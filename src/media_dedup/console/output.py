@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from rich.console import Console
+from rich.markup import escape
 
 from media_dedup.constants import ColorMode
 from media_dedup.i18n import _
@@ -120,6 +121,7 @@ class Output:
         """
         if not sys.stdin.isatty():
             return False
-        answer = self.console.input(f"❓ {question} [bold]{_('[y/N]')}[/] ")
+        # Escaped: Rich would read "[y/N]" as a style tag and print nothing.
+        answer = self.console.input(f"❓ {question} [bold]{escape(_('[y/N]'))}[/] ")
         accepted = _YES_ANSWERS | {_("y"), _("yes")}
         return answer.strip().casefold() in accepted

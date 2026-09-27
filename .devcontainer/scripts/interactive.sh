@@ -43,6 +43,7 @@ export -f dive_ci
 export -f e2e
 export -f dedup
 export -f demo
+export -f docs_screenshots
 export -f reports
 export -f reports_stop
 export -f i18n_extract

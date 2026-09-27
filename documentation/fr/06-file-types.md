@@ -1,0 +1,92 @@
+# 6. Seulement certains types de fichiers
+
+[Documentation](README.md) › Étape 6 sur 13 · 🇬🇧 [English](../en/06-file-types.md)
+
+Par défaut, l'outil analyse toutes les photos, tous les fichiers RAW et toutes les vidéos, et
+rien d'autre. `--ext` restreint l'analyse à certains types, ou l'élargit à d'autres fichiers.
+
+## Ce qui est analysé par défaut
+
+Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
+
+| Type | Extensions |
+|---|---|
+| Images | avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, tiff, webp |
+| RAW (décodés par LibRaw, aperçu tiré du JPEG intégré par l'appareil) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
+| Vidéos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
+
+`media-dedup audit --help` les liste aussi. Les [fichiers compagnons](reference-sidecars.md)
+(`.xmp`, `.aae`, `.thm`) ne sont pas analysés seuls : ils suivent leur photo.
+
+## Seulement certains types
+
+`--ext` prend une ou plusieurs extensions, séparées par des virgules ou répétées
+(`--ext heic --ext mp4`) ; la casse et le point initial n'importent pas. Par exemple, seulement
+les photos de l'iPhone et les vidéos :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
+  -v media-dedup-cache:/cache `
+  cavo789/media-dedup --locale fr audit --ext heic,mp4
+```
+
+L'audit commence par dire ce qu'il analyse :
+
+<!-- capture: audit-ext.txt|Seules ces|└ -->
+```text
+⚠️  Seules ces extensions sont analysées : .heic, .mp4.
+
+Résumé de l'audit
+┌───────────────────────────────────────┬────────┐
+│ Fichiers média analysés               │      9 │
+│ Groupes de fichiers identiques        │      4 │
+│ Copies en trop, supprimables          │      4 │
+│ Espace libérable                      │ 5,9 Mo │
+│ Fichiers cassés (vides ou illisibles) │      1 │
+│ Durée                                 │    0 s │
+└───────────────────────────────────────┴────────┘
+```
+
+## Autres types de fichiers
+
+L'outil est fait pour les photos et les vidéos, mais `--ext` accepte aussi d'autres extensions,
+par exemple pour trouver les documents en double d'un dossier familial. `clean`
+([étape 8](08-clean.md)) a alors besoin du montage `/quarantine` :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Users\Moi\Documents:/data/c/Users/Moi/Documents" `
+  -v "$HOME\media-dedup\journal:/journal" `
+  -v "$HOME\media-dedup\quarantine:/quarantine" `
+  cavo789/media-dedup --locale fr clean --ext pdf,docx
+```
+
+Ces fichiers sont traités avec plus de précautions que les photos. Pour une photo, le dossier
+n'est qu'une façon de ranger ; pour un document ou un programme, **l'endroit où se trouve le
+fichier peut être ce qui le fait fonctionner** : un `LICENSE`, un `__init__.py` ou un modèle
+identique dans deux projets est normal, et supprimer « la copie » casse l'un d'eux.
+
+- **Seulement comparés**, octet par octet : jamais décodés (les images passent par Pillow, les
+  fichiers RAW par LibRaw, les vidéos par `ffprobe` ; les autres types n'ont aucune
+  vérification), pas d'aperçu, pas de quasi-doublons. Un fichier vide n'est jamais « cassé » :
+  ce peut être un marqueur dont un programme a besoin.
+- **Leurs copies sont déplacées en quarantaine**, jamais supprimées : `clean` refuse de
+  s'exécuter sans le montage `/quarantine`. `undo` les remet en place ; `purge` les supprime
+  définitivement.
+- **Les dossiers de logiciels sont ignorés** : `.git`, `.hg`, `.svn`, `node_modules`, `.venv`,
+  `venv`, `site-packages`, `__pycache__`, `AppData`, `ProgramData`, `Program Files`,
+  `Program Files (x86)` et `Windows`, quelle que soit leur casse.
+- **Une faute de frappe n'est pas refusée** : `--ext jpgg` est une extension valable, qui ne
+  correspond simplement à rien. L'audit nomme les extensions qui ne sont ni des photos ni des
+  vidéos : lisez cet avertissement.
+- **`--ext` limite toujours l'analyse** : `--ext jpg,pdf` analyse les photos JPEG et les
+  documents PDF, pas les fichiers RAW ni les vidéos.
+
+Montez les dossiers qui contiennent vos documents, jamais un disque entier ni `C:\Users` : les
+programmes et leurs données s'y trouvent aussi.
+
+---
+
+← [5. Choisir la copie gardée](05-choose-the-kept-copy.md) · [Documentation](README.md) · Suivant : **[7. Le fichier de configuration](07-configuration-file.md)** →

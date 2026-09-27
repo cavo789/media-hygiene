@@ -1,0 +1,338 @@
+# Commands and options
+
+[Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-commands.md)
+
+Every command, every option. The [user guide](README.md#user-guide--step-by-step) introduces
+them one at a time; this page gathers them.
+
+## Commands
+
+| Command | What it does | Guide |
+|---|---|---|
+| `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](01-first-audit.md) |
+| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](10-review-bursts.md) |
+| `clean` | Audit, confirm, then delete duplicate copies, delete empty files, quarantine unreadable ones and orphan sidecars. | [8](08-clean.md) |
+| `undo [RUN]` | Restore every file of a clean run (the latest by default). | [9](09-undo-history-purge.md) |
+| `history` | List the clean runs: files deleted, space freed, quarantine, restores. | [9](09-undo-history-purge.md) |
+| `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](09-undo-history-purge.md) |
+| `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](04-html-report.md) |
+| `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](13-second-opinion.md) |
+| `config` | Show every setting, where it comes from, and the state of each mount point. | [7](07-configuration-file.md) |
+
+## Options
+
+Global options go **before** the command: `cavo789/media-dedup --locale fr audit`. The others go
+**after** it: `cavo789/media-dedup audit --prefer "C:\Photos\Family"`.
+
+| Option | Commands | Meaning |
+|---|---|---|
+| `--locale en\|fr` | global | Interface language (English by default); numbers and sizes follow it: `67,947` and `44.3 GB`, or `67.947` and `44,3 Go`. |
+| `--verbosity error\|warning\|info\|debug` | global | How much to log. |
+| `--color auto\|always\|never` | global | ANSI colours (`NO_COLOR` is honoured). |
+| `--version` | global | Show the version. |
+| `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](05-choose-the-kept-copy.md#prefer-a-folder) |
+| `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](05-choose-the-kept-copy.md#protect-a-folder) |
+| `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these extensions (`--ext png,webp`); every photo, RAW and video one by default. Other types too (`--ext pdf,docx`). [Step 6](06-file-types.md) |
+| `--yes`, `-y` | `clean`, `purge` | Do not ask for confirmation. |
+| `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](11-near-duplicates.md) |
+| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](10-review-bursts.md), [step 12](12-decide-pair-by-pair.md) |
+| `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
+| `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
+
+Most options have a `config.toml` counterpart ([step 7](07-configuration-file.md)); the command
+line wins.
+
+## The built-in help
+
+`cavo789/media-dedup --help` and `cavo789/media-dedup <command> --help` document everything, in
+both languages (`--locale fr --help`). Here is what they print:
+
+<details>
+<summary><code>--help</code></summary>
+
+<!-- capture: help.txt -->
+```text
+ Usage: media-dedup [OPTIONS] COMMAND [ARGS]...
+
+ Find and safely clean duplicate photos and videos across folders and disks.
+ Start with 'audit' (read-only), then 'clean'.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --version            Show the version and exit.                              │
+│ --help     -h        Show this message and exit.                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Output (override general.* of config.toml) ─────────────────────────────────╮
+│ --locale           <en|fr>                     Interface language.           │
+│ --verbosity        <error|warning|info|debug>  How much to log.              │
+│ --color            <auto|always|never>         When to use colours (NO_COLOR │
+│                                                is honoured too).             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Analyse ────────────────────────────────────────────────────────────────────╮
+│ audit       Find exact duplicates and broken files. Read-only: mount folders │
+│             with :ro.                                                        │
+│ crosscheck  Compare a fresh audit with Czkawka's results: a second,          │
+│             independent opinion.                                             │
+│ history     List the clean runs and what they did.                           │
+│ reports     List the HTML reports of previous audits and cleans.             │
+│ config      Show every setting, where it comes from, and the mount points.   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Act ────────────────────────────────────────────────────────────────────────╮
+│ review      Set burst shots aside, one series at a time, with the keyboard   │
+│             in your browser; 'clean --decisions' then moves them.            │
+│ clean       Audit, confirm, then really delete duplicate copies (journaled,  │
+│             undoable).                                                       │
+│ undo        Restore every file of a clean run, from the kept copy or the     │
+│             quarantine.                                                      │
+│ purge       Permanently delete the quarantined broken files of a run.        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+ A Windows folder (PowerShell):
+   docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-dedup audit
+ The current folder (PowerShell, or bash on WSL, Linux, macOS):
+   docker run --rm -it -v "${PWD}:/data/current:ro" media-dedup audit
+
+ Full commands (reports, journal, WSL): see README.md.
+```
+
+</details>
+
+<details>
+<summary><code>audit --help</code></summary>
+
+<!-- capture: help-audit.txt -->
+```text
+ Usage: media-dedup audit [OPTIONS]
+
+ Find exact duplicates and broken files. Read-only: mount folders with :ro.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
+│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
+│                         order matters.                                       │
+│ --protect        <str>  Folder never modified; its files are the copies      │
+│                         kept. Repeatable.                                    │
+│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│                         Repeatable.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
+│ --ext        <str>  Only analyse files with these extensions, e.g. --ext     │
+│                     png,webp (repeatable). Other types too, such as --ext    │
+│                     pdf,docx: their copies are moved to the quarantine.      │
+│                     Default: every photo, RAW and video extension: 3g2, 3gp, │
+│                     arw, avi, avif, bmp, cr2, cr3, dng, flv, gif, heic,      │
+│                     heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, mp4, mpeg,    │
+│                     mpg, mts, nef, orf, pef, png, raf, rw2, srw, tif, tiff,  │
+│                     ts, webm, webp, wmv.                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>review --help</code></summary>
+
+<!-- capture: help-review.txt -->
+```text
+ Usage: media-dedup review [OPTIONS]
+
+ Set burst shots aside, one series at a time, with the keyboard in your
+ browser; 'clean --decisions' then moves them.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --decisions          <path>              File the decisions are saved in,    │
+│                                          and resumed from. A relative path   │
+│                                          lies in the folder mounted on       │
+│                                          /reports. Default: decisions.json.  │
+│ --port               <int range> [x>=0]  Port of the page inside the         │
+│                                          container; publish it with -p       │
+│                                          127.0.0.1::8080 so that Docker      │
+│                                          chooses a free one on your          │
+│                                          computer. Default: 8080.            │
+│ --help       -h                          Show this message and exit.         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
+│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
+│                         order matters.                                       │
+│ --protect        <str>  Folder never modified; its files are the copies      │
+│                         kept. Repeatable.                                    │
+│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│                         Repeatable.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>clean --help</code></summary>
+
+<!-- capture: help-clean.txt -->
+```text
+ Usage: media-dedup clean [OPTIONS]
+
+ Audit, confirm, then really delete duplicate copies (journaled, undoable).
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes        -y                    Do not ask for confirmation (overrides    │
+│                                    clean.confirm).                           │
+│ --tier               <exact|near>  exact: delete byte-for-byte copies only.  │
+│                                    near: also move near duplicates (resized  │
+│                                    or recompressed copies) to the            │
+│                                    quarantine; check them in the report      │
+│                                    first. Default: exact.                    │
+│ --decisions          <path>        decisions.json downloaded from an audit   │
+│                                    report (swap or leave alone some folder   │
+│                                    pairs) or written by 'review' (burst      │
+│                                    shots set aside). A relative path is read │
+│                                    from the folder mounted on /reports. The  │
+│                                    file is refused if the folders, the pairs │
+│                                    or the series changed.                    │
+│ --help       -h                    Show this message and exit.               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
+│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
+│                         order matters.                                       │
+│ --protect        <str>  Folder never modified; its files are the copies      │
+│                         kept. Repeatable.                                    │
+│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│                         Repeatable.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
+│ --ext        <str>  Only analyse files with these extensions, e.g. --ext     │
+│                     png,webp (repeatable). Other types too, such as --ext    │
+│                     pdf,docx: their copies are moved to the quarantine.      │
+│                     Default: every photo, RAW and video extension: 3g2, 3gp, │
+│                     arw, avi, avif, bmp, cr2, cr3, dng, flv, gif, heic,      │
+│                     heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, mp4, mpeg,    │
+│                     mpg, mts, nef, orf, pef, png, raf, rw2, srw, tif, tiff,  │
+│                     ts, webm, webp, wmv.                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>undo --help</code></summary>
+
+<!-- capture: help-undo.txt -->
+```text
+ Usage: media-dedup undo [OPTIONS] [run_id]
+
+ Restore every file of a clean run, from the kept copy or the quarantine.
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>history --help</code></summary>
+
+<!-- capture: help-history.txt -->
+```text
+ Usage: media-dedup history [OPTIONS]
+
+ List the clean runs and what they did.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>purge --help</code></summary>
+
+<!-- capture: help-purge.txt -->
+```text
+ Usage: media-dedup purge [OPTIONS] [run_id]
+
+ Permanently delete the quarantined broken files of a run.
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   run_id      <str>  Run whose quarantine is deleted; every run by default.  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes   -y        Do not ask for confirmation (overrides clean.confirm).     │
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>reports --help</code></summary>
+
+<!-- capture: help-reports.txt -->
+```text
+ Usage: media-dedup reports [OPTIONS]
+
+ List the HTML reports of previous audits and cleans.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --prune          <int range> [x>=0]  Delete all reports but the N most       │
+│                                      recent ones.                            │
+│ --help   -h                          Show this message and exit.             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>crosscheck --help</code></summary>
+
+<!-- capture: help-crosscheck.txt -->
+```text
+ Usage: media-dedup crosscheck [OPTIONS]
+
+ Compare a fresh audit with Czkawka's results: a second, independent opinion.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
+│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
+│                         order matters.                                       │
+│ --protect        <str>  Folder never modified; its files are the copies      │
+│                         kept. Repeatable.                                    │
+│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│                         Repeatable.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
+│ --ext        <str>  Only analyse files with these extensions, e.g. --ext     │
+│                     png,webp (repeatable). Other types too, such as --ext    │
+│                     pdf,docx: their copies are moved to the quarantine.      │
+│                     Default: every photo, RAW and video extension: 3g2, 3gp, │
+│                     arw, avi, avif, bmp, cr2, cr3, dng, flv, gif, heic,      │
+│                     heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, mp4, mpeg,    │
+│                     mpg, mts, nef, orf, pef, png, raf, rw2, srw, tif, tiff,  │
+│                     ts, webm, webp, wmv.                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>config --help</code></summary>
+
+<!-- capture: help-config.txt -->
+```text
+ Usage: media-dedup config [OPTIONS]
+
+ Show every setting, where it comes from, and the mount points.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
