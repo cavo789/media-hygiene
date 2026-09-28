@@ -1,0 +1,45 @@
+# 0024 — Journal: record which command made a run; undo refuses unknown actions
+
+- **Priority**: High — prerequisite of `sort` (0028); the undo gap is a latent data-loss bug
+- **Batch**: journal
+- **Depends**: —
+- **Files**: `src/media_dedup/constants.py`, `src/media_dedup/actions/journal.py`, `src/media_dedup/actions/journaled.py`, `src/media_dedup/actions/undo.py`, `src/media_dedup/actions/runs.py`, `src/media_dedup/cli/cmd_history.py`, `src/media_dedup/cli/cmd_undo.py`, `documentation/en/09-undo-history-purge.md`, `documentation/fr/09-undo-history-purge.md`
+
+## Context
+
+The journal and `undo` were written for `clean` only. A second acting command (`sort`, which
+moves files into a `year/category` tree) would hit two gaps:
+
+- **Undo recreates an empty file for an action it does not know.** `undo._source_of` returns
+  `None` for any `ActionKind` outside `QUARANTINED` and `DELETE_DUPLICATE`, and `_rebuild` then
+  calls `path.touch()`. That is right for `DELETE_EMPTY` only. For a move, the "restored" file
+  would be 0 bytes while the real one stays at its new place.
+- **Nothing says which command made a run.** `Phase.CLEAN` is hard-coded in
+  `JournaledChanges.entry`, `UndoExecutor` only reverses `Phase.CLEAN` entries, and
+  `runs.summarize` counts anything not quarantined as "deleted / freed". A sort run would show
+  in `history` as a clean that deleted everything it moved.
+
+## Proposal
+
+- `Phase` already means "which command wrote the entry": add `Phase.SORT`. The context of
+  `JournaledChanges` carries the phase instead of hard-coding it. Older journals keep reading as
+  `clean`.
+- New `ActionKind.MOVE` with a new optional `target` field on `JournalEntry` (older journals
+  still load: the field defaults to `None`).
+- `_source_of` becomes an explicit match on every `ActionKind`:
+  - `DELETE_EMPTY` keeps its "recreate empty" behavior, now explicitly;
+  - `MOVE` is reversed from `target`, as a verified move back (same `sha256` check as today);
+  - an unknown kind raises `JournalError`: never touch, never guess.
+- `UndoExecutor` reverses the action phase of the run (clean or sort), and removes the folders a
+  sort created once they are empty again.
+- `RunSummary` gains the run kind and a `moved` counter. `history` shows a "Command" column and
+  is titled "Runs". `undo` without a run id names the kind of the run it reverses.
+
+## Acceptance
+
+- [ ] A journal with an unknown action kind is refused by `undo` with a clear message; no file
+      is created.
+- [ ] A synthetic sort journal (MOVE entries) is undone: files back in place, byte-identical,
+      mtime restored, emptied target folders removed.
+- [ ] Journals written by 0.2.0 still read, summarize and undo as before (fixture test).
+- [ ] `history` shows the command of each run; documentation en + fr updated; `.po` translated.
