@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.console.inventory_view import inventory_table
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import findings_table, folder_pairs_view
 from media_hygiene.errors import CrossCheckError, MediaHygieneError, MountError
@@ -43,6 +44,10 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         findings = AuditService(runtime, progress).run()
     output.show(findings_table(findings))
     output.blank()
+    inventory = inventory_table(findings.inventory)
+    if inventory is not None:
+        output.show(inventory)
+        output.blank()
     show_pairs(runtime, findings)
     return findings
 

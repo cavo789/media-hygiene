@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from media_hygiene.constants import RunKind
+from media_hygiene.scan.inventory import Inventory
 
 if TYPE_CHECKING:
     from media_hygiene.crosscheck.compare import CrossCheckResult
@@ -86,3 +87,4 @@ class ReportSummary(BaseModel):
     run_id: str | None = None
     plan_file: str | None = None
     crosscheck: CrossCheckSummary | None = None
+    inventory: Inventory | None = None

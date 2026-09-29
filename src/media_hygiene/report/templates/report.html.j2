@@ -36,6 +36,17 @@
   <div class="card"><div class="value">{{ s.broken_files | number }}</div><div class="label">{{ _("broken files") }}</div></div>
 </div>
 
+{% set inv = s.inventory %}
+{% if inv and (inv.images or inv.videos) %}
+<p class="muted">🗂️ <strong>{{ _("Inventory") }}</strong> ·
+  {% if inv.images %}{{ _("photos with a shooting date:") }} {{ inv.dated_images | share(inv.images) }} · {% endif %}
+  {% if inv.videos %}{{ _("videos with a date in their tags:") }} {{ inv.dated_videos | share(inv.videos) }} · {% endif %}
+  {{ _("with a GPS position:") }} {{ inv.located | share(inv.images + inv.videos) }}
+  {% if inv.formats %} · {% for name, count in inv.formats.items() %}{{ name }} {{ count | number }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+  {% if inv.video_seconds %} · {{ _("videos:") }} {{ inv.video_seconds | duration }}{% endif %}
+</p>
+{% endif %}
+
 {% if s.crosscheck %}
 {% set c = s.crosscheck %}
 <div class="note">

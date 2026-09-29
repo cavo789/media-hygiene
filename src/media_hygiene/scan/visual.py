@@ -9,12 +9,15 @@ shots of one series compare fairly.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from functools import cache
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
 from PIL import Image, ImageOps
 
+from media_hygiene.scan.exif import camera, taken_at
+from media_hygiene.scan.exposure import Exposure, measure
 from media_hygiene.scan.models import VisualFacts
 
 if TYPE_CHECKING:
@@ -24,15 +27,18 @@ ANALYSIS_EDGE: Final = 512
 _HASH_SIDE: Final = 8
 _DCT_SIDE: Final = 32
 _ORIENTATION_TAG: Final = 0x0112
-_EXIF_IFD: Final = 0x8769
-_DATE_TAG: Final = 0x9003
-_SUBSEC_TAG: Final = 0x9291
-_MAKE_TAG: Final = 0x010F
-_MODEL_TAG: Final = 0x0110
 _QUARTER_TURNS: Final = frozenset({5, 6, 7, 8})
 
 
-def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> VisualFacts:
+@dataclass(frozen=True, slots=True)
+class Look:
+    """What a decoded image looks like: its visual facts and its exposure."""
+
+    visual: VisualFacts
+    exposure: Exposure | None
+
+
+def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> Look:
     """Describe a decoded image.
 
     Args:
@@ -40,7 +46,7 @@ def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> VisualFact
         stored_size: Its full size as stored in the file, before any rotation.
 
     Returns:
-        Its visual facts.
+        Its visual facts, and its exposure measured on the same thumbnail.
     """
     exif = image.getexif()
     upright = ImageOps.exif_transpose(image)
@@ -48,15 +54,17 @@ def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> VisualFact
     width, height = stored_size
     if exif.get(_ORIENTATION_TAG) in _QUARTER_TURNS:
         width, height = height, width
-    return VisualFacts(
+    analysed = _analysis_pixels(gray)
+    visual = VisualFacts(
         dhash=_dhash(gray),
         phash=_phash(gray),
         width=width,
         height=height,
-        sharpness=_sharpness(gray),
-        taken_at=_taken_at(exif),
-        camera=_camera(exif),
+        sharpness=_sharpness(analysed),
+        taken_at=taken_at(exif),
+        camera=camera(exif),
     )
+    return Look(visual, measure(analysed))
 
 
 def _pixels(gray: Image.Image, size: tuple[int, int]) -> NDArray[np.float64]:
@@ -124,18 +132,29 @@ def _phash(gray: Image.Image) -> int:
     return _as_int(low > np.median(low))
 
 
-def _sharpness(gray: Image.Image) -> float:
-    """Variance of the Laplacian: high for crisp edges, low for a blurred shot.
+def _analysis_pixels(gray: Image.Image) -> NDArray[np.float64]:
+    """Shrink a grayscale image to the fixed analysis size, keeping its proportions.
 
     Args:
         gray: A grayscale image.
 
     Returns:
-        The score, rounded to one decimal.
+        Its pixels, at most `ANALYSIS_EDGE` per side.
     """
     small = gray.copy()
     small.thumbnail((ANALYSIS_EDGE, ANALYSIS_EDGE))
-    pixels = np.asarray(small, dtype=np.float64)
+    return np.asarray(small, dtype=np.float64)
+
+
+def _sharpness(pixels: NDArray[np.float64]) -> float:
+    """Variance of the Laplacian: high for crisp edges, low for a blurred shot.
+
+    Args:
+        pixels: Grayscale pixels at the analysis size.
+
+    Returns:
+        The score, rounded to one decimal.
+    """
     laplacian = (
         pixels[:-2, 1:-1]
         + pixels[2:, 1:-1]
@@ -144,49 +163,3 @@ def _sharpness(gray: Image.Image) -> float:
         - 4 * pixels[1:-1, 1:-1]
     )
     return round(float(laplacian.var()), 1) if laplacian.size else 0.0
-
-
-def _text(value: object) -> str | None:
-    """Clean an EXIF text value (bytes or str, padded with NULs or spaces).
-
-    Args:
-        value: The raw value.
-
-    Returns:
-        The text, or None when empty.
-    """
-    if isinstance(value, bytes):
-        value = value.decode(errors="replace")
-    if not isinstance(value, str):
-        return None
-    return value.strip("\x00 ").strip() or None
-
-
-def _taken_at(exif: Image.Exif) -> str | None:
-    """When the shot was taken, with sub-seconds when recorded (bursts share seconds).
-
-    Args:
-        exif: The image's EXIF.
-
-    Returns:
-        `YYYY:MM:DD HH:MM:SS[.fraction]`, or None.
-    """
-    details = exif.get_ifd(_EXIF_IFD)
-    taken = _text(details.get(_DATE_TAG))
-    subsec = _text(details.get(_SUBSEC_TAG))
-    if taken is None:
-        return None
-    return f"{taken}.{subsec}" if subsec else taken
-
-
-def _camera(exif: Image.Exif) -> str | None:
-    """Which device took the shot.
-
-    Args:
-        exif: The image's EXIF.
-
-    Returns:
-        Make and model, or None.
-    """
-    parts = (_text(exif.get(_MAKE_TAG)), _text(exif.get(_MODEL_TAG)))
-    return " ".join(part for part in parts if part) or None

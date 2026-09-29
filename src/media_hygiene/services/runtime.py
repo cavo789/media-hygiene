@@ -9,16 +9,17 @@ from typing import TYPE_CHECKING
 from media_hygiene.config.layers import merge_layers
 from media_hygiene.config.loader import LoadedSettings, load_settings
 from media_hygiene.paths.host_paths import HostPathMapper
+from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.scan.image_check import prepare_image_worker
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
     from media_hygiene.config.layers import Layer
     from media_hygiene.config.settings import Settings
     from media_hygiene.console.output import Output
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.paths.mounts import MountTable
 
 
@@ -71,6 +72,17 @@ class Runtime:
             True for a Docker mount or an explicit path.
         """
         return self.mounts.is_persistent(self.locations, kind)
+
+    @property
+    def index_file(self) -> Path | None:
+        """The index file, when the cache is mounted to keep it.
+
+        Returns:
+            Its path, or None for an index in memory.
+        """
+        if self.persistent(MountKind.CACHE):
+            return self.locations.index_file
+        return None
 
     def with_overrides(self, layer: Layer) -> Runtime:
         """Reload the settings with extra command-line overrides.

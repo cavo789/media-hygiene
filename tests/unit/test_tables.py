@@ -23,7 +23,7 @@ def media(path: str) -> MediaFile:
 
 def rendered(*decisions: KeepDecision) -> str:
     """The folder pairs of these decisions, as printed on a wide terminal."""
-    findings = AuditFindings(0, (), CleanPlan(decisions, ()))
+    findings = AuditFindings((), CleanPlan(decisions, ()))
     table = folder_pairs_view(findings, MAPPER)
     assert table is not None
     buffer = io.StringIO()
@@ -57,7 +57,7 @@ def test_one_folder_says_the_files_are_duplicated_inside() -> None:
 
 def test_no_duplicate_means_no_pairs() -> None:
     """Without duplicates there is nothing to show."""
-    assert folder_pairs_view(AuditFindings(0, (), CleanPlan((), ())), MAPPER) is None
+    assert folder_pairs_view(AuditFindings((), CleanPlan((), ())), MAPPER) is None
 
 
 def test_pairs_freeing_the_most_space_come_first() -> None:
@@ -84,7 +84,7 @@ def test_a_complete_copy_is_said_so() -> None:
         "d", 1, media("/data/c/A/x.jpg"), (media("/data/c/B/x.jpg"),)
     )
     findings = AuditFindings(
-        0, (), CleanPlan((decision,), ()), folder_files={Path("/data/c/B"): 1}
+        (), CleanPlan((decision,), ()), folder_files={Path("/data/c/B"): 1}
     )
     table = folder_pairs_view(findings, MAPPER)
     assert table is not None
@@ -101,6 +101,6 @@ def test_the_summary_counts_the_groups() -> None:
         "d", 1, media("/data/c/A/x.jpg"), (media("/data/c/B/x.jpg"),)
     )
     buffer = io.StringIO()
-    table = findings_table(AuditFindings(2, (), CleanPlan((decision,), ())))
+    table = findings_table(AuditFindings((), CleanPlan((decision,), ())))
     Console(file=buffer, width=120).print(table)
     assert "Groups of identical files" in buffer.getvalue()

@@ -6,17 +6,25 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.clean import CleanExecutor
-from media_hygiene.actions.journal import JournalWriter, journal_file
+from media_hygiene.actions.journal import (
+    JournalWriter,
+    journal_file,
+    latest_states,
+    read_journal,
+)
 from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.runs import new_run_id
-from media_hygiene.constants import BrokenReason
+from media_hygiene.constants import BrokenReason, Phase, Status
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.plan.models import AuditFindings, CleanPlan
     from media_hygiene.scan.progress import ProgressSink
@@ -138,11 +146,30 @@ class CleanService:
         locations = self._runtime.locations
         locations.journal_dir.mkdir(parents=True, exist_ok=True)
         run_id = new_run_id(locations.journal_dir)
-        with JournalWriter.open(journal_file(locations.journal_dir, run_id)) as journal:
+        journal_path = journal_file(locations.journal_dir, run_id)
+        with JournalWriter.open(journal_path) as journal:
             context = CleanContext(
                 journal=journal,
                 mapper=self._runtime.mapper,
                 quarantine_run_dir=locations.quarantine_dir / run_id,
                 progress=self._progress,
             )
-            return run_id, CleanExecutor(context).run(plan)
+            outcome = CleanExecutor(context).run(plan)
+        self._forget_removed(journal_path)
+        return run_id, outcome
+
+    def _forget_removed(self, journal_path: Path) -> None:
+        """Remove from the index the files this run deleted or moved away.
+
+        `undo` needs nothing: the next audit indexes the restored files again.
+
+        Args:
+            journal_path: The journal of the run.
+        """
+        index = self._runtime.index_file
+        if index is None:
+            return
+        latest = latest_states(read_journal(journal_path), Phase.CLEAN).values()
+        removed = [entry.path for entry in latest if entry.status is Status.DONE]
+        with FactsRepository.open(index) as repository:
+            repository.forget(removed)

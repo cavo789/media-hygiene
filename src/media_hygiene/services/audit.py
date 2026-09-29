@@ -13,8 +13,8 @@ from typing import TYPE_CHECKING
 from media_hygiene.constants import FFPROBE_BINARY
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.plan.models import AuditFindings
 from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.plan.planner import build_plan
@@ -23,6 +23,7 @@ from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder, IntegrityFindings
 from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
+from media_hygiene.scan.inventory import take_inventory
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.walker import Walk, walk
@@ -37,6 +38,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
+    from media_hygiene.scan.filters import ScanFilters
     from media_hygiene.scan.models import DuplicateGroup, MediaFile
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
@@ -75,22 +77,12 @@ class AuditService:
         refuse_overlapping_mounts(runtime)
         warn_about_scope(runtime)
         roots = runtime.mounts.data_roots(data_dir)
-        found = self._list_files(roots)
-        ffprobe = shutil.which(FFPROBE_BINARY)
-        if ffprobe is None:
-            runtime.output.warning(_("ffprobe not found: videos are not checked."))
-        with (
-            FactsRepository.open(self._index_file()) as repository,
-            runtime.executor_factory() as executor,
-        ):
-            deps = ScanDeps(repository, self._progress)
-            groups, integrity = asyncio.run(
-                _analyse(
-                    found.files,
-                    BrokenFileFinder(deps, IntegrityTools(executor, ffprobe)),
-                    ExactDuplicateFinder(deps),
-                ),
-            )
+        filters = scan_filters(runtime.settings, runtime.mapper)
+        found = self._list_files(roots, filters)
+        listed = frozenset(str(file.path) for file in found.files)
+        groups, integrity = self._check_files(
+            found, WalkCoverage(roots, listed, found.unreadable, filters)
+        )
         policy = keep_policy(
             runtime.settings, runtime.mapper, accompanied(found.sidecars)
         )
@@ -100,7 +92,6 @@ class AuditService:
             found.sidecars, policy, alone=not runtime.settings.scan.extensions
         )
         return AuditFindings(
-            files_scanned=len(found.files),
             roots=roots,
             plan=replace(plan, sidecars=sidecars),
             seconds=time.monotonic() - started,
@@ -111,29 +102,49 @@ class AuditService:
             similar=find_similar(
                 SimilarInputs(found.files, integrity.visuals, groups), policy
             ),
+            inventory=take_inventory(found.files, integrity),
         )
 
-    def _index_file(self) -> Path | None:
-        """Return the index file, when the cache is mounted to keep it.
+    def _check_files(
+        self, found: Walk, coverage: WalkCoverage
+    ) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings]:
+        """Forget from the index what is gone, then check and hash every file listed.
+
+        Args:
+            found: What the walk listed.
+            coverage: What the walk could see, to tell which files are gone.
 
         Returns:
-            Its path, or None for an index in memory.
+            The duplicate groups, the broken files and what files say of themselves.
         """
         runtime = self._runtime
-        if runtime.persistent(MountKind.CACHE):
-            return runtime.locations.index_file
-        return None
+        ffprobe = shutil.which(FFPROBE_BINARY)
+        if ffprobe is None:
+            runtime.output.warning(_("ffprobe not found: videos are not checked."))
+        with (
+            FactsRepository.open(runtime.index_file) as repository,
+            runtime.executor_factory() as executor,
+        ):
+            forget_missing(repository, coverage)
+            deps = ScanDeps(repository, self._progress)
+            return asyncio.run(
+                _analyse(
+                    found.files,
+                    BrokenFileFinder(deps, IntegrityTools(executor, ffprobe)),
+                    ExactDuplicateFinder(deps),
+                ),
+            )
 
-    def _list_files(self, roots: tuple[Path, ...]) -> Walk:
+    def _list_files(self, roots: tuple[Path, ...], filters: ScanFilters) -> Walk:
         """Walk every root, without listing a file twice (nested mounts, hard links).
 
         Args:
             roots: Mounted folders.
+            filters: Folders to skip and extensions to keep.
 
         Returns:
-            The media files, by path, and every sidecar found.
+            The media files, by path, every sidecar found, what could not be read.
         """
-        filters = scan_filters(self._runtime.settings, self._runtime.mapper)
         step = Step(
             _("Listing media files"),
             _(
@@ -146,7 +157,7 @@ class AuditService:
         self._progress.stop()
         unique = unique_files(found.files)
         warn_about_aliases(self._runtime, unique.aliases)
-        return Walk(unique.files, found.sidecars)
+        return Walk(unique.files, found.sidecars, found.unreadable)
 
 
 async def _analyse(

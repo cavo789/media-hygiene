@@ -78,6 +78,15 @@ Audit summary
 │ Duration                                             │    1 s │
 └──────────────────────────────────────────────────────┴────────┘
 
+Inventory
+┌───────────────────────────────────────┬──────────────────┐
+│ Photos with a shooting date           │   57 of 58 (98%) │
+│ Videos with a date in their tags      │      0 of 1 (0%) │
+│ Photos and videos with a GPS position │     0 of 59 (0%) │
+│ Photo formats                         │ JPEG 55 · HEIF 3 │
+│ Total length of the videos            │              8 s │
+└───────────────────────────────────────┴──────────────────┘
+
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
   C:\Photos\Old phone (deleted), 2.2 MB freed. C:\Photos\Old phone holds nothing
@@ -115,6 +124,11 @@ The table first:
 | Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([step 11](11-near-duplicates.md)). |
 | Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](10-review-bursts.md)). |
 | Duration | How long the whole audit took. |
+
+Then the *Inventory*: what your photos and videos say about themselves. How many photos have a
+shooting date (written by the camera), how many videos carry a date in their tags, how many files
+hold a GPS position, the formats of the photos and the total length of the videos. Nothing is
+judged there: these are facts the files hold, counted for you.
 
 Then *Folders sharing identical files*: each sentence is a pair of folders holding the same
 files. The copies in the first folder are **kept**, those in the second one would be

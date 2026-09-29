@@ -28,10 +28,15 @@ _LOGGER = logging.getLogger(__name__)
 
 @dataclass(frozen=True, slots=True)
 class Walk:
-    """What the walk found below the roots, in no fixed order."""
+    """What the walk found below the roots, in no fixed order.
+
+    `unreadable` lists the folders it could not read and the files it could not
+    `stat`: whatever lies there may exist, the walk just could not see it.
+    """
 
     files: tuple[MediaFile, ...] = ()
     sidecars: tuple[Sidecar, ...] = ()
+    unreadable: tuple[Path, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,6 +46,7 @@ class _Listing:
     files: tuple[MediaFile, ...] = ()
     folders: tuple[Path, ...] = ()
     sidecars: tuple[Sidecar, ...] = ()
+    unreadable: tuple[Path, ...] = ()
 
 
 async def walk(
@@ -50,7 +56,8 @@ async def walk(
 ) -> Walk:
     """Return the media files and sidecars below `roots`, as `filters` allows.
 
-    Unreadable folders are logged and skipped: one bad folder never stops the scan.
+    Unreadable folders and files are logged, skipped and listed: one bad folder
+    never stops the scan.
     Nested or overlapping roots list their files twice: see `unique_files`.
     Sidecars are listed whatever the extension filter: they follow their photo.
 
@@ -60,10 +67,11 @@ async def walk(
         progress: Advanced once per media file found.
 
     Returns:
-        Every media file and sidecar found.
+        Every media file and sidecar found, and what could not be read.
     """
     files: list[MediaFile] = []
     sidecars: list[Sidecar] = []
+    unreadable: list[Path] = []
     visits: list[asyncio.Task[None]] = []
     slots = asyncio.Semaphore(Sizes.IO_CONCURRENCY)
     async with asyncio.TaskGroup() as group:
@@ -73,12 +81,13 @@ async def walk(
                 listing = await asyncio.to_thread(_list_folder, folder, filters)
             files.extend(listing.files)
             sidecars.extend(listing.sidecars)
+            unreadable.extend(listing.unreadable)
             for _file in listing.files:
                 progress.advance()
             visits.extend(group.create_task(visit(sub)) for sub in listing.folders)
 
         visits.extend(group.create_task(visit(root)) for root in roots)
-    return Walk(tuple(files), tuple(sidecars))
+    return Walk(tuple(files), tuple(sidecars), tuple(unreadable))
 
 
 def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
@@ -97,10 +106,24 @@ def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
             items = list(entries)
     except OSError as exc:
         _LOGGER.warning("Cannot read folder %s: %s", folder, exc.strerror)
-        return _Listing()
+        return _Listing(unreadable=(folder,))
+    return _sort_entries(items, filters)
+
+
+def _sort_entries(items: list[os.DirEntry[str]], filters: ScanFilters) -> _Listing:
+    """Sort the entries of a folder: media files, sidecars, subfolders to visit.
+
+    Args:
+        items: Every entry of the folder.
+        filters: Folders to skip and extensions to keep.
+
+    Returns:
+        What the folder holds, and the files that could not be `stat`ed.
+    """
     files: list[MediaFile] = []
     folders: list[Path] = []
     sidecars: list[os.DirEntry[str]] = []
+    unreadable: list[Path] = []
     for entry in items:
         path = Path(entry.path)
         if entry.is_dir(follow_symlinks=False):
@@ -110,10 +133,17 @@ def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
         if is_sidecar(entry.name):
             sidecars.append(entry)
             continue
-        media = _describe(entry, filters.kind_of(path))
+        try:
+            media = _describe(entry, filters.kind_of(path))
+        except OSError as exc:
+            _LOGGER.warning("Cannot read %s: %s", path, exc.strerror)
+            unreadable.append(path)
+            continue
         if media is not None:
             files.append(media)
-    return _Listing(tuple(files), tuple(folders), _sidecars(sidecars, items))
+    return _Listing(
+        tuple(files), tuple(folders), _sidecars(sidecars, items), tuple(unreadable)
+    )
 
 
 def _sidecars(
@@ -131,11 +161,16 @@ def _sidecars(
     if not entries:
         return ()
     names = [item.name for item in items if not item.is_dir(follow_symlinks=False)]
-    return tuple(
-        Sidecar(file, companions_of(file.path, names))
-        for file in (_describe(entry, MediaKind.SIDECAR) for entry in entries)
-        if file is not None
-    )
+    found: list[Sidecar] = []
+    for entry in entries:
+        try:
+            file = _describe(entry, MediaKind.SIDECAR)
+        except OSError as exc:
+            _LOGGER.warning("Cannot read %s: %s", entry.path, exc.strerror)
+            continue
+        if file is not None:
+            found.append(Sidecar(file, companions_of(file.path, names)))
+    return tuple(found)
 
 
 def _describe(entry: os.DirEntry[str], kind: MediaKind | None) -> MediaFile | None:
@@ -147,17 +182,15 @@ def _describe(entry: os.DirEntry[str], kind: MediaKind | None) -> MediaFile | No
 
     Returns:
         The file, or None for anything else (a link, a device, another extension).
+
+    Raises:
+        OSError: The file cannot be `stat`ed.
     """
-    path = Path(entry.path)
     if kind is None or not entry.is_file(follow_symlinks=False):
         return None
-    try:
-        stat = entry.stat(follow_symlinks=False)
-    except OSError as exc:
-        _LOGGER.warning("Cannot read %s: %s", path, exc.strerror)
-        return None
+    stat = entry.stat(follow_symlinks=False)
     return MediaFile(
-        path=path,
+        path=Path(entry.path),
         size=stat.st_size,
         mtime_ns=stat.st_mtime_ns,
         kind=kind,

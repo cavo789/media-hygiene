@@ -569,6 +569,9 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 msgid "Invalid configuration ({details})."
 msgstr "Configuration invalide ({details})."
 
+msgid "Inventory"
+msgstr "Inventaire"
+
 #, python-brace-format
 msgid ""
 "Its address on your computer: run 'docker port {container} {port}' in "
@@ -765,6 +768,14 @@ msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 msgid "Nothing was changed."
 msgstr "Rien n'a été modifié."
 
+msgid ""
+"Once, after an update: dates, places and devices recorded in the files. "
+"Images are not decoded again, only their header is read."
+msgstr ""
+"Une seule fois, après une mise à jour : dates, lieux et appareils "
+"enregistrés dans les fichiers. Les images ne sont pas décodées à nouveau,"
+" seul leur en-tête est lu."
+
 #, python-brace-format
 msgid ""
 "Only analyse files with these extensions, e.g. --ext png,webp "
@@ -831,6 +842,9 @@ msgstr ""
 "Supprime définitivement les fichiers cassés mis en quarantaine par une "
 "exécution."
 
+msgid "Photo formats"
+msgstr "Formats des photos"
+
 msgid ""
 "Photo groups picked across the whole plan, the same ones on every run. "
 "The list after it starts with the largest files, often videos without "
@@ -839,6 +853,12 @@ msgstr ""
 "Des groupes de photos choisis dans tout le plan, les mêmes à chaque "
 "exécution. La liste suivante commence par les plus gros fichiers, souvent"
 " des vidéos sans aperçu."
+
+msgid "Photos and videos with a GPS position"
+msgstr "Photos et vidéos avec une position GPS"
+
+msgid "Photos with a shooting date"
+msgstr "Photos avec une date de prise de vue"
 
 msgid ""
 "Port of the page inside the container; publish it with -p 127.0.0.1::8080"
@@ -872,6 +892,9 @@ msgstr "Fichier RAW impossible à décoder"
 
 msgid "Random sample"
 msgstr "Échantillon aléatoire"
+
+msgid "Reading the metadata of files already in the cache"
+msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
 msgid ""
 "Reads the remaining candidates in full: same SHA-256 means identical, "
@@ -1218,6 +1241,9 @@ msgstr ""
 "commenté, au premier lancement ; modifiez-le avec n'importe quel éditeur "
 "de texte."
 
+msgid "Total length of the videos"
+msgstr "Durée totale des vidéos"
+
 msgid "Type"
 msgstr "Type"
 
@@ -1237,6 +1263,9 @@ msgstr "Valeur"
 
 msgid "Video cannot be opened"
 msgstr "Vidéo impossible à ouvrir"
+
+msgid "Videos with a date in their tags"
+msgstr "Vidéos datées par leurs balises"
 
 msgid ""
 "Walks through every folder; photos and videos are recognised by their "
@@ -1444,6 +1473,9 @@ msgstr "autres types de fichiers"
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
 
+msgid "photos with a shooting date:"
+msgstr "photos avec une date de prise de vue :"
+
 msgid "preferred folder"
 msgstr "dossier préféré"
 
@@ -1509,8 +1541,17 @@ msgstr "le chemin le plus court"
 msgid "to the quarantine with --tier near"
 msgstr "en quarantaine avec --tier near"
 
+msgid "videos with a date in their tags:"
+msgstr "vidéos datées par leurs balises :"
+
+msgid "videos:"
+msgstr "vidéos :"
+
 msgid "why:"
 msgstr "pourquoi :"
+
+msgid "with a GPS position:"
+msgstr "avec une position GPS :"
 
 msgid "y"
 msgstr "o"
@@ -1598,6 +1639,10 @@ msgstr[1] ""
 "{count} fichiers sont accessibles par deux chemins (liens physiques, ou "
 "dossier monté deux fois) : chacun n'est analysé qu'une fois, p. ex. "
 "{path} est {same_as}."
+
+#, python-brace-format
+msgid "{count} of {total} ({percent}%)"
+msgstr "{count} sur {total} ({percent} %)"
 
 #, python-brace-format
 msgid "{count} orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine."

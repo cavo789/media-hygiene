@@ -92,6 +92,7 @@ class ReportBuilder:
             run_id=record.run_id,
             plan_file=PLAN_CSV_FILE_NAME,
             crosscheck=CrossCheckSummary.of(record.crosscheck),
+            inventory=record.findings.inventory,
         )
 
     def view(self, record: ReportRecord, previews: set[Path]) -> ReportView:

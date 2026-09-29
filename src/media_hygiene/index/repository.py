@@ -3,22 +3,30 @@
 from __future__ import annotations
 
 import sqlite3
+from datetime import datetime
 from typing import TYPE_CHECKING, Final, Self
 
-from media_hygiene.constants import BrokenReason
 from media_hygiene.index.facts import FileFacts
-from media_hygiene.index.schema import SELECT, UPSERT, prepare
-from media_hygiene.scan.models import VisualFacts
+from media_hygiene.index.rows import facts_of, is_current, row_of
+from media_hygiene.index.schema import (
+    FORGET,
+    MARK_WALKED,
+    PATHS_UNDER,
+    SELECT,
+    UPSERT,
+    WALKED_AT,
+    prepare,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable
     from pathlib import Path
 
     from media_hygiene.scan.models import MediaFile
 
 _IN_MEMORY: Final = ":memory:"
-_SIZE, _MTIME, _PARTIAL, _FULL, _CHECKED, _REASON, _DETAIL, _VISUAL = range(8)
-_HEX: Final = 16
+# Sorts right after "/": every "folder/..." path is below "folder0".
+_AFTER_SEPARATOR: Final = "0"
 
 
 class FactsRepository:
@@ -73,18 +81,9 @@ class FactsRepository:
             The cached facts, or empty facts when unknown or stale.
         """
         row = self._connection.execute(SELECT, (str(file.path),)).fetchone()
-        if row is None or (row[_SIZE], row[_MTIME]) != (file.size, file.mtime_ns):
+        if row is None or not is_current(file, row):
             return FileFacts()
-        reason = row[_REASON]
-        return FileFacts(
-            partial_digest=row[_PARTIAL],
-            full_digest=row[_FULL],
-            integrity_checked=bool(row[_CHECKED]),
-            broken_reason=BrokenReason(reason) if reason is not None else None,
-            broken_detail=row[_DETAIL],
-            visual_checked=bool(row[_VISUAL]),
-            visual=_visual_of(row[_VISUAL + 1 :]),
-        )
+        return facts_of(row)
 
     def put(self, file: MediaFile, facts: FileFacts) -> None:
         """Store the facts of this version of `file`.
@@ -93,62 +92,51 @@ class FactsRepository:
             file: The file they describe.
             facts: The facts to remember.
         """
-        reason = facts.broken_reason.value if facts.broken_reason is not None else None
-        row = (
-            str(file.path),
-            file.size,
-            file.mtime_ns,
-            facts.partial_digest,
-            facts.full_digest,
-            int(facts.integrity_checked),
-            reason,
-            facts.broken_detail,
-            int(facts.visual_checked),
-            *_visual_row(facts.visual),
-        )
-        self._connection.execute(UPSERT, row)
+        self._connection.execute(UPSERT, row_of(file, facts))
 
+    def paths_under(self, folder: Path) -> list[str]:
+        """List the indexed paths below a folder.
 
-def _visual_row(visual: VisualFacts | None) -> tuple[object, ...]:
-    """Flatten visual facts into the version 2 columns.
+        Args:
+            folder: A folder (container path).
 
-    Args:
-        visual: The facts, or None.
+        Returns:
+            Every indexed path inside it, at any depth.
+        """
+        prefix = f"{folder}/"
+        bounds = (prefix, f"{folder}{_AFTER_SEPARATOR}")
+        return [row[0] for row in self._connection.execute(PATHS_UNDER, bounds)]
 
-    Returns:
-        dhash, phash, width, height, sharpness, taken_at, camera.
-    """
-    if visual is None:
-        return (None,) * 7
-    return (
-        f"{visual.dhash:016x}",
-        f"{visual.phash:016x}",
-        visual.width,
-        visual.height,
-        visual.sharpness,
-        visual.taken_at,
-        visual.camera,
-    )
+    def forget(self, paths: Iterable[str]) -> int:
+        """Remove the rows of files that are gone.
 
+        Args:
+            paths: Their paths (container paths).
 
-def _visual_of(values: Sequence[object]) -> VisualFacts | None:
-    """Rebuild visual facts from the version 2 columns.
+        Returns:
+            How many rows were removed.
+        """
+        before = self._connection.total_changes
+        self._connection.executemany(FORGET, ((path,) for path in paths))
+        return self._connection.total_changes - before
 
-    Args:
-        values: dhash, phash, width, height, sharpness, taken_at, camera.
+    def mark_walked(self, folder: Path, when: datetime) -> None:
+        """Record that a folder was just walked without any read error.
 
-    Returns:
-        The facts, or None when the image has none.
-    """
-    dhash, phash, width, height, sharpness, taken_at, camera = values
-    if not isinstance(dhash, str) or not isinstance(phash, str):
-        return None
-    return VisualFacts(
-        dhash=int(dhash, _HEX),
-        phash=int(phash, _HEX),
-        width=int(str(width)),
-        height=int(str(height)),
-        sharpness=float(str(sharpness)),
-        taken_at=taken_at if isinstance(taken_at, str) else None,
-        camera=camera if isinstance(camera, str) else None,
-    )
+        Args:
+            folder: A mounted folder (container path).
+            when: When the walk ended.
+        """
+        self._connection.execute(MARK_WALKED, (str(folder), when.isoformat()))
+
+    def walked_at(self, folder: Path) -> datetime | None:
+        """Tell when a folder was last walked without any read error.
+
+        Args:
+            folder: A mounted folder (container path).
+
+        Returns:
+            When, or None when never.
+        """
+        row = self._connection.execute(WALKED_AT, (str(folder),)).fetchone()
+        return datetime.fromisoformat(row[0]) if row is not None else None

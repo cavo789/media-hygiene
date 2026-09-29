@@ -38,6 +38,10 @@ l'autre.
 Un fichier est reconnu à son chemin, sa taille et sa date de modification : changez l'un des
 trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
 
+Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
+de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une
+vidéo… Rien de plus n'est lu pour cela.
+
 ## Bon à savoir
 
 - **Gardez ce `-v` dans chaque commande** à partir de maintenant : `audit`, puis plus tard
@@ -45,7 +49,13 @@ trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
 - **Repartir de zéro** : `docker volume rm media-hygiene-cache`. Rien n'est perdu : l'audit suivant
   relit simplement tout.
 - **Après une mise à jour** de l'outil, le premier audit peut relire vos photos une fois de plus,
-  quand la nouvelle version apprend quelque chose de nouveau sur elles.
+  quand la nouvelle version apprend quelque chose de nouveau sur elles. Quand il ne lui faut que
+  ce qu'une photo dit d'elle-même, il lit son en-tête, pas toute l'image : quelques minutes pour
+  des dizaines de milliers de photos, avec une barre de progression à part.
+- **Le cache oublie les fichiers disparus** : supprimés par `clean`, déplacés en quarantaine, ou
+  déplacés et supprimés à la main. Il n'oublie que là où l'audit a pu regarder : un disque non
+  monté cette fois, un dossier illisible, un dossier exclu, ou d'autres types de fichiers que ceux
+  de `--ext` gardent leur place dans le cache.
 
 ---
 

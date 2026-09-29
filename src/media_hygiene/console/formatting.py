@@ -62,6 +62,23 @@ def human_size(size: int) -> str:
     return f"{human_number(value / _STEP, _SIZE_DECIMALS)} {units[-1]}"
 
 
+def human_share(count: int, total: int) -> str:
+    """Render a part of a whole: `59 of 60 (98%)`, `59 sur 60 (98 %)` in French.
+
+    Args:
+        count: The part.
+        total: The whole (not zero).
+
+    Returns:
+        The translated sentence.
+    """
+    return _("{count} of {total} ({percent}%)").format(
+        count=human_number(count),
+        total=human_number(total),
+        percent=human_number(100 * count / total),
+    )
+
+
 def human_duration(seconds: float) -> str:
     """Render a duration the way people say it: `12 s`, `3 min 05 s`, `1 h 02 min`.
 

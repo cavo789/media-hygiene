@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.console.formatting import (
+    human_duration,
+    human_number,
+    human_share,
+    human_size,
+)
 from media_hygiene.i18n.templates import translated_environment
 
 if TYPE_CHECKING:
@@ -22,4 +27,6 @@ def make_environment() -> Environment:
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     environment.filters["size"] = human_size
     environment.filters["number"] = human_number
+    environment.filters["share"] = human_share
+    environment.filters["duration"] = human_duration
     return environment

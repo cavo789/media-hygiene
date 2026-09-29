@@ -462,6 +462,9 @@ msgstr ""
 msgid "Invalid configuration ({details})."
 msgstr ""
 
+msgid "Inventory"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Its address on your computer: run 'docker port {container} {port}' in "
@@ -632,6 +635,11 @@ msgstr ""
 msgid "Nothing was changed."
 msgstr ""
 
+msgid ""
+"Once, after an update: dates, places and devices recorded in the files. "
+"Images are not decoded again, only their header is read."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Only analyse files with these extensions, e.g. --ext png,webp "
@@ -684,10 +692,19 @@ msgstr ""
 msgid "Permanently delete the quarantined broken files of a run."
 msgstr ""
 
+msgid "Photo formats"
+msgstr ""
+
 msgid ""
 "Photo groups picked across the whole plan, the same ones on every run. "
 "The list after it starts with the largest files, often videos without "
 "preview."
+msgstr ""
+
+msgid "Photos and videos with a GPS position"
+msgstr ""
+
+msgid "Photos with a shooting date"
 msgstr ""
 
 msgid ""
@@ -715,6 +732,9 @@ msgid "RAW file cannot be decoded"
 msgstr ""
 
 msgid "Random sample"
+msgstr ""
+
+msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
 msgid ""
@@ -1002,6 +1022,9 @@ msgid ""
 "commented, on the first run; edit it with any text editor."
 msgstr ""
 
+msgid "Total length of the videos"
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -1020,6 +1043,9 @@ msgid "Value"
 msgstr ""
 
 msgid "Video cannot be opened"
+msgstr ""
+
+msgid "Videos with a date in their tags"
 msgstr ""
 
 msgid ""
@@ -1207,6 +1233,9 @@ msgstr ""
 msgid "outside the mounted folders"
 msgstr ""
 
+msgid "photos with a shooting date:"
+msgstr ""
+
 msgid "preferred folder"
 msgstr ""
 
@@ -1272,7 +1301,16 @@ msgstr ""
 msgid "to the quarantine with --tier near"
 msgstr ""
 
+msgid "videos with a date in their tags:"
+msgstr ""
+
+msgid "videos:"
+msgstr ""
+
 msgid "why:"
+msgstr ""
+
+msgid "with a GPS position:"
 msgstr ""
 
 msgid "y"
@@ -1335,6 +1373,10 @@ msgid_plural ""
 "mounted twice): each is analysed once, e.g. {path} is {same_as}."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} of {total} ({percent}%)"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine."

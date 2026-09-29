@@ -22,6 +22,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.plan.review import PairAction
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.report.index_page import load_summaries
+from media_hygiene.scan.file_check import Need, need_of
 from media_hygiene.scan.models import MediaFile
 
 if TYPE_CHECKING:
@@ -57,7 +58,7 @@ def test_a_report_of_0_2_0_stays_in_the_catalogue(tmp_path: Path) -> None:
 
 
 def test_an_index_of_0_2_0_is_used(tmp_path: Path) -> None:
-    """Its facts are reused: no file of 0.2.0's index is hashed again."""
+    """Its facts are reused: nothing hashed again, images only get their header read."""
     index = tmp_path / "index.sqlite"
     with sqlite3.connect(index) as connection:
         connection.executescript((FIXTURES / "index.sql").read_text("utf-8"))
@@ -69,6 +70,7 @@ def test_an_index_of_0_2_0_is_used(tmp_path: Path) -> None:
         facts = repository.get(photo)
     assert facts.full_digest == DIGEST
     assert facts.visual is not None
+    assert need_of(photo, facts) is Need.METADATA  # its header only, once
 
 
 def _unset_after_test(monkeypatch: pytest.MonkeyPatch, name: str) -> None:

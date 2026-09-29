@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.plan.similar_models import SimilarFindings
+from media_hygiene.scan.inventory import Inventory
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -158,7 +159,6 @@ class CleanPlan:
 class AuditFindings:
     """Result of an audit: how much was scanned, the groups found, and the plan."""
 
-    files_scanned: int
     roots: tuple[Path, ...]
     plan: CleanPlan
     seconds: float = 0.0
@@ -167,3 +167,13 @@ class AuditFindings:
     )
     groups: tuple[DuplicateGroup, ...] = ()
     similar: SimilarFindings = field(default_factory=SimilarFindings)
+    inventory: Inventory = field(default_factory=Inventory)
+
+    @property
+    def files_scanned(self) -> int:
+        """How many media files the audit analysed.
+
+        Returns:
+            The files of every folder.
+        """
+        return sum(self.folder_files.values())

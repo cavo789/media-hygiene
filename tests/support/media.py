@@ -19,6 +19,12 @@ IMAGE_SIZE: Final = (96, 64)
 DAY_NS: Final = 86_400 * 1_000_000_000
 BASE_TIME_NS: Final = 1_700_000_000 * 1_000_000_000
 FFMPEG: Final = shutil.which("ffmpeg")
+VIDEO_TAGS: Final = (
+    "-metadata",
+    "creation_time=2021-07-14T10:00:00Z",
+    "-metadata",
+    "location=+43.6958+007.2600/",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,6 +104,8 @@ class MediaFactory:
     def video(self, relative: str) -> Path:
         """Encode a short test video with ffmpeg (moov atom at the end, like cameras).
 
+        It carries a phone's tags: a UTC creation time and an ISO 6709 place.
+
         Args:
             relative: Path below the root.
 
@@ -107,7 +115,7 @@ class MediaFactory:
         path = self._target(relative)
         source = "testsrc=duration=2:size=160x120:rate=10"
         command = [FFMPEG or "ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi"]
-        command += ["-i", source, "-pix_fmt", "yuv420p", str(path)]
+        command += ["-i", source, "-pix_fmt", "yuv420p", *VIDEO_TAGS, str(path)]
         subprocess.run(command, check=True)  # noqa: S603 - fixed, trusted arguments
         return path
 

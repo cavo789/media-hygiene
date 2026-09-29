@@ -79,6 +79,15 @@ Résumé de l'audit
 │ Durée                                                   │    1 s │
 └─────────────────────────────────────────────────────────┴────────┘
 
+Inventaire
+┌────────────────────────────────────────┬──────────────────┐
+│ Photos avec une date de prise de vue   │ 57 sur 58 (98 %) │
+│ Vidéos datées par leurs balises        │    0 sur 1 (0 %) │
+│ Photos et vidéos avec une position GPS │   0 sur 59 (0 %) │
+│ Formats des photos                     │ JPEG 55 · HEIF 3 │
+│ Durée totale des vidéos                │              8 s │
+└────────────────────────────────────────┴──────────────────┘
+
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans C:\Photos\Ancien téléphone (supprimés), gain de 2,2 Mo. C:\Photos\Ancien
@@ -119,6 +128,11 @@ D'abord le tableau :
 | Quasi-doublons | La même photo enregistrée à nouveau : réduite, recompressée. Ce ne sont pas des fichiers identiques, ils restent en place sauf si vous le demandez ([étape 11](11-near-duplicates.md)). |
 | Rafales | Des photos prises à quelques secondes d'intervalle. Jamais touchées, sauf si vous choisissez ([étape 10](10-review-bursts.md)). |
 | Durée | Le temps qu'a pris tout l'audit. |
+
+Puis l'*Inventaire* : ce que vos photos et vos vidéos disent d'elles-mêmes. Combien de photos
+ont une date de prise de vue (écrite par l'appareil), combien de vidéos sont datées par leurs
+balises, combien de fichiers portent une position GPS, les formats des photos et la durée totale
+des vidéos. Rien n'y est jugé : ce sont des faits que les fichiers contiennent, comptés pour vous.
 
 Puis *Dossiers partageant des fichiers identiques* : chaque phrase décrit deux dossiers qui
 contiennent les mêmes fichiers. Les copies du premier dossier sont **gardées**, celles du second

@@ -1,38 +1,29 @@
-"""Find broken files (empty, undecodable, unopenable) and describe readable images."""
+"""Find broken files (empty, undecodable, unopenable) and describe readable ones."""
 
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.i18n import _
-from media_hygiene.scan.image_check import inspect_image
+from media_hygiene.scan.file_check import FileChecker, Need, need_of
 from media_hygiene.scan.models import BrokenFile
 from media_hygiene.scan.progress import Step
-from media_hygiene.scan.raw_check import inspect_raw
-from media_hygiene.scan.video_check import video_problem
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping, Sequence
+    from collections.abc import Callable, Coroutine, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.index.facts import FileFacts
     from media_hygiene.scan.deps import IntegrityTools, ScanDeps
-    from media_hygiene.scan.image_check import ImageInspection
+    from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import MediaFile, VisualFacts
 
-type _Decoder = Callable[[Path], ImageInspection]
+    type _Action = Callable[[MediaFile], Coroutine[None, None, FileFacts]]
 
-# Decoded in worker processes; videos are opened by `ffprobe` instead.
-_DECODERS: Final[Mapping[MediaKind, tuple[_Decoder, BrokenReason]]] = MappingProxyType(
-    {
-        MediaKind.IMAGE: (inspect_image, BrokenReason.UNREADABLE_IMAGE),
-        MediaKind.RAW: (inspect_raw, BrokenReason.UNREADABLE_RAW),
-    }
-)
 # Other files (asked for with --ext) are never checked: nothing says what they hold.
 _MEDIA_KINDS: Final = frozenset({MediaKind.IMAGE, MediaKind.RAW, MediaKind.VIDEO})
 _EMPTY_DETAIL = "0 bytes"
@@ -40,10 +31,13 @@ _EMPTY_DETAIL = "0 bytes"
 
 @dataclass(frozen=True, slots=True)
 class IntegrityFindings:
-    """Broken files, and what every readable image looks like."""
+    """Broken files, what readable images look like, what files say of themselves."""
 
     broken: tuple[BrokenFile, ...]
     visuals: Mapping[Path, VisualFacts]
+    metadata: Mapping[Path, MediaMetadata] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
 
 class BrokenFileFinder:
@@ -57,10 +51,10 @@ class BrokenFileFinder:
             tools: Image-decoding pool and optional `ffprobe`.
         """
         self._deps = deps
-        self._tools = tools
+        self._checker = FileChecker(deps, tools)
 
     async def find(self, files: Sequence[MediaFile]) -> IntegrityFindings:
-        """Return the broken files among `files`, and describe the readable images.
+        """Return the broken files among `files`, and describe the readable ones.
 
         Images are decoded by Pillow, RAW files by LibRaw, videos opened by `ffprobe`
         (skipped when it is unavailable). Other files are never broken, even empty:
@@ -70,38 +64,28 @@ class BrokenFileFinder:
             files: Every media file found.
 
         Returns:
-            The broken files, sorted by path, and the visual facts of images.
+            The broken files, sorted by path, the visual facts of images and the
+            metadata of images and videos.
         """
-        repository = self._deps.repository
         broken = [
             BrokenFile(file, BrokenReason.EMPTY, _EMPTY_DETAIL)
             for file in files
             if file.size == 0 and file.kind in _MEDIA_KINDS
         ]
-        to_check: list[MediaFile] = []
+        work: dict[Need, list[MediaFile]] = {need: [] for need in Need}
         known: dict[Path, FileFacts] = {}
         for file in files:
-            if file.size == 0 or not self._can_check(file):
+            if file.size == 0 or not self._checker.can_check(file):
                 continue
-            facts = repository.get(file)
-            if _is_complete(file, facts):
+            facts = self._deps.repository.get(file)
+            need = need_of(file, facts)
+            work[need].append(file)
+            if need is Need.NOTHING:
                 known[file.path] = facts
-            else:
-                to_check.append(file)
-        step = Step(
-            _("Checking that files can be read"),
-            _(
-                "Finds broken files: empty (0 bytes), images and RAW files that cannot "
-                "be decoded, videos that cannot be opened."
-            ),
+        known |= await self._run(work[Need.CHECK], self._checker.check, _check_step())
+        known |= await self._run(
+            work[Need.METADATA], self._checker.read_metadata, _metadata_step()
         )
-        self._deps.progress.start(step, len(to_check))
-        async with asyncio.TaskGroup() as group:
-            tasks = {file: group.create_task(self._check(file)) for file in to_check}
-        self._deps.progress.stop()
-        for file, task in tasks.items():
-            repository.put(file, task.result())
-            known[file.path] = task.result()
         by_path = {file.path: file for file in files}
         broken.extend(
             item
@@ -113,65 +97,67 @@ class BrokenFileFinder:
             visuals=MappingProxyType(
                 {path: facts.visual for path, facts in known.items() if facts.visual}
             ),
+            metadata=MappingProxyType(
+                {
+                    path: facts.metadata
+                    for path, facts in known.items()
+                    if facts.metadata
+                }
+            ),
         )
 
-    def _can_check(self, file: MediaFile) -> bool:
-        """Tell whether a decoder exists for this file.
+    async def _run(
+        self, files: list[MediaFile], action: _Action, step: Step
+    ) -> dict[Path, FileFacts]:
+        """Run one action on every file concurrently, then store what it learnt.
 
         Args:
-            file: Candidate file.
+            files: The files needing it.
+            action: A full check, or reading the metadata only.
+            step: The progress step shown meanwhile (nothing shown for no file).
 
         Returns:
-            True for images and RAW files, and for videos when `ffprobe` is available.
+            The updated facts, by path.
         """
-        if file.kind is MediaKind.VIDEO:
-            return self._tools.ffprobe is not None
-        return file.kind in _DECODERS
-
-    async def _check(self, file: MediaFile) -> FileFacts:
-        """Check one file and return its updated facts.
-
-        Args:
-            file: File to check.
-
-        Returns:
-            Its facts, including the integrity outcome.
-        """
-        facts = self._deps.repository.get(file)
-        try:
-            if file.kind is MediaKind.VIDEO and self._tools.ffprobe is not None:
-                async with self._deps.io_slots:
-                    problem = await video_problem(file.path, self._tools.ffprobe)
-                reason = BrokenReason.UNREADABLE_VIDEO
-            else:
-                decode, reason = _DECODERS[file.kind]
-                loop = asyncio.get_running_loop()
-                inspection = await loop.run_in_executor(
-                    self._tools.executor, decode, file.path
-                )
-                problem = inspection.problem
-                facts = facts.with_visual(inspection.visual)
-        finally:
-            self._deps.progress.advance()
-        return facts.with_integrity(reason if problem else None, problem or "")
+        if not files:
+            return {}
+        self._deps.progress.start(step, len(files))
+        async with asyncio.TaskGroup() as group:
+            tasks = {file: group.create_task(action(file)) for file in files}
+        self._deps.progress.stop()
+        for file, task in tasks.items():
+            self._deps.repository.put(file, task.result())
+        return {file.path: task.result() for file, task in tasks.items()}
 
 
-def _is_complete(file: MediaFile, facts: FileFacts) -> bool:
-    """Tell whether the index already knows all a check would compute.
-
-    Images checked by an older version still lack their visual facts: they are
-    decoded again once.
-
-    Args:
-        file: The file.
-        facts: What the index knows about it.
+def _check_step() -> Step:
+    """The progress step of the full checks.
 
     Returns:
-        True when nothing needs computing.
+        Its translated title and explanation.
     """
-    if file.kind is MediaKind.IMAGE:
-        return facts.integrity_checked and facts.visual_checked
-    return facts.integrity_checked
+    return Step(
+        _("Checking that files can be read"),
+        _(
+            "Finds broken files: empty (0 bytes), images and RAW files that cannot "
+            "be decoded, videos that cannot be opened."
+        ),
+    )
+
+
+def _metadata_step() -> Step:
+    """The progress step of the one-time metadata reading, after an update.
+
+    Returns:
+        Its translated title and explanation.
+    """
+    return Step(
+        _("Reading the metadata of files already in the cache"),
+        _(
+            "Once, after an update: dates, places and devices recorded in the files. "
+            "Images are not decoded again, only their header is read."
+        ),
+    )
 
 
 def _as_broken(file: MediaFile, facts: FileFacts) -> list[BrokenFile]:

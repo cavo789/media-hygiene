@@ -91,7 +91,7 @@ def test_second_audit_reuses_the_index(
     locations: Locations,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """With a persistent cache, unchanged files are neither hashed nor decoded again."""
+    """With a persistent cache, unchanged files are not hashed, decoded nor probed."""
     build_demo(locations.data_dir)
     first = audit(locations)
 
@@ -99,7 +99,8 @@ def test_second_audit_reuses_the_index(
         raise AssertionError
 
     monkeypatch.setattr("media_hygiene.scan.exact.full_digest", forbidden)
-    monkeypatch.setattr("media_hygiene.scan.broken.inspect_image", forbidden)
+    for name in ("inspect_image", "read_image_metadata", "probe_video"):
+        monkeypatch.setattr(f"media_hygiene.scan.file_check.{name}", forbidden)
     second = audit(locations)
     assert len(second.plan.decisions) == len(first.plan.decisions)
 

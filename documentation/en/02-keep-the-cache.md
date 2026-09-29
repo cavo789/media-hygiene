@@ -37,6 +37,10 @@ itself. Nothing to create: Docker creates it the first time and keeps it between
 A file is recognised by its path, its size and its modification date: change any of them and it
 is read again. The results are the same, with or without the cache.
 
+The cache also keeps what each file says about itself, read while it is checked: the shooting
+date, the GPS position, the device, the stars given in Windows, the length of a video… Nothing
+more is read for it.
+
 ## Good to know
 
 - **Keep this `-v` in every command** from now on: `audit`, and later `clean`, `review`… all
@@ -44,7 +48,13 @@ is read again. The results are the same, with or without the cache.
 - **Start again from scratch**: `docker volume rm media-hygiene-cache`. Nothing is lost: the next
   audit just reads everything again.
 - **After an update** of the tool, the first audit may read your photos once more, when the new
-  version learns something new about them.
+  version learns something new about them. When it only needs what a photo says about itself,
+  it reads its header, not the whole picture: a few minutes for tens of thousands of photos,
+  shown by a progress bar of its own.
+- **The cache forgets the files that are gone**: deleted by `clean`, moved to the quarantine, or
+  moved and deleted by hand. It only forgets where the audit could look: a disk not mounted this
+  time, a folder it could not read, an excluded folder, or other types of files than those of
+  `--ext` keep their place in the cache.
 
 ---
 

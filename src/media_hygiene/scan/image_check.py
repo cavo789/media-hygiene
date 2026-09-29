@@ -15,11 +15,14 @@ from typing import TYPE_CHECKING, Final
 import pillow_heif
 from PIL import Image
 
+from media_hygiene.scan.exif import image_metadata
 from media_hygiene.scan.visual import ANALYSIS_EDGE, visual_facts
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.scan.exposure import Exposure
+    from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
 
 # A corrupt file can make a decoder raise almost anything: all mean "unreadable".
@@ -64,10 +67,11 @@ def _discard_stderr() -> None:
 
 @dataclass(frozen=True, slots=True)
 class ImageInspection:
-    """Outcome of decoding an image: the decoder error, or what the image looks like."""
+    """Outcome of decoding an image: the decoder error, or what the image holds."""
 
     problem: str | None = None
     visual: VisualFacts | None = None
+    metadata: MediaMetadata | None = None
 
 
 def inspect_image(path: Path) -> ImageInspection:
@@ -89,8 +93,54 @@ def inspect_image(path: Path) -> ImageInspection:
                 image.verify()
             with Image.open(path) as image:
                 stored_size = image.size
+                header = image_metadata(image)
                 image.draft("RGB", (ANALYSIS_EDGE, ANALYSIS_EDGE))
                 image.load()
-                return ImageInspection(visual=visual_facts(image, stored_size))
+                look = visual_facts(image, stored_size)
+                return ImageInspection(
+                    visual=look.visual, metadata=_with_exposure(header, look.exposure)
+                )
         except _DECODE_ERRORS as exc:
             return ImageInspection(problem=f"{type(exc).__name__}: {exc}")
+
+
+def read_image_metadata(path: Path) -> MediaMetadata | None:
+    """Read the metadata of an image from its header only, without decoding it.
+
+    Used once, for the images an older version indexed: about 3.6 ms instead of the
+    50 ms of a decode. Their exposure stays unknown until they are decoded again.
+
+    Args:
+        path: Image file.
+
+    Returns:
+        Its metadata, or None when the file cannot be opened.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        try:
+            with Image.open(path) as image:
+                return image_metadata(image)
+        except _DECODE_ERRORS:
+            return None
+
+
+def _with_exposure(header: MediaMetadata, exposure: Exposure | None) -> MediaMetadata:
+    """Add the exposure measured on the decoded pixels to the header's metadata.
+
+    Args:
+        header: What the header said.
+        exposure: The measures, or None for an image without pixels.
+
+    Returns:
+        The complete metadata.
+    """
+    if exposure is None:
+        return header
+    return header.model_copy(
+        update={
+            "brightness": exposure.brightness,
+            "dark_share": exposure.dark_share,
+            "bright_share": exposure.bright_share,
+        }
+    )
