@@ -218,8 +218,10 @@ From the strongest to the weakest: the command-line options, then the environmen
 then `config.toml`, then the defaults. `--prefer` on the command line therefore replaces
 `preferred` of the file for that run.
 
-The environment variables are named `MEDIA_HYGIENE_<SECTION>__<KEY>` (two underscores), for
-instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON arrays.
+The environment variables are named `MEDIA_HYGIENE_<SECTION>__<KEY>` (two underscores),
+for instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON
+arrays. Up to version 0.2 their prefix was `MEDIA_DEDUP_`: it still works until version 0.4.0,
+with a warning.
 
 ---
 

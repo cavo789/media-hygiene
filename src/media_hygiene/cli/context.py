@@ -2,15 +2,21 @@
 
 from __future__ import annotations
 
+import os
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import typer
 
+from media_hygiene.config.legacy_env import (
+    LEGACY_ENV_PREFIX,
+    LEGACY_PREFIX_REMOVED_IN,
+    legacy_names,
+)
 from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
-from media_hygiene.constants import ColorMode, ExitCode
+from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.paths.locations import Locations
@@ -62,10 +68,36 @@ def build_runtime(cli_layer: Layer) -> Runtime:
     general = loaded.settings.general
     output = Output(make_console(general.color))
     configure_logging(general.verbosity, output.console)
+    _warn_legacy_variables(output)
     runtime = Runtime(loaded, locations, MountTable.current(), output, cli_layer)
     if runtime.persistent(MountKind.CONFIG):
         _create_default_config(runtime)
     return runtime
+
+
+def _warn_legacy_variables(output: Output) -> None:
+    """Say once that `MEDIA_DEDUP_*` variables are still set, and how to rename them.
+
+    `__main__` already copied their values to the new names.
+
+    Args:
+        output: Where to print.
+    """
+    names = legacy_names(os.environ)
+    if not names:
+        return
+    message = _(
+        "Environment variables now start with {new} instead of {old}: the old prefix "
+        "stops working in version {version}. Still found: {names}."
+    )
+    output.warning(
+        message.format(
+            new=ENV_PREFIX,
+            old=LEGACY_ENV_PREFIX,
+            version=LEGACY_PREFIX_REMOVED_IN,
+            names=", ".join(names),
+        )
+    )
 
 
 def _create_default_config(runtime: Runtime) -> None:

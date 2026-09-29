@@ -1,0 +1,23 @@
+{
+  "folder": "20260929-192140-audit",
+  "kind": "audit",
+  "created_at": "2026-09-29T19:21:40.956477Z",
+  "files_scanned": 2,
+  "duplicate_groups": 1,
+  "duplicate_files": 1,
+  "reclaimable_bytes": 677,
+  "broken_files": 0,
+  "orphan_sidecars": 0,
+  "freed_bytes": 0,
+  "run_id": null,
+  "plan_file": "plan.csv",
+  "crosscheck": {
+    "agrees": false,
+    "groups": 1,
+    "copies": 1,
+    "only_media_dedup": 1,
+    "only_czkawka": 0,
+    "set_aside": 2,
+    "results_date": "2026-09-29T19:00:00Z"
+  }
+}

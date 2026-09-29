@@ -117,4 +117,16 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 ## Mettre à jour
 
 `docker pull cavo789/media-hygiene` récupère la dernière version ; un tag comme
-`cavo789/media-hygiene:0.2.0` en fixe une.
+`cavo789/media-hygiene:0.3.0` en fixe une.
+
+### Vous veniez de media-dedup ?
+
+Jusqu'à la version 0.2, l'outil s'appelait **media-dedup** (`cavo789/media-dedup`) ; il
+s'appelle media-hygiene depuis la version 0.3.0. Rien de ce que vous avez n'est perdu :
+
+- Écrivez `cavo789/media-hygiene` au lieu de `cavo789/media-dedup` dans vos commandes.
+- Gardez vos dossiers et vos volumes : `$HOME\media-dedup\journal`, `media-dedup-cache` et
+  les autres vous appartiennent, quel que soit leur nom. Continuez à les écrire dans vos
+  options `-v` : `undo`, `history` et le cache y retrouvent tout.
+- Les variables d'environnement `MEDIA_DEDUP_…` fonctionnent encore jusqu'à la version 0.4.0,
+  avec un avertissement : renommez-les `MEDIA_HYGIENE_…`.

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "report": "20260929-192140-audit",
+  "roots": [
+    "C:\\Photos"
+  ],
+  "pairs": [
+    {
+      "kept_in": "C:\\Photos\\Old",
+      "removed_from": "C:\\Photos\\2019",
+      "action": "swap"
+    }
+  ],
+  "bursts": [
+    {
+      "kept": [
+        "C:\\Photos\\2019\\Plage.jpg"
+      ],
+      "discarded": [
+        "C:\\Photos\\2019\\Plage (2).jpg"
+      ]
+    }
+  ]
+}

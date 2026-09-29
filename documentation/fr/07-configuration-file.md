@@ -237,9 +237,10 @@ De la plus forte à la plus faible : les options de la ligne de commande, puis l
 d'environnement, puis `config.toml`, puis les valeurs par défaut. `--prefer` sur la ligne de
 commande remplace donc `preferred` du fichier pour ce lancement.
 
-Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux soulignés), par
-exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes s'écrivent en tableau
-JSON.
+Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux
+soulignés), par exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes
+s'écrivent en tableau JSON. Jusqu'à la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il
+fonctionne encore jusqu'à la version 0.4.0, avec un avertissement.
 
 ---
 

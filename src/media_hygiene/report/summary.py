@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from media_hygiene.constants import RunKind
 
 if TYPE_CHECKING:
     from media_hygiene.crosscheck.compare import CrossCheckResult
+
+
+_OLD_ONLY_OURS: Final = "only_media_dedup"
 
 
 class CrossCheckSummary(BaseModel):
@@ -21,10 +24,26 @@ class CrossCheckSummary(BaseModel):
     agrees: bool
     groups: int
     copies: int
-    only_media_dedup: int
+    only_ours: int
     only_czkawka: int
     set_aside: int
     results_date: datetime | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_the_0_2_name(cls, data: object) -> object:
+        """Read `only_media_dedup`, the name media-dedup 0.2 wrote for `only_ours`.
+
+        Args:
+            data: The raw input.
+
+        Returns:
+            The input, the old key renamed.
+        """
+        if not isinstance(data, dict) or _OLD_ONLY_OURS not in data:
+            return data
+        others = {key: value for key, value in data.items() if key != _OLD_ONLY_OURS}
+        return {"only_ours": data[_OLD_ONLY_OURS], **others}
 
     @classmethod
     def of(cls, result: CrossCheckResult | None) -> CrossCheckSummary | None:
@@ -42,7 +61,7 @@ class CrossCheckSummary(BaseModel):
             agrees=result.agrees,
             groups=len(result.ours),
             copies=result.copies,
-            only_media_dedup=len(result.only_ours),
+            only_ours=len(result.only_ours),
             only_czkawka=len(result.only_theirs),
             set_aside=sum(result.outside.values()),
             results_date=result.results_date,

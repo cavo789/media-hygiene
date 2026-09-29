@@ -42,8 +42,8 @@
   {% if c.agrees %}
   <strong>🤝 {{ _("Czkawka agrees: the same {copies} extra copies in {groups} groups.").format(copies=c.copies | number, groups=c.groups | number) }}</strong>
   {% else %}
-  <strong>⚠️ {{ _("Czkawka disagrees on {count} groups: look at them before cleaning.").format(count=(c.only_media_dedup + c.only_czkawka) | number) }}</strong>
-  <br>{{ _("Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The terminal lists them.").format(ours=c.only_media_dedup | number, theirs=c.only_czkawka | number) }}
+  <strong>⚠️ {{ _("Czkawka disagrees on {count} groups: look at them before cleaning.").format(count=(c.only_ours + c.only_czkawka) | number) }}</strong>
+  <br>{{ _("Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The terminal lists them.").format(ours=c.only_ours | number, theirs=c.only_czkawka | number) }}
   {% endif %}
   <br><span class="muted">{{ _("Czkawka is an independent duplicate finder.") }}{% if c.results_date %} {{ _("Czkawka results of {date} UTC.").format(date=c.results_date.strftime("%Y-%m-%d %H:%M")) }}{% endif %}{% if c.set_aside %} {{ _("Files set aside, as media-hygiene does not analyse them: {count}.").format(count=c.set_aside | number) }}{% endif %}</span>
 </div>
