@@ -1,13 +1,13 @@
 # 0029 — `classify` asks a local vision model (Ollama) about loose photos
 
-- **Priority**: Medium — the main category source for photos in date-only folders, once 0026–0028 work without it
+- **Priority**: Medium — the main category source for photos in date-only folders, once 0026–0028 and 0035 work without it
 - **Batch**: ai
-- **Depends**: 0026
+- **Depends**: 0026, 0035
 - **Files**: `src/media_dedup/classify/ai/` (new: client, describe, mapping, sampling), `src/media_dedup/index/schema.py`, `src/media_dedup/index/repository.py`, `src/media_dedup/config/settings.py`, `src/media_dedup/config/templates/config.toml.j2`, `src/media_dedup/cli/cmd_classify.py`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 
-Folder names, dates and the calendar (0026) sort much of a family collection. Photos in
+Folder names, dates (0026) and the calendar (0035) sort much of a family collection. Photos in
 date-only folders (`Juillet 2016`, `2019-04`, `DCIM`) still need a subject: beach, school
 show, pets, works at home, documents. A local vision model can provide it without any photo
 leaving the machine.
@@ -31,9 +31,9 @@ Quality:
 - Descriptions were accurate and useful. Good mappings: a construction site → Home and works;
   a school choir → School; an empty flat → Home.
 - **Occasions were missed**: nothing on a Saint-Nicolas photo nor on a Christmas Eve photo.
-  The folder name and the calendar (0026) knew.
+  The folder name (0026) and the calendar (0035) knew.
 - **The `kind` field is unreliable**: two outdoor sculptures were tagged "screenshot", and one
-  was mapped to "School". Screenshots and documents must come from metadata (0026), not from
+  was mapped to "School". Screenshots and documents must come from metadata (0035), not from
   the model.
 - **A "Family and portraits" category swallows everything**: 7 of 12 photos.
 - **A 120 px thumbnail produced an invented, detailed document title.** Tiny images must be
@@ -42,9 +42,13 @@ Quality:
 ## Proposal
 
 - **Only ask where stronger signals are silent**: skip the files already decided by
-  `existing_folder`, `calendar` or `kind` (0026), and images below a minimum size.
+  `existing_folder`, `event_neighbour` (0026), `calendar`, `date_range`, `path`, `camera` or
+  `kind` (0035), and images below a minimum size. The answer feeds the `subject` rule kind of
+  0035.
 - **Event sampling**: `samples_per_event` representatives per event, the sharpest (sharpness
   is in the index) spread across the event's span. The other photos and the videos inherit.
+  **Stable choice**: when a setting recuts the events, the photos already described are
+  preferred as samples, so a new cut does not cost a new night.
   A `subject` rule can ask for per-photo evaluation (`per_photo = true`), and the console then
   shows the time estimate first.
 - **Two steps**, so that changing the taxonomy costs seconds, not a night:
@@ -68,6 +72,12 @@ Quality:
   prompts in `templates/`.
 - **`classify --sample N`**: describes N random loose photos and prints seconds per photo and
   the estimated total, before committing to a long run.
+- **A long run is never a surprise, and never in the way**:
+  - before describing, `classify` prints the number of photos to describe and the estimated
+    time, and asks for confirmation above `[classify.ai] confirm_above` photos (`--yes`);
+  - a run describes only the samples missing from the cache; Ctrl+C keeps what is done;
+  - `--no-describe` uses the cache only (seconds): the user iterates on the rules and the
+    taxonomy without waiting, the undescribed events stay to the other rules.
 - **Docker networking**:
   - Docker Desktop resolves `host.docker.internal`;
   - Docker Engine on Linux or WSL needs `--add-host=host.docker.internal:host-gateway`, with

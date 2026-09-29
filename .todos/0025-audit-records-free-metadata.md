@@ -37,6 +37,9 @@ The same sample showed how uneven the metadata is:
   - `OffsetTimeOriginal` (time zone);
   - lens model, focal length, exposure time, f-number, ISO, flash;
   - `Software`, `ImageDescription` / `UserComment` / `Artist` when present;
+  - `Rating` (`0x4746`, 0–5 stars): Windows Explorer and Windows Photos write it when someone
+    stars a photo. It is the user's own judgment, free to read, and a rule can use it later
+    ("my favourites");
   - format (JPEG, HEIF, MPO, PNG…) and the JPEG quality estimated from the quantization tables
     (already loaded by Pillow);
   - from the gray thumbnail already made for the hashes: mean brightness and the share of
@@ -47,6 +50,10 @@ The same sample showed how uneven the metadata is:
   - `format_tags=creation_time,location,com.apple.quicktime.location.ISO6709,com.apple.quicktime.creationdate,com.apple.quicktime.make,com.apple.quicktime.model`
     and the Android make/model tags.
   - Check that the demux-only ffprobe of the image (0010) still reports these tags (e2e).
+  - Store the dates **as written**, with their offset when they have one: QuickTime's
+    `creation_time` is UTC, `com.apple.quicktime.creationdate` carries the local offset, EXIF
+    dates are local time without offset. Converting to local time is `classify`'s job (0026):
+    a New Year's Eve video at 00:30 local time is 23:30 UTC on 31/12, another year.
 - **Index schema v3**:
   - typed columns for what later steps query: `latitude`, `longitude`, and the media date for
     videos too;

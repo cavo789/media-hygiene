@@ -2,15 +2,15 @@
 
 - **Priority**: Low — only 1.3 % of the maintainer's photos carry GPS; worth it for recent phones and other users
 - **Batch**: geo
-- **Depends**: 0025, 0026, 0033
-- **Files**: `src/media_dedup/geo/` (new: geocoder, places, clusters, data), `src/media_dedup/classify/rules.py`, `src/media_dedup/config/settings.py`, `src/media_dedup/cli/cmd_places.py`, `src/media_dedup/services/places.py`, `src/media_dedup/places/` (new: app, templates, vendored Leaflet), `src/media_dedup/review/http.py`, `pyproject.toml` (tomlkit), `.devcontainer/helpers/`, `documentation/en/`, `documentation/fr/`
+- **Depends**: 0025, 0026, 0033, 0035
+- **Files**: `src/media_dedup/geo/` (new: geocoder, places, clusters, data), `src/media_dedup/classify/rules/`, `src/media_dedup/config/settings.py`, `src/media_dedup/cli/cmd_places.py`, `src/media_dedup/services/places.py`, `src/media_dedup/places/` (new: app, templates, vendored Leaflet), `src/media_dedup/review/http.py`, `pyproject.toml` (tomlkit), `.devcontainer/helpers/`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 
 With GPS, a photo can say "Maison", "Chez papy", or "Italie/Turin" without any AI. On the
 maintainer's collection only 1.3 % of images have coordinates: recent iPhones record them,
 older Android phones did not. The feature stays useful but is not the backbone of `classify`
-(0026). It adds the `place` and `trip` rule kinds.
+(0026). It adds the `place` and `trip` rule kinds to the rules of 0035.
 
 ## Proposal
 
@@ -38,6 +38,13 @@ The radius exists only for these places: a city name cannot tell home from the b
 - `trip`: an event (0026) farther than `trip_min_km` from home. Its category comes from
   `trip_category`, default `{country}/{city}`.
 - Photos without GPS inside such an event inherit it (`trip-neighbour`, lower score).
+- **Trips over several days** *(sorta)*: the events of 0026 closer than `trip_merge_gap_hours`
+  (48) whose coordinates lie within `trip_merge_max_km` (120) form one trip. By distance, not
+  by city: a trip through villages would otherwise fall into pieces.
+- **A place from a folder name** *(sorta's `path_inferred`)*: a meaningful folder label that
+  matches a GeoNames city or country (`2017/Janvier 2017/Bruges`) gives the place to the files
+  without GPS under it (`folder-place`, lower score than GPS). This is where the maintainer's
+  collection has its places: in folder names, not in coordinates.
 
 **`places` command**: a local map page served like `review` (reuses `review/http.py`: loopback
 only, `-p 127.0.0.1::8080`).
