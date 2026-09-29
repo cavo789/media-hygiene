@@ -26,8 +26,8 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────────── Annulation 20260927-064355 ──────────────────────────
-Annulation 20260927-064355
+────────────────────────── Annulation 20260929-193028 ──────────────────────────
+Annulation 20260929-193028
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -56,8 +56,8 @@ Nettoyages (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Exécution       ┃ Supprimés ┃  Libéré ┃ En quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20260927-064358 │        33 │ 16,2 Mo │              7 │         0 │
-│ 20260927-064355 │        33 │ 15,5 Mo │              3 │        36 │
+│ 20260929-193031 │        33 │ 16,2 Mo │              7 │         0 │
+│ 20260929-193028 │        33 │ 15,5 Mo │              3 │        36 │
 └─────────────────┴───────────┴─────────┴────────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -79,7 +79,7 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20260927-064358, 20260927-064355
+❓ Supprimer définitivement la quarantaine de 20260929-193031, 20260929-193028
 (2,2 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 2,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers cassés.
