@@ -1,6 +1,6 @@
 # 4. Le rapport HTML
 
-[Documentation](README.md) › Étape 4 sur 13 · 🇬🇧 [English](../en/04-html-report.md)
+[Documentation](../README.md) › Nettoyer, étape 4 sur 13 · 🇬🇧 [English](../../en/clean/04-html-report.md)
 
 Le terminal donne les totaux et les paires de dossiers. Le rapport montre le reste : les images
 elles-mêmes, chaque copie ligne par ligne, et la preuve qu'elles sont identiques. C'est une page
@@ -23,13 +23,13 @@ docker run --rm -it `
 `$HOME` est votre dossier personnel (`C:\Users\<vous>`) : les rapports arrivent dans
 `C:\Users\<vous>\media-hygiene\reports`. Créez le dossier **avant** le premier lancement : un
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
-écrire ([pourquoi](reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
+écrire ([pourquoi](../reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 
 À la fin de l'audit, deux nouvelles lignes :
 
 <!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
 ```text
-✅ Rapport HTML : /reports/20260929-202922-audit/report.html
+✅ Rapport HTML : /reports/20260929-203727-audit/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```
@@ -39,7 +39,7 @@ rapports.
 Ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliquez sur
 `index.html`. Il liste chaque audit et chaque nettoyage, du plus récent au plus ancien :
 
-![L'index des rapports : une ligne par audit ou nettoyage, avec sa date, son type, ses nombres de fichiers, de doublons et de fichiers cassés, et l'espace libérable](images/index.webp)
+![L'index des rapports : une ligne par audit ou nettoyage, avec sa date, son type, ses nombres de fichiers, de doublons et de fichiers cassés, et l'espace libérable](../images/index.webp)
 
 Cliquez sur une date pour ouvrir ce rapport. Chaque exécution a son propre dossier, nommé
 d'après sa date et son type (`AAAAMMJJ-HHMMSS-audit`), qui contient `report.html`, les
@@ -47,7 +47,7 @@ vignettes et `plan.csv`.
 
 ## Le haut : les totaux
 
-![Le haut d'un rapport d'audit : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 13,9 Mo libérables, 3 fichiers cassés, puis comment on sait que ce sont des doublons](images/report-top.webp)
+![Le haut d'un rapport d'audit : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 13,9 Mo libérables, 3 fichiers cassés, puis comment on sait que ce sont des doublons](../images/report-top.webp)
 
 Les mêmes chiffres que dans le terminal, puis un rappel : un audit ne modifie rien, et chaque
 copie listée est identique octet par octet à celle gardée.
@@ -58,7 +58,7 @@ Commencez ici. Chaque ligne est une paire de dossiers : celui qui garde ses copi
 celui qui les perd (en rouge), avec quelques images d'exemple, le nombre de fichiers et l'espace
 libéré.
 
-![Le tableau des paires de dossiers : vignettes d'exemple, le dossier gardé avec la raison, le dossier qui perd ses copies avec un badge quand c'est entièrement une copie, le nombre de fichiers, la taille, et une liste Votre décision](images/report-pairs.webp)
+![Le tableau des paires de dossiers : vignettes d'exemple, le dossier gardé avec la raison, le dossier qui perd ses copies avec un badge quand c'est entièrement une copie, le nombre de fichiers, la taille, et une liste Votre décision](../images/report-pairs.webp)
 
 - **pourquoi :** la règle qui a choisi le dossier gardé ([les règles](05-choose-the-kept-copy.md)).
 - Le badge **entièrement une copie : ne contient rien d'autre** signale un dossier sans rien à
@@ -68,7 +68,7 @@ libéré.
 
 Cliquez sur le nombre de fichiers d'une paire pour voir chaque copie, ligne par ligne :
 
-![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront supprimés de D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](images/pair.webp)
+![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront supprimés de D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](../images/pair.webp)
 
 ## Les groupes de fichiers identiques
 
@@ -76,7 +76,7 @@ Plus bas, un échantillon aléatoire de groupes de photos (les mêmes à chaque 
 plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies à supprimer 🗑️, et
 l'empreinte SHA-256 qu'elles partagent.
 
-![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie supprimée, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](images/report-groups.webp)
+![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie supprimée, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
 
 **Vérifiez vous-même** donne une commande pour PowerShell. Collez-la : Windows calcule lui-même
 l'empreinte de chaque copie, et elles sont toutes identiques. Vous n'avez pas à croire
@@ -90,19 +90,19 @@ leur arrive rien, sauf si vous le demandez :
 - **Quasi-doublons** : la même photo enregistrée à nouveau, plus petite ou recompressée
   ([étape 11](11-near-duplicates.md)).
 
-  ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](images/report-near.webp)
+  ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](../images/report-near.webp)
 
 - **Rafales** : des photos prises à quelques secondes d'intervalle, la plus nette marquée ⭐
   ([étape 10](10-review-bursts.md)).
 
-  ![Rafales : trois photos de montagne puis cinq photos d'anniversaire, chacune avec sa résolution, sa taille, sa netteté et son heure, la plus nette de chaque série marquée](images/report-bursts.webp)
+  ![Rafales : trois photos de montagne puis cinq photos d'anniversaire, chacune avec sa résolution, sa taille, sa netteté et son heure, la plus nette de chaque série marquée](../images/report-bursts.webp)
 
 ## Fichiers cassés et fichiers compagnons orphelins
 
-![Fichiers cassés : un JPEG tronqué, un fichier vide et une vidéo coupée, avec la raison ; puis un fichier compagnon orphelin IMG_0102.xmp](images/report-broken.webp)
+![Fichiers cassés : un JPEG tronqué, un fichier vide et une vidéo coupée, avec la raison ; puis un fichier compagnon orphelin IMG_0102.xmp](../images/report-broken.webp)
 
 Les fichiers vides seront supprimés ; les illisibles déplacés en quarantaine, jamais supprimés
-directement. Les [fichiers compagnons](reference-sidecars.md) restés sans leur photo sont aussi
+directement. Les [fichiers compagnons](../reference-sidecars.md) restés sans leur photo sont aussi
 déplacés en quarantaine.
 
 ## Chaque fichier dans un tableur : `plan.csv`
@@ -136,18 +136,18 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20260929-202952-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20260929-202949-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20260929-202933-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-202928-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-202926-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20260929-202924-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20260929-202923-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-202922-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-203758-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
+│ 20260929-203754-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
+│ 20260929-203738-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-203733-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-203731-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
+│ 20260929-203730-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
+│ 20260929-203728-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-203727-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```
 
 ---
 
-← [3. Plusieurs dossiers et disques](03-several-folders.md) · [Documentation](README.md) · Suivant : **[5. Choisir la copie gardée](05-choose-the-kept-copy.md)** →
+← [3. Plusieurs dossiers et disques](../start/03-several-folders.md) · [Documentation](../README.md) · Suivant : **[5. Choisir la copie gardée](05-choose-the-kept-copy.md)** →

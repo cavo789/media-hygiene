@@ -17,7 +17,7 @@ docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --loc
 
 Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
 (lecture seule) fait interdire toute écriture par Docker lui-même. Le premier lancement
-télécharge l'image tout seul. [Votre premier audit](documentation/fr/01-first-audit.md) explique
+télécharge l'image tout seul. [Votre premier audit](documentation/fr/start/01-first-audit.md) explique
 cette commande et son résultat, morceau par morceau.
 
 Ce qu'elle fait :
@@ -32,7 +32,7 @@ Ce qu'elle fait :
 - **Fichiers compagnons orphelins** : un fichier compagnon (`.xmp`, `.aae`, `.thm`) resté sans
   sa photo est déplacé en quarantaine ; celui qui accompagne sa photo n'est jamais touché.
 - **Rafales et quasi-doublons** : montrés côte à côte dans un rapport HTML ; vous choisissez les
-  meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/10-review-bursts.md).
+  meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
 - **Jamais touchés sans votre accord** : les rafales, les quasi-doublons, les dossiers protégés.
 
 ## Documentation
@@ -40,33 +40,36 @@ Ce qu'elle fait :
 La [documentation](documentation/fr/README.md) vous accompagne pas à pas. Chaque étape ajoute une
 seule chose à la commande de l'étape précédente.
 
-**Guide — pas à pas**
+**Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite :
 
-1. [Votre premier audit](documentation/fr/01-first-audit.md) : un dossier, une commande, et
+1. [Votre premier audit](documentation/fr/start/01-first-audit.md) : un dossier, une commande, et
    comment lire le résultat.
-2. [Garder le cache](documentation/fr/02-keep-the-cache.md) : les audits suivants prennent des
+2. [Garder le cache](documentation/fr/start/02-keep-the-cache.md) : les audits suivants prennent des
    secondes au lieu de minutes.
-3. [Plusieurs dossiers et disques](documentation/fr/03-several-folders.md) : `C:` et `D:`
+3. [Plusieurs dossiers et disques](documentation/fr/start/03-several-folders.md) : `C:` et `D:`
    ensemble, le dossier courant, WSL.
-4. [Le rapport HTML](documentation/fr/04-html-report.md) : les images, les paires de dossiers, la
+
+**Nettoyer les doublons**
+
+4. [Le rapport HTML](documentation/fr/clean/04-html-report.md) : les images, les paires de dossiers, la
    preuve.
-5. [Choisir la copie gardée](documentation/fr/05-choose-the-kept-copy.md) : `--prefer`,
+5. [Choisir la copie gardée](documentation/fr/clean/05-choose-the-kept-copy.md) : `--prefer`,
    `--protect`, `--exclude`.
-6. [Seulement certains types de fichiers](documentation/fr/06-file-types.md) : `--ext`, et les
+6. [Seulement certains types de fichiers](documentation/fr/clean/06-file-types.md) : `--ext`, et les
    fichiers autres que des photos.
-7. [Le fichier de configuration](documentation/fr/07-configuration-file.md) : écrire vos choix une
+7. [Le fichier de configuration](documentation/fr/clean/07-configuration-file.md) : écrire vos choix une
    fois pour toutes, dans `config.toml`.
-8. [Nettoyer](documentation/fr/08-clean.md) : supprimer les copies en trop, avec un journal et une
+8. [Nettoyer](documentation/fr/clean/08-clean.md) : supprimer les copies en trop, avec un journal et une
    quarantaine.
-9. [Annuler, historique, purge](documentation/fr/09-undo-history-purge.md) : changer d'avis, voir
+9. [Annuler, historique, purge](documentation/fr/clean/09-undo-history-purge.md) : changer d'avis, voir
    ce qui a été fait, vider la quarantaine.
-10. [Trier les rafales dans le navigateur](documentation/fr/10-review-bursts.md) : garder les
+10. [Trier les rafales dans le navigateur](documentation/fr/clean/10-review-bursts.md) : garder les
     meilleures photos de chaque rafale, au clavier.
-11. [Les quasi-doublons](documentation/fr/11-near-duplicates.md) : les copies réduites et
+11. [Les quasi-doublons](documentation/fr/clean/11-near-duplicates.md) : les copies réduites et
     recompressées (`--tier near`).
-12. [Décider paire par paire](documentation/fr/12-decide-pair-by-pair.md) : inverser une paire de
+12. [Décider paire par paire](documentation/fr/clean/12-decide-pair-by-pair.md) : inverser une paire de
     dossiers ou ne pas y toucher, depuis le rapport.
-13. [Un second avis](documentation/fr/13-second-opinion.md) : comparer avec Czkawka, un outil
+13. [Un second avis](documentation/fr/clean/13-second-opinion.md) : comparer avec Czkawka, un outil
     indépendant.
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),

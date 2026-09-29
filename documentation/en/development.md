@@ -2,7 +2,7 @@
 
 [Documentation](README.md) › For developers · 🇫🇷 [Français](../fr/development.md)
 
-Only needed to change the tool. To use it, the [user guide](README.md#user-guide--step-by-step)
+Only needed to change the tool. To use it, the [user guide](README.md#start-here)
 is enough.
 
 ## Build the image from the sources

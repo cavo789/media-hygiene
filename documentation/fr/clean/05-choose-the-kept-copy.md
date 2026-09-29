@@ -1,6 +1,6 @@
 # 5. Choisir la copie gardée
 
-[Documentation](README.md) › Étape 5 sur 13 · 🇬🇧 [English](../en/05-choose-the-kept-copy.md)
+[Documentation](../README.md) › Nettoyer, étape 5 sur 13 · 🇬🇧 [English](../../en/clean/05-choose-the-kept-copy.md)
 
 Entre des copies identiques, l'outil en garde une et marque les autres comme en trop. Son choix
 est sensé, mais vous connaissez mieux vos dossiers. Trois options permettent de l'orienter, une à
@@ -12,7 +12,7 @@ Pour chaque groupe de fichiers identiques, la première règle qui fait une diff
 
 1. un dossier **protégé** (voir plus bas) ;
 2. un dossier **préféré**, dans l'ordre où vous les avez donnés ;
-3. la copie qui a un [fichier compagnon](reference-sidecars.md) (`.xmp`, `.aae`, `.thm`) : elle garde ses retouches ;
+3. la copie qui a un [fichier compagnon](../reference-sidecars.md) (`.xmp`, `.aae`, `.thm`) : elle garde ses retouches ;
 4. un nom qui ne ressemble pas à une copie : `IMG_0101.jpg` plutôt que `IMG_0101 (1).jpg` ou `IMG_0101 - Copie.jpg` ;
 5. un nom choisi par quelqu'un plutôt que généré par un appareil ou une application : `Marie et Paul.jpg` plutôt que `IMG_1234.jpg` ;
 6. un dossier nommé par quelqu'un plutôt qu'un dossier générique : `Vacances 2019` plutôt que `DCIM\100CANON` ;
@@ -118,4 +118,4 @@ fois pour toutes dans un fichier.
 
 ---
 
-← [4. Le rapport HTML](04-html-report.md) · [Documentation](README.md) · Suivant : **[6. Seulement certains types de fichiers](06-file-types.md)** →
+← [4. Le rapport HTML](04-html-report.md) · [Documentation](../README.md) · Suivant : **[6. Seulement certains types de fichiers](06-file-types.md)** →

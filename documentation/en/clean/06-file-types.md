@@ -1,6 +1,6 @@
 # 6. Only some file types
 
-[Documentation](README.md) › Step 6 of 13 · 🇫🇷 [Français](../fr/06-file-types.md)
+[Documentation](../README.md) › Cleaning, step 6 of 13 · 🇫🇷 [Français](../../fr/clean/06-file-types.md)
 
 By default, the tool analyses every photo, RAW file and video, and nothing else. `--ext` narrows
 the analysis to some types, or widens it to other files.
@@ -15,7 +15,7 @@ Files are recognised by their extension, whatever its case:
 | RAW (decoded by LibRaw, previewed from the JPEG the camera embeds) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Videos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 
-`media-hygiene audit --help` lists them too. [Sidecars](reference-sidecars.md) (`.xmp`, `.aae`,
+`media-hygiene audit --help` lists them too. [Sidecars](../reference-sidecars.md) (`.xmp`, `.aae`,
 `.thm`) are not analysed on their own: they follow their photo.
 
 ## Only some types
@@ -85,4 +85,4 @@ data live there too.
 
 ---
 
-← [5. Choose which copy stays](05-choose-the-kept-copy.md) · [Documentation](README.md) · Next: **[7. The configuration file](07-configuration-file.md)** →
+← [5. Choose which copy stays](05-choose-the-kept-copy.md) · [Documentation](../README.md) · Next: **[7. The configuration file](07-configuration-file.md)** →

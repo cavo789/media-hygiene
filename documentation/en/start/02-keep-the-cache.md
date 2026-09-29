@@ -1,6 +1,6 @@
 # 2. Keep the cache
 
-[Documentation](README.md) › Step 2 of 13 · 🇫🇷 [Français](../fr/02-keep-the-cache.md)
+[Documentation](../README.md) › Start, step 2 of 3 · 🇫🇷 [Français](../../fr/start/02-keep-the-cache.md)
 
 Your first audit read every photo, some of them in full. On a large library, and even more
 through Docker on Windows, that takes minutes, sometimes much more. Without a cache, **every**
@@ -58,4 +58,4 @@ more is read for it.
 
 ---
 
-← [1. Your first audit](01-first-audit.md) · [Documentation](README.md) · Next: **[3. Several folders and disks](03-several-folders.md)** →
+← [1. Your first audit](01-first-audit.md) · [Documentation](../README.md) · Next: **[3. Several folders and disks](03-several-folders.md)** →

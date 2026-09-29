@@ -1,6 +1,6 @@
 # 13. A second opinion
 
-[Documentation](README.md) › Step 13 of 13 · 🇫🇷 [Français](../fr/13-second-opinion.md)
+[Documentation](../README.md) › Cleaning, step 13 of 13 · 🇫🇷 [Français](../../fr/clean/13-second-opinion.md)
 
 Before deleting family photos, a second opinion is reassuring.
 [Czkawka](https://github.com/qarmin/czkawka) is an independent, open-source duplicate finder,
@@ -47,7 +47,7 @@ group. After the usual summary:
 
 <!-- capture: crosscheck.txt|re:^Czkawka results|agrees -->
 ```text
-Czkawka results of 2026-09-29 20:28 UTC.
+Czkawka results of 2026-09-29 20:36 UTC.
 ✅ Czkawka agrees: the same 32 extra copies in 20 groups.
 ```
 
@@ -65,15 +65,15 @@ differences: other file types, excluded or system folders, broken files.
 - In every later `clean`, right before its question (*Czkawka results of … UTC*), as a reminder.
 - In the clean report:
 
-![The top of a clean report with the note: Czkawka agrees: the same 32 extra copies in 20 groups](images/clean-report.webp)
+![The top of a clean report with the note: Czkawka agrees: the same 32 extra copies in 20 groups](../images/clean-report.webp)
 
 It is information only: `clean` never requires it.
 
 ## You have seen it all
 
-That is the whole tool. From here on, the [reference pages](README.md#reference) answer precise
+That is the whole tool. From here on, the [reference pages](../README.md#reference) answer precise
 questions: every option, the mount points, what is checked before each deletion.
 
 ---
 
-← [12. Decide pair by pair](12-decide-pair-by-pair.md) · [Documentation](README.md)
+← [12. Decide pair by pair](12-decide-pair-by-pair.md) · [Documentation](../README.md)

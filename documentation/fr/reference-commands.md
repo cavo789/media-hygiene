@@ -2,22 +2,22 @@
 
 [Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-commands.md)
 
-Chaque commande, chaque option. Le [guide](README.md#guide--pas-à-pas) les présente une à une ;
+Chaque commande, chaque option. Le [guide](README.md#pour-commencer) les présente une à une ;
 cette page les rassemble.
 
 ## Commandes
 
 | Commande | Rôle | Guide |
 |---|---|---|
-| `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](01-first-audit.md) |
-| `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier. N'écrit jamais dans vos dossiers. | [10](10-review-bursts.md) |
-| `clean` | Audite, demande confirmation, puis supprime les copies en double et les fichiers vides, et met en quarantaine les fichiers illisibles et les fichiers compagnons orphelins. | [8](08-clean.md) |
-| `undo [EXÉCUTION]` | Restaure chaque fichier d'un nettoyage (le plus récent par défaut). | [9](09-undo-history-purge.md) |
-| `history` | Liste les nettoyages : fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](09-undo-history-purge.md) |
-| `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](09-undo-history-purge.md) |
-| `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](04-html-report.md) |
-| `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](13-second-opinion.md) |
-| `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](07-configuration-file.md) |
+| `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
+| `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md) |
+| `clean` | Audite, demande confirmation, puis supprime les copies en double et les fichiers vides, et met en quarantaine les fichiers illisibles et les fichiers compagnons orphelins. | [8](clean/08-clean.md) |
+| `undo [EXÉCUTION]` | Restaure chaque fichier d'un nettoyage (le plus récent par défaut). | [9](clean/09-undo-history-purge.md) |
+| `history` | Liste les nettoyages : fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
+| `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
+| `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
+| `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
+| `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
 ## Options
 
@@ -30,17 +30,17 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--verbosity error\|warning\|info\|debug` | globale | Niveau de détail des journaux. |
 | `--color auto\|always\|never` | globale | Couleurs ANSI (`NO_COLOR` est respecté). |
 | `--version` | globale | Affiche la version. |
-| `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5](05-choose-the-kept-copy.md#préférer-un-dossier) |
-| `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](05-choose-the-kept-copy.md#protéger-un-dossier) |
-| `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](05-choose-the-kept-copy.md#exclure-un-dossier) |
-| `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces extensions (`--ext png,webp`) ; toutes celles des photos, RAW et vidéos par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](06-file-types.md) |
+| `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5](clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
+| `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
+| `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces extensions (`--ext png,webp`) ; toutes celles des photos, RAW et vidéos par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `purge` | Ne pas demander de confirmation. |
-| `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](11-near-duplicates.md) |
-| `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](10-review-bursts.md), [étape 12](12-decide-pair-by-pair.md) |
+| `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
+| `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 
-La plupart des options ont leur équivalent dans `config.toml` ([étape 7](07-configuration-file.md)) ;
+La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
 la ligne de commande l'emporte.
 
 ## L'aide intégrée

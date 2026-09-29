@@ -7,41 +7,48 @@ doublons, une étape à la fois. Chaque étape ajoute une seule chose à la comm
 précédente. Arrêtez-vous quand vous avez ce qu'il vous faut : dès l'étape 1, vous savez où sont
 vos doublons.
 
-## Guide — pas à pas
+## Pour commencer
 
-**Trouver les doublons** (rien n'est modifié) :
+Quoi que vous vouliez faire ensuite, les trois premières étapes sont les mêmes : elles
+montrent ce que contiennent vos dossiers, sans rien modifier.
 
-1. [Votre premier audit](01-first-audit.md) : un dossier, une commande, et comment lire le
+1. [Votre premier audit](start/01-first-audit.md) : un dossier, une commande, et comment lire le
    résultat.
-2. [Garder le cache](02-keep-the-cache.md) : les audits suivants prennent des secondes au lieu de
+2. [Garder le cache](start/02-keep-the-cache.md) : les audits suivants prennent des secondes au lieu de
    minutes.
-3. [Plusieurs dossiers et disques](03-several-folders.md) : `C:` et `D:` ensemble, le dossier
+3. [Plusieurs dossiers et disques](start/03-several-folders.md) : `C:` et `D:` ensemble, le dossier
    courant, WSL.
-4. [Le rapport HTML](04-html-report.md) : les images, les paires de dossiers, la preuve.
+## Nettoyer les doublons
+
+Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.
+
+**Les voir** (rien n'est modifié) :
+
+4. [Le rapport HTML](clean/04-html-report.md) : les images, les paires de dossiers, la preuve.
 
 **Affiner l'analyse :**
 
-5. [Choisir la copie gardée](05-choose-the-kept-copy.md) : `--prefer`, `--protect`, `--exclude`.
-6. [Seulement certains types de fichiers](06-file-types.md) : `--ext`, et les fichiers autres que
+5. [Choisir la copie gardée](clean/05-choose-the-kept-copy.md) : `--prefer`, `--protect`, `--exclude`.
+6. [Seulement certains types de fichiers](clean/06-file-types.md) : `--ext`, et les fichiers autres que
    des photos.
-7. [Le fichier de configuration](07-configuration-file.md) : écrire vos choix une fois pour
+7. [Le fichier de configuration](clean/07-configuration-file.md) : écrire vos choix une fois pour
    toutes, dans `config.toml`.
 
 **Libérer l'espace :**
 
-8. [Nettoyer](08-clean.md) : supprimer les copies en trop, avec un journal et une quarantaine.
-9. [Annuler, historique, purge](09-undo-history-purge.md) : changer d'avis, voir ce qui a été
+8. [Nettoyer](clean/08-clean.md) : supprimer les copies en trop, avec un journal et une quarantaine.
+9. [Annuler, historique, purge](clean/09-undo-history-purge.md) : changer d'avis, voir ce qui a été
    fait, vider la quarantaine.
 
 **Aller plus loin :**
 
-10. [Trier les rafales dans le navigateur](10-review-bursts.md) : garder les meilleures photos de
+10. [Trier les rafales dans le navigateur](clean/10-review-bursts.md) : garder les meilleures photos de
     chaque rafale, au clavier.
-11. [Les quasi-doublons](11-near-duplicates.md) : les copies réduites et recompressées
+11. [Les quasi-doublons](clean/11-near-duplicates.md) : les copies réduites et recompressées
     (`--tier near`).
-12. [Décider paire par paire](12-decide-pair-by-pair.md) : inverser une paire de dossiers ou ne
+12. [Décider paire par paire](clean/12-decide-pair-by-pair.md) : inverser une paire de dossiers ou ne
     pas y toucher, depuis le rapport.
-13. [Un second avis](13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.
+13. [Un second avis](clean/13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.
 
 ## Référence
 

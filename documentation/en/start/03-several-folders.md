@@ -1,6 +1,6 @@
 # 3. Several folders and disks
 
-[Documentation](README.md) › Step 3 of 13 · 🇫🇷 [Français](../fr/03-several-folders.md)
+[Documentation](../README.md) › Start, step 3 of 3 · 🇫🇷 [Français](../../fr/start/03-several-folders.md)
 
 Duplicates rarely stay in one folder: an old disk, a phone backup, a copy on `D:`. Give the tool
 every folder to compare, and it finds the copies across all of them in one run.
@@ -79,7 +79,7 @@ same folder, Docker does not.
 ## A real backup? Leave it out
 
 If `D:\backup` must stay a second copy of your photos, do not mount it, or
-[exclude it](05-choose-the-kept-copy.md#exclude-a-folder). Otherwise the tool, rightly, sees its
+[exclude it](../clean/05-choose-the-kept-copy.md#exclude-a-folder). Otherwise the tool, rightly, sees its
 files as duplicates.
 
 ## The current folder
@@ -110,4 +110,4 @@ The rest of this guide shows PowerShell commands; the WSL version follows the sa
 
 ---
 
-← [2. Keep the cache](02-keep-the-cache.md) · [Documentation](README.md) · Next: **[4. The HTML report](04-html-report.md)** →
+← [2. Keep the cache](02-keep-the-cache.md) · [Documentation](../README.md) · Next: **[4. The HTML report](../clean/04-html-report.md)** →

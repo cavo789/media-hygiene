@@ -1,6 +1,6 @@
 # 10. Trier les rafales dans le navigateur
 
-[Documentation](README.md) › Étape 10 sur 13 · 🇬🇧 [English](../en/10-review-bursts.md)
+[Documentation](../README.md) › Nettoyer, étape 10 sur 13 · 🇬🇧 [English](../../en/clean/10-review-bursts.md)
 
 Les téléphones et appareils photo prennent des rafales : cinq, dix, vingt photos en quelques
 secondes. La plupart se ressemblent, quelques-unes sont floues, une ou deux sont réussies. Les
@@ -45,7 +45,7 @@ Le tri commence par un audit (rapide, grâce au cache), puis vous attend :
 ```text
 ✅ Tri prêt sur le port 8080 : chaque décision est enregistrée aussitôt dans
 decisions.json. Ctrl+C arrête le tri.
-💡 Son adresse sur votre ordinateur : lancez 'docker port f7e985a3a825 8080'
+💡 Son adresse sur votre ordinateur : lancez 'docker port 9725af5e2cf2 8080'
 dans un autre terminal, puis ouvrez http://<cette adresse> dans votre
 navigateur.
 ```
@@ -69,7 +69,7 @@ son identifiant plutôt que par son nom : les deux fonctionnent.
 La première série s'affiche. Ici, la deuxième, un anniversaire : cinq photos prises à une
 seconde d'intervalle.
 
-![La page de tri : en-tête « Tri des rafales, Série 2 sur 3 », cinq photos d'anniversaire côte à côte, numérotées de 1 à 5 ; la première conservée et marquée la plus nette, la troisième visiblement floue avec une netteté de 30 ; les raccourcis clavier en bas](images/review.webp)
+![La page de tri : en-tête « Tri des rafales, Série 2 sur 3 », cinq photos d'anniversaire côte à côte, numérotées de 1 à 5 ; la première conservée et marquée la plus nette, la troisième visiblement floue avec une netteté de 30 ; les raccourcis clavier en bas](../images/review.webp)
 
 - **En haut** : la série où vous êtes (*Série 2 sur 3*) et combien de photos vous avez écartées
   jusqu'ici, toutes séries confondues.
@@ -87,7 +87,7 @@ Pressez **`3`** : la photo floue est écartée. Elle pâlit, prend un cadre roug
 📦 *écartée* ; le compteur du haut augmente, et *Enregistré dans decisions.json* confirme que
 votre choix est déjà écrit :
 
-![La même série après avoir pressé 3 : la troisième photo est pâlie, encadrée en rouge et étiquetée écartée ; l'en-tête indique 1 série avec des photos écartées, 1 photo écartée, Enregistré dans decisions.json](images/review-aside.webp)
+![La même série après avoir pressé 3 : la troisième photo est pâlie, encadrée en rouge et étiquetée écartée ; l'en-tête indique 1 série avec des photos écartées, 1 photo écartée, Enregistré dans decisions.json](../images/review-aside.webp)
 
 Pressez à nouveau `3` pour finalement la garder. Un clic sur une photo fait comme son numéro.
 
@@ -195,4 +195,4 @@ de bon ([étape 9](09-undo-history-purge.md)).
 
 ---
 
-← [9. Annuler, historique, purge](09-undo-history-purge.md) · [Documentation](README.md) · Suivant : **[11. Les quasi-doublons](11-near-duplicates.md)** →
+← [9. Annuler, historique, purge](09-undo-history-purge.md) · [Documentation](../README.md) · Suivant : **[11. Les quasi-doublons](11-near-duplicates.md)** →

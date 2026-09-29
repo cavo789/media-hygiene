@@ -2,7 +2,7 @@
 
 [Documentation](README.md) › Pour les développeurs · 🇬🇧 [English](../en/development.md)
 
-Utile seulement pour modifier l'outil. Pour l'utiliser, le [guide](README.md#guide--pas-à-pas)
+Utile seulement pour modifier l'outil. Pour l'utiliser, le [guide](README.md#pour-commencer)
 suffit.
 
 ## Construire l'image depuis les sources

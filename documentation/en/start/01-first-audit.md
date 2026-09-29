@@ -1,6 +1,6 @@
 # 1. Your first audit
 
-[Documentation](README.md) › Step 1 of 13 · 🇫🇷 [Français](../fr/01-first-audit.md)
+[Documentation](../README.md) › Start, step 1 of 3 · 🇫🇷 [Français](../../fr/start/01-first-audit.md)
 
 In this first step, you ask the tool to look at **one folder** of photos and to tell you what it
 finds. Nothing is changed: an audit only reads.
@@ -32,7 +32,7 @@ The first run downloads the tool (a few hundred MB); the next ones start at once
 | `audit` | What to do: look for duplicates and broken files. |
 
 > 💡 The tool speaks English. Add `--locale fr` right after `cavo789/media-hygiene` for French:
-> `cavo789/media-hygiene --locale fr audit`. [Step 7](07-configuration-file.md) makes it permanent.
+> `cavo789/media-hygiene --locale fr audit`. [Step 7](../clean/07-configuration-file.md) makes it permanent.
 
 ## What you see while it runs
 
@@ -50,7 +50,7 @@ Each step shows one line of progress and, below it in grey, what it really does:
 
 | On screen | What it really does |
 |---|---|
-| Listing media files | Walks through the folder and keeps the photos, RAW files and videos, recognised by their extension ([the list](06-file-types.md)). The total is not known yet: a running count replaces the bar. |
+| Listing media files | Walks through the folder and keeps the photos, RAW files and videos, recognised by their extension ([the list](../clean/06-file-types.md)). The total is not known yet: a running count replaces the bar. |
 | Checking that files can be read | Finds broken files: empty ones (0 bytes), images and RAW files that cannot be decoded (each one is decoded in full), videos that cannot be opened. |
 | Comparing files of equal size | Two files can only be identical if they have the same size. For those, reads their first and last 64 KB: quick, and it rules most of them out. |
 | Proving identity (full SHA-256) | Reads the remaining candidates in full and computes their SHA-256 fingerprint: same fingerprint, same content, byte for byte. The longest step with large videos. |
@@ -120,9 +120,9 @@ The table first:
 | Extra copies that can be deleted | The files a clean would delete. For every photo present several times, one copy is kept and the others are extra: a photo stored in 3 folders gives 2 extra copies. |
 | Space that can be freed | The total size of those extra copies. |
 | Broken files | Empty files (0 bytes) and files that cannot be opened (truncated JPEG, damaged video). |
-| Orphan sidecars | Only when there are some: [sidecar files](reference-sidecars.md) left without their photo. |
-| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([step 11](11-near-duplicates.md)). |
-| Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](10-review-bursts.md)). |
+| Orphan sidecars | Only when there are some: [sidecar files](../reference-sidecars.md) left without their photo. |
+| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([step 11](../clean/11-near-duplicates.md)). |
+| Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](../clean/10-review-bursts.md)). |
 | Duration | How long the whole audit took. |
 
 Then the *Inventory*: what your photos and videos say about themselves. How many photos have a
@@ -139,7 +139,7 @@ files. The copies in the first folder are **kept**, those in the second one woul
 - *"… is present several times in …: one copy is kept"*: the same file twice in one folder,
   such as `IMG_0101.jpg` and `IMG_0101 (1).jpg`.
 
-Not the folder you want to keep? [Step 5](05-choose-the-kept-copy.md) shows how to choose.
+Not the folder you want to keep? [Step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
 
 Last come the 💡 tips. They suggest what to add next, and the next steps of this guide follow
 them one by one.
@@ -148,4 +148,4 @@ them one by one.
 
 ---
 
-[Documentation](README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →
+[Documentation](../README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →

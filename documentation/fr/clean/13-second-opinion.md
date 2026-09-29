@@ -1,6 +1,6 @@
 # 13. Un second avis
 
-[Documentation](README.md) › Étape 13 sur 13 · 🇬🇧 [English](../en/13-second-opinion.md)
+[Documentation](../README.md) › Nettoyer, étape 13 sur 13 · 🇬🇧 [English](../../en/clean/13-second-opinion.md)
 
 Avant de supprimer des photos de famille, un second avis rassure.
 [Czkawka](https://github.com/qarmin/czkawka) est un détecteur de doublons indépendant et open
@@ -49,7 +49,7 @@ groupe. Après le résumé habituel :
 
 <!-- capture: crosscheck.txt|re:^Résultats de Czkawka|d'accord -->
 ```text
-Résultats de Czkawka du 2026-09-29 20:29 UTC.
+Résultats de Czkawka du 2026-09-29 20:37 UTC.
 ✅ Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes.
 ```
 
@@ -69,16 +69,16 @@ cassés.
   rappel.
 - Dans le rapport de nettoyage :
 
-![Le haut d'un rapport de nettoyage avec la note : Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes](images/clean-report.webp)
+![Le haut d'un rapport de nettoyage avec la note : Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes](../images/clean-report.webp)
 
 C'est une information : `clean` ne l'exige jamais.
 
 ## Vous avez tout vu
 
-C'est tout l'outil. Désormais, les [pages de référence](README.md#référence) répondent aux
+C'est tout l'outil. Désormais, les [pages de référence](../README.md#référence) répondent aux
 questions précises : chaque option, les points de montage, ce qui est vérifié avant chaque
 suppression.
 
 ---
 
-← [12. Décider paire par paire](12-decide-pair-by-pair.md) · [Documentation](README.md)
+← [12. Décider paire par paire](12-decide-pair-by-pair.md) · [Documentation](../README.md)

@@ -1,6 +1,6 @@
 # 11. Les quasi-doublons
 
-[Documentation](README.md) › Étape 11 sur 13 · 🇬🇧 [English](../en/11-near-duplicates.md)
+[Documentation](../README.md) › Nettoyer, étape 11 sur 13 · 🇬🇧 [English](../../en/clean/11-near-duplicates.md)
 
 Certaines copies ne sont pas des fichiers identiques, et pourtant c'est la même image : la photo
 envoyée par WhatsApp (plus petite), celle « réduite pour l'e-mail », une copie réenregistrée avec
@@ -26,7 +26,7 @@ gardée.
 La section *Quasi-doublons* du [rapport HTML](04-html-report.md) montre chaque groupe côte à côte,
 avec la résolution, la taille et la netteté de chaque copie :
 
-![Quasi-doublons dans le rapport : une photo de prairie gardée en 1500 × 1000 pixels, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533, les deux copies marquées en quarantaine avec --tier near](images/report-near.webp)
+![Quasi-doublons dans le rapport : une photo de prairie gardée en 1500 × 1000 pixels, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533, les deux copies marquées en quarantaine avec --tier near](../images/report-near.webp)
 
 Comparez chaque copie avec celle gardée. Le résumé de l'audit les compte sur la ligne
 *Quasi-doublons (déplacés seulement avec --tier near)*.
@@ -61,7 +61,7 @@ quarantaine et traiter 3 fichiers cassés ? [o/N] o
 <!-- capture: clean-near.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20260929-202952
+Nettoyage 20260929-203758
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      40 │
 │ Taille                    │ 16,2 Mo │
@@ -70,11 +70,11 @@ Nettoyage 20260929-202952
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20260929-202952-clean/report.html
+✅ Rapport HTML : /reports/20260929-203758-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20260929-202952' restaure tout.
-💡 Les fichiers déplacés sont dans /quarantine/20260929-202952 ; 'purge' les
+💡 Vous changez d'avis ? 'media-hygiene undo 20260929-203758' restaure tout.
+💡 Les fichiers déplacés sont dans /quarantine/20260929-203758 ; 'purge' les
 supprime.
 ```
 
@@ -85,13 +85,13 @@ les fichiers illisibles et le fichier compagnon orphelin :
 
 <!-- capture: quarantine.txt -->
 ```text
-./20260929-202952/c/Photos/2022/Anniversaire/IMG_3003.jpg
-./20260929-202952/c/Photos/2023/Lac/IMG_4004.jpg
-./20260929-202952/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20260929-202952/d/Ancien disque/2020/IMG_1203.jpg
-./20260929-202952/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-./20260929-202952/d/Ancien disque/Photos 2019/IMG_0102.xmp
-./20260929-202952/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+./20260929-203758/c/Photos/2022/Anniversaire/IMG_3003.jpg
+./20260929-203758/c/Photos/2023/Lac/IMG_4004.jpg
+./20260929-203758/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20260929-203758/d/Ancien disque/2020/IMG_1203.jpg
+./20260929-203758/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+./20260929-203758/d/Ancien disque/Photos 2019/IMG_0102.xmp
+./20260929-203758/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
 ```
 
 Avant de déplacer chaque copie, `clean` vérifie que la photo gardée existe toujours et que la
@@ -100,4 +100,4 @@ de bon ([étape 9](09-undo-history-purge.md)).
 
 ---
 
-← [10. Trier les rafales dans le navigateur](10-review-bursts.md) · [Documentation](README.md) · Suivant : **[12. Décider paire par paire](12-decide-pair-by-pair.md)** →
+← [10. Trier les rafales dans le navigateur](10-review-bursts.md) · [Documentation](../README.md) · Suivant : **[12. Décider paire par paire](12-decide-pair-by-pair.md)** →

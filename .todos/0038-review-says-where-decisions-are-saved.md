@@ -3,7 +3,7 @@
 - **Priority**: medium
 - **Batch**: unassigned
 - **Depends**: —
-- **Files**: `src/media_hygiene/cli/cmd_review.py`, `src/media_hygiene/services/reviewing.py`, `src/media_hygiene/review/session.py`, `src/media_hygiene/review/views.py`, `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
+- **Files**: `src/media_hygiene/cli/cmd_review.py`, `src/media_hygiene/services/reviewing.py`, `src/media_hygiene/review/session.py`, `src/media_hygiene/review/views.py`, `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/clean/10-review-bursts.md`, `documentation/fr/clean/10-review-bursts.md`
 
 ## Context
 

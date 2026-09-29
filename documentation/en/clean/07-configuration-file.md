@@ -1,6 +1,6 @@
 # 7. The configuration file
 
-[Documentation](README.md) › Step 7 of 13 · 🇫🇷 [Français](../fr/07-configuration-file.md)
+[Documentation](../README.md) › Cleaning, step 7 of 13 · 🇫🇷 [Français](../../fr/clean/07-configuration-file.md)
 
 Your preferred folders, your excluded backup, your language: rather than typing them in every
 command, write them once in a file, `config.toml`. The tool reads it at every run.
@@ -225,4 +225,4 @@ with a warning.
 
 ---
 
-← [6. Only some file types](06-file-types.md) · [Documentation](README.md) · Next: **[8. Clean](08-clean.md)** →
+← [6. Only some file types](06-file-types.md) · [Documentation](../README.md) · Next: **[8. Clean](08-clean.md)** →

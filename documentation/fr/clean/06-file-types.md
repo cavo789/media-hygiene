@@ -1,6 +1,6 @@
 # 6. Seulement certains types de fichiers
 
-[Documentation](README.md) › Étape 6 sur 13 · 🇬🇧 [English](../en/06-file-types.md)
+[Documentation](../README.md) › Nettoyer, étape 6 sur 13 · 🇬🇧 [English](../../en/clean/06-file-types.md)
 
 Par défaut, l'outil analyse toutes les photos, tous les fichiers RAW et toutes les vidéos, et
 rien d'autre. `--ext` restreint l'analyse à certains types, ou l'élargit à d'autres fichiers.
@@ -15,7 +15,7 @@ Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
 | RAW (décodés par LibRaw, aperçu tiré du JPEG intégré par l'appareil) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Vidéos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 
-`media-hygiene audit --help` les liste aussi. Les [fichiers compagnons](reference-sidecars.md)
+`media-hygiene audit --help` les liste aussi. Les [fichiers compagnons](../reference-sidecars.md)
 (`.xmp`, `.aae`, `.thm`) ne sont pas analysés seuls : ils suivent leur photo.
 
 ## Seulement certains types
@@ -89,4 +89,4 @@ programmes et leurs données s'y trouvent aussi.
 
 ---
 
-← [5. Choisir la copie gardée](05-choose-the-kept-copy.md) · [Documentation](README.md) · Suivant : **[7. Le fichier de configuration](07-configuration-file.md)** →
+← [5. Choisir la copie gardée](05-choose-the-kept-copy.md) · [Documentation](../README.md) · Suivant : **[7. Le fichier de configuration](07-configuration-file.md)** →

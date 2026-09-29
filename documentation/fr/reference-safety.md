@@ -17,10 +17,10 @@ probable qu'une erreur de disque.
   octets sont des doublons. Deux `IMG_0001.jpg` au contenu différent n'en sont pas.
 - **Se ressembler ne suffit pas.** Une copie redimensionnée, recompressée, pivotée ou dont les
   métadonnées ont changé est un autre fichier. L'audit la liste comme
-  [quasi-doublon](11-near-duplicates.md), mais `clean` n'y touche pas, sauf si vous le demandez
+  [quasi-doublon](clean/11-near-duplicates.md), mais `clean` n'y touche pas, sauf si vous le demandez
   avec `--tier near`, et alors il la déplace seulement en quarantaine.
 - **Seuls les photos, fichiers RAW et vidéos** sont analysés, reconnus par leur extension. Les
-  autres fichiers seulement si vous [les demandez](06-file-types.md#autres-types-de-fichiers) avec
+  autres fichiers seulement si vous [les demandez](clean/06-file-types.md#autres-types-de-fichiers) avec
   `--ext`, et leurs copies sont alors déplacées en quarantaine, jamais supprimées.
 
 ## Chaque garantie, étape par étape
@@ -28,14 +28,14 @@ probable qu'une erreur de disque.
 | Étape | Garantie |
 |---|---|
 | `audit` | Lecture seule : montez vos dossiers avec `:ro` et Docker lui-même interdit toute écriture. |
-| Copie gardée | Choix déterministe : les [règles de choix](05-choose-the-kept-copy.md#comment-loutil-choisit) donnent toujours le même résultat, et le rapport indique la règle qui a décidé. Vos [décisions dans le rapport](12-decide-pair-by-pair.md) passent par-dessus. |
+| Copie gardée | Choix déterministe : les [règles de choix](clean/05-choose-the-kept-copy.md#comment-loutil-choisit) donnent toujours le même résultat, et le rapport indique la règle qui a décidé. Vos [décisions dans le rapport](clean/12-decide-pair-by-pair.md) passent par-dessus. |
 | Un fichier, deux chemins | Un dossier monté deux fois est refusé ; un fichier accessible par deux chemins (lien physique) n'est analysé qu'une fois, jamais comme doublon de lui-même. |
 | Avant chaque suppression | La copie gardée doit encore exister, être un autre fichier et être identique octet par octet ; sinon, le fichier est ignoré. |
 | Chaque action | Écrite dans le journal *avant* (`pending`) et *après* (`done`) : une interruption ne fait jamais perdre le fil. |
 | Doublons | Réellement supprimés (l'espace est libéré tout de suite) ; `undo` les reconstruit depuis la copie gardée, date comprise, même d'un disque à l'autre. |
 | Fichiers illisibles | Déplacés en quarantaine, jamais supprimés directement ; `purge` les supprime définitivement quand vous êtes sûr·e. |
 | Quasi-doublons | Jamais touchés par défaut. Avec `--tier near`, déplacés en quarantaine (jamais supprimés) après vérification : la photo gardée existe toujours, la copie est bien le fichier vu par l'audit. `undo` les remet en place. |
-| Rafales | Jamais touchées par défaut. Les photos que vous [écartez avec `review`](10-review-bursts.md) sont déplacées en quarantaine (jamais supprimées) par `clean --decisions`, après vérification : une photo gardée est toujours là, la photo écartée est bien le fichier montré par le tri. `undo` les remet en place. |
+| Rafales | Jamais touchées par défaut. Les photos que vous [écartez avec `review`](clean/10-review-bursts.md) sont déplacées en quarantaine (jamais supprimées) par `clean --decisions`, après vérification : une photo gardée est toujours là, la photo écartée est bien le fichier montré par le tri. `undo` les remet en place. |
 | Autres types de fichiers | Seulement s'ils sont demandés avec `--ext` : leurs copies sont déplacées en quarantaine (jamais supprimées), et les dossiers de logiciels (`.git`, `node_modules`, `AppData`, …) sont ignorés. |
 | Fichiers compagnons | Jamais touchés à côté de leur photo. Un orphelin est déplacé en quarantaine (jamais supprimé) après vérification : inchangé depuis l'audit, et aucun fichier du même nom à côté de lui. `undo` le remet en place. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
@@ -43,7 +43,7 @@ probable qu'une erreur de disque.
 
 ## Vérifiez vous-même
 
-Le [rapport HTML](04-html-report.md) est fait pour ça :
+Le [rapport HTML](clean/04-html-report.md) est fait pour ça :
 
 - Les **paires de dossiers** viennent en premier. Un badge signale un dossier qui est
   *entièrement une copie* d'un autre, et chaque paire a sa page qui liste toutes ses copies.
@@ -51,7 +51,7 @@ Le [rapport HTML](04-html-report.md) est fait pour ça :
 - **Vérifiez vous-même**, sur chaque groupe, donne une commande PowerShell `Get-FileHash`.
   Collez-la : chaque copie affiche le même SHA-256, calculé par Windows et non par media-hygiene.
 - **`plan.csv`** liste chaque fichier du plan avec son SHA-256, prêt pour Excel.
-- **[Un second avis](13-second-opinion.md)** : Czkawka, un outil indépendant, compare ses
+- **[Un second avis](clean/13-second-opinion.md)** : Czkawka, un outil indépendant, compare ses
   résultats à ceux de media-hygiene, groupe par groupe.
 
 ## Recommandations
@@ -60,7 +60,7 @@ Le [rapport HTML](04-html-report.md) est fait pour ça :
   vérifiez vous-même quelques groupes.
 - **Vérifiez quelle copie reste.** Le fichier gardé conserve son nom et son dossier ; le nom d'une
   copie supprimée est perdu. Ce n'est pas celle que vous voulez ?
-  [Choisissez-la](05-choose-the-kept-copy.md), puis relancez l'audit.
+  [Choisissez-la](clean/05-choose-the-kept-copy.md), puis relancez l'audit.
 - **Sauvegardez vos photos avant le premier nettoyage**, par exemple sur un disque externe :
   l'outil garde un exemplaire de chaque photo, pas deux.
 - **Mettez en pause la synchronisation cloud** (OneDrive, Google Drive, Dropbox, iCloud) pendant

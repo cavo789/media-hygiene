@@ -12,7 +12,7 @@ appartient aux fichiers de son dossier qui portent le même nom : `IMG_1.xmp` à
 - **Sa photo est gardée** : entre des copies identiques, celle qui a un fichier compagnon est
   gardée, et elle conserve ainsi ses retouches. Seul un dossier protégé ou préféré passe avant.
   Quand plusieurs copies ont chacune leur fichier compagnon, les autres
-  [règles de choix](05-choose-the-kept-copy.md#comment-loutil-choisit) les départagent.
+  [règles de choix](clean/05-choose-the-kept-copy.md#comment-loutil-choisit) les départagent.
 - **Orphelin** : une fois que `clean` a supprimé ou déplacé tous les fichiers du même nom à côté
   de lui (ou s'il n'y en avait déjà aucun), un fichier compagnon ne sert plus à rien. `clean` le
   déplace en quarantaine, sans jamais le supprimer, après avoir vérifié qu'aucun fichier du même
@@ -25,8 +25,8 @@ appartient aux fichiers de son dossier qui portent le même nom : `IMG_1.xmp` à
 
 Le fichier compagnon d'une copie supprimée n'est pas déplacé à côté de la copie gardée : il
 devient orphelin. Pour garder une autre copie *avec* ses retouches, indiquez son dossier dans
-[`--prefer`](05-choose-the-kept-copy.md#préférer-un-dossier).
+[`--prefer`](clean/05-choose-the-kept-copy.md#préférer-un-dossier).
 
 Dans l'audit, les fichiers compagnons orphelins sont comptés sur leur propre ligne, et le rapport
 HTML les liste dans la section *Fichiers compagnons orphelins*
-([capture](04-html-report.md#fichiers-cassés-et-fichiers-compagnons-orphelins)).
+([capture](clean/04-html-report.md#fichiers-cassés-et-fichiers-compagnons-orphelins)).

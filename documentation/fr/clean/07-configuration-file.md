@@ -1,6 +1,6 @@
 # 7. Le fichier de configuration
 
-[Documentation](README.md) › Étape 7 sur 13 · 🇬🇧 [English](../en/07-configuration-file.md)
+[Documentation](../README.md) › Nettoyer, étape 7 sur 13 · 🇬🇧 [English](../../en/clean/07-configuration-file.md)
 
 Vos dossiers préférés, votre sauvegarde exclue, votre langue : plutôt que de les taper dans
 chaque commande, écrivez-les une fois dans un fichier, `config.toml`. L'outil le lit à chaque
@@ -244,4 +244,4 @@ fonctionne encore jusqu'à la version 0.4.0, avec un avertissement.
 
 ---
 
-← [6. Seulement certains types de fichiers](06-file-types.md) · [Documentation](README.md) · Suivant : **[8. Nettoyer](08-clean.md)** →
+← [6. Seulement certains types de fichiers](06-file-types.md) · [Documentation](../README.md) · Suivant : **[8. Nettoyer](08-clean.md)** →

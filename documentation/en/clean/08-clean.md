@@ -1,6 +1,6 @@
 # 8. Clean
 
-[Documentation](README.md) › Step 8 of 13 · 🇫🇷 [Français](../fr/08-clean.md)
+[Documentation](../README.md) › Cleaning, step 8 of 13 · 🇫🇷 [Français](../../fr/clean/08-clean.md)
 
 You have audited, read the folder pairs, maybe chosen which folders stay. Time to free the
 space. `clean` deletes the extra copies, and keeps a written trace of everything so that you can
@@ -58,7 +58,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20260929-202847
+Clean 20260929-203652
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -67,10 +67,10 @@ Clean 20260929-202847
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20260929-202847-clean/report.html
+✅ HTML report: /reports/20260929-203652-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20260929-202847' restores everything.
-💡 Moved files are in /quarantine/20260929-202847; 'purge' deletes them.
+💡 Changed your mind? 'media-hygiene undo 20260929-203652' restores everything.
+💡 Moved files are in /quarantine/20260929-203652; 'purge' deletes them.
 ```
 
 | Line | What it means |
@@ -88,7 +88,7 @@ Clean 20260929-202847
 | Extra copy of a photo or video | **Deleted**, right after comparing it byte for byte with the kept copy once more. Different in any way? Skipped. |
 | Empty file (0 bytes) | Deleted. |
 | Unreadable file (truncated, damaged) | **Moved** to the quarantine. |
-| Orphan [sidecar](reference-sidecars.md) | Moved to the quarantine. |
+| Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | **Untouched**: only if you ask ([step 10](10-review-bursts.md), [step 11](11-near-duplicates.md)). |
 | Files of a protected folder | Untouched, always. |
 
@@ -100,7 +100,7 @@ the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the
 folder pairs as they were cleaned, and the files left untouched, if any.
 
-![The top of a clean report: 83 media files scanned, 32 duplicate copies in 20 groups, 16.2 MB freed, 3 broken files, then the folder pairs that were cleaned](images/clean-report.webp)
+![The top of a clean report: 83 media files scanned, 32 duplicate copies in 20 groups, 16.2 MB freed, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 
 ## Good to know
 
@@ -113,4 +113,4 @@ folder pairs as they were cleaned, and the files left untouched, if any.
 
 ---
 
-← [7. The configuration file](07-configuration-file.md) · [Documentation](README.md) · Next: **[9. Undo, history, purge](09-undo-history-purge.md)** →
+← [7. The configuration file](07-configuration-file.md) · [Documentation](../README.md) · Next: **[9. Undo, history, purge](09-undo-history-purge.md)** →

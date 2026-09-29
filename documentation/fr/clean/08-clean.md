@@ -1,6 +1,6 @@
 # 8. Nettoyer
 
-[Documentation](README.md) › Étape 8 sur 13 · 🇬🇧 [English](../en/08-clean.md)
+[Documentation](../README.md) › Nettoyer, étape 8 sur 13 · 🇬🇧 [English](../../en/clean/08-clean.md)
 
 Vous avez fait l'audit, lu les paires de dossiers, peut-être choisi quels dossiers restent. Place
 au ménage. `clean` supprime les copies en trop, et garde une trace écrite de tout, pour que vous
@@ -60,7 +60,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20260929-202949
+Nettoyage 20260929-203754
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -69,11 +69,11 @@ Nettoyage 20260929-202949
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20260929-202949-clean/report.html
+✅ Rapport HTML : /reports/20260929-203754-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20260929-202949' restaure tout.
-💡 Les fichiers déplacés sont dans /quarantine/20260929-202949 ; 'purge' les
+💡 Vous changez d'avis ? 'media-hygiene undo 20260929-203754' restaure tout.
+💡 Les fichiers déplacés sont dans /quarantine/20260929-203754 ; 'purge' les
 supprime.
 ```
 
@@ -92,7 +92,7 @@ supprime.
 | Copie en trop d'une photo ou d'une vidéo | **Supprimée**, juste après une nouvelle comparaison octet par octet avec la copie gardée. La moindre différence ? Ignorée. |
 | Fichier vide (0 octet) | Supprimé. |
 | Fichier illisible (tronqué, abîmé) | **Déplacé** en quarantaine. |
-| [Fichier compagnon](reference-sidecars.md) orphelin | Déplacé en quarantaine. |
+| [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | **Pas touchés** : seulement si vous le demandez ([étape 10](10-review-bursts.md), [étape 11](11-near-duplicates.md)). |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
 
@@ -106,7 +106,7 @@ Chaque nettoyage écrit son propre rapport, listé dans `index.html` à côté d
 été libéré, les paires de dossiers telles qu'elles ont été nettoyées, et les fichiers laissés
 intacts, s'il y en a.
 
-![Le haut d'un rapport de nettoyage : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 16,2 Mo libérés, 3 fichiers cassés, puis les paires de dossiers nettoyées](images/clean-report.webp)
+![Le haut d'un rapport de nettoyage : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 16,2 Mo libérés, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 
 ## Bon à savoir
 
@@ -120,4 +120,4 @@ intacts, s'il y en a.
 
 ---
 
-← [7. Le fichier de configuration](07-configuration-file.md) · [Documentation](README.md) · Suivant : **[9. Annuler, historique, purge](09-undo-history-purge.md)** →
+← [7. Le fichier de configuration](07-configuration-file.md) · [Documentation](../README.md) · Suivant : **[9. Annuler, historique, purge](09-undo-history-purge.md)** →

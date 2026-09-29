@@ -16,7 +16,7 @@ CZKAWKA_EXTENSIONS = re.compile(r"^\s*-x (?P<list>[a-z0-9,]+)$", re.MULTILINE)
 @pytest.mark.parametrize("locale", ["en", "fr"])
 def test_czkawka_scans_the_same_extensions(locale: str) -> None:
     """A new extension in the code must be added to the documented command too."""
-    page = ROOT / "documentation" / locale / "13-second-opinion.md"
+    page = ROOT / "documentation" / locale / "clean" / "13-second-opinion.md"
     found = CZKAWKA_EXTENSIONS.search(page.read_text(encoding="utf-8"))
     assert found is not None
     expected = {extension.lstrip(".") for extension in MEDIA_EXTENSIONS}

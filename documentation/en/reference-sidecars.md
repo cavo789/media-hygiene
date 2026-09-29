@@ -10,7 +10,7 @@ belongs to the files of its folder with the same name: `IMG_1.xmp` to `IMG_1.jpg
 - **Next to its photo**, a sidecar is never touched.
 - **Its photo is kept**: between identical copies, the one with a sidecar is kept, so it keeps
   its edits. Only a protected or preferred folder comes first. When several copies each have
-  their own sidecar, the other [keep rules](05-choose-the-kept-copy.md#how-the-tool-chooses)
+  their own sidecar, the other [keep rules](clean/05-choose-the-kept-copy.md#how-the-tool-chooses)
   choose among them.
 - **Orphan**: once `clean` has deleted or moved every file of the same name next to it (or if
   there was none to begin with), a sidecar is useless. `clean` moves it to the quarantine, never
@@ -21,7 +21,7 @@ belongs to the files of its folder with the same name: `IMG_1.xmp` to `IMG_1.jpg
 - **Protected folders** are never modified, sidecars included.
 
 The sidecar of a deleted copy is not moved next to the kept one: it becomes an orphan. To keep
-another copy *with* its edits, name its folder in [`--prefer`](05-choose-the-kept-copy.md#prefer-a-folder).
+another copy *with* its edits, name its folder in [`--prefer`](clean/05-choose-the-kept-copy.md#prefer-a-folder).
 
 In the audit, orphan sidecars are counted on their own line, and the HTML report lists them in
-the *Orphan sidecar files* section ([screenshot](04-html-report.md#broken-files-and-orphan-sidecars)).
+the *Orphan sidecar files* section ([screenshot](clean/04-html-report.md#broken-files-and-orphan-sidecars)).

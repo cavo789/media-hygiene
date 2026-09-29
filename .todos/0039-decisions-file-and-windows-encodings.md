@@ -3,7 +3,7 @@
 - **Priority**: medium
 - **Batch**: unassigned
 - **Depends**: —
-- **Files**: `src/media_hygiene/report/decisions.py`, `tests/unit/test_review.py`, `src/media_hygiene/config/layers.py`, `documentation/en/reference-troubleshooting.md`, `documentation/fr/reference-troubleshooting.md`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
+- **Files**: `src/media_hygiene/report/decisions.py`, `tests/unit/test_review.py`, `src/media_hygiene/config/layers.py`, `documentation/en/reference-troubleshooting.md`, `documentation/fr/reference-troubleshooting.md`, `documentation/en/clean/10-review-bursts.md`, `documentation/fr/clean/10-review-bursts.md`
 
 ## Context
 

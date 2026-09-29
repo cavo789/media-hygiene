@@ -1,6 +1,6 @@
 # 10. Sort burst series in your browser
 
-[Documentation](README.md) › Step 10 of 13 · 🇫🇷 [Français](../fr/10-review-bursts.md)
+[Documentation](../README.md) › Cleaning, step 10 of 13 · 🇫🇷 [Français](../../fr/clean/10-review-bursts.md)
 
 Phones and cameras take photos in bursts: five, ten, twenty shots in a few seconds. Most are
 nearly the same, a few are blurred, one or two are great. Sorting thousands of them file by file
@@ -44,7 +44,7 @@ The review first audits (quickly, thanks to the cache), then waits for you:
 ```text
 ✅ Review ready on port 8080: each decision is saved at once in decisions.json.
 Ctrl+C stops the review.
-💡 Its address on your computer: run 'docker port 2b8fb7cac0d6 8080' in another
+💡 Its address on your computer: run 'docker port 6b18fa750473 8080' in another
 terminal, then open http://<that address> in your browser.
 ```
 
@@ -66,7 +66,7 @@ rather than by its name: both work.
 
 The first series appears. Here, the second one, a birthday: five shots taken one second apart.
 
-![The review page: header "Burst series review, Series 2 of 3", five birthday shots side by side, numbered 1 to 5; the first one kept and marked sharpest, the third one visibly blurred with a sharpness of 30; the keyboard shortcuts at the bottom](images/review.webp)
+![The review page: header "Burst series review, Series 2 of 3", five birthday shots side by side, numbered 1 to 5; the first one kept and marked sharpest, the third one visibly blurred with a sharpness of 30; the keyboard shortcuts at the bottom](../images/review.webp)
 
 - **At the top**: which series you are on (*Series 2 of 3*) and how many shots you have set
   aside so far, across all series.
@@ -83,7 +83,7 @@ Press **`3`**: the blurred shot is set aside. It fades, gets a red frame and the
 📦 *set aside*; the counter at the top goes up, and *Saved in decisions.json* confirms that your
 choice is already written:
 
-![The same series after pressing 3: the third shot is faded, framed in red and labelled set aside; the header says 1 series with shots set aside, 1 shot set aside, Saved in decisions.json](images/review-aside.webp)
+![The same series after pressing 3: the third shot is faded, framed in red and labelled set aside; the header says 1 series with shots set aside, 1 shot set aside, Saved in decisions.json](../images/review-aside.webp)
 
 Press `3` again to keep it after all. A click on a shot does the same as its number.
 
@@ -189,4 +189,4 @@ could rebuild them. `undo` puts them back; `purge` deletes them for good
 
 ---
 
-← [9. Undo, history, purge](09-undo-history-purge.md) · [Documentation](README.md) · Next: **[11. Near duplicates](11-near-duplicates.md)** →
+← [9. Undo, history, purge](09-undo-history-purge.md) · [Documentation](../README.md) · Next: **[11. Near duplicates](11-near-duplicates.md)** →

@@ -1,6 +1,6 @@
 # 3. Plusieurs dossiers et disques
 
-[Documentation](README.md) › Étape 3 sur 13 · 🇬🇧 [English](../en/03-several-folders.md)
+[Documentation](../README.md) › Pour commencer, étape 3 sur 3 · 🇬🇧 [English](../../en/start/03-several-folders.md)
 
 Les doublons restent rarement dans un seul dossier : un ancien disque, la sauvegarde d'un
 téléphone, une copie sur `D:`. Donnez à l'outil tous les dossiers à comparer, et il trouve les
@@ -85,7 +85,7 @@ comme le même dossier, Docker non.
 ## Une vraie sauvegarde ? Laissez-la de côté
 
 Si `D:\sauvegarde` doit rester une seconde copie de vos photos, ne la montez pas, ou
-[excluez-la](05-choose-the-kept-copy.md#exclure-un-dossier). Sinon l'outil voit ses fichiers comme
+[excluez-la](../clean/05-choose-the-kept-copy.md#exclure-un-dossier). Sinon l'outil voit ses fichiers comme
 des doublons, ce qui est exact.
 
 ## Le dossier courant
@@ -117,4 +117,4 @@ La suite de ce guide montre les commandes PowerShell ; la version WSL suit le m�
 
 ---
 
-← [2. Garder le cache](02-keep-the-cache.md) · [Documentation](README.md) · Suivant : **[4. Le rapport HTML](04-html-report.md)** →
+← [2. Garder le cache](02-keep-the-cache.md) · [Documentation](../README.md) · Suivant : **[4. Le rapport HTML](../clean/04-html-report.md)** →

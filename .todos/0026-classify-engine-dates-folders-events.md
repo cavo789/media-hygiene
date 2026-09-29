@@ -197,4 +197,8 @@ The files it writes come with 0027.
       example.
 - [ ] First page of the sort guide (`documentation/<lang>/sort/`, 0034) en + fr, with a demo
       library of synthetic year folders and dated EXIF (`tests/support/docs/`);
-      `reference-commands.md`; `.po` translated.
+      `reference-commands.md`; `.po` translated. The sort guide numbers its pages from 4: it
+      follows the shared `start/` steps 1–3, as `clean/` does. Add its section to the entry
+      pages (`documentation/<lang>/README.md`, the READMEs' contents) with the advice to clean
+      the duplicates first (otherwise both copies are sorted, one renamed ` (2)`), and point
+      the footer of `start/03-several-folders.md` to both guides.

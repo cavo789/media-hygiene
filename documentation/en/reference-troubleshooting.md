@@ -4,7 +4,7 @@
 
 ## A real backup is seen as duplicates
 
-If `D:\backup` must remain a second copy of your photos, [exclude it](05-choose-the-kept-copy.md#exclude-a-folder)
+If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)
 (or do not mount it). Otherwise the tool, rightly, sees its files as duplicates.
 
 ## A folder is refused because it is mounted twice
@@ -21,9 +21,9 @@ first, or leave that folder out.
 ## Windows drives are slow through Docker
 
 The first audit reads every image and every file that shares its size with another one. With
-[`-v media-hygiene-cache:/cache`](02-keep-the-cache.md) the next audits only read new or changed
+[`-v media-hygiene-cache:/cache`](start/02-keep-the-cache.md) the next audits only read new or changed
 files. Tens of thousands of files take a few minutes just to be listed:
-[every step shows its progress](01-first-audit.md#what-you-see-while-it-runs).
+[every step shows its progress](start/01-first-audit.md#what-you-see-while-it-runs).
 
 ## "Cannot ask for confirmation without an interactive terminal"
 
@@ -47,13 +47,13 @@ before the analysis and names the folder.
 
 Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, TOML turns the
 `\b` of `"D:\backup"` into a control character, and the tool refuses such a path rather than
-ignoring it ([step 7](07-configuration-file.md#fill-it-in)).
+ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
 
 ## The review page does not open
 
 - Did you publish the port? The command needs `-p 127.0.0.1::8080`.
 - The address comes from `docker port media-hygiene-review 8080`, in another window, while the
-  review runs ([step 10](10-review-bursts.md#step-2-open-the-page)).
+  review runs ([step 10](clean/10-review-bursts.md#step-2-open-the-page)).
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.
   Start it again; your choices are kept.

@@ -1,6 +1,6 @@
 # 11. Near duplicates
 
-[Documentation](README.md) › Step 11 of 13 · 🇫🇷 [Français](../fr/11-near-duplicates.md)
+[Documentation](../README.md) › Cleaning, step 11 of 13 · 🇫🇷 [Français](../../fr/clean/11-near-duplicates.md)
 
 Some copies are not identical files, yet they are the same picture: the photo sent through
 WhatsApp (smaller), the one "reduced for email", a copy saved again with another quality, turned
@@ -25,7 +25,7 @@ never taken for a near duplicate. In each group, the **highest resolution** is k
 The *Near duplicates* section of the [HTML report](04-html-report.md) shows each group side by
 side, with the resolution, size and sharpness of every copy:
 
-![Near duplicates in the report: a meadow photo kept in 1500 × 1000 pixels, its 1024 × 683 copy from an Email folder; a beach photo kept, its 800 × 533 WhatsApp copy, both copies marked to the quarantine with --tier near](images/report-near.webp)
+![Near duplicates in the report: a meadow photo kept in 1500 × 1000 pixels, its 1024 × 683 copy from an Email folder; a beach photo kept, its 800 × 533 WhatsApp copy, both copies marked to the quarantine with --tier near](../images/report-near.webp)
 
 Compare each copy with the kept one. The audit summary counts them on the line
 *Near duplicates (moved only with --tier near)*.
@@ -60,7 +60,7 @@ quarantine and handle 3 broken files? [y/N] y
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20260929-202850
+Clean 20260929-203656
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      40 │
 │ Size                     │ 16.2 MB │
@@ -69,10 +69,10 @@ Clean 20260929-202850
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20260929-202850-clean/report.html
+✅ HTML report: /reports/20260929-203656-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20260929-202850' restores everything.
-💡 Moved files are in /quarantine/20260929-202850; 'purge' deletes them.
+💡 Changed your mind? 'media-hygiene undo 20260929-203656' restores everything.
+💡 Moved files are in /quarantine/20260929-203656; 'purge' deletes them.
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -82,13 +82,13 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20260929-202850/c/Photos/2022/Birthday/IMG_3003.jpg
-./20260929-202850/c/Photos/2023/Lake/IMG_4004.jpg
-./20260929-202850/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20260929-202850/d/Old disk/2020/IMG_1203.jpg
-./20260929-202850/d/Old disk/Email/IMG_0110 small.jpg
-./20260929-202850/d/Old disk/Photos 2019/IMG_0102.xmp
-./20260929-202850/d/Old disk/Videos/Birthday (cut).mp4
+./20260929-203656/c/Photos/2022/Birthday/IMG_3003.jpg
+./20260929-203656/c/Photos/2023/Lake/IMG_4004.jpg
+./20260929-203656/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20260929-203656/d/Old disk/2020/IMG_1203.jpg
+./20260929-203656/d/Old disk/Email/IMG_0110 small.jpg
+./20260929-203656/d/Old disk/Photos 2019/IMG_0102.xmp
+./20260929-203656/d/Old disk/Videos/Birthday (cut).mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is
@@ -97,4 +97,4 @@ the very file the audit saw. `undo` puts them back; `purge` deletes them for goo
 
 ---
 
-← [10. Sort burst series in your browser](10-review-bursts.md) · [Documentation](README.md) · Next: **[12. Decide pair by pair](12-decide-pair-by-pair.md)** →
+← [10. Sort burst series in your browser](10-review-bursts.md) · [Documentation](../README.md) · Next: **[12. Decide pair by pair](12-decide-pair-by-pair.md)** →

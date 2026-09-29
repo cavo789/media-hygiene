@@ -1,6 +1,6 @@
 # 9. Annuler, historique, purge
 
-[Documentation](README.md) › Étape 9 sur 13 · 🇬🇧 [English](../en/09-undo-history-purge.md)
+[Documentation](../README.md) › Nettoyer, étape 9 sur 13 · 🇬🇧 [English](../../en/clean/09-undo-history-purge.md)
 
 Un nettoyage n'est pas définitif. Le journal retient chaque action : vous pouvez tout remettre en
 place, voir ce que chaque nettoyage a fait et, une fois sûr·e, vider la quarantaine pour de bon.
@@ -26,9 +26,9 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20260929-202949 ────────────────
+─────────────── Annulation de l'exécution clean 20260929-203754 ────────────────
 Annulation de l'exécution clean
-20260929-202949
+20260929-203754
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -60,8 +60,8 @@ Exécutions (les plus récentes d'abord)
 ┃                 ┃          ┃           ┃         ┃            En ┃           ┃
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃  Libéré ┃   quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20260929-202952 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
-│ 20260929-202949 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
+│ 20260929-203758 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
+│ 20260929-203754 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
 └─────────────────┴──────────┴───────────┴─────────┴───────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -85,7 +85,7 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20260929-202952, 20260929-202949
+❓ Supprimer définitivement la quarantaine de 20260929-203758, 20260929-203754
 (2,2 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 2,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers cassés.
@@ -103,4 +103,4 @@ pourriez encore vouloir restaurer un nettoyage.
 
 ---
 
-← [8. Nettoyer](08-clean.md) · [Documentation](README.md) · Suivant : **[10. Trier les rafales dans le navigateur](10-review-bursts.md)** →
+← [8. Nettoyer](08-clean.md) · [Documentation](../README.md) · Suivant : **[10. Trier les rafales dans le navigateur](10-review-bursts.md)** →

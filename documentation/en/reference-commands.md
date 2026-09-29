@@ -2,22 +2,22 @@
 
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-commands.md)
 
-Every command, every option. The [user guide](README.md#user-guide--step-by-step) introduces
+Every command, every option. The [user guide](README.md#start-here) introduces
 them one at a time; this page gathers them.
 
 ## Commands
 
 | Command | What it does | Guide |
 |---|---|---|
-| `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](01-first-audit.md) |
-| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](10-review-bursts.md) |
-| `clean` | Audit, confirm, then delete duplicate copies, delete empty files, quarantine unreadable ones and orphan sidecars. | [8](08-clean.md) |
-| `undo [RUN]` | Restore every file of a clean run (the latest by default). | [9](09-undo-history-purge.md) |
-| `history` | List the clean runs: files deleted, space freed, quarantine, restores. | [9](09-undo-history-purge.md) |
-| `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](09-undo-history-purge.md) |
-| `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](04-html-report.md) |
-| `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](13-second-opinion.md) |
-| `config` | Show every setting, where it comes from, and the state of each mount point. | [7](07-configuration-file.md) |
+| `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
+| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](clean/10-review-bursts.md) |
+| `clean` | Audit, confirm, then delete duplicate copies, delete empty files, quarantine unreadable ones and orphan sidecars. | [8](clean/08-clean.md) |
+| `undo [RUN]` | Restore every file of a clean run (the latest by default). | [9](clean/09-undo-history-purge.md) |
+| `history` | List the clean runs: files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
+| `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](clean/09-undo-history-purge.md) |
+| `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
+| `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
+| `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
 ## Options
 
@@ -30,17 +30,17 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--verbosity error\|warning\|info\|debug` | global | How much to log. |
 | `--color auto\|always\|never` | global | ANSI colours (`NO_COLOR` is honoured). |
 | `--version` | global | Show the version. |
-| `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](05-choose-the-kept-copy.md#prefer-a-folder) |
-| `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](05-choose-the-kept-copy.md#protect-a-folder) |
-| `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](05-choose-the-kept-copy.md#exclude-a-folder) |
-| `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these extensions (`--ext png,webp`); every photo, RAW and video one by default. Other types too (`--ext pdf,docx`). [Step 6](06-file-types.md) |
+| `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |
+| `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
+| `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these extensions (`--ext png,webp`); every photo, RAW and video one by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `purge` | Do not ask for confirmation. |
-| `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](11-near-duplicates.md) |
-| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](10-review-bursts.md), [step 12](12-decide-pair-by-pair.md) |
+| `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
+| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 
-Most options have a `config.toml` counterpart ([step 7](07-configuration-file.md)); the command
+Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
 line wins.
 
 ## The built-in help

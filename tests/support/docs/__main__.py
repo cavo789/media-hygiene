@@ -42,7 +42,7 @@ def document(locale: Locale, work: Path) -> None:
     captures = run_scenario(demo, shots)
     target = DOCUMENTATION / locale
     images = publish(shots, target / "images")
-    for page in sorted(target.glob("*.md")):
+    for page in sorted(target.rglob("*.md")):
         refresh(page, captures)
     remove(demo)
     console.print(

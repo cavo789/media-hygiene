@@ -1,6 +1,6 @@
 # 12. Décider paire par paire
 
-[Documentation](README.md) › Étape 12 sur 13 · 🇬🇧 [English](../en/12-decide-pair-by-pair.md)
+[Documentation](../README.md) › Nettoyer, étape 12 sur 13 · 🇬🇧 [English](../../en/clean/12-decide-pair-by-pair.md)
 
 [`--prefer`](05-choose-the-kept-copy.md) change le choix pour tout un dossier, partout. Parfois,
 vous n'êtes en désaccord qu'avec une seule paire : garder l'autre côté, ou ne pas toucher à cette
@@ -19,7 +19,7 @@ Dans le tableau *Paires de dossiers* d'un rapport d'**audit**, chaque paire a un
 
 Ici, les vidéos ne sont pas touchées et la paire `Ancien téléphone` est inversée :
 
-![Les paires de dossiers du rapport, avec Ne pas toucher choisi pour C:\Photos\Vidéos et Inverser les dossiers pour C:\Photos\Ancien téléphone ; le bouton en dessous indique Télécharger decisions.json (2)](images/report-pairs.webp)
+![Les paires de dossiers du rapport, avec Ne pas toucher choisi pour C:\Photos\Vidéos et Inverser les dossiers pour C:\Photos\Ancien téléphone ; le bouton en dessous indique Télécharger decisions.json (2)](../images/report-pairs.webp)
 
 Votre navigateur retient vos choix, même si vous fermez la page. *Inverser les dossiers* n'est
 pas proposé pour les copies d'un même dossier : il n'y a rien à inverser.
@@ -62,4 +62,4 @@ et un seul `clean --decisions decisions.json` applique les deux.
 
 ---
 
-← [11. Les quasi-doublons](11-near-duplicates.md) · [Documentation](README.md) · Suivant : **[13. Un second avis](13-second-opinion.md)** →
+← [11. Les quasi-doublons](11-near-duplicates.md) · [Documentation](../README.md) · Suivant : **[13. Un second avis](13-second-opinion.md)** →

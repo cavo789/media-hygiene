@@ -1,6 +1,6 @@
 # 2. Garder le cache
 
-[Documentation](README.md) › Étape 2 sur 13 · 🇬🇧 [English](../en/02-keep-the-cache.md)
+[Documentation](../README.md) › Pour commencer, étape 2 sur 3 · 🇬🇧 [English](../../en/start/02-keep-the-cache.md)
 
 Votre premier audit a lu chaque photo, certaines entièrement. Sur une grosse bibliothèque, et
 plus encore via Docker sous Windows, cela prend des minutes, parfois bien plus. Sans cache,
@@ -59,4 +59,4 @@ vidéo… Rien de plus n'est lu pour cela.
 
 ---
 
-← [1. Votre premier audit](01-first-audit.md) · [Documentation](README.md) · Suivant : **[3. Plusieurs dossiers et disques](03-several-folders.md)** →
+← [1. Votre premier audit](01-first-audit.md) · [Documentation](../README.md) · Suivant : **[3. Plusieurs dossiers et disques](03-several-folders.md)** →
