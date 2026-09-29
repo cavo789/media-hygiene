@@ -29,7 +29,7 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
 ```text
-✅ Rapport HTML : /reports/20260929-203727-audit/report.html
+✅ Rapport HTML : /reports/20260929-205920-audit/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```
@@ -136,14 +136,14 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20260929-203758-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20260929-203754-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20260929-203738-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-203733-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-203731-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20260929-203730-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20260929-203728-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20260929-203727-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-205952-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
+│ 20260929-205948-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
+│ 20260929-205932-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-205927-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-205924-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
+│ 20260929-205923-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
+│ 20260929-205921-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20260929-205920-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

@@ -117,4 +117,4 @@ La suite de ce guide montre les commandes PowerShell ; la version WSL suit le m�
 
 ---
 
-← [2. Garder le cache](02-keep-the-cache.md) · [Documentation](../README.md) · Suivant : **[4. Le rapport HTML](../clean/04-html-report.md)** →
+← [2. Garder le cache](02-keep-the-cache.md) · [Documentation](../README.md) · Suivant, pour nettoyer : **[4. Le rapport HTML](../clean/04-html-report.md)** → · pour trier : **[4. Proposer une arborescence](../sort/04-classify.md)** →

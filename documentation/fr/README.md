@@ -50,6 +50,14 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
     pas y toucher, depuis le rapport.
 13. [Un second avis](clean/13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.
 
+## Trier les photos
+
+Donner à vos photos une arborescence rangée, `année/catégorie` ou celle que vous choisissez.
+Nettoyez d'abord les doublons : sinon les deux copies sont triées.
+
+4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
+   fichier, et ne modifie rien.
+
 ## Référence
 
 - [Commandes et options](reference-commands.md) : chaque commande, chaque option, et leur

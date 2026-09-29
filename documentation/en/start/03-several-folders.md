@@ -110,4 +110,4 @@ The rest of this guide shows PowerShell commands; the WSL version follows the sa
 
 ---
 
-← [2. Keep the cache](02-keep-the-cache.md) · [Documentation](../README.md) · Next: **[4. The HTML report](../clean/04-html-report.md)** →
+← [2. Keep the cache](02-keep-the-cache.md) · [Documentation](../README.md) · Next, to clean: **[4. The HTML report](../clean/04-html-report.md)** → · to sort: **[4. Propose a tidy tree](../sort/04-classify.md)** →

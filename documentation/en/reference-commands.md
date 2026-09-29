@@ -12,11 +12,12 @@ them one at a time; this page gathers them.
 | `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](clean/10-review-bursts.md) |
 | `clean` | Audit, confirm, then delete duplicate copies, delete empty files, quarantine unreadable ones and orphan sidecars. | [8](clean/08-clean.md) |
-| `undo [RUN]` | Restore every file of a clean run (the latest by default). | [9](clean/09-undo-history-purge.md) |
-| `history` | List the clean runs: files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
+| `undo [RUN]` | Restore every file of a run (the latest by default). | [9](clean/09-undo-history-purge.md) |
+| `history` | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
 | `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
+| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders. | [4](sort/04-classify.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -39,6 +40,10 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
+| `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
+| `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
+| `--target PATH` | `classify` | Folder receiving the tree; each mounted folder, in place, by default. |
+| `--leave PATH` | `classify` | Folder never sorted; still analysed and cleaned. |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
 line wins.
@@ -73,6 +78,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │             with :ro.                                                        │
 │ crosscheck  Compare a fresh audit with Czkawka's results: a second,          │
 │             independent opinion.                                             │
+│ classify    Propose where every photo and video should go: year, event,      │
+│             category. Read-only.                                             │
 │ history     List the runs and what they did.                                 │
 │ reports     List the HTML reports of previous audits and cleans.             │
 │ config      Show every setting, where it comes from, and the mount points.   │
@@ -317,6 +324,31 @@ both languages (`--locale fr --help`). Here is what they print:
 │                     heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, mp4, mpeg,    │
 │                     mpg, mts, nef, orf, pef, png, raf, rw2, srw, tif, tiff,  │
 │                     ts, webm, webp, wmv.                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>classify --help</code></summary>
+
+<!-- capture: help-classify.txt -->
+```text
+ Usage: media-hygiene classify [OPTIONS]
+
+ Propose where every photo and video should go: year, event, category.
+ Read-only.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --year            <str>  Only the files of this year, or of these years:     │
+│                          2016 or 2015-2017.                                  │
+│ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
+│                          {month_name}'.                                      │
+│ --target          <str>  Host folder receiving the tree; in place by         │
+│                          default.                                            │
+│ --leave           <str>  Host folder never sorted (analysed and cleaned as   │
+│                          usual).                                             │
+│ --help    -h             Show this message and exit.                         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

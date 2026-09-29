@@ -5,6 +5,7 @@ from __future__ import annotations
 import typer
 
 from media_hygiene.cli.cmd_audit import audit_command
+from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_clean import clean_command
 from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
@@ -87,6 +88,15 @@ def build_app() -> typer.Typer:
             _(
                 "Compare a fresh audit with Czkawka's results: a second, "
                 "independent opinion."
+            ),
+        ),
+        (
+            "classify",
+            classify_command,
+            analyse,
+            _(
+                "Propose where every photo and video should go: year, event, "
+                "category. Read-only."
             ),
         ),
         (

@@ -44,6 +44,14 @@ Free the space the extra copies take, safely, and keep the best shots.
     report.
 13. [A second opinion](clean/13-second-opinion.md): compare with Czkawka, an independent tool.
 
+## Sort the photos
+
+Give your photos a tidy tree, `year/category` or the one you choose. Clean the duplicates first:
+otherwise both copies are sorted.
+
+4. [Propose a tidy tree](sort/04-classify.md): `classify` proposes a place for every file, and
+   changes nothing.
+
 ## Reference
 
 - [Commands and options](reference-commands.md): every command, every option, and their `--help`.

@@ -71,6 +71,11 @@ adds one thing to the command of the step before.
 13. [A second opinion](documentation/en/clean/13-second-opinion.md) — compare with Czkawka, an
     independent tool.
 
+**Sort the photos** (clean the duplicates first)
+
+4. [Propose a tidy tree](documentation/en/sort/04-classify.md) — `classify` proposes a place
+   for every file, and changes nothing.
+
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),
 [how your photos stay safe](documentation/en/reference-safety.md),

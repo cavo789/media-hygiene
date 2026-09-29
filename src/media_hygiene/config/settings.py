@@ -6,6 +6,8 @@ import re
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.constants import (
     GENERATED_NAMES,
     GENERIC_FOLDERS,
@@ -160,17 +162,8 @@ class KeepSettings(BaseModel):
 
         Returns:
             The patterns, unchanged.
-
-        Raises:
-            ValueError: A pattern does not compile.
         """
-        for pattern in patterns:
-            try:
-                re.compile(pattern)
-            except re.error as exc:
-                message = f"{pattern!r} is not a valid regular expression: {exc}"
-                raise ValueError(message) from exc
-        return patterns
+        return valid_patterns(patterns)
 
 
 class CleanSettings(BaseModel):
@@ -191,3 +184,4 @@ class Settings(BaseModel):
     scan: ScanSettings = ScanSettings()
     keep: KeepSettings = KeepSettings()
     clean: CleanSettings = CleanSettings()
+    classify: ClassifySettings = ClassifySettings()

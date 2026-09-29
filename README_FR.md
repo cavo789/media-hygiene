@@ -72,6 +72,11 @@ seule chose à la commande de l'étape précédente.
 13. [Un second avis](documentation/fr/clean/13-second-opinion.md) : comparer avec Czkawka, un outil
     indépendant.
 
+**Trier les photos** (nettoyez d'abord les doublons)
+
+4. [Proposer une arborescence](documentation/fr/sort/04-classify.md) — `classify` propose une
+   place pour chaque fichier, et ne modifie rien.
+
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),

@@ -22,45 +22,91 @@ La première ligne dit ce qui s'est passé :
 ```text
 💡 Un fichier de configuration commenté a été créé : /config/config.toml.
 Réglages effectifs
-┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
-┃ Réglage              ┃ Valeur                            ┃ Origine           ┃
-┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
-│ general.locale       │ fr                                │ ligne de commande │
-│ general.verbosity    │ info                              │ défaut            │
-│ general.color        │ never                             │ ligne de commande │
-│ folders.preferred    │ []                                │ défaut            │
-│ folders.protected    │ []                                │ défaut            │
-│ folders.excluded     │ []                                │ défaut            │
-│ scan.extensions      │ []                                │ défaut            │
-│ keep.generated_names │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF]? │ défaut            │
-│                      │ |_DSC|PICT|CIMG)[_-]?\\d+',       │                   │
-│                      │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([_ │                   │
-│                      │ -]\\d+)?',                        │                   │
-│                      │ '(IMG|VID|AUD)-\\d{8}-WA\\d+',    │                   │
-│                      │ '_?MG_\\d+', 'P\\d{7}',           │                   │
-│                      │ 'PXL_\\d{8}_\\d+.*',              │                   │
-│                      │ '\\d{8}_\\d{6}(_\\d+)?',          │                   │
-│                      │ '\\d{4}-\\d{2}-\\d{2}             │                   │
-│                      │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d+)?' │                   │
-│                      │ , '(GOPR|G[HX]\\d{2})\\d{4}',     │                   │
-│                      │ 'DJI_\\d+',                       │                   │
-│                      │ '(FB_IMG|received|Snapchat)[_-]\\ │                   │
-│                      │ d+', '(Screenshot|Screen          │                   │
-│                      │ Shot|Capture d.écran)([ _-].*)?', │                   │
-│                      │ 'image\\d*',                      │                   │
-│                      │ '[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0- │                   │
-│                      │ 9a-f]{12}', '[0-9a-f]{16,}']      │                   │
-│ keep.generic_folders │ ['DCIM', '\\d{3}[A-Z0-9_]{5}',    │ défaut            │
-│                      │ 'Camera( Roll| Uploads)?',        │                   │
-│                      │ 'WhatsApp (Images|Video)',        │                   │
-│                      │ 'Sent',                           │                   │
-│                      │ 'Downloads?|Téléchargements',     │                   │
-│                      │ 'Screenshots|Captures d.écran',   │                   │
-│                      │ '(New folder|Nouveau dossier)(    │                   │
-│                      │ \\(\\d+\\))?',                    │                   │
-│                      │ 'Import(s|ed)?|Temp|tmp']         │                   │
-│ clean.confirm        │ True                              │ défaut            │
-└──────────────────────┴───────────────────────────────────┴───────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Réglage                    ┃ Valeur                      ┃ Origine           ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ general.locale             │ fr                          │ ligne de commande │
+│ general.verbosity          │ info                        │ défaut            │
+│ general.color              │ never                       │ ligne de commande │
+│ folders.preferred          │ []                          │ défaut            │
+│ folders.protected          │ []                          │ défaut            │
+│ folders.excluded           │ []                          │ défaut            │
+│ scan.extensions            │ []                          │ défaut            │
+│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
+│                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
+│                            │ \\d+',                      │                   │
+│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d │                   │
+│                            │ {6}([_-]\\d+)?',            │                   │
+│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d │                   │
+│                            │ +', '_?MG_\\d+', 'P\\d{7}', │                   │
+│                            │ 'PXL_\\d{8}_\\d+.*',        │                   │
+│                            │ '\\d{8}_\\d{6}(_\\d+)?',    │                   │
+│                            │ '\\d{4}-\\d{2}-\\d{2}       │                   │
+│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\ │                   │
+│                            │ \d+)?',                     │                   │
+│                            │ '(GOPR|G[HX]\\d{2})\\d{4}', │                   │
+│                            │ 'DJI_\\d+',                 │                   │
+│                            │ '(FB_IMG|received|Snapchat) │                   │
+│                            │ [_-]\\d+',                  │                   │
+│                            │ '(Screenshot|Screen         │                   │
+│                            │ Shot|Capture d.écran)([     │                   │
+│                            │ _-].*)?', 'image\\d*',      │                   │
+│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){ │                   │
+│                            │ 3}-[0-9a-f]{12}',           │                   │
+│                            │ '[0-9a-f]{16,}']            │                   │
+│ keep.generic_folders       │ ['DCIM',                    │ défaut            │
+│                            │ '\\d{3}[A-Z0-9_]{5}',       │                   │
+│                            │ 'Camera( Roll| Uploads)?',  │                   │
+│                            │ 'WhatsApp (Images|Video)',  │                   │
+│                            │ 'Sent',                     │                   │
+│                            │ 'Downloads?|Téléchargements │                   │
+│                            │ ', 'Screenshots|Captures    │                   │
+│                            │ d.écran', '(New             │                   │
+│                            │ folder|Nouveau dossier)(    │                   │
+│                            │ \\(\\d+\\))?',              │                   │
+│                            │ 'Import(s|ed)?|Temp|tmp']   │                   │
+│ clean.confirm              │ True                        │ défaut            │
+│ classify.target            │                             │ défaut            │
+│ classify.leave             │ []                          │ défaut            │
+│ classify.timezone          │                             │ défaut            │
+│ classify.layout            │ {year}/{category}           │ défaut            │
+│ classify.unsure_layout     │ {year}/To check/{category}  │ défaut            │
+│ classify.manual_layout     │ {year}/To sort/{event}      │ défaut            │
+│ classify.undated_layout    │ To sort/Undated             │ défaut            │
+│ classify.received_layout   │ To sort/Received and        │ défaut            │
+│                            │ downloaded                  │                   │
+│ classify.session_gap_hours │ 6.0                         │ défaut            │
+│ classify.merge_gap_hours   │ 18.0                        │ défaut            │
+│ classify.min_event_size    │ 5                           │ défaut            │
+│ classify.event_year        │ start                       │ défaut            │
+│ classify.sure              │ 80                          │ défaut            │
+│ classify.unsure            │ 50                          │ défaut            │
+│ classify.scores            │ {'existing-folder': 90,     │ défaut            │
+│                            │ 'person-folder': 85,        │                   │
+│                            │ 'event-neighbour': 70,      │                   │
+│                            │ 'date-only': 90,            │                   │
+│                            │ 'no-signal': 0}             │                   │
+│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
+│                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
+│                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
+│                            │ {2})(?P<M>\\d{2})(?P<S>\\d{ │                   │
+│                            │ 2}).*',                     │                   │
+│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{ │                   │
+│                            │ 4})(?P<m>\\d{2})(?P<d>\\d{2 │                   │
+│                            │ })-WA\\d+',                 │                   │
+│                            │ '(?:Screenshot|Capture)[    │                   │
+│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\ │                   │
+│                            │ d{2})-?(?P<d>\\d{2}).*',    │                   │
+│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2} │                   │
+│                            │ )-(?P<d>\\d{2})[            │                   │
+│                            │ _](?P<H>\\d{2})(?P<M>\\d{2} │                   │
+│                            │ )[._](?P<S>\\d{2}).*']      │                   │
+│ classify.generic_folders   │ ['(My |Mes                  │ défaut            │
+│                            │ )?(Photos|Pictures|Images|V │                   │
+│                            │ ideos|Vidéos|Mes images)',  │                   │
+│                            │ '(Family|Famille|Photos de  │                   │
+│                            │ famille|Family photos)']    │                   │
+└────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
@@ -169,45 +215,92 @@ les mêmes options `-v` que votre audit (ici `config` au lieu de `audit`) :
 <!-- capture: config.txt -->
 ```text
 Réglages effectifs
-┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
-┃ Réglage              ┃ Valeur                            ┃ Origine           ┃
-┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
-│ general.locale       │ fr                                │ ligne de commande │
-│ general.verbosity    │ info                              │ config.toml       │
-│ general.color        │ never                             │ ligne de commande │
-│ folders.preferred    │ []                                │ config.toml       │
-│ folders.protected    │ []                                │ config.toml       │
-│ folders.excluded     │ []                                │ config.toml       │
-│ scan.extensions      │ []                                │ config.toml       │
-│ keep.generated_names │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF]? │ défaut            │
-│                      │ |_DSC|PICT|CIMG)[_-]?\\d+',       │                   │
-│                      │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([_ │                   │
-│                      │ -]\\d+)?',                        │                   │
-│                      │ '(IMG|VID|AUD)-\\d{8}-WA\\d+',    │                   │
-│                      │ '_?MG_\\d+', 'P\\d{7}',           │                   │
-│                      │ 'PXL_\\d{8}_\\d+.*',              │                   │
-│                      │ '\\d{8}_\\d{6}(_\\d+)?',          │                   │
-│                      │ '\\d{4}-\\d{2}-\\d{2}             │                   │
-│                      │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d+)?' │                   │
-│                      │ , '(GOPR|G[HX]\\d{2})\\d{4}',     │                   │
-│                      │ 'DJI_\\d+',                       │                   │
-│                      │ '(FB_IMG|received|Snapchat)[_-]\\ │                   │
-│                      │ d+', '(Screenshot|Screen          │                   │
-│                      │ Shot|Capture d.écran)([ _-].*)?', │                   │
-│                      │ 'image\\d*',                      │                   │
-│                      │ '[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0- │                   │
-│                      │ 9a-f]{12}', '[0-9a-f]{16,}']      │                   │
-│ keep.generic_folders │ ['DCIM', '\\d{3}[A-Z0-9_]{5}',    │ défaut            │
-│                      │ 'Camera( Roll| Uploads)?',        │                   │
-│                      │ 'WhatsApp (Images|Video)',        │                   │
-│                      │ 'Sent',                           │                   │
-│                      │ 'Downloads?|Téléchargements',     │                   │
-│                      │ 'Screenshots|Captures d.écran',   │                   │
-│                      │ '(New folder|Nouveau dossier)(    │                   │
-│                      │ \\(\\d+\\))?',                    │                   │
-│                      │ 'Import(s|ed)?|Temp|tmp']         │                   │
-│ clean.confirm        │ True                              │ config.toml       │
-└──────────────────────┴───────────────────────────────────┴───────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Réglage                    ┃ Valeur                      ┃ Origine           ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ general.locale             │ fr                          │ ligne de commande │
+│ general.verbosity          │ info                        │ config.toml       │
+│ general.color              │ never                       │ ligne de commande │
+│ folders.preferred          │ []                          │ config.toml       │
+│ folders.protected          │ []                          │ config.toml       │
+│ folders.excluded           │ []                          │ config.toml       │
+│ scan.extensions            │ []                          │ config.toml       │
+│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
+│                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
+│                            │ \\d+',                      │                   │
+│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d │                   │
+│                            │ {6}([_-]\\d+)?',            │                   │
+│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d │                   │
+│                            │ +', '_?MG_\\d+', 'P\\d{7}', │                   │
+│                            │ 'PXL_\\d{8}_\\d+.*',        │                   │
+│                            │ '\\d{8}_\\d{6}(_\\d+)?',    │                   │
+│                            │ '\\d{4}-\\d{2}-\\d{2}       │                   │
+│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\ │                   │
+│                            │ \d+)?',                     │                   │
+│                            │ '(GOPR|G[HX]\\d{2})\\d{4}', │                   │
+│                            │ 'DJI_\\d+',                 │                   │
+│                            │ '(FB_IMG|received|Snapchat) │                   │
+│                            │ [_-]\\d+',                  │                   │
+│                            │ '(Screenshot|Screen         │                   │
+│                            │ Shot|Capture d.écran)([     │                   │
+│                            │ _-].*)?', 'image\\d*',      │                   │
+│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){ │                   │
+│                            │ 3}-[0-9a-f]{12}',           │                   │
+│                            │ '[0-9a-f]{16,}']            │                   │
+│ keep.generic_folders       │ ['DCIM',                    │ défaut            │
+│                            │ '\\d{3}[A-Z0-9_]{5}',       │                   │
+│                            │ 'Camera( Roll| Uploads)?',  │                   │
+│                            │ 'WhatsApp (Images|Video)',  │                   │
+│                            │ 'Sent',                     │                   │
+│                            │ 'Downloads?|Téléchargements │                   │
+│                            │ ', 'Screenshots|Captures    │                   │
+│                            │ d.écran', '(New             │                   │
+│                            │ folder|Nouveau dossier)(    │                   │
+│                            │ \\(\\d+\\))?',              │                   │
+│                            │ 'Import(s|ed)?|Temp|tmp']   │                   │
+│ clean.confirm              │ True                        │ config.toml       │
+│ classify.target            │                             │ config.toml       │
+│ classify.leave             │ []                          │ config.toml       │
+│ classify.timezone          │                             │ config.toml       │
+│ classify.layout            │ {year}/{category}           │ config.toml       │
+│ classify.unsure_layout     │ {year}/À                    │ config.toml       │
+│                            │ vérifier/{category}         │                   │
+│ classify.manual_layout     │ {year}/À trier/{event}      │ config.toml       │
+│ classify.undated_layout    │ À trier/Sans date           │ config.toml       │
+│ classify.received_layout   │ À trier/Reçues et           │ config.toml       │
+│                            │ téléchargées                │                   │
+│ classify.session_gap_hours │ 6.0                         │ défaut            │
+│ classify.merge_gap_hours   │ 18.0                        │ config.toml       │
+│ classify.min_event_size    │ 5                           │ config.toml       │
+│ classify.event_year        │ start                       │ défaut            │
+│ classify.sure              │ 80                          │ défaut            │
+│ classify.unsure            │ 50                          │ défaut            │
+│ classify.scores            │ {'existing-folder': 90,     │ défaut            │
+│                            │ 'person-folder': 85,        │                   │
+│                            │ 'event-neighbour': 70,      │                   │
+│                            │ 'date-only': 90,            │                   │
+│                            │ 'no-signal': 0}             │                   │
+│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
+│                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
+│                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
+│                            │ {2})(?P<M>\\d{2})(?P<S>\\d{ │                   │
+│                            │ 2}).*',                     │                   │
+│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{ │                   │
+│                            │ 4})(?P<m>\\d{2})(?P<d>\\d{2 │                   │
+│                            │ })-WA\\d+',                 │                   │
+│                            │ '(?:Screenshot|Capture)[    │                   │
+│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\ │                   │
+│                            │ d{2})-?(?P<d>\\d{2}).*',    │                   │
+│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2} │                   │
+│                            │ )-(?P<d>\\d{2})[            │                   │
+│                            │ _](?P<H>\\d{2})(?P<M>\\d{2} │                   │
+│                            │ )[._](?P<S>\\d{2}).*']      │                   │
+│ classify.generic_folders   │ ['(My |Mes                  │ défaut            │
+│                            │ )?(Photos|Pictures|Images|V │                   │
+│                            │ ideos|Vidéos|Mes images)',  │                   │
+│                            │ '(Family|Famille|Photos de  │                   │
+│                            │ famille|Family photos)']    │                   │
+└────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓

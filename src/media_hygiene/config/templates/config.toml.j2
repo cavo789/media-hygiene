@@ -56,3 +56,27 @@ extensions = []
 [clean]
 {{ comment(_("Ask for confirmation before cleaning."), "--yes") }}
 confirm = true
+
+
+[classify]
+{{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
+
+{{ comment(_("Host folder receiving the tree. Empty: each mounted folder is reorganised in place."), "--target") }}
+target = ''
+
+{{ comment(_("Host folders never sorted: analysed and cleaned as usual, left where they are."), "--leave") }}
+leave = []
+
+{{ comment(_("Where files go, by how sure the proposal is. Placeholders: {year}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}. An empty layout leaves the files where they are; '{year}/{month}' needs no category at all."), "--layout") }}
+layout = "{year}/{category}"
+unsure_layout = "{year}/{{ _("To check") }}/{category}"
+manual_layout = "{year}/{{ _("To sort") }}/{event}"
+undated_layout = "{{ _("To sort") }}/{{ _("Undated") }}"
+received_layout = "{{ _("To sort") }}/{{ _("Received and downloaded") }}"
+
+{{ comment(_("Events: photos taken less than merge_gap_hours apart belong together; fewer than min_event_size photos are not an event, and fall back to their month.")) }}
+merge_gap_hours = 18
+min_event_size = 5
+
+{{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: the zone of the container.')) }}
+timezone = ""

@@ -44,7 +44,7 @@ The review first audits (quickly, thanks to the cache), then waits for you:
 ```text
 ✅ Review ready on port 8080: each decision is saved at once in decisions.json.
 Ctrl+C stops the review.
-💡 Its address on your computer: run 'docker port 6b18fa750473 8080' in another
+💡 Its address on your computer: run 'docker port bad0a38bcdea 8080' in another
 terminal, then open http://<that address> in your browser.
 ```
 

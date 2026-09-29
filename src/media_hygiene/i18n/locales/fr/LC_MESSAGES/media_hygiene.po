@@ -38,6 +38,10 @@ msgstr "'undo' ne pourra plus restaurer ces fichiers cassés."
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr "--tier near déplace les quasi-doublons dans /quarantine : montez-le."
 
+#, python-brace-format
+msgid "--year {value}: write a year (2016) or a range (2015-2017)."
+msgstr "--year {value} : écrivez une année (2016) ou une plage (2015-2017)."
+
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
 
@@ -96,6 +100,10 @@ msgstr ""
 msgid "All reports"
 msgstr "Tous les rapports"
 
+#, python-brace-format
+msgid "Already in place: {share}."
+msgstr "Déjà à leur place : {share}."
+
 msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
@@ -107,6 +115,9 @@ msgstr ""
 
 msgid "Analyse"
 msgstr "Analyser"
+
+msgid "April"
+msgstr "avril"
 
 msgid "As planned"
 msgstr "Comme prévu"
@@ -128,11 +139,17 @@ msgstr ""
 "Audite, demande confirmation, puis supprime réellement les copies en "
 "double (journalisé, annulable)."
 
+msgid "August"
+msgstr "août"
+
 msgid "B"
 msgstr "o"
 
 msgid "Back to the report"
 msgstr "Retour au rapport"
+
+msgid "Band"
+msgstr "Bande"
 
 msgid ""
 "Between identical copies, a name someone chose (Mariage 2015\\Marie et "
@@ -208,6 +225,9 @@ msgid ""
 msgstr ""
 "Choisissez les dossiers qui gardent leurs copies : folders.preferred dans"
 " config.toml, ou --prefer."
+
+msgid "Classify"
+msgstr "Classer"
 
 msgid "Clean"
 msgstr "Nettoyage"
@@ -300,6 +320,9 @@ msgstr ""
 
 msgid "Date"
 msgstr "Date"
+
+msgid "December"
+msgstr "décembre"
 
 msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
@@ -401,6 +424,15 @@ msgstr ""
 "{version}. Encore présentes : {names}."
 
 msgid ""
+"Events: photos taken less than merge_gap_hours apart belong together; "
+"fewer than min_event_size photos are not an event, and fall back to their"
+" month."
+msgstr ""
+"Événements : les photos prises à moins de merge_gap_hours d'écart vont "
+"ensemble ; moins de min_event_size photos ne font pas un événement, et "
+"retombent dans leur mois."
+
+msgid ""
 "Every audit and clean, newest first. Open this page with a double-click: "
 "no server needed."
 msgstr ""
@@ -430,6 +462,9 @@ msgstr "Copies en trop, supprimables"
 
 msgid "Failed"
 msgstr "En échec"
+
+msgid "February"
+msgstr "février"
 
 msgid "File"
 msgstr "Fichier"
@@ -544,6 +579,26 @@ msgstr "Groupes de fichiers identiques"
 msgid "HTML report: {path}"
 msgstr "Rapport HTML : {path}"
 
+msgid "Host folder never sorted (analysed and cleaned as usual)."
+msgstr "Dossier de l'hôte jamais trié (analysé et nettoyé comme d'habitude)."
+
+msgid ""
+"Host folder receiving the tree. Empty: each mounted folder is reorganised"
+" in place."
+msgstr ""
+"Dossier de l'hôte qui reçoit l'arborescence. Vide : chaque dossier monté "
+"est réorganisé sur place."
+
+msgid "Host folder receiving the tree; in place by default."
+msgstr "Dossier de l'hôte qui reçoit l'arborescence ; sur place par défaut."
+
+msgid ""
+"Host folders never sorted: analysed and cleaned as usual, left where they"
+" are."
+msgstr ""
+"Dossiers de l'hôte jamais triés : analysés et nettoyés comme d'habitude, "
+"laissés où ils sont."
+
 msgid ""
 "Host paths, written between 'single quotes' so backslashes need no "
 "escaping. These are lists of paths: your real folders are never renamed."
@@ -551,6 +606,15 @@ msgstr ""
 "Chemins de votre ordinateur, écrits entre 'apostrophes' pour que les "
 "barres obliques inverses n'aient pas besoin d'être doublées. Ce sont des "
 "listes de chemins : vos vrais dossiers ne sont jamais renommés."
+
+msgid ""
+"How 'classify' proposes a tree for your photos and videos. Every value "
+"below is an example: replace it with your own structure. Nothing moves "
+"before 'sort'."
+msgstr ""
+"Comment 'classify' propose une arborescence pour vos photos et vidéos. "
+"Chaque valeur ci-dessous est un exemple : remplacez-la par votre propre "
+"structure. Rien ne bouge avant 'sort'."
 
 msgid "How do we know these are duplicates?"
 msgstr "Comment sait-on que ce sont des doublons ?"
@@ -586,6 +650,15 @@ msgstr ""
 "{port}' dans un autre terminal, puis ouvrez http://<cette adresse> dans "
 "votre navigateur."
 
+msgid "January"
+msgstr "janvier"
+
+msgid "July"
+msgstr "juillet"
+
+msgid "June"
+msgstr "juin"
+
 msgid "KB"
 msgstr "Ko"
 
@@ -600,6 +673,9 @@ msgstr "Conservées dans"
 
 msgid "Leave alone"
 msgstr "Ne pas toucher"
+
+msgid "Left as they are"
+msgstr "Laissés tels quels"
 
 #, python-brace-format
 msgid ""
@@ -625,6 +701,12 @@ msgstr "Recherche des fichiers médias"
 msgid "MB"
 msgstr "Mo"
 
+msgid "March"
+msgstr "mars"
+
+msgid "May"
+msgstr "mai"
+
 msgid "Media files scanned"
 msgstr "Fichiers média analysés"
 
@@ -640,6 +722,9 @@ msgid ""
 msgstr ""
 "Montez chaque dossier une seule fois (un dossier inclut déjà ses sous-"
 "dossiers) : retirez l'une de ces options -v."
+
+msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
+msgstr "Montez-la sous /data, par exemple -v \"C:\\Photos triées:/data/c/Tri\"."
 
 msgid "Mount points"
 msgstr "Points de montage"
@@ -741,6 +826,9 @@ msgstr "Pas de montage /journal : rien à annuler."
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr "Pas de montage /journal : sans journal, 'undo' serait impossible."
 
+msgid "No photo nor video to classify."
+msgstr "Aucune photo ni vidéo à classer."
+
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
 "place."
@@ -778,6 +866,9 @@ msgstr "Non enregistré (erreur {status})."
 msgid "Not the folder you want to keep?"
 msgstr "Ce n'est pas le dossier que vous voulez garder ?"
 
+msgid "Nothing left to check nor to sort."
+msgstr "Plus rien à vérifier ni à trier."
+
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 
@@ -788,6 +879,15 @@ msgid "Nothing was changed. Update media-hygiene, then undo this run again."
 msgstr ""
 "Rien n'a été modifié. Mettez media-hygiene à jour, puis annulez à nouveau"
 " cette exécution."
+
+msgid "Nothing was changed: 'classify' only proposes."
+msgstr "Rien n'a été modifié : 'classify' ne fait que proposer."
+
+msgid "November"
+msgstr "novembre"
+
+msgid "October"
+msgstr "octobre"
 
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
@@ -826,6 +926,11 @@ msgid ""
 msgstr ""
 "Seuls des fichiers de même taille peuvent être identiques : leurs "
 "premiers et derniers 64 Ko écartent vite la plupart d'entre eux."
+
+msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
+msgstr ""
+"Seulement les fichiers de cette année, ou de ces années : 2016 ou "
+"2015-2017."
 
 #, python-brace-format
 msgid "Only these extensions are analysed: {extensions}."
@@ -898,6 +1003,16 @@ msgstr ""
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
 
+msgid "Proposal"
+msgstr "Proposition"
+
+msgid ""
+"Propose where every photo and video should go: year, event, category. "
+"Read-only."
+msgstr ""
+"Propose où ranger chaque photo et vidéo : année, événement, catégorie. En"
+" lecture seule."
+
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
 
@@ -933,6 +1048,9 @@ msgid ""
 msgstr ""
 "Reconstruit chaque copie supprimée à partir de celle conservée, ramène "
 "les fichiers mis en quarantaine et déplacés."
+
+msgid "Received and downloaded"
+msgstr "Reçues et téléchargées"
 
 msgid ""
 "Regular expressions matching the whole name, case ignored: file names "
@@ -1079,6 +1197,9 @@ msgstr ""
 "Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur "
 "les mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :"
 
+msgid "September"
+msgstr "septembre"
+
 #, python-brace-format
 msgid "Series with shots set aside: {series} · shots set aside: {shots}"
 msgstr "Séries avec des photos écartées : {series} · photos écartées : {shots}"
@@ -1167,6 +1288,9 @@ msgstr "Espace libérable"
 msgid "State"
 msgstr "État"
 
+msgid "Sure"
+msgstr "Sûrs"
+
 msgid "Swap the folders"
 msgstr "Inverser les dossiers"
 
@@ -1227,8 +1351,16 @@ msgstr ""
 "où 'undo' les retrouve. La plus haute résolution est gardée. Comparez "
 "d'abord chaque copie à la photo gardée."
 
+#, python-brace-format
+msgid "The target {path} is not mounted."
+msgstr "La cible {path} n'est pas montée."
+
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
+
+#, python-brace-format
+msgid "The {top} largest events hold {held} of them."
+msgstr "Les {top} plus grands événements en contiennent {held}."
 
 msgid "There is no such series."
 msgstr "Cette série n'existe pas."
@@ -1257,6 +1389,15 @@ msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal
 msgid "This shot lies in a protected folder: it is never moved."
 msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 
+msgid "To check"
+msgstr "À vérifier"
+
+#, python-brace-format
+msgid "To check or to sort: {files} files in {events} event."
+msgid_plural "To check or to sort: {files} files in {events} events."
+msgstr[0] "À vérifier ou à trier : {files} fichiers dans {events} événement."
+msgstr[1] "À vérifier ou à trier : {files} fichiers dans {events} événements."
+
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
 "\\media-hygiene\\config:/config\": config.toml is created there, "
@@ -1267,11 +1408,20 @@ msgstr ""
 "commenté, au premier lancement ; modifiez-le avec n'importe quel éditeur "
 "de texte."
 
+msgid "To move"
+msgstr "À déplacer"
+
+msgid "To sort"
+msgstr "À trier"
+
 msgid "Total length of the videos"
 msgstr "Durée totale des vidéos"
 
 msgid "Type"
 msgstr "Type"
+
+msgid "Undated"
+msgstr "Sans date"
 
 #, python-brace-format
 msgid "Undo the {command} run {run_id}"
@@ -1303,6 +1453,25 @@ msgstr ""
 msgid "When to use colours (NO_COLOR is honoured too)."
 msgstr "Quand utiliser les couleurs (NO_COLOR est aussi respecté)."
 
+#, python-brace-format
+msgid ""
+"Where files go, by how sure the proposal is. Placeholders: {year}, "
+"{quarter}, {month}, {month_name}, {day}, {category}, {event}, "
+"{event_start}. An empty layout leaves the files where they are; "
+"'{year}/{month}' needs no category at all."
+msgstr ""
+"Où vont les fichiers, selon la sûreté de la proposition. Champs : {year},"
+" {quarter}, {month}, {month_name}, {day}, {category}, {event}, "
+"{event_start}. Un modèle vide laisse les fichiers où ils sont ; "
+"'{year}/{month}' n'a besoin d'aucune catégorie."
+
+#, python-brace-format
+msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
+msgstr "Où vont les fichiers sûrs, par exemple '{year}/{month} - {month_name}'."
+
+msgid "Why"
+msgstr "Pourquoi"
+
 msgid "Will be deleted"
 msgstr "Sera supprimé"
 
@@ -1328,6 +1497,13 @@ msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}.
 msgstr ""
 "Vos décisions — paires inversées : {swapped}, paires laissées telles "
 "quelles : {skipped}."
+
+msgid ""
+"Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: the zone "
+"of the container."
+msgstr ""
+"Fuseau des heures UTC des vidéos, par exemple \"Europe/Brussels\". Vide :"
+" le fuseau du conteneur."
 
 msgid "[cyan]read-only[/]"
 msgstr "[cyan]lecture seule[/]"
@@ -1634,6 +1810,14 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} paires de dossiers décidées n'existent plus, p. ex. {kept} -> "
 "{removed}."
+
+#, python-brace-format
+msgid ""
+"{count} exact duplicates are still there: run 'clean' first, otherwise "
+"both copies are sorted."
+msgstr ""
+"{count} doublons exacts sont encore là : lancez d'abord 'clean', sinon "
+"les deux copies sont triées."
 
 #, python-brace-format
 msgid ""

@@ -12,11 +12,12 @@ cette page les rassemble.
 | `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md) |
 | `clean` | Audite, demande confirmation, puis supprime les copies en double et les fichiers vides, et met en quarantaine les fichiers illisibles et les fichiers compagnons orphelins. | [8](clean/08-clean.md) |
-| `undo [EXÉCUTION]` | Restaure chaque fichier d'un nettoyage (le plus récent par défaut). | [9](clean/09-undo-history-purge.md) |
-| `history` | Liste les nettoyages : fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
+| `undo [EXÉCUTION]` | Restaure chaque fichier d'une exécution (la plus récente par défaut). | [9](clean/09-undo-history-purge.md) |
+| `history` | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
 | `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
+| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers. | [4](sort/04-classify.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -75,6 +76,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             : montez les dossiers avec :ro.                                  │
 │ crosscheck  Compare un nouvel audit aux résultats de Czkawka : un second     │
 │             avis, indépendant.                                               │
+│ classify    Propose où ranger chaque photo et vidéo : année, événement,      │
+│             catégorie. En lecture seule.                                     │
 │ history     Liste les exécutions et ce qu'elles ont fait.                    │
 │ reports     Liste les rapports HTML des audits et nettoyages précédents.     │
 │ config      Affiche chaque réglage, son origine, et les points de montage.   │
@@ -330,6 +333,31 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                     cr2, cr3, dng, flv, gif, heic, heif, jpe, jpeg, jpg,     │
 │                     m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, nef, orf, pef, │
 │                     png, raf, rw2, srw, tif, tiff, ts, webm, webp, wmv.      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>classify --help</code></summary>
+
+<!-- capture: help-classify.txt -->
+```text
+ Utilisation : media-hygiene classify [OPTIONS]
+
+ Propose où ranger chaque photo et vidéo : année, événement, catégorie. En
+ lecture seule.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --year            <str>  Seulement les fichiers de cette année, ou de ces    │
+│                          années : 2016 ou 2015-2017.                         │
+│ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
+│                          '{year}/{month} - {month_name}'.                    │
+│ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │
+│                          place par défaut.                                   │
+│ --leave           <str>  Dossier de l'hôte jamais trié (analysé et nettoyé   │
+│                          comme d'habitude).                                  │
+│ --help    -h             Affiche ce message et quitte.                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.loader import Origin, load_settings, write_default_config
 from media_hygiene.config.settings import GeneralSettings, Settings
 from media_hygiene.constants import ColorMode, Locale, Verbosity
@@ -105,7 +106,10 @@ def test_french_template_keeps_the_next_runs_in_french(locations: Locations) -> 
     text = locations.config_file.read_text()
     assert "Langue de l'interface" in text
     settings = load_settings(locations).settings
-    assert settings == Settings(general=GeneralSettings(locale=Locale.FR))
+    # The band folders of the layouts are written in French too.
+    assert settings.classify.unsure_layout == "{year}/À vérifier/{category}"
+    as_default = settings.model_copy(update={"classify": ClassifySettings()})
+    assert as_default == Settings(general=GeneralSettings(locale=Locale.FR))
 
 
 def test_escaped_backspace_in_a_path_is_refused(locations: Locations) -> None:
