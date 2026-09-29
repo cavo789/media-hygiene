@@ -72,3 +72,37 @@ docs follow in their own commits.
 - [ ] A 0.2.0 index, journal and decisions file are read by the renamed tool (test).
 - [ ] `MEDIA_DEDUP_GENERAL__LOCALE=fr` still works, with a warning; `MEDIA_HYGIENE_…` wins.
 - [ ] READMEs and documentation en + fr renamed, captures regenerated.
+
+## Status — PARTIAL (2026-09-29)
+
+### Done
+- Mechanical rename (commit `d2b1921`): package, command, distribution, environment prefix,
+  gettext catalogs, CI image name, the `dedup` helper now `hygiene`; nine lines grown past 88
+  columns reworded.
+- Compatibility (`61925c2`): `MEDIA_DEDUP_*` copied to the new names first thing in `main()`,
+  one warning lists them (`config/legacy_env.py`, to delete in 0.4.0); `summary.json` writes
+  `only_ours` and still reads 0.2's `only_media_dedup`; `tests/fixtures/0.2.0/` (index,
+  journal, decisions, cross-checked summary written by the real 0.2.0) read by the renamed
+  tool; "Coming from media-dedup" in both READMEs; configuration page; version 0.3.0.
+- Captures regenerated en + fr with `docs_screenshots`, `CLAUDE.md`, comment on the
+  devcontainer volumes (`3f05920`).
+- `git grep -i "media.dedup"`: only the expected places, plus `.claude/settings.json` (below).
+- Pre-commit gate green; targeted tests and `pytest -m e2e` (4 passed) on
+  `media-hygiene:latest`.
+
+### Not done
+- Rename the GitHub repository to `cavo789/media-hygiene` (Settings → General, or
+  `gh repo rename media-hygiene`), then `git remote set-url origin
+  git@github.com:cavo789/media-hygiene.git`.
+  **Reason:** outward-facing, on the maintainer's account; do it when this branch reaches
+  `main`, so that the links of the documentation point to an existing repository.
+- Publish 0.3.0: merge into `main`, push, run the full `check`, then `release` (tag `v0.3.0`):
+  CI pushes `cavo789/media-hygiene:0.3.0` and `:latest`.
+  **Reason:** a release is the maintainer's decision.
+- Edit the Docker Hub description of `cavo789/media-dedup`: "Renamed: see
+  cavo789/media-hygiene".
+  **Reason:** manual step on hub.docker.com, with the maintainer's account.
+- `.claude/settings.json` lists the paths of the current local folder
+  (`/workspaces/media-deduplication-pipeline`): update them when the repository is cloned
+  again under its new name.
+  **Reason:** they must match the folder on disk, which only changes at the next clone.
