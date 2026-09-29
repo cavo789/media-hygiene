@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.plan.copy_names import looks_like_copy
+from media_hygiene.plan.copy_names import looks_like_copy
 
 
 @pytest.mark.parametrize(

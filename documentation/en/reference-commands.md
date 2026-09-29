@@ -21,8 +21,8 @@ them one at a time; this page gathers them.
 
 ## Options
 
-Global options go **before** the command: `cavo789/media-dedup --locale fr audit`. The others go
-**after** it: `cavo789/media-dedup audit --prefer "C:\Photos\Family"`.
+Global options go **before** the command: `cavo789/media-hygiene --locale fr audit`. The others go
+**after** it: `cavo789/media-hygiene audit --prefer "C:\Photos\Family"`.
 
 | Option | Commands | Meaning |
 |---|---|---|
@@ -45,7 +45,7 @@ line wins.
 
 ## The built-in help
 
-`cavo789/media-dedup --help` and `cavo789/media-dedup <command> --help` document everything, in
+`cavo789/media-hygiene --help` and `cavo789/media-hygiene <command> --help` document everything, in
 both languages (`--locale fr --help`). Here is what they print:
 
 <details>
@@ -53,7 +53,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help.txt -->
 ```text
- Usage: media-dedup [OPTIONS] COMMAND [ARGS]...
+ Usage: media-hygiene [OPTIONS] COMMAND [ARGS]...
 
  Find and safely clean duplicate photos and videos across folders and disks.
  Start with 'audit' (read-only), then 'clean'.
@@ -89,9 +89,9 @@ both languages (`--locale fr --help`). Here is what they print:
 
 
  A Windows folder (PowerShell):
-   docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-dedup audit
+   docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-hygiene audit
  The current folder (PowerShell, or bash on WSL, Linux, macOS):
-   docker run --rm -it -v "${PWD}:/data/current:ro" media-dedup audit
+   docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
  Full commands (reports, journal, WSL): see README.md.
 ```
@@ -103,7 +103,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-audit.txt -->
 ```text
- Usage: media-dedup audit [OPTIONS]
+ Usage: media-hygiene audit [OPTIONS]
 
  Find exact duplicates and broken files. Read-only: mount folders with :ro.
 
@@ -137,7 +137,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-review.txt -->
 ```text
- Usage: media-dedup review [OPTIONS]
+ Usage: media-hygiene review [OPTIONS]
 
  Set burst shots aside, one series at a time, with the keyboard in your
  browser; 'clean --decisions' then moves them.
@@ -171,7 +171,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-clean.txt -->
 ```text
- Usage: media-dedup clean [OPTIONS]
+ Usage: media-hygiene clean [OPTIONS]
 
  Audit, confirm, then really delete duplicate copies (journaled, undoable).
 
@@ -219,7 +219,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-undo.txt -->
 ```text
- Usage: media-dedup undo [OPTIONS] [run_id]
+ Usage: media-hygiene undo [OPTIONS] [run_id]
 
  Restore every file of a clean run, from the kept copy or the quarantine.
 
@@ -238,7 +238,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-history.txt -->
 ```text
- Usage: media-dedup history [OPTIONS]
+ Usage: media-hygiene history [OPTIONS]
 
  List the clean runs and what they did.
 
@@ -254,7 +254,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-purge.txt -->
 ```text
- Usage: media-dedup purge [OPTIONS] [run_id]
+ Usage: media-hygiene purge [OPTIONS] [run_id]
 
  Permanently delete the quarantined broken files of a run.
 
@@ -274,7 +274,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-reports.txt -->
 ```text
- Usage: media-dedup reports [OPTIONS]
+ Usage: media-hygiene reports [OPTIONS]
 
  List the HTML reports of previous audits and cleans.
 
@@ -292,7 +292,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-crosscheck.txt -->
 ```text
- Usage: media-dedup crosscheck [OPTIONS]
+ Usage: media-hygiene crosscheck [OPTIONS]
 
  Compare a fresh audit with Czkawka's results: a second, independent opinion.
 
@@ -326,7 +326,7 @@ both languages (`--locale fr --help`). Here is what they print:
 
 <!-- capture: help-config.txt -->
 ```text
- Usage: media-dedup config [OPTIONS]
+ Usage: media-hygiene config [OPTIONS]
 
  Show every setting, where it comes from, and the mount points.
 

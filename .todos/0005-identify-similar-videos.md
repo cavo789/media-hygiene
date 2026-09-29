@@ -3,7 +3,7 @@
 - **Priority**: Low
 - **Batch**: similarity
 - **Depends**: 0001
-- **Files**: `src/media_dedup/scan/video_check.py`, `Dockerfile`
+- **Files**: `src/media_hygiene/scan/video_check.py`, `Dockerfile`
 
 ## Context
 

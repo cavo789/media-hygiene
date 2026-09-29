@@ -15,7 +15,7 @@ Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
 | RAW (décodés par LibRaw, aperçu tiré du JPEG intégré par l'appareil) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Vidéos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 
-`media-dedup audit --help` les liste aussi. Les [fichiers compagnons](reference-sidecars.md)
+`media-hygiene audit --help` les liste aussi. Les [fichiers compagnons](reference-sidecars.md)
 (`.xmp`, `.aae`, `.thm`) ne sont pas analysés seuls : ils suivent leur photo.
 
 ## Seulement certains types
@@ -28,8 +28,8 @@ les photos de l'iPhone et les vidéos :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup --locale fr audit --ext heic,mp4
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene --locale fr audit --ext heic,mp4
 ```
 
 L'audit commence par dire ce qu'il analyse :
@@ -58,9 +58,9 @@ par exemple pour trouver les documents en double d'un dossier familial. `clean`
 ```powershell
 docker run --rm -it `
   -v "C:\Users\Moi\Documents:/data/c/Users/Moi/Documents" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr clean --ext pdf,docx
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean --ext pdf,docx
 ```
 
 Ces fichiers sont traités avec plus de précautions que les photos. Pour une photo, le dossier

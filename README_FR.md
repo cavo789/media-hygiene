@@ -1,4 +1,4 @@
-# media-dedup
+# media-hygiene
 
 Trouve et nettoie en toute sécurité les photos et vidéos en double, réparties sur plusieurs
 dossiers et plusieurs disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL.
@@ -12,7 +12,7 @@ dossiers et plusieurs disques — d'un seul `docker run`, sous Windows (PowerShe
 Avec Docker installé, une seule commande audite un dossier :
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-dedup --locale fr audit
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
 ```
 
 Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
@@ -84,37 +84,37 @@ cache, les rapports, la configuration, le journal et la quarantaine. Elle nettoi
 audit, ajoutez `:ro` à vos dossiers et écrivez `audit` au lieu de `clean`.
 
 ```powershell
-mkdir "$HOME\media-dedup\reports", "$HOME\media-dedup\config", "$HOME\media-dedup\journal", "$HOME\media-dedup\quarantine"
+mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr clean
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean
 ```
 
 Depuis WSL, écrivez les chemins Linux et lancez le conteneur sous votre identité, pour que les
 fichiers créés vous appartiennent :
 
 ```bash
-mkdir -p ~/media-dedup/{reports,config,journal,quarantine}
+mkdir -p ~/media-hygiene/{reports,config,journal,quarantine}
 docker run --rm -it --user "$(id -u):$(id -g)" \
   -v "/mnt/c/Photos:/data/c/Photos" \
   -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
-  -v media-dedup-cache:/cache \
-  -v ~/media-dedup/reports:/reports \
-  -v ~/media-dedup/config:/config \
-  -v ~/media-dedup/journal:/journal \
-  -v ~/media-dedup/quarantine:/quarantine \
-  cavo789/media-dedup --locale fr clean
+  -v media-hygiene-cache:/cache \
+  -v ~/media-hygiene/reports:/reports \
+  -v ~/media-hygiene/config:/config \
+  -v ~/media-hygiene/journal:/journal \
+  -v ~/media-hygiene/quarantine:/quarantine \
+  cavo789/media-hygiene --locale fr clean
 ```
 
 `undo` au lieu de `clean` remet tout en place.
 
 ## Mettre à jour
 
-`docker pull cavo789/media-dedup` récupère la dernière version ; un tag comme
-`cavo789/media-dedup:0.2.0` en fixe une.
+`docker pull cavo789/media-hygiene` récupère la dernière version ; un tag comme
+`cavo789/media-hygiene:0.2.0` en fixe une.

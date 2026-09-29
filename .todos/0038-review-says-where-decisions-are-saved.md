@@ -3,14 +3,14 @@
 - **Priority**: medium
 - **Batch**: unassigned
 - **Depends**: —
-- **Files**: `src/media_dedup/cli/cmd_review.py`, `src/media_dedup/services/reviewing.py`, `src/media_dedup/review/session.py`, `src/media_dedup/review/views.py`, `src/media_dedup/review/templates/review.html.j2`, `src/media_dedup/i18n/locales/fr/LC_MESSAGES/media_dedup.po`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
+- **Files**: `src/media_hygiene/cli/cmd_review.py`, `src/media_hygiene/services/reviewing.py`, `src/media_hygiene/review/session.py`, `src/media_hygiene/review/views.py`, `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
 
 ## Context
 
 User feedback on 0.2.0 (2026-09-29): the page says "Saved in decisions.json" at each choice, and
 the terminal ends with "Next: the same 'clean' command with --decisions decisions.json". Nothing
 says **where** that file is: a PowerShell user will not guess it lies in the folder they mounted
-on `/reports` (`$HOME\media-dedup\reports`), and cannot open it or keep it.
+on `/reports` (`$HOME\media-hygiene\reports`), and cannot open it or keep it.
 
 The container can often name that folder: `HostPathMapper.to_host` already maps any mount
 whose Windows source the mount table shows (Docker Desktop, `paths/host_sources.py`), whatever
@@ -20,7 +20,7 @@ only keeps the file name.
 ## Proposal
 
 - Resolve the host path of the decisions file once (`runtime.mapper.to_host(target)`), e.g.
-  `C:\Users\Christophe\media-dedup\reports\decisions.json`. When the source is unknown (named
+  `C:\Users\Christophe\media-hygiene\reports\decisions.json`. When the source is unknown (named
   volume, Linux host, no Docker Desktop), say "decisions.json, in the folder mounted on
   /reports" rather than a container path the user never typed.
 - Terminal, when the review starts (next to the address of the page): "Your choices are saved
@@ -35,8 +35,8 @@ only keeps the file name.
 
 ## Acceptance
 
-- [ ] With `-v "$HOME\media-dedup\reports:/reports"` on Docker Desktop, the start message, the
-      page and the stop summary show `C:\Users\<name>\media-dedup\reports\decisions.json`.
+- [ ] With `-v "$HOME\media-hygiene\reports:/reports"` on Docker Desktop, the start message, the
+      page and the stop summary show `C:\Users\<name>\media-hygiene\reports\decisions.json`.
 - [ ] With a named volume on `/reports`, the messages name the file and the `/reports` mount,
       never an unexplained `/reports/decisions.json`.
 - [ ] `--decisions` with another name or an absolute path: the messages follow it.

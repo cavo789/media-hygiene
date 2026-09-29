@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # A fork publishes under its own account by setting this repository variable.
-  IMAGE: ${{ vars.DOCKER_HUB_NAMESPACE || 'cavo789' }}/media-dedup
+  IMAGE: ${{ vars.DOCKER_HUB_NAMESPACE || 'cavo789' }}/media-hygiene
 
 jobs:
   quality:
@@ -47,12 +47,12 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-      - name: Build media-dedup:latest (amd64)
+      - name: Build media-hygiene:latest (amd64)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           load: true
-          tags: media-dedup:latest
+          tags: media-hygiene:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Install the locked environment

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_dedup.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
+from media_hygiene.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
 from tests.support.docker import IMAGE, docker
 from tests.support.docs.container import (
     Command,
@@ -29,8 +29,10 @@ type Captures = dict[str, str]
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
 COMMANDS_TOO: Final = ("crosscheck", "config")
 _WINDOWS: Final[Mapping[Locale, Window]] = {
-    Locale.EN: Window("Audit summary", "'clean'", "media-dedup audit"),
-    Locale.FR: Window("Résumé de l'audit", "'clean'", "media-dedup --locale fr audit"),
+    Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
+    Locale.FR: Window(
+        "Résumé de l'audit", "'clean'", "media-hygiene --locale fr audit"
+    ),
 }
 _CSV_LINES: Final = 6
 # Every capture the scenario produces: the documentation's markers may name these only.

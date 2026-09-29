@@ -22,7 +22,7 @@ function welcome() {
     local uv_version=""
     command -v uv >/dev/null 2>&1 && uv_version="$(uv --version | awk '{print $2}')"
 
-    echo -e "\033[1;34m🧹  Media Dedup — Dev Container\033[0m  \033[2m·  Python ${PYTHON_VERSION:-?}  ·  uv ${uv_version:-?}\033[0m"
+    echo -e "\033[1;34m🧹  Media Hygiene — Dev Container\033[0m  \033[2m·  Python ${PYTHON_VERSION:-?}  ·  uv ${uv_version:-?}\033[0m"
     echo -e "   Find and safely clean duplicate photos & videos across folders and disks\n"
 
     awk '

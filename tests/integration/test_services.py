@@ -6,20 +6,20 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.constants import BrokenReason
-from media_dedup.errors import JournalError, MountError
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.undo import resolve_run_id
+from media_hygiene.constants import BrokenReason
+from media_hygiene.errors import JournalError, MountError
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.undo import resolve_run_id
 from tests.support.demo import build_demo
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 def test_clean_refuses_without_a_journal(tmp_path: Path) -> None:
@@ -34,7 +34,7 @@ def test_clean_refuses_read_only_folders(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Folders mounted with :ro are reported with the fix."""
-    monkeypatch.setattr("media_dedup.services.clean.is_read_only", lambda _path: True)
+    monkeypatch.setattr("media_hygiene.services.clean.is_read_only", lambda _path: True)
     with pytest.raises(MountError) as caught:
         CleanService(make_runtime(locations), NullProgress()).ensure_ready()
     assert caught.value.tip is not None

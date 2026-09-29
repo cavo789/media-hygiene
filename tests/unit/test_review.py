@@ -7,19 +7,19 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.constants import KeepReason, MediaKind
-from media_dedup.errors import DecisionsError
-from media_dedup.plan.keeper import KeepPolicy
-from media_dedup.plan.models import CleanPlan, KeepDecision
-from media_dedup.plan.review import (
+from media_hygiene.constants import KeepReason, MediaKind
+from media_hygiene.errors import DecisionsError
+from media_hygiene.plan.keeper import KeepPolicy
+from media_hygiene.plan.models import CleanPlan, KeepDecision
+from media_hygiene.plan.review import (
     PairAction,
     PairChoice,
     ReviewChoices,
     apply_choices,
 )
-from media_dedup.plan.similar_models import BurstChoice
-from media_dedup.report.decisions import read_decisions
-from media_dedup.scan.models import MediaFile
+from media_hygiene.plan.similar_models import BurstChoice
+from media_hygiene.report.decisions import read_decisions
+from media_hygiene.scan.models import MediaFile
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

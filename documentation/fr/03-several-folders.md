@@ -23,8 +23,8 @@ cache de l'étape 2 :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup --locale fr audit
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene --locale fr audit
 ```
 
 Le résultat compare maintenant les deux disques :
@@ -94,7 +94,7 @@ Dans PowerShell, placez-vous dans un dossier avec `cd`, puis utilisez `${PWD}` (
 courant) comme source :
 
 ```powershell
-docker run --rm -it -v "${PWD}:/data/current:ro" cavo789/media-dedup --locale fr audit
+docker run --rm -it -v "${PWD}:/data/current:ro" cavo789/media-hygiene --locale fr audit
 ```
 
 L'outil affiche quand même le vrai chemin Windows. Dans l'ancienne console `cmd.exe`, écrivez
@@ -109,8 +109,8 @@ Dans un terminal WSL (ou Linux), écrivez les chemins Linux, `\` continue une li
 docker run --rm -it --user "$(id -u):$(id -g)" \
   -v "/mnt/c/Photos:/data/c/Photos:ro" \
   -v "/mnt/d/Ancien disque:/data/d/Ancien disque:ro" \
-  -v media-dedup-cache:/cache \
-  cavo789/media-dedup --locale fr audit
+  -v media-hygiene-cache:/cache \
+  cavo789/media-hygiene --locale fr audit
 ```
 
 La suite de ce guide montre les commandes PowerShell ; la version WSL suit le même modèle.

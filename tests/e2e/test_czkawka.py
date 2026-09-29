@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
-from media_dedup.crosscheck.czkawka import CzkawkaCommand, CzkawkaScope
+from media_hygiene.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
+from media_hygiene.crosscheck.czkawka import CzkawkaCommand, CzkawkaScope
 from tests.support.docker import docker, run_image, tool
 
 pytestmark = [

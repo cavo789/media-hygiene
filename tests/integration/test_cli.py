@@ -9,15 +9,15 @@ import pytest
 from typer.main import get_command
 from typer.testing import CliRunner
 
-from media_dedup.__main__ import main
-from media_dedup.cli.app import build_app
-from media_dedup.cli.localized import LocalizedGroup
-from media_dedup.constants import Locale
-from media_dedup.i18n import install
+from media_hygiene.__main__ import main
+from media_hygiene.cli.app import build_app
+from media_hygiene.cli.localized import LocalizedGroup
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
 from tests.support.cli import run
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 def test_help_is_translated() -> None:
@@ -26,7 +26,7 @@ def test_help_is_translated() -> None:
     result = CliRunner().invoke(build_app(), ["--help"])
     assert "Trouve et nettoie" in result.output
     # Examples stay on one line each: a PowerShell copy/paste must be one command.
-    assert 'docker run --rm -it -v "${PWD}:/data/current:ro" media-dedup audit' in (
+    assert 'docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit' in (
         result.output
     )
 
@@ -39,7 +39,7 @@ def test_french_help_has_no_english_left() -> None:
     assert isinstance(group, LocalizedGroup)
     for args in (["--help"], *([name, "--help"] for name in sorted(group.commands))):
         output = CliRunner().invoke(app, args).output
-        assert "Utilisation : media-dedup" in output, args
+        assert "Utilisation : media-hygiene" in output, args
         assert "Affiche ce message et quitte." in output, args
         for english in ("Usage:", "Show this message", "[default:", "COMMAND "):
             assert english not in output, (args, english)
@@ -47,7 +47,7 @@ def test_french_help_has_no_english_left() -> None:
 
 def test_version() -> None:
     """--version prints the package version."""
-    assert run(CliRunner(), "--version").output.startswith("media-dedup ")
+    assert run(CliRunner(), "--version").output.startswith("media-hygiene ")
 
 
 def test_audit_clean_history_undo(cli: CliRunner, locations: Locations) -> None:
@@ -60,7 +60,7 @@ def test_audit_clean_history_undo(cli: CliRunner, locations: Locations) -> None:
         cli, "--verbosity", "warning", "clean", "--yes", "--prefer", "C:\\Family Photos"
     )
     assert clean.exit_code == 0, clean.output
-    assert "media-dedup undo" in clean.output
+    assert "media-hygiene undo" in clean.output
     history = run(cli, "history")
     assert "Clean runs" in history.output
     undo = run(cli, "undo")
@@ -93,7 +93,7 @@ def test_errors_are_explained(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -
     """Domain errors print a message and a tip, then exit with code 1."""
     assert run(cli, "undo", "unknown-run").exit_code == 1
     assert run(cli, "purge", "unknown-run").exit_code == 1
-    monkeypatch.setenv("MEDIA_DEDUP_GENERAL__LOCALE", "klingon")
+    monkeypatch.setenv("MEDIA_HYGIENE_GENERAL__LOCALE", "klingon")
     broken = run(cli, "config")
     assert broken.exit_code == 1
     assert "general.locale" in broken.output
@@ -103,8 +103,8 @@ def test_main_installs_the_locale_before_building_the_help(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """`media-dedup --locale fr --help` shows the French help (entry point)."""
-    monkeypatch.setattr("sys.argv", ["media-dedup", "--locale", "fr", "--help"])
+    """`media-hygiene --locale fr --help` shows the French help (entry point)."""
+    monkeypatch.setattr("sys.argv", ["media-hygiene", "--locale", "fr", "--help"])
     with pytest.raises(SystemExit) as caught:
         main()
     assert caught.value.code == 0

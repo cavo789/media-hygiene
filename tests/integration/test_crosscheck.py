@@ -6,10 +6,10 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_dedup.constants import CZKAWKA_FILE_NAME
-from media_dedup.report.index_page import load_summaries
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
+from media_hygiene.constants import CZKAWKA_FILE_NAME
+from media_hygiene.report.index_page import load_summaries
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
 from tests.support.cli import run
 from tests.support.runtime import make_runtime
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 def write_czkawka(locations: Locations, groups: Iterable[Iterable[Path]]) -> None:
@@ -31,8 +31,8 @@ def write_czkawka(locations: Locations, groups: Iterable[Iterable[Path]]) -> Non
     (locations.reports_dir / CZKAWKA_FILE_NAME).write_text(json.dumps(by_size))
 
 
-def media_dedup_groups(locations: Locations) -> list[list[Path]]:
-    """The groups media-dedup finds on the demo tree."""
+def media_hygiene_groups(locations: Locations) -> list[list[Path]]:
+    """The groups media-hygiene finds on the demo tree."""
     findings = AuditService(make_runtime(locations), NullProgress()).run()
     return [[file.path for file in group.files] for group in findings.groups]
 
@@ -46,8 +46,8 @@ def test_the_audit_prints_the_czkawka_command(cli: CliRunner) -> None:
 
 
 def test_crosscheck_agrees_and_reports_it(cli: CliRunner, locations: Locations) -> None:
-    """Same groups, plus files media-dedup leaves out: agreement, in the report too."""
-    groups = media_dedup_groups(locations)
+    """Same groups plus files media-hygiene leaves out: agreement, in the report too."""
+    groups = media_hygiene_groups(locations)
     data = locations.data_dir
     sidecars = [data / "c/Family Photos/2019/Vacances/IMG_0001.xmp", data / "x.xmp"]
     write_czkawka(locations, [*groups, sidecars])
@@ -65,7 +65,7 @@ def test_crosscheck_lists_disagreements(cli: CliRunner, locations: Locations) ->
     """A group only Czkawka found is shown, with its paths."""
     data = locations.data_dir
     extra = [data / "c/Family Photos/Rafale/IMG_2001.jpg", data / "c/other.jpg"]
-    write_czkawka(locations, [*media_dedup_groups(locations), extra])
+    write_czkawka(locations, [*media_hygiene_groups(locations), extra])
     output = run(cli, "crosscheck").output
     assert "Czkawka disagrees on 1 group" in output
     assert "only Czkawka" in output
@@ -78,7 +78,7 @@ def test_crosscheck_needs_results_and_a_reports_mount(
     missing = run(cli, "crosscheck")
     assert missing.exit_code == 1
     assert "czkawka_cli dup" in missing.output
-    monkeypatch.delenv("MEDIA_DEDUP_REPORTS_DIR")
+    monkeypatch.delenv("MEDIA_HYGIENE_REPORTS_DIR")
     unmounted = run(cli, "crosscheck")
     assert unmounted.exit_code == 1
     assert "/reports" in unmounted.output

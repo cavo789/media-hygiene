@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.constants import MediaKind
-from media_dedup.plan.models import KeepDecision
-from media_dedup.plan.pairs import folder_pairs
-from media_dedup.scan.models import MediaFile
+from media_hygiene.constants import MediaKind
+from media_hygiene.plan.models import KeepDecision
+from media_hygiene.plan.pairs import folder_pairs
+from media_hygiene.scan.models import MediaFile
 
 
 def media(path: str) -> MediaFile:

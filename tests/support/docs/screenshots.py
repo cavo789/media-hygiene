@@ -22,7 +22,7 @@ _BROWSER_BASE: Final = f"mcr.microsoft.com/playwright/python:v{PLAYWRIGHT}-jammy
 _DOCKERFILE: Final = (
     f"FROM {_BROWSER_BASE}\nRUN pip install --no-cache-dir playwright=={PLAYWRIGHT}\n"
 )
-BROWSER_IMAGE: Final = f"media-dedup-docs-browser:{PLAYWRIGHT}"
+BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
 _READY: Final = "8080"  # the review says it listens on port 8080
 _WAIT_SECONDS: Final = 300

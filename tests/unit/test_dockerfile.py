@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Final
 
-from media_dedup.constants import VIDEO_EXTENSIONS
+from media_hygiene.constants import VIDEO_EXTENSIONS
 
 ROOT: Final = Path(__file__).resolve().parents[2]
 DEMUXER_MAP: Final = re.compile(

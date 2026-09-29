@@ -49,10 +49,10 @@ Le [rapport HTML](04-html-report.md) est fait pour ça :
   *entièrement une copie* d'un autre, et chaque paire a sa page qui liste toutes ses copies.
 - Un **échantillon aléatoire** de groupes de photos est affiché avec des aperçus.
 - **Vérifiez vous-même**, sur chaque groupe, donne une commande PowerShell `Get-FileHash`.
-  Collez-la : chaque copie affiche le même SHA-256, calculé par Windows et non par media-dedup.
+  Collez-la : chaque copie affiche le même SHA-256, calculé par Windows et non par media-hygiene.
 - **`plan.csv`** liste chaque fichier du plan avec son SHA-256, prêt pour Excel.
 - **[Un second avis](13-second-opinion.md)** : Czkawka, un outil indépendant, compare ses
-  résultats à ceux de media-dedup, groupe par groupe.
+  résultats à ceux de media-hygiene, groupe par groupe.
 
 ## Recommandations
 

@@ -3,7 +3,7 @@
 - **Priority**: High — prerequisite of `sort` (0028); the undo gap is a latent data-loss bug
 - **Batch**: journal
 - **Depends**: —
-- **Files**: `src/media_dedup/constants.py`, `src/media_dedup/actions/kinds.py` (new), `src/media_dedup/actions/journal.py`, `src/media_dedup/actions/journaled.py`, `src/media_dedup/actions/undo.py`, `src/media_dedup/actions/runs.py`, `src/media_dedup/cli/cmd_history.py`, `src/media_dedup/cli/cmd_undo.py`, `documentation/en/09-undo-history-purge.md`, `documentation/fr/09-undo-history-purge.md`
+- **Files**: `src/media_hygiene/constants.py`, `src/media_hygiene/actions/kinds.py` (new), `src/media_hygiene/actions/journal.py`, `src/media_hygiene/actions/journaled.py`, `src/media_hygiene/actions/undo.py`, `src/media_hygiene/actions/runs.py`, `src/media_hygiene/cli/cmd_history.py`, `src/media_hygiene/cli/cmd_undo.py`, `documentation/en/09-undo-history-purge.md`, `documentation/fr/09-undo-history-purge.md`
 
 ## Context
 

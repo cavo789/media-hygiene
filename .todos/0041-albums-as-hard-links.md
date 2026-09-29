@@ -3,7 +3,7 @@
 - **Priority**: Low — additive: nothing in 0026–0036 has to change for it
 - **Batch**: albums
 - **Depends**: 0028, 0035
-- **Files**: `src/media_dedup/cli/cmd_album.py` (new), `src/media_dedup/services/album.py` (new), `src/media_dedup/actions/album.py` (new), `src/media_dedup/actions/kinds.py`, `src/media_dedup/actions/undo.py`, `documentation/en/sort/`, `documentation/fr/sort/`
+- **Files**: `src/media_hygiene/cli/cmd_album.py` (new), `src/media_hygiene/services/album.py` (new), `src/media_hygiene/actions/album.py` (new), `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/actions/undo.py`, `documentation/en/sort/`, `documentation/fr/sort/`
 
 ## Context
 
@@ -28,7 +28,7 @@ freely.
   disk space of each album.
 
 **If feasible**:
-- `media-dedup album <name> --category Noël`, `--rating 4` (the Windows stars of 0025),
+- `media-hygiene album <name> --category Noël`, `--rating 4` (the Windows stars of 0025),
   `--event <id>`, `--rule <name>` (0035): the selection comes from the latest classify plan
   and the index. It is written under `[album] root` (default `<target>/Albums/<name>`).
 - Dry run by default, like `classify`: prints the selection, `--apply` makes the links.

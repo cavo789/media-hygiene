@@ -16,7 +16,7 @@ finds. Nothing is changed: an audit only reads.
 Copy this command in PowerShell, with the path of your own folder instead of `C:\Photos`:
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-dedup audit
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
 
 The first run downloads the tool (a few hundred MB); the next ones start at once.
@@ -28,11 +28,11 @@ The first run downloads the tool (a few hundred MB); the next ones start at once
 | `-it` | Connects the box to your window: colours, progress bars, and questions you can answer. |
 | `-v "C:\Photos:/data/c/Photos:ro"` | Lets the tool see your folder. The box only sees what you give it with `-v`: here `C:\Photos`, which it calls `/data/c/Photos`. |
 | `:ro` | *Read-only*: Docker itself forbids any change to your folder. |
-| `cavo789/media-dedup` | The tool, as published on Docker Hub. |
+| `cavo789/media-hygiene` | The tool, as published on Docker Hub. |
 | `audit` | What to do: look for duplicates and broken files. |
 
-> 💡 The tool speaks English. Add `--locale fr` right after `cavo789/media-dedup` for French:
-> `cavo789/media-dedup --locale fr audit`. [Step 7](07-configuration-file.md) makes it permanent.
+> 💡 The tool speaks English. Add `--locale fr` right after `cavo789/media-hygiene` for French:
+> `cavo789/media-hygiene --locale fr audit`. [Step 7](07-configuration-file.md) makes it permanent.
 
 ## What you see while it runs
 
@@ -91,15 +91,15 @@ Folders sharing identical files
 💡 Add -v "<a folder of yours>:/reports" to get HTML reports.
 💡 Run 'clean' (same -v options, without :ro) to free 3.4 MB.
 💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
-folders, then 'media-dedup crosscheck' (same -v options):
+folders, then 'media-hygiene crosscheck' (same -v options):
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.
 💡 Near duplicates and bursts are in the HTML report; 'clean --tier near' moves
 near duplicates to the quarantine.
-💡 Sort the burst series with the keyboard: 'media-dedup review' (add -p
+💡 Sort the burst series with the keyboard: 'media-hygiene review' (add -p
 127.0.0.1::8080 to docker run).
-💡 Add -v media-dedup-cache:/cache: the next audits will be much faster.
+💡 Add -v media-hygiene-cache:/cache: the next audits will be much faster.
 ```
 
 The table first:

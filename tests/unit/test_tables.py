@@ -7,11 +7,11 @@ from pathlib import Path
 
 from rich.console import Console
 
-from media_dedup.console.tables import findings_table, folder_pairs_view
-from media_dedup.constants import MediaKind
-from media_dedup.paths.host_paths import HostPathMapper
-from media_dedup.plan.models import AuditFindings, CleanPlan, KeepDecision
-from media_dedup.scan.models import MediaFile
+from media_hygiene.console.tables import findings_table, folder_pairs_view
+from media_hygiene.constants import MediaKind
+from media_hygiene.paths.host_paths import HostPathMapper
+from media_hygiene.plan.models import AuditFindings, CleanPlan, KeepDecision
+from media_hygiene.scan.models import MediaFile
 
 MAPPER = HostPathMapper(Path("/data"))
 

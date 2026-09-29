@@ -21,8 +21,8 @@ cette page les rassemble.
 
 ## Options
 
-Les options globales se placent **avant** la commande : `cavo789/media-dedup --locale fr audit`.
-Les autres se placent **après** : `cavo789/media-dedup audit --prefer "C:\Photos\Famille"`.
+Les options globales se placent **avant** la commande : `cavo789/media-hygiene --locale fr audit`.
+Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Photos\Famille"`.
 
 | Option | Commandes | Rôle |
 |---|---|---|
@@ -45,7 +45,7 @@ la ligne de commande l'emporte.
 
 ## L'aide intégrée
 
-`cavo789/media-dedup --help` et `cavo789/media-dedup <commande> --help` documentent tout, dans
+`cavo789/media-hygiene --help` et `cavo789/media-hygiene <commande> --help` documentent tout, dans
 les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <details>
@@ -53,7 +53,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help.txt -->
 ```text
- Utilisation : media-dedup [OPTIONS] COMMANDE [ARGS]...
+ Utilisation : media-hygiene [OPTIONS] COMMANDE [ARGS]...
 
  Trouve et nettoie en toute sécurité les photos et vidéos en double, entre
  dossiers et disques. Commencez par 'audit' (lecture seule), puis 'clean'.
@@ -92,9 +92,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 
  Un dossier Windows (PowerShell) :
-   docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-dedup audit
+   docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-hygiene audit
  Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :
-   docker run --rm -it -v "${PWD}:/data/current:ro" media-dedup audit
+   docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
  Commandes complètes (rapports, journal, WSL) : voir README_FR.md.
 ```
@@ -106,7 +106,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-audit.txt -->
 ```text
- Utilisation : media-dedup audit [OPTIONS]
+ Utilisation : media-hygiene audit [OPTIONS]
 
  Trouve les doublons exacts et les fichiers cassés. Lecture seule : montez les
  dossiers avec :ro.
@@ -141,7 +141,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-review.txt -->
 ```text
- Utilisation : media-dedup review [OPTIONS]
+ Utilisation : media-hygiene review [OPTIONS]
 
  Écarter des photos de rafale, une série à la fois, au clavier dans votre
  navigateur ; 'clean --decisions' les déplace ensuite.
@@ -177,7 +177,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-clean.txt -->
 ```text
- Utilisation : media-dedup clean [OPTIONS]
+ Utilisation : media-hygiene clean [OPTIONS]
 
  Audite, demande confirmation, puis supprime réellement les copies en double
  (journalisé, annulable).
@@ -228,7 +228,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-undo.txt -->
 ```text
- Utilisation : media-dedup undo [OPTIONS] [run_id]
+ Utilisation : media-hygiene undo [OPTIONS] [run_id]
 
  Restaure chaque fichier d'un nettoyage, depuis la copie conservée ou la
  quarantaine.
@@ -249,7 +249,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-history.txt -->
 ```text
- Utilisation : media-dedup history [OPTIONS]
+ Utilisation : media-hygiene history [OPTIONS]
 
  Liste les nettoyages et ce qu'ils ont fait.
 
@@ -265,7 +265,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-purge.txt -->
 ```text
- Utilisation : media-dedup purge [OPTIONS] [run_id]
+ Utilisation : media-hygiene purge [OPTIONS] [run_id]
 
  Supprime définitivement les fichiers cassés mis en quarantaine par une
  exécution.
@@ -287,7 +287,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-reports.txt -->
 ```text
- Utilisation : media-dedup reports [OPTIONS]
+ Utilisation : media-hygiene reports [OPTIONS]
 
  Liste les rapports HTML des audits et nettoyages précédents.
 
@@ -305,7 +305,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-crosscheck.txt -->
 ```text
- Utilisation : media-dedup crosscheck [OPTIONS]
+ Utilisation : media-hygiene crosscheck [OPTIONS]
 
  Compare un nouvel audit aux résultats de Czkawka : un second avis,
  indépendant.
@@ -340,7 +340,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 <!-- capture: help-config.txt -->
 ```text
- Utilisation : media-dedup config [OPTIONS]
+ Utilisation : media-hygiene config [OPTIONS]
 
  Affiche chaque réglage, son origine, et les points de montage.
 

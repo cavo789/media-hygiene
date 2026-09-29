@@ -25,7 +25,7 @@ _YES: Final = {Locale.EN: "y", Locale.FR: "o"}
 
 @dataclass(frozen=True, slots=True)
 class Command:
-    """One media-dedup command line, and what it may see."""
+    """One media-hygiene command line, and what it may see."""
 
     args: tuple[str, ...]
     read_only: bool = True
@@ -42,7 +42,7 @@ class Demo:
     @property
     def prefix(self) -> str:
         """The name shared by the volumes and containers of this language."""
-        return f"media-dedup-docs-{self.locale}"
+        return f"media-hygiene-docs-{self.locale}"
 
     def volume(self, kind: str) -> str:
         """Name a volume of this demo.

@@ -48,10 +48,10 @@ The [HTML report](04-html-report.md) is built for that:
   one, and each pair has a page listing every copy.
 - A **random sample** of photo groups comes with previews.
 - **Check it yourself**, on every group, gives a PowerShell `Get-FileHash` command. Paste it:
-  every copy shows the same SHA-256, computed by Windows, not by media-dedup.
+  every copy shows the same SHA-256, computed by Windows, not by media-hygiene.
 - **`plan.csv`** lists every file of the plan with its SHA-256, ready for Excel.
 - **[A second opinion](13-second-opinion.md)**: Czkawka, an independent tool, compares its
-  results with media-dedup's, group by group.
+  results with media-hygiene's, group by group.
 
 ## Recommendations
 

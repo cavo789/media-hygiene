@@ -16,12 +16,12 @@ Changed your mind? Run the same command with `undo` instead of `clean`:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup undo
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene undo
 ```
 
 <!-- capture: undo.txt -->
@@ -46,7 +46,7 @@ Undo 20260927-064254
 ## See what was done: `history`
 
 ```powershell
-cavo789/media-dedup history
+cavo789/media-hygiene history
 ```
 
 <!-- capture: history.txt -->
@@ -58,7 +58,7 @@ Clean runs (newest first)
 │ 20260927-064257 │      33 │ 16.2 MB │           7 │        0 │
 │ 20260927-064254 │      33 │ 15.5 MB │           3 │       36 │
 └─────────────────┴─────────┴─────────┴─────────────┴──────────┘
-💡 'media-dedup undo <run>' restores the files of a run.
+💡 'media-hygiene undo <run>' restores the files of a run.
 ```
 
 One line per clean, the newest first: how many files it deleted, the space freed, how many files
@@ -72,7 +72,7 @@ near duplicates and burst shots. Once you have checked them (open the quarantine
 Explorer), `purge` deletes them **for good**:
 
 ```powershell
-cavo789/media-dedup purge
+cavo789/media-hygiene purge
 ```
 
 <!-- capture: purge.txt -->

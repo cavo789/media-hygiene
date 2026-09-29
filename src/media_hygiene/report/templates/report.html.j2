@@ -1,0 +1,148 @@
+{% extends "base.html.j2" %}
+{% set s = report.header.summary %}
+{% set is_clean = s.kind.value == "clean" %}
+{% set reasons = {
+  "empty": _("Empty file (0 bytes)"),
+  "unreadable-image": _("Image cannot be decoded"),
+  "unreadable-raw": _("RAW file cannot be decoded"),
+  "unreadable-video": _("Video cannot be opened"),
+} %}
+{% block title %}{{ _("media-hygiene report") }} — {{ s.folder }}{% endblock %}
+{% macro group_block(group) %}
+<div class="group">
+  <div class="thumb">{% if group.thumbnail %}<img src="{{ group.thumbnail }}" alt="" loading="lazy">{% else %}🎞️{% endif %}</div>
+  <ul class="files">
+    <li class="keep">✅ {{ group.keeper }} <span class="muted">· {{ group.size | size }} · {{ _("kept") }}{% if group.reason %} · {{ _("why:") }} {{ group.reason }}{% endif %}</span></li>
+    {% for path in group.removable %}<li class="remove">🗑️ {{ path }}</li>{% endfor %}
+    {% for path in group.protected %}<li class="lock">🔒 {{ path }} <span class="muted">· {{ _("protected folder, kept") }}</span></li>{% endfor %}
+    <li class="muted">SHA-256 <code>{{ group.proof.digest[:16] }}…</code>
+      <details><summary>{{ _("Check it yourself") }}</summary><code class="command">{{ group.proof.command }}</code></details></li>
+  </ul>
+</div>
+{% endmacro %}
+{% block content %}
+<h1>🧹 {{ _("Clean report") if is_clean else _("Audit report") }}</h1>
+<p class="muted">{{ s.created_at.strftime("%Y-%m-%d %H:%M") }} UTC{% if s.run_id %} · {{ _("run") }} {{ s.run_id }}{% endif %}</p>
+<p>{{ _("Folders analysed:") }} {% for root in report.header.roots %}<code>{{ root }}</code>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+
+<div class="cards">
+  <div class="card"><div class="value">{{ s.files_scanned | number }}</div><div class="label">{{ _("media files scanned") }}</div></div>
+  <div class="card"><div class="value">{{ s.duplicate_files | number }}</div><div class="label">{{ _("duplicate copies in %(groups)s groups", groups=s.duplicate_groups | number) }}</div></div>
+  {% if is_clean %}
+  <div class="card"><div class="value">{{ s.freed_bytes | size }}</div><div class="label">{{ _("freed") }}</div></div>
+  {% else %}
+  <div class="card"><div class="value">{{ s.reclaimable_bytes | size }}</div><div class="label">{{ _("can be freed") }}</div></div>
+  {% endif %}
+  <div class="card"><div class="value">{{ s.broken_files | number }}</div><div class="label">{{ _("broken files") }}</div></div>
+</div>
+
+{% if s.crosscheck %}
+{% set c = s.crosscheck %}
+<div class="note">
+  {% if c.agrees %}
+  <strong>🤝 {{ _("Czkawka agrees: the same {copies} extra copies in {groups} groups.").format(copies=c.copies | number, groups=c.groups | number) }}</strong>
+  {% else %}
+  <strong>⚠️ {{ _("Czkawka disagrees on {count} groups: look at them before cleaning.").format(count=(c.only_media_dedup + c.only_czkawka) | number) }}</strong>
+  <br>{{ _("Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The terminal lists them.").format(ours=c.only_media_dedup | number, theirs=c.only_czkawka | number) }}
+  {% endif %}
+  <br><span class="muted">{{ _("Czkawka is an independent duplicate finder.") }}{% if c.results_date %} {{ _("Czkawka results of {date} UTC.").format(date=c.results_date.strftime("%Y-%m-%d %H:%M")) }}{% endif %}{% if c.set_aside %} {{ _("Files set aside, as media-hygiene does not analyse them: {count}.").format(count=c.set_aside | number) }}{% endif %}</span>
+</div>
+{% endif %}
+
+{% if s.plan_file %}
+<p>📄 <a href="{{ s.plan_file }}">{{ _("The whole plan as a spreadsheet (CSV): every group, every file") }}</a></p>
+{% endif %}
+
+{% if not is_clean %}
+<p class="note">🔒 {{ _("An audit never modifies anything. Every copy listed below is byte-for-byte identical to the one kept; 'clean' compares them again right before deleting.") }}</p>
+{% endif %}
+
+{% if report.groups.largest %}
+<div class="note">
+  <strong>🔍 {{ _("How do we know these are duplicates?") }}</strong>
+  <ul>
+    <li>{{ _("Same size, then the same SHA-256 fingerprint of the whole content: in practice, two different files never share it.") }}</li>
+    <li>{{ _("Right before deleting, 'clean' compares the two files again, byte by byte, and skips any difference.") }}</li>
+    <li>{{ _("A file reachable through two paths (a folder mounted twice, a hard link) is recognised: it is never counted as its own copy.") }}</li>
+    <li>{{ _("Check any group yourself: 'Check it yourself' gives the command printing its SHA-256 with your system's own tool (PowerShell's Get-FileHash on Windows).") }}</li>
+  </ul>
+</div>
+{% endif %}
+
+{% if report.incidents.failed or report.incidents.skipped %}
+<h2>⚠️ {{ _("Files left untouched") }}</h2>
+<table>
+  <tr><th>{{ _("File") }}</th><th>{{ _("Reason") }}</th></tr>
+  {% for item in report.incidents.failed %}<tr><td>{{ item.path }}</td><td class="remove">{{ item.reason }}</td></tr>{% endfor %}
+  {% for item in report.incidents.skipped %}<tr><td>{{ item.path }}</td><td>{{ item.reason }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+
+{% if report.pairs %}
+<h2>📁 {{ _("Folder pairs") }}</h2>
+<p class="muted">{{ _("The quickest check: which folder keeps its copies, which folder loses them. Open a pair to see every copy.") }}</p>
+<table>
+  <tr><th>{{ _("Samples") }}</th><th>{{ _("Kept in") }}</th><th>{{ _("Deleted from") if is_clean else _("Will be deleted from") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th>{% if not is_clean %}<th>{{ _("Your decision") }}</th>{% endif %}</tr>
+  {% for pair in report.pairs %}
+  <tr>
+    <td><div class="samples">{% for sample in pair.evidence.samples %}<img src="{{ sample }}" alt="" loading="lazy">{% endfor %}</div></td>
+    <td class="keep">{{ pair.kept_in }}{% if pair.evidence.reasons %}<br><span class="muted">{{ _("why:") }} {{ pair.evidence.reasons | join("; ") }}</span>{% endif %}</td>
+    <td class="remove">{{ pair.removed_from }}{% if pair.evidence.complete %}<br><span class="badge">{{ _("entirely a copy: holds nothing else") }}</span>{% endif %}</td>
+    <td class="num"><a href="{{ pair.page }}">{{ pair.files | number }}</a></td>
+    <td class="num">{{ pair.size | size }}</td>
+    {% if not is_clean %}
+    <td><select class="decision" data-kept-in="{{ pair.kept_in }}" data-removed-from="{{ pair.removed_from }}" aria-label="{{ _('Your decision') }}">
+      <option value="">{{ _("As planned") }}</option>
+      {% if pair.swappable %}<option value="swap">{{ _("Swap the folders") }}</option>{% endif %}
+      <option value="skip">{{ _("Leave alone") }}</option>
+    </select></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+{% if not is_clean %}{% include "_decisions.html.j2" %}{% endif %}
+{% endif %}
+
+{% if report.groups.sample %}
+<h2>🎲 {{ _("Random sample") }}</h2>
+<p class="muted">{{ _("Photo groups picked across the whole plan, the same ones on every run. The list after it starts with the largest files, often videos without preview.") }}</p>
+{% for group in report.groups.sample %}{{ group_block(group) }}{% endfor %}
+{% endif %}
+
+{% if report.groups.largest %}
+<h2>🧬 {{ _("Duplicate groups") }}</h2>
+{% for group in report.groups.largest %}{{ group_block(group) }}{% endfor %}
+{% if report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
+{% endif %}
+
+{% include "_similar.html.j2" %}
+
+{% if report.broken.handled or report.broken.protected %}
+<h2>💔 {{ _("Broken files") }}</h2>
+<p class="muted">{{ _("Empty files are deleted; unreadable ones are moved to the quarantine, never deleted outright.") }}</p>
+{% for item in report.broken.handled + report.broken.protected %}
+<div class="group">
+  <div class="thumb">{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}❔{% endif %}</div>
+  <ul class="files">
+    <li>{{ item.path }}</li>
+    <li class="muted">{{ reasons[item.reason.value] }}{% if item.detail %} — {{ item.detail }}{% endif %}</li>
+    {% if item in report.broken.protected %}<li class="lock">🔒 {{ _("protected folder, kept") }}</li>{% endif %}
+  </ul>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if report.orphans.paths %}
+<h2>🏷️ {{ _("Orphan sidecar files") }}</h2>
+<p class="muted">{{ _("Sidecars (.xmp, .aae, .thm) hold the metadata or edits of the photo of the same name, next to them. These ones have no such file left: they are moved to the quarantine, never deleted outright. A sidecar next to its photo is never touched.") }}</p>
+<ul class="files">
+  {% for path in report.orphans.paths %}<li class="remove">🏷️ {{ path }}</li>{% endfor %}
+</ul>
+{% if report.orphans.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=report.orphans.hidden | number) }}</p>{% endif %}
+{% endif %}
+
+{% if not report.groups.largest and not report.broken.handled and not report.orphans.paths %}
+<p class="note">🎉 {{ _("Nothing to clean: no duplicate and no broken file.") }}</p>
+{% endif %}
+<p class="muted"><a href="../index.html">← {{ _("All reports") }}</a></p>
+{% endblock %}

@@ -3,7 +3,7 @@
 - **Priority**: High
 - **Batch**: classify
 - **Depends**: 0026
-- **Files**: `src/media_dedup/classify/workbook/` (new: writer, reader, validation), `src/media_dedup/report/writer.py`, `src/media_dedup/report/templates/`, `src/media_dedup/constants.py`, `pyproject.toml` (openpyxl), `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/classify/workbook/` (new: writer, reader, validation), `src/media_hygiene/report/writer.py`, `src/media_hygiene/report/templates/`, `src/media_hygiene/constants.py`, `pyproject.toml` (openpyxl), `documentation/en/`, `documentation/fr/`
 
 ## Context
 

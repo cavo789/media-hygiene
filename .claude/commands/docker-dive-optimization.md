@@ -14,7 +14,7 @@ wiring.
 
 ## 1. Discover the target(s)
 
-**This project context**: `media-dedup` ships exactly one image, built from the root `Dockerfile`.
+**This project context**: `media-hygiene` ships exactly one image, built from the root `Dockerfile`.
 `.devcontainer/Dockerfile` is a development image — never a slimming target (size is secondary
 there by design).
 
@@ -36,10 +36,10 @@ For the project Dockerfile (`Dockerfile` at repo root), the canonical build comm
 `build` helper of the devcontainer cheatsheet, i.e.:
 
 ```bash
-docker build --tag media-dedup:latest .
+docker build --tag media-hygiene:latest .
 ```
 
-It produces the tag `media-dedup:latest`, the one the README tells users to `docker run`.
+It produces the tag `media-hygiene:latest`, the one the README tells users to `docker run`.
 
 If the user passed a custom Dockerfile path, fall back to:
 

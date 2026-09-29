@@ -3,7 +3,7 @@
 - **Priority**: Low — decide after using the HTML report of 0027
 - **Batch**: review-ui
 - **Depends**: 0027, 0029, 0036
-- **Files**: `src/media_dedup/review/`, `src/media_dedup/services/reviewing.py`, `src/media_dedup/report/decisions.py`, `src/media_dedup/classify/workbook/`, `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/review/`, `src/media_hygiene/services/reviewing.py`, `src/media_hygiene/report/decisions.py`, `src/media_hygiene/classify/workbook/`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 

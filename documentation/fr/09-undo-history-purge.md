@@ -16,12 +16,12 @@ Vous changez d'avis ? Lancez la même commande avec `undo` au lieu de `clean` :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr undo
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr undo
 ```
 
 <!-- capture: undo.txt -->
@@ -47,7 +47,7 @@ Annulation 20260927-064355
 ## Voir ce qui a été fait : `history`
 
 ```powershell
-cavo789/media-dedup --locale fr history
+cavo789/media-hygiene --locale fr history
 ```
 
 <!-- capture: history.txt -->
@@ -59,7 +59,7 @@ Nettoyages (du plus récent au plus ancien)
 │ 20260927-064358 │        33 │ 16,2 Mo │              7 │         0 │
 │ 20260927-064355 │        33 │ 15,5 Mo │              3 │        36 │
 └─────────────────┴───────────┴─────────┴────────────────┴───────────┘
-💡 'media-dedup undo <run>' restaure les fichiers d'une exécution.
+💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
 
 Une ligne par nettoyage, le plus récent d'abord : combien de fichiers il a supprimés, l'espace
@@ -74,7 +74,7 @@ avez vérifiés (ouvrez le dossier de quarantaine dans l'Explorateur), `purge` l
 de bon** :
 
 ```powershell
-cavo789/media-dedup --locale fr purge
+cavo789/media-hygiene --locale fr purge
 ```
 
 <!-- capture: purge.txt -->

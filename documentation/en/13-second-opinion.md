@@ -18,7 +18,7 @@ Czkawka's command-line tool):
 
 ```powershell
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v "$HOME\media-dedup\reports:/out" `
+  -v "$HOME\media-hygiene\reports:/out" `
   jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
   -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
 ```
@@ -37,9 +37,9 @@ Run `crosscheck` with the same options as the audit:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup crosscheck
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene crosscheck
 ```
 
 `crosscheck` audits again (quickly, thanks to the cache) and compares the two tools group by
@@ -56,7 +56,7 @@ Czkawka results of 2026-09-27 06:42 UTC.
 - Or *Czkawka disagrees on N groups*, followed by each group found by one tool only. Look at them
   before cleaning.
 
-Files media-dedup deliberately leaves out are set aside and counted, not reported as
+Files media-hygiene deliberately leaves out are set aside and counted, not reported as
 differences: other file types, excluded or system folders, broken files.
 
 ## Where the verdict appears

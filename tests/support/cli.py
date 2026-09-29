@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_dedup.cli.app import build_app
+from media_hygiene.cli.app import build_app
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner, Result

@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.errors import MountError
-from media_dedup.paths.mounts import MountTable
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
+from media_hygiene.errors import MountError
+from media_hygiene.paths.mounts import MountTable
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
 from tests.support.runtime import make_runtime, output_of
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
     from tests.support.media import MediaFactory
 
 

@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.constants import Locale
-from media_dedup.i18n import install
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
 from tests.support.media import MediaFactory
 from tests.support.runtime import make_locations
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 @pytest.fixture(autouse=True)

@@ -1,6 +1,6 @@
 """`python -m tests.support.docs [en] [fr]`: refresh the screenshots and outputs.
 
-Needs Docker and the `media-dedup:latest` image (the `docs_screenshots` helper builds
+Needs Docker and the `media-hygiene:latest` image (the `docs_screenshots` helper builds
 it). Work files live in the system's temporary folder; only `documentation/` changes.
 """
 
@@ -53,7 +53,7 @@ def document(locale: Locale, work: Path) -> None:
 def main() -> None:
     """Refresh the languages given on the command line, every language by default."""
     locales = [Locale(argument) for argument in sys.argv[1:]] or list(Locale)
-    root = Path(tempfile.gettempdir()) / "media-dedup-docs"
+    root = Path(tempfile.gettempdir()) / "media-hygiene-docs"
     console.print("🌐 Preparing the browser image…")
     build_browser()
     for locale in locales:

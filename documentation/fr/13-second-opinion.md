@@ -19,7 +19,7 @@ environ 500 Mo, contient l'outil en ligne de commande de Czkawka) :
 
 ```powershell
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v "$HOME\media-dedup\reports:/out" `
+  -v "$HOME\media-hygiene\reports:/out" `
   jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
   -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
 ```
@@ -39,9 +39,9 @@ Lancez `crosscheck` avec les mêmes options que l'audit :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup --locale fr crosscheck
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr crosscheck
 ```
 
 `crosscheck` refait l'audit (rapidement, grâce au cache) et compare les deux outils groupe par
@@ -58,7 +58,7 @@ Résultats de Czkawka du 2026-09-27 06:43 UTC.
 - Ou *Czkawka n'est pas d'accord sur N groupes*, suivi de chaque groupe trouvé par un seul des
   deux outils. Regardez-les avant de nettoyer.
 
-Les fichiers que media-dedup laisse volontairement de côté sont mis à part et comptés, pas
+Les fichiers que media-hygiene laisse volontairement de côté sont mis à part et comptés, pas
 signalés comme des différences : autres types de fichiers, dossiers exclus ou système, fichiers
 cassés.
 

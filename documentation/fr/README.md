@@ -1,4 +1,4 @@
-# Documentation de media-dedup
+# Documentation de media-hygiene
 
 ← [Retour au projet](../../README_FR.md) · 🇬🇧 [English version](../en/README.md)
 

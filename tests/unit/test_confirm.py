@@ -8,7 +8,7 @@ from typing import override
 import pytest
 from rich.console import Console
 
-from media_dedup.console.output import Output
+from media_hygiene.console.output import Output
 
 
 class _Terminal(io.StringIO):

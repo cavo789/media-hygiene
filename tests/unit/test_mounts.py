@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.paths.locations import Locations
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.paths.mounts import (
+from media_hygiene.paths.locations import Locations
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.paths.mounts import (
     MountTable,
     is_read_only,
     is_writable,

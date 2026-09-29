@@ -33,8 +33,8 @@ In the demo library, `C:\Photos\2019\Seaside holidays` is kept rather than `C:\P
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup audit --prefer "C:\Photos\Old phone"
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene audit --prefer "C:\Photos\Old phone"
 ```
 
 Write the folder as Windows shows it. The pairs are reversed:
@@ -70,7 +70,7 @@ first one wins when a file is in both.
 kept. Think of a master library:
 
 ```powershell
-cavo789/media-dedup audit --protect "C:\Photos\Family"
+cavo789/media-hygiene audit --protect "C:\Photos\Family"
 ```
 
 (the `docker run … -v …` part stays the same; only the end of the command changes)
@@ -84,7 +84,7 @@ the one kept. Broken files and orphan sidecars of a protected folder are left al
 for a real backup that must stay a second copy:
 
 ```powershell
-cavo789/media-dedup audit --exclude "D:\Old disk"
+cavo789/media-hygiene audit --exclude "D:\Old disk"
 ```
 
 Only the duplicates of `C:\Photos` remain:
@@ -106,7 +106,7 @@ Folders sharing identical files
 
 `--prefer`, `--protect` and `--exclude` go **after** `audit` (and later after `clean` or
 `review`). `--locale` is different: it concerns the whole tool, so it goes **before** the
-command: `cavo789/media-dedup --locale fr audit --prefer "C:\Photos\Old phone"`.
+command: `cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Old phone"`.
 
 Typing the same options every time? [Step 7](07-configuration-file.md) writes them once in a
 file.

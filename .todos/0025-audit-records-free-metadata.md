@@ -3,7 +3,7 @@
 - **Priority**: High — first building block of `classify` (0026); cheap, useful beyond sorting
 - **Batch**: scan
 - **Depends**: —
-- **Files**: `src/media_dedup/scan/visual.py`, `src/media_dedup/scan/models.py`, `src/media_dedup/scan/video_check.py`, `src/media_dedup/scan/broken.py`, `src/media_dedup/scan/image_check.py`, `src/media_dedup/index/schema.py`, `src/media_dedup/index/repository.py`, `src/media_dedup/index/facts.py`, `src/media_dedup/report/summary.py`, `src/media_dedup/report/templates/`, `documentation/en/02-keep-the-cache.md`, `documentation/fr/02-keep-the-cache.md`
+- **Files**: `src/media_hygiene/scan/visual.py`, `src/media_hygiene/scan/models.py`, `src/media_hygiene/scan/video_check.py`, `src/media_hygiene/scan/broken.py`, `src/media_hygiene/scan/image_check.py`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/index/repository.py`, `src/media_hygiene/index/facts.py`, `src/media_hygiene/report/summary.py`, `src/media_hygiene/report/templates/`, `documentation/en/02-keep-the-cache.md`, `documentation/fr/02-keep-the-cache.md`
 
 ## Context
 
@@ -13,7 +13,7 @@ lot of metadata is in hand at that moment and thrown away. Recording it makes th
 reusable inventory for `classify` (0026) and for needs not identified yet, **as long as it stays
 free**. Only facts that cost nothing extra during the audit are added.
 
-Measured on a real 70,000-photo family collection (`media-dedup:latest`, one process):
+Measured on a real 70,000-photo family collection (`media-hygiene:latest`, one process):
 
 | Step | Cost per image |
 |---|---|

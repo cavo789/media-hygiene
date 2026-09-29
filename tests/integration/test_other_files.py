@@ -6,22 +6,22 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.actions.journal import journal_file, read_journal
-from media_dedup.constants import ActionKind, MediaKind
-from media_dedup.errors import MountError
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.undo import undo_run
+from media_hygiene.actions.journal import journal_file, read_journal
+from media_hygiene.constants import ActionKind, MediaKind
+from media_hygiene.errors import MountError
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.undo import undo_run
 from tests.support.media import MediaFactory
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.config.layers import Layer
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.config.layers import Layer
+    from media_hygiene.paths.locations import Locations
 
 _ASKED: Layer = {"scan": {"extensions": ["pdf", "jpg"]}}
 _CONTRACT = b"%PDF-1.7 contract"

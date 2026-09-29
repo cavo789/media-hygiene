@@ -24,7 +24,7 @@ change your mind.
   files, orphan sidecars, and later near duplicates and burst shots.
 
 ```powershell
-mkdir "$HOME\media-dedup\journal", "$HOME\media-dedup\quarantine"
+mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
 ## Run the clean
@@ -36,12 +36,12 @@ be allowed to delete), the journal and the quarantine, and `clean` instead of `a
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup clean
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean
 ```
 
 `clean` audits again (quickly, thanks to the cache), shows the same summary and folder pairs,
@@ -69,7 +69,7 @@ Clean 20260927-064254
 └──────────────────────────┴─────────┘
 ✅ HTML report: /reports/20260927-064254-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-dedup undo 20260927-064254' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20260927-064254' restores everything.
 💡 Moved files are in /quarantine/20260927-064254; 'purge' deletes them.
 ```
 

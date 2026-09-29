@@ -1,4 +1,4 @@
-# media-dedup documentation
+# media-hygiene documentation
 
 ← [Back to the project](../../README.md) · 🇫🇷 [Version française](../fr/README.md)
 

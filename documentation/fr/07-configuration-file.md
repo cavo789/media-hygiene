@@ -12,8 +12,8 @@ L'outil ne voit que les dossiers que vous montez : donnez-lui donc un de vos dos
 `/config`, et lancez une fois la commande `config` :
 
 ```powershell
-mkdir "$HOME\media-dedup\config"
-docker run --rm -it -v "$HOME\media-dedup\config:/config" cavo789/media-dedup --locale fr config
+mkdir "$HOME\media-hygiene\config"
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config
 ```
 
 La première ligne dit ce qui s'est passé :
@@ -79,7 +79,7 @@ Points de montage
 de commande l'emportent.
 ```
 
-Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-dedup\config`. Ouvrez-le avec
+Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-hygiene\config`. Ouvrez-le avec
 n'importe quel éditeur de texte (le Bloc-notes convient). Chaque réglage y est expliqué, par
 exemple :
 
@@ -152,10 +152,10 @@ Ajoutez le même `-v …:/config` à chaque commande, et l'outil lit le fichier.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  cavo789/media-dedup audit
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene audit
 ```
 
 Ce guide garde `--locale fr` dans ses commandes, pour celles et ceux qui n'ont pas de fichier de
@@ -237,8 +237,8 @@ De la plus forte à la plus faible : les options de la ligne de commande, puis l
 d'environnement, puis `config.toml`, puis les valeurs par défaut. `--prefer` sur la ligne de
 commande remplace donc `preferred` du fichier pour ce lancement.
 
-Les variables d'environnement s'appellent `MEDIA_DEDUP_<SECTION>__<CLÉ>` (deux soulignés), par
-exemple `-e MEDIA_DEDUP_GENERAL__LOCALE=fr` dans `docker run` ; les listes s'écrivent en tableau
+Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux soulignés), par
+exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes s'écrivent en tableau
 JSON.
 
 ---

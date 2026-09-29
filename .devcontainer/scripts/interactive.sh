@@ -1,7 +1,7 @@
 #!/bin/bash
 # .devcontainer/scripts/interactive.sh
 #
-# Purpose: dynamic interactive shell for the media-dedup devcontainer.
+# Purpose: dynamic interactive shell for the media-hygiene devcontainer.
 # This script uses annotations to build a real-time cheatsheet.
 #
 # It is the launcher only: the commands themselves live one per category in helpers/, and the
@@ -32,7 +32,7 @@ alias ls='ls -alh --color=auto'
 # Export functions for subshells. Kept centralised here rather than spread across the modules:
 # this list IS the public surface of the cheatsheet, and one place to read it beats seven.
 export -f _repo_root
-export -f _media_dedup_env
+export -f _media_hygiene_env
 export -f check
 export -f format
 export -f tests
@@ -41,7 +41,7 @@ export -f release
 export -f dive
 export -f dive_ci
 export -f e2e
-export -f dedup
+export -f hygiene
 export -f demo
 export -f docs_screenshots
 export -f reports

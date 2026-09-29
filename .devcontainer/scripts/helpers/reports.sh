@@ -9,7 +9,7 @@
 # @cmd reports
 # @desc Serve HTML reports on a free port — 'reports [dir]'
 function reports() {
-    local -r dir="${1:-/tmp/media-dedup/reports}"
+    local -r dir="${1:-/tmp/media-hygiene/reports}"
     local -r max_wait_steps=50
     local logfile pid port="" step
 
@@ -19,7 +19,7 @@ function reports() {
     fi
 
     # Port 0 lets the kernel pick a free port: nothing hardcoded, several servers can coexist.
-    logfile="$(mktemp /tmp/media-dedup-reports.XXXXXX.log)"
+    logfile="$(mktemp /tmp/media-hygiene-reports.XXXXXX.log)"
     python -m http.server 0 --bind 127.0.0.1 --directory "${dir}" >"${logfile}" 2>&1 &
     pid=$!
 

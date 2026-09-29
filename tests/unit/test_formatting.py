@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from media_dedup.console.formatting import human_duration, human_number, human_size
-from media_dedup.constants import Locale
-from media_dedup.i18n import install
+from media_hygiene.console.formatting import human_duration, human_number, human_size
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
 
 
 @pytest.mark.parametrize(

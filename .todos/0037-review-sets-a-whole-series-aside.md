@@ -3,7 +3,7 @@
 - **Priority**: medium
 - **Batch**: unassigned
 - **Depends**: —
-- **Files**: `src/media_dedup/review/templates/review.html.j2`, `src/media_dedup/review/shots.py`, `src/media_dedup/report/decisions.py`, `src/media_dedup/services/burst_review.py`, `src/media_dedup/services/review.py`, `src/media_dedup/actions/clean.py`, `src/media_dedup/actions/verify.py`, `src/media_dedup/plan/similar_models.py`, `src/media_dedup/i18n/locales/fr/LC_MESSAGES/media_dedup.po`, `tests/integration/test_review_server.py`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
+- **Files**: `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/review/shots.py`, `src/media_hygiene/report/decisions.py`, `src/media_hygiene/services/burst_review.py`, `src/media_hygiene/services/review.py`, `src/media_hygiene/actions/clean.py`, `src/media_hygiene/actions/verify.py`, `src/media_hygiene/plan/similar_models.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/integration/test_review_server.py`, `documentation/en/10-review-bursts.md`, `documentation/fr/10-review-bursts.md`
 
 ## Context
 

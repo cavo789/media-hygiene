@@ -5,20 +5,20 @@ from __future__ import annotations
 import hashlib
 from typing import TYPE_CHECKING
 
-from media_dedup.actions.journal import journal_file, read_journal
-from media_dedup.constants import Phase, Status
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.undo import resolve_run_id, undo_run
+from media_hygiene.actions.journal import journal_file, read_journal
+from media_hygiene.constants import Phase, Status
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.undo import resolve_run_id, undo_run
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
-    from media_dedup.services.runtime import Runtime
+    from media_hygiene.paths.locations import Locations
+    from media_hygiene.services.runtime import Runtime
 
 type Manifest = dict[str, tuple[str, int]]
 

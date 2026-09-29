@@ -9,12 +9,12 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.errors import DecisionsError
-from media_dedup.plan.review import PairAction
-from media_dedup.report.decisions import DecisionsFile, PairDecision
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.review import review_choices
+from media_hygiene.errors import DecisionsError
+from media_hygiene.plan.review import PairAction
+from media_hygiene.report.decisions import DecisionsFile, PairDecision
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.review import review_choices
 from tests.support.cli import run
 from tests.support.media import MediaFactory
 from tests.support.runtime import make_runtime
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
     from typer.testing import CliRunner
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 SELECT = re.compile(
     r'<select class="decision" data-kept-in="([^"]*)" data-removed-from="([^"]*)"'

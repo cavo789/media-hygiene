@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.constants import KeepReason, MediaKind
-from media_dedup.plan.keeper import KeepPolicy
-from media_dedup.scan.models import DuplicateGroup, MediaFile
+from media_hygiene.constants import KeepReason, MediaKind
+from media_hygiene.plan.keeper import KeepPolicy
+from media_hygiene.scan.models import DuplicateGroup, MediaFile
 
 DATA = Path("/data")
 

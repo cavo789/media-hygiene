@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.constants import MediaKind, Sizes
-from media_dedup.plan.models import CleanPlan, KeepDecision
-from media_dedup.report.group_views import check_command, sample_groups
-from media_dedup.scan.models import MediaFile
+from media_hygiene.constants import MediaKind, Sizes
+from media_hygiene.plan.models import CleanPlan, KeepDecision
+from media_hygiene.report.group_views import check_command, sample_groups
+from media_hygiene.scan.models import MediaFile
 
 
 def test_windows_paths_are_checked_with_powershell() -> None:

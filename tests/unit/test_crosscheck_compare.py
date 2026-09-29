@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.crosscheck.compare import AnalysedScope, OutsideReason, compare
-from media_dedup.scan.filters import ScanFilters
+from media_hygiene.crosscheck.compare import AnalysedScope, OutsideReason, compare
+from media_hygiene.scan.filters import ScanFilters
 
 SCOPE = AnalysedScope(
     roots=(Path("/data/c/Photos"),),
@@ -40,7 +40,7 @@ def test_differences_are_listed_both_ways() -> None:
     assert result.only_theirs == (group("a.jpg", "b.jpg", "c.jpg"),)
 
 
-def test_files_media_dedup_does_not_analyse_are_set_aside() -> None:
+def test_files_media_hygiene_does_not_analyse_are_set_aside() -> None:
     """Other types, excluded or system folders, broken files, other mounts."""
     theirs = [
         group("a.jpg", "b.jpg", "notes.txt"),

@@ -7,12 +7,12 @@ is enough.
 
 ## Build the image from the sources
 
-Anywhere the documentation says `cavo789/media-dedup`, use your local `media-dedup` instead:
+Anywhere the documentation says `cavo789/media-hygiene`, use your local `media-hygiene` instead:
 
 ```bash
-git clone https://github.com/cavo789/media-deduplication-pipeline.git
-cd media-deduplication-pipeline
-docker build --tag media-dedup .
+git clone https://github.com/cavo789/media-hygiene.git
+cd media-hygiene
+docker build --tag media-hygiene .
 ```
 
 The image compiles its own `ffprobe`, about 1 MB instead of 141 MB for a full build: the tool
@@ -29,7 +29,7 @@ shows the cheatsheet of helper commands (`welcome` redraws it):
 |---|---|
 | `check` | The full quality gate: pre-commit (ruff, mypy strict, pylint, shellcheck, shfmt, hadolint) then the tests with ≥ 90 % branch coverage. |
 | `format`, `tests` | Auto-fix formatting; run targeted tests. |
-| `dedup …`, `demo` | Run the tool from the sources against `/tmp/media-dedup/`; `demo` builds a sample tree and audits it. |
+| `hygiene …`, `demo` | Run the tool from the sources against `/tmp/media-hygiene/`; `demo` builds a sample tree and audits it. |
 | `reports`, `reports_stop` | Serve the HTML reports on a free port chosen by the OS. |
 | `build`, `e2e`, `dive`, `dive_ci` | Build the image, run the end-to-end tests, inspect or gate its layers. |
 | `release` | Tag `vX.Y.Z` (the `pyproject.toml` version) and push it: CI publishes the image. |
@@ -79,7 +79,7 @@ Every push and pull request runs the quality gate and the end-to-end tests on Gi
 ([`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)). To publish a new version, bump
 `version` in `pyproject.toml`, commit and push `main`, then run `release`. It tags `vX.Y.Z` and
 pushes the tag. CI then builds the image for amd64 and arm64, runs the end-to-end tests, and
-pushes `cavo789/media-dedup:<version>` and `:latest` to Docker Hub, with an SBOM and a provenance
+pushes `cavo789/media-hygiene:<version>` and `:latest` to Docker Hub, with an SBOM and a provenance
 attestation. This needs two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a
 Docker Hub access token with read/write scope).
 

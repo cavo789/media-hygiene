@@ -7,13 +7,13 @@ suffit.
 
 ## Construire l'image depuis les sources
 
-Partout où la documentation indique `cavo789/media-dedup`, utilisez alors votre image locale
-`media-dedup` :
+Partout où la documentation indique `cavo789/media-hygiene`, utilisez alors votre image locale
+`media-hygiene` :
 
 ```bash
-git clone https://github.com/cavo789/media-deduplication-pipeline.git
-cd media-deduplication-pipeline
-docker build --tag media-dedup .
+git clone https://github.com/cavo789/media-hygiene.git
+cd media-hygiene
+docker build --tag media-hygiene .
 ```
 
 L'image compile son propre `ffprobe`, environ 1 Mo au lieu de 141 Mo pour une version complète :
@@ -31,7 +31,7 @@ affiche la liste des commandes d'aide (`welcome` la réaffiche) :
 |---|---|
 | `check` | La barrière qualité complète : pre-commit (ruff, mypy strict, pylint, shellcheck, shfmt, hadolint), puis les tests avec au moins 90 % de couverture des branches. |
 | `format`, `tests` | Corrige la mise en forme ; lance des tests ciblés. |
-| `dedup …`, `demo` | Lance l'outil depuis les sources sur `/tmp/media-dedup/` ; `demo` crée une arborescence d'exemple et l'audite. |
+| `hygiene …`, `demo` | Lance l'outil depuis les sources sur `/tmp/media-hygiene/` ; `demo` crée une arborescence d'exemple et l'audite. |
 | `reports`, `reports_stop` | Sert les rapports HTML sur un port libre choisi par le système. |
 | `build`, `e2e`, `dive`, `dive_ci` | Construit l'image, lance les tests de bout en bout, inspecte ou contrôle ses couches. |
 | `release` | Crée le tag `vX.Y.Z` (la version de `pyproject.toml`) et le pousse : la CI publie l'image. |
@@ -82,7 +82,7 @@ Chaque push et chaque pull request lancent la barrière qualité et les tests de
 GitHub Actions ([`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)). Pour publier une
 nouvelle version, augmentez `version` dans `pyproject.toml`, commitez et poussez `main`, puis
 lancez `release`. Il crée le tag `vX.Y.Z` et le pousse. La CI construit alors l'image pour amd64
-et arm64, lance les tests de bout en bout, puis pousse `cavo789/media-dedup:<version>` et
+et arm64, lance les tests de bout en bout, puis pousse `cavo789/media-hygiene:<version>` et
 `:latest` sur Docker Hub, avec un SBOM et une attestation de provenance. Il faut pour cela deux
 secrets dans le dépôt : `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN` (un jeton d'accès Docker Hub en
 lecture/écriture).

@@ -1,4 +1,4 @@
-"""`media-dedup review`: the page, its state, previews, and decisions saved at once."""
+"""`media-hygiene review`: the page, its state, previews, decisions saved at once."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.errors import DecisionsError
-from media_dedup.report.decisions import read_decisions
+from media_hygiene.errors import DecisionsError
+from media_hygiene.report.decisions import read_decisions
 from tests.support.review import (
     BURST_HOST,
     PAGE,
@@ -20,7 +20,7 @@ from tests.support.review import (
 )
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 JSON = ("Host: 127.0.0.1", "Content-Type: application/json")
 

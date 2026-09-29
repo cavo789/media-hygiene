@@ -21,8 +21,8 @@ The quotes make paths with spaces work. Here are both folders, with the cache of
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup audit
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene audit
 ```
 
 The result now compares the two disks:
@@ -87,7 +87,7 @@ files as duplicates.
 In PowerShell, `cd` into a folder, then use `${PWD}` (the current folder) as the source:
 
 ```powershell
-docker run --rm -it -v "${PWD}:/data/current:ro" cavo789/media-dedup audit
+docker run --rm -it -v "${PWD}:/data/current:ro" cavo789/media-hygiene audit
 ```
 
 The tool still shows the real Windows path. In the old `cmd.exe` console, write `%cd%` instead
@@ -102,8 +102,8 @@ In a WSL (or Linux) terminal, write Linux paths, `\` continues a line, and add
 docker run --rm -it --user "$(id -u):$(id -g)" \
   -v "/mnt/c/Photos:/data/c/Photos:ro" \
   -v "/mnt/d/Old disk:/data/d/Old disk:ro" \
-  -v media-dedup-cache:/cache \
-  cavo789/media-dedup audit
+  -v media-hygiene-cache:/cache \
+  cavo789/media-hygiene audit
 ```
 
 The rest of this guide shows PowerShell commands; the WSL version follows the same pattern.

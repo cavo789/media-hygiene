@@ -1,0 +1,167 @@
+"""`clean --decisions`: check a review against the audit, then apply it to the plan.
+
+The decisions file is read before the audit (a wrong path fails at once) and checked
+after it: made on the same folders, about pairs and burst series that still exist, and
+never asking to delete the copies of a protected folder. Anything else refuses the
+whole file.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from media_hygiene.errors import DecisionsError
+from media_hygiene.i18n import _, ngettext
+from media_hygiene.paths.host_paths import is_within
+from media_hygiene.plan.pairs import folder_pairs
+from media_hygiene.plan.review import (
+    PairAction,
+    PairChoice,
+    ReviewChoices,
+    apply_choices,
+)
+from media_hygiene.report.decisions import read_decisions
+from media_hygiene.services.burst_review import burst_choices
+from media_hygiene.services.policy import keep_policy
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from media_hygiene.plan.models import AuditFindings, CleanPlan
+    from media_hygiene.plan.pairs import FolderPair
+    from media_hygiene.report.decisions import DecisionsFile
+    from media_hygiene.services.runtime import Runtime
+
+
+def load_review(runtime: Runtime, source: Path) -> DecisionsFile:
+    """Read a decisions file; a relative path is read from the reports folder.
+
+    Args:
+        runtime: Settings, mount points and output.
+        source: `--decisions` value.
+
+    Returns:
+        The decisions.
+    """
+    return read_decisions(decisions_path(runtime, source))
+
+
+def decisions_path(runtime: Runtime, source: Path) -> Path:
+    """Resolve a `--decisions` value: a relative path lies in the reports folder.
+
+    Args:
+        runtime: Settings, mount points and output.
+        source: `--decisions` value.
+
+    Returns:
+        The file, in the container.
+    """
+    return source if source.is_absolute() else runtime.locations.reports_dir / source
+
+
+def review_choices(
+    runtime: Runtime, findings: AuditFindings, review: DecisionsFile
+) -> ReviewChoices:
+    """Check that the decisions were made on this very audit, and translate them.
+
+    Args:
+        runtime: Settings, mount points and output.
+        findings: The audit just run.
+        review: The decisions file.
+
+    Returns:
+        The decisions, in container paths.
+
+    Raises:
+        DecisionsError: Other folders, a pair or a series that no longer exists, or
+            an impossible swap or move.
+    """
+    mapper = runtime.mapper
+    ours = mapper.roots_on_host(findings.roots)
+    if sorted(review.roots) != sorted(ours):
+        raise DecisionsError(
+            _(
+                "These decisions were made on other folders ({theirs}); this run "
+                "analyses {ours}."
+            ).format(theirs=", ".join(review.roots), ours=", ".join(ours)),
+            _("Mount the folders of that report, or decide again on a new report."),
+        )
+    pairs = {
+        (mapper.to_host(pair.kept_in), mapper.to_host(pair.removed_from)): pair
+        for pair in folder_pairs(findings.plan.decisions)
+    }
+    stale = [d for d in review.pairs if (d.kept_in, d.removed_from) not in pairs]
+    if stale:
+        message = ngettext(
+            "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}.",
+            "{count} decided folder pairs no longer exist, e.g. {kept} -> {removed}.",
+            len(stale),
+        )
+        raise DecisionsError(
+            message.format(
+                count=len(stale), kept=stale[0].kept_in, removed=stale[0].removed_from
+            ),
+            _("Files changed since the report: audit again and decide on it."),
+        )
+    choices = [(pairs[d.kept_in, d.removed_from], d.action) for d in review.pairs]
+    for pair, action in choices:
+        _check_swap(runtime, pair, action)
+    return ReviewChoices(
+        pairs=tuple(PairChoice(p.kept_in, p.removed_from, a) for p, a in choices),
+        bursts=burst_choices(runtime, findings, review.bursts),
+    )
+
+
+def apply_review(
+    runtime: Runtime, plan: CleanPlan, choices: ReviewChoices
+) -> CleanPlan:
+    """Apply checked decisions to the plan, and say what they change.
+
+    Args:
+        runtime: Settings, mount points and output.
+        plan: The plan `clean` would execute.
+        choices: The decisions, from `review_choices`.
+
+    Returns:
+        The plan, decisions applied.
+    """
+    pairs, bursts = choices.pairs, choices.bursts
+    swapped = sum(choice.action is PairAction.SWAP for choice in pairs)
+    if pairs:
+        runtime.output.info(
+            _(
+                "Your decisions — pairs swapped: {swapped}, pairs left alone: "
+                "{skipped}."
+            ).format(swapped=swapped, skipped=len(pairs) - swapped)
+        )
+    if bursts:
+        runtime.output.info(
+            _(
+                "Your decisions — burst series reviewed: {series}, shots set aside: "
+                "{shots}."
+            ).format(series=len(bursts), shots=sum(len(c.discarded) for c in bursts))
+        )
+    return apply_choices(plan, choices, keep_policy(runtime.settings, runtime.mapper))
+
+
+def _check_swap(runtime: Runtime, pair: FolderPair, action: PairAction) -> None:
+    """Refuse a swap that would delete what must stay.
+
+    Args:
+        runtime: Settings, mount points and output.
+        pair: The folder pair.
+        action: What the review decided for it.
+
+    Raises:
+        DecisionsError: The pair is inside one folder, or its kept folder is protected.
+    """
+    if action is not PairAction.SWAP:
+        return
+    kept = runtime.mapper.to_host(pair.kept_in)
+    if pair.kept_in == pair.removed_from:
+        message = _("{folder}: copies inside one folder cannot be swapped.")
+        raise DecisionsError(message.format(folder=kept))
+    protected = keep_policy(runtime.settings, runtime.mapper).protected
+    if any(is_within(pair.kept_in, folder) for folder in protected):
+        message = _("{folder} is protected: its copies are always kept.")
+        raise DecisionsError(message.format(folder=kept))

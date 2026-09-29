@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typer import Context
 
-from media_dedup.cli.localized import LocalizedCommand
+from media_hygiene.cli.localized import LocalizedCommand
 
 
 def test_english_keeps_the_usual_wording() -> None:

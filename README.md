@@ -1,4 +1,4 @@
-# media-dedup
+# media-hygiene
 
 Find and safely clean duplicate photos and videos spread over several folders and disks — from
 one `docker run`, on Windows (PowerShell) or WSL.
@@ -12,7 +12,7 @@ one `docker run`, on Windows (PowerShell) or WSL.
 With Docker installed, one command audits a folder:
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-dedup audit
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
 
 It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
@@ -83,36 +83,36 @@ reports, the configuration, the journal and the quarantine. It cleans; to audit,
 your folders and write `audit` instead of `clean`.
 
 ```powershell
-mkdir "$HOME\media-dedup\reports", "$HOME\media-dedup\config", "$HOME\media-dedup\journal", "$HOME\media-dedup\quarantine"
+mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup clean
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean
 ```
 
 From WSL, write Linux paths and run as yourself, so that new files belong to you:
 
 ```bash
-mkdir -p ~/media-dedup/{reports,config,journal,quarantine}
+mkdir -p ~/media-hygiene/{reports,config,journal,quarantine}
 docker run --rm -it --user "$(id -u):$(id -g)" \
   -v "/mnt/c/Photos:/data/c/Photos" \
   -v "/mnt/d/Old disk:/data/d/Old disk" \
-  -v media-dedup-cache:/cache \
-  -v ~/media-dedup/reports:/reports \
-  -v ~/media-dedup/config:/config \
-  -v ~/media-dedup/journal:/journal \
-  -v ~/media-dedup/quarantine:/quarantine \
-  cavo789/media-dedup clean
+  -v media-hygiene-cache:/cache \
+  -v ~/media-hygiene/reports:/reports \
+  -v ~/media-hygiene/config:/config \
+  -v ~/media-hygiene/journal:/journal \
+  -v ~/media-hygiene/quarantine:/quarantine \
+  cavo789/media-hygiene clean
 ```
 
 `undo` instead of `clean` puts everything back.
 
 ## Update
 
-`docker pull cavo789/media-dedup` fetches the latest version; a tag such as
-`cavo789/media-dedup:0.2.0` pins one.
+`docker pull cavo789/media-hygiene` fetches the latest version; a tag such as
+`cavo789/media-hygiene:0.2.0` pins one.

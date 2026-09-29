@@ -3,7 +3,7 @@
 - **Priority**: High — hours of editing must never be lost
 - **Batch**: classify
 - **Depends**: 0027, 0028
-- **Files**: `src/media_dedup/classify/carry.py` (new), `src/media_dedup/classify/workbook/`, `src/media_dedup/services/classify.py`, `src/media_dedup/cli/cmd_classify.py`, `src/media_dedup/cli/cmd_sort.py`, `documentation/en/sort/`, `documentation/fr/sort/`
+- **Files**: `src/media_hygiene/classify/carry.py` (new), `src/media_hygiene/classify/workbook/`, `src/media_hygiene/services/classify.py`, `src/media_hygiene/cli/cmd_classify.py`, `src/media_hygiene/cli/cmd_sort.py`, `documentation/en/sort/`, `documentation/fr/sort/`
 
 ## Context
 

@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.constants import KeepReason, MediaKind
-from media_dedup.plan.copy_names import without_copy_marks
-from media_dedup.plan.keeper import KeepPolicy
-from media_dedup.plan.name_rules import DEFAULT_NAME_RULES, NameRules
-from media_dedup.scan.models import DuplicateGroup, MediaFile
+from media_hygiene.constants import KeepReason, MediaKind
+from media_hygiene.plan.copy_names import without_copy_marks
+from media_hygiene.plan.keeper import KeepPolicy
+from media_hygiene.plan.name_rules import DEFAULT_NAME_RULES, NameRules
+from media_hygiene.scan.models import DuplicateGroup, MediaFile
 
 DATA = Path("/data")
 

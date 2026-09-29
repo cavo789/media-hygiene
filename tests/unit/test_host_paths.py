@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.paths.host_paths import HostPathMapper, is_within
+from media_hygiene.paths.host_paths import HostPathMapper, is_within
 
 MAPPER = HostPathMapper(Path("/data"))
 

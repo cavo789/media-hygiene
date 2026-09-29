@@ -6,16 +6,16 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.actions.journal import (
+from media_hygiene.actions.journal import (
     JournalEntry,
     JournalWriter,
     journal_file,
     latest_states,
     read_journal,
 )
-from media_dedup.actions.runs import list_run_ids, new_run_id, summarize
-from media_dedup.constants import ActionKind, Phase, Status
-from media_dedup.errors import JournalError
+from media_hygiene.actions.runs import list_run_ids, new_run_id, summarize
+from media_hygiene.constants import ActionKind, Phase, Status
+from media_hygiene.errors import JournalError
 
 if TYPE_CHECKING:
     from pathlib import Path

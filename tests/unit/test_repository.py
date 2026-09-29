@@ -7,10 +7,10 @@ from contextlib import closing
 from pathlib import Path
 from typing import Final
 
-from media_dedup.constants import BrokenReason, MediaKind
-from media_dedup.index.facts import FileFacts
-from media_dedup.index.repository import FactsRepository
-from media_dedup.scan.models import MediaFile, VisualFacts
+from media_hygiene.constants import BrokenReason, MediaKind
+from media_hygiene.index.facts import FileFacts
+from media_hygiene.index.repository import FactsRepository
+from media_hygiene.scan.models import MediaFile, VisualFacts
 
 VERSION_1_TABLE: Final = (
     "CREATE TABLE files (path TEXT PRIMARY KEY, size INTEGER NOT NULL,"

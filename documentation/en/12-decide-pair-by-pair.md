@@ -26,7 +26,7 @@ offered for copies inside one folder: there is nothing to swap.
 ## Step 2: download the file
 
 Click **Download decisions.json**; the number between brackets counts your decisions. Save the
-file in your reports folder (`C:\Users\<you>\media-dedup\reports`), next to `index.html`.
+file in your reports folder (`C:\Users\<you>\media-hygiene\reports`), next to `index.html`.
 
 ## Step 3: clean with your decisions
 
@@ -34,7 +34,7 @@ Run your `clean` command of [step 8](08-clean.md) with `--decisions decisions.js
 path is read from the reports folder):
 
 ```powershell
-cavo789/media-dedup clean --decisions decisions.json
+cavo789/media-hygiene clean --decisions decisions.json
 ```
 
 (with the same `docker run … -v …` part as in step 8)

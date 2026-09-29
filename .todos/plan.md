@@ -37,7 +37,7 @@ to bottom, one prompt per session.
 
 ### 2. scan — High
 
-**Shared context:** `src/media_dedup/scan/`, `src/media_dedup/index/` (`schema.py`,
+**Shared context:** `src/media_hygiene/scan/`, `src/media_hygiene/index/` (`schema.py`,
 `repository.py`), `documentation/en/02-keep-the-cache.md`, `documentation/fr/02-keep-the-cache.md`.
 
 **Why grouped:** both change the index schema and `FactsRepository`, and both document the cache
@@ -53,10 +53,10 @@ and takes the schema version after 0025's. Split, the schema upgrade would be wr
 
 ### 5. classify — High
 
-**Shared context:** `src/media_dedup/classify/` (0026 creates it; 0035 extends `models.py` and
-`bands.py`; 0027 adds `workbook/` next to them), `src/media_dedup/config/settings.py`,
-`src/media_dedup/config/templates/config.toml.j2`, `src/media_dedup/cli/cmd_classify.py`,
-`src/media_dedup/constants.py`, `documentation/<lang>/sort/`.
+**Shared context:** `src/media_hygiene/classify/` (0026 creates it; 0035 extends `models.py` and
+`bands.py`; 0027 adds `workbook/` next to them), `src/media_hygiene/config/settings.py`,
+`src/media_hygiene/config/templates/config.toml.j2`, `src/media_hygiene/cli/cmd_classify.py`,
+`src/media_hygiene/constants.py`, `documentation/<lang>/sort/`.
 
 **Why grouped:** 0026 builds the engine and its models; 0027 serialises that engine's proposal
 (`plan.json`, workbook, report); 0035 adds the rules to the same models, settings, config
@@ -73,9 +73,9 @@ load.
 
 ### 8. review-ui ~ — Medium
 
-**Shared context:** `src/media_dedup/review/` (`review.html.j2` for 0037 and 0038),
-`src/media_dedup/report/decisions.py` (0037, 0039),
-`src/media_dedup/i18n/locales/fr/LC_MESSAGES/media_dedup.po` (0037, 0038),
+**Shared context:** `src/media_hygiene/review/` (`review.html.j2` for 0037 and 0038),
+`src/media_hygiene/report/decisions.py` (0037, 0039),
+`src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po` (0037, 0038),
 `documentation/<lang>/10-review-bursts.md` (all three).
 
 **Why grouped:** three fixes from the user's feedback on 0.2.0 about the burst review page and
@@ -94,7 +94,7 @@ also declares `review-ui` but waits for the sort pipeline, so it stays standalon
 
 ### 10. report — Low
 
-**Shared context:** `src/media_dedup/report/`. 0023 touches `group_views.py` and the templates;
+**Shared context:** `src/media_hygiene/report/`. 0023 touches `group_views.py` and the templates;
 0032 touches `csv_export.py` and adds `inventory_workbook.py`.
 
 **Why grouped:** both change report output in the same package. 0032 waits for 0025 and 0033,
@@ -118,10 +118,10 @@ One `/todo NNNN` each, in its own session. The order follows the *Recommended or
 | 0024 | High | Journal: record which command made a run; undo refuses unknown actions | journal | only member of its batch |
 | 0034 | Medium | Split the documentation into a Clean guide and a Sort guide | docs | only member of its batch; runs before the classify lot, which writes into its `sort/` folder |
 | 0028 | High | `sort <workbook>`: validate strictly, move journaled, prove nothing was lost | sort | only member of its batch |
-| 0036 | High | `classify` carries the human edits of the previous proposal over; a refused workbook is salvaged | classify | shares `src/media_dedup/classify/` with the classify lot, but depends on 0028, which needs that lot first |
+| 0036 | High | `classify` carries the human edits of the previous proposal over; a refused workbook is salvaged | classify | shares `src/media_hygiene/classify/` with the classify lot, but depends on 0028, which needs that lot first |
 | 0029 | Medium | `classify` asks a local vision model (Ollama) about loose photos | ai | only member of its batch |
 | 0030 | Low | Places from GPS: personal places, offline reverse geocoding, a map page to name them | geo | only member of its batch |
-| 0031 | Low | Review a sort proposal in the browser, event by event | review-ui | shares `src/media_dedup/review/` with the review-ui ~ lot, but depends on 0027, 0029 and 0036 |
+| 0031 | Low | Review a sort proposal in the browser, event by event | review-ui | shares `src/media_hygiene/review/` with the review-ui ~ lot, but depends on 0027, 0029 and 0036 |
 | 0041 | Low | Albums: gather a selection into a folder of hard links, without moving anything | albums | only member of its batch |
 | 0005 | Low | Identify similar videos (re-encoded copies) | similarity | only member of its batch |
 | 0009 | Low | Evaluate Immich as the long-term family photo library | decision | decision-only, no `**Files**` yet |
@@ -132,6 +132,6 @@ Authoring issues found while parsing. Fix them in the TODO files, then rerun `/t
 
 - `0037-review-sets-a-whole-series-aside.md`, `0038-review-says-where-decisions-are-saved.md`,
   `0039-decisions-file-and-windows-encodings.md`: declared batch `unassigned`, treated as
-  undeclared; `review-ui` inferred from their files (`src/media_dedup/review/`,
+  undeclared; `review-ui` inferred from their files (`src/media_hygiene/review/`,
   `report/decisions.py`, `10-review-bursts.md`). Declare it to drop the `~`.
 - `0005-identify-similar-videos.md`: depends on 0001, already done — satisfied.

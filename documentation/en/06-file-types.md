@@ -15,7 +15,7 @@ Files are recognised by their extension, whatever its case:
 | RAW (decoded by LibRaw, previewed from the JPEG the camera embeds) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Videos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 
-`media-dedup audit --help` lists them too. [Sidecars](reference-sidecars.md) (`.xmp`, `.aae`,
+`media-hygiene audit --help` lists them too. [Sidecars](reference-sidecars.md) (`.xmp`, `.aae`,
 `.thm`) are not analysed on their own: they follow their photo.
 
 ## Only some types
@@ -27,8 +27,8 @@ and leading dot do not matter. For instance, only the iPhone photos and the vide
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup audit --ext heic,mp4
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene audit --ext heic,mp4
 ```
 
 The audit starts by saying what it analyses:
@@ -57,9 +57,9 @@ the `/quarantine` mount:
 ```powershell
 docker run --rm -it `
   -v "C:\Users\Me\Documents:/data/c/Users/Me/Documents" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup clean --ext pdf,docx
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean --ext pdf,docx
 ```
 
 Such files are handled with more care than photos. For a photo, the folder is only a way to

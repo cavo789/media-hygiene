@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.config.loader import Origin, load_settings, write_default_config
-from media_dedup.config.settings import GeneralSettings, Settings
-from media_dedup.constants import ColorMode, Locale, Verbosity
-from media_dedup.errors import ConfigError
-from media_dedup.i18n import install
+from media_hygiene.config.loader import Origin, load_settings, write_default_config
+from media_hygiene.config.settings import GeneralSettings, Settings
+from media_hygiene.constants import ColorMode, Locale, Verbosity
+from media_hygiene.errors import ConfigError
+from media_hygiene.i18n import install
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 def test_defaults_without_any_file(locations: Locations) -> None:
@@ -31,8 +31,8 @@ def test_precedence_cli_over_env_over_file(
     locations.config_file.write_text(
         '[general]\nlocale = "fr"\nverbosity = "debug"\ncolor = "never"\n',
     )
-    monkeypatch.setenv("MEDIA_DEDUP_GENERAL__VERBOSITY", "error")
-    monkeypatch.setenv("MEDIA_DEDUP_GENERAL__COLOR", "always")
+    monkeypatch.setenv("MEDIA_HYGIENE_GENERAL__VERBOSITY", "error")
+    monkeypatch.setenv("MEDIA_HYGIENE_GENERAL__COLOR", "always")
     loaded = load_settings(locations, {"general": {"color": "auto"}})
     general = loaded.settings.general
     assert (general.locale, general.verbosity, general.color) == (
@@ -53,8 +53,8 @@ def test_env_lists_and_booleans(
     locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Lists come as JSON arrays, booleans as text."""
-    monkeypatch.setenv("MEDIA_DEDUP_FOLDERS__PROTECTED", '["D:\\\\backup"]')
-    monkeypatch.setenv("MEDIA_DEDUP_CLEAN__CONFIRM", "false")
+    monkeypatch.setenv("MEDIA_HYGIENE_FOLDERS__PROTECTED", '["D:\\\\backup"]')
+    monkeypatch.setenv("MEDIA_HYGIENE_CLEAN__CONFIRM", "false")
     settings = load_settings(locations).settings
     assert settings.folders.protected == ("D:\\backup",)
     assert settings.clean.confirm is False
@@ -67,7 +67,7 @@ def test_env_list_must_be_a_json_array(
     value: str,
 ) -> None:
     """A malformed list variable is a configuration error."""
-    monkeypatch.setenv("MEDIA_DEDUP_FOLDERS__EXCLUDED", value)
+    monkeypatch.setenv("MEDIA_HYGIENE_FOLDERS__EXCLUDED", value)
     with pytest.raises(ConfigError, match="JSON array"):
         load_settings(locations)
 
@@ -121,8 +121,8 @@ def test_keep_patterns_come_from_the_file_and_the_environment(
 ) -> None:
     """[keep] and [scan] are overridable; a broken pattern is refused with its key."""
     locations.config_file.write_text("[keep]\ngenerated_names = ['CAM\\d+']\n")
-    monkeypatch.setenv("MEDIA_DEDUP_KEEP__GENERIC_FOLDERS", "[]")
-    monkeypatch.setenv("MEDIA_DEDUP_SCAN__EXTENSIONS", '["png"]')
+    monkeypatch.setenv("MEDIA_HYGIENE_KEEP__GENERIC_FOLDERS", "[]")
+    monkeypatch.setenv("MEDIA_HYGIENE_SCAN__EXTENSIONS", '["png"]')
     settings = load_settings(locations).settings
     assert settings.scan.extensions == (".png",)
     keep = settings.keep

@@ -7,20 +7,20 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.constants import MediaKind
-from media_dedup.plan.keeper import KeepPolicy
-from media_dedup.plan.models import CleanPlan, KeepDecision
-from media_dedup.plan.orphans import sidecars_in_scope
-from media_dedup.scan.filters import ScanFilters
-from media_dedup.scan.models import MediaFile
-from media_dedup.scan.progress import NullProgress
-from media_dedup.scan.sidecars import (
+from media_hygiene.constants import MediaKind
+from media_hygiene.plan.keeper import KeepPolicy
+from media_hygiene.plan.models import CleanPlan, KeepDecision
+from media_hygiene.plan.orphans import sidecars_in_scope
+from media_hygiene.scan.filters import ScanFilters
+from media_hygiene.scan.models import MediaFile
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.scan.sidecars import (
     Sidecar,
     accompanied,
     companions_of,
     is_sidecar,
 )
-from media_dedup.scan.walker import walk
+from media_hygiene.scan.walker import walk
 
 DATA = Path("/data")
 NAMES = ("IMG_1.JPG", "IMG_1.CR2", "IMG_1.aae", "IMG_10.jpg", "img_1 (1).jpg")

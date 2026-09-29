@@ -3,7 +3,7 @@
 - **Priority**: Medium — harmless for deduplication today, wrong data for every reader of the index tomorrow
 - **Batch**: scan
 - **Depends**: —
-- **Files**: `src/media_dedup/scan/walker.py`, `src/media_dedup/index/repository.py`, `src/media_dedup/index/schema.py`, `src/media_dedup/services/audit.py`, `src/media_dedup/services/clean.py`, `documentation/en/02-keep-the-cache.md`, `documentation/fr/02-keep-the-cache.md`
+- **Files**: `src/media_hygiene/scan/walker.py`, `src/media_hygiene/index/repository.py`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/services/audit.py`, `src/media_hygiene/services/clean.py`, `documentation/en/02-keep-the-cache.md`, `documentation/fr/02-keep-the-cache.md`
 
 ## Context
 

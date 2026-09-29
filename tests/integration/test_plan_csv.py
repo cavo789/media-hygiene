@@ -5,20 +5,20 @@ from __future__ import annotations
 import csv
 from typing import TYPE_CHECKING
 
-from media_dedup.constants import Locale, RunKind
-from media_dedup.i18n import install
-from media_dedup.report.views import ReportRecord
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.reporting import write_report
+from media_hygiene.constants import Locale, RunKind
+from media_hygiene.i18n import install
+from media_hygiene.report.views import ReportRecord
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.reporting import write_report
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
-    from media_dedup.plan.models import AuditFindings
+    from media_hygiene.paths.locations import Locations
+    from media_hygiene.plan.models import AuditFindings
 
 
 def audit_with_report(locations: Locations) -> tuple[AuditFindings, Path]:

@@ -8,11 +8,11 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
-from media_dedup.review.app import ReviewApp
-from media_dedup.scan.image_check import prepare_image_worker
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.reviewing import open_review, run_server
+from media_hygiene.review.app import ReviewApp
+from media_hygiene.scan.image_check import prepare_image_worker
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.reviewing import open_review, run_server
 from tests.support.runtime import make_runtime
 from tests.support.scenes import Effect, Shot, write_shot
 
@@ -20,9 +20,9 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_dedup.config.layers import Layer
-    from media_dedup.paths.locations import Locations
-    from media_dedup.review.session import ReviewSession
+    from media_hygiene.config.layers import Layer
+    from media_hygiene.paths.locations import Locations
+    from media_hygiene.review.session import ReviewSession
 
 BURST: Final = "c/Photos/Rafale"
 BURST_HOST: Final = "C:\\Photos\\Rafale"

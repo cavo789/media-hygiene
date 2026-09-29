@@ -7,13 +7,13 @@
 
 # @cat i18n
 # @cmd i18n_extract
-# @desc Extract _() strings into media_dedup.pot
+# @desc Extract _() strings into media_hygiene.pot
 function i18n_extract() {
     (
         cd "$(_repo_root)" || return 1
         pybabel extract --omit-header --no-location --sort-output \
             --mapping-file .config/babel.cfg \
-            --output-file src/media_dedup/i18n/locales/media_dedup.pot src
+            --output-file src/media_hygiene/i18n/locales/media_hygiene.pot src
     )
 }
 
@@ -24,8 +24,8 @@ function i18n_update() {
     i18n_extract || return 1
     (
         cd "$(_repo_root)" || return 1
-        pybabel update --ignore-pot-creation-date --ignore-obsolete --domain media_dedup \
-            --input-file src/media_dedup/i18n/locales/media_dedup.pot \
-            --output-dir src/media_dedup/i18n/locales
+        pybabel update --ignore-pot-creation-date --ignore-obsolete --domain media_hygiene \
+            --input-file src/media_hygiene/i18n/locales/media_hygiene.pot \
+            --output-dir src/media_hygiene/i18n/locales
     )
 }

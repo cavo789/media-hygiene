@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_dedup.actions.verify import burst_blocker, removal_blocker
-from media_dedup.constants import MediaKind
-from media_dedup.scan.models import MediaFile
+from media_hygiene.actions.verify import burst_blocker, removal_blocker
+from media_hygiene.constants import MediaKind
+from media_hygiene.scan.models import MediaFile
 
 if TYPE_CHECKING:
     from pathlib import Path

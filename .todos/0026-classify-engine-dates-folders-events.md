@@ -3,7 +3,7 @@
 - **Priority**: High
 - **Batch**: classify
 - **Depends**: 0025, 0034
-- **Files**: `src/media_dedup/classify/` (new: `dates.py`, `folders.py`, `events.py`, `layout.py`, `bands.py`, `models.py`), `src/media_dedup/services/classify.py`, `src/media_dedup/cli/cmd_classify.py`, `src/media_dedup/cli/app.py`, `src/media_dedup/config/settings.py`, `src/media_dedup/config/templates/config.toml.j2`, `src/media_dedup/constants.py`, `documentation/en/sort/`, `documentation/fr/sort/`, `tests/support/docs/`
+- **Files**: `src/media_hygiene/classify/` (new: `dates.py`, `folders.py`, `events.py`, `layout.py`, `bands.py`, `models.py`), `src/media_hygiene/services/classify.py`, `src/media_hygiene/cli/cmd_classify.py`, `src/media_hygiene/cli/app.py`, `src/media_hygiene/config/settings.py`, `src/media_hygiene/config/templates/config.toml.j2`, `src/media_hygiene/constants.py`, `documentation/en/sort/`, `documentation/fr/sort/`, `tests/support/docs/`
 
 ## Context
 

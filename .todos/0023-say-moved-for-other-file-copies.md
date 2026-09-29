@@ -3,7 +3,7 @@
 - **Priority**: Low
 - **Batch**: report
 - **Depends**: —
-- **Files**: `src/media_dedup/console/tables.py`, `src/media_dedup/report/templates/report.html.j2`, `src/media_dedup/report/templates/pair.html.j2`, `src/media_dedup/report/group_views.py`, `src/media_dedup/plan/pairs.py`
+- **Files**: `src/media_hygiene/console/tables.py`, `src/media_hygiene/report/templates/report.html.j2`, `src/media_hygiene/report/templates/pair.html.j2`, `src/media_hygiene/report/group_views.py`, `src/media_hygiene/plan/pairs.py`
 
 ## Context
 

@@ -1,4 +1,4 @@
-"""The documented Czkawka command keeps the same scope as media-dedup."""
+"""The documented Czkawka command keeps the same scope as media-hygiene."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.constants import MEDIA_EXTENSIONS
+from media_hygiene.constants import MEDIA_EXTENSIONS
 
 ROOT = Path(__file__).resolve().parents[2]
 CZKAWKA_EXTENSIONS = re.compile(r"^\s*-x (?P<list>[a-z0-9,]+)$", re.MULTILINE)

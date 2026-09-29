@@ -1,5 +1,5 @@
 {
-  "name": "media-dedup",
+  "name": "media-hygiene",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".",

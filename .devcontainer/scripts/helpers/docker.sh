@@ -8,10 +8,10 @@
 
 # @cat Docker image
 # @cmd build
-# @desc Build media-dedup:latest
+# @desc Build media-hygiene:latest
 function build() {
-    printf "🏗️  Building media-dedup:latest...\n"
-    docker build --tag media-dedup:latest "$(_repo_root)"
+    printf "🏗️  Building media-hygiene:latest...\n"
+    docker build --tag media-hygiene:latest "$(_repo_root)"
 }
 
 # @cat Docker image
@@ -43,7 +43,7 @@ function release() {
         fi
 
         # CI builds amd64 + arm64, runs the end-to-end tests, then pushes :<version> and :latest.
-        git tag --annotate "${tag}" --message "media-dedup ${version}" || return 1
+        git tag --annotate "${tag}" --message "media-hygiene ${version}" || return 1
         git push origin "${tag}" || return 1
         printf "✅ %s pushed: follow the publication in the repository's Actions tab\n" "${tag}"
     )
@@ -56,7 +56,7 @@ function dive() {
     # The socket path is resolved on the Docker host (docker-outside-of-docker), where it exists.
     docker run --rm -it \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        wagoodman/dive:latest media-dedup:latest
+        wagoodman/dive:latest media-hygiene:latest
 }
 
 # @cat Docker image
@@ -72,7 +72,7 @@ function dive_ci() {
     docker run --rm \
         --env CI=true \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        wagoodman/dive:latest media-dedup:latest \
+        wagoodman/dive:latest media-hygiene:latest \
         --lowestEfficiency "${lowest_efficiency}" \
         --highestUserWastedPercent "${highest_user_wasted_percent}"
 }

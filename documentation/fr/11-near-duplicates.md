@@ -40,12 +40,12 @@ avec les décisions de rafales de l'étape 10 ; chaque option fonctionne aussi s
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr clean --tier near --decisions decisions.json
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean --tier near --decisions decisions.json
 ```
 
 La question mentionne maintenant les quasi-doublons :
@@ -73,7 +73,7 @@ Nettoyage 20260927-064358
 ✅ Rapport HTML : /reports/20260927-064358-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-dedup undo 20260927-064358' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20260927-064358' restaure tout.
 💡 Les fichiers déplacés sont dans /quarantine/20260927-064358 ; 'purge' les
 supprime.
 ```

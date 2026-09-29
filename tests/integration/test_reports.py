@@ -4,21 +4,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_dedup.constants import RunKind
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.report.index_page import load_summaries, prune_reports
-from media_dedup.report.views import ReportRecord
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.reporting import write_report
+from media_hygiene.constants import RunKind
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.report.index_page import load_summaries, prune_reports
+from media_hygiene.report.views import ReportRecord
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.reporting import write_report
 from tests.support.demo import build_demo
 from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 def test_audit_and_clean_reports(locations: Locations) -> None:

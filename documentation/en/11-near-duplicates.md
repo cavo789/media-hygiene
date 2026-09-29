@@ -39,12 +39,12 @@ burst decisions of step 10; each option works on its own too:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup clean --tier near --decisions decisions.json
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean --tier near --decisions decisions.json
 ```
 
 The question now mentions the near duplicates:
@@ -71,7 +71,7 @@ Clean 20260927-064257
 └──────────────────────────┴─────────┘
 ✅ HTML report: /reports/20260927-064257-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-dedup undo 20260927-064257' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20260927-064257' restores everything.
 💡 Moved files are in /quarantine/20260927-064257; 'purge' deletes them.
 ```
 

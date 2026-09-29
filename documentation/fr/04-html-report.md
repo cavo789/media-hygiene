@@ -11,17 +11,17 @@ web qui s'ouvre dans votre navigateur, sans serveur ni connexion internet.
 Créez une fois un dossier pour les rapports, puis montez-le sur `/reports` :
 
 ```powershell
-mkdir "$HOME\media-dedup\reports"
+mkdir "$HOME\media-hygiene\reports"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup --locale fr audit
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr audit
 ```
 
 `$HOME` est votre dossier personnel (`C:\Users\<vous>`) : les rapports arrivent dans
-`C:\Users\<vous>\media-dedup\reports`. Créez le dossier **avant** le premier lancement : un
+`C:\Users\<vous>\media-hygiene\reports`. Créez le dossier **avant** le premier lancement : un
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
 écrire ([pourquoi](reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 
@@ -36,7 +36,7 @@ rapports.
 
 ## L'ouvrir
 
-Ouvrez `C:\Users\<vous>\media-dedup\reports` dans l'Explorateur et double-cliquez sur
+Ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliquez sur
 `index.html`. Il liste chaque audit et chaque nettoyage, du plus récent au plus ancien :
 
 ![L'index des rapports : une ligne par audit ou nettoyage, avec sa date, son type, ses nombres de fichiers, de doublons et de fichiers cassés, et l'espace libérable](images/index.webp)
@@ -80,7 +80,7 @@ l'empreinte SHA-256 qu'elles partagent.
 
 **Vérifiez vous-même** donne une commande pour PowerShell. Collez-la : Windows calcule lui-même
 l'empreinte de chaque copie, et elles sont toutes identiques. Vous n'avez pas à croire
-media-dedup sur parole.
+media-hygiene sur parole.
 
 ## Quasi-doublons et rafales
 
@@ -127,7 +127,7 @@ Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail
 récents et supprime les autres :
 
 ```powershell
-docker run --rm -it -v "$HOME\media-dedup\reports:/reports" cavo789/media-dedup --locale fr reports
+docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene --locale fr reports
 ```
 
 <!-- capture: reports.txt -->

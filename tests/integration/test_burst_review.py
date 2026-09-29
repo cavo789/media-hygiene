@@ -8,15 +8,15 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.services import reviewing
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services import reviewing
 from tests.support.cli import run
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from media_dedup.paths.locations import Locations
-    from media_dedup.review.app import ReviewApp
+    from media_hygiene.paths.locations import Locations
+    from media_hygiene.review.app import ReviewApp
     from tests.support.media import MediaFactory
 
 RAFALE = "C:\\Family Photos\\Rafale"
@@ -78,7 +78,7 @@ def test_shots_set_aside_need_a_quarantine(
 ) -> None:
     """Refused before the audit, with a tip."""
     write_decisions(locations, shots(0), shots(2))
-    monkeypatch.delenv("MEDIA_DEDUP_QUARANTINE_DIR")
+    monkeypatch.delenv("MEDIA_HYGIENE_QUARANTINE_DIR")
     result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
     assert result.exit_code == 1
     assert "Burst shots you set aside go to /quarantine" in result.output
@@ -122,7 +122,7 @@ def test_the_review_needs_somewhere_to_save(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Without /reports the decisions would be lost: refused before the audit."""
-    monkeypatch.delenv("MEDIA_DEDUP_REPORTS_DIR")
+    monkeypatch.delenv("MEDIA_HYGIENE_REPORTS_DIR")
     result = run(cli, "review")
     assert result.exit_code == 1
     assert "The decisions are saved in /reports" in result.output
@@ -136,7 +136,7 @@ def test_no_burst_nothing_to_review(
     media.image("c/Photos/alone.jpg")
     for kind in MountKind:
         path = locations.path_of(kind)
-        monkeypatch.setenv(f"MEDIA_DEDUP_{kind.value.upper()}_DIR", str(path))
+        monkeypatch.setenv(f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(path))
     monkeypatch.setattr(reviewing, "run_server", fake_server(lambda _app: None))
     result = run(
         CliRunner(), "review", "--decisions", str(locations.cache_dir / "d.json")

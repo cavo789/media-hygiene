@@ -10,16 +10,16 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.constants import MediaKind, Sizes
-from media_dedup.scan.filters import ScanFilters, media_kind
-from media_dedup.scan.hashing import full_digest, partial_digest
-from media_dedup.scan.progress import NullProgress
-from media_dedup.scan.walker import walk
+from media_hygiene.constants import MediaKind, Sizes
+from media_hygiene.scan.filters import ScanFilters, media_kind
+from media_hygiene.scan.hashing import full_digest, partial_digest
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.scan.walker import walk
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.scan.models import MediaFile
+    from media_hygiene.scan.models import MediaFile
 
 
 def listed(root: Path, filters: ScanFilters) -> list[MediaFile]:

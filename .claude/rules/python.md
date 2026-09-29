@@ -24,7 +24,7 @@ Full rationale and more patterns: `python-best-practices` skill. Verify: `ruff c
 - ❌ DON'T: third-party async runtimes or bare `create_task()` for fire-and-forget — pure
   `asyncio`, `TaskGroup` for structured concurrency, await or store every task handle.
 
-## media-dedup — project specifics
+## media-hygiene — project specifics
 
 These bind this repository on top of the generic rule above. Enforced by `pyproject.toml`
 (ruff `ALL`, pylint, mypy strict) — run `check` (devcontainer cheatsheet) before declaring done.
@@ -34,13 +34,13 @@ These bind this repository on top of the generic rule above. Enforced by `pyproj
 - ✅ DO: **at most 3 parameters per function** (ruff/pylint `max-args` and
   `max-positional-arguments`) — otherwise a frozen parameter object.
 - ✅ DO: code, comments, docstrings and log messages in American English; every string shown to
-  the user goes through gettext `_()` (`media_dedup.i18n`) and gets a French translation in
-  `src/media_dedup/i18n/locales/fr/LC_MESSAGES/media_dedup.po` (`i18n_update`).
+  the user goes through gettext `_()` (`media_hygiene.i18n`) and gets a French translation in
+  `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po` (`i18n_update`).
 - ✅ DO: Google-style docstrings on every module, class and function — "what is not documented
   does not exist". Every CLI command and option carries a `help=` text.
-- ✅ DO: long text (HTML, the default `config.toml`) lives in `src/media_dedup/**/templates/`, loaded
+- ✅ DO: long text (HTML, the default `config.toml`) lives in `src/media_hygiene/**/templates/`, loaded
   by path — never inline.
-- ✅ DO: every mount point path comes from `media_dedup.paths` (overridable through
-  `MEDIA_DEDUP_*_DIR`), never a literal `/data`, `/journal`, ...
+- ✅ DO: every mount point path comes from `media_hygiene.paths` (overridable through
+  `MEDIA_HYGIENE_*_DIR`), never a literal `/data`, `/journal`, ...
 - ❌ DON'T: write anything in the working tree at runtime or in tests — `tmp_path` / `/tmp` only
   (zero junk in the repository).

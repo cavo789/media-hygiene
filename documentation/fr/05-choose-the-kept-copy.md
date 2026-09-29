@@ -34,8 +34,8 @@ Dans la bibliothèque de démonstration, `C:\Photos\2019\Vacances à la mer` est
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  cavo789/media-dedup --locale fr audit --prefer "C:\Photos\Ancien téléphone"
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Ancien téléphone"
 ```
 
 Écrivez le dossier comme Windows l'affiche. Les paires s'inversent :
@@ -72,7 +72,7 @@ Le premier l'emporte quand un fichier est dans les deux.
 copies gardées. Pensez à une bibliothèque de référence :
 
 ```powershell
-cavo789/media-dedup --locale fr audit --protect "C:\Photos\Famille"
+cavo789/media-hygiene --locale fr audit --protect "C:\Photos\Famille"
 ```
 
 (la partie `docker run … -v …` ne change pas ; seule la fin de la commande change)
@@ -87,7 +87,7 @@ orphelins d'un dossier protégé restent aussi en place.
 pour une vraie sauvegarde qui doit rester une seconde copie :
 
 ```powershell
-cavo789/media-dedup --locale fr audit --exclude "D:\Ancien disque"
+cavo789/media-hygiene --locale fr audit --exclude "D:\Ancien disque"
 ```
 
 Il ne reste que les doublons de `C:\Photos` :
@@ -111,7 +111,7 @@ Dossiers partageant des fichiers identiques
 
 `--prefer`, `--protect` et `--exclude` se placent **après** `audit` (et plus tard après `clean`
 ou `review`). `--locale` est différent : il concerne tout l'outil, il se place donc **avant** la
-commande : `cavo789/media-dedup --locale fr audit --prefer "C:\Photos\Ancien téléphone"`.
+commande : `cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Ancien téléphone"`.
 
 Vous tapez les mêmes options à chaque fois ? L'[étape 7](07-configuration-file.md) les écrit une
 fois pour toutes dans un fichier.

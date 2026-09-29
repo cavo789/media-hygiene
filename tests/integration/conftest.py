@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from media_dedup.paths.mount_kind import MountKind
+from media_hygiene.paths.mount_kind import MountKind
 from tests.support.demo import build_demo
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def cli(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> CliRunner:
     """
     for kind in MountKind:
         monkeypatch.setenv(
-            f"MEDIA_DEDUP_{kind.value.upper()}_DIR", str(locations.path_of(kind))
+            f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(locations.path_of(kind))
         )
     build_demo(locations.data_dir)
     return CliRunner()

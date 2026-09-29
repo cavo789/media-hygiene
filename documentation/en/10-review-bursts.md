@@ -23,19 +23,19 @@ never decides on its own:
 folder, where it saves your choices:
 
 ```powershell
-docker run --rm -it --name media-dedup-review -p 127.0.0.1::8080 `
+docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup review
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene review
 ```
 
 Two new parts, on the first line:
 
 | Part | What it means |
 |---|---|
-| `--name media-dedup-review` | Gives the container a name, to find its address in step 2. |
+| `--name media-hygiene-review` | Gives the container a name, to find its address in step 2. |
 | `-p 127.0.0.1::8080` | Opens the page to your browser. `127.0.0.1`: your computer only, nobody else on the network. `::` lets Docker choose a free port. |
 
 The review first audits (quickly, thanks to the cache), then waits for you:
@@ -55,7 +55,7 @@ Leave this window open: the review runs as long as it stays open.
 In **another** PowerShell window, ask Docker which port it chose:
 
 ```powershell
-docker port media-dedup-review 8080
+docker port media-hygiene-review 8080
 ```
 
 It answers an address such as `127.0.0.1:49153` (the port changes every time). Open
@@ -154,12 +154,12 @@ The page itself never moves anything. Once done, run your `clean` command of
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup clean --decisions decisions.json
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean --decisions decisions.json
 ```
 
 Before its question, `clean` announces the shots it will move:

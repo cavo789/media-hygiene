@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.constants import MediaKind
-from media_dedup.plan.bursts import burst_series, moment_of
-from media_dedup.plan.keeper import KeepPolicy
-from media_dedup.plan.near import near_decisions
-from media_dedup.scan.models import MediaFile, VisualFacts
+from media_hygiene.constants import MediaKind
+from media_hygiene.plan.bursts import burst_series, moment_of
+from media_hygiene.plan.keeper import KeepPolicy
+from media_hygiene.plan.near import near_decisions
+from media_hygiene.scan.models import MediaFile, VisualFacts
 
 DATA = Path("/data/c")
 HASH = 0x0F0F_3C3C_5A5A_6969

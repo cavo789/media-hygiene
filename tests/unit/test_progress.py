@@ -7,10 +7,10 @@ import io
 import pytest
 from rich.console import Console
 
-from media_dedup.console.progress import RichProgress
-from media_dedup.constants import Locale
-from media_dedup.i18n import install
-from media_dedup.scan.progress import Step
+from media_hygiene.console.progress import RichProgress
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
+from media_hygiene.scan.progress import Step
 
 
 def drawn(total: int | None, *, is_terminal: bool = True) -> str:

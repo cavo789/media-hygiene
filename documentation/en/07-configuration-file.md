@@ -11,8 +11,8 @@ The tool only sees the folders you mount, so give it a folder of yours on `/conf
 the `config` command once:
 
 ```powershell
-mkdir "$HOME\media-dedup\config"
-docker run --rm -it -v "$HOME\media-dedup\config:/config" cavo789/media-dedup config
+mkdir "$HOME\media-hygiene\config"
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config
 ```
 
 The first line says what happened:
@@ -74,7 +74,7 @@ Mount points
 💡 Edit /config/config.toml to change these settings; command-line options win.
 ```
 
-A commented `config.toml` has appeared in `C:\Users\<you>\media-dedup\config`. Open it with any
+A commented `config.toml` has appeared in `C:\Users\<you>\media-hygiene\config`. Open it with any
 text editor (Notepad is fine). Every setting is explained, for instance:
 
 <!-- capture: config.toml|[general]|color =  -->
@@ -96,7 +96,7 @@ color = "auto"
 The file is never overwritten; delete it to get a fresh one.
 
 > 💡 Its comments are written in the language of that first run, and that language is saved in
-> it: created with `cavo789/media-dedup --locale fr config`, the file is commented in French and
+> it: created with `cavo789/media-hygiene --locale fr config`, the file is commented in French and
 > holds `locale = "fr"`, so the next runs speak French without `--locale`.
 
 ## Fill it in
@@ -140,10 +140,10 @@ Add the same `-v …:/config` to every command, and the tool reads the file:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  cavo789/media-dedup audit
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene audit
 ```
 
 ## Check what the tool uses: `config`
@@ -218,8 +218,8 @@ From the strongest to the weakest: the command-line options, then the environmen
 then `config.toml`, then the defaults. `--prefer` on the command line therefore replaces
 `preferred` of the file for that run.
 
-The environment variables are named `MEDIA_DEDUP_<SECTION>__<KEY>` (two underscores), for
-instance `-e MEDIA_DEDUP_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON arrays.
+The environment variables are named `MEDIA_HYGIENE_<SECTION>__<KEY>` (two underscores), for
+instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON arrays.
 
 ---
 

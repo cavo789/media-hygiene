@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.19
 #
-# media-dedup — the shipped image. Build: `docker build --tag media-dedup .`
-# Run:  docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-dedup audit
+# media-hygiene — the shipped image. Build: `docker build --tag media-hygiene .`
+# Run:  docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-hygiene audit
 # The development environment is built by .devcontainer/Dockerfile, never by this file.
 
 # Base image pinned by digest: this is what users run on their photos.
@@ -80,7 +80,7 @@ ARG VERSION=0.2.0
 ARG APP_UID=1000
 ARG APP_GID=1000
 
-LABEL org.opencontainers.image.title="media-dedup" \
+LABEL org.opencontainers.image.title="media-hygiene" \
       org.opencontainers.image.description="Find and safely clean duplicate photos and videos across folders and disks." \
       org.opencontainers.image.version="${VERSION}"
 
@@ -91,7 +91,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH=/opt/venv/bin:${PATH}
 
 # Every mount point exists and belongs to the app user: a named volume mounted there for the
-# first time inherits that ownership (e.g. -v media-dedup-cache:/cache).
+# first time inherits that ownership (e.g. -v media-hygiene-cache:/cache).
 RUN groupadd --gid "${APP_GID}" app && \
     useradd --uid "${APP_UID}" --gid "${APP_GID}" --no-create-home --shell /usr/sbin/nologin app && \
     mkdir -p /data /config /journal /quarantine /reports /cache && \
@@ -103,5 +103,5 @@ COPY --from=builder /opt/venv /opt/venv
 USER ${APP_UID}:${APP_GID}
 WORKDIR /tmp
 
-ENTRYPOINT ["media-dedup"]
+ENTRYPOINT ["media-hygiene"]
 CMD ["--help"]

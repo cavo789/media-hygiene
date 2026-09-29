@@ -21,7 +21,7 @@ first, or leave that folder out.
 ## Windows drives are slow through Docker
 
 The first audit reads every image and every file that shares its size with another one. With
-[`-v media-dedup-cache:/cache`](02-keep-the-cache.md) the next audits only read new or changed
+[`-v media-hygiene-cache:/cache`](02-keep-the-cache.md) the next audits only read new or changed
 files. Tens of thousands of files take a few minutes just to be listed:
 [every step shows its progress](01-first-audit.md#what-you-see-while-it-runs).
 
@@ -52,7 +52,7 @@ ignoring it ([step 7](07-configuration-file.md#fill-it-in)).
 ## The review page does not open
 
 - Did you publish the port? The command needs `-p 127.0.0.1::8080`.
-- The address comes from `docker port media-dedup-review 8080`, in another window, while the
+- The address comes from `docker port media-hygiene-review 8080`, in another window, while the
   review runs ([step 10](10-review-bursts.md#step-2-open-the-page)).
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.

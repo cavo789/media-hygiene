@@ -5,7 +5,7 @@ from __future__ import annotations
 import subprocess
 from typing import Final
 
-IMAGE: Final = "media-dedup:latest"
+IMAGE: Final = "media-hygiene:latest"
 KINDS: Final = ("data", "journal", "quarantine", "reports", "cache")
 
 
@@ -52,7 +52,7 @@ def tool(volumes: dict[str, str], *args: str, read_only_data: bool = False) -> s
 
     Args:
         volumes: Volume name per mount point.
-        *args: The media-dedup command line.
+        *args: The media-hygiene command line.
         read_only_data: Mount the data volume with `:ro`.
 
     Returns:

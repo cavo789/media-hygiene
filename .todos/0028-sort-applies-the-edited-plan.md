@@ -3,7 +3,7 @@
 - **Priority**: High
 - **Batch**: sort
 - **Depends**: 0024, 0027
-- **Files**: `src/media_dedup/cli/cmd_sort.py`, `src/media_dedup/cli/app.py`, `src/media_dedup/services/sort.py`, `src/media_dedup/actions/sort.py` (new), `src/media_dedup/actions/manifest.py` (new), `src/media_dedup/actions/journaled.py`, `src/media_dedup/actions/verify.py`, `src/media_dedup/index/repository.py`, `src/media_dedup/classify/workbook/`, `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/cli/cmd_sort.py`, `src/media_hygiene/cli/app.py`, `src/media_hygiene/services/sort.py`, `src/media_hygiene/actions/sort.py` (new), `src/media_hygiene/actions/manifest.py` (new), `src/media_hygiene/actions/journaled.py`, `src/media_hygiene/actions/verify.py`, `src/media_hygiene/index/repository.py`, `src/media_hygiene/classify/workbook/`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 

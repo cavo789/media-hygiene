@@ -17,7 +17,7 @@ Copiez cette commande dans PowerShell, avec le chemin de votre propre dossier à
 `C:\Photos` :
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-dedup --locale fr audit
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
 ```
 
 Le premier lancement télécharge l'outil (quelques centaines de Mo) ; les suivants démarrent tout
@@ -30,7 +30,7 @@ de suite.
 | `-it` | Relie la boîte à votre fenêtre : couleurs, barres de progression, et questions auxquelles vous pouvez répondre. |
 | `-v "C:\Photos:/data/c/Photos:ro"` | Montre votre dossier à l'outil. La boîte ne voit que ce que vous lui donnez avec `-v` : ici `C:\Photos`, qu'elle appelle `/data/c/Photos`. |
 | `:ro` | *Read-only*, lecture seule : Docker lui-même interdit toute modification de votre dossier. |
-| `cavo789/media-dedup` | L'outil, tel que publié sur Docker Hub. |
+| `cavo789/media-hygiene` | L'outil, tel que publié sur Docker Hub. |
 | `--locale fr` | Parle français. Sans cette option, l'outil parle anglais ; l'[étape 7](07-configuration-file.md) vous évitera de la retaper. |
 | `audit` | Ce qu'il faut faire : chercher les doublons et les fichiers cassés. |
 
@@ -94,15 +94,15 @@ Dossiers partageant des fichiers identiques
 💡 Ajoutez -v "<un de vos dossiers>:/reports" pour obtenir des rapports HTML.
 💡 Lancez 'clean' (mêmes options -v, sans :ro) pour libérer 3,4 Mo.
 💡 Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur les
-mêmes dossiers, puis 'media-dedup crosscheck' (mêmes options -v) :
+mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.
 💡 Les quasi-doublons et les rafales sont dans le rapport HTML ; 'clean --tier
 near' déplace les quasi-doublons en quarantaine.
-💡 Triez les rafales au clavier : 'media-dedup review' (ajoutez -p
+💡 Triez les rafales au clavier : 'media-hygiene review' (ajoutez -p
 127.0.0.1::8080 à docker run).
-💡 Ajoutez -v media-dedup-cache:/cache : les prochains audits seront bien plus
+💡 Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien plus
 rapides.
 ```
 

@@ -32,9 +32,9 @@ def volumes(tmp_path: Path) -> Iterator[dict[str, str]]:
     Yields:
         The volume name of each mount point.
     """
-    names = {kind: f"media-dedup-e2e-{kind}-{uuid.uuid4().hex[:8]}" for kind in KINDS}
+    names = {kind: f"media-hygiene-e2e-{kind}-{uuid.uuid4().hex[:8]}" for kind in KINDS}
     build_demo(tmp_path / "demo")
-    seed = f"media-dedup-e2e-seed-{uuid.uuid4().hex[:8]}"
+    seed = f"media-hygiene-e2e-seed-{uuid.uuid4().hex[:8]}"
     docker("create", "--name", seed, "-v", f"{names['data']}:/data", IMAGE)
     docker("cp", f"{tmp_path / 'demo'}/.", f"{seed}:/data/")
     docker("rm", seed)

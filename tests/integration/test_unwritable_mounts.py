@@ -8,16 +8,16 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
-from media_dedup.constants import RunKind
-from media_dedup.errors import MountError
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.report.views import ReportRecord
-from media_dedup.report.writer import ReportWriter
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.reporting import write_report
-from media_dedup.services.writable import ensure_writable
+from media_hygiene.constants import RunKind
+from media_hygiene.errors import MountError
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.report.views import ReportRecord
+from media_hygiene.report.writer import ReportWriter
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.reporting import write_report
+from media_hygiene.services.writable import ensure_writable
 from tests.support.cli import run
 from tests.support.demo import build_demo
 from tests.support.runtime import make_locations, make_runtime
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
     from typer.testing import CliRunner
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
     type Lock = Callable[..., None]
 
@@ -139,7 +139,7 @@ def test_read_only_mount_gets_the_ro_tip(
     locations: Locations, lock: Lock, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """A `:ro` mount is fixed by removing `:ro`, not by changing its owner."""
-    monkeypatch.setattr("media_dedup.services.writable.is_read_only", lambda _: True)
+    monkeypatch.setattr("media_hygiene.services.writable.is_read_only", lambda _: True)
     lock(MountKind.QUARANTINE)
     with pytest.raises(MountError) as caught:
         ensure_writable(make_runtime(locations), MountKind.QUARANTINE)

@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.constants import BrokenReason
-from media_dedup.errors import MountError
-from media_dedup.scan.progress import NullProgress, Step
-from media_dedup.services.audit import AuditService
+from media_hygiene.constants import BrokenReason
+from media_hygiene.errors import MountError
+from media_hygiene.scan.progress import NullProgress, Step
+from media_hygiene.services.audit import AuditService
 from tests.support.demo import build_demo
 from tests.support.media import FFMPEG
 from tests.support.runtime import make_runtime, output_of
@@ -17,9 +17,9 @@ from tests.support.runtime import make_runtime, output_of
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.config.layers import Layer
-    from media_dedup.paths.locations import Locations
-    from media_dedup.plan.models import AuditFindings
+    from media_hygiene.config.layers import Layer
+    from media_hygiene.paths.locations import Locations
+    from media_hygiene.plan.models import AuditFindings
 
 
 def audit(locations: Locations, cli: Layer | None = None) -> AuditFindings:
@@ -98,8 +98,8 @@ def test_second_audit_reuses_the_index(
     def forbidden(*_args: object) -> None:
         raise AssertionError
 
-    monkeypatch.setattr("media_dedup.scan.exact.full_digest", forbidden)
-    monkeypatch.setattr("media_dedup.scan.broken.inspect_image", forbidden)
+    monkeypatch.setattr("media_hygiene.scan.exact.full_digest", forbidden)
+    monkeypatch.setattr("media_hygiene.scan.broken.inspect_image", forbidden)
     second = audit(locations)
     assert len(second.plan.decisions) == len(first.plan.decisions)
 

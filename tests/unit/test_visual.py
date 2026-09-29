@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_dedup.plan.near import is_near
-from media_dedup.scan.image_check import inspect_image, prepare_image_worker
+from media_hygiene.plan.near import is_near
+from media_hygiene.scan.image_check import inspect_image, prepare_image_worker
 from tests.support.scenes import Effect, Shot, write_shot
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.scan.models import VisualFacts
+    from media_hygiene.scan.models import VisualFacts
 
 DATE = "2019:06:12 14:30:12"
 ORIGINAL = Shot(1, size=(960, 720), taken_at=DATE)

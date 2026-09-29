@@ -4,22 +4,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_dedup.actions.journal import journal_file, read_journal
-from media_dedup.constants import ActionKind, RunKind
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.report.views import ReportRecord
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.clean import CleanService
-from media_dedup.services.reporting import write_report
-from media_dedup.services.undo import undo_run
+from media_hygiene.actions.journal import journal_file, read_journal
+from media_hygiene.constants import ActionKind, RunKind
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.report.views import ReportRecord
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.clean import CleanService
+from media_hygiene.services.reporting import write_report
+from media_hygiene.services.undo import undo_run
 from tests.support.media import MediaFactory
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 _KEPT = "c/Photos/IMG_1.jpg"
 _COPY = "d/backup/2019/IMG_1.jpg"

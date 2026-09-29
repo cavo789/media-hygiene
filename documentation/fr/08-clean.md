@@ -25,7 +25,7 @@ puissiez changer d'avis.
   photos de rafale.
 
 ```powershell
-mkdir "$HOME\media-dedup\journal", "$HOME\media-dedup\quarantine"
+mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
 ## Lancer le nettoyage
@@ -38,12 +38,12 @@ d'`audit` :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr clean
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean
 ```
 
 `clean` refait l'audit (rapidement, grâce au cache), affiche le même résumé et les mêmes paires
@@ -72,7 +72,7 @@ Nettoyage 20260927-064355
 ✅ Rapport HTML : /reports/20260927-064355-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-dedup undo 20260927-064355' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20260927-064355' restaure tout.
 💡 Les fichiers déplacés sont dans /quarantine/20260927-064355 ; 'purge' les
 supprime.
 ```

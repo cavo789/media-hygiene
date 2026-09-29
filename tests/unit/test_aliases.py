@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.constants import MediaKind
-from media_dedup.scan.aliases import Alias, unique_files
-from media_dedup.scan.models import FileIdentity, MediaFile
+from media_hygiene.constants import MediaKind
+from media_hygiene.scan.aliases import Alias, unique_files
+from media_hygiene.scan.models import FileIdentity, MediaFile
 
 SHARED = FileIdentity(device=1, inode=42)
 

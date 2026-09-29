@@ -11,17 +11,17 @@ that opens in your browser, with no server and no internet connection.
 Create a folder for the reports once, then mount it on `/reports`:
 
 ```powershell
-mkdir "$HOME\media-dedup\reports"
+mkdir "$HOME\media-hygiene\reports"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup audit
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene audit
 ```
 
 `$HOME` is your user folder (`C:\Users\<you>`): the reports land in
-`C:\Users\<you>\media-dedup\reports`. Create the folder **before** the first run: a folder
+`C:\Users\<you>\media-hygiene\reports`. Create the folder **before** the first run: a folder
 Docker creates by itself belongs to the administrator, and the tool could not write there
 ([why](reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
 
@@ -35,7 +35,7 @@ At the end of the audit, two new lines:
 
 ## Open it
 
-Open `C:\Users\<you>\media-dedup\reports` in the Explorer and double-click `index.html`. It lists
+Open `C:\Users\<you>\media-hygiene\reports` in the Explorer and double-click `index.html`. It lists
 every audit and clean, newest first:
 
 ![The index of the reports: one line per audit or clean, with its date, its type, its numbers of files, duplicates and broken files, and the space to free](images/index.webp)
@@ -75,7 +75,7 @@ fingerprint they share.
 ![Duplicate groups: a video and three HEIC photos, each with the kept copy, the deleted copy, the start of their SHA-256, and Check it yourself open on a Get-FileHash command](images/report-groups.webp)
 
 **Check it yourself** gives a command for PowerShell. Paste it: Windows computes the fingerprint
-of every copy itself, and they are all the same. You do not have to trust media-dedup.
+of every copy itself, and they are all the same. You do not have to trust media-hygiene.
 
 ## Near duplicates and burst series
 
@@ -119,7 +119,7 @@ Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail
 recent and deletes the others:
 
 ```powershell
-docker run --rm -it -v "$HOME\media-dedup\reports:/reports" cavo789/media-dedup reports
+docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene reports
 ```
 
 <!-- capture: reports.txt -->

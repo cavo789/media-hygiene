@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from media_dedup.paths.overlaps import Overlap, mount_overlaps
+from media_hygiene.paths.overlaps import Overlap, mount_overlaps
 
 PHOTOS = (Path("/data/c/Photos"), "C:\\Photos")
 

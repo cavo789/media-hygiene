@@ -7,13 +7,13 @@ from pathlib import Path
 
 import pytest
 
-from media_dedup.constants import CZKAWKA_IMAGE
-from media_dedup.crosscheck.czkawka import (
+from media_hygiene.constants import CZKAWKA_IMAGE
+from media_hygiene.crosscheck.czkawka import (
     CzkawkaCommand,
     CzkawkaScope,
     read_czkawka_groups,
 )
-from media_dedup.errors import CrossCheckError
+from media_hygiene.errors import CrossCheckError
 
 # The shape czkawka_cli 12 writes with -C (captured from a real run, fields trimmed).
 RESULTS = {
@@ -59,11 +59,11 @@ def test_other_files_are_refused(tmp_path: Path, content: str) -> None:
     assert caught.value.tip is not None
 
 
-def test_the_command_sees_what_media_dedup_sees() -> None:
+def test_the_command_sees_what_media_hygiene_sees() -> None:
     """Same mounts (read-only), same extensions, same exclusions, every size."""
     command = CzkawkaCommand(
         mounts=(("C:\\Photos", Path("/data/c/Photos")),),
-        output_dir="C:\\Users\\me\\media-dedup\\reports",
+        output_dir="C:\\Users\\me\\media-hygiene\\reports",
         scope=CzkawkaScope(
             data_dir=Path("/data"),
             extensions=("jpg", "mp4"),
@@ -72,7 +72,7 @@ def test_the_command_sees_what_media_dedup_sees() -> None:
     ).render()
     assert command == (
         'docker run --rm -v "C:\\Photos:/data/c/Photos:ro" '
-        '-v "C:\\Users\\me\\media-dedup\\reports:/out" '
+        '-v "C:\\Users\\me\\media-hygiene\\reports:/out" '
         f"{CZKAWKA_IMAGE} czkawka_cli dup -d /data -m 1 -W -N -x jpg,mp4 "
         '-e "/data/c/Photos/Backup" -C /out/czkawka.json'
     )

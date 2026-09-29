@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_dedup.constants import RunKind
-from media_dedup.report.views import ReportRecord
-from media_dedup.scan.progress import NullProgress
-from media_dedup.services.audit import AuditService
-from media_dedup.services.reporting import write_report
+from media_hygiene.constants import RunKind
+from media_hygiene.report.views import ReportRecord
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.reporting import write_report
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
     from tests.support.media import MediaFactory
 
 

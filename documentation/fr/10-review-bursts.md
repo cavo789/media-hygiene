@@ -24,19 +24,19 @@ d'être gardées. L'outil ne décide donc jamais seul :
 et du dossier des rapports, où il enregistre vos choix :
 
 ```powershell
-docker run --rm -it --name media-dedup-review -p 127.0.0.1::8080 `
+docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  cavo789/media-dedup --locale fr review
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr review
 ```
 
 Deux nouveautés, sur la première ligne :
 
 | Morceau | Ce qu'il veut dire |
 |---|---|
-| `--name media-dedup-review` | Donne un nom au conteneur, pour retrouver son adresse à l'étape 2. |
+| `--name media-hygiene-review` | Donne un nom au conteneur, pour retrouver son adresse à l'étape 2. |
 | `-p 127.0.0.1::8080` | Ouvre la page à votre navigateur. `127.0.0.1` : votre ordinateur seulement, personne d'autre sur le réseau. `::` laisse Docker choisir un port libre. |
 
 Le tri commence par un audit (rapide, grâce au cache), puis vous attend :
@@ -57,7 +57,7 @@ Laissez cette fenêtre ouverte : le tri tourne tant qu'elle reste ouverte.
 Dans une **autre** fenêtre PowerShell, demandez à Docker quel port il a choisi :
 
 ```powershell
-docker port media-dedup-review 8080
+docker port media-hygiene-review 8080
 ```
 
 Il répond une adresse comme `127.0.0.1:49153` (le port change à chaque fois). Ouvrez
@@ -159,12 +159,12 @@ l'[étape 8](08-clean.md) avec `--decisions decisions.json` :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
-  -v media-dedup-cache:/cache `
-  -v "$HOME\media-dedup\reports:/reports" `
-  -v "$HOME\media-dedup\config:/config" `
-  -v "$HOME\media-dedup\journal:/journal" `
-  -v "$HOME\media-dedup\quarantine:/quarantine" `
-  cavo789/media-dedup --locale fr clean --decisions decisions.json
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean --decisions decisions.json
 ```
 
 Avant sa question, `clean` annonce les photos qu'il va déplacer :

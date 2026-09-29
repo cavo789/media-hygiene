@@ -11,13 +11,13 @@ function _repo_root() {
     realpath "${INTERACTIVE_SCRIPTS_DIR}/../.."
 }
 
-# _media_dedup_env — print the MEDIA_DEDUP_*_DIR assignments that redirect every mount point of
-# the tool to /tmp/media-dedup/, so a local run never needs Docker mounts nor touches the repo.
-function _media_dedup_env() {
-    local base="/tmp/media-dedup"
+# _media_hygiene_env — print the MEDIA_HYGIENE_*_DIR assignments that redirect every mount point of
+# the tool to /tmp/media-hygiene/, so a local run never needs Docker mounts nor touches the repo.
+function _media_hygiene_env() {
+    local base="/tmp/media-hygiene"
     local kind
     for kind in data config journal quarantine reports cache; do
         mkdir -p "${base}/${kind}"
-        printf 'MEDIA_DEDUP_%s_DIR=%s/%s\n' "${kind^^}" "${base}" "${kind}"
+        printf 'MEDIA_HYGIENE_%s_DIR=%s/%s\n' "${kind^^}" "${base}" "${kind}"
     done
 }

@@ -3,7 +3,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "media-deduplication-pipeline"
+name = "media-hygiene"
 version = "0.2.0"
 description = "Find and safely clean duplicate photos and videos across folders and disks."
 readme = "README.md"
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-media-dedup = "media_dedup.__main__:main"
+media-hygiene = "media_hygiene.__main__:main"
 
 [dependency-groups]
 dev = [
@@ -38,7 +38,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/media_dedup"]
+packages = ["src/media_hygiene"]
 
 # ---------------------------------------------------------------------------------------------
 # Ruff — every rule enabled; the few ignores are genuine conflicts, each justified.
@@ -61,7 +61,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Typer builds each command from its signature: one parameter per CLI option, and the
 # annotations are resolved at runtime (so their imports must stay real imports).
-"src/media_dedup/cli/**" = ["PLR0913", "TC001", "TC002", "TC003"]
+"src/media_hygiene/cli/**" = ["PLR0913", "TC001", "TC002", "TC003"]
 "tests/**" = [
     "S101",    # pytest is built on bare `assert`.
     "PLR2004", # Expected values in assertions are the test's own documentation.
@@ -174,7 +174,7 @@ filterwarnings = ["error"]
 
 [tool.coverage.run]
 branch = true
-source = ["media_dedup"]
+source = ["media_hygiene"]
 
 [tool.coverage.report]
 fail_under = 90

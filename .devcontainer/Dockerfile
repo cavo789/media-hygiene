@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 #
-# Development image of the media-dedup devcontainer: the environment a human edits, lints and
+# Development image of the media-hygiene devcontainer: the environment a human edits, lints and
 # tests inside. The shipped tool is built by the root Dockerfile, never by this one — so no
 # application COPY and no ENTRYPOINT here: the workspace is bind-mounted live by VS Code.
 
@@ -22,7 +22,7 @@ ARG DEV_USER=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
 # Workspace path inside the container, used to source the cheatsheet from ~/.bashrc.
-ARG APP_HOME=/workspaces/media-deduplication-pipeline
+ARG APP_HOME=/workspaces/media-hygiene
 # Timezone of the developer, passed from the host's TZ variable by devcontainer.json
 # (UTC when unset) — never hardcoded in this public file.
 ARG TZ=Etc/UTC

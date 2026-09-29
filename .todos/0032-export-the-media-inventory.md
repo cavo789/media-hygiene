@@ -3,7 +3,7 @@
 - **Priority**: Low
 - **Batch**: report
 - **Depends**: 0025, 0033
-- **Files**: `src/media_dedup/cli/cmd_inventory.py` (new), `src/media_dedup/services/inventory.py` (new), `src/media_dedup/report/inventory_workbook.py` (new), `src/media_dedup/index/repository.py`, `src/media_dedup/report/csv_export.py`, `pyproject.toml` (openpyxl), `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/cli/cmd_inventory.py` (new), `src/media_hygiene/services/inventory.py` (new), `src/media_hygiene/report/inventory_workbook.py` (new), `src/media_hygiene/index/repository.py`, `src/media_hygiene/report/csv_export.py`, `pyproject.toml` (openpyxl), `documentation/en/`, `documentation/fr/`
 
 ## Context
 
@@ -29,7 +29,7 @@ rows of files that are gone, and records the date of the last complete walk of e
 
 ## Proposal
 
-- `media-dedup inventory` writes `inventory.xlsx` to a new report folder
+- `media-hygiene inventory` writes `inventory.xlsx` to a new report folder
   (`<reports>/<stamp>-inventory/`):
   - openpyxl in `write_only` mode (streams rows: 70,000 files must stay fast and small in
     memory); openpyxl comes with 0027, or with this TODO if it lands first;

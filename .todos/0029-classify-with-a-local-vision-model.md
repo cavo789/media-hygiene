@@ -3,7 +3,7 @@
 - **Priority**: Medium — the main category source for photos in date-only folders, once 0026–0028 and 0035 work without it
 - **Batch**: ai
 - **Depends**: 0026, 0035
-- **Files**: `src/media_dedup/classify/ai/` (new: client, describe, mapping, sampling), `src/media_dedup/index/schema.py`, `src/media_dedup/index/repository.py`, `src/media_dedup/config/settings.py`, `src/media_dedup/config/templates/config.toml.j2`, `src/media_dedup/cli/cmd_classify.py`, `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/classify/ai/` (new: client, describe, mapping, sampling), `src/media_hygiene/index/schema.py`, `src/media_hygiene/index/repository.py`, `src/media_hygiene/config/settings.py`, `src/media_hygiene/config/templates/config.toml.j2`, `src/media_hygiene/cli/cmd_classify.py`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 

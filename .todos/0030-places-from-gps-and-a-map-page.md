@@ -3,7 +3,7 @@
 - **Priority**: Low — only 1.3 % of the maintainer's photos carry GPS; worth it for recent phones and other users
 - **Batch**: geo
 - **Depends**: 0025, 0026, 0033, 0035
-- **Files**: `src/media_dedup/geo/` (new: geocoder, places, clusters, data), `src/media_dedup/classify/rules/`, `src/media_dedup/config/settings.py`, `src/media_dedup/cli/cmd_places.py`, `src/media_dedup/services/places.py`, `src/media_dedup/places/` (new: app, templates, vendored Leaflet), `src/media_dedup/review/http.py`, `pyproject.toml` (tomlkit), `.devcontainer/helpers/`, `documentation/en/`, `documentation/fr/`
+- **Files**: `src/media_hygiene/geo/` (new: geocoder, places, clusters, data), `src/media_hygiene/classify/rules/`, `src/media_hygiene/config/settings.py`, `src/media_hygiene/cli/cmd_places.py`, `src/media_hygiene/services/places.py`, `src/media_hygiene/places/` (new: app, templates, vendored Leaflet), `src/media_hygiene/review/http.py`, `pyproject.toml` (tomlkit), `.devcontainer/helpers/`, `documentation/en/`, `documentation/fr/`
 
 ## Context
 

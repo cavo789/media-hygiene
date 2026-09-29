@@ -8,18 +8,18 @@ from typing import TYPE_CHECKING, Final
 
 from rich.console import Console
 
-from media_dedup.config.loader import load_settings
-from media_dedup.console.output import Output
-from media_dedup.paths.locations import Locations
-from media_dedup.paths.mount_kind import MountKind
-from media_dedup.paths.mounts import MountTable
-from media_dedup.scan.image_check import prepare_image_worker
-from media_dedup.services.runtime import Runtime
+from media_hygiene.config.loader import load_settings
+from media_hygiene.console.output import Output
+from media_hygiene.paths.locations import Locations
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.paths.mounts import MountTable
+from media_hygiene.scan.image_check import prepare_image_worker
+from media_hygiene.services.runtime import Runtime
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_dedup.config.layers import Layer
+    from media_hygiene.config.layers import Layer
 
 CONSOLE_WIDTH: Final = 200
 

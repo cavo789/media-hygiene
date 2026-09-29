@@ -27,7 +27,7 @@ pas proposé pour les copies d'un même dossier : il n'y a rien à inverser.
 ## Étape 2 : télécharger le fichier
 
 Cliquez sur **Télécharger decisions.json** ; le nombre entre parenthèses compte vos décisions.
-Enregistrez le fichier dans votre dossier de rapports (`C:\Users\<vous>\media-dedup\reports`), à
+Enregistrez le fichier dans votre dossier de rapports (`C:\Users\<vous>\media-hygiene\reports`), à
 côté d'`index.html`.
 
 ## Étape 3 : nettoyer avec vos décisions
@@ -36,7 +36,7 @@ Lancez votre commande `clean` de l'[étape 8](08-clean.md) avec `--decisions dec
 chemin relatif est lu dans le dossier des rapports) :
 
 ```powershell
-cavo789/media-dedup --locale fr clean --decisions decisions.json
+cavo789/media-hygiene --locale fr clean --decisions decisions.json
 ```
 
 (avec la même partie `docker run … -v …` qu'à l'étape 8)

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
 
-    from media_dedup.paths.locations import Locations
+    from media_hygiene.paths.locations import Locations
 
 WHATSAPP = "c/Users/Public/Pictures/WhatsApp/IMG-20210705-WA0001.jpg"
 EMAIL = "d/backup/email/Plage (petite).jpg"
@@ -33,7 +33,7 @@ def test_the_audit_shows_near_duplicates_and_bursts(
     output = run(cli, "audit").output
     assert "Near duplicates (moved only with --tier near)" in output
     assert "Burst series (moved only if set aside with 'review')" in output
-    assert "media-dedup review" in output
+    assert "media-hygiene review" in output
     assert "clean --tier near" in output
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()
     assert "IMG-20210705-WA0001.jpg" in report
@@ -67,7 +67,7 @@ def test_the_near_tier_needs_a_quarantine(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Refused before the long analysis, with a tip."""
-    monkeypatch.delenv("MEDIA_DEDUP_QUARANTINE_DIR")
+    monkeypatch.delenv("MEDIA_HYGIENE_QUARANTINE_DIR")
     result = run(cli, "clean", "--yes", "--tier", "near")
     assert result.exit_code == 1
     assert "/quarantine" in result.output
