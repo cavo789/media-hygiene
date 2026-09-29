@@ -5,7 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
-from media_hygiene.constants import ActionKind, RunKind
+from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.constants import RunKind
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.scan.progress import NullProgress

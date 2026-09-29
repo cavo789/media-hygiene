@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING, Self
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.constants import JOURNAL_SUFFIX, ActionKind, Phase, Status
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.constants import JOURNAL_SUFFIX
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
 

@@ -7,8 +7,9 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import journal_file, latest_states, read_journal
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.quarantine import QUARANTINED
-from media_hygiene.constants import JOURNAL_SUFFIX, Phase, Status
+from media_hygiene.constants import JOURNAL_SUFFIX
 
 if TYPE_CHECKING:
     from pathlib import Path

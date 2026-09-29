@@ -5,7 +5,7 @@ from __future__ import annotations
 import shutil
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import ActionKind
+from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 

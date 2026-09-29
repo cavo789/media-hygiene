@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import latest_states
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
 from media_hygiene.actions.quarantine import QUARANTINED
-from media_hygiene.constants import ActionKind, Phase, Status
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import Step

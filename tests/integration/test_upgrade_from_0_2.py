@@ -16,7 +16,8 @@ import pytest
 
 from media_hygiene.__main__ import main
 from media_hygiene.actions.journal import read_journal
-from media_hygiene.constants import ActionKind, MediaKind, Status
+from media_hygiene.actions.kinds import ActionKind, Status
+from media_hygiene.constants import MediaKind
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.plan.review import PairAction

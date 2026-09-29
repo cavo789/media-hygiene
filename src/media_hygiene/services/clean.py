@@ -13,8 +13,9 @@ from media_hygiene.actions.journal import (
     read_journal,
 )
 from media_hygiene.actions.journaled import CleanContext
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.runs import new_run_id
-from media_hygiene.constants import BrokenReason, Phase, Status
+from media_hygiene.constants import BrokenReason
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository

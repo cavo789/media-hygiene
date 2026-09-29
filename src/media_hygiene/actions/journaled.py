@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalEntry
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.quarantine import move_verified
-from media_hygiene.constants import Phase, Status
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.journal import JournalWriter
+    from media_hygiene.actions.kinds import ActionKind
     from media_hygiene.actions.outcome import Tally
-    from media_hygiene.constants import ActionKind
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.progress import ProgressSink

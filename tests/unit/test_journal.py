@@ -13,8 +13,8 @@ from media_hygiene.actions.journal import (
     latest_states,
     read_journal,
 )
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.actions.runs import list_run_ids, new_run_id, summarize
-from media_hygiene.constants import ActionKind, Phase, Status
 from media_hygiene.errors import JournalError
 
 if TYPE_CHECKING:

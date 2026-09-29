@@ -82,37 +82,11 @@ class BrokenReason(StrEnum):
     UNREADABLE_VIDEO = "unreadable-video"
 
 
-class ActionKind(StrEnum):
-    """What `clean` did to a file — recorded in the journal so `undo` can reverse it."""
-
-    DELETE_DUPLICATE = "delete-duplicate"
-    DELETE_EMPTY = "delete-empty"
-    QUARANTINE = "quarantine"
-    QUARANTINE_NEAR = "quarantine-near"
-    QUARANTINE_DUPLICATE = "quarantine-duplicate"
-    QUARANTINE_SIDECAR = "quarantine-sidecar"
-    QUARANTINE_BURST = "quarantine-burst"
-
-
 class CleanTier(StrEnum):
     """How far `clean` goes: exact duplicates only, or near duplicates too."""
 
     EXACT = "exact"
     NEAR = "near"
-
-
-class Phase(StrEnum):
-    """Which command wrote a journal entry."""
-
-    CLEAN = "clean"
-    UNDO = "undo"
-
-
-class Status(StrEnum):
-    """Write-ahead state of a journal entry: `pending` before acting, `done` after."""
-
-    PENDING = "pending"
-    DONE = "done"
 
 
 class RunKind(StrEnum):

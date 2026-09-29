@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.actions.journal import journal_file, read_journal
-from media_hygiene.constants import ActionKind, MediaKind
+from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.constants import MediaKind
 from media_hygiene.errors import MountError
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.scan.progress import NullProgress

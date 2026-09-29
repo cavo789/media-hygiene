@@ -6,7 +6,7 @@ import hashlib
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
-from media_hygiene.constants import Phase, Status
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService

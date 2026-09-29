@@ -7,6 +7,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journaled import JournaledChanges
+from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
 from media_hygiene.actions.verify import (
     burst_blocker,
@@ -15,7 +16,7 @@ from media_hygiene.actions.verify import (
     orphan_blocker,
     removal_blocker,
 )
-from media_hygiene.constants import ActionKind, BrokenReason, MediaKind
+from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
