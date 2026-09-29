@@ -83,6 +83,14 @@ Quality:
   - Docker Engine on Linux or WSL needs `--add-host=host.docker.internal:host-gateway`, with
     Ollama listening beyond loopback (`OLLAMA_HOST`).
   - Document both, and warn that images go to the configured URL.
+- **Kept for later, not built here (2026-09-29): a fast CLIP pass.** If `--sample` shows
+  events mixing several subjects, or a total time too long, evaluate CLIP: images and sentences
+  turned into comparable vectors, so that *every* photo is scored against the categories
+  written as sentences ("a beach", "a school show"). It runs on CPU with onnxruntime, in the
+  order of tens of milliseconds per photo (to measure), its model downloaded once into
+  `/cache`; Ollama would then describe only the samples. Limits: it sees scenes, not
+  occasions, and [sorta](https://github.com/shinKatana0/sorta) measured 59 % precision on its
+  CLIP "screenshot" class. It would also allow a search by words (albums of 0041).
 
 ## Acceptance
 

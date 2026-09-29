@@ -89,13 +89,10 @@ docs follow in their own commits.
 - `git grep -i "media.dedup"`: only the expected places, plus `.claude/settings.json` (below).
 - Pre-commit gate green; targeted tests and `pytest -m e2e` (4 passed) on
   `media-hygiene:latest`.
+- GitHub repository renamed `cavo789/media-hygiene` by the maintainer (2026-09-29); `origin`
+  updated.
 
 ### Not done
-- Rename the GitHub repository to `cavo789/media-hygiene` (Settings → General, or
-  `gh repo rename media-hygiene`), then `git remote set-url origin
-  git@github.com:cavo789/media-hygiene.git`.
-  **Reason:** outward-facing, on the maintainer's account; do it when this branch reaches
-  `main`, so that the links of the documentation point to an existing repository.
 - Publish 0.3.0: merge into `main`, push, run the full `check`, then `release` (tag `v0.3.0`):
   CI pushes `cavo789/media-hygiene:0.3.0` and `:latest`.
   **Reason:** a release is the maintainer's decision.

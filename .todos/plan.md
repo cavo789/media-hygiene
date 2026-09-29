@@ -132,7 +132,7 @@ filing a fresh TODO for what is left.
 
 | ID | Title | File |
 |----|-------|------|
-| 0040 | Rename the project to `media-hygiene` (left: GitHub rename, 0.3.0 release, Docker Hub description) | [PARTIAL_0040-rename-the-project-media-hygiene.md](PARTIAL/PARTIAL_0040-rename-the-project-media-hygiene.md) |
+| 0040 | Rename the project to `media-hygiene` (left: 0.3.0 release, Docker Hub description) | [PARTIAL_0040-rename-the-project-media-hygiene.md](PARTIAL/PARTIAL_0040-rename-the-project-media-hygiene.md) |
 
 ## Anomalies
 
