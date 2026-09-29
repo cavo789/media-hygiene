@@ -73,7 +73,7 @@ both languages (`--locale fr --help`). Here is what they print:
 │             with :ro.                                                        │
 │ crosscheck  Compare a fresh audit with Czkawka's results: a second,          │
 │             independent opinion.                                             │
-│ history     List the clean runs and what they did.                           │
+│ history     List the runs and what they did.                                 │
 │ reports     List the HTML reports of previous audits and cleans.             │
 │ config      Show every setting, where it comes from, and the mount points.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -82,8 +82,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │             in your browser; 'clean --decisions' then moves them.            │
 │ clean       Audit, confirm, then really delete duplicate copies (journaled,  │
 │             undoable).                                                       │
-│ undo        Restore every file of a clean run, from the kept copy or the     │
-│             quarantine.                                                      │
+│ undo        Restore every file of a run, from the kept copy, the quarantine  │
+│             or where it was moved.                                           │
 │ purge       Permanently delete the quarantined broken files of a run.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
@@ -221,7 +221,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene undo [OPTIONS] [run_id]
 
- Restore every file of a clean run, from the kept copy or the quarantine.
+ Restore every file of a run, from the kept copy, the quarantine or where it
+ was moved.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
@@ -240,7 +241,7 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene history [OPTIONS]
 
- List the clean runs and what they did.
+ List the runs and what they did.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │

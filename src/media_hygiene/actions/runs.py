@@ -6,13 +6,15 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.journal import journal_file, latest_states, read_journal
-from media_hygiene.actions.kinds import Phase, Status
+from media_hygiene.actions.journal import done_states, journal_file, read_journal
+from media_hygiene.actions.kinds import ACTING_PHASES, FOLDER_ACTIONS, ActionKind, Phase
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.constants import JOURNAL_SUFFIX
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from media_hygiene.actions.journal import JournalEntry
 
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 
@@ -34,14 +36,31 @@ def new_run_id(journal_dir: Path) -> str:
     return run_id
 
 
+def run_phase(entries: list[JournalEntry]) -> Phase:
+    """Tell which command made a run: the phase of its first action.
+
+    Journals written before 0.3 hold `clean` entries only, and read as such.
+
+    Args:
+        entries: Journal entries, in write order.
+
+    Returns:
+        `clean` or `sort`; `clean` for a run that did nothing yet.
+    """
+    phases = (entry.phase for entry in entries if entry.phase in ACTING_PHASES)
+    return next(phases, Phase.CLEAN)
+
+
 @dataclass(frozen=True, slots=True)
 class RunSummary:
-    """What a `clean` run did, and whether it was undone."""
+    """What a run did (`clean` or `sort`), and whether it was undone."""
 
     run_id: str
+    kind: Phase
     deleted: int
     freed: int
     quarantined: int
+    moved: int
     restored: int
 
 
@@ -56,19 +75,23 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         The run summary.
     """
     entries = read_journal(journal_file(journal_dir, run_id))
-    done = [
-        e
-        for e in latest_states(entries, Phase.CLEAN).values()
-        if e.status is Status.DONE
+    kind = run_phase(entries)
+    files = [
+        entry
+        for entry in done_states(entries, kind)
+        if entry.action not in FOLDER_ACTIONS
     ]
-    restored = latest_states(entries, Phase.UNDO).values()
-    removed = [e for e in done if e.action not in QUARANTINED]
+    moved = [entry for entry in files if entry.action is ActionKind.MOVE]
+    quarantined = [entry for entry in files if entry.action in QUARANTINED]
+    deleted = len(files) - len(moved) - len(quarantined)
     return RunSummary(
         run_id=run_id,
-        deleted=len(removed),
-        freed=sum(entry.size for entry in done),
-        quarantined=len(done) - len(removed),
-        restored=sum(1 for entry in restored if entry.status is Status.DONE),
+        kind=kind,
+        deleted=deleted,
+        freed=sum(entry.size for entry in files if entry.action is not ActionKind.MOVE),
+        quarantined=len(quarantined),
+        moved=len(moved),
+        restored=len(done_states(entries, Phase.UNDO)),
     )
 
 

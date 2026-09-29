@@ -55,6 +55,11 @@ msgstr ""
 "Un fichier accessible par deux chemins (dossier monté deux fois, lien "
 "physique) est reconnu : il n'est jamais compté comme sa propre copie."
 
+msgid "A newer version wrote this journal: update media-hygiene to undo it."
+msgstr ""
+"Une version plus récente a écrit ce journal : mettez media-hygiene à jour"
+" pour l'annuler."
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
 
@@ -210,15 +215,15 @@ msgstr "Nettoyage"
 msgid "Clean report"
 msgstr "Rapport de nettoyage"
 
-msgid "Clean runs (newest first)"
-msgstr "Nettoyages (du plus récent au plus ancien)"
-
 #, python-brace-format
 msgid "Clean {run_id}"
 msgstr "Nettoyage {run_id}"
 
 msgid "Cleaning"
 msgstr "Nettoyage"
+
+msgid "Command"
+msgstr "Commande"
 
 msgid ""
 "Compare a fresh audit with Czkawka's results: a second, independent "
@@ -597,14 +602,22 @@ msgid "Leave alone"
 msgstr "Ne pas toucher"
 
 #, python-brace-format
+msgid ""
+"Line {number} of {path} holds an action this version does not know: "
+"nothing was changed."
+msgstr ""
+"La ligne {number} de {path} contient une action que cette version ne "
+"connaît pas : rien n'a été modifié."
+
+#, python-brace-format
 msgid "Line {number} of {path} is corrupt."
 msgstr "La ligne {number} de {path} est corrompue."
 
 msgid "List the HTML reports of previous audits and cleans."
 msgstr "Liste les rapports HTML des audits et nettoyages précédents."
 
-msgid "List the clean runs and what they did."
-msgstr "Liste les nettoyages et ce qu'ils ont fait."
+msgid "List the runs and what they did."
+msgstr "Liste les exécutions et ce qu'elles ont fait."
 
 msgid "Listing media files"
 msgstr "Recherche des fichiers médias"
@@ -651,6 +664,9 @@ msgstr ""
 
 msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
 msgstr "Montez vos dossiers, p. ex. -v \"C:\\Photos:/data/c/Photos:ro\"."
+
+msgid "Moved"
+msgstr "Déplacés"
 
 #, python-brace-format
 msgid "Moved files are in /quarantine/{run_id}; 'purge' deletes them."
@@ -704,12 +720,6 @@ msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :
 msgid "No burst series: nothing to review."
 msgstr "Aucune rafale : rien à trier."
 
-msgid "No clean run found in the journal."
-msgstr "Aucun nettoyage trouvé dans le journal."
-
-msgid "No clean run yet."
-msgstr "Aucun nettoyage pour l'instant."
-
 #, python-brace-format
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder}."
@@ -744,6 +754,12 @@ msgstr "Aucun rapport pour l'instant : lancez 'media-hygiene audit'."
 msgid "No reports mount: there is no report to list."
 msgstr "Pas de montage /reports : aucun rapport à lister."
 
+msgid "No run found in the journal."
+msgstr "Aucune exécution trouvée dans le journal."
+
+msgid "No run yet."
+msgstr "Aucune exécution pour l'instant."
+
 msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
 msgstr "Pas de second avis : 'media-hygiene crosscheck' compare avec Czkawka."
 
@@ -767,6 +783,11 @@ msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 
 msgid "Nothing was changed."
 msgstr "Rien n'a été modifié."
+
+msgid "Nothing was changed. Update media-hygiene, then undo this run again."
+msgstr ""
+"Rien n'a été modifié. Mettez media-hygiene à jour, puis annulez à nouveau"
+" cette exécution."
 
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
@@ -907,11 +928,11 @@ msgid "Reason"
 msgstr "Raison"
 
 msgid ""
-"Rebuilds each deleted copy from the kept one, and brings quarantined "
-"files back."
+"Rebuilds each deleted copy from the kept one, brings quarantined and "
+"moved files back."
 msgstr ""
-"Recrée chaque copie supprimée à partir de celle gardée, et ramène les "
-"fichiers mis en quarantaine."
+"Reconstruit chaque copie supprimée à partir de celle conservée, ramène "
+"les fichiers mis en quarantaine et déplacés."
 
 msgid ""
 "Regular expressions matching the whole name, case ignored: file names "
@@ -935,10 +956,12 @@ msgstr "Retirez ':ro' de leurs options -v pour que 'clean' puisse agir."
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
 
-msgid "Restore every file of a clean run, from the kept copy or the quarantine."
+msgid ""
+"Restore every file of a run, from the kept copy, the quarantine or where "
+"it was moved."
 msgstr ""
-"Restaure chaque fichier d'un nettoyage, depuis la copie conservée ou la "
-"quarantaine."
+"Restaure chaque fichier d'une exécution, depuis la copie conservée, la "
+"quarantaine ou l'endroit où il a été déplacé."
 
 msgid "Restored"
 msgstr "Restaurés"
@@ -1007,6 +1030,9 @@ msgstr "Exécution dont la quarantaine est supprimée ; toutes par défaut."
 #, python-brace-format
 msgid "Run {run_id} has no quarantine."
 msgstr "L'exécution {run_id} n'a pas de quarantaine."
+
+msgid "Runs (newest first)"
+msgstr "Exécutions (les plus récentes d'abord)"
 
 msgid "SHA-256"
 msgstr "SHA-256"
@@ -1248,8 +1274,8 @@ msgid "Type"
 msgstr "Type"
 
 #, python-brace-format
-msgid "Undo {run_id}"
-msgstr "Annulation {run_id}"
+msgid "Undo the {command} run {run_id}"
+msgstr "Annulation de l'exécution {command} {run_id}"
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -1414,6 +1440,13 @@ msgstr "libérés"
 msgid "in excluded folders"
 msgstr "dans des dossiers exclus"
 
+msgid "it already exists"
+msgstr "il existe déjà"
+
+#, python-brace-format
+msgid "it is no longer at {path}: moved or renamed since"
+msgstr "il n'est plus à {path} : déplacé ou renommé depuis"
+
 msgid "it is the kept copy itself, seen through another path"
 msgstr "c'est la copie gardée elle-même, vue par un autre chemin"
 
@@ -1510,14 +1543,20 @@ msgstr "netteté"
 msgid "sharpness {value}"
 msgstr "netteté {value}"
 
-msgid "the file already exists"
-msgstr "le fichier existe déjà"
-
 msgid "the file no longer exists"
 msgstr "le fichier n'existe plus"
 
 msgid "the files are no longer identical"
 msgstr "les fichiers ne sont plus identiques"
+
+msgid "the folder is gone already"
+msgstr "le dossier a déjà disparu"
+
+msgid "the folder is not empty"
+msgstr "le dossier n'est pas vide"
+
+msgid "the journal does not say where its content is"
+msgstr "le journal ne dit pas où se trouve son contenu"
 
 #, python-brace-format
 msgid "the kept copy {path} no longer exists"
@@ -1697,6 +1736,10 @@ msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
 
 #, python-brace-format
+msgid "{path} changed since"
+msgstr "{path} a changé depuis"
+
+#, python-brace-format
 msgid "{path} is in a protected folder: it is never moved."
 msgstr "{path} est dans un dossier protégé : il ne bouge jamais."
 
@@ -1711,6 +1754,10 @@ msgstr "{path} n'est pas un fichier de décisions valide ({error})."
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
 msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
+
+#, python-brace-format
+msgid "{path}: this version cannot undo the action '{action}'."
+msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
 
 #, python-brace-format
 msgid "{removed} holds nothing else: it is entirely a copy of {kept}."

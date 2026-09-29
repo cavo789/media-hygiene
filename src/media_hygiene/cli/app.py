@@ -112,8 +112,8 @@ def build_app() -> typer.Typer:
             undo_command,
             act,
             _(
-                "Restore every file of a clean run, from the "
-                "kept copy or the quarantine."
+                "Restore every file of a run, from the kept copy, the quarantine "
+                "or where it was moved."
             ),
         ),
         (
@@ -126,7 +126,7 @@ def build_app() -> typer.Typer:
             "history",
             history_command,
             analyse,
-            _("List the clean runs and what they did."),
+            _("List the runs and what they did."),
         ),
         (
             "reports",

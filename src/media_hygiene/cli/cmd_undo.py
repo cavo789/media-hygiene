@@ -1,4 +1,4 @@
-"""`media-hygiene undo`: restore the files of a clean run."""
+"""`media-hygiene undo`: restore the files of a run (`clean`, later `sort`)."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from media_hygiene.console.tables import outcome_table
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.clean import CleanService
-from media_hygiene.services.undo import resolve_run_id, undo_run
+from media_hygiene.services.undo import resolve_run_id, run_kind, undo_run
 
 
 def undo_command(
@@ -24,7 +24,7 @@ def undo_command(
         ),
     ] = None,
 ) -> None:
-    """Restore every file deleted or quarantined by a clean run.
+    """Restore every file a run deleted, quarantined or moved.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -35,10 +35,13 @@ def undo_command(
     with user_errors(output):
         run = resolve_run_id(runtime, run_id)
         CleanService(runtime, NullProgress()).ensure_ready()
-        output.title(_("Undo {run_id}").format(run_id=run))
+        title = _("Undo the {command} run {run_id}").format(
+            command=run_kind(runtime, run).value, run_id=run
+        )
+        output.title(title)
         with RichProgress(output.console) as progress:
             outcome = undo_run(runtime, run, progress)
-    output.show(outcome_table(outcome, _("Undo {run_id}").format(run_id=run)))
+    output.show(outcome_table(outcome, title))
     for incident in outcome.skipped:
         output.warning(f"{runtime.mapper.to_host(incident.path)}: {incident.reason}")
     for incident in outcome.failed:

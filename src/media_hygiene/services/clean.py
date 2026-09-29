@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.clean import CleanExecutor
 from media_hygiene.actions.journal import (
     JournalWriter,
+    done_states,
     journal_file,
-    latest_states,
     read_journal,
 )
 from media_hygiene.actions.journaled import CleanContext
-from media_hygiene.actions.kinds import Phase, Status
+from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
 from media_hygiene.errors import MountError
@@ -170,7 +170,7 @@ class CleanService:
         index = self._runtime.index_file
         if index is None:
             return
-        latest = latest_states(read_journal(journal_path), Phase.CLEAN).values()
-        removed = [entry.path for entry in latest if entry.status is Status.DONE]
+        done = done_states(read_journal(journal_path), Phase.CLEAN)
+        removed = [entry.path for entry in done]
         with FactsRepository.open(index) as repository:
             repository.forget(removed)

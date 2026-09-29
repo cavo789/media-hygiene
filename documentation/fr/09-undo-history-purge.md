@@ -26,8 +26,9 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────────── Annulation 20260929-201009 ──────────────────────────
-Annulation 20260929-201009
+─────────────── Annulation de l'exécution clean 20260929-202949 ────────────────
+Annulation de l'exécution clean
+20260929-202949
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -40,9 +41,11 @@ Annulation 20260929-201009
 - Chaque copie supprimée est **reconstruite à partir de la copie gardée**, date comprise, même
   d'un disque à l'autre : c'est pour cela qu'un nettoyage peut vraiment supprimer.
 - Chaque fichier mis en quarantaine est remis à sa place.
-- Sans nom, `undo` restaure le dernier nettoyage ; `undo <exécution>` restaure celui-là. Les
+- Sans nom, `undo` restaure la dernière exécution ; `undo <exécution>` restaure celle-là. Les
   noms des exécutions viennent d'`history`, ci-dessous, et des dernières lignes de chaque
   nettoyage.
+- Un fichier déjà revenu, ou dont la copie a disparu, est laissé tel quel et listé avec la
+  raison : `undo` n'écrase jamais rien et ne devine rien.
 
 ## Voir ce qui a été fait : `history`
 
@@ -52,19 +55,22 @@ cavo789/media-hygiene --locale fr history
 
 <!-- capture: history.txt -->
 ```text
-Nettoyages (du plus récent au plus ancien)
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃ Exécution       ┃ Supprimés ┃  Libéré ┃ En quarantaine ┃ Restaurés ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20260929-201012 │        33 │ 16,2 Mo │              7 │         0 │
-│ 20260929-201009 │        33 │ 15,5 Mo │              3 │        36 │
-└─────────────────┴───────────┴─────────┴────────────────┴───────────┘
+Exécutions (les plus récentes d'abord)
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃                 ┃          ┃           ┃         ┃            En ┃           ┃
+┃ Exécution       ┃ Commande ┃ Supprimés ┃  Libéré ┃   quarantaine ┃ Restaurés ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 20260929-202952 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
+│ 20260929-202949 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
+└─────────────────┴──────────┴───────────┴─────────┴───────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
 
-Une ligne par nettoyage, le plus récent d'abord : combien de fichiers il a supprimés, l'espace
-libéré, combien de fichiers il a mis en quarantaine, et combien ont été restaurés depuis. Ici le
-premier nettoyage a été entièrement annulé (36 fichiers restaurés), puis refait.
+Une ligne par exécution, la plus récente d'abord : la commande qui l'a faite, combien de fichiers
+elle a supprimés, l'espace libéré, combien de fichiers elle a mis en quarantaine, et combien ont
+été restaurés depuis. Une colonne *Déplacés* apparaît dès qu'une exécution a déplacé des fichiers
+vers un autre de vos dossiers. Ici le premier nettoyage a été entièrement annulé (36 fichiers
+restaurés), puis refait.
 
 ## Vider la quarantaine : `purge`
 
@@ -79,7 +85,7 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20260929-201012, 20260929-201009
+❓ Supprimer définitivement la quarantaine de 20260929-202952, 20260929-202949
 (2,2 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 2,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers cassés.

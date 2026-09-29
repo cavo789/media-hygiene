@@ -62,10 +62,12 @@ def test_audit_clean_history_undo(cli: CliRunner, locations: Locations) -> None:
     assert clean.exit_code == 0, clean.output
     assert "media-hygiene undo" in clean.output
     history = run(cli, "history")
-    assert "Clean runs" in history.output
+    assert "Runs (newest first)" in history.output
+    assert " clean " in history.output  # the command of the run
+    assert "Moved" not in history.output  # a clean moves nothing to your folders
     undo = run(cli, "undo")
     assert undo.exit_code == 0, undo.output
-    assert "Undo" in undo.output
+    assert "Undo the clean run" in undo.output
 
 
 def test_clean_needs_confirmation_or_yes(cli: CliRunner) -> None:

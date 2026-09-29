@@ -26,8 +26,8 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-───────────────────────────── Undo 20260929-200907 ─────────────────────────────
-Undo 20260929-200907
+────────────────────── Undo the clean run 20260929-202847 ──────────────────────
+Undo the clean run 20260929-202847
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -40,8 +40,10 @@ Undo 20260929-200907
 - Each deleted copy is **rebuilt from the copy that was kept**, date included, even across
   disks: that is why a clean can really delete.
 - Each quarantined file is moved back to its place.
-- Without a name, `undo` restores the latest clean; `undo <run>` restores that one. The names
+- Without a name, `undo` restores the latest run; `undo <run>` restores that one. The names
   of the runs come from `history`, below, and from the last lines of each clean.
+- A file that is back already, or whose copy is gone, is left alone and listed with the reason:
+  `undo` never overwrites nor guesses.
 
 ## See what was done: `history`
 
@@ -51,19 +53,20 @@ cavo789/media-hygiene history
 
 <!-- capture: history.txt -->
 ```text
-Clean runs (newest first)
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
-┃ Run             ┃ Deleted ┃   Freed ┃ Quarantined ┃ Restored ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20260929-200910 │      33 │ 16.2 MB │           7 │        0 │
-│ 20260929-200907 │      33 │ 15.5 MB │           3 │       36 │
-└─────────────────┴─────────┴─────────┴─────────────┴──────────┘
+Runs (newest first)
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Run             ┃ Command ┃ Deleted ┃   Freed ┃ Quarantined ┃ Restored ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ 20260929-202850 │ clean   │      33 │ 16.2 MB │           7 │        0 │
+│ 20260929-202847 │ clean   │      33 │ 15.5 MB │           3 │       36 │
+└─────────────────┴─────────┴─────────┴─────────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
 
-One line per clean, the newest first: how many files it deleted, the space freed, how many files
-it moved to the quarantine, and how many were restored since. Here the first clean was fully
-undone (36 files restored), then cleaned again.
+One line per run, the newest first: the command that made it, how many files it deleted, the
+space freed, how many files it moved to the quarantine, and how many were restored since. A
+*Moved* column appears once a run has moved files to another of your folders. Here the first
+clean was fully undone (36 files restored), then cleaned again.
 
 ## Empty the quarantine: `purge`
 
@@ -77,7 +80,7 @@ cavo789/media-hygiene purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Permanently delete the quarantine of 20260929-200910, 20260929-200907 (2.2
+❓ Permanently delete the quarantine of 20260929-202850, 20260929-202847 (2.2
 MB)? [y/N] y
 ✅ Quarantine purged: 2.2 MB freed.
 💡 'undo' can no longer restore these broken files.

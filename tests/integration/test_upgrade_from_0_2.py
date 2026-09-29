@@ -15,8 +15,10 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.__main__ import main
-from media_hygiene.actions.journal import read_journal
-from media_hygiene.actions.kinds import ActionKind, Status
+from media_hygiene.actions.journal import JournalWriter, journal_file, read_journal
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.runs import summarize
+from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.constants import MediaKind
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
@@ -25,12 +27,14 @@ from media_hygiene.report.decisions import read_decisions
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.scan.file_check import Need, need_of
 from media_hygiene.scan.models import MediaFile
+from media_hygiene.scan.progress import NullProgress
 
 if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "0.2.0"
 DIGEST = "5948b2640eb33f26077d63b7bea077b2172b789d629f7f8298f2cd66244a99db"
+RUN = "20260929-192141"
 
 
 def test_a_journal_of_0_2_0_is_read() -> None:
@@ -39,6 +43,26 @@ def test_a_journal_of_0_2_0_is_read() -> None:
     assert [entry.status for entry in entries] == [Status.PENDING, Status.DONE]
     assert {entry.action for entry in entries} == {ActionKind.DELETE_DUPLICATE}
     assert entries[0].keeper == "/data/c/Photos/2019/Plage.jpg"
+
+
+def test_a_journal_of_0_2_0_summarizes_and_undoes(tmp_path: Path) -> None:
+    """Read as a clean run, and undone as before: the deleted copy comes back."""
+    data = tmp_path / "data"
+    keeper = data / "c" / "Photos" / "2019" / "Plage.jpg"
+    keeper.parent.mkdir(parents=True)
+    shutil.copy(FIXTURES / "Plage.jpg", keeper)
+    journal = journal_file(tmp_path, RUN)
+    written = (FIXTURES / "journal.jsonl").read_text("utf-8")
+    journal.write_text(written.replace('"/data/', f'"{data}/'), encoding="utf-8")
+    summary = summarize(tmp_path, RUN)
+    assert (summary.kind, summary.deleted, summary.freed) == (Phase.CLEAN, 1, 677)
+    entries = read_journal(journal)
+    with JournalWriter.open(journal) as writer:
+        outcome = UndoExecutor(writer, NullProgress()).run(entries)
+    assert outcome.done == 1
+    assert (data / "c" / "Photos" / "Old" / "IMG_0001.jpg").read_bytes() == (
+        keeper.read_bytes()
+    )
 
 
 def test_a_decisions_file_of_0_2_0_is_read() -> None:
@@ -101,4 +125,4 @@ def test_the_variables_of_0_2_0_still_apply(
     output = " ".join(capsys.readouterr().out.split())
     assert "MEDIA_DEDUP_GENERAL__LOCALE" in output
     assert "MEDIA_HYGIENE_" in output
-    assert "Aucun nettoyage" in output
+    assert "Aucune exécution" in output

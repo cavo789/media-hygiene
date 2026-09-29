@@ -75,7 +75,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             : montez les dossiers avec :ro.                                  │
 │ crosscheck  Compare un nouvel audit aux résultats de Czkawka : un second     │
 │             avis, indépendant.                                               │
-│ history     Liste les nettoyages et ce qu'ils ont fait.                      │
+│ history     Liste les exécutions et ce qu'elles ont fait.                    │
 │ reports     Liste les rapports HTML des audits et nettoyages précédents.     │
 │ config      Affiche chaque réglage, son origine, et les points de montage.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -84,8 +84,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             dans votre navigateur ; 'clean --decisions' les déplace ensuite. │
 │ clean       Audite, demande confirmation, puis supprime réellement les       │
 │             copies en double (journalisé, annulable).                        │
-│ undo        Restaure chaque fichier d'un nettoyage, depuis la copie          │
-│             conservée ou la quarantaine.                                     │
+│ undo        Restaure chaque fichier d'une exécution, depuis la copie         │
+│             conservée, la quarantaine ou l'endroit où il a été déplacé.      │
 │ purge       Supprime définitivement les fichiers cassés mis en quarantaine   │
 │             par une exécution.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -230,8 +230,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene undo [OPTIONS] [run_id]
 
- Restaure chaque fichier d'un nettoyage, depuis la copie conservée ou la
- quarantaine.
+ Restaure chaque fichier d'une exécution, depuis la copie conservée, la
+ quarantaine ou l'endroit où il a été déplacé.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Exécution à annuler (voir 'history') ; la plus récente  │
@@ -251,7 +251,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene history [OPTIONS]
 
- Liste les nettoyages et ce qu'ils ont fait.
+ Liste les exécutions et ce qu'elles ont fait.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │

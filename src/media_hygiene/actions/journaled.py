@@ -1,4 +1,4 @@
-"""Journaled changes of a clean run: a `pending` line, the change, a `done` line."""
+"""Journaled changes of a run: a `pending` line, the change, a `done` line."""
 
 from __future__ import annotations
 
@@ -24,12 +24,13 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class CleanContext:
-    """Where and how a clean run acts."""
+    """Where and how a run acts, and which command it is (`clean` by default)."""
 
     journal: JournalWriter
     mapper: HostPathMapper
     quarantine_run_dir: Path
     progress: ProgressSink
+    phase: Phase = Phase.CLEAN
 
 
 class JournaledChanges:
@@ -59,7 +60,7 @@ class JournaledChanges:
         self._seq += 1
         return JournalEntry(
             seq=self._seq,
-            phase=Phase.CLEAN,
+            phase=self._context.phase,
             status=Status.PENDING,
             action=action,
             path=str(file.path),

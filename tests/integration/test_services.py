@@ -60,7 +60,7 @@ def test_resolve_run_id_errors(tmp_path: Path, locations: Locations) -> None:
             make_runtime(make_locations(tmp_path / "x", MountKind.JOURNAL)), None
         )
     runtime = make_runtime(locations)
-    with pytest.raises(JournalError, match="No clean run"):
+    with pytest.raises(JournalError, match="No run found"):
         resolve_run_id(runtime, None)
     (locations.journal_dir / "20260101-000000.jsonl").write_text("")
     assert resolve_run_id(runtime, None) == "20260101-000000"

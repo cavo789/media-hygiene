@@ -1,30 +1,30 @@
-"""Reverse a clean run: rebuild deleted copies from their keeper, unquarantine."""
+"""Reverse a run: rebuild deleted copies, unquarantine, move files and folders back."""
 
 from __future__ import annotations
 
 import logging
-import os
-import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import latest_states
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.journal import done_states, latest_states
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
-from media_hygiene.actions.quarantine import QUARANTINED
+from media_hygiene.actions.restore import perform
+from media_hygiene.actions.reversal import blocker, reversal_of
+from media_hygiene.actions.runs import run_phase
 from media_hygiene.i18n import _
-from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import Step
 
 if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry, JournalWriter
+    from media_hygiene.actions.reversal import Reversal
     from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class UndoExecutor:
-    """Restores every file of a run that is not restored yet, newest action first."""
+    """Reverses every action of a run not reversed yet, newest action first."""
 
     def __init__(self, journal: JournalWriter, progress: ProgressSink) -> None:
         """Prepare the undo of one run.
@@ -38,35 +38,37 @@ class UndoExecutor:
         self._tally = Tally()
 
     def run(self, entries: list[JournalEntry]) -> Outcome:
-        """Restore the files acted upon by the run.
+        """Reverse the actions of the run, `clean` or `sort`.
+
+        Every action is checked to be reversible before the first file is touched.
 
         Args:
             entries: Every entry of the run's journal.
 
         Returns:
             What was restored, skipped and why.
+
+        Raises:
+            JournalError: An action cannot be undone by this version (raised before
+                anything changes).
         """
-        restored = {
-            seq
-            for seq, entry in latest_states(entries, Phase.UNDO).items()
-            if entry.status is Status.DONE
-        }
+        restored = {entry.seq for entry in done_states(entries, Phase.UNDO)}
         todo = [
-            entry
-            for seq, entry in sorted(latest_states(entries, Phase.CLEAN).items())
+            (entry, reversal_of(entry))
+            for seq, entry in sorted(latest_states(entries, run_phase(entries)).items())
             if seq not in restored
         ]
         step = Step(
             _("Restoring"),
             _(
-                "Rebuilds each deleted copy from the kept one, and brings quarantined "
-                "files back."
+                "Rebuilds each deleted copy from the kept one, brings quarantined and "
+                "moved files back."
             ),
         )
         self._progress.start(step, len(todo))
-        for entry in reversed(todo):
+        for entry, reversal in reversed(todo):
             try:
-                self._restore(entry)
+                self._restore(entry, reversal)
             except OSError as exc:
                 _LOGGER.debug("Restore failed on %s", entry.path, exc_info=True)
                 self._tally.failed.append(Incident(Path(entry.path), str(exc)))
@@ -75,69 +77,22 @@ class UndoExecutor:
         self._progress.stop()
         return self._tally.freeze()
 
-    def _restore(self, entry: JournalEntry) -> None:
-        """Restore one file, journaling the undo like any other action.
+    def _restore(self, entry: JournalEntry, reversal: Reversal) -> None:
+        """Reverse one action, journaling the undo like any other action.
 
         Args:
-            entry: Latest `clean` state of the action to reverse.
+            entry: Latest state of the action to reverse.
+            reversal: How it is reversed.
         """
-        path = Path(entry.path)
-        if path.exists():
-            # Never overwrite: the file is back already, or the action never happened.
-            self._tally.skipped.append(Incident(path, _("the file already exists")))
-            return
-        source = _source_of(entry)
-        if source is not None and not source.is_file():
-            self._tally.skipped.append(
-                Incident(path, _("its copy {path} is gone").format(path=source)),
-            )
+        reason = blocker(entry, reversal)
+        if reason is not None:
+            self._tally.skipped.append(Incident(Path(entry.path), reason))
             return
         pending = entry.model_copy(
             update={"phase": Phase.UNDO, "status": Status.PENDING}
         )
         self._journal.record(pending)
-        _rebuild(entry, source)
-        os.utime(path, ns=(entry.mtime_ns, entry.mtime_ns))
+        perform(entry, reversal)
         self._journal.record(pending.as_done())
         self._tally.done += 1
         self._tally.bytes_done += entry.size
-
-
-def _source_of(entry: JournalEntry) -> Path | None:
-    """Return the file an action can be rebuilt from.
-
-    Args:
-        entry: A `clean` entry.
-
-    Returns:
-        The keeper of a deleted duplicate, the quarantined copy, or None for an
-        empty file (recreated from nothing).
-    """
-    if entry.action in QUARANTINED:
-        return Path(entry.quarantine) if entry.quarantine else None
-    if entry.action is ActionKind.DELETE_DUPLICATE:
-        return Path(entry.keeper) if entry.keeper else None
-    return None
-
-
-def _rebuild(entry: JournalEntry, source: Path | None) -> None:
-    """Recreate the file of `entry` and prove its content is the original one.
-
-    Args:
-        entry: The `clean` entry being reversed.
-        source: Where to copy the content from (None for an empty file).
-
-    Raises:
-        OSError: The rebuilt content does not match the journaled digest.
-    """
-    path = Path(entry.path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if source is None:
-        path.touch()
-        return
-    shutil.copy2(source, path)
-    if entry.sha256 is not None and full_digest(path) != entry.sha256:
-        path.unlink()
-        raise OSError(_("the restored copy does not match the original"))
-    if entry.action in QUARANTINED:
-        source.unlink()

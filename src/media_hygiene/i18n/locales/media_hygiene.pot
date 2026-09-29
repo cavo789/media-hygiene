@@ -37,6 +37,9 @@ msgid ""
 "is recognised: it is never counted as its own copy."
 msgstr ""
 
+msgid "A newer version wrote this journal: update media-hygiene to undo it."
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -172,14 +175,14 @@ msgstr ""
 msgid "Clean report"
 msgstr ""
 
-msgid "Clean runs (newest first)"
-msgstr ""
-
 #, python-brace-format
 msgid "Clean {run_id}"
 msgstr ""
 
 msgid "Cleaning"
+msgstr ""
+
+msgid "Command"
 msgstr ""
 
 msgid ""
@@ -487,13 +490,19 @@ msgid "Leave alone"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Line {number} of {path} holds an action this version does not know: "
+"nothing was changed."
+msgstr ""
+
+#, python-brace-format
 msgid "Line {number} of {path} is corrupt."
 msgstr ""
 
 msgid "List the HTML reports of previous audits and cleans."
 msgstr ""
 
-msgid "List the clean runs and what they did."
+msgid "List the runs and what they did."
 msgstr ""
 
 msgid "Listing media files"
@@ -532,6 +541,9 @@ msgid "Mount the same journal folder as for clean: -v \"<folder>:/journal\"."
 msgstr ""
 
 msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
+msgstr ""
+
+msgid "Moved"
 msgstr ""
 
 #, python-brace-format
@@ -575,12 +587,6 @@ msgstr ""
 msgid "No burst series: nothing to review."
 msgstr ""
 
-msgid "No clean run found in the journal."
-msgstr ""
-
-msgid "No clean run yet."
-msgstr ""
-
 #, python-brace-format
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
@@ -613,6 +619,12 @@ msgstr ""
 msgid "No reports mount: there is no report to list."
 msgstr ""
 
+msgid "No run found in the journal."
+msgstr ""
+
+msgid "No run yet."
+msgstr ""
+
 msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
 msgstr ""
 
@@ -633,6 +645,9 @@ msgid "Nothing to clean: no duplicate and no broken file."
 msgstr ""
 
 msgid "Nothing was changed."
+msgstr ""
+
+msgid "Nothing was changed. Update media-hygiene, then undo this run again."
 msgstr ""
 
 msgid ""
@@ -746,8 +761,8 @@ msgid "Reason"
 msgstr ""
 
 msgid ""
-"Rebuilds each deleted copy from the kept one, and brings quarantined "
-"files back."
+"Rebuilds each deleted copy from the kept one, brings quarantined and "
+"moved files back."
 msgstr ""
 
 msgid ""
@@ -768,7 +783,9 @@ msgstr ""
 msgid "Reports (newest first)"
 msgstr ""
 
-msgid "Restore every file of a clean run, from the kept copy or the quarantine."
+msgid ""
+"Restore every file of a run, from the kept copy, the quarantine or where "
+"it was moved."
 msgstr ""
 
 msgid "Restored"
@@ -829,6 +846,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Run {run_id} has no quarantine."
+msgstr ""
+
+msgid "Runs (newest first)"
 msgstr ""
 
 msgid "SHA-256"
@@ -1029,7 +1049,7 @@ msgid "Type"
 msgstr ""
 
 #, python-brace-format
-msgid "Undo {run_id}"
+msgid "Undo the {command} run {run_id}"
 msgstr ""
 
 #, python-brace-format
@@ -1178,6 +1198,13 @@ msgstr ""
 msgid "in excluded folders"
 msgstr ""
 
+msgid "it already exists"
+msgstr ""
+
+#, python-brace-format
+msgid "it is no longer at {path}: moved or renamed since"
+msgstr ""
+
 msgid "it is the kept copy itself, seen through another path"
 msgstr ""
 
@@ -1270,13 +1297,19 @@ msgstr ""
 msgid "sharpness {value}"
 msgstr ""
 
-msgid "the file already exists"
-msgstr ""
-
 msgid "the file no longer exists"
 msgstr ""
 
 msgid "the files are no longer identical"
+msgstr ""
+
+msgid "the folder is gone already"
+msgstr ""
+
+msgid "the folder is not empty"
+msgstr ""
+
+msgid "the journal does not say where its content is"
 msgstr ""
 
 #, python-brace-format
@@ -1425,6 +1458,10 @@ msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr ""
 
 #, python-brace-format
+msgid "{path} changed since"
+msgstr ""
+
+#, python-brace-format
 msgid "{path} is in a protected folder: it is never moved."
 msgstr ""
 
@@ -1438,6 +1475,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
+msgstr ""
+
+#, python-brace-format
+msgid "{path}: this version cannot undo the action '{action}'."
 msgstr ""
 
 #, python-brace-format

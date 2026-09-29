@@ -5,13 +5,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalWriter, journal_file, read_journal
-from media_hygiene.actions.runs import list_run_ids
+from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
+    from media_hygiene.actions.kinds import Phase
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
@@ -38,7 +39,7 @@ def resolve_run_id(runtime: Runtime, run_id: str | None) -> str:
         )
     runs = list_run_ids(runtime.locations.journal_dir)
     if not runs:
-        raise JournalError(_("No clean run found in the journal."))
+        raise JournalError(_("No run found in the journal."))
     if run_id is None:
         return runs[0]
     if run_id not in runs:
@@ -47,6 +48,19 @@ def resolve_run_id(runtime: Runtime, run_id: str | None) -> str:
             _("Run 'media-hygiene history' to list the runs."),
         )
     return run_id
+
+
+def run_kind(runtime: Runtime, run_id: str) -> Phase:
+    """Tell which command made a run.
+
+    Args:
+        runtime: Settings, mount points and output.
+        run_id: An existing run.
+
+    Returns:
+        `clean` or `sort`.
+    """
+    return run_phase(read_journal(journal_file(runtime.locations.journal_dir, run_id)))
 
 
 def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:

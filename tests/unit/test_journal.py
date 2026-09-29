@@ -9,12 +9,18 @@ import pytest
 from media_hygiene.actions.journal import (
     JournalEntry,
     JournalWriter,
+    done_states,
     journal_file,
     latest_states,
     read_journal,
 )
 from media_hygiene.actions.kinds import ActionKind, Phase, Status
-from media_hygiene.actions.runs import list_run_ids, new_run_id, summarize
+from media_hygiene.actions.runs import (
+    list_run_ids,
+    new_run_id,
+    run_phase,
+    summarize,
+)
 from media_hygiene.errors import JournalError
 
 if TYPE_CHECKING:
@@ -79,3 +85,38 @@ def test_missing_or_corrupt_journal(tmp_path: Path) -> None:
     )
     with pytest.raises(JournalError, match="Line 3"):
         read_journal(corrupt)
+
+
+def test_an_action_this_version_does_not_know_is_explained(tmp_path: Path) -> None:
+    """A journal written by a newer version names the problem and the remedy."""
+    newer = tmp_path / "newer.jsonl"
+    line = entry(1, ActionKind.MOVE).model_dump_json().replace('"move"', '"teleport"')
+    newer.write_text(line + "\n")
+    with pytest.raises(JournalError, match="does not know") as caught:
+        read_journal(newer)
+    assert caught.value.tip is not None
+
+
+def test_a_sort_run_is_told_apart_and_counted(tmp_path: Path) -> None:
+    """Moves are counted as moved, never as deleted nor freed; folders count nothing."""
+    run_id = new_run_id(tmp_path)
+    with JournalWriter.open(journal_file(tmp_path, run_id)) as journal:
+        for item in (
+            entry(1, ActionKind.CREATE_FOLDER, Phase.SORT),
+            entry(2, ActionKind.MOVE, Phase.SORT),
+            entry(3, ActionKind.MOVE, Phase.SORT),
+            entry(4, ActionKind.REMOVE_FOLDER, Phase.SORT),
+        ):
+            journal.record(item)
+            journal.record(item.as_done())
+    summary = summarize(tmp_path, run_id)
+    assert summary.kind is Phase.SORT
+    assert (summary.moved, summary.deleted, summary.freed, summary.quarantined) == (
+        2,
+        0,
+        0,
+        0,
+    )
+    entries = read_journal(journal_file(tmp_path, run_id))
+    assert [item.seq for item in done_states(entries, Phase.SORT)] == [1, 2, 3, 4]
+    assert run_phase([]) is Phase.CLEAN

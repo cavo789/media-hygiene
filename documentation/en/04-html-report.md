@@ -29,7 +29,7 @@ At the end of the audit, two new lines:
 
 <!-- capture: audit.txt|HTML report|Open index.html -->
 ```text
-✅ HTML report: /reports/20260929-200840-audit/report.html
+✅ HTML report: /reports/20260929-202820-audit/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
@@ -128,14 +128,14 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20260929-200910-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
-│ 20260929-200907-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
-│ 20260929-200850-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20260929-200845-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20260929-200844-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
-│ 20260929-200842-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
-│ 20260929-200841-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20260929-200840-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20260929-202850-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
+│ 20260929-202847-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
+│ 20260929-202831-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20260929-202826-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20260929-202824-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
+│ 20260929-202823-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
+│ 20260929-202821-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20260929-202820-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```
