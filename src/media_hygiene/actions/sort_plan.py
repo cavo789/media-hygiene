@@ -34,6 +34,16 @@ class MoveGroup:
 
 
 @dataclass(frozen=True, slots=True)
+class Companions:
+    """What to tell about companions whose rows gave different folders."""
+
+    # File edits that disagree, their cells per group: `sort` refuses the workbook.
+    conflicts: tuple[tuple[str, ...], ...] = ()
+    # Members following another's event or category edit: (file deciding, others).
+    follows: tuple[tuple[str, tuple[str, ...]], ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
 class SortPlan:
     """The moves of one run, and what stays."""
 
@@ -43,6 +53,7 @@ class SortPlan:
     stay: int = 0  # stay where they are: edits, protected and `leave` folders
     done: int = 0  # moved by an earlier run of this plan
     moved_before: tuple[Path, ...] = ()  # where those were: their folders may be empty
+    companions: Companions = Companions()
 
     @property
     def moves(self) -> tuple[Move, ...]:

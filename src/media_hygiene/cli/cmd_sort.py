@@ -12,6 +12,7 @@ from media_hygiene.cli.context import runtime_of, user_errors, warn
 from media_hygiene.cli.flows import require_terminal
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.sort_view import (
+    show_follows,
     show_inputs,
     show_kept_folders,
     show_manifest,
@@ -82,6 +83,7 @@ def sort_command(  # pylint: disable=too-many-arguments
         show_inputs(runtime, inputs)
         prepared = service.prepare(inputs, keep_empty=keep_empty_folders)
         output.show(sort_table(prepared))
+        show_follows(output, prepared.plan)
         show_kept_folders(runtime, prepared.folders, done=False)
         if not prepared.plan.groups:
             output.success(_("Nothing to move: every file is where the plan puts it."))

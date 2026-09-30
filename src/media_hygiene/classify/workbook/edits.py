@@ -1,13 +1,15 @@
 """What the user changed in the workbook, and the folder it gives each file.
 
 Precedence: file > event > category. A human edit counts as sure: the file leaves the
-"to check" band. Files left as they are (protected, `leave`) ignore every edit.
+"to check" band. Files left as they are (protected, `leave`) ignore every edit. Each
+decision says where it comes from, so that `sort` can let a file edit on any companion
+(a Live Photo's video, a RAW twin) decide for the whole group.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from enum import Enum
+from enum import Enum, IntEnum
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import render
@@ -26,6 +28,14 @@ class Stay(Enum):
 
 
 type Choice = str | Stay
+
+
+class Source(IntEnum):
+    """Where a decision comes from; a lower value wins among companions."""
+
+    FILE = 0  # a cell of the Files sheet
+    GROUP = 1  # an edit of its event or of its category
+    PROPOSAL = 2  # nothing edited: what classify proposed
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +61,7 @@ class Edits:
     files: Mapping[str, Choice] = field(default_factory=dict)
     events: Mapping[str, EventEdit] = field(default_factory=dict)
     categories: Mapping[str, CategoryEdit] = field(default_factory=dict)
+    file_cells: Mapping[str, str] = field(default_factory=dict)  # row id → "Files!K7"
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,6 +71,8 @@ class Decision:
     row: PlanRow
     folder: str | None  # relative to the row's root; None: stays where it is
     band: Band  # SURE after a human edit
+    source: Source = Source.PROPOSAL
+    cell: str = ""  # the Files sheet cell of a file edit, for the messages
 
 
 def resolve(plan: ClassifyPlan, edits: Edits) -> tuple[Decision, ...]:
@@ -91,14 +104,15 @@ def _decide(row: PlanRow, plan: ClassifyPlan, edits: Edits) -> Decision:
         return unchanged
     if row.id in edits.files:
         choice = edits.files[row.id]
-        return Decision(row, None if choice is Stay.STAY else choice, Band.SURE)
+        folder = None if choice is Stay.STAY else choice
+        cell = edits.file_cells.get(row.id, "")
+        return Decision(row, folder, Band.SURE, Source.FILE, cell)
     event = edits.events.get(row.event_id)
     if event is not None and (event.name or event.category):
         return _by_event(row, event, (plan, edits))
     category = edits.categories.get(row.category)
-    if category is not None:
-        return _by_category(row, category, plan) or unchanged
-    return unchanged
+    decided = None if category is None else _by_category(row, category, plan)
+    return unchanged if decided is None else replace(decided, source=Source.GROUP)
 
 
 def _by_event(
@@ -116,14 +130,14 @@ def _by_event(
     """
     plan, edits = context
     if event.category is Stay.STAY or row.values is None:
-        return Decision(row, None, Band.SURE)
+        return Decision(row, None, Band.SURE, Source.GROUP)
     renamed = edits.categories.get(row.category)
     current = renamed.rename if renamed and isinstance(renamed.rename, str) else ""
     category = event.category or event.name or current or row.category
     values = replace(
         row.values.as_values(), category=category, event=event.name or row.values.event
     )
-    return Decision(row, render(plan.layout, values), Band.SURE)
+    return Decision(row, render(plan.layout, values), Band.SURE, Source.GROUP)
 
 
 def _by_category(

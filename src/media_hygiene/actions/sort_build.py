@@ -1,8 +1,9 @@
 """Turn the decisions of an edited plan into groups of moves, companions together.
 
 A photo and its Live Photo video (`IMG_1.HEIC`, `IMG_1.MOV`), a RAW file and its JPEG
-twin share a folder and a name: they go to the folder of the first of them (a photo,
-then a RAW file, then a video), whatever the others' rows say. Their sidecars follow
+twin share a folder and a name: they go to one folder, the one a file edit on any of
+them gives, else an event or category edit, else the proposal of the first of them (a
+photo, then a RAW file, then a video) — see `sort_companions`. Their sidecars follow
 them when they move (`actions/sort.py`).
 """
 
@@ -13,7 +14,8 @@ from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.sort_plan import Move, MoveGroup, SortPlan
+from media_hygiene.actions.sort_companions import choose
+from media_hygiene.actions.sort_plan import Companions, Move, MoveGroup, SortPlan
 from media_hygiene.constants import MediaKind
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
@@ -63,6 +65,7 @@ def sort_plan(
         stay=counts.stay,
         done=len(counts.earlier),
         moved_before=tuple(counts.earlier),
+        companions=Companions(tuple(counts.conflicts), tuple(counts.follows)),
     )
 
 
@@ -73,12 +76,16 @@ class _Counts:
     in_place: int = 0
     stay: int = 0
     earlier: list[Path] = field(default_factory=list[Path])
+    conflicts: list[tuple[str, ...]] = field(default_factory=list[tuple[str, ...]])
+    follows: list[tuple[str, tuple[str, ...]]] = field(
+        default_factory=list[tuple[str, tuple[str, ...]]]
+    )
 
 
 def _group(
     members: list[tuple[Decision, Path]], context: PlanContext, counts: _Counts
 ) -> MoveGroup | None:
-    """The moves of one group of companions: all follow the leading file.
+    """The moves of one group of companions: all follow the decision chosen.
 
     Args:
         members: The decisions and files of the group, the leading one first.
@@ -88,7 +95,12 @@ def _group(
     Returns:
         The group, or None when none of its files moves.
     """
-    lead, source = members[0]
+    choice = choose(members)
+    if choice.conflict:
+        counts.conflicts.append(choice.conflict)
+    if choice.follow is not None:
+        counts.follows.append(choice.follow)
+    lead, source = choice.decision, members[0][1]
     protected = any(is_within(source, kept) for kept in context.protected)
     if lead.folder is None or protected:
         counts.stay += len(members)

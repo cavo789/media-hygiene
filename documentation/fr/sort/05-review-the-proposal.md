@@ -27,8 +27,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20260930-185807-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-185807-classify/report.html
+✅ Classeur à modifier : /reports/20260930-191220-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-191220-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
@@ -84,6 +84,11 @@ Quelques règles :
 
 - **La modification la plus précise l'emporte** : le dossier final d'un fichier, sinon celui de
   son événement, sinon celui de sa catégorie.
+- **Les compagnons suivent un seul dossier** : une Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`) ou un
+  fichier RAW et son JPEG ont une ligne chacun, mais se déplacent ensemble. Un dossier final tapé
+  sur **n'importe laquelle** de leurs lignes décide pour tous ; deux de leurs lignes avec des
+  dossiers finaux différents sont refusées par `sort`, qui nomme les deux cellules
+  ([étape 7](07-sort.md#comment-les-fichiers-bougent)).
 - **Votre modification est sûre** : un fichier que vous placez vous-même quitte la bande « à
   vérifier ».
 - **(rester où il est)** est une valeur de chaque liste : le fichier, l'événement ou la catégorie

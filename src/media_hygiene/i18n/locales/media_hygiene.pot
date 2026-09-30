@@ -309,6 +309,12 @@ msgid "Command"
 msgstr ""
 
 msgid ""
+"Companions (a photo and its video, a RAW file and its JPEG) travel "
+"together, but their Files cells name different folders; nothing was "
+"moved:"
+msgstr ""
+
+msgid ""
 "Compare a fresh audit with Czkawka's results: a second, independent "
 "opinion."
 msgstr ""
@@ -659,6 +665,11 @@ msgid "GB"
 msgstr ""
 
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
+msgstr ""
+
+msgid ""
+"Give them the same folder, or clear all the cells but one, save the "
+"workbook, then run 'sort' again."
 msgstr ""
 
 msgid "Going to a 'to check' folder"
@@ -2292,6 +2303,12 @@ msgstr ""
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr ""
+
+#, python-brace-format
+msgid "{others} follows {lead}: companions go to one folder."
+msgid_plural "{others} follow {lead}: companions go to one folder."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{path} changed since"

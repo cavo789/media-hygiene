@@ -73,23 +73,29 @@ def at(row: Sequence[object], column: int) -> object:
     return row[column - 1] if column <= len(row) else None
 
 
-def file_edits(table: Table, problems: Problems) -> dict[str, Choice]:
-    """The final folders typed on the Files sheet.
+def file_edits(
+    table: Table, problems: Problems
+) -> tuple[dict[str, Choice], dict[str, str]]:
+    """The final folders typed on the Files sheet, and their cells.
 
     Args:
         table: Its rows.
         problems: Where problems go.
 
     Returns:
-        Row id → folder or "stay".
+        Row id → folder or "stay"; row id → its cell (`Files!K7`), for the messages.
     """
     edits: dict[str, Choice] = {}
+    cells: dict[str, str] = {}
+    sheet, column = problems.labels.files, get_column_letter(FileColumn.FINAL)
     for number, row in enumerate(table, start=2):
         text = text_of(at(row, FileColumn.FINAL))
         if text:
-            cell = (problems.labels.files, number, FileColumn.FINAL)
-            edits[text_of(row[0])] = problems.choice(text, cell)
-    return {key: value for key, value in edits.items() if value}
+            row_id = text_of(row[0])
+            edits[row_id] = problems.choice(text, (sheet, number, FileColumn.FINAL))
+            cells[row_id] = f"{sheet}!{column}{number}"
+    kept = {key: value for key, value in edits.items() if value}
+    return kept, {key: cells[key] for key in kept}
 
 
 def event_edits(table: Table, problems: Problems) -> dict[str, EventEdit]:

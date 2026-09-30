@@ -373,6 +373,15 @@ msgid "Command"
 msgstr "Commande"
 
 msgid ""
+"Companions (a photo and its video, a RAW file and its JPEG) travel "
+"together, but their Files cells name different folders; nothing was "
+"moved:"
+msgstr ""
+"Des compagnons (une photo et sa vidéo, un fichier RAW et son JPEG) "
+"voyagent ensemble, mais leurs cellules de la feuille Fichiers donnent des"
+" dossiers différents ; rien n'a été déplacé :"
+
+msgid ""
 "Compare a fresh audit with Czkawka's results: a second, independent "
 "opinion."
 msgstr ""
@@ -819,6 +828,13 @@ msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
 "Donnez son chemin dans un dossier monté, par exemple celui monté sur "
 "/reports."
+
+msgid ""
+"Give them the same folder, or clear all the cells but one, save the "
+"workbook, then run 'sort' again."
+msgstr ""
+"Donnez-leur le même dossier, ou videz toutes les cellules sauf une, "
+"enregistrez le classeur, puis relancez 'sort'."
 
 msgid "Going to a 'to check' folder"
 msgstr "Vers un dossier « à vérifier »"
@@ -2725,6 +2741,12 @@ msgstr "{folder} : des copies dans un même dossier ne peuvent pas être invers�
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
+
+#, python-brace-format
+msgid "{others} follows {lead}: companions go to one folder."
+msgid_plural "{others} follow {lead}: companions go to one folder."
+msgstr[0] "{others} suit {lead} : les compagnons vont dans un même dossier."
+msgstr[1] "{others} suivent {lead} : les compagnons vont dans un même dossier."
 
 #, python-brace-format
 msgid "{path} changed since"

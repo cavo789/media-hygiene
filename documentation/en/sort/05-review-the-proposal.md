@@ -25,8 +25,8 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20260930-185652-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-185652-classify/report.html
+✅ Workbook to edit: /reports/20260930-191105-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-191105-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
@@ -78,6 +78,10 @@ named, files already in place) come last.
 A few rules:
 
 - **The most precise edit wins**: a file's final folder, else its event's, else its category's.
+- **Companions follow one folder**: a Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`) or a RAW file and
+  its JPEG have one row each, but move together. A final folder typed on **any** of their rows
+  decides for all of them; two of their rows with different final folders are refused by `sort`,
+  naming both cells ([step 7](07-sort.md#how-files-move)).
 - **Your edit is sure**: a file you place yourself leaves the "to check" band.
 - **(stay where it is)** is a value of every list: the file, the event or the category is left
   where it is.

@@ -15,6 +15,7 @@ from media_hygiene.i18n import _, ngettext
 if TYPE_CHECKING:
     from media_hygiene.actions.manifest import Manifest
     from media_hygiene.actions.sort_folders import FolderReport
+    from media_hygiene.actions.sort_plan import SortPlan
     from media_hygiene.console.output import Output
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort import Prepared
@@ -86,6 +87,22 @@ def sort_table(prepared: Prepared) -> Table:
     for label, value in rows:
         table.add_row(label, value)
     return table
+
+
+def show_follows(output: Output, plan: SortPlan) -> None:
+    """Say which companions follow another's event or category edit, not their own.
+
+    Args:
+        output: Where to print.
+        plan: The moves.
+    """
+    for lead, others in plan.companions.follows:
+        message = ngettext(
+            "{others} follows {lead}: companions go to one folder.",
+            "{others} follow {lead}: companions go to one folder.",
+            len(others),
+        )
+        output.info(escape(message.format(others=", ".join(others), lead=lead)))
 
 
 def show_kept_folders(runtime: Runtime, folders: FolderReport, *, done: bool) -> None:

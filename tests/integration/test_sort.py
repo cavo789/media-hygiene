@@ -6,16 +6,23 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
+from openpyxl import load_workbook
+
 from media_hygiene.actions.journal import journal_file, read_journal
 from media_hygiene.actions.kinds import ActionKind, Phase
+from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.classify.models import Band, SortReason
+from media_hygiene.classify.workbook.sheets import FileColumn
 from media_hygiene.constants import MediaKind
+from media_hygiene.errors import WorkbookError
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
 from tests.support.runtime import make_runtime
+from tests.support.scenes import Shot, write_shot
 from tests.support.sorting import (
     EVENT_NAME,
     MIXED,
@@ -126,3 +133,37 @@ def test_the_journal_names_the_plan_and_each_row(locations: Locations) -> None:
     ]
     assert {e.plan for e in moves} == {result.manifest.plan_id}
     assert all(e.row for e in moves if not e.path.endswith(".xmp"))
+
+
+def type_folders(workbook: Path, typed: dict[str, str]) -> None:
+    """Type a final folder on the Files rows of these file names, as in Excel."""
+    book = load_workbook(workbook)
+    for row in book.worksheets[3].iter_rows(min_row=2):
+        names = {str(cell.value).rsplit("\\", 1)[-1] for cell in row if cell.value}
+        for name in names & typed.keys():
+            row[FileColumn.FINAL - 1].value = typed[name]
+    book.save(workbook)
+
+
+def test_a_file_edit_on_a_twin_decides_for_both(locations: Locations) -> None:
+    """IMG_0000.jpg edited, not the leading IMG_0000.jpeg: both go where it says."""
+    data = locations.data_dir
+    build_library(data)
+    write_shot(data / PARTY / "IMG_0000.jpeg", Shot(90, taken_at="2016:07:14 10:00:00"))
+    runtime = make_runtime(locations)
+    workbook = classify(runtime)
+    start = snapshot(data)
+    type_folders(workbook, {"IMG_0000.jpg": "Vacances", "IMG_0001.jpg": "Plage"})
+    assert sort(runtime).manifest.intact
+    assert (data / "c/Vacances/IMG_0000.jpg").is_file()
+    assert (data / "c/Vacances/IMG_0000.jpeg").is_file()
+    type_folders(workbook, {"IMG_0000.jpeg": "Mer"})  # now two cells disagree
+    for run_id in list_run_ids(locations.journal_dir):
+        undo(runtime, run_id)
+    assert snapshot(data) == start
+    with pytest.raises(WorkbookError) as refused:
+        sort(runtime)
+    message = " ".join(refused.value.message.split())
+    assert "(IMG_0000.jpg)" in message
+    assert "(IMG_0000.jpeg)" in message
+    assert snapshot(data) == start  # nothing moved

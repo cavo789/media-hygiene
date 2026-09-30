@@ -15,7 +15,7 @@ from openpyxl import load_workbook
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import Band, MediaInput
 from media_hygiene.classify.plan_build import build_plan
-from media_hygiene.classify.workbook.edits import Stay, resolve
+from media_hygiene.classify.workbook.edits import Source, Stay, resolve
 from media_hygiene.classify.workbook.reader import read_edits
 from media_hygiene.classify.workbook.sheets import (
     META_SHEET,
@@ -134,8 +134,12 @@ def test_edits_are_read_back_with_file_over_event(
     book.save(target)
     edits = read_edits(target, plan)
     assert edits.files == {big[0]: "2016/Fête", big[1]: Stay.STAY}
+    row = ids.index(big[0]) + 2
+    assert edits.file_cells[big[0]] == f"{files.title}!K{row}"
     decided = {d.row.id: d for d in resolve(plan, edits)}
     assert decided[big[0]].folder == "2016/Fête"
+    assert decided[big[0]].source is Source.FILE
+    assert decided[big[2]].source is Source.GROUP
     assert decided[big[1]].folder is None
     assert decided[big[2]].folder == "2016/Kermesse"
     assert decided[big[2]].band is Band.SURE

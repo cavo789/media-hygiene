@@ -8,6 +8,7 @@ from media_hygiene.classify.workbook.edits import (
     CategoryEdit,
     Edits,
     EventEdit,
+    Source,
     Stay,
     resolve,
 )
@@ -101,6 +102,13 @@ def test_a_file_edit_wins_over_its_category() -> None:
     found = folders(edits)
     assert found["sure"] == "2016/Plage"
     assert found["check"] is None
+    sources = {d.row.id: d.source for d in resolve(PLAN, edits)}
+    assert sources == {
+        "sure": Source.FILE,
+        "check": Source.GROUP,
+        "loose": Source.PROPOSAL,
+        "kept": Source.PROPOSAL,
+    }
 
 
 def test_protected_files_ignore_every_edit() -> None:

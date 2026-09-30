@@ -31,8 +31,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20260930-185859-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 30 septembre 2026 à 18:58.
+Classeur : /reports/20260930-191312-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 30 septembre 2026 à 19:13.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -89,7 +89,13 @@ dossiers protégés ne bougent jamais.
 - Un fichier existant n'est jamais écrasé : `IMG_1.jpg` devient `IMG_1 (2).jpg`.
 - **Les compagnons voyagent ensemble** : une Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`), un fichier
   RAW et son JPEG, et leurs [fichiers annexes](../reference-sidecars.md) vont dans le même
-  dossier, sous le même nom.
+  dossier, sous le même nom. Leur dossier est le dossier final tapé sur l'une de leurs lignes de
+  la feuille Fichiers ; sinon une modification d'événement ou de catégorie qui atteint l'un d'eux
+  (celle de la photo d'abord, puis du RAW, puis de la vidéo : `sort` dit « IMG_1.MOV suit
+  IMG_1.HEIC » quand leurs modifications donnaient des dossiers différents) ; sinon la
+  proposition de la photo. Deux dossiers finaux différents tapés pour les mêmes compagnons (ou un
+  dossier et *(rester où il est)*) font refuser le classeur par `sort` avant tout déplacement, en
+  nommant les deux cellules : donnez-leur le même dossier, ou videz-les toutes sauf une.
 - Le cache suit : le prochain `audit` ne relit pas les fichiers déplacés.
 
 ## Les dossiers laissés vides
@@ -109,7 +115,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20260930-185901
+Tri 20260930-191314
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -120,8 +126,8 @@ Tri 20260930-185901
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20260930-185901-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20260930-185901' remet tout en
+Manifeste : /reports/20260930-191314-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20260930-191314' remet tout en
 place.
 ```
 
@@ -152,9 +158,9 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20260930-185901 ────────────────
+──────────────── Annulation de l'exécution sort 20260930-191314 ────────────────
 Annulation de l'exécution sort
-20260930-185901
+20260930-191314
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │

@@ -26,7 +26,7 @@ from media_hygiene.classify.workbook.edits import resolve
 from media_hygiene.errors import MountError
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.acting import ensure_can_act
-from media_hygiene.services.sort_guards import check_destinations
+from media_hygiene.services.sort_guards import check_companions, check_destinations
 from media_hygiene.services.sort_report import (
     folder_rules,
     source_roots,
@@ -104,6 +104,7 @@ class SortService:
             moved_rows(runtime.locations.journal_dir, plan_id),
         )
         plan = sort_plan(plan_id, resolve(inputs.plan, inputs.edits), context)
+        check_companions(plan)
         check_destinations(runtime, plan)
         rules = folder_rules(runtime, inputs.plan)
         sources = [move.source for move in plan.moves] + list(plan.moved_before)

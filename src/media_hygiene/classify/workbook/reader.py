@@ -73,10 +73,12 @@ def read_edits(path: Path, plan: ClassifyPlan) -> Edits:
         for name in (labels.categories, labels.events, labels.files)
     )
     problems = Problems(labels)
+    typed, cells = file_edits(files, problems)
     edits = Edits(
-        files=file_edits(files, problems),
+        files=typed,
         events=event_edits(events, problems),
         categories=category_edits(categories, problems),
+        file_cells=cells,
     )
     if problems.found:
         raise WorkbookError(

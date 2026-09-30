@@ -30,8 +30,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20260930-185744-classify/classify.xlsx
-0 edits read; workbook saved on 30 September 2026 at 18:57.
+Workbook: /reports/20260930-191157-classify/classify.xlsx
+0 edits read; workbook saved on 30 September 2026 at 19:11.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -82,6 +82,12 @@ must not be inside a protected folder. Files of protected folders never move.
 - An existing file is never overwritten: `IMG_1.jpg` becomes `IMG_1 (2).jpg`.
 - **Companions travel together**: a Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`), a RAW file and its
   JPEG, and their [sidecars](../reference-sidecars.md) go to the same folder, with the same name.
+  Their folder is the final folder typed on any of their rows of the Files sheet; else an event
+  or category edit reaching one of them (the photo's first, then the RAW file's, then the
+  video's: `sort` says "IMG_1.MOV follows IMG_1.HEIC" when their edits gave different folders);
+  else the photo's proposal. Two different final folders typed for the same companions (or a
+  folder and *(stay where it is)*) make `sort` refuse the workbook before moving anything, naming
+  both cells: give them the same folder, or clear all but one.
 - The cache follows: the next `audit` does not read the moved files again.
 
 ## Folders left empty
@@ -101,7 +107,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20260930-185746
+Sort 20260930-191159
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -111,8 +117,8 @@ Sort 20260930-185746
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20260930-185746-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20260930-185746' moves everything
+Manifest: /reports/20260930-191159-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20260930-191159' moves everything
 back.
 ```
 
@@ -141,8 +147,8 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20260930-185746 ───────────────────────
-Undo the sort run 20260930-185746
+────────────────────── Undo the sort run 20260930-191159 ───────────────────────
+Undo the sort run 20260930-191159
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

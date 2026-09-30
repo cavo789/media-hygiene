@@ -3,6 +3,7 @@
 Each target root must be mounted persistently (not the container's own disk, which
 vanishes with it), writable, and outside the protected folders; no file may go into a
 protected or excluded folder; a Windows path must stay within its length limit.
+Companions whose file edits name different folders are refused too.
 """
 
 from __future__ import annotations
@@ -28,6 +29,31 @@ if TYPE_CHECKING:
 MAX_WINDOWS_PATH: Final = 259
 _WINDOWS: Final = re.compile(r"^[A-Za-z]:\\")
 _SHOWN: Final = 5
+
+
+def check_companions(plan: SortPlan) -> None:
+    """Refuse a workbook giving companions (a photo and its video) different folders.
+
+    Args:
+        plan: The moves, with the file edits that disagree.
+
+    Raises:
+        WorkbookError: Two file edits of one group disagree; nothing was moved.
+    """
+    if not plan.companions.conflicts:
+        return
+    raise WorkbookError(
+        _(
+            "Companions (a photo and its video, a RAW file and its JPEG) travel "
+            "together, but their Files cells name different folders; nothing was moved:"
+        )
+        + "\n"
+        + "\n".join(", ".join(cells) for cells in plan.companions.conflicts[:_SHOWN]),
+        _(
+            "Give them the same folder, or clear all the cells but one, save the "
+            "workbook, then run 'sort' again."
+        ),
+    )
 
 
 def check_destinations(runtime: Runtime, plan: SortPlan) -> None:
