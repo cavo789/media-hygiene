@@ -1,9 +1,10 @@
 """How sure a proposal is, and which layout that gives.
 
-The score of a reason comes from `[classify] scores`, never from the code; it is capped
-by the date's confidence. `≥ sure` is sure, `≥ unsure` goes to "to check", the rest to
-"to sort". A file dated by its mtime only is "undated". Without `{category}` in the
-layout, a reliable date is enough: `{year}/{month}` needs no taxonomy.
+The score of a reason comes from its rule or from `[classify] scores`, never from the
+code; it is capped by the date's confidence. `≥ sure` is sure, `≥ unsure` goes to
+"to check", the rest to "to sort". A file dated by its mtime only is "undated".
+Without `{category}` in the layout, a reliable date is enough: `{year}/{month}` needs
+no taxonomy.
 """
 
 from __future__ import annotations
@@ -34,12 +35,15 @@ def verdict(signal: Signal, dating: Dating, settings: ClassifySettings) -> Verdi
     reason = signal.reason
     if reason is SortReason.NO_SIGNAL and "{category}" not in settings.layout:
         reason = SortReason.DATE_ONLY
-    score = min(settings.scores.get(reason.value, 0), dating.confidence)
+    own = signal.score
+    if own is None:
+        own = settings.scores.get(reason.value, 0)
+    score = min(own, dating.confidence)
     if score >= settings.sure:
-        return Verdict(Band.SURE, reason, score)
+        return Verdict(Band.SURE, reason, score, signal.rule)
     if score >= settings.unsure:
-        return Verdict(Band.UNSURE, reason, score)
-    return Verdict(Band.MANUAL, reason, score)
+        return Verdict(Band.UNSURE, reason, score, signal.rule)
+    return Verdict(Band.MANUAL, reason, score, signal.rule)
 
 
 def layout_of(band: Band, settings: ClassifySettings, *, camera: bool) -> str:

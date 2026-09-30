@@ -27,8 +27,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20260930-144636-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-144636-classify/report.html
+✅ Classeur à modifier : /reports/20260930-151021-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-151021-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
@@ -100,4 +100,4 @@ d'une autre exécution, ou dont des lignes ou des feuilles ont été changées, 
 
 ---
 
-← [4. Proposer une arborescence](04-classify.md) · [Documentation](../README.md)
+← [4. Proposer une arborescence](04-classify.md) · [Documentation](../README.md) · Suivant : **[6. Écrire ce que vous savez](06-write-down-what-you-know.md)** →

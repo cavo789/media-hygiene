@@ -31,7 +31,7 @@ def summary_headers(labels: Labels) -> Row:
 
 
 def summary_rows(plan: ClassifyPlan) -> list[Row]:
-    """Progress, then the counts per band, year, category, reason and date source.
+    """Progress, then the counts per band, year, category, rule and date source.
 
     Args:
         plan: The plan.
@@ -55,8 +55,11 @@ def summary_rows(plan: ClassifyPlan) -> list[Row]:
     lines += [(), (_("Categories"),)]
     categories = Counter(row.category for row in rows if row.category)
     lines += _counts(categories)[:_TOP_CATEGORIES]
-    lines += [(), (_("Reasons"),)]
-    lines += _counts(Counter(row.reason.value for row in rows))
+    lines += [(), (_("Rules and reasons"),)]
+    lines += _counts(Counter(row.why for row in rows))
+    if plan.unused_rules:
+        lines += [(), (_("Rules that decided nothing: check their dates or patterns"),)]
+        lines += [(name, 0) for name in plan.unused_rules]
     lines += [(), (_("Dates from"),)]
     lines += _counts(Counter(source_name(row.date_source) for row in rows))
     return lines

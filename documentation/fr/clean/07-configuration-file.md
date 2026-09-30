@@ -84,6 +84,10 @@ Réglages effectifs
 │ classify.scores            │ {'existing-folder': 90,     │ défaut            │
 │                            │ 'person-folder': 85,        │                   │
 │                            │ 'event-neighbour': 70,      │                   │
+│                            │ 'calendar': 85,             │                   │
+│                            │ 'date-range': 95, 'kind':   │                   │
+│                            │ 85, 'path': 90, 'camera':   │                   │
+│                            │ 90, 'other-category': 85,   │                   │
 │                            │ 'date-only': 90,            │                   │
 │                            │ 'no-signal': 0}             │                   │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
@@ -106,6 +110,44 @@ Réglages effectifs
 │                            │ ideos|Vidéos|Mes images)',  │                   │
 │                            │ '(Family|Famille|Photos de  │                   │
 │                            │ famille|Family photos)']    │                   │
+│ classify.rules             │ [{'name': 'Films and        │ défaut            │
+│                            │ series', 'match': 'kind',   │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ 'download', 'score': None}, │                   │
+│                            │ {'name': 'Existing          │                   │
+│                            │ folders', 'match':          │                   │
+│                            │ 'existing_folder',          │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ None, 'score': None},       │                   │
+│                            │ {'name': 'Screenshots and   │                   │
+│                            │ documents', 'match':        │                   │
+│                            │ 'kind', 'category':         │                   │
+│                            │ 'Documents and              │                   │
+│                            │ screenshots', 'dates': '',  │                   │
+│                            │ 'pattern': '', 'kind':      │                   │
+│                            │ 'screenshot', 'score':      │                   │
+│                            │ None}, {'name': 'Event      │                   │
+│                            │ neighbours', 'match':       │                   │
+│                            │ 'event_neighbour',          │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ None, 'score': None},       │                   │
+│                            │ {'name': 'Christmas',       │                   │
+│                            │ 'match': 'calendar',        │                   │
+│                            │ 'category':                 │                   │
+│                            │ 'Parties/Christmas',        │                   │
+│                            │ 'dates': '12-24..12-26',    │                   │
+│                            │ 'pattern': '', 'kind':      │                   │
+│                            │ None, 'score': None},       │                   │
+│                            │ {'name': 'New Year',        │                   │
+│                            │ 'match': 'calendar',        │                   │
+│                            │ 'category': 'Parties/New    │                   │
+│                            │ Year', 'dates':             │                   │
+│                            │ '12-31..01-01', 'pattern':  │                   │
+│                            │ '', 'kind': None, 'score':  │                   │
+│                            │ None}]                      │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage
@@ -273,11 +315,15 @@ Réglages effectifs
 │ classify.merge_gap_hours   │ 18.0                        │ config.toml       │
 │ classify.min_event_size    │ 5                           │ config.toml       │
 │ classify.event_year        │ start                       │ défaut            │
-│ classify.sure              │ 80                          │ défaut            │
-│ classify.unsure            │ 50                          │ défaut            │
+│ classify.sure              │ 80                          │ config.toml       │
+│ classify.unsure            │ 50                          │ config.toml       │
 │ classify.scores            │ {'existing-folder': 90,     │ défaut            │
 │                            │ 'person-folder': 85,        │                   │
 │                            │ 'event-neighbour': 70,      │                   │
+│                            │ 'calendar': 85,             │                   │
+│                            │ 'date-range': 95, 'kind':   │                   │
+│                            │ 85, 'path': 90, 'camera':   │                   │
+│                            │ 90, 'other-category': 85,   │                   │
 │                            │ 'date-only': 90,            │                   │
 │                            │ 'no-signal': 0}             │                   │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
@@ -300,6 +346,48 @@ Réglages effectifs
 │                            │ ideos|Vidéos|Mes images)',  │                   │
 │                            │ '(Family|Famille|Photos de  │                   │
 │                            │ famille|Family photos)']    │                   │
+│ classify.rules             │ [{'name': 'Films et         │ config.toml       │
+│                            │ séries', 'match': 'kind',   │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ 'download', 'score': None}, │                   │
+│                            │ {'name': 'Dossiers          │                   │
+│                            │ existants', 'match':        │                   │
+│                            │ 'existing_folder',          │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ None, 'score': None},       │                   │
+│                            │ {'name': "Captures d'écran  │                   │
+│                            │ et documents", 'match':     │                   │
+│                            │ 'kind', 'category':         │                   │
+│                            │ "Documents et captures      │                   │
+│                            │ d'écran", 'dates': '',      │                   │
+│                            │ 'pattern': '', 'kind':      │                   │
+│                            │ 'screenshot', 'score':      │                   │
+│                            │ None}, {'name': "Voisins    │                   │
+│                            │ d'événement", 'match':      │                   │
+│                            │ 'event_neighbour',          │                   │
+│                            │ 'category': '', 'dates':    │                   │
+│                            │ '', 'pattern': '', 'kind':  │                   │
+│                            │ None, 'score': None},       │                   │
+│                            │ {'name': 'Noël', 'match':   │                   │
+│                            │ 'calendar', 'category':     │                   │
+│                            │ 'Fêtes/Noël', 'dates':      │                   │
+│                            │ '12-24..12-26', 'pattern':  │                   │
+│                            │ '', 'kind': None, 'score':  │                   │
+│                            │ None}, {'name': 'Nouvel     │                   │
+│                            │ An', 'match': 'calendar',   │                   │
+│                            │ 'category': 'Fêtes/Nouvel   │                   │
+│                            │ An', 'dates':               │                   │
+│                            │ '12-31..01-01', 'pattern':  │                   │
+│                            │ '', 'kind': None, 'score':  │                   │
+│                            │ None}, {'name':             │                   │
+│                            │ 'Saint-Nicolas', 'match':   │                   │
+│                            │ 'calendar', 'category':     │                   │
+│                            │ 'Fêtes/Saint-Nicolas',      │                   │
+│                            │ 'dates': '12-05..12-06',    │                   │
+│                            │ 'pattern': '', 'kind':      │                   │
+│                            │ None, 'score': None}]       │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage
@@ -332,7 +420,8 @@ commande remplace donc `preferred` du fichier pour ce lancement.
 
 Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux
 soulignés), par exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes
-s'écrivent en tableau JSON. Jusqu'à la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il
+s'écrivent en tableau JSON. Les listes de tables, comme les règles de `classify`
+(`[[classify.rules]]`), se lisent dans `config.toml` seulement. Jusqu'à la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il
 fonctionne encore jusqu'à la version 0.4.0, avec un avertissement.
 
 ---

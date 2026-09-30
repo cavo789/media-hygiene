@@ -17,7 +17,7 @@ them one at a time; this page gathers them.
 | `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md) |
+| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -46,7 +46,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--leave PATH` | `classify` | Folder never sorted; still analysed and cleaned. |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
-line wins.
+line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they are written in
+`config.toml` only ([sorting, step 6](sort/06-write-down-what-you-know.md)).
 
 ## The built-in help
 

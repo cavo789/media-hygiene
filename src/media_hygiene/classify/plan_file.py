@@ -57,6 +57,7 @@ class PlanRow(_Frozen):
     band: Band
     reason: SortReason
     score: int
+    rule: str = ""  # the name of the rule that decided; empty: no rule
     root: str  # host folder the proposal is relative to
     folder: str | None  # relative to `root`, `/`-separated; None: stay where it is
     name: str  # the target name: the original one for now
@@ -69,6 +70,15 @@ class PlanRow(_Frozen):
             It, or an empty string.
         """
         return self.values.category if self.values else ""
+
+    @property
+    def why(self) -> str:
+        """Why the file goes there: the rule's name, else the reason.
+
+        Returns:
+            It.
+        """
+        return self.rule or self.reason.value
 
     @property
     def parent(self) -> str:
@@ -113,6 +123,7 @@ class ClassifyPlan(_Frozen):
     unsure_layout: str  # the "to check" layout: re-rendered when a category is renamed
     rows: tuple[PlanRow, ...]
     events: tuple[PlanEvent, ...]
+    unused_rules: tuple[str, ...] = ()  # rules that decided no file of the plan
 
     def categories(self) -> dict[str, int]:
         """The proposed categories and their file counts, the largest first.

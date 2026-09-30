@@ -78,6 +78,8 @@ seule chose à la commande de l'étape précédente.
    place pour chaque fichier, et ne modifie rien.
 5. [Revoir la proposition](documentation/fr/sort/05-review-the-proposal.md) — la corriger dans un
    classeur, regarder les photos dans le rapport.
+6. [Écrire ce que vous savez](documentation/fr/sort/06-write-down-what-you-know.md) — des règles
+   pour vos voyages, anniversaires, dossiers et appareils, appliquées à chaque exécution.
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

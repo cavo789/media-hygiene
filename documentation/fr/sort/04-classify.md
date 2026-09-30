@@ -40,7 +40,7 @@ Proposition
 
 Pourquoi
 ┌─────────────────────┬────┐
-│ existing-folder     │ 74 │
+│ Dossiers existants  │ 74 │
 │ no-signal           │  3 │
 │ undated             │  3 │
 │   Vacances à la mer │ 13 │
@@ -55,12 +55,15 @@ Pourquoi
 │   WhatsApp          │  1 │
 └─────────────────────┴────┘
 
+⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et
+documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
+💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
 À vérifier ou à trier : 3 fichiers dans 1 événement.
 💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
 copies sont triées.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
-✅ Classeur à modifier : /reports/20260930-144636-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-144636-classify/report.html
+✅ Classeur à modifier : /reports/20260930-151021-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-151021-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
@@ -87,7 +90,7 @@ quelques tris, c'est l'avancement de votre collection.
   une messagerie).
 - **Laissés tels quels** : vos dossiers protégés et ceux que vous avez demandé de ne pas trier.
 
-*Pourquoi* donne la raison de chaque proposition, puis les catégories les plus trouvées.
+*Pourquoi* donne la règle (ou la raison) de chaque proposition, puis les catégories les plus trouvées.
 
 ## D'où viennent les dates
 
@@ -113,6 +116,9 @@ Tout est dans la section `[classify]` de `config.toml`
 
 Les modèles acceptent `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{category}`,
 `{event}` et `{event_start}`. Un modèle vide laisse les fichiers où ils sont.
+
+Les catégories viennent de règles que vous ordonnez et complétez : vos dossiers, vos voyages, vos
+anniversaires, Noël, les captures d'écran ([étape 6](06-write-down-what-you-know.md)).
 
 ---
 

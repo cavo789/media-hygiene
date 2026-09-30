@@ -93,10 +93,10 @@ def test_an_evening_and_the_next_morning_are_one_event() -> None:
 
 
 def test_a_new_year_party_stays_in_one_year() -> None:
-    """The event takes the year of its start."""
+    """The event takes the year of its start, and the New Year rule."""
     party = series("DCIM", datetime(2016, 12, 31, 22), 5)
     folders = {p.folder for p in classify(party, SETTINGS, Scope()).proposals}
-    assert folders == {"2016/To sort/2016-12-31..2017-01-01"}
+    assert folders == {"2016/Parties/New Year"}  # the default calendar rule
 
 
 def test_loose_files_of_an_event_join_its_meaningful_folder() -> None:

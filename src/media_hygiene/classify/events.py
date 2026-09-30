@@ -13,12 +13,15 @@ from dataclasses import dataclass
 from datetime import timedelta
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.models import Event
+from media_hygiene.classify.models import DateSource, Event
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
     from datetime import datetime
     from pathlib import Path
+
+    from media_hygiene.classify.models import Dating
+    from media_hygiene.config.classify_settings import ClassifySettings
 
 _ID_LENGTH: Final = 12
 
@@ -99,3 +102,29 @@ def _event(group: list[tuple[Path, datetime]], labels: Mapping[Path, str]) -> Ev
         paths=tuple(path for path, _when in group),
         label=label,
     )
+
+
+def trusted_events(
+    datings: Mapping[Path, Dating],
+    labels: Mapping[Path, str],
+    settings: ClassifySettings,
+) -> tuple[Event, ...]:
+    """Group the files with a trusted date into events.
+
+    Args:
+        datings: The date of each file.
+        labels: The meaningful folder label of each file, when it has one.
+        settings: `[classify]`: the gaps and the minimum size.
+
+    Returns:
+        The events.
+    """
+    trusted = [
+        (path, dating.when)
+        for path, dating in datings.items()
+        if dating.source is not DateSource.MTIME
+    ]
+    rules = EventRules.of(
+        settings.session_gap_hours, settings.merge_gap_hours, settings.min_event_size
+    )
+    return find_events(trusted, rules, labels)

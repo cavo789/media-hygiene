@@ -62,7 +62,7 @@ def file_rows(plan: ClassifyPlan, labels: Labels) -> list[Row]:
             source_name(row.date_source),
             row.event_id,
             band_name(row.band),
-            f"{row.reason.value} ({row.score})",
+            f"{row.why} ({row.score})",
             _folder(row, labels),
             None,
             None,

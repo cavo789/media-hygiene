@@ -1,7 +1,7 @@
 """From the files and what the index knows of them, one proposal per file.
 
-Read-only: nothing here touches a file. Dates, folders and events decide; the rules of
-`[classify.rules]` come on top (0035).
+Read-only: nothing here touches a file. Dates, folders and events give the facts; the
+ordered rules of `[[classify.rules]]` decide from them.
 """
 
 from __future__ import annotations
@@ -12,16 +12,17 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
 from media_hygiene.classify.dates import clock_not_set, zone_of
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
-from media_hygiene.classify.events import EventRules, find_events
+from media_hygiene.classify.events import trusted_events
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import (
     Band,
-    DateSource,
     Proposal,
     SortReason,
     Verdict,
 )
+from media_hygiene.classify.rules.building import RuleFacts
+from media_hygiene.classify.rules.order import decide
 from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.years import year_folders
 from media_hygiene.constants import GENERIC_FOLDERS
@@ -29,7 +30,7 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
     from pathlib import Path
 
     from media_hygiene.classify.models import Dating, Event, MediaInput
@@ -45,14 +46,16 @@ class Scope:
     kept: tuple[Path, ...] = ()  # protected and `leave` folders
     years: tuple[int, int] | None = None
     generic: tuple[str, ...] = GENERIC_FOLDERS  # `[keep]`: DCIM, Camera…
+    host: Callable[[Path], str] = str  # container → host path, for `path` rules
 
 
 @dataclass(frozen=True, slots=True)
 class Classification:
-    """Every proposal, and the events they belong to."""
+    """Every proposal, the events they belong to, and the rules that decided nothing."""
 
     proposals: tuple[Proposal, ...]
     events: tuple[Event, ...]
+    unused_rules: tuple[str, ...] = ()
 
 
 def classify(
@@ -80,17 +83,13 @@ def classify(
     datings = {file.path: dating_of(file, context) for file in files}
     signals = {file.path: folder_signal(file, rules) for file in files}
     labels = {path: s.category for path, s in signals.items() if s.category}
-    trusted = [
-        (path, dating.when)
-        for path, dating in datings.items()
-        if dating.source is not DateSource.MTIME
-    ]
-    event_rules = EventRules.of(
-        settings.session_gap_hours, settings.merge_gap_hours, settings.min_event_size
-    )
-    events = find_events(trusted, event_rules, labels)
-    signals = with_neighbours(signals, events)
+    events = trusted_events(datings, labels, settings)
     event_of = {path: event for event in events for path in event.paths}
+    signals = decide(
+        files,
+        settings,
+        RuleFacts(datings, with_neighbours(signals, events), event_of, scope.host),
+    )
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [
         _propose(
@@ -105,8 +104,10 @@ def classify(
         )
         for file in files
     ]
+    kept = tuple(p for p in proposals if _in_years(p, scope.years))
+    used = {proposal.rule for proposal in kept}
     return Classification(
-        tuple(p for p in proposals if _in_years(p, scope.years)), events
+        kept, events, tuple(r.name for r in settings.rules if r.name not in used)
     )
 
 
@@ -137,6 +138,9 @@ def _propose(
     dating, signal, event = facts.dating, facts.signal, facts.event
     if any(is_within(file.path, folder) for folder in scope.kept):
         return Proposal(file, dating, Verdict(Band.STAY, SortReason.LEFT_AS_IS, 100))
+    if signal.stay:
+        left = Verdict(Band.STAY, signal.reason, signal.score or 0, signal.rule)
+        return Proposal(file, dating, left)
     judged = verdict(signal, dating, settings)
     when = dating.when
     values = Values(

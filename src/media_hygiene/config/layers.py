@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import tomllib
-from typing import TYPE_CHECKING, Final, get_origin
+from typing import TYPE_CHECKING, Final, get_args, get_origin
 
 from pydantic import BaseModel
 
@@ -53,6 +53,8 @@ def read_file_layer(config_file: Path) -> Layer:
 def read_env_layer(environ: Mapping[str, str]) -> Layer:
     """Collect `MEDIA_HYGIENE_<SECTION>__<KEY>` variables; lists are JSON arrays.
 
+    Arrays of tables, such as `[[classify.rules]]`, are read from config.toml only.
+
     Args:
         environ: The process environment.
 
@@ -66,13 +68,31 @@ def read_env_layer(environ: Mapping[str, str]) -> Layer:
     for section, model in _SECTIONS.items():
         for key, field in model.model_fields.items():
             name = f"{ENV_PREFIX}{section}{_ENV_SEPARATOR}{key}".upper()
-            if name not in environ:
+            if name not in environ or _is_table_array(field.annotation):
                 continue
             value: object = environ[name]
             if get_origin(field.annotation) is tuple:
                 value = _parse_json_list(name, environ[name])
             layer.setdefault(section, {})[key] = value
     return layer
+
+
+def _is_table_array(annotation: object) -> bool:
+    """Tell an array of tables (`[[classify.rules]]`): config.toml only, no variable.
+
+    Args:
+        annotation: The type of a setting.
+
+    Returns:
+        True for a tuple of models.
+    """
+    items = get_args(annotation)
+    return (
+        get_origin(annotation) is tuple
+        and bool(items)
+        and isinstance(items[0], type)
+        and issubclass(items[0], BaseModel)
+    )
 
 
 def _parse_json_list(name: str, raw: str) -> list[str]:

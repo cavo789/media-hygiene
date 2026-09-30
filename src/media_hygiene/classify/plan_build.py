@@ -49,6 +49,7 @@ def build_plan(
         unsure_layout=settings.unsure_layout,
         rows=rows,
         events=events,
+        unused_rules=classification.unused_rules,
     )
 
 
@@ -104,6 +105,7 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
         band=proposal.band,
         reason=proposal.reason,
         score=proposal.verdict.score,
+        rule=proposal.rule,
         root=mapper.to_host(root),
         folder=folder,
         name=file.path.name,

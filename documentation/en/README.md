@@ -53,6 +53,8 @@ otherwise both copies are sorted.
    changes nothing.
 5. [Review the proposal](sort/05-review-the-proposal.md): correct it in a workbook, look at the
    photos in the report.
+6. [Write down what you know](sort/06-write-down-what-you-know.md): rules for your trips, your
+   birthdays, your folders and your cameras, applied at every run.
 
 ## Reference
 

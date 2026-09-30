@@ -6,8 +6,10 @@ import re
 from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
+from rich.markup import escape
 
 from media_hygiene.cli.context import runtime_of, user_errors, warn
+from media_hygiene.config.classify_rules import overlapping_ranges
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.constants import CLASSIFY_WORKBOOK_FILE_NAME, REPORT_FILE_NAME
@@ -74,10 +76,26 @@ def classify_command(  # pylint: disable=too-many-arguments
             runtime = runtime.with_overrides({"classify": overrides})
         years = parse_years(year)
         runtime.output.title(_("Classify"))
+        _warn_overlaps(runtime)
         with RichProgress(runtime.output.console) as progress:
             result = ClassifyService(runtime, progress).run(years)
     show_classification(runtime.output, result)
     _write_output(runtime, result)
+
+
+def _warn_overlaps(runtime: Runtime) -> None:
+    """Warn about date ranges sharing a day: only the first one listed applies there.
+
+    Args:
+        runtime: Settings and output.
+    """
+    for first, second in overlapping_ranges(runtime.settings.classify.rules):
+        runtime.output.warning(
+            _(
+                "The date ranges of the rules '{first}' and '{second}' overlap: "
+                "on the days they share, the first one listed wins."
+            ).format(first=escape(first), second=escape(second))
+        )
 
 
 def _write_output(runtime: Runtime, result: ClassifyResult) -> None:

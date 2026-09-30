@@ -7,6 +7,11 @@ from typing import Final, Literal
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from media_hygiene.classify.layout import check_layout
+from media_hygiene.config.classify_rules import (
+    DEFAULT_RULES,
+    ClassifyRule,
+    unique_names,
+)
 from media_hygiene.config.patterns import valid_patterns
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
@@ -33,13 +38,19 @@ SCORES: Final = {
     "existing-folder": 90,
     "person-folder": 85,
     "event-neighbour": 70,
+    "calendar": 85,
+    "date-range": 95,  # a trip the user wrote down: sure
+    "kind": 85,
+    "path": 90,
+    "camera": 90,
+    "other-category": 85,  # only when no rule above matched
     "date-only": 90,
     "no-signal": 0,
 }
 
 
 class ClassifySettings(BaseModel):
-    """`[classify]` — layouts per band, events, and the confidence thresholds.
+    """`[classify]` — layouts per band, events, rules and the confidence thresholds.
 
     Layouts are relative to the target root; an empty layout leaves the files where they
     are. `target` empty sorts each mounted folder in place.
@@ -64,6 +75,7 @@ class ClassifySettings(BaseModel):
     scores: dict[str, int] = SCORES
     name_dates: tuple[str, ...] = NAME_DATES
     generic_folders: tuple[str, ...] = LIBRARY_FOLDERS
+    rules: tuple[ClassifyRule, ...] = DEFAULT_RULES
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"
@@ -93,3 +105,29 @@ class ClassifySettings(BaseModel):
             The patterns, unchanged.
         """
         return valid_patterns(patterns)
+
+    @field_validator("rules")
+    @classmethod
+    def _unique_rules(cls, rules: tuple[ClassifyRule, ...]) -> tuple[ClassifyRule, ...]:
+        """Refuse two rules with the same name.
+
+        Args:
+            rules: The rules.
+
+        Returns:
+            Them, unchanged.
+        """
+        return unique_names(rules)
+
+    @field_validator("scores")
+    @classmethod
+    def _all_scores(cls, scores: dict[str, int]) -> dict[str, int]:
+        """Complete the scores a user wrote with the default ones.
+
+        Args:
+            scores: The scores written.
+
+        Returns:
+            Every score: a reason left out keeps its default.
+        """
+        return {**SCORES, **scores}

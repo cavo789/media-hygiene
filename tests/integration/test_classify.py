@@ -79,3 +79,23 @@ def test_the_plan_workbook_and_report_are_written_to_reports(
     assert list(folder.glob("thumbs/*.jpg"))
     first = plan.rows[0]
     assert first.path.startswith("C:\\")
+
+
+def test_rules_from_config_toml_are_applied_and_checked(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Overlapping trips are a warning; each rule's files are counted by its name."""
+    trips = (("Italy", "2019-07-01..2019-07-31"), ("Rome", "2019-07-10..2019-07-12"))
+    locations.config_file.write_text(
+        "".join(
+            f'[[classify.rules]]\nname = "{name}"\nmatch = "date_range"\n'
+            f'dates = "{dates}"\ncategory = "Trips/{name}"\n\n'
+            for name, dates in trips
+        )
+        + '[[classify.rules]]\nname = "Folders"\nmatch = "existing_folder"\n',
+        "utf-8",
+    )
+    result = run(cli, "classify")
+    assert result.exit_code == 0, result.output
+    assert "'Italy' and 'Rome' overlap" in result.output
+    assert "Folders" in result.output

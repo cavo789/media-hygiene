@@ -25,8 +25,8 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20260930-144526-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-144526-classify/report.html
+✅ Workbook to edit: /reports/20260930-150802-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-150802-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
@@ -93,4 +93,4 @@ whose rows or sheets were changed, is refused.
 
 ---
 
-← [4. Propose a tidy tree](04-classify.md) · [Documentation](../README.md)
+← [4. Propose a tidy tree](04-classify.md) · [Documentation](../README.md) · Next: **[6. Write down what you know](06-write-down-what-you-know.md)** →

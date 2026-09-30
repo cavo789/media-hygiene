@@ -59,6 +59,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
    fichier, et ne modifie rien.
 5. [Revoir la proposition](sort/05-review-the-proposal.md) : la corriger dans un classeur, regarder
    les photos dans le rapport.
+6. [Écrire ce que vous savez](sort/06-write-down-what-you-know.md) : des règles pour vos voyages,
+   vos anniversaires, vos dossiers et vos appareils, appliquées à chaque exécution.
 
 ## Référence
 

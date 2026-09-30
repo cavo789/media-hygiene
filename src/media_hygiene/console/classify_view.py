@@ -5,9 +5,10 @@ from __future__ import annotations
 from collections import Counter
 from typing import TYPE_CHECKING, Final
 
+from rich.markup import escape
 from rich.table import Table
 
-from media_hygiene.classify.models import Band, SortReason
+from media_hygiene.classify.models import Band
 from media_hygiene.classify.names import band_name
 from media_hygiene.console.formatting import human_number, human_share
 from media_hygiene.i18n import _, ngettext
@@ -43,6 +44,16 @@ def show_classification(output: Output, result: ClassifyResult) -> None:
     output.blank()
     output.show(_reasons_table(proposals))
     output.blank()
+    unused = result.classification.unused_rules
+    if unused:
+        output.warning(
+            _("Rules that decided nothing: {names}.").format(
+                names=escape(", ".join(unused))
+            )
+        )
+        output.tip(
+            _("Check their dates, their patterns and their order in config.toml.")
+        )
     _work_left(output, proposals)
     if result.duplicates:
         output.tip(
@@ -78,7 +89,7 @@ def _bands_table(proposals: tuple[Proposal, ...]) -> Table:
 
 
 def _reasons_table(proposals: tuple[Proposal, ...]) -> Table:
-    """Why, and the categories found most.
+    """Why: the files each rule or reason decided, then the categories found most.
 
     Args:
         proposals: Every proposal.
@@ -89,13 +100,12 @@ def _reasons_table(proposals: tuple[Proposal, ...]) -> Table:
     table = Table(title=_("Why"), title_justify="left", show_header=False)
     table.add_column(style="bold")
     table.add_column(justify="right")
-    reasons = Counter(proposal.reason for proposal in proposals)
-    for reason in SortReason:
-        if reasons[reason]:
-            table.add_row(reason.value, human_number(reasons[reason]))
+    reasons = Counter(proposal.rule or proposal.reason.value for proposal in proposals)
+    for reason, count in reasons.most_common():
+        table.add_row(escape(reason), human_number(count))
     categories = Counter(p.category for p in proposals if p.category)
     for category, count in categories.most_common(_TOP_CATEGORIES):
-        table.add_row(f"  {category}", human_number(count))
+        table.add_row(f"  {escape(category)}", human_number(count))
     return table
 
 

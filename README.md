@@ -77,6 +77,8 @@ adds one thing to the command of the step before.
    for every file, and changes nothing.
 5. [Review the proposal](documentation/en/sort/05-review-the-proposal.md) — correct it in a
    workbook, look at the photos in the report.
+6. [Write down what you know](documentation/en/sort/06-write-down-what-you-know.md) — rules for
+   your trips, birthdays, folders and cameras, applied at every run.
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

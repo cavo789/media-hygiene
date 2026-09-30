@@ -76,7 +76,11 @@ Effective settings
 │ classify.scores            │ {'existing-folder': 90,          │ default      │
 │                            │ 'person-folder': 85,             │              │
 │                            │ 'event-neighbour': 70,           │              │
-│                            │ 'date-only': 90, 'no-signal': 0} │              │
+│                            │ 'calendar': 85, 'date-range':    │              │
+│                            │ 95, 'kind': 85, 'path': 90,      │              │
+│                            │ 'camera': 90, 'other-category':  │              │
+│                            │ 85, 'date-only': 90,             │              │
+│                            │ 'no-signal': 0}                  │              │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
 │                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
 │                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
@@ -95,6 +99,36 @@ Effective settings
 │                            │ |Vidéos|Mes images)',            │              │
 │                            │ '(Family|Famille|Photos de       │              │
 │                            │ famille|Family photos)']         │              │
+│ classify.rules             │ [{'name': 'Films and series',    │ default      │
+│                            │ 'match': 'kind', 'category': '', │              │
+│                            │ 'dates': '', 'pattern': '',      │              │
+│                            │ 'kind': 'download', 'score':     │              │
+│                            │ None}, {'name': 'Existing        │              │
+│                            │ folders', 'match':               │              │
+│                            │ 'existing_folder', 'category':   │              │
+│                            │ '', 'dates': '', 'pattern': '',  │              │
+│                            │ 'kind': None, 'score': None},    │              │
+│                            │ {'name': 'Screenshots and        │              │
+│                            │ documents', 'match': 'kind',     │              │
+│                            │ 'category': 'Documents and       │              │
+│                            │ screenshots', 'dates': '',       │              │
+│                            │ 'pattern': '', 'kind':           │              │
+│                            │ 'screenshot', 'score': None},    │              │
+│                            │ {'name': 'Event neighbours',     │              │
+│                            │ 'match': 'event_neighbour',      │              │
+│                            │ 'category': '', 'dates': '',     │              │
+│                            │ 'pattern': '', 'kind': None,     │              │
+│                            │ 'score': None}, {'name':         │              │
+│                            │ 'Christmas', 'match':            │              │
+│                            │ 'calendar', 'category':          │              │
+│                            │ 'Parties/Christmas', 'dates':    │              │
+│                            │ '12-24..12-26', 'pattern': '',   │              │
+│                            │ 'kind': None, 'score': None},    │              │
+│                            │ {'name': 'New Year', 'match':    │              │
+│                            │ 'calendar', 'category':          │              │
+│                            │ 'Parties/New Year', 'dates':     │              │
+│                            │ '12-31..01-01', 'pattern': '',   │              │
+│                            │ 'kind': None, 'score': None}]    │              │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Mount points
@@ -243,12 +277,16 @@ Effective settings
 │ classify.merge_gap_hours   │ 18.0                             │ config.toml  │
 │ classify.min_event_size    │ 5                                │ config.toml  │
 │ classify.event_year        │ start                            │ default      │
-│ classify.sure              │ 80                               │ default      │
-│ classify.unsure            │ 50                               │ default      │
+│ classify.sure              │ 80                               │ config.toml  │
+│ classify.unsure            │ 50                               │ config.toml  │
 │ classify.scores            │ {'existing-folder': 90,          │ default      │
 │                            │ 'person-folder': 85,             │              │
 │                            │ 'event-neighbour': 70,           │              │
-│                            │ 'date-only': 90, 'no-signal': 0} │              │
+│                            │ 'calendar': 85, 'date-range':    │              │
+│                            │ 95, 'kind': 85, 'path': 90,      │              │
+│                            │ 'camera': 90, 'other-category':  │              │
+│                            │ 85, 'date-only': 90,             │              │
+│                            │ 'no-signal': 0}                  │              │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
 │                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
 │                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
@@ -267,6 +305,36 @@ Effective settings
 │                            │ |Vidéos|Mes images)',            │              │
 │                            │ '(Family|Famille|Photos de       │              │
 │                            │ famille|Family photos)']         │              │
+│ classify.rules             │ [{'name': 'Films and series',    │ config.toml  │
+│                            │ 'match': 'kind', 'category': '', │              │
+│                            │ 'dates': '', 'pattern': '',      │              │
+│                            │ 'kind': 'download', 'score':     │              │
+│                            │ None}, {'name': 'Existing        │              │
+│                            │ folders', 'match':               │              │
+│                            │ 'existing_folder', 'category':   │              │
+│                            │ '', 'dates': '', 'pattern': '',  │              │
+│                            │ 'kind': None, 'score': None},    │              │
+│                            │ {'name': 'Screenshots and        │              │
+│                            │ documents', 'match': 'kind',     │              │
+│                            │ 'category': 'Documents and       │              │
+│                            │ screenshots', 'dates': '',       │              │
+│                            │ 'pattern': '', 'kind':           │              │
+│                            │ 'screenshot', 'score': None},    │              │
+│                            │ {'name': 'Event neighbours',     │              │
+│                            │ 'match': 'event_neighbour',      │              │
+│                            │ 'category': '', 'dates': '',     │              │
+│                            │ 'pattern': '', 'kind': None,     │              │
+│                            │ 'score': None}, {'name':         │              │
+│                            │ 'Christmas', 'match':            │              │
+│                            │ 'calendar', 'category':          │              │
+│                            │ 'Parties/Christmas', 'dates':    │              │
+│                            │ '12-24..12-26', 'pattern': '',   │              │
+│                            │ 'kind': None, 'score': None},    │              │
+│                            │ {'name': 'New Year', 'match':    │              │
+│                            │ 'calendar', 'category':          │              │
+│                            │ 'Parties/New Year', 'dates':     │              │
+│                            │ '12-31..01-01', 'pattern': '',   │              │
+│                            │ 'kind': None, 'score': None}]    │              │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Mount points
@@ -298,7 +366,8 @@ then `config.toml`, then the defaults. `--prefer` on the command line therefore 
 
 The environment variables are named `MEDIA_HYGIENE_<SECTION>__<KEY>` (two underscores),
 for instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON
-arrays. Up to version 0.2 their prefix was `MEDIA_DEDUP_`: it still works until version 0.4.0,
+arrays. Lists of tables, such as the rules of `classify` (`[[classify.rules]]`), are read from
+`config.toml` only. Up to version 0.2 their prefix was `MEDIA_DEDUP_`: it still works until version 0.4.0,
 with a warning.
 
 ---

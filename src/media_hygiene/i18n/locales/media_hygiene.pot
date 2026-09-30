@@ -1,3 +1,8 @@
+msgid ""
+"\"Other\" means: sure that nothing above matches. Without it, such files "
+"go to \"to sort\", which means: we do not know."
+msgstr ""
+
 #, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
@@ -54,7 +59,21 @@ msgid "A Windows folder (PowerShell):"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"A category may use {year}, {month}, {month_name}, {day}, {event} and "
+"{event_start}: those of the event's start. Without a category, the files "
+"a rule matches stay where they are. 'score = 0' turns a rule off; without"
+" a score, the rule takes the one of its match (a date range is sure)."
+msgstr ""
+
+#, python-brace-format
 msgid "A commented configuration file was created: {path}."
+msgstr ""
+
+msgid ""
+"A date rule takes a whole event when at least half of its photos fall on "
+"its days: a trip over Christmas stays a trip if its date range is listed "
+"above Christmas."
 msgstr ""
 
 msgid ""
@@ -160,6 +179,9 @@ msgid ""
 "one (DCIM, Camera, New folder)."
 msgstr ""
 
+msgid "Birthdays"
+msgstr ""
+
 msgid "Broken"
 msgstr ""
 
@@ -217,12 +239,18 @@ msgstr ""
 msgid "Check it yourself"
 msgstr ""
 
+msgid "Check their dates, their patterns and their order in config.toml."
+msgstr ""
+
 msgid "Checking that files can be read"
 msgstr ""
 
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
 " or --prefer."
+msgstr ""
+
+msgid "Christmas"
 msgstr ""
 
 msgid "Classify"
@@ -344,6 +372,9 @@ msgstr ""
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr ""
 
+msgid "Documents and screenshots"
+msgstr ""
+
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
 msgstr ""
@@ -352,6 +383,9 @@ msgid "Download decisions.json"
 msgstr ""
 
 msgid "Download it again from the report, next to it on /reports."
+msgstr ""
+
+msgid "Drone"
 msgstr ""
 
 msgid "Duplicate groups"
@@ -369,6 +403,18 @@ msgid ""
 msgstr ""
 
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
+msgstr ""
+
+msgid ""
+"Each rule has a name and a \"match\": existing_folder (a folder name you "
+"chose), event_neighbour (the loose files of an event join its one named "
+"folder), calendar (days of every year, dates = \"12-24..12-26\"; "
+"\"12-31..01-01\" crosses New Year), date_range (days that happen once, "
+"dates = \"2023-07-01..2023-07-15\"), kind (kind = \"screenshot\", "
+"\"received\" or \"download\"), path (a regular expression searched in the"
+" host path, pattern = \"(?i)kermesse\"), camera (a regular expression "
+"searched in the make and model, pattern = \"(?i)dji\"), other_category "
+"(the files no rule above matched)."
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
@@ -399,6 +445,9 @@ msgid ""
 msgstr ""
 
 msgid "Event"
+msgstr ""
+
+msgid "Event neighbours"
 msgstr ""
 
 msgid "Events"
@@ -432,6 +481,9 @@ msgid "Every copy"
 msgstr ""
 
 msgid "Example:"
+msgstr ""
+
+msgid "Existing folders"
 msgstr ""
 
 msgid "Extra copies that can be deleted"
@@ -468,6 +520,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
+msgstr ""
+
+msgid "Films and series"
 msgstr ""
 
 msgid "Final folder"
@@ -534,6 +589,9 @@ msgstr ""
 msgid "GB"
 msgstr ""
 
+msgid "Grandma's birthday"
+msgstr ""
+
 msgid "Group"
 msgstr ""
 
@@ -545,6 +603,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "HTML report: {path}"
+msgstr ""
+
+msgid "Holidays and outings"
 msgstr ""
 
 msgid "Host folder never sorted (analysed and cleaned as usual)."
@@ -600,6 +661,9 @@ msgid "Invalid configuration ({details})."
 msgstr ""
 
 msgid "Inventory"
+msgstr ""
+
+msgid "Italy 2023"
 msgstr ""
 
 #, python-brace-format
@@ -714,6 +778,9 @@ msgstr ""
 msgid "Name another file with --decisions, or mount the same folders."
 msgstr ""
 
+msgid "Nature and landscapes"
+msgstr ""
+
 msgid "Near duplicates"
 msgstr ""
 
@@ -733,6 +800,9 @@ msgid ""
 "files elsewhere ARE deleted (a \"master library\")."
 msgstr ""
 
+msgid "New Year"
+msgstr ""
+
 msgid "New name"
 msgstr ""
 
@@ -746,6 +816,11 @@ msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr ""
 
 msgid "No burst series: nothing to review."
+msgstr ""
+
+msgid ""
+"No category: downloaded films and series are not memories, they stay "
+"where they are."
 msgstr ""
 
 #, python-brace-format
@@ -884,7 +959,13 @@ msgstr ""
 msgid "Orphan sidecars (.xmp, .aae, .thm) to move"
 msgstr ""
 
+msgid "Other"
+msgstr ""
+
 msgid "Output (override general.* of config.toml)"
+msgstr ""
+
+msgid "Parties"
 msgstr ""
 
 #, python-brace-format
@@ -907,6 +988,9 @@ msgid "Photos and videos with a GPS position"
 msgstr ""
 
 msgid "Photos with a shooting date"
+msgstr ""
+
+msgid "Pictures received through a messaging app, if you want them apart:"
 msgstr ""
 
 msgid ""
@@ -961,12 +1045,12 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
-msgid "Reasons"
-msgstr ""
-
 msgid ""
 "Rebuilds each deleted copy from the kept one, brings quarantined and "
 "moved files back."
+msgstr ""
+
+msgid "Received"
 msgstr ""
 
 msgid "Received and downloaded"
@@ -1026,6 +1110,24 @@ msgid "Root"
 msgstr ""
 
 msgid "Rows or locked cells of the workbook were changed."
+msgstr ""
+
+msgid "Rules and reasons"
+msgstr ""
+
+msgid "Rules that decided nothing: check their dates or patterns"
+msgstr ""
+
+#, python-brace-format
+msgid "Rules that decided nothing: {names}."
+msgstr ""
+
+msgid ""
+"Rules: what you know, written once, applied at every run. They are read "
+"in order, and the first one whose score reaches 'sure' decides; its name "
+"shows as the reason in the summary and in the workbook. These lists of "
+"tables are read from this file only: no environment variable overrides "
+"them."
 msgstr ""
 
 msgid "Run"
@@ -1097,6 +1199,20 @@ msgid "Saving…"
 msgstr ""
 
 msgid "Scan (override scan.* of config.toml)"
+msgstr ""
+
+msgid "School"
+msgstr ""
+
+msgid "School fair"
+msgstr ""
+
+msgid ""
+"Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and "
+"above to the 'to check' layout, the rest to the 'to sort' one."
+msgstr ""
+
+msgid "Screenshots and documents"
 msgstr ""
 
 msgid "Second opinion"
@@ -1201,6 +1317,14 @@ msgstr ""
 msgid "The HTML report could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid ""
+"The categories below are an example to replace with your own, e.g. "
+"Parties, Holidays and outings, School, Sport and leisure, Home and works,"
+" Animals, Nature and landscapes, Documents and screenshots, Other. Avoid "
+"a \"Family\" or \"Portraits\" category: in a family collection, it "
+"swallows most photos."
+msgstr ""
+
 #, python-brace-format
 msgid "The classify files could not be written to {folder}: {reason}."
 msgstr ""
@@ -1217,6 +1341,12 @@ msgid "The container cannot write to {folders}."
 msgstr ""
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The date ranges of the rules '{first}' and '{second}' overlap: on the "
+"days they share, the first one listed wins."
 msgstr ""
 
 msgid "The decisions are saved in /reports: mount it, or they are lost."
@@ -1414,6 +1544,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgstr ""
+
+msgid "Your own rules go here, above the folders, for instance:"
 msgstr ""
 
 msgid ""

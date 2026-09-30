@@ -80,3 +80,91 @@ min_event_size = 5
 
 {{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: the zone of the container.')) }}
 timezone = ""
+
+{{ comment(_("Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and above to the 'to check' layout, the rest to the 'to sort' one.")) }}
+sure = 80
+unsure = 50
+
+{{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), other_category (the files no rule above matched).')) }}
+{{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
+{{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
+{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
+
+[[classify.rules]]
+name = "{{ _("Films and series") }}"
+match = "kind"
+kind = "download"
+{{ comment(_("No category: downloaded films and series are not memories, they stay where they are.")) }}
+
+{{ comment(_("Your own rules go here, above the folders, for instance:")) }}
+# [[classify.rules]]
+# name = "{{ _("Italy 2023") }}"
+# match = "date_range"
+# dates = "2023-07-01..2023-07-15"
+# category = "{{ _("Holidays and outings") }}/{{ _("Italy 2023") }}"
+#
+# [[classify.rules]]
+# name = "{{ _("Grandma's birthday") }}"
+# match = "calendar"
+# dates = "03-12"
+# category = "{{ _("Parties") }}/{{ _("Birthdays") }}"
+#
+# [[classify.rules]]
+# name = "{{ _("School fair") }}"
+# match = "path"
+# pattern = '(?i)kermesse'
+# category = "{{ _("School") }}/{{ _("School fair") }}"
+#
+# [[classify.rules]]
+# name = "{{ _("Drone") }}"
+# match = "camera"
+# pattern = '(?i)dji|fc\d{4}'
+# category = "{{ _("Nature and landscapes") }}/{{ _("Drone") }}"
+
+[[classify.rules]]
+name = "{{ _("Existing folders") }}"
+match = "existing_folder"
+
+[[classify.rules]]
+name = "{{ _("Screenshots and documents") }}"
+match = "kind"
+kind = "screenshot"
+category = "{{ _("Documents and screenshots") }}"
+
+[[classify.rules]]
+name = "{{ _("Event neighbours") }}"
+match = "event_neighbour"
+
+[[classify.rules]]
+name = "{{ _("Christmas") }}"
+match = "calendar"
+dates = "12-24..12-26"
+category = "{{ _("Parties") }}/{{ _("Christmas") }}"
+
+[[classify.rules]]
+name = "{{ _("New Year") }}"
+match = "calendar"
+dates = "12-31..01-01"
+category = "{{ _("Parties") }}/{{ _("New Year") }}"
+{% if locale == "fr" %}
+
+[[classify.rules]]
+name = "Saint-Nicolas"
+match = "calendar"
+dates = "12-05..12-06"
+category = "{{ _("Parties") }}/Saint-Nicolas"
+{% endif %}
+
+{{ comment(_("Pictures received through a messaging app, if you want them apart:")) }}
+# [[classify.rules]]
+# name = "{{ _("Received") }}"
+# match = "kind"
+# kind = "received"
+# category = "{{ _("Received") }}"
+
+{{ comment(_('"Other" means: sure that nothing above matches. Without it, such files go to "to sort", which means: we do not know.')) }}
+# [[classify.rules]]
+# name = "{{ _("Other") }}"
+# match = "other_category"
+# category = "{{ _("Other") }}"

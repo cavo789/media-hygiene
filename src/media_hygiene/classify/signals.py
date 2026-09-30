@@ -22,10 +22,16 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Signal:
-    """A category and the reason it was given; no category: no signal."""
+    """A category, the reason and the rule it was given by; no category: no signal.
+
+    `score` None takes the score of the reason; `stay` leaves the file where it is.
+    """
 
     reason: SortReason
     category: str = ""
+    rule: str = ""
+    score: int | None = None
+    stay: bool = False
 
 
 NO_SIGNAL = Signal(SortReason.NO_SIGNAL)

@@ -17,7 +17,7 @@ cette page les rassemble.
 | `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md) |
+| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -42,7 +42,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
-la ligne de commande l'emporte.
+la ligne de commande l'emporte. Les règles de `classify` (`[[classify.rules]]`) n'ont pas
+d'option : elles s'écrivent dans `config.toml` seulement ([trier, étape 6](sort/06-write-down-what-you-know.md)).
 
 ## L'aide intégrée
 

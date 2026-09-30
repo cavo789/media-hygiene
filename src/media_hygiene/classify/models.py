@@ -31,6 +31,12 @@ class SortReason(StrEnum):
     EXISTING_FOLDER = "existing-folder"
     PERSON_FOLDER = "person-folder"
     EVENT_NEIGHBOUR = "event-neighbour"
+    CALENDAR = "calendar"
+    DATE_RANGE = "date-range"
+    KIND = "kind"
+    PATH = "path"
+    CAMERA = "camera"
+    OTHER_CATEGORY = "other-category"
     DATE_ONLY = "date-only"
     NO_SIGNAL = "no-signal"
     UNDATED = "undated"
@@ -113,11 +119,12 @@ class Event:
 
 @dataclass(frozen=True, slots=True)
 class Verdict:
-    """How sure a proposal is: its band, its reason and its score (0-100)."""
+    """How sure a proposal is: its band, its reason, its score (0-100), its rule."""
 
     band: Band
     reason: SortReason
     score: int
+    rule: str = ""  # the name of the `[[classify.rules]]` entry that decided
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,6 +165,15 @@ class Proposal:
             The reason.
         """
         return self.verdict.reason
+
+    @property
+    def rule(self) -> str:
+        """The rule that decided, as the user named it.
+
+        Returns:
+            Its name, or an empty string.
+        """
+        return self.verdict.rule
 
     @property
     def in_place(self) -> bool:

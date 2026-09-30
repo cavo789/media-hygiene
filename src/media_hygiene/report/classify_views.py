@@ -59,7 +59,7 @@ class GroupView:
         Returns:
             The reason.
         """
-        return self.head.reason.value
+        return self.head.why
 
     @property
     def shown(self) -> tuple[PlanRow, ...]:

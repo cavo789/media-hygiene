@@ -39,7 +39,7 @@ Proposal
 
 Why
 ┌────────────────────┬────┐
-│ existing-folder    │ 74 │
+│ Existing folders   │ 74 │
 │ no-signal          │  3 │
 │ undated            │  3 │
 │   Seaside holidays │ 13 │
@@ -54,12 +54,15 @@ Why
 │   WhatsApp         │  1 │
 └────────────────────┴────┘
 
+⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
+Event neighbours, Christmas, New Year.
+💡 Check their dates, their patterns and their order in config.toml.
 To check or to sort: 3 files in 1 event.
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
 💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20260930-144526-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-144526-classify/report.html
+✅ Workbook to edit: /reports/20260930-150802-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-150802-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
@@ -84,7 +87,7 @@ sorts, it is how far your collection is.
   no camera took them (pictures received in a messaging app).
 - **Left as they are**: your protected folders and the folders you asked to leave alone.
 
-*Why* gives the reason of each proposal, then the categories found most.
+*Why* gives the rule (or the reason) of each proposal, then the categories found most.
 
 ## Where the dates come from
 
@@ -109,6 +112,9 @@ and every value there is an example to replace:
 
 Layouts accept `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{category}`,
 `{event}` and `{event_start}`. An empty layout leaves the files where they are.
+
+The categories come from rules you order and complete: your folders, your trips, your
+birthdays, Christmas, screenshots ([step 6](06-write-down-what-you-know.md)).
 
 ---
 

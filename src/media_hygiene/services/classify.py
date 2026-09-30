@@ -111,6 +111,7 @@ class ClassifyService:
             tuple(mapper.to_container(p) for p in kept),
             years,
             settings.keep.generic_folders,
+            mapper.to_host,
         )
 
     def _inputs(self, roots: tuple[Path, ...]) -> list[MediaInput]:
