@@ -68,6 +68,8 @@ UPSERT: Final = (
 # Every path below a folder: `/` then anything sorts between `folder/` and `folder0`.
 PATHS_UNDER: Final = "SELECT path FROM files WHERE path >= ? AND path < ?"
 FORGET: Final = "DELETE FROM files WHERE path = ?"
+# A file moved by `sort` (or back by `undo`) keeps its facts: size and mtime are kept.
+MOVE: Final = "UPDATE OR REPLACE files SET path = ? WHERE path = ?"
 MARK_WALKED: Final = "INSERT OR REPLACE INTO roots (path, walked_at) VALUES (?, ?)"
 WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
 

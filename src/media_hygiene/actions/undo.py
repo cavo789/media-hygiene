@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import done_states, latest_states
-from media_hygiene.actions.kinds import Phase, Status
+from media_hygiene.actions.kinds import FOLDER_ACTIONS, Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
 from media_hygiene.actions.restore import perform
 from media_hygiene.actions.reversal import blocker, reversal_of
@@ -94,5 +94,7 @@ class UndoExecutor:
         self._journal.record(pending)
         perform(entry, reversal)
         self._journal.record(pending.as_done())
+        if entry.action in FOLDER_ACTIONS:  # a folder is not a file restored
+            return
         self._tally.done += 1
         self._tally.bytes_done += entry.size

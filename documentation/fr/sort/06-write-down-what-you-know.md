@@ -158,4 +158,4 @@ sur sa feuille Résumé.
 
 ---
 
-← [5. Revoir la proposition](05-review-the-proposal.md) · [Documentation](../README.md)
+← [5. Revoir la proposition](05-review-the-proposal.md) · [Documentation](../README.md) · Suivant : **[7. Trier](07-sort.md)** →

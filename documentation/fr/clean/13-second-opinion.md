@@ -49,7 +49,7 @@ groupe. Après le résumé habituel :
 
 <!-- capture: crosscheck.txt|re:^Résultats de Czkawka|d'accord -->
 ```text
-Résultats de Czkawka du 2026-09-30 15:10 UTC.
+Résultats de Czkawka du 2026-09-30 17:37 UTC.
 ✅ Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes.
 ```
 

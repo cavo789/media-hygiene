@@ -26,9 +26,9 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20260930-151046 ────────────────
+─────────────── Annulation de l'exécution clean 20260930-173817 ────────────────
 Annulation de l'exécution clean
-20260930-151046
+20260930-173817
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -46,6 +46,8 @@ Annulation de l'exécution clean
   nettoyage.
 - Un fichier déjà revenu, ou dont la copie a disparu, est laissé tel quel et listé avec la
   raison : `undo` n'écrase jamais rien et ne devine rien.
+- Un [tri](../sort/07-sort.md) s'annule de la même façon : les fichiers reviennent, les dossiers
+  qu'il a supprimés reviennent, ceux qu'il a créés s'en vont.
 
 ## Voir ce qui a été fait : `history`
 
@@ -60,8 +62,8 @@ Exécutions (les plus récentes d'abord)
 ┃                 ┃          ┃           ┃         ┃            En ┃           ┃
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃  Libéré ┃   quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20260930-151050 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
-│ 20260930-151046 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
+│ 20260930-173821 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
+│ 20260930-173817 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
 └─────────────────┴──────────┴───────────┴─────────┴───────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -85,7 +87,7 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20260930-151050, 20260930-151046
+❓ Supprimer définitivement la quarantaine de 20260930-173821, 20260930-173817
 (2,2 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 2,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers cassés.

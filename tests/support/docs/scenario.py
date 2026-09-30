@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
-COMMANDS_TOO: Final = ("crosscheck", "config", "classify")
+COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort")
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -58,6 +58,8 @@ CAPTURES: Final = frozenset(
         "quarantine.txt",
         "plan-csv.txt",
         "purge.txt",
+        "sort.txt",
+        "undo-sort.txt",
         "help.txt",
         *(f"help-{command}.txt" for command in (*COMMANDS, *COMMANDS_TOO)),
     }
@@ -155,6 +157,15 @@ def _help(demo: Demo) -> Captures:
     return captures
 
 
+def _sort(demo: Demo) -> Captures:
+    """Classify the cleaned library, sort it as proposed, then undo the sort."""
+    run(demo, Command(("classify",)))
+    return {
+        "sort.txt": run_confirmed(demo, Command(("sort",), read_only=False)),
+        "undo-sort.txt": run(demo, Command(("undo",), read_only=False)),
+    }
+
+
 def run_scenario(demo: Demo, shots: Path) -> Captures:
     """Play the whole story on freshly seeded volumes, in the documentation's order.
 
@@ -173,4 +184,5 @@ def run_scenario(demo: Demo, shots: Path) -> Captures:
     captures |= _reports(demo, shots)
     captures |= _help(demo)
     captures["purge.txt"] = run_confirmed(demo, Command(("purge",), read_only=False))
+    captures |= _sort(demo)
     return captures

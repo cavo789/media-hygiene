@@ -27,8 +27,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20260930-151021-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-151021-classify/report.html
+✅ Classeur à modifier : /reports/20260930-173752-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-173752-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
@@ -94,9 +94,10 @@ Quelques règles :
   ordre le plus utile. Utilisez les **filtres** de la ligne d'en-tête pour restreindre une feuille.
 - Enregistrez le classeur là où il est, sous son nom, au format `.xlsx`.
 
-Rien ne bouge encore : appliquer le classeur à vos dossiers est le rôle de `sort`, une commande à
-venir. L'outil vérifiera à nouveau le classeur avant de déplacer quoi que ce soit : un classeur
-d'une autre exécution, ou dont des lignes ou des feuilles ont été changées, est refusé.
+Rien ne bouge encore : appliquer le classeur à vos dossiers est le rôle de `sort`
+([étape 7](07-sort.md)). Il vérifie à nouveau le classeur avant de déplacer quoi que ce soit : un
+classeur d'une autre exécution, ou dont des lignes, des feuilles ou des cellules verrouillées ont
+été changées, est refusé.
 
 ---
 

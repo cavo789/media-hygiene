@@ -4,15 +4,23 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import JournalWriter, journal_file, read_journal
+from media_hygiene.actions.journal import (
+    JournalWriter,
+    done_states,
+    journal_file,
+    read_journal,
+)
+from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
-    from media_hygiene.actions.kinds import Phase
+    from pathlib import Path
+
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
@@ -77,4 +85,25 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
     file = journal_file(runtime.locations.journal_dir, run_id)
     entries = read_journal(file)
     with JournalWriter.open(file) as journal:
-        return UndoExecutor(journal, progress).run(entries)
+        outcome = UndoExecutor(journal, progress).run(entries)
+    _follow_moves_back(runtime, file)
+    return outcome
+
+
+def _follow_moves_back(runtime: Runtime, file: Path) -> None:
+    """Update the index: files moved back by `undo` keep their facts.
+
+    Args:
+        runtime: Settings, mount points and output.
+        file: The journal of the run.
+    """
+    index = runtime.index_file
+    back = [
+        (entry.target, entry.path)
+        for entry in done_states(read_journal(file), Phase.UNDO)
+        if entry.action is ActionKind.MOVE and entry.target
+    ]
+    if index is None or not back:
+        return
+    with FactsRepository.open(index) as repository:
+        repository.move(back)

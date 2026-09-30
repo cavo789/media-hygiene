@@ -25,8 +25,8 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20260930-150802-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-150802-classify/report.html
+✅ Workbook to edit: /reports/20260930-173638-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-173638-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
@@ -87,9 +87,9 @@ A few rules:
   the **filters** of the header row to narrow a sheet down.
 - Save the workbook where it is, with its name, in the `.xlsx` format.
 
-Nothing moves yet: applying the workbook to your folders is the job of `sort`, a command to come.
-The tool will check the workbook again before moving anything: a workbook of another run, or one
-whose rows or sheets were changed, is refused.
+Nothing moves yet: applying the workbook to your folders is the job of `sort`
+([step 7](07-sort.md)). It checks the workbook again before moving anything: a workbook of another
+run, or one whose rows, sheets or locked cells were changed, is refused.
 
 ---
 

@@ -80,6 +80,8 @@ seule chose à la commande de l'étape précédente.
    classeur, regarder les photos dans le rapport.
 6. [Écrire ce que vous savez](documentation/fr/sort/06-write-down-what-you-know.md) — des règles
    pour vos voyages, anniversaires, dossiers et appareils, appliquées à chaque exécution.
+7. [Trier](documentation/fr/sort/07-sort.md) — `sort` déplace les fichiers comme le dit le
+   classeur, journalisé et annulable.
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

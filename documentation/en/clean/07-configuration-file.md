@@ -129,6 +129,9 @@ Effective settings
 │                            │ 'Parties/New Year', 'dates':     │              │
 │                            │ '12-31..01-01', 'pattern': '',   │              │
 │                            │ 'kind': None, 'score': None}]    │              │
+│ sort.confirm               │ True                             │ default      │
+│ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ default      │
+│                            │ '.DS_Store']                     │              │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Mount points
@@ -190,6 +193,10 @@ extensions = []        # e.g. ["heic", "mp4"]; empty: every photo, RAW and video
 
 [clean]
 confirm = true         # clean asks before doing anything
+
+[sort]
+confirm = true         # sort asks before moving anything
+junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder alive
 ```
 
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
@@ -335,6 +342,9 @@ Effective settings
 │                            │ 'Parties/New Year', 'dates':     │              │
 │                            │ '12-31..01-01', 'pattern': '',   │              │
 │                            │ 'kind': None, 'score': None}]    │              │
+│ sort.confirm               │ True                             │ config.toml  │
+│ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ config.toml  │
+│                            │ '.DS_Store']                     │              │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Mount points

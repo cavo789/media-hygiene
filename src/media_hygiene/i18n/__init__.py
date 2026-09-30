@@ -8,10 +8,15 @@ installed once at start-up by `install()`.
 from __future__ import annotations
 
 import gettext
+from contextlib import contextmanager
 from contextvars import ContextVar
+from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Locale
 from media_hygiene.i18n.catalog import load_translations
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 _LOCALE: ContextVar[Locale] = ContextVar("media_hygiene_locale", default=Locale.EN)
 _ACTIVE: ContextVar[gettext.NullTranslations] = ContextVar(
@@ -33,6 +38,25 @@ def install(locale: Locale) -> gettext.NullTranslations:
     _ACTIVE.set(translations)
     _LOCALE.set(locale)
     return translations
+
+
+@contextmanager
+def using(locale: Locale) -> Iterator[None]:
+    """Translate into `locale` for a while, then restore the language in use.
+
+    Args:
+        locale: Language to use inside the `with` block.
+
+    Yields:
+        Nothing: `_()` translates into `locale` until the block ends.
+    """
+    translations = _ACTIVE.set(load_translations(locale))
+    language = _LOCALE.set(locale)
+    try:
+        yield
+    finally:
+        _ACTIVE.reset(translations)
+        _LOCALE.reset(language)
 
 
 def active_locale() -> Locale:

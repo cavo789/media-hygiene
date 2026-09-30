@@ -69,8 +69,8 @@ class JournaledChanges:
             mtime_ns=file.mtime_ns,
         )
 
-    def act(self, entry: JournalEntry, change: Callable[[], object]) -> None:
-        """Journal `pending`, change, then journal `done`.
+    def record(self, entry: JournalEntry, change: Callable[[], object]) -> None:
+        """Journal `pending`, change, then journal `done`; count nothing.
 
         Args:
             entry: The pending entry.
@@ -79,6 +79,15 @@ class JournaledChanges:
         self._context.journal.record(entry)
         change()
         self._context.journal.record(entry.as_done())
+
+    def act(self, entry: JournalEntry, change: Callable[[], object]) -> None:
+        """Journal `pending`, change, journal `done`, then count the file.
+
+        Args:
+            entry: The pending entry.
+            change: Zero-argument callable performing the change.
+        """
+        self.record(entry, change)
         self._tally.done += 1
         self._tally.bytes_done += entry.size
 

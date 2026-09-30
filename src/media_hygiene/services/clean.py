@@ -20,8 +20,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.paths.mounts import is_read_only
-from media_hygiene.services.writable import ensure_writable
+from media_hygiene.services.acting import ensure_can_act
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -74,25 +73,7 @@ class CleanService:
                 _("Copies of other files than media go to /quarantine: mount it."),
                 _('Add -v "<a folder of yours>:/quarantine" to handle them.'),
             )
-        if not runtime.persistent(MountKind.JOURNAL):
-            raise MountError(
-                _("No journal mount: without a journal, 'undo' would be impossible."),
-                _('Add -v "<a folder of yours>:/journal" to the docker run command.'),
-            )
-        read_only = [
-            root
-            for root in runtime.mounts.data_roots(runtime.locations.data_dir)
-            if root.is_dir() and is_read_only(root)
-        ]
-        if read_only:
-            folders = ", ".join(runtime.mapper.to_host(root) for root in read_only)
-            raise MountError(
-                _("These folders are mounted read-only: {folders}.").format(
-                    folders=folders
-                ),
-                _("Remove ':ro' from their -v options to let 'clean' act."),
-            )
-        ensure_writable(runtime, MountKind.JOURNAL, MountKind.QUARANTINE)
+        ensure_can_act(runtime, "clean")
 
     def feasible(self, plan: CleanPlan) -> CleanPlan:
         """Drop what has to be moved when there is no quarantine to move it to.

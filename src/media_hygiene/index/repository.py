@@ -11,6 +11,7 @@ from media_hygiene.index.rows import facts_of, is_current, row_of
 from media_hygiene.index.schema import (
     FORGET,
     MARK_WALKED,
+    MOVE,
     PATHS_UNDER,
     SELECT,
     UPSERT,
@@ -119,6 +120,14 @@ class FactsRepository:
         before = self._connection.total_changes
         self._connection.executemany(FORGET, ((path,) for path in paths))
         return self._connection.total_changes - before
+
+    def move(self, moves: Iterable[tuple[str, str]]) -> None:
+        """Follow files that moved, so their facts are not computed again.
+
+        Args:
+            moves: Old and new path of each file (container paths).
+        """
+        self._connection.executemany(MOVE, ((new, old) for old, new in moves))
 
     def mark_walked(self, folder: Path, when: datetime) -> None:
         """Record that a folder was just walked without any read error.

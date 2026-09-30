@@ -20,6 +20,8 @@ class ActionKind(StrEnum):
     QUARANTINE_DUPLICATE = "quarantine-duplicate"
     QUARANTINE_SIDECAR = "quarantine-sidecar"
     QUARANTINE_BURST = "quarantine-burst"
+    # Written by `sort`: a junk file (`Thumbs.db`) that alone kept a folder alive.
+    QUARANTINE_JUNK = "quarantine-junk"
     # Written by `sort`: a file moved to `target`, a folder created, a folder left empty
     # and removed.
     MOVE = "move"

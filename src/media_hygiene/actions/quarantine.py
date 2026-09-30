@@ -1,4 +1,4 @@
-"""Move a file to the quarantine, proving the copy identical before removing it."""
+"""Move a file across disks, proving the copy identical before removing it."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 QUARANTINED: Final = frozenset(
     {ActionKind.QUARANTINE, ActionKind.QUARANTINE_NEAR}
     | {ActionKind.QUARANTINE_DUPLICATE, ActionKind.QUARANTINE_SIDECAR}
-    | {ActionKind.QUARANTINE_BURST},
+    | {ActionKind.QUARANTINE_BURST, ActionKind.QUARANTINE_JUNK},
 )
 
 
@@ -36,5 +36,5 @@ def move_verified(source: Path, target: Path) -> None:
     shutil.copy2(source, target)
     if full_digest(source) != full_digest(target):
         target.unlink()
-        raise OSError(_("the quarantine copy differs from the original"))
+        raise OSError(_("the copy differs from the original"))
     source.unlink()

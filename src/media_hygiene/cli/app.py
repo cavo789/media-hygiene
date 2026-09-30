@@ -13,6 +13,7 @@ from media_hygiene.cli.cmd_history import history_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
+from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_undo import undo_command
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
@@ -115,6 +116,15 @@ def build_app() -> typer.Typer:
             _(
                 "Audit, confirm, then really delete duplicate "
                 "copies (journaled, undoable)."
+            ),
+        ),
+        (
+            "sort",
+            sort_command,
+            act,
+            _(
+                "Move the photos and videos as the edited classify workbook says "
+                "(journaled, undoable)."
             ),
         ),
         (

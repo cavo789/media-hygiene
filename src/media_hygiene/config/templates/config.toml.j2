@@ -58,6 +58,14 @@ extensions = []
 confirm = true
 
 
+[sort]
+{{ comment(_("Ask for confirmation before sorting."), "--yes") }}
+confirm = true
+
+{{ comment(_("Files the system leaves behind: a source folder holding nothing else is removed once sorted, these files going to the quarantine first. 'sort --keep-empty-folders' keeps every folder.")) }}
+junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
+
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 

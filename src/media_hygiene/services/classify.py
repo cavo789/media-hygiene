@@ -75,10 +75,12 @@ class ClassifyService:
         refuse_empty_data(runtime)
         data_dir = runtime.locations.data_dir
         roots = runtime.mounts.data_roots(data_dir)
-        files = self._inputs(roots)
+        scope = self._scope(years)
+        # A file already in the target reads its folders from there: a target inside
+        # a mounted folder (`C:\\Photos\\Tri`) never becomes a category of its own.
+        files = self._inputs(roots, (scope.target,) if scope.target else ())
         return ClassifyResult(
-            classify(files, runtime.settings.classify, self._scope(years)),
-            duplicates(files),
+            classify(files, runtime.settings.classify, scope), duplicates(files)
         )
 
     def _scope(self, years: tuple[int, int] | None) -> Scope:
@@ -114,11 +116,14 @@ class ClassifyService:
             mapper.to_host,
         )
 
-    def _inputs(self, roots: tuple[Path, ...]) -> list[MediaInput]:
+    def _inputs(
+        self, roots: tuple[Path, ...], target: tuple[Path, ...]
+    ) -> list[MediaInput]:
         """List the media files with what the index knows of them.
 
         Args:
             roots: Mounted folders.
+            target: The target root, if any: the root of the files already in it.
 
         Returns:
             One input per readable, non-empty photo, RAW file or video.
@@ -146,7 +151,9 @@ class ClassifyService:
             integrity = asyncio.run(finder.find(files))
             broken = {item.file.path for item in integrity.broken}
             return [
-                media_input(file, root_of(file.path, roots, runtime), repository)
+                media_input(
+                    file, root_of(file.path, (*target, *roots), runtime), repository
+                )
                 for file in files
                 if file.path not in broken
             ]

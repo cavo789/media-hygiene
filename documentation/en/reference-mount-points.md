@@ -11,7 +11,7 @@ Each place in the container has one role.
 | `/cache` | SQLite index: later audits only read new or changed files. | optional, recommended | [2](start/02-keep-the-cache.md) |
 | `/reports` | One folder per run (`report.html`, one page per folder pair, previews, `plan.csv`), `index.html`, the `decisions.json` of `review`, and the `<date>-classify` folders ([workbook and report](sort/05-review-the-proposal.md)). | optional; **required** by `review` | [4](clean/04-html-report.md) |
 | `/config` | `config.toml` only, created and commented on first run. | optional | [7](clean/07-configuration-file.md) |
-| `/journal` | One JSONL journal per clean. | **required** by `clean`, `undo`, `history` | [8](clean/08-clean.md) |
+| `/journal` | One JSONL journal per clean or sort. | **required** by `clean`, `sort`, `undo`, `history` | [8](clean/08-clean.md) |
 | `/quarantine` | Unreadable files, orphan sidecars, near duplicates, burst shots set aside and copies of other file types moved by `clean`. | to handle them | [8](clean/08-clean.md) |
 
 ## Good to know

@@ -50,6 +50,10 @@ msgid "'undo' can no longer restore these broken files."
 msgstr "'undo' ne pourra plus restaurer ces fichiers cassés."
 
 #, python-brace-format
+msgid "'{name}' is longer than {count} characters."
+msgstr "« {name} » dépasse {count} caractères."
+
+#, python-brace-format
 msgid "'{name}' is not a folder name Windows accepts."
 msgstr "« {name} » n'est pas un nom de dossier que Windows accepte."
 
@@ -102,6 +106,11 @@ msgstr ""
 "Une règle de dates prend tout un événement quand au moins la moitié de "
 "ses photos tombent sur ses jours : un voyage à cheval sur Noël reste un "
 "voyage si sa période est écrite au-dessus de Noël."
+
+msgid "A file changed by another program meanwhile also changes the counts."
+msgstr ""
+"Un fichier modifié entre-temps par un autre programme change aussi les "
+"comptes."
 
 msgid ""
 "A file reachable through two paths (a folder mounted twice, a hard link) "
@@ -186,6 +195,9 @@ msgstr "Comme prévu"
 
 msgid "Ask for confirmation before cleaning."
 msgstr "Demander confirmation avant de nettoyer."
+
+msgid "Ask for confirmation before sorting."
+msgstr "Demander confirmation avant de trier."
 
 msgid "Audit"
 msgstr "Audit"
@@ -275,6 +287,10 @@ msgid "Category"
 msgstr "Catégorie"
 
 #, python-brace-format
+msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
+msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place."
+
+#, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' restaure tout."
 
@@ -293,8 +309,31 @@ msgstr "Vérifiez vous-même"
 msgid "Check their dates, their patterns and their order in config.toml."
 msgstr "Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml."
 
+#, python-brace-format
+msgid ""
+"Check this run: {before} files ({before_size}) before, {after} files "
+"({after_size}) after; {verified} of {moved} moves verified."
+msgstr ""
+"Vérifiez ce passage : {before} fichiers ({before_size}) avant, {after} "
+"fichiers ({after_size}) après ; {verified} déplacements vérifiés sur "
+"{moved}."
+
 msgid "Checking that files can be read"
 msgstr "Vérification de la lisibilité des fichiers"
+
+msgid ""
+"Choose another target with 'classify --target', then edit its new "
+"workbook."
+msgstr ""
+"Choisissez une autre cible avec 'classify --target', puis modifiez son "
+"nouveau classeur."
+
+msgid ""
+"Choose other folders (shorter names) in the workbook, save it, and run "
+"'sort' again."
+msgstr ""
+"Choisissez d'autres dossiers (des noms plus courts) dans le classeur, "
+"enregistrez-le et relancez 'sort'."
 
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
@@ -351,6 +390,9 @@ msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 "Les copies des fichiers autres que des médias vont dans /quarantine : "
 "montez-le."
+
+msgid "Correct these cells, save the workbook, then run 'sort' again."
+msgstr "Corrigez ces cellules, enregistrez le classeur, puis relancez 'sort'."
 
 msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
@@ -454,6 +496,9 @@ msgstr "Détail"
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr "Ne pas demander de confirmation (remplace clean.confirm)."
 
+msgid "Do not ask for confirmation (overrides sort.confirm)."
+msgstr "Ne pas demander de confirmation (remplace sort.confirm)."
+
 msgid "Documents and screenshots"
 msgstr "Documents et captures d'écran"
 
@@ -487,6 +532,11 @@ msgid ""
 msgstr ""
 "Chaque copie est recomparée à celle gardée avant d'être supprimée ; les "
 "fichiers illisibles vont en quarantaine."
+
+msgid "Each file is checked again just before it moves; none is overwritten."
+msgstr ""
+"Chaque fichier est revérifié juste avant d'être déplacé ; aucun n'est "
+"écrasé."
 
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
 msgstr ""
@@ -646,6 +696,18 @@ msgstr "Fichiers traités"
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
 msgstr "Fichiers mis de côté, car media-hygiene ne les analyse pas : {count}."
 
+msgid ""
+"Files the system leaves behind: a source folder holding nothing else is "
+"removed once sorted, these files going to the quarantine first. 'sort "
+"--keep-empty-folders' keeps every folder."
+msgstr ""
+"Fichiers laissés par le système : un dossier source qui ne contient plus "
+"qu'eux est supprimé une fois trié, ces fichiers partant d'abord en "
+"quarantaine. 'sort --keep-empty-folders' garde tous les dossiers."
+
+msgid "Files to move"
+msgstr "Fichiers à déplacer"
+
 msgid "Films and series"
 msgstr "Films et séries"
 
@@ -726,6 +788,17 @@ msgstr "Commandes complètes (rapports, journal, WSL) : voir README_FR.md."
 msgid "GB"
 msgstr "Go"
 
+msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
+msgstr ""
+"Donnez son chemin dans un dossier monté, par exemple celui monté sur "
+"/reports."
+
+msgid "Going to a 'to check' folder"
+msgstr "Vers un dossier « à vérifier »"
+
+msgid "Going to a 'to sort' folder"
+msgstr "Vers un dossier « à trier »"
+
 msgid "Grandma's birthday"
 msgstr "Anniversaire de mamy"
 
@@ -803,6 +876,9 @@ msgstr "Langue de l'interface."
 msgid "Interface language: \"en\" or \"fr\"."
 msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 
+msgid "Into folders"
+msgstr "Dans des dossiers"
+
 #, python-brace-format
 msgid "Invalid configuration ({details})."
 msgstr "Configuration invalide ({details})."
@@ -836,6 +912,16 @@ msgstr "Ko"
 
 msgid "Keep at least one shot of the series."
 msgstr "Gardez au moins une photo de la série."
+
+msgid ""
+"Keep plan.json in the folder 'classify' wrote, or run 'classify' again "
+"and edit its new workbook."
+msgstr ""
+"Laissez plan.json dans le dossier écrit par 'classify', ou relancez "
+"'classify' et modifiez son nouveau classeur."
+
+msgid "Keep the source folders the sort leaves empty."
+msgstr "Garder les dossiers sources que le tri laisse vides."
 
 msgid "Kept"
 msgstr "Gardé"
@@ -873,6 +959,10 @@ msgstr "Recherche des fichiers médias"
 msgid "MB"
 msgstr "Mo"
 
+#, python-brace-format
+msgid "Manifest: {path}"
+msgstr "Manifeste : {path}"
+
 msgid "March"
 msgstr "mars"
 
@@ -898,6 +988,9 @@ msgstr ""
 msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
 msgstr "Montez-la sous /data, par exemple -v \"C:\\Photos triées:/data/c/Tri\"."
 
+msgid "Mount it, e.g. -v \"D:\\Photos sorted:/data/d/Photos sorted\"."
+msgstr "Montez-le, par exemple -v \"D:\\Photos triées:/data/d/Photos triées\"."
+
 msgid "Mount points"
 msgstr "Points de montage"
 
@@ -919,11 +1012,30 @@ msgstr ""
 "Montez le même dossier de journal que pour clean : -v "
 "\"<dossier>:/journal\"."
 
+msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
+msgstr ""
+"Montez le même dossier de rapports que pour classify : -v "
+"\"<dossier>:/reports\"."
+
 msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
 msgstr "Montez vos dossiers, p. ex. -v \"C:\\Photos:/data/c/Photos:ro\"."
 
+msgid ""
+"Move the photos and videos as the edited classify workbook says "
+"(journaled, undoable)."
+msgstr ""
+"Déplacer les photos et vidéos comme le dit le classeur de classify "
+"modifié (journalisé, annulable)."
+
+#, python-brace-format
+msgid "Move {count} files into {folders} folders?"
+msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
+
 msgid "Moved"
 msgstr "Déplacés"
+
+msgid "Moved by an earlier run"
+msgstr "Déplacés par un passage précédent"
 
 #, python-brace-format
 msgid "Moved files are in /quarantine/{run_id}; 'purge' deletes them."
@@ -996,6 +1108,9 @@ msgstr ""
 "Pas de catégorie : les films et séries téléchargés ne sont pas des "
 "souvenirs, ils restent où ils sont."
 
+msgid "No classify workbook in /reports."
+msgstr "Aucun classeur de classify dans /reports."
+
 #, python-brace-format
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder}."
@@ -1030,6 +1145,9 @@ msgstr ""
 msgid "No report yet: run 'media-hygiene audit'."
 msgstr "Aucun rapport pour l'instant : lancez 'media-hygiene audit'."
 
+msgid "No reports mount: 'sort' reads the plan 'classify' wrote there."
+msgstr "Pas de montage des rapports : 'sort' y lit le plan écrit par 'classify'."
+
 msgid "No reports mount: there is no report to list."
 msgstr "Pas de montage /reports : aucun rapport à lister."
 
@@ -1063,8 +1181,19 @@ msgstr "Notes"
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
+#, python-brace-format
+msgid ""
+"Nothing lost: {before} files ({before_size}) before and after; {verified}"
+" of {moved} moves verified."
+msgstr ""
+"Rien de perdu : {before} fichiers ({before_size}) avant et après ; "
+"{verified} déplacements vérifiés sur {moved}."
+
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
+
+msgid "Nothing to move: every file is where the plan puts it."
+msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
 
 msgid "Nothing was changed."
 msgstr "Rien n'a été modifié."
@@ -1287,8 +1416,9 @@ msgid_plural "Remove ':ro' from their -v options: the tool writes there."
 msgstr[0] "Retirez ':ro' de son option -v : l'outil y écrit."
 msgstr[1] "Retirez ':ro' de leurs options -v : l'outil y écrit."
 
-msgid "Remove ':ro' from their -v options to let 'clean' act."
-msgstr "Retirez ':ro' de leurs options -v pour que 'clean' puisse agir."
+#, python-brace-format
+msgid "Remove ':ro' from their -v options to let '{command}' act."
+msgstr "Retirez ':ro' de leurs options -v pour laisser '{command}' agir."
 
 #, python-brace-format
 msgid "Report with the photos: {path}"
@@ -1336,9 +1466,6 @@ msgstr ""
 msgid "Root"
 msgstr "Racine"
 
-msgid "Rows or locked cells of the workbook were changed."
-msgstr "Des lignes ou des cellules verrouillées du classeur ont été modifiées."
-
 msgid "Rules and reasons"
 msgstr "Règles et raisons"
 
@@ -1365,6 +1492,12 @@ msgstr ""
 msgid "Run"
 msgstr "Exécution"
 
+msgid "Run 'classify' again, then edit the new workbook."
+msgstr "Relancez 'classify', puis modifiez le nouveau classeur."
+
+msgid "Run 'classify' first, then edit its workbook."
+msgstr "Lancez d'abord 'classify', puis modifiez son classeur."
+
 #, python-brace-format
 msgid "Run 'clean' (same -v options, without :ro) to free {size}."
 msgstr "Lancez 'clean' (mêmes options -v, sans :ro) pour libérer {size}."
@@ -1390,6 +1523,11 @@ msgstr "Lancez docker avec -it, ou ajoutez --yes."
 
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr "Relancez la commande Czkawka ; elle écrit ce fichier avec -C."
+
+msgid "Run the same command again to continue: the files moved are skipped."
+msgstr ""
+"Relancez la même commande pour continuer : les fichiers déjà déplacés "
+"sont passés."
 
 msgid "Run to undo (see 'history'); the latest one by default."
 msgstr "Exécution à annuler (voir 'history') ; la plus récente par défaut."
@@ -1431,6 +1569,9 @@ msgstr ""
 "applique vos décisions, montre le résultat et demande confirmation avant "
 "de nettoyer. Le fichier est refusé si les dossiers ou les paires ont "
 "changé entre-temps."
+
+msgid "Save it, close it, then run 'sort' again."
+msgstr "Enregistrez-le, fermez-le, puis relancez 'sort'."
 
 #, python-brace-format
 msgid "Saved in {file}."
@@ -1547,12 +1688,32 @@ msgstr ""
 "...) sont ignorés : là, c'est l'endroit où se trouve un fichier qui fait "
 "fonctionner un programme."
 
+msgid "Some destinations cannot be used; nothing was moved:"
+msgstr "Certaines destinations sont inutilisables ; rien n'a été déplacé :"
+
+msgid "Sort"
+msgstr "Tri"
+
 msgid ""
 "Sort the burst series with the keyboard: 'media-hygiene review' (add -p "
 "127.0.0.1::8080 to docker run)."
 msgstr ""
 "Triez les rafales au clavier : 'media-hygiene review' (ajoutez -p "
 "127.0.0.1::8080 à docker run)."
+
+#, python-brace-format
+msgid "Sort {run_id}"
+msgstr "Tri {run_id}"
+
+msgid "Sorting"
+msgstr "Tri"
+
+msgid "Source folders removed"
+msgstr "Dossiers sources supprimés"
+
+#, python-brace-format
+msgid "Source folders removed: {count}."
+msgstr "Dossiers sources supprimés : {count}."
 
 msgid "Space"
 msgstr "Espace"
@@ -1562,6 +1723,12 @@ msgstr "Espace libérable"
 
 msgid "State"
 msgstr "État"
+
+msgid "Staying where they are"
+msgstr "Restent où ils sont"
+
+msgid "Stopped before the end, as asked."
+msgstr "Arrêté avant la fin, comme demandé."
 
 msgid "Summary"
 msgstr "Résumé"
@@ -1598,6 +1765,9 @@ msgstr ""
 "Les fichiers de 'classify' n'ont pas pu être écrits dans {folder} : "
 "{reason}."
 
+msgid "The classify workbook, edited; the latest classify run's by default."
+msgstr "Le classeur de classify, modifié ; celui du dernier classify par défaut."
+
 msgid "The collection once sorted"
 msgstr "La collection une fois triée"
 
@@ -1631,6 +1801,14 @@ msgid ""
 msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
+
+#, python-brace-format
+msgid "The manifest could not be written to {folder}: {reason}."
+msgstr "Le manifeste n'a pas pu être écrit dans {folder} : {reason}."
+
+#, python-brace-format
+msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
+msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
 
 msgid "The quarantine is empty."
 msgstr "La quarantaine est vide."
@@ -1671,18 +1849,40 @@ msgid "The sheet '{name}' was renamed or deleted."
 msgstr "La feuille « {name} » a été renommée ou supprimée."
 
 #, python-brace-format
+msgid "The sheets were renamed, moved, added or deleted: {found}."
+msgstr ""
+"Des feuilles ont été renommées, déplacées, ajoutées ou supprimées : "
+"{found}."
+
+#, python-brace-format
 msgid "The target {path} is not mounted."
 msgstr "La cible {path} n'est pas montée."
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
 
+msgid "The workbook and its plan.json do not match: one of them changed."
+msgstr ""
+"Le classeur et son plan.json ne correspondent pas : l'un des deux a "
+"changé."
+
 msgid "The workbook holds values that cannot be used:"
 msgstr "Le classeur contient des valeurs inutilisables :"
+
+msgid ""
+"The workbook is open in Excel or LibreOffice: what is not saved is not "
+"read."
+msgstr ""
+"Le classeur est ouvert dans Excel ou LibreOffice : ce qui n'est pas "
+"enregistré n'est pas lu."
 
 #, python-brace-format
 msgid "The workbook {path} cannot be opened: {reason}."
 msgstr "Le classeur {path} ne peut pas être ouvert : {reason}."
+
+#, python-brace-format
+msgid "The workbook {path} was not found."
+msgstr "Le classeur {path} est introuvable."
 
 #, python-brace-format
 msgid "The {top} largest events hold {held} of them."
@@ -1721,6 +1921,11 @@ msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 msgid "This workbook belongs to another classify run."
 msgstr "Ce classeur appartient à une autre exécution de 'classify'."
 
+msgid "This workbook was written by another version: it cannot be checked."
+msgstr ""
+"Ce classeur a été écrit par une autre version : il ne peut pas être "
+"vérifié."
+
 msgid "To check"
 msgstr "À vérifier"
 
@@ -1757,6 +1962,11 @@ msgstr "Type"
 
 msgid "Undated"
 msgstr "Sans date"
+
+msgid "Undo the change in Excel (Ctrl+Z), or restore a copy of the workbook."
+msgstr ""
+"Annulez la modification dans Excel (Ctrl+Z), ou restaurez une copie du "
+"classeur."
 
 #, python-brace-format
 msgid "Undo the {command} run {run_id}"
@@ -1824,6 +2034,10 @@ msgstr ""
 #, python-brace-format
 msgid "Workbook to edit: {path}"
 msgstr "Classeur à modifier : {path}"
+
+#, python-brace-format
+msgid "Workbook: {path}"
+msgstr "Classeur : {path}"
 
 msgid "Year"
 msgstr "Année"
@@ -1993,6 +2207,9 @@ msgstr "il n'est plus à {path} : déplacé ou renommé depuis"
 msgid "it is the kept copy itself, seen through another path"
 msgstr "c'est la copie gardée elle-même, vue par un autre chemin"
 
+msgid "its content changed"
+msgstr "son contenu a changé"
+
 #, python-brace-format
 msgid "its copy {path} is gone"
 msgstr "sa copie {path} a disparu"
@@ -2001,6 +2218,9 @@ msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)
 msgstr ""
 "son fichier compagnon (.xmp, .aae, .thm), qui garde ses retouches "
 "(l'autre copie n'en a pas)"
+
+msgid "its size changed"
+msgstr "sa taille a changé"
 
 msgid "keep"
 msgstr "garder"
@@ -2092,6 +2312,13 @@ msgstr "netteté"
 msgid "sharpness {value}"
 msgstr "netteté {value}"
 
+msgid "the copy differs from the original"
+msgstr "la copie diffère de l'original"
+
+#, python-brace-format
+msgid "the file moved from {path} is not there"
+msgstr "le fichier déplacé depuis {path} n'y est pas"
+
 msgid "the file no longer exists"
 msgstr "le fichier n'existe plus"
 
@@ -2117,14 +2344,14 @@ msgstr "la date la plus ancienne"
 msgid "the other name looks like a copy"
 msgstr "l'autre nom ressemble à une copie"
 
-msgid "the quarantine copy differs from the original"
-msgstr "la copie en quarantaine diffère de l'original"
-
 msgid "the restored copy does not match the original"
 msgstr "la copie restaurée ne correspond pas à l'original"
 
 msgid "the shortest path"
 msgstr "le chemin le plus court"
+
+msgid "the target exists"
+msgstr "la cible existe"
 
 #, python-format
 msgid "to check or to sort: %(count)s"
@@ -2156,6 +2383,18 @@ msgstr "oui"
 
 msgid "your decision in the report"
 msgstr "votre décision dans le rapport"
+
+#, python-brace-format
+msgid "{cell}: '{key}' is not a row of this plan."
+msgstr "{cell} : « {key} » n'est pas une ligne de ce plan."
+
+#, python-brace-format
+msgid "{cell}: expected '{expected}', found '{found}'."
+msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
+
+#, python-brace-format
+msgid "{cell}: the row {key} appears twice."
+msgstr "{cell} : la ligne {key} apparaît deux fois."
 
 #, python-brace-format
 msgid "{count} burst shot you set aside will be moved to the quarantine."
@@ -2190,6 +2429,16 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} paires de dossiers décidées n'existent plus, p. ex. {kept} -> "
 "{removed}."
+
+#, python-brace-format
+msgid "{count} edit read; workbook saved on {day} {month} {year} at {time}."
+msgid_plural "{count} edits read; workbook saved on {day} {month} {year} at {time}."
+msgstr[0] ""
+"{count} modification lue ; classeur enregistré le {day} {month} {year} à "
+"{time}."
+msgstr[1] ""
+"{count} modifications lues ; classeur enregistré le {day} {month} {year} "
+"à {time}."
 
 #, python-brace-format
 msgid ""
@@ -2284,12 +2533,36 @@ msgid "{count} shots"
 msgstr "{count} photos"
 
 #, python-brace-format
+msgid "{count} source folder stays: it still holds other files, e.g. {path}."
+msgid_plural "{count} source folders stay: they still hold other files, e.g. {path}."
+msgstr[0] ""
+"{count} dossier source reste : il contient encore d'autres fichiers, par "
+"exemple {path}."
+msgstr[1] ""
+"{count} dossiers sources restent : ils contiennent encore d'autres "
+"fichiers, par exemple {path}."
+
+#, python-brace-format
+msgid "{count} source folder will stay: it holds other files, e.g. {path}."
+msgid_plural "{count} source folders will stay: they hold other files, e.g. {path}."
+msgstr[0] ""
+"{count} dossier source restera : il contient d'autres fichiers, par "
+"exemple {path}."
+msgstr[1] ""
+"{count} dossiers sources resteront : ils contiennent d'autres fichiers, "
+"par exemple {path}."
+
+#, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
 msgstr "{folder} (vu comme {first} et comme {second})"
 
 #, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
 msgstr "{folder} est protégé : ses copies sont toujours gardées."
+
+#, python-brace-format
+msgid "{folder}: a protected or excluded folder receives no file."
+msgstr "{folder} : un dossier protégé ou exclu ne reçoit aucun fichier."
 
 #, python-brace-format
 msgid "{folder}: copies inside one folder cannot be swapped."
@@ -2308,8 +2581,20 @@ msgid "{path} is in a protected folder: it is never moved."
 msgstr "{path} est dans un dossier protégé : il ne bouge jamais."
 
 #, python-brace-format
+msgid "{path} is inside a protected folder: 'sort' never changes those."
+msgstr "{path} est dans un dossier protégé : 'sort' n'y touche jamais."
+
+#, python-brace-format
 msgid "{path} is not a Czkawka result file."
 msgstr "{path} n'est pas un fichier de résultats Czkawka."
+
+#, python-brace-format
+msgid ""
+"{path} is not a mounted folder: files moved there would vanish with the "
+"container."
+msgstr ""
+"{path} n'est pas un dossier monté : les fichiers déplacés là "
+"disparaîtraient avec le conteneur."
 
 #, python-brace-format
 msgid "{path} is not a valid decisions file ({error})."
@@ -2320,6 +2605,10 @@ msgid "{path} was made on other folders ({theirs}); this review analyses {ours}.
 msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
 
 #, python-brace-format
+msgid "{path}: longer than {count} characters."
+msgstr "{path} : plus de {count} caractères."
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
 
@@ -2328,6 +2617,10 @@ msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
 msgstr ""
 "{removed} ne contient rien d'autre : c'est entièrement une copie de "
 "{kept}."
+
+#, python-brace-format
+msgid "{sheet}: the row {key} was deleted."
+msgstr "{sheet} : la ligne {key} a été supprimée."
 
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."

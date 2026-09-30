@@ -148,6 +148,9 @@ Réglages effectifs
 │                            │ '12-31..01-01', 'pattern':  │                   │
 │                            │ '', 'kind': None, 'score':  │                   │
 │                            │ None}]                      │                   │
+│ sort.confirm               │ True                        │ défaut            │
+│ sort.junk_files            │ ['Thumbs.db',               │ défaut            │
+│                            │ 'desktop.ini', '.DS_Store'] │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage
@@ -213,6 +216,10 @@ extensions = []        # p. ex. ["heic", "mp4"] ; vide : photos, RAW et vidéos
 
 [clean]
 confirm = true         # clean demande avant de faire quoi que ce soit
+
+[sort]
+confirm = true         # sort demande avant de déplacer quoi que ce soit
+junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un dossier en vie
 ```
 
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
@@ -388,6 +395,9 @@ Réglages effectifs
 │                            │ 'dates': '12-05..12-06',    │                   │
 │                            │ 'pattern': '', 'kind':      │                   │
 │                            │ None, 'score': None}]       │                   │
+│ sort.confirm               │ True                        │ config.toml       │
+│ sort.junk_files            │ ['Thumbs.db',               │ config.toml       │
+│                            │ 'desktop.ini', '.DS_Store'] │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Points de montage

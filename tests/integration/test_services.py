@@ -34,7 +34,9 @@ def test_clean_refuses_read_only_folders(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Folders mounted with :ro are reported with the fix."""
-    monkeypatch.setattr("media_hygiene.services.clean.is_read_only", lambda _path: True)
+    monkeypatch.setattr(
+        "media_hygiene.services.acting.is_read_only", lambda _path: True
+    )
     with pytest.raises(MountError) as caught:
         CleanService(make_runtime(locations), NullProgress()).ensure_ready()
     assert caught.value.tip is not None

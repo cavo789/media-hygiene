@@ -9,7 +9,6 @@ writes 70,000 rows in about seven seconds (read back in about four).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final, cast
 
 from openpyxl import Workbook
@@ -17,23 +16,14 @@ from openpyxl.utils import get_column_letter
 from openpyxl.workbook.protection import WorkbookProtection
 from openpyxl.worksheet.datavalidation import DataValidation
 
-from media_hygiene.classify.workbook import rows as content
 from media_hygiene.classify.workbook.cells import (
     editable_cell,
     header_cell,
     locked_cell,
     padded,
 )
-from media_hygiene.classify.workbook.sheets import (
-    META_LIST_COLUMN,
-    META_SHEET,
-    CategoryColumn,
-    EventColumn,
-    FileColumn,
-    Labels,
-    fingerprint,
-)
-from media_hygiene.classify.workbook.summary import summary_headers, summary_rows
+from media_hygiene.classify.workbook.sheets import META_SHEET, Labels, fingerprint
+from media_hygiene.classify.workbook.specs import locked_keys, sheet_specs
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -43,25 +33,9 @@ if TYPE_CHECKING:
     from media_hygiene.classify.plan_file import ClassifyPlan
     from media_hygiene.classify.workbook.cells import WriteOnly
     from media_hygiene.classify.workbook.rows import Row
+    from media_hygiene.classify.workbook.specs import SheetSpec
 
-_PERCENT: Final = "0%"
 _WIDTH: Final = 18
-_WIDE: Final = 40
-_SUMMARY_WIDTHS: Final = (60, 24, _WIDE)
-_SUMMARY_NOTES: Final = 3
-
-
-@dataclass(frozen=True, slots=True)
-class _Spec:
-    """One protected sheet: its headers, its editable columns, its drop-downs."""
-
-    title: str
-    headers: Row
-    editable: frozenset[int]
-    lists: dict[int, str] = field(default_factory=dict)  # column → list formula
-    formats: dict[int, str] = field(default_factory=dict)  # column → number format
-    widths: tuple[int, ...] = ()  # the first columns' widths; the others: _WIDTH
-    filtered: bool = True  # an auto-filter on the header row
 
 
 def write_workbook(plan: ClassifyPlan, target: Path) -> None:
@@ -74,11 +48,10 @@ def write_workbook(plan: ClassifyPlan, target: Path) -> None:
     labels = Labels.current()
     book = Workbook(write_only=True)
     book.security = WorkbookProtection(lockStructure=True)
-    keys: list[str] = list(plan.categories())
-    for spec, rows in _sheets(plan, labels):
+    sheets = sheet_specs(plan, labels)
+    for spec, rows in sheets:
         _write(book, spec, rows)
-        if spec.title not in {labels.summary, labels.categories}:
-            keys += [str(row[0]) for row in rows]
+    keys = locked_keys(plan, sheets)
     meta = cast("WriteOnly", book.create_sheet(META_SHEET))
     meta.sheet_state = "veryHidden"
     meta.protection.sheet = True
@@ -91,66 +64,7 @@ def write_workbook(plan: ClassifyPlan, target: Path) -> None:
     book.save(target)
 
 
-def _sheets(plan: ClassifyPlan, labels: Labels) -> list[tuple[_Spec, list[Row]]]:
-    """The four visible sheets and their rows, in the workbook's order.
-
-    Args:
-        plan: The plan.
-        labels: The translated names and values.
-
-    Returns:
-        Each sheet with its rows.
-    """
-    last = len(plan.categories()) + 1
-    choices = f"'{META_SHEET}'!${META_LIST_COLUMN}$1:${META_LIST_COLUMN}${last}"
-    category = CategoryColumn
-    event = EventColumn
-    return [
-        (
-            _Spec(
-                labels.summary,
-                summary_headers(labels),
-                frozenset({_SUMMARY_NOTES}),
-                widths=_SUMMARY_WIDTHS,
-                filtered=False,
-            ),
-            summary_rows(plan),
-        ),
-        (
-            _Spec(
-                labels.categories,
-                content.category_headers(),
-                frozenset({category.RENAME, category.CONFIRM, category.NOTES}),
-                {
-                    category.RENAME: choices,
-                    category.CONFIRM: f'"{labels.yes},{labels.no}"',
-                },
-            ),
-            content.category_rows(plan),
-        ),
-        (
-            _Spec(
-                labels.events,
-                content.event_headers(),
-                frozenset({event.NAME, event.CATEGORY, event.NOTES}),
-                {event.CATEGORY: choices},
-                {event.SHARE: _PERCENT},
-            ),
-            content.event_rows(plan, labels),
-        ),
-        (
-            _Spec(
-                labels.files,
-                content.file_headers(),
-                frozenset({FileColumn.FINAL, FileColumn.NOTES}),
-                {FileColumn.FINAL: f'"{labels.stay}"'},
-            ),
-            content.file_rows(plan, labels),
-        ),
-    ]
-
-
-def _write(book: Workbook, spec: _Spec, rows: list[Row]) -> None:
+def _write(book: Workbook, spec: SheetSpec, rows: list[Row]) -> None:
     """Add one protected sheet, its header row, its rows and its drop-downs.
 
     Args:

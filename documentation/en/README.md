@@ -55,6 +55,8 @@ otherwise both copies are sorted.
    photos in the report.
 6. [Write down what you know](sort/06-write-down-what-you-know.md): rules for your trips, your
    birthdays, your folders and your cameras, applied at every run.
+7. [Sort](sort/07-sort.md): `sort` moves the files as the workbook says, journaled, undoable, and
+   proves nothing was lost.
 
 ## Reference
 

@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.patterns import valid_patterns
+from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.constants import (
     GENERATED_NAMES,
     GENERIC_FOLDERS,
@@ -185,3 +186,4 @@ class Settings(BaseModel):
     keep: KeepSettings = KeepSettings()
     clean: CleanSettings = CleanSettings()
     classify: ClassifySettings = ClassifySettings()
+    sort: SortSettings = SortSettings()

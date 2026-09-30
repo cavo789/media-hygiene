@@ -155,4 +155,4 @@ its Summary sheet.
 
 ---
 
-← [5. Review the proposal](05-review-the-proposal.md) · [Documentation](../README.md)
+← [5. Review the proposal](05-review-the-proposal.md) · [Documentation](../README.md) · Next: **[7. Sort](07-sort.md)** →

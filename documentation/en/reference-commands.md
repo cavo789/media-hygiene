@@ -18,6 +18,7 @@ them one at a time; this page gathers them.
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
+| `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -35,7 +36,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these extensions (`--ext png,webp`); every photo, RAW and video one by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `purge` | Do not ask for confirmation. |
+| `--yes`, `-y` | `clean`, `sort`, `purge` | Do not ask for confirmation. |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
@@ -44,6 +45,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--target PATH` | `classify` | Folder receiving the tree; each mounted folder, in place, by default. |
 | `--leave PATH` | `classify` | Folder never sorted; still analysed and cleaned. |
+| `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
 line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they are written in
@@ -90,6 +92,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │             in your browser; 'clean --decisions' then moves them.            │
 │ clean       Audit, confirm, then really delete duplicate copies (journaled,  │
 │             undoable).                                                       │
+│ sort        Move the photos and videos as the edited classify workbook says  │
+│             (journaled, undoable).                                           │
 │ undo        Restore every file of a run, from the kept copy, the quarantine  │
 │             or where it was moved.                                           │
 │ purge       Permanently delete the quarantined broken files of a run.        │
@@ -350,6 +354,31 @@ both languages (`--locale fr --help`). Here is what they print:
 │ --leave           <str>  Host folder never sorted (analysed and cleaned as   │
 │                          usual).                                             │
 │ --help    -h             Show this message and exit.                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>sort --help</code></summary>
+
+<!-- capture: help-sort.txt -->
+```text
+ Usage: media-hygiene sort [OPTIONS] [workbook]
+
+ Move the photos and videos as the edited classify workbook says (journaled,
+ undoable).
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   workbook      <str>  The classify workbook, edited; the latest classify    │
+│                        run's by default.                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes                 -y        Do not ask for confirmation (overrides       │
+│                                 sort.confirm).                               │
+│ --keep-empty-folders            Keep the source folders the sort leaves      │
+│                                 empty.                                       │
+│ --help                -h        Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

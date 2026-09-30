@@ -79,6 +79,8 @@ adds one thing to the command of the step before.
    workbook, look at the photos in the report.
 6. [Write down what you know](documentation/en/sort/06-write-down-what-you-know.md) — rules for
    your trips, birthdays, folders and cameras, applied at every run.
+7. [Sort](documentation/en/sort/07-sort.md) — `sort` moves the files as the workbook says,
+   journaled and undoable.
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

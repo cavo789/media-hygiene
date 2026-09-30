@@ -20,6 +20,8 @@ from media_hygiene.services.reporting import write_report
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
+    from typing import TextIO
+
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings, CleanPlan
     from media_hygiene.report.views import ReportRecord
@@ -130,16 +132,10 @@ def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa
     Returns:
         True when the clean may proceed.
 
-    Raises:
-        MediaHygieneError: Confirmation is required but there is no terminal to ask in.
     """
     if yes or not runtime.settings.clean.confirm:
         return True
-    if not sys.stdin.isatty():
-        raise MediaHygieneError(
-            _("Cannot ask for confirmation without an interactive terminal."),
-            _("Run docker with -it, or add --yes."),
-        )
+    require_terminal(sys.stdin)
     question = (
         _(
             "Delete {count} duplicate copies ({size}), move {near} near duplicates "
@@ -183,3 +179,19 @@ def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa
             broken=human_number(len(plan.broken)),
         ),
     )
+
+
+def require_terminal(stdin: TextIO) -> None:
+    """Refuse to ask a question without a terminal to answer it in.
+
+    Args:
+        stdin: The standard input.
+
+    Raises:
+        MediaHygieneError: There is no interactive terminal.
+    """
+    if not stdin.isatty():
+        raise MediaHygieneError(
+            _("Cannot ask for confirmation without an interactive terminal."),
+            _("Run docker with -it, or add --yes."),
+        )

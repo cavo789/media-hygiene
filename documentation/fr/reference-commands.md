@@ -18,6 +18,7 @@ cette page les rassemble.
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
+| `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -35,11 +36,16 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces extensions (`--ext png,webp`) ; toutes celles des photos, RAW et vidéos par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `purge` | Ne pas demander de confirmation. |
+| `--yes`, `-y` | `clean`, `sort`, `purge` | Ne pas demander de confirmation. |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
+| `--year ANNÉE[-ANNÉE]` | `classify` | Seulement les fichiers de cette année ou de ces années. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
+| `--layout DISPOSITION` | `classify` | Où vont les fichiers sûrs, par exemple `{year}/{month}`. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
+| `--target CHEMIN` | `classify` | Dossier qui reçoit l'arborescence ; chaque dossier monté, sur place, par défaut. |
+| `--leave CHEMIN` | `classify` | Dossier jamais trié ; toujours analysé et nettoyé. |
+| `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
 la ligne de commande l'emporte. Les règles de `classify` (`[[classify.rules]]`) n'ont pas
@@ -88,6 +94,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             dans votre navigateur ; 'clean --decisions' les déplace ensuite. │
 │ clean       Audite, demande confirmation, puis supprime réellement les       │
 │             copies en double (journalisé, annulable).                        │
+│ sort        Déplacer les photos et vidéos comme le dit le classeur de        │
+│             classify modifié (journalisé, annulable).                        │
 │ undo        Restaure chaque fichier d'une exécution, depuis la copie         │
 │             conservée, la quarantaine ou l'endroit où il a été déplacé.      │
 │ purge       Supprime définitivement les fichiers cassés mis en quarantaine   │
@@ -359,6 +367,31 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │ --leave           <str>  Dossier de l'hôte jamais trié (analysé et nettoyé   │
 │                          comme d'habitude).                                  │
 │ --help    -h             Affiche ce message et quitte.                       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>sort --help</code></summary>
+
+<!-- capture: help-sort.txt -->
+```text
+ Utilisation : media-hygiene sort [OPTIONS] [workbook]
+
+ Déplacer les photos et vidéos comme le dit le classeur de classify modifié
+ (journalisé, annulable).
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   workbook      <str>  Le classeur de classify, modifié ; celui du dernier   │
+│                        classify par défaut.                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes                 -y        Ne pas demander de confirmation (remplace    │
+│                                 sort.confirm).                               │
+│ --keep-empty-folders            Garder les dossiers sources que le tri       │
+│                                 laisse vides.                                │
+│ --help                -h        Affiche ce message et quitte.                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

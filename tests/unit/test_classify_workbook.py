@@ -166,10 +166,10 @@ def test_a_workbook_of_another_run_is_refused(
 
 
 def test_a_changed_locked_cell_is_refused(written: tuple[ClassifyPlan, Path]) -> None:
-    """The fingerprint covers the ids and the categories."""
+    """Rows are matched by id: a forged id is not a row of the plan."""
     plan, target = written
     book = load_workbook(target)
     book.worksheets[3].cell(2, FileColumn.ID).value = "forged"
     book.save(target)
-    with pytest.raises(WorkbookError, match="locked cells"):
+    with pytest.raises(WorkbookError, match="Files!A2: 'forged' is not a row"):
         read_edits(target, plan)
