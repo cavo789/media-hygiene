@@ -124,14 +124,9 @@ def _write(book: Workbook, spec: SheetSpec, rows: list[Row]) -> None:
     for column in range(1, width + 1):
         size = spec.widths[column - 1] if column <= len(spec.widths) else _WIDTH
         sheet.column_dimensions[get_column_letter(column)].width = size
-    for column, formula in spec.lists.items():
-        validation = DataValidation(
-            type="list", formula1=formula, allow_blank=True, showErrorMessage=False
-        )
-        letter = get_column_letter(column)
-        validation.add(f"{letter}2:{letter}{last}")
-        sheet.data_validations.append(validation)
-    if spec.filtered:
+    if rows:  # a sheet without rows (no event) has no cell to offer a list in
+        _add_lists(sheet, spec, last)
+    if spec.filtered:  # without rows: the header row alone
         sheet.auto_filter.ref = f"A1:{get_column_letter(width)}{last}"
     sheet.append([header_cell(created, value) for value in spec.headers])
     for row in rows:
@@ -143,3 +138,20 @@ def _write(book: Workbook, spec: SheetSpec, rows: list[Row]) -> None:
                 for column, value in enumerate(padded(row, max(spec.editable)), start=1)
             ]
         )
+
+
+def _add_lists(sheet: WriteOnly, spec: SheetSpec, last: int) -> None:
+    """Offer the drop-down lists of a sheet on its rows, below the header.
+
+    Args:
+        sheet: The sheet, write-only.
+        spec: The sheet's columns and list formulas.
+        last: The last row written (2 or more).
+    """
+    for column, formula in spec.lists.items():
+        validation = DataValidation(
+            type="list", formula1=formula, allow_blank=True, showErrorMessage=False
+        )
+        letter = get_column_letter(column)
+        validation.add(f"{letter}2:{letter}{last}")
+        sheet.data_validations.append(validation)

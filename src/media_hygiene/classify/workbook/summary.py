@@ -43,7 +43,7 @@ def summary_rows(plan: ClassifyPlan) -> list[Row]:
     in_place = sum(1 for row in rows if row.in_place)
     left = sum(1 for row in rows if row.band in WORK_BANDS)
     lines: list[Row] = [
-        (_("Already in place"), human_share(in_place, len(rows))),
+        (_("Already in place"), human_share(in_place, len(rows)) if rows else 0),
         (_("To check or to sort"), left),
         (_("Edit only the yellow cells, then save; nothing moves before 'sort'."),),
         (),
