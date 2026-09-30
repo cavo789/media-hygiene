@@ -42,6 +42,7 @@ class SortReason(StrEnum):
     UNDATED = "undated"
     LEFT_AS_IS = "left-as-is"
     CARRIED_OVER = "carried-over"  # an edit of the previous workbook, carried over
+    PREVIOUS_GUESS = "previous-guess"  # already in the "to check" folder of its guess
 
 
 class Band(StrEnum):

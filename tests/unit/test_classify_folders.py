@@ -10,7 +10,7 @@ from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.layout import Values, check_layout, render, safe_name
 
 ROOT = Path("/data/c/Photos")
-RULES = FolderRules.build((r"DCIM",), ("Mes photos triées",))
+RULES = FolderRules.build((r"DCIM",), (("Mes photos triées",), ()))
 
 
 @pytest.mark.parametrize(

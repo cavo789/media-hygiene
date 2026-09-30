@@ -118,6 +118,16 @@ back.
 
 The proof is written to `/reports/<run>-sort/manifest.json`.
 
+## Classify again after a sort
+
+Run `classify` again after a sort (new photos, a rule changed): the files already sorted are in
+place and are not proposed elsewhere. The **"to check" files you did not confirm** stay in their
+`<year>/To check/<category>` folder, still to check, with the reason `previous-guess`: their
+folder is the tool's own guess, so a new run does not guess again and `sort` does not move them
+back and forth. They leave it when you decide: confirm or rename the category, or give the file
+or its event a folder, in the new workbook. A rule of [step 6](06-write-down-what-you-know.md)
+that is sure of them (a date range, a path, a camera) moves them too.
+
 ## Stopped in the middle
 
 70,000 moves take a while, and a laptop sleeps. Ctrl+C finishes the current file, closes the

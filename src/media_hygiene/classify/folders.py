@@ -46,9 +46,11 @@ _LABELLED: Final = re.compile(
     rf"(?:(?:{_MONTH})\.?[ _-]*)?{_YEAR}(?:\s+[-\u2013]\s+|\s*:\s*)(?P<label>.+)",
     re.IGNORECASE,
 )
+UNSURE_FOLDERS: Final = frozenset({"to check", "à vérifier"})
 BAND_FOLDERS: Final = frozenset(
-    {"to check", "to sort", "undated", "received and downloaded"}
-    | {"à vérifier", "à trier", "sans date", "reçues et téléchargées"}
+    {"to sort", "undated", "received and downloaded"}
+    | {"à trier", "sans date", "reçues et téléchargées"}
+    | UNSURE_FOLDERS
 )
 
 
@@ -59,20 +61,28 @@ class FolderRules:
     generic: tuple[re.Pattern[str], ...]
     dates: tuple[re.Pattern[str], ...]
     bands: frozenset[str] = BAND_FOLDERS
+    unsure: frozenset[str] = UNSURE_FOLDERS  # the "to check" band folders
 
     @classmethod
-    def build(cls, generic: Iterable[str], bands: Iterable[str]) -> FolderRules:
+    def build(
+        cls, generic: Iterable[str], bands: tuple[Iterable[str], Iterable[str]]
+    ) -> FolderRules:
         """Compile the generic names of `[keep]` and `[classify]`, and the band names.
 
         Args:
             generic: Extra generic folder patterns.
-            bands: The folder names the configured layouts write.
+            bands: The folder names the configured layouts write, then those only the
+                "to check" layout writes.
 
         Returns:
             The rules.
         """
-        folded = frozenset(name.casefold() for name in bands) | BAND_FOLDERS
-        return cls(compile_patterns(generic), compile_patterns(DATE_FOLDERS), folded)
+        every, unsure = bands
+        folded = frozenset(name.casefold() for name in every) | BAND_FOLDERS
+        checked = frozenset(name.casefold() for name in unsure) | UNSURE_FOLDERS
+        return cls(
+            compile_patterns(generic), compile_patterns(DATE_FOLDERS), folded, checked
+        )
 
     def label(self, name: str) -> str | None:
         """The meaning of one folder name.
@@ -108,12 +118,29 @@ class FolderRules:
         parts = folder.relative_to(root).parts if folder.is_relative_to(root) else ()
         labels: list[str] = []
         for name in parts:
-            if name.casefold() in {"to check", "à vérifier"}:
+            if name.casefold() in self.unsure:
                 return ()
             label = self.label(name)
             if label is not None:
                 labels.append(label)
         return tuple(labels)
+
+    def guess(self, folder: Path, root: Path) -> str | None:
+        """The category a file was guessed and sorted into, "to check".
+
+        Args:
+            folder: The folder of a file.
+            root: The mounted folder or target root it lies in.
+
+        Returns:
+            The folders below the "to check" band folder (`Vacances`), or None when the
+            file is not in one.
+        """
+        parts = folder.relative_to(root).parts if folder.is_relative_to(root) else ()
+        for index, name in enumerate(parts):
+            if name.casefold() in self.unsure:
+                return "/".join(parts[index + 1 :]) or None
+        return None
 
     def year_month(self, folder: Path) -> tuple[int, int | None] | None:
         """The date a folder name gives, the innermost one first.

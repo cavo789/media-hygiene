@@ -127,6 +127,18 @@ place.
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
 
+## Relancer classify après un tri
+
+Relancez `classify` après un tri (nouvelles photos, une règle changée) : les fichiers déjà triés
+sont à leur place et ne sont pas proposés ailleurs. Les **fichiers « à vérifier » que vous n'avez
+pas confirmés** restent dans leur dossier `<année>/À vérifier/<catégorie>`, toujours à vérifier,
+avec la raison `previous-guess` : leur dossier est la supposition de l'outil lui-même, donc une
+nouvelle exécution ne suppose pas à nouveau et `sort` ne les déplace pas dans un sens puis dans
+l'autre. Ils en sortent quand vous le décidez : confirmez ou renommez la catégorie, ou donnez un
+dossier au fichier ou à son événement, dans le nouveau classeur. Une règle de
+l'[étape 6](06-write-down-what-you-know.md) qui en est sûre (une période, un chemin, un appareil)
+les déplace aussi.
+
 ## Arrêté en plein milieu
 
 70 000 déplacements prennent du temps, et un portable se met en veille. Ctrl+C termine le fichier

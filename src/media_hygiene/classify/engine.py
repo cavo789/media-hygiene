@@ -14,6 +14,7 @@ from media_hygiene.classify.dates import clock_not_set, zone_of
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
 from media_hygiene.classify.events import trusted_events
 from media_hygiene.classify.folders import FolderRules
+from media_hygiene.classify.guesses import keep_guess
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import (
     Band,
@@ -92,15 +93,19 @@ def classify(
     )
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [
-        _propose(
-            file,
-            _Facts(
-                datings[file.path],
-                signals[file.path],
-                event_of.get(file.path),
-                years[file.path],
+        keep_guess(
+            _propose(
+                file,
+                _Facts(
+                    datings[file.path],
+                    signals[file.path],
+                    event_of.get(file.path),
+                    years[file.path],
+                ),
+                (settings, scope),
             ),
-            (settings, scope),
+            rules.guess(file.path.parent, file.root),
+            settings.unsure,
         )
         for file in files
     ]

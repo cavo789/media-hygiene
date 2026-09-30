@@ -22,7 +22,7 @@ from media_hygiene.scan.models import VisualFacts
 
 ROOT = Path("/data/c/Photos")
 BRUSSELS = ZoneInfo("Europe/Brussels")
-RULES = FolderRules.build((), ())
+RULES = FolderRules.build((), ((), ()))
 MTIME = 1_500_000_000_000_000_000
 CONTEXT = DatingContext(RULES, compile_patterns(NAME_DATES), BRUSSELS)
 

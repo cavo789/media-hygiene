@@ -68,14 +68,15 @@ def layout_of(band: Band, settings: ClassifySettings, *, camera: bool) -> str:
     return layouts[band]
 
 
-def band_folders(settings: ClassifySettings) -> tuple[str, ...]:
+def band_folders(settings: ClassifySettings) -> tuple[tuple[str, ...], tuple[str, ...]]:
     """The fixed folder names the layouts write ("To check", "À trier"…).
 
     Args:
         settings: The layouts.
 
     Returns:
-        Every segment without a placeholder: never a meaning for the next run.
+        Every segment without a placeholder (never a meaning for the next run), then
+        those only the "to check" layout writes (the folders of its guesses).
     """
     layouts = (
         settings.layout,
@@ -84,9 +85,24 @@ def band_folders(settings: ClassifySettings) -> tuple[str, ...]:
         settings.undated_layout,
         settings.received_layout,
     )
-    return tuple(
+    every = tuple(segment for layout in layouts for segment in _fixed(layout))
+    others = {
         segment
         for layout in layouts
-        for segment in layout.split("/")
-        if segment and "{" not in segment
-    )
+        if layout != settings.unsure_layout
+        for segment in _fixed(layout)
+    }
+    unsure = tuple(s for s in _fixed(settings.unsure_layout) if s not in others)
+    return every, unsure
+
+
+def _fixed(layout: str) -> tuple[str, ...]:
+    """The segments of a layout without a placeholder.
+
+    Args:
+        layout: A layout.
+
+    Returns:
+        Them, in order.
+    """
+    return tuple(s for s in layout.split("/") if s and "{" not in s)
