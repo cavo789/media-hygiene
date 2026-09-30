@@ -80,3 +80,37 @@ Written to `<reports>/<stamp>-classify/`:
 - [ ] HTML report by event (same ids and order as the Events sheet), one page per year, the
       proposed tree; sort guide en + fr (screenshots via `docs_screenshots`, synthetic pictures
       only); `.po` translated.
+
+## Status — PARTIAL (2026-09-30)
+
+### Done
+- `plan.json` (versioned pydantic, `classify/plan_file.py` + `plan_build.py`): host paths, size,
+  mtime, SHA-256, date and source, event, layout values, band, reason, score, target folder and
+  name; row ids from the content, event ids from 0026 (stable across runs, tested).
+- `classify.xlsx` (`classify/workbook/`): Summary, Categories, Events (work list: undecided and
+  largest first, cumulated share), Files; Notes column on every sheet; "(stay where it is)" in
+  the drop-downs; structure lock, protected sheets with auto-filter allowed, unlocked Text-format
+  editable cells, categories drop-down that accepts free text, `veryHidden` `_meta` (format,
+  plan id, fingerprint of the locked keys, labels used).
+- Reader and precedence (`reader.py`, `sheet_edits.py`, `validation.py`, `edits.py`): file >
+  event > category, a human edit is sure, protected files ignore edits; a file that is not a
+  workbook, a renamed sheet, a damaged `_meta`, another run's workbook, changed locked cells and
+  unusable values (naming their cell) are refused. Unit tests on a synthetic plan.
+- 70,000 rows (synthetic plan): written in 6.8 s, read back and resolved in 4.3 s, 3.5 MB.
+  openpyxl's `write_only` mode keeps the cell protection and the data validation (tested).
+- LibreOffice (headless, Debian `libreoffice-calc-nogui`): opens the workbook, converts it to
+  PDF, and its re-saved `.xlsx` keeps sheet protection, unlocked Text cells and the drop-downs;
+  `read_edits` accepts it. LibreOffice turns `veryHidden` into `hidden` and drops the workbook
+  structure lock on re-save: a guard-rail only, the `_meta` and fingerprint checks still hold.
+- HTML report (`report/classify_*.py`, `classify*.html.j2`): index with progress, work left,
+  years, where to start, proposed tree; one page per year, events with the Events sheet's ids
+  and order, up to 8 previews spread over the span, a list of all the files.
+- Written to `<reports>/<stamp>-classify/` only when `/reports` is persistent; a write failure
+  is a warning. Sort guide step 5 in en + fr, step 4 and references updated, screenshots via
+  `docs_screenshots`; `.po` translated.
+
+### Not done
+- Open `classify.xlsx` in Microsoft Excel and check it opens cleanly (no repair prompt), the
+  structure lock, the locked cells, the filters and the drop-downs.
+  **Reason:** no Excel in the devcontainer; a manual check on the maintainer's Windows machine.
+  Once checked, move this file to `DONE/`.
