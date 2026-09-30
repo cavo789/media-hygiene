@@ -31,8 +31,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20260930-173841-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 30 septembre 2026 à 17:38.
+Classeur : /reports/20260930-182311-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 30 septembre 2026 à 18:23.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -65,7 +65,9 @@ attendue et la valeur trouvée :
 
 ```text
 ❌ Fichiers!J2 : attendu « 2016/À trier/2016-07-14 », trouvé « Ailleurs ».
-💡 Annulez la modification dans Excel (Ctrl+Z), ou restaurez une copie du classeur.
+💡 Annulez la modification dans Excel (Ctrl+Z), restaurez une copie du classeur,
+ou relancez 'classify' : vos modifications sont reprises dans son nouveau
+classeur.
 ```
 
 Puis les cellules jaunes : un nom que Windows refuse (`CON`, `a:b`, un point final), un dossier
@@ -107,7 +109,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20260930-173843
+Tri 20260930-182313
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -118,8 +120,8 @@ Tri 20260930-173843
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20260930-173843-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20260930-173843' remet tout en
+Manifeste : /reports/20260930-182313-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20260930-182313' remet tout en
 place.
 ```
 
@@ -138,9 +140,9 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20260930-173843 ────────────────
+──────────────── Annulation de l'exécution sort 20260930-182313 ────────────────
 Annulation de l'exécution sort
-20260930-173843
+20260930-182313
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │

@@ -156,6 +156,9 @@ règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et 
 Le classeur montre les mêmes noms dans la colonne *Raison* de sa feuille Fichiers, et les compte
 sur sa feuille Résumé.
 
+Une règle changée après avoir modifié le classeur ? Relancez `classify` : vos modifications sont
+reprises dans le nouveau classeur ([étape 5](05-review-the-proposal.md#améliorer-la-proposition-sans-perdre-votre-travail)).
+
 ---
 
 ← [5. Revoir la proposition](05-review-the-proposal.md) · [Documentation](../README.md) · Suivant : **[7. Trier](07-sort.md)** →

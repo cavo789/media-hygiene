@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from media_hygiene.classify.carry_models import EditSheet, LostEdit, LostWhy
 from media_hygiene.classify.models import Band, DateSource
 from media_hygiene.i18n import _
 
@@ -42,3 +43,31 @@ def source_name(source: DateSource | None) -> str:
         DateSource.MTIME: _("date on the disk"),
     }
     return names[source] if source else ""
+
+
+def lost_line(lost: LostEdit) -> str:
+    """Describe an edit that was not carried over, in one line.
+
+    Args:
+        lost: The edit.
+
+    Returns:
+        E.g. `Files: a.jpg: '2016/Fair' (the file is gone)`, translated.
+    """
+    sheets = {
+        EditSheet.FILES: _("Files"),
+        EditSheet.EVENTS: _("Events"),
+        EditSheet.CATEGORIES: _("Categories"),
+    }
+    reasons = {
+        (LostWhy.GONE, EditSheet.FILES): _("the file is gone"),
+        (LostWhy.GONE, EditSheet.EVENTS): _("its files are gone"),
+        (LostWhy.GONE, EditSheet.CATEGORIES): _("this category is no longer proposed"),
+        (LostWhy.MERGED, EditSheet.EVENTS): _(
+            "merged with another named event, whose name wins"
+        ),
+    }
+    why = reasons.get((lost.why, lost.sheet), _("the value cannot be used"))
+    return _("{sheet}: {key}: '{value}' ({why})").format(
+        sheet=sheets[lost.sheet], key=lost.key, value=lost.value, why=why
+    )

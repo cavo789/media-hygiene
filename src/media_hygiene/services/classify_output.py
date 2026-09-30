@@ -6,10 +6,14 @@ a workbook edited in a folder the container forgets would be lost work.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.carry import carry_over
+from media_hygiene.classify.carry_plan import with_carried
 from media_hygiene.classify.plan_build import build_plan
+from media_hygiene.classify.workbook.prefill import Prefill
 from media_hygiene.classify.workbook.writer import write_workbook
 from media_hygiene.constants import (
     CLASSIFY_FOLDER_SUFFIX,
@@ -25,18 +29,31 @@ from media_hygiene.services.writable import writable_tip
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.classify.carry_models import CarryRecord
+    from media_hygiene.classify.carry_types import CarrySource
     from media_hygiene.services.classify import ClassifyResult
     from media_hygiene.services.runtime import Runtime
 
 _STAMP_FORMAT: Final = "%Y%m%d-%H%M%S"
 
 
-def write_classify_output(runtime: Runtime, result: ClassifyResult) -> Path | None:
+@dataclass(frozen=True, slots=True)
+class ClassifyOutput:
+    """The folder written, and what was carried over from the previous workbook."""
+
+    folder: Path
+    carried: CarryRecord | None = None
+
+
+def write_classify_output(
+    runtime: Runtime, result: ClassifyResult, source: CarrySource | None = None
+) -> ClassifyOutput | None:
     """Write the plan, the workbook and the report of a classify run.
 
     Args:
         runtime: Settings, mount points and output.
         result: The proposals.
+        source: The previous workbook, whose edits are carried over.
 
     Returns:
         The folder written, or None when `/reports` would not survive the container.
@@ -48,12 +65,17 @@ def write_classify_output(runtime: Runtime, result: ClassifyResult) -> Path | No
         return None
     reports_dir = runtime.locations.reports_dir
     plan = build_plan(result.classification, runtime.settings.classify, runtime.mapper)
+    prefill = None
+    if source is not None:
+        carried = carry_over(source, plan)
+        plan = with_carried(plan, carried, source)
+        prefill = Prefill(carried.edits, carried.notes)
     try:
         folder = _new_folder(reports_dir)
         (folder / CLASSIFY_PLAN_FILE_NAME).write_text(
             plan.model_dump_json(indent=1), encoding="utf-8"
         )
-        write_workbook(plan, folder / CLASSIFY_WORKBOOK_FILE_NAME)
+        write_workbook(plan, folder / CLASSIFY_WORKBOOK_FILE_NAME, prefill)
         with runtime.executor_factory() as executor:
             ClassifyReportWriter(folder, runtime.mapper, executor).write(plan)
     except OSError as exc:
@@ -64,7 +86,7 @@ def write_classify_output(runtime: Runtime, result: ClassifyResult) -> Path | No
             ),
             writable_tip((reports_dir,)) if isinstance(exc, PermissionError) else None,
         ) from exc
-    return folder
+    return ClassifyOutput(folder, plan.carried)
 
 
 def _new_folder(reports_dir: Path) -> Path:

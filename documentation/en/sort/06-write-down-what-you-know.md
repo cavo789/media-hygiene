@@ -153,6 +153,9 @@ run before anything is read, and names itself (`classify.rules.0` is the first r
 The workbook shows the same names in the *Reason* column of its Files sheet, and counts them on
 its Summary sheet.
 
+Changed a rule after editing the workbook? Run `classify` again: your edits are carried over to
+the new workbook ([step 5](05-review-the-proposal.md#improve-the-proposal-without-losing-your-work)).
+
 ---
 
 ← [5. Review the proposal](05-review-the-proposal.md) · [Documentation](../README.md) · Next: **[7. Sort](07-sort.md)** →

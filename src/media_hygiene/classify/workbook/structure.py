@@ -69,7 +69,7 @@ def check_structure(book: ReadBook, plan: ClassifyPlan) -> None:
     if locale is None:
         raise WorkbookError(
             _("This workbook was written by another version: it cannot be checked."),
-            _("Run 'classify' again, then edit the new workbook."),
+            _("Run 'classify' again: your edits are carried over to its new workbook."),
         )
     with using(locale):
         sheets = sheet_specs(plan, labels)
@@ -117,7 +117,10 @@ def undo_tip() -> str:
     Returns:
         The translated tip.
     """
-    return _("Undo the change in Excel (Ctrl+Z), or restore a copy of the workbook.")
+    return _(
+        "Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run "
+        "'classify' again: your edits are carried over to its new workbook."
+    )
 
 
 def _sheet_difference(spec: SheetSpec, rows: list[Row], table: Table) -> str | None:

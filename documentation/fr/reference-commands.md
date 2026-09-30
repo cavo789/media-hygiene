@@ -45,6 +45,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--layout DISPOSITION` | `classify` | Où vont les fichiers sûrs, par exemple `{year}/{month}`. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
 | `--target CHEMIN` | `classify` | Dossier qui reçoit l'arborescence ; chaque dossier monté, sur place, par défaut. |
 | `--leave CHEMIN` | `classify` | Dossier jamais trié ; toujours analysé et nettoyé. |
+| `--carry-over CHEMIN` | `classify` | Classeur dont les modifications sont reprises ; celui du dernier `classify` par défaut. [Trier, étape 5](sort/05-review-the-proposal.md#améliorer-la-proposition-sans-perdre-votre-travail) |
+| `--no-carry-over` | `classify` | Repartir de zéro : ne reprendre aucune modification d'un classeur précédent. |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
@@ -358,15 +360,20 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
  lecture seule.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>  Seulement les fichiers de cette année, ou de ces    │
-│                          années : 2016 ou 2015-2017.                         │
-│ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
-│                          '{year}/{month} - {month_name}'.                    │
-│ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │
-│                          place par défaut.                                   │
-│ --leave           <str>  Dossier de l'hôte jamais trié (analysé et nettoyé   │
-│                          comme d'habitude).                                  │
-│ --help    -h             Affiche ce message et quitte.                       │
+│ --year                   <str>  Seulement les fichiers de cette année, ou de │
+│                                 ces années : 2016 ou 2015-2017.              │
+│ --layout                 <str>  Où vont les fichiers sûrs, par exemple       │
+│                                 '{year}/{month} - {month_name}'.             │
+│ --target                 <str>  Dossier de l'hôte qui reçoit l'arborescence  │
+│                                 ; sur place par défaut.                      │
+│ --leave                  <str>  Dossier de l'hôte jamais trié (analysé et    │
+│                                 nettoyé comme d'habitude).                   │
+│ --carry-over             <str>  Classeur dont les modifications sont         │
+│                                 reprises ; celui du dernier classify par     │
+│                                 défaut.                                      │
+│ --no-carry-over                 Repartir de zéro : ne reprendre aucune       │
+│                                 modification d'un classeur précédent.        │
+│ --help           -h             Affiche ce message et quitte.                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

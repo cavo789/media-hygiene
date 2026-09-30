@@ -45,6 +45,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--target PATH` | `classify` | Folder receiving the tree; each mounted folder, in place, by default. |
 | `--leave PATH` | `classify` | Folder never sorted; still analysed and cleaned. |
+| `--carry-over PATH` | `classify` | Workbook whose edits are carried over; the latest `classify` run's by default. [Sorting, step 5](sort/05-review-the-proposal.md#improve-the-proposal-without-losing-your-work) |
+| `--no-carry-over` | `classify` | Start fresh: carry no edit of a previous workbook over. |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
@@ -345,15 +347,19 @@ both languages (`--locale fr --help`). Here is what they print:
  Read-only.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>  Only the files of this year, or of these years:     │
-│                          2016 or 2015-2017.                                  │
-│ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
-│                          {month_name}'.                                      │
-│ --target          <str>  Host folder receiving the tree; in place by         │
-│                          default.                                            │
-│ --leave           <str>  Host folder never sorted (analysed and cleaned as   │
-│                          usual).                                             │
-│ --help    -h             Show this message and exit.                         │
+│ --year                   <str>  Only the files of this year, or of these     │
+│                                 years: 2016 or 2015-2017.                    │
+│ --layout                 <str>  Where sure files go, e.g. '{year}/{month} -  │
+│                                 {month_name}'.                               │
+│ --target                 <str>  Host folder receiving the tree; in place by  │
+│                                 default.                                     │
+│ --leave                  <str>  Host folder never sorted (analysed and       │
+│                                 cleaned as usual).                           │
+│ --carry-over             <str>  Workbook whose edits are carried over; the   │
+│                                 latest classify run's by default.            │
+│ --no-carry-over                 Start fresh: carry no edit of a previous     │
+│                                 workbook over.                               │
+│ --help           -h             Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

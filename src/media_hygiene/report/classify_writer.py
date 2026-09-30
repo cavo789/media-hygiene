@@ -8,9 +8,12 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
+from datetime import datetime
 from typing import TYPE_CHECKING, Final
 from urllib.parse import quote
 
+from media_hygiene.classify.layout import month_name
+from media_hygiene.classify.names import lost_line
 from media_hygiene.classify.worklist import work_list
 from media_hygiene.constants import REPORT_FILE_NAME
 from media_hygiene.report.classify_tree import proposed_tree
@@ -109,6 +112,10 @@ class ClassifyReportWriter:
                     :_TOP_EVENTS
                 ],
                 tree=proposed_tree(plan),
+                saved=_saved(plan),
+                lost=[lost_line(lost) for lost in plan.carried.lost]
+                if plan.carried
+                else [],
             ),
             encoding="utf-8",
         )
@@ -134,6 +141,21 @@ class ClassifyReportWriter:
             for row_id, job in jobs.items()
             if job.target in written
         }
+
+
+def _saved(plan: ClassifyPlan) -> str:
+    """When the workbook carried over was saved, as people write it.
+
+    Args:
+        plan: The plan.
+
+    Returns:
+        `2 October 2026, 14:32`, or empty when nothing was carried.
+    """
+    if plan.carried is None:
+        return ""
+    saved = datetime.fromisoformat(plan.carried.saved_at)
+    return f"{saved.day} {month_name(saved.month)} {saved.year}, {saved:%H:%M}"
 
 
 def _counts(groups: list[GroupView]) -> tuple[int, int, int]:

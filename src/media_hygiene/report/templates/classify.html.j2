@@ -10,6 +10,20 @@
   <div class="card"><div class="value">{{ plan.events | length | number }}</div><div class="label">{{ _("Events") }}</div></div>
 </div>
 
+{% if plan.carried %}
+<h2>{{ _("Edits carried over") }}</h2>
+<p>{{ ngettext("%(num)s edit carried over from the workbook saved on %(date)s: %(path)s", "%(num)s edits carried over from the workbook saved on %(date)s: %(path)s", plan.carried.edits, num=plan.carried.edits | number, date=saved, path=plan.carried.workbook) }}</p>
+{% if plan.carried.split %}
+<p>{{ _("Events split in several, each part keeps the edit: {names}.").format(names=plan.carried.split | join(", ")) }}</p>
+{% endif %}
+{% if lost %}
+<p>⚠️ {{ _("These edits found no place in the new proposal: type them again where they belong.") }}</p>
+<ul>
+  {% for line in lost %}<li>{{ line }}</li>{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
 <h2>{{ _("Years") }}</h2>
 <table>
   <tr><th>{{ _("Year") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Groups") }}</th><th class="num">{{ _("To check or to sort") }}</th></tr>

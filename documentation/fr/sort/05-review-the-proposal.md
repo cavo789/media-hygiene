@@ -27,8 +27,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20260930-173752-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-173752-classify/report.html
+✅ Classeur à modifier : /reports/20260930-182219-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-182219-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
@@ -93,6 +93,39 @@ Quelques règles :
 - Excel ne peut pas trier des cellules verrouillées : les feuilles arrivent déjà triées dans leur
   ordre le plus utile. Utilisez les **filtres** de la ligne d'en-tête pour restreindre une feuille.
 - Enregistrez le classeur là où il est, sous son nom, au format `.xlsx`.
+
+## Améliorer la proposition sans perdre votre travail
+
+Changez un réglage (`merge_gap_hours`, une règle de l'[étape 6](06-write-down-what-you-know.md)),
+ajoutez de nouvelles photos, et relancez `classify` : **vos modifications sont reprises** dans le
+nouveau classeur. Il lit le classeur du dernier `classify`, celui que `sort` appliquerait, et
+remplit les cellules jaunes du nouveau avec ce que vous aviez saisi, notes comprises :
+
+```text
+✅ 412 modifications reprises du classeur enregistré le 2 octobre 2026 à 14:32 :
+C:\Photos triées\reports\20261002-123210-classify\classify.xlsx
+```
+
+- **Un fichier garde sa modification** même s'il a été renommé ou déplacé entre-temps : il est
+  reconnu par son contenu (le SHA-256 de l'audit), par son chemin seulement quand le contenu
+  n'est pas connu.
+- **Un événement garde son nom** dans le nouvel événement qui contient la plupart de ses
+  fichiers. Un événement coupé en deux donne son nom aux deux parties, et `classify` le dit.
+- **Une catégorie garde son nouveau nom** et son « confirmer » tant qu'elle est encore proposée.
+- Une modification reprise est la vôtre : le fichier est sûr, avec la raison `carried-over`, et
+  vous pouvez changer la cellule jaune à nouveau.
+- **Rien n'est abandonné en silence** : une modification dont le fichier a disparu, dont la
+  catégorie n'est plus proposée, ou dont l'événement a fusionné avec un autre événement nommé,
+  est listée à l'écran et dans le rapport, pour la saisir à nouveau là où elle va.
+- Les modifications qu'un `sort` a déjà appliquées ne sont pas reprises : ces fichiers sont à
+  leur place, et `classify` les y voit.
+
+`--carry-over <classeur>` reprend les modifications d'un autre classeur (une copie gardée, une
+exécution plus ancienne) ; `--no-carry-over` repart de zéro. Un classeur que `sort` refuse (une
+colonne supprimée, une feuille renommée) est quand même lu, aussi loin que ses identifiants et ses
+cellules jaunes peuvent être trouvés : relancer `classify` est la porte de sortie. Si le dernier
+classeur ne peut pas être ouvert du tout, `classify` s'arrête avant d'écrire quoi que ce soit, pour
+que vos modifications ne soient pas enfouies sous un classeur plus récent et vide.
 
 Rien ne bouge encore : appliquer le classeur à vos dossiers est le rôle de `sort`
 ([étape 7](07-sort.md)). Il vérifie à nouveau le classeur avant de déplacer quoi que ce soit : un

@@ -103,9 +103,9 @@ def classify(runtime: Runtime) -> Path:
         The workbook.
     """
     result = ClassifyService(runtime, NullProgress()).run()
-    folder = write_classify_output(runtime, result)
-    assert folder is not None
-    return folder / "classify.xlsx"
+    written = write_classify_output(runtime, result)
+    assert written is not None
+    return written.folder / "classify.xlsx"
 
 
 def name_first_event(workbook: Path, name: str = EVENT_NAME) -> None:

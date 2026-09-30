@@ -100,14 +100,14 @@ def read_plan_id(path: Path) -> str:
     Raises:
         WorkbookError: It is not a classify workbook.
     """
-    book = _open(path)
+    book = open_book(path)
     try:
-        return _meta(book)[MetaKey.PLAN_ID]
+        return read_meta(book)[MetaKey.PLAN_ID]
     finally:
         book.close()
 
 
-def _open(path: Path) -> Workbook:
+def open_book(path: Path) -> Workbook:
     """Open a workbook to read its values.
 
     Args:
@@ -141,9 +141,9 @@ def _read(path: Path) -> ReadBook:
     Raises:
         WorkbookError: It is not a classify workbook, or a sheet is missing.
     """
-    book = _open(path)
+    book = open_book(path)
     try:
-        meta = _meta(book)
+        meta = read_meta(book)
         labels = Labels.from_meta(meta)
         names = (labels.summary, labels.categories, labels.events, labels.files)
         missing = [name for name in names if name not in book.sheetnames]
@@ -152,13 +152,13 @@ def _read(path: Path) -> ReadBook:
                 _("The sheet '{name}' was renamed or deleted.").format(name=missing[0]),
                 undo_tip(),
             )
-        tables = {name: _table(book, name, first=1) for name in names}
+        tables = {name: read_table(book, name, first=1) for name in names}
         return ReadBook(tuple(book.sheetnames), tables, meta, labels)
     finally:
         book.close()
 
 
-def _meta(book: Workbook) -> dict[MetaKey, str]:
+def read_meta(book: Workbook) -> dict[MetaKey, str]:
     """Read the hidden `_meta` sheet.
 
     Args:
@@ -172,14 +172,14 @@ def _meta(book: Workbook) -> dict[MetaKey, str]:
     """
     if META_SHEET not in book.sheetnames:
         raise WorkbookError(_("This is not a classify workbook, or it was damaged."))
-    rows = _table(book, META_SHEET, first=1)
+    rows = read_table(book, META_SHEET, first=1)
     values = {key: text_of(at(rows[key - 1], 2)) for key in MetaKey if key <= len(rows)}
     if values.get(MetaKey.FORMAT) != str(WORKBOOK_FORMAT) or len(values) < len(MetaKey):
         raise WorkbookError(_("This is not a classify workbook, or it was damaged."))
     return values
 
 
-def _table(book: Workbook, name: str, first: int = 2) -> Table:
+def read_table(book: Workbook, name: str, first: int = 2) -> Table:
     """The rows of a sheet, as values.
 
     Args:

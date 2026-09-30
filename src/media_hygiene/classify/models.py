@@ -41,6 +41,7 @@ class SortReason(StrEnum):
     NO_SIGNAL = "no-signal"
     UNDATED = "undated"
     LEFT_AS_IS = "left-as-is"
+    CARRIED_OVER = "carried-over"  # an edit of the previous workbook, carried over
 
 
 class Band(StrEnum):

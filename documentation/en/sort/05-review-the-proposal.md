@@ -25,8 +25,8 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20260930-173638-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-173638-classify/report.html
+✅ Workbook to edit: /reports/20260930-181946-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-181946-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
@@ -86,6 +86,37 @@ A few rules:
 - Excel cannot sort locked cells: the sheets come already sorted in their most useful order. Use
   the **filters** of the header row to narrow a sheet down.
 - Save the workbook where it is, with its name, in the `.xlsx` format.
+
+## Improve the proposal without losing your work
+
+Change a setting (`merge_gap_hours`, a rule of [step 6](06-write-down-what-you-know.md)), add
+new photos, and run `classify` again: **your edits are carried over** to the new workbook. It
+reads the workbook of the latest `classify` run, the one `sort` would apply, and fills the yellow
+cells of the new one with what you typed, notes included:
+
+```text
+✅ 412 edits carried over from the workbook saved on 2 October 2026 at 14:32:
+C:\Photos triées\reports\20261002-123210-classify\classify.xlsx
+```
+
+- **A file keeps its edit** even if it was renamed or moved meanwhile: it is recognised by its
+  content (the SHA-256 of the audit), by its path only when the content is not known.
+- **An event keeps its name** in the new event that holds most of its files. An event split in
+  two gives its name to both parts, and `classify` says so.
+- **A category keeps its new name** and its "confirm" as long as it is still proposed.
+- A carried edit is yours: the file is sure, with the reason `carried-over`, and you can change
+  the yellow cell again.
+- **Nothing is dropped silently**: an edit whose file is gone, whose category is no longer
+  proposed, or whose event merged with another named one, is listed on screen and in the report,
+  to type again where it belongs.
+- Edits a `sort` already applied are not carried: those files are in their place, and `classify`
+  sees them there.
+
+`--carry-over <workbook>` carries the edits of another workbook (a copy you kept, an older run);
+`--no-carry-over` starts fresh. A workbook `sort` refuses (a column deleted, a sheet renamed) is
+still read, as far as its ids and yellow cells can be found: running `classify` again is the way
+out. If the latest workbook cannot be opened at all, `classify` stops before writing anything, so
+that your edits are not buried under a newer, empty workbook.
 
 Nothing moves yet: applying the workbook to your folders is the job of `sort`
 ([step 7](07-sort.md)). It checks the workbook again before moving anything: a workbook of another

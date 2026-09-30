@@ -26,32 +26,52 @@ from media_hygiene.classify.workbook.sheets import META_SHEET, Labels, fingerpri
 from media_hygiene.classify.workbook.specs import locked_keys, sheet_specs
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
     from openpyxl.worksheet._write_only import WriteOnlyWorksheet
 
     from media_hygiene.classify.plan_file import ClassifyPlan
     from media_hygiene.classify.workbook.cells import WriteOnly
+    from media_hygiene.classify.workbook.prefill import Prefill
     from media_hygiene.classify.workbook.rows import Row
     from media_hygiene.classify.workbook.specs import SheetSpec
 
 _WIDTH: Final = 18
 
 
-def write_workbook(plan: ClassifyPlan, target: Path) -> None:
+def write_workbook(
+    plan: ClassifyPlan, target: Path, prefill: Prefill | None = None
+) -> None:
     """Write the workbook of a plan.
 
     Args:
         plan: The plan.
         target: The `.xlsx` file to write.
+        prefill: The edits carried over, written in the yellow cells.
     """
     labels = Labels.current()
     book = Workbook(write_only=True)
     book.security = WorkbookProtection(lockStructure=True)
     sheets = sheet_specs(plan, labels)
+    filled = prefill.cells(labels) if prefill else {}
     for spec, rows in sheets:
-        _write(book, spec, rows)
-    keys = locked_keys(plan, sheets)
+        _write(book, spec, _filled(rows, filled.get(spec.title, {})))
+    _write_meta(book, plan, (labels, locked_keys(plan, sheets)))
+    book.save(target)
+
+
+def _write_meta(
+    book: Workbook, plan: ClassifyPlan, written: tuple[Labels, list[str]]
+) -> None:
+    """Add the hidden `_meta` sheet: the plan id, the fingerprint, the drop-down list.
+
+    Args:
+        book: The workbook, write-only.
+        plan: The plan.
+        written: The labels used and the locked keys, in the workbook's order.
+    """
+    labels, keys = written
     meta = cast("WriteOnly", book.create_sheet(META_SHEET))
     meta.sheet_state = "veryHidden"
     meta.protection.sheet = True
@@ -61,7 +81,29 @@ def write_workbook(plan: ClassifyPlan, target: Path) -> None:
         key, value = pairs[index] if index < len(pairs) else (None, None)
         choice = listed[index] if index < len(listed) else None
         meta.append([key, value, None, choice])
-    book.save(target)
+
+
+def _filled(rows: list[Row], cells: Mapping[str, Mapping[int, str]]) -> list[Row]:
+    """Fill the yellow cells of the rows that have carried values.
+
+    Args:
+        rows: The rows of a sheet, their yellow cells empty.
+        cells: Row key → column → text.
+
+    Returns:
+        The rows.
+    """
+    if not cells:
+        return rows
+    filled: list[Row] = []
+    for row in rows:
+        values = cells.get(str(row[0]), {})
+        filled.append(
+            tuple(
+                values.get(column) or value for column, value in enumerate(row, start=1)
+            )
+        )
+    return filled
 
 
 def _write(book: Workbook, spec: SheetSpec, rows: list[Row]) -> None:

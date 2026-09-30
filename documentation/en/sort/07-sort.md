@@ -30,8 +30,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20260930-173727-classify/classify.xlsx
-0 edits read; workbook saved on 30 September 2026 at 17:37.
+Workbook: /reports/20260930-182038-classify/classify.xlsx
+0 edits read; workbook saved on 30 September 2026 at 18:20.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -62,7 +62,8 @@ difference refuses the whole file, naming the cell, the value expected and the v
 
 ```text
 ❌ Files!J2: expected '2016/To sort/2016-07-14', found 'Elsewhere'.
-💡 Undo the change in Excel (Ctrl+Z), or restore a copy of the workbook.
+💡 Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run
+'classify' again: your edits are carried over to its new workbook.
 ```
 
 Then the yellow cells: a name Windows refuses (`CON`, `a:b`, a trailing dot), a folder that
@@ -100,7 +101,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20260930-173729
+Sort 20260930-182040
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -110,8 +111,8 @@ Sort 20260930-173729
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20260930-173729-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20260930-173729' moves everything
+Manifest: /reports/20260930-182040-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20260930-182040' moves everything
 back.
 ```
 
@@ -130,8 +131,8 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20260930-173729 ───────────────────────
-Undo the sort run 20260930-173729
+────────────────────── Undo the sort run 20260930-182040 ───────────────────────
+Undo the sort run 20260930-182040
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

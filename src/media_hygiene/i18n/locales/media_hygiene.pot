@@ -10,6 +10,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)s edit carried over from the workbook saved on %(date)s: %(path)s"
+msgid_plural "%(num)s edits carried over from the workbook saved on %(date)s: %(path)s"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
 msgstr[0] ""
@@ -466,6 +472,9 @@ msgstr ""
 msgid "Edit {path} to change these settings; command-line options win."
 msgstr ""
 
+msgid "Edits carried over"
+msgstr ""
+
 msgid "Effective settings"
 msgstr ""
 
@@ -495,6 +504,10 @@ msgstr ""
 msgid ""
 "Events first, in the order of the Events sheet (same ids), then the files"
 " outside any event, by proposed folder."
+msgstr ""
+
+#, python-brace-format
+msgid "Events split in several, each part keeps the edit: {names}."
 msgstr ""
 
 msgid ""
@@ -732,6 +745,12 @@ msgid ""
 "another terminal, then open http://<that address> in your browser."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Its edits would not be carried over: repair {path}, name another one with"
+" --carry-over, or start fresh with --no-carry-over."
+msgstr ""
+
 msgid "January"
 msgstr ""
 
@@ -748,8 +767,8 @@ msgid "Keep at least one shot of the series."
 msgstr ""
 
 msgid ""
-"Keep plan.json in the folder 'classify' wrote, or run 'classify' again "
-"and edit its new workbook."
+"Keep plan.json in the folder 'classify' wrote, or run 'classify --carry-"
+"over <workbook>': your edits are carried over to its new workbook."
 msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
@@ -977,6 +996,10 @@ msgid "Not the folder you want to keep?"
 msgstr ""
 
 msgid "Notes"
+msgstr ""
+
+#, python-brace-format
+msgid "Notes carried over too: {count}."
 msgstr ""
 
 msgid "Nothing left to check nor to sort."
@@ -1236,7 +1259,7 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
-msgid "Run 'classify' again, then edit the new workbook."
+msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 
 msgid "Run 'classify' first, then edit its workbook."
@@ -1433,6 +1456,9 @@ msgstr ""
 msgid "Space that can be freed"
 msgstr ""
 
+msgid "Start fresh: carry no edit of a previous workbook over."
+msgstr ""
+
 msgid "State"
 msgstr ""
 
@@ -1517,6 +1543,9 @@ msgid ""
 "them. Open a pair to see every copy."
 msgstr ""
 
+msgid "The report lists them all: type them again where they belong."
+msgstr ""
+
 msgid "The review is not running any more: start it again."
 msgstr ""
 
@@ -1584,6 +1613,11 @@ msgid ""
 "{ours}."
 msgstr ""
 
+msgid ""
+"These edits found no place in the new proposal: type them again where "
+"they belong."
+msgstr ""
+
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
 msgstr ""
@@ -1639,7 +1673,9 @@ msgstr ""
 msgid "Undated"
 msgstr ""
 
-msgid "Undo the change in Excel (Ctrl+Z), or restore a copy of the workbook."
+msgid ""
+"Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run"
+" 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 
 #, python-brace-format
@@ -1699,6 +1735,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "Workbook to edit: {path}"
+msgstr ""
+
+msgid ""
+"Workbook whose edits are carried over; the latest classify run's by "
+"default."
 msgstr ""
 
 #, python-brace-format
@@ -1865,6 +1906,9 @@ msgstr ""
 msgid "its copy {path} is gone"
 msgstr ""
 
+msgid "its files are gone"
+msgstr ""
+
 msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)"
 msgstr ""
 
@@ -1899,6 +1943,9 @@ msgid "media-hygiene report"
 msgstr ""
 
 msgid "media-hygiene reports"
+msgstr ""
+
+msgid "merged with another named event, whose name wins"
 msgstr ""
 
 msgid "move to the quarantine"
@@ -1962,6 +2009,9 @@ msgstr ""
 msgid "the copy differs from the original"
 msgstr ""
 
+msgid "the file is gone"
+msgstr ""
+
 #, python-brace-format
 msgid "the file moved from {path} is not there"
 msgstr ""
@@ -1998,6 +2048,12 @@ msgid "the shortest path"
 msgstr ""
 
 msgid "the target exists"
+msgstr ""
+
+msgid "the value cannot be used"
+msgstr ""
+
+msgid "this category is no longer proposed"
 msgstr ""
 
 #, python-format
@@ -2062,6 +2118,22 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}."
 msgid_plural "{count} decided folder pairs no longer exist, e.g. {kept} -> {removed}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} edit carried over from the workbook saved on {day} {month} {year}"
+" at {time}: {path}"
+msgid_plural ""
+"{count} edits carried over from the workbook saved on {day} {month} "
+"{year} at {time}: {path}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} edit found no place in the new proposal:"
+msgid_plural "{count} edits found no place in the new proposal:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2208,6 +2280,10 @@ msgid "{path}: longer than {count} characters."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: no sheet of a classify workbook was found."
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr ""
 
@@ -2217,6 +2293,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{sheet}: the row {key} was deleted."
+msgstr ""
+
+#, python-brace-format
+msgid "{sheet}: {key}: '{value}' ({why})"
 msgstr ""
 
 #, python-format

@@ -10,15 +10,18 @@ from rich.markup import escape
 
 from media_hygiene.cli.context import runtime_of, user_errors, warn
 from media_hygiene.config.classify_rules import overlapping_ranges
+from media_hygiene.console.carry_view import show_carried
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.constants import CLASSIFY_WORKBOOK_FILE_NAME, REPORT_FILE_NAME
 from media_hygiene.errors import ConfigError, MountError
 from media_hygiene.i18n import _
+from media_hygiene.services.carry import CarryRequest, carry_source
 from media_hygiene.services.classify import ClassifyService
 from media_hygiene.services.classify_output import write_classify_output
 
 if TYPE_CHECKING:
+    from media_hygiene.classify.carry_types import CarrySource
     from media_hygiene.services.classify import ClassifyResult
     from media_hygiene.services.runtime import Runtime
 
@@ -58,6 +61,23 @@ def classify_command(  # pylint: disable=too-many-arguments
             help=_("Host folder never sorted (analysed and cleaned as usual)."),
         ),
     ] = None,
+    carry_over: Annotated[
+        str | None,
+        typer.Option(
+            "--carry-over",
+            help=_(
+                "Workbook whose edits are carried over; the latest classify run's "
+                "by default."
+            ),
+        ),
+    ] = None,
+    no_carry_over: Annotated[
+        bool,
+        typer.Option(
+            "--no-carry-over",
+            help=_("Start fresh: carry no edit of a previous workbook over."),
+        ),
+    ] = False,
 ) -> None:
     """Propose where every photo and video should go; never moves anything.
 
@@ -67,6 +87,8 @@ def classify_command(  # pylint: disable=too-many-arguments
         layout: `--layout` for the sure files.
         target: `--target` host folder.
         leave: `--leave` host folders.
+        carry_over: `--carry-over` workbook.
+        no_carry_over: `--no-carry-over`.
     """
     runtime = runtime_of(ctx)
     given: dict[str, object] = {"layout": layout, "target": target, "leave": leave}
@@ -77,10 +99,11 @@ def classify_command(  # pylint: disable=too-many-arguments
         years = parse_years(year)
         runtime.output.title(_("Classify"))
         _warn_overlaps(runtime)
+        source = carry_source(runtime, CarryRequest(carry_over, not no_carry_over))
         with RichProgress(runtime.output.console) as progress:
             result = ClassifyService(runtime, progress).run(years)
     show_classification(runtime.output, result)
-    _write_output(runtime, result)
+    _write_output(runtime, result, source)
 
 
 def _warn_overlaps(runtime: Runtime) -> None:
@@ -98,7 +121,9 @@ def _warn_overlaps(runtime: Runtime) -> None:
         )
 
 
-def _write_output(runtime: Runtime, result: ClassifyResult) -> None:
+def _write_output(
+    runtime: Runtime, result: ClassifyResult, source: CarrySource | None
+) -> None:
     """Write the plan, the workbook and the report, and say where they are.
 
     Files that cannot be written are only a warning: the proposals are on screen.
@@ -106,21 +131,23 @@ def _write_output(runtime: Runtime, result: ClassifyResult) -> None:
     Args:
         runtime: Settings, mount points and output.
         result: The proposals.
+        source: The previous workbook, whose edits are carried over.
     """
     output = runtime.output
     if not result.classification.proposals:
         return
     try:
-        folder = write_classify_output(runtime, result)
+        written = write_classify_output(runtime, result, source)
     except MountError as exc:
         warn(output, exc)
         return
-    if folder is None:
+    if written is None:
         output.tip(
             _('Add -v "<a folder of yours>:/reports" to get the workbook to edit.')
         )
         return
-    host = runtime.mapper.to_host
+    show_carried(output, written.carried)
+    host, folder = runtime.mapper.to_host, written.folder
     output.success(
         _("Workbook to edit: {path}").format(
             path=host(folder / CLASSIFY_WORKBOOK_FILE_NAME)

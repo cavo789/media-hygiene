@@ -11,6 +11,7 @@ from typing import Final
 
 from pydantic import BaseModel, ConfigDict
 
+from media_hygiene.classify.carry_models import CarryRecord
 from media_hygiene.classify.layout import Values
 from media_hygiene.classify.models import Band, DateSource, SortReason
 
@@ -124,6 +125,7 @@ class ClassifyPlan(_Frozen):
     rows: tuple[PlanRow, ...]
     events: tuple[PlanEvent, ...]
     unused_rules: tuple[str, ...] = ()  # rules that decided no file of the plan
+    carried: CarryRecord | None = None  # the edits carried over from a workbook
 
     def categories(self) -> dict[str, int]:
         """The proposed categories and their file counts, the largest first.
