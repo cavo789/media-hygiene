@@ -51,6 +51,8 @@ otherwise both copies are sorted.
 
 4. [Propose a tidy tree](sort/04-classify.md): `classify` proposes a place for every file, and
    changes nothing.
+5. [Review the proposal](sort/05-review-the-proposal.md): correct it in a workbook, look at the
+   photos in the report.
 
 ## Reference
 

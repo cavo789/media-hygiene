@@ -1,0 +1,39 @@
+{% extends "base.html.j2" %}
+{% block title %}{{ _("media-hygiene classify") }}{% endblock %}
+{% block content %}
+<h1>🗂️ {{ _("Proposed tree") }}</h1>
+<p class="muted">{{ _("Nothing was moved. Edit classify.xlsx next to this page; this report is where you look at the photos.") }}</p>
+<div class="cards">
+  <div class="card"><div class="value">{{ plan.rows | length | number }}</div><div class="label">{{ _("Files") }}</div></div>
+  <div class="card"><div class="value">{{ in_place | number }}</div><div class="label">{{ _("Already in place") }}</div></div>
+  <div class="card"><div class="value">{{ left | number }}</div><div class="label">{{ _("To check or to sort") }}</div></div>
+  <div class="card"><div class="value">{{ plan.events | length | number }}</div><div class="label">{{ _("Events") }}</div></div>
+</div>
+
+<h2>{{ _("Years") }}</h2>
+<table>
+  <tr><th>{{ _("Year") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Groups") }}</th><th class="num">{{ _("To check or to sort") }}</th></tr>
+  {% for year, (files, groups, undecided) in years.items() %}
+  <tr><td><a href="{{ year_page(year) }}">{{ year or _("Undated") }}</a></td><td class="num">{{ files | number }}</td><td class="num">{{ groups | number }}</td><td class="num">{{ undecided | number }}</td></tr>
+  {% endfor %}
+</table>
+
+{% if top %}
+<h2>{{ _("Where to start") }}</h2>
+<p class="muted">{{ _("The events of the Events sheet, in its order: naming the first ones covers most of the work.") }}</p>
+<table>
+  <tr><th>{{ _("Event") }}</th><th>{{ _("Dates") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("To check or to sort") }}</th><th class="num">{{ _("Share of the work, cumulated") }}</th></tr>
+  {% for item, year in top %}
+  <tr><td><a href="{{ year_page(year) }}#{{ item.event.id }}"><code>{{ item.event.id }}</code></a></td><td>{{ item.event.label or item.event.span }}</td><td class="num">{{ item.rows | length | number }}</td><td class="num">{{ item.undecided | number }}</td><td class="num">{% if item.undecided %}{{ (item.cumulated * 100) | round | int }} %{% endif %}</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<h2>{{ _("The collection once sorted") }}</h2>
+<table>
+  <tr><th>{{ _("Folder") }}</th><th class="num">{{ _("Files") }}</th></tr>
+  {% for line in tree %}
+  <tr><td style="padding-left: {{ 12 + 20 * line.depth }}px">{{ "📁" if line.depth else "💽" }} {{ line.name }}</td><td class="num">{{ line.files | number }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

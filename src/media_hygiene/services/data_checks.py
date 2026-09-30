@@ -19,6 +19,23 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
+def refuse_empty_data(runtime: Runtime) -> None:
+    """Stop when no folder is mounted under the data directory.
+
+    Args:
+        runtime: Mount points.
+
+    Raises:
+        MountError: Nothing to analyse.
+    """
+    data_dir = runtime.locations.data_dir
+    if not data_dir.is_dir() or not any(data_dir.iterdir()):
+        raise MountError(
+            _("No folder to analyse under {path}.").format(path=data_dir),
+            _('Mount your folders, e.g. -v "C:\\Photos:/data/c/Photos:ro".'),
+        )
+
+
 def refuse_overlapping_mounts(runtime: Runtime) -> None:
     r"""Stop when a Windows folder is mounted twice under the data directory.
 

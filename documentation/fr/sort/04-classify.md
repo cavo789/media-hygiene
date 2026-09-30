@@ -16,12 +16,14 @@ en `:ro` conviennent.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr classify
 ```
 
 Après un audit avec [le cache](../start/02-keep-the-cache.md), rien n'est relu : les dates, les
 appareils et les lieux viennent du cache, et les empreintes de l'audit disent quels doublons sont
-encore là.
+encore là. Le dossier de rapports reçoit le classeur où vous corrigez la proposition
+([étape 5](05-review-the-proposal.md)).
 
 <!-- capture: classify.txt -->
 ```text
@@ -57,6 +59,9 @@ Pourquoi
 💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
 copies sont triées.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
+✅ Classeur à modifier : /reports/20260930-144636-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20260930-144636-classify/report.html
+💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
 ## Lire le résultat
@@ -70,13 +75,12 @@ quelques tris, c'est l'avancement de votre collection.
   `2019/Vacances à la mer`), ou une date fiable quand le modèle n'a pas besoin de catégorie. Ils
   vont dans `année/catégorie`.
 - **À vérifier** : une supposition dont l'outil n'est pas sûr, par exemple une photo dont la date
-  contredit son dossier. Elles sont regroupées dans `année/À vérifier/catégorie` : revoyez-les
-  dans l'Explorateur, avec ses miniatures.
+  contredit son dossier. Elles sont regroupées dans `année/À vérifier/catégorie` : regardez-les
+  dans le rapport, et confirmez-les dans le classeur ([étape 5](05-review-the-proposal.md)).
 - **À trier** : rien ne dit où elles vont. Elles sont regroupées dans `année/À trier/<événement>`,
   un dossier par événement (des photos prises à peu d'intervalle, d'un dossier ou d'un téléphone
-  à l'autre), pour que vous nommiez un événement une seule fois : renommez
-  `2016/À trier/2016-07-14` en `Kermesse`, et le `classify` suivant le range dans
-  `2016/Kermesse`.
+  à l'autre), pour que vous nommiez un événement une seule fois : dans le classeur, nommez
+  l'événement `2016-07-14` `Kermesse`, et ses fichiers vont dans `2016/Kermesse`.
 - **Sans date** : seule la date du fichier sur le disque est connue, qui dit quand il a été copié,
   pas quand la photo a été prise. Ils vont dans `À trier/Sans date`, ou dans
   `À trier/Reçues et téléchargées` quand aucun appareil ne les a prises (des images reçues dans
@@ -112,4 +116,4 @@ Les modèles acceptent `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`
 
 ---
 
-← [3. Plusieurs dossiers et disques](../start/03-several-folders.md) · [Documentation](../README.md)
+← [3. Plusieurs dossiers et disques](../start/03-several-folders.md) · [Documentation](../README.md) · Suivant : **[5. Revoir la proposition](05-review-the-proposal.md)** →

@@ -11,7 +11,6 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import FFPROBE_BINARY
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
@@ -28,6 +27,7 @@ from media_hygiene.scan.progress import Step
 from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.walker import Walk, walk
 from media_hygiene.services.data_checks import (
+    refuse_empty_data,
     refuse_overlapping_mounts,
     warn_about_aliases,
     warn_about_scope,
@@ -68,12 +68,8 @@ class AuditService:
                 mounted twice.
         """
         runtime, started = self._runtime, time.monotonic()
+        refuse_empty_data(runtime)
         data_dir = runtime.locations.data_dir
-        if not data_dir.is_dir() or not any(data_dir.iterdir()):
-            raise MountError(
-                _("No folder to analyse under {path}.").format(path=data_dir),
-                _('Mount your folders, e.g. -v "C:\\Photos:/data/c/Photos:ro".'),
-            )
         refuse_overlapping_mounts(runtime)
         warn_about_scope(runtime)
         roots = runtime.mounts.data_roots(data_dir)

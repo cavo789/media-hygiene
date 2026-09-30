@@ -36,3 +36,7 @@ class CrossCheckError(MediaHygieneError):
 
 class DecisionsError(MediaHygieneError):
     """A decisions file is missing, invalid, or made for another audit."""
+
+
+class WorkbookError(MediaHygieneError):
+    """A classify workbook is missing, damaged, or made for another plan."""

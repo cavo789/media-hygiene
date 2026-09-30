@@ -58,7 +58,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20260929-205844
+Clean 20260930-144552
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -67,10 +67,10 @@ Clean 20260929-205844
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20260929-205844-clean/report.html
+✅ HTML report: /reports/20260930-144552-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20260929-205844' restores everything.
-💡 Moved files are in /quarantine/20260929-205844; 'purge' deletes them.
+💡 Changed your mind? 'media-hygiene undo 20260930-144552' restores everything.
+💡 Moved files are in /quarantine/20260930-144552; 'purge' deletes them.
 ```
 
 | Line | What it means |

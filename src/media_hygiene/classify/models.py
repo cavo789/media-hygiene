@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from datetime import datetime
     from pathlib import Path
 
+    from media_hygiene.classify.layout import Values
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
 
@@ -126,7 +127,7 @@ class Proposal:
     file: MediaInput
     dating: Dating | None
     verdict: Verdict
-    category: str = ""
+    values: Values | None = None  # what the layout was rendered from; None: stays
     event_id: str = ""
     folder: str | None = None  # relative to the target root; None: stay where it is
     target: Path | None = None  # the target folder, absolute (container path)
@@ -139,6 +140,15 @@ class Proposal:
             It.
         """
         return self.verdict.band
+
+    @property
+    def category(self) -> str:
+        """The category proposed.
+
+        Returns:
+            It, or an empty string.
+        """
+        return self.values.category if self.values else ""
 
     @property
     def reason(self) -> SortReason:

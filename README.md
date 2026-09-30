@@ -75,6 +75,8 @@ adds one thing to the command of the step before.
 
 4. [Propose a tidy tree](documentation/en/sort/04-classify.md) — `classify` proposes a place
    for every file, and changes nothing.
+5. [Review the proposal](documentation/en/sort/05-review-the-proposal.md) — correct it in a
+   workbook, look at the photos in the report.
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

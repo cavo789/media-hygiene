@@ -126,12 +126,13 @@ def _clean(demo: Demo) -> Captures:
 
 
 def _reports(demo: Demo, shots: Path) -> Captures:
-    """The HTML pages of the first audit and of the last clean, and the audit's CSV."""
+    """The pages of the first audit, the last clean and the classify; the CSV."""
     files = list_files(demo, "reports")
     folders = sorted({path.split("/")[1] for path in files if path.count("/") > 1})
     audit = next(folder for folder in folders if folder.endswith("-audit"))
     clean = [folder for folder in folders if folder.endswith("-clean")][-1]
-    shoot(demo, Job("none", ("reports", audit, clean)), shots)
+    classify = next(folder for folder in folders if folder.endswith("-classify"))
+    shoot(demo, Job("none", ("reports", audit, clean, classify)), shots)
     # The byte order mark tells Excel the file is UTF-8; the documentation needs none.
     csv = read_file(demo, "reports", f"{audit}/plan.csv").lstrip("\ufeff").splitlines()
     return {"plan-csv.txt": "\n".join(csv[:_CSV_LINES]) + "\n"}

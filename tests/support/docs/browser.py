@@ -1,8 +1,8 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review` (the burst review served on 127.0.0.1:8080), `reports <audit> <clean>`
-(report folders of /reports), `terminal <name>...` (SVG terminals in /shots). Every
-shot lands in /shots. The image runs Python 3.10: nothing newer is used here.
+Modes: `review` (the burst review served on 127.0.0.1:8080), `reports <audit> <clean>
+<classify>` (report folders of /reports), `terminal <name>...` (SVG terminals in
+/shots). Every shot lands in /shots. The image runs Python 3.10: nothing newer here.
 """
 
 from __future__ import annotations
@@ -23,6 +23,8 @@ SECTION_JS: Final = (SCRIPTS / "section.js").read_text(encoding="utf-8")
 # The bottom of the second burst series: the section stops after it.
 SECOND_SERIES_JS: Final = (SCRIPTS / "second_series.js").read_text(encoding="utf-8")
 EAGER_JS: Final = (SCRIPTS / "eager_images.js").read_text(encoding="utf-8")
+# The bottom of the first group of a classify year page.
+FIRST_GROUP_JS: Final = (SCRIPTS / "first_group.js").read_text(encoding="utf-8")
 REVIEW_WIDTH: Final = 1600
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
@@ -68,6 +70,11 @@ def shoot(page: Page, name: str, clip: dict[str, Any] | None = None) -> None:
     page.screenshot(path=SHOTS / f"{name}.png", clip=clip, full_page=True)
 
 
+def top(page: Page, height: float) -> dict[str, Any]:
+    """The clip rectangle of the top of a page, down to `height`."""
+    return {"x": 0, "y": 0, "width": page.viewport_size["width"], "height": height}
+
+
 def review(page: Page) -> None:
     """The birthday series, then a shaken shot set aside; a lake shot set aside too.
 
@@ -103,12 +110,7 @@ def audit_report(page: Page, folder: str) -> None:
     load(page, f"{REPORTS}/index.html")
     shoot(page, "index")
     load(page, f"{REPORTS}/{folder}/report.html")
-    width = page.viewport_size["width"]
-    shoot(
-        page,
-        "report-top",
-        {"x": 0, "y": 0, "width": width, "height": section(page, "📁", None)["y"]},
-    )
+    shoot(page, "report-top", top(page, section(page, "📁", None)["y"]))
     decisions = page.locator("select.decision")
     decisions.nth(2).select_option("swap")
     decisions.nth(1).select_option("skip")
@@ -143,12 +145,16 @@ def clean_report(page: Page, folder: str) -> None:
     """
     load(page, f"{REPORTS}/{folder}/report.html")
     pairs = section(page, "📁", "🎲")
-    height = pairs["y"] + pairs["height"]
-    shoot(
-        page,
-        "clean-report",
-        {"x": 0, "y": 0, "width": page.viewport_size["width"], "height": height},
-    )
+    shoot(page, "clean-report", top(page, pairs["y"] + pairs["height"]))
+
+
+def classify_report(page: Page, folder: str) -> None:
+    """The index of a classify report, then the first event of the busiest page."""
+    load(page, f"{REPORTS}/{folder}/report.html")
+    shoot(page, "classify-report")
+    link = page.locator("a[href*='.html#']").first.get_attribute("href") or ""
+    load(page, f"{REPORTS}/{folder}/{link.split('#')[0]}")
+    shoot(page, "classify-year", top(page, page.evaluate(FIRST_GROUP_JS)))
 
 
 def terminal(page: Page, name: str) -> None:
@@ -181,6 +187,7 @@ def main() -> None:
         elif mode == "reports":
             audit_report(page, arguments[0])
             clean_report(page, arguments[1])
+            classify_report(page, arguments[2])
         else:
             for name in arguments:
                 terminal(page, name)

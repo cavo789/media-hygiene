@@ -57,6 +57,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 
 4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
    fichier, et ne modifie rien.
+5. [Revoir la proposition](sort/05-review-the-proposal.md) : la corriger dans un classeur, regarder
+   les photos dans le rapport.
 
 ## Référence
 

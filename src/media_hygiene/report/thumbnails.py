@@ -46,9 +46,19 @@ def thumbnail_name(file: MediaFile) -> str:
     Returns:
         A relative path such as `thumbs/0f3a....jpg`.
     """
-    digest = hashlib.sha256(str(file.path).encode()).hexdigest()[
-        :_THUMBNAIL_NAME_LENGTH
-    ]
+    return preview_name(file.path)
+
+
+def preview_name(path: Path) -> str:
+    """Return a stable, collision-free preview file name for a picture.
+
+    Args:
+        path: The picture, container path.
+
+    Returns:
+        A relative path such as `thumbs/0f3a....jpg`.
+    """
+    digest = hashlib.sha256(str(path).encode()).hexdigest()[:_THUMBNAIL_NAME_LENGTH]
     return f"{THUMBNAILS_DIR_NAME}/{digest}.jpg"
 
 

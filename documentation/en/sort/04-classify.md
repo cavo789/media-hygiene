@@ -15,12 +15,14 @@ nothing moves, and folders mounted `:ro` are fine.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene classify
 ```
 
 After an audit with [the cache](../start/02-keep-the-cache.md), nothing is read again: the dates,
 the cameras and the places come from the cache, and the audit's fingerprints tell the duplicates
-still there.
+still there. The reports folder receives the workbook where you correct the proposal
+([step 5](05-review-the-proposal.md)).
 
 <!-- capture: classify.txt -->
 ```text
@@ -56,6 +58,9 @@ To check or to sort: 3 files in 1 event.
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
 💡 Nothing was changed: 'classify' only proposes.
+✅ Workbook to edit: /reports/20260930-144526-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-144526-classify/report.html
+💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
 ## Read the result
@@ -68,12 +73,12 @@ sorts, it is how far your collection is.
 - **Sure**: a folder name you chose (`2019/Seaside holidays` stays `2019/Seaside holidays`), or a
   reliable date when the layout needs no category. They go to `year/category`.
 - **To check**: a guess the tool is not sure of, for instance a photo whose date contradicts its
-  folder. They are gathered in `year/To check/category`: review them in the Explorer, with its
-  thumbnails.
+  folder. They are gathered in `year/To check/category`: look at them in the report, and confirm
+  them in the workbook ([step 5](05-review-the-proposal.md)).
 - **To sort**: nothing tells where they belong. They are gathered in `year/To sort/<event>`, one
   folder per event (photos taken close together, across folders and phones), so that you name
-  an event once: rename `2016/To sort/2016-07-14` to `Kermesse`, and the next `classify` files
-  it as `2016/Kermesse`.
+  an event once: in the workbook, name the event `2016-07-14` `Kermesse`, and its files go to
+  `2016/Kermesse`.
 - **Undated**: only the file's date on the disk is known, which says when it was copied, not
   when it was taken. They go to `To sort/Undated`, or to `To sort/Received and downloaded` when
   no camera took them (pictures received in a messaging app).
@@ -107,4 +112,4 @@ Layouts accept `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{cate
 
 ---
 
-← [3. Several folders and disks](../start/03-several-folders.md) · [Documentation](../README.md)
+← [3. Several folders and disks](../start/03-several-folders.md) · [Documentation](../README.md) · Next: **[5. Review the proposal](05-review-the-proposal.md)** →

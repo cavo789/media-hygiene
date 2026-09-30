@@ -24,6 +24,7 @@ from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.walker import walk
 from media_hygiene.services.classify_inputs import duplicates, media_input, root_of
+from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
@@ -71,12 +72,8 @@ class ClassifyService:
             MountError: Nothing is mounted, or the target is not mounted.
         """
         runtime = self._runtime
+        refuse_empty_data(runtime)
         data_dir = runtime.locations.data_dir
-        if not data_dir.is_dir() or not any(data_dir.iterdir()):
-            raise MountError(
-                _("No folder to analyse under {path}.").format(path=data_dir),
-                _('Mount your folders, e.g. -v "C:\\Photos:/data/c/Photos:ro".'),
-            )
         roots = runtime.mounts.data_roots(data_dir)
         files = self._inputs(roots)
         return ClassifyResult(

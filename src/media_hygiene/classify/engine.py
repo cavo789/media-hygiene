@@ -156,7 +156,7 @@ def _propose(
         file,
         dating,
         judged,
-        category=signal.category,
+        values=values,
         event_id=event.event_id if event else "",
         folder=folder,
         target=root / folder if folder is not None else None,

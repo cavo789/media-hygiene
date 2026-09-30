@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Final
 from rich.table import Table
 
 from media_hygiene.classify.models import Band, SortReason
+from media_hygiene.classify.names import band_name
 from media_hygiene.console.formatting import human_number, human_share
 from media_hygiene.i18n import _, ngettext
 
@@ -51,25 +52,6 @@ def show_classification(output: Output, result: ClassifyResult) -> None:
             ).format(count=human_number(result.duplicates))
         )
     output.tip(_("Nothing was changed: 'classify' only proposes."))
-
-
-def band_name(band: Band) -> str:
-    """The translated name of a band.
-
-    Args:
-        band: A band.
-
-    Returns:
-        Its name.
-    """
-    names = {
-        Band.SURE: _("Sure"),
-        Band.UNSURE: _("To check"),
-        Band.MANUAL: _("To sort"),
-        Band.UNDATED: _("Undated"),
-        Band.STAY: _("Left as they are"),
-    }
-    return names[band]
 
 
 def _bands_table(proposals: tuple[Proposal, ...]) -> Table:

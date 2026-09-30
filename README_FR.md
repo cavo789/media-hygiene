@@ -76,6 +76,8 @@ seule chose à la commande de l'étape précédente.
 
 4. [Proposer une arborescence](documentation/fr/sort/04-classify.md) — `classify` propose une
    place pour chaque fichier, et ne modifie rien.
+5. [Revoir la proposition](documentation/fr/sort/05-review-the-proposal.md) — la corriger dans un
+   classeur, regarder les photos dans le rapport.
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

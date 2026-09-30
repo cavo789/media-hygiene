@@ -3,16 +3,22 @@
 from __future__ import annotations
 
 import re
-from typing import Annotated, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
-from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.context import runtime_of, user_errors, warn
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
-from media_hygiene.errors import ConfigError
+from media_hygiene.constants import CLASSIFY_WORKBOOK_FILE_NAME, REPORT_FILE_NAME
+from media_hygiene.errors import ConfigError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.services.classify import ClassifyService
+from media_hygiene.services.classify_output import write_classify_output
+
+if TYPE_CHECKING:
+    from media_hygiene.services.classify import ClassifyResult
+    from media_hygiene.services.runtime import Runtime
 
 _YEARS: Final = re.compile(r"(?P<first>\d{4})(?:-(?P<last>\d{4}))?")
 
@@ -71,6 +77,41 @@ def classify_command(  # pylint: disable=too-many-arguments
         with RichProgress(runtime.output.console) as progress:
             result = ClassifyService(runtime, progress).run(years)
     show_classification(runtime.output, result)
+    _write_output(runtime, result)
+
+
+def _write_output(runtime: Runtime, result: ClassifyResult) -> None:
+    """Write the plan, the workbook and the report, and say where they are.
+
+    Files that cannot be written are only a warning: the proposals are on screen.
+
+    Args:
+        runtime: Settings, mount points and output.
+        result: The proposals.
+    """
+    output = runtime.output
+    if not result.classification.proposals:
+        return
+    try:
+        folder = write_classify_output(runtime, result)
+    except MountError as exc:
+        warn(output, exc)
+        return
+    if folder is None:
+        output.tip(
+            _('Add -v "<a folder of yours>:/reports" to get the workbook to edit.')
+        )
+        return
+    host = runtime.mapper.to_host
+    output.success(
+        _("Workbook to edit: {path}").format(
+            path=host(folder / CLASSIFY_WORKBOOK_FILE_NAME)
+        )
+    )
+    output.success(
+        _("Report with the photos: {path}").format(path=host(folder / REPORT_FILE_NAME))
+    )
+    output.tip(_("Edit the yellow cells and save: nothing moves until 'sort'."))
 
 
 def parse_years(text: str | None) -> tuple[int, int] | None:

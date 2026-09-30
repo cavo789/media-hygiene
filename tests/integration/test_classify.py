@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.plan_file import ClassifyPlan
+from media_hygiene.classify.workbook.reader import read_edits
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
@@ -58,3 +60,22 @@ def test_the_command_scopes_years_and_targets(cli: CliRunner) -> None:
     assert one_year.exit_code == 0, one_year.output
     assert run(cli, "classify", "--year", "last year").exit_code == 1
     assert run(cli, "classify", "--target", "Z:\\nowhere").exit_code == 1
+
+
+def test_the_plan_workbook_and_report_are_written_to_reports(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """One folder per run: `plan.json`, the workbook, the report, a page per year."""
+    assert run(cli, "audit").exit_code == 0
+    result = run(cli, "classify")
+    assert result.exit_code == 0, result.output
+    assert "classify.xlsx" in result.output
+    (folder,) = locations.reports_dir.glob("*-classify")
+    plan = ClassifyPlan.model_validate_json((folder / "plan.json").read_text("utf-8"))
+    assert read_edits(folder / "classify.xlsx", plan).files == {}
+    report = (folder / "report.html").read_text("utf-8")
+    years = {row.values.year for row in plan.rows if row.values}
+    assert any(f'href="{year}.html"' in report for year in years)
+    assert list(folder.glob("thumbs/*.jpg"))
+    first = plan.rows[0]
+    assert first.path.startswith("C:\\")

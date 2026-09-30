@@ -1,0 +1,33 @@
+{% extends "base.html.j2" %}
+{% block title %}{{ _("media-hygiene classify") }} — {{ year or _("Undated") }}{% endblock %}
+{% block content %}
+<p><a href="report.html">← {{ _("Proposed tree") }}</a></p>
+<h1>🗂️ {{ year or _("Undated") }}</h1>
+<p class="muted">{{ _("Events first, in the order of the Events sheet (same ids), then the files outside any event, by proposed folder.") }}</p>
+{% for group in groups %}
+<div class="group" id="{{ group.key }}">
+  <div style="min-width: 0; flex: 1">
+    <strong>{{ group.title or _("(stay where it is)") }}</strong>
+    {% if group.cumulated is not none %}<code class="muted">{{ group.key }}</code>{% endif %}
+    <div class="muted">
+      {{ ngettext("%(num)s file", "%(num)s files", group.rows | length, num=group.rows | length | number) }}
+      {% if group.undecided %} · {{ _("to check or to sort: %(count)s", count=group.undecided | number) }}{% endif %}
+      {% if group.cumulated is not none %} · {{ _("cumulated: %(share)s%%", share=(group.cumulated * 100) | round | int) }}{% endif %}
+    </div>
+    <div>→ <strong>{{ group.proposal or _("(stay where it is)") }}</strong> <span class="badge">{{ group.band }}</span> <span class="muted">{{ group.reason }}</span></div>
+    <div class="muted">{{ group.folders[:3] | join(" | ") }}</div>
+    <div class="shots" style="margin-top: 8px">
+      {% for row in group.shown %}
+      <figure class="shot"><a href="{{ row.path | file_url }}"><div class="thumb">{% if previews.get(row.id) %}<img src="{{ previews[row.id] }}" alt="{{ row.name }}" loading="lazy">{% else %}🎞️{% endif %}</div></a>
+        <span class="path">{{ row.name }}</span><br><span class="muted">{{ (row.date or "")[:16] | replace("T", " ") }}</span></figure>
+      {% endfor %}
+    </div>
+    {% if group.rows | length > group.shown | length %}
+    <details><summary>{{ _("All the files") }}</summary>
+      <ul class="files">{% for row in group.rows %}<li><a href="{{ row.path | file_url }}">{{ row.path }}</a></li>{% endfor %}</ul>
+    </details>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

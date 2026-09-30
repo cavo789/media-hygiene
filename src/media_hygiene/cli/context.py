@@ -53,6 +53,18 @@ def user_errors(output: Output) -> Iterator[None]:
         raise typer.Exit(ExitCode.FAILURE) from exc
 
 
+def warn(output: Output, error: MediaHygieneError) -> None:
+    """Show an error as a warning, with its tip: the run itself is over.
+
+    Args:
+        output: Where to print.
+        error: The error.
+    """
+    output.warning(error.message)
+    if error.tip:
+        output.tip(error.tip)
+
+
 def build_runtime(cli_layer: Layer) -> Runtime:
     """Load the settings, set up the output and snapshot the mount table.
 

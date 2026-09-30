@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.context import warn
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.console.inventory_view import inventory_table
@@ -107,9 +108,7 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
     try:
         report = write_report(runtime, record)
     except MountError as exc:
-        output.warning(exc.message)
-        if exc.tip:
-            output.tip(exc.tip)
+        warn(output, exc)
         return
     if report is None:
         output.tip(_('Add -v "<a folder of yours>:/reports" to get HTML reports.'))
