@@ -68,7 +68,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-install-project
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
@@ -82,7 +82,8 @@ ARG APP_GID=1000
 
 LABEL org.opencontainers.image.title="media-hygiene" \
       org.opencontainers.image.description="Find and safely clean duplicate photos and videos across folders and disks." \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.licenses="MIT"
 
 # Avoid .pyc cache files from build-time pip/pre-commit invocations, and unbuffered stdout for
 # any Python process run interactively in this container.
