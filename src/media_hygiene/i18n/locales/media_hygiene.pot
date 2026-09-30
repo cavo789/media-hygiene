@@ -414,6 +414,11 @@ msgstr ""
 msgid "Do not ask for confirmation (overrides sort.confirm)."
 msgstr ""
 
+msgid ""
+"Do not ask for confirmation before undoing several runs of a sort "
+"(overrides sort.confirm)."
+msgstr ""
+
 msgid "Documents and screenshots"
 msgstr ""
 
@@ -565,6 +570,9 @@ msgid "Files changed since the review: run 'review' again."
 msgstr ""
 
 msgid "Files left untouched"
+msgstr ""
+
+msgid "Files moved"
 msgstr ""
 
 msgid "Files processed"
@@ -1292,17 +1300,38 @@ msgstr ""
 msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 
-msgid "Run to undo (see 'history'); the latest one by default."
+msgid ""
+"Run to undo (see 'history'); the latest one by default. For a sort, every"
+" run of the same workbook."
 msgstr ""
 
 msgid "Run whose quarantine is deleted; every run by default."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Run {later} of the same sort came after {run_id}: the undo starts from "
+"it, so that no later move stays on top."
+msgstr ""
+
+#, python-brace-format
 msgid "Run {run_id} has no quarantine."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Run {run_id} is part of a sort run several times with the same workbook: "
+"its runs are undone together, newest first."
+msgstr ""
+
+#, python-brace-format
+msgid "Run {run_id} of the same sort was already undone: left aside."
+msgstr ""
+
 msgid "Runs (newest first)"
+msgstr ""
+
+msgid "Runs to undo (newest first)"
 msgstr ""
 
 msgid "SHA-256"
@@ -1457,6 +1486,9 @@ msgid "Space that can be freed"
 msgstr ""
 
 msgid "Start fresh: carry no edit of a previous workbook over."
+msgstr ""
+
+msgid "Started"
 msgstr ""
 
 msgid "State"
@@ -1681,6 +1713,18 @@ msgstr ""
 #, python-brace-format
 msgid "Undo the {command} run {run_id}"
 msgstr ""
+
+#, python-brace-format
+msgid "Undo the {count} run left of the sort"
+msgid_plural "Undo the {count} runs of the sort"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Undo this run and move {moved} files back?"
+msgid_plural "Undo these {count} runs and move {moved} files back?"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -2224,6 +2268,10 @@ msgid "{count} source folder will stay: it holds other files, e.g. {path}."
 msgid_plural "{count} source folders will stay: they hold other files, e.g. {path}."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{day} {month} {year} {time}"
+msgstr ""
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"

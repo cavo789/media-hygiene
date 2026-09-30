@@ -25,8 +25,8 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20260930-181946-classify/classify.xlsx
-✅ Report with the photos: /reports/20260930-181946-classify/report.html
+✅ Workbook to edit: /reports/20260930-185652-classify/classify.xlsx
+✅ Report with the photos: /reports/20260930-185652-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 

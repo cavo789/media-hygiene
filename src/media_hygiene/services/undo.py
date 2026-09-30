@@ -11,6 +11,8 @@ from media_hygiene.actions.journal import (
     read_journal,
 )
 from media_hygiene.actions.kinds import ActionKind, Phase
+from media_hygiene.actions.outcome import combine
+from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError, MountError
@@ -19,9 +21,11 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
+    from media_hygiene.actions.plan_runs import PlanRuns
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
 
@@ -69,6 +73,42 @@ def run_kind(runtime: Runtime, run_id: str) -> Phase:
         `clean` or `sort`.
     """
     return run_phase(read_journal(journal_file(runtime.locations.journal_dir, run_id)))
+
+
+def runs_to_undo(runtime: Runtime, run_id: str) -> PlanRuns | None:
+    """Tell which runs `undo <run>` reverses.
+
+    A `sort` stopped then resumed is one operation for the user: every run of its plan
+    not undone yet goes, newest first. A `clean` run goes alone.
+
+    Args:
+        runtime: Settings, mount points and output.
+        run_id: The run named (or the latest one).
+
+    Returns:
+        The runs of the sort to undo, newest first; None for a `clean` run.
+    """
+    if run_kind(runtime, run_id) is not Phase.SORT:
+        return None
+    return runs_of_plan(runtime.locations.journal_dir, run_id)
+
+
+def undo_runs(
+    runtime: Runtime, run_ids: Sequence[str], progress: ProgressSink
+) -> Outcome:
+    """Restore the files of several runs, in the order given (newest first).
+
+    Each run's journal records its own `undo` entries, and the index follows each.
+
+    Args:
+        runtime: Settings, mount points and output.
+        run_ids: The runs, newest first.
+        progress: Where to report progress.
+
+    Returns:
+        What was restored, skipped and why, summed over the runs.
+    """
+    return combine([undo_run(runtime, run_id, progress) for run_id in run_ids])
 
 
 def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:

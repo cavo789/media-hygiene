@@ -34,8 +34,8 @@ L'outil utilise tous les processeurs pour aller plus vite. Pour en garder pour l
 
 ## « Impossible de demander confirmation sans terminal interactif »
 
-Lancez avec `-it` : sans terminal, `clean` et `purge` ne peuvent pas demander confirmation, et
-les couleurs sont désactivées. Dans un script, ajoutez plutôt `--yes`.
+Lancez avec `-it` : sans terminal, `clean`, `sort`, `undo` (d'un tri lancé plusieurs fois) et
+`purge` ne peuvent pas demander confirmation, et les couleurs sont désactivées. Dans un script, ajoutez plutôt `--yes`.
 
 ## Dossiers où l'outil ne peut pas écrire
 

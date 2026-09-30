@@ -507,6 +507,13 @@ msgstr "Ne pas demander de confirmation (remplace clean.confirm)."
 msgid "Do not ask for confirmation (overrides sort.confirm)."
 msgstr "Ne pas demander de confirmation (remplace sort.confirm)."
 
+msgid ""
+"Do not ask for confirmation before undoing several runs of a sort "
+"(overrides sort.confirm)."
+msgstr ""
+"Ne pas demander de confirmation avant d'annuler plusieurs passages d'un "
+"tri (remplace sort.confirm)."
+
 msgid "Documents and screenshots"
 msgstr "Documents et captures d'écran"
 
@@ -705,6 +712,9 @@ msgstr "Des fichiers ont changé depuis le tri : relancez 'review'."
 
 msgid "Files left untouched"
 msgstr "Fichiers laissés intacts"
+
+msgid "Files moved"
+msgstr "Fichiers déplacés"
 
 msgid "Files processed"
 msgstr "Fichiers traités"
@@ -1561,18 +1571,47 @@ msgstr ""
 "Relancez la même commande pour continuer : les fichiers déjà déplacés "
 "sont passés."
 
-msgid "Run to undo (see 'history'); the latest one by default."
-msgstr "Exécution à annuler (voir 'history') ; la plus récente par défaut."
+msgid ""
+"Run to undo (see 'history'); the latest one by default. For a sort, every"
+" run of the same workbook."
+msgstr ""
+"Exécution à annuler (voir 'history') ; la plus récente par défaut. Pour "
+"un tri, tous les passages du même classeur."
 
 msgid "Run whose quarantine is deleted; every run by default."
 msgstr "Exécution dont la quarantaine est supprimée ; toutes par défaut."
 
 #, python-brace-format
+msgid ""
+"Run {later} of the same sort came after {run_id}: the undo starts from "
+"it, so that no later move stays on top."
+msgstr ""
+"Le passage {later} du même tri est venu après {run_id} : l'annulation "
+"commence par lui, pour qu'aucun déplacement plus récent ne reste par-"
+"dessus."
+
+#, python-brace-format
 msgid "Run {run_id} has no quarantine."
 msgstr "L'exécution {run_id} n'a pas de quarantaine."
 
+#, python-brace-format
+msgid ""
+"Run {run_id} is part of a sort run several times with the same workbook: "
+"its runs are undone together, newest first."
+msgstr ""
+"L'exécution {run_id} fait partie d'un tri lancé plusieurs fois avec le "
+"même classeur : ses passages sont annulés ensemble, le plus récent "
+"d'abord."
+
+#, python-brace-format
+msgid "Run {run_id} of the same sort was already undone: left aside."
+msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
+
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
+
+msgid "Runs to undo (newest first)"
+msgstr "Passages à annuler (les plus récents d'abord)"
 
 msgid "SHA-256"
 msgstr "SHA-256"
@@ -1757,6 +1796,9 @@ msgid "Start fresh: carry no edit of a previous workbook over."
 msgstr ""
 "Repartir de zéro : ne reprendre aucune modification d'un classeur "
 "précédent."
+
+msgid "Started"
+msgstr "Lancé le"
 
 msgid "State"
 msgstr "État"
@@ -2021,6 +2063,18 @@ msgstr ""
 #, python-brace-format
 msgid "Undo the {command} run {run_id}"
 msgstr "Annulation de l'exécution {command} {run_id}"
+
+#, python-brace-format
+msgid "Undo the {count} run left of the sort"
+msgid_plural "Undo the {count} runs of the sort"
+msgstr[0] "Annulation du {count} passage restant du tri"
+msgstr[1] "Annulation des {count} passages du tri"
+
+#, python-brace-format
+msgid "Undo this run and move {moved} files back?"
+msgid_plural "Undo these {count} runs and move {moved} files back?"
+msgstr[0] "Annuler ce passage et remettre {moved} fichiers en place ?"
+msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -2647,6 +2701,10 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} dossiers sources resteront : ils contiennent d'autres fichiers, "
 "par exemple {path}."
+
+#, python-brace-format
+msgid "{day} {month} {year} {time}"
+msgstr "{day} {month} {year} {time}"
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"

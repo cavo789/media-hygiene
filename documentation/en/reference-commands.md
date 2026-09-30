@@ -36,7 +36,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these extensions (`--ext png,webp`); every photo, RAW and video one by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `purge` | Do not ask for confirmation. |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
@@ -240,8 +240,11 @@ both languages (`--locale fr --help`). Here is what they print:
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
+│                      For a sort, every run of the same workbook.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes   -y        Do not ask for confirmation before undoing several runs of │
+│                   a sort (overrides sort.confirm).                           │
 │ --help  -h        Show this message and exit.                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

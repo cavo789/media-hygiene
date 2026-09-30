@@ -36,7 +36,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces extensions (`--ext png,webp`) ; toutes celles des photos, RAW et vidéos par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `purge` | Ne pas demander de confirmation. |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
@@ -249,9 +249,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Exécution à annuler (voir 'history') ; la plus récente  │
-│                      par défaut.                                             │
+│                      par défaut. Pour un tri, tous les passages du même      │
+│                      classeur.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --yes   -y        Ne pas demander de confirmation avant d'annuler plusieurs  │
+│                   passages d'un tri (remplace sort.confirm).                 │
 │ --help  -h        Affiche ce message et quitte.                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

@@ -32,8 +32,8 @@ The tool uses every processor to go faster. To leave some for your other work:
 
 ## "Cannot ask for confirmation without an interactive terminal"
 
-Run with `-it`: without a terminal, `clean` and `purge` cannot ask for confirmation, and colours
-are off. In a script, add `--yes` instead.
+Run with `-it`: without a terminal, `clean`, `sort`, `undo` (of a sort run several times) and
+`purge` cannot ask for confirmation, and colours are off. In a script, add `--yes` instead.
 
 ## Folders the tool cannot write to
 

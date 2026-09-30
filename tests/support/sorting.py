@@ -152,3 +152,14 @@ def undo(runtime: Runtime, run_id: str) -> Outcome:
         What was restored.
     """
     return undo_run(runtime, run_id, NullProgress())
+
+
+def sort_in_two_runs(runtime: Runtime) -> None:
+    """Sort, stop after two groups (Ctrl+C), then run again to the end: one plan.
+
+    Args:
+        runtime: The runtime; the latest workbook is sorted.
+    """
+    asked = iter([False, False, True])
+    assert sort(runtime, stop=lambda: next(asked, True)).moves.interrupted
+    assert not sort(runtime).moves.interrupted

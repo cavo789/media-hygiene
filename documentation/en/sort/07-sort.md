@@ -30,8 +30,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20260930-182038-classify/classify.xlsx
-0 edits read; workbook saved on 30 September 2026 at 18:20.
+Workbook: /reports/20260930-185744-classify/classify.xlsx
+0 edits read; workbook saved on 30 September 2026 at 18:57.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -101,7 +101,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20260930-182040
+Sort 20260930-185746
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -111,8 +111,8 @@ Sort 20260930-182040
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20260930-182040-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20260930-182040' moves everything
+Manifest: /reports/20260930-185746-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20260930-185746' moves everything
 back.
 ```
 
@@ -141,8 +141,8 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20260930-182040 ───────────────────────
-Undo the sort run 20260930-182040
+────────────────────── Undo the sort run 20260930-185746 ───────────────────────
+Undo the sort run 20260930-185746
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -152,8 +152,11 @@ Undo the sort run 20260930-182040
 └──────────────────────────┴────────┘
 ```
 
-A sort resumed after an interruption is several runs: undo them one by one, the latest first
-(`history` lists them).
+A sort resumed after an interruption is several runs of the same workbook, and one operation:
+`undo` of any of them undoes them all, newest first, even when you name an earlier one (no later
+move stays on top). It lists them first (run, start, files moved) and asks once; `--yes` skips
+the question, as for `sort`. A run already undone on its own is left aside, and said so. `history`
+lists the runs.
 
 ---
 

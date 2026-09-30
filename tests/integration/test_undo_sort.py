@@ -16,6 +16,7 @@ from media_hygiene.actions.journal import (
     read_journal,
 )
 from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.reversal import REVERSALS
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError
@@ -164,3 +165,13 @@ def test_history_names_the_command_of_each_run(
     history = run(cli, "history").output
     assert " sort " in history
     assert "Moved" in history
+
+
+def test_a_run_without_a_plan_is_undone_alone(tmp_path: Path) -> None:
+    """No plan id in its journal (nothing to walk back through): the run alone."""
+    sort_run = SortRun(tmp_path)
+    plan = runs_of_plan(tmp_path, sort_run.journal.stem)
+    assert [each.run_id for each in plan.runs] == [sort_run.journal.stem]
+    assert plan.runs[0].moved == len(sort_run.photos)
+    assert not plan.together
+    assert plan.later is None

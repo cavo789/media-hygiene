@@ -26,9 +26,9 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20260930-182244 ────────────────
+─────────────── Annulation de l'exécution clean 20260930-185832 ────────────────
 Annulation de l'exécution clean
-20260930-182244
+20260930-185832
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -47,7 +47,9 @@ Annulation de l'exécution clean
 - Un fichier déjà revenu, ou dont la copie a disparu, est laissé tel quel et listé avec la
   raison : `undo` n'écrase jamais rien et ne devine rien.
 - Un [tri](../sort/07-sort.md) s'annule de la même façon : les fichiers reviennent, les dossiers
-  qu'il a supprimés reviennent, ceux qu'il a créés s'en vont.
+  qu'il a supprimés reviennent, ceux qu'il a créés s'en vont. Un tri arrêté puis relancé avec le
+  même classeur s'annule en entier : tous ses passages, le plus récent d'abord, après une seule
+  question (`--yes` la saute).
 
 ## Voir ce qui a été fait : `history`
 
@@ -62,8 +64,8 @@ Exécutions (les plus récentes d'abord)
 ┃                 ┃          ┃           ┃         ┃            En ┃           ┃
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃  Libéré ┃   quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20260930-182248 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
-│ 20260930-182244 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
+│ 20260930-185836 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
+│ 20260930-185832 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
 └─────────────────┴──────────┴───────────┴─────────┴───────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -87,7 +89,7 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20260930-182248, 20260930-182244
+❓ Supprimer définitivement la quarantaine de 20260930-185836, 20260930-185832
 (2,2 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 2,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers cassés.

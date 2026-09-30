@@ -26,8 +26,8 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20260930-182011 ──────────────────────
-Undo the clean run 20260930-182011
+────────────────────── Undo the clean run 20260930-185718 ──────────────────────
+Undo the clean run 20260930-185718
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -45,7 +45,9 @@ Undo the clean run 20260930-182011
 - A file that is back already, or whose copy is gone, is left alone and listed with the reason:
   `undo` never overwrites nor guesses.
 - A [sort](../sort/07-sort.md) run is undone the same way: the files move back, the folders it
-  removed come back, the folders it created go.
+  removed come back, the folders it created go. A sort stopped then run again with the same
+  workbook is undone whole: every run of it, newest first, after one question (`--yes` skips
+  it).
 
 ## See what was done: `history`
 
@@ -59,8 +61,8 @@ Runs (newest first)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Run             ┃ Command ┃ Deleted ┃   Freed ┃ Quarantined ┃ Restored ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20260930-182015 │ clean   │      33 │ 16.2 MB │           7 │        0 │
-│ 20260930-182011 │ clean   │      33 │ 15.5 MB │           3 │       36 │
+│ 20260930-185721 │ clean   │      33 │ 16.2 MB │           7 │        0 │
+│ 20260930-185718 │ clean   │      33 │ 15.5 MB │           3 │       36 │
 └─────────────────┴─────────┴─────────┴─────────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
@@ -82,7 +84,7 @@ cavo789/media-hygiene purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Permanently delete the quarantine of 20260930-182015, 20260930-182011 (2.2
+❓ Permanently delete the quarantine of 20260930-185721, 20260930-185718 (2.2
 MB)? [y/N] y
 ✅ Quarantine purged: 2.2 MB freed.
 💡 'undo' can no longer restore these broken files.

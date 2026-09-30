@@ -31,8 +31,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20260930-182311-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 30 septembre 2026 à 18:23.
+Classeur : /reports/20260930-185859-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 30 septembre 2026 à 18:58.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -109,7 +109,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20260930-182313
+Tri 20260930-185901
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -120,8 +120,8 @@ Tri 20260930-182313
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20260930-182313-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20260930-182313' remet tout en
+Manifeste : /reports/20260930-185901-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20260930-185901' remet tout en
 place.
 ```
 
@@ -152,9 +152,9 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20260930-182313 ────────────────
+──────────────── Annulation de l'exécution sort 20260930-185901 ────────────────
 Annulation de l'exécution sort
-20260930-182313
+20260930-185901
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -164,8 +164,12 @@ Annulation de l'exécution sort
 └───────────────────────────┴────────┘
 ```
 
-Un tri repris après une interruption forme plusieurs passages : annulez-les un par un, le plus
-récent d'abord (`history` les liste).
+Un tri repris après une interruption forme plusieurs passages du même classeur, et une seule
+opération : `undo` de l'un d'eux les annule tous, le plus récent d'abord, même si vous nommez un
+passage antérieur (aucun déplacement plus récent ne reste par-dessus). Il les liste d'abord
+(passage, début, fichiers déplacés) et demande une seule fois ; `--yes` saute la question, comme
+pour `sort`. Un passage déjà annulé seul est laissé de côté, et c'est dit. `history` liste les
+passages.
 
 ---
 
