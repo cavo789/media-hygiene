@@ -68,6 +68,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
   qui est vérifié avant chaque action, comment le vérifier vous-même.
 - [Fichiers compagnons](reference-sidecars.md) : `.xmp`, `.aae`, `.thm`.
 - [Dépannage](reference-troubleshooting.md) : mises en garde et messages d'erreur.
+- [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
+  (`PYTHON_CPU_COUNT`).
 
 ## Pour les développeurs
 

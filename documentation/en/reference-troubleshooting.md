@@ -25,6 +25,11 @@ The first audit reads every image and every file that shares its size with anoth
 files. Tens of thousands of files take a few minutes just to be listed:
 [every step shows its progress](start/01-first-audit.md#what-you-see-while-it-runs).
 
+## The computer is sluggish during an audit
+
+The tool uses every processor to go faster. To leave some for your other work:
+[limit the processors used](reference-advanced.md#limit-the-processors-used).
+
 ## "Cannot ask for confirmation without an interactive terminal"
 
 Run with `-it`: without a terminal, `clean` and `purge` cannot ask for confirmation, and colours

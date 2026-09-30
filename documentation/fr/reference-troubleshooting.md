@@ -27,6 +27,11 @@ Avec [`-v media-hygiene-cache:/cache`](start/02-keep-the-cache.md), les audits s
 fichiers nouveaux ou modifiés. Rien que lister des dizaines de milliers de fichiers prend quelques
 minutes : [chaque étape affiche sa progression](start/01-first-audit.md#ce-qui-saffiche-pendant-lanalyse).
 
+## L'ordinateur est lent pendant un audit
+
+L'outil utilise tous les processeurs pour aller plus vite. Pour en garder pour le reste :
+[limiter les processeurs utilisés](reference-advanced.md#limiter-les-processeurs-utilisés).
+
 ## « Impossible de demander confirmation sans terminal interactif »
 
 Lancez avec `-it` : sans terminal, `clean` et `purge` ne peuvent pas demander confirmation, et

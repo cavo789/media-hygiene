@@ -80,7 +80,8 @@ adds one thing to the command of the step before.
 [mount points](documentation/en/reference-mount-points.md),
 [how your photos stay safe](documentation/en/reference-safety.md),
 [sidecar files](documentation/en/reference-sidecars.md),
-[troubleshooting](documentation/en/reference-troubleshooting.md).
+[troubleshooting](documentation/en/reference-troubleshooting.md),
+[advanced usage](documentation/en/reference-advanced.md).
 
 **For developers** — [build the image, the devcontainer, releases](documentation/en/development.md).
 
@@ -130,7 +131,8 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 Up to version 0.2, the tool was called **media-dedup** (`cavo789/media-dedup`); it is
 media-hygiene since version 0.3.0. Nothing of yours is lost:
 
-- Write `cavo789/media-hygiene` instead of `cavo789/media-dedup` in your commands.
+- Write `cavo789/media-hygiene` instead of `cavo789/media-dedup` in your commands: the old
+  image is no longer on Docker Hub (Docker then answers *pull access denied*).
 - Keep your folders and volumes: `$HOME\media-dedup\journal`, `media-dedup-cache` and the
   others are yours, whatever their name. Keep writing them in your `-v` options: `undo`,
   `history` and the cache find everything they hold.

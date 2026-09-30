@@ -81,7 +81,8 @@ seule chose à la commande de l'étape précédente.
 [points de montage](documentation/fr/reference-mount-points.md),
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),
 [fichiers compagnons](documentation/fr/reference-sidecars.md),
-[dépannage](documentation/fr/reference-troubleshooting.md).
+[dépannage](documentation/fr/reference-troubleshooting.md),
+[utilisation avancée](documentation/fr/reference-advanced.md).
 
 **Pour les développeurs** : [construire l'image, le devcontainer, les versions](documentation/fr/development.md).
 
@@ -132,7 +133,8 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 Jusqu'à la version 0.2, l'outil s'appelait **media-dedup** (`cavo789/media-dedup`) ; il
 s'appelle media-hygiene depuis la version 0.3.0. Rien de ce que vous avez n'est perdu :
 
-- Écrivez `cavo789/media-hygiene` au lieu de `cavo789/media-dedup` dans vos commandes.
+- Écrivez `cavo789/media-hygiene` au lieu de `cavo789/media-dedup` dans vos commandes :
+  l'ancienne image n'est plus sur Docker Hub (Docker répond alors *pull access denied*).
 - Gardez vos dossiers et vos volumes : `$HOME\media-dedup\journal`, `media-dedup-cache` et
   les autres vous appartiennent, quel que soit leur nom. Continuez à les écrire dans vos
   options `-v` : `undo`, `history` et le cache y retrouvent tout.
