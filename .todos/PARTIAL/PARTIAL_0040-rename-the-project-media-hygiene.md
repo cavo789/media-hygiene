@@ -48,8 +48,8 @@ docs follow in their own commits.
 
 **Publishing**:
 - CI publishes `cavo789/media-hygiene` (`IMAGE` in `ci.yml`). Docker Hub cannot rename a
-  repository: the description of `cavo789/media-dedup` gets a last edit pointing to the new
-  image (manual step, listed in the release).
+  repository: `cavo789/media-dedup` is deleted once the new image is published, without a
+  pointer (maintainer's decision, 2026-09-29).
 - Bump the minor version (0.3.0) and say it in the release.
 - GitHub: rename the repository (GitHub redirects old URLs and remotes), update `origin`.
 
@@ -96,8 +96,8 @@ docs follow in their own commits.
 - Publish 0.3.0: merge into `main`, push, run the full `check`, then `release` (tag `v0.3.0`):
   CI pushes `cavo789/media-hygiene:0.3.0` and `:latest`.
   **Reason:** a release is the maintainer's decision.
-- Edit the Docker Hub description of `cavo789/media-dedup`: "Renamed: see
-  cavo789/media-hygiene".
+- Delete the Docker Hub repository `cavo789/media-dedup` once `cavo789/media-hygiene:0.3.0` is
+  published (decided 2026-09-29: no redirection kept).
   **Reason:** manual step on hub.docker.com, with the maintainer's account.
 - `.claude/settings.json` lists the paths of the current local folder
   (`/workspaces/media-deduplication-pipeline`): update them when the repository is cloned

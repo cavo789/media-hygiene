@@ -19,6 +19,7 @@ older Android phones did not. The feature stays useful but is not the backbone o
 - one of them can be `home = true`, the reference for trips.
 
 The radius exists only for these places: a city name cannot tell home from the bakery next door.
+An area taken from OpenStreetMap instead of a circle (a village, a municipality) is 0044.
 
 **Offline reverse geocoding**: public GeoNames data (CC-BY 4.0, attribution in the docs).
 - Countries, first-level regions, and cities of more than 1,000 inhabitants (~150,000).
@@ -52,7 +53,8 @@ only, `-p 127.0.0.1::8080`).
   The biggest unnamed clusters are listed first: home is usually the first.
 - Click a cluster or the map, name the point, set the radius with a slider or by dragging the
   circle; move or delete a place.
-- The search is offline, among GeoNames cities, and zooms there.
+- The search is offline, among GeoNames cities, and zooms there (an explicit online search
+  is 0044).
 - Leaflet (BSD-2) is vendored in the package. Only map **tiles** are fetched by the browser
   (OpenStreetMap by default, URL configurable, attribution shown). They reveal the areas
   viewed, never a photo or a list of coordinates. The CSP allows that tile host only.
