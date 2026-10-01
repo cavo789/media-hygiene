@@ -23,6 +23,20 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
+def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
+    """List the actions of a run not reversed yet, in sequence order.
+
+    Args:
+        entries: Every entry of the run's journal.
+
+    Returns:
+        The latest state of each action no `undo` has reversed.
+    """
+    restored = {entry.seq for entry in done_states(entries, Phase.UNDO)}
+    latest = latest_states(entries, run_phase(entries))
+    return [latest[seq] for seq in sorted(latest) if seq not in restored]
+
+
 class UndoExecutor:
     """Reverses every action of a run not reversed yet, newest action first."""
 
@@ -52,12 +66,7 @@ class UndoExecutor:
             JournalError: An action cannot be undone by this version (raised before
                 anything changes).
         """
-        restored = {entry.seq for entry in done_states(entries, Phase.UNDO)}
-        todo = [
-            (entry, reversal_of(entry))
-            for seq, entry in sorted(latest_states(entries, run_phase(entries)).items())
-            if seq not in restored
-        ]
+        todo = [(entry, reversal_of(entry)) for entry in actions_to_undo(entries)]
         step = Step(
             _("Restoring"),
             _(

@@ -50,6 +50,11 @@ Annulation de l'exécution clean
   qu'il a supprimés reviennent, ceux qu'il a créés s'en vont. Un tri arrêté puis relancé avec le
   même classeur s'annule en entier : tous ses passages, le plus récent d'abord, après une seule
   question (`--yes` la saute).
+- `undo` a besoin du même `/journal`, de dossiers non montés en `:ro`, et du même `/quarantine`
+  quand l'exécution y a mis des fichiers (fichiers illisibles, fichiers compagnons orphelins,
+  quasi-doublons, photos de rafale, copies d'autres fichiers, les `Thumbs.db` et autres qu'un tri a
+  écartés). Sinon il refuse avant de modifier quoi que ce soit et nomme l'exécution. Une exécution
+  qui n'a fait que supprimer des copies ou déplacer des fichiers n'a pas besoin de quarantaine.
 
 ## Voir ce qui a été fait : `history`
 

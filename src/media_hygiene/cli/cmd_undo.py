@@ -15,14 +15,13 @@ from media_hygiene.console.tables import outcome_table
 from media_hygiene.console.undo_view import show_plan_runs
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.clean import CleanService
 from media_hygiene.services.undo import (
     resolve_run_id,
     run_kind,
     runs_to_undo,
     undo_runs,
 )
+from media_hygiene.services.undo_guard import ensure_undo_ready
 
 if TYPE_CHECKING:
     from media_hygiene.actions.plan_runs import PlanRuns
@@ -67,8 +66,9 @@ def undo_command(
     output = runtime.output
     with user_errors(output):
         run = resolve_run_id(runtime, run_id)
-        CleanService(runtime, NullProgress()).ensure_ready()
         plan = runs_to_undo(runtime, run)
+        runs = [run] if plan is None else [each.run_id for each in plan.runs]
+        ensure_undo_ready(runtime, runs)
         title = _title(runtime, run, plan)
         output.title(title)
         if plan is not None and plan.together:
@@ -76,7 +76,6 @@ def undo_command(
             if not _confirm(runtime, plan, yes=yes):
                 output.info(_("Nothing was changed."))
                 raise typer.Exit(ExitCode.OK)
-        runs = [run] if plan is None else [each.run_id for each in plan.runs]
         with RichProgress(output.console) as progress:
             outcome = undo_runs(runtime, runs, progress)
     output.show(outcome_table(outcome, title))

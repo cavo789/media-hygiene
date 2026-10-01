@@ -48,6 +48,10 @@ Undo the clean run 20261001-133820
   removed come back, the folders it created go. A sort stopped then run again with the same
   workbook is undone whole: every run of it, newest first, after one question (`--yes` skips
   it).
+- `undo` needs the same `/journal`, folders not mounted `:ro`, and the same `/quarantine` when the
+  run moved files there (unreadable files, orphan sidecars, near duplicates, burst shots, copies of
+  other files, the `Thumbs.db` and the like a sort set aside). Otherwise it refuses before changing
+  anything and names the run. A run that only deleted copies or moved files needs no quarantine.
 
 ## See what was done: `history`
 

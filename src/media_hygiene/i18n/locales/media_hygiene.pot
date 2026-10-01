@@ -903,6 +903,11 @@ msgstr ""
 msgid "Mount the same journal folder as for clean: -v \"<folder>:/journal\"."
 msgstr ""
 
+msgid ""
+"Mount the same quarantine folder as for that run: -v "
+"\"<folder>:/quarantine\"."
+msgstr ""
+
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
 msgstr ""
 
@@ -1626,6 +1631,16 @@ msgstr ""
 
 msgid "The review is not running any more: start it again."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"The run {run_id} moved {count} file to /quarantine, which is not mounted:"
+" nothing was changed."
+msgid_plural ""
+"The run {run_id} moved {count} files to /quarantine, which is not "
+"mounted: nothing was changed."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""

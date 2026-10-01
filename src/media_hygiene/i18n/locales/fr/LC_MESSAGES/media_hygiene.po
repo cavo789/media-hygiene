@@ -1110,6 +1110,13 @@ msgstr ""
 "Montez le même dossier de journal que pour clean : -v "
 "\"<dossier>:/journal\"."
 
+msgid ""
+"Mount the same quarantine folder as for that run: -v "
+"\"<folder>:/quarantine\"."
+msgstr ""
+"Montez le même dossier de quarantaine que pour cette exécution : -v "
+"\"<dossier>:/quarantine\"."
+
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
 msgstr ""
 "Montez le même dossier de rapports que pour classify : -v "
@@ -1975,6 +1982,20 @@ msgstr "Le rapport les liste toutes : saisissez-les à nouveau là où elles von
 
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
+
+#, python-brace-format
+msgid ""
+"The run {run_id} moved {count} file to /quarantine, which is not mounted:"
+" nothing was changed."
+msgid_plural ""
+"The run {run_id} moved {count} files to /quarantine, which is not "
+"mounted: nothing was changed."
+msgstr[0] ""
+"L'exécution {run_id} a mis {count} fichier dans /quarantine, qui n'est pas "
+"monté : rien n'a été modifié."
+msgstr[1] ""
+"L'exécution {run_id} a mis {count} fichiers dans /quarantine, qui n'est pas "
+"monté : rien n'a été modifié."
 
 #, python-brace-format
 msgid ""
