@@ -15,7 +15,9 @@
   "failed": _("Not saved (error {status})."),
   "offline": _("The review is not running any more: start it again."),
   "protectedShot": _("This shot lies in a protected folder: it is never moved."),
-  "keepOne": _("Keep at least one shot of the series."),
+  "keepOne": _("To set every shot aside, press X: the whole series goes to the quarantine."),
+  "allProtected": _("Every shot of this series lies in a protected folder: none is ever moved."),
+  "whole": "📦 " ~ _("Whole series set aside: its shots go to the quarantine at 'clean --decisions'. A or X keeps them all again."),
   "first": _("This is the first series."),
   "last": _("This is the last series: stop the review with Ctrl+C in the terminal."),
 } %}
@@ -46,6 +48,8 @@
   main { padding: 12px 16px 24px; }
   .muted { color: var(--muted); }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  #whole { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--bad);
+           background: var(--card); border: 2px solid var(--bad); border-radius: 10px; }
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
   .shot { position: relative; margin: 0; padding: 8px; background: var(--card); cursor: pointer;
           border: 2px solid var(--line); border-radius: 10px; }
@@ -73,6 +77,7 @@
 </header>
 <main>
   <p id="series" class="muted"></p>
+  <p id="whole" role="status" hidden></p>
   <div id="shots" class="shots"></div>
 </main>
 <footer>
@@ -80,6 +85,7 @@
   <kbd>1</kbd>…<kbd>9</kbd> {{ _("set a shot aside, or keep it again") }} ·
   <kbd>S</kbd> {{ _("keep only the sharpest") }} ·
   <kbd>A</kbd> {{ _("keep every shot") }} ·
+  <kbd>X</kbd> {{ _("set the whole series aside") }} ·
   {{ _("a click on a shot works too") }}<br>
   {{ _("Every choice is saved at once in %(file)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with --decisions %(file)s: the shots set aside go to the quarantine, and 'undo' brings them back.", file=file) }}
 </footer>
@@ -141,6 +147,8 @@
     const item = series[current];
     byId("position").textContent = fill(T.position, { number: current + 1, total: series.length });
     byId("series").textContent = [item.camera, fill(T.shots, { count: item.shots.length })].filter(Boolean).join(" · ");
+    byId("whole").hidden = item.discarded.length !== item.shots.length;
+    byId("whole").textContent = T.whole;
     byId("shots").replaceChildren(...item.shots.map((shot, rank) => card(item, shot, rank)));
     showTotals();
     prefetch(current + 1);
@@ -196,6 +204,17 @@
     decide(current, shots.map((shot, rank) => rank).filter((rank) => !shots[rank].best && !shots[rank].protected));
   };
 
+  const setWholeAside = () => {
+    const shots = series[current].shots;
+    const movable = shots.map((shot, rank) => rank).filter((rank) => !shots[rank].protected);
+    if (movable.length === 0) {
+      setStatus(T.allProtected, "error");
+      return;
+    }
+    const already = movable.every((rank) => series[current].discarded.includes(rank));
+    decide(current, already ? [] : movable);
+  };
+
   const go = (step) => {
     const next = current + step;
     if (next < 0 || next >= series.length) {
@@ -218,6 +237,7 @@
     else if (event.key === "ArrowLeft") go(-1);
     else if (key === "s") keepSharpest();
     else if (key === "a") decide(current, []);
+    else if (key === "x") setWholeAside();
     else return;
     event.preventDefault();
   });

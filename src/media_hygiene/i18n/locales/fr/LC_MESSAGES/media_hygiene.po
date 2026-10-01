@@ -682,6 +682,11 @@ msgstr ""
 msgid "Every copy"
 msgstr "Toutes les copies"
 
+msgid "Every shot of this series lies in a protected folder: none is ever moved."
+msgstr ""
+"Toutes les photos de cette rafale sont dans un dossier protégé : aucune "
+"ne bouge jamais."
+
 msgid "Example:"
 msgstr "Exemple :"
 
@@ -960,9 +965,6 @@ msgstr "juin"
 
 msgid "KB"
 msgstr "Ko"
-
-msgid "Keep at least one shot of the series."
-msgstr "Gardez au moins une photo de la série."
 
 msgid ""
 "Keep plan.json in the folder 'classify' wrote, or run 'classify --carry-"
@@ -2056,6 +2058,11 @@ msgstr ""
 msgid "To move"
 msgstr "À déplacer"
 
+msgid "To set every shot aside, press X: the whole series goes to the quarantine."
+msgstr ""
+"Pour écarter toutes les photos, appuyez sur X : toute la rafale part en "
+"quarantaine."
+
 msgid "To sort"
 msgstr "À trier"
 
@@ -2136,6 +2143,13 @@ msgstr "Où vont les fichiers sûrs, par exemple '{year}/{month} - {month_name}'
 
 msgid "Where to start"
 msgstr "Par où commencer"
+
+msgid ""
+"Whole series set aside: its shots go to the quarantine at 'clean "
+"--decisions'. A or X keeps them all again."
+msgstr ""
+"Rafale entière écartée : ses photos partent en quarantaine au 'clean "
+"--decisions'. A ou X les garde toutes à nouveau."
 
 msgid "Why"
 msgstr "Pourquoi"
@@ -2435,6 +2449,9 @@ msgstr "écarter une photo, ou la garder à nouveau"
 msgid "set aside"
 msgstr "écartée"
 
+msgid "set the whole series aside"
+msgstr "écarter toute la rafale"
+
 msgid "sharpest"
 msgstr "la plus nette"
 
@@ -2537,6 +2554,12 @@ msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
+
+#, python-brace-format
+msgid "{count} burst series is set aside whole: none of its shots stays."
+msgid_plural "{count} burst series are set aside whole: none of their shots stays."
+msgstr[0] "{count} rafale est écartée entière : aucune de ses photos ne reste."
+msgstr[1] "{count} rafales sont écartées entières : aucune de leurs photos ne reste."
 
 #, python-brace-format
 msgid "{count} burst shot you set aside will be moved to the quarantine."

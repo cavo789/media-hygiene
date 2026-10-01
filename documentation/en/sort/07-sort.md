@@ -30,8 +30,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20260930-191157-classify/classify.xlsx
-0 edits read; workbook saved on 30 September 2026 at 19:11.
+Workbook: /reports/20260930-192354-classify/classify.xlsx
+0 edits read; workbook saved on 30 September 2026 at 19:23.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -107,7 +107,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20260930-191159
+Sort 20260930-192400
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -117,8 +117,8 @@ Sort 20260930-191159
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20260930-191159-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20260930-191159' moves everything
+Manifest: /reports/20260930-192400-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20260930-192400' moves everything
 back.
 ```
 
@@ -147,8 +147,8 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20260930-191159 ───────────────────────
-Undo the sort run 20260930-191159
+────────────────────── Undo the sort run 20260930-192400 ───────────────────────
+Undo the sort run 20260930-192400
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

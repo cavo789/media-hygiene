@@ -84,6 +84,9 @@ def set_aside_problem(
 ) -> str | None:
     """Explain why these shots of a series cannot be set aside, or return None.
 
+    Every shot may be set aside (the whole series), but never one of a protected
+    folder.
+
     Args:
         builder: Knows the protected folders and the host paths.
         shots: The shots of the series.
@@ -94,8 +97,6 @@ def set_aside_problem(
     """
     if any(not 0 <= rank < len(shots) for rank in discarded):
         return _("There is no such shot in this series.")
-    if len(discarded) == len(shots):
-        return _("Keep at least one shot of the series.")
     policy = builder.policy
     locked = [
         shots[rank] for rank in sorted(discarded) if policy.is_protected(shots[rank])

@@ -116,8 +116,8 @@ class ReviewSession:
             discarded: Ranks of the shots set aside.
 
         Raises:
-            DecisionsError: An unknown series or shot, every shot set aside, or a
-                shot of a protected folder.
+            DecisionsError: An unknown series or shot, or a shot of a protected
+                folder.
         """
         problem = self._problem(series, discarded)
         if problem is not None:

@@ -543,6 +543,9 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
+msgid "Every shot of this series lies in a protected folder: none is ever moved."
+msgstr ""
+
 msgid "Example:"
 msgstr ""
 
@@ -780,9 +783,6 @@ msgid "June"
 msgstr ""
 
 msgid "KB"
-msgstr ""
-
-msgid "Keep at least one shot of the series."
 msgstr ""
 
 msgid ""
@@ -1704,6 +1704,9 @@ msgstr ""
 msgid "To move"
 msgstr ""
 
+msgid "To set every shot aside, press X: the whole series goes to the quarantine."
+msgstr ""
+
 msgid "To sort"
 msgstr ""
 
@@ -1774,6 +1777,11 @@ msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
 msgstr ""
 
 msgid "Where to start"
+msgstr ""
+
+msgid ""
+"Whole series set aside: its shots go to the quarantine at 'clean "
+"--decisions'. A or X keeps them all again."
 msgstr ""
 
 msgid "Why"
@@ -2051,6 +2059,9 @@ msgstr ""
 msgid "set aside"
 msgstr ""
 
+msgid "set the whole series aside"
+msgstr ""
+
 msgid "sharpest"
 msgstr ""
 
@@ -2153,6 +2164,12 @@ msgstr ""
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr ""
+
+#, python-brace-format
+msgid "{count} burst series is set aside whole: none of its shots stays."
+msgid_plural "{count} burst series are set aside whole: none of their shots stays."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} burst shot you set aside will be moved to the quarantine."

@@ -115,7 +115,6 @@ def test_refused_requests(
 @pytest.mark.parametrize(
     ("call", "error"),
     [
-        (decide(0, 0, 1, 2), "Keep at least one shot"),
         (decide(3, 1), "no such series"),
         (decide(0, 7), "no such shot"),
     ],

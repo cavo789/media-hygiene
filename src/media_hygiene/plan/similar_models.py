@@ -49,11 +49,21 @@ class BurstChoice:
     """The shots of one burst series a review set aside (`media-hygiene review`).
 
     Set aside, not duplicated: `clean --decisions` moves them to the quarantine, never
-    deletes them, and only while at least one `kept` shot is still there.
+    deletes them, and only while at least one `kept` shot is still there. No `kept`
+    shot: the whole series was set aside, and nothing else needs to be there.
     """
 
     kept: tuple[MediaFile, ...]
     discarded: tuple[MediaFile, ...]
+
+    @property
+    def whole(self) -> bool:
+        """Tell whether the review set the whole series aside.
+
+        Returns:
+            True when no shot is kept.
+        """
+        return not self.kept
 
 
 @dataclass(frozen=True, slots=True)

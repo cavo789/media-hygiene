@@ -110,7 +110,7 @@ def test_undecided_groups_are_untouched() -> None:
             "a is decided twice",
         ),
         (
-            '{"version": 1, "roots": [], "bursts": [{"kept": [], "discarded": ["a"]}]}',
+            '{"version": 1, "roots": [], "bursts": [{"kept": ["a"], "discarded": []}]}',
             "not a valid decisions file",
         ),
     ],
@@ -118,7 +118,7 @@ def test_undecided_groups_are_untouched() -> None:
 def test_invalid_files_are_refused(
     tmp_path: Path, content: str | None, error: str
 ) -> None:
-    """Missing, garbage, another version, decided twice, nothing kept: refused."""
+    """Missing, garbage, another version, decided twice, nothing set aside: refused."""
     path = tmp_path / "decisions.json"
     if content is not None:
         path.write_text(content)

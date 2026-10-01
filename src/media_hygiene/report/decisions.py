@@ -10,7 +10,8 @@ r"""The decisions file the report downloads and `review` writes; `clean` reads i
 
 Paths are host paths, as the report shows them. `roots` are the folders analysed by the
 audit behind the decisions: `clean` refuses the file when it sees other folders. Pairs
-left as planned and burst series left whole are not listed.
+left as planned and burst series left whole are not listed; a series set aside whole
+has an empty `kept`.
 """
 
 from __future__ import annotations
@@ -41,11 +42,15 @@ class PairDecision(BaseModel):
 
 
 class BurstDecision(BaseModel):
-    """The review of one burst series, in host paths: at least one shot of each."""
+    """The review of one burst series, in host paths.
+
+    At least one shot is set aside (a series left whole is not listed); none may be
+    kept, when the whole series was set aside.
+    """
 
     model_config = _FROZEN
 
-    kept: tuple[str, ...] = Field(min_length=1)
+    kept: tuple[str, ...] = ()
     discarded: tuple[str, ...] = Field(min_length=1)
 
 

@@ -45,7 +45,7 @@ Le tri commence par un audit (rapide, grâce au cache), puis vous attend :
 ```text
 ✅ Tri prêt sur le port 8080 : chaque décision est enregistrée aussitôt dans
 decisions.json. Ctrl+C arrête le tri.
-💡 Son adresse sur votre ordinateur : lancez 'docker port 94175a9192f2 8080'
+💡 Son adresse sur votre ordinateur : lancez 'docker port 625e4152b3ec 8080'
 dans un autre terminal, puis ouvrez http://<cette adresse> dans votre
 navigateur.
 ```
@@ -100,11 +100,16 @@ Pressez à nouveau `3` pour finalement la garder. Un clic sur une photo fait com
 | `1` … `9` | Écarter cette photo, ou la garder à nouveau |
 | `S` | Ne garder que la plus nette : toutes les autres sont écartées |
 | `A` | Garder à nouveau toutes les photos de la série |
+| `X` | Écarter toute la rafale : aucune de ses photos ne vaut la peine (`X` à nouveau les garde toutes) |
 
 Sur un clavier AZERTY, les chiffres de la rangée du haut fonctionnent **sans** Maj.
 
-Deux garde-fous : chaque série garde toujours au moins une photo, et une photo d'un
-[dossier protégé](05-choose-the-kept-copy.md#protéger-un-dossier) ne peut jamais être écartée.
+`X` écarte toutes les photos de la série : elles pâlissent, et un bandeau rouge rappelle que
+toute la rafale part en quarantaine. Écarter les photos une à une s'arrête à la dernière, pour
+qu'une série entière ne parte jamais par erreur : il faut `X`.
+
+Une photo d'un [dossier protégé](05-choose-the-kept-copy.md#protéger-un-dossier) ne peut jamais
+être écartée : `X` écarte les autres, et la protégée reste.
 
 ## Étape 6 : arrêter, et reprendre plus tard
 
@@ -112,7 +117,8 @@ Chaque choix est enregistré **aussitôt** dans `decisions.json`, dans votre dos
 Arrêtez quand vous voulez : **Ctrl+C** dans la fenêtre du tri. Le `review` suivant retrouve vos
 choix et reprend.
 
-Le fichier liste, série par série, les photos gardées et les photos écartées :
+Le fichier liste, série par série, les photos gardées et les photos écartées (une série écartée
+avec `X` a une liste `kept` vide) :
 
 <!-- capture: decisions.json -->
 ```json
@@ -185,7 +191,7 @@ de bon ([étape 9](09-undo-history-purge.md)).
   nettoyage (un fichier ajouté, déplacé ou modifié), `clean` refuse le fichier plutôt que de
   deviner : refaites le tri.
 - **Avant de déplacer une photo**, `clean` vérifie que c'est bien le fichier montré par le tri, et
-  que les photos que vous avez gardées sont toujours là.
+  que les photos que vous avez gardées, s'il y en a, sont toujours là.
 - **`review --decisions autre.json`** enregistre les choix dans un autre fichier du dossier des
   rapports.
 - **`review --port 9000`** change le port dans le conteneur ; publiez-le avec

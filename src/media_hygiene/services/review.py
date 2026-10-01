@@ -141,6 +141,14 @@ def apply_review(
                 "{shots}."
             ).format(series=len(bursts), shots=sum(len(c.discarded) for c in bursts))
         )
+    whole = sum(choice.whole for choice in bursts)
+    if whole:
+        message = ngettext(
+            "{count} burst series is set aside whole: none of its shots stays.",
+            "{count} burst series are set aside whole: none of their shots stays.",
+            whole,
+        )
+        runtime.output.info(message.format(count=whole))
     return apply_choices(plan, choices, keep_policy(runtime.settings, runtime.mapper))
 
 

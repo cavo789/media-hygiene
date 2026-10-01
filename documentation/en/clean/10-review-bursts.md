@@ -44,7 +44,7 @@ The review first audits (quickly, thanks to the cache), then waits for you:
 ```text
 ✅ Review ready on port 8080: each decision is saved at once in decisions.json.
 Ctrl+C stops the review.
-💡 Its address on your computer: run 'docker port 247293bd99ac 8080' in another
+💡 Its address on your computer: run 'docker port aa691978d783 8080' in another
 terminal, then open http://<that address> in your browser.
 ```
 
@@ -96,18 +96,24 @@ Press `3` again to keep it after all. A click on a shot does the same as its num
 | `1` … `9` | Set that shot aside, or keep it again |
 | `S` | Keep only the sharpest shot: every other one is set aside |
 | `A` | Keep every shot of the series again |
+| `X` | Set the whole series aside: none of its shots is worth keeping (`X` again keeps them all) |
 
 On an AZERTY keyboard, the digits of the top row work **without** Shift.
 
-Two safeguards: each series always keeps at least one shot, and a shot in a
-[protected folder](05-choose-the-kept-copy.md#protect-a-folder) can never be set aside.
+`X` sets aside every shot of the series: they fade, and a red banner reminds you that the whole
+series goes to the quarantine. Setting the shots aside one by one stops at the last one, so that
+a whole series never goes by mistake: that takes `X`.
+
+A shot in a [protected folder](05-choose-the-kept-copy.md#protect-a-folder) can never be set
+aside: `X` sets the others aside, and the protected one stays.
 
 ## Step 6: stop, and come back later
 
 Every choice is saved **at once** in `decisions.json`, in your reports folder. Stop whenever you
 like: **Ctrl+C** in the review window. The next `review` finds your choices again and resumes.
 
-The file lists, series by series, the shots kept and the shots set aside:
+The file lists, series by series, the shots kept and the shots set aside (a series set aside
+with `X` has an empty `kept` list):
 
 <!-- capture: decisions.json -->
 ```json
@@ -180,7 +186,7 @@ could rebuild them. `undo` puts them back; `purge` deletes them for good
   clean (a file added, moved or edited), `clean` refuses the file rather than guessing: review
   again.
 - **Before moving a shot**, `clean` checks that it is the very file the review showed, and that
-  the shots you kept are still there.
+  the shots you kept, if any, are still there.
 - **`review --decisions other.json`** saves the choices in another file of the reports folder.
 - **`review --port 9000`** changes the port inside the container; publish it with
   `-p 127.0.0.1::9000`.

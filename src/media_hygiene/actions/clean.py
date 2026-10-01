@@ -158,6 +158,8 @@ class CleanExecutor:
     def _quarantine_burst(self, choice: BurstChoice, file: MediaFile) -> None:
         """Move one burst shot a review set aside to the quarantine.
 
+        A series set aside whole has no kept shot to name in the journal.
+
         Args:
             choice: The review of its series, holding the shots kept.
             file: Shot to move.
@@ -166,7 +168,7 @@ class CleanExecutor:
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        keeper = choice.kept[0].path
+        keeper = choice.kept[0].path if choice.kept else None
         self._changes.quarantine(file, ActionKind.QUARANTINE_BURST, keeper)
 
     def _handle_broken(self, item: BrokenFile) -> None:
