@@ -25,6 +25,7 @@ SECOND_SERIES_JS: Final = (SCRIPTS / "second_series.js").read_text(encoding="utf
 EAGER_JS: Final = (SCRIPTS / "eager_images.js").read_text(encoding="utf-8")
 # The bottom of the first group of a classify year page.
 FIRST_GROUP_JS: Final = (SCRIPTS / "first_group.js").read_text(encoding="utf-8")
+SHOTS_SHOWN_JS: Final = (SCRIPTS / "shots_shown.js").read_text(encoding="utf-8")
 REVIEW_WIDTH: Final = 1600
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
@@ -75,24 +76,25 @@ def top(page: Page, height: float) -> dict[str, Any]:
     return {"x": 0, "y": 0, "width": page.viewport_size["width"], "height": height}
 
 
-def review(page: Page) -> None:
-    """The birthday series, then a shaken shot set aside; a lake shot set aside too.
+def shots_shown(page: Page) -> None:
+    """Wait until the pictures of the review's series show, then for transitions."""
+    page.wait_for_function(SHOTS_SHOWN_JS)
+    page.wait_for_timeout(PAUSE_MS)
 
-    Args:
-        page: The browser tab.
-    """
+
+def review(page: Page) -> None:
+    """The birthday series, then a shaken shot set aside; a lake shot set aside too."""
     page.goto(REVIEW)
     page.wait_for_selector("#shots figure")
     page.keyboard.press("ArrowRight")
-    page.wait_for_timeout(PAUSE_MS)
-    bottom = page.evaluate(
-        "document.querySelector('footer').getBoundingClientRect().bottom"
-    )
-    page.set_viewport_size({"width": REVIEW_WIDTH, "height": int(bottom)})
+    shots_shown(page)
+    height = page.evaluate("document.documentElement.scrollHeight")
+    page.set_viewport_size({"width": REVIEW_WIDTH, "height": int(height)})
+    shots_shown(page)
     page.screenshot(path=SHOTS / "review.png")
     page.keyboard.press("Digit3")
     page.wait_for_selector("#status.saved")
-    page.wait_for_timeout(PAUSE_MS)
+    shots_shown(page)
     page.screenshot(path=SHOTS / "review-aside.png")
     page.keyboard.press("ArrowRight")
     page.wait_for_timeout(PAUSE_MS)

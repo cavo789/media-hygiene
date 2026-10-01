@@ -26,8 +26,8 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20261001-121222 ──────────────────────
-Undo the clean run 20261001-121222
+────────────────────── Undo the clean run 20261001-122229 ──────────────────────
+Undo the clean run 20261001-122229
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -61,8 +61,8 @@ Runs (newest first)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Run             ┃ Command ┃ Deleted ┃   Freed ┃ Quarantined ┃ Restored ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20261001-121226 │ clean   │      33 │ 16.2 MB │           7 │        0 │
-│ 20261001-121222 │ clean   │      33 │ 15.5 MB │           3 │       36 │
+│ 20261001-122233 │ clean   │      33 │ 16.2 MB │           7 │        0 │
+│ 20261001-122229 │ clean   │      33 │ 15.5 MB │           3 │       36 │
 └─────────────────┴─────────┴─────────┴─────────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
@@ -84,7 +84,7 @@ cavo789/media-hygiene purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Permanently delete the quarantine of 20261001-121226, 20261001-121222 (2.2
+❓ Permanently delete the quarantine of 20261001-122233, 20261001-122229 (2.2
 MB)? [y/N] y
 ✅ Quarantine purged: 2.2 MB freed.
 💡 'undo' can no longer restore these broken files.
