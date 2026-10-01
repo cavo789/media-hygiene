@@ -61,8 +61,8 @@ To check or to sort: 3 files in 1 event.
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
 💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261001-122204-classify/classify.xlsx
-✅ Report with the photos: /reports/20261001-122204-classify/report.html
+✅ Workbook to edit: /reports/20261001-123749-classify/classify.xlsx
+✅ Report with the photos: /reports/20261001-123749-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 

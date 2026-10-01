@@ -31,6 +31,7 @@ Réglages effectifs
 │ folders.preferred          │ []                          │ défaut            │
 │ folders.protected          │ []                          │ défaut            │
 │ folders.excluded           │ []                          │ défaut            │
+│ scan.categories            │ {}                          │ défaut            │
 │ scan.extensions            │ []                          │ défaut            │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
 │                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
@@ -153,6 +154,21 @@ Réglages effectifs
 │                            │ 'desktop.ini', '.DS_Store'] │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
+Catégories d'extensions (--ext)
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Catégorie ┃ Extensions                                            ┃ Origine  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, │ intégrée │
+│           │ tiff, webp                                            │          │
+│ raw       │ arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw      │ intégrée │
+│ video     │ 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg,   │ intégrée │
+│           │ mpg, mts, ts, webm, wmv                               │          │
+│ media     │ 3g2, 3gp, arw, avi, avif, bmp, cr2, cr3, dng, flv,    │ intégrée │
+│           │ gif, heic, heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, │          │
+│           │ mp4, mpeg, mpg, mts, nef, orf, pef, png, raf, rw2,    │          │
+│           │ srw, tif, tiff, ts, webm, webp, wmv                   │          │
+└───────────┴───────────────────────────────────────────────────────┴──────────┘
+
 Points de montage
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
 ┃ Montage               ┃ Dossier sur votre ordinateur ┃ État          ┃
@@ -212,7 +228,10 @@ protected = []
 excluded = ['D:\sauvegarde']
 
 [scan]
-extensions = []        # p. ex. ["heic", "mp4"] ; vide : photos, RAW et vidéos
+extensions = []        # p. ex. ["photo", "mp4"] ; vide : photos, RAW et vidéos
+
+[scan.categories]      # vos propres catégories pour --ext
+documents = ["pdf", "docx", "txt"]
 
 [clean]
 confirm = true         # clean demande avant de faire quoi que ce soit
@@ -226,7 +245,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
 - **`excluded`** : jamais analysés, pour une vraie sauvegarde (`--exclude`).
-- **`extensions`** : seulement ces types de fichiers (`--ext`).
+- **`extensions`** : seulement ces catégories ou types de fichiers (`--ext`).
+- **`[scan.categories]`** : vos noms pour des listes d'extensions, à côté des catégories
+  intégrées `photo`, `raw`, `video` et `media` ([étape 6](06-file-types.md#vos-propres-catégories)).
 
 Pourquoi des apostrophes ? Entre guillemets, TOML lit la barre oblique inverse comme un
 caractère spécial : le `\b` de `"D:\backup"` devient un caractère de contrôle (l'outil refuse
@@ -273,6 +294,7 @@ Réglages effectifs
 │ folders.preferred          │ []                          │ config.toml       │
 │ folders.protected          │ []                          │ config.toml       │
 │ folders.excluded           │ []                          │ config.toml       │
+│ scan.categories            │ {}                          │ config.toml       │
 │ scan.extensions            │ []                          │ config.toml       │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
 │                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
@@ -400,6 +422,21 @@ Réglages effectifs
 │                            │ 'desktop.ini', '.DS_Store'] │                   │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
+Catégories d'extensions (--ext)
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Catégorie ┃ Extensions                                            ┃ Origine  ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, │ intégrée │
+│           │ tiff, webp                                            │          │
+│ raw       │ arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw      │ intégrée │
+│ video     │ 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg,   │ intégrée │
+│           │ mpg, mts, ts, webm, wmv                               │          │
+│ media     │ 3g2, 3gp, arw, avi, avif, bmp, cr2, cr3, dng, flv,    │ intégrée │
+│           │ gif, heic, heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, │          │
+│           │ mp4, mpeg, mpg, mts, nef, orf, pef, png, raf, rw2,    │          │
+│           │ srw, tif, tiff, ts, webm, webp, wmv                   │          │
+└───────────┴───────────────────────────────────────────────────────┴──────────┘
+
 Points de montage
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
 ┃ Montage               ┃ Dossier sur votre ordinateur ┃ État          ┃
@@ -428,11 +465,13 @@ De la plus forte à la plus faible : les options de la ligne de commande, puis l
 d'environnement, puis `config.toml`, puis les valeurs par défaut. `--prefer` sur la ligne de
 commande remplace donc `preferred` du fichier pour ce lancement.
 
-Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux
-soulignés), par exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes
-s'écrivent en tableau JSON. Les listes de tables, comme les règles de `classify`
-(`[[classify.rules]]`), se lisent dans `config.toml` seulement. Jusqu'à la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il
-fonctionne encore jusqu'à la version 0.4.0, avec un avertissement.
+Les variables d'environnement s'appellent `MEDIA_HYGIENE_<SECTION>__<CLÉ>` (deux soulignés), par
+exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes s'écrivent en
+tableau JSON, les tables en objet JSON qui remplace toute la table du fichier
+(`MEDIA_HYGIENE_SCAN__CATEGORIES='{"documents": ["pdf", "docx"]}'`). Les listes de tables, comme
+les règles de `classify` (`[[classify.rules]]`), se lisent dans `config.toml` seulement. Jusqu'à
+la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il fonctionne encore jusqu'à la version
+0.4.0, avec un avertissement.
 
 ---
 

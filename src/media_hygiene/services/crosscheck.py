@@ -41,7 +41,8 @@ def czkawka_command(runtime: Runtime) -> CzkawkaCommand:
     """Build the Czkawka command that sees exactly what this run sees.
 
     Same host folders on the same mount points (Czkawka reports container paths),
-    same extensions, same excluded folders, every file size.
+    same extensions (categories replaced by theirs: `-x` takes extensions only),
+    same excluded folders, every file size.
 
     Args:
         runtime: Settings, mount points and output.
@@ -52,7 +53,7 @@ def czkawka_command(runtime: Runtime) -> CzkawkaCommand:
     settings, locations, mapper = runtime.settings, runtime.locations, runtime.mapper
     sources = dict(runtime.mounts.host_sources)
     roots = runtime.mounts.data_roots(locations.data_dir)
-    extensions = settings.scan.extensions or tuple(sorted(MEDIA_EXTENSIONS))
+    extensions = settings.scan.resolved or tuple(sorted(MEDIA_EXTENSIONS))
     return CzkawkaCommand(
         mounts=tuple(
             (sources.get(root) or mapper.to_host(root), root) for root in roots

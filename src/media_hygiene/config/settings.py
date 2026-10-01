@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import re
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
-from pydantic import BaseModel, ConfigDict, field_validator
-
+from media_hygiene.config.categories import expanded, requested, valid_categories
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.sort_settings import SortSettings
@@ -13,7 +12,6 @@ from media_hygiene.constants import (
     GENERATED_NAMES,
     GENERIC_FOLDERS,
     MEDIA_EXTENSIONS,
-    SIDECAR_EXTENSIONS,
     ColorMode,
     Locale,
     Verbosity,
@@ -21,7 +19,6 @@ from media_hygiene.constants import (
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
-_EXTENSION = re.compile(r"\.[\w-]+")
 
 
 class GeneralSettings(BaseModel):
@@ -78,49 +75,58 @@ class ScanSettings(BaseModel):
     """`[scan]` — which files are analysed: photos, RAW and videos, or those asked for.
 
     Any extension may be asked for (`pdf`, `docx`): such files are only compared byte
-    for byte, never decoded, and their copies are moved to the quarantine.
+    for byte, never decoded, and their copies are moved to the quarantine. Categories
+    name lists of extensions: `photo`, `raw`, `video`, `media` and the user's own.
     """
 
     model_config = _FROZEN
 
+    # Before `extensions`: resolving them needs the user's categories.
+    categories: dict[str, tuple[str, ...]] = Field(default_factory=dict)
     extensions: tuple[str, ...] = ()
+
+    @field_validator("categories")
+    @classmethod
+    def _valid_categories(
+        cls, categories: dict[str, tuple[str, ...]]
+    ) -> dict[str, tuple[str, ...]]:
+        """Validate the user's categories (see `categories.valid_categories`).
+
+        Args:
+            categories: Configured categories.
+
+        Returns:
+            Lowercase names with their normalised extensions.
+        """
+        return valid_categories(categories)
 
     @field_validator("extensions")
     @classmethod
-    def _valid_extensions(cls, extensions: tuple[str, ...]) -> tuple[str, ...]:
-        """Normalise `PNG`, `png` or `.png` to `.png` and reject invalid ones.
+    def _valid_extensions(
+        cls, extensions: tuple[str, ...], info: ValidationInfo
+    ) -> tuple[str, ...]:
+        """Keep category names, normalise `PNG`, `png` or `.png` to `.png`.
 
         Comma-separated values (`"png,webp"`) are split. Empty means every media
         extension. Sidecars are refused: they follow the photo of the same name.
 
         Args:
-            extensions: Configured extensions.
+            extensions: Configured categories and extensions.
+            info: The fields validated before, the categories among them.
 
         Returns:
-            The lowercase extensions with their dot, without duplicates.
-
-        Raises:
-            ValueError: An extension is malformed or is a sidecar's.
+            Category names, and extensions with their dot, without duplicates.
         """
-        parts = (part.strip() for item in extensions for part in item.split(","))
-        normalized = tuple(
-            dict.fromkeys(f".{part.lstrip('.').casefold()}" for part in parts if part)
-        )
-        malformed = [ext for ext in normalized if not _EXTENSION.fullmatch(ext)]
-        if malformed:
-            message = (
-                f"invalid extension {', '.join(malformed)}: letters, digits, '-' and "
-                "'_' only, such as pdf"
-            )
-            raise ValueError(message)
-        sidecars = [ext for ext in normalized if ext in SIDECAR_EXTENSIONS]
-        if sidecars:
-            message = (
-                f"{', '.join(sidecars)}: sidecars follow the photo of the same name, "
-                "they are not analysed on their own"
-            )
-            raise ValueError(message)
-        return normalized
+        return requested(extensions, info.data.get("categories", {}))
+
+    @property
+    def resolved(self) -> tuple[str, ...]:
+        """The extensions asked for, categories replaced by their extensions.
+
+        Returns:
+            Extensions with their dot; empty when nothing was asked for.
+        """
+        return expanded(self.extensions, self.categories)
 
     @property
     def other_files(self) -> tuple[str, ...]:
@@ -129,16 +135,7 @@ class ScanSettings(BaseModel):
         Returns:
             Those extensions, in the configured order.
         """
-        return tuple(ext for ext in self.extensions if ext not in MEDIA_EXTENSIONS)
-
-
-def supported_extensions() -> str:
-    """List every media extension (the default scope), for help texts.
-
-    Returns:
-        The extensions without their dot, sorted and comma-separated.
-    """
-    return ", ".join(sorted(ext.lstrip(".") for ext in MEDIA_EXTENSIONS))
+        return tuple(ext for ext in self.resolved if ext not in MEDIA_EXTENSIONS)
 
 
 class KeepSettings(BaseModel):

@@ -53,7 +53,9 @@ def read_file_layer(config_file: Path) -> Layer:
 def read_env_layer(environ: Mapping[str, str]) -> Layer:
     """Collect `MEDIA_HYGIENE_<SECTION>__<KEY>` variables; lists are JSON arrays.
 
-    Arrays of tables, such as `[[classify.rules]]`, are read from config.toml only.
+    Tables, such as `[scan.categories]`, are JSON objects that replace the file's
+    whole table. Arrays of tables, such as `[[classify.rules]]`, are read from
+    config.toml only.
 
     Args:
         environ: The process environment.
@@ -62,7 +64,8 @@ def read_env_layer(environ: Mapping[str, str]) -> Layer:
         The overrides found, by section.
 
     Raises:
-        ConfigError: A list variable does not hold a JSON array.
+        ConfigError: A list variable does not hold a JSON array, or a table
+            variable a JSON object.
     """
     layer: Layer = {}
     for section, model in _SECTIONS.items():
@@ -73,6 +76,8 @@ def read_env_layer(environ: Mapping[str, str]) -> Layer:
             value: object = environ[name]
             if get_origin(field.annotation) is tuple:
                 value = _parse_json_list(name, environ[name])
+            elif get_origin(field.annotation) is dict:
+                value = _parse_json_table(name, environ[name])
             layer.setdefault(section, {})[key] = value
     return layer
 
@@ -117,6 +122,29 @@ def _parse_json_list(name: str, raw: str) -> list[str]:
         message = _('{name} must be a JSON array, e.g. ["C:\\\\Photos"]')
         raise ConfigError(message.format(name=name))
     return [str(item) for item in value]
+
+
+def _parse_json_table(name: str, raw: str) -> dict[str, object]:
+    """Parse a JSON object from an environment variable.
+
+    Args:
+        name: Variable name, for the error message.
+        raw: Its value.
+
+    Returns:
+        The table, e.g. `{"documents": ["pdf", "docx"]}`.
+
+    Raises:
+        ConfigError: The value is not a JSON object.
+    """
+    message = _('{name} must be a JSON object, e.g. {{"documents": ["pdf", "docx"]}}')
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ConfigError(message.format(name=name)) from exc
+    if not isinstance(value, dict):
+        raise ConfigError(message.format(name=name))
+    return {str(key): item for key, item in value.items()}
 
 
 def merge_layers(*layers: Layer) -> Layer:

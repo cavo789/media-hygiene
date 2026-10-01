@@ -80,7 +80,7 @@ def _audits(demo: Demo) -> Captures:
     captures["audit-prefer.txt"] = run(demo, Command(prefer))
     exclude = ("audit", "--exclude", f"D:\\{names.old_disk}")
     captures["audit-exclude.txt"] = run(demo, Command(exclude))
-    captures["audit-ext.txt"] = run(demo, Command(("audit", "--ext", "heic,mp4")))
+    captures["audit-ext.txt"] = run(demo, Command(("audit", "--ext", "heic,video")))
     captures["classify.txt"] = run(demo, Command(("classify",)))
     return captures
 

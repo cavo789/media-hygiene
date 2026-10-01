@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, cast
 
 import typer
 
-from media_hygiene.config.settings import supported_extensions
+from media_hygiene.config.categories import BUILTIN_CATEGORIES
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -150,7 +150,9 @@ def exclude() -> OptionInfo:
 
 
 def extensions() -> OptionInfo:
-    """`--ext`: only analyse some extensions (repeatable or comma-separated).
+    """`--ext`: only analyse some categories or extensions (repeatable).
+
+    Built before the settings are read: the user's categories cannot be listed.
 
     Returns:
         The option definition.
@@ -160,11 +162,12 @@ def extensions() -> OptionInfo:
         typer.Option(
             "--ext",
             help=_(
-                "Only analyse files with these extensions, e.g. --ext png,webp "
-                "(repeatable). Other types too, such as --ext pdf,docx: their copies "
-                "are moved to the quarantine. Default: every photo, RAW and video "
-                "extension: {extensions}."
-            ).format(extensions=supported_extensions()),
+                "Only analyse these categories or extensions, e.g. --ext photo,video "
+                "or --ext png,webp (repeatable). Categories: {categories} and those "
+                "of scan.categories in config.toml. Other types too, such as --ext "
+                "pdf,docx: their copies are moved to the quarantine. Default: media "
+                "(every photo, RAW and video)."
+            ).format(categories=", ".join(BUILTIN_CATEGORIES)),
             rich_help_panel=_panel_scan(),
             show_default=False,
         ),

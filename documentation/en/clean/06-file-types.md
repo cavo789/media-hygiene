@@ -15,27 +15,30 @@ Files are recognised by their extension, whatever its case:
 | RAW (decoded by LibRaw, previewed from the JPEG the camera embeds) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Videos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 
-`media-hygiene audit --help` lists them too. [Sidecars](../reference-sidecars.md) (`.xmp`, `.aae`,
+`media-hygiene config` lists them too, as the built-in categories `photo` (images), `raw`,
+`video` and `media` (the three). [Sidecars](../reference-sidecars.md) (`.xmp`, `.aae`,
 `.thm`) are not analysed on their own: they follow their photo.
 
 ## Only some types
 
-`--ext` takes one or more extensions, comma-separated or repeated (`--ext heic --ext mp4`); case
-and leading dot do not matter. For instance, only the iPhone photos and the videos:
+`--ext` takes one or more categories or extensions, comma-separated or repeated (`--ext heic
+--ext mp4`); case does not matter. A category names a whole list: `--ext video` analyses the
+15 video extensions, `--ext photo,raw` every picture but no video. For instance, only the iPhone
+photos and the videos:
 
 ```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
   -v media-hygiene-cache:/cache `
-  cavo789/media-hygiene audit --ext heic,mp4
+  cavo789/media-hygiene audit --ext heic,video
 ```
 
 The audit starts by saying what it analyses:
 
-<!-- capture: audit-ext.txt|Only these|└ -->
+<!-- capture: audit-ext.txt|Only analysed|└ -->
 ```text
-⚠️  Only these extensions are analysed: .heic, .mp4.
+⚠️  Only analysed: heic, video.
 
 Audit summary
 ┌────────────────────────────────────┬────────┐
@@ -47,6 +50,29 @@ Audit summary
 │ Duration                           │    0 s │
 └────────────────────────────────────┴────────┘
 ```
+
+A value without a dot is a category when one has that name, otherwise an extension: `--ext pdf`
+means the extension. Write the dot to ask for an extension that is also a category's name:
+`--ext .raw`. A name close to a category (`--ext photos`) is refused, with the right spelling:
+without that check, it would silently analyse nothing.
+
+## Your own categories
+
+Name the lists you type often in the [configuration file](07-configuration-file.md), under
+`[scan.categories]`:
+
+```toml
+[scan.categories]
+documents = ["pdf", "docx", "doc", "odt", "txt"]
+web = ["png", "webp", "svg"]
+```
+
+Then `--ext documents`, or `extensions = ["documents"]` in `[scan]`. A name holds letters,
+digits, `-` and `_`; a category lists extensions, never other categories; `photo`, `raw`,
+`video` and `media` cannot be redefined. A category only names a list: each file is still
+handled by its extension. With `web` above, the PNG files are images (checked, previewed, their
+copies deleted) and the SVG files are other files (compared only, their copies moved to the
+quarantine, see below).
 
 ## Other file types
 
@@ -75,8 +101,9 @@ copy" breaks one of them.
 - **Software folders are skipped**: `.git`, `.hg`, `.svn`, `node_modules`, `.venv`, `venv`,
   `site-packages`, `__pycache__`, `AppData`, `ProgramData`, `Program Files`,
   `Program Files (x86)` and `Windows`, whatever their case.
-- **A typo is not refused**: `--ext jpgg` is a valid extension that simply matches nothing. The
-  audit names the extensions that are not photos or videos: read that warning.
+- **An extension typo is not refused**: `--ext jpgg` is a valid extension that simply matches
+  nothing (only names close to a category are refused). The audit names the extensions that
+  are not photos or videos: read that warning.
 - **`--ext` still limits the analysis**: `--ext jpg,pdf` analyses JPEG photos and PDF documents,
   not the RAW files and videos.
 

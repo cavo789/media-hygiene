@@ -45,7 +45,7 @@ Le tri commence par un audit (rapide, grâce au cache), puis vous attend :
 ```text
 ✅ Tri prêt sur le port 8080 : chaque décision est enregistrée aussitôt dans
 decisions.json, dans le dossier monté sur /reports. Ctrl+C arrête le tri.
-💡 Son adresse sur votre ordinateur : lancez 'docker port 73eec1d953f4 8080'
+💡 Son adresse sur votre ordinateur : lancez 'docker port da8a46c48993 8080'
 dans un autre terminal, puis ouvrez http://<cette adresse> dans votre
 navigateur.
 ```

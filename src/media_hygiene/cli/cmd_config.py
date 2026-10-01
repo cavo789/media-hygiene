@@ -8,6 +8,7 @@ import typer
 from rich.table import Table
 
 from media_hygiene.cli.context import runtime_of
+from media_hygiene.config.categories import BUILTIN_CATEGORIES
 from media_hygiene.config.loader import Origin
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
@@ -46,6 +47,8 @@ def config_command(ctx: typer.Context) -> None:
             table.add_row(f"{section}.{key}", str(value), origin)
     runtime.output.show(table)
     runtime.output.blank()
+    runtime.output.show(_categories_table(runtime))
+    runtime.output.blank()
     runtime.output.show(_mounts_table(runtime))
     runtime.output.blank()
     config_file = runtime.locations.config_file
@@ -63,6 +66,31 @@ def config_command(ctx: typer.Context) -> None:
                 "there, commented, on the first run; edit it with any text editor."
             ),
         )
+
+
+def _categories_table(runtime: Runtime) -> Table:
+    """Every category `--ext` accepts, built in or from `[scan.categories]`.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        The table: name, extensions, origin.
+    """
+    table = Table(title=_("Extension categories (--ext)"), title_justify="left")
+    for header in (_("Category"), _("Extensions"), _("Origin")):
+        table.add_column(header, overflow="fold")
+    user = _origin_label(runtime.loaded.origin_of("scan", "categories"))
+    rows = [
+        (name, listed, _("built-in")) for name, listed in BUILTIN_CATEGORIES.items()
+    ]
+    rows += [
+        (name, listed, user)
+        for name, listed in runtime.settings.scan.categories.items()
+    ]
+    for name, listed, origin in rows:
+        table.add_row(name, ", ".join(ext.lstrip(".") for ext in listed), origin)
+    return table
 
 
 def _mounts_table(runtime: Runtime) -> Table:

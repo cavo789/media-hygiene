@@ -35,7 +35,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5](clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
 | `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
-| `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces extensions (`--ext png,webp`) ; toutes celles des photos, RAW et vidéos par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
+| `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
@@ -137,14 +137,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que les fichiers ayant ces extensions, p. ex.  │
-│                     --ext png,webp (répétable). D'autres types aussi, comme  │
-│                     --ext pdf,docx : leurs copies sont déplacées en          │
-│                     quarantaine. Par défaut : toutes les extensions des      │
-│                     photos, RAW et vidéos : 3g2, 3gp, arw, avi, avif, bmp,   │
-│                     cr2, cr3, dng, flv, gif, heic, heif, jpe, jpeg, jpg,     │
-│                     m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, nef, orf, pef, │
-│                     png, raf, rw2, srw, tif, tiff, ts, webm, webp, wmv.      │
+│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
+│                     photo,video ou --ext png,webp (répétable). Catégories :  │
+│                     photo, raw, video, media et celles de scan.categories    │
+│                     dans config.toml. D'autres types aussi, comme --ext      │
+│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
+│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -224,14 +222,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que les fichiers ayant ces extensions, p. ex.  │
-│                     --ext png,webp (répétable). D'autres types aussi, comme  │
-│                     --ext pdf,docx : leurs copies sont déplacées en          │
-│                     quarantaine. Par défaut : toutes les extensions des      │
-│                     photos, RAW et vidéos : 3g2, 3gp, arw, avi, avif, bmp,   │
-│                     cr2, cr3, dng, flv, gif, heic, heif, jpe, jpeg, jpg,     │
-│                     m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, nef, orf, pef, │
-│                     png, raf, rw2, srw, tif, tiff, ts, webm, webp, wmv.      │
+│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
+│                     photo,video ou --ext png,webp (répétable). Catégories :  │
+│                     photo, raw, video, media et celles de scan.categories    │
+│                     dans config.toml. D'autres types aussi, comme --ext      │
+│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
+│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -339,14 +335,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que les fichiers ayant ces extensions, p. ex.  │
-│                     --ext png,webp (répétable). D'autres types aussi, comme  │
-│                     --ext pdf,docx : leurs copies sont déplacées en          │
-│                     quarantaine. Par défaut : toutes les extensions des      │
-│                     photos, RAW et vidéos : 3g2, 3gp, arw, avi, avif, bmp,   │
-│                     cr2, cr3, dng, flv, gif, heic, heif, jpe, jpeg, jpg,     │
-│                     m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, nef, orf, pef, │
-│                     png, raf, rw2, srw, tif, tiff, ts, webm, webp, wmv.      │
+│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
+│                     photo,video ou --ext png,webp (répétable). Catégories :  │
+│                     photo, raw, video, media et celles de scan.categories    │
+│                     dans config.toml. D'autres types aussi, comme --ext      │
+│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
+│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

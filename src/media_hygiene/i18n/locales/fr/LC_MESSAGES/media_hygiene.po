@@ -693,6 +693,12 @@ msgstr "Exemple :"
 msgid "Existing folders"
 msgstr "Dossiers existants"
 
+msgid "Extension categories (--ext)"
+msgstr "Catégories d'extensions (--ext)"
+
+msgid "Extensions"
+msgstr "Extensions"
+
 msgid "Extra copies that can be deleted"
 msgstr "Copies en trop, supprimables"
 
@@ -1287,26 +1293,39 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Only analyse files with these extensions, e.g. --ext png,webp "
-"(repeatable). Other types too, such as --ext pdf,docx: their copies are "
-"moved to the quarantine. Default: every photo, RAW and video extension: "
-"{extensions}."
+"Only analyse these categories or extensions, e.g. --ext photo,video or "
+"--ext png,webp (repeatable). Categories: {categories} and those of "
+"scan.categories in config.toml. Other types too, such as --ext pdf,docx: "
+"their copies are moved to the quarantine. Default: media (every photo, "
+"RAW and video)."
 msgstr ""
-"N'analyse que les fichiers ayant ces extensions, p. ex. --ext png,webp "
-"(répétable). D'autres types aussi, comme --ext pdf,docx : leurs copies "
-"sont déplacées en quarantaine. Par défaut : toutes les extensions des "
-"photos, RAW et vidéos : {extensions}."
+"N'analyse que ces catégories ou extensions, p. ex. --ext photo,video ou "
+"--ext png,webp (répétable). Catégories : {categories} et celles de "
+"scan.categories dans config.toml. D'autres types aussi, comme --ext "
+"pdf,docx : leurs copies sont déplacées en quarantaine. Par défaut : media"
+" (toutes les photos, RAW et vidéos)."
 
 msgid ""
-"Only analyse these extensions, e.g. [\"png\", \"webp\"]. Empty: every "
-"photo, RAW and video extension (media-hygiene audit --help lists them). "
-"Other types are allowed, such as [\"pdf\", \"docx\"]: their copies are "
-"moved to the quarantine, never deleted."
+"Only analyse these categories or extensions, e.g. [\"photo\", \"video\"] "
+"or [\"png\", \"webp\"]. Built-in categories: photo, raw, video and media "
+"(the three); yours are defined below. Empty: media, every photo, RAW and "
+"video extension. Other types are allowed, such as [\"pdf\", \"docx\"]: "
+"their copies are moved to the quarantine, never deleted. A name without a"
+" dot is a category when one has that name, otherwise an extension: write "
+"\".raw\" for the extension."
 msgstr ""
-"N'analyser que ces extensions, p. ex. [\"png\", \"webp\"]. Vide : toutes "
-"celles des photos, RAW et vidéos (media-hygiene audit --help les liste). "
-"D'autres types sont permis, comme [\"pdf\", \"docx\"] : leurs copies sont"
-" déplacées en quarantaine, jamais supprimées."
+"N'analyser que ces catégories ou extensions, p. ex. [\"photo\", "
+"\"video\"] ou [\"png\", \"webp\"]. Catégories intégrées : photo, raw, "
+"video et media (les trois) ; les vôtres se définissent plus bas. Vide : "
+"media, toutes les extensions de photos, RAW et vidéos. D'autres types "
+"sont permis, comme [\"pdf\", \"docx\"] : leurs copies sont déplacées en "
+"quarantaine, jamais supprimées. Un nom sans point est une catégorie quand"
+" l'une porte ce nom, sinon une extension : écrivez \".raw\" pour "
+"l'extension."
+
+#, python-brace-format
+msgid "Only analysed: {scope}."
+msgstr "Seuls sont analysés : {scope}."
 
 msgid ""
 "Only files of the same size can be identical: their first and last 64 KB "
@@ -1319,10 +1338,6 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 "Seulement les fichiers de cette année, ou de ces années : 2016 ou "
 "2015-2017."
-
-#, python-brace-format
-msgid "Only these extensions are analysed: {extensions}."
-msgstr "Seules ces extensions sont analysées : {extensions}."
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
@@ -2205,6 +2220,17 @@ msgstr ""
 "Vos décisions — paires inversées : {swapped}, paires laissées telles "
 "quelles : {skipped}."
 
+msgid ""
+"Your own categories: a name, then its extensions (not other categories). "
+"The built-in ones cannot be redefined. Variable: "
+"MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this "
+"whole table."
+msgstr ""
+"Vos propres catégories : un nom, puis ses extensions (pas d'autres "
+"catégories). Les catégories intégrées ne peuvent pas être redéfinies. "
+"Variable : MEDIA_HYGIENE_SCAN__CATEGORIES contient un objet JSON qui "
+"remplace toute cette table."
+
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
 
@@ -2259,6 +2285,9 @@ msgstr "audit"
 
 msgid "broken files"
 msgstr "fichiers cassés"
+
+msgid "built-in"
+msgstr "intégrée"
 
 msgid "camera (EXIF)"
 msgstr "appareil (EXIF)"
@@ -2772,6 +2801,12 @@ msgstr "{folder} : des copies dans un même dossier ne peuvent pas être invers�
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
+
+#, python-brace-format
+msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgstr ""
+"{name} doit contenir un objet JSON, p. ex. {{\"documents\": [\"pdf\", "
+"\"docx\"]}}"
 
 #, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."

@@ -15,6 +15,7 @@ from media_hygiene.services.policy import unmounted_folders
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from media_hygiene.config.settings import ScanSettings
     from media_hygiene.scan.aliases import Alias
     from media_hygiene.services.runtime import Runtime
 
@@ -111,9 +112,7 @@ def warn_about_scope(runtime: Runtime) -> None:
     scan = runtime.settings.scan
     if scan.extensions:
         runtime.output.warning(
-            _("Only these extensions are analysed: {extensions}.").format(
-                extensions=", ".join(scan.extensions)
-            ),
+            _("Only analysed: {scope}.").format(scope=_scope(scan)),
         )
     if scan.other_files:
         runtime.output.warning(
@@ -128,3 +127,21 @@ def warn_about_scope(runtime: Runtime) -> None:
                 "are skipped: there, where a file lies makes a program work."
             )
         )
+
+
+def _scope(scan: ScanSettings) -> str:
+    """Name what `--ext` asked for: categories by name, the user's with their list.
+
+    Args:
+        scan: The `[scan]` settings.
+
+    Returns:
+        E.g. `video, documents (pdf, docx, txt), heic`.
+    """
+    labels = (
+        f"{item} ({', '.join(ext.lstrip('.') for ext in scan.categories[item])})"
+        if item in scan.categories
+        else item.lstrip(".")
+        for item in scan.extensions
+    )
+    return ", ".join(labels)

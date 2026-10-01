@@ -552,6 +552,12 @@ msgstr ""
 msgid "Existing folders"
 msgstr ""
 
+msgid "Extension categories (--ext)"
+msgstr ""
+
+msgid "Extensions"
+msgstr ""
+
 msgid "Extra copies that can be deleted"
 msgstr ""
 
@@ -1063,17 +1069,25 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Only analyse files with these extensions, e.g. --ext png,webp "
-"(repeatable). Other types too, such as --ext pdf,docx: their copies are "
-"moved to the quarantine. Default: every photo, RAW and video extension: "
-"{extensions}."
+"Only analyse these categories or extensions, e.g. --ext photo,video or "
+"--ext png,webp (repeatable). Categories: {categories} and those of "
+"scan.categories in config.toml. Other types too, such as --ext pdf,docx: "
+"their copies are moved to the quarantine. Default: media (every photo, "
+"RAW and video)."
 msgstr ""
 
 msgid ""
-"Only analyse these extensions, e.g. [\"png\", \"webp\"]. Empty: every "
-"photo, RAW and video extension (media-hygiene audit --help lists them). "
-"Other types are allowed, such as [\"pdf\", \"docx\"]: their copies are "
-"moved to the quarantine, never deleted."
+"Only analyse these categories or extensions, e.g. [\"photo\", \"video\"] "
+"or [\"png\", \"webp\"]. Built-in categories: photo, raw, video and media "
+"(the three); yours are defined below. Empty: media, every photo, RAW and "
+"video extension. Other types are allowed, such as [\"pdf\", \"docx\"]: "
+"their copies are moved to the quarantine, never deleted. A name without a"
+" dot is a category when one has that name, otherwise an extension: write "
+"\".raw\" for the extension."
+msgstr ""
+
+#, python-brace-format
+msgid "Only analysed: {scope}."
 msgstr ""
 
 msgid ""
@@ -1082,10 +1096,6 @@ msgid ""
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
-msgstr ""
-
-#, python-brace-format
-msgid "Only these extensions are analysed: {extensions}."
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
@@ -1832,6 +1842,13 @@ msgstr ""
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
 msgstr ""
 
+msgid ""
+"Your own categories: a name, then its extensions (not other categories). "
+"The built-in ones cannot be redefined. Variable: "
+"MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this "
+"whole table."
+msgstr ""
+
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr ""
 
@@ -1881,6 +1898,9 @@ msgid "audit"
 msgstr ""
 
 msgid "broken files"
+msgstr ""
+
+msgid "built-in"
 msgstr ""
 
 msgid "camera (EXIF)"
@@ -2327,6 +2347,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
 msgstr ""
 
 #, python-brace-format

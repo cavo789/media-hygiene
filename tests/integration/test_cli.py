@@ -117,7 +117,7 @@ def test_ext_limits_the_audit_to_some_extensions(cli: CliRunner) -> None:
     """`--ext` analyses only the extensions asked for and says so, typos included."""
     result = run(cli, "audit", "--ext", "PNG", "--ext", ".webp,png")
     assert result.exit_code == 0, result.output
-    assert "Only these extensions are analysed: .png, .webp." in result.output
+    assert "Only analysed: png, webp." in result.output
     assert re.search(r"Media files scanned\s*│\s*1 │", result.output)
     typo = run(cli, "audit", "--ext", "jpgg")
     assert typo.exit_code == 0
@@ -125,4 +125,7 @@ def test_ext_limits_the_audit_to_some_extensions(cli: CliRunner) -> None:
     assert "invalid extension .*" in run(cli, "audit", "--ext", "*").output
     assert ".xmp: sidecars follow" in run(cli, "audit", "--ext", "xmp").output
     help_text = " ".join(run(cli, "audit", "--help").output.replace("│", " ").split())
-    assert "Default: every photo, RAW and video extension: 3g2, 3gp," in help_text
+    assert (
+        "Categories: photo, raw, video, media and those of scan.categories" in help_text
+    )
+    assert "did you mean photo?" in run(cli, "audit", "--ext", "photos").output
