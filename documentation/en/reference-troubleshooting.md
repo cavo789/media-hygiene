@@ -62,3 +62,17 @@ ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.
   Start it again; your choices are kept.
+
+## Accents look wrong with `type` in PowerShell
+
+`type .\decisions.json` shows `DÃ©cembre` instead of `Décembre`: the file is fine. The tool
+writes it in UTF-8, as JSON expects, and Windows PowerShell 5.1 reads a file without a
+byte order mark in the old Windows code page. To see it right:
+
+```powershell
+Get-Content -Encoding UTF8 .\decisions.json
+```
+
+PowerShell 7 and Notepad show it right as is. The tool also reads back the files Windows tools
+rewrite: "UTF-8 with BOM" from Notepad, `Set-Content -Encoding UTF8`, or the UTF-16 of `>` and
+`Out-File`. The same goes for `config.toml`.

@@ -126,7 +126,9 @@ explorer "$HOME\media-hygiene\reports"
 ```
 
 The file lists, series by series, the shots kept and the shots set aside (a series set aside
-with `X` has an empty `kept` list):
+with `X` has an empty `kept` list). Accents look wrong with `type` in PowerShell? The file is
+fine: see [troubleshooting](../reference-troubleshooting.md#accents-look-wrong-with-type-in-powershell).
+The one of this example:
 
 <!-- capture: decisions.json -->
 ```json

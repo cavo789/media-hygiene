@@ -65,3 +65,18 @@ de l'ignorer ([étape 7](clean/07-configuration-file.md#le-remplir)).
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
 - *« Le tri ne tourne plus »* : la fenêtre du tri a été fermée ou arrêtée avec Ctrl+C.
   Relancez-le ; vos choix sont conservés.
+
+## Les accents s'affichent mal avec `type` dans PowerShell
+
+`type .\decisions.json` affiche `DÃ©cembre` au lieu de `Décembre` : le fichier est bon. L'outil
+l'écrit en UTF-8, comme le veut JSON, et Windows PowerShell 5.1 lit un fichier sans marque
+d'ordre des octets (BOM) dans l'ancienne page de code de Windows. Pour le voir correctement :
+
+```powershell
+Get-Content -Encoding UTF8 .\decisions.json
+```
+
+PowerShell 7 et le Bloc-notes l'affichent correctement tel quel. L'outil relit aussi les
+fichiers réécrits par les outils Windows : « UTF-8 avec BOM » du Bloc-notes,
+`Set-Content -Encoding UTF8`, ou l'UTF-16 de `>` et `Out-File`. Il en va de même pour
+`config.toml`.

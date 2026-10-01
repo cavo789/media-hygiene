@@ -12,6 +12,7 @@ from media_hygiene.config.settings import Settings
 from media_hygiene.constants import ENV_PREFIX
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
+from media_hygiene.text_files import read_user_text
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -28,7 +29,7 @@ _SECTIONS: Final[dict[str, type[BaseModel]]] = {
 
 
 def read_file_layer(config_file: Path) -> Layer:
-    """Read `config.toml`; a missing file is an empty layer.
+    """Read `config.toml`, UTF-8 or UTF-16 as Windows editors save it; missing: empty.
 
     Args:
         config_file: Path of the configuration file.
@@ -42,9 +43,8 @@ def read_file_layer(config_file: Path) -> Layer:
     if not config_file.is_file():
         return {}
     try:
-        with config_file.open("rb") as stream:
-            return tomllib.load(stream)
-    except tomllib.TOMLDecodeError as exc:
+        return tomllib.loads(read_user_text(config_file))
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
         message = _("The configuration file {path} is not valid TOML: {error}")
         tip = _("Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'.")
         raise ConfigError(message.format(path=config_file, error=exc), tip) from exc

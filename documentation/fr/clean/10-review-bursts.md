@@ -131,7 +131,9 @@ explorer "$HOME\media-hygiene\reports"
 ```
 
 Le fichier liste, série par série, les photos gardées et les photos écartées (une série écartée
-avec `X` a une liste `kept` vide) :
+avec `X` a une liste `kept` vide). Les accents s'affichent mal avec `type` dans PowerShell ? Le
+fichier est bon : voir le [dépannage](../reference-troubleshooting.md#les-accents-saffichent-mal-avec-type-dans-powershell).
+Celui de cet exemple :
 
 <!-- capture: decisions.json -->
 ```json

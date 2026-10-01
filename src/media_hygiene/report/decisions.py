@@ -24,6 +24,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.plan.review import PairAction
+from media_hygiene.text_files import decode_user_text
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -117,7 +118,7 @@ class DecisionsFile(BaseModel):
 
 
 def read_decisions(path: Path) -> DecisionsFile:
-    """Read and validate a decisions file.
+    """Read and validate a decisions file, UTF-8 or UTF-16 as Windows tools save it.
 
     Args:
         path: The file, in the container.
@@ -135,7 +136,12 @@ def read_decisions(path: Path) -> DecisionsFile:
         message = _("Cannot read the decisions file {path}.").format(path=path)
         raise DecisionsError(message, tip) from exc
     try:
-        return DecisionsFile.model_validate_json(raw)
+        return DecisionsFile.model_validate_json(decode_user_text(raw))
+    except UnicodeDecodeError as exc:
+        message = _("{path} is not a valid decisions file ({error}).").format(
+            path=path, error=exc.reason
+        )
+        raise DecisionsError(message, tip) from exc
     except ValidationError as exc:
         message = _("{path} is not a valid decisions file ({error}).").format(
             path=path, error=exc.errors()[0]["msg"]
@@ -145,6 +151,8 @@ def read_decisions(path: Path) -> DecisionsFile:
 
 def write_decisions(path: Path, decisions: DecisionsFile) -> None:
     """Save a decisions file at once: a crash never leaves half a file behind.
+
+    UTF-8 without byte order mark, as JSON expects (RFC 8259, section 8.1).
 
     Args:
         path: The file, in the container.
