@@ -73,6 +73,9 @@ msgstr "« {text} » n'est pas un dossier sous la cible."
 msgid "'{text}': choose {yes} or {no}."
 msgstr "« {text} » : choisissez {yes} ou {no}."
 
+msgid "(always skipped)"
+msgstr "(toujours ignorés)"
+
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
 
@@ -784,6 +787,37 @@ msgstr ""
 msgid "Folder"
 msgstr "Dossier"
 
+msgid ""
+"Folder name never analysed, wherever it is, case ignored; * and ? "
+"allowed, e.g. --exclude-name Thumbnails,.Trash-* (repeatable). Adds to "
+"the system folders already skipped. For one precise folder, use "
+"--exclude."
+msgstr ""
+"Nom de dossier jamais analysé, où qu'il soit, sans tenir compte de la "
+"casse ; * et ? permis, p. ex. --exclude-name Thumbnails,.Trash-* "
+"(répétable). S'ajoute aux dossiers système déjà ignorés. Pour un dossier "
+"précis, utilisez --exclude."
+
+msgid ""
+"Folder names never analysed, wherever they are, on every disk: they add "
+"to the system and trash folders always skipped ('media-hygiene config' "
+"lists them). Globs matching the whole name, case ignored: * stands for "
+"any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", "
+"\"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names "
+"hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as"
+" operators. A comma separates names: write ? in its place. For one "
+"precise folder, use excluded in [folders]."
+msgstr ""
+"Noms de dossiers jamais analysés, où qu'ils soient, sur tous les disques "
+": ils s'ajoutent aux dossiers système et corbeilles toujours ignorés "
+"('media-hygiene config' les liste). Motifs couvrant le nom entier, sans "
+"tenir compte de la casse : * remplace n'importe quels caractères, ? un "
+"seul, p. ex. [\"Thumbnails\", \".Trash-*\", \"*.lrdata\"]. Des motifs, "
+"pas des expressions régulières comme dans [keep] : les noms de dossiers "
+"contiennent des points et des dollars ($RECYCLE.BIN), qu'une expression "
+"régulière lit comme des opérateurs. Une virgule sépare les noms : écrivez"
+" ? à sa place. Pour un dossier précis, utilisez excluded dans [folders]."
+
 msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr "Dossier jamais analysé, p. ex. une vraie sauvegarde à garder. Répétable."
 
@@ -817,6 +851,10 @@ msgstr "Dossiers analysés :"
 
 msgid "Folders sharing identical files"
 msgstr "Dossiers partageant des fichiers identiques"
+
+#, python-brace-format
+msgid "Folders skipped by name, wherever they are: {names}."
+msgstr "Dossiers ignorés par leur nom, où qu'ils soient : {names}."
 
 #, python-brace-format
 msgid ""

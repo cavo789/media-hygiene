@@ -42,7 +42,7 @@ def czkawka_command(runtime: Runtime) -> CzkawkaCommand:
 
     Same host folders on the same mount points (Czkawka reports container paths),
     same extensions (categories replaced by theirs: `-x` takes extensions only),
-    same excluded folders, every file size.
+    same excluded folders and folder names, every file size.
 
     Args:
         runtime: Settings, mount points and output.
@@ -66,6 +66,7 @@ def czkawka_command(runtime: Runtime) -> CzkawkaCommand:
             excluded=tuple(
                 mapper.to_container(folder) for folder in settings.folders.excluded
             ),
+            excluded_names=settings.scan.excluded_names,
         ),
     )
 

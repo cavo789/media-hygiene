@@ -33,6 +33,13 @@ Réglages effectifs
 │ folders.excluded           │ []                          │ défaut            │
 │ scan.categories            │ {}                          │ défaut            │
 │ scan.extensions            │ []                          │ défaut            │
+│ scan.excluded_names        │ []                          │ défaut            │
+│ (toujours ignorés)         │ ['$recycle.bin', 'system    │ intégrée          │
+│                            │ volume information',        │                   │
+│                            │ '@eadir', '#recycle',       │                   │
+│                            │ '@recycle', '.@__thumb',    │                   │
+│                            │ '.trash', '.trash-*',       │                   │
+│                            │ '.trashes', '.thumbnails']  │                   │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
 │                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
 │                            │ \\d+',                      │                   │
@@ -228,6 +235,7 @@ protected = []
 excluded = ['D:\sauvegarde']
 
 [scan]
+excluded_names = []    # noms de dossiers ignorés partout, p. ex. ["Thumbnails", ".Trash-*"]
 extensions = []        # p. ex. ["photo", "mp4"] ; vide : photos, RAW et vidéos
 
 [scan.categories]      # vos propres catégories pour --ext
@@ -245,6 +253,11 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
 - **`excluded`** : jamais analysés, pour une vraie sauvegarde (`--exclude`).
+- **`excluded_names`** : noms de dossiers jamais analysés, où qu'ils soient ; des motifs comme
+  `.Trash-*`, sans tenir compte de la casse, ajoutés aux dossiers système toujours ignorés
+  (`--exclude-name`, [étape 5](05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques)).
+  Des motifs, pas les expressions régulières de `[keep]` plus bas : `$RECYCLE.BIN` en expression
+  régulière ne correspond jamais.
 - **`extensions`** : seulement ces catégories ou types de fichiers (`--ext`).
 - **`[scan.categories]`** : vos noms pour des listes d'extensions, à côté des catégories
   intégrées `photo`, `raw`, `video` et `media` ([étape 6](06-file-types.md#vos-propres-catégories)).
@@ -296,6 +309,13 @@ Réglages effectifs
 │ folders.excluded           │ []                          │ config.toml       │
 │ scan.categories            │ {}                          │ config.toml       │
 │ scan.extensions            │ []                          │ config.toml       │
+│ scan.excluded_names        │ []                          │ config.toml       │
+│ (toujours ignorés)         │ ['$recycle.bin', 'system    │ intégrée          │
+│                            │ volume information',        │                   │
+│                            │ '@eadir', '#recycle',       │                   │
+│                            │ '@recycle', '.@__thumb',    │                   │
+│                            │ '.trash', '.trash-*',       │                   │
+│                            │ '.trashes', '.thumbnails']  │                   │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
 │                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
 │                            │ \\d+',                      │                   │

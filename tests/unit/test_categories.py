@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.config.loader import Origin, load_settings
-from media_hygiene.config.settings import ScanSettings
+from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.constants import (
     IMAGE_EXTENSIONS,
     MEDIA_EXTENSIONS,

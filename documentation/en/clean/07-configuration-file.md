@@ -32,6 +32,13 @@ Effective settings
 │ folders.excluded           │ []                               │ default      │
 │ scan.categories            │ {}                               │ default      │
 │ scan.extensions            │ []                               │ default      │
+│ scan.excluded_names        │ []                               │ default      │
+│ (always skipped)           │ ['$recycle.bin', 'system volume  │ built-in     │
+│                            │ information', '@eadir',          │              │
+│                            │ '#recycle', '@recycle',          │              │
+│                            │ '.@__thumb', '.trash',           │              │
+│                            │ '.trash-*', '.trashes',          │              │
+│                            │ '.thumbnails']                   │              │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF] │ default      │
 │                            │ ?|_DSC|PICT|CIMG)[_-]?\\d+',     │              │
 │                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([ │              │
@@ -205,6 +212,7 @@ protected = []
 excluded = ['D:\backup']
 
 [scan]
+excluded_names = []    # folder names skipped on every disk, e.g. ["Thumbnails", ".Trash-*"]
 extensions = []        # e.g. ["photo", "mp4"]; empty: every photo, RAW and video
 
 [scan.categories]      # your own categories for --ext
@@ -221,6 +229,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
 - **`protected`**: never modified, and their files are always the copies kept (`--protect`).
 - **`excluded`**: never analysed, for a real backup (`--exclude`).
+- **`excluded_names`**: folder names never analysed, wherever they are; globs such as `.Trash-*`,
+  case ignored, added to the system folders always skipped (`--exclude-name`,
+  [step 5](05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk)). Globs, not the regular
+  expressions of `[keep]` below: `$RECYCLE.BIN` as a regular expression never matches.
 - **`extensions`**: only these categories or file types (`--ext`).
 - **`[scan.categories]`**: your names for lists of extensions, next to the built-in categories
   `photo`, `raw`, `video` and `media` ([step 6](06-file-types.md#your-own-categories)).
@@ -266,6 +278,13 @@ Effective settings
 │ folders.excluded           │ []                               │ config.toml  │
 │ scan.categories            │ {}                               │ config.toml  │
 │ scan.extensions            │ []                               │ config.toml  │
+│ scan.excluded_names        │ []                               │ config.toml  │
+│ (always skipped)           │ ['$recycle.bin', 'system volume  │ built-in     │
+│                            │ information', '@eadir',          │              │
+│                            │ '#recycle', '@recycle',          │              │
+│                            │ '.@__thumb', '.trash',           │              │
+│                            │ '.trash-*', '.trashes',          │              │
+│                            │ '.thumbnails']                   │              │
 │ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF] │ default      │
 │                            │ ?|_DSC|PICT|CIMG)[_-]?\\d+',     │              │
 │                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([ │              │

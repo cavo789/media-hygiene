@@ -40,7 +40,7 @@ def keep_policy(
 
 
 def scan_filters(settings: Settings, mapper: HostPathMapper) -> ScanFilters:
-    """Build the scan filters from the excluded host paths and the extensions.
+    """Build the scan filters from the excluded host paths and names, the extensions.
 
     Categories (`photo`, `documents`) are replaced by their extensions.
 
@@ -54,6 +54,7 @@ def scan_filters(settings: Settings, mapper: HostPathMapper) -> ScanFilters:
     return ScanFilters(
         excluded=tuple(mapper.to_container(p) for p in settings.folders.excluded),
         extensions=frozenset(settings.scan.resolved),
+        excluded_names=settings.scan.excluded_names,
     )
 
 

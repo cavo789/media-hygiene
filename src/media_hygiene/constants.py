@@ -136,15 +136,6 @@ VIDEO_EXTENSIONS: Final = frozenset(
 MEDIA_EXTENSIONS: Final = IMAGE_EXTENSIONS | RAW_EXTENSIONS | VIDEO_EXTENSIONS
 # Sidecars hold the metadata or edits of their photo: it is kept; moved once orphan.
 SIDECAR_EXTENSIONS: Final = frozenset({".aae", ".thm", ".xmp"})
-# System folders that never hold user media (Windows, Synology, desktop trash bins).
-EXCLUDED_DIR_NAMES: Final = frozenset(
-    {"$recycle.bin", "system volume information", "@eadir", "#recycle", ".trash"},
-)
-# Software folders, skipped when other files than media are analysed (paths matter).
-APP_DIR_NAMES: Final = frozenset(
-    {".git", ".hg", ".svn", ".venv", "venv", "node_modules", "site-packages", "windows"}
-    | {"__pycache__", "appdata", "programdata", "program files", "program files (x86)"},
-)
 # Names cameras and apps generate, matched whole (no extension/copy mark, any case).
 GENERATED_NAMES: Final = (
     r"_?(IMG|VID|MVI|MOV|SAM|DSC[NF]?|_DSC|PICT|CIMG)[_-]?\d+",

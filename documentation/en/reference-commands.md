@@ -35,6 +35,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |
 | `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
@@ -133,12 +134,20 @@ both languages (`--locale fr --help`). Here is what they print:
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
-│ --ext        <str>  Only analyse these categories or extensions, e.g. --ext  │
-│                     photo,video or --ext png,webp (repeatable). Categories:  │
-│                     photo, raw, video, media and those of scan.categories in │
-│                     config.toml. Other types too, such as --ext pdf,docx:    │
-│                     their copies are moved to the quarantine. Default: media │
-│                     (every photo, RAW and video).                            │
+│ --ext                 <str>  Only analyse these categories or extensions,    │
+│                              e.g. --ext photo,video or --ext png,webp        │
+│                              (repeatable). Categories: photo, raw, video,    │
+│                              media and those of scan.categories in           │
+│                              config.toml. Other types too, such as --ext     │
+│                              pdf,docx: their copies are moved to the         │
+│                              quarantine. Default: media (every photo, RAW    │
+│                              and video).                                     │
+│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
+│                              case ignored; * and ? allowed, e.g.             │
+│                              --exclude-name Thumbnails,.Trash-*              │
+│                              (repeatable). Adds to the system folders        │
+│                              already skipped. For one precise folder, use    │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -213,12 +222,20 @@ both languages (`--locale fr --help`). Here is what they print:
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
-│ --ext        <str>  Only analyse these categories or extensions, e.g. --ext  │
-│                     photo,video or --ext png,webp (repeatable). Categories:  │
-│                     photo, raw, video, media and those of scan.categories in │
-│                     config.toml. Other types too, such as --ext pdf,docx:    │
-│                     their copies are moved to the quarantine. Default: media │
-│                     (every photo, RAW and video).                            │
+│ --ext                 <str>  Only analyse these categories or extensions,    │
+│                              e.g. --ext photo,video or --ext png,webp        │
+│                              (repeatable). Categories: photo, raw, video,    │
+│                              media and those of scan.categories in           │
+│                              config.toml. Other types too, such as --ext     │
+│                              pdf,docx: their copies are moved to the         │
+│                              quarantine. Default: media (every photo, RAW    │
+│                              and video).                                     │
+│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
+│                              case ignored; * and ? allowed, e.g.             │
+│                              --exclude-name Thumbnails,.Trash-*              │
+│                              (repeatable). Adds to the system folders        │
+│                              already skipped. For one precise folder, use    │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -322,12 +339,20 @@ both languages (`--locale fr --help`). Here is what they print:
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Scan (override scan.* of config.toml) ──────────────────────────────────────╮
-│ --ext        <str>  Only analyse these categories or extensions, e.g. --ext  │
-│                     photo,video or --ext png,webp (repeatable). Categories:  │
-│                     photo, raw, video, media and those of scan.categories in │
-│                     config.toml. Other types too, such as --ext pdf,docx:    │
-│                     their copies are moved to the quarantine. Default: media │
-│                     (every photo, RAW and video).                            │
+│ --ext                 <str>  Only analyse these categories or extensions,    │
+│                              e.g. --ext photo,video or --ext png,webp        │
+│                              (repeatable). Categories: photo, raw, video,    │
+│                              media and those of scan.categories in           │
+│                              config.toml. Other types too, such as --ext     │
+│                              pdf,docx: their copies are moved to the         │
+│                              quarantine. Default: media (every photo, RAW    │
+│                              and video).                                     │
+│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
+│                              case ignored; * and ? allowed, e.g.             │
+│                              --exclude-name Thumbnails,.Trash-*              │
+│                              (repeatable). Adds to the system folders        │
+│                              already skipped. For one precise folder, use    │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

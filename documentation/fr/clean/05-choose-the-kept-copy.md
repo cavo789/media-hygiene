@@ -107,11 +107,37 @@ Dossiers partageant des fichiers identiques
   un exemplaire est gardé (gain de 287,5 Ko).
 ```
 
+## Ignorer un nom de dossier sur tous les disques
+
+Certains dossiers reviennent partout : les `Thumbnails` d'un appareil, les aperçus `*.lrdata` de
+Lightroom, la corbeille propre d'un NAS. Plutôt qu'un `--exclude` par chemin, `--exclude-name`
+ignore un dossier **par son nom**, où qu'il soit :
+
+```powershell
+cavo789/media-hygiene --locale fr audit --exclude-name "Thumbnails,*.lrdata"
+```
+
+- Le nom couvre le nom **entier** du dossier, sans tenir compte de la casse : `Thumbnails`
+  ignore `thumbnails` mais pas `Anciens Thumbnails`. `*` remplace n'importe quels caractères et
+  `?` un seul : `.Trash-*`, `*.lrdata`.
+- Répétez-le, ou séparez les noms par des virgules (un nom contenant une virgule : écrivez `?` à
+  sa place). Un chemin (`D:\sauvegarde`) est refusé : un dossier précis, c'est `--exclude`.
+- Même sens que `--exclude` : pas analysé, donc ni supprimé ni utilisé comme copie gardée.
+  L'audit nomme les noms de dossiers qu'il ignore.
+
+Ces noms s'ajoutent aux dossiers toujours ignorés, parce qu'ils ne contiennent jamais vos
+photos : la corbeille de Windows (`$RECYCLE.BIN`, `System Volume Information`), Synology
+(`@eaDir`, `#recycle`), QNAP (`@Recycle`, `.@__thumb`), les corbeilles Linux et macOS des disques
+externes (`.Trash`, `.Trash-1000`, `.Trashes`) et les caches de vignettes (`.thumbnails`). Une
+corbeille n'est pas qu'un bruit : si sa copie était celle gardée, vider la corbeille perdrait la
+photo. `media-hygiene config` les liste.
+
 ## Les options viennent après la commande
 
-`--prefer`, `--protect` et `--exclude` se placent **après** `audit` (et plus tard après `clean`
-ou `review`). `--locale` est différent : il concerne tout l'outil, il se place donc **avant** la
-commande : `cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Ancien téléphone"`.
+`--prefer`, `--protect`, `--exclude` et `--exclude-name` se placent **après** `audit` (et plus
+tard après `clean` ou `review`). `--locale` est différent : il concerne tout l'outil, il se
+place donc **avant** la commande :
+`cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Ancien téléphone"`.
 
 Vous tapez les mêmes options à chaque fois ? L'[étape 7](07-configuration-file.md) les écrit une
 fois pour toutes dans un fichier.

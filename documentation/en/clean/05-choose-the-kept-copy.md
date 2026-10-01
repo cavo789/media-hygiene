@@ -102,11 +102,35 @@ Folders sharing identical files
   is kept (287.5 KB freed).
 ```
 
+## Skip a folder name on every disk
+
+Some folders come back everywhere: a camera's `Thumbnails`, Lightroom's `*.lrdata` previews, a
+NAS's own recycle bin. Rather than one `--exclude` per path, `--exclude-name` skips a folder **by
+its name**, wherever it is:
+
+```powershell
+cavo789/media-hygiene audit --exclude-name "Thumbnails,*.lrdata"
+```
+
+- The name matches the **whole** folder name, case ignored: `Thumbnails` skips `thumbnails` but
+  not `Old Thumbnails`. `*` stands for any characters and `?` for one: `.Trash-*`, `*.lrdata`.
+- Repeat it, or separate names with commas (a name holding a comma: write `?` in its place). A
+  path (`D:\backup`) is refused: one precise folder is `--exclude`.
+- Same meaning as `--exclude`: not analysed, so neither deleted nor used as the kept copy. The
+  audit names the folder names it skips.
+
+These names add to the folders always skipped, because they never hold your photos: the Windows
+recycle bin (`$RECYCLE.BIN`, `System Volume Information`), Synology (`@eaDir`, `#recycle`), QNAP
+(`@Recycle`, `.@__thumb`), the Linux and macOS trash bins of external disks (`.Trash`,
+`.Trash-1000`, `.Trashes`) and thumbnail caches (`.thumbnails`). A trash is not only noise: if
+its copy were the one kept, emptying the trash would lose the photo. `media-hygiene config` lists
+them.
+
 ## Options come after the command
 
-`--prefer`, `--protect` and `--exclude` go **after** `audit` (and later after `clean` or
-`review`). `--locale` is different: it concerns the whole tool, so it goes **before** the
-command: `cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Old phone"`.
+`--prefer`, `--protect`, `--exclude` and `--exclude-name` go **after** `audit` (and later after
+`clean` or `review`). `--locale` is different: it concerns the whole tool, so it goes **before**
+the command: `cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Old phone"`.
 
 Typing the same options every time? [Step 7](07-configuration-file.md) writes them once in a
 file.

@@ -15,7 +15,7 @@ from media_hygiene.services.policy import unmounted_folders
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from media_hygiene.config.settings import ScanSettings
+    from media_hygiene.config.scan_settings import ScanSettings
     from media_hygiene.scan.aliases import Alias
     from media_hygiene.services.runtime import Runtime
 
@@ -98,7 +98,7 @@ def warn_about_aliases(runtime: Runtime, aliases: Sequence[Alias]) -> None:
 
 
 def warn_about_scope(runtime: Runtime) -> None:
-    """Warn about the scope: unmounted folders, extension filter, other files.
+    """Warn about the scope: unmounted folders, extensions, folder names, other files.
 
     Args:
         runtime: Settings, mount points and output.
@@ -113,6 +113,12 @@ def warn_about_scope(runtime: Runtime) -> None:
     if scan.extensions:
         runtime.output.warning(
             _("Only analysed: {scope}.").format(scope=_scope(scan)),
+        )
+    if scan.excluded_names:
+        runtime.output.warning(
+            _("Folders skipped by name, wherever they are: {names}.").format(
+                names=", ".join(scan.excluded_names)
+            ),
         )
     if scan.other_files:
         runtime.output.warning(

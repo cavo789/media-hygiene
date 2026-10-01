@@ -9,7 +9,9 @@ from media_hygiene.scan.filters import ScanFilters
 
 SCOPE = AnalysedScope(
     roots=(Path("/data/c/Photos"),),
-    filters=ScanFilters(excluded=(Path("/data/c/Photos/Backup"),)),
+    filters=ScanFilters(
+        excluded=(Path("/data/c/Photos/Backup"),), excluded_names=("Thumb*",)
+    ),
     broken=frozenset({Path("/data/c/Photos/cut.jpg")}),
 )
 
@@ -41,11 +43,12 @@ def test_differences_are_listed_both_ways() -> None:
 
 
 def test_files_media_hygiene_does_not_analyse_are_set_aside() -> None:
-    """Other types, excluded or system folders, broken files, other mounts."""
+    """Other types, folders excluded by path or name, broken files, other mounts."""
     theirs = [
         group("a.jpg", "b.jpg", "notes.txt"),
         group("x.jpg", "Backup/x.jpg"),
         group("y.jpg", "$RECYCLE.BIN/y.jpg"),
+        group("t.jpg", "2019/thumbnails/t.jpg"),
         group("cut.jpg", "cut2.jpg"),
         frozenset({Path("/data/d/z.jpg"), Path("/data/d/z2.jpg")}),
     ]
@@ -53,7 +56,7 @@ def test_files_media_hygiene_does_not_analyse_are_set_aside() -> None:
     assert result.agrees
     assert result.outside == {
         OutsideReason.EXTENSION: 1,
-        OutsideReason.EXCLUDED: 2,
+        OutsideReason.EXCLUDED: 3,
         OutsideReason.BROKEN: 1,
         OutsideReason.NOT_MOUNTED: 2,
     }

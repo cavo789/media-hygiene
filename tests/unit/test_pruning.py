@@ -53,6 +53,10 @@ def test_a_file_the_walk_did_not_list_is_forgotten() -> None:
         (ROOT / "Backup" / "a.jpg", coverage(filters=ScanFilters((ROOT / "Backup",)))),
         (ROOT / "#recycle" / "a.jpg", coverage()),
         (
+            ROOT / "2019" / "THUMBNAILS" / "a.jpg",
+            coverage(filters=ScanFilters(excluded_names=("Thumbnails",))),
+        ),
+        (
             ROOT / "2019" / "a.jpg",
             coverage(filters=ScanFilters(extensions=frozenset({".png"}))),
         ),
@@ -64,6 +68,7 @@ def test_a_file_the_walk_did_not_list_is_forgotten() -> None:
         "unreadable-file",
         "excluded-folder",
         "system-folder",
+        "excluded-name",
         "out-of-ext",
     ],
 )

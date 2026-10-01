@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import typer
 from rich.table import Table
@@ -13,11 +13,15 @@ from media_hygiene.config.loader import Origin
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only
+from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.services.runtime import Runtime
+
+
+_SYSTEM_NAMES_AFTER: Final = ("scan", "excluded_names")
 
 
 def _origin_label(origin: Origin) -> str:
@@ -45,6 +49,10 @@ def config_command(ctx: typer.Context) -> None:
         for key, value in values.items():
             origin = _origin_label(runtime.loaded.origin_of(section, key))
             table.add_row(f"{section}.{key}", str(value), origin)
+            if (section, key) == _SYSTEM_NAMES_AFTER:
+                # Always skipped too: the user's names add to these.
+                system = str(list(SYSTEM_DIR_NAMES))
+                table.add_row(_("(always skipped)"), system, _("built-in"))
     runtime.output.show(table)
     runtime.output.blank()
     runtime.output.show(_categories_table(runtime))

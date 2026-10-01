@@ -85,6 +85,7 @@ class CzkawkaCommand:
                 f"czkawka_cli dup -d {self.scope.data_dir} -m 1 -W -N",
                 f"-x {','.join(self.scope.extensions)}",
                 *(f'-e "{folder}"' for folder in self.scope.excluded),
+                *(f'-E "*/{name}/*"' for name in self.scope.excluded_names),
                 f"-C {results}",
             )
         )
@@ -92,8 +93,14 @@ class CzkawkaCommand:
 
 @dataclass(frozen=True, slots=True)
 class CzkawkaScope:
-    """What media-hygiene analyses: the data folder, the extensions, the exclusions."""
+    """What media-hygiene analyses: the data folder, the extensions, the exclusions.
+
+    Folder names become Czkawka wildcards (`-E "*/Thumbnails/*"`, one option each: it
+    ignores a comma-separated list). Czkawka matches them case-sensitively: a folder
+    in another case is still hashed there, then set aside by the comparison.
+    """
 
     data_dir: Path
     extensions: Sequence[str]
     excluded: tuple[Path, ...] = ()
+    excluded_names: tuple[str, ...] = ()

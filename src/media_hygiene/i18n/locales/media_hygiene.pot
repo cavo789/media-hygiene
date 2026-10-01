@@ -52,6 +52,9 @@ msgstr ""
 msgid "'{text}': choose {yes} or {no}."
 msgstr ""
 
+msgid "(always skipped)"
+msgstr ""
+
 msgid "(stay where it is)"
 msgstr ""
 
@@ -628,6 +631,24 @@ msgstr ""
 msgid "Folder"
 msgstr ""
 
+msgid ""
+"Folder name never analysed, wherever it is, case ignored; * and ? "
+"allowed, e.g. --exclude-name Thumbnails,.Trash-* (repeatable). Adds to "
+"the system folders already skipped. For one precise folder, use "
+"--exclude."
+msgstr ""
+
+msgid ""
+"Folder names never analysed, wherever they are, on every disk: they add "
+"to the system and trash folders always skipped ('media-hygiene config' "
+"lists them). Globs matching the whole name, case ignored: * stands for "
+"any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", "
+"\"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names "
+"hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as"
+" operators. A comma separates names: write ? in its place. For one "
+"precise folder, use excluded in [folders]."
+msgstr ""
+
 msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr ""
 
@@ -656,6 +677,10 @@ msgid "Folders analysed:"
 msgstr ""
 
 msgid "Folders sharing identical files"
+msgstr ""
+
+#, python-brace-format
+msgid "Folders skipped by name, wherever they are: {names}."
 msgstr ""
 
 #, python-brace-format

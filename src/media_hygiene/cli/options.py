@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, cast
 
 import typer
 
-from media_hygiene.config.categories import BUILTIN_CATEGORIES
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -17,10 +16,6 @@ if TYPE_CHECKING:
 
 def _panel_folders() -> str:
     return _("Folders (override folders.* of config.toml)")
-
-
-def _panel_scan() -> str:
-    return _("Scan (override scan.* of config.toml)")
 
 
 def _panel_output() -> str:
@@ -144,31 +139,6 @@ def exclude() -> OptionInfo:
             "--exclude",
             help=_("Folder never analysed, e.g. a real backup to keep. Repeatable."),
             rich_help_panel=_panel_folders(),
-            show_default=False,
-        ),
-    )
-
-
-def extensions() -> OptionInfo:
-    """`--ext`: only analyse some categories or extensions (repeatable).
-
-    Built before the settings are read: the user's categories cannot be listed.
-
-    Returns:
-        The option definition.
-    """
-    return cast(
-        "OptionInfo",
-        typer.Option(
-            "--ext",
-            help=_(
-                "Only analyse these categories or extensions, e.g. --ext photo,video "
-                "or --ext png,webp (repeatable). Categories: {categories} and those "
-                "of scan.categories in config.toml. Other types too, such as --ext "
-                "pdf,docx: their copies are moved to the quarantine. Default: media "
-                "(every photo, RAW and video)."
-            ).format(categories=", ".join(BUILTIN_CATEGORIES)),
-            rich_help_panel=_panel_scan(),
             show_default=False,
         ),
     )

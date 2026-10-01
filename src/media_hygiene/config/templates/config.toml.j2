@@ -45,6 +45,9 @@ excluded = []
 {{ comment(_('Only analyse these categories or extensions, e.g. ["photo", "video"] or ["png", "webp"]. Built-in categories: photo, raw, video and media (the three); yours are defined below. Empty: media, every photo, RAW and video extension. Other types are allowed, such as ["pdf", "docx"]: their copies are moved to the quarantine, never deleted. A name without a dot is a category when one has that name, otherwise an extension: write ".raw" for the extension.'), "--ext") }}
 extensions = []
 
+{{ comment(_("Folder names never analysed, wherever they are, on every disk: they add to the system and trash folders always skipped ('media-hygiene config' lists them). Globs matching the whole name, case ignored: * stands for any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", \"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as operators. A comma separates names: write ? in its place. For one precise folder, use excluded in [folders]."), "--exclude-name") }}
+excluded_names = []
+
 {{ comment(_("Your own categories: a name, then its extensions (not other categories). The built-in ones cannot be redefined. Variable: MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this whole table.")) }}
 [scan.categories]
 # documents = ["pdf", "docx", "txt"]

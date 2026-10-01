@@ -182,15 +182,3 @@ def folder_layer(
     given = {"preferred": prefer, "protected": protect, "excluded": exclude}
     folders: dict[str, object] = {key: value for key, value in given.items() if value}
     return {"folders": folders} if folders else {}
-
-
-def scan_layer(extensions: list[str] | None) -> Layer:
-    """Turn the `--ext` option of a command into a settings layer.
-
-    Args:
-        extensions: `--ext` values (validated and split by the settings).
-
-    Returns:
-        The `[scan]` overrides actually given.
-    """
-    return {"scan": {"extensions": extensions}} if extensions else {}

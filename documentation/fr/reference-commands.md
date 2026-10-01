@@ -35,6 +35,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5](clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
 | `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--exclude-name NOM` | `audit`, `clean`, `crosscheck` | Nom de dossier jamais analysé, où qu'il soit (casse ignorée, `*` et `?` permis : `--exclude-name Thumbnails,.Trash-*`) ; s'ajoute aux dossiers système et corbeilles toujours ignorés. [Étape 5](clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
@@ -137,12 +138,20 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
-│                     photo,video ou --ext png,webp (répétable). Catégories :  │
-│                     photo, raw, video, media et celles de scan.categories    │
-│                     dans config.toml. D'autres types aussi, comme --ext      │
-│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
-│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
+│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
+│                              ex. --ext photo,video ou --ext png,webp         │
+│                              (répétable). Catégories : photo, raw, video,    │
+│                              media et celles de scan.categories dans         │
+│                              config.toml. D'autres types aussi, comme --ext  │
+│                              pdf,docx : leurs copies sont déplacées en       │
+│                              quarantaine. Par défaut : media (toutes les     │
+│                              photos, RAW et vidéos).                         │
+│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
+│                              sans tenir compte de la casse ; * et ? permis,  │
+│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
+│                              (répétable). S'ajoute aux dossiers système déjà │
+│                              ignorés. Pour un dossier précis, utilisez       │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -222,12 +231,20 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
-│                     photo,video ou --ext png,webp (répétable). Catégories :  │
-│                     photo, raw, video, media et celles de scan.categories    │
-│                     dans config.toml. D'autres types aussi, comme --ext      │
-│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
-│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
+│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
+│                              ex. --ext photo,video ou --ext png,webp         │
+│                              (répétable). Catégories : photo, raw, video,    │
+│                              media et celles de scan.categories dans         │
+│                              config.toml. D'autres types aussi, comme --ext  │
+│                              pdf,docx : leurs copies sont déplacées en       │
+│                              quarantaine. Par défaut : media (toutes les     │
+│                              photos, RAW et vidéos).                         │
+│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
+│                              sans tenir compte de la casse ; * et ? permis,  │
+│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
+│                              (répétable). S'ajoute aux dossiers système déjà │
+│                              ignorés. Pour un dossier précis, utilisez       │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
@@ -335,12 +352,20 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                         à garder. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse (remplace scan.* de config.toml) ───────────────────────────────────╮
-│ --ext        <str>  N'analyse que ces catégories ou extensions, p. ex. --ext │
-│                     photo,video ou --ext png,webp (répétable). Catégories :  │
-│                     photo, raw, video, media et celles de scan.categories    │
-│                     dans config.toml. D'autres types aussi, comme --ext      │
-│                     pdf,docx : leurs copies sont déplacées en quarantaine.   │
-│                     Par défaut : media (toutes les photos, RAW et vidéos).   │
+│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
+│                              ex. --ext photo,video ou --ext png,webp         │
+│                              (répétable). Catégories : photo, raw, video,    │
+│                              media et celles de scan.categories dans         │
+│                              config.toml. D'autres types aussi, comme --ext  │
+│                              pdf,docx : leurs copies sont déplacées en       │
+│                              quarantaine. Par défaut : media (toutes les     │
+│                              photos, RAW et vidéos).                         │
+│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
+│                              sans tenir compte de la casse ; * et ? permis,  │
+│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
+│                              (répétable). S'ajoute aux dossiers système déjà │
+│                              ignorés. Pour un dossier précis, utilisez       │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
