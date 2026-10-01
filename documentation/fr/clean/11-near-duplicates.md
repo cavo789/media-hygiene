@@ -61,7 +61,7 @@ quarantaine et traiter 3 fichiers cassés ? [o/N] o
 <!-- capture: clean-near.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20260930-192620
+Nettoyage 20261001-121456
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      40 │
 │ Taille                    │ 16,2 Mo │
@@ -70,11 +70,11 @@ Nettoyage 20260930-192620
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20260930-192620-clean/report.html
+✅ Rapport HTML : /reports/20261001-121456-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20260930-192620' restaure tout.
-💡 Les fichiers déplacés sont dans /quarantine/20260930-192620 ; 'purge' les
+💡 Vous changez d'avis ? 'media-hygiene undo 20261001-121456' restaure tout.
+💡 Les fichiers déplacés sont dans /quarantine/20261001-121456 ; 'purge' les
 supprime.
 ```
 
@@ -85,13 +85,13 @@ les fichiers illisibles et le fichier compagnon orphelin :
 
 <!-- capture: quarantine.txt -->
 ```text
-./20260930-192620/c/Photos/2022/Anniversaire/IMG_3003.jpg
-./20260930-192620/c/Photos/2023/Lac/IMG_4004.jpg
-./20260930-192620/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20260930-192620/d/Ancien disque/2020/IMG_1203.jpg
-./20260930-192620/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-./20260930-192620/d/Ancien disque/Photos 2019/IMG_0102.xmp
-./20260930-192620/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+./20261001-121456/c/Photos/2022/Anniversaire/IMG_3003.jpg
+./20261001-121456/c/Photos/2023/Lac/IMG_4004.jpg
+./20261001-121456/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261001-121456/d/Ancien disque/2020/IMG_1203.jpg
+./20261001-121456/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+./20261001-121456/d/Ancien disque/Photos 2019/IMG_0102.xmp
+./20261001-121456/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
 ```
 
 Avant de déplacer chaque copie, `clean` vérifie que la photo gardée existe toujours et que la

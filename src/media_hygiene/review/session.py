@@ -26,6 +26,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.plan.similar_models import BurstSeries
     from media_hygiene.report.decisions import DecisionsFile
+    from media_hygiene.review.place import DecisionsPlace
     from media_hygiene.review.views import SeriesState, StateBuilder
 
 
@@ -36,6 +37,7 @@ class ReviewSource:
     bursts: tuple[BurstSeries, ...]
     builder: StateBuilder
     target: Path
+    place: DecisionsPlace
 
 
 class ReviewSession:
@@ -67,13 +69,13 @@ class ReviewSession:
             self._discarded[match.series] = match.discarded
 
     @property
-    def target_name(self) -> str:
-        """Name of the decisions file, as the user gives it to `clean --decisions`.
+    def place(self) -> DecisionsPlace:
+        """The decisions file, for `clean --decisions` and on the host.
 
         Returns:
-            The file name.
+            Its names.
         """
-        return self._source.target.name
+        return self._source.place
 
     @property
     def progress(self) -> tuple[int, int]:
@@ -91,7 +93,8 @@ class ReviewSession:
             The state.
         """
         return ReviewState(
-            decisions_file=self.target_name,
+            decisions_file=self.place.argument,
+            decisions_place=self.place.host,
             series=tuple(
                 self._with_choice(number) for number in range(len(self._states))
             ),

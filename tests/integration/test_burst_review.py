@@ -113,6 +113,7 @@ def test_the_review_command_serves_until_ctrl_c(
     assert "docker port" in result.output
     assert "shots set aside: 1" in result.output
     assert "--decisions decisions.json" in result.output
+    assert "decisions.json, in the folder mounted on" in result.output
     assert b"Burst series review" in pages[0]
     saved = json.loads((locations.reports_dir / "decisions.json").read_text())
     assert saved["bursts"][0]["discarded"] == shots(2)
@@ -143,3 +144,16 @@ def test_no_burst_nothing_to_review(
     )
     assert result.exit_code == 0, result.output
     assert "No burst series: nothing to review." in result.output
+
+
+def test_the_stop_summary_names_the_file_without_any_choice(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The file may hold the report's pairs: always said where it is."""
+    monkeypatch.setattr(reviewing, "run_server", fake_server(lambda _app: None))
+    result = run(cli, "review")
+    assert result.exit_code == 0, result.output
+    assert (
+        "Your choices are in decisions.json, in the folder mounted on" in result.output
+    )
+    assert "Next:" not in result.output

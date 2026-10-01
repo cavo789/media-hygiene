@@ -92,6 +92,7 @@ DOCKER_DESKTOP = (
     "2070 2061 0:69 /Photos /data/current ro,noatime - 9p C:\\134 rw,aname=drvfs\n"
     "2100 2091 0:63 /desktop/mnt/host/d/My\\040Pics /data/d2 ro - tmpfs none rw\n"
     "2101 2091 8:64 /var/lib/x /journal rw - ext4 /dev/sde rw\n"
+    "2103 2091 0:63 /desktop/mnt/host/c/Users/Ann/reports /reports rw - tmpfs none rw\n"
     "2102 2091 8:64 /var/lib/y /no-tail rw\n"
 )
 
@@ -105,4 +106,5 @@ def test_windows_sources_come_from_docker_desktop_mounts(tmp_path: Path) -> None
     } == {
         "/data/current": "C:\\Photos",
         "/data/d2": "D:\\My Pics",
+        "/reports": "C:\\Users\\Ann\\reports",
     }

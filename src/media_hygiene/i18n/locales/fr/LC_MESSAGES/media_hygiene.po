@@ -669,15 +669,15 @@ msgstr ""
 
 #, python-format
 msgid ""
-"Every choice is saved at once in %(file)s. Done? Ctrl+C in the terminal "
+"Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
 "stops the review; then run the same 'clean' command with --decisions "
-"%(file)s: the shots set aside go to the quarantine, and 'undo' brings "
-"them back."
+"%(file)s (that file): the shots set aside go to the quarantine, and "
+"'undo' brings them back."
 msgstr ""
-"Chaque choix est enregistré aussitôt dans %(file)s. Terminé ? Ctrl+C dans"
-" le terminal arrête le tri ; lancez ensuite la même commande 'clean' avec"
-" --decisions %(file)s : les photos écartées vont en quarantaine, et "
-"'undo' les ramène."
+"Chaque choix est enregistré aussitôt dans %(place)s. Terminé ? Ctrl+C "
+"dans le terminal arrête le tri ; lancez ensuite la même commande 'clean' "
+"avec --decisions %(file)s (ce fichier) : les photos écartées vont en "
+"quarantaine, et 'undo' les ramène."
 
 msgid "Every copy"
 msgstr "Toutes les copies"
@@ -1143,11 +1143,11 @@ msgstr "Nouveau nom"
 
 #, python-brace-format
 msgid ""
-"Next: the same 'clean' command with --decisions {file}; the shots set "
-"aside go to the quarantine, 'undo' brings them back."
+"Next: the same 'clean' command with --decisions {file} (that file); the "
+"shots set aside go to the quarantine, 'undo' brings them back."
 msgstr ""
-"Ensuite : la même commande 'clean' avec --decisions {file} ; les photos "
-"écartées vont en quarantaine, 'undo' les ramène."
+"Ensuite : la même commande 'clean' avec --decisions {file} (ce fichier) ;"
+" les photos écartées vont en quarantaine, 'undo' les ramène."
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
@@ -1500,11 +1500,11 @@ msgstr "Restauration"
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each decision is saved at once in {file}. "
+"Review ready on port {port}: each decision is saved at once in {place}. "
 "Ctrl+C stops the review."
 msgstr ""
 "Tri prêt sur le port {port} : chaque décision est enregistrée aussitôt "
-"dans {file}. Ctrl+C arrête le tri."
+"dans {place}. Ctrl+C arrête le tri."
 
 #, python-brace-format
 msgid ""
@@ -2186,6 +2186,10 @@ msgstr "Année"
 msgid "Years"
 msgstr "Années"
 
+#, python-brace-format
+msgid "Your choices are in {place}."
+msgstr "Vos choix sont dans {place}."
+
 msgid "Your decision"
 msgstr "Votre décision"
 
@@ -2744,6 +2748,10 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{day} {month} {year} {time}"
 msgstr "{day} {month} {year} {time}"
+
+#, python-brace-format
+msgid "{file}, in the folder mounted on {mount}"
+msgstr "{file}, dans le dossier monté sur {mount}"
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"

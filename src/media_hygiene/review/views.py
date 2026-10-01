@@ -54,6 +54,7 @@ class ReviewState(BaseModel):
     model_config = _FROZEN
 
     decisions_file: str
+    decisions_place: str
     series: tuple[SeriesState, ...]
 
 

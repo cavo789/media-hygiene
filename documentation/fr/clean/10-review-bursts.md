@@ -44,8 +44,8 @@ Le tri commence par un audit (rapide, grâce au cache), puis vous attend :
 <!-- capture: review.txt|Tri prêt|http:// -->
 ```text
 ✅ Tri prêt sur le port 8080 : chaque décision est enregistrée aussitôt dans
-decisions.json. Ctrl+C arrête le tri.
-💡 Son adresse sur votre ordinateur : lancez 'docker port 625e4152b3ec 8080'
+decisions.json, dans le dossier monté sur /reports. Ctrl+C arrête le tri.
+💡 Son adresse sur votre ordinateur : lancez 'docker port 4182d3909289 8080'
 dans un autre terminal, puis ouvrez http://<cette adresse> dans votre
 navigateur.
 ```
@@ -84,7 +84,7 @@ seconde d'intervalle.
 ## Étape 4 : écarter une photo
 
 Pressez **`3`** : la photo floue est écartée. Elle pâlit, prend un cadre rouge et l'étiquette
-📦 *écartée* ; le compteur du haut augmente, et *Enregistré dans decisions.json* confirme que
+📦 *écartée* ; le compteur du haut augmente, et *Enregistré dans …decisions.json* confirme que
 votre choix est déjà écrit :
 
 ![La même série après avoir pressé 3 : la troisième photo est pâlie, encadrée en rouge et étiquetée écartée ; l'en-tête indique 1 série avec des photos écartées, 1 photo écartée, Enregistré dans decisions.json](../images/review-aside.webp)
@@ -116,6 +116,19 @@ Une photo d'un [dossier protégé](05-choose-the-kept-copy.md#protéger-un-dossi
 Chaque choix est enregistré **aussitôt** dans `decisions.json`, dans votre dossier de rapports.
 Arrêtez quand vous voulez : **Ctrl+C** dans la fenêtre du tri. Le `review` suivant retrouve vos
 choix et reprend.
+
+Le tri dit où se trouve le fichier, au démarrage, sur la page et à l'arrêt :
+
+- avec Docker Desktop, en chemin Windows :
+  `C:\Users\<vous>\media-hygiene\reports\decisions.json` ;
+- sinon (un volume Docker, un hôte Linux), en *decisions.json, dans le dossier monté sur
+  /reports* : le dossier donné après `-v` pour `/reports`.
+
+Pour ouvrir ce dossier depuis PowerShell :
+
+```powershell
+explorer "$HOME\media-hygiene\reports"
+```
 
 Le fichier liste, série par série, les photos gardées et les photos écartées (une série écartée
 avec `X` a une liste `kept` vide) :

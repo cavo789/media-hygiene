@@ -60,7 +60,7 @@ quarantine and handle 3 broken files? [y/N] y
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20260930-192330
+Clean 20261001-121226
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      40 │
 │ Size                     │ 16.2 MB │
@@ -69,10 +69,10 @@ Clean 20260930-192330
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20260930-192330-clean/report.html
+✅ HTML report: /reports/20261001-121226-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20260930-192330' restores everything.
-💡 Moved files are in /quarantine/20260930-192330; 'purge' deletes them.
+💡 Changed your mind? 'media-hygiene undo 20261001-121226' restores everything.
+💡 Moved files are in /quarantine/20261001-121226; 'purge' deletes them.
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -82,13 +82,13 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20260930-192330/c/Photos/2022/Birthday/IMG_3003.jpg
-./20260930-192330/c/Photos/2023/Lake/IMG_4004.jpg
-./20260930-192330/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20260930-192330/d/Old disk/2020/IMG_1203.jpg
-./20260930-192330/d/Old disk/Email/IMG_0110 small.jpg
-./20260930-192330/d/Old disk/Photos 2019/IMG_0102.xmp
-./20260930-192330/d/Old disk/Videos/Birthday (cut).mp4
+./20261001-121226/c/Photos/2022/Birthday/IMG_3003.jpg
+./20261001-121226/c/Photos/2023/Lake/IMG_4004.jpg
+./20261001-121226/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261001-121226/d/Old disk/2020/IMG_1203.jpg
+./20261001-121226/d/Old disk/Email/IMG_0110 small.jpg
+./20261001-121226/d/Old disk/Photos 2019/IMG_0102.xmp
+./20261001-121226/d/Old disk/Videos/Birthday (cut).mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is

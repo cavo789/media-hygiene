@@ -31,8 +31,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20260930-192640-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 30 septembre 2026 à 19:26.
+Classeur : /reports/20261001-121519-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 1 octobre 2026 à 12:15.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -115,7 +115,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20260930-192645
+Tri 20261001-121521
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -126,8 +126,8 @@ Tri 20260930-192645
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20260930-192645-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20260930-192645' remet tout en
+Manifeste : /reports/20261001-121521-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261001-121521' remet tout en
 place.
 ```
 
@@ -158,9 +158,9 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20260930-192645 ────────────────
+──────────────── Annulation de l'exécution sort 20261001-121521 ────────────────
 Annulation de l'exécution sort
-20260930-192645
+20261001-121521
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │

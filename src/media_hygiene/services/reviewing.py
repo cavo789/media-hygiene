@@ -18,6 +18,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.decisions import DecisionsFile, read_decisions
 from media_hygiene.review.app import DECIDE_PATH, STATE_PATH, ReviewApp
+from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.policy import keep_policy
@@ -81,7 +82,8 @@ def open_review(
     builder = StateBuilder(
         mapper, keep_policy(runtime.settings, mapper), findings.similar.visuals
     )
-    source = ReviewSource(findings.similar.bursts, builder, target)
+    place = decisions_place(mapper, runtime.locations.reports_dir, target)
+    source = ReviewSource(findings.similar.bursts, builder, target, place)
     roots = mapper.roots_on_host(findings.roots)
     if not target.exists():
         return ReviewSession(source, DecisionsFile(version=1, roots=roots))
@@ -109,7 +111,10 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
     """
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
-        state_path=STATE_PATH, decide_path=DECIDE_PATH, file=session.target_name
+        state_path=STATE_PATH,
+        decide_path=DECIDE_PATH,
+        file=session.place.argument,
+        place=session.place.host,
     )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = ReviewApp(session, page.encode(), executor)
@@ -141,9 +146,9 @@ def _announce(runtime: Runtime, session: ReviewSession, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Review ready on port {port}: each decision is saved at once in {file}. "
+            "Review ready on port {port}: each decision is saved at once in {place}. "
             "Ctrl+C stops the review."
-        ).format(port=port, file=session.target_name)
+        ).format(port=port, place=session.place.host)
     )
     output.tip(
         _(

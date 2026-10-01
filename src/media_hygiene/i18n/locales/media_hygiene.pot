@@ -534,10 +534,10 @@ msgstr ""
 
 #, python-format
 msgid ""
-"Every choice is saved at once in %(file)s. Done? Ctrl+C in the terminal "
+"Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
 "stops the review; then run the same 'clean' command with --decisions "
-"%(file)s: the shots set aside go to the quarantine, and 'undo' brings "
-"them back."
+"%(file)s (that file): the shots set aside go to the quarantine, and "
+"'undo' brings them back."
 msgstr ""
 
 msgid "Every copy"
@@ -936,8 +936,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Next: the same 'clean' command with --decisions {file}; the shots set "
-"aside go to the quarantine, 'undo' brings them back."
+"Next: the same 'clean' command with --decisions {file} (that file); the "
+"shots set aside go to the quarantine, 'undo' brings them back."
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
@@ -1239,7 +1239,7 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each decision is saved at once in {file}. "
+"Review ready on port {port}: each decision is saved at once in {place}. "
 "Ctrl+C stops the review."
 msgstr ""
 
@@ -1815,6 +1815,10 @@ msgstr ""
 msgid "Years"
 msgstr ""
 
+#, python-brace-format
+msgid "Your choices are in {place}."
+msgstr ""
+
 msgid "Your decision"
 msgstr ""
 
@@ -2299,6 +2303,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{day} {month} {year} {time}"
+msgstr ""
+
+#, python-brace-format
+msgid "{file}, in the folder mounted on {mount}"
 msgstr ""
 
 #, python-brace-format

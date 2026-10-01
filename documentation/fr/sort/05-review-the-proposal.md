@@ -27,8 +27,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20260930-192550-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20260930-192550-classify/report.html
+✅ Classeur à modifier : /reports/20261001-121429-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261001-121429-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 

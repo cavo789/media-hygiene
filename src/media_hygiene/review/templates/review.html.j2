@@ -11,7 +11,7 @@
   "protected": "🔒 " ~ _("protected folder, kept"),
   "sharpest": "⭐ " ~ _("sharpest"),
   "saving": _("Saving…"),
-  "saved": _("Saved in {file}.").replace("{file}", file),
+  "saved": _("Saved in {file}.").replace("{file}", place),
   "failed": _("Not saved (error {status})."),
   "offline": _("The review is not running any more: start it again."),
   "protectedShot": _("This shot lies in a protected folder: it is never moved."),
@@ -87,7 +87,7 @@
   <kbd>A</kbd> {{ _("keep every shot") }} ·
   <kbd>X</kbd> {{ _("set the whole series aside") }} ·
   {{ _("a click on a shot works too") }}<br>
-  {{ _("Every choice is saved at once in %(file)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with --decisions %(file)s: the shots set aside go to the quarantine, and 'undo' brings them back.", file=file) }}
+  {{ _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with --decisions %(file)s (that file): the shots set aside go to the quarantine, and 'undo' brings them back.", place=place, file=file) }}
 </footer>
 <script>
 (() => {

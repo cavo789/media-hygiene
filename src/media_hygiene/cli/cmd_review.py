@@ -64,10 +64,13 @@ def review_command(  # pylint: disable=too-many-arguments
                 "aside: {shots}."
             ).format(series=human_number(series), shots=human_number(shots))
         )
+        place = session.place
+        output.info(_("Your choices are in {place}.").format(place=place.host))
         if shots:
             output.tip(
                 _(
-                    "Next: the same 'clean' command with --decisions {file}; the shots "
-                    "set aside go to the quarantine, 'undo' brings them back."
-                ).format(file=decisions)
+                    "Next: the same 'clean' command with --decisions {file} (that "
+                    "file); the shots set aside go to the quarantine, 'undo' brings "
+                    "them back."
+                ).format(file=place.argument)
             )

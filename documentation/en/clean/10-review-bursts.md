@@ -42,9 +42,9 @@ The review first audits (quickly, thanks to the cache), then waits for you:
 
 <!-- capture: review.txt|Review ready|http:// -->
 ```text
-✅ Review ready on port 8080: each decision is saved at once in decisions.json.
-Ctrl+C stops the review.
-💡 Its address on your computer: run 'docker port aa691978d783 8080' in another
+✅ Review ready on port 8080: each decision is saved at once in decisions.json,
+in the folder mounted on /reports. Ctrl+C stops the review.
+💡 Its address on your computer: run 'docker port 9201bcd3df34 8080' in another
 terminal, then open http://<that address> in your browser.
 ```
 
@@ -80,7 +80,7 @@ The first series appears. Here, the second one, a birthday: five shots taken one
 ## Step 4: set a shot aside
 
 Press **`3`**: the blurred shot is set aside. It fades, gets a red frame and the label
-📦 *set aside*; the counter at the top goes up, and *Saved in decisions.json* confirms that your
+📦 *set aside*; the counter at the top goes up, and *Saved in …decisions.json* confirms that your
 choice is already written:
 
 ![The same series after pressing 3: the third shot is faded, framed in red and labelled set aside; the header says 1 series with shots set aside, 1 shot set aside, Saved in decisions.json](../images/review-aside.webp)
@@ -111,6 +111,19 @@ aside: `X` sets the others aside, and the protected one stays.
 
 Every choice is saved **at once** in `decisions.json`, in your reports folder. Stop whenever you
 like: **Ctrl+C** in the review window. The next `review` finds your choices again and resumes.
+
+The review says where the file lies, when it starts, on the page and when it stops:
+
+- with Docker Desktop, as a Windows path:
+  `C:\Users\<you>\media-hygiene\reports\decisions.json`;
+- otherwise (a Docker volume, a Linux host), as *decisions.json, in the folder mounted on
+  /reports*: the folder you gave after `-v` for `/reports`.
+
+To open that folder from PowerShell:
+
+```powershell
+explorer "$HOME\media-hygiene\reports"
+```
 
 The file lists, series by series, the shots kept and the shots set aside (a series set aside
 with `X` has an empty `kept` list):
