@@ -21,6 +21,7 @@ cette page les rassemble.
 | `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
 | `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
+| `places` | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, étape 9](sort/09-places-from-gps.md) |
 
 ## Options
 
@@ -41,7 +42,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify`, avant de décrire beaucoup de photos avec un modèle local). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
+| `--port PORT` | `review`, `places` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--year ANNÉE[-ANNÉE]` | `classify` | Seulement les fichiers de cette année ou de ces années. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
 | `--layout DISPOSITION` | `classify` | Où vont les fichiers sûrs, par exemple `{year}/{month}`. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
@@ -92,6 +93,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             avis, indépendant.                                               │
 │ classify    Propose où ranger chaque photo et vidéo : année, événement,      │
 │             catégorie. En lecture seule.                                     │
+│ places      Nommer vos lieux sur une carte des endroits où les photos ont    │
+│             été prises ; enregistrés dans config.toml pour les règles        │
+│             'place' et 'trip'.                                               │
 │ inventory   Exporter vers Excel chaque photo et vidéo avec ce que les audits │
 │             en ont appris, depuis le cache seul : aucun fichier n'est lu.    │
 │ history     Liste les exécutions et ce qu'elles ont fait.                    │
@@ -481,6 +485,27 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>places --help</code></summary>
+
+<!-- capture: help-places.txt -->
+```text
+ Utilisation : media-hygiene places [OPTIONS]
+
+ Nommer vos lieux sur une carte des endroits où les photos ont été prises ;
+ enregistrés dans config.toml pour les règles 'place' et 'trip'.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --port          <int range> [x>=0]  Port de la page dans le conteneur ;      │
+│                                     publiez-le avec -p 127.0.0.1::8080 pour  │
+│                                     que Docker en choisisse un libre sur     │
+│                                     votre ordinateur. Par défaut : 8080.     │
+│ --help  -h                          Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -25,14 +25,11 @@ _HEADER_ENCODING: Final = "latin-1"
 _LOCALHOST: Final = "localhost"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
-_SECURITY_HEADERS: Final = (
-    "X-Content-Type-Options: nosniff",
-    "Referrer-Policy: no-referrer",
-    (
-        "Content-Security-Policy: default-src 'none'; script-src 'unsafe-inline'; "
-        "style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; "
-        "frame-ancestors 'none'"
-    ),
+NO_REFERRER: Final = "no-referrer"
+# What the page may load: itself only. `places` adds its scripts and the map tiles.
+REVIEW_POLICY: Final = (
+    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+    "img-src 'self'; connect-src 'self'; frame-ancestors 'none'"
 )
 
 
@@ -43,6 +40,8 @@ class ContentType(StrEnum):
     JSON = "application/json"
     JPEG = "image/jpeg"
     TEXT = "text/plain; charset=utf-8"
+    JAVASCRIPT = "text/javascript; charset=utf-8"
+    CSS = "text/css; charset=utf-8"
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,12 +56,17 @@ class Request:
 
 @dataclass(frozen=True, slots=True)
 class Response:
-    """A response; `cacheable` ones never change for a given path."""
+    """A response; `cacheable` ones never change for a given path.
+
+    `policy` is its Content-Security-Policy, `referrer` its Referrer-Policy.
+    """
 
     status: HTTPStatus
     body: bytes = b""
     content_type: ContentType = ContentType.TEXT
     cacheable: bool = False
+    policy: str = REVIEW_POLICY
+    referrer: str = NO_REFERRER
 
 
 class BadRequestError(Exception):
@@ -139,7 +143,9 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         f"Content-Length: {len(response.body)}",
         f"Cache-Control: {cache}",
         "Connection: close",
-        *_SECURITY_HEADERS,
+        "X-Content-Type-Options: nosniff",
+        f"Referrer-Policy: {response.referrer}",
+        f"Content-Security-Policy: {response.policy}",
     )
     writer.write(("\r\n".join(head) + "\r\n\r\n").encode(_HEADER_ENCODING))
     writer.write(response.body)

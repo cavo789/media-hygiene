@@ -9,8 +9,6 @@ JSON body: a page of another site cannot send one without the browser asking fir
 from __future__ import annotations
 
 import asyncio
-import contextlib
-import json
 from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
@@ -20,14 +18,8 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.report.thumbnails import review_preview
-from media_hygiene.review.http import (
-    BadRequestError,
-    ContentType,
-    Response,
-    is_local,
-    read_request,
-    write_response,
-)
+from media_hygiene.review.http import ContentType, Response, is_local
+from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.views import PREVIEW_PREFIX
 
 if TYPE_CHECKING:
@@ -41,11 +33,6 @@ STATE_PATH: Final = "/api/state"
 DECIDE_PATH: Final = "/api/decide"
 _PREVIEW_SUFFIX: Final = ".jpg"
 _GET, _POST = "GET", "POST"
-_DROPPED_CONNECTION: Final = (
-    TimeoutError,
-    asyncio.IncompleteReadError,
-    ConnectionError,
-)
 
 
 class _Decision(BaseModel):
@@ -74,20 +61,7 @@ class ReviewApp:
             reader: What the browser sends.
             writer: Where to answer.
         """
-        try:
-            try:
-                request = await read_request(reader)
-            except BadRequestError as exc:
-                response = Response(exc.status)
-            else:
-                response = await self.handle(request)
-            await write_response(writer, response)
-        except _DROPPED_CONNECTION:
-            pass  # the browser went away: nothing to answer
-        finally:
-            writer.close()
-            with contextlib.suppress(ConnectionError):
-                await writer.wait_closed()
+        await serve_connection(reader, writer, self.handle)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -140,35 +114,21 @@ class ReviewApp:
         Returns:
             The new totals, or an error with a translated message.
         """
-        headers = request.headers
-        if not headers.get("content-type", "").startswith(ContentType.JSON):
-            return Response(HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
-        origin = headers.get("origin")
-        if origin is not None and origin != f"http://{headers.get('host')}":
-            return Response(HTTPStatus.FORBIDDEN)
+        refused = refused_post(request)
+        if refused is not None:
+            return refused
         try:
             decision = _Decision.model_validate_json(request.body)
             self.session.decide(decision.series, frozenset(decision.discarded))
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         except DecisionsError as exc:
-            return _json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": exc.message})
+            return json_response(
+                HTTPStatus.UNPROCESSABLE_ENTITY, {"error": exc.message}
+            )
         except OSError as exc:
             message = _("Cannot save the decisions file: {error}.")
             error = message.format(error=exc.strerror or exc)
-            return _json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": error})
+            return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": error})
         series, shots = self.session.progress
-        return _json(HTTPStatus.OK, {"series": series, "shots": shots})
-
-
-def _json(status: HTTPStatus, value: dict[str, object]) -> Response:
-    """Answer with a JSON object.
-
-    Args:
-        status: The status.
-        value: The object.
-
-    Returns:
-        The response.
-    """
-    return Response(status, json.dumps(value).encode(), ContentType.JSON)
+        return json_response(HTTPStatus.OK, {"series": series, "shots": shots})

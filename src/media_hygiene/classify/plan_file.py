@@ -12,7 +12,7 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.carry_models import CarryRecord
-from media_hygiene.classify.layout import Values
+from media_hygiene.classify.layout import GeoValues, Values
 from media_hygiene.classify.models import Band, DateSource, SortReason
 
 PLAN_FORMAT: Final = 1
@@ -33,6 +33,34 @@ class RowValues(_Frozen):
     category: str
     event: str  # the `{event}` value: the event's label or span
     event_start: str
+    place: str = ""  # a personal place
+    country: str = ""  # those of a trip
+    region: str = ""
+    city: str = ""
+
+    @classmethod
+    def of(cls, values: Values) -> RowValues:
+        """Write layout values down.
+
+        Args:
+            values: What the layouts know of a file.
+
+        Returns:
+            The same, flat.
+        """
+        geo = values.geo
+        return cls(
+            year=values.year,
+            month=values.month,
+            day=values.day,
+            category=values.category,
+            event=values.event,
+            event_start=values.event_start,
+            place=geo.place,
+            country=geo.country,
+            region=geo.region,
+            city=geo.city,
+        )
 
     def as_values(self) -> Values:
         """The layout values.
@@ -40,7 +68,9 @@ class RowValues(_Frozen):
         Returns:
             Them.
         """
-        return Values(**self.model_dump())
+        where = GeoValues(self.place, self.country, self.region, self.city)
+        fields = self.model_dump(exclude={"place", "country", "region", "city"})
+        return Values(**fields, geo=where)
 
 
 class PlanRow(_Frozen):

@@ -36,6 +36,7 @@ affiche la liste des commandes d'aide (`welcome` la réaffiche) :
 | `build`, `e2e`, `dive`, `dive_ci` | Construit l'image, lance les tests de bout en bout (sortie gardée dans `/tmp/media-hygiene/e2e.log`), inspecte ou contrôle ses couches. |
 | `release` | Crée le tag `vX.Y.Z` (la version de `pyproject.toml`) et le pousse : la CI publie l'image. |
 | `i18n_extract`, `i18n_update` | Met à jour les catalogues gettext après la modification d'un texte affiché. |
+| `geonames_update` | Télécharge à nouveau GeoNames et reconstruit les villes hors ligne de `src/media_hygiene/geo/data/` (CC BY 4.0 : la date est notée dans son `ATTRIBUTION.txt`). |
 | `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo` et `/todo-plan`). |
 | `ci`, `ci_logs` | Dernières exécutions de la CI sur la branche ; logs des étapes en échec de la dernière exécution ratée. La CLI GitHub demande `gh auth login` une fois. |
 

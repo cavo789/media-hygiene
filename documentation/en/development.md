@@ -34,6 +34,7 @@ shows the cheatsheet of helper commands (`welcome` redraws it):
 | `build`, `e2e`, `dive`, `dive_ci` | Build the image, run the end-to-end tests (output kept in `/tmp/media-hygiene/e2e.log`), inspect or gate its layers. |
 | `release` | Tag `vX.Y.Z` (the `pyproject.toml` version) and push it: CI publishes the image. |
 | `i18n_extract`, `i18n_update` | Refresh the gettext catalogs after changing a user-facing string. |
+| `geonames_update` | Download GeoNames again and rebuild the offline towns of `src/media_hygiene/geo/data/` (CC BY 4.0: the date lands in its `ATTRIBUTION.txt`). |
 | `todos` | List the open backlog (`.todos/`, see `/todo` and `/todo-plan`). |
 | `ci`, `ci_logs` | Latest CI runs of the branch; logs of the failed steps of the latest failed run. The GitHub CLI asks for `gh auth login` once. |
 

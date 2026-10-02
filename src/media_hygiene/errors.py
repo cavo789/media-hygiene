@@ -44,3 +44,7 @@ class WorkbookError(MediaHygieneError):
 
 class AiError(MediaHygieneError):
     """The local model cannot be reached, lacks a capability, or answered nonsense."""
+
+
+class GeoDataError(MediaHygieneError):
+    """The towns shipped for offline geocoding are missing or damaged."""

@@ -1,0 +1,13 @@
+Towns, regions and countries used to name places offline (media_hygiene.geo).
+
+Source: GeoNames (https://www.geonames.org/), dumps cities1000.zip, admin1CodesASCII.txt
+and countryInfo.txt from https://download.geonames.org/export/dump/.
+Licence: Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/).
+Changes: populated places of more than 1,000 inhabitants only, without sections of towns
+and abandoned, destroyed or historical places; positions rounded to 3 decimals;
+population in thousands; other columns dropped. Made by `python -m tests.support.geonames`
+(the `geonames_update` helper of the devcontainer).
+Snapshot of 2026-10-02.
+
+Country names in English and French: Unicode CLDR, through Babel
+(https://cldr.unicode.org/), Unicode License v3 (https://www.unicode.org/license.txt).

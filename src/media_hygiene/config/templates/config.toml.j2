@@ -84,6 +84,12 @@ bright_above = 205.0
 clipped_above = 0.25
 
 
+[places]
+{{ comment(_("The map of 'places', where you name your places: only its tiles are fetched, by your browser, from this https address (they show the areas you look at, never a photo). Another tile server asks for its own credit in attribution (plain text).")) }}
+tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+attribution = "© OpenStreetMap contributors"
+
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 
@@ -93,7 +99,7 @@ target = ''
 {{ comment(_("Host folders never sorted: analysed and cleaned as usual, left where they are."), "--leave") }}
 leave = []
 
-{{ comment(_("Where files go, by how sure the proposal is. Placeholders: {year}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}. An empty layout leaves the files where they are; '{year}/{month}' needs no category at all."), "--layout") }}
+{{ comment(_("Where files go, by how sure the proposal is. Placeholders: {year}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}, {place}, {country}, {region}, {city}. An empty layout leaves the files where they are; '{year}/{month}' needs no category at all."), "--layout") }}
 layout = "{year}/{category}"
 unsure_layout = "{year}/{{ _("To check") }}/{category}"
 manual_layout = "{year}/{{ _("To sort") }}/{event}"
@@ -111,6 +117,11 @@ timezone = ""
 sure = 80
 unsure = 50
 
+{{ comment(_("Trips, for a 'trip' rule: an event whose photos lie farther than trip_min_km from home is away; away events less than trip_merge_gap_hours apart, and less than trip_merge_max_km from each other, make one trip.")) }}
+trip_min_km = 100
+trip_merge_gap_hours = 48
+trip_merge_max_km = 120
+
 [classify.ai]
 {{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}
 {{ comment(_("Docker Desktop resolves host.docker.internal by itself. Docker Engine (Linux, WSL) needs --add-host=host.docker.internal:host-gateway in docker run, and Ollama started with OLLAMA_HOST=0.0.0.0 to listen beyond 127.0.0.1.")) }}
@@ -126,7 +137,7 @@ confirm_above = 200
 concurrency = 1
 
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
-{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), other_category (the files no rule above matched).')) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
 {{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
@@ -138,6 +149,14 @@ kind = "download"
 {{ comment(_("No category: downloaded films and series are not memories, they stay where they are.")) }}
 
 {{ comment(_("Your own rules go here, above the folders, for instance:")) }}
+# [[classify.rules]]
+# name = "{{ _("My places") }}"
+# match = "place"
+#
+# [[classify.rules]]
+# name = "{{ _("Trips") }}"
+# match = "trip"
+#
 # [[classify.rules]]
 # name = "{{ _("Italy 2023") }}"
 # match = "date_range"
@@ -221,3 +240,11 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # name = "{{ _("Other") }}"
 # match = "other_category"
 # category = "{{ _("Other") }}"
+
+{{ comment(_("Your own places: a photo whose GPS position lies within radius_m metres of one goes to its name, with a 'place' rule above; a photo without GPS follows the other photos of its event. One place can be home = true: trips are measured from it. Name them on a map with 'media-hygiene places', or copy the latitude and longitude from a map. Nothing leaves your computer: towns and countries are named from GeoNames data shipped with the image.")) }}
+# [[classify.places]]
+# name = "{{ _("Home") }}"
+# latitude = 50.0
+# longitude = 5.0
+# radius_m = 200
+# home = true

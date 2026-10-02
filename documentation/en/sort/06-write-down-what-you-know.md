@@ -53,6 +53,8 @@ category = "Parties/Christmas"
 | `path` | A regular expression searched in the path on your computer, folders and name. | `pattern = '(?i)kermesse'` |
 | `camera` | A regular expression searched in the make and model. | `pattern = '(?i)dji'` |
 | `subject` | What a local vision model sees, for the photos no other rule decided ([step 8](08-subjects-from-a-local-model.md)). | `categories = ["School", "Animals"]` |
+| `place` | The GPS position lies in one of your places ([step 9](09-places-from-gps.md)). | — |
+| `trip` | An event far from home, named after its country and town, offline ([step 9](09-places-from-gps.md)). | — |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
 
 `existing_folder` and `event_neighbour` give the folder's own name as the category: they take
@@ -85,8 +87,9 @@ Told from the name and the metadata only:
 ### Categories
 
 A category may use `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` and `{event_start}`,
-taken from the start of the event: `category = "Parties/Christmas {year}"`. Characters Windows
-refuses in a folder name are refused.
+taken from the start of the event: `category = "Parties/Christmas {year}"`; the GPS rules add
+`{place}`, `{country}`, `{region}` and `{city}` ([step 9](09-places-from-gps.md#write-the-rules)).
+Characters Windows refuses in a folder name are refused.
 
 The example categories are occasions and activities: Parties, Holidays and outings, School,
 Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots,

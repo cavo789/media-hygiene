@@ -44,6 +44,7 @@ export -f e2e
 export -f hygiene
 export -f demo
 export -f docs_screenshots
+export -f geonames_update
 export -f reports
 export -f reports_stop
 export -f i18n_extract

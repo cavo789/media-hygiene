@@ -53,6 +53,8 @@ category = "Fêtes/Noël"
 | `path` | Une expression régulière cherchée dans le chemin sur votre ordinateur, dossiers et nom. | `pattern = '(?i)kermesse'` |
 | `camera` | Une expression régulière cherchée dans la marque et le modèle. | `pattern = '(?i)dji'` |
 | `subject` | Ce que voit un modèle de vision local, pour les photos qu'aucune autre règle n'a décidées ([étape 8](08-subjects-from-a-local-model.md)). | `categories = ["École", "Animaux"]` |
+| `place` | La position GPS est dans un de vos lieux ([étape 9](09-places-from-gps.md)). | — |
+| `trip` | Un événement loin de la maison, nommé d'après son pays et sa ville, hors ligne ([étape 9](09-places-from-gps.md)). | — |
 | `other_category` | Les fichiers qu'aucune règle au-dessus n'a reconnus. | `category = "Autres"` |
 
 `existing_folder` et `event_neighbour` donnent comme catégorie le nom du dossier lui-même : ils
@@ -86,8 +88,10 @@ Reconnus par le nom et les métadonnées seulement :
 ### Les catégories
 
 Une catégorie peut utiliser `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` et
-`{event_start}`, pris au début de l'événement : `category = "Fêtes/Noël {year}"`. Les
-caractères que Windows refuse dans un nom de dossier sont refusés.
+`{event_start}`, pris au début de l'événement : `category = "Fêtes/Noël {year}"` ; les règles
+GPS y ajoutent `{place}`, `{country}`, `{region}` et `{city}`
+([étape 9](09-places-from-gps.md#écrire-les-règles)). Les caractères que Windows refuse dans un
+nom de dossier sont refusés.
 
 Les catégories d'exemple sont des occasions et des activités : Fêtes, Vacances et sorties,
 École, Sport et loisirs, Maison et travaux, Animaux, Nature et paysages, Documents et captures

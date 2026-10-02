@@ -12,8 +12,10 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.engine import Scope, classify
+from media_hygiene.classify.whereabouts import needs_towns
 from media_hygiene.constants import FFPROBE_BINARY, MediaKind
 from media_hygiene.errors import MountError
+from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
@@ -151,6 +153,7 @@ class ClassifyService:
             years,
             settings.keep.generic_folders,
             mapper.to_host,
+            towns=Gazetteer.load() if needs_towns(settings.classify) else None,
         )
 
     def _inputs(

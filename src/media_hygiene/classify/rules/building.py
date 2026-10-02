@@ -9,6 +9,7 @@ from media_hygiene.classify.models import DateSource, SortReason
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules.matchers import KIND_TESTS, camera_test, path_test
+from media_hygiene.classify.whereabouts import Whereabouts
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -38,6 +39,9 @@ class RuleFacts:
     event_of: Mapping[Path, Event]
     host: Callable[[Path], str]
     subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
+    where: Whereabouts = field(
+        default_factory=Whereabouts
+    )  # personal places and trips, from the GPS
 
 
 def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
@@ -64,6 +68,8 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
         RuleMatch.PATH: lambda: path_test(rule.pattern, facts.host),
         RuleMatch.CAMERA: lambda: camera_test(rule.pattern),
         RuleMatch.SUBJECT: lambda: _subject_test(facts.subjects.get(rule.name, {})),
+        RuleMatch.PLACE: lambda: lambda file: file.path in facts.where.places,
+        RuleMatch.TRIP: lambda: lambda file: file.path in facts.where.trips,
         RuleMatch.OTHER_CATEGORY: lambda: _always,
     }
     return builders[rule.match]()

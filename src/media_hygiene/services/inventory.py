@@ -33,6 +33,7 @@ from media_hygiene.report.inventory_workbook import (
     write_csv,
     write_workbook,
 )
+from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -88,12 +89,7 @@ def export_inventory(runtime: Runtime, kind: InventoryFormat) -> InventoryResult
                 else write_workbook(target, source)
             )
     except sqlite3.Error as exc:
-        raise MountError(
-            _("The index {file} cannot be read: {reason}.").format(
-                file=runtime.mapper.to_host(index), reason=exc
-            ),
-            _("Delete it: the next audit builds it again, reading every file once."),
-        ) from exc
+        raise unreadable_index(runtime, index, exc) from exc
     except OSError as exc:
         raise MountError(
             _("The inventory could not be written to {folder}: {reason}.").format(

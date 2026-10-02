@@ -5,7 +5,6 @@ from __future__ import annotations
 import hashlib
 import uuid
 from collections import Counter
-from dataclasses import asdict
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.plan_file import ClassifyPlan, PlanEvent, PlanRow, RowValues
@@ -101,7 +100,7 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
         date=dating.when.isoformat(timespec="seconds") if dating else None,
         date_source=dating.source if dating else None,
         event_id=proposal.event_id,
-        values=RowValues(**asdict(proposal.values)) if proposal.values else None,
+        values=RowValues.of(proposal.values) if proposal.values else None,
         band=proposal.band,
         reason=proposal.reason,
         score=proposal.verdict.score,

@@ -160,4 +160,4 @@ Dans une variable d'environnement, la table est un seul objet JSON :
 
 ---
 
-← [7. Trier](07-sort.md) · [Documentation](../README.md)
+← [7. Trier](07-sort.md) · [Documentation](../README.md) · Suite : **[9. Lieux et voyages grâce au GPS](09-places-from-gps.md)** →

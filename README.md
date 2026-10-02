@@ -83,6 +83,8 @@ adds one thing to the command of the step before.
    journaled and undoable.
 8. [Name the subjects with a local model](documentation/en/sort/08-subjects-from-a-local-model.md) —
    a vision model on your computer says what the loose photos show (optional).
+9. [Places and trips from the GPS](documentation/en/sort/09-places-from-gps.md) — name your
+   places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

@@ -21,6 +21,7 @@ them one at a time; this page gathers them.
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
 | `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
+| `places` | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, step 9](sort/09-places-from-gps.md) |
 
 ## Options
 
@@ -41,7 +42,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify`, before describing many photos with a local model). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
+| `--port PORT` | `review`, `places` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
@@ -90,6 +91,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │             independent opinion.                                             │
 │ classify    Propose where every photo and video should go: year, event,      │
 │             category. Read-only.                                             │
+│ places      Name your places on a map of where the photos were taken; saved  │
+│             into config.toml for the 'place' and 'trip' rules.               │
 │ inventory   Export every photo and video with what the audits learnt to      │
 │             Excel, from the cache alone: no file is read.                    │
 │ history     List the runs and what they did.                                 │
@@ -464,6 +467,27 @@ both languages (`--locale fr --help`). Here is what they print:
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>places --help</code></summary>
+
+<!-- capture: help-places.txt -->
+```text
+ Usage: media-hygiene places [OPTIONS]
+
+ Name your places on a map of where the photos were taken; saved into
+ config.toml for the 'place' and 'trip' rules.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --port          <int range> [x>=0]  Port of the page inside the container;   │
+│                                     publish it with -p 127.0.0.1::8080 so    │
+│                                     that Docker chooses a free one on your   │
+│                                     computer. Default: 8080.                 │
+│ --help  -h                          Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

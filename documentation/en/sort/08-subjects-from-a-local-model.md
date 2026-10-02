@@ -153,4 +153,4 @@ In an environment variable, the table is one JSON object:
 
 ---
 
-← [7. Sort](07-sort.md) · [Documentation](../README.md)
+← [7. Sort](07-sort.md) · [Documentation](../README.md) · Next: **[9. Places and trips from the GPS](09-places-from-gps.md)** →

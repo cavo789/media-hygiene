@@ -84,6 +84,9 @@ seule chose à la commande de l'étape précédente.
    classeur, journalisé et annulable.
 8. [Nommer les sujets avec un modèle local](documentation/fr/sort/08-subjects-from-a-local-model.md) —
    un modèle de vision sur votre ordinateur dit ce que montrent les photos isolées (facultatif).
+9. [Lieux et voyages grâce au GPS](documentation/fr/sort/09-places-from-gps.md) — nommer vos
+   lieux sur une carte ; le GPS des téléphones récents trie maison, famille et voyages, hors
+   ligne (facultatif).
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

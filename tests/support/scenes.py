@@ -28,6 +28,8 @@ _MODEL_TAG: Final = 0x0110
 _ORIENTATION_TAG: Final = 0x0112
 _QUARTER_TURN_CLOCKWISE: Final = 6
 _BLUR_RADIUS: Final = 3.0
+_GPS_IFD: Final = 0x8825
+_MINUTES: Final = 60
 
 
 class Effect(StrEnum):
@@ -80,12 +82,13 @@ def scene(seed: int, size: tuple[int, int] = SCENE_SIZE, shift: int = 0) -> Imag
     return picture
 
 
-def write_shot(path: Path, shot: Shot) -> Path:
+def write_shot(path: Path, shot: Shot, gps: tuple[float, float] | None = None) -> Path:
     """Write a JPEG of the scene, with the EXIF of a camera when asked.
 
     Args:
         path: Target file (its folder is created).
         shot: The picture to write.
+        gps: Where it was taken, latitude and longitude; None: no position.
 
     Returns:
         The file written, dated with its seed like the other test media.
@@ -98,9 +101,26 @@ def write_shot(path: Path, shot: Shot) -> Path:
         exif[_MAKE_TAG], exif[_MODEL_TAG] = "Canon", "EOS 80D"
     if shot.taken_at:
         exif.get_ifd(_EXIF_IFD)[_DATE_TAG] = shot.taken_at
+    if gps:
+        _write_gps(exif, gps)
     if shot.effect is Effect.ROTATED:
         picture = picture.rotate(90, expand=True)
         exif[_ORIENTATION_TAG] = _QUARTER_TURN_CLOCKWISE
     path.parent.mkdir(parents=True, exist_ok=True)
     picture.save(path, "JPEG", quality=shot.quality, exif=exif)
     return age(path, shot.seed)
+
+
+def _write_gps(exif: Image.Exif, position: tuple[float, float]) -> None:
+    """Write a position as a camera does: degrees, minutes, seconds and a side.
+
+    Args:
+        exif: The EXIF being written.
+        position: Latitude and longitude, in decimal degrees.
+    """
+    gps = exif.get_ifd(_GPS_IFD)
+    for tag, value, sides in ((1, position[0], "NS"), (3, position[1], "EW")):
+        degrees, rest = divmod(abs(value) * _MINUTES * _MINUTES, _MINUTES * _MINUTES)
+        minutes, seconds = divmod(rest, _MINUTES)
+        gps[tag] = sides[value < 0]
+        gps[tag + 1] = (float(degrees), float(minutes), round(seconds, 4))

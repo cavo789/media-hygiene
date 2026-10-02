@@ -29,7 +29,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.console.output import Output
     from media_hygiene.plan.models import AuditFindings
+    from media_hygiene.review.serving import Connected
     from media_hygiene.services.runtime import Runtime
 
 # Every interface of the container: Docker forwards the published port to it.
@@ -121,7 +123,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 
-async def run_server(app: ReviewApp, port: int, ready: Callable[[int], None]) -> None:
+async def run_server(app: Connected, port: int, ready: Callable[[int], None]) -> None:
     """Listen, tell the port, and serve until cancelled.
 
     Args:
@@ -150,6 +152,16 @@ def _announce(runtime: Runtime, session: ReviewSession, port: int) -> None:
             "Ctrl+C stops the review."
         ).format(port=port, place=session.place.host)
     )
+    address_tip(output, port)
+
+
+def address_tip(output: Output, port: int) -> None:
+    """Tell how to open a local page from the host: Docker chose its port.
+
+    Args:
+        output: Where to tell it.
+        port: The port listened on, inside the container.
+    """
     output.tip(
         _(
             "Its address on your computer: run 'docker port {container} {port}' in "

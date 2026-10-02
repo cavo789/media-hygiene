@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+{# The map of `media-hygiene places`: where the photos were taken, as circles sized by
+   count, and the user's places. Leaflet is served by the tool itself; only the map tiles
+   come from the tile server, fetched by the browser. Each place is saved at once into
+   config.toml by the server. #}
+{% set texts = {
+  "photo": _("{count} photo"),
+  "photos": _("{count} photos"),
+  "inPlace": _("place: {place}"),
+  "nameIt": _("Name this place"),
+  "noCluster": _("Every cluster lies in a place of yours."),
+  "noPlace": _("No place yet: click a circle or the map."),
+  "noTown": _("No town of more than 1,000 inhabitants starts so."),
+  "newPlace": _("New place"),
+  "saving": _("Saving…"),
+  "saved": _("Saved in config.toml."),
+  "failed": _("Not saved (error {status})."),
+  "offline": _("The map is not running any more: start it again."),
+  "needName": _("Give the place a name."),
+  "confirmDelete": _("Delete the place {name}? The photos stay where they are."),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Your places") }} — media-hygiene</title>
+<link rel="stylesheet" href="/leaflet.css">
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --ok: #1a7f37; --bad: #cf222e; --place: #1a7f37; --cluster: #0969da;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --ok: #3fb950; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: flex; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  aside { width: 340px; max-width: 45vw; overflow-y: auto; padding: 12px 16px;
+          background: var(--card); border-right: 1px solid var(--line); }
+  #map { flex: 1; }
+  h1 { font-size: 1.1rem; margin: 0 0 8px; }
+  h2 { font-size: .95rem; margin: 16px 0 6px; }
+  .muted, .hint { color: var(--muted); font-size: .85rem; }
+  input[type=text], input[type=search], input[type=number] {
+    width: 100%; padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 6px; }
+  input[type=range] { width: 100%; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li button.link { width: 100%; padding: 4px 6px; text-align: left; font: inherit;
+                   color: var(--text); background: none; border: 0; border-radius: 6px;
+                   cursor: pointer; }
+  li button.link:hover { background: var(--bg); }
+  #editor { margin-top: 12px; padding: 10px; border: 2px solid var(--accent); border-radius: 10px; }
+  #editor label { display: block; margin: 8px 0 2px; font-weight: 600; }
+  #editor label.check { font-weight: normal; }
+  .buttons { display: flex; gap: 8px; margin-top: 10px; }
+  .buttons button { padding: 6px 12px; font: inherit; border: 1px solid var(--line);
+                    border-radius: 6px; background: var(--bg); color: var(--text); cursor: pointer; }
+  .buttons button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .buttons button.danger { color: var(--bad); }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  .pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
+         background: var(--accent); border: 3px solid #fff; border-radius: 50%;
+         box-shadow: 0 0 0 1px var(--accent); }
+  .leaflet-tooltip.place-name { font-weight: 600; }
+</style>
+</head>
+<body>
+<aside>
+  <h1>📍 {{ _("Your places") }}</h1>
+  <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}</p>
+  <input id="search" type="search" autocomplete="off"
+         placeholder="{{ _('Find a town (offline)…') }}" aria-label="{{ _('Find a town') }}">
+  <ul id="towns"></ul>
+  <span id="status" role="status" aria-live="polite"></span>
+  <form id="editor" hidden>
+    <strong id="editorTitle"></strong>
+    <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
+    <input id="name" type="text" maxlength="120" required>
+    <label for="radius">{{ _("Radius, in metres") }}</label>
+    <input id="radius" type="range" min="20" max="3000" step="10">
+    <input id="radiusValue" type="number" min="1" max="50000" step="1" aria-label="{{ _('Radius, in metres') }}">
+    <label class="check"><input id="home" type="checkbox"> {{ _("Home: trips are measured from it") }}</label>
+    <div class="buttons">
+      <button type="submit" class="primary">{{ _("Save") }}</button>
+      <button type="button" id="cancel">{{ _("Cancel") }}</button>
+      <button type="button" id="delete" class="danger">{{ _("Delete") }}</button>
+    </div>
+  </form>
+  <h2>{{ _("Your places") }}</h2>
+  <ul id="places"></ul>
+  <h2>{{ _("The largest clusters without a name") }}</h2>
+  <ul id="clusters"></ul>
+  <p class="hint">{{ _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") }}</p>
+</aside>
+<div id="map"></div>
+<script src="/leaflet.js"></script>
+<script>
+(() => {
+  const T = {{ texts | tojson }};
+  const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
+                  search: {{ search_path | tojson }} };
+  const tiles = {{ tiles | tojson }};
+  const attribution = {{ attribution | tojson }};
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const plain = (text) => { const span = document.createElement("span"); span.textContent = text; return span.innerHTML; };
+  const photos = (count) => fill(count === 1 ? T.photo : T.photos, { count });
+  const colour = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const SHOWN_CLUSTERS = 15, NAMED_ZOOM = 16, TOWN_ZOOM = 13, DEFAULT_RADIUS = 200;
+
+  const map = L.map("map", { worldCopyJump: true }).setView([30, 0], 2);
+  L.tileLayer(tiles, { maxZoom: 19, attribution: plain(attribution) }).addTo(map);
+  const clusterLayer = L.layerGroup().addTo(map);
+  const placeLayer = L.layerGroup().addTo(map);
+  let state = { places: [], clusters: [] };
+  let editing = null, editCircle = null, editMarker = null;
+
+  const status = (text, kind) => { const node = byId("status"); node.textContent = text; node.className = kind || ""; };
+
+  function item(list, text, action) {
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "link"; button.textContent = text;
+    button.addEventListener("click", action);
+    li.append(button); list.append(li);
+  }
+
+  function draw() {
+    clusterLayer.clearLayers(); placeLayer.clearLayers();
+    for (const [lat, lon, count, place] of state.clusters) {
+      const circle = L.circleMarker([lat, lon], {
+        radius: 4 + 3 * Math.log2(count), weight: 1, fillOpacity: 0.45,
+        color: place ? colour("--muted") : colour("--cluster"),
+      });
+      circle.bindTooltip(place ? `${photos(count)}, ${fill(T.inPlace, { place })}` : photos(count));
+      circle.on("click", (event) => { L.DomEvent.stopPropagation(event); startNew(lat, lon); });
+      circle.addTo(clusterLayer);
+    }
+    for (const place of state.places) {
+      const circle = L.circle([place.latitude, place.longitude], { radius: place.radius_m, color: colour("--place"), weight: 2 });
+      circle.bindTooltip(place.home ? `🏠 ${place.name}` : place.name, { permanent: true, className: "place-name" });
+      circle.on("click", (event) => { L.DomEvent.stopPropagation(event); edit(place); });
+      circle.addTo(placeLayer);
+    }
+    const places = byId("places"); places.replaceChildren();
+    if (!state.places.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noPlace; places.append(li); }
+    for (const place of state.places) item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+    const clusters = byId("clusters"); clusters.replaceChildren();
+    const unnamed = state.clusters.filter((cluster) => !cluster[3]).slice(0, SHOWN_CLUSTERS);
+    if (!unnamed.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noCluster; clusters.append(li); }
+    for (const [lat, lon, count] of unnamed) item(clusters, `● ${photos(count)} — ${T.nameIt}`, () => startNew(lat, lon));
+  }
+
+  function showEditor() {
+    if (editCircle) editCircle.remove();
+    if (editMarker) editMarker.remove();
+    if (!editing) { byId("editor").hidden = true; return; }
+    const at = [editing.latitude, editing.longitude];
+    editCircle = L.circle(at, { radius: editing.radius_m, color: colour("--accent"), dashArray: "6 6" }).addTo(map);
+    editMarker = L.marker(at, { draggable: true, icon: L.divIcon({ className: "pin" }) }).addTo(map);
+    editMarker.on("drag", (event) => {
+      const where = event.target.getLatLng();
+      editing.latitude = where.lat; editing.longitude = where.lng; editCircle.setLatLng(where);
+    });
+    byId("editorTitle").textContent = editing.key === null ? T.newPlace : editing.name;
+    byId("name").value = editing.name;
+    byId("radius").value = editing.radius_m; byId("radiusValue").value = editing.radius_m;
+    byId("home").checked = editing.home;
+    byId("delete").hidden = editing.key === null;
+    byId("editor").hidden = false;
+    byId("name").focus();
+  }
+
+  function edit(place) {
+    editing = { ...place };
+    map.setView([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
+    showEditor();
+  }
+  const startNew = (lat, lon) => edit({ key: null, name: "", latitude: lat, longitude: lon, radius_m: DEFAULT_RADIUS, home: false });
+  map.on("click", (event) => startNew(event.latlng.lat, event.latlng.lng));
+
+  const setRadius = (value) => {
+    const radius = Math.max(1, Math.min(50000, Number(value) || DEFAULT_RADIUS));
+    editing.radius_m = radius; editCircle.setRadius(radius);
+    byId("radius").value = radius; byId("radiusValue").value = radius;
+  };
+  byId("radius").addEventListener("input", (event) => setRadius(event.target.value));
+  byId("radiusValue").addEventListener("change", (event) => setRadius(event.target.value));
+  byId("cancel").addEventListener("click", () => { editing = null; showEditor(); });
+
+  const row = (place) => ({ key: place.key, name: place.name, latitude: place.latitude,
+                            longitude: place.longitude, radius_m: place.radius_m, home: place.home });
+
+  async function send(places) {
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(paths.save, { method: "POST", headers: { "Content-Type": "application/json" },
+                                           body: JSON.stringify({ places: places.map(row) }) });
+    } catch (error) { status(T.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    state = answer; editing = null; showEditor(); draw(); status(T.saved, "saved");
+  }
+
+  byId("editor").addEventListener("submit", (event) => {
+    event.preventDefault();
+    editing.name = byId("name").value.trim();
+    editing.home = byId("home").checked;
+    if (!editing.name) { status(T.needName, "error"); return; }
+    const others = state.places.filter((place) => place.key !== editing.key)
+      .map((place) => (editing.home ? { ...place, home: false } : place));
+    const ordered = editing.key === null ? [...others, editing]
+      : state.places.map((place) => (place.key === editing.key ? editing : others.find((other) => other.key === place.key)));
+    send(ordered);
+  });
+  byId("delete").addEventListener("click", () => {
+    if (!window.confirm(fill(T.confirmDelete, { name: editing.name }))) return;
+    send(state.places.filter((place) => place.key !== editing.key));
+  });
+
+  let searching = null;
+  byId("search").addEventListener("input", (event) => {
+    clearTimeout(searching);
+    searching = setTimeout(async () => {
+      const list = byId("towns"); list.replaceChildren();
+      const text = event.target.value.trim();
+      if (!text) return;
+      const response = await fetch(paths.search, { method: "POST", headers: { "Content-Type": "application/json" },
+                                                  body: JSON.stringify({ text }) }).catch(() => null);
+      if (!response || !response.ok) { status(T.offline, "error"); return; }
+      const towns = await response.json();
+      if (!towns.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noTown; list.append(li); }
+      for (const town of towns) {
+        item(list, `${town.name} — ${[town.region, town.country].filter(Boolean).join(", ")}`,
+             () => map.setView([town.latitude, town.longitude], TOWN_ZOOM));
+      }
+    }, 250);
+  });
+
+  fetch(paths.state).then((response) => response.json()).then((answer) => {
+    state = answer; draw();
+    const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];
+    if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM });
+  }).catch(() => status(T.offline, "error"));
+})();
+</script>
+</body>
+</html>

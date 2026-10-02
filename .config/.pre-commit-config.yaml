@@ -9,6 +9,8 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
+        # The GeoNames towns (~1.7 MB, xz) are shipped on purpose: offline geocoding.
+        exclude: ^src/media_hygiene/geo/data/towns\.tsv\.xz$
       - id: check-case-conflict
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
@@ -17,12 +19,14 @@ repos:
       - id: check-yaml
       - id: detect-private-key
       # gettext catalogs are written by pybabel (i18n_update): its layout is the reference.
+      # Vendored files (Leaflet) stay byte for byte as published.
       - id: end-of-file-fixer
-        exclude: \.pot?$
+        exclude: \.pot?$|^src/media_hygiene/places/static/
       - id: mixed-line-ending
         args: [--fix=lf]
+        exclude: ^src/media_hygiene/places/static/
       - id: trailing-whitespace
-        exclude: \.pot?$
+        exclude: \.pot?$|^src/media_hygiene/places/static/
 
   - repo: https://github.com/AleksaC/hadolint-py
     rev: v2.15.1

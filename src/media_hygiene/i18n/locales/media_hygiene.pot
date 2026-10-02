@@ -137,6 +137,9 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
+msgid "Add -v \"<a folder of yours>:/config\" to the docker run command."
+msgstr ""
+
 msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
 msgstr ""
 
@@ -282,11 +285,18 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
+msgid "Cancel"
+msgstr ""
+
 msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr ""
 
 #, python-brace-format
 msgid "Cannot read the decisions file {path}."
+msgstr ""
+
+#, python-brace-format
+msgid "Cannot save config.toml: {error}."
 msgstr ""
 
 #, python-brace-format
@@ -467,10 +477,17 @@ msgstr ""
 msgid "Decoder message"
 msgstr ""
 
+msgid "Delete"
+msgstr ""
+
 msgid "Delete all reports but the N most recent ones."
 msgstr ""
 
 msgid "Delete it: the next audit builds it again, reading every file once."
+msgstr ""
+
+#, python-brace-format
+msgid "Delete the place {name}? The photos stay where they are."
 msgstr ""
 
 #, python-brace-format
@@ -537,6 +554,11 @@ msgstr ""
 msgid "Documents and screenshots"
 msgstr ""
 
+msgid ""
+"Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
+"a 'trip' rule) to [[classify.rules]] and run 'classify'."
+msgstr ""
+
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
 msgstr ""
@@ -598,8 +620,10 @@ msgid ""
 "\"received\" or \"download\"), path (a regular expression searched in the"
 " host path, pattern = \"(?i)kermesse\"), camera (a regular expression "
 "searched in the make and model, pattern = \"(?i)dji\"), subject (what a "
-"local vision model sees, categories = [...], see [classify.ai]), "
-"other_category (the files no rule above matched)."
+"local vision model sees, categories = [...], see [classify.ai]), place "
+"(the GPS position lies in one of your places, see [[classify.places]]), "
+"trip (an event far from home, named after its country and town without "
+"going online), other_category (the files no rule above matched)."
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
@@ -667,6 +691,9 @@ msgid ""
 "stops the review; then run the same 'clean' command with --decisions "
 "%(file)s (that file): the shots set aside go to the quarantine, and "
 "'undo' brings them back."
+msgstr ""
+
+msgid "Every cluster lies in a place of yours."
 msgstr ""
 
 msgid "Every copy"
@@ -759,6 +786,12 @@ msgid "Films and series"
 msgstr ""
 
 msgid "Final folder"
+msgstr ""
+
+msgid "Find a town"
+msgstr ""
+
+msgid "Find a town (offline)…"
 msgstr ""
 
 msgid ""
@@ -859,6 +892,9 @@ msgstr ""
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
 
+msgid "Give the place a name."
+msgstr ""
+
 msgid ""
 "Give them the same folder, or clear all the cells but one, save the "
 "workbook, then run 'sort' again."
@@ -892,7 +928,13 @@ msgstr ""
 msgid "Holidays and outings"
 msgstr ""
 
+msgid "Home"
+msgstr ""
+
 msgid "Home and works"
+msgstr ""
+
+msgid "Home: trips are measured from it"
 msgstr ""
 
 msgid "Host folder never sorted (analysed and cleaned as usual)."
@@ -1073,6 +1115,15 @@ msgstr ""
 msgid "Manifest: {path}"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Map ready on port {port}: each place is saved at once in config.toml. "
+"Ctrl+C stops it."
+msgstr ""
+
+msgid "Map stopped; your places are in config.toml."
+msgstr ""
+
 msgid "March"
 msgstr ""
 
@@ -1150,10 +1201,24 @@ msgstr ""
 msgid "Moved to the quarantine from"
 msgstr ""
 
+msgid "My places"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
+msgid "Name (it becomes a folder name)"
+msgstr ""
+
 msgid "Name another file with --decisions, or mount the same folders."
+msgstr ""
+
+msgid "Name this place"
+msgstr ""
+
+msgid ""
+"Name your places on a map of where the photos were taken; saved into "
+"config.toml for the 'place' and 'trip' rules."
 msgstr ""
 
 msgid "Nature and landscapes"
@@ -1182,6 +1247,14 @@ msgid "New Year"
 msgstr ""
 
 msgid "New name"
+msgstr ""
+
+msgid "New place"
+msgstr ""
+
+msgid ""
+"Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
+"'classify'."
 msgstr ""
 
 #, python-brace-format
@@ -1238,6 +1311,12 @@ msgstr ""
 msgid "No photo nor video to classify."
 msgstr ""
 
+msgid "No photo with a GPS position in the index: the map shows no cluster."
+msgstr ""
+
+msgid "No place yet: click a circle or the map."
+msgstr ""
+
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
 "place."
@@ -1261,6 +1340,9 @@ msgstr ""
 msgid "No run yet."
 msgstr ""
 
+msgid "No town of more than 1,000 inhabitants starts so."
+msgstr ""
+
 msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
 msgstr ""
 
@@ -1272,6 +1354,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not saved (error {status})."
+msgstr ""
+
+#, python-brace-format
+msgid "Not saved: {reason}."
 msgstr ""
 
 msgid "Not the folder you want to keep?"
@@ -1364,6 +1450,9 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
+msgstr ""
+
+msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the review at 127.0.0.1 or localhost."
@@ -1478,6 +1567,9 @@ msgstr ""
 msgid "RAW file cannot be decoded"
 msgstr ""
 
+msgid "Radius, in metres"
+msgstr ""
+
 msgid "Random sample"
 msgstr ""
 
@@ -1587,6 +1679,9 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+msgid "Run 'audit' first with the same /cache mount: it records the positions."
+msgstr ""
+
 msgid ""
 "Run 'audit' first with the same /cache mount: the inventory lists what "
 "the audits learnt, without reading the files again."
@@ -1676,6 +1771,9 @@ msgstr ""
 msgid "Samples"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
 msgid ""
 "Save it in the folder mounted on /reports, then run the same 'clean' "
 "command with --decisions decisions.json: it audits again, applies your "
@@ -1684,6 +1782,9 @@ msgid ""
 msgstr ""
 
 msgid "Save it, close it, then run 'sort' again."
+msgstr ""
+
+msgid "Saved in config.toml."
 msgstr ""
 
 #, python-brace-format
@@ -1870,6 +1971,12 @@ msgid ""
 "swallows most photos."
 msgstr ""
 
+msgid ""
+"The circles are your photos with a GPS position, larger where there are "
+"more. Click a circle or the map to name a place; drag its marker to move "
+"it. Each place is saved at once in config.toml."
+msgstr ""
+
 #, python-brace-format
 msgid "The classify files could not be written to {folder}: {reason}."
 msgstr ""
@@ -1913,8 +2020,21 @@ msgstr ""
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid "The largest clusters without a name"
+msgstr ""
+
 #, python-brace-format
 msgid "The manifest could not be written to {folder}: {reason}."
+msgstr ""
+
+msgid "The map is not running any more: start it again."
+msgstr ""
+
+msgid ""
+"The map of 'places', where you name your places: only its tiles are "
+"fetched, by your browser, from this https address (they show the areas "
+"you look at, never a photo). Another tile server asks for its own credit "
+"in attribution (plain text)."
 msgstr ""
 
 msgid "The model sent an answer without a message."
@@ -1937,6 +2057,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "The model {model} is not installed at {url}."
+msgstr ""
+
+msgid "The places are saved in /config/config.toml: mount /config."
+msgstr ""
+
+#, python-brace-format
+msgid "The places of {file} are invalid: {reason}."
 msgstr ""
 
 #, python-brace-format
@@ -1999,6 +2126,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The target {path} is not mounted."
+msgstr ""
+
+#, python-brace-format
+msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
@@ -2102,6 +2233,15 @@ msgstr ""
 msgid "Total length of the videos"
 msgstr ""
 
+msgid "Trips"
+msgstr ""
+
+msgid ""
+"Trips, for a 'trip' rule: an event whose photos lie farther than "
+"trip_min_km from home is away; away events less than trip_merge_gap_hours"
+" apart, and less than trip_merge_max_km from each other, make one trip."
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -2157,8 +2297,9 @@ msgstr ""
 msgid ""
 "Where files go, by how sure the proposal is. Placeholders: {year}, "
 "{quarter}, {month}, {month_name}, {day}, {category}, {event}, "
-"{event_start}. An empty layout leaves the files where they are; "
-"'{year}/{month}' needs no category at all."
+"{event_start}, {place}, {country}, {region}, {city}. An empty layout "
+"leaves the files where they are; '{year}/{month}' needs no category at "
+"all."
 msgstr ""
 
 #, python-brace-format
@@ -2246,7 +2387,20 @@ msgid ""
 "whole table."
 msgstr ""
 
+msgid ""
+"Your own places: a photo whose GPS position lies within radius_m metres "
+"of one goes to its name, with a 'place' rule above; a photo without GPS "
+"follows the other photos of its event. One place can be home = true: "
+"trips are measured from it. Name them on a map with 'media-hygiene "
+"places', or copy the latitude and longitude from a map. Nothing leaves "
+"your computer: towns and countries are named from GeoNames data shipped "
+"with the image."
+msgstr ""
+
 msgid "Your own rules go here, above the folders, for instance:"
+msgstr ""
+
+msgid "Your places"
 msgstr ""
 
 msgid ""
@@ -2490,6 +2644,10 @@ msgid "photo"
 msgstr ""
 
 msgid "photos with a shooting date:"
+msgstr ""
+
+#, python-brace-format
+msgid "place: {place}"
 msgstr ""
 
 msgid "preferred folder"
@@ -2771,6 +2929,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} photo could not be described: unreadable, or no answer."
 msgid_plural "{count} photos could not be described: unreadable, or no answer."
 msgstr[0] ""
@@ -2781,6 +2943,10 @@ msgid "{count} photo described; kept in the cache."
 msgid_plural "{count} photos described; kept in the cache."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photos"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} report deleted."

@@ -6,6 +6,7 @@ Folder names are NFC-normalised; characters Windows refuses become `_`.
 
 from __future__ import annotations
 
+import dataclasses
 import re
 import string
 import unicodedata
@@ -28,8 +29,18 @@ _MONTHS_PER_QUARTER: Final = 3
 
 
 @dataclass(frozen=True, slots=True)
+class GeoValues:
+    """What a layout can say of where a file was taken: its place, or its trip's."""
+
+    place: str = ""  # a personal place
+    country: str = ""  # those of a trip
+    region: str = ""
+    city: str = ""
+
+
+@dataclass(frozen=True, slots=True)
 class Values:
-    """What a layout can say about one file: its date, its category, its event."""
+    """What a layout can say about one file: its date, category, event and place."""
 
     year: int
     month: int
@@ -37,6 +48,7 @@ class Values:
     category: str = ""
     event: str = ""
     event_start: str = ""
+    geo: GeoValues = dataclasses.field(default_factory=GeoValues)
 
 
 def check_layout(layout: str) -> None:
@@ -83,10 +95,10 @@ def render(layout: str, values: Values) -> str | None:
         category=values.category,
         event=values.event,
         event_start=values.event_start,
-        place="",
-        country="",
-        region="",
-        city="",
+        place=values.geo.place,
+        country=values.geo.country,
+        region=values.geo.region,
+        city=values.geo.city,
     )
     segments = [safe_name(part) for part in filled.split("/")]
     return "/".join(segment for segment in segments if segment)

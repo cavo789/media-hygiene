@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Final, Literal
+from typing import Final, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from media_hygiene.classify.layout import check_layout
+from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_ai import AiSettings
+from media_hygiene.config.classify_places import PersonalPlace, check_places
 from media_hygiene.config.classify_rules import (
     DEFAULT_RULES,
     ClassifyRule,
@@ -46,6 +48,10 @@ SCORES: Final = {
     "camera": 90,
     "other-category": 85,  # only when no rule above matched
     "subject": 85,  # the samples of an event agree; else "to check"
+    "place": 90,  # within a personal place
+    "place-neighbour": 70,  # no GPS, in an event at a personal place
+    "trip": 90,  # far from home
+    "trip-neighbour": 70,  # no GPS, in a trip
     "date-only": 90,
     "no-signal": 0,
 }
@@ -79,6 +85,10 @@ class ClassifySettings(BaseModel):
     generic_folders: tuple[str, ...] = LIBRARY_FOLDERS
     rules: tuple[ClassifyRule, ...] = DEFAULT_RULES
     ai: AiSettings = AiSettings()
+    places: tuple[PersonalPlace, ...] = ()
+    trip_min_km: float = Field(default=100, gt=0)
+    trip_merge_gap_hours: float = Field(default=48, ge=0)
+    trip_merge_max_km: float = Field(default=120, ge=0)
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"
@@ -121,6 +131,41 @@ class ClassifySettings(BaseModel):
             Them, unchanged.
         """
         return unique_names(rules)
+
+    @field_validator("places")
+    @classmethod
+    def _unique_places(
+        cls, places: tuple[PersonalPlace, ...]
+    ) -> tuple[PersonalPlace, ...]:
+        """Refuse two places of the same name, or two homes.
+
+        Args:
+            places: The places.
+
+        Returns:
+            Them, unchanged.
+        """
+        check_places(places)
+        return places
+
+    @model_validator(mode="after")
+    def _trips_need_home(self) -> Self:
+        """Refuse a `trip` rule without a home to measure the distance from.
+
+        Returns:
+            The settings, unchanged.
+
+        Raises:
+            ValueError: A trip rule is written, and no place is home.
+        """
+        trips = [rule.name for rule in self.rules if rule.match is RuleMatch.TRIP]
+        if trips and not any(place.home for place in self.places):
+            message = (
+                f"rule {trips[0]!r}: match = 'trip' needs a [[classify.places]] "
+                "with home = true"
+            )
+            raise ValueError(message)
+        return self
 
     @field_validator("scores")
     @classmethod

@@ -14,6 +14,7 @@ from media_hygiene.services.policy import unmounted_folders
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from pathlib import Path
 
     from media_hygiene.config.scan_settings import ScanSettings
     from media_hygiene.scan.aliases import Alias
@@ -151,3 +152,22 @@ def _scope(scan: ScanSettings) -> str:
         for item in scan.extensions
     )
     return ", ".join(labels)
+
+
+def unreadable_index(runtime: Runtime, index: Path, error: Exception) -> MountError:
+    """The error of an index that cannot be read.
+
+    Args:
+        runtime: Mount points.
+        index: The index file.
+        error: What SQLite said.
+
+    Returns:
+        The error, with the tip to let the next audit build it again.
+    """
+    return MountError(
+        _("The index {file} cannot be read: {reason}.").format(
+            file=runtime.mapper.to_host(index), reason=error
+        ),
+        _("Delete it: the next audit builds it again, reading every file once."),
+    )

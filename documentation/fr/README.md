@@ -68,6 +68,9 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 
 8. [Nommer les sujets avec un modèle local](sort/08-subjects-from-a-local-model.md) : un modèle de
    vision sur votre ordinateur dit ce que montrent les photos isolées (facultatif).
+9. [Lieux et voyages grâce au GPS](sort/09-places-from-gps.md) : nommer vos lieux sur une carte,
+   et laisser le GPS des téléphones récents trier maison, famille et voyages, hors ligne
+   (facultatif).
 
 ## Référence
 

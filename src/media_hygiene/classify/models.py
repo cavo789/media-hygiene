@@ -37,6 +37,10 @@ class SortReason(StrEnum):
     PATH = "path"
     CAMERA = "camera"
     SUBJECT = "subject"  # a local vision model, through `[classify.ai]`
+    PLACE = "place"  # within a personal place, from the GPS
+    PLACE_NEIGHBOUR = "place-neighbour"  # no GPS, in an event at a personal place
+    TRIP = "trip"  # far from home, from the GPS
+    TRIP_NEIGHBOUR = "trip-neighbour"  # no GPS, in a trip
     OTHER_CATEGORY = "other-category"
     DATE_ONLY = "date-only"
     NO_SIGNAL = "no-signal"

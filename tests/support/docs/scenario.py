@@ -27,7 +27,14 @@ if TYPE_CHECKING:
 type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
-COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "inventory")
+COMMANDS_TOO: Final = (
+    "crosscheck",
+    "config",
+    "classify",
+    "sort",
+    "inventory",
+    "places",
+)
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(

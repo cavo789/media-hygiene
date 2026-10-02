@@ -6,7 +6,7 @@ ordered rules of `[[classify.rules]]` decide from them.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
@@ -17,15 +17,12 @@ from media_hygiene.classify.events import trusted_events
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.guesses import keep_guess
 from media_hygiene.classify.layout import Values, render
-from media_hygiene.classify.models import (
-    Band,
-    Proposal,
-    SortReason,
-    Verdict,
-)
+from media_hygiene.classify.models import Band, Proposal, SortReason, Verdict
 from media_hygiene.classify.rules.building import RuleFacts
 from media_hygiene.classify.rules.order import decide
 from media_hygiene.classify.signals import folder_signal, with_neighbours
+from media_hygiene.classify.trips import find_whereabouts
+from media_hygiene.classify.whereabouts import with_place
 from media_hygiene.classify.years import year_folders
 from media_hygiene.constants import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
@@ -36,9 +33,11 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.classify.ai.models import Subject
+    from media_hygiene.classify.layout import GeoValues
     from media_hygiene.classify.models import Dating, Event, MediaInput
     from media_hygiene.classify.signals import Signal
     from media_hygiene.config.classify_settings import ClassifySettings
+    from media_hygiene.geo.gazetteer import Gazetteer
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +50,7 @@ class Scope:
     generic: tuple[str, ...] = GENERIC_FOLDERS  # `[keep]`: DCIM, Camera…
     host: Callable[[Path], str] = str  # container → host path, for `path` rules
     subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
+    towns: Gazetteer | None = None  # read only when a `trip` rule is on
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,20 +86,17 @@ def classify(
     )
     datings = {file.path: dating_of(file, context) for file in files}
     signals = {file.path: folder_signal(file, rules) for file in files}
-    labels = {path: s.category for path, s in signals.items() if s.category}
-    events = trusted_events(datings, labels, settings)
+    events = trusted_events(
+        datings,
+        {path: s.category for path, s in signals.items() if s.category},
+        settings,
+    )
     event_of = {path: event for event in events for path in event.paths}
     signals = without_event_folders(files, (signals, event_of), rules)
+    where = find_whereabouts(files, (events, datings), (settings, scope.towns))
+    facts = RuleFacts(datings, with_neighbours(signals, events), event_of, scope.host)
     signals = decide(
-        files,
-        settings,
-        RuleFacts(
-            datings,
-            with_neighbours(signals, events),
-            event_of,
-            scope.host,
-            scope.subjects,
-        ),
+        files, settings, replace(facts, subjects=scope.subjects, where=where)
     )
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [
@@ -111,6 +108,7 @@ def classify(
                     signals[file.path],
                     event_of.get(file.path),
                     years[file.path],
+                    where.values(file.path),
                 ),
                 (settings, scope),
             ),
@@ -134,6 +132,7 @@ class _Facts:
     signal: Signal
     event: Event | None
     year: int
+    geo: GeoValues
 
 
 def _propose(
@@ -168,6 +167,7 @@ def _propose(
         else f"{when.year:04d}-{when.month:02d}",
         event_start=event.start.date().isoformat() if event else "",
     )
+    values = with_place(values, facts.geo)
     layout = layout_of(judged.band, settings, camera=has_camera_trace(file))
     folder = render(layout, values)
     root = scope.target or file.root

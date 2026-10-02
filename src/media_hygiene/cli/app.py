@@ -11,6 +11,7 @@ from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
 from media_hygiene.cli.cmd_inventory import inventory_command
+from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
@@ -99,6 +100,15 @@ def build_app() -> typer.Typer:
             _(
                 "Propose where every photo and video should go: year, event, "
                 "category. Read-only."
+            ),
+        ),
+        (
+            "places",
+            places_command,
+            analyse,
+            _(
+                "Name your places on a map of where the photos were taken; saved "
+                "into config.toml for the 'place' and 'trip' rules."
             ),
         ),
         (

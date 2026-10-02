@@ -15,6 +15,8 @@ class RuleMatch(StrEnum):
     EVENT_NEIGHBOUR = "event_neighbour"
     CALENDAR = "calendar"
     DATE_RANGE = "date_range"
+    PLACE = "place"
+    TRIP = "trip"
     KIND = "kind"
     PATH = "path"
     CAMERA = "camera"
@@ -33,6 +35,13 @@ class FileKind(StrEnum):
 # The rules whose category comes from the folders, not from the rule.
 BUILT_IN: Final = frozenset({RuleMatch.EXISTING_FOLDER, RuleMatch.EVENT_NEIGHBOUR})
 DATED: Final = frozenset({RuleMatch.CALENDAR, RuleMatch.DATE_RANGE})
+# The rules read from the GPS: their category without one, and the reason of the
+# files without GPS that inherit them from their event.
+GEO_CATEGORIES: Final = {RuleMatch.PLACE: "{place}", RuleMatch.TRIP: "{country}/{city}"}
+NEIGHBOURS: Final = {
+    RuleMatch.PLACE: SortReason.PLACE_NEIGHBOUR,
+    RuleMatch.TRIP: SortReason.TRIP_NEIGHBOUR,
+}
 REASONS: Final = {
     RuleMatch.EVENT_NEIGHBOUR: SortReason.EVENT_NEIGHBOUR,
     RuleMatch.CALENDAR: SortReason.CALENDAR,
@@ -41,5 +50,7 @@ REASONS: Final = {
     RuleMatch.PATH: SortReason.PATH,
     RuleMatch.CAMERA: SortReason.CAMERA,
     RuleMatch.SUBJECT: SortReason.SUBJECT,
+    RuleMatch.PLACE: SortReason.PLACE,
+    RuleMatch.TRIP: SortReason.TRIP,
     RuleMatch.OTHER_CATEGORY: SortReason.OTHER_CATEGORY,
 }

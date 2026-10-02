@@ -15,8 +15,15 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.rules.building import build_test
-from media_hygiene.classify.rules.kinds import BUILT_IN, REASONS, RuleMatch
+from media_hygiene.classify.rules.kinds import (
+    BUILT_IN,
+    GEO_CATEGORIES,
+    NEIGHBOURS,
+    REASONS,
+    RuleMatch,
+)
 from media_hygiene.classify.signals import NO_SIGNAL, Signal
+from media_hygiene.classify.whereabouts import with_place
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -101,14 +108,33 @@ def _signal(
         reason, category, stay = SortReason.SUBJECT, subject.category, False
         agreed = subject.agreed
     else:
-        reason, stay = REASONS[rule.match], not rule.category
-        category = _category(rule.category, file, facts)
+        template = rule.category or GEO_CATEGORIES.get(rule.match, "")
+        reason, stay = _reason(rule.match, file, facts), not template
+        category = _category(template, file, facts)
     score = rule.score
-    if score is None:
-        score = settings.scores.get(reason.value, 0)
+    if score is None or reason in NEIGHBOURS.values():
+        default = settings.scores.get(reason.value, 0)
+        score = default if score is None else min(score, default)
     if not agreed:
         score = min(score, settings.unsure)  # one answer, or samples that disagree
     return Signal(reason, category, rule.name, score, stay)
+
+
+def _reason(match: RuleMatch, file: MediaInput, facts: RuleFacts) -> SortReason:
+    """The reason a matching rule gives a file.
+
+    Args:
+        match: What the rule matches on.
+        file: The file.
+        facts: Where it was taken.
+
+    Returns:
+        The rule's reason; a file without GPS that inherits a place or a trip from
+        its event is a neighbour.
+    """
+    spots = {RuleMatch.PLACE: facts.where.places, RuleMatch.TRIP: facts.where.trips}
+    spot = spots[match].get(file.path) if match in spots else None
+    return NEIGHBOURS[match] if spot and spot.inherited else REASONS[match]
 
 
 def _category(template: str, file: MediaInput, facts: RuleFacts) -> str:
@@ -131,4 +157,4 @@ def _category(template: str, file: MediaInput, facts: RuleFacts) -> str:
         event=(event.label or event.span) if event else "",
         event_start=event.start.date().isoformat() if event else "",
     )
-    return render(template, values) or ""
+    return render(template, with_place(values, facts.where.values(file.path))) or ""
