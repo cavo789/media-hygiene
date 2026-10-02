@@ -8,18 +8,24 @@ JSON body: a page of another site cannot send one without the browser asking fir
 
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, override
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.errors import DecisionsError
-from media_hygiene.i18n import _
 from media_hygiene.report.thumbnails import review_preview
-from media_hygiene.review.http import ContentType, Response, is_local
-from media_hygiene.review.serving import json_response, refused_post, serve_connection
+from media_hygiene.review.http import Response
+from media_hygiene.review.local_app import (
+    PAGE_PATH,
+    STATE_PATH,
+    LocalApp,
+    choice_failed,
+    jpeg_response,
+    page_or_state,
+)
+from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.views import PREVIEW_PREFIX
 
 if TYPE_CHECKING:
@@ -28,8 +34,8 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
     from media_hygiene.review.session import ReviewSession
 
-PAGE_PATH: Final = "/"
-STATE_PATH: Final = "/api/state"
+__all__ = ["DECIDE_PATH", "PAGE_PATH", "STATE_PATH", "ReviewApp"]
+
 DECIDE_PATH: Final = "/api/decide"
 _PREVIEW_SUFFIX: Final = ".jpg"
 _GET, _POST = "GET", "POST"
@@ -45,26 +51,16 @@ class _Decision(BaseModel):
 
 
 @dataclass(frozen=True, slots=True)
-class ReviewApp:
+class ReviewApp(LocalApp):
     """Answers the browser; the session holds the state and saves it."""
 
     session: ReviewSession
     page: bytes
     executor: Executor
 
-    async def connection(
-        self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
-    ) -> None:
-        """Serve one connection: one request, one response.
-
-        Args:
-            reader: What the browser sends.
-            writer: Where to answer.
-        """
-        await serve_connection(reader, writer, self.handle)
-
-    async def handle(self, request: Request) -> Response:
-        """Route a request.
+    @override
+    async def answer(self, request: Request) -> Response:
+        """Route a request from the loopback.
 
         Args:
             request: The request.
@@ -72,9 +68,6 @@ class ReviewApp:
         Returns:
             The response.
         """
-        if not is_local(request):
-            message = _("Open the review at 127.0.0.1 or localhost.")
-            return Response(HTTPStatus.FORBIDDEN, message.encode())
         if request.method == _GET:
             return await self._get(request.path)
         if request.path == DECIDE_PATH and request.method == _POST:
@@ -90,20 +83,13 @@ class ReviewApp:
         Returns:
             The response; 404 for anything else, or a preview that cannot be made.
         """
-        if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
-        if path == STATE_PATH:
-            state = self.session.state().model_dump_json().encode()
-            return Response(HTTPStatus.OK, state, ContentType.JSON)
+        if path in {PAGE_PATH, STATE_PATH}:
+            return page_or_state(path, self.page, self.session.state)
         key = path.removeprefix(PREVIEW_PREFIX).removesuffix(_PREVIEW_SUFFIX)
         source = self.session.preview_source(key)
         if source is None or path != f"{PREVIEW_PREFIX}{key}{_PREVIEW_SUFFIX}":
             return Response(HTTPStatus.NOT_FOUND)
-        loop = asyncio.get_running_loop()
-        image = await loop.run_in_executor(self.executor, review_preview, source)
-        if image is None:
-            return Response(HTTPStatus.NOT_FOUND)
-        return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
+        return await jpeg_response(self.executor, review_preview, source)
 
     def _decide(self, request: Request) -> Response:
         """Set shots of a series aside and save the decisions file.
@@ -122,13 +108,7 @@ class ReviewApp:
             self.session.decide(decision.series, frozenset(decision.discarded))
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
-        except DecisionsError as exc:
-            return json_response(
-                HTTPStatus.UNPROCESSABLE_ENTITY, {"error": exc.message}
-            )
-        except OSError as exc:
-            message = _("Cannot save the decisions file: {error}.")
-            error = message.format(error=exc.strerror or exc)
-            return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": error})
+        except (DecisionsError, OSError) as exc:
+            return choice_failed(exc)
         series, shots = self.session.progress
         return json_response(HTTPStatus.OK, {"series": series, "shots": shots})

@@ -64,6 +64,8 @@ otherwise both copies are sorted.
    on your computer says what the loose photos show (optional).
 9. [Places and trips from the GPS](sort/09-places-from-gps.md): name your places on a map, and
    let the GPS of recent phones sort home, family and trips, offline (optional).
+10. [Name the events in your browser](sort/10-name-events-in-the-browser.md): one event at a
+    time with its photos, named with the keyboard; `sort` applies your choices (optional).
 
 ## Reference
 

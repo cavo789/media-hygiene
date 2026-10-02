@@ -122,6 +122,9 @@ still read, as far as its ids and yellow cells can be found: running `classify` 
 out. If the latest workbook cannot be opened at all, `classify` stops before writing anything, so
 that your edits are not buried under a newer, empty workbook.
 
+Hundreds of events to name? [Step 10](10-name-events-in-the-browser.md) shows them one at a time in
+your browser, with their photos and a field to name them, without switching windows.
+
 Nothing moves yet: applying the workbook to your folders is the job of `sort`
 ([step 7](07-sort.md)). It checks the workbook again before moving anything: a workbook of another
 run, or one whose rows, sheets or locked cells were changed, is refused.

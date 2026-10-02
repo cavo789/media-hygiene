@@ -21,6 +21,7 @@ them one at a time; this page gathers them.
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
 | `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
+| `review-sort [WORKBOOK]` | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, step 10](sort/10-name-events-in-the-browser.md) |
 | `places` | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, step 9](sort/09-places-from-gps.md) |
 
 ## Options
@@ -42,7 +43,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify`, before describing many photos with a local model). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `places` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
+| `--port PORT` | `review`, `review-sort`, `places` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
@@ -85,30 +86,32 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                                is honoured too).             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse ────────────────────────────────────────────────────────────────────╮
-│ audit       Find exact duplicates and broken files. Read-only: mount folders │
-│             with :ro.                                                        │
-│ crosscheck  Compare a fresh audit with Czkawka's results: a second,          │
-│             independent opinion.                                             │
-│ classify    Propose where every photo and video should go: year, event,      │
-│             category. Read-only.                                             │
-│ places      Name your places on a map of where the photos were taken; saved  │
-│             into config.toml for the 'place' and 'trip' rules.               │
-│ inventory   Export every photo and video with what the audits learnt to      │
-│             Excel, from the cache alone: no file is read.                    │
-│ history     List the runs and what they did.                                 │
-│ reports     List the HTML reports of previous audits and cleans.             │
-│ config      Show every setting, where it comes from, and the mount points.   │
+│ audit        Find exact duplicates and broken files. Read-only: mount        │
+│              folders with :ro.                                               │
+│ crosscheck   Compare a fresh audit with Czkawka's results: a second,         │
+│              independent opinion.                                            │
+│ classify     Propose where every photo and video should go: year, event,     │
+│              category. Read-only.                                            │
+│ review-sort  Name the events of the classify proposal one by one in your     │
+│              browser.                                                        │
+│ places       Name your places on a map of where the photos were taken; saved │
+│              into config.toml for the 'place' and 'trip' rules.              │
+│ inventory    Export every photo and video with what the audits learnt to     │
+│              Excel, from the cache alone: no file is read.                   │
+│ history      List the runs and what they did.                                │
+│ reports      List the HTML reports of previous audits and cleans.            │
+│ config       Show every setting, where it comes from, and the mount points.  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act ────────────────────────────────────────────────────────────────────────╮
-│ review      Set burst shots aside, one series at a time, with the keyboard   │
-│             in your browser; 'clean --decisions' then moves them.            │
-│ clean       Audit, confirm, then really delete duplicate copies (journaled,  │
-│             undoable).                                                       │
-│ sort        Move the photos and videos as the edited classify workbook says  │
-│             (journaled, undoable).                                           │
-│ undo        Restore every file of a run, from the kept copy, the quarantine  │
-│             or where it was moved.                                           │
-│ purge       Permanently delete the quarantined broken files of a run.        │
+│ review       Set burst shots aside, one series at a time, with the keyboard  │
+│              in your browser; 'clean --decisions' then moves them.           │
+│ clean        Audit, confirm, then really delete duplicate copies (journaled, │
+│              undoable).                                                      │
+│ sort         Move the photos and videos as the edited classify workbook says │
+│              (journaled, undoable).                                          │
+│ undo         Restore every file of a run, from the kept copy, the quarantine │
+│              or where it was moved.                                          │
+│ purge        Permanently delete the quarantined broken files of a run.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 

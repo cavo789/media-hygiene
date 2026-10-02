@@ -15,6 +15,7 @@ from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
+from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_undo import undo_command
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
@@ -101,6 +102,12 @@ def build_app() -> typer.Typer:
                 "Propose where every photo and video should go: year, event, "
                 "category. Read-only."
             ),
+        ),
+        (
+            "review-sort",
+            review_sort_command,
+            analyse,
+            _("Name the events of the classify proposal one by one in your browser."),
         ),
         (
             "places",

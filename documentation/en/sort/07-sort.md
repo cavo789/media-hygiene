@@ -48,6 +48,8 @@ Sort
 
 - *edits read* counts the cells you filled; check the date: a workbook edited but **not saved**
   shows its old date, and `sort` warns when Excel or LibreOffice still has it open.
+- The choices made in [the browser page](10-name-events-in-the-browser.md#where-your-choices-go),
+  if any, are applied on top of the workbook, and counted on a line of their own.
 - *Already in place*: files counted, not moved.
 - *Source folders removed*: the folders the sort leaves empty (see below).
 

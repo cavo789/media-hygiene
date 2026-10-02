@@ -67,6 +67,11 @@ def lost_line(lost: LostEdit) -> str:
             "merged with another named event, whose name wins"
         ),
     }
+    if lost.why is LostWhy.CONFLICT:
+        reasons[lost.why, lost.sheet] = _(
+            "chosen in the review page, then edited otherwise in the workbook, "
+            "whose value was carried over"
+        )
     why = reasons.get((lost.why, lost.sheet), _("the value cannot be used"))
     return _("{sheet}: {key}: '{value}' ({why})").format(
         sheet=sheets[lost.sheet], key=lost.key, value=lost.value, why=why

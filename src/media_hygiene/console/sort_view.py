@@ -49,6 +49,21 @@ def show_inputs(runtime: Runtime, inputs: SortInputs) -> None:
             time=saved.strftime("%H:%M"),
         )
     )
+    page = inputs.page
+    if page.applied or page.agreed:
+        output.info(
+            ngettext(
+                "{count} choice of the review page applied on top of the workbook "
+                "({replaced} replacing a workbook edit, {agreed} the same in both).",
+                "{count} choices of the review page applied on top of the workbook "
+                "({replaced} replacing a workbook edit, {agreed} the same in both).",
+                page.applied + page.agreed,
+            ).format(
+                count=human_number(page.applied + page.agreed),
+                replaced=human_number(page.replaced),
+                agreed=human_number(page.agreed),
+            )
+        )
     if inputs.open_elsewhere:
         output.warning(
             _(

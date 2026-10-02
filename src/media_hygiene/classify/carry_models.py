@@ -25,6 +25,7 @@ class LostWhy(StrEnum):
     GONE = "gone"  # its file, event or category is no longer in the proposal
     INVALID = "invalid"  # the value cannot be used (a name Windows refuses…)
     MERGED = "merged"  # its event merged into another named event, which wins
+    CONFLICT = "conflict"  # chosen in the review page, edited otherwise in the workbook
 
 
 class LostEdit(BaseModel):

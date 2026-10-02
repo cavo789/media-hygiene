@@ -85,6 +85,8 @@ adds one thing to the command of the step before.
    a vision model on your computer says what the loose photos show (optional).
 9. [Places and trips from the GPS](documentation/en/sort/09-places-from-gps.md) — name your
    places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
+10. [Name the events in your browser](documentation/en/sort/10-name-events-in-the-browser.md) —
+    one event at a time with its photos, named with the keyboard (optional).
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

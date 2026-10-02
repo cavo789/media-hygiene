@@ -71,6 +71,9 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 9. [Lieux et voyages grâce au GPS](sort/09-places-from-gps.md) : nommer vos lieux sur une carte,
    et laisser le GPS des téléphones récents trier maison, famille et voyages, hors ligne
    (facultatif).
+10. [Nommer les événements dans le navigateur](sort/10-name-events-in-the-browser.md) : un
+    événement à la fois avec ses photos, nommé au clavier ; `sort` applique vos choix
+    (facultatif).
 
 ## Référence
 

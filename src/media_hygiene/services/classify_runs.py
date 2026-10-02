@@ -63,9 +63,27 @@ def find_plan(runtime: Runtime, workbook: Path, plan_id: str) -> ClassifyPlan | 
     Returns:
         The plan, or None.
     """
+    found = find_plan_file(runtime, workbook, plan_id)
+    return None if found is None else found[1]
+
+
+def find_plan_file(
+    runtime: Runtime, workbook: Path, plan_id: str
+) -> tuple[Path, ClassifyPlan] | None:
+    """Find a plan and its `plan.json`, as `find_plan` does.
+
+    Args:
+        runtime: Settings, mount points and output.
+        workbook: The workbook.
+        plan_id: The plan id; empty: the plan next to it.
+
+    Returns:
+        Its file and the plan, or None.
+    """
     beside = workbook.parent / CLASSIFY_PLAN_FILE_NAME
     if not plan_id:
-        return _read_plan(beside)
+        plan = _read_plan(beside)
+        return None if plan is None else (beside, plan)
     others = sorted(
         runtime.locations.reports_dir.glob(f"*/{CLASSIFY_PLAN_FILE_NAME}"),
         reverse=True,
@@ -73,7 +91,7 @@ def find_plan(runtime: Runtime, workbook: Path, plan_id: str) -> ClassifyPlan | 
     for candidate in (beside, *others):
         plan = _read_plan(candidate)
         if plan is not None and plan.plan_id == plan_id:
-            return plan
+            return candidate, plan
     return None
 
 

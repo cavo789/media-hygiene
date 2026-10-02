@@ -8,21 +8,31 @@ otherwise be buried under a workbook without them.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.sort_resume import moved_rows
+from media_hygiene.classify.carry_models import LostEdit, LostWhy
 from media_hygiene.classify.carry_types import CarrySource
+from media_hygiene.classify.page_overlay import overlay
 from media_hygiene.classify.workbook.salvage import salvage
+from media_hygiene.console.formatting import human_number
 from media_hygiene.errors import WorkbookError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.classify_runs import find_plan, latest_workbook, locate
+from media_hygiene.services.classify_runs import (
+    find_plan_file,
+    latest_workbook,
+    locate,
+)
+from media_hygiene.services.page_choices import page_decisions
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.classify.plan_file import ClassifyPlan
+    from media_hygiene.classify.workbook.salvage_models import Salvaged
     from media_hygiene.services.runtime import Runtime
 
 
@@ -89,12 +99,12 @@ def _read(runtime: Runtime, path: Path) -> CarrySource:
                 "one with --carry-over, or start fresh with --no-carry-over."
             ).format(path=host),
         ) from exc
-    plan = find_plan(runtime, path, salvaged.plan_id)
-    applied = (
-        moved_rows(runtime.locations.journal_dir, plan.plan_id)
-        if plan is not None
-        else frozenset()
-    )
+    found = find_plan_file(runtime, path, salvaged.plan_id)
+    plan = None if found is None else found[1]
+    applied = frozenset[str]()
+    if found is not None:
+        salvaged = _with_page(runtime, found, salvaged)
+        applied = moved_rows(runtime.locations.journal_dir, found[1].plan_id)
     saved = datetime.fromtimestamp(path.stat().st_mtime).astimezone()
     return CarrySource(
         workbook=host,
@@ -103,3 +113,33 @@ def _read(runtime: Runtime, path: Path) -> CarrySource:
         plan=plan,
         applied=applied,
     )
+
+
+def _with_page(
+    runtime: Runtime, found: tuple[Path, ClassifyPlan], salvaged: Salvaged
+) -> Salvaged:
+    """Lay the choices of the review page over the salvaged edits.
+
+    A choice the workbook contradicts since is not carried: the workbook's value is,
+    and the page's is listed among the edits left behind.
+
+    Args:
+        runtime: Settings, mount points and output.
+        found: The previous `plan.json` and its plan.
+        salvaged: The edits of the previous workbook.
+
+    Returns:
+        The edits to carry over.
+    """
+    page = overlay(salvaged.edits, page_decisions(*found))
+    if page.applied:
+        runtime.output.info(
+            _("Choices of the review page carried over too: {count}.").format(
+                count=human_number(page.applied)
+            )
+        )
+    left = (
+        LostEdit(sheet=item.sheet, key=item.key, value=item.page, why=LostWhy.CONFLICT)
+        for item in page.conflicts
+    )
+    return replace(salvaged, edits=page.edits, invalid=(*salvaged.invalid, *left))

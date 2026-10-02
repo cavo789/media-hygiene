@@ -55,6 +55,9 @@ msgstr ""
 msgid "(always skipped)"
 msgstr ""
 
+msgid "(empty)"
+msgstr ""
+
 msgid "(stay where it is)"
 msgstr ""
 
@@ -349,7 +352,16 @@ msgstr ""
 msgid "Checking that files can be read"
 msgstr ""
 
+#, python-brace-format
+msgid "Choices of the review page carried over too: {count}."
+msgstr ""
+
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
+msgstr ""
+
+msgid ""
+"Choose again in 'review-sort' (it shows both), or set the workbook cells "
+"back, then run 'sort' again."
 msgstr ""
 
 msgid ""
@@ -362,12 +374,22 @@ msgid ""
 "'sort' again."
 msgstr ""
 
+msgid "Choose photos of this event."
+msgstr ""
+
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
 " or --prefer."
 msgstr ""
 
 msgid "Choosing categories"
+msgstr ""
+
+msgid "Chosen here:"
+msgstr ""
+
+#, python-brace-format
+msgid "Chosen here: {chosen} · still to decide: {open}"
 msgstr ""
 
 msgid "Christmas"
@@ -673,6 +695,14 @@ msgstr ""
 msgid "Event neighbours"
 msgstr ""
 
+#, python-brace-format
+msgid "Event {name} ({id})"
+msgstr ""
+
+#, python-brace-format
+msgid "Event {number} of {total}"
+msgstr ""
+
 msgid "Events"
 msgstr ""
 
@@ -702,6 +732,13 @@ msgid ""
 "stops the review; then run the same 'clean' command with --decisions "
 "%(file)s (that file): the shots set aside go to the quarantine, and "
 "'undo' brings them back."
+msgstr ""
+
+#, python-format
+msgid ""
+"Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
+"never changed. Done? Ctrl+C in the terminal stops the review; then 'sort'"
+" applies your choices on top of the workbook."
 msgstr ""
 
 msgid "Every cluster lies in a place of yours."
@@ -899,6 +936,9 @@ msgid "Frame rate"
 msgstr ""
 
 msgid "Freed"
+msgstr ""
+
+msgid "From:"
 msgstr ""
 
 msgid "Full commands (reports, journal, WSL): see README.md."
@@ -1237,6 +1277,12 @@ msgstr ""
 msgid "Name another file with --decisions, or mount the same folders."
 msgstr ""
 
+msgid "Name of the event"
+msgstr ""
+
+msgid "Name the events of the classify proposal one by one in your browser."
+msgstr ""
+
 msgid "Name this place"
 msgstr ""
 
@@ -1277,6 +1323,11 @@ msgid "New place"
 msgstr ""
 
 msgid ""
+"Next: 'sort' applies them on top of the workbook, which you may still "
+"edit; it refuses an event or a file edited otherwise in both."
+msgstr ""
+
+msgid ""
 "Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
 "'classify'."
 msgstr ""
@@ -1306,6 +1357,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "No config.toml created: the container cannot write to {folder}."
+msgstr ""
+
+msgid "No event in this proposal: nothing to review."
+msgstr ""
+
+msgid "No event left to decide after this one."
 msgstr ""
 
 #, python-brace-format
@@ -1578,6 +1635,9 @@ msgstr ""
 msgid "Proposed tree"
 msgstr ""
 
+msgid "Proposed:"
+msgstr ""
+
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
@@ -1656,6 +1716,11 @@ msgid ""
 "it was moved."
 msgstr ""
 
+msgid ""
+"Restore it, or delete it to start the review page over: the workbook "
+"alone then decides."
+msgstr ""
+
 msgid "Restored"
 msgstr ""
 
@@ -1667,8 +1732,20 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Review ready on port {port}: each choice is saved at once in {place}. "
+"Ctrl+C stops the review."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Review ready on port {port}: each decision is saved at once in {place}. "
 "Ctrl+C stops the review."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Review stopped — events chosen: {events}, photos chosen one by one: "
+"{files}."
 msgstr ""
 
 #, python-brace-format
@@ -1824,6 +1901,9 @@ msgstr ""
 msgid "Saved in {file}."
 msgstr ""
 
+msgid "Saved."
+msgstr ""
+
 msgid "Saving…"
 msgstr ""
 
@@ -1864,6 +1944,10 @@ msgstr ""
 msgid ""
 "Second opinion: run Czkawka, an independent duplicate finder, on the same"
 " folders, then 'media-hygiene crosscheck' (same -v options):"
+msgstr ""
+
+#, python-brace-format
+msgid "Send the photos ({count}) to the category:"
 msgstr ""
 
 msgid "September"
@@ -1943,6 +2027,9 @@ msgid "Some destinations cannot be used; nothing was moved:"
 msgstr ""
 
 msgid "Sort"
+msgstr ""
+
+msgid "Sort review"
 msgstr ""
 
 msgid ""
@@ -2029,6 +2116,9 @@ msgid "The classify files could not be written to {folder}: {reason}."
 msgstr ""
 
 msgid "The classify workbook, edited; the latest classify run's by default."
+msgstr ""
+
+msgid "The classify workbook; the latest classify run's by default."
 msgstr ""
 
 msgid "The collection once sorted"
@@ -2193,6 +2283,16 @@ msgid ""
 "read."
 msgstr ""
 
+msgid ""
+"The workbook is open in Excel or LibreOffice: what is not saved is not "
+"shown."
+msgstr ""
+
+msgid ""
+"The workbook was edited otherwise since this choice: choose again here, "
+"or press Delete to let the workbook decide."
+msgstr ""
+
 #, python-brace-format
 msgid "The workbook {path} cannot be opened: {reason}."
 msgstr ""
@@ -2203,6 +2303,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The {top} largest events hold {held} of them."
+msgstr ""
+
+msgid "There is no such event."
 msgstr ""
 
 msgid "There is no such series."
@@ -2229,7 +2332,13 @@ msgstr ""
 msgid "This is not a classify workbook, or it was damaged."
 msgstr ""
 
+msgid "This is the first event."
+msgstr ""
+
 msgid "This is the first series."
+msgstr ""
+
+msgid "This is the last event: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
@@ -2292,7 +2401,13 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Type a category, or leave the photos in place."
+msgstr ""
+
 msgid "Type a name first."
+msgstr ""
+
+msgid "Type a name or a category, or leave it in place."
 msgstr ""
 
 msgid "Undated"
@@ -2403,6 +2518,9 @@ msgid ""
 "default."
 msgstr ""
 
+msgid "Workbook:"
+msgstr ""
+
 #, python-brace-format
 msgid "Workbook: {path}"
 msgstr ""
@@ -2494,6 +2612,9 @@ msgstr ""
 msgid "about {time} left"
 msgstr ""
 
+msgid "accept the name and category, then the next event to decide"
+msgstr ""
+
 msgid "alphabetical order (nothing else differs)"
 msgstr ""
 
@@ -2516,6 +2637,11 @@ msgid "camera (EXIF)"
 msgstr ""
 
 msgid "can be freed"
+msgstr ""
+
+msgid ""
+"chosen in the review page, then edited otherwise in the workbook, whose "
+"value was carried over"
 msgstr ""
 
 msgid "clean"
@@ -2559,6 +2685,9 @@ msgid "elapsed {time}"
 msgstr ""
 
 msgid "en"
+msgstr ""
+
+msgid "enlarge a photo"
 msgstr ""
 
 msgid "entirely a copy: holds nothing else"
@@ -2638,6 +2767,18 @@ msgstr ""
 msgid "kept (your decision)"
 msgstr ""
 
+msgid "leave a field"
+msgstr ""
+
+msgid "leave the selected photos where they are"
+msgstr ""
+
+msgid "leave the whole event where it is"
+msgstr ""
+
+msgid "left as it is"
+msgstr ""
+
 msgid "media files scanned"
 msgstr ""
 
@@ -2656,10 +2797,23 @@ msgstr ""
 msgid "merged with another named event, whose name wins"
 msgstr ""
 
+msgid "move between photos"
+msgstr ""
+
 msgid "move to the quarantine"
 msgstr ""
 
 msgid "moved to the quarantine"
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "naming the events up to this one covers {share}%% of the work"
+msgstr ""
+
+msgid "next event to decide"
+msgstr ""
+
+msgid "next or previous event"
 msgstr ""
 
 msgid "no"
@@ -2668,10 +2822,16 @@ msgstr ""
 msgid "no date"
 msgstr ""
 
+msgid "no preview"
+msgstr ""
+
 msgid "no shot kept from its series is left"
 msgstr ""
 
 msgid "not checked"
+msgstr ""
+
+msgid "nothing"
 msgstr ""
 
 msgid "ok"
@@ -2717,7 +2877,16 @@ msgstr ""
 msgid "protected, kept"
 msgstr ""
 
+msgid "review page"
+msgstr ""
+
 msgid "run"
+msgstr ""
+
+msgid "select a photo"
+msgstr ""
+
+msgid "send the selected photos to another category"
 msgstr ""
 
 msgid "set a shot aside, or keep it again"
@@ -2740,6 +2909,9 @@ msgid "sharpness {value}"
 msgstr ""
 
 msgid "small"
+msgstr ""
+
+msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
 msgid "the copy differs from the original"
@@ -2875,6 +3047,26 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} choice of the review page applied on top of the workbook "
+"({replaced} replacing a workbook edit, {agreed} the same in both)."
+msgid_plural ""
+"{count} choices of the review page applied on top of the workbook "
+"({replaced} replacing a workbook edit, {agreed} the same in both)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} choice of the review page was edited otherwise in the workbook "
+"since; nothing was moved:"
+msgid_plural ""
+"{count} choices of the review page were edited otherwise in the workbook "
+"since; nothing was moved:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} copy of another file than a media will be moved to the "
 "quarantine, not deleted."
 msgid_plural ""
@@ -2886,6 +3078,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}."
 msgid_plural "{count} decided folder pairs no longer exist, e.g. {kept} -> {removed}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} earlier choice of the page was edited otherwise in the workbook "
+"since: shown in red, choose again."
+msgid_plural ""
+"{count} earlier choices of the page were edited otherwise in the workbook"
+" since: shown in red, choose again."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2966,6 +3168,10 @@ msgid_plural ""
 "mounted twice): each is analysed once, e.g. {path} is {same_as}."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} files, {undecided} to check or to sort"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
@@ -3090,6 +3296,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{path} belongs to another classify run."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} changed since"
 msgstr ""
 
@@ -3099,6 +3309,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} is inside a protected folder: 'sort' never changes those."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is left as it is: no choice applies to it."
 msgstr ""
 
 #, python-brace-format
@@ -3113,6 +3327,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} is not a valid decisions file ({error})."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is not a valid decisions file of the review page."
 msgstr ""
 
 #, python-brace-format
@@ -3141,6 +3359,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{sheet}: {key}: '{value}' ({why})"
+msgstr ""
+
+#, python-brace-format
+msgid "{subject}: page '{page}', workbook '{workbook}'"
 msgstr ""
 
 #, python-brace-format

@@ -185,4 +185,4 @@ contributors](https://www.openstreetmap.org/copyright), under the
 
 ---
 
-← [8. Name the subjects with a local model](08-subjects-from-a-local-model.md) · [Documentation](../README.md)
+← [8. Name the subjects with a local model](08-subjects-from-a-local-model.md) · [Documentation](../README.md) · Next: **[10. Name the events in your browser](10-name-events-in-the-browser.md)** →

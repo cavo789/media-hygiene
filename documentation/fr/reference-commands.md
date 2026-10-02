@@ -21,6 +21,7 @@ cette page les rassemble.
 | `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
 | `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
+| `review-sort [CLASSEUR]` | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, étape 10](sort/10-name-events-in-the-browser.md) |
 | `places` | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, étape 9](sort/09-places-from-gps.md) |
 
 ## Options
@@ -42,7 +43,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify`, avant de décrire beaucoup de photos avec un modèle local). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `places` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
+| `--port PORT` | `review`, `review-sort`, `places` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--year ANNÉE[-ANNÉE]` | `classify` | Seulement les fichiers de cette année ou de ces années. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
 | `--layout DISPOSITION` | `classify` | Où vont les fichiers sûrs, par exemple `{year}/{month}`. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
@@ -87,32 +88,36 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                                                respecté).                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyser ───────────────────────────────────────────────────────────────────╮
-│ audit       Trouve les doublons exacts et les fichiers cassés. Lecture seule │
-│             : montez les dossiers avec :ro.                                  │
-│ crosscheck  Compare un nouvel audit aux résultats de Czkawka : un second     │
-│             avis, indépendant.                                               │
-│ classify    Propose où ranger chaque photo et vidéo : année, événement,      │
-│             catégorie. En lecture seule.                                     │
-│ places      Nommer vos lieux sur une carte des endroits où les photos ont    │
-│             été prises ; enregistrés dans config.toml pour les règles        │
-│             'place' et 'trip'.                                               │
-│ inventory   Exporter vers Excel chaque photo et vidéo avec ce que les audits │
-│             en ont appris, depuis le cache seul : aucun fichier n'est lu.    │
-│ history     Liste les exécutions et ce qu'elles ont fait.                    │
-│ reports     Liste les rapports HTML des audits et nettoyages précédents.     │
-│ config      Affiche chaque réglage, son origine, et les points de montage.   │
+│ audit        Trouve les doublons exacts et les fichiers cassés. Lecture      │
+│              seule : montez les dossiers avec :ro.                           │
+│ crosscheck   Compare un nouvel audit aux résultats de Czkawka : un second    │
+│              avis, indépendant.                                              │
+│ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
+│              catégorie. En lecture seule.                                    │
+│ review-sort  Nommer les événements de la proposition de classify un par un,  │
+│              dans votre navigateur.                                          │
+│ places       Nommer vos lieux sur une carte des endroits où les photos ont   │
+│              été prises ; enregistrés dans config.toml pour les règles       │
+│              'place' et 'trip'.                                              │
+│ inventory    Exporter vers Excel chaque photo et vidéo avec ce que les       │
+│              audits en ont appris, depuis le cache seul : aucun fichier      │
+│              n'est lu.                                                       │
+│ history      Liste les exécutions et ce qu'elles ont fait.                   │
+│ reports      Liste les rapports HTML des audits et nettoyages précédents.    │
+│ config       Affiche chaque réglage, son origine, et les points de montage.  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir ───────────────────────────────────────────────────────────────────────╮
-│ review      Écarter des photos de rafale, une série à la fois, au clavier    │
-│             dans votre navigateur ; 'clean --decisions' les déplace ensuite. │
-│ clean       Audite, demande confirmation, puis supprime réellement les       │
-│             copies en double (journalisé, annulable).                        │
-│ sort        Déplacer les photos et vidéos comme le dit le classeur de        │
-│             classify modifié (journalisé, annulable).                        │
-│ undo        Restaure chaque fichier d'une exécution, depuis la copie         │
-│             conservée, la quarantaine ou l'endroit où il a été déplacé.      │
-│ purge       Supprime définitivement les fichiers cassés mis en quarantaine   │
-│             par une exécution.                                               │
+│ review       Écarter des photos de rafale, une série à la fois, au clavier   │
+│              dans votre navigateur ; 'clean --decisions' les déplace         │
+│              ensuite.                                                        │
+│ clean        Audite, demande confirmation, puis supprime réellement les      │
+│              copies en double (journalisé, annulable).                       │
+│ sort         Déplacer les photos et vidéos comme le dit le classeur de       │
+│              classify modifié (journalisé, annulable).                       │
+│ undo         Restaure chaque fichier d'une exécution, depuis la copie        │
+│              conservée, la quarantaine ou l'endroit où il a été déplacé.     │
+│ purge        Supprime définitivement les fichiers cassés mis en quarantaine  │
+│              par une exécution.                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 

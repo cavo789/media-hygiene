@@ -132,6 +132,10 @@ cellules jaunes peuvent être trouvés : relancer `classify` est la porte de sor
 classeur ne peut pas être ouvert du tout, `classify` s'arrête avant d'écrire quoi que ce soit, pour
 que vos modifications ne soient pas enfouies sous un classeur plus récent et vide.
 
+Des centaines d'événements à nommer ? L'[étape 10](10-name-events-in-the-browser.md) les montre un
+par un dans votre navigateur, avec leurs photos et un champ pour les nommer, sans changer de
+fenêtre.
+
 Rien ne bouge encore : appliquer le classeur à vos dossiers est le rôle de `sort`
 ([étape 7](07-sort.md)). Il vérifie à nouveau le classeur avant de déplacer quoi que ce soit : un
 classeur d'une autre exécution, ou dont des lignes, des feuilles ou des cellules verrouillées ont

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+{# The keyboard review of a classify proposal, served by `media-hygiene review-sort`.
+   The page never touches a photo nor the workbook: each choice is sent to the server,
+   which saves sort-decisions.json; `sort` lays it over the workbook's edits. #}
+{% set texts = {
+  "position": _("Event {number} of {total}"),
+  "totals": _("Chosen here: {chosen} · still to decide: {open}"),
+  "files": _("{count} files, {undecided} to check or to sort"),
+  "share": _("naming the events up to this one covers {share}%% of the work"),
+  "from": _("From:"),
+  "proposal": _("Proposed:"),
+  "workbook": _("Workbook:"),
+  "page": _("Chosen here:"),
+  "nothing": _("nothing"),
+  "stay": _("(stay where it is)"),
+  "conflict": _("The workbook was edited otherwise since this choice: choose again here, or press Delete to let the workbook decide."),
+  "left": "🔒 " ~ _("left as it is"),
+  "noPreview": _("no preview"),
+  "saving": _("Saving…"),
+  "saved": _("Saved."),
+  "failed": _("Not saved (error {status})."),
+  "offline": _("The review is not running any more: start it again."),
+  "first": _("This is the first event."),
+  "last": _("This is the last event: stop the review with Ctrl+C in the terminal."),
+  "noOpen": _("No event left to decide after this one."),
+  "sendTo": _("Send the photos ({count}) to the category:"),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Sort review") }} — media-hygiene</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
+  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
+           border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  main { padding: 12px 16px 24px; }
+  h2 { margin: 0 0 4px; font-size: 1.2rem; overflow-wrap: anywhere; }
+  .muted { color: var(--muted); } dl { margin: 6px 0; } dt { font-weight: 600; float: left; margin-right: 6px; }
+  dd { margin: 0 0 2px; overflow-wrap: anywhere; }
+  #status.error, .conflict { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  form { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin: 10px 0; }
+  label { display: flex; flex-direction: column; font-size: .85rem; color: var(--muted); }
+  input { min-width: 16rem; padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+          border: 1px solid var(--line); border-radius: 6px; }
+  input:focus { outline: 2px solid var(--accent); }
+  #send[hidden] { display: none; }
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .photo { position: relative; margin: 0; padding: 6px; background: var(--card);
+           border: 2px solid var(--line); border-radius: 10px; }
+  .photo img, .photo .none { display: block; width: 100%; height: 150px; object-fit: contain;
+                             border-radius: 6px; background: var(--bg); }
+  .photo .none { display: grid; place-items: center; color: var(--muted); }
+  .photo.cursor { outline: 3px solid var(--accent); outline-offset: 1px; }
+  .photo.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--card)); }
+  .photo.chosen { border-color: var(--ok); } .photo.conflicting { border-color: var(--bad); }
+  figcaption { margin-top: 4px; font-size: .8rem; overflow-wrap: anywhere; }
+  .badge { font-weight: 600; } .chosen .badge { color: var(--ok); }
+  #zoom { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center;
+          background: rgb(0 0 0 / 85%); }
+  #zoom[hidden] { display: none; } #zoom img { max-width: 96vw; max-height: 94vh; }
+  kbd { display: inline-block; padding: 0 6px; font: inherit; color: var(--text); background: var(--bg);
+        border: 1px solid var(--line); border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🗂️ {{ _("Sort review") }}</h1>
+  <strong id="position"></strong>
+  <span id="totals" class="muted"></span>
+  <span id="status" role="status" aria-live="polite"></span>
+</header>
+<main>
+  <h2 id="title"></h2>
+  <div id="summary" class="muted"></div>
+  <dl id="facts"></dl>
+  <p id="conflict" class="conflict" hidden></p>
+  <form id="choice" autocomplete="off">
+    <label>{{ _("Name of the event") }} <kbd>E</kbd><input id="name" name="name"></label>
+    <label>{{ _("Category") }} <kbd>C</kbd><input id="category" name="category" list="categories"></label>
+  </form>
+  <form id="send" autocomplete="off" hidden>
+    <label><span id="send-label"></span><input id="send-category" list="categories"></label>
+  </form>
+  <datalist id="categories"></datalist>
+  <div id="photos" class="photos"></div>
+  <div id="zoom" hidden><img alt=""></div>
+</main>
+<footer>
+  <kbd>Enter</kbd> {{ _("accept the name and category, then the next event to decide") }} ·
+  <kbd>N</kbd> <kbd>P</kbd> {{ _("next or previous event") }} ·
+  <kbd>U</kbd> {{ _("next event to decide") }} ·
+  <kbd>Shift</kbd>+<kbd>S</kbd> {{ _("leave the whole event where it is") }} ·
+  <kbd>←</kbd> <kbd>→</kbd> {{ _("move between photos") }} ·
+  <kbd>Space</kbd> {{ _("select a photo") }} ·
+  <kbd>O</kbd> {{ _("send the selected photos to another category") }} ·
+  <kbd>S</kbd> {{ _("leave the selected photos where they are") }} ·
+  <kbd>Delete</kbd> {{ _("take back the choice made here (of the selected photos, else of the event)") }} ·
+  <kbd>Z</kbd> {{ _("enlarge a photo") }} ·
+  <kbd>Esc</kbd> {{ _("leave a field") }}<br>
+  {{ _("Every choice is saved at once in %(place)s; the workbook %(workbook)s is never changed. Done? Ctrl+C in the terminal stops the review; then 'sort' applies your choices on top of the workbook.", place=decisions, workbook=workbook) }}
+</footer>
+<script>
+(() => {
+  const T = {{ texts | tojson }};
+  const P = {{ paths | tojson }};
+  const positionKey = "media-hygiene:review-sort:" + {{ decisions | tojson }};
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? String(values[key]) : all));
+  let events = [];
+  let current = 0;
+  let photos = [];
+  let cursor = 0;
+  let selected = new Set();
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+  const isOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text;
+
+  const showTotals = () => {
+    const chosen = events.filter((card) => card.page).length;
+    const open = events.filter(isOpen).length;
+    byId("totals").textContent = fill(T.totals, { chosen: chosen, open: open });
+  };
+
+  const fact = (term, text) => [line("dt", term), line("dd", text || T.nothing)];
+
+  const showEvent = (card) => {
+    byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
+    byId("title").textContent = card.title;
+    byId("summary").textContent = [card.span, fill(T.files, { count: card.files, undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
+    const proposal = [card.folder || T.stay, card.band, card.why].filter(Boolean).join(" · ");
+    byId("facts").replaceChildren(
+      ...fact(T.from, card.folders.join(" · ")),
+      ...fact(T.proposal, proposal),
+      ...fact(T.workbook, card.workbook.text),
+      ...fact(T.page, card.page ? card.page.text : ""),
+    );
+    byId("conflict").hidden = !card.conflict;
+    byId("conflict").textContent = T.conflict;
+    const chosen = card.page || (card.workbook.text ? card.workbook : null);
+    byId("name").value = chosen ? chosen.name : "";
+    byId("name").placeholder = card.title;
+    byId("category").value = chosen ? (chosen.stay ? "" : chosen.category) : card.category;
+  };
+
+  const figure = (photo, rank) => {
+    const element = document.createElement("figure");
+    const css = ["photo", rank === cursor ? "cursor" : "", selected.has(photo.row) ? "selected" : "", photo.page ? "chosen" : "", photo.conflict ? "conflicting" : ""];
+    element.className = css.join(" ");
+    const image = document.createElement("img");
+    image.loading = "lazy";
+    image.alt = photo.name;
+    image.src = photo.thumb;
+    image.addEventListener("error", () => image.replaceWith(line("div", "🎞️ " + T.noPreview, "none")));
+    const badge = !photo.movable ? T.left : photo.page ? "✅ " + photo.page : photo.workbook ? "📒 " + photo.workbook : "";
+    element.append(image, line("figcaption", photo.name), line("div", photo.date, "muted"));
+    if (photo.proposed !== events[current].folder) element.append(line("div", "→ " + (photo.proposed || T.stay), "muted"));
+    if (badge) element.append(line("div", badge, "badge"));
+    element.addEventListener("click", () => { cursor = rank; toggle(); });
+    return element;
+  };
+
+  const showPhotos = () => {
+    byId("photos").replaceChildren(...photos.map(figure));
+    const shown = byId("photos").children[cursor];
+    if (shown) shown.scrollIntoView({ block: "nearest" });
+  };
+
+  const load = async (index) => {
+    current = index;
+    cursor = 0;
+    selected = new Set();
+    showEvent(events[current]);
+    showTotals();
+    byId("photos").replaceChildren();
+    const response = await fetch(P.event + "/" + encodeURIComponent(events[current].id));
+    if (!response.ok) { setStatus(T.offline, "error"); return; }
+    const view = await response.json();
+    photos = view.photos;
+    showPhotos();
+    try { window.localStorage.setItem(positionKey, events[current].id); } catch (error) { /* private browsing */ }
+  };
+
+  const send = async (path, body, then) => {
+    setStatus(T.saving);
+    let response;
+    try {
+      response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    } catch (error) { setStatus(T.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    events[current] = answer.card;
+    photos = answer.photos;
+    selected = new Set();
+    setStatus(T.saved, "saved");
+    if (then) then(); else { showEvent(answer.card); showTotals(); showPhotos(); }
+  };
+
+  const go = (step) => {
+    const next = current + step;
+    if (next < 0 || next >= events.length) { setStatus(next < 0 ? T.first : T.last); return; }
+    setStatus("");
+    load(next);
+    window.scrollTo(0, 0);
+  };
+  const goOpen = () => {
+    const next = events.findIndex((card, index) => index > current && isOpen(card));
+    if (next < 0) { setStatus(T.noOpen); showEvent(events[current]); showTotals(); showPhotos(); return; }
+    load(next);
+    window.scrollTo(0, 0);
+  };
+
+  const id = () => events[current].id;
+  const chosenRows = () => (selected.size ? [...selected] : photos[cursor] ? [photos[cursor].row] : []);
+  const accept = () => send(P.event, { event: id(), name: byId("name").value, category: byId("category").value }, goOpen);
+  const stayEvent = () => send(P.event, { event: id(), stay: true }, goOpen);
+  const toggle = () => {
+    const photo = photos[cursor];
+    if (!photo) return;
+    if (selected.has(photo.row)) selected.delete(photo.row); else selected.add(photo.row);
+    showPhotos();
+  };
+  const openSend = () => {
+    if (!photos.length) return;
+    byId("send").hidden = false;
+    byId("send-label").textContent = fill(T.sendTo, { count: chosenRows().length });
+    byId("send-category").value = "";
+    byId("send-category").focus();
+  };
+  const closeSend = () => { byId("send").hidden = true; };
+
+  // Two fields and no button: browsers do not submit on Enter, the page does.
+  byId("choice").addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    event.stopPropagation();
+    document.activeElement.blur();
+    accept();
+  });
+  byId("send").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const category = byId("send-category").value;
+    closeSend();
+    send(P.files, { event: id(), rows: chosenRows(), category: category });
+  });
+  document.addEventListener("keydown", (event) => {
+    const zoom = byId("zoom");
+    if (event.key === "Escape") {
+      zoom.hidden = true;
+      closeSend();
+      document.activeElement.blur();
+      return;
+    }
+    const typing = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+    if (typing || event.ctrlKey || event.metaKey || event.altKey || events.length === 0) return;
+    const key = event.key;
+    if (key === "Enter") accept();
+    else if (key === "n" || key === "N" || key === "PageDown") go(1);
+    else if (key === "p" || key === "P" || key === "PageUp") go(-1);
+    else if (key === "u" || key === "U") goOpen();
+    else if (key === "S") stayEvent();
+    else if (key === "s") send(P.files, { event: id(), rows: chosenRows(), stay: true });
+    else if (key === "o" || key === "O") openSend();
+    else if (key === "Delete" || key === "Backspace") send(P.forget, { event: id(), rows: [...selected] });
+    else if (key === "ArrowRight" || key === "ArrowLeft") {
+      cursor = Math.max(0, Math.min(photos.length - 1, cursor + (key === "ArrowRight" ? 1 : -1)));
+      showPhotos();
+    } else if (key === " ") toggle();
+    else if (key === "e" || key === "E") byId("name").focus();
+    else if (key === "c" || key === "C") byId("category").focus();
+    else if ((key === "z" || key === "Z") && photos[cursor]) {
+      zoom.firstElementChild.src = photos[cursor].preview;
+      zoom.hidden = !zoom.hidden;
+    } else return;
+    event.preventDefault();
+  });
+  byId("zoom").addEventListener("click", () => { byId("zoom").hidden = true; });
+
+  fetch(P.state)
+    .then((response) => response.json())
+    .then((state) => {
+      events = state.events;
+      byId("categories").replaceChildren(...state.categories.map((name) => Object.assign(document.createElement("option"), { value: name })));
+      let saved = "";
+      try { saved = window.localStorage.getItem(positionKey) || ""; } catch (error) { saved = ""; }
+      const resumed = events.findIndex((card) => card.id === saved);
+      const first = events.findIndex(isOpen);
+      if (events.length) load(resumed >= 0 ? resumed : Math.max(first, 0));
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();
+</script>
+</body>
+</html>

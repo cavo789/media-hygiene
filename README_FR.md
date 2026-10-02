@@ -87,6 +87,8 @@ seule chose à la commande de l'étape précédente.
 9. [Lieux et voyages grâce au GPS](documentation/fr/sort/09-places-from-gps.md) — nommer vos
    lieux sur une carte ; le GPS des téléphones récents trie maison, famille et voyages, hors
    ligne (facultatif).
+10. [Nommer les événements dans le navigateur](documentation/fr/sort/10-name-events-in-the-browser.md) —
+    un événement à la fois avec ses photos, nommé au clavier (facultatif).
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

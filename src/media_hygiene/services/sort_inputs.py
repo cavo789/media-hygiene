@@ -11,15 +11,22 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.page_overlay import overlay
 from media_hygiene.classify.workbook.reader import read_edits, read_plan_id
 from media_hygiene.errors import MountError, WorkbookError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.classify_runs import find_plan, latest_workbook, locate
+from media_hygiene.services.classify_runs import (
+    find_plan_file,
+    latest_workbook,
+    locate,
+)
+from media_hygiene.services.page_choices import conflict_error, page_decisions
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.classify.page_overlay import Overlaid
     from media_hygiene.classify.plan_file import ClassifyPlan
     from media_hygiene.classify.workbook.edits import Edits
     from media_hygiene.services.runtime import Runtime
@@ -30,23 +37,37 @@ _LOCK_FILES: Final = ("~${name}", ".~lock.{name}#")
 
 @dataclass(frozen=True, slots=True)
 class SortInputs:
-    """The workbook, its plan, what the user changed, and when it was saved."""
+    """The workbook, its plan, what the user changed, and when it was saved.
+
+    `edits` hold the workbook's edits with the choices of the review page laid over
+    them (`page`).
+    """
 
     workbook: Path
     plan: ClassifyPlan
-    edits: Edits
+    page: Overlaid
     saved_at: datetime
     open_elsewhere: bool  # Excel or LibreOffice still has it open
 
     @property
-    def edit_count(self) -> int:
-        """Count the cells the user filled.
+    def edits(self) -> Edits:
+        """What the user changed, in the workbook and in the review page.
 
         Returns:
-            Files, events and categories edited.
+            The edits `sort` applies.
         """
-        edits = self.edits
-        return len(edits.files) + len(edits.events) + len(edits.categories)
+        return self.page.edits
+
+    @property
+    def edit_count(self) -> int:
+        """Count the cells the user filled in the workbook.
+
+        Returns:
+            Files, events and categories edited there.
+        """
+        edits, page = self.edits, self.page
+        total = len(edits.files) + len(edits.events) + len(edits.categories)
+        return total - page.applied + page.replaced
 
 
 def find_workbook(runtime: Runtime, given: str | None) -> Path:
@@ -88,26 +109,45 @@ def find_workbook(runtime: Runtime, given: str | None) -> Path:
 def load_inputs(runtime: Runtime, workbook: Path) -> SortInputs:
     """Find the plan of a workbook, check the workbook against it, read the edits.
 
+    The choices of the review page are laid over the workbook's edits.
+
     Args:
         runtime: Settings, mount points and output.
         workbook: The workbook (container path).
 
     Returns:
         Everything `sort` applies.
+
+    Raises:
+        WorkbookError: The page and the workbook disagree on an event or a file.
     """
-    plan = _plan_of(runtime, workbook)
-    edits = read_edits(workbook, plan)
-    locks = (pattern.format(name=workbook.name) for pattern in _LOCK_FILES)
+    plan_file, plan = plan_of(runtime, workbook)
+    page = overlay(read_edits(workbook, plan), page_decisions(plan_file, plan))
+    if page.conflicts:
+        raise conflict_error(plan, page.conflicts)
     return SortInputs(
         workbook=workbook,
         plan=plan,
-        edits=edits,
+        page=page,
         saved_at=datetime.fromtimestamp(workbook.stat().st_mtime).astimezone(),
-        open_elsewhere=any((workbook.parent / lock).exists() for lock in locks),
+        open_elsewhere=open_elsewhere(workbook),
     )
 
 
-def _plan_of(runtime: Runtime, workbook: Path) -> ClassifyPlan:
+def open_elsewhere(workbook: Path) -> bool:
+    """Tell whether Excel or LibreOffice has the workbook open.
+
+    Args:
+        workbook: The workbook.
+
+    Returns:
+        True when their lock file lies next to it.
+    """
+    locks = (pattern.format(name=workbook.name) for pattern in _LOCK_FILES)
+    return any((workbook.parent / lock).exists() for lock in locks)
+
+
+def plan_of(runtime: Runtime, workbook: Path) -> tuple[Path, ClassifyPlan]:
     """Find the `plan.json` a workbook belongs to: next to it, else under `/reports`.
 
     Args:
@@ -115,15 +155,15 @@ def _plan_of(runtime: Runtime, workbook: Path) -> ClassifyPlan:
         workbook: The workbook.
 
     Returns:
-        The plan whose id the workbook records.
+        The `plan.json` whose id the workbook records, and its plan.
 
     Raises:
         WorkbookError: No plan under `/reports` has that id.
     """
     plan_id = read_plan_id(workbook)
-    plan = find_plan(runtime, workbook, plan_id)
-    if plan is not None:
-        return plan
+    found = find_plan_file(runtime, workbook, plan_id)
+    if found is not None:
+        return found
     raise WorkbookError(
         _("The plan.json of this workbook ({plan_id}) is not in /reports.").format(
             plan_id=plan_id

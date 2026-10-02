@@ -50,6 +50,8 @@ Tri
 - *modifications lues* compte les cellules que vous avez remplies ; vérifiez la date : un classeur
   modifié mais **pas enregistré** montre son ancienne date, et `sort` prévient quand Excel ou
   LibreOffice l'a encore ouvert.
+- Les choix faits dans [la page du navigateur](10-name-events-in-the-browser.md#où-vont-vos-choix),
+  s'il y en a, sont appliqués par-dessus le classeur, et comptés sur une ligne à part.
 - *Déjà à leur place* : des fichiers comptés, pas déplacés.
 - *Dossiers sources supprimés* : les dossiers que le tri laisse vides (voir plus bas).
 
