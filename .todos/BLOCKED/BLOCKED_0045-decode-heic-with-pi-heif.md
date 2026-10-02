@@ -57,3 +57,36 @@ The tests and the documentation screenshots **write** HEIC files
 - [ ] Image size before and after written down in the commit message.
 - [ ] Maintainer, by hand: in the Docker Hub description's *License* section, x265 (GPL-2.0+)
   is removed from the list of bundled components.
+
+## Status — BLOCKED (2026-10-02)
+
+### Not done
+- All items remain open: the switch to `pi-heif` was tried locally (`pyproject.toml`, `uv lock`)
+  and reverted, nothing was committed.
+  **Reason:** `pi-heif` is discontinued. Upstream removed its build on 2026-06-11
+  (bigcat88/pillow_heif PR #431: "`pi-heif` is discontinued, `1.4.0` is its final release").
+  1.4.0 bundles libheif 1.23.0 and libde265 1.1.0 and will never get the fixes released since,
+  many of them on the **decoding** path the tool runs on every HEIC file:
+  - libheif 1.23.1 to 1.23.5: among others GHSA-2jg2-4ch7-h545 (critical, out-of-bounds
+    read/write through `iden`/`auxl` chains, working code-execution exploit confirmed),
+    CVE-2026-84383 (critical, heap overflow in `scale_nearest_neighbor()`), GHSA-x8r2-mggj-j6wr
+    (critical, heap overflow in the unci decoder), decoder deadlocks, decompression bombs and
+    unbounded recursion (high);
+  - libde265 1.1.1 and 1.1.2: CVE-2026-54240 and CVE-2026-54241 (heap out-of-bounds read/write),
+    two use-after-free (GHSA-xp3h-6f5r-8cxp, GHSA-mm7m-v26f-wf8x);
+  - the Python binding itself: `pillow-heif` 1.6.0 and 1.8.0 fixed a use-after-free (#453) and a
+    segmentation fault on a non-UTF-8 metadata item type (#478) that `pi-heif` keeps.
+  Trading a GPL encoder that is never called for a frozen, known-exploitable decoder is not an
+  improvement. And x265 cannot simply be deleted from the image: the bundled libheif lists
+  `libx265-*.so.216` as `NEEDED` (`ldd`), so `import pillow_heif` would fail.
+  Measured, for whoever picks this up: image 278,757,099 bytes with `pillow-heif` 1.8.0;
+  `pillow_heif.libs` 26.8 MB of which libx265 22.8 MB; `pi_heif.libs` 3.8 MB (~23 MB saved).
+  **What unblocks it — a maintainer decision between:**
+  1. keep `pillow-heif` and accept x265 (GPL-2.0-or-later) in the image: list it in the Docker
+     Hub *License* section with where its source is (x265 4.2, the version
+     `pillow_heif.libheif_info()` reports);
+  2. build libde265 and libheif (without x265) from source in a discarded Dockerfile stage, like
+     ffprobe, and `pillow-heif` from its sdist against them: no GPL, ~23 MB less, but every
+     libheif/libde265 security release becomes a manual bump of pinned tarballs and checksums;
+  3. another decoder, if one appears that is maintained and decoding-only.
+  The libheif 1.23.5 fixes are filed separately as TODO 0054 (bump `pillow-heif` to 1.9.0).

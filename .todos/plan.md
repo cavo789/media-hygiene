@@ -15,16 +15,21 @@
 local model work; left: `--sample 50` on the maintainer's collection, noted in its file).
 0053 is partial: the e2e flake was one exit 139 (a crash before the first line of output) in
 about 170 runs, not an `undo` bug; the harness now keeps the evidence for the next occurrence.
+0045 is **blocked**: `pi-heif` was discontinued upstream (1.4.0 final, frozen on libheif 1.23.0
+and libde265 1.1.0, which miss critical decoder fixes); keeping x265 out of the image needs a
+maintainer decision, its options are in
+[BLOCKED_0045-decode-heic-with-pi-heif.md](BLOCKED/BLOCKED_0045-decode-heic-with-pi-heif.md).
+0054 (bump `pillow-heif` to 1.9.0 for the libheif 1.23.5 security fixes) can only run once 1.9.0
+is on PyPI; it comes first when it can.
 0048 (a "to sort" folder named after an event label is read as a meaning by the next
 `classify`) is low and only seen with duplicates left in place. 0030 (places) plugs into the
 rules of 0035 and has every dependency it needs; 0031 can use the subjects of 0029 now; 0041
-(albums) has every dependency. 0045 has no dependency and says "ideally before the 0.3.0
-release": it can run at any point, before the merge into `main` included.
+(albums) has every dependency.
 Run top to bottom, one prompt per session.
 
 | # | Lot | Priority | TODOs | Prompt |
 |---|-----|----------|-------|--------|
-| 1 | dependencies (standalone) | Medium | 1 | `/todo 0045` |
+| 1 | dependencies (standalone) | Medium | 1 | `/todo 0054` |
 | 2 | report | Low | 2 | `/todo 0023 0032` |
 | 3 | geo | Low | 2 | `/todo 0030 0044` |
 | 4 | classify (standalone) | Low | 1 | `/todo 0048` |
@@ -75,7 +80,7 @@ One `/todo NNNN` each, in its own session. The order follows the *Recommended or
 
 | ID | Priority | Title | Batch | Why not lotted |
 |----|----------|-------|-------|----------------|
-| 0045 | Medium | Decode HEIC with `pi-heif` instead of `pillow-heif`: no x265 (GPL) in the image, about 22 MB less | dependencies | only member of its batch |
+| 0054 | Medium | Bump `pillow-heif` to 1.9.0 once released: libheif 1.23.5 security fixes | dependencies | only member of its batch (waits for 1.9.0 on PyPI) |
 | 0031 | Low | Review a sort proposal in the browser, event by event | review-ui | only member of its batch |
 | 0048 | Low | `classify` after `sort`: a "to sort" folder named after an event label becomes a meaning | classify | only open member of its batch |
 | 0041 | Low | Albums: gather a selection into a folder of hard links, without moving anything | albums | only member of its batch |
