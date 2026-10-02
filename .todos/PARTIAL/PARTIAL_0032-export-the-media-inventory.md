@@ -60,3 +60,37 @@ rows of files that are gone, and records the date of the last complete walk of e
 - [ ] No file of `/data` is opened during the export (test with a counting fake).
 - [ ] `--format csv` gives the same rows.
 - [ ] Documentation en + fr (a screenshot of the workbook from the docs sample); `.po` translated.
+
+## Status — PARTIAL (2026-10-02)
+
+### Done
+- `media-hygiene inventory [--format xlsx|csv]` (`cli/cmd_inventory.py`, `services/inventory.py`):
+  reads `/cache/index.sqlite` only (`index/listing.py`), writes
+  `<reports>/<stamp>-inventory/inventory.xlsx` (sheets Files and Summary, write-only streaming,
+  typed cells, frozen header, autofilter, column widths) or `inventory.csv` (Files sheet, BOM,
+  `;` and decimal comma in French).
+- Columns: host path, folder, name, kind, size, mtime, date taken (as `classify` reads it), date
+  source, year, time zone, camera, lens and exposure settings, flash, width/height, sharpness,
+  format, JPEG quality, exposure measures, GPS, video tags, rating, software, integrity, decoder
+  message, SHA-256, duplicate group, copies.
+- Derived labels (Quality: blurry/small; Exposure: dark/bright) from new `[inventory]` thresholds
+  in `config.toml`, computed at export time.
+- Summary: last complete audit per root (`roots` table of 0033), then counts per kind, year,
+  camera, format, integrity, with/without date, with/without GPS, duplicates.
+- Refusals with a tip, no traceback: no `/cache` or no index (never created by the check), empty
+  index, damaged index, no `/reports`.
+- Tests: workbook read back with openpyxl, CSV same rows, translated headers and sheet names,
+  no file of `/data` opened (data deleted + counting `open`), errors, CLI.
+- Documentation en + fr: `reference-inventory.md` (includes the SQLite-browser note), commands,
+  mount points, cache page; captures `inventory.txt` and `help-inventory.txt` regenerated.
+
+### Not done
+- A screenshot of the workbook from the docs sample.
+  **Reason:** nothing in the devcontainer or the docs pipeline renders an `.xlsx` (no Excel,
+  no LibreOffice); an HTML imitation of a spreadsheet would show something Excel does not.
+  Same gap as PARTIAL 0027 (classify workbook). Maintainer decision: accept an HTML rendering of
+  the first rows, add LibreOffice headless to the docs tooling, or take one real Excel capture by
+  hand.
+- The Summary sheet does not repeat the total video duration of the 0025 console block.
+  **Reason:** left out to keep the sheet to file counts; one line to add in
+  `report/inventory_summary.py` if wanted.
