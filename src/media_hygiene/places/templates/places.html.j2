@@ -18,6 +18,10 @@
   "offline": _("The map is not running any more: start it again."),
   "needName": _("Give the place a name."),
   "confirmDelete": _("Delete the place {name}? The photos stay where they are."),
+  "osmSearching": _("Searching OpenStreetMap…"),
+  "osmNone": _("OpenStreetMap knows no area of that name."),
+  "osmTooLarge": _("Larger areas not listed (regions, countries): {count}. A 'trip' rule names them."),
+  "osmType": _("Type a name first."),
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -68,6 +72,11 @@
          background: var(--accent); border: 3px solid #fff; border-radius: 50%;
          box-shadow: 0 0 0 1px var(--accent); }
   .leaflet-tooltip.place-name { font-weight: 600; }
+  #osm { margin-top: 8px; }
+  #osm button { padding: 4px 10px; font: inherit; border: 1px solid var(--line); border-radius: 6px;
+                background: var(--bg); color: var(--text); cursor: pointer; }
+  #osm button:disabled { opacity: .6; cursor: progress; }
+  #osm a { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -77,14 +86,26 @@
   <input id="search" type="search" autocomplete="off"
          placeholder="{{ _('Find a town (offline)…') }}" aria-label="{{ _('Find a town') }}">
   <ul id="towns"></ul>
+  {% if osm_path %}
+  <div id="osm">
+    <button type="button" id="osmButton">{{ _("Search OpenStreetMap") }}</button>
+    <p class="hint">{{ _("For a village, a district or a park drawn as an area: click or press Enter. Only the text you typed is sent, to {host}; never a photo nor a position.").format(host=osm_host) }}
+      {{ _("Results") }} © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">{{ _("OpenStreetMap contributors") }}</a>, ODbL ·
+      <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener">{{ _("usage policy") }}</a></p>
+    <ul id="areas"></ul>
+  </div>
+  {% endif %}
   <span id="status" role="status" aria-live="polite"></span>
   <form id="editor" hidden>
     <strong id="editorTitle"></strong>
     <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
     <input id="name" type="text" maxlength="120" required>
+    <div id="circleOnly">
     <label for="radius">{{ _("Radius, in metres") }}</label>
     <input id="radius" type="range" min="20" max="3000" step="10">
     <input id="radiusValue" type="number" min="1" max="50000" step="1" aria-label="{{ _('Radius, in metres') }}">
+    </div>
+    <p id="areaNote" class="hint" hidden>{{ _("An area from OpenStreetMap: the photos taken inside its outline belong to this place.") }}</p>
     <label class="check"><input id="home" type="checkbox"> {{ _("Home: trips are measured from it") }}</label>
     <div class="buttons">
       <button type="submit" class="primary">{{ _("Save") }}</button>
@@ -104,7 +125,7 @@
 (() => {
   const T = {{ texts | tojson }};
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
-                  search: {{ search_path | tojson }} };
+                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -143,7 +164,8 @@
       circle.addTo(clusterLayer);
     }
     for (const place of state.places) {
-      const circle = L.circle([place.latitude, place.longitude], { radius: place.radius_m, color: colour("--place"), weight: 2 });
+      const style = { radius: place.radius_m, color: colour("--place"), weight: 2 };
+      const circle = place.area ? L.polygon(place.area, style) : L.circle([place.latitude, place.longitude], style);
       circle.bindTooltip(place.home ? `🏠 ${place.name}` : place.name, { permanent: true, className: "place-name" });
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); edit(place); });
       circle.addTo(placeLayer);
@@ -162,12 +184,17 @@
     if (editMarker) editMarker.remove();
     if (!editing) { byId("editor").hidden = true; return; }
     const at = [editing.latitude, editing.longitude];
-    editCircle = L.circle(at, { radius: editing.radius_m, color: colour("--accent"), dashArray: "6 6" }).addTo(map);
-    editMarker = L.marker(at, { draggable: true, icon: L.divIcon({ className: "pin" }) }).addTo(map);
-    editMarker.on("drag", (event) => {
-      const where = event.target.getLatLng();
-      editing.latitude = where.lat; editing.longitude = where.lng; editCircle.setLatLng(where);
-    });
+    const dashed = { radius: editing.radius_m, color: colour("--accent"), dashArray: "6 6" };
+    editCircle = (editing.area ? L.polygon(editing.area, dashed) : L.circle(at, dashed)).addTo(map);
+    byId("circleOnly").hidden = Boolean(editing.area);
+    byId("areaNote").hidden = !editing.area;
+    if (!editing.area) {
+      editMarker = L.marker(at, { draggable: true, icon: L.divIcon({ className: "pin" }) }).addTo(map);
+      editMarker.on("drag", (event) => {
+        const where = event.target.getLatLng();
+        editing.latitude = where.lat; editing.longitude = where.lng; editCircle.setLatLng(where);
+      });
+    } else { editMarker = null; }
     byId("editorTitle").textContent = editing.key === null ? T.newPlace : editing.name;
     byId("name").value = editing.name;
     byId("radius").value = editing.radius_m; byId("radiusValue").value = editing.radius_m;
@@ -179,10 +206,12 @@
 
   function edit(place) {
     editing = { ...place };
-    map.setView([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
+    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1));
+    else map.setView([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
     showEditor();
   }
-  const startNew = (lat, lon) => edit({ key: null, name: "", latitude: lat, longitude: lon, radius_m: DEFAULT_RADIUS, home: false });
+  const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
+  const startNew = (lat, lon) => edit({ ...blank, latitude: lat, longitude: lon });
   map.on("click", (event) => startNew(event.latlng.lat, event.latlng.lng));
 
   const setRadius = (value) => {
@@ -195,7 +224,8 @@
   byId("cancel").addEventListener("click", () => { editing = null; showEditor(); });
 
   const row = (place) => ({ key: place.key, name: place.name, latitude: place.latitude,
-                            longitude: place.longitude, radius_m: place.radius_m, home: place.home });
+                            longitude: place.longitude, radius_m: place.radius_m, home: place.home,
+                            osm: place.osm || "", area: place.area || null });
 
   async function send(places) {
     status(T.saving);
@@ -243,6 +273,33 @@
       }
     }, 250);
   });
+
+  async function searchOsm() {
+    const text = byId("search").value.trim();
+    const list = byId("areas"), button = byId("osmButton");
+    list.replaceChildren();
+    if (!text) { status(T.osmType, "error"); return; }
+    button.disabled = true; status(T.osmSearching);
+    try {
+      const response = await fetch(paths.osm, { method: "POST", headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ text }) }).catch(() => null);
+      if (!response) { status(T.offline, "error"); return; }
+      const answer = await response.json().catch(() => ({}));
+      if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+      status("");
+      if (!answer.areas.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.osmNone; list.append(li); }
+      for (const found of answer.areas) {
+        item(list, `${found.name} (${found.kind}) — ${found.label}`,
+             () => edit({ ...blank, name: found.name, latitude: found.latitude, longitude: found.longitude,
+                          osm: found.osm, area: found.area }));
+      }
+      if (answer.too_large) { const li = document.createElement("li"); li.className = "muted"; li.textContent = fill(T.osmTooLarge, { count: answer.too_large }); list.append(li); }
+    } finally { button.disabled = false; }
+  }
+  if (paths.osm) {
+    byId("osmButton").addEventListener("click", searchOsm);
+    byId("search").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); searchOsm(); } });
+  }
 
   fetch(paths.state).then((response) => response.json()).then((answer) => {
     state = answer; draw();

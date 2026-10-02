@@ -12,8 +12,9 @@ from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import GeoValues
+from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.classify.rules.kinds import RuleMatch
-from media_hygiene.geo.distance import METRES_PER_KM, Point, distance_km
+from media_hygiene.geo.distance import Point
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -128,10 +129,11 @@ def place_spots(
     """
     if not places:
         return {}
+    zones = zones_of(places)
     own = {
         path: found.name
         for path, point in points.items()
-        if (found := place_at(point, places)) is not None
+        if (found := place_at(point, zones)) is not None
     }
     spots = {path: Spot(GeoValues(place=name)) for path, name in own.items()}
     for event in events:
@@ -146,22 +148,3 @@ def place_spots(
             if path not in points:
                 spots[path] = Spot(GeoValues(place=name), inherited=True)
     return spots
-
-
-def place_at(point: Point, places: Sequence[PersonalPlace]) -> PersonalPlace | None:
-    """The personal place a position lies in: the closest one when several overlap.
-
-    Args:
-        point: A position.
-        places: The user's places.
-
-    Returns:
-        The place, or None.
-    """
-    found = [
-        (distance, place)
-        for place in places
-        if (distance := distance_km(point, place.point) * METRES_PER_KM)
-        <= place.radius_m
-    ]
-    return min(found, key=lambda item: item[0])[1] if found else None

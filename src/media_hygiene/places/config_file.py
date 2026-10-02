@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 import tomlkit
-from tomlkit.items import AoT, Table
+from tomlkit.items import AoT, Array, Table
 
 from media_hygiene.config.classify_places import PersonalPlace, check_places
 
@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from tomlkit.toml_document import TOMLDocument
+
+    from media_hygiene.geo.areas import Shape
 
 SECTION: Final = "classify"
 KEY: Final = "places"
@@ -143,10 +145,31 @@ def _fill(table: Table, place: PersonalPlace) -> Table:
     table["name"] = place.name
     table["latitude"] = round(place.latitude, _DECIMALS)
     table["longitude"] = round(place.longitude, _DECIMALS)
-    radius = place.radius_m
-    table["radius_m"] = int(radius) if radius.is_integer() else radius
-    if place.home:
-        table["home"] = True
-    elif "home" in table:
-        del table["home"]
+    radius = int(place.radius_m) if place.radius_m.is_integer() else place.radius_m
+    shown: dict[str, object] = {
+        "radius_m": None if place.area else radius,
+        "home": place.home or None,
+        "osm": place.osm or None,
+        "area": None if place.area is None else _area(place.area),
+    }
+    for key, value in shown.items():
+        if value is not None:
+            table[key] = value
+        elif key in table:
+            del table[key]
     return table
+
+
+def _area(area: Shape) -> Array:
+    """An area as TOML: one polygon per line, positions as `[latitude, longitude]`.
+
+    Args:
+        area: Its polygons.
+
+    Returns:
+        The array.
+    """
+    lines = tomlkit.array()
+    for polygon in area:
+        lines.append([[list(position) for position in ring] for ring in polygon])
+    return lines.multiline(multiline=True)

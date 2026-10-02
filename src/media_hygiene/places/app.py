@@ -2,8 +2,9 @@
 
 `GET /` serves the page, `GET /leaflet.js` and `/leaflet.css` the vendored library,
 `GET /api/state` the places and the clusters; `POST /api/places` saves every place
-into `config.toml`, `POST /api/search` finds towns offline. Like `review`: loopback
-hosts only, JSON bodies only, from the page's own origin.
+into `config.toml`, `POST /api/search` finds towns offline, `POST /api/osm` areas
+online (`osm_search`). Like `review`: loopback hosts only, JSON bodies only, from the
+page's own origin.
 """
 
 from __future__ import annotations
@@ -13,11 +14,12 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.i18n import _
 from media_hygiene.places.config_file import PlaceEdit
+from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 
@@ -25,6 +27,7 @@ if TYPE_CHECKING:
     import asyncio
     from collections.abc import Mapping
 
+    from media_hygiene.geo.nominatim import Nominatim
     from media_hygiene.places.board import PlacesBoard
     from media_hygiene.review.http import Request
 
@@ -42,7 +45,6 @@ PAGE_POLICY: Final = (
 )
 _GET, _POST = "GET", "POST"
 _VALUE_ERROR: Final = "Value error, "
-_MAX_SEARCH: Final = 100
 
 
 class _PlaceIn(PersonalPlace):
@@ -59,21 +61,17 @@ class _Save(BaseModel):
     places: tuple[_PlaceIn, ...]
 
 
-class _Search(BaseModel):
-    """`POST /api/search`: the start of a town's name."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    text: str = Field(max_length=_MAX_SEARCH)
-
-
 @dataclass(frozen=True, slots=True)
 class PlacesApp:
-    """Answers the browser; the board holds the state and saves it."""
+    """Answers the browser; the board holds the state and saves it.
+
+    `osm` searches OpenStreetMap; None when `[places] nominatim_url` is empty.
+    """
 
     board: PlacesBoard
     page: Response
     assets: Mapping[str, Response]
+    osm: Nominatim | None = None
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -101,11 +99,13 @@ class PlacesApp:
         path = request.path
         if request.method == _GET:
             return self._get(path)
-        if request.method != _POST or path not in {SAVE_PATH, SEARCH_PATH}:
+        if request.method != _POST or path not in {SAVE_PATH, SEARCH_PATH, OSM_PATH}:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
         if refused is not None:
             return refused
+        if path == OSM_PATH:
+            return await search_osm(self.osm, request)
         return self._save(request) if path == SAVE_PATH else self._search(request)
 
     def _get(self, path: str) -> Response:
@@ -164,7 +164,7 @@ class PlacesApp:
             The towns found.
         """
         try:
-            search = _Search.model_validate_json(request.body)
+            search = SearchText.model_validate_json(request.body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         towns = self.board.search(search.text)

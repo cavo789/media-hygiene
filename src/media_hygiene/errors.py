@@ -48,3 +48,7 @@ class AiError(MediaHygieneError):
 
 class GeoDataError(MediaHygieneError):
     """The towns shipped for offline geocoding are missing or damaged."""
+
+
+class NominatimError(MediaHygieneError):
+    """The online place search cannot be reached, refused, or answered nonsense."""

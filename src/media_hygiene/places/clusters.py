@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.whereabouts import place_at
+from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.geo.distance import Point
 
 if TYPE_CHECKING:
@@ -82,8 +82,9 @@ def named(
     Returns:
         Each cluster and its place's name, or an empty name.
     """
+    zones = zones_of(places)
     return tuple(
         NamedCluster(cluster, found.name if found else "")
         for cluster in clusters
-        for found in (place_at(cluster.point, places),)
+        for found in (place_at(cluster.point, zones),)
     )

@@ -1,8 +1,10 @@
-"""`[[classify.places]]` — the user's own places: a name, a position, a radius.
+"""`[[classify.places]]` — the user's places: a name, a position, a radius or an area.
 
 The radius exists only for these places: a town's name cannot tell home from the
-bakery next door. One place can be `home`: the reference of the `trip` rules. A name
-becomes a folder name: unique, and one Windows accepts.
+bakery next door. A place can instead be an `area` drawn from OpenStreetMap (a village,
+a park), kept in the file with its `osm` id: `classify` never goes online. One place
+can be `home`: the reference of the `trip` rules. A name becomes a folder name:
+unique, and one Windows accepts.
 """
 
 from __future__ import annotations
@@ -12,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from media_hygiene.classify.layout import check_layout
+from media_hygiene.geo.areas import Shape, check_shape
 from media_hygiene.geo.distance import Point
 
 if TYPE_CHECKING:
@@ -21,10 +24,15 @@ DEFAULT_RADIUS_M: Final = 200
 MAX_RADIUS_M: Final = 50_000
 MAX_LATITUDE: Final = 90
 MAX_LONGITUDE: Final = 180
+OSM_ID: Final = r"^([NWR][0-9]+)?$"  # a node, a way or a relation; empty: none
 
 
 class PersonalPlace(BaseModel):
-    """One place of the user's: where photos taken within `radius_m` belong."""
+    """One place of the user's: the photos taken within `radius_m`, or in `area`.
+
+    With an area, `latitude` and `longitude` are its middle, for the map and for trips
+    measured from home; `radius_m` is not used.
+    """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -33,6 +41,21 @@ class PersonalPlace(BaseModel):
     longitude: float = Field(ge=-MAX_LONGITUDE, le=MAX_LONGITUDE)
     radius_m: float = Field(default=DEFAULT_RADIUS_M, gt=0, le=MAX_RADIUS_M)
     home: bool = False
+    osm: str = Field(default="", pattern=OSM_ID)
+    area: Shape | None = None
+
+    @field_validator("area")
+    @classmethod
+    def _area(cls, area: Shape | None) -> Shape | None:
+        """Refuse an area that cannot be one.
+
+        Args:
+            area: The polygons, or None for a circle.
+
+        Returns:
+            It, unchanged.
+        """
+        return area if area is None else check_shape(area)
 
     @field_validator("name")
     @classmethod

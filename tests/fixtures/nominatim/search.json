@@ -1,0 +1,70 @@
+[
+  {
+    "place_id": 1001,
+    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+    "osm_type": "relation",
+    "osm_id": 9000001,
+    "lat": "50.315",
+    "lon": "5.12",
+    "category": "boundary",
+    "type": "administrative",
+    "place_rank": 16,
+    "importance": 0.3,
+    "addresstype": "village",
+    "name": "Fictiville",
+    "display_name": "Fictiville, Imaginary Municipality, Nowhere Province, Utopia",
+    "boundingbox": ["50.3", "50.33", "5.1", "5.14"],
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [[5.1, 50.3], [5.14, 50.3], [5.14, 50.33], [5.1, 50.33], [5.1, 50.3]],
+        [[5.12, 50.31], [5.13, 50.31], [5.13, 50.32], [5.12, 50.32], [5.12, 50.31]]
+      ]
+    }
+  },
+  {
+    "place_id": 1002,
+    "osm_type": "way",
+    "osm_id": 9000002,
+    "lat": "50.305",
+    "lon": "5.215",
+    "category": "leisure",
+    "type": "park",
+    "addresstype": "leisure",
+    "name": "",
+    "display_name": "Twin Ponds Park, Fictiville, Utopia",
+    "boundingbox": ["50.3", "50.31", "5.2", "5.23"],
+    "geojson": {
+      "type": "MultiPolygon",
+      "coordinates": [
+        [[[5.2, 50.3], [5.21, 50.3], [5.21, 50.31], [5.2, 50.31], [5.2, 50.3]]],
+        [[[5.22, 50.3], [5.23, 50.3], [5.23, 50.31], [5.22, 50.31], [5.22, 50.3]]]
+      ]
+    }
+  },
+  {
+    "place_id": 1003,
+    "osm_type": "node",
+    "osm_id": 9000003,
+    "lat": "50.316",
+    "lon": "5.121",
+    "category": "place",
+    "type": "village",
+    "name": "Fictiville",
+    "display_name": "Fictiville, Utopia",
+    "geojson": {"type": "Point", "coordinates": [5.121, 50.316]}
+  },
+  {
+    "place_id": 1004,
+    "osm_type": "relation",
+    "osm_id": 9000004,
+    "category": "boundary",
+    "type": "administrative",
+    "name": "Broken",
+    "display_name": "Broken, Utopia",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [[[5.0, 50.0], [5.1, 50.0], [5.1, 50.1], [5.0, 50.0]]]
+    }
+  }
+]

@@ -237,6 +237,13 @@ msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
 msgid ""
+"An area from OpenStreetMap: the photos taken inside its outline belong to"
+" this place."
+msgstr ""
+"Une zone d'OpenStreetMap : les photos prises à l'intérieur de son contour"
+" appartiennent à ce lieu."
+
+msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
 "deleting."
@@ -357,6 +364,14 @@ msgstr "Annuler"
 
 msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr "Impossible de demander confirmation sans terminal interactif."
+
+#, python-brace-format
+msgid ""
+"Cannot reach {host}: is this computer offline? The offline town search "
+"still works."
+msgstr ""
+"Impossible de joindre {host} : cet ordinateur est-il hors ligne ? La "
+"recherche de villes hors ligne fonctionne toujours."
 
 #, python-brace-format
 msgid "Cannot read the decisions file {path}."
@@ -1084,6 +1099,16 @@ msgstr "Dossiers partageant des fichiers identiques"
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr "Dossiers ignorés par leur nom, où qu'ils soient : {names}."
 
+#, python-brace-format
+msgid ""
+"For a village, a district or a park drawn as an area: click or press "
+"Enter. Only the text you typed is sent, to {host}; never a photo nor a "
+"position."
+msgstr ""
+"Pour un village, un quartier ou un parc dessiné comme une zone : cliquez "
+"ou appuyez sur Entrée. Seul le texte saisi est envoyé, à {host} ; jamais "
+"une photo ni une position."
+
 msgid "Format"
 msgstr "Format"
 
@@ -1317,6 +1342,14 @@ msgstr ""
 "valeur et exportez à nouveau, rien n'est relu. Une photo est floue sous "
 "blurry_below (netteté), petite sous small_below pixels sur son petit "
 "côté."
+
+#, python-brace-format
+msgid ""
+"Larger areas not listed (regions, countries): {count}. A 'trip' rule "
+"names them."
+msgstr ""
+"Zones plus grandes non listées (régions, pays) : {count}. Une règle "
+"'trip' les nomme."
 
 msgid "Last complete audit (UTC)"
 msgstr "Dernier audit complet (UTC)"
@@ -1778,6 +1811,12 @@ msgstr "Ouvrez la carte sur 127.0.0.1 ou localhost."
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr "Ouvrez le tri sur 127.0.0.1 ou localhost."
 
+msgid "OpenStreetMap contributors"
+msgstr "contributeurs d'OpenStreetMap"
+
+msgid "OpenStreetMap knows no area of that name."
+msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
+
 msgid "Origin"
 msgstr "Origine"
 
@@ -1980,6 +2019,9 @@ msgstr "Restaurés"
 
 msgid "Restoring"
 msgstr "Restauration"
+
+msgid "Results"
+msgstr "Résultats"
 
 #, python-brace-format
 msgid ""
@@ -2198,6 +2240,26 @@ msgstr ""
 
 msgid "Screenshots and documents"
 msgstr "Captures d'écran et documents"
+
+msgid "Search OpenStreetMap"
+msgstr "Chercher sur OpenStreetMap"
+
+msgid ""
+"Search an area by its name on OpenStreetMap (a village, a park), from the"
+" map, on a click only: only the text you type is sent to this Nominatim "
+"service, never a photo nor a position. Its usage policy: "
+"https://operations.osmfoundation.org/policies/nominatim/ (one search per "
+"second at most). Another instance, or empty to search offline only."
+msgstr ""
+"Chercher une zone par son nom sur OpenStreetMap (un village, un parc), "
+"depuis la carte, sur un clic seulement : seul le texte saisi est envoyé à"
+" ce service Nominatim, jamais une photo ni une position. Ses conditions "
+"d'utilisation : https://operations.osmfoundation.org/policies/nominatim/ "
+"(une recherche par seconde au plus). Une autre instance, ou vide pour ne "
+"chercher que hors ligne."
+
+msgid "Searching OpenStreetMap…"
+msgstr "Recherche sur OpenStreetMap…"
 
 msgid "Second opinion"
 msgstr "Second avis"
@@ -2718,6 +2780,9 @@ msgstr ""
 msgid "Type"
 msgstr "Type"
 
+msgid "Type a name first."
+msgstr "Saisissez d'abord un nom."
+
 msgid "Undated"
 msgstr "Sans date"
 
@@ -2889,7 +2954,9 @@ msgid ""
 "trips are measured from it. Name them on a map with 'media-hygiene "
 "places', or copy the latitude and longitude from a map. Nothing leaves "
 "your computer: towns and countries are named from GeoNames data shipped "
-"with the image."
+"with the image. A place found on OpenStreetMap from that map keeps its "
+"outline instead of a radius (area, a list of [latitude, longitude] rings,"
+" and osm, its id): 'classify' never goes online."
 msgstr ""
 "Vos propres lieux : une photo dont la position GPS est à moins de "
 "radius_m mètres de l'un d'eux va dans son nom, avec une règle 'place' au-"
@@ -2898,7 +2965,10 @@ msgstr ""
 " de lui. Nommez-les sur une carte avec 'media-hygiene places', ou copiez "
 "la latitude et la longitude d'une carte. Rien ne quitte votre ordinateur "
 ": villes et pays sont nommés à partir des données GeoNames livrées avec "
-"l'image."
+"l'image. Un lieu trouvé sur OpenStreetMap depuis cette carte garde son "
+"contour au lieu d'un rayon (area, une liste d'anneaux [latitude, "
+"longitude], et osm, son identifiant) : 'classify' ne va jamais sur "
+"Internet."
 
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
@@ -3270,6 +3340,9 @@ msgstr "en quarantaine avec --tier near"
 msgid "unknown"
 msgstr "inconnu"
 
+msgid "usage policy"
+msgstr "conditions d'utilisation"
+
 msgid "video"
 msgstr "vidéo"
 
@@ -3591,6 +3664,23 @@ msgstr "{folder} : un dossier protégé ou exclu ne reçoit aucun fichier."
 #, python-brace-format
 msgid "{folder}: copies inside one folder cannot be swapped."
 msgstr "{folder} : des copies dans un même dossier ne peuvent pas être inversées."
+
+#, python-brace-format
+msgid "{host} answered something that is not a search result."
+msgstr "{host} a répondu autre chose qu'un résultat de recherche."
+
+#, python-brace-format
+msgid "{host} answered with the error {status}."
+msgstr "{host} a répondu par l'erreur {status}."
+
+#, python-brace-format
+msgid ""
+"{host} refused the search (error {status}): its usage limits are reached."
+" Try again later, or set another service in [places] nominatim_url."
+msgstr ""
+"{host} a refusé la recherche (erreur {status}) : ses limites "
+"d'utilisation sont atteintes. Réessayez plus tard, ou indiquez un autre "
+"service dans [places] nominatim_url."
 
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"

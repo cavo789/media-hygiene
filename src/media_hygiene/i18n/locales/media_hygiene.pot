@@ -181,6 +181,11 @@ msgid "Altitude (m)"
 msgstr ""
 
 msgid ""
+"An area from OpenStreetMap: the photos taken inside its outline belong to"
+" this place."
+msgstr ""
+
+msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
 "deleting."
@@ -289,6 +294,12 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cannot ask for confirmation without an interactive terminal."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Cannot reach {host}: is this computer offline? The offline town search "
+"still works."
 msgstr ""
 
 #, python-brace-format
@@ -868,6 +879,13 @@ msgstr ""
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"For a village, a district or a park drawn as an area: click or press "
+"Enter. Only the text you typed is sent, to {host}; never a photo nor a "
+"position."
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -1069,6 +1087,12 @@ msgid ""
 "value and export again, nothing is scanned. A photo is blurry below "
 "blurry_below (sharpness), small below small_below pixels on its shorter "
 "side."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Larger areas not listed (regions, countries): {count}. A 'trip' rule "
+"names them."
 msgstr ""
 
 msgid "Last complete audit (UTC)"
@@ -1458,6 +1482,12 @@ msgstr ""
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr ""
 
+msgid "OpenStreetMap contributors"
+msgstr ""
+
+msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
 msgid "Origin"
 msgstr ""
 
@@ -1630,6 +1660,9 @@ msgid "Restored"
 msgstr ""
 
 msgid "Restoring"
+msgstr ""
+
+msgid "Results"
 msgstr ""
 
 #, python-brace-format
@@ -1809,6 +1842,20 @@ msgid ""
 msgstr ""
 
 msgid "Screenshots and documents"
+msgstr ""
+
+msgid "Search OpenStreetMap"
+msgstr ""
+
+msgid ""
+"Search an area by its name on OpenStreetMap (a village, a park), from the"
+" map, on a click only: only the text you type is sent to this Nominatim "
+"service, never a photo nor a position. Its usage policy: "
+"https://operations.osmfoundation.org/policies/nominatim/ (one search per "
+"second at most). Another instance, or empty to search offline only."
+msgstr ""
+
+msgid "Searching OpenStreetMap…"
 msgstr ""
 
 msgid "Second opinion"
@@ -2245,6 +2292,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Type a name first."
+msgstr ""
+
 msgid "Undated"
 msgstr ""
 
@@ -2394,7 +2444,9 @@ msgid ""
 "trips are measured from it. Name them on a map with 'media-hygiene "
 "places', or copy the latitude and longitude from a map. Nothing leaves "
 "your computer: towns and countries are named from GeoNames data shipped "
-"with the image."
+"with the image. A place found on OpenStreetMap from that map keeps its "
+"outline instead of a radius (area, a list of [latitude, longitude] rings,"
+" and osm, its id): 'classify' never goes online."
 msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
@@ -2750,6 +2802,9 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
+msgid "usage policy"
+msgstr ""
+
 msgid "video"
 msgstr ""
 
@@ -3004,6 +3059,20 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder}: copies inside one folder cannot be swapped."
+msgstr ""
+
+#, python-brace-format
+msgid "{host} answered something that is not a search result."
+msgstr ""
+
+#, python-brace-format
+msgid "{host} answered with the error {status}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{host} refused the search (error {status}): its usage limits are reached."
+" Try again later, or set another service in [places] nominatim_url."
 msgstr ""
 
 #, python-brace-format

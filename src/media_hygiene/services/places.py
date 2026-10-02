@@ -33,6 +33,7 @@ from media_hygiene.places.app import (
 )
 from media_hygiene.places.board import PlacesBoard
 from media_hygiene.places.clusters import clusters_of
+from media_hygiene.places.osm_search import OSM_PATH, online_search
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.reviewing import address_tip, run_server
@@ -96,11 +97,14 @@ def serve_places(runtime: Runtime, board: PlacesBoard, port: int) -> None:
         port: The port to listen on, inside the container (0: any free one).
     """
     settings = runtime.settings.places
+    osm = online_search(settings.nominatim_url)
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
         state_path=STATE_PATH,
         save_path=SAVE_PATH,
         search_path=SEARCH_PATH,
+        osm_path=OSM_PATH if osm else "",
+        osm_host=osm.host if osm else "",
         tiles=settings.tiles,
         attribution=settings.attribution,
     )
@@ -119,7 +123,7 @@ def serve_places(runtime: Runtime, board: PlacesBoard, port: int) -> None:
         policy=policy,
         referrer=PAGE_REFERRER,
     )
-    app = PlacesApp(board, shown, assets)
+    app = PlacesApp(board, shown, assets, osm)
     with contextlib.suppress(KeyboardInterrupt):
         asyncio.run(run_server(app, port, partial(_announce, runtime)))
 

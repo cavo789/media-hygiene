@@ -33,6 +33,21 @@ def test_a_tile_address_must_be_https_with_z_x_y(tiles: str) -> None:
         PlacesSettings(tiles=tiles)
 
 
+def test_the_online_search_is_openstreetmap_unless_emptied() -> None:
+    """Another instance, or none at all."""
+    assert PlacesSettings().nominatim_url == "https://nominatim.openstreetmap.org"
+    assert not PlacesSettings(nominatim_url=" ").nominatim_url
+    local = PlacesSettings(nominatim_url="http://nominatim.lan:8080")
+    assert local.nominatim_url == "http://nominatim.lan:8080"
+
+
+@pytest.mark.parametrize("url", ["ftp://nominatim.example.org", "nominatim"])
+def test_a_search_address_must_be_a_web_address(url: str) -> None:
+    """Refused at load time."""
+    with pytest.raises(ValidationError, match="http"):
+        PlacesSettings(nominatim_url=url)
+
+
 class _Writer:
     """Just enough of a stream writer."""
 

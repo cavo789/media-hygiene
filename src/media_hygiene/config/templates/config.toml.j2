@@ -88,6 +88,8 @@ clipped_above = 0.25
 {{ comment(_("The map of 'places', where you name your places: only its tiles are fetched, by your browser, from this https address (they show the areas you look at, never a photo). Another tile server asks for its own credit in attribution (plain text).")) }}
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 attribution = "© OpenStreetMap contributors"
+{{ comment(_("Search an area by its name on OpenStreetMap (a village, a park), from the map, on a click only: only the text you type is sent to this Nominatim service, never a photo nor a position. Its usage policy: https://operations.osmfoundation.org/policies/nominatim/ (one search per second at most). Another instance, or empty to search offline only.")) }}
+nominatim_url = "https://nominatim.openstreetmap.org"
 
 
 [classify]
@@ -241,7 +243,7 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # match = "other_category"
 # category = "{{ _("Other") }}"
 
-{{ comment(_("Your own places: a photo whose GPS position lies within radius_m metres of one goes to its name, with a 'place' rule above; a photo without GPS follows the other photos of its event. One place can be home = true: trips are measured from it. Name them on a map with 'media-hygiene places', or copy the latitude and longitude from a map. Nothing leaves your computer: towns and countries are named from GeoNames data shipped with the image.")) }}
+{{ comment(_("Your own places: a photo whose GPS position lies within radius_m metres of one goes to its name, with a 'place' rule above; a photo without GPS follows the other photos of its event. One place can be home = true: trips are measured from it. Name them on a map with 'media-hygiene places', or copy the latitude and longitude from a map. Nothing leaves your computer: towns and countries are named from GeoNames data shipped with the image. A place found on OpenStreetMap from that map keeps its outline instead of a radius (area, a list of [latitude, longitude] rings, and osm, its id): 'classify' never goes online.")) }}
 # [[classify.places]]
 # name = "{{ _("Home") }}"
 # latitude = 50.0

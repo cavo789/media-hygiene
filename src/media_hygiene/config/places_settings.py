@@ -1,7 +1,9 @@
-"""`[places]` — the map of `media-hygiene places`: where its tiles come from.
+"""`[places]` — the map of `media-hygiene places`: its tiles, its online search.
 
 Only the map tiles are fetched, by the browser: they reveal the areas viewed, never a
 photo nor a position of one. The page's Content-Security-Policy allows that host only.
+The online search of an area by its name asks `nominatim_url`, from the tool itself,
+on a click only; empty, there is no online search.
 """
 
 from __future__ import annotations
@@ -13,7 +15,9 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 OSM_TILES: Final = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 OSM_ATTRIBUTION: Final = "© OpenStreetMap contributors"  # plain text, shown as is
+OSM_NOMINATIM: Final = "https://nominatim.openstreetmap.org"
 _HTTPS: Final = "https"
+_WEB: Final = frozenset({"http", _HTTPS})
 _TILE_FIELDS: Final = ("{z}", "{x}", "{y}")
 _SUBDOMAIN: Final = "{s}"
 _ANY_SUBDOMAIN: Final = "*"
@@ -26,6 +30,28 @@ class PlacesSettings(BaseModel):
 
     tiles: str = OSM_TILES
     attribution: str = OSM_ATTRIBUTION
+    nominatim_url: str = OSM_NOMINATIM
+
+    @field_validator("nominatim_url")
+    @classmethod
+    def _search_url(cls, url: str) -> str:
+        """Refuse a search address that is neither empty nor http(s).
+
+        Args:
+            url: The address of a Nominatim instance; empty: no online search.
+
+        Returns:
+            It, stripped.
+
+        Raises:
+            ValueError: It is not a web address.
+        """
+        url = url.strip()
+        parts = urlsplit(url)
+        if url and (parts.scheme not in _WEB or not parts.netloc):
+            message = f"{url!r} is not an http:// or https:// address"
+            raise ValueError(message)
+        return url
 
     @field_validator("tiles")
     @classmethod
