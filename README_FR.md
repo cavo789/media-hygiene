@@ -90,6 +90,7 @@ seule chose à la commande de l'étape précédente.
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),
 [fichiers compagnons](documentation/fr/reference-sidecars.md),
 [dépannage](documentation/fr/reference-troubleshooting.md),
+[le classeur d'inventaire](documentation/fr/reference-inventory.md),
 [utilisation avancée](documentation/fr/reference-advanced.md).
 
 **Pour les développeurs** : [construire l'image, le devcontainer, les versions](documentation/fr/development.md).

@@ -72,6 +72,8 @@ otherwise both copies are sorted.
   before each action, how to check it yourself.
 - [Sidecar files](reference-sidecars.md): `.xmp`, `.aae`, `.thm`.
 - [Troubleshooting](reference-troubleshooting.md): warnings and error messages.
+- [The inventory workbook](reference-inventory.md): every photo and video with what the audits
+  learnt, in Excel, from the cache alone (`inventory`).
 - [Advanced usage](reference-advanced.md): limit the processors used (`PYTHON_CPU_COUNT`).
 
 ## For developers

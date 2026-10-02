@@ -39,7 +39,8 @@ is read again. The results are the same, with or without the cache.
 
 The cache also keeps what each file says about itself, read while it is checked: the shooting
 date, the GPS position, the device, the stars given in Windows, the length of a video… Nothing
-more is read for it.
+more is read for it. `inventory` exports all of it to an Excel workbook, without reading your
+photos again ([the inventory workbook](../reference-inventory.md)).
 
 ## Good to know
 

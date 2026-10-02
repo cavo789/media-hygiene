@@ -89,6 +89,7 @@ adds one thing to the command of the step before.
 [how your photos stay safe](documentation/en/reference-safety.md),
 [sidecar files](documentation/en/reference-sidecars.md),
 [troubleshooting](documentation/en/reference-troubleshooting.md),
+[the inventory workbook](documentation/en/reference-inventory.md),
 [advanced usage](documentation/en/reference-advanced.md).
 
 **For developers** — [build the image, the devcontainer, releases](documentation/en/development.md).

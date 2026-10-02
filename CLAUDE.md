@@ -29,7 +29,7 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 
 | Package | Role |
 |---|---|
-| `cli/` | Typer commands (`audit`, `crosscheck`, `review`, `clean`, `undo`, `history`, `reports`, `purge`, `config`); thin: build a settings layer, call a service, display. `cli/app.py` builds the app **after** the locale is installed (`__main__.py`). |
+| `cli/` | Typer commands (`audit`, `crosscheck`, `review`, `clean`, `undo`, `history`, `reports`, `purge`, `inventory`, `config`); thin: build a settings layer, call a service, display. `cli/app.py` builds the app **after** the locale is installed (`__main__.py`). |
 | `services/` | Use cases: `AuditService`, `CleanService`, `cross_check`, `serve_review`, `undo_run`, `write_report`; `Runtime` bundles settings, locations, mount table, output. |
 | `scan/` | `walker` (os.scandir; lists what it could not read), `exact` (size → partial SHA-256 → full SHA-256), `broken` + `file_check` (Pillow decode in a process pool, `ffprobe` for videos); the same decode yields `VisualFacts` (`visual`: dHash, pHash, Laplacian sharpness with numpy, EXIF date and camera) and a versioned `MediaMetadata` (`exif`, `gps`, `jpeg_quality`, `exposure`; `video_meta` from the same probe): facts only, never judgments; `inventory` counts them. Pure asyncio (`TaskGroup`, semaphore). |
 | `index/` | SQLite cache of digests/integrity/visual facts/metadata keyed by (path, size, mtime) → incremental audits; `schema` upgrades older index files in place (metadata then read once, from image headers); `pruning`: the audit forgets the files a walk proves gone, `clean` those it removed. |
@@ -37,7 +37,7 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 | `crosscheck/` | Second opinion: the `jlesage/czkawka` command the audit prints (same mounts, extensions, exclusions) and the group-by-group comparison with its JSON results, out-of-scope files set aside. |
 | `actions/` | Write-ahead JSONL journal (`pending` then `done`), `CleanExecutor` (byte compare before delete, verified quarantine move), `UndoExecutor` (rebuild from keeper / quarantine), purge, run history. |
 | `review/` | `media-hygiene review`: burst series one at a time in the browser, keyboard driven. Minimal HTTP/1.1 on asyncio streams (loopback `Host` only, JSON-only `POST`), a session saving `decisions.json` (`bursts` key, next to the report's `pairs`) at each choice; `clean --decisions` quarantines the shots set aside. |
-| `report/` | Self-contained Jinja2 HTML reports (+ previews, one page per folder pair, `plan.csv`, `summary.json`, `index.html`). |
+| `report/` | Self-contained Jinja2 HTML reports (+ previews, one page per folder pair, `plan.csv`, `summary.json`, `index.html`); `inventory.xlsx`/`.csv` streamed from the index alone (`index/listing`). |
 | `config/` | Frozen pydantic `Settings`; layers file (`config.toml`) < env (`MEDIA_HYGIENE_<SECTION>__<KEY>`) < CLI. |
 | `paths/` | Mount points (`Locations`, each overridable by `MEDIA_HYGIENE_<NAME>_DIR`), mount table, `/data/c/x` ↔ `C:\x` mapping. |
 | `i18n/` | gettext: `_()`/`ngettext()`, `.po` catalogs loaded at runtime with polib (no `.mo` in the repo). |

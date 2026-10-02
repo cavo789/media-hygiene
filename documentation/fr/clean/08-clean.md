@@ -60,7 +60,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261001-133934
+Nettoyage 20261002-152727
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -69,11 +69,11 @@ Nettoyage 20261001-133934
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261001-133934-clean/report.html
+✅ Rapport HTML : /reports/20261002-152727-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261001-133934' restaure tout.
-💡 Les fichiers déplacés sont dans /quarantine/20261001-133934 ; 'purge' les
+💡 Vous changez d'avis ? 'media-hygiene undo 20261002-152727' restaure tout.
+💡 Les fichiers déplacés sont dans /quarantine/20261002-152727 ; 'purge' les
 supprime.
 ```
 

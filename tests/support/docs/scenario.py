@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
-COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort")
+COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "inventory")
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -47,6 +47,7 @@ CAPTURES: Final = frozenset(
         "audit-exclude.txt",
         "audit-ext.txt",
         "classify.txt",
+        "inventory.txt",
         "crosscheck.txt",
         "review.txt",
         "decisions.json",
@@ -82,6 +83,7 @@ def _audits(demo: Demo) -> Captures:
     captures["audit-exclude.txt"] = run(demo, Command(exclude))
     captures["audit-ext.txt"] = run(demo, Command(("audit", "--ext", "heic,video")))
     captures["classify.txt"] = run(demo, Command(("classify",)))
+    captures["inventory.txt"] = run(demo, Command(("inventory",)))
     return captures
 
 

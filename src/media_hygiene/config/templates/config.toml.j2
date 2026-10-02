@@ -73,6 +73,17 @@ confirm = true
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
 
 
+[inventory]
+{{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
+blurry_below = 100.0
+small_below = 1000
+
+{{ comment(_("Exposure: dark below dark_below or bright above bright_above (mean brightness, 0 to 255), or when more than clipped_above of the pixels (0 to 1) are pure black or pure white.")) }}
+dark_below = 50.0
+bright_above = 205.0
+clipped_above = 0.25
+
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 

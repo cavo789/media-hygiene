@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from media_hygiene.constants import KeepReason
+from media_hygiene.constants import BrokenReason, KeepReason
 from media_hygiene.i18n import _
 
 
@@ -34,5 +34,23 @@ def keep_reason_label(reason: KeepReason | None) -> str:
         KeepReason.SHORTEST_PATH: _("the shortest path"),
         KeepReason.ALPHABETICAL: _("alphabetical order (nothing else differs)"),
         KeepReason.REVIEWED: _("your decision in the report"),
+    }
+    return labels[reason]
+
+
+def broken_reason_label(reason: BrokenReason) -> str:
+    """Translate why a file is broken.
+
+    Args:
+        reason: The reason.
+
+    Returns:
+        A short sentence.
+    """
+    labels = {
+        BrokenReason.EMPTY: _("Empty file (0 bytes)"),
+        BrokenReason.UNREADABLE_IMAGE: _("Image cannot be decoded"),
+        BrokenReason.UNREADABLE_RAW: _("RAW file cannot be decoded"),
+        BrokenReason.UNREADABLE_VIDEO: _("Video cannot be opened"),
     }
     return labels[reason]

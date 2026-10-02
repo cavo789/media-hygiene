@@ -10,6 +10,7 @@ from media_hygiene.cli.cmd_clean import clean_command
 from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
+from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
@@ -141,6 +142,15 @@ def build_app() -> typer.Typer:
             purge_command,
             act,
             _("Permanently delete the quarantined broken files of a run."),
+        ),
+        (
+            "inventory",
+            inventory_command,
+            analyse,
+            _(
+                "Export every photo and video with what the audits learnt to Excel,"
+                " from the cache alone: no file is read."
+            ),
         ),
         (
             "history",

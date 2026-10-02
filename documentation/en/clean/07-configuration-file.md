@@ -157,6 +157,11 @@ Effective settings
 │ sort.confirm               │ True                             │ default      │
 │ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ default      │
 │                            │ '.DS_Store']                     │              │
+│ inventory.blurry_below     │ 100.0                            │ default      │
+│ inventory.small_below      │ 1000                             │ default      │
+│ inventory.dark_below       │ 50.0                             │ default      │
+│ inventory.bright_above     │ 205.0                            │ default      │
+│ inventory.clipped_above    │ 0.25                             │ default      │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -420,6 +425,11 @@ Effective settings
 │ sort.confirm               │ True                             │ config.toml  │
 │ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ config.toml  │
 │                            │ '.DS_Store']                     │              │
+│ inventory.blurry_below     │ 100.0                            │ config.toml  │
+│ inventory.small_below      │ 1000                             │ config.toml  │
+│ inventory.dark_below       │ 50.0                             │ config.toml  │
+│ inventory.bright_above     │ 205.0                            │ config.toml  │
+│ inventory.clipped_above    │ 0.25                             │ config.toml  │
 └────────────────────────────┴──────────────────────────────────┴──────────────┘
 
 Extension categories (--ext)

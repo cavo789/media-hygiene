@@ -51,9 +51,17 @@ class FactsRepository:
 
         Returns:
             The repository.
+
+        Raises:
+            sqlite3.Error: The file is not an index; the connection is closed.
         """
         target = str(index_file) if index_file is not None else _IN_MEMORY
-        return cls(sqlite3.connect(target))
+        connection = sqlite3.connect(target)
+        try:
+            return cls(connection)
+        except sqlite3.Error:
+            connection.close()
+            raise
 
     def __enter__(self) -> Self:
         """Use the repository as a context manager.

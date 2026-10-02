@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason, Locale, MediaKind
 from media_hygiene.i18n import _, active_locale
-from media_hygiene.report.reasons import keep_reason_label
+from media_hygiene.report.reasons import broken_reason_label, keep_reason_label
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -28,9 +28,19 @@ type Row = tuple[str | int, ...]
 
 _SEPARATORS: Final = {Locale.FR: ";"}
 _DEFAULT_SEPARATOR: Final = ","
-_ENCODING: Final = "utf-8-sig"
+# The byte order mark tells Excel the file is UTF-8.
+CSV_ENCODING: Final = "utf-8-sig"
+CSV_DATE_FORMAT: Final = "%Y-%m-%d %H:%M:%S"
 _NANOSECONDS: Final = 1_000_000_000
-_DATE_FORMAT: Final = "%Y-%m-%d %H:%M:%S"
+
+
+def list_separator() -> str:
+    """The list separator Excel expects in the interface language.
+
+    Returns:
+        `;` in French, `,` otherwise.
+    """
+    return _SEPARATORS.get(active_locale(), _DEFAULT_SEPARATOR)
 
 
 def write_plan_csv(target: Path, plan: CleanPlan, mapper: HostPathMapper) -> None:
@@ -42,9 +52,8 @@ def write_plan_csv(target: Path, plan: CleanPlan, mapper: HostPathMapper) -> Non
         mapper: Host/container path translator.
     """
     rows = _Rows(mapper)
-    separator = _SEPARATORS.get(active_locale(), _DEFAULT_SEPARATOR)
-    with target.open("w", encoding=_ENCODING, newline="") as stream:
-        writer = csv.writer(stream, delimiter=separator)
+    with target.open("w", encoding=CSV_ENCODING, newline="") as stream:
+        writer = csv.writer(stream, delimiter=list_separator())
         writer.writerow(
             (
                 _("Group"),
@@ -140,7 +149,7 @@ class _Rows:
             line.action,
             self.mapper.to_host(file.path),
             self.mapper.to_host(file.path.parent),
-            modified.strftime(_DATE_FORMAT),
+            modified.strftime(CSV_DATE_FORMAT),
             line.detail,
         )
 
@@ -154,11 +163,5 @@ def _describe(item: BrokenFile) -> str:
     Returns:
         The translated reason.
     """
-    reasons = {
-        BrokenReason.EMPTY: _("Empty file (0 bytes)"),
-        BrokenReason.UNREADABLE_IMAGE: _("Image cannot be decoded"),
-        BrokenReason.UNREADABLE_RAW: _("RAW file cannot be decoded"),
-        BrokenReason.UNREADABLE_VIDEO: _("Video cannot be opened"),
-    }
-    reason = reasons[item.reason]
+    reason = broken_reason_label(item.reason)
     return f"{reason} — {item.detail}" if item.detail else reason

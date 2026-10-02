@@ -19,6 +19,7 @@ cette page les rassemble.
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
+| `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -50,6 +51,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--no-carry-over` | `classify` | Repartir de zéro : ne reprendre aucune modification d'un classeur précédent. |
 | `--sample N` | `classify` | Décrire N photos prises au hasard avec le modèle local, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#mesurer-dabord----sample) |
 | `--no-describe` | `classify` | Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#la-longue-exécution-jamais-une-surprise) |
+| `--format xlsx\|csv` | `inventory` | `xlsx` (par défaut) : un classeur avec les feuilles Fichiers et Résumé. `csv` : la feuille Fichiers seule, comme `plan.csv`. [Inventaire](reference-inventory.md#un-fichier-csv-à-la-place) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
@@ -90,6 +92,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │             avis, indépendant.                                               │
 │ classify    Propose où ranger chaque photo et vidéo : année, événement,      │
 │             catégorie. En lecture seule.                                     │
+│ inventory   Exporter vers Excel chaque photo et vidéo avec ce que les audits │
+│             en ont appris, depuis le cache seul : aucun fichier n'est lu.    │
 │ history     Liste les exécutions et ce qu'elles ont fait.                    │
 │ reports     Liste les rapports HTML des audits et nettoyages précédents.     │
 │ config      Affiche chaque réglage, son origine, et les points de montage.   │
@@ -441,6 +445,26 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │ --keep-empty-folders            Garder les dossiers sources que le tri       │
 │                                 laisse vides.                                │
 │ --help                -h        Affiche ce message et quitte.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>inventory --help</code></summary>
+
+<!-- capture: help-inventory.txt -->
+```text
+ Utilisation : media-hygiene inventory [OPTIONS]
+
+ Exporter vers Excel chaque photo et vidéo avec ce que les audits en ont
+ appris, depuis le cache seul : aucun fichier n'est lu.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --format          <xlsx|csv>  xlsx : un classeur Excel (feuilles Fichiers et │
+│                               Résumé). csv : la feuille Fichiers seule,      │
+│                               comme plan.csv. Par défaut : xlsx.             │
+│ --help    -h                  Affiche ce message et quitte.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

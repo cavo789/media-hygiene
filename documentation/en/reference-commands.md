@@ -19,6 +19,7 @@ them one at a time; this page gathers them.
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
+| `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
 ## Options
@@ -50,6 +51,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--no-carry-over` | `classify` | Start fresh: carry no edit of a previous workbook over. |
 | `--sample N` | `classify` | Describe N random photos with the local model, print the time per photo and the estimate of a full run, and stop. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#measure-first---sample) |
 | `--no-describe` | `classify` | Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#the-long-run-never-in-the-way) |
+| `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
@@ -88,6 +90,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │             independent opinion.                                             │
 │ classify    Propose where every photo and video should go: year, event,      │
 │             category. Read-only.                                             │
+│ inventory   Export every photo and video with what the audits learnt to      │
+│             Excel, from the cache alone: no file is read.                    │
 │ history     List the runs and what they did.                                 │
 │ reports     List the HTML reports of previous audits and cleans.             │
 │ config      Show every setting, where it comes from, and the mount points.   │
@@ -424,6 +428,26 @@ both languages (`--locale fr --help`). Here is what they print:
 │ --keep-empty-folders            Keep the source folders the sort leaves      │
 │                                 empty.                                       │
 │ --help                -h        Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>inventory --help</code></summary>
+
+<!-- capture: help-inventory.txt -->
+```text
+ Usage: media-hygiene inventory [OPTIONS]
+
+ Export every photo and video with what the audits learnt to Excel, from the
+ cache alone: no file is read.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --format          <xlsx|csv>  xlsx: an Excel workbook (Files and Summary     │
+│                               sheets). csv: the Files sheet only, like       │
+│                               plan.csv. Default: xlsx.                       │
+│ --help    -h                  Show this message and exit.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

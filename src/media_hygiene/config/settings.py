@@ -5,6 +5,7 @@ from __future__ import annotations
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
@@ -116,3 +117,4 @@ class Settings(BaseModel):
     clean: CleanSettings = CleanSettings()
     classify: ClassifySettings = ClassifySettings()
     sort: SortSettings = SortSettings()
+    inventory: InventorySettings = InventorySettings()

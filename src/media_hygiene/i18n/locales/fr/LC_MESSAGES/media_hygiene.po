@@ -196,6 +196,9 @@ msgstr ""
 "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir des rapports "
 "HTML."
 
+msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
+msgstr "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir l'inventaire."
+
 msgid "Add -v \"<a folder of yours>:/reports\" to get the workbook to edit."
 msgstr ""
 "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir le classeur à "
@@ -226,6 +229,9 @@ msgstr "Déjà à leur place"
 #, python-brace-format
 msgid "Already in place: {share}."
 msgstr "Déjà à leur place : {share}."
+
+msgid "Altitude (m)"
+msgstr "Altitude (m)"
 
 msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
@@ -304,6 +310,15 @@ msgstr ""
 msgid "Birthdays"
 msgstr "Anniversaires"
 
+msgid "Bit rate"
+msgstr "Débit binaire"
+
+msgid "Black pixels"
+msgstr "Pixels noirs"
+
+msgid "Brightness"
+msgstr "Luminosité"
+
 msgid "Broken"
 msgstr "Cassés"
 
@@ -330,6 +345,9 @@ msgstr "Les photos de rafale que vous écartez vont dans /quarantine : montez-le
 
 msgid "COMMAND [ARGS]..."
 msgstr "COMMANDE [ARGS]..."
+
+msgid "Camera"
+msgstr "Appareil"
 
 msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr "Impossible de demander confirmation sans terminal interactif."
@@ -431,6 +449,9 @@ msgstr "Nettoyage {run_id}"
 msgid "Cleaning"
 msgstr "Nettoyage"
 
+msgid "Codec"
+msgstr "Codec"
+
 msgid "Command"
 msgstr "Commande"
 
@@ -459,6 +480,9 @@ msgstr "Le dossier configuré {path} n'est pas monté : il est ignoré."
 
 msgid "Confirm the files to check"
 msgstr "Confirmer les fichiers à vérifier"
+
+msgid "Copies"
+msgstr "Copies"
 
 msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
@@ -528,6 +552,9 @@ msgstr "Date"
 msgid "Date from"
 msgstr "Date tirée de"
 
+msgid "Date taken"
+msgstr "Date de prise de vue"
+
 msgid "Dates"
 msgstr "Dates"
 
@@ -546,8 +573,16 @@ msgstr ""
 "second dossier et supprime celles du premier ; « Ne pas toucher » ne "
 "supprime rien de cette paire. Ce navigateur retient vos choix."
 
+msgid "Decoder message"
+msgstr "Message du décodeur"
+
 msgid "Delete all reports but the N most recent ones."
 msgstr "Supprime tous les rapports sauf les N plus récents."
+
+msgid "Delete it: the next audit builds it again, reading every file once."
+msgstr ""
+"Supprimez-le : le prochain audit le reconstruit, en relisant chaque "
+"fichier une fois."
 
 #, python-brace-format
 msgid "Delete {count} duplicate copies ({size}) and handle {broken} broken files?"
@@ -641,6 +676,9 @@ msgstr ""
 msgid "Drone"
 msgstr "Drone"
 
+msgid "Duplicate group"
+msgstr "Groupe de doublons"
+
 msgid "Duplicate groups"
 msgstr "Groupes de doublons"
 
@@ -649,6 +687,12 @@ msgstr "Doublons"
 
 msgid "Duration"
 msgstr "Durée"
+
+msgid "Duration (s)"
+msgstr "Durée (s)"
+
+msgid "EXIF"
+msgstr "EXIF"
 
 msgid ""
 "Each copy is compared again with the kept one before deletion; unreadable"
@@ -811,6 +855,28 @@ msgstr "Exemple :"
 msgid "Existing folders"
 msgstr "Dossiers existants"
 
+msgid ""
+"Export every photo and video with what the audits learnt to Excel, from "
+"the cache alone: no file is read."
+msgstr ""
+"Exporter vers Excel chaque photo et vidéo avec ce que les audits en ont "
+"appris, depuis le cache seul : aucun fichier n'est lu."
+
+msgid "Exposure"
+msgstr "Exposition"
+
+msgid "Exposure time (s)"
+msgstr "Temps d'exposition (s)"
+
+msgid ""
+"Exposure: dark below dark_below or bright above bright_above (mean "
+"brightness, 0 to 255), or when more than clipped_above of the pixels (0 "
+"to 1) are pure black or pure white."
+msgstr ""
+"Exposition : sombre sous dark_below ou claire au-dessus de bright_above "
+"(luminosité moyenne, de 0 à 255), ou quand plus de clipped_above des "
+"pixels (de 0 à 1) sont noir pur ou blanc pur."
+
 msgid "Extension categories (--ext)"
 msgstr "Catégories d'extensions (--ext)"
 
@@ -819,6 +885,9 @@ msgstr "Extensions"
 
 msgid "Extra copies that can be deleted"
 msgstr "Copies en trop, supprimables"
+
+msgid "F-number"
+msgstr "Ouverture (f/)"
 
 msgid "Failed"
 msgstr "En échec"
@@ -899,6 +968,12 @@ msgstr ""
 "Repère les fichiers cassés : vides (0 octet), images et fichiers RAW "
 "impossibles à décoder, vidéos impossibles à ouvrir."
 
+msgid "Flash"
+msgstr "Flash"
+
+msgid "Focal length (mm)"
+msgstr "Focale (mm)"
+
 msgid "Folder"
 msgstr "Dossier"
 
@@ -971,6 +1046,9 @@ msgstr "Dossiers partageant des fichiers identiques"
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr "Dossiers ignorés par leur nom, où qu'ils soient : {names}."
 
+msgid "Format"
+msgstr "Format"
+
 #, python-brace-format
 msgid ""
 "Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The"
@@ -978,6 +1056,9 @@ msgid ""
 msgstr ""
 "Trouvés par media-hygiene seulement : {ours}. Trouvés par Czkawka "
 "seulement : {theirs}. Le terminal les liste."
+
+msgid "Frame rate"
+msgstr "Images par seconde"
 
 msgid "Freed"
 msgstr "Libéré"
@@ -1021,6 +1102,9 @@ msgstr "Groupes de fichiers identiques"
 #, python-brace-format
 msgid "HTML report: {path}"
 msgstr "Rapport HTML : {path}"
+
+msgid "Height"
+msgstr "Hauteur"
 
 msgid "Holidays and outings"
 msgstr "Vacances et sorties"
@@ -1074,6 +1158,9 @@ msgstr "Niveau de détail des journaux."
 msgid "How much to log: \"error\", \"warning\", \"info\" or \"debug\"."
 msgstr "Quantité de messages : \"error\", \"warning\", \"info\" ou \"debug\"."
 
+msgid "ISO"
+msgstr "ISO"
+
 msgid "Id"
 msgstr "Identifiant"
 
@@ -1083,6 +1170,9 @@ msgstr "Image impossible à décoder"
 #, python-brace-format
 msgid "Install it with: ollama pull {model}"
 msgstr "Installez-le avec : ollama pull {model}"
+
+msgid "Integrity"
+msgstr "Intégrité"
 
 msgid "Interface language."
 msgstr "Langue de l'interface."
@@ -1099,6 +1189,12 @@ msgstr "Configuration invalide ({details})."
 
 msgid "Inventory"
 msgstr "Inventaire"
+
+#, python-brace-format
+msgid "Inventory of {count} file written: {path}"
+msgid_plural "Inventory of {count} files written: {path}"
+msgstr[0] "Inventaire de {count} fichier écrit : {path}"
+msgstr[1] "Inventaire de {count} fichiers écrit : {path}"
 
 msgid ""
 "Is Ollama running? On Docker Engine (Linux, WSL), add --add-"
@@ -1129,6 +1225,9 @@ msgstr ""
 "Ses modifications ne seraient pas reprises : réparez {path}, désignez-en "
 "un autre avec --carry-over, ou repartez de zéro avec --no-carry-over."
 
+msgid "JPEG quality"
+msgstr "Qualité JPEG"
+
 msgid "January"
 msgstr "janvier"
 
@@ -1158,11 +1257,34 @@ msgstr "Gardé"
 msgid "Kept in"
 msgstr "Conservées dans"
 
+msgid "Kind"
+msgstr "Type"
+
+msgid ""
+"Labels of the 'inventory' export, computed when it is written: change a "
+"value and export again, nothing is scanned. A photo is blurry below "
+"blurry_below (sharpness), small below small_below pixels on its shorter "
+"side."
+msgstr ""
+"Étiquettes de l'export 'inventory', calculées à l'écriture : changez une "
+"valeur et exportez à nouveau, rien n'est relu. Une photo est floue sous "
+"blurry_below (netteté), petite sous small_below pixels sur son petit "
+"côté."
+
+msgid "Last complete audit (UTC)"
+msgstr "Dernier audit complet (UTC)"
+
+msgid "Latitude"
+msgstr "Latitude"
+
 msgid "Leave alone"
 msgstr "Ne pas toucher"
 
 msgid "Left as they are"
 msgstr "Laissés tels quels"
+
+msgid "Lens"
+msgstr "Objectif"
 
 #, python-brace-format
 msgid ""
@@ -1184,6 +1306,9 @@ msgstr "Liste les exécutions et ce qu'elles ont fait."
 
 msgid "Listing media files"
 msgstr "Recherche des fichiers médias"
+
+msgid "Longitude"
+msgstr "Longitude"
 
 msgid "MB"
 msgstr "Mo"
@@ -1337,6 +1462,9 @@ msgstr ""
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
 
+msgid "No audit has walked a folder completely yet."
+msgstr "Aucun audit n'a encore parcouru un dossier en entier."
+
 msgid "No burst series: nothing to review."
 msgstr "Aucune rafale : rien à trier."
 
@@ -1357,6 +1485,10 @@ msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder
 #, python-brace-format
 msgid "No folder to analyse under {path}."
 msgstr "Aucun dossier à analyser sous {path}."
+
+#, python-brace-format
+msgid "No index in {folder}: nothing to export yet."
+msgstr "Pas d'index dans {folder} : rien à exporter pour l'instant."
 
 #, python-brace-format
 msgid "No journal found at {path}."
@@ -1389,6 +1521,11 @@ msgstr "Aucun rapport pour l'instant : lancez 'media-hygiene audit'."
 
 msgid "No reports mount: 'sort' reads the plan 'classify' wrote there."
 msgstr "Pas de montage des rapports : 'sort' y lit le plan écrit par 'classify'."
+
+msgid "No reports mount: the inventory would be lost with the container."
+msgstr ""
+"Pas de montage des rapports : l'inventaire disparaîtrait avec le "
+"conteneur."
 
 msgid "No reports mount: there is no report to list."
 msgstr "Pas de montage /reports : aucun rapport à lister."
@@ -1609,6 +1746,12 @@ msgstr "Photos avec une date de prise de vue"
 msgid "Pictures received through a messaging app, if you want them apart:"
 msgstr "Les images reçues par une messagerie, si vous les voulez à part :"
 
+msgid "Place"
+msgstr "Lieu"
+
+msgid "Place (video tag)"
+msgstr "Lieu (balise vidéo)"
+
 msgid ""
 "Port of the page inside the container; publish it with -p 127.0.0.1::8080"
 " so that Docker chooses a free one on your computer. Default: 8080."
@@ -1645,6 +1788,9 @@ msgstr "Arborescence proposée"
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
 
+msgid "Quality"
+msgstr "Qualité"
+
 #, python-brace-format
 msgid "Quarantine purged: {size} freed."
 msgstr "Quarantaine vidée : {size} libérés."
@@ -1652,11 +1798,17 @@ msgstr "Quarantaine vidée : {size} libérés."
 msgid "Quarantined"
 msgstr "En quarantaine"
 
+msgid "RAW"
+msgstr "RAW"
+
 msgid "RAW file cannot be decoded"
 msgstr "Fichier RAW impossible à décoder"
 
 msgid "Random sample"
 msgstr "Échantillon aléatoire"
+
+msgid "Rating"
+msgstr "Note"
 
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
@@ -1781,6 +1933,16 @@ msgstr ""
 
 msgid "Run"
 msgstr "Exécution"
+
+msgid ""
+"Run 'audit' first with the same /cache mount: the inventory lists what "
+"the audits learnt, without reading the files again."
+msgstr ""
+"Lancez d'abord 'audit' avec le même montage /cache : l'inventaire reprend"
+" ce que les audits ont appris, sans relire les fichiers."
+
+msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
+msgstr "Lancez 'audit' sur vos dossiers : l'inventaire dit alors de quand il date."
 
 msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
@@ -1962,6 +2124,9 @@ msgstr "Réglage"
 msgid "Share of the work, cumulated"
 msgstr "Part du travail, cumulée"
 
+msgid "Sharpness"
+msgstr "Netteté"
+
 msgid ""
 "Shots of one camera, taken seconds apart. This is not duplication: a "
 "plain 'clean' never touches them. The sharpest shot of each series is "
@@ -2003,6 +2168,9 @@ msgstr "Taille (octets)"
 
 msgid "Skipped (left untouched)"
 msgstr "Ignorés (laissés intacts)"
+
+msgid "Software"
+msgstr "Logiciel"
 
 msgid ""
 "Software folders (.git, node_modules, AppData, Program Files, ...) are "
@@ -2144,6 +2312,14 @@ msgid ""
 msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
+
+#, python-brace-format
+msgid "The index {file} cannot be read: {reason}."
+msgstr "L'index {file} ne peut pas être lu : {reason}."
+
+#, python-brace-format
+msgid "The inventory could not be written to {folder}: {reason}."
+msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
 
 #, python-brace-format
 msgid "The manifest could not be written to {folder}: {reason}."
@@ -2328,6 +2504,9 @@ msgstr ""
 "Ce classeur a été écrit par une autre version : il ne peut pas être "
 "vérifié."
 
+msgid "Time zone"
+msgstr "Fuseau horaire"
+
 msgid "To check"
 msgstr "À vérifier"
 
@@ -2360,6 +2539,9 @@ msgstr ""
 
 msgid "To sort"
 msgstr "À trier"
+
+msgid "Topic"
+msgstr "Rubrique"
 
 msgid "Total length of the videos"
 msgstr "Durée totale des vidéos"
@@ -2439,6 +2621,9 @@ msgstr "Où vont les fichiers sûrs, par exemple '{year}/{month} - {month_name}'
 msgid "Where to start"
 msgstr "Par où commencer"
 
+msgid "White pixels"
+msgstr "Pixels blancs"
+
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
 "--decisions'. A or X keeps them all again."
@@ -2448,6 +2633,9 @@ msgstr ""
 
 msgid "Why"
 msgstr "Pourquoi"
+
+msgid "Width"
+msgstr "Largeur"
 
 msgid "Will be deleted"
 msgstr "Sera supprimé"
@@ -2575,6 +2763,12 @@ msgstr "l'ordre alphabétique (rien d'autre ne diffère)"
 msgid "audit"
 msgstr "audit"
 
+msgid "blurry"
+msgstr "flou"
+
+msgid "bright"
+msgstr "clair"
+
 msgid "broken files"
 msgstr "fichiers cassés"
 
@@ -2599,6 +2793,9 @@ msgstr "config.toml"
 #, python-format
 msgid "cumulated: %(share)s%%"
 msgstr "cumulé : %(share)s %%"
+
+msgid "dark"
+msgstr "sombre"
 
 msgid "date on the disk"
 msgstr "date sur le disque"
@@ -2654,11 +2851,20 @@ msgstr "ffprobe introuvable : les vidéos ne sont pas vérifiées."
 msgid "file name"
 msgstr "nom du fichier"
 
+msgid "files with an identical copy"
+msgstr "fichiers ayant une copie identique"
+
 msgid "folder name"
 msgstr "nom du dossier"
 
 msgid "freed"
 msgstr "libérés"
+
+msgid "groups of identical files"
+msgstr "groupes de fichiers identiques"
+
+msgid "healthy"
+msgstr "sain"
 
 msgid "in excluded folders"
 msgstr "dans des dossiers exclus"
@@ -2735,8 +2941,17 @@ msgstr "déplacé en quarantaine"
 msgid "no"
 msgstr "non"
 
+msgid "no date"
+msgstr "sans date"
+
 msgid "no shot kept from its series is left"
 msgstr "il ne reste aucune photo gardée de sa série"
+
+msgid "not checked"
+msgstr "non vérifié"
+
+msgid "ok"
+msgstr "ok"
 
 msgid "only Czkawka"
 msgstr "Czkawka seulement"
@@ -2752,6 +2967,9 @@ msgstr "fichiers autres que photos et vidéos déplacés en quarantaine"
 
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
+
+msgid "photo"
+msgstr "photo"
 
 msgid "photos with a shooting date:"
 msgstr "photos avec une date de prise de vue :"
@@ -2792,6 +3010,9 @@ msgstr "netteté"
 #, python-brace-format
 msgid "sharpness {value}"
 msgstr "netteté {value}"
+
+msgid "small"
+msgstr "petit"
 
 msgid "the copy differs from the original"
 msgstr "la copie diffère de l'original"
@@ -2850,6 +3071,12 @@ msgstr "à vérifier ou à trier : %(count)s"
 msgid "to the quarantine with --tier near"
 msgstr "en quarantaine avec --tier near"
 
+msgid "unknown"
+msgstr "inconnu"
+
+msgid "video"
+msgstr "vidéo"
+
 msgid "video tags"
 msgstr "balises de la vidéo"
 
@@ -2862,8 +3089,27 @@ msgstr "vidéos :"
 msgid "why:"
 msgstr "pourquoi :"
 
+msgid "with GPS"
+msgstr "avec GPS"
+
 msgid "with a GPS position:"
 msgstr "avec une position GPS :"
+
+msgid "with a date"
+msgstr "avec une date"
+
+msgid "without GPS"
+msgstr "sans GPS"
+
+msgid "without a date"
+msgstr "sans date"
+
+msgid ""
+"xlsx: an Excel workbook (Files and Summary sheets). csv: the Files sheet "
+"only, like plan.csv. Default: xlsx."
+msgstr ""
+"xlsx : un classeur Excel (feuilles Fichiers et Résumé). csv : la feuille "
+"Fichiers seule, comme plan.csv. Par défaut : xlsx."
 
 msgid "y"
 msgstr "o"

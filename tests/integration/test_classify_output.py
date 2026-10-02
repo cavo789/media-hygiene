@@ -51,7 +51,7 @@ def test_two_runs_in_the_same_second_get_two_folders(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """A run never overwrites the workbook of another one."""
-    monkeypatch.setattr("media_hygiene.services.classify_output._STAMP_FORMAT", "fixed")
+    monkeypatch.setattr("media_hygiene.report.folders._STAMP_FORMAT", "fixed")
     assert run(cli, "classify").exit_code == 0
     assert run(cli, "classify").exit_code == 0
     folders = sorted(path.name for path in locations.reports_dir.glob("*-classify*"))

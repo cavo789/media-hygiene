@@ -40,7 +40,8 @@ trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
 
 Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
 de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une
-vidéo… Rien de plus n'est lu pour cela.
+vidéo… Rien de plus n'est lu pour cela. `inventory` exporte tout cela vers un classeur Excel,
+sans relire vos photos ([le classeur d'inventaire](../reference-inventory.md)).
 
 ## Bon à savoir
 

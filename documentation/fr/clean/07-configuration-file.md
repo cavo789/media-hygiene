@@ -179,6 +179,11 @@ Réglages effectifs
 │ sort.confirm               │ True                        │ défaut            │
 │ sort.junk_files            │ ['Thumbs.db',               │ défaut            │
 │                            │ 'desktop.ini', '.DS_Store'] │                   │
+│ inventory.blurry_below     │ 100.0                       │ défaut            │
+│ inventory.small_below      │ 1000                        │ défaut            │
+│ inventory.dark_below       │ 50.0                        │ défaut            │
+│ inventory.bright_above     │ 205.0                       │ défaut            │
+│ inventory.clipped_above    │ 0.25                        │ défaut            │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -484,6 +489,11 @@ Réglages effectifs
 │ sort.confirm               │ True                        │ config.toml       │
 │ sort.junk_files            │ ['Thumbs.db',               │ config.toml       │
 │                            │ 'desktop.ini', '.DS_Store'] │                   │
+│ inventory.blurry_below     │ 100.0                       │ config.toml       │
+│ inventory.small_below      │ 1000                        │ config.toml       │
+│ inventory.dark_below       │ 50.0                        │ config.toml       │
+│ inventory.bright_above     │ 205.0                       │ config.toml       │
+│ inventory.clipped_above    │ 0.25                        │ config.toml       │
 └────────────────────────────┴─────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)

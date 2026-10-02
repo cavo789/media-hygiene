@@ -7,8 +7,7 @@ a workbook edited in a folder the container forgets would be lost work.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.classify.carry import carry_over
 from media_hygiene.classify.carry_plan import with_carried
@@ -24,6 +23,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.classify_writer import ClassifyReportWriter
+from media_hygiene.report.folders import new_report_folder
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -33,8 +33,6 @@ if TYPE_CHECKING:
     from media_hygiene.classify.carry_types import CarrySource
     from media_hygiene.services.classify import ClassifyResult
     from media_hygiene.services.runtime import Runtime
-
-_STAMP_FORMAT: Final = "%Y%m%d-%H%M%S"
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,7 +69,7 @@ def write_classify_output(
         plan = with_carried(plan, carried, source)
         prefill = Prefill(carried.edits, carried.notes)
     try:
-        folder = _new_folder(reports_dir)
+        folder = new_report_folder(reports_dir, CLASSIFY_FOLDER_SUFFIX)
         (folder / CLASSIFY_PLAN_FILE_NAME).write_text(
             plan.model_dump_json(indent=1), encoding="utf-8"
         )
@@ -87,21 +85,3 @@ def write_classify_output(
             writable_tip((reports_dir,)) if isinstance(exc, PermissionError) else None,
         ) from exc
     return ClassifyOutput(folder, plan.carried)
-
-
-def _new_folder(reports_dir: Path) -> Path:
-    """Create `<stamp>-classify`, with a suffix when two runs share a second.
-
-    Args:
-        reports_dir: The reports mount point.
-
-    Returns:
-        The new, empty folder.
-    """
-    base = f"{datetime.now(UTC).strftime(_STAMP_FORMAT)}-{CLASSIFY_FOLDER_SUFFIX}"
-    folder, suffix = reports_dir / base, 1
-    while folder.exists():
-        suffix += 1
-        folder = reports_dir / f"{base}-{suffix}"
-    folder.mkdir(parents=True)
-    return folder

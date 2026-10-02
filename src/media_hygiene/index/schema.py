@@ -76,11 +76,16 @@ CREATE TABLE IF NOT EXISTS subject_mappings (
     category TEXT NOT NULL
 )
 """
-SELECT: Final = (
-    "SELECT size, mtime_ns, partial_digest, full_digest, integrity_checked,"
+# What `rows.facts_of` reads, in its order.
+_FACTS: Final = (
+    "size, mtime_ns, partial_digest, full_digest, integrity_checked,"
     " broken_reason, broken_detail, visual_checked, dhash, phash, width, height,"
-    " sharpness, taken_at, camera, metadata_version, metadata FROM files WHERE path = ?"
+    " sharpness, taken_at, camera, metadata_version, metadata"
 )
+# Both built from the constant column list above, never from input.
+SELECT: Final = f"SELECT {_FACTS} FROM files WHERE path = ?"  # noqa: S608
+# Every file, its path first, then the same columns.
+EVERY_FILE: Final = f"SELECT path, {_FACTS} FROM files ORDER BY path"  # noqa: S608
 UPSERT: Final = (
     "INSERT OR REPLACE INTO files (path, size, mtime_ns, partial_digest, full_digest,"
     " integrity_checked, broken_reason, broken_detail, visual_checked, dhash, phash,"

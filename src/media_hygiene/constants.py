@@ -18,6 +18,8 @@ PLAN_CSV_FILE_NAME: Final = "plan.csv"
 CLASSIFY_PLAN_FILE_NAME: Final = "plan.json"
 CLASSIFY_WORKBOOK_FILE_NAME: Final = "classify.xlsx"
 CLASSIFY_FOLDER_SUFFIX: Final = "classify"
+INVENTORY_FOLDER_SUFFIX: Final = "inventory"
+INVENTORY_FILE_STEM: Final = "inventory"
 CZKAWKA_IMAGE: Final = "jlesage/czkawka:v26.09.2"  # the audit's second opinion
 CZKAWKA_FILE_NAME: Final = "czkawka.json"
 CZKAWKA_OUTPUT_DIR: Final = "/out"
@@ -83,6 +85,13 @@ class BrokenReason(StrEnum):
     UNREADABLE_IMAGE = "unreadable-image"
     UNREADABLE_RAW = "unreadable-raw"
     UNREADABLE_VIDEO = "unreadable-video"
+
+
+class InventoryFormat(StrEnum):
+    """File format of `inventory`: an Excel workbook, or a CSV file."""
+
+    XLSX = "xlsx"
+    CSV = "csv"
 
 
 class CleanTier(StrEnum):
