@@ -31,7 +31,7 @@ shows the cheatsheet of helper commands (`welcome` redraws it):
 | `format`, `tests` | Auto-fix formatting; run targeted tests. |
 | `hygiene …`, `demo` | Run the tool from the sources against `/tmp/media-hygiene/`; `demo` builds a sample tree and audits it. |
 | `reports`, `reports_stop` | Serve the HTML reports on a free port chosen by the OS. |
-| `build`, `e2e`, `dive`, `dive_ci` | Build the image, run the end-to-end tests, inspect or gate its layers. |
+| `build`, `e2e`, `dive`, `dive_ci` | Build the image, run the end-to-end tests (output kept in `/tmp/media-hygiene/e2e.log`), inspect or gate its layers. |
 | `release` | Tag `vX.Y.Z` (the `pyproject.toml` version) and push it: CI publishes the image. |
 | `i18n_extract`, `i18n_update` | Refresh the gettext catalogs after changing a user-facing string. |
 | `todos` | List the open backlog (`.todos/`, see `/todo` and `/todo-plan`). |

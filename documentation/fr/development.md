@@ -33,7 +33,7 @@ affiche la liste des commandes d'aide (`welcome` la réaffiche) :
 | `format`, `tests` | Corrige la mise en forme ; lance des tests ciblés. |
 | `hygiene …`, `demo` | Lance l'outil depuis les sources sur `/tmp/media-hygiene/` ; `demo` crée une arborescence d'exemple et l'audite. |
 | `reports`, `reports_stop` | Sert les rapports HTML sur un port libre choisi par le système. |
-| `build`, `e2e`, `dive`, `dive_ci` | Construit l'image, lance les tests de bout en bout, inspecte ou contrôle ses couches. |
+| `build`, `e2e`, `dive`, `dive_ci` | Construit l'image, lance les tests de bout en bout (sortie gardée dans `/tmp/media-hygiene/e2e.log`), inspecte ou contrôle ses couches. |
 | `release` | Crée le tag `vX.Y.Z` (la version de `pyproject.toml`) et le pousse : la CI publie l'image. |
 | `i18n_extract`, `i18n_update` | Met à jour les catalogues gettext après la modification d'un texte affiché. |
 | `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo` et `/todo-plan`). |

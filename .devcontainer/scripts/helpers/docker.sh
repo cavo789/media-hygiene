@@ -79,11 +79,15 @@ function dive_ci() {
 
 # @cat Docker image
 # @cmd e2e
-# @desc Build, then run the end-to-end tests
+# @desc Build, then run the end-to-end tests (output kept in /tmp/media-hygiene/e2e.log)
 function e2e() {
     build || return 1
     (
         cd "$(_repo_root)" || return 1
-        pytest -m e2e "$@"
+        # Kept for a rare failure (TODO 0053): the next run overwrites it.
+        local log="/tmp/media-hygiene/e2e.log"
+        mkdir -p "${log%/*}"
+        pytest -m e2e "$@" 2>&1 | tee "${log}"
+        return "${PIPESTATUS[0]}"
     )
 }

@@ -60,7 +60,7 @@ The devcontainer prints a cheatsheet in every terminal (`.devcontainer/scripts/i
 check                 # pre-commit (ruff, mypy, pylint src+tests, shellcheck, shfmt, hadolint) + pytest --cov
 format                # ruff format + ruff check --fix
 tests [pytest args]   # e.g. tests tests/unit/test_keeper.py -k preferred
-e2e                   # build media-hygiene:latest, then pytest -m e2e (real docker run)
+e2e                   # build media-hygiene:latest, then pytest -m e2e (real docker run; log in /tmp/media-hygiene/e2e.log)
 hygiene <command>     # run the CLI from sources against /tmp/media-hygiene/*
 demo                  # sample tree in /tmp/media-hygiene/data, then audit
 docs_screenshots [fr] # rebuild the image, refresh documentation/ screenshots and console blocks
