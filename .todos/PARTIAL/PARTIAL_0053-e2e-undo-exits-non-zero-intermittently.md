@@ -57,3 +57,9 @@ start within the same second (`YYYYMMDD-HHMMSS` ids), or a Docker volume not yet
   time it happens, read `/tmp/media-hygiene/e2e.log` (fault handler stack + container state)
   and `docker run --rm --privileged --user 0 --entrypoint dmesg media-hygiene:latest | grep
   -i segfault` before the VM restarts.
+
+**Lead found during 0045 (2026-10-02), not yet followed:** `import media_hygiene.__main__` already
+imports `pillow_heif` (libheif, libx265, libde265) and `rawpy` (LibRaw), so every command, `undo`
+included, loads that native code before its first output line: the window in which the silent
+exit 139 happened (x265 runs CPU detection at load). Importing them lazily, only where images
+are decoded, would narrow that window and speed up start-up.
