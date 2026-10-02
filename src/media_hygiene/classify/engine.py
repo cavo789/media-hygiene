@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
 from media_hygiene.classify.dates import clock_not_set, zone_of
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
+from media_hygiene.classify.event_folders import without_event_folders
 from media_hygiene.classify.events import trusted_events
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.guesses import keep_guess
@@ -88,6 +89,7 @@ def classify(
     labels = {path: s.category for path, s in signals.items() if s.category}
     events = trusted_events(datings, labels, settings)
     event_of = {path: event for event in events for path in event.paths}
+    signals = without_event_folders(files, (signals, event_of), rules)
     signals = decide(
         files,
         settings,

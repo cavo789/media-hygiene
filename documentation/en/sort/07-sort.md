@@ -134,6 +134,10 @@ back and forth. They leave it when you decide: confirm or rename the category, o
 or its event a folder, in the new workbook. A rule of [step 6](06-write-down-what-you-know.md)
 that is sure of them (a date range, a path, a camera) moves them too.
 
+The same goes for the **"to sort" files** of an event the tool named after a folder
+(`2019/To sort/Seaside holidays`): that name is the tool's own, not a folder you chose, so the
+files stay there, still to sort. Give the event a name in the workbook to move them.
+
 ## Stopped in the middle
 
 70,000 moves take a while, and a laptop sleeps. Ctrl+C finishes the current file, closes the

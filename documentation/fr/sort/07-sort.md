@@ -145,6 +145,11 @@ dossier au fichier ou à son événement, dans le nouveau classeur. Une règle d
 l'[étape 6](06-write-down-what-you-know.md) qui en est sûre (une période, un chemin, un appareil)
 les déplace aussi.
 
+Il en va de même des **fichiers « à trier »** d'un événement que l'outil a nommé d'après un
+dossier (`2019/À trier/Vacances à la mer`) : ce nom est celui de l'outil, pas un dossier que vous
+avez choisi, donc les fichiers y restent, toujours à trier. Donnez un nom à l'événement dans le
+classeur pour les déplacer.
+
 ## Arrêté en plein milieu
 
 70 000 déplacements prennent du temps, et un portable se met en veille. Ctrl+C termine le fichier

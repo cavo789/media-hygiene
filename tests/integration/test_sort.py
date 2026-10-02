@@ -14,13 +14,16 @@ from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.classify.models import Band, SortReason
 from media_hygiene.classify.workbook.sheets import FileColumn
-from media_hygiene.constants import MediaKind
+from media_hygiene.constants import Locale, MediaKind
 from media_hygiene.errors import WorkbookError
+from media_hygiene.i18n import install
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
+from tests.support.docs.library import build_library as build_docs_library
+from tests.support.docs.names import Locale as DocsLocale
 from tests.support.runtime import make_runtime
 from tests.support.scenes import Shot, write_shot
 from tests.support.sorting import (
@@ -167,3 +170,17 @@ def test_a_file_edit_on_a_twin_decides_for_both(locations: Locations) -> None:
     assert "(IMG_0000.jpg)" in message
     assert "(IMG_0000.jpeg)" in message
     assert snapshot(data) == start  # nothing moved
+
+
+@pytest.mark.parametrize("locale", list(DocsLocale))
+def test_the_documentation_library_without_clean_settles_after_one_sort(
+    locations: Locations, locale: DocsLocale
+) -> None:
+    """Copies left in place: "to sort" files named after their event stay put."""
+    install(Locale(locale.value))
+    build_docs_library(locale, locations.data_dir)
+    runtime = make_runtime(locations)
+    classify(runtime)
+    assert not sort(runtime).moves.outcome.failed
+    proposals = ClassifyService(runtime, NullProgress()).run().classification.proposals
+    assert not [p.file.path for p in proposals if not p.in_place]
