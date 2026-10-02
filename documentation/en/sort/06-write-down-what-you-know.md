@@ -52,6 +52,7 @@ category = "Parties/Christmas"
 | `kind` | A kind of file, `kind = "screenshot"`, `"received"` or `"download"`. | `kind = "screenshot"` |
 | `path` | A regular expression searched in the path on your computer, folders and name. | `pattern = '(?i)kermesse'` |
 | `camera` | A regular expression searched in the make and model. | `pattern = '(?i)dji'` |
+| `subject` | What a local vision model sees, for the photos no other rule decided ([step 8](08-subjects-from-a-local-model.md)). | `categories = ["School", "Animals"]` |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
 
 `existing_folder` and `event_neighbour` give the folder's own name as the category: they take
@@ -108,6 +109,7 @@ turns a rule off:
 | `existing_folder` | 90 (85 for a person's folder, `Dad/2018/…`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
+| `subject` | 85 when the samples of the event agree; otherwise "to check" |
 | `event_neighbour` | 70: to check |
 
 The scores of the `[classify] scores` table set these defaults for every rule of a kind. A

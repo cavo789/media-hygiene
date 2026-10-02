@@ -100,8 +100,22 @@ timezone = ""
 sure = 80
 unsure = 50
 
+[classify.ai]
+{{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}
+{{ comment(_("Docker Desktop resolves host.docker.internal by itself. Docker Engine (Linux, WSL) needs --add-host=host.docker.internal:host-gateway in docker run, and Ollama started with OLLAMA_HOST=0.0.0.0 to listen beyond 127.0.0.1.")) }}
+url = "http://host.docker.internal:11434"
+{{ comment(_('A model that sees images, e.g. "qwen2.5vl:7b". Empty: no photo is ever sent. map_model: a text model that chooses the categories; empty: the same model.')) }}
+model = ""
+map_model = ""
+{{ comment(_("Photos that answer for each event (the sharpest, spread over its span); the other files of the event follow them. Smaller photos (shorter side, in pixels) are never sent: the model invents details on thumbnails.")) }}
+samples_per_event = 3
+min_edge = 512
+{{ comment(_("Above this many photos to describe, classify asks first and prints the estimated time. One photo at a time suits one graphics card."), "--yes") }}
+confirm_above = 200
+concurrency = 1
+
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
-{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), other_category (the files no rule above matched).')) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
 {{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
@@ -177,6 +191,19 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # match = "kind"
 # kind = "received"
 # category = "{{ _("Received") }}"
+
+{{ comment(_("The subject a local vision model sees, for the photos no rule above decided ([classify.ai] model must be set). It picks one of these categories, or none; it is sure only when the photos of an event agree. per_photo = true describes every photo instead of a few per event: much longer.")) }}
+# [[classify.rules]]
+# name = "{{ _("Subject") }}"
+# match = "subject"
+# categories = [
+#     "{{ _("Holidays and outings") }}",
+#     "{{ _("School") }}",
+#     "{{ _("Sport and leisure") }}",
+#     "{{ _("Home and works") }}",
+#     "{{ _("Animals") }}",
+#     "{{ _("Nature and landscapes") }}",
+# ]
 
 {{ comment(_('"Other" means: sure that nothing above matches. Without it, such files go to "to sort", which means: we do not know.')) }}
 # [[classify.rules]]

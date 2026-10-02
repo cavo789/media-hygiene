@@ -7,6 +7,7 @@ from typing import Final, Literal
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from media_hygiene.classify.layout import check_layout
+from media_hygiene.config.classify_ai import AiSettings
 from media_hygiene.config.classify_rules import (
     DEFAULT_RULES,
     ClassifyRule,
@@ -44,6 +45,7 @@ SCORES: Final = {
     "path": 90,
     "camera": 90,
     "other-category": 85,  # only when no rule above matched
+    "subject": 85,  # the samples of an event agree; else "to check"
     "date-only": 90,
     "no-signal": 0,
 }
@@ -76,6 +78,7 @@ class ClassifySettings(BaseModel):
     name_dates: tuple[str, ...] = NAME_DATES
     generic_folders: tuple[str, ...] = LIBRARY_FOLDERS
     rules: tuple[ClassifyRule, ...] = DEFAULT_RULES
+    ai: AiSettings = AiSettings()
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"

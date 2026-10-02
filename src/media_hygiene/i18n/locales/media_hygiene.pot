@@ -68,6 +68,9 @@ msgstr ""
 msgid "<the folder you mount on /reports>"
 msgstr ""
 
+msgid "A 'subject' rule or --sample needs a vision model."
+msgstr ""
+
 msgid "A Windows folder (PowerShell):"
 msgstr ""
 
@@ -97,16 +100,41 @@ msgid ""
 "is recognised: it is never counted as its own copy."
 msgstr ""
 
+#, python-brace-format
+msgid "A full run would describe {count} more photos: about {duration}."
+msgstr ""
+
+msgid ""
+"A local vision model (Ollama) names the subject of the photos no other "
+"rule decides. Off until a 'subject' rule is written below and a model is "
+"set here. The photos are sent to url, and only there: keep that server on"
+" your own computer."
+msgstr ""
+
+msgid ""
+"A model that sees images, e.g. \"qwen2.5vl:7b\". Empty: no photo is ever "
+"sent. map_model: a text model that chooses the categories; empty: the "
+"same model."
+msgstr ""
+
 msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
+msgid ""
+"Above this many photos to describe, classify asks first and prints the "
+"estimated time. One photo at a time suits one graphics card."
+msgstr ""
+
 msgid "Act"
 msgstr ""
 
 msgid "Action"
+msgstr ""
+
+msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
@@ -152,6 +180,9 @@ msgstr ""
 msgid "Analyse"
 msgstr ""
 
+msgid "Animals"
+msgstr ""
+
 msgid "April"
 msgstr ""
 
@@ -162,6 +193,11 @@ msgid "Ask for confirmation before cleaning."
 msgstr ""
 
 msgid "Ask for confirmation before sorting."
+msgstr ""
+
+msgid ""
+"Ask the local model nothing new: the subject rules read the descriptions "
+"already in the cache."
 msgstr ""
 
 msgid "Audit"
@@ -274,6 +310,9 @@ msgstr ""
 msgid "Checking that files can be read"
 msgstr ""
 
+msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
+msgstr ""
+
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
 "workbook."
@@ -287,6 +326,9 @@ msgstr ""
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
 " or --prefer."
+msgstr ""
+
+msgid "Choosing categories"
 msgstr ""
 
 msgid "Christmas"
@@ -414,6 +456,24 @@ msgstr ""
 msgid "Deleted from"
 msgstr ""
 
+msgid "Describe the photos without asking, however many."
+msgstr ""
+
+msgid ""
+"Describe this many random photos with the local model, print the time per"
+" photo and the estimate of a full run, and stop."
+msgstr ""
+
+#, python-brace-format
+msgid "Describe {count} photos now, about {duration}?"
+msgstr ""
+
+msgid "Describing photos"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
 msgid "Detail"
 msgstr ""
 
@@ -426,6 +486,13 @@ msgstr ""
 msgid ""
 "Do not ask for confirmation before undoing several runs of a sort "
 "(overrides sort.confirm)."
+msgstr ""
+
+msgid ""
+"Docker Desktop resolves host.docker.internal by itself. Docker Engine "
+"(Linux, WSL) needs --add-host=host.docker.internal:host-gateway in docker"
+" run, and Ollama started with OLLAMA_HOST=0.0.0.0 to listen beyond "
+"127.0.0.1."
 msgstr ""
 
 msgid "Documents and screenshots"
@@ -472,8 +539,9 @@ msgid ""
 "dates = \"2023-07-01..2023-07-15\"), kind (kind = \"screenshot\", "
 "\"received\" or \"download\"), path (a regular expression searched in the"
 " host path, pattern = \"(?i)kermesse\"), camera (a regular expression "
-"searched in the make and model, pattern = \"(?i)dji\"), other_category "
-"(the files no rule above matched)."
+"searched in the make and model, pattern = \"(?i)dji\"), subject (what a "
+"local vision model sees, categories = [...], see [classify.ai]), "
+"other_category (the files no rule above matched)."
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
@@ -731,6 +799,9 @@ msgstr ""
 msgid "Holidays and outings"
 msgstr ""
 
+msgid "Home and works"
+msgstr ""
+
 msgid "Host folder never sorted (analysed and cleaned as usual)."
 msgstr ""
 
@@ -773,6 +844,10 @@ msgstr ""
 msgid "Image cannot be decoded"
 msgstr ""
 
+#, python-brace-format
+msgid "Install it with: ollama pull {model}"
+msgstr ""
+
 msgid "Interface language."
 msgstr ""
 
@@ -787,6 +862,12 @@ msgid "Invalid configuration ({details})."
 msgstr ""
 
 msgid "Inventory"
+msgstr ""
+
+msgid ""
+"Is Ollama running? On Docker Engine (Linux, WSL), add --add-"
+"host=host.docker.internal:host-gateway and let Ollama listen beyond "
+"127.0.0.1 (OLLAMA_HOST=0.0.0.0)."
 msgstr ""
 
 msgid "Italy 2023"
@@ -1011,6 +1092,9 @@ msgstr ""
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
+msgid "No photo left to describe: every candidate is in the cache."
+msgstr ""
+
 msgid "No photo nor video to classify."
 msgstr ""
 
@@ -1055,6 +1139,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Notes carried over too: {count}."
+msgstr ""
+
+msgid ""
+"Nothing described: the cache only. Measure first with --sample 50, or "
+"describe without being asked with --yes."
+msgstr ""
+
+msgid "Nothing is proposed by --sample: run classify without it."
 msgstr ""
 
 msgid "Nothing left to check nor to sort."
@@ -1156,10 +1248,17 @@ msgid "Parties"
 msgstr ""
 
 #, python-brace-format
+msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
+msgstr ""
+
+#, python-brace-format
 msgid "Permanently delete the quarantine of {runs} ({size})?"
 msgstr ""
 
 msgid "Permanently delete the quarantined broken files of a run."
+msgstr ""
+
+msgid "Photo"
 msgstr ""
 
 msgid "Photo formats"
@@ -1172,6 +1271,12 @@ msgid ""
 msgstr ""
 
 msgid "Photos and videos with a GPS position"
+msgstr ""
+
+msgid ""
+"Photos that answer for each event (the sharpest, spread over its span); "
+"the other files of the event follow them. Smaller photos (shorter side, "
+"in pixels) are never sent: the model invents details on thumbnails."
 msgstr ""
 
 msgid "Photos with a shooting date"
@@ -1296,6 +1401,12 @@ msgstr ""
 
 msgid "Root"
 msgstr ""
+
+#, python-brace-format
+msgid "Rule '{rule}': a subject for {count} file."
+msgid_plural "Rule '{rule}': a subject for {count} files."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Rules and reasons"
 msgstr ""
@@ -1452,6 +1563,9 @@ msgstr ""
 msgid "Series {number} of {total}"
 msgstr ""
 
+msgid "Set [classify.ai] model in config.toml, or remove the rule."
+msgstr ""
+
 #, python-brace-format
 msgid "Set aside, as media-hygiene does not analyse them: {details}."
 msgstr ""
@@ -1536,6 +1650,9 @@ msgstr ""
 msgid "Space that can be freed"
 msgstr ""
 
+msgid "Sport and leisure"
+msgstr ""
+
 msgid "Start fresh: carry no edit of a previous workbook over."
 msgstr ""
 
@@ -1549,6 +1666,12 @@ msgid "Staying where they are"
 msgstr ""
 
 msgid "Stopped before the end, as asked."
+msgstr ""
+
+msgid "Stopped: the next classify run goes on where this one stopped."
+msgstr ""
+
+msgid "Subject"
 msgstr ""
 
 msgid "Summary"
@@ -1614,6 +1737,28 @@ msgstr ""
 msgid "The manifest could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid "The model sent an answer without a message."
+msgstr ""
+
+msgid "The model server sent an answer that is not JSON."
+msgstr ""
+
+#, python-brace-format
+msgid "The model server {url} answered {status}."
+msgstr ""
+
+#, python-brace-format
+msgid "The model server {url} does not answer."
+msgstr ""
+
+#, python-brace-format
+msgid "The model {model} cannot see images."
+msgstr ""
+
+#, python-brace-format
+msgid "The model {model} is not installed at {url}."
+msgstr ""
+
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr ""
@@ -1662,6 +1807,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "The sheets were renamed, moved, added or deleted: {found}."
+msgstr ""
+
+msgid ""
+"The subject a local vision model sees, for the photos no rule above "
+"decided ([classify.ai] model must be set). It picks one of these "
+"categories, or none; it is sure only when the photos of an event agree. "
+"per_photo = true describes every photo instead of a few per event: much "
+"longer."
 msgstr ""
 
 #, python-brace-format
@@ -2316,6 +2469,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} of them to describe with {model}, about {duration}."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} of {total} ({percent}%)"
 msgstr ""
 
@@ -2324,6 +2481,18 @@ msgid "{count} orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine
 msgid_plural ""
 "{count} orphan sidecars (.xmp, .aae, .thm) will be moved to the "
 "quarantine."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo could not be described: unreadable, or no answer."
+msgid_plural "{count} photos could not be described: unreadable, or no answer."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo described; kept in the cache."
+msgid_plural "{count} photos described; kept in the cache."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2452,6 +2621,16 @@ msgstr ""
 #, python-brace-format
 msgid "{sheet}: {key}: '{value}' ({why})"
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"{units} event or lone photo has no stronger signal than its subject: "
+"{samples} photos answer for it."
+msgid_plural ""
+"{units} events or lone photos have no stronger signal than their subject:"
+" {samples} photos answer for them."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."

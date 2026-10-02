@@ -1,0 +1,9 @@
+You sort the photos of a family collection into categories.
+Categories, one per line:
+{categories}
+
+For each numbered photo description below, choose the one category that fits best,
+or "{none}" when none fits. Answer in JSON: "categories" lists one choice per
+description, in the same order ({count} choices).
+
+{descriptions}

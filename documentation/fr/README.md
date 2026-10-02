@@ -64,6 +64,11 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 7. [Trier](sort/07-sort.md) : `sort` déplace les fichiers comme le dit le classeur, journalisé,
    annulable, et prouve que rien n'est perdu.
 
+**Aller plus loin :**
+
+8. [Nommer les sujets avec un modèle local](sort/08-subjects-from-a-local-model.md) : un modèle de
+   vision sur votre ordinateur dit ce que montrent les photos isolées (facultatif).
+
 ## Référence
 
 - [Commandes et options](reference-commands.md) : chaque commande, chaque option, et leur

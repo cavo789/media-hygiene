@@ -87,8 +87,8 @@ Effective settings
 │                            │ 'calendar': 85, 'date-range':    │              │
 │                            │ 95, 'kind': 85, 'path': 90,      │              │
 │                            │ 'camera': 90, 'other-category':  │              │
-│                            │ 85, 'date-only': 90,             │              │
-│                            │ 'no-signal': 0}                  │              │
+│                            │ 85, 'subject': 85, 'date-only':  │              │
+│                            │ 90, 'no-signal': 0}              │              │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
 │                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
 │                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
@@ -110,33 +110,50 @@ Effective settings
 │ classify.rules             │ [{'name': 'Films and series',    │ default      │
 │                            │ 'match': 'kind', 'category': '', │              │
 │                            │ 'dates': '', 'pattern': '',      │              │
-│                            │ 'kind': 'download', 'score':     │              │
-│                            │ None}, {'name': 'Existing        │              │
-│                            │ folders', 'match':               │              │
+│                            │ 'kind': 'download',              │              │
+│                            │ 'categories': [], 'per_photo':   │              │
+│                            │ False, 'score': None}, {'name':  │              │
+│                            │ 'Existing folders', 'match':     │              │
 │                            │ 'existing_folder', 'category':   │              │
 │                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'score': None},    │              │
-│                            │ {'name': 'Screenshots and        │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Screenshots and │              │
 │                            │ documents', 'match': 'kind',     │              │
 │                            │ 'category': 'Documents and       │              │
 │                            │ screenshots', 'dates': '',       │              │
 │                            │ 'pattern': '', 'kind':           │              │
-│                            │ 'screenshot', 'score': None},    │              │
-│                            │ {'name': 'Event neighbours',     │              │
-│                            │ 'match': 'event_neighbour',      │              │
-│                            │ 'category': '', 'dates': '',     │              │
-│                            │ 'pattern': '', 'kind': None,     │              │
-│                            │ 'score': None}, {'name':         │              │
-│                            │ 'Christmas', 'match':            │              │
-│                            │ 'calendar', 'category':          │              │
+│                            │ 'screenshot', 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Event           │              │
+│                            │ neighbours', 'match':            │              │
+│                            │ 'event_neighbour', 'category':   │              │
+│                            │ '', 'dates': '', 'pattern': '',  │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Christmas',     │              │
+│                            │ 'match': 'calendar', 'category': │              │
 │                            │ 'Parties/Christmas', 'dates':    │              │
 │                            │ '12-24..12-26', 'pattern': '',   │              │
-│                            │ 'kind': None, 'score': None},    │              │
-│                            │ {'name': 'New Year', 'match':    │              │
-│                            │ 'calendar', 'category':          │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'New Year',      │              │
+│                            │ 'match': 'calendar', 'category': │              │
 │                            │ 'Parties/New Year', 'dates':     │              │
 │                            │ '12-31..01-01', 'pattern': '',   │              │
-│                            │ 'kind': None, 'score': None}]    │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}]                           │              │
+│ classify.ai                │ {'url':                          │ default      │
+│                            │ 'http://host.docker.internal:114 │              │
+│                            │ 34', 'model': '', 'map_model':   │              │
+│                            │ '', 'samples_per_event': 3,      │              │
+│                            │ 'min_edge': 512, 'image_edge':   │              │
+│                            │ 768, 'concurrency': 1,           │              │
+│                            │ 'timeout_seconds': 180.0,        │              │
+│                            │ 'retries': 2, 'batch_size': 20,  │              │
+│                            │ 'confirm_above': 200,            │              │
+│                            │ 'seconds_per_photo': 4.5}        │              │
 │ sort.confirm               │ True                             │ default      │
 │ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ default      │
 │                            │ '.DS_Store']                     │              │
@@ -333,8 +350,8 @@ Effective settings
 │                            │ 'calendar': 85, 'date-range':    │              │
 │                            │ 95, 'kind': 85, 'path': 90,      │              │
 │                            │ 'camera': 90, 'other-category':  │              │
-│                            │ 85, 'date-only': 90,             │              │
-│                            │ 'no-signal': 0}                  │              │
+│                            │ 85, 'subject': 85, 'date-only':  │              │
+│                            │ 90, 'no-signal': 0}              │              │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
 │                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
 │                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
@@ -356,33 +373,50 @@ Effective settings
 │ classify.rules             │ [{'name': 'Films and series',    │ config.toml  │
 │                            │ 'match': 'kind', 'category': '', │              │
 │                            │ 'dates': '', 'pattern': '',      │              │
-│                            │ 'kind': 'download', 'score':     │              │
-│                            │ None}, {'name': 'Existing        │              │
-│                            │ folders', 'match':               │              │
+│                            │ 'kind': 'download',              │              │
+│                            │ 'categories': [], 'per_photo':   │              │
+│                            │ False, 'score': None}, {'name':  │              │
+│                            │ 'Existing folders', 'match':     │              │
 │                            │ 'existing_folder', 'category':   │              │
 │                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'score': None},    │              │
-│                            │ {'name': 'Screenshots and        │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Screenshots and │              │
 │                            │ documents', 'match': 'kind',     │              │
 │                            │ 'category': 'Documents and       │              │
 │                            │ screenshots', 'dates': '',       │              │
 │                            │ 'pattern': '', 'kind':           │              │
-│                            │ 'screenshot', 'score': None},    │              │
-│                            │ {'name': 'Event neighbours',     │              │
-│                            │ 'match': 'event_neighbour',      │              │
-│                            │ 'category': '', 'dates': '',     │              │
-│                            │ 'pattern': '', 'kind': None,     │              │
-│                            │ 'score': None}, {'name':         │              │
-│                            │ 'Christmas', 'match':            │              │
-│                            │ 'calendar', 'category':          │              │
+│                            │ 'screenshot', 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Event           │              │
+│                            │ neighbours', 'match':            │              │
+│                            │ 'event_neighbour', 'category':   │              │
+│                            │ '', 'dates': '', 'pattern': '',  │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'Christmas',     │              │
+│                            │ 'match': 'calendar', 'category': │              │
 │                            │ 'Parties/Christmas', 'dates':    │              │
 │                            │ '12-24..12-26', 'pattern': '',   │              │
-│                            │ 'kind': None, 'score': None},    │              │
-│                            │ {'name': 'New Year', 'match':    │              │
-│                            │ 'calendar', 'category':          │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}, {'name': 'New Year',      │              │
+│                            │ 'match': 'calendar', 'category': │              │
 │                            │ 'Parties/New Year', 'dates':     │              │
 │                            │ '12-31..01-01', 'pattern': '',   │              │
-│                            │ 'kind': None, 'score': None}]    │              │
+│                            │ 'kind': None, 'categories': [],  │              │
+│                            │ 'per_photo': False, 'score':     │              │
+│                            │ None}]                           │              │
+│ classify.ai                │ {'url':                          │ config.toml  │
+│                            │ 'http://host.docker.internal:114 │              │
+│                            │ 34', 'model': '', 'map_model':   │              │
+│                            │ '', 'samples_per_event': 3,      │              │
+│                            │ 'min_edge': 512, 'image_edge':   │              │
+│                            │ 768, 'concurrency': 1,           │              │
+│                            │ 'timeout_seconds': 180.0,        │              │
+│                            │ 'retries': 2, 'batch_size': 20,  │              │
+│                            │ 'confirm_above': 200,            │              │
+│                            │ 'seconds_per_photo': 4.5}        │              │
 │ sort.confirm               │ True                             │ config.toml  │
 │ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ config.toml  │
 │                            │ '.DS_Store']                     │              │

@@ -26,9 +26,10 @@ _NEEDS = {
     RuleMatch.KIND: "kind",
     RuleMatch.PATH: "pattern",
     RuleMatch.CAMERA: "pattern",
+    RuleMatch.SUBJECT: "categories",
     RuleMatch.OTHER_CATEGORY: "category",
 }
-_OPTIONAL = ("dates", "kind", "pattern")
+_OPTIONAL = ("dates", "kind", "pattern", "categories", "per_photo")
 
 
 class ClassifyRule(BaseModel):
@@ -45,6 +46,8 @@ class ClassifyRule(BaseModel):
     dates: str = ""  # `calendar`: `12-24..12-26`; `date_range`: `2023-07-01..07-15`
     pattern: str = ""  # `path`, `camera`: a regular expression, searched
     kind: FileKind | None = None
+    categories: tuple[str, ...] = ()  # `subject`: what the model chooses from
+    per_photo: bool = False  # `subject`: describe every photo, not samples
     score: int | None = Field(default=None, ge=0, le=100)  # None: `[classify] scores`
 
     @model_validator(mode="after")
@@ -92,6 +95,23 @@ def _check(rule: ClassifyRule) -> None:
         message = "{category} cannot be used in a category"
         raise ValueError(message)
     check_layout(rule.category)
+    _check_categories(rule.categories)
+
+
+def _check_categories(categories: tuple[str, ...]) -> None:
+    """Check the categories a `subject` rule offers the model.
+
+    Args:
+        categories: The rule's `categories`.
+
+    Raises:
+        ValueError: One is empty, holds a placeholder, or is no folder name.
+    """
+    for category in categories:
+        if not category.strip() or "{" in category:
+            message = f"{category!r} is not a category: no placeholder, not empty"
+            raise ValueError(message)
+        check_layout(category)
 
 
 def _uses(match: RuleMatch, field: str) -> bool:
@@ -105,7 +125,9 @@ def _uses(match: RuleMatch, field: str) -> bool:
         True when it does.
     """
     if field == "category":
-        return match not in BUILT_IN
+        return match not in BUILT_IN and match is not RuleMatch.SUBJECT
+    if field == "per_photo":
+        return match is RuleMatch.SUBJECT
     return _NEEDS.get(match) == field
 
 

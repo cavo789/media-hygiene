@@ -81,6 +81,8 @@ adds one thing to the command of the step before.
    your trips, birthdays, folders and cameras, applied at every run.
 7. [Sort](documentation/en/sort/07-sort.md) — `sort` moves the files as the workbook says,
    journaled and undoable.
+8. [Name the subjects with a local model](documentation/en/sort/08-subjects-from-a-local-model.md) —
+   a vision model on your computer says what the loose photos show (optional).
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

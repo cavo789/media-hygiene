@@ -82,6 +82,8 @@ seule chose à la commande de l'étape précédente.
    pour vos voyages, anniversaires, dossiers et appareils, appliquées à chaque exécution.
 7. [Trier](documentation/fr/sort/07-sort.md) — `sort` déplace les fichiers comme le dit le
    classeur, journalisé et annulable.
+8. [Nommer les sujets avec un modèle local](documentation/fr/sort/08-subjects-from-a-local-model.md) —
+   un modèle de vision sur votre ordinateur dit ce que montrent les photos isolées (facultatif).
 
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),

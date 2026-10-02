@@ -6,7 +6,7 @@ ordered rules of `[[classify.rules]]` decide from them.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
@@ -31,9 +31,10 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
+    from media_hygiene.classify.ai.models import Subject
     from media_hygiene.classify.models import Dating, Event, MediaInput
     from media_hygiene.classify.signals import Signal
     from media_hygiene.config.classify_settings import ClassifySettings
@@ -48,6 +49,7 @@ class Scope:
     years: tuple[int, int] | None = None
     generic: tuple[str, ...] = GENERIC_FOLDERS  # `[keep]`: DCIM, Camera…
     host: Callable[[Path], str] = str  # container → host path, for `path` rules
+    subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,7 +91,13 @@ def classify(
     signals = decide(
         files,
         settings,
-        RuleFacts(datings, with_neighbours(signals, events), event_of, scope.host),
+        RuleFacts(
+            datings,
+            with_neighbours(signals, events),
+            event_of,
+            scope.host,
+            scope.subjects,
+        ),
     )
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [

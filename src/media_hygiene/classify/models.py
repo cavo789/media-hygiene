@@ -36,6 +36,7 @@ class SortReason(StrEnum):
     KIND = "kind"
     PATH = "path"
     CAMERA = "camera"
+    SUBJECT = "subject"  # a local vision model, through `[classify.ai]`
     OTHER_CATEGORY = "other-category"
     DATE_ONLY = "date-only"
     NO_SIGNAL = "no-signal"

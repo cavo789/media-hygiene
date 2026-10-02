@@ -53,9 +53,9 @@ def read_file_layer(config_file: Path) -> Layer:
 def read_env_layer(environ: Mapping[str, str]) -> Layer:
     """Collect `MEDIA_HYGIENE_<SECTION>__<KEY>` variables; lists are JSON arrays.
 
-    Tables, such as `[scan.categories]`, are JSON objects that replace the file's
-    whole table. Arrays of tables, such as `[[classify.rules]]`, are read from
-    config.toml only.
+    Tables, such as `[scan.categories]` or `[classify.ai]`, are JSON objects that
+    replace the file's whole table. Arrays of tables, such as `[[classify.rules]]`,
+    are read from config.toml only.
 
     Args:
         environ: The process environment.
@@ -76,10 +76,22 @@ def read_env_layer(environ: Mapping[str, str]) -> Layer:
             value: object = environ[name]
             if get_origin(field.annotation) is tuple:
                 value = _parse_json_list(name, environ[name])
-            elif get_origin(field.annotation) is dict:
+            elif get_origin(field.annotation) is dict or _is_table(field.annotation):
                 value = _parse_json_table(name, environ[name])
             layer.setdefault(section, {})[key] = value
     return layer
+
+
+def _is_table(annotation: object) -> bool:
+    """Tell a table of settings (`[classify.ai]`): a JSON object replaces it whole.
+
+    Args:
+        annotation: The type of a setting.
+
+    Returns:
+        True for a model.
+    """
+    return isinstance(annotation, type) and issubclass(annotation, BaseModel)
 
 
 def _is_table_array(annotation: object) -> bool:

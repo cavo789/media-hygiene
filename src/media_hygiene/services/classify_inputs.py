@@ -3,17 +3,28 @@
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.models import MediaInput
 from media_hygiene.paths.host_paths import is_within
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
+    from media_hygiene.classify.engine import Scope
     from media_hygiene.index.repository import FactsRepository
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.services.runtime import Runtime
+
+
+@dataclass(frozen=True, slots=True)
+class ClassifyInputs:
+    """The files of a run and what the index knows of them, and their scope."""
+
+    files: tuple[MediaInput, ...]
+    scope: Scope
 
 
 def media_input(file: MediaFile, root: Path, index: FactsRepository) -> MediaInput:
@@ -57,7 +68,7 @@ def root_of(path: Path, roots: tuple[Path, ...], runtime: Runtime) -> Path:
     return root
 
 
-def duplicates(files: list[MediaInput]) -> int:
+def duplicates(files: Sequence[MediaInput]) -> int:
     """Count the extra copies the index knows of.
 
     Args:
@@ -68,3 +79,22 @@ def duplicates(files: list[MediaInput]) -> int:
     """
     groups = Counter(file.digest for file in files if file.digest)
     return sum(count - 1 for count in groups.values() if count > 1)
+
+
+def mounted(target: Path, data_dir: Path) -> bool:
+    """Tell whether a target lies in a mounted folder (it may not exist yet).
+
+    Args:
+        target: The target root, container path.
+        data_dir: The data mount point.
+
+    Returns:
+        True when one of its folders below the data mount point exists.
+    """
+    if not is_within(target, data_dir):
+        return False
+    return any(
+        folder.is_dir()
+        for folder in (target, *target.parents)
+        if folder != data_dir and is_within(folder, data_dir)
+    )

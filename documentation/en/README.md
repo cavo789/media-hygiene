@@ -58,6 +58,11 @@ otherwise both copies are sorted.
 7. [Sort](sort/07-sort.md): `sort` moves the files as the workbook says, journaled, undoable, and
    proves nothing was lost.
 
+**Go further:**
+
+8. [Name the subjects with a local model](sort/08-subjects-from-a-local-model.md): a vision model
+   on your computer says what the loose photos show (optional).
+
 ## Reference
 
 - [Commands and options](reference-commands.md): every command, every option, and their `--help`.

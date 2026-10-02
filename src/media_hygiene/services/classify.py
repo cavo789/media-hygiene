@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.engine import Scope, classify
@@ -17,19 +17,26 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.walker import walk
-from media_hygiene.services.classify_inputs import duplicates, media_input, root_of
+from media_hygiene.services.classify_inputs import (
+    ClassifyInputs,
+    duplicates,
+    media_input,
+    mounted,
+    root_of,
+)
 from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
+    from media_hygiene.classify.ai.models import Subject
     from media_hygiene.classify.engine import Classification
     from media_hygiene.classify.models import MediaInput
     from media_hygiene.scan.progress import ProgressSink
@@ -67,6 +74,17 @@ class ClassifyService:
 
         Returns:
             The proposals and the duplicates count.
+        """
+        return self.decide(self.collect(years))
+
+    def collect(self, years: tuple[int, int] | None = None) -> ClassifyInputs:
+        """Walk and check what the index lacks.
+
+        Args:
+            years: Only the files dated in these years get a proposal.
+
+        Returns:
+            The files and the scope.
 
         Raises:
             MountError: Nothing is mounted, or the target is not mounted.
@@ -79,8 +97,27 @@ class ClassifyService:
         # A file already in the target reads its folders from there: a target inside
         # a mounted folder (`C:\\Photos\\Tri`) never becomes a category of its own.
         files = self._inputs(roots, (scope.target,) if scope.target else ())
+        return ClassifyInputs(tuple(files), scope)
+
+    def decide(
+        self,
+        inputs: ClassifyInputs,
+        subjects: Mapping[str, Mapping[Path, Subject]] | None = None,
+    ) -> ClassifyResult:
+        """Propose a place for every file.
+
+        Args:
+            inputs: The files and the scope.
+            subjects: What a local model said, by `subject` rule.
+
+        Returns:
+            The proposals and the duplicates count.
+        """
+        scope = replace(inputs.scope, subjects=subjects or {})
+        files = inputs.files
         return ClassifyResult(
-            classify(files, runtime.settings.classify, scope), duplicates(files)
+            classify(files, self._runtime.settings.classify, scope),
+            duplicates(files),
         )
 
     def _scope(self, years: tuple[int, int] | None) -> Scope:
@@ -100,7 +137,7 @@ class ClassifyService:
         target = None
         if settings.classify.target:
             target = mapper.to_container(settings.classify.target)
-            if not _mounted(target, runtime.locations.data_dir):
+            if not mounted(target, runtime.locations.data_dir):
                 raise MountError(
                     _("The target {path} is not mounted.").format(
                         path=settings.classify.target
@@ -157,22 +194,3 @@ class ClassifyService:
                 for file in files
                 if file.path not in broken
             ]
-
-
-def _mounted(target: Path, data_dir: Path) -> bool:
-    """Tell whether a target lies in a mounted folder (it may not exist yet).
-
-    Args:
-        target: The target root, container path.
-        data_dir: The data mount point.
-
-    Returns:
-        True when one of its folders below the data mount point exists.
-    """
-    if not is_within(target, data_dir):
-        return False
-    return any(
-        folder.is_dir()
-        for folder in (target, *target.parents)
-        if folder != data_dir and is_within(folder, data_dir)
-    )

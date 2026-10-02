@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.models import DateSource, SortReason
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
     from pathlib import Path
 
+    from media_hygiene.classify.ai.models import Subject
     from media_hygiene.classify.models import Dating, Event, MediaInput
     from media_hygiene.classify.rules.calendar import OneOff, Recurring
     from media_hygiene.classify.rules.matchers import Test
@@ -27,12 +28,16 @@ _FOLDER_REASONS: Final = frozenset(
 
 @dataclass(frozen=True, slots=True)
 class RuleFacts:
-    """What the rules read besides the file: dates, folders, events, host paths."""
+    """What the rules read besides the file: dates, folders, events, host paths.
+
+    `subjects`: by `subject` rule name, what the model said of each file it covers.
+    """
 
     datings: Mapping[Path, Dating]
     folders: Mapping[Path, Signal]  # what the folders say, event neighbours joined
     event_of: Mapping[Path, Event]
     host: Callable[[Path], str]
+    subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
 
 
 def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
@@ -58,6 +63,7 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
         RuleMatch.KIND: lambda: KIND_TESTS[rule.kind] if rule.kind else _never,
         RuleMatch.PATH: lambda: path_test(rule.pattern, facts.host),
         RuleMatch.CAMERA: lambda: camera_test(rule.pattern),
+        RuleMatch.SUBJECT: lambda: _subject_test(facts.subjects.get(rule.name, {})),
         RuleMatch.OTHER_CATEGORY: lambda: _always,
     }
     return builders[rule.match]()
@@ -99,6 +105,18 @@ def _dated(window: Recurring | OneOff, facts: RuleFacts) -> Test:
         )
 
     return test
+
+
+def _subject_test(subjects: Mapping[Path, Subject]) -> Test:
+    """A test of the model's answers: the files it gave a category.
+
+    Args:
+        subjects: The answers of one `subject` rule.
+
+    Returns:
+        The test.
+    """
+    return lambda file: file.path in subjects
 
 
 def _always(_file: MediaInput) -> bool:

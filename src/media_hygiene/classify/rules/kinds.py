@@ -18,6 +18,7 @@ class RuleMatch(StrEnum):
     KIND = "kind"
     PATH = "path"
     CAMERA = "camera"
+    SUBJECT = "subject"
     OTHER_CATEGORY = "other_category"
 
 
@@ -39,5 +40,6 @@ REASONS: Final = {
     RuleMatch.KIND: SortReason.KIND,
     RuleMatch.PATH: SortReason.PATH,
     RuleMatch.CAMERA: SortReason.CAMERA,
+    RuleMatch.SUBJECT: SortReason.SUBJECT,
     RuleMatch.OTHER_CATEGORY: SortReason.OTHER_CATEGORY,
 }

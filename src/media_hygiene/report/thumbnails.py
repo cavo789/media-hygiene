@@ -102,11 +102,26 @@ def review_preview(source: Path) -> bytes | None:
     Returns:
         The JPEG bytes, or None when the picture cannot be decoded.
     """
+    return jpeg_preview(source, _REVIEW_EDGE)
+
+
+def jpeg_preview(source: Path, edge: int) -> bytes | None:
+    """Render a picture as an upright JPEG, its longer side at most `edge` pixels.
+
+    Runs in a worker process: the review page, and the photos a local model sees.
+
+    Args:
+        source: Image or RAW file.
+        edge: The longer side, in pixels.
+
+    Returns:
+        The JPEG bytes, or None when the picture cannot be decoded.
+    """
     prepare_image_worker()
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     try:
         preview = _upright(source)
-        preview.thumbnail((_REVIEW_EDGE, _REVIEW_EDGE))
+        preview.thumbnail((edge, edge))
         buffer = io.BytesIO()
         preview.save(buffer, "JPEG", quality=_REVIEW_QUALITY)
     except (*_THUMBNAIL_ERRORS, OSError):

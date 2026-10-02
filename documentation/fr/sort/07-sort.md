@@ -179,4 +179,4 @@ passages.
 
 ---
 
-← [6. Écrire ce que vous savez](06-write-down-what-you-know.md) · [Documentation](../README.md)
+← [6. Écrire ce que vous savez](06-write-down-what-you-know.md) · [Documentation](../README.md) · Suivant : **[8. Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md)** →

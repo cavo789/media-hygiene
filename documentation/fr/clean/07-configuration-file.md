@@ -96,8 +96,8 @@ Réglages effectifs
 │                            │ 'date-range': 95, 'kind':   │                   │
 │                            │ 85, 'path': 90, 'camera':   │                   │
 │                            │ 90, 'other-category': 85,   │                   │
-│                            │ 'date-only': 90,            │                   │
-│                            │ 'no-signal': 0}             │                   │
+│                            │ 'subject': 85, 'date-only': │                   │
+│                            │ 90, 'no-signal': 0}         │                   │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
 │                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
 │                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
@@ -122,40 +122,60 @@ Réglages effectifs
 │                            │ series', 'match': 'kind',   │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ 'download', 'score': None}, │                   │
-│                            │ {'name': 'Existing          │                   │
-│                            │ folders', 'match':          │                   │
-│                            │ 'existing_folder',          │                   │
+│                            │ 'download', 'categories':   │                   │
+│                            │ [], 'per_photo': False,     │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Existing folders',         │                   │
+│                            │ 'match': 'existing_folder', │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'score': None},       │                   │
-│                            │ {'name': 'Screenshots and   │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Screenshots and            │                   │
 │                            │ documents', 'match':        │                   │
 │                            │ 'kind', 'category':         │                   │
 │                            │ 'Documents and              │                   │
 │                            │ screenshots', 'dates': '',  │                   │
 │                            │ 'pattern': '', 'kind':      │                   │
-│                            │ 'screenshot', 'score':      │                   │
-│                            │ None}, {'name': 'Event      │                   │
-│                            │ neighbours', 'match':       │                   │
-│                            │ 'event_neighbour',          │                   │
+│                            │ 'screenshot', 'categories': │                   │
+│                            │ [], 'per_photo': False,     │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Event neighbours',         │                   │
+│                            │ 'match': 'event_neighbour', │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'score': None},       │                   │
-│                            │ {'name': 'Christmas',       │                   │
-│                            │ 'match': 'calendar',        │                   │
-│                            │ 'category':                 │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Christmas', 'match':       │                   │
+│                            │ 'calendar', 'category':     │                   │
 │                            │ 'Parties/Christmas',        │                   │
 │                            │ 'dates': '12-24..12-26',    │                   │
 │                            │ 'pattern': '', 'kind':      │                   │
-│                            │ None, 'score': None},       │                   │
-│                            │ {'name': 'New Year',        │                   │
-│                            │ 'match': 'calendar',        │                   │
-│                            │ 'category': 'Parties/New    │                   │
-│                            │ Year', 'dates':             │                   │
-│                            │ '12-31..01-01', 'pattern':  │                   │
-│                            │ '', 'kind': None, 'score':  │                   │
-│                            │ None}]                      │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'New Year', 'match':        │                   │
+│                            │ 'calendar', 'category':     │                   │
+│                            │ 'Parties/New Year',         │                   │
+│                            │ 'dates': '12-31..01-01',    │                   │
+│                            │ 'pattern': '', 'kind':      │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}]             │                   │
+│ classify.ai                │ {'url':                     │ défaut            │
+│                            │ 'http://host.docker.interna │                   │
+│                            │ l:11434', 'model': '',      │                   │
+│                            │ 'map_model': '',            │                   │
+│                            │ 'samples_per_event': 3,     │                   │
+│                            │ 'min_edge': 512,            │                   │
+│                            │ 'image_edge': 768,          │                   │
+│                            │ 'concurrency': 1,           │                   │
+│                            │ 'timeout_seconds': 180.0,   │                   │
+│                            │ 'retries': 2, 'batch_size': │                   │
+│                            │ 20, 'confirm_above': 200,   │                   │
+│                            │ 'seconds_per_photo': 4.5}   │                   │
 │ sort.confirm               │ True                        │ défaut            │
 │ sort.junk_files            │ ['Thumbs.db',               │ défaut            │
 │                            │ 'desktop.ini', '.DS_Store'] │                   │
@@ -373,8 +393,8 @@ Réglages effectifs
 │                            │ 'date-range': 95, 'kind':   │                   │
 │                            │ 85, 'path': 90, 'camera':   │                   │
 │                            │ 90, 'other-category': 85,   │                   │
-│                            │ 'date-only': 90,            │                   │
-│                            │ 'no-signal': 0}             │                   │
+│                            │ 'subject': 85, 'date-only': │                   │
+│                            │ 90, 'no-signal': 0}         │                   │
 │ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
 │                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
 │                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
@@ -399,44 +419,68 @@ Réglages effectifs
 │                            │ séries', 'match': 'kind',   │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ 'download', 'score': None}, │                   │
-│                            │ {'name': 'Dossiers          │                   │
-│                            │ existants', 'match':        │                   │
-│                            │ 'existing_folder',          │                   │
+│                            │ 'download', 'categories':   │                   │
+│                            │ [], 'per_photo': False,     │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Dossiers existants',       │                   │
+│                            │ 'match': 'existing_folder', │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'score': None},       │                   │
-│                            │ {'name': "Captures d'écran  │                   │
-│                            │ et documents", 'match':     │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ "Captures d'écran et        │                   │
+│                            │ documents", 'match':        │                   │
 │                            │ 'kind', 'category':         │                   │
 │                            │ "Documents et captures      │                   │
 │                            │ d'écran", 'dates': '',      │                   │
 │                            │ 'pattern': '', 'kind':      │                   │
-│                            │ 'screenshot', 'score':      │                   │
-│                            │ None}, {'name': "Voisins    │                   │
-│                            │ d'événement", 'match':      │                   │
-│                            │ 'event_neighbour',          │                   │
+│                            │ 'screenshot', 'categories': │                   │
+│                            │ [], 'per_photo': False,     │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ "Voisins d'événement",      │                   │
+│                            │ 'match': 'event_neighbour', │                   │
 │                            │ 'category': '', 'dates':    │                   │
 │                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'score': None},       │                   │
-│                            │ {'name': 'Noël', 'match':   │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Noël', 'match':            │                   │
 │                            │ 'calendar', 'category':     │                   │
 │                            │ 'Fêtes/Noël', 'dates':      │                   │
 │                            │ '12-24..12-26', 'pattern':  │                   │
-│                            │ '', 'kind': None, 'score':  │                   │
-│                            │ None}, {'name': 'Nouvel     │                   │
-│                            │ An', 'match': 'calendar',   │                   │
-│                            │ 'category': 'Fêtes/Nouvel   │                   │
-│                            │ An', 'dates':               │                   │
+│                            │ '', 'kind': None,           │                   │
+│                            │ 'categories': [],           │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
+│                            │ 'Nouvel An', 'match':       │                   │
+│                            │ 'calendar', 'category':     │                   │
+│                            │ 'Fêtes/Nouvel An', 'dates': │                   │
 │                            │ '12-31..01-01', 'pattern':  │                   │
-│                            │ '', 'kind': None, 'score':  │                   │
-│                            │ None}, {'name':             │                   │
+│                            │ '', 'kind': None,           │                   │
+│                            │ 'categories': [],           │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}, {'name':    │                   │
 │                            │ 'Saint-Nicolas', 'match':   │                   │
 │                            │ 'calendar', 'category':     │                   │
 │                            │ 'Fêtes/Saint-Nicolas',      │                   │
 │                            │ 'dates': '12-05..12-06',    │                   │
 │                            │ 'pattern': '', 'kind':      │                   │
-│                            │ None, 'score': None}]       │                   │
+│                            │ None, 'categories': [],     │                   │
+│                            │ 'per_photo': False,         │                   │
+│                            │ 'score': None}]             │                   │
+│ classify.ai                │ {'url':                     │ config.toml       │
+│                            │ 'http://host.docker.interna │                   │
+│                            │ l:11434', 'model': '',      │                   │
+│                            │ 'map_model': '',            │                   │
+│                            │ 'samples_per_event': 3,     │                   │
+│                            │ 'min_edge': 512,            │                   │
+│                            │ 'image_edge': 768,          │                   │
+│                            │ 'concurrency': 1,           │                   │
+│                            │ 'timeout_seconds': 180.0,   │                   │
+│                            │ 'retries': 2, 'batch_size': │                   │
+│                            │ 20, 'confirm_above': 200,   │                   │
+│                            │ 'seconds_per_photo': 4.5}   │                   │
 │ sort.confirm               │ True                        │ config.toml       │
 │ sort.junk_files            │ ['Thumbs.db',               │ config.toml       │
 │                            │ 'desktop.ini', '.DS_Store'] │                   │

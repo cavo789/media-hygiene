@@ -52,6 +52,7 @@ category = "Fêtes/Noël"
 | `kind` | Un genre de fichier, `kind = "screenshot"`, `"received"` ou `"download"`. | `kind = "screenshot"` |
 | `path` | Une expression régulière cherchée dans le chemin sur votre ordinateur, dossiers et nom. | `pattern = '(?i)kermesse'` |
 | `camera` | Une expression régulière cherchée dans la marque et le modèle. | `pattern = '(?i)dji'` |
+| `subject` | Ce que voit un modèle de vision local, pour les photos qu'aucune autre règle n'a décidées ([étape 8](08-subjects-from-a-local-model.md)). | `categories = ["École", "Animaux"]` |
 | `other_category` | Les fichiers qu'aucune règle au-dessus n'a reconnus. | `category = "Autres"` |
 
 `existing_folder` et `event_neighbour` donnent comme catégorie le nom du dossier lui-même : ils
@@ -110,6 +111,7 @@ Chaque `match` a un score par défaut, qu'une règle peut changer par son propre
 | `existing_folder` | 90 (85 pour le dossier d'une personne, `Papa/2018/…`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
+| `subject` | 85 quand les échantillons de l'événement sont d'accord ; sinon « à vérifier » |
 | `event_neighbour` | 70 : à vérifier |
 
 La table `[classify] scores` fixe ces valeurs par défaut pour toutes les règles d'un même

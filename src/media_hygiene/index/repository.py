@@ -117,9 +117,12 @@ class FactsRepository:
         Returns:
             How many rows were removed.
         """
+        gone = [(path,) for path in paths]
         before = self._connection.total_changes
-        self._connection.executemany(FORGET, ((path,) for path in paths))
-        return self._connection.total_changes - before
+        self._connection.executemany(FORGET[0], gone)
+        removed = self._connection.total_changes - before
+        self._connection.executemany(FORGET[1], gone)
+        return removed
 
     def move(self, moves: Iterable[tuple[str, str]]) -> None:
         """Follow files that moved, so their facts are not computed again.
@@ -127,7 +130,18 @@ class FactsRepository:
         Args:
             moves: Old and new path of each file (container paths).
         """
-        self._connection.executemany(MOVE, ((new, old) for old, new in moves))
+        pairs = [(new, old) for old, new in moves]
+        for statement in MOVE:
+            self._connection.executemany(statement, pairs)
+
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """The open connection, for the caches kept in the same file.
+
+        Returns:
+            It.
+        """
+        return self._connection
 
     def mark_walked(self, folder: Path, when: datetime) -> None:
         """Record that a folder was just walked without any read error.

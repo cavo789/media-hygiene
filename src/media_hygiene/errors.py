@@ -40,3 +40,7 @@ class DecisionsError(MediaHygieneError):
 
 class WorkbookError(MediaHygieneError):
     """A classify workbook is missing, damaged, or made for another plan."""
+
+
+class AiError(MediaHygieneError):
+    """The local model cannot be reached, lacks a capability, or answered nonsense."""

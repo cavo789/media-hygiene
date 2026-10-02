@@ -4,7 +4,8 @@ Each file is read against the rules, in order. The first match whose score reach
 `sure` wins; otherwise the best match (the earliest on a tie) is a guess to check.
 `other_category` takes the files no rule above it matched. A score of 0 turns a rule
 off. A date rule reads the event: when at least half of an event's files fall in its
-dates, the whole event takes it.
+dates, the whole event takes it. A `subject` rule is sure only when the samples of the
+event agree; otherwise it is "to check".
 """
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import Values, render
+from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.rules.building import build_test
 from media_hygiene.classify.rules.kinds import BUILT_IN, REASONS, RuleMatch
 from media_hygiene.classify.signals import NO_SIGNAL, Signal
@@ -90,15 +92,22 @@ def _signal(
         Its signal; the built-in rules give the folders' category.
     """
     settings, facts = config
+    agreed = True
     if rule.match in BUILT_IN:
         folder = facts.folders[file.path]
         reason, category, stay = folder.reason, folder.category, False
+    elif rule.match is RuleMatch.SUBJECT:
+        subject = facts.subjects[rule.name][file.path]
+        reason, category, stay = SortReason.SUBJECT, subject.category, False
+        agreed = subject.agreed
     else:
         reason, stay = REASONS[rule.match], not rule.category
         category = _category(rule.category, file, facts)
     score = rule.score
     if score is None:
         score = settings.scores.get(reason.value, 0)
+    if not agreed:
+        score = min(score, settings.unsure)  # one answer, or samples that disagree
     return Signal(reason, category, rule.name, score, stay)
 
 

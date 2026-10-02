@@ -17,7 +17,7 @@ cette page les rassemble.
 | `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
+| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 
@@ -37,7 +37,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--exclude-name NOM` | `audit`, `clean`, `crosscheck` | Nom de dossier jamais analysé, où qu'il soit (casse ignorée, `*` et `?` permis : `--exclude-name Thumbnails,.Trash-*`) ; s'ajoute aux dossiers système et corbeilles toujours ignorés. [Étape 5](clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri). |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify`, avant de décrire beaucoup de photos avec un modèle local). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
@@ -48,6 +48,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--leave CHEMIN` | `classify` | Dossier jamais trié ; toujours analysé et nettoyé. |
 | `--carry-over CHEMIN` | `classify` | Classeur dont les modifications sont reprises ; celui du dernier `classify` par défaut. [Trier, étape 5](sort/05-review-the-proposal.md#améliorer-la-proposition-sans-perdre-votre-travail) |
 | `--no-carry-over` | `classify` | Repartir de zéro : ne reprendre aucune modification d'un classeur précédent. |
+| `--sample N` | `classify` | Décrire N photos prises au hasard avec le modèle local, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#mesurer-dabord----sample) |
+| `--no-describe` | `classify` | Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#la-longue-exécution-jamais-une-surprise) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
@@ -382,20 +384,38 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
  lecture seule.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year                   <str>  Seulement les fichiers de cette année, ou de │
-│                                 ces années : 2016 ou 2015-2017.              │
-│ --layout                 <str>  Où vont les fichiers sûrs, par exemple       │
-│                                 '{year}/{month} - {month_name}'.             │
-│ --target                 <str>  Dossier de l'hôte qui reçoit l'arborescence  │
-│                                 ; sur place par défaut.                      │
-│ --leave                  <str>  Dossier de l'hôte jamais trié (analysé et    │
-│                                 nettoyé comme d'habitude).                   │
-│ --carry-over             <str>  Classeur dont les modifications sont         │
-│                                 reprises ; celui du dernier classify par     │
-│                                 défaut.                                      │
-│ --no-carry-over                 Repartir de zéro : ne reprendre aucune       │
-│                                 modification d'un classeur précédent.        │
-│ --help           -h             Affiche ce message et quitte.                │
+│ --year                   <str>               Seulement les fichiers de cette │
+│                                              année, ou de ces années : 2016  │
+│                                              ou 2015-2017.                   │
+│ --layout                 <str>               Où vont les fichiers sûrs, par  │
+│                                              exemple '{year}/{month} -       │
+│                                              {month_name}'.                  │
+│ --target                 <str>               Dossier de l'hôte qui reçoit    │
+│                                              l'arborescence ; sur place par  │
+│                                              défaut.                         │
+│ --leave                  <str>               Dossier de l'hôte jamais trié   │
+│                                              (analysé et nettoyé comme       │
+│                                              d'habitude).                    │
+│ --carry-over             <str>               Classeur dont les modifications │
+│                                              sont reprises ; celui du        │
+│                                              dernier classify par défaut.    │
+│ --no-carry-over                              Repartir de zéro : ne reprendre │
+│                                              aucune modification d'un        │
+│                                              classeur précédent.             │
+│ --sample                 <int range> [x>=0]  Décrire ce nombre de photos     │
+│                                              prises au hasard avec le modèle │
+│                                              local, afficher le temps par    │
+│                                              photo et l'estimation d'une     │
+│                                              exécution complète, puis        │
+│                                              s'arrêter.                      │
+│ --no-describe                                Ne rien demander de nouveau au  │
+│                                              modèle local : les règles       │
+│                                              subject lisent les descriptions │
+│                                              déjà dans le cache.             │
+│ --yes            -y                          Décrire les photos sans         │
+│                                              demander, quel que soit leur    │
+│                                              nombre.                         │
+│ --help           -h                          Affiche ce message et quitte.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

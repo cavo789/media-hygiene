@@ -1,0 +1,5 @@
+Describe this photo for sorting a family photo collection.
+Say what it shows: the place, the activity, the occasion, the objects that matter.
+Do not guess names, dates or text you cannot read clearly.
+Answer in English, in JSON: "description" is one short sentence (at most 25 words),
+"tags" are at most 5 single words.

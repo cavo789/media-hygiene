@@ -2,8 +2,9 @@
 
 Version 2 adds what images look like; version 3 what files say about themselves (a
 versioned JSON document, plus typed columns for what later steps query) and when each
-mounted folder was last walked completely. An older index keeps its digests and
-integrity results: the new columns are filled once, without decoding images again.
+mounted folder was last walked completely; version 4 what a local model saw in a
+photo and the categories it chose (`subject` rules). An older index keeps its digests
+and integrity results: the new columns are filled once, without decoding images again.
 """
 
 from __future__ import annotations
@@ -13,7 +14,7 @@ from typing import TYPE_CHECKING, Final
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 3
+SCHEMA_VERSION: Final = 4
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -53,6 +54,28 @@ CREATE TABLE IF NOT EXISTS roots (
     walked_at TEXT NOT NULL
 )
 """
+# Added by version 4. A description is valid for one version of the file (size,
+# mtime), one model and one prompt; a mapping for one description, one model, one
+# prompt and one list of categories (`key`, a digest of them all).
+_CREATE_DESCRIPTIONS: Final = """
+CREATE TABLE IF NOT EXISTS descriptions (
+    path TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    mtime_ns INTEGER NOT NULL,
+    model TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    description TEXT NOT NULL,
+    tags TEXT NOT NULL,
+    seconds REAL NOT NULL,
+    PRIMARY KEY (path, model, prompt)
+)
+"""
+_CREATE_MAPPINGS: Final = """
+CREATE TABLE IF NOT EXISTS subject_mappings (
+    key TEXT PRIMARY KEY,
+    category TEXT NOT NULL
+)
+"""
 SELECT: Final = (
     "SELECT size, mtime_ns, partial_digest, full_digest, integrity_checked,"
     " broken_reason, broken_detail, visual_checked, dhash, phash, width, height,"
@@ -67,9 +90,15 @@ UPSERT: Final = (
 )
 # Every path below a folder: `/` then anything sorts between `folder/` and `folder0`.
 PATHS_UNDER: Final = "SELECT path FROM files WHERE path >= ? AND path < ?"
-FORGET: Final = "DELETE FROM files WHERE path = ?"
+FORGET: Final = (
+    "DELETE FROM files WHERE path = ?",
+    "DELETE FROM descriptions WHERE path = ?",
+)
 # A file moved by `sort` (or back by `undo`) keeps its facts: size and mtime are kept.
-MOVE: Final = "UPDATE OR REPLACE files SET path = ? WHERE path = ?"
+MOVE: Final = (
+    "UPDATE OR REPLACE files SET path = ? WHERE path = ?",
+    "UPDATE OR REPLACE descriptions SET path = ? WHERE path = ?",
+)
 MARK_WALKED: Final = "INSERT OR REPLACE INTO roots (path, walked_at) VALUES (?, ?)"
 WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
 
@@ -86,4 +115,6 @@ def prepare(connection: sqlite3.Connection) -> None:
         if name not in existing:
             connection.execute(f"ALTER TABLE files ADD COLUMN {name} {definition}")
     connection.execute(_CREATE_ROOTS)
+    connection.execute(_CREATE_DESCRIPTIONS)
+    connection.execute(_CREATE_MAPPINGS)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

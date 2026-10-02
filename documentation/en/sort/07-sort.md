@@ -166,4 +166,4 @@ lists the runs.
 
 ---
 
-← [6. Write down what you know](06-write-down-what-you-know.md) · [Documentation](../README.md)
+← [6. Write down what you know](06-write-down-what-you-know.md) · [Documentation](../README.md) · Next: **[8. Name the subjects with a local model](08-subjects-from-a-local-model.md)** →

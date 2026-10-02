@@ -17,7 +17,7 @@ them one at a time; this page gathers them.
 | `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md) |
+| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 
@@ -37,7 +37,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort). |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify`, before describing many photos with a local model). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
@@ -48,6 +48,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--leave PATH` | `classify` | Folder never sorted; still analysed and cleaned. |
 | `--carry-over PATH` | `classify` | Workbook whose edits are carried over; the latest `classify` run's by default. [Sorting, step 5](sort/05-review-the-proposal.md#improve-the-proposal-without-losing-your-work) |
 | `--no-carry-over` | `classify` | Start fresh: carry no edit of a previous workbook over. |
+| `--sample N` | `classify` | Describe N random photos with the local model, print the time per photo and the estimate of a full run, and stop. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#measure-first---sample) |
+| `--no-describe` | `classify` | Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#the-long-run-never-in-the-way) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
@@ -369,19 +371,34 @@ both languages (`--locale fr --help`). Here is what they print:
  Read-only.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year                   <str>  Only the files of this year, or of these     │
-│                                 years: 2016 or 2015-2017.                    │
-│ --layout                 <str>  Where sure files go, e.g. '{year}/{month} -  │
-│                                 {month_name}'.                               │
-│ --target                 <str>  Host folder receiving the tree; in place by  │
-│                                 default.                                     │
-│ --leave                  <str>  Host folder never sorted (analysed and       │
-│                                 cleaned as usual).                           │
-│ --carry-over             <str>  Workbook whose edits are carried over; the   │
-│                                 latest classify run's by default.            │
-│ --no-carry-over                 Start fresh: carry no edit of a previous     │
-│                                 workbook over.                               │
-│ --help           -h             Show this message and exit.                  │
+│ --year                   <str>               Only the files of this year, or │
+│                                              of these years: 2016 or         │
+│                                              2015-2017.                      │
+│ --layout                 <str>               Where sure files go, e.g.       │
+│                                              '{year}/{month} -               │
+│                                              {month_name}'.                  │
+│ --target                 <str>               Host folder receiving the tree; │
+│                                              in place by default.            │
+│ --leave                  <str>               Host folder never sorted        │
+│                                              (analysed and cleaned as        │
+│                                              usual).                         │
+│ --carry-over             <str>               Workbook whose edits are        │
+│                                              carried over; the latest        │
+│                                              classify run's by default.      │
+│ --no-carry-over                              Start fresh: carry no edit of a │
+│                                              previous workbook over.         │
+│ --sample                 <int range> [x>=0]  Describe this many random       │
+│                                              photos with the local model,    │
+│                                              print the time per photo and    │
+│                                              the estimate of a full run, and │
+│                                              stop.                           │
+│ --no-describe                                Ask the local model nothing     │
+│                                              new: the subject rules read the │
+│                                              descriptions already in the     │
+│                                              cache.                          │
+│ --yes            -y                          Describe the photos without     │
+│                                              asking, however many.           │
+│ --help           -h                          Show this message and exit.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
