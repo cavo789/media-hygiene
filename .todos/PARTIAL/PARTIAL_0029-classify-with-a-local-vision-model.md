@@ -99,3 +99,52 @@ Quality:
 - [ ] `--sample 50` on the maintainer's collection: time per photo and mapping accuracy noted in
       this file before closing.
 - [ ] Documentation en + fr (networking, privacy, time estimate); `.po` translated.
+
+## Status — PARTIAL (2026-10-02)
+
+### Done
+- `match = "subject"` rule (`categories`, optional `per_photo`), opt-in: nothing is sent
+  without a `subject` rule and `[classify.ai] model`; a rule without a model stops with a
+  clear error. Default rules unchanged.
+- Only files no stronger rule decided are asked about (`classify/ai/sampling.py`: silent
+  reasons no-signal, date-only, other-category, previous-guess; stay and undated skipped);
+  photos below `min_edge` (shorter side) and videos are never sent, they follow their event.
+- Event sampling: `samples_per_event` samples, the sharpest of each part of the event's span;
+  already-described photos preferred (a recut costs no new description). Lone files are
+  their own unit.
+- Two steps: describe (vision, JSON schema, `think: false`, temperature 0, short output,
+  768 px JPEG from the process pool via `report/thumbnails.jpeg_preview`, RAW previews
+  included), cached in the index (schema 4, `descriptions` table keyed by path + size + mtime
+  + model + prompt digest; follows `sort` moves, forgotten with the file); map (text only,
+  batched by `batch_size`, JSON-schema `enum` + "none", unusable batch retried one by one,
+  cached in `subject_mappings`).
+- Confidence = agreement of samples: unanimous with 2+ samples → rule score (85, sure);
+  otherwise capped at `unsure` (to check); "none" winning → no subject.
+- Client: `urllib` in `asyncio.to_thread`, retries on timeouts/5xx, `/api/show` must list
+  `vision`, clear errors (unknown model → `ollama pull`, unreachable → `--add-host` tip).
+- `[classify.ai]`: url, model, map_model, samples_per_event, min_edge, image_edge,
+  concurrency, timeout_seconds, retries, batch_size, confirm_above, seconds_per_photo;
+  overridable with one JSON env var `MEDIA_HYGIENE_CLASSIFY__AI`. Prompts in
+  `classify/ai/templates/`.
+- `classify --sample N` (table, seconds per photo, estimate of the full run),
+  `--no-describe` (cache only), `--yes`; estimate printed before describing, confirmation
+  above `confirm_above` (refused or no terminal → cache only); Ctrl+C stops between photos,
+  the next run resumes.
+- Tests with a fake asyncio Ollama server: describe, map, cache hit, resume after
+  interruption, missing `vision` refused, nonsense answers, server error, batch fallback,
+  no model, no /cache, per_photo.
+- Docs en + fr: new sorting step 8 (networking, privacy, time estimate), rule tables of
+  step 6, reference pages; `.po` translated.
+- Real-model smoke test against the local Ollama (qwen3.8 27B) on synthetic drawn images
+  only: `--sample 3`, full run, `--no-describe` and the error paths work; ≈ 1.9 s per
+  synthetic photo once the model is loaded (not representative of real photos).
+
+### Not done
+- `--sample 50` on the maintainer's collection: time per photo and mapping accuracy noted in
+  this file.
+  **Reason:** the run that implemented this was not allowed to read the maintainer's real
+  photos; the maintainer must run it and note the figures here before closing.
+- `bge-m3` embeddings as a comparison or alternative to the mapping call: not built.
+  **Reason:** the proposal says "compare with"; the mapping call alone is cached and batched.
+  Worth measuring with the `--sample 50` run above before deciding.
+- CLIP fast pass: explicitly kept for later by the proposal.
