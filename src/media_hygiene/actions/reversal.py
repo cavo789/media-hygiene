@@ -12,6 +12,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.album_links import link_blocker
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.errors import JournalError
@@ -33,6 +34,8 @@ class Reversal(Enum):
     MOVE_BACK = auto()
     RECREATE_FOLDER = auto()
     REMOVE_CREATED_FOLDER = auto()
+    REMOVE_LINK = auto()
+    REMOVE_MARKER = auto()
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -42,6 +45,8 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.MOVE: Reversal.MOVE_BACK,
         ActionKind.REMOVE_FOLDER: Reversal.RECREATE_FOLDER,
         ActionKind.CREATE_FOLDER: Reversal.REMOVE_CREATED_FOLDER,
+        ActionKind.LINK: Reversal.REMOVE_LINK,
+        ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
     }
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
@@ -83,6 +88,10 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     path = Path(entry.path)
     if reversal is Reversal.REMOVE_CREATED_FOLDER:
         return _folder_blocker(path)
+    if reversal is Reversal.REMOVE_LINK:
+        return link_blocker(entry)
+    if reversal is Reversal.REMOVE_MARKER:
+        return None if path.is_file() else _("it is gone already")
     if path.exists():
         # Never overwrite: it is back already, or the action never happened.
         return _("it already exists")

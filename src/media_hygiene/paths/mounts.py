@@ -169,3 +169,15 @@ class MountTable:
         )
         nested = [root for root in roots if root != data_dir]
         return tuple(nested) if nested else (data_dir,)
+
+    def owner(self, path: Path) -> Path | None:
+        """Find the mount point a path lies on: a hard link cannot leave it.
+
+        Args:
+            path: A container path.
+
+        Returns:
+            The deepest mount point holding it, or None when none does.
+        """
+        holding = [point for point in self.mount_points if path.is_relative_to(point)]
+        return max(holding, key=lambda point: len(point.parts), default=None)

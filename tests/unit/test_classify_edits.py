@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from media_hygiene.classify.models import Band, DateSource, SortReason
-from media_hygiene.classify.plan_file import ClassifyPlan, PlanRow, RowValues
+from media_hygiene.classify.models import Band
 from media_hygiene.classify.workbook.edits import (
     CategoryEdit,
     Edits,
@@ -12,54 +11,15 @@ from media_hygiene.classify.workbook.edits import (
     Stay,
     resolve,
 )
+from tests.support.plans import plan_of, row
 
-
-def row(name: str, band: Band, tags: tuple[str, str] = ("", "")) -> PlanRow:
-    """A row of 2016, in the band given; tags: its category and its event."""
-    category, event = tags
-    folders = {
-        Band.SURE: f"2016/{category}",
-        Band.UNSURE: f"2016/To check/{category}",
-        Band.MANUAL: "2016/To sort/2016-07-14",
-        Band.STAY: None,
-    }
-    return PlanRow(
-        id=name,
-        path=f"C:\\Photos\\DCIM\\{name}.jpg",
-        size=1,
-        mtime_ns=0,
-        sha256=None,
-        date="2016-07-14T10:00:00",
-        date_source=DateSource.EXIF,
-        event_id=event,
-        values=RowValues(
-            year=2016,
-            month=7,
-            day=14,
-            category=category,
-            event="2016-07-14",
-            event_start="2016-07-14",
-        ),
-        band=band,
-        reason=SortReason.EXISTING_FOLDER,
-        score=90,
-        root="C:\\Photos",
-        folder=folders[band],
-        name=f"{name}.jpg",
-    )
-
-
-PLAN = ClassifyPlan(
-    plan_id="p",
-    layout="{year}/{category}",
-    unsure_layout="{year}/To check/{category}",
-    rows=(
+PLAN = plan_of(
+    (
         row("sure", Band.SURE, ("Mer", "")),
         row("check", Band.UNSURE, ("Mer", "")),
         row("loose", Band.MANUAL, ("", "e1")),
         row("kept", Band.STAY, ("Mer", "e1")),
-    ),
-    events=(),
+    )
 )
 
 

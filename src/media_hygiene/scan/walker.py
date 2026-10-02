@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import MediaKind, Sizes
+from media_hygiene.constants import ALBUM_MARKER, MediaKind, Sizes
 from media_hygiene.scan.models import FileIdentity, MediaFile
 from media_hygiene.scan.sidecars import Sidecar, companions_of, is_sidecar
 
@@ -99,7 +99,7 @@ def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
 
     Returns:
         Its media files, sidecars and the subfolders to visit; nothing when it cannot
-        be read.
+        be read, or is an album.
     """
     try:
         with os.scandir(folder) as entries:
@@ -107,6 +107,8 @@ def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
     except OSError as exc:
         _LOGGER.warning("Cannot read folder %s: %s", folder, exc.strerror)
         return _Listing(unreadable=(folder,))
+    if any(item.name == ALBUM_MARKER for item in items):
+        return _Listing()  # an album: second names of files listed where they are
     return _sort_entries(items, filters)
 
 

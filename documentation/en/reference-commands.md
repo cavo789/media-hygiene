@@ -12,13 +12,14 @@ them one at a time; this page gathers them.
 | `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](clean/10-review-bursts.md) |
 | `clean` | Audit, confirm, then delete duplicate copies, delete empty files, quarantine unreadable ones and orphan sidecars. | [8](clean/08-clean.md) |
-| `undo [RUN]` | Restore every file of a run (the latest by default). | [9](clean/09-undo-history-purge.md) |
+| `undo [RUN]` | Restore every file of a run (the latest by default); for an album, remove its links. | [9](clean/09-undo-history-purge.md) |
 | `history` | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
 | `purge [RUN]` | Permanently delete the quarantine of a run (of every run by default). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
 | `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
+| `album NAME` | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links, journaled and undoable. | [Sorting, step 11](sort/11-albums.md) |
 | `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 | `review-sort [WORKBOOK]` | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, step 10](sort/10-name-events-in-the-browser.md) |
@@ -55,6 +56,12 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--no-describe` | `classify` | Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#the-long-run-never-in-the-way) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
+| `--category NAME` | `album` | The files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 11](sort/11-albums.md#choose-what-the-album-gathers) |
+| `--event EVENT` | `album` | The files of this event: its id (Events sheet) or its name. |
+| `--rule NAME` | `album` | The files the `[[classify.rules]]` entry of this name decided. |
+| `--rating N` | `album` | The files given at least N stars (1 to 5) in Windows, as the audit read them (needs `/cache`). |
+| `--workbook PATH` | `album` | The `classify` workbook to read; the latest `classify` run's by default. |
+| `--apply` | `album` | Make the links; without it, `album` only shows what it would gather. |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
 line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they are written in
@@ -109,8 +116,10 @@ both languages (`--locale fr --help`). Here is what they print:
 │              undoable).                                                      │
 │ sort         Move the photos and videos as the edited classify workbook says │
 │              (journaled, undoable).                                          │
+│ album        Gather a selection of the classify plan into a folder of hard   │
+│              links: nothing is copied nor moved (journaled, undoable).       │
 │ undo         Restore every file of a run, from the kept copy, the quarantine │
-│              or where it was moved.                                          │
+│              or where it was moved; remove the links of an album.            │
 │ purge        Permanently delete the quarantined broken files of a run.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
@@ -261,7 +270,7 @@ both languages (`--locale fr --help`). Here is what they print:
  Usage: media-hygiene undo [OPTIONS] [run_id]
 
  Restore every file of a run, from the kept copy, the quarantine or where it
- was moved.
+ was moved; remove the links of an album.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
@@ -434,6 +443,40 @@ both languages (`--locale fr --help`). Here is what they print:
 │ --keep-empty-folders            Keep the source folders the sort leaves      │
 │                                 empty.                                       │
 │ --help                -h        Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>album --help</code></summary>
+
+<!-- capture: help-album.txt -->
+```text
+ Usage: media-hygiene album [OPTIONS] {name}
+
+ Gather a selection of the classify plan into a folder of hard links: nothing
+ is copied nor moved (journaled, undoable).
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│ *    name      <str>  The album's name: the folder holding its links.        │
+│                       [required]                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --category          <str>                  The files of this category, as    │
+│                                            the edited workbook says.         │
+│ --event             <str>                  The files of this event: its id   │
+│                                            or its name.                      │
+│ --rule              <str>                  The files the classify rule of    │
+│                                            this name decided.                │
+│ --rating            <int range> [1<=x<=5]  The files given at least these    │
+│                                            stars in Windows (1 to 5).        │
+│ --workbook          <str>                  The classify workbook to read;    │
+│                                            the latest classify run's by      │
+│                                            default.                          │
+│ --apply                                    Make the links; without it, only  │
+│                                            show what the album gathers.      │
+│ --help      -h                             Show this message and exit.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

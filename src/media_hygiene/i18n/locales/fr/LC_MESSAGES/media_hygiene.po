@@ -54,8 +54,20 @@ msgstr "'crosscheck' lit les résultats de Czkawka dans /reports : montez-le."
 msgid "'media-hygiene undo <run>' restores the files of a run."
 msgstr "'media-hygiene undo <run>' restaure les fichiers d'une exécution."
 
+#, python-brace-format
+msgid ""
+"'media-hygiene undo {run_id}' removes the album; the photos stay where "
+"they are."
+msgstr ""
+"'media-hygiene undo {run_id}' supprime l'album ; les photos restent où "
+"elles sont."
+
 msgid "'undo' can no longer restore these broken files."
 msgstr "'undo' ne pourra plus restaurer ces fichiers cassés."
+
+#, python-brace-format
+msgid "'{name}' cannot be a folder name."
+msgstr "« {name} » ne peut pas être un nom de dossier."
 
 #, python-brace-format
 msgid "'{name}' is longer than {count} characters."
@@ -82,12 +94,23 @@ msgstr "(vide)"
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
 
+msgid ""
+"--rating reads the stars the audit wrote in its cache, which is not "
+"mounted."
+msgstr ""
+"--rating lit les étoiles que l'audit a notées dans son cache, qui n'est "
+"pas monté."
+
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr "--tier near déplace les quasi-doublons dans /quarantine : montez-le."
 
 #, python-brace-format
 msgid "--year {value}: write a year (2016) or a range (2015-2017)."
 msgstr "--year {value} : écrivez une année (2016) ou une plage (2015-2017)."
+
+#, python-brace-format
+msgid "... and {count} more."
+msgstr "… et {count} de plus."
 
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
@@ -143,6 +166,14 @@ msgstr ""
 "{duration}."
 
 msgid ""
+"A hard link stays on the disk and in the mounted folder of its file: set "
+"album.root to a folder inside the one mounted for these photos."
+msgstr ""
+"Un lien physique reste sur le disque et dans le dossier monté de son "
+"fichier : réglez album.root sur un dossier situé dans celui monté pour "
+"ces photos."
+
+msgid ""
 "A local vision model (Ollama) names the subject of the photos no other "
 "rule decides. Off until a 'subject' rule is written below and a model is "
 "set here. The photos are sent to url, and only there: keep that server on"
@@ -185,6 +216,11 @@ msgstr "Agir"
 msgid "Action"
 msgstr "Action"
 
+msgid "Add --category, --event, --rule or --rating, e.g. --category Noël."
+msgstr ""
+"Ajoutez --category, --event, --rule ou --rating, par exemple --category "
+"Noël."
+
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/cache\" pour garder les descriptions."
 
@@ -222,6 +258,16 @@ msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
 msgstr ""
 "Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien "
 "plus rapides."
+
+msgid "Album folder"
+msgstr "Dossier de l'album"
+
+#, python-brace-format
+msgid "Album {name}"
+msgstr "Album {name}"
+
+msgid "Albums"
+msgstr "Albums"
 
 msgid "All reports"
 msgstr "Tous les rapports"
@@ -1016,6 +1062,9 @@ msgstr "Fichiers déplacés"
 msgid "Files processed"
 msgstr "Fichiers traités"
 
+msgid "Files selected"
+msgstr "Fichiers choisis"
+
 #, python-brace-format
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
 msgstr "Fichiers mis de côté, car media-hygiene ne les analyse pas : {count}."
@@ -1178,10 +1227,22 @@ msgstr "Commandes complètes (rapports, journal, WSL) : voir README_FR.md."
 msgid "GB"
 msgstr "Go"
 
+msgid ""
+"Gather a selection of the classify plan into a folder of hard links: "
+"nothing is copied nor moved (journaled, undoable)."
+msgstr ""
+"Rassemble une sélection du plan de classify dans un dossier de liens "
+"physiques : rien n'est copié ni déplacé (journalisé, annulable)."
+
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
 "Donnez son chemin dans un dossier monté, par exemple celui monté sur "
 "/reports."
+
+msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
+msgstr ""
+"Donnez à l'album un nom simple, par exemple « Noël » ou « Le meilleur de "
+"2016 »."
 
 msgid "Give the place a name."
 msgstr "Donnez un nom au lieu."
@@ -1192,6 +1253,9 @@ msgid ""
 msgstr ""
 "Donnez-leur le même dossier, ou videz toutes les cellules sauf une, "
 "enregistrez le classeur, puis relancez 'sort'."
+
+msgid "Gives each file a second name in the album."
+msgstr "Donne à chaque fichier un second nom dans l'album."
 
 msgid "Going to a 'to check' folder"
 msgstr "Vers un dossier « à vérifier »"
@@ -1229,6 +1293,17 @@ msgstr "Maison et travaux"
 
 msgid "Home: trips are measured from it"
 msgstr "Maison : les voyages se mesurent à partir d'ici"
+
+msgid ""
+"Host folder holding the albums of 'album': folders of hard links, a "
+"second name for each photo, which take no space. Empty: 'Albums' in the "
+"[classify] target folder. It must be on the disk of the photos, in the "
+"same mounted folder."
+msgstr ""
+"Dossier de l'hôte qui reçoit les albums de 'album' : des dossiers de "
+"liens physiques, un second nom pour chaque photo, qui ne prennent pas de "
+"place. Vide : 'Albums' dans le dossier target de [classify]. Il doit être"
+" sur le disque des photos, dans le même dossier monté."
 
 msgid "Host folder never sorted (analysed and cleaned as usual)."
 msgstr "Dossier de l'hôte jamais trié (analysé et nettoyé comme d'habitude)."
@@ -1284,6 +1359,9 @@ msgstr "Identifiant"
 
 msgid "Image cannot be decoded"
 msgstr "Image impossible à décoder"
+
+msgid "In the album already"
+msgstr "Déjà dans l'album"
 
 #, python-brace-format
 msgid "Install it with: ollama pull {model}"
@@ -1424,6 +1502,15 @@ msgstr ""
 msgid "Line {number} of {path} is corrupt."
 msgstr "La ligne {number} de {path} est corrompue."
 
+msgid "Linked"
+msgstr "Liés"
+
+msgid "Linking"
+msgstr "Liens"
+
+msgid "Links to make"
+msgstr "Liens à créer"
+
 msgid "List the HTML reports of previous audits and cleans."
 msgstr "Liste les rapports HTML des audits et nettoyages précédents."
 
@@ -1438,6 +1525,11 @@ msgstr "Longitude"
 
 msgid "MB"
 msgstr "Mo"
+
+msgid "Make the links; without it, only show what the album gathers."
+msgstr ""
+"Crée les liens ; sans cette option, montre seulement ce que l'album "
+"rassemble."
 
 #, python-brace-format
 msgid "Manifest: {path}"
@@ -1485,6 +1577,9 @@ msgstr "Montez-le, par exemple -v \"D:\\Photos triées:/data/d/Photos triées\".
 msgid "Mount points"
 msgstr "Points de montage"
 
+msgid "Mount the folder of your photos that holds it, without ':ro'."
+msgstr "Montez le dossier de vos photos qui le contient, sans ':ro'."
+
 msgid "Mount the folders of that report, or decide again on a new report."
 msgstr ""
 "Montez les dossiers de ce rapport, ou décidez à nouveau sur un nouveau "
@@ -1497,6 +1592,11 @@ msgstr ""
 
 msgid "Mount the reports folder: -v \"<folder>:/reports\"."
 msgstr "Montez le dossier des rapports : -v \"<dossier>:/reports\"."
+
+msgid "Mount the same cache folder as for the audit: -v \"<folder>:/cache\"."
+msgstr ""
+"Montez le même dossier de cache que pour l'audit : -v "
+"\"<dossier>:/cache\"."
 
 msgid "Mount the same journal folder as for clean: -v \"<folder>:/journal\"."
 msgstr ""
@@ -1667,6 +1767,11 @@ msgstr "Aucun événement dans cette proposition : rien à revoir."
 msgid "No event left to decide after this one."
 msgstr "Plus aucun événement à décider après celui-ci."
 
+msgid "No folder for the albums: neither album.root nor classify.target is set."
+msgstr ""
+"Aucun dossier pour les albums : ni album.root ni classify.target n'est "
+"défini."
+
 #, python-brace-format
 msgid "No folder to analyse under {path}."
 msgstr "Aucun dossier à analyser sous {path}."
@@ -1735,6 +1840,9 @@ msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
 msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
 msgstr "Pas de second avis : 'media-hygiene crosscheck' compare avec Czkawka."
 
+msgid "Not found"
+msgstr "Introuvables"
+
 #, python-brace-format
 msgid ""
 "Not photos or videos: {extensions}. These files are only compared byte "
@@ -1782,6 +1890,9 @@ msgstr ""
 "Rien de perdu : {before} fichiers ({before_size}) avant et après ; "
 "{verified} déplacements vérifiés sur {moved}."
 
+msgid "Nothing to add: the album holds every file found."
+msgstr "Rien à ajouter : l'album contient déjà chaque fichier trouvé."
+
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 
@@ -1799,6 +1910,9 @@ msgstr ""
 msgid "Nothing was changed: 'classify' only proposes."
 msgstr "Rien n'a été modifié : 'classify' ne fait que proposer."
 
+msgid "Nothing was changed: add --apply to make the links."
+msgstr "Rien n'a été modifié : ajoutez --apply pour créer les liens."
+
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
@@ -1811,6 +1925,9 @@ msgstr "novembre"
 
 msgid "October"
 msgstr "octobre"
+
+msgid "On another disk or mount"
+msgstr "Sur un autre disque ou montage"
 
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
@@ -2080,10 +2197,10 @@ msgstr "Rapports (du plus récent au plus ancien)"
 
 msgid ""
 "Restore every file of a run, from the kept copy, the quarantine or where "
-"it was moved."
+"it was moved; remove the links of an album."
 msgstr ""
 "Restaure chaque fichier d'une exécution, depuis la copie conservée, la "
-"quarantaine ou l'endroit où il a été déplacé."
+"quarantaine ou là où il a été déplacé ; supprime les liens d'un album."
 
 msgid ""
 "Restore it, or delete it to start the review page over: the workbook "
@@ -2190,6 +2307,9 @@ msgstr ""
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
 msgstr "Lancez 'audit' sur vos dossiers : l'inventaire dit alors de quand il date."
 
+msgid "Run 'classify' again: its plan sees the files where they are."
+msgstr "Relancez 'classify' : son plan voit les fichiers là où ils sont."
+
 msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 "Relancez 'classify' : vos modifications sont reprises dans son nouveau "
@@ -2228,6 +2348,9 @@ msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 "Relancez la même commande pour continuer : les fichiers déjà déplacés "
 "sont passés."
+
+msgid "Run the same command again: the files linked are skipped."
+msgstr "Relancez la même commande : les fichiers déjà liés sont passés."
 
 msgid ""
 "Run to undo (see 'history'); the latest one by default. For a sort, every"
@@ -2318,6 +2441,9 @@ msgstr "Enregistré."
 msgid "Saving…"
 msgstr "Enregistrement…"
 
+msgid "Say what the album gathers."
+msgstr "Dites ce que l'album rassemble."
+
 msgid "Scan (override scan.* of config.toml)"
 msgstr "Analyse (remplace scan.* de config.toml)"
 
@@ -2385,6 +2511,16 @@ msgstr "Série {number} sur {total}"
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
 msgstr "Indiquez [classify.ai] model dans config.toml, ou retirez la règle."
+
+msgid "Set album.root in config.toml to a folder outside it."
+msgstr "Réglez album.root dans config.toml sur un dossier en dehors de celui-ci."
+
+msgid ""
+"Set album.root in config.toml, a folder on the disk of your photos, e.g. "
+"root = 'C:\\Photos\\Albums'."
+msgstr ""
+"Réglez album.root dans config.toml, un dossier sur le disque de vos "
+"photos, par exemple root = 'C:\\Photos\\Albums'."
 
 #, python-brace-format
 msgid "Set aside, as media-hygiene does not analyse them: {details}."
@@ -2539,6 +2675,12 @@ msgstr "To"
 msgid "The HTML report could not be written to {folder}: {reason}."
 msgstr "Le rapport HTML n'a pas pu être écrit dans {folder} : {reason}."
 
+msgid "The album stopped at the first link refused by the disk."
+msgstr "L'album s'est arrêté au premier lien refusé par le disque."
+
+msgid "The album's name: the folder holding its links."
+msgstr "Le nom de l'album : le dossier qui contient ses liens."
+
 msgid ""
 "The categories below are an example to replace with your own, e.g. "
 "Parties, Holidays and outings, School, Sport and leisure, Home and works,"
@@ -2567,6 +2709,9 @@ msgid "The classify files could not be written to {folder}: {reason}."
 msgstr ""
 "Les fichiers de 'classify' n'ont pas pu être écrits dans {folder} : "
 "{reason}."
+
+msgid "The classify workbook to read; the latest classify run's by default."
+msgstr "Le classeur de classify à lire ; celui du dernier classify par défaut."
 
 msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr "Le classeur de classify, modifié ; celui du dernier classify par défaut."
@@ -2607,6 +2752,18 @@ msgid ""
 msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
+
+msgid "The files given at least these stars in Windows (1 to 5)."
+msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
+
+msgid "The files of this category, as the edited workbook says."
+msgstr "Les fichiers de cette catégorie, d'après le classeur modifié."
+
+msgid "The files of this event: its id or its name."
+msgstr "Les fichiers de cet événement : son identifiant ou son nom."
+
+msgid "The files the classify rule of this name decided."
+msgstr "Les fichiers que la règle de classify de ce nom a décidés."
 
 #, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
@@ -2825,6 +2982,16 @@ msgstr ""
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
 msgstr "Ces dossiers sont montés en lecture seule : {folders}."
+
+msgid ""
+"This folder is an album of media-hygiene: hard links, second names of "
+"photos kept elsewhere, which take no space. The audits skip it. 'media-"
+"hygiene undo' removes it; deleting it by hand is safe too."
+msgstr ""
+"Ce dossier est un album de media-hygiene : des liens physiques, des "
+"seconds noms de photos gardées ailleurs, qui ne prennent pas de place. "
+"Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
+"la main est sans danger aussi."
 
 msgid "This is not a classify workbook, or it was damaged."
 msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
@@ -3145,6 +3312,9 @@ msgstr "un clic sur une photo fonctionne aussi"
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
 
+msgid "a file of that name is in the album already"
+msgstr "un fichier de ce nom est déjà dans l'album"
+
 msgid "a file with the same name is still next to it"
 msgstr "un fichier du même nom est toujours à côté de lui"
 
@@ -3288,12 +3458,21 @@ msgstr "dans des dossiers exclus"
 msgid "it already exists"
 msgstr "il existe déjà"
 
+msgid "it is gone already"
+msgstr "il a déjà disparu"
+
 #, python-brace-format
 msgid "it is no longer at {path}: moved or renamed since"
 msgstr "il n'est plus à {path} : déplacé ou renommé depuis"
 
+msgid "it is no longer in the album: removed already"
+msgstr "il n'est plus dans l'album : déjà supprimé"
+
 msgid "it is the kept copy itself, seen through another path"
 msgstr "c'est la copie gardée elle-même, vue par un autre chemin"
+
+msgid "it is the last name left of this file: kept"
+msgstr "c'est le dernier nom de ce fichier : gardé"
 
 msgid "its content changed"
 msgstr "son contenu a changé"
@@ -3394,11 +3573,17 @@ msgstr "il ne reste aucune photo gardée de sa série"
 msgid "not checked"
 msgstr "non vérifié"
 
+msgid "not found where the plan or a sort put it"
+msgstr "introuvable là où le plan ou un tri l'a mis"
+
 msgid "nothing"
 msgstr "rien"
 
 msgid "ok"
 msgstr "ok"
+
+msgid "on another disk or mount: no link possible"
+msgstr "sur un autre disque ou montage : aucun lien possible"
 
 msgid "only Czkawka"
 msgstr "Czkawka seulement"
@@ -3479,6 +3664,13 @@ msgstr ""
 "reprendre le choix fait ici (des photos sélectionnées, sinon de "
 "l'événement)"
 
+msgid ""
+"the album and this file are on two disks or two mounts: a hard link "
+"cannot cross them"
+msgstr ""
+"l'album et ce fichier sont sur deux disques ou deux montages : un lien "
+"physique ne peut pas les traverser"
+
 msgid "the copy differs from the original"
 msgstr "la copie diffère de l'original"
 
@@ -3528,6 +3720,14 @@ msgstr "la valeur est inutilisable"
 
 msgid "this category is no longer proposed"
 msgstr "cette catégorie n'est plus proposée"
+
+msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
+msgstr ""
+"ce disque ne gère pas les liens physiques (FAT, exFAT, un partage réseau "
+"?)"
+
+msgid "this file has too many names already"
+msgstr "ce fichier a déjà trop de noms"
 
 #, python-format
 msgid "to check or to sort: %(count)s"
@@ -3805,6 +4005,16 @@ msgid "{count} files, {undecided} to check or to sort"
 msgstr "{count} fichiers, {undecided} à vérifier ou à trier"
 
 #, python-brace-format
+msgid "{count} link made: no photo was copied nor moved, no space is used."
+msgid_plural "{count} links made: no photo was copied nor moved, no space is used."
+msgstr[0] ""
+"{count} lien créé : aucune photo n'a été copiée ni déplacée, aucune place"
+" n'est prise."
+msgstr[1] ""
+"{count} liens créés : aucune photo n'a été copiée ni déplacée, aucune "
+"place n'est prise."
+
+#, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
 msgstr "Dont {count} à décrire avec {model}, environ {duration}."
 
@@ -3962,6 +4172,10 @@ msgid "{path} is inside a protected folder: 'sort' never changes those."
 msgstr "{path} est dans un dossier protégé : 'sort' n'y touche jamais."
 
 #, python-brace-format
+msgid "{path} is inside a protected folder: nothing is ever added there."
+msgstr "{path} est dans un dossier protégé : rien n'y est jamais ajouté."
+
+#, python-brace-format
 msgid "{path} is left as it is: no choice applies to it."
 msgstr "{path} est laissé tel quel : aucun choix ne s'y applique."
 
@@ -3984,6 +4198,14 @@ msgstr "{path} n'est pas un fichier de décisions valide ({error})."
 #, python-brace-format
 msgid "{path} is not a valid decisions file of the review page."
 msgstr "{path} n'est pas un fichier de décisions valide de la page de revue."
+
+#, python-brace-format
+msgid ""
+"{path} is not in a mounted folder: an album made there would vanish with "
+"the container."
+msgstr ""
+"{path} n'est pas dans un dossier monté : un album créé là disparaîtrait "
+"avec le conteneur."
 
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."

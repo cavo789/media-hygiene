@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry
 
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
+# Actions after which the file is still there: neither deleted nor freed.
+_KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK})
 
 
 def new_run_id(journal_dir: Path) -> str:
@@ -45,23 +47,49 @@ def run_phase(entries: list[JournalEntry]) -> Phase:
         entries: Journal entries, in write order.
 
     Returns:
-        `clean` or `sort`; `clean` for a run that did nothing yet.
+        `clean`, `sort` or `album`; `clean` for a run that did nothing yet.
     """
     phases = (entry.phase for entry in entries if entry.phase in ACTING_PHASES)
     return next(phases, Phase.CLEAN)
 
 
 @dataclass(frozen=True, slots=True)
+class Kept:
+    """The files a run left in place under another name: moved, or linked."""
+
+    moved: int = 0
+    linked: int = 0  # the hard links of an album: nothing deleted nor freed
+
+
+@dataclass(frozen=True, slots=True)
 class RunSummary:
-    """What a run did (`clean` or `sort`), and whether it was undone."""
+    """What a run did (`clean`, `sort` or `album`), and whether it was undone."""
 
     run_id: str
     kind: Phase
     deleted: int
     freed: int
     quarantined: int
-    moved: int
+    kept: Kept
     restored: int
+
+    @property
+    def moved(self) -> int:
+        """Count the files a sort moved.
+
+        Returns:
+            Them.
+        """
+        return self.kept.moved
+
+    @property
+    def linked(self) -> int:
+        """Count the links an album made.
+
+        Returns:
+            Them.
+        """
+        return self.kept.linked
 
 
 def summarize(journal_dir: Path, run_id: str) -> RunSummary:
@@ -82,15 +110,16 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         if entry.action not in FOLDER_ACTIONS
     ]
     moved = [entry for entry in files if entry.action is ActionKind.MOVE]
+    linked = [entry for entry in files if entry.action is ActionKind.LINK]
     quarantined = [entry for entry in files if entry.action in QUARANTINED]
-    deleted = len(files) - len(moved) - len(quarantined)
+    gone = [entry for entry in files if entry.action not in _KEPT]
     return RunSummary(
         run_id=run_id,
         kind=kind,
-        deleted=deleted,
-        freed=sum(entry.size for entry in files if entry.action is not ActionKind.MOVE),
+        deleted=len(gone) - len(quarantined),
+        freed=sum(entry.size for entry in gone),
         quarantined=len(quarantined),
-        moved=len(moved),
+        kept=Kept(len(moved), len(linked)),
         restored=len(done_states(entries, Phase.UNDO)),
     )
 

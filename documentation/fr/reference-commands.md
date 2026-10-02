@@ -12,13 +12,14 @@ cette page les rassemble.
 | `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md) |
 | `clean` | Audite, demande confirmation, puis supprime les copies en double et les fichiers vides, et met en quarantaine les fichiers illisibles et les fichiers compagnons orphelins. | [8](clean/08-clean.md) |
-| `undo [EXÉCUTION]` | Restaure chaque fichier d'une exécution (la plus récente par défaut). | [9](clean/09-undo-history-purge.md) |
+| `undo [EXÉCUTION]` | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens. | [9](clean/09-undo-history-purge.md) |
 | `history` | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
 | `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
 | `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
+| `album NOM` | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens, journalisés et annulables. | [Trier, étape 11](sort/11-albums.md) |
 | `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 | `review-sort [CLASSEUR]` | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, étape 10](sort/10-name-events-in-the-browser.md) |
@@ -55,6 +56,12 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--no-describe` | `classify` | Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#la-longue-exécution-jamais-une-surprise) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (par défaut) : un classeur avec les feuilles Fichiers et Résumé. `csv` : la feuille Fichiers seule, comme `plan.csv`. [Inventaire](reference-inventory.md#un-fichier-csv-à-la-place) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
+| `--category NOM` | `album` | Les fichiers de cette catégorie, d'après le classeur modifié (un événement nommé dans le classeur donne son nom). [Trier, étape 11](sort/11-albums.md#choisir-ce-que-lalbum-rassemble) |
+| `--event ÉVÉNEMENT` | `album` | Les fichiers de cet événement : son identifiant (feuille Événements) ou son nom. |
+| `--rule NOM` | `album` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
+| `--rating N` | `album` | Les fichiers qui ont au moins N étoiles (1 à 5) dans Windows, telles que l'audit les a lues (demande `/cache`). |
+| `--workbook CHEMIN` | `album` | Le classeur de `classify` à lire ; celui du dernier `classify` par défaut. |
+| `--apply` | `album` | Crée les liens ; sans cette option, `album` montre seulement ce qu'il rassemblerait. |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
 la ligne de commande l'emporte. Les règles de `classify` (`[[classify.rules]]`) n'ont pas
@@ -114,8 +121,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │              copies en double (journalisé, annulable).                       │
 │ sort         Déplacer les photos et vidéos comme le dit le classeur de       │
 │              classify modifié (journalisé, annulable).                       │
+│ album        Rassemble une sélection du plan de classify dans un dossier de  │
+│              liens physiques : rien n'est copié ni déplacé (journalisé,      │
+│              annulable).                                                     │
 │ undo         Restaure chaque fichier d'une exécution, depuis la copie        │
-│              conservée, la quarantaine ou l'endroit où il a été déplacé.     │
+│              conservée, la quarantaine ou là où il a été déplacé ; supprime  │
+│              les liens d'un album.                                           │
 │ purge        Supprime définitivement les fichiers cassés mis en quarantaine  │
 │              par une exécution.                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -273,7 +284,7 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
  Utilisation : media-hygiene undo [OPTIONS] [run_id]
 
  Restaure chaque fichier d'une exécution, depuis la copie conservée, la
- quarantaine ou l'endroit où il a été déplacé.
+ quarantaine ou là où il a été déplacé ; supprime les liens d'un album.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   run_id      <str>  Exécution à annuler (voir 'history') ; la plus récente  │
@@ -454,6 +465,41 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │ --keep-empty-folders            Garder les dossiers sources que le tri       │
 │                                 laisse vides.                                │
 │ --help                -h        Affiche ce message et quitte.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+<details>
+<summary><code>album --help</code></summary>
+
+<!-- capture: help-album.txt -->
+```text
+ Utilisation : media-hygiene album [OPTIONS] {name}
+
+ Rassemble une sélection du plan de classify dans un dossier de liens physiques
+ : rien n'est copié ni déplacé (journalisé, annulable).
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│ *    name      <str>  Le nom de l'album : le dossier qui contient ses liens. │
+│                       [required]                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --category          <str>                  Les fichiers de cette catégorie,  │
+│                                            d'après le classeur modifié.      │
+│ --event             <str>                  Les fichiers de cet événement :   │
+│                                            son identifiant ou son nom.       │
+│ --rule              <str>                  Les fichiers que la règle de      │
+│                                            classify de ce nom a décidés.     │
+│ --rating            <int range> [1<=x<=5]  Les fichiers qui ont au moins ces │
+│                                            étoiles dans Windows (1 à 5).     │
+│ --workbook          <str>                  Le classeur de classify à lire ;  │
+│                                            celui du dernier classify par     │
+│                                            défaut.                           │
+│ --apply                                    Crée les liens ; sans cette       │
+│                                            option, montre seulement ce que   │
+│                                            l'album rassemble.                │
+│ --help      -h                             Affiche ce message et quitte.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

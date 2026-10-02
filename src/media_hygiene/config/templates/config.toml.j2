@@ -73,6 +73,11 @@ confirm = true
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
 
 
+[album]
+{{ comment(_("Host folder holding the albums of 'album': folders of hard links, a second name for each photo, which take no space. Empty: 'Albums' in the [classify] target folder. It must be on the disk of the photos, in the same mounted folder.")) }}
+root = ''
+
+
 [inventory]
 {{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
 blurry_below = 100.0

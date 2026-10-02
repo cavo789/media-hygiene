@@ -6,7 +6,7 @@ import errno
 import os
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.quarantine import QUARANTINED, move_verified
 from media_hygiene.actions.reversal import Reversal, source_of
@@ -15,6 +15,9 @@ from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry
+
+# A name an album run made: a link (its file keeps its other names), the marker.
+_REMOVALS: Final = frozenset({Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER})
 
 
 def perform(entry: JournalEntry, reversal: Reversal) -> None:
@@ -30,6 +33,9 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
     path = Path(entry.path)
     if reversal is Reversal.REMOVE_CREATED_FOLDER:
         path.rmdir()
+        return
+    if reversal in _REMOVALS:
+        path.unlink()
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     if reversal is Reversal.RECREATE_FOLDER:

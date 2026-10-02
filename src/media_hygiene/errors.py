@@ -52,3 +52,7 @@ class GeoDataError(MediaHygieneError):
 
 class NominatimError(MediaHygieneError):
     """The online place search cannot be reached, refused, or answered nonsense."""
+
+
+class AlbumError(MediaHygieneError):
+    """An album cannot be made: no folder for it, a bad name, nothing to gather."""

@@ -66,6 +66,8 @@ otherwise both copies are sorted.
    let the GPS of recent phones sort home, family and trips, offline (optional).
 10. [Name the events in your browser](sort/10-name-events-in-the-browser.md): one event at a
     time with its photos, named with the keyboard; `sort` applies your choices (optional).
+11. [Albums](sort/11-albums.md): one photo in several folders ("every Christmas", "my best
+    photos"), as hard links: no copy, no space used (optional).
 
 ## Reference
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
@@ -120,3 +121,4 @@ class Settings(BaseModel):
     sort: SortSettings = SortSettings()
     inventory: InventorySettings = InventorySettings()
     places: PlacesSettings = PlacesSettings()
+    album: AlbumSettings = AlbumSettings()

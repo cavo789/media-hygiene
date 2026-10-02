@@ -33,7 +33,17 @@ msgstr ""
 msgid "'media-hygiene undo <run>' restores the files of a run."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"'media-hygiene undo {run_id}' removes the album; the photos stay where "
+"they are."
+msgstr ""
+
 msgid "'undo' can no longer restore these broken files."
+msgstr ""
+
+#, python-brace-format
+msgid "'{name}' cannot be a folder name."
 msgstr ""
 
 #, python-brace-format
@@ -61,11 +71,20 @@ msgstr ""
 msgid "(stay where it is)"
 msgstr ""
 
+msgid ""
+"--rating reads the stars the audit wrote in its cache, which is not "
+"mounted."
+msgstr ""
+
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr ""
 
 #, python-brace-format
 msgid "--year {value}: write a year (2016) or a range (2015-2017)."
+msgstr ""
+
+#, python-brace-format
+msgid "... and {count} more."
 msgstr ""
 
 msgid "<the folder you mount on /reports>"
@@ -108,6 +127,11 @@ msgid "A full run would describe {count} more photos: about {duration}."
 msgstr ""
 
 msgid ""
+"A hard link stays on the disk and in the mounted folder of its file: set "
+"album.root to a folder inside the one mounted for these photos."
+msgstr ""
+
+msgid ""
 "A local vision model (Ollama) names the subject of the photos no other "
 "rule decides. Off until a 'subject' rule is written below and a model is "
 "set here. The photos are sent to url, and only there: keep that server on"
@@ -135,6 +159,9 @@ msgid "Act"
 msgstr ""
 
 msgid "Action"
+msgstr ""
+
+msgid "Add --category, --event, --rule or --rating, e.g. --category Noël."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
@@ -165,6 +192,16 @@ msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
 msgstr ""
 
 msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
+msgstr ""
+
+msgid "Album folder"
+msgstr ""
+
+#, python-brace-format
+msgid "Album {name}"
+msgstr ""
+
+msgid "Albums"
 msgstr ""
 
 msgid "All reports"
@@ -817,6 +854,9 @@ msgstr ""
 msgid "Files processed"
 msgstr ""
 
+msgid "Files selected"
+msgstr ""
+
 #, python-brace-format
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
 msgstr ""
@@ -947,7 +987,15 @@ msgstr ""
 msgid "GB"
 msgstr ""
 
+msgid ""
+"Gather a selection of the classify plan into a folder of hard links: "
+"nothing is copied nor moved (journaled, undoable)."
+msgstr ""
+
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
+msgstr ""
+
+msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
 msgstr ""
 
 msgid "Give the place a name."
@@ -956,6 +1004,9 @@ msgstr ""
 msgid ""
 "Give them the same folder, or clear all the cells but one, save the "
 "workbook, then run 'sort' again."
+msgstr ""
+
+msgid "Gives each file a second name in the album."
 msgstr ""
 
 msgid "Going to a 'to check' folder"
@@ -993,6 +1044,13 @@ msgid "Home and works"
 msgstr ""
 
 msgid "Home: trips are measured from it"
+msgstr ""
+
+msgid ""
+"Host folder holding the albums of 'album': folders of hard links, a "
+"second name for each photo, which take no space. Empty: 'Albums' in the "
+"[classify] target folder. It must be on the disk of the photos, in the "
+"same mounted folder."
 msgstr ""
 
 msgid "Host folder never sorted (analysed and cleaned as usual)."
@@ -1038,6 +1096,9 @@ msgid "Id"
 msgstr ""
 
 msgid "Image cannot be decoded"
+msgstr ""
+
+msgid "In the album already"
 msgstr ""
 
 #, python-brace-format
@@ -1160,6 +1221,15 @@ msgstr ""
 msgid "Line {number} of {path} is corrupt."
 msgstr ""
 
+msgid "Linked"
+msgstr ""
+
+msgid "Linking"
+msgstr ""
+
+msgid "Links to make"
+msgstr ""
+
 msgid "List the HTML reports of previous audits and cleans."
 msgstr ""
 
@@ -1173,6 +1243,9 @@ msgid "Longitude"
 msgstr ""
 
 msgid "MB"
+msgstr ""
+
+msgid "Make the links; without it, only show what the album gathers."
 msgstr ""
 
 #, python-brace-format
@@ -1217,6 +1290,9 @@ msgstr ""
 msgid "Mount points"
 msgstr ""
 
+msgid "Mount the folder of your photos that holds it, without ':ro'."
+msgstr ""
+
 msgid "Mount the folders of that report, or decide again on a new report."
 msgstr ""
 
@@ -1224,6 +1300,9 @@ msgid "Mount the journal folder used by clean: -v \"<folder>:/journal\"."
 msgstr ""
 
 msgid "Mount the reports folder: -v \"<folder>:/reports\"."
+msgstr ""
+
+msgid "Mount the same cache folder as for the audit: -v \"<folder>:/cache\"."
 msgstr ""
 
 msgid "Mount the same journal folder as for clean: -v \"<folder>:/journal\"."
@@ -1365,6 +1444,9 @@ msgstr ""
 msgid "No event left to decide after this one."
 msgstr ""
 
+msgid "No folder for the albums: neither album.root nor classify.target is set."
+msgstr ""
+
 #, python-brace-format
 msgid "No folder to analyse under {path}."
 msgstr ""
@@ -1427,6 +1509,9 @@ msgstr ""
 msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
 msgstr ""
 
+msgid "Not found"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Not photos or videos: {extensions}. These files are only compared byte "
@@ -1468,6 +1553,9 @@ msgid ""
 " of {moved} moves verified."
 msgstr ""
 
+msgid "Nothing to add: the album holds every file found."
+msgstr ""
+
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr ""
 
@@ -1483,6 +1571,9 @@ msgstr ""
 msgid "Nothing was changed: 'classify' only proposes."
 msgstr ""
 
+msgid "Nothing was changed: add --apply to make the links."
+msgstr ""
+
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
@@ -1492,6 +1583,9 @@ msgid "November"
 msgstr ""
 
 msgid "October"
+msgstr ""
+
+msgid "On another disk or mount"
 msgstr ""
 
 msgid ""
@@ -1713,7 +1807,7 @@ msgstr ""
 
 msgid ""
 "Restore every file of a run, from the kept copy, the quarantine or where "
-"it was moved."
+"it was moved; remove the links of an album."
 msgstr ""
 
 msgid ""
@@ -1800,6 +1894,9 @@ msgstr ""
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
 msgstr ""
 
+msgid "Run 'classify' again: its plan sees the files where they are."
+msgstr ""
+
 msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 
@@ -1831,6 +1928,9 @@ msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr ""
 
 msgid "Run the same command again to continue: the files moved are skipped."
+msgstr ""
+
+msgid "Run the same command again: the files linked are skipped."
 msgstr ""
 
 msgid ""
@@ -1907,6 +2007,9 @@ msgstr ""
 msgid "Saving…"
 msgstr ""
 
+msgid "Say what the album gathers."
+msgstr ""
+
 msgid "Scan (override scan.* of config.toml)"
 msgstr ""
 
@@ -1962,6 +2065,14 @@ msgid "Series {number} of {total}"
 msgstr ""
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
+msgstr ""
+
+msgid "Set album.root in config.toml to a folder outside it."
+msgstr ""
+
+msgid ""
+"Set album.root in config.toml, a folder on the disk of your photos, e.g. "
+"root = 'C:\\Photos\\Albums'."
 msgstr ""
 
 #, python-brace-format
@@ -2097,6 +2208,12 @@ msgstr ""
 msgid "The HTML report could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid "The album stopped at the first link refused by the disk."
+msgstr ""
+
+msgid "The album's name: the folder holding its links."
+msgstr ""
+
 msgid ""
 "The categories below are an example to replace with your own, e.g. "
 "Parties, Holidays and outings, School, Sport and leisure, Home and works,"
@@ -2113,6 +2230,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The classify files could not be written to {folder}: {reason}."
+msgstr ""
+
+msgid "The classify workbook to read; the latest classify run's by default."
 msgstr ""
 
 msgid "The classify workbook, edited; the latest classify run's by default."
@@ -2147,6 +2267,18 @@ msgstr ""
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
+msgstr ""
+
+msgid "The files given at least these stars in Windows (1 to 5)."
+msgstr ""
+
+msgid "The files of this category, as the edited workbook says."
+msgstr ""
+
+msgid "The files of this event: its id or its name."
+msgstr ""
+
+msgid "The files the classify rule of this name decided."
 msgstr ""
 
 #, python-brace-format
@@ -2327,6 +2459,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
+msgstr ""
+
+msgid ""
+"This folder is an album of media-hygiene: hard links, second names of "
+"photos kept elsewhere, which take no space. The audits skip it. 'media-"
+"hygiene undo' removes it; deleting it by hand is safe too."
 msgstr ""
 
 msgid "This is not a classify workbook, or it was damaged."
@@ -2599,6 +2737,9 @@ msgstr ""
 msgid "a file changed since the audit"
 msgstr ""
 
+msgid "a file of that name is in the album already"
+msgstr ""
+
 msgid "a file with the same name is still next to it"
 msgstr ""
 
@@ -2729,11 +2870,20 @@ msgstr ""
 msgid "it already exists"
 msgstr ""
 
+msgid "it is gone already"
+msgstr ""
+
 #, python-brace-format
 msgid "it is no longer at {path}: moved or renamed since"
 msgstr ""
 
+msgid "it is no longer in the album: removed already"
+msgstr ""
+
 msgid "it is the kept copy itself, seen through another path"
+msgstr ""
+
+msgid "it is the last name left of this file: kept"
 msgstr ""
 
 msgid "its content changed"
@@ -2831,10 +2981,16 @@ msgstr ""
 msgid "not checked"
 msgstr ""
 
+msgid "not found where the plan or a sort put it"
+msgstr ""
+
 msgid "nothing"
 msgstr ""
 
 msgid "ok"
+msgstr ""
+
+msgid "on another disk or mount: no link possible"
 msgstr ""
 
 msgid "only Czkawka"
@@ -2914,6 +3070,11 @@ msgstr ""
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
+msgid ""
+"the album and this file are on two disks or two mounts: a hard link "
+"cannot cross them"
+msgstr ""
+
 msgid "the copy differs from the original"
 msgstr ""
 
@@ -2962,6 +3123,12 @@ msgid "the value cannot be used"
 msgstr ""
 
 msgid "this category is no longer proposed"
+msgstr ""
+
+msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
+msgstr ""
+
+msgid "this file has too many names already"
 msgstr ""
 
 #, python-format
@@ -3174,6 +3341,12 @@ msgid "{count} files, {undecided} to check or to sort"
 msgstr ""
 
 #, python-brace-format
+msgid "{count} link made: no photo was copied nor moved, no space is used."
+msgid_plural "{count} links made: no photo was copied nor moved, no space is used."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
 msgstr ""
 
@@ -3312,6 +3485,10 @@ msgid "{path} is inside a protected folder: 'sort' never changes those."
 msgstr ""
 
 #, python-brace-format
+msgid "{path} is inside a protected folder: nothing is ever added there."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} is left as it is: no choice applies to it."
 msgstr ""
 
@@ -3331,6 +3508,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} is not a valid decisions file of the review page."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{path} is not in a mounted folder: an album made there would vanish with "
+"the container."
 msgstr ""
 
 #, python-brace-format

@@ -46,19 +46,23 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         summaries: The runs, newest first.
 
     Returns:
-        The table; the *Moved* column only when a run moved files.
+        The table; the *Moved* and *Linked* columns only when a run moved files or
+        made an album.
     """
     moved = any(run.moved for run in summaries)
+    linked = any(run.linked for run in summaries)
     table = Table(title=_("Runs (newest first)"), title_justify="left")
     table.add_column(_("Run"), no_wrap=True)
     table.add_column(_("Command"))
     headers = [_("Deleted"), _("Freed"), _("Quarantined")]
-    headers += [_("Moved"), _("Restored")] if moved else [_("Restored")]
-    for header in headers:
+    headers += [_("Moved")] if moved else []
+    headers += [_("Linked")] if linked else []
+    for header in [*headers, _("Restored")]:
         table.add_column(header, justify="right")
     for run in summaries:
         counts = [human_number(run.deleted), human_size(run.freed)]
         counts += [human_number(run.quarantined)]
         counts += [human_number(run.moved)] if moved else []
+        counts += [human_number(run.linked)] if linked else []
         table.add_row(run.run_id, run.kind.value, *counts, human_number(run.restored))
     return table

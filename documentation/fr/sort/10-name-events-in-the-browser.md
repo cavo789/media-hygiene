@@ -126,4 +126,4 @@ côté.
 
 ---
 
-← [9. Lieux et voyages grâce au GPS](09-places-from-gps.md) · [Documentation](../README.md)
+← [9. Lieux et voyages grâce au GPS](09-places-from-gps.md) · [Documentation](../README.md) · Suite : **[11. Albums](11-albums.md)** →

@@ -37,6 +37,7 @@ error.
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
+| Albums | [`album`](sort/11-albums.md) only adds hard links (second names) in its own folder, journaled; every scan skips that folder. `undo` removes a link only while the photo has another name left. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |
 

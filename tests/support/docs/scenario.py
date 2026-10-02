@@ -32,6 +32,7 @@ COMMANDS_TOO: Final = (
     "config",
     "classify",
     "sort",
+    "album",
     "inventory",
     "places",
 )

@@ -87,6 +87,8 @@ adds one thing to the command of the step before.
    places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
 10. [Name the events in your browser](documentation/en/sort/10-name-events-in-the-browser.md) —
     one event at a time with its photos, named with the keyboard (optional).
+11. [Albums](documentation/en/sort/11-albums.md) — one photo in several folders, as hard links:
+    no copy, no space used (optional).
 
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),

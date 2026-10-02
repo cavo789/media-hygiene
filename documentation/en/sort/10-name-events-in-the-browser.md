@@ -118,4 +118,4 @@ value is, and the page's is listed among the edits left behind.
 
 ---
 
-← [9. Places and trips from the GPS](09-places-from-gps.md) · [Documentation](../README.md)
+← [9. Places and trips from the GPS](09-places-from-gps.md) · [Documentation](../README.md) · Next: **[11. Albums](11-albums.md)** →

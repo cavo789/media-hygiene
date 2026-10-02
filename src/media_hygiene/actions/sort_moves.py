@@ -113,12 +113,20 @@ class Relocator:
         Args:
             folder: The folder.
         """
-        missing: list[Path] = []
-        while not folder.exists():
-            missing.append(folder)
-            folder = folder.parent
-        for created in reversed(missing):
-            entry = self.changes.entry(
-                file_of(created, (0, 0)), ActionKind.CREATE_FOLDER
-            )
-            self.changes.record(entry, created.mkdir)
+        make_folders(self.changes, folder)
+
+
+def make_folders(changes: JournaledChanges, folder: Path) -> None:
+    """Create a folder and its missing parents, each one journaled (`sort`, `album`).
+
+    Args:
+        changes: The journaled changes of the run.
+        folder: The folder.
+    """
+    missing: list[Path] = []
+    while not folder.exists():
+        missing.append(folder)
+        folder = folder.parent
+    for created in reversed(missing):
+        entry = changes.entry(file_of(created, (0, 0)), ActionKind.CREATE_FOLDER)
+        changes.record(entry, created.mkdir)

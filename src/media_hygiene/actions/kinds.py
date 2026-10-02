@@ -27,6 +27,10 @@ class ActionKind(StrEnum):
     MOVE = "move"
     CREATE_FOLDER = "create-folder"
     REMOVE_FOLDER = "remove-folder"
+    # Written by `album`: a hard link made in the album folder (`path`) to a file
+    # (`keeper`), and the marker telling the scans to skip that folder.
+    LINK = "link"
+    MARK_ALBUM = "mark-album"
 
 
 class Phase(StrEnum):
@@ -34,6 +38,7 @@ class Phase(StrEnum):
 
     CLEAN = "clean"
     SORT = "sort"
+    ALBUM = "album"
     UNDO = "undo"
 
 
@@ -45,6 +50,8 @@ class Status(StrEnum):
 
 
 # The phases that change files; `undo` reverses one of them.
-ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT)
-# Actions on folders: nothing is deleted nor freed by them.
-FOLDER_ACTIONS: Final = frozenset({ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER})
+ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM)
+# Actions on folders (an album's marker included): nothing is deleted nor freed by them.
+FOLDER_ACTIONS: Final = frozenset(
+    {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
+)

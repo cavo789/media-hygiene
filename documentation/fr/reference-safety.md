@@ -38,6 +38,7 @@ probable qu'une erreur de disque.
 | Rafales | Jamais touchées par défaut. Les photos que vous [écartez avec `review`](clean/10-review-bursts.md) sont déplacées en quarantaine (jamais supprimées) par `clean --decisions`, après vérification : une photo gardée est toujours là, la photo écartée est bien le fichier montré par le tri. `undo` les remet en place. |
 | Autres types de fichiers | Seulement s'ils sont demandés avec `--ext` : leurs copies sont déplacées en quarantaine (jamais supprimées), et les dossiers de logiciels (`.git`, `node_modules`, `AppData`, …) sont ignorés. |
 | Fichiers compagnons | Jamais touchés à côté de leur photo. Un orphelin est déplacé en quarantaine (jamais supprimé) après vérification : inchangé depuis l'audit, et aucun fichier du même nom à côté de lui. `undo` le remet en place. |
+| Albums | [`album`](sort/11-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés ; toutes les analyses ignorent ce dossier. `undo` ne supprime un lien que tant que la photo garde un autre nom. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
 | Chaque groupe | Garde toujours au moins une copie. |
 

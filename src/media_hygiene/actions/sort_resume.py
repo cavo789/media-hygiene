@@ -31,18 +31,31 @@ def moved_rows(journal_dir: Path, plan_id: str) -> frozenset[str]:
     Returns:
         Their row ids; moves undone since are not listed.
     """
-    rows: set[str] = set()
-    for run_id in list_run_ids(journal_dir):
+    return frozenset(moved_targets(journal_dir, plan_id))
+
+
+def moved_targets(journal_dir: Path, plan_id: str) -> dict[str, Path]:
+    """Tell where earlier `sort` runs of a plan moved its rows.
+
+    Args:
+        journal_dir: Journal mount point.
+        plan_id: The classify plan.
+
+    Returns:
+        Row id → where its file is now (container path); moves undone are left out.
+    """
+    targets: dict[str, Path] = {}
+    for run_id in sorted(list_run_ids(journal_dir)):
         entries = read_journal(journal_file(journal_dir, run_id))
         if run_phase(entries) is not Phase.SORT:
             continue
         undone = {entry.seq for entry in done_states(entries, Phase.UNDO)}
-        rows |= {
-            entry.row
+        targets |= {
+            entry.row: Path(entry.target or entry.path)
             for seq, entry in latest_states(entries, Phase.SORT).items()
             if entry.row and seq not in undone and _moved(entry, plan_id)
         }
-    return frozenset(rows)
+    return targets
 
 
 def _moved(entry: JournalEntry, plan_id: str) -> bool:

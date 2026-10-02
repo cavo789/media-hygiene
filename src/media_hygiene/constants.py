@@ -27,6 +27,8 @@ THUMBNAILS_DIR_NAME: Final = "thumbs"
 PAIRS_DIR_NAME: Final = "pairs"
 MOUNTINFO_PATH: Final = "/proc/self/mountinfo"
 FFPROBE_BINARY: Final = "ffprobe"
+# A folder holding this file is an album of `album`: hard links that every scan skips.
+ALBUM_MARKER: Final = ".media-hygiene-album"
 
 
 class Locale(StrEnum):
