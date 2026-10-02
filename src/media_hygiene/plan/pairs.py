@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from enum import StrEnum
 from typing import TYPE_CHECKING
+
+from media_hygiene.constants import MediaKind
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -13,6 +16,18 @@ if TYPE_CHECKING:
     from media_hygiene.constants import KeepReason
     from media_hygiene.plan.models import KeepDecision
     from media_hygiene.scan.models import MediaFile
+
+
+class Disposal(StrEnum):
+    """What `clean` does with the copies of a folder pair.
+
+    Media copies are deleted; copies of other files (`--ext pdf`) are moved to the
+    quarantine. A pair gathers many groups, so it can hold both.
+    """
+
+    DELETED = "deleted"
+    MOVED = "moved"
+    MIXED = "mixed"
 
 
 @dataclass(frozen=True, slots=True)
@@ -24,6 +39,15 @@ class Copy:
     digest: str
     size: int
     reason: KeepReason | None = None
+
+    @property
+    def moved(self) -> bool:
+        """Tell whether `clean` moves this copy to the quarantine rather than delete it.
+
+        Returns:
+            True for another file than a media (asked for with `--ext`).
+        """
+        return self.removed.kind is MediaKind.OTHER
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +80,18 @@ class FolderPair:
             The byte count.
         """
         return sum(copy.size for copy in self.copies)
+
+    @property
+    def disposal(self) -> Disposal:
+        """Whether the copies are deleted, moved to the quarantine, or both.
+
+        Returns:
+            The disposal of the pair.
+        """
+        moved = sum(copy.moved for copy in self.copies)
+        if not moved:
+            return Disposal.DELETED
+        return Disposal.MOVED if moved == len(self.copies) else Disposal.MIXED
 
 
 def folder_pairs(

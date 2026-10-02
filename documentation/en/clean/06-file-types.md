@@ -97,7 +97,8 @@ copy" breaks one of them.
   LibRaw, videos through `ffprobe`; other types have no check), no preview, no near duplicates.
   An empty file is never "broken": it may be a marker a program needs.
 - **Their copies are moved to the quarantine**, never deleted: `clean` refuses to run without
-  the `/quarantine` mount. `undo` puts them back; `purge` deletes them for good.
+  the `/quarantine` mount. `undo` puts them back; `purge` deletes them for good. The console,
+  the report and its folder pairs say so: *moved to the quarantine*, 📦 instead of 🗑️.
 - **Software folders are skipped**: `.git`, `.hg`, `.svn`, `node_modules`, `.venv`, `venv`,
   `site-packages`, `__pycache__`, `AppData`, `ProgramData`, `Program Files`,
   `Program Files (x86)` and `Windows`, whatever their case.

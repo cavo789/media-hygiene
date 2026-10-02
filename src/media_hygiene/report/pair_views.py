@@ -116,13 +116,14 @@ class PairRenderer:
                     for name in (thumbnail_name(file) for file in samples)
                     if name in self.previews
                 ),
+                disposal=pair.disposal,
             ),
             swappable=pair.kept_in != pair.removed_from
             and all(copy.reason is not KeepReason.PROTECTED for copy in pair.copies),
         )
 
     def page(self, index: int, pair: FolderPair) -> PairPageView:
-        """Describe every copy of one pair, sorted by the name of the deleted file.
+        """Describe every copy of one pair, sorted by the name of the removed file.
 
         Args:
             index: Position of the pair in the report, from 1.
@@ -136,7 +137,11 @@ class PairRenderer:
             pair=self.summary(index, pair),
             copies=tuple(
                 CopyView(
-                    copy.kept.path.name, copy.removed.path.name, copy.size, copy.digest
+                    copy.kept.path.name,
+                    copy.removed.path.name,
+                    copy.size,
+                    copy.digest,
+                    moved=copy.moved,
                 )
                 for copy in copies
             ),

@@ -100,7 +100,8 @@ identique dans deux projets est normal, et supprimer « la copie » casse l'un d
   ce peut être un marqueur dont un programme a besoin.
 - **Leurs copies sont déplacées en quarantaine**, jamais supprimées : `clean` refuse de
   s'exécuter sans le montage `/quarantine`. `undo` les remet en place ; `purge` les supprime
-  définitivement.
+  définitivement. La console, le rapport et ses paires de dossiers le disent : *déplacé en
+  quarantaine*, 📦 au lieu de 🗑️.
 - **Les dossiers de logiciels sont ignorés** : `.git`, `.hg`, `.svn`, `node_modules`, `.venv`,
   `venv`, `site-packages`, `__pycache__`, `AppData`, `ProgramData`, `Program Files`,
   `Program Files (x86)` et `Windows`, quelle que soit leur casse.

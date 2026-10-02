@@ -456,6 +456,12 @@ msgstr ""
 msgid "Deleted from"
 msgstr ""
 
+msgid "Deleted or moved to the quarantine"
+msgstr ""
+
+msgid "Deleted or moved to the quarantine from"
+msgstr ""
+
 msgid "Describe the photos without asking, however many."
 msgstr ""
 
@@ -528,7 +534,17 @@ msgstr ""
 msgid "Each file is checked again just before it moves; none is overwritten."
 msgstr ""
 
+msgid ""
+"Each line: the file kept, and the byte-for-byte identical file deleted "
+"(📦: moved to the quarantine, not a media file)."
+msgstr ""
+
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
+msgstr ""
+
+msgid ""
+"Each line: the file kept, and the byte-for-byte identical file moved to "
+"the quarantine."
 msgstr ""
 
 msgid ""
@@ -1015,6 +1031,9 @@ msgid "Moved files are in /quarantine/{run_id}; 'purge' deletes them."
 msgstr ""
 
 msgid "Moved to the quarantine"
+msgstr ""
+
+msgid "Moved to the quarantine from"
 msgstr ""
 
 msgid "Name"
@@ -1996,6 +2015,18 @@ msgstr ""
 msgid "Will be deleted from"
 msgstr ""
 
+msgid "Will be deleted or moved to the quarantine"
+msgstr ""
+
+msgid "Will be deleted or moved to the quarantine from"
+msgstr ""
+
+msgid "Will be moved to the quarantine"
+msgstr ""
+
+msgid "Will be moved to the quarantine from"
+msgstr ""
+
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 
@@ -2231,6 +2262,9 @@ msgstr ""
 msgid "move to the quarantine"
 msgstr ""
 
+msgid "moved to the quarantine"
+msgstr ""
+
 msgid "no"
 msgstr ""
 
@@ -2244,6 +2278,9 @@ msgid "only media-hygiene"
 msgstr ""
 
 msgid "other file types"
+msgstr ""
+
+msgid "other files than media moved to the quarantine"
 msgstr ""
 
 msgid "outside the mounted folders"
@@ -2445,6 +2482,26 @@ msgid ""
 msgid_plural ""
 "{count} files are both in {kept} (kept) and in {removed} (deleted), "
 "{size} freed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file is both in {kept} (kept) and in {removed} (deleted, or moved"
+" to the quarantine if not a media file), {size} freed."
+msgid_plural ""
+"{count} files are both in {kept} (kept) and in {removed} (deleted, or "
+"moved to the quarantine if not a media file), {size} freed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file is both in {kept} (kept) and in {removed} (moved to the "
+"quarantine), {size} freed."
+msgid_plural ""
+"{count} files are both in {kept} (kept) and in {removed} (moved to the "
+"quarantine), {size} freed."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from media_hygiene.plan.pairs import Disposal
+
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.constants import BrokenReason, RunKind
@@ -29,13 +31,15 @@ class ReportRecord:
 class PairEvidence:
     """What reassures about a folder pair.
 
-    Why its copies are kept, sample previews, and whether the folder losing its copies
-    is entirely a copy of the other one.
+    Why its copies are kept, sample previews, whether the folder losing its copies
+    is entirely a copy of the other one, and whether those copies are deleted, moved
+    to the quarantine (other files than media), or both.
     """
 
     complete: bool = False
     reasons: tuple[str, ...] = ()
     samples: tuple[str, ...] = ()
+    disposal: Disposal = Disposal.DELETED
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,12 +61,13 @@ class FolderPairView:
 
 @dataclass(frozen=True, slots=True)
 class CopyView:
-    """One copy of a folder pair: the file kept, the identical file deleted."""
+    """One copy of a folder pair: the file kept, the identical file deleted or moved."""
 
     kept: str
     removed: str
     size: int
     digest: str
+    moved: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,12 +88,20 @@ class ProofView:
 
 
 @dataclass(frozen=True, slots=True)
+class RemovedView:
+    """A copy `clean` removes: deleted, or moved to the quarantine (not a media)."""
+
+    path: str
+    moved: bool = False
+
+
+@dataclass(frozen=True, slots=True)
 class GroupView:
     """One duplicate group."""
 
     size: int
     keeper: str
-    removable: tuple[str, ...]
+    removable: tuple[RemovedView, ...]
     protected: tuple[str, ...]
     thumbnail: str | None
     proof: ProofView = field(default_factory=ProofView)

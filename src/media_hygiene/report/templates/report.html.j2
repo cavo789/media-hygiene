@@ -7,13 +7,14 @@
   "unreadable-raw": _("RAW file cannot be decoded"),
   "unreadable-video": _("Video cannot be opened"),
 } %}
+{% from "_disposal.html.j2" import removed_from_label, disposal_note %}
 {% block title %}{{ _("media-hygiene report") }} — {{ s.folder }}{% endblock %}
 {% macro group_block(group) %}
 <div class="group">
   <div class="thumb">{% if group.thumbnail %}<img src="{{ group.thumbnail }}" alt="" loading="lazy">{% else %}🎞️{% endif %}</div>
   <ul class="files">
     <li class="keep">✅ {{ group.keeper }} <span class="muted">· {{ group.size | size }} · {{ _("kept") }}{% if group.reason %} · {{ _("why:") }} {{ group.reason }}{% endif %}</span></li>
-    {% for path in group.removable %}<li class="remove">🗑️ {{ path }}</li>{% endfor %}
+    {% for copy in group.removable %}{% if copy.moved %}<li class="remove">📦 {{ copy.path }} <span class="muted">· {{ _("moved to the quarantine") }}</span></li>{% else %}<li class="remove">🗑️ {{ copy.path }}</li>{% endif %}{% endfor %}
     {% for path in group.protected %}<li class="lock">🔒 {{ path }} <span class="muted">· {{ _("protected folder, kept") }}</span></li>{% endfor %}
     <li class="muted">SHA-256 <code>{{ group.proof.digest[:16] }}…</code>
       <details><summary>{{ _("Check it yourself") }}</summary><code class="command">{{ group.proof.command }}</code></details></li>
@@ -92,13 +93,15 @@
 {% if report.pairs %}
 <h2>📁 {{ _("Folder pairs") }}</h2>
 <p class="muted">{{ _("The quickest check: which folder keeps its copies, which folder loses them. Open a pair to see every copy.") }}</p>
+{% set disposals = report.pairs | map(attribute="evidence.disposal") | map("string") | unique | list %}
+{% set disposal = disposals[0] if disposals | length == 1 else "mixed" %}
 <table>
-  <tr><th>{{ _("Samples") }}</th><th>{{ _("Kept in") }}</th><th>{{ _("Deleted from") if is_clean else _("Will be deleted from") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th>{% if not is_clean %}<th>{{ _("Your decision") }}</th>{% endif %}</tr>
+  <tr><th>{{ _("Samples") }}</th><th>{{ _("Kept in") }}</th><th>{{ removed_from_label(disposal, is_clean) }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th>{% if not is_clean %}<th>{{ _("Your decision") }}</th>{% endif %}</tr>
   {% for pair in report.pairs %}
   <tr>
     <td><div class="samples">{% for sample in pair.evidence.samples %}<img src="{{ sample }}" alt="" loading="lazy">{% endfor %}</div></td>
     <td class="keep">{{ pair.kept_in }}{% if pair.evidence.reasons %}<br><span class="muted">{{ _("why:") }} {{ pair.evidence.reasons | join("; ") }}</span>{% endif %}</td>
-    <td class="remove">{{ pair.removed_from }}{% if pair.evidence.complete %}<br><span class="badge">{{ _("entirely a copy: holds nothing else") }}</span>{% endif %}</td>
+    <td class="remove">{{ pair.removed_from }}{% if disposal == "mixed" %}{{ disposal_note(pair.evidence.disposal) }}{% endif %}{% if pair.evidence.complete %}<br><span class="badge">{{ _("entirely a copy: holds nothing else") }}</span>{% endif %}</td>
     <td class="num"><a href="{{ pair.page }}">{{ pair.files | number }}</a></td>
     <td class="num">{{ pair.size | size }}</td>
     {% if not is_clean %}

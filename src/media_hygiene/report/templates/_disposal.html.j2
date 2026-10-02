@@ -1,0 +1,25 @@
+{# What `clean` does with the copies of a folder pair: media copies are deleted, other
+   files (`--ext pdf`) are moved to the quarantine, a pair can hold both ("mixed"). #}
+{% macro removed_from_label(disposal, is_clean) -%}
+{%- if disposal == "moved" -%}{{ _("Moved to the quarantine from") if is_clean else _("Will be moved to the quarantine from") }}
+{%- elif disposal == "mixed" -%}{{ _("Deleted or moved to the quarantine from") if is_clean else _("Will be deleted or moved to the quarantine from") }}
+{%- else -%}{{ _("Deleted from") if is_clean else _("Will be deleted from") }}{%- endif -%}
+{%- endmacro %}
+{% macro removed_label(disposal, is_clean) -%}
+{%- if disposal == "moved" -%}{{ _("Moved to the quarantine") if is_clean else _("Will be moved to the quarantine") }}
+{%- elif disposal == "mixed" -%}{{ _("Deleted or moved to the quarantine") if is_clean else _("Will be deleted or moved to the quarantine") }}
+{%- else -%}{{ _("Deleted") if is_clean else _("Will be deleted") }}{%- endif -%}
+{%- endmacro %}
+{% macro disposal_icon(disposal) -%}
+{%- if disposal == "moved" -%}📦{%- elif disposal == "mixed" -%}🗑️ 📦{%- else -%}🗑️{%- endif -%}
+{%- endmacro %}
+{% macro disposal_note(disposal) -%}
+{%- if disposal == "moved" -%}<br><span class="muted">📦 {{ _("moved to the quarantine") }}</span>
+{%- elif disposal == "mixed" -%}<br><span class="muted">🗑️ 📦 {{ _("other files than media moved to the quarantine") }}</span>
+{%- endif -%}
+{%- endmacro %}
+{% macro copies_legend(disposal) -%}
+{%- if disposal == "moved" -%}{{ _("Each line: the file kept, and the byte-for-byte identical file moved to the quarantine.") }}
+{%- elif disposal == "mixed" -%}{{ _("Each line: the file kept, and the byte-for-byte identical file deleted (📦: moved to the quarantine, not a media file).") }}
+{%- else -%}{{ _("Each line: the file kept, and the byte-for-byte identical file deleted.") }}{%- endif -%}
+{%- endmacro %}

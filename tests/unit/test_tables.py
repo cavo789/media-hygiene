@@ -104,3 +104,27 @@ def test_the_summary_counts_the_groups() -> None:
     table = findings_table(AuditFindings((), CleanPlan((decision,), ())))
     Console(file=buffer, width=120).print(table)
     assert "Groups of identical files" in buffer.getvalue()
+
+
+def other(path: str) -> MediaFile:
+    """A tiny document at `path`, asked for with `--ext`."""
+    return MediaFile(Path(path), 1, 0, MediaKind.OTHER)
+
+
+def test_documents_are_moved_not_deleted() -> None:
+    """A pair of documents says where its copies go."""
+    decision = KeepDecision(
+        "d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)
+    )
+    assert "C:\\B (moved to the quarantine)" in rendered(decision)
+
+
+def test_a_pair_of_documents_and_photos_says_both() -> None:
+    """A pair holding a document and a photo copy names both outcomes."""
+    decisions = (
+        KeepDecision("d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)),
+        KeepDecision("e", 1, media("/data/c/A/y.jpg"), (media("/data/c/B/y.jpg"),)),
+    )
+    assert "(deleted, or moved to the quarantine if not a media file)" in (
+        rendered(*decisions)
+    )

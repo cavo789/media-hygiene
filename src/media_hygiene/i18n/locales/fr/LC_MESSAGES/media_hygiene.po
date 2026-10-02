@@ -569,6 +569,12 @@ msgstr "Supprimés"
 msgid "Deleted from"
 msgstr "Supprimées de"
 
+msgid "Deleted or moved to the quarantine"
+msgstr "Supprimés ou déplacés en quarantaine"
+
+msgid "Deleted or moved to the quarantine from"
+msgstr "Supprimées ou déplacées en quarantaine depuis"
+
 msgid "Describe the photos without asking, however many."
 msgstr "Décrire les photos sans demander, quel que soit leur nombre."
 
@@ -656,10 +662,25 @@ msgstr ""
 "Chaque fichier est revérifié juste avant d'être déplacé ; aucun n'est "
 "écrasé."
 
+msgid ""
+"Each line: the file kept, and the byte-for-byte identical file deleted "
+"(📦: moved to the quarantine, not a media file)."
+msgstr ""
+"Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
+"qui est supprimé (📦 : déplacé en quarantaine, ce n'est pas une photo ni "
+"une vidéo)."
+
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
 msgstr ""
 "Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
 "qui est supprimé."
+
+msgid ""
+"Each line: the file kept, and the byte-for-byte identical file moved to "
+"the quarantine."
+msgstr ""
+"Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
+"qui est déplacé en quarantaine."
 
 msgid ""
 "Each rule has a name and a \"match\": existing_folder (a folder name you "
@@ -1260,6 +1281,9 @@ msgstr ""
 
 msgid "Moved to the quarantine"
 msgstr "Déplacés en quarantaine"
+
+msgid "Moved to the quarantine from"
+msgstr "Déplacées en quarantaine depuis"
 
 msgid "Name"
 msgstr "Nom"
@@ -2431,6 +2455,18 @@ msgstr "Sera supprimé"
 msgid "Will be deleted from"
 msgstr "Seront supprimées de"
 
+msgid "Will be deleted or moved to the quarantine"
+msgstr "Sera supprimé ou déplacé en quarantaine"
+
+msgid "Will be deleted or moved to the quarantine from"
+msgstr "Seront supprimées ou déplacées en quarantaine depuis"
+
+msgid "Will be moved to the quarantine"
+msgstr "Sera déplacé en quarantaine"
+
+msgid "Will be moved to the quarantine from"
+msgstr "Seront déplacées en quarantaine depuis"
+
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 "En TOML, les chemins Windows s'écrivent entre 'apostrophes', p. ex. "
@@ -2693,6 +2729,9 @@ msgstr "fusionné avec un autre événement nommé, dont le nom l'emporte"
 msgid "move to the quarantine"
 msgstr "déplacer en quarantaine"
 
+msgid "moved to the quarantine"
+msgstr "déplacé en quarantaine"
+
 msgid "no"
 msgstr "non"
 
@@ -2707,6 +2746,9 @@ msgstr "media-hygiene seulement"
 
 msgid "other file types"
 msgstr "autres types de fichiers"
+
+msgid "other files than media moved to the quarantine"
+msgstr "fichiers autres que photos et vidéos déplacés en quarantaine"
 
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
@@ -2939,6 +2981,36 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
 "(supprimés), gain de {size}."
+
+#, python-brace-format
+msgid ""
+"{count} file is both in {kept} (kept) and in {removed} (deleted, or moved"
+" to the quarantine if not a media file), {size} freed."
+msgid_plural ""
+"{count} files are both in {kept} (kept) and in {removed} (deleted, or "
+"moved to the quarantine if not a media file), {size} freed."
+msgstr[0] ""
+"{count} fichier est à la fois dans {kept} (gardé) et dans {removed} "
+"(supprimé, ou déplacé en quarantaine si ce n'est pas une photo ni une "
+"vidéo), gain de {size}."
+msgstr[1] ""
+"{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
+"(supprimés, ou déplacés en quarantaine si ce ne sont pas des photos ni "
+"des vidéos), gain de {size}."
+
+#, python-brace-format
+msgid ""
+"{count} file is both in {kept} (kept) and in {removed} (moved to the "
+"quarantine), {size} freed."
+msgid_plural ""
+"{count} files are both in {kept} (kept) and in {removed} (moved to the "
+"quarantine), {size} freed."
+msgstr[0] ""
+"{count} fichier est à la fois dans {kept} (gardé) et dans {removed} "
+"(déplacé en quarantaine), gain de {size}."
+msgstr[1] ""
+"{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
+"(déplacés en quarantaine), gain de {size}."
 
 #, python-brace-format
 msgid ""

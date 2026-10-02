@@ -10,7 +10,7 @@ from rich.text import Text
 
 from media_hygiene.console.formatting import human_duration, human_number, human_size
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.plan.pairs import folder_pairs
+from media_hygiene.plan.pairs import Disposal, folder_pairs
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
@@ -121,18 +121,48 @@ def _pair_sentence(pair: FolderPair, mapper: HostPathMapper) -> Text:
             pair.files,
         )
     else:
-        sentence = ngettext(
-            "{count} file is both in {kept} (kept) and in {removed} (deleted),"
-            " {size} freed.",
-            "{count} files are both in {kept} (kept) and in {removed} (deleted),"
-            " {size} freed.",
-            pair.files,
-        )
+        sentence = _between_folders(pair)
     if pair.complete:
         sentence += " " + _(
             "{removed} holds nothing else: it is entirely a copy of {kept}."
         )
     return Text.from_markup(sentence.format(**values))
+
+
+def _between_folders(pair: FolderPair) -> str:
+    """The sentence of a pair of two folders, worded after what happens to the copies.
+
+    Args:
+        pair: The folder pair.
+
+    Returns:
+        The translated sentence, with `{count}`, `{kept}`, `{removed}`, `{size}` fields.
+    """
+    match pair.disposal:
+        case Disposal.MOVED:
+            return ngettext(
+                "{count} file is both in {kept} (kept) and in {removed} (moved to the"
+                " quarantine), {size} freed.",
+                "{count} files are both in {kept} (kept) and in {removed} (moved to the"
+                " quarantine), {size} freed.",
+                pair.files,
+            )
+        case Disposal.MIXED:
+            return ngettext(
+                "{count} file is both in {kept} (kept) and in {removed} (deleted, or"
+                " moved to the quarantine if not a media file), {size} freed.",
+                "{count} files are both in {kept} (kept) and in {removed} (deleted, or"
+                " moved to the quarantine if not a media file), {size} freed.",
+                pair.files,
+            )
+        case _:
+            return ngettext(
+                "{count} file is both in {kept} (kept) and in {removed} (deleted),"
+                " {size} freed.",
+                "{count} files are both in {kept} (kept) and in {removed} (deleted),"
+                " {size} freed.",
+                pair.files,
+            )
 
 
 def outcome_table(outcome: Outcome, title: str) -> Table:
