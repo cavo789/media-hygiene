@@ -13,15 +13,15 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Final, cast
 
 from openpyxl import Workbook
-from openpyxl.cell import WriteOnlyCell
 from openpyxl.utils import get_column_letter
 
-from media_hygiene.classify.workbook.cells import header_cell
+from media_hygiene.classify.workbook.cells import header_cell, text_safe_cell
 from media_hygiene.i18n import _
 from media_hygiene.report.csv_export import (
     CSV_DATE_FORMAT,
     CSV_ENCODING,
     list_separator,
+    spreadsheet_text,
 )
 from media_hygiene.report.inventory_columns import DATE_FORMAT, columns
 from media_hygiene.report.inventory_summary import InventorySummary
@@ -39,8 +39,6 @@ if TYPE_CHECKING:
     from media_hygiene.report.inventory_entries import Entry
 
 _DECIMAL_POINT: Final = "."
-_FORMULA: Final = "="
-_STRING: Final = "s"
 _SUMMARY_WIDTHS: Final = (60, 30, 12)
 
 
@@ -114,9 +112,7 @@ def _cell(sheet: WriteOnlyWorksheet, column: Column, entry: Entry) -> Cell:
         The cell, with the number format of its column; text stays text.
     """
     value = column.value(entry)
-    written = WriteOnlyCell(sheet, value=value)
-    if isinstance(value, str) and value.startswith(_FORMULA):
-        written.data_type = _STRING  # a name such as "=1.jpg" is text, not a formula
+    written = text_safe_cell(sheet, value)
     if column.number_format is not None:
         written.number_format = column.number_format
     return written
@@ -130,7 +126,7 @@ def _text(value: Value, separator: str) -> str:
         separator: `;` (decimal comma) or `,` (decimal point).
 
     Returns:
-        The text.
+        The text; a name that starts like a formula keeps a leading apostrophe.
     """
     if value is None:
         return ""
@@ -138,6 +134,8 @@ def _text(value: Value, separator: str) -> str:
         return value.strftime(CSV_DATE_FORMAT)
     if isinstance(value, float) and separator != ",":
         return repr(value).replace(_DECIMAL_POINT, ",")
+    if isinstance(value, str):
+        return spreadsheet_text(value)
     return str(value)
 
 
@@ -160,13 +158,13 @@ def _write_summary(
     headers = (_("Folder"), _("Last complete audit (UTC)"))
     sheet.append([header_cell(created, header) for header in headers])
     for folder, walked_at in roots:
-        when = WriteOnlyCell(created, value=walked_at.replace(tzinfo=None))
+        when = text_safe_cell(created, walked_at.replace(tzinfo=None))
         when.number_format = DATE_FORMAT
-        sheet.append([folder, when])
+        sheet.append([text_safe_cell(created, folder), when])
     if not roots:
         sheet.append([_("No audit has walked a folder completely yet.")])
     sheet.append([])
     counts = (_("Topic"), _("Value"), _("Files"))
     sheet.append([header_cell(created, header) for header in counts])
     for row in summary.rows():
-        sheet.append(list(row))
+        sheet.append([text_safe_cell(created, value) for value in row])

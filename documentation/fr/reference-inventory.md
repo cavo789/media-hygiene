@@ -97,6 +97,10 @@ Un ciel de nuit est sombre exprès : changez une valeur et exportez à nouveau, 
 `inventory --format csv` écrit la feuille Fichiers seule, en `inventory.csv`, comme `plan.csv` :
 en français, `;` entre les colonnes et une virgule décimale, pour qu'Excel l'ouvre tel quel.
 
+Un texte qui commence par `=`, `+`, `-` ou `@` (un fichier nommé `-2019 voyage.jpg`) est écrit
+précédé d'une apostrophe, `'-2019 voyage.jpg` : sinon Excel le calculerait et afficherait
+`#NOM?`. Le classeur (`xlsx`) n'en a pas besoin : il garde ces noms tels quels.
+
 ## Le cache lui-même
 
 Le cache est un fichier SQLite, `index.sqlite`, dans le volume `media-hygiene-cache`. Tout

@@ -92,6 +92,10 @@ A night sky is dark on purpose: change a value and export again, nothing is read
 `inventory --format csv` writes the Files sheet alone, as `inventory.csv`, like `plan.csv`: in
 French, `;` between the columns and a decimal comma, so that Excel opens it as is.
 
+A text that starts with `=`, `+`, `-` or `@` (a file named `-2019 trip.jpg`) is written with a
+leading apostrophe, `'-2019 trip.jpg`: otherwise Excel would compute it and show `#NAME?`. The
+workbook (`xlsx`) needs no apostrophe: it keeps such names exactly.
+
 ## The cache itself
 
 The cache is a SQLite file, `index.sqlite`, in the `media-hygiene-cache` volume. Any SQLite

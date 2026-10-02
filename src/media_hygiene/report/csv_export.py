@@ -2,7 +2,9 @@
 
 The HTML report caps the groups it lists; this file never does. Excel reads a CSV with
 the list separator of the regional settings (`;` in French, `,` in English) and needs a
-byte order mark to read accents: both follow the interface language.
+byte order mark to read accents: both follow the interface language. Excel computes a
+cell that starts with `=`, `+`, `-` or `@`: such text gets a leading apostrophe, so that
+a file named `-2019 trip.jpg` shows its name, not `#NAME?` (`spreadsheet_text`).
 """
 
 from __future__ import annotations
@@ -32,6 +34,21 @@ _DEFAULT_SEPARATOR: Final = ","
 CSV_ENCODING: Final = "utf-8-sig"
 CSV_DATE_FORMAT: Final = "%Y-%m-%d %H:%M:%S"
 _NANOSECONDS: Final = 1_000_000_000
+# What makes Excel read a cell as a formula, and the prefix that keeps it text.
+_FORMULA_STARTS: Final = ("=", "+", "-", "@", "\t", "\r")
+_TEXT_PREFIX: Final = "'"
+
+
+def spreadsheet_text(text: str) -> str:
+    """Text that Excel shows as it is, never computes.
+
+    Args:
+        text: A cell's text: a name, a folder, a camera.
+
+    Returns:
+        The text, with a leading apostrophe when it starts like a formula.
+    """
+    return _TEXT_PREFIX + text if text.startswith(_FORMULA_STARTS) else text
 
 
 def list_separator() -> str:
@@ -142,16 +159,17 @@ class _Rows:
             The row, in host paths.
         """
         modified = datetime.fromtimestamp(file.mtime_ns / _NANOSECONDS, UTC)
-        return (
+        texts = (
             line.group,
             line.digest,
-            file.size,
+            str(file.size),
             line.action,
             self.mapper.to_host(file.path),
             self.mapper.to_host(file.path.parent),
             modified.strftime(CSV_DATE_FORMAT),
             line.detail,
         )
+        return tuple(spreadsheet_text(text) for text in texts)
 
 
 def _describe(item: BrokenFile) -> str:

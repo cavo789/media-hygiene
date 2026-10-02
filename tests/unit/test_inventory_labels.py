@@ -123,6 +123,18 @@ def test_csv_text_follows_the_list_separator() -> None:
     assert _text(7, ";") == "7"
 
 
+def test_csv_text_that_starts_like_a_formula_keeps_an_apostrophe() -> None:
+    """Decided in TODO 0055: Excel shows `'-2019 trip.jpg`, never `#NAME?`.
+
+    A number stays a number: a negative longitude has no apostrophe.
+    """
+    for name in ("=1.jpg", "+1.jpg", "-2019 trip.jpg", "@home.jpg"):
+        assert _text(name, ",") == f"'{name}"
+    assert _text("IMG_0001.jpg", ",") == "IMG_0001.jpg"
+    assert _text(-3.5, ",") == "-3.5"
+    assert _text(-3.5, ";") == "-3,5"
+
+
 def test_a_name_starting_with_equals_stays_text() -> None:
     """`=1.jpg` is a file name, never a formula Excel would refuse."""
     sheet = Workbook(write_only=True).create_sheet()

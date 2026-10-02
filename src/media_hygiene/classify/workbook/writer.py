@@ -21,6 +21,7 @@ from media_hygiene.classify.workbook.cells import (
     header_cell,
     locked_cell,
     padded,
+    text_safe_cell,
 )
 from media_hygiene.classify.workbook.sheets import META_SHEET, Labels, fingerprint
 from media_hygiene.classify.workbook.specs import locked_keys, sheet_specs
@@ -72,7 +73,8 @@ def _write_meta(
         written: The labels used and the locked keys, in the workbook's order.
     """
     labels, keys = written
-    meta = cast("WriteOnly", book.create_sheet(META_SHEET))
+    created: WriteOnlyWorksheet = book.create_sheet(META_SHEET)
+    meta = cast("WriteOnly", created)
     meta.sheet_state = "veryHidden"
     meta.protection.sheet = True
     listed = [labels.stay, *plan.categories()]
@@ -80,7 +82,7 @@ def _write_meta(
     for index in range(max(len(pairs), len(listed))):
         key, value = pairs[index] if index < len(pairs) else (None, None)
         choice = listed[index] if index < len(listed) else None
-        meta.append([key, value, None, choice])
+        meta.append([key, value, None, text_safe_cell(created, choice)])
 
 
 def _filled(rows: list[Row], cells: Mapping[str, Mapping[int, str]]) -> list[Row]:
