@@ -13,7 +13,8 @@
 0056 gathers, as checkboxes, every decision and manual check that the PARTIAL TODOs (0009, 0027,
 0029, 0030, 0032, 0040, 0041, 0053), BLOCKED 0045 and the choices applied in DONE TODOs leave to
 the maintainer; it is worked through progressively, by the maintainer, and closes the PARTIAL
-files one by one. 0054 (bump `pillow-heif` to 1.9.0 for the libheif 1.23.5 security fixes) can
+files one by one; TODO 0057 (no loss without `purge`) added its own choices and Windows checks
+to it. 0054 (bump `pillow-heif` to 1.9.0 for the libheif 1.23.5 security fixes) can
 only run once 1.9.0 is on PyPI.
 
 | # | Lot | Priority | TODOs | Prompt |

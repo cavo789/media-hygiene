@@ -27,11 +27,13 @@ How to use it:
   attached output written more than ~1 s after start
   (`docker run --rm alpine sh -c 'sleep 3; echo late-output'` prints nothing).
   Then ask Claude to run, at low load, one step at a time:
-  - [ ] `e2e` once: not run since TODO 0029 although the image changed (0030, 0031, 0041, 0044,
+  - [x] `e2e` once: not run since TODO 0029 although the image changed (0030, 0031, 0041, 0044,
     0005: new commands, new `ffmpeg` stage).
-  - [ ] `docs_screenshots` (en, then fr): `config.txt` lacks `places.*` and `album.root`; the help
+    → run by TODO 0057 on 2026-10-03: 5 passed.
+  - [x] `docs_screenshots` (en, then fr): `config.txt` lacks `places.*` and `album.root`; the help
     blocks of `places`, `review-sort`, `album`, `undo`, `--tier` were filled by hand from the
     sources and must be confirmed.
+    → run by TODO 0057 on 2026-10-03 (en and fr): every capture and help block regenerated.
 
 ## Part 2 — PARTIAL and BLOCKED TODOs
 
@@ -158,6 +160,18 @@ How to use it:
   folder names are compared exactly (`Vacances` ≠ `vacances`). Keep case-sensitive?
 - [ ] **0055 CSV:** text starting with `= + - @` gets a leading apostrophe in `plan.csv` and
   `inventory.csv` (Excel then computes nothing, but may show the apostrophe). Keep, or raw text?
+- [ ] **0057 `--delete`:** immediate deletion is a `clean --delete` flag only, no `[clean]`
+  setting (a config value would make deletion permanent unnoticed). Keep?
+- [ ] **0057 empty files:** `clean` still deletes 0-byte files (nothing in them; `undo` recreates
+  them) rather than quarantining them. Keep?
+- [ ] **0057 albums:** after a later `sort` moved the original, `undo` of the album keeps the
+  album's name (the recorded original is gone) and says why. Keep, or look the original up in
+  the sort journals?
+- [ ] **0057 tool folders:** a quarantine, journal, cache or reports folder inside (or around) a
+  photo folder is refused (audit, classify, clean, sort, album, purge, `reports --prune`; never
+  `undo`), unless it lies in `[folders] excluded`. Refuse, or only warn?
+- [ ] **0057 console:** the 🔒 line and the `:ro` tip (with the safety page URL) print at every
+  read-only run that reads the photos while a photo mount is writable. Too chatty?
 
 ## Part 4 — Checks on the Windows machine (DONE TODOs, untested here)
 
@@ -173,6 +187,9 @@ How to use it:
   copies.
 - [ ] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
   and home videos named `720p`/`1080p` not for downloads.
+- [ ] **0057:** a `sort` on one NTFS mount of Docker Desktop: renamed (instant) or copied file by
+  file (`renameat2` unsupported there falls back to the verified copy: slower, same result)?
+  And `-v "C:\Photos\quarantine:/quarantine"` next to `-v "C:\Photos:/data/c/Photos"` is refused.
 - [ ] **0023, 0032:** re-read the new French wordings ("déplacées en quarantaine", inventory
   headers).
 
