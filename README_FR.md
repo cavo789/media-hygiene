@@ -3,6 +3,11 @@
 Trouve et nettoie en toute sécurité les photos et vidéos en double, réparties sur plusieurs
 dossiers et plusieurs disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL.
 
+[![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
+[![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
+
+L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) (amd64 et arm64).
+
 🇬🇧 [English version](README.md)
 
 ![Un audit dans le terminal : 83 fichiers média analysés, 20 groupes de fichiers identiques, 32 copies en trop, 13,9 Mo à libérer, puis les dossiers partageant des fichiers identiques, chaque paire disant quel dossier garde ses copies](documentation/fr/images/terminal-audit.webp)
@@ -17,7 +22,7 @@ docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --loc
 
 Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
 (lecture seule) fait interdire toute écriture par Docker lui-même. Le premier lancement
-télécharge l'image tout seul. [Votre premier audit](documentation/fr/start/01-first-audit.md) explique
+télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul. [Votre premier audit](documentation/fr/start/01-first-audit.md) explique
 cette commande et son résultat, morceau par morceau.
 
 Ce qu'elle fait :

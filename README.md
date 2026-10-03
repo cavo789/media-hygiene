@@ -3,6 +3,11 @@
 Find and safely clean duplicate photos and videos spread over several folders and disks — from
 one `docker run`, on Windows (PowerShell) or WSL.
 
+[![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
+[![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
+
+The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) (amd64 and arm64).
+
 🇫🇷 [Version française](README_FR.md)
 
 ![An audit in the terminal: 83 media files scanned, 20 groups of identical files, 32 extra copies, 13.9 MB to free, then the folders sharing identical files, each pair saying which folder keeps its copies](documentation/en/images/terminal-audit.webp)
@@ -16,7 +21,7 @@ docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
 
 It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
-(read-only) makes Docker itself forbid any write. The first run downloads the image by itself.
+(read-only) makes Docker itself forbid any write. The first run downloads the image [from Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) by itself.
 [Your first audit](documentation/en/start/01-first-audit.md) explains this command and its result, part
 by part.
 
