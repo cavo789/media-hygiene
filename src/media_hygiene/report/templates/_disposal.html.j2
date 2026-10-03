@@ -1,5 +1,6 @@
-{# What `clean` does with the copies of a folder pair: media copies are deleted, other
-   files (`--ext pdf`) are moved to the quarantine, a pair can hold both ("mixed"). #}
+{# What `clean` does with the copies of a folder pair: moved to the quarantine; with
+   `--delete`, media copies are deleted and other files (`--ext pdf`) moved, a pair can
+   hold both ("mixed"). #}
 {% macro removed_from_label(disposal, is_clean) -%}
 {%- if disposal == "moved" -%}{{ _("Moved to the quarantine from") if is_clean else _("Will be moved to the quarantine from") }}
 {%- elif disposal == "mixed" -%}{{ _("Deleted or moved to the quarantine from") if is_clean else _("Will be deleted or moved to the quarantine from") }}

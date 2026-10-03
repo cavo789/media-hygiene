@@ -37,6 +37,7 @@ def test_sort_shows_what_it_read_moves_and_proves(
     assert result.exit_code == 0, result.output
     assert "1 edit read; workbook saved on" in result.output
     assert "Files to move" in result.output
+    assert "🛟 Each file is moved, never over another one nor deleted" in result.output
     assert "Nothing lost: " in result.output
     assert "manifest.json" in result.output
     assert "undo" in result.output

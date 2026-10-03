@@ -47,7 +47,7 @@ def test_every_file_of_the_plan_is_listed_once(locations: Locations) -> None:
     assert [row[4] for row in body if row[7].startswith("Orphan sidecar")] == [
         "C:\\Users\\Public\\Pictures\\Été 2019\\IMG_0002.xmp"
     ]
-    deleted = [row for row in body if row[3] == "delete" and row[0]]
+    deleted = [row for row in body if row[3] == "move to the quarantine" and row[0]]
     assert len(deleted) == plan.removable_count
     assert any(row[4].endswith("IMG_0001 (1).jpg") for row in deleted)
     assert any("Empty file (0 bytes)" in row[7] for row in body)

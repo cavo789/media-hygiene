@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
@@ -9,7 +10,7 @@ from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.constants import MediaKind
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.clean import CleanService
+from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.crosscheck import czkawka_command
 from tests.support.cli import run
 from tests.support.media import MediaFactory
@@ -28,7 +29,7 @@ _LOGO = b'<svg xmlns="http://www.w3.org/2000/svg"/>'
 def test_a_mixed_category_decodes_images_and_quarantines_the_rest(
     locations: Locations,
 ) -> None:
-    """PNG files stay images (deleted copy), SVG files are other files (moved)."""
+    """PNG files stay images (deleted with --delete), SVG files are other files."""
     media = MediaFactory(locations.data_dir)
     media.copy(media.image("c/Site/logo.png", seed=1), "c/Site/old/logo.png")
     media.image("c/Site/photo.jpg", seed=2)
@@ -41,8 +42,9 @@ def test_a_mixed_category_decodes_images_and_quarantines_the_rest(
     kinds = {decision.keeper.kind for decision in findings.plan.decisions}
     assert kinds == {MediaKind.IMAGE, MediaKind.OTHER}
     service = CleanService(runtime, NullProgress())
-    service.ensure_ready()
-    run_id, outcome = service.execute(service.feasible(findings.plan))
+    service.ensure_ready(CleanMode(delete=True))
+    plan = replace(findings.plan, delete_copies=True)
+    run_id, outcome = service.execute(service.feasible(plan))
     assert outcome.quarantined == 1
     entries = read_journal(journal_file(locations.journal_dir, run_id))
     assert {entry.action for entry in entries} == {

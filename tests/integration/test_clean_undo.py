@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
 from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.clean import CleanService
+from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.undo import resolve_run_id, undo_run
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
@@ -35,12 +36,13 @@ def manifest(root: Path) -> Manifest:
     }
 
 
-def clean(runtime: Runtime) -> str:
-    """Audit then clean; return the run identifier."""
+def clean(runtime: Runtime, *, delete: bool = False) -> str:
+    """Audit then clean (`--delete` when asked); return the run identifier."""
     findings = AuditService(runtime, NullProgress()).run()
     service = CleanService(runtime, NullProgress())
-    service.ensure_ready()
-    run_id, _outcome = service.execute(service.feasible(findings.plan))
+    service.ensure_ready(CleanMode(delete=delete))
+    plan = replace(findings.plan, delete_copies=delete)
+    run_id, _outcome = service.execute(service.feasible(plan))
     return run_id
 
 
@@ -98,12 +100,13 @@ def test_changed_keeper_blocks_the_deletion(locations: Locations) -> None:
 
 
 def test_undo_skips_when_the_kept_copy_is_gone(locations: Locations) -> None:
-    """A deleted duplicate cannot be rebuilt once its keeper disappeared."""
+    """A duplicate deleted with --delete cannot be rebuilt once its keeper is gone."""
     build_demo(locations.data_dir)
     runtime = make_runtime(locations)
     findings = AuditService(runtime, NullProgress()).run()
     keeper = findings.plan.decisions[0].keeper.path
-    run_id, _outcome = CleanService(runtime, NullProgress()).execute(findings.plan)
+    plan = replace(findings.plan, delete_copies=True)
+    run_id, _outcome = CleanService(runtime, NullProgress()).execute(plan)
     keeper.unlink()
     outcome = undo_run(runtime, run_id, NullProgress())
     assert any("gone" in incident.reason for incident in outcome.skipped)

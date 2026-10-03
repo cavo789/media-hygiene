@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 
 from media_hygiene.actions.journal import journal_file, read_journal
 from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.no_overwrite import rename_no_replace
 from media_hygiene.actions.runs import list_run_ids
 from tests.support.runtime import make_runtime
 from tests.support.sorting import (
@@ -22,6 +22,8 @@ from tests.support.sorting import (
 )
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.paths.locations import Locations
 
 _BEFORE_KILL = 3
@@ -45,19 +47,19 @@ def test_a_killed_sort_resumes_where_it_stopped(
     start, tree = snapshot(locations.data_dir), folders(locations.data_dir)
     runtime = make_runtime(locations)
     name_first_event(classify(runtime))
-    rename = Path.rename
+    rename = rename_no_replace
     calls: list[Path] = []
 
-    def dying(self: Path, target: Path) -> Path:
-        calls.append(self)
+    def dying(source: Path, target: Path) -> None:
+        calls.append(source)
         if len(calls) > _BEFORE_KILL:
             raise KeyboardInterrupt
-        return rename(self, target)
+        rename(source, target)
 
-    monkeypatch.setattr(Path, "rename", dying)
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", dying)
     with pytest.raises(KeyboardInterrupt):
         sort(runtime)
-    monkeypatch.setattr(Path, "rename", rename)
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", rename)
     second = sort(runtime)
     assert not second.moves.outcome.skipped  # nothing reported missing
     assert not second.moves.outcome.failed

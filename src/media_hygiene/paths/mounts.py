@@ -10,12 +10,15 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import MOUNTINFO_PATH
+from media_hygiene.paths.host_folders import host_folder
 from media_hygiene.paths.host_sources import windows_source
 
 if TYPE_CHECKING:
+    from media_hygiene.paths.host_folders import HostFolder
     from media_hygiene.paths.locations import Locations
     from media_hygiene.paths.mount_kind import MountKind
 
+_DEVICE_FIELD = 2
 _ROOT_FIELD = 3
 _MOUNT_POINT_FIELD = 4
 _SEPARATOR = "-"
@@ -69,7 +72,8 @@ def _parse(fields: list[str]) -> Mount | None:
     if len(tail) < _TAIL_FIELDS:
         return Mount(point, None)
     root = _unescape(fields[_ROOT_FIELD])
-    return Mount(point, windows_source(root, tail[0], _unescape(tail[1])))
+    windows = windows_source(root, tail[0], _unescape(tail[1]))
+    return Mount(point, windows, host_folder(fields[_DEVICE_FIELD], root, windows))
 
 
 def is_read_only(path: Path) -> bool:
@@ -112,6 +116,7 @@ class Mount:
 
     point: Path
     windows_source: str | None
+    host: HostFolder | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,6 +125,7 @@ class MountTable:
 
     mount_points: frozenset[Path]
     host_sources: tuple[tuple[Path, str], ...] = ()
+    host_folders: tuple[tuple[Path, HostFolder], ...] = ()
 
     @classmethod
     def current(cls, mountinfo: Path = Path(MOUNTINFO_PATH)) -> MountTable:
@@ -139,6 +145,7 @@ class MountTable:
                 for mount in mounts
                 if mount.windows_source is not None
             ),
+            tuple((mount.point, mount.host) for mount in mounts if mount.host),
         )
 
     def is_persistent(self, locations: Locations, kind: MountKind) -> bool:

@@ -79,11 +79,11 @@ def test_quarantined_files_need_the_quarantine(
 
 
 def test_deletions_alone_are_undone_without_quarantine(tmp_path: Path) -> None:
-    """A clean run without quarantine rebuilds its copies from the kept ones."""
+    """A `clean --delete` without quarantine rebuilds its copies from the kept ones."""
     locations = make_locations(tmp_path, MountKind.QUARANTINE)
     build_demo(locations.data_dir)
     before = manifest(locations.data_dir)
-    run_id = clean(make_runtime(locations))
+    run_id = clean(make_runtime(locations), delete=True)
     assert manifest(locations.data_dir) != before
     runtime = make_runtime(locations, OTHER_FILES)
     assert runtime.settings.scan.other_files

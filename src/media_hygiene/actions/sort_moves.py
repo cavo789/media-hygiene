@@ -14,7 +14,11 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.quarantine import move_verified
+from media_hygiene.actions.no_overwrite import (
+    COPY_INSTEAD,
+    copy_then_remove,
+    rename_no_replace,
+)
 from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
 from media_hygiene.scan.filters import media_kind
@@ -87,7 +91,7 @@ class Relocator:
             OSError: The move failed (the journal keeps it `pending`).
         """
         if os.path.lexists(target):
-            raise FileExistsError(errno.EEXIST, _("the target exists"), str(target))
+            raise target_exists(target)
         self.make_folder(target.parent)
         entry = self.changes.entry(file, ActionKind.MOVE).model_copy(
             update={"target": str(target), "plan": self._context.plan_id, "row": row}
@@ -95,13 +99,18 @@ class Relocator:
         journal = self._context.changes.journal
         journal.record(entry)
         try:
-            file.path.rename(target)
+            rename_no_replace(file.path, target)
+        except FileExistsError:
+            raise target_exists(target) from None
         except OSError as exc:
-            if exc.errno != errno.EXDEV:
+            if exc.errno not in COPY_INSTEAD:
                 raise
             entry = entry.model_copy(update={"sha256": full_digest(file.path)})
             journal.record(entry)
-            move_verified(file.path, target)
+            try:
+                copy_then_remove(file.path, target)
+            except FileExistsError:
+                raise target_exists(target) from None
         journal.record(entry.as_done())
         self._tally.done += 1
         self._tally.bytes_done += file.size
@@ -114,6 +123,18 @@ class Relocator:
             folder: The folder.
         """
         make_folders(self.changes, folder)
+
+
+def target_exists(target: Path) -> FileExistsError:
+    """The refusal of a move whose target exists: nothing is replaced, nothing moves.
+
+    Args:
+        target: Where the file was to go.
+
+    Returns:
+        The error to raise.
+    """
+    return FileExistsError(errno.EEXIST, _("the target exists"), str(target))
 
 
 def make_folders(changes: JournaledChanges, folder: Path) -> None:

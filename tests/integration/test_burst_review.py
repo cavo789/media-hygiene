@@ -79,7 +79,7 @@ def test_shots_set_aside_need_a_quarantine(
     """Refused before the audit, with a tip."""
     write_decisions(locations, shots(0), shots(2))
     monkeypatch.delenv("MEDIA_HYGIENE_QUARANTINE_DIR")
-    result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
+    result = run(cli, "clean", "--yes", "--delete", "--decisions", "decisions.json")
     assert result.exit_code == 1
     assert "Burst shots you set aside go to /quarantine" in result.output
     assert "Audit summary" not in result.output

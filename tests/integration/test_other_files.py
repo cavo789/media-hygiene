@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 import pytest
@@ -13,7 +14,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.clean import CleanService
+from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.undo import undo_run
 from tests.support.media import MediaFactory
 from tests.support.runtime import make_locations, make_runtime, output_of
@@ -47,7 +48,7 @@ def documents_tree(data_dir: Path) -> Path:
 def test_other_files_are_compared_and_their_copies_quarantined(
     locations: Locations,
 ) -> None:
-    """The PDF copy is moved, the photo copy deleted, and `undo` restores both."""
+    """With --delete: the PDF copy is moved, the photo copy deleted; undo: both back."""
     copy = documents_tree(locations.data_dir)
     runtime = make_runtime(locations, _ASKED)
     findings = AuditService(runtime, NullProgress()).run()
@@ -57,10 +58,12 @@ def test_other_files_are_compared_and_their_copies_quarantined(
     assert set(kinds) == {MediaKind.IMAGE, MediaKind.OTHER}
     document = kinds[MediaKind.OTHER]
     assert len(document.removable) == 1  # node_modules is skipped
-    assert findings.plan.moved_copies == 1
+    assert findings.plan.moved_copies == len(findings.plan.decisions)
+    plan = replace(findings.plan, delete_copies=True)
+    assert plan.moved_copies == 1
     service = CleanService(runtime, NullProgress())
-    service.ensure_ready()
-    run_id, outcome = service.execute(service.feasible(findings.plan))
+    service.ensure_ready(CleanMode(delete=True))
+    run_id, outcome = service.execute(service.feasible(plan))
     assert outcome.quarantined == 1
     assert not copy.exists()
     entries = read_journal(journal_file(locations.journal_dir, run_id))
@@ -75,4 +78,4 @@ def test_other_files_need_the_quarantine(tmp_path: Path) -> None:
     locations = make_locations(tmp_path, MountKind.QUARANTINE)
     runtime = make_runtime(locations, _ASKED)
     with pytest.raises(MountError, match="go to /quarantine"):
-        CleanService(runtime, NullProgress()).ensure_ready()
+        CleanService(runtime, NullProgress()).ensure_ready(CleanMode(delete=True))

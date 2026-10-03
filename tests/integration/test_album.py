@@ -42,6 +42,7 @@ def test_an_album_of_a_category_is_linked_skipped_and_undone(
     made = run(cli, "album", "Noces", "--category", WEDDING_CATEGORY, "--apply")
     assert made.exit_code == 0, made.output
     assert "3 links made" in made.output
+    assert "🛟 An album only adds names (hard links)" in made.output
     links = album_files(locations, "Noces")
     assert sorted(links) == ["DSC_0000.jpg", "DSC_0001.jpg", "DSC_0002.jpg"]
     for name, link in links.items():
@@ -107,7 +108,7 @@ def test_undo_keeps_a_link_that_became_the_last_name(
     run(cli, "album", "Noces", "--category", WEDDING_CATEGORY, "--apply")
     (photos / WEDDING_CATEGORY / "DSC_0000.jpg").unlink()
     undone = run(cli, "undo")
-    assert "last name left" in flat(undone.output)
+    assert "may be the last name of the photo" in flat(undone.output)
     assert list(album_files(locations, "Noces")) == ["DSC_0000.jpg"]
 
 

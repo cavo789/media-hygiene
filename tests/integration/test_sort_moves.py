@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import errno
 import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalWriter, journal_file, read_journal
@@ -20,6 +19,8 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.scan.progress import NullProgress
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import pytest
 
     from media_hygiene.actions.sort import MoveOutcome
@@ -79,10 +80,10 @@ def test_another_disk_copies_verifies_and_journals_the_digest(
     """A rename refused across disks: copied, proven, SHA-256 in the journal."""
     source = write(tmp_path / "a" / "IMG_1.jpg", b"photo")
 
-    def cross(_self: Path, target: Path) -> Path:
+    def cross(_source: Path, target: Path) -> None:
         raise OSError(errno.EXDEV, "Invalid cross-device link", str(target))
 
-    monkeypatch.setattr(Path, "rename", cross)
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", cross)
     group = MoveGroup(tmp_path, tmp_path / "t", (move_of(source),))
     outcome = run(tmp_path, (group,))
     assert not outcome.outcome.failed

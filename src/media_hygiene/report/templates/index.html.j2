@@ -12,7 +12,7 @@
     <td>{{ _("clean") if s.kind.value == "clean" else _("audit") }}</td>
     <td class="num">{{ s.files_scanned | number }}</td>
     <td class="num">{{ s.duplicate_files | number }}</td>
-    <td class="num">{% if s.kind.value == "clean" %}{{ s.freed_bytes | size }} {{ _("freed") }}{% else %}{{ s.reclaimable_bytes | size }}{% endif %}</td>
+    <td class="num">{% if s.kind.value == "clean" %}{{ s.freed_bytes | size }} {{ _("removed from your folders") }}{% else %}{{ s.reclaimable_bytes | size }}{% endif %}</td>
     <td class="num">{{ s.broken_files | number }}</td>
   </tr>
   {% endfor %}

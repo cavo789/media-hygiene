@@ -8,10 +8,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.kinds import Phase
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only
+from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -26,8 +28,9 @@ def ensure_can_act(runtime: Runtime, command: str) -> None:
         command: The command about to act, as the user typed it.
 
     Raises:
-        MountError: The journal is not persistent, a folder is read-only, or the
-            journal or the quarantine is not writable.
+        MountError: The journal is not persistent, a folder is read-only, the
+            journal or the quarantine is not writable, or a tool folder is mixed with
+            the photos (never for `undo`: it is how files come back).
     """
     if not runtime.persistent(MountKind.JOURNAL):
         raise MountError(
@@ -50,3 +53,5 @@ def ensure_can_act(runtime: Runtime, command: str) -> None:
             ),
         )
     ensure_writable(runtime, MountKind.JOURNAL, MountKind.QUARANTINE)
+    if command != Phase.UNDO.value:
+        refuse_tool_folders_in_data(runtime)

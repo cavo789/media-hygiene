@@ -108,7 +108,7 @@ class ReportBuilder:
         plan = record.findings.plan
         outcome = record.outcome
         names = self._names(previews)
-        groups = GroupRenderer(self.mapper, names)
+        groups = GroupRenderer(self.mapper, names, plan.delete_copies)
         return ReportView(
             header=ReportHeader(
                 self.summary(record), self.mapper.roots_on_host(record.findings.roots)

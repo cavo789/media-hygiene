@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 import typer
 
+from media_hygiene.cli.safety import announce_read_only
 from media_hygiene.config.legacy_env import (
     LEGACY_ENV_PREFIX,
     LEGACY_PREFIX_REMOVED_IN,
@@ -144,9 +145,10 @@ def _create_default_config(runtime: Runtime) -> None:
 def runtime_of(ctx: typer.Context) -> Runtime:
     """Return the runtime the root callback stored in the Typer context.
 
-    Every command calls it first: it also schedules an empty line after the
-    command's last message, before the shell prompt comes back (`--help` never
-    reaches a command, so its output is left as is).
+    Every command calls it first: a command reading the photos says it leaves them
+    untouched, and an empty line is scheduled after the command's last message,
+    before the shell prompt comes back (`--help` never reaches a command, so its
+    output is left as is).
 
     Args:
         ctx: Typer context of the running command.
@@ -161,6 +163,7 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     if not isinstance(runtime, Runtime):
         raise TypeError(type(runtime).__name__)
     ctx.call_on_close(runtime.output.blank)
+    announce_read_only(runtime, ctx.info_name)
     return runtime
 
 

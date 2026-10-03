@@ -113,5 +113,9 @@ def write_default_config(config_file: Path, locale: Locale) -> bool:
         return False
     environment = translated_environment(_TEMPLATE_PACKAGE, escaped=())
     text = environment.get_template(_TEMPLATE_NAME).render(locale=locale.value)
-    config_file.write_text(text, encoding="utf-8")
+    try:
+        with config_file.open("x", encoding="utf-8") as stream:  # never over a file
+            stream.write(text)
+    except FileExistsError:
+        return False
     return True

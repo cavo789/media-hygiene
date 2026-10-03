@@ -1,4 +1,4 @@
-"""Execute a plan: delete exact copies and empty files, quarantine the rest."""
+"""Execute a plan: quarantine copies (deleted with `--delete`), delete empty files."""
 
 from __future__ import annotations
 
@@ -120,10 +120,10 @@ class CleanExecutor:
             self._context.progress.advance()
 
     def _delete_copy(self, decision: KeepDecision, file: MediaFile) -> None:
-        """Delete one duplicate copy after a byte-for-byte check against the keeper.
+        """Set aside one duplicate copy after a byte-for-byte check against the keeper.
 
-        A copy of another file than a media (asked for with `--ext`) is moved to the
-        quarantine instead: where a document lies may matter to a program.
+        It goes to the quarantine; with `--delete`, a media copy is deleted for good
+        (a copy of another file than a media always goes to the quarantine).
 
         Args:
             decision: The group decision, holding the keeper.
@@ -133,7 +133,7 @@ class CleanExecutor:
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        if file.kind is MediaKind.OTHER:
+        if file.kind is MediaKind.OTHER or not self._context.delete_copies:
             keeper = decision.keeper.path
             self._changes.quarantine(file, ActionKind.QUARANTINE_DUPLICATE, keeper)
             return

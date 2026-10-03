@@ -14,6 +14,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries, prune_reports, write_index
+from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 from media_hygiene.services.writable import ensure_writable
 
 
@@ -48,6 +49,8 @@ def reports_command(
                 _('Mount the reports folder: -v "<folder>:/reports".'),
             )
         ensure_writable(runtime, MountKind.REPORTS)
+        if prune is not None:
+            refuse_tool_folders_in_data(runtime, (MountKind.REPORTS,))
     if prune is not None:
         removed = prune_reports(reports_dir, prune)
         output.success(

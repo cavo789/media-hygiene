@@ -23,12 +23,31 @@ def tier() -> OptionInfo:
         typer.Option(
             "--tier",
             help=_(
-                "exact: delete byte-for-byte copies only. near: also move near "
-                "duplicates (resized or recompressed copies, re-encoded videos) to "
-                "the quarantine; check them in the report first. Default: exact."
+                "exact: byte-for-byte copies only. near: also near duplicates "
+                "(resized or recompressed copies, re-encoded videos); check them in "
+                "the report first. Both go to the quarantine. Default: exact."
             ),
             show_default=False,
             case_sensitive=False,
+        ),
+    )
+
+
+def delete() -> OptionInfo:
+    """`--delete`: delete the exact copies for good instead of moving them.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--delete",
+            help=_(
+                "Delete the exact copies for good, after a byte comparison with the "
+                "kept copy, instead of moving them to the quarantine: the space is "
+                "freed at once; 'undo' rebuilds them from the kept copy."
+            ),
         ),
     )
 

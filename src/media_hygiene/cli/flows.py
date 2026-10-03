@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import warn
 from media_hygiene.console.crosscheck_view import show_cross_check
-from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.console.inventory_view import inventory_table
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import findings_table, folder_pairs_view
 from media_hygiene.errors import CrossCheckError, MediaHygieneError, MountError
-from media_hygiene.i18n import _, ngettext
+from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.crosscheck import cross_check
@@ -23,7 +21,7 @@ if TYPE_CHECKING:
     from typing import TextIO
 
     from media_hygiene.crosscheck.compare import CrossCheckResult
-    from media_hygiene.plan.models import AuditFindings, CleanPlan
+    from media_hygiene.plan.models import AuditFindings
     from media_hygiene.report.views import ReportRecord
     from media_hygiene.services.runtime import Runtime
 
@@ -118,66 +116,6 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
     output.success(_("HTML report: {path}").format(path=report))
     output.tip(
         _("Open index.html in the folder mounted on /reports: it lists every report."),
-    )
-
-
-def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa: FBT001
-    """Ask before cleaning, unless `--yes` or `[clean] confirm = false`.
-
-    Args:
-        runtime: Settings, mount points and output.
-        plan: What would be cleaned.
-        yes: `--yes` was given.
-
-    Returns:
-        True when the clean may proceed.
-
-    """
-    if yes or not runtime.settings.clean.confirm:
-        return True
-    require_terminal(sys.stdin)
-    question = (
-        _(
-            "Delete {count} duplicate copies ({size}), move {near} near duplicates "
-            "to the quarantine and handle {broken} broken files?"
-        )
-        if plan.near_count
-        else _(
-            "Delete {count} duplicate copies ({size}) and handle {broken} broken files?"
-        )
-    )
-    if plan.moved_copies:
-        moved = ngettext(
-            "{count} copy of another file than a media will be moved to the "
-            "quarantine, not deleted.",
-            "{count} copies of other files than media will be moved to the "
-            "quarantine, not deleted.",
-            plan.moved_copies,
-        )
-        runtime.output.info(moved.format(count=human_number(plan.moved_copies)))
-    if plan.burst_count:
-        bursts = ngettext(
-            "{count} burst shot you set aside will be moved to the quarantine.",
-            "{count} burst shots you set aside will be moved to the quarantine.",
-            plan.burst_count,
-        )
-        runtime.output.info(bursts.format(count=human_number(plan.burst_count)))
-    if plan.orphans:
-        orphans = ngettext(
-            "{count} orphan sidecar (.xmp, .aae, .thm) will be moved to the "
-            "quarantine.",
-            "{count} orphan sidecars (.xmp, .aae, .thm) will be moved to the "
-            "quarantine.",
-            len(plan.orphans),
-        )
-        runtime.output.info(orphans.format(count=human_number(len(plan.orphans))))
-    return runtime.output.confirm(
-        question.format(
-            count=human_number(plan.removable_count),
-            size=human_size(plan.reclaimable),
-            near=human_number(plan.near_count),
-            broken=human_number(len(plan.broken)),
-        ),
     )
 
 

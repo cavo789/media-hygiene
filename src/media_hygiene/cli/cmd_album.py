@@ -110,6 +110,12 @@ def _make(runtime: Runtime, prepared: AlbumPrepared) -> None:
     if not prepared.plan.links:
         output.success(_("Nothing to add: the album holds every file found."))
         return
+    output.info(
+        _(
+            "🛟 An album only adds names (hard links): no photo is copied, moved nor "
+            "deleted, and 'undo' removes it."
+        )
+    )
     with RichProgress(output.console) as progress, StopRequest() as stop:
         result = AlbumService(runtime, progress).execute(prepared, stop.requested)
     show_album_result(runtime, result)

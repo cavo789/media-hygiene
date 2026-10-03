@@ -51,7 +51,7 @@ def test_clean_moves_orphans_and_undo_brings_them_back(
     assert orphans == {paths["orphan"], paths["lone"]}
     service = CleanService(runtime, NullProgress())
     run_id, outcome = service.execute(service.feasible(findings.plan))
-    assert outcome.quarantined == len(orphans)
+    assert outcome.quarantined == len(orphans) + findings.plan.removable_count
     assert paths["kept"].is_file()
     assert not paths["orphan"].exists()
     assert not paths["lone"].exists()

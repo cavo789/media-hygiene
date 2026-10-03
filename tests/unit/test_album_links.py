@@ -150,5 +150,7 @@ def test_undo_explains_what_it_leaves(tmp_path: Path) -> None:
         mtime_ns=0,
     )
     assert "removed already" in (link_blocker(entry) or "")
-    marker = entry.model_copy(update={"action": ActionKind.MARK_ALBUM})
+    marker = entry.model_copy(
+        update={"action": ActionKind.MARK_ALBUM, "path": str(tmp_path / ALBUM_MARKER)}
+    )
     assert blocker(marker, reversal_of(marker)) == "it is gone already"

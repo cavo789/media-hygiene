@@ -19,6 +19,7 @@ from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_undo import undo_command
+from media_hygiene.cli.safety import help_of
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -32,15 +33,30 @@ def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:
         Name, function, panel and help text of each command.
     """
     analyse, act = _("Analyse"), _("Act")
+    return tuple(
+        (name, function, panel, help_of(name, text))
+        for name, function, panel, text in _commands(analyse, act)
+    )
+
+
+def _commands(
+    analyse: str, act: str
+) -> tuple[tuple[str, Callable[..., None], str, str], ...]:
+    """List the commands in the order of `--help`, before the read-only marker.
+
+    Args:
+        analyse: The translated name of the panel of analyses.
+        act: The translated name of the panel of actions.
+
+    Returns:
+        Name, function, panel and help text of each command.
+    """
     return (
         (
             "audit",
             audit_command,
             analyse,
-            _(
-                "Find exact duplicates and broken files. "
-                "Read-only: mount folders with :ro."
-            ),
+            _("Find exact duplicates and broken files."),
         ),
         (
             "crosscheck",
@@ -55,10 +71,7 @@ def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:
             "classify",
             classify_command,
             analyse,
-            _(
-                "Propose where every photo and video should go: year, event, "
-                "category. Read-only."
-            ),
+            _("Propose where every photo and video should go: year, event, category."),
         ),
         (
             "review-sort",
@@ -89,8 +102,9 @@ def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:
             clean_command,
             act,
             _(
-                "Audit, confirm, then really delete duplicate "
-                "copies (journaled, undoable)."
+                "Audit, confirm, then move the duplicate copies to the quarantine, "
+                "after a byte comparison (journaled, undoable); --delete deletes "
+                "them for good."
             ),
         ),
         (
@@ -124,7 +138,10 @@ def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:
             "purge",
             purge_command,
             act,
-            _("Permanently delete the quarantined broken files of a run."),
+            _(
+                "Erase the quarantine of a run for good: with 'clean --delete', the "
+                "only way the tool removes content."
+            ),
         ),
         (
             "inventory",

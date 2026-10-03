@@ -56,6 +56,7 @@ class CleanPlan:
     near: tuple[NearDecision, ...] = ()
     sidecars: tuple[Sidecar, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
+    delete_copies: bool = False  # `clean --delete`: exact copies deleted, not moved
 
     @property
     def removable_count(self) -> int:
@@ -68,16 +69,28 @@ class CleanPlan:
 
     @property
     def moved_copies(self) -> int:
-        """Number of copies of other files (not media), moved rather than deleted.
+        """Number of exact copies moved to the quarantine rather than deleted.
 
         Returns:
-            The count.
+            Every copy by default; with `--delete`, the copies of other files (not
+            media) only.
         """
         return sum(
-            file.kind is MediaKind.OTHER
+            self.to_quarantine(file)
             for decision in self.decisions
             for file in decision.removable
         )
+
+    def to_quarantine(self, file: MediaFile) -> bool:
+        """Tell whether `clean` moves a duplicate copy to the quarantine.
+
+        Args:
+            file: A copy to remove.
+
+        Returns:
+            True unless `--delete` deletes it (a media copy); another file always goes.
+        """
+        return file.kind is MediaKind.OTHER or not self.delete_copies
 
     @property
     def reclaimable(self) -> int:

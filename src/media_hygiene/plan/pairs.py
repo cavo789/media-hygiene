@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 class Disposal(StrEnum):
     """What `clean` does with the copies of a folder pair.
 
-    Media copies are deleted; copies of other files (`--ext pdf`) are moved to the
-    quarantine. A pair gathers many groups, so it can hold both.
+    Every copy is moved to the quarantine; with `clean --delete`, media copies are
+    deleted and copies of other files (`--ext pdf`) moved. A pair can hold both.
     """
 
     DELETED = "deleted"
@@ -39,15 +39,16 @@ class Copy:
     digest: str
     size: int
     reason: KeepReason | None = None
+    delete_copies: bool = False  # `clean --delete`
 
     @property
     def moved(self) -> bool:
         """Tell whether `clean` moves this copy to the quarantine rather than delete it.
 
         Returns:
-            True for another file than a media (asked for with `--ext`).
+            True by default; with `--delete`, for another file than a media only.
         """
-        return self.removed.kind is MediaKind.OTHER
+        return self.removed.kind is MediaKind.OTHER or not self.delete_copies
 
 
 @dataclass(frozen=True, slots=True)
@@ -97,12 +98,15 @@ class FolderPair:
 def folder_pairs(
     decisions: Iterable[KeepDecision],
     folder_files: Mapping[Path, int] | None = None,
+    *,
+    delete_copies: bool = False,
 ) -> tuple[FolderPair, ...]:
-    """Group the copies to delete by (kept folder, folder losing the copy).
+    """Group the copies to remove by (kept folder, folder losing the copy).
 
     Args:
         decisions: The keep decisions of a plan.
         folder_files: Media files analysed per folder, to tell complete copies.
+        delete_copies: `clean --delete`: media copies are deleted, not moved.
 
     Returns:
         The pairs, the most space freed first (then the most files, then by path).
@@ -118,6 +122,7 @@ def folder_pairs(
                     decision.digest,
                     decision.size,
                     decision.reason,
+                    delete_copies,
                 )
             )
     counts = folder_files or {}

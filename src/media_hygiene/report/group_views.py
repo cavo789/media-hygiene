@@ -76,6 +76,7 @@ class GroupRenderer:
 
     mapper: HostPathMapper
     previews: frozenset[str]
+    delete_copies: bool = False  # `clean --delete`: media copies deleted, not moved
 
     def group(self, decision: KeepDecision) -> GroupView:
         """Describe one duplicate group.
@@ -89,7 +90,10 @@ class GroupRenderer:
         host = self.mapper.to_host
         keeper = host(decision.keeper.path)
         removable = tuple(
-            RemovedView(host(file.path), moved=file.kind is MediaKind.OTHER)
+            RemovedView(
+                host(file.path),
+                moved=file.kind is MediaKind.OTHER or not self.delete_copies,
+            )
             for file in decision.removable
         )
         protected = tuple(host(file.path) for file in decision.protected)

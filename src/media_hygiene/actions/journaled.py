@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalEntry
 from media_hygiene.actions.kinds import Phase, Status
-from media_hygiene.actions.quarantine import move_verified
+from media_hygiene.actions.no_overwrite import move_no_replace
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
@@ -24,13 +24,18 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class CleanContext:
-    """Where and how a run acts, and which command it is (`clean` by default)."""
+    """Where and how a run acts, and which command it is (`clean` by default).
+
+    `delete_copies` (`clean --delete`) deletes exact copies for good; by default they
+    are moved to the quarantine like everything else `clean` sets aside.
+    """
 
     journal: JournalWriter
     mapper: HostPathMapper
     quarantine_run_dir: Path
     progress: ProgressSink
     phase: Phase = Phase.CLEAN
+    delete_copies: bool = False
 
 
 class JournaledChanges:
@@ -110,5 +115,5 @@ class JournaledChanges:
                 "keeper": str(keeper) if keeper else None,
             },
         )
-        self.act(entry, lambda: move_verified(path, target))
+        self.act(entry, lambda: move_no_replace(path, target))
         self._tally.quarantined += 1

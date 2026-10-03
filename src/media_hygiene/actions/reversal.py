@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.album_links import link_blocker
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.quarantine import QUARANTINED
+from media_hygiene.constants import ALBUM_MARKER
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
@@ -91,13 +92,27 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     if reversal is Reversal.REMOVE_LINK:
         return link_blocker(entry)
     if reversal is Reversal.REMOVE_MARKER:
-        return None if path.is_file() else _("it is gone already")
+        return _marker_blocker(path)
     if path.exists():
         # Never overwrite: it is back already, or the action never happened.
         return _("it already exists")
     if reversal in _WITHOUT_SOURCE:
         return None
     return _source_blocker(entry, reversal)
+
+
+def _marker_blocker(marker: Path) -> str | None:
+    """Tell why the marker an album run wrote cannot be removed.
+
+    Args:
+        marker: The file the journal names.
+
+    Returns:
+        The reason, or None when it is the album's own marker, still there.
+    """
+    if marker.name != ALBUM_MARKER:  # only the album's own marker is ever removed
+        return _("it is not the marker file of an album: kept")
+    return None if marker.is_file() else _("it is gone already")
 
 
 def _folder_blocker(folder: Path) -> str | None:

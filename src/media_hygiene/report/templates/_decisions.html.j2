@@ -2,7 +2,7 @@
    `clean --decisions`. The page never deletes anything: the CLI does, with every safeguard. #}
 <div class="note">
   <strong>✋ {{ _("Not the folder you want to keep?") }}</strong>
-  {{ _("Decide per pair: “Swap the folders” keeps the copies of the second folder and deletes those of the first one; “Leave alone” deletes nothing of that pair. This browser remembers your choices.") }}
+  {{ _("Decide per pair: “Swap the folders” keeps the copies of the second folder and removes those of the first one; “Leave alone” removes nothing of that pair. This browser remembers your choices.") }}
   <p><button id="download-decisions" type="button" disabled>{{ _("Download decisions.json") }} (<span id="decisions-count">0</span>)</button></p>
   <span class="muted">{{ _("Save it in the folder mounted on /reports, then run the same 'clean' command with --decisions decisions.json: it audits again, applies your decisions, shows the result and asks before cleaning. The file is refused if the folders or the pairs changed in the meantime.") }}</span>
 </div>

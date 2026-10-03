@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+import re
 import shutil
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from pydantic import ValidationError
 
@@ -17,6 +18,8 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 _INDEX_TEMPLATE = "index.html.j2"
+# `<run or stamp>-<kind>`, with a number when two reports share a second.
+_REPORT_FOLDER: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?-[a-z]+(?:-\d+)?")
 
 
 def load_summaries(reports_dir: Path) -> list[ReportSummary]:
@@ -28,13 +31,27 @@ def load_summaries(reports_dir: Path) -> list[ReportSummary]:
     Returns:
         The summaries.
     """
-    summaries: list[ReportSummary] = []
+    return [summary for summary, _folder in _reports(reports_dir)]
+
+
+def _reports(reports_dir: Path) -> list[tuple[ReportSummary, Path]]:
+    """Read every report: its summary and the folder holding it, newest first.
+
+    Args:
+        reports_dir: Reports mount point.
+
+    Returns:
+        The summaries, each with the folder its `summary.json` was found in.
+    """
+    found: list[tuple[ReportSummary, Path]] = []
     for file in reports_dir.glob(f"*/{SUMMARY_FILE_NAME}"):
         try:
-            summaries.append(ReportSummary.model_validate_json(file.read_text("utf-8")))
+            summary = ReportSummary.model_validate_json(file.read_text("utf-8"))
         except OSError, ValidationError:
             _LOGGER.warning("Skipping unreadable report summary %s", file)
-    return sorted(summaries, key=lambda summary: summary.created_at, reverse=True)
+            continue
+        found.append((summary, file.parent))
+    return sorted(found, key=lambda item: item[0].created_at, reverse=True)
 
 
 def write_index(reports_dir: Path) -> Path:
@@ -57,6 +74,10 @@ def write_index(reports_dir: Path) -> Path:
 def prune_reports(reports_dir: Path, keep: int) -> list[str]:
     """Delete every report but the `keep` most recent ones, then refresh the index.
 
+    Only a report the tool wrote is deleted: a real folder, directly in `reports_dir`,
+    named like a report (`20260925-183015-audit`), holding its `summary.json`. The
+    folder is the one the summary was found in, never a name read from the file.
+
     Args:
         reports_dir: Reports mount point.
         keep: How many reports to keep.
@@ -64,8 +85,12 @@ def prune_reports(reports_dir: Path, keep: int) -> list[str]:
     Returns:
         The folders deleted.
     """
-    removed = [summary.folder for summary in load_summaries(reports_dir)[keep:]]
+    removed = [
+        folder
+        for _summary, folder in _reports(reports_dir)[keep:]
+        if _REPORT_FOLDER.fullmatch(folder.name) and not folder.is_symlink()
+    ]
     for folder in removed:
-        shutil.rmtree(reports_dir / folder)
+        shutil.rmtree(folder)
     write_index(reports_dir)
-    return removed
+    return [folder.name for folder in removed]

@@ -1,8 +1,9 @@
-"""Copies of other files than media read "moved to the quarantine", not "deleted"."""
+"""With --delete, copies of other files than media still go to the quarantine."""
 
 from __future__ import annotations
 
 import io
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from rich.console import Console
@@ -42,7 +43,8 @@ def test_a_pdf_pair_reads_moved_to_the_quarantine(
     photo = media.image("c/Photos/IMG_1.jpg", seed=1)
     media.copy(photo, "c/Photos/old/IMG_1.jpg")
     runtime = make_runtime(locations, _ASKED)
-    findings = AuditService(runtime, NullProgress()).run()
+    audited = AuditService(runtime, NullProgress()).run()
+    findings = replace(audited, plan=replace(audited.plan, delete_copies=True))
     buffer = io.StringIO()
     Console(file=buffer, width=300).print(folder_pairs_view(findings, runtime.mapper))
     console = buffer.getvalue()

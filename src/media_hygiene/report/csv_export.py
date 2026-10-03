@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import BrokenReason, Locale, MediaKind
+from media_hygiene.constants import BrokenReason, Locale
 from media_hygiene.i18n import _, active_locale
 from media_hygiene.report.reasons import broken_reason_label, keep_reason_label
 
@@ -123,7 +123,7 @@ class _Rows:
             keep = _Line(_("keep"), group, digest, reason)
             yield self.row(decision.keeper, keep)
             for file in decision.removable:
-                moved = file.kind is MediaKind.OTHER
+                moved = plan.to_quarantine(file)
                 action = _("move to the quarantine") if moved else _("delete")
                 yield self.row(file, _Line(action, group, digest))
             for file in decision.protected:

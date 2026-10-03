@@ -62,8 +62,17 @@ msgstr ""
 "'media-hygiene undo {run_id}' supprime l'album ; les photos restent où "
 "elles sont."
 
-msgid "'undo' can no longer restore these broken files."
-msgstr "'undo' ne pourra plus restaurer ces fichiers cassés."
+msgid ""
+"'purge' erases for good: these files cannot come back, not even with "
+"'undo'. It is, with 'clean --delete', the only way the tool removes "
+"content."
+msgstr ""
+"'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même "
+"avec 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil "
+"supprime du contenu."
+
+msgid "'undo' can no longer restore these files."
+msgstr "'undo' ne pourra plus restaurer ces fichiers."
 
 #, python-brace-format
 msgid "'{name}' cannot be a folder name."
@@ -93,6 +102,14 @@ msgstr "(vide)"
 
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
+
+msgid ""
+"--delete: the copies are deleted for good, after a byte comparison with "
+"the kept copy; 'undo' rebuilds them from it."
+msgstr ""
+"--delete : les copies sont supprimées pour de bon, après une comparaison "
+"octet par octet avec la copie gardée ; 'undo' les reconstruit à partir "
+"d'elle."
 
 msgid ""
 "--rating reads the stars the audit wrote in its cache, which is not "
@@ -230,6 +247,13 @@ msgstr "Ajoutez -v \"<un de vos dossiers>:/config\" à la commande docker run."
 msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/journal\" à la commande docker run."
 
+msgid ""
+"Add -v \"<a folder of yours>:/quarantine\" (or --delete to delete them "
+"for good at once)."
+msgstr ""
+"Ajoutez -v \"<un de vos dossiers>:/quarantine\" (ou --delete pour les "
+"supprimer pour de bon tout de suite)."
+
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/quarantine\" pour les traiter."
 
@@ -258,6 +282,14 @@ msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
 msgstr ""
 "Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien "
 "plus rapides."
+
+#, python-brace-format
+msgid ""
+"Add :ro to the -v of your photo folders: the system itself then forbids "
+"any change. {url}"
+msgstr ""
+"Ajoutez :ro au -v de vos dossiers de photos : le système lui-même "
+"interdit alors toute modification. {url}"
 
 msgid "Album folder"
 msgstr "Dossier de l'album"
@@ -335,10 +367,13 @@ msgstr "Rapport d'audit"
 msgid "Audit summary"
 msgstr "Résumé de l'audit"
 
-msgid "Audit, confirm, then really delete duplicate copies (journaled, undoable)."
+msgid ""
+"Audit, confirm, then move the duplicate copies to the quarantine, after a"
+" byte comparison (journaled, undoable); --delete deletes them for good."
 msgstr ""
-"Audite, demande confirmation, puis supprime réellement les copies en "
-"double (journalisé, annulable)."
+"Analyser, confirmer, puis déplacer les copies en double en quarantaine, "
+"après une comparaison octet par octet (journalisé, annulable) ; --delete "
+"les supprime pour de bon."
 
 msgid "August"
 msgstr "août"
@@ -661,12 +696,12 @@ msgstr "décembre"
 
 msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
-" and deletes those of the first one; “Leave alone” deletes nothing of "
+" and removes those of the first one; “Leave alone” removes nothing of "
 "that pair. This browser remembers your choices."
 msgstr ""
 "Décidez paire par paire : « Inverser les dossiers » garde les copies du "
-"second dossier et supprime celles du premier ; « Ne pas toucher » ne "
-"supprime rien de cette paire. Ce navigateur retient vos choix."
+"second dossier et retire celles du premier ; « Ne pas toucher » ne retire"
+" rien de cette paire. Ce navigateur retient vos choix."
 
 msgid "Decoder message"
 msgstr "Message du décodeur"
@@ -681,6 +716,16 @@ msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 "Supprimez-le : le prochain audit le reconstruit, en relisant chaque "
 "fichier une fois."
+
+msgid ""
+"Delete the exact copies for good, after a byte comparison with the kept "
+"copy, instead of moving them to the quarantine: the space is freed at "
+"once; 'undo' rebuilds them from the kept copy."
+msgstr ""
+"Supprimer pour de bon les copies exactes, après une comparaison octet par"
+" octet avec la copie gardée, au lieu de les déplacer en quarantaine : "
+"l'espace est libéré tout de suite ; 'undo' les reconstruit à partir de la"
+" copie gardée."
 
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
@@ -904,6 +949,17 @@ msgstr ""
 "{old} : l'ancien préfixe ne fonctionnera plus à partir de la version "
 "{version}. Encore présentes : {names}."
 
+msgid ""
+"Erase the quarantine of a run for good: with 'clean --delete', the only "
+"way the tool removes content."
+msgstr ""
+"Effacer pour de bon la quarantaine d'une exécution : avec 'clean "
+"--delete', la seule façon dont l'outil supprime du contenu."
+
+#, python-brace-format
+msgid "Erase the quarantine of {runs} ({count} files, {size})?"
+msgstr "Effacer la quarantaine de {runs} ({count} fichiers, {size}) ?"
+
 msgid "Event"
 msgstr "Événement"
 
@@ -1019,8 +1075,8 @@ msgstr "Catégories d'extensions (--ext)"
 msgid "Extensions"
 msgstr "Extensions"
 
-msgid "Extra copies that can be deleted"
-msgstr "Copies en trop, supprimables"
+msgid "Extra copies that can be set aside"
+msgstr "Copies en trop, à mettre de côté"
 
 msgid "F-number"
 msgstr "Ouverture (f/)"
@@ -1101,10 +1157,8 @@ msgstr ""
 " dossiers et disques. Commencez par 'audit' (lecture seule), puis "
 "'clean'."
 
-msgid "Find exact duplicates and broken files. Read-only: mount folders with :ro."
-msgstr ""
-"Trouve les doublons exacts et les fichiers cassés. Lecture seule : montez"
-" les dossiers avec :ro."
+msgid "Find exact duplicates and broken files."
+msgstr "Trouver les doublons exacts et les fichiers cassés."
 
 msgid ""
 "Finds broken files: empty (0 bytes), images and RAW files that cannot be "
@@ -1571,6 +1625,14 @@ msgstr ""
 "Montez chaque dossier une seule fois (un dossier inclut déjà ses sous-"
 "dossiers) : retirez l'une de ces options -v."
 
+#, python-brace-format
+msgid ""
+"Mount it outside your photo folders, e.g. -v \"$HOME\\media-"
+"hygiene\\{kind}:/{kind}\" (or list it in [folders] excluded)."
+msgstr ""
+"Montez-le en dehors de vos dossiers de photos, par ex. -v \"$HOME\\media-"
+"hygiene\\{kind}:/{kind}\" (ou ajoutez-le à [folders] excluded)."
+
 msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
 msgstr "Montez-la sous /data, par exemple -v \"C:\\Photos triées:/data/c/Tri\"."
 
@@ -1629,6 +1691,22 @@ msgstr ""
 "modifié (journalisé, annulable)."
 
 #, python-brace-format
+msgid ""
+"Move {count} duplicate copies ({size}) and {near} near duplicates to the "
+"quarantine, and handle {broken} broken files?"
+msgstr ""
+"Déplacer {count} copies en double ({size}) et {near} quasi-doublons en "
+"quarantaine, et traiter {broken} fichiers cassés ?"
+
+#, python-brace-format
+msgid ""
+"Move {count} duplicate copies ({size}) to the quarantine and handle "
+"{broken} broken files?"
+msgstr ""
+"Déplacer {count} copies en double ({size}) en quarantaine et traiter "
+"{broken} fichiers cassés ?"
+
+#, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
 
@@ -1637,12 +1715,6 @@ msgstr "Déplacés"
 
 msgid "Moved by an earlier run"
 msgstr "Déplacés par un passage précédent"
-
-#, python-brace-format
-msgid "Moved files are in /quarantine/{run_id}; 'purge' deletes them."
-msgstr ""
-"Les fichiers déplacés sont dans /quarantine/{run_id} ; 'purge' les "
-"supprime."
 
 msgid "Moved to the quarantine"
 msgstr "Déplacés en quarantaine"
@@ -2040,15 +2112,6 @@ msgstr ""
 "Par photo : {describe:.1f} s pour décrire, {map:.1f} s pour choisir la "
 "catégorie."
 
-#, python-brace-format
-msgid "Permanently delete the quarantine of {runs} ({size})?"
-msgstr "Supprimer définitivement la quarantaine de {runs} ({size}) ?"
-
-msgid "Permanently delete the quarantined broken files of a run."
-msgstr ""
-"Supprime définitivement les fichiers cassés mis en quarantaine par une "
-"exécution."
-
 msgid "Photo"
 msgstr "Photo"
 
@@ -2109,12 +2172,8 @@ msgstr ""
 msgid "Proposal"
 msgstr "Proposition"
 
-msgid ""
-"Propose where every photo and video should go: year, event, category. "
-"Read-only."
-msgstr ""
-"Propose où ranger chaque photo et vidéo : année, événement, catégorie. En"
-" lecture seule."
+msgid "Propose where every photo and video should go: year, event, category."
+msgstr "Propose où ranger chaque photo et vidéo : année, événement, catégorie."
 
 msgid "Proposed folder"
 msgstr "Dossier proposé"
@@ -2343,8 +2402,10 @@ msgid "Run 'classify' first, then edit its workbook."
 msgstr "Lancez d'abord 'classify', puis modifiez son classeur."
 
 #, python-brace-format
-msgid "Run 'clean' (same -v options, without :ro) to free {size}."
-msgstr "Lancez 'clean' (mêmes options -v, sans :ro) pour libérer {size}."
+msgid "Run 'clean' (same -v options, without :ro) to set {size} of copies aside."
+msgstr ""
+"Lancez 'clean' (mêmes options -v, sans :ro) pour mettre {size} de copies "
+"de côté."
 
 msgid ""
 "Run 'media-hygiene config' to see every effective value and where it "
@@ -2383,8 +2444,8 @@ msgstr ""
 "Exécution à annuler (voir 'history') ; la plus récente par défaut. Pour "
 "un tri, tous les passages du même classeur."
 
-msgid "Run whose quarantine is deleted; every run by default."
-msgstr "Exécution dont la quarantaine est supprimée ; toutes par défaut."
+msgid "Run whose quarantine is erased; every run by default."
+msgstr "Exécution dont la quarantaine est effacée ; toutes par défaut."
 
 #, python-brace-format
 msgid ""
@@ -2851,6 +2912,10 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
 
+#, python-brace-format
+msgid "The quarantine could not be erased: {reason}."
+msgstr "La quarantaine n'a pas pu être effacée : {reason}."
+
 msgid "The quarantine is empty."
 msgstr "La quarantaine est vide."
 
@@ -2927,6 +2992,14 @@ msgstr ""
 "Des feuilles ont été renommées, déplacées, ajoutées ou supprimées : "
 "{found}."
 
+#, python-brace-format
+msgid ""
+"The space is freed by 'purge', once you have checked: media-hygiene purge"
+" {run_id}"
+msgstr ""
+"L'espace est libéré par 'purge', une fois que vous avez vérifié : media-"
+"hygiene purge {run_id}"
+
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -2989,6 +3062,14 @@ msgstr "Le classeur {path} ne peut pas être ouvert : {reason}."
 #, python-brace-format
 msgid "The workbook {path} was not found."
 msgstr "Le classeur {path} est introuvable."
+
+#, python-brace-format
+msgid ""
+"The {kind} folder ({tool}) and the photo folder {data} are one inside the"
+" other: the tool's own files would mix with your photos."
+msgstr ""
+"Le dossier {kind} ({tool}) et le dossier de photos {data} sont l'un dans "
+"l'autre : les fichiers de l'outil se mêleraient à vos photos."
 
 #, python-brace-format
 msgid "The {top} largest events hold {held} of them."
@@ -3176,6 +3257,9 @@ msgid ""
 msgstr ""
 "Parcourt tous les dossiers ; photos et vidéos sont reconnues à leur "
 "extension."
+
+msgid "What is left stays in the quarantine; run 'purge' again later."
+msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
 
 msgid "When to use colours (NO_COLOR is honoured too)."
 msgstr "Quand utiliser les couleurs (NO_COLOR est aussi respecté)."
@@ -3365,6 +3449,11 @@ msgstr ""
 "un nom choisi par quelqu'un (l'autre a été généré par un appareil photo "
 "ou une application)"
 
+msgid "a photo, a video or a sidecar is never junk: the folder is kept"
+msgstr ""
+"une photo, une vidéo ou un fichier compagnon n'est jamais un fichier "
+"inutile : le dossier est gardé"
+
 #, python-brace-format
 msgid "about {time} left"
 msgstr "encore ~{time}"
@@ -3406,6 +3495,9 @@ msgstr ""
 msgid "clean"
 msgstr "nettoyage"
 
+msgid "clean moves the duplicate copies to /quarantine: mount it."
+msgstr "clean déplace les copies en double dans /quarantine : montez-le."
+
 msgid "command line"
 msgstr "ligne de commande"
 
@@ -3440,6 +3532,9 @@ msgstr "défaut"
 msgid "delete"
 msgstr "supprimer"
 
+msgid "documentation/en/reference-safety.md"
+msgstr "documentation/fr/reference-safety.md"
+
 #, python-format
 msgid "duplicate copies in %(groups)s groups"
 msgstr "copies en double dans %(groups)s groupes"
@@ -3461,14 +3556,14 @@ msgid "environment"
 msgstr "environnement"
 
 msgid ""
-"exact: delete byte-for-byte copies only. near: also move near duplicates "
-"(resized or recompressed copies, re-encoded videos) to the quarantine; "
-"check them in the report first. Default: exact."
+"exact: byte-for-byte copies only. near: also near duplicates (resized or "
+"recompressed copies, re-encoded videos); check them in the report first. "
+"Both go to the quarantine. Default: exact."
 msgstr ""
-"exact : supprime seulement les copies identiques octet par octet. near : "
-"déplace aussi les quasi-doublons (copies redimensionnées ou "
-"recompressées, vidéos réencodées) en quarantaine ; vérifiez-les d'abord "
-"dans le rapport. Par défaut : exact."
+"exact : seulement les copies identiques octet par octet. near : aussi les"
+" quasi-doublons (copies redimensionnées ou recompressées, vidéos "
+"réencodées) ; vérifiez-les d'abord dans le rapport. Les deux vont en "
+"quarantaine. Par défaut : exact."
 
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
@@ -3487,9 +3582,6 @@ msgstr "fichiers ayant une copie identique"
 msgid "folder name"
 msgstr "nom du dossier"
 
-msgid "freed"
-msgstr "libérés"
-
 msgid "groups of identical files"
 msgstr "groupes de fichiers identiques"
 
@@ -3506,17 +3598,21 @@ msgid "it is gone already"
 msgstr "il a déjà disparu"
 
 #, python-brace-format
+msgid "it is no longer a name of {path}: kept"
+msgstr "ce n'est plus un nom de {path} : gardé"
+
+#, python-brace-format
 msgid "it is no longer at {path}: moved or renamed since"
 msgstr "il n'est plus à {path} : déplacé ou renommé depuis"
 
 msgid "it is no longer in the album: removed already"
 msgstr "il n'est plus dans l'album : déjà supprimé"
 
+msgid "it is not the marker file of an album: kept"
+msgstr "ce n'est pas le fichier repère d'un album : gardé"
+
 msgid "it is the kept copy itself, seen through another path"
 msgstr "c'est la copie gardée elle-même, vue par un autre chemin"
-
-msgid "it is the last name left of this file: kept"
-msgstr "c'est le dernier nom de ce fichier : gardé"
 
 msgid "its content changed"
 msgstr "son contenu a changé"
@@ -3527,6 +3623,14 @@ msgstr "sa copie {path} a disparu"
 
 msgid "its files are gone"
 msgstr "ses fichiers ont disparu"
+
+#, python-brace-format
+msgid ""
+"its original {path} is no longer there (moved or renamed since?): kept, "
+"it may be the last name of the photo"
+msgstr ""
+"son original {path} n'est plus là (déplacé ou renommé depuis ?) : gardé, "
+"c'est peut-être le dernier nom de la photo"
 
 msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)"
 msgstr ""
@@ -3669,6 +3773,9 @@ msgstr "dossier protégé, conservée"
 msgid "protected, kept"
 msgstr "protégé, gardé"
 
+msgid "removed from your folders"
+msgstr "retirés de vos dossiers"
+
 msgid "review page"
 msgstr "page de revue"
 
@@ -3739,6 +3846,9 @@ msgstr "le dossier n'est pas vide"
 
 msgid "the journal does not say where its content is"
 msgstr "le journal ne dit pas où se trouve son contenu"
+
+msgid "the journal does not say which photo it is a name of: kept"
+msgstr "le journal ne dit pas de quelle photo c'est un nom : gardé"
 
 #, python-brace-format
 msgid "the kept copy {path} no longer exists"
@@ -4003,30 +4113,30 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file is both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed."
+"quarantine), {size} freed by 'purge'."
 msgid_plural ""
 "{count} files are both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed."
+"quarantine), {size} freed by 'purge'."
 msgstr[0] ""
 "{count} fichier est à la fois dans {kept} (gardé) et dans {removed} "
-"(déplacé en quarantaine), gain de {size}."
+"(déplacé en quarantaine), {size} libérés par 'purge'."
 msgstr[1] ""
 "{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
-"(déplacés en quarantaine), gain de {size}."
+"(déplacés en quarantaine), {size} libérés par 'purge'."
 
 #, python-brace-format
 msgid ""
 "{count} file is present several times in {kept}: one copy is kept ({size}"
-" freed)."
+" to free)."
 msgid_plural ""
 "{count} files are present several times in {kept}: one copy of each is "
-"kept ({size} freed)."
+"kept ({size} to free)."
 msgstr[0] ""
 "{count} fichier est présent plusieurs fois dans {kept} : un exemplaire "
-"est gardé (gain de {size})."
+"est gardé ({size} à libérer)."
 msgstr[1] ""
 "{count} fichiers sont présents plusieurs fois dans {kept} : un exemplaire"
-" de chacun est gardé (gain de {size})."
+" de chacun est gardé ({size} à libérer)."
 
 #, python-brace-format
 msgid ""
@@ -4252,6 +4362,10 @@ msgstr ""
 "avec le conteneur."
 
 #, python-brace-format
+msgid "{path} is not the quarantine of a run"
+msgstr "{path} n'est pas la quarantaine d'une exécution"
+
+#, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
 msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
 
@@ -4320,4 +4434,40 @@ msgstr "… et %(count)s séries de plus."
 #, python-brace-format
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
+
+msgid "🔒 Read-only: never changes your photos."
+msgstr "🔒 Lecture seule : ne modifie jamais vos photos."
+
+msgid "🔒 Read-only: your photos and videos are not touched."
+msgstr "🔒 Lecture seule : vos photos et vidéos ne sont pas touchées."
+
+msgid ""
+"🛟 An album only adds names (hard links): no photo is copied, moved nor "
+"deleted, and 'undo' removes it."
+msgstr ""
+"🛟 Un album ne fait qu'ajouter des noms (liens physiques) : aucune photo "
+"n'est copiée, déplacée ni supprimée, et 'undo' le retire."
+
+msgid ""
+"🛟 Each file comes back where it was, never over another one; what cannot "
+"come back whole is left as it is, and said."
+msgstr ""
+"🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui"
+" ne peut pas revenir intact est laissé tel quel, et signalé."
+
+msgid ""
+"🛟 Each file is moved, never over another one nor deleted; the run is "
+"journaled: 'undo' puts everything back."
+msgstr ""
+"🛟 Chaque fichier est déplacé, jamais par-dessus un autre ni supprimé ; "
+"l'exécution est journalisée : 'undo' remet tout en place."
+
+msgid ""
+"🛟 Nothing is erased: each copy is compared byte for byte with the kept "
+"one, then moved to the quarantine. 'purge' erases it once you have "
+"checked."
+msgstr ""
+"🛟 Rien n'est effacé : chaque copie est comparée octet par octet avec "
+"celle gardée, puis déplacée en quarantaine. 'purge' l'efface une fois que"
+" vous avez vérifié."
 

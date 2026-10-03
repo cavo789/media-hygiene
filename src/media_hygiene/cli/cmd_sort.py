@@ -88,6 +88,12 @@ def sort_command(  # pylint: disable=too-many-arguments
         if not prepared.plan.groups:
             output.success(_("Nothing to move: every file is where the plan puts it."))
             return
+        output.info(
+            _(
+                "🛟 Each file is moved, never over another one nor deleted; the run "
+                "is journaled: 'undo' puts everything back."
+            )
+        )
         if not _confirm(runtime, prepared, yes=yes):
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)

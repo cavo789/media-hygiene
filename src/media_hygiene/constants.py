@@ -6,6 +6,7 @@ from enum import IntEnum, StrEnum
 from typing import Final
 
 APP_NAME: Final = "media-hygiene"
+HOME_PAGE: Final = "https://github.com/cavo789/media-hygiene"
 ENV_PREFIX: Final = "MEDIA_HYGIENE_"
 GETTEXT_DOMAIN: Final = "media_hygiene"
 CONFIG_FILE_NAME: Final = "config.toml"

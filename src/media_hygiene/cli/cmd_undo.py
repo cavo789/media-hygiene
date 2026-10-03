@@ -71,6 +71,12 @@ def undo_command(
         ensure_undo_ready(runtime, runs)
         title = _title(runtime, run, plan)
         output.title(title)
+        output.info(
+            _(
+                "🛟 Each file comes back where it was, never over another one; what "
+                "cannot come back whole is left as it is, and said."
+            )
+        )
         if plan is not None and plan.together:
             show_plan_runs(output, plan)
             if not _confirm(runtime, plan, yes=yes):

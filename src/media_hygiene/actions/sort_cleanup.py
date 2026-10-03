@@ -9,6 +9,8 @@ from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident
 from media_hygiene.actions.sort_folders import Fate, FolderReport, Verdict, verdicts
 from media_hygiene.actions.sort_moves import file_of
+from media_hygiene.config.sort_settings import is_media_name
+from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -61,6 +63,7 @@ class FolderCleaner:
                 continue
             try:
                 for junk in verdict.junk:
+                    _refuse_media(junk)
                     self._changes.quarantine(file_of(junk), ActionKind.QUARANTINE_JUNK)
                 entry = self._changes.entry(
                     file_of(verdict.folder, (0, 0)), ActionKind.REMOVE_FOLDER
@@ -73,3 +76,20 @@ class FolderCleaner:
                 yield Verdict(verdict.folder, Fate.HOLDS_FILES)
                 continue
             yield verdict
+
+
+def _refuse_media(junk: Path) -> None:
+    """Refuse to set a photo, a video or a sidecar aside as junk (last-moment check).
+
+    The settings already refuse such junk names: this guards any other way in.
+
+    Args:
+        junk: A file about to go to the quarantine as junk.
+
+    Raises:
+        OSError: It is a media or sidecar file (the folder is kept).
+    """
+    if is_media_name(junk.name):
+        raise OSError(
+            _("a photo, a video or a sidecar is never junk: the folder is kept")
+        )

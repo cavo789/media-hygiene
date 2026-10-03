@@ -36,7 +36,10 @@ def report_pairs(record: ReportRecord) -> tuple[FolderPair, ...]:
         The pairs.
     """
     findings = record.findings
-    return folder_pairs(findings.plan.decisions, findings.folder_files)
+    plan = findings.plan
+    return folder_pairs(
+        plan.decisions, findings.folder_files, delete_copies=plan.delete_copies
+    )
 
 
 def pair_samples(pair: FolderPair) -> tuple[MediaFile, ...]:

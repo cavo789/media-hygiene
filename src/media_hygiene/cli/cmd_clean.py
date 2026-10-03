@@ -1,4 +1,4 @@
-"""`media-hygiene clean`: really delete duplicates, journaled and undoable."""
+"""`media-hygiene clean`: duplicates to the quarantine, journaled and undoable."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import clean_options, options, scan_options
+from media_hygiene.cli.clean_confirm import confirm_clean
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import (
     audit_and_show,
-    confirm_clean,
     report_and_announce,
     show_pairs,
     show_second_opinion,
@@ -23,7 +23,7 @@ from media_hygiene.console.tables import outcome_table
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
 from media_hygiene.report.views import ReportRecord
-from media_hygiene.services.clean import CleanService
+from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.review import apply_review, load_review, review_choices
 
 if TYPE_CHECKING:
@@ -43,8 +43,9 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     yes: Annotated[bool, options.yes()] = False,
     tier: Annotated[CleanTier, clean_options.tier()] = CleanTier.EXACT,
     decisions: Annotated[Path | None, clean_options.decisions()] = None,
+    delete: Annotated[bool, clean_options.delete()] = False,
 ) -> None:
-    """Audit, confirm, then delete duplicate copies and handle broken files.
+    """Audit, confirm, then set duplicate copies aside and handle broken files.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -57,6 +58,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         tier: `--tier`, near duplicates are moved to the quarantine too.
         decisions: `--decisions`, the review downloaded from a report or written by
             `review`.
+        delete: `--delete`, exact copies are deleted for good, not moved.
 
     Raises:
         typer.Exit: The user declined.
@@ -70,9 +72,9 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
         bursts = review is not None and bool(review.bursts)
-        service.ensure_ready(near=tier is CleanTier.NEAR, bursts=bursts)
+        service.ensure_ready(CleanMode(tier is CleanTier.NEAR, bursts, delete))
         findings = audit_and_show(runtime)
-        plan = service.feasible(findings.plan)
+        plan = service.feasible(replace(findings.plan, delete_copies=delete))
         if tier is CleanTier.NEAR:
             plan = service.with_near(plan, findings)
         if review is not None:
@@ -103,7 +105,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
 
 
 def _after_clean_tips(output: Output, run_id: str, outcome: Outcome) -> None:
-    """Tell how to undo the clean and how to purge the quarantine.
+    """Tell how to undo the clean, and that `purge` frees the space.
 
     Args:
         output: Where to print.
@@ -115,5 +117,8 @@ def _after_clean_tips(output: Output, run_id: str, outcome: Outcome) -> None:
     )
     output.tip(undo_tip.format(run_id=run_id))
     if outcome.quarantined:
-        purge_tip = _("Moved files are in /quarantine/{run_id}; 'purge' deletes them.")
+        purge_tip = _(
+            "The space is freed by 'purge', once you have checked: "
+            "media-hygiene purge {run_id}"
+        )
         output.tip(purge_tip.format(run_id=run_id))

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
@@ -17,6 +18,8 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry
 
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
+# Every run identifier: the stamp, then a number when two runs share a second.
+RUN_ID_PATTERN: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?")
 # Actions after which the file is still there: neither deleted nor freed.
 _KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK})
 

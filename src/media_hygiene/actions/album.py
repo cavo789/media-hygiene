@@ -122,4 +122,15 @@ class AlbumExecutor:
             "'media-hygiene undo' removes it; deleting it by hand is safe too."
         )
         entry = self._changes.entry(file_of(marker, (0, 0)), ActionKind.MARK_ALBUM)
-        self._changes.record(entry, lambda: marker.write_text(text + "\n", "utf-8"))
+        self._changes.record(entry, lambda: _write_new(marker, text + "\n"))
+
+
+def _write_new(path: Path, text: str) -> None:
+    """Write a new text file, never over an existing one.
+
+    Args:
+        path: The file; it must not exist.
+        text: Its content.
+    """
+    with path.open("x", encoding="utf-8") as stream:
+        stream.write(text)

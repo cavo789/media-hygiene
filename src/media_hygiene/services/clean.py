@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
-from typing import TYPE_CHECKING
+from dataclasses import dataclass, replace
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.clean import CleanExecutor
 from media_hygiene.actions.journal import (
@@ -31,6 +31,19 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
+@dataclass(frozen=True, slots=True)
+class CleanMode:
+    """What a clean will do, as its options ask."""
+
+    near: bool = False  # `--tier near`: near duplicates go to the quarantine too
+    bursts: bool = False  # `--decisions`: burst shots set aside go there too
+    delete: bool = False  # `--delete`: exact copies deleted for good, not moved
+
+
+# The default clean: exact copies to the quarantine.
+EXACT: Final = CleanMode()
+
+
 class CleanService:
     """Refuses to act unless every action can be journaled and undone."""
 
@@ -44,35 +57,43 @@ class CleanService:
         self._runtime = runtime
         self._progress = progress
 
-    def ensure_ready(self, *, near: bool = False, bursts: bool = False) -> None:
+    def ensure_ready(self, mode: CleanMode = EXACT) -> None:
         """Check, before any analysis, that cleaning is possible and reversible.
 
         Args:
-            near: Near duplicates will be moved to the quarantine (`--tier near`).
-            bursts: Burst shots a review set aside will be moved there too.
+            mode: What the clean will do.
 
         Raises:
             MountError: The journal is not persistent, a folder is read-only, the
-                journal or the quarantine is not writable, or near duplicates, burst
-                shots or copies of other files have no quarantine to go to.
+                journal or the quarantine is not writable, or what goes to the
+                quarantine (exact copies unless `--delete`, near duplicates, burst
+                shots, copies of other files) has no quarantine to go to.
         """
         runtime = self._runtime
-        quarantine = runtime.persistent(MountKind.QUARANTINE)
-        if near and not quarantine:
-            raise MountError(
-                _("--tier near moves near duplicates to /quarantine: mount it."),
-                _('Add -v "<a folder of yours>:/quarantine" to handle them.'),
-            )
-        if bursts and not quarantine:
-            raise MountError(
-                _("Burst shots you set aside go to /quarantine: mount it."),
-                _('Add -v "<a folder of yours>:/quarantine" to handle them.'),
-            )
-        if runtime.settings.scan.other_files and not quarantine:
-            raise MountError(
-                _("Copies of other files than media go to /quarantine: mount it."),
-                _('Add -v "<a folder of yours>:/quarantine" to handle them.'),
-            )
+        tip = _('Add -v "<a folder of yours>:/quarantine" to handle them.')
+        if not runtime.persistent(MountKind.QUARANTINE):
+            if not mode.delete:
+                raise MountError(
+                    _("clean moves the duplicate copies to /quarantine: mount it."),
+                    _(
+                        'Add -v "<a folder of yours>:/quarantine" (or --delete to '
+                        "delete them for good at once)."
+                    ),
+                )
+            if mode.near:
+                raise MountError(
+                    _("--tier near moves near duplicates to /quarantine: mount it."),
+                    tip,
+                )
+            if mode.bursts:
+                raise MountError(
+                    _("Burst shots you set aside go to /quarantine: mount it."), tip
+                )
+            if runtime.settings.scan.other_files:
+                raise MountError(
+                    _("Copies of other files than media go to /quarantine: mount it."),
+                    tip,
+                )
         ensure_can_act(runtime, "clean")
 
     def feasible(self, plan: CleanPlan) -> CleanPlan:
@@ -136,6 +157,7 @@ class CleanService:
                 mapper=self._runtime.mapper,
                 quarantine_run_dir=locations.quarantine_dir / run_id,
                 progress=self._progress,
+                delete_copies=plan.delete_copies,
             )
             outcome = CleanExecutor(context).run(plan)
         self._forget_removed(journal_path)

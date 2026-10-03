@@ -21,9 +21,9 @@ def media(path: str) -> MediaFile:
     return MediaFile(Path(path), 1, 0, MediaKind.IMAGE)
 
 
-def rendered(*decisions: KeepDecision) -> str:
+def rendered(*decisions: KeepDecision, delete: bool = False) -> str:
     """The folder pairs of these decisions, as printed on a wide terminal."""
-    findings = AuditFindings((), CleanPlan(decisions, ()))
+    findings = AuditFindings((), CleanPlan(decisions, (), delete_copies=delete))
     table = folder_pairs_view(findings, MAPPER)
     assert table is not None
     buffer = io.StringIO()
@@ -36,8 +36,10 @@ def test_two_folders_say_which_one_keeps_the_files() -> None:
     decision = KeepDecision(
         "d", 1, media("/data/c/A/x.jpg"), (media("/data/c/B/x.jpg"),)
     )
+    moved = "1 file is both in C:\\A (kept) and in C:\\B (moved to the quarantine)"
+    assert f"{moved}, 1 B freed by 'purge'." in rendered(decision)
     assert "1 file is both in C:\\A (kept) and in C:\\B (deleted), 1 B freed." in (
-        rendered(decision)
+        rendered(decision, delete=True)
     )
 
 
@@ -126,5 +128,5 @@ def test_a_pair_of_documents_and_photos_says_both() -> None:
         KeepDecision("e", 1, media("/data/c/A/y.jpg"), (media("/data/c/B/y.jpg"),)),
     )
     assert "(deleted, or moved to the quarantine if not a media file)" in (
-        rendered(*decisions)
+        rendered(*decisions, delete=True)
     )

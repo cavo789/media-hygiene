@@ -37,7 +37,7 @@ def findings_table(findings: AuditFindings) -> Table:
     table.add_row(_("Media files scanned"), human_number(findings.files_scanned))
     table.add_row(_("Groups of identical files"), human_number(len(plan.decisions)))
     table.add_row(
-        _("Extra copies that can be deleted"), human_number(plan.removable_count)
+        _("Extra copies that can be set aside"), human_number(plan.removable_count)
     )
     table.add_row(_("Space that can be freed"), human_size(plan.reclaimable))
     table.add_row(
@@ -86,7 +86,10 @@ def folder_pairs_view(findings: AuditFindings, mapper: HostPathMapper) -> Table 
     Returns:
         The top pairs, or None when there is no duplicate.
     """
-    pairs = folder_pairs(findings.plan.decisions, findings.folder_files)[:_TOP_PAIRS]
+    plan = findings.plan
+    pairs = folder_pairs(
+        plan.decisions, findings.folder_files, delete_copies=plan.delete_copies
+    )[:_TOP_PAIRS]
     if not pairs:
         return None
     table = Table.grid(padding=(0, 1))
@@ -120,9 +123,9 @@ def _pair_sentence(pair: FolderPair, mapper: HostPathMapper) -> Text:
     if kept_in == removed_from:
         sentence = ngettext(
             "{count} file is present several times in {kept}: one copy is kept"
-            " ({size} freed).",
+            " ({size} to free).",
             "{count} files are present several times in {kept}: one copy of each is"
-            " kept ({size} freed).",
+            " kept ({size} to free).",
             pair.files,
         )
     else:
@@ -147,9 +150,9 @@ def _between_folders(pair: FolderPair) -> str:
         case Disposal.MOVED:
             return ngettext(
                 "{count} file is both in {kept} (kept) and in {removed} (moved to the"
-                " quarantine), {size} freed.",
+                " quarantine), {size} freed by 'purge'.",
                 "{count} files are both in {kept} (kept) and in {removed} (moved to the"
-                " quarantine), {size} freed.",
+                " quarantine), {size} freed by 'purge'.",
                 pair.files,
             )
         case Disposal.MIXED:

@@ -1,9 +1,12 @@
 """Hard links of an album: why one cannot be made, and when one may be removed.
 
 A hard link is a second name for the same bytes: removing one name never removes the
-bytes while another name is left. `undo` relies on that, and on nothing else: it removes
-an album's name only when the file still has another one (the original, wherever a
-`sort` moved it since), so an album never loses the last copy of a photo.
+bytes while another name is left. `undo` removes an album's name only when it can see
+that other name: the original the journal recorded still exists, at another path, and is
+the very same file (same disk, same inode). The link count (`st_nlink`) is not trusted:
+Docker Desktop's Windows mounts may report it wrongly. When the original was moved or
+renamed since, the album's name is kept and the reason told: an album never loses the
+last copy of a photo.
 """
 
 from __future__ import annotations
@@ -21,7 +24,6 @@ if TYPE_CHECKING:
 UNSUPPORTED: Final = frozenset(
     {errno.EXDEV, errno.EPERM, errno.ENOTSUP, errno.EOPNOTSUPP, errno.ENOSYS}
 )
-_LAST_NAME: Final = 1
 
 
 def why_not(exc: OSError) -> str:
@@ -55,11 +57,20 @@ def link_blocker(entry: JournalEntry) -> str | None:
             it is a name of (`keeper`).
 
     Returns:
-        The translated reason, or None when removing it leaves the file whole.
+        The translated reason, or None when the original is provably another name of
+        the same file, so removing the album's name leaves the photo whole.
     """
     link = Path(entry.path)
     if not link.is_file():
         return _("it is no longer in the album: removed already")
-    if link.stat().st_nlink <= _LAST_NAME:
-        return _("it is the last name left of this file: kept")
+    original = Path(entry.keeper) if entry.keeper else None
+    if original is None or original.resolve() == link.resolve():
+        return _("the journal does not say which photo it is a name of: kept")
+    if not original.is_file():
+        return _(
+            "its original {path} is no longer there (moved or renamed since?): "
+            "kept, it may be the last name of the photo"
+        ).format(path=original)
+    if not link.samefile(original):
+        return _("it is no longer a name of {path}: kept").format(path=original)
     return None

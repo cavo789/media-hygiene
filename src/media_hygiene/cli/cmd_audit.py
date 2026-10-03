@@ -49,7 +49,10 @@ def audit_command(  # pylint: disable=too-many-arguments
         output.success(_("Nothing to clean: no duplicate and no broken file."))
     else:
         output.tip(
-            _("Run 'clean' (same -v options, without :ro) to free {size}.").format(
+            _(
+                "Run 'clean' (same -v options, without :ro) to set {size} of copies "
+                "aside."
+            ).format(
                 size=human_size(plan.reclaimable),
             ),
         )

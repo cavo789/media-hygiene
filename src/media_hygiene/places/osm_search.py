@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from media_hygiene.constants import HOME_PAGE
 from media_hygiene.errors import NominatimError
 from media_hygiene.geo.nominatim import Nominatim, Service
 from media_hygiene.i18n import active_locale
@@ -25,7 +26,6 @@ if TYPE_CHECKING:
 OSM_PATH: Final = "/api/osm"
 MAX_TEXT: Final = 100
 DISTRIBUTION: Final = "media-hygiene"
-HOME_PAGE: Final = "https://github.com/cavo789/media-hygiene"
 
 
 class SearchText(BaseModel):
