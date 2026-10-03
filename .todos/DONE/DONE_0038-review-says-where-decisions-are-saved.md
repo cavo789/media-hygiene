@@ -20,7 +20,7 @@ only keeps the file name.
 ## Proposal
 
 - Resolve the host path of the decisions file once (`runtime.mapper.to_host(target)`), e.g.
-  `C:\Users\Christophe\media-hygiene\reports\decisions.json`. When the source is unknown (named
+  `C:\Users\Alice\media-hygiene\reports\decisions.json`. When the source is unknown (named
   volume, Linux host, no Docker Desktop), say "decisions.json, in the folder mounted on
   /reports" rather than a container path the user never typed.
 - Terminal, when the review starts (next to the address of the page): "Your choices are saved
