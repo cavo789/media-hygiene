@@ -59,19 +59,23 @@ The devcontainer prints a cheatsheet in every terminal (`.devcontainer/scripts/i
 `interactive.sh`). Add new developer commands there.
 
 ```bash
-check                 # pre-commit (ruff, mypy, pylint src+tests, shellcheck, shfmt, hadolint) + pytest --cov
+check                 # lint, then pytest --cov — every heavy helper runs gently (nice, half the CPUs; DEV_CPUS=n)
+lint                  # pre-commit only (ruff, mypy, pylint src+tests, shellcheck, shfmt, hadolint), new files included
 format                # ruff format + ruff check --fix
 tests [pytest args]   # e.g. tests tests/unit/test_keeper.py -k preferred
 e2e                   # build media-hygiene:latest, then pytest -m e2e (real docker run; log in /tmp/media-hygiene/e2e.log)
 hygiene <command>     # run the CLI from sources against /tmp/media-hygiene/*
-demo                  # sample tree in /tmp/media-hygiene/data, then audit
+demo / demo_clean     # sample tree in /tmp/media-hygiene/data, then audit / empty /tmp/media-hygiene
 docs_screenshots [fr] # rebuild the image, refresh documentation/ screenshots and console blocks
 reports / reports_stop  # serve /tmp/media-hygiene/reports on an OS-chosen port
 build / dive / dive_ci  # build media-hygiene:latest, inspect, gate the image layers
 release               # tag vX.Y.Z from pyproject.toml and push it: CI builds amd64+arm64, e2e, publishes
-i18n_update           # after changing any _() string: extract + merge, then translate the .po
+i18n_update           # after changing any _() string: extract + merge, then translate the .po (i18n_todo lists what is left)
 geonames_update       # download GeoNames, rebuild src/media_hygiene/geo/data (offline towns)
-ci / ci_logs          # gh: latest CI runs of the branch / logs of the failed steps (gh auth login once)
+ci / ci_logs / ci_watch  # gh: latest CI runs of the branch / logs of the failed steps / follow live (gh auth login once)
+git_doctor [--fix]    # after a crash: empty objects in .git/objects, git fsck
+docker_doctor / docker_clean  # Docker health, leftovers of e2e/docs runs / remove them
+deps                  # direct dependencies with a newer release
 ```
 
 Without the helpers: `uv run pytest`, `uv run mypy`, `uv run pylint src`,

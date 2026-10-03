@@ -14,6 +14,6 @@ function docs_screenshots() {
     build || return 1
     (
         cd "$(_repo_root)" || return 1
-        uv run --frozen --quiet python -m tests.support.docs "$@"
+        _gentle uv run --frozen --quiet python -m tests.support.docs "$@"
     )
 }

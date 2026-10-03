@@ -87,7 +87,7 @@ function e2e() {
         # Kept for a rare failure (TODO 0053): the next run overwrites it.
         local log="/tmp/media-hygiene/e2e.log"
         mkdir -p "${log%/*}"
-        pytest -m e2e "$@" 2>&1 | tee "${log}"
+        _gentle pytest -m e2e "$@" 2>&1 | tee "${log}"
         return "${PIPESTATUS[0]}"
     )
 }

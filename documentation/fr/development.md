@@ -38,15 +38,20 @@ affiche la liste des commandes d'aide (`welcome` la réaffiche) :
 | Commande | Rôle |
 |---|---|
 | `check` | La barrière qualité complète : pre-commit (ruff, mypy strict, pylint, shellcheck, shfmt, hadolint), puis les tests avec au moins 90 % de couverture des branches. |
-| `format`, `tests` | Corrige la mise en forme ; lance des tests ciblés. |
-| `hygiene …`, `demo` | Lance l'outil depuis les sources sur `/tmp/media-hygiene/` ; `demo` crée une arborescence d'exemple et l'audite. |
+| `lint`, `format`, `tests` | Pre-commit seul (nouveaux fichiers compris) ; corrige la mise en forme ; lance des tests ciblés. |
+| `hygiene …`, `demo` | Lance l'outil depuis les sources sur `/tmp/media-hygiene/` ; `demo` crée une arborescence d'exemple et l'audite, `demo_clean` vide `/tmp/media-hygiene/`. |
 | `reports`, `reports_stop` | Sert les rapports HTML sur un port libre choisi par le système. |
 | `build`, `e2e`, `dive`, `dive_ci` | Construit l'image, lance les tests de bout en bout (sortie gardée dans `/tmp/media-hygiene/e2e.log`), inspecte ou contrôle ses couches. |
 | `release` | Crée le tag `vX.Y.Z` (la version de `pyproject.toml`) et le pousse : la CI publie l'image. |
-| `i18n_extract`, `i18n_update` | Met à jour les catalogues gettext après la modification d'un texte affiché. |
+| `i18n_extract`, `i18n_update`, `i18n_todo` | Met à jour les catalogues gettext après la modification d'un texte affiché ; liste les entrées françaises encore à traduire. |
 | `geonames_update` | Télécharge à nouveau GeoNames et reconstruit les villes hors ligne de `src/media_hygiene/geo/data/` (CC BY 4.0 : la date est notée dans son `ATTRIBUTION.txt`). |
-| `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo` et `/todo-plan`). |
-| `ci`, `ci_logs` | Dernières exécutions de la CI sur la branche ; logs des étapes en échec de la dernière exécution ratée. La CLI GitHub demande `gh auth login` une fois. |
+| `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo` et `/todo-plan`), puis les partiels et les bloqués. |
+| `ci`, `ci_logs`, `ci_watch` | Dernières exécutions de la CI sur la branche ; logs des étapes en échec de la dernière exécution ratée. Suit la dernière exécution en direct. La CLI GitHub demande `gh auth login` une fois. |
+| `git_doctor`, `docker_doctor`, `docker_clean`, `deps` | Après un plantage : vérifie les objets git (`--fix` répare ceux restés vides) ; vérifie Docker et liste ce que les exécutions e2e/docs ont laissé, puis le supprime ; liste les dépendances directes qui ont une version plus récente. |
+
+`check`, `lint`, `tests`, `e2e`, `docs_screenshots` et `hygiene` tournent en douceur : priorité
+basse, la moitié des processeurs (`DEV_CPUS=8 check` pour changer), une part dont héritent les
+conteneurs e2e et docs. Les exécutions à pleine charge ont fait planter la VM WSL sous Windows.
 
 Les réglages et connexions des outils (`~/.config`, p. ex. le jeton de la CLI GitHub) sont dans
 le volume Docker `media-dedup-config`, hors de l'espace de travail : ils survivent aux

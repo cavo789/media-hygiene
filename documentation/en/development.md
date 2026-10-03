@@ -35,15 +35,20 @@ shows the cheatsheet of helper commands (`welcome` redraws it):
 | Helper | Purpose |
 |---|---|
 | `check` | The full quality gate: pre-commit (ruff, mypy strict, pylint, shellcheck, shfmt, hadolint) then the tests with ≥ 90 % branch coverage. |
-| `format`, `tests` | Auto-fix formatting; run targeted tests. |
-| `hygiene …`, `demo` | Run the tool from the sources against `/tmp/media-hygiene/`; `demo` builds a sample tree and audits it. |
+| `lint`, `format`, `tests` | Pre-commit alone (new files included); auto-fix formatting; run targeted tests. |
+| `hygiene …`, `demo` | Run the tool from the sources against `/tmp/media-hygiene/`; `demo` builds a sample tree and audits it, `demo_clean` empties `/tmp/media-hygiene/`. |
 | `reports`, `reports_stop` | Serve the HTML reports on a free port chosen by the OS. |
 | `build`, `e2e`, `dive`, `dive_ci` | Build the image, run the end-to-end tests (output kept in `/tmp/media-hygiene/e2e.log`), inspect or gate its layers. |
 | `release` | Tag `vX.Y.Z` (the `pyproject.toml` version) and push it: CI publishes the image. |
-| `i18n_extract`, `i18n_update` | Refresh the gettext catalogs after changing a user-facing string. |
+| `i18n_extract`, `i18n_update`, `i18n_todo` | Refresh the gettext catalogs after changing a user-facing string; list the French entries still to translate. |
 | `geonames_update` | Download GeoNames again and rebuild the offline towns of `src/media_hygiene/geo/data/` (CC BY 4.0: the date lands in its `ATTRIBUTION.txt`). |
-| `todos` | List the open backlog (`.todos/`, see `/todo` and `/todo-plan`). |
-| `ci`, `ci_logs` | Latest CI runs of the branch; logs of the failed steps of the latest failed run. The GitHub CLI asks for `gh auth login` once. |
+| `todos` | List the open backlog (`.todos/`, see `/todo` and `/todo-plan`), then the partial and blocked ones. |
+| `ci`, `ci_logs`, `ci_watch` | Latest CI runs of the branch; logs of the failed steps of the latest failed run; follow the latest run live. The GitHub CLI asks for `gh auth login` once. |
+| `git_doctor`, `docker_doctor`, `docker_clean`, `deps` | After a crash: check the git objects (`--fix` repairs the empty ones); check Docker and list what e2e/docs runs left behind, then remove it; list the direct dependencies with a newer release. |
+
+`check`, `lint`, `tests`, `e2e`, `docs_screenshots` and `hygiene` run gently: lower priority, half
+the processors (`DEV_CPUS=8 check` to change it), a share the e2e and docs containers inherit.
+Runs at full load crashed the WSL VM on Windows.
 
 Settings and logins of the tools (`~/.config`, e.g. the GitHub CLI token) live in the
 `media-dedup-config` Docker volume, outside the workspace: they survive rebuilds and can never be

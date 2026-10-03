@@ -29,3 +29,22 @@ function i18n_update() {
             --output-dir src/media_hygiene/i18n/locales
     )
 }
+
+# @cat i18n
+# @cmd i18n_todo
+# @desc List the French entries still untranslated or fuzzy
+function i18n_todo() {
+    (
+        cd "$(_repo_root)" || return 1
+        uv run --frozen --quiet python - <<'PY'
+import polib
+
+catalog = polib.pofile("src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po")
+left = catalog.untranslated_entries() + catalog.fuzzy_entries()
+for entry in left:
+    print(("fuzzy  " if entry.fuzzy else "empty  ") + entry.msgid.replace("\\n", " "))
+print(f"✅ Nothing left to translate ({catalog.percent_translated()} %)" if not left else
+      f"{len(left)} entr{'y' if len(left) == 1 else 'ies'} left")
+PY
+    )
+}

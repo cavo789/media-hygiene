@@ -33,7 +33,9 @@ alias ls='ls -alh --color=auto'
 # this list IS the public surface of the cheatsheet, and one place to read it beats seven.
 export -f _repo_root
 export -f _media_hygiene_env
+export -f _gentle
 export -f check
+export -f lint
 export -f format
 export -f tests
 export -f build
@@ -43,15 +45,22 @@ export -f dive_ci
 export -f e2e
 export -f hygiene
 export -f demo
+export -f demo_clean
 export -f docs_screenshots
 export -f geonames_update
 export -f reports
 export -f reports_stop
 export -f i18n_extract
 export -f i18n_update
+export -f i18n_todo
 export -f todos
 export -f ci
 export -f ci_logs
+export -f ci_watch
+export -f git_doctor
+export -f docker_doctor
+export -f docker_clean
+export -f deps
 export -f _gh_ready
 export -f welcome
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from typing import Final
 
@@ -29,6 +30,21 @@ def docker(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _cpu_share() -> tuple[str, ...]:
+    """Pass the developer's processor share on to the container.
+
+    The `check`, `e2e` and `docs_screenshots` helpers set PYTHON_CPU_COUNT to run
+    gently; without it, the tool in the container starts one worker per processor.
+
+    Returns:
+        The `docker run` options, none when PYTHON_CPU_COUNT is not set.
+    """
+    cpus = os.environ.get("PYTHON_CPU_COUNT", "")
+    if not cpus.isdigit():
+        return ()
+    return ("--cpus", cpus, "--env", f"PYTHON_CPU_COUNT={cpus}")
+
+
 def run_image(*args: str) -> subprocess.CompletedProcess[str]:
     """Run a container to completion, then read its output from the logs.
 
@@ -43,7 +59,7 @@ def run_image(*args: str) -> subprocess.CompletedProcess[str]:
     Returns:
         The exit code and the container's output.
     """
-    started = docker("run", "--detach", *FAULT_HANDLER, *args)
+    started = docker("run", "--detach", *FAULT_HANDLER, *_cpu_share(), *args)
     container = started.stdout.strip()
     if started.returncode != 0:
         return started

@@ -16,5 +16,11 @@ function todos() {
             /^TITLE: /    { title = substr($0, 8) }
             /^PRIORITY: / { printf "  \033[1;32m%-6s\033[0m \033[2m%-8s\033[0m %s\n", id, $2, title }
         '
+        local -a partial blocked
+        mapfile -t partial < <(find .todos/PARTIAL -name 'PARTIAL_*.md' -printf '%f\n' 2>/dev/null | cut -c9-12 | sort)
+        mapfile -t blocked < <(find .todos/BLOCKED -name 'BLOCKED_*.md' -printf '%f\n' 2>/dev/null | cut -c9-12 | sort)
+        ((${#partial[@]})) && printf "  \033[2mPartial: %s\033[0m\n" "${partial[*]}"
+        ((${#blocked[@]})) && printf "  \033[2mBlocked: %s\033[0m\n" "${blocked[*]}"
+        return 0
     )
 }
