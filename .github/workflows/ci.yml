@@ -59,8 +59,8 @@ jobs:
           context: .
           load: true
           tags: media-hygiene:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=linux-amd64
+          cache-to: type=gha,mode=max,scope=linux-amd64
       - name: Install the locked environment
         run: uv sync --locked
       # ffmpeg writes the demo videos: the image's own ffprobe must tell the truncated one.
@@ -69,43 +69,79 @@ jobs:
       - name: End-to-end tests (real docker run)
         run: uv run pytest -m e2e
 
-  publish:
-    name: Publish to Docker Hub
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: image
+  # One native build per platform, in parallel with the end-to-end tests: arm64 on an ARM
+  # runner, never emulated (QEMU took half an hour to compile ffmpeg). On a vX.Y.Z tag each
+  # pushes its image by digest only; `publish` names them once the end-to-end tests pass. On
+  # main they build without pushing: arm64 is proven buildable before any release.
+  build-amd64:
+    name: Image amd64
+    needs: quality
     runs-on: ubuntu-26.04
-    steps:
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps: &build-steps
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: The tag must match the version in pyproject.toml
+      - name: Version (on a tag, it must match pyproject.toml)
         id: version
         env:
+          REF: ${{ github.ref }}
           TAG: ${{ github.ref_name }}
         run: |
           version="$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml)"
-          if [[ "${TAG}" != "v${version}" ]]; then
+          if [[ "${REF}" == refs/tags/v* && "${TAG}" != "v${version}" ]]; then
               echo "::error::Tag ${TAG} does not match pyproject.toml version ${version}"
               exit 1
           fi
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+          echo "platform=$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/')" >> "${GITHUB_OUTPUT}"
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build (and on a tag push by digest), with SBOM and provenance
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/${{ steps.version.outputs.platform }}
+          build-args: VERSION=${{ steps.version.outputs.version }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=${{ startsWith(github.ref, 'refs/tags/v') }}
+          sbom: true
+          provenance: mode=max
+          cache-from: type=gha,scope=linux-${{ steps.version.outputs.platform }}
+          cache-to: type=gha,mode=max,scope=linux-${{ steps.version.outputs.platform }}
+
+  build-arm64:
+    name: Image arm64
+    needs: quality
+    runs-on: ubuntu-26.04-arm
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps: *build-steps
+
+  publish:
+    name: Publish to Docker Hub
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [image, build-amd64, build-arm64]
+    runs-on: ubuntu-26.04
+    steps:
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push amd64 + arm64, with SBOM and provenance
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          build-args: VERSION=${{ steps.version.outputs.version }}
-          tags: |
-            ${{ env.IMAGE }}:${{ steps.version.outputs.version }}
-            ${{ env.IMAGE }}:latest
-          sbom: true
-          provenance: mode=max
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Name both platforms :<version> and :latest
+        env:
+          TAG: ${{ github.ref_name }}
+          AMD64: ${{ needs.build-amd64.outputs.digest }}
+          ARM64: ${{ needs.build-arm64.outputs.digest }}
+        run: |
+          version="${TAG#v}"
+          docker buildx imagetools create \
+              --tag "${IMAGE}:${version}" --tag "${IMAGE}:latest" \
+              "${IMAGE}@${AMD64}" "${IMAGE}@${ARM64}"
+          docker buildx imagetools inspect "${IMAGE}:${version}"
