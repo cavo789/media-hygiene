@@ -44,23 +44,28 @@ docker run --rm -it `
 ```text
 Dossiers partageant des fichiers identiques
 • 3 fichiers sont à la fois dans C:\Photos\Téléphone (gardés) et dans D:\Ancien
-  disque\Téléphone (supprimés), gain de 3,0 Mo. D:\Ancien disque\Téléphone ne
-  contient rien d'autre : c'est entièrement une copie de C:\Photos\Téléphone.
+  disque\Téléphone (déplacés en quarantaine), 3,0 Mo libérés par 'purge'.
+  D:\Ancien disque\Téléphone ne contient rien d'autre : c'est entièrement une
+  copie de C:\Photos\Téléphone.
 • 1 fichier est à la fois dans C:\Photos\Vidéos (gardé) et dans D:\Ancien
-  disque\Vidéos (supprimé), gain de 2,9 Mo.
+  disque\Vidéos (déplacé en quarantaine), 2,9 Mo libérés par 'purge'.
 • 9 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  C:\Photos\2019\Vacances à la mer (supprimés), gain de 2,5 Mo.
+  C:\Photos\2019\Vacances à la mer (déplacés en quarantaine), 2,5 Mo libérés par
+  'purge'.
 • 8 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  D:\Ancien disque\Photos 2019 (supprimés), gain de 2,2 Mo.
+  D:\Ancien disque\Photos 2019 (déplacés en quarantaine), 2,2 Mo libérés par
+  'purge'.
 • 4 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans D:\Ancien disque\Photos 2019 (supprimés), gain de 1,3 Mo.
+  dans D:\Ancien disque\Photos 2019 (déplacés en quarantaine), 1,3 Mo libérés
+  par 'purge'.
 • 4 fichiers sont à la fois dans C:\Photos\2020\Noël (gardés) et dans D:\Ancien
-  disque\Noël 2020 (supprimés), gain de 1,2 Mo. D:\Ancien disque\Noël 2020 ne
-  contient rien d'autre : c'est entièrement une copie de C:\Photos\2020\Noël.
+  disque\Noël 2020 (déplacés en quarantaine), 1,2 Mo libérés par 'purge'.
+  D:\Ancien disque\Noël 2020 ne contient rien d'autre : c'est entièrement une
+  copie de C:\Photos\2020\Noël.
 • 3 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  C:\Photos\2019\Nouveau dossier (supprimés), gain de 864,7 Ko.
-  C:\Photos\2019\Nouveau dossier ne contient rien d'autre : c'est entièrement
-  une copie de C:\Photos\Ancien téléphone.
+  C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko libérés par
+  'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre : c'est
+  entièrement une copie de C:\Photos\Ancien téléphone.
 ```
 
 `--prefer` peut être répété : `--prefer "C:\Photos\Famille" --prefer "C:\Photos\Ancien téléphone"`.
@@ -96,15 +101,15 @@ Il ne reste que les doublons de `C:\Photos` :
 ```text
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\Ancien téléphone (supprimés), gain de 2,2 Mo. C:\Photos\Ancien
-  téléphone ne contient rien d'autre : c'est entièrement une copie de
-  C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\Ancien téléphone (déplacés en quarantaine), 2,2 Mo libérés par
+  'purge'. C:\Photos\Ancien téléphone ne contient rien d'autre : c'est
+  entièrement une copie de C:\Photos\2019\Vacances à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\2019\Nouveau dossier (supprimés), gain de 864,7 Ko.
-  C:\Photos\2019\Nouveau dossier ne contient rien d'autre : c'est entièrement
-  une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko
+  libérés par 'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
-  un exemplaire est gardé (gain de 287,5 Ko).
+  un exemplaire est gardé (287,5 Ko à libérer).
 ```
 
 ## Ignorer un nom de dossier sur tous les disques

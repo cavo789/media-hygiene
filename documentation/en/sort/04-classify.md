@@ -26,6 +26,7 @@ still there. The reports folder receives the workbook where you correct the prop
 
 <!-- capture: classify.txt -->
 ```text
+🔒 Read-only: your photos and videos are not touched.
 ─────────────────────────────────── Classify ───────────────────────────────────
 Already in place: 43 of 80 (54%).
 Proposal
@@ -61,8 +62,8 @@ To check or to sort: 3 files in 1 event.
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
 💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261002-152542-classify/classify.xlsx
-✅ Report with the photos: /reports/20261002-152542-classify/report.html
+✅ Workbook to edit: /reports/20261003-080653-classify/classify.xlsx
+✅ Report with the photos: /reports/20261003-080653-classify/report.html
 💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 

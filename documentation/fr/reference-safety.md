@@ -22,8 +22,8 @@ Nous le garantissons : quand vous lancez l'une de ces commandes, vos photos et v
 
 Toutes fonctionnent avec vos dossiers de photos montés **en lecture seule** : ajoutez `:ro` à
 leur `-v` (`-v "C:\Photos:/data/c/Photos:ro"`). Ce n'est alors plus seulement notre promesse : le
-système lui-même refuse toute modification. Leur `--help` commence par 🔒, et celles qui lisent
-vos photos le disent en démarrant.
+système lui-même refuse toute modification. Leur `--help` commence par *Lecture seule*, et celles qui
+lisent vos photos le disent avec 🔒 en démarrant.
 
 ## Rien n'est effacé tant que vous ne lancez pas `purge`
 

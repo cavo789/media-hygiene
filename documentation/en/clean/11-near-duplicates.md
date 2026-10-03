@@ -72,26 +72,27 @@ The question now mentions the near duplicates:
 ```text
 2 burst shots you set aside will be moved to the quarantine.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
-❓ Delete 32 duplicate copies (13.9 MB), move 2 near duplicates to the
-quarantine and handle 3 broken files? [y/N] y
+❓ Move 32 duplicate copies (13.9 MB) and 2 near duplicates to the quarantine,
+and handle 3 broken files? [y/N] y
 ```
 
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261002-152612
+Clean 20261003-080724
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      40 │
 │ Size                     │ 16.2 MB │
-│ Moved to the quarantine  │       7 │
+│ Moved to the quarantine  │      39 │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261002-152612-clean/report.html
+✅ HTML report: /reports/20261003-080724-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261002-152612' restores everything.
-💡 Moved files are in /quarantine/20261002-152612; 'purge' deletes them.
+💡 Changed your mind? 'media-hygiene undo 20261003-080724' restores everything.
+💡 The space is freed by 'purge', once you have checked: media-hygiene purge
+20261003-080724
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -101,13 +102,45 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261002-152612/c/Photos/2022/Birthday/IMG_3003.jpg
-./20261002-152612/c/Photos/2023/Lake/IMG_4004.jpg
-./20261002-152612/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261002-152612/d/Old disk/2020/IMG_1203.jpg
-./20261002-152612/d/Old disk/Email/IMG_0110 small.jpg
-./20261002-152612/d/Old disk/Photos 2019/IMG_0102.xmp
-./20261002-152612/d/Old disk/Videos/Birthday (cut).mp4
+./20261003-080724/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
+./20261003-080724/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
+./20261003-080724/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
+./20261003-080724/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
+./20261003-080724/c/Photos/2022/Birthday/IMG_3003.jpg
+./20261003-080724/c/Photos/2023/Lake/IMG_4004.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0101.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0102.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0103.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0104.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0105.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0106.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0107.jpg
+./20261003-080724/c/Photos/Old phone/IMG_0108.jpg
+./20261003-080724/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261003-080724/d/Old disk/2020/IMG_1203.jpg
+./20261003-080724/d/Old disk/Christmas 2020/IMG_1201.jpg
+./20261003-080724/d/Old disk/Christmas 2020/IMG_1202.jpg
+./20261003-080724/d/Old disk/Christmas 2020/IMG_1203.jpg
+./20261003-080724/d/Old disk/Christmas 2020/IMG_1204.jpg
+./20261003-080724/d/Old disk/Email/IMG_0110 small.jpg
+./20261003-080724/d/Old disk/Phone/IMG_4242.HEIC
+./20261003-080724/d/Old disk/Phone/IMG_4243.HEIC
+./20261003-080724/d/Old disk/Phone/IMG_4244.HEIC
+./20261003-080724/d/Old disk/Photos 2019/IMG_0101.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0102.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0102.xmp
+./20261003-080724/d/Old disk/Photos 2019/IMG_0103.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0104.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0105.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0106.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0107.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0108.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0109.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0110.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0111.jpg
+./20261003-080724/d/Old disk/Photos 2019/IMG_0112.jpg
+./20261003-080724/d/Old disk/Videos/Birthday (cut).mp4
+./20261003-080724/d/Old disk/Videos/Birthday.mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is

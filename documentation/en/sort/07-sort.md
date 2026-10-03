@@ -30,8 +30,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20261002-152636-classify/classify.xlsx
-0 edits read; workbook saved on 2 October 2026 at 15:26.
+Workbook: /reports/20261003-080751-classify/classify.xlsx
+0 edits read; workbook saved on 3 October 2026 at 08:07.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -43,6 +43,8 @@ Sort
 │ Going to a 'to sort' folder  │      1 │
 │ Source folders removed       │      2 │
 └──────────────────────────────┴────────┘
+🛟 Each file is moved, never over another one nor deleted; the run is journaled:
+'undo' puts everything back.
 ❓ Move 4 files into 2 folders? [y/N] y
 ```
 
@@ -109,7 +111,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261002-152638
+Sort 20261003-080753
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -119,8 +121,8 @@ Sort 20261002-152638
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20261002-152638-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261002-152638' moves everything
+Manifest: /reports/20261003-080753-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261003-080753' moves everything
 back.
 ```
 
@@ -153,8 +155,11 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20261002-152638 ───────────────────────
-Undo the sort run 20261002-152638
+────────────────────── Undo the sort run 20261003-080753 ───────────────────────
+🛟 Each file comes back where it was, never over another one; what cannot come
+back whole is left as it is, and said.
+
+Undo the sort run 20261003-080753
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

@@ -44,7 +44,7 @@ Audit summary
 ┌────────────────────────────────────┬────────┐
 │ Media files scanned                │      9 │
 │ Groups of identical files          │      4 │
-│ Extra copies that can be deleted   │      4 │
+│ Extra copies that can be set aside │      4 │
 │ Space that can be freed            │ 5.9 MB │
 │ Broken files (empty or unreadable) │      1 │
 │ Duration                           │    0 s │

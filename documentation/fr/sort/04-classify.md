@@ -27,6 +27,7 @@ encore là. Le dossier de rapports reçoit le classeur où vous corrigez la prop
 
 <!-- capture: classify.txt -->
 ```text
+🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ─────────────────────────────────── Classer ────────────────────────────────────
 Déjà à leur place : 43 sur 80 (54 %).
 Proposition
@@ -62,8 +63,8 @@ documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
 💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
 copies sont triées.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
-✅ Classeur à modifier : /reports/20261002-152701-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261002-152701-classify/report.html
+✅ Classeur à modifier : /reports/20261003-080819-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261003-080819-classify/report.html
 💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 

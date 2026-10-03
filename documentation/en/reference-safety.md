@@ -22,8 +22,8 @@ modified, moved nor deleted**.
 
 All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`
 (`-v "C:\Photos:/data/c/Photos:ro"`). Then it is not only our promise: the operating system
-itself refuses any change. Their `--help` starts with 🔒, and those reading your photos say so
-when they start.
+itself refuses any change. Their `--help` starts with *Read-only*, and those reading your photos say so
+with 🔒 when they start.
 
 ## Nothing is erased unless you run `purge`
 

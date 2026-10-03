@@ -21,148 +21,179 @@ The first line says what happened:
 ```text
 💡 A commented configuration file was created: /config/config.toml.
 Effective settings
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
-┃ Setting                    ┃ Value                            ┃ Origin       ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
-│ general.locale             │ en                               │ command line │
-│ general.verbosity          │ info                             │ default      │
-│ general.color              │ never                            │ command line │
-│ folders.preferred          │ []                               │ default      │
-│ folders.protected          │ []                               │ default      │
-│ folders.excluded           │ []                               │ default      │
-│ scan.categories            │ {}                               │ default      │
-│ scan.extensions            │ []                               │ default      │
-│ scan.excluded_names        │ []                               │ default      │
-│ (always skipped)           │ ['$recycle.bin', 'system volume  │ built-in     │
-│                            │ information', '@eadir',          │              │
-│                            │ '#recycle', '@recycle',          │              │
-│                            │ '.@__thumb', '.trash',           │              │
-│                            │ '.trash-*', '.trashes',          │              │
-│                            │ '.thumbnails']                   │              │
-│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF] │ default      │
-│                            │ ?|_DSC|PICT|CIMG)[_-]?\\d+',     │              │
-│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([ │              │
-│                            │ _-]\\d+)?',                      │              │
-│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d+',   │              │
-│                            │ '_?MG_\\d+', 'P\\d{7}',          │              │
-│                            │ 'PXL_\\d{8}_\\d+.*',             │              │
-│                            │ '\\d{8}_\\d{6}(_\\d+)?',         │              │
-│                            │ '\\d{4}-\\d{2}-\\d{2}            │              │
-│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d+)? │              │
-│                            │ ', '(GOPR|G[HX]\\d{2})\\d{4}',   │              │
-│                            │ 'DJI_\\d+',                      │              │
-│                            │ '(FB_IMG|received|Snapchat)[_-]\ │              │
-│                            │ \d+', '(Screenshot|Screen        │              │
-│                            │ Shot|Capture d.écran)([          │              │
-│                            │ _-].*)?', 'image\\d*',           │              │
-│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0 │              │
-│                            │ -9a-f]{12}', '[0-9a-f]{16,}']    │              │
-│ keep.generic_folders       │ ['DCIM', '\\d{3}[A-Z0-9_]{5}',   │ default      │
-│                            │ 'Camera( Roll| Uploads)?',       │              │
-│                            │ 'WhatsApp (Images|Video)',       │              │
-│                            │ 'Sent',                          │              │
-│                            │ 'Downloads?|Téléchargements',    │              │
-│                            │ 'Screenshots|Captures d.écran',  │              │
-│                            │ '(New folder|Nouveau dossier)(   │              │
-│                            │ \\(\\d+\\))?',                   │              │
-│                            │ 'Import(s|ed)?|Temp|tmp']        │              │
-│ clean.confirm              │ True                             │ default      │
-│ classify.target            │                                  │ default      │
-│ classify.leave             │ []                               │ default      │
-│ classify.timezone          │                                  │ default      │
-│ classify.layout            │ {year}/{category}                │ default      │
-│ classify.unsure_layout     │ {year}/To check/{category}       │ default      │
-│ classify.manual_layout     │ {year}/To sort/{event}           │ default      │
-│ classify.undated_layout    │ To sort/Undated                  │ default      │
-│ classify.received_layout   │ To sort/Received and downloaded  │ default      │
-│ classify.session_gap_hours │ 6.0                              │ default      │
-│ classify.merge_gap_hours   │ 18.0                             │ default      │
-│ classify.min_event_size    │ 5                                │ default      │
-│ classify.event_year        │ start                            │ default      │
-│ classify.sure              │ 80                               │ default      │
-│ classify.unsure            │ 50                               │ default      │
-│ classify.scores            │ {'existing-folder': 90,          │ default      │
-│                            │ 'person-folder': 85,             │              │
-│                            │ 'event-neighbour': 70,           │              │
-│                            │ 'calendar': 85, 'date-range':    │              │
-│                            │ 95, 'kind': 85, 'path': 90,      │              │
-│                            │ 'camera': 90, 'other-category':  │              │
-│                            │ 85, 'subject': 85, 'date-only':  │              │
-│                            │ 90, 'no-signal': 0}              │              │
-│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
-│                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
-│                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
-│                            │ })(?P<S>\\d{2}).*',              │              │
-│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{4})(? │              │
-│                            │ P<m>\\d{2})(?P<d>\\d{2})-WA\\d+' │              │
-│                            │ , '(?:Screenshot|Capture)[       │              │
-│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\d{2}) │              │
-│                            │ -?(?P<d>\\d{2}).*',              │              │
-│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2})-(?P │              │
-│                            │ <d>\\d{2})[                      │              │
-│                            │ _](?P<H>\\d{2})(?P<M>\\d{2})[._] │              │
-│                            │ (?P<S>\\d{2}).*']                │              │
-│ classify.generic_folders   │ ['(My |Mes                       │ default      │
-│                            │ )?(Photos|Pictures|Images|Videos │              │
-│                            │ |Vidéos|Mes images)',            │              │
-│                            │ '(Family|Famille|Photos de       │              │
-│                            │ famille|Family photos)']         │              │
-│ classify.rules             │ [{'name': 'Films and series',    │ default      │
-│                            │ 'match': 'kind', 'category': '', │              │
-│                            │ 'dates': '', 'pattern': '',      │              │
-│                            │ 'kind': 'download',              │              │
-│                            │ 'categories': [], 'per_photo':   │              │
-│                            │ False, 'score': None}, {'name':  │              │
-│                            │ 'Existing folders', 'match':     │              │
-│                            │ 'existing_folder', 'category':   │              │
-│                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Screenshots and │              │
-│                            │ documents', 'match': 'kind',     │              │
-│                            │ 'category': 'Documents and       │              │
-│                            │ screenshots', 'dates': '',       │              │
-│                            │ 'pattern': '', 'kind':           │              │
-│                            │ 'screenshot', 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Event           │              │
-│                            │ neighbours', 'match':            │              │
-│                            │ 'event_neighbour', 'category':   │              │
-│                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Christmas',     │              │
-│                            │ 'match': 'calendar', 'category': │              │
-│                            │ 'Parties/Christmas', 'dates':    │              │
-│                            │ '12-24..12-26', 'pattern': '',   │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'New Year',      │              │
-│                            │ 'match': 'calendar', 'category': │              │
-│                            │ 'Parties/New Year', 'dates':     │              │
-│                            │ '12-31..01-01', 'pattern': '',   │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}]                           │              │
-│ classify.ai                │ {'url':                          │ default      │
-│                            │ 'http://host.docker.internal:114 │              │
-│                            │ 34', 'model': '', 'map_model':   │              │
-│                            │ '', 'samples_per_event': 3,      │              │
-│                            │ 'min_edge': 512, 'image_edge':   │              │
-│                            │ 768, 'concurrency': 1,           │              │
-│                            │ 'timeout_seconds': 180.0,        │              │
-│                            │ 'retries': 2, 'batch_size': 20,  │              │
-│                            │ 'confirm_above': 200,            │              │
-│                            │ 'seconds_per_photo': 4.5}        │              │
-│ sort.confirm               │ True                             │ default      │
-│ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ default      │
-│                            │ '.DS_Store']                     │              │
-│ inventory.blurry_below     │ 100.0                            │ default      │
-│ inventory.small_below      │ 1000                             │ default      │
-│ inventory.dark_below       │ 50.0                             │ default      │
-│ inventory.bright_above     │ 205.0                            │ default      │
-│ inventory.clipped_above    │ 0.25                             │ default      │
-└────────────────────────────┴──────────────────────────────────┴──────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Setting                       ┃ Value                         ┃ Origin       ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ general.locale                │ en                            │ command line │
+│ general.verbosity             │ info                          │ default      │
+│ general.color                 │ never                         │ command line │
+│ folders.preferred             │ []                            │ default      │
+│ folders.protected             │ []                            │ default      │
+│ folders.excluded              │ []                            │ default      │
+│ scan.categories               │ {}                            │ default      │
+│ scan.extensions               │ []                            │ default      │
+│ scan.excluded_names           │ []                            │ default      │
+│ (always skipped)              │ ['$recycle.bin', 'system      │ built-in     │
+│                               │ volume information',          │              │
+│                               │ '@eadir', '#recycle',         │              │
+│                               │ '@recycle', '.@__thumb',      │              │
+│                               │ '.trash', '.trash-*',         │              │
+│                               │ '.trashes', '.thumbnails']    │              │
+│ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
+│                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
+│                               │ ',                            │              │
+│                               │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6 │              │
+│                               │ }([_-]\\d+)?',                │              │
+│                               │ '(IMG|VID|AUD)-\\d{8}-WA\\d+' │              │
+│                               │ , '_?MG_\\d+', 'P\\d{7}',     │              │
+│                               │ 'PXL_\\d{8}_\\d+.*',          │              │
+│                               │ '\\d{8}_\\d{6}(_\\d+)?',      │              │
+│                               │ '\\d{4}-\\d{2}-\\d{2}         │              │
+│                               │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d │              │
+│                               │ +)?',                         │              │
+│                               │ '(GOPR|G[HX]\\d{2})\\d{4}',   │              │
+│                               │ 'DJI_\\d+',                   │              │
+│                               │ '(FB_IMG|received|Snapchat)[_ │              │
+│                               │ -]\\d+', '(Screenshot|Screen  │              │
+│                               │ Shot|Capture d.écran)([       │              │
+│                               │ _-].*)?', 'image\\d*',        │              │
+│                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
+│                               │ -[0-9a-f]{12}',               │              │
+│                               │ '[0-9a-f]{16,}']              │              │
+│ keep.generic_folders          │ ['DCIM',                      │ default      │
+│                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
+│                               │ 'Camera( Roll| Uploads)?',    │              │
+│                               │ 'WhatsApp (Images|Video)',    │              │
+│                               │ 'Sent',                       │              │
+│                               │ 'Downloads?|Téléchargements', │              │
+│                               │ 'Screenshots|Captures         │              │
+│                               │ d.écran', '(New               │              │
+│                               │ folder|Nouveau dossier)(      │              │
+│                               │ \\(\\d+\\))?',                │              │
+│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│ clean.confirm                 │ True                          │ default      │
+│ classify.target               │                               │ default      │
+│ classify.leave                │ []                            │ default      │
+│ classify.timezone             │                               │ default      │
+│ classify.layout               │ {year}/{category}             │ default      │
+│ classify.unsure_layout        │ {year}/To check/{category}    │ default      │
+│ classify.manual_layout        │ {year}/To sort/{event}        │ default      │
+│ classify.undated_layout       │ To sort/Undated               │ default      │
+│ classify.received_layout      │ To sort/Received and          │ default      │
+│                               │ downloaded                    │              │
+│ classify.session_gap_hours    │ 6.0                           │ default      │
+│ classify.merge_gap_hours      │ 18.0                          │ default      │
+│ classify.min_event_size       │ 5                             │ default      │
+│ classify.event_year           │ start                         │ default      │
+│ classify.sure                 │ 80                            │ default      │
+│ classify.unsure               │ 50                            │ default      │
+│ classify.scores               │ {'existing-folder': 90,       │ default      │
+│                               │ 'person-folder': 85,          │              │
+│                               │ 'event-neighbour': 70,        │              │
+│                               │ 'calendar': 85, 'date-range': │              │
+│                               │ 95, 'kind': 85, 'path': 90,   │              │
+│                               │ 'camera': 90,                 │              │
+│                               │ 'other-category': 85,         │              │
+│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'place-neighbour': 70,        │              │
+│                               │ 'trip': 90, 'trip-neighbour': │              │
+│                               │ 70, 'date-only': 90,          │              │
+│                               │ 'no-signal': 0}               │              │
+│ classify.name_dates           │ ['(?:IMG|VID|PXL|MVIMG)?[_-]? │ default      │
+│                               │ (?P<y>\\d{4})(?P<m>\\d{2})(?P │              │
+│                               │ <d>\\d{2})[_-](?P<H>\\d{2})(? │              │
+│                               │ P<M>\\d{2})(?P<S>\\d{2}).*',  │              │
+│                               │ '(?:IMG|VID|AUD)-(?P<y>\\d{4} │              │
+│                               │ )(?P<m>\\d{2})(?P<d>\\d{2})-W │              │
+│                               │ A\\d+',                       │              │
+│                               │ '(?:Screenshot|Capture)[      │              │
+│                               │ _-]*(?P<y>\\d{4})-?(?P<m>\\d{ │              │
+│                               │ 2})-?(?P<d>\\d{2}).*',        │              │
+│                               │ '(?P<y>\\d{4})-(?P<m>\\d{2})- │              │
+│                               │ (?P<d>\\d{2})[                │              │
+│                               │ _](?P<H>\\d{2})(?P<M>\\d{2})[ │              │
+│                               │ ._](?P<S>\\d{2}).*']          │              │
+│ classify.generic_folders      │ ['(My |Mes                    │ default      │
+│                               │ )?(Photos|Pictures|Images|Vid │              │
+│                               │ eos|Vidéos|Mes images)',      │              │
+│                               │ '(Family|Famille|Photos de    │              │
+│                               │ famille|Family photos)']      │              │
+│ classify.rules                │ [{'name': 'Films and series', │ default      │
+│                               │ 'match': 'kind', 'category':  │              │
+│                               │ '', 'dates': '', 'pattern':   │              │
+│                               │ '', 'kind': 'download',       │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Existing     │              │
+│                               │ folders', 'match':            │              │
+│                               │ 'existing_folder',            │              │
+│                               │ 'category': '', 'dates': '',  │              │
+│                               │ 'pattern': '', 'kind': None,  │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Screenshots  │              │
+│                               │ and documents', 'match':      │              │
+│                               │ 'kind', 'category':           │              │
+│                               │ 'Documents and screenshots',  │              │
+│                               │ 'dates': '', 'pattern': '',   │              │
+│                               │ 'kind': 'screenshot',         │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Event        │              │
+│                               │ neighbours', 'match':         │              │
+│                               │ 'event_neighbour',            │              │
+│                               │ 'category': '', 'dates': '',  │              │
+│                               │ 'pattern': '', 'kind': None,  │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Christmas',  │              │
+│                               │ 'match': 'calendar',          │              │
+│                               │ 'category':                   │              │
+│                               │ 'Parties/Christmas', 'dates': │              │
+│                               │ '12-24..12-26', 'pattern':    │              │
+│                               │ '', 'kind': None,             │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'New Year',   │              │
+│                               │ 'match': 'calendar',          │              │
+│                               │ 'category': 'Parties/New      │              │
+│                               │ Year', 'dates':               │              │
+│                               │ '12-31..01-01', 'pattern':    │              │
+│                               │ '', 'kind': None,             │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}]                        │              │
+│ classify.ai                   │ {'url':                       │ default      │
+│                               │ 'http://host.docker.internal: │              │
+│                               │ 11434', 'model': '',          │              │
+│                               │ 'map_model': '',              │              │
+│                               │ 'samples_per_event': 3,       │              │
+│                               │ 'min_edge': 512,              │              │
+│                               │ 'image_edge': 768,            │              │
+│                               │ 'concurrency': 1,             │              │
+│                               │ 'timeout_seconds': 180.0,     │              │
+│                               │ 'retries': 2, 'batch_size':   │              │
+│                               │ 20, 'confirm_above': 200,     │              │
+│                               │ 'seconds_per_photo': 4.5}     │              │
+│ classify.places               │ []                            │ default      │
+│ classify.trip_min_km          │ 100.0                         │ default      │
+│ classify.trip_merge_gap_hours │ 48.0                          │ default      │
+│ classify.trip_merge_max_km    │ 120.0                         │ default      │
+│ sort.confirm                  │ True                          │ default      │
+│ sort.junk_files               │ ['Thumbs.db', 'desktop.ini',  │ default      │
+│                               │ '.DS_Store']                  │              │
+│ inventory.blurry_below        │ 100.0                         │ default      │
+│ inventory.small_below         │ 1000                          │ default      │
+│ inventory.dark_below          │ 50.0                          │ default      │
+│ inventory.bright_above        │ 205.0                         │ default      │
+│ inventory.clipped_above       │ 0.25                          │ default      │
+│ places.tiles                  │ https://tile.openstreetmap.or │ default      │
+│                               │ g/{z}/{x}/{y}.png             │              │
+│ places.attribution            │ © OpenStreetMap contributors  │ default      │
+│ places.nominatim_url          │ https://nominatim.openstreetm │ default      │
+│                               │ ap.org                        │              │
+│ album.root                    │                               │ default      │
+└───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
 ┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
@@ -289,148 +320,179 @@ with the same `-v` options as your audit (here `config` instead of `audit`):
 <!-- capture: config.txt -->
 ```text
 Effective settings
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
-┃ Setting                    ┃ Value                            ┃ Origin       ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
-│ general.locale             │ en                               │ command line │
-│ general.verbosity          │ info                             │ config.toml  │
-│ general.color              │ never                            │ command line │
-│ folders.preferred          │ []                               │ config.toml  │
-│ folders.protected          │ []                               │ config.toml  │
-│ folders.excluded           │ []                               │ config.toml  │
-│ scan.categories            │ {}                               │ config.toml  │
-│ scan.extensions            │ []                               │ config.toml  │
-│ scan.excluded_names        │ []                               │ config.toml  │
-│ (always skipped)           │ ['$recycle.bin', 'system volume  │ built-in     │
-│                            │ information', '@eadir',          │              │
-│                            │ '#recycle', '@recycle',          │              │
-│                            │ '.@__thumb', '.trash',           │              │
-│                            │ '.trash-*', '.trashes',          │              │
-│                            │ '.thumbnails']                   │              │
-│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[NF] │ default      │
-│                            │ ?|_DSC|PICT|CIMG)[_-]?\\d+',     │              │
-│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6}([ │              │
-│                            │ _-]\\d+)?',                      │              │
-│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d+',   │              │
-│                            │ '_?MG_\\d+', 'P\\d{7}',          │              │
-│                            │ 'PXL_\\d{8}_\\d+.*',             │              │
-│                            │ '\\d{8}_\\d{6}(_\\d+)?',         │              │
-│                            │ '\\d{4}-\\d{2}-\\d{2}            │              │
-│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d+)? │              │
-│                            │ ', '(GOPR|G[HX]\\d{2})\\d{4}',   │              │
-│                            │ 'DJI_\\d+',                      │              │
-│                            │ '(FB_IMG|received|Snapchat)[_-]\ │              │
-│                            │ \d+', '(Screenshot|Screen        │              │
-│                            │ Shot|Capture d.écran)([          │              │
-│                            │ _-].*)?', 'image\\d*',           │              │
-│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0 │              │
-│                            │ -9a-f]{12}', '[0-9a-f]{16,}']    │              │
-│ keep.generic_folders       │ ['DCIM', '\\d{3}[A-Z0-9_]{5}',   │ default      │
-│                            │ 'Camera( Roll| Uploads)?',       │              │
-│                            │ 'WhatsApp (Images|Video)',       │              │
-│                            │ 'Sent',                          │              │
-│                            │ 'Downloads?|Téléchargements',    │              │
-│                            │ 'Screenshots|Captures d.écran',  │              │
-│                            │ '(New folder|Nouveau dossier)(   │              │
-│                            │ \\(\\d+\\))?',                   │              │
-│                            │ 'Import(s|ed)?|Temp|tmp']        │              │
-│ clean.confirm              │ True                             │ config.toml  │
-│ classify.target            │                                  │ config.toml  │
-│ classify.leave             │ []                               │ config.toml  │
-│ classify.timezone          │                                  │ config.toml  │
-│ classify.layout            │ {year}/{category}                │ config.toml  │
-│ classify.unsure_layout     │ {year}/To check/{category}       │ config.toml  │
-│ classify.manual_layout     │ {year}/To sort/{event}           │ config.toml  │
-│ classify.undated_layout    │ To sort/Undated                  │ config.toml  │
-│ classify.received_layout   │ To sort/Received and downloaded  │ config.toml  │
-│ classify.session_gap_hours │ 6.0                              │ default      │
-│ classify.merge_gap_hours   │ 18.0                             │ config.toml  │
-│ classify.min_event_size    │ 5                                │ config.toml  │
-│ classify.event_year        │ start                            │ default      │
-│ classify.sure              │ 80                               │ config.toml  │
-│ classify.unsure            │ 50                               │ config.toml  │
-│ classify.scores            │ {'existing-folder': 90,          │ default      │
-│                            │ 'person-folder': 85,             │              │
-│                            │ 'event-neighbour': 70,           │              │
-│                            │ 'calendar': 85, 'date-range':    │              │
-│                            │ 95, 'kind': 85, 'path': 90,      │              │
-│                            │ 'camera': 90, 'other-category':  │              │
-│                            │ 85, 'subject': 85, 'date-only':  │              │
-│                            │ 90, 'no-signal': 0}              │              │
-│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_-]?(?P │ default      │
-│                            │ <y>\\d{4})(?P<m>\\d{2})(?P<d>\\d │              │
-│                            │ {2})[_-](?P<H>\\d{2})(?P<M>\\d{2 │              │
-│                            │ })(?P<S>\\d{2}).*',              │              │
-│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{4})(? │              │
-│                            │ P<m>\\d{2})(?P<d>\\d{2})-WA\\d+' │              │
-│                            │ , '(?:Screenshot|Capture)[       │              │
-│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\d{2}) │              │
-│                            │ -?(?P<d>\\d{2}).*',              │              │
-│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2})-(?P │              │
-│                            │ <d>\\d{2})[                      │              │
-│                            │ _](?P<H>\\d{2})(?P<M>\\d{2})[._] │              │
-│                            │ (?P<S>\\d{2}).*']                │              │
-│ classify.generic_folders   │ ['(My |Mes                       │ default      │
-│                            │ )?(Photos|Pictures|Images|Videos │              │
-│                            │ |Vidéos|Mes images)',            │              │
-│                            │ '(Family|Famille|Photos de       │              │
-│                            │ famille|Family photos)']         │              │
-│ classify.rules             │ [{'name': 'Films and series',    │ config.toml  │
-│                            │ 'match': 'kind', 'category': '', │              │
-│                            │ 'dates': '', 'pattern': '',      │              │
-│                            │ 'kind': 'download',              │              │
-│                            │ 'categories': [], 'per_photo':   │              │
-│                            │ False, 'score': None}, {'name':  │              │
-│                            │ 'Existing folders', 'match':     │              │
-│                            │ 'existing_folder', 'category':   │              │
-│                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Screenshots and │              │
-│                            │ documents', 'match': 'kind',     │              │
-│                            │ 'category': 'Documents and       │              │
-│                            │ screenshots', 'dates': '',       │              │
-│                            │ 'pattern': '', 'kind':           │              │
-│                            │ 'screenshot', 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Event           │              │
-│                            │ neighbours', 'match':            │              │
-│                            │ 'event_neighbour', 'category':   │              │
-│                            │ '', 'dates': '', 'pattern': '',  │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'Christmas',     │              │
-│                            │ 'match': 'calendar', 'category': │              │
-│                            │ 'Parties/Christmas', 'dates':    │              │
-│                            │ '12-24..12-26', 'pattern': '',   │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}, {'name': 'New Year',      │              │
-│                            │ 'match': 'calendar', 'category': │              │
-│                            │ 'Parties/New Year', 'dates':     │              │
-│                            │ '12-31..01-01', 'pattern': '',   │              │
-│                            │ 'kind': None, 'categories': [],  │              │
-│                            │ 'per_photo': False, 'score':     │              │
-│                            │ None}]                           │              │
-│ classify.ai                │ {'url':                          │ config.toml  │
-│                            │ 'http://host.docker.internal:114 │              │
-│                            │ 34', 'model': '', 'map_model':   │              │
-│                            │ '', 'samples_per_event': 3,      │              │
-│                            │ 'min_edge': 512, 'image_edge':   │              │
-│                            │ 768, 'concurrency': 1,           │              │
-│                            │ 'timeout_seconds': 180.0,        │              │
-│                            │ 'retries': 2, 'batch_size': 20,  │              │
-│                            │ 'confirm_above': 200,            │              │
-│                            │ 'seconds_per_photo': 4.5}        │              │
-│ sort.confirm               │ True                             │ config.toml  │
-│ sort.junk_files            │ ['Thumbs.db', 'desktop.ini',     │ config.toml  │
-│                            │ '.DS_Store']                     │              │
-│ inventory.blurry_below     │ 100.0                            │ config.toml  │
-│ inventory.small_below      │ 1000                             │ config.toml  │
-│ inventory.dark_below       │ 50.0                             │ config.toml  │
-│ inventory.bright_above     │ 205.0                            │ config.toml  │
-│ inventory.clipped_above    │ 0.25                             │ config.toml  │
-└────────────────────────────┴──────────────────────────────────┴──────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Setting                       ┃ Value                         ┃ Origin       ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ general.locale                │ en                            │ command line │
+│ general.verbosity             │ info                          │ config.toml  │
+│ general.color                 │ never                         │ command line │
+│ folders.preferred             │ []                            │ config.toml  │
+│ folders.protected             │ []                            │ config.toml  │
+│ folders.excluded              │ []                            │ config.toml  │
+│ scan.categories               │ {}                            │ config.toml  │
+│ scan.extensions               │ []                            │ config.toml  │
+│ scan.excluded_names           │ []                            │ config.toml  │
+│ (always skipped)              │ ['$recycle.bin', 'system      │ built-in     │
+│                               │ volume information',          │              │
+│                               │ '@eadir', '#recycle',         │              │
+│                               │ '@recycle', '.@__thumb',      │              │
+│                               │ '.trash', '.trash-*',         │              │
+│                               │ '.trashes', '.thumbnails']    │              │
+│ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
+│                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
+│                               │ ',                            │              │
+│                               │ '(IMG|VID)[_-]\\d{8}[_-]\\d{6 │              │
+│                               │ }([_-]\\d+)?',                │              │
+│                               │ '(IMG|VID|AUD)-\\d{8}-WA\\d+' │              │
+│                               │ , '_?MG_\\d+', 'P\\d{7}',     │              │
+│                               │ 'PXL_\\d{8}_\\d+.*',          │              │
+│                               │ '\\d{8}_\\d{6}(_\\d+)?',      │              │
+│                               │ '\\d{4}-\\d{2}-\\d{2}         │              │
+│                               │ \\d{2}\\.\\d{2}\\.\\d{2}(-\\d │              │
+│                               │ +)?',                         │              │
+│                               │ '(GOPR|G[HX]\\d{2})\\d{4}',   │              │
+│                               │ 'DJI_\\d+',                   │              │
+│                               │ '(FB_IMG|received|Snapchat)[_ │              │
+│                               │ -]\\d+', '(Screenshot|Screen  │              │
+│                               │ Shot|Capture d.écran)([       │              │
+│                               │ _-].*)?', 'image\\d*',        │              │
+│                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
+│                               │ -[0-9a-f]{12}',               │              │
+│                               │ '[0-9a-f]{16,}']              │              │
+│ keep.generic_folders          │ ['DCIM',                      │ default      │
+│                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
+│                               │ 'Camera( Roll| Uploads)?',    │              │
+│                               │ 'WhatsApp (Images|Video)',    │              │
+│                               │ 'Sent',                       │              │
+│                               │ 'Downloads?|Téléchargements', │              │
+│                               │ 'Screenshots|Captures         │              │
+│                               │ d.écran', '(New               │              │
+│                               │ folder|Nouveau dossier)(      │              │
+│                               │ \\(\\d+\\))?',                │              │
+│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│ clean.confirm                 │ True                          │ config.toml  │
+│ classify.target               │                               │ config.toml  │
+│ classify.leave                │ []                            │ config.toml  │
+│ classify.timezone             │                               │ config.toml  │
+│ classify.layout               │ {year}/{category}             │ config.toml  │
+│ classify.unsure_layout        │ {year}/To check/{category}    │ config.toml  │
+│ classify.manual_layout        │ {year}/To sort/{event}        │ config.toml  │
+│ classify.undated_layout       │ To sort/Undated               │ config.toml  │
+│ classify.received_layout      │ To sort/Received and          │ config.toml  │
+│                               │ downloaded                    │              │
+│ classify.session_gap_hours    │ 6.0                           │ default      │
+│ classify.merge_gap_hours      │ 18.0                          │ config.toml  │
+│ classify.min_event_size       │ 5                             │ config.toml  │
+│ classify.event_year           │ start                         │ default      │
+│ classify.sure                 │ 80                            │ config.toml  │
+│ classify.unsure               │ 50                            │ config.toml  │
+│ classify.scores               │ {'existing-folder': 90,       │ default      │
+│                               │ 'person-folder': 85,          │              │
+│                               │ 'event-neighbour': 70,        │              │
+│                               │ 'calendar': 85, 'date-range': │              │
+│                               │ 95, 'kind': 85, 'path': 90,   │              │
+│                               │ 'camera': 90,                 │              │
+│                               │ 'other-category': 85,         │              │
+│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'place-neighbour': 70,        │              │
+│                               │ 'trip': 90, 'trip-neighbour': │              │
+│                               │ 70, 'date-only': 90,          │              │
+│                               │ 'no-signal': 0}               │              │
+│ classify.name_dates           │ ['(?:IMG|VID|PXL|MVIMG)?[_-]? │ default      │
+│                               │ (?P<y>\\d{4})(?P<m>\\d{2})(?P │              │
+│                               │ <d>\\d{2})[_-](?P<H>\\d{2})(? │              │
+│                               │ P<M>\\d{2})(?P<S>\\d{2}).*',  │              │
+│                               │ '(?:IMG|VID|AUD)-(?P<y>\\d{4} │              │
+│                               │ )(?P<m>\\d{2})(?P<d>\\d{2})-W │              │
+│                               │ A\\d+',                       │              │
+│                               │ '(?:Screenshot|Capture)[      │              │
+│                               │ _-]*(?P<y>\\d{4})-?(?P<m>\\d{ │              │
+│                               │ 2})-?(?P<d>\\d{2}).*',        │              │
+│                               │ '(?P<y>\\d{4})-(?P<m>\\d{2})- │              │
+│                               │ (?P<d>\\d{2})[                │              │
+│                               │ _](?P<H>\\d{2})(?P<M>\\d{2})[ │              │
+│                               │ ._](?P<S>\\d{2}).*']          │              │
+│ classify.generic_folders      │ ['(My |Mes                    │ default      │
+│                               │ )?(Photos|Pictures|Images|Vid │              │
+│                               │ eos|Vidéos|Mes images)',      │              │
+│                               │ '(Family|Famille|Photos de    │              │
+│                               │ famille|Family photos)']      │              │
+│ classify.rules                │ [{'name': 'Films and series', │ config.toml  │
+│                               │ 'match': 'kind', 'category':  │              │
+│                               │ '', 'dates': '', 'pattern':   │              │
+│                               │ '', 'kind': 'download',       │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Existing     │              │
+│                               │ folders', 'match':            │              │
+│                               │ 'existing_folder',            │              │
+│                               │ 'category': '', 'dates': '',  │              │
+│                               │ 'pattern': '', 'kind': None,  │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Screenshots  │              │
+│                               │ and documents', 'match':      │              │
+│                               │ 'kind', 'category':           │              │
+│                               │ 'Documents and screenshots',  │              │
+│                               │ 'dates': '', 'pattern': '',   │              │
+│                               │ 'kind': 'screenshot',         │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Event        │              │
+│                               │ neighbours', 'match':         │              │
+│                               │ 'event_neighbour',            │              │
+│                               │ 'category': '', 'dates': '',  │              │
+│                               │ 'pattern': '', 'kind': None,  │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'Christmas',  │              │
+│                               │ 'match': 'calendar',          │              │
+│                               │ 'category':                   │              │
+│                               │ 'Parties/Christmas', 'dates': │              │
+│                               │ '12-24..12-26', 'pattern':    │              │
+│                               │ '', 'kind': None,             │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}, {'name': 'New Year',   │              │
+│                               │ 'match': 'calendar',          │              │
+│                               │ 'category': 'Parties/New      │              │
+│                               │ Year', 'dates':               │              │
+│                               │ '12-31..01-01', 'pattern':    │              │
+│                               │ '', 'kind': None,             │              │
+│                               │ 'categories': [],             │              │
+│                               │ 'per_photo': False, 'score':  │              │
+│                               │ None}]                        │              │
+│ classify.ai                   │ {'url':                       │ config.toml  │
+│                               │ 'http://host.docker.internal: │              │
+│                               │ 11434', 'model': '',          │              │
+│                               │ 'map_model': '',              │              │
+│                               │ 'samples_per_event': 3,       │              │
+│                               │ 'min_edge': 512,              │              │
+│                               │ 'image_edge': 768,            │              │
+│                               │ 'concurrency': 1,             │              │
+│                               │ 'timeout_seconds': 180.0,     │              │
+│                               │ 'retries': 2, 'batch_size':   │              │
+│                               │ 20, 'confirm_above': 200,     │              │
+│                               │ 'seconds_per_photo': 4.5}     │              │
+│ classify.places               │ []                            │ default      │
+│ classify.trip_min_km          │ 100.0                         │ config.toml  │
+│ classify.trip_merge_gap_hours │ 48.0                          │ config.toml  │
+│ classify.trip_merge_max_km    │ 120.0                         │ config.toml  │
+│ sort.confirm                  │ True                          │ config.toml  │
+│ sort.junk_files               │ ['Thumbs.db', 'desktop.ini',  │ config.toml  │
+│                               │ '.DS_Store']                  │              │
+│ inventory.blurry_below        │ 100.0                         │ config.toml  │
+│ inventory.small_below         │ 1000                          │ config.toml  │
+│ inventory.dark_below          │ 50.0                          │ config.toml  │
+│ inventory.bright_above        │ 205.0                         │ config.toml  │
+│ inventory.clipped_above       │ 0.25                          │ config.toml  │
+│ places.tiles                  │ https://tile.openstreetmap.or │ config.toml  │
+│                               │ g/{z}/{x}/{y}.png             │              │
+│ places.attribution            │ © OpenStreetMap contributors  │ config.toml  │
+│ places.nominatim_url          │ https://nominatim.openstreetm │ config.toml  │
+│                               │ ap.org                        │              │
+│ album.root                    │                               │ config.toml  │
+└───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
 ┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓

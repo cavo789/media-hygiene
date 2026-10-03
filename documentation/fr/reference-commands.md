@@ -3,7 +3,7 @@
 [Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-commands.md)
 
 Chaque commande, chaque option. Le [guide](README.md#pour-commencer) les présente une à une ;
-cette page les rassemble. Les commandes 🔒 ne modifient jamais vos photos
+cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule* ne modifient jamais vos photos
 ([comment vos photos restent en sécurité](reference-safety.md)).
 
 ## Commandes
@@ -97,30 +97,35 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                                                respecté).                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyser ───────────────────────────────────────────────────────────────────╮
-│ audit        Trouve les doublons exacts et les fichiers cassés. Lecture      │
-│              seule : montez les dossiers avec :ro.                           │
-│ crosscheck   Compare un nouvel audit aux résultats de Czkawka : un second    │
-│              avis, indépendant.                                              │
-│ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
-│              catégorie. En lecture seule.                                    │
-│ review-sort  Nommer les événements de la proposition de classify un par un,  │
-│              dans votre navigateur.                                          │
-│ places       Nommer vos lieux sur une carte des endroits où les photos ont   │
-│              été prises ; enregistrés dans config.toml pour les règles       │
-│              'place' et 'trip'.                                              │
-│ inventory    Exporter vers Excel chaque photo et vidéo avec ce que les       │
-│              audits en ont appris, depuis le cache seul : aucun fichier      │
-│              n'est lu.                                                       │
-│ history      Liste les exécutions et ce qu'elles ont fait.                   │
-│ reports      Liste les rapports HTML des audits et nettoyages précédents.    │
-│ config       Affiche chaque réglage, son origine, et les points de montage.  │
+│ audit        Lecture seule : ne modifie jamais vos photos. Trouver les       │
+│              doublons exacts et les fichiers cassés.                         │
+│ crosscheck   Lecture seule : ne modifie jamais vos photos. Compare un nouvel │
+│              audit aux résultats de Czkawka : un second avis, indépendant.   │
+│ classify     Lecture seule : ne modifie jamais vos photos. Propose où ranger │
+│              chaque photo et vidéo : année, événement, catégorie.            │
+│ review-sort  Lecture seule : ne modifie jamais vos photos. Nommer les        │
+│              événements de la proposition de classify un par un, dans votre  │
+│              navigateur.                                                     │
+│ places       Lecture seule : ne modifie jamais vos photos. Nommer vos lieux  │
+│              sur une carte des endroits où les photos ont été prises ;       │
+│              enregistrés dans config.toml pour les règles 'place' et 'trip'. │
+│ inventory    Lecture seule : ne modifie jamais vos photos. Exporter vers     │
+│              Excel chaque photo et vidéo avec ce que les audits en ont       │
+│              appris, depuis le cache seul : aucun fichier n'est lu.          │
+│ history      Lecture seule : ne modifie jamais vos photos. Liste les         │
+│              exécutions et ce qu'elles ont fait.                             │
+│ reports      Lecture seule : ne modifie jamais vos photos. Liste les         │
+│              rapports HTML des audits et nettoyages précédents.              │
+│ config       Lecture seule : ne modifie jamais vos photos. Affiche chaque    │
+│              réglage, son origine, et les points de montage.                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir ───────────────────────────────────────────────────────────────────────╮
-│ review       Écarter des photos de rafale, une série à la fois, au clavier   │
-│              dans votre navigateur ; 'clean --decisions' les déplace         │
-│              ensuite.                                                        │
-│ clean        Audite, demande confirmation, puis supprime réellement les      │
-│              copies en double (journalisé, annulable).                       │
+│ review       Lecture seule : ne modifie jamais vos photos. Écarter des       │
+│              photos de rafale, une série à la fois, au clavier dans votre    │
+│              navigateur ; 'clean --decisions' les déplace ensuite.           │
+│ clean        Analyser, confirmer, puis déplacer les copies en double en      │
+│              quarantaine, après une comparaison octet par octet (journalisé, │
+│              annulable) ; --delete les supprime pour de bon.                 │
 │ sort         Déplacer les photos et vidéos comme le dit le classeur de       │
 │              classify modifié (journalisé, annulable).                       │
 │ album        Rassemble une sélection du plan de classify dans un dossier de  │
@@ -129,8 +134,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │ undo         Restaure chaque fichier d'une exécution, depuis la copie        │
 │              conservée, la quarantaine ou là où il a été déplacé ; supprime  │
 │              les liens d'un album.                                           │
-│ purge        Supprime définitivement les fichiers cassés mis en quarantaine  │
-│              par une exécution.                                              │
+│ purge        Effacer pour de bon la quarantaine d'une exécution : avec       │
+│              'clean --delete', la seule façon dont l'outil supprime du       │
+│              contenu.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 
@@ -151,8 +157,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene audit [OPTIONS]
 
- Trouve les doublons exacts et les fichiers cassés. Lecture seule : montez les
- dossiers avec :ro.
+ Lecture seule : ne modifie jamais vos photos. Trouver les doublons exacts et
+ les fichiers cassés.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
@@ -192,8 +198,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene review [OPTIONS]
 
- Écarter des photos de rafale, une série à la fois, au clavier dans votre
- navigateur ; 'clean --decisions' les déplace ensuite.
+ Lecture seule : ne modifie jamais vos photos. Écarter des photos de rafale,
+ une série à la fois, au clavier dans votre navigateur ; 'clean --decisions'
+ les déplace ensuite.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --decisions          <path>              Fichier où les décisions sont       │
@@ -228,18 +235,19 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene clean [OPTIONS]
 
- Audite, demande confirmation, puis supprime réellement les copies en double
- (journalisé, annulable).
+ Analyser, confirmer, puis déplacer les copies en double en quarantaine, après
+ une comparaison octet par octet (journalisé, annulable) ; --delete les
+ supprime pour de bon.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --yes        -y                    Ne pas demander de confirmation (remplace │
 │                                    clean.confirm).                           │
-│ --tier               <exact|near>  exact : supprime seulement les copies     │
-│                                    identiques octet par octet. near :        │
-│                                    déplace aussi les quasi-doublons (copies  │
-│                                    redimensionnées ou recompressées, vidéos  │
-│                                    réencodées) en quarantaine ; vérifiez-les │
-│                                    d'abord dans le rapport. Par défaut :     │
+│ --tier               <exact|near>  exact : seulement les copies identiques   │
+│                                    octet par octet. near : aussi les         │
+│                                    quasi-doublons (copies redimensionnées ou │
+│                                    recompressées, vidéos réencodées) ;       │
+│                                    vérifiez-les d'abord dans le rapport. Les │
+│                                    deux vont en quarantaine. Par défaut :    │
 │                                    exact.                                    │
 │ --decisions          <path>        decisions.json téléchargé depuis un       │
 │                                    rapport d'audit (paires de dossiers       │
@@ -249,6 +257,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                                    le dossier monté sur /reports. Le fichier │
 │                                    est refusé si les dossiers, les paires ou │
 │                                    les séries ont changé.                    │
+│ --delete                           Supprimer pour de bon les copies exactes, │
+│                                    après une comparaison octet par octet     │
+│                                    avec la copie gardée, au lieu de les      │
+│                                    déplacer en quarantaine : l'espace est    │
+│                                    libéré tout de suite ; 'undo' les         │
+│                                    reconstruit à partir de la copie gardée.  │
 │ --help       -h                    Affiche ce message et quitte.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Dossiers (remplacent folders.* de config.toml) ─────────────────────────────╮
@@ -310,7 +324,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene history [OPTIONS]
 
- Liste les exécutions et ce qu'elles ont fait.
+ Lecture seule : ne modifie jamais vos photos. Liste les exécutions et ce
+ qu'elles ont fait.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
@@ -326,12 +341,12 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene purge [OPTIONS] [run_id]
 
- Supprime définitivement les fichiers cassés mis en quarantaine par une
- exécution.
+ Effacer pour de bon la quarantaine d'une exécution : avec 'clean --delete', la
+ seule façon dont l'outil supprime du contenu.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Exécution dont la quarantaine est supprimée ; toutes    │
-│                      par défaut.                                             │
+│   run_id      <str>  Exécution dont la quarantaine est effacée ; toutes par  │
+│                      défaut.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --yes   -y        Ne pas demander de confirmation (remplace clean.confirm).  │
@@ -348,7 +363,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene reports [OPTIONS]
 
- Liste les rapports HTML des audits et nettoyages précédents.
+ Lecture seule : ne modifie jamais vos photos. Liste les rapports HTML des
+ audits et nettoyages précédents.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --prune          <int range> [x>=0]  Supprime tous les rapports sauf les N   │
@@ -366,8 +382,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene crosscheck [OPTIONS]
 
- Compare un nouvel audit aux résultats de Czkawka : un second avis,
- indépendant.
+ Lecture seule : ne modifie jamais vos photos. Compare un nouvel audit aux
+ résultats de Czkawka : un second avis, indépendant.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
@@ -407,8 +423,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene classify [OPTIONS]
 
- Propose où ranger chaque photo et vidéo : année, événement, catégorie. En
- lecture seule.
+ Lecture seule : ne modifie jamais vos photos. Propose où ranger chaque photo
+ et vidéo : année, événement, catégorie.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year                   <str>               Seulement les fichiers de cette │
@@ -515,8 +531,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene inventory [OPTIONS]
 
- Exporter vers Excel chaque photo et vidéo avec ce que les audits en ont
- appris, depuis le cache seul : aucun fichier n'est lu.
+ Lecture seule : ne modifie jamais vos photos. Exporter vers Excel chaque photo
+ et vidéo avec ce que les audits en ont appris, depuis le cache seul : aucun
+ fichier n'est lu.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --format          <xlsx|csv>  xlsx : un classeur Excel (feuilles Fichiers et │
@@ -535,7 +552,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene config [OPTIONS]
 
- Affiche chaque réglage, son origine, et les points de montage.
+ Lecture seule : ne modifie jamais vos photos. Affiche chaque réglage, son
+ origine, et les points de montage.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
@@ -551,8 +569,9 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 ```text
  Utilisation : media-hygiene places [OPTIONS]
 
- Nommer vos lieux sur une carte des endroits où les photos ont été prises ;
- enregistrés dans config.toml pour les règles 'place' et 'trip'.
+ Lecture seule : ne modifie jamais vos photos. Nommer vos lieux sur une carte
+ des endroits où les photos ont été prises ; enregistrés dans config.toml pour
+ les règles 'place' et 'trip'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --port          <int range> [x>=0]  Port de la page dans le conteneur ;      │

@@ -29,7 +29,7 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
 ```text
-✅ Rapport HTML : /reports/20261002-152655-audit/report.html
+✅ Rapport HTML : /reports/20261003-080812-audit/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```
@@ -117,10 +117,10 @@ s'ouvre directement dans Excel, accents compris (séparateur `;` en français) :
 <!-- capture: plan-csv.txt -->
 ```text
 Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail
-1;91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne
-1;91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e;3009124;supprimer;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;
 2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;supprimer;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;
+2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;
 3;94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne
 ```
 
@@ -139,14 +139,14 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261002-152731-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20261002-152727-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20261002-152710-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261002-152704-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261002-152659-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20261002-152658-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261002-152656-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261002-152655-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-080851-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
+│ 20261003-080845-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
+│ 20261003-080828-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-080822-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-080817-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
+│ 20261003-080815-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261003-080813-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-080812-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

@@ -55,10 +55,12 @@ de dossiers, puis **demande avant de faire quoi que ce soit** :
 
 <!-- capture: clean.txt|re:^🛟|❓ -->
 ```text
-🛟 Rien n'est effacé : chaque copie est comparée octet par octet avec celle gardée, puis
-déplacée en quarantaine. 'purge' l'efface une fois que vous avez vérifié.
+🛟 Rien n'est effacé : chaque copie est comparée octet par octet avec celle
+gardée, puis déplacée en quarantaine. 'purge' l'efface une fois que vous avez
+vérifié.
 1 fichier compagnon orphelin (.xmp, .aae, .thm) sera déplacé en quarantaine.
-❓ Déplacer 32 copies en double (13,9 Mo) en quarantaine et traiter 3 fichiers cassés ? [o/N] o
+❓ Déplacer 32 copies en double (13,9 Mo) en quarantaine et traiter 3 fichiers
+cassés ? [o/N] o
 ```
 
 Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
@@ -66,7 +68,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261002-152727
+Nettoyage 20261003-080845
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -75,12 +77,12 @@ Nettoyage 20261002-152727
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261002-152727-clean/report.html
+✅ Rapport HTML : /reports/20261003-080845-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261002-152727' restaure tout.
-💡 L'espace est libéré par 'purge', une fois que vous avez vérifié : media-hygiene
-purge 20261002-152727
+💡 Vous changez d'avis ? 'media-hygiene undo 20261003-080845' restaure tout.
+💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
+media-hygiene purge 20261003-080845
 ```
 
 | Ligne | Ce qu'elle veut dire |

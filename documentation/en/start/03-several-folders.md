@@ -33,13 +33,13 @@ Audit summary
 ┌──────────────────────────────────────────────────────┬─────────┐
 │ Media files scanned                                  │      83 │
 │ Groups of identical files                            │      20 │
-│ Extra copies that can be deleted                     │      32 │
+│ Extra copies that can be set aside                   │      32 │
 │ Space that can be freed                              │ 13.9 MB │
 │ Broken files (empty or unreadable)                   │       3 │
 │ Orphan sidecars (.xmp, .aae, .thm) to move           │       1 │
 │ Near duplicates (moved only with --tier near)        │       2 │
 │ Burst series (moved only if set aside with 'review') │       3 │
-│ Duration                                             │     1 s │
+│ Duration                                             │     2 s │
 └──────────────────────────────────────────────────────┴─────────┘
 ```
 
@@ -47,24 +47,28 @@ Audit summary
 ```text
 Folders sharing identical files
 • 12 files are both in C:\Photos\2019\Seaside holidays (kept) and in D:\Old
-  disk\Photos 2019 (deleted), 3.5 MB freed. D:\Old disk\Photos 2019 holds
-  nothing else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
-• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (deleted),
-  3.0 MB freed. D:\Old disk\Phone holds nothing else: it is entirely a copy of
-  C:\Photos\Phone.
-• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (deleted),
-  2.9 MB freed.
+  disk\Photos 2019 (moved to the quarantine), 3.5 MB freed by 'purge'. D:\Old
+  disk\Photos 2019 holds nothing else: it is entirely a copy of
+  C:\Photos\2019\Seaside holidays.
+• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (moved to
+  the quarantine), 3.0 MB freed by 'purge'. D:\Old disk\Phone holds nothing
+  else: it is entirely a copy of C:\Photos\Phone.
+• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (moved to
+  the quarantine), 2.9 MB freed by 'purge'.
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (deleted), 2.2 MB freed. C:\Photos\Old phone holds nothing
-  else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
+  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\2019\Seaside holidays.
 • 4 files are both in C:\Photos\2020\Christmas (kept) and in D:\Old
-  disk\Christmas 2020 (deleted), 1.2 MB freed. D:\Old disk\Christmas 2020 holds
-  nothing else: it is entirely a copy of C:\Photos\2020\Christmas.
+  disk\Christmas 2020 (moved to the quarantine), 1.2 MB freed by 'purge'. D:\Old
+  disk\Christmas 2020 holds nothing else: it is entirely a copy of
+  C:\Photos\2020\Christmas.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (deleted), 864.7 KB freed. C:\Photos\2019\New folder
-  holds nothing else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
+  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
+  of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB freed).
+  is kept (287.5 KB to free).
 ```
 
 Every path is shown the way Windows writes it: `/data/d/Old disk` is displayed as `D:\Old disk`.

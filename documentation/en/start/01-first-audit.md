@@ -67,17 +67,18 @@ program):
 
 <!-- capture: audit-photos.txt -->
 ```text
+🔒 Read-only: your photos and videos are not touched.
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Audit summary
 ┌──────────────────────────────────────────────────────┬────────┐
 │ Media files scanned                                  │     59 │
 │ Groups of identical files                            │      8 │
-│ Extra copies that can be deleted                     │     12 │
+│ Extra copies that can be set aside                   │     12 │
 │ Space that can be freed                              │ 3.4 MB │
 │ Broken files (empty or unreadable)                   │      0 │
 │ Near duplicates (moved only with --tier near)        │      1 │
 │ Burst series (moved only if set aside with 'review') │      3 │
-│ Duration                                             │    1 s │
+│ Duration                                             │    2 s │
 └──────────────────────────────────────────────────────┴────────┘
 
 Inventory
@@ -91,16 +92,18 @@ Inventory
 
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (deleted), 2.2 MB freed. C:\Photos\Old phone holds nothing
-  else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
+  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (deleted), 864.7 KB freed. C:\Photos\2019\New folder
-  holds nothing else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
+  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
+  of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB freed).
+  is kept (287.5 KB to free).
 
 💡 Add -v "<a folder of yours>:/reports" to get HTML reports.
-💡 Run 'clean' (same -v options, without :ro) to free 3.4 MB.
+💡 Run 'clean' (same -v options, without :ro) to set 3.4 MB of copies aside.
 💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
 folders, then 'media-hygiene crosscheck' (same -v options):
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json

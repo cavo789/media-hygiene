@@ -26,9 +26,12 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261002-152727 ────────────────
+─────────────── Annulation de l'exécution clean 20261003-080845 ────────────────
+🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
+peut pas revenir intact est laissé tel quel, et signalé.
+
 Annulation de l'exécution clean
-20261002-152727
+20261003-080845
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -67,13 +70,12 @@ cavo789/media-hygiene --locale fr history
 <!-- capture: history.txt -->
 ```text
 Exécutions (les plus récentes d'abord)
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃                 ┃          ┃           ┃         ┃            En ┃           ┃
-┃ Exécution       ┃ Commande ┃ Supprimés ┃  Libéré ┃   quarantaine ┃ Restaurés ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20261002-152731 │ clean    │        33 │ 16,2 Mo │             7 │         0 │
-│ 20261002-152727 │ clean    │        33 │ 15,5 Mo │             3 │        36 │
-└─────────────────┴──────────┴───────────┴─────────┴───────────────┴───────────┘
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Exécution       ┃ Commande ┃ Supprimés ┃ Libéré ┃ En quarantaine ┃ Restaurés ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 20261003-080851 │ clean    │         1 │    0 o │             39 │         0 │
+│ 20261003-080845 │ clean    │         1 │    0 o │             35 │        36 │
+└─────────────────┴──────────┴───────────┴────────┴────────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
 
@@ -101,9 +103,9 @@ cavo789/media-hygiene --locale fr purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261002-152731, 20261002-152727 (42 fichiers, 17,7
+❓ Effacer la quarantaine de 20261003-080851, 20261003-080845 (39 fichiers, 16,2
 Mo) ? [o/N] o
-✅ Quarantaine vidée : 17,7 Mo libérés.
+✅ Quarantaine vidée : 16,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.
 ```
 

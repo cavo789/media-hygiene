@@ -42,23 +42,25 @@ Write the folder as Windows shows it. The pairs are reversed:
 <!-- capture: audit-prefer.txt|Folders sharing|<blank> -->
 ```text
 Folders sharing identical files
-• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (deleted),
-  3.0 MB freed. D:\Old disk\Phone holds nothing else: it is entirely a copy of
-  C:\Photos\Phone.
-• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (deleted),
-  2.9 MB freed.
+• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (moved to
+  the quarantine), 3.0 MB freed by 'purge'. D:\Old disk\Phone holds nothing
+  else: it is entirely a copy of C:\Photos\Phone.
+• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (moved to
+  the quarantine), 2.9 MB freed by 'purge'.
 • 9 files are both in C:\Photos\Old phone (kept) and in C:\Photos\2019\Seaside
-  holidays (deleted), 2.5 MB freed.
+  holidays (moved to the quarantine), 2.5 MB freed by 'purge'.
 • 8 files are both in C:\Photos\Old phone (kept) and in D:\Old disk\Photos 2019
-  (deleted), 2.2 MB freed.
+  (moved to the quarantine), 2.2 MB freed by 'purge'.
 • 4 files are both in C:\Photos\2019\Seaside holidays (kept) and in D:\Old
-  disk\Photos 2019 (deleted), 1.3 MB freed.
+  disk\Photos 2019 (moved to the quarantine), 1.3 MB freed by 'purge'.
 • 4 files are both in C:\Photos\2020\Christmas (kept) and in D:\Old
-  disk\Christmas 2020 (deleted), 1.2 MB freed. D:\Old disk\Christmas 2020 holds
-  nothing else: it is entirely a copy of C:\Photos\2020\Christmas.
+  disk\Christmas 2020 (moved to the quarantine), 1.2 MB freed by 'purge'. D:\Old
+  disk\Christmas 2020 holds nothing else: it is entirely a copy of
+  C:\Photos\2020\Christmas.
 • 3 files are both in C:\Photos\Old phone (kept) and in C:\Photos\2019\New
-  folder (deleted), 864.7 KB freed. C:\Photos\2019\New folder holds nothing
-  else: it is entirely a copy of C:\Photos\Old phone.
+  folder (moved to the quarantine), 864.7 KB freed by 'purge'.
+  C:\Photos\2019\New folder holds nothing else: it is entirely a copy of
+  C:\Photos\Old phone.
 ```
 
 `--prefer` can be repeated: `--prefer "C:\Photos\Family" --prefer "C:\Photos\Old phone"`. The
@@ -93,13 +95,15 @@ Only the duplicates of `C:\Photos` remain:
 ```text
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (deleted), 2.2 MB freed. C:\Photos\Old phone holds nothing
-  else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
+  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (deleted), 864.7 KB freed. C:\Photos\2019\New folder
-  holds nothing else: it is entirely a copy of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
+  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
+  of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB freed).
+  is kept (287.5 KB to free).
 ```
 
 ## Skip a folder name on every disk

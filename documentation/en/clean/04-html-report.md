@@ -29,7 +29,7 @@ At the end of the audit, two new lines:
 
 <!-- capture: audit.txt|HTML report|Open index.html -->
 ```text
-✅ HTML report: /reports/20261002-152535-audit/report.html
+✅ HTML report: /reports/20261003-080646-audit/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
@@ -109,10 +109,10 @@ Excel, accents included:
 <!-- capture: plan-csv.txt -->
 ```text
 Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail
-1,91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date
-1,91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e,3009124,delete,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,
 2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date
-2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,delete,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,
+2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,
 3,94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date
 ```
 
@@ -131,14 +131,14 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261002-152612-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
-│ 20261002-152608-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
-│ 20261002-152550-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261002-152545-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261002-152540-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
-│ 20261002-152538-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
-│ 20261002-152536-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261002-152535-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-080724-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
+│ 20261003-080719-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
+│ 20261003-080701-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-080656-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-080651-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
+│ 20261003-080649-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
+│ 20261003-080647-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-080646-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

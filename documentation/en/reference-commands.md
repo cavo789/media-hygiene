@@ -3,7 +3,7 @@
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-commands.md)
 
 Every command, every option. The [user guide](README.md#start-here) introduces
-them one at a time; this page gathers them. The 🔒 commands never change your photos
+them one at a time; this page gathers them. The commands whose help starts with *Read-only* never change your photos
 ([how your photos stay safe](reference-safety.md)).
 
 ## Commands
@@ -95,34 +95,42 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                                is honoured too).             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Analyse ────────────────────────────────────────────────────────────────────╮
-│ audit        Find exact duplicates and broken files. Read-only: mount        │
-│              folders with :ro.                                               │
-│ crosscheck   Compare a fresh audit with Czkawka's results: a second,         │
-│              independent opinion.                                            │
-│ classify     Propose where every photo and video should go: year, event,     │
-│              category. Read-only.                                            │
-│ review-sort  Name the events of the classify proposal one by one in your     │
-│              browser.                                                        │
-│ places       Name your places on a map of where the photos were taken; saved │
-│              into config.toml for the 'place' and 'trip' rules.              │
-│ inventory    Export every photo and video with what the audits learnt to     │
-│              Excel, from the cache alone: no file is read.                   │
-│ history      List the runs and what they did.                                │
-│ reports      List the HTML reports of previous audits and cleans.            │
-│ config       Show every setting, where it comes from, and the mount points.  │
+│ audit        Read-only: never changes your photos. Find exact duplicates and │
+│              broken files.                                                   │
+│ crosscheck   Read-only: never changes your photos. Compare a fresh audit     │
+│              with Czkawka's results: a second, independent opinion.          │
+│ classify     Read-only: never changes your photos. Propose where every photo │
+│              and video should go: year, event, category.                     │
+│ review-sort  Read-only: never changes your photos. Name the events of the    │
+│              classify proposal one by one in your browser.                   │
+│ places       Read-only: never changes your photos. Name your places on a map │
+│              of where the photos were taken; saved into config.toml for the  │
+│              'place' and 'trip' rules.                                       │
+│ inventory    Read-only: never changes your photos. Export every photo and    │
+│              video with what the audits learnt to Excel, from the cache      │
+│              alone: no file is read.                                         │
+│ history      Read-only: never changes your photos. List the runs and what    │
+│              they did.                                                       │
+│ reports      Read-only: never changes your photos. List the HTML reports of  │
+│              previous audits and cleans.                                     │
+│ config       Read-only: never changes your photos. Show every setting, where │
+│              it comes from, and the mount points.                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act ────────────────────────────────────────────────────────────────────────╮
-│ review       Set burst shots aside, one series at a time, with the keyboard  │
-│              in your browser; 'clean --decisions' then moves them.           │
-│ clean        Audit, confirm, then really delete duplicate copies (journaled, │
-│              undoable).                                                      │
+│ review       Read-only: never changes your photos. Set burst shots aside,    │
+│              one series at a time, with the keyboard in your browser; 'clean │
+│              --decisions' then moves them.                                   │
+│ clean        Audit, confirm, then move the duplicate copies to the           │
+│              quarantine, after a byte comparison (journaled, undoable);      │
+│              --delete deletes them for good.                                 │
 │ sort         Move the photos and videos as the edited classify workbook says │
 │              (journaled, undoable).                                          │
 │ album        Gather a selection of the classify plan into a folder of hard   │
 │              links: nothing is copied nor moved (journaled, undoable).       │
 │ undo         Restore every file of a run, from the kept copy, the quarantine │
 │              or where it was moved; remove the links of an album.            │
-│ purge        Permanently delete the quarantined broken files of a run.       │
+│ purge        Erase the quarantine of a run for good: with 'clean --delete',  │
+│              the only way the tool removes content.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 
@@ -143,7 +151,7 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene audit [OPTIONS]
 
- Find exact duplicates and broken files. Read-only: mount folders with :ro.
+ Read-only: never changes your photos. Find exact duplicates and broken files.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
@@ -183,8 +191,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene review [OPTIONS]
 
- Set burst shots aside, one series at a time, with the keyboard in your
- browser; 'clean --decisions' then moves them.
+ Read-only: never changes your photos. Set burst shots aside, one series at a
+ time, with the keyboard in your browser; 'clean --decisions' then moves them.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --decisions          <path>              File the decisions are saved in,    │
@@ -217,16 +225,17 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene clean [OPTIONS]
 
- Audit, confirm, then really delete duplicate copies (journaled, undoable).
+ Audit, confirm, then move the duplicate copies to the quarantine, after a byte
+ comparison (journaled, undoable); --delete deletes them for good.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --yes        -y                    Do not ask for confirmation (overrides    │
 │                                    clean.confirm).                           │
-│ --tier               <exact|near>  exact: delete byte-for-byte copies only.  │
-│                                    near: also move near duplicates (resized  │
-│                                    or recompressed copies, re-encoded        │
-│                                    videos) to the quarantine; check them in  │
-│                                    the report first. Default: exact.         │
+│ --tier               <exact|near>  exact: byte-for-byte copies only. near:   │
+│                                    also near duplicates (resized or          │
+│                                    recompressed copies, re-encoded videos);  │
+│                                    check them in the report first. Both go   │
+│                                    to the quarantine. Default: exact.        │
 │ --decisions          <path>        decisions.json downloaded from an audit   │
 │                                    report (swap or leave alone some folder   │
 │                                    pairs) or written by 'review' (burst      │
@@ -234,6 +243,11 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                    from the folder mounted on /reports. The  │
 │                                    file is refused if the folders, the pairs │
 │                                    or the series changed.                    │
+│ --delete                           Delete the exact copies for good, after a │
+│                                    byte comparison with the kept copy,       │
+│                                    instead of moving them to the quarantine: │
+│                                    the space is freed at once; 'undo'        │
+│                                    rebuilds them from the kept copy.         │
 │ --help       -h                    Show this message and exit.               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
@@ -294,7 +308,7 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene history [OPTIONS]
 
- List the runs and what they did.
+ Read-only: never changes your photos. List the runs and what they did.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
@@ -310,10 +324,11 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene purge [OPTIONS] [run_id]
 
- Permanently delete the quarantined broken files of a run.
+ Erase the quarantine of a run for good: with 'clean --delete', the only way
+ the tool removes content.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Run whose quarantine is deleted; every run by default.  │
+│   run_id      <str>  Run whose quarantine is erased; every run by default.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --yes   -y        Do not ask for confirmation (overrides clean.confirm).     │
@@ -330,7 +345,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene reports [OPTIONS]
 
- List the HTML reports of previous audits and cleans.
+ Read-only: never changes your photos. List the HTML reports of previous audits
+ and cleans.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --prune          <int range> [x>=0]  Delete all reports but the N most       │
@@ -348,7 +364,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene crosscheck [OPTIONS]
 
- Compare a fresh audit with Czkawka's results: a second, independent opinion.
+ Read-only: never changes your photos. Compare a fresh audit with Czkawka's
+ results: a second, independent opinion.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
@@ -388,8 +405,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene classify [OPTIONS]
 
- Propose where every photo and video should go: year, event, category.
- Read-only.
+ Read-only: never changes your photos. Propose where every photo and video
+ should go: year, event, category.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year                   <str>               Only the files of this year, or │
@@ -491,8 +508,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene inventory [OPTIONS]
 
- Export every photo and video with what the audits learnt to Excel, from the
- cache alone: no file is read.
+ Read-only: never changes your photos. Export every photo and video with what
+ the audits learnt to Excel, from the cache alone: no file is read.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --format          <xlsx|csv>  xlsx: an Excel workbook (Files and Summary     │
@@ -511,7 +528,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene config [OPTIONS]
 
- Show every setting, where it comes from, and the mount points.
+ Read-only: never changes your photos. Show every setting, where it comes from,
+ and the mount points.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
@@ -527,8 +545,8 @@ both languages (`--locale fr --help`). Here is what they print:
 ```text
  Usage: media-hygiene places [OPTIONS]
 
- Name your places on a map of where the photos were taken; saved into
- config.toml for the 'place' and 'trip' rules.
+ Read-only: never changes your photos. Name your places on a map of where the
+ photos were taken; saved into config.toml for the 'place' and 'trip' rules.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --port          <int range> [x>=0]  Port of the page inside the container;   │

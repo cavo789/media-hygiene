@@ -69,17 +69,18 @@ sont dessinées par un programme) :
 
 <!-- capture: audit-photos.txt -->
 ```text
+🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Résumé de l'audit
 ┌─────────────────────────────────────────────────────────┬────────┐
 │ Fichiers média analysés                                 │     59 │
 │ Groupes de fichiers identiques                          │      8 │
-│ Copies en trop, supprimables                            │     12 │
+│ Copies en trop, à mettre de côté                        │     12 │
 │ Espace libérable                                        │ 3,4 Mo │
 │ Fichiers cassés (vides ou illisibles)                   │      0 │
 │ Quasi-doublons (déplacés seulement avec --tier near)    │      1 │
 │ Rafales (déplacées seulement si écartées avec 'review') │      3 │
-│ Durée                                                   │    1 s │
+│ Durée                                                   │    2 s │
 └─────────────────────────────────────────────────────────┴────────┘
 
 Inventaire
@@ -93,18 +94,19 @@ Inventaire
 
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\Ancien téléphone (supprimés), gain de 2,2 Mo. C:\Photos\Ancien
-  téléphone ne contient rien d'autre : c'est entièrement une copie de
-  C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\Ancien téléphone (déplacés en quarantaine), 2,2 Mo libérés par
+  'purge'. C:\Photos\Ancien téléphone ne contient rien d'autre : c'est
+  entièrement une copie de C:\Photos\2019\Vacances à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\2019\Nouveau dossier (supprimés), gain de 864,7 Ko.
-  C:\Photos\2019\Nouveau dossier ne contient rien d'autre : c'est entièrement
-  une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko
+  libérés par 'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
-  un exemplaire est gardé (gain de 287,5 Ko).
+  un exemplaire est gardé (287,5 Ko à libérer).
 
 💡 Ajoutez -v "<un de vos dossiers>:/reports" pour obtenir des rapports HTML.
-💡 Lancez 'clean' (mêmes options -v, sans :ro) pour libérer 3,4 Mo.
+💡 Lancez 'clean' (mêmes options -v, sans :ro) pour mettre 3,4 Mo de copies de
+côté.
 💡 Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur les
 mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :
 docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json

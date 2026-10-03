@@ -26,8 +26,11 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20261002-152608 ──────────────────────
-Undo the clean run 20261002-152608
+────────────────────── Undo the clean run 20261003-080719 ──────────────────────
+🛟 Each file comes back where it was, never over another one; what cannot come
+back whole is left as it is, and said.
+
+Undo the clean run 20261003-080719
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -64,12 +67,12 @@ cavo789/media-hygiene history
 <!-- capture: history.txt -->
 ```text
 Runs (newest first)
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
-┃ Run             ┃ Command ┃ Deleted ┃   Freed ┃ Quarantined ┃ Restored ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20261002-152612 │ clean   │      33 │ 16.2 MB │           7 │        0 │
-│ 20261002-152608 │ clean   │      33 │ 15.5 MB │           3 │       36 │
-└─────────────────┴─────────┴─────────┴─────────┴─────────────┴──────────┘
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Run             ┃ Command ┃ Deleted ┃ Freed ┃ Quarantined ┃ Restored ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ 20261003-080724 │ clean   │       1 │   0 B │          39 │        0 │
+│ 20261003-080719 │ clean   │       1 │   0 B │          35 │       36 │
+└─────────────────┴─────────┴─────────┴───────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
 
@@ -92,11 +95,11 @@ cavo789/media-hygiene purge
 
 <!-- capture: purge.txt -->
 ```text
-⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'. It
-is, with 'clean --delete', the only way the tool removes content.
-❓ Erase the quarantine of 20261002-152612, 20261002-152608 (42 files, 17.7 MB)?
+⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'.
+It is, with 'clean --delete', the only way the tool removes content.
+❓ Erase the quarantine of 20261003-080724, 20261003-080719 (39 files, 16.2 MB)?
 [y/N] y
-✅ Quarantine purged: 17.7 MB freed.
+✅ Quarantine purged: 16.2 MB freed.
 💡 'undo' can no longer restore these files.
 ```
 

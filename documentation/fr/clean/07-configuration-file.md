@@ -22,169 +22,192 @@ La première ligne dit ce qui s'est passé :
 ```text
 💡 Un fichier de configuration commenté a été créé : /config/config.toml.
 Réglages effectifs
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
-┃ Réglage                    ┃ Valeur                      ┃ Origine           ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
-│ general.locale             │ fr                          │ ligne de commande │
-│ general.verbosity          │ info                        │ défaut            │
-│ general.color              │ never                       │ ligne de commande │
-│ folders.preferred          │ []                          │ défaut            │
-│ folders.protected          │ []                          │ défaut            │
-│ folders.excluded           │ []                          │ défaut            │
-│ scan.categories            │ {}                          │ défaut            │
-│ scan.extensions            │ []                          │ défaut            │
-│ scan.excluded_names        │ []                          │ défaut            │
-│ (toujours ignorés)         │ ['$recycle.bin', 'system    │ intégrée          │
-│                            │ volume information',        │                   │
-│                            │ '@eadir', '#recycle',       │                   │
-│                            │ '@recycle', '.@__thumb',    │                   │
-│                            │ '.trash', '.trash-*',       │                   │
-│                            │ '.trashes', '.thumbnails']  │                   │
-│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
-│                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
-│                            │ \\d+',                      │                   │
-│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d │                   │
-│                            │ {6}([_-]\\d+)?',            │                   │
-│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d │                   │
-│                            │ +', '_?MG_\\d+', 'P\\d{7}', │                   │
-│                            │ 'PXL_\\d{8}_\\d+.*',        │                   │
-│                            │ '\\d{8}_\\d{6}(_\\d+)?',    │                   │
-│                            │ '\\d{4}-\\d{2}-\\d{2}       │                   │
-│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\ │                   │
-│                            │ \d+)?',                     │                   │
-│                            │ '(GOPR|G[HX]\\d{2})\\d{4}', │                   │
-│                            │ 'DJI_\\d+',                 │                   │
-│                            │ '(FB_IMG|received|Snapchat) │                   │
-│                            │ [_-]\\d+',                  │                   │
-│                            │ '(Screenshot|Screen         │                   │
-│                            │ Shot|Capture d.écran)([     │                   │
-│                            │ _-].*)?', 'image\\d*',      │                   │
-│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){ │                   │
-│                            │ 3}-[0-9a-f]{12}',           │                   │
-│                            │ '[0-9a-f]{16,}']            │                   │
-│ keep.generic_folders       │ ['DCIM',                    │ défaut            │
-│                            │ '\\d{3}[A-Z0-9_]{5}',       │                   │
-│                            │ 'Camera( Roll| Uploads)?',  │                   │
-│                            │ 'WhatsApp (Images|Video)',  │                   │
-│                            │ 'Sent',                     │                   │
-│                            │ 'Downloads?|Téléchargements │                   │
-│                            │ ', 'Screenshots|Captures    │                   │
-│                            │ d.écran', '(New             │                   │
-│                            │ folder|Nouveau dossier)(    │                   │
-│                            │ \\(\\d+\\))?',              │                   │
-│                            │ 'Import(s|ed)?|Temp|tmp']   │                   │
-│ clean.confirm              │ True                        │ défaut            │
-│ classify.target            │                             │ défaut            │
-│ classify.leave             │ []                          │ défaut            │
-│ classify.timezone          │                             │ défaut            │
-│ classify.layout            │ {year}/{category}           │ défaut            │
-│ classify.unsure_layout     │ {year}/To check/{category}  │ défaut            │
-│ classify.manual_layout     │ {year}/To sort/{event}      │ défaut            │
-│ classify.undated_layout    │ To sort/Undated             │ défaut            │
-│ classify.received_layout   │ To sort/Received and        │ défaut            │
-│                            │ downloaded                  │                   │
-│ classify.session_gap_hours │ 6.0                         │ défaut            │
-│ classify.merge_gap_hours   │ 18.0                        │ défaut            │
-│ classify.min_event_size    │ 5                           │ défaut            │
-│ classify.event_year        │ start                       │ défaut            │
-│ classify.sure              │ 80                          │ défaut            │
-│ classify.unsure            │ 50                          │ défaut            │
-│ classify.scores            │ {'existing-folder': 90,     │ défaut            │
-│                            │ 'person-folder': 85,        │                   │
-│                            │ 'event-neighbour': 70,      │                   │
-│                            │ 'calendar': 85,             │                   │
-│                            │ 'date-range': 95, 'kind':   │                   │
-│                            │ 85, 'path': 90, 'camera':   │                   │
-│                            │ 90, 'other-category': 85,   │                   │
-│                            │ 'subject': 85, 'date-only': │                   │
-│                            │ 90, 'no-signal': 0}         │                   │
-│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
-│                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
-│                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
-│                            │ {2})(?P<M>\\d{2})(?P<S>\\d{ │                   │
-│                            │ 2}).*',                     │                   │
-│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{ │                   │
-│                            │ 4})(?P<m>\\d{2})(?P<d>\\d{2 │                   │
-│                            │ })-WA\\d+',                 │                   │
-│                            │ '(?:Screenshot|Capture)[    │                   │
-│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\ │                   │
-│                            │ d{2})-?(?P<d>\\d{2}).*',    │                   │
-│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2} │                   │
-│                            │ )-(?P<d>\\d{2})[            │                   │
-│                            │ _](?P<H>\\d{2})(?P<M>\\d{2} │                   │
-│                            │ )[._](?P<S>\\d{2}).*']      │                   │
-│ classify.generic_folders   │ ['(My |Mes                  │ défaut            │
-│                            │ )?(Photos|Pictures|Images|V │                   │
-│                            │ ideos|Vidéos|Mes images)',  │                   │
-│                            │ '(Family|Famille|Photos de  │                   │
-│                            │ famille|Family photos)']    │                   │
-│ classify.rules             │ [{'name': 'Films and        │ défaut            │
-│                            │ series', 'match': 'kind',   │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ 'download', 'categories':   │                   │
-│                            │ [], 'per_photo': False,     │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Existing folders',         │                   │
-│                            │ 'match': 'existing_folder', │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Screenshots and            │                   │
-│                            │ documents', 'match':        │                   │
-│                            │ 'kind', 'category':         │                   │
-│                            │ 'Documents and              │                   │
-│                            │ screenshots', 'dates': '',  │                   │
-│                            │ 'pattern': '', 'kind':      │                   │
-│                            │ 'screenshot', 'categories': │                   │
-│                            │ [], 'per_photo': False,     │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Event neighbours',         │                   │
-│                            │ 'match': 'event_neighbour', │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Christmas', 'match':       │                   │
-│                            │ 'calendar', 'category':     │                   │
-│                            │ 'Parties/Christmas',        │                   │
-│                            │ 'dates': '12-24..12-26',    │                   │
-│                            │ 'pattern': '', 'kind':      │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'New Year', 'match':        │                   │
-│                            │ 'calendar', 'category':     │                   │
-│                            │ 'Parties/New Year',         │                   │
-│                            │ 'dates': '12-31..01-01',    │                   │
-│                            │ 'pattern': '', 'kind':      │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}]             │                   │
-│ classify.ai                │ {'url':                     │ défaut            │
-│                            │ 'http://host.docker.interna │                   │
-│                            │ l:11434', 'model': '',      │                   │
-│                            │ 'map_model': '',            │                   │
-│                            │ 'samples_per_event': 3,     │                   │
-│                            │ 'min_edge': 512,            │                   │
-│                            │ 'image_edge': 768,          │                   │
-│                            │ 'concurrency': 1,           │                   │
-│                            │ 'timeout_seconds': 180.0,   │                   │
-│                            │ 'retries': 2, 'batch_size': │                   │
-│                            │ 20, 'confirm_above': 200,   │                   │
-│                            │ 'seconds_per_photo': 4.5}   │                   │
-│ sort.confirm               │ True                        │ défaut            │
-│ sort.junk_files            │ ['Thumbs.db',               │ défaut            │
-│                            │ 'desktop.ini', '.DS_Store'] │                   │
-│ inventory.blurry_below     │ 100.0                       │ défaut            │
-│ inventory.small_below      │ 1000                        │ défaut            │
-│ inventory.dark_below       │ 50.0                        │ défaut            │
-│ inventory.bright_above     │ 205.0                       │ défaut            │
-│ inventory.clipped_above    │ 0.25                        │ défaut            │
-└────────────────────────────┴─────────────────────────────┴───────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ general.locale              │ fr                         │ ligne de commande │
+│ general.verbosity           │ info                       │ défaut            │
+│ general.color               │ never                      │ ligne de commande │
+│ folders.preferred           │ []                         │ défaut            │
+│ folders.protected           │ []                         │ défaut            │
+│ folders.excluded            │ []                         │ défaut            │
+│ scan.categories             │ {}                         │ défaut            │
+│ scan.extensions             │ []                         │ défaut            │
+│ scan.excluded_names         │ []                         │ défaut            │
+│ (toujours ignorés)          │ ['$recycle.bin', 'system   │ intégrée          │
+│                             │ volume information',       │                   │
+│                             │ '@eadir', '#recycle',      │                   │
+│                             │ '@recycle', '.@__thumb',   │                   │
+│                             │ '.trash', '.trash-*',      │                   │
+│                             │ '.trashes', '.thumbnails'] │                   │
+│ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
+│                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
+│                             │ ]?\\d+',                   │                   │
+│                             │ '(IMG|VID)[_-]\\d{8}[_-]\\ │                   │
+│                             │ d{6}([_-]\\d+)?',          │                   │
+│                             │ '(IMG|VID|AUD)-\\d{8}-WA\\ │                   │
+│                             │ d+', '_?MG_\\d+',          │                   │
+│                             │ 'P\\d{7}',                 │                   │
+│                             │ 'PXL_\\d{8}_\\d+.*',       │                   │
+│                             │ '\\d{8}_\\d{6}(_\\d+)?',   │                   │
+│                             │ '\\d{4}-\\d{2}-\\d{2}      │                   │
+│                             │ \\d{2}\\.\\d{2}\\.\\d{2}(- │                   │
+│                             │ \\d+)?',                   │                   │
+│                             │ '(GOPR|G[HX]\\d{2})\\d{4}' │                   │
+│                             │ , 'DJI_\\d+',              │                   │
+│                             │ '(FB_IMG|received|Snapchat │                   │
+│                             │ )[_-]\\d+',                │                   │
+│                             │ '(Screenshot|Screen        │                   │
+│                             │ Shot|Capture d.écran)([    │                   │
+│                             │ _-].*)?', 'image\\d*',     │                   │
+│                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
+│                             │ {3}-[0-9a-f]{12}',         │                   │
+│                             │ '[0-9a-f]{16,}']           │                   │
+│ keep.generic_folders        │ ['DCIM',                   │ défaut            │
+│                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
+│                             │ 'Camera( Roll| Uploads)?', │                   │
+│                             │ 'WhatsApp (Images|Video)', │                   │
+│                             │ 'Sent',                    │                   │
+│                             │ 'Downloads?|Téléchargement │                   │
+│                             │ s', 'Screenshots|Captures  │                   │
+│                             │ d.écran', '(New            │                   │
+│                             │ folder|Nouveau dossier)(   │                   │
+│                             │ \\(\\d+\\))?',             │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│ clean.confirm               │ True                       │ défaut            │
+│ classify.target             │                            │ défaut            │
+│ classify.leave              │ []                         │ défaut            │
+│ classify.timezone           │                            │ défaut            │
+│ classify.layout             │ {year}/{category}          │ défaut            │
+│ classify.unsure_layout      │ {year}/To check/{category} │ défaut            │
+│ classify.manual_layout      │ {year}/To sort/{event}     │ défaut            │
+│ classify.undated_layout     │ To sort/Undated            │ défaut            │
+│ classify.received_layout    │ To sort/Received and       │ défaut            │
+│                             │ downloaded                 │                   │
+│ classify.session_gap_hours  │ 6.0                        │ défaut            │
+│ classify.merge_gap_hours    │ 18.0                       │ défaut            │
+│ classify.min_event_size     │ 5                          │ défaut            │
+│ classify.event_year         │ start                      │ défaut            │
+│ classify.sure               │ 80                         │ défaut            │
+│ classify.unsure             │ 50                         │ défaut            │
+│ classify.scores             │ {'existing-folder': 90,    │ défaut            │
+│                             │ 'person-folder': 85,       │                   │
+│                             │ 'event-neighbour': 70,     │                   │
+│                             │ 'calendar': 85,            │                   │
+│                             │ 'date-range': 95, 'kind':  │                   │
+│                             │ 85, 'path': 90, 'camera':  │                   │
+│                             │ 90, 'other-category': 85,  │                   │
+│                             │ 'subject': 85, 'place':    │                   │
+│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'trip': 90,                │                   │
+│                             │ 'trip-neighbour': 70,      │                   │
+│                             │ 'date-only': 90,           │                   │
+│                             │ 'no-signal': 0}            │                   │
+│ classify.name_dates         │ ['(?:IMG|VID|PXL|MVIMG)?[_ │ défaut            │
+│                             │ -]?(?P<y>\\d{4})(?P<m>\\d{ │                   │
+│                             │ 2})(?P<d>\\d{2})[_-](?P<H> │                   │
+│                             │ \\d{2})(?P<M>\\d{2})(?P<S> │                   │
+│                             │ \\d{2}).*',                │                   │
+│                             │ '(?:IMG|VID|AUD)-(?P<y>\\d │                   │
+│                             │ {4})(?P<m>\\d{2})(?P<d>\\d │                   │
+│                             │ {2})-WA\\d+',              │                   │
+│                             │ '(?:Screenshot|Capture)[   │                   │
+│                             │ _-]*(?P<y>\\d{4})-?(?P<m>\ │                   │
+│                             │ \d{2})-?(?P<d>\\d{2}).*',  │                   │
+│                             │ '(?P<y>\\d{4})-(?P<m>\\d{2 │                   │
+│                             │ })-(?P<d>\\d{2})[          │                   │
+│                             │ _](?P<H>\\d{2})(?P<M>\\d{2 │                   │
+│                             │ })[._](?P<S>\\d{2}).*']    │                   │
+│ classify.generic_folders    │ ['(My |Mes                 │ défaut            │
+│                             │ )?(Photos|Pictures|Images| │                   │
+│                             │ Videos|Vidéos|Mes          │                   │
+│                             │ images)',                  │                   │
+│                             │ '(Family|Famille|Photos de │                   │
+│                             │ famille|Family photos)']   │                   │
+│ classify.rules              │ [{'name': 'Films and       │ défaut            │
+│                             │ series', 'match': 'kind',  │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ 'download', 'categories':  │                   │
+│                             │ [], 'per_photo': False,    │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Existing folders',        │                   │
+│                             │ 'match':                   │                   │
+│                             │ 'existing_folder',         │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Screenshots and           │                   │
+│                             │ documents', 'match':       │                   │
+│                             │ 'kind', 'category':        │                   │
+│                             │ 'Documents and             │                   │
+│                             │ screenshots', 'dates': '', │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ 'screenshot',              │                   │
+│                             │ 'categories': [],          │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Event neighbours',        │                   │
+│                             │ 'match':                   │                   │
+│                             │ 'event_neighbour',         │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Christmas', 'match':      │                   │
+│                             │ 'calendar', 'category':    │                   │
+│                             │ 'Parties/Christmas',       │                   │
+│                             │ 'dates': '12-24..12-26',   │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'New Year', 'match':       │                   │
+│                             │ 'calendar', 'category':    │                   │
+│                             │ 'Parties/New Year',        │                   │
+│                             │ 'dates': '12-31..01-01',   │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}]            │                   │
+│ classify.ai                 │ {'url':                    │ défaut            │
+│                             │ 'http://host.docker.intern │                   │
+│                             │ al:11434', 'model': '',    │                   │
+│                             │ 'map_model': '',           │                   │
+│                             │ 'samples_per_event': 3,    │                   │
+│                             │ 'min_edge': 512,           │                   │
+│                             │ 'image_edge': 768,         │                   │
+│                             │ 'concurrency': 1,          │                   │
+│                             │ 'timeout_seconds': 180.0,  │                   │
+│                             │ 'retries': 2,              │                   │
+│                             │ 'batch_size': 20,          │                   │
+│                             │ 'confirm_above': 200,      │                   │
+│                             │ 'seconds_per_photo': 4.5}  │                   │
+│ classify.places             │ []                         │ défaut            │
+│ classify.trip_min_km        │ 100.0                      │ défaut            │
+│ classify.trip_merge_gap_hou │ 48.0                       │ défaut            │
+│ rs                          │                            │                   │
+│ classify.trip_merge_max_km  │ 120.0                      │ défaut            │
+│ sort.confirm                │ True                       │ défaut            │
+│ sort.junk_files             │ ['Thumbs.db',              │ défaut            │
+│                             │ 'desktop.ini',             │                   │
+│                             │ '.DS_Store']               │                   │
+│ inventory.blurry_below      │ 100.0                      │ défaut            │
+│ inventory.small_below       │ 1000                       │ défaut            │
+│ inventory.dark_below        │ 50.0                       │ défaut            │
+│ inventory.bright_above      │ 205.0                      │ défaut            │
+│ inventory.clipped_above     │ 0.25                       │ défaut            │
+│ places.tiles                │ https://tile.openstreetmap │ défaut            │
+│                             │ .org/{z}/{x}/{y}.png       │                   │
+│ places.attribution          │ © OpenStreetMap            │ défaut            │
+│                             │ contributors               │                   │
+│ places.nominatim_url        │ https://nominatim.openstre │ défaut            │
+│                             │ etmap.org                  │                   │
+│ album.root                  │                            │ défaut            │
+└─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
 ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
@@ -323,178 +346,201 @@ les mêmes options `-v` que votre audit (ici `config` au lieu de `audit`) :
 <!-- capture: config.txt -->
 ```text
 Réglages effectifs
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
-┃ Réglage                    ┃ Valeur                      ┃ Origine           ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
-│ general.locale             │ fr                          │ ligne de commande │
-│ general.verbosity          │ info                        │ config.toml       │
-│ general.color              │ never                       │ ligne de commande │
-│ folders.preferred          │ []                          │ config.toml       │
-│ folders.protected          │ []                          │ config.toml       │
-│ folders.excluded           │ []                          │ config.toml       │
-│ scan.categories            │ {}                          │ config.toml       │
-│ scan.extensions            │ []                          │ config.toml       │
-│ scan.excluded_names        │ []                          │ config.toml       │
-│ (toujours ignorés)         │ ['$recycle.bin', 'system    │ intégrée          │
-│                            │ volume information',        │                   │
-│                            │ '@eadir', '#recycle',       │                   │
-│                            │ '@recycle', '.@__thumb',    │                   │
-│                            │ '.trash', '.trash-*',       │                   │
-│                            │ '.trashes', '.thumbnails']  │                   │
-│ keep.generated_names       │ ['_?(IMG|VID|MVI|MOV|SAM|DS │ défaut            │
-│                            │ C[NF]?|_DSC|PICT|CIMG)[_-]? │                   │
-│                            │ \\d+',                      │                   │
-│                            │ '(IMG|VID)[_-]\\d{8}[_-]\\d │                   │
-│                            │ {6}([_-]\\d+)?',            │                   │
-│                            │ '(IMG|VID|AUD)-\\d{8}-WA\\d │                   │
-│                            │ +', '_?MG_\\d+', 'P\\d{7}', │                   │
-│                            │ 'PXL_\\d{8}_\\d+.*',        │                   │
-│                            │ '\\d{8}_\\d{6}(_\\d+)?',    │                   │
-│                            │ '\\d{4}-\\d{2}-\\d{2}       │                   │
-│                            │ \\d{2}\\.\\d{2}\\.\\d{2}(-\ │                   │
-│                            │ \d+)?',                     │                   │
-│                            │ '(GOPR|G[HX]\\d{2})\\d{4}', │                   │
-│                            │ 'DJI_\\d+',                 │                   │
-│                            │ '(FB_IMG|received|Snapchat) │                   │
-│                            │ [_-]\\d+',                  │                   │
-│                            │ '(Screenshot|Screen         │                   │
-│                            │ Shot|Capture d.écran)([     │                   │
-│                            │ _-].*)?', 'image\\d*',      │                   │
-│                            │ '[0-9a-f]{8}(-[0-9a-f]{4}){ │                   │
-│                            │ 3}-[0-9a-f]{12}',           │                   │
-│                            │ '[0-9a-f]{16,}']            │                   │
-│ keep.generic_folders       │ ['DCIM',                    │ défaut            │
-│                            │ '\\d{3}[A-Z0-9_]{5}',       │                   │
-│                            │ 'Camera( Roll| Uploads)?',  │                   │
-│                            │ 'WhatsApp (Images|Video)',  │                   │
-│                            │ 'Sent',                     │                   │
-│                            │ 'Downloads?|Téléchargements │                   │
-│                            │ ', 'Screenshots|Captures    │                   │
-│                            │ d.écran', '(New             │                   │
-│                            │ folder|Nouveau dossier)(    │                   │
-│                            │ \\(\\d+\\))?',              │                   │
-│                            │ 'Import(s|ed)?|Temp|tmp']   │                   │
-│ clean.confirm              │ True                        │ config.toml       │
-│ classify.target            │                             │ config.toml       │
-│ classify.leave             │ []                          │ config.toml       │
-│ classify.timezone          │                             │ config.toml       │
-│ classify.layout            │ {year}/{category}           │ config.toml       │
-│ classify.unsure_layout     │ {year}/À                    │ config.toml       │
-│                            │ vérifier/{category}         │                   │
-│ classify.manual_layout     │ {year}/À trier/{event}      │ config.toml       │
-│ classify.undated_layout    │ À trier/Sans date           │ config.toml       │
-│ classify.received_layout   │ À trier/Reçues et           │ config.toml       │
-│                            │ téléchargées                │                   │
-│ classify.session_gap_hours │ 6.0                         │ défaut            │
-│ classify.merge_gap_hours   │ 18.0                        │ config.toml       │
-│ classify.min_event_size    │ 5                           │ config.toml       │
-│ classify.event_year        │ start                       │ défaut            │
-│ classify.sure              │ 80                          │ config.toml       │
-│ classify.unsure            │ 50                          │ config.toml       │
-│ classify.scores            │ {'existing-folder': 90,     │ défaut            │
-│                            │ 'person-folder': 85,        │                   │
-│                            │ 'event-neighbour': 70,      │                   │
-│                            │ 'calendar': 85,             │                   │
-│                            │ 'date-range': 95, 'kind':   │                   │
-│                            │ 85, 'path': 90, 'camera':   │                   │
-│                            │ 90, 'other-category': 85,   │                   │
-│                            │ 'subject': 85, 'date-only': │                   │
-│                            │ 90, 'no-signal': 0}         │                   │
-│ classify.name_dates        │ ['(?:IMG|VID|PXL|MVIMG)?[_- │ défaut            │
-│                            │ ]?(?P<y>\\d{4})(?P<m>\\d{2} │                   │
-│                            │ )(?P<d>\\d{2})[_-](?P<H>\\d │                   │
-│                            │ {2})(?P<M>\\d{2})(?P<S>\\d{ │                   │
-│                            │ 2}).*',                     │                   │
-│                            │ '(?:IMG|VID|AUD)-(?P<y>\\d{ │                   │
-│                            │ 4})(?P<m>\\d{2})(?P<d>\\d{2 │                   │
-│                            │ })-WA\\d+',                 │                   │
-│                            │ '(?:Screenshot|Capture)[    │                   │
-│                            │ _-]*(?P<y>\\d{4})-?(?P<m>\\ │                   │
-│                            │ d{2})-?(?P<d>\\d{2}).*',    │                   │
-│                            │ '(?P<y>\\d{4})-(?P<m>\\d{2} │                   │
-│                            │ )-(?P<d>\\d{2})[            │                   │
-│                            │ _](?P<H>\\d{2})(?P<M>\\d{2} │                   │
-│                            │ )[._](?P<S>\\d{2}).*']      │                   │
-│ classify.generic_folders   │ ['(My |Mes                  │ défaut            │
-│                            │ )?(Photos|Pictures|Images|V │                   │
-│                            │ ideos|Vidéos|Mes images)',  │                   │
-│                            │ '(Family|Famille|Photos de  │                   │
-│                            │ famille|Family photos)']    │                   │
-│ classify.rules             │ [{'name': 'Films et         │ config.toml       │
-│                            │ séries', 'match': 'kind',   │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ 'download', 'categories':   │                   │
-│                            │ [], 'per_photo': False,     │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Dossiers existants',       │                   │
-│                            │ 'match': 'existing_folder', │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ "Captures d'écran et        │                   │
-│                            │ documents", 'match':        │                   │
-│                            │ 'kind', 'category':         │                   │
-│                            │ "Documents et captures      │                   │
-│                            │ d'écran", 'dates': '',      │                   │
-│                            │ 'pattern': '', 'kind':      │                   │
-│                            │ 'screenshot', 'categories': │                   │
-│                            │ [], 'per_photo': False,     │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ "Voisins d'événement",      │                   │
-│                            │ 'match': 'event_neighbour', │                   │
-│                            │ 'category': '', 'dates':    │                   │
-│                            │ '', 'pattern': '', 'kind':  │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Noël', 'match':            │                   │
-│                            │ 'calendar', 'category':     │                   │
-│                            │ 'Fêtes/Noël', 'dates':      │                   │
-│                            │ '12-24..12-26', 'pattern':  │                   │
-│                            │ '', 'kind': None,           │                   │
-│                            │ 'categories': [],           │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Nouvel An', 'match':       │                   │
-│                            │ 'calendar', 'category':     │                   │
-│                            │ 'Fêtes/Nouvel An', 'dates': │                   │
-│                            │ '12-31..01-01', 'pattern':  │                   │
-│                            │ '', 'kind': None,           │                   │
-│                            │ 'categories': [],           │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}, {'name':    │                   │
-│                            │ 'Saint-Nicolas', 'match':   │                   │
-│                            │ 'calendar', 'category':     │                   │
-│                            │ 'Fêtes/Saint-Nicolas',      │                   │
-│                            │ 'dates': '12-05..12-06',    │                   │
-│                            │ 'pattern': '', 'kind':      │                   │
-│                            │ None, 'categories': [],     │                   │
-│                            │ 'per_photo': False,         │                   │
-│                            │ 'score': None}]             │                   │
-│ classify.ai                │ {'url':                     │ config.toml       │
-│                            │ 'http://host.docker.interna │                   │
-│                            │ l:11434', 'model': '',      │                   │
-│                            │ 'map_model': '',            │                   │
-│                            │ 'samples_per_event': 3,     │                   │
-│                            │ 'min_edge': 512,            │                   │
-│                            │ 'image_edge': 768,          │                   │
-│                            │ 'concurrency': 1,           │                   │
-│                            │ 'timeout_seconds': 180.0,   │                   │
-│                            │ 'retries': 2, 'batch_size': │                   │
-│                            │ 20, 'confirm_above': 200,   │                   │
-│                            │ 'seconds_per_photo': 4.5}   │                   │
-│ sort.confirm               │ True                        │ config.toml       │
-│ sort.junk_files            │ ['Thumbs.db',               │ config.toml       │
-│                            │ 'desktop.ini', '.DS_Store'] │                   │
-│ inventory.blurry_below     │ 100.0                       │ config.toml       │
-│ inventory.small_below      │ 1000                        │ config.toml       │
-│ inventory.dark_below       │ 50.0                        │ config.toml       │
-│ inventory.bright_above     │ 205.0                       │ config.toml       │
-│ inventory.clipped_above    │ 0.25                        │ config.toml       │
-└────────────────────────────┴─────────────────────────────┴───────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ general.locale              │ fr                         │ ligne de commande │
+│ general.verbosity           │ info                       │ config.toml       │
+│ general.color               │ never                      │ ligne de commande │
+│ folders.preferred           │ []                         │ config.toml       │
+│ folders.protected           │ []                         │ config.toml       │
+│ folders.excluded            │ []                         │ config.toml       │
+│ scan.categories             │ {}                         │ config.toml       │
+│ scan.extensions             │ []                         │ config.toml       │
+│ scan.excluded_names         │ []                         │ config.toml       │
+│ (toujours ignorés)          │ ['$recycle.bin', 'system   │ intégrée          │
+│                             │ volume information',       │                   │
+│                             │ '@eadir', '#recycle',      │                   │
+│                             │ '@recycle', '.@__thumb',   │                   │
+│                             │ '.trash', '.trash-*',      │                   │
+│                             │ '.trashes', '.thumbnails'] │                   │
+│ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
+│                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
+│                             │ ]?\\d+',                   │                   │
+│                             │ '(IMG|VID)[_-]\\d{8}[_-]\\ │                   │
+│                             │ d{6}([_-]\\d+)?',          │                   │
+│                             │ '(IMG|VID|AUD)-\\d{8}-WA\\ │                   │
+│                             │ d+', '_?MG_\\d+',          │                   │
+│                             │ 'P\\d{7}',                 │                   │
+│                             │ 'PXL_\\d{8}_\\d+.*',       │                   │
+│                             │ '\\d{8}_\\d{6}(_\\d+)?',   │                   │
+│                             │ '\\d{4}-\\d{2}-\\d{2}      │                   │
+│                             │ \\d{2}\\.\\d{2}\\.\\d{2}(- │                   │
+│                             │ \\d+)?',                   │                   │
+│                             │ '(GOPR|G[HX]\\d{2})\\d{4}' │                   │
+│                             │ , 'DJI_\\d+',              │                   │
+│                             │ '(FB_IMG|received|Snapchat │                   │
+│                             │ )[_-]\\d+',                │                   │
+│                             │ '(Screenshot|Screen        │                   │
+│                             │ Shot|Capture d.écran)([    │                   │
+│                             │ _-].*)?', 'image\\d*',     │                   │
+│                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
+│                             │ {3}-[0-9a-f]{12}',         │                   │
+│                             │ '[0-9a-f]{16,}']           │                   │
+│ keep.generic_folders        │ ['DCIM',                   │ défaut            │
+│                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
+│                             │ 'Camera( Roll| Uploads)?', │                   │
+│                             │ 'WhatsApp (Images|Video)', │                   │
+│                             │ 'Sent',                    │                   │
+│                             │ 'Downloads?|Téléchargement │                   │
+│                             │ s', 'Screenshots|Captures  │                   │
+│                             │ d.écran', '(New            │                   │
+│                             │ folder|Nouveau dossier)(   │                   │
+│                             │ \\(\\d+\\))?',             │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│ clean.confirm               │ True                       │ config.toml       │
+│ classify.target             │                            │ config.toml       │
+│ classify.leave              │ []                         │ config.toml       │
+│ classify.timezone           │                            │ config.toml       │
+│ classify.layout             │ {year}/{category}          │ config.toml       │
+│ classify.unsure_layout      │ {year}/À                   │ config.toml       │
+│                             │ vérifier/{category}        │                   │
+│ classify.manual_layout      │ {year}/À trier/{event}     │ config.toml       │
+│ classify.undated_layout     │ À trier/Sans date          │ config.toml       │
+│ classify.received_layout    │ À trier/Reçues et          │ config.toml       │
+│                             │ téléchargées               │                   │
+│ classify.session_gap_hours  │ 6.0                        │ défaut            │
+│ classify.merge_gap_hours    │ 18.0                       │ config.toml       │
+│ classify.min_event_size     │ 5                          │ config.toml       │
+│ classify.event_year         │ start                      │ défaut            │
+│ classify.sure               │ 80                         │ config.toml       │
+│ classify.unsure             │ 50                         │ config.toml       │
+│ classify.scores             │ {'existing-folder': 90,    │ défaut            │
+│                             │ 'person-folder': 85,       │                   │
+│                             │ 'event-neighbour': 70,     │                   │
+│                             │ 'calendar': 85,            │                   │
+│                             │ 'date-range': 95, 'kind':  │                   │
+│                             │ 85, 'path': 90, 'camera':  │                   │
+│                             │ 90, 'other-category': 85,  │                   │
+│                             │ 'subject': 85, 'place':    │                   │
+│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'trip': 90,                │                   │
+│                             │ 'trip-neighbour': 70,      │                   │
+│                             │ 'date-only': 90,           │                   │
+│                             │ 'no-signal': 0}            │                   │
+│ classify.name_dates         │ ['(?:IMG|VID|PXL|MVIMG)?[_ │ défaut            │
+│                             │ -]?(?P<y>\\d{4})(?P<m>\\d{ │                   │
+│                             │ 2})(?P<d>\\d{2})[_-](?P<H> │                   │
+│                             │ \\d{2})(?P<M>\\d{2})(?P<S> │                   │
+│                             │ \\d{2}).*',                │                   │
+│                             │ '(?:IMG|VID|AUD)-(?P<y>\\d │                   │
+│                             │ {4})(?P<m>\\d{2})(?P<d>\\d │                   │
+│                             │ {2})-WA\\d+',              │                   │
+│                             │ '(?:Screenshot|Capture)[   │                   │
+│                             │ _-]*(?P<y>\\d{4})-?(?P<m>\ │                   │
+│                             │ \d{2})-?(?P<d>\\d{2}).*',  │                   │
+│                             │ '(?P<y>\\d{4})-(?P<m>\\d{2 │                   │
+│                             │ })-(?P<d>\\d{2})[          │                   │
+│                             │ _](?P<H>\\d{2})(?P<M>\\d{2 │                   │
+│                             │ })[._](?P<S>\\d{2}).*']    │                   │
+│ classify.generic_folders    │ ['(My |Mes                 │ défaut            │
+│                             │ )?(Photos|Pictures|Images| │                   │
+│                             │ Videos|Vidéos|Mes          │                   │
+│                             │ images)',                  │                   │
+│                             │ '(Family|Famille|Photos de │                   │
+│                             │ famille|Family photos)']   │                   │
+│ classify.rules              │ [{'name': 'Films et        │ config.toml       │
+│                             │ séries', 'match': 'kind',  │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ 'download', 'categories':  │                   │
+│                             │ [], 'per_photo': False,    │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Dossiers existants',      │                   │
+│                             │ 'match':                   │                   │
+│                             │ 'existing_folder',         │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ "Captures d'écran et       │                   │
+│                             │ documents", 'match':       │                   │
+│                             │ 'kind', 'category':        │                   │
+│                             │ "Documents et captures     │                   │
+│                             │ d'écran", 'dates': '',     │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ 'screenshot',              │                   │
+│                             │ 'categories': [],          │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ "Voisins d'événement",     │                   │
+│                             │ 'match':                   │                   │
+│                             │ 'event_neighbour',         │                   │
+│                             │ 'category': '', 'dates':   │                   │
+│                             │ '', 'pattern': '', 'kind': │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Noël', 'match':           │                   │
+│                             │ 'calendar', 'category':    │                   │
+│                             │ 'Fêtes/Noël', 'dates':     │                   │
+│                             │ '12-24..12-26', 'pattern': │                   │
+│                             │ '', 'kind': None,          │                   │
+│                             │ 'categories': [],          │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Nouvel An', 'match':      │                   │
+│                             │ 'calendar', 'category':    │                   │
+│                             │ 'Fêtes/Nouvel An',         │                   │
+│                             │ 'dates': '12-31..01-01',   │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'Saint-Nicolas', 'match':  │                   │
+│                             │ 'calendar', 'category':    │                   │
+│                             │ 'Fêtes/Saint-Nicolas',     │                   │
+│                             │ 'dates': '12-05..12-06',   │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'score': None}]            │                   │
+│ classify.ai                 │ {'url':                    │ config.toml       │
+│                             │ 'http://host.docker.intern │                   │
+│                             │ al:11434', 'model': '',    │                   │
+│                             │ 'map_model': '',           │                   │
+│                             │ 'samples_per_event': 3,    │                   │
+│                             │ 'min_edge': 512,           │                   │
+│                             │ 'image_edge': 768,         │                   │
+│                             │ 'concurrency': 1,          │                   │
+│                             │ 'timeout_seconds': 180.0,  │                   │
+│                             │ 'retries': 2,              │                   │
+│                             │ 'batch_size': 20,          │                   │
+│                             │ 'confirm_above': 200,      │                   │
+│                             │ 'seconds_per_photo': 4.5}  │                   │
+│ classify.places             │ []                         │ défaut            │
+│ classify.trip_min_km        │ 100.0                      │ config.toml       │
+│ classify.trip_merge_gap_hou │ 48.0                       │ config.toml       │
+│ rs                          │                            │                   │
+│ classify.trip_merge_max_km  │ 120.0                      │ config.toml       │
+│ sort.confirm                │ True                       │ config.toml       │
+│ sort.junk_files             │ ['Thumbs.db',              │ config.toml       │
+│                             │ 'desktop.ini',             │                   │
+│                             │ '.DS_Store']               │                   │
+│ inventory.blurry_below      │ 100.0                      │ config.toml       │
+│ inventory.small_below       │ 1000                       │ config.toml       │
+│ inventory.dark_below        │ 50.0                       │ config.toml       │
+│ inventory.bright_above      │ 205.0                      │ config.toml       │
+│ inventory.clipped_above     │ 0.25                       │ config.toml       │
+│ places.tiles                │ https://tile.openstreetmap │ config.toml       │
+│                             │ .org/{z}/{x}/{y}.png       │                   │
+│ places.attribution          │ © OpenStreetMap            │ config.toml       │
+│                             │ contributors               │                   │
+│ places.nominatim_url        │ https://nominatim.openstre │ config.toml       │
+│                             │ etmap.org                  │                   │
+│ album.root                  │                            │ config.toml       │
+└─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
 ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓

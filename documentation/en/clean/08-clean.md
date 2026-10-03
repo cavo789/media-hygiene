@@ -53,10 +53,11 @@ then **asks before doing anything**:
 
 <!-- capture: clean.txt|re:^🛟|❓ -->
 ```text
-🛟 Nothing is erased: each copy is compared byte for byte with the kept one, then moved to the
-quarantine. 'purge' erases it once you have checked.
+🛟 Nothing is erased: each copy is compared byte for byte with the kept one,
+then moved to the quarantine. 'purge' erases it once you have checked.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
-❓ Move 32 duplicate copies (13.9 MB) to the quarantine and handle 3 broken files? [y/N] y
+❓ Move 32 duplicate copies (13.9 MB) to the quarantine and handle 3 broken
+files? [y/N] y
 ```
 
 Anything but `y` stops here, and nothing changes. With `y`:
@@ -64,7 +65,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261002-152608
+Clean 20261003-080719
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -73,11 +74,11 @@ Clean 20261002-152608
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261002-152608-clean/report.html
+✅ HTML report: /reports/20261003-080719-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261002-152608' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20261003-080719' restores everything.
 💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261002-152608
+20261003-080719
 ```
 
 | Line | What it means |
