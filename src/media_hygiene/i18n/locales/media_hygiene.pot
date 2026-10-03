@@ -1823,6 +1823,9 @@ msgid ""
 "to the quarantine too."
 msgstr ""
 
+msgid "Read-only: never changes your photos."
+msgstr ""
+
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -3696,9 +3699,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "… and {count} more."
-msgstr ""
-
-msgid "🔒 Read-only: never changes your photos."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."

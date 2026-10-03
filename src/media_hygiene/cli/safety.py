@@ -35,7 +35,7 @@ def read_only_marker() -> str:
     Returns:
         The translated sentence.
     """
-    return _("🔒 Read-only: never changes your photos.")
+    return _("Read-only: never changes your photos.")
 
 
 def safety_doc() -> str:

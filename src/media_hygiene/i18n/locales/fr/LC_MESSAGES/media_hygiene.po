@@ -2225,6 +2225,9 @@ msgstr ""
 "Les vidéos réencodées sont dans le rapport HTML ; 'clean --tier near' les"
 " déplace aussi en quarantaine."
 
+msgid "Read-only: never changes your photos."
+msgstr "Lecture seule : ne modifie jamais vos photos."
+
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
@@ -4434,9 +4437,6 @@ msgstr "… et %(count)s séries de plus."
 #, python-brace-format
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
-
-msgid "🔒 Read-only: never changes your photos."
-msgstr "🔒 Lecture seule : ne modifie jamais vos photos."
 
 msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr "🔒 Lecture seule : vos photos et vidéos ne sont pas touchées."

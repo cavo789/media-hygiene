@@ -54,10 +54,11 @@ def test_history_counts_done_actions_and_restores(tmp_path: Path) -> None:
         journal.record(entry(3, ActionKind.DELETE_EMPTY))
         journal.record(entry(1, ActionKind.DELETE_DUPLICATE, Phase.UNDO).as_done())
     summary = summarize(tmp_path, run_id)
+    # The quarantined file still takes its space until `purge`: not freed.
     assert (summary.deleted, summary.quarantined, summary.freed, summary.restored) == (
         1,
         1,
-        200,
+        100,
         1,
     )
     entries = read_journal(journal_file(tmp_path, run_id))

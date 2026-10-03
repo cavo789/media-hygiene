@@ -115,12 +115,17 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
     moved = [entry for entry in files if entry.action is ActionKind.MOVE]
     linked = [entry for entry in files if entry.action is ActionKind.LINK]
     quarantined = [entry for entry in files if entry.action in QUARANTINED]
-    gone = [entry for entry in files if entry.action not in _KEPT]
+    # Only a deleted file frees space: a quarantined one takes it until `purge`.
+    deleted = [
+        entry
+        for entry in files
+        if entry.action not in _KEPT and entry.action not in QUARANTINED
+    ]
     return RunSummary(
         run_id=run_id,
         kind=kind,
-        deleted=len(gone) - len(quarantined),
-        freed=sum(entry.size for entry in gone),
+        deleted=len(deleted),
+        freed=sum(entry.size for entry in deleted),
         quarantined=len(quarantined),
         kept=Kept(len(moved), len(linked)),
         restored=len(done_states(entries, Phase.UNDO)),
