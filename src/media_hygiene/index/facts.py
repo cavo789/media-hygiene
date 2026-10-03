@@ -6,11 +6,13 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.scan.metadata import METADATA_VERSION
+from media_hygiene.scan.video_models import VIDEO_PRINT_VERSION
 
 if TYPE_CHECKING:
     from media_hygiene.constants import BrokenReason
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
+    from media_hygiene.scan.video_models import VideoPrint
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,8 +23,9 @@ class Integrity:
     broken_detail: str = ""
 
 
+# One field per group of index columns: the record mirrors a row, nothing to split.
 @dataclass(frozen=True, slots=True)
-class FileFacts:
+class FileFacts:  # pylint: disable=too-many-instance-attributes
     """Facts computed for a file at a given size and modification time."""
 
     partial_digest: str | None = None
@@ -34,6 +37,9 @@ class FileFacts:
     # 0: never read; older than METADATA_VERSION: read again once.
     metadata_version: int = 0
     metadata: MediaMetadata | None = None
+    # 0: never fingerprinted; older than VIDEO_PRINT_VERSION: fingerprinted again once.
+    video_print_version: int = 0
+    video_print: VideoPrint | None = None
 
     @property
     def integrity_checked(self) -> bool:
@@ -117,3 +123,16 @@ class FileFacts:
             The updated facts, marked as read by the current version.
         """
         return replace(self, metadata_version=METADATA_VERSION, metadata=metadata)
+
+    def with_video_print(self, video_print: VideoPrint | None) -> FileFacts:
+        """Return a copy holding the fingerprint of a video (None: not decodable).
+
+        Args:
+            video_print: The hashes of its frames.
+
+        Returns:
+            The updated facts, marked as fingerprinted by the current version.
+        """
+        return replace(
+            self, video_print_version=VIDEO_PRINT_VERSION, video_print=video_print
+        )

@@ -3,7 +3,8 @@
 Version 2 adds what images look like; version 3 what files say about themselves (a
 versioned JSON document, plus typed columns for what later steps query) and when each
 mounted folder was last walked completely; version 4 what a local model saw in a
-photo and the categories it chose (`subject` rules). An older index keeps its digests
+photo and the categories it chose (`subject` rules); version 5 the fingerprint of
+videos (the hashes of a few frames, `scan.keyframes`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images again.
 """
 
@@ -14,7 +15,7 @@ from typing import TYPE_CHECKING, Final
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 4
+SCHEMA_VERSION: Final = 5
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -46,6 +47,11 @@ METADATA_COLUMNS: Final = (
     ("latitude", "REAL"),
     ("longitude", "REAL"),
     ("media_date", "TEXT"),
+)
+# Added by version 5: the hashes of a few frames of a video (`index.video_rows`).
+VIDEO_PRINT_COLUMNS: Final = (
+    ("video_print_version", "INTEGER NOT NULL DEFAULT 0"),
+    ("video_print", "TEXT"),
 )
 # Added by version 3: when each mounted folder was last walked without a read error.
 _CREATE_ROOTS: Final = """
@@ -80,7 +86,8 @@ CREATE TABLE IF NOT EXISTS subject_mappings (
 _FACTS: Final = (
     "size, mtime_ns, partial_digest, full_digest, integrity_checked,"
     " broken_reason, broken_detail, visual_checked, dhash, phash, width, height,"
-    " sharpness, taken_at, camera, metadata_version, metadata"
+    " sharpness, taken_at, camera, metadata_version, metadata, video_print_version,"
+    " video_print"
 )
 # Both built from the constant column list above, never from input.
 SELECT: Final = f"SELECT {_FACTS} FROM files WHERE path = ?"  # noqa: S608
@@ -90,8 +97,8 @@ UPSERT: Final = (
     "INSERT OR REPLACE INTO files (path, size, mtime_ns, partial_digest, full_digest,"
     " integrity_checked, broken_reason, broken_detail, visual_checked, dhash, phash,"
     " width, height, sharpness, taken_at, camera, metadata_version, metadata,"
-    " latitude, longitude, media_date)"
-    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    " latitude, longitude, media_date, video_print_version, video_print)"
+    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 )
 # Every path below a folder: `/` then anything sorts between `folder/` and `folder0`.
 PATHS_UNDER: Final = "SELECT path FROM files WHERE path >= ? AND path < ?"
@@ -116,7 +123,11 @@ def prepare(connection: sqlite3.Connection) -> None:
     """
     connection.execute(_CREATE)
     existing = {row[1] for row in connection.execute("PRAGMA table_info(files)")}
-    for name, definition in (*VISUAL_COLUMNS, *METADATA_COLUMNS):
+    for name, definition in (
+        *VISUAL_COLUMNS,
+        *METADATA_COLUMNS,
+        *VIDEO_PRINT_COLUMNS,
+    ):
         if name not in existing:
             connection.execute(f"ALTER TABLE files ADD COLUMN {name} {definition}")
     connection.execute(_CREATE_ROOTS)

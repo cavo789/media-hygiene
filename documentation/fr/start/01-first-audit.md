@@ -53,6 +53,7 @@ Chaque étape affiche une ligne de progression et, en dessous en gris, ce qu'ell
 |---|---|
 | Recherche des fichiers médias | Parcourt le dossier et garde les photos, fichiers RAW et vidéos, reconnus à leur extension ([la liste](../clean/06-file-types.md)). Le total n'est pas encore connu : un compteur remplace la barre. |
 | Vérification de la lisibilité des fichiers | Repère les fichiers cassés : vides (0 octet), images et fichiers RAW impossibles à décoder (chacun est décodé entièrement), vidéos impossibles à ouvrir. |
+| Empreinte des vidéos | Une fois par vidéo, gardé dans le cache : décode quelques images et en calcule les empreintes, pour trouver les [copies réencodées](../clean/11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées). |
 | Comparaison des fichiers de même taille | Deux fichiers ne peuvent être identiques que s'ils ont la même taille. Pour ceux-là, lit leurs premiers et derniers 64 Ko : rapide, et cela en écarte la plupart. |
 | Preuve d'identité (SHA-256 complet) | Lit entièrement les candidats restants et calcule leur empreinte SHA-256 : même empreinte, même contenu, octet par octet. L'étape la plus longue avec de grosses vidéos. |
 

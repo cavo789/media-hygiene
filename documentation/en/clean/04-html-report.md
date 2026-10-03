@@ -79,12 +79,15 @@ of every copy itself, and they are all the same. You do not have to trust media-
 
 ## Near duplicates and burst series
 
-Two sections show pictures that are *not* identical files, side by side. Nothing happens to them
-unless you ask:
+These sections show pictures and videos that are *not* identical files, side by side. Nothing
+happens to them unless you ask:
 
 - **Near duplicates**: the same photo saved again, smaller or recompressed ([step 11](11-near-duplicates.md)).
 
   ![Near duplicates: a meadow photo kept in 1500 × 1000, its copy of 1024 × 683 in an Email folder to the quarantine with --tier near; a beach photo kept, its WhatsApp copy of 800 × 533](../images/report-near.webp)
+
+- **Re-encoded videos**: the same video saved again, smaller or recompressed, described by its
+  resolution, length, codec and size ([step 11](11-near-duplicates.md#videos-too-re-encoded-copies)).
 
 - **Burst series**: shots taken seconds apart, the sharpest one marked ⭐ ([step 10](10-review-bursts.md)).
 

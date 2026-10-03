@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from media_hygiene.constants import BrokenReason
 from media_hygiene.index.facts import FileFacts, Integrity
+from media_hygiene.index.video_rows import video_print_of, video_print_row
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.scan.models import VisualFacts
 
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
 _SIZE, _MTIME, _PARTIAL, _FULL, _CHECKED, _REASON, _DETAIL, _VISUAL = range(8)
 _VISUAL_VALUES: Final = slice(_VISUAL + 1, _VISUAL + 8)
 _METADATA_VERSION, _METADATA = 15, 16
+_VIDEO_PRINT: Final = slice(17, 19)
 _HEX: Final = 16
 
 
@@ -48,6 +50,7 @@ def facts_of(row: Sequence[object]) -> FileFacts:
     reason, stored = row[_REASON], row[_METADATA]
     metadata = _metadata_of(stored)
     corrupt = isinstance(stored, str) and metadata is None
+    print_version, video_print = video_print_of(row[_VIDEO_PRINT])
     return FileFacts(
         partial_digest=_text(row[_PARTIAL]),
         full_digest=_text(row[_FULL]),
@@ -61,6 +64,8 @@ def facts_of(row: Sequence[object]) -> FileFacts:
         visual=_visual_of(row[_VISUAL_VALUES]),
         metadata_version=0 if corrupt else _version(row[_METADATA_VERSION]),
         metadata=metadata,
+        video_print_version=print_version,
+        video_print=video_print,
     )
 
 
@@ -93,6 +98,7 @@ def row_of(file: MediaFile, facts: FileFacts) -> tuple[object, ...]:
         metadata.latitude if metadata else None,
         metadata.longitude if metadata else None,
         taken or (metadata.recorded_at if metadata else None),
+        *video_print_row(facts.video_print_version, facts.video_print),
     )
 
 

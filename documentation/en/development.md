@@ -20,6 +20,13 @@ only asks whether a video container opens, so the `ffprobe` stage of the `Docker
 demuxers of the video extensions it analyses and nothing else. A new video extension needs its
 demuxer there too; a test checks that both lists agree.
 
+It compiles its own `ffmpeg` too, about 6 MB: to find [re-encoded
+videos](clean/11-near-duplicates.md#videos-too-re-encoded-copies), the audit decodes a few
+frames of each video, so the `ffmpeg` stage adds the decoders of phone, camera and older PC
+videos (H.264, HEVC, MPEG-4, VP8/VP9, WMV/VC-1, ProRes, …), the scale and rotation filters and
+raw output, nothing else. Both tools share the `VIDEO_DEMUXERS` list. AV1 is left out: its
+decoder needs an external library, and such a video is simply not compared.
+
 ## The devcontainer
 
 Open the repository in the devcontainer (VS Code, *Reopen in Container*). Every new terminal

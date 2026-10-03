@@ -21,6 +21,27 @@ Les images vides ou noires ne comptent jamais, et une photo d'une [rafale](10-re
 n'est jamais prise pour un quasi-doublon. Dans chaque groupe, la **plus haute résolution** est
 gardée.
 
+## Les vidéos aussi : les copies réencodées
+
+Une vidéo partagée par une messagerie, convertie ou recompressée n'est pas non plus identique à
+l'originale. Le premier audit décode quelques images de chaque vidéo (à 10, 30, 50, 70 et 90 %
+de sa durée) et en calcule les empreintes comme pour les photos ; cela prend de quelques
+dixièmes de seconde à quelques secondes par vidéo, et le cache garde le résultat : les audits
+suivants ne décodent que les vidéos nouvelles ou modifiées. Deux vidéos ne sont des
+quasi-doublons que si **tous** les tests sont d'accord :
+
+- la même durée (à une demi-seconde près, ou 1 % d'une longue vidéo) ;
+- la même forme (proportions) ;
+- les images aux mêmes instants se ressemblent (une image peut différer, pour une coupe) ;
+- la même date d'enregistrement, ou aucune date sur la copie.
+
+Dans chaque groupe, la **plus haute résolution** est gardée, puis le plus gros fichier. Le
+rapport les liste dans leur propre section, *Vidéos réencodées*, avec la résolution, la durée,
+le codec et la taille de chaque copie (pas d'aperçu : regardez-les vous-même), et le résumé de
+l'audit les compte sur la ligne *Vidéos réencodées (déplacées seulement avec --tier near)*.
+`clean --tier near` les déplace en quarantaine avec les photos. Une vidéo que l'image ne sait
+pas décoder (AV1, rare) n'est simplement pas comparée.
+
 ## Les regarder d'abord
 
 La section *Quasi-doublons* du [rapport HTML](04-html-report.md) montre chaque groupe côte à côte,

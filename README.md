@@ -30,8 +30,8 @@ What it does:
   that was kept, and every quarantined file from the quarantine.
 - **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo is
   moved to the quarantine; one next to its photo is never touched.
-- **Burst series and near duplicates** — shown side by side in an HTML report; you choose the
-  best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
+- **Burst series and near duplicates** (re-encoded videos included) — shown side by side in an
+  HTML report; you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
 - **Never touched without your say** — bursts, near duplicates, protected folders.
 
 ## Documentation

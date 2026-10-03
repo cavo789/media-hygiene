@@ -52,6 +52,7 @@ Each step shows one line of progress and, below it in grey, what it really does:
 |---|---|
 | Listing media files | Walks through the folder and keeps the photos, RAW files and videos, recognised by their extension ([the list](../clean/06-file-types.md)). The total is not known yet: a running count replaces the bar. |
 | Checking that files can be read | Finds broken files: empty ones (0 bytes), images and RAW files that cannot be decoded (each one is decoded in full), videos that cannot be opened. |
+| Fingerprinting videos | Once per video, kept in the cache: decodes a few frames and fingerprints them, to find [re-encoded copies](../clean/11-near-duplicates.md#videos-too-re-encoded-copies). |
 | Comparing files of equal size | Two files can only be identical if they have the same size. For those, reads their first and last 64 KB: quick, and it rules most of them out. |
 | Proving identity (full SHA-256) | Reads the remaining candidates in full and computes their SHA-256 fingerprint: same fingerprint, same content, byte for byte. The longest step with large videos. |
 

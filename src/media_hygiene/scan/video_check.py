@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.scan.tool_run import run_tool
 from media_hygiene.scan.video_meta import PROBE_ENTRIES, video_metadata
 
 if TYPE_CHECKING:
@@ -40,28 +40,15 @@ async def probe_video(path: Path, ffprobe: str) -> VideoProbe:
     Returns:
         The probe error, or the metadata of a video that looks readable.
     """
-    process = await asyncio.create_subprocess_exec(
-        ffprobe,
-        *_PROBE_ARGS,
-        str(path),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    try:
-        async with asyncio.timeout(_TIMEOUT_SECONDS):
-            stdout, stderr = await process.communicate()
-    except TimeoutError:
-        process.kill()
-        await process.wait()
+    run = await run_tool((ffprobe, *_PROBE_ARGS, str(path)), _TIMEOUT_SECONDS)
+    if run is None:
         _LOGGER.warning("ffprobe timed out on %s: kept as healthy", path)
         return VideoProbe()
-    if process.returncode != 0:
-        lines = stderr.decode(errors="replace").strip().splitlines()
-        return VideoProbe(
-            lines[-1] if lines else f"ffprobe exit code {process.returncode}"
-        )
+    if run.returncode != 0:
+        lines = run.stderr.decode(errors="replace").strip().splitlines()
+        return VideoProbe(lines[-1] if lines else f"ffprobe exit code {run.returncode}")
     try:
-        probe = json.loads(stdout or b"{}")
+        probe = json.loads(run.stdout or b"{}")
     except ValueError:
         probe = {}
     if not isinstance(probe, dict) or not probe.get("streams"):

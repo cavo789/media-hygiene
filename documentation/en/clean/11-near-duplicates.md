@@ -20,6 +20,25 @@ are near duplicates only if **every** test agrees:
 Blank or black pictures never count, and a shot of a [burst series](10-review-bursts.md) is
 never taken for a near duplicate. In each group, the **highest resolution** is kept.
 
+## Videos too: re-encoded copies
+
+A video shared through a messaging app, converted or recompressed is not identical to its
+original either. The first audit decodes a few frames of each video (at 10, 30, 50, 70 and 90 %
+of its length) and fingerprints them like photos; this takes a fraction of a second to a few
+seconds per video, and the cache keeps the result: later audits only decode the new or changed
+videos. Two videos are near duplicates only if **every** test agrees:
+
+- the same length (within half a second, or 1 % of a long video);
+- the same shape (proportions);
+- the frames at the same moments look alike (one frame may differ, for a cut);
+- the same recording date, or no date at all on the copy.
+
+In each group, the **highest resolution** is kept, then the largest file. The report lists them
+in their own section, *Re-encoded videos*, with the resolution, length, codec and size of each
+copy (no preview: watch them yourself), and the audit summary counts them on the line
+*Re-encoded videos (moved only with --tier near)*. `clean --tier near` moves them to the
+quarantine with the photos. A video the image cannot decode (AV1, rare) is simply not compared.
+
 ## Look at them first
 
 The *Near duplicates* section of the [HTML report](04-html-report.md) shows each group side by

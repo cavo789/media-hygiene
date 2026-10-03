@@ -69,14 +69,22 @@ def audit_command(  # pylint: disable=too-many-arguments
                     "config.toml, or --prefer."
                 ),
             )
-    if findings.similar.near_count or findings.similar.bursts:
+    similar = findings.similar
+    if similar.near_count or similar.bursts:
         output.tip(
             _(
                 "Near duplicates and bursts are in the HTML report; "
                 "'clean --tier near' moves near duplicates to the quarantine."
             ),
         )
-    if findings.similar.bursts:
+    if similar.video_count:
+        output.tip(
+            _(
+                "Re-encoded videos are in the HTML report; 'clean --tier near' moves "
+                "them to the quarantine too."
+            ),
+        )
+    if similar.bursts:
         output.tip(
             _(
                 "Sort the burst series with the keyboard: 'media-hygiene review' (add "

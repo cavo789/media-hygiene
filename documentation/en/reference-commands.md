@@ -222,9 +222,9 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                    clean.confirm).                           │
 │ --tier               <exact|near>  exact: delete byte-for-byte copies only.  │
 │                                    near: also move near duplicates (resized  │
-│                                    or recompressed copies) to the            │
-│                                    quarantine; check them in the report      │
-│                                    first. Default: exact.                    │
+│                                    or recompressed copies, re-encoded        │
+│                                    videos) to the quarantine; check them in  │
+│                                    the report first. Default: exact.         │
 │ --decisions          <path>        decisions.json downloaded from an audit   │
 │                                    report (swap or leave alone some folder   │
 │                                    pairs) or written by 'review' (burst      │

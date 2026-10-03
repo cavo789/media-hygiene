@@ -24,8 +24,8 @@ def tier() -> OptionInfo:
             "--tier",
             help=_(
                 "exact: delete byte-for-byte copies only. near: also move near "
-                "duplicates (resized or recompressed copies) to the quarantine; "
-                "check them in the report first. Default: exact."
+                "duplicates (resized or recompressed copies, re-encoded videos) to "
+                "the quarantine; check them in the report first. Default: exact."
             ),
             show_default=False,
             case_sensitive=False,

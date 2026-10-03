@@ -22,6 +22,14 @@ l'outil demande seulement si le conteneur d'une vidéo s'ouvre, donc l'étape `f
 extension vidéo demande aussi son démultiplexeur à cet endroit ; un test vérifie que les deux
 listes concordent.
 
+Elle compile aussi son propre `ffmpeg`, environ 6 Mo : pour trouver les [vidéos
+réencodées](clean/11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées), l'audit décode
+quelques images de chaque vidéo ; l'étape `ffmpeg` ajoute donc les décodeurs des vidéos de
+téléphones, d'appareils photo et d'anciens PC (H.264, HEVC, MPEG-4, VP8/VP9, WMV/VC-1, ProRes,
+…), les filtres de mise à l'échelle et de rotation et la sortie brute, rien d'autre. Les deux
+outils partagent la liste `VIDEO_DEMUXERS`. AV1 est laissé de côté : son décodeur demande une
+bibliothèque externe, et une telle vidéo n'est simplement pas comparée.
+
 ## Le devcontainer
 
 Ouvrez le dépôt dans le devcontainer (VS Code, *Reopen in Container*). Chaque nouveau terminal

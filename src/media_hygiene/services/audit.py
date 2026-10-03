@@ -10,7 +10,7 @@ from dataclasses import replace
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import FFPROBE_BINARY
+from media_hygiene.constants import FFMPEG_BINARY, FFPROBE_BINARY
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
@@ -96,7 +96,8 @@ class AuditService:
             ),
             groups=groups,
             similar=find_similar(
-                SimilarInputs(found.files, integrity.visuals, groups), policy
+                SimilarInputs(found.files, integrity.visuals, groups, integrity.videos),
+                policy,
             ),
             inventory=take_inventory(found.files, integrity),
         )
@@ -117,6 +118,11 @@ class AuditService:
         ffprobe = shutil.which(FFPROBE_BINARY)
         if ffprobe is None:
             runtime.output.warning(_("ffprobe not found: videos are not checked."))
+        ffmpeg = shutil.which(FFMPEG_BINARY)
+        if ffmpeg is None:
+            runtime.output.warning(
+                _("ffmpeg not found: re-encoded copies of videos are not looked for.")
+            )
         with (
             FactsRepository.open(runtime.index_file) as repository,
             runtime.executor_factory() as executor,
@@ -126,7 +132,7 @@ class AuditService:
             return asyncio.run(
                 _analyse(
                     found.files,
-                    BrokenFileFinder(deps, IntegrityTools(executor, ffprobe)),
+                    BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
                     ExactDuplicateFinder(deps),
                 ),
             )

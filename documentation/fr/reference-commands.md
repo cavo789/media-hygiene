@@ -235,9 +235,10 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │ --tier               <exact|near>  exact : supprime seulement les copies     │
 │                                    identiques octet par octet. near :        │
 │                                    déplace aussi les quasi-doublons (copies  │
-│                                    redimensionnées ou recompressées) en      │
-│                                    quarantaine ; vérifiez-les d'abord dans   │
-│                                    le rapport. Par défaut : exact.           │
+│                                    redimensionnées ou recompressées, vidéos  │
+│                                    réencodées) en quarantaine ; vérifiez-les │
+│                                    d'abord dans le rapport. Par défaut :     │
+│                                    exact.                                    │
 │ --decisions          <path>        decisions.json téléchargé depuis un       │
 │                                    rapport d'audit (paires de dossiers       │
 │                                    inversées ou laissées telles quelles) ou  │

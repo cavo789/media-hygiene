@@ -54,6 +54,11 @@ def findings_table(findings: AuditFindings) -> Table:
             _("Near duplicates (moved only with --tier near)"),
             human_number(similar.near_count),
         )
+    if similar.video_count:
+        table.add_row(
+            _("Re-encoded videos (moved only with --tier near)"),
+            human_number(similar.video_count),
+        )
     if similar.bursts:
         table.add_row(
             _("Burst series (moved only if set aside with 'review')"),

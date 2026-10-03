@@ -12,6 +12,9 @@ ARG UV_VERSION=0.12.19
 # (FCF9 86EA 15E6 E293 A564 4F10 B432 2F04 D676 58D8) before trusting its new SHA-256.
 ARG FFMPEG_VERSION=9.0.2
 ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
+# Demuxers per video extension: mov (3g2 3gp m4v mov mp4), m4v (raw MPEG-4 video named .m4v),
+# matroska (mkv webm), avi, flv, mpegts (m2ts mts ts), mpegps and mpegvideo (mpeg mpg), asf (wmv).
+ARG VIDEO_DEMUXERS=mov,m4v,matroska,avi,flv,mpegts,mpegps,mpegvideo,asf
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
@@ -23,6 +26,7 @@ FROM ${PYTHON_IMAGE} AS ffprobe
 
 ARG FFMPEG_VERSION
 ARG FFMPEG_SHA256
+ARG VIDEO_DEMUXERS
 
 # Discarded stage: the compiler never reaches the image; the base is pinned by digest and the
 # FFmpeg source by checksum.
@@ -31,13 +35,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && \
-    apt-get install -y --no-install-recommends gcc libc6-dev make xz-utils zlib1g-dev
+    apt-get install -y --no-install-recommends gcc libc6-dev make nasm xz-utils zlib1g-dev
 
 ADD --checksum=sha256:${FFMPEG_SHA256} \
     https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz /tmp/ffmpeg.tar.xz
 
-# Demuxers per video extension: mov (3g2 3gp m4v mov mp4), m4v (raw MPEG-4 video named .m4v),
-# matroska (mkv webm), avi, flv, mpegts (m2ts mts ts), mpegps and mpegvideo (mpeg mpg), asf (wmv).
 WORKDIR /tmp/ffmpeg
 RUN tar -xf /tmp/ffmpeg.tar.xz --strip-components=1 && \
     ./configure \
@@ -45,9 +47,33 @@ RUN tar -xf /tmp/ffmpeg.tar.xz --strip-components=1 && \
         --disable-debug --disable-network --disable-programs --enable-ffprobe \
         --disable-avdevice --disable-avfilter --disable-swscale --disable-swresample \
         --enable-small --enable-zlib --enable-protocol=file \
-        --enable-demuxer=mov,m4v,matroska,avi,flv,mpegts,mpegps,mpegvideo,asf && \
+        --enable-demuxer="${VIDEO_DEMUXERS}" && \
     make -j"$(nproc)" ffprobe && \
     strip ffprobe
+
+# --- ffmpeg: only what scan/keyframes.py asks of it ---------------------------------------
+# Decode one frame at a given moment, turn it upright, shrink it to a grayscale square and
+# write its raw pixels to a pipe. The same demuxers as ffprobe, the decoders of phone, camera
+# and older PC videos, the scale/format/rotation filters; assembly kept (decoding speed).
+# No AV1 (its decoder needs an external library): such a video is simply not fingerprinted.
+FROM ffprobe AS ffmpeg
+
+ARG VIDEO_DEMUXERS
+
+RUN make distclean && \
+    ./configure \
+        --disable-everything --disable-autodetect --disable-doc --disable-debug \
+        --disable-network --disable-programs --enable-ffmpeg \
+        --disable-avdevice --disable-swresample \
+        --enable-small --enable-zlib --enable-protocol=file,pipe \
+        --enable-demuxer="${VIDEO_DEMUXERS}" \
+        --enable-decoder=h264,hevc,mpeg4,mpeg1video,mpeg2video,mjpeg,vp8,vp9,h263,flv \
+        --enable-decoder=msmpeg4v1,msmpeg4v2,msmpeg4v3,wmv1,wmv2,wmv3,vc1,prores \
+        --enable-parser=h264,hevc,mpeg4video,mpegvideo,mjpeg,vp8,vp9,h263,vc1 \
+        --enable-filter=scale,format,transpose,hflip,vflip,null \
+        --enable-encoder=rawvideo --enable-muxer=rawvideo && \
+    make -j"$(nproc)" ffmpeg && \
+    strip ffmpeg
 
 # --- builder: resolve the locked dependencies, then install the project as a wheel ---------
 FROM ${PYTHON_IMAGE} AS builder
@@ -73,7 +99,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-# --- runtime: the interpreter, the virtual environment and ffprobe — nothing else ---------
+# --- runtime: the interpreter, the virtual environment, ffprobe and ffmpeg — nothing else ---
 FROM ${PYTHON_IMAGE} AS runtime
 
 ARG VERSION=0.2.0
@@ -99,6 +125,7 @@ RUN groupadd --gid "${APP_GID}" app && \
     chown app:app /config /journal /quarantine /reports /cache
 
 COPY --from=ffprobe /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
+COPY --from=ffmpeg /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /opt/venv /opt/venv
 
 USER ${APP_UID}:${APP_GID}

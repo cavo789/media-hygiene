@@ -56,8 +56,8 @@ def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> Look:
         width, height = height, width
     analysed = _analysis_pixels(gray)
     visual = VisualFacts(
-        dhash=_dhash(gray),
-        phash=_phash(gray),
+        dhash=dhash(gray),
+        phash=phash(gray),
         width=width,
         height=height,
         sharpness=_sharpness(analysed),
@@ -93,7 +93,7 @@ def _as_int(bits: NDArray[np.bool_]) -> int:
     return int("".join("1" if bit else "0" for bit in bits.flatten()), 2)
 
 
-def _dhash(gray: Image.Image) -> int:
+def dhash(gray: Image.Image) -> int:
     """Difference hash: is each pixel brighter than its right neighbour?
 
     Args:
@@ -118,7 +118,7 @@ def _dct_matrix() -> NDArray[np.float64]:
     return np.cos(np.pi * (2 * positions + 1) * frequencies / (2 * _DCT_SIDE))
 
 
-def _phash(gray: Image.Image) -> int:
+def phash(gray: Image.Image) -> int:
     """Perceptual hash: which low frequencies are above their median?
 
     Args:

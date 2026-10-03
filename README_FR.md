@@ -31,8 +31,8 @@ Ce qu'elle fait :
   partir de la copie conservée, et ressort chaque fichier de la quarantaine.
 - **Fichiers compagnons orphelins** : un fichier compagnon (`.xmp`, `.aae`, `.thm`) resté sans
   sa photo est déplacé en quarantaine ; celui qui accompagne sa photo n'est jamais touché.
-- **Rafales et quasi-doublons** : montrés côte à côte dans un rapport HTML ; vous choisissez les
-  meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
+- **Rafales et quasi-doublons** (vidéos réencodées comprises) : montrés côte à côte dans un
+  rapport HTML ; vous choisissez les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
 - **Jamais touchés sans votre accord** : les rafales, les quasi-doublons, les dossiers protégés.
 
 ## Documentation

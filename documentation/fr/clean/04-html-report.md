@@ -84,13 +84,16 @@ media-hygiene sur parole.
 
 ## Quasi-doublons et rafales
 
-Deux sections montrent côte à côte des images qui ne sont *pas* des fichiers identiques. Il ne
-leur arrive rien, sauf si vous le demandez :
+Ces sections montrent côte à côte des images et des vidéos qui ne sont *pas* des fichiers
+identiques. Il ne leur arrive rien, sauf si vous le demandez :
 
 - **Quasi-doublons** : la même photo enregistrée à nouveau, plus petite ou recompressée
   ([étape 11](11-near-duplicates.md)).
 
   ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](../images/report-near.webp)
+
+- **Vidéos réencodées** : la même vidéo enregistrée à nouveau, plus petite ou recompressée,
+  décrite par sa résolution, sa durée, son codec et sa taille ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
 
 - **Rafales** : des photos prises à quelques secondes d'intervalle, la plus nette marquée ⭐
   ([étape 10](10-review-bursts.md)).

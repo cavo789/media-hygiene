@@ -12,6 +12,7 @@ from media_hygiene.i18n import _
 from media_hygiene.scan.file_check import FileChecker, Need, need_of
 from media_hygiene.scan.models import BrokenFile
 from media_hygiene.scan.progress import Step
+from media_hygiene.scan.video_prints import VideoPrinter
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine, Mapping, Sequence
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
     from media_hygiene.scan.deps import IntegrityTools, ScanDeps
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import MediaFile, VisualFacts
+    from media_hygiene.scan.video_models import VideoLook
 
     type _Action = Callable[[MediaFile], Coroutine[None, None, FileFacts]]
 
@@ -31,11 +33,14 @@ _EMPTY_DETAIL = "0 bytes"
 
 @dataclass(frozen=True, slots=True)
 class IntegrityFindings:
-    """Broken files, what readable images look like, what files say of themselves."""
+    """Broken files, what readable images and videos look like, what files say."""
 
     broken: tuple[BrokenFile, ...]
     visuals: Mapping[Path, VisualFacts]
     metadata: Mapping[Path, MediaMetadata] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    videos: Mapping[Path, VideoLook] = field(
         default_factory=lambda: MappingProxyType({})
     )
 
@@ -48,10 +53,11 @@ class BrokenFileFinder:
 
         Args:
             deps: Index, progress sink and I/O concurrency limit.
-            tools: Image-decoding pool and optional `ffprobe`.
+            tools: Image-decoding pool and optional `ffprobe` and `ffmpeg`.
         """
         self._deps = deps
         self._checker = FileChecker(deps, tools)
+        self._printer = VideoPrinter(deps, tools.ffmpeg)
 
     async def find(self, files: Sequence[MediaFile]) -> IntegrityFindings:
         """Return the broken files among `files`, and describe the readable ones.
@@ -64,8 +70,8 @@ class BrokenFileFinder:
             files: Every media file found.
 
         Returns:
-            The broken files, sorted by path, the visual facts of images and the
-            metadata of images and videos.
+            The broken files, sorted by path, the visual facts of images, the
+            metadata of images and videos, and the fingerprints of videos.
         """
         broken = [
             BrokenFile(file, BrokenReason.EMPTY, _EMPTY_DETAIL)
@@ -86,6 +92,7 @@ class BrokenFileFinder:
         known |= await self._run(
             work[Need.METADATA], self._checker.read_metadata, _metadata_step()
         )
+        videos = await self._printer.looks(files, known)
         by_path = {file.path: file for file in files}
         broken.extend(
             item
@@ -104,6 +111,7 @@ class BrokenFileFinder:
                     if facts.metadata
                 }
             ),
+            videos=MappingProxyType(videos),
         )
 
     async def _run(

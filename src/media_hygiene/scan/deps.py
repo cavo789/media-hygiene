@@ -28,7 +28,8 @@ class ScanDeps:
 
 @dataclass(frozen=True, slots=True)
 class IntegrityTools:
-    """How to check files: a pool for image decoding, `ffprobe` for videos."""
+    """How to check files: a pool for images, `ffprobe` and `ffmpeg` for videos."""
 
     executor: Executor
     ffprobe: str | None
+    ffmpeg: str | None = None

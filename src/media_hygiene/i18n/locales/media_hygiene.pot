@@ -895,6 +895,9 @@ msgid ""
 "decoded, videos that cannot be opened."
 msgstr ""
 
+msgid "Fingerprinting videos"
+msgstr ""
+
 msgid "Flash"
 msgstr ""
 
@@ -1589,6 +1592,11 @@ msgid "On another disk or mount"
 msgstr ""
 
 msgid ""
+"Once per video: a few frames are decoded and hashed, to find the same "
+"video saved again (re-encoded, resized). The cache keeps the result."
+msgstr ""
+
+msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
 "Images are not decoded again, only their header is read."
 msgstr ""
@@ -1758,6 +1766,17 @@ msgid "Random sample"
 msgstr ""
 
 msgid "Rating"
+msgstr ""
+
+msgid "Re-encoded videos"
+msgstr ""
+
+msgid "Re-encoded videos (moved only with --tier near)"
+msgstr ""
+
+msgid ""
+"Re-encoded videos are in the HTML report; 'clean --tier near' moves them "
+"to the quarantine too."
 msgstr ""
 
 msgid "Reading the metadata of files already in the cache"
@@ -2377,6 +2396,15 @@ msgid ""
 "the kept picture first."
 msgstr ""
 
+msgid ""
+"The same video saved again: shared by a messaging app, converted or "
+"recompressed. Same length, same frames at the same moments, same date or "
+"none. They are not identical files, so a plain 'clean' leaves them alone;"
+" 'clean --tier near' moves the copies to the quarantine, where 'undo' "
+"finds them again. The highest resolution, then the largest file, is kept."
+" Watch each copy before choosing."
+msgstr ""
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr ""
@@ -2839,8 +2867,11 @@ msgstr ""
 
 msgid ""
 "exact: delete byte-for-byte copies only. near: also move near duplicates "
-"(resized or recompressed copies) to the quarantine; check them in the "
-"report first. Default: exact."
+"(resized or recompressed copies, re-encoded videos) to the quarantine; "
+"check them in the report first. Default: exact."
+msgstr ""
+
+msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
 
 msgid "ffprobe not found: videos are not checked."

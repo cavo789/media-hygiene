@@ -1,4 +1,4 @@
-{# Near duplicates and burst series: included by report.html.j2. #}
+{# Near duplicates, re-encoded videos and burst series: included by report.html.j2. #}
 {% macro shot(item, label, css) %}
 <figure class="shot {{ css }}">
   <div class="thumb">{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}🖼️{% endif %}</div>
@@ -6,6 +6,17 @@
     <strong>{{ label }}</strong><br>
     <span class="path">{{ item.path }}</span><br>
     <span class="muted">{{ item.width }} × {{ item.height }} · {{ item.size | size }} · {{ _("sharpness") }} {{ item.sharpness | number }}{% if item.taken_at %} · {{ item.taken_at }}{% endif %}</span>
+  </figcaption>
+</figure>
+{% endmacro %}
+
+{% macro clip(item, label, css) %}
+<figure class="shot {{ css }}">
+  <div class="thumb">🎞️</div>
+  <figcaption>
+    <strong>{{ label }}</strong><br>
+    <span class="path">{{ item.path }}</span><br>
+    <span class="muted">{{ item.width }} × {{ item.height }} · {{ item.duration | duration }}{% if item.codec %} · {{ item.codec }}{% endif %} · {{ item.size | size }}{% if item.recorded_at %} · {{ item.recorded_at }}{% endif %}</span>
   </figcaption>
 </figure>
 {% endmacro %}
@@ -22,6 +33,19 @@
 </div>
 {% endfor %}
 {% if sim.hidden_near %}<p class="muted">{{ _("… and %(count)s more groups.", count=sim.hidden_near | number) }}</p>{% endif %}
+{% endif %}
+
+{% if sim.videos.groups %}
+<h2>🎞️ {{ _("Re-encoded videos") }}</h2>
+<p class="note">{{ _("The same video saved again: shared by a messaging app, converted or recompressed. Same length, same frames at the same moments, same date or none. They are not identical files, so a plain 'clean' leaves them alone; 'clean --tier near' moves the copies to the quarantine, where 'undo' finds them again. The highest resolution, then the largest file, is kept. Watch each copy before choosing.") }}</p>
+{% for group in sim.videos.groups %}
+<div class="shots">
+  {{ clip(group.kept, "✅ " ~ _("kept"), "keep") }}
+  {% for item in group.copies %}{{ clip(item, "📦 " ~ _("to the quarantine with --tier near"), "remove") }}{% endfor %}
+  {% for item in group.protected %}{{ clip(item, "🔒 " ~ _("protected folder, kept"), "lock") }}{% endfor %}
+</div>
+{% endfor %}
+{% if sim.videos.hidden %}<p class="muted">{{ _("… and %(count)s more groups.", count=sim.videos.hidden | number) }}</p>{% endif %}
 {% endif %}
 
 {% if sim.bursts %}

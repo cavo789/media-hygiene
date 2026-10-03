@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Sizes
 from media_hygiene.report.thumbnails import thumbnail_name
+from media_hygiene.report.video_views import VideoSection, video_section
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -57,6 +58,7 @@ class SimilarSection:
     bursts: tuple[BurstView, ...] = ()
     hidden_near: int = 0
     hidden_bursts: int = 0
+    videos: VideoSection = field(default_factory=VideoSection)
 
 
 def similar_files(similar: SimilarFindings) -> list[MediaFile]:
@@ -102,6 +104,7 @@ class SimilarRenderer:
             bursts=tuple(self._burst(s, similar) for s in similar.bursts[:limit]),
             hidden_near=max(0, len(similar.near) - limit),
             hidden_bursts=max(0, len(similar.bursts) - limit),
+            videos=video_section(similar, self.mapper),
         )
 
     def _near(self, decision: NearDecision, similar: SimilarFindings) -> NearView:

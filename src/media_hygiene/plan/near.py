@@ -16,6 +16,7 @@ from collections import defaultdict
 from itertools import combinations
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.plan.likeness import HASH_BITS, distance, is_flat, same_aspect
 from media_hygiene.plan.similar_models import NearDecision
 from media_hygiene.plan.union_find import UnionFind
 
@@ -27,24 +28,8 @@ if TYPE_CHECKING:
     from media_hygiene.scan.models import MediaFile, VisualFacts
 
 NEAR_DISTANCE: Final = 2
-_ASPECT_TOLERANCE: Final = 0.01
-_HASH_BITS: Final = 64
 _QUARTER_BITS: Final = 16
 _QUARTER_MASK: Final = (1 << _QUARTER_BITS) - 1
-_FEATURELESS_BITS: Final = 2
-
-
-def distance(first: int, second: int) -> int:
-    """Count the bits two hashes differ by.
-
-    Args:
-        first: A hash.
-        second: Another hash.
-
-    Returns:
-        The Hamming distance.
-    """
-    return (first ^ second).bit_count()
 
 
 def is_featureless(visual: VisualFacts) -> bool:
@@ -56,8 +41,7 @@ def is_featureless(visual: VisualFacts) -> bool:
     Returns:
         True for black, white or blank pictures.
     """
-    bits = visual.dhash.bit_count()
-    return bits <= _FEATURELESS_BITS or bits >= _HASH_BITS - _FEATURELESS_BITS
+    return is_flat(visual.dhash)
 
 
 def is_near(best: VisualFacts, other: VisualFacts) -> bool:
@@ -73,8 +57,7 @@ def is_near(best: VisualFacts, other: VisualFacts) -> bool:
     return (
         distance(best.dhash, other.dhash) <= NEAR_DISTANCE
         and distance(best.phash, other.phash) <= NEAR_DISTANCE
-        and abs(best.width * other.height - other.width * best.height)
-        <= _ASPECT_TOLERANCE * best.width * other.height
+        and same_aspect((best.width, best.height), (other.width, other.height))
         and (other.taken_at is None or other.taken_at == best.taken_at)
     )
 
@@ -164,7 +147,7 @@ def _quarter_buckets(
     buckets: defaultdict[tuple[int, int], list[int]] = defaultdict(list)
     for index, file in enumerate(files):
         phash = visuals[file.path].phash
-        for quarter in range(_HASH_BITS // _QUARTER_BITS):
+        for quarter in range(HASH_BITS // _QUARTER_BITS):
             key = (quarter, (phash >> (quarter * _QUARTER_BITS)) & _QUARTER_MASK)
             buckets[key].append(index)
     return (members for members in buckets.values() if len(members) > 1)

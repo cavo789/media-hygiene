@@ -102,7 +102,7 @@ class CleanService:
         return replace(plan, broken=kept, sidecars=())
 
     def with_near(self, plan: CleanPlan, findings: AuditFindings) -> CleanPlan:
-        """Add the near duplicates to the plan (`--tier near`).
+        """Add the near duplicates and re-encoded videos to the plan (`--tier near`).
 
         Args:
             plan: The feasible plan.
@@ -114,7 +114,8 @@ class CleanService:
         Near duplicates are moved to the quarantine, never deleted: `ensure_ready`
         with `near=True` has checked it is mounted.
         """
-        return replace(plan, near=findings.similar.near)
+        similar = findings.similar
+        return replace(plan, near=(*similar.near, *similar.videos))
 
     def execute(self, plan: CleanPlan) -> tuple[str, Outcome]:
         """Execute the plan under a new run identifier.

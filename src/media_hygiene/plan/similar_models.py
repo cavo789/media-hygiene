@@ -1,4 +1,7 @@
-"""Pictures that look alike without being identical: near duplicates and bursts."""
+"""Pictures that look alike without being identical: near duplicates and bursts.
+
+Re-encoded videos are near duplicates too: the same decision, their own looks.
+"""
 
 from __future__ import annotations
 
@@ -11,6 +14,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.scan.models import MediaFile, VisualFacts
+    from media_hygiene.scan.video_models import VideoLook
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,11 +72,15 @@ class BurstChoice:
 
 @dataclass(frozen=True, slots=True)
 class SimilarFindings:
-    """Near duplicates, burst series, and what each image looks like."""
+    """Near duplicates, burst series, re-encoded videos, and what each looks like."""
 
     near: tuple[NearDecision, ...] = ()
     bursts: tuple[BurstSeries, ...] = ()
     visuals: Mapping[Path, VisualFacts] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    videos: tuple[NearDecision, ...] = ()
+    video_looks: Mapping[Path, VideoLook] = field(
         default_factory=lambda: MappingProxyType({})
     )
 
@@ -84,3 +92,12 @@ class SimilarFindings:
             The count.
         """
         return sum(len(decision.removable) for decision in self.near)
+
+    @property
+    def video_count(self) -> int:
+        """Number of re-encoded video copies `clean --tier near` would move.
+
+        Returns:
+            The count.
+        """
+        return sum(len(decision.removable) for decision in self.videos)

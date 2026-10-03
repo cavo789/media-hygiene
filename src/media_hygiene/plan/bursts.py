@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.plan.near import distance
+from media_hygiene.plan.likeness import distance
 from media_hygiene.plan.similar_models import BurstSeries
 from media_hygiene.plan.union_find import UnionFind
 

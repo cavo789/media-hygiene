@@ -33,7 +33,7 @@ error.
 | Each action | Written to the journal *before* (`pending`) and *after* (`done`) it happens: an interruption never loses track. |
 | Duplicates | Really deleted (the space is freed immediately); `undo` rebuilds them from the kept copy, date included, even across disks. |
 | Unreadable files | Moved to the quarantine, never deleted outright; `purge` deletes them for good when you are sure. |
-| Near duplicates | Never touched by default. With `--tier near`, moved to the quarantine (never deleted) once checked: the kept photo still exists, the copy is the very file the audit saw. `undo` puts them back. |
+| Near duplicates | Photos and [re-encoded videos](clean/11-near-duplicates.md#videos-too-re-encoded-copies). Never touched by default. With `--tier near`, moved to the quarantine (never deleted) once checked: the kept photo or video still exists, the copy is the very file the audit saw. `undo` puts them back. |
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
