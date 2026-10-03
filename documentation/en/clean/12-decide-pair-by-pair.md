@@ -12,9 +12,9 @@ In the *Folder pairs* table of an **audit** report, each pair has a *Your decisi
 
 | Choice | What `clean` will do with that pair |
 |---|---|
-| As planned | Keep the copies of the first folder, delete those of the second one. |
-| Swap the folders | Keep the copies of the **second** folder, delete those of the first one. |
-| Leave alone | Delete nothing of that pair. |
+| As planned | Keep the copies of the first folder, set those of the second one aside. |
+| Swap the folders | Keep the copies of the **second** folder, set those of the first one aside. |
+| Leave alone | Touch nothing of that pair. |
 
 Here, the videos are left alone and the `Old phone` pair is swapped:
 
@@ -49,7 +49,7 @@ To stay safe, `clean` refuses the file rather than guessing when:
 
 - other folders are mounted than for the report;
 - a decided pair no longer exists (files changed since the report): audit again, decide again;
-- a swap would delete the copies of a protected folder.
+- a swap would set aside the copies of a protected folder.
 
 ## One file for everything
 

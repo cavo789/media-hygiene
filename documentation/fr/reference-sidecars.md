@@ -23,7 +23,7 @@ appartient aux fichiers de son dossier qui portent le même nom : `IMG_1.xmp` à
   sont déplacés.
 - **Les dossiers protégés** ne sont jamais modifiés, fichiers compagnons compris.
 
-Le fichier compagnon d'une copie supprimée n'est pas déplacé à côté de la copie gardée : il
+Le fichier compagnon d'une copie mise de côté n'est pas déplacé à côté de la copie gardée : il
 devient orphelin. Pour garder une autre copie *avec* ses retouches, indiquez son dossier dans
 [`--prefer`](clean/05-choose-the-kept-copy.md#préférer-un-dossier).
 

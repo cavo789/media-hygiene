@@ -3,7 +3,8 @@
 [Documentation](../README.md) › Start, step 1 of 3 · 🇫🇷 [Français](../../fr/start/01-first-audit.md)
 
 In this first step, you ask the tool to look at **one folder** of photos and to tell you what it
-finds. Nothing is changed: an audit only reads.
+finds. Nothing is changed: an audit only reads. With `:ro` below, it is not only a promise:
+the system itself forbids any change ([how your photos stay safe](../reference-safety.md)).
 
 ## What you need
 

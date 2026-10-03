@@ -23,16 +23,32 @@ by part.
 What it does:
 
 - **Exact duplicates** — same size and same SHA-256, compared again byte for byte right before
-  any deletion. Found across folders *and* disks (`C:` and `D:` in the same run).
+  being set aside. Found across folders *and* disks (`C:` and `D:` in the same run).
 - **Broken files** — empty files, images and RAW files that cannot be decoded (truncated JPEG,
   …), videos that cannot be opened.
-- **Reversible** — every action is journaled; `undo` restores every deleted copy from the copy
-  that was kept, and every quarantined file from the quarantine.
+- **Reversible** — every action is journaled; `undo` brings every file back from the
+  quarantine, and rebuilds a copy deleted with `clean --delete` from the copy that was kept.
 - **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo is
   moved to the quarantine; one next to its photo is never touched.
 - **Burst series and near duplicates** (re-encoded videos included) — shown side by side in an
   HTML report; you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
 - **Never touched without your say** — bursts, near duplicates, protected folders.
+
+## Your photos are safe
+
+**We guarantee it: these commands never modify, move nor delete a photo or a video** —
+`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `history`,
+`reports`, `config`. They only write their own files (reports, cache, `config.toml`). Run them
+with your folders mounted `:ro`: then the operating system itself forbids any change.
+
+**The commands that act never erase anything.** `sort` moves files (on one disk, a simple
+rename: no copy, no space used), `album` adds second names, `clean` moves the duplicate copies
+to the quarantine after comparing them byte for byte with the copy kept, `undo` puts things
+back. Never over another file, every step journaled, all undoable.
+
+**Only `purge` erases**: the quarantine, for good, after asking you (and `clean --delete`, if
+you ask for it: the copy kept stays). More in
+[how your photos stay safe](documentation/en/reference-safety.md).
 
 ## Documentation
 
@@ -58,10 +74,10 @@ adds one thing to the command of the step before.
    photos.
 7. [The configuration file](documentation/en/clean/07-configuration-file.md) — write your choices once,
    in `config.toml`.
-8. [Clean](documentation/en/clean/08-clean.md) — delete the extra copies, with a journal and a
-   quarantine.
+8. [Clean](documentation/en/clean/08-clean.md) — set the extra copies aside in the quarantine,
+   with a journal.
 9. [Undo, history, purge](documentation/en/clean/09-undo-history-purge.md) — change your mind, see what
-   was done, empty the quarantine.
+   was done, empty the quarantine to free the space.
 10. [Sort burst series in your browser](documentation/en/clean/10-review-bursts.md) — keep the best
     shots of each burst, with the keyboard.
 11. [Near duplicates](documentation/en/clean/11-near-duplicates.md) — resized and recompressed copies

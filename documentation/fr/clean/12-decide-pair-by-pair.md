@@ -13,9 +13,9 @@ Dans le tableau *Paires de dossiers* d'un rapport d'**audit**, chaque paire a un
 
 | Choix | Ce que `clean` fera de cette paire |
 |---|---|
-| Comme prévu | Garder les copies du premier dossier, supprimer celles du second. |
-| Inverser les dossiers | Garder les copies du **second** dossier, supprimer celles du premier. |
-| Ne pas toucher | Ne rien supprimer de cette paire. |
+| Comme prévu | Garder les copies du premier dossier, mettre de côté celles du second. |
+| Inverser les dossiers | Garder les copies du **second** dossier, mettre de côté celles du premier. |
+| Ne pas toucher | Ne rien toucher de cette paire. |
 
 Ici, les vidéos ne sont pas touchées et la paire `Ancien téléphone` est inversée :
 
@@ -52,7 +52,7 @@ Par sécurité, `clean` refuse le fichier plutôt que de deviner quand :
 - d'autres dossiers sont montés que pour le rapport ;
 - une paire décidée n'existe plus (des fichiers ont changé depuis le rapport) : refaites l'audit,
   décidez à nouveau ;
-- une inversion supprimerait les copies d'un dossier protégé.
+- une inversion mettrait de côté les copies d'un dossier protégé.
 
 ## Un seul fichier pour tout
 

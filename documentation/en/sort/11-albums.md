@@ -110,9 +110,9 @@ An album run is journaled like a sort: `history` lists it (column *Linked*), and
 `undo <run>` ([undo](../clean/09-undo-history-purge.md)) removes its links, its
 `.media-hygiene-album` file and the folders it created. The originals are not touched.
 
-`undo` removes a link only while the photo still has another name. If the original was deleted
-since (by hand, or by `clean`), the photo in the album is the last one left: `undo` keeps it and
-says so.
+`undo` removes a link only when the original it names is still there and is the very same file.
+If the original was deleted, moved or renamed since (by hand, by `clean`, by a later `sort`),
+the photo in the album may be the last one left: `undo` keeps it and says so.
 
 ## With sort and clean
 
@@ -120,7 +120,8 @@ says so.
   `album` finds them where the sort put them.
 - A `sort` to **another** disk copies each file there: the album then keeps the old copy, which
   takes space again. Make your albums on the disk of the sorted tree.
-- `clean` deleting a photo that is also in an album frees no space while the album holds it.
+- A photo that `clean` sets aside while an album also holds it frees no space, even once purged,
+  while the album holds it.
 - A disk that refuses hard links (a FAT or exFAT USB drive, some network shares): `album` stops at
   the first refusal and says why; `undo` removes the empty folder it left.
 - Sidecar files (`.xmp`, `.aae`) are not linked: the album holds the photos and videos only.

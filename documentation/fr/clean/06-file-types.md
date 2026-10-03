@@ -71,7 +71,7 @@ Ensuite `--ext documents`, ou `extensions = ["documents"]` dans `[scan]`. Un nom
 lettres, des chiffres, `-` et `_` ; une catégorie liste des extensions, jamais d'autres
 catégories ; `photo`, `raw`, `video` et `media` ne peuvent pas être redéfinies. Une catégorie
 ne fait que nommer une liste : chaque fichier reste traité selon son extension. Avec `web`
-ci-dessus, les fichiers PNG sont des images (vérifiées, prévisualisées, leurs copies supprimées)
+ci-dessus, les fichiers PNG sont des images (vérifiées, prévisualisées, leurs copies mises de côté)
 et les fichiers SVG d'autres fichiers (seulement comparés, leurs copies déplacées en quarantaine,
 voir ci-dessous).
 

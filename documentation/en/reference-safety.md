@@ -2,9 +2,71 @@
 
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-safety.md)
 
-Before deleting family photos, everyone asks the same question: *are these really, really
-duplicates?* This page explains what the tool calls a duplicate, what it checks before each
-action, and how you can check it yourself.
+Before touching family photos, everyone asks the same question: *can I lose one?* This page
+answers it plainly: which commands never touch your photos, which ones act and how they stay
+reversible, and the only command that erases anything.
+
+## Our promise: these commands never change your photos
+
+We guarantee it: when you run one of these commands, your photos and videos are **never
+modified, moved nor deleted**.
+
+| Command | What it writes, and where |
+|---|---|
+| `audit`, `crosscheck` | The HTML report (`/reports`) and the cache (`/cache`). |
+| `classify` | The proposal and its workbook (`/reports`), the cache. |
+| `review`, `review-sort` | Your choices, in a small `.json` file next to the report (`/reports`). |
+| `places` | The places you name, in `config.toml` (`/config`). |
+| `inventory` | The workbook (`/reports`), read from the cache alone. |
+| `history`, `reports`, `config` | Nothing in your folders (`reports --prune` deletes old reports only). |
+
+All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`
+(`-v "C:\Photos:/data/c/Photos:ro"`). Then it is not only our promise: the operating system
+itself refuses any change. Their `--help` starts with 🔒, and those reading your photos say so
+when they start.
+
+## Nothing is erased unless you run `purge`
+
+The commands that act on your files never erase anything, and every one of them can be undone:
+
+- **`sort`** moves the files where the workbook says. On one disk, a move is a simple rename:
+  nothing is copied, no space is used.
+- **`album`** only adds second names (hard links); no photo is copied, moved nor deleted.
+- **`clean`** moves the extra copies to the quarantine, each one compared byte for byte with
+  the copy kept just before. Their space is freed by `purge`, once you have checked.
+- **`undo`** puts the files of a run back where they were.
+
+**`purge` is the only command that erases**: it empties the quarantine, for good, after
+telling you how many files and how much space, and asking you. Until then, `undo` brings
+everything back.
+
+Need the space at once? `clean --delete` deletes the extra copies instead of moving them, after
+the same byte comparison. The copy kept stays, so nothing is lost: `undo` rebuilds each deleted
+copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
+
+## The safety nets, always on, at no cost in space
+
+- **Read-only commands**, and `:ro`, enforced by the operating system.
+- **Never over another file.** A move, a copy or an undo never replaces a file: if a file
+  appeared at the destination meanwhile, the action is refused, and both files stay as they are.
+- **Checked twice.** A copy is compared with the copy kept right before it is set aside; a move
+  across disks is copied, proven identical (SHA-256), and only then removed from where it was.
+- **The journal.** Every action is written down *before* and *after* it happens: an
+  interruption never loses track, and `undo` reverses any run.
+- **The quarantine.** What `clean` sets aside waits there, whole, until you `purge` it.
+- **The tool's folders stay out of your photos.** A quarantine, journal, cache or reports
+  folder placed inside a photo folder (or around one) is refused, with how to mount it instead.
+
+## Good habits
+
+- **Start small.** Audit one subfolder, look at the report, then widen.
+- **Read the report before `clean`**: the folder pairs first, then a few groups.
+- **Pause cloud synchronisation** (OneDrive, Google Drive, Dropbox, iCloud) while cleaning or
+  sorting: otherwise every change is copied to the cloud and to your other devices.
+- **Keep the journal folder**: `undo` needs it. Run `purge` only once you have checked.
+
+If you can, a **backup on an external disk** is the extra net against what no software can
+prevent: a failing disk, a mistake made outside the tool. It is welcome, not required.
 
 ## What counts as a duplicate
 
@@ -26,18 +88,20 @@ error.
 
 | Step | Guarantee |
 |---|---|
-| `audit` | Read-only: mount your folders with `:ro` and Docker itself forbids any write. |
+| `audit` and the other [read-only commands](#our-promise-these-commands-never-change-your-photos) | Mount your folders with `:ro` and the system itself forbids any write. |
 | Which copy is kept | Deterministic: the [keep rules](clean/05-choose-the-kept-copy.md#how-the-tool-chooses) always give the same choice, and the report says which rule decided. Your [decisions in the report](clean/12-decide-pair-by-pair.md) come on top. |
 | One file, two paths | A folder mounted twice is refused; a file reachable through two paths (hard link) is analysed once, never a duplicate of itself. |
-| Before each deletion | The kept copy must still exist, be another file, and still be byte-for-byte identical; otherwise the file is skipped. |
+| Before each copy is set aside | The kept copy must still exist, be another file (not the same file seen through two paths), and still be byte-for-byte identical; otherwise the copy is skipped. |
 | Each action | Written to the journal *before* (`pending`) and *after* (`done`) it happens: an interruption never loses track. |
-| Duplicates | Really deleted (the space is freed immediately); `undo` rebuilds them from the kept copy, date included, even across disks. |
+| Duplicates | Moved to the quarantine; `undo` puts them back, `purge` frees their space. With `clean --delete`, deleted at once; `undo` rebuilds them from the kept copy, date included, even across disks. |
 | Unreadable files | Moved to the quarantine, never deleted outright; `purge` deletes them for good when you are sure. |
+| Moves | Never over another file: an atomic rename that refuses an existing name, or, across disks, a copy into a new file, proven identical, before the original goes. |
 | Near duplicates | Photos and [re-encoded videos](clean/11-near-duplicates.md#videos-too-re-encoded-copies). Never touched by default. With `--tier near`, moved to the quarantine (never deleted) once checked: the kept photo or video still exists, the copy is the very file the audit saw. `undo` puts them back. |
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
-| Albums | [`album`](sort/11-albums.md) only adds hard links (second names) in its own folder, journaled; every scan skips that folder. `undo` removes a link only while the photo has another name left. |
+| Albums | [`album`](sort/11-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
+| `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |
 
@@ -56,13 +120,8 @@ The [HTML report](clean/04-html-report.md) is built for that:
 
 ## Recommendations
 
-- **Audit first, then read the folder pairs.** Open a few pairs, and check a few groups yourself.
-- **Check which copy stays.** The kept file keeps its name and folder; the name of a deleted copy
-  is lost. Not the one you want? [Choose it](clean/05-choose-the-kept-copy.md), then audit again.
-- **Back up your photos before the first clean**, for example on an external disk: the tool keeps
-  one copy of each photo, not two.
-- **Pause cloud synchronisation** (OneDrive, Google Drive, Dropbox, iCloud) while cleaning.
-  Otherwise deletions are copied to the cloud and to your other devices.
-- **Keep the journal folder**: `undo` needs it. Run `purge` only when you are sure.
+- **Check which copy stays.** The kept file keeps its name and folder; the name of a copy set
+  aside is lost once purged. Not the one you want?
+  [Choose it](clean/05-choose-the-kept-copy.md), then audit again.
 - Read the [troubleshooting page](reference-troubleshooting.md) too: a real backup must be
   excluded, and each folder must be mounted only once.

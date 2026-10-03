@@ -3,7 +3,8 @@
 [Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-commands.md)
 
 Chaque commande, chaque option. Le [guide](README.md#pour-commencer) les présente une à une ;
-cette page les rassemble.
+cette page les rassemble. Les commandes 🔒 ne modifient jamais vos photos
+([comment vos photos restent en sécurité](reference-safety.md)).
 
 ## Commandes
 
@@ -11,10 +12,10 @@ cette page les rassemble.
 |---|---|---|
 | `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md) |
-| `clean` | Audite, demande confirmation, puis supprime les copies en double et les fichiers vides, et met en quarantaine les fichiers illisibles et les fichiers compagnons orphelins. | [8](clean/08-clean.md) |
+| `clean` | Audite, demande confirmation, puis déplace en quarantaine les copies en double, les fichiers illisibles et les fichiers compagnons orphelins, et supprime les fichiers vides ; `--delete` supprime les copies à la place. | [8](clean/08-clean.md) |
 | `undo [EXÉCUTION]` | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens. | [9](clean/09-undo-history-purge.md) |
 | `history` | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
-| `purge [EXÉCUTION]` | Supprime définitivement la quarantaine d'un nettoyage (de tous par défaut). | [9](clean/09-undo-history-purge.md) |
+| `purge [EXÉCUTION]` | Efface pour de bon la quarantaine d'une exécution (de toutes par défaut) : la seule commande qui efface du contenu, avec `clean --delete`. | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
 | `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
 | `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
@@ -43,6 +44,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify`, avant de décrire beaucoup de photos avec un modèle local). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
+| `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review`, `review-sort`, `places` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |

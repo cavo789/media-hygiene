@@ -114,9 +114,10 @@ Une exécution d'`album` est journalisée comme un tri : `history` la liste (col
 `undo <exécution>` ([undo](../clean/09-undo-history-purge.md)) supprime ses liens, son fichier
 `.media-hygiene-album` et les dossiers qu'elle a créés. Les originaux ne sont pas touchés.
 
-`undo` ne supprime un lien que tant que la photo a encore un autre nom. Si l'original a été
-supprimé depuis (à la main, ou par `clean`), la photo de l'album est la dernière qui reste :
-`undo` la garde et le dit.
+`undo` ne retire un lien que si l'original qu'il désigne est toujours là et est bien le même
+fichier. Si l'original a été supprimé, déplacé ou renommé depuis (à la main, par `clean`, par un
+`sort` ultérieur), la photo de l'album est peut-être la dernière qui reste : `undo` la garde et le
+dit.
 
 ## Avec sort et clean
 
@@ -124,8 +125,8 @@ supprimé depuis (à la main, ou par `clean`), la photo de l'album est la derni�
   et `album` les retrouve là où le tri les a mises.
 - Un `sort` vers un **autre** disque y copie chaque fichier : l'album garde alors l'ancienne copie,
   qui reprend de la place. Créez vos albums sur le disque de l'arborescence triée.
-- `clean` qui supprime une photo aussi présente dans un album ne libère pas de place tant que
-  l'album la garde.
+- Une photo que `clean` met de côté alors qu'un album la contient aussi ne libère pas de place,
+  même après `purge`, tant que l'album la garde.
 - Un disque qui refuse les liens physiques (une clé USB en FAT ou exFAT, certains partages
   réseau) : `album` s'arrête au premier refus et dit pourquoi ; `undo` supprime le dossier vide
   qu'il a laissé.

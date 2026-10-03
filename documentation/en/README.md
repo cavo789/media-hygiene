@@ -6,6 +6,12 @@ This guide takes you from your very first command to a cleaned-up photo library,
 time. Each step adds one thing to the command of the step before. Stop whenever you have what you
 need: after step 1 you already know where your duplicates are.
 
+**Your photos are safe.** `audit`, `classify` and the other analyses never change a photo; with
+`:ro` on your folders, the system itself forbids it. The commands that act (`clean`, `sort`,
+`album`, `undo`) only move files, never over another one, and can all be undone. Only `purge`
+erases, the quarantine, after asking you. Details:
+[how your photos stay safe](reference-safety.md).
+
 ## Start here
 
 Whatever you want to do next, the first three steps are the same: they show what your
@@ -31,9 +37,9 @@ Free the space the extra copies take, safely, and keep the best shots.
 
 **Free the space:**
 
-8. [Clean](clean/08-clean.md): delete the extra copies, with a journal and a quarantine.
+8. [Clean](clean/08-clean.md): set the extra copies aside in the quarantine, with a journal.
 9. [Undo, history, purge](clean/09-undo-history-purge.md): change your mind, see what was done, empty
-   the quarantine.
+   the quarantine to free the space.
 
 **Go further:**
 

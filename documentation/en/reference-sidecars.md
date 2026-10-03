@@ -20,7 +20,7 @@ belongs to the files of its folder with the same name: `IMG_1.xmp` to `IMG_1.jpg
   are left where they are, only those the clean itself leaves alone are moved.
 - **Protected folders** are never modified, sidecars included.
 
-The sidecar of a deleted copy is not moved next to the kept one: it becomes an orphan. To keep
+The sidecar of a copy set aside is not moved next to the kept one: it becomes an orphan. To keep
 another copy *with* its edits, name its folder in [`--prefer`](clean/05-choose-the-kept-copy.md#prefer-a-folder).
 
 In the audit, orphan sidecars are counted on their own line, and the HTML report lists them in

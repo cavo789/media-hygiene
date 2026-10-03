@@ -38,9 +38,10 @@ Annulation de l'exécution clean
 └───────────────────────────┴─────────┘
 ```
 
-- Chaque copie supprimée est **reconstruite à partir de la copie gardée**, date comprise, même
-  d'un disque à l'autre : c'est pour cela qu'un nettoyage peut vraiment supprimer.
-- Chaque fichier mis en quarantaine est remis à sa place.
+- Chaque fichier mis en quarantaine — les copies en trop d'abord — est remis à sa place, jamais
+  par-dessus un autre fichier.
+- Chaque copie supprimée avec `clean --delete` est **reconstruite à partir de la copie gardée**,
+  date comprise, même d'un disque à l'autre.
 - Sans nom, `undo` restaure la dernière exécution ; `undo <exécution>` restaure celle-là. Les
   noms des exécutions viennent d'`history`, ci-dessous, et des dernières lignes de chaque
   nettoyage.
@@ -54,7 +55,8 @@ Annulation de l'exécution clean
   quand l'exécution y a mis des fichiers (fichiers illisibles, fichiers compagnons orphelins,
   quasi-doublons, photos de rafale, copies d'autres fichiers, les `Thumbs.db` et autres qu'un tri a
   écartés). Sinon il refuse avant de modifier quoi que ce soit et nomme l'exécution. Une exécution
-  qui n'a fait que supprimer des copies ou déplacer des fichiers n'a pas besoin de quarantaine.
+  qui n'a fait que supprimer des copies (`--delete`) ou déplacer des fichiers n'a pas besoin de
+  quarantaine.
 
 ## Voir ce qui a été fait : `history`
 
@@ -83,10 +85,12 @@ restaurés), puis refait.
 
 ## Vider la quarantaine : `purge`
 
-La quarantaine garde ce que `clean` a déplacé : fichiers illisibles, fichiers compagnons
-orphelins et, si vous l'avez demandé, quasi-doublons et photos de rafale. Une fois que vous les
-avez vérifiés (ouvrez le dossier de quarantaine dans l'Explorateur), `purge` les supprime **pour
-de bon** :
+La quarantaine garde ce que `clean` a déplacé : les copies en trop, les fichiers illisibles, les
+fichiers compagnons orphelins et, si vous l'avez demandé, quasi-doublons et photos de rafale.
+Leur place n'est libérée que maintenant : une fois que vous les avez vérifiés (ouvrez le dossier
+de quarantaine dans l'Explorateur), `purge` les supprime **pour de bon**. C'est la seule commande
+qui efface du contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de
+demander :
 
 ```powershell
 cavo789/media-hygiene --locale fr purge
@@ -94,10 +98,13 @@ cavo789/media-hygiene --locale fr purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Supprimer définitivement la quarantaine de 20261002-152731, 20261002-152727
-(2,2 Mo) ? [o/N] o
-✅ Quarantaine vidée : 2,2 Mo libérés.
-💡 'undo' ne pourra plus restaurer ces fichiers cassés.
+⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
+'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
+contenu.
+❓ Effacer la quarantaine de 20261002-152731, 20261002-152727 (42 fichiers, 17,7
+Mo) ? [o/N] o
+✅ Quarantaine vidée : 17,7 Mo libérés.
+💡 'undo' ne pourra plus restaurer ces fichiers.
 ```
 
 - Sans nom, `purge` vide la quarantaine de tous les nettoyages ; `purge <exécution>` seulement

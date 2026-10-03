@@ -37,9 +37,10 @@ Undo the clean run 20261002-152608
 └──────────────────────────┴─────────┘
 ```
 
-- Each deleted copy is **rebuilt from the copy that was kept**, date included, even across
-  disks: that is why a clean can really delete.
-- Each quarantined file is moved back to its place.
+- Each quarantined file — the extra copies first of all — is moved back to its place, never
+  over another file.
+- Each copy deleted with `clean --delete` is **rebuilt from the copy that was kept**, date
+  included, even across disks.
 - Without a name, `undo` restores the latest run; `undo <run>` restores that one. The names
   of the runs come from `history`, below, and from the last lines of each clean.
 - A file that is back already, or whose copy is gone, is left alone and listed with the reason:
@@ -51,7 +52,8 @@ Undo the clean run 20261002-152608
 - `undo` needs the same `/journal`, folders not mounted `:ro`, and the same `/quarantine` when the
   run moved files there (unreadable files, orphan sidecars, near duplicates, burst shots, copies of
   other files, the `Thumbs.db` and the like a sort set aside). Otherwise it refuses before changing
-  anything and names the run. A run that only deleted copies or moved files needs no quarantine.
+  anything and names the run. A run that only deleted copies (`--delete`) or moved files needs no
+  quarantine.
 
 ## See what was done: `history`
 
@@ -78,9 +80,11 @@ clean was fully undone (36 files restored), then cleaned again.
 
 ## Empty the quarantine: `purge`
 
-The quarantine keeps what `clean` moved: unreadable files, orphan sidecars, and, if you asked,
-near duplicates and burst shots. Once you have checked them (open the quarantine folder in the
-Explorer), `purge` deletes them **for good**:
+The quarantine keeps what `clean` moved: the extra copies, unreadable files, orphan sidecars,
+and, if you asked, near duplicates and burst shots. Their space is freed only now: once you have
+checked them (open the quarantine folder in the Explorer), `purge` deletes them **for good**.
+It is the only command that erases content (with `clean --delete`, if you use it), and it says
+so before asking:
 
 ```powershell
 cavo789/media-hygiene purge
@@ -88,10 +92,12 @@ cavo789/media-hygiene purge
 
 <!-- capture: purge.txt -->
 ```text
-❓ Permanently delete the quarantine of 20261002-152612, 20261002-152608 (2.2
-MB)? [y/N] y
-✅ Quarantine purged: 2.2 MB freed.
-💡 'undo' can no longer restore these broken files.
+⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'. It
+is, with 'clean --delete', the only way the tool removes content.
+❓ Erase the quarantine of 20261002-152612, 20261002-152608 (42 files, 17.7 MB)?
+[y/N] y
+✅ Quarantine purged: 17.7 MB freed.
+💡 'undo' can no longer restore these files.
 ```
 
 - Without a name, `purge` empties the quarantine of every clean; `purge <run>` only that one.

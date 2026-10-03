@@ -23,17 +23,36 @@ cette commande et son résultat, morceau par morceau.
 Ce qu'elle fait :
 
 - **Doublons exacts** : même taille et même SHA-256, comparés à nouveau octet par octet juste
-  avant toute suppression. Détectés entre dossiers *et* entre disques (`C:` et `D:` dans la même
+  avant d'être mis de côté. Détectés entre dossiers *et* entre disques (`C:` et `D:` dans la même
   exécution).
 - **Fichiers cassés** : fichiers vides, images et fichiers RAW impossibles à décoder (JPEG
   tronqué, …), vidéos impossibles à ouvrir.
-- **Réversible** : chaque action est journalisée ; `undo` reconstruit chaque copie supprimée à
-  partir de la copie conservée, et ressort chaque fichier de la quarantaine.
+- **Réversible** : chaque action est journalisée ; `undo` ressort chaque fichier de la
+  quarantaine, et reconstruit une copie supprimée avec `clean --delete` à partir de la copie
+  conservée.
 - **Fichiers compagnons orphelins** : un fichier compagnon (`.xmp`, `.aae`, `.thm`) resté sans
   sa photo est déplacé en quarantaine ; celui qui accompagne sa photo n'est jamais touché.
 - **Rafales et quasi-doublons** (vidéos réencodées comprises) : montrés côte à côte dans un
   rapport HTML ; vous choisissez les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
 - **Jamais touchés sans votre accord** : les rafales, les quasi-doublons, les dossiers protégés.
+
+## Vos photos sont en sécurité
+
+**Nous le garantissons : ces commandes ne modifient, ne déplacent ni ne suppriment jamais une
+photo ou une vidéo** — `audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`,
+`inventory`, `history`, `reports`, `config`. Elles n'écrivent que leurs propres fichiers
+(rapports, cache, `config.toml`). Lancez-les avec vos dossiers montés en `:ro` : le système
+lui-même interdit alors toute modification.
+
+**Les commandes qui agissent n'effacent jamais rien.** `sort` déplace des fichiers (sur un même
+disque, un simple renommage : aucune copie, aucune place prise), `album` ajoute des seconds noms,
+`clean` déplace les copies en double en quarantaine après les avoir comparées octet par octet avec
+la copie gardée, `undo` remet en place. Jamais par-dessus un autre fichier, chaque étape
+journalisée, tout est annulable.
+
+**Seul `purge` efface** : la quarantaine, pour de bon, après vous l'avoir demandé (et
+`clean --delete`, si vous le demandez : la copie gardée reste). Plus de détails dans
+[comment vos photos restent en sécurité](documentation/fr/reference-safety.md).
 
 ## Documentation
 
@@ -59,10 +78,10 @@ seule chose à la commande de l'étape précédente.
    fichiers autres que des photos.
 7. [Le fichier de configuration](documentation/fr/clean/07-configuration-file.md) : écrire vos choix une
    fois pour toutes, dans `config.toml`.
-8. [Nettoyer](documentation/fr/clean/08-clean.md) : supprimer les copies en trop, avec un journal et une
-   quarantaine.
+8. [Nettoyer](documentation/fr/clean/08-clean.md) : mettre les copies en trop de côté en
+   quarantaine, avec un journal.
 9. [Annuler, historique, purge](documentation/fr/clean/09-undo-history-purge.md) : changer d'avis, voir
-   ce qui a été fait, vider la quarantaine.
+   ce qui a été fait, vider la quarantaine pour libérer la place.
 10. [Trier les rafales dans le navigateur](documentation/fr/clean/10-review-bursts.md) : garder les
     meilleures photos de chaque rafale, au clavier.
 11. [Les quasi-doublons](documentation/fr/clean/11-near-duplicates.md) : les copies réduites et

@@ -21,8 +21,8 @@ Pour chaque groupe de fichiers identiques, la première règle qui fait une diff
 Les mêmes dossiers donnent toujours le même choix. Le rapport indique, pour chaque paire et
 chaque groupe, la règle qui a décidé (*pourquoi : la date la plus ancienne*).
 
-Le fichier gardé conserve son nom et son dossier ; le nom d'une copie supprimée est perdu.
-Regardez donc les paires de dossiers de l'audit : le dossier gardé est-il celui que vous voulez ?
+Le fichier gardé conserve son nom et son dossier ; le nom d'une copie mise de côté est perdu une
+fois la quarantaine vidée. Regardez donc les paires de dossiers de l'audit : le dossier gardé est-il celui que vous voulez ?
 
 ## Préférer un dossier
 
@@ -77,7 +77,7 @@ cavo789/media-hygiene --locale fr audit --protect "C:\Photos\Famille"
 
 (la partie `docker run … -v …` ne change pas ; seule la fin de la commande change)
 
-Mesurez bien ce que cela veut dire : les fichiers identiques *ailleurs* sont supprimés, puisque
+Mesurez bien ce que cela veut dire : les fichiers identiques *ailleurs* sont mis de côté, puisque
 la copie protégée est celle qui est gardée. Les fichiers cassés et les fichiers compagnons
 orphelins d'un dossier protégé restent aussi en place.
 

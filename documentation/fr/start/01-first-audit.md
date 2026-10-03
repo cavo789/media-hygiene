@@ -3,7 +3,9 @@
 [Documentation](../README.md) › Pour commencer, étape 1 sur 3 · 🇬🇧 [English](../../en/start/01-first-audit.md)
 
 Dans cette première étape, vous demandez à l'outil de regarder **un seul dossier** de photos et
-de vous dire ce qu'il y trouve. Rien n'est modifié : un audit ne fait que lire.
+de vous dire ce qu'il y trouve. Rien n'est modifié : un audit ne fait que lire. Avec `:ro`
+ci-dessous, ce n'est pas qu'une promesse : le système lui-même interdit toute modification
+([comment vos photos restent en sécurité](../reference-safety.md)).
 
 ## Ce qu'il vous faut
 

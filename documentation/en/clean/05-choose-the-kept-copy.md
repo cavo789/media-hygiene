@@ -20,8 +20,8 @@ For each group of identical files, the first rule that makes a difference decide
 The same folders always give the same choice. The report says, for each pair and each group,
 which rule decided (*why: the oldest date*).
 
-The kept file keeps its name and its folder; the name of a deleted copy is lost. So look at the
-folder pairs of the audit: is the kept folder the one you want?
+The kept file keeps its name and its folder; the name of a copy set aside is lost once purged.
+So look at the folder pairs of the audit: is the kept folder the one you want?
 
 ## Prefer a folder
 
@@ -75,7 +75,7 @@ cavo789/media-hygiene audit --protect "C:\Photos\Family"
 
 (the `docker run … -v …` part stays the same; only the end of the command changes)
 
-Be aware of what it means: identical files *elsewhere* are deleted, since the protected copy is
+Be aware of what it means: identical files *elsewhere* are set aside, since the protected copy is
 the one kept. Broken files and orphan sidecars of a protected folder are left alone too.
 
 ## Exclude a folder

@@ -71,7 +71,7 @@ Then `--ext documents`, or `extensions = ["documents"]` in `[scan]`. A name hold
 digits, `-` and `_`; a category lists extensions, never other categories; `photo`, `raw`,
 `video` and `media` cannot be redefined. A category only names a list: each file is still
 handled by its extension. With `web` above, the PNG files are images (checked, previewed, their
-copies deleted) and the SVG files are other files (compared only, their copies moved to the
+copies set aside) and the SVG files are other files (compared only, their copies moved to the
 quarantine, see below).
 
 ## Other file types

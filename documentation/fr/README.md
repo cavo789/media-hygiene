@@ -7,6 +7,12 @@ doublons, une étape à la fois. Chaque étape ajoute une seule chose à la comm
 précédente. Arrêtez-vous quand vous avez ce qu'il vous faut : dès l'étape 1, vous savez où sont
 vos doublons.
 
+**Vos photos sont en sécurité.** `audit`, `classify` et les autres analyses ne modifient jamais
+une photo ; avec `:ro` sur vos dossiers, le système lui-même l'interdit. Les commandes qui
+agissent (`clean`, `sort`, `album`, `undo`) ne font que déplacer des fichiers, jamais par-dessus
+un autre, et peuvent toutes être annulées. Seul `purge` efface, la quarantaine, après vous l'avoir
+demandé. Détails : [comment vos photos restent en sécurité](reference-safety.md).
+
 ## Pour commencer
 
 Quoi que vous vouliez faire ensuite, les trois premières étapes sont les mêmes : elles
@@ -36,9 +42,9 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 **Libérer l'espace :**
 
-8. [Nettoyer](clean/08-clean.md) : supprimer les copies en trop, avec un journal et une quarantaine.
+8. [Nettoyer](clean/08-clean.md) : mettre les copies en trop de côté en quarantaine, avec un journal.
 9. [Annuler, historique, purge](clean/09-undo-history-purge.md) : changer d'avis, voir ce qui a été
-   fait, vider la quarantaine.
+   fait, vider la quarantaine pour libérer la place.
 
 **Aller plus loin :**
 
