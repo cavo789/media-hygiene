@@ -21,10 +21,12 @@ env:
   # A fork publishes under its own account by setting this repository variable.
   IMAGE: ${{ vars.DOCKER_HUB_NAMESPACE || 'cavo789' }}/media-hygiene
 
+# Runners pinned to Ubuntu 26.04, which `ubuntu-latest` becomes on 2026-10-19: the gate is
+# proven on it beforehand, and a later image change is a deliberate edit, never a surprise.
 jobs:
   quality:
     name: Lint, types, tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -44,7 +46,7 @@ jobs:
   image:
     name: Image end-to-end tests
     needs: quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -71,7 +73,7 @@ jobs:
     name: Publish to Docker Hub
     if: startsWith(github.ref, 'refs/tags/v')
     needs: image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
