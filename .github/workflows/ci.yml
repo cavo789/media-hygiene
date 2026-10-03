@@ -34,6 +34,10 @@ jobs:
         run: uv sync --locked
       - name: Pre-commit hooks (ruff, mypy, pylint, shellcheck, shfmt, hadolint)
         run: uv run pre-commit run --all-files --show-diff-on-failure --config .config/.pre-commit-config.yaml
+      # ffmpeg writes the test videos (inventory, sort of the docs library, re-encoded copies),
+      # as in the devcontainer; the tool itself only warns when it is missing.
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Tests with coverage
         run: uv run pytest --cov --cov-report=term-missing:skip-covered
 
