@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.report.decisions import DecisionsFile
     from media_hygiene.review.session import ReviewSource
     from media_hygiene.review.shots import ShotPlace
     from media_hygiene.scan.models import MediaFile
@@ -72,6 +73,28 @@ def series_decision(
     return burst_decision(mapper, shots, discarded)
 
 
+def stamped_decisions(target: Path) -> tuple[DecisionsFile, tuple[int, str]]:
+    """Read the decisions file from the disk, with its size and when it was written.
+
+    Args:
+        target: The decisions file, in the container.
+
+    Returns:
+        Its decisions, and its size and modification time (ISO 8601, UTC).
+
+    Raises:
+        DecisionsError: The file cannot be read, or is not a decisions file.
+    """
+    decisions = read_decisions(target)
+    try:
+        written = target.stat()
+    except OSError as exc:
+        message = _("Cannot read the decisions file {path}.").format(path=target)
+        raise DecisionsError(message) from exc
+    modified = datetime.fromtimestamp(written.st_mtime_ns / _NANOSECONDS, tz=UTC)
+    return decisions, (written.st_size, modified.isoformat())
+
+
 def read_back(target: Path, places: Mapping[str, ShotPlace]) -> FileProof:
     """Read the decisions file from the disk, each entry placed in its series.
 
@@ -85,19 +108,13 @@ def read_back(target: Path, places: Mapping[str, ShotPlace]) -> FileProof:
     Raises:
         DecisionsError: The file cannot be read, or is not a decisions file.
     """
-    decisions = read_decisions(target)
-    try:
-        written = target.stat()
-    except OSError as exc:
-        message = _("Cannot read the decisions file {path}.").format(path=target)
-        raise DecisionsError(message) from exc
+    decisions, (size, modified) = stamped_decisions(target)
     entries = (
         (decision, match_burst(decision, places)) for decision in decisions.bursts
     )
-    modified = datetime.fromtimestamp(written.st_mtime_ns / _NANOSECONDS, tz=UTC)
     return FileProof(
-        size=written.st_size,
-        modified=modified.isoformat(),
+        size=size,
+        modified=modified,
         entries=tuple(
             DiskEntry(
                 series=match.series,

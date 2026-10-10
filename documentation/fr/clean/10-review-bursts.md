@@ -181,7 +181,8 @@ navigateur retient votre choix.
 **Dégrossir d'abord** : la liste *Ordre* au-dessus du sommaire fixe l'ordre de `→`, `←` et
 `N` : *par dossier* (l'arbre), *par date*, *plus grand écart de netteté d'abord* (les séries où
 une photo est nettement plus floue viennent en tête, avec leur écart : *écart 87 %* ; celles
-dont les photos se valent viennent en dernier) ou *à voir d'abord*. Le navigateur s'en
+dont les photos se valent viennent en dernier), *espace libéré, le plus grand d'abord* (les
+séries dont les photos écartées, ou proposées à l'écart, pèsent le plus) ou *à voir d'abord*. Le navigateur s'en
 souvient ; l'ordre reste tel quel pendant le tri, pour qu'une série ne saute jamais ailleurs
 sous vos yeux.
 

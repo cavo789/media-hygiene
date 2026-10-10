@@ -32,6 +32,7 @@ from pydantic import (
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.plan.review import PairAction
+from media_hygiene.report.near_decisions import NearGroups
 from media_hygiene.text_files import decode_user_text
 
 if TYPE_CHECKING:
@@ -100,6 +101,7 @@ class DecisionsFile(BaseModel):
     roots: tuple[str, ...]
     pairs: tuple[PairDecision, ...] = ()
     bursts: tuple[BurstDecision, ...] = ()
+    near: NearGroups = ()  # `review --near` (`near_decisions`)
 
     @field_validator("pairs")
     @classmethod

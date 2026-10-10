@@ -19,19 +19,16 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.errors import DecisionsError
-from media_hygiene.report.thumbnails import review_preview
-from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.files import FILE_PATH, file_response
+from media_hygiene.review.http import Response
 from media_hygiene.review.local_app import (
     PAGE_PATH,
     STATE_PATH,
     LocalApp,
     choice_failed,
-    jpeg_response,
     page_or_state,
 )
-from media_hygiene.review.originals import original_response
 from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -42,8 +39,6 @@ if TYPE_CHECKING:
 __all__ = ["DECIDE_PATH", "FILE_PATH", "PAGE_PATH", "STATE_PATH", "ReviewApp"]
 
 DECIDE_PATH: Final = "/api/decide"
-FILE_PATH: Final = "/api/file"
-_PREVIEW_SUFFIX: Final = ".jpg"
 _GET, _POST = "GET", "POST"
 
 
@@ -99,19 +94,8 @@ class ReviewApp(LocalApp):
         """
         if path in {PAGE_PATH, STATE_PATH}:
             return page_or_state(path, self.page, self.session.state)
-        if path == FILE_PATH:
-            try:
-                found = self.session.on_disk().model_dump_json().encode()
-            except DecisionsError as exc:
-                return choice_failed(exc)
-            return Response(HTTPStatus.OK, found, ContentType.JSON)
-        if path.startswith(ORIGINAL_PREFIX):
-            return await original_response(path, self.session.preview_source)
-        key = path.removeprefix(PREVIEW_PREFIX).removesuffix(_PREVIEW_SUFFIX)
-        source = self.session.preview_source(key)
-        if source is None or path != f"{PREVIEW_PREFIX}{key}{_PREVIEW_SUFFIX}":
-            return Response(HTTPStatus.NOT_FOUND)
-        return await jpeg_response(self.executor, review_preview, source)
+        found = await file_response(path, self.session, self.executor)
+        return Response(HTTPStatus.NOT_FOUND) if found is None else found
 
     def _decide(self, request: Request) -> Response:
         """Set shots of one or more series aside and save the decisions file.

@@ -56,6 +56,7 @@ def show_actions(
         clean=command("clean"),
         near=command("clean --tier near"),
         review=command("review", changes=False, port=PAGE_PORT),
+        near_review=command("review --near", changes=False, port=PAGE_PORT),
     )
     actions = audit_actions(findings, commands)
     if actions:

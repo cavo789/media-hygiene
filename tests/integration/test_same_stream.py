@@ -46,3 +46,6 @@ def test_the_original_is_kept(renamed: CliRunner, locations: Locations) -> None:
     assert "Same picture and sound as the kept video" in page
     assert 'src="file:///C:/Exports/162.mp4"' in page
     assert 'id="bursts"' not in page
+    assert "0 sure, 0 to check" not in page
+    assert "1 sure group: show it" in page  # folded below the groups to check
+    assert "Sure: the very picture and sound" in page

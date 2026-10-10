@@ -1,0 +1,232 @@
+{# The script of near_review.html.j2: one group at a time, each choice saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const filePath = {{ file_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
+  const UNITS = ["B", "KB", "MB", "GB", "TB"];
+  const size = (bytes) => {
+    let value = bytes;
+    let unit = 0;
+    while (value >= 1024 && unit < UNITS.length - 1) {
+      value /= 1024;
+      unit += 1;
+    }
+    return value.toLocaleString(lang, { maximumFractionDigits: 1 }) + " " + UNITS[unit];
+  };
+  let groups = [];
+  let order = [];  // group ranks, in the order shown
+  let at = 0;  // position in `order`
+  const disk = new Map();  // group rank -> its entry, as read back from the disk
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+  const current = () => order[at];
+  const undecided = (rank) => groups[rank].action === "" && !groups[rank].sure;
+
+  // To check first, then by folder pair; or the space freed, largest first; or by pair.
+  const arrange = (kind) => {
+    const ranks = groups.map((group, rank) => rank);
+    const byPair = (a, b) => groups[a].pair.localeCompare(groups[b].pair) || a - b;
+    const sorts = {
+      check: (a, b) => (groups[a].sure - groups[b].sure) || byPair(a, b),
+      gain: (a, b) => (groups[b].gain - groups[a].gain) || a - b,
+      pair: byPair,
+    };
+    const rank = current();
+    order = ranks.sort(sorts[kind] || sorts.check);
+    at = rank === undefined ? 0 : order.indexOf(rank);
+    try { localStorage.setItem("near-order", kind); } catch (error) { /* private window */ }
+  };
+
+  const showTotals = () => {
+    const decided = groups.filter((group) => group.action !== "").length;
+    const left = groups.filter((group, rank) => undecided(rank)).length;
+    byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
+    byId("totals").textContent = fill(T.totals, { decided: decided, total: groups.length, left: left });
+    const all = groups.reduce((sum, group) => sum + group.gain, 0);
+    const upTo = order.slice(0, at + 1).reduce((sum, rank) => sum + groups[rank].gain, 0);
+    const share = all ? Math.round((100 * upTo) / all) : 100;
+    byId("share").textContent = fill(T.share, { size: size(upTo), share: share });
+  };
+
+  const showPairs = () => {
+    const pairs = new Map();
+    groups.forEach((group, rank) => {
+      const ranks = pairs.get(group.pair) || [];
+      ranks.push(rank);
+      pairs.set(group.pair, ranks);
+    });
+    const rows = [...pairs].sort((a, b) => b[1].length - a[1].length).map(([pair, ranks]) => {
+      const left = ranks.filter((rank) => groups[rank].action === "");
+      const row = line("p", fill(T.pairs, { pair: pair, count: ranks.length, left: left.length }), "pair");
+      if (pair === groups[current()].pair) row.classList.add("current");
+      const button = line("button", T.pairButton);
+      button.type = "button";
+      button.title = T.pairButtonTitle;
+      button.disabled = left.length === 0;
+      button.addEventListener("click", () => decidePair(pair));
+      row.append(" ", button);
+      return row;
+    });
+    byId("pairs").replaceChildren(...rows);
+  };
+
+  const showDisk = () => {
+    const entry = disk.get(current());
+    byId("diskTitle").textContent = T.diskTitle;
+    byId("diskBody").replaceChildren(line("p", entry ? fill(T.diskEntry, { action: entry.action }) : T.diskNone));
+  };
+
+  // What each version becomes, as decided (or as the tier would do).
+  const roles = (group) => {
+    const swap = group.action === "swap";
+    const leave = group.action === "leave" || (group.action === "" && !group.sure);
+    const keptRole = swap ? "move" : "keep";
+    const copyRole = (index) => (leave || (swap && index === 0) ? "keep" : "move");
+    return { keptRole: keptRole, copyRole: copyRole, pending: group.action === "" && !group.sure };
+  };
+
+  const card = (version, role) => {
+    const figure = document.createElement("figure");
+    figure.className = "shot " + role;
+    if (version.preview) {
+      const image = document.createElement("img");
+      image.src = version.preview;
+      image.alt = version.name;
+      figure.append(image);
+    } else figure.append(line("div", T.video, "clip"));
+    const link = line("a", T.original, "original");
+    link.href = version.original;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.title = T.originalTitle;
+    const name = line("div", "");
+    name.append(line("strong", version.name), link);
+    const tags = { keep: T.kept, move: T.moved, lock: T.protected };
+    const caption = document.createElement("figcaption");
+    caption.append(line("div", tags[role], "tag"), name, line("div", version.folder, "muted"), line("div", version.details, "muted"));
+    figure.append(caption);
+    return figure;
+  };
+
+  const render = () => {
+    if (groups.length === 0) return;
+    const group = groups[current()];
+    const role = roles(group);
+    showTotals();
+    showPairs();
+    byId("why").textContent = "💬 " + group.why + " " + group.level;
+    const state = byId("state");
+    state.textContent = group.action ? T[group.action] : (group.sure ? T.pendingSure : T.pending);
+    state.className = group.action ? "decided" : (group.sure ? "sure" : "");
+    const cards = [card(group.kept, role.pending ? "keep" : role.keptRole)];
+    group.copies.forEach((version, index) => cards.push(card(version, role.pending ? "move" : role.copyRole(index))));
+    for (const version of group.protected) cards.push(card(version, "lock"));
+    byId("shots").replaceChildren(...cards);
+    showDisk();
+    for (const rank of order.slice(at + 1, at + 3)) {
+      for (const version of [groups[rank].kept, ...groups[rank].copies]) if (version.preview) new Image().src = version.preview;
+    }
+  };
+
+  const go = (step) => {
+    const next = at + step;
+    if (next < 0) setStatus(T.first, "");
+    else if (next >= order.length) setStatus(T.last, "");
+    else {
+      at = next;
+      render();
+    }
+  };
+
+  const nextUndecided = () => {
+    const ahead = order.findIndex((rank, position) => position > at && undecided(rank));
+    const found = ahead >= 0 ? ahead : order.findIndex((rank) => undecided(rank));
+    if (found < 0) setStatus(T.allDecided, "saved");
+    else {
+      at = found;
+      render();
+    }
+  };
+
+  const decide = (ranks, action, then) => {
+    setStatus(T.saving, "");
+    const choices = ranks.map((rank) => ({ group: rank, action: action }));
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ choices: choices }) })
+      .then((response) => response.json().then((body) => ({ ok: response.ok, status: response.status, body: body })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        for (const rank of ranks) {
+          groups[rank].action = action || "";
+          disk.delete(rank);
+        }
+        for (const entry of reply.body.file.entries) disk.set(entry.group, entry);
+        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
+        if (then) then();
+        else render();
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  const decidePair = (pair) => {
+    const ranks = groups.map((group, rank) => rank).filter((rank) => groups[rank].pair === pair && groups[rank].action === "");
+    if (ranks.length === 0) setStatus(T.pairNone, "");
+    else if (window.confirm(fill(T.pairAsk, { pair: pair, count: ranks.length }))) decide(ranks, "planned");
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
+    if (event.target instanceof HTMLSelectElement) return;
+    const key = event.key.toLowerCase();
+    const rank = current();
+    if (event.key === "ArrowRight") decide([rank], "planned", () => go(1));
+    else if (key === "w") {
+      if (groups[rank].swappable) decide([rank], "swap", () => go(1));
+      else setStatus(T.noSwap, "error");
+    }
+    else if (key === "l") decide([rank], "leave", () => go(1));
+    else if (event.key === "ArrowLeft") go(-1);
+    else if (key === "n") nextUndecided();
+    else if (key === "u" || event.key === "Backspace") decide([rank], null);
+    else if (key === "g") decidePair(groups[rank].pair);
+    else return;
+    event.preventDefault();
+  });
+
+  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
+    .then(([state, file]) => {
+      groups = state.groups;
+      if (file.error) setStatus(file.error, "error");
+      else {
+        for (const entry of file.entries) disk.set(entry.group, entry);
+        setStatus(fill(T.loaded, { time: clock(file.modified) }), "saved");
+      }
+      let saved = "check";
+      try { saved = localStorage.getItem("near-order") || "check"; } catch (error) { /* private window */ }
+      byId("order").value = saved;
+      byId("order").addEventListener("change", (event) => {
+        arrange(event.target.value);
+        render();
+      });
+      arrange(saved);
+      at = 0;
+      render();
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();

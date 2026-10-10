@@ -10,11 +10,13 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.paths.file_uri import file_uri
-from media_hygiene.report.near_reasons import near_why
+from media_hygiene.report.gain_order import gain_order
+from media_hygiene.report.near_reasons import group_note
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.plan.similar_models import NearDecision, SimilarFindings
+    from media_hygiene.report.near_reasons import GroupNote
     from media_hygiene.scan.models import MediaFile
 
 
@@ -40,12 +42,12 @@ class VideoNearView:
     kept: VideoView
     copies: tuple[VideoView, ...]
     protected: tuple[VideoView, ...]
-    why: str = ""  # why the kept version won (`near_reasons`)
+    note: GroupNote  # why, how sure, the space freed (`near_reasons`)
 
 
 @dataclass(frozen=True, slots=True)
 class VideoSection:
-    """Every re-encoded video group: `clean --tier near` moves them all."""
+    """Every re-encoded video group: `clean --tier near-all` moves them all."""
 
     groups: tuple[VideoNearView, ...] = ()
 
@@ -61,23 +63,30 @@ def video_section(similar: SimilarFindings, mapper: HostPathMapper) -> VideoSect
         The section.
     """
     return VideoSection(
-        groups=tuple(_group(decision, similar, mapper) for decision in similar.videos)
+        groups=tuple(
+            _group(decision, similar, (mapper, share))
+            for decision, share in gain_order(similar.videos)
+        )
     )
 
 
 def _group(
-    decision: NearDecision, similar: SimilarFindings, mapper: HostPathMapper
+    decision: NearDecision,
+    similar: SimilarFindings,
+    place: tuple[HostPathMapper, int],
 ) -> VideoNearView:
     """Describe one group.
 
     Args:
         decision: The video kept and its copies.
         similar: The findings, holding what each video looks like.
-        mapper: Turns container paths into host paths.
+        place: Turns container paths into host paths; and the share of the space
+            freed by the group and those shown above it.
 
     Returns:
         Its view.
     """
+    mapper, running = place
 
     def view(file: MediaFile) -> VideoView:
         """Describe one video of the group.
@@ -105,5 +114,7 @@ def _group(
         kept=view(decision.keeper),
         copies=tuple(view(file) for file in decision.removable),
         protected=tuple(view(file) for file in decision.protected),
-        why=near_why(decision, lambda file: similar.video_looks[file.path].pixels),
+        note=group_note(
+            decision, lambda file: similar.video_looks[file.path].pixels, running
+        ),
     )

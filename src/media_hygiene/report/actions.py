@@ -1,8 +1,8 @@
 """What an audit lets the user do, each action with its gain and its effort.
 
 At most three lines: the identical copies (no risk, one command), the near duplicates
-(groups to look at), the burst series (optional). The effort is a fixed estimate per
-group or series, the pace measured on the review page.
+(the sure groups, and those to look at), the burst series (optional). The effort is a
+fixed estimate per group to look at or series, the pace measured on the review page.
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ class ActionCommands:
     clean: str = ""
     near: str = ""
     review: str = ""
+    near_review: str = ""  # `review --near`: the groups to look at, in the browser
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,19 +87,24 @@ def audit_actions(
                 commands.clean,
             )
         )
-    groups = len(similar.near) + len(similar.videos)
+    groups = len(similar.groups)
     if groups:
+        sure = similar.sure_groups
         near = ngettext(
-            "{count} group of near duplicates to look at (~{effort}), then "
-            "'clean --tier near'.",
-            "{count} groups of near duplicates to look at (~{effort}), then "
-            "'clean --tier near'.",
+            "{count} group of near duplicates: {sure} sure, {look} to look at "
+            "(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones.",
+            "{count} groups of near duplicates: {sure} sure, {look} to look at "
+            "(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones.",
             groups,
         )
         text = near.format(
-            count=human_number(groups), effort=effort(groups * NEAR_GROUP_SECONDS)
+            count=human_number(groups),
+            sure=human_number(sure),
+            look=human_number(groups - sure),
+            effort=effort((groups - sure) * NEAR_GROUP_SECONDS),
         )
-        actions.append(AuditAction("👀", text, commands.near))
+        command = commands.near_review if groups > sure else commands.near
+        actions.append(AuditAction("👀", text, command))
     series = len(similar.bursts)
     if series:
         bursts = ngettext(

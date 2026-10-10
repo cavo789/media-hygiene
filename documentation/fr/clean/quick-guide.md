@@ -89,9 +89,12 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr clean --tier near
 ```
 
-C'est tout ou rien : tous les quasi-doublons partent en quarantaine, la plus haute résolution
-reste. Vérifiez la quarantaine, et `undo` si un groupe ne vous plaît pas. Détails : [les
-quasi-doublons](11-near-duplicates.md).
+`--tier near` ne déplace que les groupes **sûrs** (même image et même son, empreintes
+identiques, copie plus petite dans un dossier de messagerie) et dit combien de groupes à vérifier
+restent en place : décidez-les un à un dans le navigateur avec `review --near`, puis la même
+commande avec `--tier near --decisions` ; ou `--tier near-all` les déplace tous. La plus haute
+résolution reste, tout part en quarantaine : `undo` si un groupe ne vous plaît pas. Détails :
+[les quasi-doublons](11-near-duplicates.md).
 
 ## 5. Les rafales (facultatif)
 

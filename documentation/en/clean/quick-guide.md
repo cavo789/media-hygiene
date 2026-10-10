@@ -87,8 +87,11 @@ docker run --rm -it `
   cavo789/media-hygiene clean --tier near
 ```
 
-All or nothing: every near duplicate goes to the quarantine, the highest resolution stays. Check
-the quarantine, and `undo` if a group does not suit you. Details: [near
+`--tier near` moves the **sure** groups only (same picture and sound, identical fingerprints, a
+smaller copy in a messaging folder) and says how many groups to check stay in place: decide them
+one at a time in your browser with `review --near`, then the same command with
+`--tier near --decisions`; or `--tier near-all` moves them all. The highest resolution stays,
+everything goes to the quarantine: `undo` if a group does not suit you. Details: [near
 duplicates](11-near-duplicates.md).
 
 ## 5. Bursts (optional)

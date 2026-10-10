@@ -122,17 +122,18 @@ déplacés en quarantaine.
 À côté de chaque rapport, `plan.csv` liste **chaque** fichier du plan, sans limite : groupe,
 SHA-256, taille, action, chemin, dossier, date et la règle qui a choisi la copie gardée. Les
 [quasi-doublons](11-near-duplicates.md) suivent, groupe par groupe, sans SHA-256 (ce ne sont pas
-des fichiers identiques). Il s'ouvre directement dans Excel, accents compris (séparateur `;` en
+des fichiers identiques), la version gardée disant dans la dernière colonne si son groupe est sûr
+ou à vérifier. Il s'ouvre directement dans Excel, accents compris (séparateur `;` en
 français) :
 
 <!-- capture: plan-csv.txt -->
 ```text
-Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail
-1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne
-1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;
-3;94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne
+Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail;Niveau du quasi-doublon
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne;
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;;
+2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne;
+2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;;
+3;94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne;
 ```
 
 ## Lister et ranger les rapports

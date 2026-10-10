@@ -48,13 +48,17 @@ def test_the_audit_shows_near_duplicates_and_bursts(
 def test_near_duplicates_move_only_with_the_tier_and_come_back(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """A plain clean keeps them; --tier near quarantines them; undo restores them."""
+    """A plain clean keeps them, --tier near too (to check); near-all moves them."""
     data = locations.data_dir
     before = {name: digest(data / name) for name in (WHATSAPP, EMAIL)}
     assert run(cli, "clean", "--yes").exit_code == 0
     assert all((data / name).is_file() for name in before)
     assert run(cli, "undo").exit_code == 0
-    near = run(cli, "clean", "--yes", "--tier", "near")
+    sure = run(cli, "clean", "--yes", "--tier", "near")
+    assert "to check stays in place" in " ".join(sure.output.split())
+    assert all((data / name).is_file() for name in before)
+    assert run(cli, "undo").exit_code == 0
+    near = run(cli, "clean", "--yes", "--tier", "near-all")
     assert near.exit_code == 0, near.output
     assert not any((data / name).exists() for name in before)
     assert (data / KEPT).is_file()

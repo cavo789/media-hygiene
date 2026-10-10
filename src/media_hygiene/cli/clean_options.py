@@ -23,9 +23,11 @@ def tier() -> OptionInfo:
         typer.Option(
             "--tier",
             help=_(
-                "exact: byte-for-byte copies only. near: also near duplicates "
-                "(resized or recompressed copies, re-encoded videos); check them in "
-                "the report first. Both go to the quarantine. Default: exact."
+                "exact: byte-for-byte copies only. near: also the sure near "
+                "duplicates (resized or recompressed copies, re-encoded videos), "
+                "the groups to check are left alone. near-all: every near "
+                "duplicate; check them in the report first. Near duplicates go to "
+                "the quarantine. Default: exact."
             ),
             show_default=False,
             case_sensitive=False,

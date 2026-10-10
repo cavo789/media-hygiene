@@ -1,6 +1,6 @@
 {# Included in the script of review.html.j2: the order the series come in (by folder, by
-   date, the largest sharpness gap first, the series still to see first), remembered by
-   the browser, and moving along it: →, ←, N (a page at a time on the board), and the
+   date, the largest sharpness gap first, the space freed first, the series still to see
+   first), remembered by the browser, and moving along it: →, ←, N (a page at a time on the board), and the
    start where the review stopped. #}
   const orderKey = "media-hygiene:review:order";
   let mode = "folder";
@@ -10,10 +10,16 @@
   // How much the shots of a series differ in sharpness: 0 all alike, near 1 one far blurrier.
   const gapOf = (item) => 1 - Math.min(...item.shots.map((shot) => shot.share));
   const unknown = "\uffff";  // no date: after every dated series
+  // The bytes a series frees: the shots set aside, or, not seen yet, those proposed aside.
+  const spaceOf = (item) => item.shots.reduce((sum, shot, rank) => {
+    const aside = item.reviewed ? item.discarded.includes(rank) : shot.proposed;
+    return aside ? sum + shot.size : sum;
+  }, 0);
   const sorters = {
     folder: (a, b) => a - b,
     time: (a, b) => (series[a].taken || unknown).localeCompare(series[b].taken || unknown) || a - b,
     gap: (a, b) => gapOf(series[b]) - gapOf(series[a]) || a - b,
+    space: (a, b) => spaceOf(series[b]) - spaceOf(series[a]) || a - b,
     todo: (a, b) => Number(series[a].reviewed) - Number(series[b].reviewed) || a - b,
   };
 

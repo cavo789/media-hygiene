@@ -17,16 +17,18 @@ from media_hygiene.cli.flows import (
     show_pairs,
     show_second_opinion,
 )
-from media_hygiene.cli.near_preview import show_near_first
+from media_hygiene.cli.near_preview import near_waiting, show_near_first
 from media_hygiene.cli.next_steps import carried, safety, suggest
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import outcome_table
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
+from media_hygiene.plan.near_review import NearSelection
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.decisions_archive import archive_decisions
+from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.review import apply_review, load_review, review_choices
 
@@ -59,7 +61,8 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         yes: `--yes`, skip the confirmation.
-        tier: `--tier`, near duplicates are moved to the quarantine too.
+        tier: `--tier`, near duplicates are moved to the quarantine too: the sure
+            groups (`near`) or every group (`near-all`).
         decisions: `--decisions`, the review downloaded from a report or written by
             `review`.
         delete: `--delete`, exact copies are deleted for good, not moved.
@@ -76,11 +79,15 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
         bursts = review is not None and any(b.discarded for b in review.bursts)
-        service.ensure_ready(CleanMode(tier is CleanTier.NEAR, bursts, delete))
+        service.ensure_ready(CleanMode(tier is not CleanTier.EXACT, bursts, delete))
         findings = audit_and_show(runtime)
         plan = service.feasible(replace(findings.plan, delete_copies=delete))
-        if tier is CleanTier.NEAR:
-            plan = service.with_near(plan, findings)
+        if tier is not CleanTier.EXACT:
+            verdicts = near_verdicts(runtime, findings, review.near) if review else None
+            selection = NearSelection(tier is CleanTier.NEAR_ALL, verdicts)
+            plan = with_near(runtime, plan, NearRequest(findings, selection))
+        elif review is not None and review.near:
+            output.info(near_waiting(len(review.near)))
         if review is not None:
             choices = review_choices(runtime, findings, review)
             plan = apply_review(runtime, plan, choices)

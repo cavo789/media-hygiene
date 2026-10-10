@@ -77,7 +77,8 @@ def audit_command(  # pylint: disable=too-many-arguments
                 TipKind.DISCOVERY,
                 _(
                     "Near duplicates and bursts are in the HTML report; "
-                    "'clean --tier near' moves near duplicates to the quarantine."
+                    "'clean --tier near' moves the sure near duplicates to the "
+                    "quarantine, 'review --near' decides those to check."
                 ),
             )
         )
@@ -87,7 +88,7 @@ def audit_command(  # pylint: disable=too-many-arguments
                 TipKind.DISCOVERY,
                 _(
                     "Re-encoded videos are in the HTML report; 'clean --tier near' "
-                    "moves them to the quarantine too."
+                    "moves the sure ones to the quarantine too."
                 ),
             )
         )

@@ -1,29 +1,38 @@
 {# Near duplicates and re-encoded videos: included by report.html.j2 and near.html.j2. #}
+{# The groups to check come first, the sure ones folded below them; each list the largest
+   space first, with a running total (`gain_order`). #}
 {% from "_shots.html.j2" import shot, clip %}
 {% set sim = report.similar %}
+{% macro group_of(group, show) %}
+<div class="shots">
+  <p class="muted caption">💬 {{ group.note.why }} {{ group.note.level }}</p>
+  <p class="muted caption">💾 {{ _("%(gain)s freed; with the groups above: %(share)s %% of the space", gain=group.note.gain | size, share=group.note.running) }}</p>
+  {% set moved = _("to the quarantine with --tier near") if group.note.sure else _("to the quarantine once decided in 'review --near', or with --tier near-all") %}
+  {{ show(group.kept, "✅ " ~ _("kept"), "keep") }}
+  {% for item in group.copies %}{{ show(item, "📦 " ~ moved, "remove") }}{% endfor %}
+  {% for item in group.protected %}{{ show(item, "🔒 " ~ _("protected folder, kept"), "lock") }}{% endfor %}
+</div>
+{% endmacro %}
+{% macro groups_of(groups, show) %}
+{% set check = groups | rejectattr("note.sure") | list %}
+{% set sure = groups | selectattr("note.sure") | list %}
+<p class="muted">{{ _("%(sure)s sure, %(check)s to check", sure=sure | length | number, check=check | length | number) }}</p>
+{% for group in check %}{{ group_of(group, show) }}{% endfor %}
+{% if sure %}
+<details class="sure"><summary>✔️ {{ ngettext("%(num)s sure group: show it", "%(num)s sure groups: show them", sure | length, num=sure | length | number) }}</summary>
+{% for group in sure %}{{ group_of(group, show) }}{% endfor %}
+</details>
+{% endif %}
+{% endmacro %}
 {% if sim.near %}
 <h2 id="near">🪞 {{ _("Near duplicates") }}</h2>
 {% if not near_page %}<p class="muted">📄 <a href="near.html">{{ _("The near duplicates and re-encoded videos alone, on one page") }}</a></p>{% endif %}
-<p class="note">{{ _("The same picture saved again: resized, recompressed or without its date. They are not identical files, so a plain 'clean' leaves them alone; 'clean --tier near' moves the copies to the quarantine, where 'undo' finds them again. The highest resolution is kept. Compare each copy with the kept picture first.") }}</p>
-{% for group in sim.near %}
-<div class="shots">
-  {% if group.why %}<p class="muted caption">💬 {{ group.why }}</p>{% endif %}
-  {{ shot(group.kept, "✅ " ~ _("kept"), "keep") }}
-  {% for item in group.copies %}{{ shot(item, "📦 " ~ _("to the quarantine with --tier near"), "remove") }}{% endfor %}
-  {% for item in group.protected %}{{ shot(item, "🔒 " ~ _("protected folder, kept"), "lock") }}{% endfor %}
-</div>
-{% endfor %}
+<p class="note">{{ _("The same picture saved again: resized, recompressed or without its date. They are not identical files, so a plain 'clean' leaves them alone. 'clean --tier near' moves the copies of the sure groups to the quarantine, where 'undo' finds them again; 'review --near' shows the groups to check one at a time, to decide each one (as planned, keep the other version, leave alone); 'clean --tier near-all' moves them all. The highest resolution is kept.") }}</p>
+{{ groups_of(sim.near, shot) }}
 {% endif %}
 
 {% if sim.videos.groups %}
 <h2 id="videos">🎞️ {{ _("Re-encoded videos") }}</h2>
-<p class="note">{{ _("The same video saved again: shared by a messaging app, converted or recompressed. Same length, same frames at the same moments, same date or none. They are not identical files, so a plain 'clean' leaves them alone; 'clean --tier near' moves the copies to the quarantine, where 'undo' finds them again. The highest resolution, then the largest file, is kept; between copies of the very same picture and sound, whose metadata alone differ, the usual rules choose (folder, name). Play each copy before choosing.") }}</p>
-{% for group in sim.videos.groups %}
-<div class="shots">
-  {% if group.why %}<p class="muted caption">💬 {{ group.why }}</p>{% endif %}
-  {{ clip(group.kept, "✅ " ~ _("kept"), "keep") }}
-  {% for item in group.copies %}{{ clip(item, "📦 " ~ _("to the quarantine with --tier near"), "remove") }}{% endfor %}
-  {% for item in group.protected %}{{ clip(item, "🔒 " ~ _("protected folder, kept"), "lock") }}{% endfor %}
-</div>
-{% endfor %}
+<p class="note">{{ _("The same video saved again: shared by a messaging app, converted or recompressed. Same length, same frames at the same moments, same date or none. They are not identical files, so a plain 'clean' leaves them alone. 'clean --tier near' moves the copies of the sure groups to the quarantine, where 'undo' finds them again; 'review --near' decides the groups to check one at a time; 'clean --tier near-all' moves them all. The highest resolution, then the largest file, is kept; between copies of the very same picture and sound, whose metadata alone differ, the usual rules choose (folder, name). Play each copy of the groups to check before choosing.") }}</p>
+{{ groups_of(sim.videos.groups, clip) }}
 {% endif %}

@@ -47,7 +47,8 @@ Free the space the extra copies take, safely, and keep the best shots.
 
 10. [Sort burst series in your browser](clean/10-review-bursts.md): keep the best shots of each burst,
     with the keyboard.
-11. [Near duplicates](clean/11-near-duplicates.md): resized and recompressed copies (`--tier near`).
+11. [Near duplicates](clean/11-near-duplicates.md): resized and recompressed copies, the sure ones
+    apart, the others decided in your browser (`review --near`, `--tier near`).
 12. [Decide pair by pair](clean/12-decide-pair-by-pair.md): swap or leave alone a folder pair, from the
     report.
 13. [A second opinion](clean/13-second-opinion.md): compare with Czkawka, an independent tool.

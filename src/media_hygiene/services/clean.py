@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
-    from media_hygiene.plan.models import AuditFindings, CleanPlan
+    from media_hygiene.plan.models import CleanPlan
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
 
@@ -121,22 +121,6 @@ class CleanService:
                 _('Add -v "<a folder of yours>:/quarantine" to handle them.')
             )
         return replace(plan, broken=kept, sidecars=())
-
-    def with_near(self, plan: CleanPlan, findings: AuditFindings) -> CleanPlan:
-        """Add the near duplicates and re-encoded videos to the plan (`--tier near`).
-
-        Args:
-            plan: The feasible plan.
-            findings: The audit, holding the near duplicates.
-
-        Returns:
-            The plan, near duplicates and the sidecars they leave orphan included.
-
-        Near duplicates are moved to the quarantine, never deleted: `ensure_ready`
-        with `near=True` has checked it is mounted.
-        """
-        similar = findings.similar
-        return replace(plan, near=(*similar.near, *similar.videos))
 
     def execute(self, plan: CleanPlan) -> tuple[str, Outcome]:
         """Execute the plan under a new run identifier.

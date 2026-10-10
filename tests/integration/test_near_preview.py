@@ -1,4 +1,4 @@
-"""clean --tier near: every near duplicate shown in a report before the question."""
+"""clean --tier near-all: every near duplicate shown in a report before the question."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def test_the_report_is_linked_before_the_question(
 ) -> None:
     """An audit report is written first and named; declining changes nothing."""
     decline(monkeypatch)
-    result = run(cli, "clean", "--tier", "near")
+    result = run(cli, "clean", "--tier", "near-all")
     assert result.exit_code == 0, result.output
     joined = "".join(result.output.split())
     assert "lookatthembeforeanswering" in joined
@@ -42,7 +42,7 @@ def test_nothing_is_written_without_a_question(
     cli: CliRunner, locations: Locations
 ) -> None:
     """--yes: nobody looks, so only the report of the clean is written."""
-    assert run(cli, "clean", "--yes", "--tier", "near").exit_code == 0
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
     assert not list(locations.reports_dir.glob("*-audit"))
     assert list(locations.reports_dir.glob("*-clean"))
 
@@ -65,11 +65,13 @@ def test_plan_csv_lists_the_near_duplicates(
     folder = next(locations.reports_dir.glob("*-audit"))
     text = (folder / "plan.csv").read_text(encoding="utf-8-sig")
     rows = list(csv.reader(text.splitlines()))
-    near = [row for row in rows if row[3] == "move with --tier near"]
+    near = [row for row in rows if row[3] == "move with --tier near-all"]
     assert any(row[4].endswith(WHATSAPP) for row in near)
     assert all(row[0] and not row[1] for row in near)  # a group, no SHA-256
     kept = [row for row in rows if row[7].startswith("Near duplicate:")]
     assert {row[0] for row in kept} == {row[0] for row in near}
+    assert rows[0][8] == "Near-duplicate level"
+    assert all(row[8].startswith("To check:") for row in kept)
 
 
 def test_the_report_has_contents_and_a_near_page(
@@ -90,3 +92,7 @@ def test_the_report_has_contents_and_a_near_page(
     assert 'id="bursts"' not in page
     assert 'target="_blank"' in page  # each photo opens in full, in a new tab
     assert 'href="file:///C:/' in page
+    assert "0 sure, 1 to check" in page
+    assert "To check: compare the copies" in page
+    assert "with the groups above: 100 % of the space" in page
+    assert '<details class="sure">' not in page  # nothing folded

@@ -58,9 +58,11 @@ Par sécurité, `clean` refuse le fichier plutôt que de deviner quand :
 
 ## Un seul fichier pour tout
 
-Le même `decisions.json` peut contenir les paires de dossiers **et** les photos de rafale de
-l'[étape 10](10-review-bursts.md) : `review` conserve les paires déjà présentes dans le fichier,
-et un seul `clean --decisions` applique les deux.
+Le même `decisions.json` peut contenir les paires de dossiers, les photos de rafale de
+l'[étape 10](10-review-bursts.md) **et** les groupes de quasi-doublons de
+l'[étape 11](11-near-duplicates.md#décider-dans-le-navigateur--review---near) : `review` et
+`review --near` conservent ce que le fichier contient déjà, et un seul
+`clean --tier near --decisions` applique les trois.
 
 ---
 

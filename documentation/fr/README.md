@@ -52,8 +52,8 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 10. [Trier les rafales dans le navigateur](clean/10-review-bursts.md) : garder les meilleures photos de
     chaque rafale, au clavier.
-11. [Les quasi-doublons](clean/11-near-duplicates.md) : les copies réduites et recompressées
-    (`--tier near`).
+11. [Les quasi-doublons](clean/11-near-duplicates.md) : les copies réduites et recompressées, les
+    sûres à part, les autres décidées dans le navigateur (`review --near`, `--tier near`).
 12. [Décider paire par paire](clean/12-decide-pair-by-pair.md) : inverser une paire de dossiers ou ne
     pas y toucher, depuis le rapport.
 13. [Un second avis](clean/13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.

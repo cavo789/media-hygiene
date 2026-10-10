@@ -170,7 +170,8 @@ series; the browser remembers your choice.
 **Rough it out first**: the *Order* list above the table of contents sets the order of `→`,
 `←` and `N`: *by folder* (the tree), *by date*, *largest sharpness gap first* (the series
 where one shot is far blurrier come first, with their gap: *gap 87 %*; those whose shots are
-all alike come last) or *still to see first*. The browser remembers it; the order stays as it
+all alike come last), *space freed, largest first* (the series whose shots set aside, or
+proposed aside, weigh the most) or *still to see first*. The browser remembers it; the order stays as it
 is while you review, so a series never jumps away under you.
 
 **Check the sharpness at 100 %**: the previews are reduced and hide a slight blur. `C` shows

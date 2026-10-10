@@ -116,16 +116,17 @@ Empty files will be deleted; unreadable ones moved to the quarantine, never dele
 Next to each report, `plan.csv` lists **every** file of the plan, with no cap: group, SHA-256,
 size, action, path, folder, date and the rule that chose the kept copy. The
 [near duplicates](11-near-duplicates.md) follow, group by group, without SHA-256 (they are not
-identical files). It opens directly in Excel, accents included:
+identical files), the kept version saying in the last column whether its group is sure or to
+check. It opens directly in Excel, accents included:
 
 <!-- capture: plan-csv.txt -->
 ```text
-Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail
-1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date
-1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,
-2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date
-2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,
-3,94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date
+Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail,Near-duplicate level
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date,
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,,
+2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date,
+2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,,
+3,94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date,
 ```
 
 ## List and tidy the reports

@@ -23,6 +23,10 @@ msgstr ""
 "pas."
 
 #, python-format
+msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
+msgstr "%(gain)s libérés ; avec les groupes au-dessus : %(share)s %% de l'espace"
+
+#, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
 msgstr[0] "%(num)s copie"
@@ -47,6 +51,16 @@ msgid "%(num)s shot"
 msgid_plural "%(num)s shots"
 msgstr[0] "%(num)s photo"
 msgstr[1] "%(num)s photos"
+
+#, python-format
+msgid "%(num)s sure group: show it"
+msgid_plural "%(num)s sure groups: show them"
+msgstr[0] "%(num)s groupe sûr : l'afficher"
+msgstr[1] "%(num)s groupes sûrs : les afficher"
+
+#, python-format
+msgid "%(sure)s sure, %(check)s to check"
+msgstr "%(sure)s sûrs, %(check)s à vérifier"
 
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
 msgstr "'crosscheck' lit les résultats de Czkawka dans /reports : montez-le."
@@ -789,6 +803,13 @@ msgid "December"
 msgstr "décembre"
 
 msgid ""
+"Decide every undecided group of this folder pair as planned, in one write"
+" (G)"
+msgstr ""
+"Décider comme prévu chaque groupe non décidé de cette paire de dossiers, "
+"en une seule écriture (G)"
+
+msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
 "that pair. This browser remembers your choices."
@@ -796,6 +817,27 @@ msgstr ""
 "Décidez paire par paire : « Inverser les dossiers » garde les copies du "
 "second dossier et retire celles du premier ; « Ne pas toucher » ne retire"
 " rien de cette paire. Ce navigateur retient vos choix."
+
+msgid "Decided: as planned, the copies go to the quarantine."
+msgstr "Décidé : comme prévu, les copies partent en quarantaine."
+
+msgid "Decided: left alone, nothing of this group moves."
+msgstr "Décidé : laissé tel quel, rien de ce groupe ne bouge."
+
+msgid ""
+"Decided: the other version is kept, the version the audit kept goes to "
+"the quarantine."
+msgstr ""
+"Décidé : l'autre version est gardée, celle que l'audit gardait part en "
+"quarantaine."
+
+#, python-brace-format
+msgid "Decided: {decided} of {total} · to check, undecided: {left}"
+msgstr "Décidés : {decided} sur {total} · à vérifier, non décidés : {left}"
+
+#, python-brace-format
+msgid "Decision in the file: {action}"
+msgstr "Décision dans le fichier : {action}"
 
 msgid "Decoder message"
 msgstr "Message du décodeur"
@@ -1112,6 +1154,18 @@ msgstr ""
 
 #, python-format
 msgid ""
+"Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
+"stops the review; then run the same 'clean' command with --tier near "
+"%(option)s: the sure groups and the groups you decided go to the "
+"quarantine, and 'undo' brings them back."
+msgstr ""
+"Chaque choix est enregistré aussitôt dans %(place)s. Terminé ? Ctrl+C "
+"dans le terminal arrête la revue ; lancez ensuite la même commande « "
+"clean » avec --tier near %(option)s : les groupes sûrs et ceux que vous "
+"avez décidés partent en quarantaine, et « undo » les ramène."
+
+#, python-format
+msgid ""
 "Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
 "never changed. Done? Ctrl+C in the terminal stops the review; then 'sort'"
 " applies your choices on top of the workbook."
@@ -1126,6 +1180,12 @@ msgstr "Chaque groupe est dans un de vos lieux."
 
 msgid "Every copy"
 msgstr "Toutes les copies"
+
+msgid "Every group of this folder pair is decided already."
+msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
+
+msgid "Every group to check has been decided."
+msgstr "Chaque groupe à vérifier a été décidé."
 
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
@@ -1146,13 +1206,18 @@ msgstr ""
 "ne bouge jamais."
 
 msgid ""
-"Everything 'clean --tier near' moves to the quarantine, group by group: "
-"the kept version first, framed in green. Burst series are not here: "
-"--tier near never touches them."
+"Everything 'clean --tier near-all' moves to the quarantine, group by "
+"group: the groups to check first, then, folded, the sure groups that "
+"'clean --tier near' moves on its own; each list the largest space first, "
+"with a running total. In each group, the kept version first, framed in "
+"green. Burst series are not here: --tier near never touches them."
 msgstr ""
-"Tout ce que 'clean --tier near' déplace en quarantaine, groupe par groupe"
-" : la version gardée d'abord, encadrée en vert. Les rafales n'y sont pas "
-": --tier near n'y touche jamais."
+"Tout ce que « clean --tier near-all » déplace en quarantaine, groupe par "
+"groupe : les groupes à vérifier d'abord, puis, repliés, les groupes sûrs "
+"que « clean --tier near » déplace à lui seul ; chaque liste le plus grand"
+" espace d'abord, avec un total cumulé. Dans chaque groupe, la version "
+"gardée d'abord, encadrée en vert. Les rafales ne sont pas ici : --tier "
+"near n'y touche jamais."
 
 msgid "Example:"
 msgstr "Exemple :"
@@ -1218,6 +1283,9 @@ msgid "Files changed since the report: audit again and decide on it."
 msgstr ""
 "Des fichiers ont changé depuis le rapport : relancez l'audit et décidez "
 "sur le nouveau rapport."
+
+msgid "Files changed since the review: run 'review --near' again."
+msgstr "Des fichiers ont changé depuis la revue : relancez « review --near »."
 
 msgid "Files changed since the review: run 'review' again."
 msgstr "Des fichiers ont changé depuis le tri : relancez 'review'."
@@ -1452,6 +1520,10 @@ msgstr "Anniversaire de mamy"
 msgid "Group"
 msgstr "Groupe"
 
+#, python-brace-format
+msgid "Group {number} of {total}"
+msgstr "Groupe {number} sur {total}"
+
 msgid "Groups"
 msgstr "Groupes"
 
@@ -1640,6 +1712,9 @@ msgid "Kept: the same resolution, a larger file by {gap} (less compressed)."
 msgstr ""
 "Gardée : la même résolution, un fichier plus gros de {gap} (moins "
 "compressé)."
+
+msgid "Kept: your choice in 'review --near'."
+msgstr "Gardée : votre choix dans « review --near »."
 
 msgid "Keyboard"
 msgstr "Clavier"
@@ -1908,13 +1983,21 @@ msgstr "Quasi-doublons (déplacés seulement avec --tier near)"
 
 msgid ""
 "Near duplicates and bursts are in the HTML report; 'clean --tier near' "
-"moves near duplicates to the quarantine."
+"moves the sure near duplicates to the quarantine, 'review --near' decides"
+" those to check."
 msgstr ""
-"Les quasi-doublons et les rafales sont dans le rapport HTML ; 'clean "
-"--tier near' déplace les quasi-doublons en quarantaine."
+"Les quasi-doublons et les rafales sont dans le rapport HTML ; « clean "
+"--tier near » déplace les quasi-doublons sûrs en quarantaine, « review "
+"--near » décide ceux à vérifier."
 
 msgid "Near duplicates and re-encoded videos"
 msgstr "Quasi-doublons et vidéos réencodées"
+
+msgid "Near duplicates review"
+msgstr "Revue des quasi-doublons"
+
+msgid "Near-duplicate level"
+msgstr "Niveau du quasi-doublon"
 
 msgid "Never analysed: e.g. a real backup that must remain a second copy."
 msgstr ""
@@ -1985,6 +2068,9 @@ msgstr "Aucun classeur de classify dans /reports."
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder}."
 
+msgid "No decision in the file: the tier decides."
+msgstr "Aucune décision dans le fichier : le --tier décide."
+
 msgid "No event in this proposal: nothing to review."
 msgstr "Aucun événement dans cette proposition : rien à revoir."
 
@@ -2016,6 +2102,9 @@ msgstr "Pas de montage /journal : rien à annuler."
 
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr "Pas de montage /journal : sans journal, 'undo' serait impossible."
+
+msgid "No near duplicates: nothing to review."
+msgstr "Aucun quasi-doublon : rien à passer en revue."
 
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
@@ -2433,11 +2522,11 @@ msgid "Re-encoded videos (moved only with --tier near)"
 msgstr "Vidéos réencodées (déplacées seulement avec --tier near)"
 
 msgid ""
-"Re-encoded videos are in the HTML report; 'clean --tier near' moves them "
-"to the quarantine too."
+"Re-encoded videos are in the HTML report; 'clean --tier near' moves the "
+"sure ones to the quarantine too."
 msgstr ""
-"Les vidéos réencodées sont dans le rapport HTML ; 'clean --tier near' les"
-" déplace aussi en quarantaine."
+"Les vidéos réencodées sont dans le rapport HTML ; « clean --tier near » "
+"déplace aussi les sûres en quarantaine."
 
 msgid "Read-only: never changes your photos."
 msgstr "Lecture seule : ne modifie jamais vos photos."
@@ -2543,12 +2632,25 @@ msgstr ""
 ": {files}."
 
 #, python-brace-format
+msgid "Review stopped — groups decided: {decided} of {total}."
+msgstr "Revue arrêtée — groupes décidés : {decided} sur {total}."
+
+#, python-brace-format
 msgid ""
 "Review stopped — series with shots set aside: {series}, shots set aside: "
 "{shots}."
 msgstr ""
 "Tri arrêté — séries avec des photos écartées : {series}, photos écartées "
 ": {shots}."
+
+msgid ""
+"Review the near duplicates and re-encoded videos group by group instead "
+"of the burst series: as planned, keep the other version, or leave alone; "
+"'clean --tier near --decisions' applies it."
+msgstr ""
+"Passer en revue les quasi-doublons et les vidéos réencodées groupe par "
+"groupe au lieu des rafales : comme prévu, garder l'autre version, ou "
+"laisser tel quel ; « clean --tier near --decisions » l'applique."
 
 msgid ""
 "Right before deleting, 'clean' compares the two files again, byte by "
@@ -2984,6 +3086,26 @@ msgstr "Résumé"
 msgid "Sure"
 msgstr "Sûrs"
 
+msgid ""
+"Sure group: --tier near moves its copies as shown, unless you decide "
+"otherwise."
+msgstr ""
+"Groupe sûr : --tier near déplace ses copies comme affiché, sauf si vous "
+"décidez autrement."
+
+msgid ""
+"Sure: a smaller copy in a messaging or e-mail folder, taken at the same "
+"moment."
+msgstr ""
+"Sûr : une copie plus petite dans un dossier de messagerie ou d'e-mail, "
+"prise au même instant."
+
+msgid "Sure: identical fingerprints, from the same camera."
+msgstr "Sûr : empreintes identiques, du même appareil."
+
+msgid "Sure: the very picture and sound, only the metadata differ."
+msgstr "Sûr : la même image et le même son, seules les métadonnées diffèrent."
+
 msgid "Swap the folders"
 msgstr "Inverser les dossiers"
 
@@ -3124,6 +3246,13 @@ msgstr "L'index {file} ne peut pas être lu : {reason}."
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
 
+msgid ""
+"The kept version lies in a protected folder: it is never moved, W is not "
+"possible."
+msgstr ""
+"La version gardée est dans un dossier protégé : elle n'est jamais "
+"déplacée, W est impossible."
+
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
 
@@ -3236,16 +3365,20 @@ msgstr ""
 
 msgid ""
 "The same picture saved again: resized, recompressed or without its date. "
-"They are not identical files, so a plain 'clean' leaves them alone; "
-"'clean --tier near' moves the copies to the quarantine, where 'undo' "
-"finds them again. The highest resolution is kept. Compare each copy with "
-"the kept picture first."
+"They are not identical files, so a plain 'clean' leaves them alone. "
+"'clean --tier near' moves the copies of the sure groups to the "
+"quarantine, where 'undo' finds them again; 'review --near' shows the "
+"groups to check one at a time, to decide each one (as planned, keep the "
+"other version, leave alone); 'clean --tier near-all' moves them all. The "
+"highest resolution is kept."
 msgstr ""
 "La même photo enregistrée à nouveau : redimensionnée, recompressée ou "
-"sans sa date. Ce ne sont pas des fichiers identiques : un simple 'clean' "
-"n'y touche pas ; 'clean --tier near' déplace les copies en quarantaine, "
-"où 'undo' les retrouve. La plus haute résolution est gardée. Comparez "
-"d'abord chaque copie à la photo gardée."
+"sans sa date. Ce ne sont pas des fichiers identiques, donc un simple « "
+"clean » n'y touche pas. « clean --tier near » déplace les copies des "
+"groupes sûrs en quarantaine, où « undo » les retrouve ; « review --near »"
+" montre les groupes à vérifier un à un, pour décider chacun (comme prévu,"
+" garder l'autre version, laisser tel quel) ; « clean --tier near-all » "
+"les déplace tous. La plus haute résolution est gardée."
 
 #, python-brace-format
 msgid ""
@@ -3258,21 +3391,25 @@ msgstr ""
 msgid ""
 "The same video saved again: shared by a messaging app, converted or "
 "recompressed. Same length, same frames at the same moments, same date or "
-"none. They are not identical files, so a plain 'clean' leaves them alone;"
-" 'clean --tier near' moves the copies to the quarantine, where 'undo' "
-"finds them again. The highest resolution, then the largest file, is kept;"
-" between copies of the very same picture and sound, whose metadata alone "
-"differ, the usual rules choose (folder, name). Play each copy before "
-"choosing."
+"none. They are not identical files, so a plain 'clean' leaves them alone."
+" 'clean --tier near' moves the copies of the sure groups to the "
+"quarantine, where 'undo' finds them again; 'review --near' decides the "
+"groups to check one at a time; 'clean --tier near-all' moves them all. "
+"The highest resolution, then the largest file, is kept; between copies of"
+" the very same picture and sound, whose metadata alone differ, the usual "
+"rules choose (folder, name). Play each copy of the groups to check before"
+" choosing."
 msgstr ""
 "La même vidéo enregistrée à nouveau : partagée par une messagerie, "
 "convertie ou recompressée. Même durée, mêmes images aux mêmes instants, "
-"même date ou aucune. Ce ne sont pas des fichiers identiques : un simple "
-"'clean' n'y touche pas ; 'clean --tier near' déplace les copies en "
-"quarantaine, où 'undo' les retrouve. La plus haute résolution est gardée,"
-" puis le plus gros fichier ; entre copies de la même image et du même "
-"son, dont seules les métadonnées diffèrent, les règles habituelles "
-"choisissent (dossier, nom). Lisez chaque copie avant de choisir."
+"même date ou aucune. Ce ne sont pas des fichiers identiques, donc un "
+"simple « clean » n'y touche pas. « clean --tier near » déplace les copies"
+" des groupes sûrs en quarantaine, où « undo » les retrouve ; « review "
+"--near » décide un à un les groupes à vérifier ; « clean --tier near-all "
+"» les déplace tous. La plus haute résolution, puis le plus gros fichier, "
+"est gardé ; entre copies de la même image et du même son, dont seules les"
+" métadonnées diffèrent, les règles habituelles choisissent (dossier, "
+"nom). Lisez chaque copie des groupes à vérifier avant de choisir."
 
 #, python-brace-format
 msgid ""
@@ -3372,6 +3509,9 @@ msgstr "Les {top} plus grands événements en contiennent {held}."
 msgid "There is no such event."
 msgstr "Cet événement n'existe pas."
 
+msgid "There is no such group."
+msgstr "Ce groupe n'existe pas."
+
 msgid "There is no such series."
 msgstr "Cette série n'existe pas."
 
@@ -3413,6 +3553,9 @@ msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 msgid "This is the first event."
 msgstr "C'est le premier événement."
 
+msgid "This is the first group."
+msgstr "C'est le premier groupe."
+
 msgid "This is the first series."
 msgstr "C'est la première série."
 
@@ -3420,6 +3563,9 @@ msgid "This is the last event: stop the review with Ctrl+C in the terminal."
 msgstr ""
 "C'est le dernier événement : arrêtez la revue avec Ctrl+C dans le "
 "terminal."
+
+msgid "This is the last group: stop the review with Ctrl+C in the terminal."
+msgstr "C'est le dernier groupe : arrêtez la revue avec Ctrl+C dans le terminal."
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal."
@@ -3452,6 +3598,16 @@ msgid "To check or to sort: {files} files in {events} event."
 msgid_plural "To check or to sort: {files} files in {events} events."
 msgstr[0] "À vérifier ou à trier : {files} fichiers dans {events} événement."
 msgstr[1] "À vérifier ou à trier : {files} fichiers dans {events} événements."
+
+msgid ""
+"To check, undecided: nothing of this group moves with --tier near until "
+"you decide."
+msgstr ""
+"À vérifier, non décidé : rien de ce groupe ne bouge avec --tier near tant"
+" que vous n'avez pas décidé."
+
+msgid "To check: compare the copies with the kept version."
+msgstr "À vérifier : comparez les copies avec la version gardée."
 
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
@@ -3540,6 +3696,14 @@ msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
 
+#, python-brace-format, python-format
+msgid ""
+"Up to this group, in this order: {size}, {share} %% of the space of every"
+" group."
+msgstr ""
+"Jusqu'à ce groupe, dans cet ordre : {size}, {share} %% de l'espace de "
+"tous les groupes."
+
 msgid "Usage:"
 msgstr "Utilisation :"
 
@@ -3581,6 +3745,10 @@ msgstr "Et maintenant :"
 
 msgid "What you can do"
 msgstr "Ce que vous pouvez faire"
+
+#, python-brace-format
+msgid "What {file} holds for this group"
+msgstr "Ce que {file} contient pour ce groupe"
 
 #, python-brace-format
 msgid "What {file} holds for this series"
@@ -3691,6 +3859,14 @@ msgid ""
 "Your decisions — burst series reviewed: {series}, shots set aside: "
 "{shots}."
 msgstr "Vos décisions — rafales triées : {series}, photos écartées : {shots}."
+
+#, python-brace-format
+msgid ""
+"Your decisions — near-duplicate groups as planned: {planned}, another "
+"version kept: {swap}, left alone: {leave}."
+msgstr ""
+"Vos décisions — groupes de quasi-doublons comme prévu : {planned}, autre "
+"version gardée : {swap}, laissés tels quels : {leave}."
 
 #, python-brace-format
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
@@ -3819,8 +3995,17 @@ msgstr "les {count} gardées"
 msgid "alphabetical order (nothing else differs)"
 msgstr "l'ordre alphabétique (rien d'autre ne diffère)"
 
+msgid "as planned"
+msgstr "comme prévu"
+
+msgid "as planned, then next"
+msgstr "comme prévu, puis suivant"
+
 msgid "audit"
 msgstr "audit"
+
+msgid "back to undecided"
+msgstr "revenir à non décidé"
 
 msgid "blurry"
 msgstr "flou"
@@ -3845,6 +4030,9 @@ msgstr "par date"
 
 msgid "by folder"
 msgstr "par dossier"
+
+msgid "by folder pair"
+msgstr "par paire de dossiers"
 
 msgid "camera (EXIF)"
 msgstr "appareil (EXIF)"
@@ -3937,14 +4125,16 @@ msgid "environment"
 msgstr "environnement"
 
 msgid ""
-"exact: byte-for-byte copies only. near: also near duplicates (resized or "
-"recompressed copies, re-encoded videos); check them in the report first. "
-"Both go to the quarantine. Default: exact."
+"exact: byte-for-byte copies only. near: also the sure near duplicates "
+"(resized or recompressed copies, re-encoded videos), the groups to check "
+"are left alone. near-all: every near duplicate; check them in the report "
+"first. Near duplicates go to the quarantine. Default: exact."
 msgstr ""
 "exact : seulement les copies identiques octet par octet. near : aussi les"
-" quasi-doublons (copies redimensionnées ou recompressées, vidéos "
-"réencodées) ; vérifiez-les d'abord dans le rapport. Les deux vont en "
-"quarantaine. Par défaut : exact."
+" quasi-doublons sûrs (copies redimensionnées ou recompressées, vidéos "
+"réencodées), les groupes à vérifier restent en place. near-all : tous les"
+" quasi-doublons ; vérifiez-les d'abord dans le rapport. Les quasi-"
+"doublons partent en quarantaine. Par défaut : exact."
 
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
@@ -4043,6 +4233,9 @@ msgstr "garder toutes les photos"
 msgid "keep nothing"
 msgstr "ne rien garder"
 
+msgid "keep the other version, then next"
+msgstr "garder l'autre version, puis suivant"
+
 msgid "kept"
 msgstr "conservée"
 
@@ -4057,6 +4250,9 @@ msgstr "plus grand écart de netteté d'abord"
 
 msgid "leave a field"
 msgstr "quitter un champ"
+
+msgid "leave the group alone, then next"
+msgstr "laisser le groupe tel quel, puis suivant"
 
 msgid "leave the selected photos where they are"
 msgstr "laisser les photos sélectionnées où elles sont"
@@ -4096,6 +4292,9 @@ msgstr "déplacer en quarantaine"
 msgid "move with --tier near"
 msgstr "déplacer avec --tier near"
 
+msgid "move with --tier near-all"
+msgstr "déplacer avec --tier near-all"
+
 #, python-brace-format
 msgid ""
 "move {count} duplicate copy ({size}) and {near} near duplicates to the "
@@ -4131,6 +4330,9 @@ msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
 
 msgid "next event to decide"
 msgstr "événement suivant à décider"
+
+msgid "next group to check, undecided"
+msgstr "groupe suivant à vérifier, non décidé"
 
 msgid "next or previous event"
 msgstr "événement suivant ou précédent"
@@ -4208,6 +4410,9 @@ msgstr "lieu : {place}"
 msgid "preferred folder"
 msgstr "dossier préféré"
 
+msgid "previous group"
+msgstr "groupe précédent"
+
 msgid "previous series (no choice: as shown)"
 msgstr "série précédente (sans choix : comme affiché)"
 
@@ -4277,6 +4482,9 @@ msgstr "petit"
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr "triez les rafales au clavier, avec 'media-hygiene review'."
 
+msgid "space freed, largest first"
+msgstr "espace libéré, le plus grand d'abord"
+
 msgid "still to see first"
 msgstr "à voir d'abord"
 
@@ -4338,6 +4546,15 @@ msgstr "la copie restaurée ne correspond pas à l'original"
 
 #, python-brace-format
 msgid ""
+"the same 'clean' command with --tier near {option}; the sure groups and "
+"those you decided go to the quarantine, 'undo' brings them back."
+msgstr ""
+"la même commande « clean » avec --tier near {option} ; les groupes sûrs "
+"et ceux que vous avez décidés partent en quarantaine, « undo » les "
+"ramène."
+
+#, python-brace-format
+msgid ""
 "the same 'clean' command with {option}; the shots set aside go to the "
 "quarantine, 'undo' brings them back."
 msgstr ""
@@ -4352,6 +4569,9 @@ msgstr "la cible existe"
 
 msgid "the value cannot be used"
 msgstr "la valeur est inutilisable"
+
+msgid "the whole folder pair as planned"
+msgstr "toute la paire de dossiers comme prévu"
 
 msgid "this category is no longer proposed"
 msgstr "cette catégorie n'est plus proposée"
@@ -4372,12 +4592,23 @@ msgstr ""
 "timezone = \"Europe/Brussels\" dans la section [general] de {path} "
 "(heures dans votre fuseau, pas en UTC)"
 
+msgid "to check first"
+msgstr "à vérifier d'abord"
+
 #, python-format
 msgid "to check or to sort: %(count)s"
 msgstr "à vérifier ou à trier : %(count)s"
 
 msgid "to see"
 msgstr "à voir"
+
+msgid "to the quarantine"
+msgstr "en quarantaine"
+
+msgid "to the quarantine once decided in 'review --near', or with --tier near-all"
+msgstr ""
+"en quarantaine une fois décidé dans « review --near », ou avec --tier "
+"near-all"
 
 msgid "to the quarantine with --tier near"
 msgstr "en quarantaine avec --tier near"
@@ -4402,6 +4633,9 @@ msgstr "vidéo"
 
 msgid "video tags"
 msgstr "balises de la vidéo"
+
+msgid "video: open the original"
+msgstr "vidéo : ouvrez l'original"
 
 msgid "videos with a date in their tags:"
 msgstr "vidéos datées par leurs balises :"
@@ -4561,6 +4795,14 @@ msgstr[1] ""
 "{removed}."
 
 #, python-brace-format
+msgid "{count} decided group of near duplicates changed since, e.g. {kept}."
+msgid_plural "{count} decided groups of near duplicates changed since, e.g. {kept}."
+msgstr[0] "{count} groupe de quasi-doublons décidé a changé depuis, par ex. {kept}."
+msgstr[1] ""
+"{count} groupes de quasi-doublons décidés ont changé depuis, par ex. "
+"{kept}."
+
+#, python-brace-format
 msgid ""
 "{count} earlier choice of the page was edited otherwise in the workbook "
 "since: shown in red, choose again."
@@ -4696,18 +4938,54 @@ msgid "{count} files, {undecided} to check or to sort"
 msgstr "{count} fichiers, {undecided} à vérifier ou à trier"
 
 #, python-brace-format
+msgid "{count} group decided earlier changed since: to decide again."
+msgid_plural "{count} groups decided earlier changed since: to decide again."
+msgstr[0] "{count} groupe décidé plus tôt a changé depuis : à décider à nouveau."
+msgstr[1] "{count} groupes décidés plus tôt ont changé depuis : à décider à nouveau."
+
+#, python-brace-format
 msgid ""
-"{count} group of near duplicates to look at (~{effort}), then 'clean "
-"--tier near'."
+"{count} group of near duplicates to check stays in place: decide it with "
+"'review --near', or --tier near-all moves it too."
 msgid_plural ""
-"{count} groups of near duplicates to look at (~{effort}), then 'clean "
-"--tier near'."
+"{count} groups of near duplicates to check stay in place: decide them "
+"with 'review --near', or --tier near-all moves them too."
 msgstr[0] ""
-"{count} groupe de quasi-doublons à regarder (~{effort}), puis 'clean "
-"--tier near'."
+"{count} groupe de quasi-doublons à vérifier reste en place : décidez-le "
+"avec « review --near », ou --tier near-all le déplace aussi."
 msgstr[1] ""
-"{count} groupes de quasi-doublons à regarder (~{effort}), puis 'clean "
-"--tier near'."
+"{count} groupes de quasi-doublons à vérifier restent en place : décidez-"
+"les avec « review --near », ou --tier near-all les déplace aussi."
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates: {sure} sure, {look} to check (shown "
+"first)."
+msgid_plural ""
+"{count} groups of near duplicates: {sure} sure, {look} to check (shown "
+"first)."
+msgstr[0] ""
+"{count} groupe de quasi-doublons : {sure} sûr, {look} à vérifier (montré "
+"d'abord)."
+msgstr[1] ""
+"{count} groupes de quasi-doublons : {sure} sûrs, {look} à vérifier "
+"(montrés d'abord)."
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates: {sure} sure, {look} to look at "
+"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+msgid_plural ""
+"{count} groups of near duplicates: {sure} sure, {look} to look at "
+"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+msgstr[0] ""
+"{count} groupe de quasi-doublons : {sure} sûr, {look} à regarder "
+"(~{effort} dans « review --near ») ; « clean --tier near » déplace les "
+"sûrs."
+msgstr[1] ""
+"{count} groupes de quasi-doublons : {sure} sûrs, {look} à regarder "
+"(~{effort} dans « review --near ») ; « clean --tier near » déplace les "
+"sûrs."
 
 #, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
@@ -4724,6 +5002,20 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} liens créés : aucune photo n'a été copiée ni déplacée, aucune "
 "place n'est prise."
+
+#, python-brace-format
+msgid ""
+"{count} near-duplicate group decided in 'review --near' waits for --tier "
+"near: nothing of it moves without it."
+msgid_plural ""
+"{count} near-duplicate groups decided in 'review --near' wait for --tier "
+"near: nothing of them moves without it."
+msgstr[0] ""
+"{count} groupe de quasi-doublons décidé dans « review --near » attend "
+"--tier near : rien n'en bouge sans lui."
+msgstr[1] ""
+"{count} groupes de quasi-doublons décidés dans « review --near » "
+"attendent --tier near : rien n'en bouge sans lui."
 
 #, python-brace-format
 msgid "{count} obvious series validated: Z takes the whole batch back."
@@ -4905,6 +5197,18 @@ msgid "{others} follows {lead}: companions go to one folder."
 msgid_plural "{others} follow {lead}: companions go to one folder."
 msgstr[0] "{others} suit {lead} : les compagnons vont dans un même dossier."
 msgstr[1] "{others} suivent {lead} : les compagnons vont dans un même dossier."
+
+#, python-brace-format
+msgid "{pair} — groups: {count}, undecided: {left}"
+msgstr "{pair} — groupes : {count}, non décidés : {left}"
+
+#, python-brace-format
+msgid ""
+"{pair} — undecided groups: {count}. As planned, their copies to the "
+"quarantine? Each group can still be decided again."
+msgstr ""
+"{pair} — groupes non décidés : {count}. Comme prévu, leurs copies en "
+"quarantaine ? Chaque groupe peut encore être décidé autrement."
 
 #, python-brace-format
 msgid "{path} belongs to another classify run."

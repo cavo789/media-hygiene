@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Sizes
 from media_hygiene.paths.file_uri import file_uri
-from media_hygiene.report.near_reasons import near_why
+from media_hygiene.report.gain_order import gain_order
+from media_hygiene.report.near_reasons import group_note
 from media_hygiene.report.thumbnails import thumbnail_name
 from media_hygiene.report.video_views import VideoSection, video_section
 
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
         NearDecision,
         SimilarFindings,
     )
+    from media_hygiene.report.near_reasons import GroupNote
     from media_hygiene.scan.models import MediaFile
 
 
@@ -42,7 +44,7 @@ class NearView:
     kept: ShotView
     copies: tuple[ShotView, ...]
     protected: tuple[ShotView, ...]
-    why: str = ""  # why the kept version won (`near_reasons`)
+    note: GroupNote  # why, how sure, the space freed (`near_reasons`)
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,8 +60,9 @@ class BurstView:
 class SimilarSection:
     """What the report lists beyond exact duplicates, and how many bursts are left out.
 
-    Every near duplicate is listed: `clean --tier near` moves them all, so the report
-    shows them all before the question is asked.
+    Every near duplicate is listed: `clean --tier near-all` moves them all, so the
+    report shows them all before the question is asked: the groups to check first,
+    the largest space first (`gain_order`).
     """
 
     near: tuple[NearView, ...] = ()
@@ -106,18 +109,25 @@ class SimilarRenderer:
         """
         limit = Sizes.MAX_BURSTS_IN_REPORT
         return SimilarSection(
-            near=tuple(self._near(decision, similar) for decision in similar.near),
+            near=tuple(
+                self._near(decision, similar, share)
+                for decision, share in gain_order(similar.near)
+            ),
             bursts=tuple(self._burst(s, similar) for s in similar.bursts[:limit]),
             hidden_bursts=max(0, len(similar.bursts) - limit),
             videos=video_section(similar, self.mapper),
         )
 
-    def _near(self, decision: NearDecision, similar: SimilarFindings) -> NearView:
+    def _near(
+        self, decision: NearDecision, similar: SimilarFindings, running: int
+    ) -> NearView:
         return NearView(
             kept=self._shot(decision.keeper, similar),
             copies=tuple(self._shot(file, similar) for file in decision.removable),
             protected=tuple(self._shot(file, similar) for file in decision.protected),
-            why=near_why(decision, lambda file: similar.visuals[file.path].pixels),
+            note=group_note(
+                decision, lambda file: similar.visuals[file.path].pixels, running
+            ),
         )
 
     def _burst(self, series: BurstSeries, similar: SimilarFindings) -> BurstView:

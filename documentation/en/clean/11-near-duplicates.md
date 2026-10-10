@@ -39,8 +39,9 @@ videos. Two videos are near duplicates only if **every** test agrees:
 The report lists them in their own section, *Re-encoded videos*, with the resolution, length,
 codec and size of each copy, and a player: click ▶ to watch each one in the browser, or the path
 to open it in your own player. The audit summary counts them on the line
-*Re-encoded videos (moved only with --tier near)*. `clean --tier near` moves them to the
-quarantine with the photos. A video the image cannot decode (AV1, rare) is simply not compared.
+*Re-encoded videos (moved only with --tier near)*. `clean --tier near` moves the sure ones to
+the quarantine with the photos ([below](#sure-groups-and-groups-to-check)). A video the image
+cannot decode (AV1, rare) is simply not compared.
 
 ## Which version is kept, and why
 
@@ -59,6 +60,31 @@ rating set in Windows, a tag) is marked 🟰: the very same picture and sound as
 checked with a SHA-256 of both. Such copies are not identical files all the same: they are
 moved to the quarantine with `--tier near`, never deleted.
 
+## Sure groups, and groups to check
+
+On a real collection, the audit can find hundreds of groups. Most of them leave no doubt; a few
+deserve a look. Each group therefore gets a level:
+
+- **sure**, when every copy it moves is, for one of these reasons:
+  - 🟰 a video with the very same picture and sound as the kept one (its metadata alone differ);
+  - the same perceptual fingerprints (distance 0) and the same camera as the kept photo;
+  - a smaller copy in a messaging or e-mail folder (`WhatsApp Images`, `Telegram`, `Signal`,
+    `Email`, `Attachments`, `Pièces jointes`…), taken at the same moment (same EXIF date);
+- **to check**: every other group.
+
+The 💬 line of each group says it (*Sure: identical fingerprints, from the same camera.* or
+*To check: compare the copies with the kept version.*), and so does the column
+*Near-duplicate level* of `plan.csv`. The audit sums it up in its *What you can do* block:
+
+```text
+👀 500 groups of near duplicates: 480 sure, 20 to look at (~10 min in 'review
+--near'); 'clean --tier near' moves the sure ones.
+```
+
+The effort counts only the groups to look at. `--tier near` moves the sure groups and those you
+decided ([below](#decide-in-your-browser-review---near)); `--tier near-all` moves every group,
+as before.
+
 ## Look at them first
 
 The *Near duplicates* section of the [HTML report](04-html-report.md) shows each group side by
@@ -69,13 +95,88 @@ side, with the resolution, size and sharpness of every copy:
 Compare each copy with the kept one: click a picture or its path to open the original in a new
 tab. The audit summary counts them on the line
 *Near duplicates (moved only with --tier near)*. The section lists **every** group, however
-many there are, and `plan.csv` names each file too (action *move with --tier near*,
-[step 4](04-html-report.md#every-file-in-a-spreadsheet-plancsv)).
+many there are, in the order that pays off soonest:
 
-## Move them: `clean --tier near`
+- the groups **to check** first, then the **sure** groups, folded (*✔️ 480 sure groups: show
+  them*): nothing to look at there unless you want to;
+- in each list, the **space freed, largest first**: a few re-encoded videos often weigh more
+  than hundreds of shrunk photos;
+- under each group, a 💾 line gives the space its copies free and the running total:
+  *1.2 GB freed; with the groups above: 90 % of the space*. Short of time? Stop once the share
+  is high enough.
 
-Add `--tier near` to your `clean` command of [step 8](08-clean.md). Here it is combined with the
-burst decisions of step 10; each option works on its own too:
+`plan.csv` names each file too ([step 4](04-html-report.md#every-file-in-a-spreadsheet-plancsv)):
+action *move with --tier near* for a sure group, *move with --tier near-all* for a group to
+check, and the level in the column *Near-duplicate level*.
+
+## Decide in your browser: `review --near`
+
+The groups to check are best decided one at a time, with the keyboard, on the same kind of page
+as the [burst series](10-review-bursts.md). Add `--near` to the `review` command of step 10:
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "D:\Old disk:/data/d/Old disk:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene review --near
+```
+
+It says what there is to decide, then waits for you, as `review` does:
+
+```text
+1 group of near duplicates: 0 sure, 1 to check (shown first).
+✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each decision is
+saved at once in decisions.json, in the folder mounted on /reports. Ctrl+C stops
+the review.
+```
+
+The page shows one group at a time, the kept version framed in green, the copies in red dashes,
+with the 💬 line. The keys:
+
+| Key | What it does |
+|---|---|
+| `→` | as planned: the copies go to the quarantine, then the next group |
+| `W` | keep the other version: the first copy stays, the version the audit kept goes (refused when it lies in a protected folder) |
+| `L` | leave the group alone: nothing of it moves |
+| `←` / `N` | previous group / next group to check still undecided |
+| `U` | back to undecided: the tier decides again |
+| `G` | the whole folder pair as planned |
+
+**Decide once per folder pair**: the left panel lists the folder pairs (*the kept version's
+folder → the copies' folder*) with their number of groups. *✔ as planned* (or `G` on a group
+of that pair) decides every undecided group of the pair in one write, after a confirmation:
+*WhatsApp Images → DCIM — undecided groups: 312*. Each group can still be decided again.
+
+The *Order* list sets the order of `→`, `←` and `N`: *to check first*, *space freed, largest
+first* or *by folder pair*; below it, the running total up to the current group
+(*Up to this group, in this order: 3.4 GB, 90 % of the space of every group*).
+
+Each choice is saved at once in `decisions.json`, under the key `near` (next to the folder pairs
+of [step 12](12-decide-pair-by-pair.md) and the burst shots of step 10), then read back from
+the disk: the panel under the group shows what the file holds. Groups left undecided are not
+listed: the tier decides for them. Stop with Ctrl+C; reopened on the same folders, the review
+resumes, and a decided group that changed since is set back to undecided.
+
+## Move them: `clean --tier near` or `--tier near-all`
+
+- `clean --tier near` moves the **sure** groups and the groups **you decided** with `--decisions`
+  (as planned, or the other version kept); a group left alone never moves. The groups to check
+  still undecided stay in place, and `clean` says how many.
+- `clean --tier near-all` moves **every** group, as the report shows it; your decisions still
+  apply.
+
+Before applying them, `clean` checks your decisions against the audit it has just run: a decided
+group whose files changed since the review, or a swap that would move a file of a protected
+folder, refuses the whole file. Decisions in the file without a near tier wait: a plain `clean
+--decisions` says so and moves none of them.
+
+### The command
+
+Add the tier to your `clean` command of [step 8](08-clean.md). Here it is `--tier near-all`,
+every group as the report shows them, combined with the burst decisions of step 10; each option
+works on its own too:
 
 ```powershell
 docker run --rm -it `
@@ -86,7 +187,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene clean --tier near --decisions
+  cavo789/media-hygiene clean --tier near-all --decisions
 ```
 
 Before asking, `clean` writes the report of this very audit and links, on a line starting with

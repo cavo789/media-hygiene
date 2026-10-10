@@ -49,3 +49,22 @@ def port() -> OptionInfo:
             show_default=False,
         ),
     )
+
+
+def near() -> OptionInfo:
+    """`--near`: review the near duplicates instead of the burst series.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--near",
+            help=_(
+                "Review the near duplicates and re-encoded videos group by group "
+                "instead of the burst series: as planned, keep the other version, "
+                "or leave alone; 'clean --tier near --decisions' applies it."
+            ),
+        ),
+    )

@@ -6,6 +6,7 @@ Re-encoded videos are near duplicates too: the same decision, their own looks.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
@@ -18,6 +19,14 @@ if TYPE_CHECKING:
     from media_hygiene.scan.exposure import Exposure
     from media_hygiene.scan.models import MediaFile, VisualFacts
     from media_hygiene.scan.video_models import VideoLook
+
+
+class SureReason(StrEnum):
+    """Why a group of near duplicates needs no look (`near_levels`)."""
+
+    SAME_STREAM = "same-stream"  # videos: the very picture and sound
+    SAME_LOOK = "same-look"  # the same fingerprints and the same camera
+    MESSAGING_COPY = "messaging-copy"  # a smaller copy sent by a messaging app
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +45,8 @@ class NearDecision:
     same_stream: frozenset[Path] = frozenset()
     reason: NearReason = NearReason.RESOLUTION
     rule: KeepReason | None = None  # the usual rule that decided, for `RULES`
+    # Sure groups need no look (`near_levels`); None: a group to check.
+    sure: SureReason | None = None
 
     @property
     def reclaimable(self) -> int:
@@ -114,3 +125,21 @@ class SimilarFindings:
             The count.
         """
         return sum(len(decision.removable) for decision in self.videos)
+
+    @property
+    def groups(self) -> tuple[NearDecision, ...]:
+        """Every group `clean --tier near-all` would move: pictures, then videos.
+
+        Returns:
+            The groups.
+        """
+        return (*self.near, *self.videos)
+
+    @property
+    def sure_groups(self) -> int:
+        """Number of groups sure enough to move without a look (`--tier near`).
+
+        Returns:
+            The count.
+        """
+        return sum(decision.sure is not None for decision in self.groups)

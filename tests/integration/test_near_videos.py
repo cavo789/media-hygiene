@@ -6,8 +6,12 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
+from media_hygiene.services.near_reviewing import open_near_review
 from tests.support.cli import run
 from tests.support.media import FFMPEG, VIDEO_TAGS, encode
+from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
@@ -52,15 +56,28 @@ def test_the_audit_lists_the_copy(videos: CliRunner, locations: Locations) -> No
 def test_the_copy_moves_only_with_the_tier(
     videos: CliRunner, locations: Locations
 ) -> None:
-    """A plain clean keeps it; --tier near quarantines it; undo brings it back."""
+    """A plain clean keeps it; --tier near-all quarantines it; undo brings it back."""
     data = locations.data_dir
     assert run(videos, "clean", "--yes").exit_code == 0
     assert (data / COPY).is_file()
     assert run(videos, "undo").exit_code == 0
-    near = run(videos, "clean", "--yes", "--tier", "near")
+    near = run(videos, "clean", "--yes", "--tier", "near-all")
     assert near.exit_code == 0, near.output
     assert not (data / COPY).exists()
     assert (data / ORIGINAL).is_file()
     assert (data / OTHER).is_file()
     assert run(videos, "undo").exit_code == 0
     assert (data / COPY).is_file()
+
+
+@pytest.mark.usefixtures("videos")
+def test_review_near_shows_a_video_without_preview(locations: Locations) -> None:
+    """`review --near`: no preview for a video, its length and codec instead."""
+    runtime = make_runtime(locations)
+    findings = AuditService(runtime, NullProgress()).run()
+    target = locations.reports_dir / "decisions.json"
+    groups = open_near_review(runtime, findings, target).state().groups
+    [video] = [group for group in groups if group.kept.name == "Plage.mp4"]
+    assert not video.kept.preview
+    assert video.kept.original.endswith(".mp4")
+    assert "3 s" in video.kept.details

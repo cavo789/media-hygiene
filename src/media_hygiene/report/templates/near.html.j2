@@ -6,7 +6,7 @@
 <p class="muted"><a href="report.html">← {{ _("Back to the report") }}</a></p>
 <h1>🪞 {{ _("Near duplicates and re-encoded videos") }}</h1>
 <p class="muted">{{ s.created_at | when }}</p>
-<p>{{ _("Everything 'clean --tier near' moves to the quarantine, group by group: the kept version first, framed in green. Burst series are not here: --tier near never touches them.") }}</p>
+<p>{{ _("Everything 'clean --tier near-all' moves to the quarantine, group by group: the groups to check first, then, folded, the sure groups that 'clean --tier near' moves on its own; each list the largest space first, with a running total. In each group, the kept version first, framed in green. Burst series are not here: --tier near never touches them.") }}</p>
 {% include "_toc.html.j2" %}
 {% include "_similar.html.j2" %}
 <p class="muted"><a href="report.html">← {{ _("Back to the report") }}</a></p>

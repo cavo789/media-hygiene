@@ -12,17 +12,20 @@ import contextlib
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.errors import DecisionsError, MountError
+from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.report.decisions import DecisionsFile, read_decisions
-from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, STATE_PATH, ReviewApp
-from media_hygiene.review.place import decisions_flag, decisions_place
+from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
+from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
+from media_hygiene.services.review_file import (
+    first_save,
+    resume_decisions,
+    review_page,
+)
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -37,7 +40,6 @@ if TYPE_CHECKING:
 # Every interface of the container: Docker forwards the published port to it.
 LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
 HOST_LOOPBACK: Final = "127.0.0.1"
-_TEMPLATES_PACKAGE: Final = "media_hygiene.review"
 _PAGE_TEMPLATE: Final = "review.html.j2"
 
 
@@ -92,28 +94,8 @@ def open_review(
     )
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     source = ReviewSource(findings.similar.bursts, builder, target, place)
-    roots = mapper.roots_on_host(findings.roots)
-    base = (
-        read_decisions(target)
-        if target.exists()
-        else DecisionsFile(version=1, roots=roots)
-    )
-    if sorted(base.roots) != sorted(roots):
-        message = _(
-            "{path} was made on other folders ({theirs}); this review analyses {ours}."
-        )
-        raise DecisionsError(
-            message.format(
-                path=target.name, theirs=", ".join(base.roots), ours=", ".join(roots)
-            ),
-            _("Name another file with --decisions, or mount the same folders."),
-        )
-    session = ReviewSession(source, base)
-    try:
-        session.save()
-    except OSError as exc:
-        message = _("Cannot save the decisions file: {error}.")
-        raise DecisionsError(message.format(error=exc.strerror or exc)) from exc
+    session = ReviewSession(source, resume_decisions(runtime, findings, target))
+    first_save(session.save)
     return session
 
 
@@ -125,17 +107,9 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
         session: The review.
         port: The port to listen on, inside the container (0: any free one).
     """
-    environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
-    page = environment.get_template(_PAGE_TEMPLATE).render(
-        state_path=STATE_PATH,
-        decide_path=DECIDE_PATH,
-        file_path=FILE_PATH,
-        file=session.place.argument,
-        clean_option=decisions_flag(session.place.argument),
-        place=session.place.host,
-    )
+    page = review_page(_PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = ReviewApp(session, page.encode(), executor)
+        app = ReviewApp(session, page, executor)
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 

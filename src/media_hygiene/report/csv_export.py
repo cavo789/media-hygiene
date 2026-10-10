@@ -85,11 +85,15 @@ def write_plan_csv(
                 _("Folder"),
                 _("Modified (UTC)"),
                 _("Detail"),
+                _("Near-duplicate level"),
             )
         )
         writer.writerows(rows.duplicates(plan))
         writer.writerows(
-            rows.row(line.file, _Line(line.action, line.group, detail=line.detail))
+            rows.row(
+                line.file,
+                _Line(line.action, line.group, detail=line.detail, level=line.level),
+            )
             for line in near_lines(findings)
         )
         writer.writerows(rows.broken(plan))
@@ -108,6 +112,7 @@ class _Line:
     group: str = ""
     digest: str = ""
     detail: str = ""
+    level: str = ""  # near duplicates: sure or to check
 
 
 @dataclass(frozen=True, slots=True)
@@ -176,6 +181,7 @@ class _Rows:
             self.mapper.to_host(file.path.parent),
             modified.strftime(CSV_DATE_FORMAT),
             line.detail,
+            line.level,
         )
         return tuple(spreadsheet_text(text) for text in texts)
 

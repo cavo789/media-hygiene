@@ -87,7 +87,8 @@ probable qu'une erreur de disque.
 - **Se ressembler ne suffit pas.** Une copie redimensionnée, recompressée, pivotée ou dont les
   métadonnées ont changé est un autre fichier. L'audit la liste comme
   [quasi-doublon](clean/11-near-duplicates.md), mais `clean` n'y touche pas, sauf si vous le demandez
-  avec `--tier near`, et alors il la déplace seulement en quarantaine.
+  avec `--tier near` (les groupes sûrs et ceux que vous avez décidés) ou `--tier near-all`, et
+  alors il la déplace seulement en quarantaine.
 - **Seuls les photos, fichiers RAW et vidéos** sont analysés, reconnus par leur extension. Les
   autres fichiers seulement si vous [les demandez](clean/06-file-types.md#autres-types-de-fichiers) avec
   `--ext`, et leurs copies sont alors déplacées en quarantaine, jamais supprimées.

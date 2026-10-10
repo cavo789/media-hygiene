@@ -46,6 +46,7 @@ class ShotState(BaseModel):
     proposed: bool = False  # proposed to be set aside, for `reason`
     reason: str = ""  # an `AsideReason`; for the page only, never in decisions.json
     like: int | None = None  # `identical`: rank of the sharper shot it repeats
+    size: int = 0  # bytes, for the order "space freed, largest first"
 
 
 class SeriesState(BaseModel):
@@ -169,6 +170,7 @@ class StateBuilder:
             original=f"{ORIGINAL_PREFIX}{preview_key(file)}{file.path.suffix.lower()}",
             protected=self.policy.is_protected(file),
             best=best,
+            size=file.size,
         )
 
 

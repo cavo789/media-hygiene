@@ -14,7 +14,7 @@ from media_hygiene.cli.context import warn
 from media_hygiene.console.links import file_link
 from media_hygiene.constants import NEAR_FILE_NAME, RunKind
 from media_hygiene.errors import MountError
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.reporting import write_report
 
@@ -57,3 +57,22 @@ def show_near_first(runtime: Runtime, findings: AuditFindings, *, yes: bool) -> 
         "single page: {path} (Ctrl+click opens it)."
     )
     output.info(line.format(path=file_link(runtime.mapper.to_host(page))))
+
+
+def near_waiting(count: int) -> str:
+    """Say that decisions on near duplicates wait for a near tier.
+
+    Args:
+        count: The groups decided in `review --near`.
+
+    Returns:
+        The translated line.
+    """
+    message = ngettext(
+        "{count} near-duplicate group decided in 'review --near' waits for "
+        "--tier near: nothing of it moves without it.",
+        "{count} near-duplicate groups decided in 'review --near' wait for "
+        "--tier near: nothing of them moves without it.",
+        count,
+    )
+    return message.format(count=count)

@@ -13,6 +13,7 @@ from dataclasses import replace
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
+from media_hygiene.plan.near_levels import with_levels
 from media_hygiene.plan.similar import SimilarInputs, find_similar
 from media_hygiene.scan.colour import ColourTools, colours
 from media_hygiene.services.same_streams import same_streams
@@ -30,6 +31,8 @@ def checked_similar(
 ) -> SimilarFindings:
     """Find near duplicates and re-encoded videos, colours and streams checked.
 
+    Each group then says whether it is sure or to check (`near_levels`).
+
     Args:
         inputs: Files, visual facts, video fingerprints and exact-duplicate groups.
         policy: Protected folders and the usual keep rules.
@@ -45,7 +48,7 @@ def checked_similar(
         for file in _members(first.videos)
     }
     if not images and not videos:
-        return first
+        return with_levels(first)
     measured = asyncio.run(colours(images, videos, tools))
     visuals = {
         path: replace(visual, colour=measured.get(path))
@@ -58,7 +61,7 @@ def checked_similar(
     coloured = replace(
         inputs, visuals=MappingProxyType(visuals), videos=MappingProxyType(looks)
     )
-    return same_streams(find_similar(coloured, policy), policy)
+    return with_levels(same_streams(find_similar(coloured, policy), policy))
 
 
 def _members(decisions: Iterable[NearDecision]) -> Iterable[MediaFile]:

@@ -126,7 +126,7 @@ def _clean(demo: Demo) -> Captures:
     """Clean, undo, clean again with near duplicates and the review's decisions."""
     clean = Command(("clean",), read_only=False)
     choices = ("--decisions", "decisions.json")
-    near = Command(("clean", "--tier", "near", *choices), read_only=False)
+    near = Command(("clean", "--tier", "near-all", *choices), read_only=False)
     captures = {
         "clean.txt": run_confirmed(demo, clean),
         "undo.txt": run(demo, Command(("undo",), read_only=False)),

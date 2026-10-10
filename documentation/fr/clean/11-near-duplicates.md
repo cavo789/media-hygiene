@@ -42,8 +42,9 @@ Le rapport les liste dans leur propre section, *Vidéos réencodées*, avec la r
 durée, le codec et la taille de chaque copie, et un lecteur : cliquez sur ▶ pour regarder
 chacune dans le navigateur, ou sur le chemin pour l'ouvrir dans votre lecteur habituel. Le
 résumé de l'audit les compte sur la ligne *Vidéos réencodées (déplacées seulement avec --tier near)*.
-`clean --tier near` les déplace en quarantaine avec les photos. Une vidéo que l'image ne sait
-pas décoder (AV1, rare) n'est simplement pas comparée.
+`clean --tier near` déplace les sûres en quarantaine avec les photos
+([plus bas](#les-groupes-sûrs-et-ceux-à-vérifier)). Une vidéo que l'image ne sait pas décoder
+(AV1, rare) n'est simplement pas comparée.
 
 ## Quelle version est gardée, et pourquoi
 
@@ -64,6 +65,34 @@ même image et le même son que la vidéo gardée, vérifiés par un SHA-256 des
 sont pas pour autant des fichiers identiques : elles vont en quarantaine avec `--tier near`,
 jamais supprimées.
 
+## Les groupes sûrs, et ceux à vérifier
+
+Sur une vraie collection, l'audit peut trouver des centaines de groupes. La plupart ne laissent
+aucun doute ; quelques-uns méritent un coup d'œil. Chaque groupe reçoit donc un niveau :
+
+- **sûr**, quand chaque copie qu'il déplace l'est, pour l'une de ces raisons :
+  - 🟰 une vidéo avec exactement la même image et le même son que la gardée (seules ses
+    métadonnées diffèrent) ;
+  - les mêmes empreintes perceptuelles (distance 0) et le même appareil que la photo gardée ;
+  - une copie plus petite dans un dossier de messagerie ou d'e-mail (`WhatsApp Images`,
+    `Telegram`, `Signal`, `Email`, `Attachments`, `Pièces jointes`…), prise au même instant
+    (même date EXIF) ;
+- **à vérifier** : tous les autres groupes.
+
+La ligne 💬 de chaque groupe le dit (*Sûr : empreintes identiques, du même appareil.* ou
+*À vérifier : comparez les copies avec la version gardée.*), tout comme la colonne
+*Niveau du quasi-doublon* de `plan.csv`. L'audit le résume dans son bloc *Ce que vous pouvez
+faire* :
+
+```text
+👀 500 groupes de quasi-doublons : 480 sûrs, 20 à regarder (~10 min dans « review
+--near ») ; « clean --tier near » déplace les sûrs.
+```
+
+L'effort ne compte que les groupes à regarder. `--tier near` déplace les groupes sûrs et ceux
+que vous avez décidés ([plus bas](#décider-dans-le-navigateur--review---near)) ;
+`--tier near-all` déplace tous les groupes, comme avant.
+
 ## Les regarder d'abord
 
 La section *Quasi-doublons* du [rapport HTML](04-html-report.md) montre chaque groupe côte à côte,
@@ -74,13 +103,88 @@ avec la résolution, la taille et la netteté de chaque copie :
 Comparez chaque copie avec celle gardée : cliquez sur une miniature ou son chemin pour ouvrir
 l'original dans un nouvel onglet. Le résumé de l'audit les compte sur la ligne
 *Quasi-doublons (déplacés seulement avec --tier near)*. La section liste **tous** les groupes,
-quel que soit leur nombre, et `plan.csv` nomme aussi chaque fichier (action *déplacer avec --tier
-near*, [étape 4](04-html-report.md#chaque-fichier-dans-un-tableur--plancsv)).
+quel que soit leur nombre, dans l'ordre qui rapporte le plus vite :
 
-## Les déplacer : `clean --tier near`
+- les groupes **à vérifier** d'abord, puis les groupes **sûrs**, repliés (*✔️ 480 groupes
+  sûrs : les afficher*) : rien à y regarder, sauf si vous le voulez ;
+- dans chaque liste, l'**espace libéré, le plus grand d'abord** : quelques vidéos réencodées
+  pèsent souvent plus que des centaines de photos réduites ;
+- sous chaque groupe, une ligne 💾 donne l'espace que libèrent ses copies et le total cumulé :
+  *1,2 Go libérés ; avec les groupes au-dessus : 90 % de l'espace*. Pressé ? Arrêtez-vous quand
+  la part suffit.
 
-Ajoutez `--tier near` à votre commande `clean` de l'[étape 8](08-clean.md). Ici, il est combiné
-avec les décisions de rafales de l'étape 10 ; chaque option fonctionne aussi seule :
+`plan.csv` nomme aussi chaque fichier ([étape 4](04-html-report.md#chaque-fichier-dans-un-tableur--plancsv)) :
+action *déplacer avec --tier near* pour un groupe sûr, *déplacer avec --tier near-all* pour un
+groupe à vérifier, et le niveau dans la colonne *Niveau du quasi-doublon*.
+
+## Décider dans le navigateur : `review --near`
+
+Les groupes à vérifier se décident mieux un à un, au clavier, sur le même genre de page que les
+[rafales](10-review-bursts.md). Ajoutez `--near` à la commande `review` de l'étape 10 :
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr review --near
+```
+
+Elle dit ce qu'il y a à décider, puis vous attend, comme `review` :
+
+```text
+1 groupe de quasi-doublons : 0 sûr, 1 à vérifier (montré d'abord).
+✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. …
+```
+
+La page montre un groupe à la fois, la version gardée encadrée en vert, les copies en pointillés
+rouges, avec la ligne 💬. Les touches :
+
+| Touche | Ce qu'elle fait |
+|---|---|
+| `→` | comme prévu : les copies partent en quarantaine, puis le groupe suivant |
+| `W` | garder l'autre version : la première copie reste, la version que l'audit gardait part (refusé quand elle est dans un dossier protégé) |
+| `L` | laisser le groupe tel quel : rien n'en bouge |
+| `←` / `N` | groupe précédent / groupe suivant à vérifier encore non décidé |
+| `U` | revenir à non décidé : le `--tier` décide à nouveau |
+| `G` | toute la paire de dossiers comme prévu |
+
+**Décider une fois par paire de dossiers** : le panneau de gauche liste les paires de dossiers
+(*le dossier de la version gardée → celui des copies*) avec leur nombre de groupes. *✔ comme
+prévu* (ou `G` sur un groupe de cette paire) décide chaque groupe non décidé de la paire en une
+seule écriture, après confirmation : *WhatsApp Images → DCIM — groupes non décidés : 312*.
+Chaque groupe peut encore être décidé autrement.
+
+La liste *Ordre* fixe l'ordre de `→`, `←` et `N` : *à vérifier d'abord*, *espace libéré, le
+plus grand d'abord* ou *par paire de dossiers* ; en dessous, le total cumulé jusqu'au groupe
+affiché (*Jusqu'à ce groupe, dans cet ordre : 3,4 Go, 90 % de l'espace de tous les groupes*).
+
+Chaque choix est enregistré aussitôt dans `decisions.json`, sous la clé `near` (à côté des
+paires de dossiers de l'[étape 12](12-decide-pair-by-pair.md) et des photos de rafale de
+l'étape 10), puis relu depuis le disque : le panneau sous le groupe montre ce que contient le
+fichier. Les groupes non décidés n'y sont pas : le `--tier` décide pour eux. Arrêtez avec
+Ctrl+C ; rouverte sur les mêmes dossiers, la revue reprend, et un groupe décidé qui a changé
+depuis redevient non décidé.
+
+## Les déplacer : `clean --tier near` ou `--tier near-all`
+
+- `clean --tier near` déplace les groupes **sûrs** et ceux que **vous avez décidés** avec
+  `--decisions` (comme prévu, ou l'autre version gardée) ; un groupe laissé tel quel ne bouge
+  jamais. Les groupes à vérifier encore non décidés restent en place, et `clean` dit combien.
+- `clean --tier near-all` déplace **tous** les groupes, comme le rapport les montre ; vos
+  décisions s'appliquent toujours.
+
+Avant de les appliquer, `clean` vérifie vos décisions contre l'audit qu'il vient de faire : un
+groupe décidé dont les fichiers ont changé depuis la revue, ou une inversion qui déplacerait un
+fichier d'un dossier protégé, fait refuser tout le fichier. Des décisions dans le fichier sans
+`--tier` near attendent : un simple `clean --decisions` le dit et n'en déplace aucune.
+
+### La commande
+
+Ajoutez le `--tier` à votre commande `clean` de l'[étape 8](08-clean.md). Ici, c'est
+`--tier near-all`, tous les groupes comme le rapport les montre, combiné avec les décisions de
+rafales de l'étape 10 ; chaque option fonctionne aussi seule :
 
 ```powershell
 docker run --rm -it `
@@ -91,7 +195,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr clean --tier near --decisions
+  cavo789/media-hygiene --locale fr clean --tier near-all --decisions
 ```
 
 Avant de poser la question, `clean` écrit le rapport de cet audit-là et lie, sur une ligne qui

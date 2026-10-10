@@ -93,6 +93,7 @@ class NearReason(StrEnum):
     RESOLUTION = "resolution"  # the highest resolution
     SIZE = "size"  # the same resolution, a larger file by 1 % or more
     RULES = "rules"  # the same resolution and about the same size: the usual rules
+    CHOSEN = "chosen"  # a person kept another version (`review --near`)
 
 
 class BrokenReason(StrEnum):
@@ -112,10 +113,11 @@ class InventoryFormat(StrEnum):
 
 
 class CleanTier(StrEnum):
-    """How far `clean` goes: exact duplicates only, or near duplicates too."""
+    """How far `clean` goes: exact duplicates, the sure near duplicates, or them all."""
 
     EXACT = "exact"
     NEAR = "near"
+    NEAR_ALL = "near-all"
 
 
 class RunKind(StrEnum):

@@ -54,9 +54,11 @@ To stay safe, `clean` refuses the file rather than guessing when:
 
 ## One file for everything
 
-The same `decisions.json` can hold the folder pairs **and** the burst shots of
-[step 10](10-review-bursts.md): `review` keeps the pairs already in the file, and one
-`clean --decisions` applies both.
+The same `decisions.json` can hold the folder pairs, the burst shots of
+[step 10](10-review-bursts.md) **and** the near-duplicate groups of
+[step 11](11-near-duplicates.md#decide-in-your-browser-review---near): `review` and
+`review --near` keep what is already in the file, and one `clean --tier near --decisions` applies
+all three.
 
 ---
 

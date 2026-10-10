@@ -11,7 +11,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | Command | What it does | Guide |
 |---|---|---|
 | `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
-| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard. Never writes to your folders. | [10](clean/10-review-bursts.md) |
+| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `clean` | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [8](clean/08-clean.md) |
 | `undo [RUN]` | Restore every file of a run (the latest by default); for an album, remove its links. | [9](clean/09-undo-history-purge.md) |
 | `history` | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
@@ -43,9 +43,10 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify`, before describing many photos with a local model). |
-| `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
+| `--tier exact\|near\|near-all` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move the sure near duplicates, and those decided with `review --near`, to the quarantine. `near-all`: every near duplicate. [Step 11](clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
+| `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Step 8](clean/08-clean.md#need-the-space-at-once---delete) |
-| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
+| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review`, `review-sort`, `places` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
