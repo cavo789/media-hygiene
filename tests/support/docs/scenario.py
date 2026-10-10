@@ -114,11 +114,12 @@ def _crosscheck(demo: Demo) -> Captures:
 def _review(demo: Demo, shots: Path) -> Captures:
     """The burst review in the browser: one shot set aside in two series."""
     container = start_review(demo)
-    shoot(demo, Job(f"container:{container}", ("review",)), shots)
-    return {
-        "review.txt": stop_review(container),
-        "decisions.json": read_file(demo, "reports", "decisions.json"),
-    }
+    try:
+        shoot(demo, Job(f"container:{container}", ("review",)), shots)
+    finally:
+        screen = stop_review(container)
+    decisions = read_file(demo, "reports", "decisions.json")
+    return {"review.txt": screen, "decisions.json": decisions}
 
 
 def _clean(demo: Demo) -> Captures:

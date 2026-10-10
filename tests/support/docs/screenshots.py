@@ -26,6 +26,9 @@ BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
 _READY: Final = "8080"  # the review says it listens on port 8080
 _WAIT_SECONDS: Final = 300
+# Chromium sometimes dies while starting, before any page: nothing done yet, retry.
+_LAUNCH_FAILED: Final = "BrowserType.launch"
+_ATTEMPTS: Final = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +99,26 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     Raises:
         RuntimeError: The browser failed; its log says why.
     """
+    for attempt in range(1, _ATTEMPTS + 1):
+        log = _browse(demo, job, shots)
+        if not log:
+            return
+        if _LAUNCH_FAILED not in log or attempt == _ATTEMPTS:
+            message = f"browser {job.args}: {log}"
+            raise RuntimeError(message)
+
+
+def _browse(demo: Demo, job: Job, shots: Path) -> str:
+    """Run the browser once.
+
+    Args:
+        demo: The demo whose reports volume the browser reads.
+        job: The mode, its arguments, and the network to join.
+        shots: A folder of this machine, copied in as /shots and back.
+
+    Returns:
+        Empty when it worked, its log otherwise.
+    """
     name = f"{demo.prefix}-browser"
     docker("rm", "--force", name)
     install = (
@@ -103,9 +126,10 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     )
     script = f"{install} playwright=={PLAYWRIGHT} && python /tmp/browser.py "
     script += shlex.join(job.args)
-    docker("create", "--name", name, "--network", job.network,
-           "-v", f"{demo.volume('reports')}:/reports:ro", BROWSER_IMAGE,
-           "sh", "-c", script)  # fmt: skip
+    # --init and --ipc=host: what Playwright advises for Chromium in Docker.
+    docker("create", "--name", name, "--network", job.network, "--init",
+           "--ipc", "host", "-v", f"{demo.volume('reports')}:/reports:ro",
+           BROWSER_IMAGE, "sh", "-c", script)  # fmt: skip
     for source in (_SCRIPT, *sorted(_SCRIPT.parent.glob("*.js"))):
         docker("cp", str(source), f"{name}:/tmp/{source.name}")
     docker("cp", str(shots), f"{name}:/shots")
@@ -114,7 +138,7 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     if code != "0":
         log = docker("logs", name)
         docker("rm", name)
-        message = f"browser {job.args}: {log.stdout}{log.stderr}"
-        raise RuntimeError(message)
+        return f"{log.stdout}{log.stderr}" or f"exit code {code}"
     docker("cp", f"{name}:/shots/.", str(shots))
     docker("rm", name)
+    return ""

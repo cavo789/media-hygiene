@@ -91,9 +91,18 @@ def seed(demo: Demo) -> None:
 
     Args:
         demo: The demo to seed.
+
+    Raises:
+        RuntimeError: A volume could not be removed: its old content would remain.
     """
+    # A run that crashed may leave containers holding the volumes: they would stay.
+    found = docker("ps", "--all", "--quiet", "--filter", f"name=^{demo.prefix}-")
+    if leftovers := found.stdout.split():
+        docker("rm", "--force", *leftovers)
     for kind in VOLUMES:
-        docker("volume", "rm", "--force", demo.volume(kind))
+        removed = docker("volume", "rm", "--force", demo.volume(kind))
+        if removed.returncode:
+            raise RuntimeError(removed.stderr)
         docker("volume", "create", demo.volume(kind))
     holder = f"{demo.prefix}-seed"
     docker("create", "--name", holder, "-v", f"{demo.volume('c')}:/c",

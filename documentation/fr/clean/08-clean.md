@@ -68,7 +68,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261003-181140
+Nettoyage 20261010-092126
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -77,12 +77,12 @@ Nettoyage 20261003-181140
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261003-181140-clean/report.html
+✅ Rapport HTML : /reports/20261010-092126-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261003-181140' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20261010-092126' restaure tout.
 💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261003-181140
+media-hygiene purge 20261010-092126
 ```
 
 | Ligne | Ce qu'elle veut dire |

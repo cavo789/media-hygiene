@@ -114,6 +114,8 @@ near duplicates to the quarantine.
 💡 Sort the burst series with the keyboard: 'media-hygiene review' (add -p
 127.0.0.1::8080 to docker run).
 💡 Add -v media-hygiene-cache:/cache: the next audits will be much faster.
+💡 Times are in UTC: Docker does not know your time zone. Add it to docker run,
+e.g. -e TZ=Europe/Brussels.
 ```
 
 The table first:

@@ -63,7 +63,8 @@ Réglages effectifs
 │                             │ _-].*)?', 'image\\d*',     │                   │
 │                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
 │                             │ {3}-[0-9a-f]{12}',         │                   │
-│                             │ '[0-9a-f]{16,}']           │                   │
+│                             │ '[0-9a-f]{16,}',           │                   │
+│                             │ '\\d{1,6}']                │                   │
 │ keep.generic_folders        │ ['DCIM',                   │ défaut            │
 │                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
 │                             │ 'Camera( Roll| Uploads)?', │                   │
@@ -74,7 +75,61 @@ Réglages effectifs
 │                             │ d.écran', '(New            │                   │
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
-│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ ',                         │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [-_.                       │                   │
+│                             │ ](?P<month>\\d{1,2})',     │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)\ │                   │
+│                             │ \.?[                       │                   │
+│                             │ _-]*(?P<year>(?:19|20)\\d{ │                   │
+│                             │ 2})',                      │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [                          │                   │
+│                             │ _-]*(?P<month_name>janvier │                   │
+│                             │ |january|januari|jan|févri │                   │
+│                             │ er|fevrier|february|februa │                   │
+│                             │ ri|feb|fév|fev|mars|march| │                   │
+│                             │ maart|mar|avril|april|apr| │                   │
+│                             │ avr|mai|may|mei|juin|june| │                   │
+│                             │ juni|jun|juillet|july|juli │                   │
+│                             │ |jul|juil|août|aout|august │                   │
+│                             │ |augustus|aug|septembre|se │                   │
+│                             │ ptember|sep|sept|octobre|o │                   │
+│                             │ ctober|oktober|oct|okt|nov │                   │
+│                             │ embre|november|nov|décembr │                   │
+│                             │ e|decembre|december|dec|dé │                   │
+│                             │ c)',                       │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)' │                   │
+│                             │ ,                          │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
+│                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
@@ -363,7 +418,7 @@ Réglages effectifs
 ┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
 │ general.locale              │ fr                         │ ligne de commande │
-│ general.timezone            │                            │ défaut            │
+│ general.timezone            │                            │ config.toml       │
 │ general.verbosity           │ info                       │ config.toml       │
 │ general.color               │ never                      │ ligne de commande │
 │ folders.preferred           │ []                         │ config.toml       │
@@ -400,7 +455,8 @@ Réglages effectifs
 │                             │ _-].*)?', 'image\\d*',     │                   │
 │                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
 │                             │ {3}-[0-9a-f]{12}',         │                   │
-│                             │ '[0-9a-f]{16,}']           │                   │
+│                             │ '[0-9a-f]{16,}',           │                   │
+│                             │ '\\d{1,6}']                │                   │
 │ keep.generic_folders        │ ['DCIM',                   │ défaut            │
 │                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
 │                             │ 'Camera( Roll| Uploads)?', │                   │
@@ -411,7 +467,61 @@ Réglages effectifs
 │                             │ d.écran', '(New            │                   │
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
-│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ ',                         │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [-_.                       │                   │
+│                             │ ](?P<month>\\d{1,2})',     │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)\ │                   │
+│                             │ \.?[                       │                   │
+│                             │ _-]*(?P<year>(?:19|20)\\d{ │                   │
+│                             │ 2})',                      │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [                          │                   │
+│                             │ _-]*(?P<month_name>janvier │                   │
+│                             │ |january|januari|jan|févri │                   │
+│                             │ er|fevrier|february|februa │                   │
+│                             │ ri|feb|fév|fev|mars|march| │                   │
+│                             │ maart|mar|avril|april|apr| │                   │
+│                             │ avr|mai|may|mei|juin|june| │                   │
+│                             │ juni|jun|juillet|july|juli │                   │
+│                             │ |jul|juil|août|aout|august │                   │
+│                             │ |augustus|aug|septembre|se │                   │
+│                             │ ptember|sep|sept|octobre|o │                   │
+│                             │ ctober|oktober|oct|okt|nov │                   │
+│                             │ embre|november|nov|décembr │                   │
+│                             │ e|decembre|december|dec|dé │                   │
+│                             │ c)',                       │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)' │                   │
+│                             │ ,                          │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
+│                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │

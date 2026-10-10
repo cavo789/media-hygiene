@@ -120,6 +120,8 @@ near' déplace les quasi-doublons en quarantaine.
 127.0.0.1::8080 à docker run).
 💡 Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien plus
 rapides.
+💡 Les heures sont en UTC : Docker ne connaît pas votre fuseau horaire.
+Ajoutez-le à docker run, par exemple -e TZ=Europe/Brussels.
 ```
 
 D'abord le tableau :

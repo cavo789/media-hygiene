@@ -60,7 +60,7 @@ Effective settings
 │                               │ _-].*)?', 'image\\d*',        │              │
 │                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
 │                               │ -[0-9a-f]{12}',               │              │
-│                               │ '[0-9a-f]{16,}']              │              │
+│                               │ '[0-9a-f]{16,}', '\\d{1,6}']  │              │
 │ keep.generic_folders          │ ['DCIM',                      │ default      │
 │                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
 │                               │ 'Camera( Roll| Uploads)?',    │              │
@@ -71,7 +71,52 @@ Effective settings
 │                               │ d.écran', '(New               │              │
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
-│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
+│                               │ . ](?P<month>\\d{1,2})',      │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)\\.?[       │              │
+│                               │ _-]*(?P<year>(?:19|20)\\d{2}) │              │
+│                               │ ',                            │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[   │              │
+│                               │ _-]*(?P<month_name>janvier|ja │              │
+│                               │ nuary|januari|jan|février|fev │              │
+│                               │ rier|february|februari|feb|fé │              │
+│                               │ v|fev|mars|march|maart|mar|av │              │
+│                               │ ril|april|apr|avr|mai|may|mei │              │
+│                               │ |juin|june|juni|jun|juillet|j │              │
+│                               │ uly|juli|jul|juil|août|aout|a │              │
+│                               │ ugust|augustus|aug|septembre| │              │
+│                               │ september|sep|sept|octobre|oc │              │
+│                               │ tober|oktober|oct|okt|novembr │              │
+│                               │ e|november|nov|décembre|decem │              │
+│                               │ bre|december|dec|déc)',       │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)',          │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})-\\ │              │
+│                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
+│                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
 │ classify.target               │                               │ default      │
 │ classify.leave                │ []                            │ default      │
@@ -336,7 +381,7 @@ Effective settings
 ┃ Setting                       ┃ Value                         ┃ Origin       ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
 │ general.locale                │ en                            │ command line │
-│ general.timezone              │                               │ default      │
+│ general.timezone              │                               │ config.toml  │
 │ general.verbosity             │ info                          │ config.toml  │
 │ general.color                 │ never                         │ command line │
 │ folders.preferred             │ []                            │ config.toml  │
@@ -371,7 +416,7 @@ Effective settings
 │                               │ _-].*)?', 'image\\d*',        │              │
 │                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
 │                               │ -[0-9a-f]{12}',               │              │
-│                               │ '[0-9a-f]{16,}']              │              │
+│                               │ '[0-9a-f]{16,}', '\\d{1,6}']  │              │
 │ keep.generic_folders          │ ['DCIM',                      │ default      │
 │                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
 │                               │ 'Camera( Roll| Uploads)?',    │              │
@@ -382,7 +427,52 @@ Effective settings
 │                               │ d.écran', '(New               │              │
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
-│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
+│                               │ . ](?P<month>\\d{1,2})',      │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)\\.?[       │              │
+│                               │ _-]*(?P<year>(?:19|20)\\d{2}) │              │
+│                               │ ',                            │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[   │              │
+│                               │ _-]*(?P<month_name>janvier|ja │              │
+│                               │ nuary|januari|jan|février|fev │              │
+│                               │ rier|february|februari|feb|fé │              │
+│                               │ v|fev|mars|march|maart|mar|av │              │
+│                               │ ril|april|apr|avr|mai|may|mei │              │
+│                               │ |juin|june|juni|jun|juillet|j │              │
+│                               │ uly|juli|jul|juil|août|aout|a │              │
+│                               │ ugust|augustus|aug|septembre| │              │
+│                               │ september|sep|sept|octobre|oc │              │
+│                               │ tober|oktober|oct|okt|novembr │              │
+│                               │ e|november|nov|décembre|decem │              │
+│                               │ bre|december|dec|déc)',       │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)',          │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})-\\ │              │
+│                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
+│                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
 │ classify.target               │                               │ config.toml  │
 │ classify.leave                │ []                            │ config.toml  │
