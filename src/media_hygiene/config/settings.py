@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.classify_settings import ClassifySettings
@@ -23,10 +23,11 @@ from media_hygiene.constants import (
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
+_PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
 
 
 class GeneralSettings(BaseModel):
-    """`[general]` — interface language, time zone, log level and colours."""
+    """`[general]` — language, time zone, log level, colours, purge reminder."""
 
     model_config = _FROZEN
 
@@ -34,6 +35,7 @@ class GeneralSettings(BaseModel):
     timezone: str = ""
     verbosity: Verbosity = Verbosity.INFO
     color: ColorMode = ColorMode.AUTO
+    purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
 
     @field_validator("timezone")
     @classmethod

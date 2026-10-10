@@ -12,26 +12,22 @@ ne bouge avant, et `sort` peut être annulé.
 ## 0. Avant de commencer
 
 **Nettoyez d'abord les doublons** ([nettoyer en bref](../clean/quick-guide.md)) : sinon les deux
-copies d'une photo sont triées. Les dossiers créés pour le nettoyage servent aussi ici ; sinon,
-une seule fois :
+copies d'une photo sont triées. La commande `mh` écrite pour le nettoyage sert aussi ici ; sinon,
+écrivez-la une fois : [nettoyer en bref, étape 0](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh).
+Dans un nouveau terminal, rechargez-la :
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+. "$HOME\media-hygiene\mh.ps1"
 ```
 
 ## 1. Demander une proposition
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
-  -v "$HOME\media-hygiene\reports:/reports" `
-  -v "$HOME\media-hygiene\config:/config" `
-  cavo789/media-hygiene --locale fr classify
+mh classify
 ```
 
-Rien n'est modifié (`:ro`). À la fin, deux fichiers dans un nouveau dossier `<date>-classify` de
-vos rapports :
+Rien n'est modifié : `mh` monte vos dossiers en lecture seule (`:ro`). À la fin, deux fichiers
+dans un nouveau dossier `<date>-classify` de vos rapports :
 
 - `classify.xlsx`, le classeur, à ouvrir dans Excel ou LibreOffice : c'est là que vous
   **modifiez** ;
@@ -75,18 +71,11 @@ dans le nouveau. Détails : [écrire ce que vous savez](06-write-down-what-you-k
 ## 4. Trier
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos" `
-  -v media-hygiene-cache:/cache `
-  -v "$HOME\media-hygiene\reports:/reports" `
-  -v "$HOME\media-hygiene\config:/config" `
-  -v "$HOME\media-hygiene\journal:/journal" `
-  -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr sort
+mh sort
 ```
 
-Deux changements : `:ro` est retiré (`sort` déplace des fichiers), et `/journal` et `/quarantine`
-sont ajoutés. `sort` prend le classeur du dernier `classify`, le vérifie, dit combien de
+Pour `sort`, `mh` monte vos dossiers en écriture (`sort` déplace des fichiers) et ajoute le
+journal et la quarantaine. `sort` prend le classeur du dernier `classify`, le vérifie, dit combien de
 modifications il a lues (pas assez ? le classeur n'était pas enregistré) et demande
 confirmation : répondez `o`. Il finit en prouvant que rien n'est perdu : autant de fichiers,
 de la même taille, avant et après. Détails : [trier](07-sort.md).
@@ -97,8 +86,7 @@ de la même taille, avant et après. Détails : [trier](07-sort.md).
 explorer "C:\Photos"
 ```
 
-Vous changez d'avis ? Lancez la commande de l'étape 4 en remplaçant `sort` par `undo` : chaque
-fichier revient où il était.
+Vous changez d'avis ? `mh undo` : chaque fichier revient où il était.
 
 ## Aller plus loin (facultatif)
 
@@ -107,6 +95,36 @@ fichier revient où il était.
 - [Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) : ce que montrent
   les photos isolées, sans rien envoyer sur Internet.
 - [Albums](11-albums.md) : une photo dans plusieurs dossiers, sans copie ni place prise.
+
+<details>
+<summary>Sans <code>mh</code> : les commandes complètes</summary>
+
+Étape 1, en lecture seule :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr classify
+```
+
+Étapes 4 et 5 : `:ro` est retiré, `/journal` et `/quarantine` sont ajoutés ; `undo` à la place de
+`sort` pour annuler :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr sort
+```
+
+</details>
 
 ---
 

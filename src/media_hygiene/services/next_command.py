@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.services.runtime import Runtime
 
-_TOOL_KINDS: Final = (
+TOOL_KINDS: Final = (
     MountKind.CONFIG,
     MountKind.CACHE,
     MountKind.REPORTS,
@@ -35,6 +35,9 @@ CHANGING: Final = (MountKind.JOURNAL, MountKind.QUARANTINE)  # clean, undo, sort
 _NAMED_VOLUME = re.compile(r"/volumes/(?P<name>[^/]+)/_data$")
 _TIMEZONE: Final = "TZ"
 _PATH_SUFFIX: Final = "_DIR"  # MEDIA_HYGIENE_<NAME>_DIR: a mount point, not carried
+# Set by the `mh` launcher (TODO 0060): the next command is then `mh <verb>`.
+LAUNCHER_VARIABLE: Final = f"{ENV_PREFIX}LAUNCHER"
+LAUNCHER_FUNCTION: Final = "mh"
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,10 +78,13 @@ def next_command(runtime: Runtime, verb: NextVerb) -> NextCommand:
         verb: The command that comes next.
 
     Returns:
-        The command, for the shell guessed from the host folders.
+        The command, for the shell guessed from the host folders; `mh <verb>`
+        when the run was started by the launcher, which mounts everything.
     """
-    data = _data_volumes(runtime, read_only=not set(verb.needs) & set(CHANGING))
-    tools = {kind: _tool_host(runtime, kind) for kind in _TOOL_KINDS}
+    if os.environ.get(LAUNCHER_VARIABLE):
+        return NextCommand(f"{LAUNCHER_FUNCTION} {verb.arguments}", ())
+    data = data_volumes(runtime, read_only=not set(verb.needs) & set(CHANGING))
+    tools = {kind: tool_host(runtime, kind) for kind in TOOL_KINDS}
     shell = guess_shell(tuple(volume.host for volume in data))
     added = tuple(kind for kind in verb.needs if tools.get(kind) is None)
     for kind in added:
@@ -92,7 +98,7 @@ def next_command(runtime: Runtime, verb: NextVerb) -> NextCommand:
         ),
     )
     port = () if verb.port is None else (f"-p 127.0.0.1:{verb.port}:{verb.port}",)
-    run = DockerRun(volumes, (*_environment(), *port), verb.arguments)
+    run = DockerRun(volumes, (*environment(), *port), verb.arguments)
     command = run.render(shell)
     if added:
         folders = tuple(shell.home_folder(kind.value) for kind in added)
@@ -100,7 +106,7 @@ def next_command(runtime: Runtime, verb: NextVerb) -> NextCommand:
     return NextCommand(command, added)
 
 
-def _data_volumes(runtime: Runtime, *, read_only: bool) -> tuple[Volume, ...]:
+def data_volumes(runtime: Runtime, *, read_only: bool) -> tuple[Volume, ...]:
     """The folders this run analysed, on the same mount points.
 
     Args:
@@ -117,7 +123,7 @@ def _data_volumes(runtime: Runtime, *, read_only: bool) -> tuple[Volume, ...]:
     )
 
 
-def _tool_host(runtime: Runtime, kind: MountKind) -> str | None:
+def tool_host(runtime: Runtime, kind: MountKind) -> str | None:
     """The host folder (or named volume) behind a tool mount point of this run.
 
     Args:
@@ -155,7 +161,7 @@ def _host_of(runtime: Runtime, point: Path) -> str | None:
     return volume["name"] if volume is not None else path
 
 
-def _environment() -> tuple[str, ...]:
+def environment() -> tuple[str, ...]:
     """The `-e` options of this run worth keeping: the time zone, the settings.
 
     Returns:
@@ -165,6 +171,10 @@ def _environment() -> tuple[str, ...]:
         name
         for name in os.environ
         if name == _TIMEZONE
-        or (name.startswith(ENV_PREFIX) and not name.endswith(_PATH_SUFFIX))
+        or (
+            name.startswith(ENV_PREFIX)
+            and not name.endswith(_PATH_SUFFIX)
+            and name != LAUNCHER_VARIABLE
+        )
     )
     return tuple(f'-e "{name}={os.environ[name]}"' for name in names)

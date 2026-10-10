@@ -107,6 +107,22 @@ It is, with 'clean --delete', the only way the tool removes content.
 - It asks first, like `clean`; `--yes` skips the question.
 - After a purge, `undo` can no longer bring those files back.
 
+## Where am I? `status`
+
+Back after a few days, you no longer remember which run is in the quarantine, nor whether a
+review was applied? `status` reads the tool's own folders, without scanning your photos (about a
+second), and says:
+
+- the last audit or clean: when, and what it found;
+- the quarantine: how many files, how much space, since when;
+- the runs `undo` can still restore, with the full `undo` command;
+- the burst series still to see and the decisions of `review` not applied yet;
+- the last `classify` proposal, and whether `sort` applied it;
+
+then **one** next step, as a full command. A quarantine older than 30 days (`purge_hint_days`, in
+the `[general]` section of `config.toml`) is the first thing it suggests to purge. Mount the same
+folders as for `clean` (or type `mh status`): a folder not mounted is said, never an error.
+
 ## Keep the journal folder
 
 The journal is small, and it is what makes `undo` possible. Never delete it while you might

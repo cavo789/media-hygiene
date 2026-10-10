@@ -14,6 +14,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `clean` | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [8](clean/08-clean.md) |
 | `undo [RUN]` | Restore every file of a run (the latest by default); for an album, remove its links. | [9](clean/09-undo-history-purge.md) |
+| `status` | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [9](clean/09-undo-history-purge.md#where-am-i-status) |
 | `history` | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
 | `purge [RUN]` | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [9](clean/09-undo-history-purge.md) |
 | `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
@@ -22,6 +23,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
 | `album NAME` | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links, journaled and undoable. | [Sorting, step 11](sort/11-albums.md) |
 | `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
+| `launcher [--shell powershell\|bash]` | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 | `review-sort [WORKBOOK]` | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, step 10](sort/10-name-events-in-the-browser.md) |
 | `places` | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, step 9](sort/09-places-from-gps.md) |
@@ -49,6 +51,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review`, `review-sort`, `places` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
+| `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/03-several-folders.md#write-your-folders-once-mh) |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--target PATH` | `classify` | Folder receiving the tree; each mounted folder, in place, by default. |

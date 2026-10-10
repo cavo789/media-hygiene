@@ -114,6 +114,23 @@ contenu.
 - Il demande d'abord, comme `clean` ; `--yes` saute la question.
 - Après une purge, `undo` ne peut plus ramener ces fichiers.
 
+## Où en suis-je ? `status`
+
+De retour après quelques jours, vous ne savez plus quelle exécution est en quarantaine, ni si un
+tri a été appliqué ? `status` lit les dossiers de l'outil, sans analyser vos photos (une seconde
+environ), et dit :
+
+- le dernier audit ou nettoyage : quand, et ce qu'il a trouvé ;
+- la quarantaine : combien de fichiers, quelle place, depuis quand ;
+- les exécutions que `undo` peut encore restaurer, avec la commande `undo` complète ;
+- les séries de rafales encore à voir et les décisions de `review` pas encore appliquées ;
+- la dernière proposition de `classify`, et si `sort` l'a appliquée ;
+
+puis **une** étape suivante, en commande complète. Une quarantaine de plus de 30 jours
+(`purge_hint_days`, dans la section `[general]` de `config.toml`) est la première chose qu'il
+propose de purger. Montez les mêmes dossiers que pour `clean` (ou tapez `mh status`) : un dossier
+non monté est signalé, jamais une erreur.
+
 ## Gardez le dossier du journal
 
 Le journal est léger, et c'est lui qui rend `undo` possible. Ne le supprimez jamais tant que vous

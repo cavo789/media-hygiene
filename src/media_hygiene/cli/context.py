@@ -67,22 +67,24 @@ def warn(output: Output, error: MediaHygieneError) -> None:
         output.tip(error.tip)
 
 
-def build_runtime(cli_layer: Layer) -> Runtime:
+def build_runtime(cli_layer: Layer, *, stderr: bool = False) -> Runtime:
     """Load the settings, set up the output and snapshot the mount table.
 
     Args:
         cli_layer: Global options typed on the command line.
+        stderr: Print every message to the error stream: the command writes data
+            to the output stream (the `launcher` script).
 
     Returns:
         The runtime of this invocation.
     """
     locations = Locations()
-    with user_errors(Output(make_console(ColorMode.AUTO))):
+    with user_errors(Output(make_console(ColorMode.AUTO, stderr=stderr))):
         loaded = load_settings(locations, cli_layer)
     general = loaded.settings.general
     apply_timezone(general.timezone)
     output = Output(
-        make_console(general.color),
+        make_console(general.color, stderr=stderr),
         verbose=general.verbosity in {Verbosity.VERBOSE, Verbosity.DEBUG},
     )
     configure_logging(general.verbosity, output.console)

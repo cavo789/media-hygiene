@@ -18,7 +18,7 @@ modified, moved nor deleted**.
 | `review`, `review-sort` | Your choices, in a small `.json` file next to the report (`/reports`). |
 | `places` | The places you name, in `config.toml` (`/config`). |
 | `inventory` | The workbook (`/reports`), read from the cache alone. |
-| `history`, `reports`, `config` | Nothing in your folders (`reports --prune` deletes old reports only). |
+| `history`, `reports`, `config`, `status`, `launcher` | Nothing in your folders (`reports --prune` deletes old reports only). |
 
 All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`
 (`-v "C:\Photos:/data/c/Photos:ro"`). Then it is not only our promise: the operating system

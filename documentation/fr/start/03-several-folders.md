@@ -121,6 +121,40 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 
 La suite de ce guide montre les commandes PowerShell ; la version WSL suit le même modèle.
 
+## Écrire vos dossiers une fois : `mh`
+
+Les commandes s'allongent à chaque dossier, et chaque étape des guides en demande une un peu
+différente (`:ro` ou non, le journal, la quarantaine, un port pour le navigateur). Écrivez-les
+**une fois** : la commande `launcher` écrit une commande PowerShell courte, `mh`, qui retient les
+dossiers montés au moment où vous la créez.
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE=fr` est retenu
+aussi : `mh` parle français. Ensuite chaque commande est courte : `mh audit`, `mh clean`,
+`mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
+en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
+`purge`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
+`$HOME\media-hygiene` (créés s'ils manquent), plus le port des pages du navigateur pour `review`,
+`review-sort` et `places`. Les commandes que l'outil propose à la fin d'une exécution deviennent
+elles aussi `mh …`.
+
+- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"` ; ou ajoutez
+  cette ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout.
+- **Un autre dossier ?** Relancez la commande `launcher` avec un `-v` de plus.
+- PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **Depuis WSL** : ajoutez `--shell bash` et enregistrez dans `~/media-hygiene/mh.sh`, puis
+  `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque terminal).
+
 ---
 
 ← [2. Garder le cache](02-keep-the-cache.md) · [Documentation](../README.md) · Suivant, pour nettoyer : **[4. Le rapport HTML](../clean/04-html-report.md)** → · pour trier : **[4. Proposer une arborescence](../sort/04-classify.md)** →

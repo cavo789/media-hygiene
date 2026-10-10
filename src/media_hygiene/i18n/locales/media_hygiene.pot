@@ -64,6 +64,10 @@ msgid ""
 "refuses an event or a file edited otherwise in both."
 msgstr ""
 
+#, python-brace-format
+msgid "'undo {run_id}' still restores the files of the last run:"
+msgstr ""
+
 msgid "'undo' can no longer restore these files."
 msgstr ""
 
@@ -273,6 +277,11 @@ msgstr ""
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
 
+msgid ""
+"After how many days 'status' suggests emptying the quarantine with "
+"'purge' (the files set aside still take their space until then)."
+msgstr ""
+
 msgid "Album folder"
 msgstr ""
 
@@ -314,6 +323,11 @@ msgid "Analyse"
 msgstr ""
 
 msgid "Animals"
+msgstr ""
+
+msgid ""
+"Another folder? Run 'launcher' again with one more -v, saving to the same"
+" file."
 msgstr ""
 
 msgid "April"
@@ -401,6 +415,12 @@ msgstr ""
 
 msgid "Broken files in protected folders"
 msgstr ""
+
+#, python-brace-format
+msgid "Burst review: {count} series still to see."
+msgid_plural "Burst review: {count} series still to see."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Burst series"
 msgstr ""
@@ -664,6 +684,12 @@ msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
 "that pair. This browser remembers your choices."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Decided, not applied yet: {shots} shots set aside, {groups} near "
+"duplicate groups."
 msgstr ""
 
 msgid "Decided: as planned, the copies go to the quarantine."
@@ -1167,6 +1193,12 @@ msgid ""
 "'media-hygiene crosscheck' with your usual -v options:"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"For every terminal, add that line to {profile}, with the full path of the"
+" file."
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -1416,10 +1448,28 @@ msgid ""
 "names them."
 msgstr ""
 
+msgid "Last audit"
+msgstr ""
+
+#, python-brace-format
+msgid "Last audit: {when} (mount /reports to see its figures)."
+msgstr ""
+
+#, python-brace-format
+msgid "Last classify proposal: {when}, {state}"
+msgstr ""
+
+msgid "Last clean"
+msgstr ""
+
 msgid "Last complete audit (UTC)"
 msgstr ""
 
 msgid "Latitude"
+msgstr ""
+
+#, python-brace-format
+msgid "Launcher written. Load it with: {load}, then type: mh audit"
 msgstr ""
 
 msgid "Leave alone"
@@ -1457,6 +1507,10 @@ msgid "List the runs and what they did."
 msgstr ""
 
 msgid "Listing media files"
+msgstr ""
+
+#, python-brace-format
+msgid "Load it in this terminal with: {load}"
 msgstr ""
 
 msgid "Longitude"
@@ -1669,6 +1723,9 @@ msgstr ""
 msgid "No audit has walked a folder completely yet."
 msgstr ""
 
+msgid "No audit yet."
+msgstr ""
+
 msgid "No burst series: nothing to review."
 msgstr ""
 
@@ -1738,6 +1795,9 @@ msgstr ""
 msgid "No obvious series left to validate."
 msgstr ""
 
+msgid "No photo folder mounted: add -v for each folder, then run it again."
+msgstr ""
+
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr ""
 
@@ -1786,6 +1846,10 @@ msgid "Not found"
 msgstr ""
 
 #, python-brace-format
+msgid "Not looked at (not mounted): {points}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Not photos or videos: {extensions}. These files are only compared byte "
 "for byte, and their copies are moved to the quarantine."
@@ -1818,6 +1882,9 @@ msgid "Nothing is proposed by --sample: run classify without it."
 msgstr ""
 
 msgid "Nothing left to check nor to sort."
+msgstr ""
+
+msgid "Nothing left to do: everything is applied."
 msgstr ""
 
 #, python-brace-format
@@ -2054,6 +2121,17 @@ msgstr ""
 #, python-brace-format
 msgid "Quarantine purged: {size} freed."
 msgstr ""
+
+msgid "Quarantine: empty."
+msgstr ""
+
+#, python-brace-format
+msgid "Quarantine: {files} files, {size}, {count} run, set aside {when}."
+msgid_plural ""
+"Quarantine: {files} files, {size}, {count} runs, the oldest set aside "
+"{when}."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Quarantined"
 msgstr ""
@@ -2305,6 +2383,10 @@ msgid "Runs (newest first)"
 msgstr ""
 
 msgid "Runs to undo (newest first)"
+msgstr ""
+
+#, python-brace-format
+msgid "Runs you can still undo: {runs}."
 msgstr ""
 
 msgid "SHA-256"
@@ -2838,6 +2920,11 @@ msgid "The sheets were renamed, moved, added or deleted: {found}."
 msgstr ""
 
 msgid ""
+"The shell of the script: 'powershell' (Windows) or 'bash' (WSL, Linux, "
+"macOS). Default: guessed from the mounted folders."
+msgstr ""
+
+msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
 "categories, or none; it is sure only when the photos of an event agree. "
@@ -3113,6 +3200,9 @@ msgstr ""
 msgid "When to use colours (NO_COLOR is honoured too)."
 msgstr ""
 
+msgid "Where am I? The last audit, the quarantine, what is left: no scan."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Where files go, by how sure the proposal is. Placeholders: {year}, "
@@ -3127,6 +3217,9 @@ msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
 msgstr ""
 
 msgid "Where to start"
+msgstr ""
+
+msgid "Where you are"
 msgstr ""
 
 msgid "White pixels"
@@ -3178,6 +3271,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Workbook: {path}"
+msgstr ""
+
+msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
 msgstr ""
 
 msgid "Writing the HTML report and its previews…"
@@ -3309,6 +3405,13 @@ msgstr ""
 msgid "alphabetical order (nothing else differs)"
 msgstr ""
 
+#, python-brace-format
+msgid "and {count} more"
+msgstr ""
+
+msgid "apply your review: the files you set aside go to the quarantine."
+msgstr ""
+
 msgid "as planned"
 msgstr ""
 
@@ -3385,6 +3488,9 @@ msgstr ""
 msgid "date on the disk"
 msgstr ""
 
+msgid "decisions.json cannot be read: 'review' will say why."
+msgstr ""
+
 msgid ""
 "decisions.json downloaded from an audit report (swap or leave alone some "
 "folder pairs) or written by 'review' (burst shots set aside). A relative "
@@ -3448,6 +3554,9 @@ msgid "file name"
 msgstr ""
 
 msgid "files with an identical copy"
+msgstr ""
+
+msgid "finish the burst review where you stopped."
 msgstr ""
 
 msgid "folder name"
@@ -3568,6 +3677,11 @@ msgstr ""
 msgid "media-hygiene configuration — created on first run, edit it freely."
 msgstr ""
 
+msgid ""
+"media-hygiene launcher: 'mh <command>' runs the tool on your folders, "
+"e.g. mh audit, then mh clean."
+msgstr ""
+
 msgid "media-hygiene report"
 msgstr ""
 
@@ -3651,6 +3765,9 @@ msgstr ""
 msgid "not found where the plan or a sort put it"
 msgstr ""
 
+msgid "not sorted yet."
+msgstr ""
+
 msgid "nothing"
 msgstr ""
 
@@ -3658,6 +3775,9 @@ msgid "ok"
 msgstr ""
 
 msgid "on another disk or mount: no link possible"
+msgstr ""
+
+msgid "once you have checked the quarantine, 'purge' frees its space."
 msgstr ""
 
 msgid "once you have checked, 'purge' frees the space of the files set aside."
@@ -3770,7 +3890,13 @@ msgstr ""
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr ""
 
+msgid "sorted since."
+msgstr ""
+
 msgid "space freed, largest first"
+msgstr ""
+
+msgid "start with an audit: it changes nothing."
 msgstr ""
 
 msgid "still to see first"
@@ -3785,6 +3911,9 @@ msgstr ""
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
+msgstr ""
+
+msgid "the classify proposal waits: 'sort' applies the edited workbook."
 msgstr ""
 
 msgid "the copy differs from the original"
@@ -3819,10 +3948,19 @@ msgstr ""
 msgid "the kept copy {path} no longer exists"
 msgstr ""
 
+msgid "the last audit found extra copies: 'clean' sets them aside."
+msgstr ""
+
 msgid "the oldest date"
 msgstr ""
 
 msgid "the other name looks like a copy"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"the quarantine of {run_id} is more than {days} days old: once checked, "
+"'purge' frees its space."
 msgstr ""
 
 msgid "the restored copy does not match the original"
@@ -3884,6 +4022,9 @@ msgid "to the quarantine once decided in 'review --near', or with --tier near-al
 msgstr ""
 
 msgid "to the quarantine with --tier near"
+msgstr ""
+
+msgid "today"
 msgstr ""
 
 msgid "undo the last choice"
@@ -4030,6 +4171,12 @@ msgid ""
 msgid_plural ""
 "{count} copies of other files than media will be moved to the quarantine,"
 " not deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} day ago"
+msgid_plural "{count} days ago"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4297,6 +4444,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{day} {month} {year} {time}"
+msgstr ""
+
+#, python-brace-format
+msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr ""
 
 #, python-brace-format

@@ -49,7 +49,7 @@ rafales et les quasi-doublons seulement si vous le demandez.
 
 **Nous le garantissons : ces commandes ne modifient, ne déplacent ni ne suppriment jamais une
 photo ou une vidéo** — `audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`,
-`inventory`, `history`, `reports`, `config`. Elles n'écrivent que leurs propres fichiers
+`inventory`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
 (rapports, cache, `config.toml`). Lancez-les avec vos dossiers montés en `:ro` : le système
 lui-même interdit alors toute modification.
 

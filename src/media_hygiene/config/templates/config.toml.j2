@@ -25,6 +25,9 @@ verbosity = "info"
 {{ comment(_('ANSI colours: "auto", "always" or "never".'), "--color") }}
 color = "auto"
 
+{{ comment(_("After how many days 'status' suggests emptying the quarantine with 'purge' (the files set aside still take their space until then).")) }}
+purge_hint_days = 30
+
 
 [folders]
 {{ comment(_("Host paths, written between 'single quotes' so backslashes need no escaping. These are lists of paths: your real folders are never renamed.")) }}

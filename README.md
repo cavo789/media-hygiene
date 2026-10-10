@@ -48,7 +48,7 @@ near duplicates only when you ask for it.
 
 **We guarantee it: these commands never modify, move nor delete a photo or a video** —
 `audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `history`,
-`reports`, `config`. They only write their own files (reports, cache, `config.toml`). Run them
+`reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
 with your folders mounted `:ro`: then the operating system itself forbids any change.
 
 **The commands that act never erase anything.** `sort` moves files (on one disk, a simple

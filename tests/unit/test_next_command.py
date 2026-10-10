@@ -119,3 +119,13 @@ def test_the_next_command_keeps_the_global_and_folder_options() -> None:
     ctx = cast("typer.Context", SimpleNamespace(params={"prefer": ["C:\\Best"]}))
     assert carried(runtime, "clean", ctx) == '--locale fr clean --prefer "C:\\Best"'
     assert carried(runtime, "undo 1") == "--locale fr undo 1"
+
+
+def test_under_the_launcher_the_next_command_is_mh(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The `mh` function mounts everything: the step is `mh <verb>`, nothing added."""
+    monkeypatch.setenv("MEDIA_HYGIENE_LAUNCHER", "1")
+    built = next_command(_windows_run(), NextVerb("clean", CHANGING))
+    assert built.command == "mh clean"
+    assert not built.note()

@@ -18,7 +18,7 @@ Nous le garantissons : quand vous lancez l'une de ces commandes, vos photos et v
 | `review`, `review-sort` | Vos choix, dans un petit fichier `.json` à côté du rapport (`/reports`). |
 | `places` | Les lieux que vous nommez, dans `config.toml` (`/config`). |
 | `inventory` | Le classeur (`/reports`), lu dans le cache seul. |
-| `history`, `reports`, `config` | Rien dans vos dossiers (`reports --prune` ne supprime que d'anciens rapports). |
+| `history`, `reports`, `config`, `status`, `launcher` | Rien dans vos dossiers (`reports --prune` ne supprime que d'anciens rapports). |
 
 Toutes fonctionnent avec vos dossiers de photos montés **en lecture seule** : ajoutez `:ro` à
 leur `-v` (`-v "C:\Photos:/data/c/Photos:ro"`). Ce n'est alors plus seulement notre promesse : le

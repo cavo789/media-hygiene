@@ -20,22 +20,24 @@ if TYPE_CHECKING:
 _YES_ANSWERS = frozenset({"y", "yes"})
 
 
-def make_console(color: ColorMode) -> Console:
+def make_console(color: ColorMode, *, stderr: bool = False) -> Console:
     """Create the Rich console for a colour mode (`NO_COLOR` is honoured by Rich).
 
     Args:
         color: `auto` detects a terminal, `always`/`never` force the choice.
+        stderr: Print to the error stream, keeping the output stream for data
+            redirected to a file (the `launcher` script).
 
     Returns:
         The console.
     """
     match color:
         case ColorMode.ALWAYS:
-            return Console(force_terminal=True, highlight=False)
+            return Console(force_terminal=True, highlight=False, stderr=stderr)
         case ColorMode.NEVER:
-            return Console(no_color=True, highlight=False)
+            return Console(no_color=True, highlight=False, stderr=stderr)
         case ColorMode.AUTO:
-            return Console(highlight=False)
+            return Console(highlight=False, stderr=stderr)
 
 
 @dataclass(frozen=True, slots=True)

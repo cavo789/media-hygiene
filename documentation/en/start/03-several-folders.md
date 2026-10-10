@@ -112,6 +112,38 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 
 The rest of this guide shows PowerShell commands; the WSL version follows the same pattern.
 
+## Write your folders once: `mh`
+
+The commands grow with every folder, and each step of the guides needs a slightly different one
+(`:ro` or not, the journal, the quarantine, a port for the browser). Write them **once**: the
+`launcher` command writes a short PowerShell command, `mh`, that remembers the folders mounted
+when you created it.
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+No `-it` here: what `launcher` prints goes into the file. Then every command is short: `mh audit`,
+`mh clean`, `mh review`, `mh undo`, `mh status`… `mh` picks the right mounts for each one: your
+folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `album`, `undo`,
+`purge`), the cache, and the `reports`, `config`, `journal` and `quarantine` folders of
+`$HOME\media-hygiene` (created when missing), plus the port of the browser pages for `review`,
+`review-sort` and `places`. The commands the tool suggests at the end of a run become `mh …` too.
+
+- **In a new terminal**, load it again: `. "$HOME\media-hygiene\mh.ps1"`; or add that line to your
+  profile (`notepad $PROFILE`) to have `mh` everywhere.
+- **Another folder?** Run the `launcher` command again with one more `-v`.
+- PowerShell refuses to load the file (*running scripts is disabled*)? Once:
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **From WSL**: add `--shell bash` and save to `~/media-hygiene/mh.sh`, then
+  `source ~/media-hygiene/mh.sh` (in `~/.bashrc` for every terminal).
+
 ---
 
 ← [2. Keep the cache](02-keep-the-cache.md) · [Documentation](../README.md) · Next, to clean: **[4. The HTML report](../clean/04-html-report.md)** → · to sort: **[4. Propose a tidy tree](../sort/04-classify.md)** →

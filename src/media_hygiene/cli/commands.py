@@ -12,12 +12,14 @@ from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
 from media_hygiene.cli.cmd_inventory import inventory_command
+from media_hygiene.cli.cmd_launcher import launcher_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_sort import sort_command
+from media_hygiene.cli.cmd_status import status_command
 from media_hygiene.cli.cmd_undo import undo_command
 from media_hygiene.cli.safety import help_of
 from media_hygiene.i18n import _
@@ -57,6 +59,12 @@ def _commands(
             audit_command,
             analyse,
             _("Find exact duplicates and broken files."),
+        ),
+        (
+            "status",
+            status_command,
+            analyse,
+            _("Where am I? The last audit, the quarantine, what is left: no scan."),
         ),
         (
             "crosscheck",
@@ -151,6 +159,12 @@ def _commands(
                 "Export every photo and video with what the audits learnt to Excel,"
                 " from the cache alone: no file is read."
             ),
+        ),
+        (
+            "launcher",
+            launcher_command,
+            analyse,
+            _("Write 'mh', a short command holding your folders: mh audit, mh clean."),
         ),
         (
             "history",

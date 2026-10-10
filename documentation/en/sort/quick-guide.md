@@ -12,25 +12,22 @@ before, and `sort` can be undone.
 ## 0. Before you start
 
 **Clean the duplicates first** ([clean in short](../clean/quick-guide.md)): otherwise both copies
-of a photo are sorted. The folders created for the clean serve here too; otherwise, once:
+of a photo are sorted. The `mh` command written for the clean serves here too; otherwise, write it
+once: [clean in short, step 0](../clean/quick-guide.md#0-once-write-the-mh-command). In a new
+terminal, load it again:
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+. "$HOME\media-hygiene\mh.ps1"
 ```
 
 ## 1. Ask for a proposal
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
-  -v "$HOME\media-hygiene\reports:/reports" `
-  -v "$HOME\media-hygiene\config:/config" `
-  cavo789/media-hygiene classify
+mh classify
 ```
 
-Nothing is modified (`:ro`). At the end, two files in a new `<date>-classify` folder of your
-reports:
+Nothing is modified: `mh` mounts your folders read-only (`:ro`). At the end, two files in a new
+`<date>-classify` folder of your reports:
 
 - `classify.xlsx`, the workbook, to open in Excel or LibreOffice: that is where you **edit**;
 - `report.html`, the report, to open in your browser: that is where you **look** at the photos.
@@ -71,6 +68,48 @@ one. Details: [write down what you know](06-write-down-what-you-know.md).
 ## 4. Sort
 
 ```powershell
+mh sort
+```
+
+For `sort`, `mh` mounts your folders writable (`sort` moves files) and adds the journal and the
+quarantine. `sort` takes the workbook of the last `classify`, checks it, says how many edits it read (too
+few? the workbook was not saved) and asks for confirmation: answer `y`. It ends by proving that
+nothing is lost: as many files, of the same size, before and after. Details: [sort](07-sort.md).
+
+## 5. Check, or undo
+
+```powershell
+explorer "C:\Photos"
+```
+
+You change your mind? `mh undo`: each file goes back where it was.
+
+## Going further (optional)
+
+- [Places and trips from the GPS](09-places-from-gps.md): name your places on a map, and let the GPS
+  sort home, family and trips.
+- [Name subjects with a local model](08-subjects-from-a-local-model.md): what the lone photos
+  show, without sending anything to the Internet.
+- [Albums](11-albums.md): one photo in several folders, with no copy and no space taken.
+
+<details>
+<summary>Without <code>mh</code>: the full commands</summary>
+
+Step 1, read-only:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene classify
+```
+
+Steps 4 and 5: `:ro` is gone, `/journal` and `/quarantine` are added; `undo` instead of `sort` to
+undo:
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v media-hygiene-cache:/cache `
@@ -81,27 +120,7 @@ docker run --rm -it `
   cavo789/media-hygiene sort
 ```
 
-Two changes: `:ro` is gone (`sort` moves files), and `/journal` and `/quarantine` are added.
-`sort` takes the workbook of the last `classify`, checks it, says how many edits it read (too
-few? the workbook was not saved) and asks for confirmation: answer `y`. It ends by proving that
-nothing is lost: as many files, of the same size, before and after. Details: [sort](07-sort.md).
-
-## 5. Check, or undo
-
-```powershell
-explorer "C:\Photos"
-```
-
-You change your mind? Run the command of step 4 with `undo` instead of `sort`: each file goes
-back where it was.
-
-## Going further (optional)
-
-- [Places and trips from the GPS](09-places-from-gps.md): name your places on a map, and let the GPS
-  sort home, family and trips.
-- [Name subjects with a local model](08-subjects-from-a-local-model.md): what the lone photos
-  show, without sending anything to the Internet.
-- [Albums](11-albums.md): one photo in several folders, with no copy and no space taken.
+</details>
 
 ---
 

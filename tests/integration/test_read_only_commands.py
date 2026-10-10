@@ -41,6 +41,8 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("history",),
     ("reports",),
     ("config",),
+    ("status",),
+    ("launcher",),
 )
 
 
