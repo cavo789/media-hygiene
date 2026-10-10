@@ -18,7 +18,7 @@ from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.config.zone import apply_timezone
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
-from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode
+from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode, Verbosity
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.paths.locations import Locations
@@ -81,7 +81,10 @@ def build_runtime(cli_layer: Layer) -> Runtime:
         loaded = load_settings(locations, cli_layer)
     general = loaded.settings.general
     apply_timezone(general.timezone)
-    output = Output(make_console(general.color))
+    output = Output(
+        make_console(general.color),
+        verbose=general.verbosity in {Verbosity.VERBOSE, Verbosity.DEBUG},
+    )
     configure_logging(general.verbosity, output.console)
     _warn_legacy_variables(output)
     runtime = Runtime(loaded, locations, MountTable.current(), output, cli_layer)
@@ -148,9 +151,9 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     """Return the runtime the root callback stored in the Typer context.
 
     Every command calls it first: a command reading the photos says it leaves them
-    untouched, and an empty line is scheduled after the command's last message,
-    before the shell prompt comes back (`--help` never reaches a command, so its
-    output is left as is).
+    untouched, and its closing advice (next step, best tips) then an empty line are
+    scheduled after the command's last message, before the shell prompt comes back
+    (`--help` never reaches a command, so its output is left as is).
 
     Args:
         ctx: Typer context of the running command.
@@ -164,7 +167,7 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     runtime = ctx.obj
     if not isinstance(runtime, Runtime):
         raise TypeError(type(runtime).__name__)
-    ctx.call_on_close(runtime.output.blank)
+    ctx.call_on_close(runtime.output.finish)
     announce_read_only(runtime, ctx.info_name)
     return runtime
 

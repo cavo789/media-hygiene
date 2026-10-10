@@ -26,12 +26,11 @@ docker run --rm -it `
 Docker creates by itself belongs to the administrator, and the tool could not write there
 ([why](../reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
 
-At the end of the audit, two new lines:
+At the end of the audit, a new line:
 
-<!-- capture: audit.txt|HTML report|Open index.html -->
+<!-- capture: audit.txt|HTML report|. -->
 ```text
 ✅ HTML report: /reports/20261010-203144-audit/report.html
-💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
@@ -39,9 +38,9 @@ the full paths instead; in Windows Terminal, Ctrl+click opens them:
 
 ```text
 ✅ HTML report: C:\Users\<you>\media-hygiene\reports\20261003-180936-audit\report.html
-💡 Every report is listed in C:\Users\<you>\media-hygiene\reports\index.html (Ctrl+click
-opens it).
 ```
+
+With `--verbosity verbose`, a 💡 tip also names `index.html`, which lists every report.
 
 ## Open it
 

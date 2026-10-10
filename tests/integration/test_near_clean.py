@@ -30,12 +30,17 @@ def test_the_audit_shows_near_duplicates_and_bursts(
     cli: CliRunner, locations: Locations
 ) -> None:
     """Counted in the summary, explained in a tip, shown side by side in the report."""
-    output = run(cli, "audit").output
+    output = " ".join(run(cli, "--verbosity", "verbose", "audit").output.split())
     assert "Near duplicates (moved only with --tier near)" in output
     assert "Burst series (moved only if set aside with 'review')" in output
-    assert "media-hygiene review" in output
+    assert "in 'review'" in output
     assert "clean --tier near" in output
+    assert "What you can do" in output
+    assert "Photos with a shooting date" in output  # the inventory, when verbose
+    assert "burst series: optional" in output
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()
+    assert 'id="actions"' in report
+    assert "Copy the command" in report
     assert "IMG-20210705-WA0001.jpg" in report
     assert "⭐ sharpest" in report
 

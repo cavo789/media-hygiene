@@ -37,7 +37,7 @@ def videos(cli: CliRunner, locations: Locations) -> CliRunner:
 
 def test_the_audit_lists_the_copy(videos: CliRunner, locations: Locations) -> None:
     """Counted in the summary, explained in a tip, shown in the report."""
-    output = run(videos, "audit").output
+    output = run(videos, "--verbosity", "verbose", "audit").output
     assert "Re-encoded videos (moved only with --tier near)" in output
     assert "Re-encoded videos are in the HTML report" in output
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()

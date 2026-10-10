@@ -1,0 +1,124 @@
+"""What an audit lets the user do, each action with its gain and its effort.
+
+At most three lines: the identical copies (no risk, one command), the near duplicates
+(groups to look at), the burst series (optional). The effort is a fixed estimate per
+group or series, the pace measured on the review page.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Final
+
+from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.i18n import _, ngettext
+
+if TYPE_CHECKING:
+    from media_hygiene.plan.models import AuditFindings
+
+NEAR_GROUP_SECONDS: Final = 30  # to compare two pictures and choose
+BURST_SERIES_SECONDS: Final = 40  # to look at a series in 'review' and choose
+_SECONDS_PER_MINUTE: Final = 60
+
+
+@dataclass(frozen=True, slots=True)
+class ActionCommands:
+    """The full command of each action, ready to paste."""
+
+    clean: str = ""
+    near: str = ""
+    review: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class AuditAction:
+    """One thing the user can do now: an icon, what it gains and costs, its command."""
+
+    icon: str
+    text: str
+    command: str = ""
+
+
+def effort(seconds: int) -> str:
+    """Round an estimate up to the minute, the way people say it.
+
+    Args:
+        seconds: The estimate.
+
+    Returns:
+        E.g. `2 min` or `1 h 05 min`; never less than one minute.
+    """
+    minutes = max(1, math.ceil(seconds / _SECONDS_PER_MINUTE))
+    hours, minutes = divmod(minutes, _SECONDS_PER_MINUTE)
+    if hours:
+        return f"{hours} h {minutes:02d} min"
+    return f"{minutes} min"
+
+
+def audit_actions(
+    findings: AuditFindings, commands: ActionCommands
+) -> tuple[AuditAction, ...]:
+    """List what the audit found worth doing, most rewarding and safest first.
+
+    Args:
+        findings: The audit.
+        commands: The command of each action.
+
+    Returns:
+        Up to three actions.
+    """
+    plan, similar = findings.plan, findings.similar
+    actions: list[AuditAction] = []
+    if plan.decisions:
+        copies = ngettext(
+            "{count} identical copy, {size}: no risk, one command.",
+            "{count} identical copies, {size}: no risk, one command.",
+            plan.removable_count,
+        )
+        actions.append(
+            AuditAction(
+                "✅",
+                copies.format(
+                    count=human_number(plan.removable_count),
+                    size=human_size(plan.reclaimable),
+                ),
+                commands.clean,
+            )
+        )
+    groups = len(similar.near) + len(similar.videos)
+    if groups:
+        near = ngettext(
+            "{count} group of near duplicates to look at (~{effort}), then "
+            "'clean --tier near'.",
+            "{count} groups of near duplicates to look at (~{effort}), then "
+            "'clean --tier near'.",
+            groups,
+        )
+        text = near.format(
+            count=human_number(groups), effort=effort(groups * NEAR_GROUP_SECONDS)
+        )
+        actions.append(AuditAction("👀", text, commands.near))
+    series = len(similar.bursts)
+    if series:
+        bursts = ngettext(
+            "{count} burst series: optional, ~{effort} in 'review'; a series not "
+            "reviewed is kept whole.",
+            "{count} burst series: optional, ~{effort} in 'review'; the series not "
+            "reviewed are kept whole.",
+            series,
+        )
+        text = bursts.format(
+            count=human_number(series), effort=effort(series * BURST_SERIES_SECONDS)
+        )
+        actions.append(AuditAction("🎞️", text, commands.review))
+    return tuple(actions)
+
+
+def actions_title() -> str:
+    """The heading of the actions, in the terminal and in the report.
+
+    Returns:
+        The translated heading.
+    """
+    return _("What you can do")

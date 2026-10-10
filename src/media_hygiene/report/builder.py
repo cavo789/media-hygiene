@@ -111,7 +111,9 @@ class ReportBuilder:
         groups = GroupRenderer(self.mapper, names, plan.delete_copies)
         return ReportView(
             header=ReportHeader(
-                self.summary(record), self.mapper.roots_on_host(record.findings.roots)
+                self.summary(record),
+                self.mapper.roots_on_host(record.findings.roots),
+                record.actions,
             ),
             pairs=tuple(
                 self._renderer(record, previews).summary(index, pair)

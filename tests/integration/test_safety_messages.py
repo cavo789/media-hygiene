@@ -27,8 +27,9 @@ def test_clean_says_nothing_is_erased_and_how_to_free_and_undo(cli: CliRunner) -
     assert "🛟 Nothing will be erased: each copy is first compared byte for byte" in (
         cleaned
     )
-    assert "The space is freed by 'purge', once you have checked" in cleaned
+    assert "once you have checked, 'purge' frees the space" in cleaned
     assert "'media-hygiene undo " in cleaned
+    assert cleaned.index("'media-hygiene undo ") < cleaned.index("👉 What next")
     undone = flat(run(cli, "undo", "--yes").output)
     assert "🛟 Each file comes back where it was, never over another one" in undone
 

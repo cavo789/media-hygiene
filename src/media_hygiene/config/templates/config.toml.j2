@@ -19,7 +19,7 @@ locale = "{{ locale }}"
 {{ comment(_('Your time zone, for the dates and the names of reports and runs, e.g. "Europe/Brussels" or "America/Montreal" (list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: UTC, as Docker does not know yours.')) }}
 timezone = ""
 
-{{ comment(_('How much to log: "error", "warning", "info" or "debug".'), "--verbosity") }}
+{{ comment(_('How much to log: "error", "warning", "info", "verbose" (info and every tip, not only the best two) or "debug".'), "--verbosity") }}
 verbosity = "info"
 
 {{ comment(_('ANSI colours: "auto", "always" or "never".'), "--color") }}

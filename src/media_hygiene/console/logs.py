@@ -16,6 +16,7 @@ _LEVELS = {
     Verbosity.ERROR: logging.ERROR,
     Verbosity.WARNING: logging.WARNING,
     Verbosity.INFO: logging.INFO,
+    Verbosity.VERBOSE: logging.INFO,
     Verbosity.DEBUG: logging.DEBUG,
 }
 

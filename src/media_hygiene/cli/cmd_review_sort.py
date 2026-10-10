@@ -8,8 +8,10 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.sort_reviewing import open_sort_review, serve_sort_review
 
 
@@ -48,9 +50,12 @@ def review_sort_command(
             ).format(events=human_number(events), files=human_number(files))
         )
         output.info(_("Your choices are in {place}.").format(place=session.hosts[1]))
-        output.next_step(
+        verb = "sort" if workbook is None else f'sort "{workbook}"'
+        suggest(
+            runtime,
             _(
                 "'sort' applies them on top of the workbook, which you may still "
                 "edit; it refuses an event or a file edited otherwise in both."
-            )
+            ),
+            NextVerb(carried(runtime, verb), CHANGING),
         )

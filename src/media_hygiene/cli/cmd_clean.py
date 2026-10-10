@@ -18,6 +18,7 @@ from media_hygiene.cli.flows import (
     show_second_opinion,
 )
 from media_hygiene.cli.near_preview import show_near_first
+from media_hygiene.cli.next_steps import carried, safety, suggest
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import outcome_table
@@ -26,11 +27,12 @@ from media_hygiene.i18n import _
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.decisions_archive import archive_decisions
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.review import apply_review, load_review, review_choices
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
-    from media_hygiene.console.output import Output
+    from media_hygiene.services.runtime import Runtime
 
 
 # The options are parameters (and locals): the documented exception for Typer commands.
@@ -89,6 +91,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
             return
         show_near_first(runtime, replace(findings, plan=plan), yes=yes)
         if not confirm_clean(runtime, plan, yes):
+            output.drop_advice()
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)
         output.title(_("Clean"))
@@ -104,26 +107,29 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
                 crosscheck=verdict,
             ),
         )
-    _after_clean_tips(output, run_id, outcome)
+    _after_clean_tips(runtime, run_id, outcome)
     if decisions is not None:
         archive_decisions(runtime, decisions, run_id)
 
 
-def _after_clean_tips(output: Output, run_id: str, outcome: Outcome) -> None:
+def _after_clean_tips(runtime: Runtime, run_id: str, outcome: Outcome) -> None:
     """Tell how to undo the clean, and that `purge` frees the space.
 
     Args:
-        output: Where to print.
+        runtime: Settings, mount points and output.
         run_id: The clean run.
         outcome: What the clean did.
     """
-    undo_tip = _(
-        "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
+    safety(
+        runtime,
+        _(
+            "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
+        ).format(run_id=run_id),
+        NextVerb(carried(runtime, f"undo {run_id}"), CHANGING),
     )
-    output.tip(undo_tip.format(run_id=run_id))
     if outcome.quarantined:
-        purge_tip = _(
-            "The space is freed by 'purge', once you have checked: "
-            "media-hygiene purge {run_id}"
+        suggest(
+            runtime,
+            _("once you have checked, 'purge' frees the space of the files set aside."),
+            NextVerb(carried(runtime, f"purge {run_id}"), CHANGING),
         )
-        output.tip(purge_tip.format(run_id=run_id))

@@ -8,12 +8,14 @@ from typing import TYPE_CHECKING, Final
 from rich.markup import escape
 
 from media_hygiene.cli.context import warn
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.config.classify_rules import overlapping_ranges
 from media_hygiene.console.carry_view import show_carried
 from media_hygiene.constants import CLASSIFY_WORKBOOK_FILE_NAME, REPORT_FILE_NAME
 from media_hygiene.errors import ConfigError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.services.classify_output import write_classify_output
+from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     from media_hygiene.classify.carry_types import CarrySource
@@ -73,7 +75,11 @@ def write_output(
     output.success(
         _("Report with the photos: {path}").format(path=host(folder / REPORT_FILE_NAME))
     )
-    output.tip(_("Edit the yellow cells and save: nothing moves until 'sort'."))
+    suggest(
+        runtime,
+        _("edit the yellow cells and save; nothing moves until 'sort'."),
+        NextVerb(carried(runtime, "sort"), CHANGING),
+    )
 
 
 def parse_years(text: str | None) -> tuple[int, int] | None:

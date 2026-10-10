@@ -10,14 +10,17 @@ import typer
 from media_hygiene.cli import options, review_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_flag
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.reviewing import open_review, review_target, serve_review
 
 if TYPE_CHECKING:
     from media_hygiene.console.output import Output
     from media_hygiene.review.session import ReviewSession
+    from media_hygiene.services.runtime import Runtime
 
 _DECISIONS_FILE: Final = Path(DEFAULT_DECISIONS)
 
@@ -61,7 +64,7 @@ def review_command(  # pylint: disable=too-many-arguments
             )
             output.warning(dropped.format(count=human_number(session.dropped)))
         serve_review(runtime, session, port)
-        _tell_stopped(output, session)
+        _tell_stopped(ctx, runtime, session)
 
 
 def _tell_obvious(output: Output, session: ReviewSession) -> None:
@@ -89,13 +92,15 @@ def _tell_obvious(output: Output, session: ReviewSession) -> None:
     )
 
 
-def _tell_stopped(output: Output, session: ReviewSession) -> None:
+def _tell_stopped(ctx: typer.Context, runtime: Runtime, session: ReviewSession) -> None:
     """Sum the review up once stopped, and say what comes next.
 
     Args:
-        output: Where to tell it.
+        ctx: Typer context of the review, whose options `clean` keeps.
+        runtime: Settings, mount points and output.
         session: The review, stopped.
     """
+    output = runtime.output
     series, shots = session.progress
     output.blank()
     output.success(
@@ -113,9 +118,12 @@ def _tell_stopped(output: Output, session: ReviewSession) -> None:
     place = session.place
     output.info(_("Your choices are in {place}.").format(place=place.host))
     if shots:
-        output.next_step(
+        flag = decisions_flag(place.argument)
+        suggest(
+            runtime,
             _(
                 "the same 'clean' command with {option}; the shots set aside go "
                 "to the quarantine, 'undo' brings them back."
-            ).format(option=decisions_flag(place.argument))
+            ).format(option=flag),
+            NextVerb(carried(runtime, f"clean {flag}", ctx), CHANGING),
         )

@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import warn
+from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.crosscheck_outdated import show_outdated
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.inventory_view import inventory_table
@@ -34,6 +35,9 @@ if TYPE_CHECKING:
 def audit_and_show(runtime: Runtime) -> AuditFindings:
     """Run the audit with progress bars, then print its summary.
 
+    The inventory of the photos (dates, GPS, formats) only with `--verbosity
+    verbose`: the default output stays on what the audit lets the user do.
+
     Args:
         runtime: Settings, mount points and output.
 
@@ -51,7 +55,7 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
     output.show(findings_table(findings))
     output.blank()
     inventory = inventory_table(findings.inventory)
-    if inventory is not None:
+    if inventory is not None and output.verbose:  # always shown by 'inventory'
         output.show(inventory)
         output.blank()
     show_pairs(runtime, findings)
@@ -91,8 +95,11 @@ def show_second_opinion(
         runtime.output.warning(exc.message)
         return None
     if result is None:
-        runtime.output.tip(
-            _("For a second opinion, run 'crosscheck' (same -v options).")
+        runtime.output.advise(
+            Advice(
+                TipKind.DISCOVERY,
+                _("For a second opinion, run 'crosscheck' (same -v options)."),
+            )
         )
         return None
     result = show_verdict(runtime, result)
@@ -136,7 +143,7 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
         warn(output, exc)
         return
     if report is None:
-        output.tip(_('Add -v "<a folder of yours>:/reports" to get HTML reports.'))
+        output.setting(_('-v "<a folder of yours>:/reports" (HTML reports)'))
         return
     mapper = runtime.mapper
     index = runtime.locations.reports_dir / REPORT_INDEX_FILE_NAME
@@ -147,9 +154,12 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
     output.success(
         _("HTML report: {path}").format(path=file_link(mapper.to_host(report)))
     )
-    output.tip(
-        _("Every report is listed in {path} (Ctrl+click opens it).").format(
-            path=file_link(index_on_host)
+    output.advise(
+        Advice(
+            TipKind.DETAIL,
+            _("Every report is listed in {path} (Ctrl+click opens it).").format(
+                path=file_link(index_on_host)
+            ),
         )
     )
 
@@ -162,8 +172,14 @@ def _announce_in_container(output: Output, report: Path) -> None:
         report: The report written.
     """
     output.success(_("HTML report: {path}").format(path=report))
-    output.tip(
-        _("Open index.html in the folder mounted on /reports: it lists every report."),
+    output.advise(
+        Advice(
+            TipKind.DETAIL,
+            _(
+                "Open index.html in the folder mounted on /reports: it lists every "
+                "report."
+            ),
+        )
     )
 
 

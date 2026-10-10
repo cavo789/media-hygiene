@@ -82,6 +82,12 @@ msgstr ""
 msgid "(stay where it is)"
 msgstr ""
 
+#, python-brace-format
+msgid "({count} more tip: add --verbosity verbose to see it.)"
+msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
@@ -97,6 +103,15 @@ msgstr ""
 
 #, python-brace-format
 msgid "--year {value}: write a year (2016) or a range (2015-2017)."
+msgstr ""
+
+msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
+msgstr ""
+
+msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
+msgstr ""
+
+msgid "-v media-hygiene-cache:/cache (much faster next audits)"
 msgstr ""
 
 #, python-brace-format
@@ -217,9 +232,6 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/reports\" to get HTML reports."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
 msgstr ""
 
@@ -235,9 +247,6 @@ msgid "Add -v \"<a folder of yours>:/reports\" to the docker run command."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
-msgstr ""
-
-msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
 msgstr ""
 
 #, python-brace-format
@@ -432,7 +441,7 @@ msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
 msgstr ""
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
+msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
 msgstr ""
 
 msgid ""
@@ -560,6 +569,9 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
+msgid "Copied"
+msgstr ""
+
 msgid "Copies"
 msgstr ""
 
@@ -567,6 +579,9 @@ msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
 msgid "Copies of other files than media go to /quarantine: mount it."
+msgstr ""
+
+msgid "Copy the command"
 msgstr ""
 
 msgid "Correct these cells, save the workbook, then run 'sort' again."
@@ -794,9 +809,6 @@ msgid ""
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
-msgstr ""
-
-msgid "Edit the yellow cells and save: nothing moves until 'sort'."
 msgstr ""
 
 #, python-brace-format
@@ -1224,7 +1236,9 @@ msgstr ""
 msgid "How much to log."
 msgstr ""
 
-msgid "How much to log: \"error\", \"warning\", \"info\" or \"debug\"."
+msgid ""
+"How much to log: \"error\", \"warning\", \"info\", \"verbose\" (info and "
+"every tip, not only the best two) or \"debug\"."
 msgstr ""
 
 msgid "ISO"
@@ -1881,6 +1895,11 @@ msgstr ""
 msgid "Parties"
 msgstr ""
 
+msgid ""
+"Paste it in the terminal where you ran the audit (PowerShell or bash, as "
+"written)."
+msgstr ""
+
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
@@ -2353,6 +2372,9 @@ msgstr ""
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr ""
 
+msgid "Show it"
+msgstr ""
+
 msgid "Show the version and exit."
 msgstr ""
 
@@ -2390,12 +2412,6 @@ msgid "Sort"
 msgstr ""
 
 msgid "Sort review"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Sort the burst series with the keyboard: 'media-hygiene review' (add -p "
-"127.0.0.1:{port}:{port} to docker run)."
 msgstr ""
 
 #, python-brace-format
@@ -2511,6 +2527,10 @@ msgid "The classify workbook; the latest classify run's by default."
 msgstr ""
 
 msgid "The collection once sorted"
+msgstr ""
+
+#, python-brace-format
+msgid "The command adds {points}: folders of your home."
 msgstr ""
 
 #, python-brace-format
@@ -2705,12 +2725,6 @@ msgstr ""
 msgid "The sheets were renamed, moved, added or deleted: {found}."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"The space is freed by 'purge', once you have checked: media-hygiene purge"
-" {run_id}"
-msgstr ""
-
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -2829,17 +2843,6 @@ msgstr ""
 msgid "Time zone"
 msgstr ""
 
-msgid ""
-"Times are in UTC: Docker does not know your time zone. Add it to docker "
-"run, e.g. -e TZ=Europe/Brussels."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Times are in UTC: Docker does not know your time zone. Write it in "
-"{path}, section [general], e.g. timezone = \"Europe/Brussels\"."
-msgstr ""
-
 msgid "To check"
 msgstr ""
 
@@ -2862,6 +2865,10 @@ msgid "To move"
 msgstr ""
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
+msgstr ""
+
+#, python-brace-format
+msgid "To set once: {settings}."
 msgstr ""
 
 msgid "To sort"
@@ -2955,6 +2962,9 @@ msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr ""
 
 msgid "What next:"
+msgstr ""
+
+msgid "What you can do"
 msgstr ""
 
 #, python-brace-format
@@ -3245,6 +3255,9 @@ msgstr ""
 msgid "duplicate copies in %(groups)s groups"
 msgstr ""
 
+msgid "edit the yellow cells and save; nothing moves until 'sort'."
+msgstr ""
+
 #, python-brace-format
 msgid "elapsed {time}"
 msgstr ""
@@ -3477,6 +3490,9 @@ msgstr ""
 msgid "on another disk or mount: no link possible"
 msgstr ""
 
+msgid "once you have checked, 'purge' frees the space of the files set aside."
+msgstr ""
+
 msgid "only Czkawka"
 msgstr ""
 
@@ -3550,7 +3566,7 @@ msgid "run"
 msgstr ""
 
 #, python-brace-format
-msgid "run 'clean' (same -v options, without :ro) to set {size} of copies aside."
+msgid "run 'clean' to set {size} of copies aside."
 msgstr ""
 
 msgid "select a photo"
@@ -3578,10 +3594,7 @@ msgstr ""
 msgid "small"
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"sort the burst series with the keyboard, with 'media-hygiene review' (add"
-" -p 127.0.0.1:{port}:{port} to docker run)."
+msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr ""
 
 msgid "still to see first"
@@ -3661,6 +3674,12 @@ msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
 msgstr ""
 
 msgid "this file has too many names already"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
+"your time zone, not UTC)"
 msgstr ""
 
 #, python-format
@@ -3768,6 +3787,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} burst series not reviewed yet: its shots stay."
 msgid_plural "{count} burst series not reviewed yet: their shots stay."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} burst series: optional, ~{effort} in 'review'; a series not "
+"reviewed is kept whole."
+msgid_plural ""
+"{count} burst series: optional, ~{effort} in 'review'; the series not "
+"reviewed are kept whole."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3904,6 +3933,22 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} files, {undecided} to check or to sort"
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates to look at (~{effort}), then 'clean "
+"--tier near'."
+msgid_plural ""
+"{count} groups of near duplicates to look at (~{effort}), then 'clean "
+"--tier near'."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} identical copy, {size}: no risk, one command."
+msgid_plural "{count} identical copies, {size}: no risk, one command."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} link made: no photo was copied nor moved, no space is used."

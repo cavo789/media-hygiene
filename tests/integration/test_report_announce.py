@@ -31,6 +31,7 @@ def test_windows_folder_of_the_reports_is_shown(locations: Locations) -> None:
     runtime = replace(runtime, mounts=MountTable(frozenset(), host_sources=sources))
     findings = AuditService(runtime, NullProgress()).run()
     report_and_announce(runtime, ReportRecord(RunKind.AUDIT, findings))
+    runtime.output.finish()  # the closing advice
     printed = output_of(runtime)
     assert f"{_HOST_REPORTS}\\" in printed
     assert "-audit\\report.html" in printed
@@ -47,6 +48,7 @@ def test_unknown_folder_keeps_the_mount_point(locations: Locations) -> None:
     runtime = make_runtime(locations)
     findings = AuditService(runtime, NullProgress()).run()
     report_and_announce(runtime, ReportRecord(RunKind.AUDIT, findings))
+    runtime.output.finish()  # the closing advice
     printed = output_of(runtime)
     assert f"{locations.reports_dir}/" in printed
     assert "Open index.html in the folder mounted on /reports" in printed

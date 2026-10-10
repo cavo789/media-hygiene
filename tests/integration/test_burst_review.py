@@ -190,10 +190,11 @@ def test_the_stop_summary_names_the_file_without_any_choice(
 def test_audit_ends_on_the_next_step(cli: CliRunner) -> None:
     """The copies come first; once they are gone, the bursts are the next step."""
     first = run(cli, "audit")
-    assert (
-        first.output.rstrip().splitlines()[-2].startswith("👉 What next: run 'clean'")
-    )
+    assert "Photos with a shooting date" not in first.output  # 'inventory' has it
+    advice = first.output[first.output.index("👉 What next") :]
+    assert advice.startswith("👉 What next: run 'clean'")
+    assert "burst series: optional" in " ".join(first.output.split())
     assert run(cli, "clean", "--yes").exit_code == 0
     second = run(cli, "audit")
     assert "What next: sort the burst series" in second.output
-    assert "💡 Sort the burst series" not in second.output
+    assert "👉 What next: run 'clean'" not in second.output

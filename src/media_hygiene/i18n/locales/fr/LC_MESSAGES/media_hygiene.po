@@ -111,6 +111,12 @@ msgstr "(vide)"
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
 
+#, python-brace-format
+msgid "({count} more tip: add --verbosity verbose to see it.)"
+msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
+msgstr[0] "({count} autre conseil : ajoutez --verbosity verbose pour le voir.)"
+msgstr[1] "({count} autres conseils : ajoutez --verbosity verbose pour les voir.)"
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
@@ -132,6 +138,15 @@ msgstr "--tier near déplace les quasi-doublons dans /quarantine : montez-le."
 #, python-brace-format
 msgid "--year {value}: write a year (2016) or a range (2015-2017)."
 msgstr "--year {value} : écrivez une année (2016) ou une plage (2015-2017)."
+
+msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
+msgstr "-e TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC)"
+
+msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
+msgstr "-v \"<un de vos dossiers>:/reports\" (rapports HTML)"
+
+msgid "-v media-hygiene-cache:/cache (much faster next audits)"
+msgstr "-v media-hygiene-cache:/cache (prochains audits bien plus rapides)"
 
 #, python-brace-format
 msgid "... and {count} more."
@@ -297,11 +312,6 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/quarantine\" pour les traiter."
 
-msgid "Add -v \"<a folder of yours>:/reports\" to get HTML reports."
-msgstr ""
-"Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir des rapports "
-"HTML."
-
 msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir l'inventaire."
 
@@ -324,11 +334,6 @@ msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
 msgstr ""
 "Ajoutez -v \"<un de vos dossiers>:/reports\", comme dans la commande "
 "Czkawka."
-
-msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
-msgstr ""
-"Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien "
-"plus rapides."
 
 #, python-brace-format
 msgid ""
@@ -542,8 +547,8 @@ msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place."
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
-msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' restaure tout."
+msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
+msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' restaure tout :"
 
 msgid ""
 "Check any group yourself: 'Check it yourself' gives the command printing "
@@ -691,6 +696,9 @@ msgstr "Confirmer les fichiers à vérifier"
 msgid "Contents"
 msgstr "Sommaire"
 
+msgid "Copied"
+msgstr "Copiée"
+
 msgid "Copies"
 msgstr "Copies"
 
@@ -703,6 +711,9 @@ msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 "Les copies des fichiers autres que des médias vont dans /quarantine : "
 "montez-le."
+
+msgid "Copy the command"
+msgstr "Copier la commande"
 
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr "Corrigez ces cellules, enregistrez le classeur, puis relancez 'sort'."
@@ -998,9 +1009,6 @@ msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
 msgstr ""
 "Ne modifiez que les cellules jaunes, puis enregistrez ; rien ne bouge "
 "avant 'sort'."
-
-msgid "Edit the yellow cells and save: nothing moves until 'sort'."
-msgstr "Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'."
 
 #, python-brace-format
 msgid "Edit {path} to change these settings; command-line options win."
@@ -1523,8 +1531,13 @@ msgstr "Comment sait-on que ce sont des doublons ?"
 msgid "How much to log."
 msgstr "Niveau de détail des journaux."
 
-msgid "How much to log: \"error\", \"warning\", \"info\" or \"debug\"."
-msgstr "Quantité de messages : \"error\", \"warning\", \"info\" ou \"debug\"."
+msgid ""
+"How much to log: \"error\", \"warning\", \"info\", \"verbose\" (info and "
+"every tip, not only the best two) or \"debug\"."
+msgstr ""
+"Quantité de messages : \"error\", \"warning\", \"info\", \"verbose\" "
+"(info et tous les conseils, pas seulement les deux meilleurs) ou "
+"\"debug\"."
 
 msgid "ISO"
 msgstr "ISO"
@@ -2288,6 +2301,13 @@ msgstr "Page {page} sur {pages}"
 msgid "Parties"
 msgstr "Fêtes"
 
+msgid ""
+"Paste it in the terminal where you ran the audit (PowerShell or bash, as "
+"written)."
+msgstr ""
+"Collez-la dans le terminal où vous avez lancé l'audit (PowerShell ou "
+"bash, tel qu'écrit)."
+
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
@@ -2855,6 +2875,9 @@ msgstr ""
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr "Affiche chaque réglage, son origine, et les points de montage."
 
+msgid "Show it"
+msgstr "La voir"
+
 msgid "Show the version and exit."
 msgstr "Affiche la version et quitte."
 
@@ -2900,14 +2923,6 @@ msgstr "Tri"
 
 msgid "Sort review"
 msgstr "Revue du tri"
-
-#, python-brace-format
-msgid ""
-"Sort the burst series with the keyboard: 'media-hygiene review' (add -p "
-"127.0.0.1:{port}:{port} to docker run)."
-msgstr ""
-"Triez les rafales au clavier : 'media-hygiene review' (ajoutez -p "
-"127.0.0.1:{port}:{port} à docker run)."
 
 #, python-brace-format
 msgid "Sort {run_id}"
@@ -3042,6 +3057,10 @@ msgstr "Le classeur de classify ; celui du dernier classify par défaut."
 
 msgid "The collection once sorted"
 msgstr "La collection une fois triée"
+
+#, python-brace-format
+msgid "The command adds {points}: folders of your home."
+msgstr "La commande ajoute {points} : des dossiers de votre profil."
 
 #, python-brace-format
 msgid "The configuration file {path} is not valid TOML: {error}"
@@ -3275,14 +3294,6 @@ msgstr ""
 "Des feuilles ont été renommées, déplacées, ajoutées ou supprimées : "
 "{found}."
 
-#, python-brace-format
-msgid ""
-"The space is freed by 'purge', once you have checked: media-hygiene purge"
-" {run_id}"
-msgstr ""
-"L'espace est libéré par 'purge', une fois que vous avez vérifié : media-"
-"hygiene purge {run_id}"
-
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -3430,22 +3441,6 @@ msgstr ""
 msgid "Time zone"
 msgstr "Fuseau horaire"
 
-msgid ""
-"Times are in UTC: Docker does not know your time zone. Add it to docker "
-"run, e.g. -e TZ=Europe/Brussels."
-msgstr ""
-"Les heures sont en UTC : Docker ne connaît pas votre fuseau horaire. "
-"Ajoutez-le à docker run, par exemple -e TZ=Europe/Brussels."
-
-#, python-brace-format
-msgid ""
-"Times are in UTC: Docker does not know your time zone. Write it in "
-"{path}, section [general], e.g. timezone = \"Europe/Brussels\"."
-msgstr ""
-"Les heures sont en UTC : Docker ne connaît pas votre fuseau horaire. "
-"Écrivez-le dans {path}, section [general], par exemple timezone = "
-"\"Europe/Brussels\"."
-
 msgid "To check"
 msgstr "À vérifier"
 
@@ -3475,6 +3470,10 @@ msgid "To set every shot aside, press X: the whole series goes to the quarantine
 msgstr ""
 "Pour écarter toutes les photos, appuyez sur X : toute la rafale part en "
 "quarantaine."
+
+#, python-brace-format
+msgid "To set once: {settings}."
+msgstr "À régler une fois : {settings}."
 
 msgid "To sort"
 msgstr "À trier"
@@ -3579,6 +3578,9 @@ msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
 
 msgid "What next:"
 msgstr "Et maintenant :"
+
+msgid "What you can do"
+msgstr "Ce que vous pouvez faire"
 
 #, python-brace-format
 msgid "What {file} holds for this series"
@@ -3915,6 +3917,9 @@ msgstr "documentation/fr/reference-safety.md"
 msgid "duplicate copies in %(groups)s groups"
 msgstr "copies en double dans %(groups)s groupes"
 
+msgid "edit the yellow cells and save; nothing moves until 'sort'."
+msgstr "modifiez les cellules jaunes et enregistrez ; rien ne bouge avant 'sort'."
+
 #, python-brace-format
 msgid "elapsed {time}"
 msgstr "écoulé {time}"
@@ -4163,6 +4168,9 @@ msgstr "ok"
 msgid "on another disk or mount: no link possible"
 msgstr "sur un autre disque ou montage : aucun lien possible"
 
+msgid "once you have checked, 'purge' frees the space of the files set aside."
+msgstr "une fois vérifié, 'purge' libère la place des fichiers mis de côté."
+
 msgid "only Czkawka"
 msgstr "Czkawka seulement"
 
@@ -4205,7 +4213,9 @@ msgstr "série précédente (sans choix : comme affiché)"
 
 #, python-brace-format
 msgid "proposed aside: nearly identical to the sharper shot {number}"
-msgstr "proposée à l'écart : presque identique à la photo {number}, qui est plus nette"
+msgstr ""
+"proposée à l'écart : presque identique à la photo {number}, qui est plus "
+"nette"
 
 msgid "proposed aside: overexposed next to the others"
 msgstr "proposée à l'écart : surexposée à côté des autres"
@@ -4236,10 +4246,8 @@ msgid "run"
 msgstr "exécution"
 
 #, python-brace-format
-msgid "run 'clean' (same -v options, without :ro) to set {size} of copies aside."
-msgstr ""
-"lancez 'clean' (mêmes options -v, sans :ro) pour mettre {size} de copies "
-"de côté."
+msgid "run 'clean' to set {size} of copies aside."
+msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 
 msgid "select a photo"
 msgstr "sélectionner une photo"
@@ -4266,13 +4274,8 @@ msgstr "netteté {value}"
 msgid "small"
 msgstr "petit"
 
-#, python-brace-format
-msgid ""
-"sort the burst series with the keyboard, with 'media-hygiene review' (add"
-" -p 127.0.0.1:{port}:{port} to docker run)."
-msgstr ""
-"triez les rafales au clavier avec 'media-hygiene review' (ajoutez -p "
-"127.0.0.1:{port}:{port} à docker run)."
+msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
+msgstr "triez les rafales au clavier, avec 'media-hygiene review'."
 
 msgid "still to see first"
 msgstr "à voir d'abord"
@@ -4360,6 +4363,14 @@ msgstr ""
 
 msgid "this file has too many names already"
 msgstr "ce fichier a déjà trop de noms"
+
+#, python-brace-format
+msgid ""
+"timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
+"your time zone, not UTC)"
+msgstr ""
+"timezone = \"Europe/Brussels\" dans la section [general] de {path} "
+"(heures dans votre fuseau, pas en UTC)"
 
 #, python-format
 msgid "to check or to sort: %(count)s"
@@ -4470,6 +4481,20 @@ msgid "{count} burst series not reviewed yet: its shots stay."
 msgid_plural "{count} burst series not reviewed yet: their shots stay."
 msgstr[0] "{count} rafale pas encore vue : ses photos restent."
 msgstr[1] "{count} rafales pas encore vues : leurs photos restent."
+
+#, python-brace-format
+msgid ""
+"{count} burst series: optional, ~{effort} in 'review'; a series not "
+"reviewed is kept whole."
+msgid_plural ""
+"{count} burst series: optional, ~{effort} in 'review'; the series not "
+"reviewed are kept whole."
+msgstr[0] ""
+"{count} rafale : facultatif, ~{effort} dans 'review' ; une rafale non "
+"revue est gardée entière."
+msgstr[1] ""
+"{count} rafales : facultatif, ~{effort} dans 'review' ; les rafales non "
+"revues sont gardées entières."
 
 #, python-brace-format
 msgid "{count} burst shot you set aside will be moved to the quarantine."
@@ -4669,6 +4694,26 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} files, {undecided} to check or to sort"
 msgstr "{count} fichiers, {undecided} à vérifier ou à trier"
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates to look at (~{effort}), then 'clean "
+"--tier near'."
+msgid_plural ""
+"{count} groups of near duplicates to look at (~{effort}), then 'clean "
+"--tier near'."
+msgstr[0] ""
+"{count} groupe de quasi-doublons à regarder (~{effort}), puis 'clean "
+"--tier near'."
+msgstr[1] ""
+"{count} groupes de quasi-doublons à regarder (~{effort}), puis 'clean "
+"--tier near'."
+
+#, python-brace-format
+msgid "{count} identical copy, {size}: no risk, one command."
+msgid_plural "{count} identical copies, {size}: no risk, one command."
+msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
+msgstr[1] "{count} copies identiques, {size} : sans risque, une commande."
 
 #, python-brace-format
 msgid "{count} link made: no photo was copied nor moved, no space is used."

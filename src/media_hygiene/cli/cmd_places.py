@@ -8,7 +8,9 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.i18n import _
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.places import open_places, serve_places
 
 
@@ -30,9 +32,11 @@ def places_command(
         serve_places(runtime, board, port)
         output.blank()
         output.success(_("Map stopped; your places are in config.toml."))
-        output.next_step(
+        suggest(
+            runtime,
             _(
                 "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
                 "'classify'."
-            )
+            ),
+            NextVerb(carried(runtime, "classify")),
         )

@@ -7,20 +7,23 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import options, scan_options
+from media_hygiene.cli.audit_actions import show_actions
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show, report_and_announce
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.config.zone import timezone_unknown
+from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.crosscheck import czkawka_command
+from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
-    from media_hygiene.console.output import Output
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.services.runtime import Runtime
 
@@ -50,88 +53,106 @@ def audit_command(  # pylint: disable=too-many-arguments
             folder_layer(prefer, protect, exclude)
         ).with_overrides(scan_layer(ext, exclude_name))
         findings = audit_and_show(runtime)
-        report_and_announce(runtime, ReportRecord(RunKind.AUDIT, findings))
+        actions = show_actions(ctx, runtime, findings)
+        report_and_announce(
+            runtime, ReportRecord(RunKind.AUDIT, findings, actions=actions)
+        )
     output, plan = runtime.output, findings.plan
     if plan.is_empty:
         output.success(_("Nothing to clean: no duplicate and no broken file."))
-    elif plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
-        output.tip(
-            _(
-                "Second opinion: run Czkawka, an independent duplicate finder, on "
-                "the same folders, then 'media-hygiene crosscheck' "
-                "(same -v options):"
-            ),
-        )
-        output.command(czkawka_command(runtime).render())
-        if not runtime.settings.folders.preferred:
-            output.tip(
+    elif plan.decisions and not runtime.settings.folders.preferred:
+        output.advise(
+            Advice(
+                TipKind.DISCOVERY,
                 _(
                     "Choose which folders keep their copies: folders.preferred in "
                     "config.toml, or --prefer."
                 ),
             )
+        )
     similar = findings.similar
     if similar.near_count or similar.bursts:
-        output.tip(
-            _(
-                "Near duplicates and bursts are in the HTML report; "
-                "'clean --tier near' moves near duplicates to the quarantine."
-            ),
+        output.advise(
+            Advice(
+                TipKind.DISCOVERY,
+                _(
+                    "Near duplicates and bursts are in the HTML report; "
+                    "'clean --tier near' moves near duplicates to the quarantine."
+                ),
+            )
         )
     if similar.video_count:
-        output.tip(
-            _(
-                "Re-encoded videos are in the HTML report; 'clean --tier near' moves "
-                "them to the quarantine too."
-            ),
+        output.advise(
+            Advice(
+                TipKind.DISCOVERY,
+                _(
+                    "Re-encoded videos are in the HTML report; 'clean --tier near' "
+                    "moves them to the quarantine too."
+                ),
+            )
         )
-    if similar.bursts and plan.decisions:
-        output.tip(
-            _(
-                "Sort the burst series with the keyboard: 'media-hygiene review' (add "
-                "-p 127.0.0.1:{port}:{port} to docker run)."
-            ).format(port=PAGE_PORT),
-        )
+    if plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
+        _second_opinion(runtime)
     _setup_tips(runtime)
-    _next_step(output, findings)
+    _next_step(ctx, runtime, findings)
 
 
-def _next_step(output: Output, findings: AuditFindings) -> None:
+def _second_opinion(runtime: Runtime) -> None:
+    """Suggest Czkawka's command, to compare with an independent finder.
+
+    Args:
+        runtime: Settings, mount points and output.
+    """
+    runtime.output.advise(
+        Advice(
+            TipKind.DISCOVERY,
+            _(
+                "Second opinion: run Czkawka, an independent duplicate finder, on "
+                "the same folders, then 'media-hygiene crosscheck' "
+                "(same -v options):"
+            ),
+            czkawka_command(runtime).render(),
+        )
+    )
+
+
+def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) -> None:
     """Close with the step that logically follows: the copies first, then the bursts.
 
     Args:
-        output: Where to print.
+        ctx: Typer context of the audit, whose options the next command keeps.
+        runtime: Settings, mount points and output.
         findings: What the audit found.
     """
     plan = findings.plan
     if plan.decisions:
-        output.next_step(
-            _(
-                "run 'clean' (same -v options, without :ro) to set {size} of copies "
-                "aside."
-            ).format(size=human_size(plan.reclaimable))
+        suggest(
+            runtime,
+            _("run 'clean' to set {size} of copies aside.").format(
+                size=human_size(plan.reclaimable)
+            ),
+            NextVerb(carried(runtime, "clean", ctx), CHANGING),
         )
     elif findings.similar.bursts:
-        output.next_step(
-            _(
-                "sort the burst series with the keyboard, with 'media-hygiene review' "
-                "(add -p 127.0.0.1:{port}:{port} to docker run)."
-            ).format(port=PAGE_PORT)
+        suggest(
+            runtime,
+            _("sort the burst series with the keyboard, with 'media-hygiene review'."),
+            NextVerb(carried(runtime, "review", ctx), port=PAGE_PORT),
         )
 
 
 def _setup_tips(runtime: Runtime) -> None:
-    """Suggest the settings worth adding: the cache, the user's time zone.
+    """Suggest the settings worth adding once: the cache, the user's time zone.
 
     Args:
         runtime: Settings, mount points and output.
     """
     if not runtime.persistent(MountKind.CACHE):
-        runtime.output.tip(
-            _("Add -v media-hygiene-cache:/cache: the next audits will be much faster.")
+        runtime.output.setting(
+            _("-v media-hygiene-cache:/cache (much faster next audits)")
         )
     if timezone_unknown():
-        runtime.output.tip(_timezone_tip(runtime))
+        runtime.output.setting(_timezone_tip(runtime))
 
 
 def _timezone_tip(runtime: Runtime) -> str:
@@ -141,14 +162,11 @@ def _timezone_tip(runtime: Runtime) -> str:
         runtime: Settings, mount points and output.
 
     Returns:
-        The tip.
+        The setting, as a fragment of the setup line.
     """
     if runtime.persistent(MountKind.CONFIG):
         return _(
-            "Times are in UTC: Docker does not know your time zone. Write it in "
-            '{path}, section [general], e.g. timezone = "Europe/Brussels".'
+            'timezone = "Europe/Brussels" in section [general] of {path} (times '
+            "in your time zone, not UTC)"
         ).format(path=runtime.mapper.to_host(runtime.locations.config_file))
-    return _(
-        "Times are in UTC: Docker does not know your time zone. Add it to docker "
-        "run, e.g. -e TZ=Europe/Brussels."
-    )
+    return _("-e TZ=Europe/Brussels (times in your time zone, not UTC)")

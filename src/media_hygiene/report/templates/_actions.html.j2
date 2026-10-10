@@ -1,0 +1,38 @@
+{# What the audit lets the user do: gain and effort per action, each with its command. #}
+{% if report.header.actions %}
+<style>
+  .actions ul { list-style: none; padding-left: 0; }
+  .actions li { margin: 6px 0; }
+  .actions code.command { white-space: pre-wrap; }
+  .actions button.copy { margin-left: 6px; padding: 1px 10px; font-size: .85rem; }
+</style>
+<div class="note actions" id="actions">
+  <strong>{{ _("What you can do") }}</strong>
+  <ul>
+  {% for action in report.header.actions %}
+    <li>{{ action.icon }} {{ action.text }}
+    {% if action.command %}
+      <button type="button" class="copy" data-copied="{{ _('Copied') }}">{{ _("Copy the command") }}</button>
+      <details><summary>{{ _("Show it") }}</summary><code class="command">{{ action.command }}</code></details>
+    {% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+  <span class="muted">{{ _("Paste it in the terminal where you ran the audit (PowerShell or bash, as written).") }}</span>
+</div>
+<script>
+  // Copy the command next to the button; on failure, open it to select by hand.
+  for (const button of document.querySelectorAll(".actions button.copy")) {
+    button.addEventListener("click", async () => {
+      const details = button.nextElementSibling;
+      const command = details.querySelector("code").textContent;
+      try {
+        await navigator.clipboard.writeText(command);
+        button.textContent = button.dataset.copied;
+      } catch {
+        details.open = true;
+      }
+    });
+  }
+</script>
+{% endif %}

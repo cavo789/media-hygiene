@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from rich.console import Console
 from rich.markup import escape
 
+from media_hygiene.console.advice import Advice, AdviceBoard, TipKind
+from media_hygiene.console.advice_view import print_advice
 from media_hygiene.constants import ColorMode
 from media_hygiene.i18n import _
 
@@ -38,9 +40,16 @@ def make_console(color: ColorMode) -> Console:
 
 @dataclass(frozen=True, slots=True)
 class Output:
-    """Semantic output channel: every message kind has its own style and emoji."""
+    """Semantic output channel: every message kind has its own style and emoji.
+
+    `tip()` prints at once (a tip about what is on screen); `advise()`, `setting()`
+    and `next_step()` collect the closing advice, printed by `finish()` at the end
+    of the command, ranked and cut to a budget unless `verbose`.
+    """
 
     console: Console
+    verbose: bool = False
+    board: AdviceBoard = field(default_factory=AdviceBoard)
 
     def title(self, text: str) -> None:
         """Print a section title.
@@ -90,13 +99,39 @@ class Output:
         """
         self.console.print(f"💡 [cyan]{text}[/]")
 
-    def next_step(self, text: str) -> None:
-        """Print the step that logically comes next — set apart from the optional tips.
+    def advise(self, advice: Advice) -> None:
+        """Collect a tip for the end of the command, where it is ranked by kind.
+
+        Args:
+            advice: The tip, its kind and the command it suggests, if any.
+        """
+        self.board.add(advice)
+
+    def setting(self, fragment: str) -> None:
+        """Collect an option worth setting once; all of them end up on one line.
+
+        Args:
+            fragment: Translated, e.g. `-e TZ=Europe/Brussels (local times)`.
+        """
+        self.board.add_setting(fragment)
+
+    def next_step(self, text: str, command: str | None = None) -> None:
+        """Set the step that logically comes next, printed first by `finish()`.
 
         Args:
             text: Translated step, starting in lower case after the label.
+            command: The full command to paste, when the step is one.
         """
-        self.console.print(f"👉 [bold]{_('What next:')}[/] {text}")
+        self.board.step = Advice(TipKind.NEXT, text, command)
+
+    def drop_advice(self) -> None:
+        """Forget the advice collected: the user declined, nothing is to follow."""
+        self.board.drain()
+
+    def finish(self) -> None:
+        """Print the collected advice, then an empty line before the shell prompt."""
+        print_advice(self, self.board.drain())
+        self.blank()
 
     def command(self, text: str) -> None:
         """Print a command to copy and paste, never cut by a line break.

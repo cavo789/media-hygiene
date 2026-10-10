@@ -50,6 +50,7 @@ class Verbosity(StrEnum):
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
+    VERBOSE = "verbose"  # info, plus every tip a command has (not only the best two)
     DEBUG = "debug"
 
 

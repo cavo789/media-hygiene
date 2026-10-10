@@ -34,7 +34,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | Option | Commands | Meaning |
 |---|---|---|
 | `--locale en\|fr` | global | Interface language (English by default); numbers and sizes follow it: `67,947` and `44.3 GB`, or `67.947` and `44,3 Go`. |
-| `--verbosity error\|warning\|info\|debug` | global | How much to log. |
+| `--verbosity error\|warning\|info\|verbose\|debug` | global | How much to log. `verbose`: `info`, plus every tip of a command (not only the two most useful) and the inventory after an audit. |
 | `--color auto\|always\|never` | global | ANSI colours (`NO_COLOR` is honoured). |
 | `--version` | global | Show the version. |
 | `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |

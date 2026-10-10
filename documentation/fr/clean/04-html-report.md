@@ -26,13 +26,11 @@ docker run --rm -it `
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
 écrire ([pourquoi](../reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 
-À la fin de l'audit, deux nouvelles lignes :
+À la fin de l'audit, une nouvelle ligne :
 
-<!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
+<!-- capture: audit.txt|Rapport HTML|. -->
 ```text
 ✅ Rapport HTML : /reports/20261010-203315-audit/report.html
-💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
-rapports.
 ```
 
 Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
@@ -40,9 +38,9 @@ affiche les chemins complets à la place ; dans Windows Terminal, Ctrl+clic les 
 
 ```text
 ✅ Rapport HTML : C:\Users\<vous>\media-hygiene\reports\20261003-181105-audit\report.html
-💡 Tous les rapports sont listés dans C:\Users\<vous>\media-hygiene\reports\index.html
-(Ctrl+clic pour l'ouvrir).
 ```
+
+Avec `--verbosity verbose`, une astuce 💡 nomme aussi `index.html`, qui liste tous les rapports.
 
 ## L'ouvrir
 

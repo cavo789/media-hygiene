@@ -34,7 +34,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | Option | Commandes | Rôle |
 |---|---|---|
 | `--locale en\|fr` | globale | Langue de l'interface (anglais par défaut) ; les nombres et tailles la suivent : `67,947` et `44.3 GB`, ou `67.947` et `44,3 Go`. |
-| `--verbosity error\|warning\|info\|debug` | globale | Niveau de détail des journaux. |
+| `--verbosity error\|warning\|info\|verbose\|debug` | globale | Niveau de détail des journaux. `verbose` : `info`, plus toutes les astuces d'une commande (pas seulement les deux plus utiles) et l'inventaire après un audit. |
 | `--color auto\|always\|never` | globale | Couleurs ANSI (`NO_COLOR` est respecté). |
 | `--version` | globale | Affiche la version. |
 | `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5](clean/05-choose-the-kept-copy.md#préférer-un-dossier) |

@@ -133,10 +133,12 @@ The table first:
 | Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](../clean/10-review-bursts.md)). |
 | Duration | How long the whole audit took. |
 
-Then the *Inventory*: what your photos and videos say about themselves. How many photos have a
-shooting date (written by the camera), how many videos carry a date in their tags, how many files
-hold a GPS position, the formats of the photos and the total length of the videos. Nothing is
-judged there: these are facts the files hold, counted for you.
+With `--verbosity verbose` (a global option, before `audit`), the *Inventory* follows: what your
+photos and videos say about themselves. How many photos have a shooting date (written by the
+camera), how many videos carry a date in their tags, how many files hold a GPS position, the
+formats of the photos and the total length of the videos. Nothing is judged there: these are
+facts the files hold, counted for you. The [`inventory`](../reference-inventory.md) command
+lists them file by file.
 
 Then *Folders sharing identical files*: each sentence is a pair of folders holding the same
 files. The copies in the first folder are **kept**; those in the second one are the copies
@@ -150,8 +152,24 @@ audit has moved nothing. The pairs freeing the most space come first.
 
 Not the folder you want to keep? [Step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
 
-Then come the 💡 tips: what to add next. The next steps of this guide follow them one by one.
-The 👉 line at the very end gives the step that logically comes next.
+Then *What you can do*: at most three lines, each with what it gains and what it costs you.
+
+| Line | What it means |
+|---|---|
+| ✅ identical copies | No risk, one command: `clean` sets them aside, `undo` brings them back. |
+| 👀 near duplicates | Groups to look at before moving them, with an estimate of the time it takes ([step 11](../clean/11-near-duplicates.md)). |
+| 🎞️ burst series | Optional: a series you do not review is kept whole ([step 10](../clean/10-review-bursts.md)). |
+
+The 👉 line gives the step that logically comes next, followed by its **full command**, ready to
+paste: your folders on the same mount points (without `:ro` for a command that changes them), the
+folders you already mount, and the ones the next command needs that this run lacked (such as
+`/journal` and `/quarantine`, in a `media-hygiene` folder of your home, created first by
+`mkdir`). It is written for PowerShell when your folders are Windows paths (`C:\…`), for bash
+otherwise.
+
+Then at most two 💡 tips, the most useful first; the options worth setting once (the cache, your
+time zone, a reports folder) share a single ⚙️ line. A last line says how many tips were left out:
+add `--verbosity verbose` to see them all. The next steps of this guide follow them one by one.
 
 > 🔒 Nothing has changed in `C:\Photos`: an audit never writes, and `:ro` made sure of it.
 

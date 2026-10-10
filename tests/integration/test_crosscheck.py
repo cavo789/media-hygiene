@@ -39,7 +39,7 @@ def media_hygiene_groups(locations: Locations) -> list[list[Path]]:
 
 def test_the_audit_prints_the_czkawka_command(cli: CliRunner) -> None:
     """With duplicates, the audit suggests the command for a second opinion."""
-    output = run(cli, "audit").output
+    output = run(cli, "--verbosity", "verbose", "audit").output
     assert "Second opinion" in output
     assert "czkawka_cli dup -d " in output
     assert "-C /out/czkawka.json" in output

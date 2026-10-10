@@ -138,10 +138,12 @@ D'abord le tableau :
 | Rafales | Des photos prises à quelques secondes d'intervalle. Jamais touchées, sauf si vous choisissez ([étape 10](../clean/10-review-bursts.md)). |
 | Durée | Le temps qu'a pris tout l'audit. |
 
-Puis l'*Inventaire* : ce que vos photos et vos vidéos disent d'elles-mêmes. Combien de photos
-ont une date de prise de vue (écrite par l'appareil), combien de vidéos sont datées par leurs
-balises, combien de fichiers portent une position GPS, les formats des photos et la durée totale
-des vidéos. Rien n'y est jugé : ce sont des faits que les fichiers contiennent, comptés pour vous.
+Avec `--verbosity verbose` (une option globale, avant `audit`), l'*Inventaire* suit : ce que vos
+photos et vos vidéos disent d'elles-mêmes. Combien de photos ont une date de prise de vue (écrite
+par l'appareil), combien de vidéos sont datées par leurs balises, combien de fichiers portent une
+position GPS, les formats des photos et la durée totale des vidéos. Rien n'y est jugé : ce sont
+des faits que les fichiers contiennent, comptés pour vous. La commande
+[`inventory`](../reference-inventory.md) les liste fichier par fichier.
 
 Puis *Dossiers partageant des fichiers identiques* : chaque phrase décrit deux dossiers qui
 contiennent les mêmes fichiers. Les copies du premier dossier sont **gardées** ; celles du
@@ -158,8 +160,26 @@ plus d'espace viennent en premier.
 Ce n'est pas le dossier que vous voulez garder ? L'[étape 5](../clean/05-choose-the-kept-copy.md) montre
 comment choisir.
 
-Viennent ensuite les astuces 💡 : quoi ajouter ensuite. Les étapes suivantes de ce guide les
-suivent une à une. La ligne 👉, tout à la fin, donne l'étape qui vient logiquement maintenant.
+Puis *Ce que vous pouvez faire* : trois lignes au plus, chacune avec ce qu'elle rapporte et ce
+qu'elle vous coûte.
+
+| Ligne | Ce qu'elle signifie |
+|---|---|
+| ✅ copies identiques | Sans risque, une commande : `clean` les met de côté, `undo` les ramène. |
+| 👀 quasi-doublons | Des groupes à regarder avant de les déplacer, avec une estimation du temps que cela prend ([étape 11](../clean/11-near-duplicates.md)). |
+| 🎞️ rafales | Facultatif : une rafale que vous ne revoyez pas est gardée entière ([étape 10](../clean/10-review-bursts.md)). |
+
+La ligne 👉 donne l'étape qui vient logiquement maintenant, suivie de sa **commande complète**,
+prête à coller : vos dossiers sur les mêmes points de montage (sans `:ro` pour une commande qui
+les modifie), les dossiers que vous montez déjà, et ceux dont la commande suivante a besoin et
+qui manquaient à celle-ci (comme `/journal` et `/quarantine`, dans un dossier `media-hygiene` de
+votre profil, créés d'abord par `mkdir`). Elle est écrite pour PowerShell quand vos dossiers sont
+des chemins Windows (`C:\…`), pour bash sinon.
+
+Puis deux astuces 💡 au plus, la plus utile d'abord ; les options à régler une fois (le cache,
+votre fuseau horaire, un dossier de rapports) partagent une seule ligne ⚙️. Une dernière ligne
+dit combien d'astuces ont été omises : ajoutez `--verbosity verbose` pour les voir toutes. Les
+étapes suivantes de ce guide les suivent une à une.
 
 > 🔒 Rien n'a changé dans `C:\Photos` : un audit n'écrit jamais, et `:ro` s'en est assuré.
 

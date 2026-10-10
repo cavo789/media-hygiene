@@ -31,8 +31,8 @@ itself. Nothing to create: Docker creates it the first time and keeps it between
 - The first audit with the cache takes as long as before: it fills the cache.
 - The next ones only read new or changed files: the *Duration* line of the summary shows the
   difference. A step with nothing left to do is skipped.
-- The tip *"Add -v media-hygiene-cache:/cache: the next audits will be much faster."* no longer
-  appears.
+- The ⚙️ *To set once* line no longer suggests *"-v media-hygiene-cache:/cache (much faster next
+  audits)"*.
 
 A file is recognised by its path, its size and its modification date: change any of them and it
 is read again. The results are the same, with or without the cache.
