@@ -44,6 +44,8 @@ class VideoLook:
     height: int
     recorded_at: str | None = None
     codec: str | None = None
+    # Measured for re-encoded candidates only (`scan.colour`), never stored.
+    colour: float | None = None
 
     @property
     def pixels(self) -> int:

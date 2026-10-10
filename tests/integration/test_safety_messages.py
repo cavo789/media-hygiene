@@ -4,10 +4,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from typer.testing import CliRunner
+
+from media_hygiene.paths.mount_kind import MountKind
 from tests.support.cli import run
+from tests.support.media import MediaFactory
 
 if TYPE_CHECKING:
-    from typer.testing import CliRunner
+    import pytest
+
+    from media_hygiene.paths.locations import Locations
 
 
 def flat(text: str) -> str:
@@ -18,7 +24,9 @@ def flat(text: str) -> str:
 def test_clean_says_nothing_is_erased_and_how_to_free_and_undo(cli: CliRunner) -> None:
     """Default clean: moved, never erased; `purge` frees, `undo` brings back."""
     cleaned = flat(run(cli, "clean", "--yes").output)
-    assert "🛟 Nothing is erased: each copy is compared byte for byte" in cleaned
+    assert "🛟 Nothing will be erased: each copy is first compared byte for byte" in (
+        cleaned
+    )
     assert "The space is freed by 'purge', once you have checked" in cleaned
     assert "'media-hygiene undo " in cleaned
     undone = flat(run(cli, "undo", "--yes").output)
@@ -36,3 +44,18 @@ def test_delete_and_purge_say_plainly_that_they_erase(cli: CliRunner) -> None:
     text = flat(purged.output)
     assert "'purge' erases for good: these files cannot come back" in text
     assert "'undo' can no longer restore these files." in text
+
+
+def test_an_audit_without_copies_does_not_offer_to_set_copies_aside(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A broken file alone: no "set 0 of copies aside", no Czkawka, no --prefer."""
+    for kind in MountKind:
+        monkeypatch.setenv(
+            f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(locations.path_of(kind))
+        )
+    MediaFactory(locations.data_dir).empty("c/Photos/IMG_1.jpg")
+    audited = flat(run(CliRunner(), "audit").output)
+    assert "Broken files" in audited
+    for advice in ("of copies aside", "Second opinion", "--prefer"):
+        assert advice not in audited

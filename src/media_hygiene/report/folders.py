@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
@@ -21,7 +21,7 @@ def new_report_folder(reports_dir: Path, suffix: str) -> Path:
     Returns:
         The new, empty folder.
     """
-    base = f"{datetime.now(UTC).strftime(_STAMP_FORMAT)}-{suffix}"
+    base = f"{datetime.now().astimezone().strftime(_STAMP_FORMAT)}-{suffix}"
     folder, number = reports_dir / base, 1
     while folder.exists():
         number += 1

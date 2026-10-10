@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 
@@ -10,12 +10,16 @@ from media_hygiene.cli import options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show, report_and_announce
 from media_hygiene.cli.scan_options import scan_layer
+from media_hygiene.config.zone import timezone_unknown
 from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.crosscheck import czkawka_command
+
+if TYPE_CHECKING:
+    from media_hygiene.services.runtime import Runtime
 
 
 def audit_command(  # pylint: disable=too-many-arguments
@@ -47,7 +51,7 @@ def audit_command(  # pylint: disable=too-many-arguments
     output, plan = runtime.output, findings.plan
     if plan.is_empty:
         output.success(_("Nothing to clean: no duplicate and no broken file."))
-    else:
+    elif plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
         output.tip(
             _(
                 "Run 'clean' (same -v options, without :ro) to set {size} of copies "
@@ -56,15 +60,14 @@ def audit_command(  # pylint: disable=too-many-arguments
                 size=human_size(plan.reclaimable),
             ),
         )
-        if plan.decisions:
-            output.tip(
-                _(
-                    "Second opinion: run Czkawka, an independent duplicate finder, on "
-                    "the same folders, then 'media-hygiene crosscheck' "
-                    "(same -v options):"
-                ),
-            )
-            output.command(czkawka_command(runtime).render())
+        output.tip(
+            _(
+                "Second opinion: run Czkawka, an independent duplicate finder, on "
+                "the same folders, then 'media-hygiene crosscheck' "
+                "(same -v options):"
+            ),
+        )
+        output.command(czkawka_command(runtime).render())
         if not runtime.settings.folders.preferred:
             output.tip(
                 _(
@@ -94,7 +97,38 @@ def audit_command(  # pylint: disable=too-many-arguments
                 "-p 127.0.0.1::8080 to docker run)."
             ),
         )
+    _setup_tips(runtime)
+
+
+def _setup_tips(runtime: Runtime) -> None:
+    """Suggest the settings worth adding: the cache, the user's time zone.
+
+    Args:
+        runtime: Settings, mount points and output.
+    """
     if not runtime.persistent(MountKind.CACHE):
-        output.tip(
+        runtime.output.tip(
             _("Add -v media-hygiene-cache:/cache: the next audits will be much faster.")
         )
+    if timezone_unknown():
+        runtime.output.tip(_timezone_tip(runtime))
+
+
+def _timezone_tip(runtime: Runtime) -> str:
+    """Say how to give the tool the user's time zone, in config.toml when mounted.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        The tip.
+    """
+    if runtime.persistent(MountKind.CONFIG):
+        return _(
+            "Times are in UTC: Docker does not know your time zone. Write it in "
+            '{path}, section [general], e.g. timezone = "Europe/Brussels".'
+        ).format(path=runtime.mapper.to_host(runtime.locations.config_file))
+    return _(
+        "Times are in UTC: Docker does not know your time zone. Add it to docker "
+        "run, e.g. -e TZ=Europe/Brussels."
+    )

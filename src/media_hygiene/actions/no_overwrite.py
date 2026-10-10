@@ -16,11 +16,13 @@ from __future__ import annotations
 
 import ctypes
 import errno
+import hashlib
 import os
 import shutil
 from functools import cache
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import Sizes
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 
@@ -80,12 +82,18 @@ def rename_no_replace(source: Path, target: Path) -> None:
         raise OSError(code, os.strerror(code), str(target))
 
 
-def copy_exclusive(source: Path, target: Path) -> None:
+def copy_exclusive(source: Path, target: Path) -> str:
     """Copy `source` to a new file `target`, never replacing one.
+
+    The source is hashed as it is read: proving the copy later needs no second
+    reading of a source that may sit on a slow shared folder.
 
     Args:
         source: The file to copy.
         target: The copy; it must not exist.
+
+    Returns:
+        The SHA-256 of what was read from the source.
 
     Raises:
         FileExistsError: The target exists (nothing was written).
@@ -93,15 +101,19 @@ def copy_exclusive(source: Path, target: Path) -> None:
             created here, is removed first).
     """
     written = target.open(_EXCLUSIVE_WRITE)  # refused here: nothing was written
+    digest = hashlib.sha256()
     try:
         with written, source.open("rb") as read:
-            shutil.copyfileobj(read, written)
+            while chunk := read.read(Sizes.HASH_CHUNK):
+                digest.update(chunk)
+                written.write(chunk)
             written.flush()
             os.fsync(written.fileno())
         shutil.copystat(source, target)
     except BaseException:
         target.unlink()  # the partial copy, created here, never stays
         raise
+    return digest.hexdigest()
 
 
 def copy_then_remove(source: Path, target: Path) -> None:
@@ -116,8 +128,7 @@ def copy_then_remove(source: Path, target: Path) -> None:
         OSError: The copy differs from the original (the copy is removed, the
             original is kept).
     """
-    copy_exclusive(source, target)
-    if full_digest(source) != full_digest(target):
+    if copy_exclusive(source, target) != full_digest(target):
         target.unlink()
         raise OSError(_("the copy differs from the original"))
     source.unlink()

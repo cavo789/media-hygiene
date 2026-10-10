@@ -28,6 +28,8 @@ montrent ce que contiennent vos dossiers, sans rien modifier.
 
 Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.
 
+👉 **Pressé ?** [Nettoyer en bref](clean/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
+
 **Les voir** (rien n'est modifié) :
 
 4. [Le rapport HTML](clean/04-html-report.md) : les images, les paires de dossiers, la preuve.
@@ -60,6 +62,8 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 Donner à vos photos une arborescence rangée, `année/catégorie` ou celle que vous choisissez.
 Nettoyez d'abord les doublons : sinon les deux copies sont triées.
+
+👉 **Pressé ?** [Trier en bref](sort/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
 
 4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
    fichier, et ne modifie rien.

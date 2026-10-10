@@ -4,7 +4,8 @@
 
 Le terminal donne les totaux et les paires de dossiers. Le rapport montre le reste : les images
 elles-mêmes, chaque copie ligne par ligne, et la preuve qu'elles sont identiques. C'est une page
-web qui s'ouvre dans votre navigateur, sans serveur ni connexion internet.
+web qui s'ouvre dans votre navigateur, sans serveur ni connexion internet. Ses dates sont
+affichées dans le fuseau horaire de votre ordinateur.
 
 ## Donner un dossier de rapports à l'outil
 
@@ -29,9 +30,18 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
 ```text
-✅ Rapport HTML : /reports/20261003-080812-audit/report.html
+✅ Rapport HTML : /reports/20261003-181105-audit/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
+```
+
+Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
+affiche les chemins complets à la place ; dans Windows Terminal, Ctrl+clic les ouvre :
+
+```text
+✅ Rapport HTML : C:\Users\<vous>\media-hygiene\reports\20261003-181105-audit\report.html
+💡 Tous les rapports sont listés dans C:\Users\<vous>\media-hygiene\reports\index.html
+(Ctrl+clic pour l'ouvrir).
 ```
 
 ## L'ouvrir
@@ -43,7 +53,8 @@ Ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliq
 
 Cliquez sur une date pour ouvrir ce rapport. Chaque exécution a son propre dossier, nommé
 d'après sa date et son type (`AAAAMMJJ-HHMMSS-audit`), qui contient `report.html`, les
-vignettes et `plan.csv`.
+vignettes et `plan.csv`, et `near.html` s'il y a des quasi-doublons. Un encadré *Sommaire* en
+haut de `report.html` mène à chaque section.
 
 ## Le haut : les totaux
 
@@ -93,7 +104,7 @@ identiques. Il ne leur arrive rien, sauf si vous le demandez :
   ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](../images/report-near.webp)
 
 - **Vidéos réencodées** : la même vidéo enregistrée à nouveau, plus petite ou recompressée,
-  décrite par sa résolution, sa durée, son codec et sa taille ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
+  décrite par sa résolution, sa durée, son codec et sa taille, avec un lecteur ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
 
 - **Rafales** : des photos prises à quelques secondes d'intervalle, la plus nette marquée ⭐
   ([étape 10](10-review-bursts.md)).
@@ -111,8 +122,10 @@ déplacés en quarantaine.
 ## Chaque fichier dans un tableur : `plan.csv`
 
 À côté de chaque rapport, `plan.csv` liste **chaque** fichier du plan, sans limite : groupe,
-SHA-256, taille, action, chemin, dossier, date et la règle qui a choisi la copie gardée. Il
-s'ouvre directement dans Excel, accents compris (séparateur `;` en français) :
+SHA-256, taille, action, chemin, dossier, date et la règle qui a choisi la copie gardée. Les
+[quasi-doublons](11-near-duplicates.md) suivent, groupe par groupe, sans SHA-256 (ce ne sont pas
+des fichiers identiques). Il s'ouvre directement dans Excel, accents compris (séparateur `;` en
+français) :
 
 <!-- capture: plan-csv.txt -->
 ```text
@@ -139,14 +152,14 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261003-080851-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20261003-080845-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20261003-080828-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080822-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080817-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20261003-080815-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261003-080813-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080812-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-181145-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
+│ 20261003-181140-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
+│ 20261003-181120-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-181115-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-181110-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
+│ 20261003-181109-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261003-181107-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261003-181105-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

@@ -14,8 +14,8 @@ Pour chaque groupe de fichiers identiques, la première règle qui fait une diff
 2. un dossier **préféré**, dans l'ordre où vous les avez donnés ;
 3. la copie qui a un [fichier compagnon](../reference-sidecars.md) (`.xmp`, `.aae`, `.thm`) : elle garde ses retouches ;
 4. un nom qui ne ressemble pas à une copie : `IMG_0101.jpg` plutôt que `IMG_0101 (1).jpg` ou `IMG_0101 - Copie.jpg` ;
-5. un nom choisi par quelqu'un plutôt que généré par un appareil ou une application : `Marie et Paul.jpg` plutôt que `IMG_1234.jpg` ;
-6. un dossier nommé par quelqu'un plutôt qu'un dossier générique : `Vacances 2019` plutôt que `DCIM\100CANON` ;
+5. un nom choisi par quelqu'un plutôt que généré par un appareil ou une application : `Marie et Paul.jpg` plutôt que `IMG_1234.jpg` ou un simple numéro comme `162.mp4` ;
+6. un dossier nommé par quelqu'un plutôt qu'un dossier générique ou qui ne dit qu'une date : `Vacances 2019` ou `Saint-Cyprien` plutôt que `DCIM\100CANON` ou `Juillet 2018` ;
 7. la date la plus ancienne, puis le chemin le plus court, puis l'ordre alphabétique.
 
 Les mêmes dossiers donnent toujours le même choix. Le rapport indique, pour chaque paire et
@@ -44,28 +44,30 @@ docker run --rm -it `
 ```text
 Dossiers partageant des fichiers identiques
 • 3 fichiers sont à la fois dans C:\Photos\Téléphone (gardés) et dans D:\Ancien
-  disque\Téléphone (déplacés en quarantaine), 3,0 Mo libérés par 'purge'.
-  D:\Ancien disque\Téléphone ne contient rien d'autre : c'est entièrement une
-  copie de C:\Photos\Téléphone.
+  disque\Téléphone (des copies que 'clean' déplace en quarantaine), 3,0 Mo à
+  libérer avec 'purge'. D:\Ancien disque\Téléphone ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\Téléphone.
 • 1 fichier est à la fois dans C:\Photos\Vidéos (gardé) et dans D:\Ancien
-  disque\Vidéos (déplacé en quarantaine), 2,9 Mo libérés par 'purge'.
+  disque\Vidéos (une copie que 'clean' déplace en quarantaine), 2,9 Mo à libérer
+  avec 'purge'.
 • 9 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  C:\Photos\2019\Vacances à la mer (déplacés en quarantaine), 2,5 Mo libérés par
-  'purge'.
+  C:\Photos\2019\Vacances à la mer (des copies que 'clean' déplace en
+  quarantaine), 2,5 Mo à libérer avec 'purge'.
 • 8 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  D:\Ancien disque\Photos 2019 (déplacés en quarantaine), 2,2 Mo libérés par
-  'purge'.
+  D:\Ancien disque\Photos 2019 (des copies que 'clean' déplace en quarantaine),
+  2,2 Mo à libérer avec 'purge'.
 • 4 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans D:\Ancien disque\Photos 2019 (déplacés en quarantaine), 1,3 Mo libérés
-  par 'purge'.
+  dans D:\Ancien disque\Photos 2019 (des copies que 'clean' déplace en
+  quarantaine), 1,3 Mo à libérer avec 'purge'.
 • 4 fichiers sont à la fois dans C:\Photos\2020\Noël (gardés) et dans D:\Ancien
-  disque\Noël 2020 (déplacés en quarantaine), 1,2 Mo libérés par 'purge'.
-  D:\Ancien disque\Noël 2020 ne contient rien d'autre : c'est entièrement une
-  copie de C:\Photos\2020\Noël.
+  disque\Noël 2020 (des copies que 'clean' déplace en quarantaine), 1,2 Mo à
+  libérer avec 'purge'. D:\Ancien disque\Noël 2020 ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\2020\Noël.
 • 3 fichiers sont à la fois dans C:\Photos\Ancien téléphone (gardés) et dans
-  C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko libérés par
-  'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre : c'est
-  entièrement une copie de C:\Photos\Ancien téléphone.
+  C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
+  quarantaine), 864,7 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  ne contient rien d'autre : c'est entièrement une copie de C:\Photos\Ancien
+  téléphone.
 ```
 
 `--prefer` peut être répété : `--prefer "C:\Photos\Famille" --prefer "C:\Photos\Ancien téléphone"`.
@@ -101,13 +103,15 @@ Il ne reste que les doublons de `C:\Photos` :
 ```text
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\Ancien téléphone (déplacés en quarantaine), 2,2 Mo libérés par
-  'purge'. C:\Photos\Ancien téléphone ne contient rien d'autre : c'est
-  entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\Ancien téléphone (des copies que 'clean' déplace en
+  quarantaine), 2,2 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
+  contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
+  à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko
-  libérés par 'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre :
-  c'est entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
+  quarantaine), 864,7 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  ne contient rien d'autre : c'est entièrement une copie de
+  C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
   un exemplaire est gardé (287,5 Ko à libérer).
 ```

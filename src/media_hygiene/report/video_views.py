@@ -9,7 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import Sizes
+from media_hygiene.paths.file_uri import file_uri
+from media_hygiene.report.near_reasons import near_why
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class VideoView:
+class VideoView:  # pylint: disable=too-many-instance-attributes
     """One video: where it is, and what tells it from the other versions."""
 
     path: str
@@ -28,6 +29,8 @@ class VideoView:
     codec: str
     size: int
     recorded_at: str | None
+    uri: str | None = None  # plays the video itself, when its host path is known
+    same_stream: bool = False  # the very picture and sound of the kept video
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,14 +40,14 @@ class VideoNearView:
     kept: VideoView
     copies: tuple[VideoView, ...]
     protected: tuple[VideoView, ...]
+    why: str = ""  # why the kept version won (`near_reasons`)
 
 
 @dataclass(frozen=True, slots=True)
 class VideoSection:
-    """The groups shown, and how many are left out."""
+    """Every re-encoded video group: `clean --tier near` moves them all."""
 
     groups: tuple[VideoNearView, ...] = ()
-    hidden: int = 0
 
 
 def video_section(similar: SimilarFindings, mapper: HostPathMapper) -> VideoSection:
@@ -57,12 +60,8 @@ def video_section(similar: SimilarFindings, mapper: HostPathMapper) -> VideoSect
     Returns:
         The section.
     """
-    limit = Sizes.MAX_SIMILAR_IN_REPORT
     return VideoSection(
-        groups=tuple(
-            _group(decision, similar, mapper) for decision in similar.videos[:limit]
-        ),
-        hidden=max(0, len(similar.videos) - limit),
+        groups=tuple(_group(decision, similar, mapper) for decision in similar.videos)
     )
 
 
@@ -89,19 +88,22 @@ def _group(
         Returns:
             Its view, in host paths.
         """
-        look = similar.video_looks[file.path]
+        look, path = similar.video_looks[file.path], mapper.to_host(file.path)
         return VideoView(
-            path=mapper.to_host(file.path),
+            path=path,
             width=look.width,
             height=look.height,
             duration=look.duration,
             codec=look.codec or "",
             size=file.size,
             recorded_at=look.recorded_at,
+            uri=file_uri(path),
+            same_stream=file.path in decision.same_stream,
         )
 
     return VideoNearView(
         kept=view(decision.keeper),
         copies=tuple(view(file) for file in decision.removable),
         protected=tuple(view(file) for file in decision.protected),
+        why=near_why(decision, lambda file: similar.video_looks[file.path].pixels),
     )

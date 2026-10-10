@@ -25,6 +25,8 @@ folders hold, and change nothing.
 
 Free the space the extra copies take, safely, and keep the best shots.
 
+👉 **In a hurry?** [Clean in short](clean/quick-guide.md): every command, in order, on one page.
+
 **See them** (nothing is changed):
 
 4. [The HTML report](clean/04-html-report.md): the pictures, the folder pairs, the proof.
@@ -54,6 +56,8 @@ Free the space the extra copies take, safely, and keep the best shots.
 
 Give your photos a tidy tree, `year/category` or the one you choose. Clean the duplicates first:
 otherwise both copies are sorted.
+
+👉 **In a hurry?** [Sort in short](sort/quick-guide.md): every command, in order, on one page.
 
 4. [Propose a tidy tree](sort/04-classify.md): `classify` proposes a place for every file, and
    changes nothing.

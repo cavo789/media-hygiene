@@ -89,6 +89,18 @@ def test_an_undecodable_video_has_no_fingerprint(tmp_path: Path, body: str) -> N
     assert asyncio.run(keyframes.fingerprint(tmp_path / "v.mp4", 10.0, ffmpeg)) is None
 
 
+def test_an_undecodable_video_is_logged_in_debug_only(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A damaged stream makes ffmpeg talk a lot: one debug line, its last one."""
+    ffmpeg = fake_ffmpeg(tmp_path, "printf 'NAL 1\\nNAL 2\\nGave up\\n' >&2; exit 1")
+    with caplog.at_level("DEBUG", logger=keyframes.__name__):
+        asyncio.run(keyframes.fingerprint(tmp_path / "v.mp4", 10.0, ffmpeg))
+    (record,) = caplog.records
+    assert record.levelname == "DEBUG"
+    assert record.getMessage().endswith(": Gave up")
+
+
 def test_a_stuck_decoder_is_stopped(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

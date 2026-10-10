@@ -18,7 +18,7 @@ Summary
 ┌───┐
 └───┘
 
-docker run --rm -v "C:\\Photos:/data/c/Photos:ro" -x jpg -C /out/czkawka.json
+docker run --rm -it -v "C:\\Photos:/data/c/Photos:ro" -x jpg -C /out/czkawka.json
 💡 A tip long enough for the terminal
 to wrap it on a second line.
 2 burst shots will be moved.
@@ -41,7 +41,10 @@ to wrap it on a second line.
         ("screen|burst|.", "2 burst shots will be moved."),
         (
             "screen|docker run|.",
-            'docker run --rm -v "C:\\Photos:/data/c/Photos:ro" … -C /out/czkawka.json',
+            (
+                'docker run --rm -it -v "C:\\Photos:/data/c/Photos:ro" '
+                "… -C /out/czkawka.json"
+            ),
         ),
     ],
 )

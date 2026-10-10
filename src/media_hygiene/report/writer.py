@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import (
+    NEAR_FILE_NAME,
     PLAN_CSV_FILE_NAME,
     REPORT_FILE_NAME,
     SUMMARY_FILE_NAME,
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
 _STAMP_FORMAT: Final = "%Y%m%d-%H%M%S"
 _REPORT_TEMPLATE: Final = "report.html.j2"
 _PAIR_TEMPLATE: Final = "pair.html.j2"
+_NEAR_TEMPLATE: Final = "near.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,7 +41,7 @@ class ReportWriter:
     executor: Executor
 
     def write(self, record: ReportRecord) -> Path:
-        """Write the report of an audit or a clean.
+        """Write the report of an audit or a clean, and its near-duplicates page.
 
         Args:
             record: What to report.
@@ -57,21 +59,25 @@ class ReportWriter:
         target = folder / REPORT_FILE_NAME
         page = environment.get_template(_REPORT_TEMPLATE)
         target.write_text(page.render(report=view), encoding="utf-8")
+        if view.similar.near or view.similar.videos.groups:
+            near_page = environment.get_template(_NEAR_TEMPLATE)
+            (folder / NEAR_FILE_NAME).write_text(
+                near_page.render(report=view), encoding="utf-8"
+            )
         pair_page = environment.get_template(_PAIR_TEMPLATE)
         for name, pair_view in builder.pair_pages(record, previews):
             (folder / name).parent.mkdir(exist_ok=True)
             (folder / name).write_text(
                 pair_page.render(page=pair_view), encoding="utf-8"
             )
-        plan = record.findings.plan
-        write_plan_csv(folder / PLAN_CSV_FILE_NAME, plan, self.mapper)
+        write_plan_csv(folder / PLAN_CSV_FILE_NAME, record.findings, self.mapper)
         summary_json = view.header.summary.model_dump_json(indent=2)
         (folder / SUMMARY_FILE_NAME).write_text(summary_json, encoding="utf-8")
         write_index(self.reports_dir)
         return target
 
     def _new_folder(self, record: ReportRecord) -> Path:
-        stamp = record.run_id or datetime.now(UTC).strftime(_STAMP_FORMAT)
+        stamp = record.run_id or datetime.now().astimezone().strftime(_STAMP_FORMAT)
         base = f"{stamp}-{record.kind.value}"
         folder, suffix = self.reports_dir / base, 1
         while folder.exists():

@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-import subprocess
 from typing import TYPE_CHECKING, Final
 
 import pytest
 
 from tests.support.cli import run
-from tests.support.media import FFMPEG, VIDEO_TAGS
+from tests.support.media import FFMPEG, VIDEO_TAGS, encode
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
@@ -24,18 +21,6 @@ ZOOM: Final = "mandelbrot=size=320x240:rate=15"
 PATTERN: Final = "testsrc2=size=320x240:rate=15"
 
 pytestmark = pytest.mark.skipif(FFMPEG is None, reason="ffmpeg writes the videos")
-
-
-def encode(target: Path, *arguments: str) -> None:
-    """Run ffmpeg quietly, writing `target`.
-
-    Args:
-        target: The video written.
-        *arguments: Its inputs and options.
-    """
-    target.parent.mkdir(parents=True, exist_ok=True)
-    command = [FFMPEG or "ffmpeg", "-loglevel", "error", "-y", *arguments]
-    subprocess.run([*command, str(target)], check=True)  # noqa: S603 - trusted
 
 
 @pytest.fixture
@@ -58,6 +43,10 @@ def test_the_audit_lists_the_copy(videos: CliRunner, locations: Locations) -> No
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()
     assert "VID-20210714-WA0003.mp4" in report
     assert "Fractale.mp4" not in report
+    page = next(locations.reports_dir.glob("*-audit/near.html")).read_text()
+    assert '<a href="#near">' in page  # its own contents, burst series aside
+    assert '<a href="#videos">' in page
+    assert '<a href="#bursts">' not in page
 
 
 def test_the_copy_moves_only_with_the_tier(

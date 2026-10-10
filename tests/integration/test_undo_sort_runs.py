@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import shutil
+from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
@@ -153,6 +154,7 @@ def test_the_runs_of_another_sort_stay(locations: Locations) -> None:
         size=1,
         mtime_ns=1,
         plan="another plan",
+        at=datetime(2000, 1, 1, tzinfo=UTC),
     )
     other = journal_file(locations.journal_dir, "20000101-000000")
     with JournalWriter.open(other) as journal:

@@ -14,10 +14,16 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 
 ## Quick start
 
-With Docker installed, one command audits a folder:
+With Docker installed, one command audits a folder. In **PowerShell**:
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
+```
+
+In a **WSL** (or Linux) terminal, the same folder is written `/mnt/c/Photos`:
+
+```bash
+docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
 
 It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
@@ -25,19 +31,18 @@ It lists the duplicate and broken photos and videos of `C:\Photos`, and changes 
 [Your first audit](documentation/en/start/01-first-audit.md) explains this command and its result, part
 by part.
 
-What it does:
+What it finds:
 
-- **Exact duplicates** — same size and same SHA-256, compared again byte for byte right before
-  being set aside. Found across folders *and* disks (`C:` and `D:` in the same run).
+- **Exact duplicates** — same size and same SHA-256, across folders *and* disks (`C:` and `D:`
+  in the same run).
 - **Broken files** — empty files, images and RAW files that cannot be decoded (truncated JPEG,
   …), videos that cannot be opened.
-- **Reversible** — every action is journaled; `undo` brings every file back from the
-  quarantine, and rebuilds a copy deleted with `clean --delete` from the copy that was kept.
-- **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo is
-  moved to the quarantine; one next to its photo is never touched.
+- **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo.
 - **Burst series and near duplicates** (re-encoded videos included) — shown side by side in an
-  HTML report; you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
-- **Never touched without your say** — bursts, near duplicates, protected folders.
+  HTML report; `review` then lets you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
+
+Then, when you decide to, `clean` sets the extra copies and the broken files aside; bursts and
+near duplicates only when you ask for it.
 
 ## Your photos are safe
 
@@ -69,7 +74,7 @@ adds one thing to the command of the step before.
 3. [Several folders and disks](documentation/en/start/03-several-folders.md) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates**
+**Clean the duplicates** — in a hurry? [Clean in short](documentation/en/clean/quick-guide.md), every command on one page.
 
 4. [The HTML report](documentation/en/clean/04-html-report.md) — the pictures, the folder pairs, the
    proof.
@@ -92,7 +97,7 @@ adds one thing to the command of the step before.
 13. [A second opinion](documentation/en/clean/13-second-opinion.md) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first)
+**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](documentation/en/sort/quick-guide.md), every command on one page.
 
 4. [Propose a tidy tree](documentation/en/sort/04-classify.md) — `classify` proposes a place
    for every file, and changes nothing.

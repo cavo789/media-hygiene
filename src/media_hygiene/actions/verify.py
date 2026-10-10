@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-import filecmp
 import os
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.scan.hashing import identical_digest
 from media_hygiene.scan.sidecars import companions_of
 
 if TYPE_CHECKING:
@@ -15,32 +16,42 @@ if TYPE_CHECKING:
     from media_hygiene.scan.models import MediaFile
 
 
-def removal_blocker(keeper: Path, candidate: Path, size: int) -> str | None:
-    """Explain why `candidate` must not be deleted, or return None when it is safe.
+@dataclass(frozen=True, slots=True)
+class Removal:
+    """The verdict on a copy about to be set aside: why not, or its SHA-256."""
+
+    reason: str | None = None
+    sha256: str | None = None
+
+
+def checked_removal(keeper: Path, candidate: Path, size: int) -> Removal:
+    """Tell whether `candidate` may go, hashing it during the byte comparison.
 
     Safe means: both files exist, are two distinct files (not one file reached through
     two paths), still have the scanned size, and are equal byte for byte — so deleting
-    `candidate` never loses data.
+    `candidate` never loses data. The SHA-256 the journal needs comes from the same
+    reading: a large copy is not read once more for it.
 
     Args:
         keeper: The copy that stays.
-        candidate: The copy about to be deleted.
+        candidate: The copy about to be set aside.
         size: Size recorded by the scan.
 
     Returns:
-        The translated reason to skip, or None.
+        The translated reason to skip, or the SHA-256 of a candidate safe to remove.
     """
     if not keeper.is_file():
-        return _("the kept copy {path} no longer exists").format(path=keeper)
+        return Removal(_("the kept copy {path} no longer exists").format(path=keeper))
     if not candidate.is_file():
-        return _("the file no longer exists")
+        return Removal(_("the file no longer exists"))
     if keeper.samefile(candidate):
-        return _("it is the kept copy itself, seen through another path")
+        return Removal(_("it is the kept copy itself, seen through another path"))
     if keeper.stat().st_size != size or candidate.stat().st_size != size:
-        return _("a file changed since the audit")
-    if not filecmp.cmp(keeper, candidate, shallow=False):
-        return _("the files are no longer identical")
-    return None
+        return Removal(_("a file changed since the audit"))
+    digest = identical_digest(keeper, candidate)
+    if digest is None:
+        return Removal(_("the files are no longer identical"))
+    return Removal(sha256=digest)
 
 
 def near_blocker(keeper: Path, candidate: MediaFile) -> str | None:

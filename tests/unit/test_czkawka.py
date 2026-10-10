@@ -71,7 +71,7 @@ def test_the_command_sees_what_media_hygiene_sees() -> None:
         ),
     ).render()
     assert command == (
-        'docker run --rm -v "C:\\Photos:/data/c/Photos:ro" '
+        'docker run --rm -it -v "C:\\Photos:/data/c/Photos:ro" '
         '-v "C:\\Users\\me\\media-hygiene\\reports:/out" '
         f"{CZKAWKA_IMAGE} czkawka_cli dup -d /data -m 1 -W -N -x jpg,mp4 "
         '-e "/data/c/Photos/Backup" -C /out/czkawka.json'

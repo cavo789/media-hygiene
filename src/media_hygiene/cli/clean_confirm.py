@@ -29,43 +29,79 @@ def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa
     if yes or not runtime.settings.clean.confirm:
         return True
     require_terminal(sys.stdin)
-    return runtime.output.confirm(
-        _question(plan).format(
-            count=human_number(plan.removable_count),
-            size=human_size(plan.reclaimable),
-            near=human_number(plan.near_count),
-            broken=human_number(len(plan.broken)),
-        ),
-    )
+    return runtime.output.confirm(_question(plan))
 
 
 def _question(plan: CleanPlan) -> str:
-    """The question of the confirmation.
+    """The question of the confirmation: only what the clean does, no zero counts.
 
     Args:
         plan: What would be cleaned.
 
     Returns:
-        The translated question, its placeholders not filled yet.
+        The translated question, e.g. "Move 1,396 near duplicates to the quarantine?".
     """
-    if plan.delete_copies:
-        if plan.near_count:
-            return _(
-                "Delete {count} duplicate copies ({size}), move {near} near duplicates "
-                "to the quarantine and handle {broken} broken files?"
-            )
-        return _(
-            "Delete {count} duplicate copies ({size}) and handle {broken} broken files?"
+    actions = _actions(plan)
+    if not actions:
+        return _("Go on with the clean?")
+    joined = actions[0]
+    if len(actions) > 1:
+        joined = _("{actions} and {last}").format(
+            actions=", ".join(actions[:-1]), last=actions[-1]
         )
-    if plan.near_count:
-        return _(
-            "Move {count} duplicate copies ({size}) and {near} near duplicates to the "
-            "quarantine, and handle {broken} broken files?"
+    return _("{actions}?").format(actions=joined[0].upper() + joined[1:])
+
+
+def _actions(plan: CleanPlan) -> list[str]:
+    """What the clean does, one phrase per kind of file it touches.
+
+    Args:
+        plan: What would be cleaned.
+
+    Returns:
+        The phrases, lower case; none for a count of zero.
+    """
+    count, near = plan.removable_count, plan.near_count
+    size, broken = human_size(plan.reclaimable), len(plan.broken)
+    actions: list[str] = []
+    if count and plan.delete_copies:
+        phrase = ngettext(
+            "delete {count} duplicate copy ({size})",
+            "delete {count} duplicate copies ({size})",
+            count,
         )
-    return _(
-        "Move {count} duplicate copies ({size}) to the quarantine and handle "
-        "{broken} broken files?"
-    )
+        actions.append(phrase.format(count=human_number(count), size=size))
+    if count and near and not plan.delete_copies:
+        both = ngettext(
+            "move {count} duplicate copy ({size}) and {near} near duplicates to "
+            "the quarantine",
+            "move {count} duplicate copies ({size}) and {near} near duplicates to "
+            "the quarantine",
+            count,
+        )
+        actions.append(
+            both.format(count=human_number(count), size=size, near=human_number(near))
+        )
+    elif count and not plan.delete_copies:
+        phrase = ngettext(
+            "move {count} duplicate copy ({size}) to the quarantine",
+            "move {count} duplicate copies ({size}) to the quarantine",
+            count,
+        )
+        actions.append(phrase.format(count=human_number(count), size=size))
+    elif near:
+        phrase = ngettext(
+            "move {count} near duplicate to the quarantine",
+            "move {count} near duplicates to the quarantine",
+            near,
+        )
+        actions.append(phrase.format(count=human_number(near)))
+    if broken:
+        phrase = ngettext(
+            "handle {count} broken file", "handle {count} broken files", broken
+        )
+        actions.append(phrase.format(count=human_number(broken)))
+    return actions
 
 
 def _announce(runtime: Runtime, plan: CleanPlan) -> None:
@@ -93,13 +129,7 @@ def _announce(runtime: Runtime, plan: CleanPlan) -> None:
             )
             output.info(moved.format(count=human_number(plan.moved_copies)))
     else:
-        output.info(
-            _(
-                "🛟 Nothing is erased: each copy is compared byte for byte with the "
-                "kept one, then moved to the quarantine. 'purge' erases it once you "
-                "have checked."
-            )
-        )
+        output.info(_safe_line(runtime, plan))
     if plan.burst_count:
         bursts = ngettext(
             "{count} burst shot you set aside will be moved to the quarantine.",
@@ -116,3 +146,29 @@ def _announce(runtime: Runtime, plan: CleanPlan) -> None:
             len(plan.orphans),
         )
         output.info(orphans.format(count=human_number(len(plan.orphans))))
+
+
+def _safe_line(runtime: Runtime, plan: CleanPlan) -> str:
+    """Say that nothing will be erased, where the files go and how they come back.
+
+    Args:
+        runtime: Settings, mount points and output.
+        plan: What would be cleaned (without `--delete`).
+
+    Returns:
+        The line; the byte comparison is named for exact copies only.
+    """
+    quarantine = runtime.mapper.to_host(runtime.locations.quarantine_dir)
+    if plan.removable_count:
+        line = _(
+            "🛟 Nothing will be erased: each copy is first compared byte for byte "
+            "with the kept one, then moved to the quarantine ({path}). 'undo' puts "
+            "it back; 'purge' erases it once you have checked."
+        )
+    else:
+        line = _(
+            "🛟 Nothing will be erased: the files are moved to the quarantine "
+            "({path}). 'undo' puts them back; 'purge' erases them once you have "
+            "checked."
+        )
+    return line.format(path=quarantine)

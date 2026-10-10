@@ -17,6 +17,7 @@ from media_hygiene.cli.flows import (
     show_pairs,
     show_second_opinion,
 )
+from media_hygiene.cli.near_preview import show_near_first
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import outcome_table
@@ -85,6 +86,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         if plan.is_empty:
             output.success(_("Nothing to clean: no duplicate and no broken file."))
             return
+        show_near_first(runtime, replace(findings, plan=plan), yes=yes)
         if not confirm_clean(runtime, plan, yes):
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)

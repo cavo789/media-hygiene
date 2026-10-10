@@ -8,9 +8,8 @@ import typer
 
 from media_hygiene.cli import options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
-from media_hygiene.cli.flows import audit_and_show, report_and_announce
+from media_hygiene.cli.flows import audit_and_show, report_and_announce, show_verdict
 from media_hygiene.cli.scan_options import scan_layer
-from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.constants import ExitCode, RunKind
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
@@ -60,7 +59,7 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
             output.command(czkawka_command(runtime).render())
             raise typer.Exit(ExitCode.FAILURE)
         output.title(_("Second opinion"))
-        show_cross_check(output, result, runtime.mapper)
+        verdict = show_verdict(runtime, result)
         report_and_announce(
-            runtime, ReportRecord(RunKind.AUDIT, findings, crosscheck=result)
+            runtime, ReportRecord(RunKind.AUDIT, findings, crosscheck=verdict)
         )

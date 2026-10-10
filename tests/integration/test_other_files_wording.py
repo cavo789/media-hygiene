@@ -48,8 +48,8 @@ def test_a_pdf_pair_reads_moved_to_the_quarantine(
     buffer = io.StringIO()
     Console(file=buffer, width=300).print(folder_pairs_view(findings, runtime.mapper))
     console = buffer.getvalue()
-    assert "C:\\Docs\\old (moved to the quarantine)" in console
-    assert "C:\\Photos\\old (deleted)" in console
+    assert "C:\\Docs\\old (a copy 'clean' moves to the quarantine)" in console
+    assert "C:\\Photos\\old (a copy 'clean' deletes)" in console
     report = write_report(runtime, ReportRecord(RunKind.AUDIT, findings))
     assert report is not None
     html = report.read_text()

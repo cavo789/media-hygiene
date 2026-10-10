@@ -53,8 +53,9 @@ then **asks before doing anything**:
 
 <!-- capture: clean.txt|re:^🛟|❓ -->
 ```text
-🛟 Nothing is erased: each copy is compared byte for byte with the kept one,
-then moved to the quarantine. 'purge' erases it once you have checked.
+🛟 Nothing will be erased: each copy is first compared byte for byte with the
+kept one, then moved to the quarantine (/quarantine). 'undo' puts it back;
+'purge' erases it once you have checked.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
 ❓ Move 32 duplicate copies (13.9 MB) to the quarantine and handle 3 broken
 files? [y/N] y
@@ -65,7 +66,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261003-080719
+Clean 20261003-181011
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -74,11 +75,11 @@ Clean 20261003-080719
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261003-080719-clean/report.html
+✅ HTML report: /reports/20261003-181011-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261003-080719' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20261003-181011' restores everything.
 💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261003-080719
+20261003-181011
 ```
 
 | Line | What it means |
@@ -121,8 +122,11 @@ of other files than media (`--ext`) still go to the quarantine.
 
 - **No question asked**: add `--yes` (`clean --yes`), or set `confirm = false` in the `[clean]`
   section of `config.toml`. Without `-it`, `clean` cannot ask and stops: use `--yes` then.
+- **What is it doing?** A line under the bar names the file at hand and what happens to it.
+  The bar and its estimate follow the bytes: the large videos come first.
 - **Interrupted?** Ctrl+C, a power cut: every action is written to the journal *before* and
-  *after* it happens, so `undo` still restores what was done.
+  *after* it happens, so `undo` still restores what was done. A file the run had not touched yet
+  stays where it is.
 - **Refusals that protect you**: `clean` stops before the analysis without a `/journal` or a
   `/quarantine`, with a `:ro` folder, with a folder it cannot write to, or with a tool folder
   (quarantine, journal, cache, reports) placed inside a photo folder. The message says which

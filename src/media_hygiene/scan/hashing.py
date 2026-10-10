@@ -47,3 +47,24 @@ def full_digest(path: Path) -> str:
     """
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, _ALGORITHM).hexdigest()
+
+
+def identical_digest(kept: Path, copy: Path) -> str | None:
+    """Compare two files byte for byte, hashing the copy in the same reading.
+
+    Args:
+        kept: The file that stays.
+        copy: The file compared with it.
+
+    Returns:
+        The SHA-256 of the copy when both are identical, else None.
+    """
+    digest = hashlib.new(_ALGORITHM)
+    with kept.open("rb") as first, copy.open("rb") as second:
+        while chunk := second.read(Sizes.HASH_CHUNK):
+            if first.read(len(chunk)) != chunk:
+                return None
+            digest.update(chunk)
+        if first.read(1):  # the kept file is longer
+            return None
+    return digest.hexdigest()

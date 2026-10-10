@@ -16,6 +16,9 @@
 {{ comment(_('Interface language: "en" or "fr".'), "--locale") }}
 locale = "{{ locale }}"
 
+{{ comment(_('Your time zone, for the dates and the names of reports and runs, e.g. "Europe/Brussels" or "America/Montreal" (list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: UTC, as Docker does not know yours.')) }}
+timezone = ""
+
 {{ comment(_('How much to log: "error", "warning", "info" or "debug".'), "--verbosity") }}
 verbosity = "info"
 
@@ -117,7 +120,7 @@ received_layout = "{{ _("To sort") }}/{{ _("Received and downloaded") }}"
 merge_gap_hours = 18
 min_event_size = 5
 
-{{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: the zone of the container.')) }}
+{{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: [general] timezone.')) }}
 timezone = ""
 
 {{ comment(_("Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and above to the 'to check' layout, the rest to the 'to sort' one.")) }}

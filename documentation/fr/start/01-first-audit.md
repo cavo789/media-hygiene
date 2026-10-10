@@ -94,13 +94,15 @@ Inventaire
 
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\Ancien téléphone (déplacés en quarantaine), 2,2 Mo libérés par
-  'purge'. C:\Photos\Ancien téléphone ne contient rien d'autre : c'est
-  entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\Ancien téléphone (des copies que 'clean' déplace en
+  quarantaine), 2,2 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
+  contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
+  à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko
-  libérés par 'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre :
-  c'est entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
+  quarantaine), 864,7 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  ne contient rien d'autre : c'est entièrement une copie de
+  C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
   un exemplaire est gardé (287,5 Ko à libérer).
 
@@ -109,7 +111,7 @@ Dossiers partageant des fichiers identiques
 côté.
 💡 Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur les
 mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :
-docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.
 💡 Les quasi-doublons et les rafales sont dans le rapport HTML ; 'clean --tier
@@ -140,8 +142,9 @@ balises, combien de fichiers portent une position GPS, les formats des photos et
 des vidéos. Rien n'y est jugé : ce sont des faits que les fichiers contiennent, comptés pour vous.
 
 Puis *Dossiers partageant des fichiers identiques* : chaque phrase décrit deux dossiers qui
-contiennent les mêmes fichiers. Les copies du premier dossier sont **gardées**, celles du second
-seraient **supprimées**, et la phrase se termine par l'espace libéré. Les paires qui libèrent le
+contiennent les mêmes fichiers. Les copies du premier dossier sont **gardées** ; celles du
+second sont les copies que `clean` mettra en quarantaine, et la phrase se termine par la place
+qu'elles occupent. C'est une prévision : l'audit n'a rien déplacé. Les paires qui libèrent le
 plus d'espace viennent en premier.
 
 - *« … ne contient rien d'autre : c'est entièrement une copie de … »* : le second dossier ne

@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
+from media_hygiene.constants import KeepReason, NearReason
+
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
@@ -29,6 +31,10 @@ class NearDecision:
     keeper: MediaFile
     removable: tuple[MediaFile, ...]
     protected: tuple[MediaFile, ...] = ()
+    # Videos only: the copies with the very picture and sound of the keeper.
+    same_stream: frozenset[Path] = frozenset()
+    reason: NearReason = NearReason.RESOLUTION
+    rule: KeepReason | None = None  # the usual rule that decided, for `RULES`
 
     @property
     def reclaimable(self) -> int:

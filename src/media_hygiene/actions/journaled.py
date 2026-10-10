@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import JournalEntry
 from media_hygiene.actions.kinds import Phase, Status
@@ -20,6 +20,20 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.progress import ProgressSink
+
+
+@dataclass(frozen=True, slots=True)
+class Origin:
+    """What is known of a file set aside: the file kept instead, its SHA-256.
+
+    A SHA-256 computed during the byte comparison spares one more reading of the file.
+    """
+
+    keeper: Path | None = None
+    sha256: str | None = None
+
+
+NO_ORIGIN: Final = Origin()
 
 
 @dataclass(frozen=True, slots=True)
@@ -97,21 +111,22 @@ class JournaledChanges:
         self._tally.bytes_done += entry.size
 
     def quarantine(
-        self, file: MediaFile, action: ActionKind, keeper: Path | None = None
+        self, file: MediaFile, action: ActionKind, origin: Origin = NO_ORIGIN
     ) -> None:
         """Move a file to this run's quarantine, journaled.
 
         Args:
             file: File to move.
             action: Why it is moved.
-            keeper: The file kept instead, when there is one.
+            origin: The file kept instead, and the SHA-256 when already known.
         """
         path = file.path
         target = self._context.quarantine_run_dir / self._context.mapper.relative(path)
+        keeper = origin.keeper
         entry = self.entry(file, action).model_copy(
             update={
                 "quarantine": str(target),
-                "sha256": full_digest(path),
+                "sha256": origin.sha256 or full_digest(path),
                 "keeper": str(keeper) if keeper else None,
             },
         )

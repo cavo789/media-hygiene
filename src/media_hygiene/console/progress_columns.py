@@ -14,15 +14,21 @@ from rich.table import Column
 from rich.text import Text
 
 from media_hygiene.console.formatting import human_number
-from media_hygiene.i18n import _, active_locale
+from media_hygiene.i18n import _, active, active_locale
 
 if TYPE_CHECKING:
+    import gettext
+
     from rich.progress import Task
 
 _COUNT_STYLE = "progress.download"
 _ELAPSED_STYLE = "progress.elapsed"
 _REMAINING_STYLE = "progress.remaining"
 _UNKNOWN_TIME = "…"
+_SECONDS_PER_DAY = 86_400
+# Task fields of a weighted step: Rich counts the weight, these the units of work.
+UNITS = "units"
+UNITS_TOTAL = "units_total"
 
 
 def step_columns(*, counting: bool) -> tuple[ProgressColumn, ...]:
@@ -58,10 +64,13 @@ class CountColumn(ProgressColumn):
         Returns:
             The completed count, followed by the total when known.
         """
-        done = human_number(task.completed, locale=self._locale)
-        if task.total is None:
+        completed, of = task.completed, task.total
+        if UNITS_TOTAL in task.fields:  # weighted: count units, not bytes
+            completed, of = task.fields[UNITS], task.fields[UNITS_TOTAL]
+        done = human_number(completed, locale=self._locale)
+        if of is None:
             return Text(done, style=_COUNT_STYLE)
-        total = human_number(task.total, locale=self._locale)
+        total = human_number(of, locale=self._locale)
         return Text(f"{done}/{total}", style=_COUNT_STYLE)
 
 
@@ -73,6 +82,7 @@ class TimesColumn(ProgressColumn):
         super().__init__(table_column=Column(no_wrap=True))
         self._elapsed = _("elapsed {time}")
         self._remaining = _("about {time} left")
+        self._translations = active()
 
     @override
     def render(self, task: Task) -> Text:
@@ -85,23 +95,32 @@ class TimesColumn(ProgressColumn):
             The labelled times.
         """
         elapsed = task.finished_time if task.finished else task.elapsed
-        text = Text(self._elapsed.format(time=_clock(elapsed)), style=_ELAPSED_STYLE)
+        text = Text(
+            self._elapsed.format(time=clock(elapsed, self._translations)),
+            style=_ELAPSED_STYLE,
+        )
         if task.total is not None:
-            remaining = _clock(task.time_remaining)
+            remaining = clock(task.time_remaining, self._translations)
             text.append(" · ")
             text.append(self._remaining.format(time=remaining), style=_REMAINING_STYLE)
         return text
 
 
-def _clock(seconds: float | None) -> str:
-    """Render a duration as `h:mm:ss`.
+def clock(seconds: float | None, translations: gettext.NullTranslations) -> str:
+    """Render a duration as `h:mm:ss`, days first in words (`2 days 3:04:05`).
 
     Args:
         seconds: The duration, or None when not known yet.
+        translations: The catalog of the language the bar was created in.
 
     Returns:
         The clock, or an ellipsis while unknown.
     """
     if seconds is None:
         return _UNKNOWN_TIME
-    return str(timedelta(seconds=int(seconds)))
+    days, rest = divmod(int(seconds), _SECONDS_PER_DAY)
+    time = str(timedelta(seconds=rest))
+    if not days:
+        return time
+    words = translations.ngettext("{days} day {clock}", "{days} days {clock}", days)
+    return words.format(days=days, clock=time)

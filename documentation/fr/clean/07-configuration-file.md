@@ -26,6 +26,7 @@ Réglages effectifs
 ┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
 │ general.locale              │ fr                         │ ligne de commande │
+│ general.timezone            │                            │ défaut            │
 │ general.verbosity           │ info                       │ défaut            │
 │ general.color               │ never                      │ ligne de commande │
 │ folders.preferred           │ []                         │ défaut            │
@@ -252,6 +253,12 @@ exemple :
 # CLI: --locale
 locale = "fr"
 
+# Votre fuseau horaire, pour les dates et les noms des rapports et des exécutions, par
+# exemple "Europe/Brussels" ou "America/Montreal" (liste :
+# https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA). Vide : UTC, car Docker
+# ne connaît pas le vôtre.
+timezone = ""
+
 # Quantité de messages : "error", "warning", "info" ou "debug".
 # CLI: --verbosity
 verbosity = "info"
@@ -276,6 +283,7 @@ Les réglages des étapes 5 et 6, dans le fichier. Écrivez les chemins Windows 
 ```toml
 [general]
 locale = "fr"          # en | fr
+timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC
 
 [folders]
 preferred = ['C:\Photos\Ancien téléphone', 'C:\Photos\Famille']
@@ -297,6 +305,11 @@ confirm = true         # sort demande avant de déplacer quoi que ce soit
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un dossier en vie
 ```
 
+- **`timezone`** : votre fuseau horaire, pour les heures affichées et les noms des rapports et des
+  exécutions. Docker ne le connaît pas : vide, tout est en UTC (l'audit vous le rappelle). Son nom
+  vient de [cette liste](https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA), par
+  exemple `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` dans `docker run` marche
+  aussi.
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
@@ -350,6 +363,7 @@ Réglages effectifs
 ┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
 │ general.locale              │ fr                         │ ligne de commande │
+│ general.timezone            │                            │ défaut            │
 │ general.verbosity           │ info                       │ config.toml       │
 │ general.color               │ never                      │ ligne de commande │
 │ folders.preferred           │ []                         │ config.toml       │

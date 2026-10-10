@@ -14,10 +14,16 @@ L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/ca
 
 ## Démarrage rapide
 
-Avec Docker installé, une seule commande audite un dossier :
+Avec Docker installé, une seule commande audite un dossier. Dans **PowerShell** :
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+```
+
+Dans un terminal **WSL** (ou Linux), le même dossier s'écrit `/mnt/c/Photos` :
+
+```bash
+docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
 ```
 
 Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
@@ -25,21 +31,19 @@ Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien
 télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul. [Votre premier audit](documentation/fr/start/01-first-audit.md) explique
 cette commande et son résultat, morceau par morceau.
 
-Ce qu'elle fait :
+Ce qu'elle trouve :
 
-- **Doublons exacts** : même taille et même SHA-256, comparés à nouveau octet par octet juste
-  avant d'être mis de côté. Détectés entre dossiers *et* entre disques (`C:` et `D:` dans la même
-  exécution).
+- **Doublons exacts** : même taille et même SHA-256, entre dossiers *et* entre disques (`C:` et
+  `D:` dans la même exécution).
 - **Fichiers cassés** : fichiers vides, images et fichiers RAW impossibles à décoder (JPEG
   tronqué, …), vidéos impossibles à ouvrir.
-- **Réversible** : chaque action est journalisée ; `undo` ressort chaque fichier de la
-  quarantaine, et reconstruit une copie supprimée avec `clean --delete` à partir de la copie
-  conservée.
 - **Fichiers compagnons orphelins** : un fichier compagnon (`.xmp`, `.aae`, `.thm`) resté sans
-  sa photo est déplacé en quarantaine ; celui qui accompagne sa photo n'est jamais touché.
+  sa photo.
 - **Rafales et quasi-doublons** (vidéos réencodées comprises) : montrés côte à côte dans un
-  rapport HTML ; vous choisissez les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
-- **Jamais touchés sans votre accord** : les rafales, les quasi-doublons, les dossiers protégés.
+  rapport HTML ; `review` vous fait ensuite choisir les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
+
+Ensuite, si vous le décidez, `clean` met de côté les copies en trop et les fichiers cassés ; les
+rafales et les quasi-doublons seulement si vous le demandez.
 
 ## Vos photos sont en sécurité
 
@@ -73,7 +77,7 @@ seule chose à la commande de l'étape précédente.
 3. [Plusieurs dossiers et disques](documentation/fr/start/03-several-folders.md) : `C:` et `D:`
    ensemble, le dossier courant, WSL.
 
-**Nettoyer les doublons**
+**Nettoyer les doublons** — pressé ? [Nettoyer en bref](documentation/fr/clean/quick-guide.md), toutes les commandes sur une page.
 
 4. [Le rapport HTML](documentation/fr/clean/04-html-report.md) : les images, les paires de dossiers, la
    preuve.
@@ -96,7 +100,7 @@ seule chose à la commande de l'étape précédente.
 13. [Un second avis](documentation/fr/clean/13-second-opinion.md) : comparer avec Czkawka, un outil
     indépendant.
 
-**Trier les photos** (nettoyez d'abord les doublons)
+**Trier les photos** (nettoyez d'abord les doublons) — pressé ? [Trier en bref](documentation/fr/sort/quick-guide.md), toutes les commandes sur une page.
 
 4. [Proposer une arborescence](documentation/fr/sort/04-classify.md) — `classify` propose une
    place pour chaque fichier, et ne modifie rien.

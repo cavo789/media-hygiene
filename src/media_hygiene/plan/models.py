@@ -169,7 +169,7 @@ class CleanPlan:
 
 
 @dataclass(frozen=True, slots=True)
-class AuditFindings:
+class AuditFindings:  # pylint: disable=too-many-instance-attributes
     """Result of an audit: how much was scanned, the groups found, and the plan."""
 
     roots: tuple[Path, ...]
@@ -181,6 +181,8 @@ class AuditFindings:
     groups: tuple[DuplicateGroup, ...] = ()
     similar: SimilarFindings = field(default_factory=SimilarFindings)
     inventory: Inventory = field(default_factory=Inventory)
+    # Every media path the walk listed, hard-link aliases included; None when unknown.
+    listed: frozenset[Path] | None = None
 
     @property
     def files_scanned(self) -> int:

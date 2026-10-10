@@ -15,6 +15,7 @@ from media_hygiene.config.legacy_env import (
     legacy_names,
 )
 from media_hygiene.config.loader import load_settings, write_default_config
+from media_hygiene.config.zone import apply_timezone
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
 from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode
@@ -79,6 +80,7 @@ def build_runtime(cli_layer: Layer) -> Runtime:
     with user_errors(Output(make_console(ColorMode.AUTO))):
         loaded = load_settings(locations, cli_layer)
     general = loaded.settings.general
+    apply_timezone(general.timezone)
     output = Output(make_console(general.color))
     configure_logging(general.verbosity, output.console)
     _warn_legacy_variables(output)

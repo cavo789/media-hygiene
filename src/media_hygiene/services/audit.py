@@ -17,9 +17,10 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.plan.models import AuditFindings
 from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.plan.planner import build_plan
-from media_hygiene.plan.similar import SimilarInputs, find_similar
+from media_hygiene.plan.similar import SimilarInputs
 from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder, IntegrityFindings
+from media_hygiene.scan.colour import ColourTools
 from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
 from media_hygiene.scan.inventory import take_inventory
@@ -32,6 +33,7 @@ from media_hygiene.services.data_checks import (
     warn_about_aliases,
     warn_about_scope,
 )
+from media_hygiene.services.near_checks import checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
 
 if TYPE_CHECKING:
@@ -74,7 +76,7 @@ class AuditService:
         warn_about_scope(runtime)
         roots = runtime.mounts.data_roots(data_dir)
         filters = scan_filters(runtime.settings, runtime.mapper)
-        found = self._list_files(roots, filters)
+        found, every_path = self._list_files(roots, filters)
         listed = frozenset(str(file.path) for file in found.files)
         groups, integrity = self._check_files(
             found, WalkCoverage(roots, listed, found.unreadable, filters)
@@ -95,11 +97,13 @@ class AuditService:
                 Counter(file.path.parent for file in found.files)
             ),
             groups=groups,
-            similar=find_similar(
+            similar=checked_similar(
                 SimilarInputs(found.files, integrity.visuals, groups, integrity.videos),
                 policy,
+                ColourTools(shutil.which(FFMPEG_BINARY), self._progress),
             ),
             inventory=take_inventory(found.files, integrity),
+            listed=every_path,
         )
 
     def _check_files(
@@ -137,7 +141,9 @@ class AuditService:
                 ),
             )
 
-    def _list_files(self, roots: tuple[Path, ...], filters: ScanFilters) -> Walk:
+    def _list_files(
+        self, roots: tuple[Path, ...], filters: ScanFilters
+    ) -> tuple[Walk, frozenset[Path]]:
         """Walk every root, without listing a file twice (nested mounts, hard links).
 
         Args:
@@ -145,7 +151,8 @@ class AuditService:
             filters: Folders to skip and extensions to keep.
 
         Returns:
-            The media files, by path, every sidecar found, what could not be read.
+            The media files, by path, every sidecar found, what could not be read;
+            then every media path listed, the aliases set aside included.
         """
         step = Step(
             _("Listing media files"),
@@ -159,7 +166,8 @@ class AuditService:
         self._progress.stop()
         unique = unique_files(found.files)
         warn_about_aliases(self._runtime, unique.aliases)
-        return Walk(unique.files, found.sidecars, found.unreadable)
+        every_path = frozenset(file.path for file in found.files)
+        return Walk(unique.files, found.sidecars, found.unreadable), every_path
 
 
 async def _analyse(

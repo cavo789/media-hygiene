@@ -23,7 +23,7 @@
 {% endmacro %}
 {% block content %}
 <h1>🧹 {{ _("Clean report") if is_clean else _("Audit report") }}</h1>
-<p class="muted">{{ s.created_at.strftime("%Y-%m-%d %H:%M") }} UTC{% if s.run_id %} · {{ _("run") }} {{ s.run_id }}{% endif %}</p>
+<p class="muted">{{ s.created_at | when }}{% if s.run_id %} · {{ _("run") }} {{ s.run_id }}{% endif %}</p>
 <p>{{ _("Folders analysed:") }} {% for root in report.header.roots %}<code>{{ root }}</code>{% if not loop.last %}, {% endif %}{% endfor %}</p>
 
 <div class="cards">
@@ -57,13 +57,15 @@
   <strong>⚠️ {{ _("Czkawka disagrees on {count} groups: look at them before cleaning.").format(count=(c.only_ours + c.only_czkawka) | number) }}</strong>
   <br>{{ _("Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The terminal lists them.").format(ours=c.only_ours | number, theirs=c.only_czkawka | number) }}
   {% endif %}
-  <br><span class="muted">{{ _("Czkawka is an independent duplicate finder.") }}{% if c.results_date %} {{ _("Czkawka results of {date} UTC.").format(date=c.results_date.strftime("%Y-%m-%d %H:%M")) }}{% endif %}{% if c.set_aside %} {{ _("Files set aside, as media-hygiene does not analyse them: {count}.").format(count=c.set_aside | number) }}{% endif %}</span>
+  <br><span class="muted">{{ _("Czkawka is an independent duplicate finder.") }}{% if c.results_date %} {{ (_("Czkawka results of {date}.") | escape).format(date=c.results_date | when) }}{% endif %}{% if c.set_aside %} {{ _("Files set aside, as media-hygiene does not analyse them: {count}.").format(count=c.set_aside | number) }}{% endif %}</span>
 </div>
 {% endif %}
 
 {% if s.plan_file %}
 <p>📄 <a href="{{ s.plan_file }}">{{ _("The whole plan as a spreadsheet (CSV): every group, every file") }}</a></p>
 {% endif %}
+
+{% include "_toc.html.j2" %}
 
 {% if not is_clean %}
 <p class="note">🔒 {{ _("An audit never modifies anything. Every copy listed below is byte-for-byte identical to the one kept; 'clean' compares them again right before deleting.") }}</p>
@@ -82,7 +84,7 @@
 {% endif %}
 
 {% if report.incidents.failed or report.incidents.skipped %}
-<h2>⚠️ {{ _("Files left untouched") }}</h2>
+<h2 id="untouched">⚠️ {{ _("Files left untouched") }}</h2>
 <table>
   <tr><th>{{ _("File") }}</th><th>{{ _("Reason") }}</th></tr>
   {% for item in report.incidents.failed %}<tr><td>{{ item.path }}</td><td class="remove">{{ item.reason }}</td></tr>{% endfor %}
@@ -91,7 +93,7 @@
 {% endif %}
 
 {% if report.pairs %}
-<h2>📁 {{ _("Folder pairs") }}</h2>
+<h2 id="pairs">📁 {{ _("Folder pairs") }}</h2>
 <p class="muted">{{ _("The quickest check: which folder keeps its copies, which folder loses them. Open a pair to see every copy.") }}</p>
 {% set disposals = report.pairs | map(attribute="evidence.disposal") | map("string") | unique | list %}
 {% set disposal = disposals[0] if disposals | length == 1 else "mixed" %}
@@ -118,21 +120,22 @@
 {% endif %}
 
 {% if report.groups.sample %}
-<h2>🎲 {{ _("Random sample") }}</h2>
+<h2 id="sample">🎲 {{ _("Random sample") }}</h2>
 <p class="muted">{{ _("Photo groups picked across the whole plan, the same ones on every run. The list after it starts with the largest files, often videos without preview.") }}</p>
 {% for group in report.groups.sample %}{{ group_block(group) }}{% endfor %}
 {% endif %}
 
 {% if report.groups.largest %}
-<h2>🧬 {{ _("Duplicate groups") }}</h2>
+<h2 id="groups">🧬 {{ _("Duplicate groups") }}</h2>
 {% for group in report.groups.largest %}{{ group_block(group) }}{% endfor %}
 {% if report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
 {% endif %}
 
 {% include "_similar.html.j2" %}
+{% include "_bursts.html.j2" %}
 
 {% if report.broken.handled or report.broken.protected %}
-<h2>💔 {{ _("Broken files") }}</h2>
+<h2 id="broken">💔 {{ _("Broken files") }}</h2>
 <p class="muted">{{ _("Empty files are deleted; unreadable ones are moved to the quarantine, never deleted outright.") }}</p>
 {% for item in report.broken.handled + report.broken.protected %}
 <div class="group">
@@ -147,7 +150,7 @@
 {% endif %}
 
 {% if report.orphans.paths %}
-<h2>🏷️ {{ _("Orphan sidecar files") }}</h2>
+<h2 id="orphans">🏷️ {{ _("Orphan sidecar files") }}</h2>
 <p class="muted">{{ _("Sidecars (.xmp, .aae, .thm) hold the metadata or edits of the photo of the same name, next to them. These ones have no such file left: they are moved to the quarantine, never deleted outright. A sidecar next to its photo is never touched.") }}</p>
 <ul class="files">
   {% for path in report.orphans.paths %}<li class="remove">🏷️ {{ path }}</li>{% endfor %}

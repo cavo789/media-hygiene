@@ -18,7 +18,7 @@ toutes les tailles de fichier. Elle ressemble à ceci (l'image communautaire `jl
 environ 500 Mo, contient l'outil en ligne de commande de Czkawka) :
 
 ```powershell
-docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
   -v "$HOME\media-hygiene\reports:/out" `
   jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
   -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
@@ -28,8 +28,10 @@ docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/An
 
 Copiez la commande affichée par votre propre audit ; là où elle indique
 `<le dossier que vous montez sur /reports>`, écrivez votre dossier de rapports. Collez-la et
-lancez-la. Czkawka écrit ses résultats, `czkawka.json`, dans votre dossier de rapports. Depuis
-WSL, écrivez vos dossiers `/mnt/c/...` au lieu de `C:\...`.
+lancez-la. Czkawka affiche son avancement : la taille des fichiers, puis leur empreinte. Sur
+des dizaines de milliers de photos, comptez plusieurs minutes. Il écrit ses résultats,
+`czkawka.json`, dans votre dossier de rapports. Depuis WSL, écrivez vos dossiers `/mnt/c/...` au
+lieu de `C:\...`.
 
 ## Étape 3 : comparer
 
@@ -49,7 +51,7 @@ groupe. Après le résumé habituel :
 
 <!-- capture: crosscheck.txt|re:^Résultats de Czkawka|d'accord -->
 ```text
-Résultats de Czkawka du 2026-10-03 08:08 UTC.
+Résultats de Czkawka du 2026-10-03 18:11 UTC.
 ✅ Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes.
 ```
 
@@ -58,9 +60,17 @@ Résultats de Czkawka du 2026-10-03 08:08 UTC.
 - Ou *Czkawka n'est pas d'accord sur N groupes*, suivi de chaque groupe trouvé par un seul des
   deux outils. Regardez-les avant de nettoyer.
 
-Les fichiers que media-hygiene laisse volontairement de côté sont mis à part et comptés, pas
-signalés comme des différences : autres types de fichiers, dossiers exclus ou système, fichiers
-cassés.
+Les fichiers que media-hygiene laisse volontairement de côté ne sont pas comparés : ils sont
+comptés, pas signalés comme des différences. Ce sont les autres types de fichiers, les dossiers
+exclus ou système (corbeille, vignettes), les fichiers cassés. Rien à faire de votre côté. Les
+dossiers jamais analysés sont nommés, ceux qui contiennent le plus de fichiers d'abord : vous voyez
+tout de suite où Czkawka a cherché et media-hygiene non.
+
+Si des photos ont été déplacées ou supprimées depuis le passage de Czkawka (par un `clean`, par
+exemple), ses résultats ne sont plus à jour : ils sont ignorés, et le message donne les deux façons
+d'en sortir. Soit vous relancez la commande Czkawka qu'il affiche, puis `crosscheck` ; soit vous
+supprimez le fichier `czkawka.json` qu'il nomme (dans votre dossier des rapports) si vous ne voulez
+plus de second avis.
 
 ## Où apparaît le verdict
 

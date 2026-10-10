@@ -49,7 +49,7 @@ class BrokenFile:
 
 
 @dataclass(frozen=True, slots=True)
-class VisualFacts:
+class VisualFacts:  # pylint: disable=too-many-instance-attributes
     """What an image looks like, for near duplicates, bursts and the sharpest shot.
 
     Hashes are 64-bit perceptual fingerprints: close pictures differ by few bits.
@@ -63,6 +63,8 @@ class VisualFacts:
     sharpness: float
     taken_at: str | None = None
     camera: str | None = None
+    # Measured for near-duplicate candidates only (`scan.colour`), never stored.
+    colour: float | None = None
 
     @property
     def pixels(self) -> int:

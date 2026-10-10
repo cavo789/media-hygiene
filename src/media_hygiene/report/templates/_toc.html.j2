@@ -1,0 +1,20 @@
+{# The table of contents of report.html and near.html: one entry per section shown. #}
+{% set sections = [
+  ("untouched", "⚠️ " ~ _("Files left untouched"), report.incidents.failed or report.incidents.skipped),
+  ("pairs", "📁 " ~ _("Folder pairs"), report.pairs),
+  ("sample", "🎲 " ~ _("Random sample"), report.groups.sample),
+  ("groups", "🧬 " ~ _("Duplicate groups"), report.groups.largest),
+  ("near", "🪞 " ~ _("Near duplicates"), report.similar.near),
+  ("videos", "🎞️ " ~ _("Re-encoded videos"), report.similar.videos.groups),
+  ("bursts", "📸 " ~ _("Burst series"), report.similar.bursts),
+  ("broken", "💔 " ~ _("Broken files"), report.broken.handled or report.broken.protected),
+  ("orphans", "🏷️ " ~ _("Orphan sidecar files"), report.orphans.paths),
+] %}
+{% set on_page = ["near", "videos"] if near_page else sections | map(attribute=0) | list %}
+{% set shown = sections | selectattr(2) | selectattr(0, "in", on_page) | list %}
+{% if shown | length > 1 %}
+<nav class="toc" aria-label="{{ _('Contents') }}">
+  <strong>{{ _("Contents") }}</strong>
+  <ul>{% for anchor, title, _items in shown %}<li><a href="#{{ anchor }}">{{ title }}</a></li>{% endfor %}</ul>
+</nav>
+{% endif %}

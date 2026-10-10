@@ -4,23 +4,27 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
+from media_hygiene.actions.quarantine import remove_emptied_folders
 from media_hygiene.actions.restore import perform
-from media_hygiene.actions.reversal import blocker, reversal_of
+from media_hygiene.actions.reversal import Reversal, blocker, reversal_of
 from media_hygiene.actions.runs import run_phase
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
 if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry, JournalWriter
-    from media_hygiene.actions.reversal import Reversal
     from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
+# Undone by removing what the action created: the path existing proves it happened.
+_NOT_ABOUT_THE_PATH: Final = frozenset(
+    {Reversal.REMOVE_CREATED_FOLDER, Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER}
+)
 
 
 def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
@@ -73,16 +77,19 @@ class UndoExecutor:
                 "Rebuilds each deleted copy from the kept one, brings quarantined and "
                 "moved files back."
             ),
+            total_weight=sum(entry.size for entry, _reversal in todo),
         )
         self._progress.start(step, len(todo))
+        restoring = _("Putting back: {path}")
         for entry, reversal in reversed(todo):
+            self._progress.current(restoring.format(path=entry.host_path))
             try:
                 self._restore(entry, reversal)
             except OSError as exc:
                 _LOGGER.debug("Restore failed on %s", entry.path, exc_info=True)
                 self._tally.failed.append(Incident(Path(entry.path), str(exc)))
             finally:
-                self._progress.advance()
+                self._progress.advance(entry.size)
         self._progress.stop()
         return self._tally.freeze()
 
@@ -93,6 +100,9 @@ class UndoExecutor:
             entry: Latest state of the action to reverse.
             reversal: How it is reversed.
         """
+        if _never_happened(entry, reversal):
+            _LOGGER.debug("Interrupted before acting, nothing to undo: %s", entry.path)
+            return
         reason = blocker(entry, reversal)
         if reason is not None:
             self._tally.skipped.append(Incident(Path(entry.path), reason))
@@ -103,8 +113,31 @@ class UndoExecutor:
         self._journal.record(pending)
         perform(entry, reversal)
         self._journal.record(pending.as_done())
+        if reversal is Reversal.UNQUARANTINE and entry.quarantine:
+            remove_emptied_folders(Path(entry.path), Path(entry.quarantine))
         if entry.action in FOLDER_ACTIONS:  # a folder is not a file restored
             return
         self._tally.done += 1
         if entry.action is not ActionKind.LINK:  # removing a link frees nothing
             self._tally.bytes_done += entry.size
+
+
+def _never_happened(entry: JournalEntry, reversal: Reversal) -> bool:
+    """Tell whether a run stopped before this action changed anything.
+
+    A `pending` action may have happened (stopped before its `done` line) or not
+    (stopped before it acted). A file still where the action would have taken it
+    from was never touched: there is nothing to undo, and nothing to warn about.
+
+    Args:
+        entry: Latest state of the action.
+        reversal: How it is undone.
+
+    Returns:
+        True for a `pending` file action whose file is still in place.
+    """
+    return (
+        entry.status is Status.PENDING
+        and reversal not in _NOT_ABOUT_THE_PATH
+        and Path(entry.path).exists()
+    )

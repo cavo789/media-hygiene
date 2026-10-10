@@ -49,8 +49,10 @@ def human_size(size: int) -> str:
         size: Number of bytes.
 
     Returns:
-        The rounded size with its translated unit.
+        The rounded size with its translated unit; a bare `0` when there is nothing.
     """
+    if not size:
+        return human_number(0)
     units = _units()
     value = float(size)
     if abs(value) < _STEP:

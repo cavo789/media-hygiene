@@ -5,7 +5,8 @@ Two videos are alike when every test agrees: the same length (within half a seco
 most one informative frame may differ (a cut falling between two frame timings), and
 at least `MIN_FRAMES` must agree. Frames black or blank in both are not informative.
 A copy is kept apart from its original only when it was recorded at the same moment
-or has lost its date, as for images: two takes of a still scene stay two videos.
+or has lost its date, as for images: two takes of a still scene stay two videos. A
+black and white edit keeps its frames' shapes, not their colours: it is no copy.
 
 Candidates meet by length: sorted by duration, a video is only compared with the
 following ones of about the same length. Video libraries hold thousands of files,
@@ -16,7 +17,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.plan.likeness import distance, is_flat, same_aspect
+from media_hygiene.plan.likeness import distance, is_flat, same_aspect, same_colours
+from media_hygiene.plan.near_keeper import choose_keeper
 from media_hygiene.plan.similar_models import NearDecision
 from media_hygiene.plan.union_find import UnionFind
 
@@ -52,6 +54,7 @@ def alike(first: VideoLook, second: VideoLook) -> bool:
         _same_length(first.duration, second.duration)
         and same_aspect((first.width, first.height), (second.width, second.height))
         and _frames_agree(first.print.frames, second.print.frames)
+        and same_colours(first.colour, second.colour)
     )
 
 
@@ -82,8 +85,9 @@ def video_near_decisions(
 ) -> tuple[NearDecision, ...]:
     """Group re-encoded videos and choose the version to keep in each group.
 
-    The highest resolution is kept, then the largest file (the highest bit rate),
-    then the usual keep rules. Protected copies are never removable.
+    The highest resolution is kept, then a file larger by 1 % or more (a higher bit
+    rate), then the usual keep rules (`near_keeper`). Protected copies are never
+    removable.
 
     Args:
         files: Candidate videos, one per exact-duplicate group.
@@ -99,10 +103,8 @@ def video_near_decisions(
     )
     decisions: list[NearDecision] = []
     for cluster in _clusters(usable, looks):
-        keeper = min(
-            cluster,
-            key=lambda file: (-looks[file.path].pixels, -file.size, policy.rank(file)),
-        )
+        choice = choose_keeper(cluster, lambda file: looks[file.path].pixels, policy)
+        keeper = choice.keeper
         best = looks[keeper.path]
         near = [
             file
@@ -112,7 +114,15 @@ def video_near_decisions(
         removable = tuple(file for file in near if not policy.is_protected(file))
         if removable:
             protected = tuple(file for file in near if policy.is_protected(file))
-            decisions.append(NearDecision(keeper, removable, protected))
+            decisions.append(
+                NearDecision(
+                    keeper,
+                    removable,
+                    protected,
+                    reason=choice.reason,
+                    rule=choice.rule,
+                )
+            )
     return tuple(sorted(decisions, key=lambda d: (-d.keeper.size, str(d.keeper.path))))
 
 

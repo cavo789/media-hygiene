@@ -15,11 +15,13 @@ ne sont des quasi-doublons que si **tous** les tests sont d'accord :
 
 - des empreintes perceptuelles presque identiques ;
 - la même forme (proportions) ;
-- la même date de prise de vue, ou aucune date sur la plus petite copie.
+- la même date de prise de vue, ou aucune date sur la plus petite copie ;
+- les mêmes couleurs : les empreintes sont calculées en gris, alors les photos qu'elles trouvent
+  semblables sont mesurées en couleur ; une version noir et blanc d'une photo en couleur est un
+  choix, pas une copie.
 
 Les images vides ou noires ne comptent jamais, et une photo d'une [rafale](10-review-bursts.md)
-n'est jamais prise pour un quasi-doublon. Dans chaque groupe, la **plus haute résolution** est
-gardée.
+n'est jamais prise pour un quasi-doublon.
 
 ## Les vidéos aussi : les copies réencodées
 
@@ -33,14 +35,34 @@ quasi-doublons que si **tous** les tests sont d'accord :
 - la même durée (à une demi-seconde près, ou 1 % d'une longue vidéo) ;
 - la même forme (proportions) ;
 - les images aux mêmes instants se ressemblent (une image peut différer, pour une coupe) ;
-- la même date d'enregistrement, ou aucune date sur la copie.
+- la même date d'enregistrement, ou aucune date sur la copie ;
+- les mêmes couleurs, comme pour les photos (une version noir et blanc n'est pas une copie).
 
-Dans chaque groupe, la **plus haute résolution** est gardée, puis le plus gros fichier. Le
-rapport les liste dans leur propre section, *Vidéos réencodées*, avec la résolution, la durée,
-le codec et la taille de chaque copie (pas d'aperçu : regardez-les vous-même), et le résumé de
-l'audit les compte sur la ligne *Vidéos réencodées (déplacées seulement avec --tier near)*.
+Le rapport les liste dans leur propre section, *Vidéos réencodées*, avec la résolution, la
+durée, le codec et la taille de chaque copie, et un lecteur : cliquez sur ▶ pour regarder
+chacune dans le navigateur, ou sur le chemin pour l'ouvrir dans votre lecteur habituel. Le
+résumé de l'audit les compte sur la ligne *Vidéos réencodées (déplacées seulement avec --tier near)*.
 `clean --tier near` les déplace en quarantaine avec les photos. Une vidéo que l'image ne sait
 pas décoder (AV1, rare) n'est simplement pas comparée.
+
+## Quelle version est gardée, et pourquoi
+
+Pour les photos comme pour les vidéos :
+
+1. la **plus haute résolution** ;
+2. à résolution égale, un fichier **plus gros d'au moins 1 %** : c'est le moins compressé ;
+3. des tailles plus proches ne disent rien de la qualité (deux exports d'un même clip, une copie
+   dont seules les métadonnées ont changé) : les [règles habituelles](05-choose-the-kept-copy.md)
+   choisissent, comme pour les fichiers identiques : un dossier protégé ou préféré, un nom ou un
+   dossier choisi par quelqu'un, la date la plus ancienne… Un dossier ou un nom choisi par
+   quelqu'un l'emporte sur `Novembre 2015\162.mp4`.
+
+Chaque groupe du rapport commence par une ligne 💬 qui dit lequel a décidé, avec l'écart de
+taille quand il est petit ; `plan.csv` le dit aussi. Une copie vidéo dont seules les métadonnées
+ont été réécrites (une note posée dans Windows, une étiquette) est marquée 🟰 : exactement la
+même image et le même son que la vidéo gardée, vérifiés par un SHA-256 des deux. Ces copies ne
+sont pas pour autant des fichiers identiques : elles vont en quarantaine avec `--tier near`,
+jamais supprimées.
 
 ## Les regarder d'abord
 
@@ -49,8 +71,11 @@ avec la résolution, la taille et la netteté de chaque copie :
 
 ![Quasi-doublons dans le rapport : une photo de prairie gardée en 1500 × 1000 pixels, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533, les deux copies marquées en quarantaine avec --tier near](../images/report-near.webp)
 
-Comparez chaque copie avec celle gardée. Le résumé de l'audit les compte sur la ligne
-*Quasi-doublons (déplacés seulement avec --tier near)*.
+Comparez chaque copie avec celle gardée : cliquez sur une miniature ou son chemin pour ouvrir
+l'original dans un nouvel onglet. Le résumé de l'audit les compte sur la ligne
+*Quasi-doublons (déplacés seulement avec --tier near)*. La section liste **tous** les groupes,
+quel que soit leur nombre, et `plan.csv` nomme aussi chaque fichier (action *déplacer avec --tier
+near*, [étape 4](04-html-report.md#chaque-fichier-dans-un-tableur--plancsv)).
 
 ## Les déplacer : `clean --tier near`
 
@@ -69,6 +94,11 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr clean --tier near --decisions decisions.json
 ```
 
+Avant de poser la question, `clean` écrit le rapport de cet audit-là et lie, sur une ligne qui
+commence par 👀, sa page `near.html` : les quasi-doublons et les vidéos réencodées seuls, sans
+les rafales auxquelles `--tier near` ne touche jamais. Regardez-la avant de répondre. Rien n'est
+écrit quand rien n'est demandé (`--yes`).
+
 La question mentionne maintenant les quasi-doublons :
 
 <!-- capture: clean-near.txt|re:^2 |❓ -->
@@ -82,7 +112,7 @@ traiter 3 fichiers cassés ? [o/N] o
 <!-- capture: clean-near.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261003-080851
+Nettoyage 20261003-181145
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      40 │
 │ Taille                    │ 16,2 Mo │
@@ -91,12 +121,12 @@ Nettoyage 20261003-080851
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261003-080851-clean/report.html
+✅ Rapport HTML : /reports/20261003-181145-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261003-080851' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20261003-181145' restaure tout.
 💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261003-080851
+media-hygiene purge 20261003-181145
 ```
 
 Les quasi-doublons sont **déplacés en quarantaine**, jamais supprimés : ils ne sont pas
@@ -106,45 +136,45 @@ les fichiers illisibles et le fichier compagnon orphelin :
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261003-080851/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
-./20261003-080851/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
-./20261003-080851/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
-./20261003-080851/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
-./20261003-080851/c/Photos/2022/Anniversaire/IMG_3003.jpg
-./20261003-080851/c/Photos/2023/Lac/IMG_4004.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0101.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0102.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0103.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0104.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0105.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0106.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0107.jpg
-./20261003-080851/c/Photos/Ancien téléphone/IMG_0108.jpg
-./20261003-080851/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261003-080851/d/Ancien disque/2020/IMG_1203.jpg
-./20261003-080851/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-./20261003-080851/d/Ancien disque/Noël 2020/IMG_1201.jpg
-./20261003-080851/d/Ancien disque/Noël 2020/IMG_1202.jpg
-./20261003-080851/d/Ancien disque/Noël 2020/IMG_1203.jpg
-./20261003-080851/d/Ancien disque/Noël 2020/IMG_1204.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0101.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0102.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0102.xmp
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0103.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0104.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0105.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0106.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0107.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0108.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0109.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0110.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0111.jpg
-./20261003-080851/d/Ancien disque/Photos 2019/IMG_0112.jpg
-./20261003-080851/d/Ancien disque/Téléphone/IMG_4242.HEIC
-./20261003-080851/d/Ancien disque/Téléphone/IMG_4243.HEIC
-./20261003-080851/d/Ancien disque/Téléphone/IMG_4244.HEIC
-./20261003-080851/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
-./20261003-080851/d/Ancien disque/Vidéos/Anniversaire.mp4
+./20261003-181145/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
+./20261003-181145/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
+./20261003-181145/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
+./20261003-181145/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
+./20261003-181145/c/Photos/2022/Anniversaire/IMG_3003.jpg
+./20261003-181145/c/Photos/2023/Lac/IMG_4004.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0101.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0102.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0103.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0104.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0105.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0106.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0107.jpg
+./20261003-181145/c/Photos/Ancien téléphone/IMG_0108.jpg
+./20261003-181145/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261003-181145/d/Ancien disque/2020/IMG_1203.jpg
+./20261003-181145/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+./20261003-181145/d/Ancien disque/Noël 2020/IMG_1201.jpg
+./20261003-181145/d/Ancien disque/Noël 2020/IMG_1202.jpg
+./20261003-181145/d/Ancien disque/Noël 2020/IMG_1203.jpg
+./20261003-181145/d/Ancien disque/Noël 2020/IMG_1204.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0101.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0102.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0102.xmp
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0103.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0104.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0105.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0106.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0107.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0108.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0109.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0110.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0111.jpg
+./20261003-181145/d/Ancien disque/Photos 2019/IMG_0112.jpg
+./20261003-181145/d/Ancien disque/Téléphone/IMG_4242.HEIC
+./20261003-181145/d/Ancien disque/Téléphone/IMG_4243.HEIC
+./20261003-181145/d/Ancien disque/Téléphone/IMG_4244.HEIC
+./20261003-181145/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+./20261003-181145/d/Ancien disque/Vidéos/Anniversaire.mp4
 ```
 
 Avant de déplacer chaque copie, `clean` vérifie que la photo gardée existe toujours et que la

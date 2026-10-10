@@ -47,26 +47,26 @@ Audit summary
 ```text
 Folders sharing identical files
 • 12 files are both in C:\Photos\2019\Seaside holidays (kept) and in D:\Old
-  disk\Photos 2019 (moved to the quarantine), 3.5 MB freed by 'purge'. D:\Old
-  disk\Photos 2019 holds nothing else: it is entirely a copy of
+  disk\Photos 2019 (copies 'clean' moves to the quarantine), 3.5 MB to free with
+  'purge'. D:\Old disk\Photos 2019 holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
-• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (moved to
-  the quarantine), 3.0 MB freed by 'purge'. D:\Old disk\Phone holds nothing
-  else: it is entirely a copy of C:\Photos\Phone.
-• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (moved to
-  the quarantine), 2.9 MB freed by 'purge'.
+• 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (copies
+  'clean' moves to the quarantine), 3.0 MB to free with 'purge'. D:\Old
+  disk\Phone holds nothing else: it is entirely a copy of C:\Photos\Phone.
+• 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (a copy
+  'clean' moves to the quarantine), 2.9 MB to free with 'purge'.
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
-  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.2 MB to free
+  with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 4 files are both in C:\Photos\2020\Christmas (kept) and in D:\Old
-  disk\Christmas 2020 (moved to the quarantine), 1.2 MB freed by 'purge'. D:\Old
-  disk\Christmas 2020 holds nothing else: it is entirely a copy of
-  C:\Photos\2020\Christmas.
+  disk\Christmas 2020 (copies 'clean' moves to the quarantine), 1.2 MB to free
+  with 'purge'. D:\Old disk\Christmas 2020 holds nothing else: it is entirely a
+  copy of C:\Photos\2020\Christmas.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
-  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
-  of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 864.7 KB
+  to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
+  entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
   is kept (287.5 KB to free).
 ```

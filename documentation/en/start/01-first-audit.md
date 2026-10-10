@@ -92,13 +92,13 @@ Inventory
 
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
-  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.2 MB to free
+  with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
-  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
-  of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 864.7 KB
+  to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
+  entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
   is kept (287.5 KB to free).
 
@@ -106,7 +106,7 @@ Folders sharing identical files
 💡 Run 'clean' (same -v options, without :ro) to set 3.4 MB of copies aside.
 💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
 folders, then 'media-hygiene crosscheck' (same -v options):
-docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.
 💡 Near duplicates and bursts are in the HTML report; 'clean --tier near' moves
@@ -136,8 +136,9 @@ hold a GPS position, the formats of the photos and the total length of the video
 judged there: these are facts the files hold, counted for you.
 
 Then *Folders sharing identical files*: each sentence is a pair of folders holding the same
-files. The copies in the first folder are **kept**, those in the second one would be
-**deleted**, and the space it frees comes last. The pairs freeing the most space come first.
+files. The copies in the first folder are **kept**; those in the second one are the copies
+`clean` will move to the quarantine, and the space they take comes last. It is a forecast: the
+audit has moved nothing. The pairs freeing the most space come first.
 
 - *"… holds nothing else: it is entirely a copy of …"*: the second folder only holds copies of
   files kept elsewhere. The most reassuring case: that folder is a plain copy.

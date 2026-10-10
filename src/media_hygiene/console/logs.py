@@ -23,6 +23,10 @@ _LEVELS = {
 def configure_logging(verbosity: Verbosity, console: Console) -> None:
     """Send every log record to `console`, filtered by `verbosity`.
 
+    asyncio speaks only in debug: what it logs (a child process reaped twice, a task
+    stopped by Ctrl+C) is about its own machinery, often with a traceback, never
+    something the user can act on.
+
     Args:
         verbosity: Minimum level to show.
         console: Rich console to write to.
@@ -39,3 +43,5 @@ def configure_logging(verbosity: Verbosity, console: Console) -> None:
         handlers=[handler],
         force=True,
     )
+    debug = verbosity is Verbosity.DEBUG
+    logging.getLogger("asyncio").setLevel(logging.DEBUG if debug else logging.CRITICAL)

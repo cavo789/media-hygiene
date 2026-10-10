@@ -201,6 +201,11 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/reports\" to get the workbook to edit."
 msgstr ""
 
+msgid ""
+"Add -v \"<a folder of yours>:/reports\" to see the near duplicates in an "
+"HTML report before answering."
+msgstr ""
+
 msgid "Add -v \"<a folder of yours>:/reports\" to the docker run command."
 msgstr ""
 
@@ -489,6 +494,9 @@ msgid ""
 "opinion."
 msgstr ""
 
+msgid "Comparing colours"
+msgstr ""
+
 msgid "Comparing files of equal size"
 msgstr ""
 
@@ -497,6 +505,9 @@ msgid "Configured folder {path} is not mounted: it is ignored."
 msgstr ""
 
 msgid "Confirm the files to check"
+msgstr ""
+
+msgid "Contents"
 msgstr ""
 
 msgid "Copies"
@@ -520,6 +531,9 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Czkawka agrees: no exact duplicate."
+msgstr ""
+
 #, python-brace-format
 msgid "Czkawka agrees: the same {copies} extra copies in {groups} groups."
 msgstr ""
@@ -538,7 +552,7 @@ msgid "Czkawka is an independent duplicate finder."
 msgstr ""
 
 #, python-brace-format
-msgid "Czkawka results of {date} UTC."
+msgid "Czkawka results of {date}."
 msgstr ""
 
 msgid "Czkawka's results cover other folders than this run."
@@ -590,16 +604,6 @@ msgstr ""
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr ""
 
-#, python-brace-format
-msgid "Delete {count} duplicate copies ({size}) and handle {broken} broken files?"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Delete {count} duplicate copies ({size}), move {near} near duplicates to "
-"the quarantine and handle {broken} broken files?"
-msgstr ""
-
 msgid "Deleted"
 msgstr ""
 
@@ -610,6 +614,14 @@ msgid "Deleted or moved to the quarantine"
 msgstr ""
 
 msgid "Deleted or moved to the quarantine from"
+msgstr ""
+
+#, python-brace-format
+msgid "Deleting a duplicate copy: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Deleting an empty file (0 bytes): {path}"
 msgstr ""
 
 msgid "Describe the photos without asking, however many."
@@ -693,6 +705,11 @@ msgstr ""
 msgid ""
 "Each copy is compared again with the kept one before deletion; unreadable"
 " files go to the quarantine."
+msgstr ""
+
+msgid ""
+"Each copy is compared again with the kept one before going to the "
+"quarantine; unreadable files go there too."
 msgstr ""
 
 msgid "Each file is checked again just before it moves; none is overwritten."
@@ -823,7 +840,17 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
+#, python-brace-format
+msgid "Every report is listed in {path} (Ctrl+click opens it)."
+msgstr ""
+
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
+msgstr ""
+
+msgid ""
+"Everything 'clean --tier near' moves to the quarantine, group by group: "
+"the kept version first, framed in green. Burst series are not here: "
+"--tier near never touches them."
 msgstr ""
 
 msgid "Example:"
@@ -998,11 +1025,19 @@ msgstr ""
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr ""
 
+msgid "For a second opinion, run 'crosscheck' (same -v options)."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "For a village, a district or a park drawn as an area: click or press "
 "Enter. Only the text you typed is sent, to {host}; never a photo nor a "
 "position."
+msgstr ""
+
+msgid ""
+"For an up-to-date second opinion (optional): run this command, then "
+"'media-hygiene crosscheck' with your usual -v options:"
 msgstr ""
 
 msgid "Format"
@@ -1049,6 +1084,9 @@ msgid ""
 msgstr ""
 
 msgid "Gives each file a second name in the album."
+msgstr ""
+
+msgid "Go on with the clean?"
 msgstr ""
 
 msgid "Going to a 'to check' folder"
@@ -1222,6 +1260,13 @@ msgstr ""
 msgid "Kept in"
 msgstr ""
 
+msgid "Kept: the highest resolution."
+msgstr ""
+
+#, python-brace-format
+msgid "Kept: the same resolution, a larger file by {gap} (less compressed)."
+msgstr ""
+
 msgid "Kind"
 msgstr ""
 
@@ -1373,18 +1418,6 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"Move {count} duplicate copies ({size}) and {near} near duplicates to the "
-"quarantine, and handle {broken} broken files?"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Move {count} duplicate copies ({size}) to the quarantine and handle "
-"{broken} broken files?"
-msgstr ""
-
-#, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr ""
 
@@ -1398,6 +1431,26 @@ msgid "Moved to the quarantine"
 msgstr ""
 
 msgid "Moved to the quarantine from"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving a burst shot set aside to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving a duplicate copy to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving a near duplicate to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving an orphan sidecar to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving an unreadable file to the quarantine: {path}"
 msgstr ""
 
 msgid "My places"
@@ -1429,6 +1482,10 @@ msgstr ""
 msgid "Nature and landscapes"
 msgstr ""
 
+#, python-brace-format
+msgid "Near duplicate: {why}"
+msgstr ""
+
 msgid "Near duplicates"
 msgstr ""
 
@@ -1438,6 +1495,9 @@ msgstr ""
 msgid ""
 "Near duplicates and bursts are in the HTML report; 'clean --tier near' "
 "moves near duplicates to the quarantine."
+msgstr ""
+
+msgid "Near duplicates and re-encoded videos"
 msgstr ""
 
 msgid "Never analysed: e.g. a real backup that must remain a second copy."
@@ -1562,7 +1622,10 @@ msgstr ""
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr ""
 
-msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
+#, python-brace-format
+msgid ""
+"Not compared, as media-hygiene does not look at them (nothing to do): "
+"{details}."
 msgstr ""
 
 msgid "Not found"
@@ -1682,6 +1745,11 @@ msgid ""
 "rule most of them out quickly."
 msgstr ""
 
+msgid ""
+"Only for the pictures and videos found alike: a black and white edit of a"
+" colour picture is not a copy of it."
+msgstr ""
+
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
@@ -1691,6 +1759,9 @@ msgstr ""
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
+msgid "Open the original in a new tab"
+msgstr ""
+
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr ""
 
@@ -1698,6 +1769,10 @@ msgid "OpenStreetMap contributors"
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
+#, python-brace-format
+msgid "Or, to no longer see this message, delete this file: {path}"
 msgstr ""
 
 msgid "Origin"
@@ -1787,6 +1862,10 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
+#, python-brace-format
+msgid "Putting back: {path}"
+msgstr ""
+
 msgid "Quality"
 msgstr ""
 
@@ -1810,6 +1889,10 @@ msgid "Random sample"
 msgstr ""
 
 msgid "Rating"
+msgstr ""
+
+#, python-brace-format
+msgid "Re-encoded video: {why}"
 msgstr ""
 
 msgid "Re-encoded videos"
@@ -2036,6 +2119,9 @@ msgstr ""
 msgid "SHA-256"
 msgstr ""
 
+msgid "Same picture and sound as the kept video: only the metadata differ."
+msgstr ""
+
 msgid ""
 "Same size, then the same SHA-256 fingerprint of the whole content: in "
 "practice, two different files never share it."
@@ -2141,10 +2227,6 @@ msgid ""
 "root = 'C:\\Photos\\Albums'."
 msgstr ""
 
-#, python-brace-format
-msgid "Set aside, as media-hygiene does not analyse them: {details}."
-msgstr ""
-
 msgid ""
 "Set burst shots aside, one series at a time, with the keyboard in your "
 "browser; 'clean --decisions' then moves them."
@@ -2160,11 +2242,11 @@ msgid "Sharpness"
 msgstr ""
 
 msgid ""
-"Shots of one camera, taken seconds apart. This is not duplication: a "
-"plain 'clean' never touches them. The sharpest shot of each series is "
-"suggested; the choice is yours: 'media-hygiene review' shows the series "
-"one at a time to set shots aside, and 'clean --decisions' moves them to "
-"the quarantine."
+"Shots of one camera, taken seconds apart. This is not duplication: "
+"neither 'clean' nor 'clean --tier near' touches them. The sharpest shot "
+"of each series is suggested; the choice is yours: 'media-hygiene review' "
+"shows the series one at a time to set shots aside, and 'clean "
+"--decisions' moves them to the quarantine."
 msgstr ""
 
 msgid "Show every setting, where it comes from, and the mount points."
@@ -2247,6 +2329,12 @@ msgid "State"
 msgstr ""
 
 msgid "Staying where they are"
+msgstr ""
+
+msgid "Stopped (Ctrl+C)."
+msgstr ""
+
+msgid "Stopped (Ctrl+C). Your photos and videos were not touched."
 msgstr ""
 
 msgid "Stopped before the end, as asked."
@@ -2394,6 +2482,9 @@ msgstr ""
 msgid "The model {model} is not installed at {url}."
 msgstr ""
 
+msgid "The near duplicates and re-encoded videos alone, on one page"
+msgstr ""
+
 msgid "The places are saved in /config/config.toml: mount /config."
 msgstr ""
 
@@ -2447,13 +2538,28 @@ msgid ""
 "the kept picture first."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The same resolution and sizes {gap} apart (under 1 %): the size says "
+"nothing, the usual rules chose: {rule}."
+msgstr ""
+
 msgid ""
 "The same video saved again: shared by a messaging app, converted or "
 "recompressed. Same length, same frames at the same moments, same date or "
 "none. They are not identical files, so a plain 'clean' leaves them alone;"
 " 'clean --tier near' moves the copies to the quarantine, where 'undo' "
-"finds them again. The highest resolution, then the largest file, is kept."
-" Watch each copy before choosing."
+"finds them again. The highest resolution, then the largest file, is kept;"
+" between copies of the very same picture and sound, whose metadata alone "
+"differ, the usual rules choose (folder, name). Play each copy before "
+"choosing."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The second opinion of Czkawka (another duplicate finder you ran on "
+"{date}) is out of date: photos were moved or deleted since. It is "
+"ignored; cleaning does not need it."
 msgstr ""
 
 #, python-brace-format
@@ -2583,6 +2689,17 @@ msgid "This workbook was written by another version: it cannot be checked."
 msgstr ""
 
 msgid "Time zone"
+msgstr ""
+
+msgid ""
+"Times are in UTC: Docker does not know your time zone. Add it to docker "
+"run, e.g. -e TZ=Europe/Brussels."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Times are in UTC: Docker does not know your time zone. Write it in "
+"{path}, section [general], e.g. timezone = \"Europe/Brussels\"."
 msgstr ""
 
 msgid "To check"
@@ -2757,6 +2874,9 @@ msgstr ""
 msgid "Workbook: {path}"
 msgstr ""
 
+msgid "Writing the HTML report and its previews…"
+msgstr ""
+
 msgid "Year"
 msgstr ""
 
@@ -2806,8 +2926,15 @@ msgid "Your places"
 msgstr ""
 
 msgid ""
-"Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: the zone "
-"of the container."
+"Your time zone, for the dates and the names of reports and runs, e.g. "
+"\"Europe/Brussels\" or \"America/Montreal\" (list: "
+"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: "
+"UTC, as Docker does not know yours."
+msgstr ""
+
+msgid ""
+"Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
+" timezone."
 msgstr ""
 
 msgid "[cyan]read-only[/]"
@@ -2917,6 +3044,12 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
+#, python-brace-format
+msgid "delete {count} duplicate copy ({size})"
+msgid_plural "delete {count} duplicate copies ({size})"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "documentation/en/reference-safety.md"
 msgstr ""
 
@@ -2964,10 +3097,16 @@ msgstr ""
 msgid "groups of identical files"
 msgstr ""
 
+#, python-brace-format
+msgid "handle {count} broken file"
+msgid_plural "handle {count} broken files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "healthy"
 msgstr ""
 
-msgid "in excluded folders"
+msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr ""
 
 msgid "it already exists"
@@ -3065,6 +3204,31 @@ msgstr ""
 
 msgid "move to the quarantine"
 msgstr ""
+
+msgid "move with --tier near"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"move {count} duplicate copy ({size}) and {near} near duplicates to the "
+"quarantine"
+msgid_plural ""
+"move {count} duplicate copies ({size}) and {near} near duplicates to the "
+"quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "move {count} duplicate copy ({size}) to the quarantine"
+msgid_plural "move {count} duplicate copies ({size}) to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "move {count} near duplicate to the quarantine"
+msgid_plural "move {count} near duplicates to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "moved to the quarantine"
 msgstr ""
@@ -3308,6 +3472,14 @@ msgid "your decision in the report"
 msgstr ""
 
 #, python-brace-format
+msgid "{actions} and {last}"
+msgstr ""
+
+#, python-brace-format
+msgid "{actions}?"
+msgstr ""
+
+#, python-brace-format
 msgid "{cell}: '{key}' is not a row of this plan."
 msgstr ""
 
@@ -3407,31 +3579,31 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (deleted), {size} "
-"freed."
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"deletes), {size} to free."
 msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (deleted), "
-"{size} freed."
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"deletes), {size} to free."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (deleted, or moved"
-" to the quarantine if not a media file), {size} freed."
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"deletes, or moves to the quarantine if not a media file), {size} to free."
 msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (deleted, or "
-"moved to the quarantine if not a media file), {size} freed."
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"deletes, or moves to the quarantine if not a media file), {size} to free."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed by 'purge'."
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"moves to the quarantine), {size} to free with 'purge'."
 msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed by 'purge'."
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"moves to the quarantine), {size} to free with 'purge'."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3532,6 +3704,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} source folder will stay: it holds other files, e.g. {path}."
 msgid_plural "{count} source folders will stay: they hold other files, e.g. {path}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{days} day {clock}"
+msgid_plural "{days} days {clock}"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3690,15 +3868,17 @@ msgid "… and %(count)s more groups (largest files are shown first)."
 msgstr ""
 
 #, python-format
-msgid "… and %(count)s more groups."
-msgstr ""
-
-#, python-format
 msgid "… and %(count)s more series."
 msgstr ""
 
 #, python-brace-format
 msgid "… and {count} more."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"👀 Not identical files: look at them before answering, every one on a "
+"single page: {path} (Ctrl+click opens it)."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."
@@ -3719,9 +3899,16 @@ msgid ""
 "journaled: 'undo' puts everything back."
 msgstr ""
 
+#, python-brace-format
 msgid ""
-"🛟 Nothing is erased: each copy is compared byte for byte with the kept "
-"one, then moved to the quarantine. 'purge' erases it once you have "
-"checked."
+"🛟 Nothing will be erased: each copy is first compared byte for byte with "
+"the kept one, then moved to the quarantine ({path}). 'undo' puts it back;"
+" 'purge' erases it once you have checked."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"🛟 Nothing will be erased: the files are moved to the quarantine ({path})."
+" 'undo' puts them back; 'purge' erases them once you have checked."
 msgstr ""
 

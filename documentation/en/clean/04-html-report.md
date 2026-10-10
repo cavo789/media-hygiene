@@ -4,7 +4,8 @@
 
 The terminal gives the totals and the folder pairs. The report shows the rest: the pictures
 themselves, every copy line by line, and the proof that they are identical. It is a web page
-that opens in your browser, with no server and no internet connection.
+that opens in your browser, with no server and no internet connection. Its dates are shown in
+your computer's time zone.
 
 ## Give the tool a reports folder
 
@@ -29,8 +30,17 @@ At the end of the audit, two new lines:
 
 <!-- capture: audit.txt|HTML report|Open index.html -->
 ```text
-✅ HTML report: /reports/20261003-080646-audit/report.html
+✅ HTML report: /reports/20261003-180936-audit/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
+```
+
+With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
+the full paths instead; in Windows Terminal, Ctrl+click opens them:
+
+```text
+✅ HTML report: C:\Users\<you>\media-hygiene\reports\20261003-180936-audit\report.html
+💡 Every report is listed in C:\Users\<you>\media-hygiene\reports\index.html (Ctrl+click
+opens it).
 ```
 
 ## Open it
@@ -41,7 +51,9 @@ every audit and clean, newest first:
 ![The index of the reports: one line per audit or clean, with its date, its type, its numbers of files, duplicates and broken files, and the space to free](../images/index.webp)
 
 Click a date to open that report. Each run has its own folder, named after its date and kind
-(`YYYYMMDD-HHMMSS-audit`), holding `report.html`, the previews and `plan.csv`.
+(`YYYYMMDD-HHMMSS-audit`), holding `report.html`, the previews and `plan.csv`, and `near.html`
+when there are near duplicates. A *Contents* box at the top of `report.html` leads to each
+section.
 
 ## The top: the totals
 
@@ -87,7 +99,7 @@ happens to them unless you ask:
   ![Near duplicates: a meadow photo kept in 1500 × 1000, its copy of 1024 × 683 in an Email folder to the quarantine with --tier near; a beach photo kept, its WhatsApp copy of 800 × 533](../images/report-near.webp)
 
 - **Re-encoded videos**: the same video saved again, smaller or recompressed, described by its
-  resolution, length, codec and size ([step 11](11-near-duplicates.md#videos-too-re-encoded-copies)).
+  resolution, length, codec and size, with a player ([step 11](11-near-duplicates.md#videos-too-re-encoded-copies)).
 
 - **Burst series**: shots taken seconds apart, the sharpest one marked ⭐ ([step 10](10-review-bursts.md)).
 
@@ -103,8 +115,9 @@ Empty files will be deleted; unreadable ones moved to the quarantine, never dele
 ## Every file in a spreadsheet: `plan.csv`
 
 Next to each report, `plan.csv` lists **every** file of the plan, with no cap: group, SHA-256,
-size, action, path, folder, date and the rule that chose the kept copy. It opens directly in
-Excel, accents included:
+size, action, path, folder, date and the rule that chose the kept copy. The
+[near duplicates](11-near-duplicates.md) follow, group by group, without SHA-256 (they are not
+identical files). It opens directly in Excel, accents included:
 
 <!-- capture: plan-csv.txt -->
 ```text
@@ -131,14 +144,14 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261003-080724-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
-│ 20261003-080719-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
-│ 20261003-080701-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261003-080656-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261003-080651-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
-│ 20261003-080649-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
-│ 20261003-080647-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261003-080646-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-181016-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
+│ 20261003-181011-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
+│ 20261003-180951-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-180946-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-180941-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
+│ 20261003-180939-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
+│ 20261003-180937-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261003-180936-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

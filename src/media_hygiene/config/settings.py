@@ -11,6 +11,7 @@ from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
+from media_hygiene.config.zone import check_timezone
 from media_hygiene.constants import (
     GENERATED_NAMES,
     GENERIC_FOLDERS,
@@ -24,13 +25,27 @@ _FIRST_PRINTABLE = 0x20
 
 
 class GeneralSettings(BaseModel):
-    """`[general]` — interface language, log level and colours."""
+    """`[general]` — interface language, time zone, log level and colours."""
 
     model_config = _FROZEN
 
     locale: Locale = Locale.EN
+    timezone: str = ""
     verbosity: Verbosity = Verbosity.INFO
     color: ColorMode = ColorMode.AUTO
+
+    @field_validator("timezone")
+    @classmethod
+    def _known_timezone(cls, name: str) -> str:
+        """Reject a zone name that does not exist, e.g. a typo.
+
+        Args:
+            name: The configured zone.
+
+        Returns:
+            The name, unchanged.
+        """
+        return check_timezone(name)
 
 
 class FolderSettings(BaseModel):

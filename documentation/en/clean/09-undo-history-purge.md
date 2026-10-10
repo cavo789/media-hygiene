@@ -26,11 +26,11 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20261003-080719 ──────────────────────
+────────────────────── Undo the clean run 20261003-181011 ──────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the clean run 20261003-080719
+Undo the clean run 20261003-181011
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -41,7 +41,8 @@ Undo the clean run 20261003-080719
 ```
 
 - Each quarantined file — the extra copies first of all — is moved back to its place, never
-  over another file.
+  over another file. The quarantine folders it leaves empty go too: an undo carried out to the
+  end leaves nothing of the run in the quarantine.
 - Each copy deleted with `clean --delete` is **rebuilt from the copy that was kept**, date
   included, even across disks.
 - Without a name, `undo` restores the latest run; `undo <run>` restores that one. The names
@@ -70,8 +71,8 @@ Runs (newest first)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Run             ┃ Command ┃ Deleted ┃ Freed ┃ Quarantined ┃ Restored ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20261003-080724 │ clean   │       1 │   0 B │          39 │        0 │
-│ 20261003-080719 │ clean   │       1 │   0 B │          35 │       36 │
+│ 20261003-181016 │ clean   │       1 │     0 │          39 │        0 │
+│ 20261003-181011 │ clean   │       1 │     0 │          35 │       36 │
 └─────────────────┴─────────┴─────────┴───────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
@@ -97,7 +98,7 @@ cavo789/media-hygiene purge
 ```text
 ⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'.
 It is, with 'clean --delete', the only way the tool removes content.
-❓ Erase the quarantine of 20261003-080724, 20261003-080719 (39 files, 16.2 MB)?
+❓ Erase the quarantine of 20261003-181016, 20261003-181011 (39 files, 16.2 MB)?
 [y/N] y
 ✅ Quarantine purged: 16.2 MB freed.
 💡 'undo' can no longer restore these files.

@@ -31,8 +31,18 @@ def audit_with_report(locations: Locations) -> tuple[AuditFindings, Path]:
     return findings, report.parent
 
 
+def expected_rows(findings: AuditFindings) -> int:
+    """One row per file of the groups, near duplicates, broken files and orphans."""
+    plan, similar = findings.plan, findings.similar
+    near = (*similar.near, *similar.videos)
+    grouped = sum(1 + len(d.removable) + len(d.protected) for d in plan.decisions)
+    grouped += sum(1 + len(d.removable) + len(d.protected) for d in near)
+    broken = len(plan.broken) + len(plan.protected_broken)
+    return grouped + broken + len(plan.orphans)
+
+
 def test_every_file_of_the_plan_is_listed_once(locations: Locations) -> None:
-    """Keepers, copies, broken files, orphans: one row each, comma-separated."""
+    """Keepers, copies, near duplicates, broken files, orphans: one row each."""
     findings, folder = audit_with_report(locations)
     raw = (folder / "plan.csv").read_bytes()
     assert raw.startswith(b"\xef\xbb\xbf")  # the BOM Excel needs for accents
@@ -41,11 +51,9 @@ def test_every_file_of_the_plan_is_listed_once(locations: Locations) -> None:
     header, body = rows[0], rows[1:]
     assert header[:4] == ["Group", "SHA-256", "Size (bytes)", "Action"]
     plan = findings.plan
-    grouped = sum(1 + len(d.removable) + len(d.protected) for d in plan.decisions)
-    broken = len(plan.broken) + len(plan.protected_broken)
-    assert len(body) == grouped + broken + len(plan.orphans)
+    assert len(body) == expected_rows(findings)
     assert [row[4] for row in body if row[7].startswith("Orphan sidecar")] == [
-        "C:\\Users\\Public\\Pictures\\Été 2019\\IMG_0002.xmp"
+        "D:\\backup\\2019\\IMG_0002.AAE"
     ]
     deleted = [row for row in body if row[3] == "move to the quarantine" and row[0]]
     assert len(deleted) == plan.removable_count

@@ -17,7 +17,7 @@ file size. It looks like this (the community image `jlesage/czkawka`, about 500 
 Czkawka's command-line tool):
 
 ```powershell
-docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
   -v "$HOME\media-hygiene\reports:/out" `
   jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
   -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
@@ -27,7 +27,9 @@ docker run --rm -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old dis
 
 Copy the command printed by your own audit; where it shows
 `<the folder you mount on /reports>`, write your reports folder. Paste it and run it. Czkawka
-writes its results, `czkawka.json`, in your reports folder. From WSL, write your folders as `/mnt/c/...` instead of `C:\...`.
+shows its progress: the size of the files, then their fingerprint. On tens of thousands of
+photos, allow several minutes. It writes its results, `czkawka.json`, in your reports folder.
+From WSL, write your folders as `/mnt/c/...` instead of `C:\...`.
 
 ## Step 3: compare
 
@@ -47,7 +49,7 @@ group. After the usual summary:
 
 <!-- capture: crosscheck.txt|re:^Czkawka results|agrees -->
 ```text
-Czkawka results of 2026-10-03 08:07 UTC.
+Czkawka results of 2026-10-03 18:09 UTC.
 ✅ Czkawka agrees: the same 32 extra copies in 20 groups.
 ```
 
@@ -56,8 +58,15 @@ Czkawka results of 2026-10-03 08:07 UTC.
 - Or *Czkawka disagrees on N groups*, followed by each group found by one tool only. Look at them
   before cleaning.
 
-Files media-hygiene deliberately leaves out are set aside and counted, not reported as
-differences: other file types, excluded or system folders, broken files.
+Files media-hygiene deliberately leaves out are not compared, and counted, not reported as
+differences: other file types, excluded or system folders (recycle bin, thumbnails), broken files.
+Nothing to do about them. The folders never analysed are named, those holding the most files first:
+you see at once where Czkawka looked that media-hygiene does not.
+
+If photos were moved or deleted since Czkawka ran (by a `clean`, for instance), its results are out
+of date: they are ignored, and the message gives the two ways out. Either run the Czkawka command it
+prints again, then `crosscheck`, or delete the `czkawka.json` file it names (in your reports folder)
+if you no longer want a second opinion.
 
 ## Where the verdict appears
 

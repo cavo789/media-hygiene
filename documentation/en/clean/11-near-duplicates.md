@@ -15,10 +15,12 @@ are near duplicates only if **every** test agrees:
 
 - nearly identical perceptual fingerprints;
 - the same shape (proportions);
-- the same shot date, or no date at all on the smaller copy.
+- the same shot date, or no date at all on the smaller copy;
+- the same colours: the fingerprints are computed in grey, so the photos they find alike are
+  measured for colour; a black and white edit of a colour photo is a choice, not a copy.
 
 Blank or black pictures never count, and a shot of a [burst series](10-review-bursts.md) is
-never taken for a near duplicate. In each group, the **highest resolution** is kept.
+never taken for a near duplicate.
 
 ## Videos too: re-encoded copies
 
@@ -31,13 +33,31 @@ videos. Two videos are near duplicates only if **every** test agrees:
 - the same length (within half a second, or 1 % of a long video);
 - the same shape (proportions);
 - the frames at the same moments look alike (one frame may differ, for a cut);
-- the same recording date, or no date at all on the copy.
+- the same recording date, or no date at all on the copy;
+- the same colours, as for photos (a black and white edit is not a copy).
 
-In each group, the **highest resolution** is kept, then the largest file. The report lists them
-in their own section, *Re-encoded videos*, with the resolution, length, codec and size of each
-copy (no preview: watch them yourself), and the audit summary counts them on the line
+The report lists them in their own section, *Re-encoded videos*, with the resolution, length,
+codec and size of each copy, and a player: click ▶ to watch each one in the browser, or the path
+to open it in your own player. The audit summary counts them on the line
 *Re-encoded videos (moved only with --tier near)*. `clean --tier near` moves them to the
 quarantine with the photos. A video the image cannot decode (AV1, rare) is simply not compared.
+
+## Which version is kept, and why
+
+Photos and videos alike:
+
+1. the **highest resolution**;
+2. at the same resolution, a file **larger by 1 % or more**: it is the less compressed one;
+3. sizes closer than that say nothing of the quality (two exports of one clip, a copy whose
+   metadata alone changed): the [usual rules](05-choose-the-kept-copy.md) choose, as for
+   identical files: a protected or preferred folder, a name or a folder someone chose, the
+   oldest date… A folder or a name someone chose wins over `Novembre 2015\162.mp4`.
+
+Each group of the report starts with a 💬 line saying which of these decided, with the size gap
+when it is small; `plan.csv` says it too. A video copy whose metadata alone was rewritten (a
+rating set in Windows, a tag) is marked 🟰: the very same picture and sound as the kept one,
+checked with a SHA-256 of both. Such copies are not identical files all the same: they are
+moved to the quarantine with `--tier near`, never deleted.
 
 ## Look at them first
 
@@ -46,8 +66,11 @@ side, with the resolution, size and sharpness of every copy:
 
 ![Near duplicates in the report: a meadow photo kept in 1500 × 1000 pixels, its 1024 × 683 copy from an Email folder; a beach photo kept, its 800 × 533 WhatsApp copy, both copies marked to the quarantine with --tier near](../images/report-near.webp)
 
-Compare each copy with the kept one. The audit summary counts them on the line
-*Near duplicates (moved only with --tier near)*.
+Compare each copy with the kept one: click a picture or its path to open the original in a new
+tab. The audit summary counts them on the line
+*Near duplicates (moved only with --tier near)*. The section lists **every** group, however
+many there are, and `plan.csv` names each file too (action *move with --tier near*,
+[step 4](04-html-report.md#every-file-in-a-spreadsheet-plancsv)).
 
 ## Move them: `clean --tier near`
 
@@ -66,6 +89,11 @@ docker run --rm -it `
   cavo789/media-hygiene clean --tier near --decisions decisions.json
 ```
 
+Before asking, `clean` writes the report of this very audit and links, on a line starting with
+👀, its `near.html` page: the near duplicates and re-encoded videos alone, without the burst
+series that `--tier near` never touches. Look at it before answering. Nothing is written when
+nothing is asked (`--yes`).
+
 The question now mentions the near duplicates:
 
 <!-- capture: clean-near.txt|re:^2 |❓ -->
@@ -79,7 +107,7 @@ and handle 3 broken files? [y/N] y
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261003-080724
+Clean 20261003-181016
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      40 │
 │ Size                     │ 16.2 MB │
@@ -88,11 +116,11 @@ Clean 20261003-080724
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261003-080724-clean/report.html
+✅ HTML report: /reports/20261003-181016-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261003-080724' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20261003-181016' restores everything.
 💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261003-080724
+20261003-181016
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -102,45 +130,45 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261003-080724/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
-./20261003-080724/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
-./20261003-080724/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
-./20261003-080724/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
-./20261003-080724/c/Photos/2022/Birthday/IMG_3003.jpg
-./20261003-080724/c/Photos/2023/Lake/IMG_4004.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0101.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0102.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0103.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0104.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0105.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0106.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0107.jpg
-./20261003-080724/c/Photos/Old phone/IMG_0108.jpg
-./20261003-080724/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261003-080724/d/Old disk/2020/IMG_1203.jpg
-./20261003-080724/d/Old disk/Christmas 2020/IMG_1201.jpg
-./20261003-080724/d/Old disk/Christmas 2020/IMG_1202.jpg
-./20261003-080724/d/Old disk/Christmas 2020/IMG_1203.jpg
-./20261003-080724/d/Old disk/Christmas 2020/IMG_1204.jpg
-./20261003-080724/d/Old disk/Email/IMG_0110 small.jpg
-./20261003-080724/d/Old disk/Phone/IMG_4242.HEIC
-./20261003-080724/d/Old disk/Phone/IMG_4243.HEIC
-./20261003-080724/d/Old disk/Phone/IMG_4244.HEIC
-./20261003-080724/d/Old disk/Photos 2019/IMG_0101.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0102.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0102.xmp
-./20261003-080724/d/Old disk/Photos 2019/IMG_0103.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0104.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0105.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0106.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0107.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0108.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0109.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0110.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0111.jpg
-./20261003-080724/d/Old disk/Photos 2019/IMG_0112.jpg
-./20261003-080724/d/Old disk/Videos/Birthday (cut).mp4
-./20261003-080724/d/Old disk/Videos/Birthday.mp4
+./20261003-181016/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
+./20261003-181016/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
+./20261003-181016/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
+./20261003-181016/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
+./20261003-181016/c/Photos/2022/Birthday/IMG_3003.jpg
+./20261003-181016/c/Photos/2023/Lake/IMG_4004.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0101.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0102.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0103.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0104.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0105.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0106.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0107.jpg
+./20261003-181016/c/Photos/Old phone/IMG_0108.jpg
+./20261003-181016/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261003-181016/d/Old disk/2020/IMG_1203.jpg
+./20261003-181016/d/Old disk/Christmas 2020/IMG_1201.jpg
+./20261003-181016/d/Old disk/Christmas 2020/IMG_1202.jpg
+./20261003-181016/d/Old disk/Christmas 2020/IMG_1203.jpg
+./20261003-181016/d/Old disk/Christmas 2020/IMG_1204.jpg
+./20261003-181016/d/Old disk/Email/IMG_0110 small.jpg
+./20261003-181016/d/Old disk/Phone/IMG_4242.HEIC
+./20261003-181016/d/Old disk/Phone/IMG_4243.HEIC
+./20261003-181016/d/Old disk/Phone/IMG_4244.HEIC
+./20261003-181016/d/Old disk/Photos 2019/IMG_0101.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0102.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0102.xmp
+./20261003-181016/d/Old disk/Photos 2019/IMG_0103.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0104.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0105.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0106.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0107.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0108.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0109.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0110.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0111.jpg
+./20261003-181016/d/Old disk/Photos 2019/IMG_0112.jpg
+./20261003-181016/d/Old disk/Videos/Birthday (cut).mp4
+./20261003-181016/d/Old disk/Videos/Birthday.mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is

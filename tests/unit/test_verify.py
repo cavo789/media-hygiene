@@ -4,20 +4,37 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.verify import burst_blocker, removal_blocker
+from media_hygiene.actions.verify import burst_blocker, checked_removal
 from media_hygiene.constants import MediaKind
+from media_hygiene.scan.hashing import full_digest, identical_digest
 from media_hygiene.scan.models import MediaFile
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
+def removal_blocker(keeper: Path, candidate: Path, size: int) -> str | None:
+    """The reason `checked_removal` gives, if any."""
+    return checked_removal(keeper, candidate, size).reason
+
+
 def test_identical_files_can_be_removed(tmp_path: Path) -> None:
-    """Same size, same bytes: no blocker."""
+    """Same size, same bytes: no blocker, and the SHA-256 of the same reading."""
     keeper, copy = tmp_path / "keeper", tmp_path / "copy"
     keeper.write_bytes(b"same")
     copy.write_bytes(b"same")
-    assert removal_blocker(keeper, copy, 4) is None
+    removal = checked_removal(keeper, copy, 4)
+    assert removal.reason is None
+    assert removal.sha256 == full_digest(copy)
+
+
+def test_a_file_longer_on_either_side_is_not_identical(tmp_path: Path) -> None:
+    """The byte comparison reads both files to their very end."""
+    short, long = tmp_path / "short", tmp_path / "long"
+    short.write_bytes(b"same")
+    long.write_bytes(b"same+")
+    assert identical_digest(short, long) is None
+    assert identical_digest(long, short) is None
 
 
 def test_every_blocker(tmp_path: Path) -> None:

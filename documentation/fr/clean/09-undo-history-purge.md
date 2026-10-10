@@ -26,12 +26,12 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261003-080845 ────────────────
+─────────────── Annulation de l'exécution clean 20261003-181140 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261003-080845
+20261003-181140
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -42,7 +42,8 @@ Annulation de l'exécution clean
 ```
 
 - Chaque fichier mis en quarantaine — les copies en trop d'abord — est remis à sa place, jamais
-  par-dessus un autre fichier.
+  par-dessus un autre fichier. Les dossiers de quarantaine qu'il laisse vides s'en vont aussi :
+  un `undo` mené à son terme ne laisse rien de l'exécution dans la quarantaine.
 - Chaque copie supprimée avec `clean --delete` est **reconstruite à partir de la copie gardée**,
   date comprise, même d'un disque à l'autre.
 - Sans nom, `undo` restaure la dernière exécution ; `undo <exécution>` restaure celle-là. Les
@@ -73,8 +74,8 @@ Exécutions (les plus récentes d'abord)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃ Libéré ┃ En quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20261003-080851 │ clean    │         1 │    0 o │             39 │         0 │
-│ 20261003-080845 │ clean    │         1 │    0 o │             35 │        36 │
+│ 20261003-181145 │ clean    │         1 │      0 │             39 │         0 │
+│ 20261003-181140 │ clean    │         1 │      0 │             35 │        36 │
 └─────────────────┴──────────┴───────────┴────────┴────────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -103,7 +104,7 @@ cavo789/media-hygiene --locale fr purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261003-080851, 20261003-080845 (39 fichiers, 16,2
+❓ Effacer la quarantaine de 20261003-181145, 20261003-181140 (39 fichiers, 16,2
 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 16,2 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.

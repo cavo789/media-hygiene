@@ -7,15 +7,20 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.journal import done_states, journal_file, read_journal
+from pydantic import ValidationError
+
+from media_hygiene.actions.journal import (
+    JournalEntry,
+    done_states,
+    journal_file,
+    read_journal,
+)
 from media_hygiene.actions.kinds import ACTING_PHASES, FOLDER_ACTIONS, ActionKind, Phase
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.constants import JOURNAL_SUFFIX
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from media_hygiene.actions.journal import JournalEntry
 
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 # Every run identifier: the stamp, then a number when two runs share a second.
@@ -25,7 +30,7 @@ _KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK})
 
 
 def new_run_id(journal_dir: Path) -> str:
-    """Create a sortable, unique run identifier such as `20260925-183015`.
+    """Create a unique run identifier in local time, such as `20260925-183015`.
 
     Args:
         journal_dir: Where journals live, to avoid collisions.
@@ -33,7 +38,7 @@ def new_run_id(journal_dir: Path) -> str:
     Returns:
         A fresh identifier.
     """
-    base = datetime.now(UTC).strftime(_RUN_ID_FORMAT)
+    base = datetime.now().astimezone().strftime(_RUN_ID_FORMAT)
     run_id, suffix = base, 1
     while journal_file(journal_dir, run_id).exists():
         suffix += 1
@@ -135,6 +140,9 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
 def list_run_ids(journal_dir: Path) -> list[str]:
     """List every run that has a journal, newest first.
 
+    Ordered by when each run started (UTC, in its journal), not by name: names are
+    in local time, which a zone change or the autumn clock change can reorder.
+
     Args:
         journal_dir: Journal mount point.
 
@@ -143,8 +151,23 @@ def list_run_ids(journal_dir: Path) -> list[str]:
     """
     if not journal_dir.is_dir():
         return []
-    ids = (
-        path.name.removesuffix(JOURNAL_SUFFIX)
-        for path in journal_dir.glob(f"*{JOURNAL_SUFFIX}")
-    )
-    return sorted(ids, reverse=True)
+    files = journal_dir.glob(f"*{JOURNAL_SUFFIX}")
+    started = {path.name.removesuffix(JOURNAL_SUFFIX): _started(path) for path in files}
+    return sorted(started, key=lambda run: (started[run], run), reverse=True)
+
+
+def _started(journal: Path) -> datetime:
+    """When a run started: its first journal entry, else the file's last change.
+
+    Args:
+        journal: The run's journal.
+
+    Returns:
+        An aware UTC moment.
+    """
+    with journal.open(encoding="utf-8") as lines:
+        first = lines.readline()
+    try:
+        return JournalEntry.model_validate_json(first).at
+    except ValidationError:
+        return datetime.fromtimestamp(journal.stat().st_mtime, UTC)

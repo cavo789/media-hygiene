@@ -25,6 +25,7 @@ Effective settings
 ┃ Setting                       ┃ Value                         ┃ Origin       ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
 │ general.locale                │ en                            │ command line │
+│ general.timezone              │                               │ default      │
 │ general.verbosity             │ info                          │ default      │
 │ general.color                 │ never                         │ command line │
 │ folders.preferred             │ []                            │ default      │
@@ -236,6 +237,12 @@ text editor (Notepad is fine). Every setting is explained, for instance:
 # CLI: --locale
 locale = "en"
 
+# Your time zone, for the dates and the names of reports and runs, e.g.
+# "Europe/Brussels" or "America/Montreal" (list:
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: UTC, as Docker
+# does not know yours.
+timezone = ""
+
 # How much to log: "error", "warning", "info" or "debug".
 # CLI: --verbosity
 verbosity = "info"
@@ -258,6 +265,7 @@ The settings of steps 5 and 6, in the file. Write Windows paths between **single
 ```toml
 [general]
 locale = "en"          # en | fr
+timezone = "Europe/Brussels"  # your time zone; empty: UTC
 
 [folders]
 preferred = ['C:\Photos\Old phone', 'C:\Photos\Family']
@@ -279,6 +287,10 @@ confirm = true         # sort asks before moving anything
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder alive
 ```
 
+- **`timezone`**: your time zone, for the times shown and the names of the reports and runs.
+  Docker does not know it: empty, everything is in UTC (the audit reminds you). Its name comes from
+  [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g.
+  `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` in `docker run` works too.
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
 - **`protected`**: never modified, and their files are always the copies kept (`--protect`).
 - **`excluded`**: never analysed, for a real backup (`--exclude`).
@@ -324,6 +336,7 @@ Effective settings
 ┃ Setting                       ┃ Value                         ┃ Origin       ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
 │ general.locale                │ en                            │ command line │
+│ general.timezone              │                               │ default      │
 │ general.verbosity             │ info                          │ config.toml  │
 │ general.color                 │ never                         │ command line │
 │ folders.preferred             │ []                            │ config.toml  │

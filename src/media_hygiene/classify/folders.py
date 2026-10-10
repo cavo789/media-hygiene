@@ -11,39 +11,16 @@ import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.date_names import DATE_FOLDERS, MONTH, MONTHS, YEAR
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
-MONTHS: Final = (
-    ("janvier", "january", "januari", "jan"),
-    ("février", "fevrier", "february", "februari", "feb", "fév", "fev"),
-    ("mars", "march", "maart", "mar"),
-    ("avril", "april", "apr", "avr"),
-    ("mai", "may", "mei"),
-    ("juin", "june", "juni", "jun"),
-    ("juillet", "july", "juli", "jul", "juil"),
-    ("août", "aout", "august", "augustus", "aug"),
-    ("septembre", "september", "sep", "sept"),
-    ("octobre", "october", "oktober", "oct", "okt"),
-    ("novembre", "november", "nov"),
-    ("décembre", "decembre", "december", "dec", "déc"),
-)
-_MONTH: Final = "|".join(name for names in MONTHS for name in names)
-_YEAR: Final = r"(?P<year>(?:19|20)\d{2})"
-DATE_FOLDERS: Final = (
-    _YEAR,
-    rf"{_YEAR}[-_. ](?P<month>\d{{1,2}})",
-    rf"(?P<month_name>{_MONTH})\.?[ _-]*{_YEAR}",
-    rf"{_YEAR}[ _-]*(?P<month_name>{_MONTH})",
-    rf"(?P<month_name>{_MONTH})",
-    rf"{_YEAR}-\d{{2}}-\d{{2}}(?:\.\.[\d-]+)?",  # an event span `sort` wrote
-)
 # "Mois AAAA - Label": the label is the meaning.
 _LABELLED: Final = re.compile(
-    rf"(?:(?:{_MONTH})\.?[ _-]*)?{_YEAR}(?:\s+[-\u2013]\s+|\s*:\s*)(?P<label>.+)",
+    rf"(?:(?:{MONTH})\.?[ _-]*)?{YEAR}(?:\s+[-\u2013]\s+|\s*:\s*)(?P<label>.+)",
     re.IGNORECASE,
 )
 UNSURE_FOLDERS: Final = frozenset({"to check", "à vérifier"})

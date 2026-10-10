@@ -55,9 +55,9 @@ de dossiers, puis **demande avant de faire quoi que ce soit** :
 
 <!-- capture: clean.txt|re:^🛟|❓ -->
 ```text
-🛟 Rien n'est effacé : chaque copie est comparée octet par octet avec celle
-gardée, puis déplacée en quarantaine. 'purge' l'efface une fois que vous avez
-vérifié.
+🛟 Rien ne sera effacé : chaque copie est d'abord comparée octet par octet avec
+celle gardée, puis déplacée en quarantaine (/quarantine). 'undo' la remet en
+place ; 'purge' l'efface une fois que vous avez vérifié.
 1 fichier compagnon orphelin (.xmp, .aae, .thm) sera déplacé en quarantaine.
 ❓ Déplacer 32 copies en double (13,9 Mo) en quarantaine et traiter 3 fichiers
 cassés ? [o/N] o
@@ -68,7 +68,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261003-080845
+Nettoyage 20261003-181140
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -77,12 +77,12 @@ Nettoyage 20261003-080845
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261003-080845-clean/report.html
+✅ Rapport HTML : /reports/20261003-181140-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261003-080845' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20261003-181140' restaure tout.
 💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261003-080845
+media-hygiene purge 20261003-181140
 ```
 
 | Ligne | Ce qu'elle veut dire |
@@ -129,8 +129,11 @@ vont toujours en quarantaine.
 - **Sans question** : ajoutez `--yes` (`clean --yes`), ou mettez `confirm = false` dans la section
   `[clean]` de `config.toml`. Sans `-it`, `clean` ne peut pas demander et s'arrête : utilisez
   alors `--yes`.
+- **Que fait-il ?** Une ligne sous la barre nomme le fichier en cours et ce qui lui arrive. La
+  barre et son estimation suivent les octets : les grosses vidéos passent en premier.
 - **Interrompu ?** Ctrl+C, une coupure de courant : chaque action est écrite dans le journal
-  *avant* et *après* avoir eu lieu, `undo` restaure donc ce qui a été fait.
+  *avant* et *après* avoir eu lieu, `undo` restaure donc ce qui a été fait. Un fichier que
+  l'exécution n'avait pas encore touché reste où il est.
 - **Des refus qui vous protègent** : `clean` s'arrête avant l'analyse sans `/journal` ni
   `/quarantine`, avec un dossier en `:ro`, avec un dossier où il ne peut pas écrire, ou avec un
   dossier de l'outil (quarantaine, journal, cache, rapports) placé dans un dossier de photos. Le
