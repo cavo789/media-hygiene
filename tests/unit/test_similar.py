@@ -120,3 +120,22 @@ def test_exif_moments() -> None:
     assert moment_of(None) is None
     assert moment_of("2021:02:30 10:00:00") is None
     assert moment_of("unknown") is None
+
+
+def test_a_chain_of_alike_pictures_is_settled_in_one_audit() -> None:
+    """K looks like B, B like X, X like Y: cleaning once leaves no near duplicate."""
+    visuals = {
+        DATA / "K.jpg": looks(800),
+        DATA / "B.jpg": looks(400, phash=HASH ^ 0b1),
+        DATA / "X.jpg": looks(600, phash=HASH ^ 0b111),
+        DATA / "Y.jpg": looks(300, phash=HASH ^ 0b111),
+    }
+    files = [image(path.name) for path in visuals]
+    decisions = near_decisions(files, visuals, KeepPolicy())
+    assert [(d.keeper.path.name, names(d.removable)) for d in decisions] == [
+        ("K.jpg", ["B.jpg"]),
+        ("X.jpg", ["Y.jpg"]),
+    ]
+    gone = {file.path for decision in decisions for file in decision.removable}
+    left = [file for file in files if file.path not in gone]
+    assert not near_decisions(left, visuals, KeepPolicy())

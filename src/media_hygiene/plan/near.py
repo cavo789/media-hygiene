@@ -25,7 +25,7 @@ from media_hygiene.plan.likeness import (
     same_colours,
 )
 from media_hygiene.plan.near_keeper import choose_keeper
-from media_hygiene.plan.similar_models import NearDecision
+from media_hygiene.plan.near_rounds import Grouping, in_rounds
 from media_hygiene.plan.union_find import UnionFind
 
 if TYPE_CHECKING:
@@ -33,6 +33,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.plan.keeper import KeepPolicy
+    from media_hygiene.plan.near_keeper import NearChoice
+    from media_hygiene.plan.similar_models import NearDecision
     from media_hygiene.scan.models import MediaFile, VisualFacts
 
 NEAR_DISTANCE: Final = 2
@@ -81,6 +83,8 @@ def near_decisions(
     The highest resolution is kept, then a file larger by 1 % or more, then the usual
     keep rules (`near_keeper`).
     Only copies near the kept version are listed; protected copies are never removable.
+    The rest of a group, and the chains its copies held together, are settled in
+    rounds (`near_rounds`): a second audit after cleaning finds nothing new.
 
     Args:
         files: Candidate images, one per exact-duplicate group.
@@ -95,27 +99,37 @@ def near_decisions(
         for file in files
         if file.path in visuals and not is_featureless(visuals[file.path])
     ]
-    decisions: list[NearDecision] = []
-    for cluster in _clusters(usable, visuals):
-        choice = choose_keeper(cluster, lambda file: visuals[file.path].pixels, policy)
-        keeper = choice.keeper
-        near = [
-            file
-            for file in cluster
-            if file != keeper and is_near(visuals[keeper.path], visuals[file.path])
-        ]
-        removable = tuple(file for file in near if not policy.is_protected(file))
-        if removable:
-            decisions.append(
-                NearDecision(
-                    keeper,
-                    removable,
-                    tuple(file for file in near if policy.is_protected(file)),
-                    reason=choice.reason,
-                    rule=choice.rule,
-                )
-            )
-    return tuple(sorted(decisions, key=lambda d: (-d.keeper.size, str(d.keeper.path))))
+    grouping = Grouping(
+        clusters=lambda left: _clusters(left, visuals),
+        settle=lambda cluster: _settle(cluster, visuals, policy),
+        policy=policy,
+    )
+    return in_rounds(usable, grouping)
+
+
+def _settle(
+    cluster: list[MediaFile],
+    visuals: Mapping[Path, VisualFacts],
+    policy: KeepPolicy,
+) -> tuple[NearChoice, list[MediaFile]]:
+    """Choose the version to keep among linked images, and find its near copies.
+
+    Args:
+        cluster: Linked images, two or more.
+        visuals: What each one looks like.
+        policy: Protected folders and the usual keep rules.
+
+    Returns:
+        The version kept and why, and the copies near it.
+    """
+    choice = choose_keeper(cluster, lambda file: visuals[file.path].pixels, policy)
+    best = visuals[choice.keeper.path]
+    near = [
+        file
+        for file in cluster
+        if file != choice.keeper and is_near(best, visuals[file.path])
+    ]
+    return choice, near
 
 
 def _clusters(

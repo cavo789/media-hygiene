@@ -110,3 +110,18 @@ def test_videos_without_a_fingerprint_are_ignored() -> None:
     """Only fingerprinted videos are compared."""
     files = [video("big.mp4"), video("unknown.mp4")]
     assert not video_near_decisions(files, {DATA / "big.mp4": look()}, KeepPolicy())
+
+
+def test_two_copies_of_another_take_are_compared_together() -> None:
+    """X differs from the kept K by its date; Y, a copy of X, is still found."""
+    later = "2024-05-01T10:05:00Z"
+    files = [video("K.mp4", 300), video("X.mp4", 200), video("Y.mp4")]
+    looks = {
+        DATA / "K.mp4": look(1920),
+        DATA / "X.mp4": replace(look(1280), recorded_at=later),
+        DATA / "Y.mp4": replace(look(640), recorded_at=later),
+    }
+    decisions = video_near_decisions(files, looks, KeepPolicy())
+    assert [(d.keeper.path.name, names(d.removable)) for d in decisions] == [
+        ("X.mp4", ["Y.mp4"]),
+    ]
