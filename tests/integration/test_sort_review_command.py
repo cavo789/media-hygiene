@@ -37,7 +37,7 @@ def test_the_page_is_served_and_the_choices_counted(
     monkeypatch.setattr(sort_reviewing, "run_server", fake_server(name_it))
     result = run(cli, "review-sort")
     assert result.exit_code == 0, result.output
-    assert f"Review ready on port {PORT}" in result.output
+    assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
     assert "events chosen: 1, photos chosen one by one: 0" in result.output
     assert "sort-decisions.json" in result.output
     assert b"/api/forget" in pages[0]

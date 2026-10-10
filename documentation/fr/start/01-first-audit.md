@@ -107,8 +107,6 @@ Dossiers partageant des fichiers identiques
   un exemplaire est gardé (287,5 Ko à libérer).
 
 💡 Ajoutez -v "<un de vos dossiers>:/reports" pour obtenir des rapports HTML.
-💡 Lancez 'clean' (mêmes options -v, sans :ro) pour mettre 3,4 Mo de copies de
-côté.
 💡 Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur les
 mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
@@ -117,11 +115,13 @@ config.toml, ou --prefer.
 💡 Les quasi-doublons et les rafales sont dans le rapport HTML ; 'clean --tier
 near' déplace les quasi-doublons en quarantaine.
 💡 Triez les rafales au clavier : 'media-hygiene review' (ajoutez -p
-127.0.0.1::8080 à docker run).
+127.0.0.1:8088:8088 à docker run).
 💡 Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien plus
 rapides.
 💡 Les heures sont en UTC : Docker ne connaît pas votre fuseau horaire.
 Ajoutez-le à docker run, par exemple -e TZ=Europe/Brussels.
+👉 Et maintenant : lancez 'clean' (mêmes options -v, sans :ro) pour mettre 3,4
+Mo de copies de côté.
 ```
 
 D'abord le tableau :
@@ -158,8 +158,8 @@ plus d'espace viennent en premier.
 Ce n'est pas le dossier que vous voulez garder ? L'[étape 5](../clean/05-choose-the-kept-copy.md) montre
 comment choisir.
 
-Viennent enfin les astuces 💡. Elles proposent quoi ajouter ensuite, et les étapes suivantes de
-ce guide les suivent une à une.
+Viennent ensuite les astuces 💡 : quoi ajouter ensuite. Les étapes suivantes de ce guide les
+suivent une à une. La ligne 👉, tout à la fin, donne l'étape qui vient logiquement maintenant.
 
 > 🔒 Rien n'a changé dans `C:\Photos` : un audit n'écrit jamais, et `:ro` s'en est assuré.
 

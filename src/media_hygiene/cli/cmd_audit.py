@@ -9,6 +9,7 @@ import typer
 from media_hygiene.cli import options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show, report_and_announce
+from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.config.zone import timezone_unknown
 from media_hygiene.console.formatting import human_size
@@ -19,6 +20,8 @@ from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.crosscheck import czkawka_command
 
 if TYPE_CHECKING:
+    from media_hygiene.console.output import Output
+    from media_hygiene.plan.models import AuditFindings
     from media_hygiene.services.runtime import Runtime
 
 
@@ -54,14 +57,6 @@ def audit_command(  # pylint: disable=too-many-arguments
     elif plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
         output.tip(
             _(
-                "Run 'clean' (same -v options, without :ro) to set {size} of copies "
-                "aside."
-            ).format(
-                size=human_size(plan.reclaimable),
-            ),
-        )
-        output.tip(
-            _(
                 "Second opinion: run Czkawka, an independent duplicate finder, on "
                 "the same folders, then 'media-hygiene crosscheck' "
                 "(same -v options):"
@@ -90,14 +85,39 @@ def audit_command(  # pylint: disable=too-many-arguments
                 "them to the quarantine too."
             ),
         )
-    if similar.bursts:
+    if similar.bursts and plan.decisions:
         output.tip(
             _(
                 "Sort the burst series with the keyboard: 'media-hygiene review' (add "
-                "-p 127.0.0.1::8080 to docker run)."
-            ),
+                "-p 127.0.0.1:{port}:{port} to docker run)."
+            ).format(port=PAGE_PORT),
         )
     _setup_tips(runtime)
+    _next_step(output, findings)
+
+
+def _next_step(output: Output, findings: AuditFindings) -> None:
+    """Close with the step that logically follows: the copies first, then the bursts.
+
+    Args:
+        output: Where to print.
+        findings: What the audit found.
+    """
+    plan = findings.plan
+    if plan.decisions:
+        output.next_step(
+            _(
+                "run 'clean' (same -v options, without :ro) to set {size} of copies "
+                "aside."
+            ).format(size=human_size(plan.reclaimable))
+        )
+    elif findings.similar.bursts:
+        output.next_step(
+            _(
+                "sort the burst series with the keyboard, with 'media-hygiene review' "
+                "(add -p 127.0.0.1:{port}:{port} to docker run)."
+            ).format(port=PAGE_PORT)
+        )
 
 
 def _setup_tips(runtime: Runtime) -> None:

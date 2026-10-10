@@ -35,6 +35,7 @@ _SAME_LINE: Final = "."
 _SENTENCE_ENDS: Final = (".", ":", "?", "!")
 _STARTERS: Final = (
     "💡",
+    "👉",
     "✅",
     "❓",
     "⚠",

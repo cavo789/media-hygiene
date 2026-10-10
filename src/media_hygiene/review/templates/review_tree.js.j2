@@ -1,0 +1,153 @@
+{# Included in the script of review.html.j2: the table of contents, each series with its
+   state in the decisions file read back from the disk. By folder, a tree (parent folder,
+   folder, series; a folder validated at once with its button) whose rows are made when a
+   folder opens: thousands of series stay fast. In any other order, a flat list. #}
+  const counters = new Map();  // folder or parent -> { count, details, ranks }
+  const rows = new Map();  // series rank -> its row, once made
+
+  const parentOf = (folder) => {
+    const cut = Math.max(folder.lastIndexOf("\\"), folder.lastIndexOf("/"));
+    return cut > 0 ? folder.slice(0, cut) : folder;
+  };
+  const leafOf = (folder) => folder.slice(parentOf(folder).length).replace(/^[\\/]/, "") || folder;
+  const isSeen = (index) => (disk.get(index) || {}).status === "done";
+  const folderOf = (index) => series[index].shots[0].folder;
+
+  const rowText = (index) => {
+    const entry = disk.get(index);
+    const count = series[index].shots.length;
+    if (!isSeen(index)) return T.rowTodo;
+    if (entry.discarded.length === 0) return fill(T.rowKept, { count: count });
+    if (entry.kept.length === 0) return T.rowWhole;
+    return fill(T.rowAside, { aside: entry.discarded.length, count: count });
+  };
+
+  // The colour tells what happens to the shots, like their frames: kept, some set aside, all.
+  const outcome = (index) => {
+    const entry = disk.get(index);
+    if (!isSeen(index)) return "todo";
+    if (entry.discarded.length === 0) return "kept";
+    return entry.kept.length === 0 ? "whole" : "partial";
+  };
+
+  const fillRow = (row, index) => {
+    const seen = isSeen(index) ? "done" : "";
+    row.className = ["row", seen, outcome(index), index === current ? "current" : ""].join(" ");
+    const name = line("span", fill(T.rowName, { number: index + 1 }), "name");
+    if (mode !== "folder") {
+      // A flat list: where the series lies, and in sharpness order the gap it shows.
+      const where = mode === "gap" ? fill(T.rowGap, { gap: Math.round(gapOf(series[index]) * 100) }) : leafOf(folderOf(index));
+      name.append(line("small", " · " + where, "where"));
+    }
+    row.replaceChildren(name, line("span", rowText(index), "what"));
+  };
+
+  const makeRow = (index) => {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.addEventListener("click", () => {
+      setStatus("");
+      show(index);
+    });
+    fillRow(row, index);
+    rows.set(index, row);
+    return row;
+  };
+
+  const makeRows = (folder, holder) => {
+    if (holder.childElementCount === 0) holder.append(...counters.get(folder).ranks.map(makeRow));
+  };
+
+  const countLine = (key) => {
+    const counter = counters.get(key);
+    if (!counter) return;
+    const seen = counter.ranks.filter(isSeen).length;
+    counter.count.textContent = seen + " / " + counter.ranks.length;
+    counter.details.classList.toggle("done", seen === counter.ranks.length);
+  };
+
+  const validateButton = (key, ranks) => {
+    const button = line("button", T.validate, "validate");
+    button.type = "button";
+    button.title = T.validateTitle;
+    button.addEventListener("click", (event) => {
+      event.preventDefault();  // the summary would fold or unfold
+      validate(ranks, key);
+    });
+    return button;
+  };
+
+  const branch = (key, label, ranks) => {
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    const count = line("span", "", "count");
+    summary.append(line("span", label, "label"), validateButton(key, ranks), count);
+    details.append(summary);
+    counters.set(key, { count: count, details: details, ranks: ranks });
+    countLine(key);
+    return details;
+  };
+
+  const showProgress = () => {
+    const seen = series.filter((item, index) => isSeen(index)).length;
+    byId("tocBar").max = series.length;
+    byId("tocBar").value = seen;
+    byId("tocProgress").textContent = fill(T.progress, { seen: seen, total: series.length });
+  };
+
+  const folderTree = (tree) => {
+    const groups = new Map();  // parent folder -> Map(folder -> series ranks)
+    for (const index of order) {
+      const folder = folderOf(index);
+      const parent = parentOf(folder);
+      if (!groups.has(parent)) groups.set(parent, new Map());
+      const folders = groups.get(parent);
+      if (!folders.has(folder)) folders.set(folder, []);
+      folders.get(folder).push(index);
+    }
+    for (const [parent, folders] of groups) {
+      const top = branch(parent, parent, [...folders.values()].flat());
+      for (const [folder, inside] of folders) {
+        const sub = branch(folder, leafOf(folder), inside);
+        const holder = line("div", "", "rows");
+        sub.append(holder);
+        sub.addEventListener("toggle", () => sub.open && makeRows(folder, holder));
+        top.append(sub);
+      }
+      tree.append(top);
+    }
+  };
+
+  const buildTree = () => {
+    counters.clear();
+    rows.clear();
+    const tree = byId("tree");
+    tree.replaceChildren();
+    if (mode === "folder") folderTree(tree);
+    else tree.append(...order.map(makeRow));
+    showProgress();
+  };
+
+  const updateRow = (index) => {
+    countLine(folderOf(index));
+    countLine(parentOf(folderOf(index)));
+    showProgress();
+    const row = rows.get(index);
+    if (!row) return;
+    fillRow(row, index);
+    row.classList.add("flash");
+  };
+
+  const markCurrent = () => {
+    for (const row of byId("tree").querySelectorAll(".row.current")) row.classList.remove("current");
+    const folder = folderOf(current);
+    if (mode === "folder") {
+      const sub = counters.get(folder).details;
+      counters.get(parentOf(folder)).details.open = true;
+      sub.open = true;
+      makeRows(folder, sub.querySelector(".rows"));
+    }
+    const row = rows.get(current);
+    row.classList.add("current");
+    row.scrollIntoView({ block: "nearest" });
+  };

@@ -25,6 +25,7 @@ from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.clean import CleanMode, CleanService
+from media_hygiene.services.decisions_archive import archive_decisions
 from media_hygiene.services.review import apply_review, load_review, review_choices
 
 if TYPE_CHECKING:
@@ -72,7 +73,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         ).with_overrides(scan_layer(ext, exclude_name))
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
-        bursts = review is not None and bool(review.bursts)
+        bursts = review is not None and any(b.discarded for b in review.bursts)
         service.ensure_ready(CleanMode(tier is CleanTier.NEAR, bursts, delete))
         findings = audit_and_show(runtime)
         plan = service.feasible(replace(findings.plan, delete_copies=delete))
@@ -104,6 +105,8 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
             ),
         )
     _after_clean_tips(output, run_id, outcome)
+    if decisions is not None:
+        archive_decisions(runtime, decisions, run_id)
 
 
 def _after_clean_tips(output: Output, run_id: str, outcome: Outcome) -> None:

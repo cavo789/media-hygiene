@@ -103,7 +103,6 @@ Folders sharing identical files
   is kept (287.5 KB to free).
 
 💡 Add -v "<a folder of yours>:/reports" to get HTML reports.
-💡 Run 'clean' (same -v options, without :ro) to set 3.4 MB of copies aside.
 💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
 folders, then 'media-hygiene crosscheck' (same -v options):
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
@@ -112,10 +111,12 @@ docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
 💡 Near duplicates and bursts are in the HTML report; 'clean --tier near' moves
 near duplicates to the quarantine.
 💡 Sort the burst series with the keyboard: 'media-hygiene review' (add -p
-127.0.0.1::8080 to docker run).
+127.0.0.1:8088:8088 to docker run).
 💡 Add -v media-hygiene-cache:/cache: the next audits will be much faster.
 💡 Times are in UTC: Docker does not know your time zone. Add it to docker run,
 e.g. -e TZ=Europe/Brussels.
+👉 What next: run 'clean' (same -v options, without :ro) to set 3.4 MB of copies
+aside.
 ```
 
 The table first:
@@ -149,8 +150,8 @@ audit has moved nothing. The pairs freeing the most space come first.
 
 Not the folder you want to keep? [Step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
 
-Last come the 💡 tips. They suggest what to add next, and the next steps of this guide follow
-them one by one.
+Then come the 💡 tips: what to add next. The next steps of this guide follow them one by one.
+The 👉 line at the very end gives the step that logically comes next.
 
 > 🔒 Nothing has changed in `C:\Photos`: an audit never writes, and `:ro` made sure of it.
 

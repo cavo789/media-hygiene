@@ -1,0 +1,40 @@
+{# Included in the script of review.html.j2: C compares the shots of the series at 100 %,
+   the originals side by side; the mouse over one moves the same area in every one, so a
+   slight blur the reduced previews hide shows. C or Escape closes it. #}
+  const browserShows = /\.(jpe?g|png|gif|webp)$/i;  // others are downloaded, not shown
+  let comparing = false;
+
+  const compareTile = (item, rank, position) => {
+    const shot = item.shots[rank];
+    const tile = line("div", "", "tile " + shotState(item, shot, rank).css);
+    const view = line("div", "", "view");
+    if (browserShows.test(shot.original)) view.style.backgroundImage = 'url("' + shot.original + '")';
+    else view.textContent = T.compareNone;
+    tile.append(view, line("div", (position < 9 ? position + 1 + " · " : "") + shot.name + " · " + shot.details, "label"));
+    return tile;
+  };
+
+  // The same point of every original under the mouse: background positions in percent.
+  const follow = (event) => {
+    const box = event.currentTarget.getBoundingClientRect();
+    const x = Math.min(100, Math.max(0, ((event.clientX - box.left) / box.width) * 100));
+    const y = Math.min(100, Math.max(0, ((event.clientY - box.top) / box.height) * 100));
+    for (const view of byId("compare").querySelectorAll(".view")) view.style.backgroundPosition = x + "% " + y + "%";
+  };
+
+  const showCompare = () => {
+    const panel = byId("compare");
+    panel.hidden = !comparing;
+    if (!comparing) return;
+    const item = series[current];
+    const tiles = shown(item).map((rank, position) => compareTile(item, rank, position));
+    const grid = line("div", "", "grid");
+    grid.append(...tiles);
+    panel.replaceChildren(line("p", T.compareTitle, "title"), grid);
+    for (const view of panel.querySelectorAll(".view")) view.addEventListener("mousemove", follow);
+  };
+
+  const toggleCompare = (open) => {
+    comparing = open;
+    showCompare();
+  };

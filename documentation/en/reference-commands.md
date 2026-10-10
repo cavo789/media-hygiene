@@ -45,8 +45,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify`, before describing many photos with a local model). |
 | `--tier exact\|near` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move near duplicates to the quarantine. [Step 11](clean/11-near-duplicates.md) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Step 8](clean/08-clean.md#need-the-space-at-once---delete) |
-| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places` | Port of the page inside the container, `8080` by default; publish it with `-p 127.0.0.1::8080`. |
+| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report and the burst shots set aside with `review`. `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
+| `--port PORT` | `review`, `review-sort`, `places` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
@@ -199,11 +199,11 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                          and resumed from. A relative path   │
 │                                          lies in the folder mounted on       │
 │                                          /reports. Default: decisions.json.  │
-│ --port               <int range> [x>=0]  Port of the page inside the         │
-│                                          container; publish it with -p       │
-│                                          127.0.0.1::8080 so that Docker      │
-│                                          chooses a free one on your          │
-│                                          computer. Default: 8080.            │
+│ --port               <int range> [x>=1]  Port of the page. docker run        │
+│                                          publishes it under the same number  │
+│                                          on your computer: -p                │
+│                                          127.0.0.1:9000:9000 for --port      │
+│                                          9000. Default: 8088.                │
 │ --help       -h                          Show this message and exit.         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Folders (override folders.* of config.toml) ────────────────────────────────╮
@@ -242,7 +242,8 @@ both languages (`--locale fr --help`). Here is what they print:
 │                                    shots set aside). A relative path is read │
 │                                    from the folder mounted on /reports. The  │
 │                                    file is refused if the folders, the pairs │
-│                                    or the series changed.                    │
+│                                    or the series changed. Alone, --decisions │
+│                                    reads decisions.json.                     │
 │ --delete                           Delete the exact copies for good, after a │
 │                                    byte comparison with the kept copy,       │
 │                                    instead of moving them to the quarantine: │
@@ -549,10 +550,10 @@ both languages (`--locale fr --help`). Here is what they print:
  photos were taken; saved into config.toml for the 'place' and 'trip' rules.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --port          <int range> [x>=0]  Port of the page inside the container;   │
-│                                     publish it with -p 127.0.0.1::8080 so    │
-│                                     that Docker chooses a free one on your   │
-│                                     computer. Default: 8080.                 │
+│ --port          <int range> [x>=1]  Port of the page. docker run publishes   │
+│                                     it under the same number on your         │
+│                                     computer: -p 127.0.0.1:9000:9000 for     │
+│                                     --port 9000. Default: 8088.              │
 │ --help  -h                          Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

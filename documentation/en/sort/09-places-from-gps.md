@@ -25,14 +25,14 @@ the places that matter to you. It needs the cache (`/cache`, where the audits re
 positions) and the folder of `config.toml` (`/config`, where the places are saved):
 
 ```powershell
-docker run --rm -it --name media-hygiene-places -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene places
 ```
 
-As with [`review`](../clean/10-review-bursts.md#step-2-open-the-page), ask Docker for the
-address in another window, `docker port media-hygiene-places 8080`, and open it in your browser.
+As with [`review`](../clean/10-review-bursts.md#step-2-open-the-page), Ctrl+click the address it
+prints, `http://127.0.0.1:8088/`.
 
 - **The circles** are your photos with a GPS position, grouped by about 200 metres, larger
   where there are more. The list on the left gives the **largest clusters without a name**

@@ -131,6 +131,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
+│ review.propose_aside_below  │ 0.35                       │ défaut            │
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
 │ classify.timezone           │                            │ défaut            │
@@ -523,6 +524,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
+│ review.propose_aside_below  │ 0.35                       │ config.toml       │
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │
 │ classify.timezone           │                            │ config.toml       │

@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 BURST: Final = "c/Photos/Rafale"
 BURST_HOST: Final = "C:\\Photos\\Rafale"
 PAGE: Final = b"<!DOCTYPE html><title>review</title>"
+JSON_HEADERS: Final = ("Host: 127.0.0.1", "Content-Type: application/json")
 _SHOTS: Final = 3
 _SEED: Final = 100
 _BLURRED: Final = 1
@@ -88,9 +89,9 @@ class Call:
 
 def decide(series: int, *discarded: int) -> Call:
     """`POST /api/decide`, as the page sends it."""
-    body = json.dumps({"series": series, "discarded": list(discarded)}).encode()
-    headers = ("Host: 127.0.0.1", "Content-Type: application/json")
-    return Call("POST", "/api/decide", body, headers)
+    choice = {"series": series, "discarded": list(discarded)}
+    body = json.dumps({"choices": [choice]}).encode()
+    return Call("POST", "/api/decide", body, JSON_HEADERS)
 
 
 @dataclass(frozen=True, slots=True)

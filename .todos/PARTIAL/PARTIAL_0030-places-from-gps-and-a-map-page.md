@@ -48,7 +48,7 @@ An area taken from OpenStreetMap instead of a circle (a village, a municipality)
   collection has its places: in folder names, not in coordinates.
 
 **`places` command**: a local map page served like `review` (reuses `review/http.py`: loopback
-only, `-p 127.0.0.1::8080`).
+only, `-p 127.0.0.1:8088:8088`).
 - The map shows **clusters of the user's photos** from the index, as circles sized by count.
   The biggest unnamed clusters are listed first: home is usually the first.
 - Click a cluster or the map, name the point, set the radius with a slider or by dragging the

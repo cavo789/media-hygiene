@@ -24,7 +24,7 @@ _DOCKERFILE: Final = (
 )
 BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
-_READY: Final = "8080"  # the review says it listens on port 8080
+_READY: Final = "127.0.0.1:8088"  # the review prints its address
 _WAIT_SECONDS: Final = 300
 # Chromium sometimes dies while starting, before any page: nothing done yet, retry.
 _LAUNCH_FAILED: Final = "BrowserType.launch"
@@ -55,7 +55,7 @@ def start_review(demo: Demo) -> str:
         demo: The demo library to review.
 
     Returns:
-        The container's name: a browser joins its network to reach 127.0.0.1:8080.
+        The container's name: a browser joins its network to reach 127.0.0.1:8088.
 
     Raises:
         RuntimeError: The review never became ready.

@@ -48,7 +48,7 @@ def test_the_map_shows_the_clusters_and_saves_a_place(
     monkeypatch.setattr(places_service, "run_server", fake_server(name_it))
     result = run(garden, "places")
     assert result.exit_code == 0, result.output
-    assert f"Map ready on port {PORT}" in result.output
+    assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
     assert "'place' rule" in result.output
     state = json.loads(seen["state"].body)
     assert [cluster[2:] for cluster in state["clusters"]] == [[3, ""]]

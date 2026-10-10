@@ -25,7 +25,7 @@ from media_hygiene.review.sort_choices import EVENT_PATH, FILES_PATH, FORGET_PAT
 from media_hygiene.review.sort_files import SortSource
 from media_hygiene.review.sort_session import SortSession
 from media_hygiene.services.page_choices import page_decisions, page_file
-from media_hygiene.services.reviewing import address_tip, run_server
+from media_hygiene.services.reviewing import address_tip, page_url, run_server
 from media_hygiene.services.sort_inputs import find_workbook, open_elsewhere, plan_of
 from media_hygiene.services.writable import writable_tip
 
@@ -121,8 +121,8 @@ def _announce(runtime: Runtime, session: SortSession, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Review ready on port {port}: each choice is saved at once in {place}. "
-            "Ctrl+C stops the review."
-        ).format(port=port, place=session.hosts[1])
+            "Review ready, open {url} in your browser. Each choice is saved at once "
+            "in {place}. Ctrl+C stops the review."
+        ).format(url=page_url(port), place=session.hosts[1])
     )
     address_tip(output, port)

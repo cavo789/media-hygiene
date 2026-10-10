@@ -96,7 +96,7 @@ duplicates](11-near-duplicates.md).
 Series of photos taken seconds apart: you choose which ones to keep, in your browser.
 
 ```powershell
-docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
@@ -104,16 +104,10 @@ docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
   cavo789/media-hygiene review
 ```
 
-In a **second** PowerShell window, ask for the address of the page:
-
-```powershell
-docker port media-hygiene-review 8080
-```
-
-Open the address it gives (`http://127.0.0.1:49153`, for instance) in your browser and sort with
-the keyboard. Each choice is saved at once in `decisions.json`, in your reports folder;
+Open the address it prints, `http://127.0.0.1:8088/`, in your browser (Ctrl+click) and sort
+with the keyboard. Each choice is saved at once in `decisions.json`, in your reports folder;
 **Ctrl+C** stops, the next `review` resumes where you were. Then the command of step 2 with
-`--decisions decisions.json` moves the discarded photos to the quarantine:
+`--decisions` moves the discarded photos to the quarantine:
 
 ```powershell
 docker run --rm -it `
@@ -123,7 +117,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene clean --decisions decisions.json
+  cavo789/media-hygiene clean --decisions
 ```
 
 Details: [sort burst series in your browser](10-review-bursts.md).

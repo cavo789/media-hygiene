@@ -1,6 +1,6 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review` (the burst review served on 127.0.0.1:8080), `reports <audit> <clean>
+Modes: `review` (the burst review served on 127.0.0.1:8088), `reports <audit> <clean>
 <classify>` (report folders of /reports), `terminal <name>...` (SVG terminals in
 /shots). Every shot lands in /shots. The image runs Python 3.10: nothing newer here.
 """
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 SCRIPTS: Final = Path(__file__).parent  # the .js files lie next to this one
 SHOTS: Final = Path("/shots")
-REVIEW: Final = "http://127.0.0.1:8080/"
+REVIEW: Final = "http://127.0.0.1:8088/"
 REPORTS: Final = "file:///reports"
 # The bounds of a report section, from its <h2> (found by its emoji) to the next one.
 SECTION_JS: Final = (SCRIPTS / "section.js").read_text(encoding="utf-8")
@@ -83,7 +83,7 @@ def shots_shown(page: Page) -> None:
 
 
 def review(page: Page) -> None:
-    """The birthday series, then a shaken shot set aside; a lake shot set aside too."""
+    """The birthday series with its proposal, then the shaken shot set aside."""
     page.goto(REVIEW)
     page.wait_for_selector("#shots figure")
     page.keyboard.press("ArrowRight")
@@ -92,8 +92,9 @@ def review(page: Page) -> None:
     page.set_viewport_size({"width": REVIEW_WIDTH, "height": int(height)})
     shots_shown(page)
     page.screenshot(path=SHOTS / "review.png")
-    page.keyboard.press("Digit3")
-    page.wait_for_selector("#status.saved")
+    for done in ("#status.saved", "#shots figure.aside"):  # proposed: taken back, aside
+        page.keyboard.press("Digit5")
+        page.wait_for_selector(done)
     shots_shown(page)
     page.screenshot(path=SHOTS / "review-aside.png")
     page.keyboard.press("ArrowRight")
@@ -172,8 +173,7 @@ def terminal(page: Page, name: str) -> None:
 
 
 def main() -> None:
-    """Take the screenshots of the mode given on the command line."""
-    # Only the Playwright image has it: imported where it runs.
+    """Take the screenshots of the mode given (Playwright: in its image only, here)."""
     # pylint: disable-next=import-error,import-outside-toplevel
     from playwright.sync_api import sync_playwright  # noqa: PLC0415
 

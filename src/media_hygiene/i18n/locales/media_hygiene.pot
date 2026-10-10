@@ -45,6 +45,11 @@ msgid ""
 "content."
 msgstr ""
 
+msgid ""
+"'sort' applies them on top of the workbook, which you may still edit; it "
+"refuses an event or a file edited otherwise in both."
+msgstr ""
+
 msgid "'undo' can no longer restore these files."
 msgstr ""
 
@@ -221,6 +226,10 @@ msgid ""
 "any change. {url}"
 msgstr ""
 
+#, python-brace-format
+msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
+msgstr ""
+
 msgid "Album folder"
 msgstr ""
 
@@ -281,6 +290,12 @@ msgid ""
 "already in the cache."
 msgstr ""
 
+#, python-format
+msgid ""
+"At 100 %%: move the mouse over a shot, the same area shows in every one. "
+"C or Escape closes."
+msgstr ""
+
 msgid "Audit"
 msgstr ""
 
@@ -324,6 +339,9 @@ msgid "Bit rate"
 msgstr ""
 
 msgid "Black pixels"
+msgstr ""
+
+msgid "Board"
 msgstr ""
 
 msgid "Brightness"
@@ -419,6 +437,10 @@ msgid "Checking that files can be read"
 msgstr ""
 
 #, python-brace-format
+msgid "Choice on series {number} undone."
+msgstr ""
+
+#, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
 msgstr ""
 
@@ -492,6 +514,10 @@ msgstr ""
 msgid ""
 "Compare a fresh audit with Czkawka's results: a second, independent "
 "opinion."
+msgstr ""
+
+#, python-format
+msgid "Compare at 100 %%"
 msgstr ""
 
 msgid "Comparing colours"
@@ -822,9 +848,8 @@ msgstr ""
 #, python-format
 msgid ""
 "Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
-"stops the review; then run the same 'clean' command with --decisions "
-"%(file)s (that file): the shots set aside go to the quarantine, and "
-"'undo' brings them back."
+"stops the review; then run the same 'clean' command with %(option)s: the "
+"shots set aside go to the quarantine, and 'undo' brings them back."
 msgstr ""
 
 #, python-format
@@ -842,6 +867,15 @@ msgstr ""
 
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
+msgstr ""
+
+msgid "Every series has been seen."
+msgstr ""
+
+msgid "Every series here has been seen already."
+msgstr ""
+
+msgid "Every series of this page has been seen: → opens the next page."
 msgstr ""
 
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
@@ -1221,12 +1255,6 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Its address on your computer: run 'docker port {container} {port}' in "
-"another terminal, then open http://<that address> in your browser."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "Its edits would not be carried over: repair {path}, name another one with"
 " --carry-over, or start fresh with --no-carry-over."
 msgstr ""
@@ -1265,6 +1293,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Kept: the same resolution, a larger file by {gap} (less compressed)."
+msgstr ""
+
+msgid "Keyboard"
 msgstr ""
 
 msgid "Kind"
@@ -1341,8 +1372,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Map ready on port {port}: each place is saved at once in config.toml. "
-"Ctrl+C stops it."
+"Map ready, open {url} in your browser. Each place is saved at once in "
+"config.toml. Ctrl+C stops it."
 msgstr ""
 
 msgid "Map stopped; your places are in config.toml."
@@ -1517,20 +1548,7 @@ msgstr ""
 msgid "New place"
 msgstr ""
 
-msgid ""
-"Next: 'sort' applies them on top of the workbook, which you may still "
-"edit; it refuses an event or a file edited otherwise in both."
-msgstr ""
-
-msgid ""
-"Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
-"'classify'."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Next: the same 'clean' command with --decisions {file} (that file); the "
-"shots set aside go to the quarantine, 'undo' brings them back."
+msgid "Next page →"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
@@ -1545,6 +1563,21 @@ msgstr ""
 msgid ""
 "No category: downloaded films and series are not memories, they stay "
 "where they are."
+msgstr ""
+
+msgid ""
+"No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
+"red dashes set aside and the others kept. A keeps every shot; a digit "
+"takes a shot back."
+msgstr ""
+
+msgid ""
+"No choice yet: moving on (→, ← or N) keeps every shot of this series. S "
+"keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot"
+" aside."
+msgstr ""
+
+msgid "No choice yet: nothing will be moved."
 msgstr ""
 
 msgid "No classify workbook in /reports."
@@ -1681,6 +1714,9 @@ msgstr ""
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
+msgid "Nothing to undo."
+msgstr ""
+
 msgid "Nothing was changed."
 msgstr ""
 
@@ -1715,6 +1751,9 @@ msgstr ""
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
 "Images are not decoded again, only their header is read."
+msgstr ""
+
+msgid "One series"
 msgstr ""
 
 #, python-brace-format
@@ -1753,6 +1792,9 @@ msgstr ""
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
+msgid "Only the series still to see"
+msgstr ""
+
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 
@@ -1760,6 +1802,9 @@ msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the original in a new tab"
+msgstr ""
+
+msgid "Open the original in a new tab: the file as it lies on the disk"
 msgstr ""
 
 msgid "Open the review at 127.0.0.1 or localhost."
@@ -1773,6 +1818,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Or, to no longer see this message, delete this file: {path}"
+msgstr ""
+
+msgid "Order"
 msgstr ""
 
 msgid "Origin"
@@ -1791,6 +1839,10 @@ msgid "Other"
 msgstr ""
 
 msgid "Output (override general.* of config.toml)"
+msgstr ""
+
+#, python-brace-format
+msgid "Page {page} of {pages}"
 msgstr ""
 
 msgid "Parties"
@@ -1833,9 +1885,10 @@ msgstr ""
 msgid "Place (video tag)"
 msgstr ""
 
+#, python-brace-format
 msgid ""
-"Port of the page inside the container; publish it with -p 127.0.0.1::8080"
-" so that Docker chooses a free one on your computer. Default: 8080."
+"Port of the page. docker run publishes it under the same number on your "
+"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
 
 msgid ""
@@ -1889,6 +1942,9 @@ msgid "Random sample"
 msgstr ""
 
 msgid "Rating"
+msgstr ""
+
+msgid "Raw JSON"
 msgstr ""
 
 #, python-brace-format
@@ -1975,14 +2031,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each choice is saved at once in {place}. "
-"Ctrl+C stops the review."
+"Review ready, open {url} in your browser. Each choice is saved at once in"
+" {place}. Ctrl+C stops the review."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each decision is saved at once in {place}. "
-"Ctrl+C stops the review."
+"Review ready, open {url} in your browser. Each decision is saved at once "
+"in {place}. Ctrl+C stops the review."
 msgstr ""
 
 #, python-brace-format
@@ -2050,10 +2106,6 @@ msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 
 msgid "Run 'classify' first, then edit its workbook."
-msgstr ""
-
-#, python-brace-format
-msgid "Run 'clean' (same -v options, without :ro) to set {size} of copies aside."
 msgstr ""
 
 msgid ""
@@ -2150,7 +2202,7 @@ msgid "Saved in config.toml."
 msgstr ""
 
 #, python-brace-format
-msgid "Saved in {file}."
+msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
 msgstr ""
 
 msgid "Saved."
@@ -2201,6 +2253,9 @@ msgid ""
 " folders, then 'media-hygiene crosscheck' (same -v options):"
 msgstr ""
 
+msgid "Seen."
+msgstr ""
+
 #, python-brace-format
 msgid "Send the photos ({count}) to the category:"
 msgstr ""
@@ -2209,7 +2264,17 @@ msgid "September"
 msgstr ""
 
 #, python-brace-format
-msgid "Series with shots set aside: {series} · shots set aside: {shots}"
+msgid "Series seen: {seen} of {total}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Series seen: {seen} · with shots set aside: {series} · shots set aside: "
+"{shots}"
+msgstr ""
+
+#, python-brace-format
+msgid "Series {number}"
 msgstr ""
 
 #, python-brace-format
@@ -2225,6 +2290,9 @@ msgstr ""
 msgid ""
 "Set album.root in config.toml, a folder on the disk of your photos, e.g. "
 "root = 'C:\\Photos\\Albums'."
+msgstr ""
+
+msgid "Set aside"
 msgstr ""
 
 msgid ""
@@ -2291,9 +2359,10 @@ msgstr ""
 msgid "Sort review"
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Sort the burst series with the keyboard: 'media-hygiene review' (add -p "
-"127.0.0.1::8080 to docker run)."
+"127.0.0.1:{port}:{port} to docker run)."
 msgstr ""
 
 #, python-brace-format
@@ -2355,7 +2424,13 @@ msgstr ""
 msgid "Swap the folders"
 msgstr ""
 
+msgid "Switch between the board and one series at a time (P)"
+msgstr ""
+
 msgid "TB"
+msgstr ""
+
+msgid "Table of contents"
 msgstr ""
 
 #, python-brace-format
@@ -2366,6 +2441,13 @@ msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
 msgid "The album's name: the folder holding its links."
+msgstr ""
+
+msgid ""
+"The burst review proposes to set aside a shot whose sharpness is below "
+"this share of the sharpest shot of its series (0 to 1): 0.35 proposes a "
+"shot at 162 next to one at 1017, not one at 616. Moving on accepts the "
+"proposal, a key takes it back. 0 never proposes anything."
 msgstr ""
 
 msgid ""
@@ -2416,6 +2498,17 @@ msgid ""
 msgstr ""
 
 msgid "The decisions are saved in /reports: mount it, or they are lost."
+msgstr ""
+
+msgid "The decisions file does not hold your choice: try again."
+msgstr ""
+
+#, python-brace-format
+msgid "The decisions file {file} could not be archived ({error})."
+msgstr ""
+
+#, python-brace-format
+msgid "The decisions file {file} could not be archived."
 msgstr ""
 
 msgid ""
@@ -2483,6 +2576,12 @@ msgid "The model {model} is not installed at {url}."
 msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The page does not open? docker run must publish the same port on both "
+"sides: -p 127.0.0.1:{port}:{port}."
 msgstr ""
 
 msgid "The places are saved in /config/config.toml: mount /config."
@@ -2679,6 +2778,9 @@ msgstr ""
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
+msgid "This series is not in the file yet."
+msgstr ""
+
 msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
@@ -2787,6 +2889,9 @@ msgstr ""
 msgid "Usage:"
 msgstr ""
 
+msgid "Validate the series still to see here, as moving on would"
+msgstr ""
+
 msgid "Value"
 msgstr ""
 
@@ -2802,6 +2907,13 @@ msgid ""
 msgstr ""
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
+msgstr ""
+
+msgid "What next:"
+msgstr ""
+
+#, python-brace-format
+msgid "What {file} holds for this series"
 msgstr ""
 
 msgid "When to use colours (NO_COLOR is honoured too)."
@@ -2883,6 +2995,9 @@ msgstr ""
 msgid "Years"
 msgstr ""
 
+msgid "Your browser cannot show this format: open the original."
+msgstr ""
+
 #, python-brace-format
 msgid "Your choices are in {place}."
 msgstr ""
@@ -2952,7 +3067,7 @@ msgstr ""
 msgid "[yellow]not mounted[/] — nothing to analyse"
 msgstr ""
 
-msgid "a click on a shot works too"
+msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'."
 msgstr ""
 
 msgid "a file changed since the audit"
@@ -2977,7 +3092,15 @@ msgstr ""
 msgid "about {time} left"
 msgstr ""
 
+#, python-brace-format
+msgid "about {time} left at your pace"
+msgstr ""
+
 msgid "accept the name and category, then the next event to decide"
+msgstr ""
+
+#, python-brace-format
+msgid "all {count} kept"
 msgstr ""
 
 msgid "alphabetical order (nothing else differs)"
@@ -2989,6 +3112,12 @@ msgstr ""
 msgid "blurry"
 msgstr ""
 
+msgid "board ⇄ one series"
+msgstr ""
+
+msgid "board: pin the large preview of the shot under the mouse"
+msgstr ""
+
 msgid "bright"
 msgstr ""
 
@@ -2996,6 +3125,12 @@ msgid "broken files"
 msgstr ""
 
 msgid "built-in"
+msgstr ""
+
+msgid "by date"
+msgstr ""
+
+msgid "by folder"
 msgstr ""
 
 msgid "camera (EXIF)"
@@ -3018,6 +3153,10 @@ msgstr ""
 msgid "command line"
 msgstr ""
 
+#, python-format
+msgid "compare the shots at 100 %%"
+msgstr ""
+
 msgid "config.toml"
 msgstr ""
 
@@ -3035,7 +3174,8 @@ msgid ""
 "decisions.json downloaded from an audit report (swap or leave alone some "
 "folder pairs) or written by 'review' (burst shots set aside). A relative "
 "path is read from the folder mounted on /reports. The file is refused if "
-"the folders, the pairs or the series changed."
+"the folders, the pairs or the series changed. Alone, --decisions reads "
+"decisions.json."
 msgstr ""
 
 msgid "default"
@@ -3092,6 +3232,10 @@ msgid "files with an identical copy"
 msgstr ""
 
 msgid "folder name"
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "gap {gap} %%"
 msgstr ""
 
 msgid "groups of identical files"
@@ -3157,16 +3301,25 @@ msgstr ""
 msgid "keep"
 msgstr ""
 
+msgid "keep all"
+msgstr ""
+
 msgid "keep every shot"
 msgstr ""
 
-msgid "keep only the sharpest"
+msgid "keep nothing"
 msgstr ""
 
 msgid "kept"
 msgstr ""
 
 msgid "kept (your decision)"
+msgstr ""
+
+msgid "kept if you move on"
+msgstr ""
+
+msgid "largest sharpness gap first"
 msgstr ""
 
 msgid "leave a field"
@@ -3237,10 +3390,16 @@ msgstr ""
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr ""
 
+msgid "next / previous (no choice: as shown)"
+msgstr ""
+
 msgid "next event to decide"
 msgstr ""
 
 msgid "next or previous event"
+msgstr ""
+
+msgid "next series still to see"
 msgstr ""
 
 msgid "no"
@@ -3253,6 +3412,9 @@ msgid "no preview"
 msgstr ""
 
 msgid "no shot kept from its series is left"
+msgstr ""
+
+msgid "none: the whole series aside, then next"
 msgstr ""
 
 msgid "not checked"
@@ -3274,6 +3436,15 @@ msgid "only Czkawka"
 msgstr ""
 
 msgid "only media-hygiene"
+msgstr ""
+
+msgid "only the sharpest"
+msgstr ""
+
+msgid "only the sharpest, then next"
+msgstr ""
+
+msgid "original"
 msgstr ""
 
 msgid "other file types"
@@ -3298,7 +3469,8 @@ msgstr ""
 msgid "preferred folder"
 msgstr ""
 
-msgid "previous or next series"
+#, python-brace-format, python-format
+msgid "proposed aside: sharpness {share} %% of the best"
 msgstr ""
 
 msgid "protected folder"
@@ -3319,19 +3491,20 @@ msgstr ""
 msgid "run"
 msgstr ""
 
+#, python-brace-format
+msgid "run 'clean' (same -v options, without :ro) to set {size} of copies aside."
+msgstr ""
+
 msgid "select a photo"
 msgstr ""
 
 msgid "send the selected photos to another category"
 msgstr ""
 
-msgid "set a shot aside, or keep it again"
+msgid "set a shot aside, or take it back"
 msgstr ""
 
 msgid "set aside"
-msgstr ""
-
-msgid "set the whole series aside"
 msgstr ""
 
 msgid "sharpest"
@@ -3345,6 +3518,18 @@ msgid "sharpness {value}"
 msgstr ""
 
 msgid "small"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"sort the burst series with the keyboard, with 'media-hygiene review' (add"
+" -p 127.0.0.1:{port}:{port} to docker run)."
+msgstr ""
+
+msgid "still to see first"
+msgstr ""
+
+msgid "suggestion"
 msgstr ""
 
 msgid "take back the choice made here (of the selected photos, else of the event)"
@@ -3396,6 +3581,12 @@ msgstr ""
 msgid "the restored copy does not match the original"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"the same 'clean' command with {option}; the shots set aside go to the "
+"quarantine, 'undo' brings them back."
+msgstr ""
+
 msgid "the shortest path"
 msgstr ""
 
@@ -3418,13 +3609,22 @@ msgstr ""
 msgid "to check or to sort: %(count)s"
 msgstr ""
 
+msgid "to see"
+msgstr ""
+
 msgid "to the quarantine with --tier near"
+msgstr ""
+
+msgid "undo the last choice"
 msgstr ""
 
 msgid "unknown"
 msgstr ""
 
 msgid "usage policy"
+msgstr ""
+
+msgid "validate"
 msgstr ""
 
 msgid "video"
@@ -3437,6 +3637,9 @@ msgid "videos with a date in their tags:"
 msgstr ""
 
 msgid "videos:"
+msgstr ""
+
+msgid "whole series set aside"
 msgstr ""
 
 msgid "why:"
@@ -3480,6 +3683,10 @@ msgid "{actions}?"
 msgstr ""
 
 #, python-brace-format
+msgid "{aside} of {count} set aside"
+msgstr ""
+
+#, python-brace-format
 msgid "{cell}: '{key}' is not a row of this plan."
 msgstr ""
 
@@ -3494,6 +3701,12 @@ msgstr ""
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."
 msgid_plural "{count} burst series are set aside whole: none of their shots stays."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} burst series not reviewed yet: its shots stay."
+msgid_plural "{count} burst series not reviewed yet: their shots stay."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3692,6 +3905,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} series still to see in {folder}: validate them as shown, {aside} "
+"shot(s) proposed aside, the others kept?"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} shots"
 msgstr ""
 
@@ -3715,6 +3934,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{day} {month} {year} {time}"
+msgstr ""
+
+#, python-brace-format
+msgid "{file} read from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
@@ -3838,6 +4061,10 @@ msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
 msgstr ""
 
 #, python-brace-format
+msgid "{seen} of {total} series seen"
+msgstr ""
+
+#, python-brace-format
 msgid "{sheet}: the row {key} was deleted."
 msgstr ""
 
@@ -3877,8 +4104,20 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"→ validates the {count} series still to see here as shown ({aside} "
+"shot(s) proposed aside), then opens the next page."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "👀 Not identical files: look at them before answering, every one on a "
 "single page: {path} (Ctrl+click opens it)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"📦 {file} is applied: archived as {archive}, the next 'review' starts "
+"afresh."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."

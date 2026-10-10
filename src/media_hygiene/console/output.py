@@ -90,6 +90,14 @@ class Output:
         """
         self.console.print(f"💡 [cyan]{text}[/]")
 
+    def next_step(self, text: str) -> None:
+        """Print the step that logically comes next — set apart from the optional tips.
+
+        Args:
+            text: Translated step, starting in lower case after the label.
+        """
+        self.console.print(f"👉 [bold]{_('What next:')}[/] {text}")
+
     def command(self, text: str) -> None:
         """Print a command to copy and paste, never cut by a line break.
 

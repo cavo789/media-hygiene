@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import Annotated
 
 import typer
 
@@ -11,8 +11,6 @@ from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _
 from media_hygiene.services.sort_reviewing import open_sort_review, serve_sort_review
-
-SORT_REVIEW_PORT: Final = 8080
 
 
 def review_sort_command(
@@ -24,7 +22,7 @@ def review_sort_command(
         ),
     ] = None,
     *,
-    port: Annotated[int, review_options.port()] = SORT_REVIEW_PORT,
+    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
 ) -> None:
     """Serve the events of a classify proposal in the browser until Ctrl+C.
 
@@ -50,9 +48,9 @@ def review_sort_command(
             ).format(events=human_number(events), files=human_number(files))
         )
         output.info(_("Your choices are in {place}.").format(place=session.hosts[1]))
-        output.tip(
+        output.next_step(
             _(
-                "Next: 'sort' applies them on top of the workbook, which you may "
-                "still edit; it refuses an event or a file edited otherwise in both."
+                "'sort' applies them on top of the workbook, which you may still "
+                "edit; it refuses an event or a file edited otherwise in both."
             )
         )

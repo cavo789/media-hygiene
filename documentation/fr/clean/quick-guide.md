@@ -99,7 +99,7 @@ Les séries de photos prises à quelques secondes d'intervalle : vous choisissez
 dans votre navigateur.
 
 ```powershell
-docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
@@ -107,16 +107,10 @@ docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
   cavo789/media-hygiene --locale fr review
 ```
 
-Dans une **deuxième** fenêtre PowerShell, demandez l'adresse de la page :
-
-```powershell
-docker port media-hygiene-review 8080
-```
-
-Ouvrez l'adresse donnée (`http://127.0.0.1:49153`, par exemple) dans votre navigateur et triez
+Ouvrez l'adresse affichée, `http://127.0.0.1:8088/`, dans votre navigateur (Ctrl+clic) et triez
 au clavier. Chaque choix est enregistré aussitôt dans `decisions.json`, dans votre dossier de
 rapports ; **Ctrl+C** arrête, le `review` suivant reprend où vous en étiez. Ensuite, la commande
-de l'étape 2 avec `--decisions decisions.json` met les photos écartées en quarantaine :
+de l'étape 2 avec `--decisions` met les photos écartées en quarantaine :
 
 ```powershell
 docker run --rm -it `
@@ -126,7 +120,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr clean --decisions decisions.json
+  cavo789/media-hygiene --locale fr clean --decisions
 ```
 
 Détails : [trier les rafales dans le navigateur](10-review-bursts.md).

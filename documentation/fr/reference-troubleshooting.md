@@ -59,9 +59,11 @@ de l'ignorer ([étape 7](clean/07-configuration-file.md#le-remplir)).
 
 ## La page de tri ne s'ouvre pas
 
-- Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1::8080`.
-- L'adresse vient de `docker port media-hygiene-review 8080`, dans une autre fenêtre, pendant que le
-  tri tourne ([étape 10](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+- Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
+  deux côtés, sinon l'adresse affichée par le tri n'est pas la bonne
+  ([étape 10](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+- *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
+  même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
 - *« Le tri ne tourne plus »* : la fenêtre du tri a été fermée ou arrêtée avec Ctrl+C.
   Relancez-le ; vos choix sont conservés.

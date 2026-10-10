@@ -63,7 +63,8 @@ def decisions() -> OptionInfo:
             "decisions.json downloaded from an audit report (swap or leave alone "
             "some folder pairs) or written by 'review' (burst shots set aside). "
             "A relative path is read from the folder mounted on /reports. The "
-            "file is refused if the folders, the pairs or the series changed."
+            "file is refused if the folders, the pairs or the series changed. "
+            "Alone, --decisions reads decisions.json."
         )
     )
 

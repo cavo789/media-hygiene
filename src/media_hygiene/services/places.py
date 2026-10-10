@@ -36,7 +36,7 @@ from media_hygiene.places.clusters import clusters_of
 from media_hygiene.places.osm_search import OSM_PATH, online_search
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.data_checks import unreadable_index
-from media_hygiene.services.reviewing import address_tip, run_server
+from media_hygiene.services.reviewing import address_tip, page_url, run_server
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -164,8 +164,8 @@ def _announce(runtime: Runtime, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Map ready on port {port}: each place is saved at once in config.toml. "
-            "Ctrl+C stops it."
-        ).format(port=port)
+            "Map ready, open {url} in your browser. Each place is saved at once in "
+            "config.toml. Ctrl+C stops it."
+        ).format(url=page_url(port))
     )
     address_tip(output, port)

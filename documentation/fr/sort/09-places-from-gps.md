@@ -26,15 +26,14 @@ nommer les lieux qui comptent pour vous. Il lui faut le cache (`/cache`, où les
 noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) :
 
 ```powershell
-docker run --rm -it --name media-hygiene-places -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
 ```
 
-Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), demandez
-l'adresse à Docker dans une autre fenêtre, `docker port media-hygiene-places 8080`, et
-ouvrez-la dans votre navigateur.
+Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), Ctrl+clic sur
+l'adresse affichée, `http://127.0.0.1:8088/`.
 
 - **Les cercles** sont vos photos avec une position GPS, groupées par environ 200 mètres, plus
   grands là où il y en a plus. La liste de gauche donne d'abord **les plus grands groupes sans

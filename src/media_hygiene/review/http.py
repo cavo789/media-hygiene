@@ -39,6 +39,10 @@ class ContentType(StrEnum):
     HTML = "text/html; charset=utf-8"
     JSON = "application/json"
     JPEG = "image/jpeg"
+    PNG = "image/png"
+    GIF = "image/gif"
+    WEBP = "image/webp"
+    BINARY = "application/octet-stream"  # a file the browser cannot show: downloaded
     TEXT = "text/plain; charset=utf-8"
     JAVASCRIPT = "text/javascript; charset=utf-8"
     CSS = "text/css; charset=utf-8"
@@ -56,10 +60,7 @@ class Request:
 
 @dataclass(frozen=True, slots=True)
 class Response:
-    """A response; `cacheable` ones never change for a given path.
-
-    `policy` is its Content-Security-Policy, `referrer` its Referrer-Policy.
-    """
+    """A response: `cacheable` never changes for its path; CSP and Referrer-Policy."""
 
     status: HTTPStatus
     body: bytes = b""

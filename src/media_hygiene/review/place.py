@@ -9,7 +9,7 @@ container path they never typed.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 
@@ -19,12 +19,30 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
 
 
+DECISIONS_OPTION: Final = "--decisions"
+DEFAULT_DECISIONS: Final = "decisions.json"  # what `--decisions` alone names
+
+
 @dataclass(frozen=True, slots=True)
 class DecisionsPlace:
     """The decisions file, named for `clean --decisions` and for the user's eyes."""
 
     argument: str
     host: str
+
+
+def decisions_flag(argument: str) -> str:
+    """Write the option that names a decisions file, as short as possible.
+
+    Args:
+        argument: The file, as `--decisions` takes it.
+
+    Returns:
+        `--decisions` alone for the default file, else with the file.
+    """
+    if argument == DEFAULT_DECISIONS:
+        return DECISIONS_OPTION
+    return f"{DECISIONS_OPTION} {argument}"
 
 
 def decisions_place(

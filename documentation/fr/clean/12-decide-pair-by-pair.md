@@ -32,18 +32,20 @@ côté d'`index.html`.
 
 ## Étape 3 : nettoyer avec vos décisions
 
-Lancez votre commande `clean` de l'[étape 8](08-clean.md) avec `--decisions decisions.json` (un
-chemin relatif est lu dans le dossier des rapports) :
+Lancez votre commande `clean` de l'[étape 8](08-clean.md) avec `--decisions` : seul, il lit
+`decisions.json` dans le dossier des rapports (un autre fichier : `--decisions autre.json`) :
 
 ```powershell
-cavo789/media-hygiene --locale fr clean --decisions decisions.json
+cavo789/media-hygiene --locale fr clean --decisions
 ```
 
 (avec la même partie `docker run … -v …` qu'à l'étape 8)
 
 La page elle-même ne supprime jamais rien. `clean` refait l'audit, applique vos décisions, montre
 les paires de dossiers qui en résultent, et demande confirmation avant de nettoyer, avec toutes
-les protections : comparaison octet par octet, journal, `undo`.
+les protections : comparaison octet par octet, journal, `undo`. Une fois le nettoyage fait, le
+fichier est archivé sous `decisions.applied-<run>.json`, à côté de lui-même : après un `undo`,
+`--decisions` avec ce nom l'applique à nouveau.
 
 ## Quand le fichier est refusé
 
@@ -58,7 +60,7 @@ Par sécurité, `clean` refuse le fichier plutôt que de deviner quand :
 
 Le même `decisions.json` peut contenir les paires de dossiers **et** les photos de rafale de
 l'[étape 10](10-review-bursts.md) : `review` conserve les paires déjà présentes dans le fichier,
-et un seul `clean --decisions decisions.json` applique les deux.
+et un seul `clean --decisions` applique les deux.
 
 ---
 

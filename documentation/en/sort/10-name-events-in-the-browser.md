@@ -17,27 +17,27 @@ Run `classify` first ([step 4](04-classify.md)). Then mount the same folders and
 reports folder (read-only is enough for the photos: the page only shows them):
 
 ```powershell
-docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene review-sort
 ```
 
 As for [the burst review](../clean/10-review-bursts.md#step-1-start-the-review),
-`-p 127.0.0.1::8080` opens the page to your computer only, on a port Docker chooses. The page
+`-p 127.0.0.1:8088:8088` opens the page to your computer only, on port 8088. The page
 reads the workbook of the latest `classify` run, the one `sort` applies; name another one after
 the command: `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 
 ```text
-✅ Review ready on port 8080: each choice is saved at once in
+✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each choice is
+saved at once in
 C:\Users\you\media-hygiene\reports\20261002-123210-classify\sort-decisions.json.
 Ctrl+C stops the review.
-💡 Its address on your computer: run 'docker port 11f20c1a9952 8080' in another
-terminal, then open http://<that address> in your browser.
+💡 The page does not open? docker run must publish the same port on both sides:
+-p 127.0.0.1:8088:8088.
 ```
 
-In another window, `docker port media-hygiene-review 8080` gives the address to open, such as
-`http://127.0.0.1:49153`.
+Ctrl+click the address to open the page.
 
 ## Read the page
 

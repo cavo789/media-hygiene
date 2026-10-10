@@ -30,18 +30,19 @@ file in your reports folder (`C:\Users\<you>\media-hygiene\reports`), next to `i
 
 ## Step 3: clean with your decisions
 
-Run your `clean` command of [step 8](08-clean.md) with `--decisions decisions.json` (a relative
-path is read from the reports folder):
+Run your `clean` command of [step 8](08-clean.md) with `--decisions`: alone, it reads
+`decisions.json` from the reports folder (another file: `--decisions other.json`):
 
 ```powershell
-cavo789/media-hygiene clean --decisions decisions.json
+cavo789/media-hygiene clean --decisions
 ```
 
 (with the same `docker run … -v …` part as in step 8)
 
 The page itself never deletes anything. `clean` audits again, applies your decisions, shows the
 folder pairs that result, and asks before cleaning, with every safeguard: byte comparison, journal,
-`undo`.
+`undo`. Once the clean is done, the file is archived as `decisions.applied-<run>.json`, next to
+itself: after an `undo`, `--decisions` with that name applies it again.
 
 ## When the file is refused
 
@@ -55,7 +56,7 @@ To stay safe, `clean` refuses the file rather than guessing when:
 
 The same `decisions.json` can hold the folder pairs **and** the burst shots of
 [step 10](10-review-bursts.md): `review` keeps the pairs already in the file, and one
-`clean --decisions decisions.json` applies both.
+`clean --decisions` applies both.
 
 ---
 

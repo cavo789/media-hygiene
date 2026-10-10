@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import Annotated
 
 import typer
 
@@ -11,13 +11,11 @@ from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _
 from media_hygiene.services.places import open_places, serve_places
 
-PLACES_PORT: Final = 8080
-
 
 def places_command(
     ctx: typer.Context,
     *,
-    port: Annotated[int, review_options.port()] = PLACES_PORT,
+    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
 ) -> None:
     """Serve the map of the photos' positions until Ctrl+C.
 
@@ -32,9 +30,9 @@ def places_command(
         serve_places(runtime, board, port)
         output.blank()
         output.success(_("Map stopped; your places are in config.toml."))
-        output.tip(
+        output.next_step(
             _(
-                "Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], "
-                "then 'classify'."
+                "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
+                "'classify'."
             )
         )

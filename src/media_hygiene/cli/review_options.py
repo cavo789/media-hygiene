@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Final, cast
 
 import typer
 
@@ -11,6 +11,9 @@ from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from typer.models import OptionInfo
+
+# Uncommon, so rarely taken on the host, where it is published under the same number.
+PAGE_PORT: Final = 8088
 
 
 def decisions_file() -> OptionInfo:
@@ -37,12 +40,12 @@ def port() -> OptionInfo:
         "OptionInfo",
         typer.Option(
             "--port",
-            min=0,
+            min=1,
             help=_(
-                "Port of the page inside the container; publish it with "
-                "-p 127.0.0.1::8080 so that Docker chooses a free one on your "
-                "computer. Default: 8080."
-            ),
+                "Port of the page. docker run publishes it under the same number "
+                "on your computer: -p 127.0.0.1:9000:9000 for --port 9000. "
+                "Default: {default}."
+            ).format(default=PAGE_PORT),
             show_default=False,
         ),
     )

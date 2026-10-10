@@ -56,9 +56,11 @@ ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
 
 ## The review page does not open
 
-- Did you publish the port? The command needs `-p 127.0.0.1::8080`.
-- The address comes from `docker port media-hygiene-review 8080`, in another window, while the
-  review runs ([step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+- Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both
+  sides, or the address the review prints is not the right one
+  ([step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+- *port is already allocated*: another program uses 8088. Choose another number, the same three
+  times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.
   Start it again; your choices are kept.

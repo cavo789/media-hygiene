@@ -1,14 +1,14 @@
 """`media-hygiene review`: open the burst series review and serve it until Ctrl+C.
 
 The server listens on every interface of the container: Docker publishes the port on
-the host's loopback only (`-p 127.0.0.1::8080`), on a port it chooses.
+the host's loopback only, under the same number (`-p 127.0.0.1:8088:8088`): the page's
+address on the host is then known and printed as is.
 """
 
 from __future__ import annotations
 
 import asyncio
 import contextlib
-import socket
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
@@ -17,8 +17,8 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.decisions import DecisionsFile, read_decisions
-from media_hygiene.review.app import DECIDE_PATH, STATE_PATH, ReviewApp
-from media_hygiene.review.place import decisions_place
+from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, STATE_PATH, ReviewApp
+from media_hygiene.review.place import decisions_flag, decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.policy import keep_policy
@@ -36,6 +36,7 @@ if TYPE_CHECKING:
 
 # Every interface of the container: Docker forwards the published port to it.
 LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
+HOST_LOOPBACK: Final = "127.0.0.1"
 _TEMPLATES_PACKAGE: Final = "media_hygiene.review"
 _PAGE_TEMPLATE: Final = "review.html.j2"
 
@@ -68,6 +69,8 @@ def open_review(
 ) -> ReviewSession:
     """Start the review of the audit's burst series, resuming the decisions file.
 
+    The file is written at once, every series listed: `todo` until seen.
+
     Args:
         runtime: Settings, mount points and output.
         findings: The audit just run.
@@ -77,19 +80,24 @@ def open_review(
         The session.
 
     Raises:
-        DecisionsError: The file is not a decisions file, or was made on other
-            folders.
+        DecisionsError: The file is not a decisions file, was made on other
+            folders, or cannot be written.
     """
     mapper = runtime.mapper
     builder = StateBuilder(
-        mapper, keep_policy(runtime.settings, mapper), findings.similar.visuals
+        mapper,
+        keep_policy(runtime.settings, mapper),
+        findings.similar.visuals,
+        runtime.settings.review.propose_aside_below,
     )
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     source = ReviewSource(findings.similar.bursts, builder, target, place)
     roots = mapper.roots_on_host(findings.roots)
-    if not target.exists():
-        return ReviewSession(source, DecisionsFile(version=1, roots=roots))
-    base = read_decisions(target)
+    base = (
+        read_decisions(target)
+        if target.exists()
+        else DecisionsFile(version=1, roots=roots)
+    )
     if sorted(base.roots) != sorted(roots):
         message = _(
             "{path} was made on other folders ({theirs}); this review analyses {ours}."
@@ -100,7 +108,13 @@ def open_review(
             ),
             _("Name another file with --decisions, or mount the same folders."),
         )
-    return ReviewSession(source, base)
+    session = ReviewSession(source, base)
+    try:
+        session.save()
+    except OSError as exc:
+        message = _("Cannot save the decisions file: {error}.")
+        raise DecisionsError(message.format(error=exc.strerror or exc)) from exc
+    return session
 
 
 def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
@@ -115,7 +129,9 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
     page = environment.get_template(_PAGE_TEMPLATE).render(
         state_path=STATE_PATH,
         decide_path=DECIDE_PATH,
+        file_path=FILE_PATH,
         file=session.place.argument,
+        clean_option=decisions_flag(session.place.argument),
         place=session.place.host,
     )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
@@ -148,15 +164,27 @@ def _announce(runtime: Runtime, session: ReviewSession, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Review ready on port {port}: each decision is saved at once in {place}. "
-            "Ctrl+C stops the review."
-        ).format(port=port, place=session.place.host)
+            "Review ready, open {url} in your browser. Each decision is saved at "
+            "once in {place}. Ctrl+C stops the review."
+        ).format(url=page_url(port), place=session.place.host)
     )
     address_tip(output, port)
 
 
+def page_url(port: int) -> str:
+    """The page's address on the host, published under the same port number.
+
+    Args:
+        port: The port listened on, inside the container.
+
+    Returns:
+        The URL to open in the browser.
+    """
+    return f"http://{HOST_LOOPBACK}:{port}/"
+
+
 def address_tip(output: Output, port: int) -> None:
-    """Tell how to open a local page from the host: Docker chose its port.
+    """Say what to check when the page does not open: the port published as is.
 
     Args:
         output: Where to tell it.
@@ -164,7 +192,7 @@ def address_tip(output: Output, port: int) -> None:
     """
     output.tip(
         _(
-            "Its address on your computer: run 'docker port {container} {port}' in "
-            "another terminal, then open http://<that address> in your browser."
-        ).format(container=socket.gethostname(), port=port)
+            "The page does not open? docker run must publish the same port on both "
+            "sides: -p 127.0.0.1:{port}:{port}."
+        ).format(port=port)
     )

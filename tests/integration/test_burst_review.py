@@ -85,6 +85,33 @@ def test_shots_set_aside_need_a_quarantine(
     assert "Audit summary" not in result.output
 
 
+def test_a_series_kept_whole_moves_nothing(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Seen and kept whole: no shot moves, and no quarantine is needed."""
+    write_decisions(locations, shots(0, 1, 2, 3), [])
+    monkeypatch.delenv("MEDIA_HYGIENE_QUARANTINE_DIR")
+    result = run(cli, "clean", "--yes", "--delete", "--decisions", "decisions.json")
+    assert result.exit_code == 0, result.output
+    assert "burst series reviewed: 1, shots set aside: 0" in result.output
+    assert (locations.data_dir / BLURRED).is_file()
+
+
+def test_series_still_to_see_never_block_clean(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """A `todo` series moves nothing and is never checked, even when stale."""
+    todo = {"status": "todo", "kept": ["C:\\elsewhere.jpg"]}
+    done = {"kept": shots(0, 1, 3), "discarded": shots(2)}
+    decisions = {"version": 1, "roots": DEMO_ROOTS, "bursts": [todo, done]}
+    (locations.reports_dir / "decisions.json").write_text(json.dumps(decisions))
+    result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
+    assert result.exit_code == 0, result.output
+    assert "1 burst series not reviewed yet: its shots stay." in result.output
+    assert "burst series reviewed: 1, shots set aside: 1" in result.output
+    assert not (locations.data_dir / BLURRED).exists()
+
+
 def fake_server(action: Callable[[ReviewApp], None]) -> object:
     """A server that says it is ready, lets `action` act, then gets Ctrl+C."""
 
@@ -104,15 +131,15 @@ def test_the_review_command_serves_until_ctrl_c(
 
     def choose(app: ReviewApp) -> None:
         pages.append(app.page)
-        app.session.decide(0, frozenset({2}))
+        app.session.decide({0: frozenset({2})})
 
     monkeypatch.setattr(reviewing, "run_server", fake_server(choose))
     result = run(cli, "review")
     assert result.exit_code == 0, result.output
-    assert f"Review ready on port {PORT}" in result.output
-    assert "docker port" in result.output
+    assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
+    assert f"-p 127.0.0.1:{PORT}:{PORT}" in result.output
     assert "shots set aside: 1" in result.output
-    assert "--decisions decisions.json" in result.output
+    assert "'clean' command with --decisions;" in result.output
     assert "decisions.json, in the folder mounted on" in result.output
     assert b"Burst series review" in pages[0]
     saved = json.loads((locations.reports_dir / "decisions.json").read_text())
@@ -156,4 +183,16 @@ def test_the_stop_summary_names_the_file_without_any_choice(
     assert (
         "Your choices are in decisions.json, in the folder mounted on" in result.output
     )
-    assert "Next:" not in result.output
+    assert "What next:" not in result.output
+
+
+def test_audit_ends_on_the_next_step(cli: CliRunner) -> None:
+    """The copies come first; once they are gone, the bursts are the next step."""
+    first = run(cli, "audit")
+    assert (
+        first.output.rstrip().splitlines()[-2].startswith("👉 What next: run 'clean'")
+    )
+    assert run(cli, "clean", "--yes").exit_code == 0
+    second = run(cli, "audit")
+    assert "What next: sort the burst series" in second.output
+    assert "💡 Sort the burst series" not in second.output

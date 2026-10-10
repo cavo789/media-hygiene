@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _PREVIEW_KEY_LENGTH: Final = 24
 PREVIEW_PREFIX: Final = "/preview/"
+ORIGINAL_PREFIX: Final = "/original/"
 
 
 class ShotState(BaseModel):
@@ -34,18 +35,23 @@ class ShotState(BaseModel):
     folder: str
     details: str
     preview: str
+    original: str  # the file itself, bytes untouched: proof the preview is faithful
     protected: bool
     best: bool
+    share: float = 1.0  # its sharpness, as a share of the sharpest shot's
+    proposed: bool = False  # proposed to be set aside: far less sharp than the best
 
 
 class SeriesState(BaseModel):
-    """One burst series: its shots in time order, and the ranks set aside."""
+    """One burst series: its shots in time order, the ranks set aside, if seen."""
 
     model_config = _FROZEN
 
     camera: str
     shots: tuple[ShotState, ...]
+    taken: str = ""  # EXIF date of its first shot, sortable as text; empty: unknown
     discarded: tuple[int, ...] = ()
+    reviewed: bool = False  # in the decisions file, kept whole or not
 
 
 class ReviewState(BaseModel):
@@ -78,6 +84,7 @@ class StateBuilder:
     mapper: HostPathMapper
     policy: KeepPolicy
     visuals: Mapping[Path, VisualFacts]
+    propose_below: float = 0.0  # `[review] propose_aside_below`; 0: no proposal
 
     def series(self, burst: BurstSeries) -> SeriesState:
         """Describe one series, no shot set aside yet.
@@ -91,8 +98,39 @@ class StateBuilder:
         first = self.visuals.get(burst.shots[0].path)
         return SeriesState(
             camera=(first.camera if first else None) or "",
-            shots=tuple(self._shot(file, file == burst.best) for file in burst.shots),
+            taken=(first.taken_at if first else None) or "",
+            shots=tuple(self._ranked(file, burst) for file in burst.shots),
         )
+
+    def _sharpness(self, file: MediaFile) -> float | None:
+        """Read the sharpness of a shot, when it was measured.
+
+        Args:
+            file: The shot.
+
+        Returns:
+            Its sharpness, or None.
+        """
+        visual = self.visuals.get(file.path)
+        return visual.sharpness if visual is not None else None
+
+    def _ranked(self, file: MediaFile, burst: BurstSeries) -> ShotState:
+        """Describe a shot next to the sharpest of its series; far less sharp: proposed.
+
+        Args:
+            file: The shot.
+            burst: Its series.
+
+        Returns:
+            The shot, with its share of the best sharpness and the proposal.
+        """
+        shot = self._shot(file, file == burst.best)
+        sharpness, top = self._sharpness(file), self._sharpness(burst.best)
+        if sharpness is None or not top:
+            return shot
+        share = min(sharpness / top, 1.0)
+        proposed = not (shot.best or shot.protected) and share < self.propose_below
+        return shot.model_copy(update={"share": share, "proposed": proposed})
 
     def _shot(self, file: MediaFile, best: bool) -> ShotState:  # noqa: FBT001
         """Describe one shot: name, folder, and what tells it from the others.
@@ -119,6 +157,7 @@ class StateBuilder:
             folder=folder,
             details=" · ".join(details),
             preview=f"{PREVIEW_PREFIX}{preview_key(file)}.jpg",
+            original=f"{ORIGINAL_PREFIX}{preview_key(file)}{file.path.suffix.lower()}",
             protected=self.policy.is_protected(file),
             best=best,
         )

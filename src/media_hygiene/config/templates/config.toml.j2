@@ -68,6 +68,11 @@ excluded_names = []
 confirm = true
 
 
+[review]
+{{ comment(_("The burst review proposes to set aside a shot whose sharpness is below this share of the sharpest shot of its series (0 to 1): 0.35 proposes a shot at 162 next to one at 1017, not one at 616. Moving on accepts the proposal, a key takes it back. 0 never proposes anything.")) }}
+propose_aside_below = 0.35
+
+
 [sort]
 {{ comment(_("Ask for confirmation before sorting."), "--yes") }}
 confirm = true

@@ -1,0 +1,95 @@
+{# Included in the script of review.html.j2: the order the series come in (by folder, by
+   date, the largest sharpness gap first, the series still to see first), remembered by
+   the browser, and moving along it: →, ←, N (a page at a time on the board), and the
+   start where the review stopped. #}
+  const orderKey = "media-hygiene:review:order";
+  let mode = "folder";
+  let order = [];  // series ranks, in the chosen order
+  let positions = new Map();  // series rank -> its place in `order`
+
+  // How much the shots of a series differ in sharpness: 0 all alike, near 1 one far blurrier.
+  const gapOf = (item) => 1 - Math.min(...item.shots.map((shot) => shot.share));
+  const unknown = "\uffff";  // no date: after every dated series
+  const sorters = {
+    folder: (a, b) => a - b,
+    time: (a, b) => (series[a].taken || unknown).localeCompare(series[b].taken || unknown) || a - b,
+    gap: (a, b) => gapOf(series[b]) - gapOf(series[a]) || a - b,
+    todo: (a, b) => Number(series[a].reviewed) - Number(series[b].reviewed) || a - b,
+  };
+
+  // The order stays as it was set while you review: a series never jumps away under you.
+  const arrange = (next) => {
+    mode = next in sorters ? next : "folder";
+    order = series.map((item, index) => index).sort(sorters[mode]);
+    positions = new Map(order.map((index, place) => [index, place]));
+    byId("order").value = mode;
+    try {
+      window.localStorage.setItem(orderKey, mode);
+    } catch (error) {
+      // Storage refused (private browsing): the order is by folder next time.
+    }
+  };
+
+  const savedOrder = () => {
+    try {
+      return window.localStorage.getItem(orderKey) || "folder";
+    } catch (error) {
+      return "folder";
+    }
+  };
+
+  const show = (index) => {
+    current = index;
+    render();
+    window.scrollTo(0, 0);
+  };
+
+  const advance = () => {
+    const place = positions.get(current) + 1;
+    if (place < order.length) show(order[place]);
+    else setStatus(T.last);
+  };
+
+  const leave = (index) => {
+    // Leaving a series without a choice accepts it as shown: the proposal, else every shot.
+    if (!series[current].reviewed) decide(current, proposal(series[current]));
+    else setStatus("");
+    show(index);
+  };
+
+  const go = (step) => {
+    if (board) {
+      leavePage(step);
+      return;
+    }
+    const place = positions.get(current) + step;
+    if (place < 0 || place >= order.length) {
+      setStatus(place < 0 ? T.first : T.last);
+      return;
+    }
+    leave(order[place]);
+  };
+
+  const nextToSee = () => {
+    if (board) {
+      nextPageToSee();
+      return;
+    }
+    const place = positions.get(current);
+    const ahead = order.map((index, shift) => order[(place + 1 + shift) % order.length]);
+    const next = ahead.find((index) => index !== current && !series[index].reviewed);
+    if (next === undefined) setStatus(T.allSeen, "saved");
+    else leave(next);
+  };
+
+  const startAt = () => {
+    // The file is the resume point: the first series still to see, else the first one.
+    const todo = order.find((index) => !series[index].reviewed);
+    return todo === undefined ? order[0] : todo;
+  };
+
+  byId("order").addEventListener("change", (event) => {
+    arrange(event.target.value);
+    buildTree();
+    markCurrent();
+  });

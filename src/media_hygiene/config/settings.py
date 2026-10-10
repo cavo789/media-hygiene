@@ -9,6 +9,7 @@ from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.places_settings import PlacesSettings
+from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.config.zone import check_timezone
@@ -132,6 +133,7 @@ class Settings(BaseModel):
     scan: ScanSettings = ScanSettings()
     keep: KeepSettings = KeepSettings()
     clean: CleanSettings = CleanSettings()
+    review: ReviewSettings = ReviewSettings()
     classify: ClassifySettings = ClassifySettings()
     sort: SortSettings = SortSettings()
     inventory: InventorySettings = InventorySettings()

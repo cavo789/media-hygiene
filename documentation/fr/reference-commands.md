@@ -45,8 +45,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify`, avant de décrire beaucoup de photos avec un modèle local). |
 | `--tier exact\|near` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi les quasi-doublons en quarantaine. [Étape 11](clean/11-near-duplicates.md) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
-| `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places` | Port de la page dans le conteneur, `8080` par défaut ; publiez-le avec `-p 127.0.0.1::8080`. |
+| `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport et les photos de rafale écartées avec `review`. `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. Une fois appliqué par `clean`, le fichier est renommé `decisions.applied-<run>.json`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
+| `--port PORT` | `review`, `review-sort`, `places` | Port de la page, `8088` par défaut ; publiez le même : `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--year ANNÉE[-ANNÉE]` | `classify` | Seulement les fichiers de cette année ou de ces années. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
 | `--layout DISPOSITION` | `classify` | Où vont les fichiers sûrs, par exemple `{year}/{month}`. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
@@ -209,11 +209,11 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                                          relatif se trouve dans le dossier   │
 │                                          monté sur /reports. Par défaut :    │
 │                                          decisions.json.                     │
-│ --port               <int range> [x>=0]  Port de la page dans le conteneur ; │
-│                                          publiez-le avec -p 127.0.0.1::8080  │
-│                                          pour que Docker en choisisse un     │
-│                                          libre sur votre ordinateur. Par     │
-│                                          défaut : 8080.                      │
+│ --port               <int range> [x>=1]  Port de la page. docker run le      │
+│                                          publie sous le même numéro sur      │
+│                                          votre ordinateur, par exemple -p    │
+│                                          127.0.0.1:9000:9000 pour --port     │
+│                                          9000. Par défaut : 8088.            │
 │ --help       -h                          Affiche ce message et quitte.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Dossiers (remplacent folders.* de config.toml) ─────────────────────────────╮
@@ -256,7 +256,8 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
 │                                    écartées). Un chemin relatif est lu dans  │
 │                                    le dossier monté sur /reports. Le fichier │
 │                                    est refusé si les dossiers, les paires ou │
-│                                    les séries ont changé.                    │
+│                                    les séries ont changé. Seul, --decisions  │
+│                                    lit decisions.json.                       │
 │ --delete                           Supprimer pour de bon les copies exactes, │
 │                                    après une comparaison octet par octet     │
 │                                    avec la copie gardée, au lieu de les      │
@@ -574,10 +575,11 @@ les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
  les règles 'place' et 'trip'.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --port          <int range> [x>=0]  Port de la page dans le conteneur ;      │
-│                                     publiez-le avec -p 127.0.0.1::8080 pour  │
-│                                     que Docker en choisisse un libre sur     │
-│                                     votre ordinateur. Par défaut : 8080.     │
+│ --port          <int range> [x>=1]  Port de la page. docker run le publie    │
+│                                     sous le même numéro sur votre            │
+│                                     ordinateur, par exemple -p               │
+│                                     127.0.0.1:9000:9000 pour --port 9000.    │
+│                                     Par défaut : 8088.                       │
 │ --help  -h                          Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

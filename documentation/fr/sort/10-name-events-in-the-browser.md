@@ -18,28 +18,27 @@ même dossier de rapports (la lecture seule suffit pour les photos : la page ne 
 montrer) :
 
 ```powershell
-docker run --rm -it --name media-hygiene-review -p 127.0.0.1::8080 `
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr review-sort
 ```
 
 Comme pour [le tri des rafales](../clean/10-review-bursts.md#étape-1--lancer-le-tri),
-`-p 127.0.0.1::8080` ouvre la page à votre ordinateur seulement, sur un port choisi par Docker. La
-page lit le classeur du dernier `classify`, celui qu'applique `sort` ; nommez-en un autre après la
+`-p 127.0.0.1:8088:8088` ouvre la page à votre ordinateur seulement, sur le port 8088. La page
+lit le classeur du dernier `classify`, celui qu'applique `sort` ; nommez-en un autre après la
 commande : `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 
 ```text
-✅ Revue prête sur le port 8080 : chaque choix est enregistré aussitôt dans
+✅ Revue prête, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
+choix est enregistré aussitôt dans
 C:\Users\vous\media-hygiene\reports\20261002-123210-classify\sort-decisions.json.
 Ctrl+C arrête la revue.
-💡 Son adresse sur votre ordinateur : lancez 'docker port 11f20c1a9952 8080'
-dans un autre terminal, puis ouvrez http://<cette adresse> dans votre
-navigateur.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
 ```
 
-Dans une autre fenêtre, `docker port media-hygiene-review 8080` donne l'adresse à ouvrir, par
-exemple `http://127.0.0.1:49153`.
+Ctrl+clic sur l'adresse pour ouvrir la page.
 
 ## Lire la page
 

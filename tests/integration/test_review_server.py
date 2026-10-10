@@ -13,6 +13,7 @@ from tests.support.review import (
     BURST_HOST,
     PAGE,
     Call,
+    Reply,
     decide,
     review_session,
     serve_and_call,
@@ -23,6 +24,13 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 JSON = ("Host: 127.0.0.1", "Content-Type: application/json")
+
+
+def totals(reply: Reply) -> tuple[object, ...]:
+    """Series with shots set aside, shots set aside, series seen."""
+    body = reply.json()
+    assert isinstance(body, dict)
+    return body["series"], body["shots"], body["seen"]
 
 
 def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
@@ -55,21 +63,26 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
 
 
 def test_each_decision_is_saved_at_once_and_resumed(locations: Locations) -> None:
-    """Report pairs stay; the review resumes; a series kept whole is not listed."""
+    """Report pairs stay; the review resumes; a series kept whole is listed, seen."""
     write_burst(locations.data_dir)
     target = locations.reports_dir / "decisions.json"
     target.write_text(json.dumps({"version": 1, "roots": ["C:\\"], "pairs": []}))
     session = review_session(locations)
     [first] = serve_and_call(session, [decide(0, 1)])
-    assert (first.status, first.json()) == (200, {"series": 1, "shots": 1})
+    assert first.status == 200
+    assert totals(first) == (1, 1, 1)
     [burst] = read_decisions(target).bursts
     assert burst.discarded == (f"{BURST_HOST}\\IMG_1.jpg",)
     assert burst.kept == (f"{BURST_HOST}\\IMG_0.jpg", f"{BURST_HOST}\\IMG_2.jpg")
     resumed = review_session(locations)
     assert resumed.state().series[0].discarded == (1,)
     assert resumed.progress == (1, 1)
-    serve_and_call(resumed, [decide(0)])
-    assert read_decisions(target).bursts == ()
+    [whole] = serve_and_call(resumed, [decide(0)])
+    assert totals(whole) == (0, 0, 1)
+    [burst] = read_decisions(target).bursts
+    assert (len(burst.kept), burst.discarded) == (3, ())
+    seen = review_session(locations).state().series[0]
+    assert (seen.reviewed, seen.discarded) == (True, ())
 
 
 @pytest.mark.parametrize(
@@ -107,9 +120,11 @@ def test_refused_requests(
     """Another host name, no JSON, another site, garbage: refused, nothing saved."""
     write_burst(locations.data_dir)
     session = review_session(locations)
+    target = locations.reports_dir / "decisions.json"
+    before = target.read_bytes()
     [reply] = serve_and_call(session, [call])
     assert reply.status == status
-    assert not (locations.reports_dir / "decisions.json").exists()
+    assert target.read_bytes() == before
 
 
 @pytest.mark.parametrize(
@@ -145,6 +160,7 @@ def test_a_saving_error_is_reported(locations: Locations) -> None:
     """The reports folder vanished: the page says the choice was not saved."""
     write_burst(locations.data_dir)
     session = review_session(locations)
+    (locations.reports_dir / "decisions.json").unlink()
     locations.reports_dir.rmdir()
     [reply] = serve_and_call(session, [decide(0, 1)])
     assert reply.status == 500

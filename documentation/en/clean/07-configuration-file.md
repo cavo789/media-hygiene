@@ -118,6 +118,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
+│ review.propose_aside_below    │ 0.35                          │ default      │
 │ classify.target               │                               │ default      │
 │ classify.leave                │ []                            │ default      │
 │ classify.timezone             │                               │ default      │
@@ -474,6 +475,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
+│ review.propose_aside_below    │ 0.35                          │ config.toml  │
 │ classify.target               │                               │ config.toml  │
 │ classify.leave                │ []                            │ config.toml  │
 │ classify.timezone             │                               │ config.toml  │
