@@ -64,6 +64,8 @@ d'Excel.
   octets) ont un SHA-256 : les autres ne peuvent pas avoir de copie identique. Quelle copie
   `clean` garderait dépend de vos réglages : c'est le rôle du `plan.csv` du rapport
   ([étape 4](clean/04-html-report.md)).
+- **Tags** : les mots que `tags` a donnés au fichier (dossiers, date, lieu, modèle de vision),
+  séparés par `;` ; vide avant le premier passage de `tags` ([les tags](reference-tags.md)).
 
 Les fichiers RAW n'ont que leur taille, leurs dates et leur empreinte : leur contenu n'est pas
 décodé. Les fichiers autres que photos et vidéos (`--ext pdf`, [étape 6](clean/06-file-types.md))

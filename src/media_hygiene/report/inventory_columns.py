@@ -179,4 +179,5 @@ def columns() -> tuple[Column, ...]:
         Column(_("SHA-256"), lambda e: e.file.facts.full_digest, width=_WIDE * 2),
         Column(_("Duplicate group"), _group),
         Column(_("Copies"), _copies),
+        Column(_("Tags"), lambda e: e.context.tags(e.file), width=_PATH),
     )

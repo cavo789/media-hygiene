@@ -2,7 +2,8 @@
 
 Each photo is made a JPEG of `image_edge` pixels in the process pool (a RAW file gives
 its embedded preview), sent, and its description committed at once. Ctrl+C lets the
-photos being described finish; the next run starts where this one stopped.
+photos being described finish; the next run starts where this one stopped. The
+question asked is `classify`'s unless another one is given (`tags` asks its own).
 """
 
 from __future__ import annotations
@@ -10,7 +11,7 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.ai.prompts import describe_request, read_description
 from media_hygiene.errors import AiError
@@ -21,8 +22,20 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
 
     from media_hygiene.classify.ai.client import OllamaClient
+    from media_hygiene.classify.ai.models import Description
     from media_hygiene.index.descriptions import DescriptionStore, PhotoVersion
     from media_hygiene.scan.progress import ProgressSink
+
+
+@dataclass(frozen=True, slots=True)
+class Question:
+    """How a photo is asked about (model, JPEG → body), and how its answer is read."""
+
+    request: Callable[[str, bytes], dict[str, object]]
+    read: Callable[[str, float], Description | None]
+
+
+CLASSIFY_QUESTION: Final = Question(describe_request, read_description)
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,6 +47,7 @@ class DescribeDeps:
     executor: Executor
     progress: ProgressSink
     stopped: Callable[[], bool]
+    question: Question = CLASSIFY_QUESTION
 
 
 @dataclass(slots=True)
@@ -99,11 +113,13 @@ async def _describe_one(
             return
         started = time.monotonic()
         try:
-            content = await deps.client.chat(describe_request(settings.model, image))
+            content = await deps.client.chat(
+                deps.question.request(settings.model, image)
+            )
         except AiError as exc:
             outcome.errors.append(exc)
             return
-        description = read_description(content, time.monotonic() - started)
+        description = deps.question.read(content, time.monotonic() - started)
         if description is None:
             outcome.unreadable += 1
         else:

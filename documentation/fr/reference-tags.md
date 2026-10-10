@@ -1,0 +1,124 @@
+# Les tags
+
+[Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-tags.md)
+
+`tags` donne à chaque photo et vidéo **des mots pour la retrouver** : « Durbuy », « ours »,
+« anniversaire », « Noël », « neige ». Il lit ce que les audits ont appris, depuis le cache :
+lancez d'abord un [audit](start/01-first-audit.md), avec `/cache` monté
+([étape 2](start/02-keep-the-cache.md)). Les mots restent **dans le cache**, jamais dans vos
+photos.
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr tags
+```
+
+```text
+🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
+✅ 52 318 fichiers : 241 906 mots tirés de leurs dossiers, dates et lieux.
+💡 Indiquez un modèle de vision local (Ollama) dans [classify.ai] model pour ajouter ce que
+montrent les photos : elles sont envoyées à son url, et seulement là.
+```
+
+Ensuite, [`inventory`](reference-inventory.md) les liste dans sa dernière colonne, **Tags**. Une
+page de recherche et des fichiers `.xmp` portables s'appuieront bientôt dessus.
+
+## D'où viennent les mots
+
+| Source | Mots | Coût |
+|---|---|---|
+| Dossiers | Les mots des noms de dossiers que vous avez choisis : `2022/Durbuy - ours` donne `Durbuy`, `ours`. Les dossiers nommés par un appareil ou une application (`DCIM`, `100CANON`, `Camera`), les dates (`2019`, `Juillet 2019`) et les petits mots de liaison (`les`, `the`) sont écartés, comme pour [la copie gardée](clean/05-choose-the-kept-copy.md). | Secondes |
+| Date | L'année, le mois, la saison (inversée sous l'équateur), les fêtes (Noël, Nouvel an, Saint-Nicolas, Saint-Valentin, Halloween, Pâques) et les noms de vos propres règles `calendar` et `date_range` ([trier, étape 6](sort/06-write-down-what-you-know.md#les-dates)). Une photo sans date prend l'année de son dossier (`Avril 2007`). | Secondes |
+| Lieu | Le nom de votre lieu quand la position GPS s'y trouve ([trier, étape 9](sort/09-places-from-gps.md)), puis la ville la plus proche et son pays, hors ligne (GeoNames), quand elle est à moins de `town_km` (20 km). | Secondes |
+| Modèle de vision | Une courte phrase et 5 à 10 mots sur ce que montre la photo (facultatif, ci-dessous). | Environ 2 s par photo |
+
+Ces mots sont recalculés à chaque passage : renommez un dossier ou ajoutez une règle, relancez
+`tags`.
+
+## Les mots d'un modèle de vision local
+
+Un modèle de vision voit bien les **scènes et les objets** (une pièce montée, des bougies, un
+bonhomme de neige, une patinoire, une cathédrale) et lit le texte visible. Il ne connaît jamais
+l'**occasion** (Pâques, Noël) ni le **lieu** (Durbuy, la Sicile) : c'est pourquoi les dossiers,
+les dates et les lieux passent d'abord, et le modèle ne fait qu'y ajouter.
+
+C'est le modèle de [trier, étape 8](sort/08-subjects-from-a-local-model.md) : installez-le, puis
+indiquez-le dans `config.toml`.
+
+```toml
+[classify.ai]
+url = "http://host.docker.internal:11434"
+model = "qwen2.5vl:7b"
+```
+
+Avec Docker Engine (Linux, WSL), ajoutez `--add-host=host.docker.internal:host-gateway` à
+`docker run`. Sans `model`, `tags` n'envoie jamais rien.
+
+- **Vie privée** : chaque photo est envoyée, en JPEG de 768 pixels, à l'`url` de
+  `[classify.ai]`, et seulement là. Gardez ce serveur sur votre propre ordinateur.
+- **Une photo par ensemble** : les copies identiques partagent leurs mots, et une rafale prend
+  ceux de sa photo la plus nette. Les vidéos, et les photos plus petites que `min_edge`
+  (512 pixels), ne sont pas envoyées.
+- **Les plus récentes d'abord** : la première nuit couvre déjà vos dernières années.
+- **Ce qui lui est demandé** : une phrase et 5 à 10 mots, dans la langue de `[tags] language`
+  (celle de l'interface par défaut) ; les personnes comme adulte, enfant, bébé ou groupe, jamais
+  une relation (« mère », « sœur ») ni un nom.
+- **Des mots nettoyés** : en minuscules, au singulier (`bougies` → `bougie`), une fois chacun ;
+  les mots d'une ou deux lettres et ceux qui conviennent à toutes les photos (`sol`, `mur`,
+  `floor`, `wall` : `[tags] stop_words`) sont écartés.
+
+### Mesurer d'abord : `--sample`
+
+```powershell
+docker run --rm -it ... cavo789/media-hygiene --locale fr tags --sample 20
+```
+
+Il décrit 20 photos prises au hasard, affiche leur phrase, leurs mots et leur temps, puis
+l'estimation d'une exécution complète. Leurs réponses sont gardées : l'exécution complète ne les
+décrit pas à nouveau.
+
+### La longue exécution
+
+**Combien de temps** : environ 2 secondes par photo sur une carte graphique avec un modèle de
+27 milliards de paramètres, soit environ 30 heures pour 50 000 photos, moins une fois les copies
+et les rafales comptées une seule fois. Au-delà de `confirm_above` photos (200), `tags` affiche
+le nombre et la durée et demande d'abord ; `--yes` ne demande pas.
+
+**La carte graphique pour lui seul** : quand un autre programme utilise la même carte (un autre
+modèle dans Ollama), Ollama échange les modèles et une photo peut prendre de 10 à 30 secondes.
+Laissez la carte à l'exécution seule, la nuit par exemple.
+
+**Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours. Chaque réponse est
+gardée aussitôt : le prochain passage de `tags` reprend là où celui-ci s'est arrêté.
+`tags --no-describe` ne demande rien de nouveau au modèle : les mots des dossiers, des dates et
+des lieux, et les réponses déjà dans le cache.
+
+### Un dossier d'abord : `--path`
+
+```powershell
+docker run --rm -it ... cavo789/media-hygiene --locale fr tags --path "C:\Photos\2022"
+```
+
+Seulement les photos sous ce dossier (répétez `--path` pour plusieurs).
+
+## Réglages
+
+```toml
+[tags]
+language = ""   # "en", "fr", ou vide pour la langue de l'interface
+# stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
+town_km = 20
+```
+
+Une liste `stop_words` écrite ici remplace celle intégrée. Le modèle lui-même se règle dans
+`[classify.ai]` (model, url, `min_edge`, `confirm_above`).
+
+## Pourquoi pas dans les photos
+
+Écrire les mots dans un JPEG change ses octets : son empreinte, sa date, et deux copies
+identiques cesseraient de l'être si une seule était étiquetée. Cela casserait ce sur quoi cet
+outil repose, et mettrait les originaux en risque. Les mots restent dans le cache, où
+`inventory` les lit.

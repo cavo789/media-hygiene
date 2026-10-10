@@ -117,6 +117,15 @@ attribution = "© OpenStreetMap contributors"
 nominatim_url = "https://nominatim.openstreetmap.org"
 
 
+[tags]
+{{ comment(_("The words of 'tags', to find photos by what they show: the meaningful words of the folder names, the date (year, month, season, holidays), the place (your [[classify.places]], the nearest town) and, when [classify.ai] model is set, what the vision model sees. They are kept in the cache (/cache), never written into the photos.")) }}
+{{ comment(_('Language of the words: "en", "fr", or empty for the language of the interface.')) }}
+language = ""
+{{ comment(_("Words left out because they describe nearly every photo. Written here, the list replaces the built-in one (French and English).")) }}
+# stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
+{{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
+town_km = 20
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 

@@ -129,7 +129,8 @@ class FactsRepository:
         before = self._connection.total_changes
         self._connection.executemany(FORGET[0], gone)
         removed = self._connection.total_changes - before
-        self._connection.executemany(FORGET[1], gone)
+        for statement in FORGET[1:]:
+            self._connection.executemany(statement, gone)
         return removed
 
     def move(self, moves: Iterable[tuple[str, str]]) -> None:

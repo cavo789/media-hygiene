@@ -20,6 +20,7 @@ from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_status import status_command
+from media_hygiene.cli.cmd_tags import tags_command
 from media_hygiene.cli.cmd_undo import undo_command
 from media_hygiene.cli.safety import help_of
 from media_hygiene.i18n import _
@@ -149,6 +150,16 @@ def _commands(
             _(
                 "Erase the quarantine of a run for good: with 'clean --delete', the "
                 "only way the tool removes content."
+            ),
+        ),
+        (
+            "tags",
+            tags_command,
+            analyse,
+            _(
+                "Give every photo words to find it by: its folders, date and place, "
+                "and what a local vision model sees. Kept in the cache, never in "
+                "the photos."
             ),
         ),
         (

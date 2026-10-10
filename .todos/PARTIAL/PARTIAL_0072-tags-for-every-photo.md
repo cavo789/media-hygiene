@@ -126,3 +126,64 @@ recomputed independently; nothing is stored as truth that can be derived again i
 - [ ] Off by default: an audit never calls Ollama.
 - [ ] Documentation en + fr (time estimate, GPU shared with other models, privacy: images go to
       the configured URL only); `.po` translated.
+
+## Status — PARTIAL (2026-10-11)
+
+### Done
+- `tags` table in the index (schema 6: path, size, mtime, source, value, model; index on
+  `value`), forgotten and moved with the file (`index/schema.py` `FORGET`/`MOVE`);
+  `index/tag_rows.py` (`TagStore.replace` per source, `of`, `counts`, `tags_reader`).
+- Sources (`tags/models.py` `TagSource`): `folder`, `date`, `place`, `vision`, plus `caption`
+  (the model's sentence, kept whole for the search of 0073). Cheap sources recomputed at every
+  run; model sources derived at every run from the `descriptions` cache.
+- Cheap producers (`tags/producers.py`, `tags/dates.py`, `tags/vocabulary.py`,
+  `tags/context.py`): folder words through `classify`'s `FolderRules` (generic folders of
+  `[keep]` and `[classify]`, band folders, date folders), months and linking words dropped;
+  year, month, season (southern hemisphere turned), fixed holidays, Easter (computus), the
+  user's `calendar` and `date_range` rules, the folder year when no date; personal places and
+  the GeoNames town and country within `[tags] town_km`.
+- Vision producer (`tags/vision.py`, `classify/ai/templates/tags_fr.txt`, `tags_en.txt`):
+  prompt C with the measured fixes (no relationship words, phrases whole, one-line JSON,
+  `maxItems` 10), its own prompt digest; normalization (`tags/normalize.py`,
+  `tags/plurals.py`): lower case, trimmed, simple French/English singulars, ≤ 2 letters and
+  `[tags] stop_words` dropped, duplicates removed. The raw answer is cached; normalization runs
+  when tags are derived (a new stop word needs no model call).
+- Reuse of the 0029 machinery: `DescribeDeps` takes a `Question` (default: classify's), so
+  client, previews, cache, resume after Ctrl+C, time estimate and `confirm_above` are shared.
+- Describe less (`tags/selection.py`): one photo per set of identical files (SHA-256) and per
+  burst series (`plan.bursts`, the sharpest shot); videos and photos below `min_edge` skipped;
+  newest first; `--path`.
+- `media-hygiene tags` (`cli/cmd_tags.py`, `cli/tags_flow.py`, `services/tags.py`,
+  `services/tag_describe.py`, `services/tag_files.py`, `console/tags_view.py`): `--path`,
+  `--no-describe`, `--sample N`, `--yes`; read-only marker and launcher (`READ_ONLY_COMMANDS`,
+  `PHOTO_READERS`); count and estimate printed first; summary of photos with the model's
+  words and those left; next step `inventory`.
+- `[tags]` settings (`config/tags_settings.py`, `config.toml.j2`): `language` (empty: the
+  interface's), `stop_words`, `town_km`. The model stays in `[classify.ai]`.
+- "Tags" column (last) in `inventory.xlsx` / `.csv` (caption left out).
+- Off by default: no model, nothing sent; an audit never calls the model (asserted in the
+  tests' fixture).
+- Tests: unit (`test_tag_normalize.py`, `test_tag_producers.py`, `test_tag_rows.py`,
+  `test_tag_vision.py`) and fake-Ollama integration (`tests/integration/tags/`: describe,
+  inherit in a burst and from a copy, resume, `--no-describe`, `--sample`, confirmation,
+  `--path`, no model, model without vision, no index, inventory column).
+- Documentation en + fr (`reference-tags.md`, README, commands, inventory); `.po` translated.
+
+### Not done
+- Inherit within near-duplicate groups (`plan/near`): only identical copies and burst series
+  share a description.
+  **Reason:** the near-duplicate search is heavier (multi-index hashing over the whole
+  index) and its groups depend on review decisions; left for a follow-up once the cost on the
+  real collection is measured.
+- Re-run the 40-photo benchmark with the fixed prompt (no relationship word, median time).
+  **Reason:** the vision model (Ollama) was not reachable during this session; only fake
+  servers were used. To do by hand: `tags --sample 40` with `[tags] language = "fr"`.
+- Videos on one keyframe of `video_prints`, and `classify` reading the `vision` tags instead
+  of describing again: both marked "later" in the proposal.
+  **Reason:** out of scope of this TODO by its own text.
+- `status` does not mention tags yet (counts per source and photos left to describe).
+  **Reason:** not asked by the TODO; natural to add with 0073 (search), which reads the same
+  counts.
+- Help captures of `documentation/*/reference-commands.md` (`<!-- capture: … -->`) still lack
+  `tags`.
+  **Reason:** `docs_screenshots` needs a Docker build, not run during the night session.

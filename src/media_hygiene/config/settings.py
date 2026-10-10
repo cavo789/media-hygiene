@@ -12,6 +12,7 @@ from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
+from media_hygiene.config.tags_settings import TagSettings
 from media_hygiene.config.zone import check_timezone
 from media_hygiene.constants import (
     GENERATED_NAMES,
@@ -141,3 +142,4 @@ class Settings(BaseModel):
     inventory: InventorySettings = InventorySettings()
     places: PlacesSettings = PlacesSettings()
     album: AlbumSettings = AlbumSettings()
+    tags: TagSettings = TagSettings()

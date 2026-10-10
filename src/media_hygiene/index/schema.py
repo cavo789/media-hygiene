@@ -4,8 +4,10 @@ Version 2 adds what images look like; version 3 what files say about themselves 
 versioned JSON document, plus typed columns for what later steps query) and when each
 mounted folder was last walked completely; version 4 what a local model saw in a
 photo and the categories it chose (`subject` rules); version 5 the fingerprint of
-videos (the hashes of a few frames, `scan.keyframes`). An older index keeps its digests
-and integrity results: the new columns are filled once, without decoding images again.
+videos (the hashes of a few frames, `scan.keyframes`); version 6 the tags of each
+file (`index.tag_rows`: folder words, dates, places, what a vision model saw). An
+older index keeps its digests and integrity results: the new columns are filled once,
+without decoding images again.
 """
 
 from __future__ import annotations
@@ -15,7 +17,7 @@ from typing import TYPE_CHECKING, Final
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 5
+SCHEMA_VERSION: Final = 6
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -82,6 +84,20 @@ CREATE TABLE IF NOT EXISTS subject_mappings (
     category TEXT NOT NULL
 )
 """
+# Added by version 6: the searchable words of a file, one row per word and source
+# (`tags.models.TagSource`); `model` names the vision model of its sources.
+_CREATE_TAGS: Final = """
+CREATE TABLE IF NOT EXISTS tags (
+    path TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    mtime_ns INTEGER NOT NULL,
+    source TEXT NOT NULL,
+    value TEXT NOT NULL,
+    model TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (path, source, value)
+)
+"""
+_CREATE_TAG_VALUES: Final = "CREATE INDEX IF NOT EXISTS tags_value ON tags (value)"
 # What `rows.facts_of` reads, in its order.
 _FACTS: Final = (
     "size, mtime_ns, partial_digest, full_digest, integrity_checked,"
@@ -105,11 +121,13 @@ PATHS_UNDER: Final = "SELECT path FROM files WHERE path >= ? AND path < ?"
 FORGET: Final = (
     "DELETE FROM files WHERE path = ?",
     "DELETE FROM descriptions WHERE path = ?",
+    "DELETE FROM tags WHERE path = ?",
 )
 # A file moved by `sort` (or back by `undo`) keeps its facts: size and mtime are kept.
 MOVE: Final = (
     "UPDATE OR REPLACE files SET path = ? WHERE path = ?",
     "UPDATE OR REPLACE descriptions SET path = ? WHERE path = ?",
+    "UPDATE OR REPLACE tags SET path = ? WHERE path = ?",
 )
 MARK_WALKED: Final = "INSERT OR REPLACE INTO roots (path, walked_at) VALUES (?, ?)"
 WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
@@ -133,4 +151,6 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(_CREATE_ROOTS)
     connection.execute(_CREATE_DESCRIPTIONS)
     connection.execute(_CREATE_MAPPINGS)
+    connection.execute(_CREATE_TAGS)
+    connection.execute(_CREATE_TAG_VALUES)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

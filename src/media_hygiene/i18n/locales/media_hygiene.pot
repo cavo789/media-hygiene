@@ -142,6 +142,9 @@ msgstr ""
 msgid "A 'subject' rule or --sample needs a vision model."
 msgstr ""
 
+msgid "A GPS position is named after its town only within this distance, in km."
+msgstr ""
+
 msgid "A Windows folder (PowerShell):"
 msgstr ""
 
@@ -345,6 +348,11 @@ msgstr ""
 msgid ""
 "Ask the local model nothing new: the subject rules read the descriptions "
 "already in the cache."
+msgstr ""
+
+msgid ""
+"Ask the local model nothing new: the words of the folders, dates and "
+"places only, and the descriptions already in the cache."
 msgstr ""
 
 #, python-format
@@ -1228,6 +1236,11 @@ msgid ""
 "nothing is copied nor moved (journaled, undoable)."
 msgstr ""
 
+msgid ""
+"Give every photo words to find it by: its folders, date and place, and "
+"what a local vision model sees. Kept in the cache, never in the photos."
+msgstr ""
+
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
 
@@ -1440,6 +1453,11 @@ msgid ""
 "value and export again, nothing is scanned. A photo is blurry below "
 "blurry_below (sharpness), small below small_below pixels on its shorter "
 "side."
+msgstr ""
+
+msgid ""
+"Language of the words: \"en\", \"fr\", or empty for the language of the "
+"interface."
 msgstr ""
 
 #, python-brace-format
@@ -1777,6 +1795,10 @@ msgid "No index in {folder}: nothing to export yet."
 msgstr ""
 
 #, python-brace-format
+msgid "No index in {folder}: nothing to tag yet."
+msgstr ""
+
+#, python-brace-format
 msgid "No journal found at {path}."
 msgstr ""
 
@@ -1799,6 +1821,12 @@ msgid "No photo folder mounted: add -v for each folder, then run it again."
 msgstr ""
 
 msgid "No photo left to describe: every candidate is in the cache."
+msgstr ""
+
+msgid "No photo left to describe: every one is in the cache."
+msgstr ""
+
+msgid "No photo nor video of the index below these folders."
 msgstr ""
 
 msgid "No photo nor video to classify."
@@ -1978,6 +2006,11 @@ msgid ""
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
+msgstr ""
+
+msgid ""
+"Only the photos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every file of the index."
 msgstr ""
 
 msgid "Only the series still to see"
@@ -2309,6 +2342,11 @@ msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 
 msgid ""
+"Run 'audit' first with the same /cache mount: tags reads what the audits "
+"learnt, and keeps the words there."
+msgstr ""
+
+msgid ""
 "Run 'audit' first with the same /cache mount: the inventory lists what "
 "the audits learnt, without reading the files again."
 msgstr ""
@@ -2474,6 +2512,9 @@ msgid ""
 " folders, then 'media-hygiene crosscheck' (same -v options):"
 msgstr ""
 
+msgid "Seconds"
+msgstr ""
+
 msgid "Seen."
 msgstr ""
 
@@ -2503,6 +2544,11 @@ msgid "Series {number} of {total}"
 msgstr ""
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
+msgstr ""
+
+msgid ""
+"Set [classify.ai] model to a local vision model (Ollama) to add what the "
+"photos show: they are sent to its url, and only there."
 msgstr ""
 
 msgid "Set album.root in config.toml to a folder outside it."
@@ -2630,6 +2676,9 @@ msgstr ""
 msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
 
+msgid "Stopped: the next tags run goes on where this one stopped."
+msgstr ""
+
 msgid "Subject"
 msgstr ""
 
@@ -2665,6 +2714,9 @@ msgid "TB"
 msgstr ""
 
 msgid "Table of contents"
+msgstr ""
+
+msgid "Tags"
 msgstr ""
 
 #, python-brace-format
@@ -2941,6 +2993,14 @@ msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
+msgstr ""
+
+msgid ""
+"The words of 'tags', to find photos by what they show: the meaningful "
+"words of the folder names, the date (year, month, season, holidays), the "
+"place (your [[classify.places]], the nearest town) and, when "
+"[classify.ai] model is set, what the vision model sees. They are kept in "
+"the cache (/cache), never written into the photos."
 msgstr ""
 
 msgid "The workbook and its plan.json do not match: one of them changed."
@@ -3255,6 +3315,11 @@ msgid "Will be moved to the quarantine from"
 msgstr ""
 
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
+msgstr ""
+
+msgid ""
+"Words left out because they describe nearly every photo. Written here, "
+"the list replaces the built-in one (French and English)."
 msgstr ""
 
 #, python-brace-format
@@ -3938,6 +4003,9 @@ msgstr ""
 msgid "the folder is not empty"
 msgstr ""
 
+msgid "the inventory: one row per file, its tags in the last column."
+msgstr ""
+
 msgid "the journal does not say where its content is"
 msgstr ""
 
@@ -4281,6 +4349,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} file: {words} words from its folders, date and place."
+msgid_plural "{count} files: {words} words from their folders, dates and places."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} files, {undecided} to check or to sort"
 msgstr ""
 
@@ -4387,7 +4461,19 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo has the words of the vision model; {left} left."
+msgid_plural "{count} photos have the words of the vision model; {left} left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} photos"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {duration}: one per set of"
+" identical files and per burst series."
 msgstr ""
 
 #, python-brace-format

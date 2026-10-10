@@ -37,6 +37,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("review-sort",),
     ("review",),
     ("places",),
+    ("tags",),
     ("inventory",),
     ("history",),
     ("reports",),

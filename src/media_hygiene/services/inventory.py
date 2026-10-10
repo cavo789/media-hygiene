@@ -25,6 +25,7 @@ from media_hygiene.index.listing import (
     walked_roots,
 )
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.tag_rows import tags_reader
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.folders import new_report_folder
 from media_hygiene.report.inventory_entries import InventoryContext, entry_of
@@ -117,6 +118,7 @@ def _entries(runtime: Runtime, connection: sqlite3.Connection) -> Iterator[Entry
         shared_digests(connection),
         settings.inventory,
         zone_of(settings.classify.timezone),
+        tags_reader(connection),
     )
     for file in indexed_files(connection):
         entry = entry_of(file, context)

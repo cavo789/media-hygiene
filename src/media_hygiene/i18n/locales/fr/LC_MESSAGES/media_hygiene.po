@@ -178,6 +178,11 @@ msgstr "<le dossier que vous montez sur /reports>"
 msgid "A 'subject' rule or --sample needs a vision model."
 msgstr "Une règle 'subject' ou --sample demande un modèle de vision."
 
+msgid "A GPS position is named after its town only within this distance, in km."
+msgstr ""
+"Une position GPS ne prend le nom de sa ville qu'à moins de cette "
+"distance, en km."
+
 msgid "A Windows folder (PowerShell):"
 msgstr "Un dossier Windows (PowerShell) :"
 
@@ -447,6 +452,13 @@ msgid ""
 msgstr ""
 "Ne rien demander de nouveau au modèle local : les règles subject lisent "
 "les descriptions déjà dans le cache."
+
+msgid ""
+"Ask the local model nothing new: the words of the folders, dates and "
+"places only, and the descriptions already in the cache."
+msgstr ""
+"Ne rien demander de nouveau au modèle local : seulement les mots des "
+"dossiers, des dates et des lieux, et les descriptions déjà dans le cache."
 
 #, python-format
 msgid ""
@@ -1524,6 +1536,14 @@ msgstr ""
 "Rassemble une sélection du plan de classify dans un dossier de liens "
 "physiques : rien n'est copié ni déplacé (journalisé, annulable)."
 
+msgid ""
+"Give every photo words to find it by: its folders, date and place, and "
+"what a local vision model sees. Kept in the cache, never in the photos."
+msgstr ""
+"Donner à chaque photo des mots pour la retrouver : ses dossiers, sa date,"
+" son lieu, et ce qu'y voit un modèle de vision local. Gardés dans le "
+"cache, jamais dans les photos."
+
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
 "Donnez son chemin dans un dossier monté, par exemple celui monté sur "
@@ -1774,6 +1794,11 @@ msgstr ""
 "valeur et exportez à nouveau, rien n'est relu. Une photo est floue sous "
 "blurry_below (netteté), petite sous small_below pixels sur son petit "
 "côté."
+
+msgid ""
+"Language of the words: \"en\", \"fr\", or empty for the language of the "
+"interface."
+msgstr "Langue des mots : \"en\", \"fr\", ou vide pour la langue de l'interface."
 
 #, python-brace-format
 msgid ""
@@ -2158,6 +2183,10 @@ msgid "No index in {folder}: nothing to export yet."
 msgstr "Pas d'index dans {folder} : rien à exporter pour l'instant."
 
 #, python-brace-format
+msgid "No index in {folder}: nothing to tag yet."
+msgstr "Aucun index dans {folder} : rien à étiqueter pour l'instant."
+
+#, python-brace-format
 msgid "No journal found at {path}."
 msgstr "Aucun journal trouvé à {path}."
 
@@ -2181,6 +2210,12 @@ msgstr "Aucun dossier de photos monté : ajoutez un -v par dossier, puis relance
 
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr "Plus aucune photo à décrire : chaque candidate est dans le cache."
+
+msgid "No photo left to describe: every one is in the cache."
+msgstr "Plus aucune photo à décrire : toutes sont dans le cache."
+
+msgid "No photo nor video of the index below these folders."
+msgstr "Aucune photo ni vidéo de l'index sous ces dossiers."
 
 msgid "No photo nor video to classify."
 msgstr "Aucune photo ni vidéo à classer."
@@ -2403,6 +2438,14 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 "Seulement les fichiers de cette année, ou de ces années : 2016 ou "
 "2015-2017."
+
+msgid ""
+"Only the photos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every file of the index."
+msgstr ""
+"Seulement les photos sous ce dossier (chemin de l'hôte, tel que vous "
+"l'avez monté) ; à répéter pour plusieurs. Par défaut : tous les fichiers "
+"de l'index."
 
 msgid "Only the series still to see"
 msgstr "Seulement les séries à voir"
@@ -2792,6 +2835,13 @@ msgstr ""
 "positions."
 
 msgid ""
+"Run 'audit' first with the same /cache mount: tags reads what the audits "
+"learnt, and keeps the words there."
+msgstr ""
+"Lancez d'abord 'audit' avec le même montage /cache : tags lit ce que les "
+"audits ont appris, et y garde les mots."
+
+msgid ""
 "Run 'audit' first with the same /cache mount: the inventory lists what "
 "the audits learnt, without reading the files again."
 msgstr ""
@@ -2995,6 +3045,9 @@ msgstr ""
 "Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur "
 "les mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :"
 
+msgid "Seconds"
+msgstr "Secondes"
+
 msgid "Seen."
 msgstr "Vue."
 
@@ -3027,6 +3080,14 @@ msgstr "Série {number} sur {total}"
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
 msgstr "Indiquez [classify.ai] model dans config.toml, ou retirez la règle."
+
+msgid ""
+"Set [classify.ai] model to a local vision model (Ollama) to add what the "
+"photos show: they are sent to its url, and only there."
+msgstr ""
+"Indiquez un modèle de vision local (Ollama) dans [classify.ai] model pour"
+" ajouter ce que montrent les photos : elles sont envoyées à son url, et "
+"seulement là."
 
 msgid "Set album.root in config.toml to a folder outside it."
 msgstr "Réglez album.root dans config.toml sur un dossier en dehors de celui-ci."
@@ -3173,6 +3234,11 @@ msgstr ""
 "Arrêté : la prochaine exécution de classify reprend là où celle-ci s'est "
 "arrêtée."
 
+msgid "Stopped: the next tags run goes on where this one stopped."
+msgstr ""
+"Arrêté : la prochaine exécution de tags reprend là où celle-ci s'est "
+"arrêtée."
+
 msgid "Subject"
 msgstr "Sujet"
 
@@ -3213,6 +3279,9 @@ msgstr "To"
 
 msgid "Table of contents"
 msgstr "Sommaire"
+
+msgid "Tags"
+msgstr "Tags"
 
 #, python-brace-format
 msgid "The HTML report could not be written to {folder}: {reason}."
@@ -3559,6 +3628,19 @@ msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
+
+msgid ""
+"The words of 'tags', to find photos by what they show: the meaningful "
+"words of the folder names, the date (year, month, season, holidays), the "
+"place (your [[classify.places]], the nearest town) and, when "
+"[classify.ai] model is set, what the vision model sees. They are kept in "
+"the cache (/cache), never written into the photos."
+msgstr ""
+"Les mots de 'tags', pour retrouver les photos par ce qu'elles montrent : "
+"les mots parlants des noms de dossiers, la date (année, mois, saison, "
+"fêtes), le lieu (vos [[classify.places]], la ville la plus proche) et, "
+"quand [classify.ai] model est renseigné, ce que voit le modèle de vision."
+" Ils sont gardés dans le cache (/cache), jamais écrits dans les photos."
 
 msgid "The workbook and its plan.json do not match: one of them changed."
 msgstr ""
@@ -3927,6 +4009,13 @@ msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 "En TOML, les chemins Windows s'écrivent entre 'apostrophes', p. ex. "
 "'C:\\Photos'."
+
+msgid ""
+"Words left out because they describe nearly every photo. Written here, "
+"the list replaces the built-in one (French and English)."
+msgstr ""
+"Mots écartés parce qu'ils décrivent presque toutes les photos. Écrite "
+"ici, la liste remplace celle intégrée (français et anglais)."
 
 #, python-brace-format
 msgid "Workbook to edit: {path}"
@@ -4676,6 +4765,9 @@ msgstr "le dossier a déjà disparu"
 msgid "the folder is not empty"
 msgstr "le dossier n'est pas vide"
 
+msgid "the inventory: one row per file, its tags in the last column."
+msgstr "l'inventaire : une ligne par fichier, ses tags dans la dernière colonne."
+
 msgid "the journal does not say where its content is"
 msgstr "le journal ne dit pas où se trouve son contenu"
 
@@ -5105,6 +5197,14 @@ msgstr[1] ""
 "{path} est {same_as}."
 
 #, python-brace-format
+msgid "{count} file: {words} words from its folders, date and place."
+msgid_plural "{count} files: {words} words from their folders, dates and places."
+msgstr[0] ""
+"{count} fichier : {words} mots tirés de ses dossiers, de sa date et de "
+"son lieu."
+msgstr[1] "{count} fichiers : {words} mots tirés de leurs dossiers, dates et lieux."
+
+#, python-brace-format
 msgid "{count} files, {undecided} to check or to sort"
 msgstr "{count} fichiers, {undecided} à vérifier ou à trier"
 
@@ -5241,8 +5341,22 @@ msgstr[0] "{count} photo décrite ; gardée dans le cache."
 msgstr[1] "{count} photos décrites ; gardées dans le cache."
 
 #, python-brace-format
+msgid "{count} photo has the words of the vision model; {left} left."
+msgid_plural "{count} photos have the words of the vision model; {left} left."
+msgstr[0] "{count} photo a les mots du modèle de vision ; {left} restantes."
+msgstr[1] "{count} photos ont les mots du modèle de vision ; {left} restantes."
+
+#, python-brace-format
 msgid "{count} photos"
 msgstr "{count} photos"
+
+#, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {duration}: one per set of"
+" identical files and per burst series."
+msgstr ""
+"{count} photos à décrire avec {model}, environ {duration} : une par "
+"ensemble de fichiers identiques et par rafale."
 
 #, python-brace-format
 msgid "{count} report deleted."

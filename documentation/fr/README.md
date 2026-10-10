@@ -99,6 +99,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Dépannage](reference-troubleshooting.md) : mises en garde et messages d'erreur.
 - [Le classeur d'inventaire](reference-inventory.md) : chaque photo et vidéo avec ce que les
   audits en ont appris, dans Excel, depuis le cache seul (`inventory`).
+- [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
+  dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache.
 - [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
   (`PYTHON_CPU_COUNT`).
 
