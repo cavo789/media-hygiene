@@ -1,0 +1,103 @@
+# 0058 — People: find faces, group them, let the user name them
+
+- **Priority**: Low — design first; measure on the real collection before building anything
+- **Batch**: people
+- **Depends**: —
+- **Files**: `src/media_hygiene/faces/` (new: detect, embed, cluster, models download), `src/media_hygiene/index/schema.py`, `src/media_hygiene/index/` (new `face_rows.py`), `src/media_hygiene/scan/file_check.py`, `src/media_hygiene/people/` (new: naming page, served like `places`), `src/media_hygiene/cli/` (new `cmd_people.py`), `src/media_hygiene/classify/rules/`, `src/media_hygiene/config/settings.py`, `src/media_hygiene/config/templates/config.toml.j2`, `src/media_hygiene/report/`, `pyproject.toml`, `Dockerfile`, `documentation/en/sort/`, `documentation/fr/sort/`
+
+## Context
+
+The maintainer asked (2026-10-10) whether the local Ollama could tag people in photos.
+
+**Not with the vision model alone.** `qwen3.8:27b` (0029) describes a scene: how many people,
+child or adult, selfie, group, portrait. It cannot say *who* someone is: it has never seen the
+family. Asking it "same person on these two photos?" is slow (≈ 3.5 s per photo) and
+unreliable, and such models often refuse to identify real people. The Ollama embedding models
+on the machine (`bge-m3`, `mxbai-embed-large`) embed text, not faces.
+
+Tagging people is a classic pipeline that needs no LLM:
+
+1. **Detect** faces (a box and five landmarks per face).
+2. **Embed** each aligned face as a vector: close vectors are probably the same person.
+3. **Cluster** the vectors into unnamed groups.
+4. **Name** the groups in the browser ("this group is Mamie"); a new face close to a named
+   group gets the name, as a suggestion until confirmed.
+
+### Overlap with Immich (0009)
+
+0009 concluded the tool should not grow what Immich already does well, and faces are one of
+those things. **Decide first** which question this answers:
+- *find* photos of someone → Immich's job, do not build this;
+- *file* photos by who is in them (`classify` / `sort`: "events with Mamie", a folder per
+  child) → our job, build this.
+
+Record the decision here before any code.
+
+## Proposal
+
+- **Models: OpenCV Zoo YuNet (detection, MIT) + SFace (embedding, Apache 2.0)**, ONNX,
+  run with `onnxruntime` on CPU (amd64 and arm64 wheels). Tens of milliseconds per photo
+  expected (to measure). Licences fit a public Docker Hub image.
+  - **Not** InsightFace's pretrained models (ArcFace / `buffalo_l`): better, but licensed for
+    non-commercial research only.
+  - `opencv-python-headless` also ships both (`FaceDetectorYN`, `FaceRecognizerSF`) but is
+    much heavier than `onnxruntime`; compare image sizes with `dive` before choosing.
+  - Model files: downloaded once into `/cache` with a pinned SHA-256 (never under `/config`),
+    or vendored if small enough (YuNet ≈ 230 KB; SFace ≈ 37 MB is not).
+- **In the scan, opt-in**: `[people] enabled = false` by default. When on, the same decode
+  that yields `VisualFacts` runs detection + embedding in the process pool; incremental like
+  every other fact.
+  - Skip faces smaller than `min_face` pixels and blurry ones (Laplacian sharpness already
+    exists): they produce wrong groups.
+  - Videos: later, on the keyframes of `video_prints`, if at all.
+- **Index**: schema 6, a `faces` table keyed by the file identity (path, size, mtime) + model
+  version: box, landmarks, detection score, embedding (float32 blob, 128 values). Pruned and
+  moved with the file like the other rows.
+- **Clustering**: cosine distance, threshold from SFace's documented value then tuned on the
+  measurement below. Start with a simple pure-numpy approach (connected components / Chinese
+  whispers over a nearest-neighbour graph); add a dependency only if the measurement asks
+  for it. Groups recomputed from the index in seconds, never stored as truth.
+- **Names**:
+  - stored in `config.toml` as `[[people]]` (`name`, the reference face ids the user
+    confirmed), written with tomlkit like `[[classify.places]]`; read back from disk and shown
+    after each save (proof, not promise);
+  - a face is assigned by its distance to the confirmed references of each person, so a
+    re-cluster never loses a name.
+- **`media-hygiene people`**: a browser page served like `review` / `places` (loopback
+  `Host`, JSON-only `POST`), keyboard driven:
+  - largest unnamed group first, a grid of face crops;
+  - type a name, merge two groups, remove a wrong face from a group, "ignore" (strangers,
+    posters, statues);
+  - children who grow up: allow several reference sets per person.
+- **Uses**:
+  - a `match = "person"` rule in `classify` ("events where X appears" → a category or folder);
+  - a "people" column in `inventory.xlsx` / `.csv` and in the classify workbook;
+  - XMP sidecars (`PersonInImage`, read by digiKam and Lightroom): later, opt-in, because
+    this writes into the data folders.
+- **Privacy**: face vectors are biometric data (GDPR art. 9).
+  - they stay in `/cache`, never sent anywhere, never in reports beyond the names;
+  - `people forget` deletes every face row and the `[[people]]` entries;
+  - the docs say it plainly; the CLI says it in one line when the feature is turned on.
+- **Ollama stays for scenes** (0029). It can add "group photo" / "portrait" / "child" tags,
+  never identities.
+
+## Measurement first (next session)
+
+Run read-only on the maintainer's collection (`--mount …,readonly`, `--network none`, see the
+memory note on local photos), on a sample of about 2,000 photos from varied years:
+- [ ] seconds per photo for detection + embedding, on half the CPUs;
+- [ ] faces found per photo, share of tiny or blurry faces skipped;
+- [ ] group quality at two or three thresholds: how many groups are one person, how many mix
+      two people (especially siblings and children across years);
+- [ ] image size added by `onnxruntime` vs `opencv-python-headless`.
+
+Note the figures here, then decide to build, reduce or drop.
+
+## Acceptance
+
+- [ ] Immich-overlap decision recorded in this file.
+- [ ] Measurement above noted in this file.
+- [ ] Synthetic faces only in tests and screenshots (`tests/support/docs/`: drawn or
+      generated faces, never real photos).
+- [ ] Off by default; turning it on never slows an audit that does not ask for it.
+- [ ] Documentation en + fr (a sorting step, privacy, forget); `.po` translated.
