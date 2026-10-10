@@ -107,7 +107,7 @@ and handle 3 broken files? [y/N] y
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261010-185827
+Clean 20261010-203225
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      40 │
 │ Size                     │ 16.2 MB │
@@ -116,16 +116,16 @@ Clean 20261010-185827
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261010-185827-clean/report.html
+✅ HTML report: /reports/20261010-203225-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261010-185827' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20261010-203225' restores everything.
 💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261010-185827
+20261010-203225
 📦 decisions.json is applied: archived as
-decisions.applied-20261010-185827.json, in the folder mounted on /reports, the
+decisions.applied-20261010-203225.json, in the folder mounted on /reports, the
 next 'review' starts afresh.
 💡 After an undo, 'media-hygiene clean --decisions
-decisions.applied-20261010-185827.json' applies it again.
+decisions.applied-20261010-203225.json' applies it again.
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -135,45 +135,45 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261010-185827/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
-./20261010-185827/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
-./20261010-185827/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
-./20261010-185827/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
-./20261010-185827/c/Photos/2022/Birthday/IMG_3003.jpg
-./20261010-185827/c/Photos/2023/Lake/IMG_4002.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0101.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0102.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0103.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0104.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0105.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0106.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0107.jpg
-./20261010-185827/c/Photos/Old phone/IMG_0108.jpg
-./20261010-185827/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261010-185827/d/Old disk/2020/IMG_1203.jpg
-./20261010-185827/d/Old disk/Christmas 2020/IMG_1201.jpg
-./20261010-185827/d/Old disk/Christmas 2020/IMG_1202.jpg
-./20261010-185827/d/Old disk/Christmas 2020/IMG_1203.jpg
-./20261010-185827/d/Old disk/Christmas 2020/IMG_1204.jpg
-./20261010-185827/d/Old disk/Email/IMG_0110 small.jpg
-./20261010-185827/d/Old disk/Phone/IMG_4242.HEIC
-./20261010-185827/d/Old disk/Phone/IMG_4243.HEIC
-./20261010-185827/d/Old disk/Phone/IMG_4244.HEIC
-./20261010-185827/d/Old disk/Photos 2019/IMG_0101.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0102.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0102.xmp
-./20261010-185827/d/Old disk/Photos 2019/IMG_0103.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0104.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0105.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0106.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0107.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0108.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0109.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0110.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0111.jpg
-./20261010-185827/d/Old disk/Photos 2019/IMG_0112.jpg
-./20261010-185827/d/Old disk/Videos/Birthday (cut).mp4
-./20261010-185827/d/Old disk/Videos/Birthday.mp4
+./20261010-203225/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
+./20261010-203225/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
+./20261010-203225/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
+./20261010-203225/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
+./20261010-203225/c/Photos/2022/Birthday/IMG_3003.jpg
+./20261010-203225/c/Photos/2023/Lake/IMG_4002.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0101.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0102.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0103.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0104.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0105.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0106.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0107.jpg
+./20261010-203225/c/Photos/Old phone/IMG_0108.jpg
+./20261010-203225/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261010-203225/d/Old disk/2020/IMG_1203.jpg
+./20261010-203225/d/Old disk/Christmas 2020/IMG_1201.jpg
+./20261010-203225/d/Old disk/Christmas 2020/IMG_1202.jpg
+./20261010-203225/d/Old disk/Christmas 2020/IMG_1203.jpg
+./20261010-203225/d/Old disk/Christmas 2020/IMG_1204.jpg
+./20261010-203225/d/Old disk/Email/IMG_0110 small.jpg
+./20261010-203225/d/Old disk/Phone/IMG_4242.HEIC
+./20261010-203225/d/Old disk/Phone/IMG_4243.HEIC
+./20261010-203225/d/Old disk/Phone/IMG_4244.HEIC
+./20261010-203225/d/Old disk/Photos 2019/IMG_0101.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0102.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0102.xmp
+./20261010-203225/d/Old disk/Photos 2019/IMG_0103.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0104.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0105.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0106.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0107.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0108.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0109.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0110.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0111.jpg
+./20261010-203225/d/Old disk/Photos 2019/IMG_0112.jpg
+./20261010-203225/d/Old disk/Videos/Birthday (cut).mp4
+./20261010-203225/d/Old disk/Videos/Birthday.mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is

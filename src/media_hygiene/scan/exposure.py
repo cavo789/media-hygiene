@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     import numpy as np
     from numpy.typing import NDArray
 
+    from media_hygiene.scan.metadata import MediaMetadata
+
 # Gray levels counted as clipped: detail is lost in the last few levels already.
 _DARK_MAX: Final = 4
 _BRIGHT_MIN: Final = 251
@@ -44,4 +46,22 @@ def measure(pixels: NDArray[np.float64]) -> Exposure | None:
         brightness=round(float(pixels.mean()), 1),
         dark_share=round(float((pixels <= _DARK_MAX).mean()), _DECIMALS),
         bright_share=round(float((pixels >= _BRIGHT_MIN).mean()), _DECIMALS),
+    )
+
+
+def exposure_of(metadata: MediaMetadata | None) -> Exposure | None:
+    """Read back the measures an audit stored in a file's metadata.
+
+    Args:
+        metadata: The file's metadata, if read.
+
+    Returns:
+        The measures, or None when they were never taken.
+    """
+    if metadata is None or metadata.brightness is None:
+        return None
+    return Exposure(
+        brightness=metadata.brightness,
+        dark_share=metadata.dark_share or 0.0,
+        bright_share=metadata.bright_share or 0.0,
     )

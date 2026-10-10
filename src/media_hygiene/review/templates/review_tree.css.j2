@@ -37,6 +37,12 @@
   #tree .row.flash { animation: flash 1.2s ease-out; }
   @keyframes flash { from { background: color-mix(in srgb, var(--ok) 35%, transparent); } }
   #tree.only-todo .row.done, #tree.only-todo details.done { display: none; }
+  #tree.only-look .row.obvious { display: none; }
+  #obvious { width: 100%; margin: 0 0 8px; padding: 4px 8px; font: inherit; font-weight: 600;
+             color: var(--ok); background: var(--bg); cursor: pointer;
+             border: 1px solid var(--ok); border-radius: 6px; }
+  #obvious:disabled { color: var(--muted); border-color: var(--line); cursor: default; }
+  #moreKeys { margin-top: 6px; } #moreKeys summary { cursor: pointer; color: var(--muted); }
   #disk { margin-top: 14px; padding: 8px 12px; background: var(--card);
           border: 1px solid var(--line); border-radius: 10px; font-size: .85rem; }
   #disk > summary { font-weight: 600; cursor: pointer; }

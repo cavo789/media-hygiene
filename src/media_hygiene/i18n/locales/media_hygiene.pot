@@ -163,6 +163,26 @@ msgstr ""
 msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 
+msgid ""
+"A series whose proposal leaves only the sharpest shot (and those of "
+"protected folders) is obvious: the review page validates every obvious "
+"series at once, with one confirmation."
+msgstr ""
+
+msgid ""
+"A shot clearly over- or under-exposed next to the others of its series is"
+" proposed aside: its mean brightness lies farther than this from theirs "
+"(gray levels, 0 to 255), or its share of pixels clipped to white or black"
+" exceeds theirs by more than clipped_gap (0 to 1). 0 disables either "
+"rule."
+msgstr ""
+
+msgid ""
+"A shot nearly identical to a sharper shot kept of its series is proposed "
+"aside too: its perceptual hash differs by fewer bits than this (0 to 64)."
+" Low values only catch repeats of the same frame. 0 disables the rule."
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -442,6 +462,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
+msgstr ""
+
+#, python-brace-format
+msgid "Choices on {count} series undone."
 msgstr ""
 
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
@@ -1391,6 +1415,9 @@ msgstr ""
 msgid "Modified (UTC)"
 msgstr ""
 
+msgid "More keys"
+msgstr ""
+
 msgid "Mount"
 msgstr ""
 
@@ -1617,6 +1644,9 @@ msgstr ""
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
+msgid "No obvious series left to validate."
+msgstr ""
+
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr ""
 
@@ -1793,6 +1823,9 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
 msgid "Only the series still to see"
+msgstr ""
+
+msgid "Only the series to look at"
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
@@ -2595,6 +2628,9 @@ msgstr ""
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr ""
 
+msgid "The proposal is already made: → is enough when it suits you."
+msgstr ""
+
 #, python-brace-format
 msgid "The quarantine could not be erased: {reason}."
 msgstr ""
@@ -2889,7 +2925,16 @@ msgstr ""
 msgid "Usage:"
 msgstr ""
 
+msgid ""
+"Validate at once every series still to see whose proposal leaves nothing "
+"to judge (V)"
+msgstr ""
+
 msgid "Validate the series still to see here, as moving on would"
+msgstr ""
+
+#, python-brace-format
+msgid "Validate the {count} obvious series ({aside} shot(s) set aside)"
 msgstr ""
 
 msgid "Value"
@@ -3097,6 +3142,9 @@ msgid "about {time} left at your pace"
 msgstr ""
 
 msgid "accept the name and category, then the next event to decide"
+msgstr ""
+
+msgid "accept the proposal, next"
 msgstr ""
 
 #, python-brace-format
@@ -3390,9 +3438,6 @@ msgstr ""
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr ""
 
-msgid "next / previous (no choice: as shown)"
-msgstr ""
-
 msgid "next event to decide"
 msgstr ""
 
@@ -3469,8 +3514,21 @@ msgstr ""
 msgid "preferred folder"
 msgstr ""
 
+msgid "previous series (no choice: as shown)"
+msgstr ""
+
+#, python-brace-format
+msgid "proposed aside: nearly identical to the sharper shot {number}"
+msgstr ""
+
+msgid "proposed aside: overexposed next to the others"
+msgstr ""
+
 #, python-brace-format, python-format
 msgid "proposed aside: sharpness {share} %% of the best"
+msgstr ""
+
+msgid "proposed aside: underexposed next to the others"
 msgstr ""
 
 msgid "protected folder"
@@ -3625,6 +3683,9 @@ msgid "usage policy"
 msgstr ""
 
 msgid "validate"
+msgstr ""
+
+msgid "validate every obvious series at once"
 msgstr ""
 
 msgid "video"
@@ -3851,6 +3912,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} obvious series validated: Z takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} obvious series: only the sharpest shot (and those of protected "
+"folders) would stay, {aside} shot(s) set aside, saved in one write. "
+"{left} series to look at stay to see. Validate them? Z takes the whole "
+"batch back."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
 msgstr ""
 
@@ -3909,6 +3982,12 @@ msgid ""
 "{count} series still to see in {folder}: validate them as shown, {aside} "
 "shot(s) proposed aside, the others kept?"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} series to see: {obvious} obvious (one click), {look} to look at."
+msgid_plural "{count} series to see: {obvious} obvious (one click), {look} to look at."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} shots"

@@ -224,6 +224,38 @@ msgstr ""
 "Une version plus récente a écrit ce journal : mettez media-hygiene à jour"
 " pour l'annuler."
 
+msgid ""
+"A series whose proposal leaves only the sharpest shot (and those of "
+"protected folders) is obvious: the review page validates every obvious "
+"series at once, with one confirmation."
+msgstr ""
+"Une série dont la proposition ne laisse que la photo la plus nette (et "
+"celles des dossiers protégés) est évidente : la page de revue valide "
+"toutes les séries évidentes d'un coup, après une seule confirmation."
+
+msgid ""
+"A shot clearly over- or under-exposed next to the others of its series is"
+" proposed aside: its mean brightness lies farther than this from theirs "
+"(gray levels, 0 to 255), or its share of pixels clipped to white or black"
+" exceeds theirs by more than clipped_gap (0 to 1). 0 disables either "
+"rule."
+msgstr ""
+"Une photo nettement sur- ou sous-exposée à côté des autres de sa série "
+"est proposée à l'écart : sa luminosité moyenne s'écarte de la leur de "
+"plus que cette valeur (niveaux de gris, 0 à 255), ou sa part de pixels "
+"brûlés en blanc ou bouchés en noir dépasse la leur de plus que "
+"clipped_gap (0 à 1). 0 désactive l'une ou l'autre règle."
+
+msgid ""
+"A shot nearly identical to a sharper shot kept of its series is proposed "
+"aside too: its perceptual hash differs by fewer bits than this (0 to 64)."
+" Low values only catch repeats of the same frame. 0 disables the rule."
+msgstr ""
+"Une photo presque identique à une photo plus nette gardée de sa série est"
+" aussi proposée à l'écart : son empreinte perceptuelle en diffère de "
+"moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
+"les répétitions de la même image. 0 désactive la règle."
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
 
@@ -547,6 +579,10 @@ msgstr "Choix sur la série {number} annulé."
 #, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
 msgstr "Choix de la page de revue repris aussi : {count}."
+
+#, python-brace-format
+msgid "Choices on {count} series undone."
+msgstr "Choix sur {count} séries annulés."
 
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
 msgstr ""
@@ -1700,6 +1736,9 @@ msgstr "Fichiers média analysés"
 msgid "Modified (UTC)"
 msgstr "Modifié (UTC)"
 
+msgid "More keys"
+msgstr "Plus de touches"
+
 msgid "Mount"
 msgstr "Montage"
 
@@ -1965,6 +2004,9 @@ msgstr "Pas de montage /journal : rien à annuler."
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr "Pas de montage /journal : sans journal, 'undo' serait impossible."
 
+msgid "No obvious series left to validate."
+msgstr "Plus aucune série évidente à valider."
+
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr "Plus aucune photo à décrire : chaque candidate est dans le cache."
 
@@ -2185,6 +2227,9 @@ msgstr ""
 
 msgid "Only the series still to see"
 msgstr "Seulement les séries à voir"
+
+msgid "Only the series to look at"
+msgstr "Seulement les séries à regarder"
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
@@ -3125,6 +3170,9 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
 
+msgid "The proposal is already made: → is enough when it suits you."
+msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
+
 #, python-brace-format
 msgid "The quarantine could not be erased: {reason}."
 msgstr "La quarantaine n'a pas pu être effacée : {reason}."
@@ -3496,8 +3544,19 @@ msgstr "Exécution inconnue : {run_id}."
 msgid "Usage:"
 msgstr "Utilisation :"
 
+msgid ""
+"Validate at once every series still to see whose proposal leaves nothing "
+"to judge (V)"
+msgstr ""
+"Valider d'un coup toutes les séries encore à voir dont la proposition ne "
+"laisse rien à juger (V)"
+
 msgid "Validate the series still to see here, as moving on would"
 msgstr "Valider les séries encore à voir ici, comme si vous passiez à la suite"
+
+#, python-brace-format
+msgid "Validate the {count} obvious series ({aside} shot(s) set aside)"
+msgstr "Valider les {count} série(s) évidente(s) ({aside} photo(s) écartée(s))"
 
 msgid "Value"
 msgstr "Valeur"
@@ -3747,6 +3806,9 @@ msgstr "environ {time} restantes à votre rythme"
 
 msgid "accept the name and category, then the next event to decide"
 msgstr "accepter le nom et la catégorie, puis l'événement suivant à décider"
+
+msgid "accept the proposal, next"
+msgstr "accepter la proposition, puis suivante"
 
 #, python-brace-format
 msgid "all {count} kept"
@@ -4062,9 +4124,6 @@ msgstr "déplacé en quarantaine"
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
 
-msgid "next / previous (no choice: as shown)"
-msgstr "suivante / précédente (sans choix : comme affiché)"
-
 msgid "next event to decide"
 msgstr "événement suivant à décider"
 
@@ -4141,9 +4200,22 @@ msgstr "lieu : {place}"
 msgid "preferred folder"
 msgstr "dossier préféré"
 
+msgid "previous series (no choice: as shown)"
+msgstr "série précédente (sans choix : comme affiché)"
+
+#, python-brace-format
+msgid "proposed aside: nearly identical to the sharper shot {number}"
+msgstr "proposée à l'écart : presque identique à la photo {number}, qui est plus nette"
+
+msgid "proposed aside: overexposed next to the others"
+msgstr "proposée à l'écart : surexposée à côté des autres"
+
 #, python-brace-format, python-format
 msgid "proposed aside: sharpness {share} %% of the best"
 msgstr "proposée à l'écart : netteté à {share} %% de la meilleure"
+
+msgid "proposed aside: underexposed next to the others"
+msgstr "proposée à l'écart : sous-exposée à côté des autres"
 
 msgid "protected folder"
 msgstr "dossier protégé"
@@ -4310,6 +4382,9 @@ msgstr "conditions d'utilisation"
 
 msgid "validate"
 msgstr "valider"
+
+msgid "validate every obvious series at once"
+msgstr "valider d'un coup toutes les séries évidentes"
 
 msgid "video"
 msgstr "vidéo"
@@ -4606,6 +4681,22 @@ msgstr[1] ""
 "place n'est prise."
 
 #, python-brace-format
+msgid "{count} obvious series validated: Z takes the whole batch back."
+msgstr "{count} série(s) évidente(s) validée(s) : Z annule tout le lot."
+
+#, python-brace-format
+msgid ""
+"{count} obvious series: only the sharpest shot (and those of protected "
+"folders) would stay, {aside} shot(s) set aside, saved in one write. "
+"{left} series to look at stay to see. Validate them? Z takes the whole "
+"batch back."
+msgstr ""
+"{count} série(s) évidente(s) : seule la photo la plus nette (et celles "
+"des dossiers protégés) resterait, {aside} photo(s) écartée(s), enregistré"
+" en une seule écriture. {left} série(s) à regarder restent à voir. Les "
+"valider ? Z annule tout le lot."
+
+#, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
 msgstr "Dont {count} à décrire avec {model}, environ {duration}."
 
@@ -4672,6 +4763,12 @@ msgid ""
 msgstr ""
 "{count} série(s) encore à voir dans {folder} : les valider comme affiché,"
 " {aside} photo(s) proposée(s) à l'écart, les autres gardées ?"
+
+#, python-brace-format
+msgid "{count} series to see: {obvious} obvious (one click), {look} to look at."
+msgid_plural "{count} series to see: {obvious} obvious (one click), {look} to look at."
+msgstr[0] "{count} série à voir : {obvious} évidente(s) (un clic), {look} à regarder."
+msgstr[1] "{count} séries à voir : {obvious} évidentes (un clic), {look} à regarder."
 
 #, python-brace-format
 msgid "{count} shots"

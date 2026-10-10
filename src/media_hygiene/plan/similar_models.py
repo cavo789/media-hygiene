@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
+    from media_hygiene.scan.exposure import Exposure
     from media_hygiene.scan.models import MediaFile, VisualFacts
     from media_hygiene.scan.video_models import VideoLook
 
@@ -78,7 +79,10 @@ class BurstChoice:
 
 @dataclass(frozen=True, slots=True)
 class SimilarFindings:
-    """Near duplicates, burst series, re-encoded videos, and what each looks like."""
+    """Near duplicates, burst series, re-encoded videos, and what each looks like.
+
+    `exposures`: the burst shots' measures, for the review's proposals.
+    """
 
     near: tuple[NearDecision, ...] = ()
     bursts: tuple[BurstSeries, ...] = ()
@@ -87,6 +91,9 @@ class SimilarFindings:
     )
     videos: tuple[NearDecision, ...] = ()
     video_looks: Mapping[Path, VideoLook] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    exposures: Mapping[Path, Exposure] = field(
         default_factory=lambda: MappingProxyType({})
     )
 

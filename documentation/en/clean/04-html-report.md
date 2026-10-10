@@ -30,7 +30,7 @@ At the end of the audit, two new lines:
 
 <!-- capture: audit.txt|HTML report|Open index.html -->
 ```text
-✅ HTML report: /reports/20261010-185748-audit/report.html
+✅ HTML report: /reports/20261010-203144-audit/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
@@ -144,15 +144,15 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261010-185827-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
-│ 20261010-185827-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-185821-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
-│ 20261010-185804-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-185759-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-185753-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
-│ 20261010-185751-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
-│ 20261010-185749-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-185748-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261010-203225-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
+│ 20261010-203225-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261010-203219-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
+│ 20261010-203201-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261010-203155-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261010-203150-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
+│ 20261010-203148-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
+│ 20261010-203146-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261010-203144-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

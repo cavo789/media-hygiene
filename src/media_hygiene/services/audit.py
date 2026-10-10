@@ -98,7 +98,7 @@ class AuditService:
             ),
             groups=groups,
             similar=checked_similar(
-                SimilarInputs(found.files, integrity.visuals, groups, integrity.videos),
+                SimilarInputs.of(found.files, integrity, groups),
                 policy,
                 ColourTools(shutil.which(FFMPEG_BINARY), self._progress),
             ),

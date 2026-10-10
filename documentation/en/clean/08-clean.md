@@ -66,7 +66,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261010-185821
+Clean 20261010-203219
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -75,11 +75,11 @@ Clean 20261010-185821
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261010-185821-clean/report.html
+✅ HTML report: /reports/20261010-203219-clean/report.html
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261010-185821' restores everything.
+💡 Changed your mind? 'media-hygiene undo 20261010-203219' restores everything.
 💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261010-185821
+20261010-203219
 ```
 
 | Line | What it means |

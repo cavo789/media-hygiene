@@ -1,0 +1,48 @@
+{# Included in the script of review.html.j2: why a shot is proposed aside, the obvious
+   series (the proposal leaves only the sharpest shot and those of protected folders:
+   nothing to judge) validated at once in one write that Z takes back whole, and the
+   one-line welcome of a first visit, remembered by the browser. #}
+  const welcomeKey = "media-hygiene:review:welcomed";
+
+  // The reason under a proposed shot; "identical" names the shot by its key on screen.
+  const proposedText = (item, shot) => {
+    if (shot.reason === "identical") return fill(T.identical, { number: shown(item).indexOf(shot.like) + 1 });
+    if (shot.reason === "overexposed" || shot.reason === "underexposed") return T[shot.reason];
+    return fill(T.proposed, { share: Math.round(shot.share * 100) });
+  };
+
+  const obviousTodo = () => series.map((item, index) => index).filter((index) => series[index].obvious && !series[index].reviewed);
+  const asideIn = (ranks) => ranks.reduce((count, index) => count + proposal(series[index]).length, 0);
+
+  const showObvious = () => {
+    const todo = obviousTodo();
+    const button = byId("obvious");
+    button.disabled = todo.length === 0;
+    button.textContent = todo.length === 0 ? T.obviousNone : fill(T.obvious, { count: todo.length, aside: asideIn(todo) });
+  };
+
+  // Every obvious series still to see, as proposed, in one write: one Z undoes them all.
+  const validateObvious = async () => {
+    const todo = obviousTodo();
+    if (todo.length === 0) {
+      setStatus(T.obviousNone);
+      return;
+    }
+    const left = series.filter((item) => !item.reviewed).length - todo.length;
+    if (!window.confirm(fill(T.obviousAsk, { count: todo.length, aside: asideIn(todo), left: left }))) return;
+    if (await record(todo.map((index) => [index, proposal(series[index])]))) {
+      setStatus(byId("status").textContent + " " + fill(T.obviousDone, { count: todo.length }), "saved");
+    }
+  };
+
+  const welcome = () => {
+    let seen = true;
+    try {
+      seen = window.localStorage.getItem(welcomeKey) !== null;
+      window.localStorage.setItem(welcomeKey, "1");
+    } catch (error) {
+      seen = false;  // storage refused (private browsing): the line costs nothing
+    }
+    byId("welcome").hidden = seen;
+    byId("welcome").textContent = T.welcome;
+  };

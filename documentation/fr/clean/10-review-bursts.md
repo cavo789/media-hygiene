@@ -80,17 +80,26 @@ seconde d'intervalle.
   de la plus nette à la moins nette : les floues arrivent en dernier. Plus la netteté est
   haute, plus l'image est piquée ; elle ne mesure que le flou, pas un œil fermé : le choix
   reste le vôtre.
-- **📦 proposée à l'écart**, en pointillés rouges : une photo nettement moins nette que la plus
-  nette de sa série (sous 35 % de celle-ci, voir [Bon à savoir](#bon-à-savoir)). Ici, la
-  dernière, à 30 contre environ 218 pour les autres : 14 %. Les autres photos sont ⏳
-  *gardées si vous passez*.
+- **📦 proposée à l'écart**, en pointillés rouges, avec la raison sous l'image :
+  - *netteté à 13 % de la meilleure* : nettement moins nette que la plus nette de sa série
+    (sous 35 % de celle-ci). Ici, la dernière, à 30 contre environ 225 pour les autres ;
+  - *presque identique à la photo 2, qui est plus nette* : la même image encore, la photo 2
+    est gardée ;
+  - *surexposée* ou *sous-exposée à côté des autres* : bien plus claire ou plus sombre que le
+    reste de la série, ou bien plus brûlée en blanc ou bouchée en noir.
+
+  Les autres photos sont ⏳ *gardées si vous passez*. Les seuils sont dans
+  [Bon à savoir](#bon-à-savoir) ; la raison ne s'affiche que sur la page, `decisions.json` ne
+  contient que des noms.
 - **↗ original** ouvre le fichier lui-même dans un nouvel onglet, intact, en pleine taille : ce
   que vous voyez est ce qui est sur votre disque, pas un rendu de la page.
 - **À gauche, le sommaire** : toutes les séries, dossier par dossier, avec leur état dans
   `decisions.json` : ⏳ *à voir*, ✅ *les 3 gardées* (vert), 📦 *1 écartée(s) sur 3* (orange),
   🗑 *série entière écartée* (rouge). Une barre montre combien de séries vous avez vues ; un
-  clic sur une série l'ouvre, et *Seulement les séries à voir* masque les autres.
-- **En dessous, le clavier** : les touches, toujours en vue.
+  clic sur une série l'ouvre, *Seulement les séries à voir* masque les autres, et *Seulement
+  les séries à regarder* masque les [évidentes](#toutes-les-séries-évidentes-en-un-clic).
+- **En dessous, le clavier** : les quatre touches qui font l'essentiel du travail (`→`, `S`,
+  `A`, `X`), toujours en vue ; *Plus de touches* déplie les autres.
 - **Sous les photos** : *Ce que contient decisions.json pour cette série*, les noms gardés et
   écartés (et, replié, le JSON brut).
 
@@ -100,7 +109,9 @@ seconde d'intervalle.
 série telle qu'elle est à l'écran : les photos proposées à l'écart sont écartées, les autres
 gardées ; sans proposition, toutes les photos sont gardées. Avec des milliers de séries, vous
 ne pressez une touche que là où la proposition est fausse. Un clic dans le sommaire ouvre
-seulement une série : il n'enregistre rien.
+seulement une série : il n'enregistre rien. À votre première visite, une ligne bleue vous le
+rappelle : *La proposition est déjà faite : → suffit quand elle vous convient* (le navigateur
+s'en souvient, et elle disparaît à votre premier choix).
 
 Pour corriger, pressez le numéro d'une photo : sur une photo proposée, `5` la reprend
 (gardée) ; sur une autre, il l'écarte. Un clic sur une photo fait comme son numéro. À chaque
@@ -120,6 +131,7 @@ y a trouvé. Si le fichier ne contient pas votre choix, un message rouge le dit.
 | `→` ou espace | Série suivante (sans choix : comme affiché) |
 | `←` | Série précédente (sans choix : comme affiché) |
 | `N` | Série suivante à voir |
+| `V` | Valider d'un coup toutes les séries évidentes (voir plus bas) |
 | `1` … `9` | Écarter cette photo, ou la reprendre |
 | `S` | Ne garder que la plus nette, puis passer à la série suivante |
 | `A` | Garder toutes les photos de la série |
@@ -129,6 +141,30 @@ y a trouvé. Si le fichier ne contient pas votre choix, un message rouge le dit.
 | `P` | Planche ⇄ une série à la fois |
 
 Sur un clavier AZERTY, les chiffres de la rangée du haut fonctionnent **sans** Maj.
+
+### Toutes les séries évidentes en un clic
+
+Une série est **évidente** quand sa proposition ne laisse rien à juger : toutes les photos sont
+proposées à l'écart sauf la plus nette (et celles des dossiers protégés). Les autres sont **à
+regarder** : au moins une photo diffère vraiment (une autre pose, un autre cadrage) et le
+choix vous revient. Au démarrage, le tri les compte :
+
+```text
+4 000 séries à voir : 3 100 évidentes (un clic), 900 à regarder.
+```
+
+Le bouton **✔ Valider les 3 100 série(s) évidente(s) (9 400 photo(s) écartée(s))**, au-dessus
+du sommaire, ou `V`, les enregistre toutes comme proposées, **en une seule écriture**, après
+une confirmation qui donne les chiffres. La preuve est la même que pour une série : le
+fichier est relu sur le disque, et le sommaire montre ce qu'il contient. Un seul `Z` annule
+tout le lot. Cochez ensuite *Seulement les séries à regarder* : il ne reste que les séries qui
+ont besoin de vous.
+
+Rien ne change pour la sécurité : les photos écartées vont en quarantaine au
+`clean --decisions`, `undo` les ramène, et les séries que vous n'avez pas vues restent
+entières.
+
+### D'autres façons d'aller plus vite
 
 **La planche : huit séries par écran.** `P`, ou le bouton **🗂 Planche** à côté du titre,
 montre les séries une par ligne, en petites images, la plus nette d'abord et les propositions
@@ -144,7 +180,7 @@ navigateur retient votre choix.
 
 **Dégrossir d'abord** : la liste *Ordre* au-dessus du sommaire fixe l'ordre de `→`, `←` et
 `N` : *par dossier* (l'arbre), *par date*, *plus grand écart de netteté d'abord* (les séries où
-une photo est nettement plus floue viennent en tête, avec leur écart : *écart 84 %* ; celles
+une photo est nettement plus floue viennent en tête, avec leur écart : *écart 87 %* ; celles
 dont les photos se valent viennent en dernier) ou *à voir d'abord*. Le navigateur s'en
 souvient ; l'ordre reste tel quel pendant le tri, pour qu'une série ne saute jamais ailleurs
 sous vos yeux.
@@ -282,11 +318,19 @@ et lancé `undo` ? L'archive applique à nouveau les mêmes choix :
   et `--exclude` (ou gardez-les dans `config.toml`). Si une série a changé entre le tri et le
   nettoyage (un fichier ajouté, déplacé ou modifié), `clean` refuse le fichier plutôt que de
   deviner : refaites le tri.
-- **Les propositions** viennent de `[review] propose_aside_below` dans `config.toml` (par
-  défaut `0.35`) : une photo est proposée à l'écart sous cette part de la netteté de la plus
-  nette. Dans une rafale, toutes les photos montrent la même scène : comparer leur netteté a
-  du sens ; `0` ne propose jamais rien. Une photo à 616 à côté d'une à 1017 n'est pas
-  proposée : c'est peut-être une autre pose.
+- **Les propositions** viennent de `[review]` dans `config.toml`. Dans une rafale, toutes les
+  photos montrent la même scène : les comparer a du sens ; `0` désactive chaque règle :
+  - `propose_aside_below` (par défaut `0.35`) : une photo sous cette part de la netteté de la
+    plus nette. Une photo à 616 à côté d'une à 1017 n'est pas proposée : c'est peut-être une
+    autre pose ;
+  - `identical_below` (par défaut `6`, sur 64) : une photo dont l'empreinte perceptuelle
+    diffère de moins de bits que cela d'une photo plus nette gardée : deux fois la même image ;
+  - `brightness_gap` (par défaut `60` niveaux de gris, sur 255) et `clipped_gap` (par défaut
+    `0.25`) : une photo dont la luminosité moyenne s'écarte autant de celle des autres (et
+    s'éloigne plus qu'elles d'un gris moyen : de deux photos, la bien exposée reste), ou dont
+    la part de pixels brûlés en blanc ou bouchés en noir dépasse autant la leur.
+
+  La plus nette n'est jamais proposée : au moins une photo reste toujours.
 - **Les séries encore à voir** (`todo`) ne déplacent rien : `clean` dit seulement combien il en
   reste, et ne refuse jamais le fichier à cause d'elles.
 - **Avant de déplacer une photo**, `clean` vérifie que c'est bien le fichier montré par le tri, et

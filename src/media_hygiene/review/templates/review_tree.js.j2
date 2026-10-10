@@ -32,7 +32,8 @@
 
   const fillRow = (row, index) => {
     const seen = isSeen(index) ? "done" : "";
-    row.className = ["row", seen, outcome(index), index === current ? "current" : ""].join(" ");
+    const obvious = series[index].obvious ? "obvious" : "";
+    row.className = ["row", seen, outcome(index), obvious, index === current ? "current" : ""].join(" ");
     const name = line("span", fill(T.rowName, { number: index + 1 }), "name");
     if (mode !== "folder") {
       // A flat list: where the series lies, and in sharpness order the gap it shows.

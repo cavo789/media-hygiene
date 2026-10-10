@@ -3,22 +3,26 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _
+from media_hygiene.plan.burst_proposals import (
+    ProposalLimits,
+    ShotLook,
+    is_obvious,
+    propose,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-    from pathlib import Path
-
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.plan.burst_proposals import Proposal
     from media_hygiene.plan.keeper import KeepPolicy
-    from media_hygiene.plan.similar_models import BurstSeries
-    from media_hygiene.scan.models import MediaFile, VisualFacts
+    from media_hygiene.plan.similar_models import BurstSeries, SimilarFindings
+    from media_hygiene.scan.models import MediaFile
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _PREVIEW_KEY_LENGTH: Final = 24
@@ -39,7 +43,9 @@ class ShotState(BaseModel):
     protected: bool
     best: bool
     share: float = 1.0  # its sharpness, as a share of the sharpest shot's
-    proposed: bool = False  # proposed to be set aside: far less sharp than the best
+    proposed: bool = False  # proposed to be set aside, for `reason`
+    reason: str = ""  # an `AsideReason`; for the page only, never in decisions.json
+    like: int | None = None  # `identical`: rank of the sharper shot it repeats
 
 
 class SeriesState(BaseModel):
@@ -52,6 +58,7 @@ class SeriesState(BaseModel):
     taken: str = ""  # EXIF date of its first shot, sortable as text; empty: unknown
     discarded: tuple[int, ...] = ()
     reviewed: bool = False  # in the decisions file, kept whole or not
+    obvious: bool = False  # nothing to judge: only the proposal's keepers are left
 
 
 class ReviewState(BaseModel):
@@ -83,11 +90,11 @@ class StateBuilder:
 
     mapper: HostPathMapper
     policy: KeepPolicy
-    visuals: Mapping[Path, VisualFacts]
-    propose_below: float = 0.0  # `[review] propose_aside_below`; 0: no proposal
+    similar: SimilarFindings  # the series' shots' visual facts and exposures
+    limits: ProposalLimits = field(default_factory=ProposalLimits)  # `[review]`
 
     def series(self, burst: BurstSeries) -> SeriesState:
-        """Describe one series, no shot set aside yet.
+        """Describe one series, no shot set aside yet, with what is proposed aside.
 
         Args:
             burst: The series.
@@ -95,42 +102,44 @@ class StateBuilder:
         Returns:
             Its state.
         """
-        first = self.visuals.get(burst.shots[0].path)
+        first = self.similar.visuals.get(burst.shots[0].path)
+        looks = tuple(self._look(file, burst) for file in burst.shots)
+        known = tuple(filter(None, looks))
+        proposals = propose(known, self.limits) if len(known) == len(looks) else {}
+        top = max((look.sharpness for look in known), default=0.0)
+        shots = []
+        for rank, (file, look) in enumerate(zip(burst.shots, looks, strict=True)):
+            shot = self._shot(file, file == burst.best)
+            if look is not None and top:
+                share = min(look.sharpness / top, 1.0)
+                shot = shot.model_copy(update=_proposed(share, proposals.get(rank)))
+            shots.append(shot)
         return SeriesState(
             camera=(first.camera if first else None) or "",
             taken=(first.taken_at if first else None) or "",
-            shots=tuple(self._ranked(file, burst) for file in burst.shots),
+            shots=tuple(shots),
+            obvious=is_obvious(known, proposals),
         )
 
-    def _sharpness(self, file: MediaFile) -> float | None:
-        """Read the sharpness of a shot, when it was measured.
-
-        Args:
-            file: The shot.
-
-        Returns:
-            Its sharpness, or None.
-        """
-        visual = self.visuals.get(file.path)
-        return visual.sharpness if visual is not None else None
-
-    def _ranked(self, file: MediaFile, burst: BurstSeries) -> ShotState:
-        """Describe a shot next to the sharpest of its series; far less sharp: proposed.
+    def _look(self, file: MediaFile, burst: BurstSeries) -> ShotLook | None:
+        """Gather what the proposals compare: sharpness, hash, exposure.
 
         Args:
             file: The shot.
             burst: Its series.
 
         Returns:
-            The shot, with its share of the best sharpness and the proposal.
+            Its look, or None when it was never measured.
         """
-        shot = self._shot(file, file == burst.best)
-        sharpness, top = self._sharpness(file), self._sharpness(burst.best)
-        if sharpness is None or not top:
-            return shot
-        share = min(sharpness / top, 1.0)
-        proposed = not (shot.best or shot.protected) and share < self.propose_below
-        return shot.model_copy(update={"share": share, "proposed": proposed})
+        visual = self.similar.visuals.get(file.path)
+        if visual is None:
+            return None
+        return ShotLook(
+            sharpness=visual.sharpness,
+            phash=visual.phash,
+            exposure=self.similar.exposures.get(file.path),
+            keep=file == burst.best or self.policy.is_protected(file),
+        )
 
     def _shot(self, file: MediaFile, best: bool) -> ShotState:  # noqa: FBT001
         """Describe one shot: name, folder, and what tells it from the others.
@@ -144,7 +153,7 @@ class StateBuilder:
         """
         host = self.mapper.to_host(file.path)
         folder, name = host.rsplit("\\" if "\\" in host else "/", 1)
-        visual = self.visuals.get(file.path)
+        visual = self.similar.visuals.get(file.path)
         details = [human_size(file.size)]
         if visual is not None:
             details.insert(0, f"{visual.width} \N{MULTIPLICATION SIGN} {visual.height}")
@@ -161,3 +170,23 @@ class StateBuilder:
             protected=self.policy.is_protected(file),
             best=best,
         )
+
+
+def _proposed(share: float, proposal: Proposal | None) -> dict[str, object]:
+    """Describe a shot's sharpness share and what is proposed for it.
+
+    Args:
+        share: Its sharpness, as a share of the sharpest shot's.
+        proposal: Proposed aside, and why; None: kept.
+
+    Returns:
+        The fields of its state.
+    """
+    if proposal is None:
+        return {"share": share}
+    return {
+        "share": share,
+        "proposed": True,
+        "reason": proposal.reason.value,
+        "like": proposal.like,
+    }

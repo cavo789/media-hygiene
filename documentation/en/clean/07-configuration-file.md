@@ -119,6 +119,9 @@ Effective settings
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
 │ review.propose_aside_below    │ 0.35                          │ default      │
+│ review.identical_below        │ 6                             │ default      │
+│ review.brightness_gap         │ 60.0                          │ default      │
+│ review.clipped_gap            │ 0.25                          │ default      │
 │ classify.target               │                               │ default      │
 │ classify.leave                │ []                            │ default      │
 │ classify.timezone             │                               │ default      │
@@ -476,6 +479,9 @@ Effective settings
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
 │ review.propose_aside_below    │ 0.35                          │ config.toml  │
+│ review.identical_below        │ 6                             │ config.toml  │
+│ review.brightness_gap         │ 60.0                          │ config.toml  │
+│ review.clipped_gap            │ 0.25                          │ config.toml  │
 │ classify.target               │                               │ config.toml  │
 │ classify.leave                │ []                            │ config.toml  │
 │ classify.timezone             │                               │ config.toml  │

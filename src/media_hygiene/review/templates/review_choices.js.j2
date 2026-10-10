@@ -31,6 +31,7 @@
       series[index].reviewed = discarded !== null;
     }
     paced(newly);
+    byId("welcome").hidden = true;  // the first choice made: the welcome line did its job
     for (const entry of answer.file.entries) disk.set(entry.series, entry);
     setStatus(fill(T.proofOk, { time: clock(answer.file.modified) }), "saved");
     for (const [index] of choices) updateRow(index);
@@ -99,7 +100,8 @@
       return;
     }
     show(last[0][0]);
-    setStatus(fill(T.undone, { number: last[0][0] + 1 }), "saved");
+    if (last.length > 1) setStatus(fill(T.undoneMany, { count: last.length }), "saved");
+    else setStatus(fill(T.undone, { number: last[0][0] + 1 }), "saved");
   };
 
   // Every series still to see in a folder, validated as moving on would, in one write.

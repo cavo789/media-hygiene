@@ -1,9 +1,10 @@
-"""Turn the `[folders]` and `[scan]` settings into policies and filters."""
+"""Turn the `[folders]`, `[scan]` and `[review]` settings into policies and filters."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.plan.burst_proposals import ProposalLimits
 from media_hygiene.plan.keeper import KeepPolicy
 from media_hygiene.plan.name_rules import NameRules
 from media_hygiene.scan.filters import ScanFilters
@@ -11,6 +12,7 @@ from media_hygiene.scan.filters import ScanFilters
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.config.review_settings import ReviewSettings
     from media_hygiene.config.settings import FolderSettings, Settings
     from media_hygiene.paths.host_paths import HostPathMapper
 
@@ -36,6 +38,23 @@ def keep_policy(
         protected=tuple(mapper.to_container(path) for path in folders.protected),
         names=NameRules.from_patterns(keep.generated_names, keep.generic_folders),
         with_sidecar=with_sidecar,
+    )
+
+
+def proposal_limits(review: ReviewSettings) -> ProposalLimits:
+    """Build what the burst review proposes aside from the `[review]` thresholds.
+
+    Args:
+        review: The `[review]` settings.
+
+    Returns:
+        The thresholds of the proposals.
+    """
+    return ProposalLimits(
+        sharpness_below=review.propose_aside_below,
+        identical_below=review.identical_below,
+        brightness_gap=review.brightness_gap,
+        clipped_gap=review.clipped_gap,
     )
 
 

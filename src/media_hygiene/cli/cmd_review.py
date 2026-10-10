@@ -52,6 +52,7 @@ def review_command(  # pylint: disable=too-many-arguments
             output.success(_("No burst series: nothing to review."))
             return
         session = open_review(runtime, findings, target)
+        _tell_obvious(output, session)
         if session.dropped:
             dropped = ngettext(
                 "{count} series reviewed earlier changed since: reviewed again.",
@@ -61,6 +62,31 @@ def review_command(  # pylint: disable=too-many-arguments
             output.warning(dropped.format(count=human_number(session.dropped)))
         serve_review(runtime, session, port)
         _tell_stopped(output, session)
+
+
+def _tell_obvious(output: Output, session: ReviewSession) -> None:
+    """Say how many series still to see are obvious, validated by one click.
+
+    Args:
+        output: Where to tell it.
+        session: The review, opened.
+    """
+    todo = [item for item in session.state().series if not item.reviewed]
+    if not todo:
+        return
+    obvious = sum(1 for item in todo if item.obvious)
+    message = ngettext(
+        "{count} series to see: {obvious} obvious (one click), {look} to look at.",
+        "{count} series to see: {obvious} obvious (one click), {look} to look at.",
+        len(todo),
+    )
+    output.info(
+        message.format(
+            count=human_number(len(todo)),
+            obvious=human_number(obvious),
+            look=human_number(len(todo) - obvious),
+        )
+    )
 
 
 def _tell_stopped(output: Output, session: ReviewSession) -> None:

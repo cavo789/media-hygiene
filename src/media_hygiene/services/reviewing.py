@@ -21,7 +21,7 @@ from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, STATE_PATH, ReviewA
 from media_hygiene.review.place import decisions_flag, decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
-from media_hygiene.services.policy import keep_policy
+from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.writable import ensure_writable
 
@@ -87,8 +87,8 @@ def open_review(
     builder = StateBuilder(
         mapper,
         keep_policy(runtime.settings, mapper),
-        findings.similar.visuals,
-        runtime.settings.review.propose_aside_below,
+        findings.similar,
+        proposal_limits(runtime.settings.review),
     )
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     source = ReviewSource(findings.similar.bursts, builder, target, place)

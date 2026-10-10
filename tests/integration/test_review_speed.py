@@ -18,6 +18,12 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 BLURRED = 1  # the middle shot of the test burst
+NO_PROPOSAL = (
+    "propose_aside_below",
+    "identical_below",
+    "brightness_gap",
+    "clipped_gap",
+)
 
 
 def choices(*pairs: tuple[int, list[int] | None]) -> Call:
@@ -58,14 +64,14 @@ def test_a_vanished_original_is_not_found(locations: Locations) -> None:
 
 
 def test_a_far_less_sharp_shot_is_proposed_aside(locations: Locations) -> None:
-    """Below the share of the sharpest: proposed; 0 never proposes; protected never."""
+    """Below the share of the sharpest: proposed; all 0: never; protected: never."""
     write_burst(locations.data_dir)
     eager = review_session(locations, {"review": {"propose_aside_below": 0.99}})
     shots = eager.state().series[0].shots
     assert shots[BLURRED].proposed
     assert shots[BLURRED].share < 1
     assert not any(shot.proposed for shot in shots if shot.best)
-    never = review_session(locations, {"review": {"propose_aside_below": 0}})
+    never = review_session(locations, {"review": dict.fromkeys(NO_PROPOSAL, 0)})
     assert not any(shot.proposed for shot in never.state().series[0].shots)
     eager_and_protected: dict[str, dict[str, object]] = {
         "folders": {"protected": [shots[0].folder]},

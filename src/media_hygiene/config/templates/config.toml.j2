@@ -69,8 +69,17 @@ confirm = true
 
 
 [review]
+{{ comment(_("A series whose proposal leaves only the sharpest shot (and those of protected folders) is obvious: the review page validates every obvious series at once, with one confirmation.")) }}
+
 {{ comment(_("The burst review proposes to set aside a shot whose sharpness is below this share of the sharpest shot of its series (0 to 1): 0.35 proposes a shot at 162 next to one at 1017, not one at 616. Moving on accepts the proposal, a key takes it back. 0 never proposes anything.")) }}
 propose_aside_below = 0.35
+
+{{ comment(_("A shot nearly identical to a sharper shot kept of its series is proposed aside too: its perceptual hash differs by fewer bits than this (0 to 64). Low values only catch repeats of the same frame. 0 disables the rule.")) }}
+identical_below = 6
+
+{{ comment(_("A shot clearly over- or under-exposed next to the others of its series is proposed aside: its mean brightness lies farther than this from theirs (gray levels, 0 to 255), or its share of pixels clipped to white or black exceeds theirs by more than clipped_gap (0 to 1). 0 disables either rule.")) }}
+brightness_gap = 60
+clipped_gap = 0.25
 
 
 [sort]

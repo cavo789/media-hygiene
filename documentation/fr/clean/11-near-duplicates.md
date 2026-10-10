@@ -112,7 +112,7 @@ traiter 3 fichiers cassés ? [o/N] o
 <!-- capture: clean-near.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261010-190154
+Nettoyage 20261010-203356
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      40 │
 │ Taille                    │ 16,2 Mo │
@@ -121,17 +121,17 @@ Nettoyage 20261010-190154
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261010-190154-clean/report.html
+✅ Rapport HTML : /reports/20261010-203356-clean/report.html
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261010-190154' restaure tout.
+💡 Vous changez d'avis ? 'media-hygiene undo 20261010-203356' restaure tout.
 💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261010-190154
+media-hygiene purge 20261010-203356
 📦 decisions.json est appliqué : archivé sous
-decisions.applied-20261010-190154.json, dans le dossier monté sur /reports, le
+decisions.applied-20261010-203356.json, dans le dossier monté sur /reports, le
 prochain 'review' repart de zéro.
 💡 Après un undo, 'media-hygiene clean --decisions
-decisions.applied-20261010-190154.json' l'applique à nouveau.
+decisions.applied-20261010-203356.json' l'applique à nouveau.
 ```
 
 Les quasi-doublons sont **déplacés en quarantaine**, jamais supprimés : ils ne sont pas
@@ -141,45 +141,45 @@ les fichiers illisibles et le fichier compagnon orphelin :
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261010-190154/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
-./20261010-190154/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
-./20261010-190154/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
-./20261010-190154/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
-./20261010-190154/c/Photos/2022/Anniversaire/IMG_3003.jpg
-./20261010-190154/c/Photos/2023/Lac/IMG_4002.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0101.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0102.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0103.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0104.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0105.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0106.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0107.jpg
-./20261010-190154/c/Photos/Ancien téléphone/IMG_0108.jpg
-./20261010-190154/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261010-190154/d/Ancien disque/2020/IMG_1203.jpg
-./20261010-190154/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-./20261010-190154/d/Ancien disque/Noël 2020/IMG_1201.jpg
-./20261010-190154/d/Ancien disque/Noël 2020/IMG_1202.jpg
-./20261010-190154/d/Ancien disque/Noël 2020/IMG_1203.jpg
-./20261010-190154/d/Ancien disque/Noël 2020/IMG_1204.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0101.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0102.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0102.xmp
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0103.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0104.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0105.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0106.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0107.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0108.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0109.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0110.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0111.jpg
-./20261010-190154/d/Ancien disque/Photos 2019/IMG_0112.jpg
-./20261010-190154/d/Ancien disque/Téléphone/IMG_4242.HEIC
-./20261010-190154/d/Ancien disque/Téléphone/IMG_4243.HEIC
-./20261010-190154/d/Ancien disque/Téléphone/IMG_4244.HEIC
-./20261010-190154/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
-./20261010-190154/d/Ancien disque/Vidéos/Anniversaire.mp4
+./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
+./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
+./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
+./20261010-203356/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
+./20261010-203356/c/Photos/2022/Anniversaire/IMG_3003.jpg
+./20261010-203356/c/Photos/2023/Lac/IMG_4002.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0101.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0102.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0103.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0104.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0105.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0106.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0107.jpg
+./20261010-203356/c/Photos/Ancien téléphone/IMG_0108.jpg
+./20261010-203356/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261010-203356/d/Ancien disque/2020/IMG_1203.jpg
+./20261010-203356/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+./20261010-203356/d/Ancien disque/Noël 2020/IMG_1201.jpg
+./20261010-203356/d/Ancien disque/Noël 2020/IMG_1202.jpg
+./20261010-203356/d/Ancien disque/Noël 2020/IMG_1203.jpg
+./20261010-203356/d/Ancien disque/Noël 2020/IMG_1204.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0101.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0102.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0102.xmp
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0103.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0104.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0105.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0106.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0107.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0108.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0109.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0110.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0111.jpg
+./20261010-203356/d/Ancien disque/Photos 2019/IMG_0112.jpg
+./20261010-203356/d/Ancien disque/Téléphone/IMG_4242.HEIC
+./20261010-203356/d/Ancien disque/Téléphone/IMG_4243.HEIC
+./20261010-203356/d/Ancien disque/Téléphone/IMG_4244.HEIC
+./20261010-203356/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+./20261010-203356/d/Ancien disque/Vidéos/Anniversaire.mp4
 ```
 
 Avant de déplacer chaque copie, `clean` vérifie que la photo gardée existe toujours et que la

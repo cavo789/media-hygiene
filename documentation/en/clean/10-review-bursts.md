@@ -74,16 +74,25 @@ The first series appears. Here, the second one, a birthday: five shots taken one
 - **⭐ sharpest**: always **the first shot**, framed in green. The others follow from the
   sharpest to the least sharp: the blurred ones come last. The higher the sharpness, the
   crisper the picture; it measures blur only, not a closed eye: the choice stays yours.
-- **📦 proposed aside**, in red dashes: a shot far less sharp than the sharpest of its series
-  (below 35 % of it, see [Good to know](#good-to-know)). Here, the last shot, at 30 against
-  about 218 for the others: 14 %. The other shots are ⏳ *kept if you move on*.
+- **📦 proposed aside**, in red dashes, with the reason under the picture:
+  - *sharpness 13 % of the best*: far less sharp than the sharpest of its series (below 35 %
+    of it). Here, the last shot, at 30 against about 225 for the others;
+  - *nearly identical to the sharper shot 2*: the same frame again, shot 2 is kept;
+  - *overexposed* or *underexposed next to the others*: far brighter or darker than the rest
+    of the series, or far more burnt white or blocked black.
+
+  The other shots are ⏳ *kept if you move on*. The thresholds are in
+  [Good to know](#good-to-know); the reason only shows on the page, `decisions.json` lists
+  names only.
 - **↗ original** opens the file itself in a new tab, untouched, at full size: what you see is
   what lies on your disk, not a rendering of the page.
 - **On the left, the table of contents**: every series, folder by folder, with its state in
   `decisions.json`: ⏳ *to see*, ✅ *all kept* (green), 📦 *1 of 3 set aside* (orange),
   🗑 *whole series set aside* (red). A bar shows how many series you have seen; a click on a
-  series opens it, and *Only the series still to see* hides the others.
-- **Below it, the keyboard**: the keys, always in sight.
+  series opens it, *Only the series still to see* hides the others, and *Only the series to
+  look at* hides the [obvious ones](#every-obvious-series-in-one-click).
+- **Below it, the keyboard**: the four keys that do most of the work (`→`, `S`, `A`, `X`),
+  always in sight; *More keys* unfolds the others.
 - **Under the shots**: *What decisions.json holds for this series*, the names kept and set
   aside (and, folded, the raw JSON).
 
@@ -92,7 +101,9 @@ The first series appears. Here, the second one, a birthday: five shots taken one
 **Moving on accepts what is shown.** `→`, `←` or `N` without a choice saves the series as it
 is on screen: the shots proposed aside are set aside, the others kept; without a proposal,
 every shot is kept. With thousands of series, you only press a key where the proposal is
-wrong. A click in the table of contents only opens a series: it saves nothing.
+wrong. A click in the table of contents only opens a series: it saves nothing. On your first
+visit, a blue line reminds you of it: *The proposal is already made: → is enough when it
+suits you* (the browser remembers it, and it goes away at your first choice).
 
 To correct, press the number of a shot: on a proposed shot, `5` takes it back (kept); on
 another one, it sets it aside. A click on a shot does the same as its number. Each time, the
@@ -112,6 +123,7 @@ show what it found there. If the file does not hold your choice, a red message s
 | `→` or space | Next series (no choice: as shown) |
 | `←` | Previous series (no choice: as shown) |
 | `N` | Next series still to see |
+| `V` | Validate every obvious series at once (see below) |
 | `1` … `9` | Set that shot aside, or take it back |
 | `S` | Keep only the sharpest shot, then go to the next series |
 | `A` | Keep every shot of the series |
@@ -121,6 +133,28 @@ show what it found there. If the file does not hold your choice, a red message s
 | `P` | Board ⇄ one series at a time |
 
 On an AZERTY keyboard, the digits of the top row work **without** Shift.
+
+### Every obvious series in one click
+
+A series is **obvious** when its proposal leaves nothing to judge: every shot is proposed
+aside except the sharpest (and those of protected folders). The others are **to look at**:
+at least one shot really differs (another pose, another framing) and only you can choose.
+When it starts, the review counts them:
+
+```text
+4,000 series to see: 3,100 obvious (one click), 900 to look at.
+```
+
+The **✔ Validate the 3,100 obvious series (9,400 shot(s) set aside)** button, above the
+table of contents, or `V`, saves them all as proposed, **in one write**, after a confirmation
+that gives the figures. The proof is the same as for one series: the file is read back from
+the disk, and the table of contents shows what it holds. One `Z` takes the whole batch back.
+Then tick *Only the series to look at*: only the series that need you are left.
+
+Nothing changes for safety: the shots set aside go to the quarantine at
+`clean --decisions`, `undo` brings them back, and the series you have not seen stay whole.
+
+### More ways to go faster
 
 **The board: eight series per screen.** `P`, or the **🗂 Board** button next to the title,
 shows the series one per row, as small pictures, the sharpest first and the proposals marked.
@@ -135,7 +169,7 @@ series; the browser remembers your choice.
 
 **Rough it out first**: the *Order* list above the table of contents sets the order of `→`,
 `←` and `N`: *by folder* (the tree), *by date*, *largest sharpness gap first* (the series
-where one shot is far blurrier come first, with their gap: *gap 84 %*; those whose shots are
+where one shot is far blurrier come first, with their gap: *gap 87 %*; those whose shots are
 all alike come last) or *still to see first*. The browser remembers it; the order stays as it
 is while you review, so a series never jumps away under you.
 
@@ -269,11 +303,18 @@ archive applies the same choices again: `clean --decisions decisions.applied-<ru
   `--exclude` (or keep them in `config.toml`). If a series changed between the review and the
   clean (a file added, moved or edited), `clean` refuses the file rather than guessing: review
   again.
-- **The proposals** come from `[review] propose_aside_below` in `config.toml` (default
-  `0.35`): a shot is proposed aside below that share of the sharpest shot's sharpness. Within a
-  burst, every shot shows the same scene, so comparing their sharpness is meaningful; `0`
-  never proposes anything. A shot at 616 next to one at 1017 is not proposed: it may be
-  another pose.
+- **The proposals** come from `[review]` in `config.toml`. Within a burst, every shot shows
+  the same scene, so comparing the shots is meaningful; `0` disables each rule:
+  - `propose_aside_below` (default `0.35`): a shot below that share of the sharpest shot's
+    sharpness. A shot at 616 next to one at 1017 is not proposed: it may be another pose;
+  - `identical_below` (default `6`, out of 64): a shot whose perceptual fingerprint differs by
+    fewer bits than this from a sharper shot kept: the same frame twice;
+  - `brightness_gap` (default `60` gray levels, out of 255) and `clipped_gap` (default `0.25`):
+    a shot whose mean brightness lies that far from the others' (and farther from a medium
+    gray than theirs: of two shots, the well exposed one stays), or whose share of burnt
+    white or blocked black pixels exceeds theirs by that much.
+
+  The sharpest shot is never proposed: one shot at least always stays.
 - **Series still to see** (`todo`) move nothing: `clean` only says how many are left, and
   never refuses the file because of them.
 - **Before moving a shot**, `clean` checks that it is the very file the review showed, and that

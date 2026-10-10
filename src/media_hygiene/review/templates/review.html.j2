@@ -14,6 +14,15 @@
   "suggested": _("suggestion"),
   "undecided": "⏳ " ~ _("kept if you move on"),
   "proposed": "📦 " ~ _("proposed aside: sharpness {share} %% of the best"),
+  "identical": "📦 " ~ _("proposed aside: nearly identical to the sharper shot {number}"),
+  "overexposed": "📦 " ~ _("proposed aside: overexposed next to the others"),
+  "underexposed": "📦 " ~ _("proposed aside: underexposed next to the others"),
+  "obvious": "✔ " ~ _("Validate the {count} obvious series ({aside} shot(s) set aside)"),
+  "obviousNone": _("No obvious series left to validate."),
+  "obviousAsk": _("{count} obvious series: only the sharpest shot (and those of protected folders) would stay, {aside} shot(s) set aside, saved in one write. {left} series to look at stay to see. Validate them? Z takes the whole batch back."),
+  "obviousDone": _("{count} obvious series validated: Z takes the whole batch back."),
+  "undoneMany": "↶ " ~ _("Choices on {count} series undone."),
+  "welcome": "💡 " ~ _("The proposal is already made: → is enough when it suits you."),
   "pending": "⏳ " ~ _("No choice yet: moving on (→, ← or N) keeps every shot of this series. S keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot aside."),
   "pendingProposed": "⏳ " ~ _("No choice yet: moving on (→, ← or N) accepts the proposal, the shots in red dashes set aside and the others kept. A keeps every shot; a digit takes a shot back."),
   "original": "↗ " ~ _("original"),
@@ -96,6 +105,8 @@
   #status.pending { color: var(--warn); font-weight: 600; }
   #pending { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--warn);
              background: var(--card); border: 2px dashed var(--warn); border-radius: 10px; }
+  #welcome { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--accent);
+             background: var(--card); border: 2px solid var(--accent); border-radius: 10px; }
   #whole { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--bad);
            background: var(--card); border: 2px solid var(--bad); border-radius: 10px; }
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
@@ -143,22 +154,31 @@
       </select>
     </label>
     <label class="filter"><input type="checkbox" id="onlyTodo"> <span>{{ _("Only the series still to see") }}</span></label>
+    <label class="filter"><input type="checkbox" id="onlyLook"> <span>{{ _("Only the series to look at") }}</span></label>
+    <button type="button" id="obvious" title="{{ _('Validate at once every series still to see whose proposal leaves nothing to judge (V)') }}"></button>
     <div id="tree"></div>
   </section>
   <section id="keys" aria-label="{{ _('Keyboard') }}">
     <h2>⌨ {{ _("Keyboard") }}</h2>
     <dl>
-      <dt><kbd>A</kbd></dt><dd>{{ _("keep every shot") }}</dd>
+      <dt><kbd>→</kbd></dt><dd>{{ _("accept the proposal, next") }}</dd>
       <dt><kbd>S</kbd></dt><dd>{{ _("only the sharpest, then next") }}</dd>
+      <dt><kbd>A</kbd></dt><dd>{{ _("keep every shot") }}</dd>
       <dt><kbd>X</kbd></dt><dd>{{ _("none: the whole series aside, then next") }}</dd>
+    </dl>
+    <details id="moreKeys">
+    <summary>{{ _("More keys") }}</summary>
+    <dl>
       <dt><kbd>1</kbd>…<kbd>9</kbd></dt><dd>{{ _("set a shot aside, or take it back") }}</dd>
-      <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>{{ _("next / previous (no choice: as shown)") }}</dd>
+      <dt><kbd>←</kbd></dt><dd>{{ _("previous series (no choice: as shown)") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next series still to see") }}</dd>
+      <dt><kbd>V</kbd></dt><dd>{{ _("validate every obvious series at once") }}</dd>
       <dt><kbd>Z</kbd></dt><dd>{{ _("undo the last choice") }}</dd>
       <dt><kbd>C</kbd></dt><dd>{{ _("compare the shots at 100 %%") }}</dd>
       <dt><kbd>P</kbd></dt><dd>{{ _("board ⇄ one series") }}</dd>
       <dt class="board-only"><kbd>␣</kbd></dt><dd class="board-only">{{ _("board: pin the large preview of the shot under the mouse") }}</dd>
     </dl>
+    </details>
   </section>
 </aside>
 <main>
@@ -167,6 +187,7 @@
     <div id="boardRows"></div>
     <div class="boardBar"><span class="boardInfo"></span><button type="button" class="boardNext">{{ _("Next page →") }}</button></div>
   </div>
+  <p id="welcome" role="status" hidden></p>
   <div id="single">
   <p id="series" class="muted"></p>
   <p id="pending" role="status" hidden></p>
@@ -239,6 +260,8 @@
 
 {% include "review_choices.js.j2" %}
 
+{% include "review_obvious.js.j2" %}
+
 {% include "review_compare.js.j2" %}
 
 {% include "review_board.js.j2" %}
@@ -248,7 +271,7 @@
     if (item.discarded.includes(rank)) return { css: "aside", text: T.aside };
     if (item.reviewed) return { css: "kept", text: T.kept };
     // No choice yet: the sharpest is only a suggestion, far less sharp shots a proposal.
-    if (shot.proposed) return { css: "proposed", text: fill(T.proposed, { share: Math.round(shot.share * 100) }) };
+    if (shot.proposed) return { css: "proposed", text: proposedText(item, shot) };
     return shot.best ? { css: "suggested", text: T.sharpest + " · " + T.suggested } : { css: "undecided", text: T.undecided };
   };
 
@@ -293,6 +316,7 @@
 
   const render = () => {
     showTotals();
+    showObvious();
     markCurrent();
     showCompare();
     if (board) {
@@ -326,6 +350,7 @@
     else if (key === "a") decide(current, []);
     else if (key === "x") setWholeAside();
     else if (key === "n") nextToSee();
+    else if (key === "v") validateObvious();
     else if (key === "z" || event.key === "Backspace") undo();
     else if (key === "c") toggleCompare(!comparing);
     else if (key === "p") {
@@ -349,6 +374,9 @@
       byId("diskTitle").textContent = T.diskTitle;
       byId("rawTitle").textContent = T.raw;
       byId("onlyTodo").addEventListener("change", (event) => byId("tree").classList.toggle("only-todo", event.target.checked));
+      byId("onlyLook").addEventListener("change", (event) => byId("tree").classList.toggle("only-look", event.target.checked));
+      byId("obvious").addEventListener("click", validateObvious);
+      welcome();
       arrange(savedOrder());
       setBoard(savedBoard());
       buildTree();

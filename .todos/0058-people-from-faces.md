@@ -70,10 +70,10 @@ Record the decision here before any code.
     posters, statues);
   - children who grow up: allow several reference sets per person.
 - **Uses**:
+  - the names go into the label layer of 0072 (`source = person`): searchable with the other
+    words (0073, "Mamie plage") and written to XMP sidecars by 0074 (`PersonInImage`);
   - a `match = "person"` rule in `classify` ("events where X appears" → a category or folder);
   - a "people" column in `inventory.xlsx` / `.csv` and in the classify workbook;
-  - XMP sidecars (`PersonInImage`, read by digiKam and Lightroom): later, opt-in, because
-    this writes into the data folders.
 - **Privacy**: face vectors are biometric data (GDPR art. 9).
   - they stay in `/cache`, never sent anywhere, never in reports beyond the names;
   - `people forget` deletes every face row and the `[[people]]` entries;

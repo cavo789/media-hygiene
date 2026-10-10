@@ -49,7 +49,7 @@ group. After the usual summary:
 
 <!-- capture: crosscheck.txt|re:^Czkawka results|agrees -->
 ```text
-Czkawka results of 2026-10-10 18:58 UTC.
+Czkawka results of 2026-10-10 20:32 UTC.
 ✅ Czkawka agrees: the same 32 extra copies in 20 groups.
 ```
 

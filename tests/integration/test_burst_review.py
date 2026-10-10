@@ -138,6 +138,7 @@ def test_the_review_command_serves_until_ctrl_c(
     assert result.exit_code == 0, result.output
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
     assert f"-p 127.0.0.1:{PORT}:{PORT}" in result.output
+    assert "1 series to see: " in result.output
     assert "shots set aside: 1" in result.output
     assert "'clean' command with --decisions;" in result.output
     assert "decisions.json, in the folder mounted on" in result.output

@@ -132,6 +132,9 @@ Réglages effectifs
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
 │ review.propose_aside_below  │ 0.35                       │ défaut            │
+│ review.identical_below      │ 6                          │ défaut            │
+│ review.brightness_gap       │ 60.0                       │ défaut            │
+│ review.clipped_gap          │ 0.25                       │ défaut            │
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
 │ classify.timezone           │                            │ défaut            │
@@ -525,6 +528,9 @@ Réglages effectifs
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
 │ review.propose_aside_below  │ 0.35                       │ config.toml       │
+│ review.identical_below      │ 6                          │ config.toml       │
+│ review.brightness_gap       │ 60.0                       │ config.toml       │
+│ review.clipped_gap          │ 0.25                       │ config.toml       │
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │
 │ classify.timezone           │                            │ config.toml       │

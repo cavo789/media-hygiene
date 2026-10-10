@@ -24,7 +24,7 @@ def hike(library: Library) -> None:
         kind = Kind.MOUNTAINS if index % 3 else Kind.MEADOW
         picture, when = Picture(kind, 20 + index), start + timedelta(minutes=23 * index)
         if index in {6, 7, 8}:
-            picture = Picture(Kind.MOUNTAINS, 60, pan=20 + 12 * (index - 6))
+            picture = Picture(Kind.MOUNTAINS, 60, 20 + 12 * (index - 6), pose=index - 6)
             when = start + timedelta(minutes=23 * 6, seconds=index - 6)
         write_shot(folder / f"DSC_{2100 + index:04d}.jpg", Shot(picture, when))
 
@@ -36,7 +36,7 @@ def birthday(library: Library) -> None:
         datetime(2022, 5, 21, 16, 30, tzinfo=UTC),
     )
     for shot in range(5):
-        picture = Picture(Kind.BALLOONS, 1, pan=10 + 10 * shot, shaken=shot == 2)
+        picture = Picture(Kind.BALLOONS, 1, 10 + 10 * shot, shot == 2, pose=shot)
         write_shot(
             folder / f"IMG_{3001 + shot:04d}.jpg",
             Shot(picture, party + timedelta(seconds=shot)),
@@ -56,7 +56,7 @@ def lake(library: Library) -> None:
         datetime(2023, 9, 2, 20, 5, tzinfo=UTC),
     )
     for shot in range(4):
-        picture = Picture(Kind.SUNSET, 40, pan=15 + 14 * shot)
+        picture = Picture(Kind.SUNSET, 40, 15 + 14 * shot, pose=shot)
         write_shot(
             folder / f"IMG_{4001 + shot:04d}.jpg",
             Shot(picture, evening + timedelta(seconds=2 * shot)),

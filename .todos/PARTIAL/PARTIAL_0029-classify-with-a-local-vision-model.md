@@ -148,3 +148,11 @@ Quality:
   **Reason:** the proposal says "compare with"; the mapping call alone is cached and batched.
   Worth measuring with the `--sample 50` run above before deciding.
 - CLIP fast pass: explicitly kept for later by the proposal.
+
+### Raw benchmark on the real collection (2026-10-10)
+
+Not `classify --sample 50` (the mapping accuracy is still to measure), but the describe step
+alone on 40 real photos from 40 folders, 768 px: median 1.9 s with `describe.txt` (66 output
+tokens), 2.5 s with a French sentence + tags. Occasions and places still missed; the folder
+names knew them. Full figures and quality notes: 0072, which reuses this describe machinery
+for every photo (tags, search, XMP sidecars).
