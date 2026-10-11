@@ -49,7 +49,9 @@ class Tag:
     source: TagSource
     value: str
     model: str = ""  # the vision model, for its sources; empty otherwise
-    kind: PlaceKind | None = None  # for `place` words; None: other or not known yet
+    # For `place` words: what it names, several when a place shares its town's name
+    # (`Luxembourg`, a town and a country); empty: another source, or not known yet.
+    kinds: tuple[PlaceKind, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

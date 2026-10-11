@@ -34,6 +34,7 @@ _OF: Final = (
 )
 _COLUMNS: Final = "PRAGMA table_info(tags)"
 _JOINED: Final = "; "  # between two tags of a cell
+_KINDS: Final = ","  # between two kinds of a place word (`town,country`)
 # A sentence is for the search, not for a cell: the words are.
 _CELL_SOURCES: Final = frozenset(TagSource) - {TagSource.CAPTION}
 _COUNTS: Final = "SELECT source, COUNT(DISTINCT path) FROM tags GROUP BY source"
@@ -80,7 +81,7 @@ class TagStore:
                 tag.source.value,
                 tag.value,
                 tag.model,
-                tag.kind.value if tag.kind is not None else "",
+                _KINDS.join(tag.kinds),
             )
             for file in files
             for tag in file.tags
@@ -103,7 +104,7 @@ class TagStore:
             self._of, (str(photo.path), photo.size, photo.mtime_ns)
         )
         return tuple(
-            Tag(TagSource(source), str(value), str(model), _kind(kind))
+            Tag(TagSource(source), str(value), str(model), _kinds(kind))
             for source, value, model, kind in found
             if source in TagSource
         )
@@ -121,17 +122,18 @@ class TagStore:
         }
 
 
-def _kind(value: object) -> PlaceKind | None:
-    """Read the kind of a place word.
+def _kinds(value: object) -> tuple[PlaceKind, ...]:
+    """Read what a place word names.
 
     Args:
-        value: The `kind` column.
+        value: The `kind` column, e.g. `town,country`.
 
     Returns:
-        The kind; None for another source, a word of an older run, or an unknown one.
+        The kinds; none for another source, a word of an older run, or unknown ones.
     """
-    kind = str(value)
-    return PlaceKind(kind) if kind in PlaceKind else None
+    return tuple(
+        PlaceKind(kind) for kind in str(value).split(_KINDS) if kind in PlaceKind
+    )
 
 
 def tags_reader(connection: sqlite3.Connection) -> Callable[[IndexedFile], str | None]:

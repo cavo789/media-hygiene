@@ -164,7 +164,8 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
 - **Le lieu à part** : avec `place` dans `xmp_sources`, la ville va aussi dans
   `photoshop:City`, son pays dans `photoshop:Country` et votre premier lieu personnel
   (`[[classify.places]]`) dans `Iptc4xmpCore:Location`, les champs que digiKam, Lightroom et
-  Immich affichent à part des mots-clés. Un champ déjà rempli par une autre application garde sa
+  Immich affichent à part des mots-clés. Un nom qui est deux de ces lieux à la fois (Luxembourg,
+  ville et pays ; un lieu à vous qui porte le nom de sa ville) remplit les deux champs. Un champ déjà rempli par une autre application garde sa
   valeur ; un champ que vous y avez vidé n'est pas rempli à nouveau. Après une mise à jour,
   relancez `tags` une fois : les lieux trouvés avant ne savent pas encore s'ils sont une ville ou
   un pays, et ne remplissent ces champs qu'ensuite.

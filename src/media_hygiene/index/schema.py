@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS subject_mappings (
 """
 # Added by version 6: the searchable words of a file, one row per word and source
 # (`tags.models.TagSource`); `model` names the vision model of its sources, `kind`
-# what a place word names (added by version 7).
+# what a place word names, comma-separated when several (added by version 7).
 _CREATE_TAGS: Final = """
 CREATE TABLE IF NOT EXISTS tags (
     path TEXT NOT NULL,

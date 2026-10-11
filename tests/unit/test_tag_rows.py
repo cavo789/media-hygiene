@@ -19,7 +19,8 @@ FOLDER = Tag(TagSource.FOLDER, "Durbuy")
 DATE = Tag(TagSource.DATE, "2019")
 CAPTION = Tag(TagSource.CAPTION, "Un ours brun.", "vision")
 BEAR = Tag(TagSource.VISION, "ours", "vision")
-TOWN = Tag(TagSource.PLACE, "Durbuy", kind=PlaceKind.TOWN)
+TOWN = Tag(TagSource.PLACE, "Durbuy", kinds=(PlaceKind.TOWN,))
+_TOWN_AND_COUNTRY = (PlaceKind.TOWN, PlaceKind.COUNTRY)
 # The table of version 6, before place words said their kind.
 _VERSION_6_TAGS = (
     "CREATE TABLE tags (path TEXT NOT NULL, size INTEGER NOT NULL,"
@@ -102,3 +103,6 @@ def test_place_words_of_version_6_have_no_kind(tmp_path: Path) -> None:
         assert store.of(PHOTO) == (old,)
         store.replace([TagSource.PLACE], [FileTags(PHOTO, (TOWN,))])
         assert store.of(PHOTO) == (TOWN,)
+        both = Tag(TagSource.PLACE, "Luxembourg", kinds=_TOWN_AND_COUNTRY)
+        store.replace([TagSource.PLACE], [FileTags(PHOTO, (both,))])
+        assert store.of(PHOTO) == (both,)

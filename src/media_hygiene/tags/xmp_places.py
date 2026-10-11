@@ -59,8 +59,9 @@ def places_of(tags: Sequence[Tag]) -> XmpPlaces:
     """
     first: dict[PlaceKind, str] = {}
     for tag in tags:
-        if tag.source is TagSource.PLACE and tag.kind is not None:
-            first.setdefault(tag.kind, tag.value)
+        if tag.source is TagSource.PLACE:
+            for kind in tag.kinds:
+                first.setdefault(kind, tag.value)
     if not first:
         return NO_PLACES
     return XmpPlaces(

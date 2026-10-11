@@ -138,9 +138,9 @@ def test_places_name_the_users_place_then_the_town(tmp_path: Path) -> None:
     settings = Settings.model_validate({"classify": {"places": [home]}})
     chosen = replace(context(settings), towns=Gazetteer.load(write_towns(tmp_path)))
     assert place_tags(photo("a.jpg", metadata=TURIN), chosen) == (
-        Tag(TagSource.PLACE, "Chez Marco", kind=PlaceKind.PERSONAL),
-        Tag(TagSource.PLACE, "Turin", kind=PlaceKind.TOWN),
-        Tag(TagSource.PLACE, "Italy", kind=PlaceKind.COUNTRY),
+        Tag(TagSource.PLACE, "Chez Marco", kinds=(PlaceKind.PERSONAL,)),
+        Tag(TagSource.PLACE, "Turin", kinds=(PlaceKind.TOWN,)),
+        Tag(TagSource.PLACE, "Italy", kinds=(PlaceKind.COUNTRY,)),
     )
     assert not place_tags(photo("a.jpg"), chosen)
     sea = MediaMetadata(latitude=40.0, longitude=10.0)
@@ -148,14 +148,14 @@ def test_places_name_the_users_place_then_the_town(tmp_path: Path) -> None:
 
 
 def test_a_place_named_like_its_town_is_kept_once(tmp_path: Path) -> None:
-    """A personal place called `turin`: one word, of the first kind found."""
+    """A personal place called `turin`: one word, a place and a town both."""
     home = PersonalPlace(name="turin", latitude=45.0712, longitude=7.685)
     settings = Settings.model_validate({"classify": {"places": [home]}})
     chosen = replace(context(settings), towns=Gazetteer.load(write_towns(tmp_path)))
     found = place_tags(photo("a.jpg", metadata=TURIN), chosen)
-    assert [(tag.value, tag.kind) for tag in found] == [
-        ("turin", PlaceKind.PERSONAL),
-        ("Italy", PlaceKind.COUNTRY),
+    assert [(tag.value, tag.kinds) for tag in found] == [
+        ("turin", (PlaceKind.PERSONAL, PlaceKind.TOWN)),
+        ("Italy", (PlaceKind.COUNTRY,)),
     ]
 
 

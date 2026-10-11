@@ -157,7 +157,8 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
 - **The place apart**: with `place` in `xmp_sources`, the town also goes into `photoshop:City`,
   its country into `photoshop:Country` and your first personal place (`[[classify.places]]`)
   into `Iptc4xmpCore:Location`, the fields digiKam, Lightroom and Immich show apart from the
-  keywords. A field another application filled keeps its value; a field you emptied there is not
+  keywords. A name that is two of these at once (Luxembourg, a town and a country; a place of
+  yours named like its town) fills both fields. A field another application filled keeps its value; a field you emptied there is not
   filled again. After an update, run `tags` once more: the places found before do not know yet
   whether they are a town or a country, and fill these fields only then.
 - **Where**: `IMG_1.jpg.xmp` next to `IMG_1.jpg`. A sidecar already there (`IMG_1.jpg.xmp`, or

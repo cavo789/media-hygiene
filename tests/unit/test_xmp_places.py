@@ -81,10 +81,16 @@ def test_places_of_takes_the_first_of_each_kind() -> None:
     tags = (
         Tag(TagSource.PLACE, "Maison"),
         Tag(TagSource.FOLDER, "Turin"),
-        Tag(TagSource.PLACE, "Chez Marco", kind=PlaceKind.PERSONAL),
-        Tag(TagSource.PLACE, "Plage", kind=PlaceKind.PERSONAL),
-        Tag(TagSource.PLACE, "Turin", kind=PlaceKind.TOWN),
-        Tag(TagSource.PLACE, "Italy", kind=PlaceKind.COUNTRY),
+        Tag(TagSource.PLACE, "Chez Marco", kinds=(PlaceKind.PERSONAL,)),
+        Tag(TagSource.PLACE, "Plage", kinds=(PlaceKind.PERSONAL,)),
+        Tag(TagSource.PLACE, "Turin", kinds=(PlaceKind.TOWN,)),
+        Tag(TagSource.PLACE, "Italy", kinds=(PlaceKind.COUNTRY,)),
     )
     assert places_of(tags) == _TURIN
     assert places_of(tags[:2]) is NO_PLACES
+
+
+def test_a_word_of_two_kinds_fills_both_fields() -> None:
+    """`Luxembourg`, a town and a country: City and Country, never one left empty."""
+    both = Tag(TagSource.PLACE, "Luxembourg", kinds=(PlaceKind.TOWN, PlaceKind.COUNTRY))
+    assert places_of((both,)) == XmpPlaces("Luxembourg", "Luxembourg", "")

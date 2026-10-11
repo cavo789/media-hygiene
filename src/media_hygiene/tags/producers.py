@@ -8,6 +8,7 @@ words of one source, kept once each (case ignored), in their first order.
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.whereabouts import located_point
@@ -81,7 +82,8 @@ def place_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
 
     Returns:
         E.g. `Maison` (personal), `Durbuy` (town), `Belgique` (country), each once
-        whatever its case; nothing without a GPS position.
+        whatever its case, with every kind it names (`Luxembourg`: town and
+        country); nothing without a GPS position.
     """
     point = located_point(file.metadata)
     if point is None:
@@ -97,8 +99,12 @@ def place_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
     seen: dict[str, Tag] = {}
     for word, kind in found:
         name = word.strip()
-        if name:
-            seen.setdefault(name.casefold(), Tag(TagSource.PLACE, name, "", kind))
+        if not name:
+            continue
+        known = seen.get(name.casefold(), Tag(TagSource.PLACE, name))
+        if kind not in known.kinds:
+            known = replace(known, kinds=(*known.kinds, kind))
+        seen[name.casefold()] = known
     return tuple(seen.values())
 
 
