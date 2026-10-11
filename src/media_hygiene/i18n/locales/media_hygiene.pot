@@ -5179,6 +5179,22 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} setting cannot be used:"
+msgid_plural "{count} settings cannot be used:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} setting is unknown to version {version} (a typo, or a setting of "
+"a newer version?):"
+msgid_plural ""
+"{count} settings are unknown to version {version} (a typo, or a setting "
+"of a newer version?):"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} shots"
 msgstr ""
 
@@ -5435,7 +5451,19 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "{place}: {reason}."
+msgid "{place}: did you mean '{key}'?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: unknown to version {version}"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: unknown to version {version}; did you mean '{key}'?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: {reason}"
 msgstr ""
 
 #, python-brace-format

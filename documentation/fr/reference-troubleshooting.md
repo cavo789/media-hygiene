@@ -69,7 +69,8 @@ docker pull cavo789/media-hygiene
 Une faute de frappe est nommée avec le réglage qui lui ressemble. Un réglage copié d'une
 documentation plus récente demande l'image plus récente : `docker pull cavo789/media-hygiene`. Il
 en va de même pour une variable `MEDIA_HYGIENE_<SECTION>__<CLÉ>` passée avec `-e`. Une valeur
-refusée (`verbosity = "loud"`) dit ce qui est attendu à la place.
+refusée (`verbosity = "loud"`) dit ce qui est attendu à la place. Plusieurs problèmes à la fois
+sont listés un par ligne, sous un seul titre.
 
 ## La page de tri ne s'ouvre pas
 

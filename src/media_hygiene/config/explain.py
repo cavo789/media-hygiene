@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from importlib.metadata import version
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.explain_many import Explained, explained, this_version
 from media_hygiene.config.known_keys import (
     closest,
     fields_at,
@@ -14,7 +14,6 @@ from media_hygiene.config.known_keys import (
 )
 from media_hygiene.config.origin import Origin, origin_in
 from media_hygiene.config.reasons import reason
-from media_hygiene.constants import APP_NAME
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import PUBLISHED_IMAGE
@@ -48,9 +47,9 @@ def config_error(problems: Problems) -> ConfigError:
     Returns:
         The error to raise, translated, without any pydantic wording.
     """
-    sentences = [_unknown_variable(name) for name in problems.variables]
-    sentences += [_sentence(error, problems.layers) for error in problems.errors]
-    message = " ".join(sentences)
+    found = [_unknown_variable(name) for name in problems.variables]
+    found += [_sentence(error, problems.layers) for error in problems.errors]
+    message = explained(found)
     unknown = bool(problems.variables) or any(
         error["type"] == _UNKNOWN for error in problems.errors
     )
@@ -63,16 +62,7 @@ def config_error(problems: Problems) -> ConfigError:
     return error
 
 
-def _this_version() -> str:
-    """Name this version, for "unknown to version 0.3.0".
-
-    Returns:
-        The installed version.
-    """
-    return version(APP_NAME)
-
-
-def _unknown_variable(name: str) -> str:
+def _unknown_variable(name: str) -> Explained:
     """Explain an unknown setting variable.
 
     Args:
@@ -84,11 +74,13 @@ def _unknown_variable(name: str) -> str:
     text = _(
         "The variable {name} is unknown to version {version}: a typo, or a "
         "setting of a newer version?"
-    ).format(name=name, version=_this_version())
-    return _with_guess(text, closest(name, known_variables()))
+    ).format(name=name, version=this_version())
+    guess = closest(name, known_variables())
+    place = _("The variable {name}").format(name=name)
+    return Explained(True, _with_guess(text, guess), place, guess)  # noqa: FBT003
 
 
-def _sentence(error: ErrorDetails, layers: Mapping[Origin, Layer]) -> str:
+def _sentence(error: ErrorDetails, layers: Mapping[Origin, Layer]) -> Explained:
     """Explain one refused value or unknown key.
 
     Args:
@@ -96,17 +88,19 @@ def _sentence(error: ErrorDetails, layers: Mapping[Origin, Layer]) -> str:
         layers: The raw layers, to tell a variable from a line of `config.toml`.
 
     Returns:
-        The sentence.
+        The sentence, and the place for a bullet.
     """
     loc = error["loc"]
     place = _place(loc, layers)
     if error["type"] != _UNKNOWN:
-        return _("{place}: {reason}.").format(place=place, reason=reason(error))
+        refused = _("{place}: {reason}").format(place=place, reason=reason(error))
+        return Explained(False, f"{refused}.", refused)  # noqa: FBT003
     text = _(
         "{place} is unknown to version {version}: a typo, or a setting of a newer "
         "version?"
-    ).format(place=place, version=_this_version())
-    return _with_guess(text, closest(str(loc[-1]), fields_at(loc[:-1])))
+    ).format(place=place, version=this_version())
+    guess = closest(str(loc[-1]), fields_at(loc[:-1]))
+    return Explained(True, _with_guess(text, guess), place, guess)  # noqa: FBT003
 
 
 def _with_guess(text: str, guess: str | None) -> str:

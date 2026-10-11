@@ -82,7 +82,7 @@ def test_a_bad_type_in_french_has_no_pydantic_english(locations: Locations) -> N
     error = refused(locations)
     assert "« confirm » dans [clean] de config.toml : true ou false" in error.message
     assert "au moins 1 est attendu, pas 0" in error.message
-    assert "Vouliez-vous dire « timezone » ?" in error.message
+    assert "vouliez-vous dire « timezone » ?" in error.message
     assert not any(word in error.message for word in _PYDANTIC_WORDS)
 
 
@@ -108,7 +108,7 @@ def test_a_list_item_names_its_list(locations: Locations) -> None:
     )
     message = refused(locations).message
     assert "'extensions' in [scan] of config.toml: a text between quotes" in message
-    assert "is expected, not true." in message
+    assert "is expected, not true\n" in message
 
 
 def test_a_rule_is_named_by_its_number(locations: Locations) -> None:
@@ -118,10 +118,10 @@ def test_a_rule_is_named_by_its_number(locations: Locations) -> None:
         'dates = "02-30"\n[[classify.rules]]\nname = "Other"\n'
     )
     message = refused(locations).message
-    assert message.startswith("[[classify.rules]] number 1 in config.toml: rule")
+    assert "• [[classify.rules]] number 1 in config.toml: rule" in message
     assert (
         "'match' in [[classify.rules]] number 2 of config.toml: this setting is "
-        "required." in message
+        "required" in message
     )
 
 
@@ -153,7 +153,7 @@ def test_a_bad_variable_value_names_the_variable(
     monkeypatch.setenv("MEDIA_HYGIENE_CLASSIFY__AI", '{"modle": "llava"}')
     message = refused(locations).message
     assert "The variable MEDIA_HYGIENE_GENERAL__VERBOSITY: one of 'error'" in message
-    assert "'modle' in the variable MEDIA_HYGIENE_CLASSIFY__AI is unknown" in message
+    assert "'modle' in the variable MEDIA_HYGIENE_CLASSIFY__AI: unknown" in message
 
 
 def test_a_bad_option_value_names_the_command_line(locations: Locations) -> None:

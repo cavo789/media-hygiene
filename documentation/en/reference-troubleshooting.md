@@ -66,7 +66,8 @@ docker pull cavo789/media-hygiene
 A typo is named with the setting it looks like. A setting copied from a newer documentation needs
 the newer image: `docker pull cavo789/media-hygiene`. The same goes for a variable
 `MEDIA_HYGIENE_<SECTION>__<KEY>` passed with `-e`. A refused value (`verbosity = "loud"`) says
-what is expected instead.
+what is expected instead. Several problems at once are listed one per line, under a single
+heading.
 
 ## The review page does not open
 
