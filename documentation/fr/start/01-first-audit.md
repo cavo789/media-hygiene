@@ -172,8 +172,8 @@ prête à coller : vos dossiers sur les mêmes points de montage (sans `:ro` pou
 les modifie), les dossiers que vous montez déjà, et ceux dont la commande suivante a besoin et
 qui manquaient à celle-ci (comme `/journal` et `/quarantine`, dans un dossier `media-hygiene` de
 votre profil, créés d'abord par `mkdir`). Elle est écrite pour PowerShell quand vos dossiers sont
-des chemins Windows (`C:\…`), pour bash sinon : les exemples de ce guide montrent celle pour bash,
-telle qu'on la tape dans WSL (`/mnt/c/Photos`).
+des chemins Windows (`C:\…`), pour bash sinon : les exemples de ce guide montrent celle pour
+PowerShell (`C:\Photos`).
 
 Puis deux astuces 💡 au plus, la plus utile d'abord ; les options à régler une fois (le cache,
 votre fuseau horaire, un dossier de rapports) partagent une seule ligne ⚙️. Une dernière ligne

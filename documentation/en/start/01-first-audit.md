@@ -164,7 +164,7 @@ paste: your folders on the same mount points (without `:ro` for a command that c
 folders you already mount, and the ones the next command needs that this run lacked (such as
 `/journal` and `/quarantine`, in a `media-hygiene` folder of your home, created first by
 `mkdir`). It is written for PowerShell when your folders are Windows paths (`C:\…`), for bash
-otherwise: the examples of this guide show the bash one, as typed in WSL (`/mnt/c/Photos`).
+otherwise: the examples of this guide show the PowerShell one (`C:\Photos`).
 
 Then at most two 💡 tips, the most useful first; the options worth setting once (the cache, your
 time zone, a reports folder) share a single ⚙️ line. A last line says how many tips were left out:
