@@ -4,7 +4,9 @@ A group is sure when every copy it moves is, for one of these reasons:
 
 - a video with the very picture and sound of the kept one (its metadata alone differ);
 - the same fingerprints (perceptual distance 0) and the same camera as the kept one;
-- a smaller copy in a messaging or e-mail folder, with the same shooting date.
+- a smaller copy in a messaging or e-mail folder, with the same shooting date, or,
+  stripped of its EXIF like WhatsApp does, a name dated the same day
+  (`IMG-20190712-WA0003.jpg`, read with the `classify` patterns).
 
 Every other group is to check: `clean --tier near` leaves it alone until a person
 decides (`--tier near-all` moves it all the same).
@@ -12,41 +14,24 @@ decides (`--tier near-all` moves it all the same).
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.plan.messaging_copies import in_messaging_folder, same_day
 from media_hygiene.plan.similar_models import SureReason
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from pathlib import Path
 
     from media_hygiene.plan.similar_models import NearDecision, SimilarFindings
     from media_hygiene.scan.models import MediaFile
 
-# Folders where messaging apps and e-mail clients save what they receive or send.
-MESSAGING_FOLDERS: Final = tuple(
-    re.compile(pattern, re.IGNORECASE)
-    for pattern in (
-        r"whatsapp( .*)?",
-        r"telegram( .*)?",
-        r"signal( .*)?",
-        r"messenger",
-        r"viber( .*)?",
-        r"wechat( .*)?",
-        r"e-?mails?",
-        r"outlook",
-        r"thunderbird",
-        r".*attachments?",
-        r"pi[eè]ces[ -]jointes",
-    )
-)
 # From the most certain to the least: a group is as sure as its least sure copy.
 _STRENGTH: Final = (
     SureReason.SAME_STREAM,
     SureReason.SAME_LOOK,
     SureReason.MESSAGING_COPY,
+    SureReason.MESSAGING_NAME,
 )
 
 
@@ -143,27 +128,10 @@ def copy_reason(
         and kept.camera == other.camera
     ):
         return SureReason.SAME_LOOK
-    if (
-        kept.taken_at
-        and kept.taken_at == other.taken_at
-        and copy.size < decision.keeper.size
-        and in_messaging_folder(copy.path)
-    ):
+    if copy.size >= decision.keeper.size or not in_messaging_folder(copy.path):
+        return None
+    if kept.taken_at and kept.taken_at == other.taken_at:
         return SureReason.MESSAGING_COPY
+    if not other.taken_at and same_day(kept.taken_at, copy.path):
+        return SureReason.MESSAGING_NAME
     return None
-
-
-def in_messaging_folder(path: Path) -> bool:
-    """Tell whether a file lies in a folder of a messaging app or an e-mail client.
-
-    Args:
-        path: The file.
-
-    Returns:
-        True when one of its folders is named like one.
-    """
-    return any(
-        pattern.fullmatch(folder)
-        for folder in path.parent.parts
-        for pattern in MESSAGING_FOLDERS
-    )

@@ -2836,7 +2836,12 @@ msgstr ""
 
 msgid ""
 "Sure: a smaller copy in a messaging or e-mail folder, taken at the same "
-"moment."
+"moment (same EXIF date)."
+msgstr ""
+
+msgid ""
+"Sure: a smaller copy in a messaging or e-mail folder, without EXIF date, "
+"its name dated the same day."
 msgstr ""
 
 msgid "Sure: identical fingerprints, from the same camera."

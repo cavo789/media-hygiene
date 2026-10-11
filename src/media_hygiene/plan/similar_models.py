@@ -27,6 +27,7 @@ class SureReason(StrEnum):
     SAME_STREAM = "same-stream"  # videos: the very picture and sound
     SAME_LOOK = "same-look"  # the same fingerprints and the same camera
     MESSAGING_COPY = "messaging-copy"  # a smaller copy sent by a messaging app
+    MESSAGING_NAME = "messaging-name"  # the same, no EXIF date, its name dated that day
 
 
 @dataclass(frozen=True, slots=True)

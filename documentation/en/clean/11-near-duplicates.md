@@ -70,6 +70,9 @@ deserve a look. Each group therefore gets a level:
   - the same perceptual fingerprints (distance 0) and the same camera as the kept photo;
   - a smaller copy in a messaging or e-mail folder (`WhatsApp Images`, `Telegram`, `Signal`,
     `Email`, `Attachments`, `Pièces jointes`…), taken at the same moment (same EXIF date);
+    WhatsApp strips the EXIF of the pictures it sends, so a copy without an EXIF date counts
+    when its name is dated the same day as the kept photo (`IMG-20190712-WA0003.jpg`,
+    `VID-20190712-WA0001.mp4`, the names `classify` reads);
 - **to check**: every other group.
 
 The 💬 line of each group says it (*Sure: identical fingerprints, from the same camera.* or

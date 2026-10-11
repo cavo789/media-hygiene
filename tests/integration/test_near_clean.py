@@ -81,3 +81,17 @@ def test_the_near_tier_needs_a_quarantine(
     assert result.exit_code == 1
     assert "/quarantine" in result.output
     assert "Audit summary" not in result.output
+
+
+def test_a_whatsapp_copy_named_the_day_of_the_original_is_moved_by_the_tier(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """No EXIF left, but `IMG-20210705-…` is the day the original was taken: sure."""
+    data = locations.data_dir
+    (data / EMAIL).unlink()  # the e-mail copy, without a dated name, is to check
+    sure = run(cli, "clean", "--yes", "--tier", "near")
+    assert sure.exit_code == 0, sure.output
+    assert not (data / WHATSAPP).exists()
+    assert (data / KEPT).is_file()
+    assert run(cli, "undo").exit_code == 0
+    assert (data / WHATSAPP).is_file()

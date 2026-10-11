@@ -70,7 +70,12 @@ def level_text(decision: NearDecision) -> str:
         case SureReason.MESSAGING_COPY:
             return _(
                 "Sure: a smaller copy in a messaging or e-mail folder, taken at the "
-                "same moment."
+                "same moment (same EXIF date)."
+            )
+        case SureReason.MESSAGING_NAME:
+            return _(
+                "Sure: a smaller copy in a messaging or e-mail folder, without EXIF "
+                "date, its name dated the same day."
             )
         case None:
             return _("To check: compare the copies with the kept version.")

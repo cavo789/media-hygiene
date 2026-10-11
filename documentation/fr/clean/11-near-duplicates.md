@@ -76,7 +76,9 @@ aucun doute ; quelques-uns méritent un coup d'œil. Chaque groupe reçoit donc 
   - les mêmes empreintes perceptuelles (distance 0) et le même appareil que la photo gardée ;
   - une copie plus petite dans un dossier de messagerie ou d'e-mail (`WhatsApp Images`,
     `Telegram`, `Signal`, `Email`, `Attachments`, `Pièces jointes`…), prise au même instant
-    (même date EXIF) ;
+    (même date EXIF) ; WhatsApp efface l'EXIF des photos qu'il envoie : une copie sans date
+    EXIF compte alors si son nom est daté du même jour que la photo gardée
+    (`IMG-20190712-WA0003.jpg`, `VID-20190712-WA0001.mp4`, les mêmes noms que lit `classify`) ;
 - **à vérifier** : tous les autres groupes.
 
 La ligne 💬 de chaque groupe le dit (*Sûr : empreintes identiques, du même appareil.* ou

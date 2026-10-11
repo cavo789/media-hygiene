@@ -8,7 +8,7 @@ from types import MappingProxyType
 import pytest
 
 from media_hygiene.constants import MediaKind
-from media_hygiene.plan.near_levels import in_messaging_folder, with_levels
+from media_hygiene.plan.near_levels import with_levels
 from media_hygiene.plan.similar_models import (
     NearDecision,
     SimilarFindings,
@@ -122,19 +122,62 @@ def test_videos_of_the_same_stream_or_sent_by_messaging_are_sure() -> None:
     assert level_text(levels.videos[0]).startswith("Sure: the very picture and sound")
 
 
+def test_a_whatsapp_copy_without_exif_named_the_same_day_is_sure() -> None:
+    """WhatsApp stripped the EXIF: the day in its name is the proof (no time)."""
+    decision = levelled(
+        {"WhatsApp Images/IMG-20210705-WA0003.jpg": look(HASH ^ 1, None)}
+    )
+    assert decision.sure is SureReason.MESSAGING_NAME
+    assert "its name dated the same day" in level_text(decision)
+
+
 @pytest.mark.parametrize(
-    ("folder", "messaging"),
+    "copy",
     [
-        ("Android/Media/WhatsApp Images/Sent", True),
-        ("Telegram Desktop", True),
-        ("Email", True),
-        ("Outlook Attachments", True),
-        ("Pièces jointes", True),
-        ("2019/Vacances", False),
-        ("Signal", True),
-        ("Signalisation", False),  # whole words only
+        pytest.param(
+            {"WhatsApp/IMG-20210706-WA0003.jpg": look(HASH ^ 1, None)}, id="other-day"
+        ),
+        pytest.param(
+            {"WhatsApp/IMG-WA0003.jpg": look(HASH ^ 1, None)}, id="no-name-date"
+        ),
+        pytest.param(
+            {"WhatsApp/IMG-20210705-WA0003.jpg": look(HASH ^ 1, "2020:01:01 10:00:00")},
+            id="other-exif-date",
+        ),
+        pytest.param(
+            {"Holidays/IMG-20210705-WA0003.jpg": look(HASH ^ 1, None)},
+            id="no-messaging",
+        ),
     ],
 )
-def test_messaging_folders(folder: str, *, messaging: bool) -> None:
-    """Any folder of the path counts, whole names, any case."""
-    assert in_messaging_folder(DATA / folder / "a.jpg") is messaging
+def test_a_name_date_alone_is_not_enough(copy: dict[str, VisualFacts]) -> None:
+    """Another day, no date in the name, an EXIF date of its own, not messaging."""
+    assert levelled(copy).sure is None
+
+
+def test_a_kept_version_without_a_readable_date_leaves_the_copy_to_check() -> None:
+    """No day on the kept side: the name has nothing to agree with."""
+    keeper = media("kept.jpg", 10_000)
+    sent = media("WhatsApp/IMG-20210705-WA0003.jpg", 1_000)
+    visuals = {
+        keeper.path: look(taken_at="not a date"),
+        sent.path: look(HASH ^ 1, None),
+    }
+    similar = SimilarFindings(
+        near=(NearDecision(keeper, (sent,)),), visuals=MappingProxyType(visuals)
+    )
+    assert with_levels(similar).near[0].sure is None
+
+
+def test_a_whatsapp_video_named_the_day_it_was_recorded_is_sure() -> None:
+    """A video's ISO time, read as a local day, agrees with `VID-…-WA0001`."""
+    keeper = media("v/kept.mp4", 9_000)
+    sent = media("WhatsApp Video/VID-20210705-WA0001.mp4", 2_000)
+    looks = {
+        keeper.path: _video_look("2021-07-05T10:00:00+0200"),
+        sent.path: _video_look(None),
+    }
+    similar = SimilarFindings(
+        videos=(NearDecision(keeper, (sent,)),), video_looks=MappingProxyType(looks)
+    )
+    assert with_levels(similar).videos[0].sure is SureReason.MESSAGING_NAME
