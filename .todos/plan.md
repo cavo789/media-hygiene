@@ -4,7 +4,7 @@
 > `.todos/*.md` on every run. Priority and batching live in the TODO files themselves.
 >
 > Open TODOs: 5 — Critical: 0 · High: 1 · Medium: 2 · Low: 2 · Locked: 0
-> Batches marked `~` were inferred from `**Files**`, not declared (none this run).
+> Batches marked `~` were inferred from `**Files**`, not declared.
 > Lots require a shared path, never a shared theme — each lot names the directory its members
 > share. A standalone TODO is the normal case: run it in its own session, `/clear` between.
 
@@ -12,24 +12,21 @@
 
 | # | Lot | Priority | TODOs | Prompt |
 |---|-----|----------|-------|--------|
-| 1 | review (standalone) | High | 1 | `/todo 0056` |
-| 2 | tags | Medium | 2 | `/todo 0082 0084` |
-| 3 | tags (standalone) | Low | 1 | `/todo 0083` |
-| 4 | dependencies (standalone) | Medium | 1 | `/todo 0054` |
+| 1 | tags | Medium | 2 | `/todo 0082 0084` |
 
-Every open TODO now waits on the maintainer: a review (0056), a hand measurement with Ollama on the
-real collection (0082, which 0083 and 0084 depend on), or an upstream release (0054).
+Then the standalone TODOs below, highest priority first (`/todo 0056` before the lot if the
+maintainer's decisions are what blocks you).
 
 ## Lots
 
-### 2. tags — Medium
+### 1. tags — Medium
 
 **Shared context:** `documentation/en/reference-tags.md` and `documentation/fr/reference-tags.md` —
 both.
 
-**Why grouped:** 0082 re-runs the 40-photo benchmark (by hand) and writes its numbers into
-`reference-tags.md`; 0084 measures 20 real searches on the same tags and records its decision on
-`bge-m3` vectors in that same page. Run 0082 first: 0084 depends on it.
+**Why grouped:** 0082 re-runs the benchmark and records its result in the tags reference pages;
+0084 measures searches and documents its decision on vectors in the same two pages. 0084 depends on
+0082, so the second reads the first's measurements without reloading the pages.
 
 **Prompt:** `/todo 0082 0084`
 
@@ -45,9 +42,9 @@ sibling (or declare none yet), so there is nothing for a lot to save.
 
 | ID | Priority | Title | Batch | Why not lotted |
 |----|----------|-------|-------|----------------|
-| 0056 | High | Things to review: the maintainer's decisions and checks left by the PARTIAL TODOs | review | only member of its batch |
-| 0054 | Medium | Bump `pillow-heif` to 1.9.0 once released: libheif 1.23.5 security fixes | dependencies | only member of its batch (1.8.0 still the latest on PyPI, checked 2026-10-11) |
-| 0083 | Low | Tags follow-ups: near-duplicate inheritance, videos, classify reusing the vision tags | tags | no path shared with 0082/0084 (`tags/`, `services/`, `classify/ai/` vs `classify/ai/templates/`, `search/`); depends on 0082 |
+| 0056 | High | Things to review: the maintainer's decisions and checks left by the PARTIAL TODOs | review | only TODO in its batch |
+| 0054 | Medium | Bump `pillow-heif` to 1.9.0 once released: libheif 1.23.5 security fixes | dependencies | only TODO in its batch |
+| 0083 | Low | Tags follow-ups: near-duplicate inheritance, videos, classify reusing the vision tags | tags | no path shared with 0082/0084 (`src/media_hygiene/tags/`, `classify/ai/`); run after 0082 |
 
 ## Partially done — remaining work
 
@@ -66,3 +63,4 @@ filing a fresh TODO for what is left.
 | 0041 | Albums: gather a selection into a folder of hard links, without moving anything | [PARTIAL_0041-albums-as-hard-links.md](PARTIAL/PARTIAL_0041-albums-as-hard-links.md) |
 | 0053 | e2e: `undo` after `clean` exited non-zero once in four runs | [PARTIAL_0053-e2e-undo-exits-non-zero-intermittently.md](PARTIAL/PARTIAL_0053-e2e-undo-exits-non-zero-intermittently.md) |
 | 0058 | People: find faces, group them, let the user name them | [PARTIAL_0058-people-from-faces.md](PARTIAL/PARTIAL_0058-people-from-faces.md) |
+| 0087 | Keep pinned versions up to date with Renovate | [PARTIAL_0087-renovate-dependency-updates.md](PARTIAL/PARTIAL_0087-renovate-dependency-updates.md) |

@@ -106,4 +106,15 @@ et arm64, lance les tests de bout en bout, puis pousse `cavo789/media-hygiene:<v
 secrets dans le dépôt : `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN` (un jeton d'accès Docker Hub en
 lecture/écriture).
 
+Les versions épinglées sont tenues à jour par l'application GitHub Renovate
+([`.github/renovate.json`](../../.github/renovate.json)). Chaque lundi matin, elle ouvre une pull
+request par groupe : GitHub Actions (SHA et commentaire `# vX.Y.Z`), dépendances Python
+(`pyproject.toml` et `uv.lock`), images et outils Docker (le digest de l'image de base Python et
+les `ARG` du `Dockerfile` annotés `# renovate:`), et hooks pre-commit. Rien n'est fusionné
+automatiquement : un push sur `main` reconstruit l'image. Son ticket « Dependency Dashboard »
+liste ce qui attend. Une pull request FFmpeg demande une étape manuelle : vérifiez la signature
+de l'archive, puis mettez sa nouvelle empreinte dans `FFMPEG_SHA256` (la construction de l'image
+échoue tant que ce n'est pas fait). Le helper `deps` répond toujours à la même question en local,
+pour les dépendances Python.
+
 La feuille de route se trouve dans [.todos/plan.md](../../.todos/plan.md).

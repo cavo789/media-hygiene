@@ -6,11 +6,15 @@
 # The development environment is built by .devcontainer/Dockerfile, never by this file.
 
 # Base image pinned by digest: this is what users run on their photos.
+# renovate: datasource=docker depName=python
 ARG PYTHON_IMAGE=python:3.14-slim-trixie@sha256:caaf356f40667c496d405780745b9ac25771c189a51dfcc42430d531ea09f8a2
+# renovate: datasource=docker depName=ghcr.io/astral-sh/uv
 ARG UV_VERSION=0.12.19
 # FFmpeg source release, pinned by the SHA-256 of its tarball. When bumping the version, check
 # the tarball's .asc signature against the FFmpeg release key
 # (FCF9 86EA 15E6 E293 A564 4F10 B432 2F04 D676 58D8) before trusting its new SHA-256.
+# Renovate bumps the version only: FFMPEG_SHA256 is set by hand (its PR says so).
+# renovate: datasource=github-tags depName=FFmpeg/FFmpeg
 ARG FFMPEG_VERSION=9.0.2
 ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
 # Demuxers per video extension: mov (3g2 3gp m4v mov mp4), m4v (raw MPEG-4 video named .m4v),

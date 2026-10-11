@@ -100,4 +100,14 @@ pushes `cavo789/media-hygiene:<version>` and `:latest` to Docker Hub, with an SB
 attestation. This needs two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a
 Docker Hub access token with read/write scope).
 
+Pinned versions are kept up to date by the Renovate GitHub App
+([`.github/renovate.json`](../../.github/renovate.json)). Every Monday morning it opens one pull
+request per group: GitHub Actions (SHA and `# vX.Y.Z` comment), Python dependencies
+(`pyproject.toml` and `uv.lock`), Docker images and tools (the Python base image digest and the
+`# renovate:` annotated `ARG`s of the `Dockerfile`), and pre-commit hooks. Nothing is merged
+automatically: a push to `main` rebuilds the image. Its Dependency Dashboard issue lists what is
+pending. An FFmpeg pull request needs one manual step: check the tarball signature, then set
+`FFMPEG_SHA256` to its new checksum (the image build fails until you do). The `deps` helper still
+answers the same question locally, for the Python dependencies.
+
 The roadmap is in [.todos/plan.md](../../.todos/plan.md).
