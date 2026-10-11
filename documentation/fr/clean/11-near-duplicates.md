@@ -137,7 +137,7 @@ Elle dit ce qu'il y a à décider, puis vous attend, comme `review` :
 
 <!-- capture: review-near.txt|quasi-doublons :|127.0.0.1:8088:8088 -->
 ```text
-4 groupes de quasi-doublons : 1 sûrs, 3 à vérifier (montrés d'abord).
+4 groupes de quasi-doublons : 1 sûr, 3 à vérifier (montrés d'abord).
 ✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
 décision est enregistrée aussitôt dans decisions.json, dans le dossier monté sur
 /reports. Ctrl+C arrête le tri.

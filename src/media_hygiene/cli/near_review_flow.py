@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.report.actions import sure_count
 from media_hygiene.review.place import decisions_flag
 from media_hygiene.services.next_command import CHANGING, NextVerb
 
@@ -28,15 +29,14 @@ def tell_near_opened(runtime: Runtime, session: NearSession) -> None:
     groups = session.state().groups
     sure = sum(group.sure for group in groups)
     message = ngettext(
-        "{count} group of near duplicates: {sure} sure, {look} to check (shown first).",
-        "{count} groups of near duplicates: {sure} sure, {look} to check (shown "
-        "first).",
+        "{count} group of near duplicates: {sure}, {look} to check (shown first).",
+        "{count} groups of near duplicates: {sure}, {look} to check (shown first).",
         len(groups),
     )
     output.info(
         message.format(
             count=human_number(len(groups)),
-            sure=human_number(sure),
+            sure=sure_count(sure),
             look=human_number(len(groups) - sure),
         )
     )

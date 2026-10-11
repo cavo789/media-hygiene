@@ -100,7 +100,7 @@ Dossiers partageant des fichiers identiques
 
 Ce que vous pouvez faire
 ✅ 12 copies identiques, 3,4 Mo : sans risque, une commande.
-👀 3 groupes de quasi-doublons : 1 sûrs, 2 à regarder (~1 min dans « review
+👀 3 groupes de quasi-doublons : 1 sûr, 2 à regarder (~1 min dans « review
 --near ») ; « clean --tier near » déplace les sûrs.
 🎞️ 3 rafales : facultatif, ~2 min dans 'review' ; les rafales non revues sont
 gardées entières.

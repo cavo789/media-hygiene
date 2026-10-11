@@ -39,13 +39,16 @@ def show_cross_check(
     if result.agrees and not result.ours:
         output.success(_("Czkawka agrees: no exact duplicate."))
     elif result.agrees:
+        groups = len(result.ours)
+        copies = ngettext(
+            "{count} extra copy", "{count} extra copies", result.copies
+        ).format(count=human_number(result.copies))
         output.success(
-            _(
-                "Czkawka agrees: the same {copies} extra copies in {groups} groups."
-            ).format(
-                copies=human_number(result.copies),
-                groups=human_number(len(result.ours)),
-            )
+            ngettext(
+                "Czkawka agrees: the same {copies} in {count} group.",
+                "Czkawka agrees: the same {copies} in {count} groups.",
+                groups,
+            ).format(copies=copies, count=human_number(groups))
         )
     else:
         count = len(result.only_ours) + len(result.only_theirs)

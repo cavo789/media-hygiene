@@ -16,7 +16,7 @@
 {% macro groups_of(groups, show) %}
 {% set check = groups | rejectattr("note.sure") | list %}
 {% set sure = groups | selectattr("note.sure") | list %}
-<p class="muted">{{ _("%(sure)s sure, %(check)s to check", sure=sure | length | number, check=check | length | number) }}</p>
+<p class="muted">{{ _("%(sure)s, %(check)s to check", sure=ngettext("%(num)s sure", "%(num)s sure", sure | length, num=sure | length | number), check=check | length | number) }}</p>
 {% for group in check %}{{ group_of(group, show) }}{% endfor %}
 {% if sure %}
 <details class="sure"><summary>✔️ {{ ngettext("%(num)s sure group: show it", "%(num)s sure groups: show them", sure | length, num=sure | length | number) }}</summary>

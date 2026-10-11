@@ -62,14 +62,20 @@ msgstr[0] "%(num)s photo"
 msgstr[1] "%(num)s photos"
 
 #, python-format
+msgid "%(num)s sure"
+msgid_plural "%(num)s sure"
+msgstr[0] "%(num)s sûr"
+msgstr[1] "%(num)s sûrs"
+
+#, python-format
 msgid "%(num)s sure group: show it"
 msgid_plural "%(num)s sure groups: show them"
 msgstr[0] "%(num)s groupe sûr : l'afficher"
 msgstr[1] "%(num)s groupes sûrs : les afficher"
 
 #, python-format
-msgid "%(sure)s sure, %(check)s to check"
-msgstr "%(sure)s sûrs, %(check)s à vérifier"
+msgid "%(sure)s, %(check)s to check"
+msgstr "%(sure)s, %(check)s à vérifier"
 
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
 msgstr "'crosscheck' lit les résultats de Czkawka dans /reports : montez-le."
@@ -900,10 +906,10 @@ msgid "Czkawka agrees: no exact duplicate."
 msgstr "Czkawka est d'accord : aucun doublon exact."
 
 #, python-brace-format
-msgid "Czkawka agrees: the same {copies} extra copies in {groups} groups."
-msgstr ""
-"Czkawka est d'accord : les mêmes {copies} copies en trop dans {groups} "
-"groupes."
+msgid "Czkawka agrees: the same {copies} in {count} group."
+msgid_plural "Czkawka agrees: the same {copies} in {count} groups."
+msgstr[0] "Czkawka est d'accord : les mêmes {copies} dans {count} groupe."
+msgstr[1] "Czkawka est d'accord : les mêmes {copies} dans {count} groupes."
 
 #, python-brace-format
 msgid "Czkawka disagrees on {count} group: look at it before cleaning."
@@ -912,12 +918,6 @@ msgstr[0] ""
 "Czkawka n'est pas d'accord sur {count} groupe : regardez-le avant de "
 "nettoyer."
 msgstr[1] ""
-"Czkawka n'est pas d'accord sur {count} groupes : regardez-les avant de "
-"nettoyer."
-
-#, python-brace-format
-msgid "Czkawka disagrees on {count} groups: look at them before cleaning."
-msgstr ""
 "Czkawka n'est pas d'accord sur {count} groupes : regardez-les avant de "
 "nettoyer."
 
@@ -4686,8 +4686,10 @@ msgid "documentation/en/reference-safety.md"
 msgstr "documentation/fr/reference-safety.md"
 
 #, python-format
-msgid "duplicate copies in %(groups)s groups"
-msgstr "copies en double dans %(groups)s groupes"
+msgid "duplicate copies in %(num)s group"
+msgid_plural "duplicate copies in %(num)s groups"
+msgstr[0] "copies en double dans %(num)s groupe"
+msgstr[1] "copies en double dans %(num)s groupes"
 
 msgid "e.g. Durbuy bear, birthday cake, snow 2008"
 msgstr "p. ex. Durbuy ours, gâteau anniversaire, neige 2008"
@@ -5651,6 +5653,12 @@ msgstr ""
 "les deux copies sont triées."
 
 #, python-brace-format
+msgid "{count} extra copy"
+msgid_plural "{count} extra copies"
+msgstr[0] "{count} copie en trop"
+msgstr[1] "{count} copies en trop"
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] "{count} fichier trouvé."
@@ -5776,34 +5784,28 @@ msgstr[1] ""
 "les avec « review --near », ou --tier near-all les déplace aussi."
 
 #, python-brace-format
-msgid ""
-"{count} group of near duplicates: {sure} sure, {look} to check (shown "
-"first)."
-msgid_plural ""
-"{count} groups of near duplicates: {sure} sure, {look} to check (shown "
-"first)."
+msgid "{count} group of near duplicates: {sure}, {look} to check (shown first)."
+msgid_plural "{count} groups of near duplicates: {sure}, {look} to check (shown first)."
 msgstr[0] ""
-"{count} groupe de quasi-doublons : {sure} sûr, {look} à vérifier (montré "
+"{count} groupe de quasi-doublons : {sure}, {look} à vérifier (montré "
 "d'abord)."
 msgstr[1] ""
-"{count} groupes de quasi-doublons : {sure} sûrs, {look} à vérifier "
-"(montrés d'abord)."
+"{count} groupes de quasi-doublons : {sure}, {look} à vérifier (montrés "
+"d'abord)."
 
 #, python-brace-format
 msgid ""
-"{count} group of near duplicates: {sure} sure, {look} to look at "
-"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+"{count} group of near duplicates: {sure}, {look} to look at (~{effort} in"
+" 'review --near'); 'clean --tier near' moves the sure ones."
 msgid_plural ""
-"{count} groups of near duplicates: {sure} sure, {look} to look at "
-"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+"{count} groups of near duplicates: {sure}, {look} to look at (~{effort} "
+"in 'review --near'); 'clean --tier near' moves the sure ones."
 msgstr[0] ""
-"{count} groupe de quasi-doublons : {sure} sûr, {look} à regarder "
-"(~{effort} dans « review --near ») ; « clean --tier near » déplace les "
-"sûrs."
+"{count} groupe de quasi-doublons : {sure}, {look} à regarder (~{effort} "
+"dans « review --near ») ; « clean --tier near » déplace les sûrs."
 msgstr[1] ""
-"{count} groupes de quasi-doublons : {sure} sûrs, {look} à regarder "
-"(~{effort} dans « review --near ») ; « clean --tier near » déplace les "
-"sûrs."
+"{count} groupes de quasi-doublons : {sure}, {look} à regarder (~{effort} "
+"dans « review --near ») ; « clean --tier near » déplace les sûrs."
 
 #, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
@@ -5834,6 +5836,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} groupes de quasi-doublons décidés dans « review --near » "
 "attendent --tier near : rien n'en bouge sans lui."
+
+#, python-brace-format
+msgid "{count} obvious"
+msgid_plural "{count} obvious"
+msgstr[0] "{count} évidente"
+msgstr[1] "{count} évidentes"
 
 #, python-brace-format
 msgid "{count} obvious series validated: Z takes the whole batch back."
@@ -5934,10 +5942,10 @@ msgstr ""
 " {aside} photo(s) proposée(s) à l'écart, les autres gardées ?"
 
 #, python-brace-format
-msgid "{count} series to see: {obvious} obvious (one click), {look} to look at."
-msgid_plural "{count} series to see: {obvious} obvious (one click), {look} to look at."
-msgstr[0] "{count} série à voir : {obvious} évidente(s) (un clic), {look} à regarder."
-msgstr[1] "{count} séries à voir : {obvious} évidentes (un clic), {look} à regarder."
+msgid "{count} series to see: {obvious} (one click), {look} to look at."
+msgid_plural "{count} series to see: {obvious} (one click), {look} to look at."
+msgstr[0] "{count} série à voir : {obvious} (un clic), {look} à regarder."
+msgstr[1] "{count} séries à voir : {obvious} (un clic), {look} à regarder."
 
 #, python-brace-format
 msgid "{count} shots"
@@ -5982,6 +5990,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} dossiers sources resteront : ils contiennent d'autres fichiers, "
 "par exemple {path}."
+
+#, python-brace-format
+msgid "{count} sure"
+msgid_plural "{count} sure"
+msgstr[0] "{count} sûr"
+msgstr[1] "{count} sûrs"
 
 #, python-brace-format
 msgid ""

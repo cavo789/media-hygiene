@@ -6,6 +6,8 @@ import csv
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli import cmd_clean
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
 from tests.support.cli import run
 
 if TYPE_CHECKING:
@@ -96,3 +98,14 @@ def test_the_report_has_contents_and_a_near_page(
     assert "To check: compare the copies" in page
     assert "with the groups above: 100 % of the space" in page
     assert '<details class="sure">' not in page  # nothing folded
+
+
+def test_the_french_near_page_counts_each_noun_on_its_own(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """`0 sûr, 1 à vérifier`: the sure groups agree with their own number."""
+    install(Locale.FR)  # the report follows the installed language
+    assert run(cli, "audit").exit_code == 0
+    folder = next(locations.reports_dir.glob("*-audit"))
+    page = (folder / "near.html").read_text()
+    assert "0 sûr, 1 à vérifier" in page

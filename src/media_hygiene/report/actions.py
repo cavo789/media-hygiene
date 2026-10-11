@@ -57,6 +57,23 @@ def effort(seconds: int) -> str:
     return f"{minutes} min"
 
 
+def sure_count(sure: int) -> str:
+    """Count the sure groups, the adjective agreeing with their own number.
+
+    A sentence counting several things takes its plural from one of them only:
+    `1 sûrs` came from the total of groups, so the sure ones carry their own plural.
+
+    Args:
+        sure: How many groups are sure.
+
+    Returns:
+        E.g. `1 sure`; `1 sûr`, `3 sûrs` in French.
+    """
+    return ngettext("{count} sure", "{count} sure", sure).format(
+        count=human_number(sure)
+    )
+
+
 def audit_actions(
     findings: AuditFindings, commands: ActionCommands
 ) -> tuple[AuditAction, ...]:
@@ -91,15 +108,15 @@ def audit_actions(
     if groups:
         sure = similar.sure_groups
         near = ngettext(
-            "{count} group of near duplicates: {sure} sure, {look} to look at "
+            "{count} group of near duplicates: {sure}, {look} to look at "
             "(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones.",
-            "{count} groups of near duplicates: {sure} sure, {look} to look at "
+            "{count} groups of near duplicates: {sure}, {look} to look at "
             "(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones.",
             groups,
         )
         text = near.format(
             count=human_number(groups),
-            sure=human_number(sure),
+            sure=sure_count(sure),
             look=human_number(groups - sure),
             effort=effort((groups - sure) * NEAR_GROUP_SECONDS),
         )

@@ -38,13 +38,19 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)s sure"
+msgid_plural "%(num)s sure"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s sure group: show it"
 msgid_plural "%(num)s sure groups: show them"
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
-msgid "%(sure)s sure, %(check)s to check"
+msgid "%(sure)s, %(check)s to check"
 msgstr ""
 
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
@@ -742,18 +748,16 @@ msgid "Czkawka agrees: no exact duplicate."
 msgstr ""
 
 #, python-brace-format
-msgid "Czkawka agrees: the same {copies} extra copies in {groups} groups."
-msgstr ""
+msgid "Czkawka agrees: the same {copies} in {count} group."
+msgid_plural "Czkawka agrees: the same {copies} in {count} groups."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Czkawka disagrees on {count} group: look at it before cleaning."
 msgid_plural "Czkawka disagrees on {count} groups: look at them before cleaning."
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid "Czkawka disagrees on {count} groups: look at them before cleaning."
-msgstr ""
 
 msgid "Czkawka is an independent duplicate finder."
 msgstr ""
@@ -3895,8 +3899,10 @@ msgid "documentation/en/reference-safety.md"
 msgstr ""
 
 #, python-format
-msgid "duplicate copies in %(groups)s groups"
-msgstr ""
+msgid "duplicate copies in %(num)s group"
+msgid_plural "duplicate copies in %(num)s groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "e.g. Durbuy bear, birthday cake, snow 2008"
 msgstr ""
@@ -4755,6 +4761,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{count} extra copy"
+msgid_plural "{count} extra copies"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] ""
@@ -4849,22 +4861,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid ""
-"{count} group of near duplicates: {sure} sure, {look} to check (shown "
-"first)."
-msgid_plural ""
-"{count} groups of near duplicates: {sure} sure, {look} to check (shown "
-"first)."
+msgid "{count} group of near duplicates: {sure}, {look} to check (shown first)."
+msgid_plural "{count} groups of near duplicates: {sure}, {look} to check (shown first)."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} group of near duplicates: {sure} sure, {look} to look at "
-"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+"{count} group of near duplicates: {sure}, {look} to look at (~{effort} in"
+" 'review --near'); 'clean --tier near' moves the sure ones."
 msgid_plural ""
-"{count} groups of near duplicates: {sure} sure, {look} to look at "
-"(~{effort} in 'review --near'); 'clean --tier near' moves the sure ones."
+"{count} groups of near duplicates: {sure}, {look} to look at (~{effort} "
+"in 'review --near'); 'clean --tier near' moves the sure ones."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4887,6 +4895,12 @@ msgid ""
 msgid_plural ""
 "{count} near-duplicate groups decided in 'review --near' wait for --tier "
 "near: nothing of them moves without it."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} obvious"
+msgid_plural "{count} obvious"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4975,8 +4989,8 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "{count} series to see: {obvious} obvious (one click), {look} to look at."
-msgid_plural "{count} series to see: {obvious} obvious (one click), {look} to look at."
+msgid "{count} series to see: {obvious} (one click), {look} to look at."
+msgid_plural "{count} series to see: {obvious} (one click), {look} to look at."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5009,6 +5023,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} source folder will stay: it holds other files, e.g. {path}."
 msgid_plural "{count} source folders will stay: they hold other files, e.g. {path}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} sure"
+msgid_plural "{count} sure"
 msgstr[0] ""
 msgstr[1] ""
 

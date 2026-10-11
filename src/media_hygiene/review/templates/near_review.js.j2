@@ -8,7 +8,7 @@
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
-  const UNITS = ["B", "KB", "MB", "GB", "TB"];
+  const UNITS = T.units;  // translated: o, Ko, Mo… in French
   const size = (bytes) => {
     let value = bytes;
     let unit = 0;

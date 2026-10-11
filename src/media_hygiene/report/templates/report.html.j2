@@ -28,7 +28,7 @@
 
 <div class="cards">
   <div class="card"><div class="value">{{ s.files_scanned | number }}</div><div class="label">{{ _("media files scanned") }}</div></div>
-  <div class="card"><div class="value">{{ s.duplicate_files | number }}</div><div class="label">{{ _("duplicate copies in %(groups)s groups", groups=s.duplicate_groups | number) }}</div></div>
+  <div class="card"><div class="value">{{ s.duplicate_files | number }}</div><div class="label">{{ ngettext("duplicate copies in %(num)s group", "duplicate copies in %(num)s groups", s.duplicate_groups, num=s.duplicate_groups | number) }}</div></div>
   {% if is_clean %}
   <div class="card"><div class="value">{{ s.freed_bytes | size }}</div><div class="label">{{ _("removed from your folders") }}</div></div>
   {% else %}
@@ -53,9 +53,9 @@
 {% set c = s.crosscheck %}
 <div class="note">
   {% if c.agrees %}
-  <strong>🤝 {{ _("Czkawka agrees: the same {copies} extra copies in {groups} groups.").format(copies=c.copies | number, groups=c.groups | number) }}</strong>
+  <strong>🤝 {{ ngettext("Czkawka agrees: the same {copies} in {count} group.", "Czkawka agrees: the same {copies} in {count} groups.", c.groups).format(copies=ngettext("{count} extra copy", "{count} extra copies", c.copies).format(count=c.copies | number), count=c.groups | number) }}</strong>
   {% else %}
-  <strong>⚠️ {{ _("Czkawka disagrees on {count} groups: look at them before cleaning.").format(count=(c.only_ours + c.only_czkawka) | number) }}</strong>
+  <strong>⚠️ {{ ngettext("Czkawka disagrees on {count} group: look at it before cleaning.", "Czkawka disagrees on {count} groups: look at them before cleaning.", c.only_ours + c.only_czkawka).format(count=(c.only_ours + c.only_czkawka) | number) }}</strong>
   <br>{{ _("Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The terminal lists them.").format(ours=c.only_ours | number, theirs=c.only_czkawka | number) }}
   {% endif %}
   <br><span class="muted">{{ _("Czkawka is an independent duplicate finder.") }}{% if c.results_date %} {{ (_("Czkawka results of {date}.") | escape).format(date=c.results_date | when) }}{% endif %}{% if c.set_aside %} {{ _("Files set aside, as media-hygiene does not analyse them: {count}.").format(count=c.set_aside | number) }}{% endif %}</span>

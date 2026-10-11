@@ -94,14 +94,16 @@ def _tell_obvious(output: Output, session: ReviewSession) -> None:
         return
     obvious = sum(1 for item in todo if item.obvious)
     message = ngettext(
-        "{count} series to see: {obvious} obvious (one click), {look} to look at.",
-        "{count} series to see: {obvious} obvious (one click), {look} to look at.",
+        "{count} series to see: {obvious} (one click), {look} to look at.",
+        "{count} series to see: {obvious} (one click), {look} to look at.",
         len(todo),
     )
     output.info(
         message.format(
             count=human_number(len(todo)),
-            obvious=human_number(obvious),
+            obvious=ngettext("{count} obvious", "{count} obvious", obvious).format(
+                count=human_number(obvious)
+            ),
             look=human_number(len(todo) - obvious),
         )
     )
