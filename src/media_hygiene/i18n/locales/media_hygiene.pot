@@ -3316,6 +3316,9 @@ msgstr ""
 msgid "These folders are mounted read-only: {folders}."
 msgstr ""
 
+msgid "This browser cannot play this video: open the original."
+msgstr ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -4199,6 +4202,9 @@ msgid "nothing"
 msgstr ""
 
 msgid "ok"
+msgstr ""
+
+msgid "on a video you clicked: play, seek; Esc gives the keys back"
 msgstr ""
 
 msgid "on another disk or mount: no link possible"

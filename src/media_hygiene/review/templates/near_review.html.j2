@@ -16,6 +16,7 @@
   "leave": "✋ " ~ _("Decided: left alone, nothing of this group moves."),
   "noSwap": _("The kept version lies in a protected folder: it is never moved, W is not possible."),
   "video": "🎞 " ~ _("video: open the original"),
+  "noPlay": "🎞 " ~ _("This browser cannot play this video: open the original."),
   "original": "↗ " ~ _("original"),
   "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
   "saving": _("Saving…"),
@@ -73,9 +74,9 @@
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 8px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; }
   .shot.keep { border-color: var(--ok); }
-  .shot.move { border: 3px dashed var(--bad); } .shot.move img { opacity: .6; }
+  .shot.move { border: 3px dashed var(--bad); } .shot.move img, .shot.move video { opacity: .6; }
   .shot.lock { border-color: var(--warn); }
-  .shot img { display: block; width: 100%; height: auto; max-height: 58vh; object-fit: contain;
+  .shot img, .shot video { display: block; width: 100%; height: auto; max-height: 58vh; object-fit: contain;
               border-radius: 6px; background: var(--bg); }
   .shot .clip { padding: 40px 8px; text-align: center; background: var(--bg); border-radius: 6px; }
   figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
@@ -119,6 +120,7 @@
       <dt><kbd>N</kbd></dt><dd>{{ _("next group to check, undecided") }}</dd>
       <dt><kbd>U</kbd></dt><dd>{{ _("back to undecided") }}</dd>
       <dt><kbd>G</kbd></dt><dd>{{ _("the whole folder pair as planned") }}</dd>
+      <dt><kbd>␣</kbd> <kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("on a video you clicked: play, seek; Esc gives the keys back") }}</dd>
     </dl>
   </section>
   <section>

@@ -152,6 +152,12 @@ rouges, avec la ligne 💬. Les touches :
 | `U` | revenir à non décidé : le `--tier` décide à nouveau |
 | `G` | toute la paire de dossiers comme prévu |
 
+Un groupe de vidéos réencodées montre les deux versions côte à côte, prêtes à être lues : sans
+le son, rien n'est chargé au-delà de leur durée avant que vous lanciez la lecture, et vous
+pouvez avancer dans chacune. Une fois une vidéo cliquée, la barre d'espace et les flèches la
+lisent et s'y déplacent ; `Échap` rend les touches à la page. Un format que votre navigateur ne
+sait pas lire (AVI, FLV…) garde seulement son lien *↗ original*.
+
 **Décider une fois par paire de dossiers** : le panneau de gauche liste les paires de dossiers
 (*le dossier de la version gardée → celui des copies*) avec leur nombre de groupes. *✔ comme
 prévu* (ou `G` sur un groupe de cette paire) décide chaque groupe non décidé de la paire en une

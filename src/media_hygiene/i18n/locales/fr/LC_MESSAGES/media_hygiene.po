@@ -4016,6 +4016,9 @@ msgstr ""
 msgid "These folders are mounted read-only: {folders}."
 msgstr "Ces dossiers sont montés en lecture seule : {folders}."
 
+msgid "This browser cannot play this video: open the original."
+msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -5015,6 +5018,9 @@ msgstr "rien"
 
 msgid "ok"
 msgstr "ok"
+
+msgid "on a video you clicked: play, seek; Esc gives the keys back"
+msgstr "sur une vidéo cliquée : lecture, avance ; Échap rend les touches"
 
 msgid "on another disk or mount: no link possible"
 msgstr "sur un autre disque ou montage : aucun lien possible"

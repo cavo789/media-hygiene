@@ -147,6 +147,11 @@ with the 💬 line. The keys:
 | `U` | back to undecided: the tier decides again |
 | `G` | the whole folder pair as planned |
 
+A group of re-encoded videos shows both versions side by side, ready to play: muted, nothing
+is loaded beyond their length until you press play, and you can seek in each. Once you have
+clicked a video, space and the arrows play and seek in it; `Esc` gives the keys back to the
+page. A format your browser cannot play (AVI, FLV…) keeps its *↗ original* link only.
+
 **Decide once per folder pair**: the left panel lists the folder pairs (*the kept version's
 folder → the copies' folder*) with their number of groups. *✔ as planned* (or `G` on a group
 of that pair) decides every undecided group of the pair in one write, after a confirmation:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -10,7 +10,8 @@ from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.near_reviewing import open_near_review
 from tests.support.cli import run
-from tests.support.media import FFMPEG, VIDEO_TAGS, encode
+from tests.support.media import FFMPEG
+from tests.support.near_videos import COPY, ORIGINAL, OTHER, write_near_videos
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
@@ -18,24 +19,13 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
 
-ORIGINAL: Final = "c/Family Videos/Plage.mp4"
-COPY: Final = "c/Users/Public/WhatsApp/VID-20210714-WA0003.mp4"
-OTHER: Final = "c/Family Videos/Fractale.mp4"
-ZOOM: Final = "mandelbrot=size=320x240:rate=15"
-PATTERN: Final = "testsrc2=size=320x240:rate=15"
-
 pytestmark = pytest.mark.skipif(FFMPEG is None, reason="ffmpeg writes the videos")
 
 
 @pytest.fixture
 def videos(cli: CliRunner, locations: Locations) -> CliRunner:
     """The demo tree, plus a video, its smaller re-encoded copy and another video."""
-    data = locations.data_dir
-    lavfi = ("-f", "lavfi", "-t", "3", "-pix_fmt", "yuv420p", *VIDEO_TAGS)
-    encode(data / ORIGINAL, *lavfi[:2], "-i", ZOOM, *lavfi[2:])
-    copy = ("-vf", "scale=160:120", "-r", "10", "-map_metadata", "-1")
-    encode(data / COPY, "-i", str(data / ORIGINAL), *copy)
-    encode(data / OTHER, *lavfi[:2], "-i", PATTERN, *lavfi[2:])
+    write_near_videos(locations.data_dir)
     return cli
 
 
@@ -72,7 +62,7 @@ def test_the_copy_moves_only_with_the_tier(
 
 @pytest.mark.usefixtures("videos")
 def test_review_near_shows_a_video_without_preview(locations: Locations) -> None:
-    """`review --near`: no preview for a video, its length and codec instead."""
+    """`review --near`: no preview for a video, played instead; length and codec."""
     runtime = make_runtime(locations)
     findings = AuditService(runtime, NullProgress()).run()
     target = locations.reports_dir / "decisions.json"
@@ -80,4 +70,5 @@ def test_review_near_shows_a_video_without_preview(locations: Locations) -> None
     [video] = [group for group in groups if group.kept.name == "Plage.mp4"]
     assert not video.kept.preview
     assert video.kept.original.endswith(".mp4")
+    assert video.kept.video.startswith("/video/")
     assert "3 s" in video.kept.details

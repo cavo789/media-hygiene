@@ -16,8 +16,8 @@ from media_hygiene.review.http import (
     ContentType,
     Response,
     read_request,
-    write_response,
 )
+from media_hygiene.review.respond import write_response
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable

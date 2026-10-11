@@ -1,8 +1,9 @@
 """The routes of `review --near`: the page, its state, previews, and each decision.
 
 `GET /` serves the page, `GET /api/state` every group and the decisions so far,
-`GET /preview/<key>.jpg` a large preview of a picture, `GET /original/<key>.<ext>` the
-file itself, untouched, `GET /api/file` the decisions file as read from the disk, and
+`GET /preview/<key>.jpg` a large preview of a picture, `GET /video/<key>.<ext>` a video
+played in the page (by parts), `GET /original/<key>.<ext>` the file itself, untouched,
+`GET /api/file` the decisions file as read from the disk, and
 `POST /api/near` decides one group or several (a folder pair at once), saved in one
 write, then answers with those groups as read back from the disk.
 A decision needs a JSON body: a page of another site cannot send one without the
@@ -20,9 +21,15 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from media_hygiene.errors import DecisionsError
 from media_hygiene.plan.near_review import NearAction
 from media_hygiene.review.files import FILE_PATH, file_response
-from media_hygiene.review.http import Response
-from media_hygiene.review.local_app import LocalApp, choice_failed, page_or_state
+from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.local_app import (
+    PAGE_PATH,
+    LocalApp,
+    choice_failed,
+    page_or_state,
+)
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -71,6 +78,8 @@ class NearApp(LocalApp):
             The response.
         """
         if request.method == _GET:
+            if request.path.startswith(VIDEO_PREFIX):
+                return await video_response(request, self.session.preview_source)
             return await self._get(request.path)
         if request.path == NEAR_DECIDE_PATH and request.method == _POST:
             return self._decide(request)
@@ -85,6 +94,10 @@ class NearApp(LocalApp):
         Returns:
             The response; 404 for anything else.
         """
+        if path == PAGE_PATH:  # it plays the videos: `media-src` too
+            return Response(
+                HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY
+            )
         found = await file_response(path, self.session, self.executor)
         if found is not None:
             return found

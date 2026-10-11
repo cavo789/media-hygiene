@@ -107,6 +107,17 @@
       image.src = version.preview;
       image.alt = version.name;
       figure.append(image);
+    } else if (version.video) {
+      // Played by parts (Range): only its length is read until it plays; muted.
+      const video = document.createElement("video");
+      video.controls = true;
+      video.muted = true;
+      video.preload = "metadata";
+      video.playsInline = true;
+      video.title = version.name;
+      video.addEventListener("error", () => video.replaceWith(line("div", T.noPlay, "clip")));
+      video.src = version.video;
+      figure.append(video);
     } else figure.append(line("div", T.video, "clip"));
     const link = line("a", T.original, "original");
     link.href = version.original;
@@ -193,6 +204,11 @@
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
     if (event.target instanceof HTMLSelectElement) return;
+    if (event.target instanceof HTMLVideoElement) {
+      // A video clicked keeps space and the arrows (play, seek); Escape gives them back.
+      if (event.key === "Escape") event.target.blur();
+      if (event.key === " " || event.key.startsWith("Arrow") || event.key === "Escape") return;
+    }
     const key = event.key.toLowerCase();
     const rank = current();
     if (event.key === "ArrowRight") decide([rank], "planned", () => go(1));
