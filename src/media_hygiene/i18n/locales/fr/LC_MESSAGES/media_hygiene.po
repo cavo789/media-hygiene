@@ -227,6 +227,13 @@ msgstr ""
 "--rating lit les étoiles que l'audit a notées dans son cache, qui n'est "
 "pas monté."
 
+msgid ""
+"--sample only measures: no page opens. Run people without it to see the "
+"faces in your browser."
+msgstr ""
+"--sample ne fait que mesurer : aucune page ne s'ouvre. Lancez people sans"
+" cette option pour voir les visages dans votre navigateur."
+
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr "--tier near déplace les quasi-doublons dans /quarantine : montez-le."
 

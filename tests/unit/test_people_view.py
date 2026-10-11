@@ -1,11 +1,16 @@
-"""What `people` says: undecodable photos, Ctrl+C, the estimate, French decimals."""
+"""What `people` says: undecodable photos, Ctrl+C, the estimate, --sample, decimals."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
 from media_hygiene.config.people_settings import PeopleSettings
-from media_hygiene.console.people_view import show_found, show_groups, show_missing
+from media_hygiene.console.people_view import (
+    show_estimate,
+    show_found,
+    show_groups,
+    show_missing,
+)
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import install
 from media_hygiene.index.face_rows import FaceTally
@@ -48,3 +53,13 @@ def test_french_decimals_and_a_single_group(locations: Locations) -> None:
     assert "0,12 s par photo" in printed
     assert "plus flous que 12,5" in printed
     assert "aucun ne ressemble assez à un autre pour être regroupé" in printed
+
+
+def test_a_sample_says_no_page_opens(locations: Locations) -> None:
+    """`--sample` measures only: it says so, with or without photos left."""
+    runtime = make_runtime(locations)
+    show_estimate(runtime.output, 0, 0.0)
+    show_estimate(runtime.output, 40, 12.0)
+    printed = " ".join(output_of(runtime).split())
+    assert printed.count("--sample only measures: no page opens.") == 2
+    assert "40 more photos" in printed

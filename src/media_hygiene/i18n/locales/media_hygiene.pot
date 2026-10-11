@@ -188,6 +188,11 @@ msgid ""
 "mounted."
 msgstr ""
 
+msgid ""
+"--sample only measures: no page opens. Run people without it to see the "
+"faces in your browser."
+msgstr ""
+
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr ""
 

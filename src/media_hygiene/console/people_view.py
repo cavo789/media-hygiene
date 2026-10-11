@@ -112,12 +112,18 @@ def show_estimate(output: Output, left: int, seconds: float) -> None:
         left: Photos still not analysed.
         seconds: The estimated time.
     """
-    if not left:
+    if left:
+        output.info(
+            _("A full run would analyse {count} more photos: about {duration}.").format(
+                count=human_number(left), duration=human_duration(seconds)
+            )
+        )
+    else:
         output.info(_("No photo left to analyse: every one is in the cache."))
-        return
     output.info(
-        _("A full run would analyse {count} more photos: about {duration}.").format(
-            count=human_number(left), duration=human_duration(seconds)
+        _(
+            "--sample only measures: no page opens. Run people without it to see "
+            "the faces in your browser."
         )
     )
 
