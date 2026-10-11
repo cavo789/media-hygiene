@@ -101,7 +101,7 @@
   <span class="batch">
     <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
     <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
-    <button type="button" id="sureUndo" hidden></button>
+    <button type="button" id="sureUndo" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
   </span>
 </header>
 <main>
@@ -318,6 +318,7 @@
     } else if (key === " ") toggle();
     else if (key === "e" || key === "E") byId("name").focus();
     else if (key === "c" || key === "C") byId("category").focus();
+    else if (key === "Z" && event.shiftKey) undoSure();
     else if ((key === "z" || key === "Z") && photos[cursor]) {
       zoom.firstElementChild.src = photos[cursor].preview;
       zoom.hidden = !zoom.hidden;
@@ -327,7 +328,12 @@
   byId("zoom").addEventListener("click", () => { byId("zoom").hidden = true; });
   byId("sure").addEventListener("click", acceptSure);
   byId("sureUndo").addEventListener("click", undoSure);
-  byId("onlyDecide").addEventListener("change", (event) => event.target.blur());  // the keys work again
+  const filterKey = positionKey + ":only-to-decide";
+  try { byId("onlyDecide").checked = window.localStorage.getItem(filterKey) === "1"; } catch (error) { /* private browsing */ }
+  byId("onlyDecide").addEventListener("change", (event) => {
+    try { window.localStorage.setItem(filterKey, event.target.checked ? "1" : "0"); } catch (error) { /* private browsing */ }
+    event.target.blur();  // the keys work again
+  });
 
   fetch(P.state)
     .then((response) => response.json())

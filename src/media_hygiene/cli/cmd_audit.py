@@ -63,7 +63,7 @@ def audit_command(  # pylint: disable=too-many-arguments
     elif plan.decisions and not runtime.settings.folders.preferred:
         output.advise(
             Advice(
-                TipKind.DISCOVERY,
+                TipKind.NEXT,  # changes what clean keeps: before the setup line
                 _(
                     "Choose which folders keep their copies: folders.preferred in "
                     "config.toml, or --prefer."

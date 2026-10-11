@@ -127,7 +127,7 @@ environ), et dit :
 - la dernière proposition de `classify`, et si `sort` l'a appliquée ;
 
 puis **une** étape suivante, en commande complète. Une quarantaine de plus de 30 jours
-(`purge_hint_days`, dans la section `[general]` de `config.toml`) est la première chose qu'il
+(`purge_hint_days`, dans la section `[clean]` de `config.toml`) est la première chose qu'il
 propose de purger. Montez les mêmes dossiers que pour `clean` (ou tapez `mh status`) : un dossier
 non monté est signalé, jamais une erreur.
 

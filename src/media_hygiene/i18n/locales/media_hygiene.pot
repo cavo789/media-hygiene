@@ -252,9 +252,6 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/config\" to the docker run command."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
 msgstr ""
 
@@ -655,6 +652,9 @@ msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
 msgid "Copies of other files than media go to /quarantine: mount it."
+msgstr ""
+
+msgid "Copy and paste this command to run it again."
 msgstr ""
 
 msgid "Copy the command"
@@ -2866,6 +2866,9 @@ msgid ""
 "'search' finds them."
 msgstr ""
 
+msgid "Take back the last batch of sure proposals (Shift+Z)"
+msgstr ""
+
 #, python-brace-format
 msgid "Take the batch back ({count} events)"
 msgstr ""
@@ -2999,6 +3002,11 @@ msgid ""
 "in attribution (plain text)."
 msgstr ""
 
+msgid ""
+"The map saves your places in a config.toml file, kept in a folder of "
+"yours mounted on /config: this command has none."
+msgstr ""
+
 msgid "The model sent an answer without a message."
 msgstr ""
 
@@ -3028,9 +3036,6 @@ msgstr ""
 msgid ""
 "The page does not open? docker run must publish the same port on both "
 "sides: -p 127.0.0.1:{port}:{port}."
-msgstr ""
-
-msgid "The places are saved in /config/config.toml: mount /config."
 msgstr ""
 
 #, python-brace-format

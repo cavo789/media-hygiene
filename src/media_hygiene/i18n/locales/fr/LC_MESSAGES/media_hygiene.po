@@ -339,9 +339,6 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/cache\" pour garder les descriptions."
 
-msgid "Add -v \"<a folder of yours>:/config\" to the docker run command."
-msgstr "Ajoutez -v \"<un de vos dossiers>:/config\" à la commande docker run."
-
 msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/journal\" à la commande docker run."
 
@@ -810,6 +807,9 @@ msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 "Les copies des fichiers autres que des médias vont dans /quarantine : "
 "montez-le."
+
+msgid "Copy and paste this command to run it again."
+msgstr "Copiez-collez cette commande pour relancer."
 
 msgid "Copy the command"
 msgstr "Copier la commande"
@@ -3470,6 +3470,9 @@ msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
 "'search' les retrouve."
 
+msgid "Take back the last batch of sure proposals (Shift+Z)"
+msgstr "Reprendre le dernier lot de propositions sûres (Maj+Z)"
+
 #, python-brace-format
 msgid "Take the batch back ({count} events)"
 msgstr "Reprendre le lot ({count} événements)"
@@ -3630,6 +3633,13 @@ msgstr ""
 "montrent les zones que vous regardez, jamais une photo). Un autre serveur"
 " de tuiles demande sa propre mention dans attribution (texte simple)."
 
+msgid ""
+"The map saves your places in a config.toml file, kept in a folder of "
+"yours mounted on /config: this command has none."
+msgstr ""
+"La carte enregistre vos lieux dans un fichier config.toml, rangé dans un de "
+"vos dossiers monté sur /config : cette commande n'en a pas."
+
 msgid "The model sent an answer without a message."
 msgstr "Le modèle a envoyé une réponse sans message."
 
@@ -3662,9 +3672,6 @@ msgid ""
 msgstr ""
 "La page ne s'ouvre pas ? docker run doit publier le même port des deux "
 "côtés, avec -p 127.0.0.1:{port}:{port}."
-
-msgid "The places are saved in /config/config.toml: mount /config."
-msgstr "Les lieux sont enregistrés dans /config/config.toml : montez /config."
 
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."

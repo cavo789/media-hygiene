@@ -69,6 +69,7 @@ et se complète avec les catégories déjà utilisées.
 | <kbd>N</kbd> / <kbd>P</kbd> (ou Page suivante / Page précédente) | Événement suivant ou précédent, sans décider. |
 | <kbd>U</kbd> | Événement suivant à décider. |
 | <kbd>V</kbd> | Accepter d'un coup toutes les propositions sûres (voir plus bas). |
+| <kbd>Maj</kbd>+<kbd>Z</kbd> | Reprendre ce lot. |
 | <kbd>E</kbd> / <kbd>C</kbd> | Taper dans le champ nom / catégorie ; <kbd>Échap</kbd> en sort. |
 | <kbd>Maj</kbd>+<kbd>S</kbd> | Laisser tout l'événement où il est (« (rester où il est) »). |
 | <kbd>←</kbd> <kbd>→</kbd> | Passer d'une photo à l'autre. |
@@ -97,14 +98,15 @@ imposé : un événement déjà choisi, ici ou dans le classeur, n'est pas touch
 modification ultérieure du même événement dans le classeur reste un conflit, jamais réglé en
 silence.
 
-Le lot est **une seule écriture** de `sort-decisions.json`, relue sur le disque avant que la
-page ne l'affiche : la ligne d'état donne l'heure à laquelle le disque la contient. **↶ Reprendre
-le lot** oublie tout le lot, lui aussi en une seule écriture (un événement choisi à nouveau
-depuis garde votre nouveau choix).
+Le lot est **une seule écriture** de `sort-decisions.json`, relue sur le disque avant que la page ne
+l'affiche : la ligne d'état donne l'heure à laquelle le disque la contient. **↶ Reprendre le lot**
+(ou <kbd>Maj</kbd>+<kbd>Z</kbd>) oublie tout le lot, lui aussi en une seule écriture (un événement
+choisi à nouveau depuis garde votre nouveau choix).
 
 Cochez **Seulement les événements à décider** pour que <kbd>N</kbd>, <kbd>P</kbd> et <kbd>U</kbd>
 sautent les événements déjà choisis et ceux dont la proposition est sûre : il ne reste que ceux
 qui ont besoin de vous.
+Le navigateur se souvient de la case pour la prochaine ouverture de la page.
 
 ## Où vont vos choix
 

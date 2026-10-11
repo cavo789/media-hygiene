@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
+from media_hygiene.actions.undoable import can_undo
 from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
@@ -117,7 +118,11 @@ def read_status(runtime: Runtime) -> Status:
             summaries[0] if summaries else None,
             last_walk(runtime.index_file),
         ),
-        undoable=tuple(run for run in runs if _undoable(run)),
+        undoable=tuple(
+            run
+            for run in runs
+            if _undoable(run) and can_undo(locations.journal_dir, run.run_id)
+        ),
         quarantine=quarantine_state(locations.quarantine_dir)
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),

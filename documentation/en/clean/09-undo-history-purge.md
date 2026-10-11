@@ -120,7 +120,7 @@ second), and says:
 - the last `classify` proposal, and whether `sort` applied it;
 
 then **one** next step, as a full command. A quarantine older than 30 days (`purge_hint_days`, in
-the `[general]` section of `config.toml`) is the first thing it suggests to purge. Mount the same
+the `[clean]` section of `config.toml`) is the first thing it suggests to purge. Mount the same
 folders as for `clean` (or type `mh status`): a folder not mounted is said, never an error.
 
 ## Keep the journal folder

@@ -45,6 +45,14 @@ def test_tips_are_ranked_by_kind_and_cut_to_the_budget() -> None:
     assert len(selection.shown) == TIP_BUDGET
 
 
+def test_a_tip_that_changes_clean_comes_before_the_setup_line() -> None:
+    """`--prefer` (ranked NEXT by audit) is not hidden by the ⚙️ line."""
+    prefer = Advice(TipKind.NEXT, "prefer")
+    setup = Advice(TipKind.SETUP, "set")
+    selection = select((_FIND, prefer), setup, verbose=False)
+    assert selection.shown == (prefer, setup)
+
+
 def test_safety_lines_are_never_cut() -> None:
     """However many tips, the undo line stays, apart from the budget."""
     selection = select((_FIND, _SAFETY, _PREFER, _NEXT), None, verbose=False)

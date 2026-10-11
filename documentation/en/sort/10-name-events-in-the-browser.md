@@ -67,6 +67,7 @@ categories already used.
 | <kbd>N</kbd> / <kbd>P</kbd> (or Page Down / Page Up) | Next or previous event, without deciding. |
 | <kbd>U</kbd> | Next event still to decide. |
 | <kbd>V</kbd> | Accept every sure proposal at once (see below). |
+| <kbd>Shift</kbd>+<kbd>Z</kbd> | Take that batch back. |
 | <kbd>E</kbd> / <kbd>C</kbd> | Type in the name / the category field; <kbd>Esc</kbd> leaves it. |
 | <kbd>Shift</kbd>+<kbd>S</kbd> | Leave the whole event where it is ("(stay where it is)"). |
 | <kbd>←</kbd> <kbd>→</kbd> | Move between the photos. |
@@ -92,12 +93,14 @@ what the workbook said of it, like any other choice. Nothing is imposed: an even
 chose, here or in the workbook, is left alone, and a later workbook edit of the same event is
 still a conflict, never settled silently.
 
-The batch is **one write** of `sort-decisions.json`, read back from the disk before the page
-shows it: the status line gives the time the disk holds it. **↶ Take the batch back** forgets the
-whole batch in one write too (an event you chose again since keeps your new choice).
+The batch is **one write** of `sort-decisions.json`, read back from the disk before the page shows
+it: the status line gives the time the disk holds it. **↶ Take the batch back** (or
+<kbd>Shift</kbd>+<kbd>Z</kbd>) forgets the whole batch in one write too (an event you chose again
+since keeps your new choice).
 
 Tick **Only the events to decide** to make <kbd>N</kbd>, <kbd>P</kbd> and <kbd>U</kbd> skip the
 events already chosen and those whose proposal is sure: only the ones that need you remain.
+The browser remembers the box for the next opening of the page.
 
 ## Where your choices go
 

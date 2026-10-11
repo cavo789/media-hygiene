@@ -28,7 +28,7 @@ _PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
 
 
 class GeneralSettings(BaseModel):
-    """`[general]` — language, time zone, log level, colours, purge reminder."""
+    """`[general]` — language, time zone, log level, colours."""
 
     model_config = _FROZEN
 
@@ -36,7 +36,6 @@ class GeneralSettings(BaseModel):
     timezone: str = ""
     verbosity: Verbosity = Verbosity.INFO
     color: ColorMode = ColorMode.AUTO
-    purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
 
     @field_validator("timezone")
     @classmethod
@@ -119,11 +118,12 @@ class KeepSettings(BaseModel):
 
 
 class CleanSettings(BaseModel):
-    """`[clean]` — behaviour of the `clean` command."""
+    """`[clean]` — behaviour of the `clean` command, and the purge reminder."""
 
     model_config = _FROZEN
 
     confirm: bool = True
+    purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
 
 
 class Settings(BaseModel):

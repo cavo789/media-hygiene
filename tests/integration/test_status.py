@@ -11,7 +11,10 @@ if TYPE_CHECKING:
 
 
 def test_status_follows_the_clean_path(cli: CliRunner) -> None:
-    """After the audit: clean. After the clean: the quarantine, undo, purge."""
+    """After the audit: clean. After the clean: the quarantine, undo, purge.
+
+    After the purge, no undo is offered any more: nothing is left to bring back.
+    """
     run(cli, "audit")
     audited = run(cli, "status")
     assert audited.exit_code == 0, audited.output
@@ -29,3 +32,6 @@ def test_status_follows_the_clean_path(cli: CliRunner) -> None:
     purged = run(cli, "status").output
     assert "Quarantine: empty." in purged
     assert "Nothing left to do" in purged
+    # The quarantined copies are gone: `undo` would put nothing back.
+    assert "Runs you can still undo:" not in purged
+    assert "media-hygiene undo " not in purged

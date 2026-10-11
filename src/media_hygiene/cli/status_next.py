@@ -86,7 +86,7 @@ def _quarantine_or_sort(
         The text and the command, or None when nothing is left.
     """
     runs = status.quarantine.runs
-    hint = runtime.settings.general.purge_hint_days
+    hint = runtime.settings.clean.purge_hint_days
     old = [run for run in runs if days_since(run.started) >= hint]
     if old:
         run_id = old[-1].run_id
