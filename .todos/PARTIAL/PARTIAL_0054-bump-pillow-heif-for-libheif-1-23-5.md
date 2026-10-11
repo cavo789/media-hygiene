@@ -32,3 +32,23 @@ processing TODO 0045).
 
 - [ ] `uv.lock` pins `pillow-heif` ≥ 1.9.0; the image reports libheif ≥ 1.23.5.
 - [ ] Unit, integration and e2e tests green (HEIC metadata in `test_image_metadata.py` included).
+
+## Status — PARTIAL (2026-10-11)
+
+### Done
+- `pillow-heif` 1.9.0 is not on PyPI, but 1.8.1 is (2026-10-11): its changelog says libheif
+  1.23.4 → **1.23.6** (#491 #499, so the 1.23.5 fixes are in), libx265 4.2 → 4.3, and
+  "saving `;10`/`;12` data with sample values above its bit depth now raises `ValueError`" (no
+  API change for `register_heif_opener()` nor `from_pillow(...).save(...)`). cp314 manylinux
+  wheels exist for x86_64 and aarch64.
+- `pyproject.toml`: `pillow-heif>=1.8.1`; `uv lock --upgrade-package pillow-heif` (only that
+  package moved). In the devcontainer `pillow_heif.libheif_info()` reports libheif 1.23.6.
+- Unit and integration tests touching HEIC/HEIF: 65 passed; the full suite runs at the end of
+  the lot.
+
+### Not done
+- `build`, the `libheif_info()` check inside `media-hygiene:latest`, and `e2e`.
+  **Reason:** no Docker build nor e2e during the night run (machine load); the maintainer runs
+  them before pushing.
+- Note for later: `pillow-heif` 1.9.0 will require Pillow 13 (Python ≥ 3.11, fine here): bump
+  both together when it is out, as an ordinary dependency update (`deps`).
