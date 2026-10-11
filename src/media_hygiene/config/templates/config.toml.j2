@@ -128,6 +128,16 @@ town_km = 20
 {{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, date. The model's sentence goes into dc:description.")) }}
 xmp_sources = ["vision", "place"]
 
+
+[people]
+{{ comment(_("The faces 'people' finds and groups. They are personal data: kept in the cache (/cache) only, never sent anywhere; 'people --forget' deletes them all. These settings choose which faces are grouped: changing them analyses nothing again.")) }}
+{{ comment(_("Two faces this similar (cosine, 0 to 1) may be the same person: higher splits more groups, lower mixes people.")) }}
+similarity = 0.363
+{{ comment(_("Faces smaller than this many pixels (shorter side of their box) are left out.")) }}
+min_face = 40
+{{ comment(_("Faces blurrier than this sharpness (variance of the Laplacian of the face) are left out.")) }}
+min_sharpness = 30.0
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 

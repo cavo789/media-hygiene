@@ -25,11 +25,13 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def require_index(runtime: Runtime) -> None:
+def require_index(runtime: Runtime, refusal: tuple[str, str] | None = None) -> None:
     """Refuse to run without an index: opening a missing one would create it empty.
 
     Args:
         runtime: Mount points.
+        refusal: The message (with `{folder}`) and the tip, both translated; None
+            for those of `tags`.
 
     Raises:
         MountError: The cache is not mounted, or holds no index yet.
@@ -38,13 +40,14 @@ def require_index(runtime: Runtime) -> None:
     if index is not None and index.is_file():
         return
     cache = runtime.mapper.to_host(runtime.locations.cache_dir)
-    raise MountError(
-        _("No index in {folder}: nothing to tag yet.").format(folder=cache),
+    message, tip = refusal or (
+        _("No index in {folder}: nothing to tag yet."),
         _(
             "Run 'audit' first with the same /cache mount: tags reads what the "
             "audits learnt, and keeps the words there."
         ),
     )
+    raise MountError(message.format(folder=cache), tip)
 
 
 def tag_files(

@@ -101,3 +101,63 @@ Note the figures here, then decide to build, reduce or drop.
       generated faces, never real photos).
 - [ ] Off by default; turning it on never slows an audit that does not ask for it.
 - [ ] Documentation en + fr (a sorting step, privacy, forget); `.po` translated.
+
+## Status — PARTIAL (2026-10-11)
+
+### Decisions recorded
+- **Immich overlap (0009)**: build this to *file* photos by who is in them (`classify` /
+  `sort`), not to *find* someone's photos (Immich's job). Said in
+  `documentation/*/reference-people.md`.
+- **Runtime**: `onnxruntime` (main dependency, locked at 1.30.0; MIT; cp314 amd64 + arm64
+  wheels; no sympy since 1.25). Measured in a venv: 63 MB installed vs 153 MB for
+  `opencv-python-headless`. The image needs nothing more (`libstdc++` is already required by
+  `rawpy`). A `dive` measurement of the rebuilt image is still to do.
+- **Models**: YuNet 2023mar + SFace 2021dec from OpenCV Zoo at pinned commits, SHA-256 pinned
+  in `faces/weights.py`, downloaded at first use into `/cache/models`; never in the repo.
+- Checked outside the repo against OpenCV's own `FaceDetectorYN` / `FaceRecognizerSF`: same
+  boxes; alignment + embedding equal to 0.9998 cosine. About 30 ms per 512 px photo for
+  detection + embedding, one thread, decoding excluded.
+
+### Done
+- `faces/`: letterbox + YuNet decoding + NMS (numpy), 5-point similarity alignment (PIL),
+  `FaceEngine` behind a `Runner` seam, ONNX runner (lazy import, one thread), model download
+  with checksum, worker (finder built once per process), clustering (30-NN graph above the
+  threshold + Chinese whispers, fixed seed, blockwise).
+- Index schema 8: `face_scans` + `faces` (box, landmarks, score, sharpness, float32 vector),
+  per file version and model pair; pruned and moved with the file; `--forget` deletes all with
+  `secure_delete` and reads back.
+- `media-hygiene people` (read-only, page command): analyse what the cache lacks (half the
+  CPUs, Ctrl+C keeps progress), group, summary, local read-only page of the groups (face crops
+  cut on request, never written); `--sample N`, `--path`, `--forget`, `--port`.
+- `[people]` settings: `similarity`, `min_face`, `min_sharpness` (applied at grouping time:
+  changing them analyses nothing again).
+- `status` line; `safety` sets (launcher publishes the port, mounts photos `:ro`).
+- Docs en + fr: `reference-people.md` (privacy, forget, measure first), command reference,
+  documentation indexes; `.po` translated.
+- Tests: synthetic tensors and a fake finder only (`tests/support/faces.py`); no model
+  download, no real face.
+
+### Not done
+- Measurement on the real collection (seconds per photo, faces per photo, share skipped,
+  group quality at 2–3 thresholds, image size with `dive`).
+  **Reason:** no Docker and no access to the photos during the night run; `people --sample`
+  is the tool for it. Then tune `similarity` / `min_face` / `min_sharpness` defaults and
+  replace the illustrative figures of the docs example.
+- Naming: `[[people]]` in `config.toml` (tomlkit, read back), reference faces per person
+  (several sets for children), assignment by distance to references; page actions (type a
+  name, merge groups, remove a wrong face, ignore).
+  **Reason:** scope — first slice is find + group + show; naming needs the measurement first
+  to know what the groups look like.
+- Uses of the names: label layer `source = person` (0072), `search` (0073), XMP
+  `PersonInImage` (0074), `match = "person"` classify rule, a column in `inventory` and in the
+  classify workbook; a sorting step in `documentation/*/sort/`.
+  **Reason:** depend on naming.
+- Opt-in face finding inside the audit scan (`[people] enabled`).
+  **Reason:** deliberately left out: `people` analyses on its own, so an audit is never slowed;
+  revisit once the cost per photo is measured.
+- Videos (keyframes of `video_prints`); tiling for small faces in large group photos (YuNet's
+  ONNX input is a fixed 640 x 640 letterbox).
+  **Reason:** wait for the measurement.
+- Synthetic faces for documentation screenshots (`tests/support/docs/`) and the captures
+  (`help.txt`, `config.txt`, `config.toml`).
+  **Reason:** no `docs_screenshots` run tonight.

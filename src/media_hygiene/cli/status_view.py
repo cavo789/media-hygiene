@@ -77,6 +77,13 @@ def status_lines(status: Status) -> tuple[str, ...]:
         )
     if status.tagged is not None:
         lines.append(_tags(*status.tagged))
+    if status.faces is not None:
+        photos, faces = status.faces
+        lines.append(
+            _("Faces: {faces} found in {photos} photos; 'people' groups them.").format(
+                faces=human_number(faces), photos=human_number(photos)
+            )
+        )
     if status.missing:
         points = ", ".join(f"/{kind.value}" for kind in status.missing)
         lines.append(_("Not looked at (not mounted): {points}.").format(points=points))

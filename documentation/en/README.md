@@ -94,6 +94,8 @@ otherwise both copies are sorted.
 - [Tags](reference-tags.md): words to find photos by, from their folders, dates and places, and
   from a local vision model (`tags`), kept in the cache; `search` finds them in your browser,
   `xmp` writes them into `.xmp` sidecars.
+- [People](reference-people.md): find the faces in the photos and group those alike, shown in
+  your browser (`people`); kept in the cache, never sent anywhere.
 - [Advanced usage](reference-advanced.md): limit the processors used (`PYTHON_CPU_COUNT`).
 
 ## For developers

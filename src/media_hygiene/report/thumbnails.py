@@ -28,7 +28,8 @@ _JPEG_QUALITY = 80
 _REVIEW_EDGE: Final = 1600
 _REVIEW_QUALITY: Final = 88
 _THUMBNAIL_NAME_LENGTH = 20
-_THUMBNAIL_ERRORS = (
+# What decoding a damaged or truncated picture raises.
+PICTURE_ERRORS: Final = (
     ValueError,
     SyntaxError,
     EOFError,
@@ -82,11 +83,11 @@ def make_thumbnail(job: ThumbnailJob) -> bool:
     prepare_image_worker()
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     try:
-        preview = _upright(job.source)
+        preview = upright_picture(job.source)
         preview.thumbnail((Sizes.THUMBNAIL_EDGE, Sizes.THUMBNAIL_EDGE))
         job.target.parent.mkdir(parents=True, exist_ok=True)
         preview.save(job.target, "JPEG", quality=_JPEG_QUALITY)
-    except _THUMBNAIL_ERRORS:
+    except PICTURE_ERRORS:
         return False
     finally:
         ImageFile.LOAD_TRUNCATED_IMAGES = False
@@ -120,18 +121,18 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
     prepare_image_worker()
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     try:
-        preview = _upright(source)
+        preview = upright_picture(source)
         preview.thumbnail((edge, edge))
         buffer = io.BytesIO()
         preview.save(buffer, "JPEG", quality=_REVIEW_QUALITY)
-    except (*_THUMBNAIL_ERRORS, OSError):
+    except (*PICTURE_ERRORS, OSError):
         return None
     finally:
         ImageFile.LOAD_TRUNCATED_IMAGES = False
     return buffer.getvalue()
 
 
-def _upright(source: Path) -> Image.Image:
+def upright_picture(source: Path) -> Image.Image:
     """Open a picture as seen: an image, or the preview embedded in a RAW file.
 
     Args:

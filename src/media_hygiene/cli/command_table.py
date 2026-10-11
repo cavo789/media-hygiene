@@ -11,6 +11,7 @@ from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
 from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
+from media_hygiene.cli.cmd_people import people_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
@@ -107,6 +108,15 @@ def command_table(
             _(
                 "Find photos by their words in your browser (or as a table): "
                 "the words 'tags' gave them."
+            ),
+        ),
+        (
+            "people",
+            people_command,
+            analyse,
+            _(
+                "Find the faces in the photos and group those alike, shown in your "
+                "browser. Kept in the cache, never sent anywhere."
             ),
         ),
         (

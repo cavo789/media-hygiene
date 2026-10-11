@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
 from media_hygiene.actions.undoable import can_undo
+from media_hygiene.index.face_coverage import face_coverage
 from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
@@ -59,8 +60,9 @@ class LastAnalysis:
         return self.summary is not None or self.walked is not None
 
 
+# One field per part of the screen: the record mirrors what `status` shows.
 @dataclass(frozen=True, slots=True)
-class Status:
+class Status:  # pylint: disable=too-many-instance-attributes
     """Everything `status` shows, and what it could not look at."""
 
     analysis: LastAnalysis
@@ -71,6 +73,8 @@ class Status:
     missing: tuple[MountKind, ...]
     # Files with words, and with the vision model's; None before any `tags`.
     tagged: tuple[int, int] | None = None
+    # Photos analysed and faces found; None before any `people`.
+    faces: tuple[int, int] | None = None
 
     @property
     def blank(self) -> bool:
@@ -132,6 +136,7 @@ def read_status(runtime: Runtime) -> Status:
         else SortState(),
         missing=tuple(kind for kind in LOOKED_AT if kind not in mounted),
         tagged=tag_coverage(runtime.index_file),
+        faces=face_coverage(runtime.index_file),
     )
 
 

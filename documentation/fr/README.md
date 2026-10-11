@@ -102,6 +102,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
   dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `search` les
   retrouve dans votre navigateur, `xmp` les écrit dans des fichiers compagnons `.xmp`.
+- [Les personnes](reference-people.md) : trouver les visages des photos et regrouper ceux qui se
+  ressemblent, à voir dans votre navigateur (`people`) ; gardés dans le cache, jamais envoyés.
 - [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
   (`PYTHON_CPU_COUNT`).
 

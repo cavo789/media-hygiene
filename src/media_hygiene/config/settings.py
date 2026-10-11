@@ -8,6 +8,7 @@ from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
+from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
@@ -144,3 +145,4 @@ class Settings(BaseModel):
     places: PlacesSettings = PlacesSettings()
     album: AlbumSettings = AlbumSettings()
     tags: TagSettings = TagSettings()
+    people: PeopleSettings = PeopleSettings()

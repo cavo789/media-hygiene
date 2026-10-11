@@ -250,6 +250,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "A full run would analyse {count} more photos: about {duration}."
+msgstr ""
+
+#, python-brace-format
 msgid "A full run would describe {count} more photos: about {duration}."
 msgstr ""
 
@@ -407,6 +411,11 @@ msgid ""
 "deleting."
 msgstr ""
 
+msgid ""
+"Analyse this many random photos, print the time per photo and the "
+"estimate of a full run, and stop."
+msgstr ""
+
 msgid "Animals"
 msgstr ""
 
@@ -543,6 +552,10 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cannot ask for confirmation without an interactive terminal."
+msgstr ""
+
+#, python-brace-format
+msgid "Cannot download the face model {name}: {error}"
 msgstr ""
 
 #, python-brace-format
@@ -832,6 +845,9 @@ msgstr ""
 msgid "Delete all reports but the N most recent ones."
 msgstr ""
 
+msgid "Delete every face from the cache, then show that none is left."
+msgstr ""
+
 msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 
@@ -920,6 +936,11 @@ msgstr ""
 msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 
+msgid ""
+"Downloading the two face models into the cache, once (39 MB): they run on"
+" this computer, nothing about your photos is sent."
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -952,6 +973,11 @@ msgid ""
 msgstr ""
 
 msgid "Each file is checked again just before it moves; none is overwritten."
+msgstr ""
+
+msgid ""
+"Each group holds faces that look alike: probably one person. Nothing is "
+"named nor changed here yet; the faces stay on this computer."
 msgstr ""
 
 msgid ""
@@ -1154,6 +1180,29 @@ msgstr ""
 msgid "F-number"
 msgstr ""
 
+msgid "Faces alike"
+msgstr ""
+
+msgid ""
+"Faces blurrier than this sharpness (variance of the Laplacian of the "
+"face) are left out."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Faces ready, open {url} in your browser. Ctrl+C stops it; nothing is "
+"changed."
+msgstr ""
+
+msgid ""
+"Faces smaller than this many pixels (shorter side of their box) are left "
+"out."
+msgstr ""
+
+#, python-brace-format
+msgid "Faces: {faces} found in {photos} photos; 'people' groups them."
+msgstr ""
+
 msgid "Failed"
 msgstr ""
 
@@ -1233,6 +1282,14 @@ msgstr ""
 msgid ""
 "Find photos by their words in your browser (or as a table): the words "
 "'tags' gave them."
+msgstr ""
+
+msgid ""
+"Find the faces in the photos and group those alike, shown in your "
+"browser. Kept in the cache, never sent anywhere."
+msgstr ""
+
+msgid "Finding faces"
 msgstr ""
 
 msgid ""
@@ -1393,6 +1450,10 @@ msgid "Grandma's birthday"
 msgstr ""
 
 msgid "Group"
+msgstr ""
+
+#, python-brace-format
+msgid "Group {number}"
 msgstr ""
 
 #, python-brace-format
@@ -1624,6 +1685,12 @@ msgid "Leave alone"
 msgstr ""
 
 msgid "Left as they are"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Left out: {small} faces smaller than {pixels} pixels, {blurry} blurrier "
+"than {sharpness}."
 msgstr ""
 
 msgid "Lens"
@@ -1926,6 +1993,13 @@ msgstr ""
 msgid "No folder to analyse under {path}."
 msgstr ""
 
+msgid "No group yet: no two faces look alike enough."
+msgstr ""
+
+#, python-brace-format
+msgid "No index in {folder}: no photo to look at yet."
+msgstr ""
+
 #, python-brace-format
 msgid "No index in {folder}: nothing to export yet."
 msgstr ""
@@ -1960,6 +2034,9 @@ msgstr ""
 msgid "No photo folder mounted: add -v for each folder, then run it again."
 msgstr ""
 
+msgid "No photo left to analyse: every one is in the cache."
+msgstr ""
+
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr ""
 
@@ -1970,6 +2047,9 @@ msgid "No photo nor video of the index below these folders."
 msgstr ""
 
 msgid "No photo nor video to classify."
+msgstr ""
+
+msgid "No photo of the index below these folders."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
@@ -2180,6 +2260,11 @@ msgid ""
 "it for several. Default: every file of the index."
 msgstr ""
 
+msgid ""
+"Only the photos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every photo of the index."
+msgstr ""
+
 msgid "Only the series still to see"
 msgstr ""
 
@@ -2199,6 +2284,9 @@ msgid "Open the original in a new tab"
 msgstr ""
 
 msgid "Open the original in a new tab: the file as it lies on the disk"
+msgstr ""
+
+msgid "Open the page at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the review at 127.0.0.1 or localhost."
@@ -2236,6 +2324,9 @@ msgid "Other"
 msgstr ""
 
 msgid "Output (override general.* of config.toml)"
+msgstr ""
+
+msgid "Page stopped; nothing was changed."
 msgstr ""
 
 #, python-brace-format
@@ -2378,6 +2469,10 @@ msgid ""
 "sure ones to the quarantine too."
 msgstr ""
 
+#, python-brace-format
+msgid "Read back from the index: {faces} faces left."
+msgstr ""
+
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -2515,6 +2610,11 @@ msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 
 msgid ""
+"Run 'audit' first with the same /cache mount: people reads the photos the"
+" audits listed, and keeps the faces there."
+msgstr ""
+
+msgid ""
 "Run 'audit' first with the same /cache mount: tags reads what the audits "
 "learnt, and keeps the words there."
 msgstr ""
@@ -2645,6 +2745,10 @@ msgid ""
 msgstr ""
 
 msgid "Save it, close it, then run 'sort' again."
+msgstr ""
+
+#, python-brace-format
+msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
 
 msgid "Saved in config.toml."
@@ -2884,6 +2988,9 @@ msgstr ""
 msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
 
+msgid "Stopped: the next people run goes on where this one stopped."
+msgstr ""
+
 msgid "Stopped: the next tags run goes on where this one stopped."
 msgstr ""
 
@@ -3032,6 +3139,17 @@ msgid ""
 "covers most of the work."
 msgstr ""
 
+#, python-brace-format
+msgid "The face model {name} downloaded is not the expected file."
+msgstr ""
+
+msgid ""
+"The faces 'people' finds and groups. They are personal data: kept in the "
+"cache (/cache) only, never sent anywhere; 'people --forget' deletes them "
+"all. These settings choose which faces are grouped: changing them "
+"analyses nothing again."
+msgstr ""
+
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
@@ -3042,6 +3160,10 @@ msgid "The files of this event: its id or its name."
 msgstr ""
 
 msgid "The files the classify rule of this name decided."
+msgstr ""
+
+#, python-brace-format
+msgid "The groups could not be read (error {status})."
 msgstr ""
 
 #, python-brace-format
@@ -3108,6 +3230,9 @@ msgstr ""
 msgid ""
 "The page does not open? docker run must publish the same port on both "
 "sides: -p 127.0.0.1:{port}:{port}."
+msgstr ""
+
+msgid "The page is not running any more: start people again."
 msgstr ""
 
 #, python-brace-format
@@ -3323,6 +3448,9 @@ msgstr ""
 msgid "This browser cannot play this video: open the original."
 msgstr ""
 
+msgid "This build cannot find faces: the ONNX runtime is not installed."
+msgstr ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -3422,6 +3550,11 @@ msgid ""
 " apart, and less than trip_merge_max_km from each other, make one trip."
 msgstr ""
 
+msgid ""
+"Two faces this similar (cosine, 0 to 1) may be the same person: higher "
+"splits more groups, lower mixes people."
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -3469,6 +3602,9 @@ msgid ""
 msgstr ""
 
 msgid "Usage:"
+msgstr ""
+
+msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr ""
 
 msgid ""
@@ -3784,8 +3920,15 @@ msgstr ""
 msgid "an area of {count} points is too detailed (at most {limit})"
 msgstr ""
 
+msgid "analyse every photo, then see the faces alike in your browser."
+msgstr ""
+
 #, python-brace-format
 msgid "and {count} more"
+msgstr ""
+
+#, python-brace-format
+msgid "and {count} more faces"
 msgstr ""
 
 msgid "apply your review: the files you set aside go to the quarantine."
@@ -4521,6 +4664,9 @@ msgstr ""
 msgid "two rules are named '{name}'"
 msgstr ""
 
+msgid "two small local models: nothing is sent"
+msgstr ""
+
 msgid "undo the last choice"
 msgstr ""
 
@@ -4767,6 +4913,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} face forgotten."
+msgid_plural "{count} faces forgotten."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} faces look like no other: they are not shown."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] ""
@@ -4937,6 +5093,18 @@ msgid "{count} photo"
 msgstr ""
 
 #, python-brace-format
+msgid "{count} photo analysed: {faces} faces, {seconds} s per photo."
+msgid_plural "{count} photos analysed: {faces} faces, {seconds} s per photo."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo could not be decoded."
+msgid_plural "{count} photos could not be decoded."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} photo could not be described: unreadable, or no answer."
 msgid_plural "{count} photos could not be described: unreadable, or no answer."
 msgstr[0] ""
@@ -4951,6 +5119,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo has the words of the vision model; {left} left."
 msgid_plural "{count} photos have the words of the vision model; {left} left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo of {total} to analyse; the next runs analyse new ones only."
+msgid_plural "{count} photos of {total} to analyse; the next runs analyse new ones only."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5047,6 +5221,26 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{day} {month} {year} {time}"
 msgstr ""
+
+#, python-brace-format
+msgid "{faces} faces in {photos} photos"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{faces} faces in {photos} photos: no two of them look alike enough to be "
+"grouped."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{faces} faces in {photos} photos: {count} group of faces alike ({sizes}),"
+" {alone} seen once."
+msgid_plural ""
+"{faces} faces in {photos} photos: {count} groups of faces alike, the "
+"largest {sizes}; {alone} seen once."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{field} is not used by match = '{match}'"
@@ -5327,6 +5521,11 @@ msgid ""
 msgstr ""
 
 msgid "🔒 Analyse: read-only, never changes your photos"
+msgstr ""
+
+msgid ""
+"🔒 Faces are personal data: they stay in the cache (/cache), nothing is "
+"sent anywhere. 'people --forget' deletes them all."
 msgstr ""
 
 msgid "🔒 Read-only: never changes your photos."
