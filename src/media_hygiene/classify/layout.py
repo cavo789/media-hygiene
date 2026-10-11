@@ -63,14 +63,16 @@ def check_layout(layout: str) -> None:
     for _text, field, _spec, _conversion in string.Formatter().parse(layout):
         if field is not None and field not in PLACEHOLDERS:
             allowed = ", ".join(f"{{{name}}}" for name in sorted(PLACEHOLDERS))
-            message = (
-                f"unknown placeholder {{{field}}} in {layout!r}; allowed: {allowed}"
-            )
+            message = _(
+                "unknown placeholder {placeholder} in '{layout}'; allowed: {allowed}"
+            ).format(placeholder=f"{{{field}}}", layout=layout, allowed=allowed)
             raise ValueError(message)
     for segment in layout.split("/"):
         fixed = re.sub(r"\{[^}]*\}", "", segment)
         if _FORBIDDEN.search(fixed) or segment.strip(". ") != segment.strip():
-            message = f"{segment!r} is not a folder name Windows accepts"
+            message = _("'{name}' is not a folder name Windows accepts").format(
+                name=segment
+            )
             raise ValueError(message)
 
 

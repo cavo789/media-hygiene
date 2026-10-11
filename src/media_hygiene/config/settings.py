@@ -21,6 +21,7 @@ from media_hygiene.constants import (
     Locale,
     Verbosity,
 )
+from media_hygiene.i18n import _
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
@@ -83,10 +84,10 @@ class FolderSettings(BaseModel):
         """
         for path in paths:
             if any(ord(char) < _FIRST_PRINTABLE for char in path):
-                message = (
-                    f"{path!r} contains a control character: write Windows paths "
+                message = _(
+                    "{path} contains a control character: write Windows paths "
                     "between 'single quotes' in config.toml"
-                )
+                ).format(path=repr(path))
                 raise ValueError(message)
         return paths
 

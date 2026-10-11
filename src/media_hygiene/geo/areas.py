@@ -14,6 +14,8 @@ from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
+from media_hygiene.i18n import _
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -136,18 +138,24 @@ def check_shape(shape: Shape) -> Shape:
             three points, a position off the Earth, or more than `MAX_POINTS` points.
     """
     if not shape or any(not polygon for polygon in shape):
-        message = "an area needs at least one polygon, each with an outer ring"
+        message = _("an area needs at least one polygon, each with an outer ring")
         raise ValueError(message)
     if any(len(set(ring)) < MIN_RING for ring in _rings(shape)):
-        message = f"a ring of an area needs at least {MIN_RING} points"
+        message = _("a ring of an area needs at least {count} points").format(
+            count=MIN_RING
+        )
         raise ValueError(message)
     count = sum(len(ring) for ring in _rings(shape))
     if count > MAX_POINTS:
-        message = f"an area of {count} points is too detailed (at most {MAX_POINTS})"
+        message = _(
+            "an area of {count} points is too detailed (at most {limit})"
+        ).format(count=count, limit=MAX_POINTS)
         raise ValueError(message)
     for latitude, longitude in (p for ring in _rings(shape) for p in ring):
         if abs(latitude) > _MAX_LATITUDE or abs(longitude) > _MAX_LONGITUDE:
-            message = f"({latitude}, {longitude}) is not a position on the Earth"
+            message = _(
+                "({latitude}, {longitude}) is not a position on the Earth"
+            ).format(latitude=latitude, longitude=longitude)
             raise ValueError(message)
     return shape
 

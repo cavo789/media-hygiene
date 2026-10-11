@@ -8,6 +8,7 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from media_hygiene.constants import MEDIA_EXTENSIONS, SIDECAR_EXTENSIONS
+from media_hygiene.i18n import _
 
 # Files the system leaves in folders: a folder holding nothing else is empty.
 JUNK_FILES: Final = ("Thumbs.db", "desktop.ini", ".DS_Store")
@@ -44,16 +45,16 @@ class SortSettings(BaseModel):
         """
         for name in names:
             if not name.strip() or _NOT_IN_A_NAME & set(name):
-                message = (
-                    f"junk_files: {name!r} is not a plain file name "
+                message = _(
+                    "junk_files: '{name}' is not a plain file name "
                     "(no wildcard, no folder), such as Thumbs.db"
-                )
+                ).format(name=name)
                 raise ValueError(message)
             if is_media_name(name):
-                message = (
-                    f"junk_files: {name!r} is a photo, video or sidecar name: "
+                message = _(
+                    "junk_files: '{name}' is a photo, video or sidecar name: "
                     "only 'clean' may remove such a file"
-                )
+                ).format(name=name)
                 raise ValueError(message)
         return names
 

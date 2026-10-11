@@ -6,6 +6,7 @@ import re
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import SIDECAR_EXTENSIONS
+from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -57,15 +58,14 @@ def check_extensions(extensions: Sequence[str]) -> None:
     """
     malformed = [ext for ext in extensions if not _EXTENSION.fullmatch(ext)]
     if malformed:
-        message = (
-            f"invalid extension {', '.join(malformed)}: letters, digits, '-' and "
-            "'_' only, such as pdf"
-        )
+        message = _(
+            "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+        ).format(values=", ".join(malformed))
         raise ValueError(message)
     sidecars = [ext for ext in extensions if ext in SIDECAR_EXTENSIONS]
     if sidecars:
-        message = (
-            f"{', '.join(sidecars)}: sidecars follow the photo of the same name, "
+        message = _(
+            "{values}: sidecars follow the photo of the same name, "
             "they are not analysed on their own"
-        )
+        ).format(values=", ".join(sidecars))
         raise ValueError(message)

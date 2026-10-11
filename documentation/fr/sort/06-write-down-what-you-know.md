@@ -156,7 +156,7 @@ règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et 
 (les règles sont comptées depuis le haut du fichier) :
 
 ```text
-❌ [[classify.rules]] n° 1 dans config.toml : rule 'Anniversaire': '02-30' is not a day that exists.
+❌ [[classify.rules]] n° 1 dans config.toml : règle « Anniversaire » : « 02-30 » n'est pas un jour qui existe.
 💡 Corrigez la valeur, puis relancez la même commande.
 ```
 

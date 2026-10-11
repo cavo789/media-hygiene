@@ -112,6 +112,10 @@ msgid "'undo' can no longer restore these files."
 msgstr "'undo' ne pourra plus restaurer ces fichiers."
 
 #, python-brace-format
+msgid "'{category}' is not a category: no placeholder, not empty"
+msgstr "« {category} » n'est pas une catégorie : ni accolades, ni vide"
+
+#, python-brace-format
 msgid "'{key}' in the variable {name}"
 msgstr "« {key} » dans la variable {name}"
 
@@ -132,8 +136,36 @@ msgid "'{name}' is longer than {count} characters."
 msgstr "« {name} » dépasse {count} caractères."
 
 #, python-brace-format
+msgid "'{name}' is not a folder name Windows accepts"
+msgstr "« {name} » n'est pas un nom de dossier accepté par Windows"
+
+#, python-brace-format
 msgid "'{name}' is not a folder name Windows accepts."
 msgstr "« {name} » n'est pas un nom de dossier que Windows accepte."
+
+#, python-brace-format
+msgid "'{name}' is not a place name: no braces, not empty"
+msgstr "« {name} » n'est pas un nom de lieu : ni accolades, ni vide"
+
+#, python-brace-format
+msgid "'{pattern}' is not a valid regular expression: {reason}"
+msgstr "« {pattern} » n'est pas une expression régulière valide : {reason}"
+
+#, python-brace-format
+msgid "'{text}' ends before it starts"
+msgstr "« {text} » finit avant de commencer"
+
+#, python-brace-format
+msgid "'{text}' is not a date range such as 2023-07-01..2023-07-15"
+msgstr "« {text} » n'est pas une période comme 2023-07-01..2023-07-15"
+
+#, python-brace-format
+msgid "'{text}' is not a day of the year such as 12-24"
+msgstr "« {text} » n'est pas un jour de l'année comme 12-24"
+
+#, python-brace-format
+msgid "'{text}' is not a day that exists"
+msgstr "« {text} » n'est pas un jour qui existe"
 
 #, python-brace-format
 msgid "'{text}' is not a folder below the target."
@@ -142,6 +174,18 @@ msgstr "« {text} » n'est pas un dossier sous la cible."
 #, python-brace-format
 msgid "'{text}': choose {yes} or {no}."
 msgstr "« {text} » : choisissez {yes} ou {no}."
+
+#, python-brace-format
+msgid "'{url}' is not an http:// or https:// address"
+msgstr "« {url} » n'est pas une adresse http:// ou https://"
+
+#, python-brace-format
+msgid "'{url}' is not an https:// address"
+msgstr "« {url} » n'est pas une adresse https://"
+
+#, python-brace-format
+msgid "'{url}' lacks {fields}"
+msgstr "il manque {fields} dans « {url} »"
 
 msgid "(always skipped)"
 msgstr "(toujours ignorés)"
@@ -157,6 +201,10 @@ msgid "({count} more tip: add --verbosity verbose to see it.)"
 msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
 msgstr[0] "({count} autre conseil : ajoutez --verbosity verbose pour le voir.)"
 msgstr[1] "({count} autres conseils : ajoutez --verbosity verbose pour les voir.)"
+
+#, python-brace-format
+msgid "({latitude}, {longitude}) is not a position on the Earth"
+msgstr "({latitude}, {longitude}) n'est pas une position sur la Terre"
 
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
@@ -4474,6 +4522,10 @@ msgstr ""
 "inutile : le dossier est gardé"
 
 #, python-brace-format
+msgid "a ring of an area needs at least {count} points"
+msgstr "un contour de zone demande au moins {count} points"
+
+#, python-brace-format
 msgid "a text between quotes is expected, not {value}"
 msgstr "un texte entre guillemets est attendu, pas {value}"
 
@@ -4504,6 +4556,13 @@ msgstr "les {count} gardées"
 
 msgid "alphabetical order (nothing else differs)"
 msgstr "l'ordre alphabétique (rien d'autre ne diffère)"
+
+msgid "an area needs at least one polygon, each with an outer ring"
+msgstr "une zone demande au moins un polygone, chacun avec un contour extérieur"
+
+#, python-brace-format
+msgid "an area of {count} points is too detailed (at most {limit})"
+msgstr "une zone de {count} points est trop détaillée (au plus {limit})"
 
 #, python-brace-format
 msgid "and {count} more"
@@ -4556,6 +4615,20 @@ msgstr "appareil (EXIF)"
 
 msgid "can be freed"
 msgstr "libérables"
+
+#, python-brace-format
+msgid "category {name} lists no extension, e.g. {name} = ['pdf']"
+msgstr ""
+"la catégorie {name} ne liste aucune extension, par exemple {name} = "
+"['pdf']"
+
+#, python-brace-format
+msgid ""
+"category {name}: a category lists extensions, not categories; for the "
+"extension, write .{value}"
+msgstr ""
+"catégorie {name} : une catégorie liste des extensions, pas des catégories"
+" ; pour l'extension, écrivez .{value}"
 
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
@@ -4689,6 +4762,20 @@ msgstr "sain"
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
 
+#, python-brace-format
+msgid ""
+"invalid category name '{name}': letters, digits, '-' and '_' only, such "
+"as documents"
+msgstr ""
+"nom de catégorie « {name} » invalide : lettres, chiffres, « - » et « _ » "
+"seulement, par exemple documents"
+
+#, python-brace-format
+msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+msgstr ""
+"extension {values} invalide : lettres, chiffres, « - » et « _ » "
+"seulement, par exemple pdf"
+
 msgid "it already exists"
 msgstr "il existe déjà"
 
@@ -4747,6 +4834,22 @@ msgstr ""
 msgid "its size changed"
 msgstr "sa taille a changé"
 
+#, python-brace-format
+msgid ""
+"junk_files: '{name}' is a photo, video or sidecar name: only 'clean' may "
+"remove such a file"
+msgstr ""
+"junk_files : « {name} » est un nom de photo, de vidéo ou de fichier "
+"compagnon : seul « clean » peut supprimer un tel fichier"
+
+#, python-brace-format
+msgid ""
+"junk_files: '{name}' is not a plain file name (no wildcard, no folder), "
+"such as Thumbs.db"
+msgstr ""
+"junk_files : « {name} » n'est pas un simple nom de fichier (sans joker ni"
+" dossier), comme Thumbs.db"
+
 msgid "keep"
 msgstr "garder"
 
@@ -4792,6 +4895,10 @@ msgstr "laissé tel quel"
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
+
+#, python-brace-format
+msgid "match = '{match}' needs {field}"
+msgstr "match = '{match}' demande {field}"
 
 msgid "media files scanned"
 msgstr "fichiers média analysés"
@@ -4930,6 +5037,10 @@ msgstr "Czkawka seulement"
 msgid "only media-hygiene"
 msgstr "media-hygiene seulement"
 
+#, python-brace-format
+msgid "only one place can be home, not {names}"
+msgstr "un seul lieu peut être le domicile (home), pas {names}"
+
 msgid "only the sharpest"
 msgstr "seulement la plus nette"
 
@@ -5000,6 +5111,16 @@ msgstr "retirés de vos dossiers"
 
 msgid "review page"
 msgstr "page de revue"
+
+#, python-brace-format
+msgid "rule '{name}': match = 'trip' needs a [[classify.places]] with home = true"
+msgstr ""
+"règle « {name} » : match = 'trip' demande un [[classify.places]] avec "
+"home = true"
+
+#, python-brace-format
+msgid "rule '{name}': {reason}"
+msgstr "règle « {name} » : {reason}"
 
 msgid "run"
 msgstr "exécution"
@@ -5220,11 +5341,29 @@ msgstr "aujourd'hui"
 msgid "true or false is expected, not {value}"
 msgstr "true ou false est attendu, pas {value}"
 
+#, python-brace-format
+msgid "two places are named '{name}'"
+msgstr "deux lieux s'appellent « {name} »"
+
+#, python-brace-format
+msgid "two rules are named '{name}'"
+msgstr "deux règles s'appellent « {name} »"
+
 msgid "undo the last choice"
 msgstr "annuler le dernier choix"
 
 msgid "unknown"
 msgstr "inconnu"
+
+#, python-brace-format
+msgid "unknown placeholder {placeholder} in '{layout}'; allowed: {allowed}"
+msgstr "variable {placeholder} inconnue dans « {layout} » ; possibles : {allowed}"
+
+#, python-brace-format
+msgid "unknown time zone '{name}', expected a name like 'Europe/Brussels'"
+msgstr ""
+"fuseau horaire « {name} » inconnu, un nom comme 'Europe/Brussels' est "
+"attendu"
 
 msgid "usage policy"
 msgstr "conditions d'utilisation"
@@ -5298,6 +5437,10 @@ msgstr "{actions} ?"
 #, python-brace-format
 msgid "{aside} of {count} set aside"
 msgstr "{aside} écartée(s) sur {count}"
+
+#, python-brace-format
+msgid "{category} cannot be used in a category"
+msgstr "{category} ne peut pas servir dans une catégorie"
 
 #, python-brace-format
 msgid "{cell}: '{key}' is not a row of this plan."
@@ -5855,6 +5998,10 @@ msgid "{day} {month} {year} {time}"
 msgstr "{day} {month} {year} {time}"
 
 #, python-brace-format
+msgid "{field} is not used by match = '{match}'"
+msgstr "{field} ne sert pas avec match = '{match}'"
+
+#, python-brace-format
 msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr "{files} fichiers, {copies} copies en trop ({size}), {broken} illisibles."
 
@@ -5908,6 +6055,18 @@ msgid "{limit} or more is expected, not {value}"
 msgstr "au moins {limit} est attendu, pas {value}"
 
 #, python-brace-format
+msgid ""
+"{name} is a built-in category, it cannot be redefined: choose another "
+"name, e.g. my_{name}"
+msgstr ""
+"{name} est une catégorie prédéfinie, elle ne peut pas être redéfinie : "
+"choisissez un autre nom, par exemple my_{name}"
+
+#, python-brace-format
+msgid "{name} is an extension: choose another name for the category"
+msgstr "{name} est une extension : choisissez un autre nom pour la catégorie"
+
+#, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
 
@@ -5942,6 +6101,22 @@ msgstr "{path} appartient à une autre exécution de 'classify'."
 #, python-brace-format
 msgid "{path} changed since"
 msgstr "{path} a changé depuis"
+
+#, python-brace-format
+msgid ""
+"{path} contains a control character: write Windows paths between 'single "
+"quotes' in config.toml"
+msgstr ""
+"{path} contient un caractère de contrôle : écrivez les chemins Windows "
+"entre 'apostrophes' dans config.toml"
+
+#, python-brace-format
+msgid ""
+"{path} is a path, not a folder name: use --exclude (folders.excluded) for"
+" one precise folder"
+msgstr ""
+"{path} est un chemin, pas un nom de dossier : utilisez --exclude "
+"(folders.excluded) pour un dossier précis"
 
 #, python-brace-format
 msgid "{path} is in a protected folder: it is never moved."
@@ -6082,6 +6257,22 @@ msgstr[0] ""
 msgstr[1] ""
 "{units} événements ou photos isolées n'ont pas de signal plus fort que "
 "leur sujet : {samples} photos répondent pour eux."
+
+#, python-brace-format
+msgid ""
+"{values}: sidecars follow the photo of the same name, they are not "
+"analysed on their own"
+msgstr ""
+"{values} : les fichiers compagnons suivent la photo du même nom, ils ne "
+"sont pas analysés seuls"
+
+#, python-brace-format
+msgid ""
+"{value}: unknown category, did you mean {name}? For the extension, write "
+".{value}"
+msgstr ""
+"{value} : catégorie inconnue, vouliez-vous dire {name} ? Pour "
+"l'extension, écrivez .{value}"
 
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."

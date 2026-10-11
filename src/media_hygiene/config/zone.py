@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from typing import Final
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from media_hygiene.i18n import _
+
 _TZ_VARIABLE: Final = "TZ"
 
 
@@ -33,7 +35,9 @@ def check_timezone(name: str) -> str:
     try:
         ZoneInfo(name)
     except (ZoneInfoNotFoundError, ValueError) as exc:
-        message = f"unknown time zone {name!r}, expected a name like 'Europe/Brussels'"
+        message = _(
+            "unknown time zone '{name}', expected a name like 'Europe/Brussels'"
+        ).format(name=name)
         raise ValueError(message) from exc
     return name
 

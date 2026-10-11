@@ -160,3 +160,18 @@ def test_a_bad_option_value_names_the_command_line(locations: Locations) -> None
     """A refused value typed as an option is said to come from the command line."""
     error = refused(locations, {"general": {"color": "pink"}})
     assert error.message.startswith("'color' on the command line: one of")
+
+
+def test_a_validator_reason_reads_in_french(locations: Locations) -> None:
+    """The project's own reasons are translated too: no English left in the sentence."""
+    locations.config_file.write_text(
+        '[[classify.rules]]\nname = "Anniversaire"\nmatch = "calendar"\n'
+        'dates = "02-30"\ncategory = "Fêtes"\n'
+    )
+    install(Locale.FR)
+    message = refused(locations).message
+    assert message == (
+        "[[classify.rules]] n° 1 dans config.toml : règle « Anniversaire » : "
+        "« 02-30 » n'est pas un jour qui existe."
+    )
+    assert not any(word in message for word in ("rule ", "is not", "day", "exists"))

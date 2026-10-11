@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING, Final
 
 from rich.markup import escape
 
+from media_hygiene.classify.rules.calendar import overlapping_ranges
 from media_hygiene.cli.context import warn
 from media_hygiene.cli.next_steps import carried, suggest
-from media_hygiene.config.classify_rules import overlapping_ranges
 from media_hygiene.console.carry_view import show_carried
 from media_hygiene.constants import CLASSIFY_WORKBOOK_FILE_NAME, REPORT_FILE_NAME
 from media_hygiene.errors import ConfigError, MountError

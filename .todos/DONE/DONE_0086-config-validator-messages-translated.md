@@ -27,3 +27,13 @@ about twenty of them are plain English f-strings, so a French user reads:
 ## Acceptance
 
 - A unit test loads an impossible rule date in French: no English words in the message.
+
+## Status
+
+DONE (2026-10-11). Every `ValueError` raised by a config validator (`config/`,
+`classify/rules/calendar.py`, `classify/layout.py`, `geo/areas.py`) goes through `_()` with
+`{placeholders}`; 37 French translations. Quoted values read `'x'` in English (was `repr`) and
+`« x »` in French; control-character paths keep `repr` so the culprit stays visible.
+`overlapping_ranges` moved from `config/classify_rules.py` to `classify/rules/calendar.py` to keep
+the file under 200 lines. Left in English: the detail of Python's `re` module inside "not a valid
+regular expression". Acceptance test: `test_a_validator_reason_reads_in_french`.

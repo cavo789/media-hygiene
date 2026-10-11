@@ -8,17 +8,14 @@ itself. The default list is an example, written in the generated `config.toml`.
 from __future__ import annotations
 
 import re
-from itertools import combinations
-from typing import TYPE_CHECKING, Self
+from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import BUILT_IN, FileKind, RuleMatch
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
+from media_hygiene.i18n import _
 
 _NEEDS = {
     RuleMatch.CALENDAR: "dates",
@@ -63,7 +60,7 @@ class ClassifyRule(BaseModel):
         try:
             _check(self)
         except (ValueError, re.error) as exc:
-            message = f"rule {self.name!r}: {exc}"
+            message = _("rule '{name}': {reason}").format(name=self.name, reason=exc)
             raise ValueError(message) from exc
         return self
 
@@ -79,11 +76,13 @@ def _check(rule: ClassifyRule) -> None:
     """
     needed = _NEEDS.get(rule.match)
     if needed and not getattr(rule, needed):
-        message = f"match = {rule.match.value!r} needs {needed}"
+        message = _("match = '{match}' needs {field}")
+        message = message.format(match=rule.match.value, field=needed)
         raise ValueError(message)
     for field in (*_OPTIONAL, "category"):
         if field != needed and getattr(rule, field) and not _uses(rule.match, field):
-            message = f"{field} is not used by match = {rule.match.value!r}"
+            message = _("{field} is not used by match = '{match}'")
+            message = message.format(field=field, match=rule.match.value)
             raise ValueError(message)
     if rule.match is RuleMatch.CALENDAR:
         parse_recurring(rule.dates)
@@ -92,7 +91,7 @@ def _check(rule: ClassifyRule) -> None:
     if rule.pattern:
         re.compile(rule.pattern)
     if "{category}" in rule.category:
-        message = "{category} cannot be used in a category"
+        message = _("{category} cannot be used in a category")
         raise ValueError(message)
     check_layout(rule.category)
     _check_categories(rule.categories)
@@ -109,7 +108,8 @@ def _check_categories(categories: tuple[str, ...]) -> None:
     """
     for category in categories:
         if not category.strip() or "{" in category:
-            message = f"{category!r} is not a category: no placeholder, not empty"
+            message = _("'{category}' is not a category: no placeholder, not empty")
+            message = message.format(category=category)
             raise ValueError(message)
         check_layout(category)
 
@@ -146,31 +146,10 @@ def unique_names(rules: tuple[ClassifyRule, ...]) -> tuple[ClassifyRule, ...]:
     seen: set[str] = set()
     for rule in rules:
         if rule.name.casefold() in seen:
-            message = f"two rules are named {rule.name!r}"
+            message = _("two rules are named '{name}'").format(name=rule.name)
             raise ValueError(message)
         seen.add(rule.name.casefold())
     return rules
-
-
-def overlapping_ranges(rules: Sequence[ClassifyRule]) -> tuple[tuple[str, str], ...]:
-    """The pairs of date ranges sharing a day: the first one listed wins.
-
-    Args:
-        rules: The rules.
-
-    Returns:
-        The names of each such pair, in list order.
-    """
-    ranges = [
-        (rule.name, parse_one_off(rule.dates))
-        for rule in rules
-        if rule.match is RuleMatch.DATE_RANGE
-    ]
-    return tuple(
-        (first, second)
-        for (first, one), (second, other) in combinations(ranges, 2)
-        if one.overlaps(other)
-    )
 
 
 DEFAULT_RULES = (
