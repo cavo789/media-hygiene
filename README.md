@@ -1,7 +1,14 @@
 # media-hygiene
 
-Find and safely clean duplicate photos and videos spread over several folders and disks — from
-one `docker run`, on Windows (PowerShell) or WSL.
+Clean, sort and explore the photos and videos spread over several folders and disks — from one
+`docker run`, on Windows (PowerShell) or WSL. Everything runs on your computer, and every change
+is journaled and can be undone.
+
+- **Clean the duplicates**: identical copies, resized or recompressed ones, burst series.
+- **Sort**: a tidy tree proposed by date, event, place (GPS, offline) and subject (a local vision
+  model), that you correct before anything moves.
+- **Find the people**: the faces are found and grouped on your computer, to sort the photos by
+  person, without a photo server such as Immich (first version: find and group; naming next).
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)

@@ -1,7 +1,15 @@
 # media-hygiene
 
-Trouve et nettoie en toute sécurité les photos et vidéos en double, réparties sur plusieurs
-dossiers et plusieurs disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL.
+Nettoie, range et explore les photos et vidéos réparties sur plusieurs dossiers et plusieurs
+disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL. Tout se passe sur votre
+ordinateur, et chaque changement est journalisé et peut être annulé.
+
+- **Nettoyer les doublons** : copies identiques, copies redimensionnées ou recompressées, rafales.
+- **Ranger** : une arborescence proposée par date, événement, lieu (GPS, hors ligne) et sujet (un
+  modèle de vision local), que vous corrigez avant que rien ne bouge.
+- **Retrouver les personnes** : les visages sont trouvés et regroupés sur votre ordinateur, pour
+  ranger les photos par personne, sans serveur photo comme Immich (première version : trouver
+  et regrouper ; les nommer viendra ensuite).
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
