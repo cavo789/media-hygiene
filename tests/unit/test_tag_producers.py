@@ -16,9 +16,9 @@ from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.scan.models import VisualFacts
 from media_hygiene.tags.context import TagContext, tag_context
-from media_hygiene.tags.models import Tag, TagSource
+from media_hygiene.tags.models import PlaceKind, Tag, TagSource
 from media_hygiene.tags.normalize import WordRules
-from media_hygiene.tags.producers import cheap_tags, folder_words, place_words
+from media_hygiene.tags.producers import cheap_tags, folder_words, place_tags
 from tests.support.towns import write_towns
 
 ROOT = Path("/data/c/Photos")
@@ -137,16 +137,28 @@ def test_places_name_the_users_place_then_the_town(tmp_path: Path) -> None:
     home = PersonalPlace(name="Chez Marco", latitude=45.0712, longitude=7.685)
     settings = Settings.model_validate({"classify": {"places": [home]}})
     chosen = replace(context(settings), towns=Gazetteer.load(write_towns(tmp_path)))
-    assert place_words(photo("a.jpg", metadata=TURIN), chosen) == (
-        "Chez Marco",
-        "Turin",
-        "Italy",
+    assert place_tags(photo("a.jpg", metadata=TURIN), chosen) == (
+        Tag(TagSource.PLACE, "Chez Marco", kind=PlaceKind.PERSONAL),
+        Tag(TagSource.PLACE, "Turin", kind=PlaceKind.TOWN),
+        Tag(TagSource.PLACE, "Italy", kind=PlaceKind.COUNTRY),
     )
-    assert not place_words(photo("a.jpg"), chosen)
+    assert not place_tags(photo("a.jpg"), chosen)
     sea = MediaMetadata(latitude=40.0, longitude=10.0)
-    assert not place_words(photo("a.jpg", metadata=sea), chosen)
+    assert not place_tags(photo("a.jpg", metadata=sea), chosen)
+
+
+def test_a_place_named_like_its_town_is_kept_once(tmp_path: Path) -> None:
+    """A personal place called `turin`: one word, of the first kind found."""
+    home = PersonalPlace(name="turin", latitude=45.0712, longitude=7.685)
+    settings = Settings.model_validate({"classify": {"places": [home]}})
+    chosen = replace(context(settings), towns=Gazetteer.load(write_towns(tmp_path)))
+    found = place_tags(photo("a.jpg", metadata=TURIN), chosen)
+    assert [(tag.value, tag.kind) for tag in found] == [
+        ("turin", PlaceKind.PERSONAL),
+        ("Italy", PlaceKind.COUNTRY),
+    ]
 
 
 def test_without_towns_only_personal_places() -> None:
     """No gazetteer loaded: no town, no error."""
-    assert not place_words(photo("a.jpg", metadata=TURIN), context())
+    assert not place_tags(photo("a.jpg", metadata=TURIN), context())

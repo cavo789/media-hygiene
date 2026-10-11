@@ -152,6 +152,12 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
 - **What is written**: the words of the sources in `xmp_sources` (`vision` and `place` by
   default: the folder and date words are in the path already) into `dc:subject`, the model's
   sentence into `dc:description`.
+- **The place apart**: with `place` in `xmp_sources`, the town also goes into `photoshop:City`,
+  its country into `photoshop:Country` and your first personal place (`[[classify.places]]`)
+  into `Iptc4xmpCore:Location`, the fields digiKam, Lightroom and Immich show apart from the
+  keywords. A field another application filled keeps its value; a field you emptied there is not
+  filled again. After an update, run `tags` once more: the places found before do not know yet
+  whether they are a town or a country, and fill these fields only then.
 - **Where**: `IMG_1.jpg.xmp` next to `IMG_1.jpg`. A sidecar already there (`IMG_1.jpg.xmp`, or
   `IMG_1.xmp` when it belongs to that photo alone) is completed, never replaced: its edits, its
   other properties and its own words stay; the sentence is only set when it has none. A sidecar

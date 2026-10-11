@@ -21,7 +21,18 @@ XMP_NS: Final = "http://ns.adobe.com/xap/1.0/"
 # What this tool wrote last, to replace it next time and never add back a word the
 # user removed in another application.
 MH_NS: Final = "https://github.com/cavo789/media-hygiene/ns/xmp/1.0/"
-PREFIXES: Final = {"x": X_NS, "rdf": RDF_NS, "dc": DC_NS, "xmp": XMP_NS, "mh": MH_NS}
+# Where photo managers read the town, the country and the place shown apart.
+PHOTOSHOP_NS: Final = "http://ns.adobe.com/photoshop/1.0/"
+IPTC_CORE_NS: Final = "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
+PREFIXES: Final = {
+    "x": X_NS,
+    "rdf": RDF_NS,
+    "dc": DC_NS,
+    "xmp": XMP_NS,
+    "photoshop": PHOTOSHOP_NS,
+    "Iptc4xmpCore": IPTC_CORE_NS,
+    "mh": MH_NS,
+}
 LANG: Final = "{http://www.w3.org/XML/1998/namespace}lang"
 DEFAULT_LANG: Final = "x-default"
 ABOUT: Final = f"{{{RDF_NS}}}about"

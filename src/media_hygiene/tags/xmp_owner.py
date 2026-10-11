@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.constants import APP_NAME
 from media_hygiene.tags.xmp_doc import ABOUT, MH_NS, XmpError, parse, text_of
 from media_hygiene.tags.xmp_merge import CAPTION, CREATOR, SUBJECT
+from media_hygiene.tags.xmp_places import PLACE_FIELDS
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     from media_hygiene.tags.xmp_doc import XmpDoc
 
 _XMP: Final = ".xmp"
-_OURS: Final = frozenset({ABOUT, CREATOR, SUBJECT, CAPTION})
+_OURS: Final = frozenset({ABOUT, CREATOR, SUBJECT, CAPTION, *PLACE_FIELDS})
 # A sidecar this large holds more than our few words: not read, not ours.
 _LARGEST_OURS: Final = 256 * 1024
 

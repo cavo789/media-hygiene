@@ -25,6 +25,14 @@ class TagSource(StrEnum):
     PLACE = "place"  # a personal place, the GeoNames town and country
 
 
+class PlaceKind(StrEnum):
+    """What a `place` word names: `xmp` writes each kind into its own field."""
+
+    PERSONAL = "personal"  # a place of the user's (`[[classify.places]]`): Location
+    TOWN = "town"  # the GeoNames town: City
+    COUNTRY = "country"  # its country: Country
+
+
 # Seconds of work per file: the sources computed without any model.
 CHEAP_SOURCES: Final = (
     TagSource.FOLDER,
@@ -41,6 +49,7 @@ class Tag:
     source: TagSource
     value: str
     model: str = ""  # the vision model, for its sources; empty otherwise
+    kind: PlaceKind | None = None  # for `place` words; None: other or not known yet
 
 
 @dataclass(frozen=True, slots=True)

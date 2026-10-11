@@ -24,6 +24,7 @@ from media_hygiene.scan.sidecars import companions_of
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.xmp_doc import XmpError, parse
 from media_hygiene.tags.xmp_merge import XmpValues, merge, new_document
+from media_hygiene.tags.xmp_places import NO_PLACES, places_of
 
 if TYPE_CHECKING:
     import sqlite3
@@ -108,7 +109,11 @@ def _values(
         if tag.source in sources and tag.source is not TagSource.CAPTION
     )
     captions = [tag.value for tag in tags if tag.source is TagSource.CAPTION]
-    return XmpValues(tuple(words), captions[0] if captions else "")
+    return XmpValues(
+        tuple(words),
+        captions[0] if captions else "",
+        places_of(tags) if TagSource.PLACE in sources else NO_PLACES,
+    )
 
 
 def _plan_file(

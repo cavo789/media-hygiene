@@ -159,6 +159,13 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
 - **Ce qui est écrit** : les mots des sources de `xmp_sources` (`vision` et `place` par défaut :
   les mots des dossiers et des dates sont déjà dans le chemin) dans `dc:subject`, la phrase du
   modèle dans `dc:description`.
+- **Le lieu à part** : avec `place` dans `xmp_sources`, la ville va aussi dans
+  `photoshop:City`, son pays dans `photoshop:Country` et votre premier lieu personnel
+  (`[[classify.places]]`) dans `Iptc4xmpCore:Location`, les champs que digiKam, Lightroom et
+  Immich affichent à part des mots-clés. Un champ déjà rempli par une autre application garde sa
+  valeur ; un champ que vous y avez vidé n'est pas rempli à nouveau. Après une mise à jour,
+  relancez `tags` une fois : les lieux trouvés avant ne savent pas encore s'ils sont une ville ou
+  un pays, et ne remplissent ces champs qu'ensuite.
 - **Où** : `IMG_1.jpg.xmp` à côté de `IMG_1.jpg`. Un fichier compagnon déjà là (`IMG_1.jpg.xmp`,
   ou `IMG_1.xmp` quand il n'appartient qu'à cette photo) est complété, jamais remplacé : ses
   retouches, ses autres propriétés et ses propres mots restent ; la phrase n'est posée que s'il

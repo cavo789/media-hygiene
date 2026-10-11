@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.read_only import connect_read_only
-from media_hygiene.tags.models import Tag, TagSource
+from media_hygiene.tags.models import PlaceKind, Tag, TagSource
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Sequence
@@ -24,13 +24,15 @@ if TYPE_CHECKING:
 
 _DELETE: Final = "DELETE FROM tags WHERE path = ? AND source = ?"
 _INSERT: Final = (
-    "INSERT OR REPLACE INTO tags (path, size, mtime_ns, source, value, model)"
-    " VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT OR REPLACE INTO tags (path, size, mtime_ns, source, value, model, kind)"
+    " VALUES (?, ?, ?, ?, ?, ?, ?)"
 )
+# An index of version 6 opened read-only (`search`) has no `kind` yet: read as ''.
 _OF: Final = (
-    "SELECT source, value, model FROM tags"
+    "SELECT source, value, model, {kind} FROM tags"
     " WHERE path = ? AND size = ? AND mtime_ns = ? ORDER BY rowid"
 )
+_COLUMNS: Final = "PRAGMA table_info(tags)"
 _JOINED: Final = "; "  # between two tags of a cell
 # A sentence is for the search, not for a cell: the words are.
 _CELL_SOURCES: Final = frozenset(TagSource) - {TagSource.CAPTION}
@@ -47,6 +49,8 @@ class TagStore:
             connection: The index connection, tables prepared.
         """
         self._connection = connection
+        columns = {row[1] for row in connection.execute(_COLUMNS)}
+        self._of = _OF.format(kind="kind" if "kind" in columns else "''")
 
     def replace(self, sources: Iterable[TagSource], files: Sequence[FileTags]) -> int:
         """Replace the tags of some sources for some files, in one transaction.
@@ -76,6 +80,7 @@ class TagStore:
                 tag.source.value,
                 tag.value,
                 tag.model,
+                tag.kind.value if tag.kind is not None else "",
             )
             for file in files
             for tag in file.tags
@@ -95,11 +100,11 @@ class TagStore:
             Its tags, in the order they were written; empty when none (or stale).
         """
         found = self._connection.execute(
-            _OF, (str(photo.path), photo.size, photo.mtime_ns)
+            self._of, (str(photo.path), photo.size, photo.mtime_ns)
         )
         return tuple(
-            Tag(TagSource(source), str(value), str(model))
-            for source, value, model in found
+            Tag(TagSource(source), str(value), str(model), _kind(kind))
+            for source, value, model, kind in found
             if source in TagSource
         )
 
@@ -114,6 +119,19 @@ class TagStore:
             for source, count in self._connection.execute(_COUNTS)
             if source in TagSource
         }
+
+
+def _kind(value: object) -> PlaceKind | None:
+    """Read the kind of a place word.
+
+    Args:
+        value: The `kind` column.
+
+    Returns:
+        The kind; None for another source, a word of an older run, or an unknown one.
+    """
+    kind = str(value)
+    return PlaceKind(kind) if kind in PlaceKind else None
 
 
 def tags_reader(connection: sqlite3.Connection) -> Callable[[IndexedFile], str | None]:

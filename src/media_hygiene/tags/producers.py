@@ -14,7 +14,7 @@ from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.date_names import MONTHS
 from media_hygiene.geo.distance import distance_km
 from media_hygiene.tags.dates import date_words
-from media_hygiene.tags.models import Tag, TagSource
+from media_hygiene.tags.models import PlaceKind, Tag, TagSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -47,7 +47,7 @@ def cheap_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
     return (
         *_tags(TagSource.FOLDER, folder_words(file, context)),
         *_tags(TagSource.DATE, date_words(file, context)),
-        *_tags(TagSource.PLACE, place_words(file, context)),
+        *place_tags(file, context),
     )
 
 
@@ -72,7 +72,7 @@ def folder_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
     )
 
 
-def place_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
+def place_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
     """Where the file was taken: a place of the user's, the town and its country.
 
     Args:
@@ -80,16 +80,26 @@ def place_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
         context: The personal places and the towns.
 
     Returns:
-        E.g. `Maison`, `Durbuy`, `Belgique`; nothing without a GPS position.
+        E.g. `Maison` (personal), `Durbuy` (town), `Belgique` (country), each once
+        whatever its case; nothing without a GPS position.
     """
     point = located_point(file.metadata)
     if point is None:
         return ()
-    found = [zone.place.name for zone in context.places if zone.rank(point) is not None]
+    found = [
+        (zone.place.name, PlaceKind.PERSONAL)
+        for zone in context.places
+        if zone.rank(point) is not None
+    ]
     town = context.towns.nearest(point) if context.towns is not None else None
     if town is not None and distance_km(point, town.point) <= context.town_km:
-        found.extend((town.name, town.country))
-    return tuple(word for word in found if word)
+        found.extend(((town.name, PlaceKind.TOWN), (town.country, PlaceKind.COUNTRY)))
+    seen: dict[str, Tag] = {}
+    for word, kind in found:
+        name = word.strip()
+        if name:
+            seen.setdefault(name.casefold(), Tag(TagSource.PLACE, name, "", kind))
+    return tuple(seen.values())
 
 
 def _tags(source: TagSource, words: Iterable[str]) -> tuple[Tag, ...]:

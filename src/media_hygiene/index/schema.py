@@ -5,9 +5,11 @@ versioned JSON document, plus typed columns for what later steps query) and when
 mounted folder was last walked completely; version 4 what a local model saw in a
 photo and the categories it chose (`subject` rules); version 5 the fingerprint of
 videos (the hashes of a few frames, `scan.keyframes`); version 6 the tags of each
-file (`index.tag_rows`: folder words, dates, places, what a vision model saw). An
-older index keeps its digests and integrity results: the new columns are filled once,
-without decoding images again.
+file (`index.tag_rows`: folder words, dates, places, what a vision model saw);
+version 7 what each place word names (`tags.models.PlaceKind`: `kind`, empty for the
+words of an older run until `tags` runs again). An older index keeps its digests
+and integrity results: the new columns are filled once, without decoding images
+again.
 """
 
 from __future__ import annotations
@@ -17,7 +19,7 @@ from typing import TYPE_CHECKING, Final
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 6
+SCHEMA_VERSION: Final = 7
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -85,7 +87,8 @@ CREATE TABLE IF NOT EXISTS subject_mappings (
 )
 """
 # Added by version 6: the searchable words of a file, one row per word and source
-# (`tags.models.TagSource`); `model` names the vision model of its sources.
+# (`tags.models.TagSource`); `model` names the vision model of its sources, `kind`
+# what a place word names (added by version 7).
 _CREATE_TAGS: Final = """
 CREATE TABLE IF NOT EXISTS tags (
     path TEXT NOT NULL,
@@ -94,9 +97,11 @@ CREATE TABLE IF NOT EXISTS tags (
     source TEXT NOT NULL,
     value TEXT NOT NULL,
     model TEXT NOT NULL DEFAULT '',
+    kind TEXT NOT NULL DEFAULT '',
     PRIMARY KEY (path, source, value)
 )
 """
+_TAG_KIND: Final = "ALTER TABLE tags ADD COLUMN kind TEXT NOT NULL DEFAULT ''"
 _CREATE_TAG_VALUES: Final = "CREATE INDEX IF NOT EXISTS tags_value ON tags (value)"
 # What `rows.facts_of` reads, in its order.
 _FACTS: Final = (
@@ -152,5 +157,7 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(_CREATE_DESCRIPTIONS)
     connection.execute(_CREATE_MAPPINGS)
     connection.execute(_CREATE_TAGS)
+    if "kind" not in {row[1] for row in connection.execute("PRAGMA table_info(tags)")}:
+        connection.execute(_TAG_KIND)
     connection.execute(_CREATE_TAG_VALUES)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

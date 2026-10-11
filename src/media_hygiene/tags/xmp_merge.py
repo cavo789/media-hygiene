@@ -5,6 +5,7 @@
   a word it wrote that is gone (removed in another application) is not added again.
 - `dc:description` gets the model's sentence only when empty, or when it still holds
   the sentence this tool wrote last time (`mh:description`).
+- The town, the country and the user's place go into the location fields: `xmp_places`.
 - A new sidecar says who wrote it (`xmp:CreatorTool`): see `xmp_owner`.
 """
 
@@ -14,6 +15,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.tags import xmp_places
 from media_hygiene.tags.xmp_doc import (
     ABOUT,
     ALT,
@@ -47,10 +49,11 @@ _INDENT: Final = " "
 
 @dataclass(frozen=True, slots=True)
 class XmpValues:
-    """What this tool writes for one file: its words, and the model's sentence."""
+    """What this tool writes for one file: its words, the sentence, the place."""
 
     subjects: tuple[str, ...]
     description: str = ""
+    places: xmp_places.XmpPlaces = xmp_places.NO_PLACES
 
 
 def merge(doc: XmpDoc, values: XmpValues) -> bool:
@@ -65,6 +68,7 @@ def merge(doc: XmpDoc, values: XmpValues) -> bool:
     """
     before = _snapshot(doc)
     _merge(doc, values)
+    xmp_places.merge_places(doc, values.places)
     return _snapshot(doc) != before
 
 
@@ -75,13 +79,14 @@ def _snapshot(doc: XmpDoc) -> tuple[object, ...]:
         doc: The sidecar.
 
     Returns:
-        Its words, ours, its sentence, ours.
+        Its words, ours, its sentence, ours, its location fields and ours.
     """
     return (
         items(doc.find(SUBJECT)),
         items(doc.find(_MH_SUBJECTS)),
         _caption(doc),
         text_of(doc.find(_MH_CAPTION)),
+        xmp_places.places_snapshot(doc),
     )
 
 
