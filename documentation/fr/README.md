@@ -9,7 +9,7 @@ vos doublons.
 
 **Vos photos sont en sécurité.** `audit`, `classify` et les autres analyses ne modifient jamais
 une photo ; avec `:ro` sur vos dossiers, le système lui-même l'interdit. Les commandes qui
-agissent (`clean`, `sort`, `album`, `undo`) ne font que déplacer des fichiers, jamais par-dessus
+agissent (`clean`, `sort`, `album`, `xmp`, `undo`) ne font que déplacer des fichiers ou en ajouter, jamais par-dessus
 un autre, et peuvent toutes être annulées. Seul `purge` efface, la quarantaine, après vous l'avoir
 demandé. Détails : [comment vos photos restent en sécurité](reference-safety.md).
 
@@ -89,8 +89,9 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 
 ## Référence
 
-- [Commandes et options](reference-commands.md) : chaque commande, chaque option, et leur
-  `--help`.
+- [Commandes et options](reference-commands.md) : quelle commande pour quoi, puis une page par
+  commande (`audit`, `clean`, `review`, `classify`, `sort`…) : ce qu'elle fait, les dossiers dont
+  elle a besoin, ses options, des exemples et son `--help`.
 - [Points de montage](reference-mount-points.md) : `/data`, `/cache`, `/reports`, `/config`,
   `/journal`, `/quarantine`.
 - [Comment vos photos restent en sécurité](reference-safety.md) : ce qui compte comme doublon, ce

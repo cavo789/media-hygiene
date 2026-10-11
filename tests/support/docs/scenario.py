@@ -37,6 +37,13 @@ COMMANDS_TOO: Final = (
     "album",
     "inventory",
     "places",
+    "status",
+    "launcher",
+    "review-sort",
+    "tags",
+    "search",
+    "people",
+    "xmp",
 )
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),

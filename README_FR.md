@@ -49,13 +49,13 @@ rafales et les quasi-doublons seulement si vous le demandez.
 
 **Nous le garantissons : ces commandes ne modifient, ne déplacent ni ne suppriment jamais une
 photo ou une vidéo** — `audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`,
-`inventory`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
+`inventory`, `tags`, `search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
 (rapports, cache, `config.toml`). Lancez-les avec vos dossiers montés en `:ro` : le système
 lui-même interdit alors toute modification.
 
 **Les commandes qui agissent n'effacent jamais rien.** `sort` déplace des fichiers (sur un même
 disque, un simple renommage : aucune copie, aucune place prise), `album` ajoute des seconds noms,
-`clean` déplace les copies en double en quarantaine après les avoir comparées octet par octet avec
+`xmp` écrit de petits fichiers compagnons `.xmp` à côté des photos, `clean` déplace les copies en double en quarantaine après les avoir comparées octet par octet avec
 la copie gardée, `undo` remet en place. Jamais par-dessus un autre fichier, chaque étape
 journalisée, tout est annulable.
 
@@ -120,12 +120,28 @@ seule chose à la commande de l'étape précédente.
 11. [Albums](documentation/fr/sort/11-albums.md) — une photo dans plusieurs dossiers, en liens
     physiques : aucune copie, aucune place prise (facultatif).
 
+**Chaque commande a sa page** : ce qu'elle fait, les dossiers dont elle a besoin, ses options, des
+exemples : [`audit`](documentation/fr/commands/audit.md), [`status`](documentation/fr/commands/status.md),
+[`clean`](documentation/fr/commands/clean.md), [`undo`](documentation/fr/commands/undo.md),
+[`history`](documentation/fr/commands/history.md), [`purge`](documentation/fr/commands/purge.md),
+[`review`](documentation/fr/commands/review.md), [`reports`](documentation/fr/commands/reports.md),
+[`crosscheck`](documentation/fr/commands/crosscheck.md), [`config`](documentation/fr/commands/config.md),
+[`launcher`](documentation/fr/commands/launcher.md), [`classify`](documentation/fr/commands/classify.md),
+[`review-sort`](documentation/fr/commands/review-sort.md), [`sort`](documentation/fr/commands/sort.md),
+[`album`](documentation/fr/commands/album.md), [`places`](documentation/fr/commands/places.md),
+[`inventory`](documentation/fr/commands/inventory.md), [`tags`](documentation/fr/commands/tags.md),
+[`search`](documentation/fr/commands/search.md), [`xmp`](documentation/fr/commands/xmp.md),
+[`people`](documentation/fr/commands/people.md). Vous hésitez ?
+[Quelle commande ?](documentation/fr/reference-commands.md#quelle-commande-)
+
 **Référence** : [commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),
 [fichiers compagnons](documentation/fr/reference-sidecars.md),
 [dépannage](documentation/fr/reference-troubleshooting.md),
 [le classeur d'inventaire](documentation/fr/reference-inventory.md),
+[les tags](documentation/fr/reference-tags.md),
+[les personnes](documentation/fr/reference-people.md),
 [utilisation avancée](documentation/fr/reference-advanced.md).
 
 **Pour les développeurs** : [construire l'image, le devcontainer, les versions](documentation/fr/development.md).

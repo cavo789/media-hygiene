@@ -8,7 +8,7 @@ need: after step 1 you already know where your duplicates are.
 
 **Your photos are safe.** `audit`, `classify` and the other analyses never change a photo; with
 `:ro` on your folders, the system itself forbids it. The commands that act (`clean`, `sort`,
-`album`, `undo`) only move files, never over another one, and can all be undone. Only `purge`
+`album`, `xmp`, `undo`) only move files or add new ones, never over another one, and can all be undone. Only `purge`
 erases, the quarantine, after asking you. Details:
 [how your photos stay safe](reference-safety.md).
 
@@ -82,7 +82,9 @@ otherwise both copies are sorted.
 
 ## Reference
 
-- [Commands and options](reference-commands.md): every command, every option, and their `--help`.
+- [Commands and options](reference-commands.md): which command for what, then one page per
+  command (`audit`, `clean`, `review`, `classify`, `sort`…): what it does, the folders it needs,
+  its options, examples and its `--help`.
 - [Mount points](reference-mount-points.md): `/data`, `/cache`, `/reports`, `/config`,
   `/journal`, `/quarantine`.
 - [How your photos stay safe](reference-safety.md): what counts as a duplicate, what is checked

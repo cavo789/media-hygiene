@@ -18,6 +18,8 @@ modified, moved nor deleted**.
 | `review`, `review-sort` | Your choices, in a small `.json` file next to the report (`/reports`). |
 | `places` | The places you name, in `config.toml` (`/config`). |
 | `inventory` | The workbook (`/reports`), read from the cache alone. |
+| `tags`, `people` | The words and the faces, in the cache (`/cache`): never in your photos. |
+| `search` | The small previews of its page, in the cache (`/cache`). |
 | `history`, `reports`, `config`, `status`, `launcher` | Nothing in your folders (`reports --prune` deletes old reports only). |
 
 All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`

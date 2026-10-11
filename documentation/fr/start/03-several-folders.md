@@ -143,9 +143,9 @@ Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE
 aussi : `mh` parle français. Ensuite chaque commande est courte : `mh audit`, `mh clean`,
 `mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
 en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
-`purge`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
+`purge`, `xmp`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
 `$HOME\media-hygiene` (créés s'ils manquent), plus le port des pages du navigateur pour `review`,
-`review-sort` et `places`. Les commandes que l'outil propose à la fin d'une exécution deviennent
+`review-sort`, `places`, `search` et `people`. Les commandes que l'outil propose à la fin d'une exécution deviennent
 elles aussi `mh …`.
 
 - **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"` ; ou ajoutez

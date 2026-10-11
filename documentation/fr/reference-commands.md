@@ -6,31 +6,61 @@ Chaque commande, chaque option. Le [guide](README.md#pour-commencer) les présen
 cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule* ne modifient jamais vos photos
 ([comment vos photos restent en sécurité](reference-safety.md)).
 
+## Quelle commande ?
+
+| Je veux… | Commande |
+|---|---|
+| savoir ce que contiennent mes dossiers, sans aucun risque | [`audit`](commands/audit.md) |
+| savoir où j'en suis après quelques jours | [`status`](commands/status.md) |
+| libérer la place que prennent les copies | [`clean`](commands/clean.md), puis [`purge`](commands/purge.md) |
+| choisir les meilleures photos de mes rafales, ou décider les quasi-doublons | [`review`](commands/review.md), puis `clean --decisions` |
+| défaire ce qu'une exécution a fait | [`undo`](commands/undo.md) ([`history`](commands/history.md) liste les exécutions) |
+| donner à mes photos une arborescence bien rangée | [`classify`](commands/classify.md), [`review-sort`](commands/review-sort.md), puis [`sort`](commands/sort.md) |
+| rassembler mes plus belles photos dans un dossier, sans copie | [`album`](commands/album.md) |
+| trier d'après l'endroit où les photos ont été prises | [`places`](commands/places.md), puis `classify` |
+| retrouver une photo par un mot | [`tags`](commands/tags.md), puis [`search`](commands/search.md) |
+| voir mes mots dans digiKam, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
+| regrouper les photos par visage | [`people`](commands/people.md) |
+| lister chaque photo dans Excel | [`inventory`](commands/inventory.md) |
+| être sûr des doublons avant de supprimer | [`crosscheck`](commands/crosscheck.md) |
+| taper des commandes plus courtes | [`launcher`](commands/launcher.md) |
+| vérifier mes réglages et mes montages | [`config`](commands/config.md), [`reports`](commands/reports.md) pour les rapports |
+
 ## Commandes
+
+Chaque commande a sa propre page : ce qu'elle fait, quand l'utiliser, les dossiers dont elle a
+besoin, ses options, des exemples et son `--help`.
+
+**🔒 Analyser : lecture seule, ne modifie jamais vos photos**
 
 | Commande | Rôle | Guide |
 |---|---|---|
-| `audit` | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
-| `review` | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
-| `clean` | Audite, demande confirmation, puis déplace en quarantaine les copies en double, les fichiers illisibles et les fichiers compagnons orphelins, et supprime les fichiers vides ; `--delete` supprime les copies à la place. | [8](clean/08-clean.md) |
-| `undo [EXÉCUTION]` | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens. | [9](clean/09-undo-history-purge.md) |
-| `status` | Où en suis-je ? Le dernier audit, la quarantaine, les exécutions encore annulables, les tris pas appliqués, la dernière proposition pas triée ; puis une étape suivante en commande complète. Ne lit que les dossiers de l'outil, sans analyse. | [9](clean/09-undo-history-purge.md#où-en-suis-je--status) |
-| `history` | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
-| `purge [EXÉCUTION]` | Efface pour de bon la quarantaine d'une exécution (de toutes par défaut) : la seule commande qui efface du contenu, avec `clean --delete`. | [9](clean/09-undo-history-purge.md) |
-| `reports [--prune N]` | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
-| `crosscheck` | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
-| `sort [CLASSEUR]` | Vérifier le classeur modifié de `classify`, confirmer, puis déplacer les fichiers là où il le dit ; journalisé, annulable, prouvé. | [7](sort/07-sort.md) |
-| `album NOM` | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens, journalisés et annulables. | [Trier, étape 11](sort/11-albums.md) |
-| `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
-| `tags` | Donne à chaque photo des mots pour la retrouver : les mots parlants de ses dossiers, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
-| `xmp` | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit, journalisé et annulable. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
-| `search [MOTS]` | Retrouve des photos par leurs mots (ceux de `tags`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
-| `people` | Trouve les visages des photos, regroupe ceux qui se ressemblent, et montre les groupes dans votre navigateur. Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md) |
-| `launcher [--shell powershell\|bash]` | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
-| `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
-| `review-sort [CLASSEUR]` | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, étape 10](sort/10-name-events-in-the-browser.md) |
-| `places` | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, étape 9](sort/09-places-from-gps.md) |
+| [`audit`](commands/audit.md) | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
+| [`status`](commands/status.md) | Où en suis-je ? Le dernier audit, la quarantaine, les exécutions encore annulables, les tris pas appliqués, la dernière proposition pas triée ; puis une étape suivante en commande complète. Ne lit que les dossiers de l'outil, sans analyse. | [9](clean/09-undo-history-purge.md#où-en-suis-je--status) |
+| [`review`](commands/review.md) | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
+| [`history`](commands/history.md) | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [9](clean/09-undo-history-purge.md) |
+| [`reports`](commands/reports.md) | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [4](clean/04-html-report.md) |
+| [`crosscheck`](commands/crosscheck.md) | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
+| [`config`](commands/config.md) | Affiche chaque réglage, son origine, et l'état de chaque point de montage ; crée un `config.toml` commenté la première fois. | [7](clean/07-configuration-file.md) |
+| [`launcher`](commands/launcher.md) | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
+| [`classify`](commands/classify.md) | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [Trier, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
+| [`review-sort`](commands/review-sort.md) | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, 10](sort/10-name-events-in-the-browser.md) |
+| [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
+| [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
+| [`tags`](commands/tags.md) | Donne à chaque photo des mots pour la retrouver : les mots parlants de ses dossiers, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
+| [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
+| [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et montre les groupes dans votre navigateur. Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md) |
+
+**Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
+
+| Commande | Rôle | Guide |
+|---|---|---|
+| [`clean`](commands/clean.md) | Audite, demande confirmation, puis déplace en quarantaine les copies en double, les fichiers illisibles et les fichiers compagnons orphelins, et supprime les fichiers vides ; `--delete` supprime les copies à la place. | [8](clean/08-clean.md) |
+| [`undo [EXÉCUTION]`](commands/undo.md) | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens ; pour `xmp`, ses fichiers compagnons. | [9](clean/09-undo-history-purge.md) |
+| [`purge [EXÉCUTION]`](commands/purge.md) | Efface pour de bon la quarantaine d'une exécution (de toutes par défaut) : la seule commande qui efface du contenu, avec `clean --delete`. | [9](clean/09-undo-history-purge.md) |
+| [`sort [CLASSEUR]`](commands/sort.md) | Vérifie le classeur modifié de `classify`, demande confirmation, puis déplace les fichiers là où il le dit ; journalisé, annulable, prouvé. | [Trier, 7](sort/07-sort.md) |
+| [`album NOM`](commands/album.md) | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens. | [Trier, 11](sort/11-albums.md) |
+| [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 
 ## Options
 
@@ -89,8 +119,8 @@ d'option : elles s'écrivent dans `config.toml` seulement ([trier, étape 6](sor
 les deux langues (`--locale fr --help`). Une commande de plus de quatre options montre d'abord celles
 d'usage courant, sous **Options** (`clean --tier`, `review --near`, `classify --year`…) ; les autres
 suivent, sous **Options avancées** et, pour les dossiers et l'analyse, sous
-**Avancé : dossiers** et **Avancé : analyse** (elles remplacent `config.toml`). Voici ce qu'elles
-affichent :
+**Avancé : dossiers** et **Avancé : analyse** (elles remplacent `config.toml`). La page de chaque
+commande montre son propre `--help` ; voici la liste des commandes :
 
 <details>
 <summary><code>--help</code></summary>
@@ -127,6 +157,9 @@ affichent :
 │              n'est lu.                                                       │
 │ launcher     Écrit 'mh', une commande courte qui retient vos dossiers : mh   │
 │              audit, mh clean.                                                │
+│ people       Trouver les visages des photos et regrouper ceux qui se         │
+│              ressemblent, à voir dans votre navigateur. Gardés dans le       │
+│              cache, jamais envoyés nulle part.                               │
 │ places       Nommer vos lieux sur une carte des endroits où les photos ont   │
 │              été prises ; enregistrés dans config.toml pour les règles       │
 │              'place' et 'trip'.                                              │
@@ -171,460 +204,6 @@ affichent :
    docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
  Commandes complètes (rapports, journal, WSL) : voir README_FR.md.
-```
-
-</details>
-
-<details>
-<summary><code>audit --help</code></summary>
-
-<!-- capture: help-audit.txt -->
-```text
- Utilisation : media-hygiene audit [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Trouver les doublons exacts
- et les fichiers cassés.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
-│                              ex. --ext photo,video ou --ext png,webp         │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. D'autres types aussi, comme --ext  │
-│                              pdf,docx : leurs copies sont déplacées en       │
-│                              quarantaine. Par défaut : media (toutes les     │
-│                              photos, RAW et vidéos).                         │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>review --help</code></summary>
-
-<!-- capture: help-review.txt -->
-```text
- Utilisation : media-hygiene review [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Écarter des photos de rafale,
- une série à la fois, au clavier dans votre navigateur ; 'clean --decisions'
- les déplace ensuite.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near            Passer en revue les quasi-doublons et les vidéos           │
-│                   réencodées groupe par groupe au lieu des rafales : comme   │
-│                   prévu, garder l'autre version, ou laisser tel quel ; «     │
-│                   clean --tier near --decisions » l'applique.                │
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --decisions        <path>              Fichier où les décisions sont         │
-│                                        enregistrées, et repris au lancement  │
-│                                        suivant. Un chemin relatif se trouve  │
-│                                        dans le dossier monté sur /reports.   │
-│                                        Par défaut : decisions.json.          │
-│ --port             <int range> [x>=1]  Port de la page. docker run le publie │
-│                                        sous le même numéro sur votre         │
-│                                        ordinateur, par exemple -p            │
-│                                        127.0.0.1:9000:9000 pour --port 9000. │
-│                                        Par défaut : 8088.                    │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>clean --help</code></summary>
-
-<!-- capture: help-clean.txt -->
-```text
- Utilisation : media-hygiene clean [OPTIONS]
-
- Analyser, confirmer, puis déplacer les copies en double en quarantaine, après
- une comparaison octet par octet (journalisé, annulable) ; --delete les
- supprime pour de bon.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --tier               <exact|near|near-all>  Jusqu'où nettoyer. exact (par    │
-│                                             défaut) : seulement les copies   │
-│                                             identiques octet par octet. near │
-│                                             : aussi les copies réduites      │
-│                                             (envoyées par WhatsApp ou par    │
-│                                             e-mail, redimensionnées,         │
-│                                             recompressées) et les vidéos     │
-│                                             réencodées qui sont sûres ; les  │
-│                                             groupes à vérifier restent en    │
-│                                             place. near-all : tous les       │
-│                                             quasi-doublons ; vérifiez-les    │
-│                                             d'abord dans le rapport. Les     │
-│                                             quasi-doublons partent en        │
-│                                             quarantaine, jamais supprimés.   │
-│ --decisions          <path>                 Appliquer les choix faits dans   │
-│                                             le navigateur : decisions.json   │
-│                                             téléchargé depuis un rapport     │
-│                                             d'audit (paires de dossiers      │
-│                                             inversées ou laissées telles     │
-│                                             quelles) ou écrit par 'review'   │
-│                                             (photos de rafale écartées,      │
-│                                             quasi-doublons décidés). Un      │
-│                                             chemin relatif est lu dans le    │
-│                                             dossier monté sur /reports. Le   │
-│                                             fichier est refusé si les        │
-│                                             dossiers, les paires ou les      │
-│                                             séries ont changé. Seul,         │
-│                                             --decisions lit decisions.json.  │
-│ --yes        -y                             Ne pas demander de confirmation  │
-│                                             (remplace clean.confirm).        │
-│ --help       -h                             Affiche ce message et quitte.    │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --delete          Libérer l'espace tout de suite : supprimer pour de bon les │
-│                   copies exactes, après une comparaison octet par octet avec │
-│                   la copie gardée, au lieu de les déplacer en quarantaine ;  │
-│                   'undo' les reconstruit à partir de la copie gardée.        │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
-│                              ex. --ext photo,video ou --ext png,webp         │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. D'autres types aussi, comme --ext  │
-│                              pdf,docx : leurs copies sont déplacées en       │
-│                              quarantaine. Par défaut : media (toutes les     │
-│                              photos, RAW et vidéos).                         │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>undo --help</code></summary>
-
-<!-- capture: help-undo.txt -->
-```text
- Utilisation : media-hygiene undo [OPTIONS] [run_id]
-
- Restaure chaque fichier d'une exécution, depuis la copie conservée, la
- quarantaine ou là où il a été déplacé ; supprime les liens d'un album.
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Exécution à annuler (voir 'history') ; la plus récente  │
-│                      par défaut. Pour un tri, tous les passages du même      │
-│                      classeur.                                               │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Ne pas demander de confirmation avant d'annuler plusieurs  │
-│                   passages d'un tri (remplace sort.confirm).                 │
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>history --help</code></summary>
-
-<!-- capture: help-history.txt -->
-```text
- Utilisation : media-hygiene history [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Liste les exécutions et ce
- qu'elles ont fait.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>purge --help</code></summary>
-
-<!-- capture: help-purge.txt -->
-```text
- Utilisation : media-hygiene purge [OPTIONS] [run_id]
-
- Effacer pour de bon la quarantaine d'une exécution : avec 'clean --delete', la
- seule façon dont l'outil supprime du contenu.
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Exécution dont la quarantaine est effacée ; toutes par  │
-│                      défaut.                                                 │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Ne pas demander de confirmation (remplace clean.confirm).  │
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>reports --help</code></summary>
-
-<!-- capture: help-reports.txt -->
-```text
- Utilisation : media-hygiene reports [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Liste les rapports HTML des
- audits et nettoyages précédents.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --prune          <int range> [x>=0]  Supprime tous les rapports sauf les N   │
-│                                      plus récents.                           │
-│ --help   -h                          Affiche ce message et quitte.           │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>crosscheck --help</code></summary>
-
-<!-- capture: help-crosscheck.txt -->
-```text
- Utilisation : media-hygiene crosscheck [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Compare un nouvel audit aux
- résultats de Czkawka : un second avis, indépendant.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
-│                         Répétable ; l'ordre compte.                          │
-│ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
-│                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
-│                              ex. --ext photo,video ou --ext png,webp         │
-│                              (répétable). Catégories : photo, raw, video,    │
-│                              media et celles de scan.categories dans         │
-│                              config.toml. D'autres types aussi, comme --ext  │
-│                              pdf,docx : leurs copies sont déplacées en       │
-│                              quarantaine. Par défaut : media (toutes les     │
-│                              photos, RAW et vidéos).                         │
-│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
-│                              sans tenir compte de la casse ; * et ? permis,  │
-│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
-│                              (répétable). S'ajoute aux dossiers système déjà │
-│                              ignorés. Pour un dossier précis, utilisez       │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>classify --help</code></summary>
-
-<!-- capture: help-classify.txt -->
-```text
- Utilisation : media-hygiene classify [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Propose où ranger chaque
- photo et vidéo : année, événement, catégorie.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>  Seulement les fichiers de cette année, ou de ces    │
-│                          années : 2016 ou 2015-2017.                         │
-│ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
-│                          '{year}/{month} - {month_name}'.                    │
-│ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │
-│                          place par défaut.                                   │
-│ --help    -h             Affiche ce message et quitte.                       │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --leave                  <str>               Dossier de l'hôte jamais trié   │
-│                                              (analysé et nettoyé comme       │
-│                                              d'habitude).                    │
-│ --carry-over             <str>               Classeur dont les modifications │
-│                                              sont reprises ; celui du        │
-│                                              dernier classify par défaut.    │
-│ --no-carry-over                              Repartir de zéro : ne reprendre │
-│                                              aucune modification d'un        │
-│                                              classeur précédent.             │
-│ --sample                 <int range> [x>=0]  Estimer d'abord une exécution   │
-│                                              complète : décrire ce nombre de │
-│                                              photos prises au hasard avec le │
-│                                              modèle local, afficher le temps │
-│                                              par photo et l'estimation d'une │
-│                                              exécution complète, puis        │
-│                                              s'arrêter.                      │
-│ --no-describe                                Ne rien demander de nouveau au  │
-│                                              modèle local : les règles       │
-│                                              subject lisent les descriptions │
-│                                              déjà dans le cache.             │
-│ --yes            -y                          Décrire les photos sans         │
-│                                              demander, quel que soit leur    │
-│                                              nombre.                         │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>sort --help</code></summary>
-
-<!-- capture: help-sort.txt -->
-```text
- Utilisation : media-hygiene sort [OPTIONS] [workbook]
-
- Déplacer les photos et vidéos comme le dit le classeur de classify modifié
- (journalisé, annulable).
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   workbook      <str>  Le classeur de classify, modifié ; celui du dernier   │
-│                        classify par défaut.                                  │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes                 -y        Ne pas demander de confirmation (remplace    │
-│                                 sort.confirm).                               │
-│ --keep-empty-folders            Garder les dossiers sources que le tri       │
-│                                 laisse vides.                                │
-│ --help                -h        Affiche ce message et quitte.                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>album --help</code></summary>
-
-<!-- capture: help-album.txt -->
-```text
- Utilisation : media-hygiene album [OPTIONS] {name}
-
- Rassemble une sélection du plan de classify dans un dossier de liens physiques
- : rien n'est copié ni déplacé (journalisé, annulable).
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  Le nom de l'album : le dossier qui contient ses liens. │
-│                       [required]                                             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  Les fichiers de cette catégorie, d'après le       │
-│                            classeur modifié.                                 │
-│ --event             <str>  Les fichiers de cet événement : son identifiant   │
-│                            ou son nom.                                       │
-│ --apply                    Crée les liens ; sans cette option, montre        │
-│                            seulement ce que l'album rassemble.               │
-│ --help      -h             Affiche ce message et quitte.                     │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --rule            <str>                  Les fichiers que la règle de        │
-│                                          classify de ce nom a décidés.       │
-│ --rating          <int range> [1<=x<=5]  Les fichiers qui ont au moins ces   │
-│                                          étoiles dans Windows (1 à 5).       │
-│ --workbook        <str>                  Le classeur de classify à lire ;    │
-│                                          celui du dernier classify par       │
-│                                          défaut.                             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>inventory --help</code></summary>
-
-<!-- capture: help-inventory.txt -->
-```text
- Utilisation : media-hygiene inventory [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Exporter vers Excel chaque
- photo et vidéo avec ce que les audits en ont appris, depuis le cache seul :
- aucun fichier n'est lu.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --format          <xlsx|csv>  xlsx : un classeur Excel (feuilles Fichiers et │
-│                               Résumé). csv : la feuille Fichiers seule,      │
-│                               comme plan.csv. Par défaut : xlsx.             │
-│ --help    -h                  Affiche ce message et quitte.                  │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>config --help</code></summary>
-
-<!-- capture: help-config.txt -->
-```text
- Utilisation : media-hygiene config [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Affiche chaque réglage, son
- origine, et les points de montage.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>places --help</code></summary>
-
-<!-- capture: help-places.txt -->
-```text
- Utilisation : media-hygiene places [OPTIONS]
-
- 🔒 Lecture seule : ne modifie jamais vos photos. Nommer vos lieux sur une
- carte des endroits où les photos ont été prises ; enregistrés dans config.toml
- pour les règles 'place' et 'trip'.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --port          <int range> [x>=1]  Port de la page. docker run le publie    │
-│                                     sous le même numéro sur votre            │
-│                                     ordinateur, par exemple -p               │
-│                                     127.0.0.1:9000:9000 pour --port 9000.    │
-│                                     Par défaut : 8088.                       │
-│ --help  -h                          Affiche ce message et quitte.            │
-╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

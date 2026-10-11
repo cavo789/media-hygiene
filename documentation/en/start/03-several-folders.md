@@ -133,9 +133,9 @@ mh audit
 No `-it` here: what `launcher` prints goes into the file. Then every command is short: `mh audit`,
 `mh clean`, `mh review`, `mh undo`, `mh status`… `mh` picks the right mounts for each one: your
 folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `album`, `undo`,
-`purge`), the cache, and the `reports`, `config`, `journal` and `quarantine` folders of
+`purge`, `xmp`), the cache, and the `reports`, `config`, `journal` and `quarantine` folders of
 `$HOME\media-hygiene` (created when missing), plus the port of the browser pages for `review`,
-`review-sort` and `places`. The commands the tool suggests at the end of a run become `mh …` too.
+`review-sort`, `places`, `search` and `people`. The commands the tool suggests at the end of a run become `mh …` too.
 
 - **In a new terminal**, load it again: `. "$HOME\media-hygiene\mh.ps1"`; or add that line to your
   profile (`notepad $PROFILE`) to have `mh` everywhere.

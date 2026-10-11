@@ -6,31 +6,61 @@ Every command, every option. The [user guide](README.md#start-here) introduces
 them one at a time; this page gathers them. The commands whose help starts with *Read-only* never change your photos
 ([how your photos stay safe](reference-safety.md)).
 
+## Which command?
+
+| I want to… | Command |
+|---|---|
+| know what my folders hold, without any risk | [`audit`](commands/audit.md) |
+| know where I stand after a few days | [`status`](commands/status.md) |
+| free the space the copies take | [`clean`](commands/clean.md), then [`purge`](commands/purge.md) |
+| choose the best shots of my bursts, or decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
+| put back what a run did | [`undo`](commands/undo.md) ([`history`](commands/history.md) lists the runs) |
+| give my photos a tidy tree | [`classify`](commands/classify.md), [`review-sort`](commands/review-sort.md), then [`sort`](commands/sort.md) |
+| gather my best photos in one folder, without a copy | [`album`](commands/album.md) |
+| sort by where the photos were taken | [`places`](commands/places.md), then `classify` |
+| find a photo by a word | [`tags`](commands/tags.md), then [`search`](commands/search.md) |
+| see my words in digiKam, Lightroom or Immich | [`xmp`](commands/xmp.md) |
+| group the photos by face | [`people`](commands/people.md) |
+| list every photo in Excel | [`inventory`](commands/inventory.md) |
+| be sure of the duplicates before deleting | [`crosscheck`](commands/crosscheck.md) |
+| type shorter commands | [`launcher`](commands/launcher.md) |
+| check my settings and my mounts | [`config`](commands/config.md), [`reports`](commands/reports.md) for the reports |
+
 ## Commands
+
+Each command has its own page: what it does, when to use it, the folders it needs, its options,
+examples and its `--help`.
+
+**🔒 Analyse: read-only, never changes your photos**
 
 | Command | What it does | Guide |
 |---|---|---|
-| `audit` | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
-| `review` | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
-| `clean` | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [8](clean/08-clean.md) |
-| `undo [RUN]` | Restore every file of a run (the latest by default); for an album, remove its links. | [9](clean/09-undo-history-purge.md) |
-| `status` | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [9](clean/09-undo-history-purge.md#where-am-i-status) |
-| `history` | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
-| `purge [RUN]` | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [9](clean/09-undo-history-purge.md) |
-| `reports [--prune N]` | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
-| `crosscheck` | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
-| `classify` | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
-| `sort [WORKBOOK]` | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [7](sort/07-sort.md) |
-| `album NAME` | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links, journaled and undoable. | [Sorting, step 11](sort/11-albums.md) |
-| `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
-| `tags` | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
-| `xmp` | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes, journaled and undoable. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
-| `search [WORDS]` | Find photos by their words (those of `tags`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
-| `people` | Find the faces in the photos, group those that look alike, and show the groups in your browser. The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md) |
-| `launcher [--shell powershell\|bash]` | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
-| `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
-| `review-sort [WORKBOOK]` | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, step 10](sort/10-name-events-in-the-browser.md) |
-| `places` | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, step 9](sort/09-places-from-gps.md) |
+| [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
+| [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [9](clean/09-undo-history-purge.md#where-am-i-status) |
+| [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
+| [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
+| [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
+| [`crosscheck`](commands/crosscheck.md) | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
+| [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [7](clean/07-configuration-file.md) |
+| [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
+| [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
+| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 10](sort/10-name-events-in-the-browser.md) |
+| [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
+| [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
+| [`tags`](commands/tags.md) | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
+| [`search`](commands/search.md) | Find photos by their words (those of `tags`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
+| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and show the groups in your browser. The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md) |
+
+**Act: moves, writes or deletes files** (journaled, undoable)
+
+| Command | What it does | Guide |
+|---|---|---|
+| [`clean`](commands/clean.md) | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [8](clean/08-clean.md) |
+| [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [9](clean/09-undo-history-purge.md) |
+| [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [9](clean/09-undo-history-purge.md) |
+| [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
+| [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 11](sort/11-albums.md) |
+| [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 
 ## Options
 
@@ -89,8 +119,8 @@ line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they a
 both languages (`--locale fr --help`). A command with more than four options lists those of daily
 use first, under **Options** (`clean --tier`, `review --near`, `classify --year`…); the others come
 after, under **Advanced options** and, for the folders and the scan,
-under **Advanced: folders** and **Advanced: scan** (they override `config.toml`). Here is what they
-print:
+under **Advanced: folders** and **Advanced: scan** (they override `config.toml`). The page of each
+command shows its own `--help`; here is the list of the commands:
 
 <details>
 <summary><code>--help</code></summary>
@@ -125,6 +155,8 @@ print:
 │              Excel, from the cache alone: no file is read.                   │
 │ launcher     Write 'mh', a short command holding your folders: mh audit, mh  │
 │              clean.                                                          │
+│ people       Find the faces in the photos and group those alike, shown in    │
+│              your browser. Kept in the cache, never sent anywhere.           │
 │ places       Name your places on a map of where the photos were taken; saved │
 │              into config.toml for the 'place' and 'trip' rules.              │
 │ reports      List the HTML reports of previous audits and cleans.            │
@@ -164,444 +196,6 @@ print:
    docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
  Full commands (reports, journal, WSL): see README.md.
-```
-
-</details>
-
-<details>
-<summary><code>audit --help</code></summary>
-
-<!-- capture: help-audit.txt -->
-```text
- Usage: media-hygiene audit [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Find exact duplicates and broken
- files.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
-│                         Repeatable.                                          │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
-│ --ext                 <str>  Only analyse these categories or extensions,    │
-│                              e.g. --ext photo,video or --ext png,webp        │
-│                              (repeatable). Categories: photo, raw, video,    │
-│                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
-│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
-│                              case ignored; * and ? allowed, e.g.             │
-│                              --exclude-name Thumbnails,.Trash-*              │
-│                              (repeatable). Adds to the system folders        │
-│                              already skipped. For one precise folder, use    │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>review --help</code></summary>
-
-<!-- capture: help-review.txt -->
-```text
- Usage: media-hygiene review [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Set burst shots aside, one series at
- a time, with the keyboard in your browser; 'clean --decisions' then moves
- them.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near            Review the near duplicates and re-encoded videos group by  │
-│                   group instead of the burst series: as planned, keep the    │
-│                   other version, or leave alone; 'clean --tier near          │
-│                   --decisions' applies it.                                   │
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --decisions        <path>              File the decisions are saved in, and  │
-│                                        resumed from. A relative path lies in │
-│                                        the folder mounted on /reports.       │
-│                                        Default: decisions.json.              │
-│ --port             <int range> [x>=1]  Port of the page. docker run          │
-│                                        publishes it under the same number on │
-│                                        your computer: -p 127.0.0.1:9000:9000 │
-│                                        for --port 9000. Default: 8088.       │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
-│                         Repeatable.                                          │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>clean --help</code></summary>
-
-<!-- capture: help-clean.txt -->
-```text
- Usage: media-hygiene clean [OPTIONS]
-
- Audit, confirm, then move the duplicate copies to the quarantine, after a byte
- comparison (journaled, undoable); --delete deletes them for good.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --tier               <exact|near|near-all>  How far to clean. exact          │
-│                                             (default): the byte-for-byte     │
-│                                             copies only. near: also the      │
-│                                             shrunk copies (sent by WhatsApp  │
-│                                             or e-mail, resized,              │
-│                                             recompressed) and the re-encoded │
-│                                             videos that are sure; the groups │
-│                                             to check are left alone.         │
-│                                             near-all: every near duplicate;  │
-│                                             check them in the report first.  │
-│                                             Near duplicates go to the        │
-│                                             quarantine, never deleted.       │
-│ --decisions          <path>                 Apply the choices made in the    │
-│                                             browser: decisions.json          │
-│                                             downloaded from an audit report  │
-│                                             (swap or leave alone some folder │
-│                                             pairs) or written by 'review'    │
-│                                             (burst shots set aside, near     │
-│                                             duplicates decided). A relative  │
-│                                             path is read from the folder     │
-│                                             mounted on /reports. The file is │
-│                                             refused if the folders, the      │
-│                                             pairs or the series changed.     │
-│                                             Alone, --decisions reads         │
-│                                             decisions.json.                  │
-│ --yes        -y                             Do not ask for confirmation      │
-│                                             (overrides clean.confirm).       │
-│ --help       -h                             Show this message and exit.      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --delete          Free the space at once: delete the exact copies for good,  │
-│                   after a byte comparison with the kept copy, instead of     │
-│                   moving them to the quarantine; 'undo' rebuilds them from   │
-│                   the kept copy.                                             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
-│                         Repeatable.                                          │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
-│ --ext                 <str>  Only analyse these categories or extensions,    │
-│                              e.g. --ext photo,video or --ext png,webp        │
-│                              (repeatable). Categories: photo, raw, video,    │
-│                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
-│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
-│                              case ignored; * and ? allowed, e.g.             │
-│                              --exclude-name Thumbnails,.Trash-*              │
-│                              (repeatable). Adds to the system folders        │
-│                              already skipped. For one precise folder, use    │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>undo --help</code></summary>
-
-<!-- capture: help-undo.txt -->
-```text
- Usage: media-hygiene undo [OPTIONS] [run_id]
-
- Restore every file of a run, from the kept copy, the quarantine or where it
- was moved; remove the links of an album.
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Run to undo (see 'history'); the latest one by default. │
-│                      For a sort, every run of the same workbook.             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Do not ask for confirmation before undoing several runs of │
-│                   a sort (overrides sort.confirm).                           │
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>history --help</code></summary>
-
-<!-- capture: help-history.txt -->
-```text
- Usage: media-hygiene history [OPTIONS]
-
- 🔒 Read-only: never changes your photos. List the runs and what they did.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>purge --help</code></summary>
-
-<!-- capture: help-purge.txt -->
-```text
- Usage: media-hygiene purge [OPTIONS] [run_id]
-
- Erase the quarantine of a run for good: with 'clean --delete', the only way
- the tool removes content.
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   run_id      <str>  Run whose quarantine is erased; every run by default.   │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Do not ask for confirmation (overrides clean.confirm).     │
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>reports --help</code></summary>
-
-<!-- capture: help-reports.txt -->
-```text
- Usage: media-hygiene reports [OPTIONS]
-
- 🔒 Read-only: never changes your photos. List the HTML reports of previous
- audits and cleans.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --prune          <int range> [x>=0]  Delete all reports but the N most       │
-│                                      recent ones.                            │
-│ --help   -h                          Show this message and exit.             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>crosscheck --help</code></summary>
-
-<!-- capture: help-crosscheck.txt -->
-```text
- Usage: media-hygiene crosscheck [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Compare a fresh audit with Czkawka's
- results: a second, independent opinion.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
-│ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
-│                         order matters.                                       │
-│ --protect        <str>  Folder never modified; its files are the copies      │
-│                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
-│                         Repeatable.                                          │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
-│ --ext                 <str>  Only analyse these categories or extensions,    │
-│                              e.g. --ext photo,video or --ext png,webp        │
-│                              (repeatable). Categories: photo, raw, video,    │
-│                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
-│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
-│                              case ignored; * and ? allowed, e.g.             │
-│                              --exclude-name Thumbnails,.Trash-*              │
-│                              (repeatable). Adds to the system folders        │
-│                              already skipped. For one precise folder, use    │
-│                              --exclude.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>classify --help</code></summary>
-
-<!-- capture: help-classify.txt -->
-```text
- Usage: media-hygiene classify [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Propose where every photo and video
- should go: year, event, category.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --year            <str>  Only the files of this year, or of these years:     │
-│                          2016 or 2015-2017.                                  │
-│ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
-│                          {month_name}'.                                      │
-│ --target          <str>  Host folder receiving the tree; in place by         │
-│                          default.                                            │
-│ --help    -h             Show this message and exit.                         │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --leave                  <str>               Host folder never sorted        │
-│                                              (analysed and cleaned as        │
-│                                              usual).                         │
-│ --carry-over             <str>               Workbook whose edits are        │
-│                                              carried over; the latest        │
-│                                              classify run's by default.      │
-│ --no-carry-over                              Start fresh: carry no edit of a │
-│                                              previous workbook over.         │
-│ --sample                 <int range> [x>=0]  Estimate a full run first:      │
-│                                              describe this many random       │
-│                                              photos with the local model,    │
-│                                              print the time per photo and    │
-│                                              the estimate of a full run, and │
-│                                              stop.                           │
-│ --no-describe                                Ask the local model nothing     │
-│                                              new: the subject rules read the │
-│                                              descriptions already in the     │
-│                                              cache.                          │
-│ --yes            -y                          Describe the photos without     │
-│                                              asking, however many.           │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>sort --help</code></summary>
-
-<!-- capture: help-sort.txt -->
-```text
- Usage: media-hygiene sort [OPTIONS] [workbook]
-
- Move the photos and videos as the edited classify workbook says (journaled,
- undoable).
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   workbook      <str>  The classify workbook, edited; the latest classify    │
-│                        run's by default.                                     │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes                 -y        Do not ask for confirmation (overrides       │
-│                                 sort.confirm).                               │
-│ --keep-empty-folders            Keep the source folders the sort leaves      │
-│                                 empty.                                       │
-│ --help                -h        Show this message and exit.                  │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>album --help</code></summary>
-
-<!-- capture: help-album.txt -->
-```text
- Usage: media-hygiene album [OPTIONS] {name}
-
- Gather a selection of the classify plan into a folder of hard links: nothing
- is copied nor moved (journaled, undoable).
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  The album's name: the folder holding its links.        │
-│                       [required]                                             │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  The files of this category, as the edited         │
-│                            workbook says.                                    │
-│ --event             <str>  The files of this event: its id or its name.      │
-│ --apply                    Make the links; without it, only show what the    │
-│                            album gathers.                                    │
-│ --help      -h             Show this message and exit.                       │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --rule            <str>                  The files the classify rule of this │
-│                                          name decided.                       │
-│ --rating          <int range> [1<=x<=5]  The files given at least these      │
-│                                          stars in Windows (1 to 5).          │
-│ --workbook        <str>                  The classify workbook to read; the  │
-│                                          latest classify run's by default.   │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>inventory --help</code></summary>
-
-<!-- capture: help-inventory.txt -->
-```text
- Usage: media-hygiene inventory [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Export every photo and video with
- what the audits learnt to Excel, from the cache alone: no file is read.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --format          <xlsx|csv>  xlsx: an Excel workbook (Files and Summary     │
-│                               sheets). csv: the Files sheet only, like       │
-│                               plan.csv. Default: xlsx.                       │
-│ --help    -h                  Show this message and exit.                    │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>config --help</code></summary>
-
-<!-- capture: help-config.txt -->
-```text
- Usage: media-hygiene config [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Show every setting, where it comes
- from, and the mount points.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-</details>
-
-<details>
-<summary><code>places --help</code></summary>
-
-<!-- capture: help-places.txt -->
-```text
- Usage: media-hygiene places [OPTIONS]
-
- 🔒 Read-only: never changes your photos. Name your places on a map of where
- the photos were taken; saved into config.toml for the 'place' and 'trip'
- rules.
-
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --port          <int range> [x>=1]  Port of the page. docker run publishes   │
-│                                     it under the same number on your         │
-│                                     computer: -p 127.0.0.1:9000:9000 for     │
-│                                     --port 9000. Default: 8088.              │
-│ --help  -h                          Show this message and exit.              │
-╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

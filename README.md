@@ -47,12 +47,12 @@ near duplicates only when you ask for it.
 ## Your photos are safe
 
 **We guarantee it: these commands never modify, move nor delete a photo or a video** —
-`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `history`,
-`reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
+`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `tags`,
+`search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
 with your folders mounted `:ro`: then the operating system itself forbids any change.
 
 **The commands that act never erase anything.** `sort` moves files (on one disk, a simple
-rename: no copy, no space used), `album` adds second names, `clean` moves the duplicate copies
+rename: no copy, no space used), `album` adds second names, `xmp` writes small `.xmp` sidecars next to the photos, `clean` moves the duplicate copies
 to the quarantine after comparing them byte for byte with the copy kept, `undo` puts things
 back. Never over another file, every step journaled, all undoable.
 
@@ -116,12 +116,28 @@ adds one thing to the command of the step before.
 11. [Albums](documentation/en/sort/11-albums.md) — one photo in several folders, as hard links:
     no copy, no space used (optional).
 
+**Every command has its own page** — what it does, the folders it needs, its options, examples:
+[`audit`](documentation/en/commands/audit.md), [`status`](documentation/en/commands/status.md),
+[`clean`](documentation/en/commands/clean.md), [`undo`](documentation/en/commands/undo.md),
+[`history`](documentation/en/commands/history.md), [`purge`](documentation/en/commands/purge.md),
+[`review`](documentation/en/commands/review.md), [`reports`](documentation/en/commands/reports.md),
+[`crosscheck`](documentation/en/commands/crosscheck.md), [`config`](documentation/en/commands/config.md),
+[`launcher`](documentation/en/commands/launcher.md), [`classify`](documentation/en/commands/classify.md),
+[`review-sort`](documentation/en/commands/review-sort.md), [`sort`](documentation/en/commands/sort.md),
+[`album`](documentation/en/commands/album.md), [`places`](documentation/en/commands/places.md),
+[`inventory`](documentation/en/commands/inventory.md), [`tags`](documentation/en/commands/tags.md),
+[`search`](documentation/en/commands/search.md), [`xmp`](documentation/en/commands/xmp.md),
+[`people`](documentation/en/commands/people.md). Not sure which one?
+[Which command?](documentation/en/reference-commands.md#which-command)
+
 **Reference** — [commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),
 [how your photos stay safe](documentation/en/reference-safety.md),
 [sidecar files](documentation/en/reference-sidecars.md),
 [troubleshooting](documentation/en/reference-troubleshooting.md),
 [the inventory workbook](documentation/en/reference-inventory.md),
+[tags](documentation/en/reference-tags.md),
+[people](documentation/en/reference-people.md),
 [advanced usage](documentation/en/reference-advanced.md).
 
 **For developers** — [build the image, the devcontainer, releases](documentation/en/development.md).
