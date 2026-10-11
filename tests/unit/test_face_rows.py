@@ -18,7 +18,7 @@ from media_hygiene.index.face_rows import FaceStore
 from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.models import MediaFile
-from media_hygiene.services import people
+from media_hygiene.services import people_models as people
 from media_hygiene.services.people_files import require_people_index
 from tests.support.faces import FakeRecipe, coloured, face_of
 from tests.support.runtime import make_runtime, output_of

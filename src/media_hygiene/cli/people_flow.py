@@ -73,8 +73,8 @@ def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleGroups | None:
         show_missing(output, len(work.missing), len(work.photos))
         if work.missing:
             _find(runtime, step, work.missing)
-        groups = step.groups()
-        show_groups(output, groups, (step.tally(), runtime.settings.people))
+        groups = step.groups(work)
+        show_groups(output, groups, (step.tally(work), runtime.settings.people))
     return groups
 
 

@@ -13,28 +13,21 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.faces.models import FACE_MODEL
-from media_hygiene.faces.weights import (
-    DETECTOR,
-    EMBEDDER,
-    MODELS_DIR_NAME,
-    ensure_model,
-)
-from media_hygiene.faces.worker import OnnxRecipe
 from media_hygiene.i18n import _
-from media_hygiene.index.face_rows import FaceStore
+from media_hygiene.index.face_rows import FaceStore, FaceTally
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.people_files import people_photos, present_photos
 from media_hygiene.services.people_find import FindDeps, FindOutcome, find_all
 from media_hygiene.services.people_groups import PeopleGroups, group_people
+from media_hygiene.services.people_models import face_recipe
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.faces.worker import FinderRecipe
     from media_hygiene.index.descriptions import PhotoVersion
-    from media_hygiene.index.face_rows import FaceTally
+    from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.subject_answers import Answering
 
@@ -46,26 +39,6 @@ class PeopleWork:
     photos: tuple[PhotoVersion, ...]
     missing: tuple[PhotoVersion, ...]
     absent: int = 0  # in the index, not on disk: their folder is not mounted
-
-
-def face_recipe(runtime: Runtime) -> FinderRecipe:
-    """The models finding the faces, downloaded into the cache when missing.
-
-    Args:
-        runtime: Mount points.
-
-    Returns:
-        The recipe of the ONNX finder.
-    """
-    models = runtime.locations.cache_dir / MODELS_DIR_NAME
-    if not all((models / model.name).is_file() for model in (DETECTOR, EMBEDDER)):
-        runtime.output.info(
-            _(
-                "Downloading the two face models into the cache, once (39 MB): they "
-                "run on this computer, nothing about your photos is sent."
-            )
-        )
-    return OnnxRecipe(ensure_model(models, DETECTOR), ensure_model(models, EMBEDDER))
 
 
 class PeopleStep:
@@ -170,18 +143,42 @@ class PeopleStep:
         picked = secrets.SystemRandom().sample(missing, min(count, len(missing)))
         return tuple(picked)
 
-    def groups(self) -> PeopleGroups:
-        """Group every face of the index with the settings of `[people]`.
+    def groups(self, work: PeopleWork) -> PeopleGroups:
+        """Group the faces of the photos of the run with the settings of `[people]`.
+
+        The faces of photos not mounted this time stay in the index, but are not
+        shown: the page could not cut them out of their photo.
+
+        Args:
+            work: The photos of the run.
 
         Returns:
             The groups.
         """
-        return group_people(self.store.faces(), self._runtime.settings.people)
+        return group_people(self._faces_of(work), self._runtime.settings.people)
 
-    def tally(self) -> FaceTally:
-        """Count the photos analysed and the faces found.
+    def tally(self, work: PeopleWork) -> FaceTally:
+        """Count the photos of the run analysed and their faces.
+
+        Args:
+            work: The photos of the run.
 
         Returns:
-            The counts.
+            The counts; the time per photo is that of the whole index.
         """
-        return self.store.tally()
+        store = self.store
+        analysed = sum(store.scanned(photo) for photo in work.photos)
+        faces = len(self._faces_of(work))
+        return FaceTally(analysed, faces, store.tally().seconds_per_photo)
+
+    def _faces_of(self, work: PeopleWork) -> tuple[StoredFace, ...]:
+        """The faces of the index whose photo belongs to the run.
+
+        Args:
+            work: The photos of the run.
+
+        Returns:
+            Their faces, by path then number.
+        """
+        shown = {photo.path for photo in work.photos}
+        return tuple(face for face in self.store.faces() if face.path in shown)
