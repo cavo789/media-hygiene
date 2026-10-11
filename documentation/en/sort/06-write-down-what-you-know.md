@@ -149,10 +149,11 @@ Event neighbours, Christmas, New Year.
 
 The rules that decided nothing are named after the table: a typo in a regular expression, a
 wrong year, or simply nothing of that kind in your folders. A rule that cannot work stops the
-run before anything is read, and names itself (`classify.rules.0` is the first rule):
+run before anything is read, and names itself (rules are counted from the top of the file):
 
 ```text
-❌ Invalid configuration (classify.rules.0: Value error, rule 'Birthday': '02-30' is not a day that exists).
+❌ [[classify.rules]] number 1 in config.toml: rule 'Birthday': '02-30' is not a day that exists.
+💡 Correct it, then run the same command again.
 ```
 
 The workbook shows the same names in the *Reason* column of its Files sheet, and counts them on

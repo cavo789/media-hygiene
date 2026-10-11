@@ -54,6 +54,20 @@ Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, 
 `\b` of `"D:\backup"` into a control character, and the tool refuses such a path rather than
 ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
 
+## A setting of `config.toml` is unknown to this version
+
+```text
+❌ 'timezon' in [general] of config.toml is unknown to version 0.3.0: a typo, or a setting of a
+newer version? Did you mean 'timezone'?
+💡 Correct or remove it, or update the image to the latest version:
+docker pull cavo789/media-hygiene
+```
+
+A typo is named with the setting it looks like. A setting copied from a newer documentation needs
+the newer image: `docker pull cavo789/media-hygiene`. The same goes for a variable
+`MEDIA_HYGIENE_<SECTION>__<KEY>` passed with `-e`. A refused value (`verbosity = "loud"`) says
+what is expected instead.
+
 ## The review page does not open
 
 - Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both

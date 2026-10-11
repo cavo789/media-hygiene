@@ -112,6 +112,18 @@ msgid "'undo' can no longer restore these files."
 msgstr "'undo' ne pourra plus restaurer ces fichiers."
 
 #, python-brace-format
+msgid "'{key}' in the variable {name}"
+msgstr "« {key} » dans la variable {name}"
+
+#, python-brace-format
+msgid "'{key}' in {table} of config.toml"
+msgstr "« {key} » dans {table} de config.toml"
+
+#, python-brace-format
+msgid "'{key}' on the command line"
+msgstr "« {key} » sur la ligne de commande"
+
+#, python-brace-format
 msgid "'{name}' cannot be a folder name."
 msgstr "« {name} » ne peut pas être un nom de dossier."
 
@@ -814,6 +826,12 @@ msgstr "Copiez-collez cette commande pour relancer."
 msgid "Copy the command"
 msgstr "Copier la commande"
 
+msgid "Correct it, then run the same command again."
+msgstr "Corrigez la valeur, puis relancez la même commande."
+
+msgid "Correct or remove it, or update the image to the latest version:"
+msgstr "Corrigez ou supprimez la ligne, ou mettez l'image à jour :"
+
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr "Corrigez ces cellules, enregistrez le classeur, puis relancez 'sort'."
 
@@ -993,6 +1011,10 @@ msgstr "Description"
 
 msgid "Detail"
 msgstr "Détail"
+
+#, python-brace-format
+msgid "Did you mean '{key}'?"
+msgstr "Vouliez-vous dire « {key} » ?"
 
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr "Ne pas demander de confirmation (remplace clean.confirm)."
@@ -1784,10 +1806,6 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 
 msgid "Into folders"
 msgstr "Dans des dossiers"
-
-#, python-brace-format
-msgid "Invalid configuration ({details})."
-msgstr "Configuration invalide ({details})."
 
 msgid "Inventory"
 msgstr "Inventaire"
@@ -3014,9 +3032,6 @@ msgstr ""
 "Lancez 'media-hygiene config' pour voir chaque valeur effective et son "
 "origine."
 
-msgid "Run 'media-hygiene config' to see every setting and where it comes from."
-msgstr "Lancez 'media-hygiene config' pour voir chaque réglage et son origine."
-
 msgid "Run 'media-hygiene history' to list the runs."
 msgstr "Lancez 'media-hygiene history' pour lister les exécutions."
 
@@ -3838,6 +3853,18 @@ msgstr ""
 "Les villes qui servent à nommer les lieux ne peuvent pas être lues : "
 "{error}."
 
+#, python-brace-format
+msgid "The variable {name}"
+msgstr "La variable {name}"
+
+#, python-brace-format
+msgid ""
+"The variable {name} is unknown to version {version}: a typo, or a setting"
+" of a newer version?"
+msgstr ""
+"La variable {name} n'existe pas dans la version {version} : une faute de "
+"frappe, ou un réglage d'une version plus récente ?"
+
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
 
@@ -4396,6 +4423,10 @@ msgstr ""
 "Fuseau des heures UTC des vidéos, par exemple \"Europe/Brussels\". Vide :"
 " [general] timezone."
 
+#, python-brace-format
+msgid "[[{table}]] number {number}"
+msgstr "[[{table}]] n° {number}"
+
 msgid "[cyan]read-only[/]"
 msgstr "[cyan]lecture seule[/]"
 
@@ -4433,10 +4464,22 @@ msgstr ""
 "un nom choisi par quelqu'un (l'autre a été généré par un appareil photo "
 "ou une application)"
 
+#, python-brace-format
+msgid "a number is expected, not {value}"
+msgstr "un nombre est attendu, pas {value}"
+
 msgid "a photo, a video or a sidecar is never junk: the folder is kept"
 msgstr ""
 "une photo, une vidéo ou un fichier compagnon n'est jamais un fichier "
 "inutile : le dossier est gardé"
+
+#, python-brace-format
+msgid "a text between quotes is expected, not {value}"
+msgstr "un texte entre guillemets est attendu, pas {value}"
+
+#, python-brace-format
+msgid "a whole number is expected, not {value}"
+msgstr "un nombre entier est attendu, pas {value}"
 
 #, python-brace-format
 msgid "about {time} left"
@@ -4746,6 +4789,10 @@ msgstr "laisser tout l'événement où il est"
 msgid "left as it is"
 msgstr "laissé tel quel"
 
+#, python-brace-format
+msgid "less than {limit} is expected, not {value}"
+msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
+
 msgid "media files scanned"
 msgstr "fichiers média analysés"
 
@@ -4772,6 +4819,10 @@ msgstr "Rapports media-hygiene"
 
 msgid "merged with another named event, whose name wins"
 msgstr "fusionné avec un autre événement nommé, dont le nom l'emporte"
+
+#, python-brace-format
+msgid "more than {limit} is expected, not {value}"
+msgstr "une valeur supérieure à {limit} est attendue, pas {value}"
 
 msgid "move between photos"
 msgstr "passer d'une photo à l'autre"
@@ -4868,6 +4919,10 @@ msgstr "une fois la quarantaine vérifiée, 'purge' libère sa place."
 
 msgid "once you have checked, 'purge' frees the space of the files set aside."
 msgstr "une fois vérifié, 'purge' libère la place des fichiers mis de côté."
+
+#, python-brace-format
+msgid "one of {expected} is expected, not {value}"
+msgstr "une valeur parmi {expected} est attendue, pas {value}"
 
 msgid "only Czkawka"
 msgstr "Czkawka seulement"
@@ -5126,6 +5181,9 @@ msgstr ""
 msgid "this file has too many names already"
 msgstr "ce fichier a déjà trop de noms"
 
+msgid "this setting is required"
+msgstr "ce réglage est obligatoire"
+
 #, python-brace-format
 msgid ""
 "timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
@@ -5157,6 +5215,10 @@ msgstr "en quarantaine avec --tier near"
 
 msgid "today"
 msgstr "aujourd'hui"
+
+#, python-brace-format
+msgid "true or false is expected, not {value}"
+msgstr "true ou false est attendu, pas {value}"
 
 msgid "undo the last choice"
 msgstr "annuler le dernier choix"
@@ -5838,6 +5900,14 @@ msgstr ""
 "service dans [places] nominatim_url."
 
 #, python-brace-format
+msgid "{limit} or less is expected, not {value}"
+msgstr "au plus {limit} est attendu, pas {value}"
+
+#, python-brace-format
+msgid "{limit} or more is expected, not {value}"
+msgstr "au moins {limit} est attendu, pas {value}"
+
+#, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
 
@@ -5950,6 +6020,18 @@ msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
 
 #, python-brace-format
+msgid ""
+"{place} is unknown to version {version}: a typo, or a setting of a newer "
+"version?"
+msgstr ""
+"{place} n'existe pas dans la version {version} : une faute de frappe, ou "
+"un réglage d'une version plus récente ?"
+
+#, python-brace-format
+msgid "{place}: {reason}."
+msgstr "{place} : {reason}."
+
+#, python-brace-format
 msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
 msgstr ""
 "{removed} ne contient rien d'autre : c'est entièrement une copie de "
@@ -5970,6 +6052,10 @@ msgstr "{sheet} : {key} : '{value}' ({why})"
 #, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"
 msgstr "{subject} : page '{page}', classeur '{workbook}'"
+
+#, python-brace-format
+msgid "{table} in config.toml"
+msgstr "{table} dans config.toml"
 
 #, python-brace-format
 msgid "{total} files found."

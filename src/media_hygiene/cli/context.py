@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import typer
+from rich.markup import escape
 
 from media_hygiene.cli.safety import announce_read_only
 from media_hygiene.config.legacy_env import (
@@ -49,9 +50,9 @@ def user_errors(output: Output) -> Iterator[None]:
     try:
         yield
     except MediaHygieneError as exc:
-        output.error(exc.message)
+        output.error(escape(exc.message))  # plain text: `[general]` is not markup
         if exc.tip:
-            output.tip(exc.tip)
+            output.tip(escape(exc.tip))
         if exc.command:
             output.command(exc.command)
         raise typer.Exit(ExitCode.FAILURE) from exc
@@ -64,9 +65,9 @@ def warn(output: Output, error: MediaHygieneError) -> None:
         output: Where to print.
         error: The error.
     """
-    output.warning(error.message)
+    output.warning(escape(error.message))
     if error.tip:
-        output.tip(error.tip)
+        output.tip(escape(error.tip))
     if error.command:
         output.command(error.command)
 

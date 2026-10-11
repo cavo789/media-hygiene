@@ -153,10 +153,11 @@ documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
 Les règles qui n'ont rien décidé sont nommées après le tableau : une faute de frappe dans une
 expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers. Une
 règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et se nomme
-(`classify.rules.0` est la première règle) :
+(les règles sont comptées depuis le haut du fichier) :
 
 ```text
-❌ Configuration invalide (classify.rules.0: Value error, rule 'Anniversaire': '02-30' is not a day that exists).
+❌ [[classify.rules]] n° 1 dans config.toml : rule 'Anniversaire': '02-30' is not a day that exists.
+💡 Corrigez la valeur, puis relancez la même commande.
 ```
 
 Le classeur montre les mêmes noms dans la colonne *Raison* de sa feuille Fichiers, et les compte

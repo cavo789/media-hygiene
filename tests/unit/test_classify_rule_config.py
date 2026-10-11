@@ -53,7 +53,7 @@ def test_an_invalid_rule_is_refused_with_its_name(
     rules_file(locations, body)
     with pytest.raises(ConfigError, match=said) as refused:
         load_settings(locations)
-    assert "classify.rules.0" in refused.value.message
+    assert "[[classify.rules]] number 1" in refused.value.message
 
 
 def test_two_rules_with_one_name_are_refused(locations: Locations) -> None:

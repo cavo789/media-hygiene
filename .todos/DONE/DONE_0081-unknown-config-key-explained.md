@@ -36,3 +36,19 @@ command a Docker user can type either.
 
 - Unit tests: an unknown key, a near-miss typo (`timezon`), a bad type; output in French has no
   English pydantic text; no traceback.
+
+## Status
+
+DONE (2026-10-11, night run, second pass). `config/explain.py` turns every pydantic error into
+a sentence naming the key, its table and where it was written (`'timezon' in [general] of
+config.toml`, `The variable MEDIA_HYGIENE_…`, `'color' on the command line`, `[[classify.rules]]
+number 2`); an unknown key or table says "unknown to version X: a typo, or a setting of a newer
+version?", adds "Did you mean …?" (`difflib`, `config/known_keys.py`) and ends with the tip and
+the whole `docker pull cavo789/media-hygiene` command. Common types (int, float, bool, string,
+enum/literal, bounds, missing) are translated (`config/reasons.py`); a project validator's own
+message is kept (its English is follow-up 0086). An unknown `MEDIA_HYGIENE_<SECTION>__<KEY>` is
+now refused (it was silently ignored). `Origin` moved to `config/origin.py` (re-exported by the
+loader). A refused config keeps the language it names (`i18n/bootstrap.py`). `cli/context.py`
+escapes the Rich markup of a domain error's message and tip, so `[general]` is printed. The "Run 'media-hygiene
+config'" tip was dropped: `config` itself fails on a refused file.
+Report: `.claude/plans/night-2026-10-10/0081-report.md`.

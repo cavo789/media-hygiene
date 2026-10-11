@@ -81,7 +81,7 @@ def test_invalid_places_in_the_file_are_named(
     )
     result = run(garden, "places")
     assert result.exit_code != 0
-    assert "Invalid configuration (classify.places" in result.output
+    assert "'places' in [classify] of config.toml: only one place" in result.output
     assert "Traceback" not in result.output
 
 

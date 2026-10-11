@@ -85,7 +85,7 @@ def test_invalid_toml_explains_quotes(locations: Locations) -> None:
 def test_invalid_value_names_the_key(locations: Locations) -> None:
     """Validation errors point at the offending key."""
     locations.config_file.write_text('[general]\nlocale = "de"\n')
-    with pytest.raises(ConfigError, match=r"general\.locale"):
+    with pytest.raises(ConfigError, match=r"'locale' in \[general\]"):
         load_settings(locations)
 
 
@@ -133,5 +133,5 @@ def test_keep_patterns_come_from_the_file_and_the_environment(
     assert keep.generated_names == ("CAM\\d+",)
     assert not keep.generic_folders
     locations.config_file.write_text("[keep]\ngenerated_names = ['IMG_(']\n")
-    with pytest.raises(ConfigError, match=r"keep\.generated_names"):
+    with pytest.raises(ConfigError, match=r"'generated_names' in \[keep\]"):
         load_settings(locations)

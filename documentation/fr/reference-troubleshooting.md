@@ -57,6 +57,20 @@ alors avant l'analyse et nomme le dossier.
 transforme le `\b` de `"D:\backup"` en caractère de contrôle, et l'outil refuse ce chemin au lieu
 de l'ignorer ([étape 7](clean/07-configuration-file.md#le-remplir)).
 
+## Un réglage de `config.toml` est inconnu de cette version
+
+```text
+❌ « timezon » dans [general] de config.toml n'existe pas dans la version 0.3.0 : une faute de
+frappe, ou un réglage d'une version plus récente ? Vouliez-vous dire « timezone » ?
+💡 Corrigez ou supprimez la ligne, ou mettez l'image à jour :
+docker pull cavo789/media-hygiene
+```
+
+Une faute de frappe est nommée avec le réglage qui lui ressemble. Un réglage copié d'une
+documentation plus récente demande l'image plus récente : `docker pull cavo789/media-hygiene`. Il
+en va de même pour une variable `MEDIA_HYGIENE_<SECTION>__<CLÉ>` passée avec `-e`. Une valeur
+refusée (`verbosity = "loud"`) dit ce qui est attendu à la place.
+
 ## La page de tri ne s'ouvre pas
 
 - Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
