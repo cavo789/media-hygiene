@@ -18,7 +18,7 @@ docker run --rm -it `
 
 ```text
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
-✅ 52 318 fichiers : 241 906 mots tirés de leurs dossiers, dates et lieux.
+✅ 52 318 fichiers : 241 906 mots tirés de leurs dossiers, noms, dates et lieux.
 💡 Indiquez un modèle de vision local (Ollama) dans [classify.ai] model pour ajouter ce que
 montrent les photos : elles sont envoyées à son url, et seulement là.
 ```
@@ -33,13 +33,14 @@ d'autres applications lisent.
 | Source | Mots | Coût |
 |---|---|---|
 | Dossiers | Les mots des noms de dossiers que vous avez choisis : `2022/Durbuy - ours` donne `Durbuy`, `ours`. Les dossiers nommés par un appareil ou une application (`DCIM`, `100CANON`, `Camera`), les dates (`2019`, `Juillet 2019`) et les petits mots de liaison (`les`, `the`) sont écartés, comme pour [la copie gardée](clean/05-choose-the-kept-copy.md). | Secondes |
+| Nom du fichier | Les mots d'un nom que vous avez choisi : `Anniversaire Léa.mp4` donne `Anniversaire`, `Léa` ; `2019-07-12 Plage (petite).jpg` donne `Plage`, `petite`. Un nom donné par un appareil ou une application (`IMG_1234.jpg`, `DSC00042.JPG`, `VID-20190712-WA0001.mp4`, `PXL_20230101_120000.jpg`, un simple nombre) ne donne rien, pas plus que sa part dans un nom plus long (`IMG_1234 Léa.jpg` donne `Léa`) : ce sont les noms que reconnaît [la copie gardée](clean/05-choose-the-kept-copy.md), `[keep] generated_names`. Les nombres, les dates, les mois et les petits mots de liaison sont écartés, comme pour les dossiers. Les vidéos aussi. | Secondes |
 | Date | L'année, le mois, la saison (inversée sous l'équateur), les fêtes (Noël, Nouvel an, Saint-Nicolas, Saint-Valentin, Halloween, Pâques) et les noms de vos propres règles `calendar` et `date_range` ([trier, étape 6](sort/06-write-down-what-you-know.md#les-dates)). Une photo sans date prend l'année de son dossier (`Avril 2007`). | Secondes |
 | Lieu | Le nom de votre lieu quand la position GPS s'y trouve ([trier, étape 9](sort/09-places-from-gps.md)), puis la ville la plus proche et son pays, hors ligne (GeoNames), quand elle est à moins de `town_km` (20 km). | Secondes |
 | Modèle de vision | Une courte phrase et 5 à 10 mots sur ce que montre la photo (facultatif, ci-dessous). | Environ 2 s par photo |
 | Personne | Les noms des personnes sur la photo, une fois leur groupe nommé dans [`people`](reference-people.md#nommer-les-groupes). Calculés par `search` à chaque lancement, depuis les visages et `config.toml` : `tags` ne les calcule pas, et ils ne sont jamais écrits dans les fichiers compagnons `.xmp`. | Aucun pour `tags` |
 
-Ces mots sont recalculés à chaque passage : renommez un dossier ou ajoutez une règle, relancez
-`tags`.
+Ces mots sont recalculés à chaque passage : renommez un dossier ou un fichier, ou ajoutez une
+règle, relancez `tags`.
 
 ## Les mots d'un modèle de vision local
 
@@ -63,8 +64,15 @@ Avec Docker Engine (Linux, WSL), ajoutez `--add-host=host.docker.internal:host-g
 - **Vie privée** : chaque photo est envoyée, en JPEG de 768 pixels, à l'`url` de
   `[classify.ai]`, et seulement là. Gardez ce serveur sur votre propre ordinateur.
 - **Une photo par ensemble** : les copies identiques partagent leurs mots, et une rafale prend
-  ceux de sa photo la plus nette. Les vidéos, et les photos plus petites que `min_edge`
-  (512 pixels), ne sont pas envoyées.
+  ceux de sa photo la plus nette. Une quasi-copie (une copie WhatsApp et son original) est encore
+  envoyée pour elle-même.
+- **Les vidéos par une image** : l'image montrée au milieu de la vidéo est envoyée, comme une
+  photo ; les copies identiques d'une vidéo partagent ses mots. Les photos et vidéos plus
+  petites que `min_edge` (512 pixels sur leur petit côté) ne sont pas envoyées.
+- **Demandé une seule fois, pour `classify` aussi** : une règle `subject`
+  ([trier, étape 8](sort/08-subjects-from-a-local-model.md)) lit la phrase et les mots que
+  `tags` a déjà, quand le même modèle les a donnés, et les range seulement dans ses catégories :
+  une photo décrite par `tags` n'est jamais renvoyée.
 - **Les plus récentes d'abord** : la première nuit couvre déjà vos dernières années.
 - **Ce qui lui est demandé** : une phrase et 5 à 10 mots, dans la langue de `[tags] language`
   (celle de l'interface par défaut) ; les personnes comme adulte, enfant, bébé ou groupe, jamais
@@ -96,8 +104,8 @@ Laissez la carte à l'exécution seule, la nuit par exemple.
 
 **Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours. Chaque réponse est
 gardée aussitôt : le prochain passage de `tags` reprend là où celui-ci s'est arrêté.
-`tags --no-describe` ne demande rien de nouveau au modèle : les mots des dossiers, des dates et
-des lieux, et les réponses déjà dans le cache.
+`tags --no-describe` ne demande rien de nouveau au modèle : les mots des dossiers, des noms, des
+dates et des lieux, et les réponses déjà dans le cache.
 
 ### Un dossier d'abord : `--path`
 
@@ -132,7 +140,7 @@ la grille sont gardés dans `/cache`.
 | `bougies` | `bougie` aussi : les tags sont gardés au singulier. |
 | `anniv*` | Chaque mot qui commence ainsi : `anniversaire`, `anniv`. |
 | `"bord de mer"` | L'expression, ses mots dans cet ordre. |
-| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `date`, `person` (les noms de [`people`](reference-people.md)). |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `name` (nom du fichier), `date`, `person` (les noms de [`people`](reference-people.md)). |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
@@ -160,7 +168,8 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
 `clean`.
 
 - **Ce qui est écrit** : les mots des sources de `xmp_sources` (`vision` et `place` par défaut :
-  les mots des dossiers et des dates sont déjà dans le chemin) dans `dc:subject`, la phrase du
+  les mots des dossiers, des noms et des dates sont déjà dans le chemin ; ajoutez `name` ou
+  `folder` pour les écrire aussi) dans `dc:subject`, la phrase du
   modèle dans `dc:description`.
 - **Le lieu à part** : avec `place` dans `xmp_sources`, la ville va aussi dans
   `photoshop:City`, son pays dans `photoshop:Country` et votre premier lieu personnel

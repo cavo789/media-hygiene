@@ -2,8 +2,8 @@
 
 The folder rules are those of `classify` (generic folders of `[keep]` and
 `[classify]`, the tool's own band folders), the calendar its `calendar` and
-`date_range` rules, the places its `[[classify.places]]`: one vocabulary for the
-whole tool.
+`date_range` rules, the places its `[[classify.places]]`, the generated file names
+those of `[keep]` (the keep policy's): one vocabulary for the whole tool.
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ from media_hygiene.classify.place_match import zones_of
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import DEFAULT_RULES
+from media_hygiene.plan.name_rules import DEFAULT_NAME_RULES, NameRules
 
 if TYPE_CHECKING:
     from datetime import tzinfo
@@ -30,8 +31,8 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class TagContext:
-    """Folder rules, calendar, places and towns: everything a cheap tag reads."""
+class TagContext:  # pylint: disable=too-many-instance-attributes
+    """Folder and name rules, calendar, places, towns: all a cheap tag reads."""
 
     words: WordRules
     folders: FolderRules
@@ -40,6 +41,8 @@ class TagContext:
     places: tuple[Zone, ...]
     towns: Gazetteer | None = None  # None: no town named (no GPS position)
     town_km: float = 0.0
+    # Names a camera or an app generated (`[keep] generated_names`): they give no word.
+    names: NameRules = DEFAULT_NAME_RULES
 
 
 def tag_context(settings: Settings, words: WordRules) -> TagContext:
@@ -52,9 +55,9 @@ def tag_context(settings: Settings, words: WordRules) -> TagContext:
     Returns:
         The context, without towns: `with_towns` adds them when a file has GPS.
     """
-    classify = settings.classify
+    classify, keep = settings.classify, settings.keep
     folders = FolderRules.build(
-        (*settings.keep.generic_folders, *classify.generic_folders),
+        (*keep.generic_folders, *classify.generic_folders),
         band_folders(classify),
     )
     return TagContext(
@@ -64,6 +67,7 @@ def tag_context(settings: Settings, words: WordRules) -> TagContext:
         _calendar(settings),
         zones_of(classify.places),
         town_km=settings.tags.town_km,
+        names=NameRules.from_patterns(keep.generated_names, keep.generic_folders),
     )
 
 

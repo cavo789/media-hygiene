@@ -41,7 +41,8 @@ as a table.
 | `bougies` | `bougie` too: the words are kept in the singular. |
 | `anniv*` | Every word starting so. |
 | `"bord de mer"` | The phrase, its words in that order. |
-| `place:durbuy` | The word among the places only; also `vision`, `caption`, `folder`, `date`, `person`. |
+| `place:durbuy` | The word among the places only; also `vision`, `caption`, `folder`, `name` (the file name), `date`, `person`. |
+| `anniversaire` | Also `Anniversaire Léa.mp4`: the words of a file name you chose count too (`IMG_1234` gives none). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
 | `Chloé montagne` | The photos of Chloé with "montagne" from any source, once her group is named in [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | The name among the people only. A name nobody has yet is said in one line. |

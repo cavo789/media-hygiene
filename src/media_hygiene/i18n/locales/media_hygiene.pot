@@ -469,8 +469,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Ask the local model nothing new: the words of the folders, dates and "
-"places only, and the descriptions already in the cache."
+"Ask the local model nothing new: the words of the folders, names, dates "
+"and places only, and the descriptions already in the cache."
 msgstr ""
 
 #, python-format
@@ -868,7 +868,9 @@ msgstr ""
 msgid "Delete all reports but the N most recent ones."
 msgstr ""
 
-msgid "Delete every face from the cache, then show that none is left."
+msgid ""
+"Delete every face from the cache, then show that none is left; asks "
+"before deleting the names of config.toml too."
 msgstr ""
 
 msgid "Delete it: the next audit builds it again, reading every file once."
@@ -1315,8 +1317,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Find the faces in the photos and group those alike, shown in your "
-"browser. Kept in the cache, never sent anywhere."
+"Find the faces in the photos, group those alike and name them in your "
+"browser. Faces kept in the cache, never sent anywhere."
 msgstr ""
 
 msgid "Finding faces"
@@ -1446,8 +1448,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Give every photo words to find it by: its folders, date and place, and "
-"what a local vision model sees. Kept in the cache, never in the photos."
+"Give every photo words to find it by: its folders, name, date and place, "
+"and what a local vision model sees. Kept in the cache, never in the "
+"photos."
 msgstr ""
 
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
@@ -3471,16 +3474,17 @@ msgstr ""
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, date. The model's "
+"(dc:subject), by source: vision, place, folder, name, date. The model's "
 "sentence goes into dc:description."
 msgstr ""
 
 msgid ""
 "The words of 'tags', to find photos by what they show: the meaningful "
-"words of the folder names, the date (year, month, season, holidays), the "
-"place (your [[classify.places]], the nearest town) and, when "
-"[classify.ai] model is set, what the vision model sees. They are kept in "
-"the cache (/cache), never written into the photos."
+"words of the folder and file names (none for IMG_1234), the date (year, "
+"month, season, holidays), the place (your [[classify.places]], the "
+"nearest town) and, when [classify.ai] model is set, what the vision model"
+" sees. They are kept in the cache (/cache), never written into the "
+"photos."
 msgstr ""
 
 msgid "The workbook and its plan.json do not match: one of them changed."
@@ -3839,7 +3843,7 @@ msgstr ""
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
-"only (also vision, caption, folder, date, person)."
+"only (also vision, caption, folder, name, date, person)."
 msgstr ""
 
 #, python-brace-format
@@ -5056,6 +5060,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} faces"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} faces look like no other: they are not shown."
 msgstr ""
 
@@ -5116,8 +5124,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} file: {words} words from its folders, date and place."
-msgid_plural "{count} files: {words} words from their folders, dates and places."
+msgid "{count} file: {words} words from its folders, name, date and place."
+msgid_plural "{count} files: {words} words from their folders, names, dates and places."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5485,6 +5493,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} ({count} faces)"
 msgstr ""
 
 #, python-brace-format

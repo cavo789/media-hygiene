@@ -2,7 +2,7 @@
 
 The vision model is the one of `[classify.ai]` (url, model, sizes, confirmation): one
 model and one server for the whole tool. Without a model, `tags` computes the words
-of the folders, dates and places only.
+of the folders, names, dates and places only.
 """
 
 from __future__ import annotations
@@ -22,7 +22,8 @@ STOP_WORDS: Final = (
     *("picture", "person", "people", "thing", "object", "background", "scene", "view"),
 )
 _TOWN_KM: Final = 20.0
-# Folder and date words are seen in the path already: only these go into sidecars.
+# Folder, name and date words are seen in the path already: only these go into
+# sidecars.
 XMP_SOURCES: Final = (TagSource.VISION, TagSource.PLACE)
 
 

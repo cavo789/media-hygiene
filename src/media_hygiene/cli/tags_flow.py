@@ -79,7 +79,7 @@ def run_tags(runtime: Runtime, request: TagRequest) -> bool:
         elif request.describe and may_describe(runtime, work, request.yes):
             with StopRequest() as stop, RichProgress(output.console) as progress:
                 answering = Answering(True, progress, stop.requested)  # noqa: FBT003
-                show_described(output, describe_photos(step, work.missing, answering))
+                show_described(output, describe_photos(step, work, answering))
         show_vision(output, work, step.derive(work))
     return True
 

@@ -1,29 +1,31 @@
 """`tags`: the cheap words of every file, then what the vision model sees.
 
-The folder, date and place words are recomputed at every run (seconds). The model
+The folder, name, date and place words are recomputed at every run (seconds). The model
 describes only the photos the cache lacks, one per set of identical files and per
 burst series; its tags are then derived for every photo from the cached answers.
 """
 
 from __future__ import annotations
 
+import shutil
 from contextlib import ExitStack
 from dataclasses import replace
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.classify.whereabouts import located_point
+from media_hygiene.constants import FFMPEG_BINARY
 from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.i18n import active_locale
 from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.services.tag_files import tag_files
-from media_hygiene.services.tag_work import TagWork, version_of
+from media_hygiene.services.tag_work import TagWork, stills_of, version_of
 from media_hygiene.tags.context import tag_context
 from media_hygiene.tags.models import CHEAP_SOURCES, MODEL_SOURCES, FileTags
 from media_hygiene.tags.normalize import WordRules
 from media_hygiene.tags.producers import cheap_tags
-from media_hygiene.tags.selection import vision_plan
+from media_hygiene.tags.selection import STILLS, WITH_VIDEOS, vision_plan
 from media_hygiene.tags.vision import prompt_version, vision_tags
 
 if TYPE_CHECKING:
@@ -118,17 +120,19 @@ class TagStep:
         """
         repository, store = self._open()
         files = tag_files(self._runtime, repository.connection, within)
-        vision = vision_plan(files, self._ai.min_edge)
+        ffmpeg = shutil.which(FFMPEG_BINARY)
+        kinds = STILLS if ffmpeg is None else WITH_VIDEOS
+        vision = vision_plan(files, self._ai.min_edge, kinds)
         missing = tuple(
             version_of(file)
             for file in vision.asked
             if self.vision_on and store.get(version_of(file)) is None
         )
         seconds = store.seconds_per_photo() or self._ai.seconds_per_photo
-        return TagWork(files, vision, missing, seconds)
+        return TagWork(files, vision, missing, seconds, stills_of(vision.asked, ffmpeg))
 
     def cheap(self, work: TagWork) -> int:
-        """Recompute the folder, date and place tags of every file of the run.
+        """Recompute the folder, name, date and place tags of every file of the run.
 
         Args:
             work: The files.

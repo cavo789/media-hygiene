@@ -48,8 +48,8 @@ def tags_command(  # pylint: disable=too-many-arguments
         typer.Option(
             "--no-describe",
             help=_(
-                "Ask the local model nothing new: the words of the folders, dates "
-                "and places only, and the descriptions already in the cache."
+                "Ask the local model nothing new: the words of the folders, names, "
+                "dates and places only, and the descriptions already in the cache."
             ),
         ),
     ] = False,

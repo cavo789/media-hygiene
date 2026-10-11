@@ -17,7 +17,7 @@ docker run --rm -it `
 
 ```text
 🔒 Read-only: your photos and videos are not touched.
-✅ 52,318 files: 241,906 words from their folders, dates and places.
+✅ 52,318 files: 241,906 words from their folders, names, dates and places.
 💡 Set [classify.ai] model to a local vision model (Ollama) to add what the photos show: they
 are sent to its url, and only there.
 ```
@@ -32,12 +32,14 @@ applications read.
 | Source | Words | Cost |
 |---|---|---|
 | Folders | The words of the folder names you chose: `2022/Durbuy - ours` gives `Durbuy`, `ours`. Folders named by a device or an app (`DCIM`, `100CANON`, `Camera`), dates (`2019`, `Juillet 2019`) and small linking words (`les`, `the`) are left out, as for [the kept copy](clean/05-choose-the-kept-copy.md). | Seconds |
+| File name | The words of a name you chose: `Anniversaire Léa.mp4` gives `Anniversaire`, `Léa`; `2019-07-12 Plage (petite).jpg` gives `Plage`, `petite`. A name a camera or an app gave (`IMG_1234.jpg`, `DSC00042.JPG`, `VID-20190712-WA0001.mp4`, `PXL_20230101_120000.jpg`, a bare number) gives nothing, nor does its part in a longer name (`IMG_1234 Léa.jpg` gives `Léa`): these are the names [the kept copy](clean/05-choose-the-kept-copy.md) recognises, `[keep] generated_names`. Numbers, dates, months and small linking words are left out, as for the folders. Videos too. | Seconds |
 | Date | The year, the month, the season (turned around below the equator), the holidays (Christmas, New Year, Saint Nicholas, Valentine's Day, Halloween, Easter) and the names of your own `calendar` and `date_range` rules ([sorting, step 6](sort/06-write-down-what-you-know.md#dates)). A photo without a date takes the year of its folder (`Avril 2007`). | Seconds |
 | Place | The name of your place when the GPS position lies in one ([sorting, step 9](sort/09-places-from-gps.md)), then the nearest town and its country, offline (GeoNames), when it lies within `town_km` (20 km). | Seconds |
 | Vision model | A short sentence and 5 to 10 words about what the photo shows (optional, below). | About 2 s per photo |
 | Person | The names of the people on the photo, once you named their group in [`people`](reference-people.md#name-the-groups). Made by `search` at each start from the faces and `config.toml`: `tags` does not compute them, and they are never written into the `.xmp` sidecars. | None for `tags` |
 
-These words are computed again at every run: rename a folder or add a rule, run `tags` again.
+These words are computed again at every run: rename a folder or a file, or add a rule, run `tags`
+again.
 
 ## The words of a local vision model
 
@@ -61,7 +63,14 @@ On Docker Engine (Linux, WSL), add `--add-host=host.docker.internal:host-gateway
 - **Privacy**: each photo is sent, as a 768-pixel JPEG, to the `url` of `[classify.ai]`, and only
   there. Keep that server on your own computer.
 - **One photo per set**: identical copies share their words, and a burst series takes those of
-  its sharpest shot. Videos, and photos smaller than `min_edge` (512 pixels), are not sent.
+  its sharpest shot. A near copy (a WhatsApp copy and its original) is still sent on its own.
+- **Videos by one frame**: the frame shown in the middle of the video is sent, like a photo;
+  identical copies of a video share its words. Photos and videos smaller than `min_edge`
+  (512 pixels on their shorter side) are not sent.
+- **Asked once for `classify` too**: a `subject` rule
+  ([sorting, step 8](sort/08-subjects-from-a-local-model.md)) reads the sentence and words
+  `tags` already has, when the same model gave them, and only maps them to its categories: a
+  photo `tags` described is never sent again.
 - **Newest first**: the first night already covers your recent years.
 - **What it is asked**: one sentence and 5 to 10 words, in the language of `[tags] language`
   (the interface's by default); people as adult, child, baby or group, never a relationship
@@ -92,7 +101,8 @@ alone, for example at night.
 
 **Stop whenever you want**: Ctrl+C lets the photos being described finish. Each answer is kept at
 once: the next `tags` run goes on where this one stopped. `tags --no-describe` asks the model
-nothing new: the words of the folders, dates and places, and the answers already in the cache.
+nothing new: the words of the folders, names, dates and places, and the answers already in the
+cache.
 
 ### One folder first: `--path`
 
@@ -126,7 +136,7 @@ the small previews of the grid are kept in `/cache`.
 | `bougies` | `bougie` too: the tags are kept in the singular. |
 | `anniv*` | Every word starting so: `anniversaire`, `anniv`. |
 | `"bord de mer"` | The phrase, its words in that order. |
-| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `date`, `person` (the names of [`people`](reference-people.md)). |
+| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `name` (the file name), `date`, `person` (the names of [`people`](reference-people.md)). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20
@@ -153,7 +163,8 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
 `:ro`). With it, the folders must be writable and `/journal` mounted, like `clean`.
 
 - **What is written**: the words of the sources in `xmp_sources` (`vision` and `place` by
-  default: the folder and date words are in the path already) into `dc:subject`, the model's
+  default: the folder, name and date words are in the path already; add `name` or `folder` to
+  write them too) into `dc:subject`, the model's
   sentence into `dc:description`.
 - **The place apart**: with `place` in `xmp_sources`, the town also goes into `photoshop:City`,
   its country into `photoshop:Country` and your first personal place (`[[classify.places]]`)

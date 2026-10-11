@@ -1,7 +1,8 @@
 """Describe the photos missing from the cache, a few at a time, stopping on request.
 
 Each photo is made a JPEG of `image_edge` pixels in the process pool (a RAW file gives
-its embedded preview), sent, and its description committed at once. Ctrl+C lets the
+its embedded preview; a video, one frame `ffmpeg` decodes), sent, and its description
+committed at once. Ctrl+C lets the
 photos being described finish; the next run starts where this one stopped. The
 question asked is `classify`'s unless another one is given (`tags` asks its own).
 """
@@ -11,20 +12,24 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.ai.prompts import describe_request, read_description
 from media_hygiene.errors import AiError
 from media_hygiene.report.thumbnails import jpeg_preview
+from media_hygiene.scan.video_still import video_jpeg
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from concurrent.futures import Executor
+    from pathlib import Path
 
     from media_hygiene.classify.ai.client import OllamaClient
     from media_hygiene.classify.ai.models import Description
     from media_hygiene.index.descriptions import DescriptionStore, PhotoVersion
     from media_hygiene.scan.progress import ProgressSink
+    from media_hygiene.scan.video_still import VideoStill
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,6 +53,10 @@ class DescribeDeps:
     progress: ProgressSink
     stopped: Callable[[], bool]
     question: Question = CLASSIFY_QUESTION
+    # The videos among the photos, and the frame each one is seen by.
+    stills: Mapping[Path, VideoStill] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
 
 @dataclass(slots=True)
@@ -103,10 +112,7 @@ async def _describe_one(
             outcome.stopped = True
             return
         settings = deps.client.settings
-        loop = asyncio.get_running_loop()
-        image = await loop.run_in_executor(
-            deps.executor, jpeg_preview, photo.path, settings.image_edge
-        )
+        image = await _picture(photo.path, deps)
         if image is None:
             outcome.unreadable += 1
             deps.progress.advance()
@@ -126,3 +132,21 @@ async def _describe_one(
             deps.store.put(photo, description)
             outcome.described += 1
         deps.progress.advance()
+
+
+async def _picture(path: Path, deps: DescribeDeps) -> bytes | None:
+    """The JPEG the model sees: the photo, or the frame of a video.
+
+    Args:
+        path: The photo or video.
+        deps: The pool, the size of the JPEG, the frames of the videos.
+
+    Returns:
+        The JPEG, or None when it cannot be decoded.
+    """
+    edge = deps.client.settings.image_edge
+    still = deps.stills.get(path)
+    if still is not None:
+        return await video_jpeg(still, edge)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(deps.executor, jpeg_preview, path, edge)

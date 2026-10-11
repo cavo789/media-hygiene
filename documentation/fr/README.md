@@ -101,7 +101,7 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Le classeur d'inventaire](reference-inventory.md) : chaque photo et vidéo avec ce que les
   audits en ont appris, dans Excel, depuis le cache seul (`inventory`).
 - [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
-  dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `search` les
+  noms, dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `search` les
   retrouve dans votre navigateur, `xmp` les écrit dans des fichiers compagnons `.xmp`.
 - [Les personnes](reference-people.md) : trouver les visages des photos et regrouper ceux qui se
   ressemblent, à voir dans votre navigateur (`people`) ; gardés dans le cache, jamais envoyés.

@@ -1,1 +1,1 @@
-"""Tags: one searchable layer of words, from folders, dates, places and a model."""
+"""Tags: one searchable layer of words, from folders, names, dates, places, a model."""

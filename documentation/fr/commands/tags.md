@@ -30,13 +30,14 @@ docker run --rm -it `
 ```
 
 Sans modèle de vision, il prend quelques secondes : *✅ 52 318 fichiers : 241 906 mots tirés de
-leurs dossiers, dates et lieux.*
+leurs dossiers, noms, dates et lieux.*
 
 ## D'où viennent les mots
 
 | Source | Mots | Coût |
 |---|---|---|
 | Dossiers | Les mots des noms de dossiers que vous avez choisis (`2022/Durbuy - ours` donne `Durbuy`, `ours`) ; les dossiers d'appareil, les dates et les petits mots de liaison sont laissés de côté. | Secondes |
+| Nom du fichier | Les mots d'un nom que vous avez choisi (`Anniversaire Léa.mp4` donne `Anniversaire`, `Léa`) ; les noms donnés par un appareil ou une application (`IMG_1234`, `VID-20190712-WA0001`), les nombres et les dates ne donnent rien. | Secondes |
 | Date | Année, mois, saison, fêtes, et les noms de vos règles `calendar` et `date_range`. | Secondes |
 | Lieu | Votre lieu quand la position GPS s'y trouve, puis la ville la plus proche et son pays, hors ligne. | Secondes |
 | Modèle de vision | Une phrase et 5 à 10 mots sur ce que montre la photo (facultatif). | Environ 2 s par photo |
@@ -47,7 +48,7 @@ leurs dossiers, dates et lieux.*
 |---|---|
 | `--path CHEMIN` | Seulement les photos sous ce dossier (chemin de l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs. |
 | `--sample N` | Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
-| `--no-describe` | Ne rien demander de nouveau au modèle : les mots des dossiers, dates et lieux, et les descriptions déjà dans le cache. |
+| `--no-describe` | Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
 | `--yes`, `-y` | Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
 
 ## Bon à savoir
@@ -56,7 +57,9 @@ leurs dossiers, dates et lieux.*
   envoyée, en JPEG de 768 pixels, et seulement là. Gardez ce serveur sur votre propre ordinateur.
   Sans `model`, rien n'est jamais envoyé.
 - **Une photo par ensemble** : les copies identiques partagent leurs mots, une rafale prend ceux de
-  sa photo la plus nette ; les vidéos et les petites images ne sont pas envoyées.
+  sa photo la plus nette ; une vidéo est vue par l'image du milieu ; les petites images et
+  vidéos ne sont pas envoyées. `classify` réutilise ensuite ces réponses au lieu de renvoyer les
+  photos.
 - **Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours de description ; la
   fois suivante reprend où celle-ci s'est arrêtée.
 - **Pourquoi pas dans les photos ?** Écrire dans un JPEG change ses octets, son empreinte, et deux

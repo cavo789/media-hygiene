@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 
 def show_cheap(output: Output, work: TagWork, written: int) -> None:
-    """Say how many words the folders, dates and places gave.
+    """Say how many words the folders, names, dates and places gave.
 
     Args:
         output: Where to print.
@@ -31,8 +31,8 @@ def show_cheap(output: Output, work: TagWork, written: int) -> None:
     """
     output.success(
         ngettext(
-            "{count} file: {words} words from its folders, date and place.",
-            "{count} files: {words} words from their folders, dates and places.",
+            "{count} file: {words} words from its folders, name, date and place.",
+            "{count} files: {words} words from their folders, names, dates and places.",
             len(work.files),
         ).format(count=human_number(len(work.files)), words=human_number(written))
     )

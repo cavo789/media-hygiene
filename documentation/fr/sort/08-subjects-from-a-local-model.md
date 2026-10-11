@@ -77,6 +77,11 @@ représenté par quelques **échantillons**, `samples_per_event` (3 par défaut)
 plus nettes, réparties sur sa durée. Les autres photos et les vidéos de l'événement les
 suivent. Une photo isolée répond pour elle-même.
 
+Vous avez déjà lancé [`tags`](../reference-tags.md#les-mots-dun-modèle-de-vision-local) avec le
+même `model` ? Ses réponses sont réutilisées : un échantillon décrit par `tags` n'est pas
+renvoyé, seuls sa phrase et ses mots sont rapprochés de vos catégories (quelques secondes, du
+texte seulement).
+
 La **confiance** vient des échantillons, jamais de ce que le modèle dit de lui-même :
 
 | Échantillons | Proposition |

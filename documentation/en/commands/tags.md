@@ -29,13 +29,14 @@ docker run --rm -it `
 ```
 
 Without a vision model, it takes seconds: *✅ 52,318 files: 241,906 words from their folders,
-dates and places.*
+names, dates and places.*
 
 ## Where the words come from
 
 | Source | Words | Cost |
 |---|---|---|
 | Folders | The words of the folder names you chose (`2022/Durbuy - ours` gives `Durbuy`, `ours`); device folders, dates and small linking words are left out. | Seconds |
+| File name | The words of a name you chose (`Anniversaire Léa.mp4` gives `Anniversaire`, `Léa`); names a camera or an app gave (`IMG_1234`, `VID-20190712-WA0001`), numbers and dates give nothing. | Seconds |
 | Date | Year, month, season, holidays, and the names of your `calendar` and `date_range` rules. | Seconds |
 | Place | Your place when the GPS position lies in one, then the nearest town and its country, offline. | Seconds |
 | Vision model | A sentence and 5 to 10 words about what the photo shows (optional). | About 2 s per photo |
@@ -46,7 +47,7 @@ dates and places.*
 |---|---|
 | `--path PATH` | Only the photos below this folder (host path, as you mounted it); repeat it for several. |
 | `--sample N` | Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
-| `--no-describe` | Ask the model nothing new: the words of the folders, dates and places, and the descriptions already in the cache. |
+| `--no-describe` | Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
 | `--yes`, `-y` | Describe the photos without asking, however many (above 200, it asks first). |
 
 ## Good to know
@@ -55,7 +56,8 @@ dates and places.*
   as a 768-pixel JPEG, and only there. Keep that server on your own computer. Without a `model`,
   nothing is ever sent.
 - **One photo per set**: identical copies share their words, a burst takes those of its sharpest
-  shot; videos and small pictures are not sent.
+  shot; a video is seen by the frame in its middle; small pictures and videos are not sent.
+  `classify` then reuses these answers instead of sending the photos again.
 - **Stop whenever you want**: Ctrl+C lets the photos being described finish; the next run goes on
   where this one stopped.
 - **Why not inside the photos?** Writing into a JPEG changes its bytes, its fingerprint, and two

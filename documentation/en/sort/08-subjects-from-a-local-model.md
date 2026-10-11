@@ -71,6 +71,10 @@ that pace, 10,000 photos would take 11 hours. So each **event** (photos taken cl
 `samples_per_event` (3 by default): the sharpest photos, spread over its span. The other photos
 and the videos of the event follow them. A lone photo answers for itself.
 
+Already ran [`tags`](../reference-tags.md#the-words-of-a-local-vision-model) with the same
+`model`? Its answers are reused: a sample `tags` described is not sent again, only its sentence
+and words are matched to your categories (seconds, text only).
+
 The **confidence** comes from the samples, never from what the model says of itself:
 
 | Samples | Proposal |

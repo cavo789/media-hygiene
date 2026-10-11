@@ -22,6 +22,7 @@ class TagSource(StrEnum):
     VISION = "vision"  # the words a vision model gave
     CAPTION = "caption"  # its sentence, kept whole for the search
     FOLDER = "folder"  # the meaningful words of the folder names
+    NAME = "name"  # the meaningful words of the file name, none for `IMG_1234`
     DATE = "date"  # year, month, season, holidays, calendar rules
     PLACE = "place"  # a personal place, the GeoNames town and country
     # The names of the people on the photo (`people`), made at each search from the
@@ -40,6 +41,7 @@ class PlaceKind(StrEnum):
 # Seconds of work per file: the sources computed without any model.
 CHEAP_SOURCES: Final = (
     TagSource.FOLDER,
+    TagSource.NAME,
     TagSource.DATE,
     TagSource.PLACE,
 )

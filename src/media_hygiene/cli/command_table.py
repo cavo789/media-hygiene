@@ -96,9 +96,9 @@ def command_table(
             tags_command,
             analyse,
             _(
-                "Give every photo words to find it by: its folders, date and place, "
-                "and what a local vision model sees. Kept in the cache, never in "
-                "the photos."
+                "Give every photo words to find it by: its folders, name, date and "
+                "place, and what a local vision model sees. Kept in the cache, never "
+                "in the photos."
             ),
         ),
         (

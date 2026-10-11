@@ -35,3 +35,19 @@ tags first (0082, then a `tags` night).
 
 - The 20 measured searches and the decision written in this TODO; vectors built only if they
   find what FTS5 missed.
+
+## Status — BLOCKED (2026-10-11)
+
+### Not done
+- All items remain open; nothing speculative was built.
+  **Reason:** the decision rests on 20 real searches over real tags, which need 0082 (prompt
+  benchmark) then a first real `tags` night. Procedure for the maintainer:
+  1. After 0082: `mh tags --path "C:\Photos"` (a night; `--yes` skips the question).
+  2. `mh search` (page) or `mh search <words>` (table), 20 searches you would type: people's
+     events (`anniversaire Léa`), places (`Durbuy`, `mer`), objects (`gâteau`, `vélo`),
+     seasons (`neige 2010`). Since 0092 the words of the file names count too.
+  3. For each: hits found, and the photos missed that you expected (open the folder).
+     Classify each miss: plural/spelling (→ `plurals.py`), stop word, synonym ("mer" /
+     "bord de mer", → a small synonym list), or truly semantic (→ vectors).
+  4. Write the table here; build `bge-m3` vectors (plan above) only if the semantic misses
+     dominate.

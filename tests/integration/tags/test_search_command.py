@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
+from PIL import Image
+
 from media_hygiene.review.http import Request
 from media_hygiene.services import search as search_service
 from tests.support.cli import run
@@ -53,6 +55,21 @@ def test_the_table_finds_by_folder_and_date_words(cli: CliRunner) -> None:
     nothing = run(cli, "search", "zebra")
     assert nothing.exit_code == 0
     assert "Nothing found." in nothing.output
+
+
+def test_the_table_finds_by_a_word_of_the_file_name(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """`Vidéos/Anniversaire Léa.jpg`: found by its name; `IMG_0.jpg` gives no word."""
+    videos = locations.data_dir / "c" / "Photos" / "Vidéos"
+    videos.mkdir()
+    Image.new("RGB", (64, 48), (200, 30, 30)).save(videos / "Anniversaire Léa.jpg")
+    assert run(cli, "audit").exit_code == 0
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    found = run(cli, "search", "anniversaire")
+    assert "Anniversaire Léa.jpg" in found.output
+    assert "1 file found." in found.output
+    assert "Nothing found." in run(cli, "search", "name:img").output
 
 
 def test_without_tags_or_without_an_index(cli: CliRunner, locations: Locations) -> None:

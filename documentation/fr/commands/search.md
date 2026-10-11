@@ -42,7 +42,8 @@ fichiers en tableau.
 | `bougies` | `bougie` aussi : les mots sont gardés au singulier. |
 | `anniv*` | Chaque mot qui commence ainsi. |
 | `"bord de mer"` | L'expression, ses mots dans cet ordre. |
-| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption`, `folder`, `date`, `person`. |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption`, `folder`, `name` (le nom du fichier), `date`, `person`. |
+| `anniversaire` | Aussi `Anniversaire Léa.mp4` : les mots d'un nom de fichier choisi comptent aussi (`IMG_1234` n'en donne aucun). |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
 | `Chloé montagne` | Les photos de Chloé avec « montagne » venu de n'importe quelle source, une fois son groupe nommé dans [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | Le nom parmi les personnes seulement. Un nom que personne ne porte encore est signalé en une ligne. |

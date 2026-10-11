@@ -33,3 +33,21 @@ model sharing it made 11 calls of 120 take 10–30 s).
 ## Acceptance
 
 - 40 real answers read, no relationship word, the measured times written in this TODO.
+
+## Status — BLOCKED (2026-10-11)
+
+### Not done
+- All items remain open.
+  **Reason:** a measurement on the maintainer's real photos with the local Ollama vision model;
+  an unattended agent must not read those photos nor load the GPU. Procedure for the maintainer
+  (PowerShell, the GPU free: no other Ollama model loaded, `ollama ps` empty):
+  1. `config.toml`: `[tags] language = "fr"`, `[classify.ai] model = "qwen3.8:27b-mtp-q4_K_M"`.
+  2. `mh tags --path "C:\Photos" --sample 40` (read-only mount; nothing is written to the photos).
+  3. Read the table row by row: no relationship word nor first name, phrases kept whole, no stop
+     word (`sol`, `mur`, `photo`…). Note the median of the `Seconds` column and the full-run
+     estimate printed under the table, next to 2.5 s of 2026-10-10.
+  4. Output tokens (the table does not show them): `ollama serve` logs `eval_count` per call with
+     `OLLAMA_DEBUG=1`, or skip them — the time per photo is the figure that matters.
+  5. A word slips through → add it to `[tags] stop_words` or fix `tags_fr.txt` / `tags_en.txt`,
+     rerun; copy the failing answer into `tests/unit/test_tag_vision.py`.
+  6. Write the figures here, update `reference-tags.md` (en/fr) if the time per photo differs.

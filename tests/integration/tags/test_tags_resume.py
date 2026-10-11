@@ -34,7 +34,7 @@ def test_an_interrupted_run_resumes_where_it_stopped(
             progress=NullProgress(),
             stopped=lambda: fake.described() >= 2,
         )
-        outcome = describe_photos(step, work.missing, stop)
+        outcome = describe_photos(step, work, stop)
         show_described(runtime.output, outcome)
     assert outcome.stopped
     assert outcome.described == 2

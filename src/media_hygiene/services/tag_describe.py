@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import secrets
 import statistics
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.ai.client import OllamaClient
@@ -18,11 +18,9 @@ from media_hygiene.tags.normalize import normalize
 from media_hygiene.tags.vision import tags_question
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
     from media_hygiene.classify.ai.describe import DescribeOutcome
-    from media_hygiene.index.descriptions import PhotoVersion
     from media_hygiene.services.subject_answers import Answering
     from media_hygiene.services.tag_work import TagWork
     from media_hygiene.services.tags import TagStep
@@ -57,13 +55,14 @@ class TagSample:
 
 
 def describe_photos(
-    step: TagStep, photos: Sequence[PhotoVersion], answering: Answering
+    step: TagStep, work: TagWork, answering: Answering
 ) -> DescribeOutcome:
-    """Describe photos, after checking that the model sees images.
+    """Describe the photos the cache lacks, after checking that the model sees images.
 
     Args:
         step: The open tag step: settings, cache, pool.
-        photos: The photos, in the order to describe them.
+        work: The photos missing, in the order to describe them, and the frame of
+            each video among them.
         answering: Progress and Ctrl+C.
 
     Returns:
@@ -73,8 +72,9 @@ def describe_photos(
         AiError: The model cannot be reached, or cannot see images.
     """
     client = OllamaClient(step.runtime.settings.classify.ai)
-    job = DescribeJob(client, step.store, answering, tags_question(step.rules.language))
-    return describe_checked(step.runtime, photos, job)
+    question = tags_question(step.rules.language)
+    job = DescribeJob(client, step.store, answering, question, work.stills)
+    return describe_checked(step.runtime, work.missing, job)
 
 
 def run_tag_sample(
@@ -95,7 +95,7 @@ def run_tag_sample(
         list(work.missing), min(count, len(work.missing))
     )
     if chosen:
-        describe_photos(step, chosen, answering)
+        describe_photos(step, replace(work, missing=tuple(chosen)), answering)
     rows = tuple(
         TagSampleRow(
             photo.path,

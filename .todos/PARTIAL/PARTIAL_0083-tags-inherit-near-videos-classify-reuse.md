@@ -43,3 +43,29 @@ sent counts.
 
 - On a tree with a near-duplicate pair, a video and a classified folder, `tags` then
   `classify` send each picture to the model at most once.
+
+## Status — PARTIAL (2026-10-11)
+
+### Done
+- Videos: `tags` describes one frame per video (the middle, `scan/video_still.py`: `ffmpeg`
+  raw RGB → Pillow JPEG, longer side `image_edge`, orientation from the probe's size and
+  rotation); eligible when `ffmpeg` is there, the probe read the length and size, and the
+  shorter side ≥ `min_edge`; identical copies inherit; stored under the video's path.
+  `DescribeDeps.stills` / `DescribeJob.stills` / `TagWork.stills`; `vision_plan(…, kinds)`.
+- `classify` `subject` rule reuses the `tags` answers: `services/subject_store.ReusingStore`
+  (its own description, else the `caption` + `vision` tags of the same model, inherited ones
+  included); only the photos `tags` never saw are described with `describe.txt`.
+- Tests: `tests/unit/test_video_still.py`, `tests/unit/test_subject_store.py`,
+  `tests/integration/tags/test_tags_videos.py`, `tests/integration/subjects/test_classify_reuses_tags.py`.
+- Docs en/fr: `reference-tags.md`, `commands/tags.md`, `sort/08-subjects-from-a-local-model.md`.
+
+### Not done
+- Near-duplicate groups (`plan/near`, `near_video`) sharing one description.
+  **Reason:** the TODO's first step is a measurement on the real collection (time and memory of
+  the near search run by `tags` from the index alone) to choose between running it in `tags`
+  and reading the groups of the last audit report; plus the rule for groups a `review --near`
+  decision dissolved. Needs the maintainer: run `mh audit` on the whole collection, note the
+  time of the "near duplicates" step (or `time` around a script calling
+  `plan.near` on the index), then decide.
+- Real-collection check of the acceptance ("each picture sent at most once") with the real
+  model, after 0082.
