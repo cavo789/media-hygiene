@@ -12,7 +12,7 @@ from tests.support.docker import IMAGE, docker
 
 pytestmark = pytest.mark.e2e
 
-_PORT: Final = "8088"
+_PORT: Final = "18088"  # never the 8088 of the user's own pages
 _URL: Final = f"http://127.0.0.1:{_PORT}/"
 _READY: Final = f"open {_URL} in your browser"
 _WAIT_SECONDS: Final = 120
@@ -51,7 +51,7 @@ def test_review_port_is_published_on_loopback(volumes: dict[str, str]) -> None:
         f"127.0.0.1:{_PORT}:{_PORT}",
         *mounts,
         IMAGE,
-        "review",
+        *("review", "--port", _PORT),
     )
     container = started.stdout.strip()
     try:
