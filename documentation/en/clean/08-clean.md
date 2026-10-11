@@ -66,7 +66,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261010-203219
+Clean 20261011-100601
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -75,11 +75,31 @@ Clean 20261010-203219
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261010-203219-clean/report.html
+✅ HTML report: /reports/20261011-100601-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261011-100601' restores everything:
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene undo 20261011-100601
+👉 What next: once you have checked, 'purge' frees the space of the files set
+aside.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene purge 20261011-100601
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261010-203219' restores everything.
-💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261010-203219
 ```
 
 | Line | What it means |
@@ -109,7 +129,7 @@ the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the
 folder pairs as they were cleaned, and the files left untouched, if any.
 
-![The top of a clean report: 83 media files scanned, 32 duplicate copies in 20 groups, 16.2 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
+![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.3 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 
 ## Need the space at once? `--delete`
 

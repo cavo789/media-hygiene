@@ -40,15 +40,17 @@ L'audit commence par dire ce qu'il analyse :
 ```text
 ⚠️  Seuls sont analysés : heic, video.
 
+
 Résumé de l'audit
-┌───────────────────────────────────────┬────────┐
-│ Fichiers média analysés               │      9 │
-│ Groupes de fichiers identiques        │      4 │
-│ Copies en trop, à mettre de côté      │      4 │
-│ Espace libérable                      │ 5,9 Mo │
-│ Fichiers cassés (vides ou illisibles) │      1 │
-│ Durée                                 │    0 s │
-└───────────────────────────────────────┴────────┘
+┌──────────────────────────────────────────────────────────┬────────┐
+│ Fichiers média analysés                                  │     10 │
+│ Groupes de fichiers identiques                           │      4 │
+│ Copies en trop, à mettre de côté                         │      4 │
+│ Espace libérable                                         │ 5,9 Mo │
+│ Fichiers cassés (vides ou illisibles)                    │      1 │
+│ Vidéos réencodées (déplacées seulement avec --tier near) │      1 │
+│ Durée                                                    │    0 s │
+└──────────────────────────────────────────────────────────┴────────┘
 ```
 
 Une valeur sans point est une catégorie quand l'une porte ce nom, sinon une extension :

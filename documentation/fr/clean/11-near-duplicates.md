@@ -100,7 +100,7 @@ que vous avez décidés ([plus bas](#décider-dans-le-navigateur--review---near)
 La section *Quasi-doublons* du [rapport HTML](04-html-report.md) montre chaque groupe côte à côte,
 avec la résolution, la taille et la netteté de chaque copie :
 
-![Quasi-doublons dans le rapport : une photo de prairie gardée en 1500 × 1000 pixels, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533, les deux copies marquées en quarantaine avec --tier near](../images/report-near.webp)
+![Quasi-doublons dans le rapport : une photo de prairie gardée en 1500 × 1000 pixels, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533 ; deux groupes à vérifier, leurs copies en quarantaine une fois décidées dans review --near ou avec --tier near-all ; en dessous, le groupe sûr replié](../images/report-near.webp)
 
 Comparez chaque copie avec celle gardée : cliquez sur une miniature ou son chemin pour ouvrir
 l'original dans un nouvel onglet. Le résumé de l'audit les compte sur la ligne
@@ -135,13 +135,22 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 
 Elle dit ce qu'il y a à décider, puis vous attend, comme `review` :
 
+<!-- capture: review-near.txt|quasi-doublons :|127.0.0.1:8088:8088 -->
 ```text
-1 groupe de quasi-doublons : 0 sûr, 1 à vérifier (montré d'abord).
-✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. …
+4 groupes de quasi-doublons : 1 sûrs, 3 à vérifier (montrés d'abord).
+✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
+décision est enregistrée aussitôt dans decisions.json, dans le dossier monté sur
+/reports. Ctrl+C arrête le tri.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
 ```
 
 La page montre un groupe à la fois, la version gardée encadrée en vert, les copies en pointillés
-rouges, avec la ligne 💬. Les touches :
+rouges, avec la ligne 💬 :
+
+![La page de review --near : Groupe 1 sur 4, à vérifier et non décidé ; la photo de plage IMG_0104.jpg gardée en 1500 × 1000, encadrée en vert, sa copie WhatsApp de 800 × 533 en pointillés rouges ; au-dessus la ligne 💬 ; à gauche l'ordre (à vérifier d'abord), l'aide-mémoire du clavier et les trois paires de dossiers, Vacances à la mer → WhatsApp avec 2 groupes, chacune avec son bouton ✔ comme prévu](../images/review-near.webp)
+
+Les touches :
 
 | Touche | Ce qu'elle fait |
 |---|---|
@@ -157,6 +166,8 @@ le son, rien n'est chargé au-delà de leur durée avant que vous lanciez la lec
 pouvez avancer dans chacune. Une fois une vidéo cliquée, la barre d'espace et les flèches la
 lisent et s'y déplacent ; `Échap` rend les touches à la page. Un format que votre navigateur ne
 sait pas lire (AVI, FLV…) garde seulement son lien *↗ original*.
+
+![La même page triée par espace libéré, le plus grand d'abord : Anniversaire.mp4 gardée, 960 × 540, 2,9 Mo, et sa copie WhatsApp VID-20220521-WA0001.mp4, 480 × 270, 96,4 Ko, toutes deux de 8 s, chacune dans un lecteur arrêté à 0:03](../images/review-near-video.webp)
 
 **Décider une fois par paire de dossiers** : le panneau de gauche liste les paires de dossiers
 (*le dossier de la version gardée → celui des copies*) avec leur nombre de groupes. *✔ comme
@@ -217,33 +228,53 @@ La question mentionne maintenant les quasi-doublons :
 ```text
 2 photos de rafale que vous avez écartées seront déplacées en quarantaine.
 1 fichier compagnon orphelin (.xmp, .aae, .thm) sera déplacé en quarantaine.
-❓ Déplacer 32 copies en double (13,9 Mo) et 2 quasi-doublons en quarantaine et
+❓ Déplacer 32 copies en double (13,9 Mo) et 4 quasi-doublons en quarantaine et
 traiter 3 fichiers cassés ? [o/N] o
 ```
 
 <!-- capture: clean-near.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261010-203356
+Nettoyage 20261011-100826
 ┌───────────────────────────┬─────────┐
-│ Fichiers traités          │      40 │
-│ Taille                    │ 16,2 Mo │
-│ Déplacés en quarantaine   │      39 │
+│ Fichiers traités          │      42 │
+│ Taille                    │ 16,3 Mo │
+│ Déplacés en quarantaine   │      41 │
 │ Ignorés (laissés intacts) │       0 │
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261010-203356-clean/report.html
-💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
-rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261010-203356' restaure tout.
-💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261010-203356
+✅ Rapport HTML : /reports/20261011-100826-clean/report.html
 📦 decisions.json est appliqué : archivé sous
-decisions.applied-20261010-203356.json, dans le dossier monté sur /reports, le
+decisions.applied-20261011-100826.json, dans le dossier monté sur /reports, le
 prochain 'review' repart de zéro.
 💡 Après un undo, 'media-hygiene clean --decisions
-decisions.applied-20261010-203356.json' l'applique à nouveau.
+decisions.applied-20261011-100826.json' l'applique à nouveau.
+💡 Vous changez d'avis ? 'media-hygiene undo 20261011-100826' restaure tout :
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene --locale fr undo 20261011-100826
+👉 Et maintenant : une fois vérifié, 'purge' libère la place des fichiers mis de
+côté.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene --locale fr purge 20261011-100826
+💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
+rapports.
 ```
 
 Les quasi-doublons sont **déplacés en quarantaine**, jamais supprimés : ils ne sont pas
@@ -253,45 +284,47 @@ les fichiers illisibles et le fichier compagnon orphelin :
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
-./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
-./20261010-203356/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
-./20261010-203356/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
-./20261010-203356/c/Photos/2022/Anniversaire/IMG_3003.jpg
-./20261010-203356/c/Photos/2023/Lac/IMG_4002.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0101.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0102.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0103.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0104.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0105.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0106.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0107.jpg
-./20261010-203356/c/Photos/Ancien téléphone/IMG_0108.jpg
-./20261010-203356/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261010-203356/d/Ancien disque/2020/IMG_1203.jpg
-./20261010-203356/d/Ancien disque/Courriel/IMG_0110 petite.jpg
-./20261010-203356/d/Ancien disque/Noël 2020/IMG_1201.jpg
-./20261010-203356/d/Ancien disque/Noël 2020/IMG_1202.jpg
-./20261010-203356/d/Ancien disque/Noël 2020/IMG_1203.jpg
-./20261010-203356/d/Ancien disque/Noël 2020/IMG_1204.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0101.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0102.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0102.xmp
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0103.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0104.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0105.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0106.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0107.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0108.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0109.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0110.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0111.jpg
-./20261010-203356/d/Ancien disque/Photos 2019/IMG_0112.jpg
-./20261010-203356/d/Ancien disque/Téléphone/IMG_4242.HEIC
-./20261010-203356/d/Ancien disque/Téléphone/IMG_4243.HEIC
-./20261010-203356/d/Ancien disque/Téléphone/IMG_4244.HEIC
-./20261010-203356/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
-./20261010-203356/d/Ancien disque/Vidéos/Anniversaire.mp4
+./20261011-100826/c/Photos/2019/Nouveau dossier/IMG_0105 - Copie.jpg
+./20261011-100826/c/Photos/2019/Nouveau dossier/IMG_0106 - Copie.jpg
+./20261011-100826/c/Photos/2019/Nouveau dossier/IMG_0107 - Copie.jpg
+./20261011-100826/c/Photos/2019/Vacances à la mer/IMG_0101 (1).jpg
+./20261011-100826/c/Photos/2022/Anniversaire/IMG_3003.jpg
+./20261011-100826/c/Photos/2023/Lac/IMG_4002.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0101.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0102.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0103.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0104.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0105.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0106.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0107.jpg
+./20261011-100826/c/Photos/Ancien téléphone/IMG_0108.jpg
+./20261011-100826/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261011-100826/c/Photos/WhatsApp/IMG-20190712-WA0005.jpg
+./20261011-100826/c/Photos/WhatsApp/VID-20220521-WA0001.mp4
+./20261011-100826/d/Ancien disque/2020/IMG_1203.jpg
+./20261011-100826/d/Ancien disque/Courriel/IMG_0110 petite.jpg
+./20261011-100826/d/Ancien disque/Noël 2020/IMG_1201.jpg
+./20261011-100826/d/Ancien disque/Noël 2020/IMG_1202.jpg
+./20261011-100826/d/Ancien disque/Noël 2020/IMG_1203.jpg
+./20261011-100826/d/Ancien disque/Noël 2020/IMG_1204.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0101.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0102.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0102.xmp
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0103.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0104.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0105.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0106.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0107.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0108.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0109.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0110.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0111.jpg
+./20261011-100826/d/Ancien disque/Photos 2019/IMG_0112.jpg
+./20261011-100826/d/Ancien disque/Téléphone/IMG_4242.HEIC
+./20261011-100826/d/Ancien disque/Téléphone/IMG_4243.HEIC
+./20261011-100826/d/Ancien disque/Téléphone/IMG_4244.HEIC
+./20261011-100826/d/Ancien disque/Vidéos/Anniversaire (coupée).mp4
+./20261011-100826/d/Ancien disque/Vidéos/Anniversaire.mp4
 ```
 
 Avant de déplacer chaque copie, `clean` vérifie que la photo gardée existe toujours et que la

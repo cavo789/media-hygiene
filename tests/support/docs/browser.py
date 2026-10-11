@@ -1,8 +1,9 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review` (the burst review served on 127.0.0.1:8088), `reports <audit> <clean>
-<classify>` (report folders of /reports), `terminal <name>...` (SVG terminals in
-/shots). Every shot lands in /shots. The image runs Python 3.10: nothing newer here.
+Modes: `review`, `near` and `search <words>` (the pages served on 127.0.0.1:8088, see
+`served.py`), `reports <audit> <clean> <classify>` (report folders of /reports),
+`terminal <name>...` (SVG terminals in /shots). Every shot lands in /shots. The image
+runs Python 3.10: nothing newer here.
 """
 
 from __future__ import annotations
@@ -16,7 +17,6 @@ if TYPE_CHECKING:
 
 SCRIPTS: Final = Path(__file__).parent  # the .js files lie next to this one
 SHOTS: Final = Path("/shots")
-REVIEW: Final = "http://127.0.0.1:8088/"
 REPORTS: Final = "file:///reports"
 # The bounds of a report section, from its <h2> (found by its emoji) to the next one.
 SECTION_JS: Final = (SCRIPTS / "section.js").read_text(encoding="utf-8")
@@ -25,7 +25,6 @@ SECOND_SERIES_JS: Final = (SCRIPTS / "second_series.js").read_text(encoding="utf
 EAGER_JS: Final = (SCRIPTS / "eager_images.js").read_text(encoding="utf-8")
 # The bottom of the first group of a classify year page.
 FIRST_GROUP_JS: Final = (SCRIPTS / "first_group.js").read_text(encoding="utf-8")
-SHOTS_SHOWN_JS: Final = (SCRIPTS / "shots_shown.js").read_text(encoding="utf-8")
 REVIEW_WIDTH: Final = 1600
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
@@ -72,35 +71,16 @@ def shoot(page: Page, name: str, clip: dict[str, Any] | None = None) -> None:
 
 
 def top(page: Page, height: float) -> dict[str, Any]:
-    """The clip rectangle of the top of a page, down to `height`."""
+    """The clip rectangle of the top of a page.
+
+    Args:
+        page: The browser tab.
+        height: Where the clip stops.
+
+    Returns:
+        The clip rectangle of a screenshot.
+    """
     return {"x": 0, "y": 0, "width": page.viewport_size["width"], "height": height}
-
-
-def shots_shown(page: Page) -> None:
-    """Wait until the pictures of the review's series show, then for transitions."""
-    page.wait_for_function(SHOTS_SHOWN_JS)
-    page.wait_for_timeout(PAUSE_MS)
-
-
-def review(page: Page) -> None:
-    """The birthday series with its proposal, then the shaken shot set aside."""
-    page.goto(REVIEW)
-    page.wait_for_selector("#shots figure")
-    page.keyboard.press("ArrowRight")
-    shots_shown(page)
-    height = page.evaluate("document.documentElement.scrollHeight")
-    page.set_viewport_size({"width": REVIEW_WIDTH, "height": int(height)})
-    shots_shown(page)
-    page.screenshot(path=SHOTS / "review.png")
-    for done in ("#status.saved", "#shots figure.aside"):  # proposed: taken back, aside
-        page.keyboard.press("Digit5")
-        page.wait_for_selector(done)
-    shots_shown(page)
-    page.screenshot(path=SHOTS / "review-aside.png")
-    page.keyboard.press("ArrowRight")
-    page.wait_for_timeout(PAUSE_MS)
-    page.keyboard.press("Digit4")
-    page.wait_for_selector("#status.saved")
 
 
 def audit_report(page: Page, folder: str) -> None:
@@ -152,7 +132,12 @@ def clean_report(page: Page, folder: str) -> None:
 
 
 def classify_report(page: Page, folder: str) -> None:
-    """The index of a classify report, then the first event of the busiest page."""
+    """The index of a classify report, then the first event of the busiest page.
+
+    Args:
+        page: The browser tab.
+        folder: The classify's report folder in /reports.
+    """
     load(page, f"{REPORTS}/{folder}/report.html")
     shoot(page, "classify-report")
     link = page.locator("a[href*='.html#']").first.get_attribute("href") or ""
@@ -174,18 +159,26 @@ def terminal(page: Page, name: str) -> None:
 
 def main() -> None:
     """Take the screenshots of the mode given (Playwright: in its image only, here)."""
+    # Playwright lives in its image only; served.py is copied next to this script.
+    # pylint: disable-next=import-error,import-outside-toplevel
+    import served  # type: ignore[import-not-found]  # noqa: PLC0415
+
     # pylint: disable-next=import-error,import-outside-toplevel
     from playwright.sync_api import sync_playwright  # noqa: PLC0415
 
     mode, arguments = sys.argv[1], sys.argv[2:]
-    width = REVIEW_WIDTH if mode == "review" else REPORT_WIDTH
+    width = REVIEW_WIDTH if mode in {"review", "near"} else REPORT_WIDTH
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={"width": width, "height": HEIGHT}, color_scheme="light"
         )
         if mode == "review":
-            review(page)
+            served.review(page)
+        elif mode == "near":
+            served.near(page)
+        elif mode == "search":
+            served.search(page, arguments[0])
         elif mode == "reports":
             audit_report(page, arguments[0])
             clean_report(page, arguments[1])

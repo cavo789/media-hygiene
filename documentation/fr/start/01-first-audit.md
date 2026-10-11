@@ -72,25 +72,17 @@ sont dessinées par un programme) :
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Résumé de l'audit
-┌─────────────────────────────────────────────────────────┬────────┐
-│ Fichiers média analysés                                 │     59 │
-│ Groupes de fichiers identiques                          │      8 │
-│ Copies en trop, à mettre de côté                        │     12 │
-│ Espace libérable                                        │ 3,4 Mo │
-│ Fichiers cassés (vides ou illisibles)                   │      0 │
-│ Quasi-doublons (déplacés seulement avec --tier near)    │      1 │
-│ Rafales (déplacées seulement si écartées avec 'review') │      3 │
-│ Durée                                                   │    2 s │
-└─────────────────────────────────────────────────────────┴────────┘
-
-Inventaire
-┌────────────────────────────────────────┬──────────────────┐
-│ Photos avec une date de prise de vue   │ 57 sur 58 (98 %) │
-│ Vidéos datées par leurs balises        │    0 sur 1 (0 %) │
-│ Photos et vidéos avec une position GPS │   0 sur 59 (0 %) │
-│ Formats des photos                     │ JPEG 55 · HEIF 3 │
-│ Durée totale des vidéos                │              8 s │
-└────────────────────────────────────────┴──────────────────┘
+┌──────────────────────────────────────────────────────────┬────────┐
+│ Fichiers média analysés                                  │     61 │
+│ Groupes de fichiers identiques                           │      8 │
+│ Copies en trop, à mettre de côté                         │     12 │
+│ Espace libérable                                         │ 3,4 Mo │
+│ Fichiers cassés (vides ou illisibles)                    │      0 │
+│ Quasi-doublons (déplacés seulement avec --tier near)     │      2 │
+│ Vidéos réencodées (déplacées seulement avec --tier near) │      1 │
+│ Rafales (déplacées seulement si écartées avec 'review')  │      3 │
+│ Durée                                                    │    2 s │
+└──────────────────────────────────────────────────────────┴────────┘
 
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
@@ -106,22 +98,28 @@ Dossiers partageant des fichiers identiques
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
   un exemplaire est gardé (287,5 Ko à libérer).
 
-💡 Ajoutez -v "<un de vos dossiers>:/reports" pour obtenir des rapports HTML.
-💡 Second avis : lancez Czkawka, un détecteur de doublons indépendant, sur les
-mêmes dossiers, puis 'media-hygiene crosscheck' (mêmes options -v) :
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
+Ce que vous pouvez faire
+✅ 12 copies identiques, 3,4 Mo : sans risque, une commande.
+👀 3 groupes de quasi-doublons : 1 sûrs, 2 à regarder (~1 min dans « review
+--near ») ; « clean --tier near » déplace les sûrs.
+🎞️ 3 rafales : facultatif, ~2 min dans 'review' ; les rafales non revues sont
+gardées entières.
+
+👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté. La
+commande ajoute /journal, /quarantine : des dossiers de votre profil.
+mkdir -p "$HOME/media-hygiene/journal" "$HOME/media-hygiene/quarantine"
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene --locale fr clean
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.
-💡 Les quasi-doublons et les rafales sont dans le rapport HTML ; 'clean --tier
-near' déplace les quasi-doublons en quarantaine.
-💡 Triez les rafales au clavier : 'media-hygiene review' (ajoutez -p
-127.0.0.1:8088:8088 à docker run).
-💡 Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien plus
-rapides.
-💡 Les heures sont en UTC : Docker ne connaît pas votre fuseau horaire.
-Ajoutez-le à docker run, par exemple -e TZ=Europe/Brussels.
-👉 Et maintenant : lancez 'clean' (mêmes options -v, sans :ro) pour mettre 3,4
-Mo de copies de côté.
+⚙️  À régler une fois : -v "<un de vos dossiers>:/reports" (rapports HTML); -v
+media-hygiene-cache:/cache (prochains audits bien plus rapides); -e
+TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC).
+(3 autres conseils : ajoutez --verbosity verbose pour les voir.)
 ```
 
 D'abord le tableau :
@@ -174,7 +172,8 @@ prête à coller : vos dossiers sur les mêmes points de montage (sans `:ro` pou
 les modifie), les dossiers que vous montez déjà, et ceux dont la commande suivante a besoin et
 qui manquaient à celle-ci (comme `/journal` et `/quarantine`, dans un dossier `media-hygiene` de
 votre profil, créés d'abord par `mkdir`). Elle est écrite pour PowerShell quand vos dossiers sont
-des chemins Windows (`C:\…`), pour bash sinon.
+des chemins Windows (`C:\…`), pour bash sinon : les exemples de ce guide montrent celle pour bash,
+telle qu'on la tape dans WSL (`/mnt/c/Photos`).
 
 Puis deux astuces 💡 au plus, la plus utile d'abord ; les options à régler une fois (le cache,
 votre fuseau horaire, un dossier de rapports) partagent une seule ligne ⚙️. Une dernière ligne

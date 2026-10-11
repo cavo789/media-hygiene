@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
 from tests.support.docker import IMAGE, docker
+from tests.support.docs.browsing import served_pages
 from tests.support.docs.container import (
     Command,
     list_files,
@@ -15,7 +16,8 @@ from tests.support.docs.container import (
     run_in_colour,
 )
 from tests.support.docs.names import Locale
-from tests.support.docs.screenshots import Job, shoot, start_review, stop_review
+from tests.support.docs.published import as_published
+from tests.support.docs.screenshots import Job, shoot
 from tests.support.docs.terminal import Window, draw_terminal
 
 if TYPE_CHECKING:
@@ -58,6 +60,7 @@ CAPTURES: Final = frozenset(
         "inventory.txt",
         "crosscheck.txt",
         "review.txt",
+        "review-near.txt",
         "decisions.json",
         "clean.txt",
         "undo.txt",
@@ -109,17 +112,6 @@ def _crosscheck(demo: Demo) -> Captures:
            f"{demo.volume('reports')}:/reports", IMAGE, "1000:1000",
            "/reports/czkawka.json")  # fmt: skip
     return {"crosscheck.txt": run(demo, Command(("crosscheck",)))}
-
-
-def _review(demo: Demo, shots: Path) -> Captures:
-    """The burst review in the browser: one shot set aside in two series."""
-    container = start_review(demo)
-    try:
-        shoot(demo, Job(f"container:{container}", ("review",)), shots)
-    finally:
-        screen = stop_review(container)
-    decisions = read_file(demo, "reports", "decisions.json")
-    return {"review.txt": screen, "decisions.json": decisions}
 
 
 def _clean(demo: Demo) -> Captures:
@@ -185,15 +177,15 @@ def run_scenario(demo: Demo, shots: Path) -> Captures:
         shots: Where the screenshots land (PNG).
 
     Returns:
-        Every console capture, by name.
+        Every console capture, by name, its suggested commands as published.
     """
     captures = _audits(demo)
     _terminal(demo, shots)
     captures |= _crosscheck(demo)
-    captures |= _review(demo, shots)
+    captures |= served_pages(demo, shots)
     captures |= _clean(demo)
     captures |= _reports(demo, shots)
     captures |= _help(demo)
     captures["purge.txt"] = run_confirmed(demo, Command(("purge",), read_only=False))
     captures |= _sort(demo)
-    return captures
+    return {name: as_published(demo, text) for name, text in captures.items()}

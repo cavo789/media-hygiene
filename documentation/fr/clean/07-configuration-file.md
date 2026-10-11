@@ -131,6 +131,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
+│ clean.purge_hint_days       │ 30                         │ défaut            │
 │ review.propose_aside_below  │ 0.35                       │ défaut            │
 │ review.identical_below      │ 6                          │ défaut            │
 │ review.brightness_gap       │ 60.0                       │ défaut            │
@@ -267,6 +268,23 @@ Réglages effectifs
 │ places.nominatim_url        │ https://nominatim.openstre │ défaut            │
 │                             │ etmap.org                  │                   │
 │ album.root                  │                            │ défaut            │
+│ tags.language               │                            │ défaut            │
+│ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
+│                             │ 'intérieur', 'extérieur',  │                   │
+│                             │ 'plafond', 'photo',        │                   │
+│                             │ 'image', 'personne',       │                   │
+│                             │ 'personnes', 'chose',      │                   │
+│                             │ 'objet', 'fond', 'scène',  │                   │
+│                             │ 'vue', 'floor', 'wall',    │                   │
+│                             │ 'indoor', 'indoors',       │                   │
+│                             │ 'outdoor', 'outdoors',     │                   │
+│                             │ 'ceiling', 'picture',      │                   │
+│                             │ 'person', 'people',        │                   │
+│                             │ 'thing', 'object',         │                   │
+│                             │ 'background', 'scene',     │                   │
+│                             │ 'view']                    │                   │
+│ tags.town_km                │ 20.0                       │ défaut            │
+│ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -318,7 +336,8 @@ locale = "fr"
 # ne connaît pas le vôtre.
 timezone = ""
 
-# Quantité de messages : "error", "warning", "info" ou "debug".
+# Quantité de messages : "error", "warning", "info", "verbose" (info et tous les
+# conseils, pas seulement les deux meilleurs) ou "debug".
 # CLI: --verbosity
 verbosity = "info"
 
@@ -527,6 +546,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
+│ clean.purge_hint_days       │ 30                         │ config.toml       │
 │ review.propose_aside_below  │ 0.35                       │ config.toml       │
 │ review.identical_below      │ 6                          │ config.toml       │
 │ review.brightness_gap       │ 60.0                       │ config.toml       │
@@ -672,6 +692,23 @@ Réglages effectifs
 │ places.nominatim_url        │ https://nominatim.openstre │ config.toml       │
 │                             │ etmap.org                  │                   │
 │ album.root                  │                            │ config.toml       │
+│ tags.language               │                            │ config.toml       │
+│ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
+│                             │ 'intérieur', 'extérieur',  │                   │
+│                             │ 'plafond', 'photo',        │                   │
+│                             │ 'image', 'personne',       │                   │
+│                             │ 'personnes', 'chose',      │                   │
+│                             │ 'objet', 'fond', 'scène',  │                   │
+│                             │ 'vue', 'floor', 'wall',    │                   │
+│                             │ 'indoor', 'indoors',       │                   │
+│                             │ 'outdoor', 'outdoors',     │                   │
+│                             │ 'ceiling', 'picture',      │                   │
+│                             │ 'person', 'people',        │                   │
+│                             │ 'thing', 'object',         │                   │
+│                             │ 'background', 'scene',     │                   │
+│                             │ 'view']                    │                   │
+│ tags.town_km                │ 20.0                       │ config.toml       │
+│ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)

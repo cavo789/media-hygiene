@@ -28,19 +28,19 @@ still there. The reports folder receives the workbook where you correct the prop
 ```text
 🔒 Read-only: your photos and videos are not touched.
 ─────────────────────────────────── Classify ───────────────────────────────────
-Already in place: 43 of 80 (54%).
+Already in place: 43 of 82 (52%).
 Proposal
 ┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
 ┃ Band    ┃ Files ┃ To move ┃
 ┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━┩
-│ Sure    │    74 │      31 │
+│ Sure    │    76 │      33 │
 │ To sort │     3 │       3 │
 │ Undated │     3 │       3 │
 └─────────┴───────┴─────────┘
 
 Why
 ┌────────────────────┬────┐
-│ Existing folders   │ 74 │
+│ Existing folders   │ 76 │
 │ no-signal          │  3 │
 │ undated            │  3 │
 │   Seaside holidays │ 13 │
@@ -52,19 +52,29 @@ Why
 │   Lake             │  6 │
 │   Phone            │  6 │
 │   Christmas 2020   │  4 │
-│   WhatsApp         │  1 │
+│   WhatsApp         │  3 │
 └────────────────────┴────┘
 
 ⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
 Event neighbours, Christmas, New Year.
 💡 Check their dates, their patterns and their order in config.toml.
 To check or to sort: 3 files in 1 event.
+💡 Nothing was changed: 'classify' only proposes.
+✅ Workbook to edit: /reports/20261011-100457-classify/classify.xlsx
+✅ Report with the photos: /reports/20261011-100457-classify/report.html
+👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene sort
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
-💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261010-203152-classify/classify.xlsx
-✅ Report with the photos: /reports/20261010-203152-classify/report.html
-💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
 ## Read the result

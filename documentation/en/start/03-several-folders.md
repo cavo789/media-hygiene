@@ -31,13 +31,14 @@ The result now compares the two disks:
 ```text
 Audit summary
 ┌──────────────────────────────────────────────────────┬─────────┐
-│ Media files scanned                                  │      83 │
+│ Media files scanned                                  │      85 │
 │ Groups of identical files                            │      20 │
 │ Extra copies that can be set aside                   │      32 │
 │ Space that can be freed                              │ 13.9 MB │
 │ Broken files (empty or unreadable)                   │       3 │
 │ Orphan sidecars (.xmp, .aae, .thm) to move           │       1 │
-│ Near duplicates (moved only with --tier near)        │       2 │
+│ Near duplicates (moved only with --tier near)        │       3 │
+│ Re-encoded videos (moved only with --tier near)      │       1 │
 │ Burst series (moved only if set aside with 'review') │       3 │
 │ Duration                                             │     2 s │
 └──────────────────────────────────────────────────────┴─────────┘

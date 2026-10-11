@@ -127,7 +127,7 @@ The *Why* table of `classify` counts the files each rule decided, by its name:
 ```text
 Why
 ┌────────────────────┬────┐
-│ Existing folders   │ 74 │
+│ Existing folders   │ 76 │
 │ no-signal          │  3 │
 │ undated            │  3 │
 │   Seaside holidays │ 13 │
@@ -139,7 +139,7 @@ Why
 │   Lake             │  6 │
 │   Phone            │  6 │
 │   Christmas 2020   │  4 │
-│   WhatsApp         │  1 │
+│   WhatsApp         │  3 │
 └────────────────────┴────┘
 
 ⚠️  Rules that decided nothing: Films and series, Screenshots and documents,

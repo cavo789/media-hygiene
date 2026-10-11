@@ -30,7 +30,7 @@ At the end of the audit, a new line:
 
 <!-- capture: audit.txt|HTML report|. -->
 ```text
-✅ HTML report: /reports/20261010-203144-audit/report.html
+✅ HTML report: /reports/20261011-100449-audit/report.html
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
@@ -56,7 +56,7 @@ section.
 
 ## The top: the totals
 
-![The top of an audit report: 83 media files scanned, 32 duplicate copies in 20 groups, 13.9 MB can be freed, 3 broken files, then how we know these are duplicates](../images/report-top.webp)
+![The top of an audit report: 85 media files scanned, 32 duplicate copies in 20 groups, 13.9 MB can be freed, 3 broken files, then What you can do (identical copies, near duplicates, burst series, each with Copy the command), the inventory line, the contents and how we know these are duplicates](../images/report-top.webp)
 
 The same numbers as in the terminal, then a reminder: an audit changes nothing, and each copy
 listed is byte-for-byte identical to the one kept.
@@ -75,7 +75,7 @@ them (red), with a few sample pictures, the number of files and the space freed.
 
 Click the number of files of a pair to see every copy, line by line:
 
-![A folder pair page: kept in C:\Photos\2019\Seaside holidays, will be deleted from D:\Old disk\Photos 2019, 12 copies, the sample pictures, then every copy with its size and SHA-256](../images/pair.webp)
+![A folder pair page: kept in C:\Photos\2019\Seaside holidays, will be moved to the quarantine from D:\Old disk\Photos 2019, 12 copies, the sample pictures, then every copy with its size and SHA-256](../images/pair.webp)
 
 ## Groups of identical files
 
@@ -83,7 +83,7 @@ Further down, a random sample of photo groups (the same ones on every run), then
 groups first. Each group shows the copy kept ✅, the copies to delete 🗑️, and the SHA-256
 fingerprint they share.
 
-![Duplicate groups: a video and three HEIC photos, each with the kept copy, the deleted copy, the start of their SHA-256, and Check it yourself open on a Get-FileHash command](../images/report-groups.webp)
+![Duplicate groups: a video and three HEIC photos, each with the kept copy, the copy moved to the quarantine, the start of their SHA-256, and Check it yourself open on a Get-FileHash command](../images/report-groups.webp)
 
 **Check it yourself** gives a command for PowerShell. Paste it: Windows computes the fingerprint
 of every copy itself, and they are all the same. You do not have to trust media-hygiene.
@@ -95,7 +95,7 @@ happens to them unless you ask:
 
 - **Near duplicates**: the same photo saved again, smaller or recompressed ([step 11](11-near-duplicates.md)).
 
-  ![Near duplicates: a meadow photo kept in 1500 × 1000, its copy of 1024 × 683 in an Email folder to the quarantine with --tier near; a beach photo kept, its WhatsApp copy of 800 × 533](../images/report-near.webp)
+  ![Near duplicates: 1 sure, 2 to check; a meadow photo kept in 1500 × 1000, its copy of 1024 × 683 in an Email folder; a beach photo kept, its WhatsApp copy of 800 × 533; both copies go to the quarantine once decided in review --near, or with --tier near-all; below, the sure group folded](../images/report-near.webp)
 
 - **Re-encoded videos**: the same video saved again, smaller or recompressed, described by its
   resolution, length, codec and size, with a player ([step 11](11-near-duplicates.md#videos-too-re-encoded-copies)).
@@ -144,15 +144,15 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261010-203225-clean │ clean │ 83    │ 32         │ 16.2 MB │ 3      │
-│ 20261010-203225-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-203219-clean │ clean │ 83    │ 32         │ 15.5 MB │ 3      │
-│ 20261010-203201-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-203155-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-203150-audit │ audit │ 9     │ 4          │ 5.9 MB  │ 1      │
-│ 20261010-203148-audit │ audit │ 59    │ 12         │ 3.4 MB  │ 0      │
-│ 20261010-203146-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
-│ 20261010-203144-audit │ audit │ 83    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-100607-clean │ clean │ 85    │ 32         │ 16.3 MB │ 3      │
+│ 20261011-100607-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-100601-clean │ clean │ 85    │ 32         │ 15.5 MB │ 3      │
+│ 20261011-100507-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-100501-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-100455-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
+│ 20261011-100453-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
+│ 20261011-100450-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-100449-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

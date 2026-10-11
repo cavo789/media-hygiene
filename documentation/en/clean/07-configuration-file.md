@@ -118,6 +118,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
+│ clean.purge_hint_days         │ 30                            │ default      │
 │ review.propose_aside_below    │ 0.35                          │ default      │
 │ review.identical_below        │ 6                             │ default      │
 │ review.brightness_gap         │ 60.0                          │ default      │
@@ -243,6 +244,21 @@ Effective settings
 │ places.nominatim_url          │ https://nominatim.openstreetm │ default      │
 │                               │ ap.org                        │              │
 │ album.root                    │                               │ default      │
+│ tags.language                 │                               │ default      │
+│ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
+│                               │ 'intérieur', 'extérieur',     │              │
+│                               │ 'plafond', 'photo', 'image',  │              │
+│                               │ 'personne', 'personnes',      │              │
+│                               │ 'chose', 'objet', 'fond',     │              │
+│                               │ 'scène', 'vue', 'floor',      │              │
+│                               │ 'wall', 'indoor', 'indoors',  │              │
+│                               │ 'outdoor', 'outdoors',        │              │
+│                               │ 'ceiling', 'picture',         │              │
+│                               │ 'person', 'people', 'thing',  │              │
+│                               │ 'object', 'background',       │              │
+│                               │ 'scene', 'view']              │              │
+│ tags.town_km                  │ 20.0                          │ default      │
+│ tags.xmp_sources              │ ['vision', 'place']           │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -292,7 +308,8 @@ locale = "en"
 # does not know yours.
 timezone = ""
 
-# How much to log: "error", "warning", "info" or "debug".
+# How much to log: "error", "warning", "info", "verbose" (info and every tip, not only
+# the best two) or "debug".
 # CLI: --verbosity
 verbosity = "info"
 
@@ -478,6 +495,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
+│ clean.purge_hint_days         │ 30                            │ config.toml  │
 │ review.propose_aside_below    │ 0.35                          │ config.toml  │
 │ review.identical_below        │ 6                             │ config.toml  │
 │ review.brightness_gap         │ 60.0                          │ config.toml  │
@@ -603,6 +621,21 @@ Effective settings
 │ places.nominatim_url          │ https://nominatim.openstreetm │ config.toml  │
 │                               │ ap.org                        │              │
 │ album.root                    │                               │ config.toml  │
+│ tags.language                 │                               │ config.toml  │
+│ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
+│                               │ 'intérieur', 'extérieur',     │              │
+│                               │ 'plafond', 'photo', 'image',  │              │
+│                               │ 'personne', 'personnes',      │              │
+│                               │ 'chose', 'objet', 'fond',     │              │
+│                               │ 'scène', 'vue', 'floor',      │              │
+│                               │ 'wall', 'indoor', 'indoors',  │              │
+│                               │ 'outdoor', 'outdoors',        │              │
+│                               │ 'ceiling', 'picture',         │              │
+│                               │ 'person', 'people', 'thing',  │              │
+│                               │ 'object', 'background',       │              │
+│                               │ 'scene', 'view']              │              │
+│ tags.town_km                  │ 20.0                          │ config.toml  │
+│ tags.xmp_sources              │ ['vision', 'place']           │ config.toml  │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)

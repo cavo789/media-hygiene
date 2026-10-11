@@ -130,7 +130,7 @@ Le tableau *Pourquoi* de `classify` compte les fichiers que chaque règle a déc
 ```text
 Pourquoi
 ┌─────────────────────┬────┐
-│ Dossiers existants  │ 74 │
+│ Dossiers existants  │ 76 │
 │ no-signal           │  3 │
 │ undated             │  3 │
 │   Vacances à la mer │ 13 │
@@ -142,7 +142,7 @@ Pourquoi
 │   Lac               │  6 │
 │   Téléphone         │  6 │
 │   Noël 2020         │  4 │
-│   WhatsApp          │  1 │
+│   WhatsApp          │  3 │
 └─────────────────────┴────┘
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et

@@ -30,7 +30,7 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|. -->
 ```text
-✅ Rapport HTML : /reports/20261010-203315-audit/report.html
+✅ Rapport HTML : /reports/20261011-100707-audit/report.html
 ```
 
 Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
@@ -56,7 +56,7 @@ haut de `report.html` mène à chaque section.
 
 ## Le haut : les totaux
 
-![Le haut d'un rapport d'audit : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 13,9 Mo libérables, 3 fichiers cassés, puis comment on sait que ce sont des doublons](../images/report-top.webp)
+![Le haut d'un rapport d'audit : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 13,9 Mo libérables, 3 fichiers cassés, puis Ce que vous pouvez faire (copies identiques, quasi-doublons, rafales, chacune avec Copier la commande), la ligne d'inventaire, le sommaire et comment on sait que ce sont des doublons](../images/report-top.webp)
 
 Les mêmes chiffres que dans le terminal, puis un rappel : un audit ne modifie rien, et chaque
 copie listée est identique octet par octet à celle gardée.
@@ -77,7 +77,7 @@ libéré.
 
 Cliquez sur le nombre de fichiers d'une paire pour voir chaque copie, ligne par ligne :
 
-![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront supprimés de D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](../images/pair.webp)
+![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront mis en quarantaine depuis D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](../images/pair.webp)
 
 ## Les groupes de fichiers identiques
 
@@ -85,7 +85,7 @@ Plus bas, un échantillon aléatoire de groupes de photos (les mêmes à chaque 
 plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies à supprimer 🗑️, et
 l'empreinte SHA-256 qu'elles partagent.
 
-![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie supprimée, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
+![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie mise en quarantaine, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
 
 **Vérifiez vous-même** donne une commande pour PowerShell. Collez-la : Windows calcule lui-même
 l'empreinte de chaque copie, et elles sont toutes identiques. Vous n'avez pas à croire
@@ -99,7 +99,7 @@ identiques. Il ne leur arrive rien, sauf si vous le demandez :
 - **Quasi-doublons** : la même photo enregistrée à nouveau, plus petite ou recompressée
   ([étape 11](11-near-duplicates.md)).
 
-  ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](../images/report-near.webp)
+  ![Quasi-doublons : 1 sûr, 2 à vérifier ; une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533 ; les deux copies partent en quarantaine une fois décidées dans review --near, ou avec --tier near-all ; en dessous, le groupe sûr replié](../images/report-near.webp)
 
 - **Vidéos réencodées** : la même vidéo enregistrée à nouveau, plus petite ou recompressée,
   décrite par sa résolution, sa durée, son codec et sa taille, avec un lecteur ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
@@ -151,15 +151,15 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261010-203356-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20261010-203355-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261010-203350-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20261010-203332-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261010-203326-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261010-203321-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20261010-203319-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261010-203317-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261010-203315-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-100826-clean │ nettoyage │ 85       │ 32       │ 16,3 Mo │ 3      │
+│ 20261011-100826-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-100820-clean │ nettoyage │ 85       │ 32       │ 15,5 Mo │ 3      │
+│ 20261011-100726-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-100720-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-100713-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
+│ 20261011-100711-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261011-100708-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-100707-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

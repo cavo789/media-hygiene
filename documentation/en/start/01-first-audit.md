@@ -71,24 +71,16 @@ program):
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Audit summary
 ┌──────────────────────────────────────────────────────┬────────┐
-│ Media files scanned                                  │     59 │
+│ Media files scanned                                  │     61 │
 │ Groups of identical files                            │      8 │
 │ Extra copies that can be set aside                   │     12 │
 │ Space that can be freed                              │ 3.4 MB │
 │ Broken files (empty or unreadable)                   │      0 │
-│ Near duplicates (moved only with --tier near)        │      1 │
+│ Near duplicates (moved only with --tier near)        │      2 │
+│ Re-encoded videos (moved only with --tier near)      │      1 │
 │ Burst series (moved only if set aside with 'review') │      3 │
 │ Duration                                             │    2 s │
 └──────────────────────────────────────────────────────┴────────┘
-
-Inventory
-┌───────────────────────────────────────┬──────────────────┐
-│ Photos with a shooting date           │   57 of 58 (98%) │
-│ Videos with a date in their tags      │      0 of 1 (0%) │
-│ Photos and videos with a GPS position │     0 of 59 (0%) │
-│ Photo formats                         │ JPEG 55 · HEIF 3 │
-│ Total length of the videos            │              8 s │
-└───────────────────────────────────────┴──────────────────┘
 
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
@@ -102,21 +94,28 @@ Folders sharing identical files
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
   is kept (287.5 KB to free).
 
-💡 Add -v "<a folder of yours>:/reports" to get HTML reports.
-💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
-folders, then 'media-hygiene crosscheck' (same -v options):
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
+What you can do
+✅ 12 identical copies, 3.4 MB: no risk, one command.
+👀 3 groups of near duplicates: 1 sure, 2 to look at (~1 min in 'review
+--near'); 'clean --tier near' moves the sure ones.
+🎞️ 3 burst series: optional, ~2 min in 'review'; the series not reviewed are
+kept whole.
+
+👉 What next: run 'clean' to set 3.4 MB of copies aside. The command adds
+/journal, /quarantine: folders of your home.
+mkdir -p "$HOME/media-hygiene/journal" "$HOME/media-hygiene/quarantine"
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene clean
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.
-💡 Near duplicates and bursts are in the HTML report; 'clean --tier near' moves
-near duplicates to the quarantine.
-💡 Sort the burst series with the keyboard: 'media-hygiene review' (add -p
-127.0.0.1:8088:8088 to docker run).
-💡 Add -v media-hygiene-cache:/cache: the next audits will be much faster.
-💡 Times are in UTC: Docker does not know your time zone. Add it to docker run,
-e.g. -e TZ=Europe/Brussels.
-👉 What next: run 'clean' (same -v options, without :ro) to set 3.4 MB of copies
-aside.
+⚙️  To set once: -v "<a folder of yours>:/reports" (HTML reports); -v
+media-hygiene-cache:/cache (much faster next audits); -e TZ=Europe/Brussels
+(times in your time zone, not UTC).
+(3 more tips: add --verbosity verbose to see them.)
 ```
 
 The table first:
@@ -165,7 +164,7 @@ paste: your folders on the same mount points (without `:ro` for a command that c
 folders you already mount, and the ones the next command needs that this run lacked (such as
 `/journal` and `/quarantine`, in a `media-hygiene` folder of your home, created first by
 `mkdir`). It is written for PowerShell when your folders are Windows paths (`C:\…`), for bash
-otherwise.
+otherwise: the examples of this guide show the bash one, as typed in WSL (`/mnt/c/Photos`).
 
 Then at most two 💡 tips, the most useful first; the options worth setting once (the cache, your
 time zone, a reports folder) share a single ⚙️ line. A last line says how many tips were left out:

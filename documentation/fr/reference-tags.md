@@ -122,6 +122,8 @@ déplacez-vous avec les flèches, Entrée montre l'image en grand (avec un lien 
 arrête la page. Lecture seule 🔒 : elle ne change jamais un fichier ; seuls les petits aperçus de
 la grille sont gardés dans `/cache`.
 
+![La page de recherche : anniversaire tapé dans le champ Mots, à côté les filtres d'année, de chemin et de source, 8 fichiers trouvés ; une grille de photos d'anniversaire, chacune avec son nom, son dossier, sa date et ses mots Anniversaire, 2022, mai, printemps](images/search.webp)
+
 | Vous tapez | Elle trouve |
 |---|---|
 | `Durbuy ours` | Les photos qui ont les deux mots, quelle que soit leur source. |

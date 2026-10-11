@@ -116,6 +116,8 @@ large (with a link to the original), Escape closes it. Filters: years, a part of
 words of one source only. Ctrl+C stops the page. Read-only 🔒: it never changes a file; only
 the small previews of the grid are kept in `/cache`.
 
+![The search page: birthday typed in the Words field, the year, path and source filters beside it, 8 files found; a grid of birthday photos, each with its name, folder, date and its words Birthday, 2022, May, spring](images/search.webp)
+
 | You type | It finds |
 |---|---|
 | `Durbuy ours` | The photos with both words, whatever their source. |

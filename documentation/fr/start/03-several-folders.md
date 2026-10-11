@@ -33,13 +33,14 @@ Le résultat compare maintenant les deux disques :
 ```text
 Résumé de l'audit
 ┌─────────────────────────────────────────────────────────────┬─────────┐
-│ Fichiers média analysés                                     │      83 │
+│ Fichiers média analysés                                     │      85 │
 │ Groupes de fichiers identiques                              │      20 │
 │ Copies en trop, à mettre de côté                            │      32 │
 │ Espace libérable                                            │ 13,9 Mo │
 │ Fichiers cassés (vides ou illisibles)                       │       3 │
 │ Fichiers compagnons orphelins (.xmp, .aae, .thm) à déplacer │       1 │
-│ Quasi-doublons (déplacés seulement avec --tier near)        │       2 │
+│ Quasi-doublons (déplacés seulement avec --tier near)        │       3 │
+│ Vidéos réencodées (déplacées seulement avec --tier near)    │       1 │
 │ Rafales (déplacées seulement si écartées avec 'review')     │       3 │
 │ Durée                                                       │     2 s │
 └─────────────────────────────────────────────────────────────┴─────────┘

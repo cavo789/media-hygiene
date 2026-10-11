@@ -65,7 +65,7 @@ choisissez un autre numéro, le même trois fois, par exemple `-p 127.0.0.1:9000
 La première série s'affiche. Ici, la deuxième, un anniversaire : cinq photos prises à une
 seconde d'intervalle.
 
-![La page de tri : en-tête « Tri des rafales, Série 2 sur 3 », cinq photos d'anniversaire côte à côte, numérotées de 1 à 5 ; la première marquée la plus nette et encadrée en vert, la dernière floue avec une netteté de 30, encadrée en pointillés rouges et proposée à l'écart ; à gauche le sommaire et l'aide-mémoire du clavier](../images/review.webp)
+![La page de tri : en-tête « Tri des rafales, Série 2 sur 3 », cinq photos d'anniversaire, quatre côte à côte et la cinquième en dessous, numérotées de 1 à 5 ; la première marquée la plus nette et encadrée en vert, la dernière floue avec une netteté de 30, encadrée en pointillés rouges et proposée à l'écart ; à gauche le sommaire et l'aide-mémoire du clavier](../images/review.webp)
 
 - **En haut** : la série où vous êtes (*Série 2 sur 3*), combien de séries vous avez vues, et
   combien de photos vous avez écartées jusqu'ici, toutes séries confondues ; après quelques
@@ -273,7 +273,8 @@ Celui de cet exemple :
         "C:\\Photos\\2023\\Lac\\IMG_4002.jpg"
       ]
     }
-  ]
+  ],
+  "near": []
 }
 ```
 

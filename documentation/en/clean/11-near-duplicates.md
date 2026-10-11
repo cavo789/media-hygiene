@@ -93,7 +93,7 @@ as before.
 The *Near duplicates* section of the [HTML report](04-html-report.md) shows each group side by
 side, with the resolution, size and sharpness of every copy:
 
-![Near duplicates in the report: a meadow photo kept in 1500 × 1000 pixels, its 1024 × 683 copy from an Email folder; a beach photo kept, its 800 × 533 WhatsApp copy, both copies marked to the quarantine with --tier near](../images/report-near.webp)
+![Near duplicates in the report: a meadow photo kept in 1500 × 1000 pixels, its 1024 × 683 copy from an Email folder; a beach photo kept, its 800 × 533 WhatsApp copy; both groups to check, their copies to the quarantine once decided in review --near or with --tier near-all; below, the sure group folded](../images/report-near.webp)
 
 Compare each copy with the kept one: click a picture or its path to open the original in a new
 tab. The audit summary counts them on the line
@@ -128,15 +128,22 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 
 It says what there is to decide, then waits for you, as `review` does:
 
+<!-- capture: review-near.txt|near duplicates:|127.0.0.1:8088:8088 -->
 ```text
-1 group of near duplicates: 0 sure, 1 to check (shown first).
+4 groups of near duplicates: 1 sure, 3 to check (shown first).
 ✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each decision is
 saved at once in decisions.json, in the folder mounted on /reports. Ctrl+C stops
 the review.
+💡 The page does not open? docker run must publish the same port on both sides:
+-p 127.0.0.1:8088:8088.
 ```
 
 The page shows one group at a time, the kept version framed in green, the copies in red dashes,
-with the 💬 line. The keys:
+with the 💬 line:
+
+![The review --near page: Group 1 of 4, to check and undecided; the beach photo IMG_0104.jpg kept in 1500 × 1000, framed in green, its 800 × 533 WhatsApp copy in red dashes; above them the 💬 line; on the left the order (to check first), the keyboard reminder and the three folder pairs, Seaside holidays → WhatsApp with 2 groups, each with its ✔ as planned button](../images/review-near.webp)
+
+The keys:
 
 | Key | What it does |
 |---|---|
@@ -151,6 +158,8 @@ A group of re-encoded videos shows both versions side by side, ready to play: mu
 is loaded beyond their length until you press play, and you can seek in each. Once you have
 clicked a video, space and the arrows play and seek in it; `Esc` gives the keys back to the
 page. A format your browser cannot play (AVI, FLV…) keeps its *↗ original* link only.
+
+![The same page ordered by space freed, largest first: Birthday.mp4 kept, 960 × 540, 2.9 MB, and its WhatsApp copy VID-20220521-WA0001.mp4, 480 × 270, 96.4 KB, both 8 s long, each in a player paused at 0:03](../images/review-near-video.webp)
 
 **Decide once per folder pair**: the left panel lists the folder pairs (*the kept version's
 folder → the copies' folder*) with their number of groups. *✔ as planned* (or `G` on a group
@@ -209,32 +218,52 @@ The question now mentions the near duplicates:
 ```text
 2 burst shots you set aside will be moved to the quarantine.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
-❓ Move 32 duplicate copies (13.9 MB) and 2 near duplicates to the quarantine
+❓ Move 32 duplicate copies (13.9 MB) and 4 near duplicates to the quarantine
 and handle 3 broken files? [y/N] y
 ```
 
 <!-- capture: clean-near.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261010-203225
+Clean 20261011-100607
 ┌──────────────────────────┬─────────┐
-│ Files processed          │      40 │
-│ Size                     │ 16.2 MB │
-│ Moved to the quarantine  │      39 │
+│ Files processed          │      42 │
+│ Size                     │ 16.3 MB │
+│ Moved to the quarantine  │      41 │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261010-203225-clean/report.html
-💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261010-203225' restores everything.
-💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261010-203225
+✅ HTML report: /reports/20261011-100607-clean/report.html
 📦 decisions.json is applied: archived as
-decisions.applied-20261010-203225.json, in the folder mounted on /reports, the
+decisions.applied-20261011-100607.json, in the folder mounted on /reports, the
 next 'review' starts afresh.
 💡 After an undo, 'media-hygiene clean --decisions
-decisions.applied-20261010-203225.json' applies it again.
+decisions.applied-20261011-100607.json' applies it again.
+💡 Changed your mind? 'media-hygiene undo 20261011-100607' restores everything:
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene undo 20261011-100607
+👉 What next: once you have checked, 'purge' frees the space of the files set
+aside.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene purge 20261011-100607
+💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
 Near duplicates are **moved to the quarantine**, never deleted: they are not identical to the
@@ -244,45 +273,47 @@ sidecar:
 
 <!-- capture: quarantine.txt -->
 ```text
-./20261010-203225/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
-./20261010-203225/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
-./20261010-203225/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
-./20261010-203225/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
-./20261010-203225/c/Photos/2022/Birthday/IMG_3003.jpg
-./20261010-203225/c/Photos/2023/Lake/IMG_4002.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0101.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0102.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0103.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0104.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0105.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0106.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0107.jpg
-./20261010-203225/c/Photos/Old phone/IMG_0108.jpg
-./20261010-203225/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
-./20261010-203225/d/Old disk/2020/IMG_1203.jpg
-./20261010-203225/d/Old disk/Christmas 2020/IMG_1201.jpg
-./20261010-203225/d/Old disk/Christmas 2020/IMG_1202.jpg
-./20261010-203225/d/Old disk/Christmas 2020/IMG_1203.jpg
-./20261010-203225/d/Old disk/Christmas 2020/IMG_1204.jpg
-./20261010-203225/d/Old disk/Email/IMG_0110 small.jpg
-./20261010-203225/d/Old disk/Phone/IMG_4242.HEIC
-./20261010-203225/d/Old disk/Phone/IMG_4243.HEIC
-./20261010-203225/d/Old disk/Phone/IMG_4244.HEIC
-./20261010-203225/d/Old disk/Photos 2019/IMG_0101.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0102.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0102.xmp
-./20261010-203225/d/Old disk/Photos 2019/IMG_0103.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0104.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0105.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0106.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0107.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0108.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0109.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0110.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0111.jpg
-./20261010-203225/d/Old disk/Photos 2019/IMG_0112.jpg
-./20261010-203225/d/Old disk/Videos/Birthday (cut).mp4
-./20261010-203225/d/Old disk/Videos/Birthday.mp4
+./20261011-100607/c/Photos/2019/New folder/IMG_0105 - Copy.jpg
+./20261011-100607/c/Photos/2019/New folder/IMG_0106 - Copy.jpg
+./20261011-100607/c/Photos/2019/New folder/IMG_0107 - Copy.jpg
+./20261011-100607/c/Photos/2019/Seaside holidays/IMG_0101 (1).jpg
+./20261011-100607/c/Photos/2022/Birthday/IMG_3003.jpg
+./20261011-100607/c/Photos/2023/Lake/IMG_4002.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0101.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0102.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0103.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0104.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0105.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0106.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0107.jpg
+./20261011-100607/c/Photos/Old phone/IMG_0108.jpg
+./20261011-100607/c/Photos/WhatsApp/IMG-20190712-WA0003.jpg
+./20261011-100607/c/Photos/WhatsApp/IMG-20190712-WA0005.jpg
+./20261011-100607/c/Photos/WhatsApp/VID-20220521-WA0001.mp4
+./20261011-100607/d/Old disk/2020/IMG_1203.jpg
+./20261011-100607/d/Old disk/Christmas 2020/IMG_1201.jpg
+./20261011-100607/d/Old disk/Christmas 2020/IMG_1202.jpg
+./20261011-100607/d/Old disk/Christmas 2020/IMG_1203.jpg
+./20261011-100607/d/Old disk/Christmas 2020/IMG_1204.jpg
+./20261011-100607/d/Old disk/Email/IMG_0110 small.jpg
+./20261011-100607/d/Old disk/Phone/IMG_4242.HEIC
+./20261011-100607/d/Old disk/Phone/IMG_4243.HEIC
+./20261011-100607/d/Old disk/Phone/IMG_4244.HEIC
+./20261011-100607/d/Old disk/Photos 2019/IMG_0101.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0102.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0102.xmp
+./20261011-100607/d/Old disk/Photos 2019/IMG_0103.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0104.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0105.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0106.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0107.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0108.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0109.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0110.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0111.jpg
+./20261011-100607/d/Old disk/Photos 2019/IMG_0112.jpg
+./20261011-100607/d/Old disk/Videos/Birthday (cut).mp4
+./20261011-100607/d/Old disk/Videos/Birthday.mp4
 ```
 
 Before moving each copy, `clean` checks that the kept photo still exists and that the copy is

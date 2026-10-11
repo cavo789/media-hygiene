@@ -68,7 +68,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261010-203350
+Nettoyage 20261011-100820
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,5 Mo │
@@ -77,12 +77,32 @@ Nettoyage 20261010-203350
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261010-203350-clean/report.html
+✅ Rapport HTML : /reports/20261011-100820-clean/report.html
+💡 Vous changez d'avis ? 'media-hygiene undo 20261011-100820' restaure tout :
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene --locale fr undo 20261011-100820
+👉 Et maintenant : une fois vérifié, 'purge' libère la place des fichiers mis de
+côté.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene --locale fr purge 20261011-100820
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
-💡 Vous changez d'avis ? 'media-hygiene undo 20261010-203350' restaure tout.
-💡 L'espace est libéré par 'purge', une fois que vous avez vérifié :
-media-hygiene purge 20261010-203350
 ```
 
 | Ligne | Ce qu'elle veut dire |
@@ -114,7 +134,7 @@ Chaque nettoyage écrit son propre rapport, listé dans `index.html` à côté d
 été libéré, les paires de dossiers telles qu'elles ont été nettoyées, et les fichiers laissés
 intacts, s'il y en a.
 
-![Le haut d'un rapport de nettoyage : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 16,2 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
+![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,3 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 
 ## Besoin de la place tout de suite ? `--delete`
 

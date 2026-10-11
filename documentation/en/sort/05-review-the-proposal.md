@@ -25,9 +25,21 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20261010-203152-classify/classify.xlsx
-✅ Report with the photos: /reports/20261010-203152-classify/report.html
-💡 Edit the yellow cells and save: nothing moves until 'sort'.
+✅ Workbook to edit: /reports/20261011-100457-classify/classify.xlsx
+✅ Report with the photos: /reports/20261011-100457-classify/report.html
+👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  -v "/mnt/d/Old disk:/data/d/Old disk" \
+  -v "$HOME/media-hygiene/config:/config" \
+  -v "media-hygiene-cache:/cache" \
+  -v "$HOME/media-hygiene/reports:/reports" \
+  -v "$HOME/media-hygiene/journal:/journal" \
+  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+  cavo789/media-hygiene sort
+💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
+are sorted.
 ```
 
 Each run writes a new folder, `<date>-classify`, with three files:
@@ -55,7 +67,7 @@ outside any event, grouped by proposed folder. Each group shows its dates, its f
 they come from, the proposed folder and why, and up to 8 previews spread over its span. Click a
 preview to open the file; *All the files* lists every one of them.
 
-![A year page of the classify report: the event Seaside holidays with its id, 37 files of which 3 to check or to sort, the cumulated share of the work, the proposed folder 2019/Seaside holidays marked Sure, the three folders its photos come from, then eight previews spread over its days with their names and times, and a link to all the files](../images/classify-year.webp)
+![A year page of the classify report: the event Seaside holidays with its id, 38 files of which 3 to check or to sort, the cumulated share of the work, the proposed folder 2019/Seaside holidays marked Sure, the three folders its photos come from, then eight previews spread over its days with their names and times, and a link to all the files](../images/classify-year.webp)
 
 ## The workbook: edit the yellow cells
 

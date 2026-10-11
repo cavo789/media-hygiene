@@ -1,8 +1,8 @@
 r"""The demo library: C:\Photos, a family library, and D:\Old disk, full of copies.
 
 Exact copies (across disks, inside a folder, with copy names), three burst series
-(one shot shaken), two near duplicates (WhatsApp, e-mail), broken files and sidecars
-(one left orphan).
+(one shot shaken), three near duplicates (WhatsApp, e-mail), a re-encoded video, broken
+files and sidecars (one left orphan).
 """
 
 from __future__ import annotations
@@ -62,9 +62,15 @@ def _holidays(library: Library) -> list[Path]:
 
 
 def _near_duplicates(library: Library) -> None:
-    """Two holiday photos saved again, undated: smaller (WhatsApp), recompressed."""
+    """Three holiday photos saved again, undated: smaller (WhatsApp), recompressed.
+
+    The name of the second WhatsApp copy gives the very day of its original (sure);
+    the first one's does not (to check).
+    """
     whatsapp = Shot(Picture(Kind.BEACH, 4), None, None, 70, (800, 533))
     write_shot(library.photos / "WhatsApp" / "IMG-20190712-WA0003.jpg", whatsapp)
+    sunset = Shot(Picture(Kind.SUNSET, 7), None, None, 70, (800, 533))
+    write_shot(library.photos / "WhatsApp" / "IMG-20190712-WA0005.jpg", sunset)
     email = Shot(Picture(Kind.MEADOW, 10), None, None, 45, (1024, 683))
     name = f"IMG_0110{library.names.small}.jpg"
     write_shot(library.disk / library.names.email / name, email)

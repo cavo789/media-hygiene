@@ -62,7 +62,7 @@ another number, the same three times, e.g. `-p 127.0.0.1:9000:9000` and `review 
 
 The first series appears. Here, the second one, a birthday: five shots taken one second apart.
 
-![The review page: header "Burst series review, Series 2 of 3", five birthday shots side by side, numbered 1 to 5; the first one marked sharpest and framed in green, the last one blurred with a sharpness of 30, framed in red dashes and proposed aside; on the left the table of contents and the keyboard reminder](../images/review.webp)
+![The review page: header "Burst series review, Series 2 of 3", five birthday shots, four side by side and the fifth below, numbered 1 to 5; the first one marked sharpest and framed in green, the last one blurred with a sharpness of 30, framed in red dashes and proposed aside; on the left the table of contents and the keyboard reminder](../images/review.webp)
 
 - **At the top**: which series you are on (*Series 2 of 3*), how many series you have seen,
   and how many shots you have set aside so far, across all series; after a few choices,
@@ -260,7 +260,8 @@ The one of this example:
         "C:\\Photos\\2023\\Lake\\IMG_4002.jpg"
       ]
     }
-  ]
+  ],
+  "near": []
 }
 ```
 

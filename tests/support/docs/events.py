@@ -1,4 +1,4 @@
-"""The events of the demo library: a hike, a birthday, a lake, a phone, a video."""
+"""The events of the demo library: a hike, a birthday, a lake, a phone, videos."""
 
 from __future__ import annotations
 
@@ -6,7 +6,15 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Final
 
 from tests.support.docs.pictures import Kind, Picture
-from tests.support.docs.shots import PHONE, Shot, copy, truncate, video, write_shot
+from tests.support.docs.shots import (
+    PHONE,
+    Shot,
+    copy,
+    reencode,
+    truncate,
+    video,
+    write_shot,
+)
 
 if TYPE_CHECKING:
     from tests.support.docs.names import Library
@@ -85,9 +93,11 @@ def phone(library: Library) -> None:
 
 
 def videos(library: Library) -> None:
-    """A birthday video, copied on the old disk, where a second copy was cut short."""
+    """A birthday video, copied on the old disk (a copy cut short), sent by WhatsApp."""
     names = library.names
     party = datetime(2022, 5, 21, 16, 35, tzinfo=UTC)
     original = video(library.photos / names.videos / names.video, party)
     copy(original, library.disk / names.videos / names.video, LATER)
     truncate(original, library.disk / names.videos / names.cut)
+    sent = library.photos / "WhatsApp" / "VID-20220521-WA0001.mp4"
+    reencode(original, sent, party + timedelta(minutes=5))

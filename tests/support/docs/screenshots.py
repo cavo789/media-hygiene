@@ -1,4 +1,4 @@
-"""The browser side: serve the burst review, run `browser.py` in Playwright's image."""
+"""The browser side: serve the review and search pages, run `browser.py`."""
 
 from __future__ import annotations
 
@@ -24,7 +24,8 @@ _DOCKERFILE: Final = (
 )
 BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
-_READY: Final = "127.0.0.1:8088"  # the review prints its address
+_SERVED: Final = _SCRIPT.with_name("served.py")  # imported by browser.py
+_READY: Final = "127.0.0.1:8088"  # the review and the search print their address
 _WAIT_SECONDS: Final = 300
 # Chromium sometimes dies while starting, before any page: nothing done yet, retry.
 _LAUNCH_FAILED: Final = "BrowserType.launch"
@@ -48,36 +49,37 @@ def build_browser() -> None:
     )
 
 
-def start_review(demo: Demo) -> str:
-    """Start the burst review in its own container, and wait until it listens.
+def start_review(demo: Demo, args: tuple[str, ...] = ("review",)) -> str:
+    """Start a page served on port 8088 in its own container, and wait until it listens.
 
     Args:
-        demo: The demo library to review.
+        demo: The demo library to serve.
+        args: The command: `("review",)`, `("review", "--near")`, `("search",)`.
 
     Returns:
         The container's name: a browser joins its network to reach 127.0.0.1:8088.
 
     Raises:
-        RuntimeError: The review never became ready.
+        RuntimeError: The page never became ready.
     """
-    name = f"{demo.prefix}-review"
+    name = "-".join((demo.prefix, *(arg.lstrip("-") for arg in args)))
     docker("rm", "--force", name)
-    command = Command(("review",))
+    command = Command(args)
     docker("run", "--detach", "--name", name, "-t", *DUMB, *demo.mounts(command),
            *demo.tool(command))  # fmt: skip
     for _ in range(_WAIT_SECONDS):
         if _READY in docker("logs", name).stdout:
             return name
         time.sleep(1)
-    message = f"the review did not start: {docker('logs', name).stdout}"
+    message = f"{shlex.join(args)} did not start: {docker('logs', name).stdout}"
     raise RuntimeError(message)
 
 
 def stop_review(name: str) -> str:
-    """Stop the review (Ctrl+C would), and return what its terminal showed.
+    """Stop a served page (Ctrl+C would), and return what its terminal showed.
 
     Args:
-        name: The container of the review.
+        name: The container of the page.
 
     Returns:
         The screen, tidied.
@@ -130,7 +132,7 @@ def _browse(demo: Demo, job: Job, shots: Path) -> str:
     docker("create", "--name", name, "--network", job.network, "--init",
            "--ipc", "host", "-v", f"{demo.volume('reports')}:/reports:ro",
            BROWSER_IMAGE, "sh", "-c", script)  # fmt: skip
-    for source in (_SCRIPT, *sorted(_SCRIPT.parent.glob("*.js"))):
+    for source in (_SCRIPT, _SERVED, *sorted(_SCRIPT.parent.glob("*.js"))):
         docker("cp", str(source), f"{name}:/tmp/{source.name}")
     docker("cp", str(shots), f"{name}:/shots")
     docker("start", name)
