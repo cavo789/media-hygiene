@@ -1,4 +1,4 @@
-"""The image's own ffprobe and ffmpeg open every video extension analysed."""
+"""The image's ffprobe and ffmpeg open every video extension analysed; its targets."""
 
 from __future__ import annotations
 
@@ -17,6 +17,9 @@ DEMUXERS: Final = re.compile(
 )
 USES_THEM: Final = '--enable-demuxer="${VIDEO_DEMUXERS}"'
 STAGES: Final = ("AS ffprobe", "AS ffmpeg")
+LAST_STAGE: Final = re.compile(r"^FROM \S+ AS (?P<name>\S+)$", re.MULTILINE)
+BUILD_STEP: Final = "uses: docker/build-push-action@"
+NEXT_STEP: Final = "\n      - "
 
 
 def test_every_video_extension_has_its_demuxer() -> None:
@@ -37,3 +40,14 @@ def test_both_tools_open_the_same_containers() -> None:
     assert all(stage in dockerfile for stage in STAGES)
     assert dockerfile.count(USES_THEM) == len(STAGES)
     assert "--enable-demuxer=" not in dockerfile.replace(USES_THEM, "")
+
+
+def test_a_plain_build_is_local_and_ci_publishes_published() -> None:
+    """`docker build .` names itself; the pushed image is the `published` target."""
+    dockerfile = (ROOT / "Dockerfile").read_text(encoding="utf-8")
+    assert [match["name"] for match in LAST_STAGE.finditer(dockerfile)][-1] == "local"
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    steps = [part.split(NEXT_STEP, 1)[0] for part in workflow.split(BUILD_STEP)[1:]]
+    pushing = [step for step in steps if "push=" in step]
+    assert pushing
+    assert all("target: published" in step for step in pushing)

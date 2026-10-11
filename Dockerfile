@@ -139,9 +139,10 @@ WORKDIR /tmp
 ENTRYPOINT ["media-hygiene"]
 CMD ["--help"]
 
-# --- local: a developer's build names itself in the commands it suggests (TODO 0080) ---
+# --- published: what CI pushes (`target: published`); it never sets MEDIA_HYGIENE_IMAGE ---
+FROM runtime AS published
+
+# --- local: the default (last) target, so a plain `docker build --tag media-hygiene .` names
+# itself in the commands it suggests instead of the published image, which may lack a verb ---
 FROM runtime AS local
 ENV MEDIA_HYGIENE_IMAGE=media-hygiene
-
-# --- published: the default target, what CI pushes; it never sets MEDIA_HYGIENE_IMAGE ---
-FROM runtime AS published

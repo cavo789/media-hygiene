@@ -80,10 +80,10 @@ def test_the_launcher_runs_the_image_that_wrote_it(
 
 
 def test_only_the_local_target_sets_the_variable() -> None:
-    """CI publishes the last stage (no `--target`): it never names the local image."""
+    """`published` (what CI pushes) never names the local image; `local` comes last."""
     dockerfile = (ROOT / "Dockerfile").read_text(encoding="utf-8")
     stages = [match["name"] for match in _STAGE.finditer(dockerfile)]
-    assert stages[-1] == "published"
-    local = dockerfile.split("AS local", 1)[1].split("AS published", 1)
-    assert f"ENV {IMAGE_VARIABLE}={_LOCAL}\n" in local[0]
-    assert IMAGE_VARIABLE not in local[1]
+    assert stages[-2:] == ["published", "local"]
+    published, local = dockerfile.split("AS published", 1)[1].split("AS local", 1)
+    assert IMAGE_VARIABLE not in published
+    assert f"ENV {IMAGE_VARIABLE}={_LOCAL}\n" in local

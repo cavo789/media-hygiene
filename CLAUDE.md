@@ -9,9 +9,9 @@ was called `media-dedup` up to 0.2; what remains of that name is deliberate:
 `config/legacy_env.py` reads `MEDIA_DEDUP_*` until 0.4.0, `summary.json` accepts
 `only_media_dedup`, `tests/fixtures/0.2.0/` proves old files still load, and the devcontainer
 volumes keep their names. It ships as a Docker image published on Docker Hub as `cavo789/media-hygiene` (amd64 + arm64, by CI
-on a `vX.Y.Z` tag that the helper `release` creates; local build: `docker build --target
-local --tag media-hygiene .` (target `local` names itself in the commands it suggests; the last
-stage, `published`, is what CI pushes), `ENTRYPOINT ["media-hygiene"]`) run from PowerShell or WSL; the image builds a minimal `ffprobe` and `ffmpeg` from pinned sources. User documentation:
+on a `vX.Y.Z` tag that the helper `release` creates; local build: `docker build --tag
+media-hygiene .` (the default, last target `local` names itself in the commands it suggests; CI
+pushes `--target published`), `ENTRYPOINT ["media-hygiene"]`) run from PowerShell or WSL; the image builds a minimal `ffprobe` and `ffmpeg` from pinned sources. User documentation:
 [README.md](README.md) / [README_FR.md](README_FR.md) (quick start + contents only) and
 `documentation/en/` / `documentation/fr/` (same file names and `images/` in both). Step by step,
 one guide per goal after shared first steps: `start/` (steps 1–3: audit, cache, several folders),
