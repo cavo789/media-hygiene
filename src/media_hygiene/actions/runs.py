@@ -15,7 +15,13 @@ from media_hygiene.actions.journal import (
     journal_file,
     read_journal,
 )
-from media_hygiene.actions.kinds import ACTING_PHASES, FOLDER_ACTIONS, ActionKind, Phase
+from media_hygiene.actions.kinds import (
+    ACTING_PHASES,
+    FOLDER_ACTIONS,
+    XMP_ACTIONS,
+    ActionKind,
+    Phase,
+)
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.constants import JOURNAL_SUFFIX
 
@@ -26,7 +32,7 @@ _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 # Every run identifier: the stamp, then a number when two runs share a second.
 RUN_ID_PATTERN: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?")
 # Actions after which the file is still there: neither deleted nor freed.
-_KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK})
+_KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK}) | XMP_ACTIONS
 
 
 def new_run_id(journal_dir: Path) -> str:
@@ -63,10 +69,11 @@ def run_phase(entries: list[JournalEntry]) -> Phase:
 
 @dataclass(frozen=True, slots=True)
 class Kept:
-    """The files a run left in place under another name: moved, or linked."""
+    """The files a run left in place: moved, linked, or given a sidecar."""
 
     moved: int = 0
     linked: int = 0  # the hard links of an album: nothing deleted nor freed
+    written: int = 0  # the sidecars `xmp` created or rewrote
 
 
 @dataclass(frozen=True, slots=True)
@@ -119,6 +126,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
     ]
     moved = [entry for entry in files if entry.action is ActionKind.MOVE]
     linked = [entry for entry in files if entry.action is ActionKind.LINK]
+    written = sum(1 for entry in files if entry.action in XMP_ACTIONS)
     quarantined = [entry for entry in files if entry.action in QUARANTINED]
     # Only a deleted file frees space: a quarantined one takes it until `purge`.
     deleted = [
@@ -132,7 +140,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         deleted=len(deleted),
         freed=sum(entry.size for entry in deleted),
         quarantined=len(quarantined),
-        kept=Kept(len(moved), len(linked)),
+        kept=Kept(len(moved), len(linked), written),
         restored=len(done_states(entries, Phase.UNDO)),
     )
 

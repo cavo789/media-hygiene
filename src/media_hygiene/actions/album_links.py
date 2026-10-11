@@ -15,6 +15,7 @@ import errno
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import ALBUM_MARKER
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -74,3 +75,17 @@ def link_blocker(entry: JournalEntry) -> str | None:
     if not link.samefile(original):
         return _("it is no longer a name of {path}: kept").format(path=original)
     return None
+
+
+def marker_blocker(marker: Path) -> str | None:
+    """Tell why the marker an album run wrote cannot be removed.
+
+    Args:
+        marker: The file the journal names.
+
+    Returns:
+        The reason, or None when it is the album's own marker, still there.
+    """
+    if marker.name != ALBUM_MARKER:  # only the album's own marker is ever removed
+        return _("it is not the marker file of an album: kept")
+    return None if marker.is_file() else _("it is gone already")

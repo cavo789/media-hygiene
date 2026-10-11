@@ -3,6 +3,12 @@ msgid ""
 "go to \"to sort\", which means: we do not know."
 msgstr ""
 
+msgid ""
+"\"bord de mer\" finds the phrase, anniv* every word starting so, "
+"place:durbuy the word among the places only. / types a search, the arrows"
+" move, Enter opens."
+msgstr ""
+
 #, python-format
 msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
 msgstr ""
@@ -480,6 +486,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Changed your mind? 'media-hygiene undo {run_id}' removes the sidecars "
+"written and puts the others back as they were:"
 msgstr ""
 
 #, python-brace-format
@@ -1052,6 +1064,11 @@ msgstr ""
 msgid "February"
 msgstr ""
 
+msgid ""
+"Fewer words, or the start of a word with a star (anniv*), find more; "
+"place:durbuy looks among the places only."
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -1115,6 +1132,11 @@ msgid ""
 msgstr ""
 
 msgid "Find exact duplicates and broken files."
+msgstr ""
+
+msgid ""
+"Find photos by their words in your browser (or as a table): the words "
+"'tags' gave them."
 msgstr ""
 
 msgid ""
@@ -1220,6 +1242,9 @@ msgid "Frame rate"
 msgstr ""
 
 msgid "Freed"
+msgstr ""
+
+msgid "From year"
 msgstr ""
 
 msgid "From:"
@@ -1337,6 +1362,10 @@ msgid ""
 msgstr ""
 
 msgid "How do we know these are duplicates?"
+msgstr ""
+
+#, python-brace-format
+msgid "How many files the table lists at most. Default: {count}."
 msgstr ""
 
 msgid "How much to log."
@@ -1783,6 +1812,9 @@ msgstr ""
 msgid "No event left to decide after this one."
 msgstr ""
 
+msgid "No file has words yet: nothing can be found."
+msgstr ""
+
 msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 
@@ -1792,6 +1824,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "No index in {folder}: nothing to export yet."
+msgstr ""
+
+#, python-brace-format
+msgid "No index in {folder}: nothing to search yet."
 msgstr ""
 
 #, python-brace-format
@@ -1836,6 +1872,9 @@ msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
 msgid "No place yet: click a circle or the map."
+msgstr ""
+
+msgid "No preview"
 msgstr ""
 
 msgid ""
@@ -1906,6 +1945,12 @@ msgid ""
 "describe without being asked with --yes."
 msgstr ""
 
+msgid "Nothing found."
+msgstr ""
+
+msgid "Nothing found. Fewer words, or the start of a word (anniv*), find more."
+msgstr ""
+
 msgid "Nothing is proposed by --sample: run classify without it."
 msgstr ""
 
@@ -1933,6 +1978,9 @@ msgstr ""
 msgid "Nothing to undo."
 msgstr ""
 
+msgid "Nothing to write."
+msgstr ""
+
 msgid "Nothing was changed."
 msgstr ""
 
@@ -1943,6 +1991,9 @@ msgid "Nothing was changed: 'classify' only proposes."
 msgstr ""
 
 msgid "Nothing was changed: add --apply to make the links."
+msgstr ""
+
+msgid "Nothing was changed: add --apply to write the sidecars."
 msgstr ""
 
 msgid ""
@@ -2025,6 +2076,9 @@ msgstr ""
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
+msgid "Open the original"
+msgstr ""
+
 msgid "Open the original in a new tab"
 msgstr ""
 
@@ -2032,6 +2086,9 @@ msgid "Open the original in a new tab: the file as it lies on the disk"
 msgstr ""
 
 msgid "Open the review at 127.0.0.1 or localhost."
+msgstr ""
+
+msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "OpenStreetMap contributors"
@@ -2075,6 +2132,9 @@ msgstr ""
 msgid ""
 "Paste it in the terminal where you ran the audit (PowerShell or bash, as "
 "written)."
+msgstr ""
+
+msgid "Path contains"
 msgstr ""
 
 #, python-brace-format
@@ -2354,6 +2414,11 @@ msgstr ""
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
 msgstr ""
 
+msgid ""
+"Run 'audit', then 'tags', with the same /cache mount: search finds the "
+"words they keep there."
+msgstr ""
+
 msgid "Run 'classify' again: its plan sees the files where they are."
 msgstr ""
 
@@ -2361,6 +2426,9 @@ msgid "Run 'classify' again: your edits are carried over to its new workbook."
 msgstr ""
 
 msgid "Run 'classify' first, then edit its workbook."
+msgstr ""
+
+msgid "Run 'clean' first: only the copy kept then gets a sidecar."
 msgstr ""
 
 msgid ""
@@ -2372,6 +2440,11 @@ msgid "Run 'media-hygiene config' to see every setting and where it comes from."
 msgstr ""
 
 msgid "Run 'media-hygiene history' to list the runs."
+msgstr ""
+
+msgid ""
+"Run 'tags' first: it gives every photo the words of its folders, date and"
+" place."
 msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
@@ -2387,6 +2460,9 @@ msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 
 msgid "Run the same command again: the files linked are skipped."
+msgstr ""
+
+msgid "Run the same command again: the sidecars written are skipped."
 msgstr ""
 
 msgid ""
@@ -2490,6 +2566,9 @@ msgstr ""
 msgid "Screenshots and documents"
 msgstr ""
 
+msgid "Search"
+msgstr ""
+
 msgid "Search OpenStreetMap"
 msgstr ""
 
@@ -2499,6 +2578,18 @@ msgid ""
 "service, never a photo nor a position. Its usage policy: "
 "https://operations.osmfoundation.org/policies/nominatim/ (one search per "
 "second at most). Another instance, or empty to search offline only."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Search ready, open {url} in your browser. Ctrl+C stops it; nothing is "
+"changed."
+msgstr ""
+
+msgid "Search stopped; nothing was changed."
+msgstr ""
+
+msgid "Search your photos"
 msgstr ""
 
 msgid "Searching OpenStreetMap…"
@@ -2594,6 +2685,12 @@ msgid "Show the version and exit."
 msgstr ""
 
 msgid "Show this message and exit."
+msgstr ""
+
+msgid "Sidecar"
+msgstr ""
+
+msgid "Sidecars"
 msgstr ""
 
 msgid ""
@@ -2717,6 +2814,12 @@ msgid "Table of contents"
 msgstr ""
 
 msgid "Tags"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Tags: {files} files have words, {seen} of them from the vision model; "
+"'search' finds them."
 msgstr ""
 
 #, python-brace-format
@@ -2957,6 +3060,13 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The search failed (error {status})."
+msgstr ""
+
+msgid "The search is not running any more: start it again."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "The second opinion of Czkawka (another duplicate finder you ran on "
 "{date}) is out of date: photos were moved or deleted since. It is "
@@ -2993,6 +3103,12 @@ msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
+msgstr ""
+
+msgid ""
+"The words 'xmp' writes into the .xmp sidecars next to the photos "
+"(dc:subject), by source: vision, place, folder, date. The model's "
+"sentence goes into dc:description."
 msgstr ""
 
 msgid ""
@@ -3148,6 +3264,9 @@ msgid "To set once: {settings}."
 msgstr ""
 
 msgid "To sort"
+msgstr ""
+
+msgid "To year"
 msgstr ""
 
 msgid "Topic"
@@ -3317,9 +3436,21 @@ msgstr ""
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 
+msgid "Words"
+msgstr ""
+
 msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English)."
+msgstr ""
+
+msgid "Words of"
+msgstr ""
+
+msgid ""
+"Words to find, printed as a table instead of opening the page: \"bord de "
+"mer\" a phrase, anniv* a start of word, place:durbuy among the places "
+"only (also vision, caption, folder, date)."
 msgstr ""
 
 #, python-brace-format
@@ -3339,6 +3470,21 @@ msgid "Workbook: {path}"
 msgstr ""
 
 msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
+msgstr ""
+
+msgid "Write the sidecars; without it, only show what would be written."
+msgstr ""
+
+msgid ""
+"Write the words of 'tags' into .xmp sidecars next to the photos, for "
+"digiKam, darktable, Lightroom or Immich; never into a photo (journaled, "
+"undoable)."
+msgstr ""
+
+msgid "Writes the words into the .xmp sidecars."
+msgstr ""
+
+msgid "Writing"
 msgstr ""
 
 msgid "Writing the HTML report and its previews…"
@@ -3550,6 +3696,9 @@ msgstr ""
 msgid "dark"
 msgstr ""
 
+msgid "date"
+msgstr ""
+
 msgid "date on the disk"
 msgstr ""
 
@@ -3583,6 +3732,9 @@ msgstr ""
 msgid "duplicate copies in %(groups)s groups"
 msgstr ""
 
+msgid "e.g. Durbuy bear, birthday cake, snow 2008"
+msgstr ""
+
 msgid "edit the yellow cells and save; nothing moves until 'sort'."
 msgstr ""
 
@@ -3600,6 +3752,9 @@ msgid "entirely a copy: holds nothing else"
 msgstr ""
 
 msgid "environment"
+msgstr ""
+
+msgid "every source"
 msgstr ""
 
 msgid ""
@@ -3621,7 +3776,15 @@ msgstr ""
 msgid "files with an identical copy"
 msgstr ""
 
+msgid ""
+"find your photos by these words in your browser; 'inventory' lists them "
+"in its last column."
+msgstr ""
+
 msgid "finish the burst review where you stopped."
+msgstr ""
+
+msgid "folder"
 msgstr ""
 
 msgid "folder name"
@@ -3649,6 +3812,9 @@ msgstr ""
 msgid "it already exists"
 msgstr ""
 
+msgid "it changed while the words were written: left as is"
+msgstr ""
+
 msgid "it is gone already"
 msgstr ""
 
@@ -3669,6 +3835,9 @@ msgstr ""
 msgid "it is the kept copy itself, seen through another path"
 msgstr ""
 
+msgid "it reads back different from what was written"
+msgstr ""
+
 msgid "its content changed"
 msgstr ""
 
@@ -3683,6 +3852,9 @@ msgstr ""
 msgid ""
 "its original {path} is no longer there (moved or renamed since?): kept, "
 "it may be the last name of the photo"
+msgstr ""
+
+msgid "its previous content is no longer in the quarantine: kept"
 msgstr ""
 
 msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)"
@@ -3878,6 +4050,9 @@ msgstr ""
 msgid "photos with a shooting date:"
 msgstr ""
 
+msgid "place"
+msgstr ""
+
 #, python-brace-format
 msgid "place: {place}"
 msgstr ""
@@ -3925,6 +4100,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "run 'clean' to set {size} of copies aside."
+msgstr ""
+
+msgid "seen by the model"
 msgstr ""
 
 msgid "select a photo"
@@ -3984,6 +4162,9 @@ msgstr ""
 msgid "the copy differs from the original"
 msgstr ""
 
+msgid "the copy of the previous sidecar does not match it"
+msgstr ""
+
 msgid "the file is gone"
 msgstr ""
 
@@ -4003,9 +4184,6 @@ msgstr ""
 msgid "the folder is not empty"
 msgstr ""
 
-msgid "the inventory: one row per file, its tags in the last column."
-msgstr ""
-
 msgid "the journal does not say where its content is"
 msgstr ""
 
@@ -4017,6 +4195,9 @@ msgid "the kept copy {path} no longer exists"
 msgstr ""
 
 msgid "the last audit found extra copies: 'clean' sets them aside."
+msgstr ""
+
+msgid "the model's sentence"
 msgstr ""
 
 msgid "the oldest date"
@@ -4046,7 +4227,16 @@ msgid ""
 "quarantine, 'undo' brings them back."
 msgstr ""
 
+msgid "the same search in your browser, with the pictures and filters."
+msgstr ""
+
 msgid "the shortest path"
+msgstr ""
+
+msgid "the sidecar changed since (edited in another application?): kept"
+msgstr ""
+
+msgid "the sidecar is gone already"
 msgstr ""
 
 msgid "the target exists"
@@ -4299,6 +4489,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{count} file found."
+msgid_plural "{count} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
 "deletes), {size} to free."
@@ -4353,6 +4549,18 @@ msgid "{count} file: {words} words from its folders, date and place."
 msgid_plural "{count} files: {words} words from their folders, dates and places."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} files have an identical copy: left out."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files have no word to write."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files of protected folders: never written."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} files, {undecided} to check or to sort"
@@ -4511,6 +4719,22 @@ msgid "{count} shots"
 msgstr ""
 
 #, python-brace-format
+msgid "{count} sidecar written and read back; no photo was changed."
+msgid_plural "{count} sidecars written and read back; no photo was changed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} sidecars hold these words already."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} sidecars to write: {new} new, {merged} with the words added to "
+"those of another application."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} source folder stays: it still holds other files, e.g. {path}."
 msgid_plural "{count} source folders stay: they still hold other files, e.g. {path}."
 msgstr[0] ""
@@ -4663,6 +4887,10 @@ msgid "{path}: no sheet of a classify workbook was found."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: not an XMP file this tool can read ({reason}); left as is."
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr ""
 
@@ -4684,6 +4912,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"
+msgstr ""
+
+#, python-brace-format
+msgid "{total} files found."
+msgstr ""
+
+#, python-brace-format
+msgid "{total} files found; the first {shown} are listed (--limit)."
+msgstr ""
+
+#, python-brace-format
+msgid "{total} files found; the first {shown} are shown."
 msgstr ""
 
 #, python-brace-format
@@ -4759,5 +4999,10 @@ msgstr ""
 msgid ""
 "🛟 Nothing will be erased: the files are moved to the quarantine ({path})."
 " 'undo' puts them back; 'purge' erases them once you have checked."
+msgstr ""
+
+msgid ""
+"🛟 Only .xmp sidecars are written, never a photo: each one is journaled "
+"and 'undo' takes it back."
 msgstr ""
 

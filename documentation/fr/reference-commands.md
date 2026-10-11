@@ -24,6 +24,8 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | `album NOM` | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens, journalisés et annulables. | [Trier, étape 11](sort/11-albums.md) |
 | `inventory [--format xlsx\|csv]` | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | `tags` | Donne à chaque photo des mots pour la retrouver : les mots parlants de ses dossiers, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
+| `xmp` | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit, journalisé et annulable. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
+| `search [MOTS]` | Retrouve des photos par leurs mots (ceux de `tags`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | `launcher [--shell powershell\|bash]` | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
 | `config` | Affiche chaque réglage, son origine, et l'état de chaque point de montage. | [7](clean/07-configuration-file.md) |
 | `review-sort [CLASSEUR]` | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, étape 10](sort/10-name-events-in-the-browser.md) |
@@ -50,7 +52,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--near` | `review` | Décider les quasi-doublons groupe par groupe (comme prévu, garder l'autre version, laisser tel quel) au lieu de trier les rafales. [Étape 11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport, les photos de rafale écartées avec `review` et les groupes de quasi-doublons décidés avec `review --near` (avec `--tier near`). `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. Une fois appliqué par `clean`, le fichier est renommé `decisions.applied-<run>.json`. [Étape 10](clean/10-review-bursts.md), [étape 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places` | Port de la page, `8088` par défaut ; publiez le même : `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search` | Port de la page, `8088` par défaut ; publiez le même : `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--shell powershell\|bash` | `launcher` | Le shell du script `mh` ; deviné par défaut d'après les dossiers montés (un dossier Windows : PowerShell). [Étape 3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
 | `--year ANNÉE[-ANNÉE]` | `classify` | Seulement les fichiers de cette année ou de ces années. [Trier, étape 4](sort/04-classify.md#votre-propre-structure) |
@@ -63,7 +65,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--no-describe` | `classify` | Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. [Trier, étape 8](sort/08-subjects-from-a-local-model.md#la-longue-exécution-jamais-une-surprise) |
 | `--sample N` | `tags` | Décrire N photos prises au hasard avec le modèle local, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. [Tags](reference-tags.md#mesurer-dabord----sample) |
 | `--no-describe` | `tags` | Ne rien demander de nouveau au modèle local : les mots des dossiers, des dates et des lieux, et les descriptions déjà dans le cache. [Tags](reference-tags.md#les-mots-dun-modèle-de-vision-local) |
-| `--path CHEMIN` | `tags` | Seulement les photos sous ce dossier (chemin de l'hôte) ; à répéter pour plusieurs. [Tags](reference-tags.md#un-dossier-dabord----path) |
+| `--path CHEMIN` | `tags`, `xmp` | Seulement les photos sous ce dossier (chemin de l'hôte) ; à répéter pour plusieurs. [Tags](reference-tags.md#un-dossier-dabord----path) |
+| `--limit N` | `search` | Avec des mots : lister au plus N fichiers (20 par défaut). [Tags](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (par défaut) : un classeur avec les feuilles Fichiers et Résumé. `csv` : la feuille Fichiers seule, comme `plan.csv`. [Inventaire](reference-inventory.md#un-fichier-csv-à-la-place) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |
 | `--category NOM` | `album` | Les fichiers de cette catégorie, d'après le classeur modifié (un événement nommé dans le classeur donne son nom). [Trier, étape 11](sort/11-albums.md#choisir-ce-que-lalbum-rassemble) |
@@ -71,7 +74,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--rule NOM` | `album` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
 | `--rating N` | `album` | Les fichiers qui ont au moins N étoiles (1 à 5) dans Windows, telles que l'audit les a lues (demande `/cache`). |
 | `--workbook CHEMIN` | `album` | Le classeur de `classify` à lire ; celui du dernier `classify` par défaut. |
-| `--apply` | `album` | Crée les liens ; sans cette option, `album` montre seulement ce qu'il rassemblerait. |
+| `--apply` | `album`, `xmp` | Crée les liens, écrit les fichiers compagnons ; sans cette option, `album` et `xmp` montrent seulement ce qu'ils feraient. |
 
 La plupart des options ont leur équivalent dans `config.toml` ([étape 7](clean/07-configuration-file.md)) ;
 la ligne de commande l'emporte. Les règles de `classify` (`[[classify.rules]]`) n'ont pas

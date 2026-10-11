@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
+from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries
@@ -67,6 +68,8 @@ class Status:
     review: ReviewState
     sort: SortState
     missing: tuple[MountKind, ...]
+    # Files with words, and with the vision model's; None before any `tags`.
+    tagged: tuple[int, int] | None = None
 
     @property
     def blank(self) -> bool:
@@ -123,6 +126,7 @@ def read_status(runtime: Runtime) -> Status:
         if reports
         else SortState(),
         missing=tuple(kind for kind in LOOKED_AT if kind not in mounted),
+        tagged=tag_coverage(runtime.index_file),
     )
 
 
@@ -136,6 +140,7 @@ def _undoable(run: RunSummary) -> bool:
         True when more files were acted on than restored.
     """
     acted = run.deleted + run.quarantined + run.moved + run.linked
+    acted += run.kept.written
     return acted > run.restored
 
 

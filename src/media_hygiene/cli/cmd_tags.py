@@ -8,6 +8,7 @@ import typer
 
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.next_steps import carried, suggest
+from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.tags_flow import TagRequest, run_tags
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
@@ -81,6 +82,9 @@ def tags_command(  # pylint: disable=too-many-arguments
             return
         suggest(
             runtime,
-            _("the inventory: one row per file, its tags in the last column."),
-            NextVerb(carried(runtime, "inventory"), (MountKind.REPORTS,)),
+            _(
+                "find your photos by these words in your browser; 'inventory' "
+                "lists them in its last column."
+            ),
+            NextVerb(carried(runtime, "search"), port=PAGE_PORT),
         )

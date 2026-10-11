@@ -24,6 +24,8 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | `album NAME` | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links, journaled and undoable. | [Sorting, step 11](sort/11-albums.md) |
 | `inventory [--format xlsx\|csv]` | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | `tags` | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
+| `xmp` | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes, journaled and undoable. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
+| `search [WORDS]` | Find photos by their words (those of `tags`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
 | `launcher [--shell powershell\|bash]` | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
 | `config` | Show every setting, where it comes from, and the state of each mount point. | [7](clean/07-configuration-file.md) |
 | `review-sort [WORKBOOK]` | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, step 10](sort/10-name-events-in-the-browser.md) |
@@ -50,7 +52,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Step 8](clean/08-clean.md#need-the-space-at-once---delete) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/03-several-folders.md#write-your-folders-once-mh) |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
@@ -63,7 +65,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--no-describe` | `classify` | Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. [Sorting, step 8](sort/08-subjects-from-a-local-model.md#the-long-run-never-in-the-way) |
 | `--sample N` | `tags` | Describe N random photos with the local model, print their words, the time per photo and the estimate of a full run, and stop. [Tags](reference-tags.md#measure-first---sample) |
 | `--no-describe` | `tags` | Ask the local model nothing new: the words of the folders, dates and places, and the descriptions already in the cache. [Tags](reference-tags.md#the-words-of-a-local-vision-model) |
-| `--path PATH` | `tags` | Only the photos below this folder (host path); repeat it for several. [Tags](reference-tags.md#one-folder-first---path) |
+| `--path PATH` | `tags`, `xmp` | Only the photos below this folder (host path); repeat it for several. [Tags](reference-tags.md#one-folder-first---path) |
+| `--limit N` | `search` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 | `--category NAME` | `album` | The files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 11](sort/11-albums.md#choose-what-the-album-gathers) |
@@ -71,7 +74,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--rule NAME` | `album` | The files the `[[classify.rules]]` entry of this name decided. |
 | `--rating N` | `album` | The files given at least N stars (1 to 5) in Windows, as the audit read them (needs `/cache`). |
 | `--workbook PATH` | `album` | The `classify` workbook to read; the latest `classify` run's by default. |
-| `--apply` | `album` | Make the links; without it, `album` only shows what it would gather. |
+| `--apply` | `album`, `xmp` | Make the links, write the sidecars; without it, `album` and `xmp` only show what they would do. |
 
 Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
 line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they are written in

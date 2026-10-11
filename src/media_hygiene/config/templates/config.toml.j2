@@ -125,6 +125,8 @@ language = ""
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
+{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, date. The model's sentence goes into dc:description.")) }}
+xmp_sources = ["vision", "place"]
 
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}

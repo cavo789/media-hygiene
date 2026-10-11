@@ -32,6 +32,8 @@ The commands that act on your files never erase anything, and every one of them 
 - **`sort`** moves the files where the workbook says. On one disk, a move is a simple rename:
   nothing is copied, no space is used.
 - **`album`** only adds second names (hard links); no photo is copied, moved nor deleted.
+- **`xmp`** only writes small `.xmp` sidecars next to the photos, never a photo; a sidecar of
+  another application is copied into the quarantine before it is completed.
 - **`clean`** moves the extra copies to the quarantine, each one compared byte for byte with
   the copy kept just before. Their space is freed by `purge`, once you have checked.
 - **`undo`** puts the files of a run back where they were.
@@ -102,6 +104,7 @@ error.
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
 | Albums | [`album`](sort/11-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
+| XMP sidecars | [`xmp`](reference-tags.md#carry-the-words-with-the-photos-xmp) never writes into a photo nor into a protected folder. Each sidecar is journaled, written to a temporary file then renamed (never over a file that appeared), read back and parsed; one of another application is completed (its edits kept), its previous bytes kept in the quarantine. `undo` removes or restores a sidecar only while it holds what the run wrote. |
 | `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |

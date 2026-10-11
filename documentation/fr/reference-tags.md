@@ -23,8 +23,10 @@ docker run --rm -it `
 montrent les photos : elles sont envoyées à son url, et seulement là.
 ```
 
-Ensuite, [`inventory`](reference-inventory.md) les liste dans sa dernière colonne, **Tags**. Une
-page de recherche et des fichiers `.xmp` portables s'appuieront bientôt dessus.
+Ensuite, [`search`](#retrouver-une-photo-par-ses-mots--search) retrouve les photos par ces mots
+dans votre navigateur, et [`inventory`](reference-inventory.md) les liste dans sa dernière
+colonne, **Tags**. [`xmp`](#emporter-les-mots-avec-les-photos--xmp) les écrit dans des fichiers compagnons `.xmp` que
+d'autres applications lisent.
 
 ## D'où viennent les mots
 
@@ -104,6 +106,77 @@ docker run --rm -it ... cavo789/media-hygiene --locale fr tags --path "C:\Photos
 
 Seulement les photos sous ce dossier (répétez `--path` pour plusieurs).
 
+## Retrouver une photo par ses mots : `search`
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene --locale fr search
+```
+
+Ouvrez <http://127.0.0.1:8088/> : un champ, une grille des photos trouvées, les meilleures
+d'abord, chacune avec son dossier, sa date et ses mots. Tapez `/` pour chercher à nouveau,
+déplacez-vous avec les flèches, Entrée montre l'image en grand (avec un lien vers l'original),
+Échap la ferme. Filtres : années, une partie du chemin, les mots d'une seule source. Ctrl+C
+arrête la page. Lecture seule 🔒 : elle ne change jamais un fichier ; seuls les petits aperçus de
+la grille sont gardés dans `/cache`.
+
+| Vous tapez | Elle trouve |
+|---|---|
+| `Durbuy ours` | Les photos qui ont les deux mots, quelle que soit leur source. |
+| `noel`, `gateau` | `Noël`, `gâteau` : la casse et les accents ne comptent pas. |
+| `bougies` | `bougie` aussi : les tags sont gardés au singulier. |
+| `anniv*` | Chaque mot qui commence ainsi : `anniversaire`, `anniv`. |
+| `"bord de mer"` | L'expression, ses mots dans cet ordre. |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `date`. |
+| `neige 2008` | L'année est un mot de la date : la neige de 2008. |
+
+Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
+fichiers en tableau (`--limit N` pour plus). La recherche ne lit que le cache : relancez `tags`
+après un audit pour retrouver les nouvelles photos.
+
+## Emporter les mots avec les photos : `xmp`
+
+Les mots vivent dans le cache de cet outil. Pour les retrouver dans digiKam, darktable,
+Lightroom ou Immich (bibliothèque externe), `xmp` les écrit dans des **fichiers compagnons**,
+de petits fichiers `.xmp` à côté des photos : les photos elles-mêmes ne sont jamais modifiées.
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr xmp --apply
+```
+
+Sans `--apply`, `xmp` montre seulement ce qu'il écrirait (les dossiers de photos peuvent alors
+rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` monté, comme pour
+`clean`.
+
+- **Ce qui est écrit** : les mots des sources de `xmp_sources` (`vision` et `place` par défaut :
+  les mots des dossiers et des dates sont déjà dans le chemin) dans `dc:subject`, la phrase du
+  modèle dans `dc:description`.
+- **Où** : `IMG_1.jpg.xmp` à côté de `IMG_1.jpg`. Un fichier compagnon déjà là (`IMG_1.jpg.xmp`,
+  ou `IMG_1.xmp` quand il n'appartient qu'à cette photo) est complété, jamais remplacé : ses
+  retouches, ses autres propriétés et ses propres mots restent ; la phrase n'est posée que s'il
+  n'en a pas. Un fichier compagnon qui n'est pas du XMP lisible est listé et laissé tel quel.
+- **Relancez-le** après `tags` : les mots que cet outil avait écrits et ne donne plus sont
+  retirés, un mot que vous avez retiré dans une autre application n'est pas remis, et un fichier
+  compagnon déjà à jour n'est pas réécrit.
+- **Laissés de côté** : les dossiers protégés (jamais écrits), et les fichiers qui ont une copie
+  identique : deux copies auraient des fichiers compagnons divergents ; lancez d'abord `clean`,
+  seule la copie gardée en reçoit un.
+- **Sûr** : chaque fichier compagnon est journalisé avant d'être écrit, écrit dans un fichier
+  temporaire puis renommé (jamais par-dessus un fichier apparu entre-temps), relu et vérifié.
+  Celui d'une autre application est d'abord copié en quarantaine. `undo <exécution>` supprime les
+  fichiers compagnons créés par cet outil et remet les autres octet pour octet, sauf s'ils ont été
+  modifiés depuis : ils sont alors gardés, et `undo` dit pourquoi.
+- **Copie gardée** : un fichier compagnon écrit par `xmp` seul ne compte pas comme des retouches
+  quand `clean` choisit la copie à garder ([fichiers compagnons](reference-sidecars.md)).
+
 ## Réglages
 
 ```toml
@@ -111,6 +184,7 @@ Seulement les photos sous ce dossier (répétez `--path` pour plusieurs).
 language = ""   # "en", "fr", ou vide pour la langue de l'interface
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 town_km = 20
+xmp_sources = ["vision", "place"]   # les mots écrits dans les fichiers compagnons .xmp
 ```
 
 Une liste `stop_words` écrite ici remplace celle intégrée. Le modèle lui-même se règle dans
@@ -120,5 +194,6 @@ Une liste `stop_words` écrite ici remplace celle intégrée. Le modèle lui-mê
 
 Écrire les mots dans un JPEG change ses octets : son empreinte, sa date, et deux copies
 identiques cesseraient de l'être si une seule était étiquetée. Cela casserait ce sur quoi cet
-outil repose, et mettrait les originaux en risque. Les mots restent dans le cache, où
-`inventory` les lit.
+outil repose, et mettrait les originaux en risque. Les mots restent dans le cache, où `search`
+et `inventory` les lisent, et ne vont dans des fichiers compagnons à côté des photos que si vous
+le demandez (`xmp`).

@@ -7,6 +7,8 @@ from contextlib import closing
 from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.index.read_only import connect_read_only
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -26,9 +28,8 @@ def last_walk(index_file: Path | None) -> datetime | None:
     """
     if index_file is None or not index_file.is_file():
         return None
-    uri = f"{index_file.resolve().as_uri()}?mode=ro"
     try:
-        with closing(sqlite3.connect(uri, uri=True)) as connection:
+        with closing(connect_read_only(index_file)) as connection:
             row = connection.execute(_LAST_WALK).fetchone()
     except sqlite3.Error:
         return None

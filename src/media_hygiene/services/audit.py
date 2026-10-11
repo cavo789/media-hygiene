@@ -35,6 +35,7 @@ from media_hygiene.services.data_checks import (
 )
 from media_hygiene.services.near_checks import checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
+from media_hygiene.tags.xmp_owner import with_edits
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -82,7 +83,7 @@ class AuditService:
             found, WalkCoverage(roots, listed, found.unreadable, filters)
         )
         policy = keep_policy(
-            runtime.settings, runtime.mapper, accompanied(found.sidecars)
+            runtime.settings, runtime.mapper, accompanied(with_edits(found.sidecars))
         )
         plan = build_plan(groups, integrity.broken, policy)
         # With --ext, sidecars already alone before the clean are left where they are.

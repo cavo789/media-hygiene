@@ -12,6 +12,7 @@ from typing import Final, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.constants import Locale
+from media_hygiene.tags.models import TagSource
 
 # Words that describe every photo, so none: measured on a real collection (TODO 0072).
 STOP_WORDS: Final = (
@@ -21,6 +22,8 @@ STOP_WORDS: Final = (
     *("picture", "person", "people", "thing", "object", "background", "scene", "view"),
 )
 _TOWN_KM: Final = 20.0
+# Folder and date words are seen in the path already: only these go into sidecars.
+XMP_SOURCES: Final = (TagSource.VISION, TagSource.PLACE)
 
 
 class TagSettings(BaseModel):
@@ -32,6 +35,9 @@ class TagSettings(BaseModel):
     stop_words: tuple[str, ...] = STOP_WORDS
     # A GPS position names its GeoNames town only that close (km): not at sea.
     town_km: float = Field(default=_TOWN_KM, gt=0)
+    # The sources whose words `xmp` writes into `dc:subject` (the sentence of the
+    # model always goes into `dc:description`).
+    xmp_sources: tuple[TagSource, ...] = XMP_SOURCES
 
     def language_of(self, interface: Locale) -> Locale:
         """The language the words are written in.

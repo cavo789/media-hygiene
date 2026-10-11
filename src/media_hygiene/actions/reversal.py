@@ -12,10 +12,10 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.album_links import link_blocker
+from media_hygiene.actions.album_links import link_blocker, marker_blocker
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.quarantine import QUARANTINED
-from media_hygiene.constants import ALBUM_MARKER
+from media_hygiene.actions.xmp_undo import xmp_blocker
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
@@ -37,6 +37,8 @@ class Reversal(Enum):
     REMOVE_CREATED_FOLDER = auto()
     REMOVE_LINK = auto()
     REMOVE_MARKER = auto()
+    REMOVE_XMP = auto()
+    RESTORE_XMP = auto()
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -48,10 +50,14 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.CREATE_FOLDER: Reversal.REMOVE_CREATED_FOLDER,
         ActionKind.LINK: Reversal.REMOVE_LINK,
         ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
+        ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
+        ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
     }
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
 _WITHOUT_SOURCE: Final = frozenset({Reversal.RECREATE_EMPTY, Reversal.RECREATE_FOLDER})
+# Sidecars `xmp` wrote: undone only while they hold what it wrote (`xmp_undo`).
+XMP_REVERSALS: Final = frozenset({Reversal.REMOVE_XMP, Reversal.RESTORE_XMP})
 
 
 def reversal_of(entry: JournalEntry) -> Reversal:
@@ -87,32 +93,33 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
         The translated reason, or None when it can be undone.
     """
     path = Path(entry.path)
-    if reversal is Reversal.REMOVE_CREATED_FOLDER:
-        return _folder_blocker(path)
+    if reversal in XMP_REVERSALS:
+        return xmp_blocker(entry)
     if reversal is Reversal.REMOVE_LINK:
         return link_blocker(entry)
+    if reversal is Reversal.REMOVE_CREATED_FOLDER:
+        return _folder_blocker(path)
     if reversal is Reversal.REMOVE_MARKER:
-        return _marker_blocker(path)
-    if path.exists():
+        return marker_blocker(path)
+    return _restore_blocker(entry, reversal)
+
+
+def _restore_blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
+    """Tell why a file cannot come back at its place.
+
+    Args:
+        entry: The action.
+        reversal: How it is undone: the file comes back.
+
+    Returns:
+        The translated reason, or None when it can come back.
+    """
+    if Path(entry.path).exists():
         # Never overwrite: it is back already, or the action never happened.
         return _("it already exists")
     if reversal in _WITHOUT_SOURCE:
         return None
     return _source_blocker(entry, reversal)
-
-
-def _marker_blocker(marker: Path) -> str | None:
-    """Tell why the marker an album run wrote cannot be removed.
-
-    Args:
-        marker: The file the journal names.
-
-    Returns:
-        The reason, or None when it is the album's own marker, still there.
-    """
-    if marker.name != ALBUM_MARKER:  # only the album's own marker is ever removed
-        return _("it is not the marker file of an album: kept")
-    return None if marker.is_file() else _("it is gone already")
 
 
 def _folder_blocker(folder: Path) -> str | None:

@@ -22,8 +22,10 @@ docker run --rm -it `
 are sent to its url, and only there.
 ```
 
-Then [`inventory`](reference-inventory.md) lists them in its last column, **Tags**. A search page
-and portable `.xmp` files will build on them next.
+Then [`search`](#find-a-photo-by-its-words-search) finds the photos by these words in your
+browser, and [`inventory`](reference-inventory.md) lists them in its last column, **Tags**.
+[`xmp`](#carry-the-words-with-the-photos-xmp) writes them into `.xmp` sidecars that other
+applications read.
 
 ## Where the words come from
 
@@ -99,6 +101,74 @@ docker run --rm -it ... cavo789/media-hygiene tags --path "C:\Photos\2022"
 
 Only the photos below that folder (repeat `--path` for several).
 
+## Find a photo by its words: `search`
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene search
+```
+
+Open <http://127.0.0.1:8088/>: one field, a grid of the photos found, best first, each with its
+folder, date and words. Type `/` to search again, move with the arrows, Enter shows the picture
+large (with a link to the original), Escape closes it. Filters: years, a part of the path, the
+words of one source only. Ctrl+C stops the page. Read-only 🔒: it never changes a file; only
+the small previews of the grid are kept in `/cache`.
+
+| You type | It finds |
+|---|---|
+| `Durbuy ours` | The photos with both words, whatever their source. |
+| `noel`, `gateau` | `Noël`, `gâteau`: case and accents do not matter. |
+| `bougies` | `bougie` too: the tags are kept in the singular. |
+| `anniv*` | Every word starting so: `anniversaire`, `anniv`. |
+| `"bord de mer"` | The phrase, its words in that order. |
+| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `date`. |
+| `neige 2008` | The year is a word of the date: the snow of 2008. |
+
+Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20
+files as a table (`--limit N` for more). The search reads the cache only: run `tags` again after
+an audit to find the new photos.
+
+## Carry the words with the photos: `xmp`
+
+The words live in the cache of this tool. To find them in digiKam, darktable, Lightroom or
+Immich (an external library), `xmp` writes them into **sidecars**, small `.xmp` files next to
+the photos: the photos themselves are never changed.
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene xmp --apply
+```
+
+Without `--apply`, `xmp` only shows what it would write (the photo folders may then stay
+`:ro`). With it, the folders must be writable and `/journal` mounted, like `clean`.
+
+- **What is written**: the words of the sources in `xmp_sources` (`vision` and `place` by
+  default: the folder and date words are in the path already) into `dc:subject`, the model's
+  sentence into `dc:description`.
+- **Where**: `IMG_1.jpg.xmp` next to `IMG_1.jpg`. A sidecar already there (`IMG_1.jpg.xmp`, or
+  `IMG_1.xmp` when it belongs to that photo alone) is completed, never replaced: its edits, its
+  other properties and its own words stay; the sentence is only set when it has none. A sidecar
+  that is not readable XMP is listed and left as is.
+- **Run it again** after `tags`: the words this tool wrote and no longer gives are taken back, a
+  word you removed in another application is not added again, and a sidecar already up to date is
+  not written.
+- **Left out**: protected folders (never written), and files with an identical copy: two copies
+  would get diverging sidecars, so run `clean` first and only the copy kept gets one.
+- **Safe**: each sidecar is journaled before it is written, written to a temporary file then
+  renamed (never over a file that appeared meanwhile), read back and checked. A sidecar of
+  another application is first copied into the quarantine. `undo <run>` removes the sidecars this
+  tool created and puts the others back byte for byte, unless one was edited since: then it is
+  kept, and `undo` says why.
+- **Copy kept**: a sidecar written by `xmp` alone does not count as edits when `clean` chooses
+  which copy to keep ([sidecars](reference-sidecars.md)).
+
 ## Settings
 
 ```toml
@@ -106,6 +176,7 @@ Only the photos below that folder (repeat `--path` for several).
 language = ""   # "en", "fr", or empty for the language of the interface
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 town_km = 20
+xmp_sources = ["vision", "place"]   # the words written into the .xmp sidecars
 ```
 
 A list of `stop_words` written here replaces the built-in one. The model itself is set in
@@ -115,4 +186,5 @@ A list of `stop_words` written here replaces the built-in one. The model itself 
 
 Writing the words into a JPEG changes its bytes: its fingerprint, its date, and two identical
 copies would stop being identical when only one is tagged. That would break what this tool is
-built on, and risk the originals. The words stay in the cache, where `inventory` reads them.
+built on, and risk the originals. The words stay in the cache, where `search` and `inventory`
+read them, and go into sidecars next to the photos only when you ask (`xmp`).

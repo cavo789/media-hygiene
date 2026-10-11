@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+{# The page of `media-hygiene search`: one field, a few filters, a grid of the files
+   found with their folder, date and tags. Read-only: it only asks the server to search
+   and to show pictures. Keyboard: "/" focuses the field, the arrows move in the grid,
+   Enter opens the picture, Escape closes it. #}
+{% set texts = {
+  "found": _("{total} files found."),
+  "shown": _("{total} files found; the first {shown} are shown."),
+  "none": _("Nothing found. Fewer words, or the start of a word (anniv*), find more."),
+  "offline": _("The search is not running any more: start it again."),
+  "failed": _("The search failed (error {status})."),
+  "original": _("Open the original"),
+  "noPreview": _("No preview"),
+} %}
+{% set sources = {
+  "vision": _("seen by the model"),
+  "folder": _("folder"),
+  "date": _("date"),
+  "place": _("place"),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Search your photos") }} — media-hygiene</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --chip: #eef1f4; --bad: #cf222e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --chip: #21262d; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
+           border-bottom: 1px solid var(--line); }
+  h1 { font-size: 1.1rem; margin: 0 0 8px; }
+  form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+  label { display: flex; flex-direction: column; font-size: .8rem; color: var(--muted); }
+  input, select { padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+                  border: 1px solid var(--line); border-radius: 6px; }
+  #text { width: min(520px, 100%); font-size: 1.05rem; }
+  .year { width: 6.5em; }
+  button { padding: 6px 14px; font: inherit; color: #fff; background: var(--accent);
+           border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
+  .hint, #status { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+  #status.error { color: var(--bad); font-weight: 600; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+         gap: 12px; padding: 16px; }
+  .hit { background: var(--card); border: 2px solid var(--line); border-radius: 10px;
+         overflow: hidden; cursor: pointer; outline: none; }
+  .hit:focus, .hit.current { border-color: var(--accent); }
+  .hit img, .hit .empty { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+                          background: var(--chip); }
+  .hit .empty { display: flex; align-items: center; justify-content: center;
+                color: var(--muted); font-size: .85rem; }
+  .meta { padding: 6px 8px; font-size: .8rem; }
+  .name { font-weight: 600; overflow-wrap: anywhere; }
+  .folder, .caption { color: var(--muted); overflow-wrap: anywhere; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); }
+  #viewer { position: fixed; inset: 0; z-index: 2; display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px; padding: 16px;
+            background: rgba(0, 0, 0, .88); color: #fff; }
+  #viewer.open { display: flex; }
+  #viewer img { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
+  #viewer a { color: #9cd0ff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔒 {{ _("Search your photos") }}</h1>
+  <form id="form">
+    <label>{{ _("Words") }}
+      <input id="text" type="search" autocomplete="off"
+             placeholder="{{ _('e.g. Durbuy bear, birthday cake, snow 2008') }}"></label>
+    <label>{{ _("From year") }}<input id="from" class="year" type="number" min="1800" max="2200"></label>
+    <label>{{ _("To year") }}<input id="to" class="year" type="number" min="1800" max="2200"></label>
+    <label>{{ _("Path contains") }}<input id="folder" type="text"></label>
+    <label>{{ _("Words of") }}
+      <select id="source">
+        <option value="">{{ _("every source") }}</option>
+        {% for value, label in sources.items() %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+        <option value="caption">{{ _("the model's sentence") }}</option>
+      </select></label>
+    <button type="submit">{{ _("Search") }}</button>
+  </form>
+  <p class="hint">{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only. / types a search, the arrows move, Enter opens.') }}</p>
+  <p id="status" role="status"></p>
+</header>
+<main id="grid"></main>
+<div id="viewer" role="dialog" aria-modal="true">
+  <img id="large" alt="">
+  <div><span id="viewerName"></span> — <a id="originalLink" target="_blank" rel="noopener">{{ texts.original }}</a></div>
+</div>
+<script>
+"use strict";
+const TEXTS = {{ texts | tojson }};
+const SOURCES = {{ sources | tojson }};
+const SEARCH_PATH = {{ search_path | tojson }};
+const $ = (id) => document.getElementById(id);
+let cards = [];
+let current = -1;
+
+function fill(template, values) {
+  return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
+}
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function card(hit, index) {
+  const node = element("article", "hit");
+  node.tabIndex = 0;
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.alt = hit.name;
+  picture.src = hit.thumb;
+  picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", hit.name), element("div", "folder", hit.folder));
+  if (hit.date) meta.append(element("div", "folder", hit.date));
+  if (hit.caption) meta.append(element("div", "caption", hit.caption));
+  const chips = element("div", "chips");
+  for (const [source, words] of Object.entries(hit.tags)) {
+    for (const word of words) {
+      const chip = element("span", "chip", word);
+      chip.title = SOURCES[source] || source;
+      chips.append(chip);
+    }
+  }
+  meta.append(chips);
+  node.append(picture, meta);
+  node.addEventListener("click", () => { select(index); open(); });
+  node.addEventListener("focus", () => select(index));
+  node.dataset.preview = hit.preview;
+  node.dataset.original = hit.original;
+  node.dataset.name = hit.name;
+  return node;
+}
+
+function select(index) {
+  if (index < 0 || index >= cards.length) return;
+  if (current >= 0 && cards[current]) cards[current].classList.remove("current");
+  current = index;
+  cards[current].classList.add("current");
+  if (document.activeElement !== cards[current]) cards[current].focus();
+}
+
+function open() {
+  const node = cards[current];
+  if (!node) return;
+  $("large").src = node.dataset.preview;
+  $("large").alt = node.dataset.name;
+  $("viewerName").textContent = node.dataset.name;
+  $("originalLink").href = node.dataset.original;
+  $("viewer").classList.add("open");
+}
+
+function close() { $("viewer").classList.remove("open"); }
+
+function columns() {
+  if (cards.length < 2) return 1;
+  const top = cards[0].offsetTop;
+  const count = cards.findIndex((node) => node.offsetTop !== top);
+  return count < 0 ? cards.length : count;
+}
+
+async function search(event) {
+  if (event) event.preventDefault();
+  const year = (id) => ($(id).value ? Number($(id).value) : null);
+  const body = {
+    text: $("text").value, year_from: year("from"), year_to: year("to"),
+    folder: $("folder").value, source: $("source").value || null,
+  };
+  const status = $("status");
+  status.className = "";
+  let answer;
+  try {
+    answer = await fetch(SEARCH_PATH, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+  } catch (error) {
+    status.className = "error";
+    status.textContent = TEXTS.offline;
+    return;
+  }
+  if (!answer.ok) {
+    status.className = "error";
+    status.textContent = fill(TEXTS.failed, { status: answer.status });
+    return;
+  }
+  const found = await answer.json();
+  cards = found.hits.map(card);
+  current = -1;
+  $("grid").replaceChildren(...cards);
+  if (!found.total) status.textContent = TEXTS.none;
+  else if (found.total > found.hits.length) {
+    status.textContent = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
+  } else status.textContent = fill(TEXTS.found, { total: found.total });
+}
+
+document.addEventListener("keydown", (event) => {
+  const typing = ["INPUT", "SELECT"].includes(document.activeElement.tagName);
+  if ($("viewer").classList.contains("open")) {
+    if (event.key === "Escape") close();
+    else if (event.key === "ArrowRight") { select(current + 1); open(); }
+    else if (event.key === "ArrowLeft") { select(current - 1); open(); }
+    else return;
+    event.preventDefault();
+    return;
+  }
+  if (event.key === "/" && !typing) { event.preventDefault(); $("text").focus(); return; }
+  if (typing && event.key !== "ArrowDown") return;
+  const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() };
+  if (event.key in moves) {
+    event.preventDefault();
+    select(current < 0 ? 0 : current + moves[event.key]);
+  } else if (event.key === "Enter" && current >= 0) {
+    event.preventDefault();
+    open();
+  }
+});
+$("viewer").addEventListener("click", (event) => { if (event.target.tagName !== "A") close(); });
+$("form").addEventListener("submit", search);
+$("text").focus();
+search();
+</script>
+</body>
+</html>

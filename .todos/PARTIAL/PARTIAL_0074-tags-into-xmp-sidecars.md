@@ -56,3 +56,53 @@ an external library (0009). This tool already knows them: `scan/sidecars.py` (`.
 - [ ] Check by hand that digiKam (or exiftool) reads the tags of a generated sidecar; note the
       tool and version here.
 - [ ] Documentation en + fr (what is written, where, how to undo); `.po` translated.
+
+## Status — PARTIAL (2026-10-11)
+
+### Done
+- New command `media-hygiene xmp` (`cli/cmd_xmp.py`, panel "Act", not read-only): shows the
+  sidecars it would write (dry run, the photo folders may stay `:ro`); `--apply` writes;
+  `--path` limits to host folders. A separate command rather than `tags --write-xmp`: `tags`
+  is read-only (help marker, `mh` launcher mounting the photos `:ro`), a writer must not be.
+- Fields (`tags/xmp_doc.py`, `tags/xmp_merge.py`): `dc:subject` (bag) from
+  `[tags] xmp_sources` (default `vision`, `place`), `dc:description` (`x-default`) from the
+  model's sentence (`caption`), `xmp:CreatorTool` = `media-hygiene <version>` on new files;
+  our own namespace (`mh:subjects`, `mh:description`) remembers what we wrote last.
+- Merge rules: words already there kept first; ours no longer produced taken back; a word we
+  wrote that the user removed elsewhere is not added again; the sentence only when empty or
+  still ours; every other element, attribute, namespace prefix and the `xpacket` lines kept
+  (ElementTree, prefixes re-registered). DOCTYPE, non-UTF-8 or broken XML refused and listed.
+  Re-run idempotent (semantic comparison, no rewrite).
+- Where: `IMG_1.jpg.xmp` (any case) or `IMG_1.xmp` when it belongs to that photo alone;
+  otherwise a new `IMG_1.jpg.xmp`.
+- Left out: protected folders, files with an identical copy (SHA-256 in the index: `clean`
+  first), files without words, stale index rows.
+- Safety (`actions/xmp_write.py`, `actions/xmp_undo.py`): `ensure_can_act` (persistent
+  `/journal`, no `:ro` data mount); new phase `xmp` and kinds `create-xmp` / `merge-xmp`
+  journaled pending → write → done; temporary file + `renameat2(RENAME_NOREPLACE)` (fallback
+  `O_EXCL`) for new files, `os.replace` only if the old bytes are unchanged for merges; the
+  previous bytes copied (verified) into `/quarantine/<run>/…` first; read back, SHA-256
+  checked and parsed before `done`. `undo` removes ours / restores the previous bytes only
+  while the sidecar still holds what the run wrote (else kept, with the reason); a `pending`
+  write whose content is absent counts as never done. `history` shows a *Sidecars* column;
+  `status` counts an `xmp` run as undoable.
+- `KeepPolicy`: the audit ignores sidecars written by `xmp` alone (`tags/xmp_owner.py`,
+  `services/audit.py`): our sidecar never changes the copy kept; a merged one still counts.
+- Checked by hand: exiftool 13.25 reads `Subject`, `Description`, `CreatorTool` of a created
+  sidecar, and keeps Lightroom's `crs:Exposure2012` / darktable's history after a merge.
+- No new dependency (`defusedxml`): a DOCTYPE is refused before parsing, so no entity can be
+  declared; `pyproject.toml` untouched.
+- Tests: `tests/unit/test_xmp_merge.py`, `test_xmp_owner.py`, `test_xmp_actions.py`,
+  `tests/integration/tags/test_xmp_command.py` (fixtures `tests/support/sidecars.py`).
+- Docs en + fr (`reference-tags.md`, `reference-commands.md`, `reference-safety.md`,
+  `reference-sidecars.md`, documentation README); `.po` translated.
+
+### Not done
+- `photoshop:City` / `Iptc4xmpCore:Location` from the `place` tags.
+  **Reason:** a `place` tag does not say whether it is a personal place, a town or a country
+  (0072 stores the word only); writing the right field needs that kind on the tag (a column or
+  a sub-source in `index/tag_rows.py`). The place words go into `dc:subject` meanwhile.
+- `Iptc4xmpExt:PersonInImage`.
+  **Reason:** depends on 0058 (people from faces), not done.
+- Help captures of `reference-commands.md` (`xmp`, `search`).
+  **Reason:** `docs_screenshots` needs a Docker build, not run during the night session.

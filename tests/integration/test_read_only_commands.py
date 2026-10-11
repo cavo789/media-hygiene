@@ -17,6 +17,7 @@ from media_hygiene.cli.app import build_app
 from media_hygiene.cli.safety import READ_ONLY_COMMANDS, read_only_marker
 from media_hygiene.services import places as places_service
 from media_hygiene.services import reviewing, sort_reviewing
+from media_hygiene.services import search as search_service
 from tests.integration.test_clean_undo import manifest
 from tests.support.cli import run
 
@@ -38,6 +39,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("review",),
     ("places",),
     ("tags",),
+    ("search",),
     ("inventory",),
     ("history",),
     ("reports",),
@@ -86,7 +88,7 @@ def test_read_only_commands_change_nothing_in_the_photos(
     """Each one runs on read-only folders and leaves every byte and date as it was."""
     if os.geteuid() == 0:  # pragma: no cover - root ignores file permissions
         pytest.skip("root can write to read-only folders")
-    for module in (reviewing, sort_reviewing, places_service):
+    for module in (reviewing, sort_reviewing, places_service, search_service):
         monkeypatch.setattr(module, "run_server", ready_then_stop())
     before = manifest(read_only_data)
     for args in RUNS:

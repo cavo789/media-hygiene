@@ -75,6 +75,8 @@ def status_lines(status: Status) -> tuple[str, ...]:
                 when=when(status.sort.proposed), state=state
             )
         )
+    if status.tagged is not None:
+        lines.append(_tags(*status.tagged))
     if status.missing:
         points = ", ".join(f"/{kind.value}" for kind in status.missing)
         lines.append(_("Not looked at (not mounted): {points}.").format(points=points))
@@ -164,3 +166,19 @@ def _review(review: ReviewState) -> list[str]:
             )
         )
     return lines
+
+
+def _tags(files: int, seen: int) -> str:
+    """Say how many files have words to be found by, and how many the model saw.
+
+    Args:
+        files: Files with any tag.
+        seen: Files with the words of the vision model.
+
+    Returns:
+        One line.
+    """
+    return _(
+        "Tags: {files} files have words, {seen} of them from the vision model; "
+        "'search' finds them."
+    ).format(files=human_number(files), seen=human_number(seen))

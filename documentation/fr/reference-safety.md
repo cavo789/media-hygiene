@@ -33,6 +33,8 @@ Les commandes qui agissent sur vos fichiers n'effacent jamais rien, et chacune p
   est un simple renommage : rien n'est copié, aucune place n'est prise.
 - **`album`** ne fait qu'ajouter des seconds noms (liens physiques) ; aucune photo n'est copiée,
   déplacée ni supprimée.
+- **`xmp`** n'écrit que de petits fichiers compagnons `.xmp` à côté des photos, jamais une photo ;
+  celui d'une autre application est copié en quarantaine avant d'être complété.
 - **`clean`** déplace les copies en trop en quarantaine, chacune comparée octet par octet avec la
   copie gardée juste avant. Leur place est libérée par `purge`, une fois que vous avez vérifié.
 - **`undo`** remet les fichiers d'une exécution là où ils étaient.
@@ -110,6 +112,7 @@ probable qu'une erreur de disque.
 | Autres types de fichiers | Seulement s'ils sont demandés avec `--ext` : leurs copies sont déplacées en quarantaine (jamais supprimées), et les dossiers de logiciels (`.git`, `node_modules`, `AppData`, …) sont ignorés. |
 | Fichiers compagnons | Jamais touchés à côté de leur photo. Un orphelin est déplacé en quarantaine (jamais supprimé) après vérification : inchangé depuis l'audit, et aucun fichier du même nom à côté de lui. `undo` le remet en place. |
 | Albums | [`album`](sort/11-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés, jamais par-dessus un fichier ; toutes les analyses ignorent ce dossier. `undo` ne retire un nom de l'album que si l'original qu'il désigne est toujours là et est bien le même fichier ; sinon le nom reste, et `undo` dit pourquoi. |
+| Fichiers compagnons XMP | [`xmp`](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) n'écrit jamais dans une photo ni dans un dossier protégé. Chaque fichier compagnon est journalisé, écrit dans un fichier temporaire puis renommé (jamais par-dessus un fichier apparu), relu et analysé ; celui d'une autre application est complété (ses retouches gardées), ses octets précédents gardés en quarantaine. `undo` ne supprime ou ne remet un fichier compagnon que tant qu'il contient ce que l'exécution a écrit. |
 | Fichiers inutiles de `sort` | Seuls les noms de `[sort] junk_files` (`Thumbs.db`, …) vont en quarantaine avec un dossier vidé ; un nom de photo, de vidéo ou de fichier compagnon y est refusé. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
 | Chaque groupe | Garde toujours au moins une copie. |

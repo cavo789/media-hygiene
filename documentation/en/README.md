@@ -92,7 +92,8 @@ otherwise both copies are sorted.
 - [The inventory workbook](reference-inventory.md): every photo and video with what the audits
   learnt, in Excel, from the cache alone (`inventory`).
 - [Tags](reference-tags.md): words to find photos by, from their folders, dates and places, and
-  from a local vision model (`tags`), kept in the cache.
+  from a local vision model (`tags`), kept in the cache; `search` finds them in your browser,
+  `xmp` writes them into `.xmp` sidecars.
 - [Advanced usage](reference-advanced.md): limit the processors used (`PYTHON_CPU_COUNT`).
 
 ## For developers

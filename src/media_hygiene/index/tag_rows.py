@@ -7,14 +7,17 @@ mtime changed) reads as absent, and is replaced by the next run.
 
 from __future__ import annotations
 
+import sqlite3
+from contextlib import closing
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.tags.models import Tag, TagSource
 
 if TYPE_CHECKING:
-    import sqlite3
     from collections.abc import Callable, Iterable, Sequence
+    from pathlib import Path
 
     from media_hygiene.index.listing import IndexedFile
     from media_hygiene.tags.models import FileTags
@@ -140,3 +143,29 @@ def tags_reader(connection: sqlite3.Connection) -> Callable[[IndexedFile], str |
         return _JOINED.join(words) or None
 
     return read
+
+
+_COVERAGE: Final = (
+    "SELECT COUNT(DISTINCT path), COUNT(DISTINCT CASE WHEN source = ? THEN path END)"
+    " FROM tags"
+)
+
+
+def tag_coverage(index_file: Path | None) -> tuple[int, int] | None:
+    """Count the files with words, read without changing the index file.
+
+    Args:
+        index_file: The index, None when the cache is not mounted.
+
+    Returns:
+        Files with any tag, and files with the words of the vision model; None
+        without an index, or an index without tags.
+    """
+    if index_file is None or not index_file.is_file():
+        return None
+    try:
+        with closing(connect_read_only(index_file)) as connection:
+            row = connection.execute(_COVERAGE, (TagSource.VISION.value,)).fetchone()
+    except sqlite3.Error:
+        return None
+    return (int(row[0]), int(row[1])) if row and row[0] else None

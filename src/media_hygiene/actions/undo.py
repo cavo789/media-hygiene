@@ -11,8 +11,14 @@ from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Statu
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
 from media_hygiene.actions.quarantine import remove_emptied_folders
 from media_hygiene.actions.restore import perform
-from media_hygiene.actions.reversal import Reversal, blocker, reversal_of
+from media_hygiene.actions.reversal import (
+    XMP_REVERSALS,
+    Reversal,
+    blocker,
+    reversal_of,
+)
 from media_hygiene.actions.runs import run_phase
+from media_hygiene.actions.xmp_undo import never_written
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
@@ -136,6 +142,8 @@ def _never_happened(entry: JournalEntry, reversal: Reversal) -> bool:
     Returns:
         True for a `pending` file action whose file is still in place.
     """
+    if reversal in XMP_REVERSALS:
+        return never_written(entry)
     return (
         entry.status is Status.PENDING
         and reversal not in _NOT_ABOUT_THE_PATH

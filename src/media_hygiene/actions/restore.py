@@ -13,7 +13,8 @@ from media_hygiene.actions.no_overwrite import (
     move_no_replace,
 )
 from media_hygiene.actions.quarantine import QUARANTINED
-from media_hygiene.actions.reversal import Reversal, source_of
+from media_hygiene.actions.reversal import XMP_REVERSALS, Reversal, source_of
+from media_hygiene.actions.xmp_undo import undo_xmp
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 
@@ -44,6 +45,9 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
         return
     if reversal in _REMOVALS:
         path.unlink()
+        return
+    if reversal in XMP_REVERSALS:
+        undo_xmp(entry)
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     if reversal is Reversal.RECREATE_FOLDER:
