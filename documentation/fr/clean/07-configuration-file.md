@@ -158,8 +158,9 @@ Réglages effectifs
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
 │                             │ 90, 'other-category': 85,  │                   │
-│                             │ 'subject': 85, 'place':    │                   │
-│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'subject': 85, 'person':   │                   │
+│                             │ 85, 'place': 90,           │                   │
+│                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
 │                             │ 'date-only': 90,           │                   │
@@ -191,6 +192,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ 'download', 'categories':  │                   │
 │                             │ [], 'per_photo': False,    │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Existing folders',        │                   │
 │                             │ 'match':                   │                   │
@@ -199,6 +202,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Screenshots and           │                   │
 │                             │ documents', 'match':       │                   │
@@ -209,6 +214,8 @@ Réglages effectifs
 │                             │ 'screenshot',              │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Event neighbours',        │                   │
 │                             │ 'match':                   │                   │
@@ -217,6 +224,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Christmas', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -225,6 +234,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'New Year', 'match':       │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -233,6 +244,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}]            │                   │
 │ classify.ai                 │ {'url':                    │ défaut            │
 │                             │ 'http://host.docker.intern │                   │
@@ -288,6 +301,9 @@ Réglages effectifs
 │ people.similarity           │ 0.363                      │ défaut            │
 │ people.min_face             │ 40                         │ défaut            │
 │ people.min_sharpness        │ 30.0                       │ défaut            │
+│ people.with_audit           │ False                      │ défaut            │
+│ people.ignored              │ 0 visages                  │ défaut            │
+│ people.person               │                            │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -577,8 +593,9 @@ Réglages effectifs
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
 │                             │ 90, 'other-category': 85,  │                   │
-│                             │ 'subject': 85, 'place':    │                   │
-│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'subject': 85, 'person':   │                   │
+│                             │ 85, 'place': 90,           │                   │
+│                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
 │                             │ 'date-only': 90,           │                   │
@@ -610,6 +627,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ 'download', 'categories':  │                   │
 │                             │ [], 'per_photo': False,    │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Dossiers existants',      │                   │
 │                             │ 'match':                   │                   │
@@ -618,6 +637,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ "Captures d'écran et       │                   │
 │                             │ documents", 'match':       │                   │
@@ -628,6 +649,8 @@ Réglages effectifs
 │                             │ 'screenshot',              │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ "Voisins d'événement",     │                   │
 │                             │ 'match':                   │                   │
@@ -636,6 +659,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Noël', 'match':           │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -644,6 +669,8 @@ Réglages effectifs
 │                             │ '', 'kind': None,          │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Nouvel An', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -652,6 +679,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Saint-Nicolas', 'match':  │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -660,6 +689,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}]            │                   │
 │ classify.ai                 │ {'url':                    │ config.toml       │
 │                             │ 'http://host.docker.intern │                   │
@@ -715,6 +746,9 @@ Réglages effectifs
 │ people.similarity           │ 0.363                      │ config.toml       │
 │ people.min_face             │ 40                         │ config.toml       │
 │ people.min_sharpness        │ 30.0                       │ config.toml       │
+│ people.with_audit           │ False                      │ config.toml       │
+│ people.ignored              │ 0 visages                  │ défaut            │
+│ people.person               │                            │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)

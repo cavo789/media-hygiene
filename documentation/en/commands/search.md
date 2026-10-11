@@ -103,7 +103,7 @@ as a table.
 │   words      <str>  Words to find, printed as a table instead of opening the │
 │                     page: "bord de mer" a phrase, anniv* a start of word,    │
 │                     place:durbuy among the places only (also vision,         │
-│                     caption, folder, date).                                  │
+│                     caption, folder, name, date, person).                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --limit          <int range> [x>=1]  How many files the table lists at most. │

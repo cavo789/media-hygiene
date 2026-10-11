@@ -99,8 +99,8 @@ leurs dossiers, noms, dates et lieux.*
  Utilisation : media-hygiene tags [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Donner à chaque photo des
- mots pour la retrouver : ses dossiers, sa date, son lieu, et ce qu'y voit un
- modèle de vision local. Gardés dans le cache, jamais dans les photos.
+ mots pour la retrouver : ses dossiers, son nom, sa date, son lieu, et ce qu'y
+ voit un modèle de vision local. Gardés dans le cache, jamais dans les photos.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --path                 <str>               Seulement les photos sous ce      │
@@ -117,9 +117,9 @@ leurs dossiers, noms, dates et lieux.*
 │                                            s'arrêter.                        │
 │ --no-describe                              Ne rien demander de nouveau au    │
 │                                            modèle local : seulement les mots │
-│                                            des dossiers, des dates et des    │
-│                                            lieux, et les descriptions déjà   │
-│                                            dans le cache.                    │
+│                                            des dossiers, des noms, des dates │
+│                                            et des lieux, et les descriptions │
+│                                            déjà dans le cache.               │
 │ --yes          -y                          Décrire les photos sans demander, │
 │                                            quel que soit leur nombre.        │
 │ --help         -h                          Affiche ce message et quitte.     │

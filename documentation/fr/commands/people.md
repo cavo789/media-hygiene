@@ -116,8 +116,8 @@ SHA-256 : il n'envoie rien sur vos photos.
  Utilisation : media-hygiene people [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Trouver les visages des
- photos et regrouper ceux qui se ressemblent, à voir dans votre navigateur.
- Gardés dans le cache, jamais envoyés nulle part.
+ photos, regrouper ceux qui se ressemblent et les nommer dans votre navigateur.
+ Visages gardés dans le cache, jamais envoyés nulle part.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --path            <str>               Seulement les photos sous ce dossier   │
@@ -129,7 +129,9 @@ SHA-256 : il n'envoie rien sur vos photos.
 │                                       l'estimation d'une exécution complète, │
 │                                       puis s'arrêter.                        │
 │ --forget                              Supprimer tous les visages du cache,   │
-│                                       puis montrer qu'il n'en reste aucun.   │
+│                                       puis montrer qu'il n'en reste aucun ;  │
+│                                       demande aussi avant d'effacer les noms │
+│                                       de config.toml.                        │
 │ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
 │                                       sous le même numéro sur votre          │
 │                                       ordinateur, par exemple -p             │

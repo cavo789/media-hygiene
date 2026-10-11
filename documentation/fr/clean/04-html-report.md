@@ -30,7 +30,7 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|. -->
 ```text
-✅ Rapport HTML : /reports/20261011-160841-audit/report.html
+✅ Rapport HTML : /reports/20261011-204345-audit/report.html
 ```
 
 Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
@@ -131,9 +131,9 @@ français) :
 Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail;Niveau du quasi-doublon
 1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne;
 1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;;
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne;
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;;
-3;94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne;
+2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne;
+2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;;
+3;9b999fe90fc44acf6f2c5fb9d89e830321cabb631ae2ea1ad97449e4b78324c8;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne;
 ```
 
 ## Lister et ranger les rapports
@@ -151,15 +151,15 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261011-161002-clean │ nettoyage │ 85       │ 32       │ 16,3 Mo │ 3      │
-│ 20261011-161002-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
-│ 20261011-160956-clean │ nettoyage │ 85       │ 32       │ 15,5 Mo │ 3      │
-│ 20261011-160901-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
-│ 20261011-160855-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
-│ 20261011-160847-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
-│ 20261011-160845-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261011-160842-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
-│ 20261011-160841-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-204507-clean │ nettoyage │ 85       │ 32       │ 16,3 Mo │ 3      │
+│ 20261011-204507-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-204459-clean │ nettoyage │ 85       │ 32       │ 15,5 Mo │ 3      │
+│ 20261011-204405-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-204357-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-204351-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
+│ 20261011-204349-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261011-204347-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
+│ 20261011-204345-audit │ audit     │ 85       │ 32       │ 13,9 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

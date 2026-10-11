@@ -150,6 +150,12 @@ cavo789/media-hygiene --locale fr audit --people
 │                              ignorés. Pour un dossier précis, utilisez       │
 │                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options avancées ───────────────────────────────────────────────────────────╮
+│ --people            Chercher ensuite les visages des photos pas encore       │
+│                     examinées (comme 'people'), après avoir dit combien de   │
+│                     temps cela prend et demandé.                             │
+│ --yes     -y        Avec --people : ne pas demander, continuer.              │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

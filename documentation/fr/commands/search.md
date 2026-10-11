@@ -106,7 +106,7 @@ fichiers en tableau.
 │   words      <str>  Mots à trouver, affichés en tableau au lieu d'ouvrir la  │
 │                     page : "bord de mer" une expression, anniv* un début de  │
 │                     mot, place:durbuy parmi les lieux seulement (aussi       │
-│                     vision, caption, folder, date).                          │
+│                     vision, caption, folder, name, date, person).            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --limit          <int range> [x>=1]  Nombre maximal de fichiers listés dans  │

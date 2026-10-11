@@ -165,9 +165,9 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              n'est lu.                                                       │
 │ launcher     Écrit 'mh', une commande courte qui retient vos dossiers : mh   │
 │              audit, mh clean.                                                │
-│ people       Trouver les visages des photos et regrouper ceux qui se         │
-│              ressemblent, à voir dans votre navigateur. Gardés dans le       │
-│              cache, jamais envoyés nulle part.                               │
+│ people       Trouver les visages des photos, regrouper ceux qui se           │
+│              ressemblent et les nommer dans votre navigateur. Visages gardés │
+│              dans le cache, jamais envoyés nulle part.                       │
 │ places       Nommer vos lieux sur une carte des endroits où les photos ont   │
 │              été prises ; enregistrés dans config.toml pour les règles       │
 │              'place' et 'trip'.                                              │
@@ -182,8 +182,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │ status       Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il      │
 │              reste : sans analyse.                                           │
 │ tags         Donner à chaque photo des mots pour la retrouver : ses          │
-│              dossiers, sa date, son lieu, et ce qu'y voit un modèle de       │
-│              vision local. Gardés dans le cache, jamais dans les photos.     │
+│              dossiers, son nom, sa date, son lieu, et ce qu'y voit un modèle │
+│              de vision local. Gardés dans le cache, jamais dans les photos.  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
 │ album        Rassemble une sélection du plan de classify dans un dossier de  │

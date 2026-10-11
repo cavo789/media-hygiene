@@ -97,8 +97,8 @@ names, dates and places.*
  Usage: media-hygiene tags [OPTIONS]
 
  🔒 Read-only: never changes your photos. Give every photo words to find it by:
- its folders, date and place, and what a local vision model sees. Kept in the
- cache, never in the photos.
+ its folders, name, date and place, and what a local vision model sees. Kept in
+ the cache, never in the photos.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --path                 <str>               Only the photos below this folder │
@@ -110,8 +110,8 @@ names, dates and places.*
 │                                            time per photo and the estimate   │
 │                                            of a full run, and stop.          │
 │ --no-describe                              Ask the local model nothing new:  │
-│                                            the words of the folders, dates   │
-│                                            and places only, and the          │
+│                                            the words of the folders, names,  │
+│                                            dates and places only, and the    │
 │                                            descriptions already in the       │
 │                                            cache.                            │
 │ --yes          -y                          Describe the photos without       │

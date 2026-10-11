@@ -162,8 +162,8 @@ command shows its own `--help`; here is the list of the commands:
 │              Excel, from the cache alone: no file is read.                   │
 │ launcher     Write 'mh', a short command holding your folders: mh audit, mh  │
 │              clean.                                                          │
-│ people       Find the faces in the photos and group those alike, shown in    │
-│              your browser. Kept in the cache, never sent anywhere.           │
+│ people       Find the faces in the photos, group those alike and name them   │
+│              in your browser. Faces kept in the cache, never sent anywhere.  │
 │ places       Name your places on a map of where the photos were taken; saved │
 │              into config.toml for the 'place' and 'trip' rules.              │
 │ reports      List the HTML reports of previous audits and cleans.            │
@@ -175,9 +175,9 @@ command shows its own `--help`; here is the list of the commands:
 │              words 'tags' gave them.                                         │
 │ status       Where am I? The last audit, the quarantine, what is left: no    │
 │              scan.                                                           │
-│ tags         Give every photo words to find it by: its folders, date and     │
-│              place, and what a local vision model sees. Kept in the cache,   │
-│              never in the photos.                                            │
+│ tags         Give every photo words to find it by: its folders, name, date   │
+│              and place, and what a local vision model sees. Kept in the      │
+│              cache, never in the photos.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
 │ album        Gather a selection of the classify plan into a folder of hard   │

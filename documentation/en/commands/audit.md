@@ -147,6 +147,12 @@ cavo789/media-hygiene audit --people
 │                              already skipped. For one precise folder, use    │
 │                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced options ───────────────────────────────────────────────────────────╮
+│ --people            Then look for faces in the photos not looked at yet (as  │
+│                     'people' does), after saying how long it takes and       │
+│                     asking.                                                  │
+│ --yes     -y        With --people: do not ask, go on.                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

@@ -30,7 +30,7 @@ At the end of the audit, a new line:
 
 <!-- capture: audit.txt|HTML report|. -->
 ```text
-✅ HTML report: /reports/20261011-160619-audit/report.html
+✅ HTML report: /reports/20261011-204125-audit/report.html
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
@@ -124,9 +124,9 @@ check. It opens directly in Excel, accents included:
 Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail,Near-duplicate level
 1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date,
 1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,,
-2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date,
-2,4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,,
-3,94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date,
+2,e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date,
+2,e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,,
+3,9b999fe90fc44acf6f2c5fb9d89e830321cabb631ae2ea1ad97449e4b78324c8,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date,
 ```
 
 ## List and tidy the reports
@@ -144,15 +144,15 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261011-160739-clean │ clean │ 85    │ 32         │ 16.3 MB │ 3      │
-│ 20261011-160739-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-160733-clean │ clean │ 85    │ 32         │ 15.5 MB │ 3      │
-│ 20261011-160638-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-160632-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-160626-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
-│ 20261011-160624-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
-│ 20261011-160621-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-160619-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-204244-clean │ clean │ 85    │ 32         │ 16.3 MB │ 3      │
+│ 20261011-204244-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-204239-clean │ clean │ 85    │ 32         │ 15.5 MB │ 3      │
+│ 20261011-204143-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-204136-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-204131-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
+│ 20261011-204129-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
+│ 20261011-204126-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261011-204125-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

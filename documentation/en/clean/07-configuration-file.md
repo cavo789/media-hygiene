@@ -145,7 +145,8 @@ Effective settings
 │                               │ 95, 'kind': 85, 'path': 90,   │              │
 │                               │ 'camera': 90,                 │              │
 │                               │ 'other-category': 85,         │              │
-│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'subject': 85, 'person': 85,  │              │
+│                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
 │                               │ 70, 'date-only': 90,          │              │
@@ -174,14 +175,18 @@ Effective settings
 │                               │ '', 'dates': '', 'pattern':   │              │
 │                               │ '', 'kind': 'download',       │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Existing     │              │
 │                               │ folders', 'match':            │              │
 │                               │ 'existing_folder',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Screenshots  │              │
 │                               │ and documents', 'match':      │              │
 │                               │ 'kind', 'category':           │              │
@@ -189,14 +194,18 @@ Effective settings
 │                               │ 'dates': '', 'pattern': '',   │              │
 │                               │ 'kind': 'screenshot',         │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Event        │              │
 │                               │ neighbours', 'match':         │              │
 │                               │ 'event_neighbour',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Christmas',  │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category':                   │              │
@@ -204,7 +213,9 @@ Effective settings
 │                               │ '12-24..12-26', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'New Year',   │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category': 'Parties/New      │              │
@@ -212,7 +223,9 @@ Effective settings
 │                               │ '12-31..01-01', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}]                        │              │
 │ classify.ai                   │ {'url':                       │ default      │
 │                               │ 'http://host.docker.internal: │              │
@@ -262,6 +275,9 @@ Effective settings
 │ people.similarity             │ 0.363                         │ default      │
 │ people.min_face               │ 40                            │ default      │
 │ people.min_sharpness          │ 30.0                          │ default      │
+│ people.with_audit             │ False                         │ default      │
+│ people.ignored                │ 0 faces                       │ default      │
+│ people.person                 │                               │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -525,7 +541,8 @@ Effective settings
 │                               │ 95, 'kind': 85, 'path': 90,   │              │
 │                               │ 'camera': 90,                 │              │
 │                               │ 'other-category': 85,         │              │
-│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'subject': 85, 'person': 85,  │              │
+│                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
 │                               │ 70, 'date-only': 90,          │              │
@@ -554,14 +571,18 @@ Effective settings
 │                               │ '', 'dates': '', 'pattern':   │              │
 │                               │ '', 'kind': 'download',       │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Existing     │              │
 │                               │ folders', 'match':            │              │
 │                               │ 'existing_folder',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Screenshots  │              │
 │                               │ and documents', 'match':      │              │
 │                               │ 'kind', 'category':           │              │
@@ -569,14 +590,18 @@ Effective settings
 │                               │ 'dates': '', 'pattern': '',   │              │
 │                               │ 'kind': 'screenshot',         │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Event        │              │
 │                               │ neighbours', 'match':         │              │
 │                               │ 'event_neighbour',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Christmas',  │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category':                   │              │
@@ -584,7 +609,9 @@ Effective settings
 │                               │ '12-24..12-26', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'New Year',   │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category': 'Parties/New      │              │
@@ -592,7 +619,9 @@ Effective settings
 │                               │ '12-31..01-01', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}]                        │              │
 │ classify.ai                   │ {'url':                       │ config.toml  │
 │                               │ 'http://host.docker.internal: │              │
@@ -642,6 +671,9 @@ Effective settings
 │ people.similarity             │ 0.363                         │ config.toml  │
 │ people.min_face               │ 40                            │ config.toml  │
 │ people.min_sharpness          │ 30.0                          │ config.toml  │
+│ people.with_audit             │ False                         │ config.toml  │
+│ people.ignored                │ 0 faces                       │ default      │
+│ people.person                 │                               │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)

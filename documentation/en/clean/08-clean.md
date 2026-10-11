@@ -66,7 +66,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261011-160733
+Clean 20261011-204239
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -75,8 +75,8 @@ Clean 20261011-160733
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261011-160733-clean/report.html
-💡 Changed your mind? 'media-hygiene undo 20261011-160733' restores everything:
+✅ HTML report: /reports/20261011-204239-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261011-204239' restores everything:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
@@ -85,7 +85,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261011-160733
+  cavo789/media-hygiene undo 20261011-204239
 👉 What next: once you have checked, 'purge' frees the space of the files set
 aside.
 docker run --rm -it `
@@ -96,7 +96,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene purge 20261011-160733
+  cavo789/media-hygiene purge 20261011-204239
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 

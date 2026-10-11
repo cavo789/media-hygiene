@@ -110,8 +110,8 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 ```text
  Usage: media-hygiene people [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Find the faces in the photos and
- group those alike, shown in your browser. Kept in the cache, never sent
+ 🔒 Read-only: never changes your photos. Find the faces in the photos, group
+ those alike and name them in your browser. Faces kept in the cache, never sent
  anywhere.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
@@ -123,7 +123,8 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 │                                       the time per photo and the estimate of │
 │                                       a full run, and stop.                  │
 │ --forget                              Delete every face from the cache, then │
-│                                       show that none is left.                │
+│                                       show that none is left; asks before    │
+│                                       deleting the names of config.toml too. │
 │ --port            <int range> [x>=1]  Port of the page. docker run publishes │
 │                                       it under the same number on your       │
 │                                       computer: -p 127.0.0.1:9000:9000 for   │
