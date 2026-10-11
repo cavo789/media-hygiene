@@ -83,6 +83,8 @@ SHA-256 : il n'envoie rien sur vos photos.
 
 - [Les personnes](../reference-people.md) : comment ça marche, nommer, les réglages, ce qui vient
   ensuite.
+- [Trier, étape 10 : trier par personne](../sort/10-sort-by-person.md) : des groupes nommés aux
+  dossiers triés.
 
 ## L'aide intégrée
 

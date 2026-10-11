@@ -118,9 +118,11 @@ adds one thing to the command of the step before.
    a vision model on your computer says what the loose photos show (optional).
 9. [Places and trips from the GPS](documentation/en/sort/09-places-from-gps.md) — name your
    places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
-10. [Name the events in your browser](documentation/en/sort/10-name-events-in-the-browser.md) —
+10. [Sort by person](documentation/en/sort/10-sort-by-person.md) — name the faces found in
+    your photos; a rule files the events where someone appears, offline (optional).
+11. [Name the events in your browser](documentation/en/sort/11-name-events-in-the-browser.md) —
     one event at a time with its photos, named with the keyboard (optional).
-11. [Albums](documentation/en/sort/11-albums.md) — one photo in several folders, as hard links:
+12. [Albums](documentation/en/sort/12-albums.md) — one photo in several folders, as hard links:
     no copy, no space used (optional).
 
 **Every command has its own page** — what it does, the folders it needs, its options, examples:

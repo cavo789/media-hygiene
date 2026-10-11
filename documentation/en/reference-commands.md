@@ -44,7 +44,7 @@ examples and its `--help`.
 | [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
-| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 10](sort/10-name-events-in-the-browser.md) |
+| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
@@ -59,7 +59,7 @@ examples and its `--help`.
 | [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [9](clean/09-undo-history-purge.md) |
 | [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [9](clean/09-undo-history-purge.md) |
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
-| [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 11](sort/11-albums.md) |
+| [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 
 ## Options
@@ -103,7 +103,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--limit N` | `search` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
-| `--category NAME` | `album` | The files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 11](sort/11-albums.md#choose-what-the-album-gathers) |
+| `--category NAME` | `album` | The files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 12](sort/12-albums.md#choose-what-the-album-gathers) |
 | `--event EVENT` | `album` | The files of this event: its id (Events sheet) or its name. |
 | `--rule NAME` | `album` | The files the `[[classify.rules]]` entry of this name decided. |
 | `--rating N` | `album` | The files given at least N stars (1 to 5) in Windows, as the audit read them (needs `/cache`). |

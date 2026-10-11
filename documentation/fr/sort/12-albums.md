@@ -1,6 +1,6 @@
-# 11. Albums : une photo dans plusieurs dossiers, sans copie
+# 12. Albums : une photo dans plusieurs dossiers, sans copie
 
-[Documentation](../README.md) › Trier, étape 11 · 🇬🇧 [English](../../en/sort/11-albums.md)
+[Documentation](../README.md) › Trier, étape 12 · 🇬🇧 [English](../../en/sort/12-albums.md)
 
 Une arborescence donne à chaque photo **une** place : `2016/Fêtes/Noël` ou `2016/Grand-mère`,
 jamais les deux. Vous voulez pourtant peut-être « tous les Noëls depuis 2003 », « mes plus belles
@@ -44,7 +44,7 @@ lier.
 ## Choisir ce que l'album rassemble
 
 La sélection vient du plan du dernier `classify` ([étape 4](04-classify.md)), lu avec vos
-modifications du classeur et de [la page du navigateur](10-name-events-in-the-browser.md) :
+modifications du classeur et de [la page du navigateur](11-name-events-in-the-browser.md) :
 
 | Option | Rassemble |
 |---|---|
@@ -135,4 +135,4 @@ dit.
 
 ---
 
-← [10. Nommer les événements dans le navigateur](10-name-events-in-the-browser.md) · [Documentation](../README.md)
+← [11. Nommer les événements dans le navigateur](11-name-events-in-the-browser.md) · [Documentation](../README.md)

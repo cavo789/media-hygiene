@@ -67,7 +67,7 @@ fois suivante, il reprend.
 
 ## Pour aller plus loin
 
-- [Trier, étape 10 : nommer les événements dans votre navigateur](../sort/10-name-events-in-the-browser.md)
+- [Trier, étape 11 : nommer les événements dans votre navigateur](../sort/11-name-events-in-the-browser.md)
 - Ensuite : [`sort`](sort.md).
 
 ## L'aide intégrée

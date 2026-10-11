@@ -81,10 +81,12 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 9. [Lieux et voyages grâce au GPS](sort/09-places-from-gps.md) : nommer vos lieux sur une carte,
    et laisser le GPS des téléphones récents trier maison, famille et voyages, hors ligne
    (facultatif).
-10. [Nommer les événements dans le navigateur](sort/10-name-events-in-the-browser.md) : un
+10. [Trier par personne](sort/10-sort-by-person.md) : nommer les visages trouvés dans vos photos,
+    et laisser une règle ranger les événements où quelqu'un figure, hors ligne (facultatif).
+11. [Nommer les événements dans le navigateur](sort/11-name-events-in-the-browser.md) : un
     événement à la fois avec ses photos, nommé au clavier ; `sort` applique vos choix
     (facultatif).
-11. [Albums](sort/11-albums.md) : une photo dans plusieurs dossiers (« tous les Noëls », « mes
+12. [Albums](sort/12-albums.md) : une photo dans plusieurs dossiers (« tous les Noëls », « mes
     plus belles photos »), en liens physiques : aucune copie, aucune place prise (facultatif).
 
 ## Référence

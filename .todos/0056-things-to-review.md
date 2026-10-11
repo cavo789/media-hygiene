@@ -154,7 +154,7 @@ How to use it:
 - [ ] **0031 keys:** Enter accept, N/P next/previous, U, Shift+S event stays, ←/→ Space select,
   O send to a category, S photos stay, Delete take back, Z zoom, E/C fields (letters follow the
   keyboard layout, AZERTY included). Any clash with your habits?
-- [ ] **0031 screenshot** of the page in `sort/10-name-events-in-the-browser.md`: add one with the
+- [ ] **0031 screenshot** of the page in `sort/11-name-events-in-the-browser.md`: add one with the
   docs scenario (after Part 1)?
 - [ ] **0050:** two companion files edited to different folders make `sort` refuse the workbook;
   folder names are compared exactly (`Vacances` ≠ `vacances`). Keep case-sensitive?

@@ -49,7 +49,7 @@ Ouvrez les deux côte à côte. Seules les cellules **jaunes** du classeur se mo
 4. **Enregistrez et fermez** le classeur.
 
 Plutôt dans le navigateur, une photo à l'écran ? [Nommer les événements dans le
-navigateur](10-name-events-in-the-browser.md) fait la même chose au clavier. Détails : [revoir la
+navigateur](11-name-events-in-the-browser.md) fait la même chose au clavier. Détails : [revoir la
 proposition](05-review-the-proposal.md).
 
 ## 3. Écrire ce que vous savez (facultatif)
@@ -94,7 +94,9 @@ Vous changez d'avis ? `mh undo` : chaque fichier revient où il était.
   laisser le GPS trier maison, famille et voyages.
 - [Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) : ce que montrent
   les photos isolées, sans rien envoyer sur Internet.
-- [Albums](11-albums.md) : une photo dans plusieurs dossiers, sans copie ni place prise.
+- [Trier par personne](10-sort-by-person.md) : nommer une fois les visages de vos photos, et
+  ranger les événements où quelqu'un figure.
+- [Albums](12-albums.md) : une photo dans plusieurs dossiers, sans copie ni place prise.
 
 <details>
 <summary>Sans <code>mh</code> : les commandes complètes</summary>

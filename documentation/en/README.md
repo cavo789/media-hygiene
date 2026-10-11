@@ -75,9 +75,11 @@ otherwise both copies are sorted.
    on your computer says what the loose photos show (optional).
 9. [Places and trips from the GPS](sort/09-places-from-gps.md): name your places on a map, and
    let the GPS of recent phones sort home, family and trips, offline (optional).
-10. [Name the events in your browser](sort/10-name-events-in-the-browser.md): one event at a
+10. [Sort by person](sort/10-sort-by-person.md): name the faces found in your photos, and let a
+    rule file the events where someone appears, offline (optional).
+11. [Name the events in your browser](sort/11-name-events-in-the-browser.md): one event at a
     time with its photos, named with the keyboard; `sort` applies your choices (optional).
-11. [Albums](sort/11-albums.md): one photo in several folders ("every Christmas", "my best
+12. [Albums](sort/12-albums.md): one photo in several folders ("every Christmas", "my best
     photos"), as hard links: no copy, no space used (optional).
 
 ## Reference

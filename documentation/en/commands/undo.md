@@ -71,7 +71,7 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 
 - [9. Undo, history, purge](../clean/09-undo-history-purge.md#undo-a-clean-undo)
 - [Sorting, step 7: change your mind](../sort/07-sort.md#change-your-mind),
-  [step 11: undo an album](../sort/11-albums.md#undo-it)
+  [step 12: undo an album](../sort/12-albums.md#undo-it)
 - [How your photos stay safe](../reference-safety.md)
 
 ## The built-in help

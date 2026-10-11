@@ -65,7 +65,7 @@ at*), then prints the address of the page: Ctrl+click it. Ctrl+C stops it; the n
 
 ## Go further
 
-- [Sorting, step 10: name the events in your browser](../sort/10-name-events-in-the-browser.md)
+- [Sorting, step 11: name the events in your browser](../sort/11-name-events-in-the-browser.md)
 - Next: [`sort`](sort.md).
 
 ## The built-in help

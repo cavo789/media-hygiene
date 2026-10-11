@@ -1,6 +1,6 @@
-# 10. Name the events in your browser
+# 11. Name the events in your browser
 
-[Documentation](../README.md) › Sorting, step 10 · 🇫🇷 [Français](../../fr/sort/10-name-events-in-the-browser.md)
+[Documentation](../README.md) › Sorting, step 11 · 🇫🇷 [Français](../../fr/sort/11-name-events-in-the-browser.md)
 
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
 *looking* at photos: naming an event means reading the report in one window and typing in the
@@ -143,4 +143,4 @@ value is, and the page's is listed among the edits left behind.
 
 ---
 
-← [9. Places and trips from the GPS](09-places-from-gps.md) · [Documentation](../README.md) · Next: **[11. Albums](11-albums.md)** →
+← [10. Sort by person](10-sort-by-person.md) · [Documentation](../README.md) · Next: **[12. Albums](12-albums.md)** →

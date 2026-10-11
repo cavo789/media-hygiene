@@ -90,7 +90,8 @@ Reconnus par le nom et les métadonnées seulement :
 
 Une règle `person` lit les visages nommés avec [`people`](../reference-people.md) : les visages
 confirmés dans la page, et ceux qui leur ressemblent assez, comme `search` les trouve. Lancez
-d'abord `people` et nommez les groupes.
+d'abord `people` et nommez les groupes : l'[étape 10](10-sort-by-person.md) montre tout le
+chemin.
 
 ```toml
 [[classify.rules]]

@@ -1,6 +1,6 @@
-# 10. Nommer les événements dans le navigateur
+# 11. Nommer les événements dans le navigateur
 
-[Documentation](../README.md) › Trier, étape 10 · 🇬🇧 [English](../../en/sort/10-name-events-in-the-browser.md)
+[Documentation](../README.md) › Trier, étape 11 · 🇬🇧 [English](../../en/sort/11-name-events-in-the-browser.md)
 
 Le classeur de l'[étape 5](05-review-the-proposal.md) est fait pour renommer en masse, pas pour
 *regarder* les photos : nommer un événement, c'est lire le rapport dans une fenêtre et taper dans
@@ -153,4 +153,4 @@ côté.
 
 ---
 
-← [9. Lieux et voyages grâce au GPS](09-places-from-gps.md) · [Documentation](../README.md) · Suite : **[11. Albums](11-albums.md)** →
+← [10. Trier par personne](10-sort-by-person.md) · [Documentation](../README.md) · Suite : **[12. Albums](12-albums.md)** →

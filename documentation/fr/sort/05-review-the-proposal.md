@@ -144,7 +144,7 @@ cellules jaunes peuvent être trouvés : relancer `classify` est la porte de sor
 classeur ne peut pas être ouvert du tout, `classify` s'arrête avant d'écrire quoi que ce soit, pour
 que vos modifications ne soient pas enfouies sous un classeur plus récent et vide.
 
-Des centaines d'événements à nommer ? L'[étape 10](10-name-events-in-the-browser.md) les montre un
+Des centaines d'événements à nommer ? L'[étape 11](11-name-events-in-the-browser.md) les montre un
 par un dans votre navigateur, avec leurs photos et un champ pour les nommer, sans changer de
 fenêtre.
 

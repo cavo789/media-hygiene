@@ -89,7 +89,7 @@ Told from the name and the metadata only:
 
 A `person` rule reads the faces you named with [`people`](../reference-people.md): the faces
 confirmed on the page, and those close enough to them, as `search` finds them. Run `people` and
-name the groups first.
+name the groups first: [step 10](10-sort-by-person.md) shows the whole path.
 
 ```toml
 [[classify.rules]]

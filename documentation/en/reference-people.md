@@ -101,6 +101,9 @@ with both. The names are those of the page: the faces confirmed, and the faces c
 them, as `search` finds them; suggestions do not count. A name nobody has yet stops `classify`
 before anything is read, and names the rule.
 
+The whole path, from the first `people` to the sorted folders, step by step: [sorting, step
+10](sort/10-sort-by-person.md).
+
 ## During the audit: `audit --people`
 
 `audit --people` runs the audit, then counts the photos not looked at for faces yet, measures a

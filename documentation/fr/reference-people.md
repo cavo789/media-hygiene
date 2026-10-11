@@ -108,6 +108,9 @@ les visages confirmés, et les visages assez proches d'eux, comme `search` les t
 suggestions ne comptent pas. Un nom que personne ne porte encore arrête `classify` avant toute
 lecture, et nomme la règle.
 
+Tout le chemin, du premier `people` aux dossiers triés, pas à pas : [tri, étape
+10](sort/10-sort-by-person.md).
+
 ## Pendant l'audit : `audit --people`
 
 `audit --people` lance l'audit, puis compte les photos dont les visages n'ont pas encore été

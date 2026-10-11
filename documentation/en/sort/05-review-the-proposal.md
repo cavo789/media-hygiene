@@ -133,7 +133,7 @@ still read, as far as its ids and yellow cells can be found: running `classify` 
 out. If the latest workbook cannot be opened at all, `classify` stops before writing anything, so
 that your edits are not buried under a newer, empty workbook.
 
-Hundreds of events to name? [Step 10](10-name-events-in-the-browser.md) shows them one at a time in
+Hundreds of events to name? [Step 11](11-name-events-in-the-browser.md) shows them one at a time in
 your browser, with their photos and a field to name them, without switching windows.
 
 Nothing moves yet: applying the workbook to your folders is the job of `sort`

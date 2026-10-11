@@ -123,9 +123,12 @@ seule chose à la commande de l'étape précédente.
 9. [Lieux et voyages grâce au GPS](documentation/fr/sort/09-places-from-gps.md) — nommer vos
    lieux sur une carte ; le GPS des téléphones récents trie maison, famille et voyages, hors
    ligne (facultatif).
-10. [Nommer les événements dans le navigateur](documentation/fr/sort/10-name-events-in-the-browser.md) —
+10. [Trier par personne](documentation/fr/sort/10-sort-by-person.md) — nommer les visages
+    trouvés dans vos photos ; une règle range les événements où quelqu'un figure, hors ligne
+    (facultatif).
+11. [Nommer les événements dans le navigateur](documentation/fr/sort/11-name-events-in-the-browser.md) —
     un événement à la fois avec ses photos, nommé au clavier (facultatif).
-11. [Albums](documentation/fr/sort/11-albums.md) — une photo dans plusieurs dossiers, en liens
+12. [Albums](documentation/fr/sort/12-albums.md) — une photo dans plusieurs dossiers, en liens
     physiques : aucune copie, aucune place prise (facultatif).
 
 **Chaque commande a sa page** : ce qu'elle fait, les dossiers dont elle a besoin, ses options, des

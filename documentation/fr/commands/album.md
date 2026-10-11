@@ -65,7 +65,7 @@ rassemble les plus belles photos de Noël. La casse ne compte pas.
 
 ## Pour aller plus loin
 
-- [Trier, étape 11 : les albums](../sort/11-albums.md)
+- [Trier, étape 12 : les albums](../sort/12-albums.md)
 
 ## L'aide intégrée
 

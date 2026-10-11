@@ -76,7 +76,7 @@ et des dernières lignes de chaque exécution.
 
 - [9. Annuler, historique, purge](../clean/09-undo-history-purge.md#annuler-un-nettoyage--undo)
 - [Trier, étape 7 : changer d'avis](../sort/07-sort.md#changer-davis),
-  [étape 11 : annuler un album](../sort/11-albums.md#lannuler)
+  [étape 12 : annuler un album](../sort/12-albums.md#lannuler)
 - [Comment vos photos restent en sécurité](../reference-safety.md)
 
 ## L'aide intégrée

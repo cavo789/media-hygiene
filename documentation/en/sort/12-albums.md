@@ -1,6 +1,6 @@
-# 11. Albums: one photo in several folders, without a copy
+# 12. Albums: one photo in several folders, without a copy
 
-[Documentation](../README.md) › Sorting, step 11 · 🇫🇷 [Français](../../fr/sort/11-albums.md)
+[Documentation](../README.md) › Sorting, step 12 · 🇫🇷 [Français](../../fr/sort/12-albums.md)
 
 A tree gives each photo **one** place: `2016/Parties/Christmas` or `2016/Grandma`, never both.
 Yet you may want "every Christmas since 2003", "my best photos" or "everything with Grandma" in
@@ -41,7 +41,7 @@ before anything is made, and lists apart the files it cannot link.
 ## Choose what the album gathers
 
 The selection comes from the plan of the latest `classify` run ([step 4](04-classify.md)), read
-with your edits of the workbook and of [the browser page](10-name-events-in-the-browser.md):
+with your edits of the workbook and of [the browser page](11-name-events-in-the-browser.md):
 
 | Option | Gathers |
 |---|---|
@@ -128,4 +128,4 @@ the photo in the album may be the last one left: `undo` keeps it and says so.
 
 ---
 
-← [10. Name the events in your browser](10-name-events-in-the-browser.md) · [Documentation](../README.md)
+← [11. Name the events in your browser](11-name-events-in-the-browser.md) · [Documentation](../README.md)

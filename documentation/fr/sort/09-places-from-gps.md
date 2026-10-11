@@ -195,4 +195,4 @@ d'OpenStreetMap](https://www.openstreetmap.org/copyright), sous licence
 
 ---
 
-← [8. Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) · [Documentation](../README.md) · Suite : **[10. Nommer les événements dans le navigateur](10-name-events-in-the-browser.md)** →
+← [8. Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) · [Documentation](../README.md) · Suite : **[10. Trier par personne](10-sort-by-person.md)** →

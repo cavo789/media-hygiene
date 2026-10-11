@@ -46,7 +46,7 @@ Open both side by side. Only the **yellow** cells of the workbook can be edited.
 4. **Save and close** the workbook.
 
 Rather in the browser, one photo on screen? [Name the events in the
-browser](10-name-events-in-the-browser.md) does the same with the keyboard. Details: [review the
+browser](11-name-events-in-the-browser.md) does the same with the keyboard. Details: [review the
 proposal](05-review-the-proposal.md).
 
 ## 3. Write down what you know (optional)
@@ -90,7 +90,9 @@ You change your mind? `mh undo`: each file goes back where it was.
   sort home, family and trips.
 - [Name subjects with a local model](08-subjects-from-a-local-model.md): what the lone photos
   show, without sending anything to the Internet.
-- [Albums](11-albums.md): one photo in several folders, with no copy and no space taken.
+- [Sort by person](10-sort-by-person.md): name the faces of your photos once, and file the events
+  where someone appears.
+- [Albums](12-albums.md): one photo in several folders, with no copy and no space taken.
 
 <details>
 <summary>Without <code>mh</code>: the full commands</summary>

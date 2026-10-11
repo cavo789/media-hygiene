@@ -63,7 +63,7 @@ Christmas photos. Case does not matter.
 
 ## Go further
 
-- [Sorting, step 11: albums](../sort/11-albums.md)
+- [Sorting, step 12: albums](../sort/12-albums.md)
 
 ## The built-in help
 
