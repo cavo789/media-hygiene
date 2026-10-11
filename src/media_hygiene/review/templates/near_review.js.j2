@@ -120,7 +120,7 @@
       figure.append(video);
     } else figure.append(line("div", T.video, "clip"));
     const link = line("a", T.original, "original");
-    link.href = version.original;
+    link.href = version.video || version.original;  // a playable video plays in the tab
     link.target = "_blank";
     link.rel = "noopener";
     link.title = T.originalTitle;
