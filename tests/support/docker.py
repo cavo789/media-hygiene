@@ -6,7 +6,11 @@ import os
 import subprocess
 from typing import Final
 
+from media_hygiene.paths.docker_run import IMAGE_VARIABLE, PUBLISHED_IMAGE
+
 IMAGE: Final = "media-hygiene:latest"
+# The documentation shows what users of the published image see (TODO 0080).
+AS_PUBLISHED: Final = ("--env", f"{IMAGE_VARIABLE}={PUBLISHED_IMAGE}")
 KINDS: Final = ("data", "journal", "quarantine", "reports", "cache")
 # A container whose main process died of a signal exits with 128 + its number.
 SIGNAL_EXIT: Final = 128

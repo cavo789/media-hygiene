@@ -16,7 +16,12 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ENV_PREFIX
 from media_hygiene.i18n import _
-from media_hygiene.paths.docker_run import DockerRun, Volume, guess_shell
+from media_hygiene.paths.docker_run import (
+    IMAGE_VARIABLE,
+    DockerRun,
+    Volume,
+    guess_shell,
+)
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
@@ -38,6 +43,8 @@ _PATH_SUFFIX: Final = "_DIR"  # MEDIA_HYGIENE_<NAME>_DIR: a mount point, not car
 # Set by the `mh` launcher (TODO 0060): the next command is then `mh <verb>`.
 LAUNCHER_VARIABLE: Final = f"{ENV_PREFIX}LAUNCHER"
 LAUNCHER_FUNCTION: Final = "mh"
+# The image's own name is written in the command itself, not passed on with -e.
+_NOT_CARRIED: Final = frozenset({LAUNCHER_VARIABLE, IMAGE_VARIABLE})
 
 
 @dataclass(frozen=True, slots=True)
@@ -174,7 +181,7 @@ def environment() -> tuple[str, ...]:
         or (
             name.startswith(ENV_PREFIX)
             and not name.endswith(_PATH_SUFFIX)
-            and name != LAUNCHER_VARIABLE
+            and name not in _NOT_CARRIED
         )
     )
     return tuple(f'-e "{name}={os.environ[name]}"' for name in names)

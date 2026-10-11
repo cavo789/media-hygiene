@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1.19
 #
 # media-hygiene — the shipped image. Build: `docker build --tag media-hygiene .`
+# A developer's build: `docker build --target local --tag media-hygiene .` (the `build` helper).
 # Run:  docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" media-hygiene audit
 # The development environment is built by .devcontainer/Dockerfile, never by this file.
 
@@ -133,3 +134,10 @@ WORKDIR /tmp
 
 ENTRYPOINT ["media-hygiene"]
 CMD ["--help"]
+
+# --- local: a developer's build names itself in the commands it suggests (TODO 0080) ---
+FROM runtime AS local
+ENV MEDIA_HYGIENE_IMAGE=media-hygiene
+
+# --- published: the default target, what CI pushes; it never sets MEDIA_HYGIENE_IMAGE ---
+FROM runtime AS published

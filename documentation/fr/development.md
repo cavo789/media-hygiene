@@ -13,8 +13,13 @@ Partout où la documentation indique `cavo789/media-hygiene`, utilisez alors vot
 ```bash
 git clone https://github.com/cavo789/media-hygiene.git
 cd media-hygiene
-docker build --tag media-hygiene .
+docker build --target local --tag media-hygiene .
 ```
+
+La cible `local` (celle du raccourci `build`) ajoute seulement `MEDIA_HYGIENE_IMAGE=media-hygiene` :
+les commandes que l'outil propose (👉 Et maintenant, le lanceur `mh`) lancent alors votre image, et
+non l'image publiée, peut-être plus ancienne. Sans `--target`, vous obtenez l'image publiée telle
+quelle.
 
 L'image compile son propre `ffprobe`, environ 1 Mo au lieu de 141 Mo pour une version complète :
 l'outil demande seulement si le conteneur d'une vidéo s'ouvre, donc l'étape `ffprobe` du

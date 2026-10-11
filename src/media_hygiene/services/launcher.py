@@ -14,7 +14,12 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.paths.docker_run import PUBLISHED_IMAGE, Shell, Volume, guess_shell
+from media_hygiene.paths.docker_run import (
+    Shell,
+    Volume,
+    guess_shell,
+    running_image,
+)
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -114,7 +119,7 @@ def render_script(script: LauncherScript) -> str:
         script=script,
         function=LAUNCHER_FUNCTION,
         variable=LAUNCHER_VARIABLE,
-        image=PUBLISHED_IMAGE,
+        image=running_image(),
         header=_header(script.shell),
     )
 

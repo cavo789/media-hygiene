@@ -12,8 +12,12 @@ Anywhere the documentation says `cavo789/media-hygiene`, use your local `media-h
 ```bash
 git clone https://github.com/cavo789/media-hygiene.git
 cd media-hygiene
-docker build --tag media-hygiene .
+docker build --target local --tag media-hygiene .
 ```
+
+The `local` target (the `build` helper uses it) only adds `MEDIA_HYGIENE_IMAGE=media-hygiene`:
+the commands the tool suggests (👉 What next, the `mh` launcher) then run your build, not the
+published image, which may be older. Without `--target`, you get the published image as is.
 
 The image compiles its own `ffprobe`, about 1 MB instead of 141 MB for a full build: the tool
 only asks whether a video container opens, so the `ffprobe` stage of the `Dockerfile` keeps the

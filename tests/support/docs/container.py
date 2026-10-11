@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from tests.support.docker import IMAGE, docker, run_image
+from tests.support.docker import AS_PUBLISHED, IMAGE, docker, run_image
 from tests.support.docs.names import Locale
 from tests.support.docs.terminal import answer_prompt, tidy
 
@@ -15,10 +15,8 @@ if TYPE_CHECKING:
 # c and d hold C:\Photos and D:\Old disk; the others are the tool's mount points.
 VOLUMES: Final = ("c", "d", "journal", "quarantine", "reports", "cache", "config")
 _TOOL_MOUNTS: Final = VOLUMES[2:]
-DUMB: Final = (
-    "-e",
-    "TERM=dumb",
-)  # no progress animation: the screen reads top to bottom
+# No progress animation: the screen reads top to bottom.
+DUMB: Final = ("-e", "TERM=dumb")
 _IMAGE_COLUMNS: Final = ("-e", "COLUMNS=100")
 _YES: Final = {Locale.EN: "y", Locale.FR: "o"}
 
@@ -83,7 +81,8 @@ class Demo:
         Returns:
             What follows the `docker run` options.
         """
-        return [IMAGE, "--color", "never", "--locale", self.locale, *command.args]
+        return [*AS_PUBLISHED, IMAGE, "--color", "never", "--locale", self.locale,
+                *command.args]  # fmt: skip
 
 
 def seed(demo: Demo) -> None:
@@ -154,7 +153,8 @@ def run_in_colour(demo: Demo, command: Command) -> str:
     Returns:
         The output, escape codes included.
     """
-    colour = [IMAGE, "--color", "always", "--locale", demo.locale, *command.args]
+    colour = [*AS_PUBLISHED, IMAGE, "--color", "always", "--locale", demo.locale,
+              *command.args]  # fmt: skip
     return run_image(*_IMAGE_COLUMNS, *demo.mounts(command), *colour).stdout
 
 

@@ -6,15 +6,20 @@ PowerShell continues a line with a backtick, bash with a backslash; both expand
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import ENV_PREFIX
+
 if TYPE_CHECKING:
     from pathlib import Path
 
 PUBLISHED_IMAGE: Final = "cavo789/media-hygiene"
+# Set by a developer's build (Dockerfile target `local`): the image names itself.
+IMAGE_VARIABLE: Final = f"{ENV_PREFIX}IMAGE"
 TOOL_HOME: Final = "media-hygiene"  # folder of the user's home holding the tool folders
 _WINDOWS_PATH = re.compile(r"^[A-Za-z]:\\")
 _INDENT: Final = "  "
@@ -60,6 +65,18 @@ class Shell(StrEnum):
         flag = "-Force" if self is Shell.POWERSHELL else "-p"
         separator = ", " if self is Shell.POWERSHELL else " "
         return f"mkdir {flag} " + separator.join(f'"{folder}"' for folder in folders)
+
+
+def running_image() -> str:
+    """The image the suggested commands run: this one, as far as it can tell.
+
+    A container cannot learn the name it was started under: a developer's build says
+    it in `MEDIA_HYGIENE_IMAGE`, the published image leaves it unset.
+
+    Returns:
+        `MEDIA_HYGIENE_IMAGE` when set and not empty, `cavo789/media-hygiene` otherwise.
+    """
+    return os.environ.get(IMAGE_VARIABLE) or PUBLISHED_IMAGE
 
 
 def guess_shell(hosts: tuple[str, ...]) -> Shell:
@@ -117,7 +134,7 @@ class DockerRun:
             *user,
             *(volume.render() for volume in self.volumes),
             *self.options,
-            f"{PUBLISHED_IMAGE} {self.arguments}",
+            f"{running_image()} {self.arguments}",
         )
         head, *rest = lines
         body = [head, *(_INDENT + line for line in rest)]
