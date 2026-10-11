@@ -60,11 +60,13 @@ def test_the_page_refuses_what_it_should(
 def test_the_map_needs_a_config_mount(
     garden: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Nowhere to save: refused, with a tip."""
+    """Nowhere to save: refused, with the whole command to paste instead."""
     monkeypatch.delenv("MEDIA_HYGIENE_CONFIG_DIR")
     result = run(garden, "places")
     assert result.exit_code == 1
-    assert "mount /config" in result.output
+    assert "mounted on /config: this command has none" in result.output
+    assert "Copy and paste this command" in result.output
+    assert "<a folder of yours>" not in result.output
 
 
 def test_invalid_places_in_the_file_are_named(

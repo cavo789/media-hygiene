@@ -52,6 +52,8 @@ def user_errors(output: Output) -> Iterator[None]:
         output.error(exc.message)
         if exc.tip:
             output.tip(exc.tip)
+        if exc.command:
+            output.command(exc.command)
         raise typer.Exit(ExitCode.FAILURE) from exc
 
 
@@ -65,6 +67,8 @@ def warn(output: Output, error: MediaHygieneError) -> None:
     output.warning(error.message)
     if error.tip:
         output.tip(error.tip)
+    if error.command:
+        output.command(error.command)
 
 
 def build_runtime(cli_layer: Layer, *, stderr: bool = False) -> Runtime:
