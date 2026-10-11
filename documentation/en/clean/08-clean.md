@@ -66,7 +66,7 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261011-100601
+Clean 20261011-160733
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -75,30 +75,28 @@ Clean 20261011-100601
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261011-100601-clean/report.html
-💡 Changed your mind? 'media-hygiene undo 20261011-100601' restores everything:
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "/mnt/d/Old disk:/data/d/Old disk" \
-  -v "$HOME/media-hygiene/config:/config" \
-  -v "media-hygiene-cache:/cache" \
-  -v "$HOME/media-hygiene/reports:/reports" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
-  cavo789/media-hygiene undo 20261011-100601
+✅ HTML report: /reports/20261011-160733-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261011-160733' restores everything:
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene undo 20261011-160733
 👉 What next: once you have checked, 'purge' frees the space of the files set
 aside.
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "/mnt/d/Old disk:/data/d/Old disk" \
-  -v "$HOME/media-hygiene/config:/config" \
-  -v "media-hygiene-cache:/cache" \
-  -v "$HOME/media-hygiene/reports:/reports" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
-  cavo789/media-hygiene purge 20261011-100601
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene purge 20261011-160733
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 

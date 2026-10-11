@@ -26,11 +26,11 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20261011-100601 ──────────────────────
+────────────────────── Undo the clean run 20261011-160733 ──────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the clean run 20261011-100601
+Undo the clean run 20261011-160733
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.5 MB │
@@ -71,8 +71,8 @@ Runs (newest first)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Run             ┃ Command ┃ Deleted ┃ Freed ┃ Quarantined ┃ Restored ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20261011-100607 │ clean   │       1 │     0 │          41 │        0 │
-│ 20261011-100601 │ clean   │       1 │     0 │          35 │       36 │
+│ 20261011-160739 │ clean   │       1 │     0 │          41 │        0 │
+│ 20261011-160733 │ clean   │       1 │     0 │          35 │       36 │
 └─────────────────┴─────────┴─────────┴───────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
@@ -98,7 +98,7 @@ cavo789/media-hygiene purge
 ```text
 ⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'.
 It is, with 'clean --delete', the only way the tool removes content.
-❓ Erase the quarantine of 20261011-100607 (41 files, 16.3 MB)? [y/N] y
+❓ Erase the quarantine of 20261011-160739 (41 files, 16.3 MB)? [y/N] y
 ✅ Quarantine purged: 16.3 MB freed.
 💡 'undo' can no longer restore these files.
 ```

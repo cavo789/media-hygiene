@@ -285,6 +285,9 @@ Réglages effectifs
 │                             │ 'view']                    │                   │
 │ tags.town_km                │ 20.0                       │ défaut            │
 │ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
+│ people.similarity           │ 0.363                      │ défaut            │
+│ people.min_face             │ 40                         │ défaut            │
+│ people.min_sharpness        │ 30.0                       │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -709,6 +712,9 @@ Réglages effectifs
 │                             │ 'view']                    │                   │
 │ tags.town_km                │ 20.0                       │ config.toml       │
 │ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
+│ people.similarity           │ 0.363                      │ config.toml       │
+│ people.min_face             │ 40                         │ config.toml       │
+│ people.min_sharpness        │ 30.0                       │ config.toml       │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)

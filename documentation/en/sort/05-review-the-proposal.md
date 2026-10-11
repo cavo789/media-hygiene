@@ -25,18 +25,17 @@ The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20261011-100457-classify/classify.xlsx
-✅ Report with the photos: /reports/20261011-100457-classify/report.html
+✅ Workbook to edit: /reports/20261011-160628-classify/classify.xlsx
+✅ Report with the photos: /reports/20261011-160628-classify/report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "/mnt/d/Old disk:/data/d/Old disk" \
-  -v "$HOME/media-hygiene/config:/config" \
-  -v "media-hygiene-cache:/cache" \
-  -v "$HOME/media-hygiene/reports:/reports" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene sort
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.

@@ -103,12 +103,11 @@ kept whole.
 
 👉 What next: run 'clean' to set 3.4 MB of copies aside. The command adds
 /journal, /quarantine: folders of your home.
-mkdir -p "$HOME/media-hygiene/journal" "$HOME/media-hygiene/quarantine"
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene clean
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.

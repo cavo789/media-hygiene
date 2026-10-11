@@ -107,12 +107,11 @@ gardées entières.
 
 👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté. La
 commande ajoute /journal, /quarantine : des dossiers de votre profil.
-mkdir -p "$HOME/media-hygiene/journal" "$HOME/media-hygiene/quarantine"
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.

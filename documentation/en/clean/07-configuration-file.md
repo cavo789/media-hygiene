@@ -259,6 +259,9 @@ Effective settings
 │                               │ 'scene', 'view']              │              │
 │ tags.town_km                  │ 20.0                          │ default      │
 │ tags.xmp_sources              │ ['vision', 'place']           │ default      │
+│ people.similarity             │ 0.363                         │ default      │
+│ people.min_face               │ 40                            │ default      │
+│ people.min_sharpness          │ 30.0                          │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -636,6 +639,9 @@ Effective settings
 │                               │ 'scene', 'view']              │              │
 │ tags.town_km                  │ 20.0                          │ config.toml  │
 │ tags.xmp_sources              │ ['vision', 'place']           │ config.toml  │
+│ people.similarity             │ 0.363                         │ config.toml  │
+│ people.min_face               │ 40                            │ config.toml  │
+│ people.min_sharpness          │ 30.0                          │ config.toml  │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)

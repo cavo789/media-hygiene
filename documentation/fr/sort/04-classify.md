@@ -61,19 +61,18 @@ documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
 💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
 À vérifier ou à trier : 3 fichiers dans 1 événement.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
-✅ Classeur à modifier : /reports/20261011-100715-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261011-100715-classify/report.html
+✅ Classeur à modifier : /reports/20261011-160851-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261011-160851-classify/report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
-docker run --rm -it \
-  --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  -v "/mnt/d/Ancien disque:/data/d/Ancien disque" \
-  -v "$HOME/media-hygiene/config:/config" \
-  -v "media-hygiene-cache:/cache" \
-  -v "$HOME/media-hygiene/reports:/reports" \
-  -v "$HOME/media-hygiene/journal:/journal" \
-  -v "$HOME/media-hygiene/quarantine:/quarantine" \
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr sort
 💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
 copies sont triées.
