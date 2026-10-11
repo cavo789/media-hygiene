@@ -2,12 +2,29 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `launcher` · 🇬🇧 [English](../../en/commands/launcher.md)
 
-Les commandes `docker run` s'allongent à chaque dossier, et chaque commande demande des montages un
-peu différents (`:ro` ou non, le journal, un port pour le navigateur). `launcher` les écrit **une
-fois** : il affiche un court script qui définit `mh`, une commande qui retient les dossiers montés
-au moment où vous l'avez créée. Ensuite, `mh audit`, `mh clean`, `mh review`… suffisent.
-
 ## En bref
+
+**Taper `mh audit` au lieu d'un long `docker run` : vos dossiers sont écrits une fois, avec les
+bons montages pour chaque commande.**
+
+Les commandes `docker run` s'allongent à chaque dossier, et chaque commande demande des montages
+un peu différents (`:ro` ou non, le journal, un port pour le navigateur). `launcher` affiche un
+court script qui définit `mh`, une commande qui retient les dossiers montés au moment où vous
+l'avez créée. Ensuite, `mh audit`, `mh clean`, `mh review`… suffisent.
+
+**Quand** : une fois que vous savez sur quels dossiers vous travaillez ; à nouveau quand vous en
+ajoutez un.
+
+**Essayer** :
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm -v "C:\Photos:/data/c/Photos" cavo789/media-hygiene --locale fr launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

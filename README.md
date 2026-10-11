@@ -5,10 +5,10 @@ Clean, sort and explore the photos and videos spread over several folders and di
 is journaled and can be undone.
 
 - **Clean the duplicates**: identical copies, resized or recompressed ones, burst series.
-- **Sort**: a tidy tree proposed by date, event, place (GPS, offline) and subject (a local vision
-  model), that you correct before anything moves.
-- **Find the people**: the faces are found and grouped on your computer, to sort the photos by
-  person, without a photo server such as Immich (first version: find and group; naming next).
+- **Sort**: a tidy tree proposed by date, event, place (GPS, offline), subject (a local vision
+  model) and person, that you correct before anything moves.
+- **Find the people**: the faces are found and grouped on your computer; name them once, then
+  find someone's photos by name and sort them by person, without a photo server such as Immich.
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
@@ -125,7 +125,8 @@ adds one thing to the command of the step before.
 12. [Albums](documentation/en/sort/12-albums.md) — one photo in several folders, as hard links:
     no copy, no space used (optional).
 
-**Every command has its own page** — what it does, the folders it needs, its options, examples:
+**Every command has its own page** — first what it gives you, when, and a command to try; then
+the folders it needs, its options, examples:
 [`audit`](documentation/en/commands/audit.md), [`status`](documentation/en/commands/status.md),
 [`clean`](documentation/en/commands/clean.md), [`undo`](documentation/en/commands/undo.md),
 [`history`](documentation/en/commands/history.md), [`purge`](documentation/en/commands/purge.md),

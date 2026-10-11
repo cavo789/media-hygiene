@@ -2,11 +2,26 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `config` · 🇬🇧 [English](../../en/commands/config.md)
 
-`config` montre chaque réglage que l'outil va utiliser, **d'où vient chacun** (la valeur par
-défaut, `config.toml`, une variable d'environnement, la ligne de commande), et l'état de chaque
-point de montage. La première fois, il crée aussi un `config.toml` commenté, à remplir.
-
 ## En bref
+
+**Vérifier ce que l'outil va utiliser avant qu'il agisse : chaque réglage avec son origine,
+chaque dossier avec son état.**
+
+`config` montre chaque réglage, **d'où vient chacun** (la valeur par défaut, `config.toml`, une
+variable d'environnement, la ligne de commande), et l'état de chaque point de montage. La
+première fois, il crée aussi un `config.toml` commenté, à remplir.
+
+**Quand** : une fois au début, pour obtenir ce `config.toml` ; puis chaque fois qu'un réglage
+semble ne pas s'appliquer ou qu'un dossier n'est pas vu.
+
+**Essayer** :
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -16,13 +31,6 @@ point de montage. La première fois, il crée aussi un `config.toml` commenté, 
 | Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement. |
 | Annuler | Supprimez `config.toml` pour revenir aux valeurs par défaut. |
 | Avec `mh` | `mh config`. |
-
-## Quand l'utiliser
-
-- **Une fois, au début**, pour obtenir un `config.toml` commenté.
-- **Quand un réglage semble ne pas s'appliquer** : la colonne *Origine* dit quelle couche l'a emporté.
-- **Quand un dossier n'est pas vu** : le tableau des montages dit ce qui est monté, absent ou en
-  lecture seule.
 
 ## Lancer
 
@@ -59,6 +67,8 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 - `/config` contient `config.toml` **seulement** : n'y mettez jamais rien d'autre.
 - Un réglage inconnu de cette version est signalé, avec sa ligne : voir le
   [dépannage](../reference-troubleshooting.md#un-réglage-de-configtoml-est-inconnu-de-cette-version).
+  Plusieurs problèmes sont listés un par ligne ; celui d'une règle ou d'un lieu la nomme par son
+  numéro et son `name` (`[[classify.rules]] n° 2 (« Anniversaire »)`).
 
 ## Pour aller plus loin
 

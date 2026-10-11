@@ -5,11 +5,11 @@ disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL. Tout se pa
 ordinateur, et chaque changement est journalisé et peut être annulé.
 
 - **Nettoyer les doublons** : copies identiques, copies redimensionnées ou recompressées, rafales.
-- **Ranger** : une arborescence proposée par date, événement, lieu (GPS, hors ligne) et sujet (un
-  modèle de vision local), que vous corrigez avant que rien ne bouge.
-- **Retrouver les personnes** : les visages sont trouvés et regroupés sur votre ordinateur, pour
-  ranger les photos par personne, sans serveur photo comme Immich (première version : trouver
-  et regrouper ; les nommer viendra ensuite).
+- **Ranger** : une arborescence proposée par date, événement, lieu (GPS, hors ligne), sujet (un
+  modèle de vision local) et personne, que vous corrigez avant que rien ne bouge.
+- **Retrouver les personnes** : les visages sont trouvés et regroupés sur votre ordinateur ;
+  nommez-les une fois, puis retrouvez les photos de quelqu'un par son nom et rangez-les par
+  personne, sans serveur photo comme Immich.
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
@@ -131,8 +131,8 @@ seule chose à la commande de l'étape précédente.
 12. [Albums](documentation/fr/sort/12-albums.md) — une photo dans plusieurs dossiers, en liens
     physiques : aucune copie, aucune place prise (facultatif).
 
-**Chaque commande a sa page** : ce qu'elle fait, les dossiers dont elle a besoin, ses options, des
-exemples : [`audit`](documentation/fr/commands/audit.md), [`status`](documentation/fr/commands/status.md),
+**Chaque commande a sa page** : d'abord ce qu'elle vous apporte, quand, et une commande à essayer ;
+puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](documentation/fr/commands/audit.md), [`status`](documentation/fr/commands/status.md),
 [`clean`](documentation/fr/commands/clean.md), [`undo`](documentation/fr/commands/undo.md),
 [`history`](documentation/fr/commands/history.md), [`purge`](documentation/fr/commands/purge.md),
 [`review`](documentation/fr/commands/review.md), [`reports`](documentation/fr/commands/reports.md),

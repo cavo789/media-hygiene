@@ -70,7 +70,9 @@ Une faute de frappe est nommée avec le réglage qui lui ressemble. Un réglage 
 documentation plus récente demande l'image plus récente : `docker pull cavo789/media-hygiene`. Il
 en va de même pour une variable `MEDIA_HYGIENE_<SECTION>__<CLÉ>` passée avec `-e`. Une valeur
 refusée (`verbosity = "loud"`) dit ce qui est attendu à la place. Plusieurs problèmes à la fois
-sont listés un par ligne, sous un seul titre.
+sont listés un par ligne, sous un seul titre. Un problème dans une entrée `[[classify.rules]]`,
+un lieu ou une personne la nomme par son numéro et son `name` : `« match » dans
+[[classify.rules]] n° 2 (« Anniversaire ») de config.toml : ce réglage est obligatoire.`
 
 ## La page de tri ne s'ouvre pas
 

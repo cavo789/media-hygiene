@@ -2,10 +2,22 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `purge` · 🇫🇷 [Français](../../fr/commands/purge.md)
 
-`clean` never erases: it moves the extra copies to the quarantine. Their space comes back only
-when you have checked them and run `purge`, which deletes the quarantine of a run, or of every
-run, **for good**. It is the only command that erases content (with `clean --delete`, if you use
-it), and it says so before asking.
+## In short
+
+**Get the space back for good, once you have checked what the quarantine holds.**
+
+`clean` never erases: it moves the extra copies to the quarantine. `purge` deletes the
+quarantine of a run, or of every run, **for good**. It is the only command that erases content
+(with `clean --delete`, if you use it), and it says so before asking.
+
+**When**: once you have opened the quarantine folder in the Explorer, checked what it holds, and
+need the space; [`status`](status.md) reminds you of a quarantine older than 30 days.
+
+**Try it**:
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\quarantine:/quarantine" cavo789/media-hygiene purge
+```
 
 ## At a glance
 
@@ -17,11 +29,6 @@ it), and it says so before asking.
 | Writes | Nothing: it deletes the quarantine folders. |
 | Undo | **None**: after a purge, `undo` can no longer bring those files back. |
 | With `mh` | `mh purge`, `mh purge <run>`. |
-
-## When to use it
-
-Once you have opened the quarantine folder in the Explorer and checked what it holds, and you
-need the space. [`status`](status.md) reminds you of a quarantine older than 30 days.
 
 ## Run it
 

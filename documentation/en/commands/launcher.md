@@ -2,10 +2,26 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `launcher` · 🇫🇷 [Français](../../fr/commands/launcher.md)
 
+## In short
+
+**Type `mh audit` instead of a long `docker run`: your folders are written once, with the right
+mounts for every command.**
+
 The `docker run` commands grow with every folder, and each command needs slightly different
-mounts (`:ro` or not, the journal, a port for the browser). `launcher` writes them **once**: it
-prints a short script defining `mh`, a command that remembers the folders mounted when you made
-it. Then `mh audit`, `mh clean`, `mh review`… are all you type.
+mounts (`:ro` or not, the journal, a port for the browser). `launcher` prints a short script
+defining `mh`, a command that remembers the folders mounted when you made it. Then `mh audit`,
+`mh clean`, `mh review`… are all you type.
+
+**When**: once you know which folders you work on; again when you add one.
+
+**Try it**:
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm -v "C:\Photos:/data/c/Photos" cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
 
 ## At a glance
 

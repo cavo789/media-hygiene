@@ -2,12 +2,28 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `album` · 🇬🇧 [English](../../en/commands/album.md)
 
-Une arborescence donne à chaque photo **une** place. `album` rassemble une sélection (« tous les
-Noëls », « mes plus belles photos ») dans un dossier de **liens physiques** : un deuxième nom pour
-le même fichier. La photo n'est ni copiée ni déplacée, et ne prend pas de place en plus. Sans
+## En bref
+
+**Mettre une même photo dans plusieurs albums (« Noël », « Mes plus belles photos ») sans la
+copier : aucune place en plus.**
+
+Une arborescence donne à chaque photo **une** place. `album` rassemble une sélection dans un
+dossier de **liens physiques** : un deuxième nom pour le même fichier, ni copié ni déplacé. Sans
 `--apply`, il montre seulement ce qu'il ferait.
 
-## En bref
+**Quand** : après [`classify`](classify.md), chaque fois que vous voulez une sélection : une
+catégorie, un événement, les photos notées d'étoiles dans Windows.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr album "Noël" --category Noël
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

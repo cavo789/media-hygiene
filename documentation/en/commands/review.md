@@ -2,10 +2,29 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `review` · 🇫🇷 [Français](../../fr/commands/review.md)
 
-Burst series (five, ten, twenty shots in a few seconds) and near duplicates (a photo saved again,
-smaller) are not identical files: only you can tell which ones to keep. `review` shows them to
-you **one at a time**, large, in your browser, and you choose with the keyboard. Each choice is
-saved at once in `decisions.json`; `clean --decisions` applies them later.
+## In short
+
+**Keep only the best shots of your bursts, and decide the near duplicates, by looking at them
+large, in your browser.**
+
+Burst series (five, ten, twenty shots in a few seconds) and near duplicates (a photo saved
+again, smaller) are not identical files: only you can tell which ones to keep. `review` shows
+them to you **one at a time** and you choose with the keyboard. Each choice is saved at once in
+`decisions.json`; `clean --decisions` applies them later.
+
+**When**: after an audit that found burst series (or near duplicates, with `--near`), before
+`clean --decisions`.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene review
+```
 
 ## At a glance
 

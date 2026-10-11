@@ -2,12 +2,26 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `purge` · 🇬🇧 [English](../../en/commands/purge.md)
 
-`clean` n'efface jamais : il déplace les copies en trop en quarantaine. Leur place ne revient que
-quand vous les avez vérifiées et lancé `purge`, qui supprime **pour de bon** la quarantaine d'une
-exécution, ou de toutes. C'est la seule commande qui efface du contenu (avec `clean --delete`, si
-vous l'utilisez), et elle le dit avant de demander.
-
 ## En bref
+
+**Récupérer la place pour de bon, une fois que vous avez vérifié ce que contient la
+quarantaine.**
+
+`clean` n'efface jamais : il déplace les copies en trop en quarantaine. `purge` supprime **pour
+de bon** la quarantaine d'une exécution, ou de toutes. C'est la seule commande qui efface du
+contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de demander.
+
+**Quand** : une fois le dossier de la quarantaine ouvert dans l'Explorateur et vérifié, quand
+vous avez besoin de la place ; [`status`](status.md) vous rappelle une quarantaine de plus de 30
+jours.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\quarantine:/quarantine" cavo789/media-hygiene --locale fr purge
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,12 +31,6 @@ vous l'utilisez), et elle le dit avant de demander.
 | Écrit | Rien : il supprime les dossiers de quarantaine. |
 | Annuler | **Impossible** : après une purge, `undo` ne peut plus ramener ces fichiers. |
 | Avec `mh` | `mh purge`, `mh purge <exécution>`. |
-
-## Quand l'utiliser
-
-Une fois que vous avez ouvert le dossier de la quarantaine dans l'Explorateur et vérifié ce qu'il
-contient, et que vous avez besoin de la place. [`status`](status.md) vous rappelle une
-quarantaine de plus de 30 jours.
 
 ## Lancer
 

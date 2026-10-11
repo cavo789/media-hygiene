@@ -2,9 +2,28 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `search` · 🇫🇷 [Français](../../fr/commands/search.md)
 
-`search` finds photos by the words [`tags`](tags.md) gave them, in a page of your browser: one
-field, a grid of the photos found, best first, each with its folder, date and words. With words
-after the command, it prints the first matches as a table instead.
+## In short
+
+**Find a photo by what you remember of it: a word, a place, a year, a person.**
+
+`search` finds photos by the words [`tags`](tags.md) gave them and the names given in
+[`people`](people.md), in a page of your browser: one field, a grid of the photos found, best
+first, each with its folder, date and words. With words after the command, it prints the first
+matches as a table instead.
+
+**When**: after [`tags`](tags.md) (and [`people`](people.md) for the names); again after the new
+photos are tagged.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene search
+```
 
 ## At a glance
 
@@ -22,6 +41,7 @@ after the command, it prints the first matches as a table instead.
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene search
 ```
 

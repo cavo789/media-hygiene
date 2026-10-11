@@ -2,11 +2,24 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `reports` · 🇬🇧 [English](../../en/commands/reports.md)
 
-Chaque audit, nettoyage et contre-vérification écrit son propre dossier de rapport dans
-`/reports`. `reports` les liste, du plus récent au plus ancien, et régénère `index.html`, la page
-qui les relie tous. Avec `--prune`, il garde les plus récents et supprime les autres.
-
 ## En bref
+
+**Retrouver tous les rapports depuis une seule page, et supprimer les anciens en une commande.**
+
+Chaque audit, nettoyage et contre-vérification écrit son propre dossier de rapport dans
+`/reports`. `reports` les liste, du plus récent au plus ancien, et régénère `index.html`, la
+page qui les relie tous. Avec `--prune`, il garde les plus récents et supprime les autres.
+
+**Quand** : pour retrouver un ancien rapport, ou quand le dossier des rapports devient trop
+gros.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene --locale fr reports
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

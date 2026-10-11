@@ -2,12 +2,29 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `undo` · 🇬🇧 [English](../../en/commands/undo.md)
 
+## En bref
+
+**Changé d'avis ? Remettre chaque fichier d'une exécution exactement où il était.**
+
 `undo` restaure chaque fichier d'une exécution, tel que le journal l'a noté : les fichiers d'un
 `clean` reviennent de la quarantaine (ou sont reconstruits depuis la copie gardée), les fichiers
 d'un `sort` retournent dans leurs dossiers, les liens d'un `album` et les fichiers compagnons de
 `xmp` sont retirés.
 
-## En bref
+**Quand** : après un `clean`, un `sort`, un `album` ou un `xmp --apply` que vous regrettez : une
+photo que vous vouliez est en quarantaine, par exemple. Avant tout `purge` de cette exécution.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr undo
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,12 +34,6 @@ d'un `sort` retournent dans leurs dossiers, les liens d'un `album` et les fichie
 | Écrit | Chaque restauration, dans le journal de l'exécution (`history` les compte). |
 | Annuler | Pour refaire, relancez la commande ([`clean`](clean.md), [`sort`](sort.md)…). |
 | Avec `mh` | `mh undo`, `mh undo <exécution>`. |
-
-## Quand l'utiliser
-
-- Vous avez changé d'avis après un `clean`, un `sort`, un `album` ou un `xmp --apply`.
-- Une photo que vous vouliez est en quarantaine : annulez cette exécution, puis nettoyez à nouveau
-  avec d'autres options.
 
 ## Lancer
 

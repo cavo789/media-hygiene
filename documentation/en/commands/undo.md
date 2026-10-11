@@ -2,9 +2,26 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `undo` · 🇫🇷 [Français](../../fr/commands/undo.md)
 
-`undo` restores every file of a run, as the journal recorded it: the files of a `clean` come back
-from the quarantine (or are rebuilt from the copy kept), the files of a `sort` go back to their
-folders, the links of an `album` and the sidecars of `xmp` are taken away.
+## In short
+
+**Changed your mind? Put back every file of a run, exactly where it was.**
+
+`undo` restores every file of a run, as the journal recorded it: the files of a `clean` come
+back from the quarantine (or are rebuilt from the copy kept), the files of a `sort` go back to
+their folders, the links of an `album` and the sidecars of `xmp` are taken away.
+
+**When**: after a `clean`, a `sort`, an `album` or an `xmp --apply` you regret: a photo you
+wanted is in the quarantine, say. Before any `purge` of that run.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene undo
+```
 
 ## At a glance
 
@@ -16,11 +33,6 @@ folders, the links of an `album` and the sidecars of `xmp` are taken away.
 | Writes | Each restore, in the journal of the run (`history` counts them). |
 | Undo | To do it again, run the command again ([`clean`](clean.md), [`sort`](sort.md)…). |
 | With `mh` | `mh undo`, `mh undo <run>`. |
-
-## When to use it
-
-- You changed your mind after a `clean`, a `sort`, an `album` or an `xmp --apply`.
-- A photo you wanted is in the quarantine: undo that run, then clean again with other options.
 
 ## Run it
 

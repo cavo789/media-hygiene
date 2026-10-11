@@ -2,13 +2,29 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `crosscheck` · 🇬🇧 [English](../../en/commands/crosscheck.md)
 
-Avant de supprimer des photos de famille, un deuxième avis rassure. `crosscheck` refait l'audit,
-puis compare ses doublons, groupe par groupe, avec ceux de
+## En bref
+
+**Être sûr de vos doublons avant de supprimer des photos de famille : un deuxième outil,
+indépendant, les vérifie groupe par groupe.**
+
+`crosscheck` refait l'audit, puis compare ses doublons avec ceux de
 [Czkawka](https://github.com/qarmin/czkawka), un détecteur de doublons libre écrit
 indépendamment, avec une autre fonction de hachage. Quand les deux sont d'accord, vous pouvez
 nettoyer en confiance.
 
-## En bref
+**Quand** : facultatif, une fois, avant un premier grand `clean` (`clean` ne l'exige jamais). Le
+premier lancement affiche la commande de Czkawka à coller ; le suivant compare.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr crosscheck
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -18,10 +34,6 @@ nettoyer en confiance.
 | Écrit | Le cache, un rapport de contre-vérification dans `/reports`. |
 | Annuler | Rien à annuler. |
 | Avec `mh` | `mh crosscheck`. |
-
-## Quand l'utiliser
-
-Facultatif, une fois, avant un premier grand `clean` : `clean` ne l'exige jamais.
 
 ## Lancer, en trois étapes
 

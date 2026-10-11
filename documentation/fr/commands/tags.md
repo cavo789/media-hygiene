@@ -2,13 +2,31 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `tags` · 🇬🇧 [English](../../en/commands/tags.md)
 
-`tags` donne à chaque photo et vidéo **des mots pour la retrouver** : les mots parlants de ses
-dossiers (« Durbuy », « ours »), sa date (année, mois, saison, fêtes), son lieu, et, si vous le
-voulez, ce qu'y voit un modèle de vision local (« gâteau », « bougie », « neige »). Les mots
-restent **dans le cache**, jamais dans vos photos ; [`search`](search.md) les retrouve,
-[`xmp`](xmp.md) les écrit dans des fichiers compagnons.
-
 ## En bref
+
+**Donner à chaque photo et vidéo des mots pour la retrouver (ses dossiers, son nom, sa date, son
+lieu, ce qu'elle montre), sans toucher aux fichiers.**
+
+`tags` donne à chaque photo et vidéo **des mots pour la retrouver** : les mots parlants de ses
+dossiers (« Durbuy », « ours ») et de son nom, sa date (année, mois, saison, fêtes), son lieu,
+et, si vous le voulez, ce qu'y voit un modèle de vision local (« gâteau », « bougie », « neige
+»). Les mots restent **dans le cache**, jamais dans vos photos ; [`search`](search.md) les
+retrouve, [`xmp`](xmp.md) les écrit dans des fichiers compagnons.
+
+**Quand** : après un audit lancé avec le cache ; à nouveau après de nouvelles photos ou un
+dossier renommé.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr tags
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

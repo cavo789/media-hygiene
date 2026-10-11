@@ -2,9 +2,21 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `history` · 🇫🇷 [Français](../../fr/commands/history.md)
 
-`history` reads the journal and lists the runs, the newest first: the command that made each one,
-what it deleted, freed, moved and set aside, and how many files were restored since. It is where
-you find the name of a run to give to `undo` or `purge`.
+## In short
+
+**See what each run did, and find the name to give to `undo` or `purge`.**
+
+`history` reads the journal and lists the runs, the newest first: the command that made each
+one, what it deleted, freed, moved and set aside, and how many files were restored since.
+
+**When**: after a `clean`, a `sort`, an `album` or an `xmp --apply`, before an `undo` or a
+`purge`.
+
+**Try it**:
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygiene history
+```
 
 ## At a glance
 

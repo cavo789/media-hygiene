@@ -2,12 +2,30 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `places` · 🇬🇧 [English](../../en/commands/places.md)
 
-Les téléphones récents écrivent **où** chaque photo a été prise. `places` montre ces positions
-sur une carte dans votre navigateur, regroupées en cercles, et vous laisse nommer les lieux qui
-comptent pour vous : « Maison », « Chez papy », un village. Ils sont enregistrés dans
-`config.toml`, où les règles `place` et `trip` de [`classify`](classify.md) les utilisent.
-
 ## En bref
+
+**Nommer sur une carte les lieux qui comptent pour vous (la maison, chez papy, un village), pour
+que `classify` range vos photos par lieu et par voyage.**
+
+Les téléphones récents écrivent **où** chaque photo a été prise. `places` montre ces positions
+sur une carte dans votre navigateur, regroupées en cercles, et enregistre les lieux que vous
+nommez dans `config.toml`, où les règles `place` et `trip` de [`classify`](classify.md) les
+utilisent.
+
+**Quand** : avant [`classify`](classify.md), une fois qu'un audit lancé avec le cache a lu les
+positions ; à nouveau chaque fois qu'un nouveau lieu compte.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr places
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

@@ -67,7 +67,9 @@ A typo is named with the setting it looks like. A setting copied from a newer do
 the newer image: `docker pull cavo789/media-hygiene`. The same goes for a variable
 `MEDIA_HYGIENE_<SECTION>__<KEY>` passed with `-e`. A refused value (`verbosity = "loud"`) says
 what is expected instead. Several problems at once are listed one per line, under a single
-heading.
+heading. A problem inside a `[[classify.rules]]` entry, a place or a person names it by its
+number and its `name`: `'match' in [[classify.rules]] number 2 ('Birthday') of config.toml: this
+setting is required.`
 
 ## The review page does not open
 

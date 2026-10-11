@@ -2,9 +2,26 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `status` · 🇫🇷 [Français](../../fr/commands/status.md)
 
-Back after a few days, you no longer remember which run is in the quarantine, nor whether a
-review was applied? `status` reads the tool's own folders, without scanning your photos (about a
-second), and tells you where you stand, then **one** next step, as a full command.
+## In short
+
+**Back after a few days? Know in a second where you stand, and the one next step to take.**
+
+You no longer remember which run is in the quarantine, nor whether a review was applied?
+`status` reads the tool's own folders, without scanning your photos (about a second), tells you
+where you stand, then gives **one** next step, as a full command.
+
+**When**: whenever you come back to your photos, or are unsure of what was done.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene status
+```
 
 ## At a glance
 

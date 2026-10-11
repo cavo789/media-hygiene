@@ -2,13 +2,32 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `people` · 🇬🇧 [English](../../en/commands/people.md)
 
+## En bref
+
+**Retrouver les photos de quelqu'un par son nom, et les ranger selon qui y figure, sans qu'aucun
+visage ne quitte votre ordinateur.**
+
 `people` trouve les **visages** de vos photos, regroupe ceux qui se ressemblent (sans doute une
 personne par groupe), et montre les groupes dans votre navigateur, les plus grands d'abord, où
-vous les **nommez**. Ensuite, `search Chloé` trouve les photos de Chloé. Tout tourne sur votre
-ordinateur : les visages restent dans le cache, jamais envoyés nulle part ; les noms vont dans
-votre `config.toml`.
+vous les **nommez**. Ensuite, `search Chloé` trouve les photos de Chloé, et une règle `person`
+de [`classify`](classify.md) les range. Les visages restent dans le cache, jamais envoyés nulle
+part ; les noms vont dans votre `config.toml`.
 
-## En bref
+**Quand** : après un audit lancé avec le cache, ou dans la foulée avec `audit --people` ; à
+nouveau après de nouvelles photos : seules celles-là sont analysées.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr people
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -49,7 +68,8 @@ Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enr
 `config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
 visage erroné, `i` ignore un groupe d'inconnus, `y` confirme une suggestion (« Chloé ? »). Les
 exécutions suivantes gardent tous les noms, et [`search`](search.md) retrouve les personnes par
-leur nom : `search Chloé montagne`, `search person:chloe`. Détails :
+leur nom : `search Chloé montagne`, `search person:chloe`. Chaque nom est une entrée
+`[[people.person]]` de `config.toml`. Détails :
 [Les personnes](../reference-people.md#nommer-les-groupes).
 
 ## Options
@@ -74,7 +94,7 @@ SHA-256 : il n'envoie rien sur vos photos.
 - Les réglages `[people]` (`similarity`, `min_face`, `min_sharpness`) ne changent que le
   regroupement : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
-  temps que ça prend.
+  temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
 - Les vidéos ne sont pas encore analysées.
 - Sans réseau, l'erreur nomme les deux fichiers de modèle à enregistrer à la main dans le dossier
   `models` du cache.

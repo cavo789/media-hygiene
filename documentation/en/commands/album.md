@@ -2,9 +2,26 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `album` · 🇫🇷 [Français](../../fr/commands/album.md)
 
-A tree gives each photo **one** place. `album` gathers a selection ("every Christmas", "my best
-photos") into a folder of **hard links**: a second name for the same file. The photo is neither
-copied nor moved, and takes no extra space. Without `--apply`, it only shows what it would do.
+## In short
+
+**Put one photo in several albums ("Christmas", "My best photos") without copying it: no extra
+space used.**
+
+A tree gives each photo **one** place. `album` gathers a selection into a folder of **hard
+links**: a second name for the same file, neither copied nor moved. Without `--apply`, it only
+shows what it would do.
+
+**When**: after [`classify`](classify.md), whenever you want a selection: a category, an event,
+the photos you gave stars in Windows.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene album "Christmas" --category Christmas
+```
 
 ## At a glance
 

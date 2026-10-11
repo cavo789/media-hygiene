@@ -2,10 +2,27 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `inventory` · 🇫🇷 [Français](../../fr/commands/inventory.md)
 
+## In short
+
+**Answer your own questions about your photos in Excel: how many per year or per camera, which
+are blurry or tiny, which camera had its clock wrong, which hold a GPS position.**
+
 `inventory` exports every photo, RAW file and video the audits have seen to an Excel workbook,
 with everything they learnt about it: size, dates, device, settings, place, quality, duplicates,
-words. It reads **the cache alone**: no file of your folders is opened, it takes seconds even for
-tens of thousands of photos.
+words. It reads **the cache alone**: no file of your folders is opened, it takes seconds even
+for tens of thousands of photos.
+
+**When**: any time after an audit run with the cache; again after the next audit, to stay up to
+date.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene inventory
+```
 
 ## At a glance
 
@@ -16,12 +33,6 @@ tens of thousands of photos.
 | Writes | `/reports/<date>-inventory/inventory.xlsx` (or `inventory.csv`). |
 | Undo | Delete the folder. |
 | With `mh` | `mh inventory`. |
-
-## When to use it
-
-To answer your own questions with Excel's filters: how many photos per year or per camera, which
-pictures are blurry or tiny, which camera had its clock wrong, how many photos hold a GPS
-position.
 
 ## Run it
 

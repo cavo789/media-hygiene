@@ -2,13 +2,31 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `review` · 🇬🇧 [English](../../en/commands/review.md)
 
+## En bref
+
+**Ne garder que les meilleures photos de vos rafales, et trancher les quasi-doublons, en les
+regardant en grand dans votre navigateur.**
+
 Les rafales (cinq, dix, vingt photos en quelques secondes) et les quasi-doublons (une photo
 réenregistrée, plus petite) ne sont pas des fichiers identiques : c'est à vous de dire lesquels
-garder. `review` vous les montre **un à la fois**, en grand, dans votre navigateur, et vous choisissez au
-clavier. Chaque choix est enregistré aussitôt dans `decisions.json` ; `clean --decisions` les
-applique ensuite.
+garder. `review` vous les montre **un à la fois** et vous choisissez au clavier. Chaque choix
+est enregistré aussitôt dans `decisions.json` ; `clean --decisions` les applique ensuite.
 
-## En bref
+**Quand** : après un audit qui a trouvé des rafales (ou des quasi-doublons, avec `--near`),
+avant `clean --decisions`.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr review
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

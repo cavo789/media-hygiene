@@ -2,10 +2,28 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `tags` · 🇫🇷 [Français](../../fr/commands/tags.md)
 
+## In short
+
+**Give every photo and video words you can search for (its folders, name, date, place, what it
+shows), without touching the files.**
+
 `tags` gives every photo and video **words to find it by**: the meaningful words of its folders
-("Durbuy", "bear"), its date (year, month, season, holidays), its place, and, if you wish, what a
-local vision model sees ("cake", "candles", "snow"). The words stay **in the cache**, never in
-your photos; [`search`](search.md) finds them, [`xmp`](xmp.md) writes them into sidecars.
+("Durbuy", "bear") and of its name, its date (year, month, season, holidays), its place, and, if
+you wish, what a local vision model sees ("cake", "candles", "snow"). The words stay **in the
+cache**, never in your photos; [`search`](search.md) finds them, [`xmp`](xmp.md) writes them
+into sidecars.
+
+**When**: after an audit run with the cache; again after new photos or a renamed folder.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene tags
+```
 
 ## At a glance
 

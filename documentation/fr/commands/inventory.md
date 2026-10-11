@@ -2,12 +2,30 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `inventory` · 🇬🇧 [English](../../en/commands/inventory.md)
 
+## En bref
+
+**Répondre à vos propres questions sur vos photos avec Excel : combien par année ou par
+appareil, lesquelles sont floues ou minuscules, quel appareil avait son horloge fausse,
+lesquelles ont une position GPS.**
+
 `inventory` exporte vers un classeur Excel chaque photo, fichier RAW et vidéo que les audits ont
 vus, avec tout ce qu'ils en ont appris : taille, dates, appareil, réglages, lieu, qualité,
 doublons, mots. Il lit **le cache seul** : aucun fichier de vos dossiers n'est ouvert, il prend
 quelques secondes même pour des dizaines de milliers de photos.
 
-## En bref
+**Quand** : à tout moment après un audit lancé avec le cache ; à nouveau après l'audit suivant,
+pour rester à jour.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr inventory
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -16,12 +34,6 @@ quelques secondes même pour des dizaines de milliers de photos.
 | Écrit | `/reports/<date>-inventory/inventory.xlsx` (ou `inventory.csv`). |
 | Annuler | Supprimez le dossier. |
 | Avec `mh` | `mh inventory`. |
-
-## Quand l'utiliser
-
-Pour répondre à vos propres questions avec les filtres d'Excel : combien de photos par année ou
-par appareil, quelles images sont floues ou minuscules, quel appareil avait son horloge fausse,
-combien de photos ont une position GPS.
 
 ## Lancer
 

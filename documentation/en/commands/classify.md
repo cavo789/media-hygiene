@@ -2,9 +2,27 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `classify` · 🇫🇷 [Français](../../fr/commands/classify.md)
 
-`classify` proposes a place for every photo and video in a tidy tree, `year/category` by default:
-`2019/Seaside holidays`, `2016/To sort/2016-07-14`. It **only proposes**: nothing moves. You
-correct the proposal in a workbook, then [`sort`](sort.md) applies it.
+## In short
+
+**Get a tidy tree proposed for all your photos, by year, event, place or person, and correct it
+before anything moves.**
+
+`classify` proposes a place for every photo and video, `year/category` by default: `2019/Seaside
+holidays`, `2016/To sort/2016-07-14`. It **only proposes**: nothing moves. You correct the
+proposal in a workbook, then [`sort`](sort.md) applies it.
+
+**When**: after cleaning the duplicates (otherwise both copies are sorted); again after new
+photos or a changed rule: your edits of the previous workbook are carried over.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene classify
+```
 
 ## At a glance
 
@@ -16,12 +34,6 @@ correct the proposal in a workbook, then [`sort`](sort.md) applies it.
 | Writes | `/reports/<date>-classify/`: `classify.xlsx`, `report.html`, `plan.json`. Without `/reports`, the proposal stays on screen only. |
 | Undo | Nothing to undo: nothing moved. |
 | With `mh` | `mh classify`. |
-
-## When to use it
-
-After cleaning the duplicates (otherwise both copies are sorted), whenever you want a proposal:
-the first time, then after new photos or a changed rule. Your edits of the previous workbook are
-carried over.
 
 ## Run it
 
@@ -84,14 +96,17 @@ cavo789/media-hygiene classify --sample 20
 - If the latest workbook cannot be opened at all, `classify` stops before writing anything, so
   that your edits are not buried under a newer, empty workbook.
 - The local vision model (optional) is set in `[classify.ai]`: the photos are sent to its `url`,
-  and only there.
+  and only there. The photos [`tags`](tags.md) already described with the same `model` are not
+  sent again.
+- A `person` rule sorts the events where the people named in [`people`](people.md) appear
+  ([sorting, step 10](../sort/10-sort-by-person.md)).
 
 ## Go further
 
 - Sorting, [step 4](../sort/04-classify.md), [step 5](../sort/05-review-the-proposal.md),
   [step 6: the rules](../sort/06-write-down-what-you-know.md),
   [step 8: a local model](../sort/08-subjects-from-a-local-model.md),
-  [step 9: the GPS](../sort/09-places-from-gps.md)
+  [step 9: the GPS](../sort/09-places-from-gps.md), [step 10: by person](../sort/10-sort-by-person.md)
 - [Sort in short](../sort/quick-guide.md)
 - Next: [`review-sort`](review-sort.md) (optional), then [`sort`](sort.md).
 

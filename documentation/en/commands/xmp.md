@@ -2,10 +2,25 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `xmp` · 🇫🇷 [Français](../../fr/commands/xmp.md)
 
-The words of [`tags`](tags.md) live in the cache of this tool. To find them in digiKam,
-darktable, Lightroom or Immich, `xmp` writes them into **sidecars**: small `.xmp` files next to
-the photos (`IMG_1.jpg.xmp` next to `IMG_1.jpg`). The photos themselves are never changed.
+## In short
+
+**See your words in digiKam, darktable, Lightroom or Immich, without any change to the photos
+themselves.**
+
+The words of [`tags`](tags.md) live in the cache of this tool. `xmp` writes them into
+**sidecars**: small `.xmp` files next to the photos (`IMG_1.jpg.xmp` next to `IMG_1.jpg`).
 Without `--apply`, it only shows what it would write.
+
+**When**: after [`tags`](tags.md), and again after each new `tags` run.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene xmp
+```
 
 ## At a glance
 
@@ -37,7 +52,8 @@ docker run --rm -it `
 - The words of the sources in `xmp_sources` (`vision` and `place` by default) into `dc:subject`;
   the model's sentence into `dc:description`.
 - With `place`: the town into `photoshop:City`, its country into `photoshop:Country`, your
-  personal place into `Iptc4xmpCore:Location`.
+  personal place into `Iptc4xmpCore:Location`. A name that is two of these at once (Luxembourg, a
+  town and a country; a place of yours named like its town) fills both fields.
 - **A sidecar already there is completed, never replaced**: its edits, its other properties and
   its own words stay. A field another application filled keeps its value.
 

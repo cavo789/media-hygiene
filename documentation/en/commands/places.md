@@ -2,10 +2,27 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `places` · 🇫🇷 [Français](../../fr/commands/places.md)
 
+## In short
+
+**Name the places that matter to you on a map (home, grandpa's, a village), so that `classify`
+sorts your photos by place and by trip.**
+
 Recent phones write **where** each photo was taken. `places` shows those positions on a map in
-your browser, grouped in circles, and lets you name the places that matter to you: "Home", "At
-grandpa's", a village. They are saved into `config.toml`, where the `place` and `trip` rules of
-[`classify`](classify.md) use them.
+your browser, grouped in circles, and saves the places you name into `config.toml`, where the
+`place` and `trip` rules of [`classify`](classify.md) use them.
+
+**When**: before [`classify`](classify.md), once an audit run with the cache has read the
+positions; again whenever a new place matters.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene places
+```
 
 ## At a glance
 

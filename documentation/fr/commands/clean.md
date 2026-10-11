@@ -2,12 +2,29 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `clean` · 🇬🇧 [English](../../en/commands/clean.md)
 
-`clean` refait l'audit, vous montre ce qu'il va faire, **demande**, puis déplace les copies en
-trop en quarantaine, après avoir comparé chacune octet par octet avec la copie gardée. Rien n'est
-effacé : `undo` remet tout en place, et la place n'est libérée que quand vous videz la
-quarantaine avec `purge`.
-
 ## En bref
+
+**Libérer la place que prennent vos photos en double, en sécurité : les copies en trop sont
+mises de côté, jamais effacées, et tout peut être remis en place.**
+
+`clean` refait l'audit, vous montre ce qu'il va faire, **demande**, puis déplace les copies en
+trop en quarantaine, après avoir comparé chacune octet par octet avec la copie gardée. `undo`
+remet tout en place ; la place n'est libérée que quand vous videz la quarantaine avec `purge`.
+
+**Quand** : après un [`audit`](audit.md) dont vous avez lu et approuvé les paires de dossiers.
+
+**Essayer** :
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr clean
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,12 +34,6 @@ quarantaine avec `purge`.
 | Écrit | Le journal de l'exécution, la quarantaine, le rapport de nettoyage. |
 | Annuler | [`undo`](undo.md) restaure chaque fichier de l'exécution. |
 | Avec `mh` | `mh clean` : vos dossiers sont montés en écriture pour cette commande seulement. |
-
-## Quand l'utiliser
-
-Après un [`audit`](audit.md) dont vous avez lu et approuvé les paires de dossiers. Commencez
-petit (un sous-dossier), vérifiez, puis élargissez. Mettez OneDrive, Google Drive ou Dropbox en
-pause pendant le nettoyage.
 
 ## Lancer
 
@@ -90,6 +101,8 @@ cavo789/media-hygiene --locale fr clean --yes
 
 ## Bon à savoir
 
+- **Commencez petit** : un sous-dossier, vérifiez, puis élargissez. Mettez OneDrive, Google
+  Drive ou Dropbox en pause pendant le nettoyage.
 - **Des refus qui vous protègent** : `clean` s'arrête avant l'analyse sans `/journal` ni
   `/quarantine`, avec un dossier en `:ro`, avec un dossier où il ne peut pas écrire, ou avec un
   dossier de l'outil placé dans un dossier de photos. Le message dit lequel.

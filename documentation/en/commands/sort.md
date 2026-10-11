@@ -2,10 +2,28 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `sort` · 🇫🇷 [Français](../../fr/commands/sort.md)
 
+## In short
+
+**Move your photos into the tidy tree you approved, with the proof that nothing was lost, and
+undo it whenever you like.**
+
 `sort` applies the workbook of [`classify`](classify.md), with your edits: it checks it, says
 what it will do, **asks**, then moves each file to its folder. On one disk, a move is a rename:
-nothing is copied, no space is used. Every move is journaled, `undo` puts everything back, and
-the end proves that nothing was lost.
+nothing is copied, no space is used. Every move is journaled and `undo` puts everything back.
+
+**When**: once you have reviewed the proposal ([sorting, step
+5](../sort/05-review-the-proposal.md)) and, if you wish, named the events with
+[`review-sort`](review-sort.md). **Save and close the workbook first.**
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene sort
+```
 
 ## At a glance
 
@@ -17,12 +35,6 @@ the end proves that nothing was lost.
 | Writes | The journal, the moves, the proof in `/reports/<run>-sort/manifest.json`. |
 | Undo | [`undo`](undo.md): the files go back, the removed folders come back. |
 | With `mh` | `mh sort`. |
-
-## When to use it
-
-Once you have reviewed the proposal ([sorting, step 5](../sort/05-review-the-proposal.md)) and,
-if you wish, named the events in the browser ([`review-sort`](review-sort.md)). **Save and close
-the workbook first.**
 
 ## Run it
 

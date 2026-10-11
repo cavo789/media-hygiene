@@ -2,12 +2,24 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `history` · 🇬🇧 [English](../../en/commands/history.md)
 
-`history` lit le journal et liste les exécutions, de la plus récente à la plus ancienne : la
-commande qui a fait chacune, ce qu'elle a supprimé, libéré, déplacé et mis de côté, et combien de
-fichiers ont été restaurés depuis. C'est là que vous trouvez le nom d'une exécution à donner à
-`undo` ou à `purge`.
-
 ## En bref
+
+**Voir ce que chaque exécution a fait, et trouver le nom à donner à `undo` ou à `purge`.**
+
+`history` lit le journal et liste les exécutions, de la plus récente à la plus ancienne : la
+commande qui a fait chacune, ce qu'elle a supprimé, libéré, déplacé et mis de côté, et combien
+de fichiers ont été restaurés depuis.
+
+**Quand** : après un `clean`, un `sort`, un `album` ou un `xmp --apply`, avant un `undo` ou un
+`purge`.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygiene --locale fr history
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

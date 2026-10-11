@@ -10,26 +10,33 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 
 | Je veux… | Commande |
 |---|---|
-| savoir ce que contiennent mes dossiers, sans aucun risque | [`audit`](commands/audit.md) |
-| savoir où j'en suis après quelques jours | [`status`](commands/status.md) |
-| libérer la place que prennent les copies | [`clean`](commands/clean.md), puis [`purge`](commands/purge.md) |
-| choisir les meilleures photos de mes rafales, ou décider les quasi-doublons | [`review`](commands/review.md), puis `clean --decisions` |
-| défaire ce qu'une exécution a fait | [`undo`](commands/undo.md) ([`history`](commands/history.md) liste les exécutions) |
-| donner à mes photos une arborescence bien rangée | [`classify`](commands/classify.md), [`review-sort`](commands/review-sort.md), puis [`sort`](commands/sort.md) |
-| rassembler mes plus belles photos dans un dossier, sans copie | [`album`](commands/album.md) |
-| trier d'après l'endroit où les photos ont été prises | [`places`](commands/places.md), puis `classify` |
-| retrouver une photo par un mot | [`tags`](commands/tags.md), puis [`search`](commands/search.md) |
-| voir mes mots dans digiKam, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
-| regrouper les photos par visage, nommer les personnes | [`people`](commands/people.md) |
-| lister chaque photo dans Excel | [`inventory`](commands/inventory.md) |
-| être sûr des doublons avant de supprimer | [`crosscheck`](commands/crosscheck.md) |
-| taper des commandes plus courtes | [`launcher`](commands/launcher.md) |
-| vérifier mes réglages et mes montages | [`config`](commands/config.md), [`reports`](commands/reports.md) pour les rapports |
+| savoir, sans aucun risque, combien de copies contiennent mes dossiers et quelle place elles prennent | [`audit`](commands/audit.md) |
+| savoir en une seconde où j'en suis après quelques jours, et la prochaine étape | [`status`](commands/status.md) |
+| libérer la place que prennent mes photos en double, en sécurité : mises de côté, jamais effacées | [`clean`](commands/clean.md) |
+| ne garder que les meilleures photos de mes rafales, trancher les quasi-doublons | [`review`](commands/review.md), puis `clean --decisions` |
+| voir ce que chaque exécution a fait | [`history`](commands/history.md) |
+| remettre chaque fichier d'une exécution exactement où il était | [`undo`](commands/undo.md) |
+| récupérer la place pour de bon, une fois la quarantaine vérifiée | [`purge`](commands/purge.md) |
+| être sûr des doublons avant de supprimer des photos de famille | [`crosscheck`](commands/crosscheck.md) |
+| retrouver tous les rapports, supprimer les anciens | [`reports`](commands/reports.md) |
+| obtenir une arborescence bien rangée, par année, événement, lieu ou personne, et la corriger d'abord | [`classify`](commands/classify.md) |
+| nommer mes événements en regardant leurs photos | [`review-sort`](commands/review-sort.md) |
+| déplacer mes photos dans l'arborescence approuvée, de façon annulable | [`sort`](commands/sort.md) |
+| mettre une même photo dans plusieurs albums, sans copie | [`album`](commands/album.md) |
+| nommer mes lieux sur une carte, pour trier par lieu et par voyage | [`places`](commands/places.md), puis `classify` |
+| retrouver les photos de quelqu'un par son nom, les ranger selon qui y figure | [`people`](commands/people.md), puis `search` ou `classify` |
+| donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
+| retrouver une photo par un mot, un lieu, une année, une personne | [`search`](commands/search.md) |
+| voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
+| répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
+| taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
+| vérifier chaque réglage et chaque dossier avant que l'outil agisse | [`config`](commands/config.md) |
 
 ## Commandes
 
-Chaque commande a sa propre page : ce qu'elle fait, quand l'utiliser, les dossiers dont elle a
-besoin, ses options, des exemples et son `--help`.
+Chaque commande a sa propre page. Elle commence par **En bref** : ce que la commande vous apporte,
+quand l'utiliser et la commande à essayer ; puis les dossiers dont elle a besoin, ses options, des
+exemples et son `--help`.
 
 **🔒 Analyser : lecture seule, ne modifie jamais vos photos**
 
@@ -43,13 +50,13 @@ besoin, ses options, des exemples et son `--help`.
 | [`crosscheck`](commands/crosscheck.md) | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [13](clean/13-second-opinion.md) |
 | [`config`](commands/config.md) | Affiche chaque réglage, son origine, et l'état de chaque point de montage ; crée un `config.toml` commenté la première fois. | [7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
-| [`classify`](commands/classify.md) | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [Trier, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
+| [`classify`](commands/classify.md) | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [Trier, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
 | [`review-sort`](commands/review-sort.md) | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, 11](sort/11-name-events-in-the-browser.md) |
 | [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
-| [`tags`](commands/tags.md) | Donne à chaque photo des mots pour la retrouver : les mots parlants de ses dossiers, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
-| [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
-| [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md) |
+| [`tags`](commands/tags.md) | Donne à chaque photo et vidéo des mots pour la retrouver : les mots parlants de ses dossiers et de son nom de fichier, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif ; une vidéo par l'image du milieu). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
+| [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
+| [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
 
 **Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
 

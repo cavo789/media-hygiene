@@ -2,10 +2,28 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `review-sort` · 🇫🇷 [Français](../../fr/commands/review-sort.md)
 
+## In short
+
+**Name your events while looking at their photos, one event at a time, with the keyboard, rather
+than in a spreadsheet.**
+
 The workbook of [`classify`](classify.md) is good for renaming in bulk, not for *looking* at
-photos. `review-sort` shows **one event at a time** in your browser, with its photos, its proposal
-and a field to name it, all with the keyboard. Your choices are saved next to the proposal;
-[`sort`](sort.md) applies them on top of the workbook.
+photos. `review-sort` shows **one event at a time** in your browser, with its photos, its
+proposal and a field to name it. Your choices are saved next to the proposal; [`sort`](sort.md)
+applies them on top of the workbook.
+
+**When**: optional, between `classify` and `sort`, when there are many events to name. The
+workbook alone is enough, and both can be used together.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene review-sort
+```
 
 ## At a glance
 
@@ -16,11 +34,6 @@ and a field to name it, all with the keyboard. Your choices are saved next to th
 | Writes | `sort-decisions.json`, next to `plan.json` in the folder of the `classify` run. |
 | Undo | `Delete` in the page takes a choice back; the workbook then decides again. |
 | With `mh` | `mh review-sort`: the port is published for you. |
-
-## When to use it
-
-Optional, after `classify` and before `sort`, when there are many events to name. The workbook
-alone is enough, and both can be used together.
 
 ## Run it
 

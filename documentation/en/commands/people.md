@@ -2,10 +2,29 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `people` · 🇫🇷 [Français](../../fr/commands/people.md)
 
+## In short
+
+**Find the photos of someone by their name, and file them by who is on them, without a single
+face leaving your computer.**
+
 `people` finds the **faces** in your photos, groups those that look alike (probably one person
 per group), and shows the groups in your browser, largest first, where you **name** them. Then
-`search Chloé` finds the photos of Chloé. Everything runs on your computer: the faces stay in the
-cache, never sent anywhere; the names go into your `config.toml`.
+`search Chloé` finds the photos of Chloé, and a `person` rule of [`classify`](classify.md) files
+them. The faces stay in the cache, never sent anywhere; the names go into your `config.toml`.
+
+**When**: after an audit run with the cache, or right after it with `audit --people`; again
+after new photos: only those are analysed.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene people
+```
 
 ## At a glance
 
@@ -47,7 +66,8 @@ On the page, type a name on a group and press Enter: the name is saved into `con
 back and shown. `x` picks several groups to name at once, × takes a wrong face out, `i` ignores
 a group of strangers, `y` confirms a suggestion ("Chloé?"). The next runs keep every name, and
 [`search`](search.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
-Details: [People](../reference-people.md#name-the-groups).
+Each name is a `[[people.person]]` entry of `config.toml`. Details:
+[People](../reference-people.md#name-the-groups).
 
 ## Options
 
@@ -70,7 +90,7 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 - The settings `[people]` (`similarity`, `min_face`, `min_sharpness`) only change the grouping:
   nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
-  takes.
+  takes; `with_audit = true` in `[people]` does it at every audit.
 - Videos are not analysed yet.
 - Without network, the error names the two model files to save by hand into the `models` folder
   of the cache.

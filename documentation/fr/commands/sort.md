@@ -2,12 +2,31 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `sort` · 🇬🇧 [English](../../en/commands/sort.md)
 
-`sort` applique le classeur de [`classify`](classify.md), avec vos modifications : il le
-vérifie, dit ce qu'il va faire, **demande**, puis déplace chaque fichier vers son dossier. Sur un
-même disque, un déplacement est un renommage : rien n'est copié, aucune place n'est prise. Chaque
-déplacement est journalisé, `undo` remet tout en place, et la fin prouve que rien n'a été perdu.
-
 ## En bref
+
+**Déplacer vos photos dans l'arborescence que vous avez approuvée, avec la preuve que rien n'a
+été perdu, et revenir en arrière quand vous voulez.**
+
+`sort` applique le classeur de [`classify`](classify.md), avec vos modifications : il le
+vérifie, dit ce qu'il va faire, **demande**, puis déplace chaque fichier vers son dossier. Sur
+un même disque, un déplacement est un renommage : rien n'est copié, aucune place n'est prise.
+Chaque déplacement est journalisé et `undo` remet tout en place.
+
+**Quand** : une fois la proposition relue ([trier, étape 5](../sort/05-review-the-proposal.md))
+et, si vous le voulez, les événements nommés avec [`review-sort`](review-sort.md). **Enregistrez
+et fermez d'abord le classeur.**
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr sort
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,12 +36,6 @@ déplacement est journalisé, `undo` remet tout en place, et la fin prouve que r
 | Écrit | Le journal, les déplacements, la preuve dans `/reports/<exécution>-sort/manifest.json`. |
 | Annuler | [`undo`](undo.md) : les fichiers reviennent, les dossiers supprimés aussi. |
 | Avec `mh` | `mh sort`. |
-
-## Quand l'utiliser
-
-Une fois la proposition relue ([trier, étape 5](../sort/05-review-the-proposal.md)) et, si vous
-le voulez, les événements nommés dans le navigateur ([`review-sort`](review-sort.md)).
-**Enregistrez et fermez d'abord le classeur.**
 
 ## Lancer
 

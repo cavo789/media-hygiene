@@ -10,26 +10,32 @@ them one at a time; this page gathers them. The commands whose help starts with 
 
 | I want to… | Command |
 |---|---|
-| know what my folders hold, without any risk | [`audit`](commands/audit.md) |
-| know where I stand after a few days | [`status`](commands/status.md) |
-| free the space the copies take | [`clean`](commands/clean.md), then [`purge`](commands/purge.md) |
-| choose the best shots of my bursts, or decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
-| put back what a run did | [`undo`](commands/undo.md) ([`history`](commands/history.md) lists the runs) |
-| give my photos a tidy tree | [`classify`](commands/classify.md), [`review-sort`](commands/review-sort.md), then [`sort`](commands/sort.md) |
-| gather my best photos in one folder, without a copy | [`album`](commands/album.md) |
-| sort by where the photos were taken | [`places`](commands/places.md), then `classify` |
-| find a photo by a word | [`tags`](commands/tags.md), then [`search`](commands/search.md) |
-| see my words in digiKam, Lightroom or Immich | [`xmp`](commands/xmp.md) |
-| group the photos by face, name the people | [`people`](commands/people.md) |
-| list every photo in Excel | [`inventory`](commands/inventory.md) |
-| be sure of the duplicates before deleting | [`crosscheck`](commands/crosscheck.md) |
-| type shorter commands | [`launcher`](commands/launcher.md) |
-| check my settings and my mounts | [`config`](commands/config.md), [`reports`](commands/reports.md) for the reports |
+| know, without any risk, how many copies my folders hold and how much space they take | [`audit`](commands/audit.md) |
+| know in a second where I stand after a few days, and the next step | [`status`](commands/status.md) |
+| free the space my duplicate photos take, safely: set aside, never erased | [`clean`](commands/clean.md) |
+| keep only the best shots of my bursts, decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
+| see what each run did | [`history`](commands/history.md) |
+| put back every file of a run, exactly where it was | [`undo`](commands/undo.md) |
+| get the space back for good, once I checked the quarantine | [`purge`](commands/purge.md) |
+| be sure of the duplicates before deleting family photos | [`crosscheck`](commands/crosscheck.md) |
+| find every report again, delete the old ones | [`reports`](commands/reports.md) |
+| get a tidy tree proposed, by year, event, place or person, and correct it first | [`classify`](commands/classify.md) |
+| name my events while looking at their photos | [`review-sort`](commands/review-sort.md) |
+| move my photos into the tree I approved, undoable | [`sort`](commands/sort.md) |
+| put one photo in several albums, without a copy | [`album`](commands/album.md) |
+| name my places on a map, to sort by place and by trip | [`places`](commands/places.md), then `classify` |
+| find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `search` or `classify` |
+| give my photos and videos words to search for | [`tags`](commands/tags.md) |
+| find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
+| see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
+| answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
+| type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
+| check every setting and every folder before the tool acts | [`config`](commands/config.md) |
 
 ## Commands
 
-Each command has its own page: what it does, when to use it, the folders it needs, its options,
-examples and its `--help`.
+Each command has its own page. It starts with **In short**: what the command gives you, when to
+use it and the command to try; then the folders it needs, its options, examples and its `--help`.
 
 **🔒 Analyse: read-only, never changes your photos**
 
@@ -43,13 +49,13 @@ examples and its `--help`.
 | [`crosscheck`](commands/crosscheck.md) | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
 | [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
-| [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md) |
+| [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
 | [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
-| [`tags`](commands/tags.md) | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
-| [`search`](commands/search.md) | Find photos by their words (those of `tags`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
-| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md) |
+| [`tags`](commands/tags.md) | Give every photo and video words to find it by: the meaningful words of its folders and of its file name, its date (year, month, season, holidays), its place, and what a local vision model sees (optional; a video by its middle frame). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
+| [`search`](commands/search.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
+| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
 
 **Act: moves, writes or deletes files** (journaled, undoable)
 

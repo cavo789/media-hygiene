@@ -2,12 +2,30 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `classify` · 🇬🇧 [English](../../en/commands/classify.md)
 
-`classify` propose une place à chaque photo et vidéo dans une arborescence bien rangée,
-`année/catégorie` par défaut : `2019/Vacances à la mer`, `2016/À trier/2016-07-14`. Il **ne fait
-que proposer** : rien ne bouge. Vous corrigez la proposition dans un classeur, puis
-[`sort`](sort.md) l'applique.
-
 ## En bref
+
+**Obtenir une arborescence bien rangée pour toutes vos photos, par année, événement, lieu ou
+personne, et la corriger avant que rien ne bouge.**
+
+`classify` propose une place à chaque photo et vidéo, `année/catégorie` par défaut :
+`2019/Vacances à la mer`, `2016/À trier/2016-07-14`. Il **ne fait que proposer** : rien ne
+bouge. Vous corrigez la proposition dans un classeur, puis [`sort`](sort.md) l'applique.
+
+**Quand** : après avoir nettoyé les doublons (sinon les deux copies sont triées) ; à nouveau
+après de nouvelles photos ou une règle modifiée : vos modifications du classeur précédent sont
+reprises.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene --locale fr classify
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,12 +35,6 @@ que proposer** : rien ne bouge. Vous corrigez la proposition dans un classeur, p
 | Écrit | `/reports/<date>-classify/` : `classify.xlsx`, `report.html`, `plan.json`. Sans `/reports`, la proposition reste à l'écran seulement. |
 | Annuler | Rien à annuler : rien n'a bougé. |
 | Avec `mh` | `mh classify`. |
-
-## Quand l'utiliser
-
-Après avoir nettoyé les doublons (sinon les deux copies sont triées), chaque fois que vous voulez
-une proposition : la première fois, puis après de nouvelles photos ou une règle modifiée. Vos
-modifications du classeur précédent sont reprises.
 
 ## Lancer
 
@@ -86,14 +98,17 @@ cavo789/media-hygiene --locale fr classify --sample 20
   que ce soit, pour que vos modifications ne soient pas enterrées sous un classeur plus récent et
   vide.
 - Le modèle de vision local (facultatif) se règle dans `[classify.ai]` : les photos sont envoyées
-  à son `url`, et seulement là.
+  à son `url`, et seulement là. Les photos que [`tags`](tags.md) a déjà décrites avec le même
+  `model` ne sont pas renvoyées.
+- Une règle `person` range les événements où figurent les personnes nommées dans
+  [`people`](people.md) ([trier, étape 10](../sort/10-sort-by-person.md)).
 
 ## Pour aller plus loin
 
 - Trier, [étape 4](../sort/04-classify.md), [étape 5](../sort/05-review-the-proposal.md),
   [étape 6 : les règles](../sort/06-write-down-what-you-know.md),
   [étape 8 : un modèle local](../sort/08-subjects-from-a-local-model.md),
-  [étape 9 : le GPS](../sort/09-places-from-gps.md)
+  [étape 9 : le GPS](../sort/09-places-from-gps.md), [étape 10 : par personne](../sort/10-sort-by-person.md)
 - [Trier en bref](../sort/quick-guide.md)
 - Ensuite : [`review-sort`](review-sort.md) (facultatif), puis [`sort`](sort.md).
 

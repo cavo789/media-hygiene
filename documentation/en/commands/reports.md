@@ -2,9 +2,21 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `reports` · 🇫🇷 [Français](../../fr/commands/reports.md)
 
+## In short
+
+**Find every report again from one page, and delete the old ones in one command.**
+
 Every audit, clean and crosscheck writes its own report folder in `/reports`. `reports` lists
 them, newest first, and refreshes `index.html`, the page that links them all. With `--prune`, it
 keeps the most recent ones and deletes the others.
+
+**When**: to find an older report, or when the reports folder grows too large.
+
+**Try it**:
+
+```powershell
+docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene reports
+```
 
 ## At a glance
 

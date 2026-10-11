@@ -2,10 +2,26 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `crosscheck` · 🇫🇷 [Français](../../fr/commands/crosscheck.md)
 
-Before deleting family photos, a second opinion is reassuring. `crosscheck` audits again, then
-compares its duplicates, group by group, with those found by
+## In short
+
+**Be sure of your duplicates before deleting family photos: a second, independent tool checks
+them, group by group.**
+
+`crosscheck` audits again, then compares its duplicates with those found by
 [Czkawka](https://github.com/qarmin/czkawka), an open-source duplicate finder written
 independently, with another hash function. When both agree, you can clean with confidence.
+
+**When**: optional, once, before a first large `clean` (`clean` never requires it). The first
+run prints the Czkawka command to paste; the next one compares.
+
+**Try it**:
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  cavo789/media-hygiene crosscheck
+```
 
 ## At a glance
 
@@ -17,10 +33,6 @@ independently, with another hash function. When both agree, you can clean with c
 | Writes | The cache, a crosscheck report in `/reports`. |
 | Undo | Nothing to undo. |
 | With `mh` | `mh crosscheck`. |
-
-## When to use it
-
-Optional, once, before a first large `clean`: `clean` never requires it.
 
 ## Run it, in three steps
 

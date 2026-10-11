@@ -2,9 +2,22 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `audit` · 🇫🇷 [Français](../../fr/commands/audit.md)
 
+## In short
+
+**Know, without any risk, how many copies your folders hold and how much space they take.**
+
 `audit` looks at every photo, RAW file and video of the folders you mount, and tells you what it
-finds: identical copies, broken files, orphan sidecars, near duplicates and burst series. It is
-the first command to run, and the one to run again whenever you want to know where you stand.
+finds: identical copies, broken files, orphan sidecars, near duplicates and burst series. It
+changes nothing.
+
+**When**: the very first time; then before every `clean` (with the same options, to check which
+copy stays), and after adding photos or a disk.
+
+**Try it**:
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
+```
 
 ## At a glance
 
@@ -16,14 +29,6 @@ the first command to run, and the one to run again whenever you want to know whe
 | Writes | The cache, and a report in `/reports/<date>-audit/` when `/reports` is mounted. |
 | Undo | Nothing to undo: nothing changed. |
 | With `mh` | `mh audit` ([`launcher`](launcher.md)). |
-
-## When to use it
-
-- **The very first time**: to see, without any risk, how many copies your folders hold and how
-  much space they take.
-- **Before every `clean`**, with the same options, to read the folder pairs and check which copy
-  stays.
-- **After adding photos** or a disk: with the cache, only the new files are read.
 
 ## Run it
 
@@ -57,7 +62,7 @@ It prints, in this order:
 | `--exclude PATH` | Folder never analysed, such as a real backup. [Step 5](../clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--exclude-name NAME` | Folder name never analysed, wherever it is (`--exclude-name Thumbnails,.Trash-*`). [Step 5](../clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); other file types too (`--ext pdf,docx`). [Step 6](../clean/06-file-types.md) |
-| `--people` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking ([People](../reference-people.md#during-the-audit-audit---people)). |
+| `--people` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking ([People](../reference-people.md#during-the-audit-audit---people)); `with_audit = true` in `[people]` does it at every audit. |
 | `--yes`, `-y` | With `--people`: do not ask. Without a terminal (no `-it`), `--people` needs it: nothing waits for an answer. |
 
 Paths are written the Windows way (`C:\Photos\Family`), as you see them in the Explorer. Every

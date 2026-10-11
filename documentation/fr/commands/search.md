@@ -2,12 +2,31 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `search` · 🇬🇧 [English](../../en/commands/search.md)
 
-`search` retrouve des photos par les mots que [`tags`](tags.md) leur a donnés, dans une page de
-votre navigateur : un champ, une grille des photos trouvées, les meilleures d'abord, chacune avec
-son dossier, sa date et ses mots. Avec des mots après la commande, il affiche à la place les
-premiers résultats en tableau.
-
 ## En bref
+
+**Retrouver une photo par ce dont vous vous souvenez : un mot, un lieu, une année, une
+personne.**
+
+`search` retrouve des photos par les mots que [`tags`](tags.md) leur a donnés et les noms donnés
+dans [`people`](people.md), dans une page de votre navigateur : un champ, une grille des photos
+trouvées, les meilleures d'abord, chacune avec son dossier, sa date et ses mots. Avec des mots
+après la commande, il affiche à la place les premiers résultats en tableau.
+
+**Quand** : après [`tags`](tags.md) (et [`people`](people.md) pour les noms) ; à nouveau une
+fois les nouvelles photos passées par `tags`.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr search
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -23,6 +42,7 @@ premiers résultats en tableau.
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr search
 ```
 

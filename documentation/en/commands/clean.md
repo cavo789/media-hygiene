@@ -2,9 +2,27 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `clean` · 🇫🇷 [Français](../../fr/commands/clean.md)
 
+## In short
+
+**Free the space your duplicate photos take, safely: the extra copies are set aside, never
+erased, and everything can be put back.**
+
 `clean` audits again, shows you what it is about to do, **asks**, then moves the extra copies to
-the quarantine, after comparing each one byte for byte with the copy kept. Nothing is erased:
-`undo` puts everything back, and the space is freed only when you `purge` the quarantine.
+the quarantine, after comparing each one byte for byte with the copy kept. `undo` puts
+everything back; the space is freed only when you `purge` the quarantine.
+
+**When**: after an [`audit`](audit.md) whose folder pairs you have read and agree with.
+
+**Try it**:
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean
+```
 
 ## At a glance
 
@@ -16,11 +34,6 @@ the quarantine, after comparing each one byte for byte with the copy kept. Nothi
 | Writes | The journal of the run, the quarantine, the clean report. |
 | Undo | [`undo`](undo.md) restores every file of the run. |
 | With `mh` | `mh clean`: your folders are mounted writable for this command only. |
-
-## When to use it
-
-After an [`audit`](audit.md) whose folder pairs you have read and agree with. Start small (one
-subfolder), check, then widen. Pause OneDrive, Google Drive or Dropbox while it runs.
 
 ## Run it
 
@@ -88,6 +101,8 @@ cavo789/media-hygiene clean --yes
 
 ## Good to know
 
+- **Start small**: one subfolder, check, then widen. Pause OneDrive, Google Drive or Dropbox
+  while it runs.
 - **Refusals that protect you**: `clean` stops before the analysis without `/journal` or
   `/quarantine`, with a `:ro` folder, with a folder it cannot write to, or with a tool folder
   placed inside a photo folder. The message says which one.

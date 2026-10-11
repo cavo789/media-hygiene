@@ -2,9 +2,24 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `config` · 🇫🇷 [Français](../../fr/commands/config.md)
 
-`config` shows every setting the tool will use, **where each one comes from** (the built-in
-default, `config.toml`, an environment variable), and the state of each mount point. The first
-time, it also creates a commented `config.toml` for you to fill in.
+## In short
+
+**Check what the tool will use before it acts: every setting with where it comes from, every
+folder with its state.**
+
+`config` shows every setting, **where each one comes from** (the built-in default,
+`config.toml`, an environment variable, the command line), and the state of each mount point.
+The first time, it also creates a commented `config.toml` for you to fill in.
+
+**When**: once at the start, to get that `config.toml`; then whenever a setting does not seem to
+apply or a folder is not seen.
+
+**Try it**:
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config
+```
 
 ## At a glance
 
@@ -16,12 +31,6 @@ time, it also creates a commented `config.toml` for you to fill in.
 | Writes | A commented `config.toml` in `/config`, the first time only. |
 | Undo | Delete `config.toml` to get the defaults back. |
 | With `mh` | `mh config`. |
-
-## When to use it
-
-- **Once, at the start**, to get a commented `config.toml`.
-- **When a setting does not seem to apply**: the *Origin* column tells which layer won.
-- **When a folder is not seen**: the mount table says what is mounted, missing or read-only.
 
 ## Run it
 
@@ -57,6 +66,8 @@ the option of the command line.
 - `/config` holds `config.toml` **only**: never put anything else there.
 - A setting unknown to this version is said, with its line: see
   [troubleshooting](../reference-troubleshooting.md#a-setting-of-configtoml-is-unknown-to-this-version).
+  Several problems are listed one per line; one in a rule or a place names it by its number and
+  its `name` (`[[classify.rules]] number 2 ('Birthday')`).
 
 ## Go further
 

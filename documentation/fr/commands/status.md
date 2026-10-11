@@ -2,11 +2,30 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `status` · 🇬🇧 [English](../../en/commands/status.md)
 
-De retour après quelques jours, vous ne savez plus quelle exécution est en quarantaine, ni si un
-tri a été appliqué ? `status` lit les dossiers de l'outil, sans analyser vos photos (environ une
-seconde), vous dit où vous en êtes, puis **une** étape suivante, en commande complète.
-
 ## En bref
+
+**De retour après quelques jours ? Savoir en une seconde où vous en êtes, et la prochaine étape
+à faire.**
+
+Vous ne savez plus quelle exécution est en quarantaine, ni si un tri a été appliqué ? `status`
+lit les dossiers de l'outil, sans analyser vos photos (environ une seconde), vous dit où vous en
+êtes, puis donne **une** étape suivante, en commande complète.
+
+**Quand** : chaque fois que vous revenez à vos photos, ou que vous ne savez plus ce qui a été
+fait.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr status
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|

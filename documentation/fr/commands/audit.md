@@ -2,12 +2,25 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `audit` · 🇬🇧 [English](../../en/commands/audit.md)
 
+## En bref
+
+**Savoir, sans aucun risque, combien de copies vos dossiers contiennent et quelle place elles
+prennent.**
+
 `audit` examine chaque photo, fichier RAW et vidéo des dossiers que vous montez, et vous dit ce
 qu'il trouve : copies identiques, fichiers cassés, fichiers compagnons orphelins, quasi-doublons
-et rafales. C'est la première commande à lancer, et celle à relancer chaque fois que vous voulez
-savoir où vous en êtes.
+et rafales. Il ne modifie rien.
 
-## En bref
+**Quand** : la toute première fois ; puis avant chaque `clean` (avec les mêmes options, pour
+vérifier quelle copie reste), et après avoir ajouté des photos ou un disque.
+
+**Essayer** :
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+```
+
+## D'un coup d'œil
 
 | | |
 |---|---|
@@ -17,14 +30,6 @@ savoir où vous en êtes.
 | Écrit | Le cache, et un rapport dans `/reports/<date>-audit/` quand `/reports` est monté. |
 | Annuler | Rien à annuler : rien n'a changé. |
 | Avec `mh` | `mh audit` ([`launcher`](launcher.md)). |
-
-## Quand l'utiliser
-
-- **La toute première fois** : pour voir, sans aucun risque, combien de copies vos dossiers
-  contiennent et quelle place elles prennent.
-- **Avant chaque `clean`**, avec les mêmes options, pour lire les paires de dossiers et vérifier
-  quelle copie reste.
-- **Après avoir ajouté des photos** ou un disque : avec le cache, seuls les nouveaux fichiers sont lus.
 
 ## Lancer
 
@@ -59,7 +64,7 @@ Il affiche, dans cet ordre :
 | `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6](../clean/06-file-types.md) |
-| `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)). |
+| `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)) ; `with_audit = true` dans `[people]` le fait à chaque audit. |
 | `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
 
 Les chemins s'écrivent à la façon de Windows (`C:\Photos\Famille`), comme dans l'Explorateur.
