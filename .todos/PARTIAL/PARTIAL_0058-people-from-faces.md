@@ -162,3 +162,11 @@ Note the figures here, then decide to build, reduce or drop.
 - Synthetic faces for documentation screenshots (`tests/support/docs/`) and the captures
   (`help.txt`, `config.txt`, `config.toml`).
   **Reason:** no `docs_screenshots` run tonight.
+
+### Follow-ups delivered (2026-10-11, third pass)
+- Naming on the page (`[[people.person]]`, merge, remove a face, ignore, suggestions) and
+  `search` by person (`TagSource.PERSON`): **0091** (DONE).
+- Face finding inside the audit, on request (`audit --people`, `[people] with_audit`):
+  **0089** (DONE).
+- The `match = "person"` classify rule: filed as **0095**; the sort step waits for it
+  (**0088**, BLOCKED). ArcFace as a choice: **0090**, BLOCKED until measured.

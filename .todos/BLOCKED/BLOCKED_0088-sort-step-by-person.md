@@ -30,3 +30,13 @@ never real photos.
 
 - The step exists in both languages, same file name, linked from the sort quick guide.
 - `tests/unit/test_documentation.py` passes (links, anchors, parity, screenshots).
+
+## Status — BLOCKED (2026-10-11)
+
+### Not done
+- All items remain open.
+  **Reason:** the step needs naming (done by 0091: `[[people.person]]`, the page, `search
+  person:`) **and** a `match = "person"` classify rule, which does not exist yet. 0091
+  explicitly left the rule out of its scope; it is now filed as **0095** (classify `person`
+  rule). Unblocks when 0095 is done: then write the step after `09-places-from-gps.md`
+  (number it then), with synthetic faces for the captures (`tests/support/docs/`).

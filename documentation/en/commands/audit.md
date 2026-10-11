@@ -57,6 +57,8 @@ It prints, in this order:
 | `--exclude PATH` | Folder never analysed, such as a real backup. [Step 5](../clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--exclude-name NAME` | Folder name never analysed, wherever it is (`--exclude-name Thumbnails,.Trash-*`). [Step 5](../clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); other file types too (`--ext pdf,docx`). [Step 6](../clean/06-file-types.md) |
+| `--people` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking ([People](../reference-people.md#during-the-audit-audit---people)). |
+| `--yes`, `-y` | With `--people`: do not ask. Without a terminal (no `-it`), `--people` needs it: nothing waits for an answer. |
 
 Paths are written the Windows way (`C:\Photos\Family`), as you see them in the Explorer. Every
 option has its line in `config.toml` ([step 7](../clean/07-configuration-file.md)): write it
@@ -76,6 +78,9 @@ cavo789/media-hygiene audit --ext video
 
 # Everything the files say about themselves (dates, GPS, formats), after the summary
 cavo789/media-hygiene --verbosity verbose audit
+
+# Then the faces, once you agreed to the time it takes (needs /cache)
+cavo789/media-hygiene audit --people
 ```
 
 (each one with the same `docker run … -v …` part as above)

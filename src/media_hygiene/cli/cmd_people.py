@@ -49,12 +49,15 @@ def people_command(  # pylint: disable=too-many-arguments
         bool,
         typer.Option(
             "--forget",
-            help=_("Delete every face from the cache, then show that none is left."),
+            help=_(
+                "Delete every face from the cache, then show that none is left; "
+                "asks before deleting the names of config.toml too."
+            ),
         ),
     ] = False,
     port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
 ) -> None:
-    """Find the faces the cache lacks, group them, and show the groups until Ctrl+C.
+    """Find the faces the cache lacks, group them, show and name them until Ctrl+C.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -69,15 +72,15 @@ def people_command(  # pylint: disable=too-many-arguments
         require_people_index(runtime)
         ensure_writable(runtime, MountKind.CACHE)
         within = tuple(runtime.mapper.to_container(folder) for folder in path or ())
-        groups = run_people(runtime, PeopleRequest(within, sample, forget))
+        result = run_people(runtime, PeopleRequest(within, sample, forget))
         if sample:
             suggest(
                 runtime,
                 _("analyse every photo, then see the faces alike in your browser."),
                 NextVerb(carried(runtime, "people"), port=port),
             )
-        if groups is None or not groups.people:
+        if result is None or not result.groups.people:
             return
-        serve_people(runtime, groups, port)
+        serve_people(runtime, result, port)
         output.blank()
         output.success(_("Page stopped; nothing was changed."))

@@ -20,7 +20,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | sort by where the photos were taken | [`places`](commands/places.md), then `classify` |
 | find a photo by a word | [`tags`](commands/tags.md), then [`search`](commands/search.md) |
 | see my words in digiKam, Lightroom or Immich | [`xmp`](commands/xmp.md) |
-| group the photos by face | [`people`](commands/people.md) |
+| group the photos by face, name the people | [`people`](commands/people.md) |
 | list every photo in Excel | [`inventory`](commands/inventory.md) |
 | be sure of the duplicates before deleting | [`crosscheck`](commands/crosscheck.md) |
 | type shorter commands | [`launcher`](commands/launcher.md) |
@@ -49,7 +49,7 @@ examples and its `--help`.
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Give every photo words to find it by: the meaningful words of its folders, its date (year, month, season, holidays), its place, and what a local vision model sees (optional). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
 | [`search`](commands/search.md) | Find photos by their words (those of `tags`) in your browser, with filters and previews; with words, print the first matches as a table. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
-| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and show the groups in your browser. The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md) |
+| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md) |
 
 **Act: moves, writes or deletes files** (journaled, undoable)
 
@@ -78,7 +78,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
 | `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify` and `tags`, before describing many photos with a local model). |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify` and `tags`, before describing many photos with a local model; `audit`, before looking for faces with `--people`). |
+| `--people` | `audit` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking. [People](reference-people.md#during-the-audit-audit---people) |
 | `--tier exact\|near\|near-all` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move the sure near duplicates, and those decided with `review --near`, to the quarantine. `near-all`: every near duplicate. [Step 11](clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Step 8](clean/08-clean.md#need-the-space-at-once---delete) |
@@ -98,7 +99,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--no-describe` | `tags` | Ask the local model nothing new: the words of the folders, dates and places, and the descriptions already in the cache. [Tags](reference-tags.md#the-words-of-a-local-vision-model) |
 | `--path PATH` | `tags`, `xmp`, `people` | Only the photos below this folder (host path); repeat it for several. [Tags](reference-tags.md#one-folder-first---path) |
 | `--sample N` | `people` | Analyse N random photos, print the time per photo and the estimate of a full run, and stop. [People](reference-people.md#measure-first---sample) |
-| `--forget` | `people` | Delete every face from the cache, then show that none is left. [People](reference-people.md#your-privacy) |
+| `--forget` | `people` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. [People](reference-people.md#your-privacy) |
 | `--limit N` | `search` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |

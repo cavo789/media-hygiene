@@ -30,7 +30,7 @@ def search_command(  # pylint: disable=too-many-arguments
             help=_(
                 "Words to find, printed as a table instead of opening the page: "
                 '"bord de mer" a phrase, anniv* a start of word, place:durbuy '
-                "among the places only (also vision, caption, folder, date)."
+                "among the places only (also vision, caption, folder, date, person)."
             ),
             show_default=False,
         ),

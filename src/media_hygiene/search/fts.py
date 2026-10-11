@@ -11,23 +11,21 @@ from __future__ import annotations
 import sqlite3
 from contextlib import closing
 from pathlib import Path
-from typing import TYPE_CHECKING, Final, Self
+from typing import TYPE_CHECKING, Self
 
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
-from media_hygiene.search.models import Found, Hit
+from media_hygiene.search.hits import hit_of
+from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from types import TracebackType
 
     from media_hygiene.search.query import SearchQuery
-    from media_hygiene.tags.models import TagSource
-
-_DATE_LENGTH: Final = 10  # `YYYY:MM:DD`, then the time
-_EXIF_SEPARATOR, _DATE_SEPARATOR = ":", "-"
 
 
 class SearchIndex:
@@ -41,7 +39,9 @@ class SearchIndex:
         """
         self._connection = connection
         self._built: int | None = None  # the data version the table was built at
+        self._people: dict[Path, tuple[str, ...]] = {}
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
+        connection.execute(sql.CREATE_PEOPLE)
 
     @classmethod
     def open(cls, index_file: Path) -> Self:
@@ -96,6 +96,28 @@ class SearchIndex:
         """
         return self._connection.execute(sql.HAS_TAGS).fetchone() is not None
 
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """The open index, read-only: to read the faces.
+
+        Returns:
+            The connection.
+        """
+        return self._connection
+
+    def name_people(self, words: Mapping[Path, tuple[str, ...]]) -> None:
+        """Give the photos the names of the people on them, for this search only.
+
+        Args:
+            words: The names on each photo.
+        """
+        self._people = dict(words)
+        self._connection.executemany(
+            sql.PUT_PERSON,
+            [(str(path), name) for path, names in words.items() for name in names],
+        )
+        self._built = None
+
     def find(self, query: SearchQuery, limit: int) -> Found:
         """Find the files matching a search.
 
@@ -115,8 +137,8 @@ class SearchIndex:
         rows = self._connection.execute(
             sql.HITS + where + order + sql.LIMIT, (*parameters, limit)
         ).fetchall()
-        store = TagStore(self._connection)
-        hits = tuple(_hit(store, row) for row in rows)
+        store = TagStore(self._connection) if self.has_tags else None
+        hits = tuple(hit_of((store, self._people), row) for row in rows)
         return Found(int(total), hits)
 
     def source_of(self, key: int) -> PhotoVersion | None:
@@ -141,35 +163,6 @@ class SearchIndex:
         with closing(self._connection.cursor()) as cursor:
             cursor.execute(sql.DROP)
             cursor.execute(sql.CREATE)
-            if self.has_tags:
-                cursor.execute(sql.FILL)
+            cursor.execute(sql.FILL if self.has_tags else sql.FILL_PEOPLE)
         self._connection.commit()
         self._built = version
-
-
-def _hit(store: TagStore, row: tuple[object, ...]) -> Hit:
-    """Make a hit of a row, with the tags of the file.
-
-    Args:
-        store: The tags of the index.
-        row: Key, path, size, mtime and date of a file.
-
-    Returns:
-        The hit.
-    """
-    key, path, size, mtime_ns, taken = row
-    photo = PhotoVersion(Path(str(path)), int(str(size)), int(str(mtime_ns)))
-    tags: dict[TagSource, list[str]] = {}
-    for tag in store.of(photo):
-        tags.setdefault(tag.source, []).append(tag.value)
-    date = (
-        str(taken)[:_DATE_LENGTH].replace(_EXIF_SEPARATOR, _DATE_SEPARATOR)
-        if taken
-        else None
-    )
-    return Hit(
-        int(str(key)),
-        photo,
-        date,
-        {source: tuple(values) for source, values in tags.items()},
-    )

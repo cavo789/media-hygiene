@@ -220,6 +220,11 @@ msgstr ""
 "octet par octet avec la copie gardée ; 'undo' les reconstruit à partir "
 "d'elle."
 
+msgid "--people keeps the faces in the cache: mount /cache to look for them."
+msgstr ""
+"--people garde les visages dans le cache : montez /cache pour les "
+"chercher."
+
 msgid ""
 "--rating reads the stars the audit wrote in its cache, which is not "
 "mounted."
@@ -502,6 +507,20 @@ msgstr "Déjà à leur place"
 #, python-brace-format
 msgid "Already in place: {share}."
 msgstr "Déjà à leur place : {share}."
+
+#, python-brace-format
+msgid ""
+"Also delete the {count} name of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgid_plural ""
+"Also delete the {count} names of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgstr[0] ""
+"Supprimer aussi le {count} nom de config.toml ([[people.person]]) et les "
+"visages ignorés ?"
+msgstr[1] ""
+"Supprimer aussi les {count} noms de config.toml ([[people.person]]) et "
+"les visages ignorés ?"
 
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
@@ -926,6 +945,13 @@ msgstr[1] ""
 "manquants pour root seulement) ; depuis WSL ou Linux, ajoutez --user "
 "\"$(id -u):$(id -g)\"."
 
+msgid ""
+"Ctrl+C stops between two photos: the faces found are kept, and the next "
+"run goes on."
+msgstr ""
+"Ctrl+C arrête entre deux photos : les visages trouvés sont gardés, et "
+"l'exécution suivante continue."
+
 msgid "Czkawka agrees: no exact duplicate."
 msgstr "Czkawka est d'accord : aucun doublon exact."
 
@@ -1185,12 +1211,13 @@ msgstr ""
 "écrasé."
 
 msgid ""
-"Each group holds faces that look alike: probably one person. Nothing is "
-"named nor changed here yet; the faces stay on this computer."
+"Each group holds faces that look alike: probably one person. Type a name "
+"to save it in config.toml; the photos are never changed and the faces "
+"stay on this computer."
 msgstr ""
 "Chaque groupe réunit des visages qui se ressemblent : sans doute une même"
-" personne. Rien n'est nommé ni modifié ici pour l'instant ; les visages "
-"restent sur cet ordinateur."
+" personne. Tapez un nom pour l'enregistrer dans config.toml ; les photos "
+"ne sont jamais modifiées et les visages restent sur cet ordinateur."
 
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file deleted "
@@ -1462,15 +1489,21 @@ msgstr "Copies en trop, à mettre de côté"
 msgid "F-number"
 msgstr "Ouverture (f/)"
 
-msgid "Faces alike"
-msgstr "Visages semblables"
-
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
 "face) are left out."
 msgstr ""
 "Les visages plus flous que cette netteté (variance du laplacien du "
 "visage) sont laissés de côté."
+
+#, python-brace-format
+msgid ""
+"Faces ready, open {url} in your browser to name them; each name is saved "
+"at once in config.toml. Ctrl+C stops it; the photos are not changed."
+msgstr ""
+"Visages prêts, ouvrez {url} dans votre navigateur pour les nommer ; "
+"chaque nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête ; "
+"les photos ne sont pas modifiées."
 
 #, python-brace-format
 msgid ""
@@ -1486,6 +1519,9 @@ msgid ""
 msgstr ""
 "Les visages plus petits que ce nombre de pixels (petit côté de leur "
 "cadre) sont laissés de côté."
+
+msgid "Faces: every photo of the audit was looked at already."
+msgstr "Visages : chaque photo de l'audit a déjà été examinée."
 
 #, python-brace-format
 msgid "Faces: {faces} found in {photos} photos; 'people' groups them."
@@ -1918,6 +1954,9 @@ msgstr "ISO"
 msgid "Id"
 msgstr "Identifiant"
 
+msgid "Ignore this group"
+msgstr "Ignorer ce groupe"
+
 msgid "Image cannot be decoded"
 msgstr "Image impossible à décoder"
 
@@ -2298,12 +2337,32 @@ msgstr ""
 msgid "Name this place"
 msgstr "Nommer ce lieu"
 
+msgid "Name with others"
+msgstr "Nommer avec d'autres"
+
 msgid ""
 "Name your places on a map of where the photos were taken; saved into "
 "config.toml for the 'place' and 'trip' rules."
 msgstr ""
 "Nommer vos lieux sur une carte des endroits où les photos ont été prises "
 "; enregistrés dans config.toml pour les règles 'place' et 'trip'."
+
+#, python-brace-format
+msgid "Named: {people}."
+msgstr "Nommés : {people}."
+
+msgid ""
+"Names are saved in config.toml: mount a writable folder of yours on "
+"/config to name the groups. The page shows them meanwhile."
+msgstr ""
+"Les noms sont enregistrés dans config.toml : montez sur /config un "
+"dossier à vous, accessible en écriture, pour nommer les groupes. En "
+"attendant, la page les montre."
+
+msgid "Names cannot be saved: mount a writable folder on /config."
+msgstr ""
+"Les noms ne peuvent pas être enregistrés : montez un dossier accessible "
+"en écriture sur /config."
 
 msgid "Nature and landscapes"
 msgstr "Nature et paysages"
@@ -2416,6 +2475,11 @@ msgstr "Aucun événement dans cette proposition : rien à revoir."
 
 msgid "No event left to decide after this one."
 msgstr "Plus aucun événement à décider après celui-ci."
+
+msgid "No face looked for: 'people', or the next 'audit --people', does it later."
+msgstr ""
+"Aucun visage cherché : 'people', ou le prochain 'audit --people', s'en "
+"chargera plus tard."
 
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
@@ -2531,8 +2595,21 @@ msgstr "Aucune exécution pour l'instant."
 msgid "No sure proposal left to accept."
 msgstr "Plus aucune proposition sûre à accepter."
 
+msgid ""
+"No terminal to answer in: the audit ends without faces. Add --yes to look"
+" for them without a question."
+msgstr ""
+"Pas de terminal pour répondre : l'audit se termine sans les visages. "
+"Ajoutez --yes pour les chercher sans question."
+
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
+
+#, python-brace-format
+msgid "Nobody is named {names} yet: name their group on the 'people' page first."
+msgstr ""
+"Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
+"page de 'people'."
 
 #, python-brace-format
 msgid ""
@@ -2567,6 +2644,9 @@ msgstr "Pas enregistré : {reason}."
 
 msgid "Not the folder you want to keep?"
 msgstr "Ce n'est pas le dossier que vous voulez garder ?"
+
+msgid "Not this person: take this face out"
+msgstr "Pas cette personne : retirer ce visage"
 
 msgid "Notes"
 msgstr "Notes"
@@ -2841,6 +2921,9 @@ msgstr ""
 msgid "Path contains"
 msgstr "Le chemin contient"
 
+msgid "People"
+msgstr "Personnes"
+
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
@@ -2986,6 +3069,10 @@ msgid ""
 msgstr ""
 "Les vidéos réencodées sont dans le rapport HTML ; « clean --tier near » "
 "déplace aussi les sûres en quarantaine."
+
+#, python-brace-format
+msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
+msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
 
 #, python-brace-format
 msgid "Read back from the index: {faces} faces left."
@@ -3216,6 +3303,9 @@ msgstr ""
 msgid "Run 'media-hygiene history' to list the runs."
 msgstr "Lancez 'media-hygiene history' pour lister les exécutions."
 
+msgid "Run 'people' to see the groups in your browser and name them."
+msgstr "Lancez 'people' pour voir les groupes dans votre navigateur et les nommer."
+
 msgid ""
 "Run 'tags' first: it gives every photo the words of its folders, date and"
 " place."
@@ -3335,6 +3425,22 @@ msgstr "Enregistrez-le, fermez-le, puis relancez 'sort'."
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr "Enregistrez {url} sous {path} à la main, puis relancez la commande."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr "Enregistré dans config.toml, relu : personne ne s'appelle {name}."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {count} face ignored."
+msgid_plural "Saved in config.toml, read back: {count} faces ignored."
+msgstr[0] "Enregistré dans config.toml, relu : {count} visage ignoré."
+msgstr[1] "Enregistré dans config.toml, relu : {count} visages ignorés."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
+msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
+msgstr[0] "Enregistré dans config.toml, relu : {name}, {count} visage confirmé."
+msgstr[1] "Enregistré dans config.toml, relu : {name}, {count} visages confirmés."
 
 msgid "Saved in config.toml."
 msgstr "Enregistré dans config.toml."
@@ -3699,6 +3805,9 @@ msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 msgid "The album's name: the folder holding its links."
 msgstr "Le nom de l'album : le dossier qui contient ses liens."
 
+msgid "The audit is done; look for the faces now?"
+msgstr "L'audit est terminé ; chercher les visages maintenant ?"
+
 msgid ""
 "The burst review proposes to set aside a shot whose sharpness is below "
 "this share of the sharpest shot of its series (0 to 1): 0.35 proposes a "
@@ -3893,6 +4002,25 @@ msgstr "Le modèle {model} ne voit pas les images."
 #, python-brace-format
 msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
+
+msgid ""
+"The names stay in config.toml: they name no face until people finds the "
+"faces again. Answer yes in a terminal (docker run -it) to delete them."
+msgstr ""
+"Les noms restent dans config.toml : ils ne nomment aucun visage tant que "
+"people ne les a pas retrouvés. Répondez oui dans un terminal (docker run "
+"-it) pour les supprimer."
+
+msgid ""
+"The names you give on the 'people' page are saved here as "
+"[[people.person]] tables (a name, the faces confirmed as theirs, the "
+"faces taken out of them), and the faces of strangers as 'ignored'. "
+"'search person:name' finds their photos."
+msgstr ""
+"Les noms donnés sur la page de 'people' sont enregistrés ici en tables "
+"[[people.person]] (un nom, les visages confirmés comme les siens, ceux "
+"qui lui ont été retirés), et les visages d'inconnus dans 'ignored'. "
+"'search person:nom' trouve leurs photos."
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
@@ -4151,6 +4279,13 @@ msgstr ""
 #, python-brace-format
 msgid "The {top} largest events hold {held} of them."
 msgstr "Les {top} plus grands événements en contiennent {held}."
+
+msgid ""
+"Then look for faces in the photos not looked at yet (as 'people' does), "
+"after saying how long it takes and asking."
+msgstr ""
+"Chercher ensuite les visages des photos pas encore examinées (comme "
+"'people'), après avoir dit combien de temps cela prend et demandé."
 
 msgid "There is no such event."
 msgstr "Cet événement n'existe pas."
@@ -4457,6 +4592,9 @@ msgstr "Où vous en êtes"
 msgid "White pixels"
 msgstr "Pixels blancs"
 
+msgid "Who is it? Type a name, then Enter"
+msgstr "Qui est-ce ? Tapez un nom, puis Entrée"
+
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
 "--decisions'. A or X keeps them all again."
@@ -4493,6 +4631,9 @@ msgstr ""
 "En TOML, les chemins Windows s'écrivent entre 'apostrophes', p. ex. "
 "'C:\\Photos'."
 
+msgid "With --people: do not ask, go on."
+msgstr "Avec --people : ne pas demander, continuer."
+
 msgid "Words"
 msgstr "Mots"
 
@@ -4509,11 +4650,11 @@ msgstr "Mots de"
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
-"only (also vision, caption, folder, date)."
+"only (also vision, caption, folder, date, person)."
 msgstr ""
 "Mots à trouver, affichés en tableau au lieu d'ouvrir la page : \"bord de "
 "mer\" une expression, anniv* un début de mot, place:durbuy parmi les "
-"lieux seulement (aussi vision, caption, folder, date)."
+"lieux seulement (aussi vision, caption, folder, date, person)."
 
 #, python-brace-format
 msgid "Workbook to edit: {path}"
@@ -4566,6 +4707,10 @@ msgstr "Année"
 
 msgid "Years"
 msgstr "Années"
+
+#, python-brace-format
+msgid "Yes, it is {name}"
+msgstr "Oui, c'est {name}"
 
 msgid "Your browser cannot show this format: open the original."
 msgstr "Votre navigateur ne sait pas afficher ce format : ouvrez l'original."
@@ -5167,6 +5312,11 @@ msgstr[1] "déplacer {count} quasi-doublons en quarantaine"
 msgid "moved to the quarantine"
 msgstr "déplacé en quarantaine"
 
+msgid "names are kept in config.toml: mount a folder of yours on /config"
+msgstr ""
+"les noms sont gardés dans config.toml : montez un dossier à vous sur "
+"/config"
+
 #, python-brace-format, python-format
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
@@ -5256,6 +5406,9 @@ msgstr "fichiers autres que photos et vidéos déplacés en quarantaine"
 
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
+
+msgid "person"
+msgstr "personne"
 
 msgid "photo"
 msgstr "photo"
@@ -5539,6 +5692,18 @@ msgstr "aujourd'hui"
 msgid "true or false is expected, not {value}"
 msgstr "true ou false est attendu, pas {value}"
 
+msgid ""
+"true: every 'audit' then looks for faces in the photos not looked at yet,"
+" after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+"true : chaque 'audit' cherche ensuite les visages des photos pas encore "
+"examinées, après avoir dit combien de temps cela prend et demandé, comme "
+"'audit --people'."
+
+#, python-brace-format
+msgid "two people are named '{name}'"
+msgstr "deux personnes s'appellent « {name} »"
+
 #, python-brace-format
 msgid "two places are named '{name}'"
 msgstr "deux lieux s'appellent « {name} »"
@@ -5549,6 +5714,9 @@ msgstr "deux règles s'appellent « {name} »"
 
 msgid "two small local models: nothing is sent"
 msgstr "deux petits modèles locaux : rien n'est envoyé"
+
+msgid "type a name first"
+msgstr "tapez d'abord un nom"
 
 msgid "undo the last choice"
 msgstr "annuler le dernier choix"
@@ -6013,6 +6181,14 @@ msgstr[1] ""
 "dans « review --near ») ; « clean --tier near » déplace les sûrs."
 
 #, python-brace-format
+msgid "{count} groups ignored are not shown."
+msgstr "{count} groupes ignorés ne sont pas affichés."
+
+#, python-brace-format
+msgid "{count} groups picked: the next name goes to all of them."
+msgstr "{count} groupes choisis : le prochain nom va à tous."
+
+#, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
@@ -6111,6 +6287,36 @@ msgid "{count} photo described; kept in the cache."
 msgid_plural "{count} photos described; kept in the cache."
 msgstr[0] "{count} photo décrite ; gardée dans le cache."
 msgstr[1] "{count} photos décrites ; gardées dans le cache."
+
+#, python-brace-format
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgstr[0] ""
+"{count} photo n'a pas encore été examinée pour les visages : environ "
+"{duration} (estimé ; les deux modèles de visages, 39 Mo, sont d'abord "
+"téléchargés)."
+msgstr[1] ""
+"{count} photos n'ont pas encore été examinées pour les visages : environ "
+"{duration} (estimé ; les deux modèles de visages, 39 Mo, sont d'abord "
+"téléchargés)."
+
+#, python-brace-format
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} on "
+"this PC (measured on {measured} photos)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} on"
+" this PC (measured on {measured} photos)."
+msgstr[0] ""
+"{count} photo n'a pas encore été examinée pour les visages : environ "
+"{duration} sur ce PC (mesuré sur {measured} photos)."
+msgstr[1] ""
+"{count} photos n'ont pas encore été examinées pour les visages : environ "
+"{duration} sur ce PC (mesuré sur {measured} photos)."
 
 #, python-brace-format
 msgid "{count} photo has the words of the vision model; {left} left."
@@ -6382,6 +6588,14 @@ msgstr ""
 "\"docx\"]}}"
 
 #, python-brace-format
+msgid "{name}: {count} photos"
+msgstr "{name} : {count} photos"
+
+#, python-brace-format
+msgid "{name}?"
+msgstr "{name} ?"
+
+#, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
 msgid_plural "{others} follow {lead}: companions go to one folder."
 msgstr[0] "{others} suit {lead} : les compagnons vont dans un même dossier."
@@ -6610,6 +6824,14 @@ msgstr "… et %(count)s séries de plus."
 #, python-brace-format
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
+
+msgid ""
+"↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at"
+" once, i ignores a group; × takes a face out of its group."
+msgstr ""
+"↑ ↓ se déplacer, Entrée nomme, y confirme une suggestion, x nomme "
+"plusieurs groupes à la fois, i ignore un groupe ; × retire un visage de "
+"son groupe."
 
 #, python-brace-format
 msgid ""

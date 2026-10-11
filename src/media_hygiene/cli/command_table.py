@@ -115,8 +115,8 @@ def command_table(
             people_command,
             analyse,
             _(
-                "Find the faces in the photos and group those alike, shown in your "
-                "browser. Kept in the cache, never sent anywhere."
+                "Find the faces in the photos, group those alike and name them in "
+                "your browser. Faces kept in the cache, never sent anywhere."
             ),
         ),
         (

@@ -22,6 +22,7 @@ from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.originals import original_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
+from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.thumbs import GridPreview, grid_preview
 from media_hygiene.search.views import (
     JPEG,
@@ -36,6 +37,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.http import Request
     from media_hygiene.search.fts import SearchIndex
@@ -54,6 +56,7 @@ class SearchPlace:
     index: SearchIndex
     mapper: HostPathMapper
     previews: Path  # the folder of the grid's previews, in the cache
+    people: PeopleSettings  # the names, to say when a `person:` word names nobody
 
 
 @dataclass(frozen=True, slots=True)
@@ -163,5 +166,8 @@ class SearchApp:
             asked = SearchAsked.model_validate_json(request.body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
-        found = self.place.index.find(asked.query(), PAGE_HITS)
-        return json_response(HTTPStatus.OK, found_view(found, self.place.mapper))
+        query = asked.query()
+        found = found_view(self.place.index.find(query, PAGE_HITS), self.place.mapper)
+        unknown = unknown_people(query, self.place.people)
+        note = {} if unknown is None else {"note": unknown}
+        return json_response(HTTPStatus.OK, {**found, **note})

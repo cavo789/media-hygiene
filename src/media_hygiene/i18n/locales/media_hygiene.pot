@@ -183,6 +183,9 @@ msgid ""
 "the kept copy; 'undo' rebuilds them from it."
 msgstr ""
 
+msgid "--people keeps the faces in the cache: mount /cache to look for them."
+msgstr ""
+
 msgid ""
 "--rating reads the stars the audit wrote in its cache, which is not "
 "mounted."
@@ -401,6 +404,16 @@ msgstr ""
 #, python-brace-format
 msgid "Already in place: {share}."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"Also delete the {count} name of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgid_plural ""
+"Also delete the {count} names of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Altitude (m)"
 msgstr ""
@@ -762,6 +775,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid ""
+"Ctrl+C stops between two photos: the faces found are kept, and the next "
+"run goes on."
+msgstr ""
+
 msgid "Czkawka agrees: no exact duplicate."
 msgstr ""
 
@@ -981,8 +999,9 @@ msgid "Each file is checked again just before it moves; none is overwritten."
 msgstr ""
 
 msgid ""
-"Each group holds faces that look alike: probably one person. Nothing is "
-"named nor changed here yet; the faces stay on this computer."
+"Each group holds faces that look alike: probably one person. Type a name "
+"to save it in config.toml; the photos are never changed and the faces "
+"stay on this computer."
 msgstr ""
 
 msgid ""
@@ -1185,12 +1204,15 @@ msgstr ""
 msgid "F-number"
 msgstr ""
 
-msgid "Faces alike"
-msgstr ""
-
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
 "face) are left out."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Faces ready, open {url} in your browser to name them; each name is saved "
+"at once in config.toml. Ctrl+C stops it; the photos are not changed."
 msgstr ""
 
 #, python-brace-format
@@ -1202,6 +1224,9 @@ msgstr ""
 msgid ""
 "Faces smaller than this many pixels (shorter side of their box) are left "
 "out."
+msgstr ""
+
+msgid "Faces: every photo of the audit was looked at already."
 msgstr ""
 
 #, python-brace-format
@@ -1553,6 +1578,9 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
+msgid "Ignore this group"
+msgstr ""
+
 msgid "Image cannot be decoded"
 msgstr ""
 
@@ -1887,9 +1915,24 @@ msgstr ""
 msgid "Name this place"
 msgstr ""
 
+msgid "Name with others"
+msgstr ""
+
 msgid ""
 "Name your places on a map of where the photos were taken; saved into "
 "config.toml for the 'place' and 'trip' rules."
+msgstr ""
+
+#, python-brace-format
+msgid "Named: {people}."
+msgstr ""
+
+msgid ""
+"Names are saved in config.toml: mount a writable folder of yours on "
+"/config to name the groups. The page shows them meanwhile."
+msgstr ""
+
+msgid "Names cannot be saved: mount a writable folder on /config."
 msgstr ""
 
 msgid "Nature and landscapes"
@@ -1986,6 +2029,9 @@ msgid "No event in this proposal: nothing to review."
 msgstr ""
 
 msgid "No event left to decide after this one."
+msgstr ""
+
+msgid "No face looked for: 'people', or the next 'audit --people', does it later."
 msgstr ""
 
 msgid "No file has words yet: nothing can be found."
@@ -2092,7 +2138,16 @@ msgstr ""
 msgid "No sure proposal left to accept."
 msgstr ""
 
+msgid ""
+"No terminal to answer in: the audit ends without faces. Add --yes to look"
+" for them without a question."
+msgstr ""
+
 msgid "No town of more than 1,000 inhabitants starts so."
+msgstr ""
+
+#, python-brace-format
+msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
 #, python-brace-format
@@ -2123,6 +2178,9 @@ msgid "Not saved: {reason}."
 msgstr ""
 
 msgid "Not the folder you want to keep?"
+msgstr ""
+
+msgid "Not this person: take this face out"
 msgstr ""
 
 msgid "Notes"
@@ -2349,6 +2407,9 @@ msgstr ""
 msgid "Path contains"
 msgstr ""
 
+msgid "People"
+msgstr ""
+
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
@@ -2472,6 +2533,10 @@ msgstr ""
 msgid ""
 "Re-encoded videos are in the HTML report; 'clean --tier near' moves the "
 "sure ones to the quarantine too."
+msgstr ""
+
+#, python-brace-format
+msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
 msgstr ""
 
 #, python-brace-format
@@ -2657,6 +2722,9 @@ msgstr ""
 msgid "Run 'media-hygiene history' to list the runs."
 msgstr ""
 
+msgid "Run 'people' to see the groups in your browser and name them."
+msgstr ""
+
 msgid ""
 "Run 'tags' first: it gives every photo the words of its folders, date and"
 " place."
@@ -2755,6 +2823,22 @@ msgstr ""
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {count} face ignored."
+msgid_plural "Saved in config.toml, read back: {count} faces ignored."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
+msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Saved in config.toml."
 msgstr ""
@@ -3067,6 +3151,9 @@ msgstr ""
 msgid "The album's name: the folder holding its links."
 msgstr ""
 
+msgid "The audit is done; look for the faces now?"
+msgstr ""
+
 msgid ""
 "The burst review proposes to set aside a shot whose sharpness is below "
 "this share of the sharpest shot of its series (0 to 1): 0.35 proposes a "
@@ -3226,6 +3313,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "The model {model} is not installed at {url}."
+msgstr ""
+
+msgid ""
+"The names stay in config.toml: they name no face until people finds the "
+"faces again. Answer yes in a terminal (docker run -it) to delete them."
+msgstr ""
+
+msgid ""
+"The names you give on the 'people' page are saved here as "
+"[[people.person]] tables (a name, the faces confirmed as theirs, the "
+"faces taken out of them), and the faces of strangers as 'ignored'. "
+"'search person:name' finds their photos."
 msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
@@ -3421,6 +3520,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "The {top} largest events hold {held} of them."
+msgstr ""
+
+msgid ""
+"Then look for faces in the photos not looked at yet (as 'people' does), "
+"after saying how long it takes and asking."
 msgstr ""
 
 msgid "There is no such event."
@@ -3683,6 +3787,9 @@ msgstr ""
 msgid "White pixels"
 msgstr ""
 
+msgid "Who is it? Type a name, then Enter"
+msgstr ""
+
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
 "--decisions'. A or X keeps them all again."
@@ -3715,6 +3822,9 @@ msgstr ""
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 
+msgid "With --people: do not ask, go on."
+msgstr ""
+
 msgid "Words"
 msgstr ""
 
@@ -3729,7 +3839,7 @@ msgstr ""
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
-"only (also vision, caption, folder, date)."
+"only (also vision, caption, folder, date, person)."
 msgstr ""
 
 #, python-brace-format
@@ -3773,6 +3883,10 @@ msgid "Year"
 msgstr ""
 
 msgid "Years"
+msgstr ""
+
+#, python-brace-format
+msgid "Yes, it is {name}"
 msgstr ""
 
 msgid "Your browser cannot show this format: open the original."
@@ -4312,6 +4426,9 @@ msgstr[1] ""
 msgid "moved to the quarantine"
 msgstr ""
 
+msgid "names are kept in config.toml: mount a folder of yours on /config"
+msgstr ""
+
 #, python-brace-format, python-format
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr ""
@@ -4400,6 +4517,9 @@ msgid "other files than media moved to the quarantine"
 msgstr ""
 
 msgid "outside the mounted folders"
+msgstr ""
+
+msgid "person"
 msgstr ""
 
 msgid "photo"
@@ -4661,6 +4781,15 @@ msgstr ""
 msgid "true or false is expected, not {value}"
 msgstr ""
 
+msgid ""
+"true: every 'audit' then looks for faces in the photos not looked at yet,"
+" after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+
+#, python-brace-format
+msgid "two people are named '{name}'"
+msgstr ""
+
 #, python-brace-format
 msgid "two places are named '{name}'"
 msgstr ""
@@ -4670,6 +4799,9 @@ msgid "two rules are named '{name}'"
 msgstr ""
 
 msgid "two small local models: nothing is sent"
+msgstr ""
+
+msgid "type a name first"
 msgstr ""
 
 msgid "undo the last choice"
@@ -5038,6 +5170,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} groups ignored are not shown."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} groups picked: the next name goes to all of them."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] ""
@@ -5118,6 +5258,26 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo described; kept in the cache."
 msgid_plural "{count} photos described; kept in the cache."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} on "
+"this PC (measured on {measured} photos)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} on"
+" this PC (measured on {measured} photos)."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5346,6 +5506,14 @@ msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}
 msgstr ""
 
 #, python-brace-format
+msgid "{name}: {count} photos"
+msgstr ""
+
+#, python-brace-format
+msgid "{name}?"
+msgstr ""
+
+#, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
 msgid_plural "{others} follow {lead}: companions go to one folder."
 msgstr[0] ""
@@ -5543,6 +5711,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "… and {count} more."
+msgstr ""
+
+msgid ""
+"↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at"
+" once, i ignores a group; × takes a face out of its group."
 msgstr ""
 
 #, python-brace-format

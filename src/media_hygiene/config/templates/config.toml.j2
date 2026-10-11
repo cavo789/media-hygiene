@@ -137,6 +137,9 @@ similarity = 0.363
 min_face = 40
 {{ comment(_("Faces blurrier than this sharpness (variance of the Laplacian of the face) are left out.")) }}
 min_sharpness = 30.0
+{{ comment(_("true: every 'audit' then looks for faces in the photos not looked at yet, after saying how long it takes and asking, as 'audit --people' does."), "--people") }}
+with_audit = false
+{{ comment(_("The names you give on the 'people' page are saved here as [[people.person]] tables (a name, the faces confirmed as theirs, the faces taken out of them), and the faces of strangers as 'ignored'. 'search person:name' finds their photos.")) }}
 
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}

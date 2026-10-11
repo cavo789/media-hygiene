@@ -20,6 +20,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.search.app import SEARCH_PATH, SearchApp, SearchPlace
 from media_hygiene.search.fts import SearchIndex
+from media_hygiene.search.people_words import people_words, unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.search.thumbs import PREVIEWS_DIR_NAME
 from media_hygiene.services.data_checks import unreadable_index
@@ -64,6 +65,7 @@ def open_search(runtime: Runtime) -> SearchIndex:
         )
     try:
         search = SearchIndex.open(index)
+        search.name_people(people_words(search.connection, runtime.settings.people))
         empty = search.find(SearchQuery(()), 1).total == 0
     except sqlite3.Error as exc:
         raise unreadable_index(runtime, index, exc) from exc
@@ -89,7 +91,11 @@ def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:
     Returns:
         How many files match.
     """
-    found = search.find(SearchQuery(parse_terms(printed.text)), printed.limit)
+    query = SearchQuery(parse_terms(printed.text))
+    unknown = unknown_people(query, runtime.settings.people)
+    if unknown is not None:
+        runtime.output.warning(unknown)
+    found = search.find(query, printed.limit)
     show_found(runtime.output, found, runtime.mapper)
     return found.total
 
@@ -105,7 +111,7 @@ def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> None:
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(search_path=SEARCH_PATH)
     previews = runtime.locations.cache_dir / PREVIEWS_DIR_NAME
-    place = SearchPlace(search, runtime.mapper, previews)
+    place = SearchPlace(search, runtime.mapper, previews, runtime.settings.people)
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = SearchApp(place, page.encode(), executor)
         asyncio.run(run_server(app, port, partial(_announce, runtime)))

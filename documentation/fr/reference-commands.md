@@ -20,7 +20,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | trier d'après l'endroit où les photos ont été prises | [`places`](commands/places.md), puis `classify` |
 | retrouver une photo par un mot | [`tags`](commands/tags.md), puis [`search`](commands/search.md) |
 | voir mes mots dans digiKam, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
-| regrouper les photos par visage | [`people`](commands/people.md) |
+| regrouper les photos par visage, nommer les personnes | [`people`](commands/people.md) |
 | lister chaque photo dans Excel | [`inventory`](commands/inventory.md) |
 | être sûr des doublons avant de supprimer | [`crosscheck`](commands/crosscheck.md) |
 | taper des commandes plus courtes | [`launcher`](commands/launcher.md) |
@@ -49,7 +49,7 @@ besoin, ses options, des exemples et son `--help`.
 | [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Donne à chaque photo des mots pour la retrouver : les mots parlants de ses dossiers, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
 | [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
-| [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et montre les groupes dans votre navigateur. Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md) |
+| [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md) |
 
 **Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
 
@@ -78,7 +78,8 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--exclude-name NOM` | `audit`, `clean`, `crosscheck` | Nom de dossier jamais analysé, où qu'il soit (casse ignorée, `*` et `?` permis : `--exclude-name Thumbnails,.Trash-*`) ; s'ajoute aux dossiers système et corbeilles toujours ignorés. [Étape 5](clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify` et `tags`, avant de décrire beaucoup de photos avec un modèle local). |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify` et `tags`, avant de décrire beaucoup de photos avec un modèle local ; `audit`, avant de chercher les visages avec `--people`). |
+| `--people` | `audit` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé. [Personnes](reference-people.md#pendant-laudit--audit---people) |
 | `--tier exact\|near\|near-all` | `clean` | `exact` (par défaut) : seulement les copies identiques octet par octet. `near` : déplace aussi en quarantaine les quasi-doublons sûrs, et ceux décidés avec `review --near`. `near-all` : tous les quasi-doublons. [Étape 11](clean/11-near-duplicates.md#les-groupes-sûrs-et-ceux-à-vérifier) |
 | `--near` | `review` | Décider les quasi-doublons groupe par groupe (comme prévu, garder l'autre version, laisser tel quel) au lieu de trier les rafales. [Étape 11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
@@ -98,7 +99,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--no-describe` | `tags` | Ne rien demander de nouveau au modèle local : les mots des dossiers, des dates et des lieux, et les descriptions déjà dans le cache. [Tags](reference-tags.md#les-mots-dun-modèle-de-vision-local) |
 | `--path CHEMIN` | `tags`, `xmp`, `people` | Seulement les photos sous ce dossier (chemin de l'hôte) ; à répéter pour plusieurs. [Tags](reference-tags.md#un-dossier-dabord----path) |
 | `--sample N` | `people` | Analyser N photos prises au hasard, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. [Personnes](reference-people.md#mesurer-dabord----sample) |
-| `--forget` | `people` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun. [Personnes](reference-people.md#votre-vie-privée) |
+| `--forget` | `people` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. [Personnes](reference-people.md#votre-vie-privée) |
 | `--limit N` | `search` | Avec des mots : lister au plus N fichiers (20 par défaut). [Tags](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (par défaut) : un classeur avec les feuilles Fichiers et Résumé. `csv` : la feuille Fichiers seule, comme `plan.csv`. [Inventaire](reference-inventory.md#un-fichier-csv-à-la-place) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Trier, étape 7](sort/07-sort.md#les-dossiers-laissés-vides) |

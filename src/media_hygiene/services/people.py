@@ -16,18 +16,19 @@ from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore, FaceTally
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.people.naming import Known
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.people_files import people_photos, present_photos
 from media_hygiene.services.people_find import FindDeps, FindOutcome, find_all
-from media_hygiene.services.people_groups import PeopleGroups, group_people
+from media_hygiene.services.people_groups import group_people
 from media_hygiene.services.people_models import face_recipe
+from media_hygiene.services.people_names import PeopleResult, named_photos
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
     from media_hygiene.index.descriptions import PhotoVersion
-    from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.subject_answers import Answering
 
@@ -143,42 +144,27 @@ class PeopleStep:
         picked = secrets.SystemRandom().sample(missing, min(count, len(missing)))
         return tuple(picked)
 
-    def groups(self, work: PeopleWork) -> PeopleGroups:
-        """Group the faces of the photos of the run with the settings of `[people]`.
+    def result(self, work: PeopleWork) -> PeopleResult:
+        """Group the faces of the photos of the run, count them, name them.
 
-        The faces of photos not mounted this time stay in the index, but are not
-        shown: the page could not cut them out of their photo.
-
-        Args:
-            work: The photos of the run.
-
-        Returns:
-            The groups.
-        """
-        return group_people(self._faces_of(work), self._runtime.settings.people)
-
-    def tally(self, work: PeopleWork) -> FaceTally:
-        """Count the photos of the run analysed and their faces.
+        The faces of photos not mounted this time stay in the index, and still
+        name people, but are not shown: the page could not cut them out.
 
         Args:
             work: The photos of the run.
 
         Returns:
-            The counts; the time per photo is that of the whole index.
+            The groups, the counts, every face of the index and the people named.
         """
         store = self.store
-        analysed = sum(store.scanned(photo) for photo in work.photos)
-        faces = len(self._faces_of(work))
-        return FaceTally(analysed, faces, store.tally().seconds_per_photo)
-
-    def _faces_of(self, work: PeopleWork) -> tuple[StoredFace, ...]:
-        """The faces of the index whose photo belongs to the run.
-
-        Args:
-            work: The photos of the run.
-
-        Returns:
-            Their faces, by path then number.
-        """
+        every = store.faces()
         shown = {photo.path for photo in work.photos}
-        return tuple(face for face in self.store.faces() if face.path in shown)
+        faces = tuple(face for face in every if face.path in shown)
+        settings = self._runtime.settings.people
+        analysed = sum(store.scanned(photo) for photo in work.photos)
+        return PeopleResult(
+            group_people(faces, settings),
+            FaceTally(analysed, len(faces), store.tally().seconds_per_photo),
+            every,
+            named_photos(faces, Known.of(every, settings)),
+        )

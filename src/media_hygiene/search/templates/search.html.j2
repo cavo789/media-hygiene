@@ -17,6 +17,7 @@
   "folder": _("folder"),
   "date": _("date"),
   "place": _("place"),
+  "person": _("person"),
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -209,6 +210,7 @@ async function search(event) {
   else if (found.total > found.hits.length) {
     status.textContent = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
   } else status.textContent = fill(TEXTS.found, { total: found.total });
+  if (found.note) status.textContent = found.note + " " + status.textContent;
 }
 
 document.addEventListener("keydown", (event) => {

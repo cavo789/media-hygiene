@@ -59,6 +59,8 @@ Il affiche, dans cet ordre :
 | `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6](../clean/06-file-types.md) |
+| `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)). |
+| `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
 
 Les chemins s'écrivent à la façon de Windows (`C:\Photos\Famille`), comme dans l'Explorateur.
 Chaque option a sa ligne dans `config.toml` ([étape 7](../clean/07-configuration-file.md)) :
@@ -78,6 +80,9 @@ cavo789/media-hygiene --locale fr audit --ext video
 
 # Tout ce que les fichiers disent d'eux-mêmes (dates, GPS, formats), après le résumé
 cavo789/media-hygiene --locale fr --verbosity verbose audit
+
+# Puis les visages, une fois le temps accepté (il faut /cache)
+cavo789/media-hygiene --locale fr audit --people
 ```
 
 (chacune avec la même partie `docker run … -v …` que ci-dessus)

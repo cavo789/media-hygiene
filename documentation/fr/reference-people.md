@@ -12,6 +12,7 @@ sur votre ordinateur.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
   -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr people
 ```
@@ -27,14 +28,71 @@ sur cet ordinateur, rien de vos photos n'est envoyé.
 ✅ 1 436 visages dans 2 000 photos : 37 groupes de visages semblables, les plus grands 212, 140,
 96, 51, 33 ; 288 vus une seule fois.
 Laissés de côté : 301 visages de moins de 40 pixels, 64 plus flous que 30.
-✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Ctrl+C l'arrête ; rien
-n'est modifié.
+✅ Nommés : Chloé : 412 photos, Manon : 236 photos.
+✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les nommer ; chaque
+nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête ; les photos ne sont pas modifiées.
 ```
 
-La page montre les groupes, du plus grand au plus petit, quelques dizaines de visages chacun ;
-un clic sur un visage ouvre sa photo. Rien n'y est encore nommé ni modifié : cette première
-version **trouve et regroupe**. Nommer les groupes (« Mamie », un dossier par enfant) viendra
-ensuite.
+La page montre d'abord les personnes déjà nommées, puis les groupes, du plus grand au plus petit,
+quelques dizaines de visages chacun ; un clic sur un visage ouvre sa photo. **Tapez un nom** sur
+un groupe pour le nommer (ci-dessous). Les photos ne sont jamais modifiées : les noms vont dans
+votre `config.toml` (`/config`). Sans `/config` monté, la page montre les groupes et les noms
+déjà donnés, et n'en enregistre aucun.
+
+## Nommer les groupes
+
+| Sur un groupe | Ce que ça fait |
+|---|---|
+| Taper un nom, puis Entrée | Les visages montrés sont ceux de cette personne. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
+| Choisir (`x`), puis nommer | Nommer plusieurs groupes d'un coup : la même personne coupée en deux groupes. |
+| × sur un visage | Ce visage n'est pas cette personne : il est retiré du groupe, et ne reçoit plus jamais ce nom. |
+| Ignorer (`i`) | Des inconnus, des affiches, des statues : le groupe n'est plus montré, ni les visages qui lui ressemblent. |
+| Oui, c'est … (`y`) | Confirme une suggestion : un groupe dont les visages ressemblent à quelqu'un de déjà nommé, montré « Chloé ? ». |
+
+Le clavier suffit : ↑ ↓ (ou `j` `k`) passent d'un groupe à l'autre, Entrée tape un nom. Chaque
+changement est écrit dans `config.toml`, puis **relu dans le fichier** et affiché en haut de la
+page (« Enregistré dans config.toml, relu : Chloé, 58 visages confirmés. »). Les noms ressemblent
+à ceci :
+
+```toml
+[[people.person]]
+name = "Chloé"
+faces = [
+    "/data/c/Photos/2019/IMG_0412.jpg#0",
+    "/data/c/Photos/2023/IMG_7781.jpg#1",
+]
+```
+
+Chaque visage est écrit par sa photo et son numéro dans la photo, jamais par son groupe : un
+nouveau regroupement (de nouvelles photos, un autre `similarity`) garde tous les noms. Les autres
+visages reçoivent le nom du **visage confirmé le plus proche**, s'ils lui ressemblent assez
+(`similarity`) ; en dessous, ils restent sans nom. Les suggestions (« Chloé ? ») ne comptent
+jamais avant que vous les confirmiez.
+
+## Les retrouver : `search`
+
+Une fois nommées, les personnes sont des mots de [`search`](commands/search.md), sans rien
+lancer d'autre :
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr search Chloé montagne
+```
+
+`Chloé montagne` trouve les photos avec Chloé où « montagne » vient de n'importe quelle source
+(dossier, ville, ce que le modèle de vision a vu) ; `person:chloe` cherche parmi les personnes
+seulement (la casse et les accents ne comptent pas) ; `person:"Mamie Jeanne"` est un nom de deux
+mots. Un nom que personne ne porte encore est signalé en une ligne : nommez d'abord le groupe
+dans la page.
+
+## Pendant l'audit : `audit --people`
+
+`audit --people` lance l'audit, puis compte les photos dont les visages n'ont pas encore été
+cherchés, en mesure quelques-unes sur votre ordinateur, dit combien de temps prendra le reste,
+et **demande** avant de continuer. `--yes` ne demande pas ; sans terminal (pas de `-it`), rien
+n'attend : l'audit se termine sans les visages. Aucune page ne s'ouvre : lancez ensuite `people`
+pour voir les groupes. `[people] with_audit = true` le fait à chaque audit.
 
 ## Comment ça marche
 
@@ -62,8 +120,11 @@ personnelles le plus sensible (RGPD, article 9). L'outil les traite comme telles
 - le seul accès au réseau est le **téléchargement, une seule fois, des deux modèles** depuis
   OpenCV Zoo sur GitHub, vérifiés par leur SHA-256. Il n'envoie rien de vos photos. Sans réseau,
   l'erreur nomme les deux fichiers à enregistrer à la main dans le dossier `models` du cache ;
+- les noms sont dans votre `config.toml`, en texte : les visages qu'ils nomment y sont écrits par
+  photo et numéro, jamais sous forme de nombres qui décrivent un visage ;
 - **`people --forget`** supprime tous les visages du cache (leur place dans le fichier est
-  écrasée), puis relit l'index pour montrer qu'il n'en reste aucun.
+  écrasée), puis relit l'index pour montrer qu'il n'en reste aucun. Il demande ensuite si les
+  noms de `config.toml` partent aussi, et relit le fichier pour le montrer.
 
 ## Mesurer d'abord : `--sample`
 
@@ -88,6 +149,8 @@ l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs dossiers.
 | `similarity` | `0.363` | À quel point deux visages doivent se ressembler (cosinus, de 0 à 1) pour être la même personne. Plus haut : des groupes plus nombreux et plus petits ; plus bas : des personnes mélangées. `0.363` est la valeur documentée de SFace. |
 | `min_face` | `40` | Les visages plus petits que ce nombre de pixels (petit côté de leur cadre) sont laissés de côté : trop petits pour être reconnus. |
 | `min_sharpness` | `30` | Les visages plus flous sont laissés de côté : un visage flou s'éloigne du même visage vu net. |
+| `with_audit` | `false` | `true` : chaque `audit` cherche aussi les visages, après avoir demandé, comme `audit --people`. |
+| `ignored`, `[[people.person]]` | aucun | Écrits par la page : les visages ignorés, et pour chaque personne son nom, ses visages confirmés (`faces`) et ceux qui lui ont été retirés (`rejected`). |
 
 Ils choisissent seulement quels visages sont regroupés, et comment : les changer ne fait rien
 analyser à nouveau. Pour essayer une autre valeur une fois :
@@ -95,10 +158,8 @@ analyser à nouveau. Pour essayer une autre valeur une fois :
 
 ## Pas encore là
 
-- Nommer les groupes dans la page (fusionner deux groupes, retirer un visage erroné, ignorer les
-  inconnus).
-- Utiliser les noms : une règle `person` dans `classify`, une colonne dans l'inventaire, un mot
-  pour `search` et les fichiers compagnons `.xmp`.
+- Ranger par personne : une règle `person` dans `classify` ; une colonne dans l'inventaire ; les
+  noms dans les fichiers compagnons `.xmp`.
 - Les visages des vidéos.
 
 Pour **retrouver** les photos de quelqu'un, un gestionnaire de photos comme Immich le fait déjà

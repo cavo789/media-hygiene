@@ -18,6 +18,19 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
+def models_present(runtime: Runtime) -> bool:
+    """Tell whether both face models are in the cache already.
+
+    Args:
+        runtime: Mount points.
+
+    Returns:
+        True when nothing would be downloaded.
+    """
+    models = runtime.locations.cache_dir / MODELS_DIR_NAME
+    return all((models / model.name).is_file() for model in (DETECTOR, EMBEDDER))
+
+
 def face_recipe(runtime: Runtime) -> FinderRecipe:
     """The models finding the faces, downloaded into the cache when missing.
 
@@ -28,7 +41,7 @@ def face_recipe(runtime: Runtime) -> FinderRecipe:
         The recipe of the ONNX finder.
     """
     models = runtime.locations.cache_dir / MODELS_DIR_NAME
-    if not all((models / model.name).is_file() for model in (DETECTOR, EMBEDDER)):
+    if not models_present(runtime):
         runtime.output.info(
             _(
                 "Downloading the two face models into the cache, once (39 MB): they "

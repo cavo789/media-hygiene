@@ -35,6 +35,7 @@ applications read.
 | Date | The year, the month, the season (turned around below the equator), the holidays (Christmas, New Year, Saint Nicholas, Valentine's Day, Halloween, Easter) and the names of your own `calendar` and `date_range` rules ([sorting, step 6](sort/06-write-down-what-you-know.md#dates)). A photo without a date takes the year of its folder (`Avril 2007`). | Seconds |
 | Place | The name of your place when the GPS position lies in one ([sorting, step 9](sort/09-places-from-gps.md)), then the nearest town and its country, offline (GeoNames), when it lies within `town_km` (20 km). | Seconds |
 | Vision model | A short sentence and 5 to 10 words about what the photo shows (optional, below). | About 2 s per photo |
+| Person | The names of the people on the photo, once you named their group in [`people`](reference-people.md#name-the-groups). Made by `search` at each start from the faces and `config.toml`: `tags` does not compute them, and they are never written into the `.xmp` sidecars. | None for `tags` |
 
 These words are computed again at every run: rename a folder or add a rule, run `tags` again.
 
@@ -125,7 +126,7 @@ the small previews of the grid are kept in `/cache`.
 | `bougies` | `bougie` too: the tags are kept in the singular. |
 | `anniv*` | Every word starting so: `anniversaire`, `anniv`. |
 | `"bord de mer"` | The phrase, its words in that order. |
-| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `date`. |
+| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `date`, `person` (the names of [`people`](reference-people.md)). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20

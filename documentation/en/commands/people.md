@@ -1,20 +1,20 @@
-# `people`: find the faces and group those alike
+# `people`: find the faces, group those alike, name them
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `people` · 🇫🇷 [Français](../../fr/commands/people.md)
 
 `people` finds the **faces** in your photos, groups those that look alike (probably one person
-per group), and shows the groups in your browser, largest first. Everything runs on your
-computer: the faces stay in the cache, never sent anywhere. This first version finds and groups;
-naming the groups comes next.
+per group), and shows the groups in your browser, largest first, where you **name** them. Then
+`search Chloé` finds the photos of Chloé. Everything runs on your computer: the faces stay in the
+cache, never sent anywhere; the names go into your `config.toml`.
 
 ## At a glance
 
 | | |
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
-| Needs | Your folders, `/cache` (writable: the faces are kept there), and `-p 127.0.0.1:8088:8088`. |
-| Writes | The faces and the two face models (39 MB, once), in the cache. |
-| Undo | `people --forget` deletes every face from the cache. |
+| Needs | Your folders, `/cache` (writable: the faces are kept there), `/config` (writable, to save the names) and `-p 127.0.0.1:8088:8088`. |
+| Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`. |
+| Undo | `people --forget` deletes every face from the cache, then asks whether the names go too. |
 | With `mh` | `mh people`: the port is published for you. |
 
 ## Run it
@@ -23,12 +23,31 @@ naming the groups comes next.
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene people
+```
+
+With WSL or Linux:
+
+```bash
+docker run --rm -it -p 127.0.0.1:8088:8088 \
+  -v "/mnt/c/Photos:/data/c/Photos:ro" \
+  -v media-hygiene-cache:/cache \
+  -v "$HOME/media-hygiene/config:/config" \
   cavo789/media-hygiene people
 ```
 
 The first run downloads the two face models into the cache, once. Each photo is analysed once;
-the next runs analyse only the new ones. Then it prints the groups found and the address of the
-page: a click on a face opens its photo. Ctrl+C stops it.
+the next runs analyse only the new ones. Then it prints the groups found, the people already
+named, and the address of the page: a click on a face opens its photo. Ctrl+C stops it.
+
+## Name the groups
+
+On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read
+back and shown. `x` picks several groups to name at once, × takes a wrong face out, `i` ignores
+a group of strangers, `y` confirms a suggestion ("Chloé?"). The next runs keep every name, and
+[`search`](search.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
+Details: [People](../reference-people.md#name-the-groups).
 
 ## Options
 
@@ -36,7 +55,7 @@ page: a click on a face opens its photo. Ctrl+C stops it.
 |---|---|
 | `--path PATH` | Only the photos below this folder (host path, as you mounted it); repeat it for several. |
 | `--sample N` | Analyse N random photos, print the time per photo and the estimate of a full run, and stop. |
-| `--forget` | Delete every face from the cache, then show that none is left. |
+| `--forget` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Your privacy
@@ -50,13 +69,15 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 
 - The settings `[people]` (`similarity`, `min_face`, `min_sharpness`) only change the grouping:
   nothing is analysed again.
+- `audit --people` looks for the faces right after an audit, once you agreed to the time it
+  takes.
 - Videos are not analysed yet.
 - Without network, the error names the two model files to save by hand into the `models` folder
   of the cache.
 
 ## Go further
 
-- [People](../reference-people.md): how it works, the settings, what comes next.
+- [People](../reference-people.md): how it works, naming, the settings, what comes next.
 
 ## The built-in help
 

@@ -8,6 +8,8 @@ from media_hygiene.console.formatting import human_duration, human_number
 from media_hygiene.i18n import _, ngettext
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.console.output import Output
     from media_hygiene.index.face_rows import FaceTally
@@ -179,3 +181,19 @@ def show_groups(
                 ),
             )
         )
+
+
+def show_named(output: Output, named: Sequence[tuple[str, int]]) -> None:
+    """List the people named and their photos, then point at the page for the rest.
+
+    Args:
+        output: Where to print.
+        named: Each person and their photos of this run, most first.
+    """
+    if not named:
+        return
+    listed = ", ".join(
+        _("{name}: {count} photos").format(name=name, count=human_number(count))
+        for name, count in named
+    )
+    output.success(_("Named: {people}.").format(people=listed))

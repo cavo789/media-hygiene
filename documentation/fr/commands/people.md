@@ -1,20 +1,21 @@
-# `people` : trouver les visages et regrouper ceux qui se ressemblent
+# `people` : trouver les visages, regrouper ceux qui se ressemblent, les nommer
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `people` · 🇬🇧 [English](../../en/commands/people.md)
 
 `people` trouve les **visages** de vos photos, regroupe ceux qui se ressemblent (sans doute une
-personne par groupe), et montre les groupes dans votre navigateur, les plus grands d'abord. Tout
-tourne sur votre ordinateur : les visages restent dans le cache, jamais envoyés nulle part. Cette
-première version trouve et regroupe ; nommer les groupes viendra ensuite.
+personne par groupe), et montre les groupes dans votre navigateur, les plus grands d'abord, où
+vous les **nommez**. Ensuite, `search Chloé` trouve les photos de Chloé. Tout tourne sur votre
+ordinateur : les visages restent dans le cache, jamais envoyés nulle part ; les noms vont dans
+votre `config.toml`.
 
 ## En bref
 
 | | |
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
-| Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), et `-p 127.0.0.1:8088:8088`. |
-| Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache. |
-| Annuler | `people --forget` supprime tous les visages du cache. |
+| Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), `/config` (en écriture, pour enregistrer les noms) et `-p 127.0.0.1:8088:8088`. |
+| Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml`. |
+| Annuler | `people --forget` supprime tous les visages du cache, puis demande si les noms partent aussi. |
 | Avec `mh` | `mh people` : le port est publié pour vous. |
 
 ## Lancer
@@ -23,12 +24,33 @@ première version trouve et regroupe ; nommer les groupes viendra ensuite.
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr people
+```
+
+Avec WSL ou Linux :
+
+```bash
+docker run --rm -it -p 127.0.0.1:8088:8088 \
+  -v "/mnt/c/Photos:/data/c/Photos:ro" \
+  -v media-hygiene-cache:/cache \
+  -v "$HOME/media-hygiene/config:/config" \
   cavo789/media-hygiene --locale fr people
 ```
 
 La première exécution télécharge les deux modèles de visages dans le cache, une fois. Chaque photo
 est analysée une fois ; les exécutions suivantes n'analysent que les nouvelles. Il affiche ensuite
-les groupes trouvés et l'adresse de la page : un clic sur un visage ouvre sa photo. Ctrl+C l'arrête.
+les groupes trouvés, les personnes déjà nommées et l'adresse de la page : un clic sur un visage
+ouvre sa photo. Ctrl+C l'arrête.
+
+## Nommer les groupes
+
+Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans
+`config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
+visage erroné, `i` ignore un groupe d'inconnus, `y` confirme une suggestion (« Chloé ? »). Les
+exécutions suivantes gardent tous les noms, et [`search`](search.md) retrouve les personnes par
+leur nom : `search Chloé montagne`, `search person:chloe`. Détails :
+[Les personnes](../reference-people.md#nommer-les-groupes).
 
 ## Options
 
@@ -36,7 +58,7 @@ les groupes trouvés et l'adresse de la page : un clic sur un visage ouvre sa ph
 |---|---|
 | `--path CHEMIN` | Seulement les photos sous ce dossier (chemin de l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs. |
 | `--sample N` | Analyser N photos prises au hasard, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
-| `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun. |
+| `--forget` | Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun ; demande avant de supprimer aussi les noms de `config.toml`. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Votre vie privée
@@ -51,13 +73,16 @@ SHA-256 : il n'envoie rien sur vos photos.
 
 - Les réglages `[people]` (`similarity`, `min_face`, `min_sharpness`) ne changent que le
   regroupement : rien n'est analysé à nouveau.
+- `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
+  temps que ça prend.
 - Les vidéos ne sont pas encore analysées.
 - Sans réseau, l'erreur nomme les deux fichiers de modèle à enregistrer à la main dans le dossier
   `models` du cache.
 
 ## Pour aller plus loin
 
-- [Les personnes](../reference-people.md) : comment ça marche, les réglages, ce qui vient ensuite.
+- [Les personnes](../reference-people.md) : comment ça marche, nommer, les réglages, ce qui vient
+  ensuite.
 
 ## L'aide intégrée
 

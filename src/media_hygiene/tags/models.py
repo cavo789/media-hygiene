@@ -2,7 +2,8 @@
 
 A tag is valid for one version of a file (size, mtime), like every row of the index.
 Each source is recomputed on its own; `vision` and `caption` rows are derived from the
-cached descriptions, so that nothing is kept as truth that can be derived again.
+cached descriptions, so that nothing is kept as truth that can be derived again;
+`person` words are derived from the faces at each search, never stored.
 """
 
 from __future__ import annotations
@@ -23,6 +24,9 @@ class TagSource(StrEnum):
     FOLDER = "folder"  # the meaningful words of the folder names
     DATE = "date"  # year, month, season, holidays, calendar rules
     PLACE = "place"  # a personal place, the GeoNames town and country
+    # The names of the people on the photo (`people`), made at each search from the
+    # faces and `[[people.person]]`: never stored, never written into a sidecar.
+    PERSON = "person"
 
 
 class PlaceKind(StrEnum):

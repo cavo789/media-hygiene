@@ -42,8 +42,10 @@ fichiers en tableau.
 | `bougies` | `bougie` aussi : les mots sont gardés au singulier. |
 | `anniv*` | Chaque mot qui commence ainsi. |
 | `"bord de mer"` | L'expression, ses mots dans cet ordre. |
-| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption`, `folder`, `date`. |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption`, `folder`, `date`, `person`. |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
+| `Chloé montagne` | Les photos de Chloé avec « montagne » venu de n'importe quelle source, une fois son groupe nommé dans [`people`](people.md). |
+| `person:chloe`, `person:"Mamie Jeanne"` | Le nom parmi les personnes seulement. Un nom que personne ne porte encore est signalé en une ligne. |
 
 ## Options
 
@@ -58,6 +60,9 @@ fichiers en tableau.
 - La recherche ne lit que le cache : relancez [`audit`](audit.md) puis [`tags`](tags.md) pour
   trouver les nouvelles photos.
 - Sans `/cache`, ou avec un cache qu'aucun audit n'a encore rempli, il s'arrête et dit pourquoi.
+- Les noms des personnes viennent des visages du cache et des noms de `config.toml`, à chaque
+  lancement : montez aussi `/config` pour les trouver. Rien d'autre à lancer après avoir nommé un
+  groupe.
 
 ## Pour aller plus loin
 

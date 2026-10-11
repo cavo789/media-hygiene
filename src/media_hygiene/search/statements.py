@@ -30,13 +30,28 @@ _CONCATENATED: Final = ", ".join(
     f"group_concat(CASE WHEN t.source = '{name}' THEN t.value END, '{_SEPARATOR}')"
     for name in _COLUMNS
 )
+PEOPLE: Final = "person_words"
+# The names of the people on each photo, made at each search: never in the index file.
+CREATE_PEOPLE: Final = (
+    f"CREATE TEMP TABLE IF NOT EXISTS {PEOPLE}"
+    " (path TEXT NOT NULL, value TEXT NOT NULL)"
+)
+PUT_PERSON: Final = "INSERT INTO temp.person_words (path, value) VALUES (?, ?)"
+_TAG_ROWS: Final = "SELECT path, size, mtime_ns, source, value FROM tags"
+_PERSON_ROWS: Final = (
+    "SELECT p.path AS path, w.size AS size, w.mtime_ns AS mtime_ns,"  # noqa: S608
+    f" '{TagSource.PERSON.value}' AS source, p.value AS value"
+    f" FROM temp.{PEOPLE} AS p JOIN files AS w ON w.path = p.path"
+)
 # Only the tags of the version of each file the index knows.
-FILL: Final = (
+_FILL: Final = (
     f"INSERT INTO temp.{TABLE} (rowid, {', '.join(_COLUMNS)})"  # noqa: S608
-    f" SELECT f.rowid, {_CONCATENATED} FROM tags AS t JOIN files AS f"
+    f" SELECT f.rowid, {_CONCATENATED} FROM ({{rows}}) AS t JOIN files AS f"
     " ON f.path = t.path AND f.size = t.size AND f.mtime_ns = t.mtime_ns"
     " GROUP BY f.rowid"
 )
+FILL: Final = _FILL.format(rows=f"{_TAG_ROWS} UNION ALL {_PERSON_ROWS}")
+FILL_PEOPLE: Final = _FILL.format(rows=_PERSON_ROWS)  # an index without tags yet
 DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"

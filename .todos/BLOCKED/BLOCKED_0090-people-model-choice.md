@@ -41,3 +41,17 @@ better on the maintainer's photos.
 - The default stays SFace; nothing is downloaded from InsightFace unless the user asks.
 - Both models work on the same index; switching back reuses the faces already found.
 - Docs (en + fr) explain the choice and the licence in plain words.
+
+## Status — BLOCKED (2026-10-11)
+
+### Not done
+- All items remain open.
+  **Reason:** the TODO asks to measure SFace against ArcFace on the maintainer's photos
+  before building, and to build only if ArcFace is clearly better. The night run has no
+  access to the photos, and must never download InsightFace weights (non-commercial
+  licence). Unblocks with the maintainer's measurement: `people --path "C:\Photos\2023"`
+  (SFace page), then the private script
+  `.claude/plans/night-2026-10-10/0090-arcface-measure.py` (git-ignored, run in a throwaway
+  venv, downloads buffalo_l into `~/.insightface` on the maintainer's explicit run only) on
+  the same folder; count on each page the groups mixing two people, the people split into
+  several groups, and the faces left alone. Record the figures here, then build or drop.

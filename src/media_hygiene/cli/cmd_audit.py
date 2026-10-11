@@ -8,6 +8,7 @@ import typer
 
 from media_hygiene.cli import options, scan_options
 from media_hygiene.cli.audit_actions import show_actions
+from media_hygiene.cli.audit_people import audit_people
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show, report_and_announce
 from media_hygiene.cli.next_steps import carried, suggest
@@ -36,6 +37,26 @@ def audit_command(  # pylint: disable=too-many-arguments
     exclude: Annotated[list[str] | None, options.exclude()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
+    people: Annotated[
+        bool,
+        typer.Option(
+            "--people",
+            rich_help_panel=options.panel_advanced(),
+            help=_(
+                "Then look for faces in the photos not looked at yet (as 'people' "
+                "does), after saying how long it takes and asking."
+            ),
+        ),
+    ] = False,
+    yes: Annotated[
+        bool,
+        typer.Option(
+            "--yes",
+            "-y",
+            rich_help_panel=options.panel_advanced(),
+            help=_("With --people: do not ask, go on."),
+        ),
+    ] = False,
 ) -> None:
     """Find exact duplicates and broken files; never writes to `/data`.
 
@@ -46,6 +67,8 @@ def audit_command(  # pylint: disable=too-many-arguments
         exclude: `--exclude` folders.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
+        people: `--people`, faces after the audit.
+        yes: `--yes`, no question before the faces.
     """
     runtime = runtime_of(ctx)
     with user_errors(runtime.output):
@@ -92,6 +115,9 @@ def audit_command(  # pylint: disable=too-many-arguments
                 ),
             )
         )
+    if people or runtime.settings.people.with_audit:
+        with user_errors(output):
+            audit_people(runtime, yes)
     if plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
         _second_opinion(runtime)
     _setup_tips(runtime)

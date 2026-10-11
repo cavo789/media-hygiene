@@ -11,6 +11,7 @@ cache: run an [audit](start/01-first-audit.md) first, with `/cache` mounted
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
   -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene people
 ```
@@ -26,12 +27,66 @@ nothing about your photos is sent.
 ✅ 1,436 faces in 2,000 photos: 37 groups of faces alike, the largest 212, 140, 96, 51, 33; 288
 seen once.
 Left out: 301 faces smaller than 40 pixels, 64 blurrier than 30.
-✅ Faces ready, open http://127.0.0.1:8088/ in your browser. Ctrl+C stops it; nothing is changed.
+✅ Named: Chloé: 412 photos, Manon: 236 photos.
+✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each name is saved at
+once in config.toml. Ctrl+C stops it; the photos are not changed.
 ```
 
-The page shows the groups, largest first, a few dozen faces each; a click on a face opens its
-photo. Nothing is named nor changed there yet: this first version **finds and groups**. Naming
-the groups ("Grandma", a folder per child) comes next.
+The page shows the people already named first, then the groups, largest first, a few dozen faces
+each; a click on a face opens its photo. **Type a name** on a group to name it (below). The
+photos are never changed: the names go into your `config.toml` (`/config`). Without `/config`
+mounted, the page shows the groups and the names already given, and saves none.
+
+## Name the groups
+
+| On a group | What it does |
+|---|---|
+| Type a name, then Enter | The faces shown are this person's. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
+| Pick (`x`), then name | Name several groups at once: the same person split in two groups. |
+| × on a face | This face is not this person: it is taken out of the group, and never given this name again. |
+| Ignore (`i`) | Strangers, posters, statues: the group is not shown again, nor the faces close to it. |
+| Yes, it is … (`y`) | Confirms a suggestion: a group whose faces come close to someone already named, shown as "Chloé?". |
+
+The keyboard is enough: ↑ ↓ (or `j` `k`) move between groups, Enter types a name. Each change is
+written into `config.toml`, then **read back from the file** and shown at the top of the page
+("Saved in config.toml, read back: Chloé, 58 confirmed faces."). The names look like this:
+
+```toml
+[[people.person]]
+name = "Chloé"
+faces = [
+    "/data/c/Photos/2019/IMG_0412.jpg#0",
+    "/data/c/Photos/2023/IMG_7781.jpg#1",
+]
+```
+
+Each face is written by its photo and its number in it, never by its group: a new grouping (new
+photos, another `similarity`) keeps every name. The other faces get the name of the **nearest
+confirmed face**, when they look alike enough (`similarity`); below that, they stay unnamed.
+Suggestions ("Chloé?") never count until you confirm them.
+
+## Find them: `search`
+
+Once named, people are words of [`search`](commands/search.md), with nothing else to run:
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene search Chloé montagne
+```
+
+`Chloé montagne` finds the photos with Chloé where "montagne" comes from any source (folder,
+town, what the vision model saw); `person:chloe` looks among the people only (case and accents
+do not matter); `person:"Mamie Jeanne"` is a name of two words. A name nobody has yet is said in
+one line: name the group on the page first.
+
+## During the audit: `audit --people`
+
+`audit --people` runs the audit, then counts the photos not looked at for faces yet, measures a
+few of them on your computer, says how long the rest takes, and **asks** before going on.
+`--yes` does not ask; without a terminal (no `-it`), nothing waits: the audit ends without faces.
+No page opens: run `people` afterwards to see the groups. `[people] with_audit = true` does it
+at every audit.
 
 ## How it works
 
@@ -57,8 +112,11 @@ data (GDPR, article 9). The tool treats them so:
 - the only access to the network is the **one-time download of the two models** from OpenCV Zoo
   on GitHub, checked by their SHA-256. It sends nothing about your photos. Without network, the
   error names the two files to save by hand into the `models` folder of the cache;
+- the names are in your `config.toml`, as text: the faces they name are written by photo and
+  number, never as numbers that describe a face;
 - **`people --forget`** deletes every face from the cache (their place in the file is
-  overwritten), then reads the index again to show that none is left.
+  overwritten), then reads the index again to show that none is left. It then asks whether the
+  names of `config.toml` go too, and reads the file back to show it.
 
 ## Measure first: `--sample`
 
@@ -82,15 +140,16 @@ you mounted it); repeat it for several folders.
 | `similarity` | `0.363` | How alike two faces must be (cosine, 0 to 1) to be the same person. Higher: more, smaller groups; lower: people mixed. `0.363` is SFace's documented value. |
 | `min_face` | `40` | Faces smaller than this many pixels (shorter side of their box) are left out: too small to recognise. |
 | `min_sharpness` | `30` | Faces blurrier than this are left out: a blurred face drifts away from the same face seen sharp. |
+| `with_audit` | `false` | `true`: every `audit` looks for faces too, after asking, as `audit --people` does. |
+| `ignored`, `[[people.person]]` | none | Written by the page: the faces ignored, and each person's name, confirmed faces (`faces`) and faces taken out (`rejected`). |
 
 They only choose which faces are grouped, and how: changing them analyses nothing again. To try
 another value once: `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 
 ## Not there yet
 
-- Naming the groups in the page (merge two groups, remove a wrong face, ignore strangers).
-- Using the names: a `person` rule in `classify`, a column in the inventory, a word for `search`
-  and the `.xmp` sidecars.
+- Sorting by person: a `person` rule in `classify`; a column in the inventory; the names in the
+  `.xmp` sidecars.
 - The faces of videos.
 
 To **find** the photos of someone, a photo manager such as Immich already does it well; `people`

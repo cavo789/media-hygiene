@@ -36,6 +36,7 @@ d'autres applications lisent.
 | Date | L'année, le mois, la saison (inversée sous l'équateur), les fêtes (Noël, Nouvel an, Saint-Nicolas, Saint-Valentin, Halloween, Pâques) et les noms de vos propres règles `calendar` et `date_range` ([trier, étape 6](sort/06-write-down-what-you-know.md#les-dates)). Une photo sans date prend l'année de son dossier (`Avril 2007`). | Secondes |
 | Lieu | Le nom de votre lieu quand la position GPS s'y trouve ([trier, étape 9](sort/09-places-from-gps.md)), puis la ville la plus proche et son pays, hors ligne (GeoNames), quand elle est à moins de `town_km` (20 km). | Secondes |
 | Modèle de vision | Une courte phrase et 5 à 10 mots sur ce que montre la photo (facultatif, ci-dessous). | Environ 2 s par photo |
+| Personne | Les noms des personnes sur la photo, une fois leur groupe nommé dans [`people`](reference-people.md#nommer-les-groupes). Calculés par `search` à chaque lancement, depuis les visages et `config.toml` : `tags` ne les calcule pas, et ils ne sont jamais écrits dans les fichiers compagnons `.xmp`. | Aucun pour `tags` |
 
 Ces mots sont recalculés à chaque passage : renommez un dossier ou ajoutez une règle, relancez
 `tags`.
@@ -131,7 +132,7 @@ la grille sont gardés dans `/cache`.
 | `bougies` | `bougie` aussi : les tags sont gardés au singulier. |
 | `anniv*` | Chaque mot qui commence ainsi : `anniversaire`, `anniv`. |
 | `"bord de mer"` | L'expression, ses mots dans cet ordre. |
-| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `date`. |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `date`, `person` (les noms de [`people`](reference-people.md)). |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers

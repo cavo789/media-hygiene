@@ -1,4 +1,4 @@
-"""What the page shows: the groups of at least two faces, each face under a number.
+"""The faces of the page, each under a number, and the groups as numbers.
 
 A face is known to the page by its number in this run only: the page never sees a
 path it could ask for, only numbers the board hands out. The host path of each photo
@@ -8,16 +8,11 @@ is shown as text, to find it again.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-    from pathlib import Path
-
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.people_groups import PeopleGroups
-
-SHOWN: Final = 60  # faces shown per group: enough to judge it
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,27 +53,3 @@ class PeopleBoard:
         if not key.isdigit() or int(key) >= len(self.faces):
             return None
         return self.faces[int(key)]
-
-    def state(self, host: Callable[[Path], str]) -> dict[str, object]:
-        """The groups as the page reads them.
-
-        Args:
-            host: Container path → host path.
-
-        Returns:
-            Each group: its size, its photos, the first faces with their photo.
-        """
-        return {
-            "alone": self.alone,
-            "groups": [
-                {
-                    "faces": len(group),
-                    "photos": len({self.faces[key].path for key in group}),
-                    "shown": [
-                        {"key": key, "photo": host(self.faces[key].path)}
-                        for key in group[:SHOWN]
-                    ],
-                }
-                for group in self.groups
-            ],
-        }
