@@ -2,7 +2,7 @@
 
 - **Priority**: Low — documentation follow-up, nothing to write before the rule ships
 - **Batch**: people
-- **Depends**: 0058
+- **Depends**: 0058, 0091, 0095
 - **Files**: `documentation/en/sort/`, `documentation/fr/sort/`, `documentation/en/sort/quick-guide.md`, `documentation/fr/sort/quick-guide.md`, `documentation/en/reference-people.md`, `documentation/fr/reference-people.md`, `documentation/en/README.md`, `documentation/fr/README.md`, `tests/support/docs/`
 
 ## Context
@@ -31,12 +31,8 @@ never real photos.
 - The step exists in both languages, same file name, linked from the sort quick guide.
 - `tests/unit/test_documentation.py` passes (links, anchors, parity, screenshots).
 
-## Status — BLOCKED (2026-10-11)
+## Unblocked (2026-10-11)
 
-### Not done
-- All items remain open.
-  **Reason:** the step needs naming (done by 0091: `[[people.person]]`, the page, `search
-  person:`) **and** a `match = "person"` classify rule, which does not exist yet. 0091
-  explicitly left the rule out of its scope; it is now filed as **0095** (classify `person`
-  rule). Unblocks when 0095 is done: then write the step after `09-places-from-gps.md`
-  (number it then), with synthetic faces for the captures (`tests/support/docs/`).
+Was BLOCKED waiting for the `match = "person"` classify rule; 0095 delivered it (`names`,
+`all = true`, `min_share`, documented in step 6 of the sort guide and `reference-people.md`).
+The step can now be written after `09-places-from-gps.md`.
