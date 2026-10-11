@@ -80,10 +80,10 @@ msgstr "'media-hygiene undo <run>' restaure les fichiers d'une exécution."
 #, python-brace-format
 msgid ""
 "'media-hygiene undo {run_id}' removes the album; the photos stay where "
-"they are."
+"they are:"
 msgstr ""
 "'media-hygiene undo {run_id}' supprime l'album ; les photos restent où "
-"elles sont."
+"elles sont :"
 
 msgid ""
 "'purge' erases for good: these files cannot come back, not even with "
@@ -233,6 +233,9 @@ msgstr "-e TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC)"
 
 msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
 msgstr "-v \"<un de vos dossiers>:/reports\" (rapports HTML)"
+
+msgid "-v \"<a folder of yours>:/reports\" (the workbook to edit)"
+msgstr "-v \"<un de vos dossiers>:/reports\" (le classeur à modifier)"
 
 msgid "-v media-hygiene-cache:/cache (much faster next audits)"
 msgstr "-v media-hygiene-cache:/cache (prochains audits bien plus rapides)"
@@ -414,11 +417,6 @@ msgstr "Ajoutez -v \"<un de vos dossiers>:/quarantine\" pour les traiter."
 
 msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir l'inventaire."
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the workbook to edit."
-msgstr ""
-"Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir le classeur à "
-"modifier."
 
 msgid ""
 "Add -v \"<a folder of yours>:/reports\" to see the near duplicates in an "
@@ -691,8 +689,8 @@ msgid "Category"
 msgstr "Catégorie"
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
-msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place."
+msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
+msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place :"
 
 #, python-brace-format
 msgid ""

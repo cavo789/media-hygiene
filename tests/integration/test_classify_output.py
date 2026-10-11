@@ -5,6 +5,7 @@ from __future__ import annotations
 import errno
 from typing import TYPE_CHECKING
 
+from media_hygiene.console.advice import TIP_BUDGET
 from media_hygiene.report.classify_writer import ClassifyReportWriter
 from tests.support.cli import run
 
@@ -21,13 +22,21 @@ if TYPE_CHECKING:
 def test_without_a_reports_mount_the_proposals_stay_on_screen(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """A workbook in a folder the container forgets would be lost work: none."""
+    """A workbook in a folder the container forgets would be lost work: none.
+
+    The mount to add closes the command, merged with the other settings, within
+    the tip budget.
+    """
     monkeypatch.delenv("MEDIA_HYGIENE_REPORTS_DIR")
     result = run(cli, "classify")
     assert result.exit_code == 0, result.output
     assert "Already in place" in result.output
-    assert ":/reports" in result.output
     assert "classify.xlsx" not in result.output
+    closing = result.output.split("'classify' only proposes.")[1]
+    assert "To set once:" in closing
+    assert ":/reports" in closing
+    tips = [line for line in closing.splitlines() if line.startswith(("💡", "⚙️"))]
+    assert len(tips) <= TIP_BUDGET
 
 
 def test_a_report_that_cannot_be_written_is_a_warning(

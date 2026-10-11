@@ -43,6 +43,8 @@ def test_an_album_of_a_category_is_linked_skipped_and_undone(
     assert made.exit_code == 0, made.output
     assert "3 links made" in made.output
     assert "🛟 An album only adds names (hard links)" in made.output
+    undo_line = flat(made.output).split("removes the album; the photos stay")[1]
+    assert " undo " in undo_line  # the full command to paste, never cut
     links = album_files(locations, "Noces")
     assert sorted(links) == ["DSC_0000.jpg", "DSC_0001.jpg", "DSC_0002.jpg"]
     for name, link in links.items():
@@ -141,9 +143,9 @@ def test_album_refusals_say_what_to_do(
 def test_a_file_gone_since_classify_is_never_linked(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Listed as not found, with what to do."""
+    """Listed as not found; what to do closes the command."""
     photos = classified(cli, locations, monkeypatch)
     (photos / WEDDING_CATEGORY / "DSC_0000.jpg").unlink()
     shown = flat(run(cli, "album", "Noces", "--category", WEDDING_CATEGORY).output)
     assert "Not found │ 1" in shown
-    assert "Run 'classify' again" in shown
+    assert "Run 'classify' again" in shown.split("add --apply")[1]  # at the end

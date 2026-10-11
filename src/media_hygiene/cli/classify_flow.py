@@ -61,9 +61,7 @@ def write_output(
         warn(output, exc)
         return
     if written is None:
-        output.tip(
-            _('Add -v "<a folder of yours>:/reports" to get the workbook to edit.')
-        )
+        output.setting(_('-v "<a folder of yours>:/reports" (the workbook to edit)'))
         return
     show_carried(output, written.carried)
     host, folder = runtime.mapper.to_host, written.folder

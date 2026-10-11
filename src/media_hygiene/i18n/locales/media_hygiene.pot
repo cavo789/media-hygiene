@@ -56,7 +56,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "'media-hygiene undo {run_id}' removes the album; the photos stay where "
-"they are."
+"they are:"
 msgstr ""
 
 msgid ""
@@ -195,6 +195,9 @@ msgstr ""
 msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
 msgstr ""
 
+msgid "-v \"<a folder of yours>:/reports\" (the workbook to edit)"
+msgstr ""
+
 msgid "-v media-hygiene-cache:/cache (much faster next audits)"
 msgstr ""
 
@@ -324,9 +327,6 @@ msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the workbook to edit."
 msgstr ""
 
 msgid ""
@@ -564,7 +564,7 @@ msgid "Category"
 msgstr ""
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
+msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr ""
 
 #, python-brace-format

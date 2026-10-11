@@ -16,6 +16,7 @@ from media_hygiene.classify.workbook.sheets import Labels
 from media_hygiene.classify.workbook.summary import summary_rows
 from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.console.advice import TipKind
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.output import Output
 from media_hygiene.paths.host_paths import HostPathMapper
@@ -76,3 +77,15 @@ def test_the_plan_and_the_workbook_carry_the_rule() -> None:
     summary = summary_rows(plan)
     assert ("Drone [DJI]", 1) in summary
     assert ("Italy", 0) in summary
+
+
+def test_duplicates_left_close_the_command_as_a_next_step() -> None:
+    """Running 'clean' first changes what 'sort' moves: ranked as a next step."""
+    buffer = StringIO()
+    output = Output(Console(file=buffer, width=100))
+    result = classified()
+    show_classification(output, ClassifyResult(result.classification, 3))
+    assert "exact duplicates" not in buffer.getvalue()  # kept for the end
+    _step, tips, _settings = output.board.drain()
+    assert [tip.kind for tip in tips] == [TipKind.NEXT]
+    assert "3 exact duplicates" in tips[0].text

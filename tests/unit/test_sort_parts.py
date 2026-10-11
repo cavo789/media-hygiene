@@ -17,6 +17,7 @@ from media_hygiene.actions.sort import MoveOutcome
 from media_hygiene.actions.sort_folders import Fate, FolderReport, Verdict
 from media_hygiene.actions.sort_names import numbered
 from media_hygiene.cli.cmd_sort import _show_result
+from media_hygiene.console.advice import TipKind
 from media_hygiene.errors import MountError
 from media_hygiene.services.interrupt import StopRequest
 from media_hygiene.services.sort import SortResult
@@ -150,3 +151,9 @@ def test_the_closing_summary_tells_what_went_wrong(locations: Locations) -> None
         "Run the same command again",
     ):
         assert expected in text, expected
+    step, tips, _settings = runtime.output.board.drain()
+    assert step is None
+    (undo,) = tips
+    assert undo.kind is TipKind.SAFETY
+    assert undo.command is not None
+    assert undo.command.endswith("undo 20260930-100000")
