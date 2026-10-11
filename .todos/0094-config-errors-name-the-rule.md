@@ -11,6 +11,12 @@ Since 0081, a refused item of an array of tables is named by its position, count
 `[[classify.rules]] number 2 in config.toml` (`config/explain._table`). With a dozen rules, the
 user has to count. Most rules and places carry a `name` (`name = "Birthday"`).
 
+The validators of the project already name the rule in their reason (0086:
+`[[classify.rules]] number 1 in config.toml: rule 'Birthday': '02-30' is not a day that
+exists`), but pydantic's own errors do not: a missing or mistyped field reads
+`'match' in [[classify.rules]] number 2 of config.toml: this setting is required`. Only those
+need the name; never say it twice when the reason already does.
+
 ## Goal
 
 - When the raw item has a `name` (read from the file layer, `Problems.layers`, before pydantic
