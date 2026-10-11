@@ -24,7 +24,7 @@ from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.progress import Step
-from media_hygiene.services.people_files import people_photos
+from media_hygiene.services.people_files import people_photos, present_photos
 from media_hygiene.services.people_find import FindDeps, FindOutcome, find_all
 from media_hygiene.services.people_groups import PeopleGroups, group_people
 
@@ -41,10 +41,11 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class PeopleWork:
-    """The photos of a run, and those whose faces the index lacks."""
+    """The photos of a run, those whose faces the index lacks, those not here."""
 
     photos: tuple[PhotoVersion, ...]
     missing: tuple[PhotoVersion, ...]
+    absent: int = 0  # in the index, not on disk: their folder is not mounted
 
 
 def face_recipe(runtime: Runtime) -> FinderRecipe:
@@ -119,7 +120,7 @@ class PeopleStep:
         return self._store
 
     def plan(self, within: Sequence[Path]) -> PeopleWork:
-        """List the photos of the run and those not analysed yet.
+        """List the photos of the run (on disk) and those not analysed yet.
 
         Args:
             within: Container folders (`--path`); empty: the whole index.
@@ -128,8 +129,9 @@ class PeopleStep:
             The work.
         """
         store = self.store
-        photos = people_photos(store.connection, within)
-        return PeopleWork(photos, tuple(p for p in photos if not store.scanned(p)))
+        photos, absent = present_photos(people_photos(store.connection, within))
+        missing = tuple(p for p in photos if not store.scanned(p))
+        return PeopleWork(photos, missing, absent)
 
     def find(self, photos: Sequence[PhotoVersion], answering: Answering) -> FindOutcome:
         """Find the faces of photos, each one committed at once.

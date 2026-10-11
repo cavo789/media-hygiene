@@ -6112,6 +6112,20 @@ msgstr[0] "{count} photo a les mots du modèle de vision ; {left} restantes."
 msgstr[1] "{count} photos ont les mots du modèle de vision ; {left} restantes."
 
 #, python-brace-format
+msgid ""
+"{count} photo of the index is not in the mounted folders: left aside. "
+"Mount its folder to look at it too."
+msgid_plural ""
+"{count} photos of the index are not in the mounted folders: left aside. "
+"Mount their folders to look at them too."
+msgstr[0] ""
+"{count} photo de l'index n'est pas dans les dossiers montés : laissée de "
+"côté. Montez son dossier pour la regarder aussi."
+msgstr[1] ""
+"{count} photos de l'index ne sont pas dans les dossiers montés : laissées"
+" de côté. Montez leurs dossiers pour les regarder aussi."
+
+#, python-brace-format
 msgid "{count} photo of {total} to analyse; the next runs analyse new ones only."
 msgid_plural "{count} photos of {total} to analyse; the next runs analyse new ones only."
 msgstr[0] ""

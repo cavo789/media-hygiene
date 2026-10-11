@@ -9,6 +9,7 @@ import pytest
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.report.decisions import read_decisions
+from media_hygiene.review.respond import RUN_TAG
 from tests.support.review import (
     BURST_HOST,
     PAGE,
@@ -58,7 +59,8 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
     assert [shot.folder for shot in series.shots] == [BURST_HOST] * 3
     assert (image.status, image.headers["content-type"]) == (200, "image/jpeg")
     assert image.body.startswith(b"\xff\xd8")
-    assert "immutable" in image.headers["cache-control"]
+    assert image.headers["cache-control"] == "private, no-cache"
+    assert image.headers["etag"] == RUN_TAG
     assert (unknown.status, other.status) == (404, 404)
 
 

@@ -32,6 +32,25 @@ def show_privacy(output: Output) -> None:
     )
 
 
+def show_absent(output: Output, absent: int) -> None:
+    """Say how many photos of the index are not on disk, and why it is harmless.
+
+    Args:
+        output: Where to print.
+        absent: Photos of the index missing from the mounted folders.
+    """
+    if absent:
+        output.info(
+            ngettext(
+                "{count} photo of the index is not in the mounted folders: left "
+                "aside. Mount its folder to look at it too.",
+                "{count} photos of the index are not in the mounted folders: left "
+                "aside. Mount their folders to look at them too.",
+                absent,
+            ).format(count=human_number(absent))
+        )
+
+
 def show_missing(output: Output, missing: int, total: int) -> None:
     """Say how many photos are still to analyse.
 

@@ -97,3 +97,18 @@ def test_strict_settings_leave_every_face_out(
     assert "Left out: 8 faces smaller than 100 pixels, 0 blurrier than 30." in output
     assert "no two of them look alike enough to be grouped" in output
     assert apps == []
+
+
+def test_photos_of_folders_not_mounted_are_left_aside(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """Photos of the index whose folder is gone are said absent, never undecodable."""
+    family = locations.data_dir / "c" / "Family"
+    for picture in family.iterdir():
+        picture.unlink()
+    family.rmdir()
+    output = flat(run(cli, "people").output)
+    assert "5 photos of the index are not in the mounted folders: left aside" in output
+    assert "5 photos of 5 to analyse" in output
+    assert "could not be decoded" not in output
+    assert len(apps) == 1

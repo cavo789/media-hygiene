@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.console.formatting import human_number
 from media_hygiene.console.people_view import (
+    show_absent,
     show_estimate,
     show_found,
     show_groups,
@@ -59,6 +60,7 @@ def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleGroups | None:
             _forget(runtime, step)
             return None
         work = step.plan(request.within)
+        show_absent(output, work.absent)
         if not work.photos:
             output.warning(_("No photo of the index below these folders."))
             return None

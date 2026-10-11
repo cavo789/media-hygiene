@@ -18,7 +18,7 @@ from media_hygiene.services.tag_files import require_index
 
 if TYPE_CHECKING:
     import sqlite3
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
     from pathlib import Path
 
     from media_hygiene.services.runtime import Runtime
@@ -61,3 +61,46 @@ def people_photos(
         and file.facts.broken_reason is None
         and (not within or any(is_within(file.path, folder) for folder in within))
     )
+
+
+def present_photos(
+    photos: Iterable[PhotoVersion],
+) -> tuple[tuple[PhotoVersion, ...], int]:
+    """Keep the photos found on disk: a folder not mounted here holds none.
+
+    Each folder is listed once, not each photo stat'ed: an index of a whole disk
+    with one year mounted is sorted in a few hundred listings.
+
+    Args:
+        photos: The photos of the index.
+
+    Returns:
+        Those present, and how many are not.
+    """
+    listings: dict[Path, frozenset[str]] = {}
+    present: list[PhotoVersion] = []
+    absent = 0
+    for photo in photos:
+        folder = photo.path.parent
+        if folder not in listings:
+            listings[folder] = _names(folder)
+        if photo.path.name in listings[folder]:
+            present.append(photo)
+        else:
+            absent += 1
+    return tuple(present), absent
+
+
+def _names(folder: Path) -> frozenset[str]:
+    """The names in a folder; none when it is missing or cannot be read.
+
+    Args:
+        folder: The folder.
+
+    Returns:
+        Its entries.
+    """
+    try:
+        return frozenset(entry.name for entry in folder.iterdir())
+    except OSError:
+        return frozenset()

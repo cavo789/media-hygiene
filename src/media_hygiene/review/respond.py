@@ -2,11 +2,17 @@
 
 A video is never read whole: the browser asks for it piece by piece (`Range`), and
 each piece is read and sent a chunk at a time, waiting for the browser to take it.
+
+A picture is named by a number valid in this run only: `/face/3.jpg` is another face
+once the command runs again, on the same port. So the browser keeps it but asks again
+each time (`no-cache`), and `RUN_TAG`, drawn anew at each run, says whether its copy is
+still this run's (304, nothing rendered) or an older run's (rendered again).
 """
 
 from __future__ import annotations
 
 import asyncio
+import secrets
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -16,6 +22,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import FilePart, Response
 
 CHUNK: Final = 256 * 1024
+RUN_TAG: Final = f'"{secrets.token_hex(8)}"'  # the ETag of every cacheable answer
 
 
 async def write_response(writer: asyncio.StreamWriter, response: Response) -> None:
@@ -26,14 +33,19 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         response: What to send.
     """
     status = response.status
-    cache = "private, max-age=86400, immutable" if response.cacheable else "no-store"
+    cache = (
+        ("private, no-cache", f"ETag: {RUN_TAG}")
+        if response.cacheable
+        else ("no-store",)
+    )
     part = response.part
     length = len(response.body) if part is None else part.length
     head = (
         f"HTTP/1.1 {status.value} {status.phrase}",
         f"Content-Type: {response.content_type}",
         f"Content-Length: {length}",
-        f"Cache-Control: {cache}",
+        f"Cache-Control: {cache[0]}",
+        *cache[1:],
         "Connection: close",
         "X-Content-Type-Options: nosniff",
         f"Referrer-Policy: {response.referrer}",

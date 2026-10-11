@@ -17,7 +17,7 @@ from media_hygiene.review.http import (
     Response,
     read_request,
 )
-from media_hygiene.review.respond import write_response
+from media_hygiene.review.respond import RUN_TAG, write_response
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -63,7 +63,7 @@ async def serve_connection(
         except BadRequestError as exc:
             response = Response(exc.status)
         else:
-            response = await handle(request)
+            response = still_valid(request) or await handle(request)
         await write_response(writer, response)
     except _DROPPED_CONNECTION:
         pass  # the browser went away: nothing to answer
@@ -71,6 +71,24 @@ async def serve_connection(
         writer.close()
         with contextlib.suppress(ConnectionError):
             await writer.wait_closed()
+
+
+def still_valid(request: Request) -> Response | None:
+    """Answer 304 when the browser holds a copy made by this run.
+
+    Only cacheable answers carry `RUN_TAG`, so only their copies are asked about;
+    a part of a video (`Range`) is always sent.
+
+    Args:
+        request: The request.
+
+    Returns:
+        304, or None to answer the request.
+    """
+    headers = request.headers
+    if headers.get("if-none-match") != RUN_TAG or "range" in headers:
+        return None
+    return Response(HTTPStatus.NOT_MODIFIED, cacheable=True)
 
 
 def json_response(status: HTTPStatus, value: dict[str, object]) -> Response:

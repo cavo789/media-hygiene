@@ -5123,6 +5123,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} photo of the index is not in the mounted folders: left aside. "
+"Mount its folder to look at it too."
+msgid_plural ""
+"{count} photos of the index are not in the mounted folders: left aside. "
+"Mount their folders to look at them too."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} photo of {total} to analyse; the next runs analyse new ones only."
 msgid_plural "{count} photos of {total} to analyse; the next runs analyse new ones only."
 msgstr[0] ""

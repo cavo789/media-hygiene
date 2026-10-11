@@ -49,7 +49,7 @@ def test_the_original_is_the_file_itself(locations: Locations) -> None:
     )
     assert (found.status, found.headers["content-type"]) == (200, "image/jpeg")
     assert found.body == shots[0].read_bytes()
-    assert "immutable" in found.headers["cache-control"]
+    assert found.headers["cache-control"] == "private, no-cache"
     assert (unknown.status, other.status) == (404, 404)
 
 
