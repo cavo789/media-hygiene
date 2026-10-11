@@ -83,7 +83,11 @@ d'option : elles s'écrivent dans `config.toml` seulement ([trier, étape 6](sor
 ## L'aide intégrée
 
 `cavo789/media-hygiene --help` et `cavo789/media-hygiene <commande> --help` documentent tout, dans
-les deux langues (`--locale fr --help`). Voici ce qu'elles affichent :
+les deux langues (`--locale fr --help`). Une commande de plus de quatre options montre d'abord celles
+d'usage courant, sous **Options** (`clean --tier`, `review --near`, `classify --year`…) ; les autres
+suivent, sous **Options avancées** et, pour les dossiers et l'analyse, sous
+**Avancé : dossiers** et **Avancé : analyse** (elles remplacent `config.toml`). Voici ce qu'elles
+affichent :
 
 <details>
 <summary><code>--help</code></summary>

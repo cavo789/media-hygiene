@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final, cast
 import typer
 
 from media_hygiene.cli.clean_options import decisions_option
+from media_hygiene.cli.options import panel_advanced
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -26,12 +27,16 @@ def decisions_file() -> OptionInfo:
         _(
             "File the decisions are saved in, and resumed from. A relative path "
             "lies in the folder mounted on /reports. Default: decisions.json."
-        )
+        ),
+        panel_advanced(),
     )
 
 
-def port() -> OptionInfo:
+def port(panel: str | None = None) -> OptionInfo:
     """`--port`: the port of the page, inside the container.
+
+    Args:
+        panel: Help panel of the option; None where the command has few options.
 
     Returns:
         The option definition.
@@ -46,6 +51,7 @@ def port() -> OptionInfo:
                 "on your computer: -p 127.0.0.1:9000:9000 for --port 9000. "
                 "Default: {default}."
             ).format(default=PAGE_PORT),
+            rich_help_panel=panel,
             show_default=False,
         ),
     )

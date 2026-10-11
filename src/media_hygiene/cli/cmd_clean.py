@@ -41,15 +41,15 @@ if TYPE_CHECKING:
 def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     ctx: typer.Context,
     *,
+    tier: Annotated[CleanTier, clean_options.tier()] = CleanTier.EXACT,
+    decisions: Annotated[Path | None, clean_options.decisions()] = None,
+    yes: Annotated[bool, options.yes()] = False,
+    delete: Annotated[bool, clean_options.delete()] = False,
     prefer: Annotated[list[str] | None, options.prefer()] = None,
     protect: Annotated[list[str] | None, options.protect()] = None,
     exclude: Annotated[list[str] | None, options.exclude()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
-    yes: Annotated[bool, options.yes()] = False,
-    tier: Annotated[CleanTier, clean_options.tier()] = CleanTier.EXACT,
-    decisions: Annotated[Path | None, clean_options.decisions()] = None,
-    delete: Annotated[bool, clean_options.delete()] = False,
 ) -> None:
     """Audit, confirm, then set duplicate copies aside and handle broken files.
 

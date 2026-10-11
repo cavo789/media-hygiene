@@ -8,6 +8,7 @@ import typer
 
 from media_hygiene.classify.album_rows import Criteria
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.options import panel_advanced
 from media_hygiene.console.album_view import show_album, show_album_result
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
@@ -44,13 +45,16 @@ def album_command(  # pylint: disable=too-many-arguments
     rule: Annotated[
         str,
         typer.Option(
-            "--rule", help=_("The files the classify rule of this name decided.")
+            "--rule",
+            rich_help_panel=panel_advanced(),
+            help=_("The files the classify rule of this name decided."),
         ),
     ] = "",
     rating: Annotated[
         int | None,
         typer.Option(
             "--rating",
+            rich_help_panel=panel_advanced(),
             min=1,
             max=_MOST_STARS,
             help=_("The files given at least these stars in Windows (1 to 5)."),
@@ -60,6 +64,7 @@ def album_command(  # pylint: disable=too-many-arguments
         str | None,
         typer.Option(
             "--workbook",
+            rich_help_panel=panel_advanced(),
             help=_(
                 "The classify workbook to read; the latest classify run's by default."
             ),

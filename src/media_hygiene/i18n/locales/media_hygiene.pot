@@ -289,6 +289,15 @@ msgid ""
 "any change. {url}"
 msgstr ""
 
+msgid "Advanced options"
+msgstr ""
+
+msgid "Advanced: folders (override folders.* of config.toml)"
+msgstr ""
+
+msgid "Advanced: scan (override scan.* of config.toml)"
+msgstr ""
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
@@ -344,6 +353,15 @@ msgstr ""
 msgid ""
 "Another folder? Run 'launcher' again with one more -v, saving to the same"
 " file."
+msgstr ""
+
+msgid ""
+"Apply the choices made in the browser: decisions.json downloaded from an "
+"audit report (swap or leave alone some folder pairs) or written by "
+"'review' (burst shots set aside, near duplicates decided). A relative "
+"path is read from the folder mounted on /reports. The file is refused if "
+"the folders, the pairs or the series changed. Alone, --decisions reads "
+"decisions.json."
 msgstr ""
 
 msgid "April"
@@ -750,12 +768,6 @@ msgstr ""
 msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 
-msgid ""
-"Delete the exact copies for good, after a byte comparison with the kept "
-"copy, instead of moving them to the quarantine: the space is freed at "
-"once; 'undo' rebuilds them from the kept copy."
-msgstr ""
-
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr ""
@@ -933,6 +945,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
+msgstr ""
+
+msgid ""
+"Estimate a full run first: describe this many random photos with the "
+"local model, print the time per photo and the estimate of a full run, and"
+" stop."
 msgstr ""
 
 msgid "Event"
@@ -1202,9 +1220,6 @@ msgstr ""
 msgid "Folders"
 msgstr ""
 
-msgid "Folders (override folders.* of config.toml)"
-msgstr ""
-
 msgid "Folders analysed:"
 msgstr ""
 
@@ -1246,6 +1261,12 @@ msgid ""
 msgstr ""
 
 msgid "Frame rate"
+msgstr ""
+
+msgid ""
+"Free the space at once: delete the exact copies for good, after a byte "
+"comparison with the kept copy, instead of moving them to the quarantine; "
+"'undo' rebuilds them from the kept copy."
 msgstr ""
 
 msgid "Freed"
@@ -1369,6 +1390,14 @@ msgid ""
 msgstr ""
 
 msgid "How do we know these are duplicates?"
+msgstr ""
+
+msgid ""
+"How far to clean. exact (default): the byte-for-byte copies only. near: "
+"also the shrunk copies (sent by WhatsApp or e-mail, resized, "
+"recompressed) and the re-encoded videos that are sure; the groups to "
+"check are left alone. near-all: every near duplicate; check them in the "
+"report first. Near duplicates go to the quarantine, never deleted."
 msgstr ""
 
 #, python-brace-format
@@ -2568,9 +2597,6 @@ msgstr ""
 msgid "Say what the album gathers."
 msgstr ""
 
-msgid "Scan (override scan.* of config.toml)"
-msgstr ""
-
 msgid "School"
 msgstr ""
 
@@ -3731,14 +3757,6 @@ msgstr ""
 msgid "decisions.json cannot be read: 'review' will say why."
 msgstr ""
 
-msgid ""
-"decisions.json downloaded from an audit report (swap or leave alone some "
-"folder pairs) or written by 'review' (burst shots set aside). A relative "
-"path is read from the folder mounted on /reports. The file is refused if "
-"the folders, the pairs or the series changed. Alone, --decisions reads "
-"decisions.json."
-msgstr ""
-
 msgid "default"
 msgstr ""
 
@@ -3781,13 +3799,6 @@ msgid "environment"
 msgstr ""
 
 msgid "every source"
-msgstr ""
-
-msgid ""
-"exact: byte-for-byte copies only. near: also the sure near duplicates "
-"(resized or recompressed copies, re-encoded videos), the groups to check "
-"are left alone. near-all: every near duplicate; check them in the report "
-"first. Near duplicates go to the quarantine. Default: exact."
 msgstr ""
 
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."

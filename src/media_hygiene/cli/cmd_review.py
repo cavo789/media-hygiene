@@ -31,12 +31,14 @@ _DECISIONS_FILE: Final = Path(DEFAULT_DECISIONS)
 def review_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
+    near: Annotated[bool, review_options.near()] = False,
+    decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
+    port: Annotated[
+        int, review_options.port(options.panel_advanced())
+    ] = review_options.PAGE_PORT,
     prefer: Annotated[list[str] | None, options.prefer()] = None,
     protect: Annotated[list[str] | None, options.protect()] = None,
     exclude: Annotated[list[str] | None, options.exclude()] = None,
-    decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
-    near: Annotated[bool, review_options.near()] = False,
 ) -> None:
     """Audit, then serve the burst series (or near duplicates) until Ctrl+C.
 

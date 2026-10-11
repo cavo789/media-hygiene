@@ -83,7 +83,11 @@ line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they a
 ## The built-in help
 
 `cavo789/media-hygiene --help` and `cavo789/media-hygiene <command> --help` document everything, in
-both languages (`--locale fr --help`). Here is what they print:
+both languages (`--locale fr --help`). A command with more than four options lists those of daily
+use first, under **Options** (`clean --tier`, `review --near`, `classify --year`…); the others come
+after, under **Advanced options** and, for the folders and the scan,
+under **Advanced: folders** and **Advanced: scan** (they override `config.toml`). Here is what they
+print:
 
 <details>
 <summary><code>--help</code></summary>
