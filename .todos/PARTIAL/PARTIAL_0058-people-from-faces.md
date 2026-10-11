@@ -148,6 +148,7 @@ Note the figures here, then decide to build, reduce or drop.
   name, merge groups, remove a wrong face, ignore).
   **Reason:** scope — first slice is find + group + show; naming needs the measurement first
   to know what the groups look like.
+  **Follow-up:** 0091 (naming + `search` by person).
 - Uses of the names: label layer `source = person` (0072), `search` (0073), XMP
   `PersonInImage` (0074), `match = "person"` classify rule, a column in `inventory` and in the
   classify workbook; a sorting step in `documentation/*/sort/`.

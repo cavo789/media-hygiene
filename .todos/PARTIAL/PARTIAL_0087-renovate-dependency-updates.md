@@ -49,8 +49,12 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
 - `renovate-config-validator --strict` passes (repository mode).
 - Developer page updated in `documentation/en/` and `documentation/fr/` next to `deps`.
 
+- Renovate GitHub App installed on `cavo789/media-hygiene` by the maintainer (2026-10-11).
+
 ### Not done
-- Install the Renovate GitHub App on `cavo789/media-hygiene` and review its onboarding PR (check
-  the detected dependencies list: three `custom.regex` deps from the Dockerfile, the pre-commit
-  hooks, the actions, the pep621 deps).
-  **Reason:** needs the maintainer's GitHub account; cannot be done from the devcontainer.
+- Review Renovate's first run once `sortering` is merged into `main` (Renovate reads its config
+  from the default branch). Check the Dependency Dashboard lists three `custom.regex` deps from
+  the Dockerfile, the pre-commit hooks, the actions and the pep621 deps. If an onboarding PR was
+  opened before the merge (it proposes its own `renovate.json`), close it without merging.
+  **Reason:** the merge into `main` is postponed by the maintainer (a push to `main` rebuilds the
+  image).
