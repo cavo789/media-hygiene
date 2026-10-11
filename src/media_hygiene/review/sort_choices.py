@@ -9,17 +9,20 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.workbook.validation import folder_of
+from media_hygiene.review.sort_batch import SureBatch
 from media_hygiene.review.sort_files import SendFiles
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
+    from media_hygiene.review.sort_batch import BatchAnswer, SortBatchSession
     from media_hygiene.review.sort_session import SortSession
     from media_hygiene.review.sort_state import EventView
 
 EVENT_PATH: Final = "/api/event"
 FILES_PATH: Final = "/api/files"
 FORGET_PATH: Final = "/api/forget"
+SURE_PATH: Final = "/api/sure"
 
 
 class _Frozen(BaseModel):
@@ -101,12 +104,26 @@ def _forget(session: SortSession, body: bytes) -> EventView:
     return session.forget(asked.event, asked.rows)
 
 
-CHOICES: Final[Mapping[str, Callable[[SortSession, bytes], EventView]]] = (
-    MappingProxyType(
-        {
-            EVENT_PATH: _event,
-            FILES_PATH: _files,
-            FORGET_PATH: _forget,
-        }
-    )
+def _sure(session: SortBatchSession, body: bytes) -> BatchAnswer:
+    """Accept the sure proposals of events still open, or take them back, at once.
+
+    Args:
+        session: The review.
+        body: The JSON body.
+
+    Returns:
+        The batch, read back from the disk.
+    """
+    return session.batch(SureBatch.model_validate_json(body))
+
+
+type Choice = Callable[[SortBatchSession, bytes], EventView | BatchAnswer]
+
+CHOICES: Final[Mapping[str, Choice]] = MappingProxyType(
+    {
+        EVENT_PATH: _event,
+        FILES_PATH: _files,
+        FORGET_PATH: _forget,
+        SURE_PATH: _sure,
+    }
 )

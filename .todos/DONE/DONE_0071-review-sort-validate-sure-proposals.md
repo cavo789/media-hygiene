@@ -24,3 +24,22 @@ band) and only need a glance. Check first whether a batch validation already exi
 ## Acceptance
 
 - One write of `sort-decisions.json`, read back from disk; tests; docs en/fr.
+
+## Status
+
+DONE (2026-10-11, night run). No batch existed in `review-sort` before.
+
+- `review/sort_sure.py`: an event's proposal is **sure** when the folder most of its files get
+  is in the sure band, with a category, some files are still to decide and none of those
+  proposes another category; `EventCard.sure` carries it to the page.
+- `review/sort_batch.py`: `SortBatchSession` (subclass of `SortSession`) — `POST /api/sure`
+  `{events, undo}` accepts the open sure events (value = what Enter records: the proposed
+  category, no name; `base` = the workbook's value, empty) or takes back those still holding
+  the batch's value, in **one write**, then reads `sort-decisions.json` back from the disk and
+  refuses an answer the disk does not hold.
+- Page (`templates/sort_review_sure.js.j2`): button + `V` with a confirmation giving the
+  figures, `↶ Take the batch back` button, filter "Only the events to decide" (N, P, U skip
+  chosen and sure events), `✔ sure` mark after the proposal.
+- Console at start: `412 events to decide: 260 with a sure proposal (one click), 152 to look at.`
+- Docs en/fr `sort/10-name-events-in-the-browser.md`; tests `tests/unit/test_sort_sure.py`.
+- Not run in a real browser (no JS runtime in the night run).

@@ -29,6 +29,7 @@ reads the workbook of the latest `classify` run, the one `sort` applies; name an
 the command: `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 
 ```text
+412 events to decide: 260 with a sure proposal (one click), 152 to look at.
 ✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each choice is
 saved at once in
 C:\Users\you\media-hygiene\reports\20261002-123210-classify\sort-decisions.json.
@@ -65,6 +66,7 @@ categories already used.
 | <kbd>Enter</kbd> | Accept the name and category, then go to the next event still to decide. |
 | <kbd>N</kbd> / <kbd>P</kbd> (or Page Down / Page Up) | Next or previous event, without deciding. |
 | <kbd>U</kbd> | Next event still to decide. |
+| <kbd>V</kbd> | Accept every sure proposal at once (see below). |
 | <kbd>E</kbd> / <kbd>C</kbd> | Type in the name / the category field; <kbd>Esc</kbd> leaves it. |
 | <kbd>Shift</kbd>+<kbd>S</kbd> | Leave the whole event where it is ("(stay where it is)"). |
 | <kbd>←</kbd> <kbd>→</kbd> | Move between the photos. |
@@ -76,6 +78,26 @@ categories already used.
 
 A photo sent to another category gets the folder the layout gives that category, as if you had
 typed it in its **Final folder** cell: `2016/Best of` with `layout = "{year}/{category}"`.
+
+## Accept the sure proposals at once
+
+On a large collection, many events have a **sure** proposal: most of their photos come from a
+strong rule (band *Sure*), and the few still to check or to sort propose the same category, or
+none. Such an event shows `✔ sure` after its proposal; it only needs a glance.
+
+The button **✔ Accept the N sure proposals (M files)** at the top (or <kbd>V</kbd>) accepts
+them all, after a confirmation that gives the figures. Each one is recorded exactly as
+<kbd>Enter</kbd> would record it on that event untouched (its proposed category, no name), with
+what the workbook said of it, like any other choice. Nothing is imposed: an event you already
+chose, here or in the workbook, is left alone, and a later workbook edit of the same event is
+still a conflict, never settled silently.
+
+The batch is **one write** of `sort-decisions.json`, read back from the disk before the page
+shows it: the status line gives the time the disk holds it. **↶ Take the batch back** forgets the
+whole batch in one write too (an event you chose again since keeps your new choice).
+
+Tick **Only the events to decide** to make <kbd>N</kbd>, <kbd>P</kbd> and <kbd>U</kbd> skip the
+events already chosen and those whose proposal is sure: only the ones that need you remain.
 
 ## Where your choices go
 

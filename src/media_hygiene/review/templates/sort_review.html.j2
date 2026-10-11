@@ -24,6 +24,14 @@
   "last": _("This is the last event: stop the review with Ctrl+C in the terminal."),
   "noOpen": _("No event left to decide after this one."),
   "sendTo": _("Send the photos ({count}) to the category:"),
+  "sureMark": "✔ " ~ _("sure: V accepts it with the other sure proposals"),
+  "sure": "✔ " ~ _("Accept the {count} sure proposals ({files} files)"),
+  "sureNone": _("No sure proposal left to accept."),
+  "sureAsk": _("{count} events to decide have a sure proposal ({files} files): each one gets its proposed category, as Enter would give it, saved in one write. {left} events to decide stay to look at. Accept them? The ↶ button takes the whole batch back."),
+  "sureDone": _("{count} sure proposals accepted, read back from the disk at {time}: the ↶ button takes the whole batch back."),
+  "sureUndo": "↶ " ~ _("Take the batch back ({count} events)"),
+  "sureUndone": _("{count} choices of the batch taken back, read back from the disk at {time}."),
+  "nothingToUndo": _("Nothing to undo."),
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -74,6 +82,12 @@
   #zoom { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center;
           background: rgb(0 0 0 / 85%); }
   #zoom[hidden] { display: none; } #zoom img { max-width: 96vw; max-height: 94vh; }
+  .batch { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; margin-left: auto; }
+  label.filter { flex-direction: row; gap: 4px; align-items: center; color: var(--text); }
+  button { padding: 4px 10px; font: inherit; color: var(--text); background: var(--bg);
+           border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+  button:disabled { color: var(--muted); cursor: default; } button[hidden] { display: none; }
+  #sure:not(:disabled) { border-color: var(--ok); color: var(--ok); font-weight: 600; }
   kbd { display: inline-block; padding: 0 6px; font: inherit; color: var(--text); background: var(--bg);
         border: 1px solid var(--line); border-radius: 4px; }
 </style>
@@ -84,6 +98,11 @@
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>
+  <span class="batch">
+    <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
+    <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
+    <button type="button" id="sureUndo" hidden></button>
+  </span>
 </header>
 <main>
   <h2 id="title"></h2>
@@ -105,6 +124,7 @@
   <kbd>Enter</kbd> {{ _("accept the name and category, then the next event to decide") }} ·
   <kbd>N</kbd> <kbd>P</kbd> {{ _("next or previous event") }} ·
   <kbd>U</kbd> {{ _("next event to decide") }} ·
+  <kbd>V</kbd> {{ _("accept every sure proposal at once") }} ·
   <kbd>Shift</kbd>+<kbd>S</kbd> {{ _("leave the whole event where it is") }} ·
   <kbd>←</kbd> <kbd>→</kbd> {{ _("move between photos") }} ·
   <kbd>Space</kbd> {{ _("select a photo") }} ·
@@ -144,6 +164,7 @@
     const chosen = events.filter((card) => card.page).length;
     const open = events.filter(isOpen).length;
     byId("totals").textContent = fill(T.totals, { chosen: chosen, open: open });
+    showSure();
   };
 
   const fact = (term, text) => [line("dt", term), line("dd", text || T.nothing)];
@@ -152,7 +173,8 @@
     byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
     byId("title").textContent = card.title;
     byId("summary").textContent = [card.span, fill(T.files, { count: card.files, undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
-    const proposal = [card.folder || T.stay, card.band, card.why].filter(Boolean).join(" · ");
+    const sure = card.sure && isOpen(card) ? T.sureMark : "";
+    const proposal = [card.folder || T.stay, card.band, card.why, sure].filter(Boolean).join(" · ");
     byId("facts").replaceChildren(
       ...fact(T.from, card.folders.join(" · ")),
       ...fact(T.proposal, proposal),
@@ -220,15 +242,18 @@
     if (then) then(); else { showEvent(answer.card); showTotals(); showPhotos(); }
   };
 
+{% include "sort_review_sure.js.j2" %}
+
   const go = (step) => {
-    const next = current + step;
+    let next = current + step;
+    while (next >= 0 && next < events.length && !visible(events[next])) next += step;
     if (next < 0 || next >= events.length) { setStatus(next < 0 ? T.first : T.last); return; }
     setStatus("");
     load(next);
     window.scrollTo(0, 0);
   };
   const goOpen = () => {
-    const next = events.findIndex((card, index) => index > current && isOpen(card));
+    const next = events.findIndex((card, index) => index > current && isOpen(card) && visible(card));
     if (next < 0) { setStatus(T.noOpen); showEvent(events[current]); showTotals(); showPhotos(); return; }
     load(next);
     window.scrollTo(0, 0);
@@ -282,6 +307,7 @@
     else if (key === "n" || key === "N" || key === "PageDown") go(1);
     else if (key === "p" || key === "P" || key === "PageUp") go(-1);
     else if (key === "u" || key === "U") goOpen();
+    else if (key === "v" || key === "V") acceptSure();
     else if (key === "S") stayEvent();
     else if (key === "s") send(P.files, { event: id(), rows: chosenRows(), stay: true });
     else if (key === "o" || key === "O") openSend();
@@ -299,6 +325,9 @@
     event.preventDefault();
   });
   byId("zoom").addEventListener("click", () => { byId("zoom").hidden = true; });
+  byId("sure").addEventListener("click", acceptSure);
+  byId("sureUndo").addEventListener("click", undoSure);
+  byId("onlyDecide").addEventListener("change", (event) => event.target.blur());  // the keys work again
 
   fetch(P.state)
     .then((response) => response.json())
@@ -309,6 +338,7 @@
       try { saved = window.localStorage.getItem(positionKey) || ""; } catch (error) { saved = ""; }
       const resumed = events.findIndex((card) => card.id === saved);
       const first = events.findIndex(isOpen);
+      showSure();
       if (events.length) load(resumed >= 0 ? resumed : Math.max(first, 0));
     })
     .catch(() => setStatus(T.offline, "error"));

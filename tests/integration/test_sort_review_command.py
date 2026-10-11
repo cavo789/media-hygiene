@@ -38,9 +38,11 @@ def test_the_page_is_served_and_the_choices_counted(
     result = run(cli, "review-sort")
     assert result.exit_code == 0, result.output
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
+    assert "1 event to decide: 0 with a sure proposal (one click)" in result.output
     assert "events chosen: 1, photos chosen one by one: 0" in result.output
     assert "sort-decisions.json" in result.output
     assert b"/api/forget" in pages[0]
+    assert b"/api/sure" in pages[0]
     assert b"sort-decisions.json" in pages[0]
     sorted_out = run(cli, "sort", "--yes")
     assert (

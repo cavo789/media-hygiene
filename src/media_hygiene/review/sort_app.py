@@ -3,7 +3,8 @@
 `GET /` serves the page, `GET /api/state` the events, `GET /api/event/<id>` the photos
 of one event, `GET /thumb/<row>.jpg` and `/preview/<row>.jpg` a small and a large
 preview (rendered in the worker pool). `POST /api/event` names an event, `/api/files`
-sends photos elsewhere, `/api/forget` takes a choice back; each is saved at once. Like
+sends photos elsewhere, `/api/forget` takes a choice back, `/api/sure` accepts (or
+takes back) the sure proposals in one write; each is saved at once. Like
 `review`: loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
@@ -36,9 +37,10 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from pydantic import BaseModel
+
     from media_hygiene.review.http import Request
-    from media_hygiene.review.sort_session import SortSession
-    from media_hygiene.review.sort_state import EventView
+    from media_hygiene.review.sort_batch import SortBatchSession
 
 __all__ = ["PAGE_PATH", "STATE_PATH", "SortReviewApp"]
 
@@ -62,7 +64,7 @@ def _thumb(source: Path) -> bytes | None:
 class SortReviewApp(LocalApp):
     """Answers the browser; the session holds the choices and saves them."""
 
-    session: SortSession
+    session: SortBatchSession
     page: bytes
     executor: Executor
 
@@ -117,7 +119,8 @@ class SortReviewApp(LocalApp):
             request: `POST` to one of the choice routes, with a JSON body.
 
         Returns:
-            The event as chosen now, or an error with a translated message.
+            The event as chosen now (or the batch, read back), or an error with a
+            translated message.
         """
         refused = refused_post(request)
         if refused is not None:
@@ -136,11 +139,11 @@ class SortReviewApp(LocalApp):
         return _json(view)
 
 
-def _json(view: EventView) -> Response:
-    """Answer with an event and its photos.
+def _json(view: BaseModel) -> Response:
+    """Answer with an event and its photos, or a batch read back.
 
     Args:
-        view: The event.
+        view: The answer.
 
     Returns:
         The JSON response.

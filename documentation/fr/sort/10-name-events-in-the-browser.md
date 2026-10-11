@@ -30,6 +30,7 @@ lit le classeur du dernier `classify`, celui qu'applique `sort` ; nommez-en un a
 commande : `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 
 ```text
+412 événements à décider : 260 avec une proposition sûre (un clic), 152 à regarder.
 ✅ Revue prête, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
 choix est enregistré aussitôt dans
 C:\Users\vous\media-hygiene\reports\20261002-123210-classify\sort-decisions.json.
@@ -67,6 +68,7 @@ et se complète avec les catégories déjà utilisées.
 | <kbd>Entrée</kbd> | Accepter le nom et la catégorie, puis passer à l'événement suivant à décider. |
 | <kbd>N</kbd> / <kbd>P</kbd> (ou Page suivante / Page précédente) | Événement suivant ou précédent, sans décider. |
 | <kbd>U</kbd> | Événement suivant à décider. |
+| <kbd>V</kbd> | Accepter d'un coup toutes les propositions sûres (voir plus bas). |
 | <kbd>E</kbd> / <kbd>C</kbd> | Taper dans le champ nom / catégorie ; <kbd>Échap</kbd> en sort. |
 | <kbd>Maj</kbd>+<kbd>S</kbd> | Laisser tout l'événement où il est (« (rester où il est) »). |
 | <kbd>←</kbd> <kbd>→</kbd> | Passer d'une photo à l'autre. |
@@ -79,6 +81,30 @@ et se complète avec les catégories déjà utilisées.
 Une photo envoyée dans une autre catégorie reçoit le dossier que la disposition donne à cette
 catégorie, comme si vous l'aviez tapé dans sa cellule **Dossier final** : `2016/Best of` avec
 `layout = "{year}/{category}"`.
+
+## Accepter d'un coup les propositions sûres
+
+Sur une grande collection, beaucoup d'événements ont une proposition **sûre** : la plupart de
+leurs photos viennent d'une règle forte (bande *Sûrs*), et les quelques-unes qui restent à
+vérifier ou à trier proposent la même catégorie, ou aucune. Un tel événement affiche `✔ sûre`
+après sa proposition ; un coup d'œil suffit.
+
+Le bouton **✔ Accepter les N propositions sûres (M fichiers)** en haut (ou <kbd>V</kbd>) les
+accepte toutes, après une confirmation qui donne les chiffres. Chacune est enregistrée exactement
+comme <kbd>Entrée</kbd> l'enregistrerait sur cet événement laissé tel quel (sa catégorie
+proposée, sans nom), avec ce qu'en disait le classeur, comme tout autre choix. Rien n'est
+imposé : un événement déjà choisi, ici ou dans le classeur, n'est pas touché, et une
+modification ultérieure du même événement dans le classeur reste un conflit, jamais réglé en
+silence.
+
+Le lot est **une seule écriture** de `sort-decisions.json`, relue sur le disque avant que la
+page ne l'affiche : la ligne d'état donne l'heure à laquelle le disque la contient. **↶ Reprendre
+le lot** oublie tout le lot, lui aussi en une seule écriture (un événement choisi à nouveau
+depuis garde votre nouveau choix).
+
+Cochez **Seulement les événements à décider** pour que <kbd>N</kbd>, <kbd>P</kbd> et <kbd>U</kbd>
+sautent les événements déjà choisis et ceux dont la proposition est sûre : il ne reste que ceux
+qui ont besoin de vous.
 
 ## Où vont vos choix
 

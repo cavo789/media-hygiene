@@ -316,6 +316,15 @@ msgstr ""
 "affiche le temps estimé. Une photo à la fois convient à une carte "
 "graphique."
 
+msgid "Accept at once every event still to decide whose proposal is sure (V)"
+msgstr ""
+"Accepter d’un coup chaque événement encore à décider dont la proposition "
+"est sûre (V)"
+
+#, python-brace-format
+msgid "Accept the {count} sure proposals ({files} files)"
+msgstr "Accepter les {count} propositions sûres ({files} fichiers)"
+
 msgid "Act"
 msgstr "Agir"
 
@@ -2068,6 +2077,11 @@ msgstr "Mise en quarantaine d'un fichier illisible : {path}"
 msgid "My places"
 msgstr "Mes lieux"
 
+msgid "N, P and U skip the events already chosen and those whose proposal is sure"
+msgstr ""
+"N, P et U sautent les événements déjà choisis et ceux dont la proposition"
+" est sûre"
+
 msgid "Name"
 msgstr "Nom"
 
@@ -2303,6 +2317,9 @@ msgstr "Aucune exécution trouvée dans le journal."
 msgid "No run yet."
 msgstr "Aucune exécution pour l'instant."
 
+msgid "No sure proposal left to accept."
+msgstr "Plus aucune proposition sûre à accepter."
+
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
 
@@ -2387,6 +2404,9 @@ msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
+
+msgid "Nothing to take back."
+msgstr "Rien à reprendre."
 
 msgid "Nothing to undo."
 msgstr "Rien à annuler."
@@ -2497,6 +2517,9 @@ msgid ""
 msgstr ""
 "Seulement pour les photos et vidéos trouvées semblables : une version "
 "noir et blanc d'une image en couleur n'en est pas une copie."
+
+msgid "Only the events to decide"
+msgstr "Seulement les événements à décider"
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
@@ -3408,6 +3431,10 @@ msgid ""
 msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
 "'search' les retrouve."
+
+#, python-brace-format
+msgid "Take the batch back ({count} events)"
+msgstr "Reprendre le lot ({count} événements)"
 
 #, python-brace-format
 msgid "The HTML report could not be written to {folder}: {reason}."
@@ -4367,6 +4394,9 @@ msgstr "encore ~{time}"
 msgid "about {time} left at your pace"
 msgstr "environ {time} restantes à votre rythme"
 
+msgid "accept every sure proposal at once"
+msgstr "accepter d’un coup toutes les propositions sûres"
+
 msgid "accept the name and category, then the next event to decide"
 msgstr "accepter le nom et la catégorie, puis l'événement suivant à décider"
 
@@ -4942,6 +4972,9 @@ msgstr "à voir d'abord"
 msgid "suggestion"
 msgstr "suggestion"
 
+msgid "sure: V accepts it with the other sure proposals"
+msgstr "sûre : V l’accepte avec les autres propositions sûres"
+
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 "reprendre le choix fait ici (des photos sélectionnées, sinon de "
@@ -5257,6 +5290,12 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} choices of the batch taken back, read back from the disk at "
+"{time}."
+msgstr "{count} choix du lot repris, relu sur le disque à {time}."
+
+#, python-brace-format
+msgid ""
 "{count} copy of another file than a media will be moved to the "
 "quarantine, not deleted."
 msgid_plural ""
@@ -5340,6 +5379,32 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} modifications lues ; classeur enregistré le {day} {month} {year} "
 "à {time}."
+
+#, python-brace-format
+msgid ""
+"{count} event to decide: {sure} with a sure proposal (one click), {look} "
+"to look at."
+msgid_plural ""
+"{count} events to decide: {sure} with a sure proposal (one click), {look}"
+" to look at."
+msgstr[0] ""
+"{count} événement à décider : {sure} avec une proposition sûre (un clic),"
+" {look} à regarder."
+msgstr[1] ""
+"{count} événements à décider : {sure} avec une proposition sûre (un "
+"clic), {look} à regarder."
+
+#, python-brace-format
+msgid ""
+"{count} events to decide have a sure proposal ({files} files): each one "
+"gets its proposed category, as Enter would give it, saved in one write. "
+"{left} events to decide stay to look at. Accept them? The ↶ button takes "
+"the whole batch back."
+msgstr ""
+"{count} événements à décider ont une proposition sûre ({files} fichiers) "
+": chacun reçoit sa catégorie proposée, comme Entrée la lui donnerait, "
+"enregistré en une seule écriture. {left} événements à décider restent à "
+"regarder. Les accepter ? Le bouton ↶ reprend tout le lot."
 
 #, python-brace-format
 msgid ""
@@ -5683,6 +5748,14 @@ msgstr[1] ""
 "par exemple {path}."
 
 #, python-brace-format
+msgid ""
+"{count} sure proposals accepted, read back from the disk at {time}: the ↶"
+" button takes the whole batch back."
+msgstr ""
+"{count} propositions sûres acceptées, relu sur le disque à {time} : le "
+"bouton ↶ reprend tout le lot."
+
+#, python-brace-format
 msgid "{days} day {clock}"
 msgid_plural "{days} days {clock}"
 msgstr[0] "{days} jour {clock}"
@@ -5820,6 +5893,12 @@ msgstr ""
 #, python-brace-format
 msgid "{path} is not the quarantine of a run"
 msgstr "{path} n'est pas la quarantaine d'une exécution"
+
+#, python-brace-format
+msgid "{path} read back does not hold the {count} choices just saved."
+msgstr ""
+"{path}, relu, ne contient pas les {count} choix qui viennent d’être "
+"enregistrés."
 
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."

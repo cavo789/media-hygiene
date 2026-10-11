@@ -233,6 +233,13 @@ msgid ""
 "estimated time. One photo at a time suits one graphics card."
 msgstr ""
 
+msgid "Accept at once every event still to decide whose proposal is sure (V)"
+msgstr ""
+
+#, python-brace-format
+msgid "Accept the {count} sure proposals ({files} files)"
+msgstr ""
+
 msgid "Act"
 msgstr ""
 
@@ -1693,6 +1700,9 @@ msgstr ""
 msgid "My places"
 msgstr ""
 
+msgid "N, P and U skip the events already chosen and those whose proposal is sure"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -1900,6 +1910,9 @@ msgstr ""
 msgid "No run yet."
 msgstr ""
 
+msgid "No sure proposal left to accept."
+msgstr ""
+
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr ""
 
@@ -1973,6 +1986,9 @@ msgid "Nothing to clean: no duplicate and no broken file."
 msgstr ""
 
 msgid "Nothing to move: every file is where the plan puts it."
+msgstr ""
+
+msgid "Nothing to take back."
 msgstr ""
 
 msgid "Nothing to undo."
@@ -2054,6 +2070,9 @@ msgstr ""
 msgid ""
 "Only for the pictures and videos found alike: a black and white edit of a"
 " colour picture is not a copy of it."
+msgstr ""
+
+msgid "Only the events to decide"
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
@@ -2820,6 +2839,10 @@ msgstr ""
 msgid ""
 "Tags: {files} files have words, {seen} of them from the vision model; "
 "'search' finds them."
+msgstr ""
+
+#, python-brace-format
+msgid "Take the batch back ({count} events)"
 msgstr ""
 
 #, python-brace-format
@@ -3603,6 +3626,9 @@ msgstr ""
 msgid "about {time} left at your pace"
 msgstr ""
 
+msgid "accept every sure proposal at once"
+msgstr ""
+
 msgid "accept the name and category, then the next event to decide"
 msgstr ""
 
@@ -4148,6 +4174,9 @@ msgstr ""
 msgid "suggestion"
 msgstr ""
 
+msgid "sure: V accepts it with the other sure proposals"
+msgstr ""
+
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
@@ -4424,6 +4453,12 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} choices of the batch taken back, read back from the disk at "
+"{time}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "{count} copy of another file than a media will be moved to the "
 "quarantine, not deleted."
 msgid_plural ""
@@ -4481,6 +4516,24 @@ msgid "{count} edit read; workbook saved on {day} {month} {year} at {time}."
 msgid_plural "{count} edits read; workbook saved on {day} {month} {year} at {time}."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} event to decide: {sure} with a sure proposal (one click), {look} "
+"to look at."
+msgid_plural ""
+"{count} events to decide: {sure} with a sure proposal (one click), {look}"
+" to look at."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} events to decide have a sure proposal ({files} files): each one "
+"gets its proposed category, as Enter would give it, saved in one write. "
+"{left} events to decide stay to look at. Accept them? The ↶ button takes "
+"the whole batch back."
+msgstr ""
 
 #, python-brace-format
 msgid ""
@@ -4747,6 +4800,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} sure proposals accepted, read back from the disk at {time}: the ↶"
+" button takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
 msgid "{days} day {clock}"
 msgid_plural "{days} days {clock}"
 msgstr[0] ""
@@ -4872,6 +4931,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} is not the quarantine of a run"
+msgstr ""
+
+#, python-brace-format
+msgid "{path} read back does not hold the {count} choices just saved."
 msgstr ""
 
 #, python-brace-format
