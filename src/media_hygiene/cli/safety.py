@@ -37,12 +37,12 @@ _DOC_BRANCH: Final = "blob/main"
 
 
 def read_only_marker() -> str:
-    """The marker opening the help of every read-only command.
+    """The marker opening the own help of every read-only command.
 
     Returns:
         The translated sentence.
     """
-    return _("Read-only: never changes your photos.")
+    return _("🔒 Read-only: never changes your photos.")
 
 
 def safety_doc() -> str:
@@ -55,14 +55,16 @@ def safety_doc() -> str:
 
 
 def help_of(name: str, text: str) -> str:
-    """The help of a command, opened by the read-only marker when it applies.
+    """The own help of a command, opened by the read-only marker when it applies.
+
+    The command list does not repeat it: its panel title says it once.
 
     Args:
         name: The command.
         text: Its translated help.
 
     Returns:
-        The help shown in the command list and in the command's own `--help`.
+        The help shown by the command's own `--help`.
     """
     return f"{read_only_marker()} {text}" if name in READ_ONLY_COMMANDS else text
 

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene.constants import ExitCode
 from media_hygiene.paths.mounts import MountTable
 from tests.support.cli import run
 
@@ -68,7 +69,8 @@ def test_the_bash_launcher_picks_the_mounts_of_each_command(
     result = run(cli, "launcher", "--shell", "bash")
     assert result.exit_code == 0, result.output
     assert "Launcher written" not in result.stdout
-    assert "source mh.sh" in result.stderr
+    assert "source" in result.stderr
+    assert "mh.sh" in result.stderr
     script = tmp_path / "mh.sh"
     script.write_text(result.stdout, encoding="utf-8")
     home = tmp_path / "home"
@@ -92,3 +94,16 @@ def test_without_a_photo_folder_the_launcher_says_how_to_add_one(
     assert result.exit_code == 0, result.output
     assert "No photo folder mounted" in result.stderr
     assert "${mode}" not in result.stdout
+
+
+def test_on_a_terminal_the_launcher_writes_nothing_and_says_how(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`docker run -it … launcher`: no script on screen, the redirection to add."""
+    monkeypatch.setattr("media_hygiene.cli.cmd_launcher._on_screen", lambda: True)
+    result = run(cli, "launcher", "--shell", "powershell")
+    assert result.exit_code == ExitCode.USAGE, result.output
+    assert "function mh" not in result.stdout
+    assert "Launcher written" not in result.output
+    assert "Nothing written" in result.stderr
+    assert "mh.ps1" in result.stderr

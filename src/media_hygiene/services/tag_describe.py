@@ -7,16 +7,13 @@ tells what the full run would cost; its answers stay in the cache.
 
 from __future__ import annotations
 
-import asyncio
 import secrets
 import statistics
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.ai.client import OllamaClient
-from media_hygiene.classify.ai.describe import DescribeDeps, describe_all
-from media_hygiene.i18n import _
-from media_hygiene.scan.progress import Step
+from media_hygiene.services.describing import DescribeJob, describe_checked
 from media_hygiene.tags.normalize import normalize
 from media_hygiene.tags.vision import tags_question
 
@@ -75,28 +72,9 @@ def describe_photos(
     Raises:
         AiError: The model cannot be reached, or cannot see images.
     """
-    runtime = step.runtime
-    settings = runtime.settings.classify.ai
-    client = OllamaClient(settings)
-    asyncio.run(client.require_vision(settings.model))
-    progress = answering.progress
-    with runtime.executor_factory() as executor:
-        deps = DescribeDeps(
-            client,
-            step.store,
-            executor,
-            progress,
-            answering.stopped,
-            tags_question(step.rules.language),
-        )
-        progress.start(Step(_("Describing photos"), settings.model), len(photos))
-        try:
-            outcome = asyncio.run(describe_all(photos, deps))
-        finally:
-            progress.stop()
-    if outcome.errors:
-        raise outcome.errors[0]
-    return outcome
+    client = OllamaClient(step.runtime.settings.classify.ai)
+    job = DescribeJob(client, step.store, answering, tags_question(step.rules.language))
+    return describe_checked(step.runtime, photos, job)
 
 
 def run_tag_sample(

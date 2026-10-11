@@ -325,8 +325,8 @@ msgstr ""
 msgid "Accept the {count} sure proposals ({files} files)"
 msgstr "Accepter les {count} propositions sûres ({files} fichiers)"
 
-msgid "Act"
-msgstr "Agir"
+msgid "Act: moves, writes or deletes files"
+msgstr "Agir : déplace, écrit ou supprime des fichiers"
 
 msgid "Action"
 msgstr "Action"
@@ -447,9 +447,6 @@ msgstr ""
 "Un audit ne modifie jamais rien. Chaque copie listée ci-dessous est "
 "identique octet par octet à celle conservée ; 'clean' les compare encore "
 "juste avant de supprimer."
-
-msgid "Analyse"
-msgstr "Analyser"
 
 msgid "Animals"
 msgstr "Animaux"
@@ -1556,12 +1553,8 @@ msgstr ""
 "'media-hygiene crosscheck' avec vos options -v habituelles :"
 
 #, python-brace-format
-msgid ""
-"For every terminal, add that line to {profile}, with the full path of the"
-" file."
-msgstr ""
-"Pour chaque terminal, ajoutez cette ligne à {profile}, avec le chemin "
-"complet du fichier."
+msgid "For every terminal, add that line to {profile}."
+msgstr "Pour chaque terminal, ajoutez cette ligne à {profile}."
 
 msgid "Format"
 msgstr "Format"
@@ -2484,6 +2477,9 @@ msgstr ""
 "Rien n'a été déplacé. Modifiez classify.xlsx, à côté de cette page ; ce "
 "rapport sert à regarder les photos."
 
+msgid "Nothing written: the launcher goes into a file, not on the screen."
+msgstr "Rien n'a été écrit : le lanceur va dans un fichier, pas à l'écran."
+
 msgid "November"
 msgstr "novembre"
 
@@ -2803,9 +2799,6 @@ msgstr ""
 "Les vidéos réencodées sont dans le rapport HTML ; « clean --tier near » "
 "déplace aussi les sûres en quarantaine."
 
-msgid "Read-only: never changes your photos."
-msgstr "Lecture seule : ne modifie jamais vos photos."
-
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
@@ -3053,6 +3046,10 @@ msgstr "Relancez la même commande : les fichiers déjà liés sont passés."
 
 msgid "Run the same command again: the sidecars written are skipped."
 msgstr "Relancez la même commande : les fichiers compagnons écrits sont passés."
+
+#, python-brace-format
+msgid "Run the same command without -it, ending with: > {path}"
+msgstr "Relancez la même commande sans -it, en terminant par : > {path}"
 
 msgid ""
 "Run to undo (see 'history'); the latest one by default. For a sort, every"
@@ -6027,6 +6024,12 @@ msgid ""
 msgstr ""
 "📦 {file} est appliqué : archivé sous {archive}, le prochain 'review' "
 "repart de zéro."
+
+msgid "🔒 Analyse: read-only, never changes your photos"
+msgstr "🔒 Analyser : lecture seule, ne modifie jamais vos photos"
+
+msgid "🔒 Read-only: never changes your photos."
+msgstr "🔒 Lecture seule : ne modifie jamais vos photos."
 
 msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr "🔒 Lecture seule : vos photos et vidéos ne sont pas touchées."

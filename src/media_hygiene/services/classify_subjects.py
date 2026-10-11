@@ -7,23 +7,17 @@ other rules.
 
 from __future__ import annotations
 
-import asyncio
 from contextlib import ExitStack
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.classify.ai.client import OllamaClient
-from media_hygiene.classify.ai.describe import (
-    DescribeDeps,
-    DescribeOutcome,
-    describe_all,
-)
+from media_hygiene.classify.ai.describe import DescribeOutcome
 from media_hygiene.classify.ai.mapping import MapDeps
 from media_hygiene.classify.ai.prompts import version
 from media_hygiene.classify.ai.subjects import per_photo, subjects_of
-from media_hygiene.i18n import _
 from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.scan.progress import Step
+from media_hygiene.services.describing import DescribeJob, describe_checked
 from media_hygiene.services.subject_answers import Answered, answers_of
 from media_hygiene.services.subject_plan import plan_subjects
 
@@ -125,20 +119,8 @@ class SubjectStep:
         Raises:
             AiError: The model cannot be reached, or cannot see images.
         """
-        asyncio.run(self._client.require_vision(self._ai.model))
-        progress = answering.progress
-        with self._runtime.executor_factory() as executor:
-            deps = DescribeDeps(
-                self._client, self.store, executor, progress, answering.stopped
-            )
-            progress.start(Step(_("Describing photos"), self._ai.model), len(photos))
-            try:
-                outcome = asyncio.run(describe_all(photos, deps))
-            finally:
-                progress.stop()
-        if outcome.errors:
-            raise outcome.errors[0]
-        return outcome
+        job = DescribeJob(self._client, self.store, answering)
+        return describe_checked(self._runtime, photos, job)
 
     def map(
         self, plan: SubjectPlan, rule: ClassifyRule, progress: ProgressSink

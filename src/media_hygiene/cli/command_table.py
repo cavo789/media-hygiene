@@ -1,4 +1,4 @@
-"""The table of the commands, in the order of `--help`, before the read-only marker."""
+"""The table of the commands, before `--help` sorts them and marks the read-only."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_reports import reports_command
+from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_search import search_command
 from media_hygiene.cli.cmd_status import status_command
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
 def command_table(
     analyse: str, act: str
 ) -> tuple[tuple[str, Callable[..., None], str, str], ...]:
-    """List the commands in the order of `--help`, before the read-only marker.
+    """List the commands, unsorted and before the read-only marker.
 
     Args:
         analyse: The translated name of the panel of analyses.
@@ -77,6 +78,15 @@ def command_table(
             _(
                 "Name your places on a map of where the photos were taken; saved "
                 "into config.toml for the 'place' and 'trip' rules."
+            ),
+        ),
+        (
+            "review",
+            review_command,
+            analyse,
+            _(
+                "Set burst shots aside, one series at a time, with the keyboard in "
+                "your browser; 'clean --decisions' then moves them."
             ),
         ),
         *action_commands(act),

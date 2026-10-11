@@ -1,4 +1,4 @@
-"""The commands that change files, in the order of `--help`: the panel "Act"."""
+"""The commands that change files: the panel "Act" of `--help`."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.cmd_album import album_command
 from media_hygiene.cli.cmd_clean import clean_command
 from media_hygiene.cli.cmd_purge import purge_command
-from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_undo import undo_command
 from media_hygiene.cli.cmd_xmp import xmp_command
@@ -18,7 +17,7 @@ if TYPE_CHECKING:
 
 
 def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str], ...]:
-    """List the commands that change files, in the order of `--help`.
+    """List the commands that change files.
 
     Args:
         act: The translated name of the panel of actions.
@@ -27,15 +26,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         Name, function, panel and help text of each command.
     """
     return (
-        (
-            "review",
-            review_command,
-            act,
-            _(
-                "Set burst shots aside, one series at a time, with the keyboard in "
-                "your browser; 'clean --decisions' then moves them."
-            ),
-        ),
         (
             "clean",
             clean_command,

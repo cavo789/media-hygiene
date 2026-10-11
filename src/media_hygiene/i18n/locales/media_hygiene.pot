@@ -240,7 +240,7 @@ msgstr ""
 msgid "Accept the {count} sure proposals ({files} files)"
 msgstr ""
 
-msgid "Act"
+msgid "Act: moves, writes or deletes files"
 msgstr ""
 
 msgid "Action"
@@ -342,9 +342,6 @@ msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
 "deleting."
-msgstr ""
-
-msgid "Analyse"
 msgstr ""
 
 msgid "Animals"
@@ -1246,9 +1243,7 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"For every terminal, add that line to {profile}, with the full path of the"
-" file."
+msgid "For every terminal, add that line to {profile}."
 msgstr ""
 
 msgid "Format"
@@ -2046,6 +2041,9 @@ msgid ""
 "where you look at the photos."
 msgstr ""
 
+msgid "Nothing written: the launcher goes into a file, not on the screen."
+msgstr ""
+
 msgid "November"
 msgstr ""
 
@@ -2310,9 +2308,6 @@ msgid ""
 "sure ones to the quarantine too."
 msgstr ""
 
-msgid "Read-only: never changes your photos."
-msgstr ""
-
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -2511,6 +2506,10 @@ msgid "Run the same command again: the files linked are skipped."
 msgstr ""
 
 msgid "Run the same command again: the sidecars written are skipped."
+msgstr ""
+
+#, python-brace-format
+msgid "Run the same command without -it, ending with: > {path}"
 msgstr ""
 
 msgid ""
@@ -5042,6 +5041,12 @@ msgstr ""
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
 "afresh."
+msgstr ""
+
+msgid "🔒 Analyse: read-only, never changes your photos"
+msgstr ""
+
+msgid "🔒 Read-only: never changes your photos."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."

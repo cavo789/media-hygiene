@@ -64,7 +64,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert script.shell is Shell.POWERSHELL
     text = render_script(script)
     assert text.startswith("# media-hygiene launcher")
-    assert ". .\\mh.ps1" in text
+    assert '. "$HOME\\media-hygiene\\mh.ps1"' in text
     assert "function mh {" in text
     assert "$mode = if ($command -in @('clean')) { '' } else { ':ro' }" in text
     assert "@('-p', '127.0.0.1:8088:8088')" in text
@@ -88,5 +88,5 @@ def test_bash_creates_the_home_folders_and_runs_as_the_user() -> None:
     assert '--user "$(id -u):$(id -g)"' in text
     assert '-v "media-hygiene-cache:/cache" \\' in text
     assert 'case " clean " in' in text
-    assert "source mh.sh" in text
-    assert load_command(Shell.BASH) == "source mh.sh"
+    assert 'source "$HOME/media-hygiene/mh.sh"' in text
+    assert load_command(Shell.BASH) == 'source "$HOME/media-hygiene/mh.sh"'

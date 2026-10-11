@@ -119,6 +119,18 @@ def render_script(script: LauncherScript) -> str:
     )
 
 
+def script_path(shell: Shell) -> str:
+    r"""Where the guides save the script: the tool folder of the user's home.
+
+    Args:
+        shell: The shell the script is for.
+
+    Returns:
+        `$HOME\media-hygiene\mh.ps1` or `$HOME/media-hygiene/mh.sh`.
+    """
+    return shell.home_folder(SCRIPT_NAMES[shell])
+
+
 def load_command(shell: Shell) -> str:
     r"""The command loading the saved script into the current terminal.
 
@@ -126,10 +138,10 @@ def load_command(shell: Shell) -> str:
         shell: The shell the script is for.
 
     Returns:
-        `. .\mh.ps1` or `source mh.sh`.
+        `. "$HOME\media-hygiene\mh.ps1"` or `source "$HOME/media-hygiene/mh.sh"`.
     """
-    name = SCRIPT_NAMES[shell]
-    return f". .\\{name}" if shell is Shell.POWERSHELL else f"source {name}"
+    verb = "." if shell is Shell.POWERSHELL else "source"
+    return f'{verb} "{script_path(shell)}"'
 
 
 def _header(shell: Shell) -> tuple[str, ...]:
@@ -149,10 +161,7 @@ def _header(shell: Shell) -> tuple[str, ...]:
             "e.g. mh audit, then mh clean."
         ),
         _("Load it in this terminal with: {load}").format(load=load),
-        _(
-            "For every terminal, add that line to {profile}, with the full path of "
-            "the file."
-        ).format(profile=profile),
+        _("For every terminal, add that line to {profile}.").format(profile=profile),
         _(
             "Another folder? Run 'launcher' again with one more -v, saving to the "
             "same file."

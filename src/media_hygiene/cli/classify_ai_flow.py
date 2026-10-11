@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.console.formatting import human_duration, human_number
+from media_hygiene.cli.describe_consent import may_describe
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.subject_view import show_answered, show_plan, show_sample
 from media_hygiene.i18n import _
@@ -27,7 +27,6 @@ if TYPE_CHECKING:
     from media_hygiene.classify.ai.models import Subject
     from media_hygiene.services.classify_inputs import ClassifyInputs
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.subject_plan import SubjectPlan
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,7 +57,7 @@ def ask_subjects(
     with SubjectStep(runtime) as step:
         plan = step.plan(inputs)
         show_plan(output, plan, runtime.settings.classify.ai.model)
-        describe = request.describe and _allowed(runtime, plan, request.yes)
+        describe = request.describe and may_describe(runtime, plan, request.yes)
         with StopRequest() as stop, RichProgress(output.console) as progress:
             answered = step.answer(plan, Answering(describe, progress, stop.requested))
     show_answered(output, answered)
@@ -88,36 +87,6 @@ def sample_subjects(runtime: Runtime, inputs: ClassifyInputs, count: int) -> Non
                 ),
             )
     show_sample(output, result, runtime.mapper.to_host)
-
-
-def _allowed(runtime: Runtime, plan: SubjectPlan, yes: bool) -> bool:  # noqa: FBT001
-    """Tell whether the missing samples may be described now.
-
-    Args:
-        runtime: Settings and output.
-        plan: The plan.
-        yes: `--yes` was given.
-
-    Returns:
-        True when there is something to describe, few enough or accepted.
-    """
-    count = len(plan.missing)
-    if not count:
-        return False
-    if yes or count <= runtime.settings.classify.ai.confirm_above:
-        return True
-    question = _("Describe {count} photos now, about {duration}?").format(
-        count=human_number(count), duration=human_duration(plan.estimate)
-    )
-    if runtime.output.confirm(question):
-        return True
-    runtime.output.tip(
-        _(
-            "Nothing described: the cache only. Measure first with --sample 50, "
-            "or describe without being asked with --yes."
-        )
-    )
-    return False
 
 
 def _tip_cache(runtime: Runtime) -> None:

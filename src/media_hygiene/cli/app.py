@@ -7,6 +7,7 @@ import typer
 from media_hygiene.cli.commands import commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
+from media_hygiene.cli.safety import help_of
 from media_hygiene.constants import APP_NAME
 from media_hygiene.i18n import _
 
@@ -65,7 +66,8 @@ def build_app() -> typer.Typer:
         app.command(
             name=name,
             cls=LocalizedCommand,
-            help=help_text,
+            help=help_of(name, help_text),
+            short_help=help_text,
             rich_help_panel=panel,
         )(function)
     return app

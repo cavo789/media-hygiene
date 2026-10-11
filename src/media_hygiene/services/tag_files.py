@@ -9,19 +9,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.models import MediaInput
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.listing import indexed_files, walked_roots
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
-from media_hygiene.services.classify_inputs import root_of
+from media_hygiene.services.classify_inputs import input_of, root_of
 
 if TYPE_CHECKING:
     import sqlite3
     from collections.abc import Sequence
     from pathlib import Path
 
+    from media_hygiene.classify.models import MediaInput
     from media_hygiene.services.runtime import Runtime
 
 
@@ -73,16 +73,5 @@ def tag_files(
             continue
         if within and not any(is_within(file.path, folder) for folder in within):
             continue
-        facts = file.facts
-        found.append(
-            MediaInput(
-                path=file.path,
-                root=root_of(file.path, roots, runtime),
-                size=file.size,
-                mtime_ns=file.mtime_ns,
-                visual=facts.visual,
-                metadata=facts.metadata,
-                digest=facts.full_digest,
-            )
-        )
+        found.append(input_of(file, root_of(file.path, roots, runtime), file.facts))
     return tuple(found)

@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from rich.markup import escape
 from rich.table import Table
 
+from media_hygiene.console.describe_view import show_describe_counts
 from media_hygiene.console.formatting import human_duration, human_number
 from media_hygiene.i18n import _, ngettext
 
@@ -59,22 +60,7 @@ def show_answered(output: Output, answered: Answered) -> None:
         answered: The subjects and how describing went.
     """
     outcome = answered.outcome
-    if outcome.described:
-        output.success(
-            ngettext(
-                "{count} photo described; kept in the cache.",
-                "{count} photos described; kept in the cache.",
-                outcome.described,
-            ).format(count=human_number(outcome.described))
-        )
-    if outcome.unreadable:
-        output.warning(
-            ngettext(
-                "{count} photo could not be described: unreadable, or no answer.",
-                "{count} photos could not be described: unreadable, or no answer.",
-                outcome.unreadable,
-            ).format(count=human_number(outcome.unreadable))
-        )
+    show_describe_counts(output, outcome)
     if outcome.stopped:
         output.warning(
             _("Stopped: the next classify run goes on where this one stopped.")

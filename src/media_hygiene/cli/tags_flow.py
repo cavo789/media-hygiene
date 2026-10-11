@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 from rich.markup import escape
 
-from media_hygiene.console.formatting import human_duration, human_number
+from media_hygiene.cli.describe_consent import may_describe
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tags_view import (
     show_cheap,
@@ -76,7 +76,7 @@ def run_tags(runtime: Runtime, request: TagRequest) -> bool:
         show_work(output, work, model)
         if request.sample:
             _sample(step, work, request.sample)
-        elif request.describe and _allowed(runtime, work, request.yes):
+        elif request.describe and may_describe(runtime, work, request.yes):
             with StopRequest() as stop, RichProgress(output.console) as progress:
                 answering = Answering(True, progress, stop.requested)  # noqa: FBT003
                 show_described(output, describe_photos(step, work.missing, answering))
@@ -98,33 +98,3 @@ def _sample(step: TagStep, work: TagWork, count: int) -> None:
         answering = Answering(True, progress, stop.requested)  # noqa: FBT003
         sample = run_tag_sample(step, work, (count, answering))
     show_tag_sample(output, sample, runtime.mapper.to_host)
-
-
-def _allowed(runtime: Runtime, work: TagWork, yes: bool) -> bool:  # noqa: FBT001
-    """Tell whether the missing photos may be described now.
-
-    Args:
-        runtime: Settings and output.
-        work: The work of the run.
-        yes: `--yes` was given.
-
-    Returns:
-        True when there is something to describe, few enough or accepted.
-    """
-    count = len(work.missing)
-    if not count:
-        return False
-    if yes or count <= runtime.settings.classify.ai.confirm_above:
-        return True
-    question = _("Describe {count} photos now, about {duration}?").format(
-        count=human_number(count), duration=human_duration(work.estimate)
-    )
-    if runtime.output.confirm(question):
-        return True
-    runtime.output.tip(
-        _(
-            "Nothing described: the cache only. Measure first with --sample 50, "
-            "or describe without being asked with --yes."
-        )
-    )
-    return False
