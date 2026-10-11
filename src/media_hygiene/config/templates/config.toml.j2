@@ -232,6 +232,13 @@ kind = "download"
 # pattern = '(?i)dji|fc\d{4}'
 # category = "{{ _("Nature and landscapes") }}/{{ _("Drone") }}"
 
+{{ comment(_("person: the events where someone named on the 'people' page shows on at least min_share percent of the photos (10 by default), and the lone photos showing them. names = [...] matches any of them; all = true needs every one. A name nobody has in [[people.person]] stops classify.")) }}
+# [[classify.rules]]
+# name = "{{ _("With Léa") }}"
+# match = "person"
+# names = ["Léa"]
+# category = "{{ _("People") }}/Léa"
+
 [[classify.rules]]
 name = "{{ _("Existing folders") }}"
 match = "existing_folder"

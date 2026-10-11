@@ -80,6 +80,27 @@ town, what the vision model saw); `person:chloe` looks among the people only (ca
 do not matter); `person:"Mamie Jeanne"` is a name of two words. A name nobody has yet is said in
 one line: name the group on the page first.
 
+## File them: a `person` rule
+
+Once named, people can also sort the photos: a `person` rule of `classify`
+([sorting, step 6](sort/06-write-down-what-you-know.md#people)) gives a category to the events
+where someone shows.
+
+```toml
+[[classify.rules]]
+name = "With Chloé"
+match = "person"
+names = ["Chloé"]
+category = "People/Chloé"
+```
+
+An event goes to the rule when at least **10 %** of its photos show Chloé (`min_share = 10`:
+she may be the one taking the pictures); a photo outside any event goes when it shows her.
+`names = ["Chloé", "Manon"]` takes the events with either of them; add `all = true` for those
+with both. The names are those of the page: the faces confirmed, and the faces close enough to
+them, as `search` finds them; suggestions do not count. A name nobody has yet stops `classify`
+before anything is read, and names the rule.
+
 ## During the audit: `audit --people`
 
 `audit --people` runs the audit, then counts the photos not looked at for faces yet, measures a
@@ -148,8 +169,7 @@ another value once: `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 
 ## Not there yet
 
-- Sorting by person: a `person` rule in `classify`; a column in the inventory; the names in the
-  `.xmp` sidecars.
+- A column in the inventory; the names in the `.xmp` sidecars.
 - The faces of videos.
 
 To **find** the photos of someone, a photo manager such as Immich already does it well; `people`

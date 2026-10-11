@@ -104,7 +104,7 @@ def _signal(
         folder = facts.folders[file.path]
         reason, category, stay = folder.reason, folder.category, False
     elif rule.match is RuleMatch.SUBJECT:
-        subject = facts.subjects[rule.name][file.path]
+        subject = facts.seen.subjects[rule.name][file.path]
         reason, category, stay = SortReason.SUBJECT, subject.category, False
         agreed = subject.agreed
     else:

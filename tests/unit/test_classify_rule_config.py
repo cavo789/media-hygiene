@@ -45,6 +45,10 @@ def rules_file(locations: Locations, body: str) -> None:
         ('name = "Path"\nmatch = "path"\npattern = "a"\ndates = "12-24"', "not used"),
         ('name = "Bad"\nmatch = "path"\npattern = "a"\ncategory = "a:b"', "Windows"),
         ('match = "path"\npattern = "a"', "name"),
+        ('name = "Kids"\nmatch = "person"', "needs names"),
+        ('name = "Kids"\nmatch = "person"\nnames = [" "]', "name in names is empty"),
+        ('name = "Path"\nmatch = "path"\npattern = "a"\nall = true', "not used"),
+        ('name = "Kids"\nmatch = "person"\nnames = ["A"]\nmin_share = 0', "min_share"),
     ],
 )
 def test_an_invalid_rule_is_refused_with_its_name(

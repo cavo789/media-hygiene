@@ -1,4 +1,4 @@
-"""`[[classify.rules]]` — what the user knows, written once: dates, paths, cameras.
+"""`[[classify.rules]]` — what the user knows, written once: dates, paths, people.
 
 Each rule has a `name`, shown as the reason of the files it decides. The rules are read
 in order: the first whose score reaches `sure` wins. A rule refused at load time names
@@ -24,9 +24,16 @@ _NEEDS = {
     RuleMatch.PATH: "pattern",
     RuleMatch.CAMERA: "pattern",
     RuleMatch.SUBJECT: "categories",
+    RuleMatch.PERSON: "names",
     RuleMatch.OTHER_CATEGORY: "category",
 }
-_OPTIONAL = ("dates", "kind", "pattern", "categories", "per_photo")
+# The fields only one kind of rule reads, besides the one it needs.
+_ONLY = {
+    "per_photo": RuleMatch.SUBJECT,
+    "all": RuleMatch.PERSON,
+    "min_share": RuleMatch.PERSON,
+}
+_OPTIONAL = ("dates", "kind", "pattern", "categories", "names", *_ONLY)
 
 
 class ClassifyRule(BaseModel):
@@ -45,6 +52,10 @@ class ClassifyRule(BaseModel):
     kind: FileKind | None = None
     categories: tuple[str, ...] = ()  # `subject`: what the model chooses from
     per_photo: bool = False  # `subject`: describe every photo, not samples
+    names: tuple[str, ...] = ()  # `person`: names of `[[people.person]]`, any of them
+    all: bool = False  # `person`: every name, not any of them
+    # `person`: the percentage of an event's photos the people must be on; None: 10.
+    min_share: int | None = Field(default=None, ge=1, le=100)
     score: int | None = Field(default=None, ge=0, le=100)  # None: `[classify] scores`
 
     @model_validator(mode="after")
@@ -94,18 +105,21 @@ def _check(rule: ClassifyRule) -> None:
         message = _("{category} cannot be used in a category")
         raise ValueError(message)
     check_layout(rule.category)
-    _check_categories(rule.categories)
+    _check_categories(rule.categories, rule.names)
 
 
-def _check_categories(categories: tuple[str, ...]) -> None:
-    """Check the categories a `subject` rule offers the model.
+def _check_categories(categories: tuple[str, ...], names: tuple[str, ...]) -> None:
+    """Check the categories a `subject` rule offers the model, the names of a `person`.
 
     Args:
         categories: The rule's `categories`.
+        names: The rule's `names`.
 
     Raises:
         ValueError: One is empty, holds a placeholder, or is no folder name.
     """
+    if any(not name.strip() for name in names):
+        raise ValueError(_("a name in names is empty"))
     for category in categories:
         if not category.strip() or "{" in category:
             message = _("'{category}' is not a category: no placeholder, not empty")
@@ -126,8 +140,8 @@ def _uses(match: RuleMatch, field: str) -> bool:
     """
     if field == "category":
         return match not in BUILT_IN and match is not RuleMatch.SUBJECT
-    if field == "per_photo":
-        return match is RuleMatch.SUBJECT
+    if field in _ONLY:
+        return match is _ONLY[field]
     return _NEEDS.get(match) == field
 
 

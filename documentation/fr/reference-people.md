@@ -86,6 +86,28 @@ seulement (la casse et les accents ne comptent pas) ; `person:"Mamie Jeanne"` es
 mots. Un nom que personne ne porte encore est signalé en une ligne : nommez d'abord le groupe
 dans la page.
 
+## Les ranger : une règle `person`
+
+Une fois nommées, les personnes peuvent aussi ranger les photos : une règle `person` de
+`classify` ([tri, étape 6](sort/06-write-down-what-you-know.md#les-personnes)) donne une catégorie
+aux événements où quelqu'un apparaît.
+
+```toml
+[[classify.rules]]
+name = "Avec Chloé"
+match = "person"
+names = ["Chloé"]
+category = "Personnes/Chloé"
+```
+
+Un événement va à la règle quand au moins **10 %** de ses photos montrent Chloé
+(`min_share = 10` : c'est peut-être elle qui prend les photos) ; une photo hors de tout
+événement y va quand elle la montre. `names = ["Chloé", "Manon"]` prend les événements avec
+l'une ou l'autre ; ajoutez `all = true` pour ceux avec les deux. Les noms sont ceux de la page :
+les visages confirmés, et les visages assez proches d'eux, comme `search` les trouve ; les
+suggestions ne comptent pas. Un nom que personne ne porte encore arrête `classify` avant toute
+lecture, et nomme la règle.
+
 ## Pendant l'audit : `audit --people`
 
 `audit --people` lance l'audit, puis compte les photos dont les visages n'ont pas encore été
@@ -158,8 +180,7 @@ analyser à nouveau. Pour essayer une autre valeur une fois :
 
 ## Pas encore là
 
-- Ranger par personne : une règle `person` dans `classify` ; une colonne dans l'inventaire ; les
-  noms dans les fichiers compagnons `.xmp`.
+- Une colonne dans l'inventaire ; les noms dans les fichiers compagnons `.xmp`.
 - Les visages des vidéos.
 
 Pour **retrouver** les photos de quelqu'un, un gestionnaire de photos comme Immich le fait déjà

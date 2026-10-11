@@ -53,6 +53,7 @@ category = "Fêtes/Noël"
 | `path` | Une expression régulière cherchée dans le chemin sur votre ordinateur, dossiers et nom. | `pattern = '(?i)kermesse'` |
 | `camera` | Une expression régulière cherchée dans la marque et le modèle. | `pattern = '(?i)dji'` |
 | `subject` | Ce que voit un modèle de vision local, pour les photos qu'aucune autre règle n'a décidées ([étape 8](08-subjects-from-a-local-model.md)). | `categories = ["École", "Animaux"]` |
+| `person` | Quelqu'un que vous avez nommé dans la page [`people`](../reference-people.md) apparaît dans l'événement (plus bas). | `names = ["Chloé"]` |
 | `place` | La position GPS est dans un de vos lieux ([étape 9](09-places-from-gps.md)). | — |
 | `trip` | Un événement loin de la maison, nommé d'après son pays et sa ville, hors ligne ([étape 9](09-places-from-gps.md)). | — |
 | `other_category` | Les fichiers qu'aucune règle au-dessus n'a reconnus. | `category = "Autres"` |
@@ -85,6 +86,34 @@ Reconnus par le nom et les métadonnées seulement :
   `1080p`, `x264`) : un film ou une série téléchargés. Ce ne sont pas des souvenirs : la liste
   d'exemples ne leur donne pas de catégorie, ils restent donc où ils sont.
 
+### Les personnes
+
+Une règle `person` lit les visages nommés avec [`people`](../reference-people.md) : les visages
+confirmés dans la page, et ceux qui leur ressemblent assez, comme `search` les trouve. Lancez
+d'abord `people` et nommez les groupes.
+
+```toml
+[[classify.rules]]
+name = "Avec Chloé"
+match = "person"
+names = ["Chloé"]
+category = "Personnes/Chloé"
+```
+
+- Un événement va à la règle quand au moins `min_share` pour cent de ses photos montrent la
+  personne : **10** par défaut, car celle qui prend les photos y figure rarement.
+  `min_share = 30` garde les événements où on la voit souvent ; une photo hors de tout
+  événement y va quand elle la montre.
+- `names = ["Chloé", "Manon"]` : les événements avec l'une ou l'autre. Ajoutez `all = true`
+  pour ceux où chacune atteint la part.
+- La casse et les accents ne comptent pas. Un nom que personne ne porte dans la page arrête
+  `classify` avant toute lecture, et nomme la règle : une faute de frappe, ou un groupe pas
+  encore nommé.
+
+Placez-la **sous** les règles dont vous êtes plus sûr (dates, lieux) : avec 10 %, quelqu'un
+présent sur la plupart de vos événements les prend presque tous, comme le ferait une catégorie
+« Famille ».
+
 ### Les catégories
 
 Une catégorie peut utiliser `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` et
@@ -116,6 +145,7 @@ Chaque `match` a un score par défaut, qu'une règle peut changer par son propre
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 quand les échantillons de l'événement sont d'accord ; sinon « à vérifier » |
+| `person` | 85 |
 | `event_neighbour` | 70 : à vérifier |
 
 La table `[classify] scores` fixe ces valeurs par défaut pour toutes les règles d'un même

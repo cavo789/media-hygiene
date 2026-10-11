@@ -1,20 +1,20 @@
 """The `person` words of the search: who is on each photo, made from the faces.
 
-Made at each search from the faces of the index (`/cache`) and the names of
-`config.toml` (`[[people.person]]`): a face confirmed on the people page, or close
-enough to one, gives its photo the person's name. Suggestions never do. Nothing is
-written: the words live in memory for the search only.
+Made at each search (and each `classify` run with a `person` rule) from the faces of
+the index (`/cache`) and the names of `config.toml` (`[[people.person]]`): a face
+confirmed on the people page, or close enough to one, gives its photo the person's
+name. Suggestions never do. Nothing is written: the words live in memory only.
 """
 
 from __future__ import annotations
 
 import sqlite3
-import unicodedata
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore
+from media_hygiene.people.folding import folded
 from media_hygiene.people.naming import Known, name_all
 from media_hygiene.tags.models import TagSource
 
@@ -23,9 +23,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.search.query import SearchQuery
-
-_COMBINING: Final = "Mn"  # the accents, once a letter is decomposed
-_DECOMPOSED: Final = "NFKD"
 
 
 def people_words(
@@ -70,13 +67,13 @@ def unknown_people(query: SearchQuery, settings: PeopleSettings) -> str | None:
     Returns:
         The line, or None when every `person:` word names someone.
     """
-    names = [_folded(person.name) for person in settings.person]
+    names = [folded(person.name) for person in settings.person]
     words = {word for name in names for word in name.split()}
     unknown = [
         term.text
         for term in query.terms
         if term.source is TagSource.PERSON
-        and not _known(_folded(term.text), (names, words), prefix=term.prefix)
+        and not _known(folded(term.text), (names, words), prefix=term.prefix)
     ]
     if not unknown:
         return None
@@ -100,16 +97,3 @@ def _known(text: str, known: tuple[list[str], set[str]], *, prefix: bool) -> boo
     if prefix:
         return any(word.startswith(text) for word in words)
     return text in names or text in words
-
-
-def _folded(text: str) -> str:
-    """A name without case nor accents, as the search index compares them.
-
-    Args:
-        text: The name.
-
-    Returns:
-        `Chloé` → `chloe`.
-    """
-    decomposed = unicodedata.normalize(_DECOMPOSED, text.strip().casefold())
-    return "".join(c for c in decomposed if unicodedata.category(c) != _COMBINING)

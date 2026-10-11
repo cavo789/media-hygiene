@@ -53,6 +53,7 @@ category = "Parties/Christmas"
 | `path` | A regular expression searched in the path on your computer, folders and name. | `pattern = '(?i)kermesse'` |
 | `camera` | A regular expression searched in the make and model. | `pattern = '(?i)dji'` |
 | `subject` | What a local vision model sees, for the photos no other rule decided ([step 8](08-subjects-from-a-local-model.md)). | `categories = ["School", "Animals"]` |
+| `person` | Someone you named on the [`people`](../reference-people.md) page shows in the event (below). | `names = ["Chloé"]` |
 | `place` | The GPS position lies in one of your places ([step 9](09-places-from-gps.md)). | — |
 | `trip` | An event far from home, named after its country and town, offline ([step 9](09-places-from-gps.md)). | — |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
@@ -84,6 +85,31 @@ Told from the name and the metadata only:
   `x264`): a downloaded film or series. They are not memories: the example list gives them no
   category, so they stay where they are.
 
+### People
+
+A `person` rule reads the faces you named with [`people`](../reference-people.md): the faces
+confirmed on the page, and those close enough to them, as `search` finds them. Run `people` and
+name the groups first.
+
+```toml
+[[classify.rules]]
+name = "With Chloé"
+match = "person"
+names = ["Chloé"]
+category = "People/Chloé"
+```
+
+- An event goes to the rule when at least `min_share` percent of its photos show the person:
+  **10** by default, as the one taking the pictures is seldom on them. `min_share = 30` keeps
+  the events where she is often seen; a photo outside any event goes when it shows her.
+- `names = ["Chloé", "Manon"]`: the events with either of them. Add `all = true` for those
+  where each one reaches the share.
+- Case and accents do not matter. A name nobody has on the page stops `classify` before
+  anything is read, and names the rule: a typo, or a group not named yet.
+
+Put it **below** the rules you are surer of (dates, places): with 10 %, someone on most of
+your events takes most of them, like a "Family" category would.
+
 ### Categories
 
 A category may use `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` and `{event_start}`,
@@ -113,6 +139,7 @@ turns a rule off:
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 when the samples of the event agree; otherwise "to check" |
+| `person` | 85 |
 | `event_neighbour` | 70: to check |
 
 The scores of the `[classify] scores` table set these defaults for every rule of a kind. A

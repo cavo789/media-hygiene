@@ -21,6 +21,7 @@ class RuleMatch(StrEnum):
     PATH = "path"
     CAMERA = "camera"
     SUBJECT = "subject"
+    PERSON = "person"
     OTHER_CATEGORY = "other_category"
 
 
@@ -50,6 +51,7 @@ REASONS: Final = {
     RuleMatch.PATH: SortReason.PATH,
     RuleMatch.CAMERA: SortReason.CAMERA,
     RuleMatch.SUBJECT: SortReason.SUBJECT,
+    RuleMatch.PERSON: SortReason.PERSON,
     RuleMatch.PLACE: SortReason.PLACE,
     RuleMatch.TRIP: SortReason.TRIP,
     RuleMatch.OTHER_CATEGORY: SortReason.OTHER_CATEGORY,

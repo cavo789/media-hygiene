@@ -49,6 +49,7 @@ SCORES: Final = {
     "camera": 90,
     "other-category": 85,  # only when no rule above matched
     "subject": 85,  # the samples of an event agree; else "to check"
+    "person": 85,  # someone named on enough photos of the event
     "place": 90,  # within a personal place
     "place-neighbour": 70,  # no GPS, in an event at a personal place
     "trip": 90,  # far from home
