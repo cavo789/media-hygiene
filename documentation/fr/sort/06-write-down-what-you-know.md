@@ -191,6 +191,14 @@ règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et 
 💡 Corrigez la valeur, puis relancez la même commande.
 ```
 
+Un réglage oublié ou mal écrit est désigné de la même façon, le `name` de la règle à côté de son
+numéro :
+
+```text
+❌ « match » dans [[classify.rules]] n° 3 (« Vacances ») de config.toml : ce réglage est obligatoire.
+💡 Corrigez la valeur, puis relancez la même commande.
+```
+
 Le classeur montre les mêmes noms dans la colonne *Raison* de sa feuille Fichiers, et les compte
 sur sa feuille Résumé.
 

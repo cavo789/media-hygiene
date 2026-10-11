@@ -14,13 +14,14 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming
 from media_hygiene.people.crops import CropJob, face_crop
 from media_hygiene.people.roster import Change
 from media_hygiene.report.thumbnails import review_preview
+from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
@@ -40,7 +41,6 @@ CHANGE_PATH: Final = "/api/people"
 JPEG: Final = ".jpg"
 _GET, _POST = "GET", "POST"
 _NAME_LENGTH: Final = 100
-_VALUE_ERROR: Final = "Value error, "
 
 
 class _Asked(BaseModel):
@@ -153,18 +153,7 @@ class PeopleApp:
                 asked.name, roster.ids(asked.faces), roster.ids(asked.removed)
             )
             saved = roster.change(Change(asked.action, naming))
-        except ValidationError as exc:
-            reasons = "; ".join(
-                str(error["msg"]).removeprefix(_VALUE_ERROR) for error in exc.errors()
-            )
-            message = _("Not saved: {reason}.").format(reason=reasons)
-            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-        except (ValueError, TypeError) as exc:
-            message = _("Not saved: {reason}.").format(reason=exc)
-            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-        except OSError as exc:
-            message = _("Cannot save config.toml: {error}.")
-            error = message.format(error=exc.strerror or exc)
-            return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": error})
+        except (ValueError, TypeError, OSError) as exc:  # ValidationError included
+            return save_refused(exc)
         state = self.roster.state(self.mapper.to_host)
         return json_response(HTTPStatus.OK, {**state, "saved": saved})

@@ -183,6 +183,13 @@ run before anything is read, and names itself (rules are counted from the top of
 💡 Correct it, then run the same command again.
 ```
 
+A setting forgotten or mistyped is pointed at the same way, the rule's `name` next to its number:
+
+```text
+❌ 'match' in [[classify.rules]] number 3 ('Holidays') of config.toml: this setting is required.
+💡 Correct it, then run the same command again.
+```
+
 The workbook shows the same names in the *Reason* column of its Files sheet, and counts them on
 its Summary sheet.
 

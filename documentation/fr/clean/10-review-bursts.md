@@ -94,7 +94,7 @@ seconde d'intervalle.
 - **↗ original** ouvre le fichier lui-même dans un nouvel onglet, intact, en pleine taille : ce
   que vous voyez est ce qui est sur votre disque, pas un rendu de la page.
 - **À gauche, le sommaire** : toutes les séries, dossier par dossier, avec leur état dans
-  `decisions.json` : ⏳ *à voir*, ✅ *les 3 gardées* (vert), 📦 *1 écartée(s) sur 3* (orange),
+  `decisions.json` : ⏳ *à voir*, ✅ *les 3 gardées* (vert), 📦 *1 écartée sur 3* (orange),
   🗑 *série entière écartée* (rouge). Une barre montre combien de séries vous avez vues ; un
   clic sur une série l'ouvre, *Seulement les séries à voir* masque les autres, et *Seulement
   les séries à regarder* masque les [évidentes](#toutes-les-séries-évidentes-en-un-clic).
@@ -153,7 +153,7 @@ choix vous revient. Au démarrage, le tri les compte :
 4 000 séries à voir : 3 100 évidentes (un clic), 900 à regarder.
 ```
 
-Le bouton **✔ Valider les 3 100 série(s) évidente(s) (9 400 photo(s) écartée(s))**, au-dessus
+Le bouton **✔ Valider 3 100 séries évidentes (9 400 photos écartées)**, au-dessus
 du sommaire, ou `V`, les enregistre toutes comme proposées, **en une seule écriture**, après
 une confirmation qui donne les chiffres. La preuve est la même que pour une série : le
 fichier est relu sur le disque, et le sommaire montre ce qu'il contient. Un seul `Z` annule

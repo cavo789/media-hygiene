@@ -145,7 +145,7 @@ When it starts, the review counts them:
 4,000 series to see: 3,100 obvious (one click), 900 to look at.
 ```
 
-The **✔ Validate the 3,100 obvious series (9,400 shot(s) set aside)** button, above the
+The **✔ Validate 3,100 obvious series (9,400 shots set aside)** button, above the
 table of contents, or `V`, saves them all as proposed, **in one write**, after a confirmation
 that gives the figures. The proof is the same as for one series: the file is read back from
 the disk, and the table of contents shows what it holds. One `Z` takes the whole batch back.

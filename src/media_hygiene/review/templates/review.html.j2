@@ -7,6 +7,11 @@
   "position": _("Series {number} of {total}"),
   "totals": _("Series seen: {seen} · with shots set aside: {series} · shots set aside: {shots}"),
   "shots": _("{count} shots"),
+  "nSeries": [ngettext("{n} series", "{n} series", 1), ngettext("{n} series", "{n} series", 2)],
+  "nObvious": [ngettext("{n} obvious series", "{n} obvious series", 1), ngettext("{n} obvious series", "{n} obvious series", 2)],
+  "nObviousDone": [ngettext("{n} obvious series validated", "{n} obvious series validated", 1), ngettext("{n} obvious series validated", "{n} obvious series validated", 2)],
+  "nAside": [ngettext("{n} shot set aside", "{n} shots set aside", 1), ngettext("{n} shot set aside", "{n} shots set aside", 2)],
+  "nProposed": [ngettext("{n} shot proposed aside", "{n} shots proposed aside", 1), ngettext("{n} shot proposed aside", "{n} shots proposed aside", 2)],
   "kept": "✅ " ~ _("kept"),
   "aside": "📦 " ~ _("set aside"),
   "protected": "🔒 " ~ _("protected folder, kept"),
@@ -17,10 +22,10 @@
   "identical": "📦 " ~ _("proposed aside: nearly identical to the sharper shot {number}"),
   "overexposed": "📦 " ~ _("proposed aside: overexposed next to the others"),
   "underexposed": "📦 " ~ _("proposed aside: underexposed next to the others"),
-  "obvious": "✔ " ~ _("Validate the {count} obvious series ({aside} shot(s) set aside)"),
+  "obvious": "✔ " ~ _("Validate {series} ({aside})"),
   "obviousNone": _("No obvious series left to validate."),
-  "obviousAsk": _("{count} obvious series: only the sharpest shot (and those of protected folders) would stay, {aside} shot(s) set aside, saved in one write. {left} series to look at stay to see. Validate them? Z takes the whole batch back."),
-  "obviousDone": _("{count} obvious series validated: Z takes the whole batch back."),
+  "obviousAsk": _("{series}: only the sharpest shot (and those of protected folders) would stay, {aside}, saved in one write. Series to look at, still to see: {left}. Validate them? Z takes the whole batch back."),
+  "obviousDone": _("{done}: Z takes the whole batch back."),
   "undoneMany": "↶ " ~ _("Choices on {count} series undone."),
   "welcome": "💡 " ~ _("The proposal is already made: → is enough when it suits you."),
   "pending": "⏳ " ~ _("No choice yet: moving on (→, ← or N) keeps every shot of this series. S keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot aside."),
@@ -33,11 +38,11 @@
   "undone": "↶ " ~ _("Choice on series {number} undone."),
   "nothingToUndo": _("Nothing to undo."),
   "tocTitle": _("Table of contents"),
-  "progress": _("{seen} of {total} series seen"),
+  "progress": _("Series seen: {seen} of {total}"),
   "rowName": _("Series {number}"),
   "rowTodo": "⏳ " ~ _("to see"),
   "rowKept": "✅ " ~ _("all {count} kept"),
-  "rowAside": "📦 " ~ _("{aside} of {count} set aside"),
+  "rowAside": ["📦 " ~ ngettext("{n} of {count} set aside", "{n} of {count} set aside", 1), "📦 " ~ ngettext("{n} of {count} set aside", "{n} of {count} set aside", 2)],
   "rowWhole": "🗑 " ~ _("whole series set aside"),
   "rowGap": _("gap {gap} %%"),
   "compareTitle": "🔍 " ~ _("At 100 %%: move the mouse over a shot, the same area shows in every one. C or Escape closes."),
@@ -49,11 +54,11 @@
   "boardSharpest": "⭐ " ~ _("only the sharpest"),
   "boardNone": "🗑 " ~ _("keep nothing"),
   "boardPage": _("Page {page} of {pages}"),
-  "boardPending": _("→ validates the {count} series still to see here as shown ({aside} shot(s) proposed aside), then opens the next page."),
+  "boardPending": _("→ validates the series still to see here as shown ({series}, {aside}), then opens the next page."),
   "boardDone": _("Every series of this page has been seen: → opens the next page."),
   "validate": "✔ " ~ _("validate"),
   "validateTitle": _("Validate the series still to see here, as moving on would"),
-  "validateAsk": _("{count} series still to see in {folder}: validate them as shown, {aside} shot(s) proposed aside, the others kept?"),
+  "validateAsk": _("Series still to see in {folder}: {series}. Validate them as shown, {aside}, the others kept?"),
   "validateNone": _("Every series here has been seen already."),
   "diskTitle": _("What {file} holds for this series").replace("{file}", file),
   "diskTodo": "⏳ " ~ _("No choice yet: nothing will be moved."),
@@ -215,6 +220,9 @@
   const filePath = {{ file_path | tojson }};
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const plural = new Intl.PluralRules(document.documentElement.lang);
+  // A counted fragment: its singular and plural forms, the one the language uses for n.
+  const counted = (forms, n, values) => fill(forms[plural.select(n) === "one" ? 0 : 1], Object.assign({ n: n }, values));
   let series = [];
   let current = 0;
   const disk = new Map();  // series rank -> its entry, as read back from the disk

@@ -4,7 +4,7 @@
    and to show pictures. Keyboard: "/" focuses the field, the arrows move in the grid,
    Enter opens the picture, Escape closes it. #}
 {% set texts = {
-  "found": _("{total} files found."),
+  "found": [ngettext("{n} file found.", "{n} files found.", 1), ngettext("{n} file found.", "{n} files found.", 2)],
   "shown": _("{total} files found; the first {shown} are shown."),
   "none": _("Nothing found. Fewer words, or the start of a word (anniv*), find more."),
   "offline": _("The search is not running any more: start it again."),
@@ -115,6 +115,13 @@ function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
 }
 
+const PLURAL = new Intl.PluralRules(document.documentElement.lang);
+
+// A counted fragment: its singular and plural forms, the one the language uses for n.
+function counted(forms, n) {
+  return fill(forms[PLURAL.select(n) === "one" ? 0 : 1], { n: n });
+}
+
 function element(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -210,7 +217,7 @@ async function search(event) {
   if (!found.total) status.textContent = TEXTS.none;
   else if (found.total > found.hits.length) {
     status.textContent = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
-  } else status.textContent = fill(TEXTS.found, { total: found.total });
+  } else status.textContent = counted(TEXTS.found, found.total);
   if (found.note) status.textContent = found.note + " " + status.textContent;
 }
 

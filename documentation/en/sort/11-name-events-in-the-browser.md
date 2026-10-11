@@ -86,7 +86,7 @@ On a large collection, many events have a **sure** proposal: most of their photo
 strong rule (band *Sure*), and the few still to check or to sort propose the same category, or
 none. Such an event shows `✔ sure` after its proposal; it only needs a glance.
 
-The button **✔ Accept the N sure proposals (M files)** at the top (or <kbd>V</kbd>) accepts
+The button **✔ Accept N sure proposals (M files)** at the top (or <kbd>V</kbd>) accepts
 them all, after a confirmation that gives the figures. Each one is recorded exactly as
 <kbd>Enter</kbd> would record it on that event untouched (its proposed category, no name), with
 what the workbook said of it, like any other choice. Nothing is imposed: an event you already

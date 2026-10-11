@@ -7,10 +7,12 @@
    out of the group. #}
 {% set texts = {
   "group": _("Group {number}"),
-  "size": _("{faces} faces in {photos} photos"),
-  "more": _("and {count} more faces"),
-  "alone": _("{count} faces look like no other: they are not shown."),
-  "ignoredGroups": _("{count} groups ignored are not shown."),
+  "size": _("{faces} in {photos}"),
+  "faces": [ngettext("{n} face", "{n} faces", 1), ngettext("{n} face", "{n} faces", 2)],
+  "photos": [ngettext("{n} photo", "{n} photos", 1), ngettext("{n} photo", "{n} photos", 2)],
+  "more": [ngettext("and {n} more face", "and {n} more faces", 1), ngettext("and {n} more face", "and {n} more faces", 2)],
+  "alone": [ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 1), ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 2)],
+  "ignoredGroups": [ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 1), ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 2)],
   "none": _("No group yet: no two faces look alike enough."),
   "offline": _("The page is not running any more: start people again."),
   "failed": _("The groups could not be read (error {status})."),
@@ -21,7 +23,7 @@
   "ignore": _("Ignore this group"),
   "pick": _("Name with others"),
   "remove": _("Not this person: take this face out"),
-  "picked": _("{count} groups picked: the next name goes to all of them."),
+  "picked": [ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 1), ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 2)],
   "saving": _("Saving…"),
   "readOnly": _("Names cannot be saved: mount a writable folder on /config."),
 } %}
@@ -108,6 +110,13 @@ const removed = new Set();
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
+}
+
+const PLURAL = new Intl.PluralRules(document.documentElement.lang);
+
+// A counted fragment: its singular and plural forms, the one the language uses for n.
+function counted(forms, n) {
+  return fill(forms[PLURAL.select(n) === "one" ? 0 : 1], { n: n });
 }
 
 function element(tag, className, text) {
@@ -221,11 +230,11 @@ function group(item, index) {
   node.classList.toggle("picked", picked.has(index));
   const heading = item.name || (item.suggested ? fill(TEXTS.suggest, { name: item.suggested }) : fill(TEXTS.group, { number: index + 1 }));
   const title = element("h2", "", heading + " ");
-  title.append(element("small", "", fill(TEXTS.size, { faces: item.faces, photos: item.photos })));
+  title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, item.faces), photos: counted(TEXTS.photos, item.photos) })));
   const faces = element("div", "faces");
   faces.append(...item.shown.filter((shown) => !removed.has(shown.key)).map((shown) => face(shown, index)));
   if (item.faces > item.shown.length) {
-    faces.append(element("span", "more", fill(TEXTS.more, { count: item.faces - item.shown.length })));
+    faces.append(element("span", "more", counted(TEXTS.more, item.faces - item.shown.length)));
   }
   node.append(title, tools(item, index), faces);
   node.addEventListener("click", () => { current = index; mark(); });
@@ -242,7 +251,7 @@ function mark() {
 function toggle(index) {
   if (picked.has(index)) picked.delete(index); else picked.add(index);
   mark();
-  if (picked.size) say(fill(TEXTS.picked, { count: picked.size }));
+  if (picked.size) say(counted(TEXTS.picked, picked.size));
 }
 
 function ignoreGroup(index) {
@@ -261,8 +270,8 @@ function show(next) {
   render();
   const notes = [];
   if (!state.sections.length) notes.push(TEXTS.none);
-  if (state.alone) notes.push(fill(TEXTS.alone, { count: state.alone }));
-  if (state.ignored) notes.push(fill(TEXTS.ignoredGroups, { count: state.ignored }));
+  if (state.alone) notes.push(counted(TEXTS.alone, state.alone));
+  if (state.ignored) notes.push(counted(TEXTS.ignoredGroups, state.ignored));
   if (!state.writable) notes.push(TEXTS.readOnly);
   say(notes.join(" "));
 }

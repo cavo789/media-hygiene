@@ -318,7 +318,7 @@ msgid "Accept at once every event still to decide whose proposal is sure (V)"
 msgstr ""
 
 #, python-brace-format
-msgid "Accept the {count} sure proposals ({files} files)"
+msgid "Accept {sure} ({files})"
 msgstr ""
 
 msgid "Act: moves, writes or deletes files"
@@ -1100,6 +1100,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Events split in several, each part keeps the edit: {names}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Events to decide with a sure proposal: {count} ({files}). Each one gets "
+"its proposed category, as Enter would give it, saved in one write. Events"
+" to decide left to look at: {left}. Accept them? The ↶ button takes the "
+"whole batch back."
 msgstr ""
 
 msgid ""
@@ -2940,6 +2948,10 @@ msgid "September"
 msgstr ""
 
 #, python-brace-format
+msgid "Series seen: {seen} of {total}"
+msgstr ""
+
+#, python-brace-format
 msgid "Series seen: {seen} of {total}."
 msgstr ""
 
@@ -2947,6 +2959,12 @@ msgstr ""
 msgid ""
 "Series seen: {seen} · with shots set aside: {series} · shots set aside: "
 "{shots}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Series still to see in {folder}: {series}. Validate them as shown, "
+"{aside}, the others kept?"
 msgstr ""
 
 #, python-brace-format
@@ -3157,7 +3175,7 @@ msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
 #, python-brace-format
-msgid "Take the batch back ({count} events)"
+msgid "Take the batch back ({events})"
 msgstr ""
 
 #, python-brace-format
@@ -3745,7 +3763,7 @@ msgid "Validate the series still to see here, as moving on would"
 msgstr ""
 
 #, python-brace-format
-msgid "Validate the {count} obvious series ({aside} shot(s) set aside)"
+msgid "Validate {series} ({aside})"
 msgstr ""
 
 msgid "Value"
@@ -3979,6 +3997,10 @@ msgstr ""
 msgid "[[{table}]] number {number}"
 msgstr ""
 
+#, python-brace-format
+msgid "[[{table}]] number {number} ('{name}')"
+msgstr ""
+
 msgid "[cyan]read-only[/]"
 msgstr ""
 
@@ -4073,8 +4095,10 @@ msgid "and {count} more"
 msgstr ""
 
 #, python-brace-format
-msgid "and {count} more faces"
-msgstr ""
+msgid "and {n} more face"
+msgid_plural "and {n} more faces"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr ""
@@ -4919,10 +4943,6 @@ msgid "{actions}?"
 msgstr ""
 
 #, python-brace-format
-msgid "{aside} of {count} set aside"
-msgstr ""
-
-#, python-brace-format
 msgid "{category} cannot be used in a category"
 msgstr ""
 
@@ -4985,12 +5005,6 @@ msgid_plural ""
 "since; nothing was moved:"
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid ""
-"{count} choices of the batch taken back, read back from the disk at "
-"{time}."
-msgstr ""
 
 #, python-brace-format
 msgid ""
@@ -5064,14 +5078,6 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} events to decide have a sure proposal ({files} files): each one "
-"gets its proposed category, as Enter would give it, saved in one write. "
-"{left} events to decide stay to look at. Accept them? The ↶ button takes "
-"the whole batch back."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "{count} exact duplicates are still there: run 'clean' first, otherwise "
 "both copies are sorted."
 msgstr ""
@@ -5090,10 +5096,6 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} faces"
-msgstr ""
-
-#, python-brace-format
-msgid "{count} faces look like no other: they are not shown."
 msgstr ""
 
 #, python-brace-format
@@ -5171,10 +5173,6 @@ msgid "{count} files of protected folders: never written."
 msgstr ""
 
 #, python-brace-format
-msgid "{count} files, {undecided} to check or to sort"
-msgstr ""
-
-#, python-brace-format
 msgid "{count} group decided earlier changed since: to decide again."
 msgid_plural "{count} groups decided earlier changed since: to decide again."
 msgstr[0] ""
@@ -5207,14 +5205,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} groups ignored are not shown."
-msgstr ""
-
-#, python-brace-format
-msgid "{count} groups picked: the next name goes to all of them."
-msgstr ""
-
-#, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] ""
@@ -5243,18 +5233,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} obvious series validated: Z takes the whole batch back."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"{count} obvious series: only the sharpest shot (and those of protected "
-"folders) would stay, {aside} shot(s) set aside, saved in one write. "
-"{left} series to look at stay to see. Validate them? Z takes the whole "
-"batch back."
-msgstr ""
-
-#, python-brace-format
 msgid "{count} of them to describe with {model}, about {duration}."
 msgstr ""
 
@@ -5269,10 +5247,6 @@ msgid_plural ""
 "quarantine."
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid "{count} photo"
-msgstr ""
 
 #, python-brace-format
 msgid "{count} photo analysed: {faces} faces, {seconds} s per photo."
@@ -5341,10 +5315,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} photos"
-msgstr ""
-
-#, python-brace-format
 msgid ""
 "{count} photos to describe with {model}, about {duration}: one per set of"
 " identical files and per burst series."
@@ -5367,12 +5337,6 @@ msgid "{count} series reviewed earlier changed since: reviewed again."
 msgid_plural "{count} series reviewed earlier changed since: reviewed again."
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid ""
-"{count} series still to see in {folder}: validate them as shown, {aside} "
-"shot(s) proposed aside, the others kept?"
-msgstr ""
 
 #, python-brace-format
 msgid "{count} series to see: {obvious} (one click), {look} to look at."
@@ -5435,12 +5399,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid ""
-"{count} sure proposals accepted, read back from the disk at {time}: the ↶"
-" button takes the whole batch back."
-msgstr ""
-
-#, python-brace-format
 msgid "{days} day {clock}"
 msgid_plural "{days} days {clock}"
 msgstr[0] ""
@@ -5451,7 +5409,13 @@ msgid "{day} {month} {year} {time}"
 msgstr ""
 
 #, python-brace-format
-msgid "{faces} faces in {photos} photos"
+msgid ""
+"{done}, read back from the disk at {time}: the ↶ button takes the whole "
+"batch back."
+msgstr ""
+
+#, python-brace-format
+msgid "{done}: Z takes the whole batch back."
 msgstr ""
 
 #, python-brace-format
@@ -5471,11 +5435,19 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{faces} in {photos}"
+msgstr ""
+
+#, python-brace-format
 msgid "{field} is not used by match = '{match}'"
 msgstr ""
 
 #, python-brace-format
 msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
+msgstr ""
+
+#, python-brace-format
+msgid "{files}, {undecided} to check or to sort"
 msgstr ""
 
 #, python-brace-format
@@ -5553,6 +5525,108 @@ msgstr ""
 #, python-brace-format
 msgid "{name}?"
 msgstr ""
+
+#, python-brace-format
+msgid "{n} choice of the batch taken back"
+msgid_plural "{n} choices of the batch taken back"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} event"
+msgid_plural "{n} events"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face"
+msgid_plural "{n} faces"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face looks like no other: it is not shown."
+msgid_plural "{n} faces look like no other: they are not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file"
+msgid_plural "{n} files"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file found."
+msgid_plural "{n} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} group picked: the next name goes to it."
+msgid_plural "{n} groups picked: the next name goes to all of them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} ignored group is not shown."
+msgid_plural "{n} ignored groups are not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} obvious series"
+msgid_plural "{n} obvious series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} obvious series validated"
+msgid_plural "{n} obvious series validated"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} of {count} set aside"
+msgid_plural "{n} of {count} set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo"
+msgid_plural "{n} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} series"
+msgid_plural "{n} series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} shot proposed aside"
+msgid_plural "{n} shots proposed aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} shot set aside"
+msgid_plural "{n} shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} sure proposal"
+msgid_plural "{n} sure proposals"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} sure proposal accepted"
+msgid_plural "{n} sure proposals accepted"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
@@ -5685,7 +5759,10 @@ msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
 msgstr ""
 
 #, python-brace-format
-msgid "{seen} of {total} series seen"
+msgid ""
+"{series}: only the sharpest shot (and those of protected folders) would "
+"stay, {aside}, saved in one write. Series to look at, still to see: "
+"{left}. Validate them? Z takes the whole batch back."
 msgstr ""
 
 #, python-brace-format
@@ -5705,15 +5782,15 @@ msgid "{table} in config.toml"
 msgstr ""
 
 #, python-brace-format
-msgid "{total} files found."
-msgstr ""
-
-#, python-brace-format
 msgid "{total} files found; the first {shown} are listed (--limit)."
 msgstr ""
 
 #, python-brace-format
 msgid "{total} files found; the first {shown} are shown."
+msgstr ""
+
+#, python-brace-format
+msgid "{undone}, read back from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
@@ -5761,8 +5838,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"→ validates the {count} series still to see here as shown ({aside} "
-"shot(s) proposed aside), then opens the next page."
+"→ validates the series still to see here as shown ({series}, {aside}), "
+"then opens the next page."
 msgstr ""
 
 #, python-brace-format

@@ -5,7 +5,7 @@
 {% set texts = {
   "position": _("Event {number} of {total}"),
   "totals": _("Chosen here: {chosen} · still to decide: {open}"),
-  "files": _("{count} files, {undecided} to check or to sort"),
+  "files": _("{files}, {undecided} to check or to sort"),
   "share": _("naming the events up to this one covers {share}%% of the work"),
   "from": _("From:"),
   "proposal": _("Proposed:"),
@@ -25,13 +25,18 @@
   "noOpen": _("No event left to decide after this one."),
   "sendTo": _("Send the photos ({count}) to the category:"),
   "sureMark": "✔ " ~ _("sure: V accepts it with the other sure proposals"),
-  "sure": "✔ " ~ _("Accept the {count} sure proposals ({files} files)"),
+  "sure": "✔ " ~ _("Accept {sure} ({files})"),
   "sureNone": _("No sure proposal left to accept."),
-  "sureAsk": _("{count} events to decide have a sure proposal ({files} files): each one gets its proposed category, as Enter would give it, saved in one write. {left} events to decide stay to look at. Accept them? The ↶ button takes the whole batch back."),
-  "sureDone": _("{count} sure proposals accepted, read back from the disk at {time}: the ↶ button takes the whole batch back."),
-  "sureUndo": "↶ " ~ _("Take the batch back ({count} events)"),
-  "sureUndone": _("{count} choices of the batch taken back, read back from the disk at {time}."),
+  "sureAsk": _("Events to decide with a sure proposal: {count} ({files}). Each one gets its proposed category, as Enter would give it, saved in one write. Events to decide left to look at: {left}. Accept them? The ↶ button takes the whole batch back."),
+  "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
+  "sureUndo": "↶ " ~ _("Take the batch back ({events})"),
+  "sureUndone": _("{undone}, read back from the disk at {time}."),
   "nothingToUndo": _("Nothing to undo."),
+  "nFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "nEvents": [ngettext("{n} event", "{n} events", 1), ngettext("{n} event", "{n} events", 2)],
+  "nSure": [ngettext("{n} sure proposal", "{n} sure proposals", 1), ngettext("{n} sure proposal", "{n} sure proposals", 2)],
+  "nSureDone": [ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 1), ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 2)],
+  "nUndone": [ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 1), ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 2)],
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -142,6 +147,9 @@
   const positionKey = "media-hygiene:review-sort:" + {{ decisions | tojson }};
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? String(values[key]) : all));
+  const plural = new Intl.PluralRules(document.documentElement.lang);
+  // A counted fragment: its singular and plural forms, the one the language uses for n.
+  const counted = (forms, n) => fill(forms[plural.select(n) === "one" ? 0 : 1], { n: n });
   let events = [];
   let current = 0;
   let photos = [];
@@ -172,7 +180,7 @@
   const showEvent = (card) => {
     byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
     byId("title").textContent = card.title;
-    byId("summary").textContent = [card.span, fill(T.files, { count: card.files, undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
+    byId("summary").textContent = [card.span, fill(T.files, { files: counted(T.nFiles, card.files), undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
     const sure = card.sure && isOpen(card) ? T.sureMark : "";
     const proposal = [card.folder || T.stay, card.band, card.why, sure].filter(Boolean).join(" · ");
     byId("facts").replaceChildren(

@@ -19,7 +19,7 @@
     if (!isSeen(index)) return T.rowTodo;
     if (entry.discarded.length === 0) return fill(T.rowKept, { count: count });
     if (entry.kept.length === 0) return T.rowWhole;
-    return fill(T.rowAside, { aside: entry.discarded.length, count: count });
+    return counted(T.rowAside, entry.discarded.length, { count: count });
   };
 
   // The colour tells what happens to the shots, like their frames: kept, some set aside, all.

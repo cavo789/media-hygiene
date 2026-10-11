@@ -18,7 +18,7 @@
     const todo = obviousTodo();
     const button = byId("obvious");
     button.disabled = todo.length === 0;
-    button.textContent = todo.length === 0 ? T.obviousNone : fill(T.obvious, { count: todo.length, aside: asideIn(todo) });
+    button.textContent = todo.length === 0 ? T.obviousNone : fill(T.obvious, { series: counted(T.nObvious, todo.length), aside: counted(T.nAside, asideIn(todo)) });
   };
 
   // Every obvious series still to see, as proposed, in one write: one Z undoes them all.
@@ -29,9 +29,9 @@
       return;
     }
     const left = series.filter((item) => !item.reviewed).length - todo.length;
-    if (!window.confirm(fill(T.obviousAsk, { count: todo.length, aside: asideIn(todo), left: left }))) return;
+    if (!window.confirm(fill(T.obviousAsk, { series: counted(T.nObvious, todo.length), aside: counted(T.nAside, asideIn(todo)), left: left }))) return;
     if (await record(todo.map((index) => [index, proposal(series[index])]))) {
-      setStatus(byId("status").textContent + " " + fill(T.obviousDone, { count: todo.length }), "saved");
+      setStatus(byId("status").textContent + " " + fill(T.obviousDone, { done: counted(T.nObviousDone, todo.length) }), "saved");
     }
   };
 

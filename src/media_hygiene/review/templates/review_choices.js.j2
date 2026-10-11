@@ -112,6 +112,6 @@
       return;
     }
     const aside = todo.reduce((count, index) => count + proposal(series[index]).length, 0);
-    if (!window.confirm(fill(T.validateAsk, { count: todo.length, folder: folder, aside: aside }))) return;
+    if (!window.confirm(fill(T.validateAsk, { series: counted(T.nSeries, todo.length), folder: folder, aside: counted(T.nProposed, aside) }))) return;
     record(todo.map((index) => [index, proposal(series[index])]));
   };

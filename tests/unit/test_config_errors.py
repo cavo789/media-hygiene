@@ -120,8 +120,8 @@ def test_a_rule_is_named_by_its_number(locations: Locations) -> None:
     message = refused(locations).message
     assert "• [[classify.rules]] number 1 in config.toml: rule" in message
     assert (
-        "'match' in [[classify.rules]] number 2 of config.toml: this setting is "
-        "required" in message
+        "'match' in [[classify.rules]] number 2 ('Other') of config.toml: this "
+        "setting is required" in message
     )
 
 

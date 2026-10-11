@@ -90,7 +90,7 @@ leurs photos viennent d'une règle forte (bande *Sûrs*), et les quelques-unes q
 vérifier ou à trier proposent la même catégorie, ou aucune. Un tel événement affiche `✔ sûre`
 après sa proposition ; un coup d'œil suffit.
 
-Le bouton **✔ Accepter les N propositions sûres (M fichiers)** en haut (ou <kbd>V</kbd>) les
+Le bouton **✔ Accepter N propositions sûres (M fichiers)** en haut (ou <kbd>V</kbd>) les
 accepte toutes, après une confirmation qui donne les chiffres. Chacune est enregistrée exactement
 comme <kbd>Entrée</kbd> l'enregistrerait sur cet événement laissé tel quel (sa catégorie
 proposée, sans nom), avec ce qu'en disait le classeur, comme tout autre choix. Rien n'est

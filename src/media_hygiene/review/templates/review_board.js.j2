@@ -96,7 +96,7 @@
     const ranks = pageRanks(page);
     const todo = ranks.filter((index) => !series[index].reviewed);
     const aside = todo.reduce((count, index) => count + proposal(series[index]).length, 0);
-    const info = fill(T.boardPage, { page: page + 1, pages: pageCount() }) + " · " + (todo.length > 0 ? fill(T.boardPending, { count: todo.length, aside: aside }) : T.boardDone);
+    const info = fill(T.boardPage, { page: page + 1, pages: pageCount() }) + " · " + (todo.length > 0 ? fill(T.boardPending, { series: counted(T.nSeries, todo.length), aside: counted(T.nProposed, aside) }) : T.boardDone);
     for (const element of document.querySelectorAll("#board .boardInfo")) element.textContent = info;
     byId("boardRows").replaceChildren(...ranks.map(boardRow));
     for (const index of pageRanks(page + 1)) for (const shot of series[index].shots) new Image().src = shot.preview;

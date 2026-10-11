@@ -20,6 +20,7 @@ from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.i18n import _
 from media_hygiene.places.config_file import PlaceEdit
 from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
+from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 
@@ -44,7 +45,6 @@ PAGE_POLICY: Final = (
     "frame-ancestors 'none'"
 )
 _GET, _POST = "GET", "POST"
-_VALUE_ERROR: Final = "Value error, "
 
 
 class _PlaceIn(PersonalPlace):
@@ -139,19 +139,8 @@ class PlacesApp:
                 for place in body.places
             ]
             self.board.save(edits)
-        except ValidationError as exc:
-            reasons = "; ".join(
-                str(error["msg"]).removeprefix(_VALUE_ERROR) for error in exc.errors()
-            )
-            message = _("Not saved: {reason}.").format(reason=reasons)
-            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-        except ValueError as exc:
-            message = _("Not saved: {reason}.").format(reason=exc)
-            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-        except OSError as exc:
-            message = _("Cannot save config.toml: {error}.")
-            error = message.format(error=exc.strerror or exc)
-            return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": error})
+        except (ValueError, OSError) as exc:  # ValidationError included
+            return save_refused(exc)
         return json_response(HTTPStatus.OK, self.board.state())
 
     def _search(self, request: Request) -> Response:

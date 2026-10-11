@@ -12,7 +12,7 @@ from media_hygiene.config.known_keys import (
     known_variables,
     variable_name,
 )
-from media_hygiene.config.origin import Origin, origin_in
+from media_hygiene.config.origin import Origin, item_name, origin_in
 from media_hygiene.config.reasons import reason
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
@@ -91,9 +91,13 @@ def _sentence(error: ErrorDetails, layers: Mapping[Origin, Layer]) -> Explained:
         The sentence, and the place for a bullet.
     """
     loc = error["loc"]
-    place = _place(loc, layers)
+    why = reason(error)
+    name = item_name(layers, loc)
+    if name is not None and name.strip() in why:
+        name = None  # the reason already names it (`rule 'Birthday': ...`)
+    place = _place(loc, layers, name)
     if error["type"] != _UNKNOWN:
-        refused = _("{place}: {reason}").format(place=place, reason=reason(error))
+        refused = _("{place}: {reason}").format(place=place, reason=why)
         return Explained(False, f"{refused}.", refused)  # noqa: FBT003
     text = _(
         "{place} is unknown to version {version}: a typo, or a setting of a newer "
@@ -118,12 +122,15 @@ def _with_guess(text: str, guess: str | None) -> str:
     return f"{text} {_("Did you mean '{key}'?").format(key=guess)}"
 
 
-def _place(loc: Sequence[str | int], layers: Mapping[Origin, Layer]) -> str:
+def _place(
+    loc: Sequence[str | int], layers: Mapping[Origin, Layer], name: str | None
+) -> str:
     """Say where a setting was written: a line of config.toml, a variable, an option.
 
     Args:
         loc: The pydantic location, e.g. `("general", "timezone")`.
         layers: The raw layers of the run.
+        name: The `name` of the item of an array of tables, when it has one.
 
     Returns:
         E.g. `'timezone' in [general] of config.toml`.
@@ -131,13 +138,13 @@ def _place(loc: Sequence[str | int], layers: Mapping[Origin, Layer]) -> str:
     if isinstance(loc[-1], int) and not fields_at(loc):
         loc = loc[:-1]  # an item of a plain list: the setting itself is named
     if len(loc) == 1 or isinstance(loc[-1], int):
-        return _("{table} in config.toml").format(table=_table(loc))
+        return _("{table} in config.toml").format(table=_table(loc, name))
     section, key = str(loc[0]), str(loc[-1])
     origin = origin_in(layers, section, str(loc[1]))
     if origin is Origin.CLI:
         return _("'{key}' on the command line").format(key=key)
     if origin is not Origin.ENV:
-        table = _table(loc[:-1])
+        table = _table(loc[:-1], name)
         return _("'{key}' in {table} of config.toml").format(key=key, table=table)
     name = variable_name(section, str(loc[1]))
     if len(loc) == _SETTING_DEPTH:
@@ -145,17 +152,27 @@ def _place(loc: Sequence[str | int], layers: Mapping[Origin, Layer]) -> str:
     return _("'{key}' in the variable {name}").format(key=key, name=name)
 
 
-def _table(path: Sequence[str | int]) -> str:
+def _table(path: Sequence[str | int], name: str | None) -> str:
     """Name a table the way config.toml writes it.
+
+    The number stays next to the name: two items may share a name, or the name
+    may be the refused value.
 
     Args:
         path: E.g. `("general",)`, or `("classify", "rules", 0)` for the first rule.
+        name: The `name` of the item, when it has one.
 
     Returns:
-        E.g. `[general]`, or `[[classify.rules]] number 1`.
+        E.g. `[general]`, `[[classify.rules]] number 1` or
+        `[[classify.rules]] number 1 ('Birthday')`.
     """
     names = ".".join(part for part in path if isinstance(part, str))
     indexes = [part for part in path if isinstance(part, int)]
     if not indexes:
         return f"[{names}]"
-    return _("[[{table}]] number {number}").format(table=names, number=indexes[-1] + 1)
+    number = indexes[-1] + 1
+    if name is None:
+        return _("[[{table}]] number {number}").format(table=names, number=number)
+    return _("[[{table}]] number {number} ('{name}')").format(
+        table=names, number=number, name=name
+    )

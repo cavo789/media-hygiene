@@ -14,10 +14,10 @@
     const todo = sureTodo();
     const button = byId("sure");
     button.disabled = todo.length === 0;
-    button.textContent = todo.length === 0 ? T.sureNone : fill(T.sure, { count: todo.length, files: filesIn(todo) });
+    button.textContent = todo.length === 0 ? T.sureNone : fill(T.sure, { sure: counted(T.nSure, todo.length), files: counted(T.nFiles, filesIn(todo)) });
     const undo = byId("sureUndo");
     undo.hidden = lastBatch.length === 0;
-    undo.textContent = fill(T.sureUndo, { count: lastBatch.length });
+    undo.textContent = fill(T.sureUndo, { events: counted(T.nEvents, lastBatch.length) });
   };
 
   // One request, one write; the page then shows the events as the disk holds them.
@@ -40,12 +40,12 @@
     const todo = sureTodo();
     if (todo.length === 0) { setStatus(T.sureNone); return; }
     const left = events.filter(isOpen).length - todo.length;
-    if (!window.confirm(fill(T.sureAsk, { count: todo.length, files: filesIn(todo), left: left }))) return;
+    if (!window.confirm(fill(T.sureAsk, { count: todo.length, files: counted(T.nFiles, filesIn(todo)), left: left }))) return;
     const answer = await sendBatch(todo.map((card) => card.id), false);
     if (!answer) return;
     lastBatch = answer.events.map((card) => card.id);
     showSure();
-    setStatus(fill(T.sureDone, { count: answer.changed, time: new Date(answer.modified).toLocaleTimeString() }), "saved");
+    setStatus(fill(T.sureDone, { done: counted(T.nSureDone, answer.changed), time: new Date(answer.modified).toLocaleTimeString() }), "saved");
   };
 
   const undoSure = async () => {
@@ -54,5 +54,5 @@
     if (!answer) return;
     lastBatch = [];
     showSure();
-    setStatus(fill(T.sureUndone, { count: answer.changed, time: new Date(answer.modified).toLocaleTimeString() }), "saved");
+    setStatus(fill(T.sureUndone, { undone: counted(T.nUndone, answer.changed), time: new Date(answer.modified).toLocaleTimeString() }), "saved");
   };
