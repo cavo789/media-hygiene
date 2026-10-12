@@ -9,6 +9,7 @@ import pytest
 from media_hygiene.cli import audit_people
 from tests.integration.people.test_people_command import face_rows, flat
 from tests.support.cli import run
+from tests.support.faces import coloured
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
@@ -49,6 +50,8 @@ def test_yes_finds_the_faces_then_nothing_is_left(
     assert "10 photos analysed: 8 faces" in output
     assert "2 groups of faces alike" in output
     assert "Run 'people' to see the groups in your browser" in output
+    # Copies to clean come first: 'clean' stays the next step.
+    assert "What next: run 'clean'" in output
     assert face_rows(locations) == 8
     assert apps == []
     again = flat(run(cli, "audit", "--people").output)
@@ -89,4 +92,20 @@ def test_the_setting_and_a_cache_not_mounted(
     monkeypatch.delenv("MEDIA_HYGIENE_CACHE_DIR")
     output = flat(run(cli, "audit").output)
     assert "--people keeps the faces in the cache: mount /cache" in output
+    assert apps == []
+
+
+def test_without_copies_naming_the_faces_comes_next(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """No copy, no burst: the next step is the people page, its port published."""
+    for picture in (locations.data_dir / "c").rglob("*.png"):
+        picture.unlink()
+    for number, person in enumerate((0, 0, 1, 1)):
+        coloured(locations.data_dir / "c" / f"P{number}.png", person, (90 + number, 64))
+    output = flat(run(cli, "audit", "--people", "--yes").output)
+    assert (
+        "What next: name the groups of faces in your browser, with 'people'." in output
+    )
+    assert "-p 127.0.0.1:8088:8088" in output
     assert apps == []

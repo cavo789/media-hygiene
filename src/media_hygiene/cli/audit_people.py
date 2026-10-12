@@ -14,12 +14,15 @@ import time
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.cli.people_flow import find_shown
+from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.console.formatting import human_duration, human_number
 from media_hygiene.console.people_view import show_groups, show_named, show_privacy
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.people import PeopleStep
 from media_hygiene.services.people_find import workers
 from media_hygiene.services.people_models import models_present
@@ -68,6 +71,13 @@ def audit_people(runtime: Runtime, yes: bool) -> None:  # noqa: FBT001
         show_groups(output, result.groups, (result.tally, runtime.settings.people))
         show_named(output, result.named)
     output.info(_("Run 'people' to see the groups in your browser and name them."))
+    if result.groups.people:
+        # The audit's own step (copies to clean, bursts to review) comes after and wins.
+        suggest(
+            runtime,
+            _("name the groups of faces in your browser, with 'people'."),
+            NextVerb(carried(runtime, "people"), port=PAGE_PORT),
+        )
 
 
 def _estimate(runtime: Runtime, step: PeopleStep, work: PeopleWork) -> str:

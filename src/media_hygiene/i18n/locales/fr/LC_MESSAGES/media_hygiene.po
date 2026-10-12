@@ -5374,6 +5374,9 @@ msgstr[1] "déplacer {count} quasi-doublons en quarantaine"
 msgid "moved to the quarantine"
 msgstr "déplacé en quarantaine"
 
+msgid "name the groups of faces in your browser, with 'people'."
+msgstr "nommez les groupes de visages dans votre navigateur, avec 'people'."
+
 msgid "names are kept in config.toml: mount a folder of yours on /config"
 msgstr ""
 "les noms sont gardés dans config.toml : montez un dossier à vous sur "

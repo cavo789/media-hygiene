@@ -117,7 +117,8 @@ Tout le chemin, du premier `people` aux dossiers triés, pas à pas : [tri, éta
 cherchés, en mesure quelques-unes sur votre ordinateur, dit combien de temps prendra le reste,
 et **demande** avant de continuer. `--yes` ne demande pas ; sans terminal (pas de `-it`), rien
 n'attend : l'audit se termine sans les visages. Aucune page ne s'ouvre : lancez ensuite `people`
-pour voir les groupes. `[people] with_audit = true` le fait à chaque audit.
+pour voir les groupes ; quand il n'y a ni copie à nettoyer ni rafale à trier, 👉 *Et maintenant*
+en donne la commande complète. `[people] with_audit = true` le fait à chaque audit.
 
 ## Comment ça marche
 

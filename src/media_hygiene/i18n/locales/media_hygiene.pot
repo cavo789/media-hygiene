@@ -4476,6 +4476,9 @@ msgstr[1] ""
 msgid "moved to the quarantine"
 msgstr ""
 
+msgid "name the groups of faces in your browser, with 'people'."
+msgstr ""
+
 msgid "names are kept in config.toml: mount a folder of yours on /config"
 msgstr ""
 

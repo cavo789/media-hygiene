@@ -109,7 +109,8 @@ The whole path, from the first `people` to the sorted folders, step by step: [so
 `audit --people` runs the audit, then counts the photos not looked at for faces yet, measures a
 few of them on your computer, says how long the rest takes, and **asks** before going on.
 `--yes` does not ask; without a terminal (no `-it`), nothing waits: the audit ends without faces.
-No page opens: run `people` afterwards to see the groups. `[people] with_audit = true` does it
+No page opens: run `people` afterwards to see the groups; when there is no copy to clean nor
+burst to review, 👉 *What next* gives its full command. `[people] with_audit = true` does it
 at every audit.
 
 ## How it works
