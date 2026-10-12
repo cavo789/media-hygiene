@@ -33,7 +33,7 @@ processing TODO 0045).
 - [ ] `uv.lock` pins `pillow-heif` ≥ 1.9.0; the image reports libheif ≥ 1.23.5.
 - [ ] Unit, integration and e2e tests green (HEIC metadata in `test_image_metadata.py` included).
 
-## Status — PARTIAL (2026-10-11)
+## Status — DONE (2026-10-12)
 
 ### Done
 - `pillow-heif` 1.9.0 is not on PyPI, but 1.8.1 is (2026-10-11): its changelog says libheif
@@ -46,9 +46,10 @@ processing TODO 0045).
 - Unit and integration tests touching HEIC/HEIF: 65 passed; the full suite runs at the end of
   the lot.
 
-### Not done
-- `build`, the `libheif_info()` check inside `media-hygiene:latest`, and `e2e`.
-  **Reason:** no Docker build nor e2e during the night run (machine load); the maintainer runs
-  them before pushing.
-- Note for later: `pillow-heif` 1.9.0 will require Pillow 13 (Python ≥ 3.11, fine here): bump
-  both together when it is out, as an ordinary dependency update (`deps`).
+### Checked in review (2026-10-12)
+- The maintainer keeps 1.8.1 rather than waiting for 1.9.0.
+- `media-hygiene:latest` (built by `docs_screenshots`): `pillow-heif 1.8.1`, `libheif 1.23.6`,
+  `libde265 1.1.3`; the documentation demo, HEIC photos included, ran through it.
+- `e2e` with this version: moved to TODO **0096**.
+- Note for later: `pillow-heif` 1.9.0 will require Pillow 13: bump both together when it is out,
+  as an ordinary dependency update (`deps`).
