@@ -88,6 +88,13 @@ Decided in review (2026-10-12): if ArcFace is only slightly better, drop it and 
    says nobody is named so).
 4. `mh people --forget` in a terminal: answer no, then yes (read back from `config.toml`).
 5. Keys `x`, `i`, `y`, ×: keep them or ask Claude to change them after this try.
+6. The `person` rule (0095), once "Chloé" is named: add
+   `[[classify.rules]]` `name = "With Chloé"`, `match = "person"`, `names = ["Chloé"]`,
+   `category = "People/Chloé"`, then `mh classify`: the rule in the *Why* table and the
+   *Reason* column of the workbook. Then `names = ["Manon"]` (nobody so named): `classify` stops
+   and names the rule and the people named. Then `min_share = 50` and `all = true` with two
+   names: fewer events taken. Decided in review (2026-10-12): `min_share` 10 % by default, to
+   revisit after this try.
 
 ## Acceptance
 
