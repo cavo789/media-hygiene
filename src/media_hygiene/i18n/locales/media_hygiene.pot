@@ -758,10 +758,14 @@ msgid "Copy the command"
 msgstr ""
 
 msgid "Correct it, then run the same command again."
-msgstr ""
+msgid_plural "Correct them, then run the same command again."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Correct or remove it, or update the image to the latest version:"
-msgstr ""
+msgid_plural "Correct or remove them, or update the image to the latest version:"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr ""

@@ -15,7 +15,7 @@ from media_hygiene.config.known_keys import (
 from media_hygiene.config.origin import Origin, item_name, origin_in
 from media_hygiene.config.reasons import reason
 from media_hygiene.errors import ConfigError
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.docker_run import PUBLISHED_IMAGE
 
 if TYPE_CHECKING:
@@ -53,11 +53,20 @@ def config_error(problems: Problems) -> ConfigError:
     unknown = bool(problems.variables) or any(
         error["type"] == _UNKNOWN for error in problems.errors
     )
+    count = len(found)
     if not unknown:
-        return ConfigError(message, _("Correct it, then run the same command again."))
-    error = ConfigError(
-        message, _("Correct or remove it, or update the image to the latest version:")
+        hint = ngettext(
+            "Correct it, then run the same command again.",
+            "Correct them, then run the same command again.",
+            count,
+        )
+        return ConfigError(message, hint)
+    hint = ngettext(
+        "Correct or remove it, or update the image to the latest version:",
+        "Correct or remove them, or update the image to the latest version:",
+        count,
     )
+    error = ConfigError(message, hint)
     error.command = f"docker pull {PUBLISHED_IMAGE}"
     return error
 

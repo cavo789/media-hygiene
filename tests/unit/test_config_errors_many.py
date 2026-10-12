@@ -53,6 +53,10 @@ def test_a_refused_value_among_unknown_names(locations: Locations) -> None:
     locations.config_file.write_text(MIXED)
     heading, *bullets = refused(locations).message.split(BULLET)
     assert heading == "2 settings cannot be used:"
+    assert (
+        refused(locations).tip
+        == "Correct or remove them, or update the image to the latest version:"
+    )
     assert bullets[0] == (
         f"'timezon' in [general] of config.toml: unknown to version {this_version()}; "
         "did you mean 'timezone'?"
@@ -79,6 +83,8 @@ def test_french_bullets(locations: Locations) -> None:
     """The heading and the bullets read in French when the file says so."""
     locations.config_file.write_text(f'[general]\nlocale = "fr"\n{MIXED[10:]}')
     install(Locale.FR)
-    message = refused(locations).message
+    error = refused(locations)
+    message = error.message
     assert message.startswith("2 réglages sont inutilisables :")
+    assert error.tip == "Corrigez ou supprimez les lignes, ou mettez l'image à jour :"
     assert "; vouliez-vous dire « timezone » ?" in message

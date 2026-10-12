@@ -923,10 +923,14 @@ msgid "Copy the command"
 msgstr "Copier la commande"
 
 msgid "Correct it, then run the same command again."
-msgstr "Corrigez la valeur, puis relancez la même commande."
+msgid_plural "Correct them, then run the same command again."
+msgstr[0] "Corrigez la valeur, puis relancez la même commande."
+msgstr[1] "Corrigez les valeurs, puis relancez la même commande."
 
 msgid "Correct or remove it, or update the image to the latest version:"
-msgstr "Corrigez ou supprimez la ligne, ou mettez l'image à jour :"
+msgid_plural "Correct or remove them, or update the image to the latest version:"
+msgstr[0] "Corrigez ou supprimez la ligne, ou mettez l'image à jour :"
+msgstr[1] "Corrigez ou supprimez les lignes, ou mettez l'image à jour :"
 
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr "Corrigez ces cellules, enregistrez le classeur, puis relancez 'sort'."
