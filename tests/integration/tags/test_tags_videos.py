@@ -46,6 +46,8 @@ def test_a_video_is_described_once_by_its_frame(
     result = run(cli, "tags", "--yes")
     assert result.exit_code == 0, result.output
     assert fake.described() == ASKED + 1
+    said = " ".join(result.output.split())
+    assert f"{ASKED} photos and 1 video described; kept in the cache." in said
     for name in ("Neige.mp4", "Neige copie.mp4"):
         assert tags_of(locations, f"Vidéos/{name}")["vision"] == ["snow"]
     assert "vision" not in tags_of(locations, "Vidéos/petite.mp4")

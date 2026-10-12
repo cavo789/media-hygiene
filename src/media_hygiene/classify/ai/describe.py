@@ -63,7 +63,8 @@ class DescribeDeps:
 class DescribeOutcome:
     """How a describing run went."""
 
-    described: int = 0
+    described: int = 0  # videos included
+    videos: int = 0  # among the described: videos, seen by one frame
     unreadable: int = 0  # undecodable photos, or answers outside the schema
     stopped: bool = False
     errors: list[AiError] = field(default_factory=list)
@@ -131,6 +132,7 @@ async def _describe_one(
         else:
             deps.store.put(photo, description)
             outcome.described += 1
+            outcome.videos += photo.path in deps.stills
         deps.progress.advance()
 
 

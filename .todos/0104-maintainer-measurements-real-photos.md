@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`
+- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`
 
 ## Context
 
@@ -45,6 +45,18 @@ decides.
 
 Decided in review (2026-10-12): if the misses are mostly synonyms, a short synonym list in
 `[tags]` rather than vectors (simpler, explainable).
+
+## 3. Videos, classify reusing tags, cost of near duplicates (0083)
+
+1. `mh tags --path "C:\Photos\Vidéos" --sample 5`: videos appear in the table, their words are
+   plausible (one frame at the middle of each video; if poorly described, 0083 suggests three
+   frames at 30/50/70 %).
+2. On a folder `mh tags` already went through: `mh classify` with a `subject` rule says
+   "0 photos described" for those photos, and the categories hold (the French answers of `tags`
+   are matched to the categories by the text model).
+3. A full `mh audit` with the cache: note how long the "near duplicates" step takes. Under one
+   minute: `tags` runs that search itself so near-duplicate groups share one description (the
+   remainder of 0083); otherwise it reads the groups of the last audit report.
 
 ## Acceptance
 

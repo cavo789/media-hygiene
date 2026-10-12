@@ -5249,6 +5249,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo"
+msgid_plural "{count} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} photo analysed: {faces} faces, {seconds} s per photo."
 msgid_plural "{count} photos analysed: {faces} faces, {seconds} s per photo."
 msgstr[0] ""
@@ -5395,6 +5401,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} sure"
 msgid_plural "{count} sure"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} video"
+msgid_plural "{count} videos"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5730,6 +5742,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
+msgstr ""
+
+#, python-brace-format
+msgid "{photos} and {videos} described; kept in the cache."
 msgstr ""
 
 #, python-brace-format

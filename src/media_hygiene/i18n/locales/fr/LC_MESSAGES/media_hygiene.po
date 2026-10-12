@@ -6287,6 +6287,12 @@ msgstr[1] ""
 "en quarantaine."
 
 #, python-brace-format
+msgid "{count} photo"
+msgid_plural "{count} photos"
+msgstr[0] "{count} photo"
+msgstr[1] "{count} photos"
+
+#, python-brace-format
 msgid "{count} photo analysed: {faces} faces, {seconds} s per photo."
 msgid_plural "{count} photos analysed: {faces} faces, {seconds} s per photo."
 msgstr[0] "{count} photo analysée : {faces} visages, {seconds} s par photo."
@@ -6473,6 +6479,12 @@ msgid "{count} sure"
 msgid_plural "{count} sure"
 msgstr[0] "{count} sûr"
 msgstr[1] "{count} sûrs"
+
+#, python-brace-format
+msgid "{count} video"
+msgid_plural "{count} videos"
+msgstr[0] "{count} vidéo"
+msgstr[1] "{count} vidéos"
 
 #, python-brace-format
 msgid "{days} day {clock}"
@@ -6834,6 +6846,10 @@ msgstr ""
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
+
+#, python-brace-format
+msgid "{photos} and {videos} described; kept in the cache."
+msgstr "{photos} et {videos} décrites ; gardées dans le cache."
 
 #, python-brace-format
 msgid ""
