@@ -211,7 +211,7 @@ commande montre son propre `--help` ; voici la liste des commandes :
  Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :
    docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
- Commandes complètes (rapports, journal, WSL) : voir README_FR.md.
+ Guide pas à pas et toutes les commandes : https://cavo789.github.io/media-hygiene/fr/
 ```
 
 </details>

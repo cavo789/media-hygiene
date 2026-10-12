@@ -15,8 +15,9 @@ DOCUMENTATION = ROOT / "documentation"
 MKDOCS = ROOT / ".config" / "mkdocs" / "mkdocs.yml"
 CATALOG = ROOT / "src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po"
 NAV_PAGE = re.compile(r"^\s*- (?:[^:]+: )?(?P<page>[\w./-]+\.md)$")
-# `f"{DOC_PAGES}/{_('start/01-first-audit/')}"`: a page of the site, translated.
-SITE_LINK = re.compile(r"\{DOC_PAGES\}/\{_\(\s*['\"](?P<path>[^'\"]*)['\"]\s*\)\}")
+# `f"{DOC_PAGES}/{_('start/01-first-audit/')}"`: a page of the site, translated;
+# `f"{DOC_PAGES}{_('/')}"`: its home page.
+SITE_LINK = re.compile(r"\{DOC_PAGES\}/?\{_\(\s*['\"](?P<path>[^'\"]*)['\"]\s*\)\}")
 
 
 def nav_pages() -> set[str]:
@@ -37,7 +38,8 @@ def site_links() -> set[str]:
 def page_file(path: str) -> Path:
     """The file of documentation/ behind a page path of the site.
 
-    `fr/start/01-first-audit/` is `fr/start/01-first-audit.md`; English is at the root.
+    `fr/start/01-first-audit/` is `fr/start/01-first-audit.md`, `/fr/` is the French
+    home page; English is at the root.
     """
     parts = path.strip("/").split("/") if path.strip("/") else []
     locale = parts.pop(0) if parts[:1] == ["fr"] else "en"

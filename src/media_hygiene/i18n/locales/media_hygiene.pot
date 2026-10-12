@@ -222,6 +222,9 @@ msgstr ""
 msgid "... and {count} more."
 msgstr ""
 
+msgid "/"
+msgstr ""
+
 msgid "<the folder you mount on /reports>"
 msgstr ""
 
@@ -1435,9 +1438,6 @@ msgid "From year"
 msgstr ""
 
 msgid "From:"
-msgstr ""
-
-msgid "Full commands (reports, journal, WSL): see README.md."
 msgstr ""
 
 msgid "GB"
@@ -3093,6 +3093,10 @@ msgid "Staying where they are"
 msgstr ""
 
 msgid "Step 1 of the guide:"
+msgstr ""
+
+#, python-brace-format
+msgid "Step-by-step guide and every command: {url}"
 msgstr ""
 
 msgid "Stopped (Ctrl+C)."

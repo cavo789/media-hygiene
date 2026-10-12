@@ -8,7 +8,7 @@ from media_hygiene.cli.commands import commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
 from media_hygiene.cli.safety import help_of
-from media_hygiene.constants import APP_NAME
+from media_hygiene.constants import APP_NAME, DOC_PAGES
 from media_hygiene.i18n import _
 
 # One short command per line, so a copy/paste stays a single command.
@@ -36,7 +36,9 @@ def _epilog() -> str:
                     f"  {_CURRENT_FOLDER}",
                 ),
             ),
-            _("Full commands (reports, journal, WSL): see README.md."),
+            _("Step-by-step guide and every command: {url}").format(
+                url=f"{DOC_PAGES}{_('/')}"
+            ),
         ),
     )
 

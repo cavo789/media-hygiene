@@ -93,3 +93,21 @@ def site_page(config: MkDocsConfig, page_path: Path) -> str:
     tail = () if name == INDEX else (name.removesuffix(".md"),)
     path = "/".join((*prefix, *folders, *tail))
     return f"{config.site_url or '/'}{path}/" if path else config.site_url or "/"
+
+
+def on_page_context(
+    context: dict[str, object], *, page: Page, **_: object
+) -> dict[str, object]:
+    """Title the home page like the others: Material gives it the site name alone.
+
+    Args:
+        context: The template context.
+        page: The page.
+        **_: The other arguments of the event (the configuration, the navigation).
+
+    Returns:
+        The context, unchanged.
+    """
+    if page.is_homepage and page.title and not page.meta.get("title"):
+        page.meta["title"] = page.title
+    return context

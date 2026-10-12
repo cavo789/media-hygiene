@@ -267,6 +267,9 @@ msgstr "-v media-hygiene-cache:/cache (prochains audits bien plus rapides)"
 msgid "... and {count} more."
 msgstr "… et {count} de plus."
 
+msgid "/"
+msgstr "/fr/"
+
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
 
@@ -1785,9 +1788,6 @@ msgstr "De l'année"
 
 msgid "From:"
 msgstr "Depuis :"
-
-msgid "Full commands (reports, journal, WSL): see README.md."
-msgstr "Commandes complètes (rapports, journal, WSL) : voir README_FR.md."
 
 msgid "GB"
 msgstr "Go"
@@ -3745,6 +3745,10 @@ msgstr "Restent où ils sont"
 
 msgid "Step 1 of the guide:"
 msgstr "Étape 1 du guide :"
+
+#, python-brace-format
+msgid "Step-by-step guide and every command: {url}"
+msgstr "Guide pas à pas et toutes les commandes : {url}"
 
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."

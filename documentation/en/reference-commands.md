@@ -202,7 +202,7 @@ command shows its own `--help`; here is the list of the commands:
  The current folder (PowerShell, or bash on WSL, Linux, macOS):
    docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
- Full commands (reports, journal, WSL): see README.md.
+ Step-by-step guide and every command: https://cavo789.github.io/media-hygiene/
 ```
 
 </details>
