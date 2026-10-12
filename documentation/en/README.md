@@ -17,6 +17,9 @@ erases, the quarantine, after asking you. Details:
 Whatever you want to do next, the first three steps are the same: they show what your
 folders hold, and change nothing.
 
+No Docker yet? [Install Docker](start/00-install-docker.md) first, on Windows or Linux: a
+few minutes, once.
+
 1. [Your first audit](start/01-first-audit.md): one folder, one command, and how to read the result.
 2. [Keep the cache](start/02-keep-the-cache.md): the next audits take seconds instead of minutes.
 3. [Several folders and disks](start/03-several-folders.md): `C:` and `D:` together, the current

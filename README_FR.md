@@ -22,7 +22,8 @@ L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/ca
 
 ## Démarrage rapide
 
-Avec Docker installé, une seule commande audite un dossier. Dans **PowerShell** :
+Avec Docker installé ([comment l'installer](documentation/fr/start/00-install-docker.md), sous
+Windows ou Linux), une seule commande audite un dossier. Dans **PowerShell** :
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
@@ -76,7 +77,8 @@ journalisée, tout est annulable.
 La [documentation](documentation/fr/README.md) vous accompagne pas à pas. Chaque étape ajoute une
 seule chose à la commande de l'étape précédente.
 
-**Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite :
+**Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite (pas encore
+de Docker ? [Installez Docker](documentation/fr/start/00-install-docker.md) d'abord) :
 
 1. [Votre premier audit](documentation/fr/start/01-first-audit.md) : un dossier, une commande, et
    comment lire le résultat.

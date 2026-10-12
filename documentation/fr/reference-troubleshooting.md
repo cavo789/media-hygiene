@@ -2,6 +2,14 @@
 
 [Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-troubleshooting.md)
 
+## Docker répond à la place de l'outil
+
+*Le terme « docker » n'est pas reconnu*, *command not found*, *error during connect*, *Cannot
+connect to the Docker daemon*, *permission denied … docker.sock* : l'outil n'a pas encore
+démarré, c'est Docker lui-même qui manque ou est arrêté. Ouvrez Docker Desktop et attendez
+*Engine running* (Windows), ou suivez [installer Docker](start/00-install-docker.md#si-ça-ne-marche-pas)
+(Windows et Linux).
+
 ## Une vraie sauvegarde est vue comme des doublons
 
 Si `D:\sauvegarde` doit rester une seconde copie de vos photos,

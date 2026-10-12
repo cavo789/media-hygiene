@@ -8,7 +8,7 @@ the system itself forbids any change ([how your photos stay safe](../reference-s
 
 ## What you need
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- Docker installed and running: [step 0](00-install-docker.md) shows how, on Windows or Linux.
 - A folder of photos and videos, here `C:\Photos`.
 - A PowerShell window (or a WSL terminal, see [step 3](03-several-folders.md#from-wsl)).
 
@@ -173,4 +173,4 @@ add `--verbosity verbose` to see them all. The next steps of this guide follow t
 
 ---
 
-[Documentation](../README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →
+← [0. Install Docker](00-install-docker.md) · [Documentation](../README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →

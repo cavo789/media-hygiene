@@ -21,7 +21,8 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 
 ## Quick start
 
-With Docker installed, one command audits a folder. In **PowerShell**:
+With Docker installed ([how to install it](documentation/en/start/00-install-docker.md), on
+Windows or Linux), one command audits a folder. In **PowerShell**:
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
@@ -72,7 +73,8 @@ you ask for it: the copy kept stays). More in
 The [documentation](documentation/en/README.md) walks you through, one step at a time. Each step
 adds one thing to the command of the step before.
 
-**Start here** — the same three first steps, whatever you do next:
+**Start here** — the same three first steps, whatever you do next (no Docker yet?
+[Install Docker](documentation/en/start/00-install-docker.md) first):
 
 1. [Your first audit](documentation/en/start/01-first-audit.md) — one folder, one command, and how to
    read the result.

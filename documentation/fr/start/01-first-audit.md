@@ -9,7 +9,8 @@ ci-dessous, ce n'est pas qu'une promesse : le système lui-même interdit toute 
 
 ## Ce qu'il vous faut
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et démarré.
+- Docker installé et démarré : l'[étape 0](00-install-docker.md) explique comment, sous Windows ou
+  Linux.
 - Un dossier de photos et de vidéos, ici `C:\Photos`.
 - Une fenêtre PowerShell (ou un terminal WSL, voir l'[étape 3](03-several-folders.md#depuis-wsl)).
 
@@ -183,4 +184,4 @@ dit combien d'astuces ont été omises : ajoutez `--verbosity verbose` pour les 
 
 ---
 
-[Documentation](../README.md) · Suivant : **[2. Garder le cache](02-keep-the-cache.md)** →
+← [0. Installer Docker](00-install-docker.md) · [Documentation](../README.md) · Suivant : **[2. Garder le cache](02-keep-the-cache.md)** →

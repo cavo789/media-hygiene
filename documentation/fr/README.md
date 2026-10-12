@@ -18,6 +18,9 @@ demandé. Détails : [comment vos photos restent en sécurité](reference-safety
 Quoi que vous vouliez faire ensuite, les trois premières étapes sont les mêmes : elles
 montrent ce que contiennent vos dossiers, sans rien modifier.
 
+Pas encore de Docker ? [Installez Docker](start/00-install-docker.md) d'abord, sous Windows ou
+Linux : quelques minutes, une seule fois.
+
 1. [Votre premier audit](start/01-first-audit.md) : un dossier, une commande, et comment lire le
    résultat.
 2. [Garder le cache](start/02-keep-the-cache.md) : les audits suivants prennent des secondes au lieu de

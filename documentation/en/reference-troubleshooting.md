@@ -2,6 +2,13 @@
 
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-troubleshooting.md)
 
+## Docker answers instead of the tool
+
+*'docker' is not recognized*, *command not found*, *error during connect*, *Cannot connect to
+the Docker daemon*, *permission denied … docker.sock*: the tool has not started yet, Docker
+itself is missing or stopped. Open Docker Desktop and wait for *Engine running* (Windows), or
+follow [install Docker](start/00-install-docker.md#if-it-does-not-work) (Windows and Linux).
+
 ## A real backup is seen as duplicates
 
 If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)
