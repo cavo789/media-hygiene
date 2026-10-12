@@ -55,7 +55,7 @@ def review_command(  # pylint: disable=too-many-arguments
     output = runtime.output
     with user_errors(output):
         runtime = runtime.with_overrides(folder_layer(prefer, protect, exclude))
-        target = review_target(runtime, decisions)
+        target = review_target(runtime, decisions, port)
         findings = audit_and_show(runtime)
         if near:
             if not findings.similar.groups:

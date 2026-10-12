@@ -336,26 +336,12 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
-msgstr ""
-
-msgid ""
-"Add -v \"<a folder of yours>:/quarantine\" (or --delete to delete them "
-"for good at once)."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
 msgstr ""
 
 msgid ""
 "Add -v \"<a folder of yours>:/reports\" to see the near duplicates in an "
 "HTML report before answering."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to the docker run command."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
@@ -1863,9 +1849,6 @@ msgid ""
 msgstr ""
 
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
-msgstr ""
-
-msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
 msgstr ""
 
 msgid ""
@@ -3497,6 +3480,12 @@ msgid "The target {path} is not mounted."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"The tool only sees the folders you give it with -v, e.g. -v "
+"\"C:\\Photos:/data/c/Photos:ro\". Step 1 of the guide: {url}"
+msgstr ""
+
+#, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
@@ -4215,6 +4204,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "documentation/en/reference-safety.md"
+msgstr ""
+
+msgid "documentation/en/start/01-first-audit.md"
 msgstr ""
 
 #, python-format

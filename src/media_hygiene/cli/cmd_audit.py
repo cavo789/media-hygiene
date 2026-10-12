@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import options, scan_options
-from media_hygiene.cli.audit_actions import show_actions
+from media_hygiene.cli.audit_actions import second_opinion, show_actions
 from media_hygiene.cli.audit_people import audit_people
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show, report_and_announce
@@ -21,7 +21,6 @@ from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.views import ReportRecord
-from media_hygiene.services.crosscheck import czkawka_command
 from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
@@ -118,29 +117,9 @@ def audit_command(  # pylint: disable=too-many-arguments
     if people or runtime.settings.people.with_audit:
         with user_errors(output):
             audit_people(runtime, yes)
-    if plan.decisions:  # broken files or orphan sidecars alone: no copy to set aside
-        _second_opinion(runtime)
+    second_opinion(runtime, plan)
     _setup_tips(runtime)
     _next_step(ctx, runtime, findings)
-
-
-def _second_opinion(runtime: Runtime) -> None:
-    """Suggest Czkawka's command, to compare with an independent finder.
-
-    Args:
-        runtime: Settings, mount points and output.
-    """
-    runtime.output.advise(
-        Advice(
-            TipKind.DISCOVERY,
-            _(
-                "Second opinion: run Czkawka, an independent duplicate finder, on "
-                "the same folders, then 'media-hygiene crosscheck' "
-                "(same -v options):"
-            ),
-            czkawka_command(runtime).render(),
-        )
-    )
 
 
 def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) -> None:

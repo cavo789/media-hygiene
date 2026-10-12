@@ -13,17 +13,17 @@ from media_hygiene.console.links import file_link
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import findings_table, folder_pairs_view
 from media_hygiene.constants import REPORT_INDEX_FILE_NAME
-from media_hygiene.errors import CrossCheckError, MediaHygieneError, MountError
+from media_hygiene.errors import CrossCheckError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.crosscheck import cross_check, czkawka_refresh
+from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.reporting import write_report
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
     from pathlib import Path
-    from typing import TextIO
 
     from media_hygiene.console.output import Output
     from media_hygiene.crosscheck.compare import CrossCheckResult
@@ -45,8 +45,10 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         The findings.
 
     Raises:
-        MountError: The index or the report could not be written (checked first).
+        MountError: No folder to analyse, or the index or the report could not be
+            written (checked first).
     """
+    refuse_empty_data(runtime)  # the first line a user without -v reads
     ensure_writable(runtime, MountKind.CACHE, MountKind.REPORTS)
     output = runtime.output
     output.title(_("Audit"))
@@ -181,19 +183,3 @@ def _announce_in_container(output: Output, report: Path) -> None:
             ),
         )
     )
-
-
-def require_terminal(stdin: TextIO) -> None:
-    """Refuse to ask a question without a terminal to answer it in.
-
-    Args:
-        stdin: The standard input.
-
-    Raises:
-        MediaHygieneError: There is no interactive terminal.
-    """
-    if not stdin.isatty():
-        raise MediaHygieneError(
-            _("Cannot ask for confirmation without an interactive terminal."),
-            _("Run docker with -it, or add --yes."),
-        )

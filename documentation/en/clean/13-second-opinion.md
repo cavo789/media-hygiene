@@ -11,7 +11,7 @@ This step is optional: `clean` never requires it.
 
 ## Step 1: audit, with a reports folder
 
-When it finds duplicates, an audit run with `--verbosity verbose` (before `audit`) ends with a
+When it finds duplicates, an audit run with `--verbosity verbose` (before `audit`; without it, from 100 copies on) ends with a
 *Second opinion* tip and the exact Czkawka command for your folders (`crosscheck` prints it too, as long as Czkawka has not
 run): the same `-v` options, the same extensions, the same excluded folders, every
 file size. It looks like this (the community image `jlesage/czkawka`, about 500 MB, ships

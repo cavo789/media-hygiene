@@ -9,8 +9,8 @@ import typer
 from rich.markup import escape
 
 from media_hygiene.cli.context import runtime_of, user_errors, warn
-from media_hygiene.cli.flows import require_terminal
 from media_hygiene.cli.next_steps import carried, safety
+from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.sort_view import (
     show_follows,

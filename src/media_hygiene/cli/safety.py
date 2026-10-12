@@ -11,9 +11,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import HOME_PAGE
+from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
 from media_hygiene.paths.mounts import is_read_only
+from media_hygiene.services.data_checks import nothing_mounted
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -35,7 +36,6 @@ PAGE_COMMANDS: Final = frozenset(
 # The commands whose output stream is data (a script, to redirect to a file): every
 # message goes to stderr, and the launcher runs them without a terminal (`-t`).
 DATA_COMMANDS: Final = frozenset({"launcher"})
-_DOC_BRANCH: Final = "blob/main"
 
 
 def read_only_marker() -> str:
@@ -53,7 +53,7 @@ def safety_doc() -> str:
     Returns:
         Its URL on GitHub.
     """
-    return f"{HOME_PAGE}/{_DOC_BRANCH}/{_('documentation/en/reference-safety.md')}"
+    return f"{DOC_PAGES}/{_('documentation/en/reference-safety.md')}"
 
 
 def help_of(name: str, text: str) -> str:
@@ -75,13 +75,14 @@ def announce_read_only(runtime: Runtime, command: str | None) -> None:
     """Say, in one line, that a command reading the photos does not touch them.
 
     When a photo folder is mounted writable, one tip tells how to let the operating
-    system guarantee it (`:ro`).
+    system guarantee it (`:ro`). Without any folder, nothing is said: the command's
+    own error (no folder to analyse) must be the first line the user reads.
 
     Args:
         runtime: Settings, mount points and output.
         command: The command about to run.
     """
-    if command not in PHOTO_READERS:
+    if command not in PHOTO_READERS or nothing_mounted(runtime):
         return
     output = runtime.output
     output.info(_("🔒 Read-only: your photos and videos are not touched."))

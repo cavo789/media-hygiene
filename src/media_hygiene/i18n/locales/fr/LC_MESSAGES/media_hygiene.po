@@ -431,21 +431,8 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/cache\" pour garder les descriptions."
 
-msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
-msgstr "Ajoutez -v \"<un de vos dossiers>:/journal\" à la commande docker run."
-
-msgid ""
-"Add -v \"<a folder of yours>:/quarantine\" (or --delete to delete them "
-"for good at once)."
-msgstr ""
-"Ajoutez -v \"<un de vos dossiers>:/quarantine\" (ou --delete pour les "
-"supprimer pour de bon tout de suite)."
-
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/quarantine\" pour les traiter."
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
-msgstr "Ajoutez -v \"<un de vos dossiers>:/reports\" pour obtenir l'inventaire."
 
 msgid ""
 "Add -v \"<a folder of yours>:/reports\" to see the near duplicates in an "
@@ -453,9 +440,6 @@ msgid ""
 msgstr ""
 "Ajoutez -v \"<un de vos dossiers>:/reports\" pour voir les quasi-doublons"
 " dans un rapport HTML avant de répondre."
-
-msgid "Add -v \"<a folder of yours>:/reports\" to the docker run command."
-msgstr "Ajoutez -v \"<un de vos dossiers>:/reports\" à la commande docker run."
 
 msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
 msgstr ""
@@ -2289,9 +2273,6 @@ msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
 msgstr ""
 "Montez le même dossier de rapports que pour classify : -v "
 "\"<dossier>:/reports\"."
-
-msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
-msgstr "Montez vos dossiers, p. ex. -v \"C:\\Photos:/data/c/Photos:ro\"."
 
 msgid ""
 "Move the photos and videos as the edited classify workbook says "
@@ -4246,6 +4227,14 @@ msgid "The target {path} is not mounted."
 msgstr "La cible {path} n'est pas montée."
 
 #, python-brace-format
+msgid ""
+"The tool only sees the folders you give it with -v, e.g. -v "
+"\"C:\\Photos:/data/c/Photos:ro\". Step 1 of the guide: {url}"
+msgstr ""
+"L'outil ne voit que les dossiers que vous lui donnez avec -v, par exemple"
+" -v \"C:\\Photos:/data/c/Photos:ro\". Étape 1 du guide : {url}"
+
+#, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 "Les villes qui servent à nommer les lieux ne peuvent pas être lues : "
@@ -5092,6 +5081,9 @@ msgstr[1] "supprimer {count} copies en double ({size})"
 
 msgid "documentation/en/reference-safety.md"
 msgstr "documentation/fr/reference-safety.md"
+
+msgid "documentation/en/start/01-first-audit.md"
+msgstr "documentation/fr/start/01-first-audit.md"
 
 #, python-format
 msgid "duplicate copies in %(num)s group"

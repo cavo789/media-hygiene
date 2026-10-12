@@ -19,6 +19,7 @@ from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
 from media_hygiene.services.carry import CarryRequest, carry_source
 from media_hygiene.services.classify import ClassifyService
+from media_hygiene.services.data_checks import refuse_empty_data
 
 
 def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
@@ -130,6 +131,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         if overrides:
             runtime = runtime.with_overrides({"classify": overrides})
         years = parse_years(year)
+        refuse_empty_data(runtime)  # before the title: the first line without -v
         runtime.output.title(_("Classify"))
         warn_overlaps(runtime)
         source = (

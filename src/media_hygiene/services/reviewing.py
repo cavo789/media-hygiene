@@ -12,13 +12,14 @@ import contextlib
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
+from media_hygiene.services.missing_mount import missing_mount, typed_again
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.review_file import (
@@ -43,12 +44,13 @@ HOST_LOOPBACK: Final = "127.0.0.1"
 _PAGE_TEMPLATE: Final = "review.html.j2"
 
 
-def review_target(runtime: Runtime, decisions: Path) -> Path:
+def review_target(runtime: Runtime, decisions: Path, port: int) -> Path:
     """Check, before the audit, that the decisions file will outlive the container.
 
     Args:
         runtime: Settings, mount points and output.
         decisions: `--decisions` value; a relative path lies in the reports folder.
+        port: The port of the page, published again by the command offered.
 
     Returns:
         The decisions file, in the container.
@@ -58,9 +60,11 @@ def review_target(runtime: Runtime, decisions: Path) -> Path:
     """
     if not decisions.is_absolute():
         if not runtime.persistent(MountKind.REPORTS):
-            raise MountError(
+            again = NextVerb(typed_again(runtime, "review"), (MountKind.REPORTS,), port)
+            raise missing_mount(
+                runtime,
                 _("The decisions are saved in /reports: mount it, or they are lost."),
-                _('Add -v "<a folder of yours>:/reports" to the docker run command.'),
+                again,
             )
         ensure_writable(runtime, MountKind.REPORTS)
     return decisions_path(runtime, decisions)

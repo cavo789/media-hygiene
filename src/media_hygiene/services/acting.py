@@ -13,6 +13,8 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only
+from media_hygiene.services.missing_mount import missing_mount, typed_again
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 from media_hygiene.services.writable import ensure_writable
 
@@ -33,9 +35,10 @@ def ensure_can_act(runtime: Runtime, command: str) -> None:
             the photos (never for `undo`: it is how files come back).
     """
     if not runtime.persistent(MountKind.JOURNAL):
-        raise MountError(
+        raise missing_mount(
+            runtime,
             _("No journal mount: without a journal, 'undo' would be impossible."),
-            _('Add -v "<a folder of yours>:/journal" to the docker run command.'),
+            NextVerb(typed_again(runtime, command), CHANGING),
         )
     read_only = [
         root

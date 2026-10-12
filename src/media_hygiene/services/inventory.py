@@ -35,6 +35,8 @@ from media_hygiene.report.inventory_workbook import (
     write_workbook,
 )
 from media_hygiene.services.data_checks import unreadable_index
+from media_hygiene.services.missing_mount import missing_mount, typed_again
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -157,9 +159,10 @@ def _reports_dir(runtime: Runtime) -> Path:
         MountError: `/reports` is not mounted.
     """
     if not runtime.persistent(MountKind.REPORTS):
-        raise MountError(
+        raise missing_mount(
+            runtime,
             _("No reports mount: the inventory would be lost with the container."),
-            _('Add -v "<a folder of yours>:/reports" to get the inventory.'),
+            NextVerb(typed_again(runtime, "inventory"), (MountKind.REPORTS,)),
         )
     return runtime.locations.reports_dir
 

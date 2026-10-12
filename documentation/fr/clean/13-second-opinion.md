@@ -12,7 +12,7 @@ Cette étape est facultative : `clean` ne l'exige jamais.
 
 ## Étape 1 : l'audit, avec un dossier de rapports
 
-Quand il trouve des doublons, un audit lancé avec `--verbosity verbose` (avant `audit`) se termine
+Quand il trouve des doublons, un audit lancé avec `--verbosity verbose` (avant `audit` ; sans lui, à partir de 100 copies) se termine
 par une astuce *Second avis* et la commande Czkawka exacte pour vos dossiers (`crosscheck` l'affiche aussi, tant que Czkawka
 n'a pas tourné) : mêmes options `-v`, mêmes extensions, mêmes dossiers exclus,
 toutes les tailles de fichier. Elle ressemble à ceci (l'image communautaire `jlesage/czkawka`,
