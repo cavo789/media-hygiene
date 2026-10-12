@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`
+- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`
 
 ## Context
 
@@ -30,6 +30,21 @@ About 2 minutes of model time.
 
 Decided in review (2026-10-12): no output-token column in `tags --sample`; the time per photo
 decides.
+
+## 2. Twenty real searches (unblocks 0084) — after section 1
+
+1. One night of `tags`: `mh tags --path "C:\Photos" --yes` (`--yes` skips the question).
+2. Twenty searches you would really type, with `mh search <words>` or the page: events
+   (`anniversaire Léa`), places (`Durbuy`, `mer`), objects (`gâteau`, `vélo`), seasons
+   (`neige 2010`). Since 0092 the words of the file names count too.
+3. For each: the photos found, and those expected but missed (open the folder). Class each miss:
+   plural or spelling (→ `tags/plurals.py`), empty word, synonym (`mer` / `bord de mer`), or
+   truly about meaning (→ vectors).
+4. Write the table in `BLOCKED_0084-…`. Build the `bge-m3` vectors (the TODO's plan) only if
+   misses about meaning dominate.
+
+Decided in review (2026-10-12): if the misses are mostly synonyms, a short synonym list in
+`[tags]` rather than vectors (simpler, explainable).
 
 ## Acceptance
 
