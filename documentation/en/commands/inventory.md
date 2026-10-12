@@ -7,12 +7,12 @@
 **Answer your own questions about your photos in Excel: how many per year or per camera, which
 are blurry or tiny, which camera had its clock wrong, which hold a GPS position.**
 
-`inventory` exports every photo, RAW file and video the audits have seen to an Excel workbook,
+`inventory` exports every photo, RAW file and video the audits have seen to an Excel [workbook](../reference-glossary.md#workbook),
 with everything they learnt about it: size, dates, device, settings, place, quality, duplicates,
 words. It reads **the cache alone**: no file of your folders is opened, it takes seconds even
 for tens of thousands of photos.
 
-**When**: any time after an audit run with the cache; again after the next audit, to stay up to
+**When**: any time after an audit run with the [cache](../reference-glossary.md#cache); again after the next audit, to stay up to
 date.
 
 **Try it**:

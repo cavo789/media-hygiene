@@ -126,7 +126,7 @@ photo la plus ancienne : une fête du Nouvel An n'est pas coupée en deux.
 ## Votre propre structure
 
 Tout est dans la section `[classify]` de `config.toml`
-([étape 7](../clean/07-configuration-file.md)), et chaque valeur y est un exemple à remplacer :
+([étape 7 du nettoyage](../clean/07-configuration-file.md)), et chaque valeur y est un exemple à remplacer :
 
 - `--layout "{year}/{month}"` : trier par mois, sans aucune catégorie.
 - `--target 'D:\Photos triées'` : construire l'arborescence ailleurs (le dossier doit être

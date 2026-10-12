@@ -7,7 +7,7 @@
 **Déplacer vos photos dans l'arborescence que vous avez approuvée, avec la preuve que rien n'a
 été perdu, et revenir en arrière quand vous voulez.**
 
-`sort` applique le classeur de [`classify`](classify.md), avec vos modifications : il le
+`sort` applique le [classeur](../reference-glossary.md#classeur) de [`classify`](classify.md), avec vos modifications : il le
 vérifie, dit ce qu'il va faire, **demande**, puis déplace chaque fichier vers son dossier. Sur
 un même disque, un déplacement est un renommage : rien n'est copié, aucune place n'est prise.
 Chaque déplacement est journalisé et `undo` remet tout en place.

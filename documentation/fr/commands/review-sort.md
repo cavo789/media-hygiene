@@ -7,7 +7,7 @@
 **Nommer vos événements en regardant leurs photos, un événement à la fois, au clavier, plutôt
 que dans un tableur.**
 
-Le classeur de [`classify`](classify.md) est fait pour renommer en masse, pas pour *regarder*
+Le [classeur](../reference-glossary.md#classeur) de [`classify`](classify.md) est fait pour renommer en masse, pas pour *regarder*
 des photos. `review-sort` montre **un événement à la fois** dans votre navigateur, avec ses
 photos, sa proposition et un champ pour le nommer. Vos choix sont enregistrés à côté de la
 proposition ; [`sort`](sort.md) les applique par-dessus le classeur.

@@ -92,8 +92,8 @@ Cliquez sur le nombre de fichiers d'une paire pour voir chaque copie, ligne par 
 ## Les groupes de fichiers identiques
 
 Plus bas, un échantillon aléatoire de groupes de photos (les mêmes à chaque exécution), puis les
-plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies à supprimer 🗑️, et
-l'empreinte SHA-256 qu'elles partagent.
+plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies mises de côté 📦
+(déplacées en quarantaine ; 🗑️ avec `--delete`), et l'empreinte SHA-256 qu'elles partagent.
 
 ![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie mise en quarantaine, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
 

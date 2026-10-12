@@ -6,8 +6,8 @@
 
 **Changed your mind? Put back every file of a run, exactly where it was.**
 
-`undo` restores every file of a run, as the journal recorded it: the files of a `clean` come
-back from the quarantine (or are rebuilt from the copy kept), the files of a `sort` go back to
+`undo` restores every file of a run, as the [journal](../reference-glossary.md#journal) recorded it: the files of a `clean` come
+back from the [quarantine](../reference-glossary.md#quarantine) (or are rebuilt from the copy kept), the files of a `sort` go back to
 their folders, the links of an `album` and the sidecars of `xmp` are taken away.
 
 **When**: after a `clean`, a `sort`, an `album` or an `xmp --apply` you regret: a photo you
@@ -83,7 +83,7 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 
 - [9. Undo, history, purge](../clean/09-undo-history-purge.md#undo-a-clean-undo)
 - [Sorting, step 7: change your mind](../sort/07-sort.md#change-your-mind),
-  [step 12: undo an album](../sort/12-albums.md#undo-it)
+  [sorting, step 12: undo an album](../sort/12-albums.md#undo-it)
 - [How your photos stay safe](../reference-safety.md)
 
 ## The built-in help

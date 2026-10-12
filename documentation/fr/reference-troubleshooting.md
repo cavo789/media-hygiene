@@ -63,7 +63,7 @@ alors avant l'analyse et nomme le dossier.
 
 Écrivez les chemins Windows entre **apostrophes** : `'D:\backup'`. Entre guillemets, TOML
 transforme le `\b` de `"D:\backup"` en caractère de contrôle, et l'outil refuse ce chemin au lieu
-de l'ignorer ([étape 7](clean/07-configuration-file.md#le-remplir)).
+de l'ignorer ([étape 7 du nettoyage](clean/07-configuration-file.md#le-remplir)).
 
 ## Un réglage de `config.toml` est inconnu de cette version
 
@@ -86,7 +86,7 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
 
 - Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
   deux côtés, sinon l'adresse affichée par le tri n'est pas la bonne
-  ([étape 10](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+  ([étape 10 du nettoyage](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
 - *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
   même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.

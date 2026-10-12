@@ -147,7 +147,8 @@ puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](docu
 [`people`](documentation/fr/commands/people.md). Vous hésitez ?
 [Quelle commande ?](documentation/fr/reference-commands.md#quelle-commande-)
 
-**Référence** : [commandes et options](documentation/fr/reference-commands.md),
+**Référence** : [les mots de ce guide](documentation/fr/reference-glossary.md),
+[commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),
 [fichiers compagnons](documentation/fr/reference-sidecars.md),

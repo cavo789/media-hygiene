@@ -59,7 +59,7 @@ before the analysis and names the folder.
 
 Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, TOML turns the
 `\b` of `"D:\backup"` into a control character, and the tool refuses such a path rather than
-ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
+ignoring it ([cleaning, step 7](clean/07-configuration-file.md#fill-it-in)).
 
 ## A setting of `config.toml` is unknown to this version
 
@@ -82,7 +82,7 @@ setting is required.`
 
 - Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both
   sides, or the address the review prints is not the right one
-  ([step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+  ([cleaning, step 10](clean/10-review-bursts.md#step-2-open-the-page)).
 - *port is already allocated*: another program uses 8088. Choose another number, the same three
   times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.

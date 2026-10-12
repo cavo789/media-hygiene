@@ -9,9 +9,9 @@ lieu, ce qu'elle montre), sans toucher aux fichiers.**
 
 `tags` donne à chaque photo et vidéo **des mots pour la retrouver** : les mots parlants de ses
 dossiers (« Durbuy », « ours ») et de son nom, sa date (année, mois, saison, fêtes), son lieu,
-et, si vous le voulez, ce qu'y voit un modèle de vision local (« gâteau », « bougie », « neige
+et, si vous le voulez, ce qu'y voit un [modèle de vision](../reference-glossary.md#modèle-de-vision) local (« gâteau », « bougie », « neige
 »). Les mots restent **dans le cache**, jamais dans vos photos ; [`search`](search.md) les
-retrouve, [`xmp`](xmp.md) les écrit dans des fichiers compagnons.
+retrouve, [`xmp`](xmp.md) les écrit dans des [fichiers compagnons](../reference-glossary.md#fichier-compagnon).
 
 **Quand** : après un audit lancé avec le cache ; à nouveau après de nouvelles photos ou un
 dossier renommé.

@@ -7,7 +7,7 @@
 **Récupérer la place pour de bon, une fois que vous avez vérifié ce que contient la
 quarantaine.**
 
-`clean` n'efface jamais : il déplace les copies en trop en quarantaine. `purge` supprime **pour
+`clean` n'efface jamais : il déplace les copies en trop en [quarantaine](../reference-glossary.md#quarantaine). `purge` supprime **pour
 de bon** la quarantaine d'une exécution, ou de toutes. C'est la seule commande qui efface du
 contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de demander.
 

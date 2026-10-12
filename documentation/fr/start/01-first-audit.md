@@ -34,7 +34,7 @@ de suite.
 | `-v "C:\Photos:/data/c/Photos:ro"` | Montre votre dossier à l'outil. La boîte ne voit que ce que vous lui donnez avec `-v` : ici `C:\Photos`, qu'elle appelle `/data/c/Photos`. |
 | `:ro` | *Read-only*, lecture seule : Docker lui-même interdit toute modification de votre dossier. |
 | `cavo789/media-hygiene` | L'outil, tel que publié sur Docker Hub. |
-| `--locale fr` | Parle français. Sans cette option, l'outil parle anglais ; l'[étape 7](../clean/07-configuration-file.md) vous évitera de la retaper. |
+| `--locale fr` | Parle français. Sans cette option, l'outil parle anglais ; l'[étape 7 du nettoyage](../clean/07-configuration-file.md) vous évitera de la retaper. |
 | `audit` | Ce qu'il faut faire : chercher les doublons et les fichiers cassés. |
 
 ## Ce qui s'affiche pendant l'analyse
@@ -122,18 +122,18 @@ TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC).
 (3 autres conseils : ajoutez --verbosity verbose pour les voir.)
 ```
 
-D'abord le tableau :
+D'abord le tableau (un mot inconnu ? [les mots de ce guide](../reference-glossary.md)) :
 
 | Ligne | Ce qu'elle veut dire |
 |---|---|
 | Fichiers média analysés | Toutes les photos, fichiers RAW et vidéos trouvés. Les fichiers compagnons (`.xmp`, …) ne sont pas comptés. |
 | Groupes de fichiers identiques | Combien de photos ou vidéos distinctes existent en plusieurs copies identiques. |
-| Copies en trop, supprimables | Les fichiers qu'un nettoyage supprimerait. Pour chaque photo présente plusieurs fois, un exemplaire est gardé et les autres sont en trop : une photo rangée dans 3 dossiers donne 2 copies en trop. |
+| Copies en trop, à mettre de côté | Les fichiers qu'un nettoyage mettrait en quarantaine (rien n'est effacé). Pour chaque photo présente plusieurs fois, un exemplaire est gardé et les autres sont en trop : une photo rangée dans 3 dossiers donne 2 copies en trop. |
 | Espace libérable | La taille totale de ces copies en trop. |
 | Fichiers cassés | Les fichiers vides (0 octet) et ceux qui ne s'ouvrent pas (JPEG tronqué, vidéo abîmée). |
 | Fichiers compagnons orphelins | Seulement s'il y en a : des [fichiers compagnons](../reference-sidecars.md) restés sans leur photo. |
-| Quasi-doublons | La même photo enregistrée à nouveau : réduite, recompressée. Ce ne sont pas des fichiers identiques, ils restent en place sauf si vous le demandez ([étape 11](../clean/11-near-duplicates.md)). |
-| Rafales | Des photos prises à quelques secondes d'intervalle. Jamais touchées, sauf si vous choisissez ([étape 10](../clean/10-review-bursts.md)). |
+| Quasi-doublons | La même photo enregistrée à nouveau : réduite, recompressée. Ce ne sont pas des fichiers identiques, ils restent en place sauf si vous le demandez ([étape 11 du nettoyage](../clean/11-near-duplicates.md)). |
+| Rafales | Des photos prises à quelques secondes d'intervalle. Jamais touchées, sauf si vous choisissez ([étape 10 du nettoyage](../clean/10-review-bursts.md)). |
 | Durée | Le temps qu'a pris tout l'audit. |
 
 Avec `--verbosity verbose` (une option globale, avant `audit`), l'*Inventaire* suit : ce que vos
@@ -155,7 +155,7 @@ plus d'espace viennent en premier.
 - *« … est présent plusieurs fois dans … : un exemplaire est gardé »* : le même fichier deux
   fois dans un dossier, comme `IMG_0101.jpg` et `IMG_0101 (1).jpg`.
 
-Ce n'est pas le dossier que vous voulez garder ? L'[étape 5](../clean/05-choose-the-kept-copy.md) montre
+Ce n'est pas le dossier que vous voulez garder ? L'[étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md) montre
 comment choisir.
 
 Puis *Ce que vous pouvez faire* : trois lignes au plus, chacune avec ce qu'elle rapporte et ce
@@ -164,8 +164,8 @@ qu'elle vous coûte.
 | Ligne | Ce qu'elle signifie |
 |---|---|
 | ✅ copies identiques | Sans risque, une commande : `clean` les met de côté, `undo` les ramène. |
-| 👀 quasi-doublons | Des groupes à regarder avant de les déplacer, avec une estimation du temps que cela prend ([étape 11](../clean/11-near-duplicates.md)). |
-| 🎞️ rafales | Facultatif : une rafale que vous ne revoyez pas est gardée entière ([étape 10](../clean/10-review-bursts.md)). |
+| 👀 quasi-doublons | Des groupes à regarder avant de les déplacer, avec une estimation du temps que cela prend ([étape 11 du nettoyage](../clean/11-near-duplicates.md)). |
+| 🎞️ rafales | Facultatif : une rafale que vous ne revoyez pas est gardée entière ([étape 10 du nettoyage](../clean/10-review-bursts.md)). |
 
 La ligne 👉 donne l'étape qui vient logiquement maintenant, suivie de sa **commande complète**,
 prête à coller : vos dossiers sur les mêmes points de montage (sans `:ro` pour une commande qui

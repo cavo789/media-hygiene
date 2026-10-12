@@ -6,7 +6,7 @@
 
 **Get the space back for good, once you have checked what the quarantine holds.**
 
-`clean` never erases: it moves the extra copies to the quarantine. `purge` deletes the
+`clean` never erases: it moves the extra copies to the [quarantine](../reference-glossary.md#quarantine). `purge` deletes the
 quarantine of a run, or of every run, **for good**. It is the only command that erases content
 (with `clean --delete`, if you use it), and it says so before asking.
 

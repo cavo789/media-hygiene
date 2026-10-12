@@ -8,7 +8,7 @@
 mounts for every command.**
 
 The `docker run` commands grow with every folder, and each command needs slightly different
-mounts (`:ro` or not, the journal, a port for the browser). `launcher` prints a short script
+mounts (`:ro` or not, the [journal](../reference-glossary.md#journal), a port for the browser). `launcher` prints a short script
 defining `mh`, a command that remembers the folders mounted when you made it. Then `mh audit`,
 `mh clean`, `mh review`… are all you type.
 

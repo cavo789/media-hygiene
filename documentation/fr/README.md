@@ -94,6 +94,8 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 
 ## Référence
 
+- [Les mots de ce guide](reference-glossary.md) : conteneur, montage, quarantaine, journal,
+  quasi-doublon, rafale… en langage courant, de A à Z.
 - [Commandes et options](reference-commands.md) : quelle commande pour quoi, puis une page par
   commande (`audit`, `clean`, `review`, `classify`, `sort`…) : ce qu'elle fait, les dossiers dont
   elle a besoin, ses options, des exemples et son `--help`.

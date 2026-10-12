@@ -7,7 +7,7 @@
 **Name your events while looking at their photos, one event at a time, with the keyboard, rather
 than in a spreadsheet.**
 
-The workbook of [`classify`](classify.md) is good for renaming in bulk, not for *looking* at
+The [workbook](../reference-glossary.md#workbook) of [`classify`](classify.md) is good for renaming in bulk, not for *looking* at
 photos. `review-sort` shows **one event at a time** in your browser, with its photos, its
 proposal and a field to name it. Your choices are saved next to the proposal; [`sort`](sort.md)
 applies them on top of the workbook.

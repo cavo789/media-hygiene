@@ -59,12 +59,12 @@ are dates, so sorting and filtering work whatever the language of Excel.
 - **Duplicates**: the SHA-256, the number of its group of identical files and how many copies
   that group holds. Only files that looked like another one (same size, same first bytes) have a
   SHA-256: the others cannot have an identical copy. Which copy `clean` would keep depends on your
-  settings: that is the job of the report's `plan.csv` ([step 4](clean/04-html-report.md)).
+  settings: that is the job of the report's `plan.csv` ([cleaning, step 4](clean/04-html-report.md)).
 - **Tags**: the words `tags` gave the file (folders, file name, date, place, vision model), separated by
   `;`; empty before the first `tags` run ([tags](reference-tags.md)).
 
 RAW files only have their size, dates and fingerprint: their content is not decoded. Files other
-than photos and videos (`--ext pdf`, [step 6](clean/06-file-types.md)) are left out.
+than photos and videos (`--ext pdf`, [cleaning, step 6](clean/06-file-types.md)) are left out.
 
 ## The Summary sheet
 
@@ -76,7 +76,7 @@ files that have an identical copy.
 
 Two columns turn measures into words, **at export time**: *Quality* (blurry, small) and
 *Exposure* (dark, bright), or *ok*. Their thresholds are in `config.toml`
-([step 7](clean/07-configuration-file.md)):
+([cleaning, step 7](clean/07-configuration-file.md)):
 
 ```toml
 [inventory]

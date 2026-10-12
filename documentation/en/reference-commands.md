@@ -42,12 +42,12 @@ use it and the command to try; then the folders it needs, its options, examples 
 | Command | What it does | Guide |
 |---|---|---|
 | [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
-| [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [9](clean/09-undo-history-purge.md#where-am-i-status) |
-| [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
-| [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [9](clean/09-undo-history-purge.md) |
-| [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [4](clean/04-html-report.md) |
-| [`crosscheck`](commands/crosscheck.md) | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [13](clean/13-second-opinion.md) |
-| [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [7](clean/07-configuration-file.md) |
+| [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [Cleaning, 9](clean/09-undo-history-purge.md#where-am-i-status) |
+| [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
+| [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |
+| [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |
+| [`crosscheck`](commands/crosscheck.md) | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [Cleaning, 13](clean/13-second-opinion.md) |
+| [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [Cleaning, 7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
 | [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
@@ -61,9 +61,9 @@ use it and the command to try; then the folders it needs, its options, examples 
 
 | Command | What it does | Guide |
 |---|---|---|
-| [`clean`](commands/clean.md) | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [8](clean/08-clean.md) |
-| [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [9](clean/09-undo-history-purge.md) |
-| [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [9](clean/09-undo-history-purge.md) |
+| [`clean`](commands/clean.md) | Audit, confirm, then move duplicate copies, unreadable files and orphan sidecars to the quarantine, and delete empty files; `--delete` deletes the copies instead. | [Cleaning, 8](clean/08-clean.md) |
+| [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [Cleaning, 9](clean/09-undo-history-purge.md) |
+| [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
 | [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
@@ -79,17 +79,17 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--verbosity error\|warning\|info\|verbose\|debug` | global | How much to log. `verbose`: `info`, plus every tip of a command (not only the two most useful) and the inventory after an audit. |
 | `--color auto\|always\|never` | global | ANSI colours (`NO_COLOR` is honoured). |
 | `--version` | global | Show the version. |
-| `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |
-| `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
-| `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
-| `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
-| `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Step 6](clean/06-file-types.md) |
+| `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |
+| `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
+| `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
+| `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Cleaning, step 6](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify` and `tags`, before describing many photos with a local model; `audit`, before looking for faces with `--people`). |
 | `--people` | `audit` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking. [People](reference-people.md#during-the-audit-audit---people) |
-| `--tier exact\|near\|near-all` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move the sure near duplicates, and those decided with `review --near`, to the quarantine. `near-all`: every near duplicate. [Step 11](clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
-| `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
-| `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Step 8](clean/08-clean.md#need-the-space-at-once---delete) |
-| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Step 10](clean/10-review-bursts.md), [step 12](clean/12-decide-pair-by-pair.md) |
+| `--tier exact\|near\|near-all` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move the sure near duplicates, and those decided with `review --near`, to the quarantine. `near-all`: every near duplicate. [Cleaning, step 11](clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
+| `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
+| `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Cleaning, step 8](clean/08-clean.md#need-the-space-at-once---delete) |
+| `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review`, `review-sort`, `places`, `search`, `people` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/03-several-folders.md#write-your-folders-once-mh) |
@@ -116,7 +116,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--workbook PATH` | `album` | The `classify` workbook to read; the latest `classify` run's by default. |
 | `--apply` | `album`, `xmp` | Make the links, write the sidecars; without it, `album` and `xmp` only show what they would do. |
 
-Most options have a `config.toml` counterpart ([step 7](clean/07-configuration-file.md)); the command
+Most options have a `config.toml` counterpart ([cleaning, step 7](clean/07-configuration-file.md)); the command
 line wins. The rules of `classify` (`[[classify.rules]]`) have no option: they are written in
 `config.toml` only ([sorting, step 6](sort/06-write-down-what-you-know.md)).
 

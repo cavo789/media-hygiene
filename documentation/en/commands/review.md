@@ -7,12 +7,12 @@
 **Keep only the best shots of your bursts, and decide the near duplicates, by looking at them
 large, in your browser.**
 
-Burst series (five, ten, twenty shots in a few seconds) and near duplicates (a photo saved
+Burst series (five, ten, twenty shots in a few seconds) and [near duplicates](../reference-glossary.md#near-duplicate) (a photo saved
 again, smaller) are not identical files: only you can tell which ones to keep. `review` shows
 them to you **one at a time** and you choose with the keyboard. Each choice is saved at once in
 `decisions.json`; `clean --decisions` applies them later.
 
-**When**: after an audit that found burst series (or near duplicates, with `--near`), before
+**When**: after an audit that found [burst series](../reference-glossary.md#burst-series) (or near duplicates, with `--near`), before
 `clean --decisions`.
 
 **Try it**:
@@ -73,8 +73,8 @@ Ctrl+click it. Leave the window open: the page runs as long as it does; Ctrl+C s
 | `V` / `G` | Validate every obvious series at once | `G`: the whole folder pair as planned |
 | `Z` | Undo the last choice | — |
 
-The complete lists: [step 10](../clean/10-review-bursts.md#step-5-go-faster) and
-[step 11](../clean/11-near-duplicates.md#decide-in-your-browser-review---near).
+The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-faster) and
+[cleaning, step 11](../clean/11-near-duplicates.md#decide-in-your-browser-review---near).
 
 ## Options
 

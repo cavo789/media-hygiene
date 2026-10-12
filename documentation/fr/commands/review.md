@@ -7,7 +7,7 @@
 **Ne garder que les meilleures photos de vos rafales, et trancher les quasi-doublons, en les
 regardant en grand dans votre navigateur.**
 
-Les rafales (cinq, dix, vingt photos en quelques secondes) et les quasi-doublons (une photo
+Les [rafales](../reference-glossary.md#rafale) (cinq, dix, vingt photos en quelques secondes) et les [quasi-doublons](../reference-glossary.md#quasi-doublon) (une photo
 réenregistrée, plus petite) ne sont pas des fichiers identiques : c'est à vous de dire lesquels
 garder. `review` vous les montre **un à la fois** et vous choisissez au clavier. Chaque choix
 est enregistré aussitôt dans `decisions.json` ; `clean --decisions` les applique ensuite.
@@ -74,8 +74,8 @@ Ctrl+C l'arrête.
 | `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu |
 | `Z` | Annuler le dernier choix | — |
 
-Les listes complètes : [étape 10](../clean/10-review-bursts.md#étape-5--aller-plus-vite) et
-[étape 11](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near).
+Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#étape-5--aller-plus-vite) et
+[étape 11 du nettoyage](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near).
 
 ## Options
 

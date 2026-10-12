@@ -7,7 +7,7 @@
 **De retour après quelques jours ? Savoir en une seconde où vous en êtes, et la prochaine étape
 à faire.**
 
-Vous ne savez plus quelle exécution est en quarantaine, ni si un tri a été appliqué ? `status`
+Vous ne savez plus quelle exécution est en [quarantaine](../reference-glossary.md#quarantaine), ni si un tri a été appliqué ? `status`
 lit les dossiers de l'outil, sans analyser vos photos (environ une seconde), vous dit où vous en
 êtes, puis donne **une** étape suivante, en commande complète.
 
@@ -18,7 +18,7 @@ fait.
 
 ```powershell
 docker run --rm -it `
-  -v media-hygiene-cache:/cache `
+  -v media-hygiene-cache:/[cache](../reference-glossary.md#cache) `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `

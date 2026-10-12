@@ -11,7 +11,7 @@ Recent phones write **where** each photo was taken. `places` shows those positio
 your browser, grouped in circles, and saves the places you name into `config.toml`, where the
 `place` and `trip` rules of [`classify`](classify.md) use them.
 
-**When**: before [`classify`](classify.md), once an audit run with the cache has read the
+**When**: before [`classify`](classify.md), once an audit run with the [cache](../reference-glossary.md#cache) has read the
 positions; again whenever a new place matters.
 
 **Try it**:

@@ -87,6 +87,8 @@ otherwise both copies are sorted.
 
 ## Reference
 
+- [Words of this guide](reference-glossary.md): container, mount, quarantine, journal, near
+  duplicate, burst series… in plain language, from A to Z.
 - [Commands and options](reference-commands.md): which command for what, then one page per
   command (`audit`, `clean`, `review`, `classify`, `sort`…): what it does, the folders it needs,
   its options, examples and its `--help`.

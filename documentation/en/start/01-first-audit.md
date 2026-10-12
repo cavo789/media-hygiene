@@ -33,7 +33,7 @@ The first run downloads the tool (a few hundred MB); the next ones start at once
 | `audit` | What to do: look for duplicates and broken files. |
 
 > 💡 The tool speaks English. Add `--locale fr` right after `cavo789/media-hygiene` for French:
-> `cavo789/media-hygiene --locale fr audit`. [Step 7](../clean/07-configuration-file.md) makes it permanent.
+> `cavo789/media-hygiene --locale fr audit`. [Cleaning, step 7](../clean/07-configuration-file.md) makes it permanent.
 
 ## What you see while it runs
 
@@ -117,18 +117,18 @@ media-hygiene-cache:/cache (much faster next audits); -e TZ=Europe/Brussels
 (3 more tips: add --verbosity verbose to see them.)
 ```
 
-The table first:
+The table first (a word you do not know? [the words of this guide](../reference-glossary.md)):
 
 | Line | What it means |
 |---|---|
 | Media files scanned | Every photo, RAW file and video found. Sidecars (`.xmp`, …) are not counted. |
 | Groups of identical files | How many distinct photos or videos exist in several identical copies. |
-| Extra copies that can be deleted | The files a clean would delete. For every photo present several times, one copy is kept and the others are extra: a photo stored in 3 folders gives 2 extra copies. |
+| Extra copies that can be set aside | The files a clean would move to the quarantine (nothing is erased). For every photo present several times, one copy is kept and the others are extra: a photo stored in 3 folders gives 2 extra copies. |
 | Space that can be freed | The total size of those extra copies. |
 | Broken files | Empty files (0 bytes) and files that cannot be opened (truncated JPEG, damaged video). |
 | Orphan sidecars | Only when there are some: [sidecar files](../reference-sidecars.md) left without their photo. |
-| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([step 11](../clean/11-near-duplicates.md)). |
-| Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](../clean/10-review-bursts.md)). |
+| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([cleaning, step 11](../clean/11-near-duplicates.md)). |
+| Burst series | Shots taken seconds apart. Never touched unless you choose ([cleaning, step 10](../clean/10-review-bursts.md)). |
 | Duration | How long the whole audit took. |
 
 With `--verbosity verbose` (a global option, before `audit`), the *Inventory* follows: what your
@@ -148,15 +148,15 @@ audit has moved nothing. The pairs freeing the most space come first.
 - *"… is present several times in …: one copy is kept"*: the same file twice in one folder,
   such as `IMG_0101.jpg` and `IMG_0101 (1).jpg`.
 
-Not the folder you want to keep? [Step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
+Not the folder you want to keep? [Cleaning, step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
 
 Then *What you can do*: at most three lines, each with what it gains and what it costs you.
 
 | Line | What it means |
 |---|---|
 | ✅ identical copies | No risk, one command: `clean` sets them aside, `undo` brings them back. |
-| 👀 near duplicates | Groups to look at before moving them, with an estimate of the time it takes ([step 11](../clean/11-near-duplicates.md)). |
-| 🎞️ burst series | Optional: a series you do not review is kept whole ([step 10](../clean/10-review-bursts.md)). |
+| 👀 near duplicates | Groups to look at before moving them, with an estimate of the time it takes ([cleaning, step 11](../clean/11-near-duplicates.md)). |
+| 🎞️ burst series | Optional: a series you do not review is kept whole ([cleaning, step 10](../clean/10-review-bursts.md)). |
 
 The 👉 line gives the step that logically comes next, followed by its **full command**, ready to
 paste: your folders on the same mount points (without `:ro` for a command that changes them), the

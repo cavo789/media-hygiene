@@ -6,7 +6,7 @@
 
 **Back after a few days? Know in a second where you stand, and the one next step to take.**
 
-You no longer remember which run is in the quarantine, nor whether a review was applied?
+You no longer remember which run is in the [quarantine](../reference-glossary.md#quarantine), nor whether a review was applied?
 `status` reads the tool's own folders, without scanning your photos (about a second), tells you
 where you stand, then gives **one** next step, as a full command.
 
@@ -16,7 +16,7 @@ where you stand, then gives **one** next step, as a full command.
 
 ```powershell
 docker run --rm -it `
-  -v media-hygiene-cache:/cache `
+  -v media-hygiene-cache:/[cache](../reference-glossary.md#cache) `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `

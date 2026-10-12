@@ -7,7 +7,7 @@
 **Move your photos into the tidy tree you approved, with the proof that nothing was lost, and
 undo it whenever you like.**
 
-`sort` applies the workbook of [`classify`](classify.md), with your edits: it checks it, says
+`sort` applies the [workbook](../reference-glossary.md#workbook) of [`classify`](classify.md), with your edits: it checks it, says
 what it will do, **asks**, then moves each file to its folder. On one disk, a move is a rename:
 nothing is copied, no space is used. Every move is journaled and `undo` puts everything back.
 

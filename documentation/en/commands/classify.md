@@ -9,7 +9,7 @@ before anything moves.**
 
 `classify` proposes a place for every photo and video, `year/category` by default: `2019/Seaside
 holidays`, `2016/To sort/2016-07-14`. It **only proposes**: nothing moves. You correct the
-proposal in a workbook, then [`sort`](sort.md) applies it.
+proposal in a [workbook](../reference-glossary.md#workbook), then [`sort`](sort.md) applies it.
 
 **When**: after cleaning the duplicates (otherwise both copies are sorted); again after new
 photos or a changed rule: your edits of the previous workbook are carried over.

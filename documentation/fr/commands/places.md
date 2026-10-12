@@ -12,7 +12,7 @@ sur une carte dans votre navigateur, regroupées en cercles, et enregistre les l
 nommez dans `config.toml`, où les règles `place` et `trip` de [`classify`](classify.md) les
 utilisent.
 
-**Quand** : avant [`classify`](classify.md), une fois qu'un audit lancé avec le cache a lu les
+**Quand** : avant [`classify`](classify.md), une fois qu'un audit lancé avec le [cache](../reference-glossary.md#cache) a lu les
 positions ; à nouveau chaque fois qu'un nouveau lieu compte.
 
 **Essayer** :

@@ -6,8 +6,8 @@
 
 **Changé d'avis ? Remettre chaque fichier d'une exécution exactement où il était.**
 
-`undo` restaure chaque fichier d'une exécution, tel que le journal l'a noté : les fichiers d'un
-`clean` reviennent de la quarantaine (ou sont reconstruits depuis la copie gardée), les fichiers
+`undo` restaure chaque fichier d'une exécution, tel que le [journal](../reference-glossary.md#journal) l'a noté : les fichiers d'un
+`clean` reviennent de la [quarantaine](../reference-glossary.md#quarantaine) (ou sont reconstruits depuis la copie gardée), les fichiers
 d'un `sort` retournent dans leurs dossiers, les liens d'un `album` et les fichiers compagnons de
 `xmp` sont retirés.
 
@@ -86,8 +86,8 @@ et des dernières lignes de chaque exécution.
 ## Pour aller plus loin
 
 - [9. Annuler, historique, purge](../clean/09-undo-history-purge.md#annuler-un-nettoyage--undo)
-- [Trier, étape 7 : changer d'avis](../sort/07-sort.md#changer-davis),
-  [étape 12 : annuler un album](../sort/12-albums.md#lannuler)
+- [Étape 7 du tri : changer d'avis](../sort/07-sort.md#changer-davis),
+  [étape 12 du tri : annuler un album](../sort/12-albums.md#lannuler)
 - [Comment vos photos restent en sécurité](../reference-safety.md)
 
 ## L'aide intégrée

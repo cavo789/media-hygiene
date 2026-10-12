@@ -49,7 +49,7 @@ d'Excel.
 - **Où** : le fichier tel que vous le connaissez (`C:\Photos\…`), son dossier, son nom, son type
   (photo, RAW, vidéo), sa taille et sa date de modification (UTC).
 - **Quand** : la date de prise de vue, lue comme `classify` la lit
-  ([trier, étape 4](sort/04-classify.md)), son origine (EXIF ou les balises de la vidéo), son
+  ([étape 4 du tri](sort/04-classify.md)), son origine (EXIF ou les balises de la vidéo), son
   année, et le fuseau horaire que le fichier enregistre.
 - **Avec quoi** : l'appareil, l'objectif, la focale, le temps d'exposition, l'ouverture, l'ISO,
   si le flash s'est déclenché ; le logiciel qui a écrit le fichier en dernier.
@@ -63,12 +63,12 @@ d'Excel.
   de ce groupe. Seuls les fichiers qui ressemblaient à un autre (même taille, mêmes premiers
   octets) ont un SHA-256 : les autres ne peuvent pas avoir de copie identique. Quelle copie
   `clean` garderait dépend de vos réglages : c'est le rôle du `plan.csv` du rapport
-  ([étape 4](clean/04-html-report.md)).
+  ([étape 4 du nettoyage](clean/04-html-report.md)).
 - **Tags** : les mots que `tags` a donnés au fichier (dossiers, nom du fichier, date, lieu,
   modèle de vision), séparés par `;` ; vide avant le premier passage de `tags` ([les tags](reference-tags.md)).
 
 Les fichiers RAW n'ont que leur taille, leurs dates et leur empreinte : leur contenu n'est pas
-décodé. Les fichiers autres que photos et vidéos (`--ext pdf`, [étape 6](clean/06-file-types.md))
+décodé. Les fichiers autres que photos et vidéos (`--ext pdf`, [étape 6 du nettoyage](clean/06-file-types.md))
 sont laissés de côté.
 
 ## La feuille Résumé
@@ -81,7 +81,7 @@ ont une copie identique.
 
 Deux colonnes traduisent des mesures en mots, **au moment de l'export** : *Qualité* (flou, petit)
 et *Exposition* (sombre, clair), ou *ok*. Leurs seuils sont dans `config.toml`
-([étape 7](clean/07-configuration-file.md)) :
+([étape 7 du nettoyage](clean/07-configuration-file.md)) :
 
 ```toml
 [inventory]

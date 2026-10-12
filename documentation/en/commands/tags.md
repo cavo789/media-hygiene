@@ -9,9 +9,9 @@ shows), without touching the files.**
 
 `tags` gives every photo and video **words to find it by**: the meaningful words of its folders
 ("Durbuy", "bear") and of its name, its date (year, month, season, holidays), its place, and, if
-you wish, what a local vision model sees ("cake", "candles", "snow"). The words stay **in the
+you wish, what a local [vision model](../reference-glossary.md#vision-model) sees ("cake", "candles", "snow"). The words stay **in the
 cache**, never in your photos; [`search`](search.md) finds them, [`xmp`](xmp.md) writes them
-into sidecars.
+into [sidecars](../reference-glossary.md#sidecar).
 
 **When**: after an audit run with the cache; again after new photos or a renamed folder.
 

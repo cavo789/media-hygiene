@@ -8,12 +8,12 @@
 appareil, lesquelles sont floues ou minuscules, quel appareil avait son horloge fausse,
 lesquelles ont une position GPS.**
 
-`inventory` exporte vers un classeur Excel chaque photo, fichier RAW et vidéo que les audits ont
+`inventory` exporte vers un [classeur](../reference-glossary.md#classeur) Excel chaque photo, fichier RAW et vidéo que les audits ont
 vus, avec tout ce qu'ils en ont appris : taille, dates, appareil, réglages, lieu, qualité,
 doublons, mots. Il lit **le cache seul** : aucun fichier de vos dossiers n'est ouvert, il prend
 quelques secondes même pour des dizaines de milliers de photos.
 
-**Quand** : à tout moment après un audit lancé avec le cache ; à nouveau après l'audit suivant,
+**Quand** : à tout moment après un audit lancé avec le [cache](../reference-glossary.md#cache) ; à nouveau après l'audit suivant,
 pour rester à jour.
 
 **Essayer** :

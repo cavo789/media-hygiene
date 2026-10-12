@@ -10,7 +10,7 @@ visage ne quitte votre ordinateur.**
 `people` trouve les **visages** de vos photos, regroupe ceux qui se ressemblent (sans doute une
 personne par groupe), et montre les groupes dans votre navigateur, les plus grands d'abord, où
 vous les **nommez**. Ensuite, `search Chloé` trouve les photos de Chloé, et une règle `person`
-de [`classify`](classify.md) les range. Les visages restent dans le cache, jamais envoyés nulle
+de [`classify`](classify.md) les range. Les visages restent dans le [cache](../reference-glossary.md#cache), jamais envoyés nulle
 part ; les noms vont dans votre `config.toml`.
 
 **Quand** : après un audit lancé avec le cache, ou dans la foulée avec `audit --people` ; à

@@ -10,7 +10,7 @@ face leaving your computer.**
 `people` finds the **faces** in your photos, groups those that look alike (probably one person
 per group), and shows the groups in your browser, largest first, where you **name** them. Then
 `search Chloé` finds the photos of Chloé, and a `person` rule of [`classify`](classify.md) files
-them. The faces stay in the cache, never sent anywhere; the names go into your `config.toml`.
+them. The faces stay in the [cache](../reference-glossary.md#cache), never sent anywhere; the names go into your `config.toml`.
 
 **When**: after an audit run with the cache, or right after it with `audit --people`; again
 after new photos: only those are analysed.

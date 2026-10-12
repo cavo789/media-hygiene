@@ -8,7 +8,7 @@
 bons montages pour chaque commande.**
 
 Les commandes `docker run` s'allongent à chaque dossier, et chaque commande demande des montages
-un peu différents (`:ro` ou non, le journal, un port pour le navigateur). `launcher` affiche un
+un peu différents (`:ro` ou non, le [journal](../reference-glossary.md#journal), un port pour le navigateur). `launcher` affiche un
 court script qui définit `mh`, une commande qui retient les dossiers montés au moment où vous
 l'avez créée. Ensuite, `mh audit`, `mh clean`, `mh review`… suffisent.
 

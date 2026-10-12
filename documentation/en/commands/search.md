@@ -20,7 +20,7 @@ photos are tagged.
 docker run --rm -it `
   -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
+  -v media-hygiene-cache:/[cache](../reference-glossary.md#cache) `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene search
 ```

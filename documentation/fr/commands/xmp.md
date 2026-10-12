@@ -7,7 +7,7 @@
 **Voir vos mots dans digiKam, darktable, Lightroom ou Immich, sans aucun changement dans les
 photos elles-mêmes.**
 
-Les mots de [`tags`](tags.md) vivent dans le cache de cet outil. `xmp` les écrit dans des
+Les mots de [`tags`](tags.md) vivent dans le [cache](../reference-glossary.md#cache) de cet outil. `xmp` les écrit dans des
 **fichiers compagnons** : de petits fichiers `.xmp` à côté des photos (`IMG_1.jpg.xmp` à côté de
 `IMG_1.jpg`). Sans `--apply`, il montre seulement ce qu'il écrirait.
 

@@ -120,7 +120,7 @@ photo: a party on New Year's Eve is not cut in two.
 
 ## Your own structure
 
-Everything is in the `[classify]` section of `config.toml` ([step 7](../clean/07-configuration-file.md)),
+Everything is in the `[classify]` section of `config.toml` ([cleaning, step 7](../clean/07-configuration-file.md)),
 and every value there is an example to replace:
 
 - `--layout "{year}/{month}"`: sort by month, with no category at all.

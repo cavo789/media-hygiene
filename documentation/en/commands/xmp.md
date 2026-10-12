@@ -7,7 +7,7 @@
 **See your words in digiKam, darktable, Lightroom or Immich, without any change to the photos
 themselves.**
 
-The words of [`tags`](tags.md) live in the cache of this tool. `xmp` writes them into
+The words of [`tags`](tags.md) live in the [cache](../reference-glossary.md#cache) of this tool. `xmp` writes them into
 **sidecars**: small `.xmp` files next to the photos (`IMG_1.jpg.xmp` next to `IMG_1.jpg`).
 Without `--apply`, it only shows what it would write.
 

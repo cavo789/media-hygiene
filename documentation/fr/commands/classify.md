@@ -9,7 +9,7 @@ personne, et la corriger avant que rien ne bouge.**
 
 `classify` propose une place à chaque photo et vidéo, `année/catégorie` par défaut :
 `2019/Vacances à la mer`, `2016/À trier/2016-07-14`. Il **ne fait que proposer** : rien ne
-bouge. Vous corrigez la proposition dans un classeur, puis [`sort`](sort.md) l'applique.
+bouge. Vous corrigez la proposition dans un [classeur](../reference-glossary.md#classeur), puis [`sort`](sort.md) l'applique.
 
 **Quand** : après avoir nettoyé les doublons (sinon les deux copies sont triées) ; à nouveau
 après de nouvelles photos ou une règle modifiée : vos modifications du classeur précédent sont

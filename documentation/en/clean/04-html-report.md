@@ -90,7 +90,8 @@ Click the number of files of a pair to see every copy, line by line:
 ## Groups of identical files
 
 Further down, a random sample of photo groups (the same ones on every run), then the largest
-groups first. Each group shows the copy kept ✅, the copies to delete 🗑️, and the SHA-256
+groups first. Each group shows the copy kept ✅, the copies set aside 📦 (moved to the quarantine;
+🗑️ with `--delete`), and the SHA-256
 fingerprint they share.
 
 ![Duplicate groups: a video and three HEIC photos, each with the kept copy, the copy moved to the quarantine, the start of their SHA-256, and Check it yourself open on a Get-FileHash command](../images/report-groups.webp)

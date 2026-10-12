@@ -6,7 +6,7 @@
 
 **Voir ce que chaque exécution a fait, et trouver le nom à donner à `undo` ou à `purge`.**
 
-`history` lit le journal et liste les exécutions, de la plus récente à la plus ancienne : la
+`history` lit le [journal](../reference-glossary.md#journal) et liste les exécutions, de la plus récente à la plus ancienne : la
 commande qui a fait chacune, ce qu'elle a supprimé, libéré, déplacé et mis de côté, et combien
 de fichiers ont été restaurés depuis.
 

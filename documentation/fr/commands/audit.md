@@ -8,8 +8,8 @@
 prennent.**
 
 `audit` examine chaque photo, fichier RAW et vidéo des dossiers que vous montez, et vous dit ce
-qu'il trouve : copies identiques, fichiers cassés, fichiers compagnons orphelins, quasi-doublons
-et rafales. Il ne modifie rien.
+qu'il trouve : copies identiques, fichiers cassés, [fichiers compagnons orphelins](../reference-glossary.md#fichier-compagnon-orphelin), quasi-doublons
+et [rafales](../reference-glossary.md#rafale). Il ne modifie rien.
 
 **Quand** : la toute première fois ; puis avant chaque `clean` (avec les mêmes options, pour
 vérifier quelle copie reste), et après avoir ajouté des photos ou un disque.
@@ -59,16 +59,16 @@ Il affiche, dans cet ordre :
 
 | Option | Rôle |
 |---|---|
-| `--prefer CHEMIN` | Dossier dont les copies sont gardées en priorité ; à répéter, l'ordre compte. [Étape 5](../clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
-| `--protect CHEMIN` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5](../clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
-| `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
-| `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
-| `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6](../clean/06-file-types.md) |
+| `--prefer CHEMIN` | Dossier dont les copies sont gardées en priorité ; à répéter, l'ordre compte. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
+| `--protect CHEMIN` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
+| `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
+| `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6 du nettoyage](../clean/06-file-types.md) |
 | `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)) ; `with_audit = true` dans `[people]` le fait à chaque audit. |
 | `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
 
 Les chemins s'écrivent à la façon de Windows (`C:\Photos\Famille`), comme dans l'Explorateur.
-Chaque option a sa ligne dans `config.toml` ([étape 7](../clean/07-configuration-file.md)) :
+Chaque option a sa ligne dans `config.toml` ([étape 7 du nettoyage](../clean/07-configuration-file.md)) :
 écrivez-la une fois, la ligne de commande l'emporte toujours.
 
 ## Exemples

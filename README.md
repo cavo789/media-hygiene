@@ -142,7 +142,8 @@ the folders it needs, its options, examples:
 [`people`](documentation/en/commands/people.md). Not sure which one?
 [Which command?](documentation/en/reference-commands.md#which-command)
 
-**Reference** — [commands and options](documentation/en/reference-commands.md),
+**Reference** — [words of this guide](documentation/en/reference-glossary.md),
+[commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),
 [how your photos stay safe](documentation/en/reference-safety.md),
 [sidecar files](documentation/en/reference-sidecars.md),

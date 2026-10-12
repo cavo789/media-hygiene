@@ -6,7 +6,7 @@
 
 **See what each run did, and find the name to give to `undo` or `purge`.**
 
-`history` reads the journal and lists the runs, the newest first: the command that made each
+`history` reads the [journal](../reference-glossary.md#journal) and lists the runs, the newest first: the command that made each
 one, what it deleted, freed, moved and set aside, and how many files were restored since.
 
 **When**: after a `clean`, a `sort`, an `album` or an `xmp --apply`, before an `undo` or a
