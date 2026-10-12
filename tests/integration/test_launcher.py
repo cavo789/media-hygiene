@@ -71,6 +71,7 @@ def test_the_bash_launcher_picks_the_mounts_of_each_command(
     assert "Launcher written" not in result.stdout
     assert "source" in result.stderr
     assert "mh.sh" in result.stderr
+    assert "mh remembers: 1 folder, language en" in result.stderr
     script = tmp_path / "mh.sh"
     script.write_text(result.stdout, encoding="utf-8")
     home = tmp_path / "home"

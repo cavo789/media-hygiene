@@ -41,6 +41,7 @@ mh audit
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
   cavo789/media-hygiene --locale fr launcher > "$HOME\media-hygiene\mh.ps1"
@@ -53,6 +54,7 @@ Depuis WSL :
 ```bash
 mkdir -p ~/media-hygiene
 docker run --rm \
+  -e TZ=Europe/Brussels \
   -v "/mnt/c/Photos:/data/c/Photos" \
   cavo789/media-hygiene --locale fr launcher --shell bash > ~/media-hygiene/mh.sh
 source ~/media-hygiene/mh.sh
@@ -69,6 +71,11 @@ mh audit
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
   `places`, `search` et `people`.
 - **Les commandes que l'outil propose** à la fin d'une exécution s'écrivent `mh …` elles aussi.
+- **Votre langue et votre fuseau horaire** : un `--locale fr` donné à `launcher` et le `-e TZ=…`
+  de son exécution sont écrits dans le script : `mh` parle français et date ses rapports à votre
+  heure. Une langue réglée dans `config.toml` est laissée au fichier (une modification de celui-ci
+  compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, langue,
+  fuseau horaire.
 
 ## Options
 
@@ -86,6 +93,9 @@ PowerShell.
   ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout. En bash, ajoutez la ligne
   `source` à `~/.bashrc`.
 - **Un autre dossier ?** Relancez `launcher` avec un `-v` de plus, vers le même fichier.
+- **Pas à Bruxelles ?** Remplacez `Europe/Brussels` par votre fuseau (`Europe/Paris`,
+  `America/Montreal`…). Sans `-e TZ=…`, `mh` tourne en UTC : les dossiers et heures des rapports
+  sont décalés d'une ou deux heures.
 - **Avec `-it`**, le script atterrirait à l'écran au lieu du fichier : `launcher` le refuse et
   donne la bonne commande.
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :

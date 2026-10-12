@@ -21,6 +21,7 @@ from media_hygiene.paths.docker_run import (
     running_image,
 )
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
     LAUNCHER_VARIABLE,
@@ -99,7 +100,7 @@ def launcher_script(
         data=data,
         tools=tuple(tools),
         folders=_quoted(shell, tuple(created)),
-        environment=environment(),
+        environment=(*environment(), *locale_option(runtime)),
         commands=commands,
     )
 

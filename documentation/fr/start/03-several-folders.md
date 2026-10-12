@@ -132,6 +132,7 @@ dossiers montés au moment où vous la créez.
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
   cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
@@ -139,8 +140,9 @@ docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
 mh audit
 ```
 
-Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE=fr` est retenu
-aussi : `mh` parle français. Ensuite chaque commande est courte : `mh audit`, `mh clean`,
+Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE=fr` et le
+`-e TZ=…` sont retenus aussi : `mh` parle français et date ses rapports à votre heure (mettez
+votre fuseau s'il n'est pas `Europe/Brussels`). Ensuite chaque commande est courte : `mh audit`, `mh clean`,
 `mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
 en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
 `purge`, `xmp`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de

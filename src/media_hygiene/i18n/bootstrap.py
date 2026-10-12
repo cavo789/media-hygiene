@@ -54,10 +54,10 @@ def resolve_locale(argv: Sequence[str]) -> Locale:
     try:
         return load_settings(locations).settings.general.locale
     except ConfigError:
-        return _written_locale(locations)
+        return written_locale(locations)
 
 
-def _written_locale(locations: Locations) -> Locale:
+def written_locale(locations: Locations) -> Locale:
     """Read the language alone from a configuration refused for another reason.
 
     A typo elsewhere in config.toml must not turn its error message to English.

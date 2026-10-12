@@ -123,6 +123,7 @@ when you created it.
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
   cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
@@ -130,7 +131,8 @@ docker run --rm `
 mh audit
 ```
 
-No `-it` here: what `launcher` prints goes into the file. Then every command is short: `mh audit`,
+No `-it` here: what `launcher` prints goes into the file. The `-e TZ=…` is kept too: `mh` dates
+its reports in your local time (put your own zone if it is not `Europe/Brussels`). Then every command is short: `mh audit`,
 `mh clean`, `mh review`, `mh undo`, `mh status`… `mh` picks the right mounts for each one: your
 folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `album`, `undo`,
 `purge`, `xmp`), the cache, and the `reports`, `config`, `journal` and `quarantine` folders of

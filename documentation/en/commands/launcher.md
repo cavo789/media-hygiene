@@ -40,6 +40,7 @@ mh audit
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
   cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
@@ -52,6 +53,7 @@ From WSL:
 ```bash
 mkdir -p ~/media-hygiene
 docker run --rm \
+  -e TZ=Europe/Brussels \
   -v "/mnt/c/Photos:/data/c/Photos" \
   cavo789/media-hygiene launcher --shell bash > ~/media-hygiene/mh.sh
 source ~/media-hygiene/mh.sh
@@ -68,6 +70,10 @@ mh audit
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
   `places`, `search` and `people`.
 - **The commands the tool suggests** at the end of a run are written as `mh …` too.
+- **Your language and time zone**: a `--locale fr` given to `launcher` and the `-e TZ=…` of its
+  run are written into the script, so `mh` speaks French and dates its reports in your local time.
+  A language set in `config.toml` is left to the file (an edit of it still counts). `launcher`
+  ends with one line saying what `mh` remembers: folders, language, time zone.
 
 ## Options
 
@@ -85,6 +91,9 @@ PowerShell.
   profile (`notepad $PROFILE`) to have `mh` everywhere. In bash, add the `source` line to
   `~/.bashrc`.
 - **Another folder?** Run `launcher` again with one more `-v`, saving to the same file.
+- **Not in Brussels?** Replace `Europe/Brussels` with your own zone (`Europe/Paris`,
+  `America/Montreal`…). Without `-e TZ=…`, `mh` runs in UTC: report folders and times are one or
+  two hours off.
 - **With `-it`**, the script would land on the screen instead of the file: `launcher` refuses it
   and gives the right command.
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:

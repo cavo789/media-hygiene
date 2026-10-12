@@ -14,13 +14,15 @@ Back after a few days? `mh status` says where you are and what comes next.
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
 This is the only long command: it writes `mh`, a short command that remembers your folders and
-mounts, for each step, exactly what it needs. Its folders, in `$HOME\media-hygiene`, are created
+mounts, for each step, exactly what it needs (in your local time, thanks to `-e TZ=…`: put your
+own zone if it is not `Europe/Brussels`). Its folders, in `$HOME\media-hygiene`, are created
 by `mh` itself the first time:
 
 | Folder | What it receives |

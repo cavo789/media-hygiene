@@ -206,6 +206,9 @@ msgstr ""
 msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
 msgstr ""
 
+msgid "-e TZ=Europe/Brussels before 'launcher' (times in your time zone, not UTC)"
+msgstr ""
+
 msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
 msgstr ""
 
@@ -4440,6 +4443,10 @@ msgid "merged with another named event, whose name wins"
 msgstr ""
 
 #, python-brace-format
+msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
+msgstr ""
+
+#, python-brace-format
 msgid "more than {limit} is expected, not {value}"
 msgstr ""
 
@@ -5178,6 +5185,12 @@ msgstr ""
 #, python-brace-format
 msgid "{count} files of protected folders: never written."
 msgstr ""
+
+#, python-brace-format
+msgid "{count} folder"
+msgid_plural "{count} folders"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} group decided earlier changed since: to decide again."

@@ -15,6 +15,7 @@ from media_hygiene.cli.safety import (
     PAGE_COMMANDS,
     READ_ONLY_COMMANDS,
 )
+from media_hygiene.config.zone import timezone_unknown
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
@@ -25,6 +26,7 @@ from media_hygiene.services.launcher import (
     render_script,
     script_path,
 )
+from media_hygiene.services.launcher_memory import remembered
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -60,10 +62,24 @@ def launcher_command(
         runtime.output.warning(
             _("No photo folder mounted: add -v for each folder, then run it again.")
         )
+    runtime.output.info(remembered(runtime, script))
+    if timezone_unknown():
+        runtime.output.setting(_timezone_setting())
     runtime.output.success(
         _("Launcher written. Load it with: {load}, then type: mh audit").format(
             load=load_command(script.shell)
         )
+    )
+
+
+def _timezone_setting() -> str:
+    """Say how the launcher learns the time zone, so `mh` does not run in UTC.
+
+    Returns:
+        The option, as a fragment of the setup line.
+    """
+    return _(
+        "-e TZ=Europe/Brussels before 'launcher' (times in your time zone, not UTC)"
     )
 
 

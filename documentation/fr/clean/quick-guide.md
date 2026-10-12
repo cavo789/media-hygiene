@@ -15,13 +15,15 @@ vous en êtes et ce qui vient ensuite.
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
 docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
+  -e TZ=Europe/Brussels `
   -v "C:\Photos:/data/c/Photos" `
   cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
 C'est la seule commande longue : elle écrit `mh`, une commande courte qui retient vos dossiers
-et monte, à chaque étape, exactement ce qu'il faut (en français, grâce au `-e …LOCALE=fr`). Ses
+et monte, à chaque étape, exactement ce qu'il faut (en français, grâce au `-e …LOCALE=fr`, et
+à votre heure grâce au `-e TZ=…` : mettez votre fuseau s'il n'est pas `Europe/Brussels`). Ses
 dossiers, dans `$HOME\media-hygiene`, sont créés par `mh` lui-même la première fois :
 
 | Dossier | Ce qu'il reçoit |
