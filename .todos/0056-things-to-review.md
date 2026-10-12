@@ -81,12 +81,14 @@ How to use it:
 
 ### 0032 — Inventory export
 
-- [ ] Open an `inventory.xlsx` in Excel: frozen header, filter, date and percent formats.
+- [x] Open an `inventory.xlsx` in Excel: frozen header, filter, date and percent formats.
+  → checked 2026-10-12 on the real collection: no repair prompt, frozen header, filters, date formats right.
 - [x] **Workbook screenshots in the docs** (0027 and 0032): an HTML rendering of the first rows ·
   LibreOffice headless added to the docs tooling · one capture taken by hand in Excel · none.
   → none.
-- [ ] Check the default thresholds on the real collection: `[inventory] blurry_below = 100` and
+- [x] Check the default thresholds on the real collection: `[inventory] blurry_below = 100` and
   `clipped_above = 0.25` were guessed, not measured.
+  → checked 2026-10-12 on samples of the real collection: blurry, bright and dark files deserve their mark. Keep 100 / 0.25.
 - [x] Add the total video duration to the Summary sheet? Default: no.
   → no.
 - [x] Re-read the French column headers ("Rubrique", "Ouverture (f/)", "Débit binaire").

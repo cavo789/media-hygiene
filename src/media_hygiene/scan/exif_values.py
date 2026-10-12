@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import math
-from typing import SupportsFloat
+import re
+from typing import Final, SupportsFloat
+
+# C0 control characters but tab, line feed and carriage return: junk in EXIF text.
+_CONTROL: Final = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 
 
 def text(value: object) -> str | None:
-    """Clean an EXIF text value (bytes or str, padded with NULs or spaces).
+    """Clean an EXIF text value (bytes or str, padded or filled with NULs, spaces).
 
     Args:
         value: The raw value.
@@ -19,7 +23,9 @@ def text(value: object) -> str | None:
         value = value.decode(errors="replace")
     if not isinstance(value, str):
         return None
-    return value.strip("\x00 ").strip() or None
+    # EXIF text ends at its first NUL: what follows is leftover bytes.
+    value = value.strip("\x00 ").partition("\x00")[0]
+    return _CONTROL.sub("", value).strip() or None
 
 
 def number(value: object) -> float | None:

@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`
+- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
 
 ## Context
 
@@ -95,6 +95,28 @@ Decided in review (2026-10-12): if ArcFace is only slightly better, drop it and 
    and names the rule and the people named. Then `min_share = 50` and `all = true` with two
    names: fewer events taken. Decided in review (2026-10-12): `min_share` 10 % by default, to
    revisit after this try.
+
+## 6. One child across twenty years, look-alike siblings as babies
+
+Names already add up across ages: a second group named like an existing person joins their
+faces, and a face takes the name of the **nearest** confirmed face (`people/naming.py`), so a
+9-year-old leans on the confirmed faces at 8, never on an average of baby and adult. Two
+risks are not measured yet:
+
+1. **Siblings as babies.** Run `mh people` on a "babies" year (two children under 2): count
+   the groups mixing both children, and the × needed to split them. Then name a few faces of
+   each and run `people` again: count the faces given the sibling's name.
+2. **Infants.** On the same year: how many baby faces stay unnamed or form groups of one or
+   two faces (SFace is weak on infants), and whether lowering `[people] min_face` or
+   `similarity` helps or merges the siblings more.
+3. **Across the years.** Name one child on a few years spread out (baby, 8, 15, 20): the
+   `Named: …` count in the console, and in the faces suggested "Chloé ?" how many are wrong
+   (often a sibling at the same age).
+
+Decide afterwards: if the siblings are confused often (more × than a few per year), file a TODO
+to compare a face only with the confirmed faces of nearby years (EXIF date, already in the
+index); otherwise, nothing to build. The ArcFace run of §4 on the same year says whether a
+better model is the remedy instead.
 
 ## Acceptance
 
