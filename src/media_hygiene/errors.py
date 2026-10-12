@@ -6,6 +6,9 @@ from __future__ import annotations
 class MediaHygieneError(Exception):
     """Base class of every error the CLI reports to the user without a traceback."""
 
+    command: str | None = None  # the full command to paste after the tip, if any
+    link: tuple[str, str] | None = None  # (label, URL) of a page, printed last
+
     def __init__(self, message: str, tip: str | None = None) -> None:
         """Store the translated message and an optional 💡 tip.
 
@@ -56,3 +59,7 @@ class NominatimError(MediaHygieneError):
 
 class AlbumError(MediaHygieneError):
     """An album cannot be made: no folder for it, a bad name, nothing to gather."""
+
+
+class FaceModelError(MediaHygieneError):
+    """The face models cannot be run: no runtime, a failed or altered download."""

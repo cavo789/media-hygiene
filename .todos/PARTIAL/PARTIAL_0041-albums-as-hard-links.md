@@ -66,7 +66,7 @@ freely.
   `classify` and `clean` never see album links as duplicates (tested: 0 groups).
 - Tests: an album of a category and one by rating, `undo` leaves the originals byte-identical,
   the audit sees no duplicate, an album after a sort and the undo of that sort, the last name of
-  a file kept by `undo`, refusals. Docs en + fr (`sort/11-albums.md`, commands, safety, mount
+  a file kept by `undo`, refusals. Docs en + fr (`sort/12-albums.md`, commands, safety, mount
   points), `.po` translated.
 
 ### Not done

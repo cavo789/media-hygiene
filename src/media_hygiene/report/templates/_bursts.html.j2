@@ -1,0 +1,14 @@
+{# Burst series: included by report.html.j2, never by near.html.j2 (not moved by --tier near). #}
+{% from "_shots.html.j2" import shot %}
+{% set sim = report.similar %}
+{% if sim.bursts %}
+<h2 id="bursts">📸 {{ _("Burst series") }}</h2>
+<p class="note">{{ _("Shots of one camera, taken seconds apart. This is not duplication: neither 'clean' nor 'clean --tier near' touches them. The sharpest shot of each series is suggested; the choice is yours: 'media-hygiene review' shows the series one at a time to set shots aside, and 'clean --decisions' moves them to the quarantine.") }}</p>
+{% for series in sim.bursts %}
+<div class="shots">
+  <p class="muted caption">{{ series.camera }} · {{ ngettext("%(num)s shot", "%(num)s shots", series.shots | length, num=series.shots | length) }}</p>
+  {% for item in series.shots %}{{ shot(item, ("⭐ " ~ _("sharpest")) if item.path == series.best else "", "keep" if item.path == series.best else "") }}{% endfor %}
+</div>
+{% endfor %}
+{% if sim.hidden_bursts %}<p class="muted">{{ _("… and %(count)s more series.", count=sim.hidden_bursts | number) }}</p>{% endif %}
+{% endif %}

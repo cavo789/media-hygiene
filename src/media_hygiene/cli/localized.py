@@ -2,15 +2,17 @@
 
 Typer vendors Click without its gettext calls: "Usage:" and the help of `--help` are
 English literals. Click's public hooks (`format_usage`, `get_help_option`), reached
-through Typer's `cls=`, translate them; nothing of Typer is patched.
+through Typer's `cls=`, translate them; nothing of Typer is patched. The root group
+also turns Ctrl+C into one calm line instead of Typer's own abort.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Any, override
 
 from typer.core import TyperCommand, TyperGroup
 
+from media_hygiene.cli.interrupted import stop_on_interrupt
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -71,7 +73,22 @@ class LocalizedCommand(TyperCommand):
 
 
 class LocalizedGroup(TyperGroup):
-    """The root group, translated like `LocalizedCommand`."""
+    """The root group, translated like `LocalizedCommand`, calm on Ctrl+C."""
+
+    @override
+    def invoke(self, ctx: Context) -> Any:
+        """Run the command; Ctrl+C ends it with one line, never a traceback.
+
+        Args:
+            ctx: Context of the group.
+
+        Returns:
+            What the command returned.
+        """
+        try:
+            return super().invoke(ctx)
+        except KeyboardInterrupt:
+            stop_on_interrupt(ctx)
 
     @override
     def format_usage(self, ctx: Context, formatter: HelpFormatter) -> None:

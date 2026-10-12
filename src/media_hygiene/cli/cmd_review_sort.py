@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.sort_reviewing import open_sort_review, serve_sort_review
 
-SORT_REVIEW_PORT: Final = 8080
+if TYPE_CHECKING:
+    from media_hygiene.console.output import Output
+    from media_hygiene.review.sort_batch import SortBatchSession
 
 
 def review_sort_command(
@@ -24,7 +28,7 @@ def review_sort_command(
         ),
     ] = None,
     *,
-    port: Annotated[int, review_options.port()] = SORT_REVIEW_PORT,
+    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
 ) -> None:
     """Serve the events of a classify proposal in the browser until Ctrl+C.
 
@@ -40,6 +44,7 @@ def review_sort_command(
         if not session.event_count:
             output.success(_("No event in this proposal: nothing to review."))
             return
+        _tell_sure(output, session)
         serve_sort_review(runtime, session, port)
         events, files = session.progress
         output.blank()
@@ -50,9 +55,38 @@ def review_sort_command(
             ).format(events=human_number(events), files=human_number(files))
         )
         output.info(_("Your choices are in {place}.").format(place=session.hosts[1]))
-        output.tip(
+        verb = "sort" if workbook is None else f'sort "{workbook}"'
+        suggest(
+            runtime,
             _(
-                "Next: 'sort' applies them on top of the workbook, which you may "
-                "still edit; it refuses an event or a file edited otherwise in both."
-            )
+                "'sort' applies them on top of the workbook, which you may still "
+                "edit; it refuses an event or a file edited otherwise in both."
+            ),
+            NextVerb(carried(runtime, verb), CHANGING),
         )
+
+
+def _tell_sure(output: Output, session: SortBatchSession) -> None:
+    """Say how many events still to decide have a sure proposal, accepted by one click.
+
+    Args:
+        output: Where to tell it.
+        session: The review, opened.
+    """
+    open_events, sure = session.open_and_sure()
+    if not open_events:
+        return
+    message = ngettext(
+        "{count} event to decide: {sure} with a sure proposal (one click), {look} to "
+        "look at.",
+        "{count} events to decide: {sure} with a sure proposal (one click), {look} to "
+        "look at.",
+        open_events,
+    )
+    output.info(
+        message.format(
+            count=human_number(open_events),
+            sure=human_number(sure),
+            look=human_number(open_events - sure),
+        )
+    )

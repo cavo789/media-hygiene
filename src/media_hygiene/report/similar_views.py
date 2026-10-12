@@ -6,6 +6,9 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Sizes
+from media_hygiene.paths.file_uri import file_uri
+from media_hygiene.report.gain_order import gain_order
+from media_hygiene.report.near_reasons import group_note
 from media_hygiene.report.thumbnails import thumbnail_name
 from media_hygiene.report.video_views import VideoSection, video_section
 
@@ -16,11 +19,12 @@ if TYPE_CHECKING:
         NearDecision,
         SimilarFindings,
     )
+    from media_hygiene.report.near_reasons import GroupNote
     from media_hygiene.scan.models import MediaFile
 
 
 @dataclass(frozen=True, slots=True)
-class ShotView:
+class ShotView:  # pylint: disable=too-many-instance-attributes
     """One picture: where it is, its preview, and what tells it from the others."""
 
     path: str
@@ -30,6 +34,7 @@ class ShotView:
     size: int
     sharpness: float
     taken_at: str | None
+    uri: str | None = None  # opens the photo itself, when its host path is known
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,6 +44,7 @@ class NearView:
     kept: ShotView
     copies: tuple[ShotView, ...]
     protected: tuple[ShotView, ...]
+    note: GroupNote  # why, how sure, the space freed (`near_reasons`)
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,11 +58,15 @@ class BurstView:
 
 @dataclass(frozen=True, slots=True)
 class SimilarSection:
-    """What the report lists beyond exact duplicates, and how much is left out."""
+    """What the report lists beyond exact duplicates, and how many bursts are left out.
+
+    Every near duplicate is listed: `clean --tier near-all` moves them all, so the
+    report shows them all before the question is asked: the groups to check first,
+    the largest space first (`gain_order`).
+    """
 
     near: tuple[NearView, ...] = ()
     bursts: tuple[BurstView, ...] = ()
-    hidden_near: int = 0
     hidden_bursts: int = 0
     videos: VideoSection = field(default_factory=VideoSection)
 
@@ -70,12 +80,11 @@ def similar_files(similar: SimilarFindings) -> list[MediaFile]:
     Returns:
         Every picture shown.
     """
-    shown_near = similar.near[: Sizes.MAX_SIMILAR_IN_REPORT]
-    shown_bursts = similar.bursts[: Sizes.MAX_SIMILAR_IN_REPORT]
+    shown_bursts = similar.bursts[: Sizes.MAX_BURSTS_IN_REPORT]
     return [
         *(
             file
-            for decision in shown_near
+            for decision in similar.near
             for file in (decision.keeper, *decision.removable, *decision.protected)
         ),
         *(file for series in shown_bursts for file in series.shots),
@@ -98,20 +107,27 @@ class SimilarRenderer:
         Returns:
             The section.
         """
-        limit = Sizes.MAX_SIMILAR_IN_REPORT
+        limit = Sizes.MAX_BURSTS_IN_REPORT
         return SimilarSection(
-            near=tuple(self._near(d, similar) for d in similar.near[:limit]),
+            near=tuple(
+                self._near(decision, similar, share)
+                for decision, share in gain_order(similar.near)
+            ),
             bursts=tuple(self._burst(s, similar) for s in similar.bursts[:limit]),
-            hidden_near=max(0, len(similar.near) - limit),
             hidden_bursts=max(0, len(similar.bursts) - limit),
             videos=video_section(similar, self.mapper),
         )
 
-    def _near(self, decision: NearDecision, similar: SimilarFindings) -> NearView:
+    def _near(
+        self, decision: NearDecision, similar: SimilarFindings, running: int
+    ) -> NearView:
         return NearView(
             kept=self._shot(decision.keeper, similar),
             copies=tuple(self._shot(file, similar) for file in decision.removable),
             protected=tuple(self._shot(file, similar) for file in decision.protected),
+            note=group_note(
+                decision, lambda file: similar.visuals[file.path].pixels, running
+            ),
         )
 
     def _burst(self, series: BurstSeries, similar: SimilarFindings) -> BurstView:
@@ -124,13 +140,14 @@ class SimilarRenderer:
 
     def _shot(self, file: MediaFile, similar: SimilarFindings) -> ShotView:
         visual = similar.visuals[file.path]
-        name = thumbnail_name(file)
+        name, path = thumbnail_name(file), self.mapper.to_host(file.path)
         return ShotView(
-            path=self.mapper.to_host(file.path),
+            path=path,
             thumbnail=name if name in self.previews else None,
             width=visual.width,
             height=visual.height,
             size=file.size,
             sharpness=visual.sharpness,
             taken_at=visual.taken_at,
+            uri=file_uri(path),
         )

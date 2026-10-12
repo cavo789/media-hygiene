@@ -1,6 +1,7 @@
 """The whole plan as a spreadsheet: one row per file, readable by Excel in any language.
 
-The HTML report caps the groups it lists; this file never does. Excel reads a CSV with
+The HTML report caps the exact-duplicate groups it lists; this file never does, and
+lists the near duplicates too (`csv_near`). Excel reads a CSV with
 the list separator of the regional settings (`;` in French, `,` in English) and needs a
 byte order mark to read accents: both follow the interface language. Excel computes a
 cell that starts with `=`, `+`, `-` or `@`: such text gets a leading apostrophe, so that
@@ -16,6 +17,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason, Locale
 from media_hygiene.i18n import _, active_locale
+from media_hygiene.report.csv_near import near_lines
 from media_hygiene.report.reasons import broken_reason_label, keep_reason_label
 
 if TYPE_CHECKING:
@@ -23,7 +25,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
-    from media_hygiene.plan.models import CleanPlan
+    from media_hygiene.plan.models import AuditFindings, CleanPlan
     from media_hygiene.scan.models import BrokenFile, MediaFile
 
 type Row = tuple[str | int, ...]
@@ -60,15 +62,17 @@ def list_separator() -> str:
     return _SEPARATORS.get(active_locale(), _DEFAULT_SEPARATOR)
 
 
-def write_plan_csv(target: Path, plan: CleanPlan, mapper: HostPathMapper) -> None:
-    """Write every file of the plan: group by group, the broken files, the orphans.
+def write_plan_csv(
+    target: Path, findings: AuditFindings, mapper: HostPathMapper
+) -> None:
+    """Write every file of the plan: groups, near duplicates, broken files, orphans.
 
     Args:
         target: The CSV file to write.
-        plan: The plan of the audit or clean.
+        findings: The audit or clean, holding the plan and the near duplicates.
         mapper: Host/container path translator.
     """
-    rows = _Rows(mapper)
+    rows, plan = _Rows(mapper), findings.plan
     with target.open("w", encoding=CSV_ENCODING, newline="") as stream:
         writer = csv.writer(stream, delimiter=list_separator())
         writer.writerow(
@@ -81,9 +85,17 @@ def write_plan_csv(target: Path, plan: CleanPlan, mapper: HostPathMapper) -> Non
                 _("Folder"),
                 _("Modified (UTC)"),
                 _("Detail"),
+                _("Near-duplicate level"),
             )
         )
         writer.writerows(rows.duplicates(plan))
+        writer.writerows(
+            rows.row(
+                line.file,
+                _Line(line.action, line.group, detail=line.detail, level=line.level),
+            )
+            for line in near_lines(findings)
+        )
         writer.writerows(rows.broken(plan))
         orphan = _Line(
             _("move to the quarantine"),
@@ -100,6 +112,7 @@ class _Line:
     group: str = ""
     digest: str = ""
     detail: str = ""
+    level: str = ""  # near duplicates: sure or to check
 
 
 @dataclass(frozen=True, slots=True)
@@ -168,6 +181,7 @@ class _Rows:
             self.mapper.to_host(file.path.parent),
             modified.strftime(CSV_DATE_FORMAT),
             line.detail,
+            line.level,
         )
         return tuple(spreadsheet_text(text) for text in texts)
 

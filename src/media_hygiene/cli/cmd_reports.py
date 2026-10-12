@@ -9,6 +9,7 @@ from rich.table import Table
 
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.console.links import file_link
 from media_hygiene.constants import RunKind
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
@@ -83,8 +84,16 @@ def reports_command(
             human_number(summary.broken_files),
         )
     output.show(table)
+    index_on_host = runtime.mapper.to_host(index)
+    if index_on_host == str(index):  # the host folder behind /reports is unknown
+        output.tip(
+            _("Double-click {name} in the folder mounted on /reports.").format(
+                name=index.name
+            )
+        )
+        return
     output.tip(
-        _("Double-click {name} in the folder mounted on /reports.").format(
-            name=index.name
+        _("Every report is listed in {path} (Ctrl+click opens it).").format(
+            path=file_link(index_on_host)
         )
     )

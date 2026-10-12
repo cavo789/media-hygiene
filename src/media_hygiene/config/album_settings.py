@@ -6,6 +6,8 @@ from typing import Final
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from media_hygiene.i18n import _
+
 _FIRST_PRINTABLE: Final = 0x20
 
 
@@ -35,9 +37,9 @@ class AlbumSettings(BaseModel):
             ValueError: It contains a control character.
         """
         if any(ord(char) < _FIRST_PRINTABLE for char in root):
-            message = (
-                f"{root!r} contains a control character: write Windows paths "
+            message = _(
+                "{path} contains a control character: write Windows paths "
                 "between 'single quotes' in config.toml"
-            )
+            ).format(path=repr(root))
             raise ValueError(message)
         return root

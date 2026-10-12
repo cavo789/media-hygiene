@@ -41,11 +41,11 @@ def test_demo_tree_findings(locations: Locations) -> None:
     )
     expected_groups = 5 if FFMPEG else 4
     assert len(plan.decisions) == expected_groups
-    # Its sidecar (its edits) keeps a photo; otherwise, the shortest path wins the tie.
+    # Its sidecar (its edits) keeps a photo; otherwise a named folder beats `2019`.
     assert "c/Family Photos/2019/Vacances/IMG_0001.jpg" in keepers
-    assert "d/backup/2019/IMG_0003.jpg" in keepers
+    assert "c/Family Photos/2019/Vacances/IMG_0003.jpg" in keepers
     # Two copies of IMG_0002 have their own sidecar: only one of them can stay.
-    assert [file.path.name for file in plan.orphans] == ["IMG_0002.xmp"]
+    assert [file.path.name for file in plan.orphans] == ["IMG_0002.AAE"]
     removable = [f.path for d in plan.decisions for f in d.removable]
     assert "IMG_0001 (1).jpg" in names(removable)
     assert not any("Rafale" in str(path) for path in removable)
@@ -127,15 +127,20 @@ class RecordingProgress:
         """Start with no step."""
         self.steps: list[tuple[str, int | None]] = []
         self.advances: list[int] = []
+        self.weights: list[int] = []
 
     def start(self, step: Step, total: int | None) -> None:
         """Record a step."""
         self.steps.append((step.title, total))
         self.advances.append(0)
 
-    def advance(self) -> None:
-        """Count one unit of the current step."""
+    def advance(self, weight: int = 1) -> None:
+        """Count one unit of the current step, and its weight."""
         self.advances[-1] += 1
+        self.weights.append(weight)
+
+    def current(self, text: str) -> None:
+        """Nothing to record."""
 
     def stop(self) -> None:
         """Nothing to record."""

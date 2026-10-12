@@ -2,8 +2,9 @@
 
 Two images are near duplicates only when every test agrees: both 64-bit hashes differ
 by at most `NEAR_DISTANCE` bits, the aspect ratio is the same (±1 %), and the smaller
-one was shot at the same moment or has lost its date. A burst (another moment) never
-qualifies.
+one was shot at the same moment or has lost its date, and both keep the same colours
+when they were measured (a black and white edit is not a copy). A burst (another
+moment) never qualifies.
 Featureless images (black, white, blank) are left out: they all hash alike.
 
 Candidates meet through multi-index hashing: two hashes at most 3 bits apart share at
@@ -16,8 +17,15 @@ from collections import defaultdict
 from itertools import combinations
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.plan.likeness import HASH_BITS, distance, is_flat, same_aspect
-from media_hygiene.plan.similar_models import NearDecision
+from media_hygiene.plan.likeness import (
+    HASH_BITS,
+    distance,
+    is_flat,
+    same_aspect,
+    same_colours,
+)
+from media_hygiene.plan.near_keeper import choose_keeper
+from media_hygiene.plan.near_rounds import Grouping, in_rounds
 from media_hygiene.plan.union_find import UnionFind
 
 if TYPE_CHECKING:
@@ -25,6 +33,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.plan.keeper import KeepPolicy
+    from media_hygiene.plan.near_keeper import NearChoice
+    from media_hygiene.plan.similar_models import NearDecision
     from media_hygiene.scan.models import MediaFile, VisualFacts
 
 NEAR_DISTANCE: Final = 2
@@ -59,6 +69,7 @@ def is_near(best: VisualFacts, other: VisualFacts) -> bool:
         and distance(best.phash, other.phash) <= NEAR_DISTANCE
         and same_aspect((best.width, best.height), (other.width, other.height))
         and (other.taken_at is None or other.taken_at == best.taken_at)
+        and same_colours(best.colour, other.colour)
     )
 
 
@@ -69,8 +80,11 @@ def near_decisions(
 ) -> tuple[NearDecision, ...]:
     """Group near duplicates and choose the version to keep in each group.
 
-    The highest resolution is kept, then the largest file, then the usual keep rules.
+    The highest resolution is kept, then a file larger by 1 % or more, then the usual
+    keep rules (`near_keeper`).
     Only copies near the kept version are listed; protected copies are never removable.
+    The rest of a group, and the chains its copies held together, are settled in
+    rounds (`near_rounds`): a second audit after cleaning finds nothing new.
 
     Args:
         files: Candidate images, one per exact-duplicate group.
@@ -85,31 +99,37 @@ def near_decisions(
         for file in files
         if file.path in visuals and not is_featureless(visuals[file.path])
     ]
-    decisions: list[NearDecision] = []
-    for cluster in _clusters(usable, visuals):
-        keeper = min(
-            cluster,
-            key=lambda file: (
-                -visuals[file.path].pixels,
-                -file.size,
-                policy.rank(file),
-            ),
-        )
-        near = [
-            file
-            for file in cluster
-            if file != keeper and is_near(visuals[keeper.path], visuals[file.path])
-        ]
-        removable = tuple(file for file in near if not policy.is_protected(file))
-        if removable:
-            decisions.append(
-                NearDecision(
-                    keeper,
-                    removable,
-                    tuple(file for file in near if policy.is_protected(file)),
-                )
-            )
-    return tuple(sorted(decisions, key=lambda d: (-d.keeper.size, str(d.keeper.path))))
+    grouping = Grouping(
+        clusters=lambda left: _clusters(left, visuals),
+        settle=lambda cluster: _settle(cluster, visuals, policy),
+        policy=policy,
+    )
+    return in_rounds(usable, grouping)
+
+
+def _settle(
+    cluster: list[MediaFile],
+    visuals: Mapping[Path, VisualFacts],
+    policy: KeepPolicy,
+) -> tuple[NearChoice, list[MediaFile]]:
+    """Choose the version to keep among linked images, and find its near copies.
+
+    Args:
+        cluster: Linked images, two or more.
+        visuals: What each one looks like.
+        policy: Protected folders and the usual keep rules.
+
+    Returns:
+        The version kept and why, and the copies near it.
+    """
+    choice = choose_keeper(cluster, lambda file: visuals[file.path].pixels, policy)
+    best = visuals[choice.keeper.path]
+    near = [
+        file
+        for file in cluster
+        if file != choice.keeper and is_near(best, visuals[file.path])
+    ]
+    return choice, near
 
 
 def _clusters(
@@ -166,4 +186,5 @@ def _close(first: VisualFacts, second: VisualFacts) -> bool:
     return (
         distance(first.phash, second.phash) <= NEAR_DISTANCE
         and distance(first.dhash, second.dhash) <= NEAR_DISTANCE
+        and same_colours(first.colour, second.colour)
     )

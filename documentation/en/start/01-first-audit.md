@@ -8,7 +8,7 @@ the system itself forbids any change ([how your photos stay safe](../reference-s
 
 ## What you need
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- Docker installed and running: [step 0](00-install-docker.md) shows how, on Windows or Linux.
 - A folder of photos and videos, here `C:\Photos`.
 - A PowerShell window (or a WSL terminal, see [step 3](03-several-folders.md#from-wsl)).
 
@@ -33,7 +33,7 @@ The first run downloads the tool (a few hundred MB); the next ones start at once
 | `audit` | What to do: look for duplicates and broken files. |
 
 > 💡 The tool speaks English. Add `--locale fr` right after `cavo789/media-hygiene` for French:
-> `cavo789/media-hygiene --locale fr audit`. [Step 7](../clean/07-configuration-file.md) makes it permanent.
+> `cavo789/media-hygiene --locale fr audit`. [Cleaning, step 7](../clean/07-configuration-file.md) makes it permanent.
 
 ## What you see while it runs
 
@@ -71,86 +71,106 @@ program):
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Audit summary
 ┌──────────────────────────────────────────────────────┬────────┐
-│ Media files scanned                                  │     59 │
+│ Media files scanned                                  │     61 │
 │ Groups of identical files                            │      8 │
 │ Extra copies that can be set aside                   │     12 │
 │ Space that can be freed                              │ 3.4 MB │
 │ Broken files (empty or unreadable)                   │      0 │
-│ Near duplicates (moved only with --tier near)        │      1 │
+│ Near duplicates (moved only with --tier near)        │      2 │
+│ Re-encoded videos (moved only with --tier near)      │      1 │
 │ Burst series (moved only if set aside with 'review') │      3 │
 │ Duration                                             │    2 s │
 └──────────────────────────────────────────────────────┴────────┘
 
-Inventory
-┌───────────────────────────────────────┬──────────────────┐
-│ Photos with a shooting date           │   57 of 58 (98%) │
-│ Videos with a date in their tags      │      0 of 1 (0%) │
-│ Photos and videos with a GPS position │     0 of 59 (0%) │
-│ Photo formats                         │ JPEG 55 · HEIF 3 │
-│ Total length of the videos            │              8 s │
-└───────────────────────────────────────┴──────────────────┘
-
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (moved to the quarantine), 2.2 MB freed by 'purge'.
-  C:\Photos\Old phone holds nothing else: it is entirely a copy of
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.3 MB to free
+  with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (moved to the quarantine), 864.7 KB freed by
-  'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
-  of C:\Photos\2019\Seaside holidays.
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 872.9 KB
+  to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
+  entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB to free).
+  is kept (292.0 KB to free).
 
-💡 Add -v "<a folder of yours>:/reports" to get HTML reports.
-💡 Run 'clean' (same -v options, without :ro) to set 3.4 MB of copies aside.
-💡 Second opinion: run Czkawka, an independent duplicate finder, on the same
-folders, then 'media-hygiene crosscheck' (same -v options):
-docker run --rm -v "C:\Photos:/data/c/Photos:ro" … -C /out/czkawka.json
+What you can do
+✅ 12 identical copies, 3.4 MB: no risk, one command.
+👀 3 groups of near duplicates: 1 sure, 2 to look at (~1 min in 'review
+--near'); 'clean --tier near' moves the sure ones.
+🎞️ 3 burst series: optional, ~2 min in 'review'; the series not reviewed are
+kept whole.
+
+👉 What next: run 'clean' to set 3.4 MB of copies aside. The command adds
+/journal, /quarantine: folders of your home.
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene clean
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.
-💡 Near duplicates and bursts are in the HTML report; 'clean --tier near' moves
-near duplicates to the quarantine.
-💡 Sort the burst series with the keyboard: 'media-hygiene review' (add -p
-127.0.0.1::8080 to docker run).
-💡 Add -v media-hygiene-cache:/cache: the next audits will be much faster.
+⚙️  To set once: -v "<a folder of yours>:/reports" (HTML reports); -v
+media-hygiene-cache:/cache (much faster next audits); -e TZ=Europe/Brussels
+(times in your time zone, not UTC).
+(2 more tips: add --verbosity verbose to see them.)
 ```
 
-The table first:
+The table first (a word you do not know? [the words of this guide](../reference-glossary.md)):
 
 | Line | What it means |
 |---|---|
 | Media files scanned | Every photo, RAW file and video found. Sidecars (`.xmp`, …) are not counted. |
 | Groups of identical files | How many distinct photos or videos exist in several identical copies. |
-| Extra copies that can be deleted | The files a clean would delete. For every photo present several times, one copy is kept and the others are extra: a photo stored in 3 folders gives 2 extra copies. |
+| Extra copies that can be set aside | The files a clean would move to the quarantine (nothing is erased). For every photo present several times, one copy is kept and the others are extra: a photo stored in 3 folders gives 2 extra copies. |
 | Space that can be freed | The total size of those extra copies. |
 | Broken files | Empty files (0 bytes) and files that cannot be opened (truncated JPEG, damaged video). |
 | Orphan sidecars | Only when there are some: [sidecar files](../reference-sidecars.md) left without their photo. |
-| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([step 11](../clean/11-near-duplicates.md)). |
-| Burst series | Shots taken seconds apart. Never touched unless you choose ([step 10](../clean/10-review-bursts.md)). |
+| Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([cleaning, step 11](../clean/11-near-duplicates.md)). |
+| Burst series | Shots taken seconds apart. Never touched unless you choose ([cleaning, step 10](../clean/10-review-bursts.md)). |
 | Duration | How long the whole audit took. |
 
-Then the *Inventory*: what your photos and videos say about themselves. How many photos have a
-shooting date (written by the camera), how many videos carry a date in their tags, how many files
-hold a GPS position, the formats of the photos and the total length of the videos. Nothing is
-judged there: these are facts the files hold, counted for you.
+With `--verbosity verbose` (a global option, before `audit`), the *Inventory* follows: what your
+photos and videos say about themselves. How many photos have a shooting date (written by the
+camera), how many videos carry a date in their tags, how many files hold a GPS position, the
+formats of the photos and the total length of the videos. Nothing is judged there: these are
+facts the files hold, counted for you. The [`inventory`](../reference-inventory.md) command
+lists them file by file.
 
 Then *Folders sharing identical files*: each sentence is a pair of folders holding the same
-files. The copies in the first folder are **kept**, those in the second one would be
-**deleted**, and the space it frees comes last. The pairs freeing the most space come first.
+files. The copies in the first folder are **kept**; those in the second one are the copies
+`clean` will move to the quarantine, and the space they take comes last. It is a forecast: the
+audit has moved nothing. The pairs freeing the most space come first.
 
 - *"… holds nothing else: it is entirely a copy of …"*: the second folder only holds copies of
   files kept elsewhere. The most reassuring case: that folder is a plain copy.
 - *"… is present several times in …: one copy is kept"*: the same file twice in one folder,
   such as `IMG_0101.jpg` and `IMG_0101 (1).jpg`.
 
-Not the folder you want to keep? [Step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
+Not the folder you want to keep? [Cleaning, step 5](../clean/05-choose-the-kept-copy.md) shows how to choose.
 
-Last come the 💡 tips. They suggest what to add next, and the next steps of this guide follow
-them one by one.
+Then *What you can do*: at most three lines, each with what it gains and what it costs you.
+
+| Line | What it means |
+|---|---|
+| ✅ identical copies | No risk, one command: `clean` sets them aside, `undo` brings them back. |
+| 👀 near duplicates | Groups to look at before moving them, with an estimate of the time it takes ([cleaning, step 11](../clean/11-near-duplicates.md)). |
+| 🎞️ burst series | Optional: a series you do not review is kept whole ([cleaning, step 10](../clean/10-review-bursts.md)). |
+
+The 👉 line gives the step that logically comes next, followed by its **full command**, ready to
+paste: your folders on the same mount points (without `:ro` for a command that changes them), the
+folders you already mount, and the ones the next command needs that this run lacked (such as
+`/journal` and `/quarantine`, in a `media-hygiene` folder of your home, created first by
+`mkdir`). It is written for PowerShell when your folders are Windows paths (`C:\…`), for bash
+otherwise: the examples of this guide show the PowerShell one (`C:\Photos`).
+
+Then at most two 💡 tips, the most useful first; the options worth setting once (the cache, your
+time zone, a reports folder) share a single ⚙️ line. A last line says how many tips were left out:
+add `--verbosity verbose` to see them all. The next steps of this guide follow them one by one.
 
 > 🔒 Nothing has changed in `C:\Photos`: an audit never writes, and `:ro` made sure of it.
 
 ---
 
-[Documentation](../README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →
+← [0. Install Docker](00-install-docker.md) · [Documentation](../README.md) · Next: **[2. Keep the cache](02-keep-the-cache.md)** →

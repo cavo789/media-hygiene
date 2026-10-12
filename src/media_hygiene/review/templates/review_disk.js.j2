@@ -1,0 +1,27 @@
+{# Included in the script of review.html.j2: the panel under the shots, showing what the
+   decisions file read back from the disk holds for the series on screen. #}
+  const fileName = (path) => path.slice(Math.max(path.lastIndexOf("\\"), path.lastIndexOf("/")) + 1);
+
+  const names = (title, paths, css) => {
+    const block = document.createElement("div");
+    block.className = "names " + css;
+    block.append(line("strong", title + " (" + paths.length + ")"));
+    const list = document.createElement("ul");
+    list.append(...paths.map((path) => line("li", fileName(path))));
+    block.append(list);
+    return block;
+  };
+
+  const showDisk = () => {
+    const entry = disk.get(current);
+    if (!entry) {
+      byId("diskBody").replaceChildren(line("p", T.diskMissing, "muted"));
+      byId("rawJson").textContent = "";
+      return;
+    }
+    // No choice yet: the file keeps every shot, but nothing was decided; no list to show.
+    const lists = entry.status === "done" ? [names(T.diskKept, entry.kept, "kept"), names(T.diskAside, entry.discarded, "aside")] : [];
+    byId("diskBody").replaceChildren(line("p", entry.status === "done" ? T.diskDone : T.diskTodo, entry.status), ...lists);
+    const { status, kept, discarded } = entry;
+    byId("rawJson").textContent = JSON.stringify({ status, kept, discarded }, null, 2);
+  };

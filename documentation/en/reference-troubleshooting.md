@@ -2,6 +2,13 @@
 
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-troubleshooting.md)
 
+## Docker answers instead of the tool
+
+*'docker' is not recognized*, *command not found*, *error during connect*, *Cannot connect to
+the Docker daemon*, *permission denied … docker.sock*: the tool has not started yet, Docker
+itself is missing or stopped. Open Docker Desktop and wait for *Engine running* (Windows), or
+follow [install Docker](start/00-install-docker.md#if-it-does-not-work) (Windows and Linux).
+
 ## A real backup is seen as duplicates
 
 If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)
@@ -52,13 +59,32 @@ before the analysis and names the folder.
 
 Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, TOML turns the
 `\b` of `"D:\backup"` into a control character, and the tool refuses such a path rather than
-ignoring it ([step 7](clean/07-configuration-file.md#fill-it-in)).
+ignoring it ([cleaning, step 7](clean/07-configuration-file.md#fill-it-in)).
+
+## A setting of `config.toml` is unknown to this version
+
+```text
+❌ 'timezon' in [general] of config.toml is unknown to version 0.3.0: a typo, or a setting of a
+newer version? Did you mean 'timezone'?
+💡 Correct or remove it, or update the image to the latest version:
+docker pull cavo789/media-hygiene
+```
+
+A typo is named with the setting it looks like. A setting copied from a newer documentation needs
+the newer image: `docker pull cavo789/media-hygiene`. The same goes for a variable
+`MEDIA_HYGIENE_<SECTION>__<KEY>` passed with `-e`. A refused value (`verbosity = "loud"`) says
+what is expected instead. Several problems at once are listed one per line, under a single
+heading. A problem inside a `[[classify.rules]]` entry, a place or a person names it by its
+number and its `name`: `'match' in [[classify.rules]] number 2 ('Birthday') of config.toml: this
+setting is required.`
 
 ## The review page does not open
 
-- Did you publish the port? The command needs `-p 127.0.0.1::8080`.
-- The address comes from `docker port media-hygiene-review 8080`, in another window, while the
-  review runs ([step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+- Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both
+  sides, or the address the review prints is not the right one
+  ([cleaning, step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+- *port is already allocated*: another program uses 8088. Choose another number, the same three
+  times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.
   Start it again; your choices are kept.

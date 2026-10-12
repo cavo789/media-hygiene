@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validat
 
 from media_hygiene.config.categories import expanded, requested, valid_categories
 from media_hygiene.constants import MEDIA_EXTENSIONS
+from media_hygiene.i18n import _
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _SEPARATORS: Final = ("/", "\\")
@@ -82,10 +83,10 @@ class ScanSettings(BaseModel):
         valid = tuple(dict.fromkeys(part for part in parts if part))
         paths = [name for name in valid if any(sep in name for sep in _SEPARATORS)]
         if paths:
-            message = (
-                f"{paths[0]} is a path, not a folder name: use --exclude "
+            message = _(
+                "{path} is a path, not a folder name: use --exclude "
                 "(folders.excluded) for one precise folder"
-            )
+            ).format(path=paths[0])
             raise ValueError(message)
         return valid
 

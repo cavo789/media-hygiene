@@ -71,6 +71,10 @@ that pace, 10,000 photos would take 11 hours. So each **event** (photos taken cl
 `samples_per_event` (3 by default): the sharpest photos, spread over its span. The other photos
 and the videos of the event follow them. A lone photo answers for itself.
 
+Already ran [`tags`](../reference-tags.md#the-words-of-a-local-vision-model) with the same
+`model`? Its answers are reused: a sample `tags` described is not sent again, only its sentence
+and words are matched to your categories (seconds, text only).
+
 The **confidence** comes from the samples, never from what the model says of itself:
 
 | Samples | Proposal |
@@ -88,6 +92,13 @@ on a thumbnail, the model invents details.
 Before a long run, describe a few random photos and read the cost:
 
 ```powershell
+mh classify --sample 50
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
@@ -95,7 +106,10 @@ docker run --rm -it `
   cavo789/media-hygiene classify --sample 50
 ```
 
-On Docker Engine, add `--add-host=host.docker.internal:host-gateway` after `-it`.
+</details>
+
+On Docker Engine, `mh` cannot reach Ollama: use the full command, with
+`--add-host=host.docker.internal:host-gateway` after `-it`.
 
 ```text
 412 events or lone photos have no stronger signal than their subject: 1,236 photos

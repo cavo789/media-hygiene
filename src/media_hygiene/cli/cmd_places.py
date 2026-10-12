@@ -2,22 +2,23 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import Annotated
 
 import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.i18n import _
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.places import open_places, serve_places
-
-PLACES_PORT: Final = 8080
 
 
 def places_command(
     ctx: typer.Context,
     *,
-    port: Annotated[int, review_options.port()] = PLACES_PORT,
+    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
 ) -> None:
     """Serve the map of the photos' positions until Ctrl+C.
 
@@ -28,13 +29,20 @@ def places_command(
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
-        board = open_places(runtime)
+        again = NextVerb(
+            carried(runtime, "places"),
+            (MountKind.CONFIG, MountKind.CACHE),
+            port=port,
+        )
+        board = open_places(runtime, again)
         serve_places(runtime, board, port)
         output.blank()
         output.success(_("Map stopped; your places are in config.toml."))
-        output.tip(
+        suggest(
+            runtime,
             _(
-                "Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], "
-                "then 'classify'."
-            )
+                "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
+                "'classify'."
+            ),
+            NextVerb(carried(runtime, "classify")),
         )

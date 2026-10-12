@@ -8,15 +8,33 @@ lancement.
 
 ## Créer le fichier
 
-L'outil ne voit que les dossiers que vous montez : donnez-lui donc un de vos dossiers sur
-`/config`, et lancez une fois la commande `config` :
+L'outil ne voit que les dossiers que vous montez : il lit le fichier dans un de vos dossiers
+monté sur `/config` (`mh` monte `$HOME\media-hygiene\config`). Lancez une fois la commande
+`config` :
 
 ```powershell
-mkdir "$HOME\media-hygiene\config"
+mh config
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
 docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config
 ```
 
-La première ligne dit ce qui s'est passé :
+</details>
+
+Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-hygiene\config`. Ouvrez-le avec
+n'importe quel éditeur de texte, le Bloc-notes convient :
+
+```powershell
+notepad "$HOME\media-hygiene\config\config.toml"
+```
+
+<details>
+<summary>Ce que <code>config</code> a affiché (sa première ligne dit que le fichier a été créé, puis chaque réglage)</summary>
 
 <!-- capture: config-first.txt|Un fichier de configuration commenté| -->
 ```text
@@ -26,6 +44,7 @@ Réglages effectifs
 ┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
 │ general.locale              │ fr                         │ ligne de commande │
+│ general.timezone            │                            │ défaut            │
 │ general.verbosity           │ info                       │ défaut            │
 │ general.color               │ never                      │ ligne de commande │
 │ folders.preferred           │ []                         │ défaut            │
@@ -62,7 +81,8 @@ Réglages effectifs
 │                             │ _-].*)?', 'image\\d*',     │                   │
 │                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
 │                             │ {3}-[0-9a-f]{12}',         │                   │
-│                             │ '[0-9a-f]{16,}']           │                   │
+│                             │ '[0-9a-f]{16,}',           │                   │
+│                             │ '\\d{1,6}']                │                   │
 │ keep.generic_folders        │ ['DCIM',                   │ défaut            │
 │                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
 │                             │ 'Camera( Roll| Uploads)?', │                   │
@@ -73,8 +93,67 @@ Réglages effectifs
 │                             │ d.écran', '(New            │                   │
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
-│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ ',                         │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [-_.                       │                   │
+│                             │ ](?P<month>\\d{1,2})',     │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)\ │                   │
+│                             │ \.?[                       │                   │
+│                             │ _-]*(?P<year>(?:19|20)\\d{ │                   │
+│                             │ 2})',                      │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [                          │                   │
+│                             │ _-]*(?P<month_name>janvier │                   │
+│                             │ |january|januari|jan|févri │                   │
+│                             │ er|fevrier|february|februa │                   │
+│                             │ ri|feb|fév|fev|mars|march| │                   │
+│                             │ maart|mar|avril|april|apr| │                   │
+│                             │ avr|mai|may|mei|juin|june| │                   │
+│                             │ juni|jun|juillet|july|juli │                   │
+│                             │ |jul|juil|août|aout|august │                   │
+│                             │ |augustus|aug|septembre|se │                   │
+│                             │ ptember|sep|sept|octobre|o │                   │
+│                             │ ctober|oktober|oct|okt|nov │                   │
+│                             │ embre|november|nov|décembr │                   │
+│                             │ e|decembre|december|dec|dé │                   │
+│                             │ c)',                       │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)' │                   │
+│                             │ ,                          │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
+│                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
+│ clean.purge_hint_days       │ 30                         │ défaut            │
+│ review.propose_aside_below  │ 0.35                       │ défaut            │
+│ review.identical_below      │ 6                          │ défaut            │
+│ review.brightness_gap       │ 60.0                       │ défaut            │
+│ review.clipped_gap          │ 0.25                       │ défaut            │
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
 │ classify.timezone           │                            │ défaut            │
@@ -97,8 +176,9 @@ Réglages effectifs
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
 │                             │ 90, 'other-category': 85,  │                   │
-│                             │ 'subject': 85, 'place':    │                   │
-│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'subject': 85, 'person':   │                   │
+│                             │ 85, 'place': 90,           │                   │
+│                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
 │                             │ 'date-only': 90,           │                   │
@@ -130,6 +210,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ 'download', 'categories':  │                   │
 │                             │ [], 'per_photo': False,    │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Existing folders',        │                   │
 │                             │ 'match':                   │                   │
@@ -138,6 +220,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Screenshots and           │                   │
 │                             │ documents', 'match':       │                   │
@@ -148,6 +232,8 @@ Réglages effectifs
 │                             │ 'screenshot',              │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Event neighbours',        │                   │
 │                             │ 'match':                   │                   │
@@ -156,6 +242,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Christmas', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -164,6 +252,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'New Year', 'match':       │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -172,6 +262,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}]            │                   │
 │ classify.ai                 │ {'url':                    │ défaut            │
 │                             │ 'http://host.docker.intern │                   │
@@ -207,6 +299,29 @@ Réglages effectifs
 │ places.nominatim_url        │ https://nominatim.openstre │ défaut            │
 │                             │ etmap.org                  │                   │
 │ album.root                  │                            │ défaut            │
+│ tags.language               │                            │ défaut            │
+│ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
+│                             │ 'intérieur', 'extérieur',  │                   │
+│                             │ 'plafond', 'photo',        │                   │
+│                             │ 'image', 'personne',       │                   │
+│                             │ 'personnes', 'chose',      │                   │
+│                             │ 'objet', 'fond', 'scène',  │                   │
+│                             │ 'vue', 'floor', 'wall',    │                   │
+│                             │ 'indoor', 'indoors',       │                   │
+│                             │ 'outdoor', 'outdoors',     │                   │
+│                             │ 'ceiling', 'picture',      │                   │
+│                             │ 'person', 'people',        │                   │
+│                             │ 'thing', 'object',         │                   │
+│                             │ 'background', 'scene',     │                   │
+│                             │ 'view']                    │                   │
+│ tags.town_km                │ 20.0                       │ défaut            │
+│ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
+│ people.similarity           │ 0.363                      │ défaut            │
+│ people.min_face             │ 40                         │ défaut            │
+│ people.min_sharpness        │ 30.0                       │ défaut            │
+│ people.with_audit           │ False                      │ défaut            │
+│ people.ignored              │ 0 visages                  │ défaut            │
+│ people.person               │                            │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -241,9 +356,34 @@ Points de montage
 de commande l'emportent.
 ```
 
-Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-hygiene\config`. Ouvrez-le avec
-n'importe quel éditeur de texte (le Bloc-notes convient). Chaque réglage y est expliqué, par
-exemple :
+</details>
+
+## Les trois réglages que la plupart des gens changent
+
+Trouvez ces lignes dans le fichier, changez leurs valeurs, enregistrez :
+
+```toml
+[general]
+locale = "fr"                 # la langue de l'outil : en | fr
+timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC, une ou deux heures de décalage
+
+[folders]
+preferred = ['C:\Photos\Famille']  # les dossiers dont les copies sont gardées en priorité
+```
+
+- **`locale`** : `"fr"` pour le français, `"en"` pour l'anglais.
+- **`timezone`** : votre fuseau, comme `Europe/Paris` ou `America/Montreal`, pour que les
+  rapports soient nommés et datés à votre heure.
+- **`preferred`** : les dossiers qui gardent leurs copies ([étape 5](05-choose-the-kept-copy.md)) ;
+  chemins Windows entre **apostrophes**.
+
+Les lancements suivants lisent le fichier tant que `-v …:/config` est dans la commande (`mh`
+l'ajoute pour vous). Tout le reste peut attendre : la suite de cette page explique les autres
+réglages.
+
+## Chaque réglage est expliqué dans le fichier
+
+Par exemple, le début du fichier :
 
 <!-- capture: config.toml|[general]|color =  -->
 ```toml
@@ -252,7 +392,14 @@ exemple :
 # CLI: --locale
 locale = "fr"
 
-# Quantité de messages : "error", "warning", "info" ou "debug".
+# Votre fuseau horaire, pour les dates et les noms des rapports et des exécutions, par
+# exemple "Europe/Brussels" ou "America/Montreal" (liste :
+# https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA). Vide : UTC, car Docker
+# ne connaît pas le vôtre.
+timezone = ""
+
+# Quantité de messages : "error", "warning", "info", "verbose" (info et tous les
+# conseils, pas seulement les deux meilleurs) ou "debug".
 # CLI: --verbosity
 verbosity = "info"
 
@@ -276,6 +423,7 @@ Les réglages des étapes 5 et 6, dans le fichier. Écrivez les chemins Windows 
 ```toml
 [general]
 locale = "fr"          # en | fr
+timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC
 
 [folders]
 preferred = ['C:\Photos\Ancien téléphone', 'C:\Photos\Famille']
@@ -297,6 +445,11 @@ confirm = true         # sort demande avant de déplacer quoi que ce soit
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un dossier en vie
 ```
 
+- **`timezone`** : votre fuseau horaire, pour les heures affichées et les noms des rapports et des
+  exécutions. Docker ne le connaît pas : vide, tout est en UTC (l'audit vous le rappelle). Son nom
+  vient de [cette liste](https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA), par
+  exemple `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` dans `docker run` marche
+  aussi.
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
@@ -322,8 +475,16 @@ désactive la règle.
 
 ## L'utiliser
 
-Ajoutez le même `-v …:/config` à chaque commande, et l'outil lit le fichier. Avec
-`locale = "fr"` dans le fichier, `--locale fr` n'est plus nécessaire :
+`mh` monte le dossier pour chaque commande : l'outil lit donc le fichier à chaque fois. Sans `mh`,
+ajoutez le même `-v …:/config` à chaque commande ; avec `locale = "fr"` dans le fichier,
+`--locale fr` n'est plus nécessaire :
+
+```powershell
+mh audit
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -335,13 +496,18 @@ docker run --rm -it `
   cavo789/media-hygiene audit
 ```
 
+</details>
+
 Ce guide garde `--locale fr` dans ses commandes, pour celles et ceux qui n'ont pas de fichier de
 configuration : il ne gêne pas.
 
 ## Vérifier ce que l'outil utilise : `config`
 
-`config` montre chaque réglage, son origine, et l'état de chaque point de montage. Lancez-le avec
-les mêmes options `-v` que votre audit (ici `config` au lieu de `audit`) :
+`config` montre chaque réglage, son origine, et l'état de chaque point de montage : `mh config`
+(sans `mh`, les mêmes options `-v` que votre audit, avec `config` au lieu de `audit`) :
+
+<details>
+<summary>Ce qu'affiche <code>config</code> : chaque réglage, puis chaque point de montage</summary>
 
 <!-- capture: config.txt -->
 ```text
@@ -350,6 +516,7 @@ Réglages effectifs
 ┃ Réglage                     ┃ Valeur                     ┃ Origine           ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
 │ general.locale              │ fr                         │ ligne de commande │
+│ general.timezone            │                            │ config.toml       │
 │ general.verbosity           │ info                       │ config.toml       │
 │ general.color               │ never                      │ ligne de commande │
 │ folders.preferred           │ []                         │ config.toml       │
@@ -386,7 +553,8 @@ Réglages effectifs
 │                             │ _-].*)?', 'image\\d*',     │                   │
 │                             │ '[0-9a-f]{8}(-[0-9a-f]{4}) │                   │
 │                             │ {3}-[0-9a-f]{12}',         │                   │
-│                             │ '[0-9a-f]{16,}']           │                   │
+│                             │ '[0-9a-f]{16,}',           │                   │
+│                             │ '\\d{1,6}']                │                   │
 │ keep.generic_folders        │ ['DCIM',                   │ défaut            │
 │                             │ '\\d{3}[A-Z0-9_]{5}',      │                   │
 │                             │ 'Camera( Roll| Uploads)?', │                   │
@@ -397,8 +565,67 @@ Réglages effectifs
 │                             │ d.écran', '(New            │                   │
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
-│                             │ 'Import(s|ed)?|Temp|tmp']  │                   │
+│                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ ',                         │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [-_.                       │                   │
+│                             │ ](?P<month>\\d{1,2})',     │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)\ │                   │
+│                             │ \.?[                       │                   │
+│                             │ _-]*(?P<year>(?:19|20)\\d{ │                   │
+│                             │ 2})',                      │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ [                          │                   │
+│                             │ _-]*(?P<month_name>janvier │                   │
+│                             │ |january|januari|jan|févri │                   │
+│                             │ er|fevrier|february|februa │                   │
+│                             │ ri|feb|fév|fev|mars|march| │                   │
+│                             │ maart|mar|avril|april|apr| │                   │
+│                             │ avr|mai|may|mei|juin|june| │                   │
+│                             │ juni|jun|juillet|july|juli │                   │
+│                             │ |jul|juil|août|aout|august │                   │
+│                             │ |augustus|aug|septembre|se │                   │
+│                             │ ptember|sep|sept|octobre|o │                   │
+│                             │ ctober|oktober|oct|okt|nov │                   │
+│                             │ embre|november|nov|décembr │                   │
+│                             │ e|decembre|december|dec|dé │                   │
+│                             │ c)',                       │                   │
+│                             │ '(?P<month_name>janvier|ja │                   │
+│                             │ nuary|januari|jan|février| │                   │
+│                             │ fevrier|february|februari| │                   │
+│                             │ feb|fév|fev|mars|march|maa │                   │
+│                             │ rt|mar|avril|april|apr|avr │                   │
+│                             │ |mai|may|mei|juin|june|jun │                   │
+│                             │ i|jun|juillet|july|juli|ju │                   │
+│                             │ l|juil|août|aout|august|au │                   │
+│                             │ gustus|aug|septembre|septe │                   │
+│                             │ mber|sep|sept|octobre|octo │                   │
+│                             │ ber|oktober|oct|okt|novemb │                   │
+│                             │ re|november|nov|décembre|d │                   │
+│                             │ ecembre|december|dec|déc)' │                   │
+│                             │ ,                          │                   │
+│                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
+│                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
+│                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
+│ clean.purge_hint_days       │ 30                         │ config.toml       │
+│ review.propose_aside_below  │ 0.35                       │ config.toml       │
+│ review.identical_below      │ 6                          │ config.toml       │
+│ review.brightness_gap       │ 60.0                       │ config.toml       │
+│ review.clipped_gap          │ 0.25                       │ config.toml       │
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │
 │ classify.timezone           │                            │ config.toml       │
@@ -422,8 +649,9 @@ Réglages effectifs
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
 │                             │ 90, 'other-category': 85,  │                   │
-│                             │ 'subject': 85, 'place':    │                   │
-│                             │ 90, 'place-neighbour': 70, │                   │
+│                             │ 'subject': 85, 'person':   │                   │
+│                             │ 85, 'place': 90,           │                   │
+│                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
 │                             │ 'date-only': 90,           │                   │
@@ -455,6 +683,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ 'download', 'categories':  │                   │
 │                             │ [], 'per_photo': False,    │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Dossiers existants',      │                   │
 │                             │ 'match':                   │                   │
@@ -463,6 +693,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ "Captures d'écran et       │                   │
 │                             │ documents", 'match':       │                   │
@@ -473,6 +705,8 @@ Réglages effectifs
 │                             │ 'screenshot',              │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ "Voisins d'événement",     │                   │
 │                             │ 'match':                   │                   │
@@ -481,6 +715,8 @@ Réglages effectifs
 │                             │ '', 'pattern': '', 'kind': │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Noël', 'match':           │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -489,6 +725,8 @@ Réglages effectifs
 │                             │ '', 'kind': None,          │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Nouvel An', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -497,6 +735,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}, {'name':   │                   │
 │                             │ 'Saint-Nicolas', 'match':  │                   │
 │                             │ 'calendar', 'category':    │                   │
@@ -505,6 +745,8 @@ Réglages effectifs
 │                             │ 'pattern': '', 'kind':     │                   │
 │                             │ None, 'categories': [],    │                   │
 │                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
 │                             │ 'score': None}]            │                   │
 │ classify.ai                 │ {'url':                    │ config.toml       │
 │                             │ 'http://host.docker.intern │                   │
@@ -540,6 +782,29 @@ Réglages effectifs
 │ places.nominatim_url        │ https://nominatim.openstre │ config.toml       │
 │                             │ etmap.org                  │                   │
 │ album.root                  │                            │ config.toml       │
+│ tags.language               │                            │ config.toml       │
+│ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
+│                             │ 'intérieur', 'extérieur',  │                   │
+│                             │ 'plafond', 'photo',        │                   │
+│                             │ 'image', 'personne',       │                   │
+│                             │ 'personnes', 'chose',      │                   │
+│                             │ 'objet', 'fond', 'scène',  │                   │
+│                             │ 'vue', 'floor', 'wall',    │                   │
+│                             │ 'indoor', 'indoors',       │                   │
+│                             │ 'outdoor', 'outdoors',     │                   │
+│                             │ 'ceiling', 'picture',      │                   │
+│                             │ 'person', 'people',        │                   │
+│                             │ 'thing', 'object',         │                   │
+│                             │ 'background', 'scene',     │                   │
+│                             │ 'view']                    │                   │
+│ tags.town_km                │ 20.0                       │ config.toml       │
+│ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
+│ people.similarity           │ 0.363                      │ config.toml       │
+│ people.min_face             │ 40                         │ config.toml       │
+│ people.min_sharpness        │ 30.0                       │ config.toml       │
+│ people.with_audit           │ False                      │ config.toml       │
+│ people.ignored              │ 0 visages                  │ défaut            │
+│ people.person               │                            │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -573,6 +838,8 @@ Points de montage
 💡 Modifiez /config/config.toml pour changer ces réglages ; les options de ligne
 de commande l'emportent.
 ```
+
+</details>
 
 - **Origine** dit d'où vient chaque valeur : `défaut`, `config.toml`, `environnement` ou
   `ligne de commande`.

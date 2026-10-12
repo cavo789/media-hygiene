@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.overlaps import mount_overlaps
+from media_hygiene.services.missing_mount import no_folder
 from media_hygiene.services.policy import unmounted_folders
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 
@@ -22,23 +23,33 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def refuse_empty_data(runtime: Runtime) -> None:
+def refuse_empty_data(runtime: Runtime, command: str) -> None:
     """Stop when no folder is mounted, or a tool folder is mixed with the photos.
 
     Args:
         runtime: Mount points.
+        command: The running command, offered again with a folder mounted.
 
     Raises:
         MountError: Nothing to analyse, or the quarantine, the journal, the cache or
             the reports folder is, holds or lies inside a folder to analyse.
     """
-    data_dir = runtime.locations.data_dir
-    if not data_dir.is_dir() or not any(data_dir.iterdir()):
-        raise MountError(
-            _("No folder to analyse under {path}.").format(path=data_dir),
-            _('Mount your folders, e.g. -v "C:\\Photos:/data/c/Photos:ro".'),
-        )
+    if nothing_mounted(runtime):
+        raise no_folder(runtime, command)
     refuse_tool_folders_in_data(runtime)
+
+
+def nothing_mounted(runtime: Runtime) -> bool:
+    """Tell whether no folder at all was given to analyse (`docker run` without `-v`).
+
+    Args:
+        runtime: Mount points.
+
+    Returns:
+        True when the data directory is missing or empty.
+    """
+    data_dir = runtime.locations.data_dir
+    return not data_dir.is_dir() or not any(data_dir.iterdir())
 
 
 def refuse_overlapping_mounts(runtime: Runtime) -> None:

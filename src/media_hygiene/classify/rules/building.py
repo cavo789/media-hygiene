@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.models import DateSource, SortReason
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules.matchers import KIND_TESTS, camera_test, path_test
+from media_hygiene.classify.rules.people import person_test
 from media_hygiene.classify.whereabouts import Whereabouts
 
 if TYPE_CHECKING:
@@ -28,17 +29,39 @@ _FOLDER_REASONS: Final = frozenset(
 
 
 @dataclass(frozen=True, slots=True)
-class RuleFacts:
-    """What the rules read besides the file: dates, folders, events, host paths.
+class Seen:
+    """What was seen on the photos: the model's answers, the people on them.
 
     `subjects`: by `subject` rule name, what the model said of each file it covers.
+    `people`: the names of the people on each photo, from its faces.
     """
+
+    subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
+    people: Mapping[Path, tuple[str, ...]] = field(default_factory=dict)
+
+    def with_subjects(
+        self, subjects: Mapping[str, Mapping[Path, Subject]] | None
+    ) -> Seen:
+        """The same, with the model's answers.
+
+        Args:
+            subjects: What the model said, by `subject` rule; None: nothing.
+
+        Returns:
+            A copy.
+        """
+        return replace(self, subjects=subjects or {})
+
+
+@dataclass(frozen=True, slots=True)
+class RuleFacts:
+    """What the rules read besides the file: dates, folders, events, host paths."""
 
     datings: Mapping[Path, Dating]
     folders: Mapping[Path, Signal]  # what the folders say, event neighbours joined
     event_of: Mapping[Path, Event]
     host: Callable[[Path], str]
-    subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
+    seen: Seen = field(default_factory=Seen)  # the model's answers, the people
     where: Whereabouts = field(
         default_factory=Whereabouts
     )  # personal places and trips, from the GPS
@@ -67,7 +90,10 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
         RuleMatch.KIND: lambda: KIND_TESTS[rule.kind] if rule.kind else _never,
         RuleMatch.PATH: lambda: path_test(rule.pattern, facts.host),
         RuleMatch.CAMERA: lambda: camera_test(rule.pattern),
-        RuleMatch.SUBJECT: lambda: _subject_test(facts.subjects.get(rule.name, {})),
+        RuleMatch.SUBJECT: lambda: _subject_test(
+            facts.seen.subjects.get(rule.name, {})
+        ),
+        RuleMatch.PERSON: lambda: person_test(rule, facts.seen.people, facts.event_of),
         RuleMatch.PLACE: lambda: lambda file: file.path in facts.where.places,
         RuleMatch.TRIP: lambda: lambda file: file.path in facts.where.trips,
         RuleMatch.OTHER_CATEGORY: lambda: _always,

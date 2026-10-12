@@ -11,51 +11,62 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import HOME_PAGE
+from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
 from media_hygiene.paths.mounts import is_read_only
+from media_hygiene.services.data_checks import nothing_mounted
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 READ_ONLY_COMMANDS: Final = frozenset(
     {"audit", "crosscheck", "classify", "review-sort", "places", "review"}
-    | {"inventory", "history", "reports", "config"}
+    | {"inventory", "history", "reports", "config", "status", "launcher", "tags"}
+    | {"search", "people"}
 )
 # The read-only commands that read the photos themselves: they say so when they start.
 PHOTO_READERS: Final = frozenset(
-    {"audit", "crosscheck", "classify", "review-sort", "places", "review"}
+    {"audit", "crosscheck", "classify", "review-sort", "places", "review", "tags"}
+    | {"search", "people"}
 )
-_DOC_BRANCH: Final = "blob/main"
+# The commands serving a page in the browser, on the port published by `-p`.
+PAGE_COMMANDS: Final = frozenset(
+    {"review", "review-sort", "places", "search", "people"}
+)
+# The commands whose output stream is data (a script, to redirect to a file): every
+# message goes to stderr, and the launcher runs them without a terminal (`-t`).
+DATA_COMMANDS: Final = frozenset({"launcher"})
 
 
 def read_only_marker() -> str:
-    """The marker opening the help of every read-only command.
+    """The marker opening the own help of every read-only command.
 
     Returns:
         The translated sentence.
     """
-    return _("Read-only: never changes your photos.")
+    return _("🔒 Read-only: never changes your photos.")
 
 
 def safety_doc() -> str:
     """The page of the documentation on safety, in the user's language.
 
     Returns:
-        Its URL on GitHub.
+        Its URL on the documentation site.
     """
-    return f"{HOME_PAGE}/{_DOC_BRANCH}/{_('documentation/en/reference-safety.md')}"
+    return f"{DOC_PAGES}/{_('reference-safety/')}"
 
 
 def help_of(name: str, text: str) -> str:
-    """The help of a command, opened by the read-only marker when it applies.
+    """The own help of a command, opened by the read-only marker when it applies.
+
+    The command list does not repeat it: its panel title says it once.
 
     Args:
         name: The command.
         text: Its translated help.
 
     Returns:
-        The help shown in the command list and in the command's own `--help`.
+        The help shown by the command's own `--help`.
     """
     return f"{read_only_marker()} {text}" if name in READ_ONLY_COMMANDS else text
 
@@ -64,13 +75,14 @@ def announce_read_only(runtime: Runtime, command: str | None) -> None:
     """Say, in one line, that a command reading the photos does not touch them.
 
     When a photo folder is mounted writable, one tip tells how to let the operating
-    system guarantee it (`:ro`).
+    system guarantee it (`:ro`). Without any folder, nothing is said: the command's
+    own error (no folder to analyse) must be the first line the user reads.
 
     Args:
         runtime: Settings, mount points and output.
         command: The command about to run.
     """
-    if command not in PHOTO_READERS:
+    if command not in PHOTO_READERS or nothing_mounted(runtime):
         return
     output = runtime.output
     output.info(_("🔒 Read-only: your photos and videos are not touched."))

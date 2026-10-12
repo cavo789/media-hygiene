@@ -1,0 +1,17 @@
+{# Included in the style of review.html.j2: the 100 % comparison over the page (C). #}
+  #compare { position: fixed; inset: 56px 16px 56px 16px; z-index: 5; display: flex;
+             flex-direction: column; gap: 6px; padding: 10px; background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px;
+             box-shadow: 0 8px 30px rgb(0 0 0 / 25%); }
+  #compare[hidden] { display: none; }
+  #compare .title { margin: 0; font-weight: 600; }
+  #compare .grid { flex: 1; min-height: 0; display: grid; gap: 8px;
+                   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  #compare .tile { display: flex; flex-direction: column; min-height: 0;
+                   border: 3px solid var(--line); border-radius: 8px; overflow: hidden; }
+  #compare .tile.kept, #compare .tile.suggested { border-color: var(--ok); }
+  #compare .tile.aside { border-color: var(--bad); }
+  #compare .tile.proposed { border: 3px dashed var(--bad); }
+  #compare .view { flex: 1; min-height: 120px; display: grid; place-items: center;
+                   color: var(--muted); background: var(--bg) no-repeat 50% 50%; cursor: crosshair; }
+  #compare .label { padding: 4px 6px; font-size: .8rem; overflow-wrap: anywhere; }

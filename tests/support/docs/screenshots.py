@@ -1,4 +1,4 @@
-"""The browser side: serve the burst review, run `browser.py` in Playwright's image."""
+"""The browser side: serve the review and search pages, run `browser.py`."""
 
 from __future__ import annotations
 
@@ -24,8 +24,12 @@ _DOCKERFILE: Final = (
 )
 BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
-_READY: Final = "8080"  # the review says it listens on port 8080
+_SERVED: Final = _SCRIPT.with_name("served.py")  # imported by browser.py
+_READY: Final = "127.0.0.1:8088"  # the review and the search print their address
 _WAIT_SECONDS: Final = 300
+# Chromium sometimes dies while starting, before any page: nothing done yet, retry.
+_LAUNCH_FAILED: Final = "BrowserType.launch"
+_ATTEMPTS: Final = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,36 +49,37 @@ def build_browser() -> None:
     )
 
 
-def start_review(demo: Demo) -> str:
-    """Start the burst review in its own container, and wait until it listens.
+def start_review(demo: Demo, args: tuple[str, ...] = ("review",)) -> str:
+    """Start a page served on port 8088 in its own container, and wait until it listens.
 
     Args:
-        demo: The demo library to review.
+        demo: The demo library to serve.
+        args: The command: `("review",)`, `("review", "--near")`, `("search",)`.
 
     Returns:
-        The container's name: a browser joins its network to reach 127.0.0.1:8080.
+        The container's name: a browser joins its network to reach 127.0.0.1:8088.
 
     Raises:
-        RuntimeError: The review never became ready.
+        RuntimeError: The page never became ready.
     """
-    name = f"{demo.prefix}-review"
+    name = "-".join((demo.prefix, *(arg.lstrip("-") for arg in args)))
     docker("rm", "--force", name)
-    command = Command(("review",))
+    command = Command(args)
     docker("run", "--detach", "--name", name, "-t", *DUMB, *demo.mounts(command),
            *demo.tool(command))  # fmt: skip
     for _ in range(_WAIT_SECONDS):
         if _READY in docker("logs", name).stdout:
             return name
         time.sleep(1)
-    message = f"the review did not start: {docker('logs', name).stdout}"
+    message = f"{shlex.join(args)} did not start: {docker('logs', name).stdout}"
     raise RuntimeError(message)
 
 
 def stop_review(name: str) -> str:
-    """Stop the review (Ctrl+C would), and return what its terminal showed.
+    """Stop a served page (Ctrl+C would), and return what its terminal showed.
 
     Args:
-        name: The container of the review.
+        name: The container of the page.
 
     Returns:
         The screen, tidied.
@@ -96,6 +101,26 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     Raises:
         RuntimeError: The browser failed; its log says why.
     """
+    for attempt in range(1, _ATTEMPTS + 1):
+        log = _browse(demo, job, shots)
+        if not log:
+            return
+        if _LAUNCH_FAILED not in log or attempt == _ATTEMPTS:
+            message = f"browser {job.args}: {log}"
+            raise RuntimeError(message)
+
+
+def _browse(demo: Demo, job: Job, shots: Path) -> str:
+    """Run the browser once.
+
+    Args:
+        demo: The demo whose reports volume the browser reads.
+        job: The mode, its arguments, and the network to join.
+        shots: A folder of this machine, copied in as /shots and back.
+
+    Returns:
+        Empty when it worked, its log otherwise.
+    """
     name = f"{demo.prefix}-browser"
     docker("rm", "--force", name)
     install = (
@@ -103,10 +128,11 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     )
     script = f"{install} playwright=={PLAYWRIGHT} && python /tmp/browser.py "
     script += shlex.join(job.args)
-    docker("create", "--name", name, "--network", job.network,
-           "-v", f"{demo.volume('reports')}:/reports:ro", BROWSER_IMAGE,
-           "sh", "-c", script)  # fmt: skip
-    for source in (_SCRIPT, *sorted(_SCRIPT.parent.glob("*.js"))):
+    # --init and --ipc=host: what Playwright advises for Chromium in Docker.
+    docker("create", "--name", name, "--network", job.network, "--init",
+           "--ipc", "host", "-v", f"{demo.volume('reports')}:/reports:ro",
+           BROWSER_IMAGE, "sh", "-c", script)  # fmt: skip
+    for source in (_SCRIPT, _SERVED, *sorted(_SCRIPT.parent.glob("*.js"))):
         docker("cp", str(source), f"{name}:/tmp/{source.name}")
     docker("cp", str(shots), f"{name}:/shots")
     docker("start", name)
@@ -114,7 +140,7 @@ def shoot(demo: Demo, job: Job, shots: Path) -> None:
     if code != "0":
         log = docker("logs", name)
         docker("rm", name)
-        message = f"browser {job.args}: {log.stdout}{log.stderr}"
-        raise RuntimeError(message)
+        return f"{log.stdout}{log.stderr}" or f"exit code {code}"
     docker("cp", f"{name}:/shots/.", str(shots))
     docker("rm", name)
+    return ""

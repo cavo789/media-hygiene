@@ -7,7 +7,9 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import typer
+from rich.markup import escape
 
+from media_hygiene.cli.error_view import follow_up
 from media_hygiene.cli.safety import announce_read_only
 from media_hygiene.config.legacy_env import (
     LEGACY_ENV_PREFIX,
@@ -15,9 +17,10 @@ from media_hygiene.config.legacy_env import (
     legacy_names,
 )
 from media_hygiene.config.loader import load_settings, write_default_config
+from media_hygiene.config.zone import apply_timezone
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
-from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode
+from media_hygiene.constants import ENV_PREFIX, ColorMode, ExitCode, Verbosity
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.paths.locations import Locations
@@ -48,9 +51,8 @@ def user_errors(output: Output) -> Iterator[None]:
     try:
         yield
     except MediaHygieneError as exc:
-        output.error(exc.message)
-        if exc.tip:
-            output.tip(exc.tip)
+        output.error(escape(exc.message))  # plain text: `[general]` is not markup
+        follow_up(output, exc)
         raise typer.Exit(ExitCode.FAILURE) from exc
 
 
@@ -61,25 +63,30 @@ def warn(output: Output, error: MediaHygieneError) -> None:
         output: Where to print.
         error: The error.
     """
-    output.warning(error.message)
-    if error.tip:
-        output.tip(error.tip)
+    output.warning(escape(error.message))
+    follow_up(output, error)
 
 
-def build_runtime(cli_layer: Layer) -> Runtime:
+def build_runtime(cli_layer: Layer, *, stderr: bool = False) -> Runtime:
     """Load the settings, set up the output and snapshot the mount table.
 
     Args:
         cli_layer: Global options typed on the command line.
+        stderr: Print every message to the error stream: the command writes data
+            to the output stream (the `launcher` script).
 
     Returns:
         The runtime of this invocation.
     """
     locations = Locations()
-    with user_errors(Output(make_console(ColorMode.AUTO))):
+    with user_errors(Output(make_console(ColorMode.AUTO, stderr=stderr))):
         loaded = load_settings(locations, cli_layer)
     general = loaded.settings.general
-    output = Output(make_console(general.color))
+    apply_timezone(general.timezone)
+    output = Output(
+        make_console(general.color, stderr=stderr),
+        verbose=general.verbosity in {Verbosity.VERBOSE, Verbosity.DEBUG},
+    )
     configure_logging(general.verbosity, output.console)
     _warn_legacy_variables(output)
     runtime = Runtime(loaded, locations, MountTable.current(), output, cli_layer)
@@ -146,9 +153,9 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     """Return the runtime the root callback stored in the Typer context.
 
     Every command calls it first: a command reading the photos says it leaves them
-    untouched, and an empty line is scheduled after the command's last message,
-    before the shell prompt comes back (`--help` never reaches a command, so its
-    output is left as is).
+    untouched, and its closing advice (next step, best tips) then an empty line are
+    scheduled after the command's last message, before the shell prompt comes back
+    (`--help` never reaches a command, so its output is left as is).
 
     Args:
         ctx: Typer context of the running command.
@@ -162,7 +169,7 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     runtime = ctx.obj
     if not isinstance(runtime, Runtime):
         raise TypeError(type(runtime).__name__)
-    ctx.call_on_close(runtime.output.blank)
+    ctx.call_on_close(runtime.output.finish)
     announce_read_only(runtime, ctx.info_name)
     return runtime
 

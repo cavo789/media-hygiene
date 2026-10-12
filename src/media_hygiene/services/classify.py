@@ -31,6 +31,7 @@ from media_hygiene.services.classify_inputs import (
     mounted,
     root_of,
 )
+from media_hygiene.services.classify_people import with_people
 from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.policy import scan_filters
 
@@ -92,10 +93,10 @@ class ClassifyService:
             MountError: Nothing is mounted, or the target is not mounted.
         """
         runtime = self._runtime
-        refuse_empty_data(runtime)
+        refuse_empty_data(runtime, "classify")
         data_dir = runtime.locations.data_dir
         roots = runtime.mounts.data_roots(data_dir)
-        scope = self._scope(years)
+        scope = with_people(self._scope(years), runtime)
         # A file already in the target reads its folders from there: a target inside
         # a mounted folder (`C:\\Photos\\Tri`) never becomes a category of its own.
         files = self._inputs(roots, (scope.target,) if scope.target else ())
@@ -115,7 +116,7 @@ class ClassifyService:
         Returns:
             The proposals and the duplicates count.
         """
-        scope = replace(inputs.scope, subjects=subjects or {})
+        scope = replace(inputs.scope, seen=inputs.scope.seen.with_subjects(subjects))
         files = inputs.files
         return ClassifyResult(
             classify(files, self._runtime.settings.classify, scope),

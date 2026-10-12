@@ -95,3 +95,27 @@ def test_every_screenshot_is_used(locale: str) -> None:
     }
     images = set((DOCUMENTATION / locale / "images").iterdir())
     assert {image.resolve() for image in images} <= shown
+
+
+def powershell_lines(page: Path) -> list[str]:
+    """The lines of the `powershell` code blocks of a page."""
+    lines: list[str] = []
+    language: str | None = None
+    for line in page.read_text(encoding="utf-8").splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith(FENCE):
+            language = None if language is not None else stripped[len(FENCE) :]
+        elif language == "powershell":
+            lines.append(stripped)
+    return lines
+
+
+@pytest.mark.parametrize("page", PAGES, ids=lambda page: str(page.relative_to(ROOT)))
+def test_powershell_mkdir_never_fails_the_second_time(page: Path) -> None:
+    """`mkdir` without `-Force` prints a red error when the folder exists already."""
+    failing = [
+        line
+        for line in powershell_lines(page)
+        if line.startswith("mkdir ") and not line.startswith("mkdir -Force ")
+    ]
+    assert not failing, failing

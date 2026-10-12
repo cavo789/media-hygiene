@@ -52,10 +52,17 @@ def test_resolve_locale_falls_back_to_config(
     locations: Locations,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Without `--locale`, the configuration decides; a broken one means English."""
+    """Without `--locale`, the configuration decides; a broken one means English.
+
+    A file refused for another key keeps its language: the error reads in French.
+    """
     monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(locations.config_dir))
     locations.config_file.write_text('[general]\nlocale = "fr"\n')
     assert resolve_locale(["audit"]) is Locale.FR
+    locations.config_file.write_text('[general]\nlocale = "fr"\ntimezon = "UTC"\n')
+    assert resolve_locale(["audit"]) is Locale.FR
+    locations.config_file.write_text('[general]\nlocale = "de"\n')
+    assert resolve_locale(["audit"]) is Locale.EN
     locations.config_file.write_text("not = [valid")
     assert resolve_locale(["audit"]) is Locale.EN
 

@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene.classify.rules.calendar import overlapping_ranges
 from media_hygiene.classify.rules.kinds import RuleMatch
-from media_hygiene.config.classify_rules import ClassifyRule, overlapping_ranges
+from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.classify_settings import SCORES, ClassifySettings
 from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.constants import Locale
@@ -44,6 +45,10 @@ def rules_file(locations: Locations, body: str) -> None:
         ('name = "Path"\nmatch = "path"\npattern = "a"\ndates = "12-24"', "not used"),
         ('name = "Bad"\nmatch = "path"\npattern = "a"\ncategory = "a:b"', "Windows"),
         ('match = "path"\npattern = "a"', "name"),
+        ('name = "Kids"\nmatch = "person"', "needs names"),
+        ('name = "Kids"\nmatch = "person"\nnames = [" "]', "name in names is empty"),
+        ('name = "Path"\nmatch = "path"\npattern = "a"\nall = true', "not used"),
+        ('name = "Kids"\nmatch = "person"\nnames = ["A"]\nmin_share = 0', "min_share"),
     ],
 )
 def test_an_invalid_rule_is_refused_with_its_name(
@@ -53,7 +58,7 @@ def test_an_invalid_rule_is_refused_with_its_name(
     rules_file(locations, body)
     with pytest.raises(ConfigError, match=said) as refused:
         load_settings(locations)
-    assert "classify.rules.0" in refused.value.message
+    assert "[[classify.rules]] number 1" in refused.value.message
 
 
 def test_two_rules_with_one_name_are_refused(locations: Locations) -> None:

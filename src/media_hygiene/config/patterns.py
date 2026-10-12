@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from media_hygiene.i18n import _
+
 
 def valid_patterns(patterns: tuple[str, ...]) -> tuple[str, ...]:
     """Reject patterns that are not valid regular expressions.
@@ -21,6 +23,8 @@ def valid_patterns(patterns: tuple[str, ...]) -> tuple[str, ...]:
         try:
             re.compile(pattern)
         except re.error as exc:
-            message = f"{pattern!r} is not a valid regular expression: {exc}"
+            message = _(
+                "'{pattern}' is not a valid regular expression: {reason}"
+            ).format(pattern=pattern, reason=exc)
             raise ValueError(message) from exc
     return patterns

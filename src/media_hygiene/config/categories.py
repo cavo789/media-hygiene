@@ -23,6 +23,7 @@ from media_hygiene.constants import (
     RAW_EXTENSIONS,
     VIDEO_EXTENSIONS,
 )
+from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -68,14 +69,16 @@ def valid_categories(
         names = {*BUILTIN_CATEGORIES, *(key.strip().casefold() for key in categories)}
         nested = [value for value in split_values(values) if value in names]
         if nested:
-            message = (
-                f"category {name}: a category lists extensions, not categories; "
-                f"for the extension, write .{nested[0]}"
-            )
+            message = _(
+                "category {name}: a category lists extensions, not categories; "
+                "for the extension, write .{value}"
+            ).format(name=name, value=nested[0])
             raise ValueError(message)
         extensions = normalized_extensions(values)
         if not extensions:
-            message = f"category {name} lists no extension, e.g. {name} = ['pdf']"
+            message = _(
+                "category {name} lists no extension, e.g. {name} = ['pdf']"
+            ).format(name=name)
             raise ValueError(message)
         valid[name] = extensions
     return valid
@@ -91,19 +94,21 @@ def _check_name(name: str) -> None:
         ValueError: The name cannot be a user category.
     """
     if not _CATEGORY_NAME.fullmatch(name):
-        message = (
-            f"invalid category name {name!r}: letters, digits, '-' and '_' only, "
+        message = _(
+            "invalid category name '{name}': letters, digits, '-' and '_' only, "
             "such as documents"
-        )
+        ).format(name=name)
         raise ValueError(message)
     if name in BUILTIN_CATEGORIES:
-        message = (
-            f"{name} is a built-in category, it cannot be redefined: choose another "
-            f"name, e.g. my_{name}"
-        )
+        message = _(
+            "{name} is a built-in category, it cannot be redefined: choose another "
+            "name, e.g. my_{name}"
+        ).format(name=name)
         raise ValueError(message)
     if _DOT + name in MEDIA_EXTENSIONS:
-        message = f"{name} is an extension: choose another name for the category"
+        message = _(
+            "{name} is an extension: choose another name for the category"
+        ).format(name=name)
         raise ValueError(message)
 
 
@@ -150,10 +155,10 @@ def _check_typo(value: str, known: list[str]) -> None:
         return
     close = difflib.get_close_matches(value, known, n=1, cutoff=_TYPO_CUTOFF)
     if close:
-        message = (
-            f"{value}: unknown category, did you mean {close[0]}? For the "
-            f"extension, write .{value}"
-        )
+        message = _(
+            "{value}: unknown category, did you mean {name}? For the "
+            "extension, write .{value}"
+        ).format(value=value, name=close[0])
         raise ValueError(message)
 
 

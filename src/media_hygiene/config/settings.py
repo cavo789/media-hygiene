@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
+from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
+from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
+from media_hygiene.config.tags_settings import TagSettings
+from media_hygiene.config.zone import check_timezone
 from media_hygiene.constants import (
     GENERATED_NAMES,
     GENERIC_FOLDERS,
@@ -18,19 +22,35 @@ from media_hygiene.constants import (
     Locale,
     Verbosity,
 )
+from media_hygiene.i18n import _
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
+_PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
 
 
 class GeneralSettings(BaseModel):
-    """`[general]` — interface language, log level and colours."""
+    """`[general]` — language, time zone, log level, colours."""
 
     model_config = _FROZEN
 
     locale: Locale = Locale.EN
+    timezone: str = ""
     verbosity: Verbosity = Verbosity.INFO
     color: ColorMode = ColorMode.AUTO
+
+    @field_validator("timezone")
+    @classmethod
+    def _known_timezone(cls, name: str) -> str:
+        """Reject a zone name that does not exist, e.g. a typo.
+
+        Args:
+            name: The configured zone.
+
+        Returns:
+            The name, unchanged.
+        """
+        return check_timezone(name)
 
 
 class FolderSettings(BaseModel):
@@ -65,10 +85,10 @@ class FolderSettings(BaseModel):
         """
         for path in paths:
             if any(ord(char) < _FIRST_PRINTABLE for char in path):
-                message = (
-                    f"{path!r} contains a control character: write Windows paths "
+                message = _(
+                    "{path} contains a control character: write Windows paths "
                     "between 'single quotes' in config.toml"
-                )
+                ).format(path=repr(path))
                 raise ValueError(message)
         return paths
 
@@ -100,11 +120,12 @@ class KeepSettings(BaseModel):
 
 
 class CleanSettings(BaseModel):
-    """`[clean]` — behaviour of the `clean` command."""
+    """`[clean]` — behaviour of the `clean` command, and the purge reminder."""
 
     model_config = _FROZEN
 
     confirm: bool = True
+    purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
 
 
 class Settings(BaseModel):
@@ -117,8 +138,11 @@ class Settings(BaseModel):
     scan: ScanSettings = ScanSettings()
     keep: KeepSettings = KeepSettings()
     clean: CleanSettings = CleanSettings()
+    review: ReviewSettings = ReviewSettings()
     classify: ClassifySettings = ClassifySettings()
     sort: SortSettings = SortSettings()
     inventory: InventorySettings = InventorySettings()
     places: PlacesSettings = PlacesSettings()
     album: AlbumSettings = AlbumSettings()
+    tags: TagSettings = TagSettings()
+    people: PeopleSettings = PeopleSettings()

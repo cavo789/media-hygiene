@@ -112,10 +112,10 @@ def test_a_failed_copy_leaves_nothing_behind(
     source, target = files(tmp_path)
     target.parent.mkdir()
 
-    def broken(*_streams: object) -> None:
+    def broken(*_descriptor: object) -> None:
         raise OSError(errno.EIO, os.strerror(errno.EIO))
 
-    monkeypatch.setattr("shutil.copyfileobj", broken)
+    monkeypatch.setattr("os.fsync", broken)
     with pytest.raises(OSError, match=os.strerror(errno.EIO)):
         copy_exclusive(source, target)
     assert source.read_bytes() == b"photo"

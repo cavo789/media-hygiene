@@ -16,7 +16,7 @@ from importlib.resources import files
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.whereabouts import located_point
-from media_hygiene.errors import ConfigError, MountError
+from media_hygiene.errors import ConfigError
 from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
@@ -36,11 +36,13 @@ from media_hygiene.places.clusters import clusters_of
 from media_hygiene.places.osm_search import OSM_PATH, online_search
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.data_checks import unreadable_index
-from media_hygiene.services.reviewing import address_tip, run_server
+from media_hygiene.services.missing_mount import missing_mount
+from media_hygiene.services.reviewing import address_tip, page_url, run_server
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
     from media_hygiene.geo.distance import Point
+    from media_hygiene.services.next_command import NextVerb
     from media_hygiene.services.runtime import Runtime
 
 _PACKAGE: Final = "media_hygiene.places"
@@ -52,11 +54,12 @@ _ASSETS: Final = {
 }
 
 
-def open_places(runtime: Runtime) -> PlacesBoard:
+def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
     """Check the mounts, read where the photos were taken and the places written.
 
     Args:
         runtime: Settings, mount points and output.
+        again: This command, offered with `/config` added when it is missing.
 
     Returns:
         The board of the map page.
@@ -66,9 +69,13 @@ def open_places(runtime: Runtime) -> PlacesBoard:
         ConfigError: The places of `config.toml` are invalid.
     """
     if not runtime.persistent(MountKind.CONFIG):
-        raise MountError(
-            _("The places are saved in /config/config.toml: mount /config."),
-            _('Add -v "<a folder of yours>:/config" to the docker run command.'),
+        raise missing_mount(
+            runtime,
+            _(
+                "The map saves your places in a config.toml file, kept in a folder "
+                "of yours mounted on /config: this command has none."
+            ),
+            again,
         )
     ensure_writable(runtime, MountKind.CONFIG)
     points = _points(runtime)
@@ -164,8 +171,8 @@ def _announce(runtime: Runtime, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Map ready on port {port}: each place is saved at once in config.toml. "
-            "Ctrl+C stops it."
-        ).format(port=port)
+            "Map ready, open {url} in your browser. Each place is saved at once in "
+            "config.toml. Ctrl+C stops it."
+        ).format(url=page_url(port))
     )
     address_tip(output, port)

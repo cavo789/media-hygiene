@@ -109,10 +109,10 @@ class KeepPolicy:
             keeper=keeper,
             removable=tuple(file for file in others if not self.is_protected(file)),
             protected=tuple(file for file in others if self.is_protected(file)),
-            reason=self._reason(keeper, others[0]),
+            reason=self.reason(keeper, others[0]),
         )
 
-    def _reason(self, keeper: MediaFile, runner_up: MediaFile) -> KeepReason:
+    def reason(self, keeper: MediaFile, runner_up: MediaFile) -> KeepReason:
         """Name the first criterion that ranks the keeper before the next copy.
 
         Args:

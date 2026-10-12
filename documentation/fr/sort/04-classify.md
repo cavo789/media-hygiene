@@ -13,12 +13,21 @@ en `:ro` conviennent.
 ## Le lancer
 
 ```powershell
+mh classify
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr classify
 ```
+
+</details>
 
 Après un audit avec [le cache](../start/02-keep-the-cache.md), rien n'est relu : les dates, les
 appareils et les lieux viennent du cache, et les empreintes de l'audit disent quels doublons sont
@@ -29,19 +38,19 @@ encore là. Le dossier de rapports reçoit le classeur où vous corrigez la prop
 ```text
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ─────────────────────────────────── Classer ────────────────────────────────────
-Déjà à leur place : 43 sur 80 (54 %).
+Déjà à leur place : 43 sur 82 (52 %).
 Proposition
 ┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┓
 ┃ Bande     ┃ Fichiers ┃ À déplacer ┃
 ┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━┩
-│ Sûrs      │       74 │         31 │
+│ Sûrs      │       76 │         33 │
 │ À trier   │        3 │          3 │
 │ Sans date │        3 │          3 │
 └───────────┴──────────┴────────────┘
 
 Pourquoi
 ┌─────────────────────┬────┐
-│ Dossiers existants  │ 74 │
+│ Dossiers existants  │ 76 │
 │ no-signal           │  3 │
 │ undated             │  3 │
 │   Vacances à la mer │ 13 │
@@ -53,19 +62,29 @@ Pourquoi
 │   Lac               │  6 │
 │   Téléphone         │  6 │
 │   Noël 2020         │  4 │
-│   WhatsApp          │  1 │
+│   WhatsApp          │  3 │
 └─────────────────────┴────┘
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et
 documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
 💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
 À vérifier ou à trier : 3 fichiers dans 1 événement.
+💡 Rien n'a été modifié : 'classify' ne fait que proposer.
+✅ Classeur à modifier : /reports/20261012-101931-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261012-101931-classify/report.html
+👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
+avant 'sort'.
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr sort
 💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
 copies sont triées.
-💡 Rien n'a été modifié : 'classify' ne fait que proposer.
-✅ Classeur à modifier : /reports/20261003-080819-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261003-080819-classify/report.html
-💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
 ```
 
 ## Lire le résultat
@@ -107,7 +126,7 @@ photo la plus ancienne : une fête du Nouvel An n'est pas coupée en deux.
 ## Votre propre structure
 
 Tout est dans la section `[classify]` de `config.toml`
-([étape 7](../clean/07-configuration-file.md)), et chaque valeur y est un exemple à remplacer :
+([étape 7 du nettoyage](../clean/07-configuration-file.md)), et chaque valeur y est un exemple à remplacer :
 
 - `--layout "{year}/{month}"` : trier par mois, sans aucune catégorie.
 - `--target 'D:\Photos triées'` : construire l'arborescence ailleurs (le dossier doit être

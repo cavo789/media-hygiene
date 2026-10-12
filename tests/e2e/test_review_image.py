@@ -1,4 +1,4 @@
-"""The image serves the review on a port Docker publishes on 127.0.0.1, until Ctrl+C."""
+"""The image serves the review on 127.0.0.1, at the address it prints, until Ctrl+C."""
 
 from __future__ import annotations
 
@@ -12,12 +12,14 @@ from tests.support.docker import IMAGE, docker
 
 pytestmark = pytest.mark.e2e
 
-_READY: Final = "Review ready on port 8080"
+_PORT: Final = "18088"  # never the 8088 of the user's own pages
+_URL: Final = f"http://127.0.0.1:{_PORT}/"
+_READY: Final = f"open {_URL} in your browser"
 _WAIT_SECONDS: Final = 120
 # Run inside the container: its loopback is where Docker forwards the published port.
 _FETCH_STATE: Final = (
     "import urllib.request; "
-    "print(urllib.request.urlopen('http://127.0.0.1:8080/api/state').read().decode())"
+    f"print(urllib.request.urlopen('{_URL}api/state').read().decode())"
 )
 
 
@@ -34,7 +36,7 @@ def wait_for(container: str, text: str) -> str:
 
 
 def test_review_port_is_published_on_loopback(volumes: dict[str, str]) -> None:
-    """Docker chooses the host port on 127.0.0.1; Ctrl+C stops the review cleanly."""
+    """The URL printed is the one published; Ctrl+C stops the review cleanly."""
     mounts = [
         *("-v", f"{volumes['data']}:/data:ro"),
         *("-v", f"{volumes['reports']}:/reports"),
@@ -42,13 +44,20 @@ def test_review_port_is_published_on_loopback(volumes: dict[str, str]) -> None:
     ]
     hardening = ["--read-only", "--tmpfs", "/tmp"]  # noqa: S108
     started = docker(
-        "run", "--detach", *hardening, "-p", "127.0.0.1::8080", *mounts, IMAGE, "review"
+        "run",
+        "--detach",
+        *hardening,
+        "-p",
+        f"127.0.0.1:{_PORT}:{_PORT}",
+        *mounts,
+        IMAGE,
+        *("review", "--port", _PORT),
     )
     container = started.stdout.strip()
     try:
         assert started.returncode == 0, started.stderr
         assert _READY in wait_for(container, _READY)
-        assert docker("port", container, "8080").stdout.startswith("127.0.0.1:")
+        assert docker("port", container, _PORT).stdout.strip() == f"127.0.0.1:{_PORT}"
         fetched = docker("exec", container, "python", "-c", _FETCH_STATE)
         assert fetched.returncode == 0, fetched.stderr
         assert len(json.loads(fetched.stdout)["series"]) == 1

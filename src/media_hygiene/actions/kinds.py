@@ -31,6 +31,10 @@ class ActionKind(StrEnum):
     # (`keeper`), and the marker telling the scans to skip that folder.
     LINK = "link"
     MARK_ALBUM = "mark-album"
+    # Written by `xmp`: a sidecar created next to a photo, or one of another
+    # application rewritten with our words (its previous bytes kept in `quarantine`).
+    CREATE_XMP = "create-xmp"
+    MERGE_XMP = "merge-xmp"
 
 
 class Phase(StrEnum):
@@ -39,6 +43,7 @@ class Phase(StrEnum):
     CLEAN = "clean"
     SORT = "sort"
     ALBUM = "album"
+    XMP = "xmp"
     UNDO = "undo"
 
 
@@ -50,8 +55,10 @@ class Status(StrEnum):
 
 
 # The phases that change files; `undo` reverses one of them.
-ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM)
+ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP)
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(
     {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
 )
+# Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.
+XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})

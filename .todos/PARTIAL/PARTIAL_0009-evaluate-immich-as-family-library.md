@@ -111,3 +111,11 @@ should not grow what Immich already does well (faces, smart search, sharing, mob
 - A hands-on trial (synthetic pictures, `docker compose up`, external library `:ro`, check that
   hard links show as duplicates and that a moved file loses its album).
   **Reason:** not required by the TODO; worth doing before adopting option 2.
+
+### Note (2026-10-10): tags, search and sidecars
+
+The maintainer wants words on every photo, a local search, and tags that outlive any
+application: 0072 (label layer + vision tags), 0073 (search page), 0074 (XMP sidecars). This
+departs from "do not grow what Immich does well" for search, on purpose: the lasting output is
+the sidecars, which Immich reads in an external library; the search page stays a small
+one-shot tool and can be dropped if option 2 is adopted.

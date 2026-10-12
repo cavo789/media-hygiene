@@ -21,11 +21,16 @@ from media_hygiene.i18n import _, ngettext
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mounts import is_writable
 from media_hygiene.review.sort_app import PAGE_PATH, STATE_PATH, SortReviewApp
-from media_hygiene.review.sort_choices import EVENT_PATH, FILES_PATH, FORGET_PATH
+from media_hygiene.review.sort_batch import SortBatchSession
+from media_hygiene.review.sort_choices import (
+    EVENT_PATH,
+    FILES_PATH,
+    FORGET_PATH,
+    SURE_PATH,
+)
 from media_hygiene.review.sort_files import SortSource
-from media_hygiene.review.sort_session import SortSession
 from media_hygiene.services.page_choices import page_decisions, page_file
-from media_hygiene.services.reviewing import address_tip, run_server
+from media_hygiene.services.reviewing import address_tip, page_url, run_server
 from media_hygiene.services.sort_inputs import find_workbook, open_elsewhere, plan_of
 from media_hygiene.services.writable import writable_tip
 
@@ -36,7 +41,7 @@ _TEMPLATES_PACKAGE: Final = "media_hygiene.review"
 _PAGE_TEMPLATE: Final = "sort_review.html.j2"
 
 
-def open_sort_review(runtime: Runtime, given: str | None) -> SortSession:
+def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
     """Read the workbook, its plan and the page's earlier choices.
 
     Args:
@@ -81,10 +86,10 @@ def open_sort_review(runtime: Runtime, given: str | None) -> SortSession:
     source = SortSource(
         plan, edits, target, (host(workbook), host(target)), runtime.mapper
     )
-    return SortSession(source, base)
+    return SortBatchSession(source, base)
 
 
-def serve_sort_review(runtime: Runtime, session: SortSession, port: int) -> None:
+def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) -> None:
     """Serve the page until Ctrl+C; every choice is saved as it is made.
 
     Args:
@@ -101,6 +106,7 @@ def serve_sort_review(runtime: Runtime, session: SortSession, port: int) -> None
             "event": EVENT_PATH,
             "files": FILES_PATH,
             "forget": FORGET_PATH,
+            "sure": SURE_PATH,
         },
         workbook=workbook,
         decisions=decisions,
@@ -110,7 +116,7 @@ def serve_sort_review(runtime: Runtime, session: SortSession, port: int) -> None
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 
-def _announce(runtime: Runtime, session: SortSession, port: int) -> None:
+def _announce(runtime: Runtime, session: SortBatchSession, port: int) -> None:
     """Tell where the page is and how to open it from the host.
 
     Args:
@@ -121,8 +127,8 @@ def _announce(runtime: Runtime, session: SortSession, port: int) -> None:
     output = runtime.output
     output.success(
         _(
-            "Review ready on port {port}: each choice is saved at once in {place}. "
-            "Ctrl+C stops the review."
-        ).format(port=port, place=session.hosts[1])
+            "Review ready, open {url} in your browser. Each choice is saved at once "
+            "in {place}. Ctrl+C stops the review."
+        ).format(url=page_url(port), place=session.hosts[1])
     )
     address_tip(output, port)

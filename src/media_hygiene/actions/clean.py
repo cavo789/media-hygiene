@@ -6,30 +6,29 @@ import logging
 from functools import partial
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journaled import JournaledChanges
+from media_hygiene.actions.clean_step import clean_labels, clean_step, said
+from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
 from media_hygiene.actions.verify import (
     burst_blocker,
     change_blocker,
+    checked_removal,
     near_blocker,
     orphan_blocker,
-    removal_blocker,
 )
 from media_hygiene.constants import BrokenReason, MediaKind
-from media_hygiene.i18n import _
-from media_hygiene.scan.progress import Step
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
 
+    from media_hygiene.actions.clean_step import Planned
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.plan.models import CleanPlan, KeepDecision
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import BrokenFile, MediaFile
 
 _LOGGER = logging.getLogger(__name__)
-type _Action = Callable[[], object]
 
 
 class CleanExecutor:
@@ -44,6 +43,7 @@ class CleanExecutor:
         self._context = context
         self._tally = Tally()
         self._changes = JournaledChanges(context, self._tally)
+        self._labels = clean_labels(delete_copies=context.delete_copies)
 
     def run(self, plan: CleanPlan) -> Outcome:
         """Execute every action of the plan.
@@ -54,70 +54,68 @@ class CleanExecutor:
         Returns:
             What was done, skipped and why.
         """
-        step = Step(
-            _("Cleaning"),
-            _(
-                "Each copy is compared again with the kept one before deletion; "
-                "unreadable files go to the quarantine."
-            ),
-        )
-        total = plan.removable_count + plan.near_count + plan.burst_count
-        total += len(plan.broken)
-        self._context.progress.start(step, total + len(plan.orphans))
-        for file, action in self._actions(plan):
-            self._guarded(file, action)
+        actions = list(self._actions(plan))
+        step = clean_step(actions, delete_copies=self._context.delete_copies)
+        self._context.progress.start(step, len(actions))
+        for planned in actions:
+            self._guarded(planned)
         self._context.progress.stop()
         return self._tally.freeze()
 
-    def _actions(self, plan: CleanPlan) -> Iterator[tuple[MediaFile, _Action]]:
+    def _actions(self, plan: CleanPlan) -> Iterator[Planned]:
         """List the actions of the plan, in the order they must happen.
 
         Args:
             plan: What to clean.
 
         Yields:
-            Each file, and the action on it.
+            Each file, what the screen says of it, and the action on it.
         """
         for decision in plan.decisions:
             for file in decision.removable:
-                yield file, partial(self._delete_copy, decision, file)
+                action = partial(self._delete_copy, decision, file)
+                yield file, self._labels.of_copy(file), action
         yield from self._look_alikes(plan)
         for item in plan.broken:
-            yield item.file, partial(self._handle_broken, item)
+            action = partial(self._handle_broken, item)
+            yield item.file, self._labels.of_broken(item), action
         # Last: a sidecar is an orphan only once the files it belongs to are gone.
         for file in plan.orphans:
-            yield file, partial(self._quarantine_orphan, file)
+            yield file, self._labels.orphan, partial(self._quarantine_orphan, file)
 
-    def _look_alikes(self, plan: CleanPlan) -> Iterator[tuple[MediaFile, _Action]]:
+    def _look_alikes(self, plan: CleanPlan) -> Iterator[Planned]:
         """List the moves of pictures that look like a kept one: near, burst shots.
 
         Args:
             plan: What to clean.
 
         Yields:
-            Each file, and its move to the quarantine.
+            Each file, what the screen says of it, and its move to the quarantine.
         """
         for near in plan.near:
             for file in near.removable:
-                yield file, partial(self._quarantine_near, near, file)
+                action = partial(self._quarantine_near, near, file)
+                yield file, self._labels.near, action
         for choice in plan.bursts:
             for file in choice.discarded:
-                yield file, partial(self._quarantine_burst, choice, file)
+                action = partial(self._quarantine_burst, choice, file)
+                yield file, self._labels.burst, action
 
-    def _guarded(self, file: MediaFile, action: _Action) -> None:
-        """Run one action, turning an OS error into a recorded failure.
+    def _guarded(self, planned: Planned) -> None:
+        """Say what is done, run it, turn an OS error into a recorded failure.
 
         Args:
-            file: File the action is about.
-            action: Zero-argument callable performing the action.
+            planned: The file, what the screen says of it, and the action on it.
         """
+        file, _label, action = planned
+        self._context.progress.current(said(planned, self._context.mapper))
         try:
             action()
         except OSError as exc:
             _LOGGER.debug("Action failed on %s", file.path, exc_info=True)
             self._tally.failed.append(Incident(file.path, exc.strerror or str(exc)))
         finally:
-            self._context.progress.advance()
+            self._context.progress.advance(file.size)
 
     def _delete_copy(self, decision: KeepDecision, file: MediaFile) -> None:
         """Set aside one duplicate copy after a byte-for-byte check against the keeper.
@@ -129,13 +127,14 @@ class CleanExecutor:
             decision: The group decision, holding the keeper.
             file: Copy to delete.
         """
-        blocker = removal_blocker(decision.keeper.path, file.path, decision.size)
-        if blocker is not None:
-            self._tally.skipped.append(Incident(file.path, blocker))
+        keeper = decision.keeper.path
+        removal = checked_removal(keeper, file.path, decision.size)
+        if removal.reason is not None:
+            self._tally.skipped.append(Incident(file.path, removal.reason))
             return
         if file.kind is MediaKind.OTHER or not self._context.delete_copies:
-            keeper = decision.keeper.path
-            self._changes.quarantine(file, ActionKind.QUARANTINE_DUPLICATE, keeper)
+            origin = Origin(keeper, removal.sha256)
+            self._changes.quarantine(file, ActionKind.QUARANTINE_DUPLICATE, origin)
             return
         entry = self._changes.entry(file, ActionKind.DELETE_DUPLICATE).model_copy(
             update={"sha256": decision.digest, "keeper": str(decision.keeper.path)},
@@ -153,7 +152,8 @@ class CleanExecutor:
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        self._changes.quarantine(file, ActionKind.QUARANTINE_NEAR, decision.keeper.path)
+        keeper = Origin(decision.keeper.path)
+        self._changes.quarantine(file, ActionKind.QUARANTINE_NEAR, keeper)
 
     def _quarantine_burst(self, choice: BurstChoice, file: MediaFile) -> None:
         """Move one burst shot a review set aside to the quarantine.
@@ -168,7 +168,7 @@ class CleanExecutor:
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        keeper = choice.kept[0].path if choice.kept else None
+        keeper = Origin(choice.kept[0].path if choice.kept else None)
         self._changes.quarantine(file, ActionKind.QUARANTINE_BURST, keeper)
 
     def _handle_broken(self, item: BrokenFile) -> None:

@@ -79,7 +79,7 @@ class CzkawkaCommand:
         results = f"{CZKAWKA_OUTPUT_DIR}/{CZKAWKA_FILE_NAME}"
         return " ".join(
             (
-                "docker run --rm",
+                "docker run --rm -it",  # a terminal: Czkawka shows its progress
                 *volumes,
                 CZKAWKA_IMAGE,
                 f"czkawka_cli dup -d {self.scope.data_dir} -m 1 -W -N",

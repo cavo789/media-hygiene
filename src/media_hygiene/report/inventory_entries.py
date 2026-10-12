@@ -16,7 +16,7 @@ from media_hygiene.constants import MediaKind
 from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
     from datetime import tzinfo
 
     from media_hygiene.config.inventory_settings import InventorySettings
@@ -44,6 +44,11 @@ class Flag(StrEnum):
     BRIGHT = "bright"
 
 
+def _no_tags(_file: IndexedFile) -> str | None:
+    """No tags: an inventory written without the tag layer."""
+    return None
+
+
 @dataclass(frozen=True, slots=True)
 class InventoryContext:
     """What every line needs: host paths, duplicate digests, thresholds, video zone."""
@@ -52,6 +57,7 @@ class InventoryContext:
     shared: Mapping[str, SharedDigest]
     settings: InventorySettings
     zone: tzinfo
+    tags: Callable[[IndexedFile], str | None] = _no_tags  # `tags`, joined
 
 
 @dataclass(frozen=True, slots=True)

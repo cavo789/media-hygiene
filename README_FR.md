@@ -1,7 +1,15 @@
 # media-hygiene
 
-Trouve et nettoie en toute sécurité les photos et vidéos en double, réparties sur plusieurs
-dossiers et plusieurs disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL.
+Nettoie, range et explore les photos et vidéos réparties sur plusieurs dossiers et plusieurs
+disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL. Tout se passe sur votre
+ordinateur, et chaque changement est journalisé et peut être annulé.
+
+- **Nettoyer les doublons** : copies identiques, copies redimensionnées ou recompressées, rafales.
+- **Ranger** : une arborescence proposée par date, événement, lieu (GPS, hors ligne), sujet (un
+  modèle de vision local) et personne, que vous corrigez avant que rien ne bouge.
+- **Retrouver les personnes** : les visages sont trouvés et regroupés sur votre ordinateur ;
+  nommez-les une fois, puis retrouvez les photos de quelqu'un par son nom et rangez-les par
+  personne, sans serveur photo comme Immich.
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
@@ -10,14 +18,21 @@ L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/ca
 
 🇬🇧 [English version](README.md)
 
-![Un audit dans le terminal : 83 fichiers média analysés, 20 groupes de fichiers identiques, 32 copies en trop, 13,9 Mo à libérer, puis les dossiers partageant des fichiers identiques, chaque paire disant quel dossier garde ses copies](documentation/fr/images/terminal-audit.webp)
+![Un audit dans le terminal : 83 fichiers média analysés, 20 groupes de fichiers identiques, 32 copies en trop, 14,0 Mo à libérer, puis les dossiers partageant des fichiers identiques, chaque paire disant quel dossier garde ses copies](documentation/fr/images/terminal-audit.webp)
 
 ## Démarrage rapide
 
-Avec Docker installé, une seule commande audite un dossier :
+Avec Docker installé ([comment l'installer](documentation/fr/start/00-install-docker.md), sous
+Windows ou Linux), une seule commande audite un dossier. Dans **PowerShell** :
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+```
+
+Dans un terminal **WSL** (ou Linux), le même dossier s'écrit `/mnt/c/Photos` :
+
+```bash
+docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
 ```
 
 Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
@@ -25,33 +40,31 @@ Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien
 télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul. [Votre premier audit](documentation/fr/start/01-first-audit.md) explique
 cette commande et son résultat, morceau par morceau.
 
-Ce qu'elle fait :
+Ce qu'elle trouve :
 
-- **Doublons exacts** : même taille et même SHA-256, comparés à nouveau octet par octet juste
-  avant d'être mis de côté. Détectés entre dossiers *et* entre disques (`C:` et `D:` dans la même
-  exécution).
+- **Doublons exacts** : même taille et même SHA-256, entre dossiers *et* entre disques (`C:` et
+  `D:` dans la même exécution).
 - **Fichiers cassés** : fichiers vides, images et fichiers RAW impossibles à décoder (JPEG
   tronqué, …), vidéos impossibles à ouvrir.
-- **Réversible** : chaque action est journalisée ; `undo` ressort chaque fichier de la
-  quarantaine, et reconstruit une copie supprimée avec `clean --delete` à partir de la copie
-  conservée.
 - **Fichiers compagnons orphelins** : un fichier compagnon (`.xmp`, `.aae`, `.thm`) resté sans
-  sa photo est déplacé en quarantaine ; celui qui accompagne sa photo n'est jamais touché.
+  sa photo.
 - **Rafales et quasi-doublons** (vidéos réencodées comprises) : montrés côte à côte dans un
-  rapport HTML ; vous choisissez les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
-- **Jamais touchés sans votre accord** : les rafales, les quasi-doublons, les dossiers protégés.
+  rapport HTML ; `review` vous fait ensuite choisir les meilleures photos de chaque rafale [au clavier, dans votre navigateur](documentation/fr/clean/10-review-bursts.md).
+
+Ensuite, si vous le décidez, `clean` met de côté les copies en trop et les fichiers cassés ; les
+rafales et les quasi-doublons seulement si vous le demandez.
 
 ## Vos photos sont en sécurité
 
 **Nous le garantissons : ces commandes ne modifient, ne déplacent ni ne suppriment jamais une
 photo ou une vidéo** — `audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`,
-`inventory`, `history`, `reports`, `config`. Elles n'écrivent que leurs propres fichiers
+`inventory`, `tags`, `search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
 (rapports, cache, `config.toml`). Lancez-les avec vos dossiers montés en `:ro` : le système
 lui-même interdit alors toute modification.
 
 **Les commandes qui agissent n'effacent jamais rien.** `sort` déplace des fichiers (sur un même
 disque, un simple renommage : aucune copie, aucune place prise), `album` ajoute des seconds noms,
-`clean` déplace les copies en double en quarantaine après les avoir comparées octet par octet avec
+`xmp` écrit de petits fichiers compagnons `.xmp` à côté des photos, `clean` déplace les copies en double en quarantaine après les avoir comparées octet par octet avec
 la copie gardée, `undo` remet en place. Jamais par-dessus un autre fichier, chaque étape
 journalisée, tout est annulable.
 
@@ -62,9 +75,11 @@ journalisée, tout est annulable.
 ## Documentation
 
 La [documentation](documentation/fr/README.md) vous accompagne pas à pas. Chaque étape ajoute une
-seule chose à la commande de l'étape précédente.
+seule chose à la commande de l'étape précédente. Elle existe aussi en site web, avec une
+recherche : <https://cavo789.github.io/media-hygiene/fr/>.
 
-**Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite :
+**Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite (pas encore
+de Docker ? [Installez Docker](documentation/fr/start/00-install-docker.md) d'abord) :
 
 1. [Votre premier audit](documentation/fr/start/01-first-audit.md) : un dossier, une commande, et
    comment lire le résultat.
@@ -73,7 +88,7 @@ seule chose à la commande de l'étape précédente.
 3. [Plusieurs dossiers et disques](documentation/fr/start/03-several-folders.md) : `C:` et `D:`
    ensemble, le dossier courant, WSL.
 
-**Nettoyer les doublons**
+**Nettoyer les doublons** — pressé ? [Nettoyer en bref](documentation/fr/clean/quick-guide.md), toutes les commandes sur une page.
 
 4. [Le rapport HTML](documentation/fr/clean/04-html-report.md) : les images, les paires de dossiers, la
    preuve.
@@ -96,7 +111,7 @@ seule chose à la commande de l'étape précédente.
 13. [Un second avis](documentation/fr/clean/13-second-opinion.md) : comparer avec Czkawka, un outil
     indépendant.
 
-**Trier les photos** (nettoyez d'abord les doublons)
+**Trier les photos** (nettoyez d'abord les doublons) — pressé ? [Trier en bref](documentation/fr/sort/quick-guide.md), toutes les commandes sur une page.
 
 4. [Proposer une arborescence](documentation/fr/sort/04-classify.md) — `classify` propose une
    place pour chaque fichier, et ne modifie rien.
@@ -111,17 +126,37 @@ seule chose à la commande de l'étape précédente.
 9. [Lieux et voyages grâce au GPS](documentation/fr/sort/09-places-from-gps.md) — nommer vos
    lieux sur une carte ; le GPS des téléphones récents trie maison, famille et voyages, hors
    ligne (facultatif).
-10. [Nommer les événements dans le navigateur](documentation/fr/sort/10-name-events-in-the-browser.md) —
+10. [Trier par personne](documentation/fr/sort/10-sort-by-person.md) — nommer les visages
+    trouvés dans vos photos ; une règle range les événements où quelqu'un figure, hors ligne
+    (facultatif).
+11. [Nommer les événements dans le navigateur](documentation/fr/sort/11-name-events-in-the-browser.md) —
     un événement à la fois avec ses photos, nommé au clavier (facultatif).
-11. [Albums](documentation/fr/sort/11-albums.md) — une photo dans plusieurs dossiers, en liens
+12. [Albums](documentation/fr/sort/12-albums.md) — une photo dans plusieurs dossiers, en liens
     physiques : aucune copie, aucune place prise (facultatif).
 
-**Référence** : [commandes et options](documentation/fr/reference-commands.md),
+**Chaque commande a sa page** : d'abord ce qu'elle vous apporte, quand, et une commande à essayer ;
+puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](documentation/fr/commands/audit.md), [`status`](documentation/fr/commands/status.md),
+[`clean`](documentation/fr/commands/clean.md), [`undo`](documentation/fr/commands/undo.md),
+[`history`](documentation/fr/commands/history.md), [`purge`](documentation/fr/commands/purge.md),
+[`review`](documentation/fr/commands/review.md), [`reports`](documentation/fr/commands/reports.md),
+[`crosscheck`](documentation/fr/commands/crosscheck.md), [`config`](documentation/fr/commands/config.md),
+[`launcher`](documentation/fr/commands/launcher.md), [`classify`](documentation/fr/commands/classify.md),
+[`review-sort`](documentation/fr/commands/review-sort.md), [`sort`](documentation/fr/commands/sort.md),
+[`album`](documentation/fr/commands/album.md), [`places`](documentation/fr/commands/places.md),
+[`inventory`](documentation/fr/commands/inventory.md), [`tags`](documentation/fr/commands/tags.md),
+[`search`](documentation/fr/commands/search.md), [`xmp`](documentation/fr/commands/xmp.md),
+[`people`](documentation/fr/commands/people.md). Vous hésitez ?
+[Quelle commande ?](documentation/fr/reference-commands.md#quelle-commande-)
+
+**Référence** : [les mots de ce guide](documentation/fr/reference-glossary.md),
+[commandes et options](documentation/fr/reference-commands.md),
 [points de montage](documentation/fr/reference-mount-points.md),
 [comment vos photos restent en sécurité](documentation/fr/reference-safety.md),
 [fichiers compagnons](documentation/fr/reference-sidecars.md),
 [dépannage](documentation/fr/reference-troubleshooting.md),
 [le classeur d'inventaire](documentation/fr/reference-inventory.md),
+[les tags](documentation/fr/reference-tags.md),
+[les personnes](documentation/fr/reference-people.md),
 [utilisation avancée](documentation/fr/reference-advanced.md).
 
 **Pour les développeurs** : [construire l'image, le devcontainer, les versions](documentation/fr/development.md).
@@ -133,7 +168,7 @@ cache, les rapports, la configuration, le journal et la quarantaine. Elle nettoi
 audit, ajoutez `:ro` à vos dossiers et écrivez `audit` au lieu de `clean`.
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `

@@ -110,8 +110,15 @@ def test_undecided_groups_are_untouched() -> None:
             "a is decided twice",
         ),
         (
-            '{"version": 1, "roots": [], "bursts": [{"kept": ["a"], "discarded": []}]}',
-            "not a valid decisions file",
+            '{"version": 1, "roots": [], "bursts": [{"kept": [], "discarded": []}]}',
+            "lists no shot",
+        ),
+        (
+            (
+                '{"version": 1, "roots": [], "bursts": '
+                '[{"status": "todo", "kept": ["a"], "discarded": ["b"]}]}'
+            ),
+            "still to see has shots set aside",
         ),
     ],
 )

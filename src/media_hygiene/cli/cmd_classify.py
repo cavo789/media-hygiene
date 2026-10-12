@@ -13,11 +13,13 @@ from media_hygiene.cli.classify_ai_flow import (
 )
 from media_hygiene.cli.classify_flow import parse_years, warn_overlaps, write_output
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.options import panel_advanced
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
 from media_hygiene.services.carry import CarryRequest, carry_source
 from media_hygiene.services.classify import ClassifyService
+from media_hygiene.services.data_checks import refuse_empty_data
 
 
 def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
@@ -50,6 +52,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         list[str] | None,
         typer.Option(
             "--leave",
+            rich_help_panel=panel_advanced(),
             help=_("Host folder never sorted (analysed and cleaned as usual)."),
         ),
     ] = None,
@@ -57,6 +60,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         str | None,
         typer.Option(
             "--carry-over",
+            rich_help_panel=panel_advanced(),
             help=_(
                 "Workbook whose edits are carried over; the latest classify run's "
                 "by default."
@@ -67,6 +71,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         bool,
         typer.Option(
             "--no-carry-over",
+            rich_help_panel=panel_advanced(),
             help=_("Start fresh: carry no edit of a previous workbook over."),
         ),
     ] = False,
@@ -74,10 +79,12 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         int,
         typer.Option(
             "--sample",
+            rich_help_panel=panel_advanced(),
             min=0,
             help=_(
-                "Describe this many random photos with the local model, print the "
-                "time per photo and the estimate of a full run, and stop."
+                "Estimate a full run first: describe this many random photos with "
+                "the local model, print the time per photo and the estimate of a "
+                "full run, and stop."
             ),
             show_default=False,
         ),
@@ -86,6 +93,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         bool,
         typer.Option(
             "--no-describe",
+            rich_help_panel=panel_advanced(),
             help=_(
                 "Ask the local model nothing new: the subject rules read the "
                 "descriptions already in the cache."
@@ -97,6 +105,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         typer.Option(
             "--yes",
             "-y",
+            rich_help_panel=panel_advanced(),
             help=_("Describe the photos without asking, however many."),
         ),
     ] = False,
@@ -122,6 +131,8 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         if overrides:
             runtime = runtime.with_overrides({"classify": overrides})
         years = parse_years(year)
+        # Before the title: the first line a user without -v reads.
+        refuse_empty_data(runtime, "classify")
         runtime.output.title(_("Classify"))
         warn_overlaps(runtime)
         source = (

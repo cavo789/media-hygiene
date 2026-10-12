@@ -8,8 +8,15 @@ déplacement est journalisé et `undo` remet tout en place.
 
 ## Le lancer
 
-Enregistrez et fermez d'abord le classeur. Montez ensuite vos dossiers **sans** `:ro`, avec le
-journal, la quarantaine et le dossier de rapports de `classify` :
+Enregistrez et fermez d'abord le classeur. Lancez ensuite `sort` : `mh` monte pour lui vos
+dossiers **sans** `:ro`, avec le journal, la quarantaine et le dossier de rapports de `classify` :
+
+```powershell
+mh sort
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -21,6 +28,8 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr sort
 ```
 
+</details>
+
 Sans argument, `sort` prend le classeur du dernier `classify`. Pour en appliquer un autre, donnez
 son chemin : `sort "C:\Users\moi\Bureau\classify.xlsx"` (dans un dossier monté). Une copie
 modifiée ailleurs convient : son `plan.json` est retrouvé dans `/reports` grâce à l'identifiant
@@ -31,8 +40,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20261003-080918-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 3 octobre 2026 à 08:09.
+Classeur : /reports/20261012-102143-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 12 octobre 2026 à 10:21.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -52,7 +61,7 @@ l'exécution est journalisée : 'undo' remet tout en place.
 - *modifications lues* compte les cellules que vous avez remplies ; vérifiez la date : un classeur
   modifié mais **pas enregistré** montre son ancienne date, et `sort` prévient quand Excel ou
   LibreOffice l'a encore ouvert.
-- Les choix faits dans [la page du navigateur](10-name-events-in-the-browser.md#où-vont-vos-choix),
+- Les choix faits dans [la page du navigateur](11-name-events-in-the-browser.md#où-vont-vos-choix),
   s'il y en a, sont appliqués par-dessus le classeur, et comptés sur une ligne à part.
 - *Déjà à leur place* : des fichiers comptés, pas déplacés.
 - *Dossiers sources supprimés* : les dossiers que le tri laisse vides (voir plus bas).
@@ -119,7 +128,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261003-080920
+Tri 20261012-102145
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -130,9 +139,18 @@ Tri 20261003-080920
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20261003-080920-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261003-080920' remet tout en
-place.
+Manifeste : /reports/20261012-102145-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261012-102145' remet tout en
+place :
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr undo 20261012-102145
 ```
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
@@ -167,12 +185,12 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20261003-080920 ────────────────
+──────────────── Annulation de l'exécution sort 20261012-102145 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261003-080920
+20261012-102145
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │

@@ -23,7 +23,7 @@ How to use it:
 
 ## Part 1 — Prerequisite
 
-- [ ] **Restart Docker Desktop.** Since the PC reboot of 2026-10-02, `docker run` drops the
+- [x] **Restart Docker Desktop.** Since the PC reboot of 2026-10-02, `docker run` drops the
   attached output written more than ~1 s after start
   (`docker run --rm alpine sh -c 'sleep 3; echo late-output'` prints nothing).
   Then ask Claude to run, at low load, one step at a time:
@@ -34,6 +34,7 @@ How to use it:
     blocks of `places`, `review-sort`, `album`, `undo`, `--tier` were filled by hand from the
     sources and must be confirmed.
     → run by TODO 0057 on 2026-10-03 (en and fr): every capture and help block regenerated.
+  → done: TODO 0057 ran `e2e` and `docs_screenshots` on 2026-10-03.
 
 ## Part 2 — PARTIAL and BLOCKED TODOs
 
@@ -42,7 +43,8 @@ How to use it:
 - [ ] Open a `classify.xlsx` in **Microsoft Excel**: no repair prompt; sheets and structure
   locked; only the yellow cells editable; filters and drop-downs work.
   → closes 0027.
-- [ ] Decide how the documentation shows the workbook (same question as 0032 below).
+- [x] Decide how the documentation shows the workbook (same question as 0032 below).
+  → no screenshot (see 0032).
 
 ### 0029 — `classify` with a local vision model
 
@@ -51,38 +53,55 @@ How to use it:
   are right.
 - [ ] From those figures: add `bge-m3` embeddings (or a CLIP fast pass) for the mapping step, or
   not? Default: not built.
-- [ ] When the confirmation "describe N photos?" is refused, `classify` goes on with the cache
+- [x] When the confirmation "describe N photos?" is refused, `classify` goes on with the cache
   only. Keep, or abort the whole run?
-- [ ] The `subject` rule is commented out, low in the default rule list, with example
+  → keep: go on with the cache only.
+- [x] The `subject` rule is commented out, low in the default rule list, with example
   categories. Keep its position and categories, or change them?
+  → keep position and categories.
 
 ### 0030 — Places from GPS, the map page
 
-- [ ] **Place from a folder name** (`2017/Bruges` → Bruges): ordinary folder words collide with
+- [x] **Place from a folder name** (`2017/Bruges` → Bruges): ordinary folder words collide with
   real towns (Mons, Spa, Nice). Choose one: a population threshold · country names only · only
   aliases you list · an opt-in rule with a low score · not wanted.
-- [ ] If wanted: its category is the folder's own label, or `{country}/{city}`?
-- [ ] **Renaming towns** (GeoNames often gives English names: Turin, Munich, Brussels): add a
+  → a population threshold with guards: the folder name equals the town's name exactly; towns
+    in the countries of the collection's GPS photos first; ignored when the folder's own GPS
+    photos contradict it; low threshold (5,000); low score, any other rule wins. GeoNames data
+    shows a threshold alone fails both ways (Nice 342k, Paradise US 223k, Mons 95k vs Durbuy,
+    Spa 10k; `Bruges` is Bruges FR 12k, Belgian Bruges is listed as `Brugge`). A new TODO.
+- [x] If wanted: its category is the folder's own label, or `{country}/{city}`?
+  → `{country}/{city}`, like the `trip` rule.
+- [x] **Renaming towns** (GeoNames often gives English names: Turin, Munich, Brussels): add a
   table such as `[classify.town_names]`, or is the `trip` rule's category template enough?
-- [ ] **Map page screenshot** in the docs: wanted (it fetches real OpenStreetMap tiles while the
+  → add a `[classify.town_names]` table: a new TODO.
+- [x] **Map page screenshot** in the docs: wanted (it fetches real OpenStreetMap tiles while the
   docs are generated, with a synthetic place), or text only?
+  → wanted: a new TODO (synthetic place, real OSM tiles while the docs are generated).
 
 ### 0032 — Inventory export
 
-- [ ] Open an `inventory.xlsx` in Excel: frozen header, filter, date and percent formats.
-- [ ] **Workbook screenshots in the docs** (0027 and 0032): an HTML rendering of the first rows ·
+- [x] Open an `inventory.xlsx` in Excel: frozen header, filter, date and percent formats.
+  → checked 2026-10-12 on the real collection: no repair prompt, frozen header, filters, date formats right.
+- [x] **Workbook screenshots in the docs** (0027 and 0032): an HTML rendering of the first rows ·
   LibreOffice headless added to the docs tooling · one capture taken by hand in Excel · none.
-- [ ] Check the default thresholds on the real collection: `[inventory] blurry_below = 100` and
+  → none.
+- [x] Check the default thresholds on the real collection: `[inventory] blurry_below = 100` and
   `clipped_above = 0.25` were guessed, not measured.
-- [ ] Add the total video duration to the Summary sheet? Default: no.
-- [ ] Re-read the French column headers ("Rubrique", "Ouverture (f/)", "Débit binaire").
+  → checked 2026-10-12 on samples of the real collection: blurry, bright and dark files deserve their mark. Keep 100 / 0.25.
+- [x] Add the total video duration to the Summary sheet? Default: no.
+  → no.
+- [x] Re-read the French column headers ("Rubrique", "Ouverture (f/)", "Débit binaire").
+  → OK as they are.
 
 ### 0040 — Rename to media-hygiene (release 0.3.0)
 
-- [ ] Publish 0.3.0: merge `sortering` into `main`, full `check`, then `release` (tag `v0.3.0`).
+- [x] Publish 0.3.0: merge `sortering` into `main`, full `check`, then `release` (tag `v0.3.0`).
   Best done after Part 1 and after the security bump 0054 if `pillow-heif` 1.9.0 is out.
-- [ ] Delete the Docker Hub repository `cavo789/media-dedup` once `cavo789/media-hygiene:0.3.0`
+  → tag `v0.3.0` pushed on 2026-10-03.
+- [x] Delete the Docker Hub repository `cavo789/media-dedup` once `cavo789/media-hygiene:0.3.0`
   is published.
+  → deleted by the maintainer.
 - [ ] After the next clone under the new name: update the paths in `.claude/settings.json`.
 
 ### 0041 — Albums as hard links
@@ -92,86 +111,119 @@ How to use it:
   (`fsutil hardlink list`)? Same question through a WSL `/mnt/c` path.
 - [ ] If links fail on Docker Desktop: keep `album` for Linux/NAS users (it refuses cleanly), or
   remove it (UNNEEDED)?
-- [ ] Album behaviour: flat folder, original names, additive (a photo no longer selected stays).
+- [x] Album behaviour: flat folder, original names, additive (a photo no longer selected stays).
   Want a "sync" mode that removes it, or date-prefixed names for chronological order in
   Explorer?
-- [ ] `--category` matches the category as `sort` would apply it (your renames included). Should
+  → keep: flat folder, original names, additive.
+- [x] `--category` matches the category as `sort` would apply it (your renames included). Should
   it also match the originally proposed name?
+  → keep: only the category as `sort` applies it.
 
 ### 0053 — The rare silent crash (exit 139)
 
-- [ ] Do the WSL / PC restarts also happen outside this project, under any heavy Docker load?
+- [x] Do the WSL / PC restarts also happen outside this project, under any heavy Docker load?
   (Windows Event Viewer → System: Kernel-Power 41, WHEA, display driver; `mdsched.exe` memory test.)
-- [ ] Follow the lead: import `pillow_heif` and `rawpy` lazily, only where pictures are decoded,
+  → no, only with this project: the code lead stays open (lazy imports, new TODO).
+- [x] Follow the lead: import `pillow_heif` and `rawpy` lazily, only where pictures are decoded,
   so that `undo`, `history`… never load libheif/x265/LibRaw? (Also faster start-up.)
-- [ ] Next time an e2e run fails: keep `/tmp/media-hygiene/e2e.log` and give it to Claude.
+  → yes: a new TODO.
+- [x] Next time an e2e run fails: keep `/tmp/media-hygiene/e2e.log` and give it to Claude.
+  → standing instruction, noted (the `e2e` helper writes that log).
 
 ### 0009 — Immich as the family library
 
-- [ ] Decide: (1) not now · (2) Immich as a read-only viewer over the sorted tree (recommended,
+- [x] Decide: (1) not now · (2) Immich as a read-only viewer over the sorted tree (recommended,
   once the disks are clean) · (3) Immich as the master library.
-- [ ] Which machine would host it (Linux box, NAS, this Windows PC)?
-- [ ] Do family members want the mobile app, automatic backup and sharing (reasons for option 3)?
-- [ ] If option 2: a short trial with synthetic pictures first (hard links shown as duplicates,
+  → (1) not now: 0009 closes; revisit once the disks are clean and sorted (sort before any Immich import).
+- [x] Which machine would host it (Linux box, NAS, this Windows PC)?
+  → not applicable (not now).
+- [x] Do family members want the mobile app, automatic backup and sharing (reasons for option 3)?
+  → not applicable (not now).
+- [x] If option 2: a short trial with synthetic pictures first (hard links shown as duplicates,
   a moved file losing its album, on the current Immich release).
+  → not applicable (not now).
 
 ### 0045 (BLOCKED) — x265 (GPL) in the image
 
-- [ ] `pi-heif` is discontinued. Choose: (1) keep `pillow-heif` and list x265 in the Docker Hub
+- [x] `pi-heif` is discontinued. Choose: (1) keep `pillow-heif` and list x265 in the Docker Hub
   licence section · (2) build libheif + libde265 without x265 in a Dockerfile stage (no GPL,
   ~23 MB less, manual bumps on every security release) · (3) wait for another maintained
   decoder.
+  → (1): keep `pillow-heif`, list x265 (GPL) in the licence section.
 
 ### 0054 (open) — `pillow-heif` 1.9.0
 
-- [ ] Nothing to decide: run `/todo 0054` once `pillow-heif` 1.9.0 is on PyPI (libheif 1.23.5,
+- [x] Nothing to decide: run `/todo 0054` once `pillow-heif` 1.9.0 is on PyPI (libheif 1.23.5,
   one high-severity fix). Ideally before the 0.3.0 release.
+  → done (`DONE/DONE_0054-…`).
 
 ## Part 3 — Choices already applied (DONE TODOs): confirm or change
 
-- [ ] **0035 date rules:** a date rule takes an event when at least half of its files fall in the
+- [x] **0035 date rules:** a date rule takes an event when at least half of its files fall in the
   range (literal "overlaps the dates" would let a birthday swallow a whole trip). Keep?
-- [ ] **0035 warning:** every rule that decided nothing is listed (5 of 6 default rules on the
+  → keep.
+- [x] **0035 warning:** every rule that decided nothing is listed (5 of 6 default rules on the
   demo). Keep for all, or only for the rules you write (`date_range`, `path`, `camera`)?
-- [ ] **0035 undated files** matched by a rule keep the reason `undated`, so the rule may be
+  → keep.
+- [x] **0035 undated files** matched by a rule keep the reason `undated`, so the rule may be
   listed as "decided nothing". Credit them to the rule instead?
-- [ ] **0036 carry-over source:** only the latest classify run's workbook (not older runs). Keep?
-- [ ] **0036 cleared yellow cell:** a carried folder still applies at the next `sort` even if the
+  → keep.
+- [x] **0036 carry-over source:** only the latest classify run's workbook (not older runs). Keep?
+  → keep.
+- [x] **0036 cleared yellow cell:** a carried folder still applies at the next `sort` even if the
   pre-filled cell is emptied. Acceptable?
-- [ ] **0036 notes** of events a sort fully applied are dropped. Fine?
-- [ ] **0046 score** of a file kept in "To check" as a previous guess: `[classify] unsure` (50),
+  → keep.
+- [x] **0036 notes** of events a sort fully applied are dropped. Fine?
+  → keep.
+- [x] **0046 score** of a file kept in "To check" as a previous guess: `[classify] unsure` (50),
   not the rules' score. Fine?
-- [ ] **0043:** `review` accepts `--exclude` but not `--exclude-name` nor `--ext`. Add them?
-- [ ] **0005 tier:** re-encoded videos are quarantined by `clean --tier near`, like near-duplicate
+  → keep.
+- [x] **0043:** `review` accepts `--exclude` but not `--exclude-name` nor `--ext`. Add them?
+  → add them: a new TODO.
+- [x] **0005 tier:** re-encoded videos are quarantined by `clean --tier near`, like near-duplicate
   photos. Keep, or a separate tier value?
-- [ ] **0005 date rule:** a video copy must have the original's date or none, so copies re-dated
+  → keep.
+- [x] **0005 date rule:** a video copy must have the original's date or none, so copies re-dated
   by messaging apps (WhatsApp…) are missed. Relax it (a later date on the smaller copy), knowing
   security-camera clips argue against?
-- [ ] **0031 conflicts:** a workbook edit made after a choice on the `review-sort` page blocks
+  → keep.
+- [x] **0031 conflicts:** a workbook edit made after a choice on the `review-sort` page blocks
   `sort` until chosen again in one place (the TODO said "the page wins"). Keep, or the page
   always wins with a report?
-- [ ] **0031 storage:** page choices in `sort-decisions.json` beside `plan.json`. OK?
-- [ ] **0031 keys:** Enter accept, N/P next/previous, U, Shift+S event stays, ←/→ Space select,
+  → keep.
+- [x] **0031 storage:** page choices in `sort-decisions.json` beside `plan.json`. OK?
+  → keep.
+- [x] **0031 keys:** Enter accept, N/P next/previous, U, Shift+S event stays, ←/→ Space select,
   O send to a category, S photos stay, Delete take back, Z zoom, E/C fields (letters follow the
   keyboard layout, AZERTY included). Any clash with your habits?
-- [ ] **0031 screenshot** of the page in `sort/10-name-events-in-the-browser.md`: add one with the
+  → keep.
+- [x] **0031 screenshot** of the page in `sort/11-name-events-in-the-browser.md`: add one with the
+  → keep.
   docs scenario (after Part 1)?
-- [ ] **0050:** two companion files edited to different folders make `sort` refuse the workbook;
+  → no.
+- [x] **0050:** two companion files edited to different folders make `sort` refuse the workbook;
   folder names are compared exactly (`Vacances` ≠ `vacances`). Keep case-sensitive?
-- [ ] **0055 CSV:** text starting with `= + - @` gets a leading apostrophe in `plan.csv` and
+  → keep.
+- [x] **0055 CSV:** text starting with `= + - @` gets a leading apostrophe in `plan.csv` and
   `inventory.csv` (Excel then computes nothing, but may show the apostrophe). Keep, or raw text?
-- [ ] **0057 `--delete`:** immediate deletion is a `clean --delete` flag only, no `[clean]`
+  → keep.
+- [x] **0057 `--delete`:** immediate deletion is a `clean --delete` flag only, no `[clean]`
   setting (a config value would make deletion permanent unnoticed). Keep?
-- [ ] **0057 empty files:** `clean` still deletes 0-byte files (nothing in them; `undo` recreates
+  → keep.
+- [x] **0057 empty files:** `clean` still deletes 0-byte files (nothing in them; `undo` recreates
   them) rather than quarantining them. Keep?
-- [ ] **0057 albums:** after a later `sort` moved the original, `undo` of the album keeps the
+  → keep.
+- [x] **0057 albums:** after a later `sort` moved the original, `undo` of the album keeps the
   album's name (the recorded original is gone) and says why. Keep, or look the original up in
   the sort journals?
-- [ ] **0057 tool folders:** a quarantine, journal, cache or reports folder inside (or around) a
+  → keep.
+- [x] **0057 tool folders:** a quarantine, journal, cache or reports folder inside (or around) a
   photo folder is refused (audit, classify, clean, sort, album, purge, `reports --prune`; never
   `undo`), unless it lies in `[folders] excluded`. Refuse, or only warn?
-- [ ] **0057 console:** the 🔒 line and the `:ro` tip (with the safety page URL) print at every
+  → keep.
+- [x] **0057 console:** the 🔒 line and the `:ro` tip (with the safety page URL) print at every
   read-only run that reads the photos while a photo mount is writable. Too chatty?
+  → keep.
 
 ## Part 4 — Checks on the Windows machine (DONE TODOs, untested here)
 
@@ -190,8 +242,9 @@ How to use it:
 - [ ] **0057:** a `sort` on one NTFS mount of Docker Desktop: renamed (instant) or copied file by
   file (`renameat2` unsupported there falls back to the verified copy: slower, same result)?
   And `-v "C:\Photos\quarantine:/quarantine"` next to `-v "C:\Photos:/data/c/Photos"` is refused.
-- [ ] **0023, 0032:** re-read the new French wordings ("déplacées en quarantaine", inventory
+- [x] **0023, 0032:** re-read the new French wordings ("déplacées en quarantaine", inventory
   headers).
+  → OK as they are.
 
 ## Acceptance
 

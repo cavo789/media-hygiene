@@ -28,6 +28,7 @@ _TAKEN_AT: Final = 0x9003
 _EXIF_DATE: Final = "%Y:%m:%d %H:%M:%S"
 _HEIC: Final = ".heic"
 _VIDEO_SECONDS: Final = 8
+_SMALLER: Final = "scale=480:270"  # half the width and height
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,3 +134,21 @@ def video(path: Path, when: datetime) -> Path:
     command += ["-t", str(_VIDEO_SECONDS), "-pix_fmt", "yuv420p", str(path)]
     subprocess.run(command, check=True)  # noqa: S603 - fixed, trusted arguments
     return stamp(path, when)
+
+
+def reencode(source: Path, target: Path, when: datetime) -> Path:
+    """Encode a video again, smaller and more compressed: what a messaging app sends.
+
+    Args:
+        source: The original video.
+        target: The copy; its folder is created.
+        when: The date of the copy.
+
+    Returns:
+        The copy.
+    """
+    target.parent.mkdir(parents=True, exist_ok=True)
+    command = ["ffmpeg", "-loglevel", "error", "-y", "-i", str(source)]
+    command += ["-vf", _SMALLER, "-crf", "32", "-pix_fmt", "yuv420p", str(target)]
+    subprocess.run(command, check=True)  # noqa: S603 - fixed, trusted arguments
+    return stamp(target, when)

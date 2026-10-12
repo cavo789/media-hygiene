@@ -1,0 +1,22 @@
+{# Included in the script of review.html.j2: how long the series still to see should take,
+   at the pace of this session. Each pause counts two minutes at most: a coffee break
+   does not spoil the estimate. Shown once a few series were decided. #}
+  const paceCap = 120000;  // ms: a longer pause counts as this long
+  const paceFloor = 5;  // series decided in this session before an estimate is shown
+  const pace = { at: Date.now(), busy: 0, decided: 0 };
+
+  // Called after each saved choice, with the number of series it decided for the first time.
+  const paced = (newly) => {
+    const now = Date.now();
+    pace.busy += Math.min(now - pace.at, paceCap);
+    pace.at = now;
+    pace.decided += newly;
+  };
+
+  const remaining = (todo) => {
+    if (todo === 0 || pace.decided < paceFloor) return "";
+    const minutes = Math.max(1, Math.round((pace.busy / pace.decided) * todo / 60000));
+    const hours = Math.floor(minutes / 60);
+    const time = hours > 0 ? hours + " h " + String(minutes % 60).padStart(2, "0") : minutes + " min";
+    return fill(T.remaining, { time: time });
+  };

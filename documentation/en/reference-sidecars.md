@@ -19,6 +19,8 @@ belongs to the files of its folder with the same name: `IMG_1.xmp` to `IMG_1.jpg
 - **With `--ext`**, the audit looks at some files only: sidecars already alone before the clean
   are left where they are, only those the clean itself leaves alone are moved.
 - **Protected folders** are never modified, sidecars included.
+- **Written by `xmp`**: a sidecar this tool created for its words, and that nobody edited since,
+  holds no edits: it does not make its photo the copy kept ([tags](reference-tags.md#carry-the-words-with-the-photos-xmp)).
 
 The sidecar of a copy set aside is not moved next to the kept one: it becomes an orphan. To keep
 another copy *with* its edits, name its folder in [`--prefer`](clean/05-choose-the-kept-copy.md#prefer-a-folder).

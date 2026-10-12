@@ -30,12 +30,17 @@ def test_the_audit_shows_near_duplicates_and_bursts(
     cli: CliRunner, locations: Locations
 ) -> None:
     """Counted in the summary, explained in a tip, shown side by side in the report."""
-    output = run(cli, "audit").output
+    output = " ".join(run(cli, "--verbosity", "verbose", "audit").output.split())
     assert "Near duplicates (moved only with --tier near)" in output
     assert "Burst series (moved only if set aside with 'review')" in output
-    assert "media-hygiene review" in output
+    assert "in 'review'" in output
     assert "clean --tier near" in output
+    assert "What you can do" in output
+    assert "Photos with a shooting date" in output  # the inventory, when verbose
+    assert "burst series: optional" in output
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()
+    assert 'id="actions"' in report
+    assert "Copy the command" in report
     assert "IMG-20210705-WA0001.jpg" in report
     assert "⭐ sharpest" in report
 
@@ -43,13 +48,17 @@ def test_the_audit_shows_near_duplicates_and_bursts(
 def test_near_duplicates_move_only_with_the_tier_and_come_back(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """A plain clean keeps them; --tier near quarantines them; undo restores them."""
+    """A plain clean keeps them, --tier near too (to check); near-all moves them."""
     data = locations.data_dir
     before = {name: digest(data / name) for name in (WHATSAPP, EMAIL)}
     assert run(cli, "clean", "--yes").exit_code == 0
     assert all((data / name).is_file() for name in before)
     assert run(cli, "undo").exit_code == 0
-    near = run(cli, "clean", "--yes", "--tier", "near")
+    sure = run(cli, "clean", "--yes", "--tier", "near")
+    assert "to check stays in place" in " ".join(sure.output.split())
+    assert all((data / name).is_file() for name in before)
+    assert run(cli, "undo").exit_code == 0
+    near = run(cli, "clean", "--yes", "--tier", "near-all")
     assert near.exit_code == 0, near.output
     assert not any((data / name).exists() for name in before)
     assert (data / KEPT).is_file()
@@ -72,3 +81,17 @@ def test_the_near_tier_needs_a_quarantine(
     assert result.exit_code == 1
     assert "/quarantine" in result.output
     assert "Audit summary" not in result.output
+
+
+def test_a_whatsapp_copy_named_the_day_of_the_original_is_moved_by_the_tier(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """No EXIF left, but `IMG-20210705-…` is the day the original was taken: sure."""
+    data = locations.data_dir
+    (data / EMAIL).unlink()  # the e-mail copy, without a dated name, is to check
+    sure = run(cli, "clean", "--yes", "--tier", "near")
+    assert sure.exit_code == 0, sure.output
+    assert not (data / WHATSAPP).exists()
+    assert (data / KEPT).is_file()
+    assert run(cli, "undo").exit_code == 0
+    assert (data / WHATSAPP).is_file()

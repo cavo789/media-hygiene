@@ -16,6 +16,7 @@ from media_hygiene.config.classify_rules import (
     unique_names,
 )
 from media_hygiene.config.patterns import valid_patterns
+from media_hygiene.i18n import _
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 # Dates in file names: named groups y, m, d (and H, M, S when written).
@@ -48,6 +49,7 @@ SCORES: Final = {
     "camera": 90,
     "other-category": 85,  # only when no rule above matched
     "subject": 85,  # the samples of an event agree; else "to check"
+    "person": 85,  # someone named on enough photos of the event
     "place": 90,  # within a personal place
     "place-neighbour": 70,  # no GPS, in an event at a personal place
     "trip": 90,  # far from home
@@ -160,10 +162,10 @@ class ClassifySettings(BaseModel):
         """
         trips = [rule.name for rule in self.rules if rule.match is RuleMatch.TRIP]
         if trips and not any(place.home for place in self.places):
-            message = (
-                f"rule {trips[0]!r}: match = 'trip' needs a [[classify.places]] "
+            message = _(
+                "rule '{name}': match = 'trip' needs a [[classify.places]] "
                 "with home = true"
-            )
+            ).format(name=trips[0])
             raise ValueError(message)
         return self
 

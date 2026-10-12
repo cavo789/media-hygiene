@@ -1,4 +1,4 @@
-"""Fixtures: a fake Ollama, and the command line on three synthetic events."""
+"""Fixtures: the command line on three synthetic events, its model a fake Ollama."""
 
 from __future__ import annotations
 
@@ -7,25 +7,12 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from media_hygiene.paths.mount_kind import MountKind
-from tests.support.fake_ollama import FakeOllama
+from tests.support.cli import point_mounts
 from tests.support.subjects import write_config, write_events
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-
     from media_hygiene.paths.locations import Locations
-
-
-@pytest.fixture
-def fake() -> Iterator[FakeOllama]:
-    """A fake Ollama, serving for the test.
-
-    Yields:
-        The server.
-    """
-    with FakeOllama() as server:
-        yield server
+    from tests.support.fake_ollama import FakeOllama
 
 
 @pytest.fixture
@@ -37,15 +24,12 @@ def cli(
     Args:
         locations: The test mount points.
         monkeypatch: Pytest monkeypatch fixture.
-        fake: The fake model server.
+        fake: The fake model server (`fake`, tests/integration/conftest.py).
 
     Returns:
         The runner.
     """
-    for kind in MountKind:
-        monkeypatch.setenv(
-            f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(locations.path_of(kind))
-        )
+    point_mounts(locations, monkeypatch)
     write_events(locations.data_dir)
     write_config(locations.config_dir, fake.url)
     return CliRunner()

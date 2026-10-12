@@ -18,7 +18,9 @@ modified, moved nor deleted**.
 | `review`, `review-sort` | Your choices, in a small `.json` file next to the report (`/reports`). |
 | `places` | The places you name, in `config.toml` (`/config`). |
 | `inventory` | The workbook (`/reports`), read from the cache alone. |
-| `history`, `reports`, `config` | Nothing in your folders (`reports --prune` deletes old reports only). |
+| `tags`, `people` | The words and the faces, in the cache (`/cache`): never in your photos. |
+| `search` | The small previews of its page, in the cache (`/cache`). |
+| `history`, `reports`, `config`, `status`, `launcher` | Nothing in your folders (`reports --prune` deletes old reports only). |
 
 All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`
 (`-v "C:\Photos:/data/c/Photos:ro"`). Then it is not only our promise: the operating system
@@ -32,6 +34,8 @@ The commands that act on your files never erase anything, and every one of them 
 - **`sort`** moves the files where the workbook says. On one disk, a move is a simple rename:
   nothing is copied, no space is used.
 - **`album`** only adds second names (hard links); no photo is copied, moved nor deleted.
+- **`xmp`** only writes small `.xmp` sidecars next to the photos, never a photo; a sidecar of
+  another application is copied into the quarantine before it is completed.
 - **`clean`** moves the extra copies to the quarantine, each one compared byte for byte with
   the copy kept just before. Their space is freed by `purge`, once you have checked.
 - **`undo`** puts the files of a run back where they were.
@@ -79,7 +83,8 @@ error.
   bytes are duplicates. Two `IMG_0001.jpg` with different content are not.
 - **Looking the same is not enough.** A resized, recompressed, rotated or re-tagged copy is a
   different file. The audit lists it as a [near duplicate](clean/11-near-duplicates.md), but `clean`
-  leaves it alone unless you ask with `--tier near`, and then only moves it to the quarantine.
+  leaves it alone unless you ask with `--tier near` (the sure groups and those you decided) or
+  `--tier near-all`, and then only moves it to the quarantine.
 - **Only photos, RAW files and videos** are analysed, recognised by their extension. Other files
   only when you [ask for them](clean/06-file-types.md#other-file-types) with `--ext`, and then their
   copies are moved to the quarantine, never deleted.
@@ -100,7 +105,8 @@ error.
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
-| Albums | [`album`](sort/11-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
+| Albums | [`album`](sort/12-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
+| XMP sidecars | [`xmp`](reference-tags.md#carry-the-words-with-the-photos-xmp) never writes into a photo nor into a protected folder. Each sidecar is journaled, written to a temporary file then renamed (never over a file that appeared), read back and parsed; one of another application is completed (its edits kept), its previous bytes kept in the quarantine. `undo` removes or restores a sidecar only while it holds what the run wrote. |
 | `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |

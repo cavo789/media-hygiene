@@ -39,7 +39,7 @@ def media_hygiene_groups(locations: Locations) -> list[list[Path]]:
 
 def test_the_audit_prints_the_czkawka_command(cli: CliRunner) -> None:
     """With duplicates, the audit suggests the command for a second opinion."""
-    output = run(cli, "audit").output
+    output = run(cli, "--verbosity", "verbose", "audit").output
     assert "Second opinion" in output
     assert "czkawka_cli dup -d " in output
     assert "-C /out/czkawka.json" in output
@@ -54,7 +54,7 @@ def test_crosscheck_agrees_and_reports_it(cli: CliRunner, locations: Locations) 
     result = run(cli, "crosscheck")
     assert result.exit_code == 0, result.output
     assert "Czkawka agrees" in result.output
-    assert "other file types: 2" in result.output
+    assert "other file types: 2" in " ".join(result.output.split())
     verdict = load_summaries(locations.reports_dir)[0].crosscheck
     assert verdict is not None
     assert verdict.agrees
@@ -64,7 +64,11 @@ def test_crosscheck_agrees_and_reports_it(cli: CliRunner, locations: Locations) 
 def test_crosscheck_lists_disagreements(cli: CliRunner, locations: Locations) -> None:
     """A group only Czkawka found is shown, with its paths."""
     data = locations.data_dir
-    extra = [data / "c/Family Photos/Rafale/IMG_2001.jpg", data / "c/other.jpg"]
+    # Two existing, different photos: Czkawka alone groups them.
+    extra = [
+        data / "c/Family Photos/Rafale/IMG_200.jpg",
+        data / "c/Family Photos/Rafale/IMG_201.jpg",
+    ]
     write_czkawka(locations, [*media_hygiene_groups(locations), extra])
     output = run(cli, "crosscheck").output
     assert "Czkawka disagrees on 1 group" in output
@@ -88,9 +92,36 @@ def test_clean_shows_the_verdict_but_never_needs_it(
     cli: CliRunner, locations: Locations
 ) -> None:
     """No results is said; results of other folders are a warning: the clean runs."""
-    assert "Not cross-checked" in run(cli, "clean", "--yes").output
+    assert "For a second opinion, run 'crosscheck'" in run(cli, "clean", "--yes").output
     assert run(cli, "undo").exit_code == 0
     write_czkawka(locations, [[Path("/elsewhere/a.jpg"), Path("/elsewhere/b.jpg")]])
     result = run(cli, "clean", "--yes")
     assert result.exit_code == 0, result.output
     assert "cover other folders" in result.output
+
+
+def test_crosscheck_names_the_folders_it_never_analyses(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Czkawka's files in a recycle bin: counted, and the folder named."""
+    data = locations.data_dir
+    trash = [data / "c/$RECYCLE.BIN/a.jpg", data / "c/$RECYCLE.BIN/b.jpg"]
+    trash[0].parent.mkdir()
+    write_czkawka(locations, [*media_hygiene_groups(locations), trash])
+    result = run(cli, "crosscheck")
+    assert result.exit_code == 0, result.output
+    assert "• C:\\$RECYCLE.BIN: 2" in result.output
+
+
+def test_outdated_results_are_ignored_with_the_way_out(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Czkawka ran before files were removed: no verdict, its command, its file."""
+    removed = [locations.data_dir / "c/gone.jpg", locations.data_dir / "c/gone2.jpg"]
+    write_czkawka(locations, [*media_hygiene_groups(locations), removed])
+    output = run(cli, "crosscheck").output
+    assert "out of date" in output
+    assert "Czkawka agrees" not in output
+    assert "czkawka_cli dup" in output
+    assert "czkawka.json" in output
+    assert load_summaries(locations.reports_dir)[0].crosscheck is None

@@ -16,6 +16,7 @@ from media_hygiene.classify.models import Band
 from media_hygiene.classify.names import band_name
 from media_hygiene.classify.page_overlay import Verdict, value_text, verdict
 from media_hygiene.classify.page_values import EventValue, FileValue
+from media_hygiene.review.sort_sure import sure_value
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -60,6 +61,7 @@ class EventCard(BaseModel):
     folder: str  # proposed, relative to the target; empty: stays
     band: str
     why: str
+    sure: bool  # one click may accept its proposal: `sort_sure`
     workbook: Side
     page: Side | None
     conflict: bool
@@ -133,6 +135,7 @@ class CardMaker:
             folder=head.folder or "",
             band=band_name(head.band),
             why=head.why,
+            sure=sure_value(item) is not None,
             workbook=event_side(now),
             page=None if chosen is None else event_side(chosen.value),
             conflict=chosen is not None

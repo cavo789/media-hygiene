@@ -1,31 +1,26 @@
 """The `subject` rules: describe the samples missing from the cache, then map them.
 
-Describing needs a vision model and time; mapping is text only, and cached too. The
-answers become the subjects the rules read; what was not described stays to the
-other rules.
+Describing needs a vision model and time; mapping is text only, and cached too. A
+photo `tags` already had described by the same model is not described again: its
+sentence and words are mapped instead. The answers become the subjects the rules
+read; what was not described stays to the other rules.
 """
 
 from __future__ import annotations
 
-import asyncio
 from contextlib import ExitStack
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.classify.ai.client import OllamaClient
-from media_hygiene.classify.ai.describe import (
-    DescribeDeps,
-    DescribeOutcome,
-    describe_all,
-)
+from media_hygiene.classify.ai.describe import DescribeOutcome
 from media_hygiene.classify.ai.mapping import MapDeps
 from media_hygiene.classify.ai.prompts import version
 from media_hygiene.classify.ai.subjects import per_photo, subjects_of
-from media_hygiene.i18n import _
-from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.scan.progress import Step
+from media_hygiene.services.describing import DescribeJob, describe_checked
 from media_hygiene.services.subject_answers import Answered, answers_of
 from media_hygiene.services.subject_plan import plan_subjects
+from media_hygiene.services.subject_store import ReusingStore
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -33,7 +28,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.classify.ai.models import Subject
     from media_hygiene.config.classify_rules import ClassifyRule
-    from media_hygiene.index.descriptions import PhotoVersion
+    from media_hygiene.index.descriptions import DescriptionStore, PhotoVersion
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.classify_inputs import ClassifyInputs
     from media_hygiene.services.runtime import Runtime
@@ -70,7 +65,7 @@ class SubjectStep:
             FactsRepository.open(self._runtime.index_file)
         )
         asked = (self._ai.model, version("describe"))
-        self._opened = DescriptionStore(repository.connection, asked)
+        self._opened = ReusingStore(repository.connection, asked)
         return self
 
     def __exit__(self, *exc_info: object) -> None:
@@ -125,20 +120,8 @@ class SubjectStep:
         Raises:
             AiError: The model cannot be reached, or cannot see images.
         """
-        asyncio.run(self._client.require_vision(self._ai.model))
-        progress = answering.progress
-        with self._runtime.executor_factory() as executor:
-            deps = DescribeDeps(
-                self._client, self.store, executor, progress, answering.stopped
-            )
-            progress.start(Step(_("Describing photos"), self._ai.model), len(photos))
-            try:
-                outcome = asyncio.run(describe_all(photos, deps))
-            finally:
-                progress.stop()
-        if outcome.errors:
-            raise outcome.errors[0]
-        return outcome
+        job = DescribeJob(self._client, self.store, answering)
+        return describe_checked(self._runtime, photos, job)
 
     def map(
         self, plan: SubjectPlan, rule: ClassifyRule, progress: ProgressSink

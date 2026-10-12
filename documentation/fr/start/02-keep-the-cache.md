@@ -32,8 +32,8 @@ l'autre.
 - Le premier audit avec le cache dure autant qu'avant : il remplit le cache.
 - Les suivants ne lisent que les fichiers nouveaux ou modifiés : la ligne *Durée* du résumé
   montre la différence. Une étape qui n'a plus rien à faire est sautée.
-- L'astuce *« Ajoutez -v media-hygiene-cache:/cache : les prochains audits seront bien plus
-  rapides. »* ne s'affiche plus.
+- La ligne ⚙️ *À régler une fois* ne propose plus *« -v media-hygiene-cache:/cache (prochains
+  audits bien plus rapides) »*.
 
 Un fichier est reconnu à son chemin, sa taille et sa date de modification : changez l'un des
 trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.

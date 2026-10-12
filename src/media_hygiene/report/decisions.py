@@ -4,26 +4,35 @@ r"""The decisions file the report downloads and `review` writes; `clean` reads i
 {"version": 1, "report": "20260926-171446-audit", "roots": ["C:\\Photos"],
  "pairs": [{"kept_in": "C:\\Photos\\2019", "removed_from": "D:\\Old",
             "action": "swap"}],
- "bursts": [{"kept": ["C:\\Photos\\IMG_1.jpg"],
+ "bursts": [{"status": "done", "kept": ["C:\\Photos\\IMG_1.jpg"],
              "discarded": ["C:\\Photos\\IMG_2.jpg"]}]}
 ```
 
 Paths are host paths, as the report shows them. `roots` are the folders analysed by the
 audit behind the decisions: `clean` refuses the file when it sees other folders. Pairs
-left as planned and burst series left whole are not listed; a series set aside whole
-has an empty `kept`.
+left as planned are not listed. `review` lists every burst series from the start,
+`todo` until seen, then `done`; a series kept whole has an empty `discarded`, a series
+set aside whole an empty `kept`. Without `status` (older file, report), it is done.
 """
 
 from __future__ import annotations
 
 from collections import Counter
+from enum import StrEnum
 from typing import TYPE_CHECKING, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    ValidationError,
+    field_validator,
+    model_validator,
+)
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.plan.review import PairAction
+from media_hygiene.report.near_decisions import NearGroups
 from media_hygiene.text_files import decode_user_text
 
 if TYPE_CHECKING:
@@ -42,17 +51,44 @@ class PairDecision(BaseModel):
     action: PairAction
 
 
+class BurstStatus(StrEnum):
+    """Whether a burst series was seen in the review."""
+
+    TODO = "todo"  # listed when the review starts, every shot kept
+    DONE = "done"
+
+
 class BurstDecision(BaseModel):
     """The review of one burst series, in host paths.
 
-    At least one shot is set aside (a series left whole is not listed); none may be
-    kept, when the whole series was set aside.
+    None may be set aside (the series was seen and kept whole, or not seen yet), or
+    none kept (the whole series was set aside), but the series has at least one shot.
     """
 
     model_config = _FROZEN
 
+    status: BurstStatus = BurstStatus.DONE
     kept: tuple[str, ...] = ()
-    discarded: tuple[str, ...] = Field(min_length=1)
+    discarded: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def _some_shot(self) -> BurstDecision:
+        """Refuse a review without any shot, or a series not seen with shots aside.
+
+        Returns:
+            The review, unchanged.
+
+        Raises:
+            ValueError: Neither a kept nor a discarded shot, or a `todo` series with
+                shots set aside.
+        """
+        if not self.kept and not self.discarded:
+            message = "a reviewed burst series lists no shot"
+            raise ValueError(message)
+        if self.status is BurstStatus.TODO and self.discarded:
+            message = "a burst series still to see has shots set aside"
+            raise ValueError(message)
+        return self
 
 
 class DecisionsFile(BaseModel):
@@ -65,6 +101,7 @@ class DecisionsFile(BaseModel):
     roots: tuple[str, ...]
     pairs: tuple[PairDecision, ...] = ()
     bursts: tuple[BurstDecision, ...] = ()
+    near: NearGroups = ()  # `review --near` (`near_decisions`)
 
     @field_validator("pairs")
     @classmethod

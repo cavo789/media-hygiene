@@ -16,17 +16,18 @@ from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.missing_mount import missing_mount, typed_again
+from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
-    from media_hygiene.plan.models import AuditFindings, CleanPlan
+    from media_hygiene.plan.models import CleanPlan
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
 
@@ -70,30 +71,11 @@ class CleanService:
                 shots, copies of other files) has no quarantine to go to.
         """
         runtime = self._runtime
-        tip = _('Add -v "<a folder of yours>:/quarantine" to handle them.')
         if not runtime.persistent(MountKind.QUARANTINE):
-            if not mode.delete:
-                raise MountError(
-                    _("clean moves the duplicate copies to /quarantine: mount it."),
-                    _(
-                        'Add -v "<a folder of yours>:/quarantine" (or --delete to '
-                        "delete them for good at once)."
-                    ),
-                )
-            if mode.near:
-                raise MountError(
-                    _("--tier near moves near duplicates to /quarantine: mount it."),
-                    tip,
-                )
-            if mode.bursts:
-                raise MountError(
-                    _("Burst shots you set aside go to /quarantine: mount it."), tip
-                )
-            if runtime.settings.scan.other_files:
-                raise MountError(
-                    _("Copies of other files than media go to /quarantine: mount it."),
-                    tip,
-                )
+            message = _quarantine_needed(runtime, mode)
+            if message is not None:
+                again = NextVerb(typed_again(runtime, "clean"), CHANGING)
+                raise missing_mount(runtime, message, again)
         ensure_can_act(runtime, "clean")
 
     def feasible(self, plan: CleanPlan) -> CleanPlan:
@@ -121,22 +103,6 @@ class CleanService:
                 _('Add -v "<a folder of yours>:/quarantine" to handle them.')
             )
         return replace(plan, broken=kept, sidecars=())
-
-    def with_near(self, plan: CleanPlan, findings: AuditFindings) -> CleanPlan:
-        """Add the near duplicates and re-encoded videos to the plan (`--tier near`).
-
-        Args:
-            plan: The feasible plan.
-            findings: The audit, holding the near duplicates.
-
-        Returns:
-            The plan, near duplicates and the sidecars they leave orphan included.
-
-        Near duplicates are moved to the quarantine, never deleted: `ensure_ready`
-        with `near=True` has checked it is mounted.
-        """
-        similar = findings.similar
-        return replace(plan, near=(*similar.near, *similar.videos))
 
     def execute(self, plan: CleanPlan) -> tuple[str, Outcome]:
         """Execute the plan under a new run identifier.
@@ -178,3 +144,24 @@ class CleanService:
         removed = [entry.path for entry in done]
         with FactsRepository.open(index) as repository:
             repository.forget(removed)
+
+
+def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
+    """Say why this clean needs a quarantine, if it does.
+
+    Args:
+        runtime: Settings, mount points and output.
+        mode: What the clean will do.
+
+    Returns:
+        The translated reason, or None when nothing goes to the quarantine.
+    """
+    if not mode.delete:
+        return _("clean moves the duplicate copies to /quarantine: mount it.")
+    if mode.near:
+        return _("--tier near moves near duplicates to /quarantine: mount it.")
+    if mode.bursts:
+        return _("Burst shots you set aside go to /quarantine: mount it.")
+    if runtime.settings.scan.other_files:
+        return _("Copies of other files than media go to /quarantine: mount it.")
+    return None

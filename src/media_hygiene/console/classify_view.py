@@ -10,6 +10,7 @@ from rich.table import Table
 
 from media_hygiene.classify.models import Band
 from media_hygiene.classify.names import band_name
+from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.formatting import human_number, human_share
 from media_hygiene.i18n import _, ngettext
 
@@ -55,12 +56,15 @@ def show_classification(output: Output, result: ClassifyResult) -> None:
             _("Check their dates, their patterns and their order in config.toml.")
         )
     _work_left(output, proposals)
-    if result.duplicates:
-        output.tip(
-            _(
-                "{count} exact duplicates are still there: run 'clean' first, "
-                "otherwise both copies are sorted."
-            ).format(count=human_number(result.duplicates))
+    if result.duplicates:  # changes what 'sort' moves: ranked as a next step
+        output.advise(
+            Advice(
+                TipKind.NEXT,
+                _(
+                    "{count} exact duplicates are still there: run 'clean' first, "
+                    "otherwise both copies are sorted."
+                ).format(count=human_number(result.duplicates)),
+            )
         )
     output.tip(_("Nothing was changed: 'classify' only proposes."))
 

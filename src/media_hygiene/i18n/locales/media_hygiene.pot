@@ -3,6 +3,16 @@ msgid ""
 "go to \"to sort\", which means: we do not know."
 msgstr ""
 
+msgid ""
+"\"bord de mer\" finds the phrase, anniv* every word starting so, "
+"place:durbuy the word among the places only. / types a search, the arrows"
+" move, Enter opens."
+msgstr ""
+
+#, python-format
+msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
+msgstr ""
+
 #, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
@@ -27,6 +37,22 @@ msgid_plural "%(num)s shots"
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-format
+msgid "%(num)s sure"
+msgid_plural "%(num)s sure"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s sure group: show it"
+msgid_plural "%(num)s sure groups: show them"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(sure)s, %(check)s to check"
+msgstr ""
+
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
 msgstr ""
 
@@ -36,7 +62,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "'media-hygiene undo {run_id}' removes the album; the photos stay where "
-"they are."
+"they are:"
 msgstr ""
 
 msgid ""
@@ -45,7 +71,32 @@ msgid ""
 "content."
 msgstr ""
 
+msgid ""
+"'sort' applies them on top of the workbook, which you may still edit; it "
+"refuses an event or a file edited otherwise in both."
+msgstr ""
+
+#, python-brace-format
+msgid "'undo {run_id}' still restores the files of the last run:"
+msgstr ""
+
 msgid "'undo' can no longer restore these files."
+msgstr ""
+
+#, python-brace-format
+msgid "'{category}' is not a category: no placeholder, not empty"
+msgstr ""
+
+#, python-brace-format
+msgid "'{key}' in the variable {name}"
+msgstr ""
+
+#, python-brace-format
+msgid "'{key}' in {table} of config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid "'{key}' on the command line"
 msgstr ""
 
 #, python-brace-format
@@ -57,7 +108,35 @@ msgid "'{name}' is longer than {count} characters."
 msgstr ""
 
 #, python-brace-format
+msgid "'{name}' is not a folder name Windows accepts"
+msgstr ""
+
+#, python-brace-format
 msgid "'{name}' is not a folder name Windows accepts."
+msgstr ""
+
+#, python-brace-format
+msgid "'{name}' is not a place name: no braces, not empty"
+msgstr ""
+
+#, python-brace-format
+msgid "'{pattern}' is not a valid regular expression: {reason}"
+msgstr ""
+
+#, python-brace-format
+msgid "'{text}' ends before it starts"
+msgstr ""
+
+#, python-brace-format
+msgid "'{text}' is not a date range such as 2023-07-01..2023-07-15"
+msgstr ""
+
+#, python-brace-format
+msgid "'{text}' is not a day of the year such as 12-24"
+msgstr ""
+
+#, python-brace-format
+msgid "'{text}' is not a day that exists"
 msgstr ""
 
 #, python-brace-format
@@ -66,6 +145,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "'{text}': choose {yes} or {no}."
+msgstr ""
+
+#, python-brace-format
+msgid "'{url}' is not an http:// or https:// address"
+msgstr ""
+
+#, python-brace-format
+msgid "'{url}' is not an https:// address"
+msgstr ""
+
+#, python-brace-format
+msgid "'{url}' lacks {fields}"
 msgstr ""
 
 msgid "(always skipped)"
@@ -77,9 +168,22 @@ msgstr ""
 msgid "(stay where it is)"
 msgstr ""
 
+#, python-brace-format
+msgid "({count} more tip: add --verbosity verbose to see it.)"
+msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "({latitude}, {longitude}) is not a position on the Earth"
+msgstr ""
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
+msgstr ""
+
+msgid "--people keeps the faces in the cache: mount /cache to look for them."
 msgstr ""
 
 msgid ""
@@ -87,11 +191,31 @@ msgid ""
 "mounted."
 msgstr ""
 
+msgid ""
+"--sample only measures: no page opens. Run people without it to see the "
+"faces in your browser."
+msgstr ""
+
 msgid "--tier near moves near duplicates to /quarantine: mount it."
 msgstr ""
 
 #, python-brace-format
 msgid "--year {value}: write a year (2016) or a range (2015-2017)."
+msgstr ""
+
+msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
+msgstr ""
+
+msgid "-e TZ=Europe/Brussels before 'launcher' (times in your time zone, not UTC)"
+msgstr ""
+
+msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
+msgstr ""
+
+msgid "-v \"<a folder of yours>:/reports\" (the workbook to edit)"
+msgstr ""
+
+msgid "-v media-hygiene-cache:/cache (much faster next audits)"
 msgstr ""
 
 #, python-brace-format
@@ -102,6 +226,9 @@ msgid "<the folder you mount on /reports>"
 msgstr ""
 
 msgid "A 'subject' rule or --sample needs a vision model."
+msgstr ""
+
+msgid "A GPS position is named after its town only within this distance, in km."
 msgstr ""
 
 msgid "A Windows folder (PowerShell):"
@@ -134,6 +261,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "A full run would analyse {count} more photos: about {duration}."
+msgstr ""
+
+#, python-brace-format
 msgid "A full run would describe {count} more photos: about {duration}."
 msgstr ""
 
@@ -158,6 +289,26 @@ msgstr ""
 msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 
+msgid ""
+"A series whose proposal leaves only the sharpest shot (and those of "
+"protected folders) is obvious: the review page validates every obvious "
+"series at once, with one confirmation."
+msgstr ""
+
+msgid ""
+"A shot clearly over- or under-exposed next to the others of its series is"
+" proposed aside: its mean brightness lies farther than this from theirs "
+"(gray levels, 0 to 255), or its share of pixels clipped to white or black"
+" exceeds theirs by more than clipped_gap (0 to 1). 0 disables either "
+"rule."
+msgstr ""
+
+msgid ""
+"A shot nearly identical to a sharper shot kept of its series is proposed "
+"aside too: its perceptual hash differs by fewer bits than this (0 to 64)."
+" Low values only catch repeats of the same frame. 0 disables the rule."
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -166,7 +317,14 @@ msgid ""
 "estimated time. One photo at a time suits one graphics card."
 msgstr ""
 
-msgid "Act"
+msgid "Accept at once every event still to decide whose proposal is sure (V)"
+msgstr ""
+
+#, python-brace-format
+msgid "Accept {sure} ({files})"
+msgstr ""
+
+msgid "Act: moves, writes or deletes files"
 msgstr ""
 
 msgid "Action"
@@ -178,42 +336,39 @@ msgstr ""
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/config\" to the docker run command."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/journal\" to the docker run command."
-msgstr ""
-
-msgid ""
-"Add -v \"<a folder of yours>:/quarantine\" (or --delete to delete them "
-"for good at once)."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/quarantine\" to handle them."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/reports\" to get HTML reports."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the inventory."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to get the workbook to edit."
-msgstr ""
-
-msgid "Add -v \"<a folder of yours>:/reports\" to the docker run command."
+msgid ""
+"Add -v \"<a folder of yours>:/reports\" to see the near duplicates in an "
+"HTML report before answering."
 msgstr ""
 
 msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
-msgstr ""
-
-msgid "Add -v media-hygiene-cache:/cache: the next audits will be much faster."
 msgstr ""
 
 #, python-brace-format
 msgid ""
 "Add :ro to the -v of your photo folders: the system itself then forbids "
 "any change. {url}"
+msgstr ""
+
+msgid "Advanced options"
+msgstr ""
+
+msgid "Advanced: folders (override folders.* of config.toml)"
+msgstr ""
+
+msgid "Advanced: scan (override scan.* of config.toml)"
+msgstr ""
+
+#, python-brace-format
+msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
+msgstr ""
+
+msgid ""
+"After how many days 'status' suggests emptying the quarantine with "
+"'purge' (the files set aside still take their space until then)."
 msgstr ""
 
 msgid "Album folder"
@@ -239,6 +394,16 @@ msgstr ""
 msgid "Already in place: {share}."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Also delete the {count} name of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgid_plural ""
+"Also delete the {count} names of config.toml ([[people.person]]) and the "
+"faces ignored?"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Altitude (m)"
 msgstr ""
 
@@ -253,10 +418,26 @@ msgid ""
 "deleting."
 msgstr ""
 
-msgid "Analyse"
+msgid ""
+"Analyse this many random photos, print the time per photo and the "
+"estimate of a full run, and stop."
 msgstr ""
 
 msgid "Animals"
+msgstr ""
+
+msgid ""
+"Another folder? Run 'launcher' again with one more -v, saving to the same"
+" file."
+msgstr ""
+
+msgid ""
+"Apply the choices made in the browser: decisions.json downloaded from an "
+"audit report (swap or leave alone some folder pairs) or written by "
+"'review' (burst shots set aside, near duplicates decided). A relative "
+"path is read from the folder mounted on /reports. The file is refused if "
+"the folders, the pairs or the series changed. Alone, --decisions reads "
+"decisions.json."
 msgstr ""
 
 msgid "April"
@@ -274,6 +455,17 @@ msgstr ""
 msgid ""
 "Ask the local model nothing new: the subject rules read the descriptions "
 "already in the cache."
+msgstr ""
+
+msgid ""
+"Ask the local model nothing new: the words of the folders, names, dates "
+"and places only, and the descriptions already in the cache."
+msgstr ""
+
+#, python-format
+msgid ""
+"At 100 %%: move the mouse over a shot, the same area shows in every one. "
+"C or Escape closes."
 msgstr ""
 
 msgid "Audit"
@@ -321,6 +513,9 @@ msgstr ""
 msgid "Black pixels"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Brightness"
 msgstr ""
 
@@ -335,6 +530,12 @@ msgstr ""
 
 msgid "Broken files in protected folders"
 msgstr ""
+
+#, python-brace-format
+msgid "Burst review: {count} series still to see."
+msgid_plural "Burst review: {count} series still to see."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Burst series"
 msgstr ""
@@ -358,6 +559,10 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cannot ask for confirmation without an interactive terminal."
+msgstr ""
+
+#, python-brace-format
+msgid "Cannot download the face model {name}: {error}"
 msgstr ""
 
 #, python-brace-format
@@ -385,11 +590,17 @@ msgid "Category"
 msgstr ""
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
+msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr ""
 
 #, python-brace-format
-msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
+msgid ""
+"Changed your mind? 'media-hygiene undo {run_id}' removes the sidecars "
+"written and puts the others back as they were:"
+msgstr ""
+
+#, python-brace-format
+msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
 msgstr ""
 
 msgid ""
@@ -414,7 +625,15 @@ msgid "Checking that files can be read"
 msgstr ""
 
 #, python-brace-format
+msgid "Choice on series {number} undone."
+msgstr ""
+
+#, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
+msgstr ""
+
+#, python-brace-format
+msgid "Choices on {count} series undone."
 msgstr ""
 
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
@@ -489,6 +708,13 @@ msgid ""
 "opinion."
 msgstr ""
 
+#, python-format
+msgid "Compare at 100 %%"
+msgstr ""
+
+msgid "Comparing colours"
+msgstr ""
+
 msgid "Comparing files of equal size"
 msgstr ""
 
@@ -499,6 +725,12 @@ msgstr ""
 msgid "Confirm the files to check"
 msgstr ""
 
+msgid "Contents"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
 msgid "Copies"
 msgstr ""
 
@@ -507,6 +739,22 @@ msgstr ""
 
 msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
+
+msgid "Copy and paste this command to run it again."
+msgstr ""
+
+msgid "Copy the command"
+msgstr ""
+
+msgid "Correct it, then run the same command again."
+msgid_plural "Correct them, then run the same command again."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Correct or remove it, or update the image to the latest version:"
+msgid_plural "Correct or remove them, or update the image to the latest version:"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr ""
@@ -520,9 +768,19 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#, python-brace-format
-msgid "Czkawka agrees: the same {copies} extra copies in {groups} groups."
+msgid ""
+"Ctrl+C stops between two photos: the faces found are kept, and the next "
+"run goes on."
 msgstr ""
+
+msgid "Czkawka agrees: no exact duplicate."
+msgstr ""
+
+#, python-brace-format
+msgid "Czkawka agrees: the same {copies} in {count} group."
+msgid_plural "Czkawka agrees: the same {copies} in {count} groups."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Czkawka disagrees on {count} group: look at it before cleaning."
@@ -530,15 +788,11 @@ msgid_plural "Czkawka disagrees on {count} groups: look at them before cleaning.
 msgstr[0] ""
 msgstr[1] ""
 
-#, python-brace-format
-msgid "Czkawka disagrees on {count} groups: look at them before cleaning."
-msgstr ""
-
 msgid "Czkawka is an independent duplicate finder."
 msgstr ""
 
 #, python-brace-format
-msgid "Czkawka results of {date} UTC."
+msgid "Czkawka results of {date}."
 msgstr ""
 
 msgid "Czkawka's results cover other folders than this run."
@@ -563,9 +817,39 @@ msgid "December"
 msgstr ""
 
 msgid ""
+"Decide every undecided group of this folder pair as planned, in one write"
+" (G)"
+msgstr ""
+
+msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
 "that pair. This browser remembers your choices."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Decided, not applied yet: {shots} shots set aside, {groups} near "
+"duplicate groups."
+msgstr ""
+
+msgid "Decided: as planned, the copies go to the quarantine."
+msgstr ""
+
+msgid "Decided: left alone, nothing of this group moves."
+msgstr ""
+
+msgid ""
+"Decided: the other version is kept, the version the audit kept goes to "
+"the quarantine."
+msgstr ""
+
+#, python-brace-format
+msgid "Decided: {decided} of {total} · to check, undecided: {left}"
+msgstr ""
+
+#, python-brace-format
+msgid "Decision in the file: {action}"
 msgstr ""
 
 msgid "Decoder message"
@@ -577,27 +861,16 @@ msgstr ""
 msgid "Delete all reports but the N most recent ones."
 msgstr ""
 
-msgid "Delete it: the next audit builds it again, reading every file once."
+msgid ""
+"Delete every face from the cache, then show that none is left; asks "
+"before deleting the names of config.toml too."
 msgstr ""
 
-msgid ""
-"Delete the exact copies for good, after a byte comparison with the kept "
-"copy, instead of moving them to the quarantine: the space is freed at "
-"once; 'undo' rebuilds them from the kept copy."
+msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
-msgstr ""
-
-#, python-brace-format
-msgid "Delete {count} duplicate copies ({size}) and handle {broken} broken files?"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Delete {count} duplicate copies ({size}), move {near} near duplicates to "
-"the quarantine and handle {broken} broken files?"
 msgstr ""
 
 msgid "Deleted"
@@ -610,6 +883,14 @@ msgid "Deleted or moved to the quarantine"
 msgstr ""
 
 msgid "Deleted or moved to the quarantine from"
+msgstr ""
+
+#, python-brace-format
+msgid "Deleting a duplicate copy: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Deleting an empty file (0 bytes): {path}"
 msgstr ""
 
 msgid "Describe the photos without asking, however many."
@@ -631,6 +912,10 @@ msgid "Description"
 msgstr ""
 
 msgid "Detail"
+msgstr ""
+
+#, python-brace-format
+msgid "Did you mean '{key}'?"
 msgstr ""
 
 msgid "Do not ask for confirmation (overrides clean.confirm)."
@@ -669,6 +954,11 @@ msgstr ""
 msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 
+msgid ""
+"Downloading the two face models into the cache, once (39 MB): they run on"
+" this computer, nothing about your photos is sent."
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -695,7 +985,18 @@ msgid ""
 " files go to the quarantine."
 msgstr ""
 
+msgid ""
+"Each copy is compared again with the kept one before going to the "
+"quarantine; unreadable files go there too."
+msgstr ""
+
 msgid "Each file is checked again just before it moves; none is overwritten."
+msgstr ""
+
+msgid ""
+"Each group holds faces that look alike: probably one person. Type a name "
+"to save it in config.toml; the photos are never changed and the faces "
+"stay on this computer."
 msgstr ""
 
 msgid ""
@@ -727,9 +1028,6 @@ msgid ""
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
-msgstr ""
-
-msgid "Edit the yellow cells and save: nothing moves until 'sort'."
 msgstr ""
 
 #, python-brace-format
@@ -765,6 +1063,12 @@ msgstr ""
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
 msgstr ""
 
+msgid ""
+"Estimate a full run first: describe this many random photos with the "
+"local model, print the time per photo and the estimate of a full run, and"
+" stop."
+msgstr ""
+
 msgid "Event"
 msgstr ""
 
@@ -791,6 +1095,14 @@ msgstr ""
 msgid "Events split in several, each part keeps the edit: {names}."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Events to decide with a sure proposal: {count} ({files}). Each one gets "
+"its proposed category, as Enter would give it, saved in one write. Events"
+" to decide left to look at: {left}. Accept them? The ↶ button takes the "
+"whole batch back."
+msgstr ""
+
 msgid ""
 "Events: photos taken less than merge_gap_hours apart belong together; "
 "fewer than min_event_size photos are not an event, and fall back to their"
@@ -805,9 +1117,16 @@ msgstr ""
 #, python-format
 msgid ""
 "Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
-"stops the review; then run the same 'clean' command with --decisions "
-"%(file)s (that file): the shots set aside go to the quarantine, and "
-"'undo' brings them back."
+"stops the review; then run the same 'clean' command with %(option)s: the "
+"shots set aside go to the quarantine, and 'undo' brings them back."
+msgstr ""
+
+#, python-format
+msgid ""
+"Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal "
+"stops the review; then run the same 'clean' command with --tier near "
+"%(option)s: the sure groups and the groups you decided go to the "
+"quarantine, and 'undo' brings them back."
 msgstr ""
 
 #, python-format
@@ -823,7 +1142,34 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
+msgid "Every group of this folder pair is decided already."
+msgstr ""
+
+msgid "Every group to check has been decided."
+msgstr ""
+
+#, python-brace-format
+msgid "Every report is listed in {path} (Ctrl+click opens it)."
+msgstr ""
+
+msgid "Every series has been seen."
+msgstr ""
+
+msgid "Every series here has been seen already."
+msgstr ""
+
+msgid "Every series of this page has been seen: → opens the next page."
+msgstr ""
+
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
+msgstr ""
+
+msgid ""
+"Everything 'clean --tier near-all' moves to the quarantine, group by "
+"group: the groups to check first, then, folded, the sure groups that "
+"'clean --tier near' moves on its own; each list the largest space first, "
+"with a running total. In each group, the kept version first, framed in "
+"green. Burst series are not here: --tier near never touches them."
 msgstr ""
 
 msgid "Example:"
@@ -861,10 +1207,44 @@ msgstr ""
 msgid "F-number"
 msgstr ""
 
+msgid ""
+"Faces blurrier than this sharpness (variance of the Laplacian of the "
+"face) are left out."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Faces ready, open {url} in your browser to name them; each name is saved "
+"at once in config.toml. Ctrl+C stops it; the photos are not changed."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Faces ready, open {url} in your browser. Ctrl+C stops it; nothing is "
+"changed."
+msgstr ""
+
+msgid ""
+"Faces smaller than this many pixels (shorter side of their box) are left "
+"out."
+msgstr ""
+
+msgid "Faces: every photo of the audit was looked at already."
+msgstr ""
+
+#, python-brace-format
+msgid "Faces: {faces} found in {photos} photos; 'people' groups them."
+msgstr ""
+
 msgid "Failed"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid ""
+"Fewer words, or the start of a word with a star (anniv*), find more; "
+"place:durbuy looks among the places only."
 msgstr ""
 
 msgid "File"
@@ -879,6 +1259,9 @@ msgid "Files"
 msgstr ""
 
 msgid "Files changed since the report: audit again and decide on it."
+msgstr ""
+
+msgid "Files changed since the review: run 'review --near' again."
 msgstr ""
 
 msgid "Files changed since the review: run 'review' again."
@@ -927,6 +1310,19 @@ msgid ""
 msgstr ""
 
 msgid "Find exact duplicates and broken files."
+msgstr ""
+
+msgid ""
+"Find photos by their words in your browser (or as a table): the words "
+"'tags' gave them."
+msgstr ""
+
+msgid ""
+"Find the faces in the photos, group those alike and name them in your "
+"browser. Faces kept in the cache, never sent anywhere."
+msgstr ""
+
+msgid "Finding faces"
 msgstr ""
 
 msgid ""
@@ -985,9 +1381,6 @@ msgstr ""
 msgid "Folders"
 msgstr ""
 
-msgid "Folders (override folders.* of config.toml)"
-msgstr ""
-
 msgid "Folders analysed:"
 msgstr ""
 
@@ -998,11 +1391,23 @@ msgstr ""
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr ""
 
+msgid "For a second opinion, run 'crosscheck' (same -v options)."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "For a village, a district or a park drawn as an area: click or press "
 "Enter. Only the text you typed is sent, to {host}; never a photo nor a "
 "position."
+msgstr ""
+
+msgid ""
+"For an up-to-date second opinion (optional): run this command, then "
+"'media-hygiene crosscheck' with your usual -v options:"
+msgstr ""
+
+#, python-brace-format
+msgid "For every terminal, add that line to {profile}."
 msgstr ""
 
 msgid "Format"
@@ -1017,7 +1422,16 @@ msgstr ""
 msgid "Frame rate"
 msgstr ""
 
+msgid ""
+"Free the space at once: delete the exact copies for good, after a byte "
+"comparison with the kept copy, instead of moving them to the quarantine; "
+"'undo' rebuilds them from the kept copy."
+msgstr ""
+
 msgid "Freed"
+msgstr ""
+
+msgid "From year"
 msgstr ""
 
 msgid "From:"
@@ -1032,6 +1446,12 @@ msgstr ""
 msgid ""
 "Gather a selection of the classify plan into a folder of hard links: "
 "nothing is copied nor moved (journaled, undoable)."
+msgstr ""
+
+msgid ""
+"Give every photo words to find it by: its folders, name, date and place, "
+"and what a local vision model sees. Kept in the cache, never in the "
+"photos."
 msgstr ""
 
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
@@ -1051,6 +1471,9 @@ msgstr ""
 msgid "Gives each file a second name in the album."
 msgstr ""
 
+msgid "Go on with the clean?"
+msgstr ""
+
 msgid "Going to a 'to check' folder"
 msgstr ""
 
@@ -1061,6 +1484,14 @@ msgid "Grandma's birthday"
 msgstr ""
 
 msgid "Group"
+msgstr ""
+
+#, python-brace-format
+msgid "Group {number}"
+msgstr ""
+
+#, python-brace-format
+msgid "Group {number} of {total}"
 msgstr ""
 
 msgid "Groups"
@@ -1125,16 +1556,33 @@ msgstr ""
 msgid "How do we know these are duplicates?"
 msgstr ""
 
+msgid ""
+"How far to clean. exact (default): the byte-for-byte copies only. near: "
+"also the shrunk copies (sent by WhatsApp or e-mail, resized, "
+"recompressed) and the re-encoded videos that are sure; the groups to "
+"check are left alone. near-all: every near duplicate; check them in the "
+"report first. Near duplicates go to the quarantine, never deleted."
+msgstr ""
+
+#, python-brace-format
+msgid "How many files the table lists at most. Default: {count}."
+msgstr ""
+
 msgid "How much to log."
 msgstr ""
 
-msgid "How much to log: \"error\", \"warning\", \"info\" or \"debug\"."
+msgid ""
+"How much to log: \"error\", \"warning\", \"info\", \"verbose\" (info and "
+"every tip, not only the best two) or \"debug\"."
 msgstr ""
 
 msgid "ISO"
 msgstr ""
 
 msgid "Id"
+msgstr ""
+
+msgid "Ignore this group"
 msgstr ""
 
 msgid "Image cannot be decoded"
@@ -1159,10 +1607,6 @@ msgstr ""
 msgid "Into folders"
 msgstr ""
 
-#, python-brace-format
-msgid "Invalid configuration ({details})."
-msgstr ""
-
 msgid "Inventory"
 msgstr ""
 
@@ -1179,12 +1623,6 @@ msgid ""
 msgstr ""
 
 msgid "Italy 2023"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Its address on your computer: run 'docker port {container} {port}' in "
-"another terminal, then open http://<that address> in your browser."
 msgstr ""
 
 #, python-brace-format
@@ -1222,6 +1660,19 @@ msgstr ""
 msgid "Kept in"
 msgstr ""
 
+msgid "Kept: the highest resolution."
+msgstr ""
+
+#, python-brace-format
+msgid "Kept: the same resolution, a larger file by {gap} (less compressed)."
+msgstr ""
+
+msgid "Kept: your choice in 'review --near'."
+msgstr ""
+
+msgid "Keyboard"
+msgstr ""
+
 msgid "Kind"
 msgstr ""
 
@@ -1232,10 +1683,29 @@ msgid ""
 "side."
 msgstr ""
 
+msgid ""
+"Language of the words: \"en\", \"fr\", or empty for the language of the "
+"interface."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Larger areas not listed (regions, countries): {count}. A 'trip' rule "
 "names them."
+msgstr ""
+
+msgid "Last audit"
+msgstr ""
+
+#, python-brace-format
+msgid "Last audit: {when} (mount /reports to see its figures)."
+msgstr ""
+
+#, python-brace-format
+msgid "Last classify proposal: {when}, {state}"
+msgstr ""
+
+msgid "Last clean"
 msgstr ""
 
 msgid "Last complete audit (UTC)"
@@ -1244,10 +1714,20 @@ msgstr ""
 msgid "Latitude"
 msgstr ""
 
+#, python-brace-format
+msgid "Launcher written. Load it with: {load}, then type: mh audit"
+msgstr ""
+
 msgid "Leave alone"
 msgstr ""
 
 msgid "Left as they are"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Left out: {small} faces smaller than {pixels} pixels, {blurry} blurrier "
+"than {sharpness}."
 msgstr ""
 
 msgid "Lens"
@@ -1281,6 +1761,10 @@ msgstr ""
 msgid "Listing media files"
 msgstr ""
 
+#, python-brace-format
+msgid "Load it in this terminal with: {load}"
+msgstr ""
+
 msgid "Longitude"
 msgstr ""
 
@@ -1296,8 +1780,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Map ready on port {port}: each place is saved at once in config.toml. "
-"Ctrl+C stops it."
+"Map ready, open {url} in your browser. Each place is saved at once in "
+"config.toml. Ctrl+C stops it."
 msgstr ""
 
 msgid "Map stopped; your places are in config.toml."
@@ -1313,6 +1797,9 @@ msgid "Media files scanned"
 msgstr ""
 
 msgid "Modified (UTC)"
+msgstr ""
+
+msgid "More keys"
 msgstr ""
 
 msgid "Mount"
@@ -1364,24 +1851,9 @@ msgstr ""
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
 msgstr ""
 
-msgid "Mount your folders, e.g. -v \"C:\\Photos:/data/c/Photos:ro\"."
-msgstr ""
-
 msgid ""
 "Move the photos and videos as the edited classify workbook says "
 "(journaled, undoable)."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Move {count} duplicate copies ({size}) and {near} near duplicates to the "
-"quarantine, and handle {broken} broken files?"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Move {count} duplicate copies ({size}) to the quarantine and handle "
-"{broken} broken files?"
 msgstr ""
 
 #, python-brace-format
@@ -1400,7 +1872,30 @@ msgstr ""
 msgid "Moved to the quarantine from"
 msgstr ""
 
+#, python-brace-format
+msgid "Moving a burst shot set aside to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving a duplicate copy to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving a near duplicate to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving an orphan sidecar to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "Moving an unreadable file to the quarantine: {path}"
+msgstr ""
+
 msgid "My places"
+msgstr ""
+
+msgid "N, P and U skip the events already chosen and those whose proposal is sure"
 msgstr ""
 
 msgid "Name"
@@ -1418,7 +1913,15 @@ msgstr ""
 msgid "Name the events of the classify proposal one by one in your browser."
 msgstr ""
 
+msgid ""
+"Name their group on the 'people' page first, or correct the names of the "
+"rule in config.toml."
+msgstr ""
+
 msgid "Name this place"
+msgstr ""
+
+msgid "Name with others"
 msgstr ""
 
 msgid ""
@@ -1426,7 +1929,27 @@ msgid ""
 "config.toml for the 'place' and 'trip' rules."
 msgstr ""
 
+#, python-brace-format
+msgid "Named: {names}."
+msgstr ""
+
+#, python-brace-format
+msgid "Named: {people}."
+msgstr ""
+
+msgid ""
+"Names are saved in config.toml: mount a writable folder of yours on "
+"/config to name the groups. The page shows them meanwhile."
+msgstr ""
+
+msgid "Names cannot be saved: mount a writable folder on /config."
+msgstr ""
+
 msgid "Nature and landscapes"
+msgstr ""
+
+#, python-brace-format
+msgid "Near duplicate: {why}"
 msgstr ""
 
 msgid "Near duplicates"
@@ -1437,7 +1960,17 @@ msgstr ""
 
 msgid ""
 "Near duplicates and bursts are in the HTML report; 'clean --tier near' "
-"moves near duplicates to the quarantine."
+"moves the sure near duplicates to the quarantine, 'review --near' decides"
+" those to check."
+msgstr ""
+
+msgid "Near duplicates and re-encoded videos"
+msgstr ""
+
+msgid "Near duplicates review"
+msgstr ""
+
+msgid "Near-duplicate level"
 msgstr ""
 
 msgid "Never analysed: e.g. a real backup that must remain a second copy."
@@ -1457,26 +1990,16 @@ msgstr ""
 msgid "New place"
 msgstr ""
 
-msgid ""
-"Next: 'sort' applies them on top of the workbook, which you may still "
-"edit; it refuses an event or a file edited otherwise in both."
-msgstr ""
-
-msgid ""
-"Next: a 'place' rule (and a 'trip' rule) in [[classify.rules]], then "
-"'classify'."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Next: the same 'clean' command with --decisions {file} (that file); the "
-"shots set aside go to the quarantine, 'undo' brings them back."
+msgid "Next page →"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr ""
 
 msgid "No audit has walked a folder completely yet."
+msgstr ""
+
+msgid "No audit yet."
 msgstr ""
 
 msgid "No burst series: nothing to review."
@@ -1487,6 +2010,21 @@ msgid ""
 "where they are."
 msgstr ""
 
+msgid ""
+"No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
+"red dashes set aside and the others kept. A keeps every shot; a digit "
+"takes a shot back."
+msgstr ""
+
+msgid ""
+"No choice yet: moving on (→, ← or N) keeps every shot of this series. S "
+"keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot"
+" aside."
+msgstr ""
+
+msgid "No choice yet: nothing will be moved."
+msgstr ""
+
 msgid "No classify workbook in /reports."
 msgstr ""
 
@@ -1494,10 +2032,19 @@ msgstr ""
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
+msgid "No decision in the file: the tier decides."
+msgstr ""
+
 msgid "No event in this proposal: nothing to review."
 msgstr ""
 
 msgid "No event left to decide after this one."
+msgstr ""
+
+msgid "No face looked for: 'people', or the next 'audit --people', does it later."
+msgstr ""
+
+msgid "No file has words yet: nothing can be found."
 msgstr ""
 
 msgid "No folder for the albums: neither album.root nor classify.target is set."
@@ -1507,8 +2054,23 @@ msgstr ""
 msgid "No folder to analyse under {path}."
 msgstr ""
 
+msgid "No group yet: no two faces look alike enough."
+msgstr ""
+
+#, python-brace-format
+msgid "No index in {folder}: no photo to look at yet."
+msgstr ""
+
 #, python-brace-format
 msgid "No index in {folder}: nothing to export yet."
+msgstr ""
+
+#, python-brace-format
+msgid "No index in {folder}: nothing to search yet."
+msgstr ""
+
+#, python-brace-format
+msgid "No index in {folder}: nothing to tag yet."
 msgstr ""
 
 #, python-brace-format
@@ -1524,16 +2086,40 @@ msgstr ""
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
+msgid "No near duplicates: nothing to review."
+msgstr ""
+
+msgid "No obvious series left to validate."
+msgstr ""
+
+msgid "No photo folder mounted: add -v for each folder, then run it again."
+msgstr ""
+
+msgid "No photo left to analyse: every one is in the cache."
+msgstr ""
+
 msgid "No photo left to describe: every candidate is in the cache."
 msgstr ""
 
+msgid "No photo left to describe: every one is in the cache."
+msgstr ""
+
+msgid "No photo nor video of the index below these folders."
+msgstr ""
+
 msgid "No photo nor video to classify."
+msgstr ""
+
+msgid "No photo of the index below these folders."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
 msgid "No place yet: click a circle or the map."
+msgstr ""
+
+msgid "No preview"
 msgstr ""
 
 msgid ""
@@ -1559,13 +2145,35 @@ msgstr ""
 msgid "No run yet."
 msgstr ""
 
+msgid "No sure proposal left to accept."
+msgstr ""
+
+msgid ""
+"No terminal to answer in: the audit ends without faces. Add --yes to look"
+" for them without a question."
+msgstr ""
+
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr ""
 
-msgid "Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka."
+msgid "Nobody is named yet."
+msgstr ""
+
+#, python-brace-format
+msgid "Nobody is named {names} yet: name their group on the 'people' page first."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Not compared, as media-hygiene does not look at them (nothing to do): "
+"{details}."
 msgstr ""
 
 msgid "Not found"
+msgstr ""
+
+#, python-brace-format
+msgid "Not looked at (not mounted): {points}."
 msgstr ""
 
 #, python-brace-format
@@ -1585,6 +2193,9 @@ msgstr ""
 msgid "Not the folder you want to keep?"
 msgstr ""
 
+msgid "Not this person: take this face out"
+msgstr ""
+
 msgid "Notes"
 msgstr ""
 
@@ -1597,10 +2208,19 @@ msgid ""
 "describe without being asked with --yes."
 msgstr ""
 
+msgid "Nothing found."
+msgstr ""
+
+msgid "Nothing found. Fewer words, or the start of a word (anniv*), find more."
+msgstr ""
+
 msgid "Nothing is proposed by --sample: run classify without it."
 msgstr ""
 
 msgid "Nothing left to check nor to sort."
+msgstr ""
+
+msgid "Nothing left to do: everything is applied."
 msgstr ""
 
 #, python-brace-format
@@ -1618,6 +2238,15 @@ msgstr ""
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
+msgid "Nothing to take back."
+msgstr ""
+
+msgid "Nothing to undo."
+msgstr ""
+
+msgid "Nothing to write."
+msgstr ""
+
 msgid "Nothing was changed."
 msgstr ""
 
@@ -1630,9 +2259,15 @@ msgstr ""
 msgid "Nothing was changed: add --apply to make the links."
 msgstr ""
 
+msgid "Nothing was changed: add --apply to write the sidecars."
+msgstr ""
+
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
+msgstr ""
+
+msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr ""
 
 msgid "November"
@@ -1652,6 +2287,9 @@ msgstr ""
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
 "Images are not decoded again, only their header is read."
+msgstr ""
+
+msgid "One series"
 msgstr ""
 
 #, python-brace-format
@@ -1682,7 +2320,31 @@ msgid ""
 "rule most of them out quickly."
 msgstr ""
 
+msgid ""
+"Only for the pictures and videos found alike: a black and white edit of a"
+" colour picture is not a copy of it."
+msgstr ""
+
+msgid "Only the events to decide"
+msgstr ""
+
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
+msgstr ""
+
+msgid ""
+"Only the photos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every file of the index."
+msgstr ""
+
+msgid ""
+"Only the photos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every photo of the index."
+msgstr ""
+
+msgid "Only the series still to see"
+msgstr ""
+
+msgid "Only the series to look at"
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
@@ -1691,13 +2353,35 @@ msgstr ""
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
+msgid "Open the original"
+msgstr ""
+
+msgid "Open the original in a new tab"
+msgstr ""
+
+msgid "Open the original in a new tab: the file as it lies on the disk"
+msgstr ""
+
+msgid "Open the page at 127.0.0.1 or localhost."
+msgstr ""
+
 msgid "Open the review at 127.0.0.1 or localhost."
+msgstr ""
+
+msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "OpenStreetMap contributors"
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
+#, python-brace-format
+msgid "Or, to no longer see this message, delete this file: {path}"
+msgstr ""
+
+msgid "Order"
 msgstr ""
 
 msgid "Origin"
@@ -1718,7 +2402,25 @@ msgstr ""
 msgid "Output (override general.* of config.toml)"
 msgstr ""
 
+msgid "Page stopped; nothing was changed."
+msgstr ""
+
+#, python-brace-format
+msgid "Page {page} of {pages}"
+msgstr ""
+
 msgid "Parties"
+msgstr ""
+
+msgid ""
+"Paste it in the terminal where you ran the audit (PowerShell or bash, as "
+"written)."
+msgstr ""
+
+msgid "Path contains"
+msgstr ""
+
+msgid "People"
 msgstr ""
 
 #, python-brace-format
@@ -1758,9 +2460,10 @@ msgstr ""
 msgid "Place (video tag)"
 msgstr ""
 
+#, python-brace-format
 msgid ""
-"Port of the page inside the container; publish it with -p 127.0.0.1::8080"
-" so that Docker chooses a free one on your computer. Default: 8080."
+"Port of the page. docker run publishes it under the same number on your "
+"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
 
 msgid ""
@@ -1787,12 +2490,27 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
+#, python-brace-format
+msgid "Putting back: {path}"
+msgstr ""
+
 msgid "Quality"
 msgstr ""
 
 #, python-brace-format
 msgid "Quarantine purged: {size} freed."
 msgstr ""
+
+msgid "Quarantine: empty."
+msgstr ""
+
+#, python-brace-format
+msgid "Quarantine: {files} files, {size}, {count} run, set aside {when}."
+msgid_plural ""
+"Quarantine: {files} files, {size}, {count} runs, the oldest set aside "
+"{when}."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Quarantined"
 msgstr ""
@@ -1812,6 +2530,13 @@ msgstr ""
 msgid "Rating"
 msgstr ""
 
+msgid "Raw JSON"
+msgstr ""
+
+#, python-brace-format
+msgid "Re-encoded video: {why}"
+msgstr ""
+
 msgid "Re-encoded videos"
 msgstr ""
 
@@ -1819,11 +2544,16 @@ msgid "Re-encoded videos (moved only with --tier near)"
 msgstr ""
 
 msgid ""
-"Re-encoded videos are in the HTML report; 'clean --tier near' moves them "
-"to the quarantine too."
+"Re-encoded videos are in the HTML report; 'clean --tier near' moves the "
+"sure ones to the quarantine too."
 msgstr ""
 
-msgid "Read-only: never changes your photos."
+#, python-brace-format
+msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
+msgstr ""
+
+#, python-brace-format
+msgid "Read back from the index: {faces} faces left."
 msgstr ""
 
 msgid "Reading the metadata of files already in the cache"
@@ -1892,14 +2622,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each choice is saved at once in {place}. "
-"Ctrl+C stops the review."
+"Review ready, open {url} in your browser. Each choice is saved at once in"
+" {place}. Ctrl+C stops the review."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready on port {port}: each decision is saved at once in {place}. "
-"Ctrl+C stops the review."
+"Review ready, open {url} in your browser. Each decision is saved at once "
+"in {place}. Ctrl+C stops the review."
 msgstr ""
 
 #, python-brace-format
@@ -1909,9 +2639,19 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "Review stopped — groups decided: {decided} of {total}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Review stopped — series with shots set aside: {series}, shots set aside: "
 "{shots}."
+msgstr ""
+
+msgid ""
+"Review the near duplicates and re-encoded videos group by group instead "
+"of the burst series: as planned, keep the other version, or leave alone; "
+"'clean --tier near --decisions' applies it."
 msgstr ""
 
 msgid ""
@@ -1927,6 +2667,10 @@ msgid "Rule '{rule}': a subject for {count} file."
 msgid_plural "Rule '{rule}': a subject for {count} files."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Rule '{rule}': nobody is named {names} in [[people.person]]."
+msgstr ""
 
 msgid "Rules and reasons"
 msgstr ""
@@ -1953,11 +2697,26 @@ msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 
 msgid ""
+"Run 'audit' first with the same /cache mount: people reads the photos the"
+" audits listed, and keeps the faces there."
+msgstr ""
+
+msgid ""
+"Run 'audit' first with the same /cache mount: tags reads what the audits "
+"learnt, and keeps the words there."
+msgstr ""
+
+msgid ""
 "Run 'audit' first with the same /cache mount: the inventory lists what "
 "the audits learnt, without reading the files again."
 msgstr ""
 
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
+msgstr ""
+
+msgid ""
+"Run 'audit', then 'tags', with the same /cache mount: search finds the "
+"words they keep there."
 msgstr ""
 
 msgid "Run 'classify' again: its plan sees the files where they are."
@@ -1969,8 +2728,7 @@ msgstr ""
 msgid "Run 'classify' first, then edit its workbook."
 msgstr ""
 
-#, python-brace-format
-msgid "Run 'clean' (same -v options, without :ro) to set {size} of copies aside."
+msgid "Run 'clean' first: only the copy kept then gets a sidecar."
 msgstr ""
 
 msgid ""
@@ -1978,10 +2736,15 @@ msgid ""
 "comes from."
 msgstr ""
 
-msgid "Run 'media-hygiene config' to see every setting and where it comes from."
+msgid "Run 'media-hygiene history' to list the runs."
 msgstr ""
 
-msgid "Run 'media-hygiene history' to list the runs."
+msgid "Run 'people' to see the groups in your browser and name them."
+msgstr ""
+
+msgid ""
+"Run 'tags' first: it gives every photo the words of its folders, date and"
+" place."
 msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
@@ -1997,6 +2760,13 @@ msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 
 msgid "Run the same command again: the files linked are skipped."
+msgstr ""
+
+msgid "Run the same command again: the sidecars written are skipped."
+msgstr ""
+
+#, python-brace-format
+msgid "Run the same command without -it, ending with: > {path}"
 msgstr ""
 
 msgid ""
@@ -2033,7 +2803,14 @@ msgstr ""
 msgid "Runs to undo (newest first)"
 msgstr ""
 
+#, python-brace-format
+msgid "Runs you can still undo: {runs}."
+msgstr ""
+
 msgid "SHA-256"
+msgstr ""
+
+msgid "Same picture and sound as the kept video: only the metadata differ."
 msgstr ""
 
 msgid ""
@@ -2060,11 +2837,31 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr ""
 
+#, python-brace-format
+msgid "Save {url} as {path} by hand, then run the command again."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: nobody is named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {count} face ignored."
+msgid_plural "Saved in config.toml, read back: {count} faces ignored."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
+msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Saved in config.toml."
 msgstr ""
 
 #, python-brace-format
-msgid "Saved in {file}."
+msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
 msgstr ""
 
 msgid "Saved."
@@ -2074,9 +2871,6 @@ msgid "Saving…"
 msgstr ""
 
 msgid "Say what the album gathers."
-msgstr ""
-
-msgid "Scan (override scan.* of config.toml)"
 msgstr ""
 
 msgid "School"
@@ -2093,6 +2887,9 @@ msgstr ""
 msgid "Screenshots and documents"
 msgstr ""
 
+msgid "Search"
+msgstr ""
+
 msgid "Search OpenStreetMap"
 msgstr ""
 
@@ -2102,6 +2899,18 @@ msgid ""
 "service, never a photo nor a position. Its usage policy: "
 "https://operations.osmfoundation.org/policies/nominatim/ (one search per "
 "second at most). Another instance, or empty to search offline only."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Search ready, open {url} in your browser. Ctrl+C stops it; nothing is "
+"changed."
+msgstr ""
+
+msgid "Search stopped; nothing was changed."
+msgstr ""
+
+msgid "Search your photos"
 msgstr ""
 
 msgid "Searching OpenStreetMap…"
@@ -2115,6 +2924,12 @@ msgid ""
 " folders, then 'media-hygiene crosscheck' (same -v options):"
 msgstr ""
 
+msgid "Seconds"
+msgstr ""
+
+msgid "Seen."
+msgstr ""
+
 #, python-brace-format
 msgid "Send the photos ({count}) to the category:"
 msgstr ""
@@ -2123,7 +2938,27 @@ msgid "September"
 msgstr ""
 
 #, python-brace-format
-msgid "Series with shots set aside: {series} · shots set aside: {shots}"
+msgid "Series seen: {seen} of {total}"
+msgstr ""
+
+#, python-brace-format
+msgid "Series seen: {seen} of {total}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Series seen: {seen} · with shots set aside: {series} · shots set aside: "
+"{shots}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Series still to see in {folder}: {series}. Validate them as shown, "
+"{aside}, the others kept?"
+msgstr ""
+
+#, python-brace-format
+msgid "Series {number}"
 msgstr ""
 
 #, python-brace-format
@@ -2131,6 +2966,11 @@ msgid "Series {number} of {total}"
 msgstr ""
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
+msgstr ""
+
+msgid ""
+"Set [classify.ai] model to a local vision model (Ollama) to add what the "
+"photos show: they are sent to its url, and only there."
 msgstr ""
 
 msgid "Set album.root in config.toml to a folder outside it."
@@ -2141,8 +2981,7 @@ msgid ""
 "root = 'C:\\Photos\\Albums'."
 msgstr ""
 
-#, python-brace-format
-msgid "Set aside, as media-hygiene does not analyse them: {details}."
+msgid "Set aside"
 msgstr ""
 
 msgid ""
@@ -2160,20 +2999,29 @@ msgid "Sharpness"
 msgstr ""
 
 msgid ""
-"Shots of one camera, taken seconds apart. This is not duplication: a "
-"plain 'clean' never touches them. The sharpest shot of each series is "
-"suggested; the choice is yours: 'media-hygiene review' shows the series "
-"one at a time to set shots aside, and 'clean --decisions' moves them to "
-"the quarantine."
+"Shots of one camera, taken seconds apart. This is not duplication: "
+"neither 'clean' nor 'clean --tier near' touches them. The sharpest shot "
+"of each series is suggested; the choice is yours: 'media-hygiene review' "
+"shows the series one at a time to set shots aside, and 'clean "
+"--decisions' moves them to the quarantine."
 msgstr ""
 
 msgid "Show every setting, where it comes from, and the mount points."
+msgstr ""
+
+msgid "Show it"
 msgstr ""
 
 msgid "Show the version and exit."
 msgstr ""
 
 msgid "Show this message and exit."
+msgstr ""
+
+msgid "Sidecar"
+msgstr ""
+
+msgid "Sidecars"
 msgstr ""
 
 msgid ""
@@ -2207,11 +3055,6 @@ msgid "Sort"
 msgstr ""
 
 msgid "Sort review"
-msgstr ""
-
-msgid ""
-"Sort the burst series with the keyboard: 'media-hygiene review' (add -p "
-"127.0.0.1::8080 to docker run)."
 msgstr ""
 
 #, python-brace-format
@@ -2249,10 +3092,25 @@ msgstr ""
 msgid "Staying where they are"
 msgstr ""
 
+msgid "Step 1 of the guide:"
+msgstr ""
+
+msgid "Stopped (Ctrl+C)."
+msgstr ""
+
+msgid "Stopped (Ctrl+C). Your photos and videos were not touched."
+msgstr ""
+
 msgid "Stopped before the end, as asked."
 msgstr ""
 
 msgid "Stopped: the next classify run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the next people run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the next tags run goes on where this one stopped."
 msgstr ""
 
 msgid "Subject"
@@ -2264,10 +3122,53 @@ msgstr ""
 msgid "Sure"
 msgstr ""
 
+msgid ""
+"Sure group: --tier near moves its copies as shown, unless you decide "
+"otherwise."
+msgstr ""
+
+msgid ""
+"Sure: a smaller copy in a messaging or e-mail folder, taken at the same "
+"moment (same EXIF date)."
+msgstr ""
+
+msgid ""
+"Sure: a smaller copy in a messaging or e-mail folder, without EXIF date, "
+"its name dated the same day."
+msgstr ""
+
+msgid "Sure: identical fingerprints, from the same camera."
+msgstr ""
+
+msgid "Sure: the very picture and sound, only the metadata differ."
+msgstr ""
+
 msgid "Swap the folders"
 msgstr ""
 
+msgid "Switch between the board and one series at a time (P)"
+msgstr ""
+
 msgid "TB"
+msgstr ""
+
+msgid "Table of contents"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Tags: {files} files have words, {seen} of them from the vision model; "
+"'search' finds them."
+msgstr ""
+
+msgid "Take back the last batch of sure proposals (Shift+Z)"
+msgstr ""
+
+#, python-brace-format
+msgid "Take the batch back ({events})"
 msgstr ""
 
 #, python-brace-format
@@ -2278,6 +3179,16 @@ msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
 msgid "The album's name: the folder holding its links."
+msgstr ""
+
+msgid "The audit is done; look for the faces now?"
+msgstr ""
+
+msgid ""
+"The burst review proposes to set aside a shot whose sharpness is below "
+"this share of the sharpest shot of its series (0 to 1): 0.35 proposes a "
+"shot at 162 next to one at 1017, not one at 616. Moving on accepts the "
+"proposal, a key takes it back. 0 never proposes anything."
 msgstr ""
 
 msgid ""
@@ -2311,6 +3222,10 @@ msgid "The collection once sorted"
 msgstr ""
 
 #, python-brace-format
+msgid "The command adds {points}: folders of your home."
+msgstr ""
+
+#, python-brace-format
 msgid "The configuration file {path} is not valid TOML: {error}"
 msgstr ""
 
@@ -2330,9 +3245,31 @@ msgstr ""
 msgid "The decisions are saved in /reports: mount it, or they are lost."
 msgstr ""
 
+msgid "The decisions file does not hold your choice: try again."
+msgstr ""
+
+#, python-brace-format
+msgid "The decisions file {file} could not be archived ({error})."
+msgstr ""
+
+#, python-brace-format
+msgid "The decisions file {file} could not be archived."
+msgstr ""
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
+msgstr ""
+
+#, python-brace-format
+msgid "The face model {name} downloaded is not the expected file."
+msgstr ""
+
+msgid ""
+"The faces 'people' finds and groups. They are personal data: kept in the "
+"cache (/cache) only, never sent anywhere; 'people --forget' deletes them "
+"all. These settings choose which faces are grouped: changing them "
+"analyses nothing again."
 msgstr ""
 
 msgid "The files given at least these stars in Windows (1 to 5)."
@@ -2348,11 +3285,20 @@ msgid "The files the classify rule of this name decided."
 msgstr ""
 
 #, python-brace-format
+msgid "The groups could not be read (error {status})."
+msgstr ""
+
+#, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
 msgstr ""
 
 #, python-brace-format
 msgid "The inventory could not be written to {folder}: {reason}."
+msgstr ""
+
+msgid ""
+"The kept version lies in a protected folder: it is never moved, W is not "
+"possible."
 msgstr ""
 
 msgid "The largest clusters without a name"
@@ -2370,6 +3316,11 @@ msgid ""
 "fetched, by your browser, from this https address (they show the areas "
 "you look at, never a photo). Another tile server asks for its own credit "
 "in attribution (plain text)."
+msgstr ""
+
+msgid ""
+"The map saves your places in a config.toml file, kept in a folder of "
+"yours mounted on /config: this command has none."
 msgstr ""
 
 msgid "The model sent an answer without a message."
@@ -2394,7 +3345,28 @@ msgstr ""
 msgid "The model {model} is not installed at {url}."
 msgstr ""
 
-msgid "The places are saved in /config/config.toml: mount /config."
+msgid ""
+"The names stay in config.toml: they name no face until people finds the "
+"faces again. Answer yes in a terminal (docker run -it) to delete them."
+msgstr ""
+
+msgid ""
+"The names you give on the 'people' page are saved here as "
+"[[people.person]] tables (a name, the faces confirmed as theirs, the "
+"faces taken out of them), and the faces of strangers as 'ignored'. "
+"'search person:name' finds their photos."
+msgstr ""
+
+msgid "The near duplicates and re-encoded videos alone, on one page"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The page does not open? docker run must publish the same port on both "
+"sides: -p 127.0.0.1:{port}:{port}."
+msgstr ""
+
+msgid "The page is not running any more: start people again."
 msgstr ""
 
 #, python-brace-format
@@ -2403,6 +3375,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
+msgstr ""
+
+msgid "The proposal is already made: → is enough when it suits you."
 msgstr ""
 
 #, python-brace-format
@@ -2441,19 +3416,45 @@ msgstr ""
 
 msgid ""
 "The same picture saved again: resized, recompressed or without its date. "
-"They are not identical files, so a plain 'clean' leaves them alone; "
-"'clean --tier near' moves the copies to the quarantine, where 'undo' "
-"finds them again. The highest resolution is kept. Compare each copy with "
-"the kept picture first."
+"They are not identical files, so a plain 'clean' leaves them alone. "
+"'clean --tier near' moves the copies of the sure groups to the "
+"quarantine, where 'undo' finds them again; 'review --near' shows the "
+"groups to check one at a time, to decide each one (as planned, keep the "
+"other version, leave alone); 'clean --tier near-all' moves them all. The "
+"highest resolution is kept."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The same resolution and sizes {gap} apart (under 1 %): the size says "
+"nothing, the usual rules chose: {rule}."
 msgstr ""
 
 msgid ""
 "The same video saved again: shared by a messaging app, converted or "
 "recompressed. Same length, same frames at the same moments, same date or "
-"none. They are not identical files, so a plain 'clean' leaves them alone;"
-" 'clean --tier near' moves the copies to the quarantine, where 'undo' "
-"finds them again. The highest resolution, then the largest file, is kept."
-" Watch each copy before choosing."
+"none. They are not identical files, so a plain 'clean' leaves them alone."
+" 'clean --tier near' moves the copies of the sure groups to the "
+"quarantine, where 'undo' finds them again; 'review --near' decides the "
+"groups to check one at a time; 'clean --tier near-all' moves them all. "
+"The highest resolution, then the largest file, is kept; between copies of"
+" the very same picture and sound, whose metadata alone differ, the usual "
+"rules choose (folder, name). Play each copy of the groups to check before"
+" choosing."
+msgstr ""
+
+#, python-brace-format
+msgid "The search failed (error {status})."
+msgstr ""
+
+msgid "The search is not running any more: start it again."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The second opinion of Czkawka (another duplicate finder you ran on "
+"{date}) is out of date: photos were moved or deleted since. It is "
+"ignored; cleaning does not need it."
 msgstr ""
 
 #, python-brace-format
@@ -2464,10 +3465,9 @@ msgstr ""
 msgid "The sheets were renamed, moved, added or deleted: {found}."
 msgstr ""
 
-#, python-brace-format
 msgid ""
-"The space is freed by 'purge', once you have checked: media-hygiene purge"
-" {run_id}"
+"The shell of the script: 'powershell' (Windows) or 'bash' (WSL, Linux, "
+"macOS). Default: guessed from the mounted folders."
 msgstr ""
 
 msgid ""
@@ -2482,11 +3482,39 @@ msgstr ""
 msgid "The target {path} is not mounted."
 msgstr ""
 
+msgid "The tool only sees the folders you give it with -v."
+msgstr ""
+
 #, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
+#, python-brace-format
+msgid "The variable {name}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The variable {name} is unknown to version {version}: a typo, or a setting"
+" of a newer version?"
+msgstr ""
+
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
+msgstr ""
+
+msgid ""
+"The words 'xmp' writes into the .xmp sidecars next to the photos "
+"(dc:subject), by source: vision, place, folder, name, date. The model's "
+"sentence goes into dc:description."
+msgstr ""
+
+msgid ""
+"The words of 'tags', to find photos by what they show: the meaningful "
+"words of the folder and file names (none for IMG_1234), the date (year, "
+"month, season, holidays), the place (your [[classify.places]], the "
+"nearest town) and, when [classify.ai] model is set, what the vision model"
+" sees. They are kept in the cache (/cache), never written into the "
+"photos."
 msgstr ""
 
 msgid "The workbook and its plan.json do not match: one of them changed."
@@ -2528,7 +3556,15 @@ msgstr ""
 msgid "The {top} largest events hold {held} of them."
 msgstr ""
 
+msgid ""
+"Then look for faces in the photos not looked at yet (as 'people' does), "
+"after saying how long it takes and asking."
+msgstr ""
+
 msgid "There is no such event."
+msgstr ""
+
+msgid "There is no such group."
 msgstr ""
 
 msgid "There is no such series."
@@ -2552,6 +3588,12 @@ msgstr ""
 msgid "These folders are mounted read-only: {folders}."
 msgstr ""
 
+msgid "This browser cannot play this video: open the original."
+msgstr ""
+
+msgid "This build cannot find faces: the ONNX runtime is not installed."
+msgstr ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -2564,13 +3606,22 @@ msgstr ""
 msgid "This is the first event."
 msgstr ""
 
+msgid "This is the first group."
+msgstr ""
+
 msgid "This is the first series."
 msgstr ""
 
 msgid "This is the last event: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
+msgid "This is the last group: stop the review with Ctrl+C in the terminal."
+msgstr ""
+
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
+msgstr ""
+
+msgid "This series is not in the file yet."
 msgstr ""
 
 msgid "This shot lies in a protected folder: it is never moved."
@@ -2598,6 +3649,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid ""
+"To check, undecided: nothing of this group moves with --tier near until "
+"you decide."
+msgstr ""
+
+msgid "To check: compare the copies with the kept version."
+msgstr ""
+
+msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
 "\\media-hygiene\\config:/config\": config.toml is created there, "
 "commented, on the first run; edit it with any text editor."
@@ -2609,7 +3668,14 @@ msgstr ""
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 
+#, python-brace-format
+msgid "To set once: {settings}."
+msgstr ""
+
 msgid "To sort"
+msgstr ""
+
+msgid "To year"
 msgstr ""
 
 msgid "Topic"
@@ -2625,6 +3691,11 @@ msgid ""
 "Trips, for a 'trip' rule: an event whose photos lie farther than "
 "trip_min_km from home is away; away events less than trip_merge_gap_hours"
 " apart, and less than trip_merge_max_km from each other, make one trip."
+msgstr ""
+
+msgid ""
+"Two faces this similar (cosine, 0 to 1) may be the same person: higher "
+"splits more groups, lower mixes people."
 msgstr ""
 
 msgid "Type"
@@ -2667,7 +3738,28 @@ msgstr[1] ""
 msgid "Unknown run {run_id}."
 msgstr ""
 
+#, python-brace-format, python-format
+msgid ""
+"Up to this group, in this order: {size}, {share} %% of the space of every"
+" group."
+msgstr ""
+
 msgid "Usage:"
+msgstr ""
+
+msgid "Use the published image, or install the dependencies again: uv sync."
+msgstr ""
+
+msgid ""
+"Validate at once every series still to see whose proposal leaves nothing "
+"to judge (V)"
+msgstr ""
+
+msgid "Validate the series still to see here, as moving on would"
+msgstr ""
+
+#, python-brace-format
+msgid "Validate {series} ({aside})"
 msgstr ""
 
 msgid "Value"
@@ -2687,7 +3779,24 @@ msgstr ""
 msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr ""
 
+msgid "What next:"
+msgstr ""
+
+msgid "What you can do"
+msgstr ""
+
+#, python-brace-format
+msgid "What {file} holds for this group"
+msgstr ""
+
+#, python-brace-format
+msgid "What {file} holds for this series"
+msgstr ""
+
 msgid "When to use colours (NO_COLOR is honoured too)."
+msgstr ""
+
+msgid "Where am I? The last audit, the quarantine, what is left: no scan."
 msgstr ""
 
 #, python-brace-format
@@ -2706,7 +3815,13 @@ msgstr ""
 msgid "Where to start"
 msgstr ""
 
+msgid "Where you are"
+msgstr ""
+
 msgid "White pixels"
+msgstr ""
+
+msgid "Who is it? Type a name, then Enter"
 msgstr ""
 
 msgid ""
@@ -2741,6 +3856,29 @@ msgstr ""
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 
+msgid "With --people: do not ask, go on."
+msgstr ""
+
+msgid "With Léa"
+msgstr ""
+
+msgid "Words"
+msgstr ""
+
+msgid ""
+"Words left out because they describe nearly every photo. Written here, "
+"the list replaces the built-in one (French and English)."
+msgstr ""
+
+msgid "Words of"
+msgstr ""
+
+msgid ""
+"Words to find, printed as a table instead of opening the page: \"bord de "
+"mer\" a phrase, anniv* a start of word, place:durbuy among the places "
+"only (also vision, caption, folder, name, date, person)."
+msgstr ""
+
 #, python-brace-format
 msgid "Workbook to edit: {path}"
 msgstr ""
@@ -2757,10 +3895,38 @@ msgstr ""
 msgid "Workbook: {path}"
 msgstr ""
 
+msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
+msgstr ""
+
+msgid "Write the sidecars; without it, only show what would be written."
+msgstr ""
+
+msgid ""
+"Write the words of 'tags' into .xmp sidecars next to the photos, for "
+"digiKam, darktable, Lightroom or Immich; never into a photo (journaled, "
+"undoable)."
+msgstr ""
+
+msgid "Writes the words into the .xmp sidecars."
+msgstr ""
+
+msgid "Writing"
+msgstr ""
+
+msgid "Writing the HTML report and its previews…"
+msgstr ""
+
 msgid "Year"
 msgstr ""
 
 msgid "Years"
+msgstr ""
+
+#, python-brace-format
+msgid "Yes, it is {name}"
+msgstr ""
+
+msgid "Your browser cannot show this format: open the original."
 msgstr ""
 
 #, python-brace-format
@@ -2774,6 +3940,12 @@ msgstr ""
 msgid ""
 "Your decisions — burst series reviewed: {series}, shots set aside: "
 "{shots}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your decisions — near-duplicate groups as planned: {planned}, another "
+"version kept: {swap}, left alone: {leave}."
 msgstr ""
 
 #, python-brace-format
@@ -2806,8 +3978,23 @@ msgid "Your places"
 msgstr ""
 
 msgid ""
-"Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: the zone "
-"of the container."
+"Your time zone, for the dates and the names of reports and runs, e.g. "
+"\"Europe/Brussels\" or \"America/Montreal\" (list: "
+"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: "
+"UTC, as Docker does not know yours."
+msgstr ""
+
+msgid ""
+"Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
+" timezone."
+msgstr ""
+
+#, python-brace-format
+msgid "[[{table}]] number {number}"
+msgstr ""
+
+#, python-brace-format
+msgid "[[{table}]] number {number} ('{name}')"
 msgstr ""
 
 msgid "[cyan]read-only[/]"
@@ -2825,7 +4012,7 @@ msgstr ""
 msgid "[yellow]not mounted[/] — nothing to analyse"
 msgstr ""
 
-msgid "a click on a shot works too"
+msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'."
 msgstr ""
 
 msgid "a file changed since the audit"
@@ -2840,26 +4027,97 @@ msgstr ""
 msgid "a folder someone named (the other one is generic)"
 msgstr ""
 
+msgid "a name in names is empty"
+msgstr ""
+
 msgid "a name someone chose (the other one was generated by a camera or an app)"
+msgstr ""
+
+#, python-brace-format
+msgid "a number is expected, not {value}"
 msgstr ""
 
 msgid "a photo, a video or a sidecar is never junk: the folder is kept"
 msgstr ""
 
 #, python-brace-format
+msgid "a ring of an area needs at least {count} points"
+msgstr ""
+
+#, python-brace-format
+msgid "a text between quotes is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "a whole number is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
 msgid "about {time} left"
+msgstr ""
+
+#, python-brace-format
+msgid "about {time} left at your pace"
+msgstr ""
+
+msgid "accept every sure proposal at once"
 msgstr ""
 
 msgid "accept the name and category, then the next event to decide"
 msgstr ""
 
+msgid "accept the proposal, next"
+msgstr ""
+
+#, python-brace-format
+msgid "all {count} kept"
+msgstr ""
+
 msgid "alphabetical order (nothing else differs)"
+msgstr ""
+
+msgid "an area needs at least one polygon, each with an outer ring"
+msgstr ""
+
+#, python-brace-format
+msgid "an area of {count} points is too detailed (at most {limit})"
+msgstr ""
+
+msgid "analyse every photo, then see the faces alike in your browser."
+msgstr ""
+
+#, python-brace-format
+msgid "and {count} more"
+msgstr ""
+
+#, python-brace-format
+msgid "and {n} more face"
+msgid_plural "and {n} more faces"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "apply your review: the files you set aside go to the quarantine."
+msgstr ""
+
+msgid "as planned"
+msgstr ""
+
+msgid "as planned, then next"
 msgstr ""
 
 msgid "audit"
 msgstr ""
 
+msgid "back to undecided"
+msgstr ""
+
 msgid "blurry"
+msgstr ""
+
+msgid "board ⇄ one series"
+msgstr ""
+
+msgid "board: pin the large preview of the shot under the mouse"
 msgstr ""
 
 msgid "bright"
@@ -2871,10 +4129,29 @@ msgstr ""
 msgid "built-in"
 msgstr ""
 
+msgid "by date"
+msgstr ""
+
+msgid "by folder"
+msgstr ""
+
+msgid "by folder pair"
+msgstr ""
+
 msgid "camera (EXIF)"
 msgstr ""
 
 msgid "can be freed"
+msgstr ""
+
+#, python-brace-format
+msgid "category {name} lists no extension, e.g. {name} = ['pdf']"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"category {name}: a category lists extensions, not categories; for the "
+"extension, write .{value}"
 msgstr ""
 
 msgid ""
@@ -2891,6 +4168,10 @@ msgstr ""
 msgid "command line"
 msgstr ""
 
+#, python-format
+msgid "compare the shots at 100 %%"
+msgstr ""
+
 msgid "config.toml"
 msgstr ""
 
@@ -2901,14 +4182,13 @@ msgstr ""
 msgid "dark"
 msgstr ""
 
+msgid "date"
+msgstr ""
+
 msgid "date on the disk"
 msgstr ""
 
-msgid ""
-"decisions.json downloaded from an audit report (swap or leave alone some "
-"folder pairs) or written by 'review' (burst shots set aside). A relative "
-"path is read from the folder mounted on /reports. The file is refused if "
-"the folders, the pairs or the series changed."
+msgid "decisions.json cannot be read: 'review' will say why."
 msgstr ""
 
 msgid "default"
@@ -2917,11 +4197,22 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
-msgid "documentation/en/reference-safety.md"
-msgstr ""
+#, python-brace-format
+msgid "delete {count} duplicate copy ({size})"
+msgid_plural "delete {count} duplicate copies ({size})"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-format
-msgid "duplicate copies in %(groups)s groups"
+msgid "duplicate copies in %(num)s group"
+msgid_plural "duplicate copies in %(num)s groups"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "e.g. Durbuy bear, birthday cake, snow 2008"
+msgstr ""
+
+msgid "edit the yellow cells and save; nothing moves until 'sort'."
 msgstr ""
 
 #, python-brace-format
@@ -2940,10 +4231,7 @@ msgstr ""
 msgid "environment"
 msgstr ""
 
-msgid ""
-"exact: byte-for-byte copies only. near: also near duplicates (resized or "
-"recompressed copies, re-encoded videos); check them in the report first. "
-"Both go to the quarantine. Default: exact."
+msgid "every source"
 msgstr ""
 
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
@@ -2958,19 +4246,53 @@ msgstr ""
 msgid "files with an identical copy"
 msgstr ""
 
+msgid ""
+"find your photos by these words in your browser; 'inventory' lists them "
+"in its last column."
+msgstr ""
+
+msgid "finish the burst review where you stopped."
+msgstr ""
+
+msgid "folder"
+msgstr ""
+
 msgid "folder name"
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "gap {gap} %%"
 msgstr ""
 
 msgid "groups of identical files"
 msgstr ""
 
+#, python-brace-format
+msgid "handle {count} broken file"
+msgid_plural "handle {count} broken files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "healthy"
 msgstr ""
 
-msgid "in excluded folders"
+msgid "in folders never analysed (system, trash, thumbnails, excluded)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"invalid category name '{name}': letters, digits, '-' and '_' only, such "
+"as documents"
+msgstr ""
+
+#, python-brace-format
+msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
 msgstr ""
 
 msgid "it already exists"
+msgstr ""
+
+msgid "it changed while the words were written: left as is"
 msgstr ""
 
 msgid "it is gone already"
@@ -2993,6 +4315,9 @@ msgstr ""
 msgid "it is the kept copy itself, seen through another path"
 msgstr ""
 
+msgid "it reads back different from what was written"
+msgstr ""
+
 msgid "its content changed"
 msgstr ""
 
@@ -3009,19 +4334,40 @@ msgid ""
 "it may be the last name of the photo"
 msgstr ""
 
+msgid "its previous content is no longer in the quarantine: kept"
+msgstr ""
+
 msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)"
 msgstr ""
 
 msgid "its size changed"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"junk_files: '{name}' is a photo, video or sidecar name: only 'clean' may "
+"remove such a file"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"junk_files: '{name}' is not a plain file name (no wildcard, no folder), "
+"such as Thumbs.db"
+msgstr ""
+
 msgid "keep"
+msgstr ""
+
+msgid "keep all"
 msgstr ""
 
 msgid "keep every shot"
 msgstr ""
 
-msgid "keep only the sharpest"
+msgid "keep nothing"
+msgstr ""
+
+msgid "keep the other version, then next"
 msgstr ""
 
 msgid "kept"
@@ -3030,7 +4376,16 @@ msgstr ""
 msgid "kept (your decision)"
 msgstr ""
 
+msgid "kept if you move on"
+msgstr ""
+
+msgid "largest sharpness gap first"
+msgstr ""
+
 msgid "leave a field"
+msgstr ""
+
+msgid "leave the group alone, then next"
 msgstr ""
 
 msgid "leave the selected photos where they are"
@@ -3042,6 +4397,14 @@ msgstr ""
 msgid "left as it is"
 msgstr ""
 
+#, python-brace-format
+msgid "less than {limit} is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "match = '{match}' needs {field}"
+msgstr ""
+
 msgid "media files scanned"
 msgstr ""
 
@@ -3049,6 +4412,11 @@ msgid "media-hygiene classify"
 msgstr ""
 
 msgid "media-hygiene configuration — created on first run, edit it freely."
+msgstr ""
+
+msgid ""
+"media-hygiene launcher: 'mh <command>' runs the tool on your folders, "
+"e.g. mh audit, then mh clean."
 msgstr ""
 
 msgid "media-hygiene report"
@@ -3060,13 +4428,55 @@ msgstr ""
 msgid "merged with another named event, whose name wins"
 msgstr ""
 
+#, python-brace-format
+msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
+msgstr ""
+
+#, python-brace-format
+msgid "more than {limit} is expected, not {value}"
+msgstr ""
+
 msgid "move between photos"
 msgstr ""
 
 msgid "move to the quarantine"
 msgstr ""
 
+msgid "move with --tier near"
+msgstr ""
+
+msgid "move with --tier near-all"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"move {count} duplicate copy ({size}) and {near} near duplicates to the "
+"quarantine"
+msgid_plural ""
+"move {count} duplicate copies ({size}) and {near} near duplicates to the "
+"quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "move {count} duplicate copy ({size}) to the quarantine"
+msgid_plural "move {count} duplicate copies ({size}) to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "move {count} near duplicate to the quarantine"
+msgid_plural "move {count} near duplicates to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "moved to the quarantine"
+msgstr ""
+
+msgid "name the groups of faces in your browser, with 'people'."
+msgstr ""
+
+msgid "names are kept in config.toml: mount a folder of yours on /config"
 msgstr ""
 
 #, python-brace-format, python-format
@@ -3076,7 +4486,13 @@ msgstr ""
 msgid "next event to decide"
 msgstr ""
 
+msgid "next group to check, undecided"
+msgstr ""
+
 msgid "next or previous event"
+msgstr ""
+
+msgid "next series still to see"
 msgstr ""
 
 msgid "no"
@@ -3091,10 +4507,16 @@ msgstr ""
 msgid "no shot kept from its series is left"
 msgstr ""
 
+msgid "none: the whole series aside, then next"
+msgstr ""
+
 msgid "not checked"
 msgstr ""
 
 msgid "not found where the plan or a sort put it"
+msgstr ""
+
+msgid "not sorted yet."
 msgstr ""
 
 msgid "nothing"
@@ -3103,13 +4525,39 @@ msgstr ""
 msgid "ok"
 msgstr ""
 
+msgid "on a video you clicked: play, seek; Esc gives the keys back"
+msgstr ""
+
 msgid "on another disk or mount: no link possible"
+msgstr ""
+
+msgid "once you have checked the quarantine, 'purge' frees its space."
+msgstr ""
+
+msgid "once you have checked, 'purge' frees the space of the files set aside."
+msgstr ""
+
+#, python-brace-format
+msgid "one of {expected} is expected, not {value}"
 msgstr ""
 
 msgid "only Czkawka"
 msgstr ""
 
 msgid "only media-hygiene"
+msgstr ""
+
+#, python-brace-format
+msgid "only one place can be home, not {names}"
+msgstr ""
+
+msgid "only the sharpest"
+msgstr ""
+
+msgid "only the sharpest, then next"
+msgstr ""
+
+msgid "original"
 msgstr ""
 
 msgid "other file types"
@@ -3121,10 +4569,23 @@ msgstr ""
 msgid "outside the mounted folders"
 msgstr ""
 
+msgid "person"
+msgstr ""
+
+msgid ""
+"person: the events where someone named on the 'people' page shows on at "
+"least min_share percent of the photos (10 by default), and the lone "
+"photos showing them. names = [...] matches any of them; all = true needs "
+"every one. A name nobody has in [[people.person]] stops classify."
+msgstr ""
+
 msgid "photo"
 msgstr ""
 
 msgid "photos with a shooting date:"
+msgstr ""
+
+msgid "place"
 msgstr ""
 
 #, python-brace-format
@@ -3134,7 +4595,24 @@ msgstr ""
 msgid "preferred folder"
 msgstr ""
 
-msgid "previous or next series"
+msgid "previous group"
+msgstr ""
+
+msgid "previous series (no choice: as shown)"
+msgstr ""
+
+#, python-brace-format
+msgid "proposed aside: nearly identical to the sharper shot {number}"
+msgstr ""
+
+msgid "proposed aside: overexposed next to the others"
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "proposed aside: sharpness {share} %% of the best"
+msgstr ""
+
+msgid "proposed aside: underexposed next to the others"
 msgstr ""
 
 msgid "protected folder"
@@ -3146,13 +4624,31 @@ msgstr ""
 msgid "protected, kept"
 msgstr ""
 
+msgid "reference-safety/"
+msgstr ""
+
 msgid "removed from your folders"
 msgstr ""
 
 msgid "review page"
 msgstr ""
 
+#, python-brace-format
+msgid "rule '{name}': match = 'trip' needs a [[classify.places]] with home = true"
+msgstr ""
+
+#, python-brace-format
+msgid "rule '{name}': {reason}"
+msgstr ""
+
 msgid "run"
+msgstr ""
+
+#, python-brace-format
+msgid "run 'clean' to set {size} of copies aside."
+msgstr ""
+
+msgid "seen by the model"
 msgstr ""
 
 msgid "select a photo"
@@ -3161,13 +4657,10 @@ msgstr ""
 msgid "send the selected photos to another category"
 msgstr ""
 
-msgid "set a shot aside, or keep it again"
+msgid "set a shot aside, or take it back"
 msgstr ""
 
 msgid "set aside"
-msgstr ""
-
-msgid "set the whole series aside"
 msgstr ""
 
 msgid "sharpest"
@@ -3183,6 +4676,30 @@ msgstr ""
 msgid "small"
 msgstr ""
 
+msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
+msgstr ""
+
+msgid "sorted since."
+msgstr ""
+
+msgid "space freed, largest first"
+msgstr ""
+
+msgid "start with an audit: it changes nothing."
+msgstr ""
+
+msgid "start/01-first-audit/"
+msgstr ""
+
+msgid "still to see first"
+msgstr ""
+
+msgid "suggestion"
+msgstr ""
+
+msgid "sure: V accepts it with the other sure proposals"
+msgstr ""
+
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
@@ -3191,7 +4708,13 @@ msgid ""
 "cannot cross them"
 msgstr ""
 
+msgid "the classify proposal waits: 'sort' applies the edited workbook."
+msgstr ""
+
 msgid "the copy differs from the original"
+msgstr ""
+
+msgid "the copy of the previous sidecar does not match it"
 msgstr ""
 
 msgid "the file is gone"
@@ -3223,22 +4746,58 @@ msgstr ""
 msgid "the kept copy {path} no longer exists"
 msgstr ""
 
+msgid "the last audit found extra copies: 'clean' sets them aside."
+msgstr ""
+
+msgid "the model's sentence"
+msgstr ""
+
 msgid "the oldest date"
 msgstr ""
 
 msgid "the other name looks like a copy"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"the quarantine of {run_id} is more than {days} days old: once checked, "
+"'purge' frees its space."
+msgstr ""
+
 msgid "the restored copy does not match the original"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"the same 'clean' command with --tier near {option}; the sure groups and "
+"those you decided go to the quarantine, 'undo' brings them back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"the same 'clean' command with {option}; the shots set aside go to the "
+"quarantine, 'undo' brings them back."
+msgstr ""
+
+msgid "the same search in your browser, with the pictures and filters."
+msgstr ""
+
 msgid "the shortest path"
+msgstr ""
+
+msgid "the sidecar changed since (edited in another application?): kept"
+msgstr ""
+
+msgid "the sidecar is gone already"
 msgstr ""
 
 msgid "the target exists"
 msgstr ""
 
 msgid "the value cannot be used"
+msgstr ""
+
+msgid "the whole folder pair as planned"
 msgstr ""
 
 msgid "this category is no longer proposed"
@@ -3250,17 +4809,85 @@ msgstr ""
 msgid "this file has too many names already"
 msgstr ""
 
+msgid "this setting is required"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
+"your time zone, not UTC)"
+msgstr ""
+
+msgid "to check first"
+msgstr ""
+
 #, python-format
 msgid "to check or to sort: %(count)s"
+msgstr ""
+
+msgid "to see"
+msgstr ""
+
+msgid "to the quarantine"
+msgstr ""
+
+msgid "to the quarantine once decided in 'review --near', or with --tier near-all"
 msgstr ""
 
 msgid "to the quarantine with --tier near"
 msgstr ""
 
+msgid "today"
+msgstr ""
+
+#, python-brace-format
+msgid "true or false is expected, not {value}"
+msgstr ""
+
+msgid ""
+"true: every 'audit' then looks for faces in the photos not looked at yet,"
+" after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+
+#, python-brace-format
+msgid "two people are named '{name}'"
+msgstr ""
+
+#, python-brace-format
+msgid "two places are named '{name}'"
+msgstr ""
+
+#, python-brace-format
+msgid "two rules are named '{name}'"
+msgstr ""
+
+msgid "two small local models: nothing is sent"
+msgstr ""
+
+msgid "type a name first"
+msgstr ""
+
+msgid "undo the last choice"
+msgstr ""
+
 msgid "unknown"
 msgstr ""
 
+#, python-brace-format
+msgid "unknown placeholder {placeholder} in '{layout}'; allowed: {allowed}"
+msgstr ""
+
+#, python-brace-format
+msgid "unknown time zone '{name}', expected a name like 'Europe/Brussels'"
+msgstr ""
+
 msgid "usage policy"
+msgstr ""
+
+msgid "validate"
+msgstr ""
+
+msgid "validate every obvious series at once"
 msgstr ""
 
 msgid "video"
@@ -3269,10 +4896,16 @@ msgstr ""
 msgid "video tags"
 msgstr ""
 
+msgid "video: open the original"
+msgstr ""
+
 msgid "videos with a date in their tags:"
 msgstr ""
 
 msgid "videos:"
+msgstr ""
+
+msgid "whole series set aside"
 msgstr ""
 
 msgid "why:"
@@ -3308,6 +4941,18 @@ msgid "your decision in the report"
 msgstr ""
 
 #, python-brace-format
+msgid "{actions} and {last}"
+msgstr ""
+
+#, python-brace-format
+msgid "{actions}?"
+msgstr ""
+
+#, python-brace-format
+msgid "{category} cannot be used in a category"
+msgstr ""
+
+#, python-brace-format
 msgid "{cell}: '{key}' is not a row of this plan."
 msgstr ""
 
@@ -3322,6 +4967,22 @@ msgstr ""
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."
 msgid_plural "{count} burst series are set aside whole: none of their shots stays."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} burst series not reviewed yet: its shots stay."
+msgid_plural "{count} burst series not reviewed yet: their shots stay."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} burst series: optional, ~{effort} in 'review'; a series not "
+"reviewed is kept whole."
+msgid_plural ""
+"{count} burst series: optional, ~{effort} in 'review'; the series not "
+"reviewed are kept whole."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3362,8 +5023,20 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} day ago"
+msgid_plural "{count} days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}."
 msgid_plural "{count} decided folder pairs no longer exist, e.g. {kept} -> {removed}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} decided group of near duplicates changed since, e.g. {kept}."
+msgid_plural "{count} decided groups of near duplicates changed since, e.g. {kept}."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3401,37 +5074,69 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} event to decide: {sure} with a sure proposal (one click), {look} "
+"to look at."
+msgid_plural ""
+"{count} events to decide: {sure} with a sure proposal (one click), {look}"
+" to look at."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} exact duplicates are still there: run 'clean' first, otherwise "
 "both copies are sorted."
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (deleted), {size} "
-"freed."
-msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (deleted), "
-"{size} freed."
+msgid "{count} extra copy"
+msgid_plural "{count} extra copies"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} face forgotten."
+msgid_plural "{count} faces forgotten."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} faces"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} file found."
+msgid_plural "{count} files found."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (deleted, or moved"
-" to the quarantine if not a media file), {size} freed."
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"deletes), {size} to free."
 msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (deleted, or "
-"moved to the quarantine if not a media file), {size} freed."
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"deletes), {size} to free."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed by 'purge'."
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"deletes, or moves to the quarantine if not a media file), {size} to free."
 msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (moved to the "
-"quarantine), {size} freed by 'purge'."
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"deletes, or moves to the quarantine if not a media file), {size} to free."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
+"moves to the quarantine), {size} to free with 'purge'."
+msgid_plural ""
+"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
+"moves to the quarantine), {size} to free with 'purge'."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3456,12 +5161,86 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} files, {undecided} to check or to sort"
+msgid "{count} file: {words} words from its folders, name, date and place."
+msgid_plural "{count} files: {words} words from their folders, names, dates and places."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} files have an identical copy: left out."
 msgstr ""
+
+#, python-brace-format
+msgid "{count} files have no word to write."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files of protected folders: never written."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} folder"
+msgid_plural "{count} folders"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} group decided earlier changed since: to decide again."
+msgid_plural "{count} groups decided earlier changed since: to decide again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates to check stays in place: decide it with "
+"'review --near', or --tier near-all moves it too."
+msgid_plural ""
+"{count} groups of near duplicates to check stay in place: decide them "
+"with 'review --near', or --tier near-all moves them too."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} group of near duplicates: {sure}, {look} to check (shown first)."
+msgid_plural "{count} groups of near duplicates: {sure}, {look} to check (shown first)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} group of near duplicates: {sure}, {look} to look at (~{effort} in"
+" 'review --near'); 'clean --tier near' moves the sure ones."
+msgid_plural ""
+"{count} groups of near duplicates: {sure}, {look} to look at (~{effort} "
+"in 'review --near'); 'clean --tier near' moves the sure ones."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} identical copy, {size}: no risk, one command."
+msgid_plural "{count} identical copies, {size}: no risk, one command."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} link made: no photo was copied nor moved, no space is used."
 msgid_plural "{count} links made: no photo was copied nor moved, no space is used."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} near-duplicate group decided in 'review --near' waits for --tier "
+"near: nothing of it moves without it."
+msgid_plural ""
+"{count} near-duplicate groups decided in 'review --near' wait for --tier "
+"near: nothing of them moves without it."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} obvious"
+msgid_plural "{count} obvious"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3483,7 +5262,21 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} photo"
-msgstr ""
+msgid_plural "{count} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo analysed: {faces} faces, {seconds} s per photo."
+msgid_plural "{count} photos analysed: {faces} faces, {seconds} s per photo."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo could not be decoded."
+msgid_plural "{count} photos could not be decoded."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} photo could not be described: unreadable, or no answer."
@@ -3498,7 +5291,51 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} photos"
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} "
+"(estimated; the two face models, 39 MB, are downloaded first)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo has not been looked at for faces yet: about {duration} on "
+"this PC (measured on {measured} photos)."
+msgid_plural ""
+"{count} photos have not been looked at for faces yet: about {duration} on"
+" this PC (measured on {measured} photos)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo has the words of the vision model; {left} left."
+msgid_plural "{count} photos have the words of the vision model; {left} left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo of the index is not in the mounted folders: left aside. "
+"Mount its folder to look at it too."
+msgid_plural ""
+"{count} photos of the index are not in the mounted folders: left aside. "
+"Mount their folders to look at them too."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo of {total} to analyse; the next runs analyse new ones only."
+msgid_plural "{count} photos of {total} to analyse; the next runs analyse new ones only."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {duration}: one per set of"
+" identical files and per burst series."
 msgstr ""
 
 #, python-brace-format
@@ -3520,7 +5357,45 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} series to see: {obvious} (one click), {look} to look at."
+msgid_plural "{count} series to see: {obvious} (one click), {look} to look at."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} setting cannot be used:"
+msgid_plural "{count} settings cannot be used:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} setting is unknown to version {version} (a typo, or a setting of "
+"a newer version?):"
+msgid_plural ""
+"{count} settings are unknown to version {version} (a typo, or a setting "
+"of a newer version?):"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} shots"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} sidecar written and read back; no photo was changed."
+msgid_plural "{count} sidecars written and read back; no photo was changed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} sidecars hold these words already."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} sidecars to write: {new} new, {merged} with the words added to "
+"those of another application."
 msgstr ""
 
 #, python-brace-format
@@ -3536,7 +5411,71 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} sure"
+msgid_plural "{count} sure"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} video"
+msgid_plural "{count} videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{days} day {clock}"
+msgid_plural "{days} days {clock}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{day} {month} {year} {time}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{done}, read back from the disk at {time}: the ↶ button takes the whole "
+"batch back."
+msgstr ""
+
+#, python-brace-format
+msgid "{done}: Z takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{faces} faces in {photos} photos: no two of them look alike enough to be "
+"grouped."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{faces} faces in {photos} photos: {count} group of faces alike ({sizes}),"
+" {alone} seen once."
+msgid_plural ""
+"{faces} faces in {photos} photos: {count} groups of faces alike, the "
+"largest {sizes}; {alone} seen once."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{faces} in {photos}"
+msgstr ""
+
+#, python-brace-format
+msgid "{field} is not used by match = '{match}'"
+msgstr ""
+
+#, python-brace-format
+msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
+msgstr ""
+
+#, python-brace-format
+msgid "{files}, {undecided} to check or to sort"
+msgstr ""
+
+#, python-brace-format
+msgid "{file} read from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
@@ -3574,6 +5513,28 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{limit} or less is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{limit} or more is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} ({count} faces)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{name} is a built-in category, it cannot be redefined: choose another "
+"name, e.g. my_{name}"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} is an extension: choose another name for the category"
+msgstr ""
+
+#, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr ""
 
@@ -3582,10 +5543,130 @@ msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}
 msgstr ""
 
 #, python-brace-format
+msgid "{name}: {count} photos"
+msgstr ""
+
+#, python-brace-format
+msgid "{name}?"
+msgstr ""
+
+#, python-brace-format
+msgid "{n} choice of the batch taken back"
+msgid_plural "{n} choices of the batch taken back"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} event"
+msgid_plural "{n} events"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face"
+msgid_plural "{n} faces"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face looks like no other: it is not shown."
+msgid_plural "{n} faces look like no other: they are not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file"
+msgid_plural "{n} files"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file found."
+msgid_plural "{n} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} group picked: the next name goes to it."
+msgid_plural "{n} groups picked: the next name goes to all of them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} ignored group is not shown."
+msgid_plural "{n} ignored groups are not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} obvious series"
+msgid_plural "{n} obvious series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} obvious series validated"
+msgid_plural "{n} obvious series validated"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} of {count} set aside"
+msgid_plural "{n} of {count} set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo"
+msgid_plural "{n} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} series"
+msgid_plural "{n} series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} shot proposed aside"
+msgid_plural "{n} shots proposed aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} shot set aside"
+msgid_plural "{n} shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} sure proposal"
+msgid_plural "{n} sure proposals"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} sure proposal accepted"
+msgid_plural "{n} sure proposals accepted"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
 msgid_plural "{others} follow {lead}: companions go to one folder."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{pair} — groups: {count}, undecided: {left}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{pair} — undecided groups: {count}. As planned, their copies to the "
+"quarantine? Each group can still be decided again."
+msgstr ""
 
 #, python-brace-format
 msgid "{path} belongs to another classify run."
@@ -3593,6 +5674,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} changed since"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{path} contains a control character: write Windows paths between 'single "
+"quotes' in config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{path} is a path, not a folder name: use --exclude (folders.excluded) for"
+" one precise folder"
 msgstr ""
 
 #, python-brace-format
@@ -3640,6 +5733,10 @@ msgid "{path} is not the quarantine of a run"
 msgstr ""
 
 #, python-brace-format
+msgid "{path} read back does not hold the {count} choices just saved."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
 msgstr ""
 
@@ -3652,11 +5749,48 @@ msgid "{path}: no sheet of a classify workbook was found."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: not an XMP file this tool can read ({reason}); left as is."
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr ""
 
 #, python-brace-format
+msgid "{photos} and {videos} described; kept in the cache."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{place} is unknown to version {version}: a typo, or a setting of a newer "
+"version?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: did you mean '{key}'?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: unknown to version {version}"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: unknown to version {version}; did you mean '{key}'?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place}: {reason}"
+msgstr ""
+
+#, python-brace-format
 msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{series}: only the sharpest shot (and those of protected folders) would "
+"stay, {aside}, saved in one write. Series to look at, still to see: "
+"{left}. Validate them? Z takes the whole batch back."
 msgstr ""
 
 #, python-brace-format
@@ -3672,6 +5806,28 @@ msgid "{subject}: page '{page}', workbook '{workbook}'"
 msgstr ""
 
 #, python-brace-format
+msgid "{table} in config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{tip} In this command, replace {folder} with your photo folder, after "
+"checking that it exists on your computer ({check})."
+msgstr ""
+
+#, python-brace-format
+msgid "{total} files found; the first {shown} are listed (--limit)."
+msgstr ""
+
+#, python-brace-format
+msgid "{total} files found; the first {shown} are shown."
+msgstr ""
+
+#, python-brace-format
+msgid "{undone}, read back from the disk at {time}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{units} event or lone photo has no stronger signal than its subject: "
 "{samples} photos answer for it."
@@ -3680,6 +5836,18 @@ msgid_plural ""
 " {samples} photos answer for them."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{values}: sidecars follow the photo of the same name, they are not "
+"analysed on their own"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{value}: unknown category, did you mean {name}? For the extension, write "
+".{value}"
+msgstr ""
 
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."
@@ -3690,15 +5858,45 @@ msgid "… and %(count)s more groups (largest files are shown first)."
 msgstr ""
 
 #, python-format
-msgid "… and %(count)s more groups."
-msgstr ""
-
-#, python-format
 msgid "… and %(count)s more series."
 msgstr ""
 
 #, python-brace-format
 msgid "… and {count} more."
+msgstr ""
+
+msgid ""
+"↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at"
+" once, i ignores a group; × takes a face out of its group."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"→ validates the series still to see here as shown ({series}, {aside}), "
+"then opens the next page."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"👀 Not identical files: look at them before answering, every one on a "
+"single page: {path} (Ctrl+click opens it)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"📦 {file} is applied: archived as {archive}, the next 'review' starts "
+"afresh."
+msgstr ""
+
+msgid "🔒 Analyse: read-only, never changes your photos"
+msgstr ""
+
+msgid ""
+"🔒 Faces are personal data: they stay in the cache (/cache), nothing is "
+"sent anywhere. 'people --forget' deletes them all."
+msgstr ""
+
+msgid "🔒 Read-only: never changes your photos."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."
@@ -3719,9 +5917,21 @@ msgid ""
 "journaled: 'undo' puts everything back."
 msgstr ""
 
+#, python-brace-format
 msgid ""
-"🛟 Nothing is erased: each copy is compared byte for byte with the kept "
-"one, then moved to the quarantine. 'purge' erases it once you have "
-"checked."
+"🛟 Nothing will be erased: each copy is first compared byte for byte with "
+"the kept one, then moved to the quarantine ({path}). 'undo' puts it back;"
+" 'purge' erases it once you have checked."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"🛟 Nothing will be erased: the files are moved to the quarantine ({path})."
+" 'undo' puts them back; 'purge' erases them once you have checked."
+msgstr ""
+
+msgid ""
+"🛟 Only .xmp sidecars are written, never a photo: each one is journaled "
+"and 'undo' takes it back."
 msgstr ""
 

@@ -5,7 +5,8 @@ Two videos are alike when every test agrees: the same length (within half a seco
 most one informative frame may differ (a cut falling between two frame timings), and
 at least `MIN_FRAMES` must agree. Frames black or blank in both are not informative.
 A copy is kept apart from its original only when it was recorded at the same moment
-or has lost its date, as for images: two takes of a still scene stay two videos.
+or has lost its date, as for images: two takes of a still scene stay two videos. A
+black and white edit keeps its frames' shapes, not their colours: it is no copy.
 
 Candidates meet by length: sorted by duration, a video is only compared with the
 following ones of about the same length. Video libraries hold thousands of files,
@@ -16,8 +17,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.plan.likeness import distance, is_flat, same_aspect
-from media_hygiene.plan.similar_models import NearDecision
+from media_hygiene.plan.likeness import distance, is_flat, same_aspect, same_colours
+from media_hygiene.plan.near_keeper import choose_keeper
+from media_hygiene.plan.near_rounds import Grouping, in_rounds
 from media_hygiene.plan.union_find import UnionFind
 
 if TYPE_CHECKING:
@@ -25,6 +27,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.plan.keeper import KeepPolicy
+    from media_hygiene.plan.near_keeper import NearChoice
+    from media_hygiene.plan.similar_models import NearDecision
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.video_models import FrameHash, VideoLook
 
@@ -52,6 +56,7 @@ def alike(first: VideoLook, second: VideoLook) -> bool:
         _same_length(first.duration, second.duration)
         and same_aspect((first.width, first.height), (second.width, second.height))
         and _frames_agree(first.print.frames, second.print.frames)
+        and same_colours(first.colour, second.colour)
     )
 
 
@@ -82,8 +87,9 @@ def video_near_decisions(
 ) -> tuple[NearDecision, ...]:
     """Group re-encoded videos and choose the version to keep in each group.
 
-    The highest resolution is kept, then the largest file (the highest bit rate),
-    then the usual keep rules. Protected copies are never removable.
+    The highest resolution is kept, then a file larger by 1 % or more (a higher bit
+    rate), then the usual keep rules (`near_keeper`). Protected copies are never
+    removable. Chains of alike videos are settled in rounds (`near_rounds`).
 
     Args:
         files: Candidate videos, one per exact-duplicate group.
@@ -97,23 +103,37 @@ def video_near_decisions(
         (file for file in files if file.path in looks),
         key=lambda file: looks[file.path].duration,
     )
-    decisions: list[NearDecision] = []
-    for cluster in _clusters(usable, looks):
-        keeper = min(
-            cluster,
-            key=lambda file: (-looks[file.path].pixels, -file.size, policy.rank(file)),
-        )
-        best = looks[keeper.path]
-        near = [
-            file
-            for file in cluster
-            if file != keeper and is_near_video(best, looks[file.path])
-        ]
-        removable = tuple(file for file in near if not policy.is_protected(file))
-        if removable:
-            protected = tuple(file for file in near if policy.is_protected(file))
-            decisions.append(NearDecision(keeper, removable, protected))
-    return tuple(sorted(decisions, key=lambda d: (-d.keeper.size, str(d.keeper.path))))
+    grouping = Grouping(
+        clusters=lambda left: _clusters(left, looks),
+        settle=lambda cluster: _settle(cluster, looks, policy),
+        policy=policy,
+    )
+    return in_rounds(usable, grouping)
+
+
+def _settle(
+    cluster: list[MediaFile],
+    looks: Mapping[Path, VideoLook],
+    policy: KeepPolicy,
+) -> tuple[NearChoice, list[MediaFile]]:
+    """Choose the version to keep among linked videos, and find its near copies.
+
+    Args:
+        cluster: Linked videos, two or more.
+        looks: What each one looks like.
+        policy: Protected folders and the usual keep rules.
+
+    Returns:
+        The version kept and why, and the copies near it.
+    """
+    choice = choose_keeper(cluster, lambda file: looks[file.path].pixels, policy)
+    best = looks[choice.keeper.path]
+    near = [
+        file
+        for file in cluster
+        if file != choice.keeper and is_near_video(best, looks[file.path])
+    ]
+    return choice, near
 
 
 def _clusters(

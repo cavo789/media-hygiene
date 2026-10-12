@@ -7,25 +7,36 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.journal import done_states, journal_file, read_journal
-from media_hygiene.actions.kinds import ACTING_PHASES, FOLDER_ACTIONS, ActionKind, Phase
+from pydantic import ValidationError
+
+from media_hygiene.actions.journal import (
+    JournalEntry,
+    done_states,
+    journal_file,
+    read_journal,
+)
+from media_hygiene.actions.kinds import (
+    ACTING_PHASES,
+    FOLDER_ACTIONS,
+    XMP_ACTIONS,
+    ActionKind,
+    Phase,
+)
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.constants import JOURNAL_SUFFIX
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_hygiene.actions.journal import JournalEntry
-
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 # Every run identifier: the stamp, then a number when two runs share a second.
 RUN_ID_PATTERN: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?")
 # Actions after which the file is still there: neither deleted nor freed.
-_KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK})
+_KEPT: Final = frozenset({ActionKind.MOVE, ActionKind.LINK}) | XMP_ACTIONS
 
 
 def new_run_id(journal_dir: Path) -> str:
-    """Create a sortable, unique run identifier such as `20260925-183015`.
+    """Create a unique run identifier in local time, such as `20260925-183015`.
 
     Args:
         journal_dir: Where journals live, to avoid collisions.
@@ -33,7 +44,7 @@ def new_run_id(journal_dir: Path) -> str:
     Returns:
         A fresh identifier.
     """
-    base = datetime.now(UTC).strftime(_RUN_ID_FORMAT)
+    base = datetime.now().astimezone().strftime(_RUN_ID_FORMAT)
     run_id, suffix = base, 1
     while journal_file(journal_dir, run_id).exists():
         suffix += 1
@@ -58,10 +69,11 @@ def run_phase(entries: list[JournalEntry]) -> Phase:
 
 @dataclass(frozen=True, slots=True)
 class Kept:
-    """The files a run left in place under another name: moved, or linked."""
+    """The files a run left in place: moved, linked, or given a sidecar."""
 
     moved: int = 0
     linked: int = 0  # the hard links of an album: nothing deleted nor freed
+    written: int = 0  # the sidecars `xmp` created or rewrote
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,6 +126,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
     ]
     moved = [entry for entry in files if entry.action is ActionKind.MOVE]
     linked = [entry for entry in files if entry.action is ActionKind.LINK]
+    written = sum(1 for entry in files if entry.action in XMP_ACTIONS)
     quarantined = [entry for entry in files if entry.action in QUARANTINED]
     # Only a deleted file frees space: a quarantined one takes it until `purge`.
     deleted = [
@@ -127,13 +140,16 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         deleted=len(deleted),
         freed=sum(entry.size for entry in deleted),
         quarantined=len(quarantined),
-        kept=Kept(len(moved), len(linked)),
+        kept=Kept(len(moved), len(linked), written),
         restored=len(done_states(entries, Phase.UNDO)),
     )
 
 
 def list_run_ids(journal_dir: Path) -> list[str]:
     """List every run that has a journal, newest first.
+
+    Ordered by when each run started (UTC, in its journal), not by name: names are
+    in local time, which a zone change or the autumn clock change can reorder.
 
     Args:
         journal_dir: Journal mount point.
@@ -143,8 +159,23 @@ def list_run_ids(journal_dir: Path) -> list[str]:
     """
     if not journal_dir.is_dir():
         return []
-    ids = (
-        path.name.removesuffix(JOURNAL_SUFFIX)
-        for path in journal_dir.glob(f"*{JOURNAL_SUFFIX}")
-    )
-    return sorted(ids, reverse=True)
+    files = journal_dir.glob(f"*{JOURNAL_SUFFIX}")
+    started = {path.name.removesuffix(JOURNAL_SUFFIX): _started(path) for path in files}
+    return sorted(started, key=lambda run: (started[run], run), reverse=True)
+
+
+def _started(journal: Path) -> datetime:
+    """When a run started: its first journal entry, else the file's last change.
+
+    Args:
+        journal: The run's journal.
+
+    Returns:
+        An aware UTC moment.
+    """
+    with journal.open(encoding="utf-8") as lines:
+        first = lines.readline()
+    try:
+        return JournalEntry.model_validate_json(first).at
+    except ValidationError:
+        return datetime.fromtimestamp(journal.stat().st_mtime, UTC)

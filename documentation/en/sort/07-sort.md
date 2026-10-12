@@ -8,8 +8,15 @@ now moves the files where the workbook puts them. Like `clean`, every move is jo
 
 ## Run it
 
-Save and close the workbook first. Then mount your folders **without** `:ro`, with the journal,
-the quarantine and the reports folder of `classify`:
+Save and close the workbook first. Then run `sort`: `mh` mounts your folders **without** `:ro`
+for it, with the journal, the quarantine and the reports folder of `classify`:
+
+```powershell
+mh sort
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -21,6 +28,8 @@ docker run --rm -it `
   cavo789/media-hygiene sort
 ```
 
+</details>
+
 Without an argument, `sort` takes the workbook of the latest `classify` run. To apply another one,
 give its path: `sort "C:\Users\me\Desktop\classify.xlsx"` (in a mounted folder). A copy edited
 elsewhere is fine: its `plan.json` is found in `/reports` by the id the workbook holds.
@@ -30,8 +39,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20261003-080751-classify/classify.xlsx
-0 edits read; workbook saved on 3 October 2026 at 08:07.
+Workbook: /reports/20261012-101859-classify/classify.xlsx
+0 edits read; workbook saved on 12 October 2026 at 10:18.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -50,7 +59,7 @@ Sort
 
 - *edits read* counts the cells you filled; check the date: a workbook edited but **not saved**
   shows its old date, and `sort` warns when Excel or LibreOffice still has it open.
-- The choices made in [the browser page](10-name-events-in-the-browser.md#where-your-choices-go),
+- The choices made in [the browser page](11-name-events-in-the-browser.md#where-your-choices-go),
   if any, are applied on top of the workbook, and counted on a line of their own.
 - *Already in place*: files counted, not moved.
 - *Source folders removed*: the folders the sort leaves empty (see below).
@@ -111,7 +120,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261003-080753
+Sort 20261012-101901
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -121,9 +130,18 @@ Sort 20261003-080753
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20261003-080753-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261003-080753' moves everything
-back.
+Manifest: /reports/20261012-101901-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261012-101901' moves everything
+back:
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene undo 20261012-101901
 ```
 
 The proof is written to `/reports/<run>-sort/manifest.json`.
@@ -155,11 +173,11 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20261003-080753 ───────────────────────
+────────────────────── Undo the sort run 20261012-101901 ───────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the sort run 20261003-080753
+Undo the sort run 20261012-101901
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

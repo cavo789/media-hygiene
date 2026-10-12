@@ -17,3 +17,26 @@ function docs_screenshots() {
         _gentle uv run --frozen --quiet python -m tests.support.docs "$@"
     )
 }
+
+# @cat Documentation
+# @cmd docs_build
+# @desc Build the documentation site like CI (strict: broken links fail) into /tmp/media-hygiene/site
+function docs_build() {
+    (
+        cd "$(_repo_root)" || return 1
+        NO_MKDOCS_2_WARNING=true _gentle uv run --frozen --quiet --group docs \
+            mkdocs build --config-file .config/mkdocs/mkdocs.yml "$@"
+    )
+}
+
+# @cat Documentation
+# @cmd docs_serve
+# @desc Preview the documentation site, reloaded on every save — 'DOCS_PORT=8001 docs_serve'
+function docs_serve() {
+    (
+        cd "$(_repo_root)" || return 1
+        NO_MKDOCS_2_WARNING=true uv run --frozen --quiet --group docs \
+            mkdocs serve --config-file .config/mkdocs/mkdocs.yml \
+            --dev-addr "127.0.0.1:${DOCS_PORT:-8000}" "$@"
+    )
+}

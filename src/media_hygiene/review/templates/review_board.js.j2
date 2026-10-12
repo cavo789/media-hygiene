@@ -1,0 +1,157 @@
+{# Included in the script of review.html.j2: the board, several series per screen, one
+   row each, the sharpest shot first and the proposals marked. A click on a shot sets it
+   aside or takes it back, saved at once; → validates the series still to see of the page
+   as shown, in one write, then opens the next page. The keys of one series (A, S, X,
+   digits, C) act on the active row. P switches between the board and one series. #}
+  const viewKey = "media-hygiene:review:view";
+  const boardSize = 8;
+  let board = false;
+
+  const pageOf = (index) => Math.floor(positions.get(index) / boardSize);
+  const pageRanks = (page) => order.slice(page * boardSize, (page + 1) * boardSize);
+  const pageCount = () => Math.ceil(order.length / boardSize);
+
+  // Hovering a shot shows it large, on the half of the screen the mouse is not on; Space
+  // pins it, so that it stays while the mouse goes elsewhere, and Space again unpins it.
+  let hovered = null;
+  let pinned = false;
+  const zoomIn = (event, shot) => {
+    hovered = shot;
+    if (pinned) return;
+    const zoom = byId("zoom");
+    zoom.replaceChildren(Object.assign(document.createElement("img"), { src: shot.preview, alt: shot.name }));
+    zoom.className = event.clientX < window.innerWidth / 2 ? "right" : "left";
+    zoom.hidden = false;
+  };
+  const zoomOut = () => {
+    hovered = null;
+    if (!pinned) byId("zoom").hidden = true;
+  };
+  const pinZoom = () => {
+    pinned = !pinned && hovered !== null && !byId("zoom").hidden;
+    byId("zoom").classList.toggle("pinned", pinned);
+    if (!pinned && hovered === null) byId("zoom").hidden = true;
+  };
+
+  const thumb = (index, rank) => {
+    const item = series[index];
+    const shot = item.shots[rank];
+    const state = shotState(item, shot, rank);
+    const figure = line("figure", "", "thumb " + state.css);
+    const image = Object.assign(document.createElement("img"), { src: shot.preview, alt: shot.name, loading: "lazy" });
+    const share = shot.best ? T.sharpest : Math.round(shot.share * 100) + " %";
+    figure.append(image, line("figcaption", share));
+    figure.title = shot.name + " · " + state.text;
+    figure.addEventListener("mouseenter", (event) => zoomIn(event, shot));
+    figure.addEventListener("mouseleave", zoomOut);
+    figure.addEventListener("click", () => {
+      current = index;
+      toggleRank(index, rank);
+    });
+    return figure;
+  };
+
+  const rowButton = (label, action) => {
+    const button = line("button", label, "act");
+    button.type = "button";
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      action();
+    });
+    return button;
+  };
+
+  // Nothing kept: every shot set aside but those of a protected folder, as X does.
+  const keepNone = (index) => {
+    const shots = series[index].shots;
+    const movable = shots.map((shot, rank) => rank).filter((rank) => !shots[rank].protected);
+    if (movable.length === 0) setStatus(T.allProtected, "error");
+    else decide(index, movable);
+  };
+
+  const boardRow = (index) => {
+    const item = series[index];
+    const row = line("section", "", "series" + (index === current ? " current" : "") + (item.reviewed ? "" : " todo"));
+    const head = line("div", "", "head");
+    head.append(
+      line("strong", fill(T.rowName, { number: index + 1 })),
+      line("span", leafOf(folderOf(index)) + " · " + fill(T.shots, { count: item.shots.length }), "muted"),
+      line("span", rowText(index), "what " + outcome(index)),
+      rowButton(T.boardKeep, () => decide(index, [])),
+      rowButton(T.boardSharpest, () => decide(index, item.shots.map((shot, rank) => rank).filter((rank) => !item.shots[rank].best && !item.shots[rank].protected))),
+      rowButton(T.boardNone, () => keepNone(index)),
+    );
+    const strip = line("div", "", "strip");
+    strip.append(...shown(item).map((rank) => thumb(index, rank)));
+    row.append(head, strip);
+    row.addEventListener("click", () => {
+      current = index;
+      render();
+    });
+    return row;
+  };
+
+  const renderBoard = () => {
+    const page = pageOf(current);
+    const ranks = pageRanks(page);
+    const todo = ranks.filter((index) => !series[index].reviewed);
+    const aside = todo.reduce((count, index) => count + proposal(series[index]).length, 0);
+    const info = fill(T.boardPage, { page: page + 1, pages: pageCount() }) + " · " + (todo.length > 0 ? fill(T.boardPending, { series: counted(T.nSeries, todo.length), aside: counted(T.nProposed, aside) }) : T.boardDone);
+    for (const element of document.querySelectorAll("#board .boardInfo")) element.textContent = info;
+    byId("boardRows").replaceChildren(...ranks.map(boardRow));
+    for (const index of pageRanks(page + 1)) for (const shot of series[index].shots) new Image().src = shot.preview;
+  };
+
+  // Leaving a page validates its series still to see as shown, in one write, like →.
+  const leavePage = (step) => {
+    const page = pageOf(current);
+    const todo = pageRanks(page).filter((index) => !series[index].reviewed);
+    if (todo.length > 0) record(todo.map((index) => [index, proposal(series[index])]));
+    else setStatus("");
+    const next = page + step;
+    if (next < 0 || next >= pageCount()) {
+      setStatus(next < 0 ? T.first : T.last);
+      return;
+    }
+    show(order[next * boardSize]);
+  };
+
+  const nextPageToSee = () => {
+    const end = (pageOf(current) + 1) * boardSize;
+    const ahead = order.slice(end).concat(order.slice(0, end));
+    const next = ahead.find((index) => !series[index].reviewed && pageOf(index) !== pageOf(current));
+    if (next === undefined) {
+      setStatus(T.allSeen, "saved");
+      return;
+    }
+    leavePage(0);
+    show(next);
+  };
+
+  const setBoard = (on) => {
+    board = on;
+    pinned = false;
+    zoomOut();
+    document.body.classList.toggle("board", board);
+    byId("view").textContent = board ? T.viewSingle : T.viewBoard;
+    try {
+      window.localStorage.setItem(viewKey, board ? "board" : "single");
+    } catch (error) {
+      // Storage refused (private browsing): one series at a time next time.
+    }
+  };
+
+  const savedBoard = () => {
+    try {
+      return window.localStorage.getItem(viewKey) === "board";
+    } catch (error) {
+      return false;
+    }
+  };
+
+  byId("view").addEventListener("click", () => {
+    setBoard(!board);
+    render();
+  });
+  // The same bar above and below the rows: the page is often finished at its bottom.
+  for (const button of document.querySelectorAll("#board .boardNext")) button.addEventListener("click", () => leavePage(1));

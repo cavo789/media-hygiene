@@ -46,6 +46,37 @@ def test_a_named_folder_beats_a_generic_one() -> None:
     assert kept == ("c/Vacances 2019/IMG_0001.jpg", KeepReason.MEANINGFUL_FOLDER)
 
 
+def test_a_named_folder_beats_a_shorter_one_that_only_says_a_date() -> None:
+    r"""`Vacances Saint-Cyprien\Saint-Cyprien` beats a shorter `Juillet 2018`."""
+    kept = decide(
+        KeepPolicy(),
+        file_at("c/Photos/Manon/2018/Juillet 2018/20180714_101010.jpg"),
+        file_at(
+            "c/Photos/2018/2018-07/Vacances Saint-Cyprien/Saint-Cyprien/"
+            "20180714_101010.jpg"
+        ),
+    )
+    assert kept[0].endswith("Saint-Cyprien/20180714_101010.jpg")
+    assert kept[1] is KeepReason.MEANINGFUL_FOLDER
+
+
+@pytest.mark.parametrize(
+    "folder", ["2018", "2018-07", "Juillet 2018", "Novembre 2016", "july", "2018_07"]
+)
+def test_date_only_folders_are_generic(folder: str) -> None:
+    """A folder saying only a date says nothing the photo's own date does not."""
+    assert DEFAULT_NAME_RULES.in_generic_folder(DATA / folder / "a.jpg")
+
+
+@pytest.mark.parametrize(
+    "folder",
+    ["Saint-Cyprien", "marraine H2-2014", "Mars 2005 - Travaux", "Juillet à la mer"],
+)
+def test_folders_with_a_meaning_are_not_generic(folder: str) -> None:
+    """A place, an event, a label after the date: someone named it."""
+    assert not DEFAULT_NAME_RULES.in_generic_folder(DATA / folder / "a.jpg")
+
+
 def test_higher_criteria_still_win() -> None:
     """Preferred folders and copy names come before the name rule."""
     preferred = KeepPolicy(preferred=(DATA / "c/DCIM",))

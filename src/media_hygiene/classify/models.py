@@ -41,6 +41,7 @@ class SortReason(StrEnum):
     PLACE_NEIGHBOUR = "place-neighbour"  # no GPS, in an event at a personal place
     TRIP = "trip"  # far from home, from the GPS
     TRIP_NEIGHBOUR = "trip-neighbour"  # no GPS, in a trip
+    PERSON = "person"  # someone named on the people page, from the faces
     OTHER_CATEGORY = "other-category"
     DATE_ONLY = "date-only"
     NO_SIGNAL = "no-signal"

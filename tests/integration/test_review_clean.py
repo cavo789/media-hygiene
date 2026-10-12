@@ -31,7 +31,7 @@ SELECT = re.compile(
 )
 ROOTS = re.compile(r"const roots = (.*);")
 IPHONE = ("C:\\Family Photos\\iPhone", "D:\\backup\\iPhone")
-SUMMER = ("D:\\backup\\2019", "C:\\Users\\Public\\Pictures\\Été 2019")
+SUMMER = ("C:\\Users\\Public\\Pictures\\Été 2019", "D:\\backup\\2019")
 
 
 def decide(report: Path, choices: dict[tuple[str, str], str]) -> str:
@@ -51,7 +51,7 @@ def decide(report: Path, choices: dict[tuple[str, str], str]) -> str:
 
 
 def test_report_decisions_drive_the_clean(cli: CliRunner, locations: Locations) -> None:
-    """Swap keeps the backup's HEIC, skip keeps the summer copies; undo restores."""
+    """Swap keeps the backup's HEIC, skip keeps the backup's summer copy; undo too."""
     data = locations.data_dir
     assert run(cli, "audit").exit_code == 0
     [report] = locations.reports_dir.glob("*-audit/report.html")
@@ -62,7 +62,7 @@ def test_report_decisions_drive_the_clean(cli: CliRunner, locations: Locations) 
     assert "pairs swapped: 1, pairs left alone: 1" in result.output
     assert (data / "d/backup/iPhone/IMG_4242.HEIC").is_file()
     assert not (data / "c/Family Photos/iPhone/IMG_4242.HEIC").exists()
-    assert (data / "c/Users/Public/Pictures/Été 2019/IMG_0003.jpg").is_file()
+    assert (data / "d/backup/2019/IMG_0002.jpg").is_file()  # its pair left alone
     assert not (data / "d/backup/2019/IMG_0001.jpg").exists()  # Vacances has the xmp
     assert run(cli, "undo").exit_code == 0
     assert (data / "c/Family Photos/iPhone/IMG_4242.HEIC").is_file()

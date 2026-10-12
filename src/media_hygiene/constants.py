@@ -5,14 +5,19 @@ from __future__ import annotations
 from enum import IntEnum, StrEnum
 from typing import Final
 
+from media_hygiene.date_names import DATE_FOLDERS
+
 APP_NAME: Final = "media-hygiene"
 HOME_PAGE: Final = "https://github.com/cavo789/media-hygiene"
+DOC_PAGES: Final = "https://cavo789.github.io/media-hygiene"  # + _("fr/…/"), docs.yml
 ENV_PREFIX: Final = "MEDIA_HYGIENE_"
 GETTEXT_DOMAIN: Final = "media_hygiene"
 CONFIG_FILE_NAME: Final = "config.toml"
 INDEX_FILE_NAME: Final = "index.sqlite"
 JOURNAL_SUFFIX: Final = ".jsonl"
 REPORT_FILE_NAME: Final = "report.html"
+# Near duplicates and re-encoded videos alone, next to the report.
+NEAR_FILE_NAME: Final = "near.html"
 REPORT_INDEX_FILE_NAME: Final = "index.html"
 SUMMARY_FILE_NAME: Final = "summary.json"
 PLAN_CSV_FILE_NAME: Final = "plan.csv"
@@ -46,6 +51,7 @@ class Verbosity(StrEnum):
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
+    VERBOSE = "verbose"  # info, plus every tip a command has (not only the best two)
     DEBUG = "debug"
 
 
@@ -82,6 +88,15 @@ class KeepReason(StrEnum):
     REVIEWED = "reviewed"
 
 
+class NearReason(StrEnum):
+    """What made the kept version of near duplicates win."""
+
+    RESOLUTION = "resolution"  # the highest resolution
+    SIZE = "size"  # the same resolution, a larger file by 1 % or more
+    RULES = "rules"  # the same resolution and about the same size: the usual rules
+    CHOSEN = "chosen"  # a person kept another version (`review --near`)
+
+
 class BrokenReason(StrEnum):
     """Why a media file is considered broken."""
 
@@ -99,10 +114,11 @@ class InventoryFormat(StrEnum):
 
 
 class CleanTier(StrEnum):
-    """How far `clean` goes: exact duplicates only, or near duplicates too."""
+    """How far `clean` goes: exact duplicates, the sure near duplicates, or them all."""
 
     EXACT = "exact"
     NEAR = "near"
+    NEAR_ALL = "near-all"
 
 
 class RunKind(StrEnum):
@@ -118,6 +134,7 @@ class ExitCode(IntEnum):
     OK = 0
     FAILURE = 1
     USAGE = 2
+    INTERRUPTED = 130  # 128 + SIGINT, as shells report Ctrl+C
 
 
 class Sizes(IntEnum):
@@ -130,7 +147,7 @@ class Sizes(IntEnum):
     PAIR_SAMPLES = 4
     MAX_SAMPLED_PAIRS = 50
     RANDOM_SAMPLE = 30
-    MAX_SIMILAR_IN_REPORT = 200
+    MAX_BURSTS_IN_REPORT = 200
     MAX_ORPHANS_IN_REPORT = 500
     IO_CONCURRENCY = 16
 
@@ -166,8 +183,9 @@ GENERATED_NAMES: Final = (
     r"image\d*",
     r"[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}",
     r"[0-9a-f]{16,}",
+    r"\d{1,6}",  # a bare number (`162.mp4`): an export or a renaming counter
 )
-# Folder names created by devices and apps, not by someone sorting photos.
+# Folder names created by devices and apps, or saying only a date: not someone's choice.
 GENERIC_FOLDERS: Final = (
     r"DCIM",
     r"\d{3}[A-Z0-9_]{5}",
@@ -178,4 +196,5 @@ GENERIC_FOLDERS: Final = (
     r"Screenshots|Captures d.écran",
     r"(New folder|Nouveau dossier)( \(\d+\))?",
     r"Import(s|ed)?|Temp|tmp",
+    *DATE_FOLDERS,
 )

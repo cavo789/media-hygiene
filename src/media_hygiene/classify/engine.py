@@ -18,7 +18,7 @@ from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.guesses import keep_guess
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import Band, Proposal, SortReason, Verdict
-from media_hygiene.classify.rules.building import RuleFacts
+from media_hygiene.classify.rules.building import RuleFacts, Seen
 from media_hygiene.classify.rules.order import decide
 from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.trips import find_whereabouts
@@ -29,10 +29,9 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping, Sequence
+    from collections.abc import Callable, Sequence
     from pathlib import Path
 
-    from media_hygiene.classify.ai.models import Subject
     from media_hygiene.classify.layout import GeoValues
     from media_hygiene.classify.models import Dating, Event, MediaInput
     from media_hygiene.classify.signals import Signal
@@ -49,7 +48,7 @@ class Scope:
     years: tuple[int, int] | None = None
     generic: tuple[str, ...] = GENERIC_FOLDERS  # `[keep]`: DCIM, Camera…
     host: Callable[[Path], str] = str  # container → host path, for `path` rules
-    subjects: Mapping[str, Mapping[Path, Subject]] = field(default_factory=dict)
+    seen: Seen = field(default_factory=Seen)  # the model's answers, the people
     towns: Gazetteer | None = None  # read only when a `trip` rule is on
 
 
@@ -95,9 +94,8 @@ def classify(
     signals = without_event_folders(files, (signals, event_of), rules)
     where = find_whereabouts(files, (events, datings), (settings, scope.towns))
     facts = RuleFacts(datings, with_neighbours(signals, events), event_of, scope.host)
-    signals = decide(
-        files, settings, replace(facts, subjects=scope.subjects, where=where)
-    )
+    facts = replace(facts, seen=scope.seen, where=where)
+    signals = decide(files, settings, facts)
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [
         keep_guess(

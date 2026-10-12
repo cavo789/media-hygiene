@@ -8,12 +8,15 @@ import typer
 
 from media_hygiene.classify.album_rows import Criteria
 from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.next_steps import carried, safety
+from media_hygiene.cli.options import panel_advanced
 from media_hygiene.console.album_view import show_album, show_album_result
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.album import AlbumRequest, AlbumService
 from media_hygiene.services.interrupt import StopRequest
+from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     from media_hygiene.services.album import AlbumPrepared
@@ -44,13 +47,16 @@ def album_command(  # pylint: disable=too-many-arguments
     rule: Annotated[
         str,
         typer.Option(
-            "--rule", help=_("The files the classify rule of this name decided.")
+            "--rule",
+            rich_help_panel=panel_advanced(),
+            help=_("The files the classify rule of this name decided."),
         ),
     ] = "",
     rating: Annotated[
         int | None,
         typer.Option(
             "--rating",
+            rich_help_panel=panel_advanced(),
             min=1,
             max=_MOST_STARS,
             help=_("The files given at least these stars in Windows (1 to 5)."),
@@ -60,6 +66,7 @@ def album_command(  # pylint: disable=too-many-arguments
         str | None,
         typer.Option(
             "--workbook",
+            rich_help_panel=panel_advanced(),
             help=_(
                 "The classify workbook to read; the latest classify run's by default."
             ),
@@ -119,3 +126,11 @@ def _make(runtime: Runtime, prepared: AlbumPrepared) -> None:
     with RichProgress(output.console) as progress, StopRequest() as stop:
         result = AlbumService(runtime, progress).execute(prepared, stop.requested)
     show_album_result(runtime, result)
+    safety(
+        runtime,
+        _(
+            "'media-hygiene undo {run_id}' removes the album; the photos stay "
+            "where they are:"
+        ).format(run_id=result.run_id),
+        NextVerb(carried(runtime, f"undo {result.run_id}"), CHANGING),
+    )

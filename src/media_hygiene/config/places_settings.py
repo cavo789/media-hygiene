@@ -13,6 +13,8 @@ from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from media_hygiene.i18n import _
+
 OSM_TILES: Final = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 OSM_ATTRIBUTION: Final = "© OpenStreetMap contributors"  # plain text, shown as is
 OSM_NOMINATIM: Final = "https://nominatim.openstreetmap.org"
@@ -49,7 +51,7 @@ class PlacesSettings(BaseModel):
         url = url.strip()
         parts = urlsplit(url)
         if url and (parts.scheme not in _WEB or not parts.netloc):
-            message = f"{url!r} is not an http:// or https:// address"
+            message = _("'{url}' is not an http:// or https:// address").format(url=url)
             raise ValueError(message)
         return url
 
@@ -69,10 +71,12 @@ class PlacesSettings(BaseModel):
         """
         parts = urlsplit(tiles)
         if parts.scheme != _HTTPS or not parts.netloc:
-            message = f"{tiles!r} is not an https:// address"
+            message = _("'{url}' is not an https:// address").format(url=tiles)
             raise ValueError(message)
         if not all(field in tiles for field in _TILE_FIELDS):
-            message = f"{tiles!r} lacks {{z}}, {{x}} or {{y}}"
+            message = _("'{url}' lacks {fields}").format(
+                url=tiles, fields="{z}, {x} or {y}"
+            )
             raise ValueError(message)
         return tiles
 

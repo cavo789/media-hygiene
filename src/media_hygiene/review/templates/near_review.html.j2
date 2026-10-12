@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+{# The keyboard review of near duplicates, served by `media-hygiene review --near`. The page
+   never touches a file: each choice is sent to the server, which saves the decisions file;
+   `clean --tier near --decisions` then moves what was decided, journaled. The panel below
+   the group shows the decisions file as read back from the disk after every choice. #}
+{% set texts = {
+  "position": _("Group {number} of {total}"),
+  "totals": _("Decided: {decided} of {total} · to check, undecided: {left}"),
+  "kept": "✅ " ~ _("kept"),
+  "moved": "📦 " ~ _("to the quarantine"),
+  "protected": "🔒 " ~ _("protected folder, kept"),
+  "pending": "⏳ " ~ _("To check, undecided: nothing of this group moves with --tier near until you decide."),
+  "pendingSure": "✔ " ~ _("Sure group: --tier near moves its copies as shown, unless you decide otherwise."),
+  "planned": "✔ " ~ _("Decided: as planned, the copies go to the quarantine."),
+  "swap": "🔁 " ~ _("Decided: the other version is kept, the version the audit kept goes to the quarantine."),
+  "leave": "✋ " ~ _("Decided: left alone, nothing of this group moves."),
+  "noSwap": _("The kept version lies in a protected folder: it is never moved, W is not possible."),
+  "video": "🎞 " ~ _("video: open the original"),
+  "noPlay": "🎞 " ~ _("This browser cannot play this video: open the original."),
+  "original": "↗ " ~ _("original"),
+  "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
+  "saving": _("Saving…"),
+  "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds your choice.").replace("{file}", file),
+  "loaded": "📄 " ~ _("{file} read from the disk at {time}.").replace("{file}", file),
+  "diskTitle": _("What {file} holds for this group").replace("{file}", file),
+  "diskNone": "⏳ " ~ _("No decision in the file: the tier decides."),
+  "diskEntry": _("Decision in the file: {action}"),
+  "pairs": _("{pair} — groups: {count}, undecided: {left}"),
+  "pairButton": "✔ " ~ _("as planned"),
+  "pairButtonTitle": _("Decide every undecided group of this folder pair as planned, in one write (G)"),
+  "pairAsk": _("{pair} — undecided groups: {count}. As planned, their copies to the quarantine? Each group can still be decided again."),
+  "pairNone": _("Every group of this folder pair is decided already."),
+  "share": _("Up to this group, in this order: {size}, {share} %% of the space of every group."),
+  "allDecided": _("Every group to check has been decided."),
+  "first": _("This is the first group."),
+  "last": _("This is the last group: stop the review with Ctrl+C in the terminal."),
+  "failed": _("Not saved (error {status})."),
+  "offline": _("The review is not running any more: start it again."),
+  "units": [_("B"), _("KB"), _("MB"), _("GB"), _("TB")],
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Near duplicates review") }} — media-hygiene</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
+  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
+           border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  .layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; padding: 12px 16px 24px; }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
+  aside section { margin-bottom: 16px; }
+  aside h2 { font-size: .95rem; margin: 0 0 6px; }
+  .muted { color: var(--muted); }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
+           border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
+  #state.decided { border-style: solid; border-color: var(--ok); color: var(--ok); }
+  #state.sure { border-color: var(--ok); color: var(--ok); }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .shot { margin: 0; padding: 8px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; }
+  .shot.keep { border-color: var(--ok); }
+  .shot.move { border: 3px dashed var(--bad); } .shot.move img, .shot.move video { opacity: .6; }
+  .shot.lock { border-color: var(--warn); }
+  .shot img, .shot video { display: block; width: 100%; height: auto; max-height: 58vh; object-fit: contain;
+              border-radius: 6px; background: var(--bg); }
+  .shot .clip { padding: 40px 8px; text-align: center; background: var(--bg); border-radius: 6px; }
+  figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
+  figcaption .original { margin-left: 8px; color: var(--accent); }
+  .tag { font-weight: 600; }
+  .pair { margin: 0 0 8px; font-size: .85rem; overflow-wrap: anywhere; }
+  .pair.current { font-weight: 600; }
+  button { font: inherit; cursor: pointer; }
+  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; font-size: .9rem; }
+  dd { margin: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🪞 {{ _("Near duplicates review") }}</h1>
+  <strong id="position"></strong>
+  <span id="totals" class="muted"></span>
+  <span id="status" role="status" aria-live="polite"></span>
+</header>
+<div class="layout">
+<aside>
+  <section>
+    <label>{{ _("Order") }}
+      <select id="order">
+        <option value="check">{{ _("to check first") }}</option>
+        <option value="gain">{{ _("space freed, largest first") }}</option>
+        <option value="pair">{{ _("by folder pair") }}</option>
+      </select>
+    </label>
+    <p id="share" class="muted"></p>
+  </section>
+  <section>
+    <h2>⌨ {{ _("Keyboard") }}</h2>
+    <dl>
+      <dt><kbd>→</kbd></dt><dd>{{ _("as planned, then next") }}</dd>
+      <dt><kbd>W</kbd></dt><dd>{{ _("keep the other version, then next") }}</dd>
+      <dt><kbd>L</kbd></dt><dd>{{ _("leave the group alone, then next") }}</dd>
+      <dt><kbd>←</kbd></dt><dd>{{ _("previous group") }}</dd>
+      <dt><kbd>N</kbd></dt><dd>{{ _("next group to check, undecided") }}</dd>
+      <dt><kbd>U</kbd></dt><dd>{{ _("back to undecided") }}</dd>
+      <dt><kbd>G</kbd></dt><dd>{{ _("the whole folder pair as planned") }}</dd>
+      <dt><kbd>␣</kbd> <kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("on a video you clicked: play, seek; Esc gives the keys back") }}</dd>
+    </dl>
+  </section>
+  <section>
+    <h2>📁 {{ _("Folder pairs") }}</h2>
+    <div id="pairs"></div>
+  </section>
+</aside>
+<main>
+  <p id="why" class="muted"></p>
+  <p id="state" role="status"></p>
+  <div id="shots" class="shots"></div>
+  <details id="disk" open>
+    <summary id="diskTitle"></summary>
+    <div id="diskBody"></div>
+  </details>
+</main>
+</div>
+<footer>
+  {{ _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with --tier near %(option)s: the sure groups and the groups you decided go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) }}
+</footer>
+<script>
+{% include "near_review.js.j2" %}
+</script>
+</body>
+</html>

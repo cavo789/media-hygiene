@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
 
 _SHOWN_DIFFERENCES: Final = 10
-_DATE_FORMAT: Final = "%Y-%m-%d %H:%M"
+_DATE_FORMAT: Final = "%Y-%m-%d %H:%M %Z"
 
 
 def show_cross_check(
@@ -32,18 +32,23 @@ def show_cross_check(
     """
     if result.results_date is not None:
         output.info(
-            _("Czkawka results of {date} UTC.").format(
-                date=result.results_date.strftime(_DATE_FORMAT)
+            _("Czkawka results of {date}.").format(
+                date=result.results_date.astimezone().strftime(_DATE_FORMAT)
             )
         )
-    if result.agrees:
+    if result.agrees and not result.ours:
+        output.success(_("Czkawka agrees: no exact duplicate."))
+    elif result.agrees:
+        groups = len(result.ours)
+        copies = ngettext(
+            "{count} extra copy", "{count} extra copies", result.copies
+        ).format(count=human_number(result.copies))
         output.success(
-            _(
-                "Czkawka agrees: the same {copies} extra copies in {groups} groups."
-            ).format(
-                copies=human_number(result.copies),
-                groups=human_number(len(result.ours)),
-            )
+            ngettext(
+                "Czkawka agrees: the same {copies} in {count} group.",
+                "Czkawka agrees: the same {copies} in {count} groups.",
+                groups,
+            ).format(copies=copies, count=human_number(groups))
         )
     else:
         count = len(result.only_ours) + len(result.only_theirs)
@@ -65,10 +70,13 @@ def show_cross_check(
             for reason, count in sorted(result.outside.items())
         )
         output.info(
-            _("Set aside, as media-hygiene does not analyse them: {details}.").format(
-                details=details
-            )
+            _(
+                "Not compared, as media-hygiene does not look at them "
+                "(nothing to do): {details}."
+            ).format(details=details)
         )
+    for folder, count in list(result.skipped_folders.items())[:_SHOWN_DIFFERENCES]:
+        output.info(f"  • {mapper.to_host(folder)}: {human_number(count)}")
 
 
 def _differences(
@@ -110,7 +118,9 @@ def _outside_label(reason: OutsideReason) -> str:
     labels = {
         OutsideReason.NOT_MOUNTED: _("outside the mounted folders"),
         OutsideReason.EXTENSION: _("other file types"),
-        OutsideReason.EXCLUDED: _("in excluded folders"),
+        OutsideReason.EXCLUDED: _(
+            "in folders never analysed (system, trash, thumbnails, excluded)"
+        ),
         OutsideReason.BROKEN: _("broken files"),
     }
     return labels[reason]

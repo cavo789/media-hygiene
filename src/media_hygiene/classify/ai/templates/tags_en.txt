@@ -1,0 +1,7 @@
+Describe this photo of a family photo collection, so that a search finds it later.
+Say what it shows: the place, the activity, the objects that matter, the text you can read clearly.
+People: write only adult, child, baby or group; never a relationship (mother, daughter, sister, grandmother) nor a name.
+Do not invent a date, a place name, or text you cannot read clearly.
+Answer in English, in JSON on one line, without indentation:
+"description" is one short sentence (at most 25 words);
+"tags" are 5 to 10 words or phrases, singular, lower case; keep a phrase of several words whole ("dining room").

@@ -47,6 +47,8 @@ export -f hygiene
 export -f demo
 export -f demo_clean
 export -f docs_screenshots
+export -f docs_build
+export -f docs_serve
 export -f geonames_update
 export -f reports
 export -f reports_stop

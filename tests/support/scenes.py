@@ -38,6 +38,7 @@ class Effect(StrEnum):
     NONE = "none"
     BLURRED = "blurred"  # a shaken shot
     ROTATED = "rotated"  # stored sideways, displayed upright (a phone's portrait)
+    MONOCHROME = "monochrome"  # a black and white edit
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +97,8 @@ def write_shot(path: Path, shot: Shot, gps: tuple[float, float] | None = None) -
     picture = scene(shot.seed, SCENE_SIZE, shot.shift).resize(shot.size)
     if shot.effect is Effect.BLURRED:
         picture = picture.filter(ImageFilter.GaussianBlur(_BLUR_RADIUS))
+    if shot.effect is Effect.MONOCHROME:
+        picture = picture.convert("L").convert("RGB")
     exif = Image.Exif()
     if shot.camera:
         exif[_MAKE_TAG], exif[_MODEL_TAG] = "Canon", "EOS 80D"

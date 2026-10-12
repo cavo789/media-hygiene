@@ -133,3 +133,15 @@ def age(path: Path, days: int) -> Path:
     stamp = BASE_TIME_NS + days * DAY_NS
     os.utime(path, ns=(stamp, stamp))
     return path
+
+
+def encode(target: Path, *arguments: str) -> None:
+    """Run ffmpeg quietly, writing `target`.
+
+    Args:
+        target: The video written.
+        *arguments: Its inputs and options.
+    """
+    target.parent.mkdir(parents=True, exist_ok=True)
+    command = [FFMPEG or "ffmpeg", "-loglevel", "error", "-y", *arguments]
+    subprocess.run([*command, str(target)], check=True)  # noqa: S603 - trusted

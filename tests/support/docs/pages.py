@@ -35,6 +35,8 @@ _SAME_LINE: Final = "."
 _SENTENCE_ENDS: Final = (".", ":", "?", "!")
 _STARTERS: Final = (
     "💡",
+    "👉",
+    "⚙",
     "✅",
     "❓",
     "⚠",
@@ -52,7 +54,7 @@ _STARTERS: Final = (
 )
 # The Czkawka command the audit prints is one very long line: the docs shorten it.
 _CZKAWKA: Final = re.compile(
-    r"^(docker run --rm -v \"[^\"]+\").*( -C /out/czkawka\.json)$"
+    r"^(docker run --rm -it -v \"[^\"]+\").*( -C /out/czkawka\.json)$"
 )
 
 

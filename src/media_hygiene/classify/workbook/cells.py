@@ -1,8 +1,9 @@
 """The cells and sheets of a write-only workbook: locked, bold, or editable.
 
 openpyxl stores any text starting with `=` as a formula: a file named `=1.jpg` would
-make Excel report a damaged workbook. Every cell is made through `text_safe_cell`,
-which keeps such text as text.
+make Excel report a damaged workbook, and refuses control characters (an EXIF camera
+model padded with NULs). Every cell is made through `text_safe_cell`, which keeps such
+text as text and drops those characters.
 """
 
 from __future__ import annotations
@@ -10,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final, Protocol
 
 from openpyxl.cell import WriteOnlyCell
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.styles import Font, PatternFill, Protection
 
 if TYPE_CHECKING:
@@ -52,7 +54,7 @@ class WriteOnly(Protocol):
 
 
 def text_safe_cell(sheet: WriteOnlyWorksheet, value: Value | datetime) -> Cell:
-    """A cell whose text is always text, never a formula.
+    """A cell whose text is always text, never a formula, without control characters.
 
     Args:
         sheet: Its sheet.
@@ -61,6 +63,8 @@ def text_safe_cell(sheet: WriteOnlyWorksheet, value: Value | datetime) -> Cell:
     Returns:
         The cell.
     """
+    if isinstance(value, str):
+        value = ILLEGAL_CHARACTERS_RE.sub("", value)  # Excel refuses them
     written = WriteOnlyCell(sheet, value=value)
     if isinstance(value, str) and value.startswith(_FORMULA):
         written.data_type = _STRING  # a name such as "=1.jpg" is text, not a formula

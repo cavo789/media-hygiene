@@ -27,14 +27,25 @@ space ([step 9](09-undo-history-purge.md)).
   copies, unreadable files, orphan sidecars, and later near duplicates and burst shots. Without
   it, `clean` refuses to run (unless `--delete`, below).
 
+`mh` creates both in `$HOME\media-hygiene` the first time. For the full command, create them
+first:
+
 ```powershell
-mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
 ## Run the clean
 
-The same command as your audit, with three changes: **no `:ro`** on your folders (the tool must
-be allowed to move files), the journal and the quarantine, and `clean` instead of `audit`:
+One word with `mh`: it mounts your folders **without `:ro`** for `clean` (the tool must be allowed
+to move files) and adds the journal and the quarantine. The full command is the one of your
+audit with these three changes, and `clean` instead of `audit`:
+
+```powershell
+mh clean
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -48,15 +59,18 @@ docker run --rm -it `
   cavo789/media-hygiene clean
 ```
 
+</details>
+
 `clean` audits again (quickly, thanks to the cache), shows the same summary and folder pairs,
 then **asks before doing anything**:
 
 <!-- capture: clean.txt|re:^🛟|❓ -->
 ```text
-🛟 Nothing is erased: each copy is compared byte for byte with the kept one,
-then moved to the quarantine. 'purge' erases it once you have checked.
+🛟 Nothing will be erased: each copy is first compared byte for byte with the
+kept one, then moved to the quarantine (/quarantine). 'undo' puts it back;
+'purge' erases it once you have checked.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
-❓ Move 32 duplicate copies (13.9 MB) to the quarantine and handle 3 broken
+❓ Move 32 duplicate copies (14.0 MB) to the quarantine and handle 3 broken
 files? [y/N] y
 ```
 
@@ -65,20 +79,38 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261003-080719
+Clean 20261012-101749
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
-│ Size                     │ 15.5 MB │
+│ Size                     │ 15.6 MB │
 │ Moved to the quarantine  │      35 │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261003-080719-clean/report.html
+✅ HTML report: /reports/20261012-101749-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261012-101749' restores everything:
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene undo 20261012-101749
+👉 What next: once you have checked, 'purge' frees the space of the files set
+aside.
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene purge 20261012-101749
 💡 Open index.html in the folder mounted on /reports: it lists every report.
-💡 Changed your mind? 'media-hygiene undo 20261003-080719' restores everything.
-💡 The space is freed by 'purge', once you have checked: media-hygiene purge
-20261003-080719
 ```
 
 | Line | What it means |
@@ -108,7 +140,7 @@ the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the
 folder pairs as they were cleaned, and the files left untouched, if any.
 
-![The top of a clean report: 83 media files scanned, 32 duplicate copies in 20 groups, 16.2 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
+![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.4 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 
 ## Need the space at once? `--delete`
 
@@ -121,8 +153,11 @@ of other files than media (`--ext`) still go to the quarantine.
 
 - **No question asked**: add `--yes` (`clean --yes`), or set `confirm = false` in the `[clean]`
   section of `config.toml`. Without `-it`, `clean` cannot ask and stops: use `--yes` then.
+- **What is it doing?** A line under the bar names the file at hand and what happens to it.
+  The bar and its estimate follow the bytes: the large videos come first.
 - **Interrupted?** Ctrl+C, a power cut: every action is written to the journal *before* and
-  *after* it happens, so `undo` still restores what was done.
+  *after* it happens, so `undo` still restores what was done. A file the run had not touched yet
+  stays where it is.
 - **Refusals that protect you**: `clean` stops before the analysis without a `/journal` or a
   `/quarantine`, with a `:ro` folder, with a folder it cannot write to, or with a tool folder
   (quarantine, journal, cache, reports) placed inside a photo folder. The message says which

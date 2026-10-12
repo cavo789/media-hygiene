@@ -4,8 +4,7 @@
    come from the tile server, fetched by the browser. Each place is saved at once into
    config.toml by the server. #}
 {% set texts = {
-  "photo": _("{count} photo"),
-  "photos": _("{count} photos"),
+  "photos": [ngettext("{n} photo", "{n} photos", 1), ngettext("{n} photo", "{n} photos", 2)],
   "inPlace": _("place: {place}"),
   "nameIt": _("Name this place"),
   "noCluster": _("Every cluster lies in a place of yours."),
@@ -131,7 +130,10 @@
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const plain = (text) => { const span = document.createElement("span"); span.textContent = text; return span.innerHTML; };
-  const photos = (count) => fill(count === 1 ? T.photo : T.photos, { count });
+  const plural = new Intl.PluralRules(document.documentElement.lang);
+  // A counted fragment: its singular and plural forms, the one the language uses for n.
+  const counted = (forms, n) => fill(forms[plural.select(n) === "one" ? 0 : 1], { n: n });
+  const photos = (count) => counted(T.photos, count);
   const colour = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const SHOWN_CLUSTERS = 15, NAMED_ZOOM = 16, TOWN_ZOOM = 13, DEFAULT_RADIUS = 200;
 

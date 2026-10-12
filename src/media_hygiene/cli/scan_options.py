@@ -24,7 +24,7 @@ def _panel_scan() -> str:
     Returns:
         The translated title.
     """
-    return _("Scan (override scan.* of config.toml)")
+    return _("Advanced: scan (override scan.* of config.toml)")
 
 
 def extensions() -> OptionInfo:

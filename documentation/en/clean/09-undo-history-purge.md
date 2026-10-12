@@ -5,12 +5,19 @@
 A clean is not final. The journal remembers every action, so you can put everything back, see
 what each clean did, and, once you are sure, empty the quarantine for good.
 
-For the three commands below, keep the same `-v` options as your `clean` (step 8); only the last
-word changes.
+With `mh`, the three commands below are one line each. Without it, keep the same `-v` options as
+your `clean` (step 8); only the last word changes.
 
 ## Undo a clean: `undo`
 
 Changed your mind? Run the same command with `undo` instead of `clean`:
+
+```powershell
+mh undo
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -24,16 +31,18 @@ docker run --rm -it `
   cavo789/media-hygiene undo
 ```
 
+</details>
+
 <!-- capture: undo.txt -->
 ```text
-────────────────────── Undo the clean run 20261003-080719 ──────────────────────
+────────────────────── Undo the clean run 20261012-101749 ──────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the clean run 20261003-080719
+Undo the clean run 20261012-101749
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
-│ Size                     │ 15.5 MB │
+│ Size                     │ 15.6 MB │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
@@ -41,7 +50,8 @@ Undo the clean run 20261003-080719
 ```
 
 - Each quarantined file — the extra copies first of all — is moved back to its place, never
-  over another file.
+  over another file. The quarantine folders it leaves empty go too: an undo carried out to the
+  end leaves nothing of the run in the quarantine.
 - Each copy deleted with `clean --delete` is **rebuilt from the copy that was kept**, date
   included, even across disks.
 - Without a name, `undo` restores the latest run; `undo <run>` restores that one. The names
@@ -61,7 +71,7 @@ Undo the clean run 20261003-080719
 ## See what was done: `history`
 
 ```powershell
-cavo789/media-hygiene history
+mh history
 ```
 
 <!-- capture: history.txt -->
@@ -70,8 +80,8 @@ Runs (newest first)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Run             ┃ Command ┃ Deleted ┃ Freed ┃ Quarantined ┃ Restored ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ 20261003-080724 │ clean   │       1 │   0 B │          39 │        0 │
-│ 20261003-080719 │ clean   │       1 │   0 B │          35 │       36 │
+│ 20261012-101755 │ clean   │       1 │     0 │          41 │        0 │
+│ 20261012-101749 │ clean   │       1 │     0 │          35 │       36 │
 └─────────────────┴─────────┴─────────┴───────┴─────────────┴──────────┘
 💡 'media-hygiene undo <run>' restores the files of a run.
 ```
@@ -90,22 +100,37 @@ It is the only command that erases content (with `clean --delete`, if you use it
 so before asking:
 
 ```powershell
-cavo789/media-hygiene purge
+mh purge
 ```
 
 <!-- capture: purge.txt -->
 ```text
 ⚠️  'purge' erases for good: these files cannot come back, not even with 'undo'.
 It is, with 'clean --delete', the only way the tool removes content.
-❓ Erase the quarantine of 20261003-080724, 20261003-080719 (39 files, 16.2 MB)?
-[y/N] y
-✅ Quarantine purged: 16.2 MB freed.
+❓ Erase the quarantine of 20261012-101755 (41 files, 16.4 MB)? [y/N] y
+✅ Quarantine purged: 16.4 MB freed.
 💡 'undo' can no longer restore these files.
 ```
 
 - Without a name, `purge` empties the quarantine of every clean; `purge <run>` only that one.
 - It asks first, like `clean`; `--yes` skips the question.
 - After a purge, `undo` can no longer bring those files back.
+
+## Where am I? `status`
+
+Back after a few days, you no longer remember which run is in the quarantine, nor whether a
+review was applied? `status` reads the tool's own folders, without scanning your photos (about a
+second), and says:
+
+- the last audit or clean: when, and what it found;
+- the quarantine: how many files, how much space, since when;
+- the runs `undo` can still restore, with the full `undo` command;
+- the burst series still to see and the decisions of `review` not applied yet;
+- the last `classify` proposal, and whether `sort` applied it;
+
+then **one** next step, as a full command. A quarantine older than 30 days (`purge_hint_days`, in
+the `[clean]` section of `config.toml`) is the first thing it suggests to purge. Mount the same
+folders as for `clean` (or type `mh status`): a folder not mounted is said, never an error.
 
 ## Keep the journal folder
 

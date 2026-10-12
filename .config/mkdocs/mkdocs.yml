@@ -1,0 +1,137 @@
+# The documentation site: documentation/ built by MkDocs Material, published on GitHub Pages
+# (.github/workflows/docs.yml). Preview: the `docs_serve` helper; check: `docs_build`.
+# Every page of documentation/en is listed in `nav` (tests/unit/test_docs_site.py checks it).
+site_name: media-hygiene
+site_url: https://cavo789.github.io/media-hygiene/
+site_description: Find and safely clean duplicate photos and videos, then sort them.
+repo_url: https://github.com/cavo789/media-hygiene
+repo_name: cavo789/media-hygiene
+edit_uri: edit/main/documentation/
+docs_dir: ../../documentation
+site_dir: /tmp/media-hygiene/site
+strict: true
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+
+hooks:
+  - hooks.py
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: fr
+          name: Français
+          build: true
+          site_description: Trouver et nettoyer sans risque les photos et vidéos en double, puis les trier.
+          nav_translations:
+            Start here: Pour commencer
+            Clean the duplicates: Nettoyer les doublons
+            Sort the photos: Trier les photos
+            Commands: Commandes
+            Reference: Référence
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - README.md
+  - Start here:
+      - start/00-install-docker.md
+      - start/01-first-audit.md
+      - start/02-keep-the-cache.md
+      - start/03-several-folders.md
+  - Clean the duplicates:
+      - clean/04-html-report.md
+      - clean/05-choose-the-kept-copy.md
+      - clean/06-file-types.md
+      - clean/07-configuration-file.md
+      - clean/08-clean.md
+      - clean/09-undo-history-purge.md
+      - clean/10-review-bursts.md
+      - clean/11-near-duplicates.md
+      - clean/12-decide-pair-by-pair.md
+      - clean/13-second-opinion.md
+      - clean/quick-guide.md
+  - Sort the photos:
+      - sort/04-classify.md
+      - sort/05-review-the-proposal.md
+      - sort/06-write-down-what-you-know.md
+      - sort/07-sort.md
+      - sort/08-subjects-from-a-local-model.md
+      - sort/09-places-from-gps.md
+      - sort/10-sort-by-person.md
+      - sort/11-name-events-in-the-browser.md
+      - sort/12-albums.md
+      - sort/quick-guide.md
+  - Commands:
+      - reference-commands.md
+      - commands/album.md
+      - commands/audit.md
+      - commands/classify.md
+      - commands/clean.md
+      - commands/config.md
+      - commands/crosscheck.md
+      - commands/history.md
+      - commands/inventory.md
+      - commands/launcher.md
+      - commands/people.md
+      - commands/places.md
+      - commands/purge.md
+      - commands/reports.md
+      - commands/review-sort.md
+      - commands/review.md
+      - commands/search.md
+      - commands/sort.md
+      - commands/status.md
+      - commands/tags.md
+      - commands/undo.md
+      - commands/xmp.md
+  - Reference:
+      - reference-advanced.md
+      - reference-glossary.md
+      - reference-inventory.md
+      - reference-mount-points.md
+      - reference-people.md
+      - reference-safety.md
+      - reference-sidecars.md
+      - reference-tags.md
+      - reference-troubleshooting.md
+  - development.md

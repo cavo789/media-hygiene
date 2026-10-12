@@ -60,7 +60,7 @@ def visual_facts(image: Image.Image, stored_size: tuple[int, int]) -> Look:
         phash=phash(gray),
         width=width,
         height=height,
-        sharpness=_sharpness(analysed),
+        sharpness=sharpness_of(analysed),
         taken_at=taken_at(exif),
         camera=camera(exif),
     )
@@ -146,7 +146,7 @@ def _analysis_pixels(gray: Image.Image) -> NDArray[np.float64]:
     return np.asarray(small, dtype=np.float64)
 
 
-def _sharpness(pixels: NDArray[np.float64]) -> float:
+def sharpness_of(pixels: NDArray[np.float64]) -> float:
     """Variance of the Laplacian: high for crisp edges, low for a blurred shot.
 
     Args:

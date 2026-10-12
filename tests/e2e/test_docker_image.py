@@ -69,8 +69,11 @@ def test_audit_clean_undo_cycle(volumes: dict[str, str]) -> None:
 
 @pytest.mark.skipif(FFMPEG is None, reason="ffmpeg writes the demo videos")
 def test_image_ffprobe_tells_broken_videos(volumes: dict[str, str]) -> None:
-    """The image's own ffprobe (demuxers only) opens videos and reads their tags."""
-    audit = tool(volumes, "audit", read_only_data=True)
+    """The image's own ffprobe (demuxers only) opens videos and reads their tags.
+
+    The inventory table (video tags) is only printed with `--verbosity verbose`.
+    """
+    audit = tool(volumes, "--verbosity", "verbose", "audit", read_only_data=True)
     assert audit.startswith("0\n"), audit
     assert "ffprobe not found" not in audit
     assert DEMO_BROKEN.search(audit), audit

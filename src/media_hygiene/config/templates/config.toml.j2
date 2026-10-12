@@ -16,7 +16,10 @@
 {{ comment(_('Interface language: "en" or "fr".'), "--locale") }}
 locale = "{{ locale }}"
 
-{{ comment(_('How much to log: "error", "warning", "info" or "debug".'), "--verbosity") }}
+{{ comment(_('Your time zone, for the dates and the names of reports and runs, e.g. "Europe/Brussels" or "America/Montreal" (list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: UTC, as Docker does not know yours.')) }}
+timezone = ""
+
+{{ comment(_('How much to log: "error", "warning", "info", "verbose" (info and every tip, not only the best two) or "debug".'), "--verbosity") }}
 verbosity = "info"
 
 {{ comment(_('ANSI colours: "auto", "always" or "never".'), "--color") }}
@@ -64,6 +67,23 @@ excluded_names = []
 {{ comment(_("Ask for confirmation before cleaning."), "--yes") }}
 confirm = true
 
+{{ comment(_("After how many days 'status' suggests emptying the quarantine with 'purge' (the files set aside still take their space until then).")) }}
+purge_hint_days = 30
+
+
+[review]
+{{ comment(_("A series whose proposal leaves only the sharpest shot (and those of protected folders) is obvious: the review page validates every obvious series at once, with one confirmation.")) }}
+
+{{ comment(_("The burst review proposes to set aside a shot whose sharpness is below this share of the sharpest shot of its series (0 to 1): 0.35 proposes a shot at 162 next to one at 1017, not one at 616. Moving on accepts the proposal, a key takes it back. 0 never proposes anything.")) }}
+propose_aside_below = 0.35
+
+{{ comment(_("A shot nearly identical to a sharper shot kept of its series is proposed aside too: its perceptual hash differs by fewer bits than this (0 to 64). Low values only catch repeats of the same frame. 0 disables the rule.")) }}
+identical_below = 6
+
+{{ comment(_("A shot clearly over- or under-exposed next to the others of its series is proposed aside: its mean brightness lies farther than this from theirs (gray levels, 0 to 255), or its share of pixels clipped to white or black exceeds theirs by more than clipped_gap (0 to 1). 0 disables either rule.")) }}
+brightness_gap = 60
+clipped_gap = 0.25
+
 
 [sort]
 {{ comment(_("Ask for confirmation before sorting."), "--yes") }}
@@ -97,6 +117,30 @@ attribution = "© OpenStreetMap contributors"
 nominatim_url = "https://nominatim.openstreetmap.org"
 
 
+[tags]
+{{ comment(_("The words of 'tags', to find photos by what they show: the meaningful words of the folder and file names (none for IMG_1234), the date (year, month, season, holidays), the place (your [[classify.places]], the nearest town) and, when [classify.ai] model is set, what the vision model sees. They are kept in the cache (/cache), never written into the photos.")) }}
+{{ comment(_('Language of the words: "en", "fr", or empty for the language of the interface.')) }}
+language = ""
+{{ comment(_("Words left out because they describe nearly every photo. Written here, the list replaces the built-in one (French and English).")) }}
+# stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
+{{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
+town_km = 20
+{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, date. The model's sentence goes into dc:description.")) }}
+xmp_sources = ["vision", "place"]
+
+
+[people]
+{{ comment(_("The faces 'people' finds and groups. They are personal data: kept in the cache (/cache) only, never sent anywhere; 'people --forget' deletes them all. These settings choose which faces are grouped: changing them analyses nothing again.")) }}
+{{ comment(_("Two faces this similar (cosine, 0 to 1) may be the same person: higher splits more groups, lower mixes people.")) }}
+similarity = 0.363
+{{ comment(_("Faces smaller than this many pixels (shorter side of their box) are left out.")) }}
+min_face = 40
+{{ comment(_("Faces blurrier than this sharpness (variance of the Laplacian of the face) are left out.")) }}
+min_sharpness = 30.0
+{{ comment(_("true: every 'audit' then looks for faces in the photos not looked at yet, after saying how long it takes and asking, as 'audit --people' does."), "--people") }}
+with_audit = false
+{{ comment(_("The names you give on the 'people' page are saved here as [[people.person]] tables (a name, the faces confirmed as theirs, the faces taken out of them), and the faces of strangers as 'ignored'. 'search person:name' finds their photos.")) }}
+
 [classify]
 {{ comment(_("How 'classify' proposes a tree for your photos and videos. Every value below is an example: replace it with your own structure. Nothing moves before 'sort'.")) }}
 
@@ -117,7 +161,7 @@ received_layout = "{{ _("To sort") }}/{{ _("Received and downloaded") }}"
 merge_gap_hours = 18
 min_event_size = 5
 
-{{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: the zone of the container.')) }}
+{{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: [general] timezone.')) }}
 timezone = ""
 
 {{ comment(_("Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and above to the 'to check' layout, the rest to the 'to sort' one.")) }}
@@ -187,6 +231,13 @@ kind = "download"
 # match = "camera"
 # pattern = '(?i)dji|fc\d{4}'
 # category = "{{ _("Nature and landscapes") }}/{{ _("Drone") }}"
+
+{{ comment(_("person: the events where someone named on the 'people' page shows on at least min_share percent of the photos (10 by default), and the lone photos showing them. names = [...] matches any of them; all = true needs every one. A name nobody has in [[people.person]] stops classify.")) }}
+# [[classify.rules]]
+# name = "{{ _("With Léa") }}"
+# match = "person"
+# names = ["Léa"]
+# category = "{{ _("People") }}/Léa"
 
 [[classify.rules]]
 name = "{{ _("Existing folders") }}"

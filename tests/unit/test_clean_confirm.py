@@ -35,7 +35,9 @@ def test_by_default_nothing_is_erased(tmp_path: Path) -> None:
     """Every copy goes to the quarantine, and the line says so."""
     plan = CleanPlan((copies(MediaKind.IMAGE, "a.jpg"),), ())
     assert plan.moved_copies == 1
-    assert "🛟 Nothing is erased" in said(tmp_path, plan)
+    assert "🛟 Nothing will be erased: each copy is first compared" in said(
+        tmp_path, plan
+    )
 
 
 def test_delete_says_it_erases_and_what_still_moves(tmp_path: Path) -> None:
@@ -72,5 +74,31 @@ def test_the_question_names_where_the_copies_go(
         "Delete",
         "Delete",
     ]
-    assert "1 near duplicates" in asked[1]
-    assert "move 1 near duplicates" in asked[3]
+    assert asked[0] == "Move 1 duplicate copy (1 B) to the quarantine?"
+    assert "and 1 near duplicates to the quarantine" in asked[1]
+    assert (
+        asked[3]
+        == "Delete 1 duplicate copy (1 B) and move 1 near duplicate to the quarantine?"
+    )
+
+
+def test_near_duplicates_alone_ask_only_about_them(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """No zero counts in the question, no byte comparison promised for look-alikes."""
+    asked: list[str] = []
+    monkeypatch.setattr("sys.stdin.isatty", lambda: True)
+
+    def refuse(_output: object, question: str) -> bool:
+        asked.append(question)
+        return False
+
+    monkeypatch.setattr("media_hygiene.console.output.Output.confirm", refuse)
+    pair = copies(MediaKind.IMAGE, "n.jpg")
+    plan = CleanPlan((), (), near=(NearDecision(pair.keeper, pair.removable),))
+    runtime = make_runtime(make_locations(tmp_path))
+    assert not confirm_clean(runtime, plan, yes=False)
+    assert asked == ["Move 1 near duplicate to the quarantine?"]
+    assert "the files are moved to the quarantine" in " ".join(
+        output_of(runtime).split()
+    )

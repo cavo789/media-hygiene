@@ -12,12 +12,21 @@ nothing moves, and folders mounted `:ro` are fine.
 ## Run it
 
 ```powershell
+mh classify
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene classify
 ```
+
+</details>
 
 After an audit with [the cache](../start/02-keep-the-cache.md), nothing is read again: the dates,
 the cameras and the places come from the cache, and the audit's fingerprints tell the duplicates
@@ -28,19 +37,19 @@ still there. The reports folder receives the workbook where you correct the prop
 ```text
 🔒 Read-only: your photos and videos are not touched.
 ─────────────────────────────────── Classify ───────────────────────────────────
-Already in place: 43 of 80 (54%).
+Already in place: 43 of 82 (52%).
 Proposal
 ┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
 ┃ Band    ┃ Files ┃ To move ┃
 ┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━┩
-│ Sure    │    74 │      31 │
+│ Sure    │    76 │      33 │
 │ To sort │     3 │       3 │
 │ Undated │     3 │       3 │
 └─────────┴───────┴─────────┘
 
 Why
 ┌────────────────────┬────┐
-│ Existing folders   │ 74 │
+│ Existing folders   │ 76 │
 │ no-signal          │  3 │
 │ undated            │  3 │
 │   Seaside holidays │ 13 │
@@ -52,19 +61,28 @@ Why
 │   Lake             │  6 │
 │   Phone            │  6 │
 │   Christmas 2020   │  4 │
-│   WhatsApp         │  1 │
+│   WhatsApp         │  3 │
 └────────────────────┴────┘
 
 ⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
 Event neighbours, Christmas, New Year.
 💡 Check their dates, their patterns and their order in config.toml.
 To check or to sort: 3 files in 1 event.
+💡 Nothing was changed: 'classify' only proposes.
+✅ Workbook to edit: /reports/20261012-101647-classify/classify.xlsx
+✅ Report with the photos: /reports/20261012-101647-classify/report.html
+👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene sort
 💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
 are sorted.
-💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261003-080653-classify/classify.xlsx
-✅ Report with the photos: /reports/20261003-080653-classify/report.html
-💡 Edit the yellow cells and save: nothing moves until 'sort'.
 ```
 
 ## Read the result
@@ -102,7 +120,7 @@ photo: a party on New Year's Eve is not cut in two.
 
 ## Your own structure
 
-Everything is in the `[classify]` section of `config.toml` ([step 7](../clean/07-configuration-file.md)),
+Everything is in the `[classify]` section of `config.toml` ([cleaning, step 7](../clean/07-configuration-file.md)),
 and every value there is an example to replace:
 
 - `--layout "{year}/{month}"`: sort by month, with no category at all.

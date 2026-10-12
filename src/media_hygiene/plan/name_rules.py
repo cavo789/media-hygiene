@@ -63,8 +63,18 @@ class NameRules:
         Returns:
             True for names such as `IMG_1234.jpg` or `IMG_1234 (1).jpg`.
         """
-        name = without_copy_marks(path.stem)
-        return any(pattern.fullmatch(name) for pattern in self.generated_names)
+        return self.is_generated(without_copy_marks(path.stem))
+
+    def is_generated(self, stem: str) -> bool:
+        """Tell whether a name without extension is one a camera or an app gives.
+
+        Args:
+            stem: The name, without extension nor copy mark.
+
+        Returns:
+            True for `IMG_1234` or `VID-20190712-WA0001`.
+        """
+        return any(pattern.fullmatch(stem) for pattern in self.generated_names)
 
     def in_generic_folder(self, path: Path) -> bool:
         """Tell whether the file sits in a folder named by a device or an app.

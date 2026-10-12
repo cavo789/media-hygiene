@@ -11,7 +11,8 @@
 # @desc Build media-hygiene:latest
 function build() {
     printf "🏗️  Building media-hygiene:latest...\n"
-    docker build --tag media-hygiene:latest "$(_repo_root)"
+    # The local target names `media-hygiene` in the commands the tool suggests (TODO 0080).
+    docker build --target local --tag media-hygiene:latest "$(_repo_root)"
 }
 
 # @cat Docker image

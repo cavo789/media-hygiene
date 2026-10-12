@@ -17,16 +17,19 @@ from tests.support.runtime import make_runtime
 from tests.support.scenes import Effect, Shot, write_shot
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
+    from concurrent.futures import Executor
     from pathlib import Path
 
     from media_hygiene.config.layers import Layer
     from media_hygiene.paths.locations import Locations
+    from media_hygiene.review.local_app import LocalApp
     from media_hygiene.review.session import ReviewSession
 
 BURST: Final = "c/Photos/Rafale"
 BURST_HOST: Final = "C:\\Photos\\Rafale"
 PAGE: Final = b"<!DOCTYPE html><title>review</title>"
+JSON_HEADERS: Final = ("Host: 127.0.0.1", "Content-Type: application/json")
 _SHOTS: Final = 3
 _SEED: Final = 100
 _BLURRED: Final = 1
@@ -88,9 +91,9 @@ class Call:
 
 def decide(series: int, *discarded: int) -> Call:
     """`POST /api/decide`, as the page sends it."""
-    body = json.dumps({"series": series, "discarded": list(discarded)}).encode()
-    headers = ("Host: 127.0.0.1", "Content-Type: application/json")
-    return Call("POST", "/api/decide", body, headers)
+    choice = {"series": series, "discarded": list(discarded)}
+    body = json.dumps({"choices": [choice]}).encode()
+    return Call("POST", "/api/decide", body, JSON_HEADERS)
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,10 +121,25 @@ def serve_and_call(
     Returns:
         The replies, in order.
     """
+    return serve_app_and_call(lambda pool: ReviewApp(session, PAGE, pool), calls)
+
+
+def serve_app_and_call(
+    make_app: Callable[[Executor], LocalApp], calls: Sequence[Call | bytes]
+) -> list[Reply]:
+    """Serve a local page on a free port, send each call, then stop the server.
+
+    Args:
+        make_app: Builds the page's app on the worker pool.
+        calls: The requests, in order (bytes: sent as they are).
+
+    Returns:
+        The replies, in order.
+    """
 
     async def scenario() -> list[Reply]:
         with ThreadPoolExecutor(1, initializer=prepare_image_worker) as executor:
-            app = ReviewApp(session, PAGE, executor)
+            app = make_app(executor)
             ports: asyncio.Queue[int] = asyncio.Queue()
             async with asyncio.TaskGroup() as group:
                 server = group.create_task(run_server(app, 0, ports.put_nowait))

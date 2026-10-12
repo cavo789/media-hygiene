@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from concurrent.futures import Executor, ProcessPoolExecutor
 from dataclasses import dataclass, field, replace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from media_hygiene.config.layers import merge_layers
 from media_hygiene.config.loader import LoadedSettings, load_settings
@@ -15,6 +15,7 @@ from media_hygiene.scan.image_check import prepare_image_worker
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
+    from types import TracebackType
 
     from media_hygiene.config.layers import Layer
     from media_hygiene.config.settings import Settings
@@ -23,13 +24,42 @@ if TYPE_CHECKING:
     from media_hygiene.paths.mounts import MountTable
 
 
+class _ImagePool(ProcessPoolExecutor):
+    """A process pool that stops at once when its block fails or Ctrl+C is pressed."""
+
+    @override
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> bool | None:
+        """Wait for the workers after a normal end, terminate them otherwise.
+
+        Workers only read files: stopping one in the middle of a decode loses nothing,
+        while waiting for the decodes under way can take long on a slow disk.
+
+        Args:
+            exc_type: Type of the exception that ended the block, if any.
+            exc_val: That exception.
+            exc_tb: Its traceback.
+
+        Returns:
+            None: the exception, if any, goes on.
+        """
+        if exc_type is None:
+            return super().__exit__(exc_type, exc_val, exc_tb)
+        self.terminate_workers()
+        return None
+
+
 def process_pool() -> Executor:
     """Create the pool decoding images in parallel, one process per CPU.
 
     Returns:
         A process pool whose workers support HEIC and huge images.
     """
-    return ProcessPoolExecutor(initializer=prepare_image_worker)
+    return _ImagePool(initializer=prepare_image_worker)
 
 
 @dataclass(frozen=True, slots=True)

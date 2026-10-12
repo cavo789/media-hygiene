@@ -9,7 +9,7 @@ vos doublons.
 
 **Vos photos sont en sécurité.** `audit`, `classify` et les autres analyses ne modifient jamais
 une photo ; avec `:ro` sur vos dossiers, le système lui-même l'interdit. Les commandes qui
-agissent (`clean`, `sort`, `album`, `undo`) ne font que déplacer des fichiers, jamais par-dessus
+agissent (`clean`, `sort`, `album`, `xmp`, `undo`) ne font que déplacer des fichiers ou en ajouter, jamais par-dessus
 un autre, et peuvent toutes être annulées. Seul `purge` efface, la quarantaine, après vous l'avoir
 demandé. Détails : [comment vos photos restent en sécurité](reference-safety.md).
 
@@ -17,6 +17,9 @@ demandé. Détails : [comment vos photos restent en sécurité](reference-safety
 
 Quoi que vous vouliez faire ensuite, les trois premières étapes sont les mêmes : elles
 montrent ce que contiennent vos dossiers, sans rien modifier.
+
+Pas encore de Docker ? [Installez Docker](start/00-install-docker.md) d'abord, sous Windows ou
+Linux : quelques minutes, une seule fois.
 
 1. [Votre premier audit](start/01-first-audit.md) : un dossier, une commande, et comment lire le
    résultat.
@@ -27,6 +30,8 @@ montrent ce que contiennent vos dossiers, sans rien modifier.
 ## Nettoyer les doublons
 
 Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.
+
+👉 **Pressé ?** [Nettoyer en bref](clean/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
 
 **Les voir** (rien n'est modifié) :
 
@@ -50,8 +55,8 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 10. [Trier les rafales dans le navigateur](clean/10-review-bursts.md) : garder les meilleures photos de
     chaque rafale, au clavier.
-11. [Les quasi-doublons](clean/11-near-duplicates.md) : les copies réduites et recompressées
-    (`--tier near`).
+11. [Les quasi-doublons](clean/11-near-duplicates.md) : les copies réduites et recompressées, les
+    sûres à part, les autres décidées dans le navigateur (`review --near`, `--tier near`).
 12. [Décider paire par paire](clean/12-decide-pair-by-pair.md) : inverser une paire de dossiers ou ne
     pas y toucher, depuis le rapport.
 13. [Un second avis](clean/13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.
@@ -60,6 +65,8 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 Donner à vos photos une arborescence rangée, `année/catégorie` ou celle que vous choisissez.
 Nettoyez d'abord les doublons : sinon les deux copies sont triées.
+
+👉 **Pressé ?** [Trier en bref](sort/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
 
 4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
    fichier, et ne modifie rien.
@@ -77,16 +84,21 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 9. [Lieux et voyages grâce au GPS](sort/09-places-from-gps.md) : nommer vos lieux sur une carte,
    et laisser le GPS des téléphones récents trier maison, famille et voyages, hors ligne
    (facultatif).
-10. [Nommer les événements dans le navigateur](sort/10-name-events-in-the-browser.md) : un
+10. [Trier par personne](sort/10-sort-by-person.md) : nommer les visages trouvés dans vos photos,
+    et laisser une règle ranger les événements où quelqu'un figure, hors ligne (facultatif).
+11. [Nommer les événements dans le navigateur](sort/11-name-events-in-the-browser.md) : un
     événement à la fois avec ses photos, nommé au clavier ; `sort` applique vos choix
     (facultatif).
-11. [Albums](sort/11-albums.md) : une photo dans plusieurs dossiers (« tous les Noëls », « mes
+12. [Albums](sort/12-albums.md) : une photo dans plusieurs dossiers (« tous les Noëls », « mes
     plus belles photos »), en liens physiques : aucune copie, aucune place prise (facultatif).
 
 ## Référence
 
-- [Commandes et options](reference-commands.md) : chaque commande, chaque option, et leur
-  `--help`.
+- [Les mots de ce guide](reference-glossary.md) : conteneur, montage, quarantaine, journal,
+  quasi-doublon, rafale… en langage courant, de A à Z.
+- [Commandes et options](reference-commands.md) : quelle commande pour quoi, puis une page par
+  commande (`audit`, `clean`, `review`, `classify`, `sort`…) : ce qu'elle fait, les dossiers dont
+  elle a besoin, ses options, des exemples et son `--help`.
 - [Points de montage](reference-mount-points.md) : `/data`, `/cache`, `/reports`, `/config`,
   `/journal`, `/quarantine`.
 - [Comment vos photos restent en sécurité](reference-safety.md) : ce qui compte comme doublon, ce
@@ -95,6 +107,12 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Dépannage](reference-troubleshooting.md) : mises en garde et messages d'erreur.
 - [Le classeur d'inventaire](reference-inventory.md) : chaque photo et vidéo avec ce que les
   audits en ont appris, dans Excel, depuis le cache seul (`inventory`).
+- [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
+  noms, dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `search` les
+  retrouve dans votre navigateur, `xmp` les écrit dans des fichiers compagnons `.xmp`.
+- [Les personnes](reference-people.md) : trouver les visages des photos, regrouper ceux qui se
+  ressemblent et les nommer dans votre navigateur (`people`), puis retrouver quelqu'un avec
+  `search` ; gardés dans le cache, jamais envoyés.
 - [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
   (`PYTHON_CPU_COUNT`).
 

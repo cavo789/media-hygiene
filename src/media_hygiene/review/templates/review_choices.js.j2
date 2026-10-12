@@ -1,0 +1,117 @@
+{# Included in the script of review.html.j2: every choice, sent to the server and shown
+   as read back from the disk; the keys that decide a whole series and move on, undo, and
+   the validation of a whole folder. Moving along the series: review_order.js.j2. #}
+  const history = [];  // each group of choices sent, with what it replaced: Z undoes it
+
+  // Send choices, [series rank, ranks set aside or null: back to still to see], one write.
+  const send = async (choices) => {
+    setStatus(T.saving);
+    const body = { choices: choices.map(([index, discarded]) => ({ series: index, discarded: discarded })) };
+    let response;
+    try {
+      response = await fetch(decidePath, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      setStatus(T.offline, "error");
+      return false;
+    }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      setStatus(answer.error || fill(T.failed, { status: response.status }), "error");
+      return false;
+    }
+    let newly = 0;
+    for (const [index, discarded] of choices) {
+      if (!series[index].reviewed && discarded !== null) newly += 1;
+      if (series[index].reviewed && discarded === null) newly -= 1;  // undone: to see again
+      series[index].discarded = discarded === null ? [] : [...discarded].sort((a, b) => a - b);
+      series[index].reviewed = discarded !== null;
+    }
+    paced(newly);
+    byId("welcome").hidden = true;  // the first choice made: the welcome line did its job
+    for (const entry of answer.file.entries) disk.set(entry.series, entry);
+    setStatus(fill(T.proofOk, { time: clock(answer.file.modified) }), "saved");
+    for (const [index] of choices) updateRow(index);
+    render();
+    return true;
+  };
+
+  // Send choices and remember what they replace, for undo.
+  const record = async (choices) => {
+    const before = choices.map(([index]) => [index, series[index].reviewed ? [...series[index].discarded] : null]);
+    const done = await send(choices);
+    if (done) history.push(before);
+    return done;
+  };
+
+  const decide = (index, discarded) => record([[index, discarded]]);
+
+  // Set a shot of a series aside, or take it back; not seen yet: corrects the proposal.
+  const toggleRank = (index, rank) => {
+    const item = series[index];
+    if (item.shots[rank].protected) {
+      setStatus(T.protectedShot, "error");
+      return;
+    }
+    const aside = new Set(item.reviewed ? item.discarded : proposal(item));
+    if (aside.has(rank)) aside.delete(rank);
+    else aside.add(rank);
+    if (aside.size === item.shots.length) {
+      setStatus(T.keepOne, "error");
+      return;
+    }
+    decide(index, [...aside]);
+  };
+
+  const toggle = (position) => {
+    const item = series[current];
+    if (item && position < item.shots.length) toggleRank(current, shown(item)[position]);
+  };
+
+  const keepSharpest = async () => {
+    const shots = series[current].shots;
+    const aside = shots.map((shot, rank) => rank).filter((rank) => !shots[rank].best && !shots[rank].protected);
+    if (await decide(current, aside)) advance();
+  };
+
+  const setWholeAside = async () => {
+    const shots = series[current].shots;
+    const movable = shots.map((shot, rank) => rank).filter((rank) => !shots[rank].protected);
+    if (movable.length === 0) {
+      setStatus(T.allProtected, "error");
+      return;
+    }
+    const already = movable.every((rank) => series[current].discarded.includes(rank));
+    if (already) decide(current, []);
+    else if (await decide(current, movable)) advance();
+  };
+
+  const undo = async () => {
+    const last = history.pop();
+    if (!last) {
+      setStatus(T.nothingToUndo);
+      return;
+    }
+    if (!(await send(last))) {
+      history.push(last);
+      return;
+    }
+    show(last[0][0]);
+    if (last.length > 1) setStatus(fill(T.undoneMany, { count: last.length }), "saved");
+    else setStatus(fill(T.undone, { number: last[0][0] + 1 }), "saved");
+  };
+
+  // Every series still to see in a folder, validated as moving on would, in one write.
+  const validate = (ranks, folder) => {
+    const todo = ranks.filter((index) => !series[index].reviewed);
+    if (todo.length === 0) {
+      setStatus(T.validateNone);
+      return;
+    }
+    const aside = todo.reduce((count, index) => count + proposal(series[index]).length, 0);
+    if (!window.confirm(fill(T.validateAsk, { series: counted(T.nSeries, todo.length), folder: folder, aside: counted(T.nProposed, aside) }))) return;
+    record(todo.map((index) => [index, proposal(series[index])]));
+  };

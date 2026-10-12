@@ -13,7 +13,14 @@ pouvait pas nommer : un voyage, une fête. Deux fenêtres côte à côte :
 
 ## Obtenir les deux fichiers
 
-Montez un dossier de rapports, comme pour [les rapports HTML](../clean/04-html-report.md) :
+`classify` les écrit dans le dossier des rapports, que `mh` monte, comme pour [les rapports HTML](../clean/04-html-report.md) :
+
+```powershell
+mh classify
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -23,13 +30,27 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr classify
 ```
 
+</details>
+
 La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20261003-080819-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261003-080819-classify/report.html
-💡 Modifiez les cellules jaunes et enregistrez : rien ne bouge avant 'sort'.
+✅ Classeur à modifier : /reports/20261012-101931-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261012-101931-classify/report.html
+👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
+avant 'sort'.
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr sort
+💡 32 doublons exacts sont encore là : lancez d'abord 'clean', sinon les deux
+copies sont triées.
 ```
 
 Chaque exécution écrit un nouveau dossier, `<date>-classify`, avec trois fichiers :
@@ -132,7 +153,7 @@ cellules jaunes peuvent être trouvés : relancer `classify` est la porte de sor
 classeur ne peut pas être ouvert du tout, `classify` s'arrête avant d'écrire quoi que ce soit, pour
 que vos modifications ne soient pas enfouies sous un classeur plus récent et vide.
 
-Des centaines d'événements à nommer ? L'[étape 10](10-name-events-in-the-browser.md) les montre un
+Des centaines d'événements à nommer ? L'[étape 11](11-name-events-in-the-browser.md) les montre un
 par un dans votre navigateur, avec leurs photos et un champ pour les nommer, sans changer de
 fenêtre.
 

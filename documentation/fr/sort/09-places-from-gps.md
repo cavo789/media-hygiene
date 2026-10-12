@@ -23,18 +23,27 @@ zone de recherche est envoyé à OpenStreetMap ([plus bas](#un-village-ou-un-par
 
 `places` montre où vos photos ont été prises, à partir du cache des audits, et vous laisse
 nommer les lieux qui comptent pour vous. Il lui faut le cache (`/cache`, où les audits ont
-noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) :
+noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) ;
+`mh` monte les deux, et ouvre le port de la page :
 
 ```powershell
-docker run --rm -it --name media-hygiene-places -p 127.0.0.1::8080 `
+mh places
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
 ```
 
-Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), demandez
-l'adresse à Docker dans une autre fenêtre, `docker port media-hygiene-places 8080`, et
-ouvrez-la dans votre navigateur.
+</details>
+
+Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), Ctrl+clic sur
+l'adresse affichée, `http://127.0.0.1:8088/`.
 
 - **Les cercles** sont vos photos avec une position GPS, groupées par environ 200 mètres, plus
   grands là où il y en a plus. La liste de gauche donne d'abord **les plus grands groupes sans
@@ -196,4 +205,4 @@ d'OpenStreetMap](https://www.openstreetmap.org/copyright), sous licence
 
 ---
 
-← [8. Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) · [Documentation](../README.md) · Suite : **[10. Nommer les événements dans le navigateur](10-name-events-in-the-browser.md)** →
+← [8. Nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md) · [Documentation](../README.md) · Suite : **[10. Trier par personne](10-sort-by-person.md)** →

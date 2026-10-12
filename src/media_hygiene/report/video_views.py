@@ -9,16 +9,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import Sizes
+from media_hygiene.paths.file_uri import file_uri
+from media_hygiene.report.gain_order import gain_order
+from media_hygiene.report.near_reasons import group_note
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.plan.similar_models import NearDecision, SimilarFindings
+    from media_hygiene.report.near_reasons import GroupNote
     from media_hygiene.scan.models import MediaFile
 
 
 @dataclass(frozen=True, slots=True)
-class VideoView:
+class VideoView:  # pylint: disable=too-many-instance-attributes
     """One video: where it is, and what tells it from the other versions."""
 
     path: str
@@ -28,6 +31,8 @@ class VideoView:
     codec: str
     size: int
     recorded_at: str | None
+    uri: str | None = None  # plays the video itself, when its host path is known
+    same_stream: bool = False  # the very picture and sound of the kept video
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,14 +42,14 @@ class VideoNearView:
     kept: VideoView
     copies: tuple[VideoView, ...]
     protected: tuple[VideoView, ...]
+    note: GroupNote  # why, how sure, the space freed (`near_reasons`)
 
 
 @dataclass(frozen=True, slots=True)
 class VideoSection:
-    """The groups shown, and how many are left out."""
+    """Every re-encoded video group: `clean --tier near-all` moves them all."""
 
     groups: tuple[VideoNearView, ...] = ()
-    hidden: int = 0
 
 
 def video_section(similar: SimilarFindings, mapper: HostPathMapper) -> VideoSection:
@@ -57,28 +62,31 @@ def video_section(similar: SimilarFindings, mapper: HostPathMapper) -> VideoSect
     Returns:
         The section.
     """
-    limit = Sizes.MAX_SIMILAR_IN_REPORT
     return VideoSection(
         groups=tuple(
-            _group(decision, similar, mapper) for decision in similar.videos[:limit]
-        ),
-        hidden=max(0, len(similar.videos) - limit),
+            _group(decision, similar, (mapper, share))
+            for decision, share in gain_order(similar.videos)
+        )
     )
 
 
 def _group(
-    decision: NearDecision, similar: SimilarFindings, mapper: HostPathMapper
+    decision: NearDecision,
+    similar: SimilarFindings,
+    place: tuple[HostPathMapper, int],
 ) -> VideoNearView:
     """Describe one group.
 
     Args:
         decision: The video kept and its copies.
         similar: The findings, holding what each video looks like.
-        mapper: Turns container paths into host paths.
+        place: Turns container paths into host paths; and the share of the space
+            freed by the group and those shown above it.
 
     Returns:
         Its view.
     """
+    mapper, running = place
 
     def view(file: MediaFile) -> VideoView:
         """Describe one video of the group.
@@ -89,19 +97,24 @@ def _group(
         Returns:
             Its view, in host paths.
         """
-        look = similar.video_looks[file.path]
+        look, path = similar.video_looks[file.path], mapper.to_host(file.path)
         return VideoView(
-            path=mapper.to_host(file.path),
+            path=path,
             width=look.width,
             height=look.height,
             duration=look.duration,
             codec=look.codec or "",
             size=file.size,
             recorded_at=look.recorded_at,
+            uri=file_uri(path),
+            same_stream=file.path in decision.same_stream,
         )
 
     return VideoNearView(
         kept=view(decision.keeper),
         copies=tuple(view(file) for file in decision.removable),
         protected=tuple(view(file) for file in decision.protected),
+        note=group_note(
+            decision, lambda file: similar.video_looks[file.path].pixels, running
+        ),
     )

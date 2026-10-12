@@ -5,21 +5,27 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import warn
+from media_hygiene.console.advice import Advice, TipKind
+from media_hygiene.console.crosscheck_outdated import show_outdated
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.inventory_view import inventory_table
+from media_hygiene.console.links import file_link
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import findings_table, folder_pairs_view
-from media_hygiene.errors import CrossCheckError, MediaHygieneError, MountError
+from media_hygiene.constants import REPORT_INDEX_FILE_NAME
+from media_hygiene.errors import CrossCheckError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.crosscheck import cross_check
+from media_hygiene.services.crosscheck import cross_check, czkawka_refresh
+from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.reporting import write_report
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
-    from typing import TextIO
+    from pathlib import Path
 
+    from media_hygiene.console.output import Output
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.report.views import ReportRecord
@@ -29,6 +35,9 @@ if TYPE_CHECKING:
 def audit_and_show(runtime: Runtime) -> AuditFindings:
     """Run the audit with progress bars, then print its summary.
 
+    The inventory of the photos (dates, GPS, formats) only with `--verbosity
+    verbose`: the default output stays on what the audit lets the user do.
+
     Args:
         runtime: Settings, mount points and output.
 
@@ -36,8 +45,10 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         The findings.
 
     Raises:
-        MountError: The index or the report could not be written (checked first).
+        MountError: No folder to analyse, or the index or the report could not be
+            written (checked first).
     """
+    refuse_empty_data(runtime, "audit")  # the first line a user without -v reads
     ensure_writable(runtime, MountKind.CACHE, MountKind.REPORTS)
     output = runtime.output
     output.title(_("Audit"))
@@ -46,7 +57,7 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
     output.show(findings_table(findings))
     output.blank()
     inventory = inventory_table(findings.inventory)
-    if inventory is not None:
+    if inventory is not None and output.verbose:  # always shown by 'inventory'
         output.show(inventory)
         output.blank()
     show_pairs(runtime, findings)
@@ -86,12 +97,32 @@ def show_second_opinion(
         runtime.output.warning(exc.message)
         return None
     if result is None:
-        runtime.output.info(
-            _("Not cross-checked: 'media-hygiene crosscheck' compares with Czkawka.")
+        runtime.output.advise(
+            Advice(
+                TipKind.DISCOVERY,
+                _("For a second opinion, run 'crosscheck' (same -v options)."),
+            )
         )
         return None
-    show_cross_check(runtime.output, result, runtime.mapper)
+    result = show_verdict(runtime, result)
     runtime.output.blank()
+    return result
+
+
+def show_verdict(runtime: Runtime, result: CrossCheckResult) -> CrossCheckResult | None:
+    """Show Czkawka's verdict, or why its outdated results are ignored.
+
+    Args:
+        runtime: Settings, mount points and output.
+        result: The comparison.
+
+    Returns:
+        The comparison, or None when Czkawka ran before files were removed.
+    """
+    if result.outdated:
+        show_outdated(runtime.output, result.results_date, czkawka_refresh(runtime))
+        return None
+    show_cross_check(runtime.output, result, runtime.mapper)
     return result
 
 
@@ -105,31 +136,50 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
         record: What to report.
     """
     output = runtime.output
+    # Previews of thousands of photos take seconds: a spinner says the tool works.
+    working = output.console.status(_("Writing the HTML report and its previews…"))
     try:
-        report = write_report(runtime, record)
+        with working:
+            report = write_report(runtime, record)
     except MountError as exc:
         warn(output, exc)
         return
     if report is None:
-        output.tip(_('Add -v "<a folder of yours>:/reports" to get HTML reports.'))
+        output.setting(_('-v "<a folder of yours>:/reports" (HTML reports)'))
         return
-    output.success(_("HTML report: {path}").format(path=report))
-    output.tip(
-        _("Open index.html in the folder mounted on /reports: it lists every report."),
+    mapper = runtime.mapper
+    index = runtime.locations.reports_dir / REPORT_INDEX_FILE_NAME
+    index_on_host = mapper.to_host(index)
+    if index_on_host == str(index):  # the host folder behind /reports is unknown
+        _announce_in_container(output, report)
+        return
+    output.success(
+        _("HTML report: {path}").format(path=file_link(mapper.to_host(report)))
+    )
+    output.advise(
+        Advice(
+            TipKind.DETAIL,
+            _("Every report is listed in {path} (Ctrl+click opens it).").format(
+                path=file_link(index_on_host)
+            ),
+        )
     )
 
 
-def require_terminal(stdin: TextIO) -> None:
-    """Refuse to ask a question without a terminal to answer it in.
+def _announce_in_container(output: Output, report: Path) -> None:
+    """Name the report by its container path: its host folder is unknown.
 
     Args:
-        stdin: The standard input.
-
-    Raises:
-        MediaHygieneError: There is no interactive terminal.
+        output: Where to print.
+        report: The report written.
     """
-    if not stdin.isatty():
-        raise MediaHygieneError(
-            _("Cannot ask for confirmation without an interactive terminal."),
-            _("Run docker with -it, or add --yes."),
+    output.success(_("HTML report: {path}").format(path=report))
+    output.advise(
+        Advice(
+            TipKind.DETAIL,
+            _(
+                "Open index.html in the folder mounted on /reports: it lists every "
+                "report."
+            ),
         )
+    )

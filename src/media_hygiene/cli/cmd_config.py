@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 _SYSTEM_NAMES_AFTER: Final = ("scan", "excluded_names")
+_PEOPLE, _IGNORED = "people", "ignored"
 
 
 def _origin_label(origin: Origin) -> str:
@@ -32,6 +33,28 @@ def _origin_label(origin: Origin) -> str:
         Origin.CLI: _("command line"),
     }
     return labels[origin]
+
+
+def _shown(section: str, key: str, value: object) -> str:
+    """Write a value; the names of `people` by name, their thousands of faces counted.
+
+    Args:
+        section: The section.
+        key: The setting.
+        value: Its value, as JSON.
+
+    Returns:
+        The text of the cell.
+    """
+    if section != _PEOPLE or not isinstance(value, list):
+        return str(value)
+    if key == _IGNORED:
+        return _("{count} faces").format(count=len(value))
+    return ", ".join(
+        _("{name} ({count} faces)").format(name=item["name"], count=len(item["faces"]))
+        for item in value
+        if isinstance(item, dict)
+    )
 
 
 def config_command(ctx: typer.Context) -> None:
@@ -48,7 +71,7 @@ def config_command(ctx: typer.Context) -> None:
     for section, values in settings.items():
         for key, value in values.items():
             origin = _origin_label(runtime.loaded.origin_of(section, key))
-            table.add_row(f"{section}.{key}", str(value), origin)
+            table.add_row(f"{section}.{key}", _shown(section, key, value), origin)
             if (section, key) == _SYSTEM_NAMES_AFTER:
                 # Always skipped too: the user's names add to these.
                 system = str(list(SYSTEM_DIR_NAMES))

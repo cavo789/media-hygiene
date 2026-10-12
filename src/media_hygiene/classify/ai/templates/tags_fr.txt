@@ -1,0 +1,7 @@
+Décris cette photo d'une collection de photos de famille, pour la retrouver plus tard par une recherche.
+Dis ce qu'elle montre : le lieu, l'activité, les objets qui comptent, le texte que tu lis clairement.
+Personnes : écris seulement adulte, enfant, bébé ou groupe ; jamais une relation (mère, fille, sœur, grand-mère) ni un nom.
+N'invente ni date, ni nom de lieu, ni texte que tu ne lis pas clairement.
+Réponds en français, en JSON sur une seule ligne, sans indentation :
+"description" est une phrase courte (25 mots au plus) ;
+"tags" sont 5 à 10 mots ou expressions au singulier, en minuscules ; garde entière une expression de plusieurs mots (« salle à manger »).

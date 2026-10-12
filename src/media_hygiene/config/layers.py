@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, Final, get_args, get_origin
 
 from pydantic import BaseModel
 
+from media_hygiene.config.known_keys import variable_name
 from media_hygiene.config.settings import Settings
-from media_hygiene.constants import ENV_PREFIX
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.text_files import read_user_text
@@ -19,7 +19,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 type Layer = dict[str, dict[str, object]]
-_ENV_SEPARATOR = "__"
 # Every `config.toml` table, so that each one is overridable from the environment.
 _SECTIONS: Final[dict[str, type[BaseModel]]] = {
     name: field.annotation
@@ -70,7 +69,7 @@ def read_env_layer(environ: Mapping[str, str]) -> Layer:
     layer: Layer = {}
     for section, model in _SECTIONS.items():
         for key, field in model.model_fields.items():
-            name = f"{ENV_PREFIX}{section}{_ENV_SEPARATOR}{key}".upper()
+            name = variable_name(section, key)
             if name not in environ or _is_table_array(field.annotation):
                 continue
             value: object = environ[name]

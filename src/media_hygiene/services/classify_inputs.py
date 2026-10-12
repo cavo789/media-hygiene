@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from media_hygiene.classify.models import MediaInput
 from media_hygiene.paths.host_paths import is_within
@@ -14,9 +14,26 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.classify.engine import Scope
+    from media_hygiene.index.facts import FileFacts
     from media_hygiene.index.repository import FactsRepository
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.services.runtime import Runtime
+
+
+class ListedFile(Protocol):
+    """A file as a walk or the index lists it: where it is, its size and mtime."""
+
+    @property
+    def path(self) -> Path:
+        """Container path."""
+
+    @property
+    def size(self) -> int:
+        """Bytes."""
+
+    @property
+    def mtime_ns(self) -> int:
+        """Last modification, in nanoseconds."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,7 +55,20 @@ def media_input(file: MediaFile, root: Path, index: FactsRepository) -> MediaInp
     Returns:
         Its input.
     """
-    facts = index.get(file)
+    return input_of(file, root, index.get(file))
+
+
+def input_of(file: ListedFile, root: Path, facts: FileFacts) -> MediaInput:
+    """What `classify` and `tags` need of one file, its facts already read.
+
+    Args:
+        file: The file: where it is, its size and mtime.
+        root: The mounted folder it lies in.
+        facts: What the index knows of it.
+
+    Returns:
+        Its input.
+    """
     return MediaInput(
         path=file.path,
         root=root,

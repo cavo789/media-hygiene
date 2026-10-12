@@ -1,0 +1,69 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Keeps every pinned version up to date; documented in documentation/en/development.md.",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":disableRateLimiting",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "Europe/Brussels",
+  "schedule": ["before 6am on monday"],
+  "automerge": false,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "pre-commit": {
+    "enabled": true,
+    "managerFilePatterns": ["/(^|/)\\.config/\\.pre-commit-config\\.ya?ml$/"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Dockerfile ARGs annotated with `# renovate: datasource=… depName=…`.",
+      "managerFilePatterns": ["/(^|/)Dockerfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+)\\s+ARG [A-Z0-9_]+=(?:[a-z0-9./-]+:)?(?<currentValue>[^\\s@]+)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?\\s"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "GitHub Actions in one weekly PR.",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Python dependencies (pyproject.toml + uv.lock) in one weekly PR.",
+      "matchManagers": ["pep621"],
+      "groupName": "Python dependencies"
+    },
+    {
+      "description": "Base images and pinned tools of the Dockerfiles in one weekly PR.",
+      "matchManagers": ["dockerfile", "custom.regex", "devcontainer"],
+      "groupName": "Docker images and tools"
+    },
+    {
+      "description": "Pre-commit hooks in one weekly PR.",
+      "matchManagers": ["pre-commit"],
+      "groupName": "pre-commit hooks"
+    },
+    {
+      "description": "The project targets Python 3.14: a new Python minor is a deliberate change, only digests move.",
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["python"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "FFmpeg tags are n<version>; its tarball checksum is not something Renovate can update.",
+      "matchDepNames": ["FFmpeg/FFmpeg"],
+      "extractVersion": "^n(?<version>\\d+\\.\\d+(?:\\.\\d+)?)$",
+      "groupName": "FFmpeg",
+      "prBodyNotes": [
+        "⚠ Before merging: check the signature of `ffmpeg-{{{newVersion}}}.tar.xz` against the FFmpeg release key, then set `FFMPEG_SHA256` in the `Dockerfile` to its SHA-256 (`sha256sum`). Until then the image build fails on the checksum, on purpose."
+      ]
+    }
+  ]
+}

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.http import Response
-    from media_hygiene.review.sort_session import SortSession
+    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.services.runtime import Runtime
 
 PAGE: Final = b"<!DOCTYPE html><title>sort review</title>"
@@ -54,7 +54,7 @@ def reopened(runtime: Runtime) -> SortReviewApp:
     return app_of(open_sort_review(runtime, None))
 
 
-def app_of(session: SortSession) -> SortReviewApp:
+def app_of(session: SortBatchSession) -> SortReviewApp:
     """Serve a session.
 
     Args:

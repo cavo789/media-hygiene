@@ -1,0 +1,24 @@
+{# One photo or one video, with what tells it from the other versions: macros only. #}
+{% macro shot(item, label, css) %}
+<figure class="shot {{ css }}">
+  {% set image %}{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}🖼️{% endif %}{% endset %}
+  <div class="thumb">{% if item.uri %}<a href="{{ item.uri }}" target="_blank" rel="noopener" title="{{ _('Open the original in a new tab') }}">{{ image }}</a>{% else %}{{ image }}{% endif %}</div>
+  <figcaption>
+    <strong>{{ label }}</strong><br>
+    {% if item.uri %}<a class="path" href="{{ item.uri }}" target="_blank" rel="noopener">{{ item.path }}</a>{% else %}<span class="path">{{ item.path }}</span>{% endif %}<br>
+    <span class="muted">{{ item.width }} × {{ item.height }} · {{ item.size | size }} · {{ _("sharpness") }} {{ item.sharpness | number }}{% if item.taken_at %} · {{ item.taken_at }}{% endif %}</span>
+  </figcaption>
+</figure>
+{% endmacro %}
+
+{% macro clip(item, label, css) %}
+<figure class="shot {{ css }}">
+  <div class="thumb">{% if item.uri %}<video controls preload="metadata" src="{{ item.uri }}">🎞️</video>{% else %}🎞️{% endif %}</div>
+  <figcaption>
+    <strong>{{ label }}</strong><br>
+    {% if item.uri %}<a class="path" href="{{ item.uri }}" target="_blank" rel="noopener">{{ item.path }}</a>{% else %}<span class="path">{{ item.path }}</span>{% endif %}<br>
+    <span class="muted">{{ item.width }} × {{ item.height }} · {{ item.duration | duration }}{% if item.codec %} · {{ item.codec }}{% endif %} · {{ item.size | size }}{% if item.recorded_at %} · {{ item.recorded_at }}{% endif %}</span>
+    {% if item.same_stream %}<br><span class="muted">🟰 {{ _("Same picture and sound as the kept video: only the metadata differ.") }}</span>{% endif %}
+  </figcaption>
+</figure>
+{% endmacro %}

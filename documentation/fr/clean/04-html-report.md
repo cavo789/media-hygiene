@@ -4,14 +4,23 @@
 
 Le terminal donne les totaux et les paires de dossiers. Le rapport montre le reste : les images
 elles-mêmes, chaque copie ligne par ligne, et la preuve qu'elles sont identiques. C'est une page
-web qui s'ouvre dans votre navigateur, sans serveur ni connexion internet.
+web qui s'ouvre dans votre navigateur, sans serveur ni connexion internet. Ses dates sont
+affichées dans le fuseau horaire de votre ordinateur.
 
 ## Donner un dossier de rapports à l'outil
 
-Créez une fois un dossier pour les rapports, puis montez-le sur `/reports` :
+`mh` en monte déjà un, `$HOME\media-hygiene\reports`, créé la première fois ; la commande complète
+le crée, puis le monte sur `/reports` :
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports"
+mh audit
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\reports"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
@@ -20,19 +29,28 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr audit
 ```
 
+</details>
+
 `$HOME` est votre dossier personnel (`C:\Users\<vous>`) : les rapports arrivent dans
-`C:\Users\<vous>\media-hygiene\reports`. Créez le dossier **avant** le premier lancement : un
+`C:\Users\<vous>\media-hygiene\reports`. Sans `mh`, créez le dossier **avant** le premier lancement : un
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
 écrire ([pourquoi](../reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 
-À la fin de l'audit, deux nouvelles lignes :
+À la fin de l'audit, une nouvelle ligne :
 
-<!-- capture: audit.txt|Rapport HTML|Ouvrez index.html -->
+<!-- capture: audit.txt|Rapport HTML|. -->
 ```text
-✅ Rapport HTML : /reports/20261003-080812-audit/report.html
-💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
-rapports.
+✅ Rapport HTML : /reports/20261012-101921-audit/report.html
 ```
+
+Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
+affiche les chemins complets à la place ; dans Windows Terminal, Ctrl+clic les ouvre :
+
+```text
+✅ Rapport HTML : C:\Users\<vous>\media-hygiene\reports\20261003-181105-audit\report.html
+```
+
+Avec `--verbosity verbose`, une astuce 💡 nomme aussi `index.html`, qui liste tous les rapports.
 
 ## L'ouvrir
 
@@ -43,11 +61,12 @@ Ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliq
 
 Cliquez sur une date pour ouvrir ce rapport. Chaque exécution a son propre dossier, nommé
 d'après sa date et son type (`AAAAMMJJ-HHMMSS-audit`), qui contient `report.html`, les
-vignettes et `plan.csv`.
+vignettes et `plan.csv`, et `near.html` s'il y a des quasi-doublons. Un encadré *Sommaire* en
+haut de `report.html` mène à chaque section.
 
 ## Le haut : les totaux
 
-![Le haut d'un rapport d'audit : 83 fichiers média analysés, 32 copies en double dans 20 groupes, 13,9 Mo libérables, 3 fichiers cassés, puis comment on sait que ce sont des doublons](../images/report-top.webp)
+![Le haut d'un rapport d'audit : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 14,0 Mo libérables, 3 fichiers cassés, puis Ce que vous pouvez faire (copies identiques, quasi-doublons, rafales, chacune avec Copier la commande), la ligne d'inventaire, le sommaire et comment on sait que ce sont des doublons](../images/report-top.webp)
 
 Les mêmes chiffres que dans le terminal, puis un rappel : un audit ne modifie rien, et chaque
 copie listée est identique octet par octet à celle gardée.
@@ -68,15 +87,15 @@ libéré.
 
 Cliquez sur le nombre de fichiers d'une paire pour voir chaque copie, ligne par ligne :
 
-![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront supprimés de D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](../images/pair.webp)
+![La page d'une paire de dossiers : gardés dans C:\Photos\2019\Vacances à la mer, seront mis en quarantaine depuis D:\Ancien disque\Photos 2019, 12 copies, les images d'exemple, puis chaque copie avec sa taille et son SHA-256](../images/pair.webp)
 
 ## Les groupes de fichiers identiques
 
 Plus bas, un échantillon aléatoire de groupes de photos (les mêmes à chaque exécution), puis les
-plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies à supprimer 🗑️, et
-l'empreinte SHA-256 qu'elles partagent.
+plus gros groupes d'abord. Chaque groupe montre la copie gardée ✅, les copies mises de côté 📦
+(déplacées en quarantaine ; 🗑️ avec `--delete`), et l'empreinte SHA-256 qu'elles partagent.
 
-![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie supprimée, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
+![Groupes de doublons : une vidéo et trois photos HEIC, chacune avec la copie gardée, la copie mise en quarantaine, le début de leur SHA-256, et Vérifiez vous-même ouvert sur une commande Get-FileHash](../images/report-groups.webp)
 
 **Vérifiez vous-même** donne une commande pour PowerShell. Collez-la : Windows calcule lui-même
 l'empreinte de chaque copie, et elles sont toutes identiques. Vous n'avez pas à croire
@@ -90,10 +109,10 @@ identiques. Il ne leur arrive rien, sauf si vous le demandez :
 - **Quasi-doublons** : la même photo enregistrée à nouveau, plus petite ou recompressée
   ([étape 11](11-near-duplicates.md)).
 
-  ![Quasi-doublons : une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel en quarantaine avec --tier near ; une photo de plage gardée, sa copie WhatsApp de 800 × 533](../images/report-near.webp)
+  ![Quasi-doublons : 1 sûr, 2 à vérifier ; une photo de prairie gardée en 1500 × 1000, sa copie de 1024 × 683 d'un dossier Courriel ; une photo de plage gardée, sa copie WhatsApp de 800 × 533 ; les deux copies partent en quarantaine une fois décidées dans review --near, ou avec --tier near-all ; en dessous, le groupe sûr replié](../images/report-near.webp)
 
 - **Vidéos réencodées** : la même vidéo enregistrée à nouveau, plus petite ou recompressée,
-  décrite par sa résolution, sa durée, son codec et sa taille ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
+  décrite par sa résolution, sa durée, son codec et sa taille, avec un lecteur ([étape 11](11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées)).
 
 - **Rafales** : des photos prises à quelques secondes d'intervalle, la plus nette marquée ⭐
   ([étape 10](10-review-bursts.md)).
@@ -111,17 +130,20 @@ déplacés en quarantaine.
 ## Chaque fichier dans un tableur : `plan.csv`
 
 À côté de chaque rapport, `plan.csv` liste **chaque** fichier du plan, sans limite : groupe,
-SHA-256, taille, action, chemin, dossier, date et la règle qui a choisi la copie gardée. Il
-s'ouvre directement dans Excel, accents compris (séparateur `;` en français) :
+SHA-256, taille, action, chemin, dossier, date et la règle qui a choisi la copie gardée. Les
+[quasi-doublons](11-near-duplicates.md) suivent, groupe par groupe, sans SHA-256 (ce ne sont pas
+des fichiers identiques), la version gardée disant dans la dernière colonne si son groupe est sûr
+ou à vérifier. Il s'ouvre directement dans Excel, accents compris (séparateur `;` en
+français) :
 
 <!-- capture: plan-csv.txt -->
 ```text
-Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail
-1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne
-1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne
-2;4539f131584f9aad4d619782848f952577e9f0781afae06398ac3b79f9e93978;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;
-3;94741fc7d7cdce5722487c17bf48f123321dbbab8eea850e7be2a0e99edb8e54;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne
+Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail;Niveau du quasi-doublon
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne;
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;;
+2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne;
+2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;;
+3;9b999fe90fc44acf6f2c5fb9d89e830321cabb631ae2ea1ad97449e4b78324c8;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne;
 ```
 
 ## Lister et ranger les rapports
@@ -130,8 +152,17 @@ Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail
 récents et supprime les autres :
 
 ```powershell
+mh reports
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene --locale fr reports
 ```
+
+</details>
 
 <!-- capture: reports.txt -->
 ```text
@@ -139,14 +170,15 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261003-080851-clean │ nettoyage │ 83       │ 32       │ 16,2 Mo │ 3      │
-│ 20261003-080845-clean │ nettoyage │ 83       │ 32       │ 15,5 Mo │ 3      │
-│ 20261003-080828-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080822-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080817-audit │ audit     │ 9        │ 4        │ 5,9 Mo  │ 1      │
-│ 20261003-080815-audit │ audit     │ 59       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261003-080813-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
-│ 20261003-080812-audit │ audit     │ 83       │ 32       │ 13,9 Mo │ 3      │
+│ 20261012-102039-clean │ nettoyage │ 85       │ 32       │ 16,4 Mo │ 3      │
+│ 20261012-102039-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261012-102033-clean │ nettoyage │ 85       │ 32       │ 15,6 Mo │ 3      │
+│ 20261012-101940-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261012-101934-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261012-101928-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
+│ 20261012-101926-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261012-101923-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261012-101921-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

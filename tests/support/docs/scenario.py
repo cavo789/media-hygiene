@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
 from tests.support.docker import IMAGE, docker
+from tests.support.docs.browsing import served_pages
 from tests.support.docs.container import (
     Command,
     list_files,
@@ -15,7 +16,9 @@ from tests.support.docs.container import (
     run_in_colour,
 )
 from tests.support.docs.names import Locale
-from tests.support.docs.screenshots import Job, shoot, start_review, stop_review
+from tests.support.docs.people_story import PEOPLE_CAPTURES, people_story
+from tests.support.docs.published import as_published
+from tests.support.docs.screenshots import Job, shoot
 from tests.support.docs.terminal import Window, draw_terminal
 
 if TYPE_CHECKING:
@@ -27,15 +30,9 @@ if TYPE_CHECKING:
 type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
-COMMANDS_TOO: Final = (
-    "crosscheck",
-    "config",
-    "classify",
-    "sort",
-    "album",
-    "inventory",
-    "places",
-)
+COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
+                       "places", "status", "launcher", "review-sort", "tags", "search",
+                       "people", "xmp")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -58,6 +55,7 @@ CAPTURES: Final = frozenset(
         "inventory.txt",
         "crosscheck.txt",
         "review.txt",
+        "review-near.txt",
         "decisions.json",
         "clean.txt",
         "undo.txt",
@@ -71,6 +69,7 @@ CAPTURES: Final = frozenset(
         "undo-sort.txt",
         "help.txt",
         *(f"help-{command}.txt" for command in (*COMMANDS, *COMMANDS_TOO)),
+        *PEOPLE_CAPTURES,
     }
 )
 
@@ -111,21 +110,11 @@ def _crosscheck(demo: Demo) -> Captures:
     return {"crosscheck.txt": run(demo, Command(("crosscheck",)))}
 
 
-def _review(demo: Demo, shots: Path) -> Captures:
-    """The burst review in the browser: one shot set aside in two series."""
-    container = start_review(demo)
-    shoot(demo, Job(f"container:{container}", ("review",)), shots)
-    return {
-        "review.txt": stop_review(container),
-        "decisions.json": read_file(demo, "reports", "decisions.json"),
-    }
-
-
 def _clean(demo: Demo) -> Captures:
     """Clean, undo, clean again with near duplicates and the review's decisions."""
     clean = Command(("clean",), read_only=False)
     choices = ("--decisions", "decisions.json")
-    near = Command(("clean", "--tier", "near", *choices), read_only=False)
+    near = Command(("clean", "--tier", "near-all", *choices), read_only=False)
     captures = {
         "clean.txt": run_confirmed(demo, clean),
         "undo.txt": run(demo, Command(("undo",), read_only=False)),
@@ -184,15 +173,16 @@ def run_scenario(demo: Demo, shots: Path) -> Captures:
         shots: Where the screenshots land (PNG).
 
     Returns:
-        Every console capture, by name.
+        Every console capture, by name, its suggested commands as published.
     """
     captures = _audits(demo)
     _terminal(demo, shots)
     captures |= _crosscheck(demo)
-    captures |= _review(demo, shots)
+    captures |= served_pages(demo, shots)
     captures |= _clean(demo)
     captures |= _reports(demo, shots)
     captures |= _help(demo)
     captures["purge.txt"] = run_confirmed(demo, Command(("purge",), read_only=False))
+    captures |= people_story(demo, shots)
     captures |= _sort(demo)
-    return captures
+    return {name: as_published(demo, text) for name, text in captures.items()}

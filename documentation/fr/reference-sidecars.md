@@ -22,6 +22,9 @@ appartient aux fichiers de son dossier qui portent le même nom : `IMG_1.xmp` à
   seuls avant le nettoyage restent où ils sont, seuls ceux que le nettoyage lui-même laisse seuls
   sont déplacés.
 - **Les dossiers protégés** ne sont jamais modifiés, fichiers compagnons compris.
+- **Écrits par `xmp`** : un fichier compagnon que cet outil a créé pour ses mots, et que personne
+  n'a modifié depuis, ne contient aucune retouche : il ne fait pas de sa photo la copie gardée
+  ([tags](reference-tags.md#emporter-les-mots-avec-les-photos--xmp)).
 
 Le fichier compagnon d'une copie mise de côté n'est pas déplacé à côté de la copie gardée : il
 devient orphelin. Pour garder une autre copie *avec* ses retouches, indiquez son dossier dans

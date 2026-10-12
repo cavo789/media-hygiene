@@ -1,0 +1,39 @@
+{# The `mh` launcher for bash (WSL, Linux, macOS): see services/launcher.py. #}
+{% for line in header %}
+# {{ line }}
+{% endfor %}
+{{ function }}() {
+    local command="" mode=":ro" arg
+    local tty=(-i) page=()
+    for arg in "$@"; do
+        case " {{ script.commands.names | join(" ") }} " in
+            *" $arg "*) command="$arg"; break ;;
+        esac
+    done
+    case " {{ script.commands.writers | join(" ") }} " in
+        *" $command "*) mode="" ;;
+    esac
+    case " {{ script.commands.pages | join(" ") }} " in
+        *" $command "*) page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}") ;;
+    esac
+    case " {{ script.commands.data | join(" ") }} " in
+        *" $command "*) ;;
+        *) if [[ -t 0 && -t 1 ]]; then tty=(-it); fi ;;
+    esac
+{% if script.folders %}
+    mkdir -p {{ script.folders }}
+{% endif %}
+    docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
+        -e "{{ variable }}=1" \
+{% for option in script.environment %}
+        {{ option }} \
+{% endfor %}
+{% for volume in script.data %}
+        -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
+{% endfor %}
+{% for volume in script.tools %}
+        -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
+{% endfor %}
+        "${page[@]}" \
+        {{ image }} "$@"
+}

@@ -61,12 +61,17 @@ def test_clean_moves_every_copy_to_the_quarantine_and_undo_brings_it_back(
 
 
 def test_clean_without_a_quarantine_refuses_unless_delete(tmp_path: Path) -> None:
-    """Nowhere to set the copies aside: refused, `--delete` named as the way out."""
+    """Nowhere to set the copies aside: refused, the command adding it offered.
+
+    `--delete` is never the way out offered: it is the one that erases (TODO 0100).
+    """
     runtime = make_runtime(make_locations(tmp_path, MountKind.QUARANTINE))
     service = CleanService(runtime, NullProgress())
     with pytest.raises(MountError, match="to /quarantine") as refused:
         service.ensure_ready()
-    assert "--delete" in (refused.value.tip or "")
+    offered = f"{refused.value.tip} {refused.value.command}"
+    assert ":/quarantine" in offered
+    assert "--delete" not in offered
     service.ensure_ready(CleanMode(delete=True))
 
 

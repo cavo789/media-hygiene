@@ -3,32 +3,44 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
 from media_hygiene.cli import options, review_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show
+from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
+from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_flag
+from media_hygiene.services.near_reviewing import open_near_review, serve_near_review
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.reviewing import open_review, review_target, serve_review
 
-REVIEW_PORT: Final = 8080
-_DECISIONS_FILE: Final = Path("decisions.json")
+if TYPE_CHECKING:
+    from media_hygiene.console.output import Output
+    from media_hygiene.review.session import ReviewSession
+    from media_hygiene.services.runtime import Runtime
+
+_DECISIONS_FILE: Final = Path(DEFAULT_DECISIONS)
 
 
 # The options are parameters: the documented exception for Typer commands.
 def review_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
+    near: Annotated[bool, review_options.near()] = False,
+    decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
+    port: Annotated[
+        int, review_options.port(options.panel_advanced())
+    ] = review_options.PAGE_PORT,
     prefer: Annotated[list[str] | None, options.prefer()] = None,
     protect: Annotated[list[str] | None, options.protect()] = None,
     exclude: Annotated[list[str] | None, options.exclude()] = None,
-    decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
-    port: Annotated[int, review_options.port()] = REVIEW_PORT,
 ) -> None:
-    """Audit, then serve the burst series in the browser until Ctrl+C.
+    """Audit, then serve the burst series (or near duplicates) until Ctrl+C.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -37,17 +49,28 @@ def review_command(  # pylint: disable=too-many-arguments
         exclude: `--exclude` folders.
         decisions: `--decisions`, the file to save the decisions in.
         port: `--port`, inside the container.
+        near: `--near`, the near duplicates instead of the burst series.
     """
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
         runtime = runtime.with_overrides(folder_layer(prefer, protect, exclude))
-        target = review_target(runtime, decisions)
+        target = review_target(runtime, decisions, port)
         findings = audit_and_show(runtime)
+        if near:
+            if not findings.similar.groups:
+                output.success(_("No near duplicates: nothing to review."))
+                return
+            near_session = open_near_review(runtime, findings, target)
+            tell_near_opened(runtime, near_session)
+            serve_near_review(runtime, near_session, port)
+            tell_near_stopped(ctx, runtime, near_session)
+            return
         if not findings.similar.bursts:
             output.success(_("No burst series: nothing to review."))
             return
         session = open_review(runtime, findings, target)
+        _tell_obvious(output, session)
         if session.dropped:
             dropped = ngettext(
                 "{count} series reviewed earlier changed since: reviewed again.",
@@ -56,21 +79,68 @@ def review_command(  # pylint: disable=too-many-arguments
             )
             output.warning(dropped.format(count=human_number(session.dropped)))
         serve_review(runtime, session, port)
-        series, shots = session.progress
-        output.blank()
-        output.success(
-            _(
-                "Review stopped — series with shots set aside: {series}, shots set "
-                "aside: {shots}."
-            ).format(series=human_number(series), shots=human_number(shots))
+        _tell_stopped(ctx, runtime, session)
+
+
+def _tell_obvious(output: Output, session: ReviewSession) -> None:
+    """Say how many series still to see are obvious, validated by one click.
+
+    Args:
+        output: Where to tell it.
+        session: The review, opened.
+    """
+    todo = [item for item in session.state().series if not item.reviewed]
+    if not todo:
+        return
+    obvious = sum(1 for item in todo if item.obvious)
+    message = ngettext(
+        "{count} series to see: {obvious} (one click), {look} to look at.",
+        "{count} series to see: {obvious} (one click), {look} to look at.",
+        len(todo),
+    )
+    output.info(
+        message.format(
+            count=human_number(len(todo)),
+            obvious=ngettext("{count} obvious", "{count} obvious", obvious).format(
+                count=human_number(obvious)
+            ),
+            look=human_number(len(todo) - obvious),
         )
-        place = session.place
-        output.info(_("Your choices are in {place}.").format(place=place.host))
-        if shots:
-            output.tip(
-                _(
-                    "Next: the same 'clean' command with --decisions {file} (that "
-                    "file); the shots set aside go to the quarantine, 'undo' brings "
-                    "them back."
-                ).format(file=place.argument)
-            )
+    )
+
+
+def _tell_stopped(ctx: typer.Context, runtime: Runtime, session: ReviewSession) -> None:
+    """Sum the review up once stopped, and say what comes next.
+
+    Args:
+        ctx: Typer context of the review, whose options `clean` keeps.
+        runtime: Settings, mount points and output.
+        session: The review, stopped.
+    """
+    output = runtime.output
+    series, shots = session.progress
+    output.blank()
+    output.success(
+        _(
+            "Review stopped — series with shots set aside: {series}, shots set "
+            "aside: {shots}."
+        ).format(series=human_number(series), shots=human_number(shots))
+    )
+    seen, total = session.seen
+    output.info(
+        _("Series seen: {seen} of {total}.").format(
+            seen=human_number(seen), total=human_number(total)
+        )
+    )
+    place = session.place
+    output.info(_("Your choices are in {place}.").format(place=place.host))
+    if shots:
+        flag = decisions_flag(place.argument)
+        suggest(
+            runtime,
+            _(
+                "the same 'clean' command with {option}; the shots set aside go "
+                "to the quarantine, 'undo' brings them back."
+            ).format(option=flag),
+            NextVerb(carried(runtime, f"clean {flag}", ctx), CHANGING),
+        )

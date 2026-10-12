@@ -8,7 +8,7 @@ from rich.padding import Padding
 from rich.progress import Progress, ProgressColumn, TaskID
 from rich.text import Text
 
-from media_hygiene.console.progress_columns import step_columns
+from media_hygiene.console.progress_columns import UNITS, step_columns
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -37,8 +37,9 @@ class RichProgress:
             console: Where to draw.
         """
         self._console = console
-        self._progress: Progress | None = None
+        self._progress: HintedProgress | None = None
         self._task: TaskID | None = None
+        self._weighted = False
 
     def __enter__(self) -> Self:
         """Enter the lifetime of the bars.
@@ -70,12 +71,37 @@ class RichProgress:
             hint=step.hint,
         )
         self._progress.start()
-        self._task = self._progress.add_task(step.title, total=total)
+        # Weighted: Rich follows the weight; the count shown comes from the fields.
+        self._weighted = bool(step.total_weight) and total is not None
+        if self._weighted:
+            self._task = self._progress.add_task(
+                step.title, total=step.total_weight, units=0, units_total=total
+            )
+        else:
+            self._task = self._progress.add_task(step.title, total=total)
 
-    def advance(self) -> None:
-        """Advance the current bar by one unit."""
-        if self._progress is not None and self._task is not None:
+    def advance(self, weight: int = 1) -> None:
+        """Advance the current bar by one unit.
+
+        Args:
+            weight: Its share of the step's total weight, when the step has one.
+        """
+        if self._progress is None or self._task is None:
+            return
+        if not self._weighted:
             self._progress.advance(self._task)
+            return
+        units = self._progress.tasks[-1].fields[UNITS] + 1  # one task per display
+        self._progress.update(self._task, advance=weight, units=units)
+
+    def current(self, text: str) -> None:
+        """Show what is being done right now, under the bar.
+
+        Args:
+            text: Translated, e.g. the action and the file it is about.
+        """
+        if self._progress is not None:
+            self._progress.current = text
 
     def stop(self) -> None:
         """Remove the current bar."""
@@ -99,15 +125,20 @@ class HintedProgress(Progress):
         # Set before `Progress.__init__`, which already renders the display.
         self._hint = Padding(Text(hint, style=_HINT_STYLE), _HINT_INDENT)
         self._has_hint = bool(hint)
+        self.current = ""  # what is being done right now, set from the work's thread
         super().__init__(*columns, console=console, transient=True)
 
     @override
     def get_renderables(self) -> Iterable[RenderableType]:
-        """Yield the bars, then the explanation.
+        """Yield the bars, what is being done right now, then the explanation.
 
         Yields:
             What to draw.
         """
         yield self.make_tasks_table(self.tasks)
+        if current := self.current:
+            # One line, cut at the end: a long path never pushes the display down.
+            line = Text(current, no_wrap=True, overflow="ellipsis")
+            yield Padding(line, _HINT_INDENT)
         if self._has_hint:
             yield self._hint

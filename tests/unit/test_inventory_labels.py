@@ -140,3 +140,12 @@ def test_a_name_starting_with_equals_stays_text() -> None:
     sheet = Workbook(write_only=True).create_sheet()
     named = _cell(sheet, Column("Name", lambda e: e.file.path.name), entry("=1.jpg"))
     assert (named.value, named.data_type) == ("=1.jpg", "s")
+
+
+def test_control_characters_are_dropped_from_cells() -> None:
+    """Excel refuses them: an index written earlier may hold a NUL."""
+    sheet = Workbook(write_only=True).create_sheet()
+    model = _cell(
+        sheet, Column("Camera", lambda _e: "SAMSUNG\x00\x07 DIGIMAX"), entry()
+    )
+    assert model.value == "SAMSUNG DIGIMAX"

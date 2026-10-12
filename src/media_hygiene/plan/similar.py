@@ -14,12 +14,15 @@ from media_hygiene.plan.bursts import burst_series
 from media_hygiene.plan.near import near_decisions
 from media_hygiene.plan.near_video import video_near_decisions
 from media_hygiene.plan.similar_models import SimilarFindings
+from media_hygiene.scan.exposure import exposure_of
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.plan.keeper import KeepPolicy
+    from media_hygiene.scan.broken import IntegrityFindings
+    from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import DuplicateGroup, MediaFile, VisualFacts
     from media_hygiene.scan.video_models import VideoLook
 
@@ -34,6 +37,30 @@ class SimilarInputs:
     videos: Mapping[Path, VideoLook] = field(
         default_factory=lambda: MappingProxyType({})
     )
+    metadata: Mapping[Path, MediaMetadata] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+
+    @classmethod
+    def of(
+        cls,
+        files: Sequence[MediaFile],
+        integrity: IntegrityFindings,
+        groups: Sequence[DuplicateGroup],
+    ) -> SimilarInputs:
+        """Gather what the checks of an audit learnt about its files.
+
+        Args:
+            files: Every media file.
+            integrity: What checking them learnt.
+            groups: The exact-duplicate groups.
+
+        Returns:
+            The inputs.
+        """
+        return cls(
+            files, integrity.visuals, groups, integrity.videos, integrity.metadata
+        )
 
 
 def find_similar(inputs: SimilarInputs, policy: KeepPolicy) -> SimilarFindings:
@@ -74,4 +101,12 @@ def find_similar(inputs: SimilarInputs, policy: KeepPolicy) -> SimilarFindings:
         visuals=inputs.visuals,
         videos=videos,
         video_looks=inputs.videos,
+        exposures=MappingProxyType(
+            {
+                file.path: exposure
+                for series in bursts
+                for file in series.shots
+                if (exposure := exposure_of(inputs.metadata.get(file.path)))
+            }
+        ),
     )

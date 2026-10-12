@@ -98,7 +98,7 @@ def test_errors_are_explained(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -
     monkeypatch.setenv("MEDIA_HYGIENE_GENERAL__LOCALE", "klingon")
     broken = run(cli, "config")
     assert broken.exit_code == 1
-    assert "general.locale" in broken.output
+    assert "MEDIA_HYGIENE_GENERAL__LOCALE" in broken.output
 
 
 def test_main_installs_the_locale_before_building_the_help(
@@ -128,4 +128,6 @@ def test_ext_limits_the_audit_to_some_extensions(cli: CliRunner) -> None:
     assert (
         "Categories: photo, raw, video, media and those of scan.categories" in help_text
     )
-    assert "did you mean photo?" in run(cli, "audit", "--ext", "photos").output
+    assert "did you mean photo?" in " ".join(
+        run(cli, "audit", "--ext", "photos").output.split()
+    )

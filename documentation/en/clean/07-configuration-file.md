@@ -7,15 +7,32 @@ command, write them once in a file, `config.toml`. The tool reads it at every ru
 
 ## Create the file
 
-The tool only sees the folders you mount, so give it a folder of yours on `/config`, and run
-the `config` command once:
+The tool only sees the folders you mount: it reads the file in a folder of yours mounted on
+`/config` (`mh` mounts `$HOME\media-hygiene\config`). Run the `config` command once:
 
 ```powershell
-mkdir "$HOME\media-hygiene\config"
+mh config
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
 docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config
 ```
 
-The first line says what happened:
+</details>
+
+A commented `config.toml` has appeared in `C:\Users\<you>\media-hygiene\config`. Open it with any
+text editor, Notepad is fine:
+
+```powershell
+notepad "$HOME\media-hygiene\config\config.toml"
+```
+
+<details>
+<summary>What <code>config</code> printed (its first line says the file was created, then every setting)</summary>
 
 <!-- capture: config-first.txt|A commented configuration file| -->
 ```text
@@ -25,6 +42,7 @@ Effective settings
 ┃ Setting                       ┃ Value                         ┃ Origin       ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
 │ general.locale                │ en                            │ command line │
+│ general.timezone              │                               │ default      │
 │ general.verbosity             │ info                          │ default      │
 │ general.color                 │ never                         │ command line │
 │ folders.preferred             │ []                            │ default      │
@@ -59,7 +77,7 @@ Effective settings
 │                               │ _-].*)?', 'image\\d*',        │              │
 │                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
 │                               │ -[0-9a-f]{12}',               │              │
-│                               │ '[0-9a-f]{16,}']              │              │
+│                               │ '[0-9a-f]{16,}', '\\d{1,6}']  │              │
 │ keep.generic_folders          │ ['DCIM',                      │ default      │
 │                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
 │                               │ 'Camera( Roll| Uploads)?',    │              │
@@ -70,8 +88,58 @@ Effective settings
 │                               │ d.écran', '(New               │              │
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
-│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
+│                               │ . ](?P<month>\\d{1,2})',      │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)\\.?[       │              │
+│                               │ _-]*(?P<year>(?:19|20)\\d{2}) │              │
+│                               │ ',                            │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[   │              │
+│                               │ _-]*(?P<month_name>janvier|ja │              │
+│                               │ nuary|januari|jan|février|fev │              │
+│                               │ rier|february|februari|feb|fé │              │
+│                               │ v|fev|mars|march|maart|mar|av │              │
+│                               │ ril|april|apr|avr|mai|may|mei │              │
+│                               │ |juin|june|juni|jun|juillet|j │              │
+│                               │ uly|juli|jul|juil|août|aout|a │              │
+│                               │ ugust|augustus|aug|septembre| │              │
+│                               │ september|sep|sept|octobre|oc │              │
+│                               │ tober|oktober|oct|okt|novembr │              │
+│                               │ e|november|nov|décembre|decem │              │
+│                               │ bre|december|dec|déc)',       │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)',          │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})-\\ │              │
+│                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
+│                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
+│ clean.purge_hint_days         │ 30                            │ default      │
+│ review.propose_aside_below    │ 0.35                          │ default      │
+│ review.identical_below        │ 6                             │ default      │
+│ review.brightness_gap         │ 60.0                          │ default      │
+│ review.clipped_gap            │ 0.25                          │ default      │
 │ classify.target               │                               │ default      │
 │ classify.leave                │ []                            │ default      │
 │ classify.timezone             │                               │ default      │
@@ -94,7 +162,8 @@ Effective settings
 │                               │ 95, 'kind': 85, 'path': 90,   │              │
 │                               │ 'camera': 90,                 │              │
 │                               │ 'other-category': 85,         │              │
-│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'subject': 85, 'person': 85,  │              │
+│                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
 │                               │ 70, 'date-only': 90,          │              │
@@ -123,14 +192,18 @@ Effective settings
 │                               │ '', 'dates': '', 'pattern':   │              │
 │                               │ '', 'kind': 'download',       │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Existing     │              │
 │                               │ folders', 'match':            │              │
 │                               │ 'existing_folder',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Screenshots  │              │
 │                               │ and documents', 'match':      │              │
 │                               │ 'kind', 'category':           │              │
@@ -138,14 +211,18 @@ Effective settings
 │                               │ 'dates': '', 'pattern': '',   │              │
 │                               │ 'kind': 'screenshot',         │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Event        │              │
 │                               │ neighbours', 'match':         │              │
 │                               │ 'event_neighbour',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Christmas',  │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category':                   │              │
@@ -153,7 +230,9 @@ Effective settings
 │                               │ '12-24..12-26', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'New Year',   │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category': 'Parties/New      │              │
@@ -161,7 +240,9 @@ Effective settings
 │                               │ '12-31..01-01', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}]                        │              │
 │ classify.ai                   │ {'url':                       │ default      │
 │                               │ 'http://host.docker.internal: │              │
@@ -193,6 +274,27 @@ Effective settings
 │ places.nominatim_url          │ https://nominatim.openstreetm │ default      │
 │                               │ ap.org                        │              │
 │ album.root                    │                               │ default      │
+│ tags.language                 │                               │ default      │
+│ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
+│                               │ 'intérieur', 'extérieur',     │              │
+│                               │ 'plafond', 'photo', 'image',  │              │
+│                               │ 'personne', 'personnes',      │              │
+│                               │ 'chose', 'objet', 'fond',     │              │
+│                               │ 'scène', 'vue', 'floor',      │              │
+│                               │ 'wall', 'indoor', 'indoors',  │              │
+│                               │ 'outdoor', 'outdoors',        │              │
+│                               │ 'ceiling', 'picture',         │              │
+│                               │ 'person', 'people', 'thing',  │              │
+│                               │ 'object', 'background',       │              │
+│                               │ 'scene', 'view']              │              │
+│ tags.town_km                  │ 20.0                          │ default      │
+│ tags.xmp_sources              │ ['vision', 'place']           │ default      │
+│ people.similarity             │ 0.363                         │ default      │
+│ people.min_face               │ 40                            │ default      │
+│ people.min_sharpness          │ 30.0                          │ default      │
+│ people.with_audit             │ False                         │ default      │
+│ people.ignored                │ 0 faces                       │ default      │
+│ people.person                 │                               │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -226,8 +328,33 @@ Mount points
 💡 Edit /config/config.toml to change these settings; command-line options win.
 ```
 
-A commented `config.toml` has appeared in `C:\Users\<you>\media-hygiene\config`. Open it with any
-text editor (Notepad is fine). Every setting is explained, for instance:
+</details>
+
+## The three settings most people change
+
+Find these lines in the file, change their values, save:
+
+```toml
+[general]
+locale = "fr"                 # the language of the tool: en | fr
+timezone = "Europe/Brussels"  # your time zone; empty: UTC, one or two hours off
+
+[folders]
+preferred = ['C:\Photos\Family']  # the folders whose copies are kept first
+```
+
+- **`locale`**: `"fr"` for French, `"en"` for English.
+- **`timezone`**: your zone, such as `Europe/Paris` or `America/Montreal`, so that the reports
+  are named and dated in your local time.
+- **`preferred`**: the folders that keep their copies ([step 5](05-choose-the-kept-copy.md));
+  Windows paths between **single quotes**.
+
+The next runs read the file as long as `-v …:/config` is in the command (`mh` adds it for you).
+Everything else can wait: the rest of this page explains the other settings.
+
+## Every setting is explained in the file
+
+For instance, the start of the file:
 
 <!-- capture: config.toml|[general]|color =  -->
 ```toml
@@ -236,7 +363,14 @@ text editor (Notepad is fine). Every setting is explained, for instance:
 # CLI: --locale
 locale = "en"
 
-# How much to log: "error", "warning", "info" or "debug".
+# Your time zone, for the dates and the names of reports and runs, e.g.
+# "Europe/Brussels" or "America/Montreal" (list:
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: UTC, as Docker
+# does not know yours.
+timezone = ""
+
+# How much to log: "error", "warning", "info", "verbose" (info and every tip, not only
+# the best two) or "debug".
 # CLI: --verbosity
 verbosity = "info"
 
@@ -258,6 +392,7 @@ The settings of steps 5 and 6, in the file. Write Windows paths between **single
 ```toml
 [general]
 locale = "en"          # en | fr
+timezone = "Europe/Brussels"  # your time zone; empty: UTC
 
 [folders]
 preferred = ['C:\Photos\Old phone', 'C:\Photos\Family']
@@ -279,6 +414,10 @@ confirm = true         # sort asks before moving anything
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder alive
 ```
 
+- **`timezone`**: your time zone, for the times shown and the names of the reports and runs.
+  Docker does not know it: empty, everything is in UTC (the audit reminds you). Its name comes from
+  [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g.
+  `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` in `docker run` works too.
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
 - **`protected`**: never modified, and their files are always the copies kept (`--protect`).
 - **`excluded`**: never analysed, for a real backup (`--exclude`).
@@ -300,7 +439,15 @@ the built-in lists; an empty list `[]` disables the rule.
 
 ## Use it
 
-Add the same `-v …:/config` to every command, and the tool reads the file:
+`mh` mounts the folder for every command, so the tool reads the file each time. Without `mh`,
+add the same `-v …:/config` to every command:
+
+```powershell
+mh audit
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -312,10 +459,15 @@ docker run --rm -it `
   cavo789/media-hygiene audit
 ```
 
+</details>
+
 ## Check what the tool uses: `config`
 
-`config` shows every setting, where it comes from, and the state of each mount point. Run it
-with the same `-v` options as your audit (here `config` instead of `audit`):
+`config` shows every setting, where it comes from, and the state of each mount point: `mh config`
+(without `mh`, the same `-v` options as your audit, with `config` instead of `audit`):
+
+<details>
+<summary>What <code>config</code> prints: every setting, then every mount point</summary>
 
 <!-- capture: config.txt -->
 ```text
@@ -324,6 +476,7 @@ Effective settings
 ┃ Setting                       ┃ Value                         ┃ Origin       ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
 │ general.locale                │ en                            │ command line │
+│ general.timezone              │                               │ config.toml  │
 │ general.verbosity             │ info                          │ config.toml  │
 │ general.color                 │ never                         │ command line │
 │ folders.preferred             │ []                            │ config.toml  │
@@ -358,7 +511,7 @@ Effective settings
 │                               │ _-].*)?', 'image\\d*',        │              │
 │                               │ '[0-9a-f]{8}(-[0-9a-f]{4}){3} │              │
 │                               │ -[0-9a-f]{12}',               │              │
-│                               │ '[0-9a-f]{16,}']              │              │
+│                               │ '[0-9a-f]{16,}', '\\d{1,6}']  │              │
 │ keep.generic_folders          │ ['DCIM',                      │ default      │
 │                               │ '\\d{3}[A-Z0-9_]{5}',         │              │
 │                               │ 'Camera( Roll| Uploads)?',    │              │
@@ -369,8 +522,58 @@ Effective settings
 │                               │ d.écran', '(New               │              │
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
-│                               │ 'Import(s|ed)?|Temp|tmp']     │              │
+│                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
+│                               │ . ](?P<month>\\d{1,2})',      │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)\\.?[       │              │
+│                               │ _-]*(?P<year>(?:19|20)\\d{2}) │              │
+│                               │ ',                            │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})[   │              │
+│                               │ _-]*(?P<month_name>janvier|ja │              │
+│                               │ nuary|januari|jan|février|fev │              │
+│                               │ rier|february|februari|feb|fé │              │
+│                               │ v|fev|mars|march|maart|mar|av │              │
+│                               │ ril|april|apr|avr|mai|may|mei │              │
+│                               │ |juin|june|juni|jun|juillet|j │              │
+│                               │ uly|juli|jul|juil|août|aout|a │              │
+│                               │ ugust|augustus|aug|septembre| │              │
+│                               │ september|sep|sept|octobre|oc │              │
+│                               │ tober|oktober|oct|okt|novembr │              │
+│                               │ e|november|nov|décembre|decem │              │
+│                               │ bre|december|dec|déc)',       │              │
+│                               │ '(?P<month_name>janvier|janua │              │
+│                               │ ry|januari|jan|février|fevrie │              │
+│                               │ r|february|februari|feb|fév|f │              │
+│                               │ ev|mars|march|maart|mar|avril │              │
+│                               │ |april|apr|avr|mai|may|mei|ju │              │
+│                               │ in|june|juni|jun|juillet|july │              │
+│                               │ |juli|jul|juil|août|aout|augu │              │
+│                               │ st|augustus|aug|septembre|sep │              │
+│                               │ tember|sep|sept|octobre|octob │              │
+│                               │ er|oktober|oct|okt|novembre|n │              │
+│                               │ ovember|nov|décembre|decembre │              │
+│                               │ |december|dec|déc)',          │              │
+│                               │ '(?P<year>(?:19|20)\\d{2})-\\ │              │
+│                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
+│                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
+│ clean.purge_hint_days         │ 30                            │ config.toml  │
+│ review.propose_aside_below    │ 0.35                          │ config.toml  │
+│ review.identical_below        │ 6                             │ config.toml  │
+│ review.brightness_gap         │ 60.0                          │ config.toml  │
+│ review.clipped_gap            │ 0.25                          │ config.toml  │
 │ classify.target               │                               │ config.toml  │
 │ classify.leave                │ []                            │ config.toml  │
 │ classify.timezone             │                               │ config.toml  │
@@ -393,7 +596,8 @@ Effective settings
 │                               │ 95, 'kind': 85, 'path': 90,   │              │
 │                               │ 'camera': 90,                 │              │
 │                               │ 'other-category': 85,         │              │
-│                               │ 'subject': 85, 'place': 90,   │              │
+│                               │ 'subject': 85, 'person': 85,  │              │
+│                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
 │                               │ 70, 'date-only': 90,          │              │
@@ -422,14 +626,18 @@ Effective settings
 │                               │ '', 'dates': '', 'pattern':   │              │
 │                               │ '', 'kind': 'download',       │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Existing     │              │
 │                               │ folders', 'match':            │              │
 │                               │ 'existing_folder',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Screenshots  │              │
 │                               │ and documents', 'match':      │              │
 │                               │ 'kind', 'category':           │              │
@@ -437,14 +645,18 @@ Effective settings
 │                               │ 'dates': '', 'pattern': '',   │              │
 │                               │ 'kind': 'screenshot',         │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Event        │              │
 │                               │ neighbours', 'match':         │              │
 │                               │ 'event_neighbour',            │              │
 │                               │ 'category': '', 'dates': '',  │              │
 │                               │ 'pattern': '', 'kind': None,  │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'Christmas',  │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category':                   │              │
@@ -452,7 +664,9 @@ Effective settings
 │                               │ '12-24..12-26', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}, {'name': 'New Year',   │              │
 │                               │ 'match': 'calendar',          │              │
 │                               │ 'category': 'Parties/New      │              │
@@ -460,7 +674,9 @@ Effective settings
 │                               │ '12-31..01-01', 'pattern':    │              │
 │                               │ '', 'kind': None,             │              │
 │                               │ 'categories': [],             │              │
-│                               │ 'per_photo': False, 'score':  │              │
+│                               │ 'per_photo': False, 'names':  │              │
+│                               │ [], 'all': False,             │              │
+│                               │ 'min_share': None, 'score':   │              │
 │                               │ None}]                        │              │
 │ classify.ai                   │ {'url':                       │ config.toml  │
 │                               │ 'http://host.docker.internal: │              │
@@ -492,6 +708,27 @@ Effective settings
 │ places.nominatim_url          │ https://nominatim.openstreetm │ config.toml  │
 │                               │ ap.org                        │              │
 │ album.root                    │                               │ config.toml  │
+│ tags.language                 │                               │ config.toml  │
+│ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
+│                               │ 'intérieur', 'extérieur',     │              │
+│                               │ 'plafond', 'photo', 'image',  │              │
+│                               │ 'personne', 'personnes',      │              │
+│                               │ 'chose', 'objet', 'fond',     │              │
+│                               │ 'scène', 'vue', 'floor',      │              │
+│                               │ 'wall', 'indoor', 'indoors',  │              │
+│                               │ 'outdoor', 'outdoors',        │              │
+│                               │ 'ceiling', 'picture',         │              │
+│                               │ 'person', 'people', 'thing',  │              │
+│                               │ 'object', 'background',       │              │
+│                               │ 'scene', 'view']              │              │
+│ tags.town_km                  │ 20.0                          │ config.toml  │
+│ tags.xmp_sources              │ ['vision', 'place']           │ config.toml  │
+│ people.similarity             │ 0.363                         │ config.toml  │
+│ people.min_face               │ 40                            │ config.toml  │
+│ people.min_sharpness          │ 30.0                          │ config.toml  │
+│ people.with_audit             │ False                         │ config.toml  │
+│ people.ignored                │ 0 faces                       │ default      │
+│ people.person                 │                               │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -524,6 +761,8 @@ Mount points
 
 💡 Edit /config/config.toml to change these settings; command-line options win.
 ```
+
+</details>
 
 - **Origin** says where each value comes from: `default`, `config.toml`, `environment` or
   `command line`.

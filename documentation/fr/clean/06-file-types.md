@@ -27,6 +27,13 @@ Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
 aucune vidéo. Par exemple, seulement les photos de l'iPhone et les vidéos :
 
 ```powershell
+mh audit --ext heic,video
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
@@ -34,21 +41,25 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr audit --ext heic,video
 ```
 
+</details>
+
 L'audit commence par dire ce qu'il analyse :
 
 <!-- capture: audit-ext.txt|Seuls sont|└ -->
 ```text
 ⚠️  Seuls sont analysés : heic, video.
 
+
 Résumé de l'audit
-┌───────────────────────────────────────┬────────┐
-│ Fichiers média analysés               │      9 │
-│ Groupes de fichiers identiques        │      4 │
-│ Copies en trop, à mettre de côté      │      4 │
-│ Espace libérable                      │ 5,9 Mo │
-│ Fichiers cassés (vides ou illisibles) │      1 │
-│ Durée                                 │    0 s │
-└───────────────────────────────────────┴────────┘
+┌──────────────────────────────────────────────────────────┬────────┐
+│ Fichiers média analysés                                  │     10 │
+│ Groupes de fichiers identiques                           │      4 │
+│ Copies en trop, à mettre de côté                         │      4 │
+│ Espace libérable                                         │ 5,9 Mo │
+│ Fichiers cassés (vides ou illisibles)                    │      1 │
+│ Vidéos réencodées (déplacées seulement avec --tier near) │      1 │
+│ Durée                                                    │    0 s │
+└──────────────────────────────────────────────────────────┴────────┘
 ```
 
 Une valeur sans point est une catégorie quand l'une porte ce nom, sinon une extension :
@@ -79,7 +90,15 @@ voir ci-dessous).
 
 L'outil est fait pour les photos et les vidéos, mais `--ext` accepte aussi d'autres extensions,
 par exemple pour trouver les documents en double d'un dossier familial. `clean`
-([étape 8](08-clean.md)) a alors besoin du montage `/quarantine` :
+([étape 8](08-clean.md)) a alors besoin du montage `/quarantine`, que `mh` ajoute ; le dossier
+doit être un de ceux de `mh` (sinon relancez [`launcher`](../commands/launcher.md) avec son `-v`) :
+
+```powershell
+mh clean --ext pdf,docx
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -88,6 +107,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean --ext pdf,docx
 ```
+
+</details>
 
 Ces fichiers sont traités avec plus de précautions que les photos. Pour une photo, le dossier
 n'est qu'une façon de ranger ; pour un document ou un programme, **l'endroit où se trouve le

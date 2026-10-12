@@ -16,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.geo.areas import Shape, check_shape
 from media_hygiene.geo.distance import Point
+from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -73,7 +74,8 @@ class PersonalPlace(BaseModel):
         """
         name = name.strip()
         if not name or "{" in name or "}" in name:
-            message = f"{name!r} is not a place name: no braces, not empty"
+            message = _("'{name}' is not a place name: no braces, not empty")
+            message = message.format(name=name)
             raise ValueError(message)
         check_layout(name)
         return name
@@ -100,10 +102,12 @@ def check_places(places: Sequence[PersonalPlace]) -> None:
     seen: set[str] = set()
     for place in places:
         if place.name.casefold() in seen:
-            message = f"two places are named {place.name!r}"
+            message = _("two places are named '{name}'").format(name=place.name)
             raise ValueError(message)
         seen.add(place.name.casefold())
     homes = [place.name for place in places if place.home]
     if len(homes) > 1:
-        message = f"only one place can be home, not {', '.join(homes)}"
+        message = _("only one place can be home, not {names}").format(
+            names=", ".join(homes)
+        )
         raise ValueError(message)

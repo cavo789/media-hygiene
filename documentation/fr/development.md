@@ -16,6 +16,11 @@ cd media-hygiene
 docker build --tag media-hygiene .
 ```
 
+La cible par défaut, `local`, ajoute seulement `MEDIA_HYGIENE_IMAGE=media-hygiene` : les commandes
+que l'outil propose (👉 Et maintenant, le lanceur `mh`) lancent alors votre image, et non l'image
+publiée, peut-être plus ancienne. `--target published` construit l'image exactement comme Docker
+Hub la sert.
+
 L'image compile son propre `ffprobe`, environ 1 Mo au lieu de 141 Mo pour une version complète :
 l'outil demande seulement si le conteneur d'une vidéo s'ouvre, donc l'étape `ffprobe` du
 `Dockerfile` ne garde que les démultiplexeurs des extensions vidéo analysées. Une nouvelle
@@ -90,6 +95,17 @@ contient le deuxième champ (`re:` pour une expression régulière) à la suivan
 troisième (le détail est dans `tests/support/docs/pages.py`). Tout le reste des pages s'écrit à
 la main ; relisez le résultat avec `git diff documentation/`.
 
+Les mêmes pages forment le site de la documentation, <https://cavo789.github.io/media-hygiene/>,
+où mènent les liens que l'outil affiche (`DOC_PAGES` dans `constants.py`). MkDocs Material le
+construit (`.config/mkdocs/` : `mkdocs.yml`, et `hooks.py`, qui envoie vers GitHub les liens qui
+sortent de `documentation/`).
+[`.github/workflows/docs.yml`](../../.github/workflows/docs.yml) le publie sur GitHub Pages à
+chaque push de `main` qui change la documentation (il faut, une fois : Settings → Pages → Source :
+GitHub Actions). `docs_build` le construit comme la CI : un lien ou une ancre cassés le font
+échouer. `docs_serve` l'affiche sur <http://127.0.0.1:8000>, rechargé à chaque enregistrement. Une
+nouvelle page va dans `nav` de `mkdocs.yml` (un test le vérifie), en anglais seulement : le
+français suit les mêmes noms de fichiers.
+
 ## Intégration continue et versions
 
 Chaque push et chaque pull request lancent la barrière qualité et les tests de bout en bout sur
@@ -100,5 +116,16 @@ et arm64, lance les tests de bout en bout, puis pousse `cavo789/media-hygiene:<v
 `:latest` sur Docker Hub, avec un SBOM et une attestation de provenance. Il faut pour cela deux
 secrets dans le dépôt : `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN` (un jeton d'accès Docker Hub en
 lecture/écriture).
+
+Les versions épinglées sont tenues à jour par l'application GitHub Renovate
+([`.github/renovate.json`](../../.github/renovate.json)). Chaque lundi matin, elle ouvre une pull
+request par groupe : GitHub Actions (SHA et commentaire `# vX.Y.Z`), dépendances Python
+(`pyproject.toml` et `uv.lock`), images et outils Docker (le digest de l'image de base Python et
+les `ARG` du `Dockerfile` annotés `# renovate:`), et hooks pre-commit. Rien n'est fusionné
+automatiquement : un push sur `main` reconstruit l'image. Son ticket « Dependency Dashboard »
+liste ce qui attend. Une pull request FFmpeg demande une étape manuelle : vérifiez la signature
+de l'archive, puis mettez sa nouvelle empreinte dans `FFMPEG_SHA256` (la construction de l'image
+échoue tant que ce n'est pas fait). Le helper `deps` répond toujours à la même question en local,
+pour les dépendances Python.
 
 La feuille de route se trouve dans [.todos/plan.md](../../.todos/plan.md).

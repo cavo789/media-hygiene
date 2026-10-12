@@ -25,6 +25,7 @@ from media_hygiene.index.listing import (
     walked_roots,
 )
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.tag_rows import tags_reader
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.folders import new_report_folder
 from media_hygiene.report.inventory_entries import InventoryContext, entry_of
@@ -34,6 +35,8 @@ from media_hygiene.report.inventory_workbook import (
     write_workbook,
 )
 from media_hygiene.services.data_checks import unreadable_index
+from media_hygiene.services.missing_mount import missing_mount, typed_again
+from media_hygiene.services.next_command import NextVerb
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -117,6 +120,7 @@ def _entries(runtime: Runtime, connection: sqlite3.Connection) -> Iterator[Entry
         shared_digests(connection),
         settings.inventory,
         zone_of(settings.classify.timezone),
+        tags_reader(connection),
     )
     for file in indexed_files(connection):
         entry = entry_of(file, context)
@@ -155,9 +159,10 @@ def _reports_dir(runtime: Runtime) -> Path:
         MountError: `/reports` is not mounted.
     """
     if not runtime.persistent(MountKind.REPORTS):
-        raise MountError(
+        raise missing_mount(
+            runtime,
             _("No reports mount: the inventory would be lost with the container."),
-            _('Add -v "<a folder of yours>:/reports" to get the inventory.'),
+            NextVerb(typed_again(runtime, "inventory"), (MountKind.REPORTS,)),
         )
     return runtime.locations.reports_dir
 

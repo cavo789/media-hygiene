@@ -36,9 +36,10 @@ def test_two_folders_say_which_one_keeps_the_files() -> None:
     decision = KeepDecision(
         "d", 1, media("/data/c/A/x.jpg"), (media("/data/c/B/x.jpg"),)
     )
-    moved = "1 file is both in C:\\A (kept) and in C:\\B (moved to the quarantine)"
-    assert f"{moved}, 1 B freed by 'purge'." in rendered(decision)
-    assert "1 file is both in C:\\A (kept) and in C:\\B (deleted), 1 B freed." in (
+    both = "1 file is both in C:\\A (kept) and in C:\\B"
+    moved = f"{both} (a copy 'clean' moves to the quarantine)"
+    assert f"{moved}, 1 B to free with 'purge'." in rendered(decision)
+    assert f"{both} (a copy 'clean' deletes), 1 B to free." in (
         rendered(decision, delete=True)
     )
 
@@ -118,7 +119,7 @@ def test_documents_are_moved_not_deleted() -> None:
     decision = KeepDecision(
         "d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)
     )
-    assert "C:\\B (moved to the quarantine)" in rendered(decision)
+    assert "C:\\B (a copy 'clean' moves to the quarantine)" in rendered(decision)
 
 
 def test_a_pair_of_documents_and_photos_says_both() -> None:
@@ -127,6 +128,6 @@ def test_a_pair_of_documents_and_photos_says_both() -> None:
         KeepDecision("d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)),
         KeepDecision("e", 1, media("/data/c/A/y.jpg"), (media("/data/c/B/y.jpg"),)),
     )
-    assert "(deleted, or moved to the quarantine if not a media file)" in (
+    assert "(copies 'clean' deletes, or moves to the quarantine if not a media" in (
         rendered(*decisions, delete=True)
     )

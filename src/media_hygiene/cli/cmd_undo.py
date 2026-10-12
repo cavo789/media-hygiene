@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.flows import require_terminal
+from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import outcome_table

@@ -13,17 +13,15 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.album import AlbumExecutor, AlbumRun
 from media_hygiene.actions.album_plan import plan_links
-from media_hygiene.actions.journal import JournalWriter, journal_file
-from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.outcome import Tally
-from media_hygiene.actions.runs import new_run_id
 from media_hygiene.classify.album_rows import chosen_rows
 from media_hygiene.errors import AlbumError
 from media_hygiene.i18n import _
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.album_folder import album_folder
 from media_hygiene.services.album_picks import find_picks, rated
+from media_hygiene.services.journaled_run import new_run
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
 if TYPE_CHECKING:
@@ -120,17 +118,8 @@ class AlbumService:
         Returns:
             The run and what it did.
         """
-        locations = self._runtime.locations
-        locations.journal_dir.mkdir(parents=True, exist_ok=True)
-        run_id = new_run_id(locations.journal_dir)
         tally = Tally()
-        with JournalWriter.open(journal_file(locations.journal_dir, run_id)) as journal:
-            context = CleanContext(
-                journal,
-                self._runtime.mapper,
-                locations.quarantine_dir / run_id,
-                self._progress,
-                Phase.ALBUM,
-            )
+        with new_run(self._runtime, self._progress, Phase.ALBUM) as context:
             ended = AlbumExecutor(context, tally).run(prepared.plan, stop)
+        run_id = context.quarantine_run_dir.name
         return AlbumResult(run_id, tally.freeze(), ended)

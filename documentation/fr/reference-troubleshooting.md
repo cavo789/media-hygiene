@@ -2,6 +2,14 @@
 
 [Documentation](README.md) › Référence · 🇬🇧 [English](../en/reference-troubleshooting.md)
 
+## Docker répond à la place de l'outil
+
+*Le terme « docker » n'est pas reconnu*, *command not found*, *error during connect*, *Cannot
+connect to the Docker daemon*, *permission denied … docker.sock* : l'outil n'a pas encore
+démarré, c'est Docker lui-même qui manque ou est arrêté. Ouvrez Docker Desktop et attendez
+*Engine running* (Windows), ou suivez [installer Docker](start/00-install-docker.md#si-ça-ne-marche-pas)
+(Windows et Linux).
+
 ## Une vraie sauvegarde est vue comme des doublons
 
 Si `D:\sauvegarde` doit rester une seconde copie de vos photos,
@@ -55,13 +63,32 @@ alors avant l'analyse et nomme le dossier.
 
 Écrivez les chemins Windows entre **apostrophes** : `'D:\backup'`. Entre guillemets, TOML
 transforme le `\b` de `"D:\backup"` en caractère de contrôle, et l'outil refuse ce chemin au lieu
-de l'ignorer ([étape 7](clean/07-configuration-file.md#le-remplir)).
+de l'ignorer ([étape 7 du nettoyage](clean/07-configuration-file.md#le-remplir)).
+
+## Un réglage de `config.toml` est inconnu de cette version
+
+```text
+❌ « timezon » dans [general] de config.toml n'existe pas dans la version 0.3.0 : une faute de
+frappe, ou un réglage d'une version plus récente ? Vouliez-vous dire « timezone » ?
+💡 Corrigez ou supprimez la ligne, ou mettez l'image à jour :
+docker pull cavo789/media-hygiene
+```
+
+Une faute de frappe est nommée avec le réglage qui lui ressemble. Un réglage copié d'une
+documentation plus récente demande l'image plus récente : `docker pull cavo789/media-hygiene`. Il
+en va de même pour une variable `MEDIA_HYGIENE_<SECTION>__<CLÉ>` passée avec `-e`. Une valeur
+refusée (`verbosity = "loud"`) dit ce qui est attendu à la place. Plusieurs problèmes à la fois
+sont listés un par ligne, sous un seul titre. Un problème dans une entrée `[[classify.rules]]`,
+un lieu ou une personne la nomme par son numéro et son `name` : `« match » dans
+[[classify.rules]] n° 2 (« Anniversaire ») de config.toml : ce réglage est obligatoire.`
 
 ## La page de tri ne s'ouvre pas
 
-- Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1::8080`.
-- L'adresse vient de `docker port media-hygiene-review 8080`, dans une autre fenêtre, pendant que le
-  tri tourne ([étape 10](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+- Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
+  deux côtés, sinon l'adresse affichée par le tri n'est pas la bonne
+  ([étape 10 du nettoyage](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+- *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
+  même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
 - *« Le tri ne tourne plus »* : la fenêtre du tri a été fermée ou arrêtée avec Ctrl+C.
   Relancez-le ; vos choix sont conservés.

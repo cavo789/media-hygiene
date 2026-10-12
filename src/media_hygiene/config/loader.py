@@ -4,20 +4,20 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
 
+from media_hygiene.config.explain import Problems, config_error
+from media_hygiene.config.known_keys import unknown_variables
 from media_hygiene.config.layers import (
     Layer,
     merge_layers,
     read_env_layer,
     read_file_layer,
 )
+from media_hygiene.config.origin import Origin, origin_in
 from media_hygiene.config.settings import Settings
-from media_hygiene.errors import ConfigError
-from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 
 if TYPE_CHECKING:
@@ -30,13 +30,7 @@ _TEMPLATE_PACKAGE = "media_hygiene.config"
 _TEMPLATE_NAME = "config.toml.j2"
 
 
-class Origin(StrEnum):
-    """Where an effective setting comes from (shown by the `config` command)."""
-
-    DEFAULT = "default"
-    FILE = "file"
-    ENV = "env"
-    CLI = "cli"
+__all__ = ["LoadedSettings", "Origin", "load_settings", "write_default_config"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,10 +50,7 @@ class LoadedSettings:
         Returns:
             One of the `Origin` values.
         """
-        for origin in (Origin.CLI, Origin.ENV, Origin.FILE):
-            if key in self.layers.get(origin, {}).get(section, {}):
-                return origin
-        return Origin.DEFAULT
+        return origin_in(self.layers, section, key)
 
 
 def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSettings:
@@ -73,7 +64,8 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
         The validated settings and their layers.
 
     Raises:
-        ConfigError: A value is invalid; the message names the offending key.
+        ConfigError: A value is invalid, or a key or variable unknown to this
+            version; the message names it, in the user's language.
     """
     layers = {
         Origin.FILE: read_file_layer(locations.config_file),
@@ -81,18 +73,13 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
         Origin.CLI: cli or {},
     }
     merged = merge_layers(layers[Origin.FILE], layers[Origin.ENV], layers[Origin.CLI])
+    variables = unknown_variables(os.environ)
     try:
         settings = Settings.model_validate(merged)
     except ValidationError as exc:
-        details = "; ".join(
-            f"{'.'.join(str(part) for part in error['loc'])}: {error['msg']}"
-            for error in exc.errors()
-        )
-        message = _("Invalid configuration ({details}).").format(details=details)
-        tip = _(
-            "Run 'media-hygiene config' to see every setting and where it comes from."
-        )
-        raise ConfigError(message, tip) from exc
+        raise config_error(Problems(exc.errors(), layers, variables)) from exc
+    if variables:
+        raise config_error(Problems((), layers, variables))
     return LoadedSettings(settings, layers)
 
 

@@ -1,4 +1,4 @@
-"""Integration fixtures: the command line on the demo tree."""
+"""Integration fixtures: the command line on the demo tree, and a fake Ollama."""
 
 from __future__ import annotations
 
@@ -7,10 +7,13 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from media_hygiene.paths.mount_kind import MountKind
+from tests.support.cli import point_mounts
 from tests.support.demo import build_demo
+from tests.support.fake_ollama import FakeOllama
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from media_hygiene.paths.locations import Locations
 
 
@@ -25,9 +28,17 @@ def cli(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> CliRunner:
     Returns:
         The runner, the demo tree in its data folder.
     """
-    for kind in MountKind:
-        monkeypatch.setenv(
-            f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(locations.path_of(kind))
-        )
+    point_mounts(locations, monkeypatch)
     build_demo(locations.data_dir)
     return CliRunner()
+
+
+@pytest.fixture
+def fake() -> Iterator[FakeOllama]:
+    """A fake Ollama, serving for the test.
+
+    Yields:
+        The server.
+    """
+    with FakeOllama() as server:
+        yield server

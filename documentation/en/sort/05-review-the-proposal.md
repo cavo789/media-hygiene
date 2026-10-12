@@ -11,7 +11,14 @@ party. Two windows side by side:
 
 ## Get the two files
 
-Mount a reports folder, as for [the HTML reports](../clean/04-html-report.md):
+`classify` writes them in the reports folder, which `mh` mounts, as for [the HTML reports](../clean/04-html-report.md):
+
+```powershell
+mh classify
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -21,13 +28,26 @@ docker run --rm -it `
   cavo789/media-hygiene classify
 ```
 
+</details>
+
 The end of the output says where the files are:
 
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
-✅ Workbook to edit: /reports/20261003-080653-classify/classify.xlsx
-✅ Report with the photos: /reports/20261003-080653-classify/report.html
-💡 Edit the yellow cells and save: nothing moves until 'sort'.
+✅ Workbook to edit: /reports/20261012-101647-classify/classify.xlsx
+✅ Report with the photos: /reports/20261012-101647-classify/report.html
+👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene sort
+💡 32 exact duplicates are still there: run 'clean' first, otherwise both copies
+are sorted.
 ```
 
 Each run writes a new folder, `<date>-classify`, with three files:
@@ -55,7 +75,7 @@ outside any event, grouped by proposed folder. Each group shows its dates, its f
 they come from, the proposed folder and why, and up to 8 previews spread over its span. Click a
 preview to open the file; *All the files* lists every one of them.
 
-![A year page of the classify report: the event Seaside holidays with its id, 37 files of which 3 to check or to sort, the cumulated share of the work, the proposed folder 2019/Seaside holidays marked Sure, the three folders its photos come from, then eight previews spread over its days with their names and times, and a link to all the files](../images/classify-year.webp)
+![A year page of the classify report: the event Seaside holidays with its id, 38 files of which 3 to check or to sort, the cumulated share of the work, the proposed folder 2019/Seaside holidays marked Sure, the three folders its photos come from, then eight previews spread over its days with their names and times, and a link to all the files](../images/classify-year.webp)
 
 ## The workbook: edit the yellow cells
 
@@ -122,7 +142,7 @@ still read, as far as its ids and yellow cells can be found: running `classify` 
 out. If the latest workbook cannot be opened at all, `classify` stops before writing anything, so
 that your edits are not buried under a newer, empty workbook.
 
-Hundreds of events to name? [Step 10](10-name-events-in-the-browser.md) shows them one at a time in
+Hundreds of events to name? [Step 11](11-name-events-in-the-browser.md) shows them one at a time in
 your browser, with their photos and a field to name them, without switching windows.
 
 Nothing moves yet: applying the workbook to your folders is the job of `sort`

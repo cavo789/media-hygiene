@@ -12,7 +12,8 @@ from media_hygiene.i18n import install
 @pytest.mark.parametrize(
     ("size", "text"),
     [
-        (0, "0 B"),
+        (0, "0"),
+        (1, "1 B"),
         (1023, "1,023 B"),
         (1536, "1.5 KB"),
         (5 * 1024**3, "5.0 GB"),

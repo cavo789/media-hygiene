@@ -17,33 +17,39 @@ from media_hygiene.cli.flows import (
     show_pairs,
     show_second_opinion,
 )
+from media_hygiene.cli.near_preview import near_waiting, show_near_first
+from media_hygiene.cli.next_steps import carried, safety, suggest
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tables import outcome_table
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
+from media_hygiene.plan.near_review import NearSelection
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.services.clean import CleanMode, CleanService
+from media_hygiene.services.decisions_archive import archive_decisions
+from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.review import apply_review, load_review, review_choices
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
-    from media_hygiene.console.output import Output
+    from media_hygiene.services.runtime import Runtime
 
 
 # The options are parameters (and locals): the documented exception for Typer commands.
 def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     ctx: typer.Context,
     *,
+    tier: Annotated[CleanTier, clean_options.tier()] = CleanTier.EXACT,
+    decisions: Annotated[Path | None, clean_options.decisions()] = None,
+    yes: Annotated[bool, options.yes()] = False,
+    delete: Annotated[bool, clean_options.delete()] = False,
     prefer: Annotated[list[str] | None, options.prefer()] = None,
     protect: Annotated[list[str] | None, options.protect()] = None,
     exclude: Annotated[list[str] | None, options.exclude()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
-    yes: Annotated[bool, options.yes()] = False,
-    tier: Annotated[CleanTier, clean_options.tier()] = CleanTier.EXACT,
-    decisions: Annotated[Path | None, clean_options.decisions()] = None,
-    delete: Annotated[bool, clean_options.delete()] = False,
 ) -> None:
     """Audit, confirm, then set duplicate copies aside and handle broken files.
 
@@ -55,7 +61,8 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         yes: `--yes`, skip the confirmation.
-        tier: `--tier`, near duplicates are moved to the quarantine too.
+        tier: `--tier`, near duplicates are moved to the quarantine too: the sure
+            groups (`near`) or every group (`near-all`).
         decisions: `--decisions`, the review downloaded from a report or written by
             `review`.
         delete: `--delete`, exact copies are deleted for good, not moved.
@@ -71,12 +78,16 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         ).with_overrides(scan_layer(ext, exclude_name))
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
-        bursts = review is not None and bool(review.bursts)
-        service.ensure_ready(CleanMode(tier is CleanTier.NEAR, bursts, delete))
+        bursts = review is not None and any(b.discarded for b in review.bursts)
+        service.ensure_ready(CleanMode(tier is not CleanTier.EXACT, bursts, delete))
         findings = audit_and_show(runtime)
         plan = service.feasible(replace(findings.plan, delete_copies=delete))
-        if tier is CleanTier.NEAR:
-            plan = service.with_near(plan, findings)
+        if tier is not CleanTier.EXACT:
+            verdicts = near_verdicts(runtime, findings, review.near) if review else None
+            selection = NearSelection(tier is CleanTier.NEAR_ALL, verdicts)
+            plan = with_near(runtime, plan, NearRequest(findings, selection))
+        elif review is not None and review.near:
+            output.info(near_waiting(len(review.near)))
         if review is not None:
             choices = review_choices(runtime, findings, review)
             plan = apply_review(runtime, plan, choices)
@@ -85,7 +96,9 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         if plan.is_empty:
             output.success(_("Nothing to clean: no duplicate and no broken file."))
             return
+        show_near_first(runtime, replace(findings, plan=plan), yes=yes)
         if not confirm_clean(runtime, plan, yes):
+            output.drop_advice()
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)
         output.title(_("Clean"))
@@ -101,24 +114,29 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
                 crosscheck=verdict,
             ),
         )
-    _after_clean_tips(output, run_id, outcome)
+    _after_clean_tips(runtime, run_id, outcome)
+    if decisions is not None:
+        archive_decisions(runtime, decisions, run_id)
 
 
-def _after_clean_tips(output: Output, run_id: str, outcome: Outcome) -> None:
+def _after_clean_tips(runtime: Runtime, run_id: str, outcome: Outcome) -> None:
     """Tell how to undo the clean, and that `purge` frees the space.
 
     Args:
-        output: Where to print.
+        runtime: Settings, mount points and output.
         run_id: The clean run.
         outcome: What the clean did.
     """
-    undo_tip = _(
-        "Changed your mind? 'media-hygiene undo {run_id}' restores everything."
+    safety(
+        runtime,
+        _(
+            "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
+        ).format(run_id=run_id),
+        NextVerb(carried(runtime, f"undo {run_id}"), CHANGING),
     )
-    output.tip(undo_tip.format(run_id=run_id))
     if outcome.quarantined:
-        purge_tip = _(
-            "The space is freed by 'purge', once you have checked: "
-            "media-hygiene purge {run_id}"
+        suggest(
+            runtime,
+            _("once you have checked, 'purge' frees the space of the files set aside."),
+            NextVerb(carried(runtime, f"purge {run_id}"), CHANGING),
         )
-        output.tip(purge_tip.format(run_id=run_id))

@@ -60,3 +60,36 @@ def test_files_media_hygiene_does_not_analyse_are_set_aside() -> None:
         OutsideReason.BROKEN: 1,
         OutsideReason.NOT_MOUNTED: 2,
     }
+
+
+def test_the_folders_never_analysed_are_named_most_files_first() -> None:
+    """The outermost skipped folder of each file, counted: where Czkawka looked."""
+    theirs = [
+        group("x.jpg", "Backup/2019/x.jpg", "Backup/2020/x.jpg"),
+        group("y.jpg", "$RECYCLE.BIN/y.jpg"),
+    ]
+    result = compare([], theirs, SCOPE)
+    assert list(result.skipped_folders.items()) == [
+        (Path("/data/c/Photos/Backup"), 2),
+        (Path("/data/c/Photos/$RECYCLE.BIN"), 1),
+    ]
+
+
+def test_files_removed_since_czkawka_ran_are_set_aside() -> None:
+    """Files the walk no longer lists, or in a deleted skipped folder, are gone."""
+    scope = AnalysedScope(
+        roots=SCOPE.roots,
+        filters=SCOPE.filters,
+        broken=frozenset(),
+        listed=group("a.jpg"),
+        folder_exists=lambda folder: folder.name != "$RECYCLE.BIN",
+    )
+    theirs = [
+        group("a.jpg", "b.jpg"),
+        group("a.jpg", "$RECYCLE.BIN/a.jpg"),
+        group("a.jpg", "Backup/a.jpg"),
+    ]
+    result = compare([], theirs, scope)
+    assert result.agrees
+    assert result.outside == {OutsideReason.GONE: 2, OutsideReason.EXCLUDED: 1}
+    assert dict(result.skipped_folders) == {Path("/data/c/Photos/Backup"): 1}

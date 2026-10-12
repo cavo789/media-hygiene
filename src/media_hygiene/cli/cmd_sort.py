@@ -9,7 +9,8 @@ import typer
 from rich.markup import escape
 
 from media_hygiene.cli.context import runtime_of, user_errors, warn
-from media_hygiene.cli.flows import require_terminal
+from media_hygiene.cli.next_steps import carried, safety
+from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.sort_view import (
     show_follows,
@@ -24,6 +25,7 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.interrupt import StopRequest
+from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
@@ -155,8 +157,10 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         output.tip(
             _("Run the same command again to continue: the files moved are skipped.")
         )
-    output.tip(
+    safety(
+        runtime,
         _(
-            "Changed your mind? 'media-hygiene undo {run_id}' moves everything back."
-        ).format(run_id=result.run_id)
+            "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
+        ).format(run_id=result.run_id),
+        NextVerb(carried(runtime, f"undo {result.run_id}"), CHANGING),
     )

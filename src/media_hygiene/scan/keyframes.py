@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from PIL import Image
 
-from media_hygiene.scan.tool_run import run_tool
+from media_hygiene.scan.tool_run import ToolRun, run_tool
 from media_hygiene.scan.video_models import FRAME_POSITIONS, FrameHash, VideoPrint
 from media_hygiene.scan.visual import dhash, phash
 
@@ -88,11 +88,21 @@ async def _frame(path: Path, seconds: float, ffmpeg: str) -> FrameHash | None:
         _LOGGER.warning("ffmpeg timed out on %s at %.3f s", path, seconds)
         return None
     if run.returncode != 0 or len(run.stdout) != _FRAME_BYTES:
-        _LOGGER.info(
-            "No frame of %s at %.3f s: %s",
-            path,
-            seconds,
-            run.stderr.decode(errors="replace").strip() or f"{len(run.stdout)} bytes",
-        )
+        # Common (damaged streams, codecs the image lacks) and harmless: the video is
+        # only left out of the search for re-encoded copies. Debug only, one line.
+        _LOGGER.debug("No frame of %s at %.3f s: %s", path, seconds, _last_line(run))
         return None
     return frame_hash(run.stdout)
+
+
+def _last_line(run: ToolRun) -> str:
+    """Sum up why `ffmpeg` gave no frame: the last line it printed, often hundreds.
+
+    Args:
+        run: The `ffmpeg` run.
+
+    Returns:
+        Its last error line, else the number of bytes it wrote.
+    """
+    lines = run.stderr.decode(errors="replace").strip().splitlines()
+    return lines[-1] if lines else f"{len(run.stdout)} bytes"

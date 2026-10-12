@@ -15,6 +15,10 @@ cd media-hygiene
 docker build --tag media-hygiene .
 ```
 
+The default target, `local`, only adds `MEDIA_HYGIENE_IMAGE=media-hygiene`: the commands the
+tool suggests (👉 What next, the `mh` launcher) then run your build, not the published image,
+which may be older. `--target published` builds the image exactly as Docker Hub serves it.
+
 The image compiles its own `ffprobe`, about 1 MB instead of 141 MB for a full build: the tool
 only asks whether a video container opens, so the `ffprobe` stage of the `Dockerfile` keeps the
 demuxers of the video extensions it analyses and nothing else. A new video extension needs its
@@ -86,6 +90,16 @@ the second field (`re:` for a regular expression) to the next one containing the
 (`tests/support/docs/pages.py` has the details). Everything else in the pages is written by
 hand; review the result with `git diff documentation/`.
 
+The same pages make the documentation site, <https://cavo789.github.io/media-hygiene/>, where
+the links the tool prints lead (`DOC_PAGES` in `constants.py`). MkDocs Material builds it
+(`.config/mkdocs/`: `mkdocs.yml`, and `hooks.py`, which points the links leaving
+`documentation/` at GitHub). [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml)
+publishes it on GitHub Pages at every push of `main` that changes the documentation (it needs,
+once: Settings → Pages → Source: GitHub Actions). `docs_build` builds it like CI: a broken link
+or anchor fails. `docs_serve` shows it at <http://127.0.0.1:8000>, reloaded at every save. A new
+page goes into `nav` in `mkdocs.yml` (a test checks it), in English only: French follows the same
+file names.
+
 ## Continuous integration and releases
 
 Every push and pull request runs the quality gate and the end-to-end tests on GitHub Actions
@@ -95,5 +109,15 @@ pushes the tag. CI then builds the image for amd64 and arm64, runs the end-to-en
 pushes `cavo789/media-hygiene:<version>` and `:latest` to Docker Hub, with an SBOM and a provenance
 attestation. This needs two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a
 Docker Hub access token with read/write scope).
+
+Pinned versions are kept up to date by the Renovate GitHub App
+([`.github/renovate.json`](../../.github/renovate.json)). Every Monday morning it opens one pull
+request per group: GitHub Actions (SHA and `# vX.Y.Z` comment), Python dependencies
+(`pyproject.toml` and `uv.lock`), Docker images and tools (the Python base image digest and the
+`# renovate:` annotated `ARG`s of the `Dockerfile`), and pre-commit hooks. Nothing is merged
+automatically: a push to `main` rebuilds the image. Its Dependency Dashboard issue lists what is
+pending. An FFmpeg pull request needs one manual step: check the tarball signature, then set
+`FFMPEG_SHA256` to its new checksum (the image build fails until you do). The `deps` helper still
+answers the same question locally, for the Python dependencies.
 
 The roadmap is in [.todos/plan.md](../../.todos/plan.md).

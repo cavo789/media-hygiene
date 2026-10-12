@@ -1,7 +1,14 @@
 # media-hygiene
 
-Find and safely clean duplicate photos and videos spread over several folders and disks — from
-one `docker run`, on Windows (PowerShell) or WSL.
+Clean, sort and explore the photos and videos spread over several folders and disks — from one
+`docker run`, on Windows (PowerShell) or WSL. Everything runs on your computer, and every change
+is journaled and can be undone.
+
+- **Clean the duplicates**: identical copies, resized or recompressed ones, burst series.
+- **Sort**: a tidy tree proposed by date, event, place (GPS, offline), subject (a local vision
+  model) and person, that you correct before anything moves.
+- **Find the people**: the faces are found and grouped on your computer; name them once, then
+  find someone's photos by name and sort them by person, without a photo server such as Immich.
 
 [![Docker Hub](https://img.shields.io/docker/v/cavo789/media-hygiene?sort=semver&label=Docker%20Hub)](https://hub.docker.com/r/cavo789/media-hygiene)
 [![Pulls](https://img.shields.io/docker/pulls/cavo789/media-hygiene)](https://hub.docker.com/r/cavo789/media-hygiene)
@@ -10,14 +17,21 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 
 🇫🇷 [Version française](README_FR.md)
 
-![An audit in the terminal: 83 media files scanned, 20 groups of identical files, 32 extra copies, 13.9 MB to free, then the folders sharing identical files, each pair saying which folder keeps its copies](documentation/en/images/terminal-audit.webp)
+![An audit in the terminal: 83 media files scanned, 20 groups of identical files, 32 extra copies, 14.0 MB to free, then the folders sharing identical files, each pair saying which folder keeps its copies](documentation/en/images/terminal-audit.webp)
 
 ## Quick start
 
-With Docker installed, one command audits a folder:
+With Docker installed ([how to install it](documentation/en/start/00-install-docker.md), on
+Windows or Linux), one command audits a folder. In **PowerShell**:
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
+```
+
+In a **WSL** (or Linux) terminal, the same folder is written `/mnt/c/Photos`:
+
+```bash
+docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
 
 It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
@@ -25,29 +39,28 @@ It lists the duplicate and broken photos and videos of `C:\Photos`, and changes 
 [Your first audit](documentation/en/start/01-first-audit.md) explains this command and its result, part
 by part.
 
-What it does:
+What it finds:
 
-- **Exact duplicates** — same size and same SHA-256, compared again byte for byte right before
-  being set aside. Found across folders *and* disks (`C:` and `D:` in the same run).
+- **Exact duplicates** — same size and same SHA-256, across folders *and* disks (`C:` and `D:`
+  in the same run).
 - **Broken files** — empty files, images and RAW files that cannot be decoded (truncated JPEG,
   …), videos that cannot be opened.
-- **Reversible** — every action is journaled; `undo` brings every file back from the
-  quarantine, and rebuilds a copy deleted with `clean --delete` from the copy that was kept.
-- **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo is
-  moved to the quarantine; one next to its photo is never touched.
+- **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo.
 - **Burst series and near duplicates** (re-encoded videos included) — shown side by side in an
-  HTML report; you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
-- **Never touched without your say** — bursts, near duplicates, protected folders.
+  HTML report; `review` then lets you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
+
+Then, when you decide to, `clean` sets the extra copies and the broken files aside; bursts and
+near duplicates only when you ask for it.
 
 ## Your photos are safe
 
 **We guarantee it: these commands never modify, move nor delete a photo or a video** —
-`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `history`,
-`reports`, `config`. They only write their own files (reports, cache, `config.toml`). Run them
+`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `tags`,
+`search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
 with your folders mounted `:ro`: then the operating system itself forbids any change.
 
 **The commands that act never erase anything.** `sort` moves files (on one disk, a simple
-rename: no copy, no space used), `album` adds second names, `clean` moves the duplicate copies
+rename: no copy, no space used), `album` adds second names, `xmp` writes small `.xmp` sidecars next to the photos, `clean` moves the duplicate copies
 to the quarantine after comparing them byte for byte with the copy kept, `undo` puts things
 back. Never over another file, every step journaled, all undoable.
 
@@ -58,9 +71,11 @@ you ask for it: the copy kept stays). More in
 ## Documentation
 
 The [documentation](documentation/en/README.md) walks you through, one step at a time. Each step
-adds one thing to the command of the step before.
+adds one thing to the command of the step before. It is also a website, with a search box:
+<https://cavo789.github.io/media-hygiene/>.
 
-**Start here** — the same three first steps, whatever you do next:
+**Start here** — the same three first steps, whatever you do next (no Docker yet?
+[Install Docker](documentation/en/start/00-install-docker.md) first):
 
 1. [Your first audit](documentation/en/start/01-first-audit.md) — one folder, one command, and how to
    read the result.
@@ -69,7 +84,7 @@ adds one thing to the command of the step before.
 3. [Several folders and disks](documentation/en/start/03-several-folders.md) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates**
+**Clean the duplicates** — in a hurry? [Clean in short](documentation/en/clean/quick-guide.md), every command on one page.
 
 4. [The HTML report](documentation/en/clean/04-html-report.md) — the pictures, the folder pairs, the
    proof.
@@ -92,7 +107,7 @@ adds one thing to the command of the step before.
 13. [A second opinion](documentation/en/clean/13-second-opinion.md) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first)
+**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](documentation/en/sort/quick-guide.md), every command on one page.
 
 4. [Propose a tidy tree](documentation/en/sort/04-classify.md) — `classify` proposes a place
    for every file, and changes nothing.
@@ -106,17 +121,37 @@ adds one thing to the command of the step before.
    a vision model on your computer says what the loose photos show (optional).
 9. [Places and trips from the GPS](documentation/en/sort/09-places-from-gps.md) — name your
    places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
-10. [Name the events in your browser](documentation/en/sort/10-name-events-in-the-browser.md) —
+10. [Sort by person](documentation/en/sort/10-sort-by-person.md) — name the faces found in
+    your photos; a rule files the events where someone appears, offline (optional).
+11. [Name the events in your browser](documentation/en/sort/11-name-events-in-the-browser.md) —
     one event at a time with its photos, named with the keyboard (optional).
-11. [Albums](documentation/en/sort/11-albums.md) — one photo in several folders, as hard links:
+12. [Albums](documentation/en/sort/12-albums.md) — one photo in several folders, as hard links:
     no copy, no space used (optional).
 
-**Reference** — [commands and options](documentation/en/reference-commands.md),
+**Every command has its own page** — first what it gives you, when, and a command to try; then
+the folders it needs, its options, examples:
+[`audit`](documentation/en/commands/audit.md), [`status`](documentation/en/commands/status.md),
+[`clean`](documentation/en/commands/clean.md), [`undo`](documentation/en/commands/undo.md),
+[`history`](documentation/en/commands/history.md), [`purge`](documentation/en/commands/purge.md),
+[`review`](documentation/en/commands/review.md), [`reports`](documentation/en/commands/reports.md),
+[`crosscheck`](documentation/en/commands/crosscheck.md), [`config`](documentation/en/commands/config.md),
+[`launcher`](documentation/en/commands/launcher.md), [`classify`](documentation/en/commands/classify.md),
+[`review-sort`](documentation/en/commands/review-sort.md), [`sort`](documentation/en/commands/sort.md),
+[`album`](documentation/en/commands/album.md), [`places`](documentation/en/commands/places.md),
+[`inventory`](documentation/en/commands/inventory.md), [`tags`](documentation/en/commands/tags.md),
+[`search`](documentation/en/commands/search.md), [`xmp`](documentation/en/commands/xmp.md),
+[`people`](documentation/en/commands/people.md). Not sure which one?
+[Which command?](documentation/en/reference-commands.md#which-command)
+
+**Reference** — [words of this guide](documentation/en/reference-glossary.md),
+[commands and options](documentation/en/reference-commands.md),
 [mount points](documentation/en/reference-mount-points.md),
 [how your photos stay safe](documentation/en/reference-safety.md),
 [sidecar files](documentation/en/reference-sidecars.md),
 [troubleshooting](documentation/en/reference-troubleshooting.md),
 [the inventory workbook](documentation/en/reference-inventory.md),
+[tags](documentation/en/reference-tags.md),
+[people](documentation/en/reference-people.md),
 [advanced usage](documentation/en/reference-advanced.md).
 
 **For developers** — [build the image, the devcontainer, releases](documentation/en/development.md).
@@ -128,7 +163,7 @@ reports, the configuration, the journal and the quarantine. It cleans; to audit,
 your folders and write `audit` instead of `clean`.
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `

@@ -15,6 +15,7 @@ from pydantic import ValidationError
 from media_hygiene.classify.ai.models import Subject
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import Band, MediaInput, SortReason
+from media_hygiene.classify.rules.building import Seen
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_ai import AiSettings
 from media_hygiene.config.classify_rules import ClassifyRule
@@ -75,7 +76,9 @@ def proposals(subject: Subject, *rules: ClassifyRule) -> list[Proposal]:
     files = event("DCIM")
     subjects = {"Subject": {file.path: subject for file in files}}
     settings = ClassifySettings(rules=rules or (SUBJECT,))
-    return list(classify(files, settings, Scope(subjects=subjects)).proposals)
+    return list(
+        classify(files, settings, Scope(seen=Seen(subjects=subjects))).proposals
+    )
 
 
 def test_agreed_samples_are_sure_others_to_check() -> None:

@@ -18,7 +18,9 @@ Nous le garantissons : quand vous lancez l'une de ces commandes, vos photos et v
 | `review`, `review-sort` | Vos choix, dans un petit fichier `.json` à côté du rapport (`/reports`). |
 | `places` | Les lieux que vous nommez, dans `config.toml` (`/config`). |
 | `inventory` | Le classeur (`/reports`), lu dans le cache seul. |
-| `history`, `reports`, `config` | Rien dans vos dossiers (`reports --prune` ne supprime que d'anciens rapports). |
+| `tags`, `people` | Les mots et les visages, dans le cache (`/cache`) : jamais dans vos photos. |
+| `search` | Les petits aperçus de sa page, dans le cache (`/cache`). |
+| `history`, `reports`, `config`, `status`, `launcher` | Rien dans vos dossiers (`reports --prune` ne supprime que d'anciens rapports). |
 
 Toutes fonctionnent avec vos dossiers de photos montés **en lecture seule** : ajoutez `:ro` à
 leur `-v` (`-v "C:\Photos:/data/c/Photos:ro"`). Ce n'est alors plus seulement notre promesse : le
@@ -33,6 +35,8 @@ Les commandes qui agissent sur vos fichiers n'effacent jamais rien, et chacune p
   est un simple renommage : rien n'est copié, aucune place n'est prise.
 - **`album`** ne fait qu'ajouter des seconds noms (liens physiques) ; aucune photo n'est copiée,
   déplacée ni supprimée.
+- **`xmp`** n'écrit que de petits fichiers compagnons `.xmp` à côté des photos, jamais une photo ;
+  celui d'une autre application est copié en quarantaine avant d'être complété.
 - **`clean`** déplace les copies en trop en quarantaine, chacune comparée octet par octet avec la
   copie gardée juste avant. Leur place est libérée par `purge`, une fois que vous avez vérifié.
 - **`undo`** remet les fichiers d'une exécution là où ils étaient.
@@ -87,7 +91,8 @@ probable qu'une erreur de disque.
 - **Se ressembler ne suffit pas.** Une copie redimensionnée, recompressée, pivotée ou dont les
   métadonnées ont changé est un autre fichier. L'audit la liste comme
   [quasi-doublon](clean/11-near-duplicates.md), mais `clean` n'y touche pas, sauf si vous le demandez
-  avec `--tier near`, et alors il la déplace seulement en quarantaine.
+  avec `--tier near` (les groupes sûrs et ceux que vous avez décidés) ou `--tier near-all`, et
+  alors il la déplace seulement en quarantaine.
 - **Seuls les photos, fichiers RAW et vidéos** sont analysés, reconnus par leur extension. Les
   autres fichiers seulement si vous [les demandez](clean/06-file-types.md#autres-types-de-fichiers) avec
   `--ext`, et leurs copies sont alors déplacées en quarantaine, jamais supprimées.
@@ -108,7 +113,8 @@ probable qu'une erreur de disque.
 | Rafales | Jamais touchées par défaut. Les photos que vous [écartez avec `review`](clean/10-review-bursts.md) sont déplacées en quarantaine (jamais supprimées) par `clean --decisions`, après vérification : une photo gardée est toujours là, la photo écartée est bien le fichier montré par le tri. `undo` les remet en place. |
 | Autres types de fichiers | Seulement s'ils sont demandés avec `--ext` : leurs copies sont déplacées en quarantaine (jamais supprimées), et les dossiers de logiciels (`.git`, `node_modules`, `AppData`, …) sont ignorés. |
 | Fichiers compagnons | Jamais touchés à côté de leur photo. Un orphelin est déplacé en quarantaine (jamais supprimé) après vérification : inchangé depuis l'audit, et aucun fichier du même nom à côté de lui. `undo` le remet en place. |
-| Albums | [`album`](sort/11-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés, jamais par-dessus un fichier ; toutes les analyses ignorent ce dossier. `undo` ne retire un nom de l'album que si l'original qu'il désigne est toujours là et est bien le même fichier ; sinon le nom reste, et `undo` dit pourquoi. |
+| Albums | [`album`](sort/12-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés, jamais par-dessus un fichier ; toutes les analyses ignorent ce dossier. `undo` ne retire un nom de l'album que si l'original qu'il désigne est toujours là et est bien le même fichier ; sinon le nom reste, et `undo` dit pourquoi. |
+| Fichiers compagnons XMP | [`xmp`](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) n'écrit jamais dans une photo ni dans un dossier protégé. Chaque fichier compagnon est journalisé, écrit dans un fichier temporaire puis renommé (jamais par-dessus un fichier apparu), relu et analysé ; celui d'une autre application est complété (ses retouches gardées), ses octets précédents gardés en quarantaine. `undo` ne supprime ou ne remet un fichier compagnon que tant qu'il contient ce que l'exécution a écrit. |
 | Fichiers inutiles de `sort` | Seuls les noms de `[sort] junk_files` (`Thumbs.db`, …) vont en quarantaine avec un dossier vidé ; un nom de photo, de vidéo ou de fichier compagnon y est refusé. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
 | Chaque groupe | Garde toujours au moins une copie. |

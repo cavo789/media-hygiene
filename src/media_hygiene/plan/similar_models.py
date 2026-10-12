@@ -6,15 +6,28 @@ Re-encoded videos are near duplicates too: the same decision, their own looks.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from types import MappingProxyType
 from typing import TYPE_CHECKING
+
+from media_hygiene.constants import KeepReason, NearReason
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
+    from media_hygiene.scan.exposure import Exposure
     from media_hygiene.scan.models import MediaFile, VisualFacts
     from media_hygiene.scan.video_models import VideoLook
+
+
+class SureReason(StrEnum):
+    """Why a group of near duplicates needs no look (`near_levels`)."""
+
+    SAME_STREAM = "same-stream"  # videos: the very picture and sound
+    SAME_LOOK = "same-look"  # the same fingerprints and the same camera
+    MESSAGING_COPY = "messaging-copy"  # a smaller copy sent by a messaging app
+    MESSAGING_NAME = "messaging-name"  # the same, no EXIF date, its name dated that day
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,6 +42,12 @@ class NearDecision:
     keeper: MediaFile
     removable: tuple[MediaFile, ...]
     protected: tuple[MediaFile, ...] = ()
+    # Videos only: the copies with the very picture and sound of the keeper.
+    same_stream: frozenset[Path] = frozenset()
+    reason: NearReason = NearReason.RESOLUTION
+    rule: KeepReason | None = None  # the usual rule that decided, for `RULES`
+    # Sure groups need no look (`near_levels`); None: a group to check.
+    sure: SureReason | None = None
 
     @property
     def reclaimable(self) -> int:
@@ -72,7 +91,10 @@ class BurstChoice:
 
 @dataclass(frozen=True, slots=True)
 class SimilarFindings:
-    """Near duplicates, burst series, re-encoded videos, and what each looks like."""
+    """Near duplicates, burst series, re-encoded videos, and what each looks like.
+
+    `exposures`: the burst shots' measures, for the review's proposals.
+    """
 
     near: tuple[NearDecision, ...] = ()
     bursts: tuple[BurstSeries, ...] = ()
@@ -81,6 +103,9 @@ class SimilarFindings:
     )
     videos: tuple[NearDecision, ...] = ()
     video_looks: Mapping[Path, VideoLook] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    exposures: Mapping[Path, Exposure] = field(
         default_factory=lambda: MappingProxyType({})
     )
 
@@ -101,3 +126,21 @@ class SimilarFindings:
             The count.
         """
         return sum(len(decision.removable) for decision in self.videos)
+
+    @property
+    def groups(self) -> tuple[NearDecision, ...]:
+        """Every group `clean --tier near-all` would move: pictures, then videos.
+
+        Returns:
+            The groups.
+        """
+        return (*self.near, *self.videos)
+
+    @property
+    def sure_groups(self) -> int:
+        """Number of groups sure enough to move without a look (`--tier near`).
+
+        Returns:
+            The count.
+        """
+        return sum(decision.sure is not None for decision in self.groups)

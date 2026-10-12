@@ -1,0 +1,132 @@
+# `launcher`: write your folders once, then type `mh`
+
+[Documentation](../README.md) › [Commands](../reference-commands.md) › `launcher` · 🇫🇷 [Français](../../fr/commands/launcher.md)
+
+## In short
+
+**Type `mh audit` instead of a long `docker run`: your folders are written once, with the right
+mounts for every command.**
+
+The `docker run` commands grow with every folder, and each command needs slightly different
+mounts (`:ro` or not, the [journal](../reference-glossary.md#journal), a port for the browser). `launcher` prints a short script
+defining `mh`, a command that remembers the folders mounted when you made it. Then `mh audit`,
+`mh clean`, `mh review`… are all you type.
+
+**When**: once you know which folders you work on; again when you add one.
+
+**Try it**:
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm -v "C:\Photos:/data/c/Photos" cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+## At a glance
+
+| | |
+|---|---|
+| Your photos | 🔒 Never changed: it only prints a script. |
+| Needs | Your folders, one `-v` each, as you want `mh` to mount them. |
+| Recommended | Your own tool folders, if they are not those of `$HOME\media-hygiene`. |
+| Writes | Nothing itself: you redirect what it prints to a file. |
+| Undo | Delete the file. |
+
+## Run it
+
+**Without `-it`**, and with `>` to save what it prints:
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm `
+  -e TZ=Europe/Brussels `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+From WSL:
+
+```bash
+mkdir -p ~/media-hygiene
+docker run --rm \
+  -e TZ=Europe/Brussels \
+  -v "/mnt/c/Photos:/data/c/Photos" \
+  cavo789/media-hygiene launcher --shell bash > ~/media-hygiene/mh.sh
+source ~/media-hygiene/mh.sh
+mh audit
+```
+
+## What `mh` does for each command
+
+- **Your folders read-only** (`:ro`) for every command that never changes them, writable only for
+  `clean`, `sort`, `album`, `undo`, `purge` and `xmp`.
+- **The cache** (the `media-hygiene-cache` volume) and the `reports`, `config`, `journal` and
+  `quarantine` folders of `$HOME\media-hygiene`, created when missing; a tool folder you mounted
+  yourself when running `launcher` is kept instead.
+- **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
+  `places`, `search` and `people`.
+- **The commands the tool suggests** at the end of a run are written as `mh …` too.
+- **Your language and time zone**: a `--locale fr` given to `launcher` and the `-e TZ=…` of its
+  run are written into the script, so `mh` speaks French and dates its reports in your local time.
+  A language set in `config.toml` is left to the file (an edit of it still counts). `launcher`
+  ends with one line saying what `mh` remembers: folders, language, time zone.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| `--shell powershell` | A PowerShell script (`mh.ps1`), for Windows. |
+| `--shell bash` | A bash script (`mh.sh`), for WSL, Linux, macOS. |
+
+By default, the shell is guessed from the folders mounted: a Windows folder (`C:\…`) gives
+PowerShell.
+
+## Good to know
+
+- **In a new terminal**, load it again: `. "$HOME\media-hygiene\mh.ps1"`; add that line to your
+  profile (`notepad $PROFILE`) to have `mh` everywhere. In bash, add the `source` line to
+  `~/.bashrc`.
+- **Another folder?** Run `launcher` again with one more `-v`, saving to the same file.
+- **Not in Brussels?** Replace `Europe/Brussels` with your own zone (`Europe/Paris`,
+  `America/Montreal`…). Without `-e TZ=…`, `mh` runs in UTC: report folders and times are one or
+  two hours off.
+- **With `-it`**, Docker sends the messages into the file too: `launcher` writes no launcher,
+  and loading the file stops with the right command to run (without `-it`).
+- PowerShell refuses to load the file (*running scripts is disabled*)? Once:
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+
+## Go further
+
+- [3. Several folders and disks: `mh`](../start/03-several-folders.md#write-your-folders-once-mh)
+- [Mount points](../reference-mount-points.md)
+
+## The built-in help
+
+<details>
+<summary><code>launcher --help</code></summary>
+
+<!-- capture: help-launcher.txt -->
+```text
+ Usage: media-hygiene launcher [OPTIONS]
+
+ 🔒 Read-only: never changes your photos. Write 'mh', a short command holding
+ your folders: mh audit, mh clean.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --shell          <powershell|bash>  The shell of the script: 'powershell'    │
+│                                     (Windows) or 'bash' (WSL, Linux, macOS). │
+│                                     Default: guessed from the mounted        │
+│                                     folders.                                 │
+│ --help   -h                         Show this message and exit.              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+---
+
+← [All commands](../reference-commands.md) · [Documentation](../README.md)

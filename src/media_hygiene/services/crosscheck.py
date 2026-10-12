@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
+from functools import cache
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import CZKAWKA_FILE_NAME, MEDIA_EXTENSIONS
@@ -18,11 +20,32 @@ from media_hygiene.i18n import _
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.services.runtime import Runtime
+
+
+@dataclass(frozen=True, slots=True)
+class CzkawkaRefresh:
+    """How to get rid of outdated Czkawka results: run it again, or delete them."""
+
+    command: str
+    results_file: str
+
+
+def czkawka_refresh(runtime: Runtime) -> CzkawkaRefresh:
+    """The Czkawka command to run again, and its results file as the user sees it.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        Both, ready to print.
+    """
+    return CzkawkaRefresh(
+        command=czkawka_command(runtime).render(),
+        results_file=runtime.mapper.to_host(czkawka_results(runtime)),
+    )
 
 
 def czkawka_results(runtime: Runtime) -> Path:
@@ -94,6 +117,8 @@ def cross_check(runtime: Runtime, findings: AuditFindings) -> CrossCheckResult |
         roots=findings.roots,
         filters=scan_filters(runtime.settings, runtime.mapper),
         broken=frozenset(item.file.path for item in broken),
+        listed=findings.listed,
+        folder_exists=cache(Path.is_dir),
     )
     ours = (frozenset(file.path for file in group.files) for group in findings.groups)
     result = compare(ours, theirs, scope)

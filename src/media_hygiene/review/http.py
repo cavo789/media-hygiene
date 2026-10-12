@@ -17,11 +17,12 @@ from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from pathlib import Path
 
 _MAX_BODY: Final = 64 * 1024
 _MAX_HEADERS: Final = 64
 _TIMEOUT_SECONDS: Final = 30.0
-_HEADER_ENCODING: Final = "latin-1"
+HEADER_ENCODING: Final = "latin-1"
 _LOCALHOST: Final = "localhost"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
@@ -39,9 +40,28 @@ class ContentType(StrEnum):
     HTML = "text/html; charset=utf-8"
     JSON = "application/json"
     JPEG = "image/jpeg"
+    PNG = "image/png"
+    GIF = "image/gif"
+    WEBP = "image/webp"
+    BINARY = "application/octet-stream"  # a file the browser cannot show: downloaded
     TEXT = "text/plain; charset=utf-8"
     JAVASCRIPT = "text/javascript; charset=utf-8"
     CSS = "text/css; charset=utf-8"
+    MP4 = "video/mp4"
+    QUICKTIME = "video/quicktime"
+    MATROSKA = "video/x-matroska"
+    THREE_GPP = "video/3gpp"
+    THREE_GPP2 = "video/3gpp2"
+
+
+@dataclass(frozen=True, slots=True)
+class FilePart:
+    """Bytes of a file sent in chunks, never read whole: `length` from `start`."""
+
+    path: Path
+    start: int
+    length: int
+    size: int  # of the whole file, for `Content-Range`
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,10 +76,7 @@ class Request:
 
 @dataclass(frozen=True, slots=True)
 class Response:
-    """A response; `cacheable` ones never change for a given path.
-
-    `policy` is its Content-Security-Policy, `referrer` its Referrer-Policy.
-    """
+    """A response: `cacheable` never changes for its path; CSP and Referrer-Policy."""
 
     status: HTTPStatus
     body: bytes = b""
@@ -67,6 +84,7 @@ class Response:
     cacheable: bool = False
     policy: str = REVIEW_POLICY
     referrer: str = NO_REFERRER
+    part: FilePart | None = None  # sent after the head, instead of `body`
 
 
 class BadRequestError(Exception):
@@ -98,7 +116,7 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
     """
     async with asyncio.timeout(_TIMEOUT_SECONDS):
         try:
-            parts = (await reader.readline()).decode(_HEADER_ENCODING).split()
+            parts = (await reader.readline()).decode(HEADER_ENCODING).split()
             if len(parts) != _REQUEST_LINE_PARTS or not parts[2].startswith(_HTTP_1):
                 raise BadRequestError(HTTPStatus.BAD_REQUEST)
             headers = await _read_headers(reader)
@@ -128,30 +146,6 @@ def is_local(request: Request) -> bool:
         return False
 
 
-async def write_response(writer: asyncio.StreamWriter, response: Response) -> None:
-    """Send a response; the connection is closed by the caller.
-
-    Args:
-        writer: The connection.
-        response: What to send.
-    """
-    status = response.status
-    cache = "private, max-age=86400, immutable" if response.cacheable else "no-store"
-    head = (
-        f"HTTP/1.1 {status.value} {status.phrase}",
-        f"Content-Type: {response.content_type}",
-        f"Content-Length: {len(response.body)}",
-        f"Cache-Control: {cache}",
-        "Connection: close",
-        "X-Content-Type-Options: nosniff",
-        f"Referrer-Policy: {response.referrer}",
-        f"Content-Security-Policy: {response.policy}",
-    )
-    writer.write(("\r\n".join(head) + "\r\n\r\n").encode(_HEADER_ENCODING))
-    writer.write(response.body)
-    await writer.drain()
-
-
 async def _read_headers(reader: asyncio.StreamReader) -> dict[str, str]:
     """Read the header lines, up to the blank line.
 
@@ -166,7 +160,7 @@ async def _read_headers(reader: asyncio.StreamReader) -> dict[str, str]:
     """
     headers: dict[str, str] = {}
     for _line in range(_MAX_HEADERS):
-        line = (await reader.readline()).decode(_HEADER_ENCODING).strip()
+        line = (await reader.readline()).decode(HEADER_ENCODING).strip()
         if not line:
             return headers
         name, colon, value = line.partition(":")

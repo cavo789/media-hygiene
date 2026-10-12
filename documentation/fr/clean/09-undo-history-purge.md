@@ -5,12 +5,19 @@
 Un nettoyage n'est pas définitif. Le journal retient chaque action : vous pouvez tout remettre en
 place, voir ce que chaque nettoyage a fait et, une fois sûr·e, vider la quarantaine pour de bon.
 
-Pour les trois commandes ci-dessous, gardez les mêmes options `-v` que votre `clean` (étape 8) ;
-seul le dernier mot change.
+Avec `mh`, les trois commandes ci-dessous tiennent en une ligne. Sans lui, gardez les mêmes
+options `-v` que votre `clean` (étape 8) ; seul le dernier mot change.
 
 ## Annuler un nettoyage : `undo`
 
 Vous changez d'avis ? Lancez la même commande avec `undo` au lieu de `clean` :
+
+```powershell
+mh undo
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -24,17 +31,19 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr undo
 ```
 
+</details>
+
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261003-080845 ────────────────
+─────────────── Annulation de l'exécution clean 20261012-102033 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261003-080845
+20261012-102033
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
-│ Taille                    │ 15,5 Mo │
+│ Taille                    │ 15,6 Mo │
 │ Ignorés (laissés intacts) │       0 │
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
@@ -42,7 +51,8 @@ Annulation de l'exécution clean
 ```
 
 - Chaque fichier mis en quarantaine — les copies en trop d'abord — est remis à sa place, jamais
-  par-dessus un autre fichier.
+  par-dessus un autre fichier. Les dossiers de quarantaine qu'il laisse vides s'en vont aussi :
+  un `undo` mené à son terme ne laisse rien de l'exécution dans la quarantaine.
 - Chaque copie supprimée avec `clean --delete` est **reconstruite à partir de la copie gardée**,
   date comprise, même d'un disque à l'autre.
 - Sans nom, `undo` restaure la dernière exécution ; `undo <exécution>` restaure celle-là. Les
@@ -64,7 +74,7 @@ Annulation de l'exécution clean
 ## Voir ce qui a été fait : `history`
 
 ```powershell
-cavo789/media-hygiene --locale fr history
+mh history
 ```
 
 <!-- capture: history.txt -->
@@ -73,8 +83,8 @@ Exécutions (les plus récentes d'abord)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃ Libéré ┃ En quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20261003-080851 │ clean    │         1 │    0 o │             39 │         0 │
-│ 20261003-080845 │ clean    │         1 │    0 o │             35 │        36 │
+│ 20261012-102039 │ clean    │         1 │      0 │             41 │         0 │
+│ 20261012-102033 │ clean    │         1 │      0 │             35 │        36 │
 └─────────────────┴──────────┴───────────┴────────┴────────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -95,7 +105,7 @@ qui efface du contenu (avec `clean --delete`, si vous l'utilisez), et elle le di
 demander :
 
 ```powershell
-cavo789/media-hygiene --locale fr purge
+mh purge
 ```
 
 <!-- capture: purge.txt -->
@@ -103,9 +113,8 @@ cavo789/media-hygiene --locale fr purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261003-080851, 20261003-080845 (39 fichiers, 16,2
-Mo) ? [o/N] o
-✅ Quarantaine vidée : 16,2 Mo libérés.
+❓ Effacer la quarantaine de 20261012-102039 (41 fichiers, 16,4 Mo) ? [o/N] o
+✅ Quarantaine vidée : 16,4 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.
 ```
 
@@ -113,6 +122,23 @@ Mo) ? [o/N] o
   celle-là.
 - Il demande d'abord, comme `clean` ; `--yes` saute la question.
 - Après une purge, `undo` ne peut plus ramener ces fichiers.
+
+## Où en suis-je ? `status`
+
+De retour après quelques jours, vous ne savez plus quelle exécution est en quarantaine, ni si un
+tri a été appliqué ? `status` lit les dossiers de l'outil, sans analyser vos photos (une seconde
+environ), et dit :
+
+- le dernier audit ou nettoyage : quand, et ce qu'il a trouvé ;
+- la quarantaine : combien de fichiers, quelle place, depuis quand ;
+- les exécutions que `undo` peut encore restaurer, avec la commande `undo` complète ;
+- les séries de rafales encore à voir et les décisions de `review` pas encore appliquées ;
+- la dernière proposition de `classify`, et si `sort` l'a appliquée ;
+
+puis **une** étape suivante, en commande complète. Une quarantaine de plus de 30 jours
+(`purge_hint_days`, dans la section `[clean]` de `config.toml`) est la première chose qu'il
+propose de purger. Montez les mêmes dossiers que pour `clean` (ou tapez `mh status`) : un dossier
+non monté est signalé, jamais une erreur.
 
 ## Gardez le dossier du journal
 

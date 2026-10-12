@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from media_hygiene.constants import BrokenReason, RunKind
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings
+    from media_hygiene.report.actions import AuditAction
     from media_hygiene.report.similar_views import SimilarSection
     from media_hygiene.report.summary import ReportSummary
 
@@ -25,6 +26,7 @@ class ReportRecord:
     outcome: Outcome | None = None
     run_id: str | None = None
     crosscheck: CrossCheckResult | None = None
+    actions: tuple[AuditAction, ...] = ()  # what the audit lets the user do
 
 
 @dataclass(frozen=True, slots=True)
@@ -161,10 +163,11 @@ class GroupsSection:
 
 @dataclass(frozen=True, slots=True)
 class ReportHeader:
-    """What the report is about: its headline numbers and the folders analysed."""
+    """What the report is about: headline numbers, folders analysed, what to do."""
 
     summary: ReportSummary
     roots: tuple[str, ...]
+    actions: tuple[AuditAction, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

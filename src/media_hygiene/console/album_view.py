@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final
 from rich.markup import escape
 from rich.table import Table
 
+from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 
@@ -42,13 +43,23 @@ def show_album(runtime: Runtime, prepared: AlbumPrepared) -> None:
     output.show(table)
     _list(runtime, plan.missing, _("not found where the plan or a sort put it"))
     _list(runtime, plan.elsewhere, _("on another disk or mount: no link possible"))
+    # Both change what the next run links: ranked as next steps, at the end.
     if plan.missing:
-        output.tip(_("Run 'classify' again: its plan sees the files where they are."))
+        output.advise(
+            Advice(
+                TipKind.NEXT,
+                _("Run 'classify' again: its plan sees the files where they are."),
+            )
+        )
     if plan.elsewhere:
-        output.tip(
-            _(
-                "A hard link stays on the disk and in the mounted folder of its file: "
-                "set album.root to a folder inside the one mounted for these photos."
+        output.advise(
+            Advice(
+                TipKind.NEXT,
+                _(
+                    "A hard link stays on the disk and in the mounted folder of its "
+                    "file: set album.root to a folder inside the one mounted for "
+                    "these photos."
+                ),
             )
         )
 
@@ -71,7 +82,7 @@ def _list(runtime: Runtime, paths: Sequence[Path], reason: str) -> None:
 
 
 def show_album_result(runtime: Runtime, result: AlbumResult) -> None:
-    """Say what the run made, what failed, and how to undo it.
+    """Say what the run made and what failed.
 
     Args:
         runtime: Settings, mount points and output.
@@ -93,9 +104,3 @@ def show_album_result(runtime: Runtime, result: AlbumResult) -> None:
     if result.ended.interrupted:
         output.warning(_("Stopped before the end, as asked."))
         output.tip(_("Run the same command again: the files linked are skipped."))
-    output.tip(
-        _(
-            "'media-hygiene undo {run_id}' removes the album; the photos stay "
-            "where they are."
-        ).format(run_id=result.run_id)
-    )

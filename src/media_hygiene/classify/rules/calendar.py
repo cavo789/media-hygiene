@@ -2,6 +2,7 @@
 
 `12-24..12-26` comes back every year, and `12-31..01-01` crosses New Year;
 `2023-07-01..2023-07-15` happens once. A date that does not exist is refused.
+Two one-off ranges sharing a day are pointed out: the first one listed wins.
 """
 
 from __future__ import annotations
@@ -9,7 +10,16 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from datetime import date
-from typing import Final
+from itertools import combinations
+from typing import TYPE_CHECKING, Final
+
+from media_hygiene.classify.rules.kinds import RuleMatch
+from media_hygiene.i18n import _
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from media_hygiene.config.classify_rules import ClassifyRule
 
 _SEPARATOR: Final = ".."
 _DAY: Final = re.compile(r"(?P<month>\d{1,2})-(?P<day>\d{1,2})")
@@ -102,10 +112,11 @@ def parse_one_off(text: str) -> OneOff:
     try:
         start, end = date.fromisoformat(first), date.fromisoformat(last)
     except ValueError as exc:
-        message = f"{text!r} is not a date range such as 2023-07-01..2023-07-15"
+        message = _("'{text}' is not a date range such as 2023-07-01..2023-07-15")
+        message = message.format(text=text)
         raise ValueError(message) from exc
     if end < start:
-        message = f"{text!r} ends before it starts"
+        message = _("'{text}' ends before it starts").format(text=text)
         raise ValueError(message)
     return OneOff(start, end)
 
@@ -137,12 +148,33 @@ def _month_day(text: str) -> tuple[int, int]:
     """
     found = _DAY.fullmatch(text)
     if found is None:
-        message = f"{text!r} is not a day of the year such as 12-24"
+        message = _("'{text}' is not a day of the year such as 12-24").format(text=text)
         raise ValueError(message)
     month, day = int(found["month"]), int(found["day"])
     try:
         date(_LEAP_YEAR, month, day)
     except ValueError as exc:
-        message = f"{text!r} is not a day that exists"
+        message = _("'{text}' is not a day that exists").format(text=text)
         raise ValueError(message) from exc
     return month, day
+
+
+def overlapping_ranges(rules: Sequence[ClassifyRule]) -> tuple[tuple[str, str], ...]:
+    """The pairs of date ranges sharing a day: the first one listed wins.
+
+    Args:
+        rules: The rules.
+
+    Returns:
+        The names of each such pair, in list order.
+    """
+    ranges = [
+        (rule.name, parse_one_off(rule.dates))
+        for rule in rules
+        if rule.match is RuleMatch.DATE_RANGE
+    ]
+    return tuple(
+        (first, second)
+        for (first, one), (second, other) in combinations(ranges, 2)
+        if one.overlaps(other)
+    )

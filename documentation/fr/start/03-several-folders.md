@@ -33,13 +33,14 @@ Le résultat compare maintenant les deux disques :
 ```text
 Résumé de l'audit
 ┌─────────────────────────────────────────────────────────────┬─────────┐
-│ Fichiers média analysés                                     │      83 │
+│ Fichiers média analysés                                     │      85 │
 │ Groupes de fichiers identiques                              │      20 │
 │ Copies en trop, à mettre de côté                            │      32 │
-│ Espace libérable                                            │ 13,9 Mo │
+│ Espace libérable                                            │ 14,0 Mo │
 │ Fichiers cassés (vides ou illisibles)                       │       3 │
 │ Fichiers compagnons orphelins (.xmp, .aae, .thm) à déplacer │       1 │
-│ Quasi-doublons (déplacés seulement avec --tier near)        │       2 │
+│ Quasi-doublons (déplacés seulement avec --tier near)        │       3 │
+│ Vidéos réencodées (déplacées seulement avec --tier near)    │       1 │
 │ Rafales (déplacées seulement si écartées avec 'review')     │       3 │
 │ Durée                                                       │     2 s │
 └─────────────────────────────────────────────────────────────┴─────────┘
@@ -49,29 +50,33 @@ Résumé de l'audit
 ```text
 Dossiers partageant des fichiers identiques
 • 12 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans D:\Ancien disque\Photos 2019 (déplacés en quarantaine), 3,5 Mo libérés
-  par 'purge'. D:\Ancien disque\Photos 2019 ne contient rien d'autre : c'est
-  entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans D:\Ancien disque\Photos 2019 (des copies que 'clean' déplace en
+  quarantaine), 3,6 Mo à libérer avec 'purge'. D:\Ancien disque\Photos 2019 ne
+  contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
+  à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\Téléphone (gardés) et dans D:\Ancien
-  disque\Téléphone (déplacés en quarantaine), 3,0 Mo libérés par 'purge'.
-  D:\Ancien disque\Téléphone ne contient rien d'autre : c'est entièrement une
-  copie de C:\Photos\Téléphone.
+  disque\Téléphone (des copies que 'clean' déplace en quarantaine), 3,0 Mo à
+  libérer avec 'purge'. D:\Ancien disque\Téléphone ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\Téléphone.
 • 1 fichier est à la fois dans C:\Photos\Vidéos (gardé) et dans D:\Ancien
-  disque\Vidéos (déplacé en quarantaine), 2,9 Mo libérés par 'purge'.
+  disque\Vidéos (une copie que 'clean' déplace en quarantaine), 2,9 Mo à libérer
+  avec 'purge'.
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\Ancien téléphone (déplacés en quarantaine), 2,2 Mo libérés par
-  'purge'. C:\Photos\Ancien téléphone ne contient rien d'autre : c'est
-  entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\Ancien téléphone (des copies que 'clean' déplace en
+  quarantaine), 2,3 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
+  contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
+  à la mer.
 • 4 fichiers sont à la fois dans C:\Photos\2020\Noël (gardés) et dans D:\Ancien
-  disque\Noël 2020 (déplacés en quarantaine), 1,2 Mo libérés par 'purge'.
-  D:\Ancien disque\Noël 2020 ne contient rien d'autre : c'est entièrement une
-  copie de C:\Photos\2020\Noël.
+  disque\Noël 2020 (des copies que 'clean' déplace en quarantaine), 1,2 Mo à
+  libérer avec 'purge'. D:\Ancien disque\Noël 2020 ne contient rien d'autre :
+  c'est entièrement une copie de C:\Photos\2020\Noël.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
-  dans C:\Photos\2019\Nouveau dossier (déplacés en quarantaine), 864,7 Ko
-  libérés par 'purge'. C:\Photos\2019\Nouveau dossier ne contient rien d'autre :
-  c'est entièrement une copie de C:\Photos\2019\Vacances à la mer.
+  dans C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
+  quarantaine), 872,9 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  ne contient rien d'autre : c'est entièrement une copie de
+  C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
-  un exemplaire est gardé (287,5 Ko à libérer).
+  un exemplaire est gardé (292,0 Ko à libérer).
 ```
 
 Chaque chemin est affiché comme Windows l'écrit : `/data/d/Ancien disque` s'affiche
@@ -116,6 +121,42 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 ```
 
 La suite de ce guide montre les commandes PowerShell ; la version WSL suit le même modèle.
+
+## Écrire vos dossiers une fois : `mh`
+
+Les commandes s'allongent à chaque dossier, et chaque étape des guides en demande une un peu
+différente (`:ro` ou non, le journal, la quarantaine, un port pour le navigateur). Écrivez-les
+**une fois** : la commande `launcher` écrit une commande PowerShell courte, `mh`, qui retient les
+dossiers montés au moment où vous la créez.
+
+```powershell
+mkdir -Force "$HOME\media-hygiene"
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
+  -e TZ=Europe/Brussels `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
+```
+
+Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE=fr` et le
+`-e TZ=…` sont retenus aussi : `mh` parle français et date ses rapports à votre heure (mettez
+votre fuseau s'il n'est pas `Europe/Brussels`). Ensuite chaque commande est courte : `mh audit`, `mh clean`,
+`mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
+en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
+`purge`, `xmp`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
+`$HOME\media-hygiene` (créés s'ils manquent), plus le port des pages du navigateur pour `review`,
+`review-sort`, `places`, `search` et `people`. Les commandes que l'outil propose à la fin d'une exécution deviennent
+elles aussi `mh …`.
+
+- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"` ; ou ajoutez
+  cette ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout.
+- **Un autre dossier ?** Relancez la commande `launcher` avec un `-v` de plus.
+- PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **Depuis WSL** : ajoutez `--shell bash` et enregistrez dans `~/media-hygiene/mh.sh`, puis
+  `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque terminal).
 
 ---
 

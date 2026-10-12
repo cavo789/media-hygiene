@@ -14,8 +14,20 @@ if TYPE_CHECKING:
     from typer.models import OptionInfo
 
 
+def panel_advanced() -> str:
+    """Title of the help panel of the options seldom needed.
+
+    The options of daily use carry no panel: Typer lists them first, under
+    "Options". Only commands with more than four options split them.
+
+    Returns:
+        The translated title.
+    """
+    return _("Advanced options")
+
+
 def _panel_folders() -> str:
-    return _("Folders (override folders.* of config.toml)")
+    return _("Advanced: folders (override folders.* of config.toml)")
 
 
 def _panel_output() -> str:

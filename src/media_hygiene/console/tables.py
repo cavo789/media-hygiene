@@ -138,7 +138,9 @@ def _pair_sentence(pair: FolderPair, mapper: HostPathMapper) -> Text:
 
 
 def _between_folders(pair: FolderPair) -> str:
-    """The sentence of a pair of two folders, worded after what happens to the copies.
+    """The sentence of a pair of two folders, after what `clean` does to the copies.
+
+    Always a forecast: the audit changes nothing, and `clean` shows it before asking.
 
     Args:
         pair: The folder pair.
@@ -149,26 +151,28 @@ def _between_folders(pair: FolderPair) -> str:
     match pair.disposal:
         case Disposal.MOVED:
             return ngettext(
-                "{count} file is both in {kept} (kept) and in {removed} (moved to the"
-                " quarantine), {size} freed by 'purge'.",
-                "{count} files are both in {kept} (kept) and in {removed} (moved to the"
-                " quarantine), {size} freed by 'purge'.",
+                "{count} file is both in {kept} (kept) and in {removed} (a copy"
+                " 'clean' moves to the quarantine), {size} to free with 'purge'.",
+                "{count} files are both in {kept} (kept) and in {removed} (copies"
+                " 'clean' moves to the quarantine), {size} to free with 'purge'.",
                 pair.files,
             )
         case Disposal.MIXED:
             return ngettext(
-                "{count} file is both in {kept} (kept) and in {removed} (deleted, or"
-                " moved to the quarantine if not a media file), {size} freed.",
-                "{count} files are both in {kept} (kept) and in {removed} (deleted, or"
-                " moved to the quarantine if not a media file), {size} freed.",
+                "{count} file is both in {kept} (kept) and in {removed} (a copy"
+                " 'clean' deletes, or moves to the quarantine if not a media file),"
+                " {size} to free.",
+                "{count} files are both in {kept} (kept) and in {removed} (copies"
+                " 'clean' deletes, or moves to the quarantine if not a media file),"
+                " {size} to free.",
                 pair.files,
             )
         case _:
             return ngettext(
-                "{count} file is both in {kept} (kept) and in {removed} (deleted),"
-                " {size} freed.",
-                "{count} files are both in {kept} (kept) and in {removed} (deleted),"
-                " {size} freed.",
+                "{count} file is both in {kept} (kept) and in {removed} (a copy"
+                " 'clean' deletes), {size} to free.",
+                "{count} files are both in {kept} (kept) and in {removed} (copies"
+                " 'clean' deletes), {size} to free.",
                 pair.files,
             )
 
