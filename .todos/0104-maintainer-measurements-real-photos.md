@@ -78,6 +78,17 @@ where ArcFace should make the difference.
 Decided in review (2026-10-12): if ArcFace is only slightly better, drop it and keep SFace alone
 (a non-commercial licence and ≈ 300 MB of weights are only worth a clear gain).
 
+## 5. Try the people page and the names (0091, never run in a real browser)
+
+1. `mh people`: name a group, name a second one the same (merge), remove a face (×), ignore a
+   group (`i`), confirm a suggestion (`y`); open `config.toml`: comments kept,
+   `[[people.person]]` written.
+2. Run `people` again: the names are still there, `Named: …` in the console.
+3. `mh search Chloé montagne`, `mh search person:chloe`, `mh search person:Unknown` (one line
+   says nobody is named so).
+4. `mh people --forget` in a terminal: answer no, then yes (read back from `config.toml`).
+5. Keys `x`, `i`, `y`, ×: keep them or ask Claude to change them after this try.
+
 ## Acceptance
 
 - Every section done, its numbers written in the TODO it unblocks; this file then moves to
