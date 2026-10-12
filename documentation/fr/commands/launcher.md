@@ -96,8 +96,8 @@ PowerShell.
 - **Pas à Bruxelles ?** Remplacez `Europe/Brussels` par votre fuseau (`Europe/Paris`,
   `America/Montreal`…). Sans `-e TZ=…`, `mh` tourne en UTC : les dossiers et heures des rapports
   sont décalés d'une ou deux heures.
-- **Avec `-it`**, le script atterrirait à l'écran au lieu du fichier : `launcher` le refuse et
-  donne la bonne commande.
+- **Avec `-it`**, Docker envoie aussi les messages dans le fichier : `launcher` n'écrit pas de
+  lanceur, et le chargement du fichier s'arrête sur la bonne commande (sans `-it`).
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 

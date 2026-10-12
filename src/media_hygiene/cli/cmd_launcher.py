@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 import typer
 from typer.core import TyperGroup
@@ -16,6 +16,7 @@ from media_hygiene.cli.safety import (
     READ_ONLY_COMMANDS,
 )
 from media_hygiene.config.zone import timezone_unknown
+from media_hygiene.console.output import data_on_terminal
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
@@ -24,12 +25,9 @@ from media_hygiene.services.launcher import (
     launcher_script,
     load_command,
     render_script,
-    script_path,
 )
 from media_hygiene.services.launcher_memory import remembered
-
-if TYPE_CHECKING:
-    from media_hygiene.services.runtime import Runtime
+from media_hygiene.services.launcher_refusal import refusal_script
 
 
 def launcher_command(
@@ -54,8 +52,8 @@ def launcher_command(
     """
     runtime = runtime_of(ctx)
     script = launcher_script(runtime, shell, _commands(ctx))
-    if _on_screen():
-        _refuse_terminal(runtime, script.shell)
+    if data_on_terminal():
+        _refuse_terminal(script.shell)
     sys.stdout.write(render_script(script))
     sys.stdout.flush()
     if not script.data:
@@ -83,33 +81,20 @@ def _timezone_setting() -> str:
     )
 
 
-def _on_screen() -> bool:
-    """Whether the script would be printed to a terminal (`docker run -it`).
-
-    Returns:
-        True when the output stream is not redirected to a file.
-    """
-    return sys.stdout.isatty()
-
-
-def _refuse_terminal(runtime: Runtime, shell: Shell) -> None:
+def _refuse_terminal(shell: Shell) -> None:
     """Stop when the script would land on the screen instead of in a file.
 
+    `-t` joins stderr to stdout: a redirection catches the refusal too, so it is
+    written as a script that stops its own loading with the same advice.
+
     Args:
-        runtime: Settings, mount points and output.
         shell: The shell the script is for.
 
     Raises:
-        typer.Exit: Always: nothing was written.
+        typer.Exit: Always: no launcher was written.
     """
-    runtime.output.warning(
-        _("Nothing written: the launcher goes into a file, not on the screen.")
-    )
-    runtime.output.tip(
-        _("Run the same command without -it, ending with: > {path}").format(
-            path=f'"{script_path(shell)}"'
-        )
-    )
+    sys.stdout.write(refusal_script(shell))
+    sys.stdout.flush()
     raise typer.Exit(ExitCode.USAGE)
 
 

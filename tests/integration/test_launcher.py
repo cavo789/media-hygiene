@@ -100,11 +100,14 @@ def test_without_a_photo_folder_the_launcher_says_how_to_add_one(
 def test_on_a_terminal_the_launcher_writes_nothing_and_says_how(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """`docker run -it … launcher`: no script on screen, the redirection to add."""
-    monkeypatch.setattr("media_hygiene.cli.cmd_launcher._on_screen", lambda: True)
+    """`docker run -it … launcher`: only a refusal, which stops its own loading."""
+    for module in ("console.output", "cli.cmd_launcher"):
+        monkeypatch.setattr(f"media_hygiene.{module}.data_on_terminal", lambda: True)
     result = run(cli, "launcher", "--shell", "powershell")
     assert result.exit_code == ExitCode.USAGE, result.output
     assert "function mh" not in result.stdout
     assert "Launcher written" not in result.output
-    assert "Nothing written" in result.stderr
-    assert "mh.ps1" in result.stderr
+    assert result.stdout.startswith("# Nothing written")
+    assert "mh.ps1" in result.stdout
+    assert result.stdout.splitlines()[-1].startswith("throw ")
+    assert not result.stderr

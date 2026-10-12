@@ -94,8 +94,8 @@ PowerShell.
 - **Not in Brussels?** Replace `Europe/Brussels` with your own zone (`Europe/Paris`,
   `America/Montreal`…). Without `-e TZ=…`, `mh` runs in UTC: report folders and times are one or
   two hours off.
-- **With `-it`**, the script would land on the screen instead of the file: `launcher` refuses it
-  and gives the right command.
+- **With `-it`**, Docker sends the messages into the file too: `launcher` writes no launcher,
+  and loading the file stops with the right command to run (without `-it`).
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
