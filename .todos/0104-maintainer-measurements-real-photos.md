@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`
+- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`
 
 ## Context
 
@@ -57,6 +57,26 @@ Decided in review (2026-10-12): if the misses are mostly synonyms, a short synon
 3. A full `mh audit` with the cache: note how long the "near duplicates" step takes. Under one
    minute: `tags` runs that search itself so near-duplicate groups share one description (the
    remainder of 0083); otherwise it reads the groups of the last audit report.
+
+## 4. SFace against ArcFace (unblocks 0090)
+
+Pick a year with many children (same children at different ages, look-alike siblings): that is
+where ArcFace should make the difference.
+
+1. SFace, the tool: `mh people --path "C:\Photos\<year>"`, look at the page.
+2. ArcFace, outside the image: the measurement script is kept **outside the repository**
+   (InsightFace's `buffalo_l` weights are for non-commercial use only), in the maintainer's
+   private plans folder. From WSL, in a throwaway Python 3.12 environment (`insightface`
+   compiles at install and may fail on a newer Python): `uv venv --python 3.12 /tmp/arcface`,
+   `uv pip install insightface onnxruntime opencv-python-headless numpy pillow pillow-heif`,
+   then run the script on `/mnt/c/Photos/<year>` with `--threshold 0.40`, then `0.35` and `0.45`
+   (ArcFace's similarity scale is not SFace's). It writes an HTML page of the groups.
+3. On each page count: groups mixing two people, people split into several groups, time per
+   photo.
+4. Afterwards: `rm -rf /tmp/arcface ~/.insightface`.
+
+Decided in review (2026-10-12): if ArcFace is only slightly better, drop it and keep SFace alone
+(a non-commercial licence and ≈ 300 MB of weights are only worth a clear gain).
 
 ## Acceptance
 
