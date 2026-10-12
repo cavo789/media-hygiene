@@ -27,12 +27,21 @@ Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
 aucune vidéo. Par exemple, seulement les photos de l'iPhone et les vidéos :
 
 ```powershell
+mh audit --ext heic,video
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene --locale fr audit --ext heic,video
 ```
+
+</details>
 
 L'audit commence par dire ce qu'il analyse :
 
@@ -81,7 +90,15 @@ voir ci-dessous).
 
 L'outil est fait pour les photos et les vidéos, mais `--ext` accepte aussi d'autres extensions,
 par exemple pour trouver les documents en double d'un dossier familial. `clean`
-([étape 8](08-clean.md)) a alors besoin du montage `/quarantine` :
+([étape 8](08-clean.md)) a alors besoin du montage `/quarantine`, que `mh` ajoute ; le dossier
+doit être un de ceux de `mh` (sinon relancez [`launcher`](../commands/launcher.md) avec son `-v`) :
+
+```powershell
+mh clean --ext pdf,docx
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -90,6 +107,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean --ext pdf,docx
 ```
+
+</details>
 
 Ces fichiers sont traités avec plus de précautions que les photos. Pour une photo, le dossier
 n'est qu'une façon de ranger ; pour un document ou un programme, **l'endroit où se trouve le

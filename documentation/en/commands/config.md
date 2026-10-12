@@ -35,7 +35,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 ## Run it
 
 ```powershell
-mkdir "$HOME\media-hygiene\config"
+mkdir -Force "$HOME\media-hygiene\config"
 docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config
 ```
 

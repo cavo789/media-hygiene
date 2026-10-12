@@ -22,7 +22,15 @@ never goes online.
 
 `places` shows where your photos were taken, from the cache of the audits, and lets you name
 the places that matter to you. It needs the cache (`/cache`, where the audits recorded the
-positions) and the folder of `config.toml` (`/config`, where the places are saved):
+positions) and the folder of `config.toml` (`/config`, where the places are saved); `mh` mounts
+both, and opens the port of the page:
+
+```powershell
+mh places
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -30,6 +38,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene places
 ```
+
+</details>
 
 As with [`review`](../clean/10-review-bursts.md#step-2-open-the-page), Ctrl+click the address it
 prints, `http://127.0.0.1:8088/`.

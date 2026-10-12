@@ -5,12 +5,19 @@
 A clean is not final. The journal remembers every action, so you can put everything back, see
 what each clean did, and, once you are sure, empty the quarantine for good.
 
-For the three commands below, keep the same `-v` options as your `clean` (step 8); only the last
-word changes.
+With `mh`, the three commands below are one line each. Without it, keep the same `-v` options as
+your `clean` (step 8); only the last word changes.
 
 ## Undo a clean: `undo`
 
 Changed your mind? Run the same command with `undo` instead of `clean`:
+
+```powershell
+mh undo
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -23,6 +30,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene undo
 ```
+
+</details>
 
 <!-- capture: undo.txt -->
 ```text
@@ -62,7 +71,7 @@ Undo the clean run 20261011-204239
 ## See what was done: `history`
 
 ```powershell
-cavo789/media-hygiene history
+mh history
 ```
 
 <!-- capture: history.txt -->
@@ -91,7 +100,7 @@ It is the only command that erases content (with `clean --delete`, if you use it
 so before asking:
 
 ```powershell
-cavo789/media-hygiene purge
+mh purge
 ```
 
 <!-- capture: purge.txt -->

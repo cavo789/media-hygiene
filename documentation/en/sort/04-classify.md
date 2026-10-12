@@ -12,12 +12,21 @@ nothing moves, and folders mounted `:ro` are fine.
 ## Run it
 
 ```powershell
+mh classify
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene classify
 ```
+
+</details>
 
 After an audit with [the cache](../start/02-keep-the-cache.md), nothing is read again: the dates,
 the cameras and the places come from the cache, and the audit's fingerprints tell the duplicates

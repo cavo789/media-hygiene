@@ -150,7 +150,7 @@ docker run --rm -it `
 ```
 
 Step 5, `review`: the command of step 1 with `-p 127.0.0.1:8088:8088` after `-it`. Create the
-four folders before the first run (`mkdir "$HOME\media-hygiene\reports", …`): a folder Docker
+four folders before the first run (`mkdir -Force "$HOME\media-hygiene\reports", …`): a folder Docker
 creates by itself belongs to the administrator, and the tool could not write there.
 
 </details>

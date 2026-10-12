@@ -27,12 +27,21 @@ Files are recognised by their extension, whatever its case:
 photos and the videos:
 
 ```powershell
+mh audit --ext heic,video
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene audit --ext heic,video
 ```
+
+</details>
 
 The audit starts by saying what it analyses:
 
@@ -80,7 +89,15 @@ quarantine, see below).
 
 The tool is made for photos and videos, but `--ext` also accepts other extensions, for instance
 to find the duplicate documents of a family folder. `clean` ([step 8](08-clean.md)) then needs
-the `/quarantine` mount:
+the `/quarantine` mount, which `mh` adds; the folder must be one of `mh`'s (otherwise run
+[`launcher`](../commands/launcher.md) again with its `-v`):
+
+```powershell
+mh clean --ext pdf,docx
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -89,6 +106,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene clean --ext pdf,docx
 ```
+
+</details>
 
 Such files are handled with more care than photos. For a photo, the folder is only a way to
 sort; for a document or a program, **where the file lies can be what makes it work**: an

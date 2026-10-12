@@ -11,7 +11,14 @@ party. Two windows side by side:
 
 ## Get the two files
 
-Mount a reports folder, as for [the HTML reports](../clean/04-html-report.md):
+`classify` writes them in the reports folder, which `mh` mounts, as for [the HTML reports](../clean/04-html-report.md):
+
+```powershell
+mh classify
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -20,6 +27,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene classify
 ```
+
+</details>
 
 The end of the output says where the files are:
 

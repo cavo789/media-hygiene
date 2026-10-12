@@ -30,12 +30,21 @@ In the demo library, `C:\Photos\2019\Seaside holidays` is kept rather than `C:\P
 `audit`:
 
 ```powershell
+mh audit --prefer "C:\Photos\Old phone"
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene audit --prefer "C:\Photos\Old phone"
 ```
+
+</details>
 
 Write the folder as Windows shows it. The pairs are reversed:
 
@@ -74,7 +83,7 @@ first one wins when a file is in both.
 kept. Think of a master library:
 
 ```powershell
-cavo789/media-hygiene audit --protect "C:\Photos\Family"
+mh audit --protect "C:\Photos\Family"
 ```
 
 (the `docker run … -v …` part stays the same; only the end of the command changes)
@@ -88,7 +97,7 @@ the one kept. Broken files and orphan sidecars of a protected folder are left al
 for a real backup that must stay a second copy:
 
 ```powershell
-cavo789/media-hygiene audit --exclude "D:\Old disk"
+mh audit --exclude "D:\Old disk"
 ```
 
 Only the duplicates of `C:\Photos` remain:
@@ -115,7 +124,7 @@ NAS's own recycle bin. Rather than one `--exclude` per path, `--exclude-name` sk
 its name**, wherever it is:
 
 ```powershell
-cavo789/media-hygiene audit --exclude-name "Thumbnails,*.lrdata"
+mh audit --exclude-name "Thumbnails,*.lrdata"
 ```
 
 - The name matches the **whole** folder name, case ignored: `Thumbnails` skips `thumbnails` but

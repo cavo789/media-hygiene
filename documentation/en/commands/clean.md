@@ -41,7 +41,7 @@ Create the journal and the quarantine once, then run the command of your audit w
 with both folders and `clean` instead of `audit`:
 
 ```powershell
-mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `

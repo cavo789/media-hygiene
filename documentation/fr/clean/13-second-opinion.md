@@ -36,7 +36,14 @@ lieu de `C:\...`.
 
 ## Étape 3 : comparer
 
-Lancez `crosscheck` avec les mêmes options que l'audit :
+Lancez `crosscheck` avec les mêmes dossiers que l'audit (`mh` les monte) :
+
+```powershell
+mh crosscheck
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -46,6 +53,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr crosscheck
 ```
+
+</details>
 
 `crosscheck` refait l'audit (rapidement, grâce au cache) et compare les deux outils groupe par
 groupe. Après le résumé habituel :

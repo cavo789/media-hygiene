@@ -9,10 +9,18 @@ your computer's time zone.
 
 ## Give the tool a reports folder
 
-Create a folder for the reports once, then mount it on `/reports`:
+`mh` mounts one already, `$HOME\media-hygiene\reports`, created the first time; the full command
+creates it, then mounts it on `/reports`:
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports"
+mh audit
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\reports"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
@@ -21,8 +29,10 @@ docker run --rm -it `
   cavo789/media-hygiene audit
 ```
 
+</details>
+
 `$HOME` is your user folder (`C:\Users\<you>`): the reports land in
-`C:\Users\<you>\media-hygiene\reports`. Create the folder **before** the first run: a folder
+`C:\Users\<you>\media-hygiene\reports`. Without `mh`, create the folder **before** the first run: a folder
 Docker creates by itself belongs to the administrator, and the tool could not write there
 ([why](../reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
 
@@ -135,8 +145,17 @@ Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail,Near-duplica
 recent and deletes the others:
 
 ```powershell
+mh reports
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene reports
 ```
+
+</details>
 
 <!-- capture: reports.txt -->
 ```text

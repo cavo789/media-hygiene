@@ -13,12 +13,21 @@ en `:ro` conviennent.
 ## Le lancer
 
 ```powershell
+mh classify
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr classify
 ```
+
+</details>
 
 Après un audit avec [le cache](../start/02-keep-the-cache.md), rien n'est relu : les dates, les
 appareils et les lieux viennent du cache, et les empreintes de l'audit disent quels doublons sont

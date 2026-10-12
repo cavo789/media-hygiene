@@ -23,7 +23,15 @@ zone de recherche est envoyé à OpenStreetMap ([plus bas](#un-village-ou-un-par
 
 `places` montre où vos photos ont été prises, à partir du cache des audits, et vous laisse
 nommer les lieux qui comptent pour vous. Il lui faut le cache (`/cache`, où les audits ont
-noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) :
+noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) ;
+`mh` monte les deux, et ouvre le port de la page :
+
+```powershell
+mh places
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -31,6 +39,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
 ```
+
+</details>
 
 Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), Ctrl+clic sur
 l'adresse affichée, `http://127.0.0.1:8088/`.

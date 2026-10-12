@@ -8,15 +8,33 @@ lancement.
 
 ## Créer le fichier
 
-L'outil ne voit que les dossiers que vous montez : donnez-lui donc un de vos dossiers sur
-`/config`, et lancez une fois la commande `config` :
+L'outil ne voit que les dossiers que vous montez : il lit le fichier dans un de vos dossiers
+monté sur `/config` (`mh` monte `$HOME\media-hygiene\config`). Lancez une fois la commande
+`config` :
 
 ```powershell
-mkdir "$HOME\media-hygiene\config"
+mh config
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
 docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config
 ```
 
-La première ligne dit ce qui s'est passé :
+</details>
+
+Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-hygiene\config`. Ouvrez-le avec
+n'importe quel éditeur de texte, le Bloc-notes convient :
+
+```powershell
+notepad "$HOME\media-hygiene\config\config.toml"
+```
+
+<details>
+<summary>Ce que <code>config</code> a affiché (sa première ligne dit que le fichier a été créé, puis chaque réglage)</summary>
 
 <!-- capture: config-first.txt|Un fichier de configuration commenté| -->
 ```text
@@ -338,9 +356,34 @@ Points de montage
 de commande l'emportent.
 ```
 
-Un `config.toml` commenté est apparu dans `C:\Users\<vous>\media-hygiene\config`. Ouvrez-le avec
-n'importe quel éditeur de texte (le Bloc-notes convient). Chaque réglage y est expliqué, par
-exemple :
+</details>
+
+## Les trois réglages que la plupart des gens changent
+
+Trouvez ces lignes dans le fichier, changez leurs valeurs, enregistrez :
+
+```toml
+[general]
+locale = "fr"                 # la langue de l'outil : en | fr
+timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC, une ou deux heures de décalage
+
+[folders]
+preferred = ['C:\Photos\Famille']  # les dossiers dont les copies sont gardées en priorité
+```
+
+- **`locale`** : `"fr"` pour le français, `"en"` pour l'anglais.
+- **`timezone`** : votre fuseau, comme `Europe/Paris` ou `America/Montreal`, pour que les
+  rapports soient nommés et datés à votre heure.
+- **`preferred`** : les dossiers qui gardent leurs copies ([étape 5](05-choose-the-kept-copy.md)) ;
+  chemins Windows entre **apostrophes**.
+
+Les lancements suivants lisent le fichier tant que `-v …:/config` est dans la commande (`mh`
+l'ajoute pour vous). Tout le reste peut attendre : la suite de cette page explique les autres
+réglages.
+
+## Chaque réglage est expliqué dans le fichier
+
+Par exemple, le début du fichier :
 
 <!-- capture: config.toml|[general]|color =  -->
 ```toml
@@ -432,8 +475,16 @@ désactive la règle.
 
 ## L'utiliser
 
-Ajoutez le même `-v …:/config` à chaque commande, et l'outil lit le fichier. Avec
-`locale = "fr"` dans le fichier, `--locale fr` n'est plus nécessaire :
+`mh` monte le dossier pour chaque commande : l'outil lit donc le fichier à chaque fois. Sans `mh`,
+ajoutez le même `-v …:/config` à chaque commande ; avec `locale = "fr"` dans le fichier,
+`--locale fr` n'est plus nécessaire :
+
+```powershell
+mh audit
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -445,13 +496,18 @@ docker run --rm -it `
   cavo789/media-hygiene audit
 ```
 
+</details>
+
 Ce guide garde `--locale fr` dans ses commandes, pour celles et ceux qui n'ont pas de fichier de
 configuration : il ne gêne pas.
 
 ## Vérifier ce que l'outil utilise : `config`
 
-`config` montre chaque réglage, son origine, et l'état de chaque point de montage. Lancez-le avec
-les mêmes options `-v` que votre audit (ici `config` au lieu de `audit`) :
+`config` montre chaque réglage, son origine, et l'état de chaque point de montage : `mh config`
+(sans `mh`, les mêmes options `-v` que votre audit, avec `config` au lieu de `audit`) :
+
+<details>
+<summary>Ce qu'affiche <code>config</code> : chaque réglage, puis chaque point de montage</summary>
 
 <!-- capture: config.txt -->
 ```text
@@ -782,6 +838,8 @@ Points de montage
 💡 Modifiez /config/config.toml pour changer ces réglages ; les options de ligne
 de commande l'emportent.
 ```
+
+</details>
 
 - **Origine** dit d'où vient chaque valeur : `défaut`, `config.toml`, `environnement` ou
   `ligne de commande`.

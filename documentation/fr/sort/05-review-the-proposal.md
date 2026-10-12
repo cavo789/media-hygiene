@@ -13,7 +13,14 @@ pouvait pas nommer : un voyage, une fête. Deux fenêtres côte à côte :
 
 ## Obtenir les deux fichiers
 
-Montez un dossier de rapports, comme pour [les rapports HTML](../clean/04-html-report.md) :
+`classify` les écrit dans le dossier des rapports, que `mh` monte, comme pour [les rapports HTML](../clean/04-html-report.md) :
+
+```powershell
+mh classify
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -22,6 +29,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr classify
 ```
+
+</details>
 
 La fin de l'affichage dit où sont les fichiers :
 

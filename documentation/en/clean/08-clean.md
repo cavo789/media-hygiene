@@ -27,14 +27,25 @@ space ([step 9](09-undo-history-purge.md)).
   copies, unreadable files, orphan sidecars, and later near duplicates and burst shots. Without
   it, `clean` refuses to run (unless `--delete`, below).
 
+`mh` creates both in `$HOME\media-hygiene` the first time. For the full command, create them
+first:
+
 ```powershell
-mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
 ## Run the clean
 
-The same command as your audit, with three changes: **no `:ro`** on your folders (the tool must
-be allowed to move files), the journal and the quarantine, and `clean` instead of `audit`:
+One word with `mh`: it mounts your folders **without `:ro`** for `clean` (the tool must be allowed
+to move files) and adds the journal and the quarantine. The full command is the one of your
+audit with these three changes, and `clean` instead of `audit`:
+
+```powershell
+mh clean
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -47,6 +58,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene clean
 ```
+
+</details>
 
 `clean` audits again (quickly, thanks to the cache), shows the same summary and folder pairs,
 then **asks before doing anything**:

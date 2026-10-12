@@ -5,12 +5,19 @@
 Un nettoyage n'est pas définitif. Le journal retient chaque action : vous pouvez tout remettre en
 place, voir ce que chaque nettoyage a fait et, une fois sûr·e, vider la quarantaine pour de bon.
 
-Pour les trois commandes ci-dessous, gardez les mêmes options `-v` que votre `clean` (étape 8) ;
-seul le dernier mot change.
+Avec `mh`, les trois commandes ci-dessous tiennent en une ligne. Sans lui, gardez les mêmes
+options `-v` que votre `clean` (étape 8) ; seul le dernier mot change.
 
 ## Annuler un nettoyage : `undo`
 
 Vous changez d'avis ? Lancez la même commande avec `undo` au lieu de `clean` :
+
+```powershell
+mh undo
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -23,6 +30,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr undo
 ```
+
+</details>
 
 <!-- capture: undo.txt -->
 ```text
@@ -65,7 +74,7 @@ Annulation de l'exécution clean
 ## Voir ce qui a été fait : `history`
 
 ```powershell
-cavo789/media-hygiene --locale fr history
+mh history
 ```
 
 <!-- capture: history.txt -->
@@ -96,7 +105,7 @@ qui efface du contenu (avec `clean --delete`, si vous l'utilisez), et elle le di
 demander :
 
 ```powershell
-cavo789/media-hygiene --locale fr purge
+mh purge
 ```
 
 <!-- capture: purge.txt -->

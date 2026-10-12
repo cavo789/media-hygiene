@@ -34,7 +34,14 @@ From WSL, write your folders as `/mnt/c/...` instead of `C:\...`.
 
 ## Step 3: compare
 
-Run `crosscheck` with the same options as the audit:
+Run `crosscheck` with the same folders as the audit (`mh` mounts them):
+
+```powershell
+mh crosscheck
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -44,6 +51,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene crosscheck
 ```
+
+</details>
 
 `crosscheck` audits again (quickly, thanks to the cache) and compares the two tools group by
 group. After the usual summary:

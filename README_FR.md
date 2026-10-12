@@ -166,7 +166,7 @@ cache, les rapports, la configuration, le journal et la quarantaine. Elle nettoi
 audit, ajoutez `:ro` à vos dossiers et écrivez `audit` au lieu de `clean`.
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `

@@ -156,7 +156,7 @@ docker run --rm -it `
 ```
 
 Étape 5, `review` : la commande de l'étape 1 avec `-p 127.0.0.1:8088:8088` après `-it`. Créez
-les quatre dossiers avant le premier lancement (`mkdir "$HOME\media-hygiene\reports", …`) : un
+les quatre dossiers avant le premier lancement (`mkdir -Force "$HOME\media-hygiene\reports", …`) : un
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
 écrire.
 

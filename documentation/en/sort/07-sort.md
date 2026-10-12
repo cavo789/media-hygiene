@@ -8,8 +8,15 @@ now moves the files where the workbook puts them. Like `clean`, every move is jo
 
 ## Run it
 
-Save and close the workbook first. Then mount your folders **without** `:ro`, with the journal,
-the quarantine and the reports folder of `classify`:
+Save and close the workbook first. Then run `sort`: `mh` mounts your folders **without** `:ro`
+for it, with the journal, the quarantine and the reports folder of `classify`:
+
+```powershell
+mh sort
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -20,6 +27,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene sort
 ```
+
+</details>
 
 Without an argument, `sort` takes the workbook of the latest `classify` run. To apply another one,
 give its path: `sort "C:\Users\me\Desktop\classify.xlsx"` (in a mounted folder). A copy edited

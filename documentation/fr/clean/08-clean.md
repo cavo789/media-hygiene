@@ -28,15 +28,25 @@ trace écrite de tout, pour que vous puissiez changer d'avis. Une fois que vous 
   plus tard quasi-doublons et photos de rafale. Sans elle, `clean` refuse de s'exécuter (sauf
   avec `--delete`, plus bas).
 
+`mh` les crée tous les deux dans `$HOME\media-hygiene` la première fois. Pour la commande
+complète, créez-les d'abord :
+
 ```powershell
-mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
 ## Lancer le nettoyage
 
-La même commande que votre audit, avec trois changements : **pas de `:ro`** sur vos dossiers
-(l'outil doit avoir le droit de déplacer des fichiers), le journal et la quarantaine, et `clean` au lieu
-d'`audit` :
+Un mot avec `mh` : il monte vos dossiers **sans `:ro`** pour `clean` (l'outil doit avoir le droit
+de déplacer des fichiers) et ajoute le journal et la quarantaine. La commande complète est celle de
+votre audit avec ces trois changements, et `clean` au lieu d'`audit` :
+
+```powershell
+mh clean
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -49,6 +59,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean
 ```
+
+</details>
 
 `clean` refait l'audit (rapidement, grâce au cache), affiche le même résumé et les mêmes paires
 de dossiers, puis **demande avant de faire quoi que ce soit** :

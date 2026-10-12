@@ -9,10 +9,18 @@ affichées dans le fuseau horaire de votre ordinateur.
 
 ## Donner un dossier de rapports à l'outil
 
-Créez une fois un dossier pour les rapports, puis montez-le sur `/reports` :
+`mh` en monte déjà un, `$HOME\media-hygiene\reports`, créé la première fois ; la commande complète
+le crée, puis le monte sur `/reports` :
 
 ```powershell
-mkdir "$HOME\media-hygiene\reports"
+mh audit
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\reports"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
@@ -21,8 +29,10 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr audit
 ```
 
+</details>
+
 `$HOME` est votre dossier personnel (`C:\Users\<vous>`) : les rapports arrivent dans
-`C:\Users\<vous>\media-hygiene\reports`. Créez le dossier **avant** le premier lancement : un
+`C:\Users\<vous>\media-hygiene\reports`. Sans `mh`, créez le dossier **avant** le premier lancement : un
 dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne pourrait pas y
 écrire ([pourquoi](../reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 
@@ -142,8 +152,17 @@ Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail;Niv
 récents et supprime les autres :
 
 ```powershell
+mh reports
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygiene --locale fr reports
 ```
+
+</details>
 
 <!-- capture: reports.txt -->
 ```text

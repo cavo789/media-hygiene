@@ -13,8 +13,16 @@ touches a photo nor the workbook; `sort` ([step 7](07-sort.md)) applies your cho
 
 ## Start the page
 
-Run `classify` first ([step 4](04-classify.md)). Then mount the same folders and the same
-reports folder (read-only is enough for the photos: the page only shows them):
+Run `classify` first ([step 4](04-classify.md)). Then start the page with the same folders and
+the same reports folder, which `mh` mounts (read-only is enough for the photos: the page only
+shows them):
+
+```powershell
+mh review-sort
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -23,8 +31,11 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene review-sort
 ```
 
+</details>
+
 As for [the burst review](../clean/10-review-bursts.md#step-1-start-the-review),
-`-p 127.0.0.1:8088:8088` opens the page to your computer only, on port 8088. The page
+`mh` opens the page to your computer only, on port 8088 (`-p 127.0.0.1:8088:8088` in the full
+command). The page
 reads the workbook of the latest `classify` run, the one `sort` applies; name another one after
 the command: `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 

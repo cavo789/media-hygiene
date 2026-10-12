@@ -13,9 +13,16 @@ ni aux photos ni au classeur ; c'est `sort` ([étape 7](07-sort.md)) qui appliqu
 
 ## Lancer la page
 
-Lancez d'abord `classify` ([étape 4](04-classify.md)). Montez ensuite les mêmes dossiers et le
-même dossier de rapports (la lecture seule suffit pour les photos : la page ne fait que les
-montrer) :
+Lancez d'abord `classify` ([étape 4](04-classify.md)). Lancez ensuite la page avec les mêmes
+dossiers et le même dossier de rapports, que `mh` monte (la lecture seule suffit pour les photos :
+la page ne fait que les montrer) :
+
+```powershell
+mh review-sort
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -24,8 +31,11 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr review-sort
 ```
 
+</details>
+
 Comme pour [le tri des rafales](../clean/10-review-bursts.md#étape-1--lancer-le-tri),
-`-p 127.0.0.1:8088:8088` ouvre la page à votre ordinateur seulement, sur le port 8088. La page
+`mh` ouvre la page à votre ordinateur seulement, sur le port 8088 (`-p 127.0.0.1:8088:8088` dans
+la commande complète). La page
 lit le classeur du dernier `classify`, celui qu'applique `sort` ; nommez-en un autre après la
 commande : `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
 

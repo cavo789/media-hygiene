@@ -31,12 +31,21 @@ Dans la bibliothèque de démonstration, `C:\Photos\2019\Vacances à la mer` est
 `Ancien téléphone`, nommez-le avec `--prefer`, après `audit` :
 
 ```powershell
+mh audit --prefer "C:\Photos\Ancien téléphone"
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Ancien téléphone"
 ```
+
+</details>
 
 Écrivez le dossier comme Windows l'affiche. Les paires s'inversent :
 
@@ -79,7 +88,7 @@ Le premier l'emporte quand un fichier est dans les deux.
 copies gardées. Pensez à une bibliothèque de référence :
 
 ```powershell
-cavo789/media-hygiene --locale fr audit --protect "C:\Photos\Famille"
+mh audit --protect "C:\Photos\Famille"
 ```
 
 (la partie `docker run … -v …` ne change pas ; seule la fin de la commande change)
@@ -94,7 +103,7 @@ orphelins d'un dossier protégé restent aussi en place.
 pour une vraie sauvegarde qui doit rester une seconde copie :
 
 ```powershell
-cavo789/media-hygiene --locale fr audit --exclude "D:\Ancien disque"
+mh audit --exclude "D:\Ancien disque"
 ```
 
 Il ne reste que les doublons de `C:\Photos` :
@@ -123,7 +132,7 @@ Lightroom, la corbeille propre d'un NAS. Plutôt qu'un `--exclude` par chemin, `
 ignore un dossier **par son nom**, où qu'il soit :
 
 ```powershell
-cavo789/media-hygiene --locale fr audit --exclude-name "Thumbnails,*.lrdata"
+mh audit --exclude-name "Thumbnails,*.lrdata"
 ```
 
 - Le nom couvre le nom **entier** du dossier, sans tenir compte de la casse : `Thumbnails`

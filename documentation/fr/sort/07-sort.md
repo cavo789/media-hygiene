@@ -8,8 +8,15 @@ déplacement est journalisé et `undo` remet tout en place.
 
 ## Le lancer
 
-Enregistrez et fermez d'abord le classeur. Montez ensuite vos dossiers **sans** `:ro`, avec le
-journal, la quarantaine et le dossier de rapports de `classify` :
+Enregistrez et fermez d'abord le classeur. Lancez ensuite `sort` : `mh` monte pour lui vos
+dossiers **sans** `:ro`, avec le journal, la quarantaine et le dossier de rapports de `classify` :
+
+```powershell
+mh sort
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -20,6 +27,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr sort
 ```
+
+</details>
 
 Sans argument, `sort` prend le classeur du dernier `classify`. Pour en appliquer un autre, donnez
 son chemin : `sort "C:\Users\moi\Bureau\classify.xlsx"` (dans un dossier monté). Une copie

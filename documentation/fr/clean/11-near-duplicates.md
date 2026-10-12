@@ -125,6 +125,13 @@ Les groupes à vérifier se décident mieux un à un, au clavier, sur le même g
 [rafales](10-review-bursts.md). Ajoutez `--near` à la commande `review` de l'étape 10 :
 
 ```powershell
+mh review --near
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
@@ -132,6 +139,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr review --near
 ```
+
+</details>
 
 Elle dit ce qu'il y a à décider, puis vous attend, comme `review` :
 
@@ -206,6 +215,13 @@ Ajoutez le `--tier` à votre commande `clean` de l'[étape 8](08-clean.md). Ici,
 rafales de l'étape 10 ; chaque option fonctionne aussi seule :
 
 ```powershell
+mh clean --tier near-all --decisions
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
@@ -216,6 +232,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean --tier near-all --decisions
 ```
+
+</details>
 
 Avant de poser la question, `clean` écrit le rapport de cet audit-là et lie, sur une ligne qui
 commence par 👀, sa page `near.html` : les quasi-doublons et les vidéos réencodées seuls, sans

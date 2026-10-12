@@ -41,7 +41,7 @@ Créez une fois le journal et la quarantaine, puis lancez la commande de votre a
 avec ces deux dossiers et `clean` au lieu d'`audit` :
 
 ```powershell
-mkdir "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
+mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `

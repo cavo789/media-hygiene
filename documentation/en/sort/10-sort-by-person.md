@@ -24,11 +24,20 @@ so hours for a large collection the first time. Each photo is analysed **once**:
 analyse only the new ones. Measure on 200 photos at random before the long run:
 
 ```powershell
+mh people --sample 200
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene people --sample 200
 ```
+
+</details>
 
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about
 1 h 10 min.`); the faces found are kept. Rather let it run after your next audit?
@@ -39,7 +48,14 @@ photos and keeps what is done: the next run goes on.
 ## 2. Find the faces and name them
 
 `people` needs the cache (where the audits listed your photos), the folder of `config.toml`
-(`/config`, where the names are saved) and the port of its page:
+(`/config`, where the names are saved) and the port of its page, all three given by `mh`:
+
+```powershell
+mh people
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -49,7 +65,16 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene people
 ```
 
+</details>
+
 With WSL or Linux:
+
+```bash
+mh people
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```bash
 docker run --rm -it -p 127.0.0.1:8088:8088 \
@@ -59,8 +84,9 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
   cavo789/media-hygiene people
 ```
 
-With the [`mh` command](../clean/quick-guide.md#0-once-write-the-mh-command): `mh people`. It
-analyses the photos not seen yet, groups the faces that look alike (probably one person per
+</details>
+
+It analyses the photos not seen yet, groups the faces that look alike (probably one person per
 group) and prints the address of the page, `http://127.0.0.1:8088/`: Ctrl+click it.
 
 On the page, the largest groups come first. **Type a name** on a group and press Enter; the name
@@ -142,10 +168,19 @@ any other ([step 5](05-review-the-proposal.md)).
 ## Forget the faces
 
 ```powershell
+mh people --forget
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene people --forget
 ```
+
+</details>
 
 Every face is deleted from the cache, which is then read again to show that none is left. It
 then asks whether the names of `config.toml` go too, and reads the file back to show it. Your

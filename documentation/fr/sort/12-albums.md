@@ -59,8 +59,15 @@ autre classeur de `classify` que le dernier.
 
 ## Le créer
 
-Montez vos dossiers **sans** `:ro`, avec le cache, le journal, le dossier des rapports de
-`classify` et votre configuration :
+`mh` monte vos dossiers **sans** `:ro` pour `album`, avec le cache, le journal, le dossier des
+rapports de `classify` et votre configuration :
+
+```powershell
+mh album "Noël" --category Noël
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it `
@@ -71,6 +78,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr album "Noël" --category Noël
 ```
+
+</details>
 
 `album` montre d'abord ce qu'il ferait, et ne change rien :
 

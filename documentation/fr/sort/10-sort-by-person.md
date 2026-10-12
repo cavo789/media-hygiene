@@ -27,11 +27,20 @@ n'est analysée **qu'une fois** : les exécutions suivantes n'analysent que les 
 sur 200 photos prises au hasard avant la longue exécution :
 
 ```powershell
+mh people --sample 200
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   cavo789/media-hygiene --locale fr people --sample 200
 ```
+
+</details>
 
 Elle se termine par l'estimation de l'exécution complète (`Une exécution complète analyserait
 encore 20 000 photos : environ 1 h 10 min.`) ; les visages trouvés sont gardés. Plutôt après
@@ -43,7 +52,14 @@ deux photos et garde ce qui est fait : l'exécution suivante continue.
 ## 2. Trouver les visages et les nommer
 
 `people` a besoin du cache (où les audits ont listé vos photos), du dossier de `config.toml`
-(`/config`, où les noms sont enregistrés) et du port de sa page :
+(`/config`, où les noms sont enregistrés) et du port de sa page, tous trois donnés par `mh` :
+
+```powershell
+mh people
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -53,7 +69,16 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr people
 ```
 
+</details>
+
 Avec WSL ou Linux :
+
+```bash
+mh people
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```bash
 docker run --rm -it -p 127.0.0.1:8088:8088 \
@@ -63,8 +88,9 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
   cavo789/media-hygiene --locale fr people
 ```
 
-Avec la [commande `mh`](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh) :
-`mh people`. Elle analyse les photos pas encore vues, regroupe les visages qui se ressemblent
+</details>
+
+Elle analyse les photos pas encore vues, regroupe les visages qui se ressemblent
 (sans doute une personne par groupe) et affiche l'adresse de la page, `http://127.0.0.1:8088/` :
 Ctrl+clic dessus.
 
@@ -152,10 +178,19 @@ classeur comme les autres ([étape 5](05-review-the-proposal.md)).
 ## Oublier les visages
 
 ```powershell
+mh people --forget
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr people --forget
 ```
+
+</details>
 
 Tous les visages sont supprimés du cache, qui est ensuite relu pour montrer qu'il n'en reste
 aucun. Puis la commande demande si les noms de `config.toml` partent aussi, et relit le fichier

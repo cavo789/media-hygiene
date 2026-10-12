@@ -99,6 +99,13 @@ plus court) ne sont jamais envoyées : sur une vignette, le modèle invente des 
 Avant une longue exécution, décrivez quelques photos prises au hasard et lisez le coût :
 
 ```powershell
+mh classify --sample 50
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
@@ -106,7 +113,10 @@ docker run --rm -it `
   cavo789/media-hygiene --locale fr classify --sample 50
 ```
 
-Avec Docker Engine, ajoutez `--add-host=host.docker.internal:host-gateway` après `-it`.
+</details>
+
+Avec Docker Engine, `mh` ne joint pas Ollama : utilisez la commande complète, avec
+`--add-host=host.docker.internal:host-gateway` après `-it`.
 
 ```text
 412 événements ou photos isolées n'ont pas de signal plus fort que leur sujet : 1 236 photos

@@ -20,7 +20,14 @@ never decides on its own:
 ## Step 1: start the review
 
 `review` needs your folders (read-only is enough: the page never touches a photo) and the reports
-folder, where it saves your choices:
+folder, where it saves your choices; `mh` mounts both, and opens the port of the page:
+
+```powershell
+mh review
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -31,7 +38,9 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene review
 ```
 
-One new part, on the first line:
+</details>
+
+`mh` adds it for you; in the full command, one new part, on the first line:
 
 | Part | What it means |
 |---|---|
@@ -272,6 +281,13 @@ The page itself never moves anything. Once done, run your `clean` command of
 finish: only the series you have seen move something, those still to see stay as they are:
 
 ```powershell
+mh clean --decisions
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
@@ -282,6 +298,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene clean --decisions
 ```
+
+</details>
 
 Before its question, `clean` announces the shots it will move:
 

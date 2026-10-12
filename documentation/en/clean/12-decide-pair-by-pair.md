@@ -34,7 +34,7 @@ Run your `clean` command of [step 8](08-clean.md) with `--decisions`: alone, it 
 `decisions.json` from the reports folder (another file: `--decisions other.json`):
 
 ```powershell
-cavo789/media-hygiene clean --decisions
+mh clean --decisions
 ```
 
 (with the same `docker run … -v …` part as in step 8)

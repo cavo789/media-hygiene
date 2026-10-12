@@ -56,8 +56,15 @@ latest.
 
 ## Make it
 
-Mount your folders **without** `:ro`, with the cache, the journal, the reports folder of
-`classify` and your configuration:
+`mh` mounts your folders **without** `:ro` for `album`, with the cache, the journal, the reports
+folder of `classify` and your configuration:
+
+```powershell
+mh album "Christmas" --category Christmas
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -68,6 +75,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene album "Christmas" --category Christmas
 ```
+
+</details>
 
 `album` first shows what it would do, and changes nothing:
 

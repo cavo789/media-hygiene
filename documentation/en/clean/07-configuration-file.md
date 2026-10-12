@@ -7,15 +7,32 @@ command, write them once in a file, `config.toml`. The tool reads it at every ru
 
 ## Create the file
 
-The tool only sees the folders you mount, so give it a folder of yours on `/config`, and run
-the `config` command once:
+The tool only sees the folders you mount: it reads the file in a folder of yours mounted on
+`/config` (`mh` mounts `$HOME\media-hygiene\config`). Run the `config` command once:
 
 ```powershell
-mkdir "$HOME\media-hygiene\config"
+mh config
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
+mkdir -Force "$HOME\media-hygiene\config"
 docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config
 ```
 
-The first line says what happened:
+</details>
+
+A commented `config.toml` has appeared in `C:\Users\<you>\media-hygiene\config`. Open it with any
+text editor, Notepad is fine:
+
+```powershell
+notepad "$HOME\media-hygiene\config\config.toml"
+```
+
+<details>
+<summary>What <code>config</code> printed (its first line says the file was created, then every setting)</summary>
 
 <!-- capture: config-first.txt|A commented configuration file| -->
 ```text
@@ -311,8 +328,33 @@ Mount points
 💡 Edit /config/config.toml to change these settings; command-line options win.
 ```
 
-A commented `config.toml` has appeared in `C:\Users\<you>\media-hygiene\config`. Open it with any
-text editor (Notepad is fine). Every setting is explained, for instance:
+</details>
+
+## The three settings most people change
+
+Find these lines in the file, change their values, save:
+
+```toml
+[general]
+locale = "fr"                 # the language of the tool: en | fr
+timezone = "Europe/Brussels"  # your time zone; empty: UTC, one or two hours off
+
+[folders]
+preferred = ['C:\Photos\Family']  # the folders whose copies are kept first
+```
+
+- **`locale`**: `"fr"` for French, `"en"` for English.
+- **`timezone`**: your zone, such as `Europe/Paris` or `America/Montreal`, so that the reports
+  are named and dated in your local time.
+- **`preferred`**: the folders that keep their copies ([step 5](05-choose-the-kept-copy.md));
+  Windows paths between **single quotes**.
+
+The next runs read the file as long as `-v …:/config` is in the command (`mh` adds it for you).
+Everything else can wait: the rest of this page explains the other settings.
+
+## Every setting is explained in the file
+
+For instance, the start of the file:
 
 <!-- capture: config.toml|[general]|color =  -->
 ```toml
@@ -397,7 +439,15 @@ the built-in lists; an empty list `[]` disables the rule.
 
 ## Use it
 
-Add the same `-v …:/config` to every command, and the tool reads the file:
+`mh` mounts the folder for every command, so the tool reads the file each time. Without `mh`,
+add the same `-v …:/config` to every command:
+
+```powershell
+mh audit
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
 
 ```powershell
 docker run --rm -it `
@@ -409,10 +459,15 @@ docker run --rm -it `
   cavo789/media-hygiene audit
 ```
 
+</details>
+
 ## Check what the tool uses: `config`
 
-`config` shows every setting, where it comes from, and the state of each mount point. Run it
-with the same `-v` options as your audit (here `config` instead of `audit`):
+`config` shows every setting, where it comes from, and the state of each mount point: `mh config`
+(without `mh`, the same `-v` options as your audit, with `config` instead of `audit`):
+
+<details>
+<summary>What <code>config</code> prints: every setting, then every mount point</summary>
 
 <!-- capture: config.txt -->
 ```text
@@ -706,6 +761,8 @@ Mount points
 
 💡 Edit /config/config.toml to change these settings; command-line options win.
 ```
+
+</details>
 
 - **Origin** says where each value comes from: `default`, `config.toml`, `environment` or
   `command line`.

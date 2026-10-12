@@ -118,6 +118,13 @@ The groups to check are best decided one at a time, with the keyboard, on the sa
 as the [burst series](10-review-bursts.md). Add `--near` to the `review` command of step 10:
 
 ```powershell
+mh review --near
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "D:\Old disk:/data/d/Old disk:ro" `
@@ -125,6 +132,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene review --near
 ```
+
+</details>
 
 It says what there is to decide, then waits for you, as `review` does:
 
@@ -196,6 +205,13 @@ every group as the report shows them, combined with the burst decisions of step 
 works on its own too:
 
 ```powershell
+mh clean --tier near-all --decisions
+```
+
+<details>
+<summary>Without <code>mh</code>: the full command</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
@@ -206,6 +222,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene clean --tier near-all --decisions
 ```
+
+</details>
 
 Before asking, `clean` writes the report of this very audit and links, on a line starting with
 👀, its `near.html` page: the near duplicates and re-encoded videos alone, without the burst

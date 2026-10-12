@@ -21,7 +21,15 @@ d'être gardées. L'outil ne décide donc jamais seul :
 ## Étape 1 : lancer le tri
 
 `review` a besoin de vos dossiers (la lecture seule suffit : la page ne touche jamais une photo)
-et du dossier des rapports, où il enregistre vos choix :
+et du dossier des rapports, où il enregistre vos choix ; `mh` monte les deux, et ouvre le port de
+la page :
+
+```powershell
+mh review
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -32,7 +40,9 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr review
 ```
 
-Une nouveauté, sur la première ligne :
+</details>
+
+`mh` l'ajoute pour vous ; dans la commande complète, une nouveauté, sur la première ligne :
 
 | Morceau | Ce qu'il veut dire |
 |---|---|
@@ -286,6 +296,13 @@ tout trié : seules les séries vues déplacent quelque chose, celles encore à 
 quelles :
 
 ```powershell
+mh clean --decisions
+```
+
+<details>
+<summary>Sans <code>mh</code> : la commande complète</summary>
+
+```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
@@ -296,6 +313,8 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
   cavo789/media-hygiene --locale fr clean --decisions
 ```
+
+</details>
 
 Avant sa question, `clean` annonce les photos qu'il va déplacer :
 
