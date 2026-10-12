@@ -114,3 +114,7 @@ Written to `<reports>/<stamp>-classify/`:
   structure lock, the locked cells, the filters and the drop-downs.
   **Reason:** no Excel in the devcontainer; a manual check on the maintainer's Windows machine.
   Once checked, move this file to `DONE/`.
+
+## Closed — review 0056 (2026-10-12)
+
+Checked in Microsoft Excel on a real `classify --year 2015` workbook: no repair prompt; white cells locked, editable cells writable; filters and drop-downs work; sheets cannot be renamed, deleted or added. No workbook screenshot in the docs (decided). Follow-ups: TODO 0116 (editable cells in pastel green), 0114 and 0115 (console summary).

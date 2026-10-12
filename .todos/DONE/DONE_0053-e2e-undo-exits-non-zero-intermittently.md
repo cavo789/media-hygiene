@@ -63,3 +63,7 @@ imports `pillow_heif` (libheif, libx265, libde265) and `rawpy` (LibRaw), so ever
 included, loads that native code before its first output line: the window in which the silent
 exit 139 happened (x265 runs CPU detection at load). Importing them lazily, only where images
 are decoded, would narrow that window and speed up start-up.
+
+## Closed — review 0056 (2026-10-12)
+
+The maintainer's PC crashes only with this project, not under other Docker loads: the code lead stays. TODO 0117 imports `pillow_heif` and `rawpy` lazily. Standing instruction: the next failing e2e run's `/tmp/media-hygiene/e2e.log` goes to Claude.

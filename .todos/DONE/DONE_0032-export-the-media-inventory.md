@@ -94,3 +94,7 @@ rows of files that are gone, and records the date of the last complete walk of e
 - The Summary sheet does not repeat the total video duration of the 0025 console block.
   **Reason:** left out to keep the sheet to file counts; one line to add in
   `report/inventory_summary.py` if wanted.
+
+## Closed — review 0056 (2026-10-12)
+
+Checked in Excel on the real collection: no repair prompt, frozen header, filters, date formats. Thresholds `blurry_below = 100` and `clipped_above = 0.25` confirmed on samples (blurry, bright, dark all deserved). French headers kept. No total video duration, no workbook screenshot.

@@ -18,6 +18,17 @@ exist; Docker Desktop creates it empty, and the audit silently misses the real o
 TODO 0039 handled the same code page issue for `decisions.json`, not for the launcher. Not
 checked on Windows: there is no Windows in the devcontainer.
 
+## Verified on Windows (2026-10-12, review 0056)
+
+Windows PowerShell 5.1, `docker run --rm -v "C:\Photos\Vidéos:/data/c/Photos/Vidéos:ro"
+media-hygiene --locale fr launcher > C:\Temp\cfg\mh.ps1`: the file holds two wrong characters
+where each `é` was, in the `-v` line (`C:\Photos\Vid??os:/data/c/Photos/Vid??os`) and in the
+French comments (`m??me`, `?? $PROFILE`); Notepad does not even recognise the encoding. Same
+code page decoding seen on `config` output piped to `Select-String` (`├Ç v├®rifier`).
+**Confirmed for 5.1.** PowerShell 7 too (same day, `pwsh`, `> mh7.ps1`): a clean UTF-16 LE
+file, but `-v "C:\Photos\Vid├®os:/data/c/Photos/Vid├®os${mode}"` and `├á $PROFILE`, `m├¬me` in
+the comments. Both shells corrupt it: the ASCII-only script is needed for both.
+
 ## Goal
 
 1. Verify on Windows PowerShell 5.1 and 7, with a mounted folder holding `é`.

@@ -106,3 +106,7 @@ only, `-p 127.0.0.1:8088:8088`).
   about 1 s (environment issue); the two `--help` capture blocks touched were filled from the
   sources. Run both once Docker works again; no screenshot of the map page was added (it would
   fetch real OSM tiles while the docs are generated: maintainer's choice).
+
+## Closed — review 0056 (2026-10-12)
+
+A real Nominatim search on the `places` page drew its area. Decided: a town named by a folder, with guards and a low score (TODO 0119); a `[classify.town_names]` table (TODO 0120); a map screenshot in the docs (TODO 0121).

@@ -87,3 +87,7 @@ freely.
   `tidy()` (it reproduces `help-sort.txt` byte for byte); `config.txt` still lacks
   `album.root` until `docs_screenshots` runs. The album page's console examples are
   hand-written.
+
+## Closed — review 0056 (2026-10-12)
+
+Feasibility checked on Windows: `os.link` in the image through Docker Desktop (`-v "C:\Temp\links:/t"`) and through WSL (`-v /mnt/c/Temp/links:/t`) makes one inode with `st_nlink` 2, and `fsutil hardlink list` shows both names: true NTFS hard links. `album` stays; behaviour kept (flat, original names, additive; `--category` matches the applied category only).

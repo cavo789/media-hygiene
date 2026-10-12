@@ -156,3 +156,7 @@ alone on 40 real photos from 40 folders, 768 px: median 1.9 s with `describe.txt
 tokens), 2.5 s with a French sentence + tags. Occasions and places still missed; the folder
 names knew them. Full figures and quality notes: 0072, which reuses this describe machinery
 for every photo (tags, search, XMP sidecars).
+
+## Closed — review 0056 (2026-10-12)
+
+Measured on the real collection (`--sample 50`, qwen3.8:27b): 2.1 s describe + 0.2 s map per photo, a full run of the 919 photos ≈ 34 min; descriptions very good, categories weak (7 wrong of 10 checked). No `bge-m3` vectors. Kept: refusing the confirmation goes on with the cache; the `subject` rule's position. Follow-ups: TODO 0124 (a definition per category, "À la maison"), 0123 (French descriptions), 0114 (console lines).

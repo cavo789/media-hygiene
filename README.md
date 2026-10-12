@@ -21,7 +21,7 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 
 ## Quick start
 
-With Docker installed ([how to install it](documentation/en/start/00-install-docker.md), on
+With Docker installed ([how to install it](https://cavo789.github.io/media-hygiene/start/00-install-docker/), on
 Windows or Linux), one command audits a folder. In **PowerShell**:
 
 ```powershell
@@ -36,7 +36,7 @@ docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene a
 
 It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
 (read-only) makes Docker itself forbid any write. The first run downloads the image [from Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) by itself.
-[Your first audit](documentation/en/start/01-first-audit.md) explains this command and its result, part
+[Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) explains this command and its result, part
 by part.
 
 What it finds:
@@ -47,7 +47,7 @@ What it finds:
   …), videos that cannot be opened.
 - **Orphan sidecars** — a sidecar file (`.xmp`, `.aae`, `.thm`) left without its photo.
 - **Burst series and near duplicates** (re-encoded videos included) — shown side by side in an
-  HTML report; `review` then lets you choose the best shots of each burst [with the keyboard, in your browser](documentation/en/clean/10-review-bursts.md).
+  HTML report; `review` then lets you choose the best shots of each burst [with the keyboard, in your browser](https://cavo789.github.io/media-hygiene/clean/10-review-bursts/).
 
 Then, when you decide to, `clean` sets the extra copies and the broken files aside; bursts and
 near duplicates only when you ask for it.
@@ -66,95 +66,94 @@ back. Never over another file, every step journaled, all undoable.
 
 **Only `purge` erases**: the quarantine, for good, after asking you (and `clean --delete`, if
 you ask for it: the copy kept stays). More in
-[how your photos stay safe](documentation/en/reference-safety.md).
+[how your photos stay safe](https://cavo789.github.io/media-hygiene/reference-safety/).
 
 ## Documentation
 
-The [documentation](documentation/en/README.md) walks you through, one step at a time. Each step
-adds one thing to the command of the step before. It is also a website, with a search box:
-<https://cavo789.github.io/media-hygiene/>.
+The [documentation](https://cavo789.github.io/media-hygiene/) walks you through, one step at a
+time, with a search box. Each step adds one thing to the command of the step before.
 
 **Start here** — the same three first steps, whatever you do next (no Docker yet?
-[Install Docker](documentation/en/start/00-install-docker.md) first):
+[Install Docker](https://cavo789.github.io/media-hygiene/start/00-install-docker/) first):
 
-1. [Your first audit](documentation/en/start/01-first-audit.md) — one folder, one command, and how to
+1. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) — one folder, one command, and how to
    read the result.
-2. [Keep the cache](documentation/en/start/02-keep-the-cache.md) — the next audits take seconds instead
+2. [Keep the cache](https://cavo789.github.io/media-hygiene/start/02-keep-the-cache/) — the next audits take seconds instead
    of minutes.
-3. [Several folders and disks](documentation/en/start/03-several-folders.md) — `C:` and `D:` together,
+3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates** — in a hurry? [Clean in short](documentation/en/clean/quick-guide.md), every command on one page.
+**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every command on one page.
 
-4. [The HTML report](documentation/en/clean/04-html-report.md) — the pictures, the folder pairs, the
+4. [The HTML report](https://cavo789.github.io/media-hygiene/clean/04-html-report/) — the pictures, the folder pairs, the
    proof.
-5. [Choose which copy stays](documentation/en/clean/05-choose-the-kept-copy.md) — `--prefer`,
+5. [Choose which copy stays](https://cavo789.github.io/media-hygiene/clean/05-choose-the-kept-copy/) — `--prefer`,
    `--protect`, `--exclude`.
-6. [Only some file types](documentation/en/clean/06-file-types.md) — `--ext`, and files other than
+6. [Only some file types](https://cavo789.github.io/media-hygiene/clean/06-file-types/) — `--ext`, and files other than
    photos.
-7. [The configuration file](documentation/en/clean/07-configuration-file.md) — write your choices once,
+7. [The configuration file](https://cavo789.github.io/media-hygiene/clean/07-configuration-file/) — write your choices once,
    in `config.toml`.
-8. [Clean](documentation/en/clean/08-clean.md) — set the extra copies aside in the quarantine,
+8. [Clean](https://cavo789.github.io/media-hygiene/clean/08-clean/) — set the extra copies aside in the quarantine,
    with a journal.
-9. [Undo, history, purge](documentation/en/clean/09-undo-history-purge.md) — change your mind, see what
+9. [Undo, history, purge](https://cavo789.github.io/media-hygiene/clean/09-undo-history-purge/) — change your mind, see what
    was done, empty the quarantine to free the space.
-10. [Sort burst series in your browser](documentation/en/clean/10-review-bursts.md) — keep the best
+10. [Sort burst series in your browser](https://cavo789.github.io/media-hygiene/clean/10-review-bursts/) — keep the best
     shots of each burst, with the keyboard.
-11. [Near duplicates](documentation/en/clean/11-near-duplicates.md) — resized and recompressed copies
+11. [Near duplicates](https://cavo789.github.io/media-hygiene/clean/11-near-duplicates/) — resized and recompressed copies
     (`--tier near`).
-12. [Decide pair by pair](documentation/en/clean/12-decide-pair-by-pair.md) — swap or leave alone a
+12. [Decide pair by pair](https://cavo789.github.io/media-hygiene/clean/12-decide-pair-by-pair/) — swap or leave alone a
     folder pair, from the report.
-13. [A second opinion](documentation/en/clean/13-second-opinion.md) — compare with Czkawka, an
+13. [A second opinion](https://cavo789.github.io/media-hygiene/clean/13-second-opinion/) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](documentation/en/sort/quick-guide.md), every command on one page.
+**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every command on one page.
 
-4. [Propose a tidy tree](documentation/en/sort/04-classify.md) — `classify` proposes a place
+4. [Propose a tidy tree](https://cavo789.github.io/media-hygiene/sort/04-classify/) — `classify` proposes a place
    for every file, and changes nothing.
-5. [Review the proposal](documentation/en/sort/05-review-the-proposal.md) — correct it in a
+5. [Review the proposal](https://cavo789.github.io/media-hygiene/sort/05-review-the-proposal/) — correct it in a
    workbook, look at the photos in the report.
-6. [Write down what you know](documentation/en/sort/06-write-down-what-you-know.md) — rules for
+6. [Write down what you know](https://cavo789.github.io/media-hygiene/sort/06-write-down-what-you-know/) — rules for
    your trips, birthdays, folders and cameras, applied at every run.
-7. [Sort](documentation/en/sort/07-sort.md) — `sort` moves the files as the workbook says,
+7. [Sort](https://cavo789.github.io/media-hygiene/sort/07-sort/) — `sort` moves the files as the workbook says,
    journaled and undoable.
-8. [Name the subjects with a local model](documentation/en/sort/08-subjects-from-a-local-model.md) —
+8. [Name the subjects with a local model](https://cavo789.github.io/media-hygiene/sort/08-subjects-from-a-local-model/) —
    a vision model on your computer says what the loose photos show (optional).
-9. [Places and trips from the GPS](documentation/en/sort/09-places-from-gps.md) — name your
+9. [Places and trips from the GPS](https://cavo789.github.io/media-hygiene/sort/09-places-from-gps/) — name your
    places on a map; the GPS of recent phones sorts home, family and trips, offline (optional).
-10. [Sort by person](documentation/en/sort/10-sort-by-person.md) — name the faces found in
+10. [Sort by person](https://cavo789.github.io/media-hygiene/sort/10-sort-by-person/) — name the faces found in
     your photos; a rule files the events where someone appears, offline (optional).
-11. [Name the events in your browser](documentation/en/sort/11-name-events-in-the-browser.md) —
+11. [Name the events in your browser](https://cavo789.github.io/media-hygiene/sort/11-name-events-in-the-browser/) —
     one event at a time with its photos, named with the keyboard (optional).
-12. [Albums](documentation/en/sort/12-albums.md) — one photo in several folders, as hard links:
+12. [Albums](https://cavo789.github.io/media-hygiene/sort/12-albums/) — one photo in several folders, as hard links:
     no copy, no space used (optional).
 
 **Every command has its own page** — first what it gives you, when, and a command to try; then
 the folders it needs, its options, examples:
-[`audit`](documentation/en/commands/audit.md), [`status`](documentation/en/commands/status.md),
-[`clean`](documentation/en/commands/clean.md), [`undo`](documentation/en/commands/undo.md),
-[`history`](documentation/en/commands/history.md), [`purge`](documentation/en/commands/purge.md),
-[`review`](documentation/en/commands/review.md), [`reports`](documentation/en/commands/reports.md),
-[`crosscheck`](documentation/en/commands/crosscheck.md), [`config`](documentation/en/commands/config.md),
-[`launcher`](documentation/en/commands/launcher.md), [`classify`](documentation/en/commands/classify.md),
-[`review-sort`](documentation/en/commands/review-sort.md), [`sort`](documentation/en/commands/sort.md),
-[`album`](documentation/en/commands/album.md), [`places`](documentation/en/commands/places.md),
-[`inventory`](documentation/en/commands/inventory.md), [`tags`](documentation/en/commands/tags.md),
-[`search`](documentation/en/commands/search.md), [`xmp`](documentation/en/commands/xmp.md),
-[`people`](documentation/en/commands/people.md). Not sure which one?
-[Which command?](documentation/en/reference-commands.md#which-command)
+[`audit`](https://cavo789.github.io/media-hygiene/commands/audit/), [`status`](https://cavo789.github.io/media-hygiene/commands/status/),
+[`clean`](https://cavo789.github.io/media-hygiene/commands/clean/), [`undo`](https://cavo789.github.io/media-hygiene/commands/undo/),
+[`history`](https://cavo789.github.io/media-hygiene/commands/history/), [`purge`](https://cavo789.github.io/media-hygiene/commands/purge/),
+[`review`](https://cavo789.github.io/media-hygiene/commands/review/), [`reports`](https://cavo789.github.io/media-hygiene/commands/reports/),
+[`crosscheck`](https://cavo789.github.io/media-hygiene/commands/crosscheck/), [`config`](https://cavo789.github.io/media-hygiene/commands/config/),
+[`launcher`](https://cavo789.github.io/media-hygiene/commands/launcher/), [`classify`](https://cavo789.github.io/media-hygiene/commands/classify/),
+[`review-sort`](https://cavo789.github.io/media-hygiene/commands/review-sort/), [`sort`](https://cavo789.github.io/media-hygiene/commands/sort/),
+[`album`](https://cavo789.github.io/media-hygiene/commands/album/), [`places`](https://cavo789.github.io/media-hygiene/commands/places/),
+[`inventory`](https://cavo789.github.io/media-hygiene/commands/inventory/), [`tags`](https://cavo789.github.io/media-hygiene/commands/tags/),
+[`search`](https://cavo789.github.io/media-hygiene/commands/search/), [`xmp`](https://cavo789.github.io/media-hygiene/commands/xmp/),
+[`people`](https://cavo789.github.io/media-hygiene/commands/people/). Not sure which one?
+[Which command?](https://cavo789.github.io/media-hygiene/reference-commands/#which-command)
 
-**Reference** — [words of this guide](documentation/en/reference-glossary.md),
-[commands and options](documentation/en/reference-commands.md),
-[mount points](documentation/en/reference-mount-points.md),
-[how your photos stay safe](documentation/en/reference-safety.md),
-[sidecar files](documentation/en/reference-sidecars.md),
-[troubleshooting](documentation/en/reference-troubleshooting.md),
-[the inventory workbook](documentation/en/reference-inventory.md),
-[tags](documentation/en/reference-tags.md),
-[people](documentation/en/reference-people.md),
-[advanced usage](documentation/en/reference-advanced.md).
+**Reference** — [words of this guide](https://cavo789.github.io/media-hygiene/reference-glossary/),
+[commands and options](https://cavo789.github.io/media-hygiene/reference-commands/),
+[mount points](https://cavo789.github.io/media-hygiene/reference-mount-points/),
+[how your photos stay safe](https://cavo789.github.io/media-hygiene/reference-safety/),
+[sidecar files](https://cavo789.github.io/media-hygiene/reference-sidecars/),
+[troubleshooting](https://cavo789.github.io/media-hygiene/reference-troubleshooting/),
+[the inventory workbook](https://cavo789.github.io/media-hygiene/reference-inventory/),
+[tags](https://cavo789.github.io/media-hygiene/reference-tags/),
+[people](https://cavo789.github.io/media-hygiene/reference-people/),
+[advanced usage](https://cavo789.github.io/media-hygiene/reference-advanced/).
 
-**For developers** — [build the image, the devcontainer, releases](documentation/en/development.md).
+**For developers** — [build the image, the devcontainer, releases](https://cavo789.github.io/media-hygiene/development/).
 
 ## The complete command
 

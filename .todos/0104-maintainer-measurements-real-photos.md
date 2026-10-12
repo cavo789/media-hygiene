@@ -57,6 +57,9 @@ Decided in review (2026-10-12): if the misses are mostly synonyms, a short synon
 3. A full `mh audit` with the cache: note how long the "near duplicates" step takes. Under one
    minute: `tags` runs that search itself so near-duplicate groups share one description (the
    remainder of 0083); otherwise it reads the groups of the last audit report.
+   → Measured 2026-10-12: `mh audit` with the cache, 52,056 media files, **10 s in all** (21
+     near-duplicate groups, 3,320 burst series). Well under one minute: `tags` runs the
+     near-duplicate search itself.
 
 ## 4. SFace against ArcFace (unblocks 0090)
 

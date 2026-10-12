@@ -9,11 +9,13 @@ import polib
 import pytest
 
 from media_hygiene.constants import DOC_PAGES
+from tests.unit.test_documentation import LINK, anchors
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCUMENTATION = ROOT / "documentation"
 MKDOCS = ROOT / ".config" / "mkdocs" / "mkdocs.yml"
 CATALOG = ROOT / "src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po"
+READMES = (ROOT / "README.md", ROOT / "README_FR.md")
 NAV_PAGE = re.compile(r"^\s*- (?:[^:]+: )?(?P<page>[\w./-]+\.md)$")
 # `f"{DOC_PAGES}/{_('start/01-first-audit/')}"`: a page of the site, translated;
 # `f"{DOC_PAGES}{_('/')}"`: its home page.
@@ -74,3 +76,21 @@ def test_every_printed_link_has_its_page_in_both_languages(path: str) -> None:
     assert translated.get(path), f"{path!r} has no French translation"
     assert page_file(path).is_file()
     assert page_file(translated[path]).is_file()
+
+
+@pytest.mark.parametrize("readme", READMES, ids=lambda readme: readme.name)
+def test_readme_links_reach_a_page_of_the_site(readme: Path) -> None:
+    """The READMEs link the site, not GitHub's file view: every page, every anchor."""
+    links = [
+        link["target"].removeprefix(f"{DOC_PAGES}/")
+        for link in LINK.finditer(readme.read_text(encoding="utf-8"))
+        if link["target"].startswith(f"{DOC_PAGES}/")
+    ]
+    assert len(links) > 10
+    broken = [
+        target
+        for target in links
+        if not page_file((path := target.partition("#"))[0]).is_file()
+        or (path[2] and path[2] not in anchors(page_file(path[0])))
+    ]
+    assert not broken, broken

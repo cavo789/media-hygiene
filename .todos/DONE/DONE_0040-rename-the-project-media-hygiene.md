@@ -103,3 +103,7 @@ docs follow in their own commits.
   (`/workspaces/media-deduplication-pipeline`): update them when the repository is cloned
   again under its new name.
   **Reason:** they must match the folder on disk, which only changes at the next clone.
+
+## Closed — review 0056 (2026-10-12)
+
+Tag `v0.3.0` pushed on 2026-10-03; the old Docker Hub repository `cavo789/media-dedup` deleted by the maintainer. Left as a reminder only: after a clone under a new folder name, update the paths in `.claude/settings.json`.

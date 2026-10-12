@@ -119,3 +119,7 @@ application: 0072 (label layer + vision tags), 0073 (search page), 0074 (XMP sid
 departs from "do not grow what Immich does well" for search, on purpose: the lasting output is
 the sidecars, which Immich reads in an external library; the search page stays a small
 one-shot tool and can be dropped if option 2 is adopted.
+
+## Closed — review 0056 (2026-10-12)
+
+Decision (1) not now. Since the evaluation, media-hygiene gained tags, search, people and XMP sidecars, which Immich reads; option 2 now adds mostly a shared web viewer on an always-on server. Revisit once the disks are clean and sorted: sort before any Immich import (a later `sort` resets Immich's metadata of moved files). No trial, no host chosen.

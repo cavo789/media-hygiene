@@ -90,3 +90,7 @@ The tests and the documentation screenshots **write** HEIC files
      libheif/libde265 security release becomes a manual bump of pinned tarballs and checksums;
   3. another decoder, if one appears that is maintained and decoding-only.
   The libheif 1.23.5 fixes are filed separately as TODO 0054 (bump `pillow-heif` to 1.9.0).
+
+## Closed — review 0056 (2026-10-12)
+
+Decision (1): keep `pillow-heif`, list x265 (GPL) among the image's licences: TODO 0118.

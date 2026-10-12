@@ -21,6 +21,12 @@ How to use it:
 - **Default** is what the code does today: leaving it as is means answering "keep the default".
 - The second part lists choices already applied in DONE TODOs: only to confirm or change.
 
+## Progress (2026-10-12)
+
+Parts 1–3 answered; PARTIAL 0009 (→ UNNEEDED), 0027, 0029, 0030, 0032, 0040, 0041, 0053 and
+BLOCKED 0045 closed, the work their answers created filed as TODOs 0114–0125. Left: the
+Windows checks of Part 4 still unticked (0028, 0005, 0035, 0057), to run with the maintainer.
+
 ## Part 1 — Prerequisite
 
 - [x] **Restart Docker Desktop.** Since the PC reboot of 2026-10-02, `docker run` drops the
@@ -40,25 +46,42 @@ How to use it:
 
 ### 0027 — `classify` workbook and report
 
-- [ ] Open a `classify.xlsx` in **Microsoft Excel**: no repair prompt; sheets and structure
+- [x] Open a `classify.xlsx` in **Microsoft Excel**: no repair prompt; sheets and structure
   locked; only the yellow cells editable; filters and drop-downs work.
   → closes 0027.
+  → 2026-10-12 (`mh classify --year 2015`, real collection): every white cell locked, every
+    yellow cell writable; no repair prompt; filters and drop-downs work; sheets cannot be
+    renamed, deleted or added.
+    Asked: editable cells in pastel green for everyone → TODO 0116. Console findings of the
+    same run → TODO 0114 (subject lines) and 0115 (raw reason codes, untitled category rows,
+    55-rule warning under `--year`).
 - [x] Decide how the documentation shows the workbook (same question as 0032 below).
   → no screenshot (see 0032).
 
 ### 0029 — `classify` with a local vision model
 
-- [ ] Run `classify --sample 50` on the real collection, with a `subject` rule and your own
+- [x] Run `classify --sample 50` on the real collection, with a `subject` rule and your own
   categories; note in the PARTIAL file the seconds per photo and how many of the 50 subjects
   are right.
-- [ ] From those figures: add `bge-m3` embeddings (or a CLIP fast pass) for the mapping step, or
+  → 2026-10-12, real collection, 26 path rules + calendar/place rules above `subject`, 7
+    categories (Fêtes added): 506 events left to the model, 919 photos; 2.1 s describe + 0.2 s
+    map per photo, a full run ≈ 34 min (the first estimate said 1 h 08: a default figure, not
+    the last measure). 11 of 50 answered "none". "Maison et travaux" catches indoor family
+    scenes (meals, sofa, Wii). Checked by the maintainer: descriptions very good; categories
+    weak, 7 wrong of the 10 categorised photos checked (5 home scenes as "Maison et travaux", a
+    family meal at the grandparents' as "Vacances et sorties", Santa hats in a September garden
+    as "Fêtes"). Cause: `map.txt` gives the model category names only, no definition.
+  → Decided: describe in French when `locale = fr` (descriptions were English by design,
+    surprising in the `--sample` table): a new TODO.
+- [x] From those figures: add `bge-m3` embeddings (or a CLIP fast pass) for the mapping step, or
   not? Default: not built.
+  → no vectors (they would keep the same word confusion). Instead, new TODO: a definition per category (`"Name = definition"`, the definition sent to the mapping model only), and the default example "Maison et travaux" renamed "À la maison" (config template + docs).
 - [x] When the confirmation "describe N photos?" is refused, `classify` goes on with the cache
   only. Keep, or abort the whole run?
   → keep: go on with the cache only.
 - [x] The `subject` rule is commented out, low in the default rule list, with example
   categories. Keep its position and categories, or change them?
-  → keep position and categories.
+  → keep the position; categories kept except "Maison et travaux" → "À la maison" (above).
 
 ### 0030 — Places from GPS, the map page
 
@@ -102,15 +125,18 @@ How to use it:
 - [x] Delete the Docker Hub repository `cavo789/media-dedup` once `cavo789/media-hygiene:0.3.0`
   is published.
   → deleted by the maintainer.
-- [ ] After the next clone under the new name: update the paths in `.claude/settings.json`.
+- [x] After the next clone under the new name: update the paths in `.claude/settings.json`.
+  → reminder kept in the closing note of DONE_0040; nothing to do until such a clone.
 
 ### 0041 — Albums as hard links
 
-- [ ] On Windows, in a **synthetic** folder (procedure in the PARTIAL file, e.g.
+- [x] On Windows, in a **synthetic** folder (procedure in the PARTIAL file, e.g.
   `C:\Temp\links`): does `album … --apply` make true NTFS hard links through Docker Desktop
   (`fsutil hardlink list`)? Same question through a WSL `/mnt/c` path.
-- [ ] If links fail on Docker Desktop: keep `album` for Linux/NAS users (it refuses cleanly), or
+  → yes, both (2026-10-12, `C:\Temp\links`): `os.link` in the image through `-v "C:\Temp\links:/t"` and through `-v /mnt/c/Temp/links:/t` gives one inode for both names, `st_nlink` 2; `fsutil hardlink list` lists both names. True NTFS hard links.
+- [x] If links fail on Docker Desktop: keep `album` for Linux/NAS users (it refuses cleanly), or
   remove it (UNNEEDED)?
+  → not applicable: links work; `album` stays.
 - [x] Album behaviour: flat folder, original names, additive (a photo no longer selected stays).
   Want a "sync" mode that removes it, or date-prefixed names for chronological order in
   Explorer?
@@ -229,12 +255,16 @@ How to use it:
 
 - [ ] **0028:** a `sort` between two different disks (cross-device move); Ctrl+C during a `sort`
   in `docker run -it`; Excel's lock file `~$classify.xlsx` detected while the workbook is open.
-- [ ] **0038:** the `review` page names the decisions file as a `C:\…` path under Docker Desktop.
-- [ ] **0039:** PowerShell 5.1: a decisions file / `config.toml` saved with `Set-Content
+- [x] **0038:** the `review` page names the decisions file as a `C:\…` path under Docker Desktop.
+  → checked 2026-10-12: console and page footer both say `C:\Users\…\media-hygiene\reports\decisions.json`.
+- [x] **0039:** PowerShell 5.1: a decisions file / `config.toml` saved with `Set-Content
   -Encoding UTF8` (BOM) or `Out-File` (UTF-16) is read back.
-- [ ] **0037:** the `X` key sets a whole burst series aside in a real browser.
-- [ ] **0044:** one real search on the `places` page (OpenStreetMap / Nominatim) returns an area
+  → checked 2026-10-12 in Windows PowerShell 5.1: a `config.toml` written by `Set-Content -Encoding UTF8` (BOM) and by `Out-File` (UTF-16) is read, same value both times. Piped through `Select-String`, PS 5.1 decodes the UTF-8 output with the OEM code page (`├Ç v├®rifier`, `Ôöé`): a console display matter, see 0098.
+- [x] **0037:** the `X` key sets a whole burst series aside in a real browser.
+  → checked 2026-10-12 in a real browser: X sets the whole series aside, A takes it all back; → keeps both (the default).
+- [x] **0044:** one real search on the `places` page (OpenStreetMap / Nominatim) returns an area
   (only a fake server was used in tests).
+  → checked 2026-10-12: a search by name on the `places` page drew the area (Nominatim).
 - [ ] **0005:** real phone videos (WhatsApp re-encode, iPhone HEVC, 4K) are found as re-encoded
   copies.
 - [ ] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
