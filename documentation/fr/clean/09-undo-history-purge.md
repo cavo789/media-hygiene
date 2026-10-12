@@ -35,15 +35,15 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261011-204459 ────────────────
+─────────────── Annulation de l'exécution clean 20261012-102033 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261011-204459
+20261012-102033
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
-│ Taille                    │ 15,5 Mo │
+│ Taille                    │ 15,6 Mo │
 │ Ignorés (laissés intacts) │       0 │
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
@@ -83,8 +83,8 @@ Exécutions (les plus récentes d'abord)
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃ Exécution       ┃ Commande ┃ Supprimés ┃ Libéré ┃ En quarantaine ┃ Restaurés ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20261011-204507 │ clean    │         1 │      0 │             41 │         0 │
-│ 20261011-204459 │ clean    │         1 │      0 │             35 │        36 │
+│ 20261012-102039 │ clean    │         1 │      0 │             41 │         0 │
+│ 20261012-102033 │ clean    │         1 │      0 │             35 │        36 │
 └─────────────────┴──────────┴───────────┴────────┴────────────────┴───────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -113,8 +113,8 @@ mh purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261011-204507 (41 fichiers, 16,3 Mo) ? [o/N] o
-✅ Quarantaine vidée : 16,3 Mo libérés.
+❓ Effacer la quarantaine de 20261012-102039 (41 fichiers, 16,4 Mo) ? [o/N] o
+✅ Quarantaine vidée : 16,4 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.
 ```
 

@@ -42,6 +42,11 @@ dev = [
     "types-openpyxl>=3.1.5.20260827",
     "types-polib>=1.2.0.20260518",
 ]
+docs = [
+    "mkdocs>=1.6.1,<2",  # 2.0 drops the plugins and the Material theme
+    "mkdocs-material>=9.7.7",
+    "mkdocs-static-i18n>=1.3.1",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/media_hygiene"]
@@ -68,6 +73,8 @@ ignore = [
 # Typer builds each command from its signature: one parameter per CLI option, and the
 # annotations are resolved at runtime (so their imports must stay real imports).
 "src/media_hygiene/cli/**" = ["PLR0913", "TC001", "TC002", "TC003"]
+# MkDocs loads its hooks by path, outside any package.
+".config/mkdocs/hooks.py" = ["INP001"]
 "tests/**" = [
     "S101",    # pytest is built on bare `assert`.
     "PLR2004", # Expected values in assertions are the test's own documentation.

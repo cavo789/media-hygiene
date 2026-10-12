@@ -88,16 +88,16 @@ Résumé de l'audit
 Dossiers partageant des fichiers identiques
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans C:\Photos\Ancien téléphone (des copies que 'clean' déplace en
-  quarantaine), 2,2 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
+  quarantaine), 2,3 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
   contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
   à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
-  quarantaine), 864,7 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  quarantaine), 872,9 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
   ne contient rien d'autre : c'est entièrement une copie de
   C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
-  un exemplaire est gardé (287,5 Ko à libérer).
+  un exemplaire est gardé (292,0 Ko à libérer).
 
 Ce que vous pouvez faire
 ✅ 12 copies identiques, 3,4 Mo : sans risque, une commande.
@@ -119,7 +119,7 @@ config.toml, ou --prefer.
 ⚙️  À régler une fois : -v "<un de vos dossiers>:/reports" (rapports HTML); -v
 media-hygiene-cache:/cache (prochains audits bien plus rapides); -e
 TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC).
-(3 autres conseils : ajoutez --verbosity verbose pour les voir.)
+(2 autres conseils : ajoutez --verbosity verbose pour les voir.)
 ```
 
 D'abord le tableau (un mot inconnu ? [les mots de ce guide](../reference-glossary.md)) :

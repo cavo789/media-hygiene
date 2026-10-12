@@ -36,7 +36,7 @@ Résumé de l'audit
 │ Fichiers média analysés                                     │      85 │
 │ Groupes de fichiers identiques                              │      20 │
 │ Copies en trop, à mettre de côté                            │      32 │
-│ Espace libérable                                            │ 13,9 Mo │
+│ Espace libérable                                            │ 14,0 Mo │
 │ Fichiers cassés (vides ou illisibles)                       │       3 │
 │ Fichiers compagnons orphelins (.xmp, .aae, .thm) à déplacer │       1 │
 │ Quasi-doublons (déplacés seulement avec --tier near)        │       3 │
@@ -51,7 +51,7 @@ Résumé de l'audit
 Dossiers partageant des fichiers identiques
 • 12 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans D:\Ancien disque\Photos 2019 (des copies que 'clean' déplace en
-  quarantaine), 3,5 Mo à libérer avec 'purge'. D:\Ancien disque\Photos 2019 ne
+  quarantaine), 3,6 Mo à libérer avec 'purge'. D:\Ancien disque\Photos 2019 ne
   contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
   à la mer.
 • 3 fichiers sont à la fois dans C:\Photos\Téléphone (gardés) et dans D:\Ancien
@@ -63,7 +63,7 @@ Dossiers partageant des fichiers identiques
   avec 'purge'.
 • 8 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans C:\Photos\Ancien téléphone (des copies que 'clean' déplace en
-  quarantaine), 2,2 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
+  quarantaine), 2,3 Mo à libérer avec 'purge'. C:\Photos\Ancien téléphone ne
   contient rien d'autre : c'est entièrement une copie de C:\Photos\2019\Vacances
   à la mer.
 • 4 fichiers sont à la fois dans C:\Photos\2020\Noël (gardés) et dans D:\Ancien
@@ -72,11 +72,11 @@ Dossiers partageant des fichiers identiques
   c'est entièrement une copie de C:\Photos\2020\Noël.
 • 3 fichiers sont à la fois dans C:\Photos\2019\Vacances à la mer (gardés) et
   dans C:\Photos\2019\Nouveau dossier (des copies que 'clean' déplace en
-  quarantaine), 864,7 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
+  quarantaine), 872,9 Ko à libérer avec 'purge'. C:\Photos\2019\Nouveau dossier
   ne contient rien d'autre : c'est entièrement une copie de
   C:\Photos\2019\Vacances à la mer.
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
-  un exemplaire est gardé (287,5 Ko à libérer).
+  un exemplaire est gardé (292,0 Ko à libérer).
 ```
 
 Chaque chemin est affiché comme Windows l'écrit : `/data/d/Ancien disque` s'affiche

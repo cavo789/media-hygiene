@@ -71,7 +71,7 @@ de dossiers, puis **demande avant de faire quoi que ce soit** :
 celle gardée, puis déplacée en quarantaine (/quarantine). 'undo' la remet en
 place ; 'purge' l'efface une fois que vous avez vérifié.
 1 fichier compagnon orphelin (.xmp, .aae, .thm) sera déplacé en quarantaine.
-❓ Déplacer 32 copies en double (13,9 Mo) en quarantaine et traiter 3 fichiers
+❓ Déplacer 32 copies en double (14,0 Mo) en quarantaine et traiter 3 fichiers
 cassés ? [o/N] o
 ```
 
@@ -80,17 +80,17 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261011-204459
+Nettoyage 20261012-102033
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
-│ Taille                    │ 15,5 Mo │
+│ Taille                    │ 15,6 Mo │
 │ Déplacés en quarantaine   │      35 │
 │ Ignorés (laissés intacts) │       0 │
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261011-204459-clean/report.html
-💡 Vous changez d'avis ? 'media-hygiene undo 20261011-204459' restaure tout :
+✅ Rapport HTML : /reports/20261012-102033-clean/report.html
+💡 Vous changez d'avis ? 'media-hygiene undo 20261012-102033' restaure tout :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
@@ -99,7 +99,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261011-204459
+  cavo789/media-hygiene --locale fr undo 20261012-102033
 👉 Et maintenant : une fois vérifié, 'purge' libère la place des fichiers mis de
 côté.
 docker run --rm -it `
@@ -110,7 +110,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr purge 20261011-204459
+  cavo789/media-hygiene --locale fr purge 20261012-102033
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```
@@ -144,7 +144,7 @@ Chaque nettoyage écrit son propre rapport, listé dans `index.html` à côté d
 été libéré, les paires de dossiers telles qu'elles ont été nettoyées, et les fichiers laissés
 intacts, s'il y en a.
 
-![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,3 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
+![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,4 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 
 ## Besoin de la place tout de suite ? `--delete`
 

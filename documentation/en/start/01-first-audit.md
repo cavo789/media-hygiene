@@ -84,15 +84,15 @@ Audit summary
 
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.2 MB to free
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.3 MB to free
   with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 864.7 KB
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 872.9 KB
   to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
   entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB to free).
+  is kept (292.0 KB to free).
 
 What you can do
 ✅ 12 identical copies, 3.4 MB: no risk, one command.
@@ -114,7 +114,7 @@ docker run --rm -it `
 ⚙️  To set once: -v "<a folder of yours>:/reports" (HTML reports); -v
 media-hygiene-cache:/cache (much faster next audits); -e TZ=Europe/Brussels
 (times in your time zone, not UTC).
-(3 more tips: add --verbosity verbose to see them.)
+(2 more tips: add --verbosity verbose to see them.)
 ```
 
 The table first (a word you do not know? [the words of this guide](../reference-glossary.md)):

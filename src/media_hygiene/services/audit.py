@@ -71,7 +71,7 @@ class AuditService:
                 mounted twice.
         """
         runtime, started = self._runtime, time.monotonic()
-        refuse_empty_data(runtime)
+        refuse_empty_data(runtime, "audit")
         data_dir = runtime.locations.data_dir
         refuse_overlapping_mounts(runtime)
         warn_about_scope(runtime)

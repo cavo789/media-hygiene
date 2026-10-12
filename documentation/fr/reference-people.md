@@ -41,6 +41,8 @@ déjà donnés, et n'en enregistre aucun.
 
 ## Nommer les groupes
 
+![La page des personnes : le plus grand groupe nommé Chloé, le nom relu dans config.toml en haut de la page, ses sept visages en dessous ; puis le groupe 2 et le groupe 3, pas encore nommés, chacun avec son champ pour taper un nom et ses boutons pour nommer, nommer avec d'autres ou ignorer le groupe](images/people.webp)
+
 | Sur un groupe | Ce que ça fait |
 |---|---|
 | Taper un nom, puis Entrée | Les visages montrés sont ceux de cette personne. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |

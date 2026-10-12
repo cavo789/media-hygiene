@@ -40,7 +40,7 @@ At the end of the audit, a new line:
 
 <!-- capture: audit.txt|HTML report|. -->
 ```text
-✅ HTML report: /reports/20261011-204125-audit/report.html
+✅ HTML report: /reports/20261012-101638-audit/report.html
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
@@ -66,7 +66,7 @@ section.
 
 ## The top: the totals
 
-![The top of an audit report: 85 media files scanned, 32 duplicate copies in 20 groups, 13.9 MB can be freed, 3 broken files, then What you can do (identical copies, near duplicates, burst series, each with Copy the command), the inventory line, the contents and how we know these are duplicates](../images/report-top.webp)
+![The top of an audit report: 85 media files scanned, 32 duplicate copies in 20 groups, 14.0 MB can be freed, 3 broken files, then What you can do (identical copies, near duplicates, burst series, each with Copy the command), the inventory line, the contents and how we know these are duplicates](../images/report-top.webp)
 
 The same numbers as in the terminal, then a reminder: an audit changes nothing, and each copy
 listed is byte-for-byte identical to the one kept.
@@ -164,15 +164,15 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261011-204244-clean │ clean │ 85    │ 32         │ 16.3 MB │ 3      │
-│ 20261011-204244-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-204239-clean │ clean │ 85    │ 32         │ 15.5 MB │ 3      │
-│ 20261011-204143-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-204136-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-204131-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
-│ 20261011-204129-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
-│ 20261011-204126-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
-│ 20261011-204125-audit │ audit │ 85    │ 32         │ 13.9 MB │ 3      │
+│ 20261012-101755-clean │ clean │ 85    │ 32         │ 16.4 MB │ 3      │
+│ 20261012-101755-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261012-101749-clean │ clean │ 85    │ 32         │ 15.6 MB │ 3      │
+│ 20261012-101657-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261012-101651-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261012-101645-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
+│ 20261012-101642-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
+│ 20261012-101640-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261012-101638-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

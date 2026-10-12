@@ -93,7 +93,7 @@ class ClassifyService:
             MountError: Nothing is mounted, or the target is not mounted.
         """
         runtime = self._runtime
-        refuse_empty_data(runtime)
+        refuse_empty_data(runtime, "classify")
         data_dir = runtime.locations.data_dir
         roots = runtime.mounts.data_roots(data_dir)
         scope = with_people(self._scope(years), runtime)

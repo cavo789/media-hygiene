@@ -53,7 +53,7 @@ docker run --rm -it `
   cavo789/media-hygiene clean
 ```
 
-It shows the summary and the folder pairs, then asks: *❓ Move 32 duplicate copies (13.9 MB) to
+It shows the summary and the folder pairs, then asks: *❓ Move 32 duplicate copies (14.0 MB) to
 the quarantine and handle 3 broken files? [y/N]*. Anything but `y` stops
 here, and nothing changes. With `y`, a line under the bar names each file and what happens to it;
 the table at the end counts what was moved, skipped and failed.

@@ -39,8 +39,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20261011-204321-classify/classify.xlsx
-0 edits read; workbook saved on 11 October 2026 at 20:43.
+Workbook: /reports/20261012-101859-classify/classify.xlsx
+0 edits read; workbook saved on 12 October 2026 at 10:18.
 Sort
 ┌──────────────────────────────┬────────┐
 │ Files to move                │      4 │
@@ -120,7 +120,7 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261011-204323
+Sort 20261012-101901
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │
@@ -130,8 +130,8 @@ Sort 20261011-204323
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20261011-204323-sort/manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261011-204323' moves everything
+Manifest: /reports/20261012-101901-sort/manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261012-101901' moves everything
 back:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -141,7 +141,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261011-204323
+  cavo789/media-hygiene undo 20261012-101901
 ```
 
 The proof is written to `/reports/<run>-sort/manifest.json`.
@@ -173,11 +173,11 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20261011-204323 ───────────────────────
+────────────────────── Undo the sort run 20261012-101901 ───────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the sort run 20261011-204323
+Undo the sort run 20261012-101901
 ┌──────────────────────────┬────────┐
 │ Files processed          │      4 │
 │ Size                     │ 5.9 MB │

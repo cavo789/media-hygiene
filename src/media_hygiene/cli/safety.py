@@ -51,9 +51,9 @@ def safety_doc() -> str:
     """The page of the documentation on safety, in the user's language.
 
     Returns:
-        Its URL on GitHub.
+        Its URL on the documentation site.
     """
-    return f"{DOC_PAGES}/{_('documentation/en/reference-safety.md')}"
+    return f"{DOC_PAGES}/{_('reference-safety/')}"
 
 
 def help_of(name: str, text: str) -> str:

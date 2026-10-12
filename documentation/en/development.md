@@ -90,6 +90,16 @@ the second field (`re:` for a regular expression) to the next one containing the
 (`tests/support/docs/pages.py` has the details). Everything else in the pages is written by
 hand; review the result with `git diff documentation/`.
 
+The same pages make the documentation site, <https://cavo789.github.io/media-hygiene/>, where
+the links the tool prints lead (`DOC_PAGES` in `constants.py`). MkDocs Material builds it
+(`.config/mkdocs/`: `mkdocs.yml`, and `hooks.py`, which points the links leaving
+`documentation/` at GitHub). [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml)
+publishes it on GitHub Pages at every push of `main` that changes the documentation (it needs,
+once: Settings → Pages → Source: GitHub Actions). `docs_build` builds it like CI: a broken link
+or anchor fails. `docs_serve` shows it at <http://127.0.0.1:8000>, reloaded at every save. A new
+page goes into `nav` in `mkdocs.yml` (a test checks it), in English only: French follows the same
+file names.
+
 ## Continuous integration and releases
 
 Every push and pull request runs the quality gate and the end-to-end tests on GitHub Actions

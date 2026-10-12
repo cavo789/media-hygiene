@@ -60,6 +60,18 @@ The first run downloads the two face models into the cache, once. Each photo is 
 the next runs analyse only the new ones. Then it prints the groups found, the people already
 named, and the address of the page: a click on a face opens its photo. Ctrl+C stops it.
 
+<!-- capture: people.txt|re:^✅| -->
+```text
+✅ 33 photos analysed: 15 faces, 0.04 s per photo.
+✅ 17 faces in 43 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
+once.
+✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
+name is saved at once in config.toml. Ctrl+C stops it; the photos are not
+changed.
+💡 The page does not open? docker run must publish the same port on both sides:
+-p 127.0.0.1:8088:8088.
+```
+
 ## Name the groups
 
 On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read

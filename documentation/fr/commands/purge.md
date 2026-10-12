@@ -41,8 +41,8 @@ docker run --rm -it `
 ```
 
 Il prévient que les fichiers ne pourront pas revenir, donne combien de fichiers et quelle place,
-puis demande : *Effacer la quarantaine de 20261011-100826 (41 fichiers, 16,3 Mo) ? [o/N]*.
-Avec `o` : *✅ Quarantaine vidée : 16,3 Mo libérés.*
+puis demande : *Effacer la quarantaine de 20261011-100826 (41 fichiers, 16,4 Mo) ? [o/N]*.
+Avec `o` : *✅ Quarantaine vidée : 16,4 Mo libérés.*
 
 ## Options
 

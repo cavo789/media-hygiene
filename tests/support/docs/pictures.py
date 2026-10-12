@@ -16,6 +16,7 @@ from PIL import ImageDraw, ImageFilter
 from tests.support.docs.festive import balloons, christmas
 from tests.support.docs.landscapes import beach, meadow, mountains, sunset
 from tests.support.docs.painting import grain
+from tests.support.docs.portraits import paste_face, placement_of
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -79,6 +80,8 @@ def render(picture: Picture) -> Image.Image:
     # Seeded drawing, not secrets: the same scene on every run.
     rnd = random.Random(f"{picture.kind}-{picture.seed}")  # noqa: S311
     wide = _PAINTERS[picture.kind](rnd, (WIDTH + _MARGIN, HEIGHT))
+    if (face := placement_of(picture.kind, picture.seed)) is not None:
+        paste_face(wide, face)
     frame = wide.crop((picture.pan, 0, picture.pan + WIDTH, HEIGHT))
     if picture.pose is not None:
         left, top = _SUBJECT + _POSE_STEP * picture.pose, HEIGHT // 3

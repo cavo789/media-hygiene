@@ -57,10 +57,10 @@ Folders sharing identical files
 • 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (a copy
   'clean' moves to the quarantine), 2.9 MB to free with 'purge'.
 • 9 files are both in C:\Photos\Old phone (kept) and in C:\Photos\2019\Seaside
-  holidays (copies 'clean' moves to the quarantine), 2.5 MB to free with
+  holidays (copies 'clean' moves to the quarantine), 2.6 MB to free with
   'purge'.
 • 8 files are both in C:\Photos\Old phone (kept) and in D:\Old disk\Photos 2019
-  (copies 'clean' moves to the quarantine), 2.2 MB to free with 'purge'.
+  (copies 'clean' moves to the quarantine), 2.3 MB to free with 'purge'.
 • 4 files are both in C:\Photos\2019\Seaside holidays (kept) and in D:\Old
   disk\Photos 2019 (copies 'clean' moves to the quarantine), 1.3 MB to free with
   'purge'.
@@ -69,7 +69,7 @@ Folders sharing identical files
   with 'purge'. D:\Old disk\Christmas 2020 holds nothing else: it is entirely a
   copy of C:\Photos\2020\Christmas.
 • 3 files are both in C:\Photos\Old phone (kept) and in C:\Photos\2019\New
-  folder (copies 'clean' moves to the quarantine), 864.7 KB to free with
+  folder (copies 'clean' moves to the quarantine), 872.9 KB to free with
   'purge'. C:\Photos\2019\New folder holds nothing else: it is entirely a copy
   of C:\Photos\Old phone.
 ```
@@ -106,15 +106,15 @@ Only the duplicates of `C:\Photos` remain:
 ```text
 Folders sharing identical files
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.2 MB to free
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.3 MB to free
   with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 864.7 KB
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 872.9 KB
   to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
   entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB to free).
+  is kept (292.0 KB to free).
 ```
 
 ## Skip a folder name on every disk

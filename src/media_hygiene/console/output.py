@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING
 
 from rich.console import Console
 from rich.markup import escape
+from rich.style import Style
+from rich.text import Text
 
 from media_hygiene.console.advice import Advice, AdviceBoard, TipKind
 from media_hygiene.console.advice_view import print_advice
@@ -26,18 +28,32 @@ def make_console(color: ColorMode, *, stderr: bool = False) -> Console:
     Args:
         color: `auto` detects a terminal, `always`/`never` force the choice.
         stderr: Print to the error stream, keeping the output stream for data
-            redirected to a file (the `launcher` script).
+            redirected to a file (the `launcher` script). When the output stream is
+            a terminal, the console is silent: under `docker run -t` both streams
+            are one, and `> file` would catch the messages along with the data.
 
     Returns:
         The console.
     """
+    quiet = stderr and data_on_terminal()
     match color:
         case ColorMode.ALWAYS:
-            return Console(force_terminal=True, highlight=False, stderr=stderr)
+            return Console(
+                force_terminal=True, highlight=False, stderr=stderr, quiet=quiet
+            )
         case ColorMode.NEVER:
-            return Console(no_color=True, highlight=False, stderr=stderr)
+            return Console(no_color=True, highlight=False, stderr=stderr, quiet=quiet)
         case ColorMode.AUTO:
-            return Console(highlight=False, stderr=stderr)
+            return Console(highlight=False, stderr=stderr, quiet=quiet)
+
+
+def data_on_terminal() -> bool:
+    """Whether the output stream is a terminal rather than a file (`docker run -t`).
+
+    Returns:
+        True when data written to stdout would land on the screen.
+    """
+    return sys.stdout.isatty()
 
 
 @dataclass(frozen=True, slots=True)
@@ -142,6 +158,17 @@ class Output:
             text: The command, printed as is (no markup, no highlighting).
         """
         self.console.print(text, soft_wrap=True, markup=False, highlight=False)
+
+    def link(self, label: str, url: str) -> None:
+        """Print a page to open, the URL never cut by a line break (Ctrl+click).
+
+        Args:
+            label: Translated, e.g. `Step 1 of the guide:`.
+            url: The page, also a terminal hyperlink where the terminal supports it.
+        """
+        line = Text(f"📖 {label} ")
+        line.append(url, style=Style(link=url))
+        self.console.print(line, soft_wrap=True, highlight=False)
 
     def show(self, renderable: RenderableType) -> None:
         """Print any Rich renderable (tables, panels).

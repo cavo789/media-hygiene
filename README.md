@@ -17,7 +17,7 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 
 🇫🇷 [Version française](README_FR.md)
 
-![An audit in the terminal: 83 media files scanned, 20 groups of identical files, 32 extra copies, 13.9 MB to free, then the folders sharing identical files, each pair saying which folder keeps its copies](documentation/en/images/terminal-audit.webp)
+![An audit in the terminal: 83 media files scanned, 20 groups of identical files, 32 extra copies, 14.0 MB to free, then the folders sharing identical files, each pair saying which folder keeps its copies](documentation/en/images/terminal-audit.webp)
 
 ## Quick start
 
@@ -71,7 +71,8 @@ you ask for it: the copy kept stays). More in
 ## Documentation
 
 The [documentation](documentation/en/README.md) walks you through, one step at a time. Each step
-adds one thing to the command of the step before.
+adds one thing to the command of the step before. It is also a website, with a search box:
+<https://cavo789.github.io/media-hygiene/>.
 
 **Start here** — the same three first steps, whatever you do next (no Docker yet?
 [Install Docker](documentation/en/start/00-install-docker.md) first):

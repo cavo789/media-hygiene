@@ -54,7 +54,7 @@ docker run --rm -it `
 ```
 
 Il montre le résumé et les paires de dossiers, puis demande : *❓ Déplacer 32 copies en double
-(13,9 Mo) en quarantaine et traiter 3 fichiers cassés ? [o/N]*. Toute autre réponse que `o`
+(14,0 Mo) en quarantaine et traiter 3 fichiers cassés ? [o/N]*. Toute autre réponse que `o`
 arrête là, et rien ne change. Avec `o`, une ligne sous la barre nomme chaque fichier et ce qui
 lui arrive ; le tableau final compte ce qui a été déplacé, ignoré et en échec.
 

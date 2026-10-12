@@ -7,10 +7,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import DOC_PAGES
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.overlaps import mount_overlaps
+from media_hygiene.services.missing_mount import no_folder
 from media_hygiene.services.policy import unmounted_folders
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 
@@ -23,28 +23,19 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def refuse_empty_data(runtime: Runtime) -> None:
+def refuse_empty_data(runtime: Runtime, command: str) -> None:
     """Stop when no folder is mounted, or a tool folder is mixed with the photos.
 
     Args:
         runtime: Mount points.
+        command: The running command, offered again with a folder mounted.
 
     Raises:
         MountError: Nothing to analyse, or the quarantine, the journal, the cache or
             the reports folder is, holds or lies inside a folder to analyse.
     """
     if nothing_mounted(runtime):
-        raise MountError(
-            _("No folder to analyse under {path}.").format(
-                path=runtime.locations.data_dir
-            ),
-            _(
-                "The tool only sees the folders you give it with -v, e.g. -v "
-                '"C:\\Photos:/data/c/Photos:ro". Step 1 of the guide: {url}'
-            ).format(
-                url=f"{DOC_PAGES}/{_('documentation/en/start/01-first-audit.md')}"
-            ),
-        )
+        raise no_folder(runtime, command)
     refuse_tool_folders_in_data(runtime)
 
 

@@ -36,8 +36,8 @@ La fin de l'affichage dit où sont les fichiers :
 
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
-✅ Classeur à modifier : /reports/20261011-204353-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261011-204353-classify/report.html
+✅ Classeur à modifier : /reports/20261012-101931-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261012-101931-classify/report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

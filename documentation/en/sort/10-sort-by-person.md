@@ -39,6 +39,13 @@ docker run --rm -it `
 
 </details>
 
+On the demo library of this guide, 10 photos measured:
+
+<!-- capture: people-sample.txt|re:^✅|. -->
+```text
+✅ 10 photos analysed: 2 faces, 0.03 s per photo.
+```
+
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about
 1 h 10 min.`); the faces found are kept. Rather let it run after your next audit?
 `audit --people` audits, says how long the faces take, and **asks** before looking for them
@@ -89,6 +96,20 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
 It analyses the photos not seen yet, groups the faces that look alike (probably one person per
 group) and prints the address of the page, `http://127.0.0.1:8088/`: Ctrl+click it.
 
+<!-- capture: people.txt|re:^✅| -->
+```text
+✅ 33 photos analysed: 15 faces, 0.04 s per photo.
+✅ 17 faces in 43 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
+once.
+✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
+name is saved at once in config.toml. Ctrl+C stops it; the photos are not
+changed.
+💡 The page does not open? docker run must publish the same port on both sides:
+-p 127.0.0.1:8088:8088.
+```
+
+![The people page: the largest group named Chloé, the name read back from config.toml at the top (Saved in config.toml, read back: Chloé, 7 confirmed faces), her seven faces below; then Group 2 and Group 3, not named yet, each with its field to type a name and its buttons Name, Name with others, Ignore this group](../images/people.webp)
+
 On the page, the largest groups come first. **Type a name** on a group and press Enter; the name
 is written into `config.toml`, then read back from the file and shown at the top of the page
 ("Saved in config.toml, read back: Chloé, 58 confirmed faces."). The keyboard is enough:
@@ -137,7 +158,22 @@ category = "People/Chloé"
 
 Then the same commands as steps [4](04-classify.md), [5](05-review-the-proposal.md) and
 [7](07-sort.md): `mh classify`, the workbook (or [`mh review-sort`](11-name-events-in-the-browser.md)),
-then `mh sort`.
+then `mh sort`. On the demo library of this guide, every photo already lies in a folder:
+there, the rule goes right above *Existing folders*, or that rule would decide them all:
+
+<!-- capture: classify-person.txt|re:^Why$|<blank> -->
+```text
+Why
+┌──────────────────┬────┐
+│ With Chloé       │ 25 │
+│ Existing folders │ 18 │
+│ undated          │  1 │
+│   People/Chloé   │ 25 │
+│   Mountain hike  │ 10 │
+│   Lake           │  5 │
+│   Phone          │  3 │
+└──────────────────┴────┘
+```
 
 What to check:
 

@@ -39,6 +39,8 @@ mounted, the page shows the groups and the names already given, and saves none.
 
 ## Name the groups
 
+![The people page: the largest group named Chloé, the name read back from config.toml at the top (Saved in config.toml, read back: Chloé, 7 confirmed faces), her seven faces below; then Group 2 and Group 3, not named yet, each with its field to type a name and its buttons Name, Name with others, Ignore this group](images/people.webp)
+
 | On a group | What it does |
 |---|---|
 | Type a name, then Enter | The faces shown are this person's. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |

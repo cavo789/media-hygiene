@@ -95,6 +95,17 @@ contient le deuxième champ (`re:` pour une expression régulière) à la suivan
 troisième (le détail est dans `tests/support/docs/pages.py`). Tout le reste des pages s'écrit à
 la main ; relisez le résultat avec `git diff documentation/`.
 
+Les mêmes pages forment le site de la documentation, <https://cavo789.github.io/media-hygiene/>,
+où mènent les liens que l'outil affiche (`DOC_PAGES` dans `constants.py`). MkDocs Material le
+construit (`.config/mkdocs/` : `mkdocs.yml`, et `hooks.py`, qui envoie vers GitHub les liens qui
+sortent de `documentation/`).
+[`.github/workflows/docs.yml`](../../.github/workflows/docs.yml) le publie sur GitHub Pages à
+chaque push de `main` qui change la documentation (il faut, une fois : Settings → Pages → Source :
+GitHub Actions). `docs_build` le construit comme la CI : un lien ou une ancre cassés le font
+échouer. `docs_serve` l'affiche sur <http://127.0.0.1:8000>, rechargé à chaque enregistrement. Une
+nouvelle page va dans `nav` de `mkdocs.yml` (un test le vérifie), en anglais seulement : le
+français suit les mêmes noms de fichiers.
+
 ## Intégration continue et versions
 
 Chaque push et chaque pull request lancent la barrière qualité et les tests de bout en bout sur

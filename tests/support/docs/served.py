@@ -1,7 +1,7 @@
 """The pages served on 127.0.0.1:8088, shot inside the Playwright image by `browser.py`.
 
-The burst review, the near-duplicate review and the search page. Copied next to
-`browser.py`, which imports it; Python 3.10 there: nothing newer here.
+The burst review, the near-duplicate review, the search page and the people page.
+Copied next to `browser.py`, which imports it; Python 3.10 there: nothing newer here.
 """
 
 from __future__ import annotations
@@ -28,6 +28,10 @@ VIDEO_SHOWN_JS: Final = (
 HITS_SHOWN_JS: Final = (
     "() => document.querySelectorAll('#grid .hit').length > 0 && "
     "[...document.querySelectorAll('#grid img')].every((image) => image.complete)"
+)
+FACES_SHOWN_JS: Final = (
+    "() => [...document.querySelectorAll('#groups img')]"
+    ".every((image) => image.complete)"
 )
 PAUSE_MS: Final = 500
 VIDEO_PAUSE_MS: Final = 2000  # the loading spinner fades out
@@ -99,3 +103,20 @@ def search(page: Page, words: str) -> None:
     page.wait_for_function(HITS_SHOWN_JS)
     page.wait_for_timeout(PAUSE_MS)
     page.screenshot(path=SHOTS / "search.png")
+
+
+def people(page: Page, name: str) -> None:
+    """The people page: the largest group named, the name read back from config.toml.
+
+    Args:
+        page: The browser tab.
+        name: The name typed on the first group.
+    """
+    page.goto(SERVED)
+    page.wait_for_selector("#groups section input")
+    page.fill("#groups section input", name)
+    page.press("#groups section input", "Enter")
+    page.wait_for_selector("#status.saved")
+    page.wait_for_function(FACES_SHOWN_JS)
+    page.wait_for_timeout(PAUSE_MS)
+    page.screenshot(path=SHOTS / "people.png", full_page=True)

@@ -42,6 +42,13 @@ docker run --rm -it `
 
 </details>
 
+Sur la bibliothèque de démonstration de ce guide, 10 photos mesurées :
+
+<!-- capture: people-sample.txt|re:^✅|. -->
+```text
+✅ 10 photos analysées : 6 visages, 0,04 s par photo.
+```
+
 Elle se termine par l'estimation de l'exécution complète (`Une exécution complète analyserait
 encore 20 000 photos : environ 1 h 10 min.`) ; les visages trouvés sont gardés. Plutôt après
 votre prochain audit ? `audit --people` fait l'audit, dit combien de temps prendront les visages,
@@ -93,6 +100,20 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
 Elle analyse les photos pas encore vues, regroupe les visages qui se ressemblent
 (sans doute une personne par groupe) et affiche l'adresse de la page, `http://127.0.0.1:8088/` :
 Ctrl+clic dessus.
+
+<!-- capture: people.txt|re:^✅| -->
+```text
+✅ 33 photos analysées : 11 visages, 0,04 s par photo.
+✅ 17 visages dans 43 photos : 3 groupes de visages semblables, les plus grands
+7, 5, 4 ; 1 vus une seule fois.
+✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
+nommer ; chaque nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête ;
+les photos ne sont pas modifiées.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
+```
+
+![La page des personnes : le plus grand groupe nommé Chloé, le nom relu dans config.toml en haut de la page, ses sept visages en dessous ; puis le groupe 2 et le groupe 3, pas encore nommés, chacun avec son champ pour taper un nom et ses boutons pour nommer, nommer avec d'autres ou ignorer le groupe](../images/people.webp)
 
 Sur la page, les plus grands groupes viennent d'abord. **Tapez un nom** sur un groupe et appuyez
 sur Entrée ; le nom est écrit dans `config.toml`, puis relu dans le fichier et affiché en haut de
@@ -146,7 +167,23 @@ category = "Personnes/Chloé"
 
 Ensuite, les mêmes commandes qu'aux étapes [4](04-classify.md), [5](05-review-the-proposal.md)
 et [7](07-sort.md) : `mh classify`, le classeur (ou
-[`mh review-sort`](11-name-events-in-the-browser.md)), puis `mh sort`.
+[`mh review-sort`](11-name-events-in-the-browser.md)), puis `mh sort`. Dans la bibliothèque de démonstration de ce guide, chaque photo est déjà dans
+un dossier : la règle y est placée juste au-dessus de *Dossiers existants*, sinon cette règle-là
+les déciderait toutes :
+
+<!-- capture: classify-person.txt|re:^Pourquoi$|<blank> -->
+```text
+Pourquoi
+┌────────────────────┬────┐
+│ Avec Chloé         │ 25 │
+│ Dossiers existants │ 18 │
+│ undated            │  1 │
+│   Personnes/Chloé  │ 25 │
+│   Randonnée        │ 10 │
+│   Lac              │  5 │
+│   Téléphone        │  3 │
+└────────────────────┴────┘
+```
 
 Ce qu'il faut vérifier :
 

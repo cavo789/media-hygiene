@@ -9,7 +9,7 @@ from media_hygiene.date_names import DATE_FOLDERS
 
 APP_NAME: Final = "media-hygiene"
 HOME_PAGE: Final = "https://github.com/cavo789/media-hygiene"
-DOC_PAGES: Final = f"{HOME_PAGE}/blob/main"  # + a page path of documentation/
+DOC_PAGES: Final = "https://cavo789.github.io/media-hygiene"  # + _("fr/…/"), docs.yml
 ENV_PREFIX: Final = "MEDIA_HYGIENE_"
 GETTEXT_DOMAIN: Final = "media_hygiene"
 CONFIG_FILE_NAME: Final = "config.toml"

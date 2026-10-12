@@ -48,7 +48,7 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         MountError: No folder to analyse, or the index or the report could not be
             written (checked first).
     """
-    refuse_empty_data(runtime)  # the first line a user without -v reads
+    refuse_empty_data(runtime, "audit")  # the first line a user without -v reads
     ensure_writable(runtime, MountKind.CACHE, MountKind.REPORTS)
     output = runtime.output
     output.title(_("Audit"))

@@ -18,7 +18,7 @@ L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/ca
 
 🇬🇧 [English version](README.md)
 
-![Un audit dans le terminal : 83 fichiers média analysés, 20 groupes de fichiers identiques, 32 copies en trop, 13,9 Mo à libérer, puis les dossiers partageant des fichiers identiques, chaque paire disant quel dossier garde ses copies](documentation/fr/images/terminal-audit.webp)
+![Un audit dans le terminal : 83 fichiers média analysés, 20 groupes de fichiers identiques, 32 copies en trop, 14,0 Mo à libérer, puis les dossiers partageant des fichiers identiques, chaque paire disant quel dossier garde ses copies](documentation/fr/images/terminal-audit.webp)
 
 ## Démarrage rapide
 
@@ -75,7 +75,8 @@ journalisée, tout est annulable.
 ## Documentation
 
 La [documentation](documentation/fr/README.md) vous accompagne pas à pas. Chaque étape ajoute une
-seule chose à la commande de l'étape précédente.
+seule chose à la commande de l'étape précédente. Elle existe aussi en site web, avec une
+recherche : <https://cavo789.github.io/media-hygiene/fr/>.
 
 **Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite (pas encore
 de Docker ? [Installez Docker](documentation/fr/start/00-install-docker.md) d'abord) :

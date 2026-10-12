@@ -62,6 +62,18 @@ est analysée une fois ; les exécutions suivantes n'analysent que les nouvelles
 les groupes trouvés, les personnes déjà nommées et l'adresse de la page : un clic sur un visage
 ouvre sa photo. Ctrl+C l'arrête.
 
+<!-- capture: people.txt|re:^✅| -->
+```text
+✅ 33 photos analysées : 11 visages, 0,04 s par photo.
+✅ 17 visages dans 43 photos : 3 groupes de visages semblables, les plus grands
+7, 5, 4 ; 1 vus une seule fois.
+✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
+nommer ; chaque nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête ;
+les photos ne sont pas modifiées.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
+```
+
 ## Nommer les groupes
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans

@@ -3092,6 +3092,9 @@ msgstr ""
 msgid "Staying where they are"
 msgstr ""
 
+msgid "Step 1 of the guide:"
+msgstr ""
+
 msgid "Stopped (Ctrl+C)."
 msgstr ""
 
@@ -3479,10 +3482,7 @@ msgstr ""
 msgid "The target {path} is not mounted."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"The tool only sees the folders you give it with -v, e.g. -v "
-"\"C:\\Photos:/data/c/Photos:ro\". Step 1 of the guide: {url}"
+msgid "The tool only sees the folders you give it with -v."
 msgstr ""
 
 #, python-brace-format
@@ -4203,12 +4203,6 @@ msgid_plural "delete {count} duplicate copies ({size})"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "documentation/en/reference-safety.md"
-msgstr ""
-
-msgid "documentation/en/start/01-first-audit.md"
-msgstr ""
-
 #, python-format
 msgid "duplicate copies in %(num)s group"
 msgid_plural "duplicate copies in %(num)s groups"
@@ -4630,6 +4624,9 @@ msgstr ""
 msgid "protected, kept"
 msgstr ""
 
+msgid "reference-safety/"
+msgstr ""
+
 msgid "removed from your folders"
 msgstr ""
 
@@ -4689,6 +4686,9 @@ msgid "space freed, largest first"
 msgstr ""
 
 msgid "start with an audit: it changes nothing."
+msgstr ""
+
+msgid "start/01-first-audit/"
 msgstr ""
 
 msgid "still to see first"
@@ -5807,6 +5807,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{table} in config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{tip} In this command, replace {folder} with your photo folder, after "
+"checking that it exists on your computer ({check})."
 msgstr ""
 
 #, python-brace-format

@@ -27,6 +27,8 @@ def test_without_any_folder_the_error_comes_first(
     assert lines[0].startswith("❌ No folder to analyse under")
     text = " ".join(result.output.split())
     assert "The tool only sees the folders you give it with -v" in text
-    assert "documentation/en/start/01-first-audit.md" in "".join(text.split())
+    assert f"cavo789/media-hygiene {command}" in text  # the command to paste
+    guide = next(line for line in lines if line.startswith("📖"))
+    assert guide.endswith("/start/01-first-audit/")  # never cut
     assert "🔒" not in text
     assert ":ro to the -v" not in text

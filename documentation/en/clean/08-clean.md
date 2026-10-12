@@ -70,7 +70,7 @@ then **asks before doing anything**:
 kept one, then moved to the quarantine (/quarantine). 'undo' puts it back;
 'purge' erases it once you have checked.
 1 orphan sidecar (.xmp, .aae, .thm) will be moved to the quarantine.
-❓ Move 32 duplicate copies (13.9 MB) to the quarantine and handle 3 broken
+❓ Move 32 duplicate copies (14.0 MB) to the quarantine and handle 3 broken
 files? [y/N] y
 ```
 
@@ -79,17 +79,17 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261011-204239
+Clean 20261012-101749
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
-│ Size                     │ 15.5 MB │
+│ Size                     │ 15.6 MB │
 │ Moved to the quarantine  │      35 │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261011-204239-clean/report.html
-💡 Changed your mind? 'media-hygiene undo 20261011-204239' restores everything:
+✅ HTML report: /reports/20261012-101749-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261012-101749' restores everything:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
@@ -98,7 +98,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261011-204239
+  cavo789/media-hygiene undo 20261012-101749
 👉 What next: once you have checked, 'purge' frees the space of the files set
 aside.
 docker run --rm -it `
@@ -109,7 +109,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene purge 20261011-204239
+  cavo789/media-hygiene purge 20261012-101749
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
@@ -140,7 +140,7 @@ the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the
 folder pairs as they were cleaned, and the files left untouched, if any.
 
-![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.3 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
+![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.4 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 
 ## Need the space at once? `--delete`
 

@@ -16,6 +16,7 @@ from tests.support.docs.container import (
     run_in_colour,
 )
 from tests.support.docs.names import Locale
+from tests.support.docs.people_story import PEOPLE_CAPTURES, people_story
 from tests.support.docs.published import as_published
 from tests.support.docs.screenshots import Job, shoot
 from tests.support.docs.terminal import Window, draw_terminal
@@ -29,22 +30,9 @@ if TYPE_CHECKING:
 type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
-COMMANDS_TOO: Final = (
-    "crosscheck",
-    "config",
-    "classify",
-    "sort",
-    "album",
-    "inventory",
-    "places",
-    "status",
-    "launcher",
-    "review-sort",
-    "tags",
-    "search",
-    "people",
-    "xmp",
-)
+COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
+                       "places", "status", "launcher", "review-sort", "tags", "search",
+                       "people", "xmp")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -81,6 +69,7 @@ CAPTURES: Final = frozenset(
         "undo-sort.txt",
         "help.txt",
         *(f"help-{command}.txt" for command in (*COMMANDS, *COMMANDS_TOO)),
+        *PEOPLE_CAPTURES,
     }
 )
 
@@ -194,5 +183,6 @@ def run_scenario(demo: Demo, shots: Path) -> Captures:
     captures |= _reports(demo, shots)
     captures |= _help(demo)
     captures["purge.txt"] = run_confirmed(demo, Command(("purge",), read_only=False))
+    captures |= people_story(demo, shots)
     captures |= _sort(demo)
     return {name: as_published(demo, text) for name, text in captures.items()}

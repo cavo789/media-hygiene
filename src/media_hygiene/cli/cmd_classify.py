@@ -131,7 +131,8 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         if overrides:
             runtime = runtime.with_overrides({"classify": overrides})
         years = parse_years(year)
-        refuse_empty_data(runtime)  # before the title: the first line without -v
+        # Before the title: the first line a user without -v reads.
+        refuse_empty_data(runtime, "classify")
         runtime.output.title(_("Classify"))
         warn_overlaps(runtime)
         source = (

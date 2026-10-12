@@ -39,8 +39,8 @@ docker run --rm -it `
 ```
 
 It warns that the files cannot come back, gives how many files and how much space, then asks:
-*Erase the quarantine of 20261011-100607 (41 files, 16.3 MB)? [y/N]*. With `y`: *✅ Quarantine
-purged: 16.3 MB freed.*
+*Erase the quarantine of 20261011-100607 (41 files, 16.4 MB)? [y/N]*. With `y`: *✅ Quarantine
+purged: 16.4 MB freed.*
 
 ## Options
 

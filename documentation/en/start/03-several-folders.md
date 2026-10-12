@@ -34,7 +34,7 @@ Audit summary
 │ Media files scanned                                  │      85 │
 │ Groups of identical files                            │      20 │
 │ Extra copies that can be set aside                   │      32 │
-│ Space that can be freed                              │ 13.9 MB │
+│ Space that can be freed                              │ 14.0 MB │
 │ Broken files (empty or unreadable)                   │       3 │
 │ Orphan sidecars (.xmp, .aae, .thm) to move           │       1 │
 │ Near duplicates (moved only with --tier near)        │       3 │
@@ -48,7 +48,7 @@ Audit summary
 ```text
 Folders sharing identical files
 • 12 files are both in C:\Photos\2019\Seaside holidays (kept) and in D:\Old
-  disk\Photos 2019 (copies 'clean' moves to the quarantine), 3.5 MB to free with
+  disk\Photos 2019 (copies 'clean' moves to the quarantine), 3.6 MB to free with
   'purge'. D:\Old disk\Photos 2019 holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 3 files are both in C:\Photos\Phone (kept) and in D:\Old disk\Phone (copies
@@ -57,7 +57,7 @@ Folders sharing identical files
 • 1 file is both in C:\Photos\Videos (kept) and in D:\Old disk\Videos (a copy
   'clean' moves to the quarantine), 2.9 MB to free with 'purge'.
 • 8 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.2 MB to free
+  C:\Photos\Old phone (copies 'clean' moves to the quarantine), 2.3 MB to free
   with 'purge'. C:\Photos\Old phone holds nothing else: it is entirely a copy of
   C:\Photos\2019\Seaside holidays.
 • 4 files are both in C:\Photos\2020\Christmas (kept) and in D:\Old
@@ -65,11 +65,11 @@ Folders sharing identical files
   with 'purge'. D:\Old disk\Christmas 2020 holds nothing else: it is entirely a
   copy of C:\Photos\2020\Christmas.
 • 3 files are both in C:\Photos\2019\Seaside holidays (kept) and in
-  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 864.7 KB
+  C:\Photos\2019\New folder (copies 'clean' moves to the quarantine), 872.9 KB
   to free with 'purge'. C:\Photos\2019\New folder holds nothing else: it is
   entirely a copy of C:\Photos\2019\Seaside holidays.
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
-  is kept (287.5 KB to free).
+  is kept (292.0 KB to free).
 ```
 
 Every path is shown the way Windows writes it: `/data/d/Old disk` is displayed as `D:\Old disk`.
