@@ -19,10 +19,10 @@ in French (desc + tags); on 2026-10-12 `classify` measured 2.1 s describe + 0.2 
 
 1. `describe.txt` takes the answer language from the interface (`{language}` placeholder, or one
    template per language as `tags_en.txt` / `tags_fr.txt` do).
-2. The cache: a description is stored with its language; a French run reuses an English
-   description rather than paying again (the mapping step reads either language) — the table of
-   `--sample` then shows it as is. Decide and write down whether `--sample` redraws photos whose
-   cached description is in the other language (preferred: no).
+2. The cache (decided 2026-10-13): the language is part of a description's cache identity. A
+   description in another language counts as missing and is described again (about 128 English
+   descriptions on the maintainer's machine: ~5 min). Old cache rows without a language are
+   English. The estimate and `--sample` follow from "missing" as today.
 3. The mapping prompt (`map.txt`) states that descriptions may be in English or French.
 4. Measure again `--sample 20` in French, then update the time figures and remove the
    "descriptions are in English" sentence of `sort/08-…` (en + fr).
@@ -35,4 +35,5 @@ in French (desc + tags); on 2026-10-12 `classify` measured 2.1 s describe + 0.2 
 
 - `locale = "fr"`: new descriptions in French (test with the fake model server: the prompt asks
   for French).
-- Cached English descriptions still map; no re-describe.
+- Under `locale = "fr"`, a cached English description is described again in French (test);
+  under `en`, nothing is redone.

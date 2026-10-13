@@ -22,9 +22,9 @@ No README section lists any of this today; the Docker Hub overview is written fr
 2. A short "Licences" section at the end of `README.md` / `README_FR.md`: the tool is MIT; the
    image also contains … (one line each, with a link); x265 makes the **image as a whole**
    subject to the GPL for redistribution; the sources are those of the pinned upstream releases.
-3. `org.opencontainers.image.licenses`: an SPDX expression for the image (e.g.
-   `MIT AND GPL-2.0-or-later AND LGPL-2.1-or-later AND …`), or keep `MIT` and say why in a
-   comment — choose after step 1.
+3. `org.opencontainers.image.licenses`: the SPDX expression of what step 1 found (e.g.
+   `MIT AND GPL-2.0-or-later AND LGPL-2.1-or-later AND …`) — the label describes the image,
+   not only the tool (default chosen 2026-10-13).
 4. `development.md` (en + fr): when a dependency adds a native library, update the section.
 
 ## Explicit NON-goals

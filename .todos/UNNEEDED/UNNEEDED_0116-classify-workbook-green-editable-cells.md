@@ -33,3 +33,9 @@ convention for "you may write here". Decided: for every user, not an option.
 - A new `classify.xlsx` shows its editable cells in pastel green; a workbook written by the
   previous version is still read by `sort` and the carry-over.
 - `grep -rni "yellow cell\|cellules\? jaune" src documentation README*.md` finds nothing.
+
+## Closed — UNNEEDED (2026-10-13)
+
+Weighed again with what green loses: yellow is the common spreadsheet convention for "cell to
+fill in", green often reads "validated / OK" (a green row could look already accepted), and the
+change touches ~20 files and both languages of the docs. The maintainer keeps yellow.

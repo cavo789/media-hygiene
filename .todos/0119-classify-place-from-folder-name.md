@@ -20,7 +20,7 @@ language).
 
 ## What to do
 
-A new rule `match = "folder_town"` (name to settle), opt-in in the default `config.toml`:
+A new rule `match = "folder_town"`, opt-in in the default `config.toml`:
 
 - A folder name matches only when it **equals** a town name (case- and accent-insensitive),
   never a word inside it.
@@ -29,7 +29,7 @@ A new rule `match = "folder_town"` (name to settle), opt-in in the default `conf
   otherwise the most populous.
 - Ignored when GPS photos of the same folder are farther than `trip_merge_max_km` from the
   town.
-- Low score by default (below `sure`, e.g. 60): proposals land in "À vérifier"; any other rule
+- Low score by default: 60 (below `sure`): proposals land in "À vérifier"; any other rule
   wins.
 - Category template `{country}/{city}`, overridable by `category`.
 

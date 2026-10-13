@@ -52,7 +52,7 @@ Windows checks of Part 4 still unticked (0028, 0005, 0035, 0057), to run with th
   → 2026-10-12 (`mh classify --year 2015`, real collection): every white cell locked, every
     yellow cell writable; no repair prompt; filters and drop-downs work; sheets cannot be
     renamed, deleted or added.
-    Asked: editable cells in pastel green for everyone → TODO 0116. Console findings of the
+    Asked: editable cells in pastel green → TODO 0116, then kept yellow (UNNEEDED, 2026-10-13). Console findings of the
     same run → TODO 0114 (subject lines) and 0115 (raw reason codes, untitled category rows,
     55-rule warning under `--year`).
 - [x] Decide how the documentation shows the workbook (same question as 0032 below).

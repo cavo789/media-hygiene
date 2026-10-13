@@ -15,7 +15,7 @@ Review 0056 (2026-10-12): the maintainer typed `mh classify --path "C:\Photos\20
 
 - `--path` (repeatable), same help, same host → container mapping as `cmd_tags.py`
   (`runtime.mapper.to_container`); refused cleanly when the folder is not under a mount.
-- Semantics to settle and write in the help: events are still built from **every** file (an
+- Semantics (decided 2026-10-13), to write in the help: events are still built from **every** file (an
   event crossing the folder boundary stays whole, like `--year` keeps an event in the year of its
   start), and only the files below the folders get a proposal and a row in the workbook. Combine
   with `--year` as an intersection.

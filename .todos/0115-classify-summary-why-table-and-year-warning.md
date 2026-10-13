@@ -3,7 +3,7 @@
 - **Priority**: Medium — read on the maintainer's first real `--year` run
 - **Batch**: classify
 - **Depends**: —
-- **Files**: `src/media_hygiene/console/classify_view.py`, `src/media_hygiene/classify/names.py`, `src/media_hygiene/cli/classify_flow.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/sort/`, `documentation/fr/sort/`, `documentation/en/commands/classify.md`, `documentation/fr/commands/classify.md`
+- **Files**: `src/media_hygiene/classify/engine.py`, `src/media_hygiene/console/classify_view.py`, `src/media_hygiene/classify/names.py`, `src/media_hygiene/cli/classify_flow.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/sort/`, `documentation/fr/sort/`, `documentation/en/commands/classify.md`, `documentation/fr/commands/classify.md`
 
 ## Context
 
@@ -43,15 +43,24 @@ Three defects:
    "55 règles n'ont rien décidé en 2015 : normal pour celles écrites pour d'autres années." —
    no names, no tip; the workbook's summary sheet keeps the full list as today. Without
    `--year`, unchanged.
-4. Console blocks of the docs that show this summary (en + fr), `i18n_update`, translations.
+4. Undated files under `--year` (decided 2026-10-13): the same run proposed 1,342 files with no
+   EXIF date (band "Sans date") because their year is guessed from the file's modification date
+   (`iPad_Manon`, copied in 2015). They all go to `undated_layout` whatever the year, so in a
+   `--year` run they only swell the figures. With `--year`, leave out every proposal whose
+   dating is a guess from the modification date (check `Dating` for how that source is
+   recorded; `_in_years` in `engine.py`), and say it in one line:
+   "1 342 fichiers sans date : proposés par un classify sans --year." Without `--year`,
+   unchanged. The workbook of a `--year` run then holds no undated row; check the carry-over
+   keeps undated edits of an earlier full run.
+5. Console blocks of the docs that show this summary (en + fr), `i18n_update`, translations.
 
 ## Explicit NON-goals
 
 - The subject lines above the summary (0114).
-- Which files `--year` takes (undated files in a year run): a separate question.
 
 ## Acceptance
 
 - No raw `Reason` code in the console in either language (a test over every `Reason` value).
 - The category rows sit under their own title.
 - Under `--year`, one line instead of the list; without it, the list as today. Tests for both.
+- Under `--year`, no undated file is proposed and one line counts them (test).
