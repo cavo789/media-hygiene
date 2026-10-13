@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Protocol, override
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.models import PhotoFaces
 from media_hygiene.faces.onnx_runner import onnx_runner
-from media_hygiene.report.thumbnails import PICTURE_ERRORS, upright_picture
+from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
 
 if TYPE_CHECKING:
@@ -75,7 +75,7 @@ def find_faces(job: FaceJob) -> PhotoFaces | None:
     started = time.monotonic()
     try:
         picture = upright_picture(job.path)
-    except (*PICTURE_ERRORS, OSError):
+    except unreadable_errors():
         return None
     faces = finder.find(picture)
     seconds = time.monotonic() - started

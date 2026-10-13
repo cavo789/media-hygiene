@@ -13,7 +13,7 @@ from PIL import Image, ImageFile, ImageOps
 from media_hygiene.constants import THUMBNAILS_DIR_NAME, MediaKind, Sizes
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.image_check import prepare_image_worker
-from media_hygiene.scan.raw_check import RAW_ERRORS, raw_preview
+from media_hygiene.scan.raw_check import raw_errors, raw_preview
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -28,14 +28,33 @@ _JPEG_QUALITY = 80
 _REVIEW_EDGE: Final = 1600
 _REVIEW_QUALITY: Final = 88
 _THUMBNAIL_NAME_LENGTH = 20
-# What decoding a damaged or truncated picture raises.
-PICTURE_ERRORS: Final = (
-    ValueError,
-    SyntaxError,
-    EOFError,
-    Image.DecompressionBombError,
-    *RAW_ERRORS,
-)
+
+
+def picture_errors() -> tuple[type[Exception], ...]:
+    """What decoding a damaged or truncated picture raises, RAW files included.
+
+    A function, not a constant: LibRaw's errors load LibRaw, only once a picture is
+    decoded.
+
+    Returns:
+        The exception types.
+    """
+    return (
+        ValueError,
+        SyntaxError,
+        EOFError,
+        Image.DecompressionBombError,
+        *raw_errors(),
+    )
+
+
+def unreadable_errors() -> tuple[type[Exception], ...]:
+    """What reading a picture raises, from its file on disk to its pixels.
+
+    Returns:
+        The exception types: those of `picture_errors`, and `OSError`.
+    """
+    return (*picture_errors(), OSError)
 
 
 def thumbnail_name(file: MediaFile) -> str:
@@ -87,7 +106,7 @@ def make_thumbnail(job: ThumbnailJob) -> bool:
         preview.thumbnail((Sizes.THUMBNAIL_EDGE, Sizes.THUMBNAIL_EDGE))
         job.target.parent.mkdir(parents=True, exist_ok=True)
         preview.save(job.target, "JPEG", quality=_JPEG_QUALITY)
-    except PICTURE_ERRORS:
+    except picture_errors():
         return False
     finally:
         ImageFile.LOAD_TRUNCATED_IMAGES = False
@@ -125,7 +144,7 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
         preview.thumbnail((edge, edge))
         buffer = io.BytesIO()
         preview.save(buffer, "JPEG", quality=_REVIEW_QUALITY)
-    except (*PICTURE_ERRORS, OSError):
+    except unreadable_errors():
         return None
     finally:
         ImageFile.LOAD_TRUNCATED_IMAGES = False
