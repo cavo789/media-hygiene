@@ -107,7 +107,8 @@ suivent. Une photo isolée répond pour elle-même.
 Vous avez déjà lancé [`tags`](../reference-tags.md#les-mots-dun-modèle-de-vision-local) avec le
 même `model` ? Ses réponses sont réutilisées : un échantillon décrit par `tags` n'est pas
 renvoyé, seuls sa phrase et ses mots sont rapprochés de vos catégories (quelques secondes, du
-texte seulement).
+texte seulement). Seulement si `tags` a écrit dans la langue de l'interface : sinon les
+échantillons sont décrits à nouveau, dans cette langue.
 
 La **confiance** vient des échantillons, jamais de ce que le modèle dit de lui-même :
 

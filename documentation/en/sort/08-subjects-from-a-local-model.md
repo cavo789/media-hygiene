@@ -97,7 +97,8 @@ and the videos of the event follow them. A lone photo answers for itself.
 
 Already ran [`tags`](../reference-tags.md#the-words-of-a-local-vision-model) with the same
 `model`? Its answers are reused: a sample `tags` described is not sent again, only its sentence
-and words are matched to your categories (seconds, text only).
+and words are matched to your categories (seconds, text only). Only when `tags` wrote in the
+language of the interface: otherwise the samples are described again, in that language.
 
 The **confidence** comes from the samples, never from what the model says of itself:
 

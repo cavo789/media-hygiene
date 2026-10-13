@@ -4,7 +4,8 @@
 take that answer), the model's sentence (`caption`) and its words (`vision`). When
 the model of `[classify.ai]` wrote them, the `subject` rule maps them to its
 categories like one of its own descriptions: only the photos `tags` never saw are
-described again, with the question of `classify`.
+described again, with the question of `classify`. Only a sentence `tags` had in the
+language of the interface is taken: the descriptions never mix two languages.
 """
 
 from __future__ import annotations
@@ -27,16 +28,21 @@ if TYPE_CHECKING:
 class ReusingStore(DescriptionStore):
     """The descriptions of `classify`, else the answer `tags` had from that model."""
 
-    def __init__(self, connection: sqlite3.Connection, asked: tuple[str, str]) -> None:
+    def __init__(
+        self, connection: sqlite3.Connection, asked: tuple[str, str], tags_prompt: str
+    ) -> None:
         """Bind the store to a model and a prompt version.
 
         Args:
             connection: The index connection, tables prepared.
             asked: The vision model, and the version of the describe prompt.
+            tags_prompt: The version of the `tags` prompt in the interface language:
+                the sentences `tags` had from it are the only ones reused.
         """
         super().__init__(connection, asked)
         self._tags = TagStore(connection)
         self._vision_model = asked[0]
+        self._said = DescriptionStore(connection, (asked[0], tags_prompt)).texts()
 
     @override
     def get(self, photo: PhotoVersion) -> Description | None:
@@ -51,7 +57,8 @@ class ReusingStore(DescriptionStore):
         own = super().get(photo)
         if own is not None:
             return own
-        return described_by_tags(self._tags.of(photo), self._vision_model)
+        found = described_by_tags(self._tags.of(photo), self._vision_model)
+        return found if found is not None and found.text in self._said else None
 
 
 def described_by_tags(tags: Sequence[Tag], model: str) -> Description | None:

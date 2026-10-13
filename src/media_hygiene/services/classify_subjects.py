@@ -22,6 +22,7 @@ from media_hygiene.services.describing import DescribeJob, describe_checked
 from media_hygiene.services.subject_answers import Answered, answers_of
 from media_hygiene.services.subject_plan import plan_subjects
 from media_hygiene.services.subject_store import ReusingStore
+from media_hygiene.tags.vision import prompt_version
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -68,7 +69,8 @@ class SubjectStep:
             FactsRepository.open(self._runtime.index_file)
         )
         asked = (self._ai.model, version(describe_name(self._language)))
-        self._opened = ReusingStore(repository.connection, asked)
+        tags_prompt = prompt_version(self._language)  # what `tags` asked in it
+        self._opened = ReusingStore(repository.connection, asked, tags_prompt)
         return self
 
     def __exit__(self, *exc_info: object) -> None:
