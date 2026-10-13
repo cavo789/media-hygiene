@@ -225,6 +225,12 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+#, python-brace-format
+msgid "; {groups} group without a subject → your other rules, else {band}."
+msgid_plural "; {groups} groups without a subject → your other rules, else {band}."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "<the folder you mount on /reports>"
 msgstr ""
 
@@ -469,6 +475,9 @@ msgstr ""
 msgid ""
 "At 100 %%: move the mouse over a shot, the same area shows in every one. "
 "C or Escape closes."
+msgstr ""
+
+msgid "At home"
 msgstr ""
 
 msgid "Audit"
@@ -1511,9 +1520,6 @@ msgid "Holidays and outings"
 msgstr ""
 
 msgid "Home"
-msgstr ""
-
-msgid "Home and works"
 msgstr ""
 
 msgid "Home: trips are measured from it"
@@ -2663,14 +2669,14 @@ msgid "Root"
 msgstr ""
 
 #, python-brace-format
-msgid "Rule '{rule}': a subject for {count} file."
-msgid_plural "Rule '{rule}': a subject for {count} files."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "Rule '{rule}': nobody is named {names} in [[people.person]]."
 msgstr ""
+
+#, python-brace-format
+msgid "Rule '{rule}': {count} file sorted by what the model saw"
+msgid_plural "Rule '{rule}': {count} files sorted by what the model saw"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Rules and reasons"
 msgstr ""
@@ -3197,9 +3203,9 @@ msgstr ""
 
 msgid ""
 "The categories below are an example to replace with your own, e.g. "
-"Parties, Holidays and outings, School, Sport and leisure, Home and works,"
-" Animals, Nature and landscapes, Documents and screenshots, Other. Avoid "
-"a \"Family\" or \"Portraits\" category: in a family collection, it "
+"Parties, Holidays and outings, School, Sport and leisure, At home, "
+"Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"
+" \"Family\" or \"Portraits\" category: in a family collection, it "
 "swallows most photos."
 msgstr ""
 
@@ -3902,6 +3908,12 @@ msgstr ""
 msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
 msgstr ""
 
+msgid ""
+"Write each category as \"Name = definition\": the name is the folder, the"
+" definition tells the model what you mean by it. A name alone is judged "
+"by its words: \"Home and works\" drew every indoor scene."
+msgstr ""
+
 msgid "Write the sidecars; without it, only show what would be written."
 msgstr ""
 
@@ -4041,6 +4053,9 @@ msgstr ""
 msgid "a number is expected, not {value}"
 msgstr ""
 
+msgid "a pet or an animal as the main subject"
+msgstr ""
+
 msgid "a photo, a video or a sidecar is never junk: the folder is kept"
 msgstr ""
 
@@ -4115,6 +4130,9 @@ msgstr ""
 msgid "back to undecided"
 msgstr ""
 
+msgid "birthdays, Christmas, communions, weddings; not a costume alone"
+msgstr ""
+
 msgid "blurry"
 msgstr ""
 
@@ -4161,6 +4179,9 @@ msgstr ""
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
+msgstr ""
+
+msgid "classrooms, school trips, school shows and parties"
 msgstr ""
 
 msgid "clean"
@@ -4236,6 +4257,9 @@ msgid "environment"
 msgstr ""
 
 msgid "every source"
+msgstr ""
+
+msgid "everyday life at home: games, meals, children, sofa, garden"
 msgstr ""
 
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
@@ -4381,6 +4405,9 @@ msgid "kept (your decision)"
 msgstr ""
 
 msgid "kept if you move on"
+msgstr ""
+
+msgid "landscapes, plants and sky, no one as the main subject"
 msgstr ""
 
 msgid "largest sharpness gap first"
@@ -4689,6 +4716,9 @@ msgstr ""
 msgid "space freed, largest first"
 msgstr ""
 
+msgid "sports and hobbies, played or watched: matches, swimming"
+msgstr ""
+
 msgid "start with an audit: it changes nothing."
 msgstr ""
 
@@ -4751,6 +4781,16 @@ msgid "the kept copy {path} no longer exists"
 msgstr ""
 
 msgid "the last audit found extra copies: 'clean' sets them aside."
+msgstr ""
+
+#, python-brace-format
+msgid "the model will look at each of their {samples} photos."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"the model will look at {samples} of them (up to {per_event} per event, "
+"the others follow)."
 msgstr ""
 
 msgid "the model's sentence"
@@ -4842,6 +4882,9 @@ msgid "to the quarantine with --tier near"
 msgstr ""
 
 msgid "today"
+msgstr ""
+
+msgid "trips and days out: beach, mountains, visits"
 msgstr ""
 
 #, python-brace-format
@@ -5249,10 +5292,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{count} of them to describe with {model}, about {duration}."
-msgstr ""
-
-#, python-brace-format
 msgid "{count} of {total} ({percent}%)"
 msgstr ""
 
@@ -5419,6 +5458,16 @@ msgid "{count} sure"
 msgid_plural "{count} sure"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} to describe with {model} ({cached} already in the cache), about "
+"{duration}."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} to describe with {model}, about {duration}."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} video"
@@ -5832,12 +5881,8 @@ msgid "{undone}, read back from the disk at {time}."
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"{units} event or lone photo has no stronger signal than its subject: "
-"{samples} photos answer for it."
-msgid_plural ""
-"{units} events or lone photos have no stronger signal than their subject:"
-" {samples} photos answer for them."
+msgid "{units} group of photos (an event or a lone photo) no rule of yours took:"
+msgid_plural "{units} groups of photos (events or lone photos) no rule of yours took:"
 msgstr[0] ""
 msgstr[1] ""
 

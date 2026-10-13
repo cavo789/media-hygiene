@@ -5,7 +5,7 @@
 Les dossiers, les dates et vos règles ([étape 6](06-write-down-what-you-know.md)) trient une
 bonne partie d'une collection familiale. Les photos restées dans des dossiers qui ne portent
 qu'une date (`Juillet 2016`, `2019-04`, `DCIM`) n'ont toujours pas de sujet : une plage, un
-spectacle d'école, des travaux à la maison. Un **modèle de vision qui tourne sur votre propre
+spectacle d'école, un jeu à la maison. Un **modèle de vision qui tourne sur votre propre
 ordinateur** peut les regarder et le dire. Cette étape est **facultative** : sans elle, tout le
 reste fonctionne de la même façon.
 
@@ -51,8 +51,15 @@ match = "existing_folder"
 [[classify.rules]]
 name = "Sujet"
 match = "subject"
-categories = ["Vacances et sorties", "École", "Sport et loisirs", "Maison et travaux",
-              "Animaux", "Nature et paysages"]
+categories = [
+    "Vacances et sorties = voyages, journées dehors : plage, montagne, visites",
+    "Fêtes = anniversaires, Noël, communions, mariages ; pas un déguisement seul",
+    "École = classe, excursions, spectacles et fêtes de l'école",
+    "Sport et loisirs = sports et loisirs, pratiqués ou regardés : matchs, natation",
+    "À la maison = la vie de tous les jours : jeux, repas, enfants, canapé, jardin",
+    "Animaux = un animal de compagnie ou un animal comme sujet principal",
+    "Nature et paysages = paysages, plantes et ciel, sans personne au premier plan",
+]
 ```
 
 - Le modèle choisit **une** des `categories`, ou aucune : une photo qui n'entre dans aucune
@@ -67,6 +74,26 @@ categories = ["Vacances et sorties", "École", "Sport et loisirs", "Maison et tr
   fiable.
 - Évitez une catégorie « Famille » ou « Portraits » : le modèle y mettrait la plupart des
   photos.
+
+### Définir chaque catégorie
+
+Écrivez chaque catégorie sous la forme `"Nom = définition"`. Le **nom** est le dossier ; la
+**définition** dit au modèle ce que vous entendez par là, et n'apparaît nulle part ailleurs. Un
+nom seul fonctionne encore, mais le modèle ne juge alors que sur ses mots. Sur une vraie
+collection, avec les noms seuls, 7 des 10 photos vérifiées étaient dans la mauvaise catégorie :
+
+- cinq scènes à la maison (une enfant dans les bras de son père, un ours en peluche, un canapé,
+  un jeu vidéo, la terrasse) sont allées dans « Maison et travaux », à cause du mot *maison* :
+  rien à voir avec des travaux ;
+- un repas de famille chez les grands-parents est allé dans « Vacances et sorties » : *sorties*
+  attirait tous les repas ;
+- deux enfants coiffées d'un bonnet de père Noël dans un jardin en septembre sont allées dans
+  « Fêtes ».
+
+Une définition dit ce qui entre, et ce qui n'entre pas (« pas un déguisement seul »). Le modèle
+répond « aucune » plutôt que de forcer une catégorie : une telle photo reste aux autres règles.
+Changer une définition ne redécrit rien : seul le choix des catégories, en texte seul, est
+refait.
 
 ## Quelques photos par événement
 
@@ -119,14 +146,14 @@ Avec Docker Engine, `mh` ne joint pas Ollama : utilisez la commande complète, a
 `--add-host=host.docker.internal:host-gateway` après `-it`.
 
 ```text
-412 événements ou photos isolées n'ont pas de signal plus fort que leur sujet : 1 236 photos
-répondent pour eux.
-Dont 1 236 à décrire avec qwen2.5vl:7b, environ 1 h 32 min.
+412 groupes de photos (événements ou photos seules) ne sont pris par aucune de vos règles :
+le modèle en regardera 1 236 (jusqu'à 3 par événement, les autres suivent).
+1 186 à décrire avec qwen2.5vl:7b (50 déjà dans le cache), environ 1 h 29 min.
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Photo                           ┃ Description                       ┃ Catégorie            ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
-│ C:\Photos\2019-04\IMG_0412.jpg  │ Children singing on a school      │ École                │
-│                                 │ stage.                            │                      │
+│ C:\Photos\2019-04\IMG_0412.jpg  │ Des enfants chantent sur une      │ École                │
+│                                 │ scène d'école.                    │                      │
 │ …                               │ …                                 │ …                    │
 └─────────────────────────────────┴───────────────────────────────────┴──────────────────────┘
 Par photo : 3.6 s pour décrire, 0.4 s pour choisir la catégorie.
@@ -135,9 +162,20 @@ Une exécution complète décrirait encore 1 186 photos : environ 1 h 19 min.
 ```
 
 Le tableau montre si les catégories conviennent à vos photos ; le temps décide quand lancer.
-Les descriptions sont rédigées en anglais, quelle que soit la langue de l'interface : le
-modèle les lit, vous n'avez pas à le faire. Celles de l'échantillon sont gardées : l'exécution
-complète ne les décrit pas à nouveau.
+Les descriptions sont rédigées dans la langue de l'interface (`locale`) : changez-la, et les
+photos sont décrites à nouveau dans la nouvelle langue. Celles de l'échantillon sont gardées :
+l'exécution complète ne les décrit pas à nouveau.
+
+Après l'exécution complète, une ligne par règle `subject` dit ce qu'elle a décidé :
+
+```text
+✅ 1 186 photos décrites ; gardées dans le cache.
+Règle 'Sujet' : 3 904 fichiers rangés d'après ce qu'a vu le modèle ; 37 groupes sans sujet →
+vos autres règles, sinon À trier.
+```
+
+Un groupe sans sujet est un groupe pour lequel le modèle n'a trouvé aucune catégorie, ou dont
+les échantillons ne s'accordaient pas.
 
 ## La longue exécution, jamais une surprise
 

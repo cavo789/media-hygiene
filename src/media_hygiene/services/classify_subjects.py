@@ -12,10 +12,11 @@ from contextlib import ExitStack
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.classify.ai.client import OllamaClient
-from media_hygiene.classify.ai.describe import DescribeOutcome
+from media_hygiene.classify.ai.describe import DescribeOutcome, classify_question
 from media_hygiene.classify.ai.mapping import MapDeps
-from media_hygiene.classify.ai.prompts import version
+from media_hygiene.classify.ai.prompts import describe_name, version
 from media_hygiene.classify.ai.subjects import per_photo, subjects_of
+from media_hygiene.i18n import active_locale
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.describing import DescribeJob, describe_checked
 from media_hygiene.services.subject_answers import Answered, answers_of
@@ -54,6 +55,8 @@ class SubjectStep:
         self._client = OllamaClient(self._ai)
         self._stack = ExitStack()
         self._opened: DescriptionStore | None = None
+        # Described in the interface language; another language counts as missing.
+        self._language = active_locale()
 
     def __enter__(self) -> Self:
         """Open the index.
@@ -64,7 +67,7 @@ class SubjectStep:
         repository = self._stack.enter_context(
             FactsRepository.open(self._runtime.index_file)
         )
-        asked = (self._ai.model, version("describe"))
+        asked = (self._ai.model, version(describe_name(self._language)))
         self._opened = ReusingStore(repository.connection, asked)
         return self
 
@@ -103,7 +106,13 @@ class SubjectStep:
             outcome = self.describe(plan.missing, answering)
         deps = MapDeps(self._client, self.store, answering.progress)
         subjects = {rule.name: self._subjects(plan, rule, deps) for rule in plan.rules}
-        return Answered(subjects, outcome)
+        unanswered = {
+            name: sum(
+                not any(path in found for path in unit.members) for unit in plan.units
+            )
+            for name, found in subjects.items()
+        }
+        return Answered(subjects, outcome, unanswered)
 
     def describe(
         self, photos: Sequence[PhotoVersion], answering: Answering
@@ -120,7 +129,8 @@ class SubjectStep:
         Raises:
             AiError: The model cannot be reached, or cannot see images.
         """
-        job = DescribeJob(self._client, self.store, answering)
+        question = classify_question(self._language)
+        job = DescribeJob(self._client, self.store, answering, question)
         return describe_checked(self._runtime, photos, job)
 
     def map(

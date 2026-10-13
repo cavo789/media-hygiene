@@ -5,16 +5,17 @@ from __future__ import annotations
 import base64
 import json
 
+from media_hygiene.classify.ai.categories import Offered, names, offered
+from media_hygiene.classify.ai.map_prompt import NONE_ANSWER, map_request, read_mapping
 from media_hygiene.classify.ai.models import Description
 from media_hygiene.classify.ai.prompts import (
-    NONE_ANSWER,
+    describe_name,
     describe_request,
-    map_request,
     read_description,
-    read_mapping,
     version,
 )
 from media_hygiene.classify.ai.subjects import NONE
+from media_hygiene.constants import Locale
 
 CATEGORIES = ("Holidays", "School")
 
@@ -70,5 +71,34 @@ def test_a_mapping_needs_one_known_choice_per_description() -> None:
 
 def test_a_prompt_version_follows_its_text() -> None:
     """Two prompts, two versions; the same prompt, the same version."""
-    assert version("describe") != version("map")
-    assert version("describe") == version("describe")
+    assert version("describe_en") != version("map")
+    assert version("describe_en") == version("describe_en")
+
+
+def test_the_describe_prompt_follows_the_interface_language() -> None:
+    """One prompt per language: another language is another cache identity."""
+    assert describe_name(Locale.FR) == "describe_fr"
+    assert version(describe_name(Locale.FR)) != version(describe_name(Locale.EN))
+    request = describe_request("vision", b"jpeg", describe_name(Locale.FR))
+    messages = request["messages"]
+    assert isinstance(messages, list)
+    assert "Réponds en français" in messages[0]["content"]
+
+
+def test_a_category_entry_holds_a_name_and_an_optional_definition() -> None:
+    """`Name = definition`: the name is the folder; a plain name has no definition."""
+    assert offered("At home = games, meals") == Offered("At home", "games, meals")
+    assert offered("At home = games, meals").line == "At home: games, meals"
+    assert offered(" School ").line == "School"
+    assert names(["At home = games", "School"]) == ("At home", "School")
+
+
+def test_the_map_request_lists_definitions_and_enumerates_names() -> None:
+    """The model reads the definition; it may answer the name only."""
+    request = map_request("text", ["A sofa."], ["At home = games, meals", "School"])
+    messages = request["messages"]
+    assert isinstance(messages, list)
+    assert "At home: games, meals\nSchool" in messages[0]["content"]
+    assert json.loads(json.dumps(request["format"]))["properties"]["categories"][
+        "items"
+    ]["enum"] == ["At home", "School", NONE_ANSWER]

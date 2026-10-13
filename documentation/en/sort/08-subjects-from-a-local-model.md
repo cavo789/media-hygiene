@@ -4,7 +4,7 @@
 
 Folders, dates and your rules ([step 6](06-write-down-what-you-know.md)) sort much of a family
 collection. The photos left in folders that only hold a date (`July 2016`, `2019-04`, `DCIM`)
-still lack a subject: a beach, a school show, works at home. A **vision model running on your
+still lack a subject: a beach, a school show, a game at home. A **vision model running on your
 own computer** can look at them and say. This step is **optional**: without it, everything
 else works the same.
 
@@ -50,8 +50,15 @@ match = "existing_folder"
 [[classify.rules]]
 name = "Subject"
 match = "subject"
-categories = ["Holidays and outings", "School", "Sport and leisure", "Home and works",
-              "Animals", "Nature and landscapes"]
+categories = [
+    "Holidays and outings = trips and days out: beach, mountains, visits",
+    "Parties = birthdays, Christmas, communions, weddings; not a costume alone",
+    "School = classrooms, school trips, school shows and parties",
+    "Sport and leisure = sports and hobbies, played or watched: matches, swimming",
+    "At home = everyday life at home: games, meals, children, sofa, garden",
+    "Animals = a pet or an animal as the main subject",
+    "Nature and landscapes = landscapes, plants and sky, no one as the main subject",
+]
 ```
 
 - The model chooses **one** of the `categories`, or none: a photo that fits none stays to the
@@ -62,6 +69,23 @@ categories = ["Holidays and outings", "School", "Sport and leisure", "Home and w
   birthdays and Christmas as `calendar` rules ([step 6](06-write-down-what-you-know.md#dates)).
 - Screenshots and documents come from the `kind` rule: the model is unreliable there.
 - Avoid a "Family" or "Portraits" category: the model would put most photos in it.
+
+### Define each category
+
+Write each category as `"Name = definition"`. The **name** is the folder; the **definition**
+tells the model what you mean by it, and is never shown elsewhere. A plain name still works,
+but the model then judges by its words alone. On a real collection, with names only, 7 of 10
+photos checked were in the wrong category:
+
+- five scenes at home (a child in her father's arms, a teddy bear, a sofa, a video game, the
+  patio) went to "Home and works", because of the word *home*: nothing to do with works;
+- a family meal at the grandparents' went to "Holidays and outings": *outings* drew every meal;
+- two children wearing Santa hats in a September garden went to "Parties".
+
+A definition says what belongs, and what does not ("not a costume alone"). The
+model answers "none" rather than stretch a category: such a photo stays to the other rules.
+Changing a definition describes nothing again: only the choice of categories, text only, runs
+again.
 
 ## A few photos per event
 
@@ -112,9 +136,9 @@ On Docker Engine, `mh` cannot reach Ollama: use the full command, with
 `--add-host=host.docker.internal:host-gateway` after `-it`.
 
 ```text
-412 events or lone photos have no stronger signal than their subject: 1,236 photos
-answer for them.
-1,236 of them to describe with qwen2.5vl:7b, about 1 h 32 min.
+412 groups of photos (events or lone photos) no rule of yours took: the model will look at
+1,236 of them (up to 3 per event, the others follow).
+1,186 to describe with qwen2.5vl:7b (50 already in the cache), about 1 h 29 min.
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Photo                           ┃ Description                       ┃ Category             ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
@@ -128,8 +152,19 @@ A full run would describe 1,186 more photos: about 1 h 19 min.
 ```
 
 The table shows whether the categories fit your photos; the time decides when to run. The
-descriptions are written in English whatever the interface language: the model reads them, you
-do not have to. The sample's descriptions are kept: the full run does not describe them again.
+descriptions are written in the language of the interface (`locale`): switch it, and the photos
+are described again in the new language. The sample's descriptions are kept: the full run does
+not describe them again.
+
+After the full run, one line per `subject` rule tells what it decided:
+
+```text
+✅ 1,186 photos described; kept in the cache.
+Rule 'Subject': 3,904 files sorted by what the model saw; 37 groups without a subject → your
+other rules, else To sort.
+```
+
+A group without a subject is one the model found no category for, or whose samples disagreed.
 
 ## The long run, never in the way
 

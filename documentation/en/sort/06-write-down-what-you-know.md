@@ -118,7 +118,7 @@ taken from the start of the event: `category = "Parties/Christmas {year}"`; the 
 Characters Windows refuses in a folder name are refused.
 
 The example categories are occasions and activities: Parties, Holidays and outings, School,
-Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots,
+Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots,
 Other. Replace them with yours. Avoid a "Family" or "Portraits" category: in a family
 collection, it swallows most photos.
 

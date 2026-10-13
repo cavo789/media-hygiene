@@ -191,7 +191,7 @@ concurrency = 1
 {{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
-{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
+{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
 
 [[classify.rules]]
 name = "{{ _("Films and series") }}"
@@ -281,16 +281,18 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # category = "{{ _("Received") }}"
 
 {{ comment(_("The subject a local vision model sees, for the photos no rule above decided ([classify.ai] model must be set). It picks one of these categories, or none; it is sure only when the photos of an event agree. per_photo = true describes every photo instead of a few per event: much longer.")) }}
+{{ comment(_('Write each category as "Name = definition": the name is the folder, the definition tells the model what you mean by it. A name alone is judged by its words: "Home and works" drew every indoor scene.')) }}
 # [[classify.rules]]
 # name = "{{ _("Subject") }}"
 # match = "subject"
 # categories = [
-#     "{{ _("Holidays and outings") }}",
-#     "{{ _("School") }}",
-#     "{{ _("Sport and leisure") }}",
-#     "{{ _("Home and works") }}",
-#     "{{ _("Animals") }}",
-#     "{{ _("Nature and landscapes") }}",
+#     "{{ _("Holidays and outings") }} = {{ _("trips and days out: beach, mountains, visits") }}",
+#     "{{ _("Parties") }} = {{ _("birthdays, Christmas, communions, weddings; not a costume alone") }}",
+#     "{{ _("School") }} = {{ _("classrooms, school trips, school shows and parties") }}",
+#     "{{ _("Sport and leisure") }} = {{ _("sports and hobbies, played or watched: matches, swimming") }}",
+#     "{{ _("At home") }} = {{ _("everyday life at home: games, meals, children, sofa, garden") }}",
+#     "{{ _("Animals") }} = {{ _("a pet or an animal as the main subject") }}",
+#     "{{ _("Nature and landscapes") }} = {{ _("landscapes, plants and sky, no one as the main subject") }}",
 # ]
 
 {{ comment(_('"Other" means: sure that nothing above matches. Without it, such files go to "to sort", which means: we do not know.')) }}

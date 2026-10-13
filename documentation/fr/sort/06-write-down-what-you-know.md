@@ -124,7 +124,7 @@ GPS y ajoutent `{place}`, `{country}`, `{region}` et `{city}`
 nom de dossier sont refusés.
 
 Les catégories d'exemple sont des occasions et des activités : Fêtes, Vacances et sorties,
-École, Sport et loisirs, Maison et travaux, Animaux, Nature et paysages, Documents et captures
+École, Sport et loisirs, À la maison, Animaux, Nature et paysages, Documents et captures
 d'écran, Autres. Remplacez-les par les vôtres. Évitez une catégorie « Famille » ou
 « Portraits » : dans une collection familiale, elle avale la plupart des photos.
 

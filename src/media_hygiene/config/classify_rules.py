@@ -12,6 +12,7 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from media_hygiene.classify.ai.categories import names as names_of
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import BUILT_IN, FileKind, RuleMatch
@@ -120,8 +121,8 @@ def _check_categories(categories: tuple[str, ...], names: tuple[str, ...]) -> No
     """
     if any(not name.strip() for name in names):
         raise ValueError(_("a name in names is empty"))
-    for category in categories:
-        if not category.strip() or "{" in category:
+    for category in names_of(categories):  # `Name = definition`: the name is the folder
+        if not category or "{" in category:
             message = _("'{category}' is not a category: no placeholder, not empty")
             message = message.format(category=category)
             raise ValueError(message)

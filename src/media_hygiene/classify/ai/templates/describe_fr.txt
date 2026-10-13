@@ -1,0 +1,5 @@
+Décris cette photo pour ranger une collection de photos de famille.
+Dis ce qu'elle montre : le lieu, l'activité, l'occasion, les objets qui comptent.
+N'invente ni nom, ni date, ni texte que tu ne lis pas clairement.
+Réponds en français, en JSON : "description" est une phrase courte (25 mots au plus),
+"tags" sont au plus 5 mots isolés.

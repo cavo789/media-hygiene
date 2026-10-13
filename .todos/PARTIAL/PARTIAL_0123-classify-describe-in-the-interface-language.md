@@ -37,3 +37,26 @@ in French (desc + tags); on 2026-10-12 `classify` measured 2.1 s describe + 0.2 
   for French).
 - Under `locale = "fr"`, a cached English description is described again in French (test);
   under `en`, nothing is redone.
+
+## Status — PARTIAL (2026-10-13)
+
+### Done
+- One describe prompt per language, like `tags`: `describe_en.txt` (the former `describe.txt`,
+  byte for byte, so existing English cache rows keep their version and stay valid under `en`)
+  and `describe_fr.txt`. `SubjectStep` reads `active_locale()`; the prompt's digest (part of the
+  cache identity) differs per language, so under `fr` an English description counts as missing
+  and is described again; under `en` nothing is redone.
+- `map.txt` says the descriptions may be in English or French.
+- Docs en + fr `sort/08-…`: the "descriptions are in English" sentence replaced by "in the
+  interface language; switching it describes again"; the French sample table shows a French
+  description.
+- Tests: `tests/unit/test_subject_prompts.py`,
+  `tests/integration/subjects/test_classify_subjects_language.py`.
+
+### Not done
+- Step 4: measure `--sample 20` in French on the real collection and update the time figures of
+  `sort/08-…` (the console example still shows 3.6 s per photo).
+  **Reason:** needs the maintainer's photos and Ollama.
+- Note: a photo `tags` already described is still reused as is (its sentence is in the `[tags]`
+  language, not necessarily the interface's): the mapping prompt accepts both languages. Not
+  changed, to keep "a photo is sent to the model once".
