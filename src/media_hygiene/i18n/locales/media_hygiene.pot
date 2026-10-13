@@ -1490,6 +1490,11 @@ msgid "Ghent"
 msgstr ""
 
 msgid ""
+"Give a folder below one of your -v, written as the audit shows it, e.g. "
+"--path \"C:\\Photos\\2015\"."
+msgstr ""
+
+msgid ""
 "Give every photo words to find it by: its folders, name, date and place, "
 "and what a local vision model sees. Kept in the cache, never in the "
 "photos."
@@ -2376,6 +2381,13 @@ msgid ""
 msgstr ""
 
 msgid "Only the events to decide"
+msgstr ""
+
+msgid ""
+"Only the files below this folder (host path, as you mounted it); repeat "
+"it for several. The events stay whole: they are built from every file, "
+"and only the files below the folders get a proposal. With --year: the "
+"files of both."
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
@@ -3354,6 +3366,10 @@ msgid "The files of this event: its id or its name."
 msgstr ""
 
 msgid "The files the classify rule of this name decided."
+msgstr ""
+
+#, python-brace-format
+msgid "The folder {path} is not mounted."
 msgstr ""
 
 #, python-brace-format

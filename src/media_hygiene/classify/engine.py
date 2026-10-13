@@ -23,7 +23,7 @@ from media_hygiene.classify.rules.order import decide
 from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
-from media_hygiene.classify.years import in_years, year_folders
+from media_hygiene.classify.years import below, in_years, year_folders
 from media_hygiene.constants import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class Scope:
+class Scope:  # pylint: disable=too-many-instance-attributes  # one field per option
     """Where the files go, which ones never move, which years are proposed."""
 
     target: Path | None = None  # None: each mounted folder, in place
@@ -50,6 +50,7 @@ class Scope:
     host: Callable[[Path], str] = str  # container → host path, for `path` rules
     seen: Seen = field(default_factory=Seen)  # the model's answers, the people
     towns: Gazetteer | None = None  # read only when a `trip` rule is on
+    within: tuple[Path, ...] = ()  # `--path`: only the files below them get a proposal
 
 
 @dataclass(frozen=True, slots=True)
@@ -117,7 +118,7 @@ def classify(
         )
         for file in files
     ]
-    kept, undated = in_years(proposals, scope.years)
+    kept, undated = in_years(below(proposals, scope.within), scope.years)
     return Classification(kept, events, _unused(settings, kept), (scope.years, undated))
 
 

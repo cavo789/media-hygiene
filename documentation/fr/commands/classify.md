@@ -61,6 +61,7 @@ docker run --rm -it `
 
 | Option | Rôle |
 |---|---|
+| `--path DOSSIER` | Seulement les fichiers sous ce dossier (chemin de l'hôte, tel que monté), répétable : `--path "C:\Photos\2015"`. Les événements restent entiers : formés à partir de tous les fichiers, seuls ceux sous le dossier reçoivent une proposition. Avec `--year` : les deux. |
 | `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. Les fichiers datés seulement par le disque (copies, téléchargements) sont mis de côté et comptés : un classify sans `--year` les propose. Les règles écrites pour d'autres années sont comptées en une ligne, sans leurs noms. |
 | `--layout DISPOSITION` | Où vont les fichiers sûrs : `{year}/{month}`, `{year}/{category}`… Aussi `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target CHEMIN` | Dossier de l'hôte qui reçoit l'arborescence (il doit être monté) ; chaque dossier monté, sur place, par défaut. |
@@ -127,6 +128,12 @@ cavo789/media-hygiene --locale fr classify --sample 20
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year            <str>  Seulement les fichiers de cette année, ou de ces    │
 │                          années : 2016 ou 2015-2017.                         │
+│ --path            <str>  Seulement les fichiers sous ce dossier (chemin de   │
+│                          l'hôte, tel que vous l'avez monté) ; répétez-la     │
+│                          pour plusieurs. Les événements restent entiers :    │
+│                          ils sont formés à partir de tous les fichiers, et   │
+│                          seuls les fichiers sous ces dossiers reçoivent une  │
+│                          proposition. Avec --year : les fichiers des deux.   │
 │ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
 │                          '{year}/{month} - {month_name}'.                    │
 │ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │

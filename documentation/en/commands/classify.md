@@ -60,6 +60,7 @@ docker run --rm -it `
 
 | Option | What it does |
 |---|---|
+| `--path FOLDER` | Only the files below this folder (host path, as you mounted it), repeatable: `--path "C:\Photos\2015"`. Events stay whole: built from every file, only those below the folder get a proposal. With `--year`: both. |
 | `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. Files only the disk dates (copies, downloads) are left out and counted: a run without `--year` proposes them. The rules written for other years are counted in one line, not named. |
 | `--layout LAYOUT` | Where sure files go: `{year}/{month}`, `{year}/{category}`… Also `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target PATH` | Host folder receiving the tree (it must be mounted); each mounted folder, in place, by default. |
@@ -125,6 +126,11 @@ cavo789/media-hygiene classify --sample 20
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year            <str>  Only the files of this year, or of these years:     │
 │                          2016 or 2015-2017.                                  │
+│ --path            <str>  Only the files below this folder (host path, as you │
+│                          mounted it); repeat it for several. The events stay │
+│                          whole: they are built from every file, and only the │
+│                          files below the folders get a proposal. With        │
+│                          --year: the files of both.                          │
 │ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
 │                          {month_name}'.                                      │
 │ --target          <str>  Host folder receiving the tree; in place by         │

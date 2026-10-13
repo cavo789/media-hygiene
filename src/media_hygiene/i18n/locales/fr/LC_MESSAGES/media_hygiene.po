@@ -1843,6 +1843,13 @@ msgid "Ghent"
 msgstr "Gand"
 
 msgid ""
+"Give a folder below one of your -v, written as the audit shows it, e.g. "
+"--path \"C:\\Photos\\2015\"."
+msgstr ""
+"Donnez un dossier sous un de vos -v, écrit comme l'audit l'affiche, par "
+"exemple --path \"C:\\Photos\\2015\"."
+
+msgid ""
 "Give every photo words to find it by: its folders, name, date and place, "
 "and what a local vision model sees. Kept in the cache, never in the "
 "photos."
@@ -2888,6 +2895,18 @@ msgstr ""
 
 msgid "Only the events to decide"
 msgstr "Seulement les événements à décider"
+
+msgid ""
+"Only the files below this folder (host path, as you mounted it); repeat "
+"it for several. The events stay whole: they are built from every file, "
+"and only the files below the folders get a proposal. With --year: the "
+"files of both."
+msgstr ""
+"Seulement les fichiers sous ce dossier (chemin de l'hôte, tel que vous "
+"l'avez monté) ; répétez-la pour plusieurs. Les événements restent entiers"
+" : ils sont formés à partir de tous les fichiers, et seuls les fichiers "
+"sous ces dossiers reçoivent une proposition. Avec --year : les fichiers "
+"des deux."
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
@@ -4050,6 +4069,10 @@ msgstr "Les fichiers de cet événement : son identifiant ou son nom."
 
 msgid "The files the classify rule of this name decided."
 msgstr "Les fichiers que la règle de classify de ce nom a décidés."
+
+#, python-brace-format
+msgid "The folder {path} is not mounted."
+msgstr "Le dossier {path} n'est pas monté."
 
 #, python-brace-format
 msgid "The groups could not be read (error {status})."

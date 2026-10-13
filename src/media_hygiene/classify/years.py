@@ -1,4 +1,4 @@
-"""The year folder of each file, and the proposals a `--year` run keeps.
+"""The year folder of each file, and the proposals a `--year` or `--path` run keeps.
 
 One event or one meaningful folder, one year.
 """
@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.models import DateSource, SortReason
+from media_hygiene.paths.host_paths import is_within
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -77,3 +78,18 @@ def in_years(
         p for p in dated if p.dating and p.dating.source is not DateSource.MTIME
     )
     return kept, len(dated) - len(kept)
+
+
+def below(proposals: Sequence[Proposal], folders: tuple[Path, ...]) -> list[Proposal]:
+    """The proposals of the files below the `--path` folders.
+
+    Args:
+        proposals: Every proposal.
+        folders: The folders; empty: every file.
+
+    Returns:
+        Those in scope.
+    """
+    if not folders:
+        return list(proposals)
+    return [p for p in proposals if any(is_within(p.file.path, f) for f in folders)]
