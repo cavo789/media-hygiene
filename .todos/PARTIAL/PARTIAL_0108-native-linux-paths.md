@@ -30,3 +30,25 @@ checked on a native Linux Docker engine:
 ## Acceptance
 
 - The rule is in both languages; the check is recorded in the TODO or covered by a test.
+
+## Status — PARTIAL (2026-10-13)
+
+### Done
+- Found from the code: on a native engine, the 👉 command and `launcher` rebuilt the host side of
+  a data mount from mountinfo's root, which is relative to *its* file system: `/me/Pictures`
+  when `/home` is a partition of its own, `/` for a disk under `/media`. Fixed:
+  `paths/host_folders.bind_source` keeps the naming convention (`/data/home/me/Pictures` →
+  `/home/me/Pictures`) when the mount table's folder is only its end; a Windows folder, a named
+  volume, or a folder mounted off-convention (`-v ~/Pictures:/data/pictures`) is kept as found.
+  Tests: `tests/unit/test_next_command_linux.py` (root fs, `/home` partition, USB disk, free
+  mount point).
+- Docs en + fr: *From Linux* in `start/03-several-folders.md` (`$HOME/Pictures:/data$HOME/…`,
+  `/media/$USER/…`), the rule in `reference-mount-points.md`, `mh` "From WSL or Linux".
+
+### Not done
+- The check on a native Linux Docker engine (`audit` of `$HOME/x` and of a second file system,
+  then the 👉 command and `launcher --shell bash`).
+  **Reason:** the devcontainer's engine is Docker Desktop (WSL2); needs a Linux machine.
+  Known limit: a disk mounted *below* its root and off-convention
+  (`-v /media/me/Disk/Photos:/data/media/me/Disk`) still shows `/Photos`: the mount table
+  cannot tell where the disk is mounted on the host.

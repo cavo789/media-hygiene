@@ -111,7 +111,26 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
   cavo789/media-hygiene audit
 ```
 
-The rest of this guide shows PowerShell commands; the WSL version follows the same pattern.
+## From Linux
+
+On a Linux desktop, the rule is the same: `/data` followed by the **full path** of the folder.
+Your pictures in `~/Pictures` and a USB disk under `/media`:
+
+```bash
+docker run --rm -it --user "$(id -u):$(id -g)" \
+  -v "$HOME/Pictures:/data$HOME/Pictures:ro" \
+  -v "/media/$USER/Disk/Photos:/data/media/$USER/Disk/Photos:ro" \
+  -v media-hygiene-cache:/cache \
+  cavo789/media-hygiene audit
+```
+
+The tool then shows `/home/<you>/Pictures/…` and `/media/<you>/Disk/…`, the paths you know, and
+the commands it suggests (👉 *What next*, the `mh` launcher) type the same `-v` again, even when
+`/home` or the disk is a partition of its own. Mounted elsewhere (`-v "$HOME/Pictures:/data/pictures"`),
+the analysis is the same, but the paths shown are no longer yours.
+
+The rest of this guide shows PowerShell commands; the WSL and Linux versions follow the same
+pattern.
 
 ## Write your folders once: `mh`
 
@@ -144,7 +163,7 @@ folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `alb
 - **Another folder?** Run the `launcher` command again with one more `-v`.
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- **From WSL**: add `--shell bash` and save to `~/media-hygiene/mh.sh`, then
+- **From WSL or Linux**: add `--shell bash` and save to `~/media-hygiene/mh.sh`, then
   `source ~/media-hygiene/mh.sh` (in `~/.bashrc` for every terminal).
 
 ---
