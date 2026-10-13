@@ -1036,7 +1036,9 @@ msgid ""
 "local vision model sees, categories = [...], see [classify.ai]), place "
 "(the GPS position lies in one of your places, see [[classify.places]]), "
 "trip (an event far from home, named after its country and town without "
-"going online), other_category (the files no rule above matched)."
+"going online), folder_town (a folder named after a town, 2017/Durbuy: its"
+" photos go to country/town, to check), other_category (the files no rule "
+"above matched)."
 msgstr ""
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
@@ -1455,6 +1457,9 @@ msgstr ""
 msgid ""
 "Gather a selection of the classify plan into a folder of hard links: "
 "nothing is copied nor moved (journaled, undoable)."
+msgstr ""
+
+msgid "Ghent"
 msgstr ""
 
 msgid ""
@@ -3694,6 +3699,14 @@ msgstr ""
 msgid "Total length of the videos"
 msgstr ""
 
+msgid "Towns of the folders"
+msgstr ""
+
+msgid ""
+"Towns, for a 'folder_town' rule: a folder named exactly after a town of "
+"at least this many inhabitants (GeoNames) names the place of its photos."
+msgstr ""
+
 msgid "Trips"
 msgstr ""
 
@@ -3966,6 +3979,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your names for the towns: the towns are named after GeoNames, in English "
+"or in their own language (Brussels, Brugge, Gent). Write the exact "
+"GeoNames name, then yours: trips, {city}, the places page and the "
+"folder_town rule use yours; a folder named either way matches."
 msgstr ""
 
 msgid ""

@@ -163,13 +163,15 @@ Comme une règle de dates, une règle GPS suit les **événements**
 - un voyage est nommé d'après la **plus grande ville** à moins de 10 km de son jour principal :
   un hôtel dans une banlieue de Turin donne `Turin`. Les noms de pays sont écrits dans la langue
   de l'interface (`Italie` en français) ; les noms de villes sont ceux de GeoNames (souvent leur
-  nom anglais, comme `Munich`).
+  nom anglais, comme `Munich`, parfois le leur, comme `Brugge`) :
+  [vos noms pour les villes](#vos-noms-pour-les-villes) les changent.
 
 | `[classify]` | Défaut | Sens |
 |---|---|---|
 | `trip_min_km` | 100 | Plus loin de la maison que cela, un événement est un voyage. |
 | `trip_merge_gap_hours` | 48 | Des événements d'un voyage à moins de cet écart ne font qu'un voyage. |
 | `trip_merge_max_km` | 120 | …et à moins de cette distance l'un de l'autre. |
+| `folder_town_min_population` | 5000 | La plus petite ville dont un dossier peut porter le nom. |
 
 Une règle `trip` a besoin d'un lieu avec `home = true` : sans lui, le fichier est refusé à la
 lecture, avec le nom de la règle.
@@ -177,6 +179,53 @@ lecture, avec le nom de la règle.
 Les modèles et les catégories peuvent aussi utiliser `{place}` (le lieu personnel du fichier)
 et `{country}`, `{region}`, `{city}` (ceux de son voyage) ; ils sont vides pour les autres
 fichiers, et un niveau de dossier vide est omis.
+
+## Les villes nommées par vos dossiers
+
+La plupart des photos n'ont pas de position, mais leurs dossiers disent souvent où elles ont été
+prises : `2017\Durbuy`, `Vacances\Spa`. Une troisième règle les lit :
+
+```toml
+[[classify.rules]]
+name = "Villes des dossiers"
+match = "folder_town"
+```
+
+- Un dossier n'est reconnu que si son **nom entier** est celui d'une ville (sans tenir compte
+  des majuscules ni des accents) : `Durbuy` l'est, `Durbuy 2017` et `Week-end à Durbuy` non. Le
+  dossier le plus proche au-dessus d'une photo compte.
+- Seules les villes d'au moins `folder_town_min_population` habitants (5 000) comptent : un
+  village de 3 000 habitants n'est pas cherché. Les noms de mois et de saisons ne sont jamais des
+  villes (`Mai` est le mois, pas Mai au Kenya).
+- Entre des villes de même nom, celles des pays de vos photos situées et de la maison passent
+  d'abord, puis la plus grande : `Bruges` est la belge quand vous habitez en Belgique.
+- Quand les photos situées du dossier sont à plus de `trip_merge_max_km` (120 km) de la ville,
+  le dossier n'est pas nommé d'après elle : un dossier `Nice` de photos prises en Ardenne reste
+  à l'écart.
+- Ses photos vont dans `{country}/{city}` (`2017/Belgique/Durbuy`), sauf si vous écrivez une
+  autre `category`. Son score est bas (60) : les propositions sont **à vérifier**, et toute autre
+  règle passe avant.
+
+Un nom de dossier est un indice faible : un prénom (`Martin`, `Victoria`) est aussi une ville
+quelque part. Relisez les dossiers « À vérifier » avant de trier, ou donnez `score = 0` à la
+règle pour l'éteindre.
+
+## Vos noms pour les villes
+
+GeoNames nomme une ville en anglais (`Brussels`, `Antwerp`) ou dans sa propre langue (`Brugge`,
+`Gent`). Pour lire vos noms dans les catégories, écrivez-les dans `config.toml`, le nom GeoNames
+exact d'abord :
+
+```toml
+[classify.town_names]
+"Brussels" = "Bruxelles"
+"Brugge" = "Bruges"
+"Gent" = "Gand"
+```
+
+Les voyages, `{city}`, la recherche de ville de la page `places` et la règle `folder_town`
+utilisent vos noms ; un dossier nommé de l'une ou l'autre façon est reconnu (`Brugge` ou
+`Bruges`). Un nom qui n'est pas une ville de GeoNames ne fait rien.
 
 ## Une autre carte
 

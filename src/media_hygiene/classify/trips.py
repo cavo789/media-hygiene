@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.folder_towns import folder_town_spots
 from media_hygiene.classify.layout import GeoValues
 from media_hygiene.classify.models import DateSource
 from media_hygiene.classify.trip_walk import Group, TripWalk
@@ -55,19 +56,21 @@ def find_whereabouts(
     Args:
         files: The files.
         known: The events and the date of each file.
-        config: `[classify]`, and the GeoNames towns when a trip rule is on.
+        config: `[classify]`, and the GeoNames towns when a town rule is on.
 
     Returns:
-        The files at a personal place and those on a trip.
+        The files at a personal place, on a trip, in a folder named after a town.
     """
     settings, towns = config
     events, datings = known
     points = {file.path: point for file in files if (point := point_of(file))}
+    named = folder_town_spots(files, points, config)
     if not points:
-        return Whereabouts()
+        return Whereabouts(folder_towns=named)
     return Whereabouts(
         place_spots(points, events, settings.places),
         trip_spots(TripFacts(points, events, datings), settings, towns),
+        named,
     )
 
 

@@ -140,9 +140,11 @@ class TagStep:
         Returns:
             How many tags were written.
         """
-        context = tag_context(self._runtime.settings, self._rules)
+        settings = self._runtime.settings
+        context = tag_context(settings, self._rules)
         if any(located_point(file.metadata) for file in work.files):
-            context = replace(context, towns=Gazetteer.load())
+            towns = Gazetteer.load().renamed(settings.classify.town_names)
+            context = replace(context, towns=towns)
         rows = [
             FileTags(version_of(file), cheap_tags(file, context)) for file in work.files
         ]

@@ -153,13 +153,16 @@ Like a date rule, a GPS rule follows the **events** ([step 4](04-classify.md#rea
   two days of a trip joins it; a day back home ends it;
 - a trip is named after the **largest town** within 10 km of its main day: a hotel in a suburb
   of Turin gives `Turin`. Country names are written in the language of the interface
-  (`Italie` in French); town names are GeoNames' (often their English name, such as `Munich`).
+  (`Italie` in French); town names are GeoNames' (often their English name, such as `Munich`,
+  sometimes their own, such as `Brugge`): [your names for the towns](#your-names-for-the-towns)
+  change them.
 
 | `[classify]` | Default | Meaning |
 |---|---|---|
 | `trip_min_km` | 100 | Farther from home than this, an event is a trip. |
 | `trip_merge_gap_hours` | 48 | Events of a trip less than this apart are one trip. |
 | `trip_merge_max_km` | 120 | …and less than this from each other. |
+| `folder_town_min_population` | 5000 | The smallest town a folder may be named after. |
 
 A `trip` rule needs a place with `home = true`: without one, the file is refused when it is
 read, with the rule's name.
@@ -167,6 +170,49 @@ read, with the rule's name.
 Layouts and categories may also use `{place}` (the personal place of the file) and `{country}`,
 `{region}`, `{city}` (those of its trip); they are empty for the other files, and an empty
 folder level is left out.
+
+## Towns named by your folders
+
+Most photos have no position, but their folders often say where they were taken:
+`2017\Durbuy`, `Holidays\Spa`. A third rule reads them:
+
+```toml
+[[classify.rules]]
+name = "Towns of the folders"
+match = "folder_town"
+```
+
+- A folder matches only when its **whole name** is a town's (case and accents aside):
+  `Durbuy` does, `Durbuy 2017` and `Weekend in Durbuy` do not. The nearest such folder above a
+  photo counts.
+- Only towns of `folder_town_min_population` inhabitants (5,000) count: a village of 3,000
+  is not looked for. Month and season names are never towns (`Mai` is May, not Mai in Kenya).
+- Among towns of the same name, those of the countries of your located photos and of home win,
+  then the largest: `Bruges` is the Belgian one when you live in Belgium.
+- When the located photos of the folder lie farther than `trip_merge_max_km` (120 km) from
+  the town, the folder is not named after it: a `Nice` folder of photos taken in the Ardennes
+  stays out.
+- Its photos go to `{country}/{city}` (`2017/Belgium/Durbuy`), unless you write another
+  `category`. Its score is low (60): the proposals are **to check**, and any other rule wins.
+
+A folder name is a weak clue: a first name (`Martin`, `Victoria`) is also a town somewhere. Read
+the "to check" folders before sorting, or give the rule a `score = 0` to turn it off.
+
+## Your names for the towns
+
+GeoNames names a town in English (`Brussels`, `Antwerp`) or in its own language (`Brugge`,
+`Gent`). To read your names in the categories, write them in `config.toml`, the exact GeoNames
+name first:
+
+```toml
+[classify.town_names]
+"Brugge" = "Bruges"
+"Gent" = "Ghent"
+```
+
+Trips, `{city}`, the town search of the `places` page and the `folder_town` rule use your
+names; a folder named either way matches (`Brugge` or `Bruges`). A name that is no GeoNames
+town does nothing.
 
 ## Another map
 

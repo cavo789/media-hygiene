@@ -8,7 +8,6 @@ No position ever leaves the machine.
 from __future__ import annotations
 
 import lzma
-import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
@@ -18,6 +17,7 @@ import numpy as np
 from media_hygiene.constants import Locale
 from media_hygiene.errors import GeoDataError
 from media_hygiene.geo.distance import Point
+from media_hygiene.geo.folding import fold
 from media_hygiene.geo.nearest import NearestIndex
 from media_hygiene.geo.towns_file import TownRows, read_table, read_towns
 from media_hygiene.i18n import _, active_locale
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
 
+type Names = Mapping[str, str]  # GeoNames name → the user's name
 GEO_DATA: Final = Path(__file__).parent / "data"
 TOWNS_FILE: Final = "towns.tsv.xz"
 COUNTRIES_FILE: Final = "countries.tsv"
@@ -50,18 +51,19 @@ class Gazetteer:
         self,
         rows: TownRows,
         index: NearestIndex,
-        names: tuple[Mapping[str, Mapping[Locale, str]], Mapping[str, str]],
+        names: tuple[Mapping[str, Mapping[Locale, str]], Mapping[str, str], Names],
     ) -> None:
-        """Keep the towns, their index, and the names of countries and regions.
+        """Keep the towns, their index, the names of countries, regions and towns.
 
         Args:
             rows: The towns.
             index: Their positions.
-            names: Country names by code and language; region names by code.
+            names: Country names by code and language; region names by code; the
+                user's names of some towns, by GeoNames name.
         """
         self._rows = rows
         self._index = index
-        self._countries, self._regions = names
+        self._countries, self._regions, self._renames = names
         self._folded: tuple[str, ...] = ()  # the names, folded on the first search
 
     @classmethod
@@ -88,7 +90,19 @@ class Gazetteer:
             message = _("The towns used to name places cannot be read: {error}.")
             raise GeoDataError(message.format(error=exc)) from exc
         index = NearestIndex(rows.latitudes, rows.longitudes)
-        return cls(rows, index, (countries, regions))
+        return cls(rows, index, (countries, regions, {}))
+
+    def renamed(self, renames: Mapping[str, str]) -> Gazetteer:
+        """The same towns, some named the user's way (`Brugge` → `Bruges`).
+
+        Args:
+            renames: `[classify.town_names]`: the exact GeoNames name → the user's.
+
+        Returns:
+            A gazetteer that names, and finds, the towns by the user's names.
+        """
+        names = (self._countries, self._regions, dict(renames))
+        return Gazetteer(self._rows, self._index, names)
 
     def nearest(self, point: Point) -> Town | None:
         """The town nearest to a position.
@@ -137,7 +151,7 @@ class Gazetteer:
         if not wanted:
             return ()
         if not self._folded:
-            self._folded = tuple(fold(name) for name in self._rows.names)
+            self._folded = tuple(fold(name) for name in self.names)
         found = [i for i, name in enumerate(self._folded) if name.startswith(wanted)]
         population = self._rows.population_k
         found.sort(key=lambda index: -int(population[index]))
@@ -156,7 +170,7 @@ class Gazetteer:
         code = rows.countries[index]
         country = self._countries.get(code, {}).get(active_locale()) or code
         return Town(
-            rows.names[index],
+            self._renames.get(rows.names[index], rows.names[index]),
             Point(float(rows.latitudes[index]), float(rows.longitudes[index])),
             country,
             self._regions.get(rows.regions[index], ""),
@@ -164,23 +178,21 @@ class Gazetteer:
         )
 
     @property
-    def names(self) -> tuple[str, ...]:
-        """The name of every town, by row.
+    def geonames(self) -> tuple[str, ...]:
+        """The GeoNames name of every town, by row, before the user's names.
 
         Returns:
             Them.
         """
         return self._rows.names
 
+    @property
+    def names(self) -> tuple[str, ...]:
+        """The name of every town, by row, the user's names applied.
 
-def fold(text: str) -> str:
-    """A text without case nor accents, to compare names.
-
-    Args:
-        text: A name.
-
-    Returns:
-        It, folded: `Liège` → `liege`.
-    """
-    decomposed = unicodedata.normalize("NFKD", text.strip().casefold())
-    return "".join(char for char in decomposed if not unicodedata.combining(char))
+        Returns:
+            Them.
+        """
+        if not self._renames:
+            return self._rows.names
+        return tuple(self._renames.get(name, name) for name in self._rows.names)
