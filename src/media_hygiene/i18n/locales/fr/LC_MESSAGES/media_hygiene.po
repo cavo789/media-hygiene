@@ -277,8 +277,8 @@ msgstr "/fr/"
 #, python-brace-format
 msgid "; {groups} group without a subject → your other rules, else {band}."
 msgid_plural "; {groups} groups without a subject → your other rules, else {band}."
-msgstr[0] "; {groups} groupe sans sujet → vos autres règles, sinon {band}."
-msgstr[1] "; {groups} groupes sans sujet → vos autres règles, sinon {band}."
+msgstr[0] " ; {groups} groupe sans sujet → vos autres règles, sinon {band}."
+msgstr[1] " ; {groups} groupes sans sujet → vos autres règles, sinon {band}."
 
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
@@ -6697,6 +6697,20 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} règles n'ont rien décidé en {years} : normal pour celles écrites "
 "pour d'autres années."
+
+#, python-brace-format
+msgid ""
+"{count} sample not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgid_plural ""
+"{count} samples not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgstr[0] ""
+"{count} échantillon pas encore décrit (--no-describe) : seuls ceux déjà "
+"décrits répondent, en quelques secondes."
+msgstr[1] ""
+"{count} échantillons pas encore décrits (--no-describe) : seuls ceux déjà"
+" décrits répondent, en quelques secondes."
 
 #, python-brace-format
 msgid "{count} series reviewed earlier changed since: reviewed again."

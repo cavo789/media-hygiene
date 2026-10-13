@@ -5598,6 +5598,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} sample not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgid_plural ""
+"{count} samples not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} series reviewed earlier changed since: reviewed again."
 msgid_plural "{count} series reviewed earlier changed since: reviewed again."
 msgstr[0] ""

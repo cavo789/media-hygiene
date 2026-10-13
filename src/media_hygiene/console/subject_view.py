@@ -21,13 +21,12 @@ if TYPE_CHECKING:
     from media_hygiene.services.subject_plan import SubjectPlan
 
 
-def show_plan(output: Output, plan: SubjectPlan, model: str) -> None:
-    """Say how many groups the model answers for, by how many photos, and the work.
+def show_plan(output: Output, plan: SubjectPlan) -> None:
+    """Say how many groups the model answers for, and by how many photos.
 
     Args:
         output: Where to print.
         plan: The plan.
-        model: The vision model.
     """
     groups = ngettext(
         "{units} group of photos (an event or a lone photo) no rule of yours took:",
@@ -45,6 +44,16 @@ def show_plan(output: Output, plan: SubjectPlan, model: str) -> None:
             samples=samples
         )
     output.info(f"{groups} {looked}")
+
+
+def show_work(output: Output, plan: SubjectPlan, model: str) -> None:
+    """Say how many samples the model will describe, and how long it should take.
+
+    Args:
+        output: Where to print.
+        plan: The plan.
+        model: The vision model.
+    """
     if not plan.missing:
         return
     work = {
@@ -61,6 +70,26 @@ def show_plan(output: Output, plan: SubjectPlan, model: str) -> None:
     else:
         line = _("{count} to describe with {model}, about {duration}.")
     output.info(line.format(**work))
+
+
+def show_not_described(output: Output, plan: SubjectPlan) -> None:
+    """`--no-describe`: say what stays undescribed, and that it costs nothing.
+
+    Args:
+        output: Where to print.
+        plan: The plan.
+    """
+    if not plan.missing:
+        return
+    output.info(
+        ngettext(
+            "{count} sample not described yet (--no-describe): only those already "
+            "described answer, in a few seconds.",
+            "{count} samples not described yet (--no-describe): only those already "
+            "described answer, in a few seconds.",
+            len(plan.missing),
+        ).format(count=human_number(len(plan.missing)))
+    )
 
 
 def show_answered(output: Output, answered: Answered) -> None:
