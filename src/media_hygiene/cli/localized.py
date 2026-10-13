@@ -3,16 +3,20 @@
 Typer vendors Click without its gettext calls: "Usage:" and the help of `--help` are
 English literals. Click's public hooks (`format_usage`, `get_help_option`), reached
 through Typer's `cls=`, translate them; nothing of Typer is patched. The root group
-also turns Ctrl+C into one calm line instead of Typer's own abort.
+also turns Ctrl+C into one calm line instead of Typer's own abort, and an unexpected
+error into a few lines without a traceback.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, override
 
+import typer
 from typer.core import TyperCommand, TyperGroup
+from typer.exceptions import TyperException
 
 from media_hygiene.cli.interrupted import stop_on_interrupt
+from media_hygiene.cli.unexpected import debugging, stop_on_error
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -77,18 +81,29 @@ class LocalizedGroup(TyperGroup):
 
     @override
     def invoke(self, ctx: Context) -> Any:
-        """Run the command; Ctrl+C ends it with one line, never a traceback.
+        """Run the command; Ctrl+C or a bug ends it calmly, never with a traceback.
+
+        Typer's own exits and usage errors go through untouched.
 
         Args:
             ctx: Context of the group.
 
         Returns:
             What the command returned.
+
+        Raises:
+            Exception: An unexpected error, when `MEDIA_HYGIENE_DEBUG` is set.
         """
         try:
             return super().invoke(ctx)
         except KeyboardInterrupt:
             stop_on_interrupt(ctx)
+        except typer.Exit, typer.Abort, TyperException:
+            raise
+        except Exception as error:  # pylint: disable=broad-exception-caught  # any bug
+            if debugging():
+                raise
+            stop_on_error(ctx, error)
 
     @override
     def format_usage(self, ctx: Context, formatter: HelpFormatter) -> None:

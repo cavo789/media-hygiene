@@ -107,3 +107,14 @@ PowerShell 7 et le Bloc-notes l'affichent correctement tel quel. L'outil relit a
 fichiers réécrits par les outils Windows : « UTF-8 avec BOM » du Bloc-notes,
 `Set-Content -Encoding UTF8`, ou l'UTF-16 de `>` et `Out-File`. Il en va de même pour
 `config.toml`.
+
+## « Erreur inattendue pendant … »
+
+Un bogue de l'outil, pas une erreur de votre part. Le message dit ce qui a échoué et si vos
+photos ont été touchées : une commande en lecture seule n'y touche jamais ; après `clean` ou
+`sort`, ce qui a déjà été fait est dans le journal, et `undo` le remet en place.
+
+Merci d'[ouvrir un ticket](https://github.com/cavo789/media-hygiene/issues) avec la version, la
+commande tapée et le message : la dernière ligne 💡 contient les trois. Pour plus de détails,
+relancez la même commande avec `-e MEDIA_HYGIENE_DEBUG=1` après `docker run` : elle montre alors
+où l'erreur s'est produite (la trace Python), à coller aussi dans le ticket.

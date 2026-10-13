@@ -102,3 +102,14 @@ Get-Content -Encoding UTF8 .\decisions.json
 PowerShell 7 and Notepad show it right as is. The tool also reads back the files Windows tools
 rewrite: "UTF-8 with BOM" from Notepad, `Set-Content -Encoding UTF8`, or the UTF-16 of `>` and
 `Out-File`. The same goes for `config.toml`.
+
+## "Unexpected error during …"
+
+A bug of the tool, not something you did wrong. The message says what failed and whether your
+photos were touched: a read-only command never touches them; after `clean` or `sort`, what was
+already done is in the journal, and `undo` puts it back.
+
+Please [open an issue](https://github.com/cavo789/media-hygiene/issues) with the version, the
+command you typed and the message: the last 💡 line holds all three. For more details, run the
+same command again with `-e MEDIA_HYGIENE_DEBUG=1` after `docker run`: it then shows where the
+error happened (the Python traceback), to paste in the issue too.

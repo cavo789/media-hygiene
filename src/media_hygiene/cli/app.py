@@ -61,6 +61,7 @@ def build_app() -> typer.Typer:
         rich_markup_mode="rich",
         no_args_is_help=True,
         add_completion=False,
+        pretty_exceptions_enable=False,  # an unexpected error: see `cli/unexpected.py`
         context_settings={"help_option_names": ["-h", "--help"]},
     )
     app.callback()(root_callback)

@@ -3007,6 +3007,14 @@ msgstr "Lieu (balise vidéo)"
 
 #, python-brace-format
 msgid ""
+"Please report it at {url}, with the version ({version}), the command "
+"typed ({typed}) and this message. -e {variable}=1 shows the details."
+msgstr ""
+"Merci de le signaler sur {url}, avec la version ({version}), la commande "
+"tapée ({typed}) et ce message. -e {variable}=1 montre les détails."
+
+#, python-brace-format
+msgid ""
 "Port of the page. docker run publishes it under the same number on your "
 "computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
@@ -3765,9 +3773,6 @@ msgstr "Guide pas à pas et toutes les commandes : {url}"
 
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
-
-msgid "Stopped (Ctrl+C). Your photos and videos were not touched."
-msgstr "Arrêté (Ctrl+C). Vos photos et vidéos n'ont pas été touchées."
 
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
@@ -4567,6 +4572,10 @@ msgstr[0] "Annuler ce passage et remettre {moved} fichiers en place ?"
 msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 
 #, python-brace-format
+msgid "Unexpected error during {command}: {kind}: {message}"
+msgstr "Erreur inattendue pendant {command} : {kind} : {message}"
+
+#, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
 
@@ -4619,6 +4628,9 @@ msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
 
 msgid "What next:"
 msgstr "Et maintenant :"
+
+msgid "What was already done is in the journal: 'undo' puts it back."
+msgstr "Ce qui a déjà été fait est dans le journal : 'undo' le remet en place."
 
 msgid "What you can do"
 msgstr "Ce que vous pouvez faire"
@@ -4878,6 +4890,9 @@ msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
+
+msgid "Your photos and videos were not touched."
+msgstr "Vos photos et vidéos n'ont pas été touchées."
 
 msgid "Your places"
 msgstr "Vos lieux"

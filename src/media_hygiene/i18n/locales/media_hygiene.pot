@@ -2473,6 +2473,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Please report it at {url}, with the version ({version}), the command "
+"typed ({typed}) and this message. -e {variable}=1 shows the details."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Port of the page. docker run publishes it under the same number on your "
 "computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
@@ -3111,9 +3117,6 @@ msgid "Step-by-step guide and every command: {url}"
 msgstr ""
 
 msgid "Stopped (Ctrl+C)."
-msgstr ""
-
-msgid "Stopped (Ctrl+C). Your photos and videos were not touched."
 msgstr ""
 
 msgid "Stopped before the end, as asked."
@@ -3758,6 +3761,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Unexpected error during {command}: {kind}: {message}"
+msgstr ""
+
+#, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr ""
 
@@ -3803,6 +3810,9 @@ msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr ""
 
 msgid "What next:"
+msgstr ""
+
+msgid "What was already done is in the journal: 'undo' puts it back."
 msgstr ""
 
 msgid "What you can do"
@@ -4009,6 +4019,9 @@ msgid ""
 msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
+msgstr ""
+
+msgid "Your photos and videos were not touched."
 msgstr ""
 
 msgid "Your places"
