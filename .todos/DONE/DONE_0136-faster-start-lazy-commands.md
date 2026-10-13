@@ -75,3 +75,9 @@ themselves. Every command pays it: `status`, `history` and `--help` included.
 ### Not done
 - The measure in the image (`docker run --rm media-hygiene:latest --version`, target under
   0.7 s). **Reason:** it needs an image build, kept for the maintainer (low machine load).
+
+### Measured in the image (2026-10-14, with 0139)
+- Image built once in the devcontainer's Docker, `--cpus 2`, best of 5 inside the container:
+  `media-hygiene --version` **0.85 s → 0.20 s**, `status --help` 0.89 s → 0.20 s (0136 and 0139
+  together; the image before was the one built 6 hours earlier). The "Not done" item above is
+  therefore done; the maintainer's Docker Desktop figure is still welcome.
