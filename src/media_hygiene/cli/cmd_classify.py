@@ -173,4 +173,4 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         with RichProgress(runtime.output.console) as progress:
             result = ClassifyService(runtime, progress).decide(inputs, subjects)
     show_classification(runtime.output, result)
-    write_output(runtime, result, source)
+    write_output(runtime, replace(result, narrowed=bool(years or within)), source)

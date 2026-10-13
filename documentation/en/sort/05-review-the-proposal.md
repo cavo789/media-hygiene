@@ -135,6 +135,11 @@ C:\Photos triées\reports\20261002-123210-classify\classify.xlsx
   to type again where it belongs.
 - Edits a `sort` already applied are not carried: those files are in their place, and `classify`
   sees them there.
+- **A run with `--year` or `--path` keeps the other edits for later**: the files it leaves out
+  get no row, so their edits (other years, other folders, files dated only by the disk) are
+  neither carried into its workbook nor listed as lost. `classify` says how many it keeps; the
+  next run that covers those files carries them, unless you typed something else for them in a
+  newer workbook, which wins.
 
 `--carry-over <workbook>` carries the edits of another workbook (a copy you kept, an older run);
 `--no-carry-over` starts fresh. A workbook `sort` refuses (a column deleted, a sheet renamed) is

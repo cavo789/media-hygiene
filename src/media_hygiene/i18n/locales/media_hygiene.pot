@@ -26,6 +26,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid ""
+"%(num)s edit of files this run left out (--year, --path) kept for a later"
+" run."
+msgid_plural ""
+"%(num)s edits of files this run left out (--year, --path) kept for a "
+"later run."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
 msgstr[0] ""
@@ -4627,6 +4637,11 @@ msgstr ""
 msgid "kept (your decision)"
 msgstr ""
 
+msgid ""
+"kept by a run with --year or --path, then edited otherwise in the "
+"workbook, whose value was carried over"
+msgstr ""
+
 msgid "kept if you move on"
 msgstr ""
 
@@ -5344,6 +5359,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} edit found no place in the new proposal:"
 msgid_plural "{count} edits found no place in the new proposal:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} edit of files this run left out (--year, --path) kept for a later"
+" run."
+msgid_plural ""
+"{count} edits of files this run left out (--year, --path) kept for a "
+"later run."
 msgstr[0] ""
 msgstr[1] ""
 
