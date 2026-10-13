@@ -177,11 +177,7 @@ Pourquoi
 ┌────────────────────┬────┐
 │ Avec Chloé         │ 25 │
 │ Dossiers existants │ 18 │
-│ undated            │  1 │
-│   Personnes/Chloé  │ 25 │
-│   Randonnée        │ 10 │
-│   Lac              │  5 │
-│   Téléphone        │  3 │
+│ Sans date          │  1 │
 └────────────────────┴────┘
 ```
 

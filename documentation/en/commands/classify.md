@@ -60,7 +60,7 @@ docker run --rm -it `
 
 | Option | What it does |
 |---|---|
-| `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. |
+| `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. Files only the disk dates (copies, downloads) are left out and counted: a run without `--year` proposes them. The rules written for other years are counted in one line, not named. |
 | `--layout LAYOUT` | Where sure files go: `{year}/{month}`, `{year}/{category}`… Also `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target PATH` | Host folder receiving the tree (it must be mounted); each mounted folder, in place, by default. |
 | `--leave PATH` | Host folder never sorted, still analysed and cleaned. |

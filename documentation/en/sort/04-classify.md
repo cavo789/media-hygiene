@@ -48,21 +48,25 @@ Proposal
 └─────────┴───────┴─────────┘
 
 Why
-┌────────────────────┬────┐
-│ Existing folders   │ 76 │
-│ no-signal          │  3 │
-│ undated            │  3 │
-│   Seaside holidays │ 13 │
-│   Photos 2019      │ 12 │
-│   Mountain hike    │ 10 │
-│   Birthday         │  8 │
-│   Old phone        │  8 │
-│   Christmas        │  6 │
-│   Lake             │  6 │
-│   Phone            │  6 │
-│   Christmas 2020   │  4 │
-│   WhatsApp         │  3 │
-└────────────────────┴────┘
+┌──────────────────┬────┐
+│ Existing folders │ 76 │
+│ No signal        │  3 │
+│ Undated          │  3 │
+└──────────────────┴────┘
+
+Largest categories
+┌──────────────────┬────┐
+│ Seaside holidays │ 13 │
+│ Photos 2019      │ 12 │
+│ Mountain hike    │ 10 │
+│ Birthday         │  8 │
+│ Old phone        │  8 │
+│ Christmas        │  6 │
+│ Lake             │  6 │
+│ Phone            │  6 │
+│ Christmas 2020   │  4 │
+│ WhatsApp         │  3 │
+└──────────────────┴────┘
 
 ⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
 Event neighbours, Christmas, New Year.
@@ -126,7 +130,9 @@ and every value there is an example to replace:
 - `--layout "{year}/{month}"`: sort by month, with no category at all.
 - `--target 'D:\Photos sorted'`: build the tree elsewhere (the folder must be mounted); by
   default each mounted folder is reorganised in place.
-- `--year 2016`, or `--year 2015-2017`: one year at a time, one evening at a time.
+- `--year 2016`, or `--year 2015-2017`: one year at a time, one evening at a time. The files
+  only the disk dates wait for a run without `--year`: they go to `To sort/Undated` whatever
+  their year.
 - `--leave 'C:\Photos\Albums'`: a folder never sorted, still analysed and cleaned.
 
 Layouts accept `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{category}`,

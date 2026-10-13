@@ -167,11 +167,7 @@ Why
 ┌──────────────────┬────┐
 │ With Chloé       │ 25 │
 │ Existing folders │ 18 │
-│ undated          │  1 │
-│   People/Chloé   │ 25 │
-│   Mountain hike  │ 10 │
-│   Lake           │  5 │
-│   Phone          │  3 │
+│ Undated          │  1 │
 └──────────────────┴────┘
 ```
 

@@ -995,6 +995,12 @@ msgstr "Date"
 msgid "Date from"
 msgstr "Date tirée de"
 
+msgid "Date only"
+msgstr "Date seule"
+
+msgid "Date range"
+msgstr "Période"
+
 msgid "Date taken"
 msgstr "Date de prise de vue"
 
@@ -1003,6 +1009,9 @@ msgstr "Dates"
 
 msgid "Dates from"
 msgstr "Dates tirées de"
+
+msgid "Days of every year"
+msgstr "Jours de chaque année"
 
 msgid "December"
 msgstr "décembre"
@@ -1282,6 +1291,9 @@ msgstr ""
 "pays/ville, à vérifier), other_category (les fichiers qu'aucune règle au-"
 "dessus n'a reconnus)."
 
+msgid "Edit carried over from the workbook"
+msgstr "Modification reprise du classeur"
+
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
 msgstr ""
 "Ne modifiez que les cellules jaunes, puis enregistrez ; rien ne bouge "
@@ -1341,8 +1353,17 @@ msgstr ""
 msgid "Event"
 msgstr "Événement"
 
+msgid "Event at a personal place"
+msgstr "Événement à un lieu personnel"
+
 msgid "Event neighbours"
 msgstr "Voisins d'événement"
+
+msgid "Event of a named folder"
+msgstr "Événement d'un dossier nommé"
+
+msgid "Event of a trip"
+msgstr "Événement d'un voyage"
 
 #, python-brace-format
 msgid "Event {name} ({id})"
@@ -1477,6 +1498,9 @@ msgstr ""
 
 msgid "Example:"
 msgstr "Exemple :"
+
+msgid "Existing folder"
+msgstr "Dossier existant"
 
 msgid "Existing folders"
 msgstr "Dossiers existants"
@@ -1717,6 +1741,9 @@ msgid "Folder never modified; its files are the copies kept. Repeatable."
 msgstr ""
 "Dossier jamais modifié ; ses fichiers sont les copies conservées. "
 "Répétable."
+
+msgid "Folder of a person"
+msgstr "Dossier d'une personne"
 
 msgid "Folder on your computer"
 msgstr "Dossier sur votre ordinateur"
@@ -2082,6 +2109,9 @@ msgstr "Clavier"
 msgid "Kind"
 msgstr "Type"
 
+msgid "Kind of file"
+msgstr "Genre de fichier"
+
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
 "value and export again, nothing is scanned. A photo is blurry below "
@@ -2105,6 +2135,9 @@ msgid ""
 msgstr ""
 "Zones plus grandes non listées (régions, pays) : {count}. Une règle "
 "'trip' les nomme."
+
+msgid "Largest categories"
+msgstr "Catégories les plus remplies"
 
 msgid "Last audit"
 msgstr "Dernier audit"
@@ -2132,6 +2165,9 @@ msgstr "Lanceur écrit. Chargez-le avec : {load}, puis tapez : mh audit"
 
 msgid "Leave alone"
 msgstr "Ne pas toucher"
+
+msgid "Left as it is"
+msgstr "Laissé tel quel"
 
 msgid "Left as they are"
 msgstr "Laissés tels quels"
@@ -2624,6 +2660,9 @@ msgstr "Aucune exécution trouvée dans le journal."
 msgid "No run yet."
 msgstr "Aucune exécution pour l'instant."
 
+msgid "No signal"
+msgstr "Aucun indice"
+
 msgid "No sure proposal left to accept."
 msgstr "Plus aucune proposition sûre à accepter."
 
@@ -2933,6 +2972,9 @@ msgstr "Fichiers compagnons orphelins (.xmp, .aae, .thm) à déplacer"
 msgid "Other"
 msgstr "Autres"
 
+msgid "Other category"
+msgstr "Autre catégorie"
+
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
@@ -2953,6 +2995,9 @@ msgstr ""
 "Collez-la dans le terminal où vous avez lancé l'audit (PowerShell ou "
 "bash, tel qu'écrit)."
 
+msgid "Path"
+msgstr "Chemin"
+
 msgid "Path contains"
 msgstr "Le chemin contient"
 
@@ -2964,6 +3009,12 @@ msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
 "Par photo : {describe:.1f} s pour décrire, {map:.1f} s pour choisir la "
 "catégorie."
+
+msgid "Person"
+msgstr "Personne"
+
+msgid "Personal place"
+msgstr "Lieu personnel"
 
 msgid "Photo"
 msgstr "Photo"
@@ -3030,6 +3081,9 @@ msgstr ""
 "Priorité, de la plus forte à la plus faible : options de ligne de "
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
+
+msgid "Previous guess, already in place"
+msgstr "Supposition précédente, déjà en place"
 
 msgid "Proposal"
 msgstr "Proposition"
@@ -4500,6 +4554,9 @@ msgstr "Rubrique"
 msgid "Total length of the videos"
 msgstr "Durée totale des vidéos"
 
+msgid "Town of the folder"
+msgstr "Ville du dossier"
+
 msgid "Towns of the folders"
 msgstr "Villes des dossiers"
 
@@ -4510,6 +4567,9 @@ msgstr ""
 "Villes, pour une règle 'folder_town' : un dossier qui porte exactement le"
 " nom d'une ville d'au moins ce nombre d'habitants (GeoNames) nomme le "
 "lieu de ses photos."
+
+msgid "Trip"
+msgstr "Voyage"
 
 msgid "Trips"
 msgstr "Voyages"
@@ -6189,6 +6249,20 @@ msgid "{count} faces"
 msgstr "{count} visages"
 
 #, python-brace-format
+msgid ""
+"{count} file dated only by the disk left out: a classify without --year "
+"proposes it."
+msgid_plural ""
+"{count} files dated only by the disk left out: a classify without --year "
+"proposes them."
+msgstr[0] ""
+"{count} fichier daté seulement par le disque mis de côté : un classify "
+"sans --year le propose."
+msgstr[1] ""
+"{count} fichiers datés seulement par le disque mis de côté : un classify "
+"sans --year les propose."
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] "{count} fichier trouvé."
@@ -6504,6 +6578,20 @@ msgstr[0] "{count} rafale triée ne correspond plus à l'audit, par exemple {pat
 msgstr[1] ""
 "{count} rafales triées ne correspondent plus à l'audit, par exemple "
 "{path}."
+
+#, python-brace-format
+msgid ""
+"{count} rule decided nothing in {years}: normal for those written for "
+"other years."
+msgid_plural ""
+"{count} rules decided nothing in {years}: normal for those written for "
+"other years."
+msgstr[0] ""
+"{count} règle n'a rien décidé en {years} : normal pour celles écrites "
+"pour d'autres années."
+msgstr[1] ""
+"{count} règles n'ont rien décidé en {years} : normal pour celles écrites "
+"pour d'autres années."
 
 #, python-brace-format
 msgid "{count} series reviewed earlier changed since: reviewed again."

@@ -14,6 +14,7 @@ from pydantic import BaseModel, ConfigDict
 from media_hygiene.classify.carry_models import CarryRecord
 from media_hygiene.classify.layout import GeoValues, Values
 from media_hygiene.classify.models import Band, DateSource, SortReason
+from media_hygiene.classify.names import reason_name
 
 PLAN_FORMAT: Final = 1
 
@@ -104,12 +105,12 @@ class PlanRow(_Frozen):
 
     @property
     def why(self) -> str:
-        """Why the file goes there: the rule's name, else the reason.
+        """Why the file goes there: the rule's name, else the reason, translated.
 
         Returns:
             It.
         """
-        return self.rule or self.reason.value
+        return self.rule or reason_name(self.reason)
 
     @property
     def parent(self) -> str:

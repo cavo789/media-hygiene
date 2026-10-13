@@ -61,7 +61,7 @@ docker run --rm -it `
 
 | Option | Rôle |
 |---|---|
-| `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. |
+| `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. Les fichiers datés seulement par le disque (copies, téléchargements) sont mis de côté et comptés : un classify sans `--year` les propose. Les règles écrites pour d'autres années sont comptées en une ligne, sans leurs noms. |
 | `--layout DISPOSITION` | Où vont les fichiers sûrs : `{year}/{month}`, `{year}/{category}`… Aussi `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target CHEMIN` | Dossier de l'hôte qui reçoit l'arborescence (il doit être monté) ; chaque dossier monté, sur place, par défaut. |
 | `--leave CHEMIN` | Dossier de l'hôte jamais trié, toujours analysé et nettoyé. |

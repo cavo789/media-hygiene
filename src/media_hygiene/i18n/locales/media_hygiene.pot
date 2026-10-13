@@ -816,6 +816,12 @@ msgstr ""
 msgid "Date from"
 msgstr ""
 
+msgid "Date only"
+msgstr ""
+
+msgid "Date range"
+msgstr ""
+
 msgid "Date taken"
 msgstr ""
 
@@ -823,6 +829,9 @@ msgid "Dates"
 msgstr ""
 
 msgid "Dates from"
+msgstr ""
+
+msgid "Days of every year"
 msgstr ""
 
 msgid "December"
@@ -1041,6 +1050,9 @@ msgid ""
 "above matched)."
 msgstr ""
 
+msgid "Edit carried over from the workbook"
+msgstr ""
+
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
 msgstr ""
 
@@ -1086,7 +1098,16 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
+msgid "Event at a personal place"
+msgstr ""
+
 msgid "Event neighbours"
+msgstr ""
+
+msgid "Event of a named folder"
+msgstr ""
+
+msgid "Event of a trip"
 msgstr ""
 
 #, python-brace-format
@@ -1187,6 +1208,9 @@ msgid ""
 msgstr ""
 
 msgid "Example:"
+msgstr ""
+
+msgid "Existing folder"
 msgstr ""
 
 msgid "Existing folders"
@@ -1378,6 +1402,9 @@ msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr ""
 
 msgid "Folder never modified; its files are the copies kept. Repeatable."
+msgstr ""
+
+msgid "Folder of a person"
 msgstr ""
 
 msgid "Folder on your computer"
@@ -1687,6 +1714,9 @@ msgstr ""
 msgid "Kind"
 msgstr ""
 
+msgid "Kind of file"
+msgstr ""
+
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
 "value and export again, nothing is scanned. A photo is blurry below "
@@ -1703,6 +1733,9 @@ msgstr ""
 msgid ""
 "Larger areas not listed (regions, countries): {count}. A 'trip' rule "
 "names them."
+msgstr ""
+
+msgid "Largest categories"
 msgstr ""
 
 msgid "Last audit"
@@ -1730,6 +1763,9 @@ msgid "Launcher written. Load it with: {load}, then type: mh audit"
 msgstr ""
 
 msgid "Leave alone"
+msgstr ""
+
+msgid "Left as it is"
 msgstr ""
 
 msgid "Left as they are"
@@ -2156,6 +2192,9 @@ msgstr ""
 msgid "No run yet."
 msgstr ""
 
+msgid "No signal"
+msgstr ""
+
 msgid "No sure proposal left to accept."
 msgstr ""
 
@@ -2410,6 +2449,9 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
+msgid "Other category"
+msgstr ""
+
 msgid "Output (override general.* of config.toml)"
 msgstr ""
 
@@ -2428,6 +2470,9 @@ msgid ""
 "written)."
 msgstr ""
 
+msgid "Path"
+msgstr ""
+
 msgid "Path contains"
 msgstr ""
 
@@ -2436,6 +2481,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Personal place"
 msgstr ""
 
 msgid "Photo"
@@ -2487,6 +2538,9 @@ msgid ""
 "Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* "
 "environment variables (e.g. MEDIA_HYGIENE_GENERAL__LOCALE=fr) > this file"
 " > built-in defaults."
+msgstr ""
+
+msgid "Previous guess, already in place"
 msgstr ""
 
 msgid "Proposal"
@@ -3702,12 +3756,18 @@ msgstr ""
 msgid "Total length of the videos"
 msgstr ""
 
+msgid "Town of the folder"
+msgstr ""
+
 msgid "Towns of the folders"
 msgstr ""
 
 msgid ""
 "Towns, for a 'folder_town' rule: a folder named exactly after a town of "
 "at least this many inhabitants (GeoNames) names the place of its photos."
+msgstr ""
+
+msgid "Trip"
 msgstr ""
 
 msgid "Trips"
@@ -5186,6 +5246,16 @@ msgid "{count} faces"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{count} file dated only by the disk left out: a classify without --year "
+"proposes it."
+msgid_plural ""
+"{count} files dated only by the disk left out: a classify without --year "
+"proposes them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] ""
@@ -5424,6 +5494,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} reviewed burst series no longer matches the audit, e.g. {path}."
 msgid_plural "{count} reviewed burst series no longer match the audit, e.g. {path}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} rule decided nothing in {years}: normal for those written for "
+"other years."
+msgid_plural ""
+"{count} rules decided nothing in {years}: normal for those written for "
+"other years."
 msgstr[0] ""
 msgstr[1] ""
 
