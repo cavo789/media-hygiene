@@ -45,3 +45,36 @@ same word confusion, less explainably).
 - Tests: a `Name = definition` entry maps to the folder `Name`; the prompt sent to the fake
   model server holds the definition; plain names unchanged.
 - The default config shows definitions and "À la maison".
+
+## Status — PARTIAL (2026-10-13)
+
+### Done
+- `categories` entries accept `"Name = definition"` (`classify/ai/categories.py`): the name is
+  the folder and the only value the model may answer (JSON `enum`); the definition goes to the
+  mapping prompt only; the mapping cache key holds the whole entry, so a changed definition maps
+  again (descriptions are kept). Validation checks the name only (`config/classify_rules.py`).
+- `map.txt` lists `Name: definition`, asks for "none" rather than stretching a category; the
+  mapping question moved to `classify/ai/map_prompt.py` (`prompts.py` would pass 200 lines).
+- Default example (`config.toml.j2`, both catalogues): definitions, "At home" / "À la maison",
+  "Parties" / "Fêtes" added and defined as real celebrations. Definitions kept short: the
+  generated `config.toml` must stay within 88 columns (`tests/unit/test_config.py`).
+- Docs en + fr `sort/08-…`: "Define each category" with the real examples (no photo); `06-…`
+  example list says "At home".
+- Tests: `tests/unit/test_subject_prompts.py`, `tests/unit/test_subject_rule.py`,
+  `tests/integration/subjects/test_classify_subjects_language.py`.
+
+### Not done
+- Step 5: re-run `mh classify --sample 50` on the real collection and note the new correct count.
+  **Reason:** needs the maintainer's photos and Ollama (autonomous session); the measure belongs
+  with 0104's hands-on measurements.
+
+## Review — 2026-10-13: measured with the maintainer, closed
+
+`mh --locale fr classify --sample 50` on the real collection (qwen3.8 27B, image of the branch):
+every description in French; 2.4 s to describe, 0.2 s to map per photo (docs `sort/08` updated:
+10,000 photos ≈ 7 h). Categories checked by the maintainer: 4 of 9 right with the first French
+definitions — the shortened "À la maison" definition had lost "à la maison", so restaurants and
+playgrounds went there. With "À la maison = chez soi seulement : …" and "Vacances et sorties =
+hors de chez soi : voyages, restaurants, plaines de jeux" (commit eeab9b5), re-mapped with
+`--no-describe`: **8 of 9 right** (3 of 10 before 0124). The one left: a child at her school gate,
+described as "a green fence" — the description does not say school. Closed as DONE.

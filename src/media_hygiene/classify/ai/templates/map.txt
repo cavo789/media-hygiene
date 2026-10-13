@@ -1,9 +1,10 @@
 You sort the photos of a family collection into categories.
-Categories, one per line:
+Categories, one per line, each with what it holds when the user defined it:
 {categories}
 
-For each numbered photo description below, choose the one category that fits best,
-or "{none}" when none fits. Answer in JSON: "categories" lists one choice per
-description, in the same order ({count} choices).
+For each numbered photo description below (in English or in French), choose the one
+category whose definition fits, or "{none}" rather than stretch a category to a photo
+it does not describe. Answer in JSON: "categories" lists one choice per description,
+in the same order ({count} choices), each a category name exactly as written above.
 
 {descriptions}

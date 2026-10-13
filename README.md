@@ -83,7 +83,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every command on one page.
+**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every feature in order, on one page.
 
 4. [The HTML report](https://cavo789.github.io/media-hygiene/clean/04-html-report/) — the pictures, the folder pairs, the
    proof.
@@ -106,7 +106,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 13. [A second opinion](https://cavo789.github.io/media-hygiene/clean/13-second-opinion/) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every command on one page.
+**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every feature in order, on one page.
 
 4. [Propose a tidy tree](https://cavo789.github.io/media-hygiene/sort/04-classify/) — `classify` proposes a place
    for every file, and changes nothing.
@@ -208,3 +208,25 @@ media-hygiene since version 0.3.0. Nothing of yours is lost:
   `history` and the cache find everything they hold.
 - The `MEDIA_DEDUP_…` environment variables still work until version 0.4.0, with a warning:
   rename them `MEDIA_HYGIENE_…`.
+
+## Licences
+
+The tool itself is under the [MIT licence](LICENSE). The Docker image also contains other
+people's work, each under its own licence:
+
+| Component | Licence |
+|---|---|
+| [x265](https://github.com/Multicorewareinc/x265) (HEIC support, bundled by `pillow-heif`) | GPL-2.0-or-later |
+| [libheif](https://github.com/strukturag/libheif), [libde265](https://github.com/strukturag/libde265) (HEIC, bundled by `pillow-heif`) | LGPL-3.0-or-later |
+| [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, `ffmpeg`, built without `--enable-gpl`) | LGPL-2.1-or-later |
+| [LibRaw](https://www.libraw.org/) (RAW files, through `rawpy`) | LGPL-2.1 or CDDL-1.0 |
+| [GeoNames](https://www.geonames.org/) towns (`geo/data`, see its `ATTRIBUTION.txt`) | CC BY 4.0 |
+| [Leaflet](https://leafletjs.com/) (the `places` map) | BSD-2-Clause |
+| Python, Pillow, NumPy, ONNX Runtime and the other Python packages, with the libraries their wheels bundle (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 and similar permissive licences |
+| The Debian packages of the `python:3.14-slim` base image | Their own licences (`/usr/share/doc/*/copyright`) |
+
+Because of x265, the image **as a whole** is covered by the GPL when you redistribute it. Every
+component is the unmodified upstream release pinned in `Dockerfile` and `uv.lock`: its sources
+are those of that release. The face models of `people` are not in the image: they are downloaded
+on first use from [OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet: MIT, SFace:
+Apache-2.0).

@@ -60,7 +60,8 @@ def test_the_console_counts_files_per_rule_and_names_unused_rules() -> None:
     show_classification(Output(Console(file=buffer, width=100)), classified())
     text = buffer.getvalue()
     assert "Drone [DJI]" in text
-    assert "no-signal" in text
+    assert "No signal" in text
+    assert "no-signal" not in text
     assert "Rules that decided nothing: Italy." in text
 
 
@@ -73,7 +74,7 @@ def test_the_plan_and_the_workbook_carry_the_rule() -> None:
     drone = next(row for row in plan.rows if row.rule)
     assert drone.why == "Drone [DJI]"
     reasons = {row[8] for row in file_rows(plan, Labels.current())}
-    assert reasons == {"Drone [DJI] (90)", "no-signal (0)"}
+    assert reasons == {"Drone [DJI] (90)", "No signal (0)"}
     summary = summary_rows(plan)
     assert ("Drone [DJI]", 1) in summary
     assert ("Italy", 0) in summary

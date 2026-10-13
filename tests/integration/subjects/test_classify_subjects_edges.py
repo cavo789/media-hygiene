@@ -52,7 +52,7 @@ def test_an_unusable_batch_is_mapped_one_description_at_a_time(
     result = run(cli, "classify")
     assert result.exit_code == 0, result.output
     assert fake.mapped() == 1 + 3  # the batch, then its three descriptions
-    assert "a subject for 15 files" in result.output
+    assert "15 files sorted by what the model saw" in result.output
 
 
 def test_a_subject_rule_without_a_model_says_where_to_set_it(
@@ -77,7 +77,7 @@ def test_without_a_cache_the_descriptions_live_for_one_run(
     assert result.exit_code == 0, result.output
     assert ":/cache" in result.output
     assert fake.described() == 9
-    assert "a subject for 15 files" in result.output
+    assert "15 files sorted by what the model saw" in result.output
 
 
 def test_per_photo_describes_every_photo(

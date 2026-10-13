@@ -64,7 +64,10 @@ def command_table(
             "classify",
             classify_command,
             analyse,
-            _("Propose where every photo and video should go: year, event, category."),
+            _(
+                "Propose where every photo and video should go: year, event, "
+                "category, and what lone photos show with an optional local AI 🤖"
+            ),
         ),
         (
             "review-sort",
@@ -96,9 +99,9 @@ def command_table(
             tags_command,
             analyse,
             _(
-                "Give every photo words to find it by: its folders, name, date and "
-                "place, and what a local vision model sees. Kept in the cache, never "
-                "in the photos."
+                "Give every photo words to find it by, kept in the cache, never in "
+                "the photos: its folders, name, date and place, and what it shows "
+                "with an optional local AI 🤖"
             ),
         ),
         (

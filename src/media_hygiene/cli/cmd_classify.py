@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Annotated
 
 import typer
@@ -11,9 +12,14 @@ from media_hygiene.cli.classify_ai_flow import (
     ask_subjects,
     sample_subjects,
 )
-from media_hygiene.cli.classify_flow import parse_years, warn_overlaps, write_output
+from media_hygiene.cli.classify_flow import (
+    parse_years,
+    scope_folders,
+    warn_overlaps,
+    write_output,
+)
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.options import panel_advanced
+from media_hygiene.cli.options import panel_advanced, panel_local_ai
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
@@ -32,6 +38,19 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
             help=_(
                 "Only the files of this year, or of these years: 2016 or 2015-2017."
             ),
+        ),
+    ] = None,
+    path: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--path",
+            help=_(
+                "Only the files below this folder (host path, as you mounted it); "
+                "repeat it for several. The events stay whole: they are built from "
+                "every file, and only the files below the folders get a proposal. "
+                "With --year: the files of both."
+            ),
+            show_default=False,
         ),
     ] = None,
     layout: Annotated[
@@ -79,7 +98,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         int,
         typer.Option(
             "--sample",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             min=0,
             help=_(
                 "Estimate a full run first: describe this many random photos with "
@@ -93,7 +112,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         bool,
         typer.Option(
             "--no-describe",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             help=_(
                 "Ask the local model nothing new: the subject rules read the "
                 "descriptions already in the cache."
@@ -105,7 +124,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         typer.Option(
             "--yes",
             "-y",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             help=_("Describe the photos without asking, however many."),
         ),
     ] = False,
@@ -115,6 +134,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
     Args:
         ctx: Typer context holding the runtime.
         year: `--year` scope.
+        path: `--path` host folders.
         layout: `--layout` for the sure files.
         target: `--target` host folder.
         leave: `--leave` host folders.
@@ -131,6 +151,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         if overrides:
             runtime = runtime.with_overrides({"classify": overrides})
         years = parse_years(year)
+        within = scope_folders(runtime, path)
         # Before the title: the first line a user without -v reads.
         refuse_empty_data(runtime, "classify")
         runtime.output.title(_("Classify"))
@@ -142,6 +163,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         )
         with RichProgress(runtime.output.console) as progress:
             inputs = ClassifyService(runtime, progress).collect(years)
+        inputs = replace(inputs, scope=replace(inputs.scope, within=within))
         if sample:
             sample_subjects(runtime, inputs, sample)
             return

@@ -102,3 +102,27 @@ def locate(folders: Iterable[tuple[Path, HostFolder]], path: Path) -> HostFolder
         return None
     point, host = max(holding, key=lambda item: len(item[0].parts))
     return host.below(path.relative_to(point).parts)
+
+
+def bind_source(found: str | None, conventional: str) -> str:
+    """The host side of a data mount, for a `-v` to type again.
+
+    On a native Linux engine, the mount table gives the folder *within its file
+    system*: `/me/Photos` when `/home` is a partition of its own, `/` for a disk under
+    `/media`. When it is only the end of the folder the naming convention gives
+    (`/data/home/me/Photos` is `/home/me/Photos`), the convention is the whole path.
+
+    Args:
+        found: What the mount table says (a folder, a volume name, a Windows folder).
+        conventional: The host path the naming convention gives.
+
+    Returns:
+        The host side.
+    """
+    if found is None:
+        return conventional
+    if not found.startswith("/"):  # a Windows folder, a named volume
+        return found
+    tail = PurePosixPath(found).parts[1:]
+    whole = PurePosixPath(conventional).parts[1:]
+    return conventional if whole[len(whole) - len(tail) :] == tail else found

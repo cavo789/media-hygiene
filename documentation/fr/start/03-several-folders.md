@@ -120,7 +120,27 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
   cavo789/media-hygiene --locale fr audit
 ```
 
-La suite de ce guide montre les commandes PowerShell ; la version WSL suit le même modèle.
+## Depuis Linux
+
+Sur un ordinateur Linux, la règle est la même : `/data` suivi du **chemin complet** du dossier.
+Vos photos dans `~/Images` et un disque USB sous `/media` :
+
+```bash
+docker run --rm -it --user "$(id -u):$(id -g)" \
+  -v "$HOME/Images:/data$HOME/Images:ro" \
+  -v "/media/$USER/Disque/Photos:/data/media/$USER/Disque/Photos:ro" \
+  -v media-hygiene-cache:/cache \
+  cavo789/media-hygiene --locale fr audit
+```
+
+L'outil affiche alors `/home/<vous>/Images/…` et `/media/<vous>/Disque/…`, les chemins que vous
+connaissez, et les commandes qu'il propose (👉 *Et maintenant*, le lanceur `mh`) retapent les
+mêmes `-v`, même quand `/home` ou le disque est une partition à part. Monté ailleurs
+(`-v "$HOME/Images:/data/images"`), l'analyse est la même, mais les chemins affichés ne sont plus
+les vôtres.
+
+La suite de ce guide montre les commandes PowerShell ; les versions WSL et Linux suivent le même
+modèle.
 
 ## Écrire vos dossiers une fois : `mh`
 
@@ -150,12 +170,18 @@ en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `albu
 `review-sort`, `places`, `search` et `people`. Les commandes que l'outil propose à la fin d'une exécution deviennent
 elles aussi `mh …`.
 
-- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"` ; ou ajoutez
-  cette ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout.
+- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"`. Pour avoir `mh`
+  dans chaque terminal, écrivez cette ligne dans votre profil PowerShell, une fois (le profil et
+  son dossier sont créés s'ils manquent ; `notepad $PROFILE` montre ensuite la ligne) :
+
+  ```powershell
+  New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
+  Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+  ```
 - **Un autre dossier ?** Relancez la commande `launcher` avec un `-v` de plus.
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- **Depuis WSL** : ajoutez `--shell bash` et enregistrez dans `~/media-hygiene/mh.sh`, puis
+- **Depuis WSL ou Linux** : ajoutez `--shell bash` et enregistrez dans `~/media-hygiene/mh.sh`, puis
   `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque terminal).
 
 ---

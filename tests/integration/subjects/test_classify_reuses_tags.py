@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import using
 from tests.support.cli import run
 from tests.support.subjects import CATEGORIES
 
@@ -44,3 +46,17 @@ def test_the_tags_of_another_model_are_not_its_answer(
     result = run(cli, "classify")
     assert result.exit_code == 0, result.output
     assert fake.described() == PHOTOS + 9  # three samples per event, asked anew
+
+
+def test_tags_in_another_language_are_described_again(
+    cli: CliRunner, fake: FakeOllama
+) -> None:
+    """`tags` ran in English: a French `classify` describes its samples in French."""
+    assert run(cli, "audit").exit_code == 0
+    assert run(cli, "tags", "--yes").exit_code == 0
+    with using(Locale.FR):
+        french = run(cli, "classify")
+    assert french.exit_code == 0, french.output
+    assert fake.described() == PHOTOS + 9  # three samples per event, in French
+    assert run(cli, "classify").exit_code == 0
+    assert fake.described() == PHOTOS + 9  # English: the words of `tags` reused

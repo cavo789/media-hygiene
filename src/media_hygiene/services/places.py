@@ -88,7 +88,11 @@ def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
         )
     config_file = runtime.locations.config_file
     try:
-        return PlacesBoard(clusters_of(points), config_file, Gazetteer.load())
+        return PlacesBoard(
+            clusters_of(points),
+            config_file,
+            Gazetteer.load().renamed(runtime.settings.classify.town_names),
+        )
     except ValueError as exc:
         message = _("The places of {file} are invalid: {reason}.")
         host = runtime.mapper.to_host(config_file)

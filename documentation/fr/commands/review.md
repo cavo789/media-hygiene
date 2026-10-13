@@ -85,6 +85,7 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 | `--decisions FICHIER` | Le fichier où les choix sont enregistrés, et repris ; `decisions.json` de `/reports` par défaut. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même : `-p 127.0.0.1:9000:9000` pour `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | Comme pour [`audit`](audit.md#options) : donnez à `review` les mêmes qu'à `clean`. |
+| `--ext`, `--exclude-name` | Comme pour [`audit`](audit.md#options) : l'audit par lequel `review` commence voit alors les mêmes fichiers. |
 
 ## Bon à savoir
 
@@ -145,6 +146,22 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 │                         copies conservées. Répétable.                        │
 │ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
 │                         à garder. Répétable.                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
+│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
+│                              ex. --ext photo,video ou --ext png,webp         │
+│                              (répétable). Catégories : photo, raw, video,    │
+│                              media et celles de scan.categories dans         │
+│                              config.toml. D'autres types aussi, comme --ext  │
+│                              pdf,docx : leurs copies sont déplacées en       │
+│                              quarantaine. Par défaut : media (toutes les     │
+│                              photos, RAW et vidéos).                         │
+│ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
+│                              sans tenir compte de la casse ; * et ? permis,  │
+│                              p. ex. --exclude-name Thumbnails,.Trash-*       │
+│                              (répétable). S'ajoute aux dossiers système déjà │
+│                              ignorés. Pour un dossier précis, utilisez       │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -43,3 +43,34 @@ untouched (`READ_ONLY_COMMANDS`). An unexpected error deserves the same treatmen
 - Same test with `MEDIA_HYGIENE_DEBUG=1`: the exception propagates.
 - `typer.Exit`, usage errors (`--bad-option`) and Ctrl+C behave as before (existing tests pass).
 - An e2e case on the image: an unexpected error prints no traceback.
+
+## Status — PARTIAL (2026-10-13)
+
+### Done
+- `build_app`: `pretty_exceptions_enable=False`.
+- `LocalizedGroup.invoke` catches any `Exception` but `typer.Exit`, `typer.Abort` and Typer's
+  own exceptions (usage errors), and calls `cli/unexpected.py:stop_on_error`: the error line
+  (`Unexpected error during <command>: <Type>: <message>`, escaped), the reassurance (read-only:
+  "Your photos and videos were not touched.", shared with Ctrl+C through
+  `interrupted.untouched()`; `clean`/`sort`: "What was already done is in the journal: 'undo'
+  puts it back."; other commands: nothing promised), a 💡 with the issues URL, the version, the
+  command typed and `-e MEDIA_HYGIENE_DEBUG=1`; exit code `FAILURE`.
+- `MEDIA_HYGIENE_DEBUG` (non-empty, not `0`) re-raises; the `hygiene` helper sets it by default
+  (`MEDIA_HYGIENE_DEBUG=0 hygiene …` shows the user's view). Not in the image `ENV`.
+- Docs: "Unexpected error during …" in `reference-troubleshooting.md` (en + fr).
+- Tests: `tests/unit/test_cli_unexpected.py` (no traceback, no venv path, the lines, the code;
+  debug re-raises; `typer.Exit` and a bad option untouched); `test_interrupt.py` still passes.
+
+### Not done
+- The e2e case on the image.
+  **Reason:** building the image and running `e2e` is a heavy step on the maintainer's machine
+  (crashes, see the low-load rule), and there is no reliable way to make the published image hit
+  a bug; a hidden "crash on purpose" switch in the shipped code was not added. To do with the
+  next `e2e` run if a trigger is wanted (e.g. a test-only environment variable read by the e2e
+  image only).
+
+## Review — 2026-10-13
+
+Decided with the maintainer: the item left under *Not done* is dropped (no test-only crash
+trigger in the shipped image; no native Linux machine at hand — the unit tests cover the root
+file system, a `/home` partition and a USB disk). Closed as DONE.

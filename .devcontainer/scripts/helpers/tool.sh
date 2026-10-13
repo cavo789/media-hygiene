@@ -13,7 +13,9 @@ function hygiene() {
     mapfile -t env_vars < <(_media_hygiene_env)
     (
         cd "$(_repo_root)" || return 1
-        _gentle env "${env_vars[@]}" uv run --frozen --quiet media-hygiene "$@"
+        # A bug shows its traceback here (MEDIA_HYGIENE_DEBUG=0 hygiene … shows the user's view)
+        _gentle env "${env_vars[@]}" "MEDIA_HYGIENE_DEBUG=${MEDIA_HYGIENE_DEBUG:-1}" \
+            uv run --frozen --quiet media-hygiene "$@"
     )
 }
 

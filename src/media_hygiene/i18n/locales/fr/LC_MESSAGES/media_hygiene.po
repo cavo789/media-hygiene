@@ -193,6 +193,10 @@ msgstr "« {url} » n'est pas une adresse https://"
 msgid "'{url}' lacks {fields}"
 msgstr "il manque {fields} dans « {url} »"
 
+#, python-brace-format
+msgid "(Possible options: {options})"
+msgstr "(options possibles : {options})"
+
 msgid "(always skipped)"
 msgstr "(toujours ignorés)"
 
@@ -269,6 +273,12 @@ msgstr "… et {count} de plus."
 
 msgid "/"
 msgstr "/fr/"
+
+#, python-brace-format
+msgid "; {groups} group without a subject → your other rules, else {band}."
+msgid_plural "; {groups} groups without a subject → your other rules, else {band}."
+msgstr[0] " ; {groups} groupe sans sujet → vos autres règles, sinon {band}."
+msgstr[1] " ; {groups} groupes sans sujet → vos autres règles, sinon {band}."
 
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
@@ -402,6 +412,9 @@ msgstr ""
 
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
+
+msgid "Aborted."
+msgstr "Abandon."
 
 msgid ""
 "Above this many photos to describe, classify asks first and prints the "
@@ -599,6 +612,9 @@ msgid ""
 msgstr ""
 "À 100 %% : déplacez la souris sur une photo, la même zone s'affiche dans "
 "toutes. C ou Échap ferme."
+
+msgid "At home"
+msgstr "À la maison"
 
 msgid "Audit"
 msgstr "Audit"
@@ -986,6 +1002,12 @@ msgstr "Date"
 msgid "Date from"
 msgstr "Date tirée de"
 
+msgid "Date only"
+msgstr "Date seule"
+
+msgid "Date range"
+msgstr "Période"
+
 msgid "Date taken"
 msgstr "Date de prise de vue"
 
@@ -994,6 +1016,9 @@ msgstr "Dates"
 
 msgid "Dates from"
 msgstr "Dates tirées de"
+
+msgid "Days of every year"
+msgstr "Jours de chaque année"
 
 msgid "December"
 msgstr "décembre"
@@ -1115,6 +1140,10 @@ msgstr "Détail"
 #, python-brace-format
 msgid "Did you mean '{key}'?"
 msgstr "Vouliez-vous dire « {key} » ?"
+
+#, python-brace-format
+msgid "Did you mean {names}?"
+msgstr "Vouliez-vous dire {names} ?"
 
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr "Ne pas demander de confirmation (remplace clean.confirm)."
@@ -1252,7 +1281,9 @@ msgid ""
 "local vision model sees, categories = [...], see [classify.ai]), place "
 "(the GPS position lies in one of your places, see [[classify.places]]), "
 "trip (an event far from home, named after its country and town without "
-"going online), other_category (the files no rule above matched)."
+"going online), folder_town (a folder named after a town, 2017/Durbuy: its"
+" photos go to country/town, to check), other_category (the files no rule "
+"above matched)."
 msgstr ""
 "Chaque règle a un nom et un \"match\" : existing_folder (un nom de "
 "dossier que vous avez choisi), event_neighbour (les fichiers isolés d'un "
@@ -1266,8 +1297,13 @@ msgstr ""
 "subject (ce que voit un modèle de vision local, categories = [...], voir "
 "[classify.ai]), place (la position GPS est dans un de vos lieux, voir "
 "[[classify.places]]), trip (un événement loin de chez vous, nommé d'après"
-" son pays et sa ville sans aller sur Internet), other_category (les "
-"fichiers qu'aucune règle au-dessus n'a reconnus)."
+" son pays et sa ville sans aller sur Internet), folder_town (un dossier "
+"qui porte le nom d'une ville, 2017/Durbuy : ses photos vont dans "
+"pays/ville, à vérifier), other_category (les fichiers qu'aucune règle au-"
+"dessus n'a reconnus)."
+
+msgid "Edit carried over from the workbook"
+msgstr "Modification reprise du classeur"
 
 msgid "Edit only the yellow cells, then save; nothing moves before 'sort'."
 msgstr ""
@@ -1316,6 +1352,9 @@ msgstr ""
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
 msgstr "Effacer la quarantaine de {runs} ({count} fichiers, {size}) ?"
 
+msgid "Error"
+msgstr "Erreur"
+
 msgid ""
 "Estimate a full run first: describe this many random photos with the "
 "local model, print the time per photo and the estimate of a full run, and"
@@ -1328,8 +1367,17 @@ msgstr ""
 msgid "Event"
 msgstr "Événement"
 
+msgid "Event at a personal place"
+msgstr "Événement à un lieu personnel"
+
 msgid "Event neighbours"
 msgstr "Voisins d'événement"
+
+msgid "Event of a named folder"
+msgstr "Événement d'un dossier nommé"
+
+msgid "Event of a trip"
+msgstr "Événement d'un voyage"
 
 #, python-brace-format
 msgid "Event {name} ({id})"
@@ -1464,6 +1512,9 @@ msgstr ""
 
 msgid "Example:"
 msgstr "Exemple :"
+
+msgid "Existing folder"
+msgstr "Dossier existant"
 
 msgid "Existing folders"
 msgstr "Dossiers existants"
@@ -1697,6 +1748,14 @@ msgstr ""
 "régulière lit comme des opérateurs. Une virgule sépare les noms : écrivez"
 " ? à sa place. Pour un dossier précis, utilisez excluded dans [folders]."
 
+msgid ""
+"Folder names that are never towns, e.g. a first name that is also a town "
+"somewhere: [\"Martin\", \"Victoria\"]. Case and accents do not matter."
+msgstr ""
+"Les noms de dossiers qui ne sont jamais des villes, par exemple un prénom"
+" qui est aussi une ville quelque part : [\"Martin\", \"Victoria\"]. "
+"Majuscules et accents ne comptent pas."
+
 msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr "Dossier jamais analysé, p. ex. une vraie sauvegarde à garder. Répétable."
 
@@ -1704,6 +1763,9 @@ msgid "Folder never modified; its files are the copies kept. Repeatable."
 msgstr ""
 "Dossier jamais modifié ; ses fichiers sont les copies conservées. "
 "Répétable."
+
+msgid "Folder of a person"
+msgstr "Dossier d'une personne"
 
 msgid "Folder on your computer"
 msgstr "Dossier sur votre ordinateur"
@@ -1799,14 +1861,24 @@ msgstr ""
 "Rassemble une sélection du plan de classify dans un dossier de liens "
 "physiques : rien n'est copié ni déplacé (journalisé, annulable)."
 
+msgid "Ghent"
+msgstr "Gand"
+
 msgid ""
-"Give every photo words to find it by: its folders, name, date and place, "
-"and what a local vision model sees. Kept in the cache, never in the "
-"photos."
+"Give a folder below one of your -v, written as the audit shows it, e.g. "
+"--path \"C:\\Photos\\2015\"."
 msgstr ""
-"Donner à chaque photo des mots pour la retrouver : ses dossiers, son nom,"
-" sa date, son lieu, et ce qu'y voit un modèle de vision local. Gardés "
-"dans le cache, jamais dans les photos."
+"Donnez un dossier sous un de vos -v, écrit comme l'audit l'affiche, par "
+"exemple --path \"C:\\Photos\\2015\"."
+
+msgid ""
+"Give every photo words to find it by, kept in the cache, never in the "
+"photos: its folders, name, date and place, and what it shows with an "
+"optional local AI 🤖"
+msgstr ""
+"Donner à chaque photo des mots pour la retrouver, gardés dans le cache, "
+"jamais dans les photos : ses dossiers, son nom, sa date, son lieu, et ce "
+"qu'elle montre avec une IA locale facultative 🤖"
 
 msgid "Give its path in a mounted folder, e.g. the one mounted on /reports."
 msgstr ""
@@ -1872,9 +1944,6 @@ msgstr "Vacances et sorties"
 
 msgid "Home"
 msgstr "Maison"
-
-msgid "Home and works"
-msgstr "Maison et travaux"
 
 msgid "Home: trips are measured from it"
 msgstr "Maison : les voyages se mesurent à partir d'ici"
@@ -1990,6 +2059,14 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 msgid "Into folders"
 msgstr "Dans des dossiers"
 
+#, python-brace-format
+msgid "Invalid value for {option}: {reason}"
+msgstr "Valeur invalide pour {option} : {reason}"
+
+#, python-brace-format
+msgid "Invalid value: {reason}"
+msgstr "Valeur invalide : {reason}"
+
 msgid "Inventory"
 msgstr "Inventaire"
 
@@ -2069,6 +2146,9 @@ msgstr "Clavier"
 msgid "Kind"
 msgstr "Type"
 
+msgid "Kind of file"
+msgstr "Genre de fichier"
+
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
 "value and export again, nothing is scanned. A photo is blurry below "
@@ -2092,6 +2172,9 @@ msgid ""
 msgstr ""
 "Zones plus grandes non listées (régions, pays) : {count}. Une règle "
 "'trip' les nomme."
+
+msgid "Largest categories"
+msgstr "Catégories les plus remplies"
 
 msgid "Last audit"
 msgstr "Dernier audit"
@@ -2119,6 +2202,9 @@ msgstr "Lanceur écrit. Chargez-le avec : {load}, puis tapez : mh audit"
 
 msgid "Leave alone"
 msgstr "Ne pas toucher"
+
+msgid "Left as it is"
+msgstr "Laissé tel quel"
 
 msgid "Left as they are"
 msgstr "Laissés tels quels"
@@ -2202,6 +2288,15 @@ msgstr "mai"
 
 msgid "Media files scanned"
 msgstr "Fichiers média analysés"
+
+msgid "Missing argument"
+msgstr "Argument manquant"
+
+msgid "Missing option"
+msgstr "Option manquante"
+
+msgid "Missing parameter"
+msgstr "Paramètre manquant"
 
 msgid "Modified (UTC)"
 msgstr "Modifié (UTC)"
@@ -2611,6 +2706,17 @@ msgstr "Aucune exécution trouvée dans le journal."
 msgid "No run yet."
 msgstr "Aucune exécution pour l'instant."
 
+msgid "No signal"
+msgstr "Aucun indice"
+
+#, python-brace-format
+msgid "No such command {name}."
+msgstr "Commande inconnue : {name}."
+
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr "Option inconnue : {name}"
+
 msgid "No sure proposal left to accept."
 msgstr "Plus aucune proposition sûre à accepter."
 
@@ -2837,6 +2943,18 @@ msgstr ""
 msgid "Only the events to decide"
 msgstr "Seulement les événements à décider"
 
+msgid ""
+"Only the files below this folder (host path, as you mounted it); repeat "
+"it for several. The events stay whole: they are built from every file, "
+"and only the files below the folders get a proposal. With --year: the "
+"files of both."
+msgstr ""
+"Seulement les fichiers sous ce dossier (chemin de l'hôte, tel que vous "
+"l'avez monté) ; répétez-la pour plusieurs. Les événements restent entiers"
+" : ils sont formés à partir de tous les fichiers, et seuls les fichiers "
+"sous ces dossiers reçoivent une proposition. Avec --year : les fichiers "
+"des deux."
+
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 "Seulement les fichiers de cette année, ou de ces années : 2016 ou "
@@ -2899,6 +3017,18 @@ msgid "OpenStreetMap knows no area of that name."
 msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
 
 #, python-brace-format
+msgid "Option {name} needs a value."
+msgstr "L'option {name} demande une valeur."
+
+#, python-brace-format
+msgid "Option {name} needs {count} values."
+msgstr "L'option {name} demande {count} valeurs."
+
+#, python-brace-format
+msgid "Option {name} takes no value."
+msgstr "L'option {name} ne prend pas de valeur."
+
+#, python-brace-format
 msgid "Or, to no longer see this message, delete this file: {path}"
 msgstr "Ou, pour ne plus voir ce message, supprimez ce fichier : {path}"
 
@@ -2920,6 +3050,9 @@ msgstr "Fichiers compagnons orphelins (.xmp, .aae, .thm) à déplacer"
 msgid "Other"
 msgstr "Autres"
 
+msgid "Other category"
+msgstr "Autre catégorie"
+
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
@@ -2940,6 +3073,9 @@ msgstr ""
 "Collez-la dans le terminal où vous avez lancé l'audit (PowerShell ou "
 "bash, tel qu'écrit)."
 
+msgid "Path"
+msgstr "Chemin"
+
 msgid "Path contains"
 msgstr "Le chemin contient"
 
@@ -2951,6 +3087,12 @@ msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
 "Par photo : {describe:.1f} s pour décrire, {map:.1f} s pour choisir la "
 "catégorie."
+
+msgid "Person"
+msgstr "Personne"
+
+msgid "Personal place"
+msgstr "Lieu personnel"
 
 msgid "Photo"
 msgstr "Photo"
@@ -2994,6 +3136,14 @@ msgstr "Lieu (balise vidéo)"
 
 #, python-brace-format
 msgid ""
+"Please report it at {url}, with the version ({version}), the command "
+"typed ({typed}) and this message. -e {variable}=1 shows the details."
+msgstr ""
+"Merci de le signaler sur {url}, avec la version ({version}), la commande "
+"tapée ({typed}) et ce message. -e {variable}=1 montre les détails."
+
+#, python-brace-format
+msgid ""
 "Port of the page. docker run publishes it under the same number on your "
 "computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
@@ -3010,11 +3160,18 @@ msgstr ""
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
 
+msgid "Previous guess, already in place"
+msgstr "Supposition précédente, déjà en place"
+
 msgid "Proposal"
 msgstr "Proposition"
 
-msgid "Propose where every photo and video should go: year, event, category."
-msgstr "Propose où ranger chaque photo et vidéo : année, événement, catégorie."
+msgid ""
+"Propose where every photo and video should go: year, event, category, and"
+" what lone photos show with an optional local AI 🤖"
+msgstr ""
+"Propose où ranger chaque photo et vidéo : année, événement, catégorie, et"
+" ce que montrent les photos isolées avec une IA locale facultative 🤖"
 
 msgid "Proposed folder"
 msgstr "Dossier proposé"
@@ -3232,14 +3389,14 @@ msgid "Root"
 msgstr "Racine"
 
 #, python-brace-format
-msgid "Rule '{rule}': a subject for {count} file."
-msgid_plural "Rule '{rule}': a subject for {count} files."
-msgstr[0] "Règle '{rule}' : un sujet pour {count} fichier."
-msgstr[1] "Règle '{rule}' : un sujet pour {count} fichiers."
-
-#, python-brace-format
 msgid "Rule '{rule}': nobody is named {names} in [[people.person]]."
 msgstr "Règle '{rule}' : personne ne s'appelle {names} dans [[people.person]]."
+
+#, python-brace-format
+msgid "Rule '{rule}': {count} file sorted by what the model saw"
+msgid_plural "Rule '{rule}': {count} files sorted by what the model saw"
+msgstr[0] "Règle '{rule}' : {count} fichier rangé d'après ce qu'a vu le modèle"
+msgstr[1] "Règle '{rule}' : {count} fichiers rangés d'après ce qu'a vu le modèle"
 
 msgid "Rules and reasons"
 msgstr "Règles et raisons"
@@ -3753,9 +3910,6 @@ msgstr "Guide pas à pas et toutes les commandes : {url}"
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
 
-msgid "Stopped (Ctrl+C). Your photos and videos were not touched."
-msgstr "Arrêté (Ctrl+C). Vos photos et vidéos n'ont pas été touchées."
-
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
 
@@ -3866,16 +4020,16 @@ msgstr ""
 
 msgid ""
 "The categories below are an example to replace with your own, e.g. "
-"Parties, Holidays and outings, School, Sport and leisure, Home and works,"
-" Animals, Nature and landscapes, Documents and screenshots, Other. Avoid "
-"a \"Family\" or \"Portraits\" category: in a family collection, it "
+"Parties, Holidays and outings, School, Sport and leisure, At home, "
+"Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"
+" \"Family\" or \"Portraits\" category: in a family collection, it "
 "swallows most photos."
 msgstr ""
 "Les catégories ci-dessous sont un exemple à remplacer par les vôtres, par"
-" exemple Fêtes, Vacances et sorties, École, Sport et loisirs, Maison et "
-"travaux, Animaux, Nature et paysages, Documents et captures d'écran, "
-"Autres. Évitez une catégorie « Famille » ou « Portraits » : dans une "
-"collection familiale, elle avale la plupart des photos."
+" exemple Fêtes, Vacances et sorties, École, Sport et loisirs, À la "
+"maison, Animaux, Nature et paysages, Documents et captures, Autres. "
+"Évitez une catégorie « Famille » ou « Portraits » : dans une collection "
+"familiale, elle avale la plupart des photos."
 
 msgid ""
 "The circles are your photos with a GPS position, larger where there are "
@@ -3980,6 +4134,10 @@ msgid "The files the classify rule of this name decided."
 msgstr "Les fichiers que la règle de classify de ce nom a décidés."
 
 #, python-brace-format
+msgid "The folder {path} is not mounted."
+msgstr "Le dossier {path} n'est pas monté."
+
+#, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr "Les groupes n'ont pas pu être lus (erreur {status})."
 
@@ -4047,6 +4205,13 @@ msgstr "Le modèle {model} ne voit pas les images."
 #, python-brace-format
 msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
+
+msgid ""
+"The names of the people go into the sidecars, next to the photos: anyone "
+"who gets a copy of them can read who is on them."
+msgstr ""
+"Les noms des personnes vont dans les fichiers annexes, à côté des photos "
+": quiconque en reçoit une copie peut lire qui est dessus."
 
 msgid ""
 "The names stay in config.toml: they name no face until people finds the "
@@ -4482,6 +4647,23 @@ msgstr "Rubrique"
 msgid "Total length of the videos"
 msgstr "Durée totale des vidéos"
 
+msgid "Town of the folder"
+msgstr "Ville du dossier"
+
+msgid "Towns of the folders"
+msgstr "Villes des dossiers"
+
+msgid ""
+"Towns, for a 'folder_town' rule: a folder named exactly after a town of "
+"at least this many inhabitants (GeoNames) names the place of its photos."
+msgstr ""
+"Villes, pour une règle 'folder_town' : un dossier qui porte exactement le"
+" nom d'une ville d'au moins ce nombre d'habitants (GeoNames) nomme le "
+"lieu de ses photos."
+
+msgid "Trip"
+msgstr "Voyage"
+
 msgid "Trips"
 msgstr "Voyages"
 
@@ -4494,6 +4676,10 @@ msgstr ""
 " de trip_min_km de la maison est un voyage ; des voyages à moins de "
 "trip_merge_gap_hours d'écart, et à moins de trip_merge_max_km l'un de "
 "l'autre, n'en font qu'un."
+
+#, python-brace-format
+msgid "Try [blue]'{command_path} {help_option}'[/] for help."
+msgstr "Essayez [blue]'{command_path} {help_option}'[/] pour l'aide."
 
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
@@ -4541,6 +4727,14 @@ msgid "Undo this run and move {moved} files back?"
 msgid_plural "Undo these {count} runs and move {moved} files back?"
 msgstr[0] "Annuler ce passage et remettre {moved} fichiers en place ?"
 msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
+
+#, python-brace-format
+msgid "Unexpected error during {command}: {kind}: {message}"
+msgstr "Erreur inattendue pendant {command} : {kind} : {message}"
+
+#, python-brace-format
+msgid "Unexpected extra argument: {values}"
+msgstr "Argument en trop : {values}"
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -4595,6 +4789,9 @@ msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
 
 msgid "What next:"
 msgstr "Et maintenant :"
+
+msgid "What was already done is in the journal: 'undo' puts it back."
+msgstr "Ce qui a déjà été fait est dans le journal : 'undo' le remet en place."
 
 msgid "What you can do"
 msgstr "Ce que vous pouvez faire"
@@ -4732,6 +4929,16 @@ msgstr ""
 "Écrit 'mh', une commande courte qui retient vos dossiers : mh audit, mh "
 "clean."
 
+msgid ""
+"Write each category as \"Name = definition\": the name is the folder, the"
+" definition tells the model what you mean by it. A name alone is judged "
+"by its words: \"Home and works\" drew every indoor scene."
+msgstr ""
+"Écrivez chaque catégorie sous la forme « Nom = définition » : le nom est "
+"le dossier, la définition dit au modèle ce que vous entendez par là. Un "
+"nom seul est jugé sur ses mots : « Maison et travaux » attirait toutes "
+"les scènes d'intérieur."
+
 msgid "Write the sidecars; without it, only show what would be written."
 msgstr ""
 "Écrire les fichiers compagnons ; sans cette option, seulement montrer ce "
@@ -4795,6 +5002,19 @@ msgstr ""
 "Vos décisions — paires inversées : {swapped}, paires laissées telles "
 "quelles : {skipped}."
 
+#, python-brace-format
+msgid ""
+"Your names for the towns: the towns are named after GeoNames, in English "
+"or in their own language (Brussels, Brugge, Gent). Write the exact "
+"GeoNames name, then yours: trips, {city}, the places page and the "
+"folder_town rule use yours; a folder named either way matches."
+msgstr ""
+"Vos noms pour les villes : les villes sont nommées d'après GeoNames, en "
+"anglais ou dans leur propre langue (Brussels, Brugge, Gent). Écrivez le "
+"nom GeoNames exact, puis le vôtre : les voyages, {city}, la page des "
+"lieux et la règle folder_town utilisent le vôtre ; un dossier nommé de "
+"l'une ou l'autre façon est reconnu."
+
 msgid ""
 "Your own categories: a name, then its extensions (not other categories). "
 "The built-in ones cannot be redefined. Variable: "
@@ -4831,6 +5051,9 @@ msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
+
+msgid "Your photos and videos were not touched."
+msgstr "Vos photos et vidéos n'ont pas été touchées."
 
 msgid "Your places"
 msgstr "Vos lieux"
@@ -4904,6 +5127,9 @@ msgstr ""
 #, python-brace-format
 msgid "a number is expected, not {value}"
 msgstr "un nombre est attendu, pas {value}"
+
+msgid "a pet or an animal as the main subject"
+msgstr "un animal de compagnie ou un animal comme sujet principal"
 
 msgid "a photo, a video or a sidecar is never junk: the folder is kept"
 msgstr ""
@@ -4980,8 +5206,14 @@ msgstr "comme prévu, puis suivant"
 msgid "audit"
 msgstr "audit"
 
+msgid "away from home: trips, visits, restaurants, playgrounds"
+msgstr "hors de chez soi : voyages, restaurants, plaines de jeux"
+
 msgid "back to undecided"
 msgstr "revenir à non décidé"
+
+msgid "birthdays, Christmas, communions, weddings; not a costume alone"
+msgstr "anniversaires, Noël, communions, mariages ; pas un déguisement seul"
 
 msgid "blurry"
 msgstr "flou"
@@ -5036,6 +5268,9 @@ msgid ""
 msgstr ""
 "choisi dans la page de revue, puis modifié autrement dans le classeur, "
 "dont la valeur a été reprise"
+
+msgid "classrooms, school trips, school shows and parties"
+msgstr "classe, excursions, spectacles et fêtes de l'école"
 
 msgid "clean"
 msgstr "nettoyage"
@@ -5161,6 +5396,9 @@ msgstr "sain"
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
 
+msgid "in your own home only: meals, games, children, sofa, garden"
+msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
+
 #, python-brace-format
 msgid ""
 "invalid category name '{name}': letters, digits, '-' and '_' only, such "
@@ -5272,6 +5510,9 @@ msgstr "gardé (votre décision)"
 
 msgid "kept if you move on"
 msgstr "gardée si vous passez"
+
+msgid "landscapes, plants and sky, no one as the main subject"
+msgstr "paysages, plantes et ciel, sans personne au premier plan"
 
 msgid "largest sharpness gap first"
 msgstr "plus grand écart de netteté d'abord"
@@ -5477,6 +5718,14 @@ msgid "person"
 msgstr "personne"
 
 msgid ""
+"person writes the names of the people on each photo (PersonInImage): "
+"never by default, as the names then travel with every copy of the photos."
+msgstr ""
+"person écrit les noms des personnes sur chaque photo (PersonInImage) : "
+"jamais par défaut, car les noms voyagent alors avec chaque copie des "
+"photos."
+
+msgid ""
 "person: the events where someone named on the 'people' page shows on at "
 "least min_share percent of the photos (10 by default), and the lone "
 "photos showing them. names = [...] matches any of them; all = true needs "
@@ -5598,6 +5847,9 @@ msgstr "triée depuis."
 msgid "space freed, largest first"
 msgstr "espace libéré, le plus grand d'abord"
 
+msgid "sports and hobbies, played or watched: matches, swimming"
+msgstr "sports et loisirs, pratiqués ou regardés : matchs, natation"
+
 msgid "start with an audit: it changes nothing."
 msgstr "commencez par un audit : il ne change rien."
 
@@ -5665,6 +5917,18 @@ msgstr "la copie conservée {path} n'existe plus"
 
 msgid "the last audit found extra copies: 'clean' sets them aside."
 msgstr "le dernier audit a trouvé des copies en trop : 'clean' les met de côté."
+
+#, python-brace-format
+msgid "the model will look at each of their {samples} photos."
+msgstr "le modèle regardera chacune de leurs {samples} photos."
+
+#, python-brace-format
+msgid ""
+"the model will look at {samples} of them (up to {per_event} per event, "
+"the others follow)."
+msgstr ""
+"le modèle en regardera {samples} (jusqu'à {per_event} par événement, les "
+"autres suivent)."
 
 msgid "the model's sentence"
 msgstr "la phrase du modèle"
@@ -6094,6 +6358,20 @@ msgid "{count} faces"
 msgstr "{count} visages"
 
 #, python-brace-format
+msgid ""
+"{count} file dated only by the disk left out: a classify without --year "
+"proposes it."
+msgid_plural ""
+"{count} files dated only by the disk left out: a classify without --year "
+"proposes them."
+msgstr[0] ""
+"{count} fichier daté seulement par le disque mis de côté : un classify "
+"sans --year le propose."
+msgstr[1] ""
+"{count} fichiers datés seulement par le disque mis de côté : un classify "
+"sans --year les propose."
+
+#, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] "{count} fichier trouvé."
@@ -6283,10 +6561,6 @@ msgstr[0] "{count} évidente"
 msgstr[1] "{count} évidentes"
 
 #, python-brace-format
-msgid "{count} of them to describe with {model}, about {duration}."
-msgstr "Dont {count} à décrire avec {model}, environ {duration}."
-
-#, python-brace-format
 msgid "{count} of {total} ({percent}%)"
 msgstr "{count} sur {total} ({percent} %)"
 
@@ -6415,6 +6689,34 @@ msgstr[1] ""
 "{path}."
 
 #, python-brace-format
+msgid ""
+"{count} rule decided nothing in {years}: normal for those written for "
+"other years."
+msgid_plural ""
+"{count} rules decided nothing in {years}: normal for those written for "
+"other years."
+msgstr[0] ""
+"{count} règle n'a rien décidé en {years} : normal pour celles écrites "
+"pour d'autres années."
+msgstr[1] ""
+"{count} règles n'ont rien décidé en {years} : normal pour celles écrites "
+"pour d'autres années."
+
+#, python-brace-format
+msgid ""
+"{count} sample not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgid_plural ""
+"{count} samples not described yet (--no-describe): only those already "
+"described answer, in a few seconds."
+msgstr[0] ""
+"{count} échantillon pas encore décrit (--no-describe) : seuls ceux déjà "
+"décrits répondent, en quelques secondes."
+msgstr[1] ""
+"{count} échantillons pas encore décrits (--no-describe) : seuls ceux déjà"
+" décrits répondent, en quelques secondes."
+
+#, python-brace-format
 msgid "{count} series reviewed earlier changed since: reviewed again."
 msgid_plural "{count} series reviewed earlier changed since: reviewed again."
 msgstr[0] "{count} série triée auparavant a changé depuis : à trier à nouveau."
@@ -6495,6 +6797,18 @@ msgid "{count} sure"
 msgid_plural "{count} sure"
 msgstr[0] "{count} sûr"
 msgstr[1] "{count} sûrs"
+
+#, python-brace-format
+msgid ""
+"{count} to describe with {model} ({cached} already in the cache), about "
+"{duration}."
+msgstr ""
+"{count} à décrire avec {model} ({cached} déjà dans le cache), environ "
+"{duration}."
+
+#, python-brace-format
+msgid "{count} to describe with {model}, about {duration}."
+msgstr "{count} à décrire avec {model}, environ {duration}."
 
 #, python-brace-format
 msgid "{count} video"
@@ -6946,18 +7260,14 @@ msgid "{undone}, read back from the disk at {time}."
 msgstr "{undone}, relu sur le disque à {time}."
 
 #, python-brace-format
-msgid ""
-"{units} event or lone photo has no stronger signal than its subject: "
-"{samples} photos answer for it."
-msgid_plural ""
-"{units} events or lone photos have no stronger signal than their subject:"
-" {samples} photos answer for them."
+msgid "{units} group of photos (an event or a lone photo) no rule of yours took:"
+msgid_plural "{units} groups of photos (events or lone photos) no rule of yours took:"
 msgstr[0] ""
-"{units} événement ou photo isolée n'a pas de signal plus fort que son "
-"sujet : {samples} photos répondent pour lui."
+"{units} groupe de photos (un événement ou une photo seule) n'est pris par"
+" aucune de vos règles :"
 msgstr[1] ""
-"{units} événements ou photos isolées n'ont pas de signal plus fort que "
-"leur sujet : {samples} photos répondent pour eux."
+"{units} groupes de photos (événements ou photos seules) ne sont pris par "
+"aucune de vos règles :"
 
 #, python-brace-format
 msgid ""
@@ -6966,6 +7276,22 @@ msgid ""
 msgstr ""
 "{values} : les fichiers compagnons suivent la photo du même nom, ils ne "
 "sont pas analysés seuls"
+
+#, python-brace-format
+msgid "{value} is not a number."
+msgstr "{value} n'est pas un nombre."
+
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr "{value} n'est pas dans l'intervalle {range}."
+
+#, python-brace-format
+msgid "{value} is not one of {choices}."
+msgstr "{value} n'est pas l'un de {choices}."
+
+#, python-brace-format
+msgid "{value} is not valid."
+msgstr "{value} n'est pas valide."
 
 #, python-brace-format
 msgid ""
@@ -7088,4 +7414,7 @@ msgid ""
 msgstr ""
 "🛟 Seuls des fichiers compagnons .xmp sont écrits, jamais une photo : "
 "chacun est journalisé et 'undo' le reprend."
+
+msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
+msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"
 

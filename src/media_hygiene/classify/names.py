@@ -1,9 +1,9 @@
-"""Translated names of the bands and date sources: console and workbook."""
+"""Translated names of the bands, reasons and date sources: console and workbook."""
 
 from __future__ import annotations
 
 from media_hygiene.classify.carry_models import EditSheet, LostEdit, LostWhy
-from media_hygiene.classify.models import Band, DateSource
+from media_hygiene.classify.models import Band, DateSource, SortReason
 from media_hygiene.i18n import _
 
 
@@ -24,6 +24,42 @@ def band_name(band: Band) -> str:
         Band.STAY: _("Left as they are"),
     }
     return names[band]
+
+
+def reason_name(reason: SortReason) -> str:
+    """The translated name of a reason, shown when no rule of the user decided.
+
+    Args:
+        reason: A reason.
+
+    Returns:
+        Its name.
+    """
+    names = {
+        SortReason.EXISTING_FOLDER: _("Existing folder"),
+        SortReason.PERSON_FOLDER: _("Folder of a person"),
+        SortReason.EVENT_NEIGHBOUR: _("Event of a named folder"),
+        SortReason.CALENDAR: _("Days of every year"),
+        SortReason.DATE_RANGE: _("Date range"),
+        SortReason.KIND: _("Kind of file"),
+        SortReason.PATH: _("Path"),
+        SortReason.CAMERA: _("Camera"),
+        SortReason.SUBJECT: _("Subject"),
+        SortReason.PLACE: _("Personal place"),
+        SortReason.PLACE_NEIGHBOUR: _("Event at a personal place"),
+        SortReason.TRIP: _("Trip"),
+        SortReason.TRIP_NEIGHBOUR: _("Event of a trip"),
+        SortReason.FOLDER_TOWN: _("Town of the folder"),
+        SortReason.PERSON: _("Person"),
+        SortReason.OTHER_CATEGORY: _("Other category"),
+        SortReason.DATE_ONLY: _("Date only"),
+        SortReason.NO_SIGNAL: _("No signal"),
+        SortReason.UNDATED: _("Undated"),
+        SortReason.LEFT_AS_IS: _("Left as it is"),
+        SortReason.CARRIED_OVER: _("Edit carried over from the workbook"),
+        SortReason.PREVIOUS_GUESS: _("Previous guess, already in place"),
+    }
+    return names[reason]
 
 
 def source_name(source: DateSource | None) -> str:

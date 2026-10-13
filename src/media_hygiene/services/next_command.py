@@ -22,6 +22,7 @@ from media_hygiene.paths.docker_run import (
     Volume,
     guess_shell,
 )
+from media_hygiene.paths.host_folders import bind_source
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
@@ -124,8 +125,9 @@ def data_volumes(runtime: Runtime, *, read_only: bool) -> tuple[Volume, ...]:
         One volume per data root.
     """
     roots = runtime.mounts.data_roots(runtime.locations.data_dir)
+    to_host = runtime.mapper.to_host
     return tuple(
-        Volume(_host_of(runtime, root) or runtime.mapper.to_host(root), root, read_only)
+        Volume(bind_source(_host_of(runtime, root), to_host(root)), root, read_only)
         for root in roots
     )
 

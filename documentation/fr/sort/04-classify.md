@@ -49,20 +49,24 @@ Proposition
 └───────────┴──────────┴────────────┘
 
 Pourquoi
+┌────────────────────┬────┐
+│ Dossiers existants │ 76 │
+│ Aucun indice       │  3 │
+│ Sans date          │  3 │
+└────────────────────┴────┘
+
+Catégories les plus remplies
 ┌─────────────────────┬────┐
-│ Dossiers existants  │ 76 │
-│ no-signal           │  3 │
-│ undated             │  3 │
-│   Vacances à la mer │ 13 │
-│   Photos 2019       │ 12 │
-│   Randonnée         │ 10 │
-│   Anniversaire      │  8 │
-│   Ancien téléphone  │  8 │
-│   Noël              │  6 │
-│   Lac               │  6 │
-│   Téléphone         │  6 │
-│   Noël 2020         │  4 │
-│   WhatsApp          │  3 │
+│ Vacances à la mer   │ 13 │
+│ Photos 2019         │ 12 │
+│ Randonnée           │ 10 │
+│ Anniversaire        │  8 │
+│ Ancien téléphone    │  8 │
+│ Noël                │  6 │
+│ Lac                 │  6 │
+│ Téléphone           │  6 │
+│ Noël 2020           │  4 │
+│ WhatsApp            │  3 │
 └─────────────────────┴────┘
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et
@@ -131,7 +135,9 @@ Tout est dans la section `[classify]` de `config.toml`
 - `--layout "{year}/{month}"` : trier par mois, sans aucune catégorie.
 - `--target 'D:\Photos triées'` : construire l'arborescence ailleurs (le dossier doit être
   monté) ; par défaut, chaque dossier monté est réorganisé sur place.
-- `--year 2016`, ou `--year 2015-2017` : une année à la fois, une soirée à la fois.
+- `--year 2016`, ou `--year 2015-2017` : une année à la fois, une soirée à la fois. Les
+  fichiers datés seulement par le disque attendent un classify sans `--year` : ils vont dans
+  `À trier/Sans date` quelle que soit leur année.
 - `--leave 'C:\Photos\Albums'` : un dossier jamais trié, toujours analysé et nettoyé.
 
 Les modèles acceptent `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{category}`,

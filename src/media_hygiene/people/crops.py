@@ -10,7 +10,7 @@ import io
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.report.thumbnails import PICTURE_ERRORS, upright_picture
+from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
 
 if TYPE_CHECKING:
@@ -45,7 +45,7 @@ def face_crop(job: CropJob) -> bytes | None:
     prepare_image_worker()
     try:
         picture = upright_picture(job.path)
-    except (*PICTURE_ERRORS, OSError):
+    except unreadable_errors():
         return None
     box = job.box
     side = max(box.width, box.height) * (1 + 2 * _MARGIN)

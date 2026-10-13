@@ -12,7 +12,9 @@ import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.ai.prompts import map_request, read_mapping, version
+from media_hygiene.classify.ai.categories import names
+from media_hygiene.classify.ai.map_prompt import map_request, read_mapping
+from media_hygiene.classify.ai.prompts import version
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -83,7 +85,7 @@ def mapping_key(text: str, model: str, categories: Sequence[str]) -> str:
     Args:
         text: The description.
         model: The text model.
-        categories: The rule's categories, in order.
+        categories: The rule's categories, in order, definitions included.
 
     Returns:
         A SHA-256 digest.
@@ -107,7 +109,7 @@ async def _ask(
     """
     model = deps.client.settings.text_model
     content = await deps.client.chat(map_request(model, batch, categories))
-    answers = read_mapping(content, len(batch), categories)
+    answers = read_mapping(content, len(batch), names(categories))
     if answers is not None:
         return dict(zip(batch, answers, strict=True))
     if len(batch) == 1:

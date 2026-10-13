@@ -118,7 +118,7 @@ taken from the start of the event: `category = "Parties/Christmas {year}"`; the 
 Characters Windows refuses in a folder name are refused.
 
 The example categories are occasions and activities: Parties, Holidays and outings, School,
-Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots,
+Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots,
 Other. Replace them with yours. Avoid a "Family" or "Portraits" category: in a family
 collection, it swallows most photos.
 
@@ -153,21 +153,25 @@ The *Why* table of `classify` counts the files each rule decided, by its name:
 <!-- capture: classify.txt|Why|Check their dates -->
 ```text
 Why
-┌────────────────────┬────┐
-│ Existing folders   │ 76 │
-│ no-signal          │  3 │
-│ undated            │  3 │
-│   Seaside holidays │ 13 │
-│   Photos 2019      │ 12 │
-│   Mountain hike    │ 10 │
-│   Birthday         │  8 │
-│   Old phone        │  8 │
-│   Christmas        │  6 │
-│   Lake             │  6 │
-│   Phone            │  6 │
-│   Christmas 2020   │  4 │
-│   WhatsApp         │  3 │
-└────────────────────┴────┘
+┌──────────────────┬────┐
+│ Existing folders │ 76 │
+│ No signal        │  3 │
+│ Undated          │  3 │
+└──────────────────┴────┘
+
+Largest categories
+┌──────────────────┬────┐
+│ Seaside holidays │ 13 │
+│ Photos 2019      │ 12 │
+│ Mountain hike    │ 10 │
+│ Birthday         │  8 │
+│ Old phone        │  8 │
+│ Christmas        │  6 │
+│ Lake             │  6 │
+│ Phone            │  6 │
+│ Christmas 2020   │  4 │
+│ WhatsApp         │  3 │
+└──────────────────┴────┘
 
 ⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
 Event neighbours, Christmas, New Year.

@@ -6,7 +6,7 @@ identical files, and the quality and exposure labels of `[inventory]`.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final
@@ -18,6 +18,7 @@ from media_hygiene.scan.filters import media_kind
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
     from datetime import tzinfo
+    from pathlib import Path
 
     from media_hygiene.config.inventory_settings import InventorySettings
     from media_hygiene.index.listing import IndexedFile, SharedDigest
@@ -58,6 +59,8 @@ class InventoryContext:
     settings: InventorySettings
     zone: tzinfo
     tags: Callable[[IndexedFile], str | None] = _no_tags  # `tags`, joined
+    # The names on each photo, from its faces and `[[people.person]]`; none: empty.
+    people: Mapping[Path, tuple[str, ...]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)

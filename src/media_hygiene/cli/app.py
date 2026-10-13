@@ -8,6 +8,7 @@ from media_hygiene.cli.commands import commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
 from media_hygiene.cli.safety import help_of
+from media_hygiene.cli.usage_errors import localize_error_frame
 from media_hygiene.constants import APP_NAME, DOC_PAGES
 from media_hygiene.i18n import _
 
@@ -49,6 +50,7 @@ def build_app() -> typer.Typer:
     Returns:
         The Typer application.
     """
+    localize_error_frame()
     app = typer.Typer(
         name=APP_NAME,
         cls=LocalizedGroup,
@@ -61,6 +63,7 @@ def build_app() -> typer.Typer:
         rich_markup_mode="rich",
         no_args_is_help=True,
         add_completion=False,
+        pretty_exceptions_enable=False,  # an unexpected error: see `cli/unexpected.py`
         context_settings={"help_option_names": ["-h", "--help"]},
     )
     app.callback()(root_callback)

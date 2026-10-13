@@ -31,6 +31,13 @@ videos (H.264, HEVC, MPEG-4, VP8/VP9, WMV/VC-1, ProRes, …), the scale and rota
 raw output, nothing else. Both tools share the `VIDEO_DEMUXERS` list. AV1 is left out: its
 decoder needs an external library, and such a video is simply not compared.
 
+Both stay under the LGPL: never add `--enable-gpl` nor `--enable-nonfree` to their
+`configure`. When a dependency brings a new native library (a wheel's `*.libs` folder, an
+`apt-get install` in the runtime stage, a vendored file), add it to the *Licences* section of
+both READMEs and, when its licence is new, to the `org.opencontainers.image.licenses` label of
+the `Dockerfile`. To list what the wheels bundle:
+`ls /home/vscode/.venv/lib/python3.14/site-packages/*.libs`.
+
 ## The devcontainer
 
 Open the repository in the devcontainer (VS Code, *Reopen in Container*). Every new terminal

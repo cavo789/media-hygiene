@@ -23,7 +23,7 @@ from media_hygiene.classify.rules.order import decide
 from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
-from media_hygiene.classify.years import year_folders
+from media_hygiene.classify.years import below, in_years, year_folders
 from media_hygiene.constants import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class Scope:
+class Scope:  # pylint: disable=too-many-instance-attributes  # one field per option
     """Where the files go, which ones never move, which years are proposed."""
 
     target: Path | None = None  # None: each mounted folder, in place
@@ -50,6 +50,7 @@ class Scope:
     host: Callable[[Path], str] = str  # container → host path, for `path` rules
     seen: Seen = field(default_factory=Seen)  # the model's answers, the people
     towns: Gazetteer | None = None  # read only when a `trip` rule is on
+    within: tuple[Path, ...] = ()  # `--path`: only the files below them get a proposal
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,6 +60,8 @@ class Classification:
     proposals: tuple[Proposal, ...]
     events: tuple[Event, ...]
     unused_rules: tuple[str, ...] = ()
+    # `--year`: the years, and the files left out because only the disk dates them.
+    years: tuple[tuple[int, int] | None, int] = (None, 0)
 
 
 def classify(
@@ -115,11 +118,8 @@ def classify(
         )
         for file in files
     ]
-    kept = tuple(p for p in proposals if _in_years(p, scope.years))
-    used = {proposal.rule for proposal in kept}
-    return Classification(
-        kept, events, tuple(r.name for r in settings.rules if r.name not in used)
-    )
+    kept, undated = in_years(below(proposals, scope.within), scope.years)
+    return Classification(kept, events, _unused(settings, kept), (scope.years, undated))
 
 
 @dataclass(frozen=True, slots=True)
@@ -180,16 +180,15 @@ def _propose(
     )
 
 
-def _in_years(proposal: Proposal, years: tuple[int, int] | None) -> bool:
-    """Tell whether a proposal falls in the years asked for.
+def _unused(settings: ClassifySettings, kept: Sequence[Proposal]) -> tuple[str, ...]:
+    """The rules that decided no file of the run.
 
     Args:
-        proposal: A proposal.
-        years: First and last year, or None for all.
+        settings: `[classify]`: the rules.
+        kept: The proposals of the run.
 
     Returns:
-        True when in scope.
+        Their names, in order.
     """
-    if years is None or proposal.dating is None:
-        return years is None
-    return years[0] <= proposal.dating.when.year <= years[1]
+    used = {proposal.rule for proposal in kept}
+    return tuple(rule.name for rule in settings.rules if rule.name not in used)

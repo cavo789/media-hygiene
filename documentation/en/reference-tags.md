@@ -173,6 +173,12 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
   like its town) fills both fields. A field another application filled keeps its value; a field
   you emptied there is not filled again. After an update, run `tags` once more: the places found
   before do not know yet whether they are a town or a country, and fill these fields only then.
+- **The people, only if you ask**: with `person` in `xmp_sources` (never by default), the names of
+  the people on the photo ([`people`](reference-people.md)) go into
+  `Iptc4xmpExt:PersonInImage`, the field digiKam, Lightroom and Immich read. `xmp` says it before
+  writing: the names then travel with every copy of the photos (a phone, a cloud, a shared
+  drive). A name another application wrote stays; take `person` out and run `xmp --apply` again
+  to take ours back.
 - **Where**: `IMG_1.jpg.xmp` next to `IMG_1.jpg`. A sidecar already there (`IMG_1.jpg.xmp`, or
   `IMG_1.xmp` when it belongs to that photo alone) is completed, never replaced: its edits, its
   other properties and its own words stay; the sentence is only set when it has none. A sidecar

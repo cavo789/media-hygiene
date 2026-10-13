@@ -126,6 +126,7 @@ language = ""
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
 {{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, date. The model's sentence goes into dc:description.")) }}
+{{ comment(_("person writes the names of the people on each photo (PersonInImage): never by default, as the names then travel with every copy of the photos.")) }}
 xmp_sources = ["vision", "place"]
 
 
@@ -172,6 +173,10 @@ unsure = 50
 trip_min_km = 100
 trip_merge_gap_hours = 48
 trip_merge_max_km = 120
+{{ comment(_("Towns, for a 'folder_town' rule: a folder named exactly after a town of at least this many inhabitants (GeoNames) names the place of its photos.")) }}
+folder_town_min_population = 5000
+{{ comment(_('Folder names that are never towns, e.g. a first name that is also a town somewhere: ["Martin", "Victoria"]. Case and accents do not matter.')) }}
+folder_town_ignore = []
 
 [classify.ai]
 {{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}
@@ -188,10 +193,10 @@ confirm_above = 200
 concurrency = 1
 
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
-{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), other_category (the files no rule above matched).')) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
-{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, Home and works, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
+{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
 
 [[classify.rules]]
 name = "{{ _("Films and series") }}"
@@ -207,6 +212,10 @@ kind = "download"
 # [[classify.rules]]
 # name = "{{ _("Trips") }}"
 # match = "trip"
+#
+# [[classify.rules]]
+# name = "{{ _("Towns of the folders") }}"
+# match = "folder_town"
 #
 # [[classify.rules]]
 # name = "{{ _("Italy 2023") }}"
@@ -281,16 +290,18 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # category = "{{ _("Received") }}"
 
 {{ comment(_("The subject a local vision model sees, for the photos no rule above decided ([classify.ai] model must be set). It picks one of these categories, or none; it is sure only when the photos of an event agree. per_photo = true describes every photo instead of a few per event: much longer.")) }}
+{{ comment(_('Write each category as "Name = definition": the name is the folder, the definition tells the model what you mean by it. A name alone is judged by its words: "Home and works" drew every indoor scene.')) }}
 # [[classify.rules]]
 # name = "{{ _("Subject") }}"
 # match = "subject"
 # categories = [
-#     "{{ _("Holidays and outings") }}",
-#     "{{ _("School") }}",
-#     "{{ _("Sport and leisure") }}",
-#     "{{ _("Home and works") }}",
-#     "{{ _("Animals") }}",
-#     "{{ _("Nature and landscapes") }}",
+#     "{{ _("Holidays and outings") }} = {{ _("away from home: trips, visits, restaurants, playgrounds") }}",
+#     "{{ _("Parties") }} = {{ _("birthdays, Christmas, communions, weddings; not a costume alone") }}",
+#     "{{ _("School") }} = {{ _("classrooms, school trips, school shows and parties") }}",
+#     "{{ _("Sport and leisure") }} = {{ _("sports and hobbies, played or watched: matches, swimming") }}",
+#     "{{ _("At home") }} = {{ _("in your own home only: meals, games, children, sofa, garden") }}",
+#     "{{ _("Animals") }} = {{ _("a pet or an animal as the main subject") }}",
+#     "{{ _("Nature and landscapes") }} = {{ _("landscapes, plants and sky, no one as the main subject") }}",
 # ]
 
 {{ comment(_('"Other" means: sure that nothing above matches. Without it, such files go to "to sort", which means: we do not know.')) }}
@@ -306,3 +317,8 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # longitude = 5.0
 # radius_m = 200
 # home = true
+
+{{ comment(_("Your names for the towns: the towns are named after GeoNames, in English or in their own language (Brussels, Brugge, Gent). Write the exact GeoNames name, then yours: trips, {city}, the places page and the folder_town rule use yours; a folder named either way matches.")) }}
+# [classify.town_names]
+# "Brugge" = "Bruges"
+# "Gent" = "{{ _("Ghent") }}"

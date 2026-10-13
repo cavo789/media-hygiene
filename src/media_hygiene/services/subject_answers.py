@@ -33,10 +33,15 @@ class Answering:
 
 @dataclass(frozen=True, slots=True)
 class Answered:
-    """The subjects of every `subject` rule, and how describing went."""
+    """The subjects of every `subject` rule, and how describing went.
+
+    `unanswered`: by rule, the units none of whose files got a subject (the model said
+    none, the samples disagreed, or nothing was described): the other rules decide.
+    """
 
     subjects: dict[str, dict[Path, Subject]]
     outcome: DescribeOutcome = field(default_factory=DescribeOutcome)
+    unanswered: dict[str, int] = field(default_factory=dict)
 
 
 def answers_of(plan: SubjectPlan, rule: ClassifyRule, deps: MapDeps) -> dict[Path, str]:

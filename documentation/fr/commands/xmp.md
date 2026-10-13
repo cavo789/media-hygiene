@@ -54,6 +54,9 @@ docker run --rm -it `
 - Avec `place` : la ville dans `photoshop:City`, son pays dans `photoshop:Country`, votre lieu
   personnel dans `Iptc4xmpCore:Location`. Un nom qui est deux de ces lieux à la fois (Luxembourg,
   ville et pays ; un lieu à vous qui porte le nom de sa ville) remplit les deux champs.
+- Avec `person` (à demander, jamais par défaut) : les noms des personnes sur la photo dans
+  `Iptc4xmpExt:PersonInImage` ; `xmp` prévient d'abord, puisque les noms voyagent alors avec les
+  photos.
 - **Un fichier compagnon déjà là est complété, jamais remplacé** : ses modifications, ses autres
   propriétés et ses propres mots restent. Un champ qu'une autre application a rempli garde sa valeur.
 

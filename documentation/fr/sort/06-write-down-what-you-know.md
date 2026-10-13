@@ -124,7 +124,7 @@ GPS y ajoutent `{place}`, `{country}`, `{region}` et `{city}`
 nom de dossier sont refusés.
 
 Les catégories d'exemple sont des occasions et des activités : Fêtes, Vacances et sorties,
-École, Sport et loisirs, Maison et travaux, Animaux, Nature et paysages, Documents et captures
+École, Sport et loisirs, À la maison, Animaux, Nature et paysages, Documents et captures
 d'écran, Autres. Remplacez-les par les vôtres. Évitez une catégorie « Famille » ou
 « Portraits » : dans une collection familiale, elle avale la plupart des photos.
 
@@ -160,20 +160,24 @@ Le tableau *Pourquoi* de `classify` compte les fichiers que chaque règle a déc
 <!-- capture: classify.txt|Pourquoi|Vérifiez leurs dates -->
 ```text
 Pourquoi
+┌────────────────────┬────┐
+│ Dossiers existants │ 76 │
+│ Aucun indice       │  3 │
+│ Sans date          │  3 │
+└────────────────────┴────┘
+
+Catégories les plus remplies
 ┌─────────────────────┬────┐
-│ Dossiers existants  │ 76 │
-│ no-signal           │  3 │
-│ undated             │  3 │
-│   Vacances à la mer │ 13 │
-│   Photos 2019       │ 12 │
-│   Randonnée         │ 10 │
-│   Anniversaire      │  8 │
-│   Ancien téléphone  │  8 │
-│   Noël              │  6 │
-│   Lac               │  6 │
-│   Téléphone         │  6 │
-│   Noël 2020         │  4 │
-│   WhatsApp          │  3 │
+│ Vacances à la mer   │ 13 │
+│ Photos 2019         │ 12 │
+│ Randonnée           │ 10 │
+│ Anniversaire        │  8 │
+│ Ancien téléphone    │  8 │
+│ Noël                │  6 │
+│ Lac                 │  6 │
+│ Téléphone           │  6 │
+│ Noël 2020           │  4 │
+│ WhatsApp            │  3 │
 └─────────────────────┴────┘
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et

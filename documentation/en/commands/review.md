@@ -84,6 +84,7 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 | `--decisions FILE` | The file the choices are saved in, and resumed from; `decisions.json` of `/reports` by default. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one: `-p 127.0.0.1:9000:9000` for `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | As for [`audit`](audit.md#options): give `review` the same ones as `clean`. |
+| `--ext`, `--exclude-name` | As for [`audit`](audit.md#options): the audit `review` starts with then sees the same files. |
 
 ## Good to know
 
@@ -141,6 +142,22 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 │                         kept. Repeatable.                                    │
 │ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
 │                         Repeatable.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮
+│ --ext                 <str>  Only analyse these categories or extensions,    │
+│                              e.g. --ext photo,video or --ext png,webp        │
+│                              (repeatable). Categories: photo, raw, video,    │
+│                              media and those of scan.categories in           │
+│                              config.toml. Other types too, such as --ext     │
+│                              pdf,docx: their copies are moved to the         │
+│                              quarantine. Default: media (every photo, RAW    │
+│                              and video).                                     │
+│ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
+│                              case ignored; * and ? allowed, e.g.             │
+│                              --exclude-name Thumbnails,.Trash-*              │
+│                              (repeatable). Adds to the system folders        │
+│                              already skipped. For one precise folder, use    │
+│                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -28,6 +28,7 @@ _UPSERT: Final = (
     " (path, size, mtime_ns, model, prompt, description, tags, seconds)"
     " VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 )
+_TEXTS: Final = "SELECT description FROM descriptions WHERE model = ? AND prompt = ?"
 _SECONDS: Final = "SELECT seconds FROM descriptions WHERE model = ? AND seconds > 0"
 _MAPPING: Final = "SELECT category FROM subject_mappings WHERE key = ?"
 _PUT_MAPPING: Final = (
@@ -95,6 +96,15 @@ class DescriptionStore:
             ),
         )
         self._connection.commit()
+
+    def texts(self) -> frozenset[str]:
+        """Every sentence this model answered to this prompt, whatever the photo.
+
+        Returns:
+            The sentences.
+        """
+        rows = self._connection.execute(_TEXTS, (self._model, self._prompt))
+        return frozenset(row[0] for row in rows)
 
     def seconds_per_photo(self) -> float | None:
         """How long this model takes to describe a photo, on this machine.

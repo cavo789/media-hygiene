@@ -18,9 +18,38 @@ from media_hygiene.services.classify_output import write_classify_output
 from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.classify.carry_types import CarrySource
     from media_hygiene.services.classify import ClassifyResult
     from media_hygiene.services.runtime import Runtime
+
+
+def scope_folders(runtime: Runtime, given: list[str] | None) -> tuple[Path, ...]:
+    """The `--path` folders, in container paths; each must be mounted.
+
+    Args:
+        runtime: The host → container mapping.
+        given: Host folders, as typed.
+
+    Returns:
+        The folders.
+
+    Raises:
+        MountError: A folder is not below a mounted folder.
+    """
+    folders = tuple(runtime.mapper.to_container(folder) for folder in given or ())
+    for typed, folder in zip(given or (), folders, strict=True):
+        if not folder.is_dir():
+            raise MountError(
+                _("The folder {path} is not mounted.").format(path=typed),
+                _(
+                    "Give a folder below one of your -v, written as the audit shows "
+                    'it, e.g. --path "C:\\Photos\\2015".'
+                ),
+            )
+    return folders
+
 
 _YEARS: Final = re.compile(r"(?P<first>\d{4})(?:-(?P<last>\d{4}))?")
 

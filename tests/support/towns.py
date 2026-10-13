@@ -31,15 +31,27 @@ TOWNS: Final = (
     ("Sydney", -33.86785, 151.20732, "PPLA", "AU", "02", 4627345),
     ("The Rocks", -33.85923, 151.20807, "PPL", "AU", "02", 1500),
     ("Turin 04 Old district", 45.07100, 7.68500, "PPLX", "IT", "12", 50000),
+    ("Durbuy", 50.35255, 5.45630, "PPL", "BE", "WAL", 11000),
+    ("Stoumont", 50.40592, 5.80840, "PPL", "BE", "WAL", 3000),
+    ("Nice", 43.70313, 7.26608, "PPLA2", "FR", "93", 342669),
+    ("Bruges", 44.88333, -0.61667, "PPL", "FR", "75", 12000),
 )
 REGIONS: Final = (
     ("BE.BRU", "Brussels Capital"),
     ("BE.VLG", "Flanders"),
+    ("BE.WAL", "Wallonia"),
+    ("FR.93", "Provence-Alpes-Côte d'Azur"),
+    ("FR.75", "Nouvelle-Aquitaine"),
     ("IT.12", "Piedmont"),
     ("IT.09", "Lombardy"),
     ("AU.02", "New South Wales"),
 )
-COUNTRIES: Final = (("BE", "Belgium"), ("IT", "Italy"), ("AU", "Australia"))
+COUNTRIES: Final = (
+    ("BE", "Belgium"),
+    ("IT", "Italy"),
+    ("AU", "Australia"),
+    ("FR", "France"),
+)
 
 
 def write_towns(folder: Path) -> Path:

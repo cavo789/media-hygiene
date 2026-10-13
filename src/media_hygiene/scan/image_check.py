@@ -1,4 +1,12 @@
-"""Decode an image to prove it is readable, and describe it (in worker processes)."""
+"""Decode an image to prove it is readable, and describe it (in worker processes).
+
+`pillow_heif` loads libheif and its codecs, native libraries: it is imported when a
+worker is prepared to decode, so that a command which never opens a picture never
+loads it.
+"""
+
+# ruff: noqa: PLC0415
+# pylint: disable=import-outside-toplevel
 
 from __future__ import annotations
 
@@ -12,7 +20,6 @@ import warnings
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-import pillow_heif
 from PIL import Image
 
 from media_hygiene.scan.exif import image_metadata
@@ -54,6 +61,8 @@ def prepare_image_worker() -> None:
         signal.signal(signal.SIGINT, signal.SIG_IGN)
     if multiprocessing.parent_process() is not None:
         _discard_stderr()
+    import pillow_heif
+
     pillow_heif.register_heif_opener()
     Image.MAX_IMAGE_PIXELS = None
 

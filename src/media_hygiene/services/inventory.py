@@ -34,6 +34,7 @@ from media_hygiene.report.inventory_workbook import (
     write_csv,
     write_workbook,
 )
+from media_hygiene.search.people_words import people_words
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import NextVerb
@@ -121,6 +122,7 @@ def _entries(runtime: Runtime, connection: sqlite3.Connection) -> Iterator[Entry
         settings.inventory,
         zone_of(settings.classify.timezone),
         tags_reader(connection),
+        people_words(connection, settings.people),
     )
     for file in indexed_files(connection):
         entry = entry_of(file, context)

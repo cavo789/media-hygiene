@@ -26,7 +26,8 @@ class TagSource(StrEnum):
     DATE = "date"  # year, month, season, holidays, calendar rules
     PLACE = "place"  # a personal place, the GeoNames town and country
     # The names of the people on the photo (`people`), made at each search from the
-    # faces and `[[people.person]]`: never stored, never written into a sidecar.
+    # faces and `[[people.person]]`: never stored; written into a sidecar only when
+    # the user adds it to `[tags] xmp_sources`.
     PERSON = "person"
 
 

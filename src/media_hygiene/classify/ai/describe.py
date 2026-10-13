@@ -12,10 +12,16 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import dataclass, field
+from functools import partial
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.ai.prompts import describe_request, read_description
+from media_hygiene.classify.ai.prompts import (
+    describe_name,
+    describe_request,
+    read_description,
+)
+from media_hygiene.constants import Locale
 from media_hygiene.errors import AiError
 from media_hygiene.report.thumbnails import jpeg_preview
 from media_hygiene.scan.video_still import video_jpeg
@@ -40,7 +46,20 @@ class Question:
     read: Callable[[str, float], Description | None]
 
 
-CLASSIFY_QUESTION: Final = Question(describe_request, read_description)
+def classify_question(language: Locale) -> Question:
+    """The question of `classify`, answered in the language of the interface.
+
+    Args:
+        language: The language of the descriptions.
+
+    Returns:
+        The question.
+    """
+    name = describe_name(language)
+    return Question(partial(describe_request, name=name), read_description)
+
+
+CLASSIFY_QUESTION: Final = classify_question(Locale.EN)
 
 
 @dataclass(frozen=True, slots=True)

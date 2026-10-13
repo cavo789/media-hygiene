@@ -96,6 +96,9 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
         RuleMatch.PERSON: lambda: person_test(rule, facts.seen.people, facts.event_of),
         RuleMatch.PLACE: lambda: lambda file: file.path in facts.where.places,
         RuleMatch.TRIP: lambda: lambda file: file.path in facts.where.trips,
+        RuleMatch.FOLDER_TOWN: lambda: (
+            lambda file: file.path in facts.where.folder_towns
+        ),
         RuleMatch.OTHER_CATEGORY: lambda: _always,
     }
     return builders[rule.match]()

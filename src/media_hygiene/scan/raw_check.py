@@ -2,7 +2,13 @@
 
 Runs in worker processes, like the image checks. RAW files get no visual facts: they
 stay out of near duplicates and bursts, whose tests are tuned on JPEG pictures.
+
+`rawpy` loads LibRaw, a native library: it is imported by the functions that decode
+only, so that a command which never opens a picture (`undo`, `history`…) never loads it.
 """
+
+# ruff: noqa: PLC0415
+# pylint: disable=import-outside-toplevel
 
 from __future__ import annotations
 
@@ -10,26 +16,12 @@ import io
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
-import rawpy
 from PIL import ExifTags, Image, ImageOps
-
-# rawpy's package only re-exports these names to type checkers: take them at the source.
-from rawpy._rawpy import (
-    LibRawError,
-    LibRawNoThumbnailError,
-    LibRawUnsupportedThumbnailError,
-    NotSupportedError,
-    ThumbFormat,
-)
 
 from media_hygiene.scan.image_check import ImageInspection
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-# A damaged RAW file can make LibRaw fail in many ways: all mean "unreadable".
-RAW_ERRORS: Final = (LibRawError, NotSupportedError, OSError, MemoryError)
-_NO_PREVIEW: Final = (LibRawNoThumbnailError, LibRawUnsupportedThumbnailError)
 # LibRaw's `flip`: how the picture must be turned to be seen upright.
 _FLIPS: Final = {
     3: Image.Transpose.ROTATE_180,
@@ -48,12 +40,26 @@ def inspect_raw(path: Path) -> ImageInspection:
     Returns:
         The decoder error, or nothing to report.
     """
+    import rawpy
+
     try:
         with rawpy.imread(str(path)) as raw:
             raw.unpack()
-    except RAW_ERRORS as exc:
+    except raw_errors() as exc:
         return ImageInspection(problem=_describe(exc))
     return ImageInspection()
+
+
+def raw_errors() -> tuple[type[Exception], ...]:
+    """The errors of a damaged RAW file: LibRaw fails in many ways, all "unreadable".
+
+    Returns:
+        The exception types.
+    """
+    # rawpy only re-exports these names to type checkers: take them at the source.
+    from rawpy._rawpy import LibRawError, NotSupportedError
+
+    return (LibRawError, NotSupportedError, OSError, MemoryError)
 
 
 def raw_preview(path: Path) -> Image.Image:
@@ -67,10 +73,17 @@ def raw_preview(path: Path) -> Image.Image:
     Returns:
         The preview.
     """
+    import rawpy
+    from rawpy._rawpy import (
+        LibRawNoThumbnailError,
+        LibRawUnsupportedThumbnailError,
+        ThumbFormat,
+    )
+
     with rawpy.imread(str(path)) as raw:
         try:
             thumb = raw.extract_thumb()
-        except _NO_PREVIEW:
+        except LibRawNoThumbnailError, LibRawUnsupportedThumbnailError:
             return Image.fromarray(raw.postprocess(half_size=True))  # already upright
         flip = raw.sizes.flip
     image: Image.Image

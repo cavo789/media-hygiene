@@ -21,6 +21,7 @@ from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.sidecars import companions_of
+from media_hygiene.search.people_words import people_words
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.xmp_doc import XmpError, parse
 from media_hygiene.tags.xmp_merge import XmpValues, merge, new_document
@@ -28,8 +29,9 @@ from media_hygiene.tags.xmp_places import NO_PLACES, places_of
 
 if TYPE_CHECKING:
     import sqlite3
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
 
+    from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.index.listing import IndexedFile
 
 _XMP: Final = ".xmp"
@@ -43,6 +45,7 @@ class XmpScope:
     protected: tuple[Path, ...]
     sources: tuple[TagSource, ...]
     tool: str  # `media-hygiene <version>`, the creator of new sidecars
+    people: PeopleSettings | None = None  # the names: read with the `person` source
 
 
 @dataclass(slots=True)
@@ -78,30 +81,38 @@ def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
     )
     store, plan = TagStore(connection), XmpPlan()
     folders: dict[Path, list[str]] = {}
+    named = (
+        people_words(connection, scope.people)
+        if scope.people and TagSource.PERSON in scope.sources
+        else {}
+    )
     for file in files:
         if any(is_within(file.path, folder) for folder in scope.protected):
             plan.protected += 1
         elif file.facts.full_digest and digests[file.facts.full_digest] > 1:
             plan.copies += 1
         else:
-            values = _values(store, file, scope.sources)
+            values = _values(store, file, (scope.sources, named))
             _plan_file(plan, (file, values), (scope, folders))
     return plan
 
 
 def _values(
-    store: TagStore, file: IndexedFile, sources: Sequence[TagSource]
+    store: TagStore,
+    file: IndexedFile,
+    wanted: tuple[Sequence[TagSource], Mapping[Path, tuple[str, ...]]],
 ) -> XmpValues:
-    """Our words and sentence for one file.
+    """Our words, sentence, place and people's names for one file.
 
     Args:
         store: The tags of the index.
         file: The file.
-        sources: The sources written into `dc:subject`.
+        wanted: The sources written, and the names on each photo (`person` only).
 
     Returns:
         The values; empty when it has none.
     """
+    sources, named = wanted
     tags = store.of(PhotoVersion(file.path, file.size, file.mtime_ns))
     words = dict.fromkeys(
         tag.value
@@ -113,6 +124,7 @@ def _values(
         tuple(words),
         captions[0] if captions else "",
         places_of(tags) if TagSource.PLACE in sources else NO_PLACES,
+        named.get(file.path, ()),
     )
 
 
@@ -130,7 +142,9 @@ def _plan_file(
     """
     file, values = what
     scope, folders = where
-    if not (values.subjects or values.description) or not file.path.is_file():
+    if not (values.subjects or values.description or values.people) or (
+        not file.path.is_file()
+    ):
         plan.without_words += 1
         return
     sidecar = sidecar_of(file.path, folders)

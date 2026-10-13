@@ -60,15 +60,16 @@ docker run --rm -it `
 
 | Option | What it does |
 |---|---|
-| `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. |
+| `--path FOLDER` | Only the files below this folder (host path, as you mounted it), repeatable: `--path "C:\Photos\2015"`. Events stay whole: built from every file, only those below the folder get a proposal. With `--year`: both. |
+| `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. Files only the disk dates (copies, downloads) are left out and counted: a run without `--year` proposes them. The rules written for other years are counted in one line, not named. |
 | `--layout LAYOUT` | Where sure files go: `{year}/{month}`, `{year}/{category}`… Also `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target PATH` | Host folder receiving the tree (it must be mounted); each mounted folder, in place, by default. |
 | `--leave PATH` | Host folder never sorted, still analysed and cleaned. |
 | `--carry-over WORKBOOK` | Carry over the edits of this workbook; the latest `classify` run's by default. |
 | `--no-carry-over` | Start fresh. |
-| `--sample N` | Describe N random photos with the local vision model, print the time per photo and the estimate of a full run, and stop. |
-| `--no-describe` | Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. |
-| `--yes`, `-y` | Describe the photos with the local model without asking, however many. |
+| 🤖 `--sample N` | **With a local AI only.** Describe N random photos with the local vision model, print the time per photo and the estimate of a full run, and stop. |
+| 🤖 `--no-describe` | **With a local AI only.** Ask the local model nothing new: the `subject` rules read the descriptions already in the cache. |
+| 🤖 `--yes`, `-y` | **With a local AI only.** Describe the photos with the local model without asking, however many. |
 
 Every option has its line in the `[classify]` section of `config.toml`; the rules
 (`[[classify.rules]]`) are written there only.
@@ -120,11 +121,17 @@ cavo789/media-hygiene classify --sample 20
  Usage: media-hygiene classify [OPTIONS]
 
  🔒 Read-only: never changes your photos. Propose where every photo and video
- should go: year, event, category.
+ should go: year, event, category, and what lone photos show with an optional
+ local AI 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year            <str>  Only the files of this year, or of these years:     │
 │                          2016 or 2015-2017.                                  │
+│ --path            <str>  Only the files below this folder (host path, as you │
+│                          mounted it); repeat it for several. The events stay │
+│                          whole: they are built from every file, and only the │
+│                          files below the folders get a proposal. With        │
+│                          --year: the files of both.                          │
 │ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
 │                          {month_name}'.                                      │
 │ --target          <str>  Host folder receiving the tree; in place by         │
@@ -132,26 +139,25 @@ cavo789/media-hygiene classify --sample 20
 │ --help    -h             Show this message and exit.                         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
-│ --leave                  <str>               Host folder never sorted        │
-│                                              (analysed and cleaned as        │
-│                                              usual).                         │
-│ --carry-over             <str>               Workbook whose edits are        │
-│                                              carried over; the latest        │
-│                                              classify run's by default.      │
-│ --no-carry-over                              Start fresh: carry no edit of a │
-│                                              previous workbook over.         │
-│ --sample                 <int range> [x>=0]  Estimate a full run first:      │
-│                                              describe this many random       │
-│                                              photos with the local model,    │
-│                                              print the time per photo and    │
-│                                              the estimate of a full run, and │
-│                                              stop.                           │
-│ --no-describe                                Ask the local model nothing     │
-│                                              new: the subject rules read the │
-│                                              descriptions already in the     │
-│                                              cache.                          │
-│ --yes            -y                          Describe the photos without     │
-│                                              asking, however many.           │
+│ --leave                <str>  Host folder never sorted (analysed and cleaned │
+│                               as usual).                                     │
+│ --carry-over           <str>  Workbook whose edits are carried over; the     │
+│                               latest classify run's by default.              │
+│ --no-carry-over               Start fresh: carry no edit of a previous       │
+│                               workbook over.                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
+│ --sample               <int range> [x>=0]  Estimate a full run first:        │
+│                                            describe this many random photos  │
+│                                            with the local model, print the   │
+│                                            time per photo and the estimate   │
+│                                            of a full run, and stop.          │
+│ --no-describe                              Ask the local model nothing new:  │
+│                                            the subject rules read the        │
+│                                            descriptions already in the       │
+│                                            cache.                            │
+│ --yes          -y                          Describe the photos without       │
+│                                            asking, however many.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

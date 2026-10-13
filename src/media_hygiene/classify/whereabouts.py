@@ -9,12 +9,15 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field, replace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.layout import GeoValues
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.geo.distance import Point
+from media_hygiene.geo.gazetteer import Gazetteer
+
+_TOWN_RULES: Final = frozenset({RuleMatch.TRIP, RuleMatch.FOLDER_TOWN})
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -37,10 +40,11 @@ class Spot:
 
 @dataclass(frozen=True, slots=True)
 class Whereabouts:
-    """The files at a personal place, and those on a trip."""
+    """The files at a personal place, on a trip, in a folder named after a town."""
 
     places: Mapping[Path, Spot] = field(default_factory=dict)
     trips: Mapping[Path, Spot] = field(default_factory=dict)
+    folder_towns: Mapping[Path, Spot] = field(default_factory=dict)
 
     def values(self, path: Path) -> GeoValues:
         """What the layouts can say of where one file was taken.
@@ -49,9 +53,10 @@ class Whereabouts:
             path: The file.
 
         Returns:
-            Its place, and the country, region and town of its trip.
+            Its place, and the country, region and town of its trip (else of the
+            town its folder is named after).
         """
-        trip = self.trips.get(path)
+        trip = self.trips.get(path) or self.folder_towns.get(path)
         place = self.places.get(path)
         found = trip.values if trip else GeoValues()
         return replace(found, place=place.values.place) if place else found
@@ -98,8 +103,22 @@ def located_point(metadata: MediaMetadata | None) -> Point | None:
     return Point(metadata.latitude, metadata.longitude)
 
 
+def load_towns(settings: ClassifySettings) -> Gazetteer | None:
+    """The GeoNames towns, the user's names applied, when a run names towns.
+
+    Args:
+        settings: `[classify]`.
+
+    Returns:
+        The towns; None when no `trip` or `folder_town` rule is on.
+    """
+    if not needs_towns(settings):
+        return None
+    return Gazetteer.load().renamed(settings.town_names)
+
+
 def needs_towns(settings: ClassifySettings) -> bool:
-    """Tell whether a run names towns: a `trip` rule is on.
+    """Tell whether a run names towns: a `trip` or `folder_town` rule is on.
 
     Args:
         settings: `[classify]`.
@@ -107,9 +126,7 @@ def needs_towns(settings: ClassifySettings) -> bool:
     Returns:
         True when the GeoNames towns must be read.
     """
-    return any(
-        rule.match is RuleMatch.TRIP and rule.score != 0 for rule in settings.rules
-    )
+    return any(rule.match in _TOWN_RULES and rule.score != 0 for rule in settings.rules)
 
 
 def place_spots(

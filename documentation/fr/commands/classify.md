@@ -61,15 +61,16 @@ docker run --rm -it `
 
 | Option | Rôle |
 |---|---|
-| `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. |
+| `--path DOSSIER` | Seulement les fichiers sous ce dossier (chemin de l'hôte, tel que monté), répétable : `--path "C:\Photos\2015"`. Les événements restent entiers : formés à partir de tous les fichiers, seuls ceux sous le dossier reçoivent une proposition. Avec `--year` : les deux. |
+| `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. Les fichiers datés seulement par le disque (copies, téléchargements) sont mis de côté et comptés : un classify sans `--year` les propose. Les règles écrites pour d'autres années sont comptées en une ligne, sans leurs noms. |
 | `--layout DISPOSITION` | Où vont les fichiers sûrs : `{year}/{month}`, `{year}/{category}`… Aussi `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target CHEMIN` | Dossier de l'hôte qui reçoit l'arborescence (il doit être monté) ; chaque dossier monté, sur place, par défaut. |
 | `--leave CHEMIN` | Dossier de l'hôte jamais trié, toujours analysé et nettoyé. |
 | `--carry-over CLASSEUR` | Reprendre les modifications de ce classeur ; celui du dernier `classify` par défaut. |
 | `--no-carry-over` | Repartir de zéro. |
-| `--sample N` | Décrire N photos prises au hasard avec le modèle de vision local, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
-| `--no-describe` | Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. |
-| `--yes`, `-y` | Décrire les photos avec le modèle local sans demander, quel que soit leur nombre. |
+| 🤖 `--sample N` | **Avec une IA locale seulement.** Décrire N photos prises au hasard avec le modèle de vision local, afficher le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
+| 🤖 `--no-describe` | **Avec une IA locale seulement.** Ne rien demander de nouveau au modèle local : les règles `subject` lisent les descriptions déjà dans le cache. |
+| 🤖 `--yes`, `-y` | **Avec une IA locale seulement.** Décrire les photos avec le modèle local sans demander, quel que soit leur nombre. |
 
 Chaque option a sa ligne dans la section `[classify]` de `config.toml` ; les règles
 (`[[classify.rules]]`) s'y écrivent seulement.
@@ -122,11 +123,18 @@ cavo789/media-hygiene --locale fr classify --sample 20
  Utilisation : media-hygiene classify [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Propose où ranger chaque
- photo et vidéo : année, événement, catégorie.
+ photo et vidéo : année, événement, catégorie, et ce que montrent les photos
+ isolées avec une IA locale facultative 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --year            <str>  Seulement les fichiers de cette année, ou de ces    │
 │                          années : 2016 ou 2015-2017.                         │
+│ --path            <str>  Seulement les fichiers sous ce dossier (chemin de   │
+│                          l'hôte, tel que vous l'avez monté) ; répétez-la     │
+│                          pour plusieurs. Les événements restent entiers :    │
+│                          ils sont formés à partir de tous les fichiers, et   │
+│                          seuls les fichiers sous ces dossiers reçoivent une  │
+│                          proposition. Avec --year : les fichiers des deux.   │
 │ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
 │                          '{year}/{month} - {month_name}'.                    │
 │ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │
@@ -134,29 +142,27 @@ cavo789/media-hygiene --locale fr classify --sample 20
 │ --help    -h             Affiche ce message et quitte.                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
-│ --leave                  <str>               Dossier de l'hôte jamais trié   │
-│                                              (analysé et nettoyé comme       │
-│                                              d'habitude).                    │
-│ --carry-over             <str>               Classeur dont les modifications │
-│                                              sont reprises ; celui du        │
-│                                              dernier classify par défaut.    │
-│ --no-carry-over                              Repartir de zéro : ne reprendre │
-│                                              aucune modification d'un        │
-│                                              classeur précédent.             │
-│ --sample                 <int range> [x>=0]  Estimer d'abord une exécution   │
-│                                              complète : décrire ce nombre de │
-│                                              photos prises au hasard avec le │
-│                                              modèle local, afficher le temps │
-│                                              par photo et l'estimation d'une │
-│                                              exécution complète, puis        │
-│                                              s'arrêter.                      │
-│ --no-describe                                Ne rien demander de nouveau au  │
-│                                              modèle local : les règles       │
-│                                              subject lisent les descriptions │
-│                                              déjà dans le cache.             │
-│ --yes            -y                          Décrire les photos sans         │
-│                                              demander, quel que soit leur    │
-│                                              nombre.                         │
+│ --leave                <str>  Dossier de l'hôte jamais trié (analysé et      │
+│                               nettoyé comme d'habitude).                     │
+│ --carry-over           <str>  Classeur dont les modifications sont reprises  │
+│                               ; celui du dernier classify par défaut.        │
+│ --no-carry-over               Repartir de zéro : ne reprendre aucune         │
+│                               modification d'un classeur précédent.          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
+│ --sample               <int range> [x>=0]  Estimer d'abord une exécution     │
+│                                            complète : décrire ce nombre de   │
+│                                            photos prises au hasard avec le   │
+│                                            modèle local, afficher le temps   │
+│                                            par photo et l'estimation d'une   │
+│                                            exécution complète, puis          │
+│                                            s'arrêter.                        │
+│ --no-describe                              Ne rien demander de nouveau au    │
+│                                            modèle local : les règles subject │
+│                                            lisent les descriptions déjà dans │
+│                                            le cache.                         │
+│ --yes          -y                          Décrire les photos sans demander, │
+│                                            quel que soit leur nombre.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

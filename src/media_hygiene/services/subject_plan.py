@@ -40,6 +40,7 @@ class SubjectPlan:
     versions: Mapping[Path, PhotoVersion]
     missing: tuple[PhotoVersion, ...]
     seconds_per_photo: float
+    per_event: int = 0  # samples asked per unit; 0: every photo (`per_photo`)
 
     @property
     def sample_count(self) -> int:
@@ -49,6 +50,15 @@ class SubjectPlan:
             The number of samples, described or not.
         """
         return sum(len(paths) for paths in self.samples.values())
+
+    @property
+    def cached(self) -> int:
+        """How many samples the cache already describes.
+
+        Returns:
+            The samples not to describe again.
+        """
+        return self.sample_count - len(self.missing)
 
     @property
     def estimate(self) -> float:
@@ -121,4 +131,5 @@ def plan_subjects(
         versions,
         tuple(versions[p] for p in chosen if p not in described),
         store.seconds_per_photo() or ai.seconds_per_photo,
+        count,
     )

@@ -12,7 +12,13 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.describe_consent import may_describe
 from media_hygiene.console.progress import RichProgress
-from media_hygiene.console.subject_view import show_answered, show_plan, show_sample
+from media_hygiene.console.subject_view import (
+    show_answered,
+    show_not_described,
+    show_plan,
+    show_sample,
+    show_work,
+)
 from media_hygiene.i18n import _
 from media_hygiene.services.classify_sample import run_sample
 from media_hygiene.services.classify_subjects import SubjectStep
@@ -56,7 +62,11 @@ def ask_subjects(
     _tip_cache(runtime)
     with SubjectStep(runtime) as step:
         plan = step.plan(inputs)
-        show_plan(output, plan, runtime.settings.classify.ai.model)
+        show_plan(output, plan)
+        if request.describe:
+            show_work(output, plan, runtime.settings.classify.ai.model)
+        else:
+            show_not_described(output, plan)
         describe = request.describe and may_describe(runtime, plan, request.yes)
         with StopRequest() as stop, RichProgress(output.console) as progress:
             answered = step.answer(plan, Answering(describe, progress, stop.requested))
@@ -76,7 +86,8 @@ def sample_subjects(runtime: Runtime, inputs: ClassifyInputs, count: int) -> Non
     _tip_cache(runtime)
     with SubjectStep(runtime) as step:
         plan = step.plan(inputs)
-        show_plan(output, plan, runtime.settings.classify.ai.model)
+        show_plan(output, plan)
+        show_work(output, plan, runtime.settings.classify.ai.model)
         with StopRequest() as stop, RichProgress(output.console) as progress:
             result = run_sample(
                 step,

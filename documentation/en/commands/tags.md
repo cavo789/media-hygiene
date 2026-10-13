@@ -64,9 +64,9 @@ names, dates and places.*
 | Option | What it does |
 |---|---|
 | `--path PATH` | Only the photos below this folder (host path, as you mounted it); repeat it for several. |
-| `--sample N` | Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
-| `--no-describe` | Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
-| `--yes`, `-y` | Describe the photos without asking, however many (above 200, it asks first). |
+| 🤖 `--sample N` | **With a local AI only.** Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
+| 🤖 `--no-describe` | **With a local AI only.** Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
+| 🤖 `--yes`, `-y` | **With a local AI only.** Describe the photos without asking, however many (above 200, it asks first). |
 
 ## Good to know
 
@@ -96,15 +96,17 @@ names, dates and places.*
 ```text
  Usage: media-hygiene tags [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Give every photo words to find it by:
- its folders, name, date and place, and what a local vision model sees. Kept in
- the cache, never in the photos.
+ 🔒 Read-only: never changes your photos. Give every photo words to find it by,
+ kept in the cache, never in the photos: its folders, name, date and place, and
+ what it shows with an optional local AI 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path                 <str>               Only the photos below this folder │
-│                                            (host path, as you mounted it);   │
-│                                            repeat it for several. Default:   │
-│                                            every file of the index.          │
+│ --path          <str>  Only the photos below this folder (host path, as you  │
+│                        mounted it); repeat it for several. Default: every    │
+│                        file of the index.                                    │
+│ --help  -h             Show this message and exit.                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
 │ --sample               <int range> [x>=0]  Describe this many random photos  │
 │                                            with the local model, print the   │
 │                                            time per photo and the estimate   │
@@ -116,7 +118,6 @@ names, dates and places.*
 │                                            cache.                            │
 │ --yes          -y                          Describe the photos without       │
 │                                            asking, however many.             │
-│ --help         -h                          Show this message and exit.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

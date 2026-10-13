@@ -38,9 +38,12 @@ def test_a_subject_rule_needs_categories_and_no_category() -> None:
         ClassifyRule(name="S", match=RuleMatch.SUBJECT)
     with pytest.raises(ValidationError, match="category is not used"):
         ClassifyRule(name="S", match=RuleMatch.SUBJECT, categories=("A",), category="B")
-    for bad in ("", "Trips {year}", "A:B"):
+    for bad in ("", "Trips {year}", "A:B", " = only a definition", "A:B = x"):
         with pytest.raises(ValidationError, match="rule 'S'"):
             ClassifyRule(name="S", match=RuleMatch.SUBJECT, categories=(bad,))
+    defined = "At home = everyday life: games, meals; a/b"  # the name is the folder
+    rule = ClassifyRule(name="S", match=RuleMatch.SUBJECT, categories=(defined,))
+    assert rule.categories == (defined,)
 
 
 def test_only_a_subject_rule_takes_categories_and_per_photo() -> None:

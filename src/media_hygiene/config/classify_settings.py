@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Final, Literal, Self
+from typing import Annotated, Final, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.classify.rules.kinds import RuleMatch
@@ -19,6 +26,7 @@ from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.i18n import _
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
+_TownName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 # Dates in file names: named groups y, m, d (and H, M, S when written).
 NAME_DATES: Final = (
     (
@@ -54,6 +62,7 @@ SCORES: Final = {
     "place-neighbour": 70,  # no GPS, in an event at a personal place
     "trip": 90,  # far from home
     "trip-neighbour": 70,  # no GPS, in a trip
+    "folder-town": 60,  # a folder named after a town: to check
     "date-only": 90,
     "no-signal": 0,
 }
@@ -91,6 +100,10 @@ class ClassifySettings(BaseModel):
     trip_min_km: float = Field(default=100, gt=0)
     trip_merge_gap_hours: float = Field(default=48, ge=0)
     trip_merge_max_km: float = Field(default=120, ge=0)
+    # The exact GeoNames name of a town → the user's name for it ("Brugge" = "Bruges").
+    town_names: dict[_TownName, _TownName] = {}
+    folder_town_min_population: int = Field(default=5000, ge=0)
+    folder_town_ignore: tuple[str, ...] = ()  # folder names that are never towns
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"

@@ -54,3 +54,12 @@ def test_exclude_name_on_the_command_line(cli: CliRunner) -> None:
     config = run(cli, "config").output
     assert "(always skipped)" in config
     assert "@recycle" in config
+
+
+def test_review_takes_the_scan_options_of_audit(cli: CliRunner) -> None:
+    """`review --ext png --exclude-name Vacances`: its audit sees what `audit` would."""
+    result = run(cli, "review", "--ext", "png", "--exclude-name", "Vacances")
+    assert result.exit_code == 0, result.output
+    assert "Only analysed: png." in result.output
+    assert "wherever they are: Vacances." in result.output
+    assert "No burst series: nothing to review." in result.output

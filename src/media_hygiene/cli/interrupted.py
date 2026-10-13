@@ -25,15 +25,34 @@ def stop_on_interrupt(ctx: Context) -> NoReturn:
     Raises:
         typer.Exit: Always, with the conventional code of an interrupted program.
     """
-    runtime = ctx.obj
-    output = (
-        runtime.output
-        if isinstance(runtime, Runtime)
-        else Output(make_console(ColorMode.AUTO))
-    )
+    output = output_of(ctx)
     output.blank()
     if ctx.invoked_subcommand in READ_ONLY_COMMANDS:
-        output.warning(_("Stopped (Ctrl+C). Your photos and videos were not touched."))
+        output.warning(f"{_('Stopped (Ctrl+C).')} {untouched()}")
     else:
         output.warning(_("Stopped (Ctrl+C)."))
     raise typer.Exit(ExitCode.INTERRUPTED)
+
+
+def untouched() -> str:
+    """The reassurance after a read-only command stopped, whatever stopped it.
+
+    Returns:
+        The translated sentence.
+    """
+    return _("Your photos and videos were not touched.")
+
+
+def output_of(ctx: Context) -> Output:
+    """Where to print once a command stopped: its own output, else a new one.
+
+    Args:
+        ctx: Context of the root group, holding the runtime once it is built.
+
+    Returns:
+        The output.
+    """
+    runtime = ctx.obj
+    if isinstance(runtime, Runtime):
+        return runtime.output
+    return Output(make_console(ColorMode.AUTO))

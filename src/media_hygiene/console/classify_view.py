@@ -9,8 +9,12 @@ from rich.markup import escape
 from rich.table import Table
 
 from media_hygiene.classify.models import Band
-from media_hygiene.classify.names import band_name
+from media_hygiene.classify.names import band_name, reason_name
 from media_hygiene.console.advice import Advice, TipKind
+from media_hygiene.console.classify_rules_view import (
+    show_undated_left,
+    show_unused_rules,
+)
 from media_hygiene.console.formatting import human_number, human_share
 from media_hygiene.i18n import _, ngettext
 
@@ -34,6 +38,7 @@ def show_classification(output: Output, result: ClassifyResult) -> None:
     proposals = result.classification.proposals
     if not proposals:
         output.info(_("No photo nor video to classify."))
+        show_undated_left(output, result.classification.years[1])
         return
     in_place = sum(1 for proposal in proposals if proposal.in_place)
     output.info(
@@ -45,16 +50,9 @@ def show_classification(output: Output, result: ClassifyResult) -> None:
     output.blank()
     output.show(_reasons_table(proposals))
     output.blank()
-    unused = result.classification.unused_rules
-    if unused:
-        output.warning(
-            _("Rules that decided nothing: {names}.").format(
-                names=escape(", ".join(unused))
-            )
-        )
-        output.tip(
-            _("Check their dates, their patterns and their order in config.toml.")
-        )
+    output.show(_categories_table(proposals))
+    output.blank()
+    show_unused_rules(output, result.classification)
     _work_left(output, proposals)
     if result.duplicates:  # changes what 'sort' moves: ranked as a next step
         output.advise(
@@ -93,7 +91,7 @@ def _bands_table(proposals: tuple[Proposal, ...]) -> Table:
 
 
 def _reasons_table(proposals: tuple[Proposal, ...]) -> Table:
-    """Why: the files each rule or reason decided, then the categories found most.
+    """Why: the files each rule decided, else each reason, named.
 
     Args:
         proposals: Every proposal.
@@ -104,12 +102,30 @@ def _reasons_table(proposals: tuple[Proposal, ...]) -> Table:
     table = Table(title=_("Why"), title_justify="left", show_header=False)
     table.add_column(style="bold")
     table.add_column(justify="right")
-    reasons = Counter(proposal.rule or proposal.reason.value for proposal in proposals)
+    reasons = Counter(p.rule or reason_name(p.reason) for p in proposals)
     for reason, count in reasons.most_common():
         table.add_row(escape(reason), human_number(count))
+    return table
+
+
+def _categories_table(proposals: tuple[Proposal, ...]) -> Table:
+    """The categories that receive the most files.
+
+    Args:
+        proposals: Every proposal.
+
+    Returns:
+        The table.
+    """
+    title = _("Largest categories")
+    table = Table(
+        title=title, title_justify="left", show_header=False, min_width=len(title)
+    )
+    table.add_column()
+    table.add_column(justify="right")
     categories = Counter(p.category for p in proposals if p.category)
     for category, count in categories.most_common(_TOP_CATEGORIES):
-        table.add_row(f"  {escape(category)}", human_number(count))
+        table.add_row(escape(category), human_number(count))
     return table
 
 

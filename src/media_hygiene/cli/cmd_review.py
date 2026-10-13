@@ -7,11 +7,12 @@ from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
-from media_hygiene.cli import options, review_options
+from media_hygiene.cli import options, review_options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.flows import audit_and_show
 from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
 from media_hygiene.cli.next_steps import carried, suggest
+from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_flag
@@ -39,6 +40,8 @@ def review_command(  # pylint: disable=too-many-arguments
     prefer: Annotated[list[str] | None, options.prefer()] = None,
     protect: Annotated[list[str] | None, options.protect()] = None,
     exclude: Annotated[list[str] | None, options.exclude()] = None,
+    ext: Annotated[list[str] | None, scan_options.extensions()] = None,
+    exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
 ) -> None:
     """Audit, then serve the burst series (or near duplicates) until Ctrl+C.
 
@@ -47,6 +50,8 @@ def review_command(  # pylint: disable=too-many-arguments
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        ext: `--ext` categories and extensions, as for `audit`.
+        exclude_name: `--exclude-name` folder names, as for `audit`.
         decisions: `--decisions`, the file to save the decisions in.
         port: `--port`, inside the container.
         near: `--near`, the near duplicates instead of the burst series.
@@ -54,7 +59,9 @@ def review_command(  # pylint: disable=too-many-arguments
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
-        runtime = runtime.with_overrides(folder_layer(prefer, protect, exclude))
+        runtime = runtime.with_overrides(
+            folder_layer(prefer, protect, exclude)
+        ).with_overrides(scan_layer(ext, exclude_name))
         target = review_target(runtime, decisions, port)
         findings = audit_and_show(runtime)
         if near:
@@ -72,12 +79,13 @@ def review_command(  # pylint: disable=too-many-arguments
         session = open_review(runtime, findings, target)
         _tell_obvious(output, session)
         if session.dropped:
-            dropped = ngettext(
-                "{count} series reviewed earlier changed since: reviewed again.",
-                "{count} series reviewed earlier changed since: reviewed again.",
-                session.dropped,
+            output.warning(
+                ngettext(
+                    "{count} series reviewed earlier changed since: reviewed again.",
+                    "{count} series reviewed earlier changed since: reviewed again.",
+                    session.dropped,
+                ).format(count=human_number(session.dropped))
             )
-            output.warning(dropped.format(count=human_number(session.dropped)))
         serve_review(runtime, session, port)
         _tell_stopped(ctx, runtime, session)
 

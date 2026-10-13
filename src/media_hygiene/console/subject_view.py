@@ -21,39 +21,79 @@ if TYPE_CHECKING:
     from media_hygiene.services.subject_plan import SubjectPlan
 
 
-def show_plan(output: Output, plan: SubjectPlan, model: str) -> None:
-    """Say how many photos answer for how many events, and what is left to describe.
+def show_plan(output: Output, plan: SubjectPlan) -> None:
+    """Say how many groups the model answers for, and by how many photos.
+
+    Args:
+        output: Where to print.
+        plan: The plan.
+    """
+    groups = ngettext(
+        "{units} group of photos (an event or a lone photo) no rule of yours took:",
+        "{units} groups of photos (events or lone photos) no rule of yours took:",
+        len(plan.units),
+    ).format(units=human_number(len(plan.units)))
+    samples = human_number(plan.sample_count)
+    if plan.per_event:
+        looked = _(
+            "the model will look at {samples} of them "
+            "(up to {per_event} per event, the others follow)."
+        ).format(samples=samples, per_event=human_number(plan.per_event))
+    else:
+        looked = _("the model will look at each of their {samples} photos.").format(
+            samples=samples
+        )
+    output.info(f"{groups} {looked}")
+
+
+def show_work(output: Output, plan: SubjectPlan, model: str) -> None:
+    """Say how many samples the model will describe, and how long it should take.
 
     Args:
         output: Where to print.
         plan: The plan.
         model: The vision model.
     """
-    output.info(
-        ngettext(
-            "{units} event or lone photo has no stronger signal than its subject: "
-            "{samples} photos answer for it.",
-            "{units} events or lone photos have no stronger signal than their "
-            "subject: {samples} photos answer for them.",
-            len(plan.units),
-        ).format(
-            units=human_number(len(plan.units)),
-            samples=human_number(plan.sample_count),
+    if not plan.missing:
+        return
+    work = {
+        "count": human_number(len(plan.missing)),
+        "model": escape(model),
+        "duration": human_duration(plan.estimate),
+        "cached": human_number(plan.cached),
+    }
+    if plan.cached:
+        line = _(
+            "{count} to describe with {model} ({cached} already in the cache), "
+            "about {duration}."
         )
-    )
+    else:
+        line = _("{count} to describe with {model}, about {duration}.")
+    output.info(line.format(**work))
+
+
+def show_not_described(output: Output, plan: SubjectPlan) -> None:
+    """`--no-describe`: say what stays undescribed, and that it costs nothing.
+
+    Args:
+        output: Where to print.
+        plan: The plan.
+    """
     if not plan.missing:
         return
     output.info(
-        _("{count} of them to describe with {model}, about {duration}.").format(
-            count=human_number(len(plan.missing)),
-            model=escape(model),
-            duration=human_duration(plan.estimate),
-        )
+        ngettext(
+            "{count} sample not described yet (--no-describe): only those already "
+            "described answer, in a few seconds.",
+            "{count} samples not described yet (--no-describe): only those already "
+            "described answer, in a few seconds.",
+            len(plan.missing),
+        ).format(count=human_number(len(plan.missing)))
     )
 
 
 def show_answered(output: Output, answered: Answered) -> None:
-    """Say what was described, and how many files each `subject` rule covers.
+    """Say what was described, the files each `subject` rule sorts, the groups left.
 
     Args:
         output: Where to print.
@@ -66,13 +106,21 @@ def show_answered(output: Output, answered: Answered) -> None:
             _("Stopped: the next classify run goes on where this one stopped.")
         )
     for name, subjects in answered.subjects.items():
-        output.info(
-            ngettext(
-                "Rule '{rule}': a subject for {count} file.",
-                "Rule '{rule}': a subject for {count} files.",
-                len(subjects),
-            ).format(rule=escape(name), count=human_number(len(subjects)))
-        )
+        line = ngettext(
+            "Rule '{rule}': {count} file sorted by what the model saw",
+            "Rule '{rule}': {count} files sorted by what the model saw",
+            len(subjects),
+        ).format(rule=escape(name), count=human_number(len(subjects)))
+        left = answered.unanswered.get(name, 0)
+        if left:
+            line += ngettext(
+                "; {groups} group without a subject → your other rules, else {band}.",
+                "; {groups} groups without a subject → your other rules, else {band}.",
+                left,
+            ).format(groups=human_number(left), band=_("To sort"))
+        else:
+            line += "."
+        output.info(line)
 
 
 def show_sample(

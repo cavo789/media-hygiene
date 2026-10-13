@@ -26,6 +26,17 @@ def panel_advanced() -> str:
     return _("Advanced options")
 
 
+def panel_local_ai() -> str:
+    """Title of the help panel of the options that only serve a local vision model.
+
+    Everything else works without one: the panel tells, at a glance, what to skip.
+
+    Returns:
+        The translated title.
+    """
+    return _("🤖 Local AI (Ollama), optional: a model set in config.toml")
+
+
 def _panel_folders() -> str:
     return _("Advanced: folders (override folders.* of config.toml)")
 
