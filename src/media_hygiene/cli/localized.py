@@ -12,11 +12,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, override
 
 import typer
+from typer._click.exceptions import UsageError
 from typer.core import TyperCommand, TyperGroup
 from typer.exceptions import TyperException
 
 from media_hygiene.cli.interrupted import stop_on_interrupt
 from media_hygiene.cli.unexpected import debugging, stop_on_error
+from media_hygiene.cli.usage_errors import translated
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -51,7 +53,26 @@ def _translate_help(option: TyperOption | None) -> TyperOption | None:
 
 
 class LocalizedCommand(TyperCommand):
-    """A command whose usage line and `--help` option are translated."""
+    """A command whose usage line, `--help` option and usage errors are translated."""
+
+    @override
+    def parse_args(self, ctx: Context, args: list[str]) -> list[str]:
+        """Read the command line; a mistake is told in the user's language.
+
+        Args:
+            ctx: Context of the command.
+            args: The words typed.
+
+        Returns:
+            The words left.
+
+        Raises:
+            UsageError: An unknown option, a missing or invalid value, translated.
+        """
+        try:
+            return super().parse_args(ctx, args)
+        except UsageError as error:
+            raise translated(error) from error
 
     @override
     def format_usage(self, ctx: Context, formatter: HelpFormatter) -> None:
@@ -78,6 +99,46 @@ class LocalizedCommand(TyperCommand):
 
 class LocalizedGroup(TyperGroup):
     """The root group, translated like `LocalizedCommand`, calm on Ctrl+C."""
+
+    @override
+    def parse_args(self, ctx: Context, args: list[str]) -> list[str]:
+        """Read the global options; a mistake is told in the user's language.
+
+        Args:
+            ctx: Context of the group.
+            args: The words typed.
+
+        Returns:
+            The words left.
+
+        Raises:
+            UsageError: An unknown option, a missing or invalid value, translated.
+        """
+        try:
+            return super().parse_args(ctx, args)
+        except UsageError as error:
+            raise translated(error) from error
+
+    @override
+    def resolve_command(
+        self, ctx: Context, args: list[str]
+    ) -> tuple[str | None, Command | None, list[str]]:
+        """Find the command typed; an unknown one is told in the user's language.
+
+        Args:
+            ctx: Context of the group.
+            args: The words typed.
+
+        Returns:
+            The command's name, the command and the words left.
+
+        Raises:
+            UsageError: No such command, translated, with Typer's suggestions.
+        """
+        try:
+            return super().resolve_command(ctx, args)
+        except UsageError as error:
+            raise translated(error) from error
 
     @override
     def invoke(self, ctx: Context) -> Any:

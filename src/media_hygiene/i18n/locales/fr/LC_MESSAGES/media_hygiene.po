@@ -193,6 +193,10 @@ msgstr "« {url} » n'est pas une adresse https://"
 msgid "'{url}' lacks {fields}"
 msgstr "il manque {fields} dans « {url} »"
 
+#, python-brace-format
+msgid "(Possible options: {options})"
+msgstr "(options possibles : {options})"
+
 msgid "(always skipped)"
 msgstr "(toujours ignorés)"
 
@@ -408,6 +412,9 @@ msgstr ""
 
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
+
+msgid "Aborted."
+msgstr "Abandon."
 
 msgid ""
 "Above this many photos to describe, classify asks first and prints the "
@@ -1134,6 +1141,10 @@ msgstr "Détail"
 msgid "Did you mean '{key}'?"
 msgstr "Vouliez-vous dire « {key} » ?"
 
+#, python-brace-format
+msgid "Did you mean {names}?"
+msgstr "Vouliez-vous dire {names} ?"
+
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr "Ne pas demander de confirmation (remplace clean.confirm)."
 
@@ -1340,6 +1351,9 @@ msgstr ""
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
 msgstr "Effacer la quarantaine de {runs} ({count} fichiers, {size}) ?"
+
+msgid "Error"
+msgstr "Erreur"
 
 msgid ""
 "Estimate a full run first: describe this many random photos with the "
@@ -2037,6 +2051,14 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 msgid "Into folders"
 msgstr "Dans des dossiers"
 
+#, python-brace-format
+msgid "Invalid value for {option}: {reason}"
+msgstr "Valeur invalide pour {option} : {reason}"
+
+#, python-brace-format
+msgid "Invalid value: {reason}"
+msgstr "Valeur invalide : {reason}"
+
 msgid "Inventory"
 msgstr "Inventaire"
 
@@ -2258,6 +2280,15 @@ msgstr "mai"
 
 msgid "Media files scanned"
 msgstr "Fichiers média analysés"
+
+msgid "Missing argument"
+msgstr "Argument manquant"
+
+msgid "Missing option"
+msgstr "Option manquante"
+
+msgid "Missing parameter"
+msgstr "Paramètre manquant"
 
 msgid "Modified (UTC)"
 msgstr "Modifié (UTC)"
@@ -2670,6 +2701,14 @@ msgstr "Aucune exécution pour l'instant."
 msgid "No signal"
 msgstr "Aucun indice"
 
+#, python-brace-format
+msgid "No such command {name}."
+msgstr "Commande inconnue : {name}."
+
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr "Option inconnue : {name}"
+
 msgid "No sure proposal left to accept."
 msgstr "Plus aucune proposition sûre à accepter."
 
@@ -2968,6 +3007,18 @@ msgstr "contributeurs d'OpenStreetMap"
 
 msgid "OpenStreetMap knows no area of that name."
 msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
+
+#, python-brace-format
+msgid "Option {name} needs a value."
+msgstr "L'option {name} demande une valeur."
+
+#, python-brace-format
+msgid "Option {name} needs {count} values."
+msgstr "L'option {name} demande {count} valeurs."
+
+#, python-brace-format
+msgid "Option {name} takes no value."
+msgstr "L'option {name} ne prend pas de valeur."
 
 #, python-brace-format
 msgid "Or, to no longer see this message, delete this file: {path}"
@@ -4607,6 +4658,10 @@ msgstr ""
 "trip_merge_gap_hours d'écart, et à moins de trip_merge_max_km l'un de "
 "l'autre, n'en font qu'un."
 
+#, python-brace-format
+msgid "Try [blue]'{command_path} {help_option}'[/] for help."
+msgstr "Essayez [blue]'{command_path} {help_option}'[/] pour l'aide."
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -4657,6 +4712,10 @@ msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 #, python-brace-format
 msgid "Unexpected error during {command}: {kind}: {message}"
 msgstr "Erreur inattendue pendant {command} : {kind} : {message}"
+
+#, python-brace-format
+msgid "Unexpected extra argument: {values}"
+msgstr "Argument en trop : {values}"
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -7176,6 +7235,22 @@ msgid ""
 msgstr ""
 "{values} : les fichiers compagnons suivent la photo du même nom, ils ne "
 "sont pas analysés seuls"
+
+#, python-brace-format
+msgid "{value} is not a number."
+msgstr "{value} n'est pas un nombre."
+
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr "{value} n'est pas dans l'intervalle {range}."
+
+#, python-brace-format
+msgid "{value} is not one of {choices}."
+msgstr "{value} n'est pas l'un de {choices}."
+
+#, python-brace-format
+msgid "{value} is not valid."
+msgstr "{value} n'est pas valide."
 
 #, python-brace-format
 msgid ""

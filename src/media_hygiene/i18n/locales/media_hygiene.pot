@@ -159,6 +159,10 @@ msgstr ""
 msgid "'{url}' lacks {fields}"
 msgstr ""
 
+#, python-brace-format
+msgid "(Possible options: {options})"
+msgstr ""
+
 msgid "(always skipped)"
 msgstr ""
 
@@ -319,6 +323,9 @@ msgid ""
 msgstr ""
 
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
+msgstr ""
+
+msgid "Aborted."
 msgstr ""
 
 msgid ""
@@ -939,6 +946,10 @@ msgstr ""
 msgid "Did you mean '{key}'?"
 msgstr ""
 
+#, python-brace-format
+msgid "Did you mean {names}?"
+msgstr ""
+
 msgid "Do not ask for confirmation (overrides clean.confirm)."
 msgstr ""
 
@@ -1087,6 +1098,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
+msgstr ""
+
+msgid "Error"
 msgstr ""
 
 msgid ""
@@ -1650,6 +1664,14 @@ msgstr ""
 msgid "Into folders"
 msgstr ""
 
+#, python-brace-format
+msgid "Invalid value for {option}: {reason}"
+msgstr ""
+
+#, python-brace-format
+msgid "Invalid value: {reason}"
+msgstr ""
+
 msgid "Inventory"
 msgstr ""
 
@@ -1846,6 +1868,15 @@ msgid "May"
 msgstr ""
 
 msgid "Media files scanned"
+msgstr ""
+
+msgid "Missing argument"
+msgstr ""
+
+msgid "Missing option"
+msgstr ""
+
+msgid "Missing parameter"
 msgstr ""
 
 msgid "Modified (UTC)"
@@ -2200,6 +2231,14 @@ msgstr ""
 msgid "No signal"
 msgstr ""
 
+#, python-brace-format
+msgid "No such command {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
 msgid "No sure proposal left to accept."
 msgstr ""
 
@@ -2437,6 +2476,18 @@ msgid "OpenStreetMap contributors"
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
+#, python-brace-format
+msgid "Option {name} needs a value."
+msgstr ""
+
+#, python-brace-format
+msgid "Option {name} needs {count} values."
+msgstr ""
+
+#, python-brace-format
+msgid "Option {name} takes no value."
 msgstr ""
 
 #, python-brace-format
@@ -3795,6 +3846,10 @@ msgid ""
 " apart, and less than trip_merge_max_km from each other, make one trip."
 msgstr ""
 
+#, python-brace-format
+msgid "Try [blue]'{command_path} {help_option}'[/] for help."
+msgstr ""
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -3838,6 +3893,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "Unexpected error during {command}: {kind}: {message}"
+msgstr ""
+
+#, python-brace-format
+msgid "Unexpected extra argument: {values}"
 msgstr ""
 
 #, python-brace-format
@@ -6020,6 +6079,22 @@ msgstr[1] ""
 msgid ""
 "{values}: sidecars follow the photo of the same name, they are not "
 "analysed on their own"
+msgstr ""
+
+#, python-brace-format
+msgid "{value} is not a number."
+msgstr ""
+
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#, python-brace-format
+msgid "{value} is not one of {choices}."
+msgstr ""
+
+#, python-brace-format
+msgid "{value} is not valid."
 msgstr ""
 
 #, python-brace-format
