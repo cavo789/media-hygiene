@@ -89,8 +89,9 @@ again.
 
 ## A few photos per event
 
-Describing a photo takes seconds: about 4 seconds on one graphics card with a large model. At
-that pace, 10,000 photos would take 11 hours. So each **event** (photos taken close together,
+Describing a photo takes seconds: measured on one graphics card with a 27-billion-parameter
+model, 2.4 seconds to describe a photo in French and 0.2 to choose its category. At that pace,
+10,000 photos would take 7 hours. So each **event** (photos taken close together,
 [step 4](04-classify.md#read-the-result)) is represented by a few **samples**,
 `samples_per_event` (3 by default): the sharpest photos, spread over its span. The other photos
 and the videos of the event follow them. A lone photo answers for itself.
@@ -139,7 +140,7 @@ On Docker Engine, `mh` cannot reach Ollama: use the full command, with
 ```text
 412 groups of photos (events or lone photos) no rule of yours took: the model will look at
 1,236 of them (up to 3 per event, the others follow).
-1,186 to describe with qwen2.5vl:7b (50 already in the cache), about 1 h 29 min.
+1,186 to describe with qwen2.5vl:7b (50 already in the cache), about 47 min.
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Photo                           ┃ Description                       ┃ Category             ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
@@ -147,8 +148,8 @@ On Docker Engine, `mh` cannot reach Ollama: use the full command, with
 │                                 │ stage.                            │                      │
 │ …                               │ …                                 │ …                    │
 └─────────────────────────────────┴───────────────────────────────────┴──────────────────────┘
-Per photo: 3.6 s to describe, 0.4 s to map.
-A full run would describe 1,186 more photos: about 1 h 19 min.
+Per photo: 2.4 s to describe, 0.2 s to map.
+A full run would describe 1,186 more photos: about 51 min.
 💡 Nothing is proposed by --sample: run classify without it.
 ```
 

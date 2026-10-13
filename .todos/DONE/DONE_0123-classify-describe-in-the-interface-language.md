@@ -60,3 +60,14 @@ in French (desc + tags); on 2026-10-12 `classify` measured 2.1 s describe + 0.2 
 - Note: a photo `tags` already described is still reused as is (its sentence is in the `[tags]`
   language, not necessarily the interface's): the mapping prompt accepts both languages. Not
   changed, to keep "a photo is sent to the model once".
+
+## Review — 2026-10-13: measured with the maintainer, closed
+
+`mh --locale fr classify --sample 50` on the real collection (qwen3.8 27B, image of the branch):
+every description in French; 2.4 s to describe, 0.2 s to map per photo (docs `sort/08` updated:
+10,000 photos ≈ 7 h). Categories checked by the maintainer: 4 of 9 right with the first French
+definitions — the shortened "À la maison" definition had lost "à la maison", so restaurants and
+playgrounds went there. With "À la maison = chez soi seulement : …" and "Vacances et sorties =
+hors de chez soi : voyages, restaurants, plaines de jeux" (commit eeab9b5), re-mapped with
+`--no-describe`: **8 of 9 right** (3 of 10 before 0124). The one left: a child at her school gate,
+described as "a green fence" — the description does not say school. Closed as DONE.

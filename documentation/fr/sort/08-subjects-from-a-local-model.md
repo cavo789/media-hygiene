@@ -97,8 +97,9 @@ refait.
 
 ## Quelques photos par événement
 
-Décrire une photo prend des secondes : environ 4 secondes sur une carte graphique avec un grand
-modèle. À ce rythme, 10 000 photos prendraient 11 heures. Chaque **événement** (des photos
+Décrire une photo prend des secondes : mesuré sur une carte graphique avec un modèle de
+27 milliards de paramètres, 2,4 secondes pour décrire une photo en français et 0,2 pour choisir
+sa catégorie. À ce rythme, 10 000 photos prendraient 7 heures. Chaque **événement** (des photos
 prises à peu de temps d'intervalle, [étape 4](04-classify.md#lire-le-résultat)) est donc
 représenté par quelques **échantillons**, `samples_per_event` (3 par défaut) : les photos les
 plus nettes, réparties sur sa durée. Les autres photos et les vidéos de l'événement les
@@ -149,7 +150,7 @@ Avec Docker Engine, `mh` ne joint pas Ollama : utilisez la commande complète, a
 ```text
 412 groupes de photos (événements ou photos seules) ne sont pris par aucune de vos règles :
 le modèle en regardera 1 236 (jusqu'à 3 par événement, les autres suivent).
-1 186 à décrire avec qwen2.5vl:7b (50 déjà dans le cache), environ 1 h 29 min.
+1 186 à décrire avec qwen2.5vl:7b (50 déjà dans le cache), environ 47 min.
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Photo                           ┃ Description                       ┃ Catégorie            ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
@@ -157,8 +158,8 @@ le modèle en regardera 1 236 (jusqu'à 3 par événement, les autres suivent).
 │                                 │ scène d'école.                    │                      │
 │ …                               │ …                                 │ …                    │
 └─────────────────────────────────┴───────────────────────────────────┴──────────────────────┘
-Par photo : 3.6 s pour décrire, 0.4 s pour choisir la catégorie.
-Une exécution complète décrirait encore 1 186 photos : environ 1 h 19 min.
+Par photo : 2.4 s pour décrire, 0.2 s pour choisir la catégorie.
+Une exécution complète décrirait encore 1 186 photos : environ 51 min.
 💡 --sample ne propose rien : lancez classify sans lui.
 ```
 
