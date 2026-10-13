@@ -103,6 +103,7 @@ class ClassifySettings(BaseModel):
     # The exact GeoNames name of a town → the user's name for it ("Brugge" = "Bruges").
     town_names: dict[_TownName, _TownName] = {}
     folder_town_min_population: int = Field(default=5000, ge=0)
+    folder_town_ignore: tuple[str, ...] = ()  # folder names that are never towns
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"

@@ -1748,6 +1748,14 @@ msgstr ""
 "régulière lit comme des opérateurs. Une virgule sépare les noms : écrivez"
 " ? à sa place. Pour un dossier précis, utilisez excluded dans [folders]."
 
+msgid ""
+"Folder names that are never towns, e.g. a first name that is also a town "
+"somewhere: [\"Martin\", \"Victoria\"]. Case and accents do not matter."
+msgstr ""
+"Les noms de dossiers qui ne sont jamais des villes, par exemple un prénom"
+" qui est aussi une ville quelque part : [\"Martin\", \"Victoria\"]. "
+"Majuscules et accents ne comptent pas."
+
 msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr "Dossier jamais analysé, p. ex. une vraie sauvegarde à garder. Répétable."
 

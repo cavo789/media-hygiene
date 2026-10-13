@@ -172,6 +172,7 @@ Comme une règle de dates, une règle GPS suit les **événements**
 | `trip_merge_gap_hours` | 48 | Des événements d'un voyage à moins de cet écart ne font qu'un voyage. |
 | `trip_merge_max_km` | 120 | …et à moins de cette distance l'un de l'autre. |
 | `folder_town_min_population` | 5000 | La plus petite ville dont un dossier peut porter le nom. |
+| `folder_town_ignore` | `[]` | Les noms de dossiers qui ne sont jamais des villes. |
 
 Une règle `trip` a besoin d'un lieu avec `home = true` : sans lui, le fichier est refusé à la
 lecture, avec le nom de la règle.
@@ -207,8 +208,9 @@ match = "folder_town"
   règle passe avant.
 
 Un nom de dossier est un indice faible : un prénom (`Martin`, `Victoria`) est aussi une ville
-quelque part. Relisez les dossiers « À vérifier » avant de trier, ou donnez `score = 0` à la
-règle pour l'éteindre.
+quelque part. Relisez les dossiers « À vérifier » avant de trier, et listez les noms qui ne sont
+jamais des villes dans `[classify] folder_town_ignore = ["Martin", "Victoria"]` (sans tenir compte
+des majuscules ni des accents) ; ou donnez `score = 0` à la règle pour l'éteindre.
 
 ## Vos noms pour les villes
 

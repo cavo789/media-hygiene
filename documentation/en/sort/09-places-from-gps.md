@@ -163,6 +163,7 @@ Like a date rule, a GPS rule follows the **events** ([step 4](04-classify.md#rea
 | `trip_merge_gap_hours` | 48 | Events of a trip less than this apart are one trip. |
 | `trip_merge_max_km` | 120 | …and less than this from each other. |
 | `folder_town_min_population` | 5000 | The smallest town a folder may be named after. |
+| `folder_town_ignore` | `[]` | Folder names that are never towns. |
 
 A `trip` rule needs a place with `home = true`: without one, the file is refused when it is
 read, with the rule's name.
@@ -196,7 +197,9 @@ match = "folder_town"
   `category`. Its score is low (60): the proposals are **to check**, and any other rule wins.
 
 A folder name is a weak clue: a first name (`Martin`, `Victoria`) is also a town somewhere. Read
-the "to check" folders before sorting, or give the rule a `score = 0` to turn it off.
+the "to check" folders before sorting, and list the names that are never towns in
+`[classify] folder_town_ignore = ["Martin", "Victoria"]` (case and accents do not matter); or give
+the rule a `score = 0` to turn it off.
 
 ## Your names for the towns
 

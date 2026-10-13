@@ -1412,6 +1412,11 @@ msgid ""
 "precise folder, use excluded in [folders]."
 msgstr ""
 
+msgid ""
+"Folder names that are never towns, e.g. a first name that is also a town "
+"somewhere: [\"Martin\", \"Victoria\"]. Case and accents do not matter."
+msgstr ""
+
 msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
 msgstr ""
 

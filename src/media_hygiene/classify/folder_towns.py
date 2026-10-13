@@ -133,12 +133,13 @@ def _towns(
         The index.
     """
     least = settings.folder_town_min_population
+    ignored = _NOT_TOWNS | {fold(name) for name in settings.folder_town_ignore}
     by_name: dict[str, list[Town]] = defaultdict(list)
     for index, names in enumerate(zip(towns.geonames, towns.names, strict=True)):
         town = towns.town(index)
         if town.population_k * _THOUSAND < least:
             continue
-        for key in {fold(name) for name in names} - _NOT_TOWNS:
+        for key in {fold(name) for name in names} - ignored:
             by_name[key].append(town)
     grid = {
         Point(round(p.latitude * _GRID) / _GRID, round(p.longitude * _GRID) / _GRID)

@@ -175,6 +175,8 @@ trip_merge_gap_hours = 48
 trip_merge_max_km = 120
 {{ comment(_("Towns, for a 'folder_town' rule: a folder named exactly after a town of at least this many inhabitants (GeoNames) names the place of its photos.")) }}
 folder_town_min_population = 5000
+{{ comment(_('Folder names that are never towns, e.g. a first name that is also a town somewhere: ["Martin", "Victoria"]. Case and accents do not matter.')) }}
+folder_town_ignore = []
 
 [classify.ai]
 {{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}

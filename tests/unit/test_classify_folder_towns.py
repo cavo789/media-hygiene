@@ -108,3 +108,9 @@ def test_town_names_must_not_be_empty() -> None:
         ClassifySettings.model_validate({"town_names": {"Brugge": " "}})
     names = ClassifySettings.model_validate({"town_names": {" Brugge ": "Bruges"}})
     assert names.town_names == {"Brugge": "Bruges"}
+
+
+def test_ignored_names_are_never_towns(towns: Gazetteer) -> None:
+    """`folder_town_ignore`: a first name that is a town somewhere, any case."""
+    ignored = run(shots("Nice"), towns, folder_town_ignore=("NICE",))
+    assert {p.reason for p in ignored} == {SortReason.NO_SIGNAL}
