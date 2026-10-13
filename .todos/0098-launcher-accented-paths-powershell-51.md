@@ -44,3 +44,11 @@ the comments. Both shells corrupt it: the ASCII-only script is needed for both.
 - Unit test: a mount `C:\Photos\Vidéos` renders an ASCII-only `mh.ps1` whose string evaluates
   back to the original path (checked by decoding the `[char]` escapes in the test).
 - Manual check on Windows PowerShell 5.1: `mh audit` finds the files of an accented folder.
+
+## Seen on the maintainer's machine (2026-10-13)
+
+The `mh.ps1` written by `launcher` showed `├á` for `à` and `m├¬me` for `même` in its comments
+when opened on Windows (UTF-8 bytes read in the console's old code page, CP850). Only comments
+were hit there, but an accented folder in a `-v` would be corrupted the same way: the symptom is
+confirmed, the fix (an ASCII-safe script, or a BOM) is still to choose. The maintainer fixed those
+two comments by hand.
