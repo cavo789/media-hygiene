@@ -86,6 +86,7 @@ class XmpService:
             keep_policy(runtime.settings, runtime.mapper).protected,
             runtime.settings.tags.xmp_sources,
             f"{APP_NAME} {version(APP_NAME)}",
+            runtime.settings.people,
         )
         index = runtime.locations.index_file  # mounted: `ensure_ready` checked it
         try:

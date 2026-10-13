@@ -66,6 +66,8 @@ d'Excel.
   ([étape 4 du nettoyage](clean/04-html-report.md)).
 - **Tags** : les mots que `tags` a donnés au fichier (dossiers, nom du fichier, date, lieu,
   modèle de vision), séparés par `;` ; vide avant le premier passage de `tags` ([les tags](reference-tags.md)).
+- **People** : les noms des personnes sur la photo, d'après ses visages et les noms donnés sur la
+  page [`people`](reference-people.md) ; vide quand personne n'est nommé.
 
 Les fichiers RAW n'ont que leur taille, leurs dates et leur empreinte : leur contenu n'est pas
 décodé. Les fichiers autres que photos et vidéos (`--ext pdf`, [étape 6 du nettoyage](clean/06-file-types.md))

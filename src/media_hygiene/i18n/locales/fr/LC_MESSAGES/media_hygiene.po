@@ -4195,6 +4195,13 @@ msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
 
 msgid ""
+"The names of the people go into the sidecars, next to the photos: anyone "
+"who gets a copy of them can read who is on them."
+msgstr ""
+"Les noms des personnes vont dans les fichiers annexes, à côté des photos "
+": quiconque en reçoit une copie peut lire qui est dessus."
+
+msgid ""
 "The names stay in config.toml: they name no face until people finds the "
 "faces again. Answer yes in a terminal (docker run -it) to delete them."
 msgstr ""
@@ -5694,6 +5701,14 @@ msgstr "hors des dossiers montés"
 
 msgid "person"
 msgstr "personne"
+
+msgid ""
+"person writes the names of the people on each photo (PersonInImage): "
+"never by default, as the names then travel with every copy of the photos."
+msgstr ""
+"person écrit les noms des personnes sur chaque photo (PersonInImage) : "
+"jamais par défaut, car les noms voyagent alors avec chaque copie des "
+"photos."
 
 msgid ""
 "person: the events where someone named on the 'people' page shows on at "

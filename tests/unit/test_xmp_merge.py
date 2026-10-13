@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
+
 import pytest
 
-from media_hygiene.tags.xmp_doc import XmpError, items, parse
+from media_hygiene.tags.xmp_doc import LI, XmpError, items, parse
 from media_hygiene.tags.xmp_merge import (
     CAPTION,
+    PERSON_IN_IMAGE,
     SUBJECT,
     XmpValues,
     merge,
@@ -86,3 +89,17 @@ def test_what_is_not_xmp_is_refused(data: bytes) -> None:
     """A DOCTYPE, broken XML, another encoding: refused, never rewritten."""
     with pytest.raises(XmpError):
         parse(data)
+
+
+def test_people_are_written_shared_and_taken_back() -> None:
+    """`PersonInImage`: ours added, another tool's kept, ours gone with the source."""
+    doc = new_document(XmpValues(("ours",), people=("Léa",)), _TOOL)
+    assert items(doc.find(PERSON_IN_IMAGE)) == ["Léa"]
+    bag = doc.find(PERSON_IN_IMAGE)
+    assert bag is not None
+    ET.SubElement(bag[0], LI).text = "Paul"  # named in digiKam
+    assert merge(doc, XmpValues(("ours",), people=("Léa", "Zoé")))
+    assert items(doc.find(PERSON_IN_IMAGE)) == ["Léa", "Paul", "Zoé"]
+    assert merge(doc, XmpValues(("ours",)))  # the `person` source removed
+    assert items(doc.find(PERSON_IN_IMAGE)) == ["Paul"]
+    assert new_document(XmpValues(("ours",)), _TOOL).find(PERSON_IN_IMAGE) is None

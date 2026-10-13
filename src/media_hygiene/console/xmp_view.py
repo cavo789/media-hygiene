@@ -9,6 +9,7 @@ from rich.table import Table
 
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -37,6 +38,13 @@ def show_plan(runtime: Runtime, plan: XmpPlan) -> None:
             merged=human_number(merged),
         )
     )
+    if plan.jobs and TagSource.PERSON in runtime.settings.tags.xmp_sources:
+        output.warning(
+            _(
+                "The names of the people go into the sidecars, next to the photos: "
+                "anyone who gets a copy of them can read who is on them."
+            )
+        )
     if plan.jobs:
         table = Table(_("Photo"), _("Sidecar"))
         for job in plan.jobs[:_SHOWN]:

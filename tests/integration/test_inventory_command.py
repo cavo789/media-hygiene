@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import sqlite3
 from typing import TYPE_CHECKING
 
@@ -71,3 +72,26 @@ def test_both_mounts_are_needed(tmp_path: Path, missing: MountKind) -> None:
         sqlite3.connect(locations.index_file).close()
     with pytest.raises(MountError):
         export_inventory(make_runtime(locations), InventoryFormat.XLSX)
+
+
+def test_the_people_column(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The names on each photo, from the faces; empty without anyone named."""
+    assert run(cli, "audit").exit_code == 0
+    assert run(cli, "inventory", "--format", "csv").exit_code == 0
+    assert _people(locations) == {""}
+    named = next(locations.data_dir.rglob("*.jpg"))
+    monkeypatch.setattr(
+        "media_hygiene.services.inventory.people_words",
+        lambda _connection, _settings: {named: ("Léa", "Paul")},
+    )
+    assert run(cli, "inventory", "--format", "csv").exit_code == 0
+    assert _people(locations) == {"", "Léa, Paul"}
+
+
+def _people(locations: Locations) -> set[str]:
+    """The values of the People column of the latest CSV inventory."""
+    latest = max(locations.reports_dir.glob("*-inventory*/inventory.csv"))
+    with latest.open(encoding="utf-8-sig", newline="") as stream:
+        return {row["People"] for row in csv.DictReader(stream)}

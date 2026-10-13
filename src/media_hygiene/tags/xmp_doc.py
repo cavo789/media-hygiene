@@ -24,6 +24,7 @@ MH_NS: Final = "https://github.com/cavo789/media-hygiene/ns/xmp/1.0/"
 # Where photo managers read the town, the country and the place shown apart.
 PHOTOSHOP_NS: Final = "http://ns.adobe.com/photoshop/1.0/"
 IPTC_CORE_NS: Final = "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
+IPTC_EXT_NS: Final = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/"  # PersonInImage
 PREFIXES: Final = {
     "x": X_NS,
     "rdf": RDF_NS,
@@ -31,6 +32,7 @@ PREFIXES: Final = {
     "xmp": XMP_NS,
     "photoshop": PHOTOSHOP_NS,
     "Iptc4xmpCore": IPTC_CORE_NS,
+    "Iptc4xmpExt": IPTC_EXT_NS,
     "mh": MH_NS,
 }
 LANG: Final = "{http://www.w3.org/XML/1998/namespace}lang"

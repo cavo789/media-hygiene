@@ -3485,6 +3485,11 @@ msgid "The model {model} is not installed at {url}."
 msgstr ""
 
 msgid ""
+"The names of the people go into the sidecars, next to the photos: anyone "
+"who gets a copy of them can read who is on them."
+msgstr ""
+
+msgid ""
 "The names stay in config.toml: they name no face until people finds the "
 "faces again. Answer yes in a terminal (docker run -it) to delete them."
 msgstr ""
@@ -4770,6 +4775,11 @@ msgid "outside the mounted folders"
 msgstr ""
 
 msgid "person"
+msgstr ""
+
+msgid ""
+"person writes the names of the people on each photo (PersonInImage): "
+"never by default, as the names then travel with every copy of the photos."
 msgstr ""
 
 msgid ""

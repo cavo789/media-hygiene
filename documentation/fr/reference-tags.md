@@ -179,6 +179,12 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
   application garde sa valeur ; un champ que vous y avez vidé n'est pas rempli à nouveau. Après
   une mise à jour, relancez `tags` une fois : les lieux trouvés avant ne savent pas encore s'ils
   sont une ville ou un pays, et ne remplissent ces champs qu'ensuite.
+- **Les personnes, seulement si vous le demandez** : avec `person` dans `xmp_sources` (jamais par
+  défaut), les noms des personnes sur la photo ([`people`](reference-people.md)) vont dans
+  `Iptc4xmpExt:PersonInImage`, le champ que lisent digiKam, Lightroom et Immich. `xmp` le dit
+  avant d'écrire : les noms voyagent alors avec chaque copie des photos (un téléphone, un cloud,
+  un disque partagé). Un nom écrit par une autre application reste ; retirez `person` et relancez
+  `xmp --apply` pour reprendre les nôtres.
 - **Où** : `IMG_1.jpg.xmp` à côté de `IMG_1.jpg`. Un fichier compagnon déjà là (`IMG_1.jpg.xmp`,
   ou `IMG_1.xmp` quand il n'appartient qu'à cette photo) est complété, jamais remplacé : ses
   retouches, ses autres propriétés et ses propres mots restent ; la phrase n'est posée que s'il

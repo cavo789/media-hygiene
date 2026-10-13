@@ -130,6 +130,11 @@ def _broken_detail(entry: Entry) -> str | None:
     return entry.file.facts.broken_detail or None
 
 
+def _people(entry: Entry) -> str | None:
+    """The names of the people on the photo, from its faces."""
+    return ", ".join(entry.context.people.get(entry.file.path, ())) or None
+
+
 def columns() -> tuple[Column, ...]:
     """Every column, its header in the active language.
 
@@ -180,4 +185,5 @@ def columns() -> tuple[Column, ...]:
         Column(_("Duplicate group"), _group),
         Column(_("Copies"), _copies),
         Column(_("Tags"), lambda e: e.context.tags(e.file), width=_PATH),
+        Column(_("People"), _people, width=_WIDE * 2),
     )

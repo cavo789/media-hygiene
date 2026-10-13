@@ -62,6 +62,8 @@ are dates, so sorting and filtering work whatever the language of Excel.
   settings: that is the job of the report's `plan.csv` ([cleaning, step 4](clean/04-html-report.md)).
 - **Tags**: the words `tags` gave the file (folders, file name, date, place, vision model), separated by
   `;`; empty before the first `tags` run ([tags](reference-tags.md)).
+- **People**: the names of the people on the photo, from its faces and the names you gave on the
+  [`people`](reference-people.md) page; empty when nobody is named.
 
 RAW files only have their size, dates and fingerprint: their content is not decoded. Files other
 than photos and videos (`--ext pdf`, [cleaning, step 6](clean/06-file-types.md)) are left out.

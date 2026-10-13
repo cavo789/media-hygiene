@@ -54,6 +54,8 @@ docker run --rm -it `
 - With `place`: the town into `photoshop:City`, its country into `photoshop:Country`, your
   personal place into `Iptc4xmpCore:Location`. A name that is two of these at once (Luxembourg, a
   town and a country; a place of yours named like its town) fills both fields.
+- With `person` (opt-in, never by default): the names of the people on the photo into
+  `Iptc4xmpExt:PersonInImage`; `xmp` warns first, since the names then travel with the photos.
 - **A sidecar already there is completed, never replaced**: its edits, its other properties and
   its own words stay. A field another application filled keeps its value.
 
