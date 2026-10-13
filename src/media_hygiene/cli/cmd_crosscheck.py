@@ -44,14 +44,14 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
-        runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
-        ).with_overrides(scan_layer(ext, exclude_name))
         if not runtime.persistent(MountKind.REPORTS):
             raise MountError(
                 _("'crosscheck' reads Czkawka's results from /reports: mount it."),
                 _('Add -v "<a folder of yours>:/reports", as in the Czkawka command.'),
             )
+        runtime = runtime.with_overrides(
+            folder_layer(prefer, protect, exclude)
+        ).with_overrides(scan_layer(ext, exclude_name))
         findings = audit_and_show(runtime)
         result = cross_check(runtime, findings)
         if result is None:

@@ -48,7 +48,11 @@ repos:
         types_or: [python, pyi]
       - id: mypy
         name: mypy (strict)
-        entry: mypy
+        # Every tracked file (the `files` of pyproject.toml, minus untracked work in
+        # progress, which pre-commit does not stash and CI never sees).
+        entry: >-
+          bash -c 'git ls-files -z -- "src/*.py" "src/*.pyi" "tests/*.py"
+          | xargs -0 mypy'
         language: system
         types_or: [python, pyi]
         pass_filenames: false
@@ -68,6 +72,30 @@ repos:
         language: system
         types: [python]
         files: ^tests/
+        require_serial: true
+      # duplicate-code compares the files pylint is given with each other: at commit time
+      # pre-commit passes only the staged ones, so a copy of a file left out goes unseen
+      # until CI (--all-files). These two run that one check over every tracked file,
+      # cheaply; untracked work in progress is left out, as CI never sees it.
+      - id: pylint-duplicates
+        name: pylint duplicate-code (all of src)
+        entry: >-
+          bash -c 'git ls-files -z -- "src/*.py"
+          | xargs -0 pylint --disable=all --enable=duplicate-code'
+        language: system
+        types: [python]
+        files: ^src/
+        pass_filenames: false
+        require_serial: true
+      - id: pylint-duplicates-tests
+        name: pylint duplicate-code (all of tests)
+        entry: >-
+          bash -c 'git ls-files -z -- "tests/*.py"
+          | xargs -0 pylint --disable=all --enable=duplicate-code'
+        language: system
+        types: [python]
+        files: ^tests/
+        pass_filenames: false
         require_serial: true
       - id: shellcheck
         name: shellcheck
