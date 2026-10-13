@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import multiprocessing
+import threading
 from concurrent.futures import Executor, ProcessPoolExecutor
 from dataclasses import dataclass, field, replace
-from typing import TYPE_CHECKING, override
+from multiprocessing import forkserver
+from typing import TYPE_CHECKING, Final, override
 
 from media_hygiene.config.layers import merge_layers
 from media_hygiene.config.loader import LoadedSettings, load_settings
@@ -21,6 +24,14 @@ if TYPE_CHECKING:
     from media_hygiene.console.output import Output
     from media_hygiene.paths.locations import Locations
     from media_hygiene.paths.mounts import MountTable
+
+
+# Imported once by the fork server, inherited by every worker it forks.
+_WORKER_MODULES: Final = (
+    "media_hygiene.scan.image_check",
+    "media_hygiene.scan.raw_check",
+    "pillow_heif",
+)
 
 
 class _ImagePool(ProcessPoolExecutor):
@@ -63,7 +74,33 @@ def process_pool() -> Executor:
         prepare_image_worker,
     )
 
-    return _ImagePool(initializer=prepare_image_worker)
+    return _ImagePool(mp_context=_pool_context(), initializer=prepare_image_worker)
+
+
+def warm_pool() -> None:
+    """Start the fork server of the image pools now, in the background.
+
+    It imports Pillow and numpy while the command lists the folders: the first pool
+    then answers at once. Harmless when no pool follows.
+    """
+    _pool_context()  # its preload list, before the server starts
+    threading.Thread(
+        target=forkserver.ensure_running, name="warm-pool", daemon=True
+    ).start()
+
+
+def _pool_context() -> multiprocessing.context.ForkServerContext:
+    """The start method of the image pools, its fork server importing what they need.
+
+    The fork server imports only what workers need, never the CLI of `__main__`: each
+    worker is a fork of a process that already holds Pillow, HEIC and numpy.
+
+    Returns:
+        The context.
+    """
+    context = multiprocessing.get_context("forkserver")
+    context.set_forkserver_preload(list(_WORKER_MODULES))
+    return context
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,6 +143,11 @@ class Runtime:
             True for a Docker mount or an explicit path.
         """
         return self.mounts.is_persistent(self.locations, kind)
+
+    def warm_pool(self) -> None:
+        """Start the fork server of the image pools now, when this run uses them."""
+        if self.executor_factory is process_pool:
+            warm_pool()
 
     @property
     def index_file(self) -> Path | None:

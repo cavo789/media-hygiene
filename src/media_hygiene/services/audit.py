@@ -78,6 +78,7 @@ class AuditService:
         """
         runtime, started = self._runtime, time.monotonic()
         refuse_empty_data(runtime, "audit")
+        runtime.warm_pool()  # Pillow and numpy load while the folders are listed
         data_dir = runtime.locations.data_dir
         refuse_overlapping_mounts(runtime)
         warn_about_scope(runtime)
