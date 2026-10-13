@@ -1,26 +1,18 @@
 """`media-hygiene purge`: erase the quarantine for good — the one way content goes."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.actions.purge import (
-    file_count,
-    folder_size,
-    purge_run,
-    quarantine_runs,
-)
 from media_hygiene.cli import options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.constants import ExitCode
-from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
-from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -47,6 +39,13 @@ def purge_command(
             not writable.
         typer.Exit: The user declined.
     """
+    from media_hygiene.actions.purge import file_count, folder_size, quarantine_runs
+    from media_hygiene.console.formatting import human_number, human_size
+    from media_hygiene.errors import MediaHygieneError
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
+    from media_hygiene.services.writable import ensure_writable
+
     runtime = runtime_of(ctx)
     output = runtime.output
     quarantine_dir = runtime.locations.quarantine_dir
@@ -97,6 +96,9 @@ def _purge(runtime: Runtime, runs: list[str]) -> int:
     Raises:
         MediaHygieneError: A folder could not be erased (what is left stays).
     """
+    from media_hygiene.actions.purge import purge_run
+    from media_hygiene.errors import MediaHygieneError
+
     quarantine_dir = runtime.locations.quarantine_dir
     try:
         return sum(purge_run(quarantine_dir, run) for run in runs)

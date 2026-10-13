@@ -12,7 +12,7 @@ from typing import Final, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from media_hygiene.faces.cluster import SFACE_SIMILARITY
+from media_hygiene.faces.similarity import SFACE_SIMILARITY
 from media_hygiene.i18n import _
 
 # Measured on sample faces (TODO 0058): below, the vector of a face drifts away from

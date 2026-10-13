@@ -1,5 +1,8 @@
 """`media-hygiene xmp`: write the tags into `.xmp` sidecars, journaled and undoable."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import Annotated
@@ -7,14 +10,7 @@ from typing import Annotated
 import typer
 
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.next_steps import carried, safety
-from media_hygiene.console.progress import RichProgress
-from media_hygiene.console.xmp_view import show_plan, show_result
 from media_hygiene.i18n import _
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.interrupt import StopRequest
-from media_hygiene.services.next_command import CHANGING, NextVerb
-from media_hygiene.services.xmp import XmpService
 
 
 def xmp_command(
@@ -46,6 +42,14 @@ def xmp_command(
         path: `--path`, host folders.
         apply: `--apply`, write the sidecars.
     """
+    from media_hygiene.cli.next_steps import carried, safety
+    from media_hygiene.console.progress import RichProgress
+    from media_hygiene.console.xmp_view import show_plan, show_result
+    from media_hygiene.scan.progress import NullProgress
+    from media_hygiene.services.interrupt import StopRequest
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+    from media_hygiene.services.xmp import XmpService
+
     runtime = runtime_of(ctx)
     output = runtime.output
     within = tuple(runtime.mapper.to_container(folder) for folder in path or ())

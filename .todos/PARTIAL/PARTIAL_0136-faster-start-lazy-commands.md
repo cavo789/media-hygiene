@@ -49,3 +49,29 @@ themselves. Every command pays it: `status`, `history` and `--help` included.
   before and after.
 - No change in the help output, the commands or their options (the `--help` captures of the docs
   stay identical).
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Every `cli/cmd_*.py` keeps at module level only what Typer reads (signatures, option
+  types, help texts) and imports the rest inside the functions that use it (moved by an AST
+  script, then checked by hand). Ruff `PLC0415` is ignored for `cli/cmd_*.py` in
+  `pyproject.toml`, with the reason; pylint gets a module-level
+  `import-outside-toplevel` (and `too-many-locals` where the imports push a command past 15
+  locals, imports counting as locals).
+- Heavy imports on the path every command takes, found with `-X importtime`:
+  - `config.classify_places` → `geo.areas` / `geo.distance` (numpy): the numpy-free shape
+    checks moved to `geo/shapes.py`, `Point` to `geo/point.py` (both re-exported);
+  - `config.people_settings` → `faces.cluster` (numpy) for one constant: `faces/similarity.py`;
+  - `services.runtime` → `scan.image_check` (Pillow): imported when the first pool is made;
+  - `config.loader` → `i18n.templates` (Jinja2): imported when the default file is rendered.
+- Measured in the devcontainer (best of 9): `python -m media_hygiene --version` **0.49 s →
+  0.20 s**, `status --help` the same; `media_hygiene` modules loaded for `--version`: 502 → 125.
+  The `--help` of the root and of every command is byte for byte the same as before.
+- `tests/unit/test_start_imports.py`: `--version`, `--help`, `status --help` load none of
+  numpy, openpyxl, Pillow, Jinja2, rawpy, OpenCV. Tests that patched a name in a `cmd_*`
+  module now patch it where it is defined.
+
+### Not done
+- The measure in the image (`docker run --rm media-hygiene:latest --version`, target under
+  0.7 s). **Reason:** it needs an image build, kept for the maintainer (low machine load).

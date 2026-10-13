@@ -20,7 +20,6 @@ from media_hygiene.config.layers import (
 from media_hygiene.config.origin import Origin, origin_in
 from media_hygiene.config.settings import Settings
 from media_hygiene.constants import APP_NAME
-from media_hygiene.i18n.templates import translated_environment
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -100,6 +99,11 @@ def default_config(locale: Locale) -> str:
     Returns:
         Its text, the version that wrote it on a comment line.
     """
+    # Jinja2 loads only when the file is written or compared, not on every run.
+    from media_hygiene.i18n.templates import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+        translated_environment,
+    )
+
     environment = translated_environment(_TEMPLATE_PACKAGE, escaped=())
     template = environment.get_template(_TEMPLATE_NAME)
     return template.render(locale=locale.value, version=package_version(APP_NAME))

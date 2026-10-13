@@ -1,16 +1,20 @@
 """`media-hygiene history`: list the runs recorded in the journal."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
-import typer
-from rich.table import Table
+from typing import TYPE_CHECKING
 
-from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
+import typer
+
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.console.formatting import human_number, human_size
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
+
+if TYPE_CHECKING:
+    from rich.table import Table
+
+    from media_hygiene.actions.runs import RunSummary
 
 
 def history_command(ctx: typer.Context) -> None:
@@ -22,6 +26,10 @@ def history_command(ctx: typer.Context) -> None:
     Raises:
         MountError: The journal is not mounted.
     """
+    from media_hygiene.actions.runs import list_run_ids, summarize
+    from media_hygiene.errors import MountError
+    from media_hygiene.paths.mount_kind import MountKind
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
@@ -49,6 +57,10 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         The table; the *Moved*, *Linked* and *Sidecars* columns only when a run
         moved files, made an album or wrote sidecars.
     """
+    from rich.table import Table
+
+    from media_hygiene.console.formatting import human_number, human_size
+
     moved = any(run.moved for run in summaries)
     linked = any(run.linked for run in summaries)
     written = any(run.kept.written for run in summaries)

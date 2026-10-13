@@ -1,22 +1,17 @@
 """`media-hygiene album`: gather a selection into a folder of hard links."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
-from media_hygiene.classify.album_rows import Criteria
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.next_steps import carried, safety
 from media_hygiene.cli.options import panel_advanced
-from media_hygiene.console.album_view import show_album, show_album_result
-from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.album import AlbumRequest, AlbumService
-from media_hygiene.services.interrupt import StopRequest
-from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     from media_hygiene.services.album import AlbumPrepared
@@ -92,6 +87,11 @@ def album_command(  # pylint: disable=too-many-arguments
         workbook: `--workbook`, or None for the latest.
         apply: `--apply`, make the links.
     """
+    from media_hygiene.classify.album_rows import Criteria
+    from media_hygiene.console.album_view import show_album
+    from media_hygiene.scan.progress import NullProgress
+    from media_hygiene.services.album import AlbumRequest, AlbumService
+
     runtime = runtime_of(ctx)
     request = AlbumRequest(name, Criteria(category, event, rule, rating or 0), workbook)
     with user_errors(runtime.output):
@@ -113,6 +113,13 @@ def _make(runtime: Runtime, prepared: AlbumPrepared) -> None:
         runtime: Settings, mount points and output.
         prepared: The album.
     """
+    from media_hygiene.cli.next_steps import carried, safety
+    from media_hygiene.console.album_view import show_album_result
+    from media_hygiene.console.progress import RichProgress
+    from media_hygiene.services.album import AlbumService
+    from media_hygiene.services.interrupt import StopRequest
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
     output = runtime.output
     if not prepared.plan.links:
         output.success(_("Nothing to add: the album holds every file found."))

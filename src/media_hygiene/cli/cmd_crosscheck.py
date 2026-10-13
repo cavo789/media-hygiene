@@ -1,5 +1,8 @@
 """`media-hygiene crosscheck`: compare a fresh audit with Czkawka's results."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import Annotated
@@ -8,14 +11,9 @@ import typer
 
 from media_hygiene.cli import options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
-from media_hygiene.cli.flows import audit_and_show, report_and_announce, show_verdict
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import ExitCode, RunKind
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.report.views import ReportRecord
-from media_hygiene.services.crosscheck import cross_check, czkawka_command
 
 
 def crosscheck_command(  # pylint: disable=too-many-arguments
@@ -41,6 +39,16 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
         MountError: No reports mount point, where Czkawka's results are read.
         typer.Exit: Czkawka has not been run yet.
     """
+    from media_hygiene.cli.flows import (
+        audit_and_show,
+        report_and_announce,
+        show_verdict,
+    )
+    from media_hygiene.errors import MountError
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.report.views import ReportRecord
+    from media_hygiene.services.crosscheck import cross_check, czkawka_command
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):

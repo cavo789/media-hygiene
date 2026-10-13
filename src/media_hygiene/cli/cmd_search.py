@@ -1,5 +1,7 @@
 """`media-hygiene search`: find photos by their words, in the browser or the console."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 from typing import Annotated, Final
@@ -8,15 +10,7 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.i18n import _
-from media_hygiene.services.next_command import NextVerb
-from media_hygiene.services.search import (
-    Printed,
-    open_search,
-    print_found,
-    serve_search,
-)
 
 _PRINTED: Final = 20
 
@@ -58,6 +52,15 @@ def search_command(  # pylint: disable=too-many-arguments
         limit: `--limit`, rows of the table.
         port: `--port`, inside the container.
     """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.services.next_command import NextVerb
+    from media_hygiene.services.search import (
+        Printed,
+        open_search,
+        print_found,
+        serve_search,
+    )
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output), open_search(runtime) as search:

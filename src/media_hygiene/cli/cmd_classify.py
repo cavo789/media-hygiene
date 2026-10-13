@@ -1,5 +1,7 @@
 """`media-hygiene classify`: propose a tree for the photos and videos; read-only."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 from dataclasses import replace
@@ -7,25 +9,9 @@ from typing import Annotated
 
 import typer
 
-from media_hygiene.cli.classify_ai_flow import (
-    SubjectRequest,
-    ask_subjects,
-    sample_subjects,
-)
-from media_hygiene.cli.classify_flow import (
-    parse_years,
-    scope_folders,
-    warn_overlaps,
-    write_output,
-)
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.options import panel_advanced, panel_local_ai
-from media_hygiene.console.classify_view import show_classification
-from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
-from media_hygiene.services.carry import CarryRequest, carry_source
-from media_hygiene.services.classify import ClassifyService
-from media_hygiene.services.data_checks import refuse_empty_data
 
 
 def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
@@ -144,6 +130,23 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         no_describe: `--no-describe`.
         yes: `--yes`.
     """
+    from media_hygiene.cli.classify_ai_flow import (
+        SubjectRequest,
+        ask_subjects,
+        sample_subjects,
+    )
+    from media_hygiene.cli.classify_flow import (
+        parse_years,
+        scope_folders,
+        warn_overlaps,
+        write_output,
+    )
+    from media_hygiene.console.classify_view import show_classification
+    from media_hygiene.console.progress import RichProgress
+    from media_hygiene.services.carry import CarryRequest, carry_source
+    from media_hygiene.services.classify import ClassifyService
+    from media_hygiene.services.data_checks import refuse_empty_data
+
     runtime = runtime_of(ctx)
     given: dict[str, object] = {"layout": layout, "target": target, "leave": leave}
     overrides = {key: value for key, value in given.items() if value}

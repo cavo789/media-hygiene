@@ -10,7 +10,6 @@ from media_hygiene.config.layers import merge_layers
 from media_hygiene.config.loader import LoadedSettings, load_settings
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.scan.image_check import prepare_image_worker
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -59,6 +58,11 @@ def process_pool() -> Executor:
     Returns:
         A process pool whose workers support HEIC and huge images.
     """
+    # Pillow and LibRaw load with the first pool, never for `--version` or `--help`.
+    from media_hygiene.scan.image_check import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+        prepare_image_worker,
+    )
+
     return _ImagePool(initializer=prepare_image_worker)
 
 

@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_hygiene.cli import cmd_review
 from media_hygiene.errors import DecisionsError
 from media_hygiene.plan.near_review import NearAction
 from media_hygiene.report.decisions import read_decisions
@@ -173,7 +172,9 @@ def test_the_command_tells_what_to_decide_and_what_next(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Counts first, then the clean command that applies the decisions."""
-    monkeypatch.setattr(cmd_review, "serve_near_review", lambda *_args: None)
+    monkeypatch.setattr(
+        "media_hygiene.services.near_reviewing.serve_near_review", lambda *_args: None
+    )
     result = run(cli, "review", "--near")
     assert result.exit_code == 0, result.output
     said = " ".join(result.output.split())

@@ -1,22 +1,21 @@
 """`media-hygiene config`: show every effective setting, its origin, and the mounts."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
-from rich.table import Table
 
-from media_hygiene.cli.config_mounts import mounts_table, on_host
-from media_hygiene.cli.config_upgrade_flow import show_upgrade, upgrade_tip
 from media_hygiene.cli.context import runtime_of
-from media_hygiene.config.categories import BUILTIN_CATEGORIES
-from media_hygiene.config.loader import Origin
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
 
 if TYPE_CHECKING:
+    from rich.table import Table
+
+    from media_hygiene.config.loader import Origin
     from media_hygiene.services.runtime import Runtime
 
 
@@ -25,6 +24,8 @@ _PEOPLE, _IGNORED = "people", "ignored"
 
 
 def _origin_label(origin: Origin) -> str:
+    from media_hygiene.config.loader import Origin
+
     labels = {
         Origin.DEFAULT: _("default"),
         Origin.FILE: _("config.toml"),
@@ -84,6 +85,13 @@ def config_command(
         upgrade: `--upgrade`.
         dry_run: `--dry-run`.
     """
+    from rich.table import Table
+
+    from media_hygiene.cli.config_mounts import mounts_table, on_host
+    from media_hygiene.cli.config_upgrade_flow import show_upgrade, upgrade_tip
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
+
     runtime = runtime_of(ctx)
     if upgrade or dry_run:
         show_upgrade(runtime, dry_run=dry_run)
@@ -133,6 +141,10 @@ def _categories_table(runtime: Runtime) -> Table:
     Returns:
         The table: name, extensions, origin.
     """
+    from rich.table import Table
+
+    from media_hygiene.config.categories import BUILTIN_CATEGORIES
+
     table = Table(title=_("Extension categories (--ext)"), title_justify="left")
     for header in (_("Category"), _("Extensions"), _("Origin")):
         table.add_column(header, overflow="fold")

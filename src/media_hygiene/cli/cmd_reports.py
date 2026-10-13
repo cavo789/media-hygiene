@@ -1,22 +1,17 @@
 """`media-hygiene reports`: list the HTML reports of previous audits and cleans."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import Annotated
 
 import typer
-from rich.table import Table
 
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.console.formatting import human_number, human_size
-from media_hygiene.console.links import file_link
 from media_hygiene.constants import RunKind
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.report.index_page import load_summaries, prune_reports, write_index
-from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
-from media_hygiene.services.writable import ensure_writable
 
 
 def reports_command(
@@ -40,6 +35,20 @@ def reports_command(
     Raises:
         MountError: The reports folder is not mounted, or not writable.
     """
+    from rich.table import Table
+
+    from media_hygiene.console.formatting import human_number, human_size
+    from media_hygiene.console.links import file_link
+    from media_hygiene.errors import MountError
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.report.index_page import (
+        load_summaries,
+        prune_reports,
+        write_index,
+    )
+    from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
+    from media_hygiene.services.writable import ensure_writable
+
     runtime = runtime_of(ctx)
     output = runtime.output
     reports_dir = runtime.locations.reports_dir
