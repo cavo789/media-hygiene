@@ -52,3 +52,9 @@ checked on a native Linux Docker engine:
   Known limit: a disk mounted *below* its root and off-convention
   (`-v /media/me/Disk/Photos:/data/media/me/Disk`) still shows `/Photos`: the mount table
   cannot tell where the disk is mounted on the host.
+
+## Review — 2026-10-13
+
+Decided with the maintainer: the item left under *Not done* is dropped (no test-only crash
+trigger in the shipped image; no native Linux machine at hand — the unit tests cover the root
+file system, a `/home` partition and a USB disk). Closed as DONE.

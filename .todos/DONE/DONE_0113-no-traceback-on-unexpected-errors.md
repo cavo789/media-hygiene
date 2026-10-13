@@ -68,3 +68,9 @@ untouched (`READ_ONLY_COMMANDS`). An unexpected error deserves the same treatmen
   a bug; a hidden "crash on purpose" switch in the shipped code was not added. To do with the
   next `e2e` run if a trigger is wanted (e.g. a test-only environment variable read by the e2e
   image only).
+
+## Review — 2026-10-13
+
+Decided with the maintainer: the item left under *Not done* is dropped (no test-only crash
+trigger in the shipped image; no native Linux machine at hand — the unit tests cover the root
+file system, a `/home` partition and a USB disk). Closed as DONE.
