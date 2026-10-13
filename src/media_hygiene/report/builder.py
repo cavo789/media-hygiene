@@ -15,7 +15,8 @@ from media_hygiene.report.group_views import (
 from media_hygiene.report.pair_views import PairRenderer, report_pairs, sampled_files
 from media_hygiene.report.similar_views import SimilarRenderer, similar_files
 from media_hygiene.report.summary import CrossCheckSummary, ReportSummary
-from media_hygiene.report.thumbnails import PREVIEWABLE, ThumbnailJob, thumbnail_name
+from media_hygiene.report.thumbnail_jobs import ThumbnailJob
+from media_hygiene.report.thumbnails import PREVIEWABLE, thumbnail_name
 from media_hygiene.report.views import (
     BrokenSection,
     BrokenView,

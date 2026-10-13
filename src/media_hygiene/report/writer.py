@@ -17,13 +17,13 @@ from media_hygiene.report.builder import ReportBuilder
 from media_hygiene.report.csv_export import write_plan_csv
 from media_hygiene.report.environment import make_environment
 from media_hygiene.report.index_page import write_index
-from media_hygiene.report.thumbnails import make_thumbnails
+from media_hygiene.report.thumbnail_jobs import make_thumbnails
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.report.preview_cache import PreviewPool
     from media_hygiene.report.views import ReportRecord
 
 _STAMP_FORMAT: Final = "%Y%m%d-%H%M%S"
@@ -38,7 +38,7 @@ class ReportWriter:
 
     reports_dir: Path
     mapper: HostPathMapper
-    executor: Executor
+    pool: PreviewPool  # renders previews, and keeps them in the cache
 
     def write(self, record: ReportRecord) -> Path:
         """Write the report of an audit or a clean, and its near-duplicates page.
@@ -52,7 +52,7 @@ class ReportWriter:
         folder = self._new_folder(record)
         builder = ReportBuilder(self.mapper, folder)
         previews = asyncio.run(
-            make_thumbnails(builder.thumbnail_jobs(record), self.executor)
+            make_thumbnails(builder.thumbnail_jobs(record), self.pool)
         )
         view = builder.view(record, previews)
         environment = make_environment()

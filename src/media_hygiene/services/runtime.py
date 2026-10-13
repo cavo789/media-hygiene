@@ -114,6 +114,17 @@ class Runtime:
             return self.locations.index_file
         return None
 
+    @property
+    def previews_dir(self) -> Path | None:
+        """The folder previews are kept in, when the cache is mounted to keep them.
+
+        Returns:
+            Its path, or None: previews are then rendered each time.
+        """
+        if self.persistent(MountKind.CACHE):
+            return self.locations.previews_dir
+        return None
+
     def with_overrides(self, layer: Layer) -> Runtime:
         """Reload the settings with extra command-line overrides.
 

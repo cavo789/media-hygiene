@@ -113,7 +113,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
     """
     page = review_page(_PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = ReviewApp(session, page, executor)
+        app = ReviewApp(session, page, executor, runtime.previews_dir)
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 

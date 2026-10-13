@@ -85,5 +85,5 @@ def serve_near_review(runtime: Runtime, session: NearSession, port: int) -> None
         address_tip(runtime.output, port)
 
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = NearApp(session, page, executor)
+        app = NearApp(session, page, executor, runtime.previews_dir)
         asyncio.run(run_server(app, port, ready))

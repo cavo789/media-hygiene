@@ -20,6 +20,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.plan.near_review import NearAction
+from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.files import FILE_PATH, file_response
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import (
@@ -33,6 +34,7 @@ from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_respons
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
+    from pathlib import Path
 
     from media_hygiene.review.http import Request
     from media_hygiene.review.near_session import NearSession
@@ -66,6 +68,7 @@ class NearApp(LocalApp):
     session: NearSession
     page: bytes
     executor: Executor
+    previews: Path | None = None  # the cache folder of previews, if any
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -98,7 +101,9 @@ class NearApp(LocalApp):
             return Response(
                 HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY
             )
-        found = await file_response(path, self.session, self.executor)
+        found = await file_response(
+            path, self.session, PreviewPool(self.executor, self.previews)
+        )
         if found is not None:
             return found
         return page_or_state(path, self.page, self.session.state)

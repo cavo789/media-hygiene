@@ -45,3 +45,35 @@ A photo that does not change never needs a second decode for a given size.
   fake checks this.
 - `review` serves a photo already seen without decoding it.
 - A file rewritten in place (new mtime) gets a new preview.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `report/preview_cache.py`: `cached_preview(PreviewJob(source, edge, folder))`, run in the
+  worker pool. The key is a digest of (version, path, size, mtime_ns, edge), the size and mtime
+  read by a `stat` in the worker; written under a `.part` name then renamed. A picture that
+  cannot be decoded is kept as an empty file (not decoded again for that version). A hit
+  touches the file (least recently used order).
+- `/cache/previews/` (`constants.PREVIEWS_DIR_NAME`, `Runtime.previews_dir`: None without a
+  persistent cache, then nothing is kept).
+- Reports (`report/thumbnail_jobs.py`, moved out of `thumbnails.py`; `ReportWriter` and
+  `ClassifyReportWriter` take a `PreviewPool`) copy the kept preview into their `thumbs/`.
+  Thumbnails are now JPEG quality 88 like the other previews (was 80).
+- `review`, `review --near`, `review-sort` (400 px and 1600 px), `people` (photo, not the face
+  crops), `search` (grid and large preview) all go through the cache. `search` used its own
+  `search-previews/` folder: replaced by the shared one (`search/thumbs.py` keeps `GRID_EDGE`).
+- Bound: `trim_previews` keeps the folder under 2 GB (`MAX_PREVIEW_BYTES`), least recently used
+  first, down to 80 %; run before each report is written.
+- Docs `start/02-keep-the-cache` en + fr. Tests: `tests/unit/test_preview_cache.py`,
+  `tests/integration/test_report_previews.py` (a second report decodes no picture).
+
+### Not done
+- Item 5, a per-preview ETag across sessions. **Reason:** the preview URLs carry keys valid
+  for one run only, and the 304 check happens in `review/serving.py` before the app sees the
+  request; with the disk cache, answering again costs a 100–300 KB read over the loopback.
+  Not worth the change unless measured.
+- Item 4 as written (remove the previews of the files `clean`/`purge` delete; the size in
+  `status`). **Reason:** replaced by the plain size cap the TODO allowed; showing the size in
+  `status` is left for later (a new user-facing line, to decide with the maintainer).
+- The old `/cache/search-previews/` folder of earlier versions is left in place (a few MB at
+  most; deleting the cache volume removes it).

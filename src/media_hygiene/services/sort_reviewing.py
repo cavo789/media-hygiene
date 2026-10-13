@@ -112,7 +112,7 @@ def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) ->
         decisions=decisions,
     )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = SortReviewApp(session, page.encode(), executor)
+        app = SortReviewApp(session, page.encode(), executor, runtime.previews_dir)
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 

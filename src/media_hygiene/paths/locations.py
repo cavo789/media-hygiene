@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -11,6 +11,9 @@ from media_hygiene.constants import CONFIG_FILE_NAME, ENV_PREFIX, INDEX_FILE_NAM
 
 if TYPE_CHECKING:
     from media_hygiene.paths.mount_kind import MountKind
+
+# Below the cache: photo previews, each size kept once (`report.preview_cache`).
+_PREVIEWS_DIR_NAME: Final = "previews"
 
 
 class Locations(BaseSettings):
@@ -48,6 +51,15 @@ class Locations(BaseSettings):
             `<cache_dir>/index.sqlite`.
         """
         return self.cache_dir / INDEX_FILE_NAME
+
+    @property
+    def previews_dir(self) -> Path:
+        """Folder of the previews kept between runs.
+
+        Returns:
+            `<cache_dir>/previews`.
+        """
+        return self.cache_dir / _PREVIEWS_DIR_NAME
 
     def path_of(self, kind: MountKind) -> Path:
         """Return the directory of a mount point.

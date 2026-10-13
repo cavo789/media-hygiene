@@ -24,6 +24,7 @@ from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.classify_writer import ClassifyReportWriter
 from media_hygiene.report.folders import new_report_folder
+from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -75,7 +76,9 @@ def write_classify_output(
         )
         write_workbook(plan, folder / CLASSIFY_WORKBOOK_FILE_NAME, prefill)
         with runtime.executor_factory() as executor:
-            ClassifyReportWriter(folder, runtime.mapper, executor).write(plan)
+            ClassifyReportWriter(
+                folder, runtime.mapper, PreviewPool(executor, runtime.previews_dir)
+            ).write(plan)
     except OSError as exc:
         raise MountError(
             _("The classify files could not be written to {folder}: {reason}.").format(

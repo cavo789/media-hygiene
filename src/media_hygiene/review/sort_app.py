@@ -18,7 +18,8 @@ from pydantic import ValidationError
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.report.thumbnails import jpeg_preview, review_preview
+from media_hygiene.report.preview_cache import PreviewPool
+from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import (
     PAGE_PATH,
@@ -33,7 +34,6 @@ from media_hygiene.review.sort_choices import CHOICES, EVENT_PATH
 from media_hygiene.review.sort_views import JPEG_SUFFIX, PREVIEW_PREFIX, THUMB_PREFIX
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
     from concurrent.futures import Executor
     from pathlib import Path
 
@@ -48,18 +48,6 @@ _THUMB_EDGE: Final = 400
 _VALUE_ERROR: Final = "Value error, "
 
 
-def _thumb(source: Path) -> bytes | None:
-    """Render a small preview, for the grid of an event.
-
-    Args:
-        source: Image or RAW file.
-
-    Returns:
-        The JPEG bytes, or None when the picture cannot be decoded.
-    """
-    return jpeg_preview(source, _THUMB_EDGE)
-
-
 @dataclass(frozen=True, slots=True)
 class SortReviewApp(LocalApp):
     """Answers the browser; the session holds the choices and saves them."""
@@ -67,6 +55,7 @@ class SortReviewApp(LocalApp):
     session: SortBatchSession
     page: bytes
     executor: Executor
+    previews: Path | None = None  # the cache folder of previews, if any
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -102,10 +91,10 @@ class SortReviewApp(LocalApp):
             except DecisionsError:
                 return Response(HTTPStatus.NOT_FOUND)
             return _json(view)
-        render: Callable[[Path], bytes | None] = (
-            _thumb if path.startswith(THUMB_PREFIX) else review_preview
-        )
-        prefix = THUMB_PREFIX if render is _thumb else PREVIEW_PREFIX
+        thumb = path.startswith(THUMB_PREFIX)
+        prefix = THUMB_PREFIX if thumb else PREVIEW_PREFIX
+        pool = PreviewPool(self.executor, self.previews)
+        render = pool.renderer(_THUMB_EDGE if thumb else REVIEW_EDGE)
         row = path.removeprefix(prefix).removesuffix(JPEG_SUFFIX)
         source = self.session.preview_source(row)
         if source is None or path != f"{prefix}{row}{JPEG_SUFFIX}":
