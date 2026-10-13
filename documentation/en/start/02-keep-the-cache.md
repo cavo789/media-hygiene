@@ -62,6 +62,9 @@ shown for the longest time are removed, and made again if needed.
 
 - **Keep this `-v` in every command** from now on: `audit`, and later `clean`, `review`… all
   use the same cache.
+- **An audit stopped halfway** (Ctrl+C, `docker stop`, the PC switched off) keeps what it
+  already checked: the cache saves its work every few seconds, and the next audit goes on from
+  there.
 - **Start again from scratch**: `docker volume rm media-hygiene-cache`. Nothing is lost: the next
   audit just reads everything again.
 - **After an update** of the tool, the first audit may read your photos once more, when the new

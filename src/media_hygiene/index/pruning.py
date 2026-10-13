@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.index.walks import mark_walked
 from media_hygiene.paths.host_paths import is_within
 
 if TYPE_CHECKING:
@@ -54,7 +55,7 @@ def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> int:
     now = datetime.now(UTC)
     for root in coverage.roots:
         if not any(is_within(item, root) for item in coverage.unreadable):
-            repository.mark_walked(root, now)
+            mark_walked(repository, root, now)
     return forgotten
 
 

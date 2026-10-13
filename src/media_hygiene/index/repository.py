@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+import time
 from typing import TYPE_CHECKING, Final, Self
 
 from media_hygiene.index.facts import FileFacts
@@ -11,12 +11,10 @@ from media_hygiene.index.preload import bounds_under, known_under
 from media_hygiene.index.rows import facts_of, is_current, row_of
 from media_hygiene.index.schema import (
     FORGET,
-    MARK_WALKED,
     MOVE,
     PATHS_UNDER,
     SELECT,
     UPSERT,
-    WALKED_AT,
     prepare,
 )
 
@@ -28,6 +26,8 @@ if TYPE_CHECKING:
     from media_hygiene.scan.models import MediaFile
 
 _IN_MEMORY: Final = ":memory:"
+# A killed run (docker stop, a crash) keeps what it stored until its last commit.
+_COMMIT_EVERY_SECONDS: Final = 5.0
 
 
 class FactsRepository:
@@ -42,6 +42,7 @@ class FactsRepository:
         self._connection = connection
         self._known: Known = {}  # filled by `preload`, kept up to date by `put`
         self._preloaded: tuple[str, ...] = ()  # the folders `_known` covers, "x/"
+        self._committed = time.monotonic()
         prepare(connection)
 
     @classmethod
@@ -111,6 +112,9 @@ class FactsRepository:
             facts: The facts to remember.
         """
         self._connection.execute(UPSERT, row_of(file, facts))
+        if time.monotonic() - self._committed >= _COMMIT_EVERY_SECONDS:
+            self._connection.commit()
+            self._committed = time.monotonic()
         self._known[str(file.path)] = (file.size, file.mtime_ns, facts)
 
     def preload(self, roots: Iterable[Path]) -> None:
@@ -175,24 +179,3 @@ class FactsRepository:
             It.
         """
         return self._connection
-
-    def mark_walked(self, folder: Path, when: datetime) -> None:
-        """Record that a folder was just walked without any read error.
-
-        Args:
-            folder: A mounted folder (container path).
-            when: When the walk ended.
-        """
-        self._connection.execute(MARK_WALKED, (str(folder), when.isoformat()))
-
-    def walked_at(self, folder: Path) -> datetime | None:
-        """Tell when a folder was last walked without any read error.
-
-        Args:
-            folder: A mounted folder (container path).
-
-        Returns:
-            When, or None when never.
-        """
-        row = self._connection.execute(WALKED_AT, (str(folder),)).fetchone()
-        return datetime.fromisoformat(row[0]) if row is not None else None

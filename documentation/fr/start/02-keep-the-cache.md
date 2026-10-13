@@ -64,6 +64,9 @@ n'ont plus été affichés depuis le plus longtemps sont supprimés, et refaits 
 
 - **Gardez ce `-v` dans chaque commande** à partir de maintenant : `audit`, puis plus tard
   `clean`, `review`… utilisent tous le même cache.
+- **Un audit arrêté en cours de route** (Ctrl+C, `docker stop`, le PC éteint) garde ce qu'il a
+  déjà vérifié : le cache enregistre son travail toutes les quelques secondes, et l'audit suivant
+  reprend de là.
 - **Repartir de zéro** : `docker volume rm media-hygiene-cache`. Rien n'est perdu : l'audit suivant
   relit simplement tout.
 - **Après une mise à jour** de l'outil, le premier audit peut relire vos photos une fois de plus,

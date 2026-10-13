@@ -8,9 +8,12 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.read_only import connect_read_only
+from media_hygiene.index.schema import MARK_WALKED, WALKED_AT
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from media_hygiene.index.repository import FactsRepository
 
 _LAST_WALK: Final = "SELECT MAX(walked_at) FROM roots"
 
@@ -34,3 +37,28 @@ def last_walk(index_file: Path | None) -> datetime | None:
     except sqlite3.Error:
         return None
     return datetime.fromisoformat(row[0]) if row and row[0] else None
+
+
+def mark_walked(repository: FactsRepository, folder: Path, when: datetime) -> None:
+    """Record that a folder was just walked without any read error.
+
+    Args:
+        repository: The index, open for writing.
+        folder: A mounted folder (container path).
+        when: When the walk ended.
+    """
+    repository.connection.execute(MARK_WALKED, (str(folder), when.isoformat()))
+
+
+def walked_at(repository: FactsRepository, folder: Path) -> datetime | None:
+    """Tell when a folder was last walked without any read error.
+
+    Args:
+        repository: The index.
+        folder: A mounted folder (container path).
+
+    Returns:
+        When, or None when never.
+    """
+    row = repository.connection.execute(WALKED_AT, (str(folder),)).fetchone()
+    return datetime.fromisoformat(row[0]) if row is not None else None
