@@ -29,7 +29,7 @@ def stage_label(stage: Stage) -> str:
     """
     labels = {
         Stage.LISTING: _("listing"),
-        Stage.INDEX: _("cache upkeep"),
+        Stage.INDEX: _("cache"),
         Stage.INTEGRITY: _("checks"),
         Stage.DIGESTS: _("fingerprints"),
         Stage.SIMILAR: _("near duplicates"),

@@ -4371,7 +4371,7 @@ msgstr ""
 msgid "by folder pair"
 msgstr ""
 
-msgid "cache upkeep"
+msgid "cache"
 msgstr ""
 
 msgid "camera (EXIF)"

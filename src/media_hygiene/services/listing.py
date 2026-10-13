@@ -40,18 +40,21 @@ def list_media(
         What the walk found.
     """
     filters = scan_filters(runtime.settings, runtime.mapper)
-    days = runtime.settings.scan.full_check_days
     index = runtime.index_file
-    setup = WalkSetup(filters)
-    if index is not None and index.is_file() and days:
-        with FactsRepository.open(index) as repository:
+    if index is None:
+        found = asyncio.run(walk(roots, WalkSetup(filters), progress))
+        _tell(runtime, found)
+        return found
+    days = runtime.settings.scan.full_check_days
+    existed = index.is_file()
+    with FactsRepository.open(index) as repository:  # one connection for both
+        setup = WalkSetup(filters)
+        if existed and days:
             known = load_listings(repository.connection, roots)
-        trusted = datetime.now(UTC) - timedelta(days=days)
-        setup = WalkSetup(filters, known, trusted)
-    found = asyncio.run(walk(roots, setup, progress))
-    if index is not None:
-        with FactsRepository.open(index) as repository:
-            save_listings(repository.connection, found.listings, (roots, found.visited))
+            trusted = datetime.now(UTC) - timedelta(days=days)
+            setup = WalkSetup(filters, known, trusted)
+        found = asyncio.run(walk(roots, setup, progress))
+        save_listings(repository.connection, found.listings, (roots, found.visited))
     _tell(runtime, found)
     return found
 

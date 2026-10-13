@@ -50,6 +50,11 @@ de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows
 vidéo… Rien de plus n'est lu pour cela. `inventory` exporte tout cela vers un classeur Excel,
 sans relire vos photos ([le classeur d'inventaire](../reference-inventory.md)).
 
+Pour les photos et vidéos trouvées semblables, il garde aussi à quel point chacune est colorée
+(une retouche en noir et blanc n'est pas une copie) et, pour les vidéos réencodées, une empreinte
+de leur image et de leur son : les audits suivants, `review --near` et `clean` ne mesurent que ce
+qui est nouveau ou modifié.
+
 ## Bon à savoir
 
 - **Gardez ce `-v` dans chaque commande** à partir de maintenant : `audit`, puis plus tard

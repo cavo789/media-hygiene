@@ -41,7 +41,7 @@ def test_the_audit_shows_near_duplicates_and_bursts(
     assert "Report written in" in output
     for label in (
         "listing",
-        "cache upkeep",
+        "cache",
         "checks",
         "fingerprints",
         "near duplicates",

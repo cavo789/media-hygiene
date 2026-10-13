@@ -37,7 +37,7 @@ def test_every_stage_has_a_label_on_the_line() -> None:
     """Every stage is named, with its duration, in one line."""
     line = stages_line([StageTime(stage, 1.25) for stage in Stage])
     assert line is not None
-    assert line.startswith("Time per step: listing 1.2 s · cache upkeep")
+    assert line.startswith("Time per step: listing 1.2 s · cache")
     assert line.count("·") == len(Stage) - 1
 
 

@@ -5279,8 +5279,8 @@ msgstr "par dossier"
 msgid "by folder pair"
 msgstr "par paire de dossiers"
 
-msgid "cache upkeep"
-msgstr "entretien du cache"
+msgid "cache"
+msgstr "cache"
 
 msgid "camera (EXIF)"
 msgstr "appareil (EXIF)"

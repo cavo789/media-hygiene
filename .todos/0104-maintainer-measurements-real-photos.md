@@ -124,7 +124,7 @@ better model is the remedy instead.
 ## 7. Where a warm audit spends its time (0131; ranks 0132–0136, measures 0134)
 
 Since 0131, `--verbosity verbose` prints one line under the findings table, e.g.
-`Time per step: listing 1.2 s · cache upkeep 0.1 s · checks 3.4 s · fingerprints 0.8 s · near
+`Time per step: listing 1.2 s · cache 0.1 s · checks 3.4 s · fingerprints 0.8 s · near
 duplicates 0.9 s · colours 21 s · same streams 2 s`, and `Report written in 9 s.` after the
 report. Nothing to install, no GPU.
 

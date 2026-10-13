@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import FFMPEG_BINARY, FFPROBE_BINARY
 from media_hygiene.i18n import _
+from media_hygiene.index.measures import MeasureStore
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.plan.models import AuditFindings
@@ -43,6 +44,8 @@ from media_hygiene.tags.xmp_owner import with_edits
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.plan.keeper import KeepPolicy
+    from media_hygiene.plan.similar_models import SimilarFindings
     from media_hygiene.scan.broken import IntegrityFindings
     from media_hygiene.scan.models import DuplicateGroup
     from media_hygiene.scan.progress import ProgressSink
@@ -83,24 +86,16 @@ class AuditService:
         with self._stopwatch.timing(Stage.LISTING):
             found, every_path = self._list_files(roots)
         listed = frozenset(str(file.path) for file in found.files)
-        groups, integrity = self._check_files(
-            found, WalkCoverage(roots, listed, found.unreadable, filters)
-        )
         policy = keep_policy(
             runtime.settings, runtime.mapper, accompanied(with_edits(found.sidecars))
+        )
+        groups, integrity, similar = self._analyse_files(
+            found, WalkCoverage(roots, listed, found.unreadable, filters), policy
         )
         plan = build_plan(groups, integrity.broken, policy)
         # With --ext, sidecars already alone before the clean are left where they are.
         sidecars = sidecars_in_scope(
             found.sidecars, policy, alone=not runtime.settings.scan.extensions
-        )
-        similar = checked_similar(
-            SimilarInputs.of(found.files, integrity, groups),
-            policy,
-            NearTools(
-                ColourTools(shutil.which(FFMPEG_BINARY), self._progress),
-                self._stopwatch,
-            ),
         )
         return AuditFindings(
             roots=roots,
@@ -116,40 +111,63 @@ class AuditService:
             stages=self._stopwatch.times(),
         )
 
-    def _check_files(
-        self, found: Walk, coverage: WalkCoverage
-    ) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings]:
-        """Forget from the index what is gone, then check and hash every file listed.
+    def _analyse_files(
+        self, found: Walk, coverage: WalkCoverage, policy: KeepPolicy
+    ) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings, SimilarFindings]:
+        """Forget what is gone, check and hash every file, then find near duplicates.
+
+        One index connection and one pool serve every step.
 
         Args:
             found: What the walk listed.
             coverage: What the walk could see, to tell which files are gone.
+            policy: Protected folders and the usual keep rules.
 
         Returns:
-            The duplicate groups, the broken files and what files say of themselves.
+            The duplicate groups, the broken files and what files say of themselves,
+            and the near duplicates.
         """
-        runtime = self._runtime
-        ffprobe = shutil.which(FFPROBE_BINARY)
-        if ffprobe is None:
-            runtime.output.warning(_("ffprobe not found: videos are not checked."))
-        ffmpeg = shutil.which(FFMPEG_BINARY)
-        if ffmpeg is None:
-            runtime.output.warning(
-                _("ffmpeg not found: re-encoded copies of videos are not looked for.")
-            )
+        ffprobe, ffmpeg = self._tools()
         with (
-            FactsRepository.open(runtime.index_file) as repository,
-            runtime.executor_factory() as executor,
+            FactsRepository.open(self._runtime.index_file) as repository,
+            self._runtime.executor_factory() as executor,
         ):
             with self._stopwatch.timing(Stage.INDEX):
                 forget_missing(repository, coverage)
+                repository.preload(coverage.roots)
             deps = ScanDeps(repository, self._progress)
             finders = Finders(
                 BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
                 ExactDuplicateFinder(deps),
                 self._stopwatch,
             )
-            return asyncio.run(analyse(found.files, finders))
+            groups, integrity = asyncio.run(analyse(found.files, finders))
+            tools = NearTools(
+                ColourTools(ffmpeg, self._progress, executor),
+                MeasureStore(repository.connection),
+                self._stopwatch,
+            )
+            similar = checked_similar(
+                SimilarInputs.of(found.files, integrity, groups), policy, tools
+            )
+        return groups, integrity, similar
+
+    def _tools(self) -> tuple[str | None, str | None]:
+        """Find `ffprobe` and `ffmpeg`, and say what is not done without them.
+
+        Returns:
+            Their paths, None when missing.
+        """
+        output = self._runtime.output
+        ffprobe = shutil.which(FFPROBE_BINARY)
+        if ffprobe is None:
+            output.warning(_("ffprobe not found: videos are not checked."))
+        ffmpeg = shutil.which(FFMPEG_BINARY)
+        if ffmpeg is None:
+            output.warning(
+                _("ffmpeg not found: re-encoded copies of videos are not looked for.")
+            )
+        return ffprobe, ffmpeg
 
     def _list_files(self, roots: tuple[Path, ...]) -> tuple[Walk, frozenset[Path]]:
         """Walk every root, without listing a file twice (nested mounts, hard links).

@@ -49,6 +49,10 @@ date, the GPS position, the device, the stars given in Windows, the length of a 
 more is read for it. `inventory` exports all of it to an Excel workbook, without reading your
 photos again ([the inventory workbook](../reference-inventory.md)).
 
+For the photos and videos found alike, it also keeps how colourful each one is (a black and
+white edit is not a copy) and, for re-encoded videos, a fingerprint of their picture and sound:
+the next audits, `review --near` and `clean` measure only what is new or changed.
+
 ## Good to know
 
 - **Keep this `-v` in every command** from now on: `audit`, and later `clean`, `review`… all
