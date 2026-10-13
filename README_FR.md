@@ -214,3 +214,25 @@ s'appelle media-hygiene depuis la version 0.3.0. Rien de ce que vous avez n'est 
   options `-v` : `undo`, `history` et le cache y retrouvent tout.
 - Les variables d'environnement `MEDIA_DEDUP_…` fonctionnent encore jusqu'à la version 0.4.0,
   avec un avertissement : renommez-les `MEDIA_HYGIENE_…`.
+
+## Licences
+
+L'outil lui-même est sous [licence MIT](LICENSE). L'image Docker contient aussi le travail
+d'autres personnes, chacun sous sa propre licence :
+
+| Composant | Licence |
+|---|---|
+| [x265](https://github.com/Multicorewareinc/x265) (lecture des HEIC, fourni par `pillow-heif`) | GPL-2.0-or-later |
+| [libheif](https://github.com/strukturag/libheif), [libde265](https://github.com/strukturag/libde265) (HEIC, fournis par `pillow-heif`) | LGPL-3.0-or-later |
+| [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, `ffmpeg`, compilés sans `--enable-gpl`) | LGPL-2.1-or-later |
+| [LibRaw](https://www.libraw.org/) (fichiers RAW, via `rawpy`) | LGPL-2.1 ou CDDL-1.0 |
+| Les villes de [GeoNames](https://www.geonames.org/) (`geo/data`, voir son `ATTRIBUTION.txt`) | CC BY 4.0 |
+| [Leaflet](https://leafletjs.com/) (la carte de `places`) | BSD-2-Clause |
+| Python, Pillow, NumPy, ONNX Runtime et les autres paquets Python, avec les bibliothèques que leurs wheels embarquent (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 et licences permissives semblables |
+| Les paquets Debian de l'image de base `python:3.14-slim` | Leurs propres licences (`/usr/share/doc/*/copyright`) |
+
+À cause de x265, l'image **dans son ensemble** relève de la GPL quand vous la redistribuez.
+Chaque composant est la version d'origine, non modifiée, épinglée dans `Dockerfile` et
+`uv.lock` : ses sources sont celles de cette version. Les modèles de visages de `people` ne sont
+pas dans l'image : ils sont téléchargés à la première utilisation depuis
+[OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet : MIT, SFace : Apache-2.0).

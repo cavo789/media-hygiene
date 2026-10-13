@@ -35,6 +35,13 @@ téléphones, d'appareils photo et d'anciens PC (H.264, HEVC, MPEG-4, VP8/VP9, W
 outils partagent la liste `VIDEO_DEMUXERS`. AV1 est laissé de côté : son décodeur demande une
 bibliothèque externe, et une telle vidéo n'est simplement pas comparée.
 
+Les deux restent sous LGPL : n'ajoutez jamais `--enable-gpl` ni `--enable-nonfree` à leur
+`configure`. Quand une dépendance apporte une nouvelle bibliothèque native (le dossier `*.libs`
+d'une wheel, un `apt-get install` dans l'étape runtime, un fichier embarqué), ajoutez-la à la
+section *Licences* des deux README et, si sa licence est nouvelle, à l'étiquette
+`org.opencontainers.image.licenses` du `Dockerfile`. Pour lister ce que les wheels embarquent :
+`ls /home/vscode/.venv/lib/python3.14/site-packages/*.libs`.
+
 ## Le devcontainer
 
 Ouvrez le dépôt dans le devcontainer (VS Code, *Reopen in Container*). Chaque nouveau terminal

@@ -208,3 +208,25 @@ media-hygiene since version 0.3.0. Nothing of yours is lost:
   `history` and the cache find everything they hold.
 - The `MEDIA_DEDUP_…` environment variables still work until version 0.4.0, with a warning:
   rename them `MEDIA_HYGIENE_…`.
+
+## Licences
+
+The tool itself is under the [MIT licence](LICENSE). The Docker image also contains other
+people's work, each under its own licence:
+
+| Component | Licence |
+|---|---|
+| [x265](https://github.com/Multicorewareinc/x265) (HEIC support, bundled by `pillow-heif`) | GPL-2.0-or-later |
+| [libheif](https://github.com/strukturag/libheif), [libde265](https://github.com/strukturag/libde265) (HEIC, bundled by `pillow-heif`) | LGPL-3.0-or-later |
+| [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, `ffmpeg`, built without `--enable-gpl`) | LGPL-2.1-or-later |
+| [LibRaw](https://www.libraw.org/) (RAW files, through `rawpy`) | LGPL-2.1 or CDDL-1.0 |
+| [GeoNames](https://www.geonames.org/) towns (`geo/data`, see its `ATTRIBUTION.txt`) | CC BY 4.0 |
+| [Leaflet](https://leafletjs.com/) (the `places` map) | BSD-2-Clause |
+| Python, Pillow, NumPy, ONNX Runtime and the other Python packages, with the libraries their wheels bundle (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 and similar permissive licences |
+| The Debian packages of the `python:3.14-slim` base image | Their own licences (`/usr/share/doc/*/copyright`) |
+
+Because of x265, the image **as a whole** is covered by the GPL when you redistribute it. Every
+component is the unmodified upstream release pinned in `Dockerfile` and `uv.lock`: its sources
+are those of that release. The face models of `people` are not in the image: they are downloaded
+on first use from [OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet: MIT, SFace:
+Apache-2.0).

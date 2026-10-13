@@ -111,10 +111,12 @@ ARG VERSION=0.2.0
 ARG APP_UID=1000
 ARG APP_GID=1000
 
+# The licences of the image, not only of the tool: x265 (GPL, bundled by pillow-heif),
+# libheif/libde265, FFmpeg, LibRaw, Leaflet, GeoNames. See "Licences" in README.md.
 LABEL org.opencontainers.image.title="media-hygiene" \
       org.opencontainers.image.description="Find and safely clean duplicate photos and videos across folders and disks." \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="MIT AND GPL-2.0-or-later AND LGPL-3.0-or-later AND LGPL-2.1-or-later AND (LGPL-2.1-only OR CDDL-1.0) AND BSD-2-Clause AND CC-BY-4.0"
 
 # Avoid .pyc cache files from build-time pip/pre-commit invocations, and unbuffered stdout for
 # any Python process run interactively in this container.
