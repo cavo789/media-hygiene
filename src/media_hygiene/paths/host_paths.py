@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 _WINDOWS_PATH = re.compile(r"^(?P<drive>[A-Za-z]):[\\/]*(?P<rest>.*)$")
 _SEPARATORS = re.compile(r"[\\/]+")
@@ -26,6 +26,8 @@ class HostPathMapper:
     def to_host(self, path: Path) -> str:
         r"""Render a container path the way the user sees it on the host.
 
+        Compared as text: it runs for every file, and for every `path` rule.
+
         Args:
             path: A path inside the container.
 
@@ -33,19 +35,22 @@ class HostPathMapper:
             The known Windows source, else `C:\\...` for a drive-letter mount, else
             `/...`.
         """
+        text = str(path)
         known = [
-            (point, host) for point, host in self.sources if path.is_relative_to(point)
+            (point, host)
+            for point, host in self.sources
+            if _below(text, str(point)) is not None
         ]
         if known:
-            point, host = max(known, key=lambda source: len(source[0].parts))
-            rest = path.relative_to(point).parts
+            point, host = max(known, key=lambda source: len(str(source[0])))
+            rest = _below(text, str(point)) or ()
             return "\\".join((host.rstrip("\\"), *rest)) if rest else host
-        if not path.is_relative_to(self.data_dir):
-            return str(path)
-        parts = path.relative_to(self.data_dir).parts
+        parts = _below(text, str(self.data_dir))
+        if parts is None:
+            return text
         if parts and len(parts[0]) == 1 and parts[0].isalpha():
             return f"{parts[0].upper()}:\\" + "\\".join(parts[1:])
-        return str(PurePosixPath("/", *parts))
+        return "/" + "/".join(parts)
 
     def roots_on_host(self, roots: tuple[Path, ...]) -> tuple[str, ...]:
         r"""Name the folders an audit analysed, as the user knows them.
@@ -130,3 +135,21 @@ def is_within(path: Path, folder: Path) -> bool:
     folder_parts = [part.casefold() for part in folder.parts]
     path_parts = [part.casefold() for part in path.parts]
     return path_parts[: len(folder_parts)] == folder_parts
+
+
+def _below(path: str, folder: str) -> tuple[str, ...] | None:
+    """The parts of a POSIX path below a folder, compared as text.
+
+    Args:
+        path: A container path.
+        folder: A container folder.
+
+    Returns:
+        The parts below it (empty: the folder itself), or None when outside it.
+    """
+    root = folder.rstrip("/")
+    if path in {folder, root}:
+        return ()
+    if not path.startswith(f"{root}/"):
+        return None
+    return tuple(part for part in path[len(root) + 1 :].split("/") if part)

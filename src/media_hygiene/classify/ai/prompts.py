@@ -71,6 +71,22 @@ def describe_name(language: Locale) -> str:
     return f"describe_{language.value}"
 
 
+def photo_chat(model: str, image: bytes, name: str) -> dict[str, object]:
+    """The part of an `/api/chat` body every question about one photo shares.
+
+    Args:
+        model: The vision model.
+        image: The photo, as JPEG.
+        name: The prompt template.
+
+    Returns:
+        The model and the one user message, the photo attached.
+    """
+    picture = base64.b64encode(image).decode("ascii")
+    message = {"role": "user", "content": prompt(name), "images": [picture]}
+    return {"model": model, "messages": [message]}
+
+
 def describe_request(
     model: str, image: bytes, name: str = "describe_en"
 ) -> dict[str, object]:
@@ -84,11 +100,8 @@ def describe_request(
     Returns:
         The `/api/chat` body.
     """
-    picture = base64.b64encode(image).decode("ascii")
-    message = {"role": "user", "content": prompt(name), "images": [picture]}
     return {
-        "model": model,
-        "messages": [message],
+        **photo_chat(model, image, name),
         "format": DESCRIBE_SCHEMA,
         "think": False,
         "options": {**OPTIONS, "num_predict": _DESCRIBE_TOKENS},

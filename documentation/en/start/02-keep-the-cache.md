@@ -37,6 +37,13 @@ itself. Nothing to create: Docker creates it the first time and keeps it between
 A file is recognised by its path, its size and its modification date: change any of them and it
 is read again. The results are the same, with or without the cache.
 
+Even the walk through your folders gets shorter: a folder where no file was added, removed or
+renamed since the last audit is taken from the cache, without looking at each of its files. The
+audit says it in one line: *"851 unchanged folders taken from the index, 6 read."* A photo
+changed **in place** by another program (same name) does not change its folder: it is seen at
+the latest when its folder is read again, after `full_check_days` (7 days) in `[scan]`, or at
+once with `audit --full`.
+
 The cache also keeps what each file says about itself, read while it is checked: the shooting
 date, the GPS position, the device, the stars given in Windows, the length of a video… Nothing
 more is read for it. `inventory` exports all of it to an Excel workbook, without reading your

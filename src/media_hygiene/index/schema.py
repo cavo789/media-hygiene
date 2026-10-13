@@ -8,7 +8,8 @@ videos (the hashes of a few frames, `scan.keyframes`); version 6 the tags of eac
 file (`index.tag_rows`: folder words, dates, places, what a vision model saw);
 version 7 what each place word names (`tags.models.PlaceKind`: `kind`, empty for the
 words of an older run until `tags` runs again); version 8 the faces of the photos
-(`index.face_schema`). An older index keeps its digests
+(`index.face_schema`); version 9 the listing of every folder walked
+(`index.folder_listings`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images
 again.
 """
@@ -18,11 +19,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
+from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 8
+SCHEMA_VERSION: Final = 9
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -169,4 +171,5 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(_CREATE_TAG_VALUES)
     connection.execute(CREATE_FACE_SCANS)
     connection.execute(CREATE_FACES)
+    connection.execute(CREATE_FOLDER_LISTINGS)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

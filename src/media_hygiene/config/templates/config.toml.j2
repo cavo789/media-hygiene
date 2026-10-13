@@ -51,6 +51,9 @@ extensions = []
 {{ comment(_("Folder names never analysed, wherever they are, on every disk: they add to the system and trash folders always skipped ('media-hygiene config' lists them). Globs matching the whole name, case ignored: * stands for any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", \"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as operators. A comma separates names: write ? in its place. For one precise folder, use excluded in [folders]."), "--exclude-name") }}
 excluded_names = []
 
+{{ comment(_("A folder that did not change since the last audit is taken from the index (/cache) instead of read again: one look at the folder instead of one per file. A file changed in place does not change its folder: a folder listed more than this many days ago is read again anyway. 0 reads every folder every time."), "--full") }}
+full_check_days = 7
+
 {{ comment(_("Your own categories: a name, then its extensions (not other categories). The built-in ones cannot be redefined. Variable: MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this whole table.")) }}
 [scan.categories]
 # documents = ["pdf", "docx", "txt"]

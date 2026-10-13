@@ -9,14 +9,13 @@ model call.
 
 from __future__ import annotations
 
-import base64
 import json
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.ai.describe import Question
 from media_hygiene.classify.ai.models import Description
-from media_hygiene.classify.ai.prompts import prompt, version
+from media_hygiene.classify.ai.prompts import photo_chat, version
 from media_hygiene.tags.models import Tag, TagSource
 from media_hygiene.tags.normalize import normalize
 
@@ -129,11 +128,8 @@ def _request(name: str, model: str, image: bytes) -> dict[str, object]:
     Returns:
         The body.
     """
-    picture = base64.b64encode(image).decode("ascii")
-    message = {"role": "user", "content": prompt(name), "images": [picture]}
     return {
-        "model": model,
-        "messages": [message],
+        **photo_chat(model, image, name),
         "format": _SCHEMA,
         "think": False,
         "options": _OPTIONS,

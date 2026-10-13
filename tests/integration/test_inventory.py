@@ -57,7 +57,7 @@ def test_the_workbook_lists_every_file_with_typed_cells(
     assert book.sheetnames == ["Files", "Summary"]
     files = book["Files"]
     assert files.freeze_panes == "A2"
-    assert files.auto_filter.ref == f"A1:AQ{files.max_row}"
+    assert files.auto_filter.ref == f"A1:AR{files.max_row}"  # People is the last
     header, *lines = rows(files)
     by_path = {line[0]: dict(zip(header, line, strict=True)) for line in lines}
     assert set(by_path) == {

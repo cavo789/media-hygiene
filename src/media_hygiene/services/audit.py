@@ -26,13 +26,14 @@ from media_hygiene.scan.exact import ExactDuplicateFinder
 from media_hygiene.scan.inventory import take_inventory
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.sidecars import accompanied
-from media_hygiene.scan.walker import Walk, walk
+from media_hygiene.scan.walker import Walk
 from media_hygiene.services.data_checks import (
     refuse_empty_data,
     refuse_overlapping_mounts,
     warn_about_aliases,
     warn_about_scope,
 )
+from media_hygiene.services.listing import list_media
 from media_hygiene.services.near_checks import checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
 from media_hygiene.tags.xmp_owner import with_edits
@@ -41,7 +42,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.scan.filters import ScanFilters
     from media_hygiene.scan.models import DuplicateGroup, MediaFile
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
@@ -77,7 +77,7 @@ class AuditService:
         warn_about_scope(runtime)
         roots = runtime.mounts.data_roots(data_dir)
         filters = scan_filters(runtime.settings, runtime.mapper)
-        found, every_path = self._list_files(roots, filters)
+        found, every_path = self._list_files(roots)
         listed = frozenset(str(file.path) for file in found.files)
         groups, integrity = self._check_files(
             found, WalkCoverage(roots, listed, found.unreadable, filters)
@@ -142,14 +142,11 @@ class AuditService:
                 ),
             )
 
-    def _list_files(
-        self, roots: tuple[Path, ...], filters: ScanFilters
-    ) -> tuple[Walk, frozenset[Path]]:
+    def _list_files(self, roots: tuple[Path, ...]) -> tuple[Walk, frozenset[Path]]:
         """Walk every root, without listing a file twice (nested mounts, hard links).
 
         Args:
             roots: Mounted folders.
-            filters: Folders to skip and extensions to keep.
 
         Returns:
             The media files, by path, every sidecar found, what could not be read;
@@ -163,7 +160,7 @@ class AuditService:
             ),
         )
         self._progress.start(step, None)
-        found = asyncio.run(walk(roots, filters, self._progress))
+        found = list_media(self._runtime, roots, self._progress)
         self._progress.stop()
         unique = unique_files(found.files)
         warn_about_aliases(self._runtime, unique.aliases)

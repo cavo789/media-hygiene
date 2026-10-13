@@ -7,6 +7,7 @@ ordered rules of `[[classify.rules]]` decide from them.
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
+from functools import cache
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
@@ -96,7 +97,10 @@ def classify(
     event_of = {path: event for event in events for path in event.paths}
     signals = without_event_folders(files, (signals, event_of), rules)
     where = find_whereabouts(files, (events, datings), (settings, scope.towns))
-    facts = RuleFacts(datings, with_neighbours(signals, events), event_of, scope.host)
+    # Every `path` rule asks for the host path of every file: computed once each.
+    facts = RuleFacts(
+        datings, with_neighbours(signals, events), event_of, cache(scope.host)
+    )
     facts = replace(facts, seen=scope.seen, where=where)
     signals = decide(files, settings, facts)
     years = year_folders(files, datings, (signals, event_of, settings.event_year))

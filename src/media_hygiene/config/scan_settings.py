@@ -30,6 +30,8 @@ class ScanSettings(BaseModel):
     categories: dict[str, tuple[str, ...]] = Field(default_factory=dict)
     extensions: tuple[str, ...] = ()
     excluded_names: tuple[str, ...] = ()
+    # A folder listing older than this is read again, even if the folder did not change.
+    full_check_days: int = Field(default=7, ge=0)  # 0: every folder, every time
 
     @field_validator("categories")
     @classmethod

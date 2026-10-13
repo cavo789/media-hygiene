@@ -332,6 +332,19 @@ msgstr ""
 "Un fichier accessible par deux chemins (dossier monté deux fois, lien "
 "physique) est reconnu : il n'est jamais compté comme sa propre copie."
 
+msgid ""
+"A folder that did not change since the last audit is taken from the index"
+" (/cache) instead of read again: one look at the folder instead of one "
+"per file. A file changed in place does not change its folder: a folder "
+"listed more than this many days ago is read again anyway. 0 reads every "
+"folder every time."
+msgstr ""
+"Un dossier qui n'a pas changé depuis le dernier audit est repris de "
+"l'index (/cache) au lieu d'être relu : un coup d'œil au dossier au lieu "
+"d'un par fichier. Un fichier modifié sur place ne change pas son dossier "
+": un dossier listé il y a plus de ce nombre de jours est relu de toute "
+"façon. 0 relit tous les dossiers à chaque fois."
+
 #, python-brace-format
 msgid "A full run would analyse {count} more photos: about {duration}."
 msgstr ""
@@ -377,6 +390,15 @@ msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 "Une version plus récente a écrit ce journal : mettez media-hygiene à jour"
 " pour l'annuler."
+
+#, python-brace-format
+msgid ""
+"A photo changed in place by another program? 'audit --full' reads every "
+"folder (done anyway for those listed {days} days ago)."
+msgstr ""
+"Une photo modifiée sur place par un autre programme ? 'audit --full' "
+"relit tous les dossiers (c'est fait de toute façon pour ceux listés il y "
+"a {days} jours)."
 
 msgid ""
 "A series whose proposal leaves only the sharpest shot (and those of "
@@ -3256,6 +3278,13 @@ msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
 #, python-brace-format
 msgid "Read back from the index: {faces} faces left."
 msgstr "Relu dans l'index : il reste {faces} visages."
+
+msgid ""
+"Read every folder again, even those that did not change since the last "
+"audit: for a photo changed in place by another program."
+msgstr ""
+"Relire tous les dossiers, même ceux qui n'ont pas changé depuis le "
+"dernier audit : pour une photo modifiée sur place par un autre programme."
 
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
@@ -7212,6 +7241,12 @@ msgid "{removed} holds nothing else: it is entirely a copy of {kept}."
 msgstr ""
 "{removed} ne contient rien d'autre : c'est entièrement une copie de "
 "{kept}."
+
+#, python-brace-format
+msgid "{reused} unchanged folder taken from the index, {read} read."
+msgid_plural "{reused} unchanged folders taken from the index, {read} read."
+msgstr[0] "{reused} dossier inchangé repris de l'index, {read} relus."
+msgstr[1] "{reused} dossiers inchangés repris de l'index, {read} relus."
 
 #, python-brace-format
 msgid ""
