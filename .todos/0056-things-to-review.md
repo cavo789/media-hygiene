@@ -25,7 +25,8 @@ How to use it:
 
 Parts 1–3 answered; PARTIAL 0009 (→ UNNEEDED), 0027, 0029, 0030, 0032, 0040, 0041, 0053 and
 BLOCKED 0045 closed, the work their answers created filed as TODOs 0114–0125. Left: the
-Windows checks of Part 4 still unticked (0028, 0005, 0035, 0057), to run with the maintainer.
+Windows checks of Part 4: 0028 and 0057 done on 2026-10-14 (work filed as TODO 0138); 0005
+(postponed) and 0035 still unticked.
 
 ## Part 1 — Prerequisite
 
@@ -253,8 +254,21 @@ Windows checks of Part 4 still unticked (0028, 0005, 0035, 0057), to run with th
 
 ## Part 4 — Checks on the Windows machine (DONE TODOs, untested here)
 
-- [ ] **0028:** a `sort` between two different disks (cross-device move); Ctrl+C during a `sort`
+- [x] **0028:** a `sort` between two different disks (cross-device move); Ctrl+C during a `sort`
   in `docker run -it`; Excel's lock file `~$classify.xlsx` detected while the workbook is open.
+  → 2026-10-14 (image 0.3.0, `C:\Temp\sort-test`, target on a second `-v`): cross-mount move
+    copied and verified; Ctrl+C at 112/414 stopped cleanly (no traceback, "Nothing lost: 420
+    files", 114 of 114 moves verified, resume and undo hints); src 300 + sorted 120 = 420; the
+    rerun counted "Moved by an earlier run: 114"; `undo` brought the 114 back, 0 failed.
+    Excel open on the workbook: `~$classify.xlsx` is there and `sort` warns ("open in Excel or
+    LibreOffice: what is not saved is not read", tip: save, close, run again), then still asks
+    (default No). Decided: keep the warning, no refusal (nothing is lost; an orphan lock file
+    after an Excel crash would otherwise block `sort`).
+    Unexplained: 6 files already sat in `sorted` before the interrupted run (most likely an
+    earlier run stopped after 6 files); the test folder, journal included, was deleted before
+    `history` could tell. The before/after count held (420), nothing to file unless it recurs.
+    Seen in passing: the 0.3.0 tip printed "list it in  excluded" (Rich ate `[folders]`),
+    already fixed on main (`cli/error_view.py` escapes the tip).
 - [x] **0038:** the `review` page names the decisions file as a `C:\…` path under Docker Desktop.
   → checked 2026-10-12: console and page footer both say `C:\Users\…\media-hygiene\reports\decisions.json`.
 - [x] **0039:** PowerShell 5.1: a decisions file / `config.toml` saved with `Set-Content
@@ -267,11 +281,22 @@ Windows checks of Part 4 still unticked (0028, 0005, 0035, 0057), to run with th
   → checked 2026-10-12: a search by name on the `places` page drew the area (Nominatim).
 - [ ] **0005:** real phone videos (WhatsApp re-encode, iPhone HEVC, 4K) are found as re-encoded
   copies.
+  → postponed by the maintainer (2026-10-14). Procedure ready: three originals (Android, iPhone
+    HEVC `.MOV`, 4K) and their WhatsApp received copies in `C:\Temp\video-test\videos`, `audit`
+    with `:ro`; expect 3 groups under *Re-encoded videos*; for a miss, `ffprobe` duration and
+    `creation_time` of both files.
 - [ ] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
   and home videos named `720p`/`1080p` not for downloads.
-- [ ] **0057:** a `sort` on one NTFS mount of Docker Desktop: renamed (instant) or copied file by
+- [x] **0057:** a `sort` on one NTFS mount of Docker Desktop: renamed (instant) or copied file by
   file (`renameat2` unsupported there falls back to the verified copy: slower, same result)?
   And `-v "C:\Photos\quarantine:/quarantine"` next to `-v "C:\Photos:/data/c/Photos"` is refused.
+  → 2026-10-14, synthetic copy (`C:\Temp\sort-test`, 420 files, 3.0 GB, one mount, target inside
+    it): **copied file by file**, ~70 s; `undo` copies back too (1 min 01 s, 420 back, 0 failed).
+    Probe in the image on that mount: `renameat2(RENAME_NOREPLACE)` → `EINVAL`; `os.link` +
+    `unlink` works and keeps the inode (11258999068581133), plain `rename` too. So a hard link then
+    unlink would move instantly while still refusing an existing target: TODO 0138. The docs'
+    "on one disk, a move is a rename: nothing is copied" is wrong under Docker Desktop.
+    A quarantine mounted inside the photo folder is refused with a clear message and tip.
 - [x] **0023, 0032:** re-read the new French wordings ("déplacées en quarantaine", inventory
   headers).
   → OK as they are.
