@@ -3336,6 +3336,10 @@ msgstr "Retirez ':ro' de leurs options -v pour laisser '{command}' agir."
 msgid "Report with the photos: {path}"
 msgstr "Rapport avec les photos : {path}"
 
+#, python-brace-format
+msgid "Report written in {duration}."
+msgstr "Rapport écrit en {duration}."
+
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
 
@@ -4617,6 +4621,10 @@ msgstr ""
 "Ce classeur a été écrit par une autre version : il ne peut pas être "
 "vérifié."
 
+#, python-brace-format
+msgid "Time per step: {steps}"
+msgstr "Temps par étape : {steps}"
+
 msgid "Time zone"
 msgstr "Fuseau horaire"
 
@@ -5271,6 +5279,9 @@ msgstr "par dossier"
 msgid "by folder pair"
 msgstr "par paire de dossiers"
 
+msgid "cache upkeep"
+msgstr "entretien du cache"
+
 msgid "camera (EXIF)"
 msgstr "appareil (EXIF)"
 
@@ -5291,6 +5302,9 @@ msgstr ""
 "catégorie {name} : une catégorie liste des extensions, pas des catégories"
 " ; pour l'extension, écrivez .{value}"
 
+msgid "checks"
+msgstr "vérifications"
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -5306,6 +5320,9 @@ msgstr "nettoyage"
 
 msgid "clean moves the duplicate copies to /quarantine: mount it."
 msgstr "clean déplace les copies en double dans /quarantine : montez-le."
+
+msgid "colours"
+msgstr "couleurs"
 
 msgid "command line"
 msgstr "ligne de commande"
@@ -5396,6 +5413,9 @@ msgid ""
 msgstr ""
 "retrouvez vos photos par ces mots dans votre navigateur ; 'inventory' les"
 " liste dans sa dernière colonne."
+
+msgid "fingerprints"
+msgstr "empreintes"
 
 msgid "finish the burst review where you stopped."
 msgstr "terminez le tri des rafales là où vous vous êtes arrêté."
@@ -5565,6 +5585,9 @@ msgstr "laissé tel quel"
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
 
+msgid "listing"
+msgstr "liste"
+
 #, python-brace-format
 msgid "match = '{match}' needs {field}"
 msgstr "match = '{match}' demande {field}"
@@ -5656,6 +5679,9 @@ msgstr ""
 #, python-brace-format, python-format
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
+
+msgid "near duplicates"
+msgstr "quasi-doublons"
 
 msgid "next event to decide"
 msgstr "événement suivant à décider"
@@ -5838,6 +5864,9 @@ msgstr "exécution"
 #, python-brace-format
 msgid "run 'clean' to set {size} of copies aside."
 msgstr "lancez 'clean' pour mettre {size} de copies de côté."
+
+msgid "same streams"
+msgstr "mêmes flux"
 
 msgid "seen by the model"
 msgstr "vu par le modèle"
@@ -7247,6 +7276,10 @@ msgid "{reused} unchanged folder taken from the index, {read} read."
 msgid_plural "{reused} unchanged folders taken from the index, {read} read."
 msgstr[0] "{reused} dossier inchangé repris de l'index, {read} relus."
 msgstr[1] "{reused} dossiers inchangés repris de l'index, {read} relus."
+
+#, python-brace-format
+msgid "{seconds} s"
+msgstr "{seconds} s"
 
 #, python-brace-format
 msgid ""

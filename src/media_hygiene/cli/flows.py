@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import warn
@@ -11,6 +12,7 @@ from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.inventory_view import inventory_table
 from media_hygiene.console.links import file_link
 from media_hygiene.console.progress import RichProgress
+from media_hygiene.console.stage_times import short_duration, stages_line
 from media_hygiene.console.tables import findings_table, folder_pairs_view
 from media_hygiene.constants import REPORT_INDEX_FILE_NAME
 from media_hygiene.errors import CrossCheckError, MountError
@@ -55,6 +57,9 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
     with RichProgress(output.console) as progress:
         findings = AuditService(runtime, progress).run()
     output.show(findings_table(findings))
+    timed = stages_line(findings.stages)
+    if timed is not None and output.verbose:  # where the time goes, to paste
+        output.info(f"[dim]{timed}[/]")
     output.blank()
     inventory = inventory_table(findings.inventory)
     if inventory is not None and output.verbose:  # always shown by 'inventory'
@@ -138,12 +143,18 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
     output = runtime.output
     # Previews of thousands of photos take seconds: a spinner says the tool works.
     working = output.console.status(_("Writing the HTML report and its previews…"))
+    started = time.monotonic()
     try:
         with working:
             report = write_report(runtime, record)
     except MountError as exc:
         warn(output, exc)
         return
+    if report is not None and output.verbose:
+        seconds = short_duration(time.monotonic() - started)
+        output.info(
+            f"[dim]{_('Report written in {duration}.').format(duration=seconds)}[/]"
+        )
     if report is None:
         output.setting(_('-v "<a folder of yours>:/reports" (HTML reports)'))
         return

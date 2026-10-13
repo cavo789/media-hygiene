@@ -46,3 +46,17 @@ after N days (as `full_check_days` does for listings)? Proposal: yes, with the s
 - Changing `--prefer`, adding a file, or touching one makes the next audit run in full.
 - Measured with 0131: time of a second `audit` and of `review --near` on the real collection,
   before and after.
+
+## Status — BLOCKED (2026-10-14)
+
+### Not done
+- All items remain open.
+  **Reason:** it depends on the numbers of 0131, which only the maintainer can measure
+  (`0104` §7: `mh --verbosity verbose audit` twice, then `review --near`). The only figure so far
+  (0104 §3, 2026-10-12, before 0130) is a warm audit of 52,056 files in **10 s in all**. Saving
+  and reloading every finding (plan, groups, near decisions, bursts, video looks, inventory)
+  safely, without `pickle`, is a large, risky surface: build it only if the step line shows
+  that what it skips (`checks`, `fingerprints`, `near duplicates`, `colours`, `same streams`)
+  still costs much once 0132 caches colours and stream digests and 0135 reads the index once.
+  The open question above (age of the snapshot, `--full` after `full_check_days`) also waits
+  for the maintainer.

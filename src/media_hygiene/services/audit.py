@@ -19,14 +19,16 @@ from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.plan.planner import build_plan
 from media_hygiene.plan.similar import SimilarInputs
 from media_hygiene.scan.aliases import unique_files
-from media_hygiene.scan.broken import BrokenFileFinder, IntegrityFindings
+from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.colour import ColourTools
 from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
 from media_hygiene.scan.inventory import take_inventory
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.sidecars import accompanied
+from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.scan.walker import Walk
+from media_hygiene.services.audit_analysis import Finders, analyse
 from media_hygiene.services.data_checks import (
     refuse_empty_data,
     refuse_overlapping_mounts,
@@ -34,15 +36,15 @@ from media_hygiene.services.data_checks import (
     warn_about_scope,
 )
 from media_hygiene.services.listing import list_media
-from media_hygiene.services.near_checks import checked_similar
+from media_hygiene.services.near_checks import NearTools, checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
 from media_hygiene.tags.xmp_owner import with_edits
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.scan.models import DuplicateGroup, MediaFile
+    from media_hygiene.scan.broken import IntegrityFindings
+    from media_hygiene.scan.models import DuplicateGroup
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
 
@@ -59,6 +61,7 @@ class AuditService:
         """
         self._runtime = runtime
         self._progress = progress
+        self._stopwatch = Stopwatch()
 
     def run(self) -> AuditFindings:
         """List media files, find broken files, exact duplicates and orphan sidecars.
@@ -77,7 +80,8 @@ class AuditService:
         warn_about_scope(runtime)
         roots = runtime.mounts.data_roots(data_dir)
         filters = scan_filters(runtime.settings, runtime.mapper)
-        found, every_path = self._list_files(roots)
+        with self._stopwatch.timing(Stage.LISTING):
+            found, every_path = self._list_files(roots)
         listed = frozenset(str(file.path) for file in found.files)
         groups, integrity = self._check_files(
             found, WalkCoverage(roots, listed, found.unreadable, filters)
@@ -90,6 +94,14 @@ class AuditService:
         sidecars = sidecars_in_scope(
             found.sidecars, policy, alone=not runtime.settings.scan.extensions
         )
+        similar = checked_similar(
+            SimilarInputs.of(found.files, integrity, groups),
+            policy,
+            NearTools(
+                ColourTools(shutil.which(FFMPEG_BINARY), self._progress),
+                self._stopwatch,
+            ),
+        )
         return AuditFindings(
             roots=roots,
             plan=replace(plan, sidecars=sidecars),
@@ -98,13 +110,10 @@ class AuditService:
                 Counter(file.path.parent for file in found.files)
             ),
             groups=groups,
-            similar=checked_similar(
-                SimilarInputs.of(found.files, integrity, groups),
-                policy,
-                ColourTools(shutil.which(FFMPEG_BINARY), self._progress),
-            ),
+            similar=similar,
             inventory=take_inventory(found.files, integrity),
             listed=every_path,
+            stages=self._stopwatch.times(),
         )
 
     def _check_files(
@@ -132,15 +141,15 @@ class AuditService:
             FactsRepository.open(runtime.index_file) as repository,
             runtime.executor_factory() as executor,
         ):
-            forget_missing(repository, coverage)
+            with self._stopwatch.timing(Stage.INDEX):
+                forget_missing(repository, coverage)
             deps = ScanDeps(repository, self._progress)
-            return asyncio.run(
-                _analyse(
-                    found.files,
-                    BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
-                    ExactDuplicateFinder(deps),
-                ),
+            finders = Finders(
+                BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
+                ExactDuplicateFinder(deps),
+                self._stopwatch,
             )
+            return asyncio.run(analyse(found.files, finders))
 
     def _list_files(self, roots: tuple[Path, ...]) -> tuple[Walk, frozenset[Path]]:
         """Walk every root, without listing a file twice (nested mounts, hard links).
@@ -166,29 +175,3 @@ class AuditService:
         warn_about_aliases(self._runtime, unique.aliases)
         every_path = frozenset(file.path for file in found.files)
         return Walk(unique.files, found.sidecars, found.unreadable), every_path
-
-
-async def _analyse(
-    files: Sequence[MediaFile],
-    broken_finder: BrokenFileFinder,
-    exact_finder: ExactDuplicateFinder,
-) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings]:
-    """Find broken files first (describing images), then exact duplicates.
-
-    Broken and empty files are kept out of duplicate groups: they are handled on their
-    own (deleted when empty, quarantined when unreadable).
-
-    Args:
-        files: Every media file found.
-        broken_finder: Integrity checker.
-        exact_finder: Duplicate finder.
-
-    Returns:
-        The duplicate groups, the broken files and the visual facts of images.
-    """
-    integrity = await broken_finder.find(files)
-    broken_paths = {item.file.path for item in integrity.broken}
-    healthy = [
-        file for file in files if file.size > 0 and file.path not in broken_paths
-    ]
-    return await exact_finder.find(healthy), integrity

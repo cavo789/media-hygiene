@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
+- **Files**: `.todos/PARTIAL/PARTIAL_0131-time-each-audit-step.md`, `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
 
 ## Context
 
@@ -120,6 +120,21 @@ Decide afterwards: if the siblings are confused often (more × than a few per ye
 to compare a face only with the confirmed faces of nearby years (EXIF date, already in the
 index); otherwise, nothing to build. The ArcFace run of §4 on the same year says whether a
 better model is the remedy instead.
+
+## 7. Where a warm audit spends its time (0131; ranks 0132–0136, measures 0134)
+
+Since 0131, `--verbosity verbose` prints one line under the findings table, e.g.
+`Time per step: listing 1.2 s · cache upkeep 0.1 s · checks 3.4 s · fingerprints 0.8 s · near
+duplicates 0.9 s · colours 21 s · same streams 2 s`, and `Report written in 9 s.` after the
+report. Nothing to install, no GPU.
+
+1. `mh --verbosity verbose audit` twice in a row, nothing changed in between (the first one
+   warms the cache if needed). Paste both step lines and both report lines.
+2. `mh --verbosity verbose review --near`, then stop it (Ctrl+C) once the page opens. Paste its
+   step line.
+3. With these numbers Claude re-ranks 0132 (colours, same streams), 0133 (report), 0135
+   (checks + fingerprints = index reads) and 0136 (start-up); 0134 (reuse of the last findings)
+   then shows its gain on the same two runs.
 
 ## Acceptance
 

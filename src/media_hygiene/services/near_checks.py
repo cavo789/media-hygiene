@@ -9,13 +9,14 @@ light; nothing is stored, so a later audit measures them again.
 from __future__ import annotations
 
 import asyncio
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from media_hygiene.plan.near_levels import with_levels
 from media_hygiene.plan.similar import SimilarInputs, find_similar
-from media_hygiene.scan.colour import ColourTools, colours
+from media_hygiene.scan.colour import colours
+from media_hygiene.scan.stopwatch import Stage
 from media_hygiene.services.same_streams import same_streams
 
 if TYPE_CHECKING:
@@ -23,11 +24,21 @@ if TYPE_CHECKING:
 
     from media_hygiene.plan.keeper import KeepPolicy
     from media_hygiene.plan.similar_models import NearDecision, SimilarFindings
+    from media_hygiene.scan.colour import ColourTools
     from media_hygiene.scan.models import MediaFile
+    from media_hygiene.scan.stopwatch import Stopwatch
+
+
+@dataclass(frozen=True, slots=True)
+class NearTools:
+    """What checking near duplicates needs: colour tools and the audit's stopwatch."""
+
+    colour: ColourTools
+    stopwatch: Stopwatch
 
 
 def checked_similar(
-    inputs: SimilarInputs, policy: KeepPolicy, tools: ColourTools
+    inputs: SimilarInputs, policy: KeepPolicy, tools: NearTools
 ) -> SimilarFindings:
     """Find near duplicates and re-encoded videos, colours and streams checked.
 
@@ -36,12 +47,14 @@ def checked_similar(
     Args:
         inputs: Files, visual facts, video fingerprints and exact-duplicate groups.
         policy: Protected folders and the usual keep rules.
-        tools: `ffmpeg` and the progress sink, to measure colours.
+        tools: `ffmpeg` and the progress sink, to measure colours; the stopwatch.
 
     Returns:
         The findings.
     """
-    first = find_similar(inputs, policy)
+    watch = tools.stopwatch
+    with watch.timing(Stage.SIMILAR):
+        first = find_similar(inputs, policy)
     images = {file.path for file in _members(first.near)}
     videos = {
         file.path: first.video_looks[file.path].duration
@@ -49,7 +62,8 @@ def checked_similar(
     }
     if not images and not videos:
         return with_levels(first)
-    measured = asyncio.run(colours(images, videos, tools))
+    with watch.timing(Stage.COLOURS):
+        measured = asyncio.run(colours(images, videos, tools.colour))
     visuals = {
         path: replace(visual, colour=measured.get(path))
         for path, visual in inputs.visuals.items()
@@ -61,7 +75,10 @@ def checked_similar(
     coloured = replace(
         inputs, visuals=MappingProxyType(visuals), videos=MappingProxyType(looks)
     )
-    return with_levels(same_streams(find_similar(coloured, policy), policy))
+    with watch.timing(Stage.SIMILAR):
+        second = find_similar(coloured, policy)
+    with watch.timing(Stage.STREAMS):
+        return with_levels(same_streams(second, policy))
 
 
 def _members(decisions: Iterable[NearDecision]) -> Iterable[MediaFile]:

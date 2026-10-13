@@ -2758,6 +2758,10 @@ msgstr ""
 msgid "Report with the photos: {path}"
 msgstr ""
 
+#, python-brace-format
+msgid "Report written in {duration}."
+msgstr ""
+
 msgid "Reports (newest first)"
 msgstr ""
 
@@ -3803,6 +3807,10 @@ msgstr ""
 msgid "This workbook was written by another version: it cannot be checked."
 msgstr ""
 
+#, python-brace-format
+msgid "Time per step: {steps}"
+msgstr ""
+
 msgid "Time zone"
 msgstr ""
 
@@ -4363,6 +4371,9 @@ msgstr ""
 msgid "by folder pair"
 msgstr ""
 
+msgid "cache upkeep"
+msgstr ""
+
 msgid "camera (EXIF)"
 msgstr ""
 
@@ -4379,6 +4390,9 @@ msgid ""
 "extension, write .{value}"
 msgstr ""
 
+msgid "checks"
+msgstr ""
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -4391,6 +4405,9 @@ msgid "clean"
 msgstr ""
 
 msgid "clean moves the duplicate copies to /quarantine: mount it."
+msgstr ""
+
+msgid "colours"
 msgstr ""
 
 msgid "command line"
@@ -4477,6 +4494,9 @@ msgstr ""
 msgid ""
 "find your photos by these words in your browser; 'inventory' lists them "
 "in its last column."
+msgstr ""
+
+msgid "fingerprints"
 msgstr ""
 
 msgid "finish the burst review where you stopped."
@@ -4635,6 +4655,9 @@ msgstr ""
 msgid "less than {limit} is expected, not {value}"
 msgstr ""
 
+msgid "listing"
+msgstr ""
+
 #, python-brace-format
 msgid "match = '{match}' needs {field}"
 msgstr ""
@@ -4715,6 +4738,9 @@ msgstr ""
 
 #, python-brace-format, python-format
 msgid "naming the events up to this one covers {share}%% of the work"
+msgstr ""
+
+msgid "near duplicates"
 msgstr ""
 
 msgid "next event to decide"
@@ -4885,6 +4911,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "run 'clean' to set {size} of copies aside."
+msgstr ""
+
+msgid "same streams"
 msgstr ""
 
 msgid "seen by the model"
@@ -6079,6 +6108,10 @@ msgid "{reused} unchanged folder taken from the index, {read} read."
 msgid_plural "{reused} unchanged folders taken from the index, {read} read."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{seconds} s"
+msgstr ""
 
 #, python-brace-format
 msgid ""

@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import BrokenFile, DuplicateGroup, MediaFile
     from media_hygiene.scan.sidecars import Sidecar
+    from media_hygiene.scan.stopwatch import StageTime
 
 
 @dataclass(frozen=True, slots=True)
@@ -183,6 +184,8 @@ class AuditFindings:  # pylint: disable=too-many-instance-attributes
     inventory: Inventory = field(default_factory=Inventory)
     # Every media path the walk listed, hard-link aliases included; None when unknown.
     listed: frozenset[Path] | None = None
+    # How long each stage took, in the order they ran (`audit -v`).
+    stages: tuple[StageTime, ...] = ()
 
     @property
     def files_scanned(self) -> int:
