@@ -8,6 +8,7 @@ import typer
 
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.next_steps import carried, suggest
+from media_hygiene.cli.options import panel_local_ai
 from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.tags_flow import TagRequest, run_tags
 from media_hygiene.i18n import _
@@ -35,6 +36,7 @@ def tags_command(  # pylint: disable=too-many-arguments
         int,
         typer.Option(
             "--sample",
+            rich_help_panel=panel_local_ai(),
             min=0,
             help=_(
                 "Describe this many random photos with the local model, print the "
@@ -47,6 +49,7 @@ def tags_command(  # pylint: disable=too-many-arguments
         bool,
         typer.Option(
             "--no-describe",
+            rich_help_panel=panel_local_ai(),
             help=_(
                 "Ask the local model nothing new: the words of the folders, names, "
                 "dates and places only, and the descriptions already in the cache."
@@ -58,6 +61,7 @@ def tags_command(  # pylint: disable=too-many-arguments
         typer.Option(
             "--yes",
             "-y",
+            rich_help_panel=panel_local_ai(),
             help=_("Describe the photos without asking, however many."),
         ),
     ] = False,

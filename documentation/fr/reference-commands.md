@@ -155,7 +155,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 ╭─ 🔒 Analyser : lecture seule, ne modifie jamais vos photos ──────────────────╮
 │ audit        Trouver les doublons exacts et les fichiers cassés.             │
 │ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
-│              catégorie.                                                      │
+│              catégorie, et ce que montrent les photos isolées avec une IA    │
+│              locale facultative 🤖                                           │
 │ config       Affiche chaque réglage, son origine, et les points de montage.  │
 │ crosscheck   Compare un nouvel audit aux résultats de Czkawka : un second    │
 │              avis, indépendant.                                              │
@@ -181,9 +182,10 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              en tableau) : les mots que 'tags' leur a donnés.                │
 │ status       Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il      │
 │              reste : sans analyse.                                           │
-│ tags         Donner à chaque photo des mots pour la retrouver : ses          │
-│              dossiers, son nom, sa date, son lieu, et ce qu'y voit un modèle │
-│              de vision local. Gardés dans le cache, jamais dans les photos.  │
+│ tags         Donner à chaque photo des mots pour la retrouver, gardés dans   │
+│              le cache, jamais dans les photos : ses dossiers, son nom, sa    │
+│              date, son lieu, et ce qu'elle montre avec une IA locale         │
+│              facultative 🤖                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
 │ album        Rassemble une sélection du plan de classify dans un dossier de  │

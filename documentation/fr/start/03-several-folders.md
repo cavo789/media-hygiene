@@ -170,8 +170,14 @@ en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `albu
 `review-sort`, `places`, `search` et `people`. Les commandes que l'outil propose à la fin d'une exécution deviennent
 elles aussi `mh …`.
 
-- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"` ; ou ajoutez
-  cette ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout.
+- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"`. Pour avoir `mh`
+  dans chaque terminal, écrivez cette ligne dans votre profil PowerShell, une fois (le profil et
+  son dossier sont créés s'ils manquent ; `notepad $PROFILE` montre ensuite la ligne) :
+
+  ```powershell
+  New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
+  Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+  ```
 - **Un autre dossier ?** Relancez la commande `launcher` avec un `-v` de plus.
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.

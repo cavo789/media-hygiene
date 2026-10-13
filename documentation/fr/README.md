@@ -31,7 +31,7 @@ Linux : quelques minutes, une seule fois.
 
 Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.
 
-👉 **Pressé ?** [Nettoyer en bref](clean/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
+👉 **Pressé ?** [Nettoyer en bref](clean/quick-guide.md) : le parcours complet, chaque fonctionnalité dans l'ordre, sur une page.
 
 **Les voir** (rien n'est modifié) :
 
@@ -66,7 +66,7 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 Donner à vos photos une arborescence rangée, `année/catégorie` ou celle que vous choisissez.
 Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 
-👉 **Pressé ?** [Trier en bref](sort/quick-guide.md) : toutes les commandes, dans l'ordre, sur une page.
+👉 **Pressé ?** [Trier en bref](sort/quick-guide.md) : le parcours complet, chaque fonctionnalité dans l'ordre, sur une page.
 
 4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
    fichier, et ne modifie rien.

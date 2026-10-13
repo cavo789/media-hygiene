@@ -153,7 +153,8 @@ command shows its own `--help`; here is the list of the commands:
 ╭─ 🔒 Analyse: read-only, never changes your photos ───────────────────────────╮
 │ audit        Find exact duplicates and broken files.                         │
 │ classify     Propose where every photo and video should go: year, event,     │
-│              category.                                                       │
+│              category, and what lone photos show with an optional local AI   │
+│              🤖                                                              │
 │ config       Show every setting, where it comes from, and the mount points.  │
 │ crosscheck   Compare a fresh audit with Czkawka's results: a second,         │
 │              independent opinion.                                            │
@@ -175,9 +176,9 @@ command shows its own `--help`; here is the list of the commands:
 │              words 'tags' gave them.                                         │
 │ status       Where am I? The last audit, the quarantine, what is left: no    │
 │              scan.                                                           │
-│ tags         Give every photo words to find it by: its folders, name, date   │
-│              and place, and what a local vision model sees. Kept in the      │
-│              cache, never in the photos.                                     │
+│ tags         Give every photo words to find it by, kept in the cache, never  │
+│              in the photos: its folders, name, date and place, and what it   │
+│              shows with an optional local AI 🤖                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
 │ album        Gather a selection of the classify plan into a folder of hard   │

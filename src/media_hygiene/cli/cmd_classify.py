@@ -19,7 +19,7 @@ from media_hygiene.cli.classify_flow import (
     write_output,
 )
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.options import panel_advanced
+from media_hygiene.cli.options import panel_advanced, panel_local_ai
 from media_hygiene.console.classify_view import show_classification
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.i18n import _
@@ -98,7 +98,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         int,
         typer.Option(
             "--sample",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             min=0,
             help=_(
                 "Estimate a full run first: describe this many random photos with "
@@ -112,7 +112,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         bool,
         typer.Option(
             "--no-describe",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             help=_(
                 "Ask the local model nothing new: the subject rules read the "
                 "descriptions already in the cache."
@@ -124,7 +124,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         typer.Option(
             "--yes",
             "-y",
-            rich_help_panel=panel_advanced(),
+            rich_help_panel=panel_local_ai(),
             help=_("Describe the photos without asking, however many."),
         ),
     ] = False,

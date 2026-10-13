@@ -89,9 +89,16 @@ PowerShell.
 
 ## Bon à savoir
 
-- **Dans un nouveau terminal**, rechargez-le : `. "$HOME\media-hygiene\mh.ps1"` ; ajoutez cette
-  ligne à votre profil (`notepad $PROFILE`) pour avoir `mh` partout. En bash, ajoutez la ligne
-  `source` à `~/.bashrc`.
+- **Dans un nouveau terminal**, rechargez-le : `. "$HOME\media-hygiene\mh.ps1"`. Pour avoir `mh`
+  dans chaque terminal, écrivez cette ligne dans votre profil PowerShell, une fois (le profil et
+  son dossier sont créés s'ils manquent ; `notepad $PROFILE` montre ensuite la ligne) :
+
+  ```powershell
+  New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
+  Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+  ```
+
+  En bash, ajoutez la ligne `source` à `~/.bashrc`.
 - **Un autre dossier ?** Relancez `launcher` avec un `-v` de plus, vers le même fichier.
 - **Pas à Bruxelles ?** Remplacez `Europe/Brussels` par votre fuseau (`Europe/Paris`,
   `America/Montreal`…). Sans `-e TZ=…`, `mh` tourne en UTC : les dossiers et heures des rapports

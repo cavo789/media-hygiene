@@ -158,8 +158,14 @@ folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `alb
 `$HOME\media-hygiene` (created when missing), plus the port of the browser pages for `review`,
 `review-sort`, `places`, `search` and `people`. The commands the tool suggests at the end of a run become `mh …` too.
 
-- **In a new terminal**, load it again: `. "$HOME\media-hygiene\mh.ps1"`; or add that line to your
-  profile (`notepad $PROFILE`) to have `mh` everywhere.
+- **In a new terminal**, load it again: `. "$HOME\media-hygiene\mh.ps1"`. To have `mh` in every
+  terminal, write that line into your PowerShell profile, once (the profile and its folder are
+  created when missing; `notepad $PROFILE` then shows the line):
+
+  ```powershell
+  New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
+  Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+  ```
 - **Another folder?** Run the `launcher` command again with one more `-v`.
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.

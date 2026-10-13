@@ -65,9 +65,9 @@ leurs dossiers, noms, dates et lieux.*
 | Option | Rôle |
 |---|---|
 | `--path CHEMIN` | Seulement les photos sous ce dossier (chemin de l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs. |
-| `--sample N` | Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
-| `--no-describe` | Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
-| `--yes`, `-y` | Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
+| 🤖 `--sample N` | **Avec une IA locale seulement.** Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
+| 🤖 `--no-describe` | **Avec une IA locale seulement.** Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
+| 🤖 `--yes`, `-y` | **Avec une IA locale seulement.** Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
 
 ## Bon à savoir
 
@@ -99,16 +99,17 @@ leurs dossiers, noms, dates et lieux.*
  Utilisation : media-hygiene tags [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Donner à chaque photo des
- mots pour la retrouver : ses dossiers, son nom, sa date, son lieu, et ce qu'y
- voit un modèle de vision local. Gardés dans le cache, jamais dans les photos.
+ mots pour la retrouver, gardés dans le cache, jamais dans les photos : ses
+ dossiers, son nom, sa date, son lieu, et ce qu'elle montre avec une IA locale
+ facultative 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path                 <str>               Seulement les photos sous ce      │
-│                                            dossier (chemin de l'hôte, tel    │
-│                                            que vous l'avez monté) ; à        │
-│                                            répéter pour plusieurs. Par       │
-│                                            défaut : tous les fichiers de     │
-│                                            l'index.                          │
+│ --path          <str>  Seulement les photos sous ce dossier (chemin de       │
+│                        l'hôte, tel que vous l'avez monté) ; à répéter pour   │
+│                        plusieurs. Par défaut : tous les fichiers de l'index. │
+│ --help  -h             Affiche ce message et quitte.                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
 │ --sample               <int range> [x>=0]  Décrire ce nombre de photos       │
 │                                            prises au hasard avec le modèle   │
 │                                            local, afficher le temps par      │
@@ -122,7 +123,6 @@ leurs dossiers, noms, dates et lieux.*
 │                                            déjà dans le cache.               │
 │ --yes          -y                          Décrire les photos sans demander, │
 │                                            quel que soit leur nombre.        │
-│ --help         -h                          Affiche ce message et quitte.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

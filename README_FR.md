@@ -87,7 +87,7 @@ de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/
 3. [Plusieurs dossiers et disques](https://cavo789.github.io/media-hygiene/fr/start/03-several-folders/) : `C:` et `D:`
    ensemble, le dossier courant, WSL.
 
-**Nettoyer les doublons** — pressé ? [Nettoyer en bref](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/), toutes les commandes sur une page.
+**Nettoyer les doublons** — pressé ? [Nettoyer en bref](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/), chaque fonctionnalité dans l'ordre, sur une page.
 
 4. [Le rapport HTML](https://cavo789.github.io/media-hygiene/fr/clean/04-html-report/) : les images, les paires de dossiers, la
    preuve.
@@ -110,7 +110,7 @@ de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/
 13. [Un second avis](https://cavo789.github.io/media-hygiene/fr/clean/13-second-opinion/) : comparer avec Czkawka, un outil
     indépendant.
 
-**Trier les photos** (nettoyez d'abord les doublons) — pressé ? [Trier en bref](https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/), toutes les commandes sur une page.
+**Trier les photos** (nettoyez d'abord les doublons) — pressé ? [Trier en bref](https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/), chaque fonctionnalité dans l'ordre, sur une page.
 
 4. [Proposer une arborescence](https://cavo789.github.io/media-hygiene/fr/sort/04-classify/) — `classify` propose une
    place pour chaque fichier, et ne modifie rien.

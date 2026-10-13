@@ -83,7 +83,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every command on one page.
+**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every feature in order, on one page.
 
 4. [The HTML report](https://cavo789.github.io/media-hygiene/clean/04-html-report/) — the pictures, the folder pairs, the
    proof.
@@ -106,7 +106,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 13. [A second opinion](https://cavo789.github.io/media-hygiene/clean/13-second-opinion/) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every command on one page.
+**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every feature in order, on one page.
 
 4. [Propose a tidy tree](https://cavo789.github.io/media-hygiene/sort/04-classify/) — `classify` proposes a place
    for every file, and changes nothing.
