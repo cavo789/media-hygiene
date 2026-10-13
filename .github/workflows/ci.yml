@@ -133,6 +133,9 @@ jobs:
     needs: [image, build-amd64, build-arm64]
     runs-on: ubuntu-26.04
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
@@ -149,3 +152,20 @@ jobs:
               --tag "${IMAGE}:${version}" --tag "${IMAGE}:latest" \
               "${IMAGE}@${AMD64}" "${IMAGE}@${ARM64}"
           docker buildx imagetools inspect "${IMAGE}:${version}"
+      # The Docker Hub overview is README.md, relative links made absolute (GitHub, this tag);
+      # the short description is the image's OCI description. Needs a token with the
+      # read/write/delete scope.
+      - name: Read the short description from the Dockerfile
+        id: about
+        run: |
+          short="$(sed -n 's/.*org\.opencontainers\.image\.description="\([^"]*\)".*/\1/p' Dockerfile)"
+          echo "short=${short}" >> "${GITHUB_OUTPUT}"
+      - name: Publish README.md as the Docker Hub overview
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE }}
+          short-description: ${{ steps.about.outputs.short }}
+          readme-filepath: ./README.md
+          enable-url-completion: true

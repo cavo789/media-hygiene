@@ -114,8 +114,11 @@ Every push and pull request runs the quality gate and the end-to-end tests on Gi
 `version` in `pyproject.toml`, commit and push `main`, then run `release`. It tags `vX.Y.Z` and
 pushes the tag. CI then builds the image for amd64 and arm64, runs the end-to-end tests, and
 pushes `cavo789/media-hygiene:<version>` and `:latest` to Docker Hub, with an SBOM and a provenance
-attestation. This needs two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a
-Docker Hub access token with read/write scope).
+attestation. The same job publishes `README.md` as the Docker Hub overview (its relative links
+made absolute, to this tag on GitHub; the short description is the image's OCI description):
+**edit the README, never the Docker Hub page**, which the next release overwrites. This needs
+two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a Docker Hub access token
+with the read/write/delete scope, which editing the overview requires).
 
 Pinned versions are kept up to date by the Renovate GitHub App
 ([`.github/renovate.json`](../../.github/renovate.json)). Every Monday morning it opens one pull
