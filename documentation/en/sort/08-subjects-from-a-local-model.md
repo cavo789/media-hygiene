@@ -51,11 +51,11 @@ match = "existing_folder"
 name = "Subject"
 match = "subject"
 categories = [
-    "Holidays and outings = trips and days out: beach, mountains, visits",
+    "Holidays and outings = away from home: trips, visits, restaurants, playgrounds",
     "Parties = birthdays, Christmas, communions, weddings; not a costume alone",
     "School = classrooms, school trips, school shows and parties",
     "Sport and leisure = sports and hobbies, played or watched: matches, swimming",
-    "At home = everyday life at home: games, meals, children, sofa, garden",
+    "At home = in your own home only: meals, games, children, sofa, garden",
     "Animals = a pet or an animal as the main subject",
     "Nature and landscapes = landscapes, plants and sky, no one as the main subject",
 ]

@@ -52,11 +52,11 @@ match = "existing_folder"
 name = "Sujet"
 match = "subject"
 categories = [
-    "Vacances et sorties = voyages, journées dehors : plage, montagne, visites",
+    "Vacances et sorties = hors de chez soi : voyages, restaurants, plaines de jeux",
     "Fêtes = anniversaires, Noël, communions, mariages ; pas un déguisement seul",
     "École = classe, excursions, spectacles et fêtes de l'école",
     "Sport et loisirs = sports et loisirs, pratiqués ou regardés : matchs, natation",
-    "À la maison = la vie de tous les jours : jeux, repas, enfants, canapé, jardin",
+    "À la maison = chez soi seulement : repas, jeux, enfants, canapé, jardin",
     "Animaux = un animal de compagnie ou un animal comme sujet principal",
     "Nature et paysages = paysages, plantes et ciel, sans personne au premier plan",
 ]

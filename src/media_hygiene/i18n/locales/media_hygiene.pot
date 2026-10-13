@@ -4306,6 +4306,9 @@ msgstr ""
 msgid "audit"
 msgstr ""
 
+msgid "away from home: trips, visits, restaurants, playgrounds"
+msgstr ""
+
 msgid "back to undecided"
 msgstr ""
 
@@ -4438,9 +4441,6 @@ msgstr ""
 msgid "every source"
 msgstr ""
 
-msgid "everyday life at home: games, meals, children, sofa, garden"
-msgstr ""
-
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
 
@@ -4484,6 +4484,9 @@ msgid "healthy"
 msgstr ""
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
+msgstr ""
+
+msgid "in your own home only: meals, games, children, sofa, garden"
 msgstr ""
 
 #, python-brace-format
@@ -5066,9 +5069,6 @@ msgid "to the quarantine with --tier near"
 msgstr ""
 
 msgid "today"
-msgstr ""
-
-msgid "trips and days out: beach, mountains, visits"
 msgstr ""
 
 #, python-brace-format

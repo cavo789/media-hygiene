@@ -5202,6 +5202,9 @@ msgstr "comme prévu, puis suivant"
 msgid "audit"
 msgstr "audit"
 
+msgid "away from home: trips, visits, restaurants, playgrounds"
+msgstr "hors de chez soi : voyages, restaurants, plaines de jeux"
+
 msgid "back to undecided"
 msgstr "revenir à non décidé"
 
@@ -5340,9 +5343,6 @@ msgstr "environnement"
 msgid "every source"
 msgstr "toutes les sources"
 
-msgid "everyday life at home: games, meals, children, sofa, garden"
-msgstr "la vie de tous les jours : jeux, repas, enfants, canapé, jardin"
-
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
 "ffmpeg introuvable : les copies réencodées de vidéos ne sont pas "
@@ -5391,6 +5391,9 @@ msgstr "sain"
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
+
+msgid "in your own home only: meals, games, children, sofa, garden"
+msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
 
 #, python-brace-format
 msgid ""
@@ -6028,9 +6031,6 @@ msgstr "en quarantaine avec --tier near"
 
 msgid "today"
 msgstr "aujourd'hui"
-
-msgid "trips and days out: beach, mountains, visits"
-msgstr "voyages, journées dehors : plage, montagne, visites"
 
 #, python-brace-format
 msgid "true or false is expected, not {value}"
