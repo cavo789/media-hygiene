@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from importlib.metadata import version as package_version
 from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
@@ -18,6 +19,7 @@ from media_hygiene.config.layers import (
 )
 from media_hygiene.config.origin import Origin, origin_in
 from media_hygiene.config.settings import Settings
+from media_hygiene.constants import APP_NAME
 from media_hygiene.i18n.templates import translated_environment
 
 if TYPE_CHECKING:
@@ -30,7 +32,13 @@ _TEMPLATE_PACKAGE = "media_hygiene.config"
 _TEMPLATE_NAME = "config.toml.j2"
 
 
-__all__ = ["LoadedSettings", "Origin", "load_settings", "write_default_config"]
+__all__ = [
+    "LoadedSettings",
+    "Origin",
+    "default_config",
+    "load_settings",
+    "write_default_config",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,6 +91,20 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
     return LoadedSettings(settings, layers)
 
 
+def default_config(locale: Locale) -> str:
+    """The commented `config.toml` of this version, in the active language.
+
+    Args:
+        locale: The language stored in the file (`general.locale`).
+
+    Returns:
+        Its text, the version that wrote it on a comment line.
+    """
+    environment = translated_environment(_TEMPLATE_PACKAGE, escaped=())
+    template = environment.get_template(_TEMPLATE_NAME)
+    return template.render(locale=locale.value, version=package_version(APP_NAME))
+
+
 def write_default_config(config_file: Path, locale: Locale) -> bool:
     """Create a commented `config.toml` when none exists yet.
 
@@ -98,8 +120,7 @@ def write_default_config(config_file: Path, locale: Locale) -> bool:
     """
     if config_file.exists() or not config_file.parent.is_dir():
         return False
-    environment = translated_environment(_TEMPLATE_PACKAGE, escaped=())
-    text = environment.get_template(_TEMPLATE_NAME).render(locale=locale.value)
+    text = default_config(locale)
     try:
         with config_file.open("x", encoding="utf-8") as stream:  # never over a file
             stream.write(text)

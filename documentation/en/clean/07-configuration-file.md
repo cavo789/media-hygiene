@@ -769,6 +769,15 @@ Mount points
 - **Folder on your computer** shows the Windows folder behind each mount; `—` for a Docker
   volume such as the cache.
 
+## After an update
+
+A newer version can bring new settings. Your file keeps working without them, each one at its
+default value. `mh config` says how many are new since the version that wrote your file, and
+`mh config --upgrade` adds them to `C:\Users\<you>\media-hygiene\config\config.toml`, each with
+its explanation, in your file's language: your values, comments and rules stay as they are.
+`mh config --dry-run` lists them first, writing nothing. Details:
+[`config --upgrade`](../commands/config.md#after-an-update---upgrade).
+
 ## Who wins?
 
 From the strongest to the weakest: the command-line options, then the environment variables,

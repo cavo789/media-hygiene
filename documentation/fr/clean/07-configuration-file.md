@@ -846,6 +846,16 @@ de commande l'emportent.
 - **Dossier sur votre ordinateur** montre le dossier Windows derrière chaque montage ; `—` pour
   un volume Docker comme le cache.
 
+## Après une mise à jour
+
+Une version plus récente peut apporter de nouveaux réglages. Votre fichier fonctionne toujours
+sans eux, chacun à sa valeur par défaut. `mh config` dit combien sont nouveaux depuis la version
+qui a écrit votre fichier, et `mh config --upgrade` les ajoute à
+`C:\Users\<vous>\media-hygiene\config\config.toml`, chacun avec son explication, dans la langue de
+votre fichier : vos valeurs, commentaires et règles restent tels quels. `mh config --dry-run` les
+liste d'abord, sans rien écrire. Détails :
+[`config --upgrade`](../commands/config.md#après-une-mise-à-jour----upgrade).
+
 ## Qui l'emporte ?
 
 De la plus forte à la plus faible : les options de la ligne de commande, puis les variables

@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Your photos | 🔒 Never changed. |
 | Needs | Nothing. |
 | Recommended | `/config`, and the same `-v` options as your usual command, to see their state. |
-| Writes | A commented `config.toml` in `/config`, the first time only. |
+| Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks. |
 | Undo | Delete `config.toml` to get the defaults back. |
 | With `mh` | `mh config`. |
 
@@ -54,6 +54,26 @@ in `C:\Users\<you>\media-hygiene\config` with any text editor. With
   *mounted*, *read-only* or *not mounted* (*nothing kept after the run* for a tool folder), with
   the folder of your computer behind it when Docker Desktop tells it.
 
+## After an update: `--upgrade`
+
+A newer version may bring new settings. Your `config.toml` still works without them (each one
+takes its default value), but its comments do not tell you about them. `config` says so in one
+line, *💡 config.toml was written by 0.3.0: 3 new settings since.*, then:
+
+```powershell
+# List what would be added, write nothing
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config --dry-run
+
+# Add them, each with its explanation
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene config --upgrade
+```
+
+Each missing setting is added with its comment, after the setting that comes before it; a
+missing table is added whole. **Your values, your comments and your rules are kept**, nothing is
+moved or removed, and the comments added are in the language of your file. The file is read back
+from the disk and the console lists what it now holds. `/config` mounted with `:ro` is refused
+(`--dry-run` still works); no backup is left in `/config`.
+
 ## Who wins?
 
 From the weakest to the strongest: the built-in default, `config.toml`, an environment variable
@@ -62,7 +82,8 @@ the option of the command line.
 
 ## Good to know
 
-- `config` has no option of its own; the global ones apply (`--locale`, `--verbosity`).
+- `config` has two options of its own, `--upgrade` and `--dry-run`; the global ones apply too
+  (`--locale`, `--verbosity`).
 - `/config` holds `config.toml` **only**: never put anything else there.
 - A setting unknown to this version is said, with its line: see
   [troubleshooting](../reference-troubleshooting.md#a-setting-of-configtoml-is-unknown-to-this-version).
@@ -87,7 +108,12 @@ the option of the command line.
  from, and the mount points.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --upgrade            Add the settings of this version to your config.toml,   │
+│                      with their explanation; your values and comments are    │
+│                      kept.                                                   │
+│ --dry-run            With --upgrade: list the settings it would add, write   │
+│                      nothing.                                                │
+│ --help     -h        Show this message and exit.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

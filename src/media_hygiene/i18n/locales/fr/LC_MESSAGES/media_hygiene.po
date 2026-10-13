@@ -91,6 +91,13 @@ msgstr[1] "%(num)s groupes sûrs : les afficher"
 msgid "%(sure)s, %(check)s to check"
 msgstr "%(sure)s, %(check)s à vérifier"
 
+msgid ""
+"'config --upgrade' adds them with their explanation; your values are kept"
+" (--dry-run lists them first)."
+msgstr ""
+"'config --upgrade' les ajoute avec leur explication ; vos valeurs sont "
+"gardées (--dry-run les liste d'abord)."
+
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
 msgstr "'crosscheck' lit les résultats de Czkawka dans /reports : montez-le."
 
@@ -287,6 +294,9 @@ msgstr "… et {count} de plus."
 
 msgid "/"
 msgstr "/fr/"
+
+msgid "/config is not mounted: there is no config.toml to complete."
+msgstr "/config n'est pas monté : il n'y a pas de config.toml à compléter."
 
 #, python-brace-format
 msgid "; {groups} group without a subject → your other rules, else {band}."
@@ -505,6 +515,13 @@ msgid ""
 msgstr ""
 "Ajoutez :ro au -v de vos dossiers de photos : le système lui-même "
 "interdit alors toute modification. {url}"
+
+msgid ""
+"Add the settings of this version to your config.toml, with their "
+"explanation; your values and comments are kept."
+msgstr ""
+"Ajouter à votre config.toml les réglages de cette version, avec leur "
+"explication ; vos valeurs et commentaires sont gardés."
 
 msgid "Advanced options"
 msgstr "Options avancées"
@@ -933,6 +950,10 @@ msgstr "Comparaison des couleurs"
 
 msgid "Comparing files of equal size"
 msgstr "Comparaison des fichiers de même taille"
+
+#, python-brace-format
+msgid "Completing {path} would change a setting: nothing was written."
+msgstr "Compléter {path} changerait un réglage : rien n'a été écrit."
 
 #, python-brace-format
 msgid "Configured folder {path} is not mounted: it is ignored."
@@ -2361,6 +2382,9 @@ msgstr ""
 msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
 msgstr "Montez-la sous /data, par exemple -v \"C:\\Photos triées:/data/c/Tri\"."
 
+msgid "Mount it without :ro for this command, or add --dry-run."
+msgstr "Montez-le sans :ro pour cette commande, ou ajoutez --dry-run."
+
 msgid "Mount it, e.g. -v \"D:\\Photos sorted:/data/d/Photos sorted\"."
 msgstr "Montez-le, par exemple -v \"D:\\Photos triées:/data/d/Photos triées\"."
 
@@ -2404,6 +2428,11 @@ msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
 msgstr ""
 "Montez le même dossier de rapports que pour classify : -v "
 "\"<dossier>:/reports\"."
+
+msgid "Mount your folder, e.g. -v \"$HOME\\media-hygiene\\config:/config\"."
+msgstr ""
+"Montez votre dossier, par exemple -v \"$HOME\\media-"
+"hygiene\\config:/config\"."
 
 msgid ""
 "Move the photos and videos as the edited classify workbook says "
@@ -2894,6 +2923,9 @@ msgid ""
 msgstr ""
 "Rien n'a été déplacé. Modifiez classify.xlsx, à côté de cette page ; ce "
 "rapport sert à regarder les photos."
+
+msgid "Nothing was written: run 'config --upgrade' to add them."
+msgstr "Rien n'a été écrit : lancez 'config --upgrade' pour les ajouter."
 
 msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr "Rien n'a été écrit : le lanceur va dans un fichier, pas à l'écran."
@@ -3545,6 +3577,9 @@ msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
 msgstr "Lancez Czkawka avec les mêmes options -v : 'audit' affiche la commande."
+
+msgid "Run any command once: it creates the file, complete and commented."
+msgstr "Lancez une commande une fois : elle crée le fichier, complet et commenté."
 
 msgid "Run docker with -it, or add --yes."
 msgstr "Lancez docker avec -it, ou ajoutez --yes."
@@ -4549,6 +4584,10 @@ msgstr ""
 "Chercher ensuite les visages des photos pas encore examinées (comme "
 "'people'), après avoir dit combien de temps cela prend et demandé."
 
+#, python-brace-format
+msgid "There is no config.toml in {folder} yet."
+msgstr "Il n'y a pas encore de config.toml dans {folder}."
+
 msgid "There is no such event."
 msgstr "Cet événement n'existe pas."
 
@@ -4932,6 +4971,9 @@ msgstr ""
 msgid "With --people: do not ask, go on."
 msgstr "Avec --people : ne pas demander, continuer."
 
+msgid "With --upgrade: list the settings it would add, write nothing."
+msgstr "Avec --upgrade : lister les réglages qu'il ajouterait, sans rien écrire."
+
 msgid "With Léa"
 msgstr "Avec Léa"
 
@@ -5119,6 +5161,13 @@ msgstr ""
 "exécutions, par exemple \"Europe/Brussels\" ou \"America/Montreal\" "
 "(liste : https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA). "
 "Vide : UTC, car Docker ne connaît pas le vôtre."
+
+msgid ""
+"Your values and comments are kept; the new settings hold their default "
+"value."
+msgstr ""
+"Vos valeurs et commentaires sont gardés ; les nouveaux réglages ont leur "
+"valeur par défaut."
 
 msgid ""
 "Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
@@ -5347,6 +5396,26 @@ msgstr "comparer les photos à 100 %%"
 
 msgid "config.toml"
 msgstr "config.toml"
+
+#, python-brace-format
+msgid "config.toml was written by an earlier version: {count} new setting since."
+msgid_plural "config.toml was written by an earlier version: {count} new settings since."
+msgstr[0] ""
+"config.toml a été écrit par une version antérieure : {count} nouveau "
+"réglage depuis."
+msgstr[1] ""
+"config.toml a été écrit par une version antérieure : {count} nouveaux "
+"réglages depuis."
+
+#, python-brace-format
+msgid "config.toml was written by {version}: {count} new setting since."
+msgid_plural "config.toml was written by {version}: {count} new settings since."
+msgstr[0] ""
+"config.toml a été écrit par la version {version} : {count} nouveau "
+"réglage depuis."
+msgstr[1] ""
+"config.toml a été écrit par la version {version} : {count} nouveaux "
+"réglages depuis."
 
 #, python-format
 msgid "cumulated: %(share)s%%"
@@ -6822,6 +6891,12 @@ msgstr[0] "{count} série à voir : {obvious} (un clic), {look} à regarder."
 msgstr[1] "{count} séries à voir : {obvious} (un clic), {look} à regarder."
 
 #, python-brace-format
+msgid "{count} setting added to {path}, read back from the disk:"
+msgid_plural "{count} settings added to {path}, read back from the disk:"
+msgstr[0] "{count} réglage ajouté à {path}, relu sur le disque :"
+msgstr[1] "{count} réglages ajoutés à {path}, relus sur le disque :"
+
+#, python-brace-format
 msgid "{count} setting cannot be used:"
 msgid_plural "{count} settings cannot be used:"
 msgstr[0] "{count} réglage est inutilisable :"
@@ -6840,6 +6915,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} réglages n'existent pas dans la version {version} (une faute de "
 "frappe, ou des réglages d'une version plus récente ?) :"
+
+#, python-brace-format
+msgid "{count} setting would be added to {path}, with its explanation:"
+msgid_plural "{count} settings would be added to {path}, with their explanation:"
+msgstr[0] "{count} réglage serait ajouté à {path}, avec son explication :"
+msgstr[1] "{count} réglages seraient ajoutés à {path}, avec leur explication :"
 
 #, python-brace-format
 msgid "{count} shots"
@@ -6978,6 +7059,12 @@ msgstr "{file}, dans le dossier monté sur {mount}"
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
 msgstr "{folder} (vu comme {first} et comme {second})"
+
+#, python-brace-format
+msgid "{folder} is mounted read-only: config.toml cannot be completed."
+msgstr ""
+"{folder} est monté en lecture seule : config.toml ne peut pas être "
+"complété."
 
 #, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
@@ -7243,6 +7330,10 @@ msgid "{path} is not the quarantine of a run"
 msgstr "{path} n'est pas la quarantaine d'une exécution"
 
 #, python-brace-format
+msgid "{path} is up to date ({version})."
+msgstr "{path} est à jour ({version})."
+
+#, python-brace-format
 msgid "{path} read back does not hold the {count} choices just saved."
 msgstr ""
 "{path}, relu, ne contient pas les {count} choix qui viennent d’être "
@@ -7251,6 +7342,10 @@ msgstr ""
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
 msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
+
+#, python-brace-format
+msgid "{path} was written but is still incomplete."
+msgstr "{path} a été écrit mais reste incomplet."
 
 #, python-brace-format
 msgid "{path}: longer than {count} characters."

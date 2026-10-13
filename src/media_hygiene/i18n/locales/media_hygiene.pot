@@ -63,6 +63,11 @@ msgstr[1] ""
 msgid "%(sure)s, %(check)s to check"
 msgstr ""
 
+msgid ""
+"'config --upgrade' adds them with their explanation; your values are kept"
+" (--dry-run lists them first)."
+msgstr ""
+
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
 msgstr ""
 
@@ -239,6 +244,9 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+msgid "/config is not mounted: there is no config.toml to complete."
+msgstr ""
+
 #, python-brace-format
 msgid "; {groups} group without a subject → your other rules, else {band}."
 msgid_plural "; {groups} groups without a subject → your other rules, else {band}."
@@ -391,6 +399,11 @@ msgstr ""
 msgid ""
 "Add :ro to the -v of your photo folders: the system itself then forbids "
 "any change. {url}"
+msgstr ""
+
+msgid ""
+"Add the settings of this version to your config.toml, with their "
+"explanation; your values and comments are kept."
 msgstr ""
 
 msgid "Advanced options"
@@ -759,6 +772,10 @@ msgid "Comparing colours"
 msgstr ""
 
 msgid "Comparing files of equal size"
+msgstr ""
+
+#, python-brace-format
+msgid "Completing {path} would change a setting: nothing was written."
 msgstr ""
 
 #, python-brace-format
@@ -1931,6 +1948,9 @@ msgstr ""
 msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
 msgstr ""
 
+msgid "Mount it without :ro for this command, or add --dry-run."
+msgstr ""
+
 msgid "Mount it, e.g. -v \"D:\\Photos sorted:/data/d/Photos sorted\"."
 msgstr ""
 
@@ -1961,6 +1981,9 @@ msgid ""
 msgstr ""
 
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
+msgstr ""
+
+msgid "Mount your folder, e.g. -v \"$HOME\\media-hygiene\\config:/config\"."
 msgstr ""
 
 msgid ""
@@ -2388,6 +2411,9 @@ msgstr ""
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
+msgstr ""
+
+msgid "Nothing was written: run 'config --upgrade' to add them."
 msgstr ""
 
 msgid "Nothing written: the launcher goes into a file, not on the screen."
@@ -2922,6 +2948,9 @@ msgid ""
 msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
+msgstr ""
+
+msgid "Run any command once: it creates the file, complete and commented."
 msgstr ""
 
 msgid "Run docker with -it, or add --yes."
@@ -3745,6 +3774,10 @@ msgid ""
 "after saying how long it takes and asking."
 msgstr ""
 
+#, python-brace-format
+msgid "There is no config.toml in {folder} yet."
+msgstr ""
+
 msgid "There is no such event."
 msgstr ""
 
@@ -4076,6 +4109,9 @@ msgstr ""
 msgid "With --people: do not ask, go on."
 msgstr ""
 
+msgid "With --upgrade: list the settings it would add, write nothing."
+msgstr ""
+
 msgid "With Léa"
 msgstr ""
 
@@ -4216,6 +4252,11 @@ msgid ""
 "\"Europe/Brussels\" or \"America/Montreal\" (list: "
 "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: "
 "UTC, as Docker does not know yours."
+msgstr ""
+
+msgid ""
+"Your values and comments are kept; the new settings hold their default "
+"value."
 msgstr ""
 
 msgid ""
@@ -4429,6 +4470,18 @@ msgstr ""
 
 msgid "config.toml"
 msgstr ""
+
+#, python-brace-format
+msgid "config.toml was written by an earlier version: {count} new setting since."
+msgid_plural "config.toml was written by an earlier version: {count} new settings since."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "config.toml was written by {version}: {count} new setting since."
+msgid_plural "config.toml was written by {version}: {count} new settings since."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-format
 msgid "cumulated: %(share)s%%"
@@ -5695,6 +5748,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} setting added to {path}, read back from the disk:"
+msgid_plural "{count} settings added to {path}, read back from the disk:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} setting cannot be used:"
 msgid_plural "{count} settings cannot be used:"
 msgstr[0] ""
@@ -5707,6 +5766,12 @@ msgid ""
 msgid_plural ""
 "{count} settings are unknown to version {version} (a typo, or a setting "
 "of a newer version?):"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} setting would be added to {path}, with its explanation:"
+msgid_plural "{count} settings would be added to {path}, with their explanation:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5826,6 +5891,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 
 #, python-brace-format
@@ -6075,11 +6144,19 @@ msgid "{path} is not the quarantine of a run"
 msgstr ""
 
 #, python-brace-format
+msgid "{path} is up to date ({version})."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} read back does not hold the {count} choices just saved."
 msgstr ""
 
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} was written but is still incomplete."
 msgstr ""
 
 #, python-brace-format
