@@ -36,6 +36,17 @@ def audit_command(  # pylint: disable=too-many-arguments
     exclude: Annotated[list[str] | None, options.exclude()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
+    full: Annotated[
+        bool,
+        typer.Option(
+            "--full",
+            rich_help_panel=options.panel_advanced(),
+            help=_(
+                "Read every folder again, even those that did not change since the "
+                "last audit: for a photo changed in place by another program."
+            ),
+        ),
+    ] = False,
     people: Annotated[
         bool,
         typer.Option(
@@ -66,6 +77,7 @@ def audit_command(  # pylint: disable=too-many-arguments
         exclude: `--exclude` folders.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
+        full: `--full`, no folder taken from the index.
         people: `--people`, faces after the audit.
         yes: `--yes`, no question before the faces.
     """
@@ -74,6 +86,8 @@ def audit_command(  # pylint: disable=too-many-arguments
         runtime = runtime.with_overrides(
             folder_layer(prefer, protect, exclude)
         ).with_overrides(scan_layer(ext, exclude_name))
+        if full:
+            runtime = runtime.with_overrides({"scan": {"full_check_days": 0}})
         findings = audit_and_show(runtime)
         actions = show_actions(ctx, runtime, findings)
         report_and_announce(

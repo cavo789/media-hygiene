@@ -38,6 +38,13 @@ l'autre.
 Un fichier est reconnu à son chemin, sa taille et sa date de modification : changez l'un des
 trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
 
+Même le parcours de vos dossiers raccourcit : un dossier où aucun fichier n'a été ajouté,
+supprimé ou renommé depuis le dernier audit est repris du cache, sans regarder chacun de ses
+fichiers. L'audit le dit en une ligne : *« 851 dossiers inchangés repris de l'index, 6 relus. »*
+Une photo modifiée **sur place** par un autre programme (même nom) ne change pas son dossier :
+elle est vue au plus tard quand son dossier est relu, après `full_check_days` (7 jours) dans
+`[scan]`, ou tout de suite avec `audit --full`.
+
 Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
 de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une
 vidéo… Rien de plus n'est lu pour cela. `inventory` exporte tout cela vers un classeur Excel,

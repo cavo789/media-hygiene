@@ -12,8 +12,9 @@ from media_hygiene.constants import MediaKind
 from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.scan import walker
+from media_hygiene.scan import folder_entries, walker
 from media_hygiene.scan.filters import ScanFilters
+from media_hygiene.scan.folder_cache import WalkSetup
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
 
@@ -99,7 +100,7 @@ def test_the_walk_lists_what_it_could_not_read(
         (tmp_path / name).write_bytes(b"x")
     # A stat failure cannot be provoked on a real file when tests run as root.
     # pylint: disable-next=protected-access
-    real_scandir, real_describe = os.scandir, walker._describe  # noqa: SLF001
+    real_scandir, real_describe = os.scandir, folder_entries._describe  # noqa: SLF001
 
     def scandir(folder: Path) -> object:
         if Path(folder).name == "locked":
@@ -112,7 +113,9 @@ def test_the_walk_lists_what_it_could_not_read(
         return real_describe(entry, kind)  # type: ignore[arg-type]
 
     monkeypatch.setattr("media_hygiene.scan.walker.os.scandir", scandir)
-    monkeypatch.setattr(walker, "_describe", describe)
-    found = asyncio.run(walker.walk((tmp_path,), ScanFilters(), NullProgress()))
+    monkeypatch.setattr(folder_entries, "_describe", describe)
+    found = asyncio.run(
+        walker.walk((tmp_path,), WalkSetup(ScanFilters()), NullProgress())
+    )
     assert [file.path.name for file in found.files] == ["a.jpg"]
     assert set(found.unreadable) == {tmp_path / "locked", tmp_path / "ok" / "b.jpg"}

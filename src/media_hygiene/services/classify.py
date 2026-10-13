@@ -22,7 +22,6 @@ from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.progress import Step
-from media_hygiene.scan.walker import walk
 from media_hygiene.services.classify_inputs import (
     ClassifyInputs,
     duplicates,
@@ -32,6 +31,7 @@ from media_hygiene.services.classify_inputs import (
 )
 from media_hygiene.services.classify_people import with_people
 from media_hygiene.services.data_checks import refuse_empty_data
+from media_hygiene.services.listing import list_media
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
@@ -171,7 +171,7 @@ class ClassifyService:
         runtime = self._runtime
         filters = scan_filters(runtime.settings, runtime.mapper)
         self._progress.start(Step(_("Listing media files"), ""), None)
-        found = asyncio.run(walk(roots, filters, self._progress))
+        found = list_media(runtime, roots, self._progress)
         self._progress.stop()
         files = [
             file

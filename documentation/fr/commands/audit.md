@@ -63,6 +63,7 @@ Il affiche, dans cet ordre :
 | `--protect CHEMIN` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
 | `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
+| `--full` | Relire tous les dossiers, même ceux inchangés depuis le dernier audit (repris du cache sinon) : pour une photo modifiée sur place par un autre programme. [Étape 2](../start/02-keep-the-cache.md#ce-qui-change) |
 | `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6 du nettoyage](../clean/06-file-types.md) |
 | `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)) ; `with_audit = true` dans `[people]` le fait à chaque audit. |
 | `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
@@ -151,6 +152,9 @@ cavo789/media-hygiene --locale fr audit --people
 │                              --exclude.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
+│ --full              Relire tous les dossiers, même ceux qui n'ont pas changé │
+│                     depuis le dernier audit : pour une photo modifiée sur    │
+│                     place par un autre programme.                            │
 │ --people            Chercher ensuite les visages des photos pas encore       │
 │                     examinées (comme 'people'), après avoir dit combien de   │
 │                     temps cela prend et demandé.                             │

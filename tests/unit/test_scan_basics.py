@@ -12,6 +12,7 @@ import pytest
 
 from media_hygiene.constants import MediaKind, Sizes
 from media_hygiene.scan.filters import ScanFilters, media_kind
+from media_hygiene.scan.folder_cache import WalkSetup
 from media_hygiene.scan.hashing import full_digest, partial_digest
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.scan.walker import walk
@@ -24,7 +25,7 @@ if TYPE_CHECKING:
 
 def listed(root: Path, filters: ScanFilters) -> list[MediaFile]:
     """Walk `root` and return its media files, sorted by path."""
-    found = asyncio.run(walk((root,), filters, NullProgress()))
+    found = asyncio.run(walk((root,), WalkSetup(filters), NullProgress()))
     return sorted(found.files, key=lambda file: file.path)
 
 

@@ -1,7 +1,9 @@
 """List every media file and sidecar below the data roots, without following links.
 
 Folders are read concurrently: on a Windows drive seen through Docker, each directory
-listing waits for a slow round trip, so several are kept in flight at once.
+listing waits for a slow round trip, so several are kept in flight at once. A folder
+that did not change since the index last listed it is taken from the index instead
+(`scan.folder_cache`): one `stat` of the folder instead of one per file.
 """
 
 from __future__ import annotations
@@ -9,19 +11,24 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-from dataclasses import dataclass
-from pathlib import Path
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import ALBUM_MARKER, MediaKind, Sizes
-from media_hygiene.scan.models import FileIdentity, MediaFile
-from media_hygiene.scan.sidecars import Sidecar, companions_of, is_sidecar
+from media_hygiene.constants import ALBUM_MARKER, Sizes
+from media_hygiene.scan.folder_cache import EntryKind, snapshot
+from media_hygiene.scan.folder_entries import Listing, sort_entries
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Mapping, Sequence
+    from pathlib import Path
 
     from media_hygiene.scan.filters import ScanFilters
+    from media_hygiene.scan.folder_cache import CachedEntry, FolderListing, WalkSetup
+    from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.progress import ProgressSink
+    from media_hygiene.scan.sidecars import Sidecar
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,29 +39,35 @@ class Walk:
 
     `unreadable` lists the folders it could not read and the files it could not
     `stat`: whatever lies there may exist, the walk just could not see it.
+    `listings`: the folders read this time, to keep in the index; `visited`: every
+    folder walked; `reused`: how many of them came from the index.
     """
 
     files: tuple[MediaFile, ...] = ()
     sidecars: tuple[Sidecar, ...] = ()
     unreadable: tuple[Path, ...] = ()
+    listings: Mapping[Path, FolderListing] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    visited: frozenset[Path] = frozenset()
+    reused: int = 0
 
 
 @dataclass(frozen=True, slots=True)
-class _Listing:
-    """What one folder holds: its media files, its sidecars, the subfolders to visit."""
+class _Visit:
+    """One folder walked: what it holds, its new listing, whether it was reused."""
 
-    files: tuple[MediaFile, ...] = ()
-    folders: tuple[Path, ...] = ()
-    sidecars: tuple[Sidecar, ...] = ()
-    unreadable: tuple[Path, ...] = ()
+    listing: Listing
+    fresh: FolderListing | None = None
+    reused: bool = False
 
 
 async def walk(
     roots: Iterable[Path],
-    filters: ScanFilters,
+    setup: WalkSetup,
     progress: ProgressSink,
 ) -> Walk:
-    """Return the media files and sidecars below `roots`, as `filters` allows.
+    """Return the media files and sidecars below `roots`, as `setup` allows.
 
     Unreadable folders and files are logged, skipped and listed: one bad folder
     never stops the scan.
@@ -63,138 +76,85 @@ async def walk(
 
     Args:
         roots: Folders to walk.
-        filters: Folders to skip and extensions to keep.
+        setup: Folders to skip, extensions to keep, the listings to trust.
         progress: Advanced once per media file found.
 
     Returns:
-        Every media file and sidecar found, and what could not be read.
+        Every media file and sidecar found, what could not be read, the new listings.
     """
     files: list[MediaFile] = []
     sidecars: list[Sidecar] = []
     unreadable: list[Path] = []
+    listings: dict[Path, FolderListing] = {}
+    visited: list[Path] = []
+    reused = 0
+    now = datetime.now(UTC)
     visits: list[asyncio.Task[None]] = []
     slots = asyncio.Semaphore(Sizes.IO_CONCURRENCY)
     async with asyncio.TaskGroup() as group:
 
         async def visit(folder: Path) -> None:
+            nonlocal reused
             async with slots:
-                listing = await asyncio.to_thread(_list_folder, folder, filters)
+                seen = await asyncio.to_thread(_visit, folder, (setup, now))
+            listing = seen.listing
             files.extend(listing.files)
             sidecars.extend(listing.sidecars)
             unreadable.extend(listing.unreadable)
+            visited.append(folder)
+            reused += seen.reused
+            if seen.fresh is not None:
+                listings[folder] = seen.fresh
             for _file in listing.files:
                 progress.advance()
             visits.extend(group.create_task(visit(sub)) for sub in listing.folders)
 
         visits.extend(group.create_task(visit(root)) for root in roots)
-    return Walk(tuple(files), tuple(sidecars), tuple(unreadable))
+    found = (tuple(files), tuple(sidecars), tuple(unreadable))
+    return Walk(*found, MappingProxyType(listings), frozenset(visited), reused)
 
 
-def _list_folder(folder: Path, filters: ScanFilters) -> _Listing:
-    """Read one folder (runs in a worker thread).
+def _visit(folder: Path, context: tuple[WalkSetup, datetime]) -> _Visit:
+    """Read one folder, or take it from the index (runs in a worker thread).
 
     Args:
         folder: Folder to read.
-        filters: Folders to skip and extensions to keep.
+        context: What to keep and trust, and the time of this walk.
 
     Returns:
-        Its media files, sidecars and the subfolders to visit; nothing when it cannot
-        be read, or is an album.
+        What it holds; nothing when it cannot be read.
     """
+    setup, now = context
     try:
+        mtime_ns = folder.stat().st_mtime_ns  # before listing: a later change shows
+        known = setup.reusable(folder, mtime_ns)
+        if known is not None:
+            return _Visit(_sorted(known.entries, setup.filters), reused=True)
         with os.scandir(folder) as entries:
             items = list(entries)
     except OSError as exc:
         _LOGGER.warning("Cannot read folder %s: %s", folder, exc.strerror)
-        return _Listing(unreadable=(folder,))
-    if any(item.name == ALBUM_MARKER for item in items):
-        return _Listing()  # an album: second names of files listed where they are
-    return _sort_entries(items, filters)
+        return _Visit(Listing(unreadable=(folder,)))
+    fresh = snapshot(items, mtime_ns, now)
+    complete = all(
+        entry.facts is not None
+        for entry in fresh.entries
+        if entry.kind is EntryKind.FILE
+    )
+    return _Visit(_sorted(fresh.entries, setup.filters), fresh if complete else None)
 
 
-def _sort_entries(items: list[os.DirEntry[str]], filters: ScanFilters) -> _Listing:
-    """Sort the entries of a folder: media files, sidecars, subfolders to visit.
+def _sorted(entries: Sequence[CachedEntry], filters: ScanFilters) -> Listing:
+    """Sort the entries of a folder, unless it is an album.
 
     Args:
-        items: Every entry of the folder.
+        entries: Its entries.
         filters: Folders to skip and extensions to keep.
 
     Returns:
-        What the folder holds, and the files that could not be `stat`ed.
+        Its media files, sidecars and subfolders; nothing for an album, whose files
+        are second names of files listed where they are.
     """
-    files: list[MediaFile] = []
-    folders: list[Path] = []
-    sidecars: list[os.DirEntry[str]] = []
-    unreadable: list[Path] = []
-    for entry in items:
-        path = Path(entry.path)
-        if entry.is_dir(follow_symlinks=False):
-            if not filters.skips_dir(path):
-                folders.append(path)
-            continue
-        if is_sidecar(entry.name):
-            sidecars.append(entry)
-            continue
-        try:
-            media = _describe(entry, filters.kind_of(path))
-        except OSError as exc:
-            _LOGGER.warning("Cannot read %s: %s", path, exc.strerror)
-            unreadable.append(path)
-            continue
-        if media is not None:
-            files.append(media)
-    return _Listing(
-        tuple(files), tuple(folders), _sidecars(sidecars, items), tuple(unreadable)
-    )
-
-
-def _sidecars(
-    entries: list[os.DirEntry[str]], items: list[os.DirEntry[str]]
-) -> tuple[Sidecar, ...]:
-    """Describe the sidecars of a folder, with the files each one belongs to.
-
-    Args:
-        entries: The sidecar entries of the folder.
-        items: Every entry of the folder.
-
-    Returns:
-        The sidecars that are regular files.
-    """
-    if not entries:
-        return ()
-    names = [item.name for item in items if not item.is_dir(follow_symlinks=False)]
-    found: list[Sidecar] = []
-    for entry in entries:
-        try:
-            file = _describe(entry, MediaKind.SIDECAR)
-        except OSError as exc:
-            _LOGGER.warning("Cannot read %s: %s", entry.path, exc.strerror)
-            continue
-        if file is not None:
-            found.append(Sidecar(file, companions_of(file.path, names)))
-    return tuple(found)
-
-
-def _describe(entry: os.DirEntry[str], kind: MediaKind | None) -> MediaFile | None:
-    """Describe a directory entry when it is a regular file the walk keeps.
-
-    Args:
-        entry: The directory entry (its stat is cached by `scandir`).
-        kind: What the file is, or None when the walk does not keep it.
-
-    Returns:
-        The file, or None for anything else (a link, a device, another extension).
-
-    Raises:
-        OSError: The file cannot be `stat`ed.
-    """
-    if kind is None or not entry.is_file(follow_symlinks=False):
-        return None
-    stat = entry.stat(follow_symlinks=False)
-    return MediaFile(
-        path=Path(entry.path),
-        size=stat.st_size,
-        mtime_ns=stat.st_mtime_ns,
-        kind=kind,
-        identity=FileIdentity(stat.st_dev, stat.st_ino) if stat.st_ino else None,
-    )
+    if any(entry.name == ALBUM_MARKER for entry in entries):
+        return Listing()
+    return sort_entries(entries, filters)

@@ -12,6 +12,7 @@ from media_hygiene.plan.keeper import KeepPolicy
 from media_hygiene.plan.models import CleanPlan, KeepDecision
 from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.scan.filters import ScanFilters
+from media_hygiene.scan.folder_cache import WalkSetup
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.scan.sidecars import (
@@ -112,7 +113,7 @@ def test_walk_lists_sidecars_with_their_files(tmp_path: Path) -> None:
         (tmp_path / name).write_bytes(b"x")
     (tmp_path / "IMG_1").mkdir()
     filters = ScanFilters(extensions=frozenset({".png"}))
-    found = asyncio.run(walk((tmp_path,), filters, NullProgress()))
+    found = asyncio.run(walk((tmp_path,), WalkSetup(filters), NullProgress()))
     assert not found.files
     by_name = {s.file.path.name: s for s in found.sidecars}
     assert by_name["IMG_1.xmp"].companions == {"IMG_1.jpg", "IMG_1.CR2"}
