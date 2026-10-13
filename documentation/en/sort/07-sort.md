@@ -90,7 +90,8 @@ must not be inside a protected folder. Files of protected folders never move.
 
 - Each file is checked again just before it moves: a file changed or deleted since `classify` is
   skipped and listed. Files that are not in the plan are never touched.
-- On the same disk, a file is renamed: instant. Across disks (two `-v` options are two disks, even
+- On the same disk, a file is renamed (with Docker Desktop on Windows, given its new name then
+  rid of the old one, which is the same): instant. Across disks (two `-v` options are two disks, even
   on the same drive), it is copied, compared with the original, and only then removed.
 - An existing file is never overwritten: `IMG_1.jpg` becomes `IMG_1 (2).jpg`.
 - **Companions travel together**: a Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`), a RAW file and its

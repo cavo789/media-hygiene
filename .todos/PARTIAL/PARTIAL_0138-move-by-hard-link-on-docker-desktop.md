@@ -62,3 +62,21 @@ inode) is completed on replay.
 - On a Docker Desktop NTFS mount, the maintainer's `sort` of a test folder keeps the inodes and
   takes seconds, not a minute; `undo` likewise.
 - Targeted tests pass; `lint` clean.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `move_no_replace`: `renameat2(RENAME_NOREPLACE)`; on a refusal other than `EXDEV`
+  (`EINVAL`, `ENOSYS`, `ENOTSUP`), `os.link` then `unlink` of the source
+  (`actions/link_move.py`); `EXDEV`/`EPERM`/`ENOTSUP`/`EOPNOTSUPP`/`ENOSYS` from `link` → the
+  verified copy as before; `EEXIST` from `link` → `FileExistsError`, nothing changed.
+- Half-done state: a `FileExistsError` whose target is the very same file (`samefile`) is a
+  move killed between link and unlink: the old name is removed and the move counts as done.
+  This sits in `move_no_replace` itself, so every caller (`journaled.py` quarantine moves,
+  `sort`, `restore.py` for `undo`) completes it when the move is replayed or run again.
+- Tests: `tests/unit/test_link_move.py`. Docs `sort/07` en + fr: a precision for Docker
+  Desktop (the wording "renamed: instant" stays true).
+
+### Not done
+- The maintainer's measurement on a Docker Desktop NTFS mount (inodes kept, `sort`/`undo` in
+  seconds). **Reason:** needs Windows + Docker Desktop and an image build.
