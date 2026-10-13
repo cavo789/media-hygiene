@@ -27,8 +27,9 @@ function lint() {
         printf "🔍 Running pre-commit hooks...\n"
         # Tracked AND untracked (non-ignored) files: `--all-files` would only see what git
         # already tracks, silently skipping every new file.
+        # The hooks that check the whole tree (mypy, duplicate-code) add them on this flag.
         git ls-files --cached --others --exclude-standard -z |
-            _gentle xargs -0 pre-commit run --config .config/.pre-commit-config.yaml --files
+            LINT_UNTRACKED=1 _gentle xargs -0 pre-commit run --config .config/.pre-commit-config.yaml --files
     )
 }
 
