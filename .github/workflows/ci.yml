@@ -41,7 +41,9 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Tests with coverage
-        run: uv run pytest --cov --cov-report=term-missing:skip-covered
+        # -n auto: one worker per vCPU of the runner (4); the devcontainer stays serial
+        # (`tests`, `check`), as the maintainer's PC suffers under load.
+        run: uv run pytest -n auto --cov --cov-report=term-missing:skip-covered
 
   image:
     name: Image end-to-end tests
