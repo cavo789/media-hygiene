@@ -25,8 +25,8 @@ How to use it:
 
 Parts 1–3 answered; PARTIAL 0009 (→ UNNEEDED), 0027, 0029, 0030, 0032, 0040, 0041, 0053 and
 BLOCKED 0045 closed, the work their answers created filed as TODOs 0114–0125. Left: the
-Windows checks of Part 4: 0028 and 0057 done on 2026-10-14 (work filed as TODO 0138); 0005
-(postponed) and 0035 still unticked.
+Windows checks of Part 4: 0028 and 0057 done on 2026-10-14 (work filed as TODO 0138); 0035
+checked by Claude on 2026-10-14 (work filed as TODO 0145); 0005 (postponed) still unticked.
 
 ## Part 1 — Prerequisite
 
@@ -285,8 +285,17 @@ Windows checks of Part 4: 0028 and 0057 done on 2026-10-14 (work filed as TODO 0
     HEVC `.MOV`, 4K) and their WhatsApp received copies in `C:\Temp\video-test\videos`, `audit`
     with `:ro`; expect 3 groups under *Re-encoded videos*; for a miss, `ffprobe` duration and
     `creation_time` of both files.
-- [ ] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
+- [x] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
   and home videos named `720p`/`1080p` not for downloads.
+  → checked by Claude on 2026-10-14. The run was read-only: `classify` with the default rules
+    (no vision model) on a copy of the maintainer's index. **Downloads: right**: one video only,
+    a recorded online class named `… (720p).mp4`, a true download; no home video named so.
+    **Screenshots: mostly right**: 52 of 52,056 files go to "Documents and screenshots"
+    (`existing_folder` comes first, so only loose files of year folders get there). About 44
+    are true (38 `Screenshot_…`, messaging pictures, GIFs); 5 are PNGs named like a phone camera
+    (`IMG_YYYYMMDD_HHMMSS.png`, edited photos) and about 3 plain-named PNGs in year folders,
+    likely exported photos too. The camera-named ones are filed as TODO 0145; the plain-named
+    ones stay (nothing tells them apart, the workbook shows them before `sort`).
 - [x] **0057:** a `sort` on one NTFS mount of Docker Desktop: renamed (instant) or copied file by
   file (`renameat2` unsupported there falls back to the verified copy: slower, same result)?
   And `-v "C:\Photos\quarantine:/quarantine"` next to `-v "C:\Photos:/data/c/Photos"` is refused.
@@ -306,3 +315,17 @@ Windows checks of Part 4: 0028 and 0057 done on 2026-10-14 (work filed as TODO 0
 - Every box is ticked, each with its answer.
 - The PARTIAL files 0009, 0027, 0029, 0030, 0032, 0040, 0041, 0053 and BLOCKED 0045 are closed
   (DONE, UNNEEDED, or a new TODO for the work an answer created).
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Parts 1–3 answered and applied (see Progress above); Part 4: 0028, 0037, 0038, 0039, 0044,
+  0057, 0023/0032 checked by the maintainer, 0035 checked by Claude on the real collection
+  (read-only `classify`, default rules, copy of the index): work filed as TODO 0145.
+
+### Not done
+- **0005**: real phone videos (WhatsApp re-encode, iPhone HEVC, 4K) found as re-encoded copies.
+  **Reason:** postponed by the maintainer; the test folder (`C:\Temp\video-test\videos`) does not
+  exist yet, and only the maintainer can make WhatsApp copies of their own videos. The collection holds
+  no HEVC and no 4K video (measured in 0141), so it cannot stand in. Procedure in the box above;
+  revive with a fresh TODO once the folder exists.
