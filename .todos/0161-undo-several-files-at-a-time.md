@@ -48,3 +48,10 @@ file sharing is dominated by I/O latency (copy back from the quarantine, compare
   pass unchanged.
 - Say in the report whether the worker count should become a `config.toml` setting (shared
   with `clean`'s, see 0149).
+
+## Also `sort` (2026-10-14)
+
+Measured after 0138 (`measures-20261014-2203`): `sort` of 4,000 files by link 51 s and its
+`undo` 37 s, one file at a time (≈ 13 and 9 ms per file, no byte copied): the same latency per
+file as above. Whether `sort`'s `Relocator.move` can use the same runner (folders created in
+order, suffixes for names taken decided before the move) is part of this TODO's design.

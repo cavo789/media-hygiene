@@ -4,7 +4,6 @@
 - **Batch**: mounts
 - **Depends**: —
 - **Files**: `src/media_hygiene/actions/journaled.py`, `src/media_hygiene/actions/quarantine.py`, `src/media_hygiene/actions/purge.py`, `src/media_hygiene/paths/`, `src/media_hygiene/scan/walker.py`, `src/media_hygiene/services/launcher.py`, `documentation/en/clean/`, `documentation/fr/clean/`
-- **Needs maintainer**: a decision on the mount design (quarantine beside the photos or not), after a measurement on Windows (the measurement: `tests/measure/mh-measure.ps1` steps 5a and 5d, inbox (2026-10-14))
 
 ## Context
 
@@ -50,3 +49,21 @@ Desktop's NTFS mounts (0138): instant, no space used.
 ## Acceptance
 
 - The decision and the measured figures written here; the follow-up TODO filed if needed.
+
+## Status — DONE (2026-10-14): option 1, the design is kept
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; run `measures-20261014-2133`, test folder of 2,000 photos
+copied twice), `clean` of 2,001 copies (1.3 GB), `WORKERS = 4`:
+
+| | to `/quarantine` (5a) | `--delete`, no move (5d) |
+|---|---|---|
+| `clean` | 20 s | 10 s |
+| `undo` of that clean | 57 s | 36 s |
+
+The moves between mounts are half of a clean (measured); a quarantine beside the photos would
+have saved that half (*estimate*, from 5d) and the free space on `C:`.
+
+**Decision (maintainer, 2026-10-14): option 1, keep one `/quarantine` mount.** "I do not want a
+`.media-hygiene-quarantine` folder created everywhere." Options 2 and 3 are dropped; no
+follow-up TODO. The undo side is sped up by 0161 instead.

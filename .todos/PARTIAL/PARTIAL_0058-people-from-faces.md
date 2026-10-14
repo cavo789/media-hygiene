@@ -174,3 +174,12 @@ Note the figures here, then decide to build, reduce or drop.
 ## Inbox (2026-10-14)
 
 - The measurement is now step 6c (`people --sample 200` on `C:\Photos`): seconds per photo, faces, share left out; the group quality and `dive` stay by hand of `tests/measure/mh-measure.ps1`.
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; run `measures-20261014-2133`, test folder of 2,000 photos
+copied twice). `people --sample 200` on `C:\Photos` (52,054 files): 200 photos analysed, 96 faces
+(0.48 per photo), 0.16 s per photo; the tool's estimate for a full run: 50,323 more photos,
+about 16 min 20 s. Wall time of the sample: 12.6 s. Still waiting: the group quality at 2–3
+thresholds (the maintainer's eyes on the page) and the image size with `dive`.
