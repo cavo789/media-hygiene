@@ -156,3 +156,15 @@ Consequences: 0131 DONE, 0134 UNNEEDED, 0141 Low, 0144 Low with a revisit condit
 
 - Every section done, its numbers written in the TODO it unblocks; this file then moves to
   `DONE/`.
+
+## Status — BLOCKED (2026-10-14)
+
+### Not done
+- Sections 1, 2, 4, 5 and 6, and step 2 of section 3 (sections 7 and steps 1, 3 of section 3 are
+  done above).
+  **Reason:** each one loads the local vision model or the face models on the GPU (the PC crashes
+  under heavy unattended load), needs the maintainer's judgement (are the tags, the searches, the
+  face groups right?) or clicks in a real browser (`people` page), or a licence-restricted model
+  kept outside the repository (ArcFace). Only the maintainer can run them; each section names the
+  TODO its numbers unblock (0082, 0084, 0083, 0090, 0091). Revive with a fresh TODO per section
+  when the maintainer has the numbers.
