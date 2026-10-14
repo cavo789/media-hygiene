@@ -15,7 +15,9 @@
       "Bash(.claude/scripts/todo_plan_tables.sh *)",
       "Bash(python3 .claude/scripts/todo_plan_render.py *)",
       "Bash(python3 .claude/scripts/tests_for.py *)",
-      "Bash(python3 .claude/scripts/tests_for.py)"
+      "Bash(python3 .claude/scripts/tests_for.py)",
+      "Bash(python3 .claude/scripts/todo_inbox.py *)",
+      "Bash(python3 .claude/scripts/todo_inbox.py)"
     ],
     "additionalDirectories": [
       "/tmp",

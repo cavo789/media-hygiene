@@ -109,7 +109,9 @@ header bullets Priority/Batch/Depends/Files, optional Needs maintainer — skill
 `/todo NNNN` implements, `/todo-plan` regenerates `.todos/plan.md` (never edit it by hand),
 `/iterate` asks the blocking questions first, then runs the plan lot by lot in subagents (a
 commit per lot, a feedback file to review); `/review-feedback` goes through that file with the
-user, applies the decisions and files the follow-ups.
+user, applies the decisions and files the follow-ups; `/todo:inbox` gathers everything the backlog
+waits for from the maintainer (`.claude/scripts/todo_inbox.py`), asks what can be answered in a
+chat and closes, refiles or unblocks the TODOs.
 Reviews: `/python-review`, `/bash-review`, `/docker-review`, `/docker-dive-optimization`, agent
 `cache-invalidation-reviewer`. Working method (`.claude/rules/workflow.md`, skill
 `measure-before-ranking`): the lessons of past sessions. These commands, skills, agents,
