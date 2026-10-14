@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/PARTIAL/PARTIAL_0131-time-each-audit-step.md`, `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
+- **Files**: `.todos/DONE/DONE_0131-time-each-audit-step.md`, `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
 
 ## Context
 
@@ -135,6 +135,22 @@ report. Nothing to install, no GPU.
 3. With these numbers Claude re-ranks 0132 (colours, same streams), 0133 (report), 0135
    (checks + fingerprints = index reads) and 0136 (start-up); 0134 (reuse of the last findings)
    then shows its gain on the same two runs.
+
+→ Done 2026-10-14. Measured by the maintainer on 2026-10-14, `C:\Photos` (52,056 media files), image built from
+`main` at `cea37b8`, Docker Desktop:
+
+| | before (0104 §3, 2026-10-12) | after |
+|---|---|---|
+| warm `audit`, Duration | 10 s | **3–4 s** |
+| first `audit` after the update (schema 10, colours, previews made once) | — | 20 s |
+| `mh --version` (5 runs, Docker start included) | 1.1–1.3 s (0136) | 0.56–0.65 s |
+
+Step line of the second warm audit (`review --near` shows the same before its page opens):
+`listing 1.1 s · cache 0.8 s · checks 0.1 s · fingerprints 0.0 s · near duplicates 1.5 s ·
+colours 0.0 s · same streams 0.0 s`, then `Report written in 0.8 s.` (first warm audit:
+fingerprints 0.2 s, report 0.6 s).
+
+Consequences: 0131 DONE, 0134 UNNEEDED, 0141 Low, 0144 Low with a revisit condition.
 
 ## Acceptance
 

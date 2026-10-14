@@ -66,3 +66,8 @@ read, listing save, analysis).
   with `classify`) was not worth the change.
 - Measure before/after on the real collection (item 6). **Reason:** needs the maintainer
   (0104 §7: the `cache`, `checks` and `fingerprints` figures of the step line).
+
+### Measured (2026-10-14)
+- `cache` stage (forget_missing + one-pass read of 52,056 rows): 0.8 s; `checks` 0.1 s and
+  `fingerprints` 0.0–0.2 s on a warm audit of `C:\Photos` (details in DONE_0131). The change
+  is kept.

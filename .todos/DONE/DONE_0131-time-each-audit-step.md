@@ -60,3 +60,24 @@ Steps a warm audit runs (`services/audit.py`, `services/near_checks.py`,
 ### Not done
 - The figures of a warm audit on the real collection, and the re-ranking of 0132–0136 on them.
   **Reason:** needs the maintainer's `C:\Photos` (an unattended agent never reads it); see 0104 §7.
+
+## Status — DONE (2026-10-14, after the maintainer's measurement)
+
+Measured by the maintainer on 2026-10-14, `C:\Photos` (52,056 media files), image built from
+`main` at `cea37b8`, Docker Desktop:
+
+| | before (0104 §3, 2026-10-12) | after |
+|---|---|---|
+| warm `audit`, Duration | 10 s | **3–4 s** |
+| first `audit` after the update (schema 10, colours, previews made once) | — | 20 s |
+| `mh --version` (5 runs, Docker start included) | 1.1–1.3 s (0136) | 0.56–0.65 s |
+
+Step line of the second warm audit (`review --near` shows the same before its page opens):
+`listing 1.1 s · cache 0.8 s · checks 0.1 s · fingerprints 0.0 s · near duplicates 1.5 s ·
+colours 0.0 s · same streams 0.0 s`, then `Report written in 0.8 s.` (first warm audit:
+fingerprints 0.2 s, report 0.6 s).
+
+Re-ranking: 0132–0136 are done; the step line shows nothing left above 1.5 s on a warm audit.
+0134 (reuse the last findings) would save about 2.5 s per command: UNNEEDED. 0141 (faster
+ffmpeg) only helps a first audit now that colours are cached: Low. 0144 (compiled Python) stays
+Low, to revisit if `near duplicates` grows past ~10 s on a larger collection.

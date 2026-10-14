@@ -60,3 +60,11 @@ after N days (as `full_check_days` does for listings)? Proposal: yes, with the s
   still costs much once 0132 caches colours and stream digests and 0135 reads the index once.
   The open question above (age of the snapshot, `--full` after `full_check_days`) also waits
   for the maintainer.
+
+## Status — UNNEEDED (2026-10-14)
+
+The figures it waited for (DONE_0131): a warm audit of 52,056 files takes 3–4 s; what this
+TODO would skip (`cache` 0.8 s, `checks` 0.1 s, `fingerprints` 0–0.2 s, `near duplicates`
+1.5 s) is about 2.5 s per command. Saving and reloading every finding safely, with the risk of
+stale results, is not worth it. Decided with the maintainer. Revive only if a warm audit of a
+much larger collection spends tens of seconds in those steps.
