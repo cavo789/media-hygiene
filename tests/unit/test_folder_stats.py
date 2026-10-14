@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import threading
 import time
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Final
@@ -64,19 +65,28 @@ def test_a_changed_folder_keeps_the_stats_of_its_known_files(tmp_path: Path) -> 
 def test_the_files_of_a_big_folder_are_stated_in_parallel(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """600 files at 2 ms each: well under the 1.2 s of one thread."""
+    """600 files at 2 ms each: several are stated at the same time.
+
+    Counted, not timed: a wall-clock bound failed on a loaded CI runner (pytest-xdist)
+    although the files were stated in parallel.
+    """
     for index in range(_MANY):
         (tmp_path / f"{index}.jpg").write_bytes(b"x")
+    lock, now, most = threading.Lock(), [0], [0]
 
     def slow(entry: os.DirEntry[str], kept: Mapping[str, CachedStat]) -> CachedEntry:
+        with lock:
+            now[0] += 1
+            most[0] = max(most[0], now[0])
         time.sleep(_SLOW_SECONDS)
+        with lock:
+            now[0] -= 1
         return cached_entry(entry, kept)
 
     monkeypatch.setattr(folder_stats, "cached_entry", slow)
-    started = time.monotonic()
     found = _walk(tmp_path)
     assert len(found.files) == _MANY
-    assert time.monotonic() - started < _MANY * _SLOW_SECONDS / 2
+    assert most[0] > 1
 
 
 def test_a_folder_changing_every_day_is_still_read_in_full(tmp_path: Path) -> None:
