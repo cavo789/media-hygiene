@@ -36,6 +36,9 @@ These bind this repository on top of the generic rule above. Enforced by `pyproj
 - ✅ DO: code, comments, docstrings and log messages in American English; every string shown to
   the user goes through gettext `_()` (`media_hygiene.i18n`) and gets a French translation in
   `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po` (`i18n_update`).
+- ❌ DON'T: save the `.po` catalog with `polib` (`pofile(...).save()`): it re-wraps every
+  entry at its own width and rewrites thousands of lines. Run `i18n_update` (pybabel, which
+  owns the wrapping), then fill only the new `msgstr` lines as text; `i18n_todo` checks.
 - ✅ DO: Google-style docstrings on every module, class and function — "what is not documented
   does not exist". Every CLI command and option carries a `help=` text.
 - ✅ DO: long text (HTML, the default `config.toml`) lives in `src/media_hygiene/**/templates/`, loaded

@@ -11,6 +11,7 @@ from media_hygiene.i18n import _
 from media_hygiene.scan.bounded import bounded_map, pool_in_flight
 from media_hygiene.scan.file_check import FileChecker, Need, need_of
 from media_hygiene.scan.models import BrokenFile
+from media_hygiene.scan.partial_fill import fill_partials
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.video_prints import VideoPrinter
 
@@ -92,6 +93,7 @@ class BrokenFileFinder:
         known |= await self._run(
             work[Need.METADATA], self._checker.read_metadata, _metadata_step()
         )
+        known |= await fill_partials(files, known, self._deps)
         videos = await self._printer.looks(files, known)
         by_path = {file.path: file for file in files}
         broken.extend(

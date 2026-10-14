@@ -45,6 +45,12 @@ changed **in place** by another program (same name) does not change its folder: 
 the latest after `full_check_days` (7 days) in `[scan]`, when every folder is read in full, or
 at once with `audit --full`.
 
+Renaming or moving folders in Explorer keeps what the cache knows: a file found elsewhere with
+the same size, the same modification time and the same first and last 64 KB is the same file. The
+audit says it: *"1,234 files moved or renamed since the last audit: what the cache knew of them
+follows them."* Its checks, its faces and what a local model said of it are not done again; a
+file changed (a new modification time) is checked again.
+
 The cache also keeps what each file says about itself, read while it is checked: the shooting
 date, the GPS position, the device, the stars given in Windows, the length of a video… Nothing
 more is read for it. `inventory` exports all of it to an Excel workbook, without reading your

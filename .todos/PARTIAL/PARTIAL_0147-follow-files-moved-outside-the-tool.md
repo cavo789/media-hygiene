@@ -63,3 +63,27 @@ it moves or copies, so (size, mtime_ns) survives such a move, and the content pr
   paths, the names of 0146 still applied.
 - Two different files with the same size and mtime are never paired (different partial digest).
 - A moved and then edited file (new mtime) is checked again.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Item 1: `scan/partial_fill.py` gives every checked file its partial digest once (videos,
+  rows of older versions, pictures above `WHOLE_READ_LIMIT`), its own progress step, stored
+  as it goes. Pictures checked since 0148 already get it from their decoding. Videos get it
+  from this pass (just after their check), not inside the `ffprobe` check itself.
+- Items 2–3: `index/rematch.py`: gone rows and unknown listed files paired on (size, mtime_ns,
+  partial digest), never on size and time alone; among identical copies the same file name is
+  preferred. `forget_missing` moves the pairs (`FactsRepository.move`: every table, and the
+  `moves` record of 0146, so the names follow), forgets the rest, and returns `Pruned`
+  (followed, forgotten). `audit` and `classify` both pass the listed files.
+- Item 4: one console line (`services/listing.tell_followed`), translated.
+- Item 6: docs en + fr (`start/02-keep-the-cache.md`).
+- Tests: `tests/integration/test_follow_moved_files.py` (a renamed folder: nothing decoded
+  again, faces at the new path; different content or another time: never paired).
+
+### Not done
+- Item 5 (optional): a collection mounted at another path (moved to another drive) lending
+  its rows, copied, to the files it matches.
+  **Reason:** deliberately left out: copying rows of every table (facts, faces, descriptions,
+  tags, measures) without forgetting the originals needs its own design (which copy do the
+  names of `people` point to?). Revive if a maintainer moves a collection to another drive.

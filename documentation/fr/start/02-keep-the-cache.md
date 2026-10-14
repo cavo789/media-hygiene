@@ -46,6 +46,12 @@ examinées une à une. Une photo modifiée **sur place** par un autre programme 
 change pas son dossier : elle est vue au plus tard après `full_check_days` (7 jours) dans
 `[scan]`, quand chaque dossier est relu en entier, ou tout de suite avec `audit --full`.
 
+Renommer ou déplacer des dossiers dans l'Explorateur garde ce que le cache sait : un fichier
+retrouvé ailleurs avec la même taille, la même date de modification et les mêmes 64 premiers et
+derniers Ko est le même fichier. L'audit le dit : *« 1 234 fichiers déplacés ou renommés depuis
+le dernier audit : ce que le cache en savait les suit. »* Ses vérifications, ses visages et ce
+qu'un modèle local en a dit ne sont pas refaits ; un fichier modifié (nouvelle date) est revérifié.
+
 Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
 de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une
 vidéo… Rien de plus n'est lu pour cela. `inventory` exporte tout cela vers un classeur Excel,

@@ -36,7 +36,7 @@ from media_hygiene.services.data_checks import (
     warn_about_aliases,
     warn_about_scope,
 )
-from media_hygiene.services.listing import list_media
+from media_hygiene.services.listing import list_media, tell_followed
 from media_hygiene.services.near_checks import NearTools, checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
 from media_hygiene.tags.xmp_owner import with_edits
@@ -91,7 +91,9 @@ class AuditService:
             runtime.settings, runtime.mapper, accompanied(with_edits(found.sidecars))
         )
         groups, integrity, similar = self._analyse_files(
-            found, WalkCoverage(roots, listed, found.unreadable, filters), policy
+            found,
+            WalkCoverage(roots, listed, found.unreadable, filters, found.files),
+            policy,
         )
         plan = build_plan(groups, integrity.broken, policy)
         # With --ext, sidecars already alone before the clean are left where they are.
@@ -134,7 +136,7 @@ class AuditService:
             self._runtime.executor_factory() as executor,
         ):
             with self._stopwatch.timing(Stage.INDEX):
-                forget_missing(repository, coverage)
+                tell_followed(self._runtime, forget_missing(repository, coverage))
                 repository.preload(coverage.roots)
             deps = ScanDeps(repository, self._progress)
             finders = Finders(

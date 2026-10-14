@@ -22,6 +22,7 @@ from media_hygiene.services.policy import scan_filters
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.index.pruning import Pruned
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
 
@@ -81,4 +82,24 @@ def _tell(runtime: Runtime, found: Walk) -> None:
             "A photo changed in place by another program? 'audit --full' reads "
             "every folder (done anyway for those listed {days} days ago)."
         ).format(days=runtime.settings.scan.full_check_days)
+    )
+
+
+def tell_followed(runtime: Runtime, pruned: Pruned) -> None:
+    """Say how many files moved or renamed since were recognised (TODO 0147).
+
+    Args:
+        runtime: Output.
+        pruned: What the index did after the walk.
+    """
+    if not pruned.followed:
+        return
+    runtime.output.info(
+        ngettext(
+            "{count} file moved or renamed since the last audit: what the cache knew "
+            "of it follows it.",
+            "{count} files moved or renamed since the last audit: what the cache knew "
+            "of them follows them.",
+            pruned.followed,
+        ).format(count=human_number(pruned.followed))
     )

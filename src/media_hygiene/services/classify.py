@@ -31,7 +31,7 @@ from media_hygiene.services.classify_inputs import (
 )
 from media_hygiene.services.classify_people import with_people
 from media_hygiene.services.data_checks import refuse_empty_data
-from media_hygiene.services.listing import list_media
+from media_hygiene.services.listing import list_media, tell_followed
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
@@ -184,9 +184,9 @@ class ClassifyService:
             runtime.executor_factory() as executor,
         ):
             listed = frozenset(str(file.path) for file in found.files)
-            forget_missing(
-                repository, WalkCoverage(roots, listed, found.unreadable, filters)
-            )
+            coverage = WalkCoverage(roots, listed, found.unreadable, filters, files)
+            tell_followed(runtime, forget_missing(repository, coverage))
+            repository.preload(roots)  # one read of the index, as the audit (0157)
             tools = IntegrityTools(executor, shutil.which(FFPROBE_BINARY))
             finder = BrokenFileFinder(ScanDeps(repository, self._progress), tools)
             integrity = asyncio.run(finder.find(files))

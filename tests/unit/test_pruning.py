@@ -41,7 +41,7 @@ def test_a_file_the_walk_did_not_list_is_forgotten() -> None:
     """Deleted, moved or renamed by hand: its old path loses its row."""
     with FactsRepository.open(None) as repository:
         indexed(repository, KEPT, ROOT / "2019" / "gone.jpg")
-        assert forget_missing(repository, coverage()) == 1
+        assert forget_missing(repository, coverage()).forgotten == 1
         assert repository.paths_under(ROOT) == [str(KEPT)]
 
 
@@ -78,7 +78,7 @@ def test_absence_proves_nothing_there(path: Path, walk: WalkCoverage) -> None:
     """Where the walk could not or would not look, rows are kept."""
     with FactsRepository.open(None) as repository:
         indexed(repository, KEPT, path)
-        assert forget_missing(repository, walk) == 0
+        assert forget_missing(repository, walk).forgotten == 0
 
 
 def test_only_complete_walks_are_dated() -> None:

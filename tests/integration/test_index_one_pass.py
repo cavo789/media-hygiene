@@ -9,6 +9,7 @@ from media_hygiene.index import repository as repository_module
 from media_hygiene.index.schema import SCHEMA_VERSION
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
+from media_hygiene.services.classify import ClassifyService
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
@@ -23,8 +24,10 @@ _TABLES = "SELECT name FROM sqlite_master WHERE type = 'table'"
 _ONE_FILE = "FROM files WHERE path = '"  # values are shown bound
 
 
-def traced_audit(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> list[str]:
-    """Run an audit, recording every SQL statement the index runs."""
+def traced_audit(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch, *, classify: bool = False
+) -> list[str]:
+    """Run an audit (or `classify`), recording every SQL statement the index runs."""
     statements: list[str] = []
     real = sqlite3.connect
 
@@ -34,7 +37,8 @@ def traced_audit(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> list[
         return connection
 
     monkeypatch.setattr(sqlite3, "connect", connect)
-    AuditService(make_runtime(locations), NullProgress()).run()
+    service = ClassifyService if classify else AuditService
+    service(make_runtime(locations), NullProgress()).run()
     monkeypatch.undo()
     return statements
 
@@ -52,6 +56,16 @@ def test_a_warm_audit_reads_no_row_one_by_one(
         "FROM files WHERE path >= '" in s and "partial_digest" in s for s in warm
     )
     assert not [statement for statement in warm if "CREATE TABLE" in statement]
+
+
+def test_a_warm_classify_reads_no_row_one_by_one(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`classify` reads the index at once too (TODO 0157)."""
+    build_demo(locations.data_dir)
+    traced_audit(locations, monkeypatch)
+    warm = traced_audit(locations, monkeypatch, classify=True)
+    assert not [statement for statement in warm if _ONE_FILE in statement]
 
 
 def test_an_index_of_the_previous_version_still_upgrades(tmp_path: Path) -> None:

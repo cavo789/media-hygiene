@@ -14,12 +14,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.index.rematch import rematched
 from media_hygiene.index.walks import mark_walked
 from media_hygiene.paths.host_paths import is_within
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from media_hygiene.index.repository import FactsRepository
     from media_hygiene.scan.filters import ScanFilters
+    from media_hygiene.scan.models import MediaFile
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,31 +36,49 @@ class WalkCoverage:
     listed: frozenset[str]
     unreadable: tuple[Path, ...]
     filters: ScanFilters
+    files: Sequence[MediaFile] = ()  # what was listed: the moved files are among them
 
 
-def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> int:
-    """Remove the rows of the files the walk proves gone, and date the complete walks.
+@dataclass(frozen=True, slots=True)
+class Pruned:
+    """What the index did after a walk: files followed to their new path, forgotten."""
+
+    followed: int = 0
+    forgotten: int = 0
+
+
+def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> Pruned:
+    """Follow the files moved since, forget the other ones the walk proves gone.
+
+    A file moved or renamed outside the tool keeps its rows (`index.rematch`); the
+    other gone files are forgotten. The complete walks are dated.
 
     Args:
         repository: The index.
         coverage: What the walk saw.
 
     Returns:
-        How many rows were forgotten.
+        How many files were followed, and how many forgotten.
     """
+    indexed = {root: repository.paths_under(root) for root in coverage.roots}
     gone = [
         path
-        for root in coverage.roots
-        for path in repository.paths_under(root)
+        for root, paths in indexed.items()
+        for path in paths
         if _proven_gone(Path(path), root, coverage)
     ]
-    forgotten = repository.forget(gone)
+    known = {path for paths in indexed.values() for path in paths}
+    newcomers = [file for file in coverage.files if str(file.path) not in known]
+    pairs = rematched(repository.connection, gone, newcomers) if gone else []
+    repository.move(pairs)
+    followed = {old for old, _new in pairs}
+    forgotten = repository.forget(path for path in gone if path not in followed)
     _LOGGER.debug("Index: forgot %d files that are gone", forgotten)
     now = datetime.now(UTC)
     for root in coverage.roots:
         if not any(is_within(item, root) for item in coverage.unreadable):
             mark_walked(repository, root, now)
-    return forgotten
+    return Pruned(len(pairs), forgotten)
 
 
 def _proven_gone(path: Path, root: Path, coverage: WalkCoverage) -> bool:
