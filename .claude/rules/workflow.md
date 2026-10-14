@@ -8,6 +8,12 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   ❌ DON'T: trust a single-file `mypy`/`ruff` run: the gate's config differs (strict typing of
   tests, pylint's docstring and boolean checks). The `Stop` hook (`.claude/scripts/stop_gate.sh`)
   runs it on the changed files at the end of each turn and sends a failure back.
+- ✅ DO: between two edits, run only the tests of what changed:
+  `pytest $(python3 .claude/scripts/tests_for.py)` (the tests importing a changed module, in
+  seconds); before declaring done, `--depth 1` (the tests of its importers too), then the
+  commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
+  `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
+  each edit (minutes of load on the maintainer's PC).
 - ✅ DO: before editing files near a size cap, `.claude/scripts/near_limit.sh <files>`; plan
   the split (a new module) before writing, not after the linter fails.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list
@@ -41,7 +47,7 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 
 ## media-hygiene — project specifics
 
-- Devcontainer facts: no `pytest -n` (no xdist); a foreground `sleep` is refused (use a
+- Devcontainer facts: no `pytest -n` here (xdist is installed for CI only: the PC suffers under load); a foreground `sleep` is refused (use a
   background run or a check loop); `ProcessPoolExecutor` in `python -c` needs the `fork`
   context; the scratchpad is invisible to the host Docker daemon (`docker cp`, or
   `-c "$(cat script.py)"`); heavy steps one at a time, `nice -n 19`, `PYTHON_CPU_COUNT=4`.

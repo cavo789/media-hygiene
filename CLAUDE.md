@@ -68,6 +68,7 @@ check                 # lint, then pytest --cov — every heavy helper runs gent
 lint                  # pre-commit only (ruff, mypy, pylint src+tests, shellcheck, shfmt, hadolint), new files included
 format                # ruff format + ruff check --fix
 tests [pytest args]   # e.g. tests tests/unit/test_keeper.py -k preferred
+tests_quick [args]    # only the tests importing the files changed (TESTS_DEPTH=1 widens; .claude/scripts/tests_for.py)
 e2e                   # build media-hygiene:latest, then pytest -m e2e (real docker run; log in /tmp/media-hygiene/e2e.log)
 hygiene <command>     # run the CLI from sources against /tmp/media-hygiene/*
 demo / demo_clean     # sample tree in /tmp/media-hygiene/data, then audit / empty /tmp/media-hygiene
@@ -90,7 +91,7 @@ Without the helpers: `uv run pytest`, `uv run mypy`, `uv run pylint src`,
 ## Conventions (enforced by tooling — see `.claude/rules/python.md`)
 
 - Python 3.14, fully typed, mypy strict (+ extra error codes), ruff `select = ["ALL"]`, pylint 10/10.
-- **Max 200 lines per file, max 3 parameters per function** (frozen parameter object otherwise).
+- **Max 200 lines per file (`src/` only; no cap in `tests/`), max 3 parameters per function** (frozen parameter object otherwise).
   Only documented exception: Typer command functions in `cli/` (one parameter per CLI option).
 - Google docstrings everywhere; every CLI command and option has help text.
 - Every user-facing string goes through `_()`; run `i18n_update` and translate

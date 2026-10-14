@@ -13,7 +13,9 @@
       "Bash(uv sync *)",
       "Bash(.claude/scripts/near_limit.sh *)",
       "Bash(.claude/scripts/todo_plan_tables.sh *)",
-      "Bash(python3 .claude/scripts/todo_plan_render.py *)"
+      "Bash(python3 .claude/scripts/todo_plan_render.py *)",
+      "Bash(python3 .claude/scripts/tests_for.py *)",
+      "Bash(python3 .claude/scripts/tests_for.py)"
     ],
     "additionalDirectories": [
       "/tmp",

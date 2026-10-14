@@ -164,7 +164,8 @@ For each TODO file (process them in the order given):
    CLAUDE.md, contributing guide, or existing code for style, error-handling, and documentation
    conventions, and follow them exactly rather than defaulting to generic style.
 3. Verify with **targeted tests only**: run just the test(s) covering the touched code, using this
-   project's own test runner, never the full suite. The full suite is usually expensive to run and
+   project's own test runner, never the full suite — `.claude/scripts/tests_for.py`, when the
+   project has it, lists them from the imports of the changed files. The full suite is usually expensive to run and
    parse — reserve it for the user, per the Phase 6 reminder. If the change is broad enough that no
    single targeted test covers it, run the couple of most relevant ones and say so plainly in the
    Phase 4 summary rather than falling back to a full run.
