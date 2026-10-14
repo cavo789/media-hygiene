@@ -24,8 +24,10 @@ env:
 # Runners pinned to Ubuntu 26.04, which `ubuntu-latest` becomes on 2026-10-19: the gate is
 # proven on it beforehand, and a later image change is a deliberate edit, never a surprise.
 jobs:
-  quality:
-    name: Lint, types, tests
+  # Lint and tests in parallel (≈ 110 s and ≈ 145 s on the runner, measured): the image
+  # jobs wait for the longer of the two instead of their sum.
+  lint:
+    name: Lint, types
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -34,8 +36,29 @@ jobs:
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - name: Install the locked environment
         run: uv sync --locked
+      # mypy rechecks only what changed since the cached run: a new key per commit, the
+      # latest cache of the branch (or of main) restored.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .mypy_cache
+          key: mypy-${{ hashFiles('uv.lock', 'pyproject.toml') }}-${{ github.sha }}
+          restore-keys: mypy-${{ hashFiles('uv.lock', 'pyproject.toml') }}-
+      # Stage manual: the duplicate-code checks too, left out of local commits.
       - name: Pre-commit hooks (ruff, mypy, pylint, shellcheck, shfmt, hadolint)
-        run: uv run pre-commit run --all-files --show-diff-on-failure --config .config/.pre-commit-config.yaml
+        run: >-
+          uv run pre-commit run --all-files --hook-stage manual --show-diff-on-failure
+          --config .config/.pre-commit-config.yaml
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - name: Install the locked environment
+        run: uv sync --locked
       # ffmpeg writes the test videos (inventory, sort of the docs library, re-encoded copies),
       # as in the devcontainer; the tool itself only warns when it is missing.
       - name: Install ffmpeg
@@ -47,7 +70,7 @@ jobs:
 
   image:
     name: Image end-to-end tests
-    needs: quality
+    needs: [lint, tests]
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -79,7 +102,7 @@ jobs:
   # main they build without pushing: arm64 is proven buildable before any release.
   build-amd64:
     name: Image amd64
-    needs: quality
+    needs: [lint, tests]
     runs-on: ubuntu-26.04
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -123,7 +146,7 @@ jobs:
 
   build-arm64:
     name: Image arm64
-    needs: quality
+    needs: [lint, tests]
     runs-on: ubuntu-26.04-arm
     outputs:
       digest: ${{ steps.build.outputs.digest }}

@@ -76,11 +76,11 @@ repos:
         types: [python]
         files: ^tests/
         require_serial: true
-      # duplicate-code compares the files pylint is given with each other: at commit time
-      # pre-commit passes only the staged ones, so a copy of a file left out goes unseen
-      # until CI (--all-files). These two run that one check over every tracked file,
-      # cheaply; untracked work in progress is left out, as CI never sees it (the `lint`
-      # helper sets LINT_UNTRACKED to check new files too).
+      # duplicate-code compares the files pylint is given with each other, so these two
+      # run that one check over every tracked file; untracked work in progress is left
+      # out, as CI never sees it (the `lint` helper sets LINT_UNTRACKED to check new files
+      # too). Stage `manual`: not at each commit (≈ 17 s for src/ alone, measured in the
+      # devcontainer), only where `--hook-stage manual` is passed: `lint`, `check`, CI.
       - id: pylint-duplicates
         name: pylint duplicate-code (all of src)
         entry: >-
@@ -91,6 +91,7 @@ repos:
         files: ^src/
         pass_filenames: false
         require_serial: true
+        stages: [manual]
       - id: pylint-duplicates-tests
         name: pylint duplicate-code (all of tests)
         entry: >-
@@ -101,6 +102,7 @@ repos:
         files: ^tests/
         pass_filenames: false
         require_serial: true
+        stages: [manual]
       - id: shellcheck
         name: shellcheck
         entry: shellcheck --external-sources
