@@ -61,7 +61,7 @@ share: a first audit of JPEGs on Windows waits for the disk, not for the decoder
   with duplicates): the `checks` and `fingerprints` stages of `--verbosity verbose`, before and
   after, written in the commit message.
 
-## Status — PARTIAL (2026-10-14)
+## Status — DONE (2026-10-14)
 
 ### Done
 - `scan/whole_read.py`: a picture up to `WHOLE_READ_LIMIT` (128 MB, not 256: 16 workers ×
@@ -81,3 +81,17 @@ share: a first audit of JPEGs on Windows waits for the disk, not for the decoder
   duplicates), before and after.
   **Reason:** needs the maintainer's Docker Desktop and a rebuilt image; the devcontainer
   measures (2026-10-14: 45.5 → 40.5 ms per photo, one worker, cold) are in the Context above.
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`), first audit, fresh cache volume, test folder of photos copied twice:
+
+| Test folder | checks | per file | throughput |
+|---|---|---|---|
+| 4,000 photos (2.7 GB) | 7.6 s | 1.9 ms | ≈ 350 MB/s |
+| 12,000 photos (12.9 GB) | 27.8 s | 2.3 ms | ≈ 465 MB/s |
+
+`fingerprints` 0.0 s (no video in the folder). Only the "after" was measured on Windows: an
+image from before 2ea65e4 was not rebuilt (cost judged higher than what it would teach; the
+"before" is the devcontainer's 45.5 → 40.5 ms per photo above). Closed on the "after".

@@ -76,3 +76,16 @@ the size of each copy.
   `--delete`), and choosing K from it.
   **Reason:** needs the maintainer's Docker Desktop and a folder where writing is allowed (the
   devcontainer only reads `C:\Photos`). To compare, set `WORKERS` to 1 in a local build.
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`), `clean` to a quarantine on another mount, `WORKERS = 4`:
+
+| Copies | `clean` | `undo` of that clean |
+|---|---|---|
+| 2,001 (1.3 GB) | 20 s (+ report 1.9 s) | 56 s |
+| 6,001 (6.3 GB) | 1 min 21 s (+ report 4.5 s), ≈ 78 MB/s | 3 min 53 s |
+
+Still missing: K = 1 against K = 4, and `--delete` (steps 5d/5e added to the script by
+217d2da). `undo` stays one file at a time: 0161.

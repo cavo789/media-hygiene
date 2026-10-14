@@ -55,7 +55,7 @@ Not worth a compiler (0144): numpy already holds the tool, and `np.bitwise_count
 - The benchmark of item 1, before and after, in the commit message; the `near duplicates`
   stage of the maintainer's warm audit before and after.
 
-## Status — PARTIAL (2026-10-14)
+## Status — DONE (2026-10-14)
 
 ### Done
 - Item 1, benchmark (devcontainer, synthetic clustered hashes: scenes of 1–30 shots 4–12 bits
@@ -88,3 +88,11 @@ Not worth a compiler (0144): numpy already holds the tool, and `np.bitwise_count
 ## Inbox (2026-10-14)
 
 - Item 4 (`near_video._clusters` with numpy) dropped: not measured as slow. Only the maintainer's measurement (`mh-measure.ps1` step 6) remains.
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`), warm audit of `C:\Photos` (52,054 files, nothing changed): `near duplicates` 0.9 s
+of a 3 s audit (4.0 s wall time); `colours` and `same streams` 0.0 s. Test folder of 12,000
+photos: 0.2 s. Only the "after" was measured (no image from before c0cf34f rebuilt); the
+whole warm audit stays at the 3–4 s measured before. Closed on the "after".

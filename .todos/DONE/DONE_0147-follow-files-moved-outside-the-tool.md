@@ -64,7 +64,7 @@ it moves or copies, so (size, mtime_ns) survives such a move, and the content pr
 - Two different files with the same size and mtime are never paired (different partial digest).
 - A moved and then edited file (new mtime) is checked again.
 
-## Status — PARTIAL (2026-10-14)
+## Status — DONE (2026-10-14)
 
 ### Done
 - Item 1: `scan/partial_fill.py` gives every checked file its partial digest once (videos,
@@ -93,3 +93,16 @@ it moves or copies, so (size, mtime_ns) survives such a move, and the content pr
 - Item 5 (a collection mounted at another path): dropped by the maintainer (rare; a rename
   on the same mount is already followed). Only the measurement of `mh-measure.ps1` step 4
   remains.
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`):
+
+| Test folder | First audit | Folder renamed in Explorer, audit |
+|---|---|---|
+| 4,000 photos (2.7 GB) | 9.5 s | 2.2 s: 2,000 files followed, checks 0.0 s |
+| 12,000 photos (12.9 GB) | 30.6 s | 4.6 s: 6,000 files followed, cache 2.5 s, checks 0.0 s (−85 %) |
+
+The one-time pass giving older rows their partial digest: checks 17.6 s on `C:\Photos`
+(52,054 files, one run), then 0.1 s. Closed: item 5 dropped (see Inbox), measurement done.

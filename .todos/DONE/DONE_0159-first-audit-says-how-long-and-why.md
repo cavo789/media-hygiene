@@ -41,3 +41,11 @@ Today a first audit shows its progress bars with an ETA once each pass has start
   appears when nothing was checked; texts translated.
 - The maintainer reads the lines on a first audit of the test folder of `mh-measure.ps1` and
   judges the estimate (within a factor of 2).
+
+## Windows measurement (2026-10-14)
+
+Measured by the maintainer on 2026-10-14 with `tests/measure/mh-measure.ps1` (Windows, Docker
+Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`). First audit of 12,000 photos: "12,000 photos to check for the first time: less than a
+minute" — the checks took 27.8 s, the audit 30 s; "Next audit: a few seconds" — the next audit
+took 1.7 s. Within the factor of 2 of the acceptance. With 4,000 photos (checks 7.6 s) neither
+line appears: they wait for `SAMPLE_SECONDS` (20 s) of checks, as designed.
