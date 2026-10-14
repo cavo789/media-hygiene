@@ -32,7 +32,6 @@ filing a fresh TODO for what is left.
 | ID | Title | File |
 |----|-------|------|
 | 0056 | Things to review: the maintainer's decisions and checks left by the PARTIAL TODOs | [PARTIAL_0056-things-to-review.md](PARTIAL/PARTIAL_0056-things-to-review.md) |
-| 0098 | `launcher > mh.ps1` in Windows PowerShell 5.1: accented folder names may be corrupted | [PARTIAL_0098-launcher-accented-paths-powershell-51.md](PARTIAL/PARTIAL_0098-launcher-accented-paths-powershell-51.md) |
 | 0058 | People: find faces, group them, let the user name them | [PARTIAL_0058-people-from-faces.md](PARTIAL/PARTIAL_0058-people-from-faces.md) |
 | 0083 | Tags follow-ups: near-duplicate inheritance, videos, classify reusing the vision tags | [PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md](PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md) |
 | 0087 | Keep pinned versions up to date with Renovate | [PARTIAL_0087-renovate-dependency-updates.md](PARTIAL/PARTIAL_0087-renovate-dependency-updates.md) |

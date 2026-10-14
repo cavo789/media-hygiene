@@ -75,3 +75,13 @@ two comments by hand.
   `mh audit` finds the files of the accented folder, and `notepad mh.ps1` shows ASCII.
   **Reason:** no Windows in the devcontainer; only the maintainer can run it. Close as DONE
   once it passes.
+
+## Verified on Windows (2026-10-14) — DONE
+
+Image built from `95ff133`, Windows PowerShell 5.1:
+`docker run … -v "C:\Photos\2012\Vidéo:/data/c/Photos/2012/Vidéo:ro" media-hygiene launcher
+--shell powershell > C:\Temp\mh-test.ps1`. `(Get-Content … -Raw) -match '[^\x00-\x7F]'` →
+`False`; the `-v` line reads `Vid$([char]0x00E9)o`; after `. C:\Temp\mh-test.ps1`, `mh audit`
+analysed the 22 media files of the accented folder, and no garbled folder was created.
+(A first try on `C:\Photos\Vidéos` found 0 files: that folder is an empty one Docker Desktop
+created on 2026-10-12 when a missing folder was mounted; the real one is `Videos`.)
