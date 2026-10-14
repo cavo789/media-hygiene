@@ -75,7 +75,7 @@ class VideoPrinter:
     async def _fingerprint(
         self, files: list[MediaFile], facts: Mapping[Path, FileFacts], ffmpeg: str
     ) -> dict[Path, FileFacts]:
-        """Fingerprint videos concurrently, then store the fingerprints.
+        """Fingerprint videos concurrently, storing each one as it ends (TODO 0143).
 
         Args:
             files: The videos to fingerprint.
@@ -102,13 +102,13 @@ class VideoPrinter:
             async with self._slots:
                 found = await fingerprint(file.path, duration or 0.0, ffmpeg)
             progress.advance()
-            return current.with_video_print(found)
+            printed = current.with_video_print(found)
+            self._deps.repository.put(file, printed)
+            return printed
 
         async with asyncio.TaskGroup() as group:
             tasks = {file: group.create_task(one(file)) for file in files}
         progress.stop()
-        for file, task in tasks.items():
-            self._deps.repository.put(file, task.result())
         return {file.path: task.result() for file, task in tasks.items()}
 
 

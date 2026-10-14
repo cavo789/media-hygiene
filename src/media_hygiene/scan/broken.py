@@ -117,7 +117,10 @@ class BrokenFileFinder:
     async def _run(
         self, files: list[MediaFile], action: _Action, step: Step
     ) -> dict[Path, FileFacts]:
-        """Run one action on every file concurrently, then store what it learnt.
+        """Run one action on every file concurrently, storing each file as it ends.
+
+        Stored at once, not after the pass: the index commits every few seconds, so a
+        run killed halfway keeps the files already checked (TODO 0143).
 
         Args:
             files: The files needing it.
@@ -129,12 +132,25 @@ class BrokenFileFinder:
         """
         if not files:
             return {}
+        repository = self._deps.repository
+
+        async def stored(file: MediaFile) -> FileFacts:
+            """Run the action on one file, then store its facts.
+
+            Args:
+                file: The file.
+
+            Returns:
+                Its updated facts.
+            """
+            facts = await action(file)
+            repository.put(file, facts)
+            return facts
+
         self._deps.progress.start(step, len(files))
         async with asyncio.TaskGroup() as group:
-            tasks = {file: group.create_task(action(file)) for file in files}
+            tasks = {file: group.create_task(stored(file)) for file in files}
         self._deps.progress.stop()
-        for file, task in tasks.items():
-            self._deps.repository.put(file, task.result())
         return {file.path: task.result() for file, task in tasks.items()}
 
 

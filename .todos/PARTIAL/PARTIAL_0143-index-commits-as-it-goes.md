@@ -63,6 +63,20 @@ should cost only the files not yet stored.
 - WAL / `synchronous = NORMAL` (item 2). **Reason:** WAL needs shared memory that a Docker
   Desktop bind mount may not offer, and it cannot be checked here (no Windows); a commit every
   5 s with the default journal costs nothing next to decoding photos.
-- The e2e check that `docker stop` of a running audit exits within 10 s with the index
-  committed, and the measure on the demo tree. **Reason:** needs an image build (kept for the
-  maintainer: low machine load).
+
+## Status update (2026-10-14, second run)
+
+### Done
+- **Gap found and fixed**: the commit every 5 s did not cover the long passes, which stored
+  their results only once the whole pass was over. A first audit killed while decoding still
+  lost everything. Now each file is stored as soon as it ends: integrity checks
+  (`scan/broken.py`, `_run`), digests (`scan/exact.py`, `_hash`), video fingerprints
+  (`scan/video_prints.py`). Tests `tests/integration/test_store_as_it_goes.py`: a pass that
+  fails on the second file keeps the first one in the index (both tests fail without the fix).
+- e2e `tests/e2e/test_stop_image.py`: 150 large PNGs audited on half a processor, `docker stop`
+  after 5 s → exit 130 in under 9 s, no traceback, and between 1 and 149 checked files are in
+  the index. Passed twice in a row (9.2 s, 7.8 s).
+
+### Not done
+- WAL / `synchronous = NORMAL` (item 2) only, for the reason above. Revive if a Windows bind
+  mount of `/cache` is shown to support WAL and commits ever show up in the step timings.

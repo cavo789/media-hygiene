@@ -149,11 +149,13 @@ class ExactDuplicateFinder:
             digest = task.result()
             if digest is not None:
                 digests[file] = digest
-                repository.put(file, step.store(repository.get(file), digest))
         return digests
 
     async def _hash(self, file: MediaFile, step: _DigestStep) -> str | None:
         """Hash one file in a worker thread, within the I/O concurrency limit.
+
+        The digest is stored at once, not after the pass: the index commits every few
+        seconds, so a run killed halfway keeps the files already read (TODO 0143).
 
         Args:
             file: File to hash.
@@ -164,9 +166,12 @@ class ExactDuplicateFinder:
         """
         async with self._deps.io_slots:
             try:
-                return await asyncio.to_thread(step.compute, file.path)
+                digest = await asyncio.to_thread(step.compute, file.path)
             except OSError as exc:
                 _LOGGER.warning("Cannot read %s: %s", file.path, exc.strerror)
                 return None
             finally:
                 self._deps.progress.advance()
+        repository = self._deps.repository
+        repository.put(file, step.store(repository.get(file), digest))
+        return digest
