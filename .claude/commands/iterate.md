@@ -1,57 +1,92 @@
 # Iterate
 
-Run the open backlog unattended, lot after lot, as `.todos/plan.md` orders it: implement, verify,
-commit, regenerate the plan, and keep a feedback file the user reviews afterwards.
+Run the open backlog unattended, lot after lot, as `.todos/plan.md` orders it: first unblock what
+waits for an answer, then implement each lot **in a subagent**, commit, regenerate the plan, and
+keep a feedback file the user reviews afterwards.
 
 **Usage:** `/iterate` — every runnable lot and standalone TODO, in plan order.
 `/iterate <n>` — stop after `n` lots or standalone TODOs.
 
-This command **orchestrates**; the work on each TODO follows `/todo` (`.claude/commands/todo.md`):
-its readiness check, locks, implementation rules, close-out (DONE / PARTIAL / BLOCKED) and plan
-refresh apply unchanged. Read it first. The working method of `.claude/rules/workflow.md` applies
-throughout (commit gate, measured vs estimated, gains, unattended runs).
+The work on each TODO follows `/todo` (`.claude/commands/todo.md`): readiness, locks,
+implementation rules, close-out (DONE / PARTIAL / BLOCKED), plan refresh. The working method of
+`.claude/rules/workflow.md` applies throughout. This command adds the orchestration: what to ask
+first, what to delegate, what to commit, what to report.
+
+## Why subagents
+
+A lot reads and edits dozens of files and runs long test outputs; done in the main session, every
+later lot re-sends all of it. Each lot runs in its own subagent: the main session keeps only a
+short report per lot, so a run of ten lots costs about as much context as one.
 
 ## Phase 0 — Start
 
 1. `git status --porcelain`: a dirty tree means another session (or the user) is working — stop
    and ask. Never `git stash`.
 2. Read `.todos/plan.md`. If its counts differ from `.claude/scripts/todo_plan_tables.sh`, the
-   plan is stale: regenerate it (`/todo-plan`) before going on.
-3. The queue, in this order: the *Recommended order* lots, then *Standalone* by priority. Never
-   take a TODO listed under *Waiting for the maintainer* (`Needs maintainer`) or *Currently in
-   progress* (locked).
-4. Create the feedback file `.claude/plans/feedback-<YYYY-MM-DD>-iterate.md` (private,
-   git-ignored) from the template below, and tell the user its path in one line.
+   plan is stale: regenerate it (`/todo-plan`) first.
+3. Create the feedback file `.claude/plans/feedback-<YYYY-MM-DD>-iterate.md` (private,
+   git-ignored) from the template below; tell the user its path in one line.
 
-## Phase 1 — One lot at a time
+## Phase 1 — Unblock first (while the user is here)
 
-For each lot (or standalone TODO) of the queue:
+Blocked TODOs never enter the queue: they would only end PARTIAL for want of an answer. Collect
+what blocks, cheaply (no implementation, headers and the questions only):
 
-1. Run the `/todo` procedure on its IDs. A TODO found not ready (a blocker `/todo` Phase 1 would
-   ask about) is **skipped**, not asked: write the blocker in the feedback file and go on with the
-   rest of the lot.
-2. Verify: targeted tests while working; once the lot is complete, the unit tests then the
-   integration tests of the project, one after the other, gently (`.claude/rules/workflow.md`,
-   project facts); the commit gate on the changed files.
-3. Close out each TODO as `/todo` Phase 3 says. A TODO whose only remaining item is a
-   measurement or a decision of the user ends PARTIAL, with that item in `### Not done`.
-4. Refresh `.todos/plan.md` (`/todo` Phase 5; counts and PARTIAL table from
-   `todo_plan_tables.sh`).
-5. `git fsck --no-dangling`, then **one commit for the lot**: code, tests, docs, translations,
-   the moved TODO files and the plan, message naming the TODO IDs and the measured gains.
-   **Never push** unless the user asked.
-6. Append the lot's section to the feedback file (template below).
-7. Give the user a one-line progress note (lot done, commit, next lot).
+- the TODOs listed under *Waiting for the maintainer* (`Needs maintainer`), with what they need;
+- in the TODOs of the queue, an explicit question to the user ("the maintainer confirms or drops
+  it", "decision", "open question", an `Options` section to choose from).
 
-Stop early when: a test failure cannot be fixed within the TODO's scope (leave the tree clean:
-commit what is green, describe the rest in the feedback file); the user sends a message (answer
-it, then go on unless they say stop); `/iterate <n>` reached `n`.
+Then **offer to answer them now**, before any implementation (AskUserQuestion, at most 4 questions
+per call, the recommended option first, each option saying what it implies). For each answer:
 
-## Phase 2 — End
+- write it into the TODO (a `## Decided (<date>)` section: the choice, by whom), and remove its
+  `Needs maintainer` bullet when nothing else is needed: it joins the queue;
+- a need that is not an answer (a measurement on the user's machine, real files, an account)
+  cannot be given here: say so, leave the TODO waiting.
 
-1. Finish the feedback file: the gains table (where, before → after, %, measured or estimated),
-   the questions for the user, what waits for them (measurements with the exact command, decisions,
-   files to provide).
+The user may decline or skip: those TODOs stay out of the queue, listed in the feedback file
+under *Waiting for you*. If the user is not there (the run was started to go unattended), skip
+this phase and leave every blocked TODO out.
+
+Commit the decided TODOs (`Backlog: decisions for …`), regenerate the plan, then build the
+queue: the *Recommended order* lots, then *Standalone* by priority; never a TODO still waiting
+or locked.
+
+## Phase 2 — One lot at a time, each in a subagent
+
+Lots run **one after the other** (they share the working tree), each delegated to a
+`general-purpose` subagent, in the foreground (the next lot depends on its commit). The prompt
+gives it everything it needs, since it starts cold:
+
+- the TODO IDs of the lot, and: "Follow `.claude/commands/todo.md` (Phases 0–5) on them, and
+  `.claude/rules/workflow.md`. Run targeted tests while working, then once the lot is complete
+  the unit tests and the integration tests, one after the other, gently (`nice`,
+  `PYTHON_CPU_COUNT=4`), and the commit gate on the changed files.";
+- "A TODO not ready (a question to the user, data you cannot reach): do not ask — skip it, and
+  say why in your report.";
+- "Append the section of each TODO to `<feedback file>` (template in
+  `.claude/commands/iterate.md`).";
+- "Then `git fsck --no-dangling` and one commit for the lot: code, tests, docs, translations,
+  the moved TODO files and the plan; the message names the TODO IDs and the measured gains.
+  Never push, never `git stash`.";
+- "Report in at most 15 lines: per TODO the outcome (DONE / PARTIAL / skipped and why), the
+  commit hash, the tests run and their result, the gains (before → after, %, measured or
+  estimated), the questions for the user. Nothing else: no diff, no logs."
+
+After each subagent:
+
+1. Check its claims cheaply: `git log --oneline -1` (the commit exists), `git status --porcelain`
+   (clean tree). A dirty tree or a missing commit: stop and tell the user what the report says.
+2. Keep its report (it feeds the final summary) and give the user a one-line progress note.
+
+Stop early when: a lot ends with a failure its subagent could not fix (the tree stays as the
+subagent left it, described in the feedback file); the user sends a message (answer it, go on
+unless they say stop); `/iterate <n>` reached `n`.
+
+## Phase 3 — End
+
+1. Finish the feedback file: the gains table, the questions, what waits for the user
+   (measurements with the exact command, decisions, files to provide).
 2. Final message to the user, in their language: the commits (hash, subject), the gains table,
    the questions, what waits for them, the path of the feedback file, the next step from
    `.todos/plan.md`. Then `/todo`'s Phase 6 commit reminder.
@@ -64,7 +99,8 @@ it, then go on unless they say stop); `/iterate <n>` reached `n`.
 Private notes for the review: per TODO the questions met, the choices made (and the alternatives
 left aside), deviations from the TODO, what could not be checked here, what waits for the user.
 
-Queue at the start: <lots and standalone TODOs, in order>. Commits on <branch>, not pushed.
+Decided at the start: <TODO: answer, one line each>. Queue: <lots and standalone TODOs, in
+order>. Commits on <branch>, not pushed.
 
 ---
 

@@ -106,7 +106,8 @@ Without the helpers: `uv run pytest`, `uv run mypy`, `uv run pylint src`,
 Follow-up work lives in `.todos/NNNN-slug.md` (IDs from `.claude/scripts/todo_next_id.sh`,
 header bullets Priority/Batch/Depends/Files, optional Needs maintainer — skill `todo-authoring`).
 `/todo NNNN` implements, `/todo-plan` regenerates `.todos/plan.md` (never edit it by hand),
-`/iterate` runs the plan unattended, lot by lot (a commit per lot, a feedback file to review).
+`/iterate` asks the blocking questions first, then runs the plan lot by lot in subagents (a
+commit per lot, a feedback file to review).
 Reviews: `/python-review`, `/bash-review`, `/docker-review`, `/docker-dive-optimization`, agent
 `cache-invalidation-reviewer`. Working method (`.claude/rules/workflow.md`, skill
 `measure-before-ranking`): the lessons of past sessions. These commands, skills, agents,
