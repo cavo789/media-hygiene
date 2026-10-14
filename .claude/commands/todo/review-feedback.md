@@ -3,8 +3,8 @@
 Go through the feedback file of an unattended run (`/todo:iterate`, or any run that kept one) with the
 user: question by question, apply each decision, file the follow-ups, and close the file.
 
-**Usage:** `/review-feedback` — the most recent `.claude/plans/feedback-*.md`, and the open
-pull request of its `/todo:iterate` branch when there is one. `/review-feedback <file>` — that file.
+**Usage:** `/todo:review-feedback` — the most recent `.claude/plans/feedback-*.md`, and the open
+pull request of its `/todo:iterate` branch when there is one. `/todo:review-feedback <file>` — that file.
 
 The user may be on a small screen: one decision at a time, short options, the recommended one
 first. Speak the user's language.

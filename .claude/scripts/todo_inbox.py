@@ -116,7 +116,7 @@ def feedback(plans: Path) -> list[Record]:
             "STATE": "feedback",
             "FILE": str(path),
             "TITLE": path.stem,
-            "ITEM": "not reviewed yet: /review-feedback",
+            "ITEM": "not reviewed yet: /todo:review-feedback",
             "REASON": "",
             "UNBLOCKS": "",
             "MEASURED-BY": "",

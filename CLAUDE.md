@@ -108,7 +108,7 @@ Follow-up work lives in `.todos/NNNN-slug.md` (IDs from `.claude/scripts/todo_ne
 header bullets Priority/Batch/Depends/Files, optional Needs maintainer — skill `todo-authoring`).
 `/todo:run NNNN` implements, `/todo:plan` regenerates `.todos/plan.md` (never edit it by hand),
 `/todo:iterate` asks the blocking questions first, then runs the plan lot by lot in subagents (a
-commit per lot, a feedback file to review); `/review-feedback` goes through that file with the
+commit per lot, a feedback file to review); `/todo:review-feedback` goes through that file with the
 user, applies the decisions and files the follow-ups; `/todo:inbox` gathers everything the backlog
 waits for from the maintainer (`.claude/scripts/todo_inbox.py`), asks what can be answered in a
 chat and closes, refiles or unblocks the TODOs.

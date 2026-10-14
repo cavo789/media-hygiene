@@ -29,7 +29,7 @@ The maintainer may be on a phone: short questions, the recommended option first,
    - **Measure, not covered yet** — a measurement the script lacks: propose adding a step to the
      script (`.claude/rules/workflow.md`: never a list of commands to type).
    - **Stale** — no longer true (done since, superseded, its reason gone): propose to close it.
-   - **Feedback file** — an unattended run not reviewed yet: point at `/review-feedback`.
+   - **Feedback file** — an unattended run not reviewed yet: point at `/todo:review-feedback`.
 4. Show the overview first, short: how many items per bucket, and for **Answer now** the order
    (most open TODOs unblocked first, then High before Low). Then start.
 

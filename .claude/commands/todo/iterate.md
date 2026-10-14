@@ -112,7 +112,7 @@ unless they say stop); `/todo:iterate <n>` reached `n`.
    green or red — and whenever the run stops early or waits for them. They may be away from the
    terminal.
 5. Final message to the user, in their language: the pull request link, the commits, the gains
-   table, the questions, what waits for them, the next step (`/review-feedback`, then merge).
+   table, the questions, what waits for them, the next step (`/todo:review-feedback`, then merge).
    Never merge it yourself.
 
 ## Feedback file template
