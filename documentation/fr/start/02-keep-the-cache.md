@@ -29,9 +29,14 @@ l'autre.
 
 ## Ce qui change
 
-- Le premier audit avec le cache dure autant qu'avant : il remplit le cache.
+- Le premier audit avec le cache dure autant qu'avant : il remplit le cache. Sa ligne ⏳ dit
+  maintenant que vous pouvez arrêter à tout moment (Ctrl+C) sans perdre ce qui est vérifié, et
+  après le résumé : *« ⚡ Prochain audit : quelques secondes, les fichiers vérifiés sont repris
+  du cache. »*
 - Les suivants ne lisent que les fichiers nouveaux ou modifiés : la ligne *Durée* du résumé
-  montre la différence. Une étape qui n'a plus rien à faire est sautée.
+  montre la différence. Une étape qui n'a plus rien à faire est sautée. Quand aucun fichier
+  n'est nouveau ni modifié, l'audit le dit : *« ♻️ Rien de nouveau ni de modifié depuis le
+  dernier audit : 52.056 fichiers repris du cache. »*
 - La ligne ⚙️ *À régler une fois* ne propose plus *« -v media-hygiene-cache:/cache (prochains
   audits bien plus rapides) »*.
 

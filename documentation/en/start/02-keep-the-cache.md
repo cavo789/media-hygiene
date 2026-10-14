@@ -28,9 +28,13 @@ itself. Nothing to create: Docker creates it the first time and keeps it between
 
 ## What changes
 
-- The first audit with the cache takes as long as before: it fills the cache.
+- The first audit with the cache takes as long as before: it fills the cache. Its ⏳ line
+  now says that you can stop at any time (Ctrl+C) without losing what is checked, and after
+  the summary: *"⚡ Next audit: a few seconds, the files checked are taken from the cache."*
 - The next ones only read new or changed files: the *Duration* line of the summary shows the
-  difference. A step with nothing left to do is skipped.
+  difference. A step with nothing left to do is skipped. When no file is new or changed, the
+  audit says so: *"♻️ No new or changed file since the last audit: 52,056 files taken from the
+  cache."*
 - The ⚙️ *To set once* line no longer suggests *"-v media-hygiene-cache:/cache (much faster next
   audits)"*.
 

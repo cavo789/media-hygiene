@@ -60,8 +60,20 @@ Chaque étape affiche une ligne de progression et, en dessous en gris, ce qu'ell
 | Comparaison des fichiers de même taille | Deux fichiers ne peuvent être identiques que s'ils ont la même taille. Pour ceux-là, lit leurs premiers et derniers 64 Ko : rapide, et cela en écarte la plupart. |
 | Preuve d'identité (SHA-256 complet) | Lit entièrement les candidats restants et calcule leur empreinte SHA-256 : même empreinte, même contenu, octet par octet. L'étape la plus longue avec de grosses vidéos. |
 
-Sur une grosse bibliothèque, le premier audit peut être long : l'[étape suivante](02-keep-the-cache.md)
-rend les suivants bien plus rapides.
+### Combien de temps dure le premier audit
+
+Le premier audit décode chaque photo une fois : sur une grosse bibliothèque, et à travers Docker
+sous Windows, cela prend des minutes, parfois des heures. Quand plus de 500 fichiers sont à
+vérifier, l'outil chronomètre ses 20 premières secondes, puis dit une fois combien de temps
+prendra le reste, arrondi vers le haut :
+
+```text
+⏳ 23.412 photos et 318 vidéos à vérifier pour la première fois : environ 45 min. Le cache
+n'est pas gardé : le prochain audit les vérifiera tous à nouveau (voir le conseil à la fin).
+```
+
+Sans cache, comme ici, chaque audit repart de zéro : l'[étape suivante](02-keep-the-cache.md)
+garde ce travail, et les audits suivants prennent quelques secondes.
 
 ## Lire le résultat
 

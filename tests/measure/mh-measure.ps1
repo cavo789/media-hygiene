@@ -5,8 +5,9 @@
 # read-only mount of C:\). Windows PowerShell 5.1, ASCII only (an accented byte breaks the
 # console code page, TODO 0098).
 #
-#   1. a first audit of a test folder with duplicates, fresh cache   (0148: checks, fingerprints)
-#   2. the same audit again, nothing changed                         (warm audit)
+#   1. a first audit of a test folder with duplicates, fresh cache   (0148: checks, fingerprints;
+#      0159: its estimate of the checks, against their time per step)
+#   2. the same audit again, nothing changed                         (warm audit, 0159 line)
 #   3. one photo added to the big flat folder, audit                 (0153: listing)
 #   4. a folder renamed, audit                                        (0147: files followed)
 #   5. clean, then undo, then audit                                   (0149 clean time, 0156)
@@ -34,7 +35,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$keep = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error'
+$keep = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8

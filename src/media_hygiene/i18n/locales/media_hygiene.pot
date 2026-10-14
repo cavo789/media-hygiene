@@ -2161,6 +2161,9 @@ msgstr ""
 msgid "New place"
 msgstr ""
 
+msgid "Next audit: a few seconds, the files checked are taken from the cache."
+msgstr ""
+
 msgid "Next page →"
 msgstr ""
 
@@ -2259,6 +2262,16 @@ msgstr ""
 
 msgid "No near duplicates: nothing to review."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"No new or changed file since the last audit: {count} file taken from the "
+"cache."
+msgid_plural ""
+"No new or changed file since the last audit: {count} files taken from the"
+" cache."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "No obvious series left to validate."
 msgstr ""
@@ -4395,6 +4408,18 @@ msgid "a whole number is expected, not {value}"
 msgstr ""
 
 #, python-brace-format
+msgid "about {hours} h"
+msgstr ""
+
+#, python-brace-format
+msgid "about {hours} h {minutes:02d}"
+msgstr ""
+
+#, python-brace-format
+msgid "about {minutes} min"
+msgstr ""
+
+#, python-brace-format
 msgid "about {time} left"
 msgstr ""
 
@@ -4781,6 +4806,9 @@ msgid "leave the whole event where it is"
 msgstr ""
 
 msgid "left as it is"
+msgstr ""
+
+msgid "less than a minute"
 msgstr ""
 
 #, python-brace-format
@@ -5958,6 +5986,18 @@ msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{files} to check for the first time: {about}. The cache is not kept: the "
+"next audit checks them all again (see the tip at the end)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{files} to check for the first time: {about}. You can stop at any time "
+"(Ctrl+C): what is checked is kept, and the next audit takes seconds."
+msgstr ""
+
+#, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
 msgstr ""
 
@@ -6253,6 +6293,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
+msgstr ""
+
+#, python-brace-format
+msgid "{photos} and {videos}"
 msgstr ""
 
 #, python-brace-format

@@ -107,6 +107,20 @@ def test_second_audit_reuses_the_index(
     assert len(second.plan.decisions) == len(first.plan.decisions)
 
 
+def test_a_warm_audit_says_everything_came_from_the_cache(
+    locations: Locations,
+) -> None:
+    """The second audit tells that nothing was checked again; the first, short, not."""
+    build_demo(locations.data_dir)
+    first = make_runtime(locations)
+    AuditService(first, NullProgress()).run()
+    assert "first time" not in output_of(first)  # the demo tree is below the threshold
+    assert "No new or changed file" not in output_of(first)
+    second = make_runtime(locations)
+    AuditService(second, NullProgress()).run()
+    assert "No new or changed file since the last audit" in output_of(second)
+
+
 def test_first_audit_reads_each_picture_once(
     locations: Locations,
     monkeypatch: pytest.MonkeyPatch,

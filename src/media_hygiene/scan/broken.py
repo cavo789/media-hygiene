@@ -7,12 +7,12 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason, MediaKind
-from media_hygiene.i18n import _
 from media_hygiene.scan.bounded import bounded_map, pool_in_flight
+from media_hygiene.scan.check_steps import check_step, metadata_step
 from media_hygiene.scan.file_check import FileChecker, Need, need_of
+from media_hygiene.scan.first_checks import FirstChecks, Pace
 from media_hygiene.scan.models import BrokenFile
 from media_hygiene.scan.partial_fill import fill_partials
-from media_hygiene.scan.progress import Step
 from media_hygiene.scan.video_prints import VideoPrinter
 
 if TYPE_CHECKING:
@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from media_hygiene.scan.deps import IntegrityTools, ScanDeps
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import MediaFile, VisualFacts
+    from media_hygiene.scan.progress import Step
     from media_hygiene.scan.video_models import VideoLook
 
     type _Action = Callable[[MediaFile], Coroutine[None, None, FileFacts]]
@@ -44,6 +45,15 @@ class IntegrityFindings:
     videos: Mapping[Path, VideoLook] = field(
         default_factory=lambda: MappingProxyType({})
     )
+
+
+@dataclass(frozen=True, slots=True)
+class _Pass:
+    """One pass over files: what it does to each, and what the user sees."""
+
+    action: _Action
+    step: Step
+    timed: bool = False
 
 
 class BrokenFileFinder:
@@ -89,10 +99,12 @@ class BrokenFileFinder:
             work[need].append(file)
             if need is Need.NOTHING:
                 known[file.path] = facts
-        known |= await self._run(work[Need.CHECK], self._checker.check, _check_step())
-        known |= await self._run(
-            work[Need.METADATA], self._checker.read_metadata, _metadata_step()
-        )
+        if known and not work[Need.CHECK] and not work[Need.METADATA]:
+            self._deps.reporter.nothing_new(len(known))
+        checks = _Pass(self._checker.check, check_step(), timed=True)
+        known |= await self._run(work[Need.CHECK], checks)
+        reading = _Pass(self._checker.read_metadata, metadata_step())
+        known |= await self._run(work[Need.METADATA], reading)
         known |= await fill_partials(files, known, self._deps)
         videos = await self._printer.looks(files, known)
         by_path = {file.path: file for file in files}
@@ -116,9 +128,7 @@ class BrokenFileFinder:
             videos=MappingProxyType(videos),
         )
 
-    async def _run(
-        self, files: list[MediaFile], action: _Action, step: Step
-    ) -> dict[Path, FileFacts]:
+    async def _run(self, files: list[MediaFile], run: _Pass) -> dict[Path, FileFacts]:
         """Run one action on every file concurrently, storing each file as it ends.
 
         Stored at once, not after the pass: the index commits every few seconds, so a
@@ -126,8 +136,8 @@ class BrokenFileFinder:
 
         Args:
             files: The files needing it.
-            action: A full check, or reading the metadata only.
-            step: The progress step shown meanwhile (nothing shown for no file).
+            run: The action, its progress step (nothing shown for no file), and
+                whether its pace is told (the first checks only).
 
         Returns:
             The updated facts, by path.
@@ -135,6 +145,8 @@ class BrokenFileFinder:
         if not files:
             return {}
         repository = self._deps.repository
+        tell = self._deps.reporter.first_checks if run.timed else _untold
+        pace = Pace(FirstChecks.of(files), tell)
 
         async def stored(file: MediaFile) -> FileFacts:
             """Run the action on one file, then store its facts.
@@ -145,44 +157,19 @@ class BrokenFileFinder:
             Returns:
                 Its updated facts.
             """
-            facts = await action(file)
+            facts = await run.action(file)
             repository.put(file, facts)
+            pace.one_done()
             return facts
 
-        self._deps.progress.start(step, len(files))
+        self._deps.progress.start(run.step, len(files))
         done = await bounded_map(files, stored, pool_in_flight())
         self._deps.progress.stop()
         return {file.path: facts for file, facts in zip(files, done, strict=True)}
 
 
-def _check_step() -> Step:
-    """The progress step of the full checks.
-
-    Returns:
-        Its translated title and explanation.
-    """
-    return Step(
-        _("Checking that files can be read"),
-        _(
-            "Finds broken files: empty (0 bytes), images and RAW files that cannot "
-            "be decoded, videos that cannot be opened."
-        ),
-    )
-
-
-def _metadata_step() -> Step:
-    """The progress step of the one-time metadata reading, after an update.
-
-    Returns:
-        Its translated title and explanation.
-    """
-    return Step(
-        _("Reading the metadata of files already in the cache"),
-        _(
-            "Once, after an update: dates, places and devices recorded in the files. "
-            "Images are not decoded again, only their header is read."
-        ),
-    )
+def _untold(_checks: FirstChecks) -> None:
+    """Say nothing of a pass whose pace does not matter."""
 
 
 def _as_broken(file: MediaFile, facts: FileFacts) -> list[BrokenFile]:

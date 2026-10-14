@@ -55,8 +55,10 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
     output = runtime.output
     output.title(_("Audit"))
     with RichProgress(output.console) as progress:
-        findings = AuditService(runtime, progress).run()
+        service = AuditService(runtime, progress)
+        findings = service.run()
     output.show(findings_table(findings))
+    service.guide.close()
     timed = stages_line(findings.stages)
     if timed is not None and output.verbose:  # where the time goes, to paste
         output.info(f"[dim]{timed}[/]")

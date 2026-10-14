@@ -30,6 +30,7 @@ from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.scan.walker import Walk
 from media_hygiene.services.audit_analysis import Finders, analyse
+from media_hygiene.services.check_guide import CheckGuide
 from media_hygiene.services.data_checks import (
     refuse_empty_data,
     refuse_overlapping_mounts,
@@ -65,6 +66,7 @@ class AuditService:
         self._runtime = runtime
         self._progress = progress
         self._stopwatch = Stopwatch()
+        self.guide = CheckGuide.of(runtime)  # told the pace of the checks, as they go
 
     def run(self) -> AuditFindings:
         """List media files, find broken files, exact duplicates and orphan sidecars.
@@ -138,7 +140,7 @@ class AuditService:
             with self._stopwatch.timing(Stage.INDEX):
                 tell_followed(self._runtime, forget_missing(repository, coverage))
                 repository.preload(coverage.roots)
-            deps = ScanDeps(repository, self._progress)
+            deps = ScanDeps(repository, self._progress, reporter=self.guide)
             finders = Finders(
                 BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
                 ExactDuplicateFinder(deps),

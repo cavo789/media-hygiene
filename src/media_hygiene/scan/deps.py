@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Sizes
+from media_hygiene.scan.first_checks import CheckReporter, SilentReporter
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -17,13 +18,14 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class ScanDeps:
-    """The index to read/write facts, and where to report progress."""
+    """The index to read/write facts, where to report progress and the pace."""
 
     repository: FactsRepository
     progress: ProgressSink
     io_slots: asyncio.Semaphore = field(
         default_factory=lambda: asyncio.Semaphore(Sizes.IO_CONCURRENCY),
     )
+    reporter: CheckReporter = field(default_factory=SilentReporter)
 
 
 @dataclass(frozen=True, slots=True)

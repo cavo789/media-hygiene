@@ -437,8 +437,8 @@ msgid ""
 "A short fingerprint of each file: a file moved or renamed later in "
 "Explorer is recognised without being read again."
 msgstr ""
-"Une courte empreinte de chaque fichier : un fichier déplacé ou renommé plus "
-"tard dans l'Explorateur est reconnu sans être relu."
+"Une courte empreinte de chaque fichier : un fichier déplacé ou renommé "
+"plus tard dans l'Explorateur est reconnu sans être relu."
 
 msgid ""
 "A shot clearly over- or under-exposed next to the others of its series is"
@@ -2640,6 +2640,11 @@ msgstr "Nouveau nom"
 msgid "New place"
 msgstr "Nouveau lieu"
 
+msgid "Next audit: a few seconds, the files checked are taken from the cache."
+msgstr ""
+"Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
+"cache."
+
 msgid "Next page →"
 msgstr "Page suivante →"
 
@@ -2752,6 +2757,20 @@ msgstr "Pas de montage /journal : sans journal, 'undo' serait impossible."
 
 msgid "No near duplicates: nothing to review."
 msgstr "Aucun quasi-doublon : rien à passer en revue."
+
+#, python-brace-format
+msgid ""
+"No new or changed file since the last audit: {count} file taken from the "
+"cache."
+msgid_plural ""
+"No new or changed file since the last audit: {count} files taken from the"
+" cache."
+msgstr[0] ""
+"Rien de nouveau ni de modifié depuis le dernier audit : {count} fichier "
+"repris du cache."
+msgstr[1] ""
+"Rien de nouveau ni de modifié depuis le dernier audit : {count} fichiers "
+"repris du cache."
 
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
@@ -5332,6 +5351,18 @@ msgid "a whole number is expected, not {value}"
 msgstr "un nombre entier est attendu, pas {value}"
 
 #, python-brace-format
+msgid "about {hours} h"
+msgstr "environ {hours} h"
+
+#, python-brace-format
+msgid "about {hours} h {minutes:02d}"
+msgstr "environ {hours} h {minutes:02d}"
+
+#, python-brace-format
+msgid "about {minutes} min"
+msgstr "environ {minutes} min"
+
+#, python-brace-format
 msgid "about {time} left"
 msgstr "encore ~{time}"
 
@@ -5753,6 +5784,9 @@ msgstr "laisser tout l'événement où il est"
 
 msgid "left as it is"
 msgstr "laissé tel quel"
+
+msgid "less than a minute"
+msgstr "moins d'une minute"
 
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
@@ -6718,8 +6752,8 @@ msgstr[0] ""
 "{count} fichier déplacé ou renommé depuis le dernier audit : ce que le "
 "cache en savait le suit."
 msgstr[1] ""
-"{count} fichiers déplacés ou renommés depuis le dernier audit : ce que le "
-"cache en savait les suit."
+"{count} fichiers déplacés ou renommés depuis le dernier audit : ce que le"
+" cache en savait les suit."
 
 #, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."
@@ -7152,6 +7186,24 @@ msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr "{files} fichiers, {copies} copies en trop ({size}), {broken} illisibles."
 
 #, python-brace-format
+msgid ""
+"{files} to check for the first time: {about}. The cache is not kept: the "
+"next audit checks them all again (see the tip at the end)."
+msgstr ""
+"{files} à vérifier pour la première fois : {about}. Le cache n'est pas "
+"gardé : le prochain audit les vérifiera tous à nouveau (voir le conseil à"
+" la fin)."
+
+#, python-brace-format
+msgid ""
+"{files} to check for the first time: {about}. You can stop at any time "
+"(Ctrl+C): what is checked is kept, and the next audit takes seconds."
+msgstr ""
+"{files} à vérifier pour la première fois : {about}. Vous pouvez arrêter à"
+" tout moment (Ctrl+C) : ce qui est vérifié est gardé, et le prochain "
+"audit prend quelques secondes."
+
+#, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
 msgstr "{files}, {undecided} à vérifier ou à trier"
 
@@ -7471,6 +7523,10 @@ msgstr ""
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
+
+#, python-brace-format
+msgid "{photos} and {videos}"
+msgstr "{photos} et {videos}"
 
 #, python-brace-format
 msgid "{photos} and {videos} described; kept in the cache."

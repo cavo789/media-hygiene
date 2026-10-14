@@ -57,8 +57,19 @@ Each step shows one line of progress and, below it in grey, what it really does:
 | Comparing files of equal size | Two files can only be identical if they have the same size. For those, reads their first and last 64 KB: quick, and it rules most of them out. |
 | Proving identity (full SHA-256) | Reads the remaining candidates in full and computes their SHA-256 fingerprint: same fingerprint, same content, byte for byte. The longest step with large videos. |
 
-On a large library, the first audit can take a long while: the [next step](02-keep-the-cache.md)
-makes the following ones much faster.
+### How long the first audit takes
+
+The first audit decodes every photo once: on a large library, and through Docker on Windows,
+that takes minutes, sometimes hours. When more than 500 files are to be checked, the tool times
+its first 20 seconds, then says once how long the rest will take, rounded up:
+
+```text
+⏳ 23,412 photos and 318 videos to check for the first time: about 45 min. The cache is not
+kept: the next audit checks them all again (see the tip at the end).
+```
+
+Without a cache, as here, every audit starts again from scratch: the
+[next step](02-keep-the-cache.md) keeps that work, and the next audits take seconds.
 
 ## Read the result
 
