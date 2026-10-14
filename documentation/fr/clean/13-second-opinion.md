@@ -10,33 +10,9 @@ confiance.
 
 Cette étape est facultative : `clean` ne l'exige jamais.
 
-## Étape 1 : l'audit, avec un dossier de rapports
+## Lancer `crosscheck`
 
-Quand il trouve des doublons, un audit lancé avec `--verbosity verbose` (avant `audit` ; sans lui, à partir de 100 copies) se termine
-par une astuce *Second avis* et la commande Czkawka exacte pour vos dossiers (`crosscheck` l'affiche aussi, tant que Czkawka
-n'a pas tourné) : mêmes options `-v`, mêmes extensions, mêmes dossiers exclus,
-toutes les tailles de fichier. Elle ressemble à ceci (l'image communautaire `jlesage/czkawka`,
-environ 500 Mo, contient l'outil en ligne de commande de Czkawka) :
-
-```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v "$HOME\media-hygiene\reports:/out" `
-  jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
-  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
-```
-
-## Étape 2 : lancer Czkawka
-
-Copiez la commande affichée par votre propre audit ; là où elle indique
-`<le dossier que vous montez sur /reports>`, écrivez votre dossier de rapports. Collez-la et
-lancez-la. Czkawka affiche son avancement : la taille des fichiers, puis leur empreinte. Sur
-des dizaines de milliers de photos, comptez plusieurs minutes. Il écrit ses résultats,
-`czkawka.json`, dans votre dossier de rapports. Depuis WSL, écrivez vos dossiers `/mnt/c/...` au
-lieu de `C:\...`.
-
-## Étape 3 : comparer
-
-Lancez `crosscheck` avec les mêmes dossiers que l'audit (`mh` les monte) :
+Avec les mêmes dossiers que l'audit (`mh` les monte) :
 
 ```powershell
 mh crosscheck
@@ -56,12 +32,42 @@ docker run --rm -it `
 
 </details>
 
-`crosscheck` refait l'audit (rapidement, grâce au cache) et compare les deux outils groupe par
-groupe. Après le résumé habituel :
+Czkawka est livré dans l'image : rien d'autre à installer, rien à coller. `crosscheck` refait
+l'audit (rapidement, grâce au cache), puis lance Czkawka sur les mêmes dossiers : mêmes
+extensions, mêmes dossiers exclus, toutes les tailles de fichier. Czkawka ne fait que lire, et
+affiche ses propres messages. Sur des dizaines de milliers de photos, comptez quelques minutes la
+première fois ; avec `/cache`, il y garde son propre cache et les fois suivantes ne relisent que
+ce qui a changé (`--fresh` relit tout). Ses résultats, `czkawka.json`, vont dans votre dossier de
+rapports.
+
+<details>
+<summary>Vous préférez lancer Czkawka vous-même ?</summary>
+
+`crosscheck --print-command` ne lance pas Czkawka : il affiche la commande qui le lance dans sa
+propre image (l'image communautaire `jlesage/czkawka`, environ 500 Mo), avec vos dossiers. Là où
+elle indique `<le dossier que vous montez sur /reports>`, écrivez votre dossier de rapports. Elle
+ressemble à ceci :
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
+  -v "$HOME\media-hygiene\reports:/out" `
+  jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
+  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
+```
+
+Depuis WSL, écrivez vos dossiers `/mnt/c/...` au lieu de `C:\...`. Une fois qu'il a tourné,
+`crosscheck --print-command` compare ses résultats.
+
+</details>
+
+## Lire le verdict
+
+Après le résumé habituel et le passage de Czkawka, les deux outils sont comparés groupe par
+groupe :
 
 <!-- capture: crosscheck.txt|re:^Résultats de Czkawka|d'accord -->
 ```text
-Résultats de Czkawka du 2026-10-12 10:19 UTC.
+Résultats de Czkawka du 2026-10-14 15:13 UTC.
 ✅ Czkawka est d'accord : les mêmes 32 copies en trop dans 20 groupes.
 ```
 
@@ -77,10 +83,10 @@ dossiers jamais analysés sont nommés, ceux qui contiennent le plus de fichiers
 tout de suite où Czkawka a cherché et media-hygiene non.
 
 Si des photos ont été déplacées ou supprimées depuis le passage de Czkawka (par un `clean`, par
-exemple), ses résultats ne sont plus à jour : ils sont ignorés, et le message donne les deux façons
-d'en sortir. Soit vous relancez la commande Czkawka qu'il affiche, puis `crosscheck` ; soit vous
-supprimez le fichier `czkawka.json` qu'il nomme (dans votre dossier des rapports) si vous ne voulez
-plus de second avis.
+exemple), ses résultats ne sont plus à jour : un `audit` ou un `clean` suivant les ignore, et le
+message donne les deux façons d'en sortir. Soit vous relancez `crosscheck` ; soit vous supprimez le
+fichier `czkawka.json` qu'il nomme (dans votre dossier des rapports) si vous ne voulez plus de
+second avis.
 
 ## Où apparaît le verdict
 

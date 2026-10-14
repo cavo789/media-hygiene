@@ -59,6 +59,7 @@ Réglages effectifs
 │                             │ '@recycle', '.@__thumb',   │                   │
 │                             │ '.trash', '.trash-*',      │                   │
 │                             │ '.trashes', '.thumbnails'] │                   │
+│ scan.full_check_days        │ 7                          │ défaut            │
 │ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
 │                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
 │                             │ ]?\\d+',                   │                   │
@@ -181,6 +182,7 @@ Réglages effectifs
 │                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
+│                             │ 'folder-town': 60,         │                   │
 │                             │ 'date-only': 90,           │                   │
 │                             │ 'no-signal': 0}            │                   │
 │ classify.name_dates         │ ['(?:IMG|VID|PXL|MVIMG)?[_ │ défaut            │
@@ -283,6 +285,10 @@ Réglages effectifs
 │ classify.trip_merge_gap_hou │ 48.0                       │ défaut            │
 │ rs                          │                            │                   │
 │ classify.trip_merge_max_km  │ 120.0                      │ défaut            │
+│ classify.town_names         │ {}                         │ défaut            │
+│ classify.folder_town_min_po │ 5000                       │ défaut            │
+│ pulation                    │                            │                   │
+│ classify.folder_town_ignore │ []                         │ défaut            │
 │ sort.confirm                │ True                       │ défaut            │
 │ sort.junk_files             │ ['Thumbs.db',              │ défaut            │
 │                             │ 'desktop.ini',             │                   │
@@ -292,6 +298,7 @@ Réglages effectifs
 │ inventory.dark_below        │ 50.0                       │ défaut            │
 │ inventory.bright_above      │ 205.0                      │ défaut            │
 │ inventory.clipped_above     │ 0.25                       │ défaut            │
+│ cache.previews_max_gb       │ 2.0                        │ défaut            │
 │ places.tiles                │ https://tile.openstreetmap │ défaut            │
 │                             │ .org/{z}/{x}/{y}.png       │                   │
 │ places.attribution          │ © OpenStreetMap            │ défaut            │
@@ -531,6 +538,7 @@ Réglages effectifs
 │                             │ '@recycle', '.@__thumb',   │                   │
 │                             │ '.trash', '.trash-*',      │                   │
 │                             │ '.trashes', '.thumbnails'] │                   │
+│ scan.full_check_days        │ 7                          │ config.toml       │
 │ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
 │                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
 │                             │ ]?\\d+',                   │                   │
@@ -654,6 +662,7 @@ Réglages effectifs
 │                             │ 'place-neighbour': 70,     │                   │
 │                             │ 'trip': 90,                │                   │
 │                             │ 'trip-neighbour': 70,      │                   │
+│                             │ 'folder-town': 60,         │                   │
 │                             │ 'date-only': 90,           │                   │
 │                             │ 'no-signal': 0}            │                   │
 │ classify.name_dates         │ ['(?:IMG|VID|PXL|MVIMG)?[_ │ défaut            │
@@ -766,6 +775,10 @@ Réglages effectifs
 │ classify.trip_merge_gap_hou │ 48.0                       │ config.toml       │
 │ rs                          │                            │                   │
 │ classify.trip_merge_max_km  │ 120.0                      │ config.toml       │
+│ classify.town_names         │ {}                         │ défaut            │
+│ classify.folder_town_min_po │ 5000                       │ config.toml       │
+│ pulation                    │                            │                   │
+│ classify.folder_town_ignore │ []                         │ config.toml       │
 │ sort.confirm                │ True                       │ config.toml       │
 │ sort.junk_files             │ ['Thumbs.db',              │ config.toml       │
 │                             │ 'desktop.ini',             │                   │
@@ -775,6 +788,7 @@ Réglages effectifs
 │ inventory.dark_below        │ 50.0                       │ config.toml       │
 │ inventory.bright_above      │ 205.0                      │ config.toml       │
 │ inventory.clipped_above     │ 0.25                       │ config.toml       │
+│ cache.previews_max_gb       │ 2.0                        │ config.toml       │
 │ places.tiles                │ https://tile.openstreetmap │ config.toml       │
 │                             │ .org/{z}/{x}/{y}.png       │                   │
 │ places.attribution          │ © OpenStreetMap            │ config.toml       │

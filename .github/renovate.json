@@ -64,6 +64,14 @@
       "prBodyNotes": [
         "⚠ Before merging: check the signature of `ffmpeg-{{{newVersion}}}.tar.xz` against the FFmpeg release key, then set `FFMPEG_SHA256` in the `Dockerfile` to its SHA-256 (`sha256sum`). Until then the image build fails on the checksum, on purpose."
       ]
+    },
+    {
+      "description": "Czkawka's release binaries: their checksums are not something Renovate can update.",
+      "matchDepNames": ["qarmin/czkawka"],
+      "groupName": "Czkawka",
+      "prBodyNotes": [
+        "⚠ Before merging: download `linux_czkawka_cli_x86_64` and `linux_czkawka_cli_arm64` of release {{{newVersion}}} (`gh release download {{{newVersion}}} --repo qarmin/czkawka`), then set `CZKAWKA_SHA256_AMD64` and `CZKAWKA_SHA256_ARM64` in the `Dockerfile` to their SHA-256 (`sha256sum`), and check that `czkawka_cli dup -C` still writes the same JSON (e2e `test_czkawka.py`). Until then the image build fails on the checksums, on purpose."
+      ]
     }
   ]
 }

@@ -40,8 +40,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20261012-102143-classify/classify.xlsx
-0 modification lue ; classeur enregistré le 12 octobre 2026 à 10:21.
+Classeur : /reports/20261014-151432-classify/classify.xlsx
+0 modification lue ; classeur enregistré le 14 octobre 2026 à 15:14.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      4 │
@@ -129,7 +129,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261012-102145
+Tri 20261014-151433
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │
@@ -140,8 +140,8 @@ Tri 20261012-102145
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20261012-102145-sort/manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261012-102145' remet tout en
+Manifeste : /reports/20261014-151433-sort/manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261014-151433' remet tout en
 place :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -151,7 +151,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261012-102145
+  cavo789/media-hygiene --locale fr undo 20261014-151433
 ```
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
@@ -186,12 +186,12 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20261012-102145 ────────────────
+──────────────── Annulation de l'exécution sort 20261014-151433 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261012-102145
+20261014-151433
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      4 │
 │ Taille                    │ 5,9 Mo │

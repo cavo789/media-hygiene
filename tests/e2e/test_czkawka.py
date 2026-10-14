@@ -1,4 +1,4 @@
-"""The second opinion for real: the printed command, run with the Czkawka image."""
+"""`crosscheck --print-command`: the printed command, run with the Czkawka image."""
 
 from __future__ import annotations
 
@@ -42,6 +42,6 @@ def test_czkawka_agrees_on_the_demo_tree(volumes: dict[str, str]) -> None:
     assert arguments[:3] == ["docker", "run", "--rm"]
     czkawka = run_image(*arguments[3:])
     assert czkawka.returncode == 0, czkawka.stdout + czkawka.stderr
-    verdict = tool(volumes, "crosscheck", read_only_data=True)
+    verdict = tool(volumes, "crosscheck", "--print-command", read_only_data=True)
     assert verdict.startswith("0\n"), verdict
     assert "Czkawka agrees" in verdict

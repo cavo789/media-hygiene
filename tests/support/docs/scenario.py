@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import CZKAWKA_IMAGE, MEDIA_EXTENSIONS
-from tests.support.docker import IMAGE, docker
 from tests.support.docs.browsing import served_pages
 from tests.support.docs.container import (
     Command,
@@ -95,18 +93,7 @@ def _audits(demo: Demo) -> Captures:
 
 
 def _crosscheck(demo: Demo) -> Captures:
-    """Czkawka's opinion on the same folders, then the comparison."""
-    extensions = ",".join(
-        sorted(extension.lstrip(".") for extension in MEDIA_EXTENSIONS)
-    )
-    folders = Command(())
-    docker("run", "--rm", *demo.mounts(folders)[:4], "-v",
-           f"{demo.volume('reports')}:/out", CZKAWKA_IMAGE, "czkawka_cli", "dup",
-           "-d", "/data", "-m", "1", "-W", "-N", "-x", extensions,
-           "-C", "/out/czkawka.json")  # fmt: skip
-    docker("run", "--rm", "--user", "0", "--entrypoint", "chown", "-v",
-           f"{demo.volume('reports')}:/reports", IMAGE, "1000:1000",
-           "/reports/czkawka.json")  # fmt: skip
+    """The second opinion: `crosscheck` runs Czkawka itself, then compares."""
     return {"crosscheck.txt": run(demo, Command(("crosscheck",)))}
 
 

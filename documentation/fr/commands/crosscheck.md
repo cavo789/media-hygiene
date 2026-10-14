@@ -7,19 +7,20 @@
 **Être sûr de vos doublons avant de supprimer des photos de famille : un deuxième outil,
 indépendant, les vérifie groupe par groupe.**
 
-`crosscheck` refait l'audit, puis compare ses doublons avec ceux de
-[Czkawka](https://github.com/qarmin/czkawka), un détecteur de doublons libre écrit
-indépendamment, avec une autre fonction de hachage. Quand les deux sont d'accord, vous pouvez
-nettoyer en confiance.
+`crosscheck` refait l'audit, lance [Czkawka](https://github.com/qarmin/czkawka), un détecteur de
+doublons libre écrit indépendamment, avec une autre fonction de hachage, puis compare les deux,
+groupe par groupe. Czkawka est livré dans l'image : une seule commande fait tout. Quand les deux
+sont d'accord, vous pouvez nettoyer en confiance.
 
-**Quand** : facultatif, une fois, avant un premier grand `clean` (`clean` ne l'exige jamais). Le
-premier lancement affiche la commande de Czkawka à coller ; le suivant compare.
+**Quand** : facultatif, avant un premier grand `clean` (`clean` ne l'exige jamais), et de nouveau
+après un nettoyage si vous le souhaitez : avec `/cache`, Czkawka ne relit que ce qui a changé.
 
 **Essayer** :
 
 ```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr crosscheck
 ```
@@ -29,22 +30,15 @@ docker run --rm -it `
 | | |
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
-| Il faut | Vos dossiers, et `/reports`, où Czkawka a écrit `czkawka.json`. |
-| Conseillé | `/cache` (l'audit prend quelques secondes), `/config`. |
-| Écrit | Le cache, un rapport de contre-vérification dans `/reports`. |
+| Il faut | Vos dossiers, et `/reports`, où sont gardés les résultats de Czkawka (`czkawka.json`). |
+| Conseillé | `/cache` : l'audit prend quelques secondes, et Czkawka y garde son propre cache. `/config`. |
+| Écrit | Le cache, `czkawka.json` et un rapport de contre-vérification dans `/reports`. |
 | Annuler | Rien à annuler. |
 | Avec `mh` | `mh crosscheck`. |
 
-## Lancer, en trois étapes
+## Lancer
 
-1. **La commande Czkawka.** Tant que Czkawka n'a pas tourné, `crosscheck` (et un audit lancé avec
-   `--verbosity verbose`) affiche la commande exacte pour vos dossiers : les mêmes options `-v`,
-   extensions et dossiers exclus. Elle utilise l'image communautaire `jlesage/czkawka` (environ
-   500 Mo).
-2. **Lancez Czkawka.** Collez cette commande, avec votre dossier de rapports là où elle le dit.
-   Sur des dizaines de milliers de photos, comptez plusieurs minutes. Il écrit `czkawka.json`
-   dans votre dossier de rapports.
-3. **Comparez**, avec les mêmes options que votre audit :
+Avec les mêmes dossiers et options que votre audit :
 
 ```powershell
 docker run --rm -it `
@@ -54,6 +48,13 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr crosscheck
 ```
+
+1. **L'audit**, rapide grâce au cache.
+2. **Czkawka** lit les mêmes dossiers, les mêmes extensions, sans les dossiers exclus, toutes les
+   tailles de fichier. Il ne fait que lire : rien n'est modifié. Sur des dizaines de milliers de
+   photos, comptez quelques minutes la première fois ; avec `/cache`, les fois suivantes ne
+   relisent que ce qui a changé. Il écrit `czkawka.json` dans votre dossier de rapports.
+3. **La comparaison**, groupe par groupe, et son rapport.
 
 ## Lire le verdict
 
@@ -70,14 +71,22 @@ question, et dans le rapport de nettoyage.
 Les mêmes options de dossiers et d'analyse qu'[`audit`](audit.md#options) : `--prefer`,
 `--protect`, `--exclude`, `--exclude-name`, `--ext`. Donnez celles de votre audit.
 
+| Option | Ce qu'elle fait |
+|---|---|
+| `--fresh` | Czkawka relit et recalcule l'empreinte de chaque fichier, sans tenir compte de son cache : un deuxième avis qui ne doit rien au précédent. Plus lent. |
+| `--print-command` | Czkawka n'est pas lancé ici : `crosscheck` affiche la commande qui le lance dans sa propre image (l'image communautaire `jlesage/czkawka`, environ 500 Mo), puis compare le `czkawka.json` qu'il a écrit. Pour qui veut lancer Czkawka de ses propres yeux. |
+
 ## Bon à savoir
 
 - Les fichiers que media-hygiene laisse de côté exprès (autres types de fichiers, dossiers exclus
   ou système, fichiers cassés) sont comptés à part, pas signalés comme des différences ; les
   dossiers jamais analysés sont nommés, les plus gros d'abord.
 - **Des photos déplacées ou supprimées depuis que Czkawka a tourné** (par un `clean`, par exemple)
-  rendent ses résultats périmés : ils sont ignorés, et le message donne la sortie : relancer
-  Czkawka, ou supprimer `czkawka.json` si vous ne voulez plus de deuxième avis.
+  rendent ses résultats périmés pour les `audit` et `clean` suivants : ils sont ignorés, et le
+  message donne la sortie : relancer `crosscheck`, ou supprimer `czkawka.json` si vous ne voulez
+  plus de deuxième avis.
+- Czkawka est le binaire publié par son propre projet (licence MIT), tel quel, épinglé dans
+  l'image. Seul l'emballage est commun : son code et sa fonction de hachage restent les siens.
 
 ## Pour aller plus loin
 
@@ -93,8 +102,9 @@ Les mêmes options de dossiers et d'analyse qu'[`audit`](audit.md#options) : `--
 ```text
  Utilisation : media-hygiene crosscheck [OPTIONS]
 
- 🔒 Lecture seule : ne modifie jamais vos photos. Compare un nouvel audit aux
- résultats de Czkawka : un second avis, indépendant.
+ 🔒 Lecture seule : ne modifie jamais vos photos. Lance Czkawka, un détecteur
+ de doublons indépendant, puis compare ses groupes à un nouvel audit : un
+ second avis.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Affiche ce message et quitte.                              │
@@ -122,6 +132,17 @@ Les mêmes options de dossiers et d'analyse qu'[`audit`](audit.md#options) : `--
 │                              (répétable). S'ajoute aux dossiers système déjà │
 │                              ignorés. Pour un dossier précis, utilisez       │
 │                              --exclude.                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options avancées ───────────────────────────────────────────────────────────╮
+│ --fresh                  Czkawka relit et recalcule l'empreinte de chaque    │
+│                          fichier, sans tenir compte de ce que son cache dans │
+│                          /cache retient de sa dernière exécution. Plus lent  │
+│                          ; pour un second avis qui ne doit rien au           │
+│                          précédent.                                          │
+│ --print-command          Ne pas lancer Czkawka ici : afficher la commande    │
+│                          qui le lance dans sa propre image, puis comparer    │
+│                          les résultats qu'il a écrits dans /reports          │
+│                          (czkawka.json).                                     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

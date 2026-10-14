@@ -98,8 +98,8 @@ msgstr ""
 "'config --upgrade' les ajoute avec leur explication ; vos valeurs sont "
 "gardées (--dry-run les liste d'abord)."
 
-msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
-msgstr "'crosscheck' lit les résultats de Czkawka dans /reports : montez-le."
+msgid "'crosscheck' keeps Czkawka's results in /reports: mount it."
+msgstr "'crosscheck' garde les résultats de Czkawka dans /reports : montez-le."
 
 msgid "'media-hygiene undo <run>' restores the files of a run."
 msgstr "'media-hygiene undo <run>' restaure les fichiers d'une exécution."
@@ -503,10 +503,8 @@ msgstr ""
 "Ajoutez -v \"<un de vos dossiers>:/reports\" pour voir les quasi-doublons"
 " dans un rapport HTML avant de répondre."
 
-msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
-msgstr ""
-"Ajoutez -v \"<un de vos dossiers>:/reports\", comme dans la commande "
-"Czkawka."
+msgid "Add -v \"<a folder of yours>:/reports\"."
+msgstr "Ajoutez -v \"<un dossier à vous>:/reports\"."
 
 #, python-brace-format
 msgid ""
@@ -934,13 +932,6 @@ msgstr ""
 "voyagent ensemble, mais leurs cellules de la feuille Fichiers donnent des"
 " dossiers différents ; rien n'a été déplacé :"
 
-msgid ""
-"Compare a fresh audit with Czkawka's results: a second, independent "
-"opinion."
-msgstr ""
-"Compare un nouvel audit aux résultats de Czkawka : un second avis, "
-"indépendant."
-
 #, python-format
 msgid "Compare at 100 %%"
 msgstr "Comparer à 100 %%"
@@ -1032,6 +1023,10 @@ msgstr[0] "Czkawka est d'accord : les mêmes {copies} dans {count} groupe."
 msgstr[1] "Czkawka est d'accord : les mêmes {copies} dans {count} groupes."
 
 #, python-brace-format
+msgid "Czkawka could not start: {reason}."
+msgstr "Czkawka n'a pas pu démarrer : {reason}."
+
+#, python-brace-format
 msgid "Czkawka disagrees on {count} group: look at it before cleaning."
 msgid_plural "Czkawka disagrees on {count} groups: look at them before cleaning."
 msgstr[0] ""
@@ -1041,12 +1036,32 @@ msgstr[1] ""
 "Czkawka n'est pas d'accord sur {count} groupes : regardez-les avant de "
 "nettoyer."
 
+#, python-brace-format
+msgid "Czkawka finished in {duration}."
+msgstr "Czkawka a terminé en {duration}."
+
 msgid "Czkawka is an independent duplicate finder."
 msgstr "Czkawka est un détecteur de doublons indépendant."
+
+msgid ""
+"Czkawka reads and hashes every file again, ignoring what its cache in "
+"/cache remembers from its previous run. Slower; for a second opinion that"
+" owes nothing to an earlier one."
+msgstr ""
+"Czkawka relit et recalcule l'empreinte de chaque fichier, sans tenir "
+"compte de ce que son cache dans /cache retient de sa dernière exécution. "
+"Plus lent ; pour un second avis qui ne doit rien au précédent."
+
+msgid "Czkawka reads your folders"
+msgstr "Czkawka lit vos dossiers"
 
 #, python-brace-format
 msgid "Czkawka results of {date}."
 msgstr "Résultats de Czkawka du {date}."
+
+#, python-brace-format
+msgid "Czkawka stopped with exit code {code}: no second opinion."
+msgstr "Czkawka s'est arrêté avec le code de sortie {code} : pas de second avis."
 
 msgid "Czkawka's results cover other folders than this run."
 msgstr ""
@@ -1214,6 +1229,14 @@ msgid ""
 msgstr ""
 "Ne pas demander de confirmation avant d'annuler plusieurs passages d'un "
 "tri (remplace sort.confirm)."
+
+msgid ""
+"Do not run Czkawka here: print the command that runs it in its own image,"
+" then compare the results it wrote in /reports (czkawka.json)."
+msgstr ""
+"Ne pas lancer Czkawka ici : afficher la commande qui le lance dans sa "
+"propre image, puis comparer les résultats qu'il a écrits dans /reports "
+"(czkawka.json)."
 
 msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
@@ -1865,6 +1888,13 @@ msgstr ""
 "une photo ni une position."
 
 msgid ""
+"For an up-to-date second opinion (optional): run 'crosscheck' again, it "
+"runs Czkawka itself:"
+msgstr ""
+"Pour un second avis à jour (facultatif) : relancez 'crosscheck', il lance"
+" Czkawka lui-même :"
+
+msgid ""
 "For an up-to-date second opinion (optional): run this command, then "
 "'media-hygiene crosscheck' with your usual -v options:"
 msgstr ""
@@ -2152,6 +2182,13 @@ msgid ""
 msgstr ""
 "Ses modifications ne seraient pas reprises : réparez {path}, désignez-en "
 "un autre avec --carry-over, ou repartez de zéro avec --no-carry-over."
+
+msgid ""
+"Its messages are above. Run 'crosscheck' again, or 'crosscheck --print-"
+"command' to run Czkawka yourself."
+msgstr ""
+"Ses messages sont juste au-dessus. Relancez 'crosscheck', ou 'crosscheck "
+"--print-command' pour lancer Czkawka vous-même."
 
 msgid "JPEG quality"
 msgstr "Qualité JPEG"
@@ -3555,6 +3592,9 @@ msgstr ""
 "Lancez d'abord 'clean' : seule la copie gardée reçoit alors un fichier "
 "compagnon."
 
+msgid "Run 'crosscheck --print-command' to run Czkawka yourself."
+msgstr "Lancez 'crosscheck --print-command' pour lancer Czkawka vous-même."
+
 msgid ""
 "Run 'media-hygiene config' to see every effective value and where it "
 "comes from."
@@ -3577,6 +3617,13 @@ msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
 msgstr "Lancez Czkawka avec les mêmes options -v : 'audit' affiche la commande."
+
+msgid ""
+"Run Czkawka, an independent duplicate finder, then compare its groups "
+"with a fresh audit: a second opinion."
+msgstr ""
+"Lance Czkawka, un détecteur de doublons indépendant, puis compare ses "
+"groupes à un nouvel audit : un second avis."
 
 msgid "Run any command once: it creates the file, complete and commented."
 msgstr "Lancez une commande une fois : elle crée le fichier, complet et commenté."
@@ -3781,6 +3828,13 @@ msgstr "Recherche sur OpenStreetMap…"
 
 msgid "Second opinion"
 msgstr "Second avis"
+
+msgid ""
+"Second opinion: 'crosscheck' runs Czkawka, an independent duplicate "
+"finder, on the same folders, then compares group by group:"
+msgstr ""
+"Second avis : 'crosscheck' lance Czkawka, un détecteur de doublons "
+"indépendant, sur les mêmes dossiers, puis compare groupe par groupe :"
 
 msgid ""
 "Second opinion: run Czkawka, an independent duplicate finder, on the same"
@@ -4985,6 +5039,13 @@ msgstr "Avec --people : ne pas demander, continuer."
 
 msgid "With --upgrade: list the settings it would add, write nothing."
 msgstr "Avec --upgrade : lister les réglages qu'il ajouterait, sans rien écrire."
+
+msgid ""
+"With -v media-hygiene-cache:/cache, Czkawka remembers its work: the next "
+"crosscheck only reads what changed."
+msgstr ""
+"Avec -v media-hygiene-cache:/cache, Czkawka retient son travail : le "
+"prochain crosscheck ne relit que ce qui a changé."
 
 msgid "With Léa"
 msgstr "Avec Léa"
@@ -7563,6 +7624,16 @@ msgstr ""
 
 msgid "🔒 Analyse: read-only, never changes your photos"
 msgstr "🔒 Analyser : lecture seule, ne modifie jamais vos photos"
+
+msgid ""
+"🔒 Czkawka, an independent duplicate finder, now reads the same folders "
+"with its own code and its own hash. It changes nothing. On tens of "
+"thousands of photos, allow a few minutes the first time."
+msgstr ""
+"🔒 Czkawka, un détecteur de doublons indépendant, lit maintenant les mêmes"
+" dossiers, avec son propre code et sa propre empreinte. Il ne modifie "
+"rien. Sur des dizaines de milliers de photos, comptez quelques minutes la"
+" première fois."
 
 msgid ""
 "🔒 Faces are personal data: they stay in the cache (/cache), nothing is "

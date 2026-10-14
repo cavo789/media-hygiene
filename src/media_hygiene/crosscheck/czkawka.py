@@ -1,15 +1,16 @@
 """Czkawka's side: the command media-hygiene suggests, and the JSON results it writes.
 
 `czkawka_cli dup -C <file>` (version 12) writes `{"<size>": [[{"path": ...}, ...]]}`:
-groups of identical files, by size. Its paths are those of its own container, so the
-command reuses media-hygiene's mount points.
+groups of identical files, by size. In the image, `crosscheck` runs it in place
+(`czkawka_run`), on the very paths media-hygiene reads; the command printed for those
+who run it themselves reuses media-hygiene's mount points, so its paths are the same.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
 
@@ -21,6 +22,12 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 type Group = frozenset[Path]
+
+# Czkawka's command-line tool: shipped in the image, run by the printed command too.
+CZKAWKA_BINARY: Final = "czkawka_cli"
+
+# Options whose value is a path or a wildcard: quoted in the printed command.
+_QUOTED: Final = frozenset({"-e", "-E"})
 
 
 class _Entry(BaseModel):
@@ -77,16 +84,17 @@ class CzkawkaCommand:
         volumes = [f'-v "{host}:{point}:ro"' for host, point in self.mounts]
         volumes.append(f'-v "{self.output_dir}:{CZKAWKA_OUTPUT_DIR}"')
         results = f"{CZKAWKA_OUTPUT_DIR}/{CZKAWKA_FILE_NAME}"
+        options = (
+            f'{flag} "{value}"' if flag in _QUOTED else f"{flag} {value}".strip()
+            for flag, value in self.scope.options(results)
+        )
         return " ".join(
             (
                 "docker run --rm -it",  # a terminal: Czkawka shows its progress
                 *volumes,
                 CZKAWKA_IMAGE,
-                f"czkawka_cli dup -d {self.scope.data_dir} -m 1 -W -N",
-                f"-x {','.join(self.scope.extensions)}",
-                *(f'-e "{folder}"' for folder in self.scope.excluded),
-                *(f'-E "*/{name}/*"' for name in self.scope.excluded_names),
-                f"-C {results}",
+                CZKAWKA_BINARY,
+                *options,
             )
         )
 
@@ -104,3 +112,42 @@ class CzkawkaScope:
     extensions: Sequence[str]
     excluded: tuple[Path, ...] = ()
     excluded_names: tuple[str, ...] = ()
+
+    def options(self, results: str) -> tuple[tuple[str, str], ...]:
+        """The `dup` options, the same for the printed command and a run in place.
+
+        Every file size (`-m 1`), no error code when duplicates are found (`-W`),
+        no list on the terminal (`-N`), the results as compact JSON (`-C`).
+
+        Args:
+            results: Where Czkawka writes its JSON results.
+
+        Returns:
+            Each option and its value (empty for a flag), `dup` first.
+        """
+        return (
+            ("dup", ""),
+            ("-d", str(self.data_dir)),
+            ("-m", "1"),
+            ("-W", ""),
+            ("-N", ""),
+            ("-x", ",".join(self.extensions)),
+            *(("-e", str(folder)) for folder in self.excluded),
+            *(("-E", f"*/{name}/*") for name in self.excluded_names),
+            ("-C", results),
+        )
+
+    def arguments(self, results: str) -> tuple[str, ...]:
+        """The `dup` options as the arguments of a process (no shell, no quoting).
+
+        Args:
+            results: Where Czkawka writes its JSON results.
+
+        Returns:
+            The arguments, after the executable.
+        """
+        return tuple(
+            part
+            for flag, value in self.options(results)
+            for part in ((flag, value) if value else (flag,))
+        )

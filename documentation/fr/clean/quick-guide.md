@@ -150,10 +150,9 @@ autre détecteur de doublons open source, peut vérifier les mêmes dossiers :
 mh crosscheck
 ```
 
-Tant que Czkawka n'a pas tourné, `crosscheck` affiche la commande Czkawka exacte pour vos
-dossiers : copiez-la et lancez-la (plusieurs minutes sur une grande collection). Relancez ensuite
-`mh crosscheck` : il compare les deux résultats groupe par groupe et dit où ils diffèrent.
-Détails : [un second avis](13-second-opinion.md).
+Czkawka est livré dans l'image : `crosscheck` le lance sur vos dossiers (quelques minutes sur une
+grande collection la première fois), puis compare les deux résultats groupe par groupe et dit où
+ils diffèrent. Détails : [un second avis](13-second-opinion.md).
 
 ## 7. Mettre les doublons exacts de côté
 

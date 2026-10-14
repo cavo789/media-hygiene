@@ -46,7 +46,7 @@ Sur la bibliothèque de démonstration de ce guide, 10 photos mesurées :
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysées : 6 visages, 0,04 s par photo.
+✅ 10 photos analysées : 3 visages, 0,05 s par photo.
 ```
 
 Elle se termine par l'estimation de l'exécution complète (`Une exécution complète analyserait
@@ -103,7 +103,7 @@ Ctrl+clic dessus.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysées : 11 visages, 0,04 s par photo.
+✅ 33 photos analysées : 14 visages, 0,05 s par photo.
 ✅ 17 visages dans 43 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
@@ -111,6 +111,8 @@ nommer ; chaque nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête
 les photos ne sont pas modifiées.
 💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
 avec -p 127.0.0.1:8088:8088.
+
+✅ Page arrêtée ; rien n'a été modifié.
 ```
 
 ![La page des personnes : le plus grand groupe nommé Chloé, le nom relu dans config.toml en haut de la page, ses sept visages en dessous ; puis le groupe 2 et le groupe 3, pas encore nommés, chacun avec son champ pour taper un nom et ses boutons pour nommer, nommer avec d'autres ou ignorer le groupe](../images/people.webp)

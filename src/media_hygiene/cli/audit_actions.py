@@ -14,7 +14,11 @@ from media_hygiene.report.actions import (
     actions_title,
     audit_actions,
 )
-from media_hygiene.services.crosscheck import czkawka_command
+from media_hygiene.services.crosscheck import (
+    crosscheck_command,
+    czkawka_command,
+    czkawka_executable,
+)
 from media_hygiene.services.next_command import CHANGING, NextVerb, next_command
 
 if TYPE_CHECKING:
@@ -75,7 +79,7 @@ def show_actions(
 
 
 def second_opinion(runtime: Runtime, plan: CleanPlan) -> None:
-    """Suggest Czkawka's command before a large clean, to compare with another finder.
+    """Suggest a second opinion before a large clean: `crosscheck`, or Czkawka.
 
     On a small audit (a first try), the setup hints and `--prefer` matter more: the
     tip then needs `--verbosity verbose`; the `clean` confirmation names `crosscheck`.
@@ -87,6 +91,19 @@ def second_opinion(runtime: Runtime, plan: CleanPlan) -> None:
     if not plan.decisions:  # broken files or orphan sidecars alone: no copy
         return
     if plan.removable_count < SECOND_OPINION_FROM and not runtime.output.verbose:
+        return
+    if czkawka_executable() is not None:
+        runtime.output.advise(
+            Advice(
+                TipKind.DISCOVERY,
+                _(
+                    "Second opinion: 'crosscheck' runs Czkawka, an independent "
+                    "duplicate finder, on the same folders, then compares group by "
+                    "group:"
+                ),
+                crosscheck_command(runtime, carried(runtime, "crosscheck")),
+            )
+        )
         return
     runtime.output.advise(
         Advice(

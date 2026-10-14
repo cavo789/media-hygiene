@@ -46,7 +46,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |
-| [`crosscheck`](commands/crosscheck.md) | Audit again, then compare with the results of Czkawka, an independent duplicate finder. | [Cleaning, 13](clean/13-second-opinion.md) |
+| [`crosscheck`](commands/crosscheck.md) | Audit again, run Czkawka, an independent duplicate finder, then compare both. | [Cleaning, 13](clean/13-second-opinion.md) |
 | [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [Cleaning, 7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
@@ -156,8 +156,8 @@ command shows its own `--help`; here is the list of the commands:
 │              category, and what lone photos show with an optional local AI   │
 │              🤖                                                              │
 │ config       Show every setting, where it comes from, and the mount points.  │
-│ crosscheck   Compare a fresh audit with Czkawka's results: a second,         │
-│              independent opinion.                                            │
+│ crosscheck   Run Czkawka, an independent duplicate finder, then compare its  │
+│              groups with a fresh audit: a second opinion.                    │
 │ history      List the runs and what they did.                                │
 │ inventory    Export every photo and video with what the audits learnt to     │
 │              Excel, from the cache alone: no file is read.                   │

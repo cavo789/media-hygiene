@@ -68,7 +68,7 @@ msgid ""
 " (--dry-run lists them first)."
 msgstr ""
 
-msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
+msgid "'crosscheck' keeps Czkawka's results in /reports: mount it."
 msgstr ""
 
 msgid "'media-hygiene undo <run>' restores the files of a run."
@@ -392,7 +392,7 @@ msgid ""
 "HTML report before answering."
 msgstr ""
 
-msgid "Add -v \"<a folder of yours>:/reports\", as in the Czkawka command."
+msgid "Add -v \"<a folder of yours>:/reports\"."
 msgstr ""
 
 #, python-brace-format
@@ -759,11 +759,6 @@ msgid ""
 "moved:"
 msgstr ""
 
-msgid ""
-"Compare a fresh audit with Czkawka's results: a second, independent "
-"opinion."
-msgstr ""
-
 #, python-format
 msgid "Compare at 100 %%"
 msgstr ""
@@ -843,16 +838,37 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Czkawka could not start: {reason}."
+msgstr ""
+
+#, python-brace-format
 msgid "Czkawka disagrees on {count} group: look at it before cleaning."
 msgid_plural "Czkawka disagrees on {count} groups: look at them before cleaning."
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid "Czkawka finished in {duration}."
+msgstr ""
+
 msgid "Czkawka is an independent duplicate finder."
+msgstr ""
+
+msgid ""
+"Czkawka reads and hashes every file again, ignoring what its cache in "
+"/cache remembers from its previous run. Slower; for a second opinion that"
+" owes nothing to an earlier one."
+msgstr ""
+
+msgid "Czkawka reads your folders"
 msgstr ""
 
 #, python-brace-format
 msgid "Czkawka results of {date}."
+msgstr ""
+
+#, python-brace-format
+msgid "Czkawka stopped with exit code {code}: no second opinion."
 msgstr ""
 
 msgid "Czkawka's results cover other folders than this run."
@@ -1000,6 +1016,11 @@ msgstr ""
 msgid ""
 "Do not ask for confirmation before undoing several runs of a sort "
 "(overrides sort.confirm)."
+msgstr ""
+
+msgid ""
+"Do not run Czkawka here: print the command that runs it in its own image,"
+" then compare the results it wrote in /reports (czkawka.json)."
 msgstr ""
 
 msgid ""
@@ -1503,6 +1524,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"For an up-to-date second opinion (optional): run 'crosscheck' again, it "
+"runs Czkawka itself:"
+msgstr ""
+
+msgid ""
 "For an up-to-date second opinion (optional): run this command, then "
 "'media-hygiene crosscheck' with your usual -v options:"
 msgstr ""
@@ -1740,6 +1766,11 @@ msgstr ""
 msgid ""
 "Its edits would not be carried over: repair {path}, name another one with"
 " --carry-over, or start fresh with --no-carry-over."
+msgstr ""
+
+msgid ""
+"Its messages are above. Run 'crosscheck' again, or 'crosscheck --print-"
+"command' to run Czkawka yourself."
 msgstr ""
 
 msgid "JPEG quality"
@@ -2931,6 +2962,9 @@ msgstr ""
 msgid "Run 'clean' first: only the copy kept then gets a sidecar."
 msgstr ""
 
+msgid "Run 'crosscheck --print-command' to run Czkawka yourself."
+msgstr ""
+
 msgid ""
 "Run 'media-hygiene config' to see every effective value and where it "
 "comes from."
@@ -2948,6 +2982,11 @@ msgid ""
 msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
+msgstr ""
+
+msgid ""
+"Run Czkawka, an independent duplicate finder, then compare its groups "
+"with a fresh audit: a second opinion."
 msgstr ""
 
 msgid "Run any command once: it creates the file, complete and commented."
@@ -3120,6 +3159,11 @@ msgid "Searching OpenStreetMap…"
 msgstr ""
 
 msgid "Second opinion"
+msgstr ""
+
+msgid ""
+"Second opinion: 'crosscheck' runs Czkawka, an independent duplicate "
+"finder, on the same folders, then compares group by group:"
 msgstr ""
 
 msgid ""
@@ -4117,6 +4161,11 @@ msgid "With --people: do not ask, go on."
 msgstr ""
 
 msgid "With --upgrade: list the settings it would add, write nothing."
+msgstr ""
+
+msgid ""
+"With -v media-hygiene-cache:/cache, Czkawka remembers its work: the next "
+"crosscheck only reads what changed."
 msgstr ""
 
 msgid "With Léa"
@@ -6337,6 +6386,12 @@ msgid ""
 msgstr ""
 
 msgid "🔒 Analyse: read-only, never changes your photos"
+msgstr ""
+
+msgid ""
+"🔒 Czkawka, an independent duplicate finder, now reads the same folders "
+"with its own code and its own hash. It changes nothing. On tens of "
+"thousands of photos, allow a few minutes the first time."
 msgstr ""
 
 msgid ""

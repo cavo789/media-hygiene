@@ -40,7 +40,7 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|. -->
 ```text
-✅ Rapport HTML : /reports/20261012-101921-audit/report.html
+✅ Rapport HTML : /reports/20261014-151322-audit/report.html
 ```
 
 Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et
@@ -170,15 +170,15 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261012-102039-clean │ nettoyage │ 85       │ 32       │ 16,4 Mo │ 3      │
-│ 20261012-102039-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
-│ 20261012-102033-clean │ nettoyage │ 85       │ 32       │ 15,6 Mo │ 3      │
-│ 20261012-101940-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
-│ 20261012-101934-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
-│ 20261012-101928-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
-│ 20261012-101926-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261012-101923-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
-│ 20261012-101921-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261014-151354-clean │ nettoyage │ 85       │ 32       │ 16,4 Mo │ 3      │
+│ 20261014-151354-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261014-151350-clean │ nettoyage │ 85       │ 32       │ 15,6 Mo │ 3      │
+│ 20261014-151333-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261014-151329-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261014-151325-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
+│ 20261014-151324-audit │ audit     │ 61       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261014-151323-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
+│ 20261014-151322-audit │ audit     │ 85       │ 32       │ 14,0 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```

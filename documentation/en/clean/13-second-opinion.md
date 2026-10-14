@@ -9,32 +9,9 @@ the same mistake: when they agree, you can clean with confidence.
 
 This step is optional: `clean` never requires it.
 
-## Step 1: audit, with a reports folder
+## Run `crosscheck`
 
-When it finds duplicates, an audit run with `--verbosity verbose` (before `audit`; without it, from 100 copies on) ends with a
-*Second opinion* tip and the exact Czkawka command for your folders (`crosscheck` prints it too, as long as Czkawka has not
-run): the same `-v` options, the same extensions, the same excluded folders, every
-file size. It looks like this (the community image `jlesage/czkawka`, about 500 MB, ships
-Czkawka's command-line tool):
-
-```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
-  -v "$HOME\media-hygiene\reports:/out" `
-  jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
-  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
-```
-
-## Step 2: run Czkawka
-
-Copy the command printed by your own audit; where it shows
-`<the folder you mount on /reports>`, write your reports folder. Paste it and run it. Czkawka
-shows its progress: the size of the files, then their fingerprint. On tens of thousands of
-photos, allow several minutes. It writes its results, `czkawka.json`, in your reports folder.
-From WSL, write your folders as `/mnt/c/...` instead of `C:\...`.
-
-## Step 3: compare
-
-Run `crosscheck` with the same folders as the audit (`mh` mounts them):
+With the same folders as the audit (`mh` mounts them):
 
 ```powershell
 mh crosscheck
@@ -54,12 +31,39 @@ docker run --rm -it `
 
 </details>
 
-`crosscheck` audits again (quickly, thanks to the cache) and compares the two tools group by
-group. After the usual summary:
+Czkawka ships in the image: nothing else to install, nothing to paste. `crosscheck` audits again
+(quickly, thanks to the cache), then runs Czkawka on the same folders: the same extensions, the
+same excluded folders, every file size. Czkawka only reads, and shows its own messages. On tens of
+thousands of photos, allow a few minutes the first time; with `/cache`, it keeps its own cache
+there and the next runs only read what changed (`--fresh` reads everything again). Its results,
+`czkawka.json`, go to your reports folder.
+
+<details>
+<summary>Prefer to run Czkawka yourself?</summary>
+
+`crosscheck --print-command` does not run Czkawka: it prints the command that runs it in its own
+image (the community image `jlesage/czkawka`, about 500 MB), with your folders. Where it shows
+`<the folder you mount on /reports>`, write your reports folder. It looks like this:
+
+```powershell
+docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
+  -v "$HOME\media-hygiene\reports:/out" `
+  jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
+  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
+```
+
+From WSL, write your folders as `/mnt/c/...` instead of `C:\...`. Once it has run,
+`crosscheck --print-command` compares its results.
+
+</details>
+
+## Read the verdict
+
+After the usual summary and Czkawka's run, the two tools are compared group by group:
 
 <!-- capture: crosscheck.txt|re:^Czkawka results|agrees -->
 ```text
-Czkawka results of 2026-10-12 10:16 UTC.
+Czkawka results of 2026-10-14 15:12 UTC.
 ✅ Czkawka agrees: the same 32 extra copies in 20 groups.
 ```
 
@@ -74,9 +78,9 @@ Nothing to do about them. The folders never analysed are named, those holding th
 you see at once where Czkawka looked that media-hygiene does not.
 
 If photos were moved or deleted since Czkawka ran (by a `clean`, for instance), its results are out
-of date: they are ignored, and the message gives the two ways out. Either run the Czkawka command it
-prints again, then `crosscheck`, or delete the `czkawka.json` file it names (in your reports folder)
-if you no longer want a second opinion.
+of date: a later `audit` or `clean` ignores them, and the message gives the two ways out. Either run
+`crosscheck` again, or delete the `czkawka.json` file it names (in your reports folder) if you no
+longer want a second opinion.
 
 ## Where the verdict appears
 

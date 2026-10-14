@@ -37,6 +37,10 @@ still there. The reports folder receives the workbook where you correct the prop
 ```text
 🔒 Read-only: your photos and videos are not touched.
 ─────────────────────────────────── Classify ───────────────────────────────────
+23 unchanged folders taken from the index, 0 read.
+💡 A photo changed in place by another program? 'audit --full' reads every
+folder (done anyway for those listed 7 days ago).
+
 Already in place: 43 of 82 (52%).
 Proposal
 ┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
@@ -73,8 +77,8 @@ Event neighbours, Christmas, New Year.
 💡 Check their dates, their patterns and their order in config.toml.
 To check or to sort: 3 files in 1 event.
 💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261012-101647-classify/classify.xlsx
-✅ Report with the photos: /reports/20261012-101647-classify/report.html
+✅ Workbook to edit: /reports/20261014-151202-classify/classify.xlsx
+✅ Report with the photos: /reports/20261014-151202-classify/report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

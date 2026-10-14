@@ -32,12 +32,20 @@ def show_outdated(
             "ignored; cleaning does not need it."
         ).format(date=date.strftime(_DATE_FORMAT) if date else "?")
     )
-    output.tip(
-        _(
-            "For an up-to-date second opinion (optional): run this command, then "
-            "'media-hygiene crosscheck' with your usual -v options:"
+    if refresh.runs_here:
+        output.tip(
+            _(
+                "For an up-to-date second opinion (optional): run 'crosscheck' "
+                "again, it runs Czkawka itself:"
+            )
         )
-    )
+    else:
+        output.tip(
+            _(
+                "For an up-to-date second opinion (optional): run this command, "
+                "then 'media-hygiene crosscheck' with your usual -v options:"
+            )
+        )
     output.command(refresh.command)
     output.tip(
         _("Or, to no longer see this message, delete this file: {path}").format(

@@ -56,8 +56,8 @@ def command_table(
             crosscheck_command,
             analyse,
             _(
-                "Compare a fresh audit with Czkawka's results: a second, "
-                "independent opinion."
+                "Run Czkawka, an independent duplicate finder, then compare its "
+                "groups with a fresh audit: a second opinion."
             ),
         ),
         (

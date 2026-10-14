@@ -135,7 +135,9 @@ les `ARG` du `Dockerfile` annotés `# renovate:`), et hooks pre-commit. Rien n'e
 automatiquement : un push sur `main` reconstruit l'image. Son ticket « Dependency Dashboard »
 liste ce qui attend. Une pull request FFmpeg demande une étape manuelle : vérifiez la signature
 de l'archive, puis mettez sa nouvelle empreinte dans `FFMPEG_SHA256` (la construction de l'image
-échoue tant que ce n'est pas fait). Le helper `deps` répond toujours à la même question en local,
-pour les dépendances Python.
+échoue tant que ce n'est pas fait). De même pour une pull request Czkawka : mettez dans
+`CZKAWKA_SHA256_AMD64` et `CZKAWKA_SHA256_ARM64` les empreintes des deux binaires publiés
+(`gh release download <version> --repo qarmin/czkawka`, puis `sha256sum`). Le helper `deps`
+répond toujours à la même question en local, pour les dépendances Python.
 
 La feuille de route se trouve dans [.todos/plan.md](../../.todos/plan.md).

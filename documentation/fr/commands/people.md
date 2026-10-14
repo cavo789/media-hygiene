@@ -64,7 +64,7 @@ ouvre sa photo. Ctrl+C l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysées : 11 visages, 0,04 s par photo.
+✅ 33 photos analysées : 14 visages, 0,05 s par photo.
 ✅ 17 visages dans 43 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
@@ -72,6 +72,8 @@ nommer ; chaque nom est enregistré aussitôt dans config.toml. Ctrl+C l'arrête
 les photos ne sont pas modifiées.
 💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
 avec -p 127.0.0.1:8088:8088.
+
+✅ Page arrêtée ; rien n'a été modifié.
 ```
 
 ## Nommer les groupes

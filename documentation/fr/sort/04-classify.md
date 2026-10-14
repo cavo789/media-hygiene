@@ -38,6 +38,10 @@ encore là. Le dossier de rapports reçoit le classeur où vous corrigez la prop
 ```text
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ─────────────────────────────────── Classer ────────────────────────────────────
+23 dossiers inchangés repris de l'index, 0 relus.
+💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
+tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
+
 Déjà à leur place : 43 sur 82 (52 %).
 Proposition
 ┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┓
@@ -74,8 +78,8 @@ documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
 💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
 À vérifier ou à trier : 3 fichiers dans 1 événement.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
-✅ Classeur à modifier : /reports/20261012-101931-classify/classify.xlsx
-✅ Rapport avec les photos : /reports/20261012-101931-classify/report.html
+✅ Classeur à modifier : /reports/20261014-151326-classify/classify.xlsx
+✅ Rapport avec les photos : /reports/20261014-151326-classify/report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

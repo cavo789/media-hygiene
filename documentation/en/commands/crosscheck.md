@@ -7,18 +7,20 @@
 **Be sure of your duplicates before deleting family photos: a second, independent tool checks
 them, group by group.**
 
-`crosscheck` audits again, then compares its duplicates with those found by
-[Czkawka](https://github.com/qarmin/czkawka), an open-source duplicate finder written
-independently, with another hash function. When both agree, you can clean with confidence.
+`crosscheck` audits again, runs [Czkawka](https://github.com/qarmin/czkawka), an open-source
+duplicate finder written independently, with another hash function, then compares both, group by
+group. Czkawka ships in the image: one command does it all. When both agree, you can clean with
+confidence.
 
-**When**: optional, once, before a first large `clean` (`clean` never requires it). The first
-run prints the Czkawka command to paste; the next one compares.
+**When**: optional, before a first large `clean` (`clean` never requires it), and again after
+cleaning if you like: with `/cache`, Czkawka only reads what changed.
 
 **Try it**:
 
 ```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene crosscheck
 ```
@@ -28,20 +30,15 @@ docker run --rm -it `
 | | |
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
-| Needs | Your folders, and `/reports`, where Czkawka wrote `czkawka.json`. |
-| Recommended | `/cache` (the audit takes seconds), `/config`. |
-| Writes | The cache, a crosscheck report in `/reports`. |
+| Needs | Your folders, and `/reports`, where Czkawka's results (`czkawka.json`) are kept. |
+| Recommended | `/cache`: the audit takes seconds, and Czkawka keeps its own cache there. `/config`. |
+| Writes | The cache, `czkawka.json` and a crosscheck report in `/reports`. |
 | Undo | Nothing to undo. |
 | With `mh` | `mh crosscheck`. |
 
-## Run it, in three steps
+## Run it
 
-1. **The Czkawka command.** As long as Czkawka has not run, `crosscheck` (and an audit run with
-   `--verbosity verbose`) prints the exact command for your folders: the same `-v` options,
-   extensions and excluded folders. It uses the community image `jlesage/czkawka` (about 500 MB).
-2. **Run Czkawka.** Paste that command, with your reports folder where it says so. On tens of
-   thousands of photos, allow several minutes. It writes `czkawka.json` in your reports folder.
-3. **Compare**, with the same options as your audit:
+With the same folders and options as your audit:
 
 ```powershell
 docker run --rm -it `
@@ -51,6 +48,13 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene crosscheck
 ```
+
+1. **The audit**, quickly thanks to the cache.
+2. **Czkawka** reads the same folders, the same extensions, without the excluded folders, every
+   file size. It only reads: nothing is changed. On tens of thousands of photos, allow a few
+   minutes the first time; with `/cache`, the next runs only read what changed. It writes
+   `czkawka.json` in your reports folder.
+3. **The comparison**, group by group, and its report.
 
 ## Read the verdict
 
@@ -67,14 +71,21 @@ question, and in the clean report.
 The same folder and scan options as [`audit`](audit.md#options): `--prefer`, `--protect`,
 `--exclude`, `--exclude-name`, `--ext`. Give the ones of your audit.
 
+| Option | What it does |
+|---|---|
+| `--fresh` | Czkawka reads and hashes every file again, ignoring its cache: a second opinion that owes nothing to an earlier one. Slower. |
+| `--print-command` | Czkawka is not run here: `crosscheck` prints the command that runs it in its own image (the community image `jlesage/czkawka`, about 500 MB), then compares the `czkawka.json` it wrote. For those who want to run Czkawka with their own eyes. |
+
 ## Good to know
 
 - Files media-hygiene deliberately leaves out (other file types, excluded or system folders,
   broken files) are counted apart, not reported as differences; the folders never analysed are
   named, the largest first.
-- **Photos moved or deleted since Czkawka ran** (by a `clean`, say) make its results out of date:
-  they are ignored, and the message gives the way out: run Czkawka again, or delete
-  `czkawka.json` if you no longer want a second opinion.
+- **Photos moved or deleted since Czkawka ran** (by a `clean`, say) make its results out of date
+  for the later `audit` and `clean`: they are ignored, and the message gives the way out: run
+  `crosscheck` again, or delete `czkawka.json` if you no longer want a second opinion.
+- Czkawka is the unmodified release binary of its project (MIT licence), pinned in the image.
+  Only the packaging is shared: its code and its hash function stay its own.
 
 ## Go further
 
@@ -90,8 +101,8 @@ The same folder and scan options as [`audit`](audit.md#options): `--prefer`, `--
 ```text
  Usage: media-hygiene crosscheck [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Compare a fresh audit with Czkawka's
- results: a second, independent opinion.
+ 🔒 Read-only: never changes your photos. Run Czkawka, an independent duplicate
+ finder, then compare its groups with a fresh audit: a second opinion.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
@@ -119,6 +130,15 @@ The same folder and scan options as [`audit`](audit.md#options): `--prefer`, `--
 │                              (repeatable). Adds to the system folders        │
 │                              already skipped. For one precise folder, use    │
 │                              --exclude.                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced options ───────────────────────────────────────────────────────────╮
+│ --fresh                  Czkawka reads and hashes every file again, ignoring │
+│                          what its cache in /cache remembers from its         │
+│                          previous run. Slower; for a second opinion that     │
+│                          owes nothing to an earlier one.                     │
+│ --print-command          Do not run Czkawka here: print the command that     │
+│                          runs it in its own image, then compare the results  │
+│                          it wrote in /reports (czkawka.json).                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

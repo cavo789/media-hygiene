@@ -57,6 +57,7 @@ Effective settings
 │                               │ '@recycle', '.@__thumb',      │              │
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
+│ scan.full_check_days          │ 7                             │ default      │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │
@@ -166,8 +167,9 @@ Effective settings
 │                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
-│                               │ 70, 'date-only': 90,          │              │
-│                               │ 'no-signal': 0}               │              │
+│                               │ 70, 'folder-town': 60,        │              │
+│                               │ 'date-only': 90, 'no-signal': │              │
+│                               │ 0}                            │              │
 │ classify.name_dates           │ ['(?:IMG|VID|PXL|MVIMG)?[_-]? │ default      │
 │                               │ (?P<y>\\d{4})(?P<m>\\d{2})(?P │              │
 │                               │ <d>\\d{2})[_-](?P<H>\\d{2})(? │              │
@@ -260,6 +262,10 @@ Effective settings
 │ classify.trip_min_km          │ 100.0                         │ default      │
 │ classify.trip_merge_gap_hours │ 48.0                          │ default      │
 │ classify.trip_merge_max_km    │ 120.0                         │ default      │
+│ classify.town_names           │ {}                            │ default      │
+│ classify.folder_town_min_popu │ 5000                          │ default      │
+│ lation                        │                               │              │
+│ classify.folder_town_ignore   │ []                            │ default      │
 │ sort.confirm                  │ True                          │ default      │
 │ sort.junk_files               │ ['Thumbs.db', 'desktop.ini',  │ default      │
 │                               │ '.DS_Store']                  │              │
@@ -268,6 +274,7 @@ Effective settings
 │ inventory.dark_below          │ 50.0                          │ default      │
 │ inventory.bright_above        │ 205.0                         │ default      │
 │ inventory.clipped_above       │ 0.25                          │ default      │
+│ cache.previews_max_gb         │ 2.0                           │ default      │
 │ places.tiles                  │ https://tile.openstreetmap.or │ default      │
 │                               │ g/{z}/{x}/{y}.png             │              │
 │ places.attribution            │ © OpenStreetMap contributors  │ default      │
@@ -491,6 +498,7 @@ Effective settings
 │                               │ '@recycle', '.@__thumb',      │              │
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
+│ scan.full_check_days          │ 7                             │ config.toml  │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │
@@ -600,8 +608,9 @@ Effective settings
 │                               │ 'place': 90,                  │              │
 │                               │ 'place-neighbour': 70,        │              │
 │                               │ 'trip': 90, 'trip-neighbour': │              │
-│                               │ 70, 'date-only': 90,          │              │
-│                               │ 'no-signal': 0}               │              │
+│                               │ 70, 'folder-town': 60,        │              │
+│                               │ 'date-only': 90, 'no-signal': │              │
+│                               │ 0}                            │              │
 │ classify.name_dates           │ ['(?:IMG|VID|PXL|MVIMG)?[_-]? │ default      │
 │                               │ (?P<y>\\d{4})(?P<m>\\d{2})(?P │              │
 │                               │ <d>\\d{2})[_-](?P<H>\\d{2})(? │              │
@@ -694,6 +703,10 @@ Effective settings
 │ classify.trip_min_km          │ 100.0                         │ config.toml  │
 │ classify.trip_merge_gap_hours │ 48.0                          │ config.toml  │
 │ classify.trip_merge_max_km    │ 120.0                         │ config.toml  │
+│ classify.town_names           │ {}                            │ default      │
+│ classify.folder_town_min_popu │ 5000                          │ config.toml  │
+│ lation                        │                               │              │
+│ classify.folder_town_ignore   │ []                            │ config.toml  │
 │ sort.confirm                  │ True                          │ config.toml  │
 │ sort.junk_files               │ ['Thumbs.db', 'desktop.ini',  │ config.toml  │
 │                               │ '.DS_Store']                  │              │
@@ -702,6 +715,7 @@ Effective settings
 │ inventory.dark_below          │ 50.0                          │ config.toml  │
 │ inventory.bright_above        │ 205.0                         │ config.toml  │
 │ inventory.clipped_above       │ 0.25                          │ config.toml  │
+│ cache.previews_max_gb         │ 2.0                           │ config.toml  │
 │ places.tiles                  │ https://tile.openstreetmap.or │ config.toml  │
 │                               │ g/{z}/{x}/{y}.png             │              │
 │ places.attribution            │ © OpenStreetMap contributors  │ config.toml  │

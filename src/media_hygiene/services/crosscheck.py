@@ -1,7 +1,8 @@
-"""The cross-check use case: suggest Czkawka's command, then compare its results."""
+"""The cross-check use case: run Czkawka (or print its command), compare its results."""
 
 from __future__ import annotations
 
+import shutil
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from functools import cache
@@ -11,12 +12,16 @@ from typing import TYPE_CHECKING
 from media_hygiene.constants import CZKAWKA_FILE_NAME, MEDIA_EXTENSIONS
 from media_hygiene.crosscheck.compare import AnalysedScope, OutsideReason, compare
 from media_hygiene.crosscheck.czkawka import (
+    CZKAWKA_BINARY,
     CzkawkaCommand,
     CzkawkaScope,
     read_czkawka_groups,
 )
+from media_hygiene.crosscheck.czkawka_run import CzkawkaRun
 from media_hygiene.errors import CrossCheckError
 from media_hygiene.i18n import _
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.next_command import NextVerb, next_command
 from media_hygiene.services.policy import scan_filters
 
 if TYPE_CHECKING:
@@ -31,21 +36,64 @@ class CzkawkaRefresh:
 
     command: str
     results_file: str
+    runs_here: bool = False  # the command is `crosscheck`, which runs Czkawka itself
 
 
 def czkawka_refresh(runtime: Runtime) -> CzkawkaRefresh:
-    """The Czkawka command to run again, and its results file as the user sees it.
+    """The command that runs Czkawka again, and its results file as the user sees it.
 
     Args:
         runtime: Settings, mount points and output.
 
     Returns:
-        Both, ready to print.
+        Both, ready to print: `crosscheck` where the image ships Czkawka, else the
+        command that runs it in its own image.
     """
-    return CzkawkaRefresh(
-        command=czkawka_command(runtime).render(),
-        results_file=runtime.mapper.to_host(czkawka_results(runtime)),
-    )
+    results_file = runtime.mapper.to_host(czkawka_results(runtime))
+    if czkawka_executable() is None:
+        return CzkawkaRefresh(czkawka_command(runtime).render(), results_file)
+    return CzkawkaRefresh(crosscheck_command(runtime), results_file, runs_here=True)
+
+
+def crosscheck_command(runtime: Runtime, arguments: str = "crosscheck") -> str:
+    """The full `crosscheck` command, with this run's folders.
+
+    Args:
+        runtime: Settings, mount points and output.
+        arguments: The command line after the image, e.g. with global options.
+
+    Returns:
+        The command, ready to paste.
+    """
+    verb = NextVerb(arguments, (MountKind.REPORTS,))
+    return next_command(runtime, verb).command
+
+
+def czkawka_executable() -> str | None:
+    """Find Czkawka's command-line tool: shipped in the image, absent elsewhere.
+
+    Returns:
+        Its path, or None.
+    """
+    return shutil.which(CZKAWKA_BINARY)
+
+
+def czkawka_run(runtime: Runtime, *, fresh: bool) -> CzkawkaRun | None:
+    """How to run Czkawka here: its results in /reports, its cache in /cache.
+
+    Args:
+        runtime: Settings, mount points and output.
+        fresh: Ignore Czkawka's cache.
+
+    Returns:
+        The run, or None where Czkawka is not installed (outside the image).
+    """
+    executable = czkawka_executable()
+    if executable is None:
+        return None
+    kept = runtime.persistent(MountKind.CACHE)
+    cache_dir = runtime.locations.cache_dir if kept else None
+    return CzkawkaRun(executable, czkawka_results(runtime), cache_dir, fresh)
 
 
 def czkawka_results(runtime: Runtime) -> Path:

@@ -82,7 +82,7 @@ Résumé de l'audit
 │ Quasi-doublons (déplacés seulement avec --tier near)     │      2 │
 │ Vidéos réencodées (déplacées seulement avec --tier near) │      1 │
 │ Rafales (déplacées seulement si écartées avec 'review')  │      3 │
-│ Durée                                                    │    2 s │
+│ Durée                                                    │    1 s │
 └──────────────────────────────────────────────────────────┴────────┘
 
 Dossiers partageant des fichiers identiques

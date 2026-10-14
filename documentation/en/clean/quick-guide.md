@@ -143,10 +143,9 @@ duplicate finder, can check the same folders:
 mh crosscheck
 ```
 
-As long as Czkawka has not run, `crosscheck` prints the exact Czkawka command for your folders:
-copy it and run it (several minutes on a large collection). Then run `mh crosscheck` again: it
-compares both results group by group and says where they differ. Details: [a second
-opinion](13-second-opinion.md).
+Czkawka ships in the image: `crosscheck` runs it on your folders (a few minutes on a large
+collection the first time), then compares both results group by group and says where they
+differ. Details: [a second opinion](13-second-opinion.md).
 
 ## 7. Set the exact duplicates aside
 

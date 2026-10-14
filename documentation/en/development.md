@@ -127,7 +127,9 @@ request per group: GitHub Actions (SHA and `# vX.Y.Z` comment), Python dependenc
 `# renovate:` annotated `ARG`s of the `Dockerfile`), and pre-commit hooks. Nothing is merged
 automatically: a push to `main` rebuilds the image. Its Dependency Dashboard issue lists what is
 pending. An FFmpeg pull request needs one manual step: check the tarball signature, then set
-`FFMPEG_SHA256` to its new checksum (the image build fails until you do). The `deps` helper still
-answers the same question locally, for the Python dependencies.
+`FFMPEG_SHA256` to its new checksum (the image build fails until you do). A Czkawka pull request
+likewise: set `CZKAWKA_SHA256_AMD64` and `CZKAWKA_SHA256_ARM64` to the checksums of the two
+release binaries (`gh release download <version> --repo qarmin/czkawka`, then `sha256sum`). The
+`deps` helper still answers the same question locally, for the Python dependencies.
 
 The roadmap is in [.todos/plan.md](../../.todos/plan.md).

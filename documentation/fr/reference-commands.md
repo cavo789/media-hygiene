@@ -47,7 +47,7 @@ exemples et son `--help`.
 | [`review`](commands/review.md) | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [Nettoyer, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | [`history`](commands/history.md) | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [Nettoyer, 4](clean/04-html-report.md) |
-| [`crosscheck`](commands/crosscheck.md) | Refait l'audit, puis le compare aux résultats de Czkawka, un détecteur de doublons indépendant. | [Nettoyer, 13](clean/13-second-opinion.md) |
+| [`crosscheck`](commands/crosscheck.md) | Refait l'audit, lance Czkawka, un détecteur de doublons indépendant, puis compare les deux. | [Nettoyer, 13](clean/13-second-opinion.md) |
 | [`config`](commands/config.md) | Affiche chaque réglage, son origine, et l'état de chaque point de montage ; crée un `config.toml` commenté la première fois. | [Nettoyer, 7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh) |
 | [`classify`](commands/classify.md) | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [Trier, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
@@ -158,8 +158,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              catégorie, et ce que montrent les photos isolées avec une IA    │
 │              locale facultative 🤖                                           │
 │ config       Affiche chaque réglage, son origine, et les points de montage.  │
-│ crosscheck   Compare un nouvel audit aux résultats de Czkawka : un second    │
-│              avis, indépendant.                                              │
+│ crosscheck   Lance Czkawka, un détecteur de doublons indépendant, puis       │
+│              compare ses groupes à un nouvel audit : un second avis.         │
 │ history      Liste les exécutions et ce qu'elles ont fait.                   │
 │ inventory    Exporter vers Excel chaque photo et vidéo avec ce que les       │
 │              audits en ont appris, depuis le cache seul : aucun fichier      │
@@ -213,7 +213,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
  Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :
    docker run --rm -it -v "${PWD}:/data/current:ro" media-hygiene audit
 
- Guide pas à pas et toutes les commandes : https://cavo789.github.io/media-hygiene/fr/
+ Guide pas à pas et toutes les commandes :
+ https://cavo789.github.io/media-hygiene/fr/
 ```
 
 </details>

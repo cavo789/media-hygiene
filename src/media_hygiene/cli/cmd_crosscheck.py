@@ -9,7 +9,7 @@ from typing import Annotated
 
 import typer
 
-from media_hygiene.cli import options, scan_options
+from media_hygiene.cli import crosscheck_options, options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import ExitCode, RunKind
@@ -24,8 +24,10 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
     exclude: Annotated[list[str] | None, options.exclude()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
+    fresh: Annotated[bool, crosscheck_options.fresh()] = False,
+    print_command: Annotated[bool, crosscheck_options.print_command()] = False,
 ) -> None:
-    """Audit again (fast with the cache), then compare with Czkawka's groups.
+    """Audit again (fast with the cache), run Czkawka, then compare its groups.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -34,11 +36,15 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
         exclude: `--exclude` folders.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
+        fresh: `--fresh`, Czkawka ignores its cache.
+        print_command: `--print-command`, Czkawka is run by the user.
 
     Raises:
-        MountError: No reports mount point, where Czkawka's results are read.
-        typer.Exit: Czkawka has not been run yet.
+        MountError: No reports mount point, where Czkawka's results are kept.
+        typer.Exit: Czkawka has not been run yet (`--print-command`, or outside
+            the image).
     """
+    from media_hygiene.cli.czkawka_flow import run_second_opinion
     from media_hygiene.cli.flows import (
         audit_and_show,
         report_and_announce,
@@ -47,20 +53,27 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
     from media_hygiene.errors import MountError
     from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.report.views import ReportRecord
-    from media_hygiene.services.crosscheck import cross_check, czkawka_command
+    from media_hygiene.services.crosscheck import (
+        cross_check,
+        czkawka_command,
+        czkawka_run,
+    )
 
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
         if not runtime.persistent(MountKind.REPORTS):
             raise MountError(
-                _("'crosscheck' reads Czkawka's results from /reports: mount it."),
-                _('Add -v "<a folder of yours>:/reports", as in the Czkawka command.'),
+                _("'crosscheck' keeps Czkawka's results in /reports: mount it."),
+                _('Add -v "<a folder of yours>:/reports".'),
             )
         runtime = runtime.with_overrides(
             folder_layer(prefer, protect, exclude)
         ).with_overrides(scan_layer(ext, exclude_name))
         findings = audit_and_show(runtime)
+        run = None if print_command else czkawka_run(runtime, fresh=fresh)
+        if run is not None:
+            run_second_opinion(runtime, run)
         result = cross_check(runtime, findings)
         if result is None:
             output.error(_("No Czkawka results yet: run Czkawka first (PowerShell):"))

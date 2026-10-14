@@ -226,6 +226,7 @@ d'autres personnes, chacun sous sa propre licence :
 | [libheif](https://github.com/strukturag/libheif), [libde265](https://github.com/strukturag/libde265) (HEIC, fournis par `pillow-heif`) | LGPL-3.0-or-later |
 | [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, `ffmpeg`, compilés sans `--enable-gpl`) | LGPL-2.1-or-later |
 | [LibRaw](https://www.libraw.org/) (fichiers RAW, via `rawpy`) | LGPL-2.1 ou CDDL-1.0 |
+| [Czkawka](https://github.com/qarmin/czkawka) (`czkawka_cli`, le second avis de `crosscheck`) | MIT |
 | Les villes de [GeoNames](https://www.geonames.org/) (`geo/data`, voir son `ATTRIBUTION.txt`) | CC BY 4.0 |
 | [Leaflet](https://leafletjs.com/) (la carte de `places`) | BSD-2-Clause |
 | Python, Pillow, NumPy, ONNX Runtime et les autres paquets Python, avec les bibliothèques que leurs wheels embarquent (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 et licences permissives semblables |

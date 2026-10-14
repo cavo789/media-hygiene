@@ -43,7 +43,7 @@ On the demo library of this guide, 10 photos measured:
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysed: 2 faces, 0.03 s per photo.
+✅ 10 photos analysed: 3 faces, 0.04 s per photo.
 ```
 
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about
@@ -98,7 +98,7 @@ group) and prints the address of the page, `http://127.0.0.1:8088/`: Ctrl+click 
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysed: 15 faces, 0.04 s per photo.
+✅ 33 photos analysed: 14 faces, 0.04 s per photo.
 ✅ 17 faces in 43 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
@@ -106,6 +106,8 @@ name is saved at once in config.toml. Ctrl+C stops it; the photos are not
 changed.
 💡 The page does not open? docker run must publish the same port on both sides:
 -p 127.0.0.1:8088:8088.
+
+✅ Page stopped; nothing was changed.
 ```
 
 ![The people page: the largest group named Chloé, the name read back from config.toml at the top (Saved in config.toml, read back: Chloé, 7 confirmed faces), her seven faces below; then Group 2 and Group 3, not named yet, each with its field to type a name and its buttons Name, Name with others, Ignore this group](../images/people.webp)

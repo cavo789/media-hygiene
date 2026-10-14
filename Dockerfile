@@ -20,6 +20,13 @@ ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e00
 # Demuxers per video extension: mov (3g2 3gp m4v mov mp4), m4v (raw MPEG-4 video named .m4v),
 # matroska (mkv webm), avi, flv, mpegts (m2ts mts ts), mpegps and mpegvideo (mpeg mpg), asf (wmv).
 ARG VIDEO_DEMUXERS=mov,m4v,matroska,avi,flv,mpegts,mpegps,mpegvideo,asf
+# Czkawka's command-line tool, the second opinion of `crosscheck`: the release binaries of its
+# own project (MIT), pinned by the SHA-256 of each platform's file. Renovate bumps the version
+# only: both checksums are set by hand (its PR says so).
+# renovate: datasource=github-releases depName=qarmin/czkawka
+ARG CZKAWKA_VERSION=12.0.2
+ARG CZKAWKA_SHA256_AMD64=61e7e8ac3f42338957ddc0739df653b9df6ff2958cab3b4cce14663b39c40843
+ARG CZKAWKA_SHA256_ARM64=3a65408ca30036cf1cd993112bde6288e13c870842d12131dee8b4e435325c38
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
@@ -80,6 +87,24 @@ RUN make distclean && \
     make -j"$(nproc)" ffmpeg && \
     strip ffmpeg
 
+# --- czkawka: the release binary of the platform being built, nothing else ----------------
+# Both files are fetched (ADD checks each one's checksum; it cannot pick by platform), and the
+# stage is discarded: only the one binary of the target platform reaches the image.
+FROM ${PYTHON_IMAGE} AS czkawka
+
+ARG TARGETARCH
+ARG CZKAWKA_VERSION
+ARG CZKAWKA_SHA256_AMD64
+ARG CZKAWKA_SHA256_ARM64
+
+ADD --checksum=sha256:${CZKAWKA_SHA256_AMD64} \
+    https://github.com/qarmin/czkawka/releases/download/${CZKAWKA_VERSION}/linux_czkawka_cli_x86_64 \
+    /tmp/czkawka/amd64
+ADD --checksum=sha256:${CZKAWKA_SHA256_ARM64} \
+    https://github.com/qarmin/czkawka/releases/download/${CZKAWKA_VERSION}/linux_czkawka_cli_arm64 \
+    /tmp/czkawka/arm64
+RUN install -m 0755 "/tmp/czkawka/${TARGETARCH}" /usr/local/bin/czkawka_cli
+
 # --- builder: resolve the locked dependencies, then install the project as a wheel ---------
 FROM ${PYTHON_IMAGE} AS builder
 
@@ -104,7 +129,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-# --- runtime: the interpreter, the virtual environment, ffprobe and ffmpeg — nothing else ---
+# --- runtime: the interpreter, the virtual environment, ffprobe, ffmpeg, czkawka_cli -----
 FROM ${PYTHON_IMAGE} AS runtime
 
 ARG VERSION=0.2.0
@@ -112,7 +137,7 @@ ARG APP_UID=1000
 ARG APP_GID=1000
 
 # The licences of the image, not only of the tool: x265 (GPL, bundled by pillow-heif),
-# libheif/libde265, FFmpeg, LibRaw, Leaflet, GeoNames. See "Licences" in README.md.
+# libheif/libde265, FFmpeg, LibRaw, Czkawka, Leaflet, GeoNames. See "Licences" in README.md.
 LABEL org.opencontainers.image.title="media-hygiene" \
       org.opencontainers.image.description="Find and safely clean duplicate photos and videos across folders and disks." \
       org.opencontainers.image.version="${VERSION}" \
@@ -140,6 +165,7 @@ RUN python -m compileall -q -j0 --invalidation-mode unchecked-hash \
 
 COPY --from=ffprobe /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=ffmpeg /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=czkawka /usr/local/bin/czkawka_cli /usr/local/bin/czkawka_cli
 COPY --from=builder /opt/venv /opt/venv
 
 USER ${APP_UID}:${APP_GID}
