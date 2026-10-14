@@ -8,8 +8,10 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.constants import Sizes
 from media_hygiene.i18n import _
 from media_hygiene.index.facts import FileFacts
+from media_hygiene.scan.bounded import bounded_map
 from media_hygiene.scan.hashing import full_digest, partial_digest
 from media_hygiene.scan.models import DuplicateGroup, MediaFile
 from media_hygiene.scan.progress import Step
@@ -140,15 +142,15 @@ class ExactDuplicateFinder:
             else:
                 digests[file] = cached
         self._deps.progress.start(step.step, len(missing))
-        async with asyncio.TaskGroup() as group:
-            tasks = {
-                file: group.create_task(self._hash(file, step)) for file in missing
-            }
+        found = await bounded_map(
+            missing, lambda file: self._hash(file, step), Sizes.IO_CONCURRENCY
+        )
         self._deps.progress.stop()
-        for file, task in tasks.items():
-            digest = task.result()
-            if digest is not None:
-                digests[file] = digest
+        digests.update(
+            (file, digest)
+            for file, digest in zip(missing, found, strict=True)
+            if digest is not None
+        )
         return digests
 
     async def _hash(self, file: MediaFile, step: _DigestStep) -> str | None:

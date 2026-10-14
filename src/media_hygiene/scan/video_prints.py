@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
+from media_hygiene.scan.bounded import bounded_map
 from media_hygiene.scan.keyframes import fingerprint
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.video_models import VIDEO_PRINT_VERSION, VideoLook
@@ -106,10 +107,9 @@ class VideoPrinter:
             self._deps.repository.put(file, printed)
             return printed
 
-        async with asyncio.TaskGroup() as group:
-            tasks = {file: group.create_task(one(file)) for file in files}
+        done = await bounded_map(files, one, os.process_cpu_count() or 1)
         progress.stop()
-        return {file.path: task.result() for file, task in tasks.items()}
+        return {file.path: printed for file, printed in zip(files, done, strict=True)}
 
 
 def look_of(facts: FileFacts) -> VideoLook | None:

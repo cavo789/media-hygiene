@@ -3,7 +3,9 @@
 Folders are read concurrently: on a Windows drive seen through Docker, each directory
 listing waits for a slow round trip, so several are kept in flight at once. A folder
 that did not change since the index last listed it is taken from the index instead
-(`scan.folder_cache`): one `stat` of the folder instead of one per file.
+(`scan.folder_cache`): one `stat` of the folder instead of one per file. A folder read
+again has its files `stat`ed in parallel, and only its new names when the last listing
+is recent enough (`scan.folder_stats`).
 """
 
 from __future__ import annotations
@@ -17,8 +19,9 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import ALBUM_MARKER, Sizes
-from media_hygiene.scan.folder_cache import EntryKind, snapshot
+from media_hygiene.scan.folder_cache import EntryKind
 from media_hygiene.scan.folder_entries import Listing, sort_entries
+from media_hygiene.scan.folder_stats import StatPlan, fresh_listing
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -62,6 +65,15 @@ class _Visit:
     reused: bool = False
 
 
+@dataclass(frozen=True, slots=True)
+class _Read:
+    """A folder read in a worker thread: done, or its entries still to record."""
+
+    done: _Visit | None = None
+    mtime_ns: int = 0
+    items: tuple[os.DirEntry[str], ...] = ()
+
+
 async def walk(
     roots: Iterable[Path],
     setup: WalkSetup,
@@ -96,7 +108,8 @@ async def walk(
         async def visit(folder: Path) -> None:
             nonlocal reused
             async with slots:
-                seen = await asyncio.to_thread(_visit, folder, (setup, now))
+                read = await asyncio.to_thread(_read, folder, setup)
+            seen = read.done or await _fresh(folder, read, (setup, now, slots))
             listing = seen.listing
             files.extend(listing.files)
             sidecars.extend(listing.sidecars)
@@ -114,28 +127,47 @@ async def walk(
     return Walk(*found, MappingProxyType(listings), frozenset(visited), reused)
 
 
-def _visit(folder: Path, context: tuple[WalkSetup, datetime]) -> _Visit:
+def _read(folder: Path, setup: WalkSetup) -> _Read:
     """Read one folder, or take it from the index (runs in a worker thread).
 
     Args:
         folder: Folder to read.
-        context: What to keep and trust, and the time of this walk.
+        setup: What to keep and trust.
 
     Returns:
-        What it holds; nothing when it cannot be read.
+        What it holds when taken from the index or unreadable; else its entries,
+        still to record.
     """
-    setup, now = context
     try:
         mtime_ns = folder.stat().st_mtime_ns  # before listing: a later change shows
         known = setup.reusable(folder, mtime_ns)
         if known is not None:
-            return _Visit(_sorted(known.entries, setup.filters), reused=True)
+            return _Read(_Visit(_sorted(known.entries, setup.filters), reused=True))
         with os.scandir(folder) as entries:
-            items = list(entries)
+            items = tuple(entries)
     except OSError as exc:
         _LOGGER.warning("Cannot read folder %s: %s", folder, exc.strerror)
-        return _Visit(Listing(unreadable=(folder,)))
-    fresh = snapshot(items, mtime_ns, now)
+        return _Read(_Visit(Listing(unreadable=(folder,))))
+    return _Read(mtime_ns=mtime_ns, items=items)
+
+
+async def _fresh(
+    folder: Path, read: _Read, context: tuple[WalkSetup, datetime, asyncio.Semaphore]
+) -> _Visit:
+    """Record a folder just listed: its files `stat`ed in parallel, known ones kept.
+
+    Args:
+        folder: The folder.
+        read: Its time and entries.
+        context: What to keep and trust, the time of this walk, the I/O limit.
+
+    Returns:
+        What it holds, and its listing to keep when every file could be `stat`ed.
+    """
+    setup, now, slots = context
+    kept = setup.kept_stats(folder, now)
+    plan = StatPlan(read.mtime_ns, kept.listed_at, kept.stats, slots)
+    fresh = await fresh_listing(read.items, plan)
     complete = all(
         entry.facts is not None
         for entry in fresh.entries

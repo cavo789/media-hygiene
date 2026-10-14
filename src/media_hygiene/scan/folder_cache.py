@@ -17,7 +17,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Mapping
     from datetime import datetime
     from pathlib import Path
 
@@ -103,6 +103,14 @@ class FolderListing:
 
 
 @dataclass(frozen=True, slots=True)
+class KeptStats:
+    """The stats a changed folder keeps, and the date its new listing takes."""
+
+    stats: Mapping[str, CachedStat]
+    listed_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
 class WalkSetup:
     """What a walk keeps, and the listings it may trust instead of reading a folder.
 
@@ -130,36 +138,57 @@ class WalkSetup:
             return None
         return known
 
+    def kept_stats(self, folder: Path, now: datetime) -> KeptStats:
+        """The `stat` of the files of a changed folder that can still be trusted.
 
-def snapshot(
-    entries: Sequence[os.DirEntry[str]], mtime_ns: int, now: datetime
-) -> FolderListing:
-    """Record a folder just listed, every regular file `stat`ed.
+        A file rewritten in place does not change its folder's time: its `stat` is
+        trusted until the listing is too old, whether or not other names came or went.
+        The new listing keeps the date of the old one, so that a folder changing every
+        day is still read in full once its last full reading is too old.
 
-    Args:
-        entries: Its entries.
-        mtime_ns: Its modification time, read before listing it.
-        now: When it was listed.
+        Args:
+            folder: A folder about to be listed again.
+            now: The time of this walk.
 
-    Returns:
-        The listing.
-    """
-    return FolderListing(mtime_ns, now, tuple(_cached(entry) for entry in entries))
+        Returns:
+            The `stat` of each file of its last listing, by name, and the date the new
+            listing takes; none and `now` when that listing is too old or nothing is
+            trusted.
+        """
+        known = self.known.get(folder)
+        if known is None or self.trusted_since is None:
+            return KeptStats({}, now)
+        if known.listed_at < self.trusted_since:
+            return KeptStats({}, now)
+        stats = {
+            entry.name: entry.facts
+            for entry in known.entries
+            if entry.kind is EntryKind.FILE and entry.facts is not None
+        }
+        return KeptStats(stats, known.listed_at if stats else now)
 
 
-def _cached(entry: os.DirEntry[str]) -> CachedEntry:
-    """Record one entry.
+def cached_entry(
+    entry: os.DirEntry[str], kept: Mapping[str, CachedStat]
+) -> CachedEntry:
+    """Record one entry of a folder just listed.
 
     Args:
         entry: The entry.
+        kept: The `stat` of the files the last listing saw, by name, still trusted.
 
     Returns:
-        It, with the `stat` of a regular file (None when it fails).
+        It, with the `stat` of a regular file: the kept one while the name still
+        holds the same inode (`readdir` gives it for free; an editor saving through a
+        new file and a rename gives a new one), else read now (None when that fails).
     """
     if entry.is_dir(follow_symlinks=False):
         return CachedEntry(entry.path, entry.name, EntryKind.DIR)
     if not entry.is_file(follow_symlinks=False):
         return CachedEntry(entry.path, entry.name, EntryKind.OTHER)
+    known = kept.get(entry.name)
+    if known is not None and known.st_ino == entry.inode():  # not saved as a new file
+        return CachedEntry(entry.path, entry.name, EntryKind.FILE, known)
     try:
         stat = entry.stat(follow_symlinks=False)
     except OSError:

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.i18n import _
+from media_hygiene.scan.bounded import bounded_map, pool_in_flight
 from media_hygiene.scan.file_check import FileChecker, Need, need_of
 from media_hygiene.scan.models import BrokenFile
 from media_hygiene.scan.progress import Step
@@ -148,10 +148,9 @@ class BrokenFileFinder:
             return facts
 
         self._deps.progress.start(step, len(files))
-        async with asyncio.TaskGroup() as group:
-            tasks = {file: group.create_task(stored(file)) for file in files}
+        done = await bounded_map(files, stored, pool_in_flight())
         self._deps.progress.stop()
-        return {file.path: task.result() for file, task in tasks.items()}
+        return {file.path: facts for file, facts in zip(files, done, strict=True)}
 
 
 def _check_step() -> Step:

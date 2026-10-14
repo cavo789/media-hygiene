@@ -23,12 +23,15 @@ from typing import TYPE_CHECKING, Final
 from PIL import Image
 
 from media_hygiene.scan.exif import image_metadata
+from media_hygiene.scan.hashing import digests_of
 from media_hygiene.scan.visual import ANALYSIS_EDGE, visual_facts
+from media_hygiene.scan.whole_read import read_whole, source_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.scan.exposure import Exposure
+    from media_hygiene.scan.hashing import Digests
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
 
@@ -81,36 +84,45 @@ class ImageInspection:
     problem: str | None = None
     visual: VisualFacts | None = None
     metadata: MediaMetadata | None = None
+    digests: Digests | None = None  # None: the file was too large to read at once
 
 
 def inspect_image(path: Path) -> ImageInspection:
     """Verify the structure of an image, decode it, then describe it.
 
     JPEG files are decoded at a reduced scale (still at least `ANALYSIS_EDGE` pixels
-    per side when the photo is that large): every byte is still read and checked.
+    per side when the photo is that large): every byte is still read and checked. The
+    file is read once (`whole_read`), and its digests come from that same reading.
 
     Args:
         path: Image file.
 
     Returns:
-        The decoder error, or the visual facts of a readable image.
+        The decoder error, or the visual facts of a readable image; its digests.
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
+        digests = None
         try:
-            with Image.open(path) as image:
+            data = read_whole(path)
+            digests = None if data is None else digests_of(data)
+            with Image.open(source_of(path, data)) as image:
                 image.verify()
-            with Image.open(path) as image:
+            with Image.open(source_of(path, data)) as image:
                 stored_size = image.size
                 header = image_metadata(image)
                 image.draft("RGB", (ANALYSIS_EDGE, ANALYSIS_EDGE))
                 image.load()
                 look = visual_facts(image, stored_size)
                 return ImageInspection(
-                    visual=look.visual, metadata=_with_exposure(header, look.exposure)
+                    visual=look.visual,
+                    metadata=_with_exposure(header, look.exposure),
+                    digests=digests,
                 )
         except _DECODE_ERRORS as exc:
-            return ImageInspection(problem=f"{type(exc).__name__}: {exc}")
+            return ImageInspection(
+                problem=f"{type(exc).__name__}: {exc}", digests=digests
+            )
 
 
 def read_image_metadata(path: Path) -> MediaMetadata | None:

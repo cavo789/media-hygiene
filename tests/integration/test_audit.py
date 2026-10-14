@@ -6,8 +6,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from media_hygiene.constants import BrokenReason
+from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.errors import MountError
+from media_hygiene.scan.filters import media_kind
+from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import NullProgress, Step
 from media_hygiene.services.audit import AuditService
 from tests.support.demo import build_demo
@@ -103,6 +105,22 @@ def test_second_audit_reuses_the_index(
         monkeypatch.setattr(f"media_hygiene.scan.file_check.{name}", forbidden)
     second = audit(locations)
     assert len(second.plan.decisions) == len(first.plan.decisions)
+
+
+def test_first_audit_reads_each_picture_once(
+    locations: Locations,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The digests of a checked picture come from its decoding: never read again."""
+    build_demo(locations.data_dir)
+    hashed = full_digest
+
+    def videos_only(path: Path) -> str:
+        assert media_kind(path) is MediaKind.VIDEO, path
+        return hashed(path)
+
+    monkeypatch.setattr("media_hygiene.scan.exact.full_digest", videos_only)
+    assert audit(locations).groups
 
 
 def test_unmounted_folders_are_reported(locations: Locations) -> None:

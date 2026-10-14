@@ -18,7 +18,9 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 from PIL import ExifTags, Image, ImageOps
 
+from media_hygiene.scan.hashing import digests_of
 from media_hygiene.scan.image_check import ImageInspection
+from media_hygiene.scan.whole_read import read_whole
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -34,20 +36,27 @@ _UPRIGHT: Final = 1
 def inspect_raw(path: Path) -> ImageInspection:
     """Unpack every pixel of a RAW file: a truncated or damaged one fails.
 
+    The file is read once (`whole_read`): LibRaw unpacks the bytes the digests come
+    from.
+
     Args:
         path: RAW file.
 
     Returns:
-        The decoder error, or nothing to report.
+        The decoder error, or nothing to report; its digests.
     """
     import rawpy
 
+    digests = None
     try:
-        with rawpy.imread(str(path)) as raw:
+        data = read_whole(path)
+        digests = None if data is None else digests_of(data)
+        source = str(path) if data is None else io.BytesIO(data)
+        with rawpy.imread(source) as raw:
             raw.unpack()
     except raw_errors() as exc:
-        return ImageInspection(problem=_describe(exc))
-    return ImageInspection()
+        return ImageInspection(problem=_describe(exc), digests=digests)
+    return ImageInspection(digests=digests)
 
 
 def raw_errors() -> tuple[type[Exception], ...]:

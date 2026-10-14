@@ -41,9 +41,10 @@ trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
 Même le parcours de vos dossiers raccourcit : un dossier où aucun fichier n'a été ajouté,
 supprimé ou renommé depuis le dernier audit est repris du cache, sans regarder chacun de ses
 fichiers. L'audit le dit en une ligne : *« 851 dossiers inchangés repris de l'index, 6 relus. »*
-Une photo modifiée **sur place** par un autre programme (même nom) ne change pas son dossier :
-elle est vue au plus tard quand son dossier est relu, après `full_check_days` (7 jours) dans
-`[scan]`, ou tout de suite avec `audit --full`.
+Un dossier où des photos ont été ajoutées est relu, mais seules ses nouvelles photos sont
+examinées une à une. Une photo modifiée **sur place** par un autre programme (même nom) ne
+change pas son dossier : elle est vue au plus tard après `full_check_days` (7 jours) dans
+`[scan]`, quand chaque dossier est relu en entier, ou tout de suite avec `audit --full`.
 
 Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
 de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une

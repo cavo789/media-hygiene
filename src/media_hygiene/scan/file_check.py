@@ -115,6 +115,9 @@ class FileChecker:
                 inspection = await self._in_pool(_decoder(file.kind), file.path)
                 problem = inspection.problem
                 facts = facts.with_visual(inspection.visual)
+                if inspection.digests is not None:  # read once: no second reading
+                    digests = inspection.digests
+                    facts = facts.with_partial(digests.partial).with_full(digests.full)
                 if file.kind is MediaKind.IMAGE:
                     facts = facts.with_metadata(inspection.metadata)
         finally:

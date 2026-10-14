@@ -67,11 +67,15 @@ def test_a_file_rewritten_in_place_is_measured_again(
     audit(locations)
     opened.clear()
     kept = locations.data_dir / KEPT
-    # Saved by an editor: the file and its folder change (the listing of an unchanged
-    # folder is reused, `services/listing`).
-    for changed in (kept, kept.parent):
-        stat = changed.stat()
-        os.utime(changed, ns=(stat.st_atime_ns, stat.st_mtime_ns + _ONE_SECOND_NS))
+    # Saved by an editor: written to a new file renamed over the old one, so the file
+    # (new inode, new time) and its folder change.
+    saved = kept.with_name("saving.tmp")
+    saved.write_bytes(kept.read_bytes())
+    stat = kept.stat()
+    os.utime(saved, ns=(stat.st_atime_ns, stat.st_mtime_ns + _ONE_SECOND_NS))
+    saved.replace(kept)
+    folder = kept.parent.stat()
+    os.utime(kept.parent, ns=(folder.st_atime_ns, folder.st_mtime_ns + _ONE_SECOND_NS))
     audit(locations)
     assert opened == [kept]
 

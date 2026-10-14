@@ -13,7 +13,12 @@ import pytest
 from media_hygiene.constants import MediaKind, Sizes
 from media_hygiene.scan.filters import ScanFilters, media_kind
 from media_hygiene.scan.folder_cache import WalkSetup
-from media_hygiene.scan.hashing import full_digest, partial_digest
+from media_hygiene.scan.hashing import (
+    Digests,
+    digests_of,
+    full_digest,
+    partial_digest,
+)
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.scan.walker import walk
 
@@ -48,17 +53,23 @@ def test_media_kind(tmp_path: Path, name: str, kind: MediaKind | None) -> None:
 
 @pytest.mark.parametrize(
     "size",
-    [10, Sizes.PARTIAL_HASH + 10, 2 * Sizes.PARTIAL_HASH + 10],
+    [
+        0,
+        10,
+        Sizes.PARTIAL_HASH + 10,
+        2 * Sizes.PARTIAL_HASH,
+        2 * Sizes.PARTIAL_HASH + 10,
+    ],
 )
 def test_digests(tmp_path: Path, size: int) -> None:
-    """The full digest is SHA-256; partial digests differ when the ends differ."""
+    """SHA-256, from the path or from the bytes read once; partial ones see the ends."""
     data = os.urandom(size)
     first, second = tmp_path / "first", tmp_path / "second"
     first.write_bytes(data)
-    second.write_bytes(data[:-1] + bytes([data[-1] ^ 0xFF]))
+    second.write_bytes(data[:-1] + bytes([data[-1] ^ 0xFF]) if data else b"x")
     assert full_digest(first) == hashlib.sha256(data).hexdigest()
+    assert digests_of(data) == Digests(partial_digest(first), full_digest(first))
     assert partial_digest(first) != partial_digest(second)
-    assert partial_digest(first) == partial_digest(first)
 
 
 def test_walk_skips_system_and_excluded_folders(tmp_path: Path) -> None:

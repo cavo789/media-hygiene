@@ -60,3 +60,24 @@ share: a first audit of JPEGs on Windows waits for the disk, not for the decoder
 - Measured once on a Windows folder through Docker (a fresh cache volume over a test folder
   with duplicates): the `checks` and `fingerprints` stages of `--verbosity verbose`, before and
   after, written in the commit message.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `scan/whole_read.py`: a picture up to `WHOLE_READ_LIMIT` (128 MB, not 256: 16 workers ×
+  256 MB could reach 4 GB on a Docker Desktop VM) is read in one `read()`; `inspect_image`
+  decodes it from `io.BytesIO`, `inspect_raw` from a file object (`rawpy.imread` accepts one;
+  a truncated RAW gives the same LibRaw error text).
+- `hashing.digests_of(bytes)` gives exactly `partial_digest` / `full_digest` (unit test over
+  0, 10, 64 KiB + 10, 128 KiB and 128 KiB + 10 bytes). `ImageInspection.digests`, stored by
+  `FileChecker.check` with the other facts (also for a broken picture: it was read anyway).
+- `ExactDuplicateFinder` unchanged: it finds the digests in the index.
+- Test `test_first_audit_reads_each_picture_once`: during a first audit of the demo tree,
+  `exact.full_digest` is only called for videos.
+
+### Not done
+- The measurement on a Windows folder (acceptance item 3): the `checks` and `fingerprints`
+  stages of `--verbosity verbose` on a first audit (fresh cache volume over a test folder with
+  duplicates), before and after.
+  **Reason:** needs the maintainer's Docker Desktop and a rebuilt image; the devcontainer
+  measures (2026-10-14: 45.5 → 40.5 ms per photo, one worker, cold) are in the Context above.

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import Sizes
@@ -12,6 +13,33 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 _ALGORITHM = "sha256"
+
+
+@dataclass(frozen=True, slots=True)
+class Digests:
+    """Both digests of one file, computed from its bytes read once."""
+
+    partial: str
+    full: str
+
+
+def digests_of(data: bytes) -> Digests:
+    """Hash the bytes of a whole file as `partial_digest` and `full_digest` would.
+
+    Same algorithm and same sampled bytes: digests computed either way compare equal.
+
+    Args:
+        data: Every byte of the file.
+
+    Returns:
+        Its partial and full digests.
+    """
+    sample = Sizes.PARTIAL_HASH
+    sampled = data[:sample] + data[-sample:] if len(data) > 2 * sample else data
+    return Digests(
+        partial=hashlib.new(_ALGORITHM, sampled).hexdigest(),
+        full=hashlib.new(_ALGORITHM, data).hexdigest(),
+    )
 
 
 def partial_digest(path: Path) -> str:
