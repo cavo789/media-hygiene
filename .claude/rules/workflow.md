@@ -31,8 +31,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - A private feedback file `.claude/plans/feedback-<topic>.md`, kept as you go: per TODO the
   questions met, the choices and their alternatives, deviations from the TODO, what waits for
   the maintainer (measurements, decisions); at the end, the gains table.
-- One commit per lot (or standalone TODO), `git fsck --no-dangling` first, never `git stash`
-  (another session may share the tree), no push unless asked.
+- A work branch (`iterate/<date>`), one commit per lot pushed as it goes, `git fsck
+  --no-dangling` first, never `git stash` (another session may share the tree), never `main`;
+  a pull request at the end is the review (CI runs the heavy tests); the user merges.
+- Notify the user (`PushNotification`) when the run ends or stops: they may be away.
 - A TODO that needs the maintainer (a measurement on their machine, a decision, real files)
   is left for them, said in the feedback file, never guessed.
 

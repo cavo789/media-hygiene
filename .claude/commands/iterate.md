@@ -1,8 +1,10 @@
 # Iterate
 
 Run the open backlog unattended, lot after lot, as `.todos/plan.md` orders it: first unblock what
-waits for an answer, then implement each lot **in a subagent**, commit, regenerate the plan, and
-keep a feedback file the user reviews afterwards.
+waits for an answer, then implement each lot **in a subagent**, on a work branch, one commit per
+lot pushed as it goes; at the end a **pull request** whose description is the review: the user
+reads it, comments and merges from a phone, and GitHub's CI runs the full suite and the image
+end-to-end tests instead of the user's PC.
 
 **Usage:** `/iterate` — every runnable lot and standalone TODO, in plan order.
 `/iterate <n>` — stop after `n` lots or standalone TODOs.
@@ -24,7 +26,10 @@ short report per lot, so a run of ten lots costs about as much context as one.
    and ask. Never `git stash`.
 2. Read `.todos/plan.md`. If its counts differ from `.claude/scripts/todo_plan_tables.sh`, the
    plan is stale: regenerate it (`/todo-plan`) first.
-3. Create the feedback file `.claude/plans/feedback-<YYYY-MM-DD>-iterate.md` (private,
+3. Create the work branch `iterate/<YYYY-MM-DD>` from an up-to-date `main` (`git switch -c`; a
+   second run the same day: `-2`, `-3`). Never commit an `/iterate` run on `main`: a push of
+   `main` rebuilds the published image; the user merges the pull request when satisfied.
+4. Create the feedback file `.claude/plans/feedback-<YYYY-MM-DD>-iterate.md` (private,
    git-ignored) from the template below; tell the user its path in one line.
 
 ## Phase 1 — Unblock first (while the user is here)
@@ -55,20 +60,27 @@ or locked.
 ## Phase 2 — One lot at a time, each in a subagent
 
 Lots run **one after the other** (they share the working tree), each delegated to a
-`general-purpose` subagent, in the foreground (the next lot depends on its commit). The prompt
-gives it everything it needs, since it starts cold:
+`general-purpose` subagent, in the foreground (the next lot depends on its commit).
+
+**Model per lot** (the `model` parameter): `sonnet` when every TODO of the lot is mechanical — docs
+and captures, translations, backlog files, a small rule or setting with its tests, Priority `Low`
+with a clear recipe; `opus` (the default) for design work, concurrency, caches and indexes,
+anything touching user data (moves, deletions, journals), or a TODO whose Context reports a past
+mistake. In doubt, `opus`. Say the choice in the progress line.
+
+The prompt gives the subagent everything it needs, since it starts cold:
 
 - the TODO IDs of the lot, and: "Follow `.claude/commands/todo.md` (Phases 0–5) on them, and
-  `.claude/rules/workflow.md`. Run targeted tests while working, then once the lot is complete
-  the unit tests and the integration tests, one after the other, gently (`nice`,
-  `PYTHON_CPU_COUNT=4`), and the commit gate on the changed files.";
+  `.claude/rules/workflow.md`. Run the targeted tests of what you touch and the commit gate on the
+  changed files; the full suite and the image tests run in CI on the pull request, not here (the
+  user's PC suffers under heavy load). Run the whole unit suite (fast) once before committing.";
 - "A TODO not ready (a question to the user, data you cannot reach): do not ask — skip it, and
   say why in your report.";
 - "Append the section of each TODO to `<feedback file>` (template in
   `.claude/commands/iterate.md`).";
-- "Then `git fsck --no-dangling` and one commit for the lot: code, tests, docs, translations,
-  the moved TODO files and the plan; the message names the TODO IDs and the measured gains.
-  Never push, never `git stash`.";
+- "Then `git fsck --no-dangling`, one commit for the lot on the current branch (code, tests,
+  docs, translations, the moved TODO files and the plan; the message names the TODO IDs and the
+  measured gains), and `git push -u origin HEAD`. Never push `main`, never `git stash`.";
 - "Report in at most 15 lines: per TODO the outcome (DONE / PARTIAL / skipped and why), the
   commit hash, the tests run and their result, the gains (before → after, %, measured or
   estimated), the questions for the user. Nothing else: no diff, no logs."
@@ -76,7 +88,8 @@ gives it everything it needs, since it starts cold:
 After each subagent:
 
 1. Check its claims cheaply: `git log --oneline -1` (the commit exists), `git status --porcelain`
-   (clean tree). A dirty tree or a missing commit: stop and tell the user what the report says.
+   (clean tree), the branch pushed. A dirty tree or a missing commit: stop, notify the user
+   (below), and tell what the report says.
 2. Keep its report (it feeds the final summary) and give the user a one-line progress note.
 
 Stop early when: a lot ends with a failure its subagent could not fix (the tree stays as the
@@ -87,9 +100,21 @@ unless they say stop); `/iterate <n>` reached `n`.
 
 1. Finish the feedback file: the gains table, the questions, what waits for the user
    (measurements with the exact command, decisions, files to provide).
-2. Final message to the user, in their language: the commits (hash, subject), the gains table,
-   the questions, what waits for them, the path of the feedback file, the next step from
-   `.todos/plan.md`. Then `/todo`'s Phase 6 commit reminder.
+2. Open the pull request (`gh pr create --base main --head <branch>`), in the user's language:
+   title `Iterate <date>: <TODO IDs>`; body = the review — per TODO (outcome, commit, gain), the
+   gains table, the **questions as a numbered list** (the user answers in comments: "2: keep",
+   "3: setting please"), what waits for them, and the next step. The repository is public: no
+   personal data in it (no private paths, names, figures of the user's own library beyond what
+   the TODOs already publish); the full details stay in the private feedback file.
+3. Watch the CI of the pull request in the background (`gh pr checks <n> --watch`, run in the
+   background; never a foreground wait). A failure: read its log (`gh run view --log-failed`),
+   fix it on the branch in a subagent, push again.
+4. **Notify the user** (`PushNotification`, one short line) at the end — pull request opened, CI
+   green or red — and whenever the run stops early or waits for them. They may be away from the
+   terminal.
+5. Final message to the user, in their language: the pull request link, the commits, the gains
+   table, the questions, what waits for them, the next step (`/review-feedback`, then merge).
+   Never merge it yourself.
 
 ## Feedback file template
 
