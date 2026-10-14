@@ -102,7 +102,8 @@ must not be inside a protected folder. Files of protected folders never move.
   else the photo's proposal. Two different final folders typed for the same companions (or a
   folder and *(stay where it is)*) make `sort` refuse the workbook before moving anything, naming
   both cells: give them the same folder, or clear all but one.
-- The cache follows: the next `audit` does not read the moved files again.
+- The cache follows: the next `audit` does not read the moved files again, and the names given
+  in [`people`](../commands/people.md) stay on their faces.
 
 ## Folders left empty
 

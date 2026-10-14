@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore
+from media_hygiene.index.moves import load_moves
 from media_hygiene.people.folding import folded
 from media_hygiene.people.naming import Known, name_all
 from media_hygiene.tags.models import TagSource
@@ -47,7 +48,9 @@ def people_words(
     order = {person.name: rank for rank, person in enumerate(settings.person)}
     found: dict[Path, set[str]] = {}
     for face, name in zip(
-        faces, name_all(faces, Known.of(faces, settings)), strict=True
+        faces,
+        name_all(faces, Known.of(faces, settings, load_moves(connection))),
+        strict=True,
     ):
         if name.named:
             found.setdefault(face.path, set()).add(name.name)

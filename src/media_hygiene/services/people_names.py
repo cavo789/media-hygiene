@@ -6,13 +6,14 @@ A person's photos are those with a face confirmed as theirs, or close enough to 
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from media_hygiene.people.naming import name_all
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.index.face_rows import FaceTally, StoredFace
@@ -28,6 +29,8 @@ class PeopleResult:
     tally: FaceTally
     every: tuple[StoredFace, ...]
     named: tuple[tuple[str, int], ...]  # name, photos of the run; most photos first
+    # Where the photos the index followed went: names confirmed before still apply.
+    moves: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
 
 
 def named_photos(

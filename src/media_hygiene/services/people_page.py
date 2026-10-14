@@ -53,7 +53,7 @@ def serve_people(runtime: Runtime, result: PeopleResult, port: int) -> None:
         face_prefix=FACE_PREFIX,
         photo_prefix=PHOTO_PREFIX,
     )
-    names = NamesFile(_names_file(runtime), runtime.settings.people)
+    names = NamesFile(_names_file(runtime), runtime.settings.people, result.moves)
     roster = Roster(PeopleBoard.of(result.groups), result.every, names)
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PeopleApp(

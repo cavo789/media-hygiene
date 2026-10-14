@@ -10,11 +10,13 @@ import asyncio
 import secrets
 from contextlib import ExitStack
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Self
 
 from media_hygiene.faces.models import FACE_MODEL
 from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore, FaceTally
+from media_hygiene.index.moves import load_moves
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.people.naming import Known
 from media_hygiene.scan.progress import Step
@@ -162,9 +164,11 @@ class PeopleStep:
         faces = tuple(face for face in every if face.path in shown)
         settings = self._runtime.settings.people
         analysed = sum(store.scanned(photo) for photo in work.photos)
+        moves = load_moves(store.connection)
         return PeopleResult(
             group_people(faces, settings),
             FaceTally(analysed, len(faces), store.tally().seconds_per_photo),
             every,
-            named_photos(faces, Known.of(every, settings)),
+            named_photos(faces, Known.of(every, settings, moves)),
+            MappingProxyType(moves),
         )

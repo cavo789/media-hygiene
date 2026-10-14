@@ -80,6 +80,8 @@ On the page, type a name on a group and press Enter: the name is saved into `con
 back and shown. `x` picks several groups to name at once, × takes a wrong face out, `i` ignores
 a group of strangers, `y` confirms a suggestion ("Chloé?"). The next runs keep every name, and
 [`search`](search.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
+The names follow the photos [`sort`](sort.md) moves (and `undo` moves back); `config.toml` is
+updated the next time the page saves a name.
 Each name is a `[[people.person]]` entry of `config.toml`. Details:
 [People](../reference-people.md#name-the-groups).
 

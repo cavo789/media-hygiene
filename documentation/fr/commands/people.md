@@ -82,7 +82,9 @@ Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enr
 `config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
 visage erroné, `i` ignore un groupe d'inconnus, `y` confirme une suggestion (« Chloé ? »). Les
 exécutions suivantes gardent tous les noms, et [`search`](search.md) retrouve les personnes par
-leur nom : `search Chloé montagne`, `search person:chloe`. Chaque nom est une entrée
+leur nom : `search Chloé montagne`, `search person:chloe`. Les noms suivent les photos que
+[`sort`](sort.md) déplace (et qu'`undo` remet en place) ; `config.toml` est mis à jour la
+prochaine fois que la page enregistre un nom. Chaque nom est une entrée
 `[[people.person]]` de `config.toml`. Détails :
 [Les personnes](../reference-people.md#nommer-les-groupes).
 

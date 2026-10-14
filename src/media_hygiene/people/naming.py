@@ -16,9 +16,10 @@ from typing import TYPE_CHECKING, Final
 import numpy as np
 
 from media_hygiene.faces.models import EMBEDDING_SIZE, vector_of
+from media_hygiene.people.followed import follow_ids
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from numpy.typing import NDArray
@@ -95,17 +96,26 @@ class Known:
     similarity: float
 
     @classmethod
-    def of(cls, every: Sequence[StoredFace], settings: PeopleSettings) -> Known:
+    def of(
+        cls,
+        every: Sequence[StoredFace],
+        settings: PeopleSettings,
+        moves: Mapping[str, str] | None = None,
+    ) -> Known:
         """Gather the references among every face of the index.
 
         Args:
             every: The faces of the index, mounted or not: a name stays known while
                 its photos are elsewhere.
             settings: `[people]`, with the names.
+            moves: Where the photos the index followed went (`index.moves`): a name
+                confirmed before a `sort` still finds its face.
 
         Returns:
             The references; a face id no longer in the index is left out.
         """
+        present = {str(face.path) for face in every}
+        settings = follow_ids(settings, moves or {}, present)
         confirmed = {key: FaceName(_IGNORED, How.IGNORED) for key in settings.ignored}
         rejected: dict[str, set[str]] = {}
         for person in settings.person:

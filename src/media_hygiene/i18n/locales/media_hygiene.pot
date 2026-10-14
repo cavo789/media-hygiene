@@ -5510,6 +5510,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} face follows a photo that sort moved: config.toml updated."
+msgid_plural "{count} faces follow photos that sort moved: config.toml updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} face forgotten."
 msgid_plural "{count} faces forgotten."
 msgstr[0] ""

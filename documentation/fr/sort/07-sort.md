@@ -110,7 +110,8 @@ dossiers protégés ne bougent jamais.
   proposition de la photo. Deux dossiers finaux différents tapés pour les mêmes compagnons (ou un
   dossier et *(rester où il est)*) font refuser le classeur par `sort` avant tout déplacement, en
   nommant les deux cellules : donnez-leur le même dossier, ou videz-les toutes sauf une.
-- Le cache suit : le prochain `audit` ne relit pas les fichiers déplacés.
+- Le cache suit : le prochain `audit` ne relit pas les fichiers déplacés, et les noms donnés
+  dans [`people`](../commands/people.md) restent sur leurs visages.
 
 ## Les dossiers laissés vides
 

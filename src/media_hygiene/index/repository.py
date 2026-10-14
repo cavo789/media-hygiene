@@ -7,6 +7,7 @@ import time
 from typing import TYPE_CHECKING, Final, Self
 
 from media_hygiene.index.facts import FileFacts
+from media_hygiene.index.moves import record_moves
 from media_hygiene.index.preload import bounds_under, known_under
 from media_hygiene.index.rows import facts_of, is_current, row_of
 from media_hygiene.index.schema import (
@@ -170,6 +171,7 @@ class FactsRepository:
                 self._known.pop(path, None)
         for statement in MOVE:
             self._connection.executemany(statement, pairs)
+        record_moves(self._connection, [(old, new) for new, old in pairs])
 
     @property
     def connection(self) -> sqlite3.Connection:

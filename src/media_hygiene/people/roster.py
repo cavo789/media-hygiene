@@ -7,17 +7,19 @@ writable `/config`, the page shows the names already given and saves none.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.i18n import _, ngettext
+from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming, give_name, ignore_faces, reject_faces
 from media_hygiene.people.config_file import read_people, save_people
+from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.naming import Known, id_of, name_all
+from media_hygiene.people.proof import followed_line, proof_line
 from media_hygiene.people.sections import sections_of
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Mapping
     from pathlib import Path
 
     from media_hygiene.config.people_settings import PeopleSettings
@@ -30,10 +32,11 @@ SHOWN: Final = 60  # faces shown per section: enough to judge it
 
 @dataclass(frozen=True, slots=True)
 class NamesFile:
-    """Where the names are saved (None: not mounted), and the settings of the run."""
+    """Where the names are saved (None: not mounted), the settings, the moves."""
 
     config_file: Path | None
     settings: PeopleSettings
+    moves: Mapping[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -61,7 +64,8 @@ class Roster:
         self._every = every
         self._file = names.config_file
         self._settings = names.settings
-        self._names = name_all(board.faces, Known.of(every, self._settings))
+        self._moves = names.moves
+        self._names = name_all(board.faces, self._known())
 
     @property
     def writable(self) -> bool:
@@ -107,7 +111,9 @@ class Roster:
             raise ValueError(
                 _("names are kept in config.toml: mount a folder of yours on /config")
             )
-        written = read_people(self._file)
+        present = {str(face.path) for face in self._every}
+        original = read_people(self._file)
+        written = follow_ids(original, self._moves, present)
         if change.action == "ignore":
             wanted = ignore_faces(written, change.naming.faces)
         elif change.action == "reject":
@@ -119,8 +125,16 @@ class Roster:
         self._settings = self._settings.model_copy(
             update={"person": back.person, "ignored": back.ignored}
         )
-        self._names = name_all(self.board.faces, Known.of(self._every, self._settings))
-        return _proof(back, change)
+        self._names = name_all(self.board.faces, self._known())
+        return proof_line(back, change) + followed_line(original, written)
+
+    def _known(self) -> Known:
+        """The faces of reference, ids of moved photos followed (TODO 0146).
+
+        Returns:
+            The references.
+        """
+        return Known.of(self._every, self._settings, self._moves)
 
     def ids(self, keys: tuple[int, ...]) -> tuple[str, ...]:
         """The ids of faces of the board.
@@ -161,33 +175,3 @@ class Roster:
                 {"key": key, "photo": host(self.board.faces[key].path)} for key in shown
             ],
         }
-
-
-def _proof(back: PeopleSettings, change: Change) -> str:
-    """Say what `config.toml` holds now for the change.
-
-    Args:
-        back: `[people]` read back from the disk.
-        change: The change.
-
-    Returns:
-        One line.
-    """
-    if change.action == "ignore":
-        count = len(back.ignored)
-        return ngettext(
-            "Saved in config.toml, read back: {count} face ignored.",
-            "Saved in config.toml, read back: {count} faces ignored.",
-            count,
-        ).format(count=count)
-    folded = change.naming.name.strip().casefold()
-    person = next((p for p in back.person if p.name.casefold() == folded), None)
-    if person is None:
-        return _("Saved in config.toml, read back: nobody is named {name}.").format(
-            name=change.naming.name
-        )
-    return ngettext(
-        "Saved in config.toml, read back: {name}, {count} confirmed face.",
-        "Saved in config.toml, read back: {name}, {count} confirmed faces.",
-        len(person.faces),
-    ).format(name=person.name, count=len(person.faces))

@@ -6583,6 +6583,15 @@ msgstr[0] "{count} copie en trop"
 msgstr[1] "{count} copies en trop"
 
 #, python-brace-format
+msgid "{count} face follows a photo that sort moved: config.toml updated."
+msgid_plural "{count} faces follow photos that sort moved: config.toml updated."
+msgstr[0] ""
+"{count} visage suit une photo que sort a déplacée : config.toml mis à jour."
+msgstr[1] ""
+"{count} visages suivent des photos que sort a déplacées : config.toml mis à "
+"jour."
+
+#, python-brace-format
 msgid "{count} face forgotten."
 msgid_plural "{count} faces forgotten."
 msgstr[0] "{count} visage oublié."

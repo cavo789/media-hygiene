@@ -10,7 +10,8 @@ version 7 what each place word names (`tags.models.PlaceKind`: `kind`, empty for
 words of an older run until `tags` runs again); version 8 the faces of the photos
 (`index.face_schema`); version 9 the listing of every folder walked
 (`index.folder_listings`); version 10 the colourfulness and same-stream digest of
-near-duplicate candidates (`index.measures`). An older index keeps its digests
+near-duplicate candidates (`index.measures`); version 11 where the files the index
+followed went (`index.moves`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images
 again.
 """
@@ -22,11 +23,12 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.measures import CREATE_MEASURES
+from media_hygiene.index.moves import CREATE_MOVES
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 10
+SCHEMA_VERSION: Final = 11
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -185,4 +187,5 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_FACES)
     connection.execute(CREATE_FOLDER_LISTINGS)
     connection.execute(CREATE_MEASURES)
+    connection.execute(CREATE_MOVES)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
