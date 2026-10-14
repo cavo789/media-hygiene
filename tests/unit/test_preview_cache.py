@@ -92,5 +92,5 @@ def test_trimmed_least_recently_used_first(tmp_path: Path) -> None:
         "8.jpg",
         "9.jpg",
     ]
-    assert trim_previews(None) == 0
-    assert trim_previews(tmp_path / "none") == 0
+    assert trim_previews(None, 500) == 0
+    assert trim_previews(tmp_path / "none", 500) == 0

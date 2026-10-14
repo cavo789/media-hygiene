@@ -46,3 +46,25 @@ def test_a_second_report_decodes_no_picture(
     assert first.parent != second.parent
     assert any((second.parent / "thumbs").iterdir())
     assert any((locations.cache_dir / "previews").iterdir())
+
+
+def test_the_bound_comes_from_the_settings(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`[cache] previews_max_gb` tiny: previews are trimmed before the next report."""
+    build_demo(locations.data_dir)
+    runtime = make_runtime(locations, {"cache": {"previews_max_gb": 1e-9}})
+    assert runtime.settings.cache.previews_max_bytes == 1
+    real = thumbnails.jpeg_preview
+    decoded: list[Path] = []
+
+    def counted(source: Path, edge: int) -> bytes | None:
+        decoded.append(source)
+        return real(source, edge)
+
+    monkeypatch.setattr(preview_cache, "jpeg_preview", counted)
+    findings = AuditService(runtime, NullProgress()).run()
+    write_report(runtime, ReportRecord(RunKind.AUDIT, findings))
+    decoded.clear()
+    write_report(runtime, ReportRecord(RunKind.AUDIT, findings))
+    assert decoded, "trimmed to nothing: the previews are made again"

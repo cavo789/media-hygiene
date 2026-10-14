@@ -36,7 +36,7 @@ def write_report(runtime: Runtime, record: ReportRecord) -> Path | None:
     reports_dir = runtime.locations.reports_dir
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
-        trim_previews(runtime.previews_dir)
+        trim_previews(runtime.previews_dir, runtime.settings.cache.previews_max_bytes)
         with runtime.executor_factory() as executor:
             report = ReportWriter(
                 reports_dir, runtime.mapper, PreviewPool(executor, runtime.previews_dir)

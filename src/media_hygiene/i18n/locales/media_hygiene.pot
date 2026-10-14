@@ -3396,6 +3396,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"The cache folder (/cache) keeps the previews of your photos, one per "
+"size, so that reports and review pages never decode a photo twice. At "
+"most this many gigabytes: beyond, the previews shown least recently are "
+"removed, and made again when needed."
+msgstr ""
+
+msgid ""
 "The categories below are an example to replace with your own, e.g. "
 "Parties, Holidays and outings, School, Sport and leisure, At home, "
 "Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"

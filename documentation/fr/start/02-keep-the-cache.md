@@ -58,7 +58,9 @@ qui est nouveau ou modifié.
 Il garde aussi les aperçus de vos photos, un par taille : les petits des rapports HTML, les
 grands des pages de revue, la grille de `search`. Une photo est décodée une fois ; les rapports
 et pages suivants relisent son aperçu. Les aperçus prennent au plus 2 Go : au-delà, ceux qui
-n'ont plus été affichés depuis le plus longtemps sont supprimés, et refaits s'il le faut.
+n'ont plus été affichés depuis le plus longtemps sont supprimés, et refaits s'il le faut. Pour
+changer cette limite, réglez `previews_max_gb` dans la table `[cache]` de `config.toml`
+(`config --upgrade` l'ajoute à un fichier plus ancien).
 
 ## Bon à savoir
 

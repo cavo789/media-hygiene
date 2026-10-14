@@ -29,9 +29,8 @@ _VERSION: Final = 1
 _NAME_LENGTH: Final = 32
 _SUFFIX: Final = ".jpg"
 _PARTIAL: Final = ".part"
-# The bound of the cache folder: beyond it, the previews used least recently go,
-# down to `_TRIMMED_SHARE` of it (so that the next report does not trim again).
-MAX_PREVIEW_BYTES: Final = 2 * 1024**3
+# Beyond the bound (`[cache] previews_max_gb`), the previews used least recently go,
+# down to this share of it (so that the next report does not trim again).
 _TRIMMED_SHARE: Final = 0.8
 
 
@@ -133,7 +132,7 @@ def _keep(target: Path, image: bytes) -> None:
         partial_file.replace(target)
 
 
-def trim_previews(folder: Path | None, budget: int = MAX_PREVIEW_BYTES) -> int:
+def trim_previews(folder: Path | None, budget: int) -> int:
     """Keep the cache folder within its bound, the previews used least recently first.
 
     Args:

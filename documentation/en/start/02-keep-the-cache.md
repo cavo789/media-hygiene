@@ -56,7 +56,9 @@ the next audits, `review --near` and `clean` measure only what is new or changed
 It keeps the previews of your photos too, one per size: the small ones of the HTML reports,
 the large ones of the review pages, the grid of `search`. A photo is decoded once; the next
 reports and pages read its preview back. The previews take at most 2 GB: beyond, those not
-shown for the longest time are removed, and made again if needed.
+shown for the longest time are removed, and made again if needed. To change that bound, set
+`previews_max_gb` in the `[cache]` table of `config.toml` (`config --upgrade` adds it to an
+older file).
 
 ## Good to know
 

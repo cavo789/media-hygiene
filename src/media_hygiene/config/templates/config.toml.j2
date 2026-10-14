@@ -113,6 +113,11 @@ bright_above = 205.0
 clipped_above = 0.25
 
 
+[cache]
+{{ comment(_("The cache folder (/cache) keeps the previews of your photos, one per size, so that reports and review pages never decode a photo twice. At most this many gigabytes: beyond, the previews shown least recently are removed, and made again when needed.")) }}
+previews_max_gb = 2.0
+
+
 [places]
 {{ comment(_("The map of 'places', where you name your places: only its tiles are fetched, by your browser, from this https address (they show the areas you look at, never a photo). Another tile server asks for its own credit in attribution (plain text).")) }}
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
