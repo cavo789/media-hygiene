@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_folders import Fate, FolderReport, Verdict, verdicts
 from media_hygiene.actions.sort_moves import file_of
 from media_hygiene.config.sort_settings import is_media_name
@@ -71,8 +71,7 @@ class FolderCleaner:
                 self._changes.record(entry, verdict.folder.rmdir)
             except OSError as exc:
                 _LOGGER.debug("Removal failed on %s", verdict.folder, exc_info=True)
-                reason = exc.strerror or str(exc)
-                self._tally.failed.append(Incident(verdict.folder, reason))
+                self._tally.failed.append(Incident(verdict.folder, why(exc)))
                 yield Verdict(verdict.folder, Fate.HOLDS_FILES)
                 continue
             yield verdict

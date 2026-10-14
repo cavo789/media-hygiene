@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import logging
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
+from contextvars import copy_context
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.clean_step import said
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.i18n import ngettext
 
 if TYPE_CHECKING:
@@ -70,7 +71,9 @@ def run_all[T](actions: Iterable[T], runner: Runner[T]) -> None:
             for planned in actions:
                 if len(running) >= runner.workers * _AHEAD:
                     _settle(running, runner, wait(running, return_when=FIRST_COMPLETED))
-                running[pool.submit(runner.work, planned)] = planned
+                # each worker speaks the language of the run: `_()` reads a context var
+                work = pool.submit(copy_context().run, runner.work, planned)
+                running[work] = planned
             while running:
                 _settle(running, runner, wait(running, return_when=FIRST_COMPLETED))
         except BaseException as stop:
@@ -121,7 +124,7 @@ def guarded(tally: Tally) -> Callable[[Planned], None]:
             action()
         except OSError as exc:
             _LOGGER.debug("Action failed on %s", file.path, exc_info=True)
-            tally.failed.append(Incident(file.path, exc.strerror or str(exc)))
+            tally.failed.append(Incident(file.path, why(exc)))
 
     return work
 

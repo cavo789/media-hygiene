@@ -292,6 +292,10 @@ msgstr "-v media-hygiene-cache:/cache (prochains audits bien plus rapides)"
 msgid "... and {count} more."
 msgstr "… et {count} de plus."
 
+#, python-brace-format
+msgid "... and {count} more: {reason}"
+msgstr "… et {count} de plus : {reason}"
+
 msgid "/"
 msgstr "/fr/"
 
@@ -4116,8 +4120,8 @@ msgstr[0] ""
 "Arrêt : le fichier en cours se termine d'abord, pour que rien ne reste à "
 "moitié fait…"
 msgstr[1] ""
-"Arrêt : les {count} fichiers en cours se terminent d'abord, pour que rien "
-"ne reste à moitié fait…"
+"Arrêt : les {count} fichiers en cours se terminent d'abord, pour que rien"
+" ne reste à moitié fait…"
 
 msgid "Subject"
 msgstr "Sujet"
@@ -5434,6 +5438,9 @@ msgid_plural "and {n} more faces"
 msgstr[0] "et {n} visage de plus"
 msgstr[1] "et {n} visages de plus"
 
+msgid "another program is using it"
+msgstr "un autre programme l'utilise"
+
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr "appliquez votre tri : les fichiers mis de côté vont en quarantaine."
 
@@ -5705,6 +5712,9 @@ msgstr "il n'est plus à {path} : déplacé ou renommé depuis"
 msgid "it is no longer in the album: removed already"
 msgstr "il n'est plus dans l'album : déjà supprimé"
 
+msgid "it is no longer there"
+msgstr "il n'est plus là"
+
 msgid "it is not the marker file of an album: kept"
 msgstr "ce n'est pas le fichier repère d'un album : gardé"
 
@@ -5943,6 +5953,9 @@ msgstr "il ne reste aucune photo gardée de sa série"
 msgid "none: the whole series aside, then next"
 msgstr "aucune : toute la série écartée, puis suivante"
 
+msgid "not allowed (the owner or the permissions of the file)"
+msgstr "non autorisé (le propriétaire ou les permissions du fichier)"
+
 msgid "not checked"
 msgstr "non vérifié"
 
@@ -6129,6 +6142,9 @@ msgstr "netteté {value}"
 msgid "small"
 msgstr "petit"
 
+msgid "something of that name is already there"
+msgstr "quelque chose porte déjà ce nom à cet endroit"
+
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr "triez les rafales au clavier, avec 'media-hygiene review'."
 
@@ -6177,6 +6193,12 @@ msgstr "la copie diffère de l'original"
 msgid "the copy of the previous sidecar does not match it"
 msgstr "la copie du fichier compagnon précédent ne lui correspond pas"
 
+msgid "the disk could not be read or written (input/output error)"
+msgstr "le disque n'a pas pu être lu ou écrit (erreur d'entrée/sortie)"
+
+msgid "the disk is full"
+msgstr "le disque est plein"
+
 msgid "the file is gone"
 msgstr "le fichier a disparu"
 
@@ -6192,6 +6214,9 @@ msgstr "les fichiers ne sont plus identiques"
 
 msgid "the folder is gone already"
 msgstr "le dossier a déjà disparu"
+
+msgid "the folder is mounted read-only (:ro)"
+msgstr "le dossier est monté en lecture seule (:ro)"
 
 msgid "the folder is not empty"
 msgstr "le dossier n'est pas vide"

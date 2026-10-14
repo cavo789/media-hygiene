@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import threading
 import time
 from typing import TYPE_CHECKING, Final, override
@@ -13,7 +14,11 @@ from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.actions.parallel import WORKERS
 from media_hygiene.actions.restore import perform
 from media_hygiene.actions.undo import UndoExecutor
+from media_hygiene.console.incidents_view import SHOWN_FIRST, show_failed
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import using
 from media_hygiene.scan.progress import NullProgress
+from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -28,14 +33,14 @@ _RUN: Final = "20261014-090000"
 class Clean:
     """A clean done by hand: files in two folders, each moved to the quarantine."""
 
-    def __init__(self, root: Path) -> None:
-        """Set aside `_FILES` files, journaled `pending` then `done`."""
+    def __init__(self, root: Path, files: int = _FILES) -> None:
+        """Set aside `files` files, journaled `pending` then `done`."""
         self.data = root / "data" / "c" / "Photos"
         self.run = root / "quarantine" / _RUN
         self.journal = root / f"{_RUN}.jsonl"
         self.content = {
             self.data / f"{index % 2}" / f"{index}.jpg": bytes([index]) * (index + 1)
-            for index in range(_FILES)
+            for index in range(files)
         }
         with JournalWriter.open(self.journal) as writer:
             for seq, (path, data) in enumerate(self.content.items(), 1):
@@ -151,3 +156,28 @@ def test_an_undo_stopped_between_its_lines_is_judged_from_the_files(
     assert outcome.done == _FILES - 1
     assert [incident.path.name for incident in outcome.skipped] == [f"{_FILES - 1}.jpg"]
     assert run.back() == _FILES
+
+
+def test_identical_failures_are_said_once_in_the_run_language(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """50 files refused by the mount: French plain words, a handful of lines (0162)."""
+    run = Clean(tmp_path, files=50)
+
+    def refused(entry: JournalEntry, reversal: Reversal) -> None:
+        del reversal
+        raise PermissionError(errno.EPERM, "Operation not permitted", entry.path)
+
+    monkeypatch.setattr("media_hygiene.actions.undo.perform", refused)
+    with using(Locale.FR):
+        outcome = run.undo()
+        assert len(outcome.failed) == 50
+        assert {incident.reason for incident in outcome.failed} == {
+            "non autorisé (le propriétaire ou les permissions du fichier)"
+        }  # translated in the worker threads too
+        runtime = make_runtime(make_locations(tmp_path / "mounts"))
+        show_failed(runtime, outcome.failed)
+    text = output_of(runtime)
+    assert len(text.splitlines()) == SHOWN_FIRST + 1
+    assert "… et 45 de plus : non autorisé" in text
+    assert "[Errno" not in text

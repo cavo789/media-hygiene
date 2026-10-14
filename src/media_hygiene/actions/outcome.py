@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import errno
+import os
 import time
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
+
+from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -75,3 +79,33 @@ def combine(outcomes: Sequence[Outcome]) -> Outcome:
         failed=tuple(item for outcome in outcomes for item in outcome.failed),
         seconds=sum(outcome.seconds for outcome in outcomes),
     )
+
+
+def why(exc: Exception) -> str:
+    """Say in plain words why an action failed: never a path, never `[Errno n]`.
+
+    The line that shows the reason already names the file (in its Windows form): the
+    container path and the error number that `str(exc)` adds mean nothing to a user.
+    Our own `OSError(_("..."))` messages, without an error number, pass unchanged.
+    The raw error stays in the debug log.
+
+    Args:
+        exc: The error met.
+
+    Returns:
+        The translated reason.
+    """
+    if not isinstance(exc, OSError) or exc.errno is None:
+        return str(exc)
+    reasons = {
+        errno.EPERM: _("not allowed (the owner or the permissions of the file)"),
+        errno.EACCES: _("not allowed (the owner or the permissions of the file)"),
+        errno.ENOSPC: _("the disk is full"),
+        errno.EEXIST: _("something of that name is already there"),
+        errno.ENOENT: _("it is no longer there"),
+        errno.EROFS: _("the folder is mounted read-only (:ro)"),
+        errno.ENOTEMPTY: _("the folder is not empty"),
+        errno.EBUSY: _("another program is using it"),
+        errno.EIO: _("the disk could not be read or written (input/output error)"),
+    }
+    return reasons.get(exc.errno) or exc.strerror or os.strerror(exc.errno)

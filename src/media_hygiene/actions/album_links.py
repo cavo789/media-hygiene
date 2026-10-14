@@ -15,6 +15,7 @@ import errno
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.outcome import why
 from media_hygiene.constants import ALBUM_MARKER
 from media_hygiene.i18n import _
 
@@ -47,7 +48,7 @@ def why_not(exc: OSError) -> str:
         return _("a file of that name is in the album already")
     if exc.errno == errno.EMLINK:
         return _("this file has too many names already")
-    return exc.strerror or str(exc)
+    return why(exc)
 
 
 def link_blocker(entry: JournalEntry) -> str | None:

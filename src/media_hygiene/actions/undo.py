@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Status
-from media_hygiene.actions.outcome import Incident, Outcome, Tally
+from media_hygiene.actions.outcome import Incident, Outcome, Tally, why
 from media_hygiene.actions.parallel import Runner, run_all, stopping_on
 from media_hygiene.actions.quarantine import LeftFolders
 from media_hygiene.actions.restore import perform
@@ -120,7 +120,7 @@ class UndoExecutor:
             except OSError as exc:
                 _LOGGER.debug("Restore failed on %s", entry.path, exc_info=True)
                 with self._lock:
-                    self._tally.failed.append(Incident(Path(entry.path), str(exc)))
+                    self._tally.failed.append(Incident(Path(entry.path), why(exc)))
 
     def _shown(self, chain: Chain) -> None:
         """Say which files came back, and advance the bar (the calling thread).

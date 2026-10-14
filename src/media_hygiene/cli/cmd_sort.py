@@ -18,8 +18,6 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort import Prepared, SortResult
 
-_SHOWN_INCIDENTS = 10
-
 
 # The options are parameters: the documented exception for Typer commands.
 def sort_command(  # pylint: disable=too-many-arguments
@@ -133,9 +131,8 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         runtime: Settings, mount points and output.
         result: The run.
     """
-    from rich.markup import escape
-
     from media_hygiene.cli.next_steps import carried, safety
+    from media_hygiene.console.incidents_view import show_failed, show_skipped
     from media_hygiene.console.sort_view import show_kept_folders, show_manifest
     from media_hygiene.console.tables import outcome_table
     from media_hygiene.errors import MediaHygieneError
@@ -145,10 +142,8 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
     outcome = result.moves.outcome
     title = _("Sort {run_id}").format(run_id=result.run_id)
     output.show(outcome_table(outcome, title))
-    for incident in outcome.skipped[:_SHOWN_INCIDENTS]:
-        output.warning(escape(f"{host(incident.path)}: {incident.reason}"))
-    for incident in outcome.failed[:_SHOWN_INCIDENTS]:
-        output.error(escape(f"{host(incident.path)}: {incident.reason}"))
+    show_skipped(runtime, outcome.skipped)
+    show_failed(runtime, outcome.failed)
     if result.folders.removed:
         output.info(
             _("Source folders removed: {count}.").format(count=result.folders.removed)
