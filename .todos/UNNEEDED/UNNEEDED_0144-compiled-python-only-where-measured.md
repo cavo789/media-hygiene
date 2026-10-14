@@ -50,3 +50,22 @@ Python is loops over files: candidate pairs in `near._clusters` (`combinations` 
 
 - A written answer, with figures: which steps (if any) were Python-bound, what was done, the
   times before and after.
+
+## Status — UNNEEDED (2026-10-14)
+
+The figures it waited for (DONE_0131, 0104 §7: `C:\Photos`, 52,056 media files, Docker
+Desktop): a warm audit takes 3–4 s in all, `listing 1.1 s · cache 0.8 s · checks 0.1 s ·
+fingerprints 0.0 s · near duplicates 1.5 s · colours 0.0 s · same streams 0.0 s`, then the
+report in 0.8 s.
+
+- **Python-bound steps**: only `near duplicates` (1.5 s: `find_similar` run twice, quarter
+  buckets, keep policy) and part of the report. Listing and cache are I/O and SQLite; a first
+  audit is dominated by decoding (C, process pool) and `ffmpeg`.
+- **Best case for a compiler**: mypyc's typical 2–4× on that one step saves ~1 s per command,
+  for a native build per platform and a module set mypyc must accept. Not worth it.
+- **Nothing was changed**; no before/after times therefore.
+
+Revive only if `near duplicates` passes ~10 s on a warm audit of a larger collection, and then
+in this order: skip the second `find_similar` run when the colours change nothing, vectorise
+the bucket comparisons with `np.bitwise_count`, and mypyc on `plan/near.py` +
+`plan/likeness.py` last.
