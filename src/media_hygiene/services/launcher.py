@@ -21,6 +21,7 @@ from media_hygiene.paths.docker_run import (
     running_image,
 )
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -106,7 +107,7 @@ def launcher_script(
 
 
 def render_script(script: LauncherScript) -> str:
-    """Write the script, its header translated.
+    """Write the script, its header translated; `mh.ps1` in ASCII only.
 
     Args:
         script: What the script holds.
@@ -116,13 +117,14 @@ def render_script(script: LauncherScript) -> str:
     """
     environment_ = translated_environment(_TEMPLATE_PACKAGE, escaped=())
     template = environment_.get_template(_TEMPLATES[script.shell])
-    return template.render(
+    text = template.render(
         script=script,
         function=LAUNCHER_FUNCTION,
         variable=LAUNCHER_VARIABLE,
         image=running_image(),
         header=_header(script.shell),
     )
+    return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
 
 
 def script_path(shell: Shell) -> str:

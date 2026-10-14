@@ -105,6 +105,9 @@ PowerShell.
   and loading the file stops with the right command to run (without `-it`).
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **Accented folders** (`C:\Photos\Vidéos`) are safe: `mh.ps1` holds ASCII characters only, so
+  that `>` cannot garble them, whatever the console's code page. An `é` of a folder is written
+  `$([char]0x00E9)`, which PowerShell turns back into `é`; the comments lose their accents.
 
 ## Go further
 

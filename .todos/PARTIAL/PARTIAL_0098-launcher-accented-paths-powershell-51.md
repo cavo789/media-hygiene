@@ -52,3 +52,26 @@ when opened on Windows (UTF-8 bytes read in the console's old code page, CP850).
 were hit there, but an accented folder in a `-v` would be corrupted the same way: the symptom is
 confirmed, the fix (an ASCII-safe script, or a BOM) is still to choose. The maintainer fixed those
 two comments by hand.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Fix chosen: an ASCII-only `mh.ps1`, no BOM. A BOM would not help: the corruption happens
+  before `>` writes the file, when PowerShell decodes the tool's output with the console's code
+  page. New `services/launcher_ascii.py`, applied by `launcher.render_script` to the PowerShell
+  script only. In code lines, every non-ASCII character becomes `$([char]0x00E9)`, or
+  `$([char]::ConvertFromUtf32(0x…))` beyond U+FFFF. Every path and option of the template lies in
+  a double-quoted string, where PowerShell expands it. In comment lines, accents are dropped
+  (NFKD, `à` → `a`). The bash script is unchanged (UTF-8 end to end).
+- Tests `tests/unit/test_launcher_ascii.py`: `C:\Photos\Vidéos` and `D:\Été 2019`, French
+  header, render an ASCII-only script whose strings, expanded the way PowerShell does, give back
+  the exact `-v` lines; an emoji folder; bash keeps UTF-8.
+- Docs en + fr: a "Good to know" bullet in `commands/launcher.md`, and a troubleshooting entry
+  (`mh` mounts an empty folder instead of an accented one: write `launcher` again).
+
+### Not done
+- Manual check on Windows PowerShell 5.1 (and 7) with an image built from this commit: `docker
+  run … -v "C:\Photos\Vidéos:/data/c/Photos/Vidéos:ro" … launcher > mh.ps1`, then `. mh.ps1`,
+  `mh audit` finds the files of the accented folder, and `notepad mh.ps1` shows ASCII.
+  **Reason:** no Windows in the devcontainer; only the maintainer can run it. Close as DONE
+  once it passes.

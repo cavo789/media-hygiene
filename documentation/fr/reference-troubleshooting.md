@@ -108,6 +108,14 @@ fichiers réécrits par les outils Windows : « UTF-8 avec BOM » du Bloc-notes,
 `Set-Content -Encoding UTF8`, ou l'UTF-16 de `>` et `Out-File`. Il en va de même pour
 `config.toml`.
 
+## `mh` monte un dossier vide au lieu d'un dossier accentué
+
+Un `mh.ps1` écrit par une image plus ancienne contient `Vid├®os` là où votre dossier s'appelle
+`Vidéos` : PowerShell a décodé la sortie de l'outil avec l'ancienne page de codes de la console
+avant que `>` ne l'enregistre. `mh` monte alors un dossier qui n'existe pas, Docker Desktop le crée
+vide, et l'audit n'y trouve rien. Relancez `launcher`, avec les mêmes options `-v`, vers le même
+fichier : le nouveau script ne contient que de l'ASCII et garde chaque accent.
+
 ## « Erreur inattendue pendant … »
 
 Un bogue de l'outil, pas une erreur de votre part. Le message dit ce qui a échoué et si vos

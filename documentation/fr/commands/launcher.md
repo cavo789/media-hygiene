@@ -107,6 +107,10 @@ PowerShell.
   lanceur, et le chargement du fichier s'arrête sur la bonne commande (sans `-it`).
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **Les dossiers accentués** (`C:\Photos\Vidéos`) ne craignent rien : `mh.ps1` ne contient que
+  des caractères ASCII, que `>` ne peut pas abîmer, quelle que soit la page de codes de la
+  console. Un `é` de dossier y est écrit `$([char]0x00E9)`, que PowerShell retransforme en `é` ;
+  les commentaires perdent leurs accents.
 
 ## Pour aller plus loin
 

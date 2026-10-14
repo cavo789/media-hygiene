@@ -103,6 +103,14 @@ PowerShell 7 and Notepad show it right as is. The tool also reads back the files
 rewrite: "UTF-8 with BOM" from Notepad, `Set-Content -Encoding UTF8`, or the UTF-16 of `>` and
 `Out-File`. The same goes for `config.toml`.
 
+## `mh` mounts an empty folder instead of an accented one
+
+A `mh.ps1` written by an older image holds `Vid├®os` where your folder is `Vidéos`: PowerShell
+decoded the tool's output in the console's old code page before `>` saved it. `mh` then mounts a
+folder that does not exist, Docker Desktop creates it empty, and the audit finds nothing there.
+Run `launcher` again, with the same `-v` options, to the same file: the new script is ASCII only
+and keeps every accent.
+
 ## "Unexpected error during …"
 
 A bug of the tool, not something you did wrong. The message says what failed and whether your
