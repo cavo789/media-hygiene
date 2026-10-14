@@ -1,15 +1,21 @@
-"""Reverse a run: rebuild deleted copies, unquarantine, move files and folders back."""
+"""Reverse a run: rebuild deleted copies, unquarantine, move files and folders back.
+
+A few files come back at once, as `clean` set them aside (0161, `undo_chains`).
+"""
 
 from __future__ import annotations
 
 import logging
+import threading
+from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
-from media_hygiene.actions.quarantine import remove_emptied_folders
+from media_hygiene.actions.parallel import Runner, run_all, stopping_on
+from media_hygiene.actions.quarantine import LeftFolders
 from media_hygiene.actions.restore import perform
 from media_hygiene.actions.reversal import (
     XMP_REVERSALS,
@@ -18,12 +24,14 @@ from media_hygiene.actions.reversal import (
     reversal_of,
 )
 from media_hygiene.actions.runs import run_phase
+from media_hygiene.actions.undo_chains import stages
 from media_hygiene.actions.xmp_undo import never_written
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
 if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry, JournalWriter
+    from media_hygiene.actions.undo_chains import Chain
     from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
@@ -48,7 +56,7 @@ def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
 
 
 class UndoExecutor:
-    """Reverses every action of a run not reversed yet, newest action first."""
+    """Reverses every action of a run not reversed yet, newest first, a few at once."""
 
     def __init__(self, journal: JournalWriter, progress: ProgressSink) -> None:
         """Prepare the undo of one run.
@@ -60,6 +68,9 @@ class UndoExecutor:
         self._journal = journal
         self._progress = progress
         self._tally = Tally()
+        self._lock = threading.Lock()  # the tally, filled by several workers
+        self._left = LeftFolders()
+        self._restoring = _("Putting back: {path}")
 
     def run(self, entries: list[JournalEntry]) -> Outcome:
         """Reverse the actions of the run, `clean` or `sort`.
@@ -86,18 +97,40 @@ class UndoExecutor:
             total_weight=sum(entry.size for entry, _reversal in todo),
         )
         self._progress.start(step, len(todo))
-        restoring = _("Putting back: {path}")
-        for entry, reversal in reversed(todo):
-            self._progress.current(restoring.format(path=entry.host_path))
+        runner = Runner(
+            self._reverse, self._shown, stopping=stopping_on(self._progress)
+        )
+        try:
+            for stage in stages(todo[::-1]):
+                run_all(stage, runner if len(stage) > 1 else replace(runner, workers=1))
+        finally:  # an undo stopped halfway still removes the folders it emptied
+            self._left.remove()
+        self._progress.stop()
+        return self._tally.freeze()
+
+    def _reverse(self, chain: Chain) -> None:
+        """Reverse a chain of actions, in its order (a worker thread).
+
+        Args:
+            chain: Actions sharing a path, newest first.
+        """
+        for entry, reversal in chain:
             try:
                 self._restore(entry, reversal)
             except OSError as exc:
                 _LOGGER.debug("Restore failed on %s", entry.path, exc_info=True)
-                self._tally.failed.append(Incident(Path(entry.path), str(exc)))
-            finally:
-                self._progress.advance(entry.size)
-        self._progress.stop()
-        return self._tally.freeze()
+                with self._lock:
+                    self._tally.failed.append(Incident(Path(entry.path), str(exc)))
+
+    def _shown(self, chain: Chain) -> None:
+        """Say which files came back, and advance the bar (the calling thread).
+
+        Args:
+            chain: The actions just reversed.
+        """
+        for entry, _reversal in chain:
+            self._progress.current(self._restoring.format(path=entry.host_path))
+            self._progress.advance(entry.size)
 
     def _restore(self, entry: JournalEntry, reversal: Reversal) -> None:
         """Reverse one action, journaling the undo like any other action.
@@ -111,7 +144,8 @@ class UndoExecutor:
             return
         reason = blocker(entry, reversal)
         if reason is not None:
-            self._tally.skipped.append(Incident(Path(entry.path), reason))
+            with self._lock:
+                self._tally.skipped.append(Incident(Path(entry.path), reason))
             return
         pending = entry.model_copy(
             update={"phase": Phase.UNDO, "status": Status.PENDING}
@@ -120,12 +154,13 @@ class UndoExecutor:
         perform(entry, reversal)
         self._journal.record(pending.as_done())
         if reversal is Reversal.UNQUARANTINE and entry.quarantine:
-            remove_emptied_folders(Path(entry.path), Path(entry.quarantine))
+            self._left.note(Path(entry.path), Path(entry.quarantine))
         if entry.action in FOLDER_ACTIONS:  # a folder is not a file restored
             return
-        self._tally.done += 1
-        if entry.action is not ActionKind.LINK:  # removing a link frees nothing
-            self._tally.bytes_done += entry.size
+        with self._lock:
+            self._tally.done += 1
+            if entry.action is not ActionKind.LINK:  # removing a link frees nothing
+                self._tally.bytes_done += entry.size
 
 
 def _never_happened(entry: JournalEntry, reversal: Reversal) -> bool:

@@ -1,4 +1,4 @@
-"""Run the actions of a clean a few at a time: each one still alone with its journal.
+"""Run the actions of a clean or an undo a few at a time, each alone with its journal.
 
 Through a Windows folder seen by Docker, one reader gets ≈ 105 MB/s and four readers
 ≈ 454 MB/s (measured, TODO 0149): comparing a copy with its kept file, then moving
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from media_hygiene.actions.clean_step import Planned
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
+    from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,19 +41,19 @@ def _unsaid(_count: int) -> None:
 
 
 @dataclass(frozen=True, slots=True)
-class Runner:
+class Runner[T]:
     """What to do with each planned action, and what to show once it is done.
 
     `stopping` is told, after Ctrl+C, how many files are still under way.
     """
 
-    work: Callable[[Planned], None]  # in a worker thread; never raises an OSError
-    shown: Callable[[Planned], None]  # in the calling thread, after each action
+    work: Callable[[T], None]  # in a worker thread; never raises an OSError
+    shown: Callable[[T], None]  # in the calling thread, after each action
     workers: int = WORKERS
     stopping: Callable[[int], None] = _unsaid
 
 
-def run_all(actions: Iterable[Planned], runner: Runner) -> None:
+def run_all[T](actions: Iterable[T], runner: Runner[T]) -> None:
     """Run every action, at most `runner.workers` at a time, in their order of start.
 
     Args:
@@ -64,7 +65,7 @@ def run_all(actions: Iterable[Planned], runner: Runner) -> None:
             once the files not started yet are cancelled.
     """
     with ThreadPoolExecutor(runner.workers) as pool:
-        running: dict[Future[None], Planned] = {}
+        running: dict[Future[None], T] = {}
         try:
             for planned in actions:
                 if len(running) >= runner.workers * _AHEAD:
@@ -81,9 +82,9 @@ def run_all(actions: Iterable[Planned], runner: Runner) -> None:
             raise
 
 
-def _settle(
-    running: dict[Future[None], Planned],
-    runner: Runner,
+def _settle[T](
+    running: dict[Future[None], T],
+    runner: Runner[T],
     finished: tuple[set[Future[None]], set[Future[None]]],
 ) -> None:
     """Show the actions that ended, and take them off the running ones.
@@ -147,11 +148,11 @@ def shown_on(context: CleanContext) -> Callable[[Planned], None]:
     return shown
 
 
-def stopping_on(context: CleanContext) -> Callable[[int], None]:
+def stopping_on(progress: ProgressSink) -> Callable[[int], None]:
     """Say, under the bar, that the files under way end before the run stops.
 
     Args:
-        context: The progress sink of the run.
+        progress: The progress sink of the run.
 
     Returns:
         The screen update, given how many files are still under way.
@@ -169,6 +170,6 @@ def stopping_on(context: CleanContext) -> Callable[[int], None]:
             "left halfway…",
             count,
         )
-        context.progress.current(line.format(count=count))
+        progress.current(line.format(count=count))
 
     return stopping
