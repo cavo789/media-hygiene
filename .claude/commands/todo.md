@@ -266,8 +266,8 @@ Run this **even when every TODO came out `PARTIAL` or `BLOCKED`** — those move
 both discarded on the next run and a chance to get the remaining batching wrong. Regeneration is the
 only supported update path.
 
-The header counts and the PARTIAL table are mechanical: take them from
-`.claude/scripts/todo_plan_tables.sh` rather than counting by hand.
+The plan is generated: `python3 .claude/scripts/todo_plan_render.py .todos` (what `/todo-plan`
+runs); never edit it by hand.
 
 ## Unattended runs — several TODOs or lots in a row
 

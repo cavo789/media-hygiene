@@ -24,8 +24,7 @@ short report per lot, so a run of ten lots costs about as much context as one.
 
 1. `git status --porcelain`: a dirty tree means another session (or the user) is working — stop
    and ask. Never `git stash`.
-2. Read `.todos/plan.md`. If its counts differ from `.claude/scripts/todo_plan_tables.sh`, the
-   plan is stale: regenerate it (`/todo-plan`) first.
+2. Regenerate `.todos/plan.md` (`python3 .claude/scripts/todo_plan_render.py .todos`), then read it.
 3. Create the work branch `iterate/<YYYY-MM-DD>` from an up-to-date `main` (`git switch -c`; a
    second run the same day: `-2`, `-3`). Never commit an `/iterate` run on `main`: a push of
    `main` rebuilds the published image; the user merges the pull request when satisfied.

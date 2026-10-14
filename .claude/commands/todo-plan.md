@@ -11,6 +11,19 @@ one question — *what should I hand to `/todo` next, and in what order?*
 
 **Usage:** `/todo-plan` (no arguments)
 
+## The generator — run it, do not rewrite the plan by hand
+
+```bash
+python3 .claude/scripts/todo_plan_render.py .todos
+```
+
+It writes `.todos/plan.md` by applying the phases below mechanically (lots = connected components of
+a batch under a shared folder, capped at 5, never Critical with Low; *Waiting for the maintainer*,
+*Currently in progress*, *Partially done*, *Anomalies*). Run it, read the result, and report it
+(Phase 5). The rest of this document is the specification the script implements: when a rule
+should change, change the script and this text together. Write the plan by hand only if the
+script fails, and say so.
+
 ## Core rule — plan.md is a projection, never a source
 
 `plan.md` is **regenerated from scratch on every run** and overwritten. It holds no information of its
