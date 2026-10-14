@@ -48,3 +48,39 @@ megabytes), and seeks.
 - Measured on the maintainer's real videos (0104): fingerprint time per video before and
   after, written in the commit message.
 - `dive_ci` still passes.
+
+## Status — UNNEEDED (2026-10-14)
+
+Measured, nothing changed. FFmpeg 9.0.2 built twice with the `Dockerfile` options (one container
+on 4 CPUs: 28 s and 40 s), plus `concat,split,trim` to try one run per video. The commands are
+those of `keyframes.py`, on real videos of `C:\Photos` (read-only), the page cache warm, best
+of 3 runs. The collection holds no HEVC and no 4K video (2003–2023: H.264 up to 1080p, and
+MJPEG), so the HEVC/4K cases of item 1 could not be measured.
+
+CPU time (user + system) for the 5 frames of one video:
+
+| Video | `--enable-small` (today) | without it | `-threads 2` | one run (concat) |
+|---|---|---|---|---|
+| H.264 1080p, 9 s, 45 Mb/s | 1.76 s | 1.73 s | 1.82 s | 2.79 s |
+| H.264 1080p, 44 s | 0.92 s | 0.90 s | 0.96 s | 1.65 s |
+| H.264 1080p, 137 s | 0.52 s | 0.51 s | 0.56 s | 0.94 s |
+
+Wall time of the same runs: 1.69 / 1.63 / 1.00 / 1.11 s for the first video; a small
+H.264 (219 s) and an MJPEG (237 s) take 0.05–0.22 s whatever the variant.
+
+- **`--enable-small`**: 2 % of CPU, against a binary of 10.5 MB instead of 5.7 MB. Kept.
+  Frames are byte for byte identical with both builds.
+- **`-threads 2`**: shorter wall time for a single video, but more CPU. An audit already runs
+  one video per processor (`VideoPrinter._slots`); it would only help the last video of the
+  pass. Not done.
+- **One run per video** (5 inputs, `trim=end_frame=1`, `concat`): 60–80 % more CPU. Its
+  shorter wall time comes from ffmpeg 9's threads (one per input), which an audit already gets
+  by running several videos at once. Worse, the frames differ on 2 videos out of 5, and an
+  MJPEG video gives 3 frames instead of 5: it would mean `VIDEO_PRINT_VERSION` + 1 and a
+  fallback path, for a loss. Rejected.
+- **Colour frames from the same run** (item 4): since 0132 the colours are stored, so a warm
+  audit spends 0.0 s on them. Not done.
+
+What a first audit pays: 0.5–1.8 s of CPU per 1080p video, spread over every processor (about
+2–4 minutes for 2,000 videos on 16 CPUs). Revive only if the maintainer's collection gains
+4K HEVC videos and the `fingerprints` step of `Time per step` shows it on a first audit.
