@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from tests.support.docs.container import Command, read_file, run
 from tests.support.docs.screenshots import Job, shoot, start_review, stop_review
@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from tests.support.docs.container import Demo
+
+PLACE: Final = "Parc du Cinquantenaire"  # a public park of Brussels
 
 type Captures = dict[str, str]
 
@@ -57,3 +59,17 @@ def served_pages(demo: Demo, shots: Path) -> Captures:
     word = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1].casefold()
     _serve(demo, ("search", "--", "search", word), shots)
     return captures
+
+
+def places_story(demo: Demo, shots: Path) -> None:
+    """Name the park on the places map; the place stays in config.toml, unread.
+
+    Args:
+        demo: The demo library, audited: its cache holds the GPS positions.
+        shots: Where the screenshots land (PNG).
+    """
+    container = start_review(demo, ("places",))
+    try:
+        shoot(demo, Job(f"container:{container}", ("places", PLACE)), shots)
+    finally:
+        stop_review(container)

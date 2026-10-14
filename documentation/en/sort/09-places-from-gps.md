@@ -44,6 +44,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 As with [`review`](../clean/10-review-bursts.md#step-2-open-the-page), Ctrl+click the address it
 prints, `http://127.0.0.1:8088/`.
 
+![The places map: OpenStreetMap tiles of the Cinquantenaire park in Brussels, the circle of the photos taken there, the green circle of the place Parc du Cinquantenaire just saved, and on the left the list of places and of the largest clusters without a name](../images/places.webp)
+
 - **The circles** are your photos with a GPS position, grouped by about 200 metres, larger
   where there are more. The list on the left gives the **largest clusters without a name**
   first: home is usually the first one.

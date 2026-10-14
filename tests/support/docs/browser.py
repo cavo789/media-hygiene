@@ -1,9 +1,9 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review`, `near`, `search <words>`, `people <name>` (the pages served on
-127.0.0.1:8088, see `served.py`), `reports <audit> <clean> <classify>` (report folders
-of /reports), `terminal <name>...` (SVG terminals in /shots). Every shot lands in
-/shots. The image runs Python 3.10: nothing newer here.
+Modes: `review`, `near`, `search <words>`, `people <name>`, `places <name>` (the pages
+served on 127.0.0.1:8088, see `served.py`), `reports <audit> <clean> <classify>`
+(report folders of /reports), `terminal <name>...` (SVG terminals in /shots). Every
+shot lands in /shots. The image runs Python 3.10: nothing newer here.
 """
 
 from __future__ import annotations
@@ -181,6 +181,8 @@ def main() -> None:
             served.search(page, arguments[0])
         elif mode == "people":
             served.people(page, arguments[0])
+        elif mode == "places":
+            served.places(page, arguments[0])
         elif mode == "reports":
             audit_report(page, arguments[0])
             clean_report(page, arguments[1])

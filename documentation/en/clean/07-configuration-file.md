@@ -58,6 +58,7 @@ Effective settings
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
 │ scan.full_check_days          │ 7                             │ default      │
+│ scan.read_whole_mb            │ 128                           │ default      │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │
@@ -503,6 +504,7 @@ Effective settings
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
 │ scan.full_check_days          │ 7                             │ config.toml  │
+│ scan.read_whole_mb            │ 128                           │ config.toml  │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │

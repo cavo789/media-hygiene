@@ -25,6 +25,7 @@ _MAKE: Final = 0x010F
 _MODEL: Final = 0x0110
 _EXIF_IFD: Final = 0x8769
 _TAKEN_AT: Final = 0x9003
+_GPS_IFD: Final = 0x8825
 _EXIF_DATE: Final = "%Y:%m:%d %H:%M:%S"
 _HEIC: Final = ".heic"
 _VIDEO_SECONDS: Final = 8
@@ -40,6 +41,21 @@ class Shot:
     camera: tuple[str, str] | None = CAMERA
     quality: int = 88
     size: tuple[int, int] | None = None
+    gps: tuple[float, float] | None = None  # latitude, longitude (north, east)
+
+
+def _degrees(value: float) -> tuple[float, float, float]:
+    """A coordinate as the EXIF stores it: degrees, minutes, seconds."""
+    value = abs(value)
+    minutes = (value - int(value)) * 60
+    return (float(int(value)), float(int(minutes)), (minutes - int(minutes)) * 60)
+
+
+def _locate(exif: Image.Exif, latitude: float, longitude: float) -> None:
+    """Write a GPS position into the EXIF."""
+    gps = exif.get_ifd(_GPS_IFD)
+    gps[1], gps[2] = "N" if latitude >= 0 else "S", _degrees(latitude)
+    gps[3], gps[4] = "E" if longitude >= 0 else "W", _degrees(longitude)
 
 
 def stamp(path: Path, when: datetime) -> Path:
@@ -75,6 +91,8 @@ def write_shot(path: Path, shot: Shot) -> Path:
         exif[_MAKE], exif[_MODEL] = shot.camera
     if shot.taken_at is not None:
         exif.get_ifd(_EXIF_IFD)[_TAKEN_AT] = shot.taken_at.strftime(_EXIF_DATE)
+    if shot.gps is not None:
+        _locate(exif, *shot.gps)
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.suffix.casefold() == _HEIC:
         heic = pillow_heif.from_pillow(picture)

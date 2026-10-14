@@ -19,7 +19,19 @@ from tests.support.docs.shots import (
 if TYPE_CHECKING:
     from tests.support.docs.names import Library
 
+# Public places, synthetic photos: a Brussels park, the lake of Genval.
+PARK: Final = (
+    50.841,
+    4.393,
+)  # middle of a 0.002 degree cell: stays one cluster
+GENVAL: Final = (50.719, 4.489)
+_JITTER: Final = 0.0002  # about 20 m a step: one cluster of the `places` map
 LATER: Final = datetime(2024, 1, 15, 20, 30, tzinfo=UTC)  # when the copies were made
+
+
+def _near(place: tuple[float, float], step: int) -> tuple[float, float]:
+    """A position a few metres from a place, a different one at each step."""
+    return (place[0] + _JITTER * (step % 3 - 1), place[1] + _JITTER * (step % 4 - 1.5))
 
 
 def hike(library: Library) -> None:
@@ -47,13 +59,13 @@ def birthday(library: Library) -> None:
         picture = Picture(Kind.BALLOONS, 1, 10 + 10 * shot, shot == 2, pose=shot)
         write_shot(
             folder / f"IMG_{3001 + shot:04d}.jpg",
-            Shot(picture, party + timedelta(seconds=shot)),
+            Shot(picture, party + timedelta(seconds=shot), gps=_near(PARK, shot)),
         )
     for index in range(3):
         when = party + timedelta(minutes=20 * (index + 1))
         write_shot(
             folder / f"IMG_{3010 + index:04d}.jpg",
-            Shot(Picture(Kind.BALLOONS, 10 + index), when),
+            Shot(Picture(Kind.BALLOONS, 10 + index), when, gps=_near(PARK, index + 5)),
         )
 
 
@@ -67,7 +79,11 @@ def lake(library: Library) -> None:
         picture = Picture(Kind.SUNSET, 40, 15 + 14 * shot, pose=shot)
         write_shot(
             folder / f"IMG_{4001 + shot:04d}.jpg",
-            Shot(picture, evening + timedelta(seconds=2 * shot)),
+            Shot(
+                picture,
+                evening + timedelta(seconds=2 * shot),
+                gps=_near(GENVAL, shot),
+            ),
         )
     for index in range(2):
         when = evening + timedelta(hours=index + 1)

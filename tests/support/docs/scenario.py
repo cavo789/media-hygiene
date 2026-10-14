@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from tests.support.docs.browsing import served_pages
+from tests.support.docs.browsing import places_story, served_pages
 from tests.support.docs.container import (
     Command,
     list_files,
@@ -172,4 +172,5 @@ def run_scenario(demo: Demo, shots: Path) -> Captures:
     captures["purge.txt"] = run_confirmed(demo, Command(("purge",), read_only=False))
     captures |= people_story(demo, shots)
     captures |= _sort(demo)
+    places_story(demo, shots)
     return {name: as_published(demo, text) for name, text in captures.items()}
