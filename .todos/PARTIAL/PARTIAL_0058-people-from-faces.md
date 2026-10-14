@@ -170,3 +170,7 @@ Note the figures here, then decide to build, reduce or drop.
   **0089** (DONE).
 - The `match = "person"` classify rule: filed as **0095**; the sort step waits for it
   (**0088**, BLOCKED). ArcFace as a choice: **0090**, BLOCKED until measured.
+
+## Inbox (2026-10-14)
+
+- The measurement is now step 6c (`people --sample 200` on `C:\Photos`): seconds per photo, faces, share left out; the group quality and `dive` stay by hand of `tests/measure/mh-measure.ps1`.

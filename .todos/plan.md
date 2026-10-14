@@ -24,7 +24,7 @@ One `/todo NNNN` each, highest priority first.
 
 | ID | Priority | Title | Needs |
 |---|---|---|---|
-| 0150 | Medium | Decision: a quarantine on the photos' own mount, so that setting a file aside is a rename | a decision on the mount design (quarantine beside the photos or not), after a measurement on Windows |
+| 0150 | Medium | Decision: a quarantine on the photos' own mount, so that setting a file aside is a rename | a decision on the mount design (quarantine beside the photos or not), after a measurement on Windows (the measurement: `tests/measure/mh-measure.ps1` steps 5a and 5d, inbox (2026-10-14)) |
 | 0155 | Medium | HEIC (iPhone) photos cost ≈ 13× a JPEG to check: measure on real files, then a faster decode | a few dozen real iPhone HEIC files (tile grids), kept outside the repository |
 | 0160 | Medium | A first audit in stages: the exact duplicates first, in minutes; the decoding after | a decision on the option (below), after the measurements of `tests/measure/mh-measure.ps1` |
 | 0121 | Low | Docs: a screenshot of the `places` map, with a synthetic place | a go-ahead to run `docs_screenshots` (image build + browser, heavy for the PC) → later: the maintainer says when the PC can take it; the same run refreshes the `config --show` captures (`read_whole_mb`) (2026-10-14) |

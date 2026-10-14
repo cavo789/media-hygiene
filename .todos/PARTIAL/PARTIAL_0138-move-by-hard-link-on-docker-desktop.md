@@ -80,3 +80,7 @@ inode) is completed on replay.
 ### Not done
 - The maintainer's measurement on a Docker Desktop NTFS mount (inodes kept, `sort`/`undo` in
   seconds). **Reason:** needs Windows + Docker Desktop and an image build.
+
+## Inbox (2026-10-14)
+
+- The measurement is now step 7 (classify, sort, undo of the test folder) of `tests/measure/mh-measure.ps1`.

@@ -11,7 +11,11 @@
 #   3. one photo added to the big flat folder, audit                 (0153: listing)
 #   4. a folder renamed, audit                                        (0147: files followed)
 #   5. clean, then undo, then audit                                   (0149 clean time, 0156)
+#      clean --delete, then undo: no move, against 5a                 (0150: share of the moves)
 #   6. C:\Photos read-only with your usual cache, audit twice         (0147 one-time pass, 0152)
+#      people --sample 200 on it: seconds per photo, faces            (0058; adds the faces of
+#      those 200 photos and the two face models, 39 MB, to that cache)
+#   7. classify, sort, then undo of the test folder                   (0138: moves on NTFS)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -31,11 +35,14 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# The tool writes UTF-8 (emoji, table borders): read docker's output as such, not as the
+# console code page, which garbles them.
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -46,7 +53,7 @@ function Measure-Mh([string]$title, [string[]]$mounts, [string[]]$arguments) {
     Log ""
     Log "== $title"
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    $lines = & docker run --rm @mounts $Image --locale en --verbosity verbose @arguments 2>&1
+    $lines = & docker run --rm --env COLUMNS=160 @mounts $Image --locale en --verbosity verbose @arguments 2>&1
     $watch.Stop()
     foreach ($line in $lines) {
         $text = "$line"
@@ -108,11 +115,19 @@ Measure-Mh "4. a folder renamed in Explorer (0147)" $readOnly @("audit")
 Measure-Mh "5a. clean of the duplicates (0149)" $writable @("clean", "--yes")
 Measure-Mh "5b. undo of that clean" $writable @("undo", "--yes")
 Measure-Mh "5c. audit after undo: nothing decoded again (0156)" $readOnly @("audit")
+Measure-Mh "5d. clean --delete: no move, against 5a (0150)" $writable @("clean", "--yes", "--delete")
+Measure-Mh "5e. undo of that clean: copies rebuilt from the kept files" $writable @("undo", "--yes")
 
 # --- 6: the real collection, read-only, with the usual cache -------------------------------
 $real = @("-v", "${Photos}:/data/c/Photos:ro", "-v", "${Cache}:/cache")
 Measure-Mh "6a. C:\Photos, first audit with this image (one-time 128 KB pass, 0147)" $real @("audit")
 Measure-Mh "6b. C:\Photos, warm audit (near duplicates, 0152)" $real @("audit")
+Measure-Mh "6c. C:\Photos, people --sample 200 (0058)" $real @("people", "--sample", "200")
+
+# --- 7: sort on the test folder: moves within one NTFS mount (0138) --------------------------
+Measure-Mh "7a. classify the test folder" $writable @("classify")
+Measure-Mh "7b. sort, the default proposal (0138: renamed or linked, not copied)" $writable @("sort", "--yes")
+Measure-Mh "7c. undo of that sort" $writable @("undo", "--yes")
 
 # --- clean up -------------------------------------------------------------------------------
 if (-not $Keep) {
