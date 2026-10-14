@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import math
 from typing import TYPE_CHECKING, Final
 
 from PIL import Image, ImageFile, ImageOps
@@ -92,7 +93,7 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
     prepare_image_worker()
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     try:
-        preview = upright_picture(source)
+        preview = upright_picture(source, edge)
         preview.thumbnail((edge, edge))
         buffer = io.BytesIO()
         preview.save(buffer, "JPEG", quality=_REVIEW_QUALITY)
@@ -103,11 +104,16 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
     return buffer.getvalue()
 
 
-def upright_picture(source: Path) -> Image.Image:
+def upright_picture(source: Path, edge: int | None = None) -> Image.Image:
     """Open a picture as seen: an image, or the preview embedded in a RAW file.
+
+    Shown at most `edge` pixels wide, a JPEG is decoded at a reduced scale (1/2, 1/4
+    or 1/8, by libjpeg) still at least that large: 2.5 to 3.8 times faster than the
+    whole picture (measured, TODO 0154). Without `edge` (faces), the whole picture.
 
     Args:
         source: Image or RAW file.
+        edge: The longer side it will be shown at, None for the full picture.
 
     Returns:
         The picture, upright, in RGB.
@@ -115,4 +121,9 @@ def upright_picture(source: Path) -> Image.Image:
     if media_kind(source) is MediaKind.RAW:
         return raw_preview(source).convert("RGB")
     with Image.open(source) as image:
+        if edge is not None:
+            width, height = image.size
+            scale = edge / max(width, height, 1)
+            if scale < 1:
+                image.draft(None, (math.ceil(width * scale), math.ceil(height * scale)))
         return ImageOps.exif_transpose(image).convert("RGB")
