@@ -469,10 +469,11 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`extensions`** : seulement ces catégories ou types de fichiers (`--ext`).
 - **`[scan.categories]`** : vos noms pour des listes d'extensions, à côté des catégories
   intégrées `photo`, `raw`, `video` et `media` ([étape 6](06-file-types.md#vos-propres-catégories)).
-- **`read_whole_mb`** (256, absent de l'exemple) : une photo ou un fichier RAW jusqu'à cette
+- **`read_whole_mb`** (128, absent de l'exemple) : une photo ou un fichier RAW jusqu'à cette
   taille n'est lu qu'une fois, pour sa vérification et son empreinte. Chaque worker garde un seul
-  fichier de ce genre à la fois : avec 16 workers, jusqu'à 4 Go au pire. Diminuez-le si Docker
-  Desktop a peu de mémoire (*Settings > Resources*) ; `0` lit chaque fichier deux fois.
+  fichier de ce genre à la fois : avec 16 workers, jusqu'à 2 Go au pire. Augmentez-le pour de
+  grands scans si la mémoire le permet, diminuez-le si Docker Desktop en a peu (*Settings >
+  Resources*) ; `0` lit chaque fichier deux fois.
 
 Pourquoi des apostrophes ? Entre guillemets, TOML lit la barre oblique inverse comme un
 caractère spécial : le `\b` de `"D:\backup"` devient un caractère de contrôle (l'outil refuse

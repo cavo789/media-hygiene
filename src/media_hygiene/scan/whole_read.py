@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 # Larger pictures (huge scans, panoramas) are decoded from their path, as before.
-# 16 workers x 256 MB: 4 GB at worst, only when 16 such huge files are read at once.
-WHOLE_READ_MB: Final = 256
+# 16 workers x 128 MB: 2 GB at worst, only when 16 such huge files are read at once.
+WHOLE_READ_MB: Final = 128
 MEBIBYTE: Final = 1024 * 1024
 WHOLE_READ_LIMIT: Final = WHOLE_READ_MB * MEBIBYTE
 
