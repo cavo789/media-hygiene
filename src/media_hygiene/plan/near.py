@@ -13,18 +13,16 @@ least one of their four 16-bit quarters, so only images sharing a quarter are co
 
 from __future__ import annotations
 
-from collections import defaultdict
-from itertools import combinations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.plan.likeness import (
-    HASH_BITS,
     distance,
     is_flat,
     same_aspect,
     same_colours,
 )
 from media_hygiene.plan.near_keeper import choose_keeper
+from media_hygiene.plan.near_pairs import close_pairs
 from media_hygiene.plan.near_rounds import Grouping, in_rounds
 from media_hygiene.plan.union_find import UnionFind
 
@@ -38,8 +36,6 @@ if TYPE_CHECKING:
     from media_hygiene.scan.models import MediaFile, VisualFacts
 
 NEAR_DISTANCE: Final = 2
-_QUARTER_BITS: Final = 16
-_QUARTER_MASK: Final = (1 << _QUARTER_BITS) - 1
 
 
 def is_featureless(visual: VisualFacts) -> bool:
@@ -145,46 +141,9 @@ def _clusters(
         The sets of two images or more.
     """
     links = UnionFind(files)
-    for members in _quarter_buckets(files, visuals):
-        for first, second in combinations(members, 2):
-            if _close(visuals[files[first].path], visuals[files[second].path]):
-                links.link(first, second)
+    if len(files) < 2:  # noqa: PLR2004 - a pair needs two
+        return links.sets()
+    firsts, seconds = close_pairs([visuals[file.path] for file in files], NEAR_DISTANCE)
+    for first, second in zip(firsts.tolist(), seconds.tolist(), strict=True):
+        links.link(first, second)
     return links.sets()
-
-
-def _quarter_buckets(
-    files: Sequence[MediaFile], visuals: Mapping[Path, VisualFacts]
-) -> Iterable[list[int]]:
-    """Bucket images by each 16-bit quarter of their perceptual hash.
-
-    Args:
-        files: Candidate images.
-        visuals: What each image looks like.
-
-    Returns:
-        The positions of the images sharing a quarter, bucket by bucket.
-    """
-    buckets: defaultdict[tuple[int, int], list[int]] = defaultdict(list)
-    for index, file in enumerate(files):
-        phash = visuals[file.path].phash
-        for quarter in range(HASH_BITS // _QUARTER_BITS):
-            key = (quarter, (phash >> (quarter * _QUARTER_BITS)) & _QUARTER_MASK)
-            buckets[key].append(index)
-    return (members for members in buckets.values() if len(members) > 1)
-
-
-def _close(first: VisualFacts, second: VisualFacts) -> bool:
-    """Tell whether two images may be near duplicates (the hashes alone).
-
-    Args:
-        first: An image.
-        second: Another image.
-
-    Returns:
-        True when both hashes are within `NEAR_DISTANCE`.
-    """
-    return (
-        distance(first.phash, second.phash) <= NEAR_DISTANCE
-        and distance(first.dhash, second.dhash) <= NEAR_DISTANCE
-        and same_colours(first.colour, second.colour)
-    )

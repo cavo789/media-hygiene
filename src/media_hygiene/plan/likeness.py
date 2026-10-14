@@ -12,8 +12,8 @@ _ASPECT_TOLERANCE: Final = 0.01
 _FEATURELESS_BITS: Final = 2
 # Colourfulness (`scan.colour`): below the floor, both are dull or grey alike; above it,
 # a version with less than half the colour of the other is an edit, not a copy.
-_COLOUR_FLOOR: Final = 10.0
-_COLOUR_SHARE: Final = 0.5
+COLOUR_FLOOR: Final = 10.0
+COLOUR_SHARE: Final = 0.5
 
 
 def distance(first: int, second: int) -> int:
@@ -72,4 +72,4 @@ def same_colours(first: float | None, second: float | None) -> bool:
     if first is None or second is None:
         return True
     low, high = sorted((first, second))
-    return high < _COLOUR_FLOOR or low > _COLOUR_SHARE * high
+    return high < COLOUR_FLOOR or low > COLOUR_SHARE * high

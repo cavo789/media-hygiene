@@ -54,3 +54,33 @@ Not worth a compiler (0144): numpy already holds the tool, and `np.bitwise_count
 - The near-duplicate and burst tests pass unchanged.
 - The benchmark of item 1, before and after, in the commit message; the `near duplicates`
   stage of the maintainer's warm audit before and after.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Item 1, benchmark (devcontainer, synthetic clustered hashes: scenes of 1–30 shots 4–12 bits
+  apart, 10 % near copies within 2 bits; `near_decisions` alone, one process):
+
+  | Photos | before | after |
+  |---|---|---|
+  | 50,000 | 0.36 s | 0.10 s |
+  | 100,000 | 0.97 s | 0.28 s |
+  | 300,000 | 3.89 s | 1.17 s |
+
+  Same decisions (4,585 / 9,165 / 27,409). The profile before: 5.5 million pair tests in
+  Python; after: two `close_pairs` calls, what is left is `UnionFind.sets` (0.5 s at 300,000).
+- Item 2: `plan/near_pairs.close_pairs`: per quarter, `argsort` of the 16-bit keys, pairs of
+  equal keys by offset, both distances with `np.bitwise_count`, colours in bulk (NaN =
+  unknown). `near._clusters` links those pairs. `tests/unit/test_near_pairs.py` proves the
+  same pairs as the one-by-one reference on five random sets, colours known or not; the
+  near-duplicate, burst and similar tests pass unchanged.
+- Item 3 not needed: with item 2 the second `find_similar` run costs about a second at
+  300,000 photos.
+
+### Not done
+- The `near duplicates` stage of the maintainer's warm audit, before and after.
+  **Reason:** needs the real collection and an image build (Docker Desktop).
+- Item 4 for `near_video._clusters` (videos sorted by duration, each compared with the next
+  ones of about the same length): many clips of one length (messaging videos) would compare
+  each with each. **Reason:** not measured as slow; revive if the `same streams`/`near
+  duplicates` stage grows on a collection with thousands of short clips.
