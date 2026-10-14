@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +32,7 @@ def test_workers_never_load_the_command_line(tmp_path: Path) -> None:
         text=True,
         check=True,
         cwd=_ROOT,
-        env={"PYTHONPATH": str(_ROOT)},
+        # Keep the environment (PYTHONPYCACHEPREFIX: no __pycache__ in the tree).
+        env={**os.environ, "PYTHONPATH": str(_ROOT)},
     )
     assert "cli in worker: False" in found.stdout, found.stderr[-2000:]
