@@ -6,7 +6,8 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - ✅ DO: before declaring done or committing, run the commit gate itself on what changed:
   `pre-commit run --config <the project's config> --files $(git status --porcelain | awk '{print $2}')`.
   ❌ DON'T: trust a single-file `mypy`/`ruff` run: the gate's config differs (strict typing of
-  tests, pylint's docstring and boolean checks).
+  tests, pylint's docstring and boolean checks). The `Stop` hook (`.claude/scripts/stop_gate.sh`)
+  runs it on the changed files at the end of each turn and sends a failure back.
 - ✅ DO: before editing files near a size cap, `.claude/scripts/near_limit.sh <files>`; plan
   the split (a new module) before writing, not after the linter fails.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list

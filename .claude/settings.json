@@ -10,12 +10,28 @@
       "Bash(mypy *)",
       "Bash(pylint *)",
       "Bash(uv run *)",
-      "Bash(uv sync *)"
+      "Bash(uv sync *)",
+      "Bash(.claude/scripts/near_limit.sh *)",
+      "Bash(.claude/scripts/todo_plan_tables.sh *)"
     ],
     "additionalDirectories": [
       "/tmp",
       "/home/vscode/.claude/projects/-workspaces-media-deduplication-pipeline/memory",
       "/workspaces/media-deduplication-pipeline/.claude/memory"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/stop_gate.sh",
+            "timeout": 300,
+            "statusMessage": "Commit gate on the changed files…"
+          }
+        ]
+      }
     ]
   }
 }
