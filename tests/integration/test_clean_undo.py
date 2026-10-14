@@ -64,13 +64,19 @@ def test_clean_then_undo_restores_everything(locations: Locations) -> None:
 
 
 def test_every_action_is_journaled_before_and_after(locations: Locations) -> None:
-    """Each action has a `pending` line followed by a `done` line."""
+    """Each action has a `pending` line, then later its own `done` line.
+
+    Several copies are moved at once (TODO 0149): the `done` lines may come in another
+    order than the `pending` ones, never before their own.
+    """
     build_demo(locations.data_dir)
     run_id = clean(make_runtime(locations))
     entries = read_journal(journal_file(locations.journal_dir, run_id))
-    pending = [e.seq for e in entries if e.status is Status.PENDING]
-    done = [e.seq for e in entries if e.status is Status.DONE]
+    line = {(e.seq, e.status): index for index, e in enumerate(entries)}
+    pending = sorted(e.seq for e in entries if e.status is Status.PENDING)
+    done = sorted(e.seq for e in entries if e.status is Status.DONE)
     assert pending == done
+    assert all(line[seq, Status.PENDING] < line[seq, Status.DONE] for seq in done)
     assert all(e.phase is Phase.CLEAN for e in entries)
 
 
