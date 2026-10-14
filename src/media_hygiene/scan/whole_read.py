@@ -2,7 +2,7 @@
 
 On a Windows folder seen through Docker, reading is what a first audit waits for: a
 picture hashed later by the exact-duplicate pass would be read a second time. Memory
-stays bounded: one file of at most `WHOLE_READ_LIMIT` per worker; a larger one
+stays bounded: one file of at most `[scan] read_whole_mb` per worker; a larger one
 is decoded from its path and hashed by the exact-duplicate pass, as before.
 """
 
@@ -15,14 +15,18 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 # Larger pictures (huge scans, panoramas) are decoded from their path, as before.
-WHOLE_READ_LIMIT: Final = 128 * 1024 * 1024
+# 16 workers x 256 MB: 4 GB at worst, only when 16 such huge files are read at once.
+WHOLE_READ_MB: Final = 256
+MEBIBYTE: Final = 1024 * 1024
+WHOLE_READ_LIMIT: Final = WHOLE_READ_MB * MEBIBYTE
 
 
-def read_whole(path: Path) -> bytes | None:
+def read_whole(path: Path, limit: int = WHOLE_READ_LIMIT) -> bytes | None:
     """Read every byte of a file not larger than the limit.
 
     Args:
         path: The file.
+        limit: The largest size read at once, in bytes.
 
     Returns:
         Its bytes, or None when it is too large to hold in memory.
@@ -30,7 +34,7 @@ def read_whole(path: Path) -> bytes | None:
     Raises:
         OSError: The file cannot be read.
     """
-    if path.stat().st_size > WHOLE_READ_LIMIT:
+    if path.stat().st_size > limit:
         return None
     with path.open("rb", buffering=0) as stream:
         return stream.read()

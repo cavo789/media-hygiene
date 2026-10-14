@@ -8,9 +8,10 @@ an older version indexed only gets its header read again: no decode.
 from __future__ import annotations
 
 import asyncio
+import functools
 from enum import Enum, auto
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, Protocol
 
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.scan.image_check import inspect_image, read_image_metadata
@@ -34,6 +35,19 @@ _REASONS: Final[Mapping[MediaKind, BrokenReason]] = MappingProxyType(
         MediaKind.VIDEO: BrokenReason.UNREADABLE_VIDEO,
     }
 )
+
+
+class _Decoder(Protocol):
+    """`inspect_image` or `inspect_raw`: a file, the largest one read at once."""
+
+    def __call__(self, path: Path, limit: int) -> ImageInspection:
+        """Decode the file.
+
+        Args:
+            path: The file.
+            limit: The largest file read at once, in bytes.
+        """
+        ...
 
 
 class Need(Enum):
@@ -112,7 +126,10 @@ class FileChecker:
                 problem = probe.problem
                 facts = facts.with_metadata(probe.metadata)
             else:
-                inspection = await self._in_pool(_decoder(file.kind), file.path)
+                decode = functools.partial(
+                    _decoder(file.kind), limit=self._tools.read_limit
+                )
+                inspection = await self._in_pool(decode, file.path)
                 problem = inspection.problem
                 facts = facts.with_visual(inspection.visual)
                 if inspection.digests is not None:  # read once: no second reading
@@ -156,7 +173,7 @@ class FileChecker:
         return await loop.run_in_executor(self._tools.executor, work, path)
 
 
-def _decoder(kind: MediaKind) -> Callable[[Path], ImageInspection]:
+def _decoder(kind: MediaKind) -> _Decoder:
     """Choose how to decode an image or a RAW file (looked up at call time).
 
     Args:

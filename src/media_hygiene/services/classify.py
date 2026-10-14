@@ -7,21 +7,21 @@ dates, cameras and metadata come from the index.
 from __future__ import annotations
 
 import asyncio
-import shutil
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.whereabouts import load_towns
-from media_hygiene.constants import FFPROBE_BINARY, MediaKind
+from media_hygiene.constants import MediaKind
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder
-from media_hygiene.scan.deps import IntegrityTools, ScanDeps
+from media_hygiene.scan.deps import ScanDeps
 from media_hygiene.scan.progress import Step
+from media_hygiene.services.check_tools import check_tools
 from media_hygiene.services.classify_inputs import (
     ClassifyInputs,
     duplicates,
@@ -187,7 +187,7 @@ class ClassifyService:
             coverage = WalkCoverage(roots, listed, found.unreadable, filters, files)
             tell_followed(runtime, forget_missing(repository, coverage))
             repository.preload(roots)  # one read of the index, as the audit (0157)
-            tools = IntegrityTools(executor, shutil.which(FFPROBE_BINARY))
+            tools = check_tools(runtime, executor)
             finder = BrokenFileFinder(ScanDeps(repository, self._progress), tools)
             integrity = asyncio.run(finder.find(files))
             broken = {item.file.path for item in integrity.broken}

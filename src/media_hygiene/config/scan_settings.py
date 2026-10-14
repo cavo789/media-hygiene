@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validat
 from media_hygiene.config.categories import expanded, requested, valid_categories
 from media_hygiene.constants import MEDIA_EXTENSIONS
 from media_hygiene.i18n import _
+from media_hygiene.scan.whole_read import MEBIBYTE, WHOLE_READ_MB
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _SEPARATORS: Final = ("/", "\\")
@@ -32,6 +33,8 @@ class ScanSettings(BaseModel):
     excluded_names: tuple[str, ...] = ()
     # A folder listing older than this is read again, even if the folder did not change.
     full_check_days: int = Field(default=7, ge=0)  # 0: every folder, every time
+    # A picture up to this size is read once into memory: decoded and hashed from it.
+    read_whole_mb: int = Field(default=WHOLE_READ_MB, ge=0)  # 0: read twice, as before
 
     @field_validator("categories")
     @classmethod
@@ -91,6 +94,15 @@ class ScanSettings(BaseModel):
             ).format(path=paths[0])
             raise ValueError(message)
         return valid
+
+    @property
+    def read_whole_bytes(self) -> int:
+        """The largest picture read once into memory.
+
+        Returns:
+            `read_whole_mb` in bytes.
+        """
+        return self.read_whole_mb * MEBIBYTE
 
     @property
     def resolved(self) -> tuple[str, ...]:

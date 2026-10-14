@@ -55,6 +55,9 @@ excluded_names = []
 {{ comment(_("A folder that did not change since the last audit is taken from the index (/cache) instead of read again: one look at the folder instead of one per file. A file changed in place does not change its folder: a folder listed more than this many days ago is read again anyway. 0 reads every folder every time."), "--full") }}
 full_check_days = 7
 
+{{ comment(_("A photo or RAW file up to this size, in MB, is read once into memory: it is checked and its fingerprint computed from that one reading. Each worker holds one such file at a time: with 16 workers, up to 16 x this size at worst. Lower it when Docker has little memory (Docker Desktop: Settings > Resources); 0 reads every file twice.")) }}
+read_whole_mb = 256
+
 {{ comment(_("Your own categories: a name, then its extensions (not other categories). The built-in ones cannot be redefined. Variable: MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this whole table.")) }}
 [scan.categories]
 # documents = ["pdf", "docx", "txt"]

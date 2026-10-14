@@ -35,7 +35,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$keep = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -50,7 +50,7 @@ function Measure-Mh([string]$title, [string[]]$mounts, [string[]]$arguments) {
     $watch.Stop()
     foreach ($line in $lines) {
         $text = "$line"
-        if ($text -match $keep) { Log ("   " + $text.Trim()) }
+        if ($text -match $wanted) { Log ("   " + $text.Trim()) }
     }
     Log ("   wall time: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
 }

@@ -69,7 +69,14 @@ def test_checked_photo_is_stored_before_the_pass_ends(
 ) -> None:
     """The integrity pass: the photo checked first is in the index."""
     done, failing = two_photos(tmp_path)
-    check: Callable[[Path], ImageInspection] = first_then_fail(done.path, inspect_image)
+    checked: Callable[[Path], ImageInspection] = first_then_fail(
+        done.path, inspect_image
+    )
+
+    def check(path: Path, limit: int) -> ImageInspection:
+        assert limit
+        return checked(path)
+
     monkeypatch.setattr(file_check, "inspect_image", check)
     with (
         FactsRepository.open(None) as index,

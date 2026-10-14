@@ -25,7 +25,7 @@ from PIL import Image
 from media_hygiene.scan.exif import image_metadata
 from media_hygiene.scan.hashing import digests_of
 from media_hygiene.scan.visual import ANALYSIS_EDGE, visual_facts
-from media_hygiene.scan.whole_read import read_whole, source_of
+from media_hygiene.scan.whole_read import WHOLE_READ_LIMIT, read_whole, source_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -87,7 +87,7 @@ class ImageInspection:
     digests: Digests | None = None  # None: the file was too large to read at once
 
 
-def inspect_image(path: Path) -> ImageInspection:
+def inspect_image(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
     """Verify the structure of an image, decode it, then describe it.
 
     JPEG files are decoded at a reduced scale (still at least `ANALYSIS_EDGE` pixels
@@ -96,6 +96,7 @@ def inspect_image(path: Path) -> ImageInspection:
 
     Args:
         path: Image file.
+        limit: The largest file read at once, in bytes (`[scan] read_whole_mb`).
 
     Returns:
         The decoder error, or the visual facts of a readable image; its digests.
@@ -104,7 +105,7 @@ def inspect_image(path: Path) -> ImageInspection:
         warnings.simplefilter("ignore")
         digests = None
         try:
-            data = read_whole(path)
+            data = read_whole(path, limit)
             digests = None if data is None else digests_of(data)
             with Image.open(source_of(path, data)) as image:
                 image.verify()

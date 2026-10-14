@@ -335,6 +335,14 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A photo or RAW file up to this size, in MB, is read once into memory: it "
+"is checked and its fingerprint computed from that one reading. Each "
+"worker holds one such file at a time: with 16 workers, up to 16 x this "
+"size at worst. Lower it when Docker has little memory (Docker Desktop: "
+"Settings > Resources); 0 reads every file twice."
+msgstr ""
+
+msgid ""
 "A series whose proposal leaves only the sharpest shot (and those of "
 "protected folders) is obvious: the review page validates every obvious "
 "series at once, with one confirmation."
@@ -3381,6 +3389,14 @@ msgstr ""
 
 msgid "Stopped: the next tags run goes on where this one stopped."
 msgstr ""
+
+#, python-brace-format
+msgid "Stopping: the file under way ends first, so that nothing is left halfway…"
+msgid_plural ""
+"Stopping: the {count} files under way end first, so that nothing is left "
+"halfway…"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Subject"
 msgstr ""

@@ -65,3 +65,26 @@ def test_a_stop_starts_no_new_file() -> None:
     with pytest.raises(KeyboardInterrupt):
         run_all([planned(i) for i in range(_FILES)], Runner(work, show, _WORKERS))
     assert len(started) < _FILES
+
+
+def test_a_stop_says_the_files_under_way_end_first() -> None:
+    """Ctrl+C with a slow file still running: the screen is told it ends first."""
+    release = threading.Event()
+    told: list[int] = []
+
+    def work(action: Planned) -> None:
+        if action[0].size:
+            release.wait(timeout=5)
+
+    def show(_action: Planned) -> None:
+        raise KeyboardInterrupt
+
+    def stopping(count: int) -> None:
+        told.append(count)
+        release.set()
+
+    runner = Runner(work, show, _WORKERS, stopping)
+    with pytest.raises(KeyboardInterrupt):
+        run_all([planned(i) for i in range(_FILES)], runner)
+    assert told
+    assert 0 < told[0] <= _WORKERS

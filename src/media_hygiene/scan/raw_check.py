@@ -20,7 +20,7 @@ from PIL import ExifTags, Image, ImageOps
 
 from media_hygiene.scan.hashing import digests_of
 from media_hygiene.scan.image_check import ImageInspection
-from media_hygiene.scan.whole_read import read_whole
+from media_hygiene.scan.whole_read import WHOLE_READ_LIMIT, read_whole
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -33,7 +33,7 @@ _FLIPS: Final = {
 _UPRIGHT: Final = 1
 
 
-def inspect_raw(path: Path) -> ImageInspection:
+def inspect_raw(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
     """Unpack every pixel of a RAW file: a truncated or damaged one fails.
 
     The file is read once (`whole_read`): LibRaw unpacks the bytes the digests come
@@ -41,6 +41,7 @@ def inspect_raw(path: Path) -> ImageInspection:
 
     Args:
         path: RAW file.
+        limit: The largest file read at once, in bytes (`[scan] read_whole_mb`).
 
     Returns:
         The decoder error, or nothing to report; its digests.
@@ -49,7 +50,7 @@ def inspect_raw(path: Path) -> ImageInspection:
 
     digests = None
     try:
-        data = read_whole(path)
+        data = read_whole(path, limit)
         digests = None if data is None else digests_of(data)
         source = str(path) if data is None else io.BytesIO(data)
         with rawpy.imread(source) as raw:

@@ -137,6 +137,23 @@ def test_first_audit_reads_each_picture_once(
     assert audit(locations).groups
 
 
+def test_read_whole_mb_zero_reads_pictures_again(
+    locations: Locations,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`[scan] read_whole_mb = 0`: pictures decoded from their path, hashed later."""
+    build_demo(locations.data_dir)
+    hashed: list[MediaKind | None] = []
+
+    def counted(path: Path) -> str:
+        hashed.append(media_kind(path))
+        return full_digest(path)
+
+    monkeypatch.setattr("media_hygiene.scan.exact.full_digest", counted)
+    assert audit(locations, {"scan": {"read_whole_mb": 0}}).groups
+    assert MediaKind.IMAGE in hashed
+
+
 def test_unmounted_folders_are_reported(locations: Locations) -> None:
     """A configured folder that is not mounted produces a warning."""
     build_demo(locations.data_dir)

@@ -16,6 +16,7 @@ from media_hygiene.scan.deps import IntegrityTools, ScanDeps
 from media_hygiene.scan.image_check import ImageInspection
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.scan.whole_read import WHOLE_READ_LIMIT
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -59,7 +60,8 @@ def test_integrity_pass_holds_a_bounded_number_of_files(
 ) -> None:
     """60 pictures, at most 4 handed to the pool at any time, every one checked."""
 
-    def healthy(_path: Path) -> ImageInspection:
+    def healthy(_path: Path, limit: int) -> ImageInspection:
+        assert limit == WHOLE_READ_LIMIT  # IntegrityTools' default
         return ImageInspection()
 
     monkeypatch.setattr(file_check, "inspect_image", healthy)

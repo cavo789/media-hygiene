@@ -10,7 +10,13 @@ from media_hygiene.actions.clean_step import clean_labels, clean_step
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
-from media_hygiene.actions.parallel import Runner, guarded, run_all, shown_on
+from media_hygiene.actions.parallel import (
+    Runner,
+    guarded,
+    run_all,
+    shown_on,
+    stopping_on,
+)
 from media_hygiene.actions.verify import (
     burst_blocker,
     change_blocker,
@@ -62,7 +68,10 @@ class CleanExecutor:
             [*actions, *orphans], delete_copies=self._context.delete_copies
         )
         self._context.progress.start(step, len(actions) + len(orphans))
-        runner = Runner(guarded(self._tally), shown_on(self._context))
+        context = self._context
+        runner = Runner(
+            guarded(self._tally), shown_on(context), stopping=stopping_on(context)
+        )
         run_all(actions, runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.
         run_all(orphans, replace(runner, workers=1))

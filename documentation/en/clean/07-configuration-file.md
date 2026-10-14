@@ -435,6 +435,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
 - **`extensions`**: only these categories or file types (`--ext`).
 - **`[scan.categories]`**: your names for lists of extensions, next to the built-in categories
   `photo`, `raw`, `video` and `media` ([step 6](06-file-types.md#your-own-categories)).
+- **`read_whole_mb`** (256, not written in the example): a photo or RAW file up to this size is
+  read only once, for its check and its fingerprint. Each worker holds one such file at a time:
+  with 16 workers, up to 4 GB at worst. Lower it if Docker Desktop has little memory
+  (*Settings > Resources*); `0` reads each file twice.
 
 Why single quotes? In double quotes, TOML turns the `\b` of `"D:\backup"` into a control
 character; the tool refuses such a path rather than ignoring it.

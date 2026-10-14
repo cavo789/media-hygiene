@@ -5,7 +5,8 @@ Through a Windows folder seen by Docker, one reader gets ≈ 105 MB/s and four r
 it, waits on the disk. Each file keeps its own sequence — journal `pending`,
 comparison, move, journal `done` — so the comparison stays right before its own
 move. Only the screen is updated from the calling thread. Ctrl+C (or `docker stop`)
-starts no new file; the files under way end, as one file ended before.
+starts no new file; the files under way end, as one file ended before, and the screen
+says so while they do.
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.clean_step import said
 from media_hygiene.actions.outcome import Incident
+from media_hygiene.i18n import ngettext
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -33,13 +35,21 @@ WORKERS: Final = 4
 _AHEAD: Final = 2
 
 
+def _unsaid(_count: int) -> None:
+    """Show nothing while the files under way end."""
+
+
 @dataclass(frozen=True, slots=True)
 class Runner:
-    """What to do with each planned action, and what to show once it is done."""
+    """What to do with each planned action, and what to show once it is done.
+
+    `stopping` is told, after Ctrl+C, how many files are still under way.
+    """
 
     work: Callable[[Planned], None]  # in a worker thread; never raises an OSError
     shown: Callable[[Planned], None]  # in the calling thread, after each action
     workers: int = WORKERS
+    stopping: Callable[[int], None] = _unsaid
 
 
 def run_all(actions: Iterable[Planned], runner: Runner) -> None:
@@ -62,9 +72,12 @@ def run_all(actions: Iterable[Planned], runner: Runner) -> None:
                 running[pool.submit(runner.work, planned)] = planned
             while running:
                 _settle(running, runner, wait(running, return_when=FIRST_COMPLETED))
-        except BaseException:
+        except BaseException as stop:
             for future in running:
                 future.cancel()  # not started yet: never started
+            under_way = sum(not future.done() for future in running)
+            if under_way and isinstance(stop, KeyboardInterrupt):
+                runner.stopping(under_way)  # the pool waits for them on its way out
             raise
 
 
@@ -132,3 +145,30 @@ def shown_on(context: CleanContext) -> Callable[[Planned], None]:
         context.progress.advance(planned[0].size)
 
     return shown
+
+
+def stopping_on(context: CleanContext) -> Callable[[int], None]:
+    """Say, under the bar, that the files under way end before the run stops.
+
+    Args:
+        context: The progress sink of the run.
+
+    Returns:
+        The screen update, given how many files are still under way.
+    """
+
+    def stopping(count: int) -> None:
+        """Show the wait.
+
+        Args:
+            count: The files still under way.
+        """
+        line = ngettext(
+            "Stopping: the file under way ends first, so that nothing is left halfway…",
+            "Stopping: the {count} files under way end first, so that nothing is "
+            "left halfway…",
+            count,
+        )
+        context.progress.current(line.format(count=count))
+
+    return stopping

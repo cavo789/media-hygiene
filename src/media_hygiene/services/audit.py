@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import asyncio
-import shutil
 import time
 from collections import Counter
 from dataclasses import replace
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import FFMPEG_BINARY, FFPROBE_BINARY
 from media_hygiene.i18n import _
 from media_hygiene.index.measures import MeasureStore
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
@@ -22,7 +20,7 @@ from media_hygiene.plan.similar import SimilarInputs
 from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.colour import ColourTools
-from media_hygiene.scan.deps import IntegrityTools, ScanDeps
+from media_hygiene.scan.deps import ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
 from media_hygiene.scan.inventory import take_inventory
 from media_hygiene.scan.progress import Step
@@ -31,6 +29,7 @@ from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.scan.walker import Walk
 from media_hygiene.services.audit_analysis import Finders, analyse
 from media_hygiene.services.check_guide import CheckGuide
+from media_hygiene.services.check_tools import audit_tools
 from media_hygiene.services.data_checks import (
     refuse_empty_data,
     refuse_overlapping_mounts,
@@ -132,7 +131,6 @@ class AuditService:
             The duplicate groups, the broken files and what files say of themselves,
             and the near duplicates.
         """
-        ffprobe, ffmpeg = self._tools()
         with (
             FactsRepository.open(self._runtime.index_file) as repository,
             self._runtime.executor_factory() as executor,
@@ -141,14 +139,15 @@ class AuditService:
                 tell_followed(self._runtime, forget_missing(repository, coverage))
                 repository.preload(coverage.roots)
             deps = ScanDeps(repository, self._progress, reporter=self.guide)
+            checks = audit_tools(self._runtime, executor)
             finders = Finders(
-                BrokenFileFinder(deps, IntegrityTools(executor, ffprobe, ffmpeg)),
+                BrokenFileFinder(deps, checks),
                 ExactDuplicateFinder(deps),
                 self._stopwatch,
             )
             groups, integrity = asyncio.run(analyse(found.files, finders))
             tools = NearTools(
-                ColourTools(ffmpeg, self._progress, executor),
+                ColourTools(checks.ffmpeg, self._progress, executor),
                 MeasureStore(repository.connection),
                 self._stopwatch,
             )
@@ -156,23 +155,6 @@ class AuditService:
                 SimilarInputs.of(found.files, integrity, groups), policy, tools
             )
         return groups, integrity, similar
-
-    def _tools(self) -> tuple[str | None, str | None]:
-        """Find `ffprobe` and `ffmpeg`, and say what is not done without them.
-
-        Returns:
-            Their paths, None when missing.
-        """
-        output = self._runtime.output
-        ffprobe = shutil.which(FFPROBE_BINARY)
-        if ffprobe is None:
-            output.warning(_("ffprobe not found: videos are not checked."))
-        ffmpeg = shutil.which(FFMPEG_BINARY)
-        if ffmpeg is None:
-            output.warning(
-                _("ffmpeg not found: re-encoded copies of videos are not looked for.")
-            )
-        return ffprobe, ffmpeg
 
     def _list_files(self, roots: tuple[Path, ...]) -> tuple[Walk, frozenset[Path]]:
         """Walk every root, without listing a file twice (nested mounts, hard links).
