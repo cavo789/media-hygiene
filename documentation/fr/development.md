@@ -72,8 +72,8 @@ suivi par git (`devcontainer.json` compris) : ce dépôt est public.
 
 ## Règles de code
 
-Appliquées par l'outillage : tout est typé, 200 lignes maximum par fichier et 3 paramètres
-maximum par fonction, code en anglais, chaque texte affiché passe par gettext. Les caches
+Appliquées par l'outillage : tout est typé, 200 lignes maximum par fichier (sauf les tests)
+et 3 paramètres maximum par fonction, code en anglais, chaque texte affiché passe par gettext. Les caches
 n'atterrissent jamais dans le dépôt : ils vivent dans `/tmp`.
 
 ## Documentation

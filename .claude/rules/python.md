@@ -30,7 +30,8 @@ These bind this repository on top of the generic rule above. Enforced by `pyproj
 (ruff `ALL`, pylint, mypy strict) — run `check` (devcontainer cheatsheet) before declaring done.
 
 - ✅ DO: **at most 200 lines per file** (pylint `max-module-lines`) — split into modules, classes and
-  helpers beyond that. Tests included.
+  helpers beyond that. `src/` only: test modules have no line cap (a
+  long test module stays one file).
 - ✅ DO: **at most 3 parameters per function** (ruff/pylint `max-args` and
   `max-positional-arguments`) — otherwise a frozen parameter object.
 - ✅ DO: code, comments, docstrings and log messages in American English; every string shown to

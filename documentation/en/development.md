@@ -68,8 +68,8 @@ is public.
 
 ## Code rules
 
-Enforced by the tooling: everything typed, at most 200 lines per file and 3 parameters per
-function, code in English, every user-facing string translated through gettext. Caches never land
+Enforced by the tooling: everything typed, at most 200 lines per file (the tests excepted)
+and 3 parameters per function, code in English, every user-facing string translated through gettext. Caches never land
 in the repository (they live in `/tmp`).
 
 ## Documentation
