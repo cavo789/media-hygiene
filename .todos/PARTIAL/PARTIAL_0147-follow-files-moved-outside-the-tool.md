@@ -87,3 +87,9 @@ it moves or copies, so (size, mtime_ns) survives such a move, and the content pr
   **Reason:** deliberately left out: copying rows of every table (facts, faces, descriptions,
   tags, measures) without forgetting the originals needs its own design (which copy do the
   names of `people` point to?). Revive if a maintainer moves a collection to another drive.
+
+## Inbox (2026-10-14)
+
+- Item 5 (a collection mounted at another path): dropped by the maintainer (rare; a rename
+  on the same mount is already followed). Only the measurement of `mh-measure.ps1` step 4
+  remains.

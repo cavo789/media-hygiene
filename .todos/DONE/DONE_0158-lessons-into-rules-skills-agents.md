@@ -140,3 +140,7 @@ Sources to mine before writing anything (read them, do not rely on this list alo
 - A measurement kit the maintainer runs once for all pending figures (C11, second half).
   **Reason:** it needs its own design (which commands, where the output goes); the pending
   measurements are listed meanwhile in the feedback file of the run.
+
+## Inbox (2026-10-14)
+
+- The measurement kit exists (`tests/measure/mh-measure.ps1`, 828e494); item 3 observed in the session of 2026-10-14 (commit gate, targeted tests, near_limit applied unprompted). Closed as DONE.

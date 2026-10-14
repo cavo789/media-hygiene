@@ -71,3 +71,7 @@ read, listing save, analysis).
 - `cache` stage (forget_missing + one-pass read of 52,056 rows): 0.8 s; `checks` 0.1 s and
   `fingerprints` 0.0–0.2 s on a warm audit of `C:\Photos` (details in DONE_0131). The change
   is kept.
+
+## Inbox (2026-10-14)
+
+- Items 2 and 5 dropped (no gain); item 6 measured already (`cache` 0.8 s, see Measured). Closed as DONE.

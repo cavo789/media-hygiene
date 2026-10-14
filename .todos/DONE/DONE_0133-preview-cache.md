@@ -77,3 +77,8 @@ A photo that does not change never needs a second decode for a given size.
   `status` is left for later (a new user-facing line, to decide with the maintainer).
 - The old `/cache/search-previews/` folder of earlier versions is left in place (a few MB at
   most; deleting the cache volume removes it).
+
+## Inbox (2026-10-14)
+
+- Items 4 (size in `status`) and 5 (ETag), the old `search-previews/` folder: dropped by the
+  maintainer; the `[cache] previews_max_gb` bound is enough. Closed as DONE.

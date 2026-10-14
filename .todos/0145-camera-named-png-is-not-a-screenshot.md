@@ -4,7 +4,6 @@
 - **Batch**: classify
 - **Depends**: —
 - **Files**: `src/media_hygiene/classify/rules/matchers.py`, `tests/unit/test_classify_rules.py`, `documentation/en/sort/06-write-down-what-you-know.md`, `documentation/fr/sort/06-write-down-what-you-know.md`
-- **Needs maintainer**: a confirmation of the rule (a camera-named PNG is an edited photo, not a screenshot)
 
 ## Context
 
@@ -31,7 +30,7 @@ screenshots, as are Screenpresso captures.
 Videos named with a resolution (`720p`, `1080p`) are fine: one file only, and it is a recorded
 online class, i.e. a true download.
 
-## Change (proposal: the maintainer confirms or drops it)
+## Change (confirmed by the maintainer, inbox of 2026-10-14)
 
 In `is_screenshot`, before the PNG test: a name of a phone camera with date and time is not a
 screenshot. Patterns: `IMG_YYYYMMDD_HHMMSS`, `YYYYMMDD_HHMMSS`, `PXL_YYYYMMDD_…`. They must not

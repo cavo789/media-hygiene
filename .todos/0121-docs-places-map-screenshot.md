@@ -4,7 +4,7 @@
 - **Batch**: docs
 - **Depends**: —
 - **Files**: `tests/support/docs/shots.py`, `tests/support/docs/served.py`, `tests/support/docs/scenario.py`, `documentation/en/sort/09-places-from-gps.md`, `documentation/fr/sort/09-places-from-gps.md`, `documentation/en/commands/places.md`, `documentation/fr/commands/places.md`, `documentation/en/images/`, `documentation/fr/images/`
-- **Needs maintainer**: a go-ahead to run `docs_screenshots` (image build + browser, heavy for the PC)
+- **Needs maintainer**: a go-ahead to run `docs_screenshots` (image build + browser, heavy for the PC) → later: the maintainer says when the PC can take it; the same run refreshes the `config --show` captures (`read_whole_mb`) (2026-10-14)
 
 ## Context
 

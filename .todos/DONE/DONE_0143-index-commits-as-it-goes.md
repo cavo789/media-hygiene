@@ -80,3 +80,7 @@ should cost only the files not yet stored.
 ### Not done
 - WAL / `synchronous = NORMAL` (item 2) only, for the reason above. Revive if a Windows bind
   mount of `/cache` is shown to support WAL and commits ever show up in the step timings.
+
+## Inbox (2026-10-14)
+
+- WAL / `synchronous = NORMAL` dropped (Docker Desktop bind mounts, no gain next to decoding). Closed as DONE.

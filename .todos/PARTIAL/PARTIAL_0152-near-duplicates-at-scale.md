@@ -84,3 +84,7 @@ Not worth a compiler (0144): numpy already holds the tool, and `np.bitwise_count
   ones of about the same length): many clips of one length (messaging videos) would compare
   each with each. **Reason:** not measured as slow; revive if the `same streams`/`near
   duplicates` stage grows on a collection with thousands of short clips.
+
+## Inbox (2026-10-14)
+
+- Item 4 (`near_video._clusters` with numpy) dropped: not measured as slow. Only the maintainer's measurement (`mh-measure.ps1` step 6) remains.
