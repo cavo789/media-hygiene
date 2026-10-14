@@ -53,3 +53,12 @@ Measured on 2026-10-14 in the devcontainer, 12 MP pictures made from the same sy
 
 - The figures of item 2 written here; the `DECODE_THREADS` decision applied or rejected with its
   figures; a follow-up TODO for the decoder if it qualifies.
+
+## Status — BLOCKED (2026-10-14)
+
+### Not done
+- All items remain open.
+  **Reason:** the measurement needs a few dozen real iPhone HEIC files (tile grids); the
+  maintainer has none (inbox of 2026-10-14). Synthetic HEIC files do not have the tile grids
+  that make the cost. Unblocks when someone provides real HEIC files, kept outside the
+  repository.

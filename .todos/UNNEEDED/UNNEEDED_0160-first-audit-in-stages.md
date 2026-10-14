@@ -42,3 +42,14 @@ first audit the decoding is, against the reading.
 - The decision written here; then a first audit of a large test folder shows its exact
   duplicates (report, `clean` possible) in a fraction of the time of the full audit, figures
   measured before and after.
+
+## Status — UNNEEDED (2026-10-14)
+
+**Decision (maintainer, 2026-10-14): option 4, nothing more.** The figures it waited for
+(`mh-measure.ps1` step 1, Windows + Docker Desktop, fresh cache): a first audit of 12,000 JPEG
+photos (12.9 GB) in 30 s, checks 27.8 s, ≈ 465 MB/s; 4,000 photos (2.7 GB) in 9 s. For 300,000
+photos of 2.8 MB that is ≈ 30 min (*estimate*, linear from these throughputs), not hours, and
+0159's announcement ("… to check for the first time: less than a minute", measured 30 s) tells
+the user beforehand that stopping is safe and the next audit takes seconds. Stages would read
+the duplicates twice (undoing part of 0148) for a gain no longer worth the complexity. HEIC
+stays slower (0155, blocked). Revive with a fresh TODO if a user finds a first audit too long.
