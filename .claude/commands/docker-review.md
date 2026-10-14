@@ -140,7 +140,7 @@ restatement of the finding:
 After writing the TODOs, regenerate the plan:
 
 ```text
-/todo-plan
+/todo:plan
 ```
 
 Do not hand-edit `.todos/plan.md` — it is a regenerated projection. In the final report, point to

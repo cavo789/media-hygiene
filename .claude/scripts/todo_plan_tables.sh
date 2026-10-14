@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Prints the mechanical parts of .todos/plan.md, so that /todo-plan (or a /todo run between
+# Prints the mechanical parts of .todos/plan.md, so that /todo:plan (or a /todo:run between
 # two lots) never recounts them by hand: the counts line of the header and the table of the
-# PARTIAL TODOs. The lots, Standalone order and anomalies stay /todo-plan's judgement.
+# PARTIAL TODOs. The lots, Standalone order and anomalies stay /todo:plan's judgement.
 #
 # Usage: todo_plan_tables.sh [todos-dir]
 #   todos-dir  defaults to ./.todos

@@ -49,12 +49,12 @@ The maintainer may be on a phone: short questions, the recommended option first,
 Per TODO, once every item of it is answered:
 
 - **Open TODO** whose `Needs maintainer` is answered: write the decision into the body, remove
-  the `Needs maintainer` bullet: it becomes runnable by `/todo` and `/iterate`.
+  the `Needs maintainer` bullet: it becomes runnable by `/todo:run` and `/todo:iterate`.
 - **PARTIAL / BLOCKED** where every remaining item is "keep" or "stale": `git mv` to `DONE/`
   (work done, rest dropped) or `UNNEEDED/` (nothing of it is wanted any more), the answers kept
   in its `## Status`.
 - **An answer that asks for work**: file a fresh TODO (skill `todo-authoring`), referencing the
-  one it follows; `/todo` never reaches PARTIAL files. Then close the old one as above.
+  one it follows; `/todo:run` never reaches PARTIAL files. Then close the old one as above.
 - **Measure** items: nothing to apply until the results come back; when they do, read the
   results file, then treat each measured item as answered.
 - A pattern the maintainer corrected: a short rule in `.claude/rules/workflow.md` (public, no
@@ -67,5 +67,5 @@ filed and unblocked). Push only when asked.
 ## Phase 3 — Close
 
 One short message: what was closed, filed and unblocked (IDs), what waits for the measure script
-(one line: the command to run), what waits for material, and the next prompt (`/iterate` when
+(one line: the command to run), what waits for material, and the next prompt (`/todo:iterate` when
 the plan has runnable work, else the measure script).

@@ -57,7 +57,7 @@ affiche la liste des commandes d'aide (`welcome` la réaffiche) :
 | `release` | Crée le tag `vX.Y.Z` (la version de `pyproject.toml`) et le pousse : la CI publie l'image. |
 | `i18n_extract`, `i18n_update`, `i18n_todo` | Met à jour les catalogues gettext après la modification d'un texte affiché ; liste les entrées françaises encore à traduire. |
 | `geonames_update` | Télécharge à nouveau GeoNames et reconstruit les villes hors ligne de `src/media_hygiene/geo/data/` (CC BY 4.0 : la date est notée dans son `ATTRIBUTION.txt`). |
-| `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo` et `/todo-plan`), puis les partiels et les bloqués. |
+| `todos` | Liste les TODOs ouverts (`.todos/`, voir `/todo:run` et `/todo:plan`), puis les partiels et les bloqués. |
 | `ci`, `ci_logs`, `ci_watch` | Dernières exécutions de la CI sur la branche ; logs des étapes en échec de la dernière exécution ratée. Suit la dernière exécution en direct. La CLI GitHub demande `gh auth login` une fois. |
 | `git_doctor`, `docker_doctor`, `docker_clean`, `deps` | Après un plantage : vérifie les objets git (`--fix` répare ceux restés vides) ; vérifie Docker et liste ce que les exécutions e2e/docs ont laissé, puis le supprime ; liste les dépendances directes qui ont une version plus récente. |
 

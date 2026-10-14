@@ -53,7 +53,7 @@ shows the cheatsheet of helper commands (`welcome` redraws it):
 | `release` | Tag `vX.Y.Z` (the `pyproject.toml` version) and push it: CI publishes the image. |
 | `i18n_extract`, `i18n_update`, `i18n_todo` | Refresh the gettext catalogs after changing a user-facing string; list the French entries still to translate. |
 | `geonames_update` | Download GeoNames again and rebuild the offline towns of `src/media_hygiene/geo/data/` (CC BY 4.0: the date lands in its `ATTRIBUTION.txt`). |
-| `todos` | List the open backlog (`.todos/`, see `/todo` and `/todo-plan`), then the partial and blocked ones. |
+| `todos` | List the open backlog (`.todos/`, see `/todo:run` and `/todo:plan`), then the partial and blocked ones. |
 | `ci`, `ci_logs`, `ci_watch` | Latest CI runs of the branch; logs of the failed steps of the latest failed run; follow the latest run live. The GitHub CLI asks for `gh auth login` once. |
 | `git_doctor`, `docker_doctor`, `docker_clean`, `deps` | After a crash: check the git objects (`--fix` repairs the empty ones); check Docker and list what e2e/docs runs left behind, then remove it; list the direct dependencies with a newer release. |
 

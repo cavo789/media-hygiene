@@ -5,7 +5,7 @@ set -euo pipefail
 #
 # A split decided while planning is a new module; a split forced by the linter after the
 # change is a rushed one. Run it on the files a TODO names (its `Files:` bullet) in
-# /todo Phase 1, and before editing any file you are about to grow.
+# /todo:run Phase 1, and before editing any file you are about to grow.
 #
 # Usage: near_limit.sh [file...]
 #   NEAR_LIMIT  lines from which a file is listed (default 185)

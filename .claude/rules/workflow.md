@@ -34,7 +34,7 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - ✅ DO: before changing a design the user chose (mounts, data layout, a dependency), list
   what the change loses, and ask.
 
-## Unattended runs (several TODOs in a row — `/iterate`)
+## Unattended runs (several TODOs in a row — `/todo:iterate`)
 
 - A private feedback file `.claude/plans/feedback-<topic>.md`, kept as you go: per TODO the
   questions met, the choices and their alternatives, deviations from the TODO, what waits for

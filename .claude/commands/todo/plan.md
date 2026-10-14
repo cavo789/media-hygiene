@@ -7,9 +7,9 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 # TODO Plan
 
 Regenerate `.todos/plan.md`: a prioritized, batched reading of the **open** TODO backlog that answers
-one question — *what should I hand to `/todo` next, and in what order?*
+one question — *what should I hand to `/todo:run` next, and in what order?*
 
-**Usage:** `/todo-plan` (no arguments)
+**Usage:** `/todo:plan` (no arguments)
 
 ## The generator — run it, do not rewrite the plan by hand
 
@@ -32,10 +32,10 @@ own: every fact in it comes from a TODO file. Consequences, all mandatory:
 - **Never edit `plan.md` by hand** — the next run discards the edit.
 - **Never edit a TODO file from this command.** If a TODO lacks metadata, infer it (rules below) and
   note the inference in the plan; do not "fix" the TODO. This command is read-only on `.todos/*.md`.
-- **Never append.** A stale plan is worse than no plan: `/todo` moves files to `DONE/` and the plan
+- **Never append.** A stale plan is worse than no plan: `/todo:run` moves files to `DONE/` and the plan
   must forget them, not accumulate them.
 
-Run it after any `/todo` session, and at the end of every review that files new TODOs.
+Run it after any `/todo:run` session, and at the end of every review that files new TODOs.
 
 ---
 
@@ -44,7 +44,7 @@ Run it after any `/todo` session, and at the end of every review that files new 
 **The flat backlog is the queue.** Rank and batch **only** flat `.todos/*.md`. Exclude, without
 exception:
 
-- the status subfolders (`DONE/`, `PARTIAL/`, `BLOCKED/`, `UNNEEDED/`, `POSTPONED/`) — `/todo`
+- the status subfolders (`DONE/`, `PARTIAL/`, `BLOCKED/`, `UNNEEDED/`, `POSTPONED/`) — `/todo:run`
   Phase 3 moves a TODO there precisely to take it out of the queue,
 - `plan.md` itself,
 - `000_*.md` backlog aggregates (e.g. the `/dry` backlog) — they are their own tracking system,
@@ -56,7 +56,7 @@ If the flat backlog is empty, write a `plan.md` saying so and stop.
 **One read-only exception — `PARTIAL/`.** A `PARTIAL_NNN-*.md` was closed out with real work left
 behind, documented under its `### Not done` bullets. That work is invisible everywhere else, so list
 those files in a dedicated reminder section (Phase 4) — **ID, title, and link only**. Do **not** rank
-them, batch them, or fold them into a lot: they are not `/todo`-addressable (`/todo NNN` globs
+them, batch them, or fold them into a lot: they are not `/todo:run`-addressable (`/todo:run NNN` globs
 `.todos/NNN-*.md`, which no longer matches once the file moved). The section exists so the remainder
 is visible, not so it is queued. Reviving one is a human decision: it means re-filing a fresh TODO
 for the remainder.
@@ -83,7 +83,7 @@ aggregate backlogs and `0000-*.md` journals are already excluded) and prints one
 | `FILES` | the raw `- **Files**:` bullet text, wrapped lines already joined onto one line |
 | `FLAGS` | `missing-priority`, `missing-files`, `stale-status` (file contains `## Status` but is still in the flat backlog) |
 | `NEEDS` | the optional `Needs maintainer` bullet (a measurement on their machine, a decision, real data), empty otherwise |
-| `LOCKED` | UTC timestamp if a `/todo` run currently holds this TODO (see `todo_lock.sh`), empty otherwise |
+| `LOCKED` | UTC timestamp if a `/todo:run` currently holds this TODO (see `todo_lock.sh`), empty otherwise |
 
 Do not open a TODO file yourself except to disambiguate a record the script flags or a `FILES` value
 that looks like a brace glob or an ambiguous continuation (below). The plan reuses each TODO's title;
@@ -128,14 +128,14 @@ The script reports each field verbatim; the judgment below is still yours:
 - **`NEEDS` non-empty** — the TODO waits for the maintainer before (or to finish) the work. Keep
   it **out of the lots and out of Standalone**: an unattended run would only close it PARTIAL for
   that reason. List it in the *Waiting for the maintainer* section (Phase 4) with what it needs.
-- **`LOCKED` non-empty** — a `/todo` session already holds this TODO. Keep it **out of the lots and
+- **`LOCKED` non-empty** — a `/todo:run` session already holds this TODO. Keep it **out of the lots and
   out of Standalone** — recommending it as "next to run" while another session is already running it
   is the same failure as ranking blocked work. List it in the dedicated *Currently in progress*
   section (Phase 4) instead, with the `LOCKED` timestamp.
 
 ## Phase 3 — Build the lots
 
-A **lot** is a set of TODOs worth handing to a single `/todo` prompt, because they open the **same
+A **lot** is a set of TODOs worth handing to a single `/todo:run` prompt, because they open the **same
 files**. The win is one context load, one validation gate (this project's own lint/format/test
 commands), one review pass.
 
@@ -180,7 +180,7 @@ So the batch key **proposes**, the file sets **decide**:
 shared directory, because that sentence is the only thing a reader can audit before spending a
 session on the lot. If the honest justification is "both are about X" with no path in it, rule 1
 already told you: that is not a lot. Batching is now mechanical — file sets decide it. Judgment
-belongs to `/todo` Phase 0 (is this TODO *right*?), not here. The plan does **not** assess
+belongs to `/todo:run` Phase 0 (is this TODO *right*?), not here. The plan does **not** assess
 readiness, correctness, or effort in hours.
 
 ## Phase 4 — Write `.todos/plan.md`
@@ -194,7 +194,7 @@ rule. Structure:
 ````markdown
 # TODO execution plan
 
-> Generated by `/todo-plan` on YYYY-MM-DD — **do not edit by hand**, this file is regenerated from
+> Generated by `/todo:plan` on YYYY-MM-DD — **do not edit by hand**, this file is regenerated from
 > `.todos/*.md` on every run. Priority and batching live in the TODO files themselves.
 >
 > Open TODOs: N — Critical: n · High: n · Medium: n · Low: n · Locked: n · Waiting: n
@@ -206,8 +206,8 @@ rule. Structure:
 
 | # | Lot | Priority | TODOs | Prompt |
 |---|-----|----------|-------|--------|
-| 1 | lib | High | 2 | `/todo 012 014` |
-| 2 | docker ~ | Medium | 2 | `/todo 021 022` |
+| 1 | lib | High | 2 | `/todo:run 012 014` |
+| 2 | docker ~ | Medium | 2 | `/todo:run 021 022` |
 
 ## Lots
 
@@ -218,7 +218,7 @@ rule. Structure:
 **Why grouped:** 014 adds a new date-normalization helper; 012 calls it from the row validator.
 Splitting them would load `lib/validation.py` twice.
 
-**Prompt:** `/todo 012 014`
+**Prompt:** `/todo:run 012 014`
 
 | Order | ID | Priority | Title | Depends |
 |-------|----|----------|-------|---------|
@@ -229,7 +229,7 @@ Splitting them would load `lib/validation.py` twice.
 
 ## Standalone
 
-One `/todo NNN` each, in its own session — highest priority first. These share no files with a
+One `/todo:run NNN` each, in its own session — highest priority first. These share no files with a
 sibling (or declare none yet), so there is nothing for a lot to save.
 
 | ID | Priority | Title | Batch | Why not lotted |
@@ -250,7 +250,7 @@ unattended run; run them with the maintainer, or once they provided it.
 
 ## Currently in progress
 
-Locked by a running `/todo` session (see `/todo`'s own "Locking" section for the mechanism). **Not
+Locked by a running `/todo:run` session (see `/todo:run`'s own "Locking" section for the mechanism). **Not
 queued**: don't recommend these, another session already has them. If the timestamp looks stale (the
 owning session likely crashed), that's a call for the human — this plan only reports the fact.
 
@@ -263,7 +263,7 @@ owning session likely crashed), that's a call for the human — this plan only r
 ## Partially done — remaining work
 
 Closed out as `PARTIAL`, with work documented under their `### Not done` bullets. **Not queued**:
-`/todo NNN` no longer reaches them. Listed so the remainder stays visible — reviving one means
+`/todo:run NNN` no longer reaches them. Listed so the remainder stays visible — reviving one means
 filing a fresh TODO for what is left.
 
 | ID | Title | File |
@@ -274,12 +274,12 @@ filing a fresh TODO for what is left.
 
 ## Anomalies
 
-Authoring issues found while parsing. Fix them in the TODO files, then rerun `/todo-plan`.
+Authoring issues found while parsing. Fix them in the TODO files, then rerun `/todo:plan`.
 
 - `4xx-...md`: unparseable priority `Urgent` — treated as Medium.
 - `4xx-...md`: depends on 999, which does not exist.
 - `4xx-...md`: carries a `## Status — BLOCKED` section but sits in the flat backlog — it is being
-  ranked as actionable work. Move it to `BLOCKED/` (see `/todo` Phase 3).
+  ranked as actionable work. Move it to `BLOCKED/` (see `/todo:run` Phase 3).
 
 *(omit this section entirely when empty)*
 ````
@@ -296,11 +296,11 @@ the plan into the chat — link it as [.todos/plan.md](.todos/plan.md).
 
 - Cheap by design: one script call replaces N file reads, no source inspection, no test runs. Run it
   in its own session, after a `/clear` — it needs TODO headers, not the implementation history of the
-  `/todo` run that preceded it.
+  `/todo:run` that preceded it.
 - **The plan spends the user's quota.** Each prompt it emits becomes a session, and every turn of
   that session re-sends the whole conversation — so a lot that does not genuinely share files makes
   the reader pay for two contexts at once. That is why Phase 3 demands a shared path and defaults to
   splitting. Fewer, honest lots beat a tidy-looking grouping.
 - Complements manual TODO authoring (e.g. after a code review, an incident, or a `pre-commit`
-  finding you don't want to fix on the spot) and `/todo` (which consumes them). It sits between the
+  finding you don't want to fix on the spot) and `/todo:run` (which consumes them). It sits between the
   two and holds no state.

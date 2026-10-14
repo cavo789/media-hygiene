@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Parses the flat .todos/ backlog into structured records for /todo-plan.
+# Parses the flat .todos/ backlog into structured records for /todo:plan.
 #
 # Scans every .todos/*.md file (flat only — DONE/, PARTIAL/, BLOCKED/, UNNEEDED/,
 # POSTPONED/ subfolders, plan.md, 000_*-prefixed aggregate backlogs, and
 # 0000--prefixed progress journals are never part of the flat queue) and extracts
-# the header fields /todo-plan Phase 2 would otherwise parse by hand from N
+# the header fields /todo:plan Phase 2 would otherwise parse by hand from N
 # separate file reads: ID, title, priority
 # (normalized to its first word, lowercased), batch, depends, and the raw Files
 # bullet text (wrapped lines joined). Directory-set normalization and lot-building
@@ -26,7 +26,7 @@ set -euo pipefail
 #   FILES: <raw bullet text, wrapped lines joined with a single space>
 #   FLAGS: <comma-separated: missing-priority, missing-files, stale-status>
 #   NEEDS: <the optional "Needs maintainer" bullet, empty when absent>
-#   LOCKED: <UTC timestamp from .todos/.locks/<value>/since if a /todo run currently holds this
+#   LOCKED: <UTC timestamp from .todos/.locks/<value>/since if a /todo:run currently holds this
 #            TODO (see todo_lock.sh), empty otherwise>
 
 todos_dir="${1:-.todos}"

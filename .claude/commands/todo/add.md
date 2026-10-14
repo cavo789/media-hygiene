@@ -56,9 +56,9 @@ as a valid `Depends` value).
 
    Fill Context/Acceptance from `$ARGUMENTS` and the conversation. Leave
    `Priority` / `Batch` / `Depends` / `Files` at their defaults for the user to
-   adjust — these header bullets are what `/todo-plan` parses.
+   adjust — these header bullets are what `/todo:plan` parses.
 
 6. **Report and hand off.**
    - Print the created path and the Title.
    - Remind the user that `.todos/plan.md` is a generated projection — run
-     `/todo-plan` to regenerate it. Offer to run it now.
+     `/todo:plan` to regenerate it. Offer to run it now.

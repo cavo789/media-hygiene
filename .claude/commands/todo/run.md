@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Edit, Write, Bash
 
 Process one or more TODO files from `.todos/` by TODO number.
 
-**Usage:** `/todo 0133 0134 0135`
+**Usage:** `/todo:run 0133 0134 0135`
 
 **Arguments:** one or more numeric TODO IDs only. IDs are matched by value, not by digit
 width — a legacy 3-digit ID (`031`) and a current 4-digit one (`0637`) both resolve fine,
@@ -21,8 +21,8 @@ Read `$ARGUMENTS`.
 If `$ARGUMENTS` is empty, or contains anything other than space-separated numbers, stop immediately and respond:
 
 ```text
-Usage: /todo <number> [number...]
-Example: /todo 0133 0134 0135
+Usage: /todo:run <number> [number...]
+Example: /todo:run 0133 0134 0135
 ```
 
 Do not continue.
@@ -55,10 +55,10 @@ For each number `NNN`:
    .claude/scripts/todo_lock.sh check .todos NNN
    ```
 
-   Exit `1` means another `/todo` run already holds it — mark that number as not ready:
+   Exit `1` means another `/todo:run` already holds it — mark that number as not ready:
 
    `Locked: already being processed (since <timestamp from the script's output>) — likely
-   another /todo session running concurrently. If that session crashed and this lock is
+   another /todo:run session running concurrently. If that session crashed and this lock is
    stale, delete .todos/.locks/<NNN>/ and re-run.`
 
    See "Locking" below for the full mechanism.
@@ -74,7 +74,7 @@ From this point onward, "each TODO file" means each resolved file from the numer
 `.todos/.locks/<value>/` (keyed by numeric value, so `055` and `0055` collide the same way file
 resolution already does) is an advisory lock held for the duration this command actually works on a
 TODO. It exists because two Claude Code sessions commonly share the same checked-out `.todos/` (two
-terminals in the same devcontainer) — without it, a typo'd or overlapping `/todo` invocation in a
+terminals in the same devcontainer) — without it, a typo'd or overlapping `/todo:run` invocation in a
 second session can start implementing a file another session is mid-way through.
 
 - **Checked** in Argument validation step 4, above — a locked number is reported not-ready, same as
@@ -228,7 +228,7 @@ Then apply exactly one of the following outcomes:
     **Reason:** <explanation — what unblocks it, and who/what is needed>
   ```
 
-  The move out of the flat backlog is **mandatory**, not cosmetic: `/todo-plan` ranks every flat
+  The move out of the flat backlog is **mandatory**, not cosmetic: `/todo:plan` ranks every flat
   `.todos/*.md` as actionable work. A blocked TODO left in place is re-proposed as the next thing to
   do on every plan regeneration, forever.
 
@@ -256,10 +256,10 @@ Report pass/fail inline; fix before declaring done.
 
 Every outcome in Phase 3 moves a file out of the flat backlog, so `.todos/plan.md` is now stale: it
 still lists the TODOs you just closed, and its batching no longer reflects what remains. Regenerate
-it (see `todo-plan.md`):
+it (see `todo/plan.md`):
 
 ```text
-/todo-plan
+/todo:plan
 ```
 
 Run this **even when every TODO came out `PARTIAL` or `BLOCKED`** — those moved too. Do not hand-edit
@@ -267,7 +267,7 @@ Run this **even when every TODO came out `PARTIAL` or `BLOCKED`** — those move
 both discarded on the next run and a chance to get the remaining batching wrong. Regeneration is the
 only supported update path.
 
-The plan is generated: `python3 .claude/scripts/todo_plan_render.py .todos` (what `/todo-plan`
+The plan is generated: `python3 .claude/scripts/todo_plan_render.py .todos` (what `/todo:plan`
 runs); never edit it by hand.
 
 ## Unattended runs — several TODOs or lots in a row
@@ -285,7 +285,7 @@ When the user hands over a whole plan ("run the plan, commit between lots"):
 
 ## Phase 6 — Commit-hygiene reminder (MANDATORY, always output)
 
-Processing a TODO can touch many files; stacking several `/todo` runs without committing between them
+Processing a TODO can touch many files; stacking several `/todo:run` runs without committing between them
 is how an unreviewable 40-file working tree happens (and the commit-reminder extension only nags once
 the count is already large). Before ending the session, always output this reminder verbatim — even
 when only one TODO ran, and even when everything came out `PARTIAL`/`BLOCKED`:

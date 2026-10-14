@@ -1,6 +1,6 @@
 # .devcontainer/scripts/helpers/todos.sh
 #
-# Category "Backlog" — a quick look at the open .todos/ backlog (see /todo and /todo-plan).
+# Category "Backlog" — a quick look at the open .todos/ backlog (see /todo:run and /todo:plan).
 #
 # Sourced by ../interactive.sh — no shebang, never executed directly.
 # shellcheck shell=bash

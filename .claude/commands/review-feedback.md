@@ -1,10 +1,10 @@
 # Review feedback
 
-Go through the feedback file of an unattended run (`/iterate`, or any run that kept one) with the
+Go through the feedback file of an unattended run (`/todo:iterate`, or any run that kept one) with the
 user: question by question, apply each decision, file the follow-ups, and close the file.
 
 **Usage:** `/review-feedback` — the most recent `.claude/plans/feedback-*.md`, and the open
-pull request of its `/iterate` branch when there is one. `/review-feedback <file>` — that file.
+pull request of its `/todo:iterate` branch when there is one. `/review-feedback <file>` — that file.
 
 The user may be on a small screen: one decision at a time, short options, the recommended one
 first. Speak the user's language.
@@ -17,7 +17,7 @@ first. Speak the user's language.
    - **Questions** (`**Question**:` bullets, the *Questions* section);
    - **Deviations** from a TODO (`**Deviation**:`): the user accepts or asks to change them;
    - **Waiting for you** (measurements, files, decisions) — not answerable here, only listed.
-3. When an `/iterate` pull request exists (`gh pr list --head iterate/…`), read its comments
+3. When a `/todo:iterate` pull request exists (`gh pr list --head iterate/…`), read its comments
    (`gh pr view <n> --comments`, and the review comments with `gh api
    repos/{owner}/{repo}/pulls/<n>/comments`): an answer given there ("2: keep", a remark on a
    line) is taken as the answer to that question; confirm it in one line instead of asking again.
@@ -49,8 +49,8 @@ Group the answers by what they lead to:
 - **A rule for next time** (a pattern the user corrected) — add it to `.claude/rules/workflow.md`
   or the project rules, short; a personal preference goes to memory instead.
 
-Regenerate the plan (`/todo-plan`) when TODOs were filed, then commit the backlog — on the
-`/iterate` branch when the run has one (push it: the pull request follows), else as the user
+Regenerate the plan (`/todo:plan`) when TODOs were filed, then commit the backlog — on the
+`/todo:iterate` branch when the run has one (push it: the pull request follows), else as the user
 asks. Never merge the pull request: the user does, once satisfied.
 
 ## Phase 3 — Close
@@ -59,5 +59,5 @@ asks. Never merge the pull request: the user does, once satisfied.
    reads as closed on the phone.
 2. Append `## Reviewed (<date>)` to the feedback file: the decisions in one line each, the commits
    made, the TODOs filed, what still waits for the user.
-3. Final message: the same, short, and the next step (merge the pull request; `/iterate` when
+3. Final message: the same, short, and the next step (merge the pull request; `/todo:iterate` when
    the plan has runnable lots).

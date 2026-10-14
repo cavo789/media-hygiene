@@ -6,10 +6,10 @@ lot pushed as it goes; at the end a **pull request** whose description is the re
 reads it, comments and merges from a phone, and GitHub's CI runs the full suite and the image
 end-to-end tests instead of the user's PC.
 
-**Usage:** `/iterate` — every runnable lot and standalone TODO, in plan order.
-`/iterate <n>` — stop after `n` lots or standalone TODOs.
+**Usage:** `/todo:iterate` — every runnable lot and standalone TODO, in plan order.
+`/todo:iterate <n>` — stop after `n` lots or standalone TODOs.
 
-The work on each TODO follows `/todo` (`.claude/commands/todo.md`): readiness, locks,
+The work on each TODO follows `/todo:run` (`.claude/commands/todo/run.md`): readiness, locks,
 implementation rules, close-out (DONE / PARTIAL / BLOCKED), plan refresh. The working method of
 `.claude/rules/workflow.md` applies throughout. This command adds the orchestration: what to ask
 first, what to delegate, what to commit, what to report.
@@ -26,7 +26,7 @@ short report per lot, so a run of ten lots costs about as much context as one.
    and ask. Never `git stash`.
 2. Regenerate `.todos/plan.md` (`python3 .claude/scripts/todo_plan_render.py .todos`), then read it.
 3. Create the work branch `iterate/<YYYY-MM-DD>` from an up-to-date `main` (`git switch -c`; a
-   second run the same day: `-2`, `-3`). Never commit an `/iterate` run on `main`: a push of
+   second run the same day: `-2`, `-3`). Never commit a `/todo:iterate` run on `main`: a push of
    `main` rebuilds the published image; the user merges the pull request when satisfied.
 4. Create the feedback file `.claude/plans/feedback-<YYYY-MM-DD>-iterate.md` (private,
    git-ignored) from the template below; tell the user its path in one line.
@@ -69,14 +69,14 @@ mistake. In doubt, `opus`. Say the choice in the progress line.
 
 The prompt gives the subagent everything it needs, since it starts cold:
 
-- the TODO IDs of the lot, and: "Follow `.claude/commands/todo.md` (Phases 0–5) on them, and
+- the TODO IDs of the lot, and: "Follow `.claude/commands/todo/run.md` (Phases 0–5) on them, and
   `.claude/rules/workflow.md`. Run the targeted tests of what you touch and the commit gate on the
   changed files; the full suite and the image tests run in CI on the pull request, not here (the
   user's PC suffers under heavy load). Run the whole unit suite (fast) once before committing.";
 - "A TODO not ready (a question to the user, data you cannot reach): do not ask — skip it, and
   say why in your report.";
 - "Append the section of each TODO to `<feedback file>` (template in
-  `.claude/commands/iterate.md`).";
+  `.claude/commands/todo/iterate.md`).";
 - "Then `git fsck --no-dangling`, one commit for the lot on the current branch (code, tests,
   docs, translations, the moved TODO files and the plan; the message names the TODO IDs and the
   measured gains), and `git push -u origin HEAD`. Never push `main`, never `git stash`.";
@@ -93,7 +93,7 @@ After each subagent:
 
 Stop early when: a lot ends with a failure its subagent could not fix (the tree stays as the
 subagent left it, described in the feedback file); the user sends a message (answer it, go on
-unless they say stop); `/iterate <n>` reached `n`.
+unless they say stop); `/todo:iterate <n>` reached `n`.
 
 ## Phase 3 — End
 
@@ -118,7 +118,7 @@ unless they say stop); `/iterate <n>` reached `n`.
 ## Feedback file template
 
 ```markdown
-# Feedback — /iterate of <date>
+# Feedback — /todo:iterate of <date>
 
 Private notes for the review: per TODO the questions met, the choices made (and the alternatives
 left aside), deviations from the TODO, what could not be checked here, what waits for the user.
