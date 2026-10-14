@@ -128,6 +128,10 @@ def test_each_kind_is_told_from_its_name_and_metadata() -> None:
         shot("x/IMG-20200105-WA0003.jpg", None, camera=None),
         shot("x/Show.S01E05.1080p.x264.mkv", when, camera=None),
         shot("x/IMG_1234.jpg", when),
+        shot("x/IMG_20170923_124027.png", when, camera=None),
+        shot("x/20220827_165332.png", when, camera=None),
+        shot("x/IMG_1807.PNG", when, camera=None),
+        shot("x/Screenshot_20170923-111739.png", when, camera=None),
         shot("x/Holiday 1080p.jpg", when, camera=None),
     ]
     found = by_name(run(files, *rules))
@@ -137,6 +141,10 @@ def test_each_kind_is_told_from_its_name_and_metadata() -> None:
     assert found["IMG-20200105-WA0003.jpg"].rule == "received"
     assert found["Show.S01E05.1080p.x264.mkv"].rule == "download"
     assert found["IMG_1234.jpg"].rule == ""
+    assert found["IMG_20170923_124027.png"].rule == ""  # an edited photo
+    assert found["20220827_165332.png"].rule == ""
+    assert found["IMG_1807.PNG"].rule == "screenshot"  # iPad: 4 digits
+    assert found["Screenshot_20170923-111739.png"].rule == "screenshot"
     assert found["Holiday 1080p.jpg"].rule == ""  # a large JPEG, not a video
 
 
