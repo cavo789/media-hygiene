@@ -17,6 +17,7 @@ from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
 from media_hygiene.i18n import _
+from media_hygiene.index.parked import park
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
@@ -126,24 +127,28 @@ class CleanService:
                 delete_copies=plan.delete_copies,
             )
             outcome = CleanExecutor(context).run(plan)
-        self._forget_removed(journal_path)
+        self._forget_removed(journal_path, run_id)
         return run_id, outcome
 
-    def _forget_removed(self, journal_path: Path) -> None:
-        """Remove from the index the files this run deleted or moved away.
+    def _forget_removed(self, journal_path: Path, run_id: str) -> None:
+        """Take out of the index the files this run deleted or moved away.
 
-        `undo` needs nothing: the next audit indexes the restored files again.
+        The rows of a file set aside are parked (`index.parked`): `undo` puts them
+        back, `purge` drops them. Those of a file deleted are forgotten.
 
         Args:
             journal_path: The journal of the run.
+            run_id: The run.
         """
         index = self._runtime.index_file
         if index is None:
             return
         done = done_states(read_journal(journal_path), Phase.CLEAN)
-        removed = [entry.path for entry in done]
+        aside = [(entry.path, entry.quarantine) for entry in done if entry.quarantine]
+        deleted = [entry.path for entry in done if not entry.quarantine]
         with FactsRepository.open(index) as repository:
-            repository.forget(removed)
+            park(repository.connection, run_id, aside)
+            repository.forget(deleted)
 
 
 def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:

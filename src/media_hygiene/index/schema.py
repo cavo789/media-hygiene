@@ -11,7 +11,8 @@ words of an older run until `tags` runs again); version 8 the faces of the photo
 (`index.face_schema`); version 9 the listing of every folder walked
 (`index.folder_listings`); version 10 the colourfulness and same-stream digest of
 near-duplicate candidates (`index.measures`); version 11 where the files the index
-followed went (`index.moves`). An older index keeps its digests
+followed went (`index.moves`); version 12 the rows of the files a clean set aside
+(`index.parked`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images
 again.
 """
@@ -24,11 +25,13 @@ from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
+from media_hygiene.index.parked import CREATE_PARKED
+from media_hygiene.index.schema_tables import PATH_TABLES
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 11
+SCHEMA_VERSION: Final = 12
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -135,22 +138,10 @@ UPSERT: Final = (
 )
 # Every path below a folder: `/` then anything sorts between `folder/` and `folder0`.
 PATHS_UNDER: Final = "SELECT path FROM files WHERE path >= ? AND path < ?"
-FORGET: Final = (
-    "DELETE FROM files WHERE path = ?",
-    "DELETE FROM descriptions WHERE path = ?",
-    "DELETE FROM tags WHERE path = ?",
-    "DELETE FROM face_scans WHERE path = ?",
-    "DELETE FROM faces WHERE path = ?",
-    "DELETE FROM measures WHERE path = ?",
-)
 # A file moved by `sort` (or back by `undo`) keeps its facts: size and mtime are kept.
-MOVE: Final = (
-    "UPDATE OR REPLACE files SET path = ? WHERE path = ?",
-    "UPDATE OR REPLACE descriptions SET path = ? WHERE path = ?",
-    "UPDATE OR REPLACE tags SET path = ? WHERE path = ?",
-    "UPDATE OR REPLACE face_scans SET path = ? WHERE path = ?",
-    "UPDATE OR REPLACE faces SET path = ? WHERE path = ?",
-    "UPDATE OR REPLACE measures SET path = ? WHERE path = ?",
+MOVE: Final = tuple(
+    f"UPDATE OR REPLACE {table} SET path = ? WHERE path = ?"  # noqa: S608 - constant
+    for table in PATH_TABLES
 )
 MARK_WALKED: Final = "INSERT OR REPLACE INTO roots (path, walked_at) VALUES (?, ?)"
 WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
@@ -188,4 +179,5 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_FOLDER_LISTINGS)
     connection.execute(CREATE_MEASURES)
     connection.execute(CREATE_MOVES)
+    connection.execute(CREATE_PARKED)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

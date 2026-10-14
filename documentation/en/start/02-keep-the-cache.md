@@ -49,7 +49,8 @@ Renaming or moving folders in Explorer keeps what the cache knows: a file found 
 the same size, the same modification time and the same first and last 64 KB is the same file. The
 audit says it: *"1,234 files moved or renamed since the last audit: what the cache knew of them
 follows them."* Its checks, its faces and what a local model said of it are not done again; a
-file changed (a new modification time) is checked again.
+file changed (a new modification time) is checked again. The same goes for the files `undo` brings
+back from the quarantine; `purge` forgets what the cache knew of the files it erases.
 
 The cache also keeps what each file says about itself, read while it is checked: the shooting
 date, the GPS position, the device, the stars given in Windows, the length of a video… Nothing

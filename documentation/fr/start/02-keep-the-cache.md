@@ -51,6 +51,8 @@ retrouvé ailleurs avec la même taille, la même date de modification et les m�
 derniers Ko est le même fichier. L'audit le dit : *« 1 234 fichiers déplacés ou renommés depuis
 le dernier audit : ce que le cache en savait les suit. »* Ses vérifications, ses visages et ce
 qu'un modèle local en a dit ne sont pas refaits ; un fichier modifié (nouvelle date) est revérifié.
+De même pour les fichiers qu'`undo` ramène de la quarantaine ; `purge` oublie ce que le cache
+savait des fichiers qu'il efface.
 
 Le cache garde aussi ce que chaque fichier dit de lui-même, lu pendant sa vérification : la date
 de prise de vue, la position GPS, l'appareil, les étoiles données dans Windows, la durée d'une

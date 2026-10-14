@@ -10,14 +10,8 @@ from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.moves import record_moves
 from media_hygiene.index.preload import bounds_under, known_under
 from media_hygiene.index.rows import facts_of, is_current, row_of
-from media_hygiene.index.schema import (
-    FORGET,
-    MOVE,
-    PATHS_UNDER,
-    SELECT,
-    UPSERT,
-    prepare,
-)
+from media_hygiene.index.schema import MOVE, PATHS_UNDER, SELECT, UPSERT, prepare
+from media_hygiene.index.schema_tables import FORGET
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

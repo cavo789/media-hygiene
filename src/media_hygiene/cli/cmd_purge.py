@@ -98,10 +98,12 @@ def _purge(runtime: Runtime, runs: list[str]) -> int:
     """
     from media_hygiene.actions.purge import purge_run
     from media_hygiene.errors import MediaHygieneError
+    from media_hygiene.index.parked import forget_runs
+    from media_hygiene.index.repository import FactsRepository
 
     quarantine_dir = runtime.locations.quarantine_dir
     try:
-        return sum(purge_run(quarantine_dir, run) for run in runs)
+        freed = sum(purge_run(quarantine_dir, run) for run in runs)
     except OSError as exc:
         raise MediaHygieneError(
             _("The quarantine could not be erased: {reason}.").format(
@@ -109,3 +111,8 @@ def _purge(runtime: Runtime, runs: list[str]) -> int:
             ),
             _("What is left stays in the quarantine; run 'purge' again later."),
         ) from exc
+    index = runtime.index_file
+    if index is not None and index.is_file():  # what the index kept of them (0156)
+        with FactsRepository.open(index) as repository:
+            forget_runs(repository.connection, runs)
+    return freed

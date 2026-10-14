@@ -17,6 +17,7 @@ from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.parked import unpark
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 
@@ -138,12 +139,15 @@ def _follow_moves_back(runtime: Runtime, file: Path) -> None:
         file: The journal of the run.
     """
     index = runtime.index_file
+    done = done_states(read_journal(file), Phase.UNDO)
     back = [
         (entry.target, entry.path)
-        for entry in done_states(read_journal(file), Phase.UNDO)
+        for entry in done
         if entry.action is ActionKind.MOVE and entry.target
     ]
-    if index is None or not back:
+    restored = [(entry.quarantine, entry.path) for entry in done if entry.quarantine]
+    if index is None or not (back or restored):
         return
     with FactsRepository.open(index) as repository:
         repository.move(back)
+        unpark(repository.connection, restored)  # set aside by a clean (0156)
