@@ -45,6 +45,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   background run or a check loop); `ProcessPoolExecutor` in `python -c` needs the `fork`
   context; the scratchpad is invisible to the host Docker daemon (`docker cp`, or
   `-c "$(cat script.py)"`); heavy steps one at a time, `nice -n 19`, `PYTHON_CPU_COUNT=4`.
+- Measurements only the maintainer can run (Windows + Docker Desktop): add a step to
+  `tests/measure/mh-measure.ps1` (PowerShell 5.1, ASCII) instead of a list of commands to type;
+  its results file is read back from the devcontainer through a read-only mount of `C:\`.
 - A change of console output or of a page makes the documentation captures stale: say that
   `docs_screenshots` should run; never run it unasked (image build + browser: heavy).
 - The maintainer's reviews often turn a constant into a `config.toml` setting
