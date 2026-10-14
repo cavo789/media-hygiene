@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
@@ -65,6 +66,7 @@ class JournaledChanges:
         self._context = context
         self._tally = tally
         self._seq = 0
+        self._lock = threading.Lock()  # a clean acts on a few files at once (0149)
 
     def entry(self, file: MediaFile, action: ActionKind) -> JournalEntry:
         """Build the `pending` journal entry of an action.
@@ -76,9 +78,11 @@ class JournaledChanges:
         Returns:
             The entry, with the next sequence number.
         """
-        self._seq += 1
+        with self._lock:
+            self._seq += 1
+            seq = self._seq
         return JournalEntry(
-            seq=self._seq,
+            seq=seq,
             phase=self._context.phase,
             status=Status.PENDING,
             action=action,
@@ -107,8 +111,9 @@ class JournaledChanges:
             change: Zero-argument callable performing the change.
         """
         self.record(entry, change)
-        self._tally.done += 1
-        self._tally.bytes_done += entry.size
+        with self._lock:
+            self._tally.done += 1
+            self._tally.bytes_done += entry.size
 
     def quarantine(
         self, file: MediaFile, action: ActionKind, origin: Origin = NO_ORIGIN
@@ -131,4 +136,5 @@ class JournaledChanges:
             },
         )
         self.act(entry, lambda: move_no_replace(path, target))
-        self._tally.quarantined += 1
+        with self._lock:
+            self._tally.quarantined += 1

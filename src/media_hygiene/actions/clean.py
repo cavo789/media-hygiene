@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-import logging
+from dataclasses import replace
 from functools import partial
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.clean_step import clean_labels, clean_step, said
+from media_hygiene.actions.clean_step import clean_labels, clean_step
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, Outcome, Tally
+from media_hygiene.actions.parallel import Runner, guarded, run_all, shown_on
 from media_hygiene.actions.verify import (
     burst_blocker,
     change_blocker,
@@ -28,11 +29,9 @@ if TYPE_CHECKING:
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import BrokenFile, MediaFile
 
-_LOGGER = logging.getLogger(__name__)
-
 
 class CleanExecutor:
-    """Acts file by file; a problem on one file never stops the others."""
+    """Acts on a few files at a time; a problem on one file never stops the others."""
 
     def __init__(self, context: CleanContext) -> None:
         """Prepare a run.
@@ -55,10 +54,18 @@ class CleanExecutor:
             What was done, skipped and why.
         """
         actions = list(self._actions(plan))
-        step = clean_step(actions, delete_copies=self._context.delete_copies)
-        self._context.progress.start(step, len(actions))
-        for planned in actions:
-            self._guarded(planned)
+        orphans = [
+            (file, self._labels.orphan, partial(self._quarantine_orphan, file))
+            for file in plan.orphans
+        ]
+        step = clean_step(
+            [*actions, *orphans], delete_copies=self._context.delete_copies
+        )
+        self._context.progress.start(step, len(actions) + len(orphans))
+        runner = Runner(guarded(self._tally), shown_on(self._context))
+        run_all(actions, runner)
+        # Last, one by one: a sidecar is an orphan only once its files are gone.
+        run_all(orphans, replace(runner, workers=1))
         self._context.progress.stop()
         return self._tally.freeze()
 
@@ -79,9 +86,6 @@ class CleanExecutor:
         for item in plan.broken:
             action = partial(self._handle_broken, item)
             yield item.file, self._labels.of_broken(item), action
-        # Last: a sidecar is an orphan only once the files it belongs to are gone.
-        for file in plan.orphans:
-            yield file, self._labels.orphan, partial(self._quarantine_orphan, file)
 
     def _look_alikes(self, plan: CleanPlan) -> Iterator[Planned]:
         """List the moves of pictures that look like a kept one: near, burst shots.
@@ -100,22 +104,6 @@ class CleanExecutor:
             for file in choice.discarded:
                 action = partial(self._quarantine_burst, choice, file)
                 yield file, self._labels.burst, action
-
-    def _guarded(self, planned: Planned) -> None:
-        """Say what is done, run it, turn an OS error into a recorded failure.
-
-        Args:
-            planned: The file, what the screen says of it, and the action on it.
-        """
-        file, _label, action = planned
-        self._context.progress.current(said(planned, self._context.mapper))
-        try:
-            action()
-        except OSError as exc:
-            _LOGGER.debug("Action failed on %s", file.path, exc_info=True)
-            self._tally.failed.append(Incident(file.path, exc.strerror or str(exc)))
-        finally:
-            self._context.progress.advance(file.size)
 
     def _delete_copy(self, decision: KeepDecision, file: MediaFile) -> None:
         """Set aside one duplicate copy after a byte-for-byte check against the keeper.

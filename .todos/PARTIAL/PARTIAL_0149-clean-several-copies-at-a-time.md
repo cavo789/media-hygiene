@@ -53,3 +53,26 @@ the size of each copy.
 - Integration test: K files in flight, every entry `pending` then `done`, the same outcome as
   one at a time; a run interrupted with several `pending` entries is undone completely.
 - The figures of item 6 in the commit message.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `actions/parallel.py`: `run_all` hands the actions of a clean to 4 worker threads
+  (`WORKERS`), at most 8 handed out ahead; each file keeps its own sequence (journal
+  `pending`, comparison, move, journal `done`), so the comparison stays right before its own
+  move. The screen (current file, bar by bytes) is updated from the calling thread only.
+- Near duplicates, burst shots and broken files go through the same runner; orphan sidecars
+  run last and one by one (a sidecar is an orphan only once its files are gone).
+- Thread safety: `JournalWriter.record` and the sequence numbers and counters of
+  `JournaledChanges` are under a lock.
+- Ctrl+C / `docker stop`: files not started are cancelled, the ones under way end, then the
+  interruption goes on as before (journal closed, exit 130).
+- Tests: `tests/unit/test_clean_parallel.py` (at most K at once, shown by the caller, a stop
+  starts no new file); `test_several_actions_stopped_at_once_are_each_judged` (undo of a run
+  stopped with several `pending` entries). The clean, undo and journal tests pass unchanged.
+
+### Not done
+- Item 6, the measurement on a Windows test folder (K = 1 against K = 4, with and without
+  `--delete`), and choosing K from it.
+  **Reason:** needs the maintainer's Docker Desktop and a folder where writing is allowed (the
+  devcontainer only reads `C:\Photos`). To compare, set `WORKERS` to 1 in a local build.

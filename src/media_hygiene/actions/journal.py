@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Self
 
@@ -73,6 +74,7 @@ class JournalWriter:
             stream: Journal file opened for appending.
         """
         self._stream = stream
+        self._lock = threading.Lock()
 
     @classmethod
     def open(cls, file: Path) -> Self:
@@ -108,9 +110,11 @@ class JournalWriter:
         Args:
             entry: Entry to persist.
         """
-        self._stream.write(entry.model_dump_json() + "\n")
-        self._stream.flush()
-        os.fsync(self._stream.fileno())
+        line = entry.model_dump_json() + "\n"
+        with self._lock:  # several files of a clean are handled at once (0149)
+            self._stream.write(line)
+            self._stream.flush()
+            os.fsync(self._stream.fileno())
 
 
 def read_journal(file: Path) -> list[JournalEntry]:
