@@ -63,7 +63,8 @@ class VisualFacts:  # pylint: disable=too-many-instance-attributes
     sharpness: float
     taken_at: str | None = None
     camera: str | None = None
-    # Measured for near-duplicate candidates only (`scan.colour`), never stored.
+    # Measured for near-duplicate candidates only (`scan.colour`), then kept in the
+    # index (`index.measures`).
     colour: float | None = None
 
     @property

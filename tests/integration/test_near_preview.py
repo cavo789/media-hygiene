@@ -5,7 +5,6 @@ from __future__ import annotations
 import csv
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli import cmd_clean
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import install
 from tests.support.cli import run
@@ -21,7 +20,9 @@ WHATSAPP = "IMG-20210705-WA0001.jpg"
 
 def decline(monkeypatch: pytest.MonkeyPatch) -> None:
     """Answer 'no' to the confirmation, as a person at a terminal would."""
-    monkeypatch.setattr(cmd_clean, "confirm_clean", lambda *_args: False)
+    monkeypatch.setattr(
+        "media_hygiene.cli.clean_confirm.confirm_clean", lambda *_args: False
+    )
 
 
 def test_the_report_is_linked_before_the_question(

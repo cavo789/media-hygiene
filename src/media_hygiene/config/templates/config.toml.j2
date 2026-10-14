@@ -7,6 +7,7 @@
 {%- endif %}
 {%- endmacro %}
 {{ comment(_("media-hygiene configuration — created on first run, edit it freely.")) }}
+# media-hygiene-config: {{ version }}
 #
 {{ comment(_("Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* environment variables (e.g. MEDIA_HYGIENE_GENERAL__LOCALE=fr) > this file > built-in defaults.")) }}
 {{ comment(_("Run 'media-hygiene config' to see every effective value and where it comes from.")) }}
@@ -110,6 +111,11 @@ small_below = 1000
 dark_below = 50.0
 bright_above = 205.0
 clipped_above = 0.25
+
+
+[cache]
+{{ comment(_("The cache folder (/cache) keeps the previews of your photos, one per size, so that reports and review pages never decode a photo twice. At most this many gigabytes: beyond, the previews shown least recently are removed, and made again when needed.")) }}
+previews_max_gb = 2.0
 
 
 [places]

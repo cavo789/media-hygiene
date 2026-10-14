@@ -19,21 +19,17 @@ from media_hygiene.constants import REPORT_FILE_NAME
 from media_hygiene.report.classify_tree import proposed_tree
 from media_hygiene.report.classify_views import work_left, year_groups
 from media_hygiene.report.environment import make_environment
-from media_hygiene.report.thumbnails import (
-    PREVIEWABLE,
-    ThumbnailJob,
-    make_thumbnails,
-    preview_name,
-)
+from media_hygiene.report.thumbnail_jobs import ThumbnailJob, make_thumbnails
+from media_hygiene.report.thumbnails import PREVIEWABLE, preview_name
 from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
     from pathlib import Path
 
     from media_hygiene.classify.plan_file import ClassifyPlan, PlanRow
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.report.classify_views import GroupView
+    from media_hygiene.report.preview_cache import PreviewPool
 
 _INDEX_TEMPLATE: Final = "classify.html.j2"
 _YEAR_TEMPLATE: Final = "classify_year.html.j2"
@@ -71,7 +67,7 @@ class ClassifyReportWriter:
 
     folder: Path
     mapper: HostPathMapper
-    executor: Executor
+    pool: PreviewPool  # renders previews, and keeps them in the cache
 
     def write(self, plan: ClassifyPlan) -> Path:
         """Write the report of a plan.
@@ -135,7 +131,7 @@ class ClassifyReportWriter:
             source = self.mapper.to_container(row.path)
             if media_kind(source) in PREVIEWABLE:
                 jobs[row.id] = ThumbnailJob(source, self.folder / preview_name(source))
-        written = asyncio.run(make_thumbnails(list(jobs.values()), self.executor))
+        written = asyncio.run(make_thumbnails(list(jobs.values()), self.pool))
         return {
             row_id: preview_name(job.source)
             for row_id, job in jobs.items()

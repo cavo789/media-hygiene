@@ -56,7 +56,9 @@ def serve_people(runtime: Runtime, result: PeopleResult, port: int) -> None:
     names = NamesFile(_names_file(runtime), runtime.settings.people)
     roster = Roster(PeopleBoard.of(result.groups), result.every, names)
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = PeopleApp(roster, runtime.mapper, page.encode(), executor)
+        app = PeopleApp(
+            roster, runtime.mapper, page.encode(), executor, runtime.previews_dir
+        )
         asyncio.run(run_server(app, port, partial(_announce, runtime, roster)))
 
 

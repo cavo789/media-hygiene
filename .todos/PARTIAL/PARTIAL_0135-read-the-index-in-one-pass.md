@@ -40,3 +40,29 @@ read, listing save, analysis).
 - A warm audit issues one `SELECT` of the files table, not one per file. A test counts the
   statements with `connection.set_trace_callback`.
 - An index of an older schema still upgrades (`tests/fixtures/`).
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `FactsRepository.preload(roots)` (`index/preload.py`): one `SELECT` per mounted folder,
+  rows parsed once into path → (size, mtime, facts); `get` answers from it (a path below a
+  preloaded folder and absent is unknown, no `SELECT`), `put`/`forget`/`move` keep it in step.
+  The audit preloads right after `forget_missing` (timed as the `cache` stage of 0131).
+- `exact.py` needs no change: its repeated `get` calls are now dictionary reads.
+- `schema.prepare` returns at once when `PRAGMA user_version` is already `SCHEMA_VERSION`: no
+  DDL, no write.
+- `services/listing.list_media` opens the index once (load, walk, save) instead of twice; the
+  audit's analysis and near-duplicate checks share one connection and one pool (0132). An audit
+  now opens the index 2 times instead of 3.
+- Tests: `tests/integration/test_index_one_pass.py` traces the statements (no per-file `SELECT`,
+  no `CREATE TABLE` on a warm audit) and checks that an index of version 9 still upgrades.
+
+### Not done
+- Lazy metadata parsing (item 2). **Reason:** the audit needs the metadata of every file
+  anyway (`take_inventory`, `IntegrityFindings.metadata`), so parsing on first access would
+  save nothing there; each row is now parsed once instead of once per `get`.
+- A single connection from the listing to the end (item 5, fully). **Reason:** with `prepare`
+  skipped, a second open costs a file open; passing the repository into `list_media` (shared
+  with `classify`) was not worth the change.
+- Measure before/after on the real collection (item 6). **Reason:** needs the maintainer
+  (0104 §7: the `cache`, `checks` and `fingerprints` figures of the step line).

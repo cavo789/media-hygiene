@@ -112,7 +112,7 @@ def test_the_page_searches_and_shows_the_pictures(
     assert hit["tags"]["folder"] == ["Durbuy", "ours"]
     assert seen["thumb"].body.startswith(b"\xff\xd8")
     assert seen["again"].body == seen["thumb"].body
-    assert any((locations.cache_dir / "search-previews").iterdir())
+    assert any((locations.cache_dir / "previews").iterdir())
     assert seen["preview"].body.startswith(b"\xff\xd8")
     assert seen["original"].body.startswith(b"\xff\xd8")
     page = seen["page"]

@@ -53,6 +53,7 @@ class ClassifyResult:
 
     classification: Classification
     duplicates: int
+    narrowed: bool = False  # `--year` or `--path`: the other files got no proposal
 
 
 class ClassifyService:

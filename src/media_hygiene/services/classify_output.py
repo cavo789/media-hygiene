@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.carry import carry_over
+from media_hygiene.classify.carry_deferred import with_deferred
 from media_hygiene.classify.carry_plan import with_carried
+from media_hygiene.classify.carry_scope import ScopeCheck, keep_deferred, split_scope
 from media_hygiene.classify.plan_build import build_plan
 from media_hygiene.classify.workbook.prefill import Prefill
 from media_hygiene.classify.workbook.writer import write_workbook
@@ -24,6 +26,7 @@ from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.classify_writer import ClassifyReportWriter
 from media_hygiene.report.folders import new_report_folder
+from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
@@ -65,8 +68,13 @@ def write_classify_output(
     plan = build_plan(result.classification, runtime.settings.classify, runtime.mapper)
     prefill = None
     if source is not None:
+        check = ScopeCheck(
+            result.narrowed,
+            lambda host: runtime.mapper.to_container(host).exists(),
+        )
+        source, deferred = split_scope(with_deferred(source), plan, check)
         carried = carry_over(source, plan)
-        plan = with_carried(plan, carried, source)
+        plan = keep_deferred(with_carried(plan, carried, source), deferred)
         prefill = Prefill(carried.edits, carried.notes)
     try:
         folder = new_report_folder(reports_dir, CLASSIFY_FOLDER_SUFFIX)
@@ -75,7 +83,9 @@ def write_classify_output(
         )
         write_workbook(plan, folder / CLASSIFY_WORKBOOK_FILE_NAME, prefill)
         with runtime.executor_factory() as executor:
-            ClassifyReportWriter(folder, runtime.mapper, executor).write(plan)
+            ClassifyReportWriter(
+                folder, runtime.mapper, PreviewPool(executor, runtime.previews_dir)
+            ).write(plan)
     except OSError as exc:
         raise MountError(
             _("The classify files could not be written to {folder}: {reason}.").format(

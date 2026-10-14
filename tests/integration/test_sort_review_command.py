@@ -28,10 +28,13 @@ def test_the_page_is_served_and_the_choices_counted(
     build_library(locations.data_dir)
     assert run(cli, "classify").exit_code == 0
     pages: list[bytes] = []
+    thumbs: list[int] = []
 
     async def name_it(app: SortReviewApp) -> None:
         pages.append(app.page)
         [card] = json.loads((await call(app, "GET /api/state")).body)["events"]
+        view = json.loads((await call(app, f"GET /api/event/{card['id']}")).body)
+        thumbs.append((await call(app, f"GET {view['photos'][0]['thumb']}")).status)
         await call(app, "POST /api/event", {"event": card["id"], "name": EVENT_NAME})
 
     monkeypatch.setattr(sort_reviewing, "run_server", fake_server(name_it))
@@ -44,6 +47,11 @@ def test_the_page_is_served_and_the_choices_counted(
     assert b"/api/forget" in pages[0]
     assert b"/api/sure" in pages[0]
     assert b"sort-decisions.json" in pages[0]
+    # The next event's thumbnails and the zoom around the cursor are asked ahead.
+    assert b"new Image().src = photo.thumb" in pages[0]
+    assert b"new Image().src = photos[rank].preview" in pages[0]
+    assert thumbs == [200]
+    assert any((locations.cache_dir / "previews").iterdir())  # kept for next time
     sorted_out = run(cli, "sort", "--yes")
     assert (
         "1 choice of the review page applied on top of the workbook"

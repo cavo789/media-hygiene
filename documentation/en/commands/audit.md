@@ -82,7 +82,8 @@ cavo789/media-hygiene audit --exclude "D:\Backup"
 # Only the videos
 cavo789/media-hygiene audit --ext video
 
-# Everything the files say about themselves (dates, GPS, formats), after the summary
+# Everything the files say about themselves (dates, GPS, formats), after the summary,
+# and how long each step took (listing, checks, fingerprints, near duplicates…)
 cavo789/media-hygiene --verbosity verbose audit
 
 # Then the faces, once you agreed to the time it takes (needs /cache)

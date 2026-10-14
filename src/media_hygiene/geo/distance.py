@@ -6,11 +6,12 @@ Accurate to about 0.5 %: plenty to tell a garden from the next town.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 from statistics import median
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
+
+from media_hygiene.geo.point import Point
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -21,13 +22,15 @@ EARTH_RADIUS_KM: Final = 6371.0088
 KM_PER_DEGREE: Final = math.pi * EARTH_RADIUS_KM / 180
 METRES_PER_KM: Final = 1000
 
-
-@dataclass(frozen=True, slots=True)
-class Point:
-    """A position in decimal degrees: south and west are negative."""
-
-    latitude: float
-    longitude: float
+__all__ = [
+    "EARTH_RADIUS_KM",
+    "KM_PER_DEGREE",
+    "METRES_PER_KM",
+    "Point",
+    "centre",
+    "distance_km",
+    "distances_km",
+]
 
 
 def distance_km(first: Point, second: Point) -> float:

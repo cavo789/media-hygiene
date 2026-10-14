@@ -84,7 +84,8 @@ cavo789/media-hygiene --locale fr audit --exclude "D:\Sauvegarde"
 # Seulement les vidéos
 cavo789/media-hygiene --locale fr audit --ext video
 
-# Tout ce que les fichiers disent d'eux-mêmes (dates, GPS, formats), après le résumé
+# Tout ce que les fichiers disent d'eux-mêmes (dates, GPS, formats), après le résumé,
+# et le temps pris par chaque étape (liste, vérifications, empreintes, quasi-doublons…)
 cavo789/media-hygiene --locale fr --verbosity verbose audit
 
 # Puis les visages, une fois le temps accepté (il faut /cache)

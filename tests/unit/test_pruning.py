@@ -12,6 +12,7 @@ from media_hygiene.constants import MediaKind
 from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.walks import walked_at
 from media_hygiene.scan import folder_entries, walker
 from media_hygiene.scan.filters import ScanFilters
 from media_hygiene.scan.folder_cache import WalkSetup
@@ -87,8 +88,8 @@ def test_only_complete_walks_are_dated() -> None:
         forget_missing(repository, coverage())
         broken = WalkCoverage((other,), frozenset(), (other / "Locked",), ScanFilters())
         forget_missing(repository, broken)
-        assert repository.walked_at(ROOT) is not None
-        assert repository.walked_at(other) is None
+        assert walked_at(repository, ROOT) is not None
+        assert walked_at(repository, other) is None
 
 
 def test_the_walk_lists_what_it_could_not_read(

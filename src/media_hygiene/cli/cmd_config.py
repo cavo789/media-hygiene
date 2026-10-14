@@ -1,23 +1,21 @@
 """`media-hygiene config`: show every effective setting, its origin, and the mounts."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
-from rich.table import Table
 
 from media_hygiene.cli.context import runtime_of
-from media_hygiene.config.categories import BUILTIN_CATEGORIES
-from media_hygiene.config.loader import Origin
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.paths.mounts import is_read_only
-from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    from rich.table import Table
 
+    from media_hygiene.config.loader import Origin
     from media_hygiene.services.runtime import Runtime
 
 
@@ -26,6 +24,8 @@ _PEOPLE, _IGNORED = "people", "ignored"
 
 
 def _origin_label(origin: Origin) -> str:
+    from media_hygiene.config.loader import Origin
+
     labels = {
         Origin.DEFAULT: _("default"),
         Origin.FILE: _("config.toml"),
@@ -57,13 +57,45 @@ def _shown(section: str, key: str, value: object) -> str:
     )
 
 
-def config_command(ctx: typer.Context) -> None:
+def config_command(
+    ctx: typer.Context,
+    *,
+    upgrade: Annotated[
+        bool,
+        typer.Option(
+            "--upgrade",
+            help=_(
+                "Add the settings of this version to your config.toml, with their "
+                "explanation; your values and comments are kept."
+            ),
+        ),
+    ] = False,
+    dry_run: Annotated[
+        bool,
+        typer.Option(
+            "--dry-run",
+            help=_("With --upgrade: list the settings it would add, write nothing."),
+        ),
+    ] = False,
+) -> None:
     """Explain the effective configuration and the state of each mount point.
 
     Args:
         ctx: Typer context holding the runtime.
+        upgrade: `--upgrade`.
+        dry_run: `--dry-run`.
     """
+    from rich.table import Table
+
+    from media_hygiene.cli.config_mounts import mounts_table, on_host
+    from media_hygiene.cli.config_upgrade_flow import show_upgrade, upgrade_tip
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
+
     runtime = runtime_of(ctx)
+    if upgrade or dry_run:
+        show_upgrade(runtime, dry_run=dry_run)
+        return
     settings = runtime.settings.model_dump(mode="json")
     table = Table(title=_("Effective settings"), title_justify="left")
     for header in (_("Setting"), _("Value"), _("Origin")):
@@ -80,13 +112,13 @@ def config_command(ctx: typer.Context) -> None:
     runtime.output.blank()
     runtime.output.show(_categories_table(runtime))
     runtime.output.blank()
-    runtime.output.show(_mounts_table(runtime))
+    runtime.output.show(mounts_table(runtime))
     runtime.output.blank()
     config_file = runtime.locations.config_file
     if runtime.persistent(MountKind.CONFIG):
         runtime.output.tip(
             _("Edit {path} to change these settings; command-line options win.").format(
-                path=_on_host(runtime, config_file) or config_file,
+                path=on_host(runtime, config_file) or config_file,
             ),
         )
     else:
@@ -97,6 +129,7 @@ def config_command(ctx: typer.Context) -> None:
                 "there, commented, on the first run; edit it with any text editor."
             ),
         )
+    upgrade_tip(runtime)
 
 
 def _categories_table(runtime: Runtime) -> Table:
@@ -108,6 +141,10 @@ def _categories_table(runtime: Runtime) -> Table:
     Returns:
         The table: name, extensions, origin.
     """
+    from rich.table import Table
+
+    from media_hygiene.config.categories import BUILTIN_CATEGORIES
+
     table = Table(title=_("Extension categories (--ext)"), title_justify="left")
     for header in (_("Category"), _("Extensions"), _("Origin")):
         table.add_column(header, overflow="fold")
@@ -122,71 +159,3 @@ def _categories_table(runtime: Runtime) -> Table:
     for name, listed, origin in rows:
         table.add_row(name, ", ".join(ext.lstrip(".") for ext in listed), origin)
     return table
-
-
-def _mounts_table(runtime: Runtime) -> Table:
-    """Each mount point, the folder of the user's computer behind it, and its state.
-
-    The data mount point lists every folder mounted below it.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The table.
-    """
-    table = Table(title=_("Mount points"), title_justify="left")
-    for header in (_("Mount"), _("Folder on your computer"), _("State")):
-        table.add_column(header, overflow="fold")
-    data_dir = runtime.locations.data_dir
-    for kind in MountKind:
-        path = runtime.locations.path_of(kind)
-        paths = [path]
-        if kind is MountKind.DATA:
-            paths = list(runtime.mounts.data_roots(data_dir))
-        for mount in paths:
-            table.add_row(
-                str(mount),
-                _on_host(runtime, mount) or "—",
-                _state(runtime, kind, mount),
-            )
-    return table
-
-
-def _state(runtime: Runtime, kind: MountKind, path: Path) -> str:
-    """Describe whether a mount point is mounted, and how.
-
-    Args:
-        runtime: Settings, mount points and output.
-        kind: Which mount point.
-        path: The mount point, or a folder mounted below `/data`.
-
-    Returns:
-        The translated, coloured state.
-    """
-    mounted = (
-        path in runtime.mounts.mount_points
-        if kind is MountKind.DATA
-        else runtime.persistent(kind)
-    )
-    if not mounted and kind is MountKind.DATA:
-        return _("[yellow]not mounted[/] — nothing to analyse")
-    if not mounted:
-        return _("[yellow]not mounted[/] — nothing kept after the run")
-    if path.is_dir() and is_read_only(path):
-        return _("[cyan]read-only[/]")
-    return _("[green]mounted[/]")
-
-
-def _on_host(runtime: Runtime, path: Path) -> str | None:
-    r"""Return the folder of the user's computer behind a container path, when known.
-
-    Args:
-        runtime: Settings, mount points and output.
-        path: A container path.
-
-    Returns:
-        E.g. `C:\Users\me\media-hygiene\config`, or None (Docker volume, unknown).
-    """
-    host = runtime.mapper.to_host(path)
-    return None if host == str(path) else host

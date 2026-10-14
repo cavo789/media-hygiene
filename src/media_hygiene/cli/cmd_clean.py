@@ -1,5 +1,7 @@
 """`media-hygiene clean`: duplicates to the quarantine, journaled and undoable."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 from dataclasses import replace
@@ -9,28 +11,10 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import clean_options, options, scan_options
-from media_hygiene.cli.clean_confirm import confirm_clean
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
-from media_hygiene.cli.flows import (
-    audit_and_show,
-    report_and_announce,
-    show_pairs,
-    show_second_opinion,
-)
-from media_hygiene.cli.near_preview import near_waiting, show_near_first
-from media_hygiene.cli.next_steps import carried, safety, suggest
 from media_hygiene.cli.scan_options import scan_layer
-from media_hygiene.console.progress import RichProgress
-from media_hygiene.console.tables import outcome_table
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
-from media_hygiene.plan.near_review import NearSelection
-from media_hygiene.report.views import ReportRecord
-from media_hygiene.services.clean import CleanMode, CleanService
-from media_hygiene.services.decisions_archive import archive_decisions
-from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
-from media_hygiene.services.next_command import CHANGING, NextVerb
-from media_hygiene.services.review import apply_review, load_review, review_choices
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
@@ -70,6 +54,23 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.cli.clean_confirm import confirm_clean
+    from media_hygiene.cli.flows import (
+        audit_and_show,
+        report_and_announce,
+        show_pairs,
+        show_second_opinion,
+    )
+    from media_hygiene.cli.near_preview import near_waiting, show_near_first
+    from media_hygiene.console.progress import RichProgress
+    from media_hygiene.console.tables import outcome_table
+    from media_hygiene.plan.near_review import NearSelection
+    from media_hygiene.report.views import ReportRecord
+    from media_hygiene.services.clean import CleanMode, CleanService
+    from media_hygiene.services.decisions_archive import archive_decisions
+    from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
+    from media_hygiene.services.review import apply_review, load_review, review_choices
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output), RichProgress(output.console) as progress:
@@ -127,6 +128,9 @@ def _after_clean_tips(runtime: Runtime, run_id: str, outcome: Outcome) -> None:
         run_id: The clean run.
         outcome: What the clean did.
     """
+    from media_hygiene.cli.next_steps import carried, safety, suggest
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
     safety(
         runtime,
         _(

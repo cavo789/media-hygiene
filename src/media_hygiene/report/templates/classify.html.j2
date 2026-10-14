@@ -13,6 +13,9 @@
 {% if plan.carried %}
 <h2>{{ _("Edits carried over") }}</h2>
 <p>{{ ngettext("%(num)s edit carried over from the workbook saved on %(date)s: %(path)s", "%(num)s edits carried over from the workbook saved on %(date)s: %(path)s", plan.carried.edits, num=plan.carried.edits | number, date=saved, path=plan.carried.workbook) }}</p>
+{% if plan.carried.deferred %}
+<p>{{ ngettext("%(num)s edit of files this run left out (--year, --path) kept for a later run.", "%(num)s edits of files this run left out (--year, --path) kept for a later run.", plan.carried.deferred, num=plan.carried.deferred | number) }}</p>
+{% endif %}
 {% if plan.carried.split %}
 <p>{{ _("Events split in several, each part keeps the edit: {names}.").format(names=plan.carried.split | join(", ")) }}</p>
 {% endif %}

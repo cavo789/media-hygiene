@@ -44,7 +44,8 @@ class VideoLook:
     height: int
     recorded_at: str | None = None
     codec: str | None = None
-    # Measured for re-encoded candidates only (`scan.colour`), never stored.
+    # Measured for re-encoded candidates only (`scan.colour`), then kept in the index
+    # (`index.measures`).
     colour: float | None = None
 
     @property

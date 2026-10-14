@@ -20,7 +20,8 @@ from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming
 from media_hygiene.people.crops import CropJob, face_crop
 from media_hygiene.people.roster import Change
-from media_hygiene.report.thumbnails import review_preview
+from media_hygiene.report.preview_cache import PreviewPool
+from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.local_app import jpeg_response
@@ -28,6 +29,7 @@ from media_hygiene.review.serving import json_response, refused_post, serve_conn
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
+    from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.people.roster import Roster
@@ -62,6 +64,7 @@ class PeopleApp:
     mapper: HostPathMapper
     page: bytes
     executor: Executor
+    previews: Path | None = None  # the cache folder of previews, if any
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -126,7 +129,11 @@ class PeopleApp:
             if face is None:
                 break
             if prefix == PHOTO_PREFIX:
-                return await jpeg_response(self.executor, review_preview, face.path)
+                return await jpeg_response(
+                    self.executor,
+                    PreviewPool(self.executor, self.previews).renderer(REVIEW_EDGE),
+                    face.path,
+                )
             loop = asyncio.get_running_loop()
             job = CropJob(face.path, face.box)
             image = await loop.run_in_executor(self.executor, face_crop, job)

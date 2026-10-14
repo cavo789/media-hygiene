@@ -131,6 +131,13 @@ RUN groupadd --gid "${APP_GID}" app && \
     mkdir -p /data /config /journal /quarantine /reports /cache && \
     chown app:app /config /journal /quarantine /reports /cache
 
+# The base image ships no bytecode for the standard library, and the app user can never write
+# it: without this, every run compiles ~190 modules again (~300 ms). `unchecked-hash`: these
+# files never change in the image, so Python does not even look at the sources.
+RUN python -m compileall -q -j0 --invalidation-mode unchecked-hash \
+        -x '/(test|idlelib|tkinter|turtledemo|ensurepip|lib2to3|pydoc_data)/' \
+        "$(python -c 'import sysconfig; print(sysconfig.get_path("stdlib"))')"
+
 COPY --from=ffprobe /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=ffmpeg /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /opt/venv /opt/venv

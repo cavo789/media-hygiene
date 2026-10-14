@@ -103,6 +103,11 @@ def lost_line(lost: LostEdit) -> str:
             "merged with another named event, whose name wins"
         ),
     }
+    if lost.why is LostWhy.REPLACED:
+        reasons[lost.why, lost.sheet] = _(
+            "kept by a run with --year or --path, then edited otherwise in the "
+            "workbook, whose value was carried over"
+        )
     if lost.why is LostWhy.CONFLICT:
         reasons[lost.why, lost.sheet] = _(
             "chosen in the review page, then edited otherwise in the workbook, "

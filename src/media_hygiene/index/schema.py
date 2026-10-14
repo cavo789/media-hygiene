@@ -9,7 +9,8 @@ file (`index.tag_rows`: folder words, dates, places, what a vision model saw);
 version 7 what each place word names (`tags.models.PlaceKind`: `kind`, empty for the
 words of an older run until `tags` runs again); version 8 the faces of the photos
 (`index.face_schema`); version 9 the listing of every folder walked
-(`index.folder_listings`). An older index keeps its digests
+(`index.folder_listings`); version 10 the colourfulness and same-stream digest of
+near-duplicate candidates (`index.measures`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images
 again.
 """
@@ -20,11 +21,12 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
+from media_hygiene.index.measures import CREATE_MEASURES
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 9
+SCHEMA_VERSION: Final = 10
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -119,6 +121,9 @@ _FACTS: Final = (
 SELECT: Final = f"SELECT {_FACTS} FROM files WHERE path = ?"  # noqa: S608
 # Every file, its path first, then the same columns.
 EVERY_FILE: Final = f"SELECT path, {_FACTS} FROM files ORDER BY path"  # noqa: S608
+# The same, below a folder (`index.preload`).
+_BELOW: Final = "WHERE path >= ? AND path < ?"
+FILES_UNDER: Final = f"SELECT path, {_FACTS} FROM files {_BELOW}"  # noqa: S608
 UPSERT: Final = (
     "INSERT OR REPLACE INTO files (path, size, mtime_ns, partial_digest, full_digest,"
     " integrity_checked, broken_reason, broken_detail, visual_checked, dhash, phash,"
@@ -134,6 +139,7 @@ FORGET: Final = (
     "DELETE FROM tags WHERE path = ?",
     "DELETE FROM face_scans WHERE path = ?",
     "DELETE FROM faces WHERE path = ?",
+    "DELETE FROM measures WHERE path = ?",
 )
 # A file moved by `sort` (or back by `undo`) keeps its facts: size and mtime are kept.
 MOVE: Final = (
@@ -142,6 +148,7 @@ MOVE: Final = (
     "UPDATE OR REPLACE tags SET path = ? WHERE path = ?",
     "UPDATE OR REPLACE face_scans SET path = ? WHERE path = ?",
     "UPDATE OR REPLACE faces SET path = ? WHERE path = ?",
+    "UPDATE OR REPLACE measures SET path = ? WHERE path = ?",
 )
 MARK_WALKED: Final = "INSERT OR REPLACE INTO roots (path, walked_at) VALUES (?, ?)"
 WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
@@ -150,9 +157,14 @@ WALKED_AT: Final = "SELECT walked_at FROM roots WHERE path = ?"
 def prepare(connection: sqlite3.Connection) -> None:
     """Create the tables, or add what an older index lacks.
 
+    An index already at this version is left as it is: nothing to check, nothing
+    written.
+
     Args:
         connection: An open SQLite connection.
     """
+    if connection.execute("PRAGMA user_version").fetchone() == (SCHEMA_VERSION,):
+        return
     connection.execute(_CREATE)
     existing = {row[1] for row in connection.execute("PRAGMA table_info(files)")}
     for name, definition in (
@@ -172,4 +184,5 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_FACE_SCANS)
     connection.execute(CREATE_FACES)
     connection.execute(CREATE_FOLDER_LISTINGS)
+    connection.execute(CREATE_MEASURES)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

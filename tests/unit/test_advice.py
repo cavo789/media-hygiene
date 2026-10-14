@@ -112,7 +112,7 @@ def test_the_settings_to_add_once_share_one_line(
 ) -> None:
     """No cache, no time zone: one ⚙️ line names both, config.toml when mounted."""
     missing, said = case
-    monkeypatch.setattr(cmd_audit, "timezone_unknown", lambda: True)
+    monkeypatch.setattr("media_hygiene.config.zone.timezone_unknown", lambda: True)
     runtime = make_runtime(make_locations(tmp_path, *missing))
     cmd_audit._setup_tips(runtime)  # noqa: SLF001  # pylint: disable=protected-access
     runtime.output.finish()

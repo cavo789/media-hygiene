@@ -1,5 +1,8 @@
 """`media-hygiene review`: set burst shots aside, series by series, in the browser."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,16 +12,9 @@ import typer
 
 from media_hygiene.cli import options, review_options, scan_options
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
-from media_hygiene.cli.flows import audit_and_show
-from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
-from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.cli.scan_options import scan_layer
-from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_flag
-from media_hygiene.services.near_reviewing import open_near_review, serve_near_review
-from media_hygiene.services.next_command import CHANGING, NextVerb
-from media_hygiene.services.reviewing import open_review, review_target, serve_review
+from media_hygiene.review.place import DEFAULT_DECISIONS
 
 if TYPE_CHECKING:
     from media_hygiene.console.output import Output
@@ -56,6 +52,19 @@ def review_command(  # pylint: disable=too-many-arguments
         port: `--port`, inside the container.
         near: `--near`, the near duplicates instead of the burst series.
     """
+    from media_hygiene.cli.flows import audit_and_show
+    from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
+    from media_hygiene.console.formatting import human_number
+    from media_hygiene.services.near_reviewing import (
+        open_near_review,
+        serve_near_review,
+    )
+    from media_hygiene.services.reviewing import (
+        open_review,
+        review_target,
+        serve_review,
+    )
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
@@ -97,6 +106,8 @@ def _tell_obvious(output: Output, session: ReviewSession) -> None:
         output: Where to tell it.
         session: The review, opened.
     """
+    from media_hygiene.console.formatting import human_number
+
     todo = [item for item in session.state().series if not item.reviewed]
     if not todo:
         return
@@ -125,6 +136,11 @@ def _tell_stopped(ctx: typer.Context, runtime: Runtime, session: ReviewSession) 
         runtime: Settings, mount points and output.
         session: The review, stopped.
     """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.console.formatting import human_number
+    from media_hygiene.review.place import decisions_flag
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
     output = runtime.output
     series, shots = session.progress
     output.blank()

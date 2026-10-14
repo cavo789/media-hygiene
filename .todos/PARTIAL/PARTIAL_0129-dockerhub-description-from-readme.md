@@ -34,3 +34,19 @@ publish `README.md` as the overview at each release.
 
 - After the next release, the Docker Hub overview equals `README.md`, the *Licences* section
   included, its links working.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- `ci.yml`, job *Publish to Docker Hub* (tags only): a checkout (`persist-credentials: false`),
+  then after the manifest, `peter-evans/dockerhub-description` v5.0.0 pinned by commit SHA
+  (`1b9a80c0…`), `repository: ${{ env.IMAGE }}`, `readme-filepath: ./README.md`,
+  `enable-url-completion: true` (relative links and images made absolute to GitHub, at the
+  tag), `short-description` read from the Dockerfile's `org.opencontainers.image.description`.
+- `development.md` en + fr: the overview follows the README; the token needs read/write/delete.
+
+### Not done
+- Check that `DOCKERHUB_TOKEN` has the read/write/delete scope, and the overview after the next
+  release (links, *Licences* section). **Reason:** needs the maintainer's Docker Hub account and
+  a release; a token without the scope makes this last step of the job fail, after the image is
+  pushed.

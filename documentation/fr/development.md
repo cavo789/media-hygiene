@@ -122,7 +122,10 @@ lancez `release`. Il crée le tag `vX.Y.Z` et le pousse. La CI construit alors l
 et arm64, lance les tests de bout en bout, puis pousse `cavo789/media-hygiene:<version>` et
 `:latest` sur Docker Hub, avec un SBOM et une attestation de provenance. Il faut pour cela deux
 secrets dans le dépôt : `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN` (un jeton d'accès Docker Hub en
-lecture/écriture).
+lecture/écriture/suppression, ce qu'exige la modification de la présentation). Le même job publie
+`README.md` comme présentation sur Docker Hub (ses liens relatifs rendus absolus, vers ce tag sur
+GitHub ; la description courte est la description OCI de l'image) : **modifiez le README, jamais
+la page Docker Hub**, que la version suivante écrase.
 
 Les versions épinglées sont tenues à jour par l'application GitHub Renovate
 ([`.github/renovate.json`](../../.github/renovate.json)). Chaque lundi matin, elle ouvre une pull

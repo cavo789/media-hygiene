@@ -5,6 +5,10 @@ between would be silently replaced by a POSIX rename, or truncated by a copy. He
 refusal is the act itself:
 
 - on one disk, `renameat2(RENAME_NOREPLACE)` renames atomically, or fails with EEXIST;
+- where that rename is refused but hard links work (Docker Desktop's NTFS mounts), a
+  second name is linked, which fails with EEXIST too, then the first one is removed:
+  instant, no byte copied. Killed in between, both names hold the same file: the next
+  move of it only removes the old name;
 - where the kernel or the filesystem cannot do that (some FUSE, 9p or virtiofs
   mounts of Docker Desktop), and across disks, the target is created with
   `O_CREAT | O_EXCL`, filled, synced, proven identical to the source by its SHA-256,
@@ -22,6 +26,7 @@ import shutil
 from functools import cache
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.link_move import moved_by_link, same_file
 from media_hygiene.constants import Sizes
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
@@ -137,7 +142,7 @@ def copy_then_remove(source: Path, target: Path) -> None:
 def move_no_replace(
     source: Path, target: Path, rename: Renamer = rename_no_replace
 ) -> None:
-    """Move a file, never replacing anything: renamed on one disk, copied otherwise.
+    """Move a file, never replacing anything: renamed or linked, else copied.
 
     Args:
         source: The file to move.
@@ -151,10 +156,15 @@ def move_no_replace(
     target.parent.mkdir(parents=True, exist_ok=True)
     try:
         rename(source, target)
+    except FileExistsError:
+        if not same_file(source, target):
+            raise
+        source.unlink()  # a move by link killed before its end: finish it
     except OSError as exc:
         if exc.errno not in COPY_INSTEAD:
             raise
-        copy_then_remove(source, target)
+        if exc.errno == errno.EXDEV or not moved_by_link(source, target):
+            copy_then_remove(source, target)
 
 
 def create_empty(path: Path) -> None:

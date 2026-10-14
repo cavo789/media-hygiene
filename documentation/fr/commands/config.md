@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Vos photos | 🔒 Jamais modifiées. |
 | Il faut | Rien. |
 | Conseillé | `/config`, et les mêmes options `-v` que votre commande habituelle, pour voir leur état. |
-| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement. |
+| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement ; avec `--upgrade`, les réglages qui lui manquent. |
 | Annuler | Supprimez `config.toml` pour revenir aux valeurs par défaut. |
 | Avec `mh` | `mh config`. |
 
@@ -55,6 +55,28 @@ La première exécution dit *💡 Un fichier de configuration commenté a été 
   dossier de l'outil), avec le dossier de votre ordinateur derrière lui quand Docker Desktop le
   donne.
 
+## Après une mise à jour : `--upgrade`
+
+Une version plus récente peut apporter de nouveaux réglages. Votre `config.toml` fonctionne
+toujours sans eux (chacun prend sa valeur par défaut), mais ses commentaires n'en disent rien.
+`config` le signale en une ligne, *💡 config.toml a été écrit par la version 0.3.0 : 3 nouveaux
+réglages depuis.*, puis :
+
+```powershell
+# Lister ce qui serait ajouté, sans rien écrire
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config --dry-run
+
+# Les ajouter, chacun avec son explication
+docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygiene --locale fr config --upgrade
+```
+
+Chaque réglage manquant est ajouté avec son commentaire, après le réglage qui le précède ; une
+table manquante est ajoutée entière. **Vos valeurs, vos commentaires et vos règles sont gardés**,
+rien n'est déplacé ni supprimé, et les commentaires ajoutés sont dans la langue de votre fichier.
+Le fichier est relu sur le disque et la console liste ce qu'il contient désormais. `/config`
+monté avec `:ro` est refusé (`--dry-run` fonctionne toujours) ; aucune sauvegarde n'est laissée
+dans `/config`.
+
 ## Qui l'emporte ?
 
 De la plus faible à la plus forte : la valeur par défaut, `config.toml`, une variable
@@ -63,7 +85,8 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 
 ## Bon à savoir
 
-- `config` n'a pas d'option à lui ; les options globales s'appliquent (`--locale`, `--verbosity`).
+- `config` a deux options à lui, `--upgrade` et `--dry-run` ; les options globales s'appliquent
+  aussi (`--locale`, `--verbosity`).
 - `/config` contient `config.toml` **seulement** : n'y mettez jamais rien d'autre.
 - Un réglage inconnu de cette version est signalé, avec sa ligne : voir le
   [dépannage](../reference-troubleshooting.md#un-réglage-de-configtoml-est-inconnu-de-cette-version).
@@ -88,7 +111,12 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
  origine, et les points de montage.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --upgrade            Ajouter à votre config.toml les réglages de cette       │
+│                      version, avec leur explication ; vos valeurs et         │
+│                      commentaires sont gardés.                               │
+│ --dry-run            Avec --upgrade : lister les réglages qu'il ajouterait,  │
+│                      sans rien écrire.                                       │
+│ --help     -h        Affiche ce message et quitte.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

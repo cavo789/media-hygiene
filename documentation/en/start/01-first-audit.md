@@ -129,7 +129,7 @@ The table first (a word you do not know? [the words of this guide](../reference-
 | Orphan sidecars | Only when there are some: [sidecar files](../reference-sidecars.md) left without their photo. |
 | Near duplicates | The same photo saved again: resized, recompressed. Not identical files, left alone unless you ask ([cleaning, step 11](../clean/11-near-duplicates.md)). |
 | Burst series | Shots taken seconds apart. Never touched unless you choose ([cleaning, step 10](../clean/10-review-bursts.md)). |
-| Duration | How long the whole audit took. |
+| Duration | How long the whole audit took. With `--verbosity verbose`, a line below the table splits it by step (*Time per step: listing 1.2 s · checks 3.4 s · …*), then the report says how long it took to write. |
 
 With `--verbosity verbose` (a global option, before `audit`), the *Inventory* follows: what your
 photos and videos say about themselves. How many photos have a shooting date (written by the

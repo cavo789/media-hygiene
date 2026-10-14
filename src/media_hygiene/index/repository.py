@@ -3,19 +3,18 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+import time
 from typing import TYPE_CHECKING, Final, Self
 
 from media_hygiene.index.facts import FileFacts
+from media_hygiene.index.preload import bounds_under, known_under
 from media_hygiene.index.rows import facts_of, is_current, row_of
 from media_hygiene.index.schema import (
     FORGET,
-    MARK_WALKED,
     MOVE,
     PATHS_UNDER,
     SELECT,
     UPSERT,
-    WALKED_AT,
     prepare,
 )
 
@@ -23,11 +22,12 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
+    from media_hygiene.index.preload import Known
     from media_hygiene.scan.models import MediaFile
 
 _IN_MEMORY: Final = ":memory:"
-# Sorts right after "/": every "folder/..." path is below "folder0".
-_AFTER_SEPARATOR: Final = "0"
+# A killed run (docker stop, a crash) keeps what it stored until its last commit.
+_COMMIT_EVERY_SECONDS: Final = 5.0
 
 
 class FactsRepository:
@@ -40,6 +40,9 @@ class FactsRepository:
             connection: SQLite connection, owned by the repository from now on.
         """
         self._connection = connection
+        self._known: Known = {}  # filled by `preload`, kept up to date by `put`
+        self._preloaded: tuple[str, ...] = ()  # the folders `_known` covers, "x/"
+        self._committed = time.monotonic()
         prepare(connection)
 
     @classmethod
@@ -89,6 +92,13 @@ class FactsRepository:
         Returns:
             The cached facts, or empty facts when unknown or stale.
         """
+        path = str(file.path)
+        if (known := self._known.get(path)) is not None:
+            size, mtime_ns, facts = known
+            current = (size, mtime_ns) == (file.size, file.mtime_ns)
+            return facts if current else FileFacts()
+        if path.startswith(self._preloaded):  # read at once: not in the index
+            return FileFacts()
         row = self._connection.execute(SELECT, (str(file.path),)).fetchone()
         if row is None or not is_current(file, row):
             return FileFacts()
@@ -102,6 +112,20 @@ class FactsRepository:
             facts: The facts to remember.
         """
         self._connection.execute(UPSERT, row_of(file, facts))
+        if time.monotonic() - self._committed >= _COMMIT_EVERY_SECONDS:
+            self._connection.commit()
+            self._committed = time.monotonic()
+        self._known[str(file.path)] = (file.size, file.mtime_ns, facts)
+
+    def preload(self, roots: Iterable[Path]) -> None:
+        """Read every row below the roots at once: `get` then answers from memory.
+
+        Args:
+            roots: The mounted folders about to be analysed.
+        """
+        folders = tuple(roots)
+        self._known = known_under(self._connection, folders)
+        self._preloaded = tuple(bounds_under(folder)[0] for folder in folders)
 
     def paths_under(self, folder: Path) -> list[str]:
         """List the indexed paths below a folder.
@@ -112,8 +136,7 @@ class FactsRepository:
         Returns:
             Every indexed path inside it, at any depth.
         """
-        prefix = f"{folder}/"
-        bounds = (prefix, f"{folder}{_AFTER_SEPARATOR}")
+        bounds = bounds_under(folder)
         return [row[0] for row in self._connection.execute(PATHS_UNDER, bounds)]
 
     def forget(self, paths: Iterable[str]) -> int:
@@ -126,6 +149,8 @@ class FactsRepository:
             How many rows were removed.
         """
         gone = [(path,) for path in paths]
+        for (path,) in gone:
+            self._known.pop(path, None)
         before = self._connection.total_changes
         self._connection.executemany(FORGET[0], gone)
         removed = self._connection.total_changes - before
@@ -140,6 +165,9 @@ class FactsRepository:
             moves: Old and new path of each file (container paths).
         """
         pairs = [(new, old) for old, new in moves]
+        for pair in pairs:
+            for path in pair:
+                self._known.pop(path, None)
         for statement in MOVE:
             self._connection.executemany(statement, pairs)
 
@@ -151,24 +179,3 @@ class FactsRepository:
             It.
         """
         return self._connection
-
-    def mark_walked(self, folder: Path, when: datetime) -> None:
-        """Record that a folder was just walked without any read error.
-
-        Args:
-            folder: A mounted folder (container path).
-            when: When the walk ended.
-        """
-        self._connection.execute(MARK_WALKED, (str(folder), when.isoformat()))
-
-    def walked_at(self, folder: Path) -> datetime | None:
-        """Tell when a folder was last walked without any read error.
-
-        Args:
-            folder: A mounted folder (container path).
-
-        Returns:
-            When, or None when never.
-        """
-        row = self._connection.execute(WALKED_AT, (str(folder),)).fetchone()
-        return datetime.fromisoformat(row[0]) if row is not None else None

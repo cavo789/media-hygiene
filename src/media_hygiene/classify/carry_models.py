@@ -26,6 +26,7 @@ class LostWhy(StrEnum):
     INVALID = "invalid"  # the value cannot be used (a name Windows refuses…)
     MERGED = "merged"  # its event merged into another named event, which wins
     CONFLICT = "conflict"  # chosen in the review page, edited otherwise in the workbook
+    REPLACED = "replaced"  # kept by a narrowed run, edited otherwise in the workbook
 
 
 class LostEdit(BaseModel):
@@ -49,4 +50,5 @@ class CarryRecord(BaseModel):
     edits: int  # the edits carried over (files, events, categories)
     notes: int = 0  # the notes carried over
     split: tuple[str, ...] = ()  # the events whose edit went to several events
+    deferred: int = 0  # `--year`, `--path`: edits of files left out, kept for later
     lost: tuple[LostEdit, ...] = ()

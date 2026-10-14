@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from PIL import Image
 
 from media_hygiene.constants import Sizes
-from media_hygiene.report.thumbnails import ThumbnailJob, make_thumbnail
+from media_hygiene.report.thumbnail_jobs import ThumbnailJob, make_thumbnail
 from media_hygiene.scan.raw_check import inspect_raw, raw_preview
 from tests.support.dng import SIZE, DngSpec, dng_bytes, write_dng
 

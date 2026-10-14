@@ -1,5 +1,8 @@
 """`media-hygiene review-sort`: walk through a classify proposal in the browser."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
@@ -8,11 +11,7 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.next_steps import carried, suggest
-from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.services.next_command import CHANGING, NextVerb
-from media_hygiene.services.sort_reviewing import open_sort_review, serve_sort_review
 
 if TYPE_CHECKING:
     from media_hygiene.console.output import Output
@@ -37,6 +36,14 @@ def review_sort_command(
         workbook: The workbook (host or container path), or None for the latest.
         port: `--port`, inside the container.
     """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.console.formatting import human_number
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+    from media_hygiene.services.sort_reviewing import (
+        open_sort_review,
+        serve_sort_review,
+    )
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
@@ -73,6 +80,8 @@ def _tell_sure(output: Output, session: SortBatchSession) -> None:
         output: Where to tell it.
         session: The review, opened.
     """
+    from media_hygiene.console.formatting import human_number
+
     open_events, sure = session.open_and_sure()
     if not open_events:
         return

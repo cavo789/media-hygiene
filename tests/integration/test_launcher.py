@@ -101,8 +101,7 @@ def test_on_a_terminal_the_launcher_writes_nothing_and_says_how(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """`docker run -it … launcher`: only a refusal, which stops its own loading."""
-    for module in ("console.output", "cli.cmd_launcher"):
-        monkeypatch.setattr(f"media_hygiene.{module}.data_on_terminal", lambda: True)
+    monkeypatch.setattr("media_hygiene.console.output.data_on_terminal", lambda: True)
     result = run(cli, "launcher", "--shell", "powershell")
     assert result.exit_code == ExitCode.USAGE, result.output
     assert "function mh" not in result.stdout

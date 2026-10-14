@@ -1,5 +1,8 @@
 """`media-hygiene audit`: analyse without modifying anything."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
@@ -7,21 +10,11 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import options, scan_options
-from media_hygiene.cli.audit_actions import second_opinion, show_actions
-from media_hygiene.cli.audit_people import audit_people
 from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
-from media_hygiene.cli.flows import audit_and_show, report_and_announce
-from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.scan_options import scan_layer
-from media_hygiene.config.zone import timezone_unknown
-from media_hygiene.console.advice import Advice, TipKind
-from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.report.views import ReportRecord
-from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     from media_hygiene.plan.models import AuditFindings
@@ -81,6 +74,12 @@ def audit_command(  # pylint: disable=too-many-arguments
         people: `--people`, faces after the audit.
         yes: `--yes`, no question before the faces.
     """
+    from media_hygiene.cli.audit_actions import second_opinion, show_actions
+    from media_hygiene.cli.audit_people import audit_people
+    from media_hygiene.cli.flows import audit_and_show, report_and_announce
+    from media_hygiene.console.advice import Advice, TipKind
+    from media_hygiene.report.views import ReportRecord
+
     runtime = runtime_of(ctx)
     with user_errors(runtime.output):
         runtime = runtime.with_overrides(
@@ -144,6 +143,10 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
         runtime: Settings, mount points and output.
         findings: What the audit found.
     """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.console.formatting import human_size
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
     plan = findings.plan
     if plan.decisions:
         suggest(
@@ -167,6 +170,9 @@ def _setup_tips(runtime: Runtime) -> None:
     Args:
         runtime: Settings, mount points and output.
     """
+    from media_hygiene.config.zone import timezone_unknown
+    from media_hygiene.paths.mount_kind import MountKind
+
     if not runtime.persistent(MountKind.CACHE):
         runtime.output.setting(
             _("-v media-hygiene-cache:/cache (much faster next audits)")
@@ -184,6 +190,8 @@ def _timezone_tip(runtime: Runtime) -> str:
     Returns:
         The setting, as a fragment of the setup line.
     """
+    from media_hygiene.paths.mount_kind import MountKind
+
     if runtime.persistent(MountKind.CONFIG):
         return _(
             'timezone = "Europe/Brussels" in section [general] of {path} (times '

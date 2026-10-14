@@ -145,6 +145,12 @@ C:\Photos triées\reports\20261002-123210-classify\classify.xlsx
   est listée à l'écran et dans le rapport, pour la saisir à nouveau là où elle va.
 - Les modifications qu'un `sort` a déjà appliquées ne sont pas reprises : ces fichiers sont à
   leur place, et `classify` les y voit.
+- **Un passage avec `--year` ou `--path` garde les autres modifications pour plus tard** : les
+  fichiers qu'il laisse de côté n'ont pas de ligne, donc leurs modifications (autres années,
+  autres dossiers, fichiers datés seulement par le disque) ne sont ni reprises dans son classeur
+  ni listées comme perdues. `classify` dit combien il en garde ; le prochain passage qui couvre
+  ces fichiers les reprend, sauf si vous avez saisi autre chose pour eux dans un classeur plus
+  récent, qui l'emporte.
 
 `--carry-over <classeur>` reprend les modifications d'un autre classeur (une copie gardée, une
 exécution plus ancienne) ; `--no-carry-over` repart de zéro. Un classeur que `sort` refuse (une

@@ -26,7 +26,9 @@ def show_carried(output: Output, record: CarryRecord | None) -> None:
         output: Where to print.
         record: What was carried; None when nothing was read.
     """
-    if record is None or not (record.edits or record.notes or record.lost):
+    if record is None or not (
+        record.edits or record.notes or record.lost or record.deferred
+    ):
         return
     saved = datetime.fromisoformat(record.saved_at)
     output.success(
@@ -56,6 +58,16 @@ def show_carried(output: Output, record: CarryRecord | None) -> None:
             _("Events split in several, each part keeps the edit: {names}.").format(
                 names=escape(", ".join(record.split))
             )
+        )
+    if record.deferred:
+        output.info(
+            ngettext(
+                "{count} edit of files this run left out (--year, --path) kept for "
+                "a later run.",
+                "{count} edits of files this run left out (--year, --path) kept for "
+                "a later run.",
+                record.deferred,
+            ).format(count=human_number(record.deferred))
         )
     if not record.lost:
         return

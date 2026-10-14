@@ -73,6 +73,9 @@ ignore = [
 # Typer builds each command from its signature: one parameter per CLI option, and the
 # annotations are resolved at runtime (so their imports must stay real imports).
 "src/media_hygiene/cli/**" = ["PLR0913", "TC001", "TC002", "TC003"]
+# A command imports the code it runs inside its function: `--version`, `status` or `--help`
+# never load numpy, openpyxl or the services of the other commands (TODO 0136).
+"src/media_hygiene/cli/cmd_*.py" = ["PLC0415"]
 # MkDocs loads its hooks by path, outside any package.
 ".config/mkdocs/hooks.py" = ["INP001"]
 "tests/**" = [

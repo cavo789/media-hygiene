@@ -17,13 +17,14 @@ from typing import TYPE_CHECKING, Final
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.report.thumbnails import review_preview
+from media_hygiene.report.preview_cache import PreviewPool
+from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.originals import original_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.search.people_words import unknown_people
-from media_hygiene.search.thumbs import GridPreview, grid_preview
+from media_hygiene.search.thumbs import GRID_EDGE
 from media_hygiene.search.views import (
     JPEG,
     ORIGINAL_PREFIX,
@@ -55,7 +56,7 @@ class SearchPlace:
 
     index: SearchIndex
     mapper: HostPathMapper
-    previews: Path  # the folder of the grid's previews, in the cache
+    previews: Path | None  # the cache folder of previews, if any
     people: PeopleSettings  # the names, to say when a `person:` word names nobody
 
 
@@ -132,11 +133,13 @@ class SearchApp:
         photo = self.place.index.source_of(int(key)) if key.isdigit() else None
         if photo is None:
             return Response(HTTPStatus.NOT_FOUND)
+        pool = PreviewPool(self.executor, self.place.previews)
         if prefix == PREVIEW_PREFIX:
-            return await jpeg_response(self.executor, review_preview, photo.path)
-        job = GridPreview(photo, self.place.previews)
+            render = pool.renderer(REVIEW_EDGE)
+            return await jpeg_response(self.executor, render, photo.path)
         loop = asyncio.get_running_loop()
-        image = await loop.run_in_executor(self.executor, grid_preview, job)
+        render = pool.renderer(GRID_EDGE)
+        image = await loop.run_in_executor(self.executor, render, photo.path)
         if image is None:
             return Response(HTTPStatus.NOT_FOUND)
         return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)

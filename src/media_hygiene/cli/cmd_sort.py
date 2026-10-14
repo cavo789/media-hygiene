@@ -1,33 +1,18 @@
 """`media-hygiene sort`: apply the workbook of `classify`, journaled and undoable."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 import sys
 from typing import TYPE_CHECKING, Annotated
 
 import typer
-from rich.markup import escape
 
 from media_hygiene.cli.context import runtime_of, user_errors, warn
-from media_hygiene.cli.next_steps import carried, safety
-from media_hygiene.cli.terminal import require_terminal
-from media_hygiene.console.progress import RichProgress
-from media_hygiene.console.sort_view import (
-    show_follows,
-    show_inputs,
-    show_kept_folders,
-    show_manifest,
-    sort_table,
-)
-from media_hygiene.console.tables import outcome_table
 from media_hygiene.constants import ExitCode
-from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.interrupt import StopRequest
-from media_hygiene.services.next_command import CHANGING, NextVerb
-from media_hygiene.services.sort import SortService
-from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -75,6 +60,18 @@ def sort_command(  # pylint: disable=too-many-arguments
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.console.progress import RichProgress
+    from media_hygiene.console.sort_view import (
+        show_follows,
+        show_inputs,
+        show_kept_folders,
+        sort_table,
+    )
+    from media_hygiene.scan.progress import NullProgress
+    from media_hygiene.services.interrupt import StopRequest
+    from media_hygiene.services.sort import SortService
+    from media_hygiene.services.sort_inputs import find_workbook, load_inputs
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
@@ -116,6 +113,8 @@ def _confirm(runtime: Runtime, prepared: Prepared, *, yes: bool) -> bool:
         True when the sort may proceed.
 
     """
+    from media_hygiene.cli.terminal import require_terminal
+
     if yes or not runtime.settings.sort.confirm:
         return True
     require_terminal(sys.stdin)
@@ -134,6 +133,14 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         runtime: Settings, mount points and output.
         result: The run.
     """
+    from rich.markup import escape
+
+    from media_hygiene.cli.next_steps import carried, safety
+    from media_hygiene.console.sort_view import show_kept_folders, show_manifest
+    from media_hygiene.console.tables import outcome_table
+    from media_hygiene.errors import MediaHygieneError
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
     output, host = runtime.output, runtime.mapper.to_host
     outcome = result.moves.outcome
     title = _("Sort {run_id}").format(run_id=result.run_id)

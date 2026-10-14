@@ -22,7 +22,6 @@ from media_hygiene.search.app import SEARCH_PATH, SearchApp, SearchPlace
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.people_words import people_words, unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
-from media_hygiene.search.thumbs import PREVIEWS_DIR_NAME
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.reviewing import address_tip, page_url, run_server
 
@@ -110,8 +109,9 @@ def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> None:
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(search_path=SEARCH_PATH)
-    previews = runtime.locations.cache_dir / PREVIEWS_DIR_NAME
-    place = SearchPlace(search, runtime.mapper, previews, runtime.settings.people)
+    place = SearchPlace(
+        search, runtime.mapper, runtime.previews_dir, runtime.settings.people
+    )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = SearchApp(place, page.encode(), executor)
         asyncio.run(run_server(app, port, partial(_announce, runtime)))

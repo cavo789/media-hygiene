@@ -220,7 +220,22 @@
     if (shown) shown.scrollIntoView({ block: "nearest" });
   };
 
+  // While the user decides, the next event's thumbnails (the previous one's when going
+  // back) and the zoom of the photos around the cursor are asked for: one event ahead.
+  const ahead = async (index) => {
+    if (index < 0 || index >= events.length) return;
+    try {
+      const response = await fetch(P.event + "/" + encodeURIComponent(events[index].id));
+      if (!response.ok) return;
+      for (const photo of (await response.json()).photos) new Image().src = photo.thumb;
+    } catch (error) { /* ahead only: the event is asked for again when shown */ }
+  };
+  const zoomAhead = () => {
+    for (const rank of [cursor, cursor + 1, cursor - 1]) if (photos[rank]) new Image().src = photos[rank].preview;
+  };
+
   const load = async (index) => {
+    const back = index < current;
     current = index;
     cursor = 0;
     selected = new Set();
@@ -232,6 +247,8 @@
     const view = await response.json();
     photos = view.photos;
     showPhotos();
+    zoomAhead();
+    ahead(back ? index - 1 : index + 1);
     try { window.localStorage.setItem(positionKey, events[current].id); } catch (error) { /* private browsing */ }
   };
 
@@ -323,6 +340,7 @@
     else if (key === "ArrowRight" || key === "ArrowLeft") {
       cursor = Math.max(0, Math.min(photos.length - 1, cursor + (key === "ArrowRight" ? 1 : -1)));
       showPhotos();
+      zoomAhead();
     } else if (key === " ") toggle();
     else if (key === "e" || key === "E") byId("name").focus();
     else if (key === "c" || key === "C") byId("category").focus();

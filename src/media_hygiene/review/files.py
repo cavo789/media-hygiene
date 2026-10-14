@@ -11,17 +11,18 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Protocol
 
 from media_hygiene.errors import DecisionsError
-from media_hygiene.report.thumbnails import review_preview
+from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import choice_failed, jpeg_response
 from media_hygiene.review.originals import original_response
 from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
     from pathlib import Path
 
     from pydantic import BaseModel
+
+    from media_hygiene.report.preview_cache import PreviewPool
 
 FILE_PATH: Final = "/api/file"
 _PREVIEW_SUFFIX: Final = ".jpg"
@@ -49,14 +50,14 @@ class ReviewFiles(Protocol):
 
 
 async def file_response(
-    path: str, files: ReviewFiles, executor: Executor
+    path: str, files: ReviewFiles, pool: PreviewPool
 ) -> Response | None:
     """Serve the decisions file, an original or a preview.
 
     Args:
         path: The path asked for.
         files: The session, which knows the files.
-        executor: The worker pool, for the previews.
+        pool: The worker pool and the cache folder, for the previews.
 
     Returns:
         The response (404 for an unknown key, or a preview that cannot be made);
@@ -76,4 +77,4 @@ async def file_response(
     source = files.preview_source(key)
     if source is None or path != f"{PREVIEW_PREFIX}{key}{_PREVIEW_SUFFIX}":
         return Response(HTTPStatus.NOT_FOUND)
-    return await jpeg_response(executor, review_preview, source)
+    return await jpeg_response(pool.executor, pool.renderer(REVIEW_EDGE), source)

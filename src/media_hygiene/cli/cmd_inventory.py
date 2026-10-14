@@ -1,21 +1,20 @@
 """`media-hygiene inventory`: every photo and video with what the audits learnt."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
-from rich.table import Table
 
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.console.formatting import human_number
 from media_hygiene.constants import InventoryFormat
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.inventory import export_inventory
-from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
+    from rich.table import Table
+
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.services.inventory import InventoryResult
 
@@ -43,6 +42,11 @@ def inventory_command(
         ctx: Typer context holding the runtime.
         file_format: `--format`, the workbook or a CSV file.
     """
+    from media_hygiene.console.formatting import human_number
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.services.inventory import export_inventory
+    from media_hygiene.services.writable import ensure_writable
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
@@ -74,6 +78,8 @@ def _roots_table(result: InventoryResult, mapper: HostPathMapper) -> Table:
     Returns:
         The table.
     """
+    from rich.table import Table
+
     table = Table(title=_("Last complete audit (UTC)"), title_justify="left")
     table.add_column(_("Folder"))
     table.add_column(_("Date"), no_wrap=True)

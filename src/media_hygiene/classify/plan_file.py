@@ -12,142 +12,18 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.carry_models import CarryRecord
-from media_hygiene.classify.layout import GeoValues, Values
-from media_hygiene.classify.models import Band, DateSource, SortReason
-from media_hygiene.classify.names import reason_name
+from media_hygiene.classify.plan_deferred import DeferredEdits
+from media_hygiene.classify.plan_rows import PlanEvent, PlanRow, RowValues
+
+__all__ = ["PLAN_FORMAT", "ClassifyPlan", "PlanEvent", "PlanRow", "RowValues"]
 
 PLAN_FORMAT: Final = 1
 
 
-class _Frozen(BaseModel):
-    """A frozen, strict pydantic model."""
+class ClassifyPlan(BaseModel):
+    """Every proposal of one run, and the layouts that produced them."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
-
-
-class RowValues(_Frozen):
-    """What the layouts know of a file: re-rendered when the user names its event."""
-
-    year: int  # the year folder: an event keeps the year of its start
-    month: int
-    day: int
-    category: str
-    event: str  # the `{event}` value: the event's label or span
-    event_start: str
-    place: str = ""  # a personal place
-    country: str = ""  # those of a trip
-    region: str = ""
-    city: str = ""
-
-    @classmethod
-    def of(cls, values: Values) -> RowValues:
-        """Write layout values down.
-
-        Args:
-            values: What the layouts know of a file.
-
-        Returns:
-            The same, flat.
-        """
-        geo = values.geo
-        return cls(
-            year=values.year,
-            month=values.month,
-            day=values.day,
-            category=values.category,
-            event=values.event,
-            event_start=values.event_start,
-            place=geo.place,
-            country=geo.country,
-            region=geo.region,
-            city=geo.city,
-        )
-
-    def as_values(self) -> Values:
-        """The layout values.
-
-        Returns:
-            Them.
-        """
-        where = GeoValues(self.place, self.country, self.region, self.city)
-        fields = self.model_dump(exclude={"place", "country", "region", "city"})
-        return Values(**fields, geo=where)
-
-
-class PlanRow(_Frozen):
-    """One media file and where it is proposed to go."""
-
-    id: str
-    path: str  # host path of the file
-    size: int
-    mtime_ns: int
-    sha256: str | None
-    date: str | None  # ISO date and time, local
-    date_source: DateSource | None
-    event_id: str
-    values: RowValues | None  # what the layout was rendered from; None: stays
-    band: Band
-    reason: SortReason
-    score: int
-    rule: str = ""  # the name of the rule that decided; empty: no rule
-    root: str  # host folder the proposal is relative to
-    folder: str | None  # relative to `root`, `/`-separated; None: stay where it is
-    name: str  # the target name: the original one for now
-
-    @property
-    def category(self) -> str:
-        """The proposed category.
-
-        Returns:
-            It, or an empty string.
-        """
-        return self.values.category if self.values else ""
-
-    @property
-    def why(self) -> str:
-        """Why the file goes there: the rule's name, else the reason, translated.
-
-        Returns:
-            It.
-        """
-        return self.rule or reason_name(self.reason)
-
-    @property
-    def parent(self) -> str:
-        """The host folder of the file, written as the host writes it.
-
-        Returns:
-            It.
-        """
-        cut = max(self.path.rfind("\\"), self.path.rfind("/"))
-        return self.path[:cut] if cut > 0 else self.path
-
-    @property
-    def in_place(self) -> bool:
-        """Tell whether the file already sits in its proposed folder.
-
-        Returns:
-            True when it stays, or its folder is the proposed one.
-        """
-        if self.folder is None:
-            return True
-        target = f"{self.root}/{self.folder}".replace("\\", "/")
-        return self.parent.replace("\\", "/") == target
-
-
-class PlanEvent(_Frozen):
-    """Files taken close together, named once."""
-
-    id: str
-    start: str
-    end: str
-    span: str  # the default name: `2016-07-01..07-15`
-    label: str  # the meaningful folder the event came from, if any
-    rows: tuple[str, ...]  # row ids, in date order
-
-
-class ClassifyPlan(_Frozen):
-    """Every proposal of one run, and the layouts that produced them."""
 
     version: int = PLAN_FORMAT
     plan_id: str
@@ -157,6 +33,8 @@ class ClassifyPlan(_Frozen):
     events: tuple[PlanEvent, ...]
     unused_rules: tuple[str, ...] = ()  # rules that decided no file of the plan
     carried: CarryRecord | None = None  # the edits carried over from a workbook
+    # `--year`, `--path`: the edits of the files left out, kept for a later run.
+    deferred: DeferredEdits | None = None
 
     def categories(self) -> dict[str, int]:
         """The proposed categories and their file counts, the largest first.

@@ -1,5 +1,8 @@
 """`media-hygiene people`: find the faces of the photos, group them, show the groups."""
 
+# pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
+# the code it runs when it runs; those imports count as local variables.
+
 from __future__ import annotations
 
 from typing import Annotated
@@ -8,14 +11,7 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.next_steps import carried, suggest
-from media_hygiene.cli.people_flow import PeopleRequest, run_people
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.next_command import NextVerb
-from media_hygiene.services.people_files import require_people_index
-from media_hygiene.services.people_page import serve_people
-from media_hygiene.services.writable import ensure_writable
 
 
 # The options are parameters: the documented exception for Typer commands.
@@ -66,6 +62,14 @@ def people_command(  # pylint: disable=too-many-arguments
         forget: `--forget`.
         port: `--port`, inside the container.
     """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.cli.people_flow import PeopleRequest, run_people
+    from media_hygiene.paths.mount_kind import MountKind
+    from media_hygiene.services.next_command import NextVerb
+    from media_hygiene.services.people_files import require_people_index
+    from media_hygiene.services.people_page import serve_people
+    from media_hygiene.services.writable import ensure_writable
+
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):

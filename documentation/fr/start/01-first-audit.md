@@ -134,7 +134,7 @@ D'abord le tableau (un mot inconnu ? [les mots de ce guide](../reference-glossar
 | Fichiers compagnons orphelins | Seulement s'il y en a : des [fichiers compagnons](../reference-sidecars.md) restés sans leur photo. |
 | Quasi-doublons | La même photo enregistrée à nouveau : réduite, recompressée. Ce ne sont pas des fichiers identiques, ils restent en place sauf si vous le demandez ([étape 11 du nettoyage](../clean/11-near-duplicates.md)). |
 | Rafales | Des photos prises à quelques secondes d'intervalle. Jamais touchées, sauf si vous choisissez ([étape 10 du nettoyage](../clean/10-review-bursts.md)). |
-| Durée | Le temps qu'a pris tout l'audit. |
+| Durée | Le temps qu'a pris tout l'audit. Avec `--verbosity verbose`, une ligne sous le tableau le détaille par étape (*Temps par étape : liste 1,2 s · vérifications 3,4 s · …*), puis le rapport dit le temps pris pour l'écrire. |
 
 Avec `--verbosity verbose` (une option globale, avant `audit`), l'*Inventaire* suit : ce que vos
 photos et vos vidéos disent d'elles-mêmes. Combien de photos ont une date de prise de vue (écrite

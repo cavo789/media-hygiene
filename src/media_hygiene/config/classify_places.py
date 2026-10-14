@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from media_hygiene.classify.layout import check_layout
-from media_hygiene.geo.areas import Shape, check_shape
-from media_hygiene.geo.distance import Point
+from media_hygiene.geo.point import Point
+from media_hygiene.geo.shapes import Shape, check_shape
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:

@@ -70,3 +70,21 @@ def test_an_unreadable_latest_workbook_stops_classify(
     assert result.exit_code != 0
     assert "--no-carry-over" in result.output
     assert len(_workbooks(locations)) == 1
+
+
+def test_a_year_run_says_what_it_keeps_for_later(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """`--year`: the other years' edits are kept, in the console and the report."""
+    build_day(locations.data_dir)
+    assert run(cli, "classify").exit_code == 0
+    edit(_workbooks(locations)[0], final("M0.jpg", "2018/Kept"))
+    result = run(cli, "classify", "--year", "2017")
+    assert result.exit_code == 0, result.output
+    output = " ".join(result.output.split())
+    assert (
+        "1 edit of files this run left out (--year, --path) kept for a later" in output
+    )
+    assert "found no place" not in output
+    report = max(locations.reports_dir.glob("*-classify*/report.html"))
+    assert "kept for a later run" in report.read_text(encoding="utf-8")

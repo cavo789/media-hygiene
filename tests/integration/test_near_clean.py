@@ -38,6 +38,17 @@ def test_the_audit_shows_near_duplicates_and_bursts(
     assert "What you can do" in output
     assert "Photos with a shooting date" in output  # the inventory, when verbose
     assert "burst series: optional" in output
+    assert "Report written in" in output
+    for label in (
+        "listing",
+        "cache",
+        "checks",
+        "fingerprints",
+        "near duplicates",
+        "colours",
+        "same streams",
+    ):
+        assert f"{label} " in output.split("Time per step:")[1], label
     report = next(locations.reports_dir.glob("*-audit/report.html")).read_text()
     assert 'id="actions"' in report
     assert "Copy the command" in report

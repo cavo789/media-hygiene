@@ -4,7 +4,7 @@ Perceptual hashes are computed in grey: a black and white edit of a colour photo
 hashes like its original. The colourfulness of Hasler and Süsstrunk (2003) tells them
 apart: about 0 for black and white, 15 for a dull picture, 33 and more for an ordinary
 colour one. It is measured only for the pictures and videos already found alike, on a
-small square.
+small square, and kept in the index (`index.measures`) for the next audits.
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ from media_hygiene.scan.tool_run import run_tool
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
+    from concurrent.futures import Executor
     from pathlib import Path
 
     from numpy.typing import NDArray
@@ -111,27 +112,32 @@ async def video_colour(path: Path, duration: float, ffmpeg: str) -> float | None
 
 @dataclass(frozen=True, slots=True)
 class ColourTools:
-    """What measuring needs: `ffmpeg` for the videos, and where to report progress."""
+    """What measuring needs: `ffmpeg`, where to report progress, a pool for the photos.
+
+    The pool is one of processes outside the tests: decoding holds the GIL.
+    """
 
     ffmpeg: str | None
     progress: ProgressSink
+    executor: Executor
 
 
 async def colours(
     images: Collection[Path], videos: Mapping[Path, float], tools: ColourTools
 ) -> dict[Path, float]:
-    """Measure photos (one thread each) and videos (one `ffmpeg` each), several at once.
+    """Measure photos (in the pool) and videos (one `ffmpeg` each), several at once.
 
     Args:
         images: The photos.
         videos: The videos and their lengths; left out without `ffmpeg`.
-        tools: `ffmpeg` and the progress sink.
+        tools: `ffmpeg`, the progress sink and the pool.
 
     Returns:
         The colourfulness of each picture or video measured, by path.
     """
     slots = asyncio.Semaphore(os.process_cpu_count() or 1)
     ffmpeg, progress = tools.ffmpeg, tools.progress
+    loop = asyncio.get_running_loop()
     measured = dict(videos) if ffmpeg is not None else {}
 
     async def one(path: Path) -> float | None:
@@ -147,7 +153,7 @@ async def colours(
             if path in measured and ffmpeg is not None:
                 value = await video_colour(path, measured[path], ffmpeg)
             else:
-                value = await asyncio.to_thread(image_colour, path)
+                value = await loop.run_in_executor(tools.executor, image_colour, path)
         progress.advance()
         return value
 

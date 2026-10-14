@@ -96,7 +96,8 @@ dossiers protégés ne bougent jamais.
 
 - Chaque fichier est revérifié juste avant d'être déplacé : un fichier modifié ou supprimé depuis
   `classify` est passé et listé. Les fichiers absents du plan ne sont jamais touchés.
-- Sur le même disque, un fichier est renommé : instantané. D'un disque à l'autre (deux options
+- Sur le même disque, un fichier est renommé (avec Docker Desktop sous Windows, il reçoit son
+  nouveau nom puis perd l'ancien, ce qui revient au même) : instantané. D'un disque à l'autre (deux options
   `-v` sont deux disques, même sur le même lecteur), il est copié, comparé à l'original, et
   seulement ensuite supprimé.
 - Un fichier existant n'est jamais écrasé : `IMG_1.jpg` devient `IMG_1 (2).jpg`.

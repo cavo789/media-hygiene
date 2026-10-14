@@ -49,10 +49,24 @@ date, the GPS position, the device, the stars given in Windows, the length of a 
 more is read for it. `inventory` exports all of it to an Excel workbook, without reading your
 photos again ([the inventory workbook](../reference-inventory.md)).
 
+For the photos and videos found alike, it also keeps how colourful each one is (a black and
+white edit is not a copy) and, for re-encoded videos, a fingerprint of their picture and sound:
+the next audits, `review --near` and `clean` measure only what is new or changed.
+
+It keeps the previews of your photos too, one per size: the small ones of the HTML reports,
+the large ones of the review pages, the grid of `search`. A photo is decoded once; the next
+reports and pages read its preview back. The previews take at most 2 GB: beyond, those not
+shown for the longest time are removed, and made again if needed. To change that bound, set
+`previews_max_gb` in the `[cache]` table of `config.toml` (`config --upgrade` adds it to an
+older file).
+
 ## Good to know
 
 - **Keep this `-v` in every command** from now on: `audit`, and later `clean`, `review`… all
   use the same cache.
+- **An audit stopped halfway** (Ctrl+C, `docker stop`, the PC switched off) keeps what it
+  already checked: the cache saves its work every few seconds, and the next audit goes on from
+  there.
 - **Start again from scratch**: `docker volume rm media-hygiene-cache`. Nothing is lost: the next
   audit just reads everything again.
 - **After an update** of the tool, the first audit may read your photos once more, when the new

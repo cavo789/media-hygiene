@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.errors import DecisionsError
+from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.files import FILE_PATH, file_response
 from media_hygiene.review.http import Response
 from media_hygiene.review.local_app import (
@@ -32,6 +33,7 @@ from media_hygiene.review.serving import json_response, refused_post
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
+    from pathlib import Path
 
     from media_hygiene.review.http import Request
     from media_hygiene.review.session import ReviewSession
@@ -66,6 +68,7 @@ class ReviewApp(LocalApp):
     session: ReviewSession
     page: bytes
     executor: Executor
+    previews: Path | None = None  # the cache folder of previews, if any
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -94,7 +97,9 @@ class ReviewApp(LocalApp):
         """
         if path in {PAGE_PATH, STATE_PATH}:
             return page_or_state(path, self.page, self.session.state)
-        found = await file_response(path, self.session, self.executor)
+        found = await file_response(
+            path, self.session, PreviewPool(self.executor, self.previews)
+        )
         return Response(HTTPStatus.NOT_FOUND) if found is None else found
 
     def _decide(self, request: Request) -> Response:

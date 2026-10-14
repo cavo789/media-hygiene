@@ -16,13 +16,13 @@ from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
+from media_hygiene.faces.similarity import SFACE_SIMILARITY
+
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 type Groups = tuple[tuple[int, ...], ...]
 
-# SFace's documented cosine threshold for "same person".
-SFACE_SIMILARITY: Final = 0.363
 NEIGHBOURS: Final = 30
 ROUNDS: Final = 20  # at most; it usually settles in a few
 _BLOCK: Final = 256  # rows compared at once: 256 x faces float32 in memory

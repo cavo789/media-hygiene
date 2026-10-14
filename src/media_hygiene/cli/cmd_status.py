@@ -1,14 +1,13 @@
 """`media-hygiene status`: where am I? Read-only, no scan, about a second."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 import typer
 
 from media_hygiene.cli.context import runtime_of
-from media_hygiene.cli.status_next import advise_status
-from media_hygiene.cli.status_view import status_lines
 from media_hygiene.i18n import _
-from media_hygiene.services.status import read_status
 
 
 def status_command(ctx: typer.Context) -> None:
@@ -20,6 +19,10 @@ def status_command(ctx: typer.Context) -> None:
     Args:
         ctx: Typer context holding the runtime.
     """
+    from media_hygiene.cli.status_next import advise_status
+    from media_hygiene.cli.status_view import status_lines
+    from media_hygiene.services.status import read_status
+
     runtime = runtime_of(ctx)
     status = read_status(runtime)
     runtime.output.title(_("Where you are"))

@@ -26,6 +26,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid ""
+"%(num)s edit of files this run left out (--year, --path) kept for a later"
+" run."
+msgid_plural ""
+"%(num)s edits of files this run left out (--year, --path) kept for a "
+"later run."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
 msgstr[0] ""
@@ -51,6 +61,11 @@ msgstr[1] ""
 
 #, python-format
 msgid "%(sure)s, %(check)s to check"
+msgstr ""
+
+msgid ""
+"'config --upgrade' adds them with their explanation; your values are kept"
+" (--dry-run lists them first)."
 msgstr ""
 
 msgid "'crosscheck' reads Czkawka's results from /reports: mount it."
@@ -229,6 +244,9 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+msgid "/config is not mounted: there is no config.toml to complete."
+msgstr ""
+
 #, python-brace-format
 msgid "; {groups} group without a subject → your other rules, else {band}."
 msgid_plural "; {groups} groups without a subject → your other rules, else {band}."
@@ -381,6 +399,11 @@ msgstr ""
 msgid ""
 "Add :ro to the -v of your photo folders: the system itself then forbids "
 "any change. {url}"
+msgstr ""
+
+msgid ""
+"Add the settings of this version to your config.toml, with their "
+"explanation; your values and comments are kept."
 msgstr ""
 
 msgid "Advanced options"
@@ -749,6 +772,10 @@ msgid "Comparing colours"
 msgstr ""
 
 msgid "Comparing files of equal size"
+msgstr ""
+
+#, python-brace-format
+msgid "Completing {path} would change a setting: nothing was written."
 msgstr ""
 
 #, python-brace-format
@@ -1921,6 +1948,9 @@ msgstr ""
 msgid "Mount it under /data, e.g. -v \"C:\\Photos triées:/data/c/Tri\"."
 msgstr ""
 
+msgid "Mount it without :ro for this command, or add --dry-run."
+msgstr ""
+
 msgid "Mount it, e.g. -v \"D:\\Photos sorted:/data/d/Photos sorted\"."
 msgstr ""
 
@@ -1951,6 +1981,9 @@ msgid ""
 msgstr ""
 
 msgid "Mount the same reports folder as for classify: -v \"<folder>:/reports\"."
+msgstr ""
+
+msgid "Mount your folder, e.g. -v \"$HOME\\media-hygiene\\config:/config\"."
 msgstr ""
 
 msgid ""
@@ -2380,6 +2413,9 @@ msgid ""
 "where you look at the photos."
 msgstr ""
 
+msgid "Nothing was written: run 'config --upgrade' to add them."
+msgstr ""
+
 msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr ""
 
@@ -2758,6 +2794,10 @@ msgstr ""
 msgid "Report with the photos: {path}"
 msgstr ""
 
+#, python-brace-format
+msgid "Report written in {duration}."
+msgstr ""
+
 msgid "Reports (newest first)"
 msgstr ""
 
@@ -2908,6 +2948,9 @@ msgid ""
 msgstr ""
 
 msgid "Run Czkawka with the same -v options: 'audit' prints the command."
+msgstr ""
+
+msgid "Run any command once: it creates the file, complete and commented."
 msgstr ""
 
 msgid "Run docker with -it, or add --yes."
@@ -3353,6 +3396,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"The cache folder (/cache) keeps the previews of your photos, one per "
+"size, so that reports and review pages never decode a photo twice. At "
+"most this many gigabytes: beyond, the previews shown least recently are "
+"removed, and made again when needed."
+msgstr ""
+
+msgid ""
 "The categories below are an example to replace with your own, e.g. "
 "Parties, Holidays and outings, School, Sport and leisure, At home, "
 "Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"
@@ -3731,6 +3781,10 @@ msgid ""
 "after saying how long it takes and asking."
 msgstr ""
 
+#, python-brace-format
+msgid "There is no config.toml in {folder} yet."
+msgstr ""
+
 msgid "There is no such event."
 msgstr ""
 
@@ -3801,6 +3855,10 @@ msgid "This workbook belongs to another classify run."
 msgstr ""
 
 msgid "This workbook was written by another version: it cannot be checked."
+msgstr ""
+
+#, python-brace-format
+msgid "Time per step: {steps}"
 msgstr ""
 
 msgid "Time zone"
@@ -4058,6 +4116,9 @@ msgstr ""
 msgid "With --people: do not ask, go on."
 msgstr ""
 
+msgid "With --upgrade: list the settings it would add, write nothing."
+msgstr ""
+
 msgid "With Léa"
 msgstr ""
 
@@ -4198,6 +4259,11 @@ msgid ""
 "\"Europe/Brussels\" or \"America/Montreal\" (list: "
 "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Empty: "
 "UTC, as Docker does not know yours."
+msgstr ""
+
+msgid ""
+"Your values and comments are kept; the new settings hold their default "
+"value."
 msgstr ""
 
 msgid ""
@@ -4363,6 +4429,9 @@ msgstr ""
 msgid "by folder pair"
 msgstr ""
 
+msgid "cache"
+msgstr ""
+
 msgid "camera (EXIF)"
 msgstr ""
 
@@ -4379,6 +4448,9 @@ msgid ""
 "extension, write .{value}"
 msgstr ""
 
+msgid "checks"
+msgstr ""
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -4393,6 +4465,9 @@ msgstr ""
 msgid "clean moves the duplicate copies to /quarantine: mount it."
 msgstr ""
 
+msgid "colours"
+msgstr ""
+
 msgid "command line"
 msgstr ""
 
@@ -4402,6 +4477,18 @@ msgstr ""
 
 msgid "config.toml"
 msgstr ""
+
+#, python-brace-format
+msgid "config.toml was written by an earlier version: {count} new setting since."
+msgid_plural "config.toml was written by an earlier version: {count} new settings since."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "config.toml was written by {version}: {count} new setting since."
+msgid_plural "config.toml was written by {version}: {count} new settings since."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-format
 msgid "cumulated: %(share)s%%"
@@ -4477,6 +4564,9 @@ msgstr ""
 msgid ""
 "find your photos by these words in your browser; 'inventory' lists them "
 "in its last column."
+msgstr ""
+
+msgid "fingerprints"
 msgstr ""
 
 msgid "finish the burst review where you stopped."
@@ -4607,6 +4697,11 @@ msgstr ""
 msgid "kept (your decision)"
 msgstr ""
 
+msgid ""
+"kept by a run with --year or --path, then edited otherwise in the "
+"workbook, whose value was carried over"
+msgstr ""
+
 msgid "kept if you move on"
 msgstr ""
 
@@ -4633,6 +4728,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
+msgstr ""
+
+msgid "listing"
 msgstr ""
 
 #, python-brace-format
@@ -4715,6 +4813,9 @@ msgstr ""
 
 #, python-brace-format, python-format
 msgid "naming the events up to this one covers {share}%% of the work"
+msgstr ""
+
+msgid "near duplicates"
 msgstr ""
 
 msgid "next event to decide"
@@ -4885,6 +4986,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "run 'clean' to set {size} of copies aside."
+msgstr ""
+
+msgid "same streams"
 msgstr ""
 
 msgid "seen by the model"
@@ -5319,6 +5423,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} edit of files this run left out (--year, --path) kept for a later"
+" run."
+msgid_plural ""
+"{count} edits of files this run left out (--year, --path) kept for a "
+"later run."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} edit read; workbook saved on {day} {month} {year} at {time}."
 msgid_plural "{count} edits read; workbook saved on {day} {month} {year} at {time}."
 msgstr[0] ""
@@ -5641,6 +5755,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} setting added to {path}, read back from the disk:"
+msgid_plural "{count} settings added to {path}, read back from the disk:"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} setting cannot be used:"
 msgid_plural "{count} settings cannot be used:"
 msgstr[0] ""
@@ -5653,6 +5773,12 @@ msgid ""
 msgid_plural ""
 "{count} settings are unknown to version {version} (a typo, or a setting "
 "of a newer version?):"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} setting would be added to {path}, with its explanation:"
+msgid_plural "{count} settings would be added to {path}, with their explanation:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5772,6 +5898,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 
 #, python-brace-format
@@ -6021,11 +6151,19 @@ msgid "{path} is not the quarantine of a run"
 msgstr ""
 
 #, python-brace-format
+msgid "{path} is up to date ({version})."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} read back does not hold the {count} choices just saved."
 msgstr ""
 
 #, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} was written but is still incomplete."
 msgstr ""
 
 #, python-brace-format
@@ -6079,6 +6217,10 @@ msgid "{reused} unchanged folder taken from the index, {read} read."
 msgid_plural "{reused} unchanged folders taken from the index, {read} read."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{seconds} s"
+msgstr ""
 
 #, python-brace-format
 msgid ""

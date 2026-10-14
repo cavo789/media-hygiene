@@ -1,33 +1,22 @@
 """`media-hygiene launcher`: write `mh`, a function holding the mounts of this run."""
 
+# pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
+
 from __future__ import annotations
 
 import sys
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
-from typer.core import TyperGroup
 
 from media_hygiene.cli.context import runtime_of
 from media_hygiene.cli.review_options import PAGE_PORT
-from media_hygiene.cli.safety import (
-    DATA_COMMANDS,
-    PAGE_COMMANDS,
-    READ_ONLY_COMMANDS,
-)
-from media_hygiene.config.zone import timezone_unknown
-from media_hygiene.console.output import data_on_terminal
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
-from media_hygiene.services.launcher import (
-    LauncherCommands,
-    launcher_script,
-    load_command,
-    render_script,
-)
-from media_hygiene.services.launcher_memory import remembered
-from media_hygiene.services.launcher_refusal import refusal_script
+
+if TYPE_CHECKING:
+    from media_hygiene.services.launcher import LauncherCommands
 
 
 def launcher_command(
@@ -50,6 +39,15 @@ def launcher_command(
         ctx: Typer context holding the runtime.
         shell: `--shell`, None to guess it.
     """
+    from media_hygiene.config.zone import timezone_unknown
+    from media_hygiene.console.output import data_on_terminal
+    from media_hygiene.services.launcher import (
+        launcher_script,
+        load_command,
+        render_script,
+    )
+    from media_hygiene.services.launcher_memory import remembered
+
     runtime = runtime_of(ctx)
     script = launcher_script(runtime, shell, _commands(ctx))
     if data_on_terminal():
@@ -93,6 +91,8 @@ def _refuse_terminal(shell: Shell) -> None:
     Raises:
         typer.Exit: Always: no launcher was written.
     """
+    from media_hygiene.services.launcher_refusal import refusal_script
+
     sys.stdout.write(refusal_script(shell))
     sys.stdout.flush()
     raise typer.Exit(ExitCode.USAGE)
@@ -107,6 +107,15 @@ def _commands(ctx: typer.Context) -> LauncherCommands:
     Returns:
         The commands, the photos read-write for those not read-only.
     """
+    from typer.core import TyperGroup
+
+    from media_hygiene.cli.safety import (
+        DATA_COMMANDS,
+        PAGE_COMMANDS,
+        READ_ONLY_COMMANDS,
+    )
+    from media_hygiene.services.launcher import LauncherCommands
+
     root = ctx.find_root()
     group = root.command
     names = tuple(group.list_commands(root)) if isinstance(group, TyperGroup) else ()
