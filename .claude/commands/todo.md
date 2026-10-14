@@ -118,6 +118,13 @@ For each file passed in `$ARGUMENTS`:
      implementation. Blocker note: `No Files: section and scope not derivable — needs the target
      files listed before this can be processed autonomously.`
 
+   - **Does it declare `Needs maintainer`** (a measurement on their machine, a decision, real
+     data)? Then what it needs is not in reach: say so as a blocker, unless the user is here to
+     provide it, or the TODO says which part can be done without it.
+   - **Files near the size cap**: run `.claude/scripts/near_limit.sh <the files of its Files:
+     bullet>`; for each file listed, decide now where the new code goes (a new module), so the
+     split is planned, not forced by the linter after the change.
+
 3. Produce a **readiness report** — one row per file:
 
    | File | Ready? | Blockers / open questions |
@@ -161,7 +168,11 @@ For each TODO file (process them in the order given):
    parse — reserve it for the user, per the Phase 6 reminder. If the change is broad enough that no
    single targeted test covers it, run the couple of most relevant ones and say so plainly in the
    Phase 4 summary rather than falling back to a full run.
-4. Keep track of what was done and what could not be done (and why).
+4. Before calling a TODO done, run the commit gate on the files changed (`pre-commit run --files
+   …` where the project uses pre-commit): a single-file type-check or lint run misses what the
+   gate's own configuration checks.
+5. Keep track of what was done and what could not be done (and why), and of the gain: before →
+   after, measured or estimated (Phase 4 reports it).
 
 ---
 
@@ -231,6 +242,9 @@ After all files are processed, output a compact summary table:
 | DONE_031-sqlite.md | ✓ Done | — |
 | PARTIAL_007-inspect.md | ~ Partial | `--debt` flag deferred: needs baseline API |
 
+When a TODO was about speed, memory or the user's comfort, add **what the user gains**: where,
+before → after, in % when possible, each figure marked measured or estimated.
+
 Then run this project's own lint/type/format gate — the exact commands live in its `CLAUDE.md` or contributing guide
 (a linter, a type-checker, a formatter). If the project routes all of them through `pre-commit`,
 `pre-commit run --all-files` covers it; otherwise run them as documented.
@@ -251,6 +265,22 @@ Run this **even when every TODO came out `PARTIAL` or `BLOCKED`** — those move
 `plan.md` to strike out the processed lines: it is a regenerated projection, and a manual edit is
 both discarded on the next run and a chance to get the remaining batching wrong. Regeneration is the
 only supported update path.
+
+The header counts and the PARTIAL table are mechanical: take them from
+`.claude/scripts/todo_plan_tables.sh` rather than counting by hand.
+
+## Unattended runs — several TODOs or lots in a row
+
+When the user hands over a whole plan ("run the plan, commit between lots"):
+
+- Keep a private feedback file (`.claude/plans/feedback-<topic>.md`, git-ignored): per TODO, the
+  questions met, the choices made and the alternatives left, every deviation from the TODO, what
+  waits for the user (measurements on their machine, decisions); at the end, the gains table.
+  The user reviews the run from it.
+- Commit after each lot or standalone TODO (`git fsck --no-dangling` first, never `git stash`),
+  regenerate the plan, then go on. Do not push unless asked.
+- Skip the TODOs that need the user (`Needs maintainer`, a decision, real data) and list them in
+  the feedback file instead of guessing.
 
 ## Phase 6 — Commit-hygiene reminder (MANDATORY, always output)
 

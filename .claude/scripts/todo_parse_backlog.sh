@@ -25,6 +25,7 @@ set -euo pipefail
 #   DEPENDS: <declared depends, empty if none/absent>
 #   FILES: <raw bullet text, wrapped lines joined with a single space>
 #   FLAGS: <comma-separated: missing-priority, missing-files, stale-status>
+#   NEEDS: <the optional "Needs maintainer" bullet, empty when absent>
 #   LOCKED: <UTC timestamp from .todos/.locks/<value>/since if a /todo run currently holds this
 #            TODO (see todo_lock.sh), empty otherwise>
 
@@ -47,6 +48,7 @@ for f in "${todos_dir}"/*.md; do
         sed -E 's/^- \*\*Priority\*\*:[[:space:]]*//' | awk '{print tolower($1)}' || true)"
     batch="$(grep -m1 -E '^- \*\*Batch\*\*:' "${f}" | sed -E 's/^- \*\*Batch\*\*:[[:space:]]*//' || true)"
     depends="$(grep -m1 -E '^- \*\*Depends\*\*:' "${f}" | sed -E 's/^- \*\*Depends\*\*:[[:space:]]*//' || true)"
+    needs="$(grep -m1 -E '^- \*\*Needs maintainer\*\*:' "${f}" | sed -E 's/^- \*\*Needs maintainer\*\*:[[:space:]]*//' || true)"
 
     # The Files bullet wraps across lines until the next "- **Field**:" bullet or a blank line.
     files="$(awk '
@@ -82,6 +84,7 @@ for f in "${todos_dir}"/*.md; do
     printf 'DEPENDS: %s\n' "${depends}"
     printf 'FILES: %s\n' "${files}"
     printf 'FLAGS: %s\n' "${flags_str}"
+    printf 'NEEDS: %s\n' "${needs}"
     printf 'LOCKED: %s\n' "${locked}"
     printf '\n'
 done

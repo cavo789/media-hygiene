@@ -106,3 +106,37 @@ Sources to mine before writing anything (read them, do not rely on this list alo
   in every session).
 - The scripts proposed (near-limit check, plan rendering) run and are used by `/todo`.
 - One `/todo` run on a small TODO afterwards follows the new rules without a reminder.
+
+## Status — PARTIAL (2026-10-14)
+
+### Done
+- Sources mined: the 25 memory notes, the `## Status` sections of PARTIAL/ and BLOCKED/ (most
+  common reason by far: a measurement only the maintainer can run), `git log` since
+  2026-09-26 (the "review of …" commits: constants turned into settings, stale captures,
+  language of the interface), the feedback file of the 0146–0157 run.
+- Homes:
+  - `.claude/rules/workflow.md` (new, always loaded): commit gate on the changed files,
+    near-limit check, cache-invalidation and path-reference checklists, ties between identical
+    copies, measured vs estimated, gains in every report, limits that may become settings,
+    trade-offs before changing a user's design, unattended runs (feedback file, commit per
+    lot, fsck, no stash, no push), devcontainer facts, stale captures, product rules (proof
+    not promise, no traceback, one-liners, Windows-first, 🤖).
+  - `.claude/rules/python.md`: never save the `.po` with `polib` (lesson A1).
+  - Scripts: `near_limit.sh` (A2), `todo_plan_tables.sh` (A5: counts line and PARTIAL table of
+    the plan, never recounted by hand).
+  - Skill `measure-before-ranking` (C9, C10). Agent `cache-invalidation-reviewer` (B6–B8).
+  - `todo-authoring`: optional `Needs maintainer` field, measured/estimated rule (C10, C11);
+    `todo_parse_backlog.sh` prints `NEEDS`; `/todo-plan` lists those TODOs apart (*Waiting for
+    the maintainer*); `/todo`: near-limit check in Phase 1, commit gate in Phase 2, gains in
+    Phase 4, an *Unattended runs* section (D12, D13, D14).
+  - The open TODOs waiting for the maintainer carry the new field (0121, 0145, 0150, 0155).
+  - CLAUDE.md names the new rule, skill and agent.
+- Memory: no note removed: each holds the dated incident behind a rule (the *why*), which the
+  public rules leave out on purpose.
+
+### Not done
+- Acceptance item 3: a `/todo` run on a small TODO afterwards follows the new rules without a
+  reminder. **Reason:** only observable in a later session.
+- A measurement kit the maintainer runs once for all pending figures (C11, second half).
+  **Reason:** it needs its own design (which commands, where the output goes); the pending
+  measurements are listed meanwhile in the feedback file of the run.

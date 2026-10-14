@@ -4,6 +4,7 @@
 - **Batch**: mounts
 - **Depends**: —
 - **Files**: `src/media_hygiene/actions/journaled.py`, `src/media_hygiene/actions/quarantine.py`, `src/media_hygiene/actions/purge.py`, `src/media_hygiene/paths/`, `src/media_hygiene/scan/walker.py`, `src/media_hygiene/services/launcher.py`, `documentation/en/clean/`, `documentation/fr/clean/`
+- **Needs maintainer**: a decision on the mount design (quarantine beside the photos or not), after a measurement on Windows
 
 ## Context
 

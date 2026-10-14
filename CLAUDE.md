@@ -104,9 +104,11 @@ Without the helpers: `uv run pytest`, `uv run mypy`, `uv run pylint src`,
 ## Backlog and Claude tooling
 
 Follow-up work lives in `.todos/NNNN-slug.md` (IDs from `.claude/scripts/todo_next_id.sh`,
-header bullets Priority/Batch/Depends/Files — skill `todo-authoring`). `/todo NNNN` implements,
-`/todo-plan` regenerates `.todos/plan.md` (never edit it by hand). Reviews: `/python-review`,
-`/bash-review`, `/docker-review`, `/docker-dive-optimization`. These commands, skills, agents,
+header bullets Priority/Batch/Depends/Files, optional Needs maintainer — skill `todo-authoring`).
+`/todo NNNN` implements, `/todo-plan` regenerates `.todos/plan.md` (never edit it by hand).
+Reviews: `/python-review`, `/bash-review`, `/docker-review`, `/docker-dive-optimization`, agent
+`cache-invalidation-reviewer`. Working method (`.claude/rules/workflow.md`, skill
+`measure-before-ranking`): the lessons of past sessions. These commands, skills, agents,
 rules and scripts are public and shared with the maintainer's other repositories.
 
 `.claude/memory/` (Claude's memory, linked by `.devcontainer/scripts/post-create.sh`) and

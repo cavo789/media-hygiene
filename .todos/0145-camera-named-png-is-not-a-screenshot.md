@@ -4,6 +4,7 @@
 - **Batch**: classify
 - **Depends**: —
 - **Files**: `src/media_hygiene/classify/rules/matchers.py`, `tests/unit/test_classify_rules.py`, `documentation/en/sort/06-write-down-what-you-know.md`, `documentation/fr/sort/06-write-down-what-you-know.md`
+- **Needs maintainer**: a confirmation of the rule (a camera-named PNG is an edited photo, not a screenshot)
 
 ## Context
 

@@ -4,6 +4,7 @@
 - **Batch**: docker
 - **Depends**: —
 - **Files**: `src/media_hygiene/scan/image_check.py`, `Dockerfile`, `pyproject.toml`
+- **Needs maintainer**: a few dozen real iPhone HEIC files (tile grids), kept outside the repository
 
 ## Context
 

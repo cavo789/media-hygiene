@@ -61,6 +61,18 @@ The first four fields are mandatory and machine-readable:
 - **Files** — backtick-quoted paths touched by the fix, comma-separated. `TBD` only when the TODO is
   genuinely decision-only (no files identified yet).
 
+Optional, machine-readable too:
+
+- **Needs maintainer** — what only a person can provide before (or to finish) the work: a
+  measurement on their machine, a decision, real data, a licence, an account. One line, e.g.
+  `- **Needs maintainer**: a measurement on Windows + Docker Desktop (a first audit)`.
+  `/todo-plan` lists these TODOs apart, so an unattended run does not pick them and close them
+  PARTIAL for that reason alone. Omit the field when nothing is needed.
+
+In the body, every figure says how it was obtained: **measured** (what, where, how) or
+**estimated** (from which measures). Do not state a fact about a third-party product without
+having checked it; write "to check" instead.
+
 A caller may add its own extra mandatory fields on top of these four (e.g. `ux-onboarding-review`'s
 `Horizon`) — say so explicitly in that skill rather than leaving it implicit.
 
