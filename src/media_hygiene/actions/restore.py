@@ -59,7 +59,9 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
         raise FileExistsError(
             errno.EEXIST, _("it already exists"), entry.host_path
         ) from None
-    os.utime(path, ns=(entry.mtime_ns, entry.mtime_ns))
+    if path.stat().st_mtime_ns != entry.mtime_ns:  # a file moved back kept its time
+        # Only the owner may set a time: not the image's user on a file it did not make.
+        os.utime(path, ns=(entry.mtime_ns, entry.mtime_ns))
 
 
 def _bring_back(entry: JournalEntry, reversal: Reversal) -> None:

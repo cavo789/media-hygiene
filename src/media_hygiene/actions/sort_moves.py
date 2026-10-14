@@ -1,8 +1,10 @@
 """The journaled changes of a sort: a file moved, a folder created, never overwriting.
 
-On one disk a file is renamed (instant, atomic); across disks (two Docker mounts are two
-disks, even on one drive) it is copied, proven identical, then removed, and its SHA-256
-is journaled so that `undo` and the manifest can prove it whole.
+On one disk a file is renamed (instant, atomic); where that rename is refused (Docker
+Desktop's NTFS mounts) it is linked under its new name, then its old name is removed
+(instant too, 0138); across disks (two Docker mounts are two disks, even on one drive)
+it is copied, proven identical, then removed, and its SHA-256 is journaled so that
+`undo` and the manifest can prove it whole.
 """
 
 from __future__ import annotations
@@ -14,6 +16,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.link_move import moved_by_link
 from media_hygiene.actions.no_overwrite import (
     COPY_INSTEAD,
     copy_then_remove,
@@ -105,15 +108,35 @@ class Relocator:
         except OSError as exc:
             if exc.errno not in COPY_INSTEAD:
                 raise
-            entry = entry.model_copy(update={"sha256": full_digest(file.path)})
-            journal.record(entry)
-            try:
-                copy_then_remove(file.path, target)
-            except FileExistsError:
-                raise target_exists(target) from None
+            if exc.errno == errno.EXDEV or not _linked(file.path, target):
+                entry = self._copied(file, target, entry)
         journal.record(entry.as_done())
         self._tally.done += 1
         self._tally.bytes_done += file.size
+        return entry
+
+    def _copied(
+        self, file: MediaFile, target: Path, entry: JournalEntry
+    ) -> JournalEntry:
+        """Move a file by a copy proven identical, its SHA-256 journaled first.
+
+        Args:
+            file: The file.
+            target: Where it goes; never overwritten.
+            entry: Its `pending` journal entry.
+
+        Returns:
+            The entry, with the SHA-256 of the file.
+
+        Raises:
+            FileExistsError: Something is at the target already (nothing changed).
+        """
+        entry = entry.model_copy(update={"sha256": full_digest(file.path)})
+        self._context.changes.journal.record(entry)
+        try:
+            copy_then_remove(file.path, target)
+        except FileExistsError:
+            raise target_exists(target) from None
         return entry
 
     def make_folder(self, folder: Path) -> None:
@@ -123,6 +146,26 @@ class Relocator:
             folder: The folder.
         """
         make_folders(self.changes, folder)
+
+
+def _linked(source: Path, target: Path) -> bool:
+    """Move a file by a hard link then the removal of its old name, where possible.
+
+    Args:
+        source: The file.
+        target: Where it goes; never overwritten.
+
+    Returns:
+        False when no link can be made (another disk, a filesystem without links):
+        nothing changed, the file is to be copied.
+
+    Raises:
+        FileExistsError: Something is at the target already (nothing changed).
+    """
+    try:
+        return moved_by_link(source, target)
+    except FileExistsError:
+        raise target_exists(target) from None
 
 
 def target_exists(target: Path) -> FileExistsError:

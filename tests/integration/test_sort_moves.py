@@ -133,3 +133,75 @@ def test_companions_travel_together_with_one_suffix(tmp_path: Path) -> None:
     assert sorted(path.name for path in folder.iterdir()) == sorted(
         path.name for path in (*files, *sidecars)
     )
+
+
+def refused(_source: Path, target: Path) -> None:
+    """The atomic rename of Docker Desktop's NTFS mounts: refused with EINVAL."""
+    raise OSError(errno.EINVAL, "Invalid argument", str(target))
+
+
+def test_a_refused_rename_moves_by_link_without_copying(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """EINVAL from the rename (Docker Desktop NTFS): linked, same file, no digest."""
+    source = write(tmp_path / "a" / "IMG_1.jpg", b"photo")
+    inode = source.stat().st_ino
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", refused)
+    group = MoveGroup(tmp_path, tmp_path / "t", (move_of(source),))
+    outcome = run(tmp_path, (group,))
+    assert not outcome.outcome.failed
+    assert outcome.moved[0].sha256 is None
+    assert not source.exists()
+    assert (tmp_path / "t" / "IMG_1.jpg").stat().st_ino == inode
+    undo(tmp_path)
+    assert source.read_bytes() == b"photo"
+
+
+def test_a_refused_rename_and_link_copy_the_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """EINVAL from the rename, EPERM from the link: copied and proven, as before."""
+    source = write(tmp_path / "a" / "IMG_1.jpg", b"photo")
+
+    def no_link(_source: object, target: object) -> None:
+        raise OSError(errno.EPERM, "Operation not permitted", str(target))
+
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", refused)
+    monkeypatch.setattr("media_hygiene.actions.link_move.os.link", no_link)
+    group = MoveGroup(tmp_path, tmp_path / "t", (move_of(source),))
+    outcome = run(tmp_path, (group,))
+    assert not outcome.outcome.failed
+    assert outcome.moved[0].sha256
+    assert (tmp_path / "t" / "IMG_1.jpg").read_bytes() == b"photo"
+    assert not source.exists()
+
+
+def test_a_refused_rename_never_links_over_a_name_taken(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The link refuses an existing target like the rename: nothing is replaced."""
+    source = write(tmp_path / "a" / "IMG_1.jpg", b"ours")
+    taken = write(tmp_path / "t" / "IMG_1.jpg", b"theirs")
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", refused)
+    group = MoveGroup(tmp_path, tmp_path / "t", (move_of(source),))
+    outcome = run(tmp_path, (group,))
+    assert outcome.outcome.done == 1
+    assert taken.read_bytes() == b"theirs"
+    assert (tmp_path / "t" / "IMG_1 (2).jpg").read_bytes() == b"ours"
+
+
+def test_undo_of_a_move_by_link_never_sets_the_time_again(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A file moved back kept its time: no `utime`, refused to a non-owner (EPERM)."""
+    source = write(tmp_path / "a" / "IMG_1.jpg", b"photo")
+
+    def not_owner(path: object, **_times: object) -> None:
+        raise PermissionError(errno.EPERM, "Operation not permitted", str(path))
+
+    monkeypatch.setattr("media_hygiene.actions.sort_moves.rename_no_replace", refused)
+    run(tmp_path, (MoveGroup(tmp_path, tmp_path / "t", (move_of(source),)),))
+    monkeypatch.setattr("media_hygiene.actions.restore.os.utime", not_owner)
+    undo(tmp_path)
+    assert source.read_bytes() == b"photo"
+    assert source.stat().st_mtime_ns == MTIME
