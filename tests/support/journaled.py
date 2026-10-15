@@ -5,9 +5,9 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import JournalWriter
+from media_hygiene.actions.journal import JournalEntry, JournalWriter
 from media_hygiene.actions.journaled import CleanContext
-from media_hygiene.actions.kinds import Phase
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.scan.progress import NullProgress
 
@@ -16,6 +16,23 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 JOURNAL_NAME = "run.jsonl"
+
+
+def move(seq: int, row: str, paths: tuple[Path, Path]) -> JournalEntry:
+    """A pending move of plan `p`, from `paths[0]` to `paths[1]`."""
+    return JournalEntry(
+        seq=seq,
+        phase=Phase.SORT,
+        status=Status.PENDING,
+        action=ActionKind.MOVE,
+        path=str(paths[0]),
+        host_path=str(paths[0]),
+        size=1,
+        mtime_ns=0,
+        target=str(paths[1]),
+        plan="p",
+        row=row,
+    )
 
 
 @contextmanager

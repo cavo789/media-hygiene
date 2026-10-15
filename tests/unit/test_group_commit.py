@@ -6,15 +6,17 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import JournalEntry, JournalWriter, read_journal
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.journal import JournalWriter, read_journal
+from media_hygiene.actions.kinds import Status
+from tests.support.journaled import move
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     import pytest
+
+    from media_hygiene.actions.journal import JournalEntry
 
 WORKERS = 4
 PER_WORKER = 25
@@ -29,16 +31,7 @@ def _entry(seq: int) -> JournalEntry:
     Returns:
         The entry.
     """
-    return JournalEntry(
-        seq=seq,
-        phase=Phase.SORT,
-        status=Status.PENDING,
-        action=ActionKind.MOVE,
-        path=f"/data/c/{seq}.jpg",
-        host_path=f"C:\\{seq}.jpg",
-        size=seq,
-        mtime_ns=1,
-    )
+    return move(seq, str(seq), (Path(f"/data/c/{seq}.jpg"), Path(f"/data/t/{seq}.jpg")))
 
 
 class SyncedSizes:

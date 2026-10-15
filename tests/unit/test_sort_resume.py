@@ -4,29 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import JournalEntry, JournalWriter, journal_file
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.journal import JournalWriter, journal_file
+from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.sort_resume import moved_rows
+from tests.support.journaled import move
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-
-def move(seq: int, row: str, paths: tuple[Path, Path]) -> JournalEntry:
-    """A pending move of plan `p`."""
-    return JournalEntry(
-        seq=seq,
-        phase=Phase.SORT,
-        status=Status.PENDING,
-        action=ActionKind.MOVE,
-        path=str(paths[0]),
-        host_path=str(paths[0]),
-        size=1,
-        mtime_ns=0,
-        target=str(paths[1]),
-        plan="p",
-        row=row,
-    )
 
 
 def test_done_and_carried_out_moves_count_undone_ones_do_not(tmp_path: Path) -> None:
