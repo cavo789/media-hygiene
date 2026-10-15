@@ -24,3 +24,8 @@ Decided in the review of 2026-10-15 (maintainer): investigate, do not leave it u
    gives a cluster of N).
 3. A change to the scenario or the map makes the capture stale: run `docs_screenshots` only with
    the maintainer's go-ahead (heavy for the PC).
+
+## Decided (2026-10-15)
+
+- The maintainer gives the go-ahead (`/todo:iterate` of 2026-10-15): run `docs_screenshots`
+  in this run if the fix changes the scenario or the map, `nice -n 19`.

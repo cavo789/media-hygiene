@@ -29,3 +29,8 @@ tiling for small faces were dropped (inbox of 2026-10-15): measured 2026-10-14 o
 ## Acceptance
 
 - The size added by `onnxruntime` to the image, measured, written here.
+
+## Decided (2026-10-15)
+
+- The maintainer gives the go-ahead (`/todo:iterate` of 2026-10-15): build the image locally
+  under `nice -n 19`, then `dive` and `du` in the image.
