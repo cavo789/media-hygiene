@@ -66,3 +66,8 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
   the Renovate app is installed with access to `cavo789/media-hygiene` (GitHub → Settings →
   Applications). Next: the job logs on developer.mend.io (repository `media-hygiene`), to see
   whether a run happened and why it made nothing.
+- Cause found (developer.mend.io, 2026-10-15 10:27, screenshot by the maintainer): the repository
+  is in **Silent** mode ("Dependency Updates (Renovate): Silent", Community plan, Renovate
+  44.156.3). Jobs run and end DONE (requested ones since 3 days, a scheduled one pending), but a
+  silent Renovate opens no issue and no PR. Next: switch the mode to interactive in the Mend
+  settings, then check the Dependency Dashboard appears after the next job.
