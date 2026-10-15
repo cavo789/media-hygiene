@@ -10,7 +10,7 @@ ARG UV_VERSION=0.13.1
 ARG FFMPEG_VERSION=9.0.2
 # GitHub CLI: CI logs (gh run view --log-failed), runs and pull requests from the terminal.
 # renovate: datasource=github-releases depName=cli/cli
-ARG GH_VERSION=2.101.0
+ARG GH_VERSION=2.102.0
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 FROM mwader/static-ffmpeg:${FFMPEG_VERSION} AS ffmpeg
