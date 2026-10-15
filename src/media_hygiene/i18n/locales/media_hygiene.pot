@@ -1710,6 +1710,13 @@ msgid ""
 "report first. Near duplicates go to the quarantine, never deleted."
 msgstr ""
 
+msgid ""
+"How many files 'clean' and 'undo' handle at once (1 or more): four "
+"readers read a Windows folder about 4 times faster than one. Lower it to "
+"1 for a slow USB hard disk, whose head seeks back and forth between the "
+"readers."
+msgstr ""
+
 #, python-brace-format
 msgid "How many files the table lists at most. Default: {count}."
 msgstr ""

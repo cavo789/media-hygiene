@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Status
 from media_hygiene.actions.outcome import Incident, Outcome, Tally, why
-from media_hygiene.actions.parallel import Runner, run_all, stopping_on
+from media_hygiene.actions.parallel import WORKERS, Runner, run_all, stopping_on
 from media_hygiene.actions.quarantine import LeftFolders
 from media_hygiene.actions.restore import perform
 from media_hygiene.actions.reversal import (
@@ -58,14 +58,18 @@ def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
 class UndoExecutor:
     """Reverses every action of a run not reversed yet, newest first, a few at once."""
 
-    def __init__(self, journal: JournalWriter, progress: ProgressSink) -> None:
+    def __init__(
+        self, journal: JournalWriter, progress: ProgressSink, workers: int = WORKERS
+    ) -> None:
         """Prepare the undo of one run.
 
         Args:
             journal: The run's journal, opened for appending `undo` entries.
             progress: Where to report progress.
+            workers: How many files are put back at once (`[clean] workers`).
         """
         self._journal = journal
+        self._workers = workers
         self._progress = progress
         self._tally = Tally()
         self._lock = threading.Lock()  # the tally, filled by several workers
@@ -98,7 +102,10 @@ class UndoExecutor:
         )
         self._progress.start(step, len(todo))
         runner = Runner(
-            self._reverse, self._shown, stopping=stopping_on(self._progress)
+            self._reverse,
+            self._shown,
+            self._workers,
+            stopping=stopping_on(self._progress),
         )
         try:
             for stage in stages(todo[::-1]):

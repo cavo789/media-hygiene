@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journal import JournalEntry
 from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.no_overwrite import move_no_replace
+from media_hygiene.actions.parallel import WORKERS
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
@@ -42,7 +43,8 @@ class CleanContext:
     """Where and how a run acts, and which command it is (`clean` by default).
 
     `delete_copies` (`clean --delete`) deletes exact copies for good; by default they
-    are moved to the quarantine like everything else `clean` sets aside.
+    are moved to the quarantine like everything else `clean` sets aside. `workers`
+    (`[clean] workers`) is how many files `clean` handles at once.
     """
 
     journal: JournalWriter
@@ -51,6 +53,7 @@ class CleanContext:
     progress: ProgressSink
     phase: Phase = Phase.CLEAN
     delete_copies: bool = False
+    workers: int = WORKERS
 
 
 class JournaledChanges:

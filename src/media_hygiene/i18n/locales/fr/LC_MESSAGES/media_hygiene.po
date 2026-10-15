@@ -2125,6 +2125,17 @@ msgstr ""
 " les quasi-doublons ; vérifiez-les d'abord dans le rapport. Les quasi-"
 "doublons partent en quarantaine, jamais supprimés."
 
+msgid ""
+"How many files 'clean' and 'undo' handle at once (1 or more): four "
+"readers read a Windows folder about 4 times faster than one. Lower it to "
+"1 for a slow USB hard disk, whose head seeks back and forth between the "
+"readers."
+msgstr ""
+"Combien de fichiers 'clean' et 'undo' traitent à la fois (1 ou plus) : "
+"quatre lecteurs lisent un dossier Windows environ 4 fois plus vite qu'un "
+"seul. Mettez 1 pour un disque dur USB lent, dont la tête fait des allers-"
+"retours entre les lecteurs."
+
 #, python-brace-format
 msgid "How many files the table lists at most. Default: {count}."
 msgstr "Nombre maximal de fichiers listés dans le tableau. Par défaut : {count}."

@@ -31,7 +31,8 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
-# Files compared and moved at once: reading scales almost 4 times up to four readers.
+# Files compared and moved at once by default (`[clean] workers`): reading scales
+# almost 4 times up to four readers.
 WORKERS: Final = 4
 # Files handed out ahead of the workers, so that none waits for the next one.
 _AHEAD: Final = 2

@@ -125,6 +125,7 @@ class CleanService:
                 quarantine_run_dir=locations.quarantine_dir / run_id,
                 progress=self._progress,
                 delete_copies=plan.delete_copies,
+                workers=self._runtime.settings.clean.workers,
             )
             outcome = CleanExecutor(context).run(plan)
         self._forget_removed(journal_path, run_id)

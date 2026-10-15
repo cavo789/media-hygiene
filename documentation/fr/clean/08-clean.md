@@ -161,6 +161,9 @@ vont toujours en quarantaine.
   alors `--yes`.
 - **Que fait-il ?** Une ligne sous la barre nomme le fichier en cours et ce qui lui arrive. La
   barre et son estimation suivent les octets : les grosses vidéos passent en premier.
+- **Quelques fichiers à la fois** : `clean` et `undo` traitent 4 fichiers à la fois. Sur un disque
+  dur USB lent, mettez `workers = 1` dans la section `[clean]` de `config.toml`
+  ([étape 7](07-configuration-file.md#le-remplir)).
 - **Interrompu ?** Ctrl+C, une coupure de courant : chaque action est écrite dans le journal
   *avant* et *après* avoir eu lieu, `undo` restaure donc ce qui a été fait. Un fichier que
   l'exécution n'avait pas encore touché reste où il est.

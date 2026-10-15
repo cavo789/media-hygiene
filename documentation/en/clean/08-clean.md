@@ -155,6 +155,9 @@ of other files than media (`--ext`) still go to the quarantine.
   section of `config.toml`. Without `-it`, `clean` cannot ask and stops: use `--yes` then.
 - **What is it doing?** A line under the bar names the file at hand and what happens to it.
   The bar and its estimate follow the bytes: the large videos come first.
+- **A few files at once**: `clean` and `undo` handle 4 files at a time. On a slow USB hard disk,
+  set `workers = 1` in the `[clean]` section of `config.toml`
+  ([step 7](07-configuration-file.md#fill-it-in)).
 - **Interrupted?** Ctrl+C, a power cut: every action is written to the journal *before* and
   *after* it happens, so `undo` still restores what was done. A file the run had not touched yet
   stays where it is.
