@@ -39,18 +39,21 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 **Then** write `mh`, with your folder instead of `C:\Photos`, as Explorer shows it:
 
 ```powershell
-mkdir -Force "$HOME\media-hygiene"
+New-Item -ItemType Directory -Force "$HOME\media-hygiene", (Split-Path $PROFILE) | Out-Null
 docker run --rm cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
+Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
-In a new terminal, load `mh` again with the last line.
+The third line writes `mh` into your PowerShell profile: every new terminal knows it, tomorrow
+too. The last one loads it in this terminal. Later, to change your folders, run the `docker run`
+line only: the profile already has its line.
 
 ??? question "Several folders? A quarantine on another disk?"
 
     One `--photos` per folder: `--photos "C:\Photos" --photos "D:\Images\Family"`. Not a folder
     inside another one: each of its files would be seen twice. One more folder later? Run the
-    command again, with every folder.
+    `docker run` line again, with every folder.
 
     The copies set aside go to `$HOME\media-hygiene\quarantine`. Your photos are on another disk
     than `C:`? Add `--quarantine "D:\quarantine"`: on the photos' disk, setting aside is a simple
@@ -69,15 +72,6 @@ In a new terminal, load `mh` again with the last line.
     | `config` | `config.toml`, your settings. |
     | `journal` | The journal of each clean: what makes `undo` possible. |
     | `quarantine` | The files set aside, until you erase them. |
-
-??? tip "`mh` in every terminal"
-
-    Write the loading line into your PowerShell profile, once:
-
-    ```powershell
-    New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
-    Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
-    ```
 
 **Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
 Enter runs it. More: [`menu`](../commands/menu.md).

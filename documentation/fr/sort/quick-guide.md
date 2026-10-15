@@ -31,11 +31,7 @@ sans lui, sautez-les. Vous voulez seulement **retrouver** une photo, sans rien d
 **Nettoyez d'abord les doublons** ([nettoyer en bref](../clean/quick-guide.md)) : sinon les deux
 copies d'une photo sont triées. La commande `mh` écrite pour le nettoyage sert aussi ici ; sinon,
 écrivez-la une fois : [nettoyer en bref, étape 0](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh).
-Dans un nouveau terminal, rechargez-la :
-
-```powershell
-. "$HOME\media-hygiene\mh.ps1"
-```
+L'étape 0 l'a écrite dans votre profil PowerShell : chaque nouveau terminal la connaît.
 
 **Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
 Entrée la lance. Plus : [`menu`](../commands/menu.md).

@@ -32,7 +32,7 @@ else works.
 mh audit
 ```
 
-In a new terminal, load `mh` again: `. "$HOME\media-hygiene\mh.ps1"`. Better still, clean the
+Step 0 wrote `mh` into your PowerShell profile: every new terminal knows it. Better still, clean the
 duplicates first ([clean in short](../clean/quick-guide.md)): otherwise each photo is found twice.
 
 **Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;

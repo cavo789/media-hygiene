@@ -42,18 +42,21 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 le montre :
 
 ```powershell
-mkdir -Force "$HOME\media-hygiene"
+New-Item -ItemType Directory -Force "$HOME\media-hygiene", (Split-Path $PROFILE) | Out-Null
 docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
+Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
-Dans un nouveau terminal, rechargez `mh` avec la dernière ligne.
+La troisième ligne écrit `mh` dans votre profil PowerShell : chaque nouveau terminal le connaît,
+demain aussi. La dernière le charge dans ce terminal. Plus tard, pour changer vos dossiers,
+relancez seulement la ligne `docker run` : le profil a déjà sa ligne.
 
 ??? question "Plusieurs dossiers ? Une quarantaine sur un autre disque ?"
 
     Un `--photos` par dossier : `--photos "C:\Photos" --photos "D:\Images\Famille"`. Pas un
     dossier à l'intérieur d'un autre : chacun de ses fichiers serait vu deux fois. Un dossier de
-    plus plus tard ? Relancez la commande, avec tous les dossiers.
+    plus plus tard ? Relancez la ligne `docker run`, avec tous les dossiers.
 
     Les copies mises de côté vont dans `$HOME\media-hygiene\quarantine`. Vos photos sont sur un
     autre disque que `C:` ? Ajoutez `--quarantine "D:\quarantaine"` : sur le disque des photos,
@@ -74,15 +77,6 @@ Dans un nouveau terminal, rechargez `mh` avec la dernière ligne.
     | `config` | `config.toml`, vos réglages. |
     | `journal` | Le journal de chaque nettoyage : ce qui permet `undo`. |
     | `quarantine` | Les fichiers mis de côté, jusqu'à ce que vous les effaciez. |
-
-??? tip "`mh` dans chaque terminal"
-
-    Écrivez la ligne de chargement dans votre profil PowerShell, une fois :
-
-    ```powershell
-    New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
-    Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
-    ```
 
 **Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
 Entrée la lance. Plus : [`menu`](../commands/menu.md).

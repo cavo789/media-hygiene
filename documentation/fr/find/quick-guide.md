@@ -32,7 +32,7 @@ lui, tout le reste fonctionne.
 mh audit
 ```
 
-Dans un nouveau terminal, rechargez `mh` : `. "$HOME\media-hygiene\mh.ps1"`. Mieux encore,
+L'étape 0 a écrit `mh` dans votre profil PowerShell : chaque nouveau terminal le connaît. Mieux encore,
 nettoyez d'abord les doublons ([nettoyer en bref](../clean/quick-guide.md)) : sinon chaque photo
 est trouvée deux fois.
 

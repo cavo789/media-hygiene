@@ -29,12 +29,8 @@ short](../find/quick-guide.md)**.
 
 **Clean the duplicates first** ([clean in short](../clean/quick-guide.md)): otherwise both copies
 of a photo are sorted. The `mh` command written for the clean serves here too; otherwise, write it
-once: [clean in short, step 0](../clean/quick-guide.md#0-once-write-the-mh-command). In a new
-terminal, load it again:
-
-```powershell
-. "$HOME\media-hygiene\mh.ps1"
-```
+once: [clean in short, step 0](../clean/quick-guide.md#0-once-write-the-mh-command). Step 0 wrote
+it into your PowerShell profile: every new terminal knows it.
 
 **Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
 Enter runs it. More: [`menu`](../commands/menu.md).
