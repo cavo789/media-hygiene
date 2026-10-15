@@ -50,3 +50,8 @@ publish `README.md` as the overview at each release.
   release (links, *Licences* section). **Reason:** needs the maintainer's Docker Hub account and
   a release; a token without the scope makes this last step of the job fail, after the image is
   pushed.
+
+## Inbox (2026-10-15)
+
+- `DOCKERHUB_TOKEN` scope: Read/Write/Delete, confirmed by the maintainer. Left: read the Docker
+  Hub overview after the next release (links, *Licences* section).

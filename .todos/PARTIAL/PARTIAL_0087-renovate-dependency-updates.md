@@ -58,3 +58,11 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
   opened before the merge (it proposes its own `renovate.json`), close it without merging.
   **Reason:** the merge into `main` is postponed by the maintainer (a push to `main` rebuilds the
   image).
+
+## Inbox (2026-10-15)
+
+- `.github/renovate.json` is on `main` since 2026-10-14 17:17, yet on 2026-10-15 08:55 there is
+  no Dependency Dashboard issue and no Renovate PR (checked with `gh`). The maintainer confirmed
+  the Renovate app is installed with access to `cavo789/media-hygiene` (GitHub → Settings →
+  Applications). Next: the job logs on developer.mend.io (repository `media-hygiene`), to see
+  whether a run happened and why it made nothing.
