@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.scan.sidecars import is_sidecar
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Collection, Iterable
 
     from media_hygiene.actions.sort_plan import MoveGroup
 
@@ -61,12 +61,16 @@ def sidecars_of(group: MoveGroup) -> list[Path]:
     return sorted(path for path in found if owners(path.name, names))
 
 
-def free_names(folder: Path, names: list[str]) -> dict[str, str]:
+def free_names(
+    folder: Path, names: list[str], given: Collection[str] = frozenset()
+) -> dict[str, str]:
     """Give each name of a group a name free in the target folder, the same suffix.
 
     Args:
         folder: The target folder (it may not exist yet).
         names: The names of the group, the leading file first.
+        given: Names (casefolded) already given in `folder` to files of the run not
+            moved yet: free on the disk, taken all the same.
 
     Returns:
         Name → the name it takes in `folder`.
@@ -74,7 +78,10 @@ def free_names(folder: Path, names: list[str]) -> dict[str, str]:
     stem = PurePath(names[0]).stem
     for number in itertools.count(1):
         taken = {name: numbered(name, stem, number) for name in names}
-        if not any(os.path.lexists(folder / name) for name in taken.values()):
+        if not any(
+            name.casefold() in given or os.path.lexists(folder / name)
+            for name in taken.values()
+        ):
             return taken
     return {}  # pragma: no cover - `itertools.count` never ends
 

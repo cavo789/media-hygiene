@@ -164,9 +164,10 @@ files stay there, still to sort. Give the event a name in the workbook to move t
 
 ## Stopped in the middle
 
-70,000 moves take a while, and a laptop sleeps. Ctrl+C finishes the current file, closes the
-journal and says what was done. Run the same command again: the files already moved by this
-workbook are counted as done, and the sort goes on.
+70,000 moves take a while, and a laptop sleeps. `sort` moves 4 files at a time (`workers` in the
+`[clean]` section of `config.toml`); Ctrl+C finishes the files under way, closes the journal and
+says what was done. Run the same command again: the files already moved by this workbook are
+counted as done, and the sort goes on.
 
 ## Change your mind
 

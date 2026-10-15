@@ -17,6 +17,7 @@
 #      people --sample 200 on it: seconds per photo, faces            (0058; adds the faces of
 #      those 200 photos and the two face models, 39 MB, to that cache)
 #   7. classify, sort (NTFS file ids before/after), undo of the test folder  (0138: moves on NTFS)
+#      sort, then undo, one file at a time ([clean] workers = 1)       (0163: 4 at once against 7b)
 #   8. each file operation of a sort by link and its undo, alone           (0138: what is refused)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -196,6 +197,9 @@ if (Wanted 7) {
     $back = FileIds $data
     $same = @($back.Keys | Where-Object { $before.ContainsKey($_) -and $before[$_] -eq $back[$_] }).Count
     Log ("   NTFS ids after undo: {0} of {1} files back at their first path with their first id" -f $same, $back.Count)
+    $oneByOne = @("--env", "MEDIA_HYGIENE_CLEAN__WORKERS=1") + $writable
+    Measure-Mh "7d. sort, one file at a time: against 7b, 4 at once (0163)" $oneByOne @("sort", "--yes")
+    Measure-Mh "7e. undo of that sort" $writable @("undo", "--yes")
 }
 
 # --- 8: which file operations Docker Desktop's NTFS mount allows (0138: undo after a link) ----

@@ -1711,10 +1711,10 @@ msgid ""
 msgstr ""
 
 msgid ""
-"How many files 'clean' and 'undo' handle at once (1 or more): four "
-"readers read a Windows folder about 4 times faster than one. Lower it to "
-"1 for a slow USB hard disk, whose head seeks back and forth between the "
-"readers."
+"How many files 'clean', 'undo' and 'sort' handle at once (1 or more): "
+"four readers read a Windows folder about 4 times faster than one. Lower "
+"it to 1 for a slow USB hard disk, whose head seeks back and forth between"
+" the readers."
 msgstr ""
 
 #, python-brace-format

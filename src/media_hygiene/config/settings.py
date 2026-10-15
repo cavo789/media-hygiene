@@ -124,9 +124,9 @@ class KeepSettings(BaseModel):
 class CleanSettings(BaseModel):
     """`[clean]` — behaviour of `clean` and `undo`, and the purge reminder.
 
-    `workers` is how many files `clean` and `undo` handle at once: four readers read a
-    Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk, whose
-    head seeks between the readers, may prefer 1.
+    `workers` is how many files `clean`, `undo` and `sort` handle at once: four readers
+    read a Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk,
+    whose head seeks between the readers, may prefer 1.
     """
 
     model_config = _FROZEN

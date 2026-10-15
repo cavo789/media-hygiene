@@ -34,3 +34,13 @@ answered: it can use the same runner, group by group.
   by ≈ 65 %, 0149/0161), measured on the maintainer's machine.
 - Tests: at most `WORKERS` moves at once; names taken decided before the moves (two files of one
   group with the same name never race for it); an interrupted sort resumed; its undo unchanged.
+
+## Status — DONE (2026-10-15)
+
+- Groups (a file and its companions) move a few at a time through `run_all`, names decided
+  first in order (`actions/sort_groups.py`), counters locked, folders made once under a lock,
+  `moved` sorted by journal `seq`; tests in `tests/integration/test_sort_parallel.py` and
+  `tests/unit/test_sort_groups.py`.
+- Measured here (simulated 13 ms per rename, 400 files): 8.2 s → 2.6 s (−69 %).
+- Left for the maintainer: the Windows timing, `mh-measure.ps1 -Only 7 -Count 4000` (7b: 4 at
+  once, 7d: one at a time).

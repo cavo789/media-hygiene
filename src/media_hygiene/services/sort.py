@@ -170,6 +170,7 @@ class SortService:
                 locations.quarantine_dir / run_id,
                 self._progress,
                 Phase.SORT,
+                workers=self._runtime.settings.clean.workers,
             )
             executor = SortExecutor(SortContext(changes, plan.plan_id, stop), tally)
             moves = executor.run(plan)
