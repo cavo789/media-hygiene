@@ -60,13 +60,19 @@ def test_every_refusal_is_explained() -> None:
     """Two mounts, a disk without links, a name taken, too many names, the rest."""
     reasons = {
         code: why_not(OSError(code, os.strerror(code)))
-        for code in (errno.EXDEV, errno.EPERM, errno.EEXIST, errno.EMLINK, errno.EIO)
+        for code in (
+            errno.EXDEV,
+            errno.EPERM,
+            errno.EEXIST,
+            errno.EMLINK,
+            errno.ENAMETOOLONG,
+        )
     }
     assert "two disks or two mounts" in reasons[errno.EXDEV]
     assert "does not support hard links" in reasons[errno.EPERM]
     assert "in the album already" in reasons[errno.EEXIST]
     assert "too many names" in reasons[errno.EMLINK]
-    assert reasons[errno.EIO] == os.strerror(errno.EIO)
+    assert reasons[errno.ENAMETOOLONG] == os.strerror(errno.ENAMETOOLONG)
     assert why_not(OSError("odd")) == "odd"
 
 

@@ -80,7 +80,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261014-151350
+Nettoyage 20261014-204120
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,6 Mo │
@@ -89,8 +89,8 @@ Nettoyage 20261014-151350
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261014-151350-clean/report.html
-💡 Vous changez d'avis ? 'media-hygiene undo 20261014-151350' restaure tout :
+✅ Rapport HTML : /reports/20261014-204120-clean/report.html
+💡 Vous changez d'avis ? 'media-hygiene undo 20261014-204120' restaure tout :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
@@ -99,7 +99,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261014-151350
+  cavo789/media-hygiene --locale fr undo 20261014-204120
 👉 Et maintenant : une fois vérifié, 'purge' libère la place des fichiers mis de
 côté.
 docker run --rm -it `
@@ -110,7 +110,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr purge 20261014-151350
+  cavo789/media-hygiene --locale fr purge 20261014-204120
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```
@@ -161,6 +161,9 @@ vont toujours en quarantaine.
   alors `--yes`.
 - **Que fait-il ?** Une ligne sous la barre nomme le fichier en cours et ce qui lui arrive. La
   barre et son estimation suivent les octets : les grosses vidéos passent en premier.
+- **Quelques fichiers à la fois** : `clean` et `undo` traitent 4 fichiers à la fois. Sur un disque
+  dur USB lent, mettez `workers = 1` dans la section `[clean]` de `config.toml`
+  ([étape 7](07-configuration-file.md#le-remplir)).
 - **Interrompu ?** Ctrl+C, une coupure de courant : chaque action est écrite dans le journal
   *avant* et *après* avoir eu lieu, `undo` restaure donc ce qui a été fait. Un fichier que
   l'exécution n'avait pas encore touché reste où il est.

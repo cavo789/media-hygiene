@@ -39,6 +39,9 @@ _DOWNLOAD_NAMES: Final = re.compile(
     r"|hevc|xvid|divx|web-?dl|web-?rip|blu-?ray|[bh]d-?rip|dvd-?rip|hdtv)(?![a-z0-9])",
     re.IGNORECASE,
 )
+# A phone camera's dated name (`IMG_20190123_202218`, `PXL_20230105_101010123`): never
+# the 4-digit `IMG_1807` of an iPad screenshot. A camera writes no PNG: an edited photo.
+_CAMERA_NAMES: Final = re.compile(r"^(?:(?:IMG|PXL)_)?\d{8}_\d{6}", re.IGNORECASE)
 _PNG: Final = ".png"
 TINY_SIDE: Final = 400  # pixels: icons, stickers, thumbnails
 
@@ -50,10 +53,13 @@ def is_screenshot(file: MediaInput) -> bool:
         file: The file.
 
     Returns:
-        True for a screenshot name, or a PNG or tiny image without a camera trace.
+        True for a screenshot name, or a PNG or tiny image without a camera trace
+        (and not named like a camera: that is an edited photo).
     """
     if _SCREENSHOT_NAMES.search(file.path.stem):
         return True
+    if _CAMERA_NAMES.match(file.path.stem):
+        return False
     if has_camera_trace(file):
         return False
     visual = file.visual

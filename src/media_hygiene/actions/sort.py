@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import Relocator, file_of
 from media_hygiene.actions.sort_names import free_names, owners, sidecars_of
 from media_hygiene.actions.verify import change_blocker
@@ -113,7 +113,7 @@ class SortExecutor:
             return action()
         except OSError as exc:
             _LOGGER.debug("Move failed on %s", path, exc_info=True)
-            self._tally.failed.append(Incident(path, exc.strerror or str(exc)))
+            self._tally.failed.append(Incident(path, why(exc)))
             return False
 
     def _move(self, move: Move, target: Path) -> bool:

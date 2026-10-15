@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from media_hygiene.actions.parallel import WORKERS
 from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.cache_settings import CacheSettings
 from media_hygiene.config.classify_settings import ClassifySettings
@@ -121,12 +122,18 @@ class KeepSettings(BaseModel):
 
 
 class CleanSettings(BaseModel):
-    """`[clean]` — behaviour of the `clean` command, and the purge reminder."""
+    """`[clean]` — behaviour of `clean` and `undo`, and the purge reminder.
+
+    `workers` is how many files `clean` and `undo` handle at once: four readers read a
+    Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk, whose
+    head seeks between the readers, may prefer 1.
+    """
 
     model_config = _FROZEN
 
     confirm: bool = True
     purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
+    workers: int = Field(default=WORKERS, ge=1)
 
 
 class Settings(BaseModel):

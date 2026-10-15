@@ -126,7 +126,8 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
     file = journal_file(runtime.locations.journal_dir, run_id)
     entries = read_journal(file)
     with JournalWriter.open(file) as journal:
-        outcome = UndoExecutor(journal, progress).run(entries)
+        executor = UndoExecutor(journal, progress, runtime.settings.clean.workers)
+        outcome = executor.run(entries)
     _follow_moves_back(runtime, file)
     return outcome
 

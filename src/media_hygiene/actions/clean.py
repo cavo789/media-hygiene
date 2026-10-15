@@ -68,9 +68,11 @@ class CleanExecutor:
             [*actions, *orphans], delete_copies=self._context.delete_copies
         )
         self._context.progress.start(step, len(actions) + len(orphans))
-        context = self._context
         runner = Runner(
-            guarded(self._tally), shown_on(context), stopping=stopping_on(context)
+            guarded(self._tally),
+            shown_on(self._context),
+            self._context.workers,
+            stopping=stopping_on(self._context.progress),
         )
         run_all(actions, runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.

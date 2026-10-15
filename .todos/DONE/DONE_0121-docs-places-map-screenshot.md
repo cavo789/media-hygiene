@@ -4,7 +4,6 @@
 - **Batch**: docs
 - **Depends**: —
 - **Files**: `tests/support/docs/shots.py`, `tests/support/docs/served.py`, `tests/support/docs/scenario.py`, `documentation/en/sort/09-places-from-gps.md`, `documentation/fr/sort/09-places-from-gps.md`, `documentation/en/commands/places.md`, `documentation/fr/commands/places.md`, `documentation/en/images/`, `documentation/fr/images/`
-- **Needs maintainer**: a go-ahead to run `docs_screenshots` (image build + browser, heavy for the PC) → later: the maintainer says when the PC can take it; the same run refreshes the `config --show` captures (`read_whole_mb`) (2026-10-14)
 
 ## Context
 
@@ -33,3 +32,9 @@ same day (an OSM search drew its area).
 
 - `docs_screenshots` and `docs_screenshots fr` produce the image; `test_documentation.py` sees it
   used in both languages.
+
+## Decided (2026-10-14)
+
+- Go-ahead to run `docs_screenshots` in the `/todo:iterate` run of 2026-10-14, last, after the
+  other TODOs (the maintainer, at the start of the run). The same run refreshes every capture
+  made stale by the run's earlier lots.

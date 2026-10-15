@@ -1,4 +1,4 @@
-"""Run the actions of a clean a few at a time: each one still alone with its journal.
+"""Run the actions of a clean or an undo a few at a time, each alone with its journal.
 
 Through a Windows folder seen by Docker, one reader gets ≈ 105 MB/s and four readers
 ≈ 454 MB/s (measured, TODO 0149): comparing a copy with its kept file, then moving
@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import logging
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
+from contextvars import copy_context
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.clean_step import said
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.i18n import ngettext
 
 if TYPE_CHECKING:
@@ -26,10 +27,12 @@ if TYPE_CHECKING:
     from media_hygiene.actions.clean_step import Planned
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
+    from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
 
-# Files compared and moved at once: reading scales almost 4 times up to four readers.
+# Files compared and moved at once by default (`[clean] workers`): reading scales
+# almost 4 times up to four readers.
 WORKERS: Final = 4
 # Files handed out ahead of the workers, so that none waits for the next one.
 _AHEAD: Final = 2
@@ -40,19 +43,19 @@ def _unsaid(_count: int) -> None:
 
 
 @dataclass(frozen=True, slots=True)
-class Runner:
+class Runner[T]:
     """What to do with each planned action, and what to show once it is done.
 
     `stopping` is told, after Ctrl+C, how many files are still under way.
     """
 
-    work: Callable[[Planned], None]  # in a worker thread; never raises an OSError
-    shown: Callable[[Planned], None]  # in the calling thread, after each action
+    work: Callable[[T], None]  # in a worker thread; never raises an OSError
+    shown: Callable[[T], None]  # in the calling thread, after each action
     workers: int = WORKERS
     stopping: Callable[[int], None] = _unsaid
 
 
-def run_all(actions: Iterable[Planned], runner: Runner) -> None:
+def run_all[T](actions: Iterable[T], runner: Runner[T]) -> None:
     """Run every action, at most `runner.workers` at a time, in their order of start.
 
     Args:
@@ -64,12 +67,14 @@ def run_all(actions: Iterable[Planned], runner: Runner) -> None:
             once the files not started yet are cancelled.
     """
     with ThreadPoolExecutor(runner.workers) as pool:
-        running: dict[Future[None], Planned] = {}
+        running: dict[Future[None], T] = {}
         try:
             for planned in actions:
                 if len(running) >= runner.workers * _AHEAD:
                     _settle(running, runner, wait(running, return_when=FIRST_COMPLETED))
-                running[pool.submit(runner.work, planned)] = planned
+                # each worker speaks the language of the run: `_()` reads a context var
+                work = pool.submit(copy_context().run, runner.work, planned)
+                running[work] = planned
             while running:
                 _settle(running, runner, wait(running, return_when=FIRST_COMPLETED))
         except BaseException as stop:
@@ -81,9 +86,9 @@ def run_all(actions: Iterable[Planned], runner: Runner) -> None:
             raise
 
 
-def _settle(
-    running: dict[Future[None], Planned],
-    runner: Runner,
+def _settle[T](
+    running: dict[Future[None], T],
+    runner: Runner[T],
     finished: tuple[set[Future[None]], set[Future[None]]],
 ) -> None:
     """Show the actions that ended, and take them off the running ones.
@@ -120,7 +125,7 @@ def guarded(tally: Tally) -> Callable[[Planned], None]:
             action()
         except OSError as exc:
             _LOGGER.debug("Action failed on %s", file.path, exc_info=True)
-            tally.failed.append(Incident(file.path, exc.strerror or str(exc)))
+            tally.failed.append(Incident(file.path, why(exc)))
 
     return work
 
@@ -147,11 +152,11 @@ def shown_on(context: CleanContext) -> Callable[[Planned], None]:
     return shown
 
 
-def stopping_on(context: CleanContext) -> Callable[[int], None]:
+def stopping_on(progress: ProgressSink) -> Callable[[int], None]:
     """Say, under the bar, that the files under way end before the run stops.
 
     Args:
-        context: The progress sink of the run.
+        progress: The progress sink of the run.
 
     Returns:
         The screen update, given how many files are still under way.
@@ -169,6 +174,6 @@ def stopping_on(context: CleanContext) -> Callable[[int], None]:
             "left halfway…",
             count,
         )
-        context.progress.current(line.format(count=count))
+        progress.current(line.format(count=count))
 
     return stopping

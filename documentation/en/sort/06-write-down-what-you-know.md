@@ -78,7 +78,8 @@ one listed wins.
 Told from the name and the metadata only:
 
 - `screenshot`: a screenshot name (`Screenshot_…`, `Capture d'écran …`), or, without any camera
-  make, model or position, a PNG or an image smaller than 400 pixels.
+  make, model or position, a PNG or an image smaller than 400 pixels. A PNG named like a
+  camera (`IMG_20190123_202218.png`) is taken for an edited photo, not a screenshot.
 - `received`: a picture received through a messaging app (`IMG-20200105-WA0003`,
   `received_…`), which lost its camera date on the way.
 - `download`: a video whose name holds a season, a resolution or a codec (`S01E05`, `1080p`,

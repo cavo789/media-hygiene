@@ -241,6 +241,10 @@ msgstr ""
 msgid "... and {count} more."
 msgstr ""
 
+#, python-brace-format
+msgid "... and {count} more: {reason}"
+msgstr ""
+
 msgid "/"
 msgstr ""
 
@@ -1704,6 +1708,13 @@ msgid ""
 "recompressed) and the re-encoded videos that are sure; the groups to "
 "check are left alone. near-all: every near duplicate; check them in the "
 "report first. Near duplicates go to the quarantine, never deleted."
+msgstr ""
+
+msgid ""
+"How many files 'clean' and 'undo' handle at once (1 or more): four "
+"readers read a Windows folder about 4 times faster than one. Lower it to "
+"1 for a slow USB hard disk, whose head seeks back and forth between the "
+"readers."
 msgstr ""
 
 #, python-brace-format
@@ -4479,6 +4490,9 @@ msgid_plural "and {n} more faces"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "another program is using it"
+msgstr ""
+
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr ""
 
@@ -4728,6 +4742,9 @@ msgstr ""
 msgid "it is no longer in the album: removed already"
 msgstr ""
 
+msgid "it is no longer there"
+msgstr ""
+
 msgid "it is not the marker file of an album: kept"
 msgstr ""
 
@@ -4946,6 +4963,9 @@ msgstr ""
 msgid "none: the whole series aside, then next"
 msgstr ""
 
+msgid "not allowed (the owner or the permissions of the file)"
+msgstr ""
+
 msgid "not checked"
 msgstr ""
 
@@ -5120,6 +5140,9 @@ msgstr ""
 msgid "small"
 msgstr ""
 
+msgid "something of that name is already there"
+msgstr ""
+
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr ""
 
@@ -5164,6 +5187,12 @@ msgstr ""
 msgid "the copy of the previous sidecar does not match it"
 msgstr ""
 
+msgid "the disk could not be read or written (input/output error)"
+msgstr ""
+
+msgid "the disk is full"
+msgstr ""
+
 msgid "the file is gone"
 msgstr ""
 
@@ -5178,6 +5207,9 @@ msgid "the files are no longer identical"
 msgstr ""
 
 msgid "the folder is gone already"
+msgstr ""
+
+msgid "the folder is mounted read-only (:ro)"
 msgstr ""
 
 msgid "the folder is not empty"

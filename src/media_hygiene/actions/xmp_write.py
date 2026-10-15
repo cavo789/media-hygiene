@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.no_overwrite import COPY_INSTEAD, rename_no_replace
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
@@ -98,7 +98,7 @@ class XmpExecutor:
                 self._write(job)
             except (OSError, XmpError) as exc:
                 _LOGGER.debug("Sidecar not written: %s", job.sidecar, exc_info=True)
-                self._tally.failed.append(Incident(job.sidecar, str(exc)))
+                self._tally.failed.append(Incident(job.sidecar, why(exc)))
             progress.advance()
         progress.stop()
         return stopped

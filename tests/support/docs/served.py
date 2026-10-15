@@ -33,6 +33,13 @@ FACES_SHOWN_JS: Final = (
     "() => [...document.querySelectorAll('#groups img')]"
     ".every((image) => image.complete)"
 )
+# Every tile of the map drawn: a grey map fails the run, it never reaches the docs.
+TILES_SHOWN_JS: Final = (
+    "() => { const tiles = [...document.querySelectorAll('.leaflet-tile')]; "
+    "return tiles.length > 0 && "
+    "tiles.every((tile) => tile.classList.contains('leaflet-tile-loaded')); }"
+)
+TILES_MS: Final = 30_000
 PAUSE_MS: Final = 500
 VIDEO_PAUSE_MS: Final = 2000  # the loading spinner fades out
 
@@ -120,3 +127,22 @@ def people(page: Page, name: str) -> None:
     page.wait_for_function(FACES_SHOWN_JS)
     page.wait_for_timeout(PAUSE_MS)
     page.screenshot(path=SHOTS / "people.png", full_page=True)
+
+
+def places(page: Page, name: str) -> None:
+    """The places map: the largest cluster named and saved, the OSM tiles drawn.
+
+    Args:
+        page: The browser tab.
+        name: The name typed on the park's cluster.
+    """
+    page.goto(SERVED)
+    page.wait_for_selector("#clusters li button")
+    page.locator("#clusters li button").first.click()
+    page.fill("#name", name)
+    page.press("#name", "Enter")
+    page.wait_for_selector("#status.saved")
+    page.mouse.move(5, 5)  # off the map: no hover tooltip on a circle
+    page.wait_for_function(TILES_SHOWN_JS, timeout=TILES_MS)  # raises if tiles fail
+    page.wait_for_timeout(PAUSE_MS)
+    page.screenshot(path=SHOTS / "places.png")

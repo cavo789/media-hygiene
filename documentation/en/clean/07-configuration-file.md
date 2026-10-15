@@ -58,6 +58,7 @@ Effective settings
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
 │ scan.full_check_days          │ 7                             │ default      │
+│ scan.read_whole_mb            │ 128                           │ default      │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │
@@ -439,6 +440,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
   read only once, for its check and its fingerprint. Each worker holds one such file at a time:
   with 16 workers, up to 2 GB at worst. Raise it for big scans when memory allows, lower it if
   Docker Desktop has little (*Settings > Resources*); `0` reads each file twice.
+- **`workers`** (4, in `[clean]`, not written in the example): how many files `clean` and `undo`
+  handle at once. Four readers read a Windows folder about 4 times faster than one; lower it to
+  `1` for a slow USB hard disk, whose head seeks back and forth between the readers.
 
 Why single quotes? In double quotes, TOML turns the `\b` of `"D:\backup"` into a control
 character; the tool refuses such a path rather than ignoring it.
@@ -503,6 +507,7 @@ Effective settings
 │                               │ '.trash', '.trash-*',         │              │
 │                               │ '.trashes', '.thumbnails']    │              │
 │ scan.full_check_days          │ 7                             │ config.toml  │
+│ scan.read_whole_mb            │ 128                           │ config.toml  │
 │ keep.generated_names          │ ['_?(IMG|VID|MVI|MOV|SAM|DSC[ │ default      │
 │                               │ NF]?|_DSC|PICT|CIMG)[_-]?\\d+ │              │
 │                               │ ',                            │              │

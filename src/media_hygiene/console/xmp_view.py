@@ -8,6 +8,7 @@ from rich.markup import escape
 from rich.table import Table
 
 from media_hygiene.console.formatting import human_number
+from media_hygiene.console.incidents_view import show_failed
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.tags.models import TagSource
 
@@ -106,7 +107,7 @@ def show_result(runtime: Runtime, result: XmpResult) -> None:
         runtime: Settings, mount points and output.
         result: The run.
     """
-    output, host = runtime.output, runtime.mapper.to_host
+    output = runtime.output
     outcome = result.outcome
     output.success(
         ngettext(
@@ -115,8 +116,7 @@ def show_result(runtime: Runtime, result: XmpResult) -> None:
             outcome.done,
         ).format(count=human_number(outcome.done))
     )
-    for incident in outcome.failed[:_SHOWN]:
-        output.error(escape(f"{host(incident.path)}: {incident.reason}"))
+    show_failed(runtime, outcome.failed)
     if result.interrupted:
         output.warning(_("Stopped before the end, as asked."))
         output.tip(_("Run the same command again: the sidecars written are skipped."))

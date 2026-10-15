@@ -53,6 +53,7 @@ def undo_command(
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.console.incidents_view import show_failed, show_skipped
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.console.tables import outcome_table
     from media_hygiene.console.undo_view import show_plan_runs
@@ -82,10 +83,8 @@ def undo_command(
         with RichProgress(output.console) as progress:
             outcome = undo_runs(runtime, runs, progress)
     output.show(outcome_table(outcome, title))
-    for incident in outcome.skipped:
-        output.warning(f"{runtime.mapper.to_host(incident.path)}: {incident.reason}")
-    for incident in outcome.failed:
-        output.error(f"{runtime.mapper.to_host(incident.path)}: {incident.reason}")
+    show_skipped(runtime, outcome.skipped)
+    show_failed(runtime, outcome.failed)
 
 
 def _title(runtime: Runtime, run: str, plan: PlanRuns | None) -> str:

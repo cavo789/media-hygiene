@@ -45,6 +45,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 Comme pour [`review`](../clean/10-review-bursts.md#étape-2--ouvrir-la-page), Ctrl+clic sur
 l'adresse affichée, `http://127.0.0.1:8088/`.
 
+![La carte des lieux : les tuiles OpenStreetMap du parc du Cinquantenaire à Bruxelles, le cercle des photos prises là, le cercle vert du lieu Parc du Cinquantenaire qui vient d'être enregistré, et à gauche la liste des lieux et des plus grands groupes sans nom](../images/places.webp)
+
 - **Les cercles** sont vos photos avec une position GPS, groupées par environ 200 mètres, plus
   grands là où il y en a plus. La liste de gauche donne d'abord **les plus grands groupes sans
   nom** : la maison est souvent le premier.

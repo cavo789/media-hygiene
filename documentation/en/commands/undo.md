@@ -73,6 +73,10 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 
 - **Never over another file, never a guess**: a file that is back already, or whose copy is gone,
   is left alone and listed with the reason.
+- **The reason in plain words**: "not allowed (the owner or the permissions of the file)", "the
+  disk is full"... When many files fail for the same reason, the first five are named, then one
+  line says how many more (`... and 3,980 more: <reason>`); `--verbosity debug` lists every
+  file with the system's own error.
 - `undo` checks the mounts **before** changing anything: without the same `/journal`, with
   folders mounted `:ro`, or without the `/quarantine` the run used, it refuses and names the run.
 - An album link whose original was deleted or moved since may be the last copy of the photo:

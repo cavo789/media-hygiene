@@ -9,6 +9,7 @@ from rich.table import Table
 
 from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.formatting import human_number
+from media_hygiene.console.incidents_view import show_failed
 from media_hygiene.i18n import _, ngettext
 
 if TYPE_CHECKING:
@@ -88,7 +89,7 @@ def show_album_result(runtime: Runtime, result: AlbumResult) -> None:
         runtime: Settings, mount points and output.
         result: The run.
     """
-    output, host = runtime.output, runtime.mapper.to_host
+    output = runtime.output
     outcome = result.outcome
     output.success(
         ngettext(
@@ -97,8 +98,7 @@ def show_album_result(runtime: Runtime, result: AlbumResult) -> None:
             outcome.done,
         ).format(count=human_number(outcome.done))
     )
-    for incident in outcome.failed[:_SHOWN]:
-        output.error(escape(f"{host(incident.path)}: {incident.reason}"))
+    show_failed(runtime, outcome.failed)
     if result.ended.unsupported:
         output.error(_("The album stopped at the first link refused by the disk."))
     if result.ended.interrupted:

@@ -79,17 +79,17 @@ Anything but `y` stops here, and nothing changes. With `y`:
 <!-- capture: clean.txt|re:^─+ Clean| -->
 ```text
 ──────────────────────────────────── Clean ─────────────────────────────────────
-Clean 20261014-151224
+Clean 20261014-203953
 ┌──────────────────────────┬─────────┐
 │ Files processed          │      36 │
 │ Size                     │ 15.6 MB │
 │ Moved to the quarantine  │      35 │
 │ Skipped (left untouched) │       0 │
 │ Failed                   │       0 │
-│ Duration                 │     1 s │
+│ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261014-151224-clean/report.html
-💡 Changed your mind? 'media-hygiene undo 20261014-151224' restores everything:
+✅ HTML report: /reports/20261014-203953-clean/report.html
+💡 Changed your mind? 'media-hygiene undo 20261014-203953' restores everything:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Old disk:/data/d/Old disk" `
@@ -98,7 +98,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261014-151224
+  cavo789/media-hygiene undo 20261014-203953
 👉 What next: once you have checked, 'purge' frees the space of the files set
 aside.
 docker run --rm -it `
@@ -109,7 +109,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene purge 20261014-151224
+  cavo789/media-hygiene purge 20261014-203953
 💡 Open index.html in the folder mounted on /reports: it lists every report.
 ```
 
@@ -155,6 +155,9 @@ of other files than media (`--ext`) still go to the quarantine.
   section of `config.toml`. Without `-it`, `clean` cannot ask and stops: use `--yes` then.
 - **What is it doing?** A line under the bar names the file at hand and what happens to it.
   The bar and its estimate follow the bytes: the large videos come first.
+- **A few files at once**: `clean` and `undo` handle 4 files at a time. On a slow USB hard disk,
+  set `workers = 1` in the `[clean]` section of `config.toml`
+  ([step 7](07-configuration-file.md#fill-it-in)).
 - **Interrupted?** Ctrl+C, a power cut: every action is written to the journal *before* and
   *after* it happens, so `undo` still restores what was done. A file the run had not touched yet
   stays where it is.

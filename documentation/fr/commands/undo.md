@@ -75,6 +75,10 @@ et des dernières lignes de chaque exécution.
 
 - **Jamais par-dessus un autre fichier, jamais au hasard** : un fichier déjà revenu, ou dont la
   copie a disparu, est laissé tel quel et listé avec la raison.
+- **La raison en clair** : « non autorisé (le propriétaire ou les permissions du fichier) », « le
+  disque est plein »… Quand beaucoup de fichiers échouent pour la même raison, les cinq premiers
+  sont nommés, puis une ligne dit combien d'autres (`… et 3 980 de plus : <raison>`) ;
+  `--verbosity debug` liste chaque fichier avec l'erreur exacte du système.
 - `undo` vérifie les montages **avant** de changer quoi que ce soit : sans le même `/journal`,
   avec des dossiers en `:ro`, ou sans la `/quarantine` utilisée par l'exécution, il refuse et
   nomme l'exécution.

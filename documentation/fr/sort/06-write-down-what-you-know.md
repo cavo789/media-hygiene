@@ -79,7 +79,8 @@ liste l'emporte.
 Reconnus par le nom et les métadonnées seulement :
 
 - `screenshot` : un nom de capture d'écran (`Screenshot_…`, `Capture d'écran …`), ou, sans
-  marque, modèle ni position d'un appareil, un PNG ou une image de moins de 400 pixels.
+  marque, modèle ni position d'un appareil, un PNG ou une image de moins de 400 pixels. Un PNG nommé comme un appareil photo
+  (`IMG_20190123_202218.png`) est pris pour une photo retouchée, pas pour une capture.
 - `received` : une image reçue par une messagerie (`IMG-20200105-WA0003`, `received_…`), qui a
   perdu sa date d'appareil en route.
 - `download` : une vidéo dont le nom contient une saison, une résolution ou un codec (`S01E05`,

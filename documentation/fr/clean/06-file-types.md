@@ -52,6 +52,8 @@ L'audit commence par dire ce qu'il analyse :
 💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
 tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
 
+♻️  Rien de nouveau ni de modifié depuis le dernier audit : 10 fichiers repris
+du cache.
 Résumé de l'audit
 ┌──────────────────────────────────────────────────────────┬────────┐
 │ Fichiers média analysés                                  │     10 │
