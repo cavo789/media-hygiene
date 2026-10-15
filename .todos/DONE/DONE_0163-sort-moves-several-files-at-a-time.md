@@ -42,5 +42,11 @@ answered: it can use the same runner, group by group.
   `moved` sorted by journal `seq`; tests in `tests/integration/test_sort_parallel.py` and
   `tests/unit/test_sort_groups.py`.
 - Measured here (simulated 13 ms per rename, 400 files): 8.2 s → 2.6 s (−69 %).
-- Left for the maintainer: the Windows timing, `mh-measure.ps1 -Only 7 -Count 4000` (7b: 4 at
-  once, 7d: one at a time).
+- Left for the maintainer: the Windows timing (7b: 4 at once, 7d: one at a time). The script
+  is in the repository, not on the PC: fetch it first, the image built from this branch.
+
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/main/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 7 -Count 4000
+  ```
