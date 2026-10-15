@@ -38,27 +38,58 @@ def owners(sidecar: str, names: Iterable[str]) -> list[str]:
     ]
 
 
-def sidecars_of(group: MoveGroup) -> list[Path]:
-    """List the sidecars next to the files of a group.
+class SourceSidecars:
+    """The sidecars of the source folders, each folder listed once by a sort (0171).
+
+    Listing a folder of 4,000 photos for each of its files made a sort quadratic, on
+    a shared folder above all. A sidecar is handed to the first group owning it: it
+    moves once.
+    """
+
+    def __init__(self) -> None:
+        """Start with no folder listed."""
+        self._by_folder: dict[Path, dict[str, list[Path]]] = {}
+
+    def take(self, group: MoveGroup) -> list[Path]:
+        """Hand out the sidecars next to the files of a group.
+
+        Args:
+            group: Files that move together, all in one folder.
+
+        Returns:
+            The sidecars belonging to one of them, by name, not handed out before.
+        """
+        folder = group.moves[0].source.parent
+        keyed = self._by_folder.get(folder)
+        if keyed is None:
+            keyed = self._by_folder[folder] = _sidecars_in(folder)
+        found: list[Path] = []
+        for move in group.moves:
+            name = move.source.name
+            for key in (name.casefold(), PurePath(name).stem.casefold()):
+                found.extend(keyed.pop(key, ()))
+        return sorted(found)
+
+
+def _sidecars_in(folder: Path) -> dict[str, list[Path]]:
+    """List the sidecars of a folder, by the name they belong to.
 
     Args:
-        group: Files that move together, all in one folder.
+        folder: A source folder.
 
     Returns:
-        The sidecars belonging to one of them, by name.
+        Casefolded stem of each sidecar (`IMG_1` or `IMG_1.CR2`) → the sidecars.
     """
-    folder = group.moves[0].source.parent
-    names = [move.source.name for move in group.moves]
+    keyed: dict[str, list[Path]] = {}
     try:
         with os.scandir(folder) as entries:
-            found = [
-                Path(entry.path)
-                for entry in entries
-                if entry.is_file() and is_sidecar(entry.name)
-            ]
+            for entry in entries:
+                if entry.is_file() and is_sidecar(entry.name):
+                    key = PurePath(entry.name).stem.casefold()
+                    keyed.setdefault(key, []).append(Path(entry.path))
     except OSError:
-        return []
-    return sorted(path for path in found if owners(path.name, names))
+        return {}
+    return keyed
 
 
 def free_names(

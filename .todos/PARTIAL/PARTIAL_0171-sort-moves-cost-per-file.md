@@ -95,3 +95,45 @@ Known per file, to measure, not assume (skill `measure-before-ranking`):
   If 7b's `moves` stays far above 7c, the next suspects are per-file calls on the NTFS
   share that `sort` makes and `undo` does not (`lexists` of the target, the link fallback
   of 0138): step 8 runs them one by one (it may need a timing per operation).
+
+## Status — PARTIAL (2026-10-15, Windows measured, second cut)
+
+Measured by the maintainer (`mh-measure.ps1 -Only 7 -Count 4000`, image
+`sha256:2c87ea63…` built after commit 7fea8cd, group commit inside; `measures-20261015-1808`),
+against `measures-20261015-1731`, same 8,000 files (2 folders of 4,000), 4,755 MB:
+
+| Step | Before | After group commit |
+|---|---|---|
+| 7b, sort 4 at once: moves / wall | 73 s / 95.2 s | **65 s / 87.1 s (−11 % / −9 %)** |
+| 7c, undo: Duration | 30 s | **19 s (−37 %)** |
+| 7d, sort one at a time: moves / wall | 82 s / 106.1 s | **74 s / 96.5 s (−10 % / −9 %)** |
+| 7e, undo | — | 19 s |
+
+- The journal's syncs were ≈ 8 s of 7b and ≈ 11 s of 7c on Windows (measured, by difference).
+- What remained: 7b 65 s ≈ 8.1 ms per file against 7c ≈ 2.4 ms, and 4 workers gaining only
+  12 % over 1 (7b against 7d): something per file was serial. Found by reading, then
+  measured in the devcontainer on the maintainer's tree shape (2 folders of 4,000 synthetic
+  JPEGs): `NameBook.ready` → `sidecars_of` listed the **whole source folder for every group**,
+  in the calling thread: 8,000 `os.scandir` of 4,000 entries, **29.6 s of the 30.7 s** moves
+  stage (quadratic; with 40 files per folder it cost nothing, which is why the first
+  measurement missed it).
+- Cut: `sort_names.SourceSidecars` lists each source folder once, sidecars keyed by their
+  stem, and hands each one to the first group owning it (it moves once; before, two groups
+  owning `IMG_1.xmp` both listed it). Measured, same tree: moves **30.7 s → 12.2 s (−60 %)**,
+  `os.scandir` 8,020 → 2; `undo` 13 s, 8,000 files back.
+  Tests (`tests/unit/test_sort_groups.py`): the old listing kept as reference, 30 random
+  folders (sidecars `IMG_1.xmp`, `img_1.XMP`, `IMG_1.jpg.xmp`, a folder named `sub.xmp`,
+  unowned sidecars) give the same sidecars per group; a sidecar owned by two groups goes with
+  the first; a folder gone since the plan gives none.
+- Setting: none.
+
+### Not done
+- 7b/7d on Windows with the sidecar cut. *Estimated*: the moves fall from 65 s toward
+  undo's ≈ 19–25 s (the listing was serial and crossed the share 8,000 times).
+  **Reason:** only the maintainer's PC. With an image built after this commit:
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/main/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 7 -Count 4000
+  ```
+  If 7b's `moves` then sit near 7c, close DONE.

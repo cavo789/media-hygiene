@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from operator import attrgetter
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.sort_names import free_names, sidecars_of
+from media_hygiene.actions.sort_names import SourceSidecars, free_names
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -48,6 +48,7 @@ class NameBook:
     def __init__(self) -> None:
         """Start with no name given."""
         self._given: dict[Path, set[str]] = {}
+        self._sidecars = SourceSidecars()
 
     def ready(self, group: MoveGroup) -> ReadyGroup:
         """Find a group's sidecars and give each file a free name, kept for it.
@@ -58,7 +59,7 @@ class NameBook:
         Returns:
             The group and its names.
         """
-        sidecars = tuple(sidecars_of(group))
+        sidecars = tuple(self._sidecars.take(group))
         names = [move.source.name for move in group.moves]
         given = self._given.setdefault(group.folder, set())
         targets = free_names(
