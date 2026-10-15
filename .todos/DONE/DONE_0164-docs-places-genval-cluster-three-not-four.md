@@ -29,3 +29,8 @@ Decided in the review of 2026-10-15 (maintainer): investigate, do not leave it u
 
 - The maintainer gives the go-ahead (`/todo:iterate` of 2026-10-15): run `docs_screenshots`
   in this run if the fix changes the scenario or the map, `nice -n 19`.
+
+## Decided (2026-10-15)
+
+- The maintainer keeps the capture as it is (review of PR #7): the map shows the library after
+  the cleaning, 3 photos of the lake; no new `docs_screenshots`.

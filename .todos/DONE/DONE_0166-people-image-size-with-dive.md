@@ -54,3 +54,8 @@ gives the per-layer sizes).
   `numpy` (43.6 MB + `numpy.libs` 26.8 MB) is needed without it.
 - Below the 20 % threshold: no TODO filed for an optional extra or a separate image tag.
 - Documentation: neither `reference-people.md` makes a claim on the image size; unchanged.
+
+## Decided (2026-10-15)
+
+- The maintainer accepts the 17 % (review of PR #7): `onnxruntime` stays in the image, no
+  optional extra nor separate tag.

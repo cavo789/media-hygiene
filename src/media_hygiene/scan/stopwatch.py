@@ -1,4 +1,4 @@
-"""How long each stage of an audit took, so users see where the time goes."""
+"""How long each stage of an audit or a sort took, so users see where the time goes."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Stage(StrEnum):
-    """The stages of an audit, in the order they run."""
+    """The stages of an audit, then of a sort, in the order they run."""
 
     LISTING = "listing"
     INDEX = "index"
@@ -22,6 +22,12 @@ class Stage(StrEnum):
     SIMILAR = "similar"
     COLOURS = "colours"
     STREAMS = "streams"
+    PREPARE = "prepare"  # sort: the plan applied, every destination checked
+    COUNTS = "counts"  # sort: the files counted, before and after
+    MOVES = "moves"
+    FOLLOW = "follow"  # sort: the index follows the files moved
+    VERIFY = "verify"  # sort: every move checked at its target
+    MANIFEST = "manifest"
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,8 +59,16 @@ class Stopwatch:
         try:
             yield
         finally:
-            elapsed = time.monotonic() - started
-            self._totals[stage] = self._totals.get(stage, 0.0) + elapsed
+            self.record(stage, time.monotonic() - started)
+
+    def record(self, stage: Stage, seconds: float) -> None:
+        """Add a duration timed elsewhere.
+
+        Args:
+            stage: What took that time.
+            seconds: How long.
+        """
+        self._totals[stage] = self._totals.get(stage, 0.0) + seconds
 
     def times(self) -> tuple[StageTime, ...]:
         """Every stage timed, in the order stages run.

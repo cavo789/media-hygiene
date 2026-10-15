@@ -185,6 +185,7 @@ if (Wanted 6) {
 }
 
 # --- 7: sort on the test folder: moves within one NTFS mount (0138) --------------------------
+# 7b and 7d print 'Time per step' (0170): counts, moves, cache update, move checks, manifest.
 if (Wanted 7) {
     Measure-Mh "7a. classify the test folder" $writable @("classify")
     $before = FileIds $data

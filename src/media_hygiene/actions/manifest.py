@@ -3,11 +3,15 @@
 The census walks the source roots and the target roots (junk files apart: they may go
 to the quarantine). Every file moved must be at its target with its size, and with its
 SHA-256 when it crossed disks. The result is shown, and written as `manifest.json`.
+
+Both read each file with one `stat`: on Docker Desktop's share of a Windows disk every
+call crosses the VM boundary, and 8,000 files counted twice used to cost 48,000 of them.
 """
 
 from __future__ import annotations
 
 import os
+import stat
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -18,7 +22,7 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable, Iterable, Iterator
 
     from media_hygiene.actions.journal import JournalEntry
 
@@ -71,18 +75,39 @@ def census(roots: Iterable[Path], junk: frozenset[str]) -> Census:
     for root in ordered:
         if not any(is_within(root, kept) for kept in outer):
             outer.append(root)
-    files = size = 0
-    for root in outer:
-        for folder, _dirs, names in os.walk(root):
-            for name in names:
-                if name.casefold() in junk:
-                    continue
-                path = Path(folder, name)
-                if path.is_symlink() or not path.is_file():
-                    continue
-                files += 1
-                size += path.stat().st_size
-    return Census(files=files, bytes=size)
+    sizes = [size for root in outer for size in _file_sizes(root, junk)]
+    return Census(files=len(sizes), bytes=sum(sizes))
+
+
+def _file_sizes(root: Path, junk: frozenset[str]) -> Iterator[int]:
+    """The size of each regular file below a folder, links and junk files apart.
+
+    The folder listing tells files, folders and links apart without a `stat`
+    (as `os.walk` does): only the size costs one, `lstat`. A link is neither counted
+    nor followed; a folder that cannot be read is skipped, as `os.walk` skips it.
+
+    Args:
+        root: The folder.
+        junk: Casefolded names of junk files.
+
+    Yields:
+        The sizes, in bytes.
+    """
+    folders = [root]
+    while folders:
+        try:
+            with os.scandir(folders.pop()) as entries:
+                listed = list(entries)
+        except OSError:
+            continue
+        for entry in listed:
+            if entry.is_dir(follow_symlinks=False):
+                folders.append(Path(entry.path))
+            elif (
+                entry.is_file(follow_symlinks=False)
+                and entry.name.casefold() not in junk
+            ):
+                yield entry.stat(follow_symlinks=False).st_size
 
 
 def verify_moves(
@@ -119,9 +144,13 @@ def _move_problem(entry: JournalEntry, target: Path) -> str | None:
     Returns:
         The translated problem, or None when the file is there, whole.
     """
-    if not target.is_file():
+    try:
+        found = target.stat()  # one call: it is there, a file, and its size
+    except OSError:
+        found = None
+    if found is None or not stat.S_ISREG(found.st_mode):
         return _("the file moved from {path} is not there").format(path=entry.host_path)
-    if target.stat().st_size != entry.size:
+    if found.st_size != entry.size:
         return _("its size changed")
     if entry.sha256 is not None and full_digest(target) != entry.sha256:
         return _("its content changed")

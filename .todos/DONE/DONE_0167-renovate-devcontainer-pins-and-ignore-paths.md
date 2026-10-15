@@ -44,3 +44,17 @@ hooks. Two gaps:
 - `renovate-config-validator --strict`: `npx` is absent in the devcontainer (run it where Node exists).
 - Dashboard check (tick "run again" on cavo789/media-hygiene#3: `cli/cli` under `.devcontainer/Dockerfile`, no `.claude/` file).
   **Reason:** Renovate reads `main`; possible only after this branch is merged.
+
+## Status — DONE (2026-10-15)
+
+Checked after PR #7 was merged, on the Dependency Dashboard (cavo789/media-hygiene#3, read with
+`gh issue view 3` on 2026-10-15, updated by Renovate at 12:51 UTC):
+
+- `cli/cli` is listed under `.devcontainer/Dockerfile` (custom regex manager), and no
+  `.claude/` file appears anywhere in *Detected Dependencies*.
+- End to end: Renovate opened PR #8 `chore(deps): update dependency cli/cli to v2.102.0`, merged
+  (`GH_VERSION=2.102.0` on `main`): the annotation and the `v`-stripping `extractVersion` work.
+- `renovate-config-validator` never ran locally, but Renovate applied the new config without
+  opening a configuration-error issue: no further check needed.
+- The "run again" checkbox (`<!-- manual job -->`) sits at the very bottom of the dashboard,
+  after *Detected Dependencies*; it was not needed, Renovate ran on its own after the merge.

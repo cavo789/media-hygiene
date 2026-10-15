@@ -1355,8 +1355,7 @@ msgstr ""
 "ne sont jamais modifiées et les visages restent sur cet ordinateur."
 
 msgid "Each group of near duplicates is described through the version kept."
-msgstr ""
-"Chaque groupe de quasi-doublons est décrit par la version conservée."
+msgstr "Chaque groupe de quasi-doublons est décrit par la version conservée."
 
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file deleted "
@@ -5511,6 +5510,9 @@ msgstr "par paire de dossiers"
 msgid "cache"
 msgstr "cache"
 
+msgid "cache update"
+msgstr "mise à jour du cache"
+
 msgid "camera (EXIF)"
 msgstr "appareil (EXIF)"
 
@@ -5582,6 +5584,9 @@ msgstr[0] ""
 msgstr[1] ""
 "config.toml a été écrit par la version {version} : {count} nouveaux "
 "réglages depuis."
+
+msgid "counts"
+msgstr "comptages"
 
 #, python-format
 msgid "cumulated: %(share)s%%"
@@ -5850,6 +5855,9 @@ msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
 msgid "listing"
 msgstr "liste"
 
+msgid "manifest"
+msgstr "manifeste"
+
 #, python-brace-format
 msgid "match = '{match}' needs {field}"
 msgstr "match = '{match}' demande {field}"
@@ -5892,6 +5900,9 @@ msgstr "une valeur supérieure à {limit} est attendue, pas {value}"
 msgid "move between photos"
 msgstr "passer d'une photo à l'autre"
 
+msgid "move checks"
+msgstr "vérification des déplacements"
+
 msgid "move to the quarantine"
 msgstr "déplacer en quarantaine"
 
@@ -5929,6 +5940,9 @@ msgstr[1] "déplacer {count} quasi-doublons en quarantaine"
 
 msgid "moved to the quarantine"
 msgstr "déplacé en quarantaine"
+
+msgid "moves"
+msgstr "déplacements"
 
 msgid "name the groups of faces in your browser, with 'people'."
 msgstr "nommez les groupes de visages dans votre navigateur, avec 'people'."
@@ -6069,6 +6083,9 @@ msgstr "lieu"
 #, python-brace-format
 msgid "place: {place}"
 msgstr "lieu : {place}"
+
+msgid "plan checks"
+msgstr "vérification du plan"
 
 msgid "preferred folder"
 msgstr "dossier préféré"

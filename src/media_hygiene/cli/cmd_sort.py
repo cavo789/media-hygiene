@@ -16,7 +16,7 @@ from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.sort import Prepared, SortResult
+    from media_hygiene.services.sort_models import Prepared, SortResult
 
 
 # The options are parameters: the documented exception for Typer commands.
@@ -134,6 +134,7 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
     from media_hygiene.cli.next_steps import carried, safety
     from media_hygiene.console.incidents_view import show_failed, show_skipped
     from media_hygiene.console.sort_view import show_kept_folders, show_manifest
+    from media_hygiene.console.stage_times import stages_line
     from media_hygiene.console.tables import outcome_table
     from media_hygiene.errors import MediaHygieneError
     from media_hygiene.services.next_command import CHANGING, NextVerb
@@ -150,6 +151,9 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         )
     show_kept_folders(runtime, result.folders, done=True)
     show_manifest(output, result.manifest)
+    timed = stages_line(result.stages)
+    if timed is not None and output.verbose:  # where the time goes, to paste
+        output.info(f"[dim]{timed}[/]")
     if isinstance(result.manifest_file, MediaHygieneError):
         warn(output, result.manifest_file)
     elif result.manifest_file is not None:
