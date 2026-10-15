@@ -38,3 +38,10 @@ share a description: each of its files is described on its own.
 
 - On a tree with a near-duplicate pair, `tags` sends one picture of the pair to the model;
   with a `leave` decision for that pair, two.
+
+## Decided (2026-10-15)
+
+- The maintainer keeps the near-duplicate search on every `tags` run, with no setting to turn it
+  off (review of PR #7): ≈ 2 s is negligible on their machine.
+- Only `decisions.json` and its archives are read; a file saved under a custom `--decisions`
+  name is not (maintainer, review of PR #7).
