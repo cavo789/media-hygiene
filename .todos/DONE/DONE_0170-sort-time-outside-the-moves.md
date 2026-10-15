@@ -68,3 +68,22 @@ assumed (skill `measure-before-ranking`).
   per-entry sync — to measure). Worth its own TODO once the Windows stage line says how much
   of the 70 s `Duration` it is.
   **Reason:** the TODO is about the time outside the moves.
+
+## Status — DONE (2026-10-15, Windows measured)
+
+Measured by the maintainer (`mh-measure.ps1 -Only 7 -Count 4000`, image built from `main` after
+PR #9, 8,000 files, 4,755 MB, `measures-20261015-1731`), against `measures-20261015-1429`:
+
+| Step | Before, wall time | After, wall time | Time outside `Duration` |
+|---|---|---|---|
+| 7b, sort 4 at once | 111.8 s | **95.2 s (−15 %)** | 42 s → 22 s (−48 %) |
+| 7d, sort one at a time | 125.1 s | **106.1 s (−15 %)** | 43 s → 24 s (−44 %) |
+
+- Stage line of 7b: plan checks 1.5 s · counts 7.7 s · moves 1 min 13 s · cache update 0.1 s ·
+  move checks 5.0 s · manifest 0.0 s. Per call: counts 16,000 `stat` in 7.7 s ≈ 0.48 ms, move
+  checks 8,000 in 5.0 s ≈ 0.62 ms (measured). At those costs, the old counts (48,203 calls)
+  took ≈ 23 s and the old checks (16,000) ≈ 10 s: the 42 s were the stats, as estimated.
+- The estimate was 86 s; measured 95.2 s. The ≈ 8 s that are neither a stage nor `Duration`
+  are the container start, the workbook read and the summary (undo spends ≈ 4 s outside its
+  `Duration`). The moves themselves (73 s, 9 ms per file) are now three quarters of the run:
+  followed by 0171.
