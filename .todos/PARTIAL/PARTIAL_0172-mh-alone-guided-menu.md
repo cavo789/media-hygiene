@@ -109,3 +109,49 @@ From the documentation review: today a newcomer must type at least five differen
 to reach a first clean (`audit`, `clean`, `history`, `undo`, `purge`), copied from the guide.
 With the menu: one (`mh`), then Enter at each step; the names are learnt by reading them in the
 menu and in the "type it directly" line. To confirm with the maintainer's run (Needs maintainer).
+
+## Status — PARTIAL (2026-10-15)
+
+### Done
+- New read-only data verb `menu` (`cli/cmd_menu.py`, `menu_catalog.py`, `menu_steps.py`,
+  `menu_view.py`): the menu on stderr, `number<TAB>command` on stdout, `0` = the line Enter
+  runs (written first, only when a step is proposed). Under `-t` (`docker run -it … menu`) the
+  menu is shown and no line is written.
+- The proposed step is the step of `status`: `_next_step` moved to `cli/status_step.py`
+  (`next_step` → `NextStep` with a `Slot`), used by both; `status` output unchanged.
+- 17 steps in the guides' order (clean 7, sort 6, find 4); ✅ only on proof (audit seen, no
+  copy left / a clean, a proposal, a sort applied, tags, faces); `purge <run>` / `undo <run>`
+  from the state, without a number when there is nothing to purge or undo; `album` listed as
+  "type it yourself" with the link to the sort guide; 🤖 shown when `[classify.ai] model` is
+  set, otherwise one footer line says what it would need.
+- `mh.ps1.j2` / `mh.sh.j2`: `mh` alone runs `mh menu` (colour forced when the host terminal
+  supports it: `-t 2` in bash, `$Host.UI.SupportsVirtualTerminal` in PowerShell), reads the
+  number (`Read-Host` / `read`), Enter = line 0, then calls `mh <command>` itself; never `--yes`.
+  Data commands (`launcher`, `menu`) now run without `-i` too, so the menu's docker cannot eat
+  the keystrokes typed for the prompt.
+- Tests: `tests/unit/test_menu.py` (one per `_next_step` state, 👉 == `status`; stdout lines
+  only; missing mounts; `-t`), `tests/unit/test_launcher_menu.py` (bash `mh` really run with a
+  fake `docker`; PowerShell ASCII in French; no translation can break the script), the
+  read-only integration run, e2e `test_mh_alone_runs_the_step_typed_on_the_demo_tree`.
+- Docs: `commands/menu.md` in both languages, `reference-commands.md` (both tables), the three
+  quick guides ("Lost? Type `mh` alone" before step 1, a `menu` row in their tables), `nav`,
+  `COMMANDS_TOO`, a `menu.txt` capture in the scenario. French translated.
+
+### Decisions (to confirm)
+- No loop: after the step, `mh` stops; `mh` again shows the updated menu.
+- Sort and find always shown, dimmed while a clean step is proposed.
+- The "Next time, type it directly: mh clean" line is printed **before** the step runs, so the
+  step's own single 👉 What next line stays the last one on screen.
+- No `[general] menu` setting added. Proposed: only if a user asks; `mh --help` still gives
+  the help.
+
+### Not done
+- One run on Windows PowerShell 5.1 + Docker Desktop: `mh` alone, a number, Enter, Ctrl+C;
+  check that the colours (`--color always` when `$Host.UI.SupportsVirtualTerminal`) show as
+  colours and not as escape codes once the docker output is not a `-t` terminal, and that the
+  emoji columns line up. If the codes show raw, drop the `$color` line of `mh.ps1.j2`.
+  **Reason:** Needs maintainer (Windows machine).
+- The e2e test and `docs_screenshots` (the `menu.txt` and `help-menu.txt` captures, the
+  `--help` capture of `reference-commands.md` now listing `menu`) were not run here.
+  **Reason:** image build + browser, heavy: CI runs e2e; `docs_screenshots` to be run by the
+  maintainer.

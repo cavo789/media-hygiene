@@ -87,6 +87,9 @@ In a new terminal, load `mh` again with the last line.
     Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
     ```
 
+**Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
+Enter runs it. More: [`menu`](../commands/menu.md).
+
 ## 1. Audit
 
 <span class="mh-badge mh-safe">🔒 Photos untouched</span>
@@ -377,6 +380,7 @@ Each command of the clean, and the step of this page that shows it:
 | [`review`](../commands/review.md) | 9, 10 | Decides bursts and near duplicates in the browser. |
 | [`purge`](../commands/purge.md) | 11 | Empties the quarantine: the space is freed. |
 | [`status`](../commands/status.md) | 12 | Says where you are and the next step. |
+| [`menu`](../commands/menu.md) | 12 | Lists every step with its command; Enter runs the next one. |
 | [`reports`](../commands/reports.md) | 12 | Lists the reports, deletes the old ones. |
 
 The other commands have their own path: to give your photos a tidy tree, by year, event, place

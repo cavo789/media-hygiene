@@ -37,6 +37,9 @@ Dans un nouveau terminal, rechargez-la :
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
+**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
+Entrée la lance. Plus : [`menu`](../commands/menu.md).
+
 ## 1. Demander une proposition
 
 <span class="mh-badge mh-safe">🔒 Photos intactes</span>
@@ -356,6 +359,7 @@ Chaque commande du tri, et l'étape de cette page qui la montre :
 | [`undo`](../commands/undo.md) | 10, 11 | Annule un tri, un album. |
 | [`album`](../commands/album.md) | 11 | Une photo dans plusieurs dossiers, sans copie. |
 | [`status`](../commands/status.md) | Plus tard | Dit où vous en êtes et la prochaine étape. |
+| [`menu`](../commands/menu.md) | Plus tard | Liste chaque étape avec sa commande ; Entrée lance la prochaine. |
 
 Pour retrouver une photo par un mot, un lieu, une année ou une personne (`tags`, `search`, `xmp`,
 `inventory`) : **[retrouver en bref](../find/quick-guide.md)**. Pour trouver et nettoyer les

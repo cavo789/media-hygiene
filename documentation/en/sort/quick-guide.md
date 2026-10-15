@@ -36,6 +36,9 @@ terminal, load it again:
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
+**Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
+Enter runs it. More: [`menu`](../commands/menu.md).
+
 ## 1. Ask for a proposal
 
 <span class="mh-badge mh-safe">🔒 Photos untouched</span>
@@ -349,6 +352,7 @@ Each command of the sort, and the step of this page that shows it:
 | [`undo`](../commands/undo.md) | 10, 11 | Undoes a sort, an album. |
 | [`album`](../commands/album.md) | 11 | One photo in several folders, without a copy. |
 | [`status`](../commands/status.md) | Later | Says where you are and the next step. |
+| [`menu`](../commands/menu.md) | Later | Lists every step with its command; Enter runs the next one. |
 
 To find a photo by a word, a place, a year or a person (`tags`, `search`, `xmp`, `inventory`):
 **[find in short](../find/quick-guide.md)**. To find and clean duplicates (`audit`, `clean`,

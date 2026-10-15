@@ -184,7 +184,13 @@ msgstr ""
 msgid "(empty)"
 msgstr ""
 
+msgid "(nothing to do yet)"
+msgstr ""
+
 msgid "(stay where it is)"
+msgstr ""
+
+msgid "(type it yourself)"
 msgstr ""
 
 #, python-brace-format
@@ -371,6 +377,10 @@ msgid ""
 " Low values only catch repeats of the same frame. 0 disables the rule."
 msgstr ""
 
+#, python-brace-format
+msgid "A step to type yourself takes words only you know: {url}"
+msgstr ""
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr ""
 
@@ -508,6 +518,9 @@ msgid ""
 "path is read from the folder mounted on /reports. The file is refused if "
 "the folders, the pairs or the series changed. Alone, --decisions reads "
 "decisions.json."
+msgstr ""
+
+msgid "Apply your choices: what you set aside goes to the quarantine"
 msgstr ""
 
 msgid "April"
@@ -656,6 +669,9 @@ msgstr ""
 msgid "Cannot save the decisions file: {error}."
 msgstr ""
 
+msgid "Carry the words into other photo software"
+msgstr ""
+
 msgid "Categories"
 msgstr ""
 
@@ -730,6 +746,9 @@ msgstr ""
 msgid "Choose photos of this event."
 msgstr ""
 
+msgid "Choose the best shots of each burst, in your browser"
+msgstr ""
+
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
 " or --prefer."
@@ -755,6 +774,9 @@ msgid "Clean"
 msgstr ""
 
 msgid "Clean report"
+msgstr ""
+
+msgid "Clean the duplicates"
 msgstr ""
 
 #, python-brace-format
@@ -1169,6 +1191,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Enter runs step {number} ({command}). Another number runs that step. "
+"Ctrl+C leaves."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Environment variables now start with {new} instead of {old}: the old "
 "prefix stops working in version {version}. Still found: {names}."
 msgstr ""
@@ -1279,6 +1307,9 @@ msgstr ""
 msgid "Every group to check has been decided."
 msgstr ""
 
+msgid "Every photo and video in an Excel workbook"
+msgstr ""
+
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
 msgstr ""
@@ -1293,6 +1324,11 @@ msgid "Every series of this page has been seen: → opens the next page."
 msgstr ""
 
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
+msgstr ""
+
+msgid ""
+"Every step of the guides with its command, the next one first: what 'mh' "
+"alone shows, Enter runs it."
 msgstr ""
 
 msgid ""
@@ -1432,6 +1468,12 @@ msgstr ""
 msgid "Final folder"
 msgstr ""
 
+msgid "Find a photo"
+msgstr ""
+
+msgid "Find a photo by its words, in your browser"
+msgstr ""
+
 msgid "Find a town"
 msgstr ""
 
@@ -1449,6 +1491,9 @@ msgstr ""
 msgid ""
 "Find photos by their words in your browser (or as a table): the words "
 "'tags' gave them."
+msgstr ""
+
+msgid "Find the duplicates and the broken files"
 msgstr ""
 
 msgid ""
@@ -1575,6 +1620,9 @@ msgid ""
 "'undo' rebuilds them from the kept copy."
 msgstr ""
 
+msgid "Free the space of the quarantine, for good"
+msgstr ""
+
 msgid "Freed"
 msgstr ""
 
@@ -1585,6 +1633,9 @@ msgid "From:"
 msgstr ""
 
 msgid "GB"
+msgstr ""
+
+msgid "Gather a selection into an album of links"
 msgstr ""
 
 msgid ""
@@ -1618,6 +1669,9 @@ msgstr ""
 msgid ""
 "Give them the same folder, or clear all the cells but one, save the "
 "workbook, then run 'sort' again."
+msgstr ""
+
+msgid "Give your photos words"
 msgstr ""
 
 msgid "Gives each file a second name in the album."
@@ -2049,6 +2103,9 @@ msgid ""
 "(journaled, undoable)."
 msgstr ""
 
+msgid "Move the photos as the workbook says"
+msgstr ""
+
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr ""
@@ -2103,7 +2160,13 @@ msgstr ""
 msgid "Name of the event"
 msgstr ""
 
+msgid "Name the events in your browser"
+msgstr ""
+
 msgid "Name the events of the classify proposal one by one in your browser."
+msgstr ""
+
+msgid "Name the faces"
 msgstr ""
 
 msgid ""
@@ -2115,6 +2178,9 @@ msgid "Name this place"
 msgstr ""
 
 msgid "Name with others"
+msgstr ""
+
+msgid "Name your places on a map"
 msgstr ""
 
 msgid ""
@@ -2187,6 +2253,10 @@ msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 
 msgid "Next page →"
+msgstr ""
+
+#, python-brace-format
+msgid "Next time, type it directly: {command}"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
@@ -2359,6 +2429,10 @@ msgid "No signal"
 msgstr ""
 
 #, python-brace-format
+msgid "No step {choice}: type mh alone to see the menu again."
+msgstr ""
+
+#, python-brace-format
 msgid "No such command {name}."
 msgstr ""
 
@@ -2442,6 +2516,9 @@ msgid "Nothing left to check nor to sort."
 msgstr ""
 
 msgid "Nothing left to do: everything is applied."
+msgstr ""
+
+msgid "Nothing left to do: everything is applied. A number runs that step."
 msgstr ""
 
 #, python-brace-format
@@ -2739,6 +2816,9 @@ msgstr ""
 msgid "Proposal"
 msgstr ""
 
+msgid "Propose a tidy tree, in a workbook you correct"
+msgstr ""
+
 msgid ""
 "Propose where every photo and video should go: year, event, category, and"
 " what lone photos show with an optional local AI 🤖"
@@ -2754,6 +2834,9 @@ msgid "Proposed:"
 msgstr ""
 
 msgid "Proving identity (full SHA-256)"
+msgstr ""
+
+msgid "Put back the files of the last run"
 msgstr ""
 
 #, python-brace-format
@@ -3283,6 +3366,9 @@ msgid ""
 "browser; 'clean --decisions' then moves them."
 msgstr ""
 
+msgid "Set the extra copies aside (asks first)"
+msgstr ""
+
 msgid "Setting"
 msgstr ""
 
@@ -3351,6 +3437,9 @@ msgstr ""
 msgid "Sort review"
 msgstr ""
 
+msgid "Sort the photos"
+msgstr ""
+
 #, python-brace-format
 msgid "Sort {run_id}"
 msgstr ""
@@ -3387,6 +3476,9 @@ msgid "Staying where they are"
 msgstr ""
 
 msgid "Step 1 of the guide:"
+msgstr ""
+
+msgid "Step number (Enter: the proposed one)"
 msgstr ""
 
 #, python-brace-format
@@ -3635,6 +3727,11 @@ msgstr ""
 msgid ""
 "The map saves your places in a config.toml file, kept in a folder of "
 "yours mounted on /config: this command has none."
+msgstr ""
+
+msgid ""
+"The menu runs its steps through mh: write it once with 'launcher' (step 0"
+" of the guides), then type mh alone."
 msgstr ""
 
 msgid "The model sent an answer without a message."
@@ -4127,6 +4224,9 @@ msgstr ""
 msgid ""
 "Walks through every folder; photos and videos are recognised by their "
 "extension."
+msgstr ""
+
+msgid "What each run did"
 msgstr ""
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
@@ -4891,6 +4991,9 @@ msgstr ""
 msgid "media-hygiene reports"
 msgstr ""
 
+msgid "media-hygiene — where you are"
+msgstr ""
+
 msgid "merged with another named event, whose name wins"
 msgstr ""
 
@@ -5035,6 +5138,9 @@ msgstr ""
 msgid "only the sharpest, then next"
 msgstr ""
 
+msgid "optional"
+msgstr ""
+
 msgid "original"
 msgstr ""
 
@@ -5169,6 +5275,9 @@ msgid "something of that name is already there"
 msgstr ""
 
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
+msgstr ""
+
+msgid "sort/quick-guide/"
 msgstr ""
 
 msgid "sorted since."
@@ -6580,5 +6689,10 @@ msgid ""
 msgstr ""
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
+msgstr ""
+
+msgid ""
+"🤖 classify and tags can also ask a local AI model: set [classify.ai] "
+"model in config.toml (mh config)."
 msgstr ""
 

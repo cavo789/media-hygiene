@@ -120,6 +120,7 @@ nav:
       - commands/history.md
       - commands/inventory.md
       - commands/launcher.md
+      - commands/menu.md
       - commands/people.md
       - commands/places.md
       - commands/purge.md

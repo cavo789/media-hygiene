@@ -4,14 +4,35 @@
 # {{ line }}
 {% endfor %}
 function {{ function }} {
+    if ($args.Count -eq 0) {
+        # Alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
+        $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' })
+        $steps = @({{ function }} @color menu)
+        if ($LASTEXITCODE -ne 0) { return }
+        $choice = "$(Read-Host "{{ menu.prompt }}")".Trim()
+        if (-not $choice) { $choice = '0' }
+        $chosen = ''
+        foreach ($step in $steps) {
+            $number, $line = "$step" -split "`t", 2
+            if ($number -eq $choice) { $chosen = $line; break }
+        }
+        if (-not $chosen) {
+            if ($choice -ne '0') { Write-Host "{{ menu.unknown }}" }
+            return
+        }
+        Write-Host "{{ menu.direct }}"
+        $words = -split $chosen
+        {{ function }} @words
+        return
+    }
     $command = $args | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
     $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
-    $tty = if ($command -in @({{ listed(script.commands.data) }})) { '-i' } else { '-it' }
+    $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
-    docker run --rm $tty `
+    docker run --rm @tty `
         -e "{{ variable }}=1" `
 {% for option in script.environment %}
         {{ option }} `

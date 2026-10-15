@@ -36,6 +36,9 @@ Dans un nouveau terminal, rechargez `mh` : `. "$HOME\media-hygiene\mh.ps1"`. Mie
 nettoyez d'abord les doublons ([nettoyer en bref](../clean/quick-guide.md)) : sinon chaque photo
 est trouvée deux fois.
 
+**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
+Entrée la lance. Plus : [`menu`](../commands/menu.md).
+
 ## 1. Nommer les personnes (facultatif)
 
 <span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
@@ -197,6 +200,7 @@ Chaque commande de la recherche, et l'étape de cette page qui la montre :
 | [`undo`](../commands/undo.md) | 5 | Retire les fichiers `.xmp` écrits. |
 | [`inventory`](../commands/inventory.md) | 6 | Chaque photo et vidéo dans un classeur Excel. |
 | [`status`](../commands/status.md) | Plus tard | Dit où vous en êtes et la prochaine étape. |
+| [`menu`](../commands/menu.md) | Plus tard | Liste chaque étape avec sa commande ; Entrée lance la prochaine. |
 
 Pour donner à vos photos une arborescence bien rangée (`classify`, `sort`, `album`) : **[trier en
 bref](../sort/quick-guide.md)**. Pour nettoyer les doublons : **[nettoyer en

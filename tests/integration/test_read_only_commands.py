@@ -49,6 +49,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("config",),
     ("status",),
     ("launcher",),
+    ("menu",),
 )
 
 

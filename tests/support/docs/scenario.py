@@ -30,7 +30,7 @@ type Captures = dict[str, str]
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
 COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
                        "places", "status", "launcher", "review-sort", "tags", "search",
-                       "people", "xmp")  # fmt: skip
+                       "people", "xmp", "menu")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -51,6 +51,7 @@ CAPTURES: Final = frozenset(
         "audit-ext.txt",
         "classify.txt",
         "inventory.txt",
+        "menu.txt",
         "crosscheck.txt",
         "review.txt",
         "review-near.txt",
@@ -89,6 +90,8 @@ def _audits(demo: Demo) -> Captures:
     captures["audit-ext.txt"] = run(demo, Command(("audit", "--ext", "heic,video")))
     captures["classify.txt"] = run(demo, Command(("classify",)))
     captures["inventory.txt"] = run(demo, Command(("inventory",)))
+    # Under `-t`, the menu is shown without the lines `mh` reads: the clean proposed.
+    captures["menu.txt"] = run(demo, Command(("menu",)))
     return captures
 
 

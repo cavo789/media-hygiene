@@ -12,6 +12,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 |---|---|
 | know, without any risk, how many copies my folders hold and how much space they take | [`audit`](commands/audit.md) |
 | know in a second where I stand after a few days, and the next step | [`status`](commands/status.md) |
+| not remember any command: see every step, run the next one with Enter | [`menu`](commands/menu.md) (`mh` alone) |
 | free the space my duplicate photos take, safely: set aside, never erased | [`clean`](commands/clean.md) |
 | keep only the best shots of my bursts, decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
 | see what each run did | [`history`](commands/history.md) |
@@ -43,6 +44,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 |---|---|---|
 | [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [Cleaning, 9](clean/09-undo-history-purge.md#where-am-i-status) |
+| [`menu`](commands/menu.md) | What `mh` alone shows: every step of the three guides with its full `mh` command, the one `status` would give proposed; Enter runs it through `mh`, a number runs another. Reads the tool's folders only, no scan. | [Clean in short](clean/quick-guide.md) |
 | [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |

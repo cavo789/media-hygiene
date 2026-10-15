@@ -23,6 +23,7 @@ from media_hygiene.paths.docker_run import (
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_memory import locale_option
+from media_hygiene.services.launcher_menu import menu_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
     LAUNCHER_VARIABLE,
@@ -50,7 +51,7 @@ class LauncherCommands:
     names: tuple[str, ...]
     writers: tuple[str, ...]  # photos mounted read-write: no `:ro`
     pages: tuple[str, ...]  # `-p 127.0.0.1:<port>:<port>`
-    data: tuple[str, ...]  # their output is redirected to a file: no terminal
+    data: tuple[str, ...]  # their output is read or redirected: no terminal, no input
     port: int
 
 
@@ -123,6 +124,7 @@ def render_script(script: LauncherScript) -> str:
         variable=LAUNCHER_VARIABLE,
         image=running_image(),
         header=_header(script.shell),
+        menu=menu_texts(),
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
 

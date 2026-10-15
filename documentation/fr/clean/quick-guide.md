@@ -90,6 +90,9 @@ Dans un nouveau terminal, rechargez `mh` avec la dernière ligne.
     Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
     ```
 
+**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
+Entrée la lance. Plus : [`menu`](../commands/menu.md).
+
 ## 1. Auditer
 
 <span class="mh-badge mh-safe">🔒 Photos intactes</span>
@@ -388,6 +391,7 @@ Chaque commande du nettoyage, et l'étape de cette page qui la montre :
 | [`review`](../commands/review.md) | 9, 10 | Décide les rafales et les quasi-doublons dans le navigateur. |
 | [`purge`](../commands/purge.md) | 11 | Vide la quarantaine : la place est libérée. |
 | [`status`](../commands/status.md) | 12 | Dit où vous en êtes et la prochaine étape. |
+| [`menu`](../commands/menu.md) | 12 | Liste chaque étape avec sa commande ; Entrée lance la prochaine. |
 | [`reports`](../commands/reports.md) | 12 | Liste les rapports, supprime les anciens. |
 
 Les autres commandes ont leur propre parcours : pour donner à vos photos une arborescence bien

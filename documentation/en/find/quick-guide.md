@@ -35,6 +35,9 @@ mh audit
 In a new terminal, load `mh` again: `. "$HOME\media-hygiene\mh.ps1"`. Better still, clean the
 duplicates first ([clean in short](../clean/quick-guide.md)): otherwise each photo is found twice.
 
+**Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
+Enter runs it. More: [`menu`](../commands/menu.md).
+
 ## 1. Name the people (optional)
 
 <span class="mh-badge mh-optional">Optional</span> <span class="mh-badge mh-safe">🔒 Photos untouched</span>
@@ -192,6 +195,7 @@ Each command of the search, and the step of this page that shows it:
 | [`undo`](../commands/undo.md) | 5 | Removes the `.xmp` files written. |
 | [`inventory`](../commands/inventory.md) | 6 | Each photo and video in an Excel workbook. |
 | [`status`](../commands/status.md) | Later | Says where you are and the next step. |
+| [`menu`](../commands/menu.md) | Later | Lists every step with its command; Enter runs the next one. |
 
 To give your photos a tidy tree (`classify`, `sort`, `album`): **[sort in
 short](../sort/quick-guide.md)**. To clean the duplicates: **[clean in

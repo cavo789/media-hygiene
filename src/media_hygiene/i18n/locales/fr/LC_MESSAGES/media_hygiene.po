@@ -224,8 +224,14 @@ msgstr "(toujours ignorés)"
 msgid "(empty)"
 msgstr "(vide)"
 
+msgid "(nothing to do yet)"
+msgstr "(rien à faire pour l'instant)"
+
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
+
+msgid "(type it yourself)"
+msgstr "(à taper vous-même)"
 
 #, python-brace-format
 msgid "({count} more tip: add --verbosity verbose to see it.)"
@@ -481,6 +487,12 @@ msgstr ""
 "moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
 "les répétitions de la même image. 0 désactive la règle."
 
+#, python-brace-format
+msgid "A step to type yourself takes words only you know: {url}"
+msgstr ""
+"Une étape à taper vous-même demande des mots que vous seul connaissez : "
+"{url}"
+
 msgid "ANSI colours: \"auto\", \"always\" or \"never\"."
 msgstr "Couleurs ANSI : \"auto\", \"always\" ou \"never\"."
 
@@ -654,6 +666,9 @@ msgstr ""
 "/reports. Le fichier est refusé si les dossiers, les paires ou les séries"
 " ont changé. Seul, --decisions lit decisions.json."
 
+msgid "Apply your choices: what you set aside goes to the quarantine"
+msgstr "Appliquer vos choix : ce que vous avez écarté va en quarantaine"
+
 msgid "April"
 msgstr "avril"
 
@@ -816,6 +831,9 @@ msgstr "Impossible d'enregistrer config.toml : {error}."
 msgid "Cannot save the decisions file: {error}."
 msgstr "Impossible d'enregistrer le fichier de décisions : {error}."
 
+msgid "Carry the words into other photo software"
+msgstr "Emporter les mots dans d'autres logiciels photo"
+
 msgid "Categories"
 msgstr "Catégories"
 
@@ -906,6 +924,9 @@ msgstr ""
 msgid "Choose photos of this event."
 msgstr "Choisissez des photos de cet événement."
 
+msgid "Choose the best shots of each burst, in your browser"
+msgstr "Choisir les meilleures photos de chaque rafale, dans le navigateur"
+
 msgid ""
 "Choose which folders keep their copies: folders.preferred in config.toml,"
 " or --prefer."
@@ -934,6 +955,9 @@ msgstr "Nettoyage"
 
 msgid "Clean report"
 msgstr "Rapport de nettoyage"
+
+msgid "Clean the duplicates"
+msgstr "Nettoyer les doublons"
 
 #, python-brace-format
 msgid "Clean {run_id}"
@@ -1442,6 +1466,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Enter runs step {number} ({command}). Another number runs that step. "
+"Ctrl+C leaves."
+msgstr ""
+"Entrée lance l'étape {number} ({command}). Un autre numéro lance cette "
+"étape. Ctrl+C pour quitter."
+
+#, python-brace-format
+msgid ""
 "Environment variables now start with {new} instead of {old}: the old "
 "prefix stops working in version {version}. Still found: {names}."
 msgstr ""
@@ -1586,6 +1618,9 @@ msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
 msgid "Every group to check has been decided."
 msgstr "Chaque groupe à vérifier a été décidé."
 
+msgid "Every photo and video in an Excel workbook"
+msgstr "Toutes les photos et vidéos dans un classeur Excel"
+
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
 msgstr "Tous les rapports sont listés dans {path} (Ctrl+clic pour l'ouvrir)."
@@ -1603,6 +1638,13 @@ msgid "Every shot of this series lies in a protected folder: none is ever moved.
 msgstr ""
 "Toutes les photos de cette rafale sont dans un dossier protégé : aucune "
 "ne bouge jamais."
+
+msgid ""
+"Every step of the guides with its command, the next one first: what 'mh' "
+"alone shows, Enter runs it."
+msgstr ""
+"Chaque étape des guides avec sa commande, la prochaine en premier : ce "
+"que montre 'mh' seul, Entrée la lance."
 
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
@@ -1771,6 +1813,12 @@ msgstr "Films et séries"
 msgid "Final folder"
 msgstr "Dossier final"
 
+msgid "Find a photo"
+msgstr "Retrouver une photo"
+
+msgid "Find a photo by its words, in your browser"
+msgstr "Retrouver une photo par ses mots, dans le navigateur"
+
 msgid "Find a town"
 msgstr "Chercher une ville"
 
@@ -1794,6 +1842,9 @@ msgid ""
 msgstr ""
 "Retrouver des photos par leurs mots dans votre navigateur (ou en tableau)"
 " : les mots que 'tags' leur a donnés."
+
+msgid "Find the duplicates and the broken files"
+msgstr "Trouver les doublons et les fichiers abîmés"
 
 msgid ""
 "Find the faces in the photos, group those alike and name them in your "
@@ -1957,6 +2008,9 @@ msgstr ""
 "lieu de les déplacer en quarantaine ; 'undo' les reconstruit à partir de "
 "la copie gardée."
 
+msgid "Free the space of the quarantine, for good"
+msgstr "Libérer la place de la quarantaine, définitivement"
+
 msgid "Freed"
 msgstr "Libéré"
 
@@ -1968,6 +2022,9 @@ msgstr "Depuis :"
 
 msgid "GB"
 msgstr "Go"
+
+msgid "Gather a selection into an album of links"
+msgstr "Réunir une sélection dans un album de liens"
 
 msgid ""
 "Gather a selection of the classify plan into a folder of hard links: "
@@ -2014,6 +2071,9 @@ msgid ""
 msgstr ""
 "Donnez-leur le même dossier, ou videz toutes les cellules sauf une, "
 "enregistrez le classeur, puis relancez 'sort'."
+
+msgid "Give your photos words"
+msgstr "Donner des mots à vos photos"
 
 msgid "Gives each file a second name in the album."
 msgstr "Donne à chaque fichier un second nom dans l'album."
@@ -2517,6 +2577,9 @@ msgstr ""
 "Déplacer les photos et vidéos comme le dit le classeur de classify "
 "modifié (journalisé, annulable)."
 
+msgid "Move the photos as the workbook says"
+msgstr "Déplacer les photos comme le dit le classeur"
+
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
@@ -2573,10 +2636,16 @@ msgstr "Indiquez un autre fichier avec --decisions, ou montez les mêmes dossier
 msgid "Name of the event"
 msgstr "Nom de l'événement"
 
+msgid "Name the events in your browser"
+msgstr "Nommer les événements dans le navigateur"
+
 msgid "Name the events of the classify proposal one by one in your browser."
 msgstr ""
 "Nommer les événements de la proposition de classify un par un, dans votre"
 " navigateur."
+
+msgid "Name the faces"
+msgstr "Nommer les visages"
 
 msgid ""
 "Name their group on the 'people' page first, or correct the names of the "
@@ -2590,6 +2659,9 @@ msgstr "Nommer ce lieu"
 
 msgid "Name with others"
 msgstr "Nommer avec d'autres"
+
+msgid "Name your places on a map"
+msgstr "Nommer vos lieux sur une carte"
 
 msgid ""
 "Name your places on a map of where the photos were taken; saved into "
@@ -2679,6 +2751,10 @@ msgstr ""
 
 msgid "Next page →"
 msgstr "Page suivante →"
+
+#, python-brace-format
+msgid "Next time, type it directly: {command}"
+msgstr "La prochaine fois, tapez-la directement : {command}"
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
@@ -2874,6 +2950,10 @@ msgid "No signal"
 msgstr "Aucun indice"
 
 #, python-brace-format
+msgid "No step {choice}: type mh alone to see the menu again."
+msgstr "Pas d'étape {choice} : tapez mh seul pour revoir le menu."
+
+#, python-brace-format
 msgid "No such command {name}."
 msgstr "Commande inconnue : {name}."
 
@@ -2970,6 +3050,9 @@ msgstr "Plus rien à vérifier ni à trier."
 
 msgid "Nothing left to do: everything is applied."
 msgstr "Plus rien à faire : tout est appliqué."
+
+msgid "Nothing left to do: everything is applied. A number runs that step."
+msgstr "Plus rien à faire : tout est appliqué. Un numéro lance cette étape."
 
 #, python-brace-format
 msgid ""
@@ -3333,6 +3416,9 @@ msgstr "Supposition précédente, déjà en place"
 msgid "Proposal"
 msgstr "Proposition"
 
+msgid "Propose a tidy tree, in a workbook you correct"
+msgstr "Proposer une arborescence rangée, dans un classeur que vous corrigez"
+
 msgid ""
 "Propose where every photo and video should go: year, event, category, and"
 " what lone photos show with an optional local AI 🤖"
@@ -3351,6 +3437,9 @@ msgstr "Proposé :"
 
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
+
+msgid "Put back the files of the last run"
+msgstr "Remettre les fichiers de la dernière exécution"
 
 #, python-brace-format
 msgid "Putting back: {path}"
@@ -3984,6 +4073,9 @@ msgstr ""
 "Écarter des photos de rafale, une série à la fois, au clavier dans votre "
 "navigateur ; 'clean --decisions' les déplace ensuite."
 
+msgid "Set the extra copies aside (asks first)"
+msgstr "Mettre les copies en trop de côté (demande d'abord)"
+
 msgid "Setting"
 msgstr "Réglage"
 
@@ -4064,6 +4156,9 @@ msgstr "Tri"
 msgid "Sort review"
 msgstr "Revue du tri"
 
+msgid "Sort the photos"
+msgstr "Trier les photos"
+
 #, python-brace-format
 msgid "Sort {run_id}"
 msgstr "Tri {run_id}"
@@ -4103,6 +4198,9 @@ msgstr "Restent où ils sont"
 
 msgid "Step 1 of the guide:"
 msgstr "Étape 1 du guide :"
+
+msgid "Step number (Enter: the proposed one)"
+msgstr "Numéro de l'étape (Entrée : celle proposée)"
 
 #, python-brace-format
 msgid "Step-by-step guide and every command: {url}"
@@ -4408,6 +4506,13 @@ msgid ""
 msgstr ""
 "La carte enregistre vos lieux dans un fichier config.toml, rangé dans un "
 "de vos dossiers monté sur /config : cette commande n'en a pas."
+
+msgid ""
+"The menu runs its steps through mh: write it once with 'launcher' (step 0"
+" of the guides), then type mh alone."
+msgstr ""
+"Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' "
+"(étape 0 des guides), puis tapez mh seul."
 
 msgid "The model sent an answer without a message."
 msgstr "Le modèle a envoyé une réponse sans message."
@@ -5016,6 +5121,9 @@ msgid ""
 msgstr ""
 "Parcourt tous les dossiers ; photos et vidéos sont reconnues à leur "
 "extension."
+
+msgid "What each run did"
+msgstr "Ce qu'a fait chaque exécution"
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
@@ -5886,6 +5994,9 @@ msgstr "Rapport media-hygiene"
 msgid "media-hygiene reports"
 msgstr "Rapports media-hygiene"
 
+msgid "media-hygiene — where you are"
+msgstr "media-hygiene — où vous en êtes"
+
 msgid "merged with another named event, whose name wins"
 msgstr "fusionné avec un autre événement nommé, dont le nom l'emporte"
 
@@ -6036,6 +6147,9 @@ msgstr "seulement la plus nette"
 msgid "only the sharpest, then next"
 msgstr "seulement la plus nette, puis suivante"
 
+msgid "optional"
+msgstr "facultatif"
+
 msgid "original"
 msgstr "original"
 
@@ -6183,6 +6297,9 @@ msgstr "quelque chose porte déjà ce nom à cet endroit"
 
 msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
 msgstr "triez les rafales au clavier, avec 'media-hygiene review'."
+
+msgid "sort/quick-guide/"
+msgstr "fr/sort/quick-guide/"
 
 msgid "sorted since."
 msgstr "triée depuis."
@@ -7875,4 +7992,11 @@ msgstr ""
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"
+
+msgid ""
+"🤖 classify and tags can also ask a local AI model: set [classify.ai] "
+"model in config.toml (mh config)."
+msgstr ""
+"🤖 classify et tags peuvent aussi interroger un modèle d'IA local : "
+"indiquez [classify.ai] model dans config.toml (mh config)."
 

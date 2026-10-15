@@ -11,6 +11,7 @@ from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
 from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
+from media_hygiene.cli.cmd_menu import menu_command
 from media_hygiene.cli.cmd_people import people_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_reports import reports_command
@@ -50,6 +51,15 @@ def command_table(
             status_command,
             analyse,
             _("Where am I? The last audit, the quarantine, what is left: no scan."),
+        ),
+        (
+            "menu",
+            menu_command,
+            analyse,
+            _(
+                "Every step of the guides with its command, the next one first: "
+                "what 'mh' alone shows, Enter runs it."
+            ),
         ),
         (
             "crosscheck",
