@@ -1,8 +1,9 @@
-"""What `mh` alone says around the menu: the prompt, a wrong number, the command learnt.
+"""What `mh` says by itself: the menu's prompt, the command learnt, a folder not found.
 
 The `menu` command prints the steps; the `mh` function asks for the number and runs
-the step itself (`services/launcher.py`). Its three messages are written into the
-script, translated, with the shell variables they show (`$choice`, `$chosen`).
+the step itself (`services/launcher.py`), after checking the photo folders. Its
+messages are written into the script, translated, with the shell variables they show
+(`$choice`, `$chosen`, `$folder`).
 """
 
 from __future__ import annotations
@@ -18,15 +19,16 @@ UNSAFE_CHARACTERS = frozenset('"$`\\')
 
 @dataclass(frozen=True, slots=True)
 class MenuTexts:
-    """The messages of `mh` alone, ready to sit inside double quotes."""
+    """The messages of `mh` itself, ready to sit inside double quotes."""
 
     prompt: str
     unknown: str  # holds `$choice`
     direct: str  # holds `mh $chosen`
+    missing: str  # holds `$folder`
 
 
 def menu_texts() -> MenuTexts:
-    """Translate the messages of `mh` alone, the shell variables in place.
+    """Translate the messages of `mh` itself, the shell variables in place.
 
     Returns:
         The messages; a translation's quote or dollar sign is dropped, so that it
@@ -40,6 +42,12 @@ def menu_texts() -> MenuTexts:
         direct=_safe(_("Next time, type it directly: {command}")).replace(
             "{command}", f"{LAUNCHER_FUNCTION} $chosen"
         ),
+        missing=_safe(
+            _(
+                "{folder} cannot be found: plug its disk in, or write mh again with "
+                "launcher."
+            )
+        ).replace("{folder}", "$folder"),
     )
 
 

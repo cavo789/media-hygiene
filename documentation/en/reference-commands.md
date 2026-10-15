@@ -94,6 +94,8 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
 | `--port PORT` | `review`, `review-sort`, `places`, `search`, `people` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
+| `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
+| `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
 | `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/03-several-folders.md#write-your-folders-once-mh) |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |

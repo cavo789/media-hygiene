@@ -426,7 +426,8 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
 - **`timezone`**: your time zone, for the times shown and the names of the reports and runs.
   Docker does not know it: empty, everything is in UTC (the audit reminds you). Its name comes from
   [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g.
-  `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` in `docker run` works too.
+  `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` in `docker run` works too. With
+  `mh`, nothing to set: it asks Windows for your zone at each run; this setting wins over it.
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
 - **`protected`**: never modified, and their files are always the copies kept (`--protect`).
 - **`excluded`**: never analysed, for a real backup (`--exclude`).

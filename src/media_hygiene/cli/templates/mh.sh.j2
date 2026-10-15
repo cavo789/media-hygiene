@@ -7,8 +7,27 @@
         _{{ function }}_menu
         return
     fi
-    local command="" mode=":ro" arg
-    local tty=(-i) page=()
+    local command="" mode=":ro" arg folder zone="${TZ:-}"
+    local tty=(-i) page=() given=() rest=() photos=() zoned=()
+    # --photos /mnt/e/Folder: one more photo folder, for this command only.
+    while [[ $# -gt 0 ]]; do
+        if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
+        folder="$2"
+        shift 2
+        if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
+        folder="$(cd "$folder" && pwd -P)"
+        if [[ "$folder" =~ ^/mnt/([a-z])(/.*)?$ ]]; then
+            given+=("$folder:/data/${BASH_REMATCH[1]}${BASH_REMATCH[2]}")
+        else
+            given+=("$folder:/data$folder")
+        fi
+    done
+    set -- "${rest[@]}"
+{% if checked %}
+    for folder in {% for folder in checked %}"{{ folder }}"{{ " " if not loop.last }}{% endfor %}; do
+        if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
+    done
+{% endif %}
     for arg in "$@"; do
         case " {{ script.commands.names | join(" ") }} " in
             *" $arg "*) command="$arg"; break ;;
@@ -24,17 +43,26 @@
         *" $command "*) tty=() ;;
         *) if [[ -t 0 && -t 1 ]]; then tty=(-it); fi ;;
     esac
+    for folder in "${given[@]}"; do photos+=(-v "$folder$mode"); done
+    # The host's own zone, unless TZ says one: /etc/localtime links to it.
+    if [[ -z "$zone" && -L /etc/localtime ]]; then
+        zone="$(readlink /etc/localtime)"
+        zone="${zone#*zoneinfo/}"
+    fi
+    if [[ -n "$zone" ]]; then zoned=(-e "TZ=$zone"); fi
 {% if script.folders %}
     mkdir -p {{ script.folders }}
 {% endif %}
     docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
         -e "{{ variable }}=1" \
+        "${zoned[@]}" \
 {% for option in script.environment %}
         {{ option }} \
 {% endfor %}
 {% for volume in script.data %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
 {% endfor %}
+        "${photos[@]}" \
 {% for volume in script.tools %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
@@ -47,17 +75,17 @@ _{{ function }}_menu() {
     local steps number line choice="" chosen="" color=() words=()
     if [[ -t 2 ]]; then color=(--color always); fi
     steps="$({{ function }} "${color[@]}" menu)" || return
-    read -r -p "{{ menu.prompt }}: " choice || return 0
+    read -r -p "{{ texts.prompt }}: " choice || return 0
     choice="${choice:-0}"
     while IFS=$'\t' read -r number line; do
         if [[ "$number" == "$choice" ]]; then chosen="$line"; break; fi
     done <<< "$steps"
     if [[ -z "$chosen" ]]; then
         if [[ "$choice" == 0 ]]; then return 0; fi
-        printf '%s\n' "{{ menu.unknown }}" >&2
+        printf '%s\n' "{{ texts.unknown }}" >&2
         return 2
     fi
-    printf '%s\n' "{{ menu.direct }}" >&2
+    printf '%s\n' "{{ texts.direct }}" >&2
     read -r -a words <<< "$chosen"
     {{ function }} "${words[@]}"
 }

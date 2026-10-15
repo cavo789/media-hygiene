@@ -9,8 +9,8 @@ mounts for every command.**
 
 The `docker run` commands grow with every folder, and each command needs slightly different
 mounts (`:ro` or not, the [journal](../reference-glossary.md#journal), a port for the browser). `launcher` prints a short script
-defining `mh`, a command that remembers the folders mounted when you made it. Then `mh audit`,
-`mh clean`, `mh review`… are all you type.
+defining `mh`, a command that remembers your folders, given as Explorer shows them: no `-v` to
+write. Then `mh audit`, `mh clean`, `mh review`… are all you type.
 
 **When**: once you know which folders you work on; again when you add one.
 
@@ -18,7 +18,7 @@ defining `mh`, a command that remembers the folders mounted when you made it. Th
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm -v "C:\Photos:/data/c/Photos" cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
 ```
@@ -28,8 +28,8 @@ mh audit
 | | |
 |---|---|
 | Your photos | 🔒 Never changed: it only prints a script. |
-| Needs | Your folders, one `-v` each, as you want `mh` to mount them. |
-| Recommended | Your own tool folders, if they are not those of `$HOME\media-hygiene`. |
+| Needs | Your folders, one `--photos` each. |
+| Recommended | `--quarantine` on the photos' disk, if it is not `C:`. |
 | Writes | Nothing itself: you redirect what it prints to a file. |
 | Undo | Delete the file. |
 
@@ -39,11 +39,11 @@ mh audit
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm `
-  -e TZ=Europe/Brussels `
-  -v "C:\Photos:/data/c/Photos" `
-  -v "D:\Old disk:/data/d/Old disk" `
-  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm cavo789/media-hygiene launcher `
+  --photos "C:\Photos" `
+  --photos "D:\Old disk" `
+  --quarantine "D:\quarantine" `
+  > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
 ```
@@ -52,26 +52,29 @@ From WSL:
 
 ```bash
 mkdir -p ~/media-hygiene
-docker run --rm \
-  -e TZ=Europe/Brussels \
-  -v "/mnt/c/Photos:/data/c/Photos" \
-  cavo789/media-hygiene launcher --shell bash > ~/media-hygiene/mh.sh
+docker run --rm cavo789/media-hygiene launcher --photos /mnt/c/Photos > ~/media-hygiene/mh.sh
 source ~/media-hygiene/mh.sh
 mh audit
 ```
 
 ## What `mh` does for each command
 
+- **It checks your folders first**: a disk not plugged in is said, and nothing runs (Docker
+  would mount an empty folder in its place).
 - **Your folders read-only** (`:ro`) for every command that never changes them, writable only for
   `clean`, `sort`, `album`, `undo`, `purge` and `xmp`.
 - **The cache** (the `media-hygiene-cache` volume) and the `reports`, `config`, `journal` and
-  `quarantine` folders of `$HOME\media-hygiene`, created when missing; a tool folder you mounted
-  yourself when running `launcher` is kept instead.
+  `quarantine` folders of `$HOME\media-hygiene`, created when missing; the folder of
+  `--quarantine`, or a tool folder you mounted yourself with `-v` when running `launcher`, is
+  kept instead.
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
   `places`, `search` and `people`.
 - **The commands the tool suggests** at the end of a run are written as `mh …` too.
-- **Your language and time zone**: a `--locale fr` given to `launcher` and the `-e TZ=…` of its
-  run are written into the script, so `mh` speaks French and dates its reports in your local time.
+- **Your time zone, asked at each run**: `mh.ps1` asks Windows (`Get-TimeZone`), `mh.sh` the
+  system (`/etc/localtime`), so the reports are dated in your local time, abroad too. A
+  `[general] timezone` in `config.toml`, or a `-e TZ=…` given to `launcher`, wins.
+- **Your language**: a `--locale fr` given to `launcher` is written into the script, so `mh`
+  speaks French.
   A language set in `config.toml` is left to the file (an edit of it still counts). `launcher`
   ends with one line saying what `mh` remembers: folders, language, time zone.
 
@@ -79,11 +82,13 @@ mh audit
 
 | Option | What it does |
 |---|---|
+| `--photos "C:\Photos"` | A folder of photos and videos, as Explorer shows it (`/mnt/c/Photos` from WSL). Repeat it for several folders; not a folder inside another one. |
+| `--quarantine "D:\quarantine"` | Where the copies set aside go. Default: `$HOME\media-hygiene\quarantine`. |
 | `--shell powershell` | A PowerShell script (`mh.ps1`), for Windows. |
 | `--shell bash` | A bash script (`mh.sh`), for WSL, Linux, macOS. |
 
-By default, the shell is guessed from the folders mounted: a Windows folder (`C:\…`) gives
-PowerShell.
+By default, the shell is guessed from the folders: a Windows folder (`C:\…`) gives PowerShell.
+The `-v` of earlier guides still work, alongside `--photos`.
 
 ## Good to know
 
@@ -97,10 +102,12 @@ PowerShell.
   ```
 
   In bash, add the `source` line to `~/.bashrc`.
-- **Another folder?** Run `launcher` again with one more `-v`, saving to the same file.
-- **Not in Brussels?** Replace `Europe/Brussels` with your own zone (`Europe/Paris`,
-  `America/Montreal`…). Without `-e TZ=…`, `mh` runs in UTC: report folders and times are one or
-  two hours off.
+- **Another folder?** Run `launcher` again with one more `--photos`, saving to the same file. For
+  one command only: `mh --photos "E:\USB key" audit` adds it to your folders.
+- **A network folder** (`\\NAS\photos`) is refused by `--photos`: copy the photos to a local
+  disk, or mount it yourself with `-v`.
+- **A refused folder** (inside another one, network, relative): `launcher` says why on screen, and
+  loading the file stops with the same sentence.
 - **With `-it`**, Docker sends the messages into the file too: `launcher` writes no launcher,
   and loading the file stops with the right command to run (without `-it`).
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:

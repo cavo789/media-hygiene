@@ -1,0 +1,14 @@
+windows_zones.tsv: the Windows time zone ids and their IANA zone (territory "001"),
+from the Unicode CLDR file common/supplemental/windowsZones.xml, downloaded on 2026-10-15
+from https://github.com/unicode-org/cldr (main branch).
+
+Copyright © 1991-2026 Unicode, Inc. Unicode License v3:
+https://www.unicode.org/license.txt
+
+To rebuild: download that file, keep each <mapZone other="…" territory="001" type="…"/>
+as one "other<TAB>type" line, sorted.
+Seven old IANA names of that file are written with their current name (the old ones are
+links that a minimal tzdata may lack): America/Indianapolis → America/Indiana/Indianapolis,
+America/Buenos_Aires → America/Argentina/Buenos_Aires, America/Godthab → America/Nuuk,
+Europe/Kiev → Europe/Kyiv, Asia/Calcutta → Asia/Kolkata, Asia/Katmandu → Asia/Kathmandu,
+Asia/Rangoon → Asia/Yangon.

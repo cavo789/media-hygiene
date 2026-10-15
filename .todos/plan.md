@@ -19,3 +19,4 @@ Nothing to run unattended.
 | 0129 | Docker Hub overview: published from README.md by CI at each release | [PARTIAL_0129-dockerhub-description-from-readme.md](PARTIAL/PARTIAL_0129-dockerhub-description-from-readme.md) |
 | 0149 | `clean`: compare and move several copies at a time | [PARTIAL_0149-clean-several-copies-at-a-time.md](PARTIAL/PARTIAL_0149-clean-several-copies-at-a-time.md) |
 | 0172 | `mh` alone opens a guided menu: every step in order, the next one first | [PARTIAL_0172-mh-alone-guided-menu.md](PARTIAL/PARTIAL_0172-mh-alone-guided-menu.md) |
+| 0173 | `launcher --photos "C:\Photos"`: Windows paths only, the time zone found by `mh` | [PARTIAL_0173-launcher-windows-folders-and-zone.md](PARTIAL/PARTIAL_0173-launcher-windows-folders-and-zone.md) |

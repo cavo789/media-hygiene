@@ -38,40 +38,34 @@ compte seulement ; les scripts téléchargés sur Internet doivent toujours êtr
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 ```
 
-**Ensuite**, écrivez `mh`, avec votre dossier à la place de `C:\Photos` :
+**Ensuite**, écrivez `mh`, avec votre dossier à la place de `C:\Photos`, tel que l'Explorateur
+le montre :
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
-  -e TZ=Europe/Brussels `
-  -v "C:\Photos:/data/c/Photos" `
-  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
 Dans un nouveau terminal, rechargez `mh` avec la dernière ligne.
 
-??? question "Vos photos ne sont pas dans `C:\Photos` ?"
+??? question "Plusieurs dossiers ? Une quarantaine sur un autre disque ?"
 
-    Changez **les deux côtés** de `-v` : le dossier Windows à gauche, le même chemin à droite
-    après `/data/`, la lettre du disque en minuscule et des `/` au lieu des `\`.
-    `D:\Images\Famille` s'écrit :
+    Un `--photos` par dossier : `--photos "C:\Photos" --photos "D:\Images\Famille"`. Pas un
+    dossier à l'intérieur d'un autre : chacun de ses fichiers serait vu deux fois. Un dossier de
+    plus plus tard ? Relancez la commande, avec tous les dossiers.
 
-    ```powershell
-    -v "D:\Images\Famille:/data/d/Images/Famille"
-    ```
-
-    Avec seulement la gauche changée, les rapports montreraient `C:\Photos` et `--prefer
-    "D:\Images\…"` ne désignerait rien. Deux dossiers ? Deux `-v` : [plusieurs dossiers et
-    disques](../start/03-several-folders.md). Un dossier de plus plus tard ? Relancez la commande
-    avec un `-v` de plus.
+    Les copies mises de côté vont dans `$HOME\media-hygiene\quarantine`. Vos photos sont sur un
+    autre disque que `C:` ? Ajoutez `--quarantine "D:\quarantaine"` : sur le disque des photos,
+    mettre de côté est un simple renommage, instantané ; vers un autre disque, chaque fichier est
+    copié.
 
 ??? info "Ce que fait cette commande"
 
     C'est la seule commande longue : elle écrit `mh`, une commande courte qui retient vos
-    dossiers et monte, à chaque étape, exactement ce qu'il faut (en français, grâce au
-    `-e …LOCALE=fr`, et à votre heure grâce au `-e TZ=…` : mettez votre fuseau s'il n'est pas
-    `Europe/Brussels`). Ses dossiers, dans `$HOME\media-hygiene`, sont créés par `mh` lui-même la
+    dossiers et monte, à chaque étape, exactement ce qu'il faut, en français (grâce au
+    `-e …LOCALE=fr`) et à votre heure (`mh` demande votre fuseau horaire à Windows à chaque
+    lancement). Ses dossiers, dans `$HOME\media-hygiene`, sont créés par `mh` lui-même la
     première fois :
 
     | Dossier | Ce qu'il reçoit |

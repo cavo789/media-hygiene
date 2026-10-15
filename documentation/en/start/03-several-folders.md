@@ -136,22 +136,23 @@ pattern.
 
 The commands grow with every folder, and each step of the guides needs a slightly different one
 (`:ro` or not, the journal, the quarantine, a port for the browser). Write them **once**: the
-`launcher` command writes a short PowerShell command, `mh`, that remembers the folders mounted
-when you created it.
+`launcher` command writes a short PowerShell command, `mh`, that remembers your folders. Give
+them as Explorer shows them, one `--photos` each: no `-v`, `mh` writes them for you.
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm `
-  -e TZ=Europe/Brussels `
-  -v "C:\Photos:/data/c/Photos" `
-  -v "D:\Old disk:/data/d/Old disk" `
-  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm cavo789/media-hygiene launcher `
+  --photos "C:\Photos" `
+  --photos "D:\Old disk" `
+  --quarantine "D:\quarantine" `
+  > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
 ```
 
-No `-it` here: what `launcher` prints goes into the file. The `-e TZ=…` is kept too: `mh` dates
-its reports in your local time (put your own zone if it is not `Europe/Brussels`). Then every command is short: `mh audit`,
+No `-it` here: what `launcher` prints goes into the file. `--quarantine` is optional (by default
+`$HOME\media-hygiene\quarantine`): on the photos' disk, setting aside is a rename, not a copy.
+`mh` dates its reports in your local time: it asks Windows for your time zone at each run. Then every command is short: `mh audit`,
 `mh clean`, `mh review`, `mh undo`, `mh status`… `mh` picks the right mounts for each one: your
 folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `album`, `undo`,
 `purge`, `xmp`), the cache, and the `reports`, `config`, `journal` and `quarantine` folders of
@@ -166,10 +167,15 @@ folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `alb
   New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
   Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
   ```
-- **Another folder?** Run the `launcher` command again with one more `-v`.
+- **Another folder?** Run the `launcher` command again with one more `--photos`. For one command
+  only, `mh --photos "E:\USB key" audit` adds it to your folders: the copies of your photos on
+  the key are found too.
+- **A disk not plugged in?** `mh` says which folder it cannot find and runs nothing (Docker would
+  otherwise mount an empty folder, and the audit would find nothing).
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- **From WSL or Linux**: add `--shell bash` and save to `~/media-hygiene/mh.sh`, then
+- **From WSL or Linux**: give the folders as bash sees them (`--photos /mnt/c/Photos`), save to
+  `~/media-hygiene/mh.sh`, then
   `source ~/media-hygiene/mh.sh` (in `~/.bashrc` for every terminal).
 
 ---

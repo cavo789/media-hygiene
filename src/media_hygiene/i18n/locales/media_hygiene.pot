@@ -231,9 +231,6 @@ msgstr ""
 msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
 msgstr ""
 
-msgid "-e TZ=Europe/Brussels before 'launcher' (times in your time zone, not UTC)"
-msgstr ""
-
 msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
 msgstr ""
 
@@ -299,6 +296,11 @@ msgstr ""
 msgid ""
 "A file reachable through two paths (a folder mounted twice, a hard link) "
 "is recognised: it is never counted as its own copy."
+msgstr ""
+
+msgid ""
+"A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
+"/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
 msgstr ""
 
 msgid ""
@@ -840,6 +842,9 @@ msgstr ""
 msgid "Copy the command"
 msgstr ""
 
+msgid "Copy the photos to a local disk, or mount it yourself with -v."
+msgstr ""
+
 msgid "Correct it, then run the same command again."
 msgid_plural "Correct them, then run the same command again."
 msgstr[0] ""
@@ -1146,6 +1151,9 @@ msgstr ""
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file moved to "
 "the quarantine."
+msgstr ""
+
+msgid "Each of its files would be seen twice, as its own duplicate."
 msgstr ""
 
 msgid ""
@@ -2372,7 +2380,9 @@ msgstr[1] ""
 msgid "No obvious series left to validate."
 msgstr ""
 
-msgid "No photo folder mounted: add -v for each folder, then run it again."
+msgid ""
+"No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
+" again."
 msgstr ""
 
 msgid "No photo left to analyse: every one is in the cache."
@@ -4268,6 +4278,11 @@ msgstr ""
 msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
 msgstr ""
 
+msgid ""
+"Where the copies set aside go, once: best on the photos' disk (a move, "
+"not a copy). Default: the quarantine folder of your home."
+msgstr ""
+
 msgid "Where to start"
 msgstr ""
 
@@ -5560,6 +5575,9 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
+msgid "your computer's, read at each run"
+msgstr ""
+
 msgid "your decision in the report"
 msgstr ""
 
@@ -6196,6 +6214,12 @@ msgid "{folder} (seen as {first} and as {second})"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{folder} cannot be found: plug its disk in, or write mh again with "
+"launcher."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 
@@ -6204,11 +6228,19 @@ msgid "{folder} is protected: its copies are always kept."
 msgstr ""
 
 #, python-brace-format
+msgid "{folder}: a network folder, which --photos does not take."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder}: a protected or excluded folder receives no file."
 msgstr ""
 
 #, python-brace-format
 msgid "{folder}: copies inside one folder cannot be swapped."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder}: give the full path, from the drive letter."
 msgstr ""
 
 #, python-brace-format
@@ -6223,6 +6255,10 @@ msgstr ""
 msgid ""
 "{host} refused the search (error {status}): its usage limits are reached."
 " Try again later, or set another service in [places] nominatim_url."
+msgstr ""
+
+#, python-brace-format
+msgid "{inner} is inside {outer}: give only {outer}."
 msgstr ""
 
 #, python-brace-format

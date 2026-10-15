@@ -113,7 +113,7 @@ fichiers réécrits par les outils Windows : « UTF-8 avec BOM » du Bloc-notes,
 Un `mh.ps1` écrit par une image plus ancienne contient `Vid├®os` là où votre dossier s'appelle
 `Vidéos` : PowerShell a décodé la sortie de l'outil avec l'ancienne page de codes de la console
 avant que `>` ne l'enregistre. `mh` monte alors un dossier qui n'existe pas, Docker Desktop le crée
-vide, et l'audit n'y trouve rien. Relancez `launcher`, avec les mêmes options `-v`, vers le même
+vide, et l'audit n'y trouve rien. Relancez `launcher`, avec les mêmes dossiers, vers le même
 fichier : le nouveau script ne contient que de l'ASCII et garde chaque accent.
 
 ## « Erreur inattendue pendant … »

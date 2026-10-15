@@ -12,6 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.docker_run import (
@@ -22,6 +23,7 @@ from media_hygiene.paths.docker_run import (
 )
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import menu_texts
 from media_hygiene.services.next_command import (
@@ -62,9 +64,19 @@ class LauncherScript:
     shell: Shell
     data: tuple[Volume, ...]
     tools: tuple[Volume, ...]
-    folders: str  # the host folders to create, quoted, for the shell
+    created: tuple[str, ...]  # the host folders `mh` creates
     environment: tuple[str, ...]
     commands: LauncherCommands
+
+    @property
+    def folders(self) -> str:
+        """The folders to create, as the shell takes them in one command.
+
+        Returns:
+            `"a", "b"` for PowerShell, `"a" "b"` for bash; empty without folders.
+        """
+        separator = ", " if self.shell is Shell.POWERSHELL else " "
+        return separator.join(f'"{folder}"' for folder in self.created)
 
 
 def launcher_script(
@@ -101,7 +113,7 @@ def launcher_script(
         shell=shell,
         data=data,
         tools=tuple(tools),
-        folders=_quoted(shell, tuple(created)),
+        created=tuple(created),
         environment=(*environment(), *locale_option(runtime)),
         commands=commands,
     )
@@ -124,7 +136,9 @@ def render_script(script: LauncherScript) -> str:
         variable=LAUNCHER_VARIABLE,
         image=running_image(),
         header=_header(script.shell),
-        menu=menu_texts(),
+        texts=menu_texts(),
+        checked=checked_folders(script),
+        zone=WINDOWS_ZONE_VARIABLE,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
 
@@ -177,17 +191,3 @@ def _header(shell: Shell) -> tuple[str, ...]:
             "same file."
         ),
     )
-
-
-def _quoted(shell: Shell, folders: tuple[str, ...]) -> str:
-    """List folders as the shell takes them in one command.
-
-    Args:
-        shell: The shell.
-        folders: Host folders.
-
-    Returns:
-        `"a", "b"` for PowerShell, `"a" "b"` for bash; empty without folders.
-    """
-    separator = ", " if shell is Shell.POWERSHELL else " "
-    return separator.join(f'"{folder}"' for folder in folders)

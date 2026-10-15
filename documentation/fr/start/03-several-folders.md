@@ -146,23 +146,25 @@ modèle.
 
 Les commandes s'allongent à chaque dossier, et chaque étape des guides en demande une un peu
 différente (`:ro` ou non, le journal, la quarantaine, un port pour le navigateur). Écrivez-les
-**une fois** : la commande `launcher` écrit une commande PowerShell courte, `mh`, qui retient les
-dossiers montés au moment où vous la créez.
+**une fois** : la commande `launcher` écrit une commande PowerShell courte, `mh`, qui retient vos
+dossiers. Donnez-les tels que l'Explorateur les montre, un `--photos` chacun : pas de `-v`, `mh`
+les écrit pour vous.
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr `
-  -e TZ=Europe/Brussels `
-  -v "C:\Photos:/data/c/Photos" `
-  -v "D:\Ancien disque:/data/d/Ancien disque" `
-  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher `
+  --photos "C:\Photos" `
+  --photos "D:\Ancien disque" `
+  --quarantine "D:\quarantaine" `
+  > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
 ```
 
-Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. Le `-e …LOCALE=fr` et le
-`-e TZ=…` sont retenus aussi : `mh` parle français et date ses rapports à votre heure (mettez
-votre fuseau s'il n'est pas `Europe/Brussels`). Ensuite chaque commande est courte : `mh audit`, `mh clean`,
+Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. `--quarantine` est facultatif (par
+défaut `$HOME\media-hygiene\quarantine`) : sur le disque des photos, mettre de côté est un
+renommage, pas une copie. Le `-e …LOCALE=fr` est retenu : `mh` parle français. Et il date ses
+rapports à votre heure : il demande votre fuseau horaire à Windows à chaque lancement. Ensuite chaque commande est courte : `mh audit`, `mh clean`,
 `mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
 en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
 `purge`, `xmp`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
@@ -178,10 +180,15 @@ elles aussi `mh …`.
   New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
   Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
   ```
-- **Un autre dossier ?** Relancez la commande `launcher` avec un `-v` de plus.
+- **Un autre dossier ?** Relancez la commande `launcher` avec un `--photos` de plus. Pour une
+  seule commande, `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers : les copies de vos
+  photos sur la clé sont trouvées aussi.
+- **Un disque pas branché ?** `mh` dit quel dossier il ne trouve pas et ne lance rien (sinon Docker
+  monterait un dossier vide, et l'audit ne trouverait rien).
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- **Depuis WSL ou Linux** : ajoutez `--shell bash` et enregistrez dans `~/media-hygiene/mh.sh`, puis
+- **Depuis WSL ou Linux** : donnez les dossiers tels que bash les voit (`--photos /mnt/c/Photos`),
+  enregistrez dans `~/media-hygiene/mh.sh`, puis
   `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque terminal).
 
 ---

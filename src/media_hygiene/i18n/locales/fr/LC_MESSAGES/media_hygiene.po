@@ -280,11 +280,6 @@ msgstr "--year {value} : écrivez une année (2016) ou une plage (2015-2017)."
 msgid "-e TZ=Europe/Brussels (times in your time zone, not UTC)"
 msgstr "-e TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC)"
 
-msgid "-e TZ=Europe/Brussels before 'launcher' (times in your time zone, not UTC)"
-msgstr ""
-"-e TZ=Europe/Brussels avant 'launcher' (heures dans votre fuseau, pas en "
-"UTC)"
-
 msgid "-v \"<a folder of yours>:/reports\" (HTML reports)"
 msgstr "-v \"<un de vos dossiers>:/reports\" (rapports HTML)"
 
@@ -365,6 +360,14 @@ msgid ""
 msgstr ""
 "Un fichier accessible par deux chemins (dossier monté deux fois, lien "
 "physique) est reconnu : il n'est jamais compté comme sa propre copie."
+
+msgid ""
+"A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
+"/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
+msgstr ""
+"Un dossier de photos et vidéos, tel que l'Explorateur le montre : "
+"\"C:\\Photos\" (ou /mnt/c/Photos sous WSL). Répétez-la pour plusieurs "
+"dossiers. Pas besoin de -v."
 
 msgid ""
 "A folder that did not change since the last audit is taken from the index"
@@ -1027,6 +1030,9 @@ msgstr "Copiez-collez cette commande pour relancer."
 msgid "Copy the command"
 msgstr "Copier la commande"
 
+msgid "Copy the photos to a local disk, or mount it yourself with -v."
+msgstr "Copiez les photos sur un disque local, ou montez-le vous-même avec -v."
+
 msgid "Correct it, then run the same command again."
 msgid_plural "Correct them, then run the same command again."
 msgstr[0] "Corrigez la valeur, puis relancez la même commande."
@@ -1400,6 +1406,9 @@ msgid ""
 msgstr ""
 "Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
 "qui est déplacé en quarantaine."
+
+msgid "Each of its files would be seen twice, as its own duplicate."
+msgstr "Chacun de ses fichiers serait vu deux fois, comme son propre doublon."
 
 msgid ""
 "Each rule has a name and a \"match\": existing_folder (a folder name you "
@@ -2887,8 +2896,12 @@ msgstr[1] ""
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
 
-msgid "No photo folder mounted: add -v for each folder, then run it again."
-msgstr "Aucun dossier de photos monté : ajoutez un -v par dossier, puis relancez."
+msgid ""
+"No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
+" again."
+msgstr ""
+"Aucun dossier de photos : ajoutez --photos \"C:\\Photos\" pour chaque "
+"dossier, puis relancez."
 
 msgid "No photo left to analyse: every one is in the cache."
 msgstr "Plus aucune photo à analyser : toutes sont dans le cache."
@@ -5171,6 +5184,14 @@ msgstr ""
 msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
 msgstr "Où vont les fichiers sûrs, par exemple '{year}/{month} - {month_name}'."
 
+msgid ""
+"Where the copies set aside go, once: best on the photos' disk (a move, "
+"not a copy). Default: the quarantine folder of your home."
+msgstr ""
+"Où vont les copies mises de côté, une seule fois : de préférence sur le "
+"disque des photos (un déplacement, pas une copie). Par défaut : le "
+"dossier quarantine de votre dossier personnel."
+
 msgid "Where to start"
 msgstr "Par où commencer"
 
@@ -6609,6 +6630,9 @@ msgstr "o"
 msgid "yes"
 msgstr "oui"
 
+msgid "your computer's, read at each run"
+msgstr "celui de l'ordinateur, lu à chaque lancement"
+
 msgid "your decision in the report"
 msgstr "votre décision dans le rapport"
 
@@ -7424,6 +7448,14 @@ msgid "{folder} (seen as {first} and as {second})"
 msgstr "{folder} (vu comme {first} et comme {second})"
 
 #, python-brace-format
+msgid ""
+"{folder} cannot be found: plug its disk in, or write mh again with "
+"launcher."
+msgstr ""
+"{folder} est introuvable : branchez son disque, ou réécrivez mh avec "
+"launcher."
+
+#, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 "{folder} est monté en lecture seule : config.toml ne peut pas être "
@@ -7434,12 +7466,20 @@ msgid "{folder} is protected: its copies are always kept."
 msgstr "{folder} est protégé : ses copies sont toujours gardées."
 
 #, python-brace-format
+msgid "{folder}: a network folder, which --photos does not take."
+msgstr "{folder} : un dossier réseau, que --photos ne prend pas."
+
+#, python-brace-format
 msgid "{folder}: a protected or excluded folder receives no file."
 msgstr "{folder} : un dossier protégé ou exclu ne reçoit aucun fichier."
 
 #, python-brace-format
 msgid "{folder}: copies inside one folder cannot be swapped."
 msgstr "{folder} : des copies dans un même dossier ne peuvent pas être inversées."
+
+#, python-brace-format
+msgid "{folder}: give the full path, from the drive letter."
+msgstr "{folder} : donnez le chemin complet, depuis la lettre du lecteur."
 
 #, python-brace-format
 msgid "{host} answered something that is not a search result."
@@ -7457,6 +7497,10 @@ msgstr ""
 "{host} a refusé la recherche (erreur {status}) : ses limites "
 "d'utilisation sont atteintes. Réessayez plus tard, ou indiquez un autre "
 "service dans [places] nominatim_url."
+
+#, python-brace-format
+msgid "{inner} is inside {outer}: give only {outer}."
+msgstr "{inner} est dans {outer} : ne donnez que {outer}."
 
 #, python-brace-format
 msgid "{limit} or less is expected, not {value}"

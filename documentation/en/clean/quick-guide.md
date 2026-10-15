@@ -36,40 +36,32 @@ scripts downloaded from the internet must still be signed:
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 ```
 
-**Then** write `mh`, with your folder instead of `C:\Photos`:
+**Then** write `mh`, with your folder instead of `C:\Photos`, as Explorer shows it:
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene"
-docker run --rm `
-  -e TZ=Europe/Brussels `
-  -v "C:\Photos:/data/c/Photos" `
-  cavo789/media-hygiene launcher > "$HOME\media-hygiene\mh.ps1"
+docker run --rm cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
 In a new terminal, load `mh` again with the last line.
 
-??? question "Your photos are not in `C:\Photos`?"
+??? question "Several folders? A quarantine on another disk?"
 
-    Change **both sides** of `-v`: the Windows folder on the left, the same path on the right
-    after `/data/`, the drive letter in lower case and `/` instead of `\`. `D:\Images\Family` is
-    written:
+    One `--photos` per folder: `--photos "C:\Photos" --photos "D:\Images\Family"`. Not a folder
+    inside another one: each of its files would be seen twice. One more folder later? Run the
+    command again, with every folder.
 
-    ```powershell
-    -v "D:\Images\Family:/data/d/Images/Family"
-    ```
-
-    With the left side only changed, the reports would show `C:\Photos` and `--prefer
-    "D:\Images\…"` would point to nothing. Two folders? Two `-v`: [several folders and
-    disks](../start/03-several-folders.md). One more folder later? Run the command again with one
-    more `-v`.
+    The copies set aside go to `$HOME\media-hygiene\quarantine`. Your photos are on another disk
+    than `C:`? Add `--quarantine "D:\quarantine"`: on the photos' disk, setting aside is a simple
+    rename, instant; to another disk, every file is copied.
 
 ??? info "What this command does"
 
     This is the only long command: it writes `mh`, a short command that remembers your folders
-    and mounts, for each step, exactly what it needs (in your local time, thanks to `-e TZ=…`: put
-    your own zone if it is not `Europe/Brussels`). Its folders, in `$HOME\media-hygiene`, are
-    created by `mh` itself the first time:
+    and mounts, for each step, exactly what it needs, in your local time (`mh` asks Windows for
+    your time zone at each run). Its folders, in `$HOME\media-hygiene`, are created by `mh`
+    itself the first time:
 
     | Folder | What it receives |
     |---|---|

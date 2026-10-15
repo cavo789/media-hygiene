@@ -1,5 +1,6 @@
 {# The `mh` launcher for PowerShell: see services/launcher.py. #}
 {% macro listed(names) %}{% for name in names %}'{{ name }}'{{ ", " if not loop.last }}{% endfor %}{% endmacro %}
+{% macro quoted(names) %}{% for name in names %}"{{ name }}"{{ ", " if not loop.last }}{% endfor %}{% endmacro %}
 {% for line in header %}
 # {{ line }}
 {% endfor %}
@@ -8,8 +9,8 @@ function {{ function }} {
         # Alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
         $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' })
         $steps = @({{ function }} @color menu)
-        if ($LASTEXITCODE -ne 0) { return }
-        $choice = "$(Read-Host "{{ menu.prompt }}")".Trim()
+        if ($LASTEXITCODE -ne 0 -or $steps.Count -eq 0) { return }
+        $choice = "$(Read-Host "{{ texts.prompt }}")".Trim()
         if (-not $choice) { $choice = '0' }
         $chosen = ''
         foreach ($step in $steps) {
@@ -17,32 +18,50 @@ function {{ function }} {
             if ($number -eq $choice) { $chosen = $line; break }
         }
         if (-not $chosen) {
-            if ($choice -ne '0') { Write-Host "{{ menu.unknown }}" }
+            if ($choice -ne '0') { Write-Host "{{ texts.unknown }}" }
             return
         }
-        Write-Host "{{ menu.direct }}"
+        Write-Host "{{ texts.direct }}"
         $words = -split $chosen
         {{ function }} @words
         return
     }
-    $command = $args | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
+    # --photos "E:\Folder": one more photo folder, for this command only.
+    $given = @()
+    $rest = @()
+    for ($i = 0; $i -lt $args.Count; $i++) {
+        if ($args[$i] -ne '--photos' -or $i + 1 -ge $args.Count) { $rest += $args[$i]; continue }
+        $i++
+        $folder = $args[$i]
+        $found = Resolve-Path -LiteralPath $folder -ErrorAction SilentlyContinue
+        if (-not $found -or $found.ProviderPath -notmatch '^[A-Za-z]:') { Write-Host "{{ texts.missing }}"; return }
+        $full = $found.ProviderPath.TrimEnd('\')
+        $given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/')
+    }
+    foreach ($folder in @({{ quoted(checked) }})) {
+        if (-not (Test-Path -LiteralPath $folder)) { Write-Host "{{ texts.missing }}"; return }
+    }
+    $command = $rest | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
     $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
+    $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
     docker run --rm @tty `
         -e "{{ variable }}=1" `
+        -e "{{ zone }}=$((Get-TimeZone).Id)" `
 {% for option in script.environment %}
         {{ option }} `
 {% endfor %}
 {% for volume in script.data %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
 {% endfor %}
+        @photos `
 {% for volume in script.tools %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
         @page `
-        {{ image }} @args
+        {{ image }} @rest
 }

@@ -1,8 +1,9 @@
-r"""What `docker run -it … launcher` prints instead of the launcher.
+r"""What `launcher` prints instead of the launcher: run with `-it`, or a folder refused.
 
-With `-t`, Docker joins stderr to stdout in one pseudo-terminal: whatever the command
-says lands in the file of `> mh.ps1`, not on the screen. So the refusal is itself a
-script: comment lines to read, then one line stopping the load with the same advice.
+The output goes into `> mh.ps1` whatever happens, so a refusal is itself a script:
+comment lines to read, then one line stopping the load with the same advice. With
+`-t`, Docker even joins stderr to stdout in one pseudo-terminal: whatever the command
+says lands in the file, not on the screen.
 PowerShell 5.1 decodes the output of `docker` with the console code page before
 writing the file, so that line spells every non-ASCII character as `[char]` codes.
 """
@@ -35,6 +36,19 @@ def refusal_script(shell: Shell) -> str:
             path=f'"{script_path(shell)}"'
         ),
     )
+    return stopping_script(shell, lines)
+
+
+def stopping_script(shell: Shell, lines: tuple[str, ...]) -> str:
+    """A script that says why nothing was written, then stops its own loading.
+
+    Args:
+        shell: The shell the launcher is for.
+        lines: The translated advice, one sentence per line.
+
+    Returns:
+        Readable comment lines, then the line that stops loading the script.
+    """
     message = " ".join(lines)
     stop = (
         f"throw ({_powershell_text(message)})"

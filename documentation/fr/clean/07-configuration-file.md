@@ -458,7 +458,8 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
   exécutions. Docker ne le connaît pas : vide, tout est en UTC (l'audit vous le rappelle). Son nom
   vient de [cette liste](https://fr.wikipedia.org/wiki/Liste_des_fuseaux_horaires_IANA), par
   exemple `Europe/Paris`, `America/Montreal`. `-e TZ=Europe/Brussels` dans `docker run` marche
-  aussi.
+  aussi. Avec `mh`, rien à régler : il demande votre fuseau à Windows à chaque lancement ; ce
+  réglage l'emporte sur lui.
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).

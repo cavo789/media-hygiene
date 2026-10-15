@@ -1,8 +1,9 @@
 """The user's time zone, which a Docker container does not know by itself.
 
 Docker Desktop runs containers in UTC. `[general] timezone` (or the usual `-e TZ=…`)
-names the user's zone; it is installed as the process zone, so every local time of the
-run (folder names, run identifiers, the terminal) follows it.
+names the user's zone; without either, the zone `mh.ps1` read on the Windows host
+(`windows_zones`). It is installed as the process zone, so every local time of the run
+(folder names, run identifiers, the terminal) follows it.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ from datetime import datetime, timedelta
 from typing import Final
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from media_hygiene.config.windows_zones import host_zone
 from media_hygiene.i18n import _
 
 _TZ_VARIABLE: Final = "TZ"
@@ -46,8 +48,11 @@ def apply_timezone(name: str) -> None:
     """Make the configured zone the local time of this process.
 
     Args:
-        name: An IANA zone name; empty keeps the container's zone (`-e TZ=…` or UTC).
+        name: An IANA zone name; empty keeps the container's zone (`-e TZ=…`), else
+            the zone of the Windows host, else UTC.
     """
+    if not name and not os.environ.get(_TZ_VARIABLE):
+        name = host_zone()
     if not name:
         return
     os.environ[_TZ_VARIABLE] = name

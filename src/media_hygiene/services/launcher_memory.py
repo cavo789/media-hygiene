@@ -3,7 +3,8 @@
 The global `--locale fr` of the `launcher` run is an option of that run only: without
 it in the script, `mh audit` would speak the language of `config.toml` (English by
 default) while the guide in front of the reader quotes French. The time zone is kept
-only when the run knew it (`-e TZ=…` or `[general] timezone`).
+only when the run knew it (`-e TZ=…` or `[general] timezone`); otherwise `mh` reads the
+computer's own zone at each run.
 """
 
 from __future__ import annotations
@@ -55,7 +56,11 @@ def remembered(runtime: Runtime, script: LauncherScript) -> str:
     """
     count = len(script.data)
     folders = ngettext("{count} folder", "{count} folders", count).format(count=count)
-    zone = _UTC if timezone_unknown() else os.environ.get(_TIMEZONE, _UTC)
+    zone = (
+        _("your computer's, read at each run")
+        if timezone_unknown()
+        else os.environ.get(_TIMEZONE, _UTC)
+    )
     return _("mh remembers: {folders}, language {locale}, time zone {zone}.").format(
         folders=folders, locale=runtime.settings.general.locale.value, zone=zone
     )
