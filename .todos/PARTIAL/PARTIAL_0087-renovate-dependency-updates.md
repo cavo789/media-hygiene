@@ -71,3 +71,8 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
   44.156.3). Jobs run and end DONE (requested ones since 3 days, a scheduled one pending), but a
   silent Renovate opens no issue and no PR. Next: switch the mode to interactive in the Mend
   settings, then check the Dependency Dashboard appears after the next job.
+- Mend settings changed by the maintainer (2026-10-15): Silent mode off, Automated PRs on
+  ("Mend will automatically create pull requests to update outdated dependencies"), Require
+  config file and onboarding PRs left off. Left: after the next job, the Dependency Dashboard
+  lists the three `custom.regex` deps of the Dockerfile, the pre-commit hooks, the actions and
+  the pep621 deps.
