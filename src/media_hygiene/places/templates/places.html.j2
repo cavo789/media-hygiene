@@ -129,7 +129,9 @@
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
-  const plain = (text) => { const span = document.createElement("span"); span.textContent = text; return span.innerHTML; };
+  // Text as a node: Leaflet writes a string tooltip with innerHTML, a node as it is.
+  const label = (text) => { const span = document.createElement("span"); span.textContent = text; return span; };
+  const plain = (text) => label(text).innerHTML;
   const plural = new Intl.PluralRules(document.documentElement.lang);
   // A counted fragment: its singular and plural forms, the one the language uses for n.
   const counted = (forms, n) => fill(forms[plural.select(n) === "one" ? 0 : 1], { n: n });
@@ -161,14 +163,14 @@
         radius: 4 + 3 * Math.log2(count), weight: 1, fillOpacity: 0.45,
         color: place ? colour("--muted") : colour("--cluster"),
       });
-      circle.bindTooltip(place ? `${photos(count)}, ${fill(T.inPlace, { place })}` : photos(count));
+      circle.bindTooltip(label(place ? `${photos(count)}, ${fill(T.inPlace, { place })}` : photos(count)));
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); startNew(lat, lon); });
       circle.addTo(clusterLayer);
     }
     for (const place of state.places) {
       const style = { radius: place.radius_m, color: colour("--place"), weight: 2 };
       const circle = place.area ? L.polygon(place.area, style) : L.circle([place.latitude, place.longitude], style);
-      circle.bindTooltip(place.home ? `🏠 ${place.name}` : place.name, { permanent: true, className: "place-name" });
+      circle.bindTooltip(label(place.home ? `🏠 ${place.name}` : place.name), { permanent: true, className: "place-name" });
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); edit(place); });
       circle.addTo(placeLayer);
     }
