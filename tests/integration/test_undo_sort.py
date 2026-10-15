@@ -175,3 +175,22 @@ def test_a_run_without_a_plan_is_undone_alone(tmp_path: Path) -> None:
     assert plan.runs[0].moved == len(sort_run.photos)
     assert not plan.together
     assert plan.later is None
+
+
+def test_a_sort_whose_done_lines_were_lost_is_undone_completely(
+    tmp_path: Path,
+) -> None:
+    """A power cut loses the `done` lines not synced yet (0171): judged on disk."""
+    run = SortRun(tmp_path)
+    pending = [
+        line
+        for line in run.journal.read_text(encoding="utf-8").splitlines()
+        if f'"status":"{Status.PENDING}"' in line
+    ]
+    run.journal.write_text("\n".join(pending) + "\n", encoding="utf-8")
+    outcome = run.undo()
+    assert not outcome.skipped
+    assert not outcome.failed
+    for name, data in run.photos.items():
+        assert (run.source / name).read_bytes() == data
+    assert not (tmp_path / "Tri").exists()

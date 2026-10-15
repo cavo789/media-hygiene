@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import os
-import threading
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Self
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from media_hygiene.actions.group_commit import GroupCommit
 from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.constants import JOURNAL_SUFFIX
 from media_hygiene.errors import JournalError
@@ -65,7 +64,7 @@ def journal_file(journal_dir: Path, run_id: str) -> Path:
 
 
 class JournalWriter:
-    """Appends entries and forces them to disk before the action they announce."""
+    """Appends entries; a `pending` one reaches the disk before its action."""
 
     def __init__(self, stream: TextIO) -> None:
         """Wrap an append-mode text stream.
@@ -73,8 +72,7 @@ class JournalWriter:
         Args:
             stream: Journal file opened for appending.
         """
-        self._stream = stream
-        self._lock = threading.Lock()
+        self._lines = GroupCommit(stream)
 
     @classmethod
     def open(cls, file: Path) -> Self:
@@ -97,24 +95,31 @@ class JournalWriter:
         return self
 
     def __exit__(self, *exc_info: object) -> None:
-        """Close the journal.
+        """Sync the last entries, then close the journal.
 
         Args:
             *exc_info: Exception details from the `with` statement (unused).
         """
-        self._stream.close()
+        self._lines.close()
+
+    @property
+    def syncs(self) -> int:
+        """How many times the journal was forced to the disk.
+
+        Returns:
+            The `fsync` calls so far.
+        """
+        return self._lines.syncs
 
     def record(self, entry: JournalEntry) -> None:
-        """Append one entry and flush it to the disk.
+        """Append one entry; a `pending` one returns once it is on the disk.
 
         Args:
             entry: Entry to persist.
         """
-        line = entry.model_dump_json() + "\n"
-        with self._lock:  # several files of a clean are handled at once (0149)
-            self._stream.write(line)
-            self._stream.flush()
-            os.fsync(self._stream.fileno())
+        number = self._lines.append(entry.model_dump_json() + "\n")
+        if entry.status is Status.PENDING:  # write-ahead: before its action
+            self._lines.sync(number)
 
 
 def read_journal(file: Path) -> list[JournalEntry]:
