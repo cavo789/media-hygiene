@@ -45,3 +45,5 @@ share a description: each of its files is described on its own.
   off (review of PR #7): ≈ 2 s is negligible on their machine.
 - Only `decisions.json` and its archives are read; a file saved under a custom `--decisions`
   name is not (maintainer, review of PR #7).
+- The `tags --no-describe` timing before/after on the maintainer's collection is not needed:
+  ≈ 2 s is negligible for them (maintainer, 2026-10-15).
