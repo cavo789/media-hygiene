@@ -34,3 +34,23 @@ tiling for small faces were dropped (inbox of 2026-10-15): measured 2026-10-14 o
 
 - The maintainer gives the go-ahead (`/todo:iterate` of 2026-10-15): build the image locally
   under `nice -n 19`, then `dive` and `du` in the image.
+
+## Measured (2026-10-15)
+
+Local build `docker build --target local` (`build` helper, `nice -n 19`), then
+`docker image inspect`, `docker history` and `du -sk` run in the image (venv `/opt/venv`,
+Python 3.14, onnxruntime 1.30.0). All figures measured; `dive -j` not needed (`docker history`
+gives the per-layer sizes).
+
+| What | Size | Share |
+|---|---|---|
+| Whole image | 411,073,474 B (411 MB, 392 MiB) | 100 % |
+| Layer `COPY /opt/venv` | 236 MB (`du` of `/opt/venv`: 244,880 KiB) | 57 % of the image |
+| `site-packages/onnxruntime` | 68,208 KiB (69.8 MB) | 17.0 % of the image, 27.9 % of the venv |
+| + `.dist-info` (64 KiB) and `bin/onnxruntime_test` (4 KiB) | 68,276 KiB | 17.0 % |
+| + deps pulled by it: `google` (protobuf) 2,728 KiB, `flatbuffers` 268 KiB | 71,272 KiB (73.0 MB) | 17.8 % |
+
+- No shared library outside its folder (no `onnxruntime.libs`; `find` finds nothing else).
+  `numpy` (43.6 MB + `numpy.libs` 26.8 MB) is needed without it.
+- Below the 20 % threshold: no TODO filed for an optional extra or a separate image tag.
+- Documentation: neither `reference-people.md` makes a claim on the image size; unchanged.
