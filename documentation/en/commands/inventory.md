@@ -62,6 +62,7 @@ audited completely.
 
 ## Go further
 
+- [Find in short](../find/quick-guide.md)
 - [The inventory workbook](../reference-inventory.md): every column, the quality and exposure
   labels.
 - [2. Keep the cache](../start/02-keep-the-cache.md)

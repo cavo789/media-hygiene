@@ -81,6 +81,7 @@ docker run --rm -it `
 
 ## Pour aller plus loin
 
+- [Retrouver en bref](../find/quick-guide.md)
 - [Les tags : emporter les mots avec les photos](../reference-tags.md#emporter-les-mots-avec-les-photos--xmp)
 - [Fichiers compagnons](../reference-sidecars.md)
 

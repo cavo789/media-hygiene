@@ -85,6 +85,7 @@ as a table.
 
 ## Go further
 
+- [Find in short](../find/quick-guide.md)
 - [Tags: find a photo by its words](../reference-tags.md#find-a-photo-by-its-words-search)
 
 ## The built-in help

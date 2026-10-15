@@ -78,6 +78,7 @@ docker run --rm -it `
 
 ## Go further
 
+- [Find in short](../find/quick-guide.md)
 - [Tags: carry the words with the photos](../reference-tags.md#carry-the-words-with-the-photos-xmp)
 - [Sidecar files](../reference-sidecars.md)
 

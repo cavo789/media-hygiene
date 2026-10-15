@@ -83,6 +83,7 @@ names, dates and places.*
 
 ## Go further
 
+- [Find in short](../find/quick-guide.md)
 - [Tags](../reference-tags.md): every source, the settings, the long run.
 - [Sorting, step 8: a local vision model](../sort/08-subjects-from-a-local-model.md)
 - Next: [`search`](search.md), [`xmp`](xmp.md), [`inventory`](inventory.md).

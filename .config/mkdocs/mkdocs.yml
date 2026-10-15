@@ -13,6 +13,7 @@ strict: true
 
 theme:
   name: material
+  custom_dir: overrides  # stylesheets/guide.css: the look of the "in short" guides
   language: en
   features:
     - navigation.sections
@@ -32,6 +33,9 @@ theme:
         icon: material/weather-sunny
         name: Light mode
 
+extra_css:
+  - stylesheets/guide.css
+
 hooks:
   - hooks.py
 
@@ -49,6 +53,7 @@ plugins:
           build: true
           site_description: Trouver et nettoyer sans risque les photos et vidéos en double, puis les trier.
           nav_translations:
+            In short: En bref
             Start here: Pour commencer
             Clean the duplicates: Nettoyer les doublons
             Sort the photos: Trier les photos
@@ -62,6 +67,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  - pymdownx.details
   - pymdownx.highlight
   - pymdownx.superfences
 
@@ -73,6 +79,10 @@ validation:
 
 nav:
   - README.md
+  - In short:
+      - clean/quick-guide.md
+      - sort/quick-guide.md
+      - find/quick-guide.md
   - Start here:
       - start/00-install-docker.md
       - start/01-first-audit.md
@@ -89,7 +99,6 @@ nav:
       - clean/11-near-duplicates.md
       - clean/12-decide-pair-by-pair.md
       - clean/13-second-opinion.md
-      - clean/quick-guide.md
   - Sort the photos:
       - sort/04-classify.md
       - sort/05-review-the-proposal.md
@@ -100,7 +109,6 @@ nav:
       - sort/10-sort-by-person.md
       - sort/11-name-events-in-the-browser.md
       - sort/12-albums.md
-      - sort/quick-guide.md
   - Commands:
       - reference-commands.md
       - commands/album.md

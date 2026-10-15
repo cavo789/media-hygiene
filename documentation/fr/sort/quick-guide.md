@@ -2,27 +2,31 @@
 
 [Documentation](../README.md) › Trier en bref · 🇬🇧 [English](../../en/sort/quick-guide.md)
 
-Tout ce que l'outil sait faire pour **ranger** vos photos et vidéos, puis pour les **retrouver**,
-dans l'ordre, une étape à la fois, prêt à copier dans **PowerShell**. Chaque étape tient en
-quelques lignes et renvoie à sa page détaillée, si vous voulez comprendre. Arrivé en bas, vous
-avez fait le tour : [la dernière section](#vous-avez-fait-le-tour) reprend chaque commande et
-l'étape qui la montre. Remplacez `C:\Photos` par votre dossier.
+Donnez à vos photos et vidéos une arborescence bien rangée, `année/catégorie` ou celle que vous
+choisissez : une commande par étape, à coller dans **PowerShell**. `classify` **propose** une
+place pour chaque fichier, vous corrigez la proposition, et seul `sort` déplace les fichiers. Rien
+ne bouge avant, et `sort` peut être annulé.
 
-Le principe : `classify` **propose** une place pour chaque photo et vidéo (`année/catégorie` par
-défaut), vous corrigez la proposition, et seul `sort` déplace les fichiers. Rien ne bouge avant,
-et `sort` peut être annulé. Les étapes marquées *facultatif* peuvent être sautées : le parcours
-continue sans elles.
+<div class="mh-path" markdown>
 
-> 🤖 **IA locale requise** : ce signe marque les seules commandes qui ne fonctionnent qu'avec un
-> modèle de vision installé sur votre ordinateur ([Ollama](https://ollama.com), étape 7). Sans
-> lui, sautez-les : tout le reste du parcours fonctionne, rien ne vous l'impose.
+**Le strict minimum**, pour un premier tri : quatre étapes. Les autres sont facultatives.
 
-- **Ranger** (étapes 1 à 11) : une proposition, vos corrections, ce que vous savez (dates,
-  lieux, personnes, sujets), puis le tri et les albums.
-- **Retrouver** (étapes 12 à 15) : « Chloé en vacances à la montagne », par des mots, dans votre
-  navigateur, dans d'autres logiciels photo ou dans Excel.
+- [0 · Avant de commencer](#0-avant-de-commencer)
+- [1 · Demander une proposition](#1-demander-une-proposition)
+- [2 · La corriger](#2-corriger-la-proposition-dans-le-classeur)
+- [9 · Trier](#9-trier)
+
+</div>
+
+Chaque étape dit ce qu'elle risque : <span class="mh-badge mh-safe">🔒 Photos intactes</span>
+<span class="mh-badge mh-undo">↩️ Annulable</span>. <span class="mh-badge mh-ai">🤖 IA
+locale</span> marque les seules commandes qui demandent un modèle de vision sur votre ordinateur :
+sans lui, sautez-les. Vous voulez seulement **retrouver** une photo, sans rien déplacer ?
+**[Retrouver en bref](../find/quick-guide.md)**.
 
 ## 0. Avant de commencer
+
+<span class="mh-badge mh-once">⏱ Une fois</span>
 
 **Nettoyez d'abord les doublons** ([nettoyer en bref](../clean/quick-guide.md)) : sinon les deux
 copies d'une photo sont triées. La commande `mh` écrite pour le nettoyage sert aussi ici ; sinon,
@@ -33,42 +37,55 @@ Dans un nouveau terminal, rechargez-la :
 . "$HOME\media-hygiene\mh.ps1"
 ```
 
-## Ranger
-
 ## 1. Demander une proposition
+
+<span class="mh-badge mh-safe">🔒 Photos intactes</span>
+
+`classify` date chaque fichier, regroupe les photos prises à peu d'intervalle en **événements**,
+et propose un dossier pour chacun :
 
 ```powershell
 mh classify
 ```
 
-Rien n'est modifié : `mh` monte vos dossiers en lecture seule (`:ro`). `classify` date chaque
-fichier (EXIF, nom, dossier), regroupe les photos prises à peu d'intervalle en **événements**,
-et propose un dossier pour chacun. À la fin, deux fichiers dans un nouveau dossier
-`<date>-classify` de vos rapports :
+À la fin, un nouveau dossier `<date>-classify` de vos rapports contient deux fichiers :
 
 - `classify.xlsx`, le classeur, à ouvrir dans Excel ou LibreOffice : c'est là que vous
   **modifiez** ;
 - `report.html`, le rapport, à ouvrir dans votre navigateur : c'est là que vous **regardez** les
   photos.
 
-Une grande collection ? `mh classify --year 2016` propose une année à la fois. Détails :
-[proposer une arborescence](04-classify.md).
+![La première page du rapport de classify : quatre compteurs (fichiers, déjà à leur place, à vérifier ou à trier, événements), un tableau des années avec des liens vers leurs pages, les événements par où commencer avec leur part du travail, puis l'arborescence proposée avec le nombre de fichiers de chaque dossier](../images/classify-report.webp)
+
+??? info "Détails"
+
+    Rien n'est modifié : `mh` monte vos dossiers en lecture seule (`:ro`). La date d'un
+    événement vient de l'EXIF, du nom ou du dossier de ses fichiers. Une grande collection ?
+    `mh classify --year 2016` propose une année à la fois. Plus : [proposer une
+    arborescence](04-classify.md).
 
 ## 2. Corriger la proposition dans le classeur
+
+<span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
 Ouvrez les deux côte à côte. Seules les cellules **jaunes** du classeur se modifient.
 
 1. **Commencez par la feuille Événements** : les plus grands d'abord. Tapez un **Nom**
    (`Italie 2023`) : il devient le dossier de l'événement. Nommer les dix premières lignes règle
    souvent l'essentiel de la collection.
-2. Pour comprendre un événement, cherchez son identifiant dans le rapport : ses dates, ses
-   aperçus, d'où viennent ses photos.
+2. Pour comprendre un événement, copiez son **Identifiant** (la première colonne, 12
+   caractères), ouvrez la page de son année dans le rapport et cherchez-le (Ctrl+F) : ses dates,
+   ses aperçus, les dossiers d'où viennent ses photos.
 3. Un fichier mal placé ? Feuille Fichiers, colonne **Dossier final** (`2016/Kermesse`).
 4. **Enregistrez et fermez** le classeur.
 
-Détails : [revoir la proposition](05-review-the-proposal.md).
+![Une page d'année du rapport de classify : un événement de vacances avec son identifiant, son nombre de fichiers dont quelques-uns à vérifier ou à trier, la part cumulée du travail, le dossier proposé marqué Sûr, les dossiers d'où viennent ses photos, puis huit aperçus répartis sur ses jours avec leurs noms et leurs heures, et un lien vers tous les fichiers](../images/classify-year.webp)
+
+Plus : [revoir la proposition](05-review-the-proposal.md).
 
 ## 3. … ou dans le navigateur (facultatif)
+
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
 Plutôt une photo à l'écran qu'un tableur ? Les mêmes événements, un à la fois, avec leurs photos :
 
@@ -78,15 +95,28 @@ mh review-sort
 
 Ouvrez `http://127.0.0.1:8088/` (Ctrl+clic). <kbd>Entrée</kbd> accepte le nom et la catégorie
 et passe au suivant, <kbd>E</kbd> tape un nom, <kbd>O</kbd> envoie les photos choisies ailleurs,
-<kbd>V</kbd> accepte d'un coup toutes les propositions sûres. Vos choix vont dans
-`sort-decisions.json`, à côté du classeur, jamais dedans : `sort` lit les deux, et une même ligne
-modifiée des deux côtés lui est signalée, jamais tranchée en silence. Détails : [nommer les
-événements dans le navigateur](11-name-events-in-the-browser.md).
+<kbd>V</kbd> accepte d'un coup toutes les propositions sûres.
+
+??? info "Détails"
+
+    Vos choix vont dans `sort-decisions.json`, à côté du classeur, jamais dedans : `sort` lit les
+    deux, et une même ligne modifiée des deux côtés lui est signalée, jamais tranchée en silence.
+    Plus : [nommer les événements dans le navigateur](11-name-events-in-the-browser.md).
 
 ## 4. Écrire ce que vous savez (facultatif)
 
-Vos voyages, vos fêtes, vos dossiers existants : écrits une fois comme règles dans
-`$HOME\media-hygiene\config\config.toml`, ils servent à chaque `classify`. Par exemple :
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
+
+Vos voyages, vos fêtes, vos dossiers existants : écrits une fois comme règles dans `config.toml`,
+ils servent à chaque `classify`. La première fois, `mh config` crée ce fichier, chaque réglage
+expliqué ; ouvrez-le ensuite :
+
+```powershell
+mh config
+notepad "$HOME\media-hygiene\config\config.toml"
+```
+
+Ajoutez vos règles à la fin du fichier, par exemple :
 
 ```toml
 [[classify.rules]]
@@ -102,26 +132,31 @@ dates = "12-24..12-26"
 category = "Fêtes/Noël {year}"
 ```
 
-| `match` | Reconnaît |
-|---|---|
-| `existing_folder` | Un nom de dossier que vous avez choisi (`2019/Vacances à la mer`). |
-| `calendar`, `date_range` | Des jours qui reviennent chaque année (anniversaires, Noël), ou une seule fois (un voyage). |
-| `kind` | Les captures d'écran, les images reçues par une messagerie, les films téléchargés. |
-| `path`, `camera` | Un mot dans le chemin, une marque d'appareil (un drone, une caméra sport). |
-| `place`, `trip`, `folder_town` | Vos lieux, vos voyages, les villes nommées par vos dossiers : étape 5. |
-| `person` | Quelqu'un que vous avez nommé : étape 6. |
-| `subject` | Ce que voit un modèle de vision local : étape 7. |
-| `other_category` | Tout ce qu'aucune règle au-dessus n'a reconnu. |
+Les règles sont lues dans l'ordre : la première sûre décide.
 
-Les règles sont lues dans l'ordre : la première sûre décide. Votre propre arborescence se règle
-dans `[classify]` : `layout = "{year}/{month}"` (par mois), `target` (construire ailleurs),
-`leave` (un dossier jamais trié). Détails : [écrire ce que vous savez](06-write-down-what-you-know.md),
-[votre propre structure](04-classify.md#votre-propre-structure).
+??? info "Toutes les sortes de règles, et votre propre arborescence"
+
+    | `match` | Reconnaît |
+    |---|---|
+    | `existing_folder` | Un nom de dossier que vous avez choisi (`2019/Vacances à la mer`). |
+    | `calendar`, `date_range` | Des jours qui reviennent chaque année (anniversaires, Noël), ou une seule fois (un voyage). |
+    | `kind` | Les captures d'écran, les images reçues par une messagerie, les films téléchargés. |
+    | `path`, `camera` | Un mot dans le chemin, une marque d'appareil (un drone, une caméra sport). |
+    | `place`, `trip`, `folder_town` | Vos lieux, vos voyages, les villes nommées par vos dossiers : étape 5. |
+    | `person` | Quelqu'un que vous avez nommé : étape 6. |
+    | `subject` | Ce que voit un modèle de vision local : étape 7. |
+    | `other_category` | Tout ce qu'aucune règle au-dessus n'a reconnu. |
+
+    Votre propre arborescence se règle dans `[classify]` : `layout = "{year}/{month}"` (par
+    mois), `target` (construire ailleurs), `leave` (un dossier jamais trié). Plus : [écrire ce que
+    vous savez](06-write-down-what-you-know.md), [votre propre
+    structure](04-classify.md#votre-propre-structure).
 
 ## 5. Les lieux et les voyages, grâce au GPS (facultatif)
 
-Les téléphones récents écrivent où chaque photo a été prise ; l'audit dit combien des vôtres ont
-une position. Nommez vos lieux sur une carte :
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
+
+Les téléphones récents écrivent où chaque photo a été prise. Nommez vos lieux sur une carte :
 
 ```powershell
 mh places
@@ -129,8 +164,11 @@ mh places
 
 Ouvrez `http://127.0.0.1:8088/` : les cercles sont vos photos, les plus grands groupes sans nom
 d'abord. Cliquez, nommez (« Maison », « Chez papy »), réglez le rayon, cochez **Maison** pour la
-vôtre, **Enregistrer** : le lieu est écrit dans `config.toml`. Un village ou un parc entier ?
-**Chercher sur OpenStreetMap** prend son contour. Puis trois règles :
+vôtre, **Enregistrer** : le lieu est écrit dans `config.toml`.
+
+![La carte des lieux : les tuiles OpenStreetMap du parc du Cinquantenaire à Bruxelles, le cercle des photos prises là, le cercle vert du lieu Parc du Cinquantenaire qui vient d'être enregistré, et à gauche la liste des lieux et des plus grands groupes sans nom](../images/places.webp)
+
+Ajoutez ensuite trois règles à `config.toml` :
 
 ```toml
 [[classify.rules]]
@@ -146,17 +184,22 @@ name = "Villes des dossiers"
 match = "folder_town"
 ```
 
-`place` range dans le nom du lieu (`2023/Maison`), `trip` nomme chaque voyage à plus de 100 km de
-la maison d'après son pays et sa ville (`2023/Italie/Turin`), `folder_town` lit les dossiers
-nommés comme une ville (`2017\Durbuy`). Les villes sont nommées hors ligne : aucune position ne
-quitte votre ordinateur. Détails : [lieux et voyages grâce au GPS](09-places-from-gps.md).
+??? info "Détails"
+
+    L'audit dit combien de vos photos ont une position. Un village ou un parc entier ?
+    **Chercher sur OpenStreetMap** prend son contour. `place` range dans le nom du lieu
+    (`2023/Maison`), `trip` nomme chaque voyage à plus de 100 km de la maison d'après son pays et
+    sa ville (`2023/Italie/Turin`), `folder_town` lit les dossiers nommés comme une ville
+    (`2017\Durbuy`). Les villes sont nommées hors ligne : aucune position ne quitte votre
+    ordinateur. Plus : [lieux et voyages grâce au GPS](09-places-from-gps.md).
 
 ## 6. Les personnes (facultatif)
 
-Aucune IA à installer : l'outil apporte ses propres modèles de visages (39 Mo, téléchargés
-une fois). Nommez une fois les visages de vos photos ; ils servent à ranger (ici) et à retrouver
-(étape 13). Trouver les visages prend du temps la première fois : mesurez d'abord, puis lancez
-la page.
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
+
+Nommez une fois les visages de vos photos : ils servent à ranger (ici) et à retrouver
+([retrouver en bref](../find/quick-guide.md)). Aucune IA à installer. Trouver les visages prend
+du temps la première fois : mesurez d'abord, puis lancez la page.
 
 ```powershell
 mh people --sample 200
@@ -164,10 +207,13 @@ mh people
 ```
 
 Ouvrez `http://127.0.0.1:8088/` : les visages qui se ressemblent sont regroupés, les plus grands
-groupes d'abord. **Tapez un nom** sur un groupe, Entrée : il est écrit dans `config.toml`. `x`
-choisit plusieurs groupes de la même personne, × retire un visage, `i` ignore des inconnus, `y`
-confirme une suggestion « Chloé ? ». Nommer les dix plus grands groupes suffit souvent. Pour
-ranger les événements où quelqu'un figure :
+groupes d'abord. **Tapez un nom** sur un groupe, Entrée : il est écrit dans `config.toml`. Nommer
+les dix plus grands groupes suffit souvent.
+
+![La page des personnes : le plus grand groupe nommé Chloé, le nom relu dans config.toml en haut de la page, ses sept visages en dessous ; puis le groupe 2 et le groupe 3, pas encore nommés, chacun avec son champ pour taper un nom et ses boutons pour nommer, nommer avec d'autres ou ignorer le groupe](../images/people.webp)
+
+Pour ranger les événements où quelqu'un figure, ajoutez une règle **sous** vos règles de dates
+et de lieux (sinon elle prend tout événement où Chloé figure) :
 
 ```toml
 [[classify.rules]]
@@ -177,44 +223,53 @@ names = ["Chloé"]
 category = "Personnes/Chloé"
 ```
 
-Placez-la **sous** vos règles de dates et de lieux : sinon elle prend tout événement où Chloé
-figure. Les visages restent dans le cache, jamais envoyés ; `mh people --forget` les supprime
-tous. Plus tard, `mh audit --people` cherche les visages des nouvelles photos avec l'audit.
-Détails : [trier par personne](10-sort-by-person.md), [les personnes](../reference-people.md).
+??? info "Détails"
+
+    L'outil apporte ses propres modèles de visages (39 Mo, téléchargés une fois). Sur la page,
+    `x` choisit plusieurs groupes de la même personne, × retire un visage, `i` ignore des
+    inconnus, `y` confirme une suggestion « Chloé ? ». Les visages restent dans le cache, jamais
+    envoyés ; `mh people --forget` les supprime tous. Plus tard, `mh audit --people` cherche les
+    visages des nouvelles photos avec l'audit. Plus : [trier par personne](10-sort-by-person.md),
+    [les personnes](../reference-people.md).
 
 ## 7. Les sujets, avec une IA locale (facultatif)
 
-> 🤖 **Toute cette étape demande Ollama installé sur votre ordinateur.** Sans lui, sautez-la :
-> les dates, les lieux et les personnes rangent déjà l'essentiel.
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-ai">🤖 IA locale</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
 Les photos dans des dossiers qui ne portent qu'une date (`DCIM`, `Juillet 2016`) n'ont pas de
-sujet. Un modèle de vision **sur votre ordinateur** peut dire ce qu'elles montrent :
+sujet. Un modèle de vision **sur votre ordinateur** peut dire ce qu'elles montrent. Sans lui,
+sautez cette étape : les dates, les lieux et les personnes rangent déjà l'essentiel.
 
 1. Installez [Ollama](https://ollama.com), puis un modèle qui voit les images :
    `ollama pull qwen2.5vl:7b`.
 2. Indiquez-le dans `config.toml`, avec une règle `subject`, en bas de la liste :
 
-   ```toml
-   [classify.ai]
-   url = "http://host.docker.internal:11434"
-   model = "qwen2.5vl:7b"
+    ```toml
+    [classify.ai]
+    url = "http://host.docker.internal:11434"
+    model = "qwen2.5vl:7b"
 
-   [[classify.rules]]
-   name = "Sujet"
-   match = "subject"
-   categories = [
-       "École = classe, excursions, spectacles et fêtes de l'école",
-       "Animaux = un animal de compagnie ou un animal comme sujet principal",
-   ]
-   ```
+    [[classify.rules]]
+    name = "Sujet"
+    match = "subject"
+    categories = [
+        "École = classe, excursions, spectacles et fêtes de l'école",
+        "Animaux = un animal de compagnie ou un animal comme sujet principal",
+    ]
+    ```
 
-3. 🤖 Mesurez le coût sur quelques photos : `mh classify --sample 50`.
+3. Mesurez le coût sur quelques photos : `mh classify --sample 50`.
 
-Seules les photos qu'aucune autre règle n'a rangées sont envoyées, quelques-unes par événement,
-au seul `url` que vous indiquez. Avec WSL ou Linux sans Docker Desktop, voyez la page détaillée.
-Détails : [nommer les sujets avec un modèle local](08-subjects-from-a-local-model.md).
+??? info "Détails"
+
+    Seules les photos qu'aucune autre règle n'a rangées sont envoyées, quelques-unes par
+    événement, au seul `url` que vous indiquez. Avec WSL ou Linux sans Docker Desktop, voyez la
+    page détaillée. Plus : [nommer les sujets avec un modèle
+    local](08-subjects-from-a-local-model.md).
 
 ## 8. Relancer la proposition
+
+<span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
 Après vos règles, vos lieux, vos personnes, relancez l'étape 1 :
 
@@ -222,135 +277,74 @@ Après vos règles, vos lieux, vos personnes, relancez l'étape 1 :
 mh classify
 ```
 
-Les modifications déjà faites dans l'ancien classeur et dans `review-sort` sont reprises. Le
-tableau *Pourquoi* compte les fichiers que chaque règle a décidés ; une règle listée sous
-*Règles qui n'ont rien décidé* est placée trop bas, ou ne reconnaît rien. Corrigez encore
-(étapes 2 et 3), autant de fois qu'il le faut : rien ne bouge avant `sort`.
+Les modifications déjà faites dans l'ancien classeur et dans `review-sort` sont reprises.
+Corrigez encore (étapes 2 et 3), autant de fois qu'il le faut : rien ne bouge avant `sort`.
+
+??? info "Détails"
+
+    Le tableau *Pourquoi* compte les fichiers que chaque règle a décidés ; une règle listée sous
+    *Règles qui n'ont rien décidé* est placée trop bas, ou ne reconnaît rien.
 
 ## 9. Trier
+
+<span class="mh-badge mh-undo">↩️ Annulable</span>
+
+Déplacez les fichiers comme le dit le classeur :
 
 ```powershell
 mh sort
 ```
 
-Pour `sort`, `mh` monte vos dossiers en écriture (`sort` déplace des fichiers) et ajoute le
-journal et la quarantaine. `sort` prend le classeur du dernier `classify`, le vérifie, dit combien de
-modifications il a lues (pas assez ? le classeur n'était pas enregistré) et demande
-confirmation : répondez `o`. Il finit en prouvant que rien n'est perdu : autant de fichiers,
-de la même taille, avant et après. Détails : [trier](07-sort.md).
+`sort` dit combien de modifications il a lues (pas assez ? le classeur n'était pas enregistré)
+et demande confirmation : répondez `o`. Il finit en prouvant que rien n'est perdu : autant de
+fichiers, de la même taille, avant et après.
+
+??? info "Détails"
+
+    Pour `sort`, `mh` monte vos dossiers en écriture (`sort` déplace des fichiers) et ajoute le
+    journal et la quarantaine. `sort` prend le classeur du dernier `classify` et le vérifie avant
+    de rien déplacer. Plus : [trier](07-sort.md).
 
 ## 10. Vérifier, ou annuler
+
+<span class="mh-badge mh-undo">↩️ undo remet en place</span>
 
 ```powershell
 explorer "C:\Photos"
 ```
 
 Vous changez d'avis ? `mh undo` : chaque fichier revient où il était. Un `classify` relancé après
-un tri ne propose pas ailleurs ce qui est déjà rangé. Détails : [changer d'avis](07-sort.md#changer-davis).
+un tri ne propose pas ailleurs ce qui est déjà rangé. Plus : [changer d'avis](07-sort.md#changer-davis).
 
 ## 11. Les albums (facultatif)
 
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-undo">↩️ Annulable</span>
+
 Une photo de Noël qui est aussi parmi vos plus belles ? Un album la met dans un second dossier
-sans la copier : un lien physique, aucune place prise.
+sans la copier : un lien physique, aucune place prise. La première ligne montre ce qu'il ferait,
+la seconde crée l'album dans `C:\Photos\Albums\Noël` :
 
 ```powershell
 mh album "Noël" --category Noël
 mh album "Noël" --category Noël --apply
 ```
 
-La première ligne montre ce qu'il ferait, la seconde crée l'album dans `C:\Photos\Albums\Noël`.
-Ce qu'il rassemble : `--category`, `--event`, `--rule`, ou `--rating 4` (au moins 4 étoiles dans
-Windows), ensemble si vous voulez (`--category Noël --rating 4`). `mh undo` supprime ses liens,
-jamais une photo. Détails : [albums](12-albums.md).
+??? info "Détails"
 
-## Retrouver
-
-## 12. Donner des mots à vos photos
-
-```powershell
-mh tags
-```
-
-En quelques secondes, chaque photo et vidéo reçoit les mots de ses dossiers et de son nom
-(`2022/Durbuy - ours` donne `Durbuy`, `ours`), de sa date (année, mois, saison, Noël, vos règles
-de dates) et de son lieu (votre lieu, la ville et le pays les plus proches). Ils restent dans le
-cache, jamais dans vos photos.
-
-Cette commande ne demande aucune IA. Avec Ollama ([étape 7](#7-les-sujets-avec-une-ia-locale-facultatif)),
-la même commande ajoute aussi ce que **montre** chaque photo (« montagne », « neige »,
-« gâteau ») :
-
-> 🤖 **IA locale requise** : seulement si `[classify.ai] model` est rempli dans `config.toml`.
-> Sinon, `tags` le dit en une ligne et s'en tient aux dossiers, noms, dates et lieux.
-
-```powershell
-mh tags --sample 20
-mh tags
-```
-
-Environ 2 secondes par photo, donc souvent une nuit ou plus : `--sample 20` mesure d'abord ;
-Ctrl+C arrête, le suivant reprend, les plus récentes d'abord. Ses réponses servent aussi à la
-règle `subject`, jamais demandées deux fois.
-Détails : [les tags](../reference-tags.md).
-
-## 13. Retrouver une photo : `search`
-
-```powershell
-mh search
-```
-
-Ouvrez `http://127.0.0.1:8088/` : tapez ce dont vous vous souvenez, la grille montre les photos,
-les meilleures d'abord ; Entrée en agrandit une. Filtres : années, une partie du chemin, une
-source de mots.
-
-| Vous tapez | Elle trouve |
-|---|---|
-| `Chloé montagne` | Chloé (étape 6) sur une photo où « montagne » vient d'un dossier ou d'un nom (`Vacances montagne`), ou, 🤖 avec une IA locale, de ce que montre la photo (étape 12). |
-| `person:"Mamie Jeanne"` | Le nom parmi les personnes seulement. |
-| `neige 2008` | La neige de 2008 : l'année est un mot de la date. |
-| `place:durbuy` | Le mot parmi les lieux seulement. |
-| `anniv*`, `"bord de mer"` | Un début de mot, une expression. |
-
-Sans navigateur, `mh search Chloé montagne` affiche les premiers résultats en tableau. De
-nouvelles photos ? `mh audit` puis `mh tags` d'abord. Détails : [`search`](../commands/search.md).
-
-## 14. Emporter les mots dans un autre logiciel photo (facultatif)
-
-Vous voulez les mêmes mots dans digiKam, darktable, Lightroom ou Immich ?
-
-```powershell
-mh xmp
-mh xmp --apply
-```
-
-La première ligne montre ce qu'il écrirait ; la seconde écrit un fichier compagnon `.xmp` à côté
-de chaque photo (`IMG_1.jpg.xmp`) : la photo elle-même n'est jamais modifiée, un `.xmp` déjà là
-est complété, jamais remplacé. Les noms des personnes n'y vont que si vous ajoutez `person` à
-`[tags] xmp_sources`. `mh undo` retire ce qu'il a écrit. Détails : [emporter les mots avec les
-photos](../reference-tags.md#emporter-les-mots-avec-les-photos--xmp).
-
-## 15. Répondre à vos propres questions dans Excel (facultatif)
-
-```powershell
-mh inventory
-```
-
-Un classeur `inventory.xlsx`, dans vos rapports : chaque photo et vidéo avec sa date, son
-appareil, sa position, sa taille, des mots de qualité (*flou*, *petit*) et d'exposition
-(*sombre*, *clair*), et ses mots de `tags`. Lu depuis le cache seul, en secondes : filtrez,
-triez, comptez. `--format csv` pour un fichier CSV. Détails : [le classeur
-d'inventaire](../reference-inventory.md).
+    Ce qu'il rassemble : `--category`, `--event`, `--rule`, ou `--rating 4` (au moins 4 étoiles
+    dans Windows), ensemble si vous voulez (`--category Noël --rating 4`). `mh undo` supprime ses
+    liens, jamais une photo. Plus : [albums](12-albums.md).
 
 ## Plus tard : de nouvelles photos
 
 Le même chemin, en plus court, car le cache se souvient de tout : `mh audit` et `mh clean`
-([nettoyer en bref](../clean/quick-guide.md)), `mh people` pour les nouveaux visages, `mh tags`,
-puis `mh classify`, le classeur et `mh sort`. Ce qui est déjà rangé reste à sa place. Perdu ?
+([nettoyer en bref](../clean/quick-guide.md)), `mh people` pour les nouveaux visages, puis
+`mh classify`, le classeur et `mh sort`. Ce qui est déjà rangé reste à sa place. Perdu ?
 `mh status` dit où vous en êtes, et si la dernière proposition a été triée.
 
 ## Vous avez fait le tour
 
-Chaque commande du tri et de la recherche, et l'étape de cette page qui la montre :
+Chaque commande du tri, et l'étape de cette page qui la montre :
 
 | Commande | Étape | Ce qu'elle fait |
 |---|---|---|
@@ -359,50 +353,44 @@ Chaque commande du tri et de la recherche, et l'étape de cette page qui la mont
 | [`places`](../commands/places.md) | 5 | Nomme vos lieux sur une carte. |
 | [`people`](../commands/people.md) | 6 | Trouve et nomme les visages ; `--forget` les supprime. |
 | [`sort`](../commands/sort.md) | 9 | Déplace les fichiers comme le dit le classeur. |
-| [`undo`](../commands/undo.md) | 10, 11, 14 | Annule un tri, un album, des fichiers `.xmp`. |
+| [`undo`](../commands/undo.md) | 10, 11 | Annule un tri, un album. |
 | [`album`](../commands/album.md) | 11 | Une photo dans plusieurs dossiers, sans copie. |
-| [`tags`](../commands/tags.md) | 12 | Donne des mots à chaque photo et vidéo ; 🤖 ce qu'elles montrent, avec une IA locale seulement. |
-| [`search`](../commands/search.md) | 13 | Retrouve une photo par un mot, un lieu, une année, une personne. |
-| [`xmp`](../commands/xmp.md) | 14 | Écrit les mots dans des fichiers compagnons `.xmp`. |
-| [`inventory`](../commands/inventory.md) | 15 | Chaque photo et vidéo dans un classeur Excel. |
 | [`status`](../commands/status.md) | Plus tard | Dit où vous en êtes et la prochaine étape. |
 
-Les autres commandes trouvent et nettoient les doublons (`audit`, `clean`, `review`, `purge`,
-`history`, `crosscheck`, `reports`, `config`, `launcher`) : **[nettoyer en
-bref](../clean/quick-guide.md)**. Un mot vous échappe ? [Les mots de ce
-guide](../reference-glossary.md). Un message d'erreur ? [Dépannage](../reference-troubleshooting.md).
+Pour retrouver une photo par un mot, un lieu, une année ou une personne (`tags`, `search`, `xmp`,
+`inventory`) : **[retrouver en bref](../find/quick-guide.md)**. Pour trouver et nettoyer les
+doublons (`audit`, `clean`, `review`, `purge`…) : **[nettoyer en bref](../clean/quick-guide.md)**.
+Un mot vous échappe ? [Les mots de ce guide](../reference-glossary.md). Un message d'erreur ?
+[Dépannage](../reference-troubleshooting.md).
 
-<details>
-<summary>Sans <code>mh</code> : les commandes complètes</summary>
+??? note "Sans `mh` : les commandes complètes"
 
-Pour celles qui ne modifient rien (`classify`, `tags`, `inventory`, et `xmp` sans `--apply`), en
-lecture seule ; ajoutez `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page
-(`review-sort`, `places`, `people`, `search`) :
+    Pour celles qui ne modifient rien (`classify`), en lecture seule ; ajoutez
+    `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page (`review-sort`,
+    `places`, `people`) :
 
-```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
-  -v "$HOME\media-hygiene\reports:/reports" `
-  -v "$HOME\media-hygiene\config:/config" `
-  cavo789/media-hygiene --locale fr classify
-```
+    ```powershell
+    docker run --rm -it `
+      -v "C:\Photos:/data/c/Photos:ro" `
+      -v media-hygiene-cache:/cache `
+      -v "$HOME\media-hygiene\reports:/reports" `
+      -v "$HOME\media-hygiene\config:/config" `
+      cavo789/media-hygiene --locale fr classify
+    ```
 
-Pour `sort`, `undo`, `album --apply` et `xmp --apply` : `:ro` est retiré, `/journal` et
-`/quarantine` sont ajoutés ; remplacez `sort` par la commande de l'étape :
+    Pour `sort`, `undo` et `album --apply` : `:ro` est retiré, `/journal` et `/quarantine` sont
+    ajoutés ; remplacez `sort` par la commande de l'étape :
 
-```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos" `
-  -v media-hygiene-cache:/cache `
-  -v "$HOME\media-hygiene\reports:/reports" `
-  -v "$HOME\media-hygiene\config:/config" `
-  -v "$HOME\media-hygiene\journal:/journal" `
-  -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr sort
-```
-
-</details>
+    ```powershell
+    docker run --rm -it `
+      -v "C:\Photos:/data/c/Photos" `
+      -v media-hygiene-cache:/cache `
+      -v "$HOME\media-hygiene\reports:/reports" `
+      -v "$HOME\media-hygiene\config:/config" `
+      -v "$HOME\media-hygiene\journal:/journal" `
+      -v "$HOME\media-hygiene\quarantine:/quarantine" `
+      cavo789/media-hygiene --locale fr sort
+    ```
 
 ---
 

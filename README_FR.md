@@ -77,6 +77,14 @@ journalisée, tout est annulable.
 La [documentation](https://cavo789.github.io/media-hygiene/fr/) vous accompagne pas à pas, avec
 une recherche. Chaque étape ajoute une seule chose à la commande de l'étape précédente.
 
+**Trois guides, une page chacun**, le strict minimum d'abord :
+
+- 🧹 [Nettoyer en bref](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/) — libérer la place des copies en double, sans risque.
+- 🗂️ [Trier en bref](https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/) — une arborescence rangée, proposée, corrigée par vous, puis appliquée.
+- 🔎 [Retrouver en bref](https://cavo789.github.io/media-hygiene/fr/find/quick-guide/) — retrouver une photo par une personne, un lieu, une année ou un mot.
+
+Ou pas à pas, une option à la fois :
+
 **Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite (pas encore
 de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/00-install-docker/) d'abord) :
 
@@ -87,7 +95,7 @@ de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/
 3. [Plusieurs dossiers et disques](https://cavo789.github.io/media-hygiene/fr/start/03-several-folders/) : `C:` et `D:`
    ensemble, le dossier courant, WSL.
 
-**Nettoyer les doublons** — pressé ? [Nettoyer en bref](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/), chaque fonctionnalité dans l'ordre, sur une page.
+**Nettoyer les doublons**
 
 4. [Le rapport HTML](https://cavo789.github.io/media-hygiene/fr/clean/04-html-report/) : les images, les paires de dossiers, la
    preuve.
@@ -110,7 +118,7 @@ de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/
 13. [Un second avis](https://cavo789.github.io/media-hygiene/fr/clean/13-second-opinion/) : comparer avec Czkawka, un outil
     indépendant.
 
-**Trier les photos** (nettoyez d'abord les doublons) — pressé ? [Trier en bref](https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/), chaque fonctionnalité dans l'ordre, sur une page.
+**Trier les photos** (nettoyez d'abord les doublons)
 
 4. [Proposer une arborescence](https://cavo789.github.io/media-hygiene/fr/sort/04-classify/) — `classify` propose une
    place pour chaque fichier, et ne modifie rien.

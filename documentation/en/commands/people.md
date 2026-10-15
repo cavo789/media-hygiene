@@ -113,6 +113,7 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 
 ## Go further
 
+- [Find in short](../find/quick-guide.md)
 - [People](../reference-people.md): how it works, naming, the settings, what comes next.
 - [Sorting, step 10: sort by person](../sort/10-sort-by-person.md): from the named groups to
   sorted folders.

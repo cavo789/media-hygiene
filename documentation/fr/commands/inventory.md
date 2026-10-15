@@ -64,6 +64,7 @@ dossier a été audité complètement pour la dernière fois.
 
 ## Pour aller plus loin
 
+- [Retrouver en bref](../find/quick-guide.md)
 - [Le classeur d'inventaire](../reference-inventory.md) : chaque colonne, les étiquettes de
   qualité et d'exposition.
 - [2. Garder le cache](../start/02-keep-the-cache.md)

@@ -85,6 +85,7 @@ leurs dossiers, noms, dates et lieux.*
 
 ## Pour aller plus loin
 
+- [Retrouver en bref](../find/quick-guide.md)
 - [Les tags](../reference-tags.md) : chaque source, les réglages, la longue exécution.
 - [Trier, étape 8 : un modèle de vision local](../sort/08-subjects-from-a-local-model.md)
 - Ensuite : [`search`](search.md), [`xmp`](xmp.md), [`inventory`](inventory.md).

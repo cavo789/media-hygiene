@@ -12,6 +12,35 @@ need: after step 1 you already know where your duplicates are.
 erases, the quarantine, after asking you. Details:
 [how your photos stay safe](reference-safety.md).
 
+## Three guides, one page each
+
+What do you want to do? Each guide takes you from the first command to the result, one command
+per step, the strict minimum shown first.
+
+<div class="grid cards" markdown>
+
+-   🧹 **[Clean in short](clean/quick-guide.md)**
+
+    ---
+
+    Free the space of the duplicate copies, safely. Everything can be undone until the last step.
+
+-   🗂️ **[Sort in short](sort/quick-guide.md)**
+
+    ---
+
+    A tidy tree, `year/category` or yours: proposed, corrected by you, then moved. Undoable.
+
+-   🔎 **[Find in short](find/quick-guide.md)**
+
+    ---
+
+    Find a photo by a person, a place, a year or a word, in your browser. Nothing moves.
+
+</div>
+
+Rather understand each option? The step-by-step guide below adds one thing at a time.
+
 ## Start here
 
 Whatever you want to do next, the first three steps are the same: they show what your
@@ -27,8 +56,6 @@ few minutes, once.
 ## Clean the duplicates
 
 Free the space the extra copies take, safely, and keep the best shots.
-
-👉 **In a hurry?** [Clean in short](clean/quick-guide.md): the whole path, every feature in order, on one page.
 
 **See them** (nothing is changed):
 
@@ -60,8 +87,6 @@ Free the space the extra copies take, safely, and keep the best shots.
 
 Give your photos a tidy tree, `year/category` or the one you choose. Clean the duplicates first:
 otherwise both copies are sorted.
-
-👉 **In a hurry?** [Sort in short](sort/quick-guide.md): the whole path, every feature in order, on one page.
 
 4. [Propose a tidy tree](sort/04-classify.md): `classify` proposes a place for every file, and
    changes nothing.

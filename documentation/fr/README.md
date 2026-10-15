@@ -13,6 +13,37 @@ agissent (`clean`, `sort`, `album`, `xmp`, `undo`) ne font que déplacer des fic
 un autre, et peuvent toutes être annulées. Seul `purge` efface, la quarantaine, après vous l'avoir
 demandé. Détails : [comment vos photos restent en sécurité](reference-safety.md).
 
+## Trois guides, une page chacun
+
+Que voulez-vous faire ? Chaque guide vous emmène de la première commande au résultat, une
+commande par étape, le strict minimum montré d'abord.
+
+<div class="grid cards" markdown>
+
+-   🧹 **[Nettoyer en bref](clean/quick-guide.md)**
+
+    ---
+
+    Libérer la place des copies en double, sans risque. Tout s'annule jusqu'à la dernière étape.
+
+-   🗂️ **[Trier en bref](sort/quick-guide.md)**
+
+    ---
+
+    Une arborescence bien rangée, `année/catégorie` ou la vôtre : proposée, corrigée par vous,
+    puis appliquée. Annulable.
+
+-   🔎 **[Retrouver en bref](find/quick-guide.md)**
+
+    ---
+
+    Retrouver une photo par une personne, un lieu, une année ou un mot, dans votre navigateur.
+    Rien ne bouge.
+
+</div>
+
+Vous préférez comprendre chaque option ? Le guide pas à pas ci-dessous ajoute une chose à la fois.
+
 ## Pour commencer
 
 Quoi que vous vouliez faire ensuite, les trois premières étapes sont les mêmes : elles
@@ -30,8 +61,6 @@ Linux : quelques minutes, une seule fois.
 ## Nettoyer les doublons
 
 Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.
-
-👉 **Pressé ?** [Nettoyer en bref](clean/quick-guide.md) : le parcours complet, chaque fonctionnalité dans l'ordre, sur une page.
 
 **Les voir** (rien n'est modifié) :
 
@@ -65,8 +94,6 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 
 Donner à vos photos une arborescence rangée, `année/catégorie` ou celle que vous choisissez.
 Nettoyez d'abord les doublons : sinon les deux copies sont triées.
-
-👉 **Pressé ?** [Trier en bref](sort/quick-guide.md) : le parcours complet, chaque fonctionnalité dans l'ordre, sur une page.
 
 4. [Proposer une arborescence](sort/04-classify.md) : `classify` propose une place pour chaque
    fichier, et ne modifie rien.

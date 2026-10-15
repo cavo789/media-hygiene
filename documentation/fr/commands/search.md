@@ -87,6 +87,7 @@ fichiers en tableau.
 
 ## Pour aller plus loin
 
+- [Retrouver en bref](../find/quick-guide.md)
 - [Les tags : retrouver une photo par ses mots](../reference-tags.md#retrouver-une-photo-par-ses-mots--search)
 
 ## L'aide intégrée

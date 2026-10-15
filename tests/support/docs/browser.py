@@ -25,6 +25,11 @@ SECOND_SERIES_JS: Final = (SCRIPTS / "second_series.js").read_text(encoding="utf
 EAGER_JS: Final = (SCRIPTS / "eager_images.js").read_text(encoding="utf-8")
 # The bottom of the first group of a classify year page.
 FIRST_GROUP_JS: Final = (SCRIPTS / "first_group.js").read_text(encoding="utf-8")
+# The width and height of a terminal SVG's viewBox.
+VIEW_BOX_JS: Final = (
+    "() => { const box = document.querySelector('svg').viewBox.baseVal;"
+    " return [box.width, box.height]; }"
+)
 REVIEW_WIDTH: Final = 1600
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
@@ -153,6 +158,12 @@ def terminal(page: Page, name: str) -> None:
         name: The SVG file name in /shots, without extension.
     """
     page.goto(f"file://{SHOTS}/{name}.svg")
+    # The SVG has a viewBox only: in a 1180x1000 window, it would sit between two white
+    # bands. A window of its own proportions keeps the terminal alone.
+    width, height = page.evaluate(VIEW_BOX_JS)
+    page.set_viewport_size(
+        {"width": REPORT_WIDTH, "height": round(REPORT_WIDTH * height / width)}
+    )
     page.wait_for_timeout(3 * PAUSE_MS)
     page.screenshot(path=SHOTS / f"{name}.png", clip=page.locator("svg").bounding_box())
 

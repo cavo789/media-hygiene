@@ -73,6 +73,14 @@ you ask for it: the copy kept stays). More in
 The [documentation](https://cavo789.github.io/media-hygiene/) walks you through, one step at a
 time, with a search box. Each step adds one thing to the command of the step before.
 
+**Three guides, one page each**, the strict minimum first:
+
+- 🧹 [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/) — free the space of the duplicate copies, safely.
+- 🗂️ [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/) — a tidy tree, proposed, corrected by you, then moved.
+- 🔎 [Find in short](https://cavo789.github.io/media-hygiene/find/quick-guide/) — find a photo by a person, a place, a year or a word.
+
+Or step by step, one option at a time:
+
 **Start here** — the same three first steps, whatever you do next (no Docker yet?
 [Install Docker](https://cavo789.github.io/media-hygiene/start/00-install-docker/) first):
 
@@ -83,7 +91,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `C:` and `D:` together,
    the current folder, WSL.
 
-**Clean the duplicates** — in a hurry? [Clean in short](https://cavo789.github.io/media-hygiene/clean/quick-guide/), every feature in order, on one page.
+**Clean the duplicates**
 
 4. [The HTML report](https://cavo789.github.io/media-hygiene/clean/04-html-report/) — the pictures, the folder pairs, the
    proof.
@@ -106,7 +114,7 @@ time, with a search box. Each step adds one thing to the command of the step bef
 13. [A second opinion](https://cavo789.github.io/media-hygiene/clean/13-second-opinion/) — compare with Czkawka, an
     independent tool.
 
-**Sort the photos** (clean the duplicates first) — in a hurry? [Sort in short](https://cavo789.github.io/media-hygiene/sort/quick-guide/), every feature in order, on one page.
+**Sort the photos** (clean the duplicates first)
 
 4. [Propose a tidy tree](https://cavo789.github.io/media-hygiene/sort/04-classify/) — `classify` proposes a place
    for every file, and changes nothing.
