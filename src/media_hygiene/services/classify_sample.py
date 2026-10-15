@@ -63,8 +63,9 @@ def run_sample(
         The sample and its timings.
     """
     count, answering = request
-    candidates = dict.fromkeys(c.path for unit in plan.units for c in unit.candidates)
-    fresh = [path for path in candidates if step.store.get(plan.versions[path]) is None]
+    # The plan's own samples: two photos of the same part of an event would leave
+    # one of them unused by the full run, and its count one too high.
+    fresh = [photo.path for photo in plan.missing]
     chosen = secrets.SystemRandom().sample(fresh, min(count, len(fresh)))
     if chosen:
         step.describe([plan.versions[path] for path in chosen], answering)

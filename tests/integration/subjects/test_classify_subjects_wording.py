@@ -42,7 +42,7 @@ def test_the_cache_and_the_groups_without_a_subject_are_counted(
     result = run(cli, "classify")
     assert result.exit_code == 0, result.output
     text = " ".join(result.output.split())
-    assert "7 to describe with vision (2 already in the cache)" in text
+    assert "7 to describe with vision (2 already in the cache)" in text, result.output
     assert "10 files sorted by what the model saw; 1 group without a subject" in text
     assert "your other rules, else To sort." in text
 
@@ -54,5 +54,5 @@ def test_no_describe_announces_no_work(cli: CliRunner, fake: FakeOllama) -> None
     assert result.exit_code == 0, result.output
     text = " ".join(result.output.split())
     assert "to describe with" not in text
-    assert "7 samples not described yet (--no-describe)" in text
+    assert "7 samples not described yet (--no-describe)" in text, result.output
     assert fake.described() == 2
