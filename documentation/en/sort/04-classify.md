@@ -77,8 +77,8 @@ Event neighbours, Christmas, New Year.
 💡 Check their dates, their patterns and their order in config.toml.
 To check or to sort: 3 files in 1 event.
 💡 Nothing was changed: 'classify' only proposes.
-✅ Workbook to edit: /reports/20261015-153425-classify/classify.xlsx
-✅ Report with the photos: /reports/20261015-153425-classify/report.html
+✅ Workbook to edit: /reports/20261015-162209-classify/classify.xlsx
+✅ Report with the photos: /reports/20261015-162209-classify/report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

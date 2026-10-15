@@ -26,4 +26,3 @@ Nothing to run unattended.
 |----|-------|------|
 | 0129 | Docker Hub overview: published from README.md by CI at each release | [PARTIAL_0129-dockerhub-description-from-readme.md](PARTIAL/PARTIAL_0129-dockerhub-description-from-readme.md) |
 | 0149 | `clean`: compare and move several copies at a time | [PARTIAL_0149-clean-several-copies-at-a-time.md](PARTIAL/PARTIAL_0149-clean-several-copies-at-a-time.md) |
-| 0171 | `sort`: the moves cost 9 ms per file on Windows, undo 3.8 ms | [PARTIAL_0171-sort-moves-cost-per-file.md](PARTIAL/PARTIAL_0171-sort-moves-cost-per-file.md) |
