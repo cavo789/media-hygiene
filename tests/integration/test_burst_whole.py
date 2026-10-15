@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions import parallel
 from media_hygiene.report.decisions import read_decisions
 from tests.integration.test_burst_review import shots, write_decisions
 from tests.support.cli import run
@@ -17,8 +18,13 @@ from tests.support.review import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    import pytest
     from typer.testing import CliRunner
 
+    from media_hygiene.actions.clean_step import Planned
+    from media_hygiene.actions.parallel import Runner
     from media_hygiene.paths.locations import Locations
 
 RAFALE = "c/Family Photos/Rafale"
@@ -67,3 +73,29 @@ def test_a_shot_kept_for_its_copies_comes_back_with_them(
     assert run(cli, "undo").exit_code == 0
     after = sorted(p.relative_to(data) for p in data.rglob("*") if p.is_file())
     assert after == before
+
+
+def test_the_copy_is_checked_before_its_keeper_leaves(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The copy's stage ends before the shots move: no race with its byte check."""
+    data = locations.data_dir
+    copy = data / "d/backup/Rafale/IMG_200.jpg"
+    copy.parent.mkdir(parents=True)
+    shutil.copy2(data / RAFALE / SHOTS[0], copy)
+    stages: list[set[str]] = []
+
+    def recorded(actions: Iterable[Planned], runner: Runner[Planned]) -> None:
+        planned = list(actions)
+        stages.append({file.path.name for file, _label, _action in planned})
+        parallel.run_all(planned, runner)
+
+    monkeypatch.setattr("media_hygiene.actions.clean.run_all", recorded)
+    write_decisions(locations, [], shots(0, 1, 2, 3))
+    assert run(cli, "clean", "--yes", "--decisions", "decisions.json").exit_code == 0
+    copies = next(n for n, stage in enumerate(stages) if "IMG_200.jpg" in stage)
+    shots_set_aside = next(
+        n for n, stage in enumerate(stages) if "IMG_203.jpg" in stage
+    )
+    assert copies < shots_set_aside
+    assert not copy.exists()

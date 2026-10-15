@@ -51,7 +51,7 @@ class CleanExecutor:
         self._labels = clean_labels(delete_copies=context.delete_copies)
 
     def run(self, plan: CleanPlan) -> Outcome:
-        """Execute every action of the plan.
+        """Execute the plan: copies first, then what may be their keeper (a shot).
 
         Args:
             plan: What to clean.
@@ -74,7 +74,8 @@ class CleanExecutor:
             self._context.workers,
             stopping=stopping_on(self._context.progress),
         )
-        run_all(actions, runner)
+        run_all(actions[: plan.removable_count], runner)
+        run_all(actions[plan.removable_count :], runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.
         run_all(orphans, replace(runner, workers=1))
         self._context.progress.stop()
