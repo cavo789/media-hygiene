@@ -50,3 +50,22 @@ answered: it can use the same runner, group by group.
   Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/main/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 7 -Count 4000
   ```
+
+## Windows measurement (2026-10-15)
+
+Measured by the maintainer (`measures-20261015-1429`, `-Only 7 -Count 4000`: 8,000 files,
+4,755 MB, Docker Desktop, image built from `iterate/2026-10-15`; one run of each, 7b before 7d):
+
+| Step | `Duration` (moves) | Wall time (`docker run`) |
+|---|---|---|
+| 7d `sort`, one at a time (`[clean] workers = 1`) | 1 min 22 s (10.3 ms/file) | 125.1 s |
+| 7b `sort`, 4 at once (default) | 1 min 10 s (8.8 ms/file) | 111.8 s |
+| 7c / 7e `undo` of the sort (default 4) | 28 s (3.5 ms/file) | 31.3 / 31.9 s |
+
+- `sort`'s moves: 82 s → 70 s, **−15 %** (measured), far from the −69 % estimated from the
+  simulation: Docker Desktop's renames and links overlap much less than its reads (0149). The
+  estimate was wrong; 4 workers still help, so they stay.
+- `undo` of a sort: 9.3 ms/file on 2026-10-14 (37 s for 4,000, one at a time) → 3.5 ms/file
+  (−62 % per file; different runs and sizes: indicative). That is 0161's gain.
+- About 42 s of each `sort` run fall outside `Duration` (wall 111.8 s against 70 s), against
+  ≈ 3 s for `undo`: now larger than what the workers saved. Followed by 0168.
