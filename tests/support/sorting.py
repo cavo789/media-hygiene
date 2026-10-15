@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.sort import SortResult
+    from media_hygiene.services.sort_models import SortResult
 
 PHOTOS: Final = "c/Photos"
 PARTY: Final = f"{PHOTOS}/2016/Juillet 2016"

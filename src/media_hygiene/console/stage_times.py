@@ -1,4 +1,4 @@
-"""One line saying where an audit spent its time (`--verbosity verbose`)."""
+"""One line saying where an audit or a sort spent its time (`--verbosity verbose`)."""
 
 from __future__ import annotations
 
@@ -35,6 +35,12 @@ def stage_label(stage: Stage) -> str:
         Stage.SIMILAR: _("near duplicates"),
         Stage.COLOURS: _("colours"),
         Stage.STREAMS: _("same streams"),
+        Stage.PREPARE: _("plan checks"),
+        Stage.COUNTS: _("counts"),
+        Stage.MOVES: _("moves"),
+        Stage.FOLLOW: _("cache update"),
+        Stage.VERIFY: _("move checks"),
+        Stage.MANIFEST: _("manifest"),
     }
     return labels[stage]
 

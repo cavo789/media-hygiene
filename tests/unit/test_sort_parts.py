@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import signal
+from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -19,8 +20,9 @@ from media_hygiene.actions.sort_names import numbered
 from media_hygiene.cli.cmd_sort import _show_result
 from media_hygiene.console.advice import TipKind
 from media_hygiene.errors import MountError
+from media_hygiene.scan.stopwatch import Stage, StageTime
 from media_hygiene.services.interrupt import StopRequest
-from media_hygiene.services.sort import SortResult
+from media_hygiene.services.sort_models import SortResult
 from media_hygiene.services.sort_report import write_manifest
 from tests.support.runtime import make_runtime, output_of
 
@@ -140,6 +142,7 @@ def test_the_closing_summary_tells_what_went_wrong(locations: Locations) -> None
     )
     _show_result(runtime, result)
     text = " ".join(output_of(runtime).split())
+    assert "Time per step" not in text  # only with --verbosity verbose
     for expected in (
         "C:\\a.jpg: changed",
         "C:\\a.jpg: denied",
@@ -157,3 +160,92 @@ def test_the_closing_summary_tells_what_went_wrong(locations: Locations) -> None
     assert undo.kind is TipKind.SAFETY
     assert undo.command is not None
     assert undo.command.endswith("undo 20260930-100000")
+
+
+def reference_census(roots: list[Path], junk: frozenset[str]) -> Census:
+    """The census before 0170 (os.walk, three stats per file), kept as the reference."""
+    outer = [
+        root
+        for root in sorted(set(roots), key=lambda root: len(root.parts))
+        if not any(root != other and root.is_relative_to(other) for other in roots)
+    ]
+    files = size = 0
+    for root in outer:
+        for folder, _dirs, names in os.walk(root):
+            for name in names:
+                path = Path(folder, name)
+                if name.casefold() in junk or path.is_symlink() or not path.is_file():
+                    continue
+                files += 1
+                size += path.stat().st_size
+    return Census(files=files, bytes=size)
+
+
+def test_the_census_counts_what_it_counted_before(tmp_path: Path) -> None:
+    """Links to files and folders, a pipe, junk in any case, no root: as before."""
+    root = tmp_path / "root"
+    (root / "a" / "deep").mkdir(parents=True)
+    (root / "a" / "deep" / "x.jpg").write_bytes(b"12345")
+    (root / "b.jpg").write_bytes(b"12")
+    (root / "a" / "THUMBS.DB").write_bytes(b"junk")
+    (root / "a" / "to-file.jpg").symlink_to(root / "b.jpg")
+    (root / "to-folder").symlink_to(root / "a", target_is_directory=True)
+    (root / "broken.jpg").symlink_to(tmp_path / "nowhere")
+    os.mkfifo(root / "pipe")
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    (elsewhere / "y.jpg").write_bytes(b"1")
+    roots = [root, root / "a", elsewhere, tmp_path / "missing"]
+    junk = frozenset({"thumbs.db"})
+    assert census(roots, junk) == reference_census(roots, junk)
+    assert census(roots, junk) == Census(files=3, bytes=8)
+
+
+def test_the_census_reads_each_file_with_one_stat(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Neither `os.stat` nor `os.lstat` per file: the listing's entry gives the size."""
+    for index in range(5):
+        (tmp_path / f"{index}.jpg").write_bytes(b"1234")
+    calls: list[str] = []
+    real_stat, real_lstat = os.stat, os.lstat
+
+    def counted_stat(*args: object, **kwargs: object) -> os.stat_result:
+        calls.append("stat")
+        return real_stat(*args, **kwargs)  # type: ignore[arg-type]
+
+    def counted_lstat(*args: object, **kwargs: object) -> os.stat_result:
+        calls.append("lstat")
+        return real_lstat(*args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(os, "stat", counted_stat)
+    monkeypatch.setattr(os, "lstat", counted_lstat)
+    assert census([tmp_path], frozenset()) == Census(files=5, bytes=20)
+    assert not calls
+
+
+def test_a_folder_at_the_target_is_not_the_file_moved(tmp_path: Path) -> None:
+    """One `stat` still tells a file from a folder of the same name."""
+    (tmp_path / "folder.jpg").mkdir()
+    verified, problems = verify_moves(
+        [entry(tmp_path / "s", tmp_path / "folder.jpg")], str
+    )
+    assert verified == 0
+    assert "is not there" in problems[0]
+
+
+def test_a_verbose_sort_says_where_its_time_went(locations: Locations) -> None:
+    """`--verbosity verbose`: one line, each stage and its time (0170)."""
+    runtime = make_runtime(locations)
+    runtime = replace(runtime, output=replace(runtime.output, verbose=True))
+    result = SortResult(
+        "20260930-100000",
+        MoveOutcome(Outcome(2, 8, 0, (), ()), (), interrupted=False),
+        FolderReport(),
+        manifest(),
+        None,
+        (StageTime(Stage.COUNTS, 0.25), StageTime(Stage.MOVES, 70.0)),
+    )
+    _show_result(runtime, result)
+    text = " ".join(output_of(runtime).split())
+    assert "Time per step: counts 0.2 s · moves 1 min 10 s" in text

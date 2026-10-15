@@ -18,8 +18,8 @@ if TYPE_CHECKING:
     from media_hygiene.actions.sort_plan import SortPlan
     from media_hygiene.console.output import Output
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.sort import Prepared
     from media_hygiene.services.sort_inputs import SortInputs
+    from media_hygiene.services.sort_models import Prepared
 
 _TO_CHECK: Final = frozenset({Band.UNSURE})
 

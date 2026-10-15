@@ -68,4 +68,4 @@ Measured by the maintainer (`measures-20261015-1429`, `-Only 7 -Count 4000`: 8,0
 - `undo` of a sort: 9.3 ms/file on 2026-10-14 (37 s for 4,000, one at a time) → 3.5 ms/file
   (−62 % per file; different runs and sizes: indicative). That is 0161's gain.
 - About 42 s of each `sort` run fall outside `Duration` (wall 111.8 s against 70 s), against
-  ≈ 3 s for `undo`: now larger than what the workers saved. Followed by 0168.
+  ≈ 3 s for `undo`: now larger than what the workers saved. Followed by 0170 (filed as 0168, renumbered: main had a 0168).

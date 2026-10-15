@@ -4551,6 +4551,9 @@ msgstr ""
 msgid "cache"
 msgstr ""
 
+msgid "cache update"
+msgstr ""
+
 msgid "camera (EXIF)"
 msgstr ""
 
@@ -4608,6 +4611,9 @@ msgid "config.toml was written by {version}: {count} new setting since."
 msgid_plural "config.toml was written by {version}: {count} new settings since."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "counts"
+msgstr ""
 
 #, python-format
 msgid "cumulated: %(share)s%%"
@@ -4858,6 +4864,9 @@ msgstr ""
 msgid "listing"
 msgstr ""
 
+msgid "manifest"
+msgstr ""
+
 #, python-brace-format
 msgid "match = '{match}' needs {field}"
 msgstr ""
@@ -4896,6 +4905,9 @@ msgstr ""
 msgid "move between photos"
 msgstr ""
 
+msgid "move checks"
+msgstr ""
+
 msgid "move to the quarantine"
 msgstr ""
 
@@ -4928,6 +4940,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "moved to the quarantine"
+msgstr ""
+
+msgid "moves"
 msgstr ""
 
 msgid "name the groups of faces in your browser, with 'people'."
@@ -5058,6 +5073,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "place: {place}"
+msgstr ""
+
+msgid "plan checks"
 msgstr ""
 
 msgid "preferred folder"

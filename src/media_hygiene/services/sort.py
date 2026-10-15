@@ -7,7 +7,8 @@ every move is checked (`actions/manifest.py`).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+import time
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import JournalWriter, journal_file
@@ -23,49 +24,25 @@ from media_hygiene.actions.sort_folders import FolderReport, candidates, verdict
 from media_hygiene.actions.sort_moves import SortContext
 from media_hygiene.actions.sort_resume import moved_rows
 from media_hygiene.classify.workbook.edits import resolve
-from media_hygiene.errors import MountError
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.sort_guards import check_companions, check_destinations
+from media_hygiene.services.sort_models import Prepared, SortResult
 from media_hygiene.services.sort_report import (
     folder_rules,
+    manifest_or_error,
     source_roots,
-    write_manifest,
 )
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from pathlib import Path
 
     from media_hygiene.actions.journal import JournalEntry
     from media_hygiene.actions.sort import MoveOutcome
-    from media_hygiene.actions.sort_folders import FolderRules
-    from media_hygiene.actions.sort_plan import SortPlan
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort_inputs import SortInputs
-
-
-@dataclass(frozen=True, slots=True)
-class Prepared:
-    """A sort ready to run: its moves, and the folders it would remove."""
-
-    inputs: SortInputs
-    plan: SortPlan
-    rules: FolderRules
-    candidates: tuple[Path, ...]  # folders that may end up empty, deepest first
-    folders: FolderReport  # the prediction
-
-
-@dataclass(frozen=True, slots=True)
-class SortResult:
-    """What a sort run did, and the proof that nothing was lost."""
-
-    run_id: str
-    moves: MoveOutcome
-    folders: FolderReport
-    manifest: Manifest
-    manifest_file: Path | MountError | None  # None: no /reports mount
 
 
 class SortService:
@@ -95,7 +72,7 @@ class SortService:
         Returns:
             The sort, ready to run.
         """
-        runtime = self._runtime
+        runtime, started = self._runtime, time.monotonic()
         plan_id = inputs.plan.plan_id
         protected = runtime.settings.folders.protected
         context = PlanContext(
@@ -111,7 +88,8 @@ class SortService:
         found = () if keep_empty else tuple(candidates(sources, rules))
         gone = [move.source for move in plan.moves]
         predicted = FolderReport.of(verdicts(list(found), rules, gone))
-        return Prepared(inputs, plan, rules, found, predicted)
+        seconds = time.monotonic() - started
+        return Prepared(inputs, plan, rules, found, predicted, seconds)
 
     def execute(self, prepared: Prepared, stop: Callable[[], bool]) -> SortResult:
         """Move the files under a new run identifier, then prove nothing was lost.
@@ -123,30 +101,34 @@ class SortService:
         Returns:
             The run, what it did, and its manifest.
         """
-        runtime = self._runtime
-        journal_dir = runtime.locations.journal_dir
-        journal_dir.mkdir(parents=True, exist_ok=True)
-        run_id = new_run_id(journal_dir)
+        runtime, watch = self._runtime, Stopwatch()
+        watch.record(Stage.PREPARE, prepared.seconds)
+        runtime.locations.journal_dir.mkdir(parents=True, exist_ok=True)
+        run_id = new_run_id(runtime.locations.journal_dir)
         roots = (*source_roots(runtime, prepared.plan), *prepared.plan.roots)
-        before = census(roots, prepared.rules.junk)
-        moves, folders = self._act(prepared, run_id, stop)
-        self._follow(moves.moved)
-        verified, problems = verify_moves(moves.moved, runtime.mapper.to_host)
+        with watch.timing(Stage.COUNTS):
+            before = census(roots, prepared.rules.junk)
+        with watch.timing(Stage.MOVES):
+            moves, folders = self._act(prepared, run_id, stop)
+        with watch.timing(Stage.FOLLOW):
+            self._follow(moves.moved)
+        with watch.timing(Stage.VERIFY):
+            verified, problems = verify_moves(moves.moved, runtime.mapper.to_host)
+        with watch.timing(Stage.COUNTS):
+            after = census(roots, prepared.rules.junk)
         manifest = Manifest(
             run_id=run_id,
             plan_id=prepared.plan.plan_id,
             roots=tuple(runtime.mapper.to_host(root) for root in sorted(set(roots))),
             before=before,
-            after=census(roots, prepared.rules.junk),
+            after=after,
             moved=len(moves.moved),
             verified=verified,
             problems=problems,
         )
-        try:
-            written: Path | MountError | None = write_manifest(runtime, manifest)
-        except MountError as exc:  # the moves are over: only a warning
-            written = exc
-        return SortResult(run_id, moves, folders, manifest, written)
+        with watch.timing(Stage.MANIFEST):
+            written = manifest_or_error(runtime, manifest)
+        return SortResult(run_id, moves, folders, manifest, written, watch.times())
 
     def _act(
         self, prepared: Prepared, run_id: str, stop: Callable[[], bool]

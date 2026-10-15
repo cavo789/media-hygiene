@@ -20,6 +20,7 @@ from media_hygiene.i18n import install
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.scan.stopwatch import Stage
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
 from tests.support.docs.library import build_library as build_docs_library
@@ -67,6 +68,14 @@ def test_classify_edit_sort_then_undo_gives_the_tree_back(locations: Locations) 
     assert isinstance(result.manifest_file, Path)
     manifest = json.loads(result.manifest_file.read_text("utf-8"))
     assert manifest["before"] == manifest["after"]
+    assert [time.stage for time in result.stages] == [  # where the time went (0170)
+        Stage.PREPARE,
+        Stage.COUNTS,
+        Stage.MOVES,
+        Stage.FOLLOW,
+        Stage.VERIFY,
+        Stage.MANIFEST,
+    ]
     outcome = undo(runtime, result.run_id)
     assert not outcome.failed, outcome
     assert not outcome.skipped, outcome

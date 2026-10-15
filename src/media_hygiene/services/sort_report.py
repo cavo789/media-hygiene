@@ -99,3 +99,19 @@ def write_manifest(runtime: Runtime, manifest: Manifest) -> Path | None:
             writable_tip((reports_dir,)) if isinstance(exc, PermissionError) else None,
         ) from exc
     return target
+
+
+def manifest_or_error(runtime: Runtime, manifest: Manifest) -> Path | MountError | None:
+    """Write `manifest.json`, the error kept instead of raised: the moves are over.
+
+    Args:
+        runtime: Settings, mount points and output.
+        manifest: The proof of the run.
+
+    Returns:
+        The file, None without a persistent `/reports`, or why it was not written.
+    """
+    try:
+        return write_manifest(runtime, manifest)
+    except MountError as exc:  # only a warning now
+        return exc
