@@ -1110,6 +1110,9 @@ msgid ""
 "stay on this computer."
 msgstr ""
 
+msgid "Each group of near duplicates is described through the version kept."
+msgstr ""
+
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file deleted "
 "(📦: moved to the quarantine, not a media file)."
@@ -2226,6 +2229,10 @@ msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
 msgid "No decision in the file: the tier decides."
+msgstr ""
+
+#, python-brace-format
+msgid "No decisions file of 'review --near' in {folder}."
 msgstr ""
 
 msgid "No event in this proposal: nothing to review."

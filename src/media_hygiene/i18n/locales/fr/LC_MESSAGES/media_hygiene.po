@@ -1354,6 +1354,10 @@ msgstr ""
 " personne. Tapez un nom pour l'enregistrer dans config.toml ; les photos "
 "ne sont jamais modifiées et les visages restent sur cet ordinateur."
 
+msgid "Each group of near duplicates is described through the version kept."
+msgstr ""
+"Chaque groupe de quasi-doublons est décrit par la version conservée."
+
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file deleted "
 "(📦: moved to the quarantine, not a media file)."
@@ -2132,10 +2136,9 @@ msgid ""
 " the readers."
 msgstr ""
 "Combien de fichiers 'clean', 'undo' et 'sort' traitent à la fois (1 ou "
-"plus) : "
-"quatre lecteurs lisent un dossier Windows environ 4 fois plus vite qu'un "
-"seul. Mettez 1 pour un disque dur USB lent, dont la tête fait des allers-"
-"retours entre les lecteurs."
+"plus) : quatre lecteurs lisent un dossier Windows environ 4 fois plus "
+"vite qu'un seul. Mettez 1 pour un disque dur USB lent, dont la tête fait "
+"des allers-retours entre les lecteurs."
 
 #, python-brace-format
 msgid "How many files the table lists at most. Default: {count}."
@@ -2727,6 +2730,10 @@ msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder
 
 msgid "No decision in the file: the tier decides."
 msgstr "Aucune décision dans le fichier : le --tier décide."
+
+#, python-brace-format
+msgid "No decisions file of 'review --near' in {folder}."
+msgstr "Aucun fichier de décisions de 'review --near' dans {folder}."
 
 msgid "No event in this proposal: nothing to review."
 msgstr "Aucun événement dans cette proposition : rien à revoir."

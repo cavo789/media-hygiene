@@ -1,8 +1,8 @@
 """`tags`: the cheap words of every file, then what the vision model sees.
 
 The folder, name, date and place words are recomputed at every run (seconds). The model
-describes only the photos the cache lacks, one per set of identical files and per
-burst series; its tags are then derived for every photo from the cached answers.
+describes only the photos the cache lacks, one per set of identical files, burst
+series and group of near duplicates; every photo then takes the cached answers.
 """
 
 from __future__ import annotations
@@ -20,9 +20,11 @@ from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.services.tag_files import tag_files
+from media_hygiene.services.tag_near import near_search
 from media_hygiene.services.tag_work import TagWork, stills_of, version_of
 from media_hygiene.tags.context import tag_context
 from media_hygiene.tags.models import CHEAP_SOURCES, MODEL_SOURCES, FileTags
+from media_hygiene.tags.near_share import near_shared
 from media_hygiene.tags.normalize import WordRules
 from media_hygiene.tags.producers import cheap_tags
 from media_hygiene.tags.selection import STILLS, WITH_VIDEOS, vision_plan
@@ -122,7 +124,11 @@ class TagStep:
         files = tag_files(self._runtime, repository.connection, within)
         ffmpeg = shutil.which(FFMPEG_BINARY)
         kinds = STILLS if ffmpeg is None else WITH_VIDEOS
-        vision = vision_plan(files, self._ai.min_edge, kinds)
+        vision = near_shared(
+            vision_plan(files, self._ai.min_edge, kinds),
+            files,
+            near_search(self._runtime, repository, videos=ffmpeg is not None),
+        )
         missing = tuple(
             version_of(file)
             for file in vision.asked
@@ -154,8 +160,8 @@ class TagStep:
         """Write the model's tags of every photo whose answer is in the cache.
 
         A photo takes its own answer, else the one of the photo that answers for it
-        (its identical copy, the best shot of its burst). The others keep what an
-        earlier model or prompt gave them.
+        (its identical copy, its burst's best shot, its near group's version kept).
+        The others keep what an earlier model or prompt gave them.
 
         Args:
             work: The files and who answers for whom.
