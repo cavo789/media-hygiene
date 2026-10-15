@@ -3,7 +3,7 @@
 - **Priority**: Medium — several BLOCKED TODOs wait on these numbers
 - **Batch**: review
 - **Depends**: —
-- **Files**: `.todos/DONE/DONE_0131-time-each-audit-step.md`, `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/PARTIAL/PARTIAL_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/PARTIAL/PARTIAL_0058-people-from-faces.md`
+- **Files**: `.todos/DONE/DONE_0131-time-each-audit-step.md`, `.todos/BLOCKED/BLOCKED_0082-tags-benchmark-fixed-prompt.md`, `.todos/BLOCKED/BLOCKED_0084-search-measure-then-vectors.md`, `.todos/DONE/DONE_0083-tags-inherit-near-videos-classify-reuse.md`, `.todos/BLOCKED/BLOCKED_0090-people-model-choice.md`, `.todos/DONE/DONE_0058-people-from-faces.md`
 
 ## Context
 

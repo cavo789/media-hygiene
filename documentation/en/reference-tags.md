@@ -63,7 +63,11 @@ On Docker Engine (Linux, WSL), add `--add-host=host.docker.internal:host-gateway
 - **Privacy**: each photo is sent, as a 768-pixel JPEG, to the `url` of `[classify.ai]`, and only
   there. Keep that server on your own computer.
 - **One photo per set**: identical copies share their words, and a burst series takes those of
-  its sharpest shot. A near copy (a WhatsApp copy and its original) is still sent on its own.
+  its sharpest shot. Near duplicates (a WhatsApp copy and its original, a re-encoded video) are
+  found as the audit finds them: the version the audit keeps is sent, and its copies take its
+  words, even a copy too small to be sent. The decisions of
+  [`review --near`](commands/review.md) are followed: a group you left alone is sent file by
+  file, and when you kept another version, that one is sent.
 - **Videos by one frame**: the frame shown in the middle of the video is sent, like a photo;
   identical copies of a video share its words. Photos and videos smaller than `min_edge`
   (512 pixels on their shorter side) are not sent.
@@ -91,7 +95,7 @@ estimate of a full run. Their answers are kept: the full run does not describe t
 ### The long run
 
 **How long**: about 2 seconds per photo on one graphics card with a 27-billion-parameter model,
-so about 30 hours for 50,000 photos, less once copies and burst series are counted once. Above
+so about 30 hours for 50,000 photos, less once copies, burst series and near duplicates are counted once. Above
 `confirm_above` photos (200), `tags` prints the count and the time and asks first; `--yes` does
 not ask.
 

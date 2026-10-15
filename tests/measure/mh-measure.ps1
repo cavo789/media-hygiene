@@ -12,10 +12,12 @@
 #   4. a folder renamed, audit                                        (0147: files followed)
 #   5. clean, then undo, then audit                                   (0149 clean time, 0156)
 #      clean --delete, then undo: no move, against 5a                 (0150: share of the moves)
+#      clean, then undo, one file at a time ([clean] workers = 1)     (0149: K = 1 against 5a/5b)
 #   6. C:\Photos read-only with your usual cache, audit twice         (0147 one-time pass, 0152)
 #      people --sample 200 on it: seconds per photo, faces            (0058; adds the faces of
 #      those 200 photos and the two face models, 39 MB, to that cache)
 #   7. classify, sort (NTFS file ids before/after), undo of the test folder  (0138: moves on NTFS)
+#      sort, then undo, one file at a time ([clean] workers = 1)       (0163: 4 at once against 7b)
 #   8. each file operation of a sort by link and its undo, alone           (0138: what is refused)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -169,6 +171,9 @@ if (Wanted 5) {
     Measure-Mh "5c. audit after undo: nothing decoded again (0156)" $readOnly @("audit")
     Measure-Mh "5d. clean --delete: no move, against 5a (0150)" $writable @("clean", "--yes", "--delete")
     Measure-Mh "5e. undo of that clean: copies rebuilt from the kept files" $writable @("undo", "--yes")
+    $oneAtATime = @("--env", "MEDIA_HYGIENE_CLEAN__WORKERS=1") + $writable
+    Measure-Mh "5f. clean, one file at a time: against 5a (0149)" $oneAtATime @("clean", "--yes")
+    Measure-Mh "5g. undo, one file at a time: against 5b (0149)" $oneAtATime @("undo", "--yes")
 }
 
 # --- 6: the real collection, read-only, with the usual cache -------------------------------
@@ -192,6 +197,9 @@ if (Wanted 7) {
     $back = FileIds $data
     $same = @($back.Keys | Where-Object { $before.ContainsKey($_) -and $before[$_] -eq $back[$_] }).Count
     Log ("   NTFS ids after undo: {0} of {1} files back at their first path with their first id" -f $same, $back.Count)
+    $oneByOne = @("--env", "MEDIA_HYGIENE_CLEAN__WORKERS=1") + $writable
+    Measure-Mh "7d. sort, one file at a time: against 7b, 4 at once (0163)" $oneByOne @("sort", "--yes")
+    Measure-Mh "7e. undo of that sort" $writable @("undo", "--yes")
 }
 
 # --- 8: which file operations Docker Desktop's NTFS mount allows (0138: undo after a link) ----

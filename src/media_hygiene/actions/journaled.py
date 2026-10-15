@@ -114,9 +114,17 @@ class JournaledChanges:
             change: Zero-argument callable performing the change.
         """
         self.record(entry, change)
+        self.count(entry.size)
+
+    def count(self, size: int) -> None:
+        """Count one file done (several workers count at once).
+
+        Args:
+            size: Its size, in bytes.
+        """
         with self._lock:
             self._tally.done += 1
-            self._tally.bytes_done += entry.size
+            self._tally.bytes_done += size
 
     def quarantine(
         self, file: MediaFile, action: ActionKind, origin: Origin = NO_ORIGIN

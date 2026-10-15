@@ -176,8 +176,9 @@ classeur pour les déplacer.
 
 ## Arrêté en plein milieu
 
-70 000 déplacements prennent du temps, et un portable se met en veille. Ctrl+C termine le fichier
-en cours, ferme le journal et dit ce qui a été fait. Relancez la même commande : les fichiers déjà
+70 000 déplacements prennent du temps, et un portable se met en veille. `sort` déplace 4 fichiers
+à la fois (`workers` dans la section `[clean]` de `config.toml`) ; Ctrl+C termine les fichiers en
+cours, ferme le journal et dit ce qui a été fait. Relancez la même commande : les fichiers déjà
 déplacés par ce classeur comptent comme faits, et le tri continue.
 
 ## Changer d'avis

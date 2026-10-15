@@ -1110,6 +1110,9 @@ msgid ""
 "stay on this computer."
 msgstr ""
 
+msgid "Each group of near duplicates is described through the version kept."
+msgstr ""
+
 msgid ""
 "Each line: the file kept, and the byte-for-byte identical file deleted "
 "(📦: moved to the quarantine, not a media file)."
@@ -1711,10 +1714,10 @@ msgid ""
 msgstr ""
 
 msgid ""
-"How many files 'clean' and 'undo' handle at once (1 or more): four "
-"readers read a Windows folder about 4 times faster than one. Lower it to "
-"1 for a slow USB hard disk, whose head seeks back and forth between the "
-"readers."
+"How many files 'clean', 'undo' and 'sort' handle at once (1 or more): "
+"four readers read a Windows folder about 4 times faster than one. Lower "
+"it to 1 for a slow USB hard disk, whose head seeks back and forth between"
+" the readers."
 msgstr ""
 
 #, python-brace-format
@@ -2226,6 +2229,10 @@ msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
 msgid "No decision in the file: the tier decides."
+msgstr ""
+
+#, python-brace-format
+msgid "No decisions file of 'review --near' in {folder}."
 msgstr ""
 
 msgid "No event in this proposal: nothing to review."

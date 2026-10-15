@@ -64,8 +64,12 @@ Avec Docker Engine (Linux, WSL), ajoutez `--add-host=host.docker.internal:host-g
 - **Vie privée** : chaque photo est envoyée, en JPEG de 768 pixels, à l'`url` de
   `[classify.ai]`, et seulement là. Gardez ce serveur sur votre propre ordinateur.
 - **Une photo par ensemble** : les copies identiques partagent leurs mots, et une rafale prend
-  ceux de sa photo la plus nette. Une quasi-copie (une copie WhatsApp et son original) est encore
-  envoyée pour elle-même.
+  ceux de sa photo la plus nette. Les quasi-doublons (une copie WhatsApp et son original, une
+  vidéo réencodée) sont trouvés comme l'audit les trouve : la version que l'audit conserve est
+  envoyée, et ses copies prennent ses mots, même une copie trop petite pour être envoyée. Les
+  décisions de [`review --near`](commands/review.md) sont suivies : un groupe laissé tel quel est
+  envoyé fichier par fichier, et quand vous avez gardé une autre version, c'est elle qui est
+  envoyée.
 - **Les vidéos par une image** : l'image montrée au milieu de la vidéo est envoyée, comme une
   photo ; les copies identiques d'une vidéo partagent ses mots. Les photos et vidéos plus
   petites que `min_edge` (512 pixels sur leur petit côté) ne sont pas envoyées.
@@ -94,8 +98,8 @@ décrit pas à nouveau.
 ### La longue exécution
 
 **Combien de temps** : environ 2 secondes par photo sur une carte graphique avec un modèle de
-27 milliards de paramètres, soit environ 30 heures pour 50 000 photos, moins une fois les copies
-et les rafales comptées une seule fois. Au-delà de `confirm_above` photos (200), `tags` affiche
+27 milliards de paramètres, soit environ 30 heures pour 50 000 photos, moins une fois les copies,
+les rafales et les quasi-doublons comptés une seule fois. Au-delà de `confirm_above` photos (200), `tags` affiche
 le nombre et la durée et demande d'abord ; `--yes` ne demande pas.
 
 **La carte graphique pour lui seul** : quand un autre programme utilise la même carte (un autre

@@ -58,3 +58,30 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
   opened before the merge (it proposes its own `renovate.json`), close it without merging.
   **Reason:** the merge into `main` is postponed by the maintainer (a push to `main` rebuilds the
   image).
+
+## Inbox (2026-10-15)
+
+- `.github/renovate.json` is on `main` since 2026-10-14 17:17, yet on 2026-10-15 08:55 there is
+  no Dependency Dashboard issue and no Renovate PR (checked with `gh`). The maintainer confirmed
+  the Renovate app is installed with access to `cavo789/media-hygiene` (GitHub → Settings →
+  Applications). Next: the job logs on developer.mend.io (repository `media-hygiene`), to see
+  whether a run happened and why it made nothing.
+- Cause found (developer.mend.io, 2026-10-15 10:27, screenshot by the maintainer): the repository
+  is in **Silent** mode ("Dependency Updates (Renovate): Silent", Community plan, Renovate
+  44.156.3). Jobs run and end DONE (requested ones since 3 days, a scheduled one pending), but a
+  silent Renovate opens no issue and no PR. Next: switch the mode to interactive in the Mend
+  settings, then check the Dependency Dashboard appears after the next job.
+- Mend settings changed by the maintainer (2026-10-15): Silent mode off, Automated PRs on
+  ("Mend will automatically create pull requests to update outdated dependencies"), Require
+  config file and onboarding PRs left off. Left: after the next job, the Dependency Dashboard
+  lists the three `custom.regex` deps of the Dockerfile, the pre-commit hooks, the actions and
+  the pep621 deps.
+- First manual job (2026-10-15 10:30, `manual`, DONE) opened the Dependency Dashboard,
+  cavo789/media-hygiene#3 (read with `gh`): 4 `regex` deps of the `Dockerfile` (`python` with
+  digest, `uv`, `FFmpeg/FFmpeg`, `qarmin/czkawka`), 23 + 7 action pins of `ci.yml` / `docs.yml`
+  (SHA kept), 29 pep621 deps, the 2 remote pre-commit hooks (the others are `repo: local`), the
+  devcontainer feature and `.devcontainer/Dockerfile`. No onboarding PR. Two updates pending
+  approval (setup-uv v10.3.0; docker images and tools), lock file maintenance awaiting Monday.
+  Acceptance met: closed DONE. Gaps (`GH_VERSION` not followed, `.claude/` listed) → **0167**.
+  To check on the first docker PR: Python stays 3.14 (only the digest moves; the dashboard
+  lists 3.15 as available, the `enabled: false` rule should keep it out).

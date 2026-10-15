@@ -69,3 +69,11 @@ sent counts.
   `plan.near` on the index), then decide.
 - Real-collection check of the acceptance ("each picture sent at most once") with the real
   model, after 0082.
+
+## Inbox (2026-10-15)
+
+- Near groups: `tags` runs the near search itself (decided 2026-10-12, 0104 §3: 1.5 s on
+  52,056 files); a group set aside in `review --near` (`leave`) does **not** share a
+  description → filed as **0165**.
+- Real-collection check ("each picture sent at most once"): stays with 0104 §1/§3 (after 0082).
+- Closed DONE.

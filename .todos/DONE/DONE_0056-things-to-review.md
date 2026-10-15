@@ -279,12 +279,14 @@ checked by Claude on 2026-10-14 (work filed as TODO 0145); 0005 (postponed) stil
 - [x] **0044:** one real search on the `places` page (OpenStreetMap / Nominatim) returns an area
   (only a fake server was used in tests).
   → checked 2026-10-12: a search by name on the `places` page drew the area (Nominatim).
-- [ ] **0005:** real phone videos (WhatsApp re-encode, iPhone HEVC, 4K) are found as re-encoded
+- [x] **0005:** real phone videos (WhatsApp re-encode, iPhone HEVC, 4K) are found as re-encoded
   copies.
   → postponed by the maintainer (2026-10-14). Procedure ready: three originals (Android, iPhone
     HEVC `.MOV`, 4K) and their WhatsApp received copies in `C:\Temp\video-test\videos`, `audit`
     with `:ro`; expect 3 groups under *Re-encoded videos*; for a miss, `ffprobe` duration and
     `creation_time` of both files.
+  → dropped by the maintainer (inbox of 2026-10-15): the synthetic tests are trusted; no
+    follow-up TODO.
 - [x] **0035:** on the real collection, PNG exports without EXIF are not taken for screenshots,
   and home videos named `720p`/`1080p` not for downloads.
   → checked by Claude on 2026-10-14. The run was read-only: `classify` with the default rules
@@ -329,3 +331,7 @@ checked by Claude on 2026-10-14 (work filed as TODO 0145); 0005 (postponed) stil
   exist yet, and only the maintainer can make WhatsApp copies of their own videos. The collection holds
   no HEVC and no 4K video (measured in 0141), so it cannot stand in. Procedure in the box above;
   revive with a fresh TODO once the folder exists.
+
+## Inbox (2026-10-15)
+
+- 0005 → dropped (synthetic tests trusted, no follow-up). Every box is ticked: closed DONE.

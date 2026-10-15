@@ -1,16 +1,15 @@
 """The journaled changes of a sort: a file moved, a folder created, never overwriting.
 
-On one disk a file is renamed (instant, atomic); where that rename is refused (Docker
-Desktop's NTFS mounts) it is linked under its new name, then its old name is removed
-(instant too, 0138); across disks (two Docker mounts are two disks, even on one drive)
-it is copied, proven identical, then removed, and its SHA-256 is journaled so that
-`undo` and the manifest can prove it whole.
+On one disk a file is renamed (atomic); where refused (Docker Desktop's NTFS mounts) it
+is linked under its new name, then its old name is removed (0138); across disks it is
+copied, proven identical, removed, its SHA-256 journaled for `undo` and the manifest.
 """
 
 from __future__ import annotations
 
 import errno
 import os
+import threading
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -73,8 +72,9 @@ class Relocator:
             tally: Counters of the run.
         """
         self._context = context
-        self._tally = tally
         self.changes = JournaledChanges(context.changes, tally)
+        self._made: set[Path] = set()  # folders known to exist
+        self._lock = threading.Lock()  # a few groups move at once (0163)
 
     def move(
         self, file: MediaFile, target: Path, row: str | None = None
@@ -111,8 +111,7 @@ class Relocator:
             if exc.errno == errno.EXDEV or not _linked(file.path, target):
                 entry = self._copied(file, target, entry)
         journal.record(entry.as_done())
-        self._tally.done += 1
-        self._tally.bytes_done += file.size
+        self.changes.count(file.size)
         return entry
 
     def _copied(
@@ -140,12 +139,15 @@ class Relocator:
         return entry
 
     def make_folder(self, folder: Path) -> None:
-        """Create a folder and its missing parents, each one journaled.
+        """Create a folder and its missing parents, each one journaled, only once.
 
         Args:
             folder: The folder.
         """
-        make_folders(self.changes, folder)
+        with self._lock:
+            if folder not in self._made:
+                make_folders(self.changes, folder)
+                self._made.add(folder)
 
 
 def _linked(source: Path, target: Path) -> bool:

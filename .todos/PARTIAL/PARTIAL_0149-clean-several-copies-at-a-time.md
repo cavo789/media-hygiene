@@ -89,3 +89,9 @@ Desktop, image built from `main`; runs `measures-20261014-2116` and `-2125`), `c
 
 Still missing: K = 1 against K = 4, and `--delete` (steps 5d/5e added to the script by
 217d2da). `undo` stays one file at a time: 0161.
+
+## Inbox (2026-10-15)
+
+- K = 1 against K = 4: steps 5f/5g added to `tests/measure/mh-measure.ps1` (clean then undo with
+  `MEDIA_HYGIENE_CLEAN__WORKERS=1`, against 5a/5b). `--delete` is step 5d. Since 0161,
+  `[clean] workers` is a setting (default 4): the measurement only chooses the default.

@@ -29,7 +29,7 @@ _JITTER: Final = 0.0002  # about 20 m a step: one cluster of the `places` map
 LATER: Final = datetime(2024, 1, 15, 20, 30, tzinfo=UTC)  # when the copies were made
 
 
-def _near(place: tuple[float, float], step: int) -> tuple[float, float]:
+def near(place: tuple[float, float], step: int) -> tuple[float, float]:
     """A position a few metres from a place, a different one at each step."""
     return (place[0] + _JITTER * (step % 3 - 1), place[1] + _JITTER * (step % 4 - 1.5))
 
@@ -59,18 +59,22 @@ def birthday(library: Library) -> None:
         picture = Picture(Kind.BALLOONS, 1, 10 + 10 * shot, shot == 2, pose=shot)
         write_shot(
             folder / f"IMG_{3001 + shot:04d}.jpg",
-            Shot(picture, party + timedelta(seconds=shot), gps=_near(PARK, shot)),
+            Shot(picture, party + timedelta(seconds=shot), gps=near(PARK, shot)),
         )
     for index in range(3):
         when = party + timedelta(minutes=20 * (index + 1))
         write_shot(
             folder / f"IMG_{3010 + index:04d}.jpg",
-            Shot(Picture(Kind.BALLOONS, 10 + index), when, gps=_near(PARK, index + 5)),
+            Shot(Picture(Kind.BALLOONS, 10 + index), when, gps=near(PARK, index + 5)),
         )
 
 
 def lake(library: Library) -> None:
-    """A burst of four sunset shots over a lake, then two meadow photos."""
+    """A burst of four sunset shots over a lake, then two meadow photos.
+
+    The four are positioned at Genval, yet the `places` map shows 3 photos: the
+    burst review sets IMG_4002 aside, `clean --decisions` then `purge` remove it.
+    """
     folder, evening = (
         library.photos / library.names.lake,
         datetime(2023, 9, 2, 20, 5, tzinfo=UTC),
@@ -82,7 +86,7 @@ def lake(library: Library) -> None:
             Shot(
                 picture,
                 evening + timedelta(seconds=2 * shot),
-                gps=_near(GENVAL, shot),
+                gps=near(GENVAL, shot),
             ),
         )
     for index in range(2):

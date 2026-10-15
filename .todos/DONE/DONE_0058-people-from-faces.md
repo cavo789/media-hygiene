@@ -183,3 +183,10 @@ copied twice). `people --sample 200` on `C:\Photos` (52,054 files): 200 photos a
 (0.48 per photo), 0.16 s per photo; the tool's estimate for a full run: 50,323 more photos,
 about 16 min 20 s. Wall time of the sample: 12.6 s. Still waiting: the group quality at 2–3
 thresholds (the maintainer's eyes on the page) and the image size with `dive`.
+
+## Inbox (2026-10-15)
+
+- Closed DONE. Group quality → stays in 0104 §5–6; image size with `dive` → **0166**; synthetic
+  faces for the documentation: already done (`tests/support/docs/portraits.py`,
+  `people_story.py`, `images/people.webp`); videos and tiling for small faces → dropped
+  (0.48 face per photo, measured 2026-10-14).

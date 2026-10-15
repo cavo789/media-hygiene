@@ -475,8 +475,8 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
   fichier de ce genre à la fois : avec 16 workers, jusqu'à 2 Go au pire. Augmentez-le pour de
   grands scans si la mémoire le permet, diminuez-le si Docker Desktop en a peu (*Settings >
   Resources*) ; `0` lit chaque fichier deux fois.
-- **`workers`** (4, dans `[clean]`, absent de l'exemple) : combien de fichiers `clean` et `undo`
-  traitent à la fois. Quatre lecteurs lisent un dossier Windows environ 4 fois plus vite qu'un
+- **`workers`** (4, dans `[clean]`, absent de l'exemple) : combien de fichiers `clean`, `undo`
+  et `sort` traitent à la fois. Quatre lecteurs lisent un dossier Windows environ 4 fois plus vite qu'un
   seul ; mettez `1` pour un disque dur USB lent, dont la tête fait des allers-retours entre les
   lecteurs.
 
