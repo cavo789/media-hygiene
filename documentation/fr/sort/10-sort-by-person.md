@@ -46,7 +46,7 @@ Sur la bibliothèque de démonstration de ce guide, 10 photos mesurées :
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysées : 3 visages, 0,04 s par photo.
+✅ 10 photos analysées : 3 visages, 0,03 s par photo.
 ```
 
 Elle se termine par l'estimation de l'exécution complète (`Une exécution complète analyserait

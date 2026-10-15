@@ -138,6 +138,7 @@ Effective settings
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
 │ clean.purge_hint_days         │ 30                            │ default      │
+│ clean.workers                 │ 4                             │ default      │
 │ review.propose_aside_below    │ 0.35                          │ default      │
 │ review.identical_below        │ 6                             │ default      │
 │ review.brightness_gap         │ 60.0                          │ default      │
@@ -587,6 +588,7 @@ Effective settings
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
 │ clean.purge_hint_days         │ 30                            │ config.toml  │
+│ clean.workers                 │ 4                             │ config.toml  │
 │ review.propose_aside_below    │ 0.35                          │ config.toml  │
 │ review.identical_below        │ 6                             │ config.toml  │
 │ review.brightness_gap         │ 60.0                          │ config.toml  │

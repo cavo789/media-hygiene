@@ -90,7 +90,7 @@ Audit summary
 │ Near duplicates (moved only with --tier near)        │      2 │
 │ Re-encoded videos (moved only with --tier near)      │      1 │
 │ Burst series (moved only if set aside with 'review') │      3 │
-│ Duration                                             │    2 s │
+│ Duration                                             │    1 s │
 └──────────────────────────────────────────────────────┴────────┘
 
 Folders sharing identical files

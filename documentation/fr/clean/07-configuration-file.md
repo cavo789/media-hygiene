@@ -152,6 +152,7 @@ Réglages effectifs
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
 │ clean.purge_hint_days       │ 30                         │ défaut            │
+│ clean.workers               │ 4                          │ défaut            │
 │ review.propose_aside_below  │ 0.35                       │ défaut            │
 │ review.identical_below      │ 6                          │ défaut            │
 │ review.brightness_gap       │ 60.0                       │ défaut            │
@@ -641,6 +642,7 @@ Réglages effectifs
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
 │ clean.purge_hint_days       │ 30                         │ config.toml       │
+│ clean.workers               │ 4                          │ config.toml       │
 │ review.propose_aside_below  │ 0.35                       │ config.toml       │
 │ review.identical_below      │ 6                          │ config.toml       │
 │ review.brightness_gap       │ 60.0                       │ config.toml       │
