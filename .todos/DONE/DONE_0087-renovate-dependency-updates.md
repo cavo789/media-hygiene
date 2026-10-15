@@ -76,3 +76,12 @@ custom (regex) managers and lets us point it at the pre-commit file under `.conf
   config file and onboarding PRs left off. Left: after the next job, the Dependency Dashboard
   lists the three `custom.regex` deps of the Dockerfile, the pre-commit hooks, the actions and
   the pep621 deps.
+- First manual job (2026-10-15 10:30, `manual`, DONE) opened the Dependency Dashboard,
+  cavo789/media-hygiene#3 (read with `gh`): 4 `regex` deps of the `Dockerfile` (`python` with
+  digest, `uv`, `FFmpeg/FFmpeg`, `qarmin/czkawka`), 23 + 7 action pins of `ci.yml` / `docs.yml`
+  (SHA kept), 29 pep621 deps, the 2 remote pre-commit hooks (the others are `repo: local`), the
+  devcontainer feature and `.devcontainer/Dockerfile`. No onboarding PR. Two updates pending
+  approval (setup-uv v10.3.0; docker images and tools), lock file maintenance awaiting Monday.
+  Acceptance met: closed DONE. Gaps (`GH_VERSION` not followed, `.claude/` listed) → **0167**.
+  To check on the first docker PR: Python stays 3.14 (only the digest moves; the dashboard
+  lists 3.15 as available, the `enabled: false` rule should keep it out).
