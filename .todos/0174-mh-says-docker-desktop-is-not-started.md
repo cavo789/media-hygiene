@@ -41,3 +41,10 @@ the container never starts.
 
 One cryptic error of the first day replaced by its fix in one sentence; no figure before the
 maintainer's run.
+
+## Decided (2026-10-15)
+
+- Troubleshooting page, before the maintainer's run: describe the case (Docker's
+  "error during connect…" when Docker Desktop is closed) and the fix, without quoting the exact
+  message, marked "exact wording to check"; the maintainer completes the quote after the run.
+  (Maintainer, in `/todo:iterate`.)
