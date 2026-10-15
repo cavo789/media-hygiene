@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.19
+# syntax=docker/dockerfile:1.28
 #
 # Development image of the media-hygiene devcontainer: the environment a human edits, lints and
 # tests inside. The shipped tool is built by the root Dockerfile, never by this one — so no
@@ -6,11 +6,11 @@
 
 ARG PYTHON_IMAGE=python:3.14-slim-trixie
 # Pinned to the same versions as the root Dockerfile so local runs never drift from the image.
-ARG UV_VERSION=0.12.19
+ARG UV_VERSION=0.13.1
 ARG FFMPEG_VERSION=9.0.2
 # GitHub CLI: CI logs (gh run view --log-failed), runs and pull requests from the terminal.
 # renovate: datasource=github-releases depName=cli/cli
-ARG GH_VERSION=2.101.0
+ARG GH_VERSION=2.102.0
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 FROM mwader/static-ffmpeg:${FFMPEG_VERSION} AS ffmpeg

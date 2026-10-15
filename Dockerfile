@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.19
+# syntax=docker/dockerfile:1.28
 #
 # media-hygiene — the shipped image. Build: `docker build --tag media-hygiene .`
 # A developer's build: `docker build --target local --tag media-hygiene .` (the `build` helper).
@@ -7,9 +7,9 @@
 
 # Base image pinned by digest: this is what users run on their photos.
 # renovate: datasource=docker depName=python
-ARG PYTHON_IMAGE=python:3.14-slim-trixie@sha256:caaf356f40667c496d405780745b9ac25771c189a51dfcc42430d531ea09f8a2
+ARG PYTHON_IMAGE=python:3.14-slim-trixie@sha256:a2b82f3c48559aa0a8446d9af49826b6e2b2016f4cd2afabfe6013ec53729170
 # renovate: datasource=docker depName=ghcr.io/astral-sh/uv
-ARG UV_VERSION=0.12.19
+ARG UV_VERSION=0.13.1
 # FFmpeg source release, pinned by the SHA-256 of its tarball. When bumping the version, check
 # the tarball's .asc signature against the FFmpeg release key
 # (FCF9 86EA 15E6 E293 A564 4F10 B432 2F04 D676 58D8) before trusting its new SHA-256.
