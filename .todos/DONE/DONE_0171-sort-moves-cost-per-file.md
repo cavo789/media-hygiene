@@ -137,3 +137,24 @@ against `measures-20261015-1731`, same 8,000 files (2 folders of 4,000), 4,755 M
   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 7 -Count 4000
   ```
   If 7b's `moves` then sit near 7c, close DONE.
+
+## Status — DONE (2026-10-15, Windows measured)
+
+Measured by the maintainer (`mh-measure.ps1 -Only 7 -Count 4000`, image
+`sha256:4f02a123…` holding both cuts, `measures-20261015-1820`), same 8,000 files, 4,755 MB:
+
+| Step | Before (`-1731`) | Group commit (`-1808`) | + sidecars once (`-1820`) | In all |
+|---|---|---|---|---|
+| 7b moves | 73 s | 65 s | **19.3 s** | **−74 %** |
+| 7b wall | 95.2 s | 87.1 s | **52.1 s** | **−45 %** |
+| 7c undo | 30 s | 19 s | 22 s | −27 % |
+| 7d moves (1 at a time) | 82 s | 74 s | **51.3 s** | −37 % |
+| 7d wall | 106.1 s | 96.5 s | **73.4 s** | −31 % |
+
+- The 5 ms per file of `sort` against `undo` were the sidecar listing (serial, a whole
+  folder per group): 7b's moves now cost ≈ 2.4 ms per file, as `undo` does (7c 22 s).
+  4 workers now gain 62 % over 1 (19.3 s against 51.3 s; 12 % before).
+- Seen, not acted on: in this 7b, `counts` 12.5 s and `move checks` 13.5 s (7.6 s and 4.9 s
+  in `-1808`, 8.2 s and 5.1 s in this run's 7d). One run; the same stages are normal in 7d,
+  so probably the host (antivirus or indexing scanning 8,000 files just moved): to watch in
+  the next step-7 run before filing anything.
