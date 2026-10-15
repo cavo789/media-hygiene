@@ -9,6 +9,7 @@ ARG PYTHON_IMAGE=python:3.14-slim-trixie
 ARG UV_VERSION=0.12.19
 ARG FFMPEG_VERSION=9.0.2
 # GitHub CLI: CI logs (gh run view --log-failed), runs and pull requests from the terminal.
+# renovate: datasource=github-releases depName=cli/cli
 ARG GH_VERSION=2.101.0
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv

@@ -7,6 +7,17 @@
     ":disableRateLimiting",
     "helpers:pinGitHubActionDigests"
   ],
+  "ignorePaths": [
+    ".claude/**",
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**"
+  ],
   "timezone": "Europe/Brussels",
   "schedule": ["before 6am on monday"],
   "automerge": false,
@@ -55,6 +66,11 @@
       "matchDepNames": ["python"],
       "matchUpdateTypes": ["major", "minor"],
       "enabled": false
+    },
+    {
+      "description": "The GitHub CLI tags its releases v<version>; the devcontainer's GH_VERSION (and its download URL, which adds the v) holds the bare number.",
+      "matchDepNames": ["cli/cli"],
+      "extractVersion": "^v(?<version>.+)$"
     },
     {
       "description": "FFmpeg tags are n<version>; its tarball checksum is not something Renovate can update.",

@@ -32,3 +32,15 @@ hooks. Two gaps:
 ## Acceptance
 
 - The dashboard lists `cli/cli` under `.devcontainer/Dockerfile`, and no `.claude/` file.
+
+## Status — PARTIAL (2026-10-15)
+
+### Done
+- `GH_VERSION` of `.devcontainer/Dockerfile` annotated (`# renovate: datasource=github-releases depName=cli/cli`); the custom manager's `(^|/)Dockerfile$` already reached it. Regex tested in Python on both Dockerfiles: 4 matches in the root one (unchanged), `cli/cli` 2.101.0 in the devcontainer one.
+- `cli/cli` tags carry a `v` prefix (`gh release list -R cli/cli`: v2.102.0), unlike `qarmin/czkawka`: a `packageRules` entry with `extractVersion` `^v(?<version>.+)$` keeps `GH_VERSION` bare.
+- `ignorePaths` gets `.claude/**`; the Renovate docs list `ignorePaths` as not mergeable, and `config:recommended` extends `:ignoreModulesAndTests`, so the preset's 8 globs are repeated explicitly.
+
+### Not done
+- `renovate-config-validator --strict`: `npx` is absent in the devcontainer (run it where Node exists).
+- Dashboard check (tick "run again" on cavo789/media-hygiene#3: `cli/cli` under `.devcontainer/Dockerfile`, no `.claude/` file).
+  **Reason:** Renovate reads `main`; possible only after this branch is merged.
