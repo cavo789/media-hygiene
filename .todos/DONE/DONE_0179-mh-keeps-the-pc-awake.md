@@ -72,3 +72,7 @@ The 18:17 run alerted again with a `mh.ps1` without the kernel32 call, and a use
 (`launcher`, `. mh.ps1`, `mh audit` in a normal PowerShell, no keep-awake) raised nothing: the
 alerts came from the measure harness (`probe.ps1`, conhost, `-ExecutionPolicy Bypass`), not from
 the compile. The keep-awake is back; still to check: the same user-like run with it.
+
+## Status — DONE (2026-10-16, Windows measured)
+
+User-like run (normal PowerShell, `. mh.ps1`, `mh audit --full`): `powercfg /requests` lists powershell.exe under SYSTEM during the audit; step 9b (measures-20261016-1803) showed it gone after. No Avast alert.

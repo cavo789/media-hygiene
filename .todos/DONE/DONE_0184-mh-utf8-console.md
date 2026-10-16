@@ -45,3 +45,7 @@ French menu in the old console: unreadable accents (if confirmed) → readable.
 ### Not done
 - The check in the old console (conhost) under Windows PowerShell 5.1.
   **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.
+
+## Status — DONE (2026-10-16, Windows measured)
+
+measures-20261016-1803, step 9a (conhost, code page 850): the French menu shows its accents, none garbled; the console's own code page is back after mh.

@@ -67,3 +67,7 @@ audit itself prints.
   (`-Only 10`).
 - `docs_screenshots` to run (the menu and audit captures).
   **Reason:** heavy; left to the maintainer.
+
+## Status — DONE (2026-10-16, Windows measured)
+
+measures-20261016-1803, step 10a: `mh open` opened the browser on the reports. The stale captures are left to `docs_screenshots` (tracked with 0172).

@@ -59,3 +59,7 @@ Starting the tool: open PowerShell and type `mh` → double-click an icon.
   `$MyInvocation.MyCommand.ScriptBlock.File` gives the mh.ps1 path.
   **Reason:** needs the maintainer's Windows; step 10b of `tests/measure/mh-measure.ps1`
   (`-Only 10`; an existing shortcut is saved and put back).
+
+## Status — DONE (2026-10-16, Windows measured)
+
+measures-20261016-1803, step 10b: both shortcuts written and read back; the Desktop icon opened the mh menu and the window stayed open.

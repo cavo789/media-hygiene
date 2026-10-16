@@ -39,14 +39,9 @@ One `/todo:run NNNN` each, highest priority first.
 | 0149 | `clean`: compare and move several copies at a time | [PARTIAL_0149-clean-several-copies-at-a-time.md](PARTIAL/PARTIAL_0149-clean-several-copies-at-a-time.md) |
 | 0172 | `mh` alone opens a guided menu: every step in order, the next one first | [PARTIAL_0172-mh-alone-guided-menu.md](PARTIAL/PARTIAL_0172-mh-alone-guided-menu.md) |
 | 0173 | `launcher --photos "C:\Photos"`: Windows paths only, the time zone found by `mh` | [PARTIAL_0173-launcher-windows-folders-and-zone.md](PARTIAL/PARTIAL_0173-launcher-windows-folders-and-zone.md) |
-| 0175 | `mh open`: open the reports in the browser, from the host | [PARTIAL_0175-mh-open-the-last-report.md](PARTIAL/PARTIAL_0175-mh-open-the-last-report.md) |
 | 0176 | `mh folders`: list, add, remove a folder; `mh` rewrites itself | [PARTIAL_0176-mh-folders-rewrites-itself.md](PARTIAL/PARTIAL_0176-mh-folders-rewrites-itself.md) |
 | 0177 | `mh update`: pull the new image, rewrite `mh` with the same folders | [PARTIAL_0177-mh-update-pulls-and-rewrites.md](PARTIAL/PARTIAL_0177-mh-update-pulls-and-rewrites.md) |
 | 0178 | `mh review` / `review-sort` / `places`: `mh` opens the browser on the page | [PARTIAL_0178-mh-opens-the-browser-for-pages.md](PARTIAL/PARTIAL_0178-mh-opens-the-browser-for-pages.md) |
-| 0179 | `mh`: Windows does not go to sleep during a long run | [PARTIAL_0179-mh-keeps-the-pc-awake.md](PARTIAL/PARTIAL_0179-mh-keeps-the-pc-awake.md) |
-| 0180 | `mh shortcut`: a "Media Hygiene" icon on the Desktop and in the Start menu | [PARTIAL_0180-mh-shortcut-opens-the-menu.md](PARTIAL/PARTIAL_0180-mh-shortcut-opens-the-menu.md) |
 | 0181 | Explorer right-click on a folder: "Media Hygiene" opens the `mh` menu on it | [PARTIAL_0181-mh-explorer-right-click.md](PARTIAL/PARTIAL_0181-mh-explorer-right-click.md) |
 | 0182 | `clean`: say when the quarantine is on another drive than the photos | [PARTIAL_0182-quarantine-on-another-drive-warns.md](PARTIAL/PARTIAL_0182-quarantine-on-another-drive-warns.md) |
 | 0183 | One quarantine per drive: files set aside stay on their own drive | [PARTIAL_0183-one-quarantine-per-drive.md](PARTIAL/PARTIAL_0183-one-quarantine-per-drive.md) |
-| 0184 | `mh.ps1`: UTF-8 console by default, accents and emojis readable | [PARTIAL_0184-mh-utf8-console.md](PARTIAL/PARTIAL_0184-mh-utf8-console.md) |
-| 0185 | `mh`: the window title and a sound say when a long run ends | [PARTIAL_0185-mh-says-when-a-run-ends.md](PARTIAL/PARTIAL_0185-mh-says-when-a-run-ends.md) |

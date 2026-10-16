@@ -46,3 +46,7 @@ Knowing a long run ended: open the window to check → see it in the taskbar, he
 ### Not done
 - The check on Windows (title in the taskbar, sound) under PowerShell 5.1.
   **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.
+
+## Status — DONE (2026-10-16, Windows measured)
+
+User-like run: the sound played at the end and the title read `mh audit: done`.
