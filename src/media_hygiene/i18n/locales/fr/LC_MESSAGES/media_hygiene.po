@@ -1325,7 +1325,9 @@ msgstr ""
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
 "it says it is running, then type the command again."
-msgstr "Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande."
+msgstr ""
+"Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, "
+"attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande."
 
 msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
@@ -1341,7 +1343,9 @@ msgstr ""
 msgid ""
 "Docker is not started: start it (Docker Desktop, or the docker service), "
 "then type the command again."
-msgstr "Docker n'est pas démarré : lancez-le (Docker Desktop, ou le service docker), puis tapez à nouveau la commande."
+msgstr ""
+"Docker n'est pas démarré : lancez-le (Docker Desktop, ou le service "
+"docker), puis tapez à nouveau la commande."
 
 msgid "Documents and screenshots"
 msgstr "Documents et captures d'écran"
@@ -2370,6 +2374,9 @@ msgstr "juin"
 
 msgid "KB"
 msgstr "Ko"
+
+msgid "Keep one of them: the other is a copy."
+msgstr "Gardez-en un : l'autre est une copie."
 
 msgid ""
 "Keep plan.json in the folder 'classify' wrote, or run 'classify --carry-"
@@ -3965,6 +3972,10 @@ msgstr ""
 "dessus."
 
 #, python-brace-format
+msgid "Run {run_id} found in the quarantine of {new}, not of {old}."
+msgstr "Exécution {run_id} retrouvée dans la quarantaine de {new}, pas de {old}."
+
+#, python-brace-format
 msgid "Run {run_id} has no quarantine."
 msgstr "L'exécution {run_id} n'a pas de quarantaine."
 
@@ -4781,6 +4792,12 @@ msgstr[0] ""
 msgstr[1] ""
 "L'exécution {run_id} a mis {count} fichiers dans /quarantine, qui n'est "
 "pas monté : rien n'a été modifié."
+
+#, python-brace-format
+msgid ""
+"The run {run_id} set files aside on {drive}, and a folder of that run is "
+"in the quarantines of {both}: nothing was changed."
+msgstr "L'exécution {run_id} a mis des fichiers de côté sur {drive}, et un dossier de cette exécution est dans les quarantaines de {both} : rien n'a été modifié."
 
 #, python-brace-format
 msgid ""
@@ -6086,6 +6103,9 @@ msgstr "sa copie {path} a disparu"
 
 msgid "its files are gone"
 msgstr "ses fichiers ont disparu"
+
+msgid "its folder is not on the drive under its new letter"
+msgstr "son dossier n'est pas sur le disque sous sa nouvelle lettre"
 
 #, python-brace-format
 msgid ""

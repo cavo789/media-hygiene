@@ -60,6 +60,8 @@ folder; elsewhere (Linux, a Docker volume) nothing is said.
 Keep a drive plugged in until its files are checked: `undo` and `purge <run>` refuse a run
 whose files are in the quarantine of a drive not mounted now, and name the drive to plug in;
 `purge` alone erases the other runs and says which ones it kept.
+A drive plugged back under another letter (`E:` is now `F:`) is found: the run's folder in
+`F:`'s quarantine is used and said, and each file comes back only if its folder is on `F:`.
 
 ## Run the clean
 

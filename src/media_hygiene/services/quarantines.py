@@ -4,7 +4,9 @@ The journal records where each file was set aside (`/quarantine/e/<run>/…` for
 of `E:` with a quarantine of its own). When that drive's quarantine is not mounted now
 (the drive unplugged, `mh` written again without its folders), Docker may still have
 left an empty `e` folder in `/quarantine`: `undo` would find nothing there and `purge`
-would erase the other drives only. Both refuse instead, naming the drive to plug in.
+would erase the other drives only. Both refuse instead, naming the drive to plug in,
+unless the run's folder is in another drive's quarantine: the drive came back under
+another letter (0186, `drive_letter.py`).
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ from media_hygiene.actions.undo import actions_to_undo
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.quarantines import Quarantines
+from media_hygiene.services.drive_letter import LetterChange, moved_to
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -78,6 +81,34 @@ def refuse_unplugged(runtime: Runtime, run_ids: Sequence[str]) -> None:
         )
 
 
+def letter_changes(runtime: Runtime, run_id: str) -> tuple[LetterChange, ...]:
+    """Find the drives of a run that came back under another letter.
+
+    Args:
+        runtime: Settings, mount points and output.
+        run_id: The run.
+
+    Returns:
+        One change per drive not mounted whose run folder is on another drive.
+
+    Raises:
+        MountError: Two drives hold the run's folder.
+    """
+    quarantines = mounted_quarantines(runtime)
+    locations = runtime.locations
+    changes = (
+        (drive, moved_to(quarantines, run_id, drive))
+        for drive in _away(runtime, quarantines, run_id)
+    )
+    return tuple(
+        LetterChange(
+            drive[0].lower(), new, locations.quarantine_dir, locations.data_dir
+        )
+        for drive, new in changes
+        if new is not None
+    )
+
+
 def held_back(runtime: Runtime, run_ids: Sequence[str]) -> dict[str, str]:
     """Find the runs with files in the quarantine of a drive not mounted now.
 
@@ -89,13 +120,42 @@ def held_back(runtime: Runtime, run_ids: Sequence[str]) -> dict[str, str]:
         The drive to plug in, by run; the other runs are not listed.
     """
     quarantines = mounted_quarantines(runtime)
-    missing = {run: _unplugged(runtime, quarantines, run) for run in run_ids}
-    return {
-        run: drives.most_common(1)[0][0] for run, drives in missing.items() if drives
-    }
+    held: dict[str, str] = {}
+    for run in run_ids:
+        try:
+            drives = _unplugged(runtime, quarantines, run)
+        except MountError:  # the run's folder on two drives: kept, nothing guessed
+            drives = _away(runtime, quarantines, run)
+        if drives:
+            held[run] = drives.most_common(1)[0][0]
+    return held
 
 
 def _unplugged(runtime: Runtime, quarantines: Quarantines, run_id: str) -> Counter[str]:
+    """Count a run's files on a drive not mounted now, nor found under another letter.
+
+    Args:
+        runtime: Settings, mount points and output.
+        quarantines: The quarantines mounted.
+        run_id: The run.
+
+    Returns:
+        How many files per drive to plug in; empty when none.
+
+    Raises:
+        MountError: Two drives hold the run's folder.
+    """
+    away = _away(runtime, quarantines, run_id)
+    return Counter(
+        {
+            drive: count
+            for drive, count in away.items()
+            if moved_to(quarantines, run_id, drive) is None
+        }
+    )
+
+
+def _away(runtime: Runtime, quarantines: Quarantines, run_id: str) -> Counter[str]:
     """Count a run's files waiting in the quarantine of a drive not mounted now.
 
     Args:

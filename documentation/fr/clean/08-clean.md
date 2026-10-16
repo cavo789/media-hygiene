@@ -63,6 +63,9 @@ Gardez un disque branché jusqu'à ce que ses fichiers soient vérifiés : `undo
 `purge <exécution>` refusent une exécution dont les fichiers sont dans la quarantaine d'un disque
 qui n'est pas monté, et nomment le disque à brancher ; `purge` seul efface les autres exécutions
 et dit lesquelles il a gardées.
+Un disque rebranché sous une autre lettre (`E:` devenu `F:`) est retrouvé : le dossier de
+l'exécution dans la quarantaine de `F:` est utilisé, et `undo` le dit ; chaque fichier ne revient
+que si son dossier existe sur `F:`.
 
 ## Lancer le nettoyage
 

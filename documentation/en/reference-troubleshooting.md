@@ -89,6 +89,14 @@ To get the space back, check the files set aside, then `purge` them
 quarantine: `mh` does it for each drive of its photo folders (`mh folders add`), or
 `-v "E:\media-hygiene\quarantine:/quarantine/e"`.
 
+## `undo` asks to plug in a drive that is plugged in
+
+`undo` or `purge <run>` says *set … files aside in the quarantine of E:, which is not mounted*
+while the USB drive is plugged in: Windows gave it another letter. Keep one of its photo folders
+in `mh` (`mh folders add "F:\Photos"`, which also mounts `F:`'s quarantine): the run is then
+found in `F:`'s quarantine, and `undo` says so. If it says the run is in two quarantines, one is
+a copy made by hand: keep one.
+
 ## A Windows path in `config.toml` is refused
 
 Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, TOML turns the

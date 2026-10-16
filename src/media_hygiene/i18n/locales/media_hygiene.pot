@@ -1925,6 +1925,9 @@ msgstr ""
 msgid "KB"
 msgstr ""
 
+msgid "Keep one of them: the other is a copy."
+msgstr ""
+
 msgid ""
 "Keep plan.json in the folder 'classify' wrote, or run 'classify --carry-"
 "over <workbook>': your edits are carried over to its new workbook."
@@ -3272,6 +3275,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "Run {run_id} found in the quarantine of {new}, not of {old}."
+msgstr ""
+
+#, python-brace-format
 msgid "Run {run_id} has no quarantine."
 msgstr ""
 
@@ -3956,6 +3963,12 @@ msgid_plural ""
 "mounted: nothing was changed."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"The run {run_id} set files aside on {drive}, and a folder of that run is "
+"in the quarantines of {both}: nothing was changed."
+msgstr ""
 
 #, python-brace-format
 msgid ""
@@ -5057,6 +5070,9 @@ msgid "its copy {path} is gone"
 msgstr ""
 
 msgid "its files are gone"
+msgstr ""
+
+msgid "its folder is not on the drive under its new letter"
 msgstr ""
 
 #, python-brace-format

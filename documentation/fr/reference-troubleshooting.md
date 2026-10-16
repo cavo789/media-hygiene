@@ -95,6 +95,14 @@ récupérer la place, vérifiez les fichiers mis de côté, puis effacez-les ave
 propre quarantaine : `mh` le fait pour chaque disque de ses dossiers de photos (`mh folders add`),
 ou `-v "E:\media-hygiene\quarantine:/quarantine/e"`.
 
+## `undo` demande de brancher un disque déjà branché
+
+`undo` ou `purge <exécution>` dit *… mis de côté dans la quarantaine de E:, qui n'est pas montée*
+alors que le disque USB est branché : Windows lui a donné une autre lettre. Gardez un de ses
+dossiers de photos dans `mh` (`mh folders add "F:\Photos"`, qui monte aussi la quarantaine de
+`F:`) : l'exécution est alors retrouvée dans la quarantaine de `F:`, et `undo` le dit. S'il dit
+que l'exécution est dans deux quarantaines, l'une est une copie faite à la main : gardez-en une.
+
 ## Un chemin Windows de `config.toml` est refusé
 
 Écrivez les chemins Windows entre **apostrophes** : `'D:\backup'`. Entre guillemets, TOML
