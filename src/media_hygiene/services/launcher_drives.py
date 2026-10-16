@@ -1,11 +1,13 @@
 r"""One quarantine per photo drive in `mh` (0183): files set aside stay on their drive.
 
-Each drive of the photo folders other than the quarantine's own (`C:`, the user's
-home, unless `--quarantine` names another) gets `E:\media-hygiene\quarantine` (from
+With the default quarantine (`$HOME\media-hygiene\quarantine`, on `C:`), each other
+drive of the photo folders gets `E:\media-hygiene\quarantine` (from
 WSL `/mnt/e/media-hygiene/quarantine`) mounted on `/quarantine/e`; `mh` creates the
 folder before each run like those of the home. A whole drive given as photos (`E:\`)
 gets one too: the audit never reads a `media-hygiene` folder (`scan/skipped_dirs.py`).
-`mh folders add` writes `mh` again, so a new drive gets its own.
+`mh folders add` writes `mh` again, so a new drive gets its own. A quarantine the user
+named (`--quarantine`, a `-v` of their own) receives every drive's files: none is added
+(0193); `clean` then says the copy crosses drives (0182).
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ _HOME_DRIVE: Final = "c"  # `$HOME`: on Windows and under WSL, the system drive
 
 
 def with_drive_quarantines(script: LauncherScript) -> LauncherScript:
-    """Add a quarantine for each photo drive that is not the quarantine's own.
+    """Add a quarantine for each photo drive but C:, unless the user named theirs.
 
     Args:
         script: The script, its photo folders final.
@@ -38,18 +40,22 @@ def with_drive_quarantines(script: LauncherScript) -> LauncherScript:
         same script again when it had them already).
     """
     quarantine = script.tools[TOOL_KINDS.index(MountKind.QUARANTINE)]
-    own = _letter(quarantine.host) or _HOME_DRIVE
+    named = quarantine.host != script.shell.home_folder(MountKind.QUARANTINE.value)
     volumes: dict[str, Volume] = {}
-    for volume in script.data:
+    for volume in () if named else script.data:
         letter = _letter(volume.host)
-        if letter is None or letter == own or letter in volumes:
+        if letter is None or letter == _HOME_DRIVE or letter in volumes:
             continue
         volumes[letter] = Volume(
             _quarantine_of(volume.host, letter), quarantine.point / letter
         )
     drives = tuple(volumes[letter] for letter in sorted(volumes))
     hosts = tuple(volume.host for volume in drives)
-    created = (*(folder for folder in script.created if folder not in hosts), *hosts)
+    before = {volume.host for volume in script.drives}
+    created = (
+        *(folder for folder in script.created if folder not in {*hosts, *before}),
+        *hosts,
+    )
     return replace(script, drives=drives, created=created)
 
 

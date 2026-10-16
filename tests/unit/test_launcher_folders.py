@@ -103,8 +103,8 @@ def test_several_folders_and_the_quarantine_replace_the_defaults() -> None:
     assert '-v "D:\\Images\\Famille:/data/d/Images/Famille${mode}" `' in text
     assert '-v "D:\\q:/quarantine" `' in text
     assert "$HOME\\media-hygiene\\quarantine" not in text
-    # The quarantine is on D: now: C: gets its own (0183), D: none.
-    assert '-v "C:\\media-hygiene\\quarantine:/quarantine/c" `' in text
+    # A quarantine named by the user receives every drive's files (0193).
+    assert "/quarantine/c" not in text
     assert "/quarantine/d" not in text
     assert 'foreach ($folder in @("C:\\Photos", "D:\\Images\\Famille")) {' in text
     assert '-e "MEDIA_HYGIENE_WINDOWS_ZONE=$((Get-TimeZone).Id)" `' in text

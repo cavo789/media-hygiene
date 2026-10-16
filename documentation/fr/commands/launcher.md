@@ -68,8 +68,8 @@ mh audit
   et `quarantine` de `$HOME\media-hygiene`, créés s'ils manquent ; le dossier de `--quarantine`,
   ou un dossier de l'outil que vous avez monté vous-même avec `-v` en lançant `launcher`, est gardé
   à la place.
-- **Une quarantaine par disque de photos** : pour chaque disque de vos dossiers de photos autre
-  que celui de la quarantaine (`C:`), `X:\media-hygiene\quarantine` monté sur `/quarantine/x` et
+- **Une quarantaine par disque de photos** (sans `--quarantine`) : pour chaque disque de vos
+  dossiers de photos autre que celui de la quarantaine (`C:`), `X:\media-hygiene\quarantine` monté sur `/quarantine/x` et
   créé s'il manque. `clean` met chaque fichier de côté sur son propre disque : nettoyer `E:` ne
   remplit jamais `C:`
   ([nettoyer, étape 8](../clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine)). Un
@@ -172,7 +172,7 @@ construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` 
 | Option | Rôle |
 |---|---|
 | `--photos "C:\Photos"` | Un dossier de photos et vidéos, tel que l'Explorateur le montre (`/mnt/c/Photos` depuis WSL). Répétez-la pour plusieurs dossiers ; pas un dossier à l'intérieur d'un autre. |
-| `--quarantine "D:\quarantaine"` | Où vont les copies mises de côté. Par défaut : `$HOME\media-hygiene\quarantine`. |
+| `--quarantine "D:\quarantaine"` | Où vont les copies mises de côté, de tous les disques. Par défaut : `$HOME\media-hygiene\quarantine`, avec une quarantaine par disque de photos. |
 | `--shell powershell` | Un script PowerShell (`mh.ps1`), pour Windows. |
 | `--shell bash` | Un script bash (`mh.sh`), pour WSL, Linux, macOS. |
 

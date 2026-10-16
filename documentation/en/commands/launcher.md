@@ -67,8 +67,8 @@ mh audit
   `quarantine` folders of `$HOME\media-hygiene`, created when missing; the folder of
   `--quarantine`, or a tool folder you mounted yourself with `-v` when running `launcher`, is
   kept instead.
-- **One quarantine per photo drive**: for each drive of your photo folders other than the
-  quarantine's (`C:`), `X:\media-hygiene\quarantine` mounted on `/quarantine/x` and created
+- **One quarantine per photo drive** (without `--quarantine`): for each drive of your photo
+  folders other than the quarantine's (`C:`), `X:\media-hygiene\quarantine` mounted on `/quarantine/x` and created
   when missing. `clean` sets each file aside on its own drive: cleaning `E:` never fills `C:`
   ([cleaning, step 8](../clean/08-clean.md#photos-on-another-drive-than-the-quarantine)). A
   photo folder that is a whole drive (`E:\`) gets one too: the audit never reads a
@@ -166,7 +166,7 @@ yourself (`media-hygiene`) has nothing to download: `mh update` says so.
 | Option | What it does |
 |---|---|
 | `--photos "C:\Photos"` | A folder of photos and videos, as Explorer shows it (`/mnt/c/Photos` from WSL). Repeat it for several folders; not a folder inside another one. |
-| `--quarantine "D:\quarantine"` | Where the copies set aside go. Default: `$HOME\media-hygiene\quarantine`. |
+| `--quarantine "D:\quarantine"` | Where the copies set aside go, from every drive. Default: `$HOME\media-hygiene\quarantine`, with one quarantine per photo drive. |
 | `--shell powershell` | A PowerShell script (`mh.ps1`), for Windows. |
 | `--shell bash` | A bash script (`mh.sh`), for WSL, Linux, macOS. |
 

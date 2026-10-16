@@ -117,6 +117,23 @@ def test_a_whole_drive_given_as_photos_gets_its_own_quarantine() -> None:
     assert script.drives == (Volume("E:\\media-hygiene\\quarantine", _Q / "e"),)
 
 
+def test_a_quarantine_the_user_named_receives_every_drive() -> None:
+    r"""--quarantine D:\Q: no drive quarantine, C:'s photos included (0193)."""
+    script = _script("C:\\Photos", "E:\\Photos", quarantine="D:\\Q")
+    assert script.drives == ()
+    text = render_script(script)
+    assert "/quarantine/e" not in text
+    assert "/quarantine/c" not in text
+    assert not any("media-hygiene\\quarantine" in folder for folder in script.created)
+
+
+def test_the_default_quarantine_keeps_one_per_drive() -> None:
+    """Without --quarantine: E:'s own, as before (0183)."""
+    assert _script("C:\\Photos", "E:\\Photos").drives == (
+        Volume("E:\\media-hygiene\\quarantine", _Q / "e"),
+    )
+
+
 def test_wsl_folders_get_their_drive_quarantine_too() -> None:
     """/mnt/e/Photos: /mnt/e/media-hygiene/quarantine on /quarantine/e."""
     script = _script("/mnt/e/Photos", "/home/me/Pictures")
