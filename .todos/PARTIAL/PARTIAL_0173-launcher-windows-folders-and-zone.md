@@ -120,3 +120,18 @@ From the command above: 4 things to copy exactly → 1 (the folder as Explorer s
 - Network folders (`\\NAS\photos`): refused by `--photos`; whether Docker Desktop can bind
   mount them, or a mapped drive letter, is to check.
   → keep the refusal: no network folders for now (maintainer, inbox 2026-10-16).
+
+### Measured on Windows (2026-10-16, step 15 of mh-measure.ps1, PowerShell 5.1)
+- 15a: the guide's `launcher --photos` line: exit code 0, `mh.ps1` written (33 590 bytes,
+  holds `Get-TimeZone`). Its "launcher says" lines show PowerShell 5.1 wrapping docker's
+  stderr in a NativeCommandError record: an artefact of the harness's `2>` redirect, not of
+  the guide's line (`>` only, stderr on the console).
+- 15b: `mh audit`: exit code 0.
+- 15c: no hour read (the harness's `mh history` lists clean runs, none here: a harness bug).
+  The local hour is shown by another run the same day: `mh audit` at about 18:54 local
+  (Romance Standard Time, UTC+2) wrote `reports\20261016-185421-audit` — local, not UTC.
+- 15e: a folder not plugged in (`Q:\…`): "cannot be found: plug its disk in, or write mh
+  again with launcher", no docker run. Exit code 0 (the PowerShell `mh` sets none on that
+  refusal; the bash one returns 2).
+- Not done: 15d, `mh --photos <USB key> audit` (no key plugged in): with steps 12 and 13,
+  `-OtherDrive E:`.

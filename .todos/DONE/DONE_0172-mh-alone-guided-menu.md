@@ -110,7 +110,7 @@ to reach a first clean (`audit`, `clean`, `history`, `undo`, `purge`), copied fr
 With the menu: one (`mh`), then Enter at each step; the names are learnt by reading them in the
 menu and in the "type it directly" line. To confirm with the maintainer's run (Needs maintainer).
 
-## Status — PARTIAL (2026-10-15)
+## Status — DONE (2026-10-16): the Windows run is measured (end of file); formerly PARTIAL (2026-10-15)
 
 ### Done
 - New read-only data verb `menu` (`cli/cmd_menu.py`, `menu_catalog.py`, `menu_steps.py`,
@@ -156,3 +156,10 @@ menu and in the "type it directly" line. To confirm with the maintainer's run (N
   `--help` capture of `reference-commands.md` now listing `menu`) were not run here.
   **Reason:** image build + browser, heavy: CI runs e2e; `docs_screenshots` to be run by the
   maintainer.
+
+### Measured on Windows (2026-10-16, step 14 of mh-measure.ps1, PowerShell 5.1)
+The `mh` menu, opened by hand (`. mh.ps1; mh`) in the old console (`conhost.exe
+powershell.exe`) and in the usual one: colours shown as colours, emoji and step columns lined
+up, the number + Enter ran `audit`, Ctrl+C at the question gave the prompt back with no red
+error — in both. The `$color` line stays. No antivirus alert (the harness no longer launches
+the console itself).
