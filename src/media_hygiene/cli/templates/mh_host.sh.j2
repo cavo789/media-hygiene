@@ -1,0 +1,65 @@
+{# The helpers of mh.sh around docker run, and `mh open`: see services/launcher_host.py. #}
+# A long run keeps the computer awake (0179): systemd-inhibit on Linux, caffeinate on
+# macOS; nothing on WSL, where Windows decides. Prints the words to put before docker.
+_{{ function }}_awake() {
+    if [[ -z "${WSL_DISTRO_NAME:-}" ]] && command -v systemd-inhibit >/dev/null 2>&1 &&
+        systemd-inhibit --list >/dev/null 2>&1; then
+        printf '%s ' systemd-inhibit --what=sleep --who=media-hygiene "--why=$1" --
+    elif command -v caffeinate >/dev/null 2>&1; then
+        printf '%s ' caffeinate -i
+    fi
+}
+
+# The window title says what runs, then how it ended, with a bell (0185).
+_{{ function }}_title() {
+    if [[ -t 2 ]]; then printf '\e]0;%s\a%s' "$1" "${2:-}" >&2; fi
+}
+
+# Wait until the page answers on the port, then open the browser on it (0178).
+_{{ function }}_browse() {
+    local port="$1" tries="$2" opener line
+    opener="$(_{{ function }}_opener)"
+    if [[ -z "$opener" ]]; then return 0; fi
+    while [[ "$tries" -gt 0 ]]; do
+        tries=$((tries - 1))
+        line=""
+        {
+            printf 'GET / HTTP/1.1\r\nHost: 127.0.0.1:%s\r\nConnection: close\r\n\r\n' "$port" >&3
+            IFS= read -r -t 2 line <&3
+        } 2>/dev/null 3<>"/dev/tcp/127.0.0.1/$port"
+        if [[ "$line" == HTTP/* ]]; then
+            "$opener" "http://127.0.0.1:$port/" >/dev/null 2>&1
+            return 0
+        fi
+        sleep 1
+    done
+}
+
+# The program opening a page or a file: wslview or explorer.exe on WSL, xdg-open on
+# Linux, open on macOS; nothing printed when none is there.
+_{{ function }}_opener() {
+    local opener
+    for opener in wslview explorer.exe xdg-open; do
+        if command -v "$opener" >/dev/null 2>&1; then
+            printf '%s' "$opener"
+            return 0
+        fi
+    done
+    if [[ "$OSTYPE" == darwin* ]]; then printf '%s' open; fi
+}
+
+# `{{ function }} open`: the catalogue of every report in the browser (0175).
+_{{ function }}_open() {
+{% if host.index %}
+    local index="{{ host.index }}" opener
+    if [[ ! -f "$index" ]]; then printf '%s\n' "{{ host.texts.no_report }}" >&2; return 1; fi
+    opener="$(_{{ function }}_opener)"
+    if [[ -z "$opener" ]]; then printf '%s\n' "{{ host.texts.no_opener }}" >&2; return 1; fi
+    if [[ "$opener" == explorer.exe ]]; then index="$(wslpath -w "$index")"; fi
+    # explorer.exe says 1 even when it opened the page.
+    "$opener" "$index" >/dev/null 2>&1 || true
+{% else %}
+    printf '%s\n' "{{ host.texts.volume }}" >&2
+    return 1
+{% endif %}
+}

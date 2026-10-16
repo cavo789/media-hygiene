@@ -1093,10 +1093,20 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Docker Desktop is not started: start it from the Start menu, wait until "
+"it says it is running, then type the command again."
+msgstr ""
+
+msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
 "(Linux, WSL) needs --add-host=host.docker.internal:host-gateway in docker"
 " run, and Ollama started with OLLAMA_HOST=0.0.0.0 to listen beyond "
 "127.0.0.1."
+msgstr ""
+
+msgid ""
+"Docker is not started: start it (Docker Desktop, or the docker service), "
+"then type the command again."
 msgstr ""
 
 msgid "Documents and screenshots"

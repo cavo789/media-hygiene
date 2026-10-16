@@ -134,6 +134,14 @@ function global:{{ function }} {
     if ($long) {
         if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
     }
+    if ($status -ne 0) {
+        # The container did not run or failed: Docker Desktop stopped says so in one line;
+        # the exit code stays the run's (0174).
+        $ErrorActionPreference = 'Continue'
+        $null = docker version 2>$null
+        if ($LASTEXITCODE -ne 0) { Write-Host "{{ texts.desktop }}" }
+        $global:LASTEXITCODE = $status
+    }
 }
 
 # `{{ function }} open`: the catalogue of every report in the default browser (0175).

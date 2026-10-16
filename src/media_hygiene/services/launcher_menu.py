@@ -35,6 +35,8 @@ class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     failed: str  # the same, when it failed
     folder: str  # `mh --photos X` alone: the menu's folder; holds `${shown}` (0181)
     reading: str  # shown while the menu reads the tool folders (a large quarantine: s)
+    desktop: str  # mh.ps1: a failed run, and Docker Desktop does not answer (0174)
+    daemon: str  # mh.sh: the same, Docker on Linux, macOS or WSL
 
 
 def menu_texts() -> MenuTexts:
@@ -64,6 +66,18 @@ def menu_texts() -> MenuTexts:
             "{folder}", "${shown}"
         ),
         reading=shell_safe(_("Reading where you are…")),
+        desktop=shell_safe(
+            _(
+                "Docker Desktop is not started: start it from the Start menu, wait "
+                "until it says it is running, then type the command again."
+            )
+        ),
+        daemon=shell_safe(
+            _(
+                "Docker is not started: start it (Docker Desktop, or the docker "
+                "service), then type the command again."
+            )
+        ),
     )
 
 

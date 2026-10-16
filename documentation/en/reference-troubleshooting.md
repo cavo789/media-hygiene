@@ -9,6 +9,16 @@ the Docker daemon*, *permission denied … docker.sock*: the tool has not starte
 itself is missing or stopped. Open Docker Desktop and wait for *Engine running* (Windows), or
 follow [install Docker](start/00-install-docker.md#if-it-does-not-work) (Windows and Linux).
 
+**Docker Desktop closed, on Windows**, `docker run` prints:
+
+```text
+failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+```
+
+`mh` adds one plain line below it: *Docker Desktop is not started: start it from the Start menu,
+wait until it says it is running, then type the command again.* After a restart of the
+computer, Docker Desktop takes a few seconds to answer.
+
 ## A real backup is seen as duplicates
 
 If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)

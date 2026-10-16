@@ -10,6 +10,16 @@ démarré, c'est Docker lui-même qui manque ou est arrêté. Ouvrez Docker Desk
 *Engine running* (Windows), ou suivez [installer Docker](start/00-install-docker.md#si-ça-ne-marche-pas)
 (Windows et Linux).
 
+**Docker Desktop fermé, sous Windows**, `docker run` affiche :
+
+```text
+failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+```
+
+`mh` ajoute en dessous une ligne en clair : *Docker Desktop n'est pas démarré : lancez-le depuis
+le menu Démarrer, attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande.* Après un
+redémarrage de l'ordinateur, Docker Desktop met quelques secondes à répondre.
+
 ## Une vraie sauvegarde est vue comme des doublons
 
 Si `D:\sauvegarde` doit rester une seconde copie de vos photos,

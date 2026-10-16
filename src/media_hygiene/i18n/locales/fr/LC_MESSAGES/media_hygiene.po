@@ -1323,6 +1323,11 @@ msgstr ""
 "(czkawka.json)."
 
 msgid ""
+"Docker Desktop is not started: start it from the Start menu, wait until "
+"it says it is running, then type the command again."
+msgstr "Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande."
+
+msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
 "(Linux, WSL) needs --add-host=host.docker.internal:host-gateway in docker"
 " run, and Ollama started with OLLAMA_HOST=0.0.0.0 to listen beyond "
@@ -1332,6 +1337,11 @@ msgstr ""
 "(Linux, WSL) demande --add-host=host.docker.internal:host-gateway dans "
 "docker run, et Ollama démarré avec OLLAMA_HOST=0.0.0.0 pour écouter au-"
 "delà de 127.0.0.1."
+
+msgid ""
+"Docker is not started: start it (Docker Desktop, or the docker service), "
+"then type the command again."
+msgstr "Docker n'est pas démarré : lancez-le (Docker Desktop, ou le service docker), puis tapez à nouveau la commande."
 
 msgid "Documents and screenshots"
 msgstr "Documents et captures d'écran"
