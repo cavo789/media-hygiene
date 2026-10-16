@@ -262,7 +262,8 @@ Nettoyage 20261016-192706
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261016-192706-clean/report.html
+✅ Rapport HTML :
+C:\Users\you\media-hygiene\reports\20261016-192706-clean\report.html
 📦 decisions.json est appliqué : archivé sous
 decisions.applied-20261016-192706.json, dans le dossier monté sur /reports, le
 prochain 'review' repart de zéro.

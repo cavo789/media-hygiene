@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from tests.support.docker import AS_PUBLISHED, IMAGE, docker, run_image
+from tests.support.docs.host_paths import as_on_windows
 from tests.support.docs.names import Locale
 from tests.support.docs.terminal import answer_prompt, tidy
 
@@ -137,7 +138,7 @@ def run(demo: Demo, command: Command) -> str:
         The screen, tidied.
     """
     result = run_image("-t", *DUMB, *demo.mounts(command), *demo.tool(command))
-    return tidy(result.stdout + result.stderr)
+    return as_on_windows(tidy(result.stdout + result.stderr))
 
 
 def run_confirmed(demo: Demo, command: Command) -> str:
@@ -151,7 +152,8 @@ def run_confirmed(demo: Demo, command: Command) -> str:
         The screen, question and answer included, tidied.
     """
     line = ["docker", "run", "--rm", "-it", *DUMB, *demo.mounts(command)]
-    return tidy(answer_prompt([*line, *demo.tool(command)], _YES[demo.locale]))
+    screen = answer_prompt([*line, *demo.tool(command)], _YES[demo.locale])
+    return as_on_windows(tidy(screen))
 
 
 def run_in_colour(demo: Demo, command: Command) -> str:

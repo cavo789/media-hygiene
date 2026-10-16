@@ -160,7 +160,8 @@ What you can do
 🎞️ 3 burst series: optional, ~2 min in 'review'; the series not reviewed are
 kept whole.
 
-✅ HTML report: /reports/20261016-192337-audit/report.html
+✅ HTML report:
+C:\Users\you\media-hygiene\reports\20261016-192337-audit\report.html
 👉 What next: run 'clean' to set 3.4 MB of copies aside.
 mh clean
 💡 Type mh open: your browser shows every report.

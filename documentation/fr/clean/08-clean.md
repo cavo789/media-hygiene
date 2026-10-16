@@ -121,7 +121,8 @@ Nettoyage 20261016-192704
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
-✅ Rapport HTML : /reports/20261016-192704-clean/report.html
+✅ Rapport HTML :
+C:\Users\you\media-hygiene\reports\20261016-192704-clean\report.html
 💡 Vous changez d'avis ? 'media-hygiene undo 20261016-192704' restaure tout :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

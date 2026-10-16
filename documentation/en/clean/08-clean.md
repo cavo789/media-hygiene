@@ -117,7 +117,8 @@ Clean 20261016-192409
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261016-192409-clean/report.html
+✅ HTML report:
+C:\Users\you\media-hygiene\reports\20261016-192409-clean\report.html
 💡 Changed your mind? 'media-hygiene undo 20261016-192409' restores everything:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

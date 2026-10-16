@@ -40,7 +40,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 <!-- capture: sort.txt|re:^─+ Tri|❓ -->
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
-Classeur : /reports/20261016-192740-classify/classify.xlsx
+Classeur :
+C:\Users\you\media-hygiene\reports\20261016-192740-classify\classify.xlsx
 0 modification lue ; classeur enregistré le 16 octobre 2026 à 19:27.
 Tri
 ┌────────────────────────────────┬────────┐
@@ -141,7 +142,8 @@ Tri 20261016-192742
 Dossiers sources supprimés : 2.
 ✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
 vérifiés sur 4.
-Manifeste : /reports/20261016-192742-sort/manifest.json
+Manifeste :
+C:\Users\you\media-hygiene\reports\20261016-192742-sort\manifest.json
 💡 Vous changez d'avis ? 'media-hygiene undo 20261016-192742' remet tout en
 place :
 docker run --rm -it `

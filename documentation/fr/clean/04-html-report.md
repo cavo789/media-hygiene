@@ -40,7 +40,8 @@ dossier que Docker crée lui-même appartient à l'administrateur, et l'outil ne
 
 <!-- capture: audit.txt|Rapport HTML|. -->
 ```text
-✅ Rapport HTML : /reports/20261016-192637-audit/report.html
+✅ Rapport HTML :
+C:\Users\you\media-hygiene\reports\20261016-192637-audit\report.html
 ```
 
 Avec Docker Desktop (PowerShell), l'outil connaît le dossier Windows derrière `/reports` et

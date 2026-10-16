@@ -39,7 +39,8 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 <!-- capture: sort.txt|re:^─+ Sort|❓ -->
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
-Workbook: /reports/20261016-192444-classify/classify.xlsx
+Workbook:
+C:\Users\you\media-hygiene\reports\20261016-192444-classify\classify.xlsx
 0 edits read; workbook saved on 16 October 2026 at 19:24.
 Sort
 ┌──────────────────────────────┬────────┐
@@ -132,7 +133,7 @@ Sort 20261016-192445
 └──────────────────────────┴────────┘
 Source folders removed: 2.
 ✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: /reports/20261016-192445-sort/manifest.json
+Manifest: C:\Users\you\media-hygiene\reports\20261016-192445-sort\manifest.json
 💡 Changed your mind? 'media-hygiene undo 20261016-192445' moves everything
 back:
 docker run --rm -it `

@@ -252,7 +252,8 @@ Clean 20261016-192411
 │ Failed                   │       0 │
 │ Duration                 │     0 s │
 └──────────────────────────┴─────────┘
-✅ HTML report: /reports/20261016-192411-clean/report.html
+✅ HTML report:
+C:\Users\you\media-hygiene\reports\20261016-192411-clean\report.html
 📦 decisions.json is applied: archived as
 decisions.applied-20261016-192411.json, in the folder mounted on /reports, the
 next 'review' starts afresh.

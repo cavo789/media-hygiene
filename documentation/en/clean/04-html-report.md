@@ -40,7 +40,8 @@ At the end of the audit, a new line:
 
 <!-- capture: audit.txt|HTML report|. -->
 ```text
-✅ HTML report: /reports/20261016-192342-audit/report.html
+✅ HTML report:
+C:\Users\you\media-hygiene\reports\20261016-192342-audit\report.html
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows

@@ -27,7 +27,7 @@ audited completely:
 <!-- capture: inventory.txt -->
 ```text
 ✅ Inventory of 84 files written:
-/reports/20261016-192348-inventory/inventory.xlsx
+C:\Users\you\media-hygiene\reports\20261016-192348-inventory\inventory.xlsx
 Last complete audit (UTC)
 ┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
 ┃ Folder      ┃ Date             ┃
