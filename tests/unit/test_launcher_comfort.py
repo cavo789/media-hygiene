@@ -181,7 +181,9 @@ def test_bash_wraps_a_long_command_with_systemd_inhibit(
     """0179: `systemd-inhibit` before docker for `audit`, not for `history`."""
     record = tmp_path / "inhibit.txt"
     fake_program(
-        bin_folder, "systemd-inhibit", f'[[ "$1" == --list ]] || echo "$*" >> {record}'
+        bin_folder,
+        "systemd-inhibit",
+        f'[[ "${{*: -1}}" == true ]] || echo "$*" >> {record}',
     )
     done = _bash(tmp_path, "mh audit; mh history; echo status=$?")
     assert "status=0" in done.stdout
@@ -189,6 +191,20 @@ def test_bash_wraps_a_long_command_with_systemd_inhibit(
     assert len(lines) == 1
     assert lines[0].startswith("--what=sleep --who=media-hygiene --why=audit -- docker")
     assert lines[0].endswith(" audit")
+
+
+def test_bash_runs_as_is_when_systemd_refuses_to_inhibit(
+    tmp_path: Path, bin_folder: Path
+) -> None:
+    """No desktop session (SSH, CI): systemd refuses; docker runs alone, status 0."""
+    record = tmp_path / "inhibit.txt"
+    fake_program(bin_folder, "systemd-inhibit", f'echo "$*" >> {record}; exit 1')
+    done = _bash(tmp_path, "mh audit; echo status=$?")
+    assert "ran:audit" in done.stdout
+    assert "status=0" in done.stdout
+    assert record.read_text(encoding="utf-8").splitlines() == [
+        "--what=sleep --who=media-hygiene --why=check true"
+    ]
 
 
 def test_bash_does_not_inhibit_on_wsl(tmp_path: Path, bin_folder: Path) -> None:

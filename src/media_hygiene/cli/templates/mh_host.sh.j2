@@ -1,9 +1,11 @@
 {# The helpers of mh.sh around docker run, and `mh open`: see services/launcher_host.py. #}
 # A long run keeps the computer awake (0179): systemd-inhibit on Linux, caffeinate on
 # macOS; nothing on WSL, where Windows decides. Prints the words to put before docker.
+# Tried first on `true`: without a desktop session (SSH, a server, CI) systemd may refuse
+# to inhibit ("Access denied … interactive authentication"), and the run goes as is.
 _{{ function }}_awake() {
     if [[ -z "${WSL_DISTRO_NAME:-}" ]] && command -v systemd-inhibit >/dev/null 2>&1 &&
-        systemd-inhibit --list >/dev/null 2>&1; then
+        systemd-inhibit --what=sleep --who=media-hygiene --why=check true >/dev/null 2>&1; then
         printf '%s ' systemd-inhibit --what=sleep --who=media-hygiene "--why=$1" --
     elif command -v caffeinate >/dev/null 2>&1; then
         printf '%s ' caffeinate -i
