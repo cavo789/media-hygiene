@@ -43,7 +43,7 @@ can rewrite its own file.
 
 One more folder: the long line with every folder retyped → `mh folders add "D:\X"`.
 
-## Status — PARTIAL (2026-10-16)
+## Status — DONE (2026-10-16): the Windows run is measured (below); formerly PARTIAL (2026-10-16)
 
 ### Done
 - `services/launcher_kept.py`: the `launcher` run kept in the script, each word quoted for its
@@ -82,3 +82,11 @@ One more folder: the long line with every folder retyped → `mh folders add "D:
   mount point inside the read-only demo volume of `/data`.
   **Reason:** e2e data is a named volume; the add-then-audit path is in step 11b instead.
   → refiled as 0189, e2e in CI with a host folder (maintainer, inbox 2026-10-16).
+
+### Measured on Windows (2026-10-16, maintainer, PowerShell 5.1, step 11 of mh-measure.ps1)
+- 11a: `mh folders` lists the folder and the quarantine, each `found`; audit: 40 files.
+- 11b: `mh folders add "…\Extra photos"` (a space): "Saved, read back", the file names the
+  folder, no temporary file left; a **new terminal** lists both and its audit counts 43 files
+  (exit code 0).
+- 11c: a folder inside another refused by `launcher`; "mh is unchanged", `mh.ps1` unchanged.
+- 11d: remove → one folder left; removing the last one refused; an unlisted one said so.

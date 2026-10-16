@@ -65,3 +65,11 @@ command.
 - No release notes exist (CI publishes tags to Docker Hub, no GitHub Release): the docs link the
   Docker Hub tags page instead. **Reason:** a decision for the maintainer.
   → refiled as 0187: CI creates a GitHub Release (maintainer, inbox 2026-10-16).
+
+### Measured on Windows (2026-10-16, step 11e of mh-measure.ps1)
+- Local build: "This image is a local build: nothing to pull." as designed.
+- Real update (local build tagged `cavo789/media-hygiene`, then pulled): the published image is
+  v0.3.0, which has no `launcher` command ("No such command 'launcher'"): `mh update` said
+  "mh is unchanged: launcher refused it" and `mh.ps1` kept its folder — safe. The full path
+  (pull, rewrite, both versions said) can only be measured once a release with `launcher` is
+  published: rerun step 11 then.

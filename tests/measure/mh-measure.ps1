@@ -102,6 +102,18 @@ function Measure-Mh([string]$title, [string[]]$mounts, [string[]]$arguments) {
 # -Only "7,8": with -File, PowerShell hands the list over as one string; split it here.
 $steps = @($Only -split '[,; ]+' | Where-Object { $_ -ne "" })
 
+# -OtherDrive given but not there (a USB key not plugged in): said once, here; steps 12, 13
+# and 15d skip it instead of picking another drive or stopping on Join-Path.
+$unplugged = ""
+if ($OtherDrive -ne "") {
+    $OtherDrive = $OtherDrive.TrimEnd('\')
+    if (-not (Test-Path -LiteralPath ($OtherDrive + "\"))) {
+        $unplugged = $OtherDrive
+        $OtherDrive = ""
+        Log "-OtherDrive ${unplugged}: this drive is not accessible (not plugged in?). Steps 12, 13 and 15d skip it: plug it in, then run them again."
+    }
+}
+
 function Wanted([int]$group) {
     return ($steps.Count -eq 0) -or ($steps -contains "$group")
 }
@@ -532,13 +544,15 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
 # folder's, on C:. 12a must show the line with X:, C: and C:'s free space; 12c must not.
 $otherRoot = ""
 if (Wanted 12) {
-    if ($OtherDrive -eq "") {
+    if ($OtherDrive -eq "" -and $unplugged -eq "") {
         $found = Get-PSDrive -PSProvider FileSystem |
             Where-Object { $_.Name -ne 'C' -and $_.Free -gt 2GB } | Select-Object -First 1
         if ($found) { $OtherDrive = $found.Name + ":" }
     }
     Log ""
-    if ($OtherDrive -eq "") {
+    if ($unplugged -ne "") {
+        Log "== 12. skipped: -OtherDrive $unplugged is not accessible"
+    } elseif ($OtherDrive -eq "") {
         Log "== 12. skipped: no drive other than C: with 2 GB free (give one with -OtherDrive)"
     } else {
         $otherRoot = Join-Path ($OtherDrive.TrimEnd('\') + "\") "mh-measure-12"
@@ -576,13 +590,15 @@ if (Wanted 12) {
 $driveRoot = ""
 if (Wanted 13) {
     $drive13 = $OtherDrive
-    if ($drive13 -eq "") {
+    if ($drive13 -eq "" -and $unplugged -eq "") {
         $found = Get-PSDrive -PSProvider FileSystem |
             Where-Object { $_.Name -ne 'C' -and $_.Free -gt 3GB } | Select-Object -First 1
         if ($found) { $drive13 = $found.Name + ":" }
     }
     Log ""
-    if ($drive13 -eq "") {
+    if ($unplugged -ne "") {
+        Log "== 13. skipped: -OtherDrive $unplugged is not accessible"
+    } elseif ($drive13 -eq "") {
         Log "== 13. skipped: no drive other than C: with 3 GB free (give one with -OtherDrive)"
     } else {
         $driveRoot = Join-Path ($drive13.TrimEnd('\') + "\") "mh-measure-13"
@@ -683,7 +699,8 @@ if (Wanted 15) {
         Log "   15d. mh --photos $other audit: exit code $LASTEXITCODE"
         if (-not $Keep) { Remove-Item -Recurse -Force $other }
     } else {
-        Log "   15d. skipped: give -OtherDrive E: (a USB key) to audit a second folder with --photos"
+        if ($unplugged -ne "") { Log "   15d. skipped: -OtherDrive $unplugged is not accessible" }
+        else { Log "   15d. skipped: give -OtherDrive E: (a USB key) to audit a second folder with --photos" }
     }
     $said = @(mh --photos "Q:\mh-measure-not-plugged" audit 6>&1 2>&1 | ForEach-Object { "$_" })
     Log ("   15e. a folder not plugged in: exit code $LASTEXITCODE, says: " + ($said -join ' / '))
