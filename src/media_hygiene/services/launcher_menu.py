@@ -3,7 +3,7 @@
 The `menu` command prints the steps; the `mh` function asks for the number and runs
 the step itself (`services/launcher.py`), after checking the photo folders. Its
 messages are written into the script, translated, with the shell variables they show
-(`$choice`, `$chosen`, `$folder`, `$command`).
+(`$choice`, `$chosen`, `$folder`, `$command`, `$shown`).
 """
 
 from __future__ import annotations
@@ -32,6 +32,7 @@ class MenuTexts:
     missing: str  # holds `$folder`
     done: str  # the window title after a long run; holds `mh $command`
     failed: str  # the same, when it failed
+    folder: str  # `mh --photos X` alone: the menu's folder; holds `$shown` (0181)
 
 
 def menu_texts() -> MenuTexts:
@@ -42,25 +43,28 @@ def menu_texts() -> MenuTexts:
         cannot break the script.
     """
     return MenuTexts(
-        prompt=_safe(_("Step number (Enter: the proposed one)")),
-        unknown=_safe(
+        prompt=shell_safe(_("Step number (Enter: the proposed one)")),
+        unknown=shell_safe(
             _("No step {choice}: type mh alone to see the menu again.")
         ).replace("{choice}", "$choice"),
-        direct=_safe(_("Next time, type it directly: {command}")).replace(
+        direct=shell_safe(_("Next time, type it directly: {command}")).replace(
             "{command}", f"{LAUNCHER_FUNCTION} $chosen"
         ),
-        missing=_safe(
+        missing=shell_safe(
             _(
                 "{folder} cannot be found: plug its disk in, or write mh again with "
                 "launcher."
             )
         ).replace("{folder}", "$folder"),
-        done=_safe(_("{command}: done")).replace("{command}", _COMMAND),
-        failed=_safe(_("{command}: failed")).replace("{command}", _COMMAND),
+        done=shell_safe(_("{command}: done")).replace("{command}", _COMMAND),
+        failed=shell_safe(_("{command}: failed")).replace("{command}", _COMMAND),
+        folder=shell_safe(_("The step you choose also analyses: {folder}")).replace(
+            "{folder}", "${shown}"
+        ),
     )
 
 
-def _safe(text: str) -> str:
+def shell_safe(text: str) -> str:
     """Drop what a double-quoted string would read as code.
 
     Args:

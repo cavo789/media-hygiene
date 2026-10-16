@@ -22,6 +22,8 @@
 #   9. the mh launcher around docker run, in the old console (conhost)    (0184 accents, 0179 awake,
 #      0185 title and sound, 0178 browser): asks what you heard and saw; the awake check
 #      (powercfg /requests) needs an administrator PowerShell
+#  10. mh open, mh shortcut, mh explorer (right-click a folder), each read back   (0175, 0180,
+#      0181): asks what you saw; your own Media Hygiene shortcut or entry is put back after
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -32,6 +34,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Count 3000 -Image media-hygiene
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 8 -Count 10   (step 8 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -345,6 +348,81 @@ Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
     $opened = Read-Host "9d. A window runs mh review: did your browser open on the review page by itself? (y/n; n/a if it said there is nothing to review)"
     Log "   9d. browser opened by mh review: $opened"
     Write-Host "Press Ctrl+C in the review window, then close it."
+}
+
+# --- 10: what mh does by itself, without docker run (0175, 0180, 0181) ----------------------
+# mh open, mh shortcut, mh explorer: each one read back here; a Media Hygiene shortcut or
+# right-click entry you already had is saved first and put back at the end.
+if (Wanted 10) {
+    $ErrorActionPreference = "Continue"
+    $mhDir = Join-Path $tool "mh"
+    New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
+    . $mhFile
+    Log ""
+    Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 explorer)"
+    $index = Join-Path $tool "reports\index.html"
+    if (-not (Test-Path $index)) {
+        $said = @(mh open 6>&1 | ForEach-Object { "$_" })
+        Log ("   10a. mh open before any report says: " + ($said -join ' / '))
+        mh audit | Out-Null
+    }
+    mh open
+    $opened = Read-Host "10a. mh open: did your browser open the list of the reports? (y/n)"
+    Log "   10a. browser opened on index.html by mh open: $opened"
+
+    # 10b: the shortcuts, yours saved first.
+    $shell = New-Object -ComObject WScript.Shell
+    $links = @(foreach ($place in 'Desktop', 'Programs') { Join-Path ([Environment]::GetFolderPath($place)) 'Media Hygiene.lnk' })
+    foreach ($link in $links) { if (Test-Path -LiteralPath $link) { Copy-Item -LiteralPath $link -Destination "$link.mh-measure" -Force } }
+    $said = @(mh shortcut 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   10b. " + $line) }
+    foreach ($link in $links) {
+        $back = $shell.CreateShortcut($link)
+        Log ("   10b. {0} exists: {1}; target {2}; arguments {3}" -f $link, (Test-Path -LiteralPath $link), $back.TargetPath, $back.Arguments)
+    }
+    $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open on the mh menu and stay open? (y/n)"
+    Log "   10b. the icon opens the mh menu, window kept: $clicked"
+
+    # 10c: the right-click entry, yours exported first; a folder whose name has a space and an apostrophe.
+    $key = 'HKCU\Software\Classes\Directory\shell\MediaHygiene'
+    $saved = Join-Path $Work "explorer-key.reg"
+    $had = Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"
+    if ($had) { & reg.exe export $key $saved /y | Out-Null }
+    $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   10c. " + $line) }
+    $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene\command" -ErrorAction SilentlyContinue)
+    Log ("   10c. registry command read back: " + $(if ($command) { $command.GetValue('') } else { '(none)' }))
+    $odd = Join-Path $Work "L'ete 2019"
+    New-Item -ItemType Directory -Force -Path $odd | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
+    explorer.exe $Work
+    $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: does the mh menu open, saying it also analyses that folder? (y/n)"
+    Log "   10c. right-click opens the menu on the folder: $menu"
+    $where = Read-Host "10c. Where was Media Hygiene: in the first menu, or under Show more options? (first/more)"
+    Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
+    $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
+    Log "   10c. audit chosen from the right-click analyses the folder: $audit"
+
+    # 10d: --remove, then what you had put back.
+    $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   10d. " + $line) }
+    Log ("   10d. key still there after --remove: " + (Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"))
+    if ($had) { & reg.exe import $saved 2>&1 | Out-Null }
+    foreach ($link in $links) {
+        Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
+    }
+    Log "   10d. your own shortcuts and right-click entry, if any, are back; close the mh windows."
+    $ErrorActionPreference = "Stop"
 }
 
 # --- clean up -------------------------------------------------------------------------------

@@ -6,15 +6,14 @@ import time
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.context import warn
+from media_hygiene.cli.report_where import announce_report
 from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.console.crosscheck_outdated import show_outdated
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.inventory_view import inventory_table
-from media_hygiene.console.links import file_link
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.stage_times import short_duration, stages_line
 from media_hygiene.console.tables import findings_table, folder_pairs_view
-from media_hygiene.constants import REPORT_INDEX_FILE_NAME
 from media_hygiene.errors import CrossCheckError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
@@ -25,9 +24,6 @@ from media_hygiene.services.reporting import write_report
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
-    from media_hygiene.console.output import Output
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.report.views import ReportRecord
@@ -160,39 +156,4 @@ def report_and_announce(runtime: Runtime, record: ReportRecord) -> None:
     if report is None:
         output.setting(_('-v "<a folder of yours>:/reports" (HTML reports)'))
         return
-    mapper = runtime.mapper
-    index = runtime.locations.reports_dir / REPORT_INDEX_FILE_NAME
-    index_on_host = mapper.to_host(index)
-    if index_on_host == str(index):  # the host folder behind /reports is unknown
-        _announce_in_container(output, report)
-        return
-    output.success(
-        _("HTML report: {path}").format(path=file_link(mapper.to_host(report)))
-    )
-    output.advise(
-        Advice(
-            TipKind.DETAIL,
-            _("Every report is listed in {path} (Ctrl+click opens it).").format(
-                path=file_link(index_on_host)
-            ),
-        )
-    )
-
-
-def _announce_in_container(output: Output, report: Path) -> None:
-    """Name the report by its container path: its host folder is unknown.
-
-    Args:
-        output: Where to print.
-        report: The report written.
-    """
-    output.success(_("HTML report: {path}").format(path=report))
-    output.advise(
-        Advice(
-            TipKind.DETAIL,
-            _(
-                "Open index.html in the folder mounted on /reports: it lists every "
-                "report."
-            ),
-        )
-    )
+    announce_report(runtime, report)

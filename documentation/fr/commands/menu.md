@@ -49,6 +49,11 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
 Tant qu'une étape de nettoyage est proposée, celles du tri et de la recherche sont estompées :
 elles viennent après.
 
+La dernière section, sous Windows, rend `mh` plus facile à atteindre : `mh shortcut` (une icône sur
+le Bureau) et `mh explorer` (le clic droit d'un dossier). `mh open`, après `mh audit`, montre les
+rapports dans votre navigateur. `mh` lance ces trois-là lui-même : [ce que `mh` fait
+lui-même](launcher.md#ce-que-mh-fait-lui-même).
+
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────

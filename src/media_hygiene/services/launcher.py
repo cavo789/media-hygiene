@@ -24,6 +24,7 @@ from media_hygiene.paths.docker_run import (
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_folders import checked_folders
+from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import BROWSE_WAIT, menu_texts
 from media_hygiene.services.next_command import (
@@ -139,6 +140,7 @@ def render_script(script: LauncherScript) -> str:
         image=running_image(),
         header=_header(script.shell),
         texts=menu_texts(),
+        host=host_commands(script),
         checked=checked_folders(script),
         zone=WINDOWS_ZONE_VARIABLE,
     )

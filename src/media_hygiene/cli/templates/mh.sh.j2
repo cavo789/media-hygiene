@@ -3,12 +3,8 @@
 # {{ line }}
 {% endfor %}
 {{ function }}() {
-    if [[ $# -eq 0 ]]; then
-        _{{ function }}_menu
-        return
-    fi
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
-    local tty=(-i) page=() given=() rest=() photos=() zoned=() awake=()
+    local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=()
     # --photos /mnt/e/Folder: one more photo folder, for this command only.
     while [[ $# -gt 0 ]]; do
         if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
@@ -16,6 +12,7 @@
         shift 2
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
         folder="$(cd "$folder" && pwd -P)"
+        typed+=(--photos "$folder")
         if [[ "$folder" =~ ^/mnt/([a-z])(/.*)?$ ]]; then
             given+=("$folder:/data/${BASH_REMATCH[1]}${BASH_REMATCH[2]}")
         else
@@ -23,6 +20,17 @@
         fi
     done
     set -- "${rest[@]}"
+    if [[ $# -eq 0 ]]; then
+        # Alone: the menu; with --photos, the step chosen gets them too (0181).
+        _{{ function }}_menu "${typed[@]}"
+        return
+    fi
+    # The commands of the host itself, without the container (0175, 0180, 0181).
+    case "$1" in
+{% for name in host.names %}
+        {{ name }}) _{{ function }}_{{ name }} "${@:2}"; return ;;
+{% endfor %}
+    esac
 {% if checked %}
     for folder in {% for folder in checked %}"{{ folder }}"{{ " " if not loop.last }}{% endfor %}; do
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
@@ -67,7 +75,7 @@
         disown "$browser" 2>/dev/null
     fi
     "${awake[@]}" docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
-        -e "{{ variable }}=1" \
+        -e "{{ variable }}={{ script.shell.value }}" \
         "${zoned[@]}" \
 {% for option in script.environment %}
         {{ option }} \
@@ -110,12 +118,8 @@ _{{ function }}_title() {
 
 # Wait until the page answers on the port, then open the browser on it (0178).
 _{{ function }}_browse() {
-    local port="$1" tries="$2" opener="" line
-    for opener in wslview explorer.exe xdg-open; do
-        if command -v "$opener" >/dev/null 2>&1; then break; fi
-        opener=""
-    done
-    if [[ -z "$opener" && "$OSTYPE" == darwin* ]]; then opener=open; fi
+    local port="$1" tries="$2" opener line
+    opener="$(_{{ function }}_opener)"
     if [[ -z "$opener" ]]; then return 0; fi
     while [[ "$tries" -gt 0 ]]; do
         tries=$((tries - 1))
@@ -132,10 +136,51 @@ _{{ function }}_browse() {
     done
 }
 
-# `{{ function }}` alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
+# The program opening a page or a file: wslview or explorer.exe on WSL, xdg-open on
+# Linux, open on macOS; nothing printed when none is there.
+_{{ function }}_opener() {
+    local opener
+    for opener in wslview explorer.exe xdg-open; do
+        if command -v "$opener" >/dev/null 2>&1; then
+            printf '%s' "$opener"
+            return 0
+        fi
+    done
+    if [[ "$OSTYPE" == darwin* ]]; then printf '%s' open; fi
+}
+
+# `{{ function }} open`: the catalogue of every report in the browser (0175).
+_{{ function }}_open() {
+{% if host.index %}
+    local index="{{ host.index }}" opener
+    if [[ ! -f "$index" ]]; then printf '%s\n' "{{ host.texts.no_report }}" >&2; return 1; fi
+    opener="$(_{{ function }}_opener)"
+    if [[ -z "$opener" ]]; then printf '%s\n' "{{ host.texts.no_opener }}" >&2; return 1; fi
+    if [[ "$opener" == explorer.exe ]]; then index="$(wslpath -w "$index")"; fi
+    # explorer.exe says 1 even when it opened the page.
+    "$opener" "$index" >/dev/null 2>&1 || true
+{% else %}
+    printf '%s\n' "{{ host.texts.volume }}" >&2
+    return 1
+{% endif %}
+}
+{% for name in host.windows %}
+
+# `{{ function }} {{ name }}` writes a Windows shortcut or registry key: mh.ps1 only (0180, 0181).
+_{{ function }}_{{ name }}() {
+    set -- {{ name }}
+    printf '%s\n' "{{ host.texts.windows }}" >&2
+    return 2
+}
+{% endfor %}
+
+# `{{ function }}` alone: the menu lists the steps, the number chosen runs as
+# `{{ function }} <step>`, with the --photos given to it, if any (0181).
 _{{ function }}_menu() {
-    local steps number line choice="" chosen="" color=() words=()
+    local steps number line choice="" chosen="" color=() words=() shown="" index
     if [[ -t 2 ]]; then color=(--color always); fi
+    for ((index = 2; index <= $#; index += 2)); do shown+="${shown:+, }${!index}"; done
+    if [[ -n "$shown" ]]; then printf '%s\n' "{{ texts.folder }}" >&2; fi
     steps="$({{ function }} "${color[@]}" menu)" || return
     read -r -p "{{ texts.prompt }}: " choice || return 0
     choice="${choice:-0}"
@@ -149,5 +194,5 @@ _{{ function }}_menu() {
     fi
     printf '%s\n' "{{ texts.direct }}" >&2
     read -r -a words <<< "$chosen"
-    {{ function }} "${words[@]}"
+    {{ function }} "${words[@]}" "$@"
 }

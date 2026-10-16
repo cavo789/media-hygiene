@@ -182,7 +182,9 @@ elles aussi `mh …`.
   ```
 - **Un autre dossier ?** Relancez la commande `launcher` avec un `--photos` de plus. Pour une
   seule commande, `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers : les copies de vos
-  photos sur la clé sont trouvées aussi.
+  photos sur la clé sont trouvées aussi. `mh --photos "E:\Clé USB"` seul ouvre le menu sur
+  elle ; `mh explorer` met cela au clic droit de chaque dossier dans l'Explorateur : clic droit,
+  *Media Hygiene*, puis choisissez l'étape.
 - **Un disque pas branché ?** `mh` dit quel dossier il ne trouve pas et ne lance rien (sinon Docker
   monterait un dossier vide, et l'audit ne trouverait rien).
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :

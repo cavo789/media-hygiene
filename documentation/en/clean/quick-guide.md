@@ -49,6 +49,10 @@ The third line writes `mh` into your PowerShell profile: every new terminal know
 too. The last one loads it in this terminal. Later, to change your folders, run the `docker run`
 line only: the profile already has its line.
 
+**Rather click than type?** `mh shortcut` puts a *Media Hygiene* icon on your Desktop and in the
+Start menu: a double-click opens the `mh` menu. `mh explorer` adds *Media Hygiene* to the
+right-click of every folder: the menu opens on that folder. More: [`launcher`](../commands/launcher.md#what-mh-does-by-itself).
+
 ??? question "Several folders? A quarantine on another disk?"
 
     One `--photos` per folder: `--photos "C:\Photos" --photos "D:\Images\Family"`. Not a folder
@@ -100,7 +104,8 @@ mh audit
 
 <span class="mh-badge mh-safe">🔒 Photos untouched</span>
 
-At the end of the audit, Ctrl+click the path of `report.html`:
+At the end of the audit, type `mh open`: your browser shows the list of the reports, the newest
+at its top (or Ctrl+click the path of `report.html`):
 
 ![The top of an audit report: 85 media files scanned, 32 duplicate copies in 20 groups, 14.0 MB can be freed, 3 broken files, then What you can do (identical copies, near duplicates, burst series, each with Copy the command), the inventory line, the contents and how we know these are duplicates](../images/report-top.webp)
 
@@ -116,7 +121,8 @@ Read it in this order:
 
 ??? info "Details"
 
-    The report closed? Open `index.html` in `$HOME\media-hygiene\reports`: it lists every report.
+    The report closed? `mh open` opens it again: `index.html`, in `$HOME\media-hygiene\reports`,
+    lists every report.
     Each file, with what will happen to it, is also in `plan.csv`, next to the report, to open in
     Excel. More: [the HTML report](04-html-report.md).
 

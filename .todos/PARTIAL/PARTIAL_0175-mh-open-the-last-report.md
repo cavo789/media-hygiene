@@ -43,3 +43,27 @@ the script, `script.tools`).
 
 Reaching the report: browse to a folder of the home and double-click → one command, the one the
 audit itself prints.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh open` handled by `mh` itself, without `docker run`, through one host-command mechanism
+  shared with 0180/0181 (`services/launcher_host.py`: `HOST_COMMANDS`, dispatched by the first
+  word in `mh.ps1.j2` / `mh.sh.j2` before any docker option is built).
+- PowerShell: `Invoke-Item -LiteralPath "<reports host folder>\index.html"`; bash: `wslview`,
+  `explorer.exe` (with `wslpath -w`), `xdg-open`, `open` (macOS), the same opener as the page
+  browser (`_mh_opener`, shared with 0178). Missing `index.html`: "No report yet: type mh audit
+  first."; no opener: the file to open by hand; reports in a named volume: said, with the `-v`.
+- Under the launcher, the closing tip of `audit`/`clean` is "Type mh open: your browser shows every
+  report." (`cli/report_where.py`, moved out of `flows.py` near its cap; a 💡 NEXT tip, not 👉:
+  the one 👉 line stays the next step).
+- Menu: `open` right after `audit` in the Clean section, 🔒.
+- Docs EN/FR: quick guide step 2, HTML report page, launcher page (image `--help` does not list
+  it), menu page. Tests: `tests/unit/test_launcher_host.py`.
+
+### Not done
+- One run on Windows: `mh open` opens the default browser on `index.html` (PowerShell 5.1).
+  **Reason:** needs the maintainer's Windows; step 10a of `tests/measure/mh-measure.ps1`
+  (`-Only 10`).
+- `docs_screenshots` to run (the menu and audit captures).
+  **Reason:** heavy; left to the maintainer.

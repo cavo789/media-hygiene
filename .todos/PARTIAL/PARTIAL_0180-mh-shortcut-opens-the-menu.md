@@ -34,3 +34,28 @@ the maintainer (2026-10-16): the icon opens a PowerShell window showing the `mh`
 ## Gain (estimated)
 
 Starting the tool: open PowerShell and type `mh` → double-click an icon.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh shortcut` in `mh.ps1` (host-command mechanism of 0175): `WScript.Shell.CreateShortcut`
+  writes `Media Hygiene.lnk` on the Desktop and in the Start menu (`GetFolderPath('Desktop')`,
+  `'Programs'`), target `%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe` (5.1 even
+  when `mh` runs in pwsh 7), arguments `-NoExit -ExecutionPolicy Bypass -Command ". '<mh.ps1>';
+  mh"`; `<mh.ps1>` is the file the function was loaded from
+  (`$MyInvocation.MyCommand.ScriptBlock.File`), its apostrophes doubled.
+- Proven: each `.lnk` read back (`CreateShortcut` on the same path, `TargetPath` and `Arguments`
+  compared) and shown with its path; a failed save says "Could not write <path>". Run again:
+  rewritten, same names.
+- bash: one line, "mh shortcut is for Windows only.", status 2. Menu: a last section
+  "Reach mh without typing (Windows)", hidden from the bash `mh` (the launcher now passes its
+  shell in `MEDIA_HYGIENE_LAUNCHER`: `powershell` / `bash`, instead of `1`).
+- Docs EN/FR: quick guide step 0 (after the profile line), launcher and menu pages. Tests:
+  `tests/unit/test_launcher_host.py`.
+
+### Not done
+- One run on Windows: `mh shortcut`, double-click the icon: a PowerShell window opens on the `mh`
+  menu and stays open; `-ExecutionPolicy Bypass` enough with the user's policy;
+  `$MyInvocation.MyCommand.ScriptBlock.File` gives the mh.ps1 path.
+  **Reason:** needs the maintainer's Windows; step 10b of `tests/measure/mh-measure.ps1`
+  (`-Only 10`; an existing shortcut is saved and put back).

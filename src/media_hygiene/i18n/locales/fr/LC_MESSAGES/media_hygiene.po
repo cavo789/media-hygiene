@@ -637,6 +637,9 @@ msgstr ""
 "identique octet par octet à celle conservée ; 'clean' les compare encore "
 "juste avant de supprimer."
 
+msgid "An icon on the Desktop and in the Start menu opens this menu"
+msgstr "Une icône sur le Bureau et dans le menu Démarrer ouvre ce menu"
+
 msgid ""
 "Analyse this many random photos, print the time per photo and the "
 "estimate of a full run, and stop."
@@ -1046,6 +1049,14 @@ msgstr[1] "Corrigez ou supprimez les lignes, ou mettez l'image à jour :"
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr "Corrigez ces cellules, enregistrez le classeur, puis relancez 'sort'."
 
+#, python-brace-format
+msgid "Could not remove {key}."
+msgstr "Impossible de supprimer {key}."
+
+#, python-brace-format
+msgid "Could not write {path}."
+msgstr "Impossible d'écrire {path}."
+
 msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
 "one for root only); from WSL or Linux, add --user \"$(id -u):$(id -g)\"."
@@ -1314,6 +1325,11 @@ msgstr ""
 "Terminé ? Ctrl+C dans le terminal arrête la carte. Ajoutez ensuite une "
 "règle 'place' (et une règle 'trip') dans [[classify.rules]] et lancez "
 "'classify'."
+
+msgid ""
+"Double-click Media Hygiene on the Desktop or in the Start menu: the mh "
+"menu opens."
+msgstr "Double-cliquez sur Media Hygiene sur le Bureau ou dans le menu Démarrer : le menu de mh s'ouvre."
 
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
@@ -2932,6 +2948,10 @@ msgstr "Aucun lieu pour l'instant : cliquez sur un cercle ou sur la carte."
 msgid "No preview"
 msgstr "Pas d'aperçu"
 
+#, python-brace-format
+msgid "No program here opens a page: open {index} yourself."
+msgstr "Aucun programme ici n'ouvre une page : ouvrez {index} vous-même."
+
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
 "place."
@@ -2941,6 +2961,10 @@ msgstr ""
 
 msgid "No report yet: run 'media-hygiene audit'."
 msgstr "Aucun rapport pour l'instant : lancez 'media-hygiene audit'."
+
+#, python-brace-format
+msgid "No report yet: type {command} first."
+msgstr "Pas encore de rapport : tapez d'abord {command}."
 
 msgid "No reports mount: 'sort' reads the plan 'classify' wrote there."
 msgstr "Pas de montage des rapports : 'sort' y lit le plan écrit par 'classify'."
@@ -3518,6 +3542,9 @@ msgstr ""
 "Les vidéos réencodées sont dans le rapport HTML ; « clean --tier near » "
 "déplace aussi les sûres en quarantaine."
 
+msgid "Reach mh without typing (Windows)"
+msgstr "Ouvrir mh sans rien taper (Windows)"
+
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
 msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
@@ -3532,6 +3559,9 @@ msgid ""
 msgstr ""
 "Relire tous les dossiers, même ceux qui n'ont pas changé depuis le "
 "dernier audit : pour une photo modifiée sur place par un autre programme."
+
+msgid "Read the reports in your browser"
+msgstr "Lire les rapports dans votre navigateur"
 
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
@@ -3667,6 +3697,19 @@ msgid ""
 msgstr ""
 "Juste avant de supprimer, 'clean' compare à nouveau les deux fichiers, "
 "octet par octet, et ignore toute différence."
+
+msgid "Right-click a folder in Explorer: this menu, on that folder"
+msgstr "Clic droit sur un dossier dans l'Explorateur : ce menu, sur ce dossier"
+
+#, python-brace-format
+msgid ""
+"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
+"back from {key}:"
+msgstr "Clic droit sur un dossier, puis Media Hygiene : le menu de mh s'ouvre sur ce dossier. Relu depuis {key} :"
+
+#, python-brace-format
+msgid "Right-click entry removed: {key} is gone."
+msgstr "Entrée du clic droit retirée : {key} n'existe plus."
 
 msgid "Root"
 msgstr "Racine"
@@ -3923,6 +3966,10 @@ msgstr[1] "Enregistré dans config.toml, relu : {name}, {count} visages confirm�
 
 msgid "Saved in config.toml."
 msgstr "Enregistré dans config.toml."
+
+#, python-brace-format
+msgid "Saved, read back from {path}:"
+msgstr "Enregistré, relu depuis {path} :"
 
 #, python-brace-format
 msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
@@ -4617,6 +4664,12 @@ msgstr ""
 msgid "The report lists them all: type them again where they belong."
 msgstr "Le rapport les liste toutes : saisissez-les à nouveau là où elles vont."
 
+#, python-brace-format
+msgid ""
+"The reports are in the Docker volume {volume}, which no browser opens: "
+"write mh again with launcher and -v <a folder of yours>:/reports."
+msgstr "Les rapports sont dans le volume Docker {volume}, qu'aucun navigateur n'ouvre : réécrivez mh avec launcher et -v <un dossier à vous>:/reports."
+
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
 
@@ -4723,6 +4776,10 @@ msgid ""
 msgstr ""
 "Le shell du script : 'powershell' (Windows) ou 'bash' (WSL, Linux, "
 "macOS). Par défaut : deviné d'après les dossiers montés."
+
+#, python-brace-format
+msgid "The step you choose also analyses: {folder}"
+msgstr "L'étape choisie analyse aussi : {folder}"
 
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
@@ -5051,6 +5108,10 @@ msgstr "Saisissez d'abord un nom."
 
 msgid "Type a name or a category, or leave it in place."
 msgstr "Tapez un nom ou une catégorie, ou laissez-le où il est."
+
+#, python-brace-format
+msgid "Type {command}: your browser shows every report."
+msgstr "Tapez {command} : votre navigateur montre tous les rapports."
 
 msgid "Undated"
 msgstr "Sans date"
@@ -6029,6 +6090,11 @@ msgstr "fusionné avec un autre événement nommé, dont le nom l'emporte"
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
 msgstr "mh retient : {folders}, langue {locale}, fuseau horaire {zone}."
 
+msgid ""
+"mh was not loaded from its file mh.ps1: load it as step 0 of the guides "
+"says, then try again."
+msgstr "mh n'a pas été chargé depuis son fichier mh.ps1 : chargez-le comme le dit l'étape 0 des guides, puis réessayez."
+
 #, python-brace-format
 msgid "more than {limit} is expected, not {value}"
 msgstr "une valeur supérieure à {limit} est attendue, pas {value}"
@@ -6663,6 +6729,10 @@ msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
+
+#, python-brace-format
+msgid "{command} is for Windows only."
+msgstr "{command} est réservé à Windows."
 
 #, python-brace-format
 msgid "{command}: done"

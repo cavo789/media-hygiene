@@ -33,6 +33,7 @@ def _titles() -> dict[Section, str]:
         Section.CLEAN: _("Clean the duplicates"),
         Section.SORT: _("Sort the photos"),
         Section.FIND: _("Find a photo"),
+        Section.SETUP: _("Reach mh without typing (Windows)"),
     }
 
 

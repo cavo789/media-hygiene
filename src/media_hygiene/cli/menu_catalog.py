@@ -1,7 +1,8 @@
-"""The steps of the three quick guides, as the `mh` menu lists them.
+"""The steps of the three quick guides, as the `mh` menu lists them, then its setup.
 
 The order is the guides' (`documentation/*/{clean,sort,find}/quick-guide.md`), the
-badges theirs: 🔒 photos untouched, ↩️ can be undone, ⚠️ for good.
+badges theirs: 🔒 photos untouched, ↩️ can be undone, ⚠️ for good. `open`, `shortcut`
+and `explorer` are run by `mh` itself, on the host (`services/launcher_host.py`).
 """
 
 from __future__ import annotations
@@ -47,6 +48,7 @@ def clean_steps() -> tuple[Step, ...]:
             Risk.SAFE,
             Slot.AUDIT,
         ),
+        Step("open", _("Read the reports in your browser"), Risk.SAFE),
         Step(
             "clean", _("Set the extra copies aside (asks first)"), Risk.UNDO, Slot.CLEAN
         ),
@@ -132,6 +134,28 @@ def find_steps() -> tuple[Step, ...]:
         Step(
             "inventory",
             _("Every photo and video in an Excel workbook"),
+            Risk.SAFE,
+            optional=True,
+        ),
+    )
+
+
+def setup_steps() -> tuple[Step, ...]:
+    """The steps that make `mh` easier to reach, on Windows only (0180, 0181).
+
+    Returns:
+        Them, in order.
+    """
+    return (
+        Step(
+            "shortcut",
+            _("An icon on the Desktop and in the Start menu opens this menu"),
+            Risk.SAFE,
+            optional=True,
+        ),
+        Step(
+            "explorer",
+            _("Right-click a folder in Explorer: this menu, on that folder"),
             Risk.SAFE,
             optional=True,
         ),

@@ -88,6 +88,26 @@ mh audit
   A language set in `config.toml` is left to the file (an edit of it still counts). `launcher`
   ends with one line saying what `mh` remembers: folders, language, time zone.
 
+## What `mh` does by itself
+
+Three commands are not commands of the image: `mh` runs them on your computer, without Docker.
+So `--help` of the image does not list them; this page and the `mh` menu do.
+
+| Command | What it does |
+|---|---|
+| `mh open` | Opens `index.html`, the list of every report, in your browser (the newest at its top). No report yet: it says to run `mh audit` first. |
+| `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window on the `mh` menu, which stays open. Run again, it rewrites both. |
+| `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the `mh` menu opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
+
+`mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key
+`HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. From WSL, Linux or macOS,
+`mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; the other two say they are for
+Windows.
+
+**`mh --photos "E:\Folder"` alone** opens the menu on that folder: it says which folder, and the
+step you choose analyses it too, as `mh --photos "E:\Folder" audit` would. That is what the
+right-click of `mh explorer` runs.
+
 ## Options
 
 | Option | What it does |

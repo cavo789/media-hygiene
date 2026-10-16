@@ -54,8 +54,9 @@ With `--verbosity verbose`, a 💡 tip also names `index.html`, which lists ever
 
 ## Open it
 
-Open `C:\Users\<you>\media-hygiene\reports` in the Explorer and double-click `index.html`. It lists
-every audit and clean, newest first:
+With `mh`, type `mh open` (the audit ends with that line): your browser opens `index.html`.
+Without it, open `C:\Users\<you>\media-hygiene\reports` in the Explorer and double-click
+`index.html`. It lists every audit and clean, newest first:
 
 ![The index of the reports: one line per audit or clean, with its date, its type, its numbers of files, duplicates and broken files, and the space to free](../images/index.webp)
 

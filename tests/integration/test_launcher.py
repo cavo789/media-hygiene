@@ -77,7 +77,7 @@ def test_the_bash_launcher_picks_the_mounts_of_each_command(
     home = tmp_path / "home"
     audit = _arguments(script, home, "--locale fr audit")
     assert audit[:3] == ["run", "--rm", "-i"]
-    assert "MEDIA_HYGIENE_LAUNCHER=1" in audit
+    assert "MEDIA_HYGIENE_LAUNCHER=bash" in audit
     assert audit[-3:] == ["--locale", "fr", "audit"]
     assert f"/:{mounted_data}:ro" in audit
     assert "-p" not in audit

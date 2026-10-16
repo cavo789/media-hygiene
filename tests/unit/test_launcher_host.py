@@ -1,0 +1,328 @@
+"""What `mh` runs on the host itself, without the container: open, shortcut, explorer.
+
+TODOs 0175 (`mh open`: the reports in the browser), 0180 (`mh shortcut`: an icon
+opening the menu) and 0181 (`mh explorer`: the right-click entry of a folder, and
+`mh --photos X` alone: the menu on that folder).
+"""
+
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+from dataclasses import replace
+from pathlib import Path, PureWindowsPath
+from typing import TYPE_CHECKING, Final
+
+import pytest
+from typer.testing import CliRunner
+
+from media_hygiene.cli.app import build_app
+from media_hygiene.cli.menu_steps import Section, build_menu
+from media_hygiene.cli.report_where import announce_report
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import using
+from media_hygiene.paths.docker_run import Shell, Volume
+from media_hygiene.paths.mounts import MountTable
+from media_hygiene.services.launcher import (
+    LauncherCommands,
+    LauncherScript,
+    launcher_script,
+    render_script,
+)
+from media_hygiene.services.launcher_host import (
+    EXPLORER_KEY,
+    FROM_EXPLORER,
+    HOST_COMMANDS,
+)
+from media_hygiene.services.next_command import LAUNCHER_VARIABLE
+from media_hygiene.services.status import read_status
+from tests.support.runtime import make_locations, make_runtime, output_of
+from tests.unit.test_launcher_ascii import accented_runtime, expanded
+
+if TYPE_CHECKING:
+    from media_hygiene.services.runtime import Runtime
+
+_COMMANDS: Final = LauncherCommands(("audit", "menu"), (), (), ("menu",), 8088)
+# The image's stand-in: the menu has one step, audit; the rest is echoed word by word.
+_FAKE_DOCKER: Final = r"""
+docker() {
+    case " $* " in
+        *" menu "*) printf '1\taudit\n' ;;
+        *) printf 'ran:%s\n' "$@" ;;
+    esac
+}
+"""
+_HINT: Final = 30
+
+
+def _runtime(tmp_path: Path) -> Runtime:
+    """A run without any mount: the tool folders default to the home."""
+    return replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+
+
+def _bash_script(tmp_path: Path, script: LauncherScript | None = None) -> Path:
+    """Write the bash `mh` into the test's folder."""
+    path = tmp_path / "mh.sh"
+    built = script or launcher_script(_runtime(tmp_path), Shell.BASH, _COMMANDS)
+    path.write_text(render_script(built), encoding="utf-8")
+    return path
+
+
+def _bash(
+    tmp_path: Path, line: str, script: Path | None = None
+) -> subprocess.CompletedProcess[str]:
+    """Load the bash `mh` with `bin/` first on `PATH`, then run `line`."""
+    path = script or _bash_script(tmp_path)
+    bash = shutil.which("bash") or "bash"
+    env = {"HOME": str(tmp_path), "PATH": f"{tmp_path / 'bin'}:/usr/bin:/bin"}
+    # Trusted script written by the test itself, run on its temporary folder.
+    return subprocess.run(  # noqa: S603
+        [bash, "-c", f"{_FAKE_DOCKER}\nsource {path}; {line}; echo status=$?"],
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+        timeout=60,
+    )
+
+
+def _fake(tmp_path: Path, name: str, body: str) -> None:
+    """Write an executable `name` into `bin/` of the test's folder."""
+    folder = tmp_path / "bin"
+    folder.mkdir(exist_ok=True)
+    path = folder / name
+    path.write_text(f"#!/bin/bash\n{body}\n", encoding="utf-8")
+    path.chmod(0o755)
+
+
+def _index(tmp_path: Path) -> Path:
+    """Write the catalogue of the reports where `mh` looks for it."""
+    reports = tmp_path / "media-hygiene" / "reports"
+    reports.mkdir(parents=True)
+    index = reports / "index.html"
+    index.write_text("<html></html>", encoding="utf-8")
+    return index
+
+
+def _powershell() -> str:
+    """The French `mh.ps1`, as PowerShell evaluates its strings."""
+    with using(Locale.FR):
+        text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
+    assert text.isascii()
+    return expanded(text)
+
+
+def test_bash_open_gives_the_index_to_the_opener(tmp_path: Path) -> None:
+    """0175: `xdg-open` gets the catalogue's host path; docker is not called."""
+    index = _index(tmp_path)
+    record = tmp_path / "opened.txt"
+    _fake(tmp_path, "xdg-open", f'echo "$1" > {record}')
+    done = _bash(tmp_path, "mh open")
+    assert "status=0" in done.stdout
+    assert "ran:" not in done.stdout
+    assert record.read_text(encoding="utf-8") == f"{index}\n"
+
+
+def test_bash_open_on_wsl_gives_explorer_a_windows_path(tmp_path: Path) -> None:
+    """0175: without wslview, `explorer.exe` gets the path `wslpath -w` gives."""
+    _index(tmp_path)
+    record = tmp_path / "opened.txt"
+    _fake(tmp_path, "wslpath", r'echo "C:\\fake\\$(basename "$2")"')
+    _fake(tmp_path, "explorer.exe", f'echo "$1" > {record}; exit 1')
+    done = _bash(tmp_path, "mh open")
+    assert "status=0" in done.stdout  # explorer.exe says 1 even when it opened it
+    assert record.read_text(encoding="utf-8") == "C:\\fake\\index.html\n"
+
+
+def test_bash_open_without_a_report_says_to_audit_first(tmp_path: Path) -> None:
+    """0175: no `index.html`: one line, nothing opened."""
+    record = tmp_path / "opened.txt"
+    _fake(tmp_path, "xdg-open", f'echo "$1" > {record}')
+    done = _bash(tmp_path, "mh open")
+    assert "status=1" in done.stdout
+    assert done.stderr == "No report yet: type mh audit first.\n"
+    assert not record.exists()
+
+
+def test_bash_open_without_an_opener_names_the_file(tmp_path: Path) -> None:
+    """0175: nothing to open a page: the file to open by hand."""
+    index = _index(tmp_path)
+    done = _bash(tmp_path, "OSTYPE=linux-gnu mh open")
+    assert "status=1" in done.stdout
+    assert f"open {index} yourself." in done.stderr
+
+
+def test_open_on_a_named_volume_says_how_to_mount_a_folder(tmp_path: Path) -> None:
+    """0175: a volume is no folder of the host: said, with the `-v` to use."""
+    script = launcher_script(_runtime(tmp_path), Shell.BASH, _COMMANDS)
+    tools = tuple(
+        Volume("media-hygiene-reports", volume.point)
+        if volume.point.name == "reports"
+        else volume
+        for volume in script.tools
+    )
+    path = _bash_script(tmp_path, replace(script, tools=tools))
+    done = _bash(tmp_path, "mh open", path)
+    assert "status=1" in done.stdout
+    assert "Docker volume media-hygiene-reports" in done.stderr
+    assert "-v <a folder of yours>:/reports" in done.stderr
+
+
+@pytest.mark.parametrize("name", ["shortcut", "explorer"])
+def test_bash_says_windows_only(tmp_path: Path, name: str) -> None:
+    """0180, 0181: one line, status 2, no docker."""
+    done = _bash(tmp_path, f"mh {name} --remove")
+    assert done.stderr == f"mh {name} is for Windows only.\n"
+    assert done.stdout == "status=2\n"
+
+
+def test_bash_photos_alone_open_the_menu_on_that_folder(tmp_path: Path) -> None:
+    """0181: the folder said, the step chosen runs with it, mounted under /data."""
+    folder = tmp_path / "L'été 2019"
+    folder.mkdir()
+    done = _bash(tmp_path, f'mh --photos "{folder}" <<< 1')
+    assert f"The step you choose also analyses: {folder}" in done.stderr
+    ran = [line for line in done.stdout.splitlines() if line.startswith("ran:")]
+    assert ran[-1] == "ran:audit"
+    assert f"ran:{folder}:/data{folder}:ro" in ran
+
+
+def test_powershell_dispatches_host_commands_before_docker() -> None:
+    """One mechanism: each host command by its first word, before `docker run`."""
+    text = _powershell()
+    switch = text.index("    switch ($rest[0]) {")
+    for name in HOST_COMMANDS:
+        line = f"'{name}' {{ _mh_{name} @($rest | Select-Object -Skip 1); return }}"
+        assert switch < text.index(line) < text.index("docker run --rm")
+        assert f"function _mh_{name} {{" in text
+
+
+def test_powershell_open_invokes_the_index_of_the_reports() -> None:
+    """0175: `Invoke-Item` on the host folder of /reports; missing: the line."""
+    text = _powershell()
+    assert '$index = "$HOME\\media-hygiene\\reports\\index.html"' in text
+    assert "Invoke-Item -LiteralPath $index" in text
+    assert "Pas encore de rapport : tapez d'abord mh audit." in text
+
+
+def test_powershell_shortcut_writes_then_reads_back_both_links() -> None:
+    """0180: Desktop and Start menu, `-NoExit`, this file loaded; read back."""
+    text = _powershell()
+    assert "foreach ($place in 'Desktop', 'Programs') {" in text
+    assert "[Environment]::GetFolderPath($place)) 'Media Hygiene.lnk'" in text
+    assert "System32\\WindowsPowerShell\\v1.0\\powershell.exe" in text
+    assert (
+        "'-NoExit -ExecutionPolicy Bypass -Command \". ''{0}''; {1}\"' -f "
+        '$file.Replace("\'", "\'\'"), $words'
+    ) in text
+    assert "$file = $MyInvocation.MyCommand.ScriptBlock.File" in text
+    save = text.index("try { $link.Save() } catch { }")
+    back = text.index("$back = $shell.CreateShortcut($path)")
+    assert save < back < text.index("$back.Arguments -eq $arguments")
+    assert 'Write-Host "Enregistr\u00e9, relu depuis ${path} :"' in text
+
+
+def test_powershell_explorer_writes_the_key_and_reads_it_back() -> None:
+    """0181: HKCU only, `%V` after a comment sign, read back; `--remove`."""
+    text = _powershell()
+    assert f"$key = '{EXPLORER_KEY}'" in text
+    assert EXPLORER_KEY.startswith("HKCU:\\")
+    assert f"_mh_start 'mh {FROM_EXPLORER} #\" \"%V'" in text
+    assert '$null = New-Item -Path "$key\\command" -Value $command -Force' in text
+    assert "$read = if ($back) { $back.GetValue('') } else { $null }" in text
+    assert "if ($read -eq $command) {" in text
+    assert "if ($args -contains '--remove') {" in text
+    assert "Remove-Item -LiteralPath $key -Recurse -Force" in text
+
+
+def _from_command_line(line: str) -> str:
+    """What `mh --from-explorer` reads, as its PowerShell lines do."""
+    at = line.rindex('#" "')
+    return line[at + 4 :].rstrip().rstrip('"')
+
+
+@pytest.mark.parametrize(
+    "folder", ["C:\\Photos", "D:\\Mes photos\\L'été 2019", "E:\\", "F:\\a $b `c"]
+)
+def test_any_folder_name_comes_back_whole(folder: str) -> None:
+    """0181: spaces, apostrophes, `$`, a drive root: Explorer's `%V`, read back."""
+    text = _powershell()
+    assert "$folder = $line.Substring($line.LastIndexOf('#\" \"') + 4)" in text
+    command = (
+        '"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoExit '
+        "-ExecutionPolicy Bypass -Command \". 'C:\\Users\\O''Neil\\mh.ps1'; "
+        f'mh {FROM_EXPLORER} #" "%V"'
+    )
+    line = command.replace("%V", folder)  # what Explorer starts
+    code = line[: line.rindex("#")]
+    assert folder not in code  # the name sits after the comment sign only
+    assert _from_command_line(line) == folder
+    assert PureWindowsPath(_from_command_line(line)) == PureWindowsPath(folder)
+
+
+def test_powershell_photos_alone_open_the_menu_with_them() -> None:
+    """0181: `--photos` parsed first; the menu's step gets them."""
+    text = _powershell()
+    parsed = text.index("$typed += '--photos', $found.ProviderPath")
+    alone = text.index("    if ($rest.Count -eq 0) {")
+    assert parsed < alone < text.index("        mh @words @typed")
+    assert 'Write-Host "L\'\u00e9tape choisie analyse aussi : ${shown}"' in text
+    explorer = text.index(f"$args[0] -eq '{FROM_EXPLORER}'")
+    assert explorer < parsed
+    assert "        mh --photos $folder" in text
+
+
+def test_the_launcher_tells_the_image_its_shell() -> None:
+    """The menu hides the Windows steps from the bash `mh` only."""
+    assert f'-e "{LAUNCHER_VARIABLE}=powershell"' in _powershell()
+
+
+def test_menu_lists_open_after_audit_and_setup_on_windows(tmp_path: Path) -> None:
+    """0175: `open` right after `audit`; 0180, 0181: setup last, not for bash."""
+    status = read_status(make_runtime(make_locations(tmp_path)))
+    menu = build_menu(status, _HINT)
+    commands = [line.step.command for line in menu.steps]
+    assert commands[commands.index("audit") + 1] == "open"
+    setup = [line.step.command for line in menu.steps if line.section is Section.SETUP]
+    assert setup == ["shortcut", "explorer"]
+    assert menu.steps[-1].section is Section.SETUP
+    bash = build_menu(status, _HINT, windows=False)
+    assert not any(line.section is Section.SETUP for line in bash.steps)
+    assert "open" in [line.step.command for line in bash.steps]
+
+
+def test_under_the_launcher_the_report_tip_is_mh_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0175: `mh open` replaces where `index.html` lies; without mh, unchanged."""
+    runtime = make_runtime(make_locations(tmp_path))
+    report = runtime.locations.reports_dir / "report.html"
+    monkeypatch.setenv(LAUNCHER_VARIABLE, "powershell")
+    announce_report(runtime, report)
+    runtime.output.finish()
+    printed = output_of(runtime)
+    assert "Type mh open: your browser shows every report." in printed
+    assert "Open index.html" not in printed
+    monkeypatch.delenv(LAUNCHER_VARIABLE)
+    announce_report(runtime, report)
+    runtime.output.finish()
+    assert "Open index.html in the folder mounted on /reports" in output_of(runtime)
+    assert os.environ.get(LAUNCHER_VARIABLE) is None
+
+
+@pytest.mark.parametrize("shell", ["bash", "powershell"])
+def test_the_menu_shows_the_windows_steps_to_powershell_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, shell: str
+) -> None:
+    """0180, 0181: `mh shortcut` and `mh explorer` are not offered to bash."""
+    listed = shell == "powershell"
+    monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(tmp_path))
+    monkeypatch.setenv(LAUNCHER_VARIABLE, shell)
+    result = CliRunner().invoke(build_app(), ["menu"])
+    assert result.exit_code == 0, result.output
+    assert ("mh shortcut" in result.stderr) is listed
+    assert ("mh explorer" in result.stderr) is listed
+    assert "mh open" in result.stderr

@@ -54,8 +54,9 @@ Avec `--verbosity verbose`, une astuce 💡 nomme aussi `index.html`, qui liste 
 
 ## L'ouvrir
 
-Ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliquez sur
-`index.html`. Il liste chaque audit et chaque nettoyage, du plus récent au plus ancien :
+Avec `mh`, tapez `mh open` (l'audit finit par cette ligne) : votre navigateur ouvre `index.html`.
+Sans lui, ouvrez `C:\Users\<vous>\media-hygiene\reports` dans l'Explorateur et double-cliquez
+sur `index.html`. Il liste chaque audit et chaque nettoyage, du plus récent au plus ancien :
 
 ![L'index des rapports : une ligne par audit ou nettoyage, avec sa date, son type, ses nombres de fichiers, de doublons et de fichiers cassés, et l'espace libérable](../images/index.webp)
 

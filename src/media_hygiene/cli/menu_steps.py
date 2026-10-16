@@ -11,9 +11,15 @@ from dataclasses import dataclass, replace
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.menu_catalog import clean_steps, find_steps, sort_steps
+from media_hygiene.cli.menu_catalog import (
+    clean_steps,
+    find_steps,
+    setup_steps,
+    sort_steps,
+)
 from media_hygiene.cli.status_step import Slot, next_step
 from media_hygiene.constants import RunKind
+from media_hygiene.services.launcher_host import windows_menu
 
 if TYPE_CHECKING:
     from media_hygiene.cli.menu_catalog import Step
@@ -26,6 +32,7 @@ class Section(StrEnum):
     CLEAN = "clean"
     SORT = "sort"
     FIND = "find"
+    SETUP = "setup"  # `mh` on the Desktop and in Explorer: Windows only
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,21 +55,27 @@ class Menu:
     proposed: MenuStep | None
 
 
-def build_menu(status: Status, purge_hint_days: int) -> Menu:
-    """List the steps of the three guides, the proposed one marked.
+def build_menu(
+    status: Status, purge_hint_days: int, *, windows: bool | None = None
+) -> Menu:
+    """List the steps of the three guides, the proposed one marked, then the setup.
 
     Args:
         status: What the tool folders say.
         purge_hint_days: The age from which a quarantine is worth purging first.
+        windows: False leaves out the Windows steps; None: unless the bash `mh`
+            runs the menu.
 
     Returns:
         The menu, its selectable steps numbered from 1.
     """
     proposal = next_step(status, purge_hint_days)
+    windows = windows_menu() if windows is None else windows
     sections = (
         (Section.CLEAN, clean_steps()),
         (Section.SORT, sort_steps()),
         (Section.FIND, find_steps()),
+        (Section.SETUP, setup_steps() if windows else ()),
     )
     lines: list[MenuStep] = []
     number = 0

@@ -169,7 +169,9 @@ folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `alb
   ```
 - **Another folder?** Run the `launcher` command again with one more `--photos`. For one command
   only, `mh --photos "E:\USB key" audit` adds it to your folders: the copies of your photos on
-  the key are found too.
+  the key are found too. `mh --photos "E:\USB key"` alone opens the menu on it; `mh explorer`
+  puts that on the right-click of every folder in Explorer: right-click, *Media Hygiene*, then
+  choose the step.
 - **A disk not plugged in?** `mh` says which folder it cannot find and runs nothing (Docker would
   otherwise mount an empty folder, and the audit would find nothing).
 - PowerShell refuses to load the file (*running scripts is disabled*)? Once:

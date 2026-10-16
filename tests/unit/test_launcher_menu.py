@@ -104,10 +104,10 @@ def test_powershell_menu_reads_a_number_then_calls_itself() -> None:
     with using(Locale.FR):
         text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
     assert text.isascii()
-    assert "    if ($args.Count -eq 0) {" in text
+    assert "    if ($rest.Count -eq 0) {" in text
     assert "$steps = @(mh @color menu)" in text
     assert '$number, $line = "$step" -split "`t", 2' in text
-    assert "        mh @words" in text
+    assert "        mh @words @typed" in text
     back = expanded(text)
     assert 'Write-Host "La prochaine fois, tapez-la directement : mh $chosen"' in back
 

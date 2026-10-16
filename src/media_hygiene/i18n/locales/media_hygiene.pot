@@ -500,6 +500,9 @@ msgid ""
 "deleting."
 msgstr ""
 
+msgid "An icon on the Desktop and in the Start menu opens this menu"
+msgstr ""
+
 msgid ""
 "Analyse this many random photos, print the time per photo and the "
 "estimate of a full run, and stop."
@@ -858,6 +861,14 @@ msgstr[1] ""
 msgid "Correct these cells, save the workbook, then run 'sort' again."
 msgstr ""
 
+#, python-brace-format
+msgid "Could not remove {key}."
+msgstr ""
+
+#, python-brace-format
+msgid "Could not write {path}."
+msgstr ""
+
 msgid ""
 "Create the folder yourself before docker run (Docker creates a missing "
 "one for root only); from WSL or Linux, add --user \"$(id -u):$(id -g)\"."
@@ -1080,6 +1091,11 @@ msgstr ""
 msgid ""
 "Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
+msgstr ""
+
+msgid ""
+"Double-click Media Hygiene on the Desktop or in the Start menu: the mh "
+"menu opens."
 msgstr ""
 
 #, python-brace-format
@@ -2412,12 +2428,20 @@ msgstr ""
 msgid "No preview"
 msgstr ""
 
+#, python-brace-format
+msgid "No program here opens a page: open {index} yourself."
+msgstr ""
+
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
 "place."
 msgstr ""
 
 msgid "No report yet: run 'media-hygiene audit'."
+msgstr ""
+
+#, python-brace-format
+msgid "No report yet: type {command} first."
 msgstr ""
 
 msgid "No reports mount: 'sort' reads the plan 'classify' wrote there."
@@ -2907,6 +2931,9 @@ msgid ""
 "sure ones to the quarantine too."
 msgstr ""
 
+msgid "Reach mh without typing (Windows)"
+msgstr ""
+
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
 msgstr ""
@@ -2918,6 +2945,9 @@ msgstr ""
 msgid ""
 "Read every folder again, even those that did not change since the last "
 "audit: for a photo changed in place by another program."
+msgstr ""
+
+msgid "Read the reports in your browser"
 msgstr ""
 
 msgid "Reading 128 KB of each file already in the cache, once"
@@ -3028,6 +3058,19 @@ msgstr ""
 msgid ""
 "Right before deleting, 'clean' compares the two files again, byte by "
 "byte, and skips any difference."
+msgstr ""
+
+msgid "Right-click a folder in Explorer: this menu, on that folder"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
+"back from {key}:"
+msgstr ""
+
+#, python-brace-format
+msgid "Right-click entry removed: {key} is gone."
 msgstr ""
 
 msgid "Root"
@@ -3240,6 +3283,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Saved in config.toml."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved, read back from {path}:"
 msgstr ""
 
 #, python-brace-format
@@ -3821,6 +3868,12 @@ msgstr ""
 msgid "The report lists them all: type them again where they belong."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The reports are in the Docker volume {volume}, which no browser opens: "
+"write mh again with launcher and -v <a folder of yours>:/reports."
+msgstr ""
+
 msgid "The review is not running any more: start it again."
 msgstr ""
 
@@ -3894,6 +3947,10 @@ msgstr ""
 msgid ""
 "The shell of the script: 'powershell' (Windows) or 'bash' (WSL, Linux, "
 "macOS). Default: guessed from the mounted folders."
+msgstr ""
+
+#, python-brace-format
+msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
 msgid ""
@@ -4160,6 +4217,10 @@ msgid "Type a name first."
 msgstr ""
 
 msgid "Type a name or a category, or leave it in place."
+msgstr ""
+
+#, python-brace-format
+msgid "Type {command}: your browser shows every report."
 msgstr ""
 
 msgid "Undated"
@@ -5020,6 +5081,11 @@ msgstr ""
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
 msgstr ""
 
+msgid ""
+"mh was not loaded from its file mh.ps1: load it as step 0 of the guides "
+"says, then try again."
+msgstr ""
+
 #, python-brace-format
 msgid "more than {limit} is expected, not {value}"
 msgstr ""
@@ -5607,6 +5673,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
+msgstr ""
+
+#, python-brace-format
+msgid "{command} is for Windows only."
 msgstr ""
 
 #, python-brace-format

@@ -47,6 +47,10 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
 
 While a clean step is proposed, the sort and find steps are dimmed: they come after.
 
+The last section, on Windows, makes `mh` easier to reach: `mh shortcut` (an icon on the Desktop)
+and `mh explorer` (the right-click of a folder). `mh open`, after `mh audit`, shows the reports in
+your browser. `mh` runs these three itself: [what `mh` does by itself](launcher.md#what-mh-does-by-itself).
+
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────

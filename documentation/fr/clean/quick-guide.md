@@ -52,6 +52,11 @@ La troisième ligne écrit `mh` dans votre profil PowerShell : chaque nouveau te
 demain aussi. La dernière le charge dans ce terminal. Plus tard, pour changer vos dossiers,
 relancez seulement la ligne `docker run` : le profil a déjà sa ligne.
 
+**Plutôt cliquer que taper ?** `mh shortcut` pose une icône *Media Hygiene* sur votre Bureau et
+dans le menu Démarrer : un double-clic ouvre le menu de `mh`. `mh explorer` ajoute *Media
+Hygiene* au clic droit de chaque dossier : le menu s'ouvre sur ce dossier. Plus :
+[`launcher`](../commands/launcher.md#ce-que-mh-fait-lui-même).
+
 ??? question "Plusieurs dossiers ? Une quarantaine sur un autre disque ?"
 
     Un `--photos` par dossier : `--photos "C:\Photos" --photos "D:\Images\Famille"`. Pas un
@@ -105,7 +110,8 @@ mh audit
 
 <span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
-À la fin de l'audit, Ctrl+clic sur le chemin de `report.html` :
+À la fin de l'audit, tapez `mh open` : votre navigateur montre la liste des rapports, le plus
+récent en haut (ou Ctrl+clic sur le chemin de `report.html`) :
 
 ![Le haut d'un rapport d'audit : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 14,0 Mo libérables, 3 fichiers cassés, puis Ce que vous pouvez faire (copies identiques, quasi-doublons, rafales, chacune avec Copier la commande), la ligne d'inventaire, le sommaire et comment on sait que ce sont des doublons](../images/report-top.webp)
 
@@ -122,8 +128,8 @@ Lisez-le dans cet ordre :
 
 ??? info "Détails"
 
-    Le rapport est fermé ? Ouvrez `index.html` dans `$HOME\media-hygiene\reports` : il liste tous
-    les rapports. Chaque fichier, avec ce qui lui arrivera, est aussi dans `plan.csv`, à côté du
+    Le rapport est fermé ? `mh open` le rouvre : `index.html`, dans
+    `$HOME\media-hygiene\reports`, liste tous les rapports. Chaque fichier, avec ce qui lui arrivera, est aussi dans `plan.csv`, à côté du
     rapport, à ouvrir dans Excel. Plus : [le rapport HTML](04-html-report.md).
 
 ## 3. Choisir la copie gardée

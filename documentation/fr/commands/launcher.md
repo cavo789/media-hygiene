@@ -91,6 +91,26 @@ mh audit
   compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, langue,
   fuseau horaire.
 
+## Ce que `mh` fait lui-même
+
+Trois commandes ne sont pas des commandes de l'image : `mh` les lance sur votre ordinateur, sans
+Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de `mh`, si.
+
+| Commande | Ce qu'elle fait |
+|---|---|
+| `mh open` | Ouvre `index.html`, la liste de tous les rapports, dans votre navigateur (le plus récent en haut). Pas encore de rapport : elle dit de lancer d'abord `mh audit`. |
+| `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell sur le menu de `mh`, qui reste ouverte. Relancée, elle réécrit les deux. |
+| `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : le menu de `mh` s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
+
+`mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
+registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Depuis WSL,
+Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
+autres disent qu'elles sont pour Windows.
+
+**`mh --photos "E:\Dossier"` seul** ouvre le menu sur ce dossier : il dit lequel, et l'étape
+choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
+clic droit de `mh explorer`.
+
 ## Options
 
 | Option | Rôle |

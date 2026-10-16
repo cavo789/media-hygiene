@@ -32,3 +32,30 @@ opens the `mh` menu with that folder, not an audit straight away.
 ## Gain (estimated)
 
 Analysing another folder: type its path → right-click it.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh --photos "<folder>"` without a command opens the menu: `--photos` is now parsed before the
+  menu branch (both shells), the menu says "The step you choose also analyses: <folder>", and
+  the chosen step runs with the `--photos` given.
+- `mh explorer` in `mh.ps1` (host-command mechanism of 0175/0180, `_mh_start` shared with
+  `mh shortcut`): `HKCU:\Software\Classes\Directory\shell\MediaHygiene` (label, `Icon`) and its
+  `command` = `"<powershell.exe>" -NoExit -ExecutionPolicy Bypass -Command ". '<mh.ps1>'; mh
+  --from-explorer #" "%V"`. Quoting: Explorer's `%V` sits after `#`, a PowerShell comment, so no
+  character of a folder name (apostrophe, `$`, backtick, a trailing `\` of a drive root) can break
+  the command; `mh --from-explorer` reads the folder back from `[Environment]::CommandLine`
+  (after the last `#" "`, closing quote trimmed). Tested on names with spaces, `'`, `$`, `E:\`.
+  Read back (`GetValue('')` compared) and shown; `mh explorer --remove` deletes the key, checked
+  gone. HKCU only.
+- bash: one line, Windows only. Menu: last section, Windows only.
+- Docs EN/FR: launcher page, "several folders" (right-click), menu page, quick guide step 0.
+
+### Not done
+- One run on Windows 10 or 11: right-click a folder → "Media Hygiene" → the menu opens on it,
+  `audit` chosen analyses that folder; where the entry sits on Windows 11 (first menu or "Show
+  more options"); the `#` comment trick works as expected with `powershell.exe -Command`.
+  **Reason:** needs the maintainer's Windows; step 10c-10d of `tests/measure/mh-measure.ps1`
+  (`-Only 10`; an existing entry is exported and imported back).
+- Right-click on the background of an open folder (`Directory\Background\shell`) not added.
+  **Reason:** not asked; one more key if wanted.
