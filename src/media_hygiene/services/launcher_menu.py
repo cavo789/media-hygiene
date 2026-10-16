@@ -3,7 +3,8 @@
 The `menu` command prints the steps; the `mh` function asks for the number and runs
 the step itself (`services/launcher.py`), after checking the photo folders. Its
 messages are written into the script, translated, with the shell variables they show
-(`$choice`, `$chosen`, `$folder`, `$command`, `$shown`).
+(`${choice}`, `${chosen}`, `${folder}`, `${command}`, `${shown}`): braced,
+so that a colon after them (`mh ${command}: done`) is text, not a drive or scope.
 """
 
 from __future__ import annotations
@@ -19,7 +20,7 @@ UNSAFE_CHARACTERS = frozenset('"$`\\')
 # How long `mh` waits for a page to answer before opening the browser on it (0178): a
 # review audits first, minutes without a cache. The wait also ends with the command.
 BROWSE_WAIT: Final = 300
-_COMMAND: Final = f"{LAUNCHER_FUNCTION} $command"
+_COMMAND: Final = f"{LAUNCHER_FUNCTION} ${{command}}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,12 +28,12 @@ class MenuTexts:
     """The messages of `mh` itself, ready to sit inside double quotes."""
 
     prompt: str
-    unknown: str  # holds `$choice`
-    direct: str  # holds `mh $chosen`
-    missing: str  # holds `$folder`
-    done: str  # the window title after a long run; holds `mh $command`
+    unknown: str  # holds `${choice}`
+    direct: str  # holds `mh ${chosen}`
+    missing: str  # holds `${folder}`
+    done: str  # the window title after a long run; holds `mh ${command}`
     failed: str  # the same, when it failed
-    folder: str  # `mh --photos X` alone: the menu's folder; holds `$shown` (0181)
+    folder: str  # `mh --photos X` alone: the menu's folder; holds `${shown}` (0181)
 
 
 def menu_texts() -> MenuTexts:
@@ -46,16 +47,16 @@ def menu_texts() -> MenuTexts:
         prompt=shell_safe(_("Step number (Enter: the proposed one)")),
         unknown=shell_safe(
             _("No step {choice}: type mh alone to see the menu again.")
-        ).replace("{choice}", "$choice"),
+        ).replace("{choice}", "${choice}"),
         direct=shell_safe(_("Next time, type it directly: {command}")).replace(
-            "{command}", f"{LAUNCHER_FUNCTION} $chosen"
+            "{command}", f"{LAUNCHER_FUNCTION} ${{chosen}}"
         ),
         missing=shell_safe(
             _(
                 "{folder} cannot be found: plug its disk in, or write mh again with "
                 "launcher."
             )
-        ).replace("{folder}", "$folder"),
+        ).replace("{folder}", "${folder}"),
         done=shell_safe(_("{command}: done")).replace("{command}", _COMMAND),
         failed=shell_safe(_("{command}: failed")).replace("{command}", _COMMAND),
         folder=shell_safe(_("The step you choose also analyses: {folder}")).replace(

@@ -109,7 +109,7 @@ def test_powershell_menu_reads_a_number_then_calls_itself() -> None:
     assert '$number, $line = "$step" -split "`t", 2' in text
     assert "        mh @words @typed" in text
     back = expanded(text)
-    assert 'Write-Host "La prochaine fois, tapez-la directement : mh $chosen"' in back
+    assert 'Write-Host "La prochaine fois, tapez-la directement : mh ${chosen}"' in back
 
 
 def test_no_translation_can_break_the_script() -> None:
@@ -118,5 +118,5 @@ def test_no_translation_can_break_the_script() -> None:
         with using(locale):
             texts = menu_texts()
         for text in (texts.prompt, texts.unknown, texts.direct):
-            own = text.replace("$choice", "").replace("$chosen", "")
+            own = text.replace("${choice}", "").replace("${chosen}", "")
             assert not set(own) & UNSAFE_CHARACTERS

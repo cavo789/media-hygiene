@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import http.server
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -51,9 +52,9 @@ def _commands(port: int = _PORT, wait: int = 5) -> LauncherCommands:
     )
 
 
-def _powershell() -> str:
-    """The French `mh.ps1`, as PowerShell evaluates its strings."""
-    with using(Locale.FR):
+def _powershell(locale: Locale = Locale.FR) -> str:
+    """The `mh.ps1` of a language (French by default), its strings evaluated."""
+    with using(locale):
         text = render_script(launcher_script(accented_runtime(), None, _commands()))
     assert text.isascii()
     return expanded(text)
@@ -166,7 +167,7 @@ def test_powershell_titles_long_commands_only_and_compiles_nothing() -> None:
     assert "Add-Type" not in text
     assert "SetThreadExecutionState" not in text
     assert '$Host.UI.RawUI.WindowTitle = "mh $command..."' in text
-    assert '{ "mh $command : terminé" } else { "mh $command : échec" }' in text
+    assert '{ "mh ${command} : terminé" } else { "mh ${command} : échec" }' in text
     assert "[Media.SystemSounds]::Asterisk.Play()" in text
     assert "[Media.SystemSounds]::Hand.Play()" in text
     assert "$Host.UI.RawUI.WindowTitle = $global:MediaHygieneTitle" in text
@@ -263,3 +264,12 @@ def test_a_page_under_the_launcher_says_the_browser_opens(
     assert "Your browser opens on http://127.0.0.1:8088/; if not" in printed
     assert printed.count("-p 127.0.0.1:8088:8088") == 1
     assert os.environ.get(LAUNCHER_VARIABLE) is None
+
+
+@pytest.mark.parametrize("locale", list(Locale))
+def test_no_variable_is_followed_by_a_colon(locale: Locale) -> None:
+    """`"$command: done"` breaks PowerShell (a drive or scope): braced only."""
+    text = _powershell(locale)
+    scopes = ("env", "global", "script", "local", "using")
+    loose = re.findall(r"\$([A-Za-z_]\w*):", text)
+    assert [name for name in loose if name not in scopes] == []
