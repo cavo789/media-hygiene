@@ -133,7 +133,8 @@ def test_bash_open_without_a_report_says_to_audit_first(tmp_path: Path) -> None:
 def test_bash_open_without_an_opener_names_the_file(tmp_path: Path) -> None:
     """0175: nothing to open a page: the file to open by hand."""
     index = _index(tmp_path)
-    done = _bash(tmp_path, "OSTYPE=linux-gnu mh open")
+    (tmp_path / "bin").mkdir()  # alone on PATH: no xdg-open of the machine's own
+    done = _bash(tmp_path, 'OSTYPE=linux-gnu PATH="$HOME/bin" mh open')
     assert "status=1" in done.stdout
     assert f"open {index} yourself." in done.stderr
 

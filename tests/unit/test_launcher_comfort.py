@@ -89,6 +89,9 @@ def _bash(
     script = tmp_path / "mh.sh"
     commands = _commands(port, wait=int((extra or {}).get("WAIT", "5")))
     script.write_text(render_script(launcher_script(runtime, Shell.BASH, commands)))
+    if not (tmp_path / "bin" / "systemd-inhibit").exists():
+        # The machine's own (a CI runner) would run the docker program, not the fake.
+        fake_program(tmp_path / "bin", "systemd-inhibit", "exit 1")
     env = {"HOME": str(tmp_path), "PATH": f"{tmp_path / 'bin'}:/usr/bin:/bin"}
     return run_bash(f"{_FAKE_DOCKER}\nsource {script}; {line}", env | (extra or {}))
 

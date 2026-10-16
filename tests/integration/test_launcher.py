@@ -12,6 +12,7 @@ import pytest
 from media_hygiene.constants import ExitCode
 from media_hygiene.paths.mounts import MountTable
 from tests.support.cli import run
+from tests.support.host_bash import fake_program
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -37,7 +38,11 @@ def _arguments(script: Path, home: Path, command: str) -> list[str]:
     """
     bash = shutil.which("bash") or "bash"
     line = f"{_FAKE_DOCKER}; source {script}; mh {command}"
-    environment = {**os.environ, "HOME": str(home)}
+    # The machine's systemd-inhibit (a CI runner) would run the docker program, not
+    # the fake: one that refuses keeps the run as it is.
+    fake_program(script.parent / "bin", "systemd-inhibit", "exit 1")
+    path = f"{script.parent / 'bin'}:{os.environ.get('PATH', '')}"
+    environment = {**os.environ, "HOME": str(home), "PATH": path}
     # Trusted script written by the test itself, run on its temporary folder.
     done = subprocess.run(  # noqa: S603
         [bash, "-c", line], capture_output=True, text=True, check=True, env=environment
