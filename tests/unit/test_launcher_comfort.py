@@ -9,9 +9,7 @@ from __future__ import annotations
 import http.server
 import os
 import re
-import shutil
 import socket
-import subprocess
 import threading
 from dataclasses import replace
 from typing import TYPE_CHECKING, Final, override
@@ -29,10 +27,12 @@ from media_hygiene.services.launcher import (
 )
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from media_hygiene.services.reviewing import address_tip
+from tests.support.host_bash import fake_program, run_bash
 from tests.support.runtime import make_locations, make_runtime, output_of
 from tests.unit.test_launcher_ascii import accented_runtime, expanded
 
 if TYPE_CHECKING:
+    import subprocess
     from collections.abc import Iterator
     from pathlib import Path
 
@@ -77,13 +77,6 @@ docker() {
 """
 
 
-def _fake(folder: Path, name: str, body: str) -> None:
-    """Write an executable `name` into `folder`."""
-    path = folder / name
-    path.write_text(f"#!/bin/bash\n{body}\n", encoding="utf-8")
-    path.chmod(0o755)
-
-
 def _bash(
     tmp_path: Path, line: str, extra: dict[str, str] | None = None
 ) -> subprocess.CompletedProcess[str]:
@@ -95,18 +88,8 @@ def _bash(
     script = tmp_path / "mh.sh"
     commands = _commands(port, wait=int((extra or {}).get("WAIT", "5")))
     script.write_text(render_script(launcher_script(runtime, Shell.BASH, commands)))
-    bash = shutil.which("bash") or "bash"
     env = {"HOME": str(tmp_path), "PATH": f"{tmp_path / 'bin'}:/usr/bin:/bin"}
-    env |= extra or {}
-    # Trusted script written by the test itself, run on its temporary folder.
-    return subprocess.run(  # noqa: S603
-        [bash, "-c", f"{_FAKE_DOCKER}\nsource {script}; {line}"],
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
-        timeout=60,
-    )
+    return run_bash(f"{_FAKE_DOCKER}\nsource {script}; {line}", env | (extra or {}))
 
 
 @pytest.fixture
@@ -193,7 +176,7 @@ def test_bash_wraps_a_long_command_with_systemd_inhibit(
 ) -> None:
     """0179: `systemd-inhibit` before docker for `audit`, not for `history`."""
     record = tmp_path / "inhibit.txt"
-    _fake(
+    fake_program(
         bin_folder, "systemd-inhibit", f'[[ "$1" == --list ]] || echo "$*" >> {record}'
     )
     done = _bash(tmp_path, "mh audit; mh history; echo status=$?")
@@ -207,7 +190,7 @@ def test_bash_wraps_a_long_command_with_systemd_inhibit(
 def test_bash_does_not_inhibit_on_wsl(tmp_path: Path, bin_folder: Path) -> None:
     """0179: on WSL, Windows decides; docker runs as is."""
     record = tmp_path / "inhibit.txt"
-    _fake(bin_folder, "systemd-inhibit", f'echo "$*" >> {record}')
+    fake_program(bin_folder, "systemd-inhibit", f'echo "$*" >> {record}')
     done = _bash(tmp_path, "mh audit", {"WSL_DISTRO_NAME": "Ubuntu"})
     assert "ran:audit" in done.stdout
     assert not record.exists()
@@ -224,7 +207,7 @@ def test_bash_opens_the_browser_once_the_page_answers(
 ) -> None:
     """0178: `xdg-open` gets the page's address; docker stays in the foreground."""
     record = tmp_path / "opened.txt"
-    _fake(bin_folder, "xdg-open", f'echo "$1" > {record}')
+    fake_program(bin_folder, "xdg-open", f'echo "$1" > {record}')
     extra = {"PORT": str(page_port), "WAIT_FOR": str(record)}
     done = _bash(tmp_path, "mh review", extra)
     assert "ran:review" in done.stdout
@@ -236,7 +219,7 @@ def test_bash_opens_nothing_for_a_command_without_page(
 ) -> None:
     """0178: `history` serves no page: no browser."""
     record = tmp_path / "opened.txt"
-    _fake(bin_folder, "xdg-open", f'echo "$1" > {record}')
+    fake_program(bin_folder, "xdg-open", f'echo "$1" > {record}')
     done = _bash(tmp_path, "mh history")
     assert "ran:history" in done.stdout
     assert not record.exists()
@@ -247,7 +230,7 @@ def test_bash_gives_up_silently_on_a_page_that_never_answers(
 ) -> None:
     """0178: the wait ends, nothing opened, nothing said."""
     record = tmp_path / "opened.txt"
-    _fake(bin_folder, "xdg-open", f'echo "$1" > {record}')
+    fake_program(bin_folder, "xdg-open", f'echo "$1" > {record}')
     done = _bash(tmp_path, f"_mh_browse {_free_port()} 2; echo status=$?")
     assert done.stdout == "status=0\n"
     assert not done.stderr

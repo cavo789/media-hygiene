@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-import time
 from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
@@ -35,8 +34,6 @@ from tests.support.runtime import make_runtime
 from tests.unit.test_launcher_ascii import expanded
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-
     from media_hygiene.services.runtime import Runtime
 
 _DATA: Final = Path("/data")
@@ -221,18 +218,6 @@ def test_bash_stops_on_a_folder_not_found(tmp_path: Path) -> None:
     assert f"{gone} cannot be found" in shown
     assert "ran:" not in shown
     assert "status=2" in shown
-
-
-@pytest.fixture
-def process_zone() -> Iterator[None]:
-    """Give the process zone back after the test, whatever it set."""
-    saved = os.environ.get("TZ")
-    yield
-    if saved is None:
-        os.environ.pop("TZ", None)
-    else:
-        os.environ["TZ"] = saved
-    time.tzset()
 
 
 def test_a_windows_zone_id_gets_its_iana_name() -> None:

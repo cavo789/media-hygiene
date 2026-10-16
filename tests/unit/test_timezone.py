@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import os
-import time
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
@@ -17,20 +15,7 @@ from media_hygiene.config.settings import GeneralSettings
 from media_hygiene.config.zone import apply_timezone, timezone_unknown
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
     from pathlib import Path
-
-
-@pytest.fixture
-def process_zone() -> Iterator[None]:
-    """Give the process zone back after the test, whatever it set."""
-    saved = os.environ.get("TZ")
-    yield
-    if saved is None:
-        os.environ.pop("TZ", None)
-    else:
-        os.environ["TZ"] = saved
-    time.tzset()
 
 
 @pytest.mark.usefixtures("process_zone")

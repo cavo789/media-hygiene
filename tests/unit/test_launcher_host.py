@@ -8,8 +8,6 @@ opening the menu) and 0181 (`mh explorer`: the right-click entry of a folder, an
 from __future__ import annotations
 
 import os
-import shutil
-import subprocess
 from dataclasses import replace
 from pathlib import Path, PureWindowsPath
 from typing import TYPE_CHECKING, Final
@@ -37,10 +35,13 @@ from media_hygiene.services.launcher_host import (
 )
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from media_hygiene.services.status import read_status
+from tests.support.host_bash import fake_program, run_bash
 from tests.support.runtime import make_locations, make_runtime, output_of
 from tests.unit.test_launcher_ascii import accented_runtime, expanded
 
 if TYPE_CHECKING:
+    import subprocess
+
     from media_hygiene.services.runtime import Runtime
 
 _COMMANDS: Final = LauncherCommands(("audit", "menu"), (), (), ("menu",), 8088)
@@ -76,26 +77,8 @@ def _bash(
 ) -> subprocess.CompletedProcess[str]:
     """Load the bash `mh` with `bin/` first on `PATH`, then run `line`."""
     path = script or _bash_script(tmp_path)
-    bash = shutil.which("bash") or "bash"
     env = {"HOME": str(tmp_path), "PATH": f"{tmp_path / 'bin'}:/usr/bin:/bin"}
-    # Trusted script written by the test itself, run on its temporary folder.
-    return subprocess.run(  # noqa: S603
-        [bash, "-c", f"{_FAKE_DOCKER}\nsource {path}; {line}; echo status=$?"],
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
-        timeout=60,
-    )
-
-
-def _fake(tmp_path: Path, name: str, body: str) -> None:
-    """Write an executable `name` into `bin/` of the test's folder."""
-    folder = tmp_path / "bin"
-    folder.mkdir(exist_ok=True)
-    path = folder / name
-    path.write_text(f"#!/bin/bash\n{body}\n", encoding="utf-8")
-    path.chmod(0o755)
+    return run_bash(f"{_FAKE_DOCKER}\nsource {path}; {line}; echo status=$?", env)
 
 
 def _index(tmp_path: Path) -> Path:
@@ -119,7 +102,7 @@ def test_bash_open_gives_the_index_to_the_opener(tmp_path: Path) -> None:
     """0175: `xdg-open` gets the catalogue's host path; docker is not called."""
     index = _index(tmp_path)
     record = tmp_path / "opened.txt"
-    _fake(tmp_path, "xdg-open", f'echo "$1" > {record}')
+    fake_program(tmp_path / "bin", "xdg-open", f'echo "$1" > {record}')
     done = _bash(tmp_path, "mh open")
     assert "status=0" in done.stdout
     assert "ran:" not in done.stdout
@@ -130,8 +113,8 @@ def test_bash_open_on_wsl_gives_explorer_a_windows_path(tmp_path: Path) -> None:
     """0175: without wslview, `explorer.exe` gets the path `wslpath -w` gives."""
     _index(tmp_path)
     record = tmp_path / "opened.txt"
-    _fake(tmp_path, "wslpath", r'echo "C:\\fake\\$(basename "$2")"')
-    _fake(tmp_path, "explorer.exe", f'echo "$1" > {record}; exit 1')
+    fake_program(tmp_path / "bin", "wslpath", r'echo "C:\\fake\\$(basename "$2")"')
+    fake_program(tmp_path / "bin", "explorer.exe", f'echo "$1" > {record}; exit 1')
     done = _bash(tmp_path, "mh open")
     assert "status=0" in done.stdout  # explorer.exe says 1 even when it opened it
     assert record.read_text(encoding="utf-8") == "C:\\fake\\index.html\n"
@@ -140,7 +123,7 @@ def test_bash_open_on_wsl_gives_explorer_a_windows_path(tmp_path: Path) -> None:
 def test_bash_open_without_a_report_says_to_audit_first(tmp_path: Path) -> None:
     """0175: no `index.html`: one line, nothing opened."""
     record = tmp_path / "opened.txt"
-    _fake(tmp_path, "xdg-open", f'echo "$1" > {record}')
+    fake_program(tmp_path / "bin", "xdg-open", f'echo "$1" > {record}')
     done = _bash(tmp_path, "mh open")
     assert "status=1" in done.stdout
     assert done.stderr == "No report yet: type mh audit first.\n"
