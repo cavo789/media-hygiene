@@ -43,7 +43,7 @@ On the demo library of this guide, 10 photos measured:
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysed: 5 faces, 0.06 s per photo.
+✅ 10 photos analysed: 5 faces, 0.04 s per photo.
 ```
 
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about

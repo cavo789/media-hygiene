@@ -40,7 +40,7 @@ At the end of the audit, a new line:
 
 <!-- capture: audit.txt|HTML report|. -->
 ```text
-✅ HTML report: /reports/20261016-181710-audit/report.html
+✅ HTML report: /reports/20261016-192342-audit/report.html
 ```
 
 With Docker Desktop (PowerShell), the tool knows the Windows folder behind `/reports` and shows
@@ -165,15 +165,15 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261016-181740-clean │ clean │ 85    │ 32         │ 16.4 MB │ 3      │
-│ 20261016-181739-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
-│ 20261016-181737-clean │ clean │ 85    │ 32         │ 15.6 MB │ 3      │
-│ 20261016-181721-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
-│ 20261016-181717-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
-│ 20261016-181713-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
-│ 20261016-181712-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
-│ 20261016-181711-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
-│ 20261016-181710-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261016-192411-clean │ clean │ 85    │ 32         │ 16.4 MB │ 3      │
+│ 20261016-192410-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261016-192409-clean │ clean │ 85    │ 32         │ 15.6 MB │ 3      │
+│ 20261016-192353-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261016-192349-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261016-192345-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
+│ 20261016-192344-audit │ audit │ 61    │ 12         │ 3.4 MB  │ 0      │
+│ 20261016-192343-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
+│ 20261016-192342-audit │ audit │ 85    │ 32         │ 14.0 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

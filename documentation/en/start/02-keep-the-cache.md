@@ -19,9 +19,10 @@ mh audit
 <!-- capture: audit-mh-again.txt|re:^─+ Audit|No new or changed -->
 ```text
 ──────────────────────────────────── Audit ─────────────────────────────────────
-22 unchanged folders taken from the index, 0 read.
+16 unchanged folders taken from the index, 0 read.
 💡 A photo changed in place by another program? 'audit --full' reads every
 folder (done anyway for those listed 7 days ago).
+
 ♻️  No new or changed file since the last audit: 61 files taken from the cache.
 ```
 

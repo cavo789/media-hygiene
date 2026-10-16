@@ -57,7 +57,7 @@ your browser. `mh` runs these three itself: [what `mh` does by itself](launcher.
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-16 18:17 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-10-16 19:23 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 

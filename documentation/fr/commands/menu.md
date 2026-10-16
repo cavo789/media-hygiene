@@ -59,7 +59,7 @@ lui-même](launcher.md#ce-que-mh-fait-lui-même).
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-10-16 18:18 (aujourd'hui) — 10 fichiers, 4 copies en trop
+Dernier audit: 2026-10-16 19:26 (aujourd'hui) — 10 fichiers, 4 copies en trop
 (5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 

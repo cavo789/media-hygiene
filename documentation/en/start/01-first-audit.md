@@ -160,12 +160,13 @@ What you can do
 🎞️ 3 burst series: optional, ~2 min in 'review'; the series not reviewed are
 kept whole.
 
+✅ HTML report: /reports/20261016-192337-audit/report.html
 👉 What next: run 'clean' to set 3.4 MB of copies aside.
 mh clean
 💡 Type mh open: your browser shows every report.
 💡 Choose which folders keep their copies: folders.preferred in config.toml, or
 --prefer.
-(1 more tip: add --verbosity verbose to see it.)
+(3 more tips: add --verbosity verbose to see them.)
 ```
 
 The table first (a word you do not know? [the words of this guide](../reference-glossary.md)):

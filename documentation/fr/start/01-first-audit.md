@@ -170,12 +170,13 @@ Ce que vous pouvez faire
 🎞️ 3 rafales : facultatif, ~2 min dans 'review' ; les rafales non revues sont
 gardées entières.
 
+✅ Rapport HTML : /reports/20261016-192631-audit/report.html
 👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté.
 mh clean
 💡 Tapez mh open : votre navigateur montre tous les rapports.
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.
-(1 autre conseil : ajoutez --verbosity verbose pour le voir.)
+(3 autres conseils : ajoutez --verbosity verbose pour les voir.)
 ```
 
 D'abord le tableau (un mot inconnu ? [les mots de ce guide](../reference-glossary.md)) :
