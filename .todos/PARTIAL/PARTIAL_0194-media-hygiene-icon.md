@@ -22,3 +22,23 @@ Decided at the review of the 2026-10-16 run (question 3, about 0180/0181): `mh s
   back as today; missing file → PowerShell's icon, said in one line.
 - Avast: writing an `.ico` from a script is a new behaviour; check with a user-like run
   (memory of 2026-10-16: the harness, not `mh`, was flagged).
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- The icon, approved by the maintainer: `src/media_hygiene/cli/icon/` (`media-hygiene.svg`,
+  a 16 px variant `media-hygiene-16.svg` drawn on the pixel grid, `media-hygiene.ico` 16/24/32/48/256
+  px, 14.3 KB measured; `ICON.txt`: origin, MIT). In the wheel (checked with `uv build`).
+- Delivery chosen by the maintainer: not base64 in `mh.ps1` (+~18 KB, a decoded blob written by
+  a script looks like a dropper to an antivirus) but `_mh_icon`: `docker create` + `docker cp` of
+  the image's `.ico` next to `mh.ps1`, `docker rm`; Docker writes the file, not PowerShell.
+- `mh shortcut`: `IconLocation` of both `.lnk`, shown in the read-back; `mh explorer`: the `Icon`
+  value of the key, shown after the read-back command. Not copied (and none from before) →
+  PowerShell's icon and one translated line. Tests in `tests/unit/test_launcher_host.py`; docs EN/FR.
+
+### Not done
+- One look on Windows: the Desktop and Start menu icon, the right-click entry (16 px), how long
+  `docker create`/`cp`/`rm` takes there (estimated 1–2 s), and whether Avast says anything.
+  **Reason:** needs the maintainer's PC (Windows + Docker Desktop + Avast). Steps: `mh update`,
+  then `mh shortcut` and `mh explorer`. If Explorer shows the old icon, its icon cache is stale
+  (sign out and in again).

@@ -9,6 +9,22 @@ function global:_{{ function }}_start($words) {
     '-NoExit -ExecutionPolicy Bypass -Command ". ''{0}''; {1}"' -f $file.Replace("'", "''"), $words
 }
 
+# The icon of the shortcut and of the right-click entry, copied from the image next to
+# this file by Docker itself, so that no script writes an image file (0194).
+# Returns its path; PowerShell's own, said in one line, when it is not there.
+function global:_{{ function }}_icon($powershell) {
+    $file = $MyInvocation.MyCommand.ScriptBlock.File
+    $icon = Join-Path (Split-Path -Parent $file) '{{ host.icon_name }}'
+    $container = docker create {{ image }} 2>$null | Select-Object -Last 1
+    if ($LASTEXITCODE -eq 0 -and $container) {
+        $null = docker cp "${container}:{{ host.icon }}" $icon 2>$null
+        $null = docker rm $container 2>$null
+    }
+    if (Test-Path -LiteralPath $icon) { return $icon }
+    Write-Host "{{ host.texts.no_icon }}"
+    $powershell
+}
+
 # Why a write failed, in one line (never the error record), then whether access was
 # refused: an antivirus may lock a path it flagged until Windows restarts (0190).
 function global:_{{ function }}_why($record) {
@@ -23,6 +39,7 @@ function global:_{{ function }}_why($record) {
 function global:_{{ function }}_shortcut {
     $powershell, $arguments = _{{ function }}_start '{{ function }}'
     if (-not $arguments) { return }
+    $icon = _{{ function }}_icon $powershell
     $shell = New-Object -ComObject WScript.Shell
     $written = 0
     $denied = $false
@@ -33,12 +50,14 @@ function global:_{{ function }}_shortcut {
         $link.Arguments = $arguments
         $link.WorkingDirectory = $HOME
         $link.Description = '{{ host.label }}'
+        $link.IconLocation = "$icon,0"
         $reason = ''
         try { $link.Save() } catch { $reason, $refused = _{{ function }}_why $_; $denied = $denied -or $refused }
         $back = $shell.CreateShortcut($path)
         if ((Test-Path -LiteralPath $path) -and $back.TargetPath -eq $powershell -and $back.Arguments -eq $arguments) {
             Write-Host "{{ host.texts.saved }}"
             Write-Host "    $($back.TargetPath) $($back.Arguments)"
+            Write-Host "    $($back.IconLocation)"
             $written++
         } else {
             Write-Host "{{ host.texts.not_saved }}"
@@ -68,10 +87,11 @@ function global:_{{ function }}_explorer {
     }
     $powershell, $arguments = _{{ function }}_start '{{ function }} {{ host.flag }} #" "%V'
     if (-not $arguments) { return }
+    $icon = _{{ function }}_icon $powershell
     $command = '"' + $powershell + '" ' + $arguments
     try {
         $null = New-Item -Path $key -Value '{{ host.label }}' -Force -ErrorAction Stop
-        $null = New-ItemProperty -LiteralPath $key -Name Icon -Value $powershell -Force -ErrorAction Stop
+        $null = New-ItemProperty -LiteralPath $key -Name Icon -Value $icon -Force -ErrorAction Stop
         $null = New-Item -Path "$key\command" -Value $command -Force -ErrorAction Stop
     } catch { $reason, $denied = _{{ function }}_why $_ }
     $back = Get-Item -LiteralPath "$key\command" -ErrorAction SilentlyContinue
@@ -79,6 +99,7 @@ function global:_{{ function }}_explorer {
     if ($read -eq $command) {
         Write-Host "{{ host.texts.explorer }}"
         Write-Host "    $read"
+        Write-Host "    $((Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon)"
     } else {
         $path = $key
         Write-Host "{{ host.texts.not_saved }}"

@@ -13,6 +13,7 @@ from pathlib import Path, PureWindowsPath
 from typing import TYPE_CHECKING, Final
 
 import pytest
+from PIL import Image
 from typer.testing import CliRunner
 
 from media_hygiene.cli.app import build_app
@@ -32,6 +33,8 @@ from media_hygiene.services.launcher_host import (
     EXPLORER_KEY,
     FROM_EXPLORER,
     HOST_COMMANDS,
+    ICON,
+    ICON_NAME,
 )
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from media_hygiene.services.status import read_status
@@ -254,6 +257,46 @@ def test_powershell_explorer_catches_its_errors_and_says_why() -> None:
     assert body.count("$reason, $denied = _mh_why $_") == 2
     assert body.count('if ($reason) { Write-Host "    $reason" }') == 2
     assert body.count('if ($denied) { Write-Host "Acc\u00e8s refus\u00e9') == 2
+
+
+def test_the_icon_ships_in_the_package_at_every_windows_size() -> None:
+    """0194: one `.ico`, 16 to 256 px, where `mh` copies it from."""
+    with Image.open(ICON) as icon:
+        sizes = icon.info["sizes"]
+    assert sizes == {(16, 16), (24, 24), (32, 32), (48, 48), (256, 256)}
+    assert Path(ICON).name == ICON_NAME
+
+
+def test_powershell_icon_is_copied_by_docker_next_to_the_script() -> None:
+    """0194: `docker cp` writes it (no script writes an image file); missing: a line."""
+    text = _powershell()
+    body = text[text.index("function global:_mh_icon($powershell) {") :]
+    body = body[: body.index("\n}\n")]
+    assert f"Join-Path (Split-Path -Parent $file) '{ICON_NAME}'" in body
+    create = body.index("$container = docker create ")
+    copy = body.index(f'$null = docker cp "${{container}}:{ICON}" $icon 2>$null')
+    assert create < copy < body.index("$null = docker rm $container 2>$null")
+    assert "if (Test-Path -LiteralPath $icon) { return $icon }" in body
+    assert "L'ic\u00f4ne de Media Hygiene n'a pas pu \u00eatre copi\u00e9e" in body
+    assert body.rstrip().endswith("$powershell")
+    assert "FromBase64String" not in text
+
+
+def test_powershell_shortcut_and_explorer_show_the_icon_read_back() -> None:
+    """0194: both point to the copied icon and show what they read back."""
+    text = _powershell()
+    for name in ("shortcut", "explorer"):
+        body = text[text.index(f"function global:_mh_{name}") :]
+        body = body[: body.index("\n}\n")]
+        checked = body.index("if (-not $arguments) { return }")
+        assert checked < body.index("$icon = _mh_icon $powershell")
+    assert '$link.IconLocation = "$icon,0"' in text
+    assert 'Write-Host "    $($back.IconLocation)"' in text
+    assert "-Name Icon -Value $icon -Force -ErrorAction Stop" in text
+    assert (
+        "(Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon"
+        in text
+    )
 
 
 def _from_command_line(line: str) -> str:

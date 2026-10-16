@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Media Hygiene: a duplicate photo (blue, behind), the kept one (front) and a broom. -->
+  <g stroke="#0B2239" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="84" y="20" width="152" height="150" rx="18" fill="#3D85C6" stroke-width="12"/>
+    <rect x="20" y="58" width="168" height="170" rx="18" fill="#FFFFFF" stroke-width="12"/>
+    <clipPath id="photo"><rect x="42" y="80" width="124" height="100" rx="6"/></clipPath>
+    <g clip-path="url(#photo)">
+      <rect x="42" y="80" width="124" height="100" fill="#FFFFFF" stroke="none"/>
+      <path d="M30 186 L84 128 L120 164 L140 146 L178 186 Z" fill="#34A853" stroke-width="8"/>
+      <circle cx="136" cy="110" r="14" fill="#FBC02D" stroke="none"/>
+    </g>
+    <rect x="42" y="80" width="124" height="100" rx="6" fill="none" stroke-width="8"/>
+    <g transform="translate(194 194) rotate(32) scale(0.9)">
+      <rect x="-13" y="-124" width="26" height="96" rx="13" fill="#FBC02D" stroke-width="10"/>
+      <rect x="-30" y="-36" width="60" height="22" rx="6" fill="#FBC02D" stroke-width="10"/>
+      <path d="M-28 -14 H28 Q40 22 34 50 Q0 64 -34 50 Q-40 22 -28 -14 Z" fill="#FBC02D" stroke-width="10"/>
+      <path d="M-12 0 L-16 40 M8 0 L10 44" fill="none" stroke-width="7"/>
+    </g>
+  </g>
+</svg>

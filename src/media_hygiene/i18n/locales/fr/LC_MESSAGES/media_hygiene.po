@@ -4466,6 +4466,13 @@ msgstr "Reprendre le lot ({events})"
 msgid "The HTML report could not be written to {folder}: {reason}."
 msgstr "Le rapport HTML n'a pas pu être écrit dans {folder} : {reason}."
 
+msgid ""
+"The Media Hygiene icon could not be copied from the image: PowerShell's "
+"icon is used instead."
+msgstr ""
+"L'icône de Media Hygiene n'a pas pu être copiée depuis l'image : celle de "
+"PowerShell la remplace."
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 

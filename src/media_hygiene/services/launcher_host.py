@@ -15,6 +15,7 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
@@ -45,6 +46,9 @@ EXPLORER_KEY: Final = r"HKCU:\Software\Classes\Directory\shell\MediaHygiene"
 # Explorer puts the folder after a `#`: a comment for PowerShell, so that no character
 # of its name (an apostrophe) breaks the command; `mh` reads it from the command line.
 FROM_EXPLORER: Final = "--from-explorer"
+# The icon of both (0194): `mh` copies it next to `mh.ps1` with `docker cp`.
+ICON_NAME: Final = "media-hygiene.ico"
+ICON: Final = (Path(__file__).parents[1] / "cli" / "icon" / ICON_NAME).as_posix()
 _INDEX_PAGE: Final = "index.html"
 _VOLUME: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
 
@@ -65,10 +69,11 @@ class HostTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     explorer: str  # holds `$key`
     removed: str  # holds `$key`
     not_removed: str  # holds `$key`
+    no_icon: str  # the icon could not be copied from the image (0194)
 
 
 @dataclass(frozen=True, slots=True)
-class HostCommands:
+class HostCommands:  # pylint: disable=too-many-instance-attributes  # one per template value
     """What the script needs to run its host commands."""
 
     names: tuple[str, ...]
@@ -78,6 +83,8 @@ class HostCommands:
     label: str = LABEL
     key: str = EXPLORER_KEY
     flag: str = FROM_EXPLORER
+    icon: str = ICON  # its path in the image
+    icon_name: str = ICON_NAME
 
 
 def host_commands(script: LauncherScript) -> HostCommands:
@@ -168,4 +175,10 @@ def _texts(reports: str) -> HostTexts:
             _("Right-click entry removed: {key} is gone."), "{key}", "${key}"
         ),
         not_removed=with_variable(_("Could not remove {key}."), "{key}", "${key}"),
+        no_icon=shell_safe(
+            _(
+                "The Media Hygiene icon could not be copied from the image: "
+                "PowerShell's icon is used instead."
+            )
+        ),
     )

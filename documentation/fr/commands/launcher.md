@@ -114,7 +114,9 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Un échec est dit
 avec sa raison ; un *accès refusé* vient souvent d'un antivirus, qui peut bloquer un chemin qu'il a
-signalé jusqu'au redémarrage de Windows. Depuis WSL,
+signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hygiene* : Docker la
+copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
+disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
 autres disent qu'elles sont pour Windows.
 

@@ -3697,6 +3697,11 @@ msgstr ""
 msgid "The HTML report could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid ""
+"The Media Hygiene icon could not be copied from the image: PowerShell's "
+"icon is used instead."
+msgstr ""
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
