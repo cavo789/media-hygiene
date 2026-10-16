@@ -330,7 +330,7 @@ def test_kept_run_gives_back_what_launcher_cannot_rebuild(tmp_path: Path) -> Non
     )
     kept = kept_run(script)
     assert kept.photos == ('"C:\\Photos"',)
-    assert kept.fixed == 1  # D:\Old; a named volume is not listed
+    assert kept.fixed == 2  # D:\Old and the named volume: photos all the same
     assert kept.launcher == (
         '"--locale"', '"fr"', '"launcher"', '"--shell"', '"powershell"',
         '"--quarantine"', '"D:\\quarantine"',

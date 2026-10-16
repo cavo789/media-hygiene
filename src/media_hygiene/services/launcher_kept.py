@@ -36,7 +36,7 @@ _ESCAPES: Final = {
 
 
 @dataclass(frozen=True, slots=True)
-class KeptRun:
+class KeptRun:  # pylint: disable=too-many-instance-attributes  # one per template value
     """The `launcher` run of the script, each word quoted for its shell."""
 
     docker: tuple[str, ...]  # `docker run --rm` options, before the image
@@ -46,15 +46,9 @@ class KeptRun:
     quarantine: str  # the host folder of the quarantine, inside double quotes
     image: str
     pullable: bool  # the published image; a local build has nothing to pull
-
-    @property
-    def fixed(self) -> int:
-        """Count the photo folders mounted with `-v`: kept, never removed by `mh`.
-
-        Returns:
-            How many listed folders are not given back with `--photos`.
-        """
-        return len(self.shown) - len(self.photos)
+    # The data mounts not given back with `--photos` (a `-v` folder, a named volume):
+    # kept, never removed by `mh`, so removing the last `--photos` still leaves photos.
+    fixed: int = 0
 
 
 def kept_run(script: LauncherScript) -> KeptRun:
@@ -98,6 +92,7 @@ def kept_run(script: LauncherScript) -> KeptRun:
         ),
         image=image,
         pullable=image == PUBLISHED_IMAGE,
+        fixed=len(script.data) - len(photos),
     )
 
 
