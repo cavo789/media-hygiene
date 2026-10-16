@@ -257,7 +257,10 @@ def test_update_pulls_rewrites_and_says_both_versions(tmp_path: Path) -> None:
         call.endswith(f"launcher --shell bash --photos {photos}") for call in calls
     )
     assert f"Pulling {PUBLISHED_IMAGE}" in done.stdout
-    assert "Updated: media-hygiene old → media-hygiene new." in done.stdout
+    assert (
+        "Updated: media-hygiene old → media-hygiene new. What changed: "
+        "https://github.com/cavo789/media-hygiene/releases"
+    ) in done.stdout
     assert "still takes 100 MB: docker image prune frees it." in done.stdout
     assert not any(call.startswith(("image prune", "rmi")) for call in calls)
     assert _held(done) == [str(photos)]

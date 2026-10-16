@@ -4338,9 +4338,9 @@ msgid ""
 "there from another drive, in GB (0 or more): a full system drive breaks "
 "Windows. 0 keeps no margin."
 msgstr ""
-"Espace que 'clean' laisse libre sur le disque de la quarantaine quand il y "
-"copie des fichiers d'un autre disque, en Go (0 ou plus) : un disque système "
-"plein bloque Windows. 0 ne garde aucune marge."
+"Espace que 'clean' laisse libre sur le disque de la quarantaine quand il "
+"y copie des fichiers d'un autre disque, en Go (0 ou plus) : un disque "
+"système plein bloque Windows. 0 ne garde aucune marge."
 
 msgid "Space that can be freed"
 msgstr "Espace libérable"
@@ -5308,8 +5308,8 @@ msgstr ""
 "tous les groupes."
 
 #, python-brace-format
-msgid "Updated: {before} → {after}."
-msgstr "Mis à jour : {before} → {after}."
+msgid "Updated: {before} → {after}. What changed: {notes}"
+msgstr "Mis à jour : {before} → {after}. Ce qui a changé : {notes}"
 
 msgid "Usage:"
 msgstr "Utilisation :"

@@ -8,9 +8,14 @@ show (`${folder}`, `${old}`, `${new}`, `${size}`), inside double quotes.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Final
 
+from media_hygiene.constants import HOME_PAGE
 from media_hygiene.i18n import _
 from media_hygiene.services.launcher_menu import shell_safe, with_variable
+
+# The notes of each version: a GitHub Release, made by CI at each `vX.Y.Z` tag (0187).
+RELEASES: Final = f"{HOME_PAGE}/releases"
 
 
 @dataclass(frozen=True, slots=True)
@@ -92,8 +97,12 @@ def update_texts() -> UpdateTexts:
             _("Already the latest version: {version}."), "{version}", "${new}"
         ),
         updated=with_variable(
-            _("Updated: {before} → {after}."), "{before}", "${old}"
-        ).replace("{after}", "${new}"),
+            _("Updated: {before} → {after}. What changed: {notes}"),
+            "{before}",
+            "${old}",
+        )
+        .replace("{after}", "${new}")
+        .replace("{notes}", RELEASES),
         space=with_variable(
             _("The previous image still takes {size} MB: docker image prune frees it."),
             "{size}",

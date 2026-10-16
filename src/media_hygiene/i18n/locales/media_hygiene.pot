@@ -4370,7 +4370,7 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "Updated: {before} → {after}."
+msgid "Updated: {before} → {after}. What changed: {notes}"
 msgstr ""
 
 msgid "Usage:"

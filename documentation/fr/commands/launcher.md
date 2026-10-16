@@ -160,8 +160,9 @@ libère, `docker image prune` ; il ne la lance jamais à votre place.
 
 **Quand** : une fois par mois, ou quand un guide montre une commande que votre `mh` ne connaît
 pas. L'outil ne cherche jamais une nouvelle version de lui-même : rien ne quitte votre ordinateur
-sans que vous le demandiez. Les versions publiées sont listées sur
-[Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene/tags).
+sans que vous le demandiez. Les notes de chaque version sont sur
+[GitHub](https://github.com/cavo789/media-hygiene/releases) ; `mh update` affiche ce lien après
+une mise à jour.
 
 Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez

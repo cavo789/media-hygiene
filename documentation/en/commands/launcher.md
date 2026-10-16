@@ -155,7 +155,8 @@ it never runs it for you.
 
 **When**: once a month, or when a guide shows a command your `mh` does not know. The tool
 never looks for a new version by itself: nothing leaves your computer unless you ask. The
-published versions are listed on [Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene/tags).
+notes of each version are on [GitHub](https://github.com/cavo789/media-hygiene/releases); `mh update`
+prints that link after an update.
 
 A `mh` written before `mh update` existed does not know it: run the `launcher` line of the
 guides once more, with your folders; from then on, `mh update` is enough. An image you built
