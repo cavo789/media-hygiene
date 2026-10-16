@@ -43,9 +43,10 @@ L'outil utilise tous les processeurs pour aller plus vite. Pour en garder pour l
 ## L'analyse s'est arrêtée pendant la nuit
 
 L'ordinateur s'est mis en veille : Docker Desktop se met en pause avec lui, et l'exécution
-s'arrête là où elle en était. Pour un premier audit, réglez *Veille* sur *Jamais* (*Paramètres →
-Système → Alimentation*), puis remettez-la après. Relancez la commande : ce qui a déjà été lu est
-dans le cache.
+s'arrête là où elle en était. Lancez-la avec [`mh`](commands/launcher.md#ce-que-mh-fait-pour-chaque-commande),
+qui garde l'ordinateur éveillé jusqu'à la fin d'une commande longue, ou réglez *Veille* sur
+*Jamais* dans les paramètres de Windows pour cette nuit-là. Relancez la commande : ce qui a déjà
+été lu est dans le cache.
 
 ## `mh.ps1` ne peut pas être écrit : « Access to the path … is denied »
 

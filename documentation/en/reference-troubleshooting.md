@@ -39,9 +39,10 @@ The tool uses every processor to go faster. To leave some for your other work:
 
 ## The analysis stopped overnight
 
-The computer went to sleep: Docker Desktop pauses with it, and the run stops where it was. For
-a first audit, set *Sleep* to *Never* (*Settings → System → Power*), and back after. Run the
-command again: what was already read is in the cache.
+The computer went to sleep: Docker Desktop pauses with it, and the run stops where it was. Run
+it with [`mh`](commands/launcher.md#what-mh-does-for-each-command), which keeps the computer
+awake until a long command ends, or set *Sleep* to *Never* in the Windows settings for that
+night. Run the command again: what was already read is in the cache.
 
 ## `mh.ps1` cannot be written: "Access to the path … is denied"
 

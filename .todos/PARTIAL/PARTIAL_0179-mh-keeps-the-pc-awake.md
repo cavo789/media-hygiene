@@ -65,3 +65,10 @@ denied", no new alert). The run-time compile of a kernel32 call is the likeliest
 Sleep to Never for a first audit, and a troubleshooting entry covers the antivirus. `mh.sh`
 keeps `systemd-inhibit` / `caffeinate`. To confirm: step 9 again in a new `-Work` folder, no
 alert expected.
+
+## Put back (maintainer, 2026-10-16)
+
+The 18:17 run alerted again with a `mh.ps1` without the kernel32 call, and a user-like run
+(`launcher`, `. mh.ps1`, `mh audit` in a normal PowerShell, no keep-awake) raised nothing: the
+alerts came from the measure harness (`probe.ps1`, conhost, `-ExecutionPolicy Bypass`), not from
+the compile. The keep-awake is back; still to check: the same user-like run with it.

@@ -85,9 +85,12 @@ function global:{{ function }} {
         try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false) } catch { }
         $OutputEncoding = [Console]::OutputEncoding
         if ($long) {
-            # No keep-awake here: compiling a call to kernel32 at run time made Avast's behaviour
-            # shield stop mh during an audit (measured 2026-10-16, 0179); the guides say to set
-            # Sleep to Never instead.
+            # The computer stays awake until the command ends; the screen may turn off (0179).
+            if (-not ('MediaHygiene.Power' -as [type])) {
+                Add-Type -Namespace MediaHygiene -Name Power -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint flags);'
+            }
+            # ES_CONTINUOUS (0x80000000) + ES_SYSTEM_REQUIRED (0x1), in decimal for PowerShell 5.1.
+            $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483649)
             $global:MediaHygieneTitle = $Host.UI.RawUI.WindowTitle
             $Host.UI.RawUI.WindowTitle = "{{ function }} $command..."
         }
@@ -121,6 +124,8 @@ function global:{{ function }} {
         try { [Console]::OutputEncoding = $console } catch { }
         if ($browser) { Remove-Job -Job $browser -Force }
         if ($long) {
+            # ES_CONTINUOUS alone: the computer may sleep again, Ctrl+C included.
+            $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483648)
             $Host.UI.RawUI.WindowTitle = if ($status -eq 0) { "{{ texts.done }}" } else { "{{ texts.failed }}" }
         }
     }
