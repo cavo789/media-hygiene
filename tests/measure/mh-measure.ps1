@@ -104,7 +104,10 @@ function Wanted([int]$group) {
 }
 
 # NTFS file ids (no administrator rights needed): a file renamed or linked keeps its id, a
-# copy gets a new one. That is what proves 0138 (sort moves without copying).
+# copy gets a new one. That is what proves 0138 (sort moves without copying). Compiled only for
+# step 7: an antivirus's behaviour shield may flag C# calling kernel32 (Avast IDP.Generic,
+# 2026-10-16), and steps 9+ must show whether the mh.ps1 users get is flagged, not this.
+if (Wanted 7) {
 Add-Type -TypeDefinition @'
 using System;
 using System.IO;
@@ -130,6 +133,7 @@ public static class MhFileId {
     }
 }
 '@
+}
 
 function FileIds([string]$root) {
     $ids = @{}
