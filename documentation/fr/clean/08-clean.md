@@ -53,7 +53,7 @@ d'autant. Avant de demander, `clean` le dit en une ligne :
 ⚠️ 32 fichiers (14,0 Go) seront copiés de E: vers la quarantaine sur C: (40,2 Go libres là-bas).
 ```
 
-S'ils ne tiennent pas, en gardant 1 Go libre sur ce disque, `clean` s'arrête avant de déplacer quoi
+S'ils ne tiennent pas, en gardant 1 Go libre sur ce disque ([`quarantine_headroom_gb`](07-configuration-file.md)), `clean` s'arrête avant de déplacer quoi
 que ce soit et dit combien il manque. Libérez de la place (`purge` efface les fichiers des
 nettoyages précédents), ou donnez à ce disque sa propre quarantaine. La ligne demande Docker
 Desktop, qui indique le disque de chaque dossier ; ailleurs (Linux, un volume Docker), rien n'est

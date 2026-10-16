@@ -3584,6 +3584,12 @@ msgstr ""
 msgid "Space"
 msgstr ""
 
+msgid ""
+"Space 'clean' leaves free on the quarantine's drive when it copies files "
+"there from another drive, in GB (0 or more): a full system drive breaks "
+"Windows. 0 keeps no margin."
+msgstr ""
+
 msgid "Space that can be freed"
 msgstr ""
 

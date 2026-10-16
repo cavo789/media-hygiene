@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.cli.clean_confirm import confirm_clean
+from media_hygiene.config.settings import CleanSettings
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.errors import MountError
 from media_hygiene.paths.drives import Drives, QuarantineRoute
@@ -18,7 +19,8 @@ from media_hygiene.plan.models import CleanPlan, KeepDecision
 from media_hygiene.plan.similar_models import NearDecision
 from media_hygiene.scan.models import BrokenFile, MediaFile
 from media_hygiene.services.quarantine_space import (
-    QUARANTINE_HEADROOM,
+    CrossDrive,
+    Room,
     cross_drive,
     set_aside,
 )
@@ -186,11 +188,25 @@ def test_delete_counts_only_what_still_moves(
         Drives(runtime.mounts.host_sources), runtime.locations.quarantine_dir
     )
     free(monkeypatch, 100 * GB)
-    (room,) = cross_drive(route, set_aside(plan))
+    (room,) = cross_drive(route, set_aside(plan), GB)
     assert (room.cross.count, room.cross.size) == (3, 2 * PHOTO_SIZE + 5)
     assert room.cross.sources == ("E:",)
     assert room.missing == 0
-    assert room.cross.size + QUARANTINE_HEADROOM < room.free
+    assert room.cross.size + GB < room.free
+
+
+@pytest.mark.parametrize(("headroom", "missing"), [(0, 0), (GB, GB)])
+def test_the_headroom_is_what_stays_free(headroom: int, missing: int) -> None:
+    """0191: copies that fit exactly pass with no margin, miss it with 1 GB kept."""
+    cross = CrossDrive(Path("/quarantine"), "C:", ("E:",), 1, 10 * GB)
+    assert Room(cross, 10 * GB, headroom).missing == missing
+
+
+def test_the_headroom_setting_defaults_to_one_gigabyte() -> None:
+    """0191: `[clean] quarantine_headroom_gb`, 1 by default, in bytes for `clean`."""
+    assert CleanSettings().quarantine_headroom == GB
+    assert CleanSettings(quarantine_headroom_gb=0).quarantine_headroom == 0
+    assert CleanSettings(quarantine_headroom_gb=2.5).quarantine_headroom == 5 * GB // 2
 
 
 def test_unreadable_free_space_says_nothing(

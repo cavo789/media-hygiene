@@ -4333,6 +4333,15 @@ msgstr "Dossiers sources supprimés : {count}."
 msgid "Space"
 msgstr "Espace"
 
+msgid ""
+"Space 'clean' leaves free on the quarantine's drive when it copies files "
+"there from another drive, in GB (0 or more): a full system drive breaks "
+"Windows. 0 keeps no margin."
+msgstr ""
+"Espace que 'clean' laisse libre sur le disque de la quarantaine quand il y "
+"copie des fichiers d'un autre disque, en Go (0 ou plus) : un disque système "
+"plein bloque Windows. 0 ne garde aucune marge."
+
 msgid "Space that can be freed"
 msgstr "Espace libérable"
 
@@ -4797,7 +4806,10 @@ msgstr[1] ""
 msgid ""
 "The run {run_id} set files aside on {drive}, and a folder of that run is "
 "in the quarantines of {both}: nothing was changed."
-msgstr "L'exécution {run_id} a mis des fichiers de côté sur {drive}, et un dossier de cette exécution est dans les quarantaines de {both} : rien n'a été modifié."
+msgstr ""
+"L'exécution {run_id} a mis des fichiers de côté sur {drive}, et un "
+"dossier de cette exécution est dans les quarantaines de {both} : rien n'a"
+" été modifié."
 
 #, python-brace-format
 msgid ""

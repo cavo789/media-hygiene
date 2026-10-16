@@ -11,7 +11,7 @@ from __future__ import annotations
 import shutil
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.constants import BrokenReason
 from media_hygiene.paths.drives import Drives, QuarantineRoute
@@ -24,9 +24,6 @@ if TYPE_CHECKING:
     from media_hygiene.plan.models import CleanPlan
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.services.runtime import Runtime
-
-# Left free on the quarantine's drive: a full system drive breaks Windows itself.
-QUARANTINE_HEADROOM: Final = 1024**3
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +43,7 @@ class Room:
 
     cross: CrossDrive
     free: int
+    headroom: int  # left free there (`[clean] quarantine_headroom_gb`)
 
     @property
     def missing(self) -> int:
@@ -54,7 +52,7 @@ class Room:
         Returns:
             Zero when they fit.
         """
-        return max(0, self.cross.size + QUARANTINE_HEADROOM - self.free)
+        return max(0, self.cross.size + self.headroom - self.free)
 
 
 def quarantine_route(runtime: Runtime) -> QuarantineRoute:
@@ -94,12 +92,15 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
     yield from plan.orphans
 
 
-def cross_drive(route: QuarantineRoute, files: Iterator[MediaFile]) -> list[Room]:
+def cross_drive(
+    route: QuarantineRoute, files: Iterator[MediaFile], headroom: int
+) -> list[Room]:
     """Group the files copied to another drive by the quarantine receiving them.
 
     Args:
         route: Which quarantine receives each file, and the drives.
         files: The files set aside.
+        headroom: The bytes to leave free on the quarantine's drive.
 
     Returns:
         One room per quarantine receiving files from another drive; none when no
@@ -125,7 +126,7 @@ def cross_drive(route: QuarantineRoute, files: Iterator[MediaFile]) -> list[Room
         )
         for folder, drive in sorted(drives.items())
     )
-    return [Room(cross, free) for cross, free in rooms if free is not None]
+    return [Room(cross, free, headroom) for cross, free in rooms if free is not None]
 
 
 def free_space(folder: Path) -> int | None:

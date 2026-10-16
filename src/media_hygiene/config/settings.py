@@ -29,6 +29,8 @@ from media_hygiene.i18n import _
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
 _PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
+# Left free on the quarantine's drive by `clean`: a full system drive breaks Windows.
+_QUARANTINE_HEADROOM_GB = 1.0
 
 
 class GeneralSettings(BaseModel):
@@ -126,7 +128,8 @@ class CleanSettings(BaseModel):
 
     `workers` is how many files `clean`, `undo` and `sort` handle at once: four readers
     read a Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk,
-    whose head seeks between the readers, may prefer 1.
+    whose head seeks between the readers, may prefer 1. `quarantine_headroom_gb` is
+    what a `clean` copying to another drive leaves free there (0182, 0191).
     """
 
     model_config = _FROZEN
@@ -134,6 +137,16 @@ class CleanSettings(BaseModel):
     confirm: bool = True
     purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
     workers: int = Field(default=WORKERS, ge=1)
+    quarantine_headroom_gb: float = Field(default=_QUARANTINE_HEADROOM_GB, ge=0)
+
+    @property
+    def quarantine_headroom(self) -> int:
+        """The space `clean` keeps free on the quarantine's drive, in bytes (0191).
+
+        Returns:
+            `quarantine_headroom_gb` GiB.
+        """
+        return int(self.quarantine_headroom_gb * 1024**3)
 
 
 class Settings(BaseModel):

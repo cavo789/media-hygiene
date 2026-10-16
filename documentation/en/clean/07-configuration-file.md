@@ -445,6 +445,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
 - **`workers`** (4, in `[clean]`, not written in the example): how many files `clean`, `undo`
   and `sort` handle at once. Four readers read a Windows folder about 4 times faster than one; lower it to
   `1` for a slow USB hard disk, whose head seeks back and forth between the readers.
+- **`quarantine_headroom_gb`** (1, in `[clean]`): what a `clean` copying files to the quarantine of
+  another drive leaves free there, in GB; it refuses before moving anything when that space would
+  be missing. `0` keeps no margin; raise it if your `C:` must keep more room.
 
 Why single quotes? In double quotes, TOML turns the `\b` of `"D:\backup"` into a control
 character; the tool refuses such a path rather than ignoring it.

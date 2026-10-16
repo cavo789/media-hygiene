@@ -12,7 +12,6 @@ from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.quarantine_space import (
-    QUARANTINE_HEADROOM,
     cross_drive,
     quarantine_route,
     set_aside,
@@ -36,7 +35,8 @@ def check_quarantine_room(runtime: Runtime, plan: CleanPlan) -> None:
     Raises:
         MountError: The quarantine's drive lacks the room, the headroom kept.
     """
-    rooms = cross_drive(quarantine_route(runtime), set_aside(plan))
+    headroom = runtime.settings.clean.quarantine_headroom
+    rooms = cross_drive(quarantine_route(runtime), set_aside(plan), headroom)
     for room in rooms:
         if room.missing:
             raise MountError(_refusal(room), _tip(room))
@@ -97,7 +97,7 @@ def _refusal(room: Room) -> str:
         sources=", ".join(cross.sources),
         free=human_size(room.free),
         missing=human_size(room.missing),
-        headroom=human_size(QUARANTINE_HEADROOM),
+        headroom=human_size(room.headroom),
     )
 
 

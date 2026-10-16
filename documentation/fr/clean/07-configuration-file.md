@@ -481,6 +481,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
   et `sort` traitent à la fois. Quatre lecteurs lisent un dossier Windows environ 4 fois plus vite qu'un
   seul ; mettez `1` pour un disque dur USB lent, dont la tête fait des allers-retours entre les
   lecteurs.
+- **`quarantine_headroom_gb`** (1, dans `[clean]`) : ce qu'un `clean` qui copie des fichiers dans la
+  quarantaine d'un autre disque y laisse libre, en Go ; il refuse avant tout déplacement si cette
+  place manquerait. `0` ne garde aucune marge ; augmentez-le si votre `C:` doit garder plus de place.
 
 Pourquoi des apostrophes ? Entre guillemets, TOML lit la barre oblique inverse comme un
 caractère spécial : le `\b` de `"D:\backup"` devient un caractère de contrôle (l'outil refuse

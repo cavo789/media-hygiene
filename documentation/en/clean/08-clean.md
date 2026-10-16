@@ -52,7 +52,7 @@ as much. Before asking, `clean` says so in one line:
 ⚠️ 32 files (14.0 GB) will be copied from E: to the quarantine on C: (40.2 GB free there).
 ```
 
-When they would not fit, keeping 1 GB free on that drive, `clean` stops before moving anything
+When they would not fit, keeping 1 GB free on that drive ([`quarantine_headroom_gb`](07-configuration-file.md)), `clean` stops before moving anything
 and says how much is missing. Free some space (`purge` erases the files of earlier cleans), or
 give that drive its own quarantine. The line needs Docker Desktop, which tells the drive of each
 folder; elsewhere (Linux, a Docker volume) nothing is said.
