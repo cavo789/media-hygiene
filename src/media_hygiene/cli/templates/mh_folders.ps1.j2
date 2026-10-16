@@ -37,14 +37,19 @@ function global:_{{ f }}_list {
     Write-Host "{{ update.photos }}"
     foreach ($folder in @({{ kept.shown | join(", ") }})) { _{{ f }}_state $folder }
     Write-Host "{{ update.quarantine }}"
-    _{{ f }}_state {{ kept.quarantine }}
+    _{{ f }}_state {{ kept.quarantine }} $true
 {% for volume in script.drives %}
-    _{{ f }}_state "{{ volume.host }}"
+    _{{ f }}_state "{{ volume.host }}" $true
 {% endfor %}
 }
 
-function global:_{{ f }}_state($folder) {
-    $state = if (Test-Path -LiteralPath $folder) { "{{ update.found }}" } else { "{{ update.absent }}" }
+# A quarantine is made by the first clean: missing on a disk that is there, it is not
+# "not found" (review of 2026-10-16).
+function global:_{{ f }}_state($folder, $quarantine = $false) {
+    $root = [IO.Path]::GetPathRoot($folder)
+    $state = "{{ update.absent }}"
+    if (Test-Path -LiteralPath $folder) { $state = "{{ update.found }}" }
+    elseif ($quarantine -and $root -and (Test-Path -LiteralPath $root)) { $state = "{{ update.unborn }}" }
     Write-Host "    ${folder}: $state"
 }
 

@@ -5284,6 +5284,9 @@ msgstr ""
 msgid "not checked"
 msgstr ""
 
+msgid "not created yet: the first clean creates it"
+msgstr ""
+
 msgid "not found where the plan or a sort put it"
 msgstr ""
 

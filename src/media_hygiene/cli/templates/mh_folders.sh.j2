@@ -45,15 +45,21 @@ _{{ f }}_list() {
     printf '%s\n' "{{ update.photos }}"
     for folder in {{ kept.shown | join(" ") }}; do _{{ f }}_state "$folder"; done
     printf '%s\n' "{{ update.quarantine }}"
-    _{{ f }}_state {{ kept.quarantine }}
+    _{{ f }}_state {{ kept.quarantine }} quarantine
 {% for volume in script.drives %}
-    _{{ f }}_state "{{ volume.host }}"
+    _{{ f }}_state "{{ volume.host }}" quarantine
 {% endfor %}
 }
 
+# A quarantine is made by the first clean: missing on a disk that is there (a WSL
+# /mnt/<drive>, else /), it is not "not found" (review of 2026-10-16).
 _{{ f }}_state() {
+    local root=/
+    [[ "$1" =~ ^(/mnt/[a-zA-Z])(/|$) ]] && root="${BASH_REMATCH[1]}"
     if [[ -d "$1" ]]; then
         printf '    %s: %s\n' "$1" "{{ update.found }}"
+    elif [[ "${2:-}" == quarantine && -d "$root" ]]; then
+        printf '    %s: %s\n' "$1" "{{ update.unborn }}"
     else
         printf '    %s: %s\n' "$1" "{{ update.absent }}"
     fi

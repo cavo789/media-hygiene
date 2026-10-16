@@ -6338,6 +6338,9 @@ msgstr "non autorisé (le propriétaire ou les permissions du fichier)"
 msgid "not checked"
 msgstr "non vérifié"
 
+msgid "not created yet: the first clean creates it"
+msgstr "pas encore créée : le premier clean la crée"
+
 msgid "not found where the plan or a sort put it"
 msgstr "introuvable là où le plan ou un tri l'a mis"
 

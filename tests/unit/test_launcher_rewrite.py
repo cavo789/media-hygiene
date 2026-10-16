@@ -194,6 +194,19 @@ def test_folders_remove_takes_a_renamed_folder_out(tmp_path: Path) -> None:
     assert _held(added) == [str(photos), str(renamed)]
 
 
+def test_folders_says_a_quarantine_is_made_by_the_first_clean(tmp_path: Path) -> None:
+    """Review of 2026-10-16: a quarantine not made yet is not "not found"."""
+    (photos,) = _folders(tmp_path, "Photos")
+    script = _written(tmp_path, photos)
+    quarantine = tmp_path / "media-hygiene" / "quarantine"
+    unborn = _mh(tmp_path, script, "mh folders")
+    assert f"    {quarantine}: not created yet: the first clean creates it" in (
+        unborn.stdout
+    )
+    quarantine.mkdir(parents=True)
+    assert f"    {quarantine}: found" in _mh(tmp_path, script, "mh folders").stdout
+
+
 def test_a_failing_launcher_leaves_mh_as_it_was(tmp_path: Path) -> None:
     """0176: no `> mh.sh`: a refusal writes nothing over the old file."""
     photos, more = _folders(tmp_path, "Photos", "More")
@@ -347,6 +360,19 @@ def test_powershell_keeps_the_run_in_ascii_and_rewrites_safely() -> None:
     load = back.index("    . $file\n")
     assert run < check < save < move < load < back.index("    _mh_list\n", load)
     assert "$file = $MyInvocation.MyCommand.ScriptBlock.File" in back
+
+
+def test_powershell_folders_says_a_quarantine_is_made_by_the_first_clean() -> None:
+    """Review of 2026-10-16: missing on a disk that is there, not "not found"."""
+    with using(Locale.FR):
+        back = expanded(
+            render_script(launcher_script(accented_runtime(), None, _COMMANDS))
+        )
+    assert "function global:_mh_state($folder, $quarantine = $false) {" in back
+    assert '    _mh_state "$HOME\\media-hygiene\\quarantine" $true\n' in back
+    assert (
+        '(Test-Path -LiteralPath $root)) { $state = "pas encore cr\u00e9\u00e9e' in back
+    )
 
 
 def test_powershell_functions_are_global_and_host_words_splatted() -> None:

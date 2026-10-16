@@ -21,6 +21,7 @@ class UpdateTexts:  # pylint: disable=too-many-instance-attributes  # one per me
     quarantine: str
     found: str
     absent: str
+    unborn: str  # a quarantine not created yet, its disk there
     usage: str
     not_found: str  # holds `${folder}`
     already: str  # holds `${folder}`
@@ -47,6 +48,7 @@ def update_texts() -> UpdateTexts:
         quarantine=shell_safe(_("The quarantine:")),
         found=shell_safe(_("found")),
         absent=shell_safe(_("not found: is its disk plugged in?")),
+        unborn=shell_safe(_("not created yet: the first clean creates it")),
         usage=shell_safe(
             _(
                 "Add or remove a photo folder: mh folders add <folder>, "
