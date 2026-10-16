@@ -33,7 +33,9 @@ opens the `mh` menu with that folder, not an audit straight away.
 
 Analysing another folder: type its path → right-click it.
 
-## Status — PARTIAL (2026-10-16)
+## Status — DONE (2026-10-16)
+
+The Windows run that was missing is measured (below); formerly PARTIAL.
 
 ### Done
 - `mh --photos "<folder>"` without a command opens the menu: `--photos` is now parsed before the
@@ -60,3 +62,14 @@ Analysing another folder: type its path → right-click it.
 - Right-click on the background of an open folder (`Directory\Background\shell`) not added.
   **Reason:** not asked; one more key if wanted.
   → refiled as 0188: add it (maintainer, inbox 2026-10-16).
+
+### Measured on Windows (2026-10-16, maintainer, Windows 11, PowerShell 5.1)
+- `mh explorer` from a normal PowerShell (`mh` written by the local image built from `main`):
+  the key written and read back, the command shown; no antivirus alert (Avast).
+- The entry sits under **"Show more options"** (classic menu), not in the first menu.
+- Right-click `C:\Photos\2009\develop may09` (a name with a space) → *Media Hygiene*: the `mh`
+  menu opens and says "L'étape choisie analyse aussi : C:\Photos\2009\develop may09"; `audit`
+  chosen analyses that folder (maintainer: yes).
+- `mh explorer --remove`: "n'existe plus", read back.
+- The measure harness's own run of step 10 was stopped by Avast at 10b (the harness, not `mh`:
+  see 0190); the right-click was then measured by hand, as a user runs it.
