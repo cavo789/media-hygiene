@@ -1531,15 +1531,6 @@ msgstr ""
 "Entrée lance l'étape {number} ({command}). Un autre numéro lance cette "
 "étape. Ctrl+C pour quitter."
 
-#, python-brace-format
-msgid ""
-"Environment variables now start with {new} instead of {old}: the old "
-"prefix stops working in version {version}. Still found: {names}."
-msgstr ""
-"Les variables d'environnement commencent désormais par {new} au lieu de "
-"{old} : l'ancien préfixe ne fonctionnera plus à partir de la version "
-"{version}. Encore présentes : {names}."
-
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."

@@ -51,7 +51,8 @@ Effective settings
 │ scan.categories               │ {}                            │ default      │
 │ scan.extensions               │ []                            │ default      │
 │ scan.excluded_names           │ []                            │ default      │
-│ (always skipped)              │ ['$recycle.bin', 'system      │ built-in     │
+│ (always skipped)              │ ['media-hygiene',             │ built-in     │
+│                               │ '$recycle.bin', 'system       │              │
 │                               │ volume information',          │              │
 │                               │ '@eadir', '#recycle',         │              │
 │                               │ '@recycle', '.@__thumb',      │              │
@@ -139,6 +140,7 @@ Effective settings
 │ clean.confirm                 │ True                          │ default      │
 │ clean.purge_hint_days         │ 30                            │ default      │
 │ clean.workers                 │ 4                             │ default      │
+│ clean.quarantine_headroom_gb  │ 1.0                           │ default      │
 │ review.propose_aside_below    │ 0.35                          │ default      │
 │ review.identical_below        │ 6                             │ default      │
 │ review.brightness_gap         │ 60.0                          │ default      │
@@ -505,7 +507,8 @@ Effective settings
 │ scan.categories               │ {}                            │ config.toml  │
 │ scan.extensions               │ []                            │ config.toml  │
 │ scan.excluded_names           │ []                            │ config.toml  │
-│ (always skipped)              │ ['$recycle.bin', 'system      │ built-in     │
+│ (always skipped)              │ ['media-hygiene',             │ built-in     │
+│                               │ '$recycle.bin', 'system       │              │
 │                               │ volume information',          │              │
 │                               │ '@eadir', '#recycle',         │              │
 │                               │ '@recycle', '.@__thumb',      │              │
@@ -593,6 +596,7 @@ Effective settings
 │ clean.confirm                 │ True                          │ config.toml  │
 │ clean.purge_hint_days         │ 30                            │ config.toml  │
 │ clean.workers                 │ 4                             │ config.toml  │
+│ clean.quarantine_headroom_gb  │ 1.0                           │ config.toml  │
 │ review.propose_aside_below    │ 0.35                          │ config.toml  │
 │ review.identical_below        │ 6                             │ config.toml  │
 │ review.brightness_gap         │ 60.0                          │ config.toml  │
@@ -818,7 +822,7 @@ instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are writte
 arrays, tables as JSON objects that replace the file's whole table
 (`MEDIA_HYGIENE_SCAN__CATEGORIES='{"documents": ["pdf", "docx"]}'`). Lists of tables, such as
 the rules of `classify` (`[[classify.rules]]`), are read from `config.toml` only. Up to version
-0.2 their prefix was `MEDIA_DEDUP_`: it still works until version 0.4.0, with a warning.
+0.2 their prefix was `MEDIA_DEDUP_`, no longer read since version 0.4.0.
 
 ---
 

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `media-hygiene` finds and safely cleans duplicate photos and videos across folders and disks. It
 was called `media-dedup` up to 0.2; what remains of that name is deliberate:
-`config/legacy_env.py` reads `MEDIA_DEDUP_*` until 0.4.0, `summary.json` accepts
+`MEDIA_DEDUP_*` variables are no longer read (0.4.0), `summary.json` accepts
 `only_media_dedup`, `tests/fixtures/0.2.0/` proves old files still load, and the devcontainer
 volumes keep their names. It ships as a Docker image published on Docker Hub as `cavo789/media-hygiene` (amd64 + arm64, by CI
 on a `vX.Y.Z` tag that the helper `release` creates; local build: `docker build --tag

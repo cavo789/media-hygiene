@@ -10,7 +10,6 @@ from __future__ import annotations
 import shutil
 import sqlite3
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pytest
 
@@ -21,16 +20,12 @@ from media_hygiene.actions.runs import summarize
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.constants import MediaKind
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.plan.review import PairAction
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.scan.file_check import Need, need_of
 from media_hygiene.scan.models import MediaFile
 from media_hygiene.scan.progress import NullProgress
-
-if TYPE_CHECKING:
-    from media_hygiene.paths.locations import Locations
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "0.2.0"
 DIGEST = "5948b2640eb33f26077d63b7bea077b2172b789d629f7f8298f2cd66244a99db"
@@ -98,31 +93,15 @@ def test_an_index_of_0_2_0_is_used(tmp_path: Path) -> None:
     assert need_of(photo, facts) is Need.METADATA  # its header only, once
 
 
-def _unset_after_test(monkeypatch: pytest.MonkeyPatch, name: str) -> None:
-    """Make pytest remove `name` at the end, even when the code under test sets it."""
-    monkeypatch.setenv(name, "")
-    monkeypatch.delenv(name)
-
-
-def test_the_variables_of_0_2_0_still_apply(
-    locations: Locations,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
+def test_the_variables_of_0_2_0_are_no_longer_read(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    """`MEDIA_DEDUP_*` set the mounts and the language, and one warning names them."""
-    old = {"MEDIA_DEDUP_GENERAL__LOCALE": "fr"}
-    old |= {
-        f"MEDIA_DEDUP_{kind.value.upper()}_DIR": str(locations.path_of(kind))
-        for kind in MountKind
-    }
-    for name, value in old.items():
-        monkeypatch.setenv(name, value)
-        _unset_after_test(monkeypatch, name.replace("MEDIA_DEDUP_", "MEDIA_HYGIENE_"))
+    """0.4.0: `MEDIA_DEDUP_*` changes nothing any more, and nothing warns about it."""
+    monkeypatch.setenv("MEDIA_DEDUP_GENERAL__LOCALE", "fr")
     monkeypatch.setattr("sys.argv", ["media-hygiene", "history"])
-    with pytest.raises(SystemExit) as caught:
+    with pytest.raises(SystemExit):  # no journal mounted here: its English refusal
         main()
-    assert caught.value.code == 0
-    output = " ".join(capsys.readouterr().out.split())
-    assert "MEDIA_DEDUP_GENERAL__LOCALE" in output
-    assert "MEDIA_HYGIENE_" in output
-    assert "Aucune exécution" in output
+    captured = capsys.readouterr()
+    output = " ".join((captured.out + captured.err).split())
+    assert "MEDIA_DEDUP_" not in output
+    assert "No journal mount" in output  # English: the old variable's fr not applied

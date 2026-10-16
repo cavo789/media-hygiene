@@ -898,8 +898,7 @@ exemple `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` dans `docker run` ; les listes s'�
 tableau JSON, les tables en objet JSON qui remplace toute la table du fichier
 (`MEDIA_HYGIENE_SCAN__CATEGORIES='{"documents": ["pdf", "docx"]}'`). Les listes de tables, comme
 les règles de `classify` (`[[classify.rules]]`), se lisent dans `config.toml` seulement. Jusqu'à
-la version 0.2, leur préfixe était `MEDIA_DEDUP_` : il fonctionne encore jusqu'à la version
-0.4.0, avec un avertissement.
+la version 0.2, leur préfixe était `MEDIA_DEDUP_`, qui n'est plus lu depuis la version 0.4.0.
 
 ---
 

@@ -1243,12 +1243,6 @@ msgid ""
 "Ctrl+C leaves."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"Environment variables now start with {new} instead of {old}: the old "
-"prefix stops working in version {version}. Still found: {names}."
-msgstr ""
-
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."

@@ -206,7 +206,7 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 ## Update
 
 `docker pull cavo789/media-hygiene` fetches the latest version; a tag such as
-`cavo789/media-hygiene:0.3.0` pins one.
+`cavo789/media-hygiene:0.4.0` pins one.
 
 ### Coming from media-dedup
 
@@ -218,8 +218,8 @@ media-hygiene since version 0.3.0. Nothing of yours is lost:
 - Keep your folders and volumes: `$HOME\media-dedup\journal`, `media-dedup-cache` and the
   others are yours, whatever their name. Keep writing them in your `-v` options: `undo`,
   `history` and the cache find everything they hold.
-- The `MEDIA_DEDUP_…` environment variables still work until version 0.4.0, with a warning:
-  rename them `MEDIA_HYGIENE_…`.
+- The `MEDIA_DEDUP_…` environment variables are no longer read since version 0.4.0: rename
+  them `MEDIA_HYGIENE_…`.
 
 ## Licences
 

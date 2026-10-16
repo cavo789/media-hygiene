@@ -57,52 +57,63 @@ your browser. `mh` runs these three itself: [what `mh` does by itself](launcher.
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-11 17:43 (4 days ago) — 29 files, 9 extra copies (46.3 KB),
-3 broken.
+Last audit: 2026-10-16 18:17 (today) — 10 files, 4 extra copies (5.9 MB), 1
+broken.
 Quarantine: empty.
 
       Clean the duplicates
 ✅  1 mh audit                          Find the duplicates and the  🔒
                                         broken files
-👉  2 mh clean                          Set the extra copies aside   ↩️
+    2 mh open                           Read the reports in your     🔒
+                                        browser
+👉  3 mh clean                          Set the extra copies aside   ↩️
                                         (asks first)
-    3 mh history                        What each run did            🔒
+    4 mh history                        What each run did            🔒
       mh undo                           Put back the files of the    ↩️
                                         last run (nothing to do yet)
-    4 mh review                         Choose the best shots of     🔒 optional
+    5 mh review                         Choose the best shots of     🔒 optional
                                         each burst, in your browser
-    5 mh clean --tier near --decisions  Apply your choices: what you ↩️ optional
+    6 mh clean --tier near --decisions  Apply your choices: what you ↩️ optional
                                         set aside goes to the
                                         quarantine
       mh purge                          Free the space of the        ⚠️
                                         quarantine, for good
                                         (nothing to do yet)
       Sort the photos
-    6 mh classify                       Propose a tidy tree, in a    🔒
+✅  7 mh classify                       Propose a tidy tree, in a    🔒
                                         workbook you correct
-    7 mh review-sort                    Name the events in your      🔒 optional
+    8 mh review-sort                    Name the events in your      🔒 optional
                                         browser
-    8 mh places                         Name your places on a map    🔒 optional
-    9 mh people                         Name the faces               🔒 optional
-   10 mh sort                           Move the photos as the       ↩️
+    9 mh places                         Name your places on a map    🔒 optional
+   10 mh people                         Name the faces               🔒 optional
+   11 mh sort                           Move the photos as the       ↩️
                                         workbook says
       mh album "Christmas" --category … Gather a selection into an   ↩️ optional
                                         album of links (type it
                                         yourself)
       Find a photo
-✅ 11 mh tags                           Give your photos words       🔒
-   12 mh search                         Find a photo by its words,   🔒
+   12 mh tags                           Give your photos words       🔒
+   13 mh search                         Find a photo by its words,   🔒
                                         in your browser
-   13 mh xmp                            Carry the words into other   ↩️ optional
+   14 mh xmp                            Carry the words into other   ↩️ optional
                                         photo software
-   14 mh inventory                      Every photo and video in an  🔒 optional
+   15 mh inventory                      Every photo and video in an  🔒 optional
                                         Excel workbook
+      Reach mh without typing (Windows)
+   16 mh shortcut                       An icon on the Desktop and   🔒 optional
+                                        in the Start menu opens this
+                                        menu
+   17 mh explorer                       Right-click a folder in      🔒 optional
+                                        Explorer: this menu, on that
+                                        folder
 
+🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good
 🤖 classify and tags can also ask a local AI model: set [classify.ai] model in
 config.toml (mh config).
 A step to type yourself takes words only you know:
 https://cavo789.github.io/media-hygiene/sort/quick-guide/
-Enter runs step 2 (mh clean). Another number runs that step. Ctrl+C leaves.
+Your folders: mh folders. A new version: mh update.
+Enter runs step 3 (mh clean). Another number runs that step. Ctrl+C leaves.
 ⚠️  The menu runs its steps through mh: write it once with 'launcher' (step 0 of
 the guides), then type mh alone.
 ```
@@ -128,7 +139,6 @@ the guides), then type mh alone.
 
 <!-- capture: help-menu.txt -->
 ```text
-
  Usage: media-hygiene menu [OPTIONS]
 
  🔒 Read-only: never changes your photos. Every step of the guides with its

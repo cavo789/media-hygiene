@@ -167,6 +167,8 @@ command shows its own `--help`; here is the list of the commands:
 │              Excel, from the cache alone: no file is read.                   │
 │ launcher     Write 'mh', a short command holding your folders: mh audit, mh  │
 │              clean.                                                          │
+│ menu         Every step of the guides with its command, the next one first:  │
+│              what 'mh' alone shows, Enter runs it.                           │
 │ people       Find the faces in the photos, group those alike and name them   │
 │              in your browser. Faces kept in the cache, never sent anywhere.  │
 │ places       Name your places on a map of where the photos were taken; saved │
