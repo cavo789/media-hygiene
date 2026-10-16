@@ -16,6 +16,9 @@ changes the mount design (one `/quarantine`, `CLAUDE.md`): the maintainer asked 
 
 Each drive's quarantine is `X:\media-hygiene\quarantine`, mounted on `/quarantine/x`;
 `/quarantine` stays the quarantine of `C:` and the default.
+Only the quarantine moves per drive (maintainer, 2026-10-16): config, journal, reports and the
+cache stay single, in `$HOME\media-hygiene` (one index finds duplicates across drives, one
+journal records each file's quarantine path, so `undo` follows it).
 Watch: `/quarantine/x` is nested in the `/quarantine` mount, so Docker creates an empty `x`
 folder in C:'s quarantine; every reader listing runs of `/quarantine` must skip the
 one-letter drive folders (a run id never is one letter: to check).
