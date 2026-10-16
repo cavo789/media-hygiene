@@ -64,7 +64,7 @@ ouvre sa photo. Ctrl+C l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysées : 13 visages, 0,04 s par photo.
+✅ 33 photos analysées : 12 visages, 0,04 s par photo.
 ✅ 17 visages dans 43 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les

@@ -170,6 +170,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              n'est lu.                                                       │
 │ launcher     Écrit 'mh', une commande courte qui retient vos dossiers : mh   │
 │              audit, mh clean.                                                │
+│ menu         Chaque étape des guides avec sa commande, la prochaine en       │
+│              premier : ce que montre 'mh' seul, Entrée la lance.             │
 │ people       Trouver les visages des photos, regrouper ceux qui se           │
 │              ressemblent et les nommer dans votre navigateur. Visages gardés │
 │              dans le cache, jamais envoyés nulle part.                       │

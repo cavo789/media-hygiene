@@ -53,7 +53,8 @@ Réglages effectifs
 │ scan.categories             │ {}                         │ défaut            │
 │ scan.extensions             │ []                         │ défaut            │
 │ scan.excluded_names         │ []                         │ défaut            │
-│ (toujours ignorés)          │ ['$recycle.bin', 'system   │ intégrée          │
+│ (toujours ignorés)          │ ['media-hygiene',          │ intégrée          │
+│                             │ '$recycle.bin', 'system    │                   │
 │                             │ volume information',       │                   │
 │                             │ '@eadir', '#recycle',      │                   │
 │                             │ '@recycle', '.@__thumb',   │                   │
@@ -153,6 +154,8 @@ Réglages effectifs
 │ clean.confirm               │ True                       │ défaut            │
 │ clean.purge_hint_days       │ 30                         │ défaut            │
 │ clean.workers               │ 4                          │ défaut            │
+│ clean.quarantine_headroom_g │ 1.0                        │ défaut            │
+│ b                           │                            │                   │
 │ review.propose_aside_below  │ 0.35                       │ défaut            │
 │ review.identical_below      │ 6                          │ défaut            │
 │ review.brightness_gap       │ 60.0                       │ défaut            │
@@ -547,7 +550,8 @@ Réglages effectifs
 │ scan.categories             │ {}                         │ config.toml       │
 │ scan.extensions             │ []                         │ config.toml       │
 │ scan.excluded_names         │ []                         │ config.toml       │
-│ (toujours ignorés)          │ ['$recycle.bin', 'system   │ intégrée          │
+│ (toujours ignorés)          │ ['media-hygiene',          │ intégrée          │
+│                             │ '$recycle.bin', 'system    │                   │
 │                             │ volume information',       │                   │
 │                             │ '@eadir', '#recycle',      │                   │
 │                             │ '@recycle', '.@__thumb',   │                   │
@@ -647,6 +651,8 @@ Réglages effectifs
 │ clean.confirm               │ True                       │ config.toml       │
 │ clean.purge_hint_days       │ 30                         │ config.toml       │
 │ clean.workers               │ 4                          │ config.toml       │
+│ clean.quarantine_headroom_g │ 1.0                        │ config.toml       │
+│ b                           │                            │                   │
 │ review.propose_aside_below  │ 0.35                       │ config.toml       │
 │ review.identical_below      │ 6                          │ config.toml       │
 │ review.brightness_gap       │ 60.0                       │ config.toml       │

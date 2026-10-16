@@ -59,62 +59,76 @@ lui-même](launcher.md#ce-que-mh-fait-lui-même).
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-10-11 17:43 (il y a 4 jours) — 29 fichiers, 9 copies en trop
-(46,3 Ko), 3 illisibles.
+Dernier audit: 2026-10-16 18:18 (aujourd'hui) — 10 fichiers, 4 copies en trop
+(5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 
       Nettoyer les doublons
-✅  1 mh audit                          Trouver les doublons et    🔒
-                                        les fichiers abîmés
-👉  2 mh clean                          Mettre les copies en trop  ↩️
-                                        de côté (demande d'abord)
-    3 mh history                        Ce qu'a fait chaque        🔒
-                                        exécution
-      mh undo                           Remettre les fichiers de   ↩️
-                                        la dernière exécution
-                                        (rien à faire pour
-                                        l'instant)
-    4 mh review                         Choisir les meilleures     🔒 facultatif
-                                        photos de chaque rafale,
-                                        dans le navigateur
-    5 mh clean --tier near --decisions  Appliquer vos choix : ce   ↩️ facultatif
-                                        que vous avez écarté va en
-                                        quarantaine
-      mh purge                          Libérer la place de la     ⚠️
-                                        quarantaine,
-                                        définitivement (rien à
-                                        faire pour l'instant)
+✅  1 mh audit                            Trouver les doublons et  🔒
+                                          les fichiers abîmés
+    2 mh open                             Lire les rapports dans   🔒
+                                          votre navigateur
+👉  3 mh clean                            Mettre les copies en     ↩️
+                                          trop de côté (demande
+                                          d'abord)
+    4 mh history                          Ce qu'a fait chaque      🔒
+                                          exécution
+      mh undo                             Remettre les fichiers de ↩️
+                                          la dernière exécution
+                                          (rien à faire pour
+                                          l'instant)
+    5 mh review                           Choisir les meilleures   🔒 facultatif
+                                          photos de chaque rafale,
+                                          dans le navigateur
+    6 mh clean --tier near --decisions    Appliquer vos choix : ce ↩️ facultatif
+                                          que vous avez écarté va
+                                          en quarantaine
+      mh purge                            Libérer la place de la   ⚠️
+                                          quarantaine,
+                                          définitivement (rien à
+                                          faire pour l'instant)
       Trier les photos
-    6 mh classify                       Proposer une arborescence  🔒
-                                        rangée, dans un classeur
-                                        que vous corrigez
-    7 mh review-sort                    Nommer les événements dans 🔒 facultatif
-                                        le navigateur
-    8 mh places                         Nommer vos lieux sur une   🔒 facultatif
-                                        carte
-    9 mh people                         Nommer les visages         🔒 facultatif
-   10 mh sort                           Déplacer les photos comme  ↩️
-                                        le dit le classeur
-      mh album "Christmas" --category … Réunir une sélection dans  ↩️ facultatif
-                                        un album de liens (à taper
-                                        vous-même)
+✅  7 mh classify                         Proposer une             🔒
+                                          arborescence rangée,
+                                          dans un classeur que
+                                          vous corrigez
+    8 mh review-sort                      Nommer les événements    🔒 facultatif
+                                          dans le navigateur
+    9 mh places                           Nommer vos lieux sur une 🔒 facultatif
+                                          carte
+   10 mh people                           Nommer les visages       🔒 facultatif
+   11 mh sort                             Déplacer les photos      ↩️
+                                          comme le dit le classeur
+      mh album "Christmas" --category …   Réunir une sélection     ↩️ facultatif
+                                          dans un album de liens
+                                          (à taper vous-même)
       Retrouver une photo
-✅ 11 mh tags                           Donner des mots à vos      🔒
-                                        photos
-   12 mh search                         Retrouver une photo par    🔒
-                                        ses mots, dans le
-                                        navigateur
-   13 mh xmp                            Emporter les mots dans     ↩️ facultatif
-                                        d'autres logiciels photo
-   14 mh inventory                      Toutes les photos et       🔒 facultatif
-                                        vidéos dans un classeur
-                                        Excel
+   12 mh tags                             Donner des mots à vos    🔒
+                                          photos
+   13 mh search                           Retrouver une photo par  🔒
+                                          ses mots, dans le
+                                          navigateur
+   14 mh xmp                              Emporter les mots dans   ↩️ facultatif
+                                          d'autres logiciels photo
+   15 mh inventory                        Toutes les photos et     🔒 facultatif
+                                          vidéos dans un classeur
+                                          Excel
+      Ouvrir mh sans rien taper (Windows)
+   16 mh shortcut                         Une icône sur le Bureau  🔒 facultatif
+                                          et dans le menu Démarrer
+                                          ouvre ce menu
+   17 mh explorer                         Clic droit sur un        🔒 facultatif
+                                          dossier dans
+                                          l'Explorateur : ce menu,
+                                          sur ce dossier
 
+🔒 vos photos ne sont pas touchées · ↩️ peut être annulé · ⚠️ définitif
 🤖 classify et tags peuvent aussi interroger un modèle d'IA local : indiquez
 [classify.ai] model dans config.toml (mh config).
 Une étape à taper vous-même demande des mots que vous seul connaissez :
 https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/
-Entrée lance l'étape 2 (mh clean). Un autre numéro lance cette étape. Ctrl+C
+Vos dossiers : mh folders. Une nouvelle version : mh update.
+Entrée lance l'étape 3 (mh clean). Un autre numéro lance cette étape. Ctrl+C
 pour quitter.
 ⚠️  Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' (étape
 0 des guides), puis tapez mh seul.
@@ -143,7 +157,6 @@ pour quitter.
 
 <!-- capture: help-menu.txt -->
 ```text
-
  Utilisation : media-hygiene menu [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Chaque étape des guides avec
