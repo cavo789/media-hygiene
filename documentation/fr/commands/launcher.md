@@ -31,7 +31,7 @@ mh audit
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : il affiche seulement un script. |
 | Il faut | Vos dossiers, un `--photos` chacun. |
-| Conseillé | `--quarantine` sur le disque des photos, s'il n'est pas `C:`. |
+| Bon à savoir | Chaque disque de photos a sa propre quarantaine : ce que `clean` met de côté reste sur son disque. |
 | Écrit | Rien lui-même : vous redirigez ce qu'il affiche vers un fichier. |
 | Annuler | Supprimez le fichier. |
 
@@ -44,7 +44,6 @@ mkdir -Force "$HOME\media-hygiene"
 docker run --rm cavo789/media-hygiene --locale fr launcher `
   --photos "C:\Photos" `
   --photos "D:\Ancien disque" `
-  --quarantine "D:\quarantaine" `
   > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
@@ -69,6 +68,14 @@ mh audit
   et `quarantine` de `$HOME\media-hygiene`, créés s'ils manquent ; le dossier de `--quarantine`,
   ou un dossier de l'outil que vous avez monté vous-même avec `-v` en lançant `launcher`, est gardé
   à la place.
+- **Une quarantaine par disque de photos** : pour chaque disque de vos dossiers de photos autre
+  que celui de la quarantaine (`C:`), `X:\media-hygiene\quarantine` monté sur `/quarantine/x` et
+  créé s'il manque. `clean` met chaque fichier de côté sur son propre disque : nettoyer `E:` ne
+  remplit jamais `C:`
+  ([nettoyer, étape 8](../clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine)). Un
+  dossier de photos qui est un disque entier (`E:\`) contiendrait ce dossier : son disque garde
+  la quarantaine de `C:`. `mh folders add` avec un dossier d'un nouveau disque ajoute aussi sa
+  quarantaine.
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
   `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
   répond : aucune adresse à copier. Ctrl+C dans la fenêtre l'arrête toujours.
@@ -101,7 +108,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh open` | Ouvre `index.html`, la liste de tous les rapports, dans votre navigateur (le plus récent en haut). Pas encore de rapport : elle dit de lancer d'abord `mh audit`. |
 | `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell sur le menu de `mh`, qui reste ouverte. Relancée, elle réécrit les deux. |
 | `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : le menu de `mh` s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
-| `mh folders` | Liste vos dossiers de photos et la quarantaine, chacun *présent* ou *introuvable* (un disque pas branché). `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
+| `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché). `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de

@@ -31,6 +31,10 @@
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
+#  13. 1 GB set aside from another drive (-OtherDrive, else the first drive but C: with 3 GB
+#      free): to the quarantine on C: (copy E: -> C:), then to that drive's own quarantine
+#      /quarantine/x (copy E: -> E:): wall time of each clean and undo; then undo without
+#      the drive's quarantine mounted must refuse, naming the drive                  (0183)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -44,6 +48,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
 
 param(
     [string]$Photos = "C:\Photos",
@@ -64,7 +69,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -550,9 +555,62 @@ if (Wanted 12) {
     }
 }
 
+# --- 13: one quarantine per drive: copy E: -> C: against E: -> E: (0183) -------------------
+# 1 GB of photos of -Photos copied twice to X:\mh-measure-13 (removed at the end): each clean
+# sets 1 GB aside. 13a/13b: quarantine on C: only; 13c/13d: X:'s own on /quarantine/x too.
+# If 13c is not faster than 13a, the gain of 0183 is the space on C: only (say it in the docs).
+$driveRoot = ""
+if (Wanted 13) {
+    $drive13 = $OtherDrive
+    if ($drive13 -eq "") {
+        $found = Get-PSDrive -PSProvider FileSystem |
+            Where-Object { $_.Name -ne 'C' -and $_.Free -gt 3GB } | Select-Object -First 1
+        if ($found) { $drive13 = $found.Name + ":" }
+    }
+    Log ""
+    if ($drive13 -eq "") {
+        Log "== 13. skipped: no drive other than C: with 3 GB free (give one with -OtherDrive)"
+    } else {
+        $driveRoot = Join-Path ($drive13.TrimEnd('\') + "\") "mh-measure-13"
+        $driveData = Join-Path $driveRoot "data"
+        $driveQuarantine = Join-Path $driveRoot "quarantine"
+        foreach ($folder in "data\a", "data\b", "quarantine") {
+            New-Item -ItemType Directory -Force -Path (Join-Path $driveRoot $folder) | Out-Null
+        }
+        $bytes = 0
+        $files = 0
+        foreach ($photo in (Get-ChildItem -Path $Photos -Recurse -File -Include *.jpg, *.jpeg)) {
+            if ($bytes -ge 1GB) { break }
+            $name = "{0:D6}-{1}" -f $files, $photo.Name
+            Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $driveData "a\$name")
+            Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $driveData "b\$name")
+            $bytes += $photo.Length
+            $files++
+        }
+        $letter13 = $drive13.Substring(0, 1).ToLower()
+        $driveMounts = @(
+            "-v", "${driveData}:/data/${letter13}/mh-measure-13",
+            "-v", "${volume}:/cache",
+            "-v", "$(Join-Path $tool 'journal'):/journal",
+            "-v", "$(Join-Path $tool 'reports'):/reports",
+            "-v", "$(Join-Path $tool 'quarantine'):/quarantine"
+        )
+        $ownQuarantine = $driveMounts + @("-v", "${driveQuarantine}:/quarantine/${letter13}")
+        Log ("== 13. {0} files ({1:N2} GB) to set aside on $drive13" -f $files, ($bytes / 1GB))
+        Measure-Mh "13a. clean, quarantine on C: (copy $drive13 -> C:) (0183)" $driveMounts @("clean", "--yes")
+        Measure-Mh "13b. undo of that clean (copy C: -> $drive13)" $driveMounts @("undo", "--yes")
+        Measure-Mh "13c. clean, $drive13's own quarantine (copy $drive13 -> $drive13) (0183)" $ownQuarantine @("clean", "--yes")
+        $aside = @(Get-ChildItem -Path $driveQuarantine -Recurse -File).Count
+        Log "   13c. files in $driveQuarantine after the clean: $aside (expected: $files)"
+        Measure-Mh "13d. undo without $drive13's quarantine mounted: must refuse, naming $drive13" $driveMounts @("undo", "--yes")
+        Measure-Mh "13e. undo of that clean (copy $drive13 -> $drive13)" $ownQuarantine @("undo", "--yes")
+    }
+}
+
 # --- clean up -------------------------------------------------------------------------------
 if (-not $Keep) {
     if ($otherRoot -ne "") { Remove-Item -Recurse -Force $otherRoot }
+    if ($driveRoot -ne "") { Remove-Item -Recurse -Force $driveRoot }
     Remove-Item -Recurse -Force $Work
     docker volume rm -f $volume | Out-Null
 }

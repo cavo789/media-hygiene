@@ -2,7 +2,8 @@
 
 Only the folders the tool made are ever deleted: a direct child of the quarantine
 named like a run (`20260925-183015`), a real folder (not a link to one elsewhere).
-Anything else found there is left alone.
+Anything else found there is left alone, the drives' folders (`/quarantine/e`, a
+quarantine of its own) included: a run's quarantine may lie in several of them.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ from media_hygiene.actions.runs import RUN_ID_PATTERN
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
 
@@ -32,6 +34,33 @@ def quarantine_runs(quarantine_dir: Path) -> list[str]:
         (path.name for path in quarantine_dir.iterdir() if _is_run_folder(path)),
         reverse=True,
     )
+
+
+def runs_in(quarantines: Sequence[Path]) -> list[str]:
+    """List the runs that still have files in any of the quarantines, newest first.
+
+    Args:
+        quarantines: The default quarantine and the per-drive ones.
+
+    Returns:
+        The run identifiers, each once.
+    """
+    runs = {run for folder in quarantines for run in quarantine_runs(folder)}
+    return sorted(runs, reverse=True)
+
+
+def run_folders(quarantines: Sequence[Path], run_id: str) -> list[Path]:
+    """Find the folders of a run in the quarantines.
+
+    Args:
+        quarantines: The default quarantine and the per-drive ones.
+        run_id: The run.
+
+    Returns:
+        Its folder in each quarantine that has one.
+    """
+    folders = (folder / run_id for folder in quarantines)
+    return [folder for folder in folders if _is_run_folder(folder)]
 
 
 def _is_run_folder(path: Path) -> bool:

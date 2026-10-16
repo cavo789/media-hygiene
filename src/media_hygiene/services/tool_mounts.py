@@ -13,6 +13,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.tool_overlaps import DataScope, tool_overlaps
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -44,7 +45,11 @@ def refuse_tool_folders_in_data(
         runtime.mounts.data_roots(locations.data_dir),
         tuple(mapper.to_container(path) for path in runtime.settings.folders.excluded),
     )
-    overlaps = tool_overlaps(scope, ((kind, locations.path_of(kind)) for kind in kinds))
+    tools = [(kind, locations.path_of(kind)) for kind in kinds]
+    if MountKind.QUARANTINE in kinds:  # the drives' own quarantines too (0183)
+        drives = mounted_quarantines(runtime).drive_folders
+        tools += [(MountKind.QUARANTINE, folder) for folder in drives]
+    overlaps = tool_overlaps(scope, tools)
     if not overlaps:
         return
     first = overlaps[0]

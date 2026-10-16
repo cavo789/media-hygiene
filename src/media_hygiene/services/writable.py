@@ -6,13 +6,14 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only, is_writable
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.services.runtime import Runtime
 
 
@@ -33,6 +34,8 @@ def ensure_writable(runtime: Runtime, *kinds: MountKind) -> None:
     folders = [
         runtime.locations.path_of(kind) for kind in kinds if runtime.persistent(kind)
     ]
+    if MountKind.QUARANTINE in kinds:  # the drives' own quarantines too (0183)
+        folders += mounted_quarantines(runtime).drive_folders
     blocked = [folder for folder in folders if not is_writable(folder)]
     if blocked:
         raise MountError(

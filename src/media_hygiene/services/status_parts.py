@@ -6,13 +6,14 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.purge import file_count, folder_size, quarantine_runs
+from media_hygiene.actions.purge import file_count, folder_size, run_folders, runs_in
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME
 from media_hygiene.errors import DecisionsError
 from media_hygiene.report.decisions import BurstStatus, read_decisions
 from media_hygiene.review.place import DEFAULT_DECISIONS
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
 _RUN_STAMP: Final = "%Y%m%d-%H%M%S"
@@ -67,33 +68,35 @@ class QuarantineState:
         return sum(run.size for run in self.runs)
 
 
-def quarantine_state(quarantine_dir: Path) -> QuarantineState:
-    """Measure the quarantine of every run.
+def quarantine_state(quarantines: Sequence[Path]) -> QuarantineState:
+    """Measure the quarantine of every run, in every quarantine.
 
     Args:
-        quarantine_dir: The quarantine mount point.
+        quarantines: The default quarantine and the per-drive ones.
 
     Returns:
         The runs that still hold files.
     """
-    runs = (
-        _measure(quarantine_dir / run_id) for run_id in quarantine_runs(quarantine_dir)
-    )
+    runs = (_measure(quarantines, run_id) for run_id in runs_in(quarantines))
     return QuarantineState(tuple(run for run in runs if run.files))
 
 
-def _measure(folder: Path) -> QuarantinedRun:
-    """Count and measure the quarantine of one run.
+def _measure(quarantines: Sequence[Path], run_id: str) -> QuarantinedRun:
+    """Count and measure the quarantine of one run, on every drive.
 
     Args:
-        folder: The folder of the run in the quarantine, named after it.
+        quarantines: The default quarantine and the per-drive ones.
+        run_id: The run.
 
     Returns:
         Its files, size and start.
     """
-    run_id = folder.name
+    folders = run_folders(quarantines, run_id)
     return QuarantinedRun(
-        run_id, file_count(folder), folder_size(folder), run_started(run_id)
+        run_id,
+        sum(file_count(folder) for folder in folders),
+        sum(folder_size(folder) for folder in folders),
+        run_started(run_id),
     )
 
 

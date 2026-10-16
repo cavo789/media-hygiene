@@ -51,7 +51,12 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 | `console/` | Rich output facade (tips 💡), progress bars, tables, logging. |
 
 Mount points: `/data/<drive>/<path>` (folders to scan), `/config` (config.toml **only**),
-`/journal`, `/quarantine`, `/reports`, `/cache`. Never store other data under `/config`.
+`/journal`, `/quarantine`, `/reports`, `/cache`. Never store other data under `/config`. Only
+the quarantine goes per drive: `/quarantine/<x>` (`X:\media-hygiene\quarantine`, mounted by
+`mh` for each photo drive but `C:`) receives the files of drive `X:` (`paths/quarantines.py`,
+`QuarantineRoute`); `/quarantine` is `C:`'s and the default; readers list every quarantine and
+skip the one-letter folders; `undo`/`purge <run>` refuse a run whose drive quarantine is not
+mounted (`purge` alone keeps such runs).
 
 Semantics to preserve: `protected` folders are never modified and always hold the kept copy (so
 identical files elsewhere are deleted); `excluded` folders are not analysed (a real backup).

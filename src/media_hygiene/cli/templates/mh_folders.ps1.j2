@@ -38,6 +38,9 @@ function global:_{{ f }}_list {
     foreach ($folder in @({{ kept.shown | join(", ") }})) { _{{ f }}_state $folder }
     Write-Host "{{ update.quarantine }}"
     _{{ f }}_state {{ kept.quarantine }}
+{% for volume in script.drives %}
+    _{{ f }}_state "{{ volume.host }}"
+{% endfor %}
 }
 
 function global:_{{ f }}_state($folder) {

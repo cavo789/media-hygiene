@@ -84,7 +84,7 @@
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
 {% endfor %}
         "${photos[@]}" \
-{% for volume in script.tools %}
+{% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
         "${page[@]}" \

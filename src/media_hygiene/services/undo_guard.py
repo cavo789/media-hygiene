@@ -17,6 +17,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.quarantines import refuse_unplugged
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -33,9 +34,11 @@ def ensure_undo_ready(runtime: Runtime, run_ids: Sequence[str]) -> None:
 
     Raises:
         MountError: The journal is not persistent, a folder is read-only, a mount point
-            is not writable, or a run has files in a quarantine that is not mounted.
+            is not writable, or a run has files in a quarantine that is not mounted
+            (`/quarantine`, or the one of a drive).
     """
     ensure_can_act(runtime, Phase.UNDO.value)
+    refuse_unplugged(runtime, run_ids)
     if runtime.persistent(MountKind.QUARANTINE):
         return
     for run_id in run_ids:

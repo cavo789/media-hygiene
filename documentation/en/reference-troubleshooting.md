@@ -68,8 +68,9 @@ The photos were on another drive than the quarantine: each file set aside was co
 quarantine's drive (with `mh`, `C:`). `clean` says it before asking, and refuses when the files
 would not fit ([cleaning, step 8](clean/08-clean.md#photos-on-another-drive-than-the-quarantine)).
 To get the space back, check the files set aside, then `purge` them
-([step 9](clean/09-undo-history-purge.md)). For the next clean, give the quarantine a folder on
-the photos' drive: `-v "E:\media-hygiene\quarantine:/quarantine"`.
+([step 9](clean/09-undo-history-purge.md)). For the next clean, give that drive its own
+quarantine: `mh` does it for each drive of its photo folders (`mh folders add`), or
+`-v "E:\media-hygiene\quarantine:/quarantine/e"`.
 
 ## A Windows path in `config.toml` is refused
 

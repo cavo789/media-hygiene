@@ -13,6 +13,7 @@ L'outil tourne dans un conteneur : il ne voit que les dossiers que vous lui donn
 | `/config` | `config.toml` uniquement, créé et commenté au premier lancement ; `places` y enregistre vos lieux. | facultatif ; **obligatoire** pour `places` | [Nettoyer, 7](clean/07-configuration-file.md) |
 | `/journal` | Un journal JSONL par nettoyage, tri ou album. | **obligatoire** pour `clean`, `sort`, `album`, `undo`, `history` | [Nettoyer, 8](clean/08-clean.md) |
 | `/quarantine` | Fichiers illisibles, fichiers compagnons orphelins, quasi-doublons, photos de rafale écartées et copies d'autres types de fichiers déplacés par `clean`. | pour les traiter | [Nettoyer, 8](clean/08-clean.md) |
+| `/quarantine/<disque>` | La quarantaine d'un disque (`E:\media-hygiene\quarantine` sur `/quarantine/e`) : les fichiers de ce disque mis de côté y restent ; `/quarantine` reçoit ceux des autres disques. `mh` en monte une pour chaque disque de photos autre que `C:`. | facultatif, conseillé pour des photos hors de `C:` | [Nettoyer, 8](clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine) |
 
 ## Bon à savoir
 
@@ -25,4 +26,9 @@ L'outil tourne dans un conteneur : il ne voit que les dossiers que vous lui donn
   l'administrateur, et l'outil ne peut pas y écrire
   ([dépannage](reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 - **`/config` ne contient que `config.toml`** : rien d'autre n'y est jamais écrit.
+- **Seule la quarantaine va par disque** : configuration, journal, rapports et cache restent
+  uniques (un seul index trouve les doublons d'un disque à l'autre ; un seul journal note où est
+  allé chaque fichier, et `undo` le suit). Gardez la quarantaine d'un disque montée jusqu'à ce que
+  ses exécutions soient purgées ou annulées : sinon `undo` et `purge <exécution>` refusent, en
+  nommant le disque à brancher, et `purge` garde ces exécutions.
 - **Lancements durcis** : l'image fonctionne aussi avec `--read-only --tmpfs /tmp`.

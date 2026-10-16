@@ -23,6 +23,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
+from media_hygiene.services.quarantine_space import quarantine_route
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -126,6 +127,7 @@ class CleanService:
                 progress=self._progress,
                 delete_copies=plan.delete_copies,
                 workers=self._runtime.settings.clean.workers,
+                route=quarantine_route(self._runtime),
             )
             outcome = CleanExecutor(context).run(plan)
         self._forget_removed(journal_path, run_id)

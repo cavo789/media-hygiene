@@ -74,8 +74,9 @@ sur le disque de la quarantaine (avec `mh`, `C:`). `clean` le dit avant de deman
 quand les fichiers ne tiendraient pas
 ([nettoyer, étape 8](clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine)). Pour
 récupérer la place, vérifiez les fichiers mis de côté, puis effacez-les avec `purge`
-([étape 9](clean/09-undo-history-purge.md)). Pour le prochain nettoyage, donnez à la quarantaine
-un dossier du disque des photos : `-v "E:\media-hygiene\quarantine:/quarantine"`.
+([étape 9](clean/09-undo-history-purge.md)). Pour le prochain nettoyage, donnez à ce disque sa
+propre quarantaine : `mh` le fait pour chaque disque de ses dossiers de photos (`mh folders add`),
+ou `-v "E:\media-hygiene\quarantine:/quarantine/e"`.
 
 ## Un chemin Windows de `config.toml` est refusé
 

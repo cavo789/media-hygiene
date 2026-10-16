@@ -36,9 +36,17 @@ mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 
 ### Photos on another drive than the quarantine
 
-With `mh`, the quarantine is on `C:` (in `$HOME`). Photos on `D:` or `E:` are then *copied* to
-`C:` when set aside: the space comes back on `E:`, and `C:` fills up by as much. Before asking,
-`clean` says so in one line:
+With `mh`, each photo drive has its own quarantine: `E:\media-hygiene\quarantine` for the
+photos of `E:` (mounted on `/quarantine/e`), `$HOME\media-hygiene\quarantine` for those of `C:`.
+A file set aside stays on its drive: cleaning `E:` never fills `C:`. `mh` creates these folders
+before each run, and `mh folders add` with a folder of a new drive gives that drive its own
+quarantine too. With the full command, add one `-v` per drive:
+`-v "E:\media-hygiene\quarantine:/quarantine/e"`.
+
+A drive without a quarantine of its own (a photo folder that is a whole drive, `E:\`, which
+would hold it; a folder given to one command with `mh --photos`) sends its files to
+`/quarantine`: they are then *copied* to `C:`, the space comes back on `E:` and `C:` fills up by
+as much. Before asking, `clean` says so in one line:
 
 ```text
 ⚠️ 32 files (14.0 GB) will be copied from E: to the quarantine on C: (40.2 GB free there).
@@ -46,10 +54,12 @@ With `mh`, the quarantine is on `C:` (in `$HOME`). Photos on `D:` or `E:` are th
 
 When they would not fit, keeping 1 GB free on that drive, `clean` stops before moving anything
 and says how much is missing. Free some space (`purge` erases the files of earlier cleans), or
-give the quarantine a folder on the photos' drive: `-v "E:\media-hygiene\quarantine:/quarantine"`
-(once the earlier cleans are purged: `undo` looks for their files in the quarantine mounted now).
-The line needs Docker Desktop, which tells the drive of each folder; elsewhere (Linux, a Docker
-volume) nothing is said.
+give that drive its own quarantine. The line needs Docker Desktop, which tells the drive of each
+folder; elsewhere (Linux, a Docker volume) nothing is said.
+
+Keep a drive plugged in until its files are checked: `undo` and `purge <run>` refuse a run
+whose files are in the quarantine of a drive not mounted now, and name the drive to plug in;
+`purge` alone erases the other runs and says which ones it kept.
 
 ## Run the clean
 

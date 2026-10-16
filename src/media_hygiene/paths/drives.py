@@ -48,8 +48,8 @@ class QuarantineRoute:
     """Which quarantine receives a file set aside, and on which drive it lies.
 
     `default` (`/quarantine`) receives every file whose drive has no quarantine of
-    its own in `by_drive` (empty until a quarantine per drive is mounted): callers ask
-    this route rather than the mount point.
+    its own in `by_drive` (`/quarantine/e` for `E:`, `paths/quarantines.py`): callers
+    ask this route rather than the mount point.
     """
 
     drives: Drives

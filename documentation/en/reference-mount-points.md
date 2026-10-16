@@ -13,6 +13,7 @@ Each place in the container has one role.
 | `/config` | `config.toml` only, created and commented on first run; `places` saves your places in it. | optional; **required** by `places` | [Cleaning, 7](clean/07-configuration-file.md) |
 | `/journal` | One JSONL journal per clean, sort or album. | **required** by `clean`, `sort`, `album`, `undo`, `history` | [Cleaning, 8](clean/08-clean.md) |
 | `/quarantine` | Unreadable files, orphan sidecars, near duplicates, burst shots set aside and copies of other file types moved by `clean`. | to handle them | [Cleaning, 8](clean/08-clean.md) |
+| `/quarantine/<drive>` | The quarantine of one drive (`E:\media-hygiene\quarantine` on `/quarantine/e`): the files of that drive set aside stay on it; `/quarantine` receives those of the other drives. `mh` mounts one for each photo drive other than `C:`. | optional, recommended for photos outside `C:` | [Cleaning, 8](clean/08-clean.md#photos-on-another-drive-than-the-quarantine) |
 
 ## Good to know
 
@@ -24,4 +25,8 @@ Each place in the container has one role.
   administrator, and the tool cannot write there
   ([troubleshooting](reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
 - **`/config` holds `config.toml` only**: nothing else is ever written there.
+- **Only the quarantine goes per drive**: config, journal, reports and cache stay single (one
+  index finds duplicates across drives; one journal records where each file went, so `undo`
+  follows it). Keep a drive's quarantine mounted until its runs are purged or undone: otherwise
+  `undo` and `purge <run>` refuse, naming the drive to plug in, and `purge` keeps those runs.
 - **Hardened runs**: the image also works with `--read-only --tmpfs /tmp`.

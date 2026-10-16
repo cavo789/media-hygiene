@@ -3,7 +3,8 @@ r"""The `mh` launcher: a shell function holding the mounts of one run, written o
 `docker run … launcher > mh.ps1` writes a PowerShell (or bash) function `mh` that runs
 the image with the folders of that run: the photo folders read-only (`:ro`) unless the
 command changes them, the tool folders always, a default folder of the user's home for
-each tool folder the run lacked, and the port of the review pages for the commands
+each tool folder the run lacked, a quarantine on each photo drive (0183,
+`launcher_drives.py`), and the port of the review pages for the commands
 that serve one. `mh audit`, `mh clean`, `mh review` then replace the long commands.
 """
 
@@ -22,6 +23,7 @@ from media_hygiene.paths.docker_run import (
 )
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
 from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_host import host_commands
@@ -61,7 +63,7 @@ class LauncherCommands:
 
 
 @dataclass(frozen=True, slots=True)
-class LauncherScript:
+class LauncherScript:  # pylint: disable=too-many-instance-attributes
     """Everything the script holds, rendered by the template of its shell."""
 
     shell: Shell
@@ -71,6 +73,7 @@ class LauncherScript:
     environment: tuple[str, ...]
     commands: LauncherCommands
     data_dir: Path  # where `--photos` folders are mounted (`/data`)
+    drives: tuple[Volume, ...] = ()  # `/quarantine/e`: each drive's own (0183)
 
     @property
     def folders(self) -> str:
@@ -133,6 +136,7 @@ def render_script(script: LauncherScript) -> str:
     Returns:
         The text of `mh.ps1` or `mh.sh`.
     """
+    script = with_drive_quarantines(script)
     environment_ = translated_environment(_TEMPLATE_PACKAGE, escaped=())
     template = environment_.get_template(_TEMPLATES[script.shell])
     text = template.render(

@@ -1,4 +1,8 @@
-"""Before `clean` asks: the copies to another drive, refused when they don't fit."""
+"""Before `clean` asks: the copies to another drive, refused when they don't fit.
+
+Said only for a drive without a quarantine of its own (`/quarantine/<x>`, 0183): with
+one, its files stay on it.
+"""
 
 from __future__ import annotations
 
@@ -98,15 +102,17 @@ def _refusal(room: Room) -> str:
 
 
 def _tip(room: Room) -> str:
-    """How to make room: free the drive, or put the quarantine on the photos' drive.
+    """How to make room: free the drive, or give the photos' drive its own quarantine.
 
     Args:
         room: What a quarantine receives from other drives.
 
     Returns:
-        The tip.
+        The tip: `mh` mounts one for each drive of its photo folders (0183).
     """
+    source = room.cross.sources[0]
     return _(
         "Free space on {drive} ('purge' erases the files of earlier cleans), or "
-        "mount a quarantine folder of {source} on /quarantine."
-    ).format(drive=room.cross.drive, source=room.cross.sources[0])
+        "give {source} its own quarantine: 'mh folders add' with a folder of "
+        '{source}, or -v "{source}\\media-hygiene\\quarantine:/quarantine/{letter}".'
+    ).format(drive=room.cross.drive, source=source, letter=source[0].lower())

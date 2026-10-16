@@ -2039,11 +2039,14 @@ msgstr "Images par seconde"
 #, python-brace-format
 msgid ""
 "Free space on {drive} ('purge' erases the files of earlier cleans), or "
-"mount a quarantine folder of {source} on /quarantine."
+"give {source} its own quarantine: 'mh folders add' with a folder of "
+"{source}, or -v \"{source}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
 msgstr ""
-"Libérez de la place sur {drive} ('purge' efface les fichiers des nettoyages "
-"précédents), ou montez sur /quarantine un dossier de quarantaine de "
-"{source}."
+"Libérez de la place sur {drive} ('purge' efface les fichiers des "
+"nettoyages précédents), ou donnez à {source} sa propre quarantaine : 'mh "
+"folders add' avec un dossier de {source}, ou -v \"{source}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
 
 msgid ""
 "Free the space at once: delete the exact copies for good, after a byte "
@@ -2367,6 +2370,14 @@ msgstr "Gardées"
 
 msgid "Kept in"
 msgstr "Conservées dans"
+
+#, python-brace-format
+msgid ""
+"Kept, their drive's quarantine not mounted: {runs}. Plug the drive in, "
+"then purge them."
+msgstr ""
+"Gardées, la quarantaine de leur disque n'étant pas montée : {runs}. "
+"Branchez le disque, puis purgez-les."
 
 msgid "Kept: the highest resolution."
 msgstr "Gardée : la plus haute résolution."
@@ -3468,6 +3479,16 @@ msgid ""
 msgstr ""
 "Merci de le signaler sur {url}, avec la version ({version}), la commande "
 "tapée ({typed}) et ce message. -e {variable}=1 montre les détails."
+
+#, python-brace-format
+msgid ""
+"Plug {drive} in and keep one of its photo folders in mh ('mh folders "
+"add'), or mount its quarantine yourself: -v \"{drive}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
+msgstr ""
+"Branchez {drive} et gardez un de ses dossiers de photos dans mh ('mh "
+"folders add'), ou montez vous-même sa quarantaine : -v \"{drive}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
 
 #, python-brace-format
 msgid ""
@@ -4737,6 +4758,22 @@ msgstr[0] ""
 msgstr[1] ""
 "L'exécution {run_id} a mis {count} fichiers dans /quarantine, qui n'est "
 "pas monté : rien n'a été modifié."
+
+#, python-brace-format
+msgid ""
+"The run {run_id} set {count} file aside in the quarantine of {drive}, "
+"which is not mounted (/quarantine/{letter}): nothing was changed."
+msgid_plural ""
+"The run {run_id} set {count} files aside in the quarantine of {drive}, "
+"which is not mounted (/quarantine/{letter}): nothing was changed."
+msgstr[0] ""
+"L'exécution {run_id} a mis {count} fichier de côté dans la quarantaine de"
+" {drive}, qui n'est pas montée (/quarantine/{letter}) : rien n'a été "
+"modifié."
+msgstr[1] ""
+"L'exécution {run_id} a mis {count} fichiers de côté dans la quarantaine "
+"de {drive}, qui n'est pas montée (/quarantine/{letter}) : rien n'a été "
+"modifié."
 
 #, python-brace-format
 msgid ""

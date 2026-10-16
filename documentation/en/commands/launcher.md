@@ -30,7 +30,7 @@ mh audit
 |---|---|
 | Your photos | 🔒 Never changed: it only prints a script. |
 | Needs | Your folders, one `--photos` each. |
-| Recommended | `--quarantine` on the photos' disk, if it is not `C:`. |
+| Good to know | Each photo drive gets its own quarantine: what `clean` sets aside stays on its drive. |
 | Writes | Nothing itself: you redirect what it prints to a file. |
 | Undo | Delete the file. |
 
@@ -43,7 +43,6 @@ mkdir -Force "$HOME\media-hygiene"
 docker run --rm cavo789/media-hygiene launcher `
   --photos "C:\Photos" `
   --photos "D:\Old disk" `
-  --quarantine "D:\quarantine" `
   > "$HOME\media-hygiene\mh.ps1"
 . "$HOME\media-hygiene\mh.ps1"
 mh audit
@@ -68,6 +67,12 @@ mh audit
   `quarantine` folders of `$HOME\media-hygiene`, created when missing; the folder of
   `--quarantine`, or a tool folder you mounted yourself with `-v` when running `launcher`, is
   kept instead.
+- **One quarantine per photo drive**: for each drive of your photo folders other than the
+  quarantine's (`C:`), `X:\media-hygiene\quarantine` mounted on `/quarantine/x` and created
+  when missing. `clean` sets each file aside on its own drive: cleaning `E:` never fills `C:`
+  ([cleaning, step 8](../clean/08-clean.md#photos-on-another-drive-than-the-quarantine)). A
+  photo folder that is a whole drive (`E:\`) would hold that folder: its drive keeps the
+  quarantine of `C:`. `mh folders add` with a folder of a new drive adds its quarantine too.
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
   `places`, `search` and `people`, and **your browser opens on that page** as soon as it
   answers: no address to copy. Ctrl+C in the window still stops it.
@@ -99,7 +104,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh open` | Opens `index.html`, the list of every report, in your browser (the newest at its top). No report yet: it says to run `mh audit` first. |
 | `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window on the `mh` menu, which stays open. Run again, it rewrites both. |
 | `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the `mh` menu opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
-| `mh folders` | Lists your photo folders and the quarantine, each *found* or *not found* (a disk not plugged in). `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
+| `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in). `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key

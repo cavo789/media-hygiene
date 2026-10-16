@@ -141,6 +141,21 @@ def test_short_of_room_refuses_and_says_what_is_missing(
         assert "1 file (3.0 GB) would be copied there from E:, 2.0 GB free" in message
         assert "2.0 GB missing (1.0 GB stay free)" in message
         assert "'purge'" in (refused.value.tip or "")
+        tip = " ".join((refused.value.tip or "").split())
+        assert "E:\\media-hygiene\\quarantine:/quarantine/e" in tip
+
+
+def test_a_drive_with_its_own_quarantine_says_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """E:'s quarantine mounted on /quarantine/e (0183): its files stay on E:."""
+    free(monkeypatch, 0)
+    runtime = runtime_on(tmp_path, ON_TWO_DRIVES)
+    own = runtime.locations.quarantine_dir / "e"
+    sources = (*runtime.mounts.host_sources, (own, "E:\\media-hygiene\\quarantine"))
+    runtime = replace(runtime, mounts=MountTable(frozenset({own}), sources))
+    data = runtime.locations.data_dir
+    assert "will be copied" not in said(runtime, CleanPlan((copies(f"{data}/e"),), ()))
 
 
 def test_delete_counts_only_what_still_moves(

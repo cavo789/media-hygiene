@@ -19,6 +19,7 @@ from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries
+from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.status_parts import (
     QuarantineState,
     ReviewState,
@@ -127,7 +128,7 @@ def read_status(runtime: Runtime) -> Status:
             for run in runs
             if _undoable(run) and can_undo(locations.journal_dir, run.run_id)
         ),
-        quarantine=quarantine_state(locations.quarantine_dir)
+        quarantine=quarantine_state(mounted_quarantines(runtime).folders)
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),
         review=review_state(locations.reports_dir) if reports else ReviewState(),

@@ -27,6 +27,7 @@ from media_hygiene.classify.workbook.edits import resolve
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.quarantine_space import quarantine_route
 from media_hygiene.services.sort_guards import check_companions, check_destinations
 from media_hygiene.services.sort_models import Prepared, SortResult
 from media_hygiene.services.sort_report import (
@@ -153,6 +154,7 @@ class SortService:
                 self._progress,
                 Phase.SORT,
                 workers=self._runtime.settings.clean.workers,
+                route=quarantine_route(self._runtime),
             )
             executor = SortExecutor(SortContext(changes, plan.plan_id, stop), tally)
             moves = executor.run(plan)

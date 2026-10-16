@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import BrokenReason
 from media_hygiene.paths.drives import Drives, QuarantineRoute
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -63,10 +64,12 @@ def quarantine_route(runtime: Runtime) -> QuarantineRoute:
         runtime: Settings, mount points and output.
 
     Returns:
-        The route of this run.
+        The route of this run: a drive's own quarantine (`/quarantine/<x>`) when
+        mounted, else `/quarantine`.
     """
     drives = Drives(runtime.mounts.host_sources)
-    return QuarantineRoute(drives, runtime.locations.quarantine_dir)
+    quarantines = mounted_quarantines(runtime)
+    return QuarantineRoute(drives, quarantines.default, quarantines.by_drive)
 
 
 def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:

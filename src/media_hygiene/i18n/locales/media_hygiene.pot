@@ -1650,7 +1650,9 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Free space on {drive} ('purge' erases the files of earlier cleans), or "
-"mount a quarantine folder of {source} on /quarantine."
+"give {source} its own quarantine: 'mh folders add' with a folder of "
+"{source}, or -v \"{source}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
 msgstr ""
 
 msgid ""
@@ -1920,6 +1922,12 @@ msgid "Kept"
 msgstr ""
 
 msgid "Kept in"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Kept, their drive's quarantine not mounted: {runs}. Plug the drive in, "
+"then purge them."
 msgstr ""
 
 msgid "Kept: the highest resolution."
@@ -2857,6 +2865,13 @@ msgstr ""
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
 "typed ({typed}) and this message. -e {variable}=1 shows the details."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Plug {drive} in and keep one of its photo folders in mh ('mh folders "
+"add'), or mount its quarantine yourself: -v \"{drive}\\media-"
+"hygiene\\quarantine:/quarantine/{letter}\"."
 msgstr ""
 
 #, python-brace-format
@@ -3918,6 +3933,16 @@ msgid ""
 msgid_plural ""
 "The run {run_id} moved {count} files to /quarantine, which is not "
 "mounted: nothing was changed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"The run {run_id} set {count} file aside in the quarantine of {drive}, "
+"which is not mounted (/quarantine/{letter}): nothing was changed."
+msgid_plural ""
+"The run {run_id} set {count} files aside in the quarantine of {drive}, "
+"which is not mounted (/quarantine/{letter}): nothing was changed."
 msgstr[0] ""
 msgstr[1] ""
 

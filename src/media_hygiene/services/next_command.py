@@ -25,6 +25,7 @@ from media_hygiene.paths.docker_run import (
 )
 from media_hygiene.paths.host_folders import bind_source
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -101,6 +102,7 @@ def next_command(runtime: Runtime, verb: NextVerb) -> NextCommand:
     added = tuple(kind for kind in verb.needs if tools.get(kind) is None)
     for kind in added:
         tools[kind] = shell.home_folder(kind.value)
+    drives = mounted_quarantines(runtime).drive_folders  # `/quarantine/e` (0183)
     volumes = (
         *data,
         *(
@@ -108,6 +110,7 @@ def next_command(runtime: Runtime, verb: NextVerb) -> NextCommand:
             for kind, host in tools.items()
             if host is not None
         ),
+        *(Volume(host, at) for at in drives if (host := _host_of(runtime, at))),
     )
     port = () if verb.port is None else (f"-p 127.0.0.1:{verb.port}:{verb.port}",)
     run = DockerRun(volumes, (*environment(), *port), verb.arguments)

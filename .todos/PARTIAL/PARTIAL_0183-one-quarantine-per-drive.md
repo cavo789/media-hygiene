@@ -48,3 +48,42 @@ one-letter drive folders (a run id never is one letter: to check).
 ## Gain (estimated)
 
 Space used on `C:` by a clean of `E:`: the size of the files set aside → 0.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `paths/quarantines.py` (`Quarantines`): the per-drive quarantines are the mounts
+  `/quarantine/<one lowercase letter>`; `QuarantineRoute.by_drive` is filled from them
+  (`services/quarantine_space.py`), `CleanContext.route` + `run_folder()` send each file of
+  `clean` (and sort's junk) to `<its drive's quarantine>/<run>/…`, else `/quarantine/<run>`.
+  The journal records that path; `undo` follows it (unchanged).
+- Readers read every quarantine: `actions/purge.py` (`runs_in`, `run_folders`), `status`
+  (hence the menu's `Slot.PURGE` and the age hint), `purge` (a run on two drives erased on
+  both), the clean confirmation line (every quarantine named). History reads journals only;
+  the decisions archive does not read the quarantine: nothing to change there.
+- `services/quarantines.py`: `undo` and `purge <run>` refuse a run whose `done` quarantine
+  moves point into `/quarantine/<x>` not mounted now, naming the drive; `purge` alone keeps
+  such runs and names them (cache-invalidation-reviewer finding). The one-letter folder Docker
+  leaves in `/quarantine` is never a run (run ids start with 8 digits; `purge e` refused).
+- Persistence: a per-drive quarantine is only ever a mount, hence persistent; `/quarantine`
+  stays required by `clean` as before. Writability and the "tool folder inside photos" check
+  cover the per-drive ones.
+- Launcher (`services/launcher_drives.py`): one `-v "X:\media-hygiene\quarantine:/quarantine/x"`
+  per photo drive other than the quarantine's own (`C:` by default; WSL `/mnt/x/…` too), created
+  by `mh` before each run, listed by `mh folders`; none for a drive whose photo folder holds it
+  (`E:\`). `mh folders add` rewrites `mh`, so a new drive gets its own. The `docker run` printed
+  after a command (without `mh`) carries the per-drive mounts of the run.
+- 0182's line now appears only for a drive without its own quarantine; its refusal tip points
+  to `/quarantine/<x>`.
+- Tests: `tests/integration/test_quarantine_drives.py`, `tests/unit/test_quarantine_drives.py`,
+  `tests/unit/test_clean_space.py`. Docs EN/FR (mount points, clean step 8, launcher,
+  troubleshooting), CLAUDE.md, French catalog. `tests/measure/mh-measure.ps1` step 13.
+
+### Not done
+- The measurement on Windows: time to set aside 1 GB from `E:` to `C:` against `E:` to `E:`
+  (two mounts: a copy either way), and the docs sentence about speed that depends on it.
+  **Reason:** needs the maintainer's Windows + Docker Desktop and a second drive:
+  `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:`
+  (13a/13b against 13c/13e; 13d must refuse naming the drive).
+- A USB drive that comes back under another letter: the journal says `/quarantine/e/…`, the
+  refusal asks for `E:`. Same limit as every path in the journal; not handled.

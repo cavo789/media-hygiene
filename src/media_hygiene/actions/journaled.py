@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalWriter
     from media_hygiene.actions.kinds import ActionKind
     from media_hygiene.actions.outcome import Tally
+    from media_hygiene.paths.drives import QuarantineRoute
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.progress import ProgressSink
@@ -39,12 +40,14 @@ NO_ORIGIN: Final = Origin()
 
 
 @dataclass(frozen=True, slots=True)
-class CleanContext:
+class CleanContext:  # pylint: disable=too-many-instance-attributes
     """Where and how a run acts, and which command it is (`clean` by default).
 
     `delete_copies` (`clean --delete`) deletes exact copies for good; by default they
     are moved to the quarantine like everything else `clean` sets aside. `workers`
-    (`[clean] workers`) is how many files `clean` handles at once.
+    (`[clean] workers`) is how many files `clean` handles at once. `route` sends a
+    file to the quarantine of its drive (`/quarantine/e/<run>`); without it, or for
+    a drive without one, it goes to `quarantine_run_dir` (`/quarantine/<run>`).
     """
 
     journal: JournalWriter
@@ -54,6 +57,20 @@ class CleanContext:
     phase: Phase = Phase.CLEAN
     delete_copies: bool = False
     workers: int = WORKERS
+    route: QuarantineRoute | None = None
+
+    def run_folder(self, path: Path) -> Path:
+        """The folder of this run in the quarantine receiving a file.
+
+        Args:
+            path: The file set aside.
+
+        Returns:
+            `<its drive's quarantine>/<run>`, else `quarantine_run_dir`.
+        """
+        if self.route is None:
+            return self.quarantine_run_dir
+        return self.route.receiving(path) / self.quarantine_run_dir.name
 
 
 class JournaledChanges:
@@ -137,7 +154,7 @@ class JournaledChanges:
             origin: The file kept instead, and the SHA-256 when already known.
         """
         path = file.path
-        target = self._context.quarantine_run_dir / self._context.mapper.relative(path)
+        target = self._context.run_folder(path) / self._context.mapper.relative(path)
         keeper = origin.keeper
         entry = self.entry(file, action).model_copy(
             update={

@@ -37,9 +37,17 @@ mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 
 ### Photos sur un autre disque que la quarantaine
 
-Avec `mh`, la quarantaine est sur `C:` (dans `$HOME`). Les photos de `D:` ou `E:` mises de côté
-sont alors *copiées* sur `C:` : la place revient sur `E:`, et `C:` se remplit d'autant. Avant de
-demander, `clean` le dit en une ligne :
+Avec `mh`, chaque disque de photos a sa propre quarantaine : `E:\media-hygiene\quarantine` pour
+les photos de `E:` (montée sur `/quarantine/e`), `$HOME\media-hygiene\quarantine` pour celles de
+`C:`. Un fichier mis de côté reste sur son disque : nettoyer `E:` ne remplit jamais `C:`. `mh`
+crée ces dossiers avant chaque lancement, et `mh folders add` avec un dossier d'un nouveau disque
+donne aussi à ce disque sa propre quarantaine. Avec la commande complète, ajoutez un `-v` par
+disque : `-v "E:\media-hygiene\quarantine:/quarantine/e"`.
+
+Un disque sans quarantaine à lui (un dossier de photos qui est un disque entier, `E:\`, qui la
+contiendrait ; un dossier donné à une seule commande avec `mh --photos`) envoie ses fichiers dans
+`/quarantine` : ils sont alors *copiés* sur `C:`, la place revient sur `E:` et `C:` se remplit
+d'autant. Avant de demander, `clean` le dit en une ligne :
 
 ```text
 ⚠️ 32 fichiers (14,0 Go) seront copiés de E: vers la quarantaine sur C: (40,2 Go libres là-bas).
@@ -47,10 +55,14 @@ demander, `clean` le dit en une ligne :
 
 S'ils ne tiennent pas, en gardant 1 Go libre sur ce disque, `clean` s'arrête avant de déplacer quoi
 que ce soit et dit combien il manque. Libérez de la place (`purge` efface les fichiers des
-nettoyages précédents), ou donnez à la quarantaine un dossier du disque des photos :
-`-v "E:\media-hygiene\quarantine:/quarantine"` (une fois les nettoyages précédents purgés :
-`undo` cherche leurs fichiers dans la quarantaine montée à ce moment-là). La ligne demande Docker Desktop, qui indique le
-disque de chaque dossier ; ailleurs (Linux, un volume Docker), rien n'est dit.
+nettoyages précédents), ou donnez à ce disque sa propre quarantaine. La ligne demande Docker
+Desktop, qui indique le disque de chaque dossier ; ailleurs (Linux, un volume Docker), rien n'est
+dit.
+
+Gardez un disque branché jusqu'à ce que ses fichiers soient vérifiés : `undo` et
+`purge <exécution>` refusent une exécution dont les fichiers sont dans la quarantaine d'un disque
+qui n'est pas monté, et nomment le disque à brancher ; `purge` seul efface les autres exécutions
+et dit lesquelles il a gardées.
 
 ## Lancer le nettoyage
 

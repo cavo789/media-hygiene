@@ -9,6 +9,7 @@ from media_hygiene.cli.clean_space import check_quarantine_room
 from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from media_hygiene.plan.models import CleanPlan
@@ -160,7 +161,8 @@ def _safe_line(runtime: Runtime, plan: CleanPlan) -> str:
     Returns:
         The line; the byte comparison is named for exact copies only.
     """
-    quarantine = runtime.mapper.to_host(runtime.locations.quarantine_dir)
+    folders = mounted_quarantines(runtime).folders  # each drive's own too (0183)
+    quarantine = ", ".join(runtime.mapper.to_host(folder) for folder in folders)
     if plan.removable_count:
         line = _(
             "🛟 Nothing will be erased: each copy is first compared byte for byte "
