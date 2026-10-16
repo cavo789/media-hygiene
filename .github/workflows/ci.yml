@@ -94,6 +94,10 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: End-to-end tests (real docker run)
+        # A folder of the runner's own disk: Docker bind-mounts it, which the
+        # devcontainer's volume cannot offer (0189: launcher --photos, mh folders add).
+        env:
+          MEDIA_HYGIENE_E2E_HOST_DIR: ${{ runner.temp }}
         run: uv run pytest -m e2e
 
   # One native build per platform, in parallel with the end-to-end tests: arm64 on an ARM
