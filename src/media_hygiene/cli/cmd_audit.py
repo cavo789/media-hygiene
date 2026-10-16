@@ -159,7 +159,7 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
     elif findings.similar.bursts:
         suggest(
             runtime,
-            _("sort the burst series with the keyboard, with 'media-hygiene review'."),
+            _("sort the burst series with the keyboard, in 'review'."),
             NextVerb(carried(runtime, "review", ctx), port=PAGE_PORT),
         )
 

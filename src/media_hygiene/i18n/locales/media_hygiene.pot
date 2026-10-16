@@ -5456,7 +5456,7 @@ msgstr ""
 msgid "something of that name is already there"
 msgstr ""
 
-msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
+msgid "sort the burst series with the keyboard, in 'review'."
 msgstr ""
 
 msgid "sort/quick-guide/"

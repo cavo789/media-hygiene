@@ -6520,8 +6520,8 @@ msgstr "petit"
 msgid "something of that name is already there"
 msgstr "quelque chose porte déjà ce nom à cet endroit"
 
-msgid "sort the burst series with the keyboard, with 'media-hygiene review'."
-msgstr "triez les rafales au clavier, avec 'media-hygiene review'."
+msgid "sort the burst series with the keyboard, in 'review'."
+msgstr "triez les rafales au clavier, dans 'review'."
 
 msgid "sort/quick-guide/"
 msgstr "fr/sort/quick-guide/"
