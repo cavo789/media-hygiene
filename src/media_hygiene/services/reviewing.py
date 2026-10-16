@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import os
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
@@ -19,7 +20,7 @@ from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.missing_mount import missing_mount, typed_again
-from media_hygiene.services.next_command import NextVerb
+from media_hygiene.services.next_command import LAUNCHER_VARIABLE, NextVerb
 from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.review_file import (
@@ -164,10 +165,20 @@ def page_url(port: int) -> str:
 def address_tip(output: Output, port: int) -> None:
     """Say what to check when the page does not open: the port published as is.
 
+    Under the launcher, which publishes the port and opens the browser itself (0178),
+    say that instead.
+
     Args:
         output: Where to tell it.
         port: The port listened on, inside the container.
     """
+    if os.environ.get(LAUNCHER_VARIABLE):
+        output.info(
+            _("Your browser opens on {url}; if not, open that address.").format(
+                url=page_url(port)
+            )
+        )
+        return
     output.tip(
         _(
             "The page does not open? docker run must publish the same port on both "

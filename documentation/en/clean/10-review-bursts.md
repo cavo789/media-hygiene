@@ -61,8 +61,9 @@ Leave this window open: the review runs as long as it stays open.
 
 ## Step 2: open the page
 
-Ctrl+click the address the review printed, `http://127.0.0.1:8088/`, or type it in your
-browser.
+With `mh review`, your browser opens on the page by itself, as soon as the review is ready.
+With the full command, Ctrl+click the address the review printed, `http://127.0.0.1:8088/`, or
+type it in your browser.
 
 Docker refuses to start with *port is already allocated*? Another program uses 8088: choose
 another number, the same three times, e.g. `-p 127.0.0.1:9000:9000` and `review --port 9000`.

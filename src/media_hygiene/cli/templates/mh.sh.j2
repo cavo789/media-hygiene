@@ -7,8 +7,8 @@
         _{{ function }}_menu
         return
     fi
-    local command="" mode=":ro" arg folder zone="${TZ:-}"
-    local tty=(-i) page=() given=() rest=() photos=() zoned=()
+    local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
+    local tty=(-i) page=() given=() rest=() photos=() zoned=() awake=()
     # --photos /mnt/e/Folder: one more photo folder, for this command only.
     while [[ $# -gt 0 ]]; do
         if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
@@ -43,6 +43,9 @@
         *" $command "*) tty=() ;;
         *) if [[ -t 0 && -t 1 ]]; then tty=(-it); fi ;;
     esac
+    case " {{ script.commands.long | join(" ") }} " in
+        *" $command "*) long=1 ;;
+    esac
     for folder in "${given[@]}"; do photos+=(-v "$folder$mode"); done
     # The host's own zone, unless TZ says one: /etc/localtime links to it.
     if [[ -z "$zone" && -L /etc/localtime ]]; then
@@ -53,7 +56,17 @@
 {% if script.folders %}
     mkdir -p {{ script.folders }}
 {% endif %}
-    docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
+    if [[ -n "$long" ]]; then
+        read -r -a awake <<< "$(_{{ function }}_awake "$command")"
+        _{{ function }}_title "{{ function }} $command..."
+    fi
+    if [[ -n "${page[*]}" ]]; then
+        # The browser opens on the page as soon as it answers (0178).
+        { _{{ function }}_browse {{ script.commands.port }} {{ script.commands.browse_wait }} & } 2>/dev/null
+        browser=$!
+        disown "$browser" 2>/dev/null
+    fi
+    "${awake[@]}" docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
         -e "{{ variable }}=1" \
         "${zoned[@]}" \
 {% for option in script.environment %}
@@ -67,7 +80,56 @@
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
         "${page[@]}" \
-        {{ image }} "$@"
+        {{ image }} "$@" || status=$?
+    if [[ -n "$browser" ]]; then kill "$browser" 2>/dev/null; fi
+    if [[ -n "$long" ]]; then
+        if [[ "$status" -eq 0 ]]; then
+            _{{ function }}_title "{{ texts.done }}" $'\a'
+        else
+            _{{ function }}_title "{{ texts.failed }}" $'\a'
+        fi
+    fi
+    return "$status"
+}
+
+# A long run keeps the computer awake (0179): systemd-inhibit on Linux, caffeinate on
+# macOS; nothing on WSL, where Windows decides. Prints the words to put before docker.
+_{{ function }}_awake() {
+    if [[ -z "${WSL_DISTRO_NAME:-}" ]] && command -v systemd-inhibit >/dev/null 2>&1 &&
+        systemd-inhibit --list >/dev/null 2>&1; then
+        printf '%s ' systemd-inhibit --what=sleep --who=media-hygiene "--why=$1" --
+    elif command -v caffeinate >/dev/null 2>&1; then
+        printf '%s ' caffeinate -i
+    fi
+}
+
+# The window title says what runs, then how it ended, with a bell (0185).
+_{{ function }}_title() {
+    if [[ -t 2 ]]; then printf '\e]0;%s\a%s' "$1" "${2:-}" >&2; fi
+}
+
+# Wait until the page answers on the port, then open the browser on it (0178).
+_{{ function }}_browse() {
+    local port="$1" tries="$2" opener="" line
+    for opener in wslview explorer.exe xdg-open; do
+        if command -v "$opener" >/dev/null 2>&1; then break; fi
+        opener=""
+    done
+    if [[ -z "$opener" && "$OSTYPE" == darwin* ]]; then opener=open; fi
+    if [[ -z "$opener" ]]; then return 0; fi
+    while [[ "$tries" -gt 0 ]]; do
+        tries=$((tries - 1))
+        line=""
+        {
+            printf 'GET / HTTP/1.1\r\nHost: 127.0.0.1:%s\r\nConnection: close\r\n\r\n' "$port" >&3
+            IFS= read -r -t 2 line <&3
+        } 2>/dev/null 3<>"/dev/tcp/127.0.0.1/$port"
+        if [[ "$line" == HTTP/* ]]; then
+            "$opener" "http://127.0.0.1:$port/" >/dev/null 2>&1
+            return 0
+        fi
+        sleep 1
+    done
 }
 
 # `{{ function }}` alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.

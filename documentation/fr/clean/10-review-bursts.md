@@ -63,8 +63,9 @@ Laissez cette fenêtre ouverte : le tri tourne tant qu'elle reste ouverte.
 
 ## Étape 2 : ouvrir la page
 
-Ctrl+clic sur l'adresse affichée par le tri, `http://127.0.0.1:8088/`, ou tapez-la dans votre
-navigateur.
+Avec `mh review`, votre navigateur s'ouvre tout seul sur la page, dès que le tri est prêt. Avec
+la commande complète, Ctrl+clic sur l'adresse affichée par le tri, `http://127.0.0.1:8088/`, ou
+tapez-la dans votre navigateur.
 
 Docker refuse de démarrer avec *port is already allocated* ? Un autre programme utilise 8088 :
 choisissez un autre numéro, le même trois fois, par exemple `-p 127.0.0.1:9000:9000` et

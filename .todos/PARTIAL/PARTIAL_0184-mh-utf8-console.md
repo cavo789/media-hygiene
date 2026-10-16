@@ -30,3 +30,18 @@ default.
 ## Gain (estimated)
 
 French menu in the old console: unreadable accents (if confirmed) → readable.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh.ps1` saves `[Console]::OutputEncoding`, sets UTF-8 (no BOM) and `$OutputEncoding` before
+  `docker run` (the menu's capture runs through the same call), restores it in a `finally`
+  (Ctrl+C included); the setter is guarded (`try`) for hosts without a console (ISE). ASCII kept.
+- Unit: `tests/unit/test_launcher_comfort.py` (set before `docker run`, restored in `finally`, ASCII).
+- Docs EN/FR: one bullet on `commands/launcher.md`.
+- `tests/measure/mh-measure.ps1` step 9a: `mh menu` in French captured in conhost; logs the
+  code page before/after and whether accents (or `├®`) show.
+
+### Not done
+- The check in the old console (conhost) under Windows PowerShell 5.1.
+  **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.

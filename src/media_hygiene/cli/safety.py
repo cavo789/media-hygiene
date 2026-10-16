@@ -37,6 +37,11 @@ PAGE_COMMANDS: Final = frozenset(
 # message goes to stderr, and the launcher runs them without a terminal (`-t`) and
 # without the keyboard (`-i`), which stays for the `mh` that reads their output.
 DATA_COMMANDS: Final = frozenset({"launcher", "menu"})
+# The commands that may run for hours: the launcher keeps the computer awake during
+# them, and says in the window title, with a sound, when they end (0179, 0185).
+LONG_COMMANDS: Final = frozenset(
+    {"audit", "clean", "inventory", "classify", "sort", "tags", "people", "undo"}
+)
 
 
 def read_only_marker() -> str:

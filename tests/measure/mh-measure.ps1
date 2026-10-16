@@ -19,6 +19,9 @@
 #   7. classify, sort (NTFS file ids before/after), undo of the test folder  (0138: moves on NTFS)
 #      sort, then undo, one file at a time ([clean] workers = 1)       (0163: 4 at once against 7b)
 #   8. each file operation of a sort by link and its undo, alone           (0138: what is refused)
+#   9. the mh launcher around docker run, in the old console (conhost)    (0184 accents, 0179 awake,
+#      0185 title and sound, 0178 browser): asks what you heard and saw; the awake check
+#      (powercfg /requests) needs an administrator PowerShell
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -28,6 +31,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Count 3000 -Image media-hygiene
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 8 -Count 10   (step 8 only)
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -282,6 +286,65 @@ scenario('linked-rmdir-wait', linked=True, remove_folder=True, pause=5)
     $probeRun = @("-v", "${data}:/data/c/measure", "-v", "${probeDir}:/probe:ro")
     $lines = & docker run --rm @probeRun --entrypoint python $Image /probe/probe.py 2>&1
     foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+}
+
+# --- 9: the mh launcher around docker run (0184, 0179, 0185, 0178) ---------------------------
+# mh is written by the image under test, French, with the tool folders of the test folder.
+if (Wanted 9) {
+    $mhDir = Join-Path $tool "mh"
+    New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image --locale fr launcher --photos $data > $mhFile
+    $result = Join-Path $mhDir "probe.txt"
+    $probe = Join-Path $mhDir "probe.ps1"
+    Set-Content -Path $probe -Encoding Ascii -Value @'
+param([string]$mh, [string]$result)
+function Note([string]$text) { Add-Content -Path $result -Value $text -Encoding UTF8 }
+Note ("   9a. console code page before mh: " + [Console]::OutputEncoding.CodePage)
+. $mh
+$menu = @(mh menu 2>&1 | ForEach-Object { "$_" })
+$text = $menu -join "`n"
+Note ("   9a. French menu holds accented letters: " + ($text -match '[\u00E0-\u00FC]') + "; an e-acute garbled as in code page 850: " + ($text -match '\u251C\u00AE'))
+Note ("   9a. its first line: " + ($menu | Where-Object { "$_".Trim() } | Select-Object -First 1))
+Note ("   9a. console code page after mh: " + [Console]::OutputEncoding.CodePage)
+$Host.UI.RawUI.WindowTitle = "mh-measure"
+mh audit
+Note ("   9c. exit code " + $LASTEXITCODE + ", window title after mh audit: " + $Host.UI.RawUI.WindowTitle)
+mh history | Out-Null
+Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
+'@
+    Log ""
+    Log "== 9. the mh launcher in the old console (0184, 0179, 0185, 0178)"
+    Remove-Item -Force -ErrorAction SilentlyContinue $result
+    $arguments = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$probe`" -mh `"$mhFile`" -result `"$result`""
+    $child = Start-Process -FilePath conhost.exe -ArgumentList $arguments -PassThru
+    $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    $awake = $false
+    while (-not $child.HasExited) {
+        if ($admin -and ((powercfg /requests) -join " ") -match 'powershell') { $awake = $true }
+        Start-Sleep -Seconds 1
+    }
+    if (Test-Path $result) { Get-Content -Path $result -Encoding UTF8 | ForEach-Object { Log $_ } }
+    if ($admin) {
+        $after = ((powercfg /requests) -join " ") -match 'powershell'
+        Log ("   9b. awake request of powershell.exe during mh audit: {0}; still there after: {1}" -f $awake, $after)
+    } else {
+        Log "   9b. skipped: powercfg /requests needs an administrator PowerShell (run -Only 9 from one)"
+    }
+    $heard = Read-Host "9c. Did you hear a sound when mh audit ended in the other window? (y/n)"
+    Log "   9c. sound heard at the end: $heard"
+    $review = "-NoProfile -ExecutionPolicy Bypass -NoExit -Command . '$mhFile'; mh review"
+    Start-Process -FilePath conhost.exe -ArgumentList "powershell.exe $review" | Out-Null
+    $opened = Read-Host "9d. A window runs mh review: did your browser open on the review page by itself? (y/n; n/a if it said there is nothing to review)"
+    Log "   9d. browser opened by mh review: $opened"
+    Write-Host "Press Ctrl+C in the review window, then close it."
 }
 
 # --- clean up -------------------------------------------------------------------------------

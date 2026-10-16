@@ -28,3 +28,21 @@ is running, then that it is over. Asked by the maintainer (2026-10-16).
 ## Gain (estimated)
 
 Knowing a long run ended: open the window to check → see it in the taskbar, hear it.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh.ps1`, long commands only: title `mh <command>...` before `docker run`, `mh <command>:
+  done` / `failed` (translated, `MenuTexts.done` / `failed`) in the `finally`, then
+  `SystemSounds.Asterisk` / `Hand`; the user's title saved in `$global:MediaHygieneTitle` and
+  restored at the next `mh` call.
+- `mh.sh`: title escape `\e]0;…\a` and a bell, only when stderr is a terminal; the status of
+  `docker run` is still returned.
+- Unit: rendered PowerShell (French texts expanded), bash status kept.
+- Docs EN/FR: one bullet on the launcher page.
+- `mh-measure.ps1` step 9c: logs the title after `mh audit` and at the next call; asks
+  whether the sound was heard.
+
+### Not done
+- The check on Windows (title in the taskbar, sound) under PowerShell 5.1.
+  **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.

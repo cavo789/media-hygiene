@@ -5,6 +5,11 @@
 # {{ line }}
 {% endfor %}
 function {{ function }} {
+    # The title a long run left in the taskbar goes back at the next call (0185).
+    if ($null -ne $global:MediaHygieneTitle) {
+        $Host.UI.RawUI.WindowTitle = $global:MediaHygieneTitle
+        $global:MediaHygieneTitle = $null
+    }
     if ($args.Count -eq 0) {
         # Alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
         $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' })
@@ -45,23 +50,64 @@ function {{ function }} {
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
     $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
+    $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
-    docker run --rm @tty `
-        -e "{{ variable }}=1" `
-        -e "{{ zone }}=$((Get-TimeZone).Id)" `
+    $status = 1
+    $browser = $null
+    $console = [Console]::OutputEncoding
+    try {
+        # The image writes UTF-8: accents and emojis readable in any console (0184).
+        try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false) } catch { }
+        $OutputEncoding = [Console]::OutputEncoding
+        if ($long) {
+            # The computer stays awake until the command ends; the screen may turn off (0179).
+            if (-not ('MediaHygiene.Power' -as [type])) {
+                Add-Type -Namespace MediaHygiene -Name Power -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint flags);'
+            }
+            # ES_CONTINUOUS (0x80000000) + ES_SYSTEM_REQUIRED (0x1), in decimal for PowerShell 5.1.
+            $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483649)
+            $global:MediaHygieneTitle = $Host.UI.RawUI.WindowTitle
+            $Host.UI.RawUI.WindowTitle = "{{ function }} $command..."
+        }
+        if ($page) {
+            # The browser opens on the page as soon as it answers (0178).
+            $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
+                param($url, $wait)
+                for ($i = 0; $i -lt $wait; $i++) {
+                    try { $null = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop; break } catch { Start-Sleep -Seconds 1 }
+                }
+                if ($i -lt $wait) { Start-Process $url }
+            }
+        }
+        docker run --rm @tty `
+            -e "{{ variable }}=1" `
+            -e "{{ zone }}=$((Get-TimeZone).Id)" `
 {% for option in script.environment %}
-        {{ option }} `
+            {{ option }} `
 {% endfor %}
 {% for volume in script.data %}
-        -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
+            -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
 {% endfor %}
-        @photos `
+            @photos `
 {% for volume in script.tools %}
-        -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
+            -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
-        @page `
-        {{ image }} @rest
+            @page `
+            {{ image }} @rest
+        $status = $LASTEXITCODE
+    } finally {
+        try { [Console]::OutputEncoding = $console } catch { }
+        if ($browser) { Remove-Job -Job $browser -Force }
+        if ($long) {
+            # ES_CONTINUOUS alone: the computer may sleep again, Ctrl+C included.
+            $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483648)
+            $Host.UI.RawUI.WindowTitle = if ($status -eq 0) { "{{ texts.done }}" } else { "{{ texts.failed }}" }
+        }
+    }
+    if ($long) {
+        if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
+    }
 }

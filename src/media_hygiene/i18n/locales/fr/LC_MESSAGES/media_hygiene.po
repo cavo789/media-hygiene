@@ -5348,6 +5348,10 @@ msgid "Your browser cannot show this format: open the original."
 msgstr "Votre navigateur ne sait pas afficher ce format : ouvrez l'original."
 
 #, python-brace-format
+msgid "Your browser opens on {url}; if not, open that address."
+msgstr "Votre navigateur s'ouvre sur {url} ; sinon, ouvrez cette adresse."
+
+#, python-brace-format
 msgid "Your choices are in {place}."
 msgstr "Vos choix sont dans {place}."
 
@@ -6659,6 +6663,14 @@ msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
+
+#, python-brace-format
+msgid "{command}: done"
+msgstr "{command} : terminé"
+
+#, python-brace-format
+msgid "{command}: failed"
+msgstr "{command} : échec"
 
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."

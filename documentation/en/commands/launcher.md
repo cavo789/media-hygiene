@@ -68,7 +68,17 @@ mh audit
   `--quarantine`, or a tool folder you mounted yourself with `-v` when running `launcher`, is
   kept instead.
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
-  `places`, `search` and `people`.
+  `places`, `search` and `people`, and **your browser opens on that page** as soon as it
+  answers: no address to copy. Ctrl+C in the window still stops it.
+- **Your computer stays awake during the long commands** (`audit`, `clean`, `inventory`,
+  `classify`, `sort`, `tags`, `people`, `undo`): Windows does not go to sleep before they end,
+  and may again after (the screen may still turn off). From Linux, `mh.sh` uses
+  `systemd-inhibit`, from macOS `caffeinate`; from WSL, Windows decides.
+- **The window title says when a long command ends**: `mh audit...` while it runs, then
+  `mh audit: done` (or `failed`) with a sound, so a minimised window shows it in the taskbar.
+  Your own title is back at the next `mh`.
+- **Accents and emojis readable** in every console, the old one of Windows PowerShell 5.1
+  too: `mh.ps1` reads the tool's output in UTF-8, then gives the console its own encoding back.
 - **The commands the tool suggests** at the end of a run are written as `mh …` too.
 - **Your time zone, asked at each run**: `mh.ps1` asks Windows (`Get-TimeZone`), `mh.sh` the
   system (`/etc/localtime`), so the reports are dated in your local time, abroad too. A

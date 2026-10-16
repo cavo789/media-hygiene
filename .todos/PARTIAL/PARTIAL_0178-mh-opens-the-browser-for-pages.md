@@ -37,3 +37,23 @@ serve a page. Asked by the maintainer (2026-10-16).
 ## Gain (estimated)
 
 Reaching the review page: copy an address into a browser → nothing to do.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh.ps1`, page commands only: a `Start-Job` waits until `GET /` answers
+  (`Invoke-WebRequest`, a TCP connect is not enough: Docker's proxy accepts before the page
+  listens), then `Start-Process` on `http://127.0.0.1:<port>/`; the job is removed in the
+  `finally` when the command ends. Wait limit `BROWSE_WAIT` = 300 s (script data).
+- `mh.sh`: a background `_mh_browse` (bash `/dev/tcp`, HTTP check), opener `wslview`,
+  `explorer.exe`, `xdg-open`, `open` (macOS only); killed when docker ends.
+- Under the launcher, `address_tip` (every page command) says "Your browser opens on …; if not,
+  open that address" instead of the port tip.
+- Unit: rendered PowerShell; bash with a fake `xdg-open` and a real local page records the URL;
+  a non-page command opens nothing; a port that never answers ends silently; the line printed.
+- Docs EN/FR: launcher page, cleaning step 10, troubleshooting.
+- `mh-measure.ps1` step 9d: starts `mh review` in a window, asks whether the browser opened.
+
+### Not done
+- The check on Windows: `mh review` opens the default browser (PowerShell 5.1).
+  **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.

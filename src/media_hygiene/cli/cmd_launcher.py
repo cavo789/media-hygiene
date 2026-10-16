@@ -175,6 +175,7 @@ def _commands(ctx: typer.Context) -> LauncherCommands:
 
     from media_hygiene.cli.safety import (
         DATA_COMMANDS,
+        LONG_COMMANDS,
         PAGE_COMMANDS,
         READ_ONLY_COMMANDS,
     )
@@ -188,5 +189,6 @@ def _commands(ctx: typer.Context) -> LauncherCommands:
         writers=tuple(name for name in names if name not in READ_ONLY_COMMANDS),
         pages=tuple(name for name in names if name in PAGE_COMMANDS),
         data=tuple(name for name in names if name in DATA_COMMANDS),
+        long=tuple(name for name in names if name in LONG_COMMANDS),
         port=PAGE_PORT,
     )

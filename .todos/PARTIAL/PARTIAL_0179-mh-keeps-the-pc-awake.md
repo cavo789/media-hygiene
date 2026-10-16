@@ -35,3 +35,22 @@ pauses, the run stops and the user does not know why. Asked by the maintainer (2
 ## Gain (estimated)
 
 A first audit started in the evening: stopped at the first sleep → finished in the morning.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `LONG_COMMANDS` (`cli/safety.py`) → `LauncherCommands.long` → the script data; `mh.ps1` calls
+  `SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)` (`Add-Type` once per session,
+  type `MediaHygiene.Power`) for those commands only, `ES_CONTINUOUS` alone in the `finally`.
+- `mh.sh`: `systemd-inhibit --what=sleep` when present and logind answers (`--list`), not on
+  WSL (`WSL_DISTRO_NAME`); `caffeinate -i` when present (macOS).
+- Unit: PowerShell call and `finally`; bash with a fake `systemd-inhibit` (long command
+  wrapped, `history` not, WSL not).
+- Docs EN/FR: launcher bullet; troubleshooting "The analysis stopped overnight".
+- `mh-measure.ps1` step 9b: polls `powercfg /requests` during `mh audit` (administrator only).
+
+### Not done
+- The check on Windows: a laptop set to sleep after 1 minute stays awake through `mh audit`,
+  sleeps again after.
+  **Reason:** needs the maintainer's Windows, from an administrator PowerShell:
+  `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.

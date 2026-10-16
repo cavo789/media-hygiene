@@ -40,6 +40,14 @@ minutes : [chaque étape affiche sa progression](start/01-first-audit.md#ce-qui-
 L'outil utilise tous les processeurs pour aller plus vite. Pour en garder pour le reste :
 [limiter les processeurs utilisés](reference-advanced.md#limiter-les-processeurs-utilisés).
 
+## L'analyse s'est arrêtée pendant la nuit
+
+L'ordinateur s'est mis en veille : Docker Desktop se met en pause avec lui, et l'exécution
+s'arrête là où elle en était. Lancez-la avec [`mh`](commands/launcher.md#ce-que-mh-fait-pour-chaque-commande),
+qui garde l'ordinateur éveillé jusqu'à la fin d'une commande longue, ou réglez *Veille* sur
+*Jamais* dans les paramètres de Windows pour cette nuit-là. Relancez la commande : ce qui a déjà
+été lu est dans le cache.
+
 ## « Impossible de demander confirmation sans terminal interactif »
 
 Lancez avec `-it` : sans terminal, `clean`, `sort`, `undo` (d'un tri lancé plusieurs fois) et
@@ -84,6 +92,7 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
 
 ## La page de tri ne s'ouvre pas
 
+- Avec `mh review`, votre navigateur s'ouvre tout seul sur la page, dès qu'elle répond.
 - Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
   deux côtés, sinon l'adresse affichée par le tri n'est pas la bonne
   ([étape 10 du nettoyage](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).

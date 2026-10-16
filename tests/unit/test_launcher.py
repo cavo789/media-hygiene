@@ -77,7 +77,10 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert '"$HOME\\media-hygiene\\config", "$HOME\\media-hygiene\\journal"' in text
     assert '-e "TZ=Europe/Brussels" `' in text
     assert text.count("MEDIA_HYGIENE_LAUNCHER") == 1
-    assert text.endswith("        cavo789/media-hygiene @rest\n}\n")
+    assert (
+        "            cavo789/media-hygiene @rest\n        $status = $LASTEXITCODE"
+        in text
+    )
 
 
 def test_bash_creates_the_home_folders_and_runs_as_the_user() -> None:

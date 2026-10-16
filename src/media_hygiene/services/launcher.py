@@ -25,7 +25,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_memory import locale_option
-from media_hygiene.services.launcher_menu import menu_texts
+from media_hygiene.services.launcher_menu import BROWSE_WAIT, menu_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
     LAUNCHER_VARIABLE,
@@ -55,6 +55,8 @@ class LauncherCommands:
     pages: tuple[str, ...]  # `-p 127.0.0.1:<port>:<port>`
     data: tuple[str, ...]  # their output is read or redirected: no terminal, no input
     port: int
+    long: tuple[str, ...] = ()  # the computer kept awake, the end told (0179, 0185)
+    browse_wait: int = BROWSE_WAIT  # seconds `mh` waits for a page before giving up
 
 
 @dataclass(frozen=True, slots=True)

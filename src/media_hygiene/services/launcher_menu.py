@@ -1,20 +1,25 @@
-"""What `mh` says by itself: the menu's prompt, the command learnt, a folder not found.
+"""What `mh` says by itself: the menu's prompt, a folder not found, a long run's end.
 
 The `menu` command prints the steps; the `mh` function asks for the number and runs
 the step itself (`services/launcher.py`), after checking the photo folders. Its
 messages are written into the script, translated, with the shell variables they show
-(`$choice`, `$chosen`, `$folder`).
+(`$choice`, `$chosen`, `$folder`, `$command`).
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 # Inside the double-quoted strings of both shells, these would be code, not text.
 UNSAFE_CHARACTERS = frozenset('"$`\\')
+# How long `mh` waits for a page to answer before opening the browser on it (0178): a
+# review audits first, minutes without a cache. The wait also ends with the command.
+BROWSE_WAIT: Final = 300
+_COMMAND: Final = f"{LAUNCHER_FUNCTION} $command"
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,6 +30,8 @@ class MenuTexts:
     unknown: str  # holds `$choice`
     direct: str  # holds `mh $chosen`
     missing: str  # holds `$folder`
+    done: str  # the window title after a long run; holds `mh $command`
+    failed: str  # the same, when it failed
 
 
 def menu_texts() -> MenuTexts:
@@ -48,6 +55,8 @@ def menu_texts() -> MenuTexts:
                 "launcher."
             )
         ).replace("{folder}", "$folder"),
+        done=_safe(_("{command}: done")).replace("{command}", _COMMAND),
+        failed=_safe(_("{command}: failed")).replace("{command}", _COMMAND),
     )
 
 

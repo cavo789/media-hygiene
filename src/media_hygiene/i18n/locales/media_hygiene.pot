@@ -4415,6 +4415,10 @@ msgid "Your browser cannot show this format: open the original."
 msgstr ""
 
 #, python-brace-format
+msgid "Your browser opens on {url}; if not, open that address."
+msgstr ""
+
+#, python-brace-format
 msgid "Your choices are in {place}."
 msgstr ""
 
@@ -5603,6 +5607,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
+msgstr ""
+
+#, python-brace-format
+msgid "{command}: done"
+msgstr ""
+
+#, python-brace-format
+msgid "{command}: failed"
 msgstr ""
 
 #, python-brace-format

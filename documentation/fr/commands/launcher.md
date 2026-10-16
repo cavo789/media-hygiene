@@ -70,7 +70,17 @@ mh audit
   ou un dossier de l'outil que vous avez monté vous-même avec `-v` en lançant `launcher`, est gardé
   à la place.
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
-  `places`, `search` et `people`.
+  `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
+  répond : aucune adresse à copier. Ctrl+C dans la fenêtre l'arrête toujours.
+- **Votre ordinateur reste éveillé pendant les commandes longues** (`audit`, `clean`,
+  `inventory`, `classify`, `sort`, `tags`, `people`, `undo`) : Windows ne se met pas en veille
+  avant leur fin, et peut à nouveau après (l'écran peut toujours s'éteindre). Sous Linux, `mh.sh`
+  utilise `systemd-inhibit`, sous macOS `caffeinate` ; sous WSL, Windows décide.
+- **Le titre de la fenêtre dit quand une commande longue se termine** : `mh audit...` pendant
+  qu'elle tourne, puis `mh audit : terminé` (ou `échec`) avec un son : une fenêtre réduite le
+  montre dans la barre des tâches. Votre propre titre revient au `mh` suivant.
+- **Accents et emojis lisibles** dans chaque console, l'ancienne de Windows PowerShell 5.1
+  aussi : `mh.ps1` lit la sortie de l'outil en UTF-8, puis rend à la console son propre encodage.
 - **Les commandes que l'outil propose** à la fin d'une exécution s'écrivent `mh …` elles aussi.
 - **Votre fuseau horaire, demandé à chaque lancement** : `mh.ps1` le demande à Windows
   (`Get-TimeZone`), `mh.sh` au système (`/etc/localtime`) : les rapports sont datés à votre heure,

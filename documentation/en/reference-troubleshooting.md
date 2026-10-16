@@ -37,6 +37,13 @@ files. Tens of thousands of files take a few minutes just to be listed:
 The tool uses every processor to go faster. To leave some for your other work:
 [limit the processors used](reference-advanced.md#limit-the-processors-used).
 
+## The analysis stopped overnight
+
+The computer went to sleep: Docker Desktop pauses with it, and the run stops where it was. Run
+it with [`mh`](commands/launcher.md#what-mh-does-for-each-command), which keeps the computer
+awake until a long command ends, or set *Sleep* to *Never* in the Windows settings for that
+night. Run the command again: what was already read is in the cache.
+
 ## "Cannot ask for confirmation without an interactive terminal"
 
 Run with `-it`: without a terminal, `clean`, `sort`, `undo` (of a sort run several times) and
@@ -80,6 +87,7 @@ setting is required.`
 
 ## The review page does not open
 
+- With `mh review`, your browser opens on the page by itself, once it answers.
 - Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both
   sides, or the address the review prints is not the right one
   ([cleaning, step 10](clean/10-review-bursts.md#step-2-open-the-page)).
