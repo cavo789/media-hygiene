@@ -67,6 +67,16 @@ alors avant l'analyse et nomme le dossier.
 - Si seul le rapport échoue après un audit, un avertissement le signale et les résultats restent
   à l'écran.
 
+## C: est plein après un nettoyage
+
+Les photos étaient sur un autre disque que la quarantaine : chaque fichier mis de côté a été copié
+sur le disque de la quarantaine (avec `mh`, `C:`). `clean` le dit avant de demander, et refuse
+quand les fichiers ne tiendraient pas
+([nettoyer, étape 8](clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine)). Pour
+récupérer la place, vérifiez les fichiers mis de côté, puis effacez-les avec `purge`
+([étape 9](clean/09-undo-history-purge.md)). Pour le prochain nettoyage, donnez à la quarantaine
+un dossier du disque des photos : `-v "E:\media-hygiene\quarantine:/quarantine"`.
+
 ## Un chemin Windows de `config.toml` est refusé
 
 Écrivez les chemins Windows entre **apostrophes** : `'D:\backup'`. Entre guillemets, TOML

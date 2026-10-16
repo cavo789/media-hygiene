@@ -28,6 +28,9 @@
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
 #      published one, writes mh again and says both versions                (0176, 0177)
+#  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
+#      free), quarantine on C:: the line before the question names both drives, the size and
+#      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -40,6 +43,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
 
 param(
     [string]$Photos = "C:\Photos",
@@ -48,7 +52,8 @@ param(
     [string]$Image = "media-hygiene",
     [string]$Cache = "media-hygiene-cache",
     [switch]$Keep,
-    [string]$Only = ""
+    [string]$Only = "",
+    [string]$OtherDrive = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -59,7 +64,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -503,8 +508,51 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     $ErrorActionPreference = "Stop"
 }
 
+# --- 12: photos on another drive than the quarantine (0182) --------------------------------
+# A few duplicates copied to X:\mh-measure-12 (removed at the end); the quarantine is the test
+# folder's, on C:. 12a must show the line with X:, C: and C:'s free space; 12c must not.
+$otherRoot = ""
+if (Wanted 12) {
+    if ($OtherDrive -eq "") {
+        $found = Get-PSDrive -PSProvider FileSystem |
+            Where-Object { $_.Name -ne 'C' -and $_.Free -gt 2GB } | Select-Object -First 1
+        if ($found) { $OtherDrive = $found.Name + ":" }
+    }
+    Log ""
+    if ($OtherDrive -eq "") {
+        Log "== 12. skipped: no drive other than C: with 2 GB free (give one with -OtherDrive)"
+    } else {
+        $otherRoot = Join-Path ($OtherDrive.TrimEnd('\') + "\") "mh-measure-12"
+        $otherData = Join-Path $otherRoot "data"
+        $otherQuarantine = Join-Path $otherRoot "quarantine"
+        foreach ($folder in "a", "b") {
+            New-Item -ItemType Directory -Force -Path (Join-Path $otherData $folder) | Out-Null
+        }
+        New-Item -ItemType Directory -Force -Path $otherQuarantine | Out-Null
+        foreach ($photo in ($picked | Select-Object -First 10)) {
+            Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $otherData "a\$($photo.Name)")
+            Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $otherData "b\$($photo.Name)")
+        }
+        $letter = $OtherDrive.Substring(0, 1).ToLower()
+        $otherMounts = @(
+            "-v", "${otherData}:/data/${letter}/mh-measure-12",
+            "-v", "${volume}:/cache",
+            "-v", "$(Join-Path $tool 'journal'):/journal",
+            "-v", "$(Join-Path $tool 'reports'):/reports"
+        )
+        $onC = $otherMounts + @("-v", "$(Join-Path $tool 'quarantine'):/quarantine")
+        $onOther = $otherMounts + @("-v", "${otherQuarantine}:/quarantine")
+        Log ("== 12. data on $OtherDrive, Windows says C: has {0:N1} GB free" -f ((Get-PSDrive C).Free / 1GB))
+        Measure-Mh "12a. clean, quarantine on C:: one line names $OtherDrive and C: (0182)" $onC @("clean", "--yes")
+        Measure-Mh "12b. undo of that clean" $onC @("undo", "--yes")
+        Measure-Mh "12c. clean, quarantine on ${OtherDrive}: no line expected (0182)" $onOther @("clean", "--yes")
+        Measure-Mh "12d. undo of that clean" $onOther @("undo", "--yes")
+    }
+}
+
 # --- clean up -------------------------------------------------------------------------------
 if (-not $Keep) {
+    if ($otherRoot -ne "") { Remove-Item -Recurse -Force $otherRoot }
     Remove-Item -Recurse -Force $Work
     docker volume rm -f $volume | Out-Null
 }

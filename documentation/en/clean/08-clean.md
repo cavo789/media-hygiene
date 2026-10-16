@@ -34,6 +34,23 @@ first:
 mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
+### Photos on another drive than the quarantine
+
+With `mh`, the quarantine is on `C:` (in `$HOME`). Photos on `D:` or `E:` are then *copied* to
+`C:` when set aside: the space comes back on `E:`, and `C:` fills up by as much. Before asking,
+`clean` says so in one line:
+
+```text
+⚠️ 32 files (14.0 GB) will be copied from E: to the quarantine on C: (40.2 GB free there).
+```
+
+When they would not fit, keeping 1 GB free on that drive, `clean` stops before moving anything
+and says how much is missing. Free some space (`purge` erases the files of earlier cleans), or
+give the quarantine a folder on the photos' drive: `-v "E:\media-hygiene\quarantine:/quarantine"`
+(once the earlier cleans are purged: `undo` looks for their files in the quarantine mounted now).
+The line needs Docker Desktop, which tells the drive of each folder; elsewhere (Linux, a Docker
+volume) nothing is said.
+
 ## Run the clean
 
 One word with `mh`: it mounts your folders **without `:ro`** for `clean` (the tool must be allowed
@@ -164,7 +181,8 @@ of other files than media (`--ext`) still go to the quarantine.
 - **Refusals that protect you**: `clean` stops before the analysis without a `/journal` or a
   `/quarantine`, with a `:ro` folder, with a folder it cannot write to, or with a tool folder
   (quarantine, journal, cache, reports) placed inside a photo folder. The message says which
-  one.
+  one. Just before the question, it also stops when the files copied from another drive would not
+  fit in the quarantine ([above](#photos-on-another-drive-than-the-quarantine)).
 
 ---
 

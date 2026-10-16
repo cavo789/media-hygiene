@@ -1647,6 +1647,12 @@ msgstr ""
 msgid "Frame rate"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Free space on {drive} ('purge' erases the files of earlier cleans), or "
+"mount a quarantine folder of {source} on /quarantine."
+msgstr ""
+
 msgid ""
 "Free the space at once: delete the exact copies for good, after a byte "
 "comparison with the kept copy, instead of moving them to the quarantine; "
@@ -2506,6 +2512,18 @@ msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
 "{details}."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"Not enough room on {drive} for the quarantine: {count} file ({size}) "
+"would be copied there from {sources}, {free} free; {missing} missing "
+"({headroom} stay free). Nothing was changed."
+msgid_plural ""
+"Not enough room on {drive} for the quarantine: {count} files ({size}) "
+"would be copied there from {sources}, {free} free; {missing} missing "
+"({headroom} stay free). Nothing was changed."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Not found"
 msgstr ""
@@ -5896,6 +5914,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} faces"
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} file ({size}) will be copied from {sources} to the quarantine on "
+"{drive} ({free} free there)."
+msgid_plural ""
+"{count} files ({size}) will be copied from {sources} to the quarantine on"
+" {drive} ({free} free there)."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""

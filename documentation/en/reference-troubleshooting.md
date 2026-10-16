@@ -62,6 +62,15 @@ before the analysis and names the folder.
   `config.toml` is optional: it is then not created.
 - If the report alone fails after an audit, a warning says so and the results stay on screen.
 
+## C: is full after a clean
+
+The photos were on another drive than the quarantine: each file set aside was copied to the
+quarantine's drive (with `mh`, `C:`). `clean` says it before asking, and refuses when the files
+would not fit ([cleaning, step 8](clean/08-clean.md#photos-on-another-drive-than-the-quarantine)).
+To get the space back, check the files set aside, then `purge` them
+([step 9](clean/09-undo-history-purge.md)). For the next clean, give the quarantine a folder on
+the photos' drive: `-v "E:\media-hygiene\quarantine:/quarantine"`.
+
 ## A Windows path in `config.toml` is refused
 
 Write Windows paths between **single quotes**: `'D:\backup'`. In double quotes, TOML turns the

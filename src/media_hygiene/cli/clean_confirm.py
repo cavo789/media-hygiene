@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.clean_space import check_quarantine_room
 from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _, ngettext
@@ -26,6 +27,7 @@ def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa
         True when the clean may proceed.
     """
     _announce(runtime, plan)
+    check_quarantine_room(runtime, plan)
     if yes or not runtime.settings.clean.confirm:
         return True
     require_terminal(sys.stdin)

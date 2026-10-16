@@ -35,6 +35,23 @@ complète, créez-les d'abord :
 mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
 ```
 
+### Photos sur un autre disque que la quarantaine
+
+Avec `mh`, la quarantaine est sur `C:` (dans `$HOME`). Les photos de `D:` ou `E:` mises de côté
+sont alors *copiées* sur `C:` : la place revient sur `E:`, et `C:` se remplit d'autant. Avant de
+demander, `clean` le dit en une ligne :
+
+```text
+⚠️ 32 fichiers (14,0 Go) seront copiés de E: vers la quarantaine sur C: (40,2 Go libres là-bas).
+```
+
+S'ils ne tiennent pas, en gardant 1 Go libre sur ce disque, `clean` s'arrête avant de déplacer quoi
+que ce soit et dit combien il manque. Libérez de la place (`purge` efface les fichiers des
+nettoyages précédents), ou donnez à la quarantaine un dossier du disque des photos :
+`-v "E:\media-hygiene\quarantine:/quarantine"` (une fois les nettoyages précédents purgés :
+`undo` cherche leurs fichiers dans la quarantaine montée à ce moment-là). La ligne demande Docker Desktop, qui indique le
+disque de chaque dossier ; ailleurs (Linux, un volume Docker), rien n'est dit.
+
 ## Lancer le nettoyage
 
 Un mot avec `mh` : il monte vos dossiers **sans `:ro`** pour `clean` (l'outil doit avoir le droit
@@ -170,7 +187,9 @@ vont toujours en quarantaine.
 - **Des refus qui vous protègent** : `clean` s'arrête avant l'analyse sans `/journal` ni
   `/quarantine`, avec un dossier en `:ro`, avec un dossier où il ne peut pas écrire, ou avec un
   dossier de l'outil (quarantaine, journal, cache, rapports) placé dans un dossier de photos. Le
-  message dit lequel.
+  message dit lequel. Juste avant la question, il s'arrête aussi quand les fichiers copiés depuis
+  un autre disque ne tiendraient pas dans la quarantaine
+  ([plus haut](#photos-sur-un-autre-disque-que-la-quarantaine)).
 
 ---
 
