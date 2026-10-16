@@ -93,7 +93,7 @@ def test_without_a_photo_folder_the_launcher_says_how_to_add_one(
     """No data mount: no folder in the script, a warning on stderr."""
     result = run(cli, "launcher", "--shell", "powershell")
     assert result.exit_code == 0, result.output
-    assert "No photo folder mounted" in result.stderr
+    assert "No photo folder: add --photos" in result.stderr
     assert "${mode}" not in result.stdout
 
 
