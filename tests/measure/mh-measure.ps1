@@ -48,17 +48,20 @@
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
 # measure first (devcontainer: `build`, or `docker build --tag media-hygiene .`).
 #
-# Usage (PowerShell, from any folder):
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Count 3000 -Image media-hygiene
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 8 -Count 10   (step 8 only)
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
-#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 17 -Count 5
+# Usage (PowerShell, from any folder; once after the download: Unblock-File .\mh-measure.ps1).
+# No -ExecutionPolicy Bypass, anywhere: Avast's Behavior Shield flagged a script launching
+# conhost -> powershell -ExecutionPolicy Bypass twice (IDP.HELU.PSD11, 2026-10-16); the
+# windows of steps 9d and 14 are opened by you, as a user does.
+#   .\mh-measure.ps1
+#   .\mh-measure.ps1 -Count 3000 -Image media-hygiene
+#   .\mh-measure.ps1 -Only 8 -Count 10   (step 8 only)
+#   .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
+#   .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
+#   .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
+#   .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
+#   .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
+#   .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
+#   .\mh-measure.ps1 -Only 17 -Count 5
 
 param(
     [string]$Photos = "C:\Photos",
@@ -367,7 +370,7 @@ Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
     Log ""
     Log "== 9. the mh launcher in the old console (0184, 0179, 0185, 0178)"
     Remove-Item -Force -ErrorAction SilentlyContinue $result
-    $arguments = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$probe`" -mh `"$mhFile`" -result `"$result`""
+    $arguments = "powershell.exe -NoProfile -File `"$probe`" -mh `"$mhFile`" -result `"$result`""
     $child = Start-Process -FilePath conhost.exe -ArgumentList $arguments -PassThru
     $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     $awake = $false
@@ -384,8 +387,8 @@ Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
     }
     $heard = Read-Host "9c. Did you hear a sound when mh audit ended in the other window? (y/n)"
     Log "   9c. sound heard at the end: $heard"
-    $review = "-NoProfile -ExecutionPolicy Bypass -NoExit -Command . '$mhFile'; mh review"
-    Start-Process -FilePath conhost.exe -ArgumentList "powershell.exe $review" | Out-Null
+    Write-Host "9d. Open a console yourself: Win+R, type conhost.exe powershell.exe, Enter. In it, type:"
+    Write-Host "    . '$mhFile'; mh review"
     $opened = Read-Host "9d. A window runs mh review: did your browser open on the review page by itself? (y/n; n/a if it said there is nothing to review)"
     Log "   9d. browser opened by mh review: $opened"
     Write-Host "Press Ctrl+C in the review window, then close it."
@@ -508,7 +511,7 @@ $lines = @(mh audit 2>&1 | ForEach-Object { "$_" })
 Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Where-Object { $_ -match 'Media files scanned' }) -join ' / '))
 '@
     Remove-Item -Force -ErrorAction SilentlyContinue $result
-    Start-Process -FilePath powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$probe`" -mh `"$mhFile`" -result `"$result`"" -Wait
+    Start-Process -FilePath powershell.exe -ArgumentList "-NoProfile -File `"$probe`" -mh `"$mhFile`" -result `"$result`"" -Wait
     if (Test-Path $result) { Get-Content -Path $result -Encoding UTF8 | ForEach-Object { Log $_ } }
 
     # 11c: refused folders leave the file as it was; 11d: the folder taken out again.
@@ -654,14 +657,14 @@ if (Wanted 14) {
     & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
     Log ""
     Log "== 14. the mh menu by hand (0172)"
-    $menu = "-NoProfile -ExecutionPolicy Bypass -NoExit -Command . '$mhFile'; mh"
     foreach ($console in 'conhost', 'usual') {
         if ($console -eq 'conhost') {
-            Start-Process -FilePath conhost.exe -ArgumentList "powershell.exe $menu" | Out-Null
+            Write-Host "14 (old console): Win+R, type conhost.exe powershell.exe, Enter."
         } else {
-            Start-Process -FilePath powershell.exe -ArgumentList $menu | Out-Null
+            Write-Host "14 (usual console): open Windows PowerShell as you usually do."
         }
-        Write-Host "14 ($console console): a window shows the mh menu. Type the number of 'audit', Enter; when it ends, type mh again, then Ctrl+C at the question."
+        Write-Host "    In it, type: . '$mhFile'; mh"
+        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh again, then Ctrl+C at the question."
         $colours = Read-Host "14. Colours shown as colours, not as codes like [32m? (y/n)"
         $columns = Read-Host "14. Emoji and step columns lined up? (y/n)"
         $ran = Read-Host "14. The number + Enter ran audit? (y/n)"
