@@ -159,15 +159,12 @@ def test_powershell_reads_docker_in_utf8_and_restores_the_console() -> None:
     assert text.index("[Console]::OutputEncoding = $console", finally_) > finally_
 
 
-def test_powershell_keeps_awake_and_titles_long_commands_only() -> None:
-    """0179, 0185: the list comes from the script data; restored in `finally`."""
+def test_powershell_titles_long_commands_only_and_compiles_nothing() -> None:
+    """0185: the list comes from the script data; 0179: no Add-Type (Avast)."""
     text = _powershell()
     assert "$long = $command -in @('audit')" in text
-    finally_ = text.index("    } finally {")
-    awake = text.index("SetThreadExecutionState([uint32]2147483649)")
-    assert text.index("if ($long) {") < awake < finally_
-    assert text.index("SetThreadExecutionState([uint32]2147483648)") > finally_
-    assert "-not ('MediaHygiene.Power' -as [type])" in text
+    assert "Add-Type" not in text
+    assert "SetThreadExecutionState" not in text
     assert '$Host.UI.RawUI.WindowTitle = "mh $command..."' in text
     assert '{ "mh $command : terminé" } else { "mh $command : échec" }' in text
     assert "[Media.SystemSounds]::Asterisk.Play()" in text

@@ -79,10 +79,12 @@ mh audit
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
   `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
   répond : aucune adresse à copier. Ctrl+C dans la fenêtre l'arrête toujours.
-- **Votre ordinateur reste éveillé pendant les commandes longues** (`audit`, `clean`,
-  `inventory`, `classify`, `sort`, `tags`, `people`, `undo`) : Windows ne se met pas en veille
-  avant leur fin, et peut à nouveau après (l'écran peut toujours s'éteindre). Sous Linux, `mh.sh`
-  utilise `systemd-inhibit`, sous macOS `caffeinate` ; sous WSL, Windows décide.
+- **La veille pendant les commandes longues** (`audit`, `clean`, `inventory`, `classify`,
+  `sort`, `tags`, `people`, `undo`) : sous Windows, réglez *Veille* sur *Jamais* pour un premier
+  audit ([pourquoi](../reference-troubleshooting.md#lanalyse-sest-arrêtée-pendant-la-nuit)) ;
+  `mh.ps1` ne le fait pas pour vous, car un antivirus a arrêté `mh` quand il essayait. Sous Linux,
+  `mh.sh` garde l'ordinateur éveillé avec `systemd-inhibit`, sous macOS avec `caffeinate` ; sous
+  WSL, Windows décide.
 - **Le titre de la fenêtre dit quand une commande longue se termine** : `mh audit...` pendant
   qu'elle tourne, puis `mh audit : terminé` (ou `échec`) avec un son : une fenêtre réduite le
   montre dans la barre des tâches. Votre propre titre revient au `mh` suivant.

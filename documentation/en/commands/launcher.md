@@ -76,10 +76,11 @@ mh audit
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
   `places`, `search` and `people`, and **your browser opens on that page** as soon as it
   answers: no address to copy. Ctrl+C in the window still stops it.
-- **Your computer stays awake during the long commands** (`audit`, `clean`, `inventory`,
-  `classify`, `sort`, `tags`, `people`, `undo`): Windows does not go to sleep before they end,
-  and may again after (the screen may still turn off). From Linux, `mh.sh` uses
-  `systemd-inhibit`, from macOS `caffeinate`; from WSL, Windows decides.
+- **Sleep during the long commands** (`audit`, `clean`, `inventory`, `classify`, `sort`,
+  `tags`, `people`, `undo`): on Windows, set *Sleep* to *Never* for a first audit
+  ([why](../reference-troubleshooting.md#the-analysis-stopped-overnight)); `mh.ps1` does not do
+  it for you, since antivirus software stopped `mh` when it tried. From Linux, `mh.sh` keeps the
+  computer awake with `systemd-inhibit`, from macOS with `caffeinate`; from WSL, Windows decides.
 - **The window title says when a long command ends**: `mh audit...` while it runs, then
   `mh audit: done` (or `failed`) with a sound, so a minimised window shows it in the taskbar.
   Your own title is back at the next `mh`.

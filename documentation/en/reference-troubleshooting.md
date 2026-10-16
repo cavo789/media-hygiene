@@ -39,10 +39,16 @@ The tool uses every processor to go faster. To leave some for your other work:
 
 ## The analysis stopped overnight
 
-The computer went to sleep: Docker Desktop pauses with it, and the run stops where it was. Run
-it with [`mh`](commands/launcher.md#what-mh-does-for-each-command), which keeps the computer
-awake until a long command ends, or set *Sleep* to *Never* in the Windows settings for that
-night. Run the command again: what was already read is in the cache.
+The computer went to sleep: Docker Desktop pauses with it, and the run stops where it was. For
+a first audit, set *Sleep* to *Never* (*Settings → System → Power*), and back after. Run the
+command again: what was already read is in the cache.
+
+## `mh.ps1` cannot be written: "Access to the path … is denied"
+
+Your antivirus blocks that file: after it has flagged something in a folder, some (Avast) refuse
+any new file at the same path, without a new alert. Look in its quarantine and its history for
+`mh.ps1`; restore it, or add an exception for `$HOME\media-hygiene\mh.ps1`, then run the
+`launcher` line of [step 0](clean/quick-guide.md) again.
 
 ## "Cannot ask for confirmation without an interactive terminal"
 

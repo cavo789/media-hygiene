@@ -54,3 +54,14 @@ A first audit started in the evening: stopped at the first sleep → finished in
   sleeps again after.
   **Reason:** needs the maintainer's Windows, from an administrator PowerShell:
   `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.
+
+## Measured on Windows (2026-10-16), then removed from `mh.ps1`
+
+`measures-20261016-1803`, step 9: the awake request was there during `mh audit` and gone after
+(the mechanism worked), but Avast's Behavior Shield (`IDP.HELU.PSD11`) stopped the PowerShell
+running `mh` during that audit, and afterwards refused any file at that folder's paths ("Access
+denied", no new alert). The run-time compile of a kernel32 call is the likeliest trigger
+(inferred, not isolated). Maintainer's decision: remove it from `mh.ps1`; the guides say to set
+Sleep to Never for a first audit, and a troubleshooting entry covers the antivirus. `mh.sh`
+keeps `systemd-inhibit` / `caffeinate`. To confirm: step 9 again in a new `-Work` folder, no
+alert expected.
