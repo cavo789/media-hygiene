@@ -54,7 +54,8 @@ docker run --rm hello-world
 ```
 
 *Hello from Docker!* and a few lines of explanation: Docker works. Your drives `C:`, `D:`… are
-reachable by Docker as they are: nothing more to set.
+reachable by Docker as they are: nothing more to set. Next, [step 1](01-first-audit.md#write-mh-once)
+writes `mh`, the short command you type from then on.
 
 ### If it does not work
 
@@ -136,7 +137,8 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 
 `$HOME/Pictures` becomes `/data/home/<you>/Pictures`, and the tool shows your folders by their
 real path, `/home/<you>/Pictures`. A `\` at the end of a line continues the command on the next
-one.
+one. `mh` exists for bash too: `launcher --shell bash --photos "$HOME/Pictures"` writes it into
+`~/media-hygiene/mh.sh` ([`launcher`](../commands/launcher.md)).
 
 ## On a Mac
 

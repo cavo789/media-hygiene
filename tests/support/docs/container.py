@@ -12,9 +12,15 @@ from tests.support.docs.terminal import answer_prompt, tidy
 if TYPE_CHECKING:
     from tests.support.docs.names import Library
 
-# c and d hold C:\Photos and D:\Old disk; the others are the tool's mount points.
-VOLUMES: Final = ("c", "d", "journal", "quarantine", "reports", "cache", "config")
-_TOOL_MOUNTS: Final = VOLUMES[2:]
+# c and d hold C:\Photos and D:\Old disk; the others are the tool's mount points, then
+# those of the `mh` captures, fresh as on a new PC and apart from the story's (0195).
+_TOOL_MOUNTS: Final = ("journal", "quarantine", "reports", "cache", "config")
+_MH: Final = "mh-"
+VOLUMES: Final = ("c", "d", *_TOOL_MOUNTS, *(f"{_MH}{kind}" for kind in _TOOL_MOUNTS))
+# What `mh` passes on: the launcher's name (the tool then suggests `mh …` commands),
+# and the language and colours as settings, not options repeated in those commands.
+_LAUNCHED: Final = "MEDIA_HYGIENE_LAUNCHER=powershell"
+_PLAIN: Final = "MEDIA_HYGIENE_GENERAL__COLOR=never"
 # No progress animation: the screen reads top to bottom.
 DUMB: Final = ("-e", "TERM=dumb")
 _IMAGE_COLUMNS: Final = ("-e", "COLUMNS=100")
@@ -27,7 +33,7 @@ class Command:
 
     args: tuple[str, ...]
     read_only: bool = True
-    photos_only: bool = False
+    launcher: bool = False  # run as `mh` runs it: C:\Photos and its own tool folders
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,7 +60,7 @@ class Demo:
         return f"{self.prefix}-{kind}"
 
     def mounts(self, command: Command) -> list[str]:
-        """The `-v` options of a command.
+        """The `-v` options of a command, and the `-e` of `mh` for a launcher one.
 
         Args:
             command: What the command may see.
@@ -65,8 +71,11 @@ class Demo:
         suffix = ":ro" if command.read_only else ""
         disk = self.library.names.old_disk
         options = ["-v", f"{self.volume('c')}:/data/c/Photos{suffix}"]
-        if command.photos_only:
-            return options
+        if command.launcher:
+            for kind in _TOOL_MOUNTS:
+                options += ["-v", f"{self.volume(_MH + kind)}:/{kind}"]
+            locale = f"MEDIA_HYGIENE_GENERAL__LOCALE={self.locale}"
+            return [*options, "-e", _LAUNCHED, "-e", _PLAIN, "-e", locale]
         options += ["-v", f"{self.volume('d')}:/data/d/{disk}{suffix}"]
         for kind in _TOOL_MOUNTS:
             options += ["-v", f"{self.volume(kind)}:/{kind}"]
@@ -81,6 +90,8 @@ class Demo:
         Returns:
             What follows the `docker run` options.
         """
+        if command.launcher:  # `mh audit`: the settings came with `-e`
+            return [*AS_PUBLISHED, IMAGE, *command.args]
         return [*AS_PUBLISHED, IMAGE, "--color", "never", "--locale", self.locale,
                 *command.args]  # fmt: skip
 

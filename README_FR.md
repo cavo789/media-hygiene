@@ -1,7 +1,7 @@
 # media-hygiene
 
 Nettoie, range et explore les photos et vidéos réparties sur plusieurs dossiers et plusieurs
-disques — d'un seul `docker run`, sous Windows (PowerShell) ou WSL. Tout se passe sur votre
+disques — avec Docker, sous Windows (PowerShell) ou WSL. Tout se passe sur votre
 ordinateur, et chaque changement est journalisé et peut être annulé.
 
 - **Nettoyer les doublons** : copies identiques, copies redimensionnées ou recompressées, rafales.
@@ -23,28 +23,33 @@ L'image : [**cavo789/media-hygiene** sur Docker Hub](https://hub.docker.com/r/ca
 ## Démarrage rapide
 
 Avec Docker installé ([comment l'installer](https://cavo789.github.io/media-hygiene/fr/start/00-install-docker/), sous
-Windows ou Linux), une seule commande audite un dossier. Dans **PowerShell** :
+Windows ou Linux), écrivez `mh` une fois, une commande courte qui retient vos dossiers. Dans
+**PowerShell**, avec votre dossier à la place de `C:\Photos` :
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
+New-Item -ItemType Directory -Force "$HOME\media-hygiene", (Split-Path $PROFILE) | Out-Null
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
+Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
 ```
 
-Dans un terminal **WSL** (ou Linux), le même dossier s'écrit `/mnt/c/Photos` :
+`mh audit` liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier :
+`mh` lui donne votre dossier en lecture seule (`:ro`), et Docker lui-même interdit toute écriture.
+Le premier lancement télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul.
+Ensuite, `mh` seul ouvre un menu qui propose l'étape suivante, et `mh shortcut` pose une icône
+*Media Hygiene* sur votre Bureau. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/)
+explique ces lignes et le résultat, morceau par morceau.
+
+Juste pour essayer, ou dans un terminal **WSL** (ou Linux), une seule commande audite un dossier
+sans `mh` :
 
 ```bash
 docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
 ```
 
-Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier : `:ro`
-(lecture seule) fait interdire toute écriture par Docker lui-même. Le premier lancement
-télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/) explique
-cette commande et son résultat, morceau par morceau.
-
-**Ensuite, `mh`.** Une ligne écrit une commande `mh` qui connaît vos dossiers : `mh` seul ouvre un
-menu qui propose l'étape suivante, et `mh shortcut` pose une icône *Media Hygiene* sur votre Bureau
-([Nettoyer en bref, étape 0](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/)).
-
-Ce qu'elle trouve :
+Ce qu'il trouve :
 
 - **Doublons exacts** : même taille et même SHA-256, entre dossiers *et* entre disques (`C:` et
   `D:` dans la même exécution).
@@ -79,7 +84,7 @@ journalisée, tout est annulable.
 ## Documentation
 
 La [documentation](https://cavo789.github.io/media-hygiene/fr/) vous accompagne pas à pas, avec
-une recherche. Chaque étape ajoute une seule chose à la commande de l'étape précédente.
+une recherche. L'étape 1 écrit `mh` ; ensuite, chaque étape est une commande `mh` courte.
 
 **Trois guides, une page chacun**, le strict minimum d'abord :
 
@@ -92,12 +97,12 @@ Ou pas à pas, une option à la fois :
 **Pour commencer** — les trois mêmes premières étapes, quoi que vous fassiez ensuite (pas encore
 de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/00-install-docker/) d'abord) :
 
-1. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/) : un dossier, une commande, et
-   comment lire le résultat.
+1. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/) : écrire `mh` pour un dossier,
+   `mh audit`, et comment lire le résultat.
 2. [Garder le cache](https://cavo789.github.io/media-hygiene/fr/start/02-keep-the-cache/) : les audits suivants prennent des
    secondes au lieu de minutes.
-3. [Plusieurs dossiers et disques](https://cavo789.github.io/media-hygiene/fr/start/03-several-folders/) : `C:` et `D:`
-   ensemble, le dossier courant, WSL.
+3. [Plusieurs dossiers et disques](https://cavo789.github.io/media-hygiene/fr/start/03-several-folders/) : `mh folders add`,
+   `C:` et `D:` ensemble ; sans `mh`, WSL et Linux.
 
 **Nettoyer les doublons**
 
@@ -174,9 +179,9 @@ puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](http
 
 ## La commande complète
 
-Une fois le guide parcouru, la plupart des gens arrivent à cette commande : deux dossiers, le
-cache, les rapports, la configuration, le journal et la quarantaine. Elle nettoie ; pour un
-audit, ajoutez `:ro` à vos dossiers et écrivez `audit` au lieu de `clean`.
+Ce que `mh clean` tape pour vous, écrit en entier : deux dossiers, le cache, les rapports, la
+configuration, le journal et la quarantaine. Utile sans `mh` (un script, un autre shell). Elle
+nettoie ; pour un audit, ajoutez `:ro` à vos dossiers et écrivez `audit` au lieu de `clean`.
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"

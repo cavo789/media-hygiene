@@ -56,7 +56,9 @@ docker run --rm hello-world
 ```
 
 *Hello from Docker!* et quelques lignes d'explication : Docker fonctionne. Vos lecteurs `C:`,
-`D:`… sont accessibles à Docker tels quels : rien d'autre à régler.
+`D:`… sont accessibles à Docker tels quels : rien d'autre à régler. Ensuite,
+l'[étape 1](01-first-audit.md#écrire-mh-une-fois) écrit `mh`, la commande courte que vous tapez
+dès lors.
 
 ### Si ça ne marche pas
 
@@ -140,6 +142,8 @@ docker run --rm -it --user "$(id -u):$(id -g)" \
 
 `$HOME/Images` devient `/data/home/<vous>/Images`, et l'outil montre vos dossiers par leur vrai
 chemin, `/home/<vous>/Images`. Un `\` en fin de ligne continue la commande sur la suivante.
+`mh` existe aussi pour bash : `launcher --shell bash --photos "$HOME/Images"` l'écrit dans
+`~/media-hygiene/mh.sh` ([`launcher`](../commands/launcher.md)).
 
 ## Sur un Mac
 

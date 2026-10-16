@@ -204,7 +204,8 @@ The `-v` of earlier guides still work, alongside `--photos`.
 
 ## Go further
 
-- [3. Several folders and disks: `mh`](../start/03-several-folders.md#write-your-folders-once-mh)
+- [1. Your first audit: write `mh`](../start/01-first-audit.md#write-mh-once)
+- [3. Several folders and disks: `mh folders add`](../start/03-several-folders.md#add-a-folder-mh-folders-add)
 - [Mount points](../reference-mount-points.md)
 
 ## The built-in help

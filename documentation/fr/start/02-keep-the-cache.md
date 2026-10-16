@@ -3,42 +3,37 @@
 [Documentation](../README.md) › Pour commencer, étape 2 sur 3 · 🇬🇧 [English](../../en/start/02-keep-the-cache.md)
 
 Votre premier audit a lu chaque photo, certaines entièrement. Sur une grosse bibliothèque, et
-plus encore via Docker sous Windows, cela prend des minutes, parfois bien plus. Sans cache,
-**chaque** audit repart de zéro.
+plus encore via Docker sous Windows, cela prend des minutes, parfois bien plus.
 
 Le cache retient ce que l'outil a appris sur chaque fichier : son empreinte, s'il est lisible,
 à quoi il ressemble. Les audits suivants ne lisent que les fichiers nouveaux ou modifiés.
+**`mh` le garde pour vous** : chaque commande `mh` utilise le même cache, un volume Docker nommé
+`media-hygiene-cache`. Rien à régler.
 
-## Ajouter le cache
-
-Ajoutez un `-v` à la commande de l'étape 1 :
+## Auditer à nouveau
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
-  cavo789/media-hygiene --locale fr audit
+mh audit
 ```
 
-Dans PowerShell, la backtick `` ` `` en fin de ligne continue la commande sur la ligne suivante
-(rien ne doit la suivre, pas même un espace). C'est la même commande que sur une seule ligne.
-
-`media-hygiene-cache` n'est pas un de vos dossiers : c'est un *volume*, un espace de stockage que
-Docker gère lui-même. Rien à créer : Docker le crée la première fois et le garde d'un lancement à
-l'autre.
+<!-- capture: audit-mh-again.txt|re:^─+ Audit|Rien de nouveau -->
+```text
+──────────────────────────────────── Audit ─────────────────────────────────────
+22 dossiers inchangés repris de l'index, 0 relus.
+💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
+tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
+♻️  Rien de nouveau ni de modifié depuis le dernier audit : 61 fichiers repris
+du cache.
+```
 
 ## Ce qui change
 
-- Le premier audit avec le cache dure autant qu'avant : il remplit le cache. Sa ligne ⏳ dit
-  maintenant que vous pouvez arrêter à tout moment (Ctrl+C) sans perdre ce qui est vérifié, et
-  après le résumé : *« ⚡ Prochain audit : quelques secondes, les fichiers vérifiés sont repris
-  du cache. »*
+- Le premier audit remplit le cache. Sa ligne ⏳ dit que vous pouvez arrêter à tout moment
+  (Ctrl+C) sans perdre ce qui est vérifié, et après le résumé : *« ⚡ Prochain audit : quelques
+  secondes, les fichiers vérifiés sont repris du cache. »*
 - Les suivants ne lisent que les fichiers nouveaux ou modifiés : la ligne *Durée* du résumé
   montre la différence. Une étape qui n'a plus rien à faire est sautée. Quand aucun fichier
-  n'est nouveau ni modifié, l'audit le dit : *« ♻️ Rien de nouveau ni de modifié depuis le
-  dernier audit : 52.056 fichiers repris du cache. »*
-- La ligne ⚙️ *À régler une fois* ne propose plus *« -v media-hygiene-cache:/cache (prochains
-  audits bien plus rapides) »*.
+  n'est nouveau ni modifié, l'audit le dit, comme ci-dessus.
 
 Un fichier est reconnu à son chemin, sa taille et sa date de modification : changez l'un des
 trois et il est relu. Les résultats sont les mêmes, avec ou sans cache.
@@ -78,8 +73,6 @@ changer cette limite, réglez `previews_max_gb` dans la table `[cache]` de `conf
 
 ## Bon à savoir
 
-- **Gardez ce `-v` dans chaque commande** à partir de maintenant : `audit`, puis plus tard
-  `clean`, `review`… utilisent tous le même cache.
 - **Un audit arrêté en cours de route** (Ctrl+C, `docker stop`, le PC éteint) garde ce qu'il a
   déjà vérifié : le cache enregistre son travail toutes les quelques secondes, et l'audit suivant
   reprend de là.
@@ -93,6 +86,25 @@ changer cette limite, réglez `previews_max_gb` dans la table `[cache]` de `conf
   déplacés et supprimés à la main. Il n'oublie que là où l'audit a pu regarder : un disque non
   monté cette fois, un dossier illisible, un dossier exclu, ou d'autres types de fichiers que ceux
   de `--ext` gardent leur place dans le cache.
+
+
+??? note "Sans `mh` : ajouter le cache vous-même"
+
+    Ajoutez un `-v` au `docker run` de l'étape 1 :
+
+    ```powershell
+    docker run --rm -it `
+      -v "C:\Photos:/data/c/Photos:ro" `
+      -v media-hygiene-cache:/cache `
+      cavo789/media-hygiene --locale fr audit
+    ```
+
+    Dans PowerShell, la backtick `` ` `` en fin de ligne continue la commande sur la ligne
+    suivante (rien ne doit la suivre, pas même un espace). `media-hygiene-cache` n'est pas un de
+    vos dossiers : c'est un *volume*, un espace de stockage que Docker gère lui-même, créé la
+    première fois et gardé d'un lancement à l'autre. **Gardez ce `-v` dans chaque commande** dès
+    lors : `audit`, puis plus tard `clean`, `review`… utilisent tous le même cache. Tant qu'il
+    n'y est pas, la ligne ⚙️ *À régler une fois* de chaque audit le propose.
 
 ---
 

@@ -41,7 +41,8 @@ _CSV_LINES: Final = 6
 # Every capture the scenario produces: the documentation's markers may name these only.
 CAPTURES: Final = frozenset(
     {
-        "audit-photos.txt",
+        "audit-mh.txt",
+        "audit-mh-again.txt",
         "config-first.txt",
         "config.txt",
         "config.toml",
@@ -77,7 +78,9 @@ def _audits(demo: Demo) -> Captures:
     """The first audit on one folder, the configuration, then audits with options."""
     names = demo.library.names
     captures = {
-        "audit-photos.txt": run(demo, Command(("audit",), photos_only=True)),
+        # `mh audit` on a new PC, then again: the cache at work (0195).
+        "audit-mh.txt": run(demo, Command(("audit",), launcher=True)),
+        "audit-mh-again.txt": run(demo, Command(("audit",), launcher=True)),
         "config-first.txt": run(demo, Command(("config",))),
         "config.txt": run(demo, Command(("config",))),
         "config.toml": read_file(demo, "config", "config.toml"),

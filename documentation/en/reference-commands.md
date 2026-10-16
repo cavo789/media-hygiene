@@ -50,7 +50,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |
 | [`crosscheck`](commands/crosscheck.md) | Audit again, run Czkawka, an independent duplicate finder, then compare both. | [Cleaning, 13](clean/13-second-opinion.md) |
 | [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [Cleaning, 7](clean/07-configuration-file.md) |
-| [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/03-several-folders.md#write-your-folders-once-mh) |
+| [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/01-first-audit.md#write-mh-once) |
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
 | [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
@@ -96,7 +96,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
 | `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
-| `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/03-several-folders.md#write-your-folders-once-mh) |
+| `--shell powershell\|bash` | `launcher` | The shell of the `mh` script; guessed from the mounted folders by default (a Windows folder: PowerShell). [Step 3](start/01-first-audit.md#write-mh-once) |
 | `--year YEAR[-YEAR]` | `classify` | Only the files of this year or these years. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--layout LAYOUT` | `classify` | Where sure files go, e.g. `{year}/{month}`. [Sorting, step 4](sort/04-classify.md#your-own-structure) |
 | `--target PATH` | `classify` | Folder receiving the tree; each mounted folder, in place, by default. |

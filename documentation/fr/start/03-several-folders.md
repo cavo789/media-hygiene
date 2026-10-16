@@ -6,26 +6,20 @@ Les doublons restent rarement dans un seul dossier : un ancien disque, la sauveg
 téléphone, une copie sur `D:`. Donnez à l'outil tous les dossiers à comparer, et il trouve les
 copies entre eux en une seule fois.
 
-## Un `-v` par dossier
+## Ajouter un dossier : `mh folders add`
 
-Chaque dossier a son propre `-v`. La règle : **`X:\chemin` devient `/data/x/chemin`**, la lettre
-du lecteur en minuscule.
-
-| Sur votre ordinateur | Dans la commande |
-|---|---|
-| `C:\Photos` | `-v "C:\Photos:/data/c/Photos:ro"` |
-| `D:\Ancien disque` | `-v "D:\Ancien disque:/data/d/Ancien disque:ro"` |
-
-Grâce aux guillemets, les chemins avec des espaces fonctionnent. Voici les deux dossiers, avec le
-cache de l'étape 2 :
+Donnez le dossier tel que l'Explorateur le montre :
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
-  -v media-hygiene-cache:/cache `
-  cavo789/media-hygiene --locale fr audit
+mh folders add "D:\Ancien disque"
+mh audit
 ```
+
+`mh` se réécrit avec ce dossier, puis montre vos dossiers relus depuis son fichier.
+`mh folders` seul les liste, chacun *présent* ou *introuvable* (un disque pas branché) ;
+`mh folders remove "D:\Ancien disque"` en retire un, un dossier renommé aussi. Plusieurs dossiers
+dès le départ ? Un `--photos` chacun dans la ligne `launcher` de l'[étape 1](01-first-audit.md#écrire-mh-une-fois) :
+`--photos "C:\Photos" --photos "D:\Ancien disque"`.
 
 Le résultat compare maintenant les deux disques :
 
@@ -82,117 +76,93 @@ Dossiers partageant des fichiers identiques
 Chaque chemin est affiché comme Windows l'écrit : `/data/d/Ancien disque` s'affiche
 `D:\Ancien disque`.
 
-## Montez chaque dossier une seule fois
+Chaque disque de vos photos a sa propre quarantaine (`D:\media-hygiene\quarantine`) : ce que
+`clean` mettra de côté reste sur son disque, un simple renommage. Plutôt une seule quarantaine pour
+tout ? Ajoutez `--quarantine "D:\quarantaine"` à la ligne `launcher` : elle reçoit les fichiers de
+tous les disques.
 
-Un dossier inclut déjà ses sous-dossiers : `C:\Photos` suffit pour `C:\Photos\2019`. Monter les
+## Juste une fois : `mh --photos`
+
+Pour une seule commande, `mh --photos "E:\Clé USB" audit` ajoute un dossier aux vôtres : les copies
+de vos photos sur la clé sont trouvées aussi, et vos dossiers restent tels quels.
+`mh --photos "E:\Clé USB"` seul ouvre le menu sur elle ; `mh explorer` met cela au clic droit de
+chaque dossier dans l'Explorateur : clic droit, *Media Hygiene*, puis choisissez l'étape.
+
+Un disque pas branché ? `mh` dit quel dossier il ne trouve pas et ne lance rien : Docker monterait
+sinon un dossier vide, et l'audit ne trouverait rien.
+
+## Donnez chaque dossier une seule fois
+
+Un dossier inclut déjà ses sous-dossiers : `C:\Photos` suffit pour `C:\Photos\2019`. Donner les
 deux montrerait chaque photo deux fois, et l'outil le **refuse** plutôt que de prendre une photo
-pour un doublon d'elle-même. Attention à la casse : Windows voit `C:\Photos` et `C:\photos\2019`
-comme le même dossier, Docker non.
+pour un doublon d'elle-même.
 
 ## Une vraie sauvegarde ? Laissez-la de côté
 
-Si `D:\sauvegarde` doit rester une seconde copie de vos photos, ne la montez pas, ou
+Si `D:\sauvegarde` doit rester une seconde copie de vos photos, ne l'ajoutez pas, ou
 [excluez-la](../clean/05-choose-the-kept-copy.md#exclure-un-dossier). Sinon l'outil voit ses fichiers comme
 des doublons, ce qui est exact.
 
-## Le dossier courant
+## Bon à savoir
 
-Dans PowerShell, placez-vous dans un dossier avec `cd`, puis utilisez `${PWD}` (le dossier
-courant) comme source :
-
-```powershell
-docker run --rm -it -v "${PWD}:/data/current:ro" cavo789/media-hygiene --locale fr audit
-```
-
-L'outil affiche quand même le vrai chemin Windows. Dans l'ancienne console `cmd.exe`, écrivez
-`%cd%` au lieu de `${PWD}`.
-
-## Depuis WSL
-
-Dans un terminal WSL (ou Linux), écrivez les chemins Linux, `\` continue une ligne, et ajoutez
-`--user "$(id -u):$(id -g)"` pour que les fichiers que l'outil créera ensuite vous appartiennent :
-
-```bash
-docker run --rm -it --user "$(id -u):$(id -g)" \
-  -v "/mnt/c/Photos:/data/c/Photos:ro" \
-  -v "/mnt/d/Ancien disque:/data/d/Ancien disque:ro" \
-  -v media-hygiene-cache:/cache \
-  cavo789/media-hygiene --locale fr audit
-```
-
-## Depuis Linux
-
-Sur un ordinateur Linux, la règle est la même : `/data` suivi du **chemin complet** du dossier.
-Vos photos dans `~/Images` et un disque USB sous `/media` :
-
-```bash
-docker run --rm -it --user "$(id -u):$(id -g)" \
-  -v "$HOME/Images:/data$HOME/Images:ro" \
-  -v "/media/$USER/Disque/Photos:/data/media/$USER/Disque/Photos:ro" \
-  -v media-hygiene-cache:/cache \
-  cavo789/media-hygiene --locale fr audit
-```
-
-L'outil affiche alors `/home/<vous>/Images/…` et `/media/<vous>/Disque/…`, les chemins que vous
-connaissez, et les commandes qu'il propose (👉 *Et maintenant*, le lanceur `mh`) retapent les
-mêmes `-v`, même quand `/home` ou le disque est une partition à part. Monté ailleurs
-(`-v "$HOME/Images:/data/images"`), l'analyse est la même, mais les chemins affichés ne sont plus
-les vôtres.
-
-La suite de ce guide montre les commandes PowerShell ; les versions WSL et Linux suivent le même
-modèle.
-
-## Écrire vos dossiers une fois : `mh`
-
-Les commandes s'allongent à chaque dossier, et chaque étape des guides en demande une un peu
-différente (`:ro` ou non, le journal, la quarantaine, un port pour le navigateur). Écrivez-les
-**une fois** : la commande `launcher` écrit une commande PowerShell courte, `mh`, qui retient vos
-dossiers. Donnez-les tels que l'Explorateur les montre, un `--photos` chacun : pas de `-v`, `mh`
-les écrit pour vous.
-
-```powershell
-mkdir -Force "$HOME\media-hygiene"
-docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher `
-  --photos "C:\Photos" `
-  --photos "D:\Ancien disque" `
-  --quarantine "D:\quarantaine" `
-  > "$HOME\media-hygiene\mh.ps1"
-. "$HOME\media-hygiene\mh.ps1"
-mh audit
-```
-
-Pas de `-it` ici : ce qu'affiche `launcher` va dans le fichier. `--quarantine` est facultatif (par
-défaut `$HOME\media-hygiene\quarantine`) : sur le disque des photos, mettre de côté est un
-renommage, pas une copie. Le `-e …LOCALE=fr` est retenu : `mh` parle français. Et il date ses
-rapports à votre heure : il demande votre fuseau horaire à Windows à chaque lancement. Ensuite chaque commande est courte : `mh audit`, `mh clean`,
-`mh review`, `mh undo`, `mh status`… `mh` choisit les bons montages pour chacune : vos dossiers
-en lecture seule (`:ro`) sauf si la commande les modifie (`clean`, `sort`, `album`, `undo`,
-`purge`, `xmp`), le cache, et les dossiers `reports`, `config`, `journal` et `quarantine` de
-`$HOME\media-hygiene` (créés s'ils manquent), plus le port des pages du navigateur pour `review`,
-`review-sort`, `places`, `search` et `people`. Les commandes que l'outil propose à la fin d'une exécution deviennent
-elles aussi `mh …`.
-
-- **Dans un nouveau terminal**, rechargez-la : `. "$HOME\media-hygiene\mh.ps1"`. Pour avoir `mh`
-  dans chaque terminal, écrivez cette ligne dans votre profil PowerShell, une fois (le profil et
-  son dossier sont créés s'ils manquent ; `notepad $PROFILE` montre ensuite la ligne) :
-
-  ```powershell
-  New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
-  Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
-  ```
-- **Un autre dossier ?** `mh folders add "D:\Ancien disque"` : `mh` se réécrit avec lui, et
-  affiche vos dossiers relus depuis le fichier (`mh folders` seul les liste, `mh folders remove`
-  en retire un, un dossier renommé aussi). Pour une seule commande, `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers : les copies de vos
-  photos sur la clé sont trouvées aussi. `mh --photos "E:\Clé USB"` seul ouvre le menu sur
-  elle ; `mh explorer` met cela au clic droit de chaque dossier dans l'Explorateur : clic droit,
-  *Media Hygiene*, puis choisissez l'étape.
-- **Un disque pas branché ?** `mh` dit quel dossier il ne trouve pas et ne lance rien (sinon Docker
-  monterait un dossier vide, et l'audit ne trouverait rien).
+- **Un nouveau terminal** connaît `mh` grâce à votre profil PowerShell (étape 1). Sans cette
+  ligne, rechargez-le : `. "$HOME\media-hygiene\mh.ps1"`.
+- **Une nouvelle version** : `mh update` la télécharge et réécrit `mh` avec vos dossiers.
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-- **Depuis WSL ou Linux** : donnez les dossiers tels que bash les voit (`--photos /mnt/c/Photos`),
-  enregistrez dans `~/media-hygiene/mh.sh`, puis
-  `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque terminal).
+
+??? note "Sans `mh` : un `-v` par dossier, depuis PowerShell, WSL ou Linux"
+
+    Chaque dossier a son propre `-v`. La règle : **`X:\chemin` devient `/data/x/chemin`**, la
+    lettre du lecteur en minuscule. Grâce aux guillemets, les chemins avec des espaces
+    fonctionnent :
+
+    | Sur votre ordinateur | Dans la commande |
+    |---|---|
+    | `C:\Photos` | `-v "C:\Photos:/data/c/Photos:ro"` |
+    | `D:\Ancien disque` | `-v "D:\Ancien disque:/data/d/Ancien disque:ro"` |
+
+    ```powershell
+    docker run --rm -it `
+      -v "C:\Photos:/data/c/Photos:ro" `
+      -v "D:\Ancien disque:/data/d/Ancien disque:ro" `
+      -v media-hygiene-cache:/cache `
+      cavo789/media-hygiene --locale fr audit
+    ```
+
+    Attention à la casse : Windows voit `C:\Photos` et `C:\photos\2019` comme le même dossier,
+    Docker non. Le dossier courant de PowerShell est `${PWD}` (`-v "${PWD}:/data/current:ro"`) ;
+    dans l'ancienne console `cmd.exe`, `%cd%`.
+
+    **Depuis WSL**, écrivez les chemins Linux, `\` continue une ligne, et ajoutez
+    `--user "$(id -u):$(id -g)"` pour que les fichiers que l'outil créera ensuite vous
+    appartiennent :
+
+    ```bash
+    docker run --rm -it --user "$(id -u):$(id -g)" \
+      -v "/mnt/c/Photos:/data/c/Photos:ro" \
+      -v "/mnt/d/Ancien disque:/data/d/Ancien disque:ro" \
+      -v media-hygiene-cache:/cache \
+      cavo789/media-hygiene --locale fr audit
+    ```
+
+    **Depuis Linux**, la règle est la même : `/data` suivi du **chemin complet** du dossier. Vos
+    photos dans `~/Images` et un disque USB sous `/media` :
+
+    ```bash
+    docker run --rm -it --user "$(id -u):$(id -g)" \
+      -v "$HOME/Images:/data$HOME/Images:ro" \
+      -v "/media/$USER/Disque/Photos:/data/media/$USER/Disque/Photos:ro" \
+      -v media-hygiene-cache:/cache \
+      cavo789/media-hygiene --locale fr audit
+    ```
+
+    L'outil affiche alors `/home/<vous>/Images/…` et `/media/<vous>/Disque/…`, les chemins que
+    vous connaissez. Monté ailleurs (`-v "$HOME/Images:/data/images"`), l'analyse est la même,
+    mais les chemins affichés ne sont plus les vôtres. `mh` existe aussi pour bash : donnez les
+    dossiers tels que bash les voit (`launcher --shell bash --photos /mnt/c/Photos`), enregistrez
+    dans `~/media-hygiene/mh.sh`, puis `source ~/media-hygiene/mh.sh` (dans `~/.bashrc` pour chaque
+    terminal).
 
 ---
 

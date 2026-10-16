@@ -3,8 +3,9 @@
 ← [Back to the project](../../README.md) · 🇫🇷 [Version française](../fr/README.md)
 
 This guide takes you from your very first command to a cleaned-up photo library, one step at a
-time. Each step adds one thing to the command of the step before. Stop whenever you have what you
-need: after step 1 you already know where your duplicates are.
+time. Step 1 writes `mh`, a short command that remembers your folders; then each step is one
+`mh` command. Stop whenever you have what you need: after step 1 you already know where your
+duplicates are.
 
 **Your photos are safe.** `audit`, `classify` and the other analyses never change a photo; with
 `:ro` on your folders, the system itself forbids it. The commands that act (`clean`, `sort`,
@@ -49,10 +50,11 @@ folders hold, and change nothing.
 No Docker yet? [Install Docker](start/00-install-docker.md) first, on Windows or Linux: a
 few minutes, once.
 
-1. [Your first audit](start/01-first-audit.md): one folder, one command, and how to read the result.
+1. [Your first audit](start/01-first-audit.md): write `mh` for one folder, `mh audit`, and how to
+   read the result.
 2. [Keep the cache](start/02-keep-the-cache.md): the next audits take seconds instead of minutes.
-3. [Several folders and disks](start/03-several-folders.md): `C:` and `D:` together, the current
-   folder, WSL.
+3. [Several folders and disks](start/03-several-folders.md): `mh folders add`, `C:` and `D:`
+   together, a USB key; without `mh`, WSL and Linux.
 ## Clean the duplicates
 
 Free the space the extra copies take, safely, and keep the best shots.

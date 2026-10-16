@@ -211,7 +211,8 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 
 ## Pour aller plus loin
 
-- [3. Plusieurs dossiers et disques : `mh`](../start/03-several-folders.md#écrire-vos-dossiers-une-fois--mh)
+- [1. Votre premier audit : écrire `mh`](../start/01-first-audit.md#écrire-mh-une-fois)
+- [3. Plusieurs dossiers et disques : `mh folders add`](../start/03-several-folders.md#ajouter-un-dossier--mh-folders-add)
 - [Points de montage](../reference-mount-points.md)
 
 ## L'aide intégrée

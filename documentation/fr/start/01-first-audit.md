@@ -2,9 +2,10 @@
 
 [Documentation](../README.md) › Pour commencer, étape 1 sur 3 · 🇬🇧 [English](../../en/start/01-first-audit.md)
 
-Dans cette première étape, vous demandez à l'outil de regarder **un seul dossier** de photos et
-de vous dire ce qu'il y trouve. Rien n'est modifié : un audit ne fait que lire. Avec `:ro`
-ci-dessous, ce n'est pas qu'une promesse : le système lui-même interdit toute modification
+Dans cette première étape, vous écrivez `mh`, une commande courte qui retient votre dossier,
+puis vous lui demandez de regarder ce dossier de photos et de vous dire ce qu'il y trouve. Rien
+n'est modifié : un audit ne fait que lire, et `mh` lui donne votre dossier en lecture seule
+(`:ro`) : le système lui-même interdit toute modification
 ([comment vos photos restent en sécurité](../reference-safety.md)).
 
 ## Ce qu'il vous faut
@@ -12,30 +13,81 @@ ci-dessous, ce n'est pas qu'une promesse : le système lui-même interdit toute 
 - Docker installé et démarré : l'[étape 0](00-install-docker.md) explique comment, sous Windows ou
   Linux.
 - Un dossier de photos et de vidéos, ici `C:\Photos`.
-- Une fenêtre PowerShell (ou un terminal WSL, voir l'[étape 3](03-several-folders.md#depuis-wsl)).
+- Une fenêtre PowerShell (menu Démarrer, tapez *PowerShell*). WSL ou Linux ? Voyez l'encadré à
+  la fin de cette section.
 
-## Lancer l'audit
+## Écrire `mh`, une fois
 
-Copiez cette commande dans PowerShell, avec le chemin de votre propre dossier à la place de
-`C:\Photos` :
+**D'abord**, laissez PowerShell exécuter les scripts écrits sur votre ordinateur, `mh` compris :
+Windows l'interdit par défaut (*l'exécution de scripts est désactivée sur ce système*). Pour votre
+compte seulement ; les scripts téléchargés sur Internet doivent toujours être signés :
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
+```
+
+**Ensuite**, écrivez `mh`, avec votre dossier à la place de `C:\Photos`, tel que l'Explorateur
+le montre :
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\media-hygiene", (Split-Path $PROFILE) | Out-Null
+docker run --rm -e MEDIA_HYGIENE_GENERAL__LOCALE=fr cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
+Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+. "$HOME\media-hygiene\mh.ps1"
 ```
 
 Le premier lancement télécharge l'outil (quelques centaines de Mo) ; les suivants démarrent tout
 de suite.
 
-| Morceau | Ce qu'il veut dire |
+| Ligne | Ce qu'elle fait |
 |---|---|
-| `docker run` | Démarre l'outil dans un conteneur, une petite boîte isolée. |
-| `--rm` | Supprime cette boîte quand l'outil se termine : rien ne traîne. |
-| `-it` | Relie la boîte à votre fenêtre : couleurs, barres de progression, et questions auxquelles vous pouvez répondre. |
-| `-v "C:\Photos:/data/c/Photos:ro"` | Montre votre dossier à l'outil. La boîte ne voit que ce que vous lui donnez avec `-v` : ici `C:\Photos`, qu'elle appelle `/data/c/Photos`. |
-| `:ro` | *Read-only*, lecture seule : Docker lui-même interdit toute modification de votre dossier. |
-| `cavo789/media-hygiene` | L'outil, tel que publié sur Docker Hub. |
-| `--locale fr` | Parle français. Sans cette option, l'outil parle anglais ; l'[étape 7 du nettoyage](../clean/07-configuration-file.md) vous évitera de la retaper. |
-| `audit` | Ce qu'il faut faire : chercher les doublons et les fichiers cassés. |
+| `New-Item …` | Crée `$HOME\media-hygiene` (les dossiers de l'outil y vont) et le dossier de votre profil PowerShell. |
+| `docker run … launcher --photos "C:\Photos"` | Demande à l'outil d'écrire `mh` pour ce dossier, dans `mh.ps1`. Pas de `-it` : ce qu'il affiche va dans le fichier. Avec `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr`, `mh` parle français. |
+| `Add-Content $PROFILE …` | Chaque nouvelle fenêtre PowerShell connaît `mh`, demain aussi. |
+| `. "…\mh.ps1"` | Charge `mh` dans cette fenêtre. |
+
+C'est la seule commande longue du guide. Plusieurs dossiers, un disque USB ? L'[étape
+3](03-several-folders.md) les ajoute avec `mh folders add`. **Plutôt cliquer que taper ?**
+`mh shortcut` pose une icône *Media Hygiene* sur votre Bureau : un double-clic ouvre le menu de
+`mh`.
+
+## Lancer l'audit
+
+```powershell
+mh audit
+```
+
+`mh` seul ouvre un menu qui propose l'étape suivante ; `mh audit` la lance directement.
+Derrière, `mh` tape le `docker run` pour vous : votre dossier en lecture seule, le cache, les
+dossiers des rapports, de la configuration, du journal et de la quarantaine dans
+`$HOME\media-hygiene` (créés s'ils manquent), et votre fuseau horaire, demandé à Windows à chaque
+lancement.
+
+??? note "Sans `mh` : un seul `docker run` (WSL, Linux, ou juste pour essayer)"
+
+    Le même audit en une seule commande Docker, rien d'autre à installer que Docker :
+
+    ```powershell
+    docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene --locale fr audit
+    ```
+
+    | Morceau | Ce qu'il veut dire |
+    |---|---|
+    | `docker run` | Démarre l'outil dans un conteneur, une petite boîte isolée. |
+    | `--rm` | Supprime cette boîte quand l'outil se termine : rien ne traîne. |
+    | `-it` | Relie la boîte à votre fenêtre : couleurs, barres de progression, et questions auxquelles vous pouvez répondre. |
+    | `-v "C:\Photos:/data/c/Photos:ro"` | Montre votre dossier à l'outil. La boîte ne voit que ce que vous lui donnez avec `-v` : ici `C:\Photos`, qu'elle appelle `/data/c/Photos`. |
+    | `:ro` | *Read-only*, lecture seule : Docker lui-même interdit toute modification de votre dossier. |
+    | `cavo789/media-hygiene` | L'outil, tel que publié sur Docker Hub. |
+    | `--locale fr` | Parle français. Sans cette option, l'outil parle anglais ; l'[étape 7 du nettoyage](../clean/07-configuration-file.md) vous évitera de la retaper. |
+    | `audit` | Ce qu'il faut faire : chercher les doublons et les fichiers cassés. |
+
+    Dans un terminal WSL, le même dossier s'écrit `/mnt/c/Photos` ; sous Linux, voyez
+    l'[étape 0](00-install-docker.md#votre-première-commande-sous-linux). `mh` existe aussi pour
+    bash : `launcher --shell bash --photos /mnt/c/Photos > ~/media-hygiene/mh.sh`, puis
+    `source ~/media-hygiene/mh.sh` ([`launcher`](../commands/launcher.md)). Sans `mh`, chaque
+    commande des guides demande ses propres montages : l'[étape suivante](02-keep-the-cache.md) et
+    l'[étape 3](03-several-folders.md) les montrent.
 
 ## Ce qui s'affiche pendant l'analyse
 
@@ -68,19 +120,19 @@ vérifier, l'outil chronomètre ses 20 premières secondes, puis dit une fois co
 prendra le reste, arrondi vers le haut :
 
 ```text
-⏳ 23.412 photos et 318 vidéos à vérifier pour la première fois : environ 45 min. Le cache
-n'est pas gardé : le prochain audit les vérifiera tous à nouveau (voir le conseil à la fin).
+⏳ 23.412 photos et 318 vidéos à vérifier pour la première fois : environ 45 min. Vous pouvez
+arrêter à tout moment (Ctrl+C) : ce qui est vérifié est gardé, et le prochain audit prend
+quelques secondes.
 ```
 
-Sans cache, comme ici, chaque audit repart de zéro : l'[étape suivante](02-keep-the-cache.md)
-garde ce travail, et les audits suivants prennent quelques secondes.
+`mh` garde le cache : l'[étape suivante](02-keep-the-cache.md) montre ce qu'il fait gagner.
 
 ## Lire le résultat
 
-Voici ce qu'affiche un audit de `C:\Photos` (une bibliothèque de démonstration, dont les images
-sont dessinées par un programme) :
+Voici ce qu'affiche `mh audit` la première fois sur `C:\Photos` (une bibliothèque de
+démonstration, dont les images sont dessinées par un programme) :
 
-<!-- capture: audit-photos.txt -->
+<!-- capture: audit-mh.txt|re:^🔒| -->
 ```text
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ──────────────────────────────────── Audit ─────────────────────────────────────
@@ -118,20 +170,12 @@ Ce que vous pouvez faire
 🎞️ 3 rafales : facultatif, ~2 min dans 'review' ; les rafales non revues sont
 gardées entières.
 
-👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté. La
-commande ajoute /journal, /quarantine : des dossiers de votre profil.
-mkdir -Force "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos" `
-  -v "$HOME\media-hygiene\journal:/journal" `
-  -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr clean
+👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté.
+mh clean
+💡 Tapez mh open : votre navigateur montre tous les rapports.
 💡 Choisissez les dossiers qui gardent leurs copies : folders.preferred dans
 config.toml, ou --prefer.
-⚙️  À régler une fois : -v "<un de vos dossiers>:/reports" (rapports HTML); -v
-media-hygiene-cache:/cache (prochains audits bien plus rapides); -e
-TZ=Europe/Brussels (heures dans votre fuseau, pas en UTC).
-(2 autres conseils : ajoutez --verbosity verbose pour les voir.)
+(1 autre conseil : ajoutez --verbosity verbose pour le voir.)
 ```
 
 D'abord le tableau (un mot inconnu ? [les mots de ce guide](../reference-glossary.md)) :
@@ -179,20 +223,19 @@ qu'elle vous coûte.
 | 👀 quasi-doublons | Des groupes à regarder avant de les déplacer, avec une estimation du temps que cela prend ([étape 11 du nettoyage](../clean/11-near-duplicates.md)). |
 | 🎞️ rafales | Facultatif : une rafale que vous ne revoyez pas est gardée entière ([étape 10 du nettoyage](../clean/10-review-bursts.md)). |
 
-La ligne 👉 donne l'étape qui vient logiquement maintenant, suivie de sa **commande complète**,
-prête à coller : vos dossiers sur les mêmes points de montage (sans `:ro` pour une commande qui
-les modifie), les dossiers que vous montez déjà, et ceux dont la commande suivante a besoin et
-qui manquaient à celle-ci (comme `/journal` et `/quarantine`, dans un dossier `media-hygiene` de
-votre profil, créés d'abord par `mkdir`). Elle est écrite pour PowerShell quand vos dossiers sont
-des chemins Windows (`C:\…`), pour bash sinon : les exemples de ce guide montrent celle pour
-PowerShell (`C:\Photos`).
+La ligne 👉 donne l'étape qui vient logiquement maintenant, sous la forme de la commande `mh` à
+taper : `mh clean`. `mh` choisit ses montages tout seul : votre dossier sans `:ro` pour une
+commande qui le modifie, le journal et la quarantaine. Lancée sans `mh`, la même ligne donne le
+**`docker run` complet**, prêt à coller, avec ces montages écrits en entier.
 
-Puis deux astuces 💡 au plus, la plus utile d'abord ; les options à régler une fois (le cache,
-votre fuseau horaire, un dossier de rapports) partagent une seule ligne ⚙️. Une dernière ligne
-dit combien d'astuces ont été omises : ajoutez `--verbosity verbose` pour les voir toutes. Les
-étapes suivantes de ce guide les suivent une à une.
+Puis deux astuces 💡 au plus, la plus utile d'abord (`mh open` montre le rapport HTML de cet
+audit dans votre navigateur). Sans `mh`, les options à régler une fois (le cache, votre fuseau
+horaire, un dossier de rapports) partagent une seule ligne ⚙️ : `mh` les règle toutes pour vous.
+Une dernière ligne dit combien d'astuces ont été omises : ajoutez `--verbosity verbose` pour les
+voir toutes.
 
-> 🔒 Rien n'a changé dans `C:\Photos` : un audit n'écrit jamais, et `:ro` s'en est assuré.
+> 🔒 Rien n'a changé dans `C:\Photos` : un audit n'écrit jamais, et le `:ro` que `mh` lui donne
+> s'en est assuré.
 
 ---
 

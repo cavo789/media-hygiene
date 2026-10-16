@@ -1,7 +1,7 @@
 # media-hygiene
 
-Clean, sort and explore the photos and videos spread over several folders and disks — from one
-`docker run`, on Windows (PowerShell) or WSL. Everything runs on your computer, and every change
+Clean, sort and explore the photos and videos spread over several folders and disks — with
+Docker, on Windows (PowerShell) or WSL. Everything runs on your computer, and every change
 is journaled and can be undone.
 
 - **Clean the duplicates**: identical copies, resized or recompressed ones, burst series.
@@ -22,26 +22,30 @@ The image: [**cavo789/media-hygiene** on Docker Hub](https://hub.docker.com/r/ca
 ## Quick start
 
 With Docker installed ([how to install it](https://cavo789.github.io/media-hygiene/start/00-install-docker/), on
-Windows or Linux), one command audits a folder. In **PowerShell**:
+Windows or Linux), write `mh` once, a short command that remembers your folders. In
+**PowerShell**, with your folder instead of `C:\Photos`:
 
 ```powershell
-docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
+New-Item -ItemType Directory -Force "$HOME\media-hygiene", (Split-Path $PROFILE) | Out-Null
+docker run --rm cavo789/media-hygiene launcher --photos "C:\Photos" > "$HOME\media-hygiene\mh.ps1"
+Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
+. "$HOME\media-hygiene\mh.ps1"
+mh audit
 ```
 
-In a **WSL** (or Linux) terminal, the same folder is written `/mnt/c/Photos`:
+`mh audit` lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing:
+`mh` gives it your folder read-only (`:ro`), so Docker itself forbids any write. The first run
+downloads the image [from Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) by itself.
+Then `mh` alone opens a menu that proposes the next step, and `mh shortcut` puts a *Media
+Hygiene* icon on your Desktop. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/)
+explains these lines and the result, part by part.
+
+Just to try, or in a **WSL** (or Linux) terminal, one command audits a folder without `mh`:
 
 ```bash
 docker run --rm -it -v "/mnt/c/Photos:/data/c/Photos:ro" cavo789/media-hygiene audit
 ```
-
-It lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing: `:ro`
-(read-only) makes Docker itself forbid any write. The first run downloads the image [from Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) by itself.
-[Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) explains this command and its result, part
-by part.
-
-**Then, `mh`.** One line writes an `mh` command that knows your folders: `mh` alone opens a menu
-that proposes the next step, and `mh shortcut` puts a *Media Hygiene* icon on your Desktop
-([Clean in short, step 0](https://cavo789.github.io/media-hygiene/clean/quick-guide/)).
 
 What it finds:
 
@@ -75,7 +79,7 @@ you ask for it: the copy kept stays). More in
 ## Documentation
 
 The [documentation](https://cavo789.github.io/media-hygiene/) walks you through, one step at a
-time, with a search box. Each step adds one thing to the command of the step before.
+time, with a search box. Step 1 writes `mh`; then each step is one short `mh` command.
 
 **Three guides, one page each**, the strict minimum first:
 
@@ -88,12 +92,12 @@ Or step by step, one option at a time:
 **Start here** — the same three first steps, whatever you do next (no Docker yet?
 [Install Docker](https://cavo789.github.io/media-hygiene/start/00-install-docker/) first):
 
-1. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) — one folder, one command, and how to
-   read the result.
+1. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) — write `mh` for one folder,
+   `mh audit`, and how to read the result.
 2. [Keep the cache](https://cavo789.github.io/media-hygiene/start/02-keep-the-cache/) — the next audits take seconds instead
    of minutes.
-3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `C:` and `D:` together,
-   the current folder, WSL.
+3. [Several folders and disks](https://cavo789.github.io/media-hygiene/start/03-several-folders/) — `mh folders add`,
+   `C:` and `D:` together; without `mh`, WSL and Linux.
 
 **Clean the duplicates**
 
@@ -169,9 +173,9 @@ the folders it needs, its options, examples:
 
 ## The complete command
 
-Once through the guide, most people end up with this command: two folders, the cache, the
-reports, the configuration, the journal and the quarantine. It cleans; to audit, add `:ro` to
-your folders and write `audit` instead of `clean`.
+What `mh clean` types for you, written out: two folders, the cache, the reports, the
+configuration, the journal and the quarantine. Useful without `mh` (a script, another shell). It
+cleans; to audit, add `:ro` to your folders and write `audit` instead of `clean`.
 
 ```powershell
 mkdir -Force "$HOME\media-hygiene\reports", "$HOME\media-hygiene\config", "$HOME\media-hygiene\journal", "$HOME\media-hygiene\quarantine"

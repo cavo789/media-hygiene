@@ -3,9 +3,9 @@
 ← [Retour au projet](../../README_FR.md) · 🇬🇧 [English version](../en/README.md)
 
 Ce guide vous emmène de votre toute première commande jusqu'à une photothèque débarrassée de ses
-doublons, une étape à la fois. Chaque étape ajoute une seule chose à la commande de l'étape
-précédente. Arrêtez-vous quand vous avez ce qu'il vous faut : dès l'étape 1, vous savez où sont
-vos doublons.
+doublons, une étape à la fois. L'étape 1 écrit `mh`, une commande courte qui retient vos
+dossiers ; ensuite, chaque étape est une commande `mh`. Arrêtez-vous quand vous avez ce qu'il vous
+faut : dès l'étape 1, vous savez où sont vos doublons.
 
 **Vos photos sont en sécurité.** `audit`, `classify` et les autres analyses ne modifient jamais
 une photo ; avec `:ro` sur vos dossiers, le système lui-même l'interdit. Les commandes qui
@@ -52,12 +52,12 @@ montrent ce que contiennent vos dossiers, sans rien modifier.
 Pas encore de Docker ? [Installez Docker](start/00-install-docker.md) d'abord, sous Windows ou
 Linux : quelques minutes, une seule fois.
 
-1. [Votre premier audit](start/01-first-audit.md) : un dossier, une commande, et comment lire le
-   résultat.
+1. [Votre premier audit](start/01-first-audit.md) : écrire `mh` pour un dossier, `mh audit`, et
+   comment lire le résultat.
 2. [Garder le cache](start/02-keep-the-cache.md) : les audits suivants prennent des secondes au lieu de
    minutes.
-3. [Plusieurs dossiers et disques](start/03-several-folders.md) : `C:` et `D:` ensemble, le dossier
-   courant, WSL.
+3. [Plusieurs dossiers et disques](start/03-several-folders.md) : `mh folders add`, `C:` et `D:`
+   ensemble, une clé USB ; sans `mh`, WSL et Linux.
 ## Nettoyer les doublons
 
 Libérer la place des copies en trop, en toute sécurité, et garder les meilleures photos.

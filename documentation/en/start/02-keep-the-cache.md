@@ -3,40 +3,36 @@
 [Documentation](../README.md) › Start, step 2 of 3 · 🇫🇷 [Français](../../fr/start/02-keep-the-cache.md)
 
 Your first audit read every photo, some of them in full. On a large library, and even more
-through Docker on Windows, that takes minutes, sometimes much more. Without a cache, **every**
-audit starts again from scratch.
+through Docker on Windows, that takes minutes, sometimes much more.
 
 The cache remembers what the tool learnt about each file: its fingerprint, whether it can be
 read, what it looks like. The next audits only read the files that are new or have changed.
+**`mh` keeps it for you**: every `mh` command uses the same cache, a Docker volume named
+`media-hygiene-cache`. Nothing to set.
 
-## Add the cache
-
-Add one `-v` to the command of step 1:
+## Audit again
 
 ```powershell
-docker run --rm -it `
-  -v "C:\Photos:/data/c/Photos:ro" `
-  -v media-hygiene-cache:/cache `
-  cavo789/media-hygiene audit
+mh audit
 ```
 
-In PowerShell, the backtick `` ` `` at the end of a line continues the command on the next one
-(nothing may follow it, not even a space). The command is the same as a single line.
-
-`media-hygiene-cache` is not a folder of yours: it is a *volume*, a storage space Docker manages by
-itself. Nothing to create: Docker creates it the first time and keeps it between runs.
+<!-- capture: audit-mh-again.txt|re:^─+ Audit|No new or changed -->
+```text
+──────────────────────────────────── Audit ─────────────────────────────────────
+22 unchanged folders taken from the index, 0 read.
+💡 A photo changed in place by another program? 'audit --full' reads every
+folder (done anyway for those listed 7 days ago).
+♻️  No new or changed file since the last audit: 61 files taken from the cache.
+```
 
 ## What changes
 
-- The first audit with the cache takes as long as before: it fills the cache. Its ⏳ line
-  now says that you can stop at any time (Ctrl+C) without losing what is checked, and after
-  the summary: *"⚡ Next audit: a few seconds, the files checked are taken from the cache."*
+- The first audit fills the cache. Its ⏳ line says that you can stop at any time (Ctrl+C)
+  without losing what is checked, and after the summary: *"⚡ Next audit: a few seconds, the
+  files checked are taken from the cache."*
 - The next ones only read new or changed files: the *Duration* line of the summary shows the
   difference. A step with nothing left to do is skipped. When no file is new or changed, the
-  audit says so: *"♻️ No new or changed file since the last audit: 52,056 files taken from the
-  cache."*
-- The ⚙️ *To set once* line no longer suggests *"-v media-hygiene-cache:/cache (much faster next
-  audits)"*.
+  audit says so, as above.
 
 A file is recognised by its path, its size and its modification date: change any of them and it
 is read again. The results are the same, with or without the cache.
@@ -74,8 +70,6 @@ older file).
 
 ## Good to know
 
-- **Keep this `-v` in every command** from now on: `audit`, and later `clean`, `review`… all
-  use the same cache.
 - **An audit stopped halfway** (Ctrl+C, `docker stop`, the PC switched off) keeps what it
   already checked: the cache saves its work every few seconds, and the next audit goes on from
   there.
@@ -89,6 +83,25 @@ older file).
   moved and deleted by hand. It only forgets where the audit could look: a disk not mounted this
   time, a folder it could not read, an excluded folder, or other types of files than those of
   `--ext` keep their place in the cache.
+
+
+??? note "Without `mh`: add the cache yourself"
+
+    Add one `-v` to the `docker run` of step 1:
+
+    ```powershell
+    docker run --rm -it `
+      -v "C:\Photos:/data/c/Photos:ro" `
+      -v media-hygiene-cache:/cache `
+      cavo789/media-hygiene audit
+    ```
+
+    In PowerShell, the backtick `` ` `` at the end of a line continues the command on the next
+    one (nothing may follow it, not even a space). `media-hygiene-cache` is not a folder of
+    yours: it is a *volume*, a storage space Docker manages by itself, created the first time
+    and kept between runs. **Keep this `-v` in every command** from then on: `audit`, and later
+    `clean`, `review`… all use the same cache. Until it is there, the ⚙️ *To set once* line of
+    each audit suggests it.
 
 ---
 
