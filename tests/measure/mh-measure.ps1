@@ -41,6 +41,8 @@
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
 #  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
 #      waits for you to start it again                                         (0174)
+#  17. mh.ps1 kept in memory, written in variants (without / with only: keep-awake, browser,
+#      shortcut, right-click): which one the antivirus refuses   (Avast IDP.Generic, 2026-10-16)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -56,6 +58,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 17 -Count 5
 
 param(
     [string]$Photos = "C:\Photos",
@@ -706,6 +709,53 @@ if (Wanted 16) {
         & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
     } while ($LASTEXITCODE -ne 0 -and $watch.Elapsed.TotalSeconds -lt 180)
     Log ("   16c. Docker Desktop answering again after {0:N0} s: {1}" -f $watch.Elapsed.TotalSeconds, ($LASTEXITCODE -eq 0))
+}
+
+# --- 17: which part of mh.ps1 an antivirus refuses on write (Avast IDP.Generic) -----------
+# mh.ps1 is kept in memory, then written to %TEMP%\mh-avast in variants, each without one
+# part (or with only one): keep-awake (Add-Type kernel32), browser (Start-Job polling a URL),
+# shortcut (WScript.Shell), right-click (HKCU registry). Refused or removed = flagged.
+if (Wanted 17) {
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 17. which part of mh.ps1 is refused on write (antivirus)"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Log ("   17. mh.ps1 in memory: {0} lines" -f $lines.Count)
+    $parts = [ordered]@{
+        awake    = 'Add-Type|DllImport|SetThreadExecutionState|MediaHygiene\.Power'
+        browser  = 'Start-Job|Invoke-WebRequest|Start-Process \$url|Receive-Job|Stop-Job|Remove-Job'
+        shortcut = 'WScript|CreateShortcut|ExecutionPolicy Bypass|\.lnk'
+        registry = 'HKCU|New-ItemProperty|Classes\\Directory|%V'
+    }
+    $variants = [ordered]@{ 'full' = @() }
+    foreach ($name in $parts.Keys) { $variants["without-$name"] = @($name) }
+    $variants['without-all'] = @($parts.Keys)
+    foreach ($name in $parts.Keys) { $variants["only-$name"] = @($parts.Keys | Where-Object { $_ -ne $name }) }
+    $folder = Join-Path $env:TEMP "mh-avast"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $written = @{}
+    foreach ($variant in $variants.Keys) {
+        $drop = @($variants[$variant] | ForEach-Object { $parts[$_] })
+        $kept = @($lines | Where-Object { $line = "$_"; -not ($drop | Where-Object { $line -match $_ }) })
+        $text = ($kept -join "`r`n") + "`r`n"
+        $path = Join-Path $folder "$variant.ps1"
+        try {
+            [IO.File]::WriteAllText($path, $text, (New-Object Text.UTF8Encoding $false))
+            $written[$variant] = $text
+            Log ("   17. {0,-18} {1,4} lines: written" -f $variant, $kept.Count)
+        } catch {
+            Log ("   17. {0,-18} {1,4} lines: REFUSED ({2})" -f $variant, $kept.Count, $_.Exception.GetType().Name)
+        }
+    }
+    Start-Sleep -Seconds 15
+    foreach ($variant in $written.Keys) {
+        $path = Join-Path $folder "$variant.ps1"
+        $still = (Test-Path -LiteralPath $path) -and ([IO.File]::ReadAllText($path) -eq $written[$variant])
+        Log ("   17. {0,-18} still there, unchanged, 15 s later: {1}" -f $variant, $still)
+    }
+    $seen = Read-Host "17. Did the antivirus show alerts? Which file names did they give? (type them, or none)"
+    Log "   17. antivirus alerts: $seen"
+    if (-not $Keep) { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $folder }
 }
 
 # --- clean up -------------------------------------------------------------------------------
