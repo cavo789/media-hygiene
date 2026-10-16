@@ -37,11 +37,14 @@ def menu_command(ctx: typer.Context) -> None:
     from media_hygiene.services.status import read_status
 
     runtime = runtime_of(ctx)
-    status = read_status(runtime)
-    menu = build_menu(status, runtime.settings.clean.purge_hint_days)
     output = runtime.output
     on_screen = data_on_terminal()
     output.console.quiet = False  # `-t`: the stderr console is muted for data
+    # A large quarantine takes seconds to count through Docker Desktop: a spinner on
+    # stderr (`mh` passes --color always) says the tool is alive (seen 2026-10-16).
+    with output.console.status(_("Reading the tool folders…")):
+        status = read_status(runtime)
+    menu = build_menu(status, runtime.settings.clean.purge_hint_days)
     output.title(_("media-hygiene — where you are"))
     lines = status_lines(status)
     for line in (*lines[:2], *lines[-1:] * bool(status.missing)):

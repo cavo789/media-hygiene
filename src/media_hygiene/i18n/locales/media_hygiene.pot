@@ -2998,6 +2998,9 @@ msgstr ""
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
+msgid "Reading the tool folders…"
+msgstr ""
+
 msgid "Reading where you are…"
 msgstr ""
 

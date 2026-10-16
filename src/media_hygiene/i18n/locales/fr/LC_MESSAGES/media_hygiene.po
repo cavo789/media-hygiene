@@ -3630,6 +3630,9 @@ msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
+msgid "Reading the tool folders…"
+msgstr "Lecture des dossiers de l'outil…"
+
 msgid "Reading where you are…"
 msgstr "Lecture de là où vous en êtes…"
 
@@ -8068,8 +8071,8 @@ msgid ""
 "{safe} your photos are not touched · {undo} can be undone · {final} for "
 "good"
 msgstr ""
-"{safe} vos photos ne sont pas touchées · {undo} peut être annulé · {final} "
-"définitif"
+"{safe} vos photos ne sont pas touchées · {undo} peut être annulé · "
+"{final} définitif"
 
 #, python-brace-format
 msgid "{seconds} s"
