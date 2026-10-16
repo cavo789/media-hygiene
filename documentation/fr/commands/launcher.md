@@ -73,8 +73,8 @@ mh audit
   créé s'il manque. `clean` met chaque fichier de côté sur son propre disque : nettoyer `E:` ne
   remplit jamais `C:`
   ([nettoyer, étape 8](../clean/08-clean.md#photos-sur-un-autre-disque-que-la-quarantaine)). Un
-  dossier de photos qui est un disque entier (`E:\`) contiendrait ce dossier : son disque garde
-  la quarantaine de `C:`. `mh folders add` avec un dossier d'un nouveau disque ajoute aussi sa
+  dossier de photos qui est un disque entier (`E:\`) a aussi la sienne : l'analyse ne lit jamais
+  un dossier `media-hygiene`. `mh folders add` avec un dossier d'un nouveau disque ajoute aussi sa
   quarantaine.
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
   `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle

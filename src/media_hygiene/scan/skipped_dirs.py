@@ -9,13 +9,18 @@ from __future__ import annotations
 from fnmatch import fnmatchcase
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.paths.docker_run import TOOL_HOME
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
 # System, trash and thumbnail folders that never hold user media: Windows recycle bin,
 # Synology (@eaDir, #recycle), QNAP (@Recycle, .@__thumb), freedesktop trash
-# (.Trash-<uid>) and thumbnails, macOS trash on external volumes (.Trashes).
+# (.Trash-<uid>) and thumbnails, macOS trash on external volumes (.Trashes); and the
+# tool's own folder (quarantine, reports, cache), reached when a whole drive or the home
+# is given as photos (0192).
 SYSTEM_DIR_NAMES: Final = (
+    TOOL_HOME,
     "$recycle.bin",
     "system volume information",
     "@eadir",

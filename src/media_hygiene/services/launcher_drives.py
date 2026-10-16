@@ -3,9 +3,9 @@ r"""One quarantine per photo drive in `mh` (0183): files set aside stay on their
 Each drive of the photo folders other than the quarantine's own (`C:`, the user's
 home, unless `--quarantine` names another) gets `E:\media-hygiene\quarantine` (from
 WSL `/mnt/e/media-hygiene/quarantine`) mounted on `/quarantine/e`; `mh` creates the
-folder before each run like those of the home. A drive whose photo folder holds that
-folder (`E:\` itself) gets none: the quarantine would be read as photos; its files go
-to `/quarantine`. `mh folders add` writes `mh` again, so a new drive gets its own.
+folder before each run like those of the home. A whole drive given as photos (`E:\`)
+gets one too: the audit never reads a `media-hygiene` folder (`scan/skipped_dirs.py`).
+`mh folders add` writes `mh` again, so a new drive gets its own.
 """
 
 from __future__ import annotations
@@ -44,9 +44,9 @@ def with_drive_quarantines(script: LauncherScript) -> LauncherScript:
         letter = _letter(volume.host)
         if letter is None or letter == own or letter in volumes:
             continue
-        host = _quarantine_of(volume.host, letter)
-        if not any(_holds(data.host, host) for data in script.data):
-            volumes[letter] = Volume(host, quarantine.point / letter)
+        volumes[letter] = Volume(
+            _quarantine_of(volume.host, letter), quarantine.point / letter
+        )
     drives = tuple(volumes[letter] for letter in sorted(volumes))
     hosts = tuple(volume.host for volume in drives)
     created = (*(folder for folder in script.created if folder not in hosts), *hosts)
@@ -80,19 +80,3 @@ def _quarantine_of(host: str, letter: str) -> str:
     if _WINDOWS.match(host):
         return str(PureWindowsPath(f"{letter.upper()}:\\", TOOL_HOME, name))
     return str(PurePosixPath("/mnt", letter, TOOL_HOME, name))
-
-
-def _holds(photos: str, folder: str) -> bool:
-    """Tell whether a photo folder holds a folder (Windows ignores case).
-
-    Args:
-        photos: A photo folder.
-        folder: The quarantine of a drive.
-
-    Returns:
-        True when the folder is inside the photo folder, or is it.
-    """
-    if _WINDOWS.match(photos) and _WINDOWS.match(folder):
-        around = PureWindowsPath(photos.rstrip("\\/") + "\\")  # `E:` is `E:\`
-        return PureWindowsPath(folder).is_relative_to(around)
-    return PurePosixPath(folder).is_relative_to(PurePosixPath(photos))

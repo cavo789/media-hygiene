@@ -71,8 +71,8 @@ mh audit
   quarantine's (`C:`), `X:\media-hygiene\quarantine` mounted on `/quarantine/x` and created
   when missing. `clean` sets each file aside on its own drive: cleaning `E:` never fills `C:`
   ([cleaning, step 8](../clean/08-clean.md#photos-on-another-drive-than-the-quarantine)). A
-  photo folder that is a whole drive (`E:\`) would hold that folder: its drive keeps the
-  quarantine of `C:`. `mh folders add` with a folder of a new drive adds its quarantine too.
+  photo folder that is a whole drive (`E:\`) gets one too: the audit never reads a
+  `media-hygiene` folder. `mh folders add` with a folder of a new drive adds its quarantine too.
 - **The port of the browser page** (`-p 127.0.0.1:8088:8088`) for `review`, `review-sort`,
   `places`, `search` and `people`, and **your browser opens on that page** as soon as it
   answers: no address to copy. Ctrl+C in the window still stops it.

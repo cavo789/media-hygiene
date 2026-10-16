@@ -25,10 +25,12 @@ ROOT = Path("/data/d/Disk")
         ".Trash-1000",
         ".Trashes",
         ".thumbnails",
+        "media-hygiene",
+        "Media-Hygiene",
     ],
 )
 def test_system_and_trash_folders_are_always_skipped(name: str) -> None:
-    """Windows, Synology, QNAP, freedesktop and macOS trash or thumbnail folders."""
+    """Trash or thumbnail folders, and the tool's own (a whole drive, 0192)."""
     assert ScanFilters().skips_dir(ROOT / name)
 
 

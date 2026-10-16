@@ -86,6 +86,21 @@ def test_walk_skips_system_and_excluded_folders(tmp_path: Path) -> None:
     ]
 
 
+def test_walk_never_reads_the_tool_folder_of_a_whole_drive(tmp_path: Path) -> None:
+    r"""E:\ given whole: its quarantine, reports and cache are not photos (0192)."""
+    for relative in (
+        "Photos/a.jpg",
+        "media-hygiene/quarantine/20261016-120000/e/Photos/a.jpg",
+        "media-hygiene/reports/previews/b.jpg",
+    ):
+        (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / relative).write_bytes(b"x")
+    found = listed(tmp_path, ScanFilters())
+    assert [file.path.relative_to(tmp_path).as_posix() for file in found] == [
+        "Photos/a.jpg"
+    ]
+
+
 def test_walk_logs_unreadable_folders(
     tmp_path: Path,
     caplog: pytest.LogCaptureFixture,

@@ -137,7 +137,8 @@ mh audit --exclude-name "Thumbnails,*.lrdata"
 These names add to the folders always skipped, because they never hold your photos: the Windows
 recycle bin (`$RECYCLE.BIN`, `System Volume Information`), Synology (`@eaDir`, `#recycle`), QNAP
 (`@Recycle`, `.@__thumb`), the Linux and macOS trash bins of external disks (`.Trash`,
-`.Trash-1000`, `.Trashes`) and thumbnail caches (`.thumbnails`). A trash is not only noise: if
+`.Trash-1000`, `.Trashes`), thumbnail caches (`.thumbnails`) and the tool's own folder
+(`media-hygiene`: quarantine, reports, cache). A trash is not only noise: if
 its copy were the one kept, emptying the trash would lose the photo. `media-hygiene config` lists
 them.
 

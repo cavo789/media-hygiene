@@ -111,9 +111,10 @@ def test_each_photo_drive_but_c_gets_its_quarantine_created_by_mh() -> None:
     assert "/quarantine/c" not in text
 
 
-def test_a_whole_drive_given_as_photos_keeps_the_default_quarantine() -> None:
-    r"""E:\ itself would hold its quarantine: the audit would read it as photos."""
-    assert _script("C:\\Photos", "E:\\").drives == ()
+def test_a_whole_drive_given_as_photos_gets_its_own_quarantine() -> None:
+    r"""E:\ itself: its quarantine on /quarantine/e, never read by the audit (0192)."""
+    script = _script("C:\\Photos", "E:\\")
+    assert script.drives == (Volume("E:\\media-hygiene\\quarantine", _Q / "e"),)
 
 
 def test_wsl_folders_get_their_drive_quarantine_too() -> None:

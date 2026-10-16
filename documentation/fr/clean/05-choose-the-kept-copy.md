@@ -146,7 +146,8 @@ mh audit --exclude-name "Thumbnails,*.lrdata"
 Ces noms s'ajoutent aux dossiers toujours ignorés, parce qu'ils ne contiennent jamais vos
 photos : la corbeille de Windows (`$RECYCLE.BIN`, `System Volume Information`), Synology
 (`@eaDir`, `#recycle`), QNAP (`@Recycle`, `.@__thumb`), les corbeilles Linux et macOS des disques
-externes (`.Trash`, `.Trash-1000`, `.Trashes`) et les caches de vignettes (`.thumbnails`). Une
+externes (`.Trash`, `.Trash-1000`, `.Trashes`), les caches de vignettes (`.thumbnails`) et le
+dossier de l'outil lui-même (`media-hygiene` : quarantaine, rapports, cache). Une
 corbeille n'est pas qu'un bruit : si sa copie était celle gardée, vider la corbeille perdrait la
 photo. `media-hygiene config` les liste.
 
