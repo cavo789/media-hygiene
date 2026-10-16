@@ -59,3 +59,4 @@ Analysing another folder: type its path → right-click it.
   (`-Only 10`; an existing entry is exported and imported back).
 - Right-click on the background of an open folder (`Directory\Background\shell`) not added.
   **Reason:** not asked; one more key if wanted.
+  → refiled as 0188: add it (maintainer, inbox 2026-10-16).

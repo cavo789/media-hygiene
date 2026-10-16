@@ -151,6 +151,7 @@ menu and in the "type it directly" line. To confirm with the maintainer's run (N
   colours and not as escape codes once the docker output is not a `-t` terminal, and that the
   emoji columns line up. If the codes show raw, drop the `$color` line of `mh.ps1.j2`.
   **Reason:** Needs maintainer (Windows machine).
+  → step 14 of `tests/measure/mh-measure.ps1` added (inbox, 2026-10-16).
 - The e2e test and `docs_screenshots` (the `menu.txt` and `help-menu.txt` captures, the
   `--help` capture of `reference-commands.md` now listing `menu`) were not run here.
   **Reason:** image build + browser, heavy: CI runs e2e; `docs_screenshots` to be run by the

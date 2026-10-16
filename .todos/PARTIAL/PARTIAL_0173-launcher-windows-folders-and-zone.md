@@ -108,12 +108,15 @@ From the command above: 4 things to copy exactly → 1 (the folder as Explorer s
   `-e TZ`. The PowerShell part (`Resolve-Path`, `Get-TimeZone`, `Test-Path`, `@rest`) is only
   checked as text here: no PowerShell in the devcontainer.
   **Reason:** Needs maintainer (Windows machine).
+  → step 15 of `tests/measure/mh-measure.ps1` added (inbox, 2026-10-16).
 - An e2e test of `launcher --photos`: the demo tree lives in a named volume, and a host path of
   the devcontainer is invisible to the host Docker daemon. The existing e2e (`-v` volumes,
   `mh audit`, `mh` alone) covers the new templates.
   **Reason:** devcontainer limit; could run in CI only, with a host folder.
+  → refiled as 0189, e2e in CI with a host folder (maintainer, inbox 2026-10-16).
 - `docs_screenshots`: the `help-launcher.txt` capture (two new options) and the `-e TZ` line of
   the first audit's capture are stale.
   **Reason:** heavy (image build + browser), for the maintainer.
 - Network folders (`\\NAS\photos`): refused by `--photos`; whether Docker Desktop can bind
   mount them, or a mapped drive letter, is to check.
+  → keep the refusal: no network folders for now (maintainer, inbox 2026-10-16).

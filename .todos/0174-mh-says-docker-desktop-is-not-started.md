@@ -4,7 +4,7 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/services/launcher_menu.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/{en,fr}/reference-troubleshooting.md`, `documentation/{en,fr}/commands/launcher.md`, `tests/unit/test_launcher_menu.py`
-- **Needs maintainer**: the exact message and exit code of `docker run` on Windows when Docker Desktop is closed (PowerShell 5.1), to quote it in the troubleshooting page
+- **Needs maintainer**: the exact message and exit code of `docker run` on Windows when Docker Desktop is closed (PowerShell 5.1), to quote it in the troubleshooting page: step 16 of `tests/measure/mh-measure.ps1` records it (inbox, 2026-10-16)
 
 ## Why
 

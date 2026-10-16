@@ -35,6 +35,12 @@
 #      free): to the quarantine on C: (copy E: -> C:), then to that drive's own quarantine
 #      /quarantine/x (copy E: -> E:): wall time of each clean and undo; then undo without
 #      the drive's quarantine mounted must refuse, naming the drive                  (0183)
+#  14. the mh menu by hand, old console then your usual one: colours, columns, a number +
+#      Enter, Ctrl+C; asks what you saw                                        (0172)
+#  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
+#      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
+#  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
+#      waits for you to start it again                                         (0174)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -49,6 +55,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
 
 param(
     [string]$Photos = "C:\Photos",
@@ -605,6 +612,96 @@ if (Wanted 13) {
         Measure-Mh "13d. undo without $drive13's quarantine mounted: must refuse, naming $drive13" $driveMounts @("undo", "--yes")
         Measure-Mh "13e. undo of that clean (copy $drive13 -> $drive13)" $ownQuarantine @("undo", "--yes")
     }
+}
+
+# --- 14: the mh menu by hand, in the old console and in your usual one (0172) --------------
+# mh alone lists the steps; a number then Enter runs one. Watch the colours and the columns.
+if (Wanted 14) {
+    $ErrorActionPreference = "Continue"
+    $mhDir = Join-Path $tool "mh14"
+    New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
+    Log ""
+    Log "== 14. the mh menu by hand (0172)"
+    $menu = "-NoProfile -ExecutionPolicy Bypass -NoExit -Command . '$mhFile'; mh"
+    foreach ($console in 'conhost', 'usual') {
+        if ($console -eq 'conhost') {
+            Start-Process -FilePath conhost.exe -ArgumentList "powershell.exe $menu" | Out-Null
+        } else {
+            Start-Process -FilePath powershell.exe -ArgumentList $menu | Out-Null
+        }
+        Write-Host "14 ($console console): a window shows the mh menu. Type the number of 'audit', Enter; when it ends, type mh again, then Ctrl+C at the question."
+        $colours = Read-Host "14. Colours shown as colours, not as codes like [32m? (y/n)"
+        $columns = Read-Host "14. Emoji and step columns lined up? (y/n)"
+        $ran = Read-Host "14. The number + Enter ran audit? (y/n)"
+        $stopped = Read-Host "14. Ctrl+C at the question gave the prompt back, no red error? (y/n)"
+        Log "   14 ($console): colours $colours, columns $columns, number ran $ran, Ctrl+C clean $stopped"
+        Write-Host "Close that window."
+    }
+}
+
+# --- 15: the launcher line of the guide, then mh audit and mh --photos (0173) ----------------
+# The same line as "Clean in short", step 0, with the test folder; nothing under your $HOME.
+if (Wanted 15) {
+    $ErrorActionPreference = "Continue"
+    $mhDir = Join-Path $tool "mh15"
+    New-Item -ItemType Directory -Force -Path $mhDir | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    Log ""
+    Log "== 15. launcher --photos, then mh (0173)"
+    $errFile = Join-Path $mhDir "launcher-said.txt"
+    & docker run --rm $Image launcher --photos $data > $mhFile 2> $errFile
+    Log "   15a. launcher exit code: $LASTEXITCODE"
+    foreach ($line in @(Get-Content -Path $errFile)) { if ("$line".Trim()) { Log ("   15a. launcher says: " + "$line".Trim()) } }
+    Log ("   15a. mh.ps1 written: {0} bytes; holds Get-TimeZone: {1}" -f (Get-Item $mhFile).Length, ((Get-Content $mhFile -Raw) -match 'Get-TimeZone'))
+    . $mhFile
+    mh audit | Out-Null
+    Log "   15b. mh audit: exit code $LASTEXITCODE"
+    $lines = @(mh history 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match '\d\d:\d\d' } | Select-Object -First 2)
+    foreach ($line in $lines) { Log ("   15c. mh history: " + $line.Trim()) }
+    Log ("   15c. clock of this PC: " + (Get-Date -Format "yyyy-MM-dd HH:mm") + " (" + (Get-TimeZone).Id + "): the history must show the same hour")
+    if ($OtherDrive -ne "") {
+        $other = Join-Path $OtherDrive "mh-measure-15"
+        New-Item -ItemType Directory -Force -Path $other | Out-Null
+        Copy-Item -Path (Join-Path $data "flat\*") -Destination $other -ErrorAction SilentlyContinue
+        mh --photos $other audit | Out-Null
+        Log "   15d. mh --photos $other audit: exit code $LASTEXITCODE"
+        if (-not $Keep) { Remove-Item -Recurse -Force $other }
+    } else {
+        Log "   15d. skipped: give -OtherDrive E: (a USB key) to audit a second folder with --photos"
+    }
+    $said = @(mh --photos "Q:\mh-measure-not-plugged" audit 6>&1 2>&1 | ForEach-Object { "$_" })
+    Log ("   15e. a folder not plugged in: exit code $LASTEXITCODE, says: " + ($said -join ' / '))
+}
+
+# --- 16: Docker Desktop closed: the exact message of docker run (0174) ----------------------
+# You quit Docker Desktop when asked; its own message and exit code are recorded as they are.
+if (Wanted 16) {
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 16. docker run with Docker Desktop closed (0174)"
+    Read-Host "16. Quit Docker Desktop now (its icon near the clock, right-click, Quit), wait 20 s, then press Enter"
+    $said = @(& docker run --rm $Image --version 2>&1 | ForEach-Object { "$_" })
+    $code = $LASTEXITCODE
+    foreach ($line in $said) { Log ("   16a. docker run says: " + $line.Trim()) }
+    Log "   16a. docker run exit code: $code"
+    & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
+    Log "   16b. docker version exit code with Docker Desktop closed: $LASTEXITCODE"
+    Read-Host "16. Start Docker Desktop again, then press Enter (this script waits up to 3 minutes for it)"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    do {
+        Start-Sleep -Seconds 5
+        & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
+    } while ($LASTEXITCODE -ne 0 -and $watch.Elapsed.TotalSeconds -lt 180)
+    Log ("   16c. Docker Desktop answering again after {0:N0} s: {1}" -f $watch.Elapsed.TotalSeconds, ($LASTEXITCODE -eq 0))
 }
 
 # --- clean up -------------------------------------------------------------------------------

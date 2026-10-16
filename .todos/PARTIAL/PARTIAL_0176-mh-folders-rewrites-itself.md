@@ -81,3 +81,4 @@ One more folder: the long line with every folder retyped → `mh folders add "D:
 - e2e adds a host folder but audits only after removing it: Docker cannot create a bind's
   mount point inside the read-only demo volume of `/data`.
   **Reason:** e2e data is a named volume; the add-then-audit path is in step 11b instead.
+  → refiled as 0189, e2e in CI with a host folder (maintainer, inbox 2026-10-16).

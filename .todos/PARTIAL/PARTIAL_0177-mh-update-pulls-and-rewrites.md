@@ -64,3 +64,4 @@ command.
   build as `cavo789/media-hygiene` (asks first) and lets `mh update` pull the published one.
 - No release notes exist (CI publishes tags to Docker Hub, no GitHub Release): the docs link the
   Docker Hub tags page instead. **Reason:** a decision for the maintainer.
+  → refiled as 0187: CI creates a GitHub Release (maintainer, inbox 2026-10-16).
