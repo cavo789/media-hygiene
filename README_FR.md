@@ -40,6 +40,10 @@ Elle liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien
 télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/) explique
 cette commande et son résultat, morceau par morceau.
 
+**Ensuite, `mh`.** Une ligne écrit une commande `mh` qui connaît vos dossiers : `mh` seul ouvre un
+menu qui propose l'étape suivante, et `mh shortcut` pose une icône *Media Hygiene* sur votre Bureau
+([Nettoyer en bref, étape 0](https://cavo789.github.io/media-hygiene/fr/clean/quick-guide/)).
+
 Ce qu'elle trouve :
 
 - **Doublons exacts** : même taille et même SHA-256, entre dossiers *et* entre disques (`C:` et

@@ -148,7 +148,8 @@ the Terminal. The commands of this guide follow the Linux pattern above.
 
 - **Docker**: Docker Desktop offers its updates itself; on Linux, your usual system updates
   (`sudo apt upgrade`) include it.
-- **The tool**: `docker pull cavo789/media-hygiene` fetches its latest version.
+- **The tool**: `docker pull cavo789/media-hygiene` fetches its latest version; with `mh`, type
+  `mh update`: it also writes `mh` again with your folders.
 
 ---
 

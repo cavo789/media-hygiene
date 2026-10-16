@@ -50,7 +50,7 @@ mh people --sample 200
 mh people
 ```
 
-Open `http://127.0.0.1:8088/`: faces that look alike are grouped, the largest groups first.
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`): faces that look alike are grouped, the largest groups first.
 **Type a name** on a group, Enter: it is written into `config.toml`. Naming the ten largest groups
 is often enough.
 
@@ -73,7 +73,7 @@ name your places on a map:
 mh places
 ```
 
-Open `http://127.0.0.1:8088/`, click a circle, name it, **Save**.
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`); click a circle, name it, **Save**.
 
 ![The places map: OpenStreetMap tiles of the Cinquantenaire park in Brussels, the circle of the photos taken there, the green circle of the place Parc du Cinquantenaire just saved, and on the left the list of places and of the largest clusters without a name](../images/places.webp)
 
@@ -119,7 +119,7 @@ your photos.
 mh search
 ```
 
-Open `http://127.0.0.1:8088/`: type what you remember, the grid shows the photos, the best first;
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`): type what you remember, the grid shows the photos, the best first;
 Enter enlarges one.
 
 ![The search page: birthday typed in the Words field, the year, path and source filters beside it, 8 files found; a grid of birthday photos, each with its name, folder, date and its words Birthday, 2022, May, spring](../images/search.webp)

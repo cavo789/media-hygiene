@@ -39,6 +39,10 @@ It lists the duplicate and broken photos and videos of `C:\Photos`, and changes 
 [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/) explains this command and its result, part
 by part.
 
+**Then, `mh`.** One line writes an `mh` command that knows your folders: `mh` alone opens a menu
+that proposes the next step, and `mh shortcut` puts a *Media Hygiene* icon on your Desktop
+([Clean in short, step 0](https://cavo789.github.io/media-hygiene/clean/quick-guide/)).
+
 What it finds:
 
 - **Exact duplicates** — same size and same SHA-256, across folders *and* disks (`C:` and `D:`

@@ -52,7 +52,7 @@ mh people --sample 200
 mh people
 ```
 
-Ouvrez `http://127.0.0.1:8088/` : les visages qui se ressemblent sont regroupés, les plus grands
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : les visages qui se ressemblent sont regroupés, les plus grands
 groupes d'abord. **Tapez un nom** sur un groupe, Entrée : il est écrit dans `config.toml`. Nommer
 les dix plus grands groupes suffit souvent.
 
@@ -76,7 +76,7 @@ noms (« Maison », « Chez papy »), nommez vos lieux sur une carte :
 mh places
 ```
 
-Ouvrez `http://127.0.0.1:8088/`, cliquez sur un cercle, nommez-le, **Enregistrer**.
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) ; cliquez sur un cercle, nommez-le, **Enregistrer**.
 
 ![La carte des lieux : les tuiles OpenStreetMap du parc du Cinquantenaire à Bruxelles, le cercle des photos prises là, le cercle vert du lieu Parc du Cinquantenaire qui vient d'être enregistré, et à gauche la liste des lieux et des plus grands groupes sans nom](../images/places.webp)
 
@@ -123,7 +123,7 @@ vos photos.
 mh search
 ```
 
-Ouvrez `http://127.0.0.1:8088/` : tapez ce dont vous vous souvenez, la grille montre les photos,
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : tapez ce dont vous vous souvenez, la grille montre les photos,
 les meilleures d'abord ; Entrée en agrandit une.
 
 ![La page de recherche : anniversaire tapé dans le champ Mots, à côté les filtres d'année, de chemin et de source, 8 fichiers trouvés ; une grille de photos d'anniversaire, chacune avec son nom, son dossier, sa date et ses mots Anniversaire, 2022, mai, printemps](../images/search.webp)

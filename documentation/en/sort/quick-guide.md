@@ -87,7 +87,7 @@ Rather a photo on screen than a spreadsheet? The same events, one at a time, wit
 mh review-sort
 ```
 
-Open `http://127.0.0.1:8088/` (Ctrl+click). <kbd>Enter</kbd> accepts the name and category and
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`). <kbd>Enter</kbd> accepts the name and category and
 goes to the next one, <kbd>E</kbd> types a name, <kbd>O</kbd> sends the chosen photos elsewhere,
 <kbd>V</kbd> accepts every sure proposal at once.
 
@@ -155,7 +155,7 @@ Recent phones write where each photo was taken. Name your places on a map:
 mh places
 ```
 
-Open `http://127.0.0.1:8088/`: the circles are your photos, the largest unnamed groups first.
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`): the circles are your photos, the largest unnamed groups first.
 Click, name ("Home", "Grandpa's"), set the radius, tick **Home** for yours, **Save**: the place is
 written into `config.toml`.
 
@@ -199,7 +199,7 @@ mh people --sample 200
 mh people
 ```
 
-Open `http://127.0.0.1:8088/`: faces that look alike are grouped, the largest groups first.
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`): faces that look alike are grouped, the largest groups first.
 **Type a name** on a group, Enter: it is written into `config.toml`. Naming the ten largest groups
 is often enough.
 

@@ -151,7 +151,8 @@ hello-world` dans le Terminal. Les commandes de ce guide suivent le modèle Linu
 
 - **Docker** : Docker Desktop propose lui-même ses mises à jour ; sous Linux, vos mises à jour
   système habituelles (`sudo apt upgrade`) l'incluent.
-- **L'outil** : `docker pull cavo789/media-hygiene` récupère sa dernière version.
+- **L'outil** : `docker pull cavo789/media-hygiene` récupère sa dernière version ; avec `mh`, tapez
+  `mh update` : il réécrit aussi `mh` avec vos dossiers.
 
 ---
 

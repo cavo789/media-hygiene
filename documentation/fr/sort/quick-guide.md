@@ -92,7 +92,7 @@ Plutôt une photo à l'écran qu'un tableur ? Les mêmes événements, un à la 
 mh review-sort
 ```
 
-Ouvrez `http://127.0.0.1:8088/` (Ctrl+clic). <kbd>Entrée</kbd> accepte le nom et la catégorie
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`). <kbd>Entrée</kbd> accepte le nom et la catégorie
 et passe au suivant, <kbd>E</kbd> tape un nom, <kbd>O</kbd> envoie les photos choisies ailleurs,
 <kbd>V</kbd> accepte d'un coup toutes les propositions sûres.
 
@@ -161,7 +161,7 @@ Les téléphones récents écrivent où chaque photo a été prise. Nommez vos l
 mh places
 ```
 
-Ouvrez `http://127.0.0.1:8088/` : les cercles sont vos photos, les plus grands groupes sans nom
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : les cercles sont vos photos, les plus grands groupes sans nom
 d'abord. Cliquez, nommez (« Maison », « Chez papy »), réglez le rayon, cochez **Maison** pour la
 vôtre, **Enregistrer** : le lieu est écrit dans `config.toml`.
 
@@ -205,7 +205,7 @@ mh people --sample 200
 mh people
 ```
 
-Ouvrez `http://127.0.0.1:8088/` : les visages qui se ressemblent sont regroupés, les plus grands
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : les visages qui se ressemblent sont regroupés, les plus grands
 groupes d'abord. **Tapez un nom** sur un groupe, Entrée : il est écrit dans `config.toml`. Nommer
 les dix plus grands groupes suffit souvent.
 
