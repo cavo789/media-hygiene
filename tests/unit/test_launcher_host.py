@@ -202,10 +202,33 @@ def test_powershell_shortcut_writes_then_reads_back_both_links() -> None:
         '$file.Replace("\'", "\'\'"), $words'
     ) in text
     assert "$file = $MyInvocation.MyCommand.ScriptBlock.File" in text
-    save = text.index("try { $link.Save() } catch { }")
+    save = text.index("try { $link.Save() } catch { $reason, $refused = _mh_why $_;")
     back = text.index("$back = $shell.CreateShortcut($path)")
     assert save < back < text.index("$back.Arguments -eq $arguments")
     assert 'Write-Host "Enregistr\u00e9, relu depuis ${path} :"' in text
+
+
+def test_powershell_shortcut_says_why_and_suggests_a_click_only_once_written() -> None:
+    """0190: why a write failed, the refusal hint, no click after a failure."""
+    text = _powershell()
+    body = text[text.index("function global:_mh_shortcut {") :]
+    body = body[: body.index("\n}\n")]
+    assert 'Write-Host "Impossible d\'\u00e9crire ${path}."' in body
+    assert 'if ($reason) { Write-Host "    $reason" }' in body
+    counted = body.index("$written++")
+    assert counted < body.index('Write-Host "Impossible d')
+    assert 'if ($denied) { Write-Host "Acc\u00e8s refus\u00e9 : un antivirus' in body
+    assert 'if ($written -gt 0) { Write-Host "Double-cliquez' in body
+
+
+def test_powershell_why_keeps_the_innermost_message_and_spots_a_refusal() -> None:
+    """0190: the COM wrapper unwrapped, access refused by type or by its HRESULT."""
+    text = _powershell()
+    assert "function global:_mh_why($record) {" in text
+    assert "while ($exception.InnerException) {" in text
+    assert "($exception -is [UnauthorizedAccessException])" in text
+    assert "($exception.HResult -eq -2147024891)" in text
+    assert -2147024891 == 0x80070005 - 2**32  # E_ACCESSDENIED
 
 
 def test_powershell_explorer_writes_the_key_and_reads_it_back() -> None:
@@ -218,7 +241,18 @@ def test_powershell_explorer_writes_the_key_and_reads_it_back() -> None:
     assert "$read = if ($back) { $back.GetValue('') } else { $null }" in text
     assert "if ($read -eq $command) {" in text
     assert "if ($args -contains '--remove') {" in text
-    assert "Remove-Item -LiteralPath $key -Recurse -Force" in text
+    assert "Remove-Item -LiteralPath $key -Recurse -Force -ErrorAction Stop" in text
+
+
+def test_powershell_explorer_catches_its_errors_and_says_why() -> None:
+    """0190: each write stops on error, so the catch sees it; no red error record."""
+    text = _powershell()
+    body = text[text.index("function global:_mh_explorer {") :]
+    body = body[: body.index("\n}\n")]
+    assert body.count("-Force -ErrorAction Stop") == 4
+    assert body.count("$reason, $denied = _mh_why $_") == 2
+    assert body.count('if ($reason) { Write-Host "    $reason" }') == 2
+    assert body.count('if ($denied) { Write-Host "Acc\u00e8s refus\u00e9') == 2
 
 
 def _from_command_line(line: str) -> str:

@@ -519,6 +519,13 @@ msgstr ""
 msgid "Accept {sure} ({files})"
 msgstr "Accepter {sure} ({files})"
 
+msgid ""
+"Access refused: an antivirus may lock a path it has flagged; restarting "
+"Windows lifts such a lock."
+msgstr ""
+"Accès refusé : un antivirus peut bloquer un chemin qu'il a signalé ; "
+"redémarrer Windows lève ce blocage."
+
 msgid "Act: moves, writes or deletes files"
 msgstr "Agir : déplace, écrit ou supprime des fichiers"
 

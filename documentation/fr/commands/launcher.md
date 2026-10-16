@@ -112,7 +112,9 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
-registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Depuis WSL,
+registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Un échec est dit
+avec sa raison ; un *accès refusé* vient souvent d'un antivirus, qui peut bloquer un chemin qu'il a
+signalé jusqu'au redémarrage de Windows. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
 autres disent qu'elles sont pour Windows.
 

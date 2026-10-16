@@ -60,6 +60,7 @@ class HostTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     no_file: str
     saved: str  # holds `$path`
     not_saved: str  # holds `$path`
+    denied: str  # access refused: an antivirus may lock a path (0190)
     shortcut: str
     explorer: str  # holds `$key`
     removed: str  # holds `$key`
@@ -143,6 +144,12 @@ def _texts(reports: str) -> HostTexts:
         ),
         saved=with_variable(_("Saved, read back from {path}:"), "{path}", "${path}"),
         not_saved=with_variable(_("Could not write {path}."), "{path}", "${path}"),
+        denied=shell_safe(
+            _(
+                "Access refused: an antivirus may lock a path it has flagged; "
+                "restarting Windows lifts such a lock."
+            )
+        ),
         shortcut=shell_safe(
             _(
                 "Double-click Media Hygiene on the Desktop or in the Start menu: "

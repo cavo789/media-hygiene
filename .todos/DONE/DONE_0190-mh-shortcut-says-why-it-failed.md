@@ -43,3 +43,11 @@ Two defects:
 
 The `-ExecutionPolicy Bypass` in the shortcut and the right-click command: measured harmless here
 (the `.lnk` with it saved, no alert from a user-like run), so it stays.
+
+## Measured on Windows (2026-10-16, maintainer, Windows 11, PowerShell 5.1)
+
+Image built from the working tree, `mh` written again. A refusal simulated by a read-only
+Desktop `Media Hygiene.lnk` pointing to Notepad: `mh shortcut` said "Impossible d'écrire …",
+then `Unable to save shortcut "…"` (the system's message), the Start menu shortcut saved and
+read back, the "Accès refusé" hint, then the double-click line (one shortcut was written).
+Read-only cleared: both saved and read back.

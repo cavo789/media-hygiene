@@ -401,6 +401,11 @@ msgstr ""
 msgid "Accept {sure} ({files})"
 msgstr ""
 
+msgid ""
+"Access refused: an antivirus may lock a path it has flagged; restarting "
+"Windows lifts such a lock."
+msgstr ""
+
 msgid "Act: moves, writes or deletes files"
 msgstr ""
 

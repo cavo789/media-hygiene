@@ -108,7 +108,9 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key
-`HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. From WSL, Linux or macOS,
+`HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. A failure is shown with its
+reason; *access refused* often comes from an antivirus, which may lock a path it has flagged until
+Windows restarts. From WSL, Linux or macOS,
 `mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; the other two say they are for
 Windows.
 
