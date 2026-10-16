@@ -168,6 +168,7 @@ def test_the_screen_says_what_enter_runs(tmp_path: Path) -> None:
     assert "(type it yourself)" in shown
     assert "[classify.ai] model" in shown
     assert "Enter runs step 3 (mh clean)." in shown
+    assert "🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good" in shown
 
 
 def test_nothing_left_says_so(tmp_path: Path) -> None:

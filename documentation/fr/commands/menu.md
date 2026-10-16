@@ -41,13 +41,15 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
 - le **numéro** à taper, puis la **commande** que vous taperez plus tard vous-même ;
 - ce que fait l'étape, et son badge : 🔒 photos intactes, ↩️ annulable, ⚠️ définitif,
   *facultatif* ; 🤖 à côté de `classify` et `tags` quand un modèle local est indiqué
-  (`[classify.ai] model`).
+  (`[classify.ai] model`). La ligne sous le tableau rappelle ce que veulent dire 🔒, ↩️ et ⚠️.
 - Une étape que l'outil remplit d'après ce qu'il sait prend son argument (`mh purge <exécution>`,
   `mh undo <exécution>`) ; sans rien à purger ni à annuler, elle n'a pas de numéro. Un album
   demande des mots que vous seul connaissez (`mh album "Noël" --category …`) : à taper vous-même.
 
 Tant qu'une étape de nettoyage est proposée, celles du tri et de la recherche sont estompées :
-elles viennent après.
+elles viennent après. Le menu prend la largeur de votre fenêtre ; *Lecture de là où vous en
+êtes…* s'affiche pendant qu'il compte la quarantaine, ce qui prend quelques secondes quand elle
+contient des milliers de fichiers.
 
 La dernière section, sous Windows, rend `mh` plus facile à atteindre : `mh shortcut` (une icône sur
 le Bureau) et `mh explorer` (le clic droit d'un dossier). `mh open`, après `mh audit`, montre les

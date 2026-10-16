@@ -8,7 +8,9 @@ quarantine of its own) included: a run's quarantine may lie in several of them.
 
 from __future__ import annotations
 
+import os
 import shutil
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.runs import RUN_ID_PATTERN
@@ -16,7 +18,6 @@ from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from pathlib import Path
 
 
 def quarantine_runs(quarantine_dir: Path) -> list[str]:
@@ -88,7 +89,7 @@ def folder_size(folder: Path) -> int:
     Returns:
         Its size in bytes.
     """
-    return sum(path.stat().st_size for path in folder.rglob("*") if path.is_file())
+    return folder_census(folder)[1]
 
 
 def file_count(folder: Path) -> int:
@@ -100,7 +101,36 @@ def file_count(folder: Path) -> int:
     Returns:
         How many files it holds.
     """
-    return sum(1 for path in folder.rglob("*") if path.is_file())
+    return folder_census(folder)[0]
+
+
+def folder_census(folder: Path) -> tuple[int, int]:
+    """Count and measure the files below `folder` in one walk, one `stat` per file.
+
+    Through Docker Desktop each `stat` of a Windows drive costs milliseconds: a
+    quarantine of 15,888 files took about 30 s to show in `mh` (seen 2026-10-16) when
+    counted and measured in two walks.
+
+    Args:
+        folder: Folder to walk.
+
+    Returns:
+        How many files it holds, and their size in bytes.
+    """
+    files = size = 0
+    pending = [folder]
+    while pending:
+        try:
+            entries = list(os.scandir(pending.pop()))
+        except OSError:
+            continue
+        for entry in entries:
+            if entry.is_dir(follow_symlinks=False):
+                pending.append(Path(entry.path))
+            elif entry.is_file(follow_symlinks=False):
+                files += 1
+                size += entry.stat(follow_symlinks=False).st_size
+    return files, size
 
 
 def purge_run(quarantine_dir: Path, run_id: str) -> int:

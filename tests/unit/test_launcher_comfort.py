@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final, override
 
 import pytest
 
+from media_hygiene.actions.purge import file_count, folder_census, folder_size
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
@@ -259,3 +260,21 @@ def test_no_variable_is_followed_by_a_colon(locale: Locale) -> None:
     scopes = ("env", "global", "script", "local", "using")
     loose = re.findall(r"\$([A-Za-z_]\w*):", text)
     assert [name for name in loose if name not in scopes] == []
+
+
+def test_powershell_gives_its_width_and_says_it_reads() -> None:
+    """The menu's output is read, not a terminal: the window's width goes with it."""
+    text = _powershell()
+    assert '-e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)"' in text
+    reading = text.index('Write-Host "Lecture de là où vous en êtes…"')
+    assert reading < text.index("$steps = @(mh @color menu)")
+
+
+def test_census_counts_and_measures_in_one_walk(tmp_path: Path) -> None:
+    """Files below folders counted and measured; folders themselves are not files."""
+    (tmp_path / "a" / "b").mkdir(parents=True)
+    (tmp_path / "a" / "one.jpg").write_bytes(b"12345")
+    (tmp_path / "a" / "b" / "two.jpg").write_bytes(b"123")
+    assert folder_census(tmp_path) == (2, 8)
+    assert (file_count(tmp_path), folder_size(tmp_path)) == (2, 8)
+    assert folder_census(tmp_path / "missing") == (0, 0)

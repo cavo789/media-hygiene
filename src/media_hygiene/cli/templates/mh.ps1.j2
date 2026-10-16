@@ -39,6 +39,7 @@ function global:{{ function }} {
             Write-Host "{{ texts.folder }}"
         }
         $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' })
+        Write-Host "{{ texts.reading }}"
         $steps = @({{ function }} @color menu)
         if ($LASTEXITCODE -ne 0 -or $steps.Count -eq 0) { return }
         $choice = "$(Read-Host "{{ texts.prompt }}")".Trim()
@@ -107,6 +108,7 @@ function global:{{ function }} {
         docker run --rm @tty `
             -e "{{ variable }}={{ script.shell.value }}" `
             -e "{{ zone }}=$((Get-TimeZone).Id)" `
+            -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
 {% for option in script.environment %}
             {{ option }} `
 {% endfor %}

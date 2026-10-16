@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final
 from rich.markup import escape
 from rich.table import Table
 
+from media_hygiene.cli.menu_catalog import Risk
 from media_hygiene.cli.menu_steps import Section
 from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
@@ -100,6 +101,12 @@ def _footer(runtime: Runtime, menu: Menu) -> None:
         menu: The menu.
     """
     output = runtime.output
+    output.info(
+        _(
+            "{safe} your photos are not touched · {undo} can be undone · "
+            "{final} for good"
+        ).format(safe=Risk.SAFE.value, undo=Risk.UNDO.value, final=Risk.FINAL.value)
+    )
     if not runtime.settings.classify.ai.model:
         output.info(
             escape(

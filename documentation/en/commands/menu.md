@@ -41,11 +41,14 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
 - the **number** to type, then the **command** you will later type yourself;
 - what the step does, and its badge: 🔒 photos untouched, ↩️ can be undone, ⚠️ for good,
   *optional*; 🤖 next to `classify` and `tags` when a local model is set (`[classify.ai] model`).
+  The line under the table recalls what 🔒, ↩️ and ⚠️ mean.
 - A step the tool fills from what it knows takes its argument (`mh purge <run>`, `mh undo <run>`);
   with nothing to purge or undo, it has no number. An album needs words only you know
   (`mh album "Christmas" --category …`): type it yourself.
 
-While a clean step is proposed, the sort and find steps are dimmed: they come after.
+While a clean step is proposed, the sort and find steps are dimmed: they come after. The menu
+takes the width of your window; *Reading where you are…* shows while it counts the quarantine,
+which takes a few seconds when it holds thousands of files.
 
 The last section, on Windows, makes `mh` easier to reach: `mh shortcut` (an icon on the Desktop)
 and `mh explorer` (the right-click of a folder). `mh open`, after `mh audit`, shows the reports in

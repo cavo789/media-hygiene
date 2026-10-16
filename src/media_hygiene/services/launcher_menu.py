@@ -24,7 +24,7 @@ _COMMAND: Final = f"{LAUNCHER_FUNCTION} ${{command}}"
 
 
 @dataclass(frozen=True, slots=True)
-class MenuTexts:
+class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per message
     """The messages of `mh` itself, ready to sit inside double quotes."""
 
     prompt: str
@@ -34,6 +34,7 @@ class MenuTexts:
     done: str  # the window title after a long run; holds `mh ${command}`
     failed: str  # the same, when it failed
     folder: str  # `mh --photos X` alone: the menu's folder; holds `${shown}` (0181)
+    reading: str  # shown while the menu reads the tool folders (a large quarantine: s)
 
 
 def menu_texts() -> MenuTexts:
@@ -62,6 +63,7 @@ def menu_texts() -> MenuTexts:
         folder=shell_safe(_("The step you choose also analyses: {folder}")).replace(
             "{folder}", "${shown}"
         ),
+        reading=shell_safe(_("Reading where you are…")),
     )
 
 

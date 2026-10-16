@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.purge import file_count, folder_size, run_folders, runs_in
+from media_hygiene.actions.purge import folder_census, run_folders, runs_in
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME
 from media_hygiene.errors import DecisionsError
 from media_hygiene.report.decisions import BurstStatus, read_decisions
@@ -91,11 +91,11 @@ def _measure(quarantines: Sequence[Path], run_id: str) -> QuarantinedRun:
     Returns:
         Its files, size and start.
     """
-    folders = run_folders(quarantines, run_id)
+    census = [folder_census(folder) for folder in run_folders(quarantines, run_id)]
     return QuarantinedRun(
         run_id,
-        sum(file_count(folder) for folder in folders),
-        sum(folder_size(folder) for folder in folders),
+        sum(files for files, _ in census),
+        sum(size for _, size in census),
         run_started(run_id),
     )
 

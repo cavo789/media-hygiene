@@ -61,6 +61,8 @@
         zone="${zone#*zoneinfo/}"
     fi
     if [[ -n "$zone" ]]; then zoned=(-e "TZ=$zone"); fi
+    # The width of this terminal: the menu's output is read, not shown on a terminal.
+    if [[ -n "${COLUMNS:-}" ]]; then zoned+=(-e "COLUMNS=$COLUMNS"); fi
 {% if script.folders %}
     mkdir -p {{ script.folders }}
 {% endif %}
@@ -181,6 +183,7 @@ _{{ function }}_menu() {
     if [[ -t 2 ]]; then color=(--color always); fi
     for ((index = 2; index <= $#; index += 2)); do shown+="${shown:+, }${!index}"; done
     if [[ -n "$shown" ]]; then printf '%s\n' "{{ texts.folder }}" >&2; fi
+    printf '%s\n' "{{ texts.reading }}" >&2
     steps="$({{ function }} "${color[@]}" menu)" || return
     read -r -p "{{ texts.prompt }}: " choice || return 0
     choice="${choice:-0}"

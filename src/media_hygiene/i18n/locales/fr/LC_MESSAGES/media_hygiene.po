@@ -3630,6 +3630,9 @@ msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
+msgid "Reading where you are…"
+msgstr "Lecture de là où vous en êtes…"
+
 msgid ""
 "Reads the remaining candidates in full: same SHA-256 means identical, "
 "byte for byte."
@@ -8059,6 +8062,14 @@ msgid "{reused} unchanged folder taken from the index, {read} read."
 msgid_plural "{reused} unchanged folders taken from the index, {read} read."
 msgstr[0] "{reused} dossier inchangé repris de l'index, {read} relus."
 msgstr[1] "{reused} dossiers inchangés repris de l'index, {read} relus."
+
+#, python-brace-format
+msgid ""
+"{safe} your photos are not touched · {undo} can be undone · {final} for "
+"good"
+msgstr ""
+"{safe} vos photos ne sont pas touchées · {undo} peut être annulé · {final} "
+"définitif"
 
 #, python-brace-format
 msgid "{seconds} s"
