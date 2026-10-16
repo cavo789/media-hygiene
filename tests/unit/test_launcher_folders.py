@@ -158,7 +158,7 @@ def test_launcher_takes_photos_without_any_mount(
     monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(tmp_path))
     result = CliRunner().invoke(build_app(), ["launcher", "--photos", "C:\\Photos"])
     assert result.exit_code == 0, result.output
-    assert "function mh {" in result.stdout
+    assert "function global:mh {" in result.stdout
     assert '-v "C:\\Photos:/data/c/Photos${mode}" `' in result.stdout
     assert "No photo folder" not in result.stderr
 

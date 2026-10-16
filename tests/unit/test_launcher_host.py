@@ -195,9 +195,9 @@ def test_powershell_dispatches_host_commands_before_docker() -> None:
     text = _powershell()
     switch = text.index("    switch ($rest[0]) {")
     for name in HOST_COMMANDS:
-        line = f"'{name}' {{ _mh_{name} @($rest | Select-Object -Skip 1); return }}"
+        line = f"'{name}' {{ _mh_{name} @more; return }}"
         assert switch < text.index(line) < text.index("docker run --rm")
-        assert f"function _mh_{name} {{" in text
+        assert f"function global:_mh_{name} {{" in text
 
 
 def test_powershell_open_invokes_the_index_of_the_reports() -> None:

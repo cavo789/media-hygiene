@@ -119,6 +119,13 @@ folder that does not exist, Docker Desktop creates it empty, and the audit finds
 Run `launcher` again, with the same folders, to the same file: the new script is ASCII only
 and keeps every accent.
 
+## A command the guide shows is unknown
+
+*No such command*, or `mh` runs the image's help instead: your image is older than the guide.
+Type `mh update`: it downloads the new version and writes `mh` again with your folders. A `mh`
+older than `mh update` itself does not know it: run the `launcher` line of
+[the guide](clean/quick-guide.md#0-once-write-the-mh-command) once more, with your folders.
+
 ## "Unexpected error during …"
 
 A bug of the tool, not something you did wrong. The message says what failed and whether your

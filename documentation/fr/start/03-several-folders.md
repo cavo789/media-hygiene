@@ -180,8 +180,9 @@ elles aussi `mh …`.
   New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
   Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
   ```
-- **Un autre dossier ?** Relancez la commande `launcher` avec un `--photos` de plus. Pour une
-  seule commande, `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers : les copies de vos
+- **Un autre dossier ?** `mh folders add "D:\Ancien disque"` : `mh` se réécrit avec lui, et
+  affiche vos dossiers relus depuis le fichier (`mh folders` seul les liste, `mh folders remove`
+  en retire un, un dossier renommé aussi). Pour une seule commande, `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers : les copies de vos
   photos sur la clé sont trouvées aussi. `mh --photos "E:\Clé USB"` seul ouvre le menu sur
   elle ; `mh explorer` met cela au clic droit de chaque dossier dans l'Explorateur : clic droit,
   *Media Hygiene*, puis choisissez l'étape.

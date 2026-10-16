@@ -76,3 +76,17 @@ def shell_safe(text: str) -> str:
     return "".join(
         character for character in text if character not in UNSAFE_CHARACTERS
     )
+
+
+def with_variable(text: str, field: str, variable: str) -> str:
+    """Make a message safe, then put a shell variable in its field.
+
+    Args:
+        text: The translated message.
+        field: Its field, e.g. `{path}`.
+        variable: The shell variable shown there, e.g. `${path}`.
+
+    Returns:
+        The message for the script.
+    """
+    return shell_safe(text).replace(field, variable)

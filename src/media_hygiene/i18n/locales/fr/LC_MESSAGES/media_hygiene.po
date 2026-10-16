@@ -555,6 +555,13 @@ msgstr ""
 "interdit alors toute modification. {url}"
 
 msgid ""
+"Add or remove a photo folder: mh folders add <folder>, mh folders remove "
+"<folder>."
+msgstr ""
+"Ajouter ou retirer un dossier de photos : mh folders add <dossier>, mh "
+"folders remove <dossier>."
+
+msgid ""
 "Add the settings of this version to your config.toml, with their "
 "explanation; your values and comments are kept."
 msgstr ""
@@ -605,6 +612,10 @@ msgid "Already in place: {share}."
 msgstr "Déjà à leur place : {share}."
 
 #, python-brace-format
+msgid "Already the latest version: {version}."
+msgstr "Déjà la dernière version : {version}."
+
+#, python-brace-format
 msgid ""
 "Also delete the {count} name of config.toml ([[people.person]]) and the "
 "faces ignored?"
@@ -651,11 +662,11 @@ msgid "Animals"
 msgstr "Animaux"
 
 msgid ""
-"Another folder? Run 'launcher' again with one more -v, saving to the same"
-" file."
+"Another folder? mh folders add <folder>. A new version? mh update. Both "
+"rewrite this file."
 msgstr ""
-"Un autre dossier ? Relancez 'launcher' avec un -v de plus, vers le même "
-"fichier."
+"Un autre dossier ? mh folders add <dossier>. Une nouvelle version ? mh "
+"update. Les deux réécrivent ce fichier."
 
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
@@ -1329,7 +1340,9 @@ msgstr ""
 msgid ""
 "Double-click Media Hygiene on the Desktop or in the Start menu: the mh "
 "menu opens."
-msgstr "Double-cliquez sur Media Hygiene sur le Bureau ou dans le menu Démarrer : le menu de mh s'ouvre."
+msgstr ""
+"Double-cliquez sur Media Hygiene sur le Bureau ou dans le menu Démarrer :"
+" le menu de mh s'ouvre."
 
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
@@ -3705,7 +3718,9 @@ msgstr "Clic droit sur un dossier dans l'Explorateur : ce menu, sur ce dossier"
 msgid ""
 "Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
 "back from {key}:"
-msgstr "Clic droit sur un dossier, puis Media Hygiene : le menu de mh s'ouvre sur ce dossier. Relu depuis {key} :"
+msgstr ""
+"Clic droit sur un dossier, puis Media Hygiene : le menu de mh s'ouvre sur"
+" ce dossier. Relu depuis {key} :"
 
 #, python-brace-format
 msgid "Right-click entry removed: {key} is gone."
@@ -4644,6 +4659,10 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
 
+#, python-brace-format
+msgid "The previous image still takes {size} MB: docker image prune frees it."
+msgstr "L'image précédente occupe encore {size} Mo : docker image prune la libère."
+
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
 
@@ -4653,6 +4672,9 @@ msgstr "La quarantaine n'a pas pu être effacée : {reason}."
 
 msgid "The quarantine is empty."
 msgstr "La quarantaine est vide."
+
+msgid "The quarantine:"
+msgstr "La quarantaine :"
 
 msgid ""
 "The quickest check: which folder keeps its copies, which folder loses "
@@ -4668,7 +4690,9 @@ msgstr "Le rapport les liste toutes : saisissez-les à nouveau là où elles von
 msgid ""
 "The reports are in the Docker volume {volume}, which no browser opens: "
 "write mh again with launcher and -v <a folder of yours>:/reports."
-msgstr "Les rapports sont dans le volume Docker {volume}, qu'aucun navigateur n'ouvre : réécrivez mh avec launcher et -v <un dossier à vous>:/reports."
+msgstr ""
+"Les rapports sont dans le volume Docker {volume}, qu'aucun navigateur "
+"n'ouvre : réécrivez mh avec launcher et -v <un dossier à vous>:/reports."
 
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
@@ -4955,6 +4979,13 @@ msgstr ""
 "Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
 "la main est sans danger aussi."
 
+msgid ""
+"This image is a local build: nothing to pull. Build it again, then write "
+"mh with launcher."
+msgstr ""
+"Cette image est construite sur place : rien à télécharger. Reconstruisez-"
+"la, puis réécrivez mh avec launcher."
+
 msgid "This is not a classify workbook, or it was damaged."
 msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 
@@ -5159,6 +5190,10 @@ msgid ""
 msgstr ""
 "Jusqu'à ce groupe, dans cet ordre : {size}, {share} %% de l'espace de "
 "tous les groupes."
+
+#, python-brace-format
+msgid "Updated: {before} → {after}."
+msgstr "Mis à jour : {before} → {after}."
 
 msgid "Usage:"
 msgstr "Utilisation :"
@@ -5440,6 +5475,10 @@ msgstr ""
 "quelles : {skipped}."
 
 #, python-brace-format
+msgid "Your folders: {folders}. A new version: {update}."
+msgstr "Vos dossiers : {folders}. Une nouvelle version : {update}."
+
+#, python-brace-format
 msgid ""
 "Your names for the towns: the towns are named after GeoNames, in English "
 "or in their own language (Brussels, Brugge, Gent). Write the exact "
@@ -5488,6 +5527,9 @@ msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
+
+msgid "Your photo folders:"
+msgstr "Vos dossiers de photos :"
 
 msgid "Your photos and videos were not touched."
 msgstr "Vos photos et vidéos n'ont pas été touchées."
@@ -5810,6 +5852,9 @@ msgid_plural "delete {count} duplicate copies ({size})"
 msgstr[0] "supprimer {count} copie en double ({size})"
 msgstr[1] "supprimer {count} copies en double ({size})"
 
+msgid "docker pull failed: mh is unchanged."
+msgstr "docker pull a échoué : mh n'a pas changé."
+
 #, python-format
 msgid "duplicate copies in %(num)s group"
 msgid_plural "duplicate copies in %(num)s groups"
@@ -5873,6 +5918,9 @@ msgstr "dossier"
 
 msgid "folder name"
 msgstr "nom du dossier"
+
+msgid "found"
+msgstr "présent"
 
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
@@ -6086,6 +6134,16 @@ msgstr "media-hygiene — où vous en êtes"
 msgid "merged with another named event, whose name wins"
 msgstr "fusionné avec un autre événement nommé, dont le nom l'emporte"
 
+msgid "mh is unchanged: launcher refused it (see above)."
+msgstr "mh n'a pas changé : launcher l'a refusé (voir plus haut)."
+
+msgid ""
+"mh needs at least one photo folder: add the new one first, then remove "
+"this one."
+msgstr ""
+"mh a besoin d'au moins un dossier de photos : ajoutez d'abord le nouveau,"
+" puis retirez celui-ci."
+
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
 msgstr "mh retient : {folders}, langue {locale}, fuseau horaire {zone}."
@@ -6093,7 +6151,16 @@ msgstr "mh retient : {folders}, langue {locale}, fuseau horaire {zone}."
 msgid ""
 "mh was not loaded from its file mh.ps1: load it as step 0 of the guides "
 "says, then try again."
-msgstr "mh n'a pas été chargé depuis son fichier mh.ps1 : chargez-le comme le dit l'étape 0 des guides, puis réessayez."
+msgstr ""
+"mh n'a pas été chargé depuis son fichier mh.ps1 : chargez-le comme le dit"
+" l'étape 0 des guides, puis réessayez."
+
+msgid ""
+"mh was not loaded from its file: load it as step 0 of the guides says, "
+"then try again."
+msgstr ""
+"mh n'a pas été chargé depuis son fichier : chargez-le comme le dit "
+"l'étape 0 des guides, puis réessayez."
 
 #, python-brace-format
 msgid "more than {limit} is expected, not {value}"
@@ -6196,6 +6263,9 @@ msgstr "non vérifié"
 
 msgid "not found where the plan or a sort put it"
 msgstr "introuvable là où le plan ou un tri l'a mis"
+
+msgid "not found: is its disk plugged in?"
+msgstr "introuvable : son disque est-il branché ?"
 
 msgid "not sorted yet."
 msgstr "pas encore triée."
@@ -7530,6 +7600,10 @@ msgid "{folder} (seen as {first} and as {second})"
 msgstr "{folder} (vu comme {first} et comme {second})"
 
 #, python-brace-format
+msgid "{folder} cannot be found: check its name, or plug its disk in."
+msgstr "{folder} est introuvable : vérifiez son nom, ou branchez son disque."
+
+#, python-brace-format
 msgid ""
 "{folder} cannot be found: plug its disk in, or write mh again with "
 "launcher."
@@ -7542,6 +7616,14 @@ msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 "{folder} est monté en lecture seule : config.toml ne peut pas être "
 "complété."
+
+#, python-brace-format
+msgid "{folder} is not one of your folders: mh folders lists them."
+msgstr "{folder} n'est pas un de vos dossiers : mh folders les liste."
+
+#, python-brace-format
+msgid "{folder} is one of your folders already."
+msgstr "{folder} est déjà un de vos dossiers."
 
 #, python-brace-format
 msgid "{folder} is protected: its copies are always kept."

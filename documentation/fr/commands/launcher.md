@@ -13,8 +13,8 @@ court script qui définit `mh`, une commande qui retient vos dossiers, donnés t
 l'Explorateur les montre : aucun `-v` à écrire. Ensuite, `mh audit`, `mh clean`, `mh review`…
 suffisent.
 
-**Quand** : une fois que vous savez sur quels dossiers vous travaillez ; à nouveau quand vous en
-ajoutez un.
+**Quand** : une fois que vous savez sur quels dossiers vous travaillez. Plus tard, `mh folders add`
+en ajoute un et `mh update` apporte la nouvelle version : les deux réécrivent le fichier pour vous.
 
 **Essayer** :
 
@@ -93,7 +93,7 @@ mh audit
 
 ## Ce que `mh` fait lui-même
 
-Trois commandes ne sont pas des commandes de l'image : `mh` les lance sur votre ordinateur, sans
+Ces commandes ne sont pas des commandes de l'image : `mh` les lance sur votre ordinateur, sans
 Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de `mh`, si.
 
 | Commande | Ce qu'elle fait |
@@ -101,6 +101,8 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh open` | Ouvre `index.html`, la liste de tous les rapports, dans votre navigateur (le plus récent en haut). Pas encore de rapport : elle dit de lancer d'abord `mh audit`. |
 | `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell sur le menu de `mh`, qui reste ouverte. Relancée, elle réécrit les deux. |
 | `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : le menu de `mh` s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
+| `mh folders` | Liste vos dossiers de photos et la quarantaine, chacun *présent* ou *introuvable* (un disque pas branché). `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
+| `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Depuis WSL,
@@ -110,6 +112,51 @@ autres disent qu'elles sont pour Windows.
 **`mh --photos "E:\Dossier"` seul** ouvre le menu sur ce dossier : il dit lequel, et l'étape
 choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
 clic droit de `mh explorer`.
+
+## Changer vos dossiers : `mh folders`
+
+```powershell
+mh folders                          # vos dossiers, présents ou non
+mh folders add "D:\Ancien disque"    # un de plus
+mh folders remove "D:\Ancien disque" # un de moins
+```
+
+`add` et `remove` relancent `launcher`, par l'image, avec les dossiers que `mh` contient plus ou
+moins celui-là, et la même quarantaine, la même langue, les mêmes réglages. Le nouveau script va
+dans un fichier à côté de `mh.ps1`, qu'il ne remplace que si `launcher` l'a accepté : un dossier
+refusé (à l'intérieur d'un autre, un dossier réseau) laisse votre `mh` tel quel, avec la raison à
+l'écran. `mh` charge ensuite le nouveau fichier dans ce terminal et affiche les dossiers qu'il y a
+relus : ce que vous voyez est ce qui est enregistré. Les autres terminaux le voient dès qu'ils
+rechargent le fichier (un nouveau terminal le fait, avec la ligne de votre profil).
+
+- **Un dossier renommé ou déplacé** (dans l'Explorateur) : `mh` dit qu'il ne le trouve pas.
+  `mh folders remove` l'ancien nom, même disparu, puis `mh folders add` le nouveau. L'audit
+  suivant relit ses fichiers : le cache les connaît par leur chemin.
+- **Le dernier dossier** ne peut pas être retiré : `mh` en veut au moins un. Ajoutez d'abord le
+  nouveau.
+- **Le dossier d'un disque pas branché** peut être retiré ; celui à ajouter doit être là.
+- Windows ignore la casse : `C:\photos` est `C:\Photos`, déjà un de vos dossiers.
+
+## Une nouvelle version : `mh update`
+
+```powershell
+mh update
+```
+
+Il télécharge la nouvelle image (`docker pull`, sa progression affichée telle quelle), réécrit
+`mh` avec les mêmes dossiers exactement comme `mh folders`, puis dit les versions : *Mis à jour :
+media-hygiene 0.5.0 → media-hygiene 0.6.0*, ou *Déjà la dernière version*. L'image précédente
+occupe encore de la place sur votre disque : `mh update` dit combien, et la commande qui la
+libère, `docker image prune` ; il ne la lance jamais à votre place.
+
+**Quand** : une fois par mois, ou quand un guide montre une commande que votre `mh` ne connaît
+pas. L'outil ne cherche jamais une nouvelle version de lui-même : rien ne quitte votre ordinateur
+sans que vous le demandiez. Les versions publiées sont listées sur
+[Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene/tags).
+
+Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
+`launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez
+construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit.
 
 ## Options
 
@@ -135,8 +182,8 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
   ```
 
   En bash, ajoutez la ligne `source` à `~/.bashrc`.
-- **Un autre dossier ?** Relancez `launcher` avec un `--photos` de plus, vers le même fichier.
-  Pour une seule commande : `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers.
+- **Un autre dossier ?** `mh folders add "E:\Dossier"` : `mh` se réécrit lui-même. Pour une
+  seule commande : `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers.
 - **Un dossier réseau** (`\\NAS\photos`) est refusé par `--photos` : copiez les photos sur un
   disque local, ou montez-le vous-même avec `-v`.
 - **Un dossier refusé** (dans un autre, réseau, relatif) : `launcher` dit pourquoi à l'écran, et

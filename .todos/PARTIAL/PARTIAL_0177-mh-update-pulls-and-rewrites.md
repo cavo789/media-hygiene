@@ -39,3 +39,28 @@ user types, and the documentation says when.
 
 Updating: `docker pull` + the long `launcher` line retyped (both unknown to a newcomer) → one
 command.
+
+## Status — PARTIAL (2026-10-16)
+
+### Done
+- `mh update` (`_mh_update` in `mh_folders.{ps1,sh}.j2`): image id and `--version` before,
+  `docker pull <the script's image>` with its own output, then the same rewrite as `mh folders`
+  (temporary file, replaced only on success, reloaded, folders read back), `--version` after:
+  "Updated: before → after", or "Already the latest version" when the id did not change; the
+  previous image's size and `docker image prune` said, never run. A failed pull leaves `mh` as
+  it was. A local build (`MEDIA_HYGIENE_IMAGE` set: the image is not `cavo789/media-hygiene`):
+  said, nothing pulled. Never runs by itself.
+- Menu line (shared with 0176); docs en/fr: launcher page ("A new version: `mh update`", when
+  to type it), "Clean in short" step 12, troubleshooting ("A command the guide shows is
+  unknown").
+- Tests: bash with a fake `docker` (pull with the script's image, rewrite, versions, space line,
+  failed pull, latest, local build); PowerShell text (pull only for the published image).
+- `tests/measure/mh-measure.ps1` step 11e.
+
+### Not done
+- The Windows run: `mh update` with an older image pulled first (PowerShell 5.1).
+  **Reason:** no PowerShell here, and no published image with `mh update` yet; step 11e
+  (`powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20`) tags the local
+  build as `cavo789/media-hygiene` (asks first) and lets `mh update` pull the published one.
+- No release notes exist (CI publishes tags to Docker Hub, no GitHub Release): the docs link the
+  Docker Hub tags page instead. **Reason:** a decision for the maintainer.

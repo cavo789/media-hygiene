@@ -1,0 +1,94 @@
+{# `mh folders` and `mh update` in mh.ps1: see services/launcher_kept.py. #}
+{% set f = function %}
+
+# The photo folders that `launcher` gets back as --photos when mh is written again (0176).
+function global:_{{ f }}_photos { @({{ kept.photos | join(", ") }}) }
+
+# `{{ f }} folders`: the photo folders and the quarantine, each found or not; `add` and
+# `remove` write mh again with one folder more or less (0176).
+function global:_{{ f }}_folders {
+    if ($args.Count -eq 0) {
+        _{{ f }}_list
+        Write-Host "{{ update.usage }}"
+        return
+    }
+    if ($args.Count -ne 2 -or $args[0] -notin 'add', 'remove') { Write-Host "{{ update.usage }}"; return }
+    $photos = @(_{{ f }}_photos)
+    $folder = "$($args[1])"
+    if ($args[0] -eq 'add') {
+        if (-not (Test-Path -LiteralPath $folder -PathType Container)) { Write-Host "{{ update.not_found }}"; return }
+        $folder = (Resolve-Path -LiteralPath $folder).ProviderPath
+        if ($folder -notmatch '^[A-Za-z]:') { Write-Host "{{ update.not_found }}"; return }
+        # Windows ignores case: C:\photos is C:\Photos, mounted once.
+        if (@($photos | Where-Object { $_.TrimEnd('\') -eq $folder.TrimEnd('\') }).Count -gt 0) { Write-Host "{{ update.already }}"; return }
+        $photos += $folder
+    } else {
+        # A folder renamed, moved or on a disk gone: removed without being found.
+        $kept = @($photos | Where-Object { $_.TrimEnd('\') -ne $folder.TrimEnd('\') })
+        if ($kept.Count -eq $photos.Count) { Write-Host "{{ update.not_listed }}"; return }
+        if ($kept.Count + {{ kept.fixed }} -eq 0) { Write-Host "{{ update.last }}"; return }
+        $photos = $kept
+    }
+    $null = _{{ f }}_rewrite $photos
+}
+
+# The folders of this very file, each said found or not.
+function global:_{{ f }}_list {
+    Write-Host "{{ update.photos }}"
+    foreach ($folder in @({{ kept.shown | join(", ") }})) { _{{ f }}_state $folder }
+    Write-Host "{{ update.quarantine }}"
+    _{{ f }}_state {{ kept.quarantine }}
+}
+
+function global:_{{ f }}_state($folder) {
+    $state = if (Test-Path -LiteralPath $folder) { "{{ update.found }}" } else { "{{ update.absent }}" }
+    Write-Host "    ${folder}: $state"
+}
+
+# Run `launcher` again with these photo folders, into a file beside this one; it
+# replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
+# was), then it is loaded again and its folders read back (0176). True when written.
+function global:_{{ f }}_rewrite($photos) {
+    $file = $MyInvocation.MyCommand.ScriptBlock.File
+    if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ update.no_file }}"; return $false }
+    $docker = @({{ kept.docker | join(", ") }})
+    $words = @({{ kept.launcher | join(", ") }})
+    foreach ($folder in $photos) { $words += '--photos', $folder }
+    $lines = @(docker run --rm -e "{{ variable }}={{ script.shell.value }}" @docker {{ kept.image }} @words)
+    if ($LASTEXITCODE -ne 0 -or $lines.Count -eq 0) { Write-Host "{{ update.unchanged }}"; return $false }
+    $temp = "$file.new"
+    Set-Content -LiteralPath $temp -Value $lines -Encoding Ascii
+    Move-Item -LiteralPath $temp -Destination $file -Force
+    . $file
+    $path = $file
+    Write-Host "{{ host.texts.saved }}"
+    _{{ f }}_list
+    return $true
+}
+
+# `{{ f }} update`: pull the image, write mh again with the same folders, then say the
+# versions. Only when typed: mh never looks for a new version by itself (0177).
+function global:_{{ f }}_update {
+{% if kept.pullable %}
+    $image = '{{ kept.image }}'
+    $before = "$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' $image 2>$null)"
+    $old = if ($before) { "$(docker run --rm $image --version)" } else { '' }
+    docker pull $image
+    if ($LASTEXITCODE -ne 0) { Write-Host "{{ update.pull_failed }}"; return }
+    $after = "$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' $image)"
+    $photos = @(_{{ f }}_photos)
+    if (-not (_{{ f }}_rewrite $photos)) { return }
+    $new = "$(docker run --rm $image --version)"
+    if ($before -eq $after) { Write-Host "{{ update.latest }}"; return }
+    Write-Host "{{ update.updated }}"
+    if (-not $before) { return }
+    # The previous image stays until pruned: its size said, never removed unasked.
+    $bytes = "$(docker image inspect --format '{% raw %}{{.Size}}{% endraw %}' $before 2>$null)"
+    if ($bytes -match '^\d+$') {
+        $size = [math]::Round([double]$bytes / 1MB)
+        Write-Host "{{ update.space }}"
+    }
+{% else %}
+    Write-Host "{{ update.local }}"
+{% endif %}
+}

@@ -46,8 +46,8 @@ Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
 ```
 
 The third line writes `mh` into your PowerShell profile: every new terminal knows it, tomorrow
-too. The last one loads it in this terminal. Later, to change your folders, run the `docker run`
-line only: the profile already has its line.
+too. The last one loads it in this terminal. Later, `mh folders add "D:\Old disk"` adds a folder
+and `mh update` brings a new version: both write `mh` again for you.
 
 **Rather click than type?** `mh shortcut` puts a *Media Hygiene* icon on your Desktop and in the
 Start menu: a double-click opens the `mh` menu. `mh explorer` adds *Media Hygiene* to the
@@ -56,8 +56,8 @@ right-click of every folder: the menu opens on that folder. More: [`launcher`](.
 ??? question "Several folders? A quarantine on another disk?"
 
     One `--photos` per folder: `--photos "C:\Photos" --photos "D:\Images\Family"`. Not a folder
-    inside another one: each of its files would be seen twice. One more folder later? Run the
-    `docker run` line again, with every folder.
+    inside another one: each of its files would be seen twice. One more folder later?
+    `mh folders add "D:\Old disk"`.
 
     The copies set aside go to `$HOME\media-hygiene\quarantine`. Your photos are on another disk
     than `C:`? Add `--quarantine "D:\quarantine"`: on the photos' disk, setting aside is a simple
@@ -350,6 +350,8 @@ the ones you chose to keep. In the weeks that follow:
 - **Where am I?** `mh status`: the last audit, what is in the quarantine and since when, what
   `undo` can still restore, the decisions not yet applied, then the next step as a full command.
 - **New photos?** Start again at step 1: thanks to the cache, only the new ones are read.
+- **A new version?** `mh update`, once a month or when a guide shows a command your `mh` does
+  not know: it downloads the image and writes `mh` again with your folders.
 - **Too many reports?** `mh reports --prune 10` keeps the ten most recent and rebuilds
   `index.html`.
 

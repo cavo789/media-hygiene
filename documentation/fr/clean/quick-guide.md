@@ -49,8 +49,9 @@ Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
 ```
 
 La troisième ligne écrit `mh` dans votre profil PowerShell : chaque nouveau terminal le connaît,
-demain aussi. La dernière le charge dans ce terminal. Plus tard, pour changer vos dossiers,
-relancez seulement la ligne `docker run` : le profil a déjà sa ligne.
+demain aussi. La dernière le charge dans ce terminal. Plus tard, `mh folders add "D:\Ancien
+disque"` ajoute un dossier et `mh update` apporte une nouvelle version : les deux réécrivent `mh`
+pour vous.
 
 **Plutôt cliquer que taper ?** `mh shortcut` pose une icône *Media Hygiene* sur votre Bureau et
 dans le menu Démarrer : un double-clic ouvre le menu de `mh`. `mh explorer` ajoute *Media
@@ -61,7 +62,7 @@ Hygiene* au clic droit de chaque dossier : le menu s'ouvre sur ce dossier. Plus 
 
     Un `--photos` par dossier : `--photos "C:\Photos" --photos "D:\Images\Famille"`. Pas un
     dossier à l'intérieur d'un autre : chacun de ses fichiers serait vu deux fois. Un dossier de
-    plus plus tard ? Relancez la ligne `docker run`, avec tous les dossiers.
+    plus plus tard ? `mh folders add "D:\Ancien disque"`.
 
     Les copies mises de côté vont dans `$HOME\media-hygiene\quarantine`. Vos photos sont sur un
     autre disque que `C:` ? Ajoutez `--quarantine "D:\quarantaine"` : sur le disque des photos,
@@ -363,6 +364,8 @@ sont ceux que vous avez choisi de garder. Les semaines suivantes :
   ce que `undo` peut encore restaurer, les décisions pas encore appliquées, puis la prochaine
   étape en commande complète.
 - **De nouvelles photos ?** Reprenez à l'étape 1 : grâce au cache, seules les nouvelles sont lues.
+- **Une nouvelle version ?** `mh update`, une fois par mois ou quand un guide montre une commande
+  que votre `mh` ne connaît pas : il télécharge l'image et réécrit `mh` avec vos dossiers.
 - **Trop de rapports ?** `mh reports --prune 10` garde les dix plus récents et refait
   `index.html`.
 

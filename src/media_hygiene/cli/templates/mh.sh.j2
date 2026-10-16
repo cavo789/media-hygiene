@@ -196,3 +196,4 @@ _{{ function }}_menu() {
     read -r -a words <<< "$chosen"
     {{ function }} "${words[@]}" "$@"
 }
+{% include 'mh_folders.sh.j2' %}

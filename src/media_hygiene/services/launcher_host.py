@@ -1,11 +1,13 @@
-r"""The commands `mh` runs on the host itself, without `docker run` (0175, 0180, 0181).
+r"""The commands `mh` runs on the host itself, without `docker run` (0175-0181).
 
 The container can neither open a browser nor write a Windows shortcut or registry key:
 `mh open` (the reports in the browser), `mh shortcut` (an icon opening the menu) and
-`mh explorer` (the right-click entry of a folder) are functions of the script. `mh`
+`mh explorer` (the right-click entry of a folder) are functions of the script, and so
+are `mh folders` and `mh update`, which write the script itself again. `mh`
 dispatches them before anything else, by their first word; the bash script says that
-the last two are for Windows. Their messages are written into the script, translated,
-with the shell variables they show (`${index}`, `${path}`, `${key}`, `$1`).
+`shortcut` and `explorer` are for Windows. Their messages are written into the
+script, translated, with the shell variables they show (`${index}`, `${path}`,
+`${key}`, `$1`).
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.launcher_menu import shell_safe
+from media_hygiene.services.launcher_menu import shell_safe, with_variable
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
     LAUNCHER_VARIABLE,
@@ -31,7 +33,10 @@ if TYPE_CHECKING:
 OPEN: Final = "open"
 SHORTCUT: Final = "shortcut"
 EXPLORER: Final = "explorer"
-HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER)
+# Both write `mh` again by running `launcher` (0176, 0177: `launcher_kept.py`).
+FOLDERS: Final = "folders"
+UPDATE: Final = "update"
+HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE)
 WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER)
 # The name of the shortcut and of the right-click entry.
 LABEL: Final = "Media Hygiene"
@@ -136,15 +141,15 @@ def _texts(reports: str) -> HostTexts:
                 "guides says, then try again."
             )
         ),
-        saved=_with(_("Saved, read back from {path}:"), "{path}", "${path}"),
-        not_saved=_with(_("Could not write {path}."), "{path}", "${path}"),
+        saved=with_variable(_("Saved, read back from {path}:"), "{path}", "${path}"),
+        not_saved=with_variable(_("Could not write {path}."), "{path}", "${path}"),
         shortcut=shell_safe(
             _(
                 "Double-click Media Hygiene on the Desktop or in the Start menu: "
                 "the mh menu opens."
             )
         ),
-        explorer=_with(
+        explorer=with_variable(
             _(
                 "Right-click a folder, then Media Hygiene: the mh menu opens on it. "
                 "Read back from {key}:"
@@ -152,22 +157,8 @@ def _texts(reports: str) -> HostTexts:
             "{key}",
             "${key}",
         ),
-        removed=_with(
+        removed=with_variable(
             _("Right-click entry removed: {key} is gone."), "{key}", "${key}"
         ),
-        not_removed=_with(_("Could not remove {key}."), "{key}", "${key}"),
+        not_removed=with_variable(_("Could not remove {key}."), "{key}", "${key}"),
     )
-
-
-def _with(text: str, field: str, variable: str) -> str:
-    """Make a message safe, then put a shell variable in its field.
-
-    Args:
-        text: The translated message.
-        field: Its field, e.g. `{path}`.
-        variable: The shell variable shown there, e.g. `$path`.
-
-    Returns:
-        The message for the script.
-    """
-    return shell_safe(text).replace(field, variable)

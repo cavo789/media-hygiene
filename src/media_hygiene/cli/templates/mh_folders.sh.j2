@@ -1,0 +1,105 @@
+{# `mh folders` and `mh update` in mh.sh: see services/launcher_kept.py. #}
+{% set f = function %}
+
+# The file this script is loaded from, and the photo folders that `launcher` gets back
+# as --photos when mh is written again (0176).
+_{{ f }}_file="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd -P)/$(basename "${BASH_SOURCE[0]}")"
+_{{ f }}_photos=({{ kept.photos | join(" ") }})
+
+# `{{ f }} folders`: the photo folders and the quarantine, each found or not; `add` and
+# `remove` write mh again with one folder more or less (0176).
+_{{ f }}_folders() {
+    local photos=("${_{{ f }}_photos[@]}") kept=() folder item found=""
+    if [[ $# -eq 0 ]]; then
+        _{{ f }}_list
+        printf '%s\n' "{{ update.usage }}"
+        return 0
+    fi
+    if [[ $# -ne 2 || ("$1" != add && "$1" != remove) ]]; then
+        printf '%s\n' "{{ update.usage }}" >&2
+        return 2
+    fi
+    folder="$2"
+    if [[ "$1" == add ]]; then
+        if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ update.not_found }}" >&2; return 2; fi
+        folder="$(cd "$folder" && pwd -P)"
+        for item in "${photos[@]}"; do
+            if [[ "${item%/}" == "${folder%/}" ]]; then printf '%s\n' "{{ update.already }}" >&2; return 0; fi
+        done
+        photos+=("$folder")
+    else
+        # A folder renamed, moved or on a disk gone: removed without being found.
+        for item in "${photos[@]}"; do
+            if [[ "${item%/}" != "${folder%/}" ]]; then kept+=("$item"); else found=1; fi
+        done
+        if [[ -z "$found" ]]; then printf '%s\n' "{{ update.not_listed }}" >&2; return 2; fi
+        if [[ -z "${kept[*]}" && {{ kept.fixed }} -eq 0 ]]; then printf '%s\n' "{{ update.last }}" >&2; return 2; fi
+        photos=("${kept[@]}")
+    fi
+    _{{ f }}_rewrite "${photos[@]}"
+}
+
+# The folders of this very file, each said found or not.
+_{{ f }}_list() {
+    local folder
+    printf '%s\n' "{{ update.photos }}"
+    for folder in {{ kept.shown | join(" ") }}; do _{{ f }}_state "$folder"; done
+    printf '%s\n' "{{ update.quarantine }}"
+    _{{ f }}_state {{ kept.quarantine }}
+}
+
+_{{ f }}_state() {
+    if [[ -d "$1" ]]; then
+        printf '    %s: %s\n' "$1" "{{ update.found }}"
+    else
+        printf '    %s: %s\n' "$1" "{{ update.absent }}"
+    fi
+}
+
+# Run `launcher` again with these photo folders, into a file beside this one; it
+# replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
+# was), then it is loaded again and its folders read back (0176).
+_{{ f }}_rewrite() {
+    local file="${_{{ f }}_file:-}" temp path folder words=({{ kept.launcher | join(" ") }})
+    if [[ ! -f "$file" ]]; then printf '%s\n' "{{ update.no_file }}" >&2; return 1; fi
+    for folder in "$@"; do words+=(--photos "$folder"); done
+    temp="$file.new"
+    if ! docker run --rm -e "{{ variable }}={{ script.shell.value }}" {{ kept.docker | join(" ") }} {{ kept.image }} "${words[@]}" > "$temp" ||
+        [[ ! -s "$temp" ]]; then
+        rm -f "$temp"
+        printf '%s\n' "{{ update.unchanged }}" >&2
+        return 1
+    fi
+    mv -f "$temp" "$file"
+    # shellcheck disable=SC1090  # the file just written
+    source "$file"
+    path="$file"
+    printf '%s\n' "{{ host.texts.saved }}"
+    _{{ f }}_list
+}
+
+# `{{ f }} update`: pull the image, write mh again with the same folders, then say the
+# versions. Only when typed: mh never looks for a new version by itself (0177).
+_{{ f }}_update() {
+{% if kept.pullable %}
+    local image="{{ kept.image }}" before after old="" new="" size=""
+    before="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image" 2>/dev/null)" || before=""
+    if [[ -n "$before" ]]; then old="$(docker run --rm "$image" --version)"; fi
+    if ! docker pull "$image"; then printf '%s\n' "{{ update.pull_failed }}" >&2; return 1; fi
+    after="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image")"
+    _{{ f }}_rewrite "${_{{ f }}_photos[@]}" || return 1
+    new="$(docker run --rm "$image" --version)"
+    if [[ "$before" == "$after" ]]; then printf '%s\n' "{{ update.latest }}"; return 0; fi
+    printf '%s\n' "{{ update.updated }}"
+    if [[ -z "$before" ]]; then return 0; fi
+    # The previous image stays until pruned: its size said, never removed unasked.
+    size="$(docker image inspect --format '{% raw %}{{.Size}}{% endraw %}' "$before" 2>/dev/null)" || size=""
+    if [[ "$size" =~ ^[0-9]+$ ]]; then
+        size=$((size / 1048576))
+        printf '%s\n' "{{ update.space }}"
+    fi
+{% else %}
+    printf '%s\n' "{{ update.local }}" >&2
+    return 2
+{% endif %}
+}

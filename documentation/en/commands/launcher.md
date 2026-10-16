@@ -12,7 +12,8 @@ mounts (`:ro` or not, the [journal](../reference-glossary.md#journal), a port fo
 defining `mh`, a command that remembers your folders, given as Explorer shows them: no `-v` to
 write. Then `mh audit`, `mh clean`, `mh review`… are all you type.
 
-**When**: once you know which folders you work on; again when you add one.
+**When**: once you know which folders you work on. Later, `mh folders add` adds one and `mh update`
+brings the new version: both write the file again for you.
 
 **Try it**:
 
@@ -90,7 +91,7 @@ mh audit
 
 ## What `mh` does by itself
 
-Three commands are not commands of the image: `mh` runs them on your computer, without Docker.
+These commands are not commands of the image: `mh` runs them on your computer, without Docker.
 So `--help` of the image does not list them; this page and the `mh` menu do.
 
 | Command | What it does |
@@ -98,6 +99,8 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh open` | Opens `index.html`, the list of every report, in your browser (the newest at its top). No report yet: it says to run `mh audit` first. |
 | `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window on the `mh` menu, which stays open. Run again, it rewrites both. |
 | `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the `mh` menu opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
+| `mh folders` | Lists your photo folders and the quarantine, each *found* or *not found* (a disk not plugged in). `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
+| `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key
 `HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. From WSL, Linux or macOS,
@@ -107,6 +110,49 @@ Windows.
 **`mh --photos "E:\Folder"` alone** opens the menu on that folder: it says which folder, and the
 step you choose analyses it too, as `mh --photos "E:\Folder" audit` would. That is what the
 right-click of `mh explorer` runs.
+
+## Change your folders: `mh folders`
+
+```powershell
+mh folders                          # your folders, found or not
+mh folders add "D:\Old disk"        # one more
+mh folders remove "D:\Old disk"     # one less
+```
+
+`add` and `remove` run `launcher` again, through the image, with the folders `mh` holds plus or
+minus that one, and the same quarantine, language and settings. The new script goes into a file
+beside `mh.ps1`, which it replaces only when `launcher` accepted it: a refused folder (inside
+another one, a network folder) leaves your `mh` as it was, with the reason on screen. `mh` then
+loads the new file in this terminal and shows the folders it read back from it, so what you see
+is what is saved. Other terminals see it once they load the file again (a new terminal does,
+with the line in your profile).
+
+- **A folder renamed or moved** (in Explorer): `mh` says it cannot find it. `mh folders remove`
+  the old name, even though it is gone, then `mh folders add` the new one. The next audit reads
+  its files again: the cache knows them by their path.
+- **The last folder** cannot be removed: `mh` needs at least one. Add the new one first.
+- **A folder of a disk not plugged in** can be removed; one to add must be there.
+- Windows ignores case: `C:\photos` is `C:\Photos`, already one of your folders.
+
+## A new version: `mh update`
+
+```powershell
+mh update
+```
+
+It downloads the new image (`docker pull`, its progress shown as it is), writes `mh` again with
+the same folders exactly as `mh folders` does, then says the versions: *Updated: media-hygiene
+0.5.0 → media-hygiene 0.6.0*, or *Already the latest version*. The previous image still takes
+room on your disk: `mh update` says how much, and the command freeing it, `docker image prune`;
+it never runs it for you.
+
+**When**: once a month, or when a guide shows a command your `mh` does not know. The tool
+never looks for a new version by itself: nothing leaves your computer unless you ask. The
+published versions are listed on [Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene/tags).
+
+A `mh` written before `mh update` existed does not know it: run the `launcher` line of the
+guides once more, with your folders; from then on, `mh update` is enough. An image you built
+yourself (`media-hygiene`) has nothing to download: `mh update` says so.
 
 ## Options
 
@@ -132,8 +178,8 @@ The `-v` of earlier guides still work, alongside `--photos`.
   ```
 
   In bash, add the `source` line to `~/.bashrc`.
-- **Another folder?** Run `launcher` again with one more `--photos`, saving to the same file. For
-  one command only: `mh --photos "E:\USB key" audit` adds it to your folders.
+- **Another folder?** `mh folders add "E:\Folder"`: `mh` writes itself again. For one command
+  only: `mh --photos "E:\USB key" audit` adds it to your folders.
 - **A network folder** (`\\NAS\photos`) is refused by `--photos`: copy the photos to a local
   disk, or mount it yourself with `-v`.
 - **A refused folder** (inside another one, network, relative): `launcher` says why on screen, and

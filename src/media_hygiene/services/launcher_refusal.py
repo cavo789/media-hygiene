@@ -14,7 +14,7 @@ from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
-from media_hygiene.services.launcher import script_path
+from media_hygiene.services.launcher_file import script_path
 
 _LAST_ASCII: Final = 0x7F
 # The pseudo-terminal ends lines with \r\n: the final comment sign swallows the \r.

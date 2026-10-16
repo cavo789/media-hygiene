@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE
-from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.docker_run import (
     Shell,
@@ -23,10 +22,13 @@ from media_hygiene.paths.docker_run import (
 )
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_file import header
 from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_host import host_commands
+from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import BROWSE_WAIT, menu_texts
+from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
     LAUNCHER_VARIABLE,
@@ -37,14 +39,12 @@ from media_hygiene.services.next_command import (
 )
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.services.runtime import Runtime
 
 _TEMPLATE_PACKAGE: Final = "media_hygiene.cli"
 _TEMPLATES: Final = {Shell.POWERSHELL: "mh.ps1.j2", Shell.BASH: "mh.sh.j2"}
-SCRIPT_NAMES: Final = {Shell.POWERSHELL: "mh.ps1", Shell.BASH: "mh.sh"}
-_PROFILES: Final = {Shell.POWERSHELL: "$PROFILE", Shell.BASH: "~/.bashrc"}
-# The cache is a named volume (README), the other tool folders are in the home.
-_CACHE_VOLUME: Final = "media-hygiene-cache"
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,6 +70,7 @@ class LauncherScript:
     created: tuple[str, ...]  # the host folders `mh` creates
     environment: tuple[str, ...]
     commands: LauncherCommands
+    data_dir: Path  # where `--photos` folders are mounted (`/data`)
 
     @property
     def folders(self) -> str:
@@ -107,7 +108,7 @@ def launcher_script(
     for kind in TOOL_KINDS:
         host = tool_host(runtime, kind)
         if host is None and kind is MountKind.CACHE:
-            host = _CACHE_VOLUME
+            host = CACHE_VOLUME
         if host is None:
             host = shell.home_folder(kind.value)
             created.append(host)
@@ -119,6 +120,7 @@ def launcher_script(
         created=tuple(created),
         environment=(*environment(), *locale_option(runtime)),
         commands=commands,
+        data_dir=runtime.locations.data_dir,
     )
 
 
@@ -138,60 +140,12 @@ def render_script(script: LauncherScript) -> str:
         function=LAUNCHER_FUNCTION,
         variable=LAUNCHER_VARIABLE,
         image=running_image(),
-        header=_header(script.shell),
+        header=header(script.shell),
         texts=menu_texts(),
+        kept=kept_run(script),
+        update=update_texts(),
         host=host_commands(script),
         checked=checked_folders(script),
         zone=WINDOWS_ZONE_VARIABLE,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
-
-
-def script_path(shell: Shell) -> str:
-    r"""Where the guides save the script: the tool folder of the user's home.
-
-    Args:
-        shell: The shell the script is for.
-
-    Returns:
-        `$HOME\media-hygiene\mh.ps1` or `$HOME/media-hygiene/mh.sh`.
-    """
-    return shell.home_folder(SCRIPT_NAMES[shell])
-
-
-def load_command(shell: Shell) -> str:
-    r"""The command loading the saved script into the current terminal.
-
-    Args:
-        shell: The shell the script is for.
-
-    Returns:
-        `. "$HOME\media-hygiene\mh.ps1"` or `source "$HOME/media-hygiene/mh.sh"`.
-    """
-    verb = "." if shell is Shell.POWERSHELL else "source"
-    return f'{verb} "{script_path(shell)}"'
-
-
-def _header(shell: Shell) -> tuple[str, ...]:
-    """The comment lines opening the script: what it is, how to load it.
-
-    Args:
-        shell: The shell the script is for.
-
-    Returns:
-        Translated lines, without the comment sign.
-    """
-    load = load_command(shell)
-    profile = _PROFILES[shell]
-    return (
-        _(
-            "media-hygiene launcher: 'mh <command>' runs the tool on your folders, "
-            "e.g. mh audit, then mh clean."
-        ),
-        _("Load it in this terminal with: {load}").format(load=load),
-        _("For every terminal, add that line to {profile}.").format(profile=profile),
-        _(
-            "Another folder? Run 'launcher' again with one more -v, saving to the "
-            "same file."
-        ),
-    )

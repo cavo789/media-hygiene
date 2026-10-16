@@ -115,6 +115,12 @@ def _footer(runtime: Runtime, menu: Menu) -> None:
                 url=f"{DOC_PAGES}/{_('sort/quick-guide/')}"
             )
         )
+    # Not steps of a guide: `mh` runs them itself (0176, 0177).
+    output.info(
+        _("Your folders: {folders}. A new version: {update}.").format(
+            folders=f"{LAUNCHER_FUNCTION} folders", update=f"{LAUNCHER_FUNCTION} update"
+        )
+    )
     proposed = menu.proposed
     if proposed is None:
         output.success(

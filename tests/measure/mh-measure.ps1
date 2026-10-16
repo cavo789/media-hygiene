@@ -24,6 +24,10 @@
 #      (powercfg /requests) needs an administrator PowerShell
 #  10. mh open, mh shortcut, mh explorer (right-click a folder), each read back   (0175, 0180,
 #      0181): asks what you saw; your own Media Hygiene shortcut or entry is put back after
+#  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
+#      mh update: with the local image it says there is nothing to pull; then, if you agree, the
+#      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
+#      published one, writes mh again and says both versions                (0176, 0177)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -35,6 +39,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 8 -Count 10   (step 8 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300  (step 9 only)
 #   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 10 -Count 20  (step 10 only)
+#   powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 11 -Count 20  (step 11 only)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -422,6 +427,79 @@ if (Wanted 10) {
         if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
     }
     Log "   10d. your own shortcuts and right-click entry, if any, are back; close the mh windows."
+    $ErrorActionPreference = "Stop"
+}
+
+# --- 11: mh folders and mh update, mh rewriting its own file (0176, 0177) ------------------
+# mh is written by the image under test; a folder added here is audited from a new terminal.
+if (Wanted 11) {
+    $ErrorActionPreference = "Continue"
+    $mhDir = Join-Path $tool "mh11"
+    New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
+    . $mhFile
+    Log ""
+    Log "== 11. mh folders and mh update (0176, 0177)"
+    $said = @(mh folders 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11a. " + $line) }
+    $scanned = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'Media files scanned' })
+    Log ("   11a. audit before add: " + ($scanned -join ' / '))
+
+    # 11b: one more folder, then a new terminal (its own powershell.exe) loads the file and audits.
+    $extra = Join-Path $Work "Extra photos"
+    New-Item -ItemType Directory -Force -Path $extra | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $extra ("extra-" + $_.Name)) }
+    $said = @(mh folders add $extra 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11b. " + $line) }
+    Log ("   11b. the file names the folder: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $extra -Quiet))
+    Log ("   11b. no temporary file left: " + (-not (Test-Path -LiteralPath "$mhFile.new")))
+    $result = Join-Path $mhDir "probe.txt"
+    $probe = Join-Path $mhDir "probe.ps1"
+    Set-Content -Path $probe -Encoding Ascii -Value @'
+param([string]$mh, [string]$result)
+function Note([string]$text) { Add-Content -Path $result -Value $text -Encoding UTF8 }
+. $mh
+foreach ($line in @(mh folders 6>&1 | ForEach-Object { "$_" })) { Note ("   11b. new terminal: " + $line) }
+$lines = @(mh audit 2>&1 | ForEach-Object { "$_" })
+Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Where-Object { $_ -match 'Media files scanned' }) -join ' / '))
+'@
+    Remove-Item -Force -ErrorAction SilentlyContinue $result
+    Start-Process -FilePath powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$probe`" -mh `"$mhFile`" -result `"$result`"" -Wait
+    if (Test-Path $result) { Get-Content -Path $result -Encoding UTF8 | ForEach-Object { Log $_ } }
+
+    # 11c: refused folders leave the file as it was; 11d: the folder taken out again.
+    $before = (Get-FileHash -LiteralPath $mhFile).Hash
+    $inside = Join-Path $data "flat"
+    $said = @(mh folders add $inside 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11c. add a folder inside another: " + $line) }
+    Log ("   11c. mh.ps1 unchanged: " + ($before -eq (Get-FileHash -LiteralPath $mhFile).Hash))
+    $said = @(mh folders remove $data 6>&1 | ForEach-Object { "$_" })
+    $said += @(mh folders remove $extra 6>&1 | ForEach-Object { "$_" })
+    $said += @(mh folders remove $data 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11d. " + $line) }
+
+    # 11e: mh update. The local build has nothing to pull.
+    $said = @(mh update 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11e. local image: " + $line) }
+    $agree = Read-Host "11e. Try mh update for real? Your local image is tagged cavo789/media-hygiene, then the published one is pulled over that tag (y/n)"
+    Log "   11e. real update tried: $agree"
+    if ($agree -eq 'y') {
+        & docker tag $Image "cavo789/media-hygiene:latest"
+        & docker run --rm -e "MEDIA_HYGIENE_IMAGE=cavo789/media-hygiene" @toolMounts $Image launcher --photos $data > $mhFile
+        . $mhFile
+        $said = @(mh update 6>&1 | ForEach-Object { "$_" })
+        foreach ($line in $said) { Log ("   11e. " + $line) }
+        Log ("   11e. mh.ps1 still names the folder: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $data -Quiet))
+        Log ("   11e. images: " + ((& docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | Where-Object { $_ -match 'media-hygiene' }) -join ' / '))
+    }
     $ErrorActionPreference = "Stop"
 }
 

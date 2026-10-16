@@ -125,6 +125,14 @@ avant que `>` ne l'enregistre. `mh` monte alors un dossier qui n'existe pas, Doc
 vide, et l'audit n'y trouve rien. Relancez `launcher`, avec les mêmes dossiers, vers le même
 fichier : le nouveau script ne contient que de l'ASCII et garde chaque accent.
 
+## Une commande du guide est inconnue
+
+*No such command*, ou `mh` affiche l'aide de l'image à la place : votre image est plus ancienne
+que le guide. Tapez `mh update` : il télécharge la nouvelle version et réécrit `mh` avec vos
+dossiers. Un `mh` plus ancien que `mh update` lui-même ne le connaît pas : relancez une fois la
+ligne `launcher` du [guide](clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh), avec
+vos dossiers.
+
 ## « Erreur inattendue pendant … »
 
 Un bogue de l'outil, pas une erreur de votre part. Le message dit ce qui a échoué et si vos

@@ -14,9 +14,9 @@ from media_hygiene.paths.mounts import MountTable
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
-    load_command,
     render_script,
 )
+from media_hygiene.services.launcher_file import load_command
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
@@ -65,7 +65,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     text = render_script(script)
     assert text.startswith("# media-hygiene launcher")
     assert '. "$HOME\\media-hygiene\\mh.ps1"' in text
-    assert "function mh {" in text
+    assert "function global:mh {" in text
     assert "$mode = if ($command -in @('clean')) { '' } else { ':ro' }" in text
     assert "@('-p', '127.0.0.1:8088:8088')" in text
     assert "$tty = @(if ($command -notin @('launcher')) { '-it' })" in text
@@ -76,7 +76,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert '-v "$HOME\\media-hygiene\\journal:/journal" `' in text
     assert '"$HOME\\media-hygiene\\config", "$HOME\\media-hygiene\\journal"' in text
     assert '-e "TZ=Europe/Brussels" `' in text
-    assert text.count("MEDIA_HYGIENE_LAUNCHER") == 1
+    assert "MEDIA_HYGIENE_LAUNCHER=1" not in text  # its own shell, never carried
     assert (
         "            cavo789/media-hygiene @rest\n        $status = $LASTEXITCODE"
         in text

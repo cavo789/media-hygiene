@@ -4,7 +4,7 @@
 {% for line in header %}
 # {{ line }}
 {% endfor %}
-function {{ function }} {
+function global:{{ function }} {
     # The title a long run left in the taskbar goes back at the next call (0185).
     if ($null -ne $global:MediaHygieneTitle) {
         $Host.UI.RawUI.WindowTitle = $global:MediaHygieneTitle
@@ -58,9 +58,11 @@ function {{ function }} {
         return
     }
     # The commands of the host itself, without the container (0175, 0180, 0181).
+    # Splatted: each word its own argument, as typed.
+    $more = @($rest | Select-Object -Skip 1)
     switch ($rest[0]) {
 {% for name in host.names %}
-        '{{ name }}' { _{{ function }}_{{ name }} @($rest | Select-Object -Skip 1); return }
+        '{{ name }}' { _{{ function }}_{{ name }} @more; return }
 {% endfor %}
     }
     foreach ($folder in @({{ quoted(checked) }})) {
@@ -133,7 +135,7 @@ function {{ function }} {
 }
 
 # `{{ function }} open`: the catalogue of every report in the default browser (0175).
-function _{{ function }}_open {
+function global:_{{ function }}_open {
 {% if host.index %}
     $index = "{{ host.index }}"
     if (-not (Test-Path -LiteralPath $index)) { Write-Host "{{ host.texts.no_report }}"; return }
@@ -146,7 +148,7 @@ function _{{ function }}_open {
 # What the icon and the right-click entry start: Windows PowerShell loading this very
 # file, then `{{ function }}` with the words given; the window stays open (0180, 0181).
 # Returns the program, then its arguments; nothing when this file is unknown.
-function _{{ function }}_start($words) {
+function global:_{{ function }}_start($words) {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
     if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ host.texts.no_file }}"; return }
     Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
@@ -154,7 +156,7 @@ function _{{ function }}_start($words) {
 }
 
 # `{{ function }} shortcut`: "{{ host.label }}" on the Desktop and in the Start menu, read back (0180).
-function _{{ function }}_shortcut {
+function global:_{{ function }}_shortcut {
     $powershell, $arguments = _{{ function }}_start '{{ function }}'
     if (-not $arguments) { return }
     $shell = New-Object -ComObject WScript.Shell
@@ -180,7 +182,7 @@ function _{{ function }}_shortcut {
 # `{{ function }} explorer`: the right-click entry of every folder, in the user's own
 # registry (no administrator), read back; `--remove` deletes it (0181). Explorer puts
 # the folder after `#`: a comment, so that no character of its name breaks the command.
-function _{{ function }}_explorer {
+function global:_{{ function }}_explorer {
     $key = '{{ host.key }}'
     if ($args -contains '--remove') {
         if (Test-Path -LiteralPath $key) { Remove-Item -LiteralPath $key -Recurse -Force -ErrorAction SilentlyContinue }
@@ -205,3 +207,4 @@ function _{{ function }}_explorer {
         Write-Host "{{ host.texts.not_saved }}"
     }
 }
+{% include 'mh_folders.ps1.j2' %}

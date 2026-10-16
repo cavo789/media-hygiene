@@ -69,7 +69,8 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
         quarantine: `--quarantine`, the quarantine folder typed.
     """
     from media_hygiene.console.output import data_on_terminal
-    from media_hygiene.services.launcher import load_command, render_script
+    from media_hygiene.services.launcher import render_script
+    from media_hygiene.services.launcher_file import written
     from media_hygiene.services.launcher_folders import FolderChoice
     from media_hygiene.services.launcher_memory import remembered
 
@@ -87,11 +88,8 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
             )
         )
     runtime.output.info(remembered(runtime, script))
-    runtime.output.success(
-        _("Launcher written. Load it with: {load}, then type: mh audit").format(
-            load=load_command(script.shell)
-        )
-    )
+    if done := written(script.shell):
+        runtime.output.success(done)
 
 
 def _built(

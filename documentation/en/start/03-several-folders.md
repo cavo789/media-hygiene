@@ -167,8 +167,9 @@ folders read-only (`:ro`) unless the command changes them (`clean`, `sort`, `alb
   New-Item -ItemType Directory -Force (Split-Path $PROFILE) | Out-Null
   Add-Content $PROFILE '. "$HOME\media-hygiene\mh.ps1"'
   ```
-- **Another folder?** Run the `launcher` command again with one more `--photos`. For one command
-  only, `mh --photos "E:\USB key" audit` adds it to your folders: the copies of your photos on
+- **Another folder?** `mh folders add "D:\Old disk"`: `mh` writes itself again with it, and shows
+  your folders read back from the file (`mh folders` alone lists them, `mh folders remove` takes
+  one out, a renamed folder too). For one command only, `mh --photos "E:\USB key" audit` adds it to your folders: the copies of your photos on
   the key are found too. `mh --photos "E:\USB key"` alone opens the menu on it; `mh explorer`
   puts that on the right-click of every folder in Explorer: right-click, *Media Hygiene*, then
   choose the step.
