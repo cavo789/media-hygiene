@@ -25,6 +25,7 @@ def _page() -> str:
         state_path="/api/state",
         save_path="/api/places",
         search_path="/api/search",
+        cluster_path="/api/cluster/",
         osm_path="",
         osm_host="",
         tiles="https://tile.example/{z}/{x}/{y}.png",

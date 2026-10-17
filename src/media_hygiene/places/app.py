@@ -1,10 +1,11 @@
 """The routes of the map page: the page, Leaflet, its state, saving, the town search.
 
 `GET /` serves the page, `GET /leaflet.js` and `/leaflet.css` the vendored library,
-`GET /api/state` the places and the clusters; `POST /api/places` saves every place
-into `config.toml`, `POST /api/search` finds towns offline, `POST /api/osm` areas
-online (`osm_search`). Like `review`: loopback hosts only, JSON bodies only, from the
-page's own origin.
+`GET /api/state` the places and the clusters, `GET /api/cluster/<rank>` and
+`GET /preview/<key>.jpg` the first photos of one (`photos`); `POST /api/places`
+saves every place into `config.toml`, `POST /api/search` finds towns offline,
+`POST /api/osm` areas online (`osm_search`). Like `review`: loopback hosts only,
+JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.i18n import _
 from media_hygiene.places.config_file import PlaceEdit
 from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
+from media_hygiene.places.photos import photo_response
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
@@ -30,6 +32,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.geo.nominatim import Nominatim
     from media_hygiene.places.board import PlacesBoard
+    from media_hygiene.report.preview_cache import PreviewPool
     from media_hygiene.review.http import Request
 
 PAGE_PATH: Final = "/"
@@ -66,12 +69,14 @@ class PlacesApp:
     """Answers the browser; the board holds the state and saves it.
 
     `osm` searches OpenStreetMap; None when `[places] nominatim_url` is empty.
+    `pool` renders the photos' previews; None: none is served.
     """
 
     board: PlacesBoard
     page: Response
     assets: Mapping[str, Response]
     osm: Nominatim | None = None
+    pool: PreviewPool | None = None
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -98,7 +103,7 @@ class PlacesApp:
             return Response(HTTPStatus.FORBIDDEN, message.encode())
         path = request.path
         if request.method == _GET:
-            return self._get(path)
+            return await self._get(path)
         if request.method != _POST or path not in {SAVE_PATH, SEARCH_PATH, OSM_PATH}:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
@@ -108,8 +113,8 @@ class PlacesApp:
             return await search_osm(self.osm, request)
         return self._save(request) if path == SAVE_PATH else self._search(request)
 
-    def _get(self, path: str) -> Response:
-        """Serve the page, its state, or Leaflet.
+    async def _get(self, path: str) -> Response:
+        """Serve the page, its state, a cluster's photos, or Leaflet.
 
         Args:
             path: The path asked for.
@@ -121,6 +126,9 @@ class PlacesApp:
             return self.page
         if path == STATE_PATH:
             return json_response(HTTPStatus.OK, self.board.state())
+        photos = await photo_response(path, self.board, self.pool)
+        if photos is not None:
+            return photos
         return self.assets.get(path, Response(HTTPStatus.NOT_FOUND))
 
     def _save(self, request: Request) -> Response:

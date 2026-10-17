@@ -19,6 +19,7 @@ positions; again whenever a new place matters.
 ```powershell
 docker run --rm -it `
   -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene places
@@ -28,16 +29,17 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed: the positions come from the cache. No photo folder is needed. |
-| Needs | `/cache` (the positions the audits recorded), `/config` (where the places are saved), and `-p 127.0.0.1:8088:8088`. |
+| Your photos | 🔒 Never changed: the positions come from the cache. The photo folders, read-only (`:ro`), show the photos of a cluster; without them, the map works but shows no photo. |
+| Needs | `/cache` (the positions the audits recorded, and the previews), `/config` (where the places are saved), your photo folders read-only, and `-p 127.0.0.1:8088:8088`. |
 | Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file. |
 | Undo | Delete a place on the map, or its lines in `config.toml`. |
-| With `mh` | `mh places`: the port is published for you. |
+| With `mh` | `mh places`: your photo folders are mounted read-only and the port is published for you. |
 
 ## Run it
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene places
@@ -51,12 +53,18 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
 
 - **The circles** are your photos with a GPS position, grouped by about 200 metres. The list on
   the left gives the largest clusters without a name first: home is usually the first one.
+- **Click the number of photos** (for instance "11 photos") on a line of that list to see the
+  photos of the cluster (24 at most) and recognise the place before naming it; hover a photo to see where it was taken.
+  Click again, or ✕, to close them.
+- **Fold a list** by clicking its title: *Your places (10)* folds by itself from 8 places on,
+  so that the clusters stay in reach; your browser remembers your choice.
 - **Click a circle, or anywhere**, to name a place; set its radius with the slider, drag its
   marker. Tick **Home** for your home: trips are measured from it.
 - **Find a town** searches the towns shipped with the image, offline.
 - **Search OpenStreetMap** finds a village, a district or a park with its outline: the photo then
   belongs to it when it was taken inside.
-- **Save** writes the place into `config.toml` at once. Click a place to move, rename or delete it.
+- **Save** writes the place into `config.toml` at once; its line flashes in *Your places*. Click
+  a place to move, rename or delete it.
 
 ## Options
 
@@ -66,7 +74,8 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
 
 ## What leaves your computer
 
-No position, no photo, no list of places. The map loads **tiles** (the areas you look at) from
+No position, no photo, no list of places. The photos of a cluster are shown by the tool itself,
+from your folders; their previews stay in `/cache`. The map loads **tiles** (the areas you look at) from
 the server of `[places] tiles`; **Search OpenStreetMap** sends the **text you typed**, on your
 click only, to `[places] nominatim_url` (empty turns that search off). `classify` never goes
 online.

@@ -20,6 +20,7 @@ positions ; à nouveau chaque fois qu'un nouveau lieu compte.
 ```powershell
 docker run --rm -it `
   -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
@@ -29,16 +30,17 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées : les positions viennent du cache. Aucun dossier de photos n'est nécessaire. |
-| Il faut | `/cache` (les positions notées par les audits), `/config` (où les lieux sont enregistrés), et `-p 127.0.0.1:8088:8088`. |
+| Vos photos | 🔒 Jamais modifiées : les positions viennent du cache. Les dossiers de photos, en lecture seule (`:ro`), montrent les photos d'un groupe ; sans eux, la carte marche mais ne montre aucune photo. |
+| Il faut | `/cache` (les positions notées par les audits, et les aperçus), `/config` (où les lieux sont enregistrés), vos dossiers de photos en lecture seule, et `-p 127.0.0.1:8088:8088`. |
 | Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier. |
 | Annuler | Supprimez un lieu sur la carte, ou ses lignes dans `config.toml`. |
-| Avec `mh` | `mh places` : le port est publié pour vous. |
+| Avec `mh` | `mh places` : vos dossiers de photos sont montés en lecture seule et le port est publié pour vous. |
 
 ## Lancer
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
@@ -53,14 +55,19 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
 - **Les cercles** sont vos photos avec une position GPS, regroupées par 200 mètres environ. La
   liste de gauche donne d'abord les plus gros groupes sans nom : la maison est en général le
   premier.
+- **Cliquez sur le nombre de photos** (par exemple « 11 photos ») sur une ligne de cette liste
+  pour voir les photos du groupe (24 au plus) et reconnaître le lieu avant de le nommer ;
+  survolez une photo pour voir où elle a été prise. Cliquez à nouveau, ou sur ✕, pour les refermer.
+- **Repliez une liste** en cliquant sur son titre : *Vos lieux (10)* se replie d'elle-même à
+  partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix.
 - **Cliquez sur un cercle, ou n'importe où**, pour nommer un lieu ; réglez son rayon avec le
   curseur, déplacez son repère. Cochez **Maison** pour votre domicile : les voyages se mesurent
   depuis lui.
 - **Chercher une ville** cherche parmi les villes livrées avec l'image, hors ligne.
 - **Chercher sur OpenStreetMap** trouve un village, un quartier ou un parc avec son contour : une
   photo lui appartient alors quand elle a été prise à l'intérieur.
-- **Enregistrer** écrit le lieu dans `config.toml` aussitôt. Cliquez sur un lieu pour le déplacer,
-  le renommer ou le supprimer.
+- **Enregistrer** écrit le lieu dans `config.toml` aussitôt ; sa ligne clignote dans *Vos lieux*.
+  Cliquez sur un lieu pour le déplacer, le renommer ou le supprimer.
 
 ## Options
 
@@ -70,7 +77,8 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
 
 ## Ce qui quitte votre ordinateur
 
-Aucune position, aucune photo, aucune liste de lieux. La carte charge des **tuiles** (les zones
+Aucune position, aucune photo, aucune liste de lieux. Les photos d'un groupe sont montrées par
+l'outil lui-même, depuis vos dossiers ; leurs aperçus restent dans `/cache`. La carte charge des **tuiles** (les zones
 que vous regardez) depuis le serveur de `[places] tiles` ; **Chercher sur OpenStreetMap** envoie
 **le texte que vous avez tapé**, sur votre clic seulement, à `[places] nominatim_url` (vide, cette
 recherche est désactivée). `classify` ne va jamais en ligne.

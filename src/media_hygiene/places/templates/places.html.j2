@@ -21,6 +21,11 @@
   "osmNone": _("OpenStreetMap knows no area of that name."),
   "osmTooLarge": _("Larger areas not listed (regions, countries): {count}. A 'trip' rule names them."),
   "osmType": _("Type a name first."),
+  "allPhotos": [ngettext("The only photo of this cluster", "The {n} photos of this cluster", 1),
+                ngettext("The only photo of this cluster", "The {n} photos of this cluster", 2)],
+  "somePhotos": _("{shown} photos out of {count}"),
+  "photosMissing": _("Some photos are not reachable: moved since the audit, or their folder is not mounted (read-only is enough)."),
+  "showPhotos": _("Show its photos"),
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -76,6 +81,28 @@
                 background: var(--bg); color: var(--text); cursor: pointer; }
   #osm button:disabled { opacity: .6; cursor: progress; }
   #osm a { color: var(--accent); }
+  details.fold { margin-top: 16px; }
+  details.fold > summary { font-size: .95rem; font-weight: 600; color: var(--muted); cursor: pointer;
+                           margin-bottom: 6px; }
+  details.fold .count { font-weight: normal; }
+  li.cluster { display: flex; gap: 4px; align-items: center; }
+  li.cluster button.link { flex: 1; width: auto; }
+  li.cluster button.count { padding: 2px 8px; font: inherit; font-size: .85rem; white-space: nowrap;
+                            color: var(--accent); background: none; border: 1px solid var(--line);
+                            border-radius: 6px; cursor: pointer; }
+  li.cluster.shown button.count { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @keyframes flash { from { background: var(--accent); color: #fff; } to { background: none; } }
+  li.flash button.link { animation: flash 1.6s ease-out; }
+  #photos { margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; }
+  #photos header { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+  #photos header button { font: inherit; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
+  #grid img, #grid .gone { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                           background: var(--bg); }
+  #grid .gone { display: flex; align-items: center; justify-content: center; color: var(--muted);
+                font-size: 1.4rem; border: 1px dashed var(--line); }
+  .photo-pin { width: 12px !important; height: 12px !important; margin: -6px 0 0 -6px !important;
+               background: var(--bad); border: 2px solid #fff; border-radius: 50%; }
 </style>
 </head>
 <body>
@@ -112,10 +139,20 @@
       <button type="button" id="delete" class="danger">{{ _("Delete") }}</button>
     </div>
   </form>
-  <h2>{{ _("Your places") }}</h2>
-  <ul id="places"></ul>
-  <h2>{{ _("The largest clusters without a name") }}</h2>
-  <ul id="clusters"></ul>
+  <details id="placesFold" class="fold" open>
+    <summary>{{ _("Your places") }} <span id="placesCount" class="count"></span></summary>
+    <ul id="places"></ul>
+  </details>
+  <details id="clustersFold" class="fold" open>
+    <summary>{{ _("The largest clusters without a name") }} <span id="clustersCount" class="count"></span></summary>
+    <ul id="clusters"></ul>
+    <section id="photos" hidden aria-live="polite">
+      <header><span id="photosTitle"></span>
+        <button type="button" id="photosClose" aria-label="{{ _('Close') }}">✕</button></header>
+      <p id="photosMissing" class="hint" hidden></p>
+      <div id="grid"></div>
+    </section>
+  </details>
   <p class="hint">{{ _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") }}</p>
 </aside>
 <div id="map"></div>
@@ -124,7 +161,8 @@
 (() => {
   const T = {{ texts | tojson }};
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
-                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }} };
+                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
+                  cluster: {{ cluster_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -138,6 +176,8 @@
   const photos = (count) => counted(T.photos, count);
   const colour = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const SHOWN_CLUSTERS = 15, NAMED_ZOOM = 16, TOWN_ZOOM = 13, DEFAULT_RADIUS = 200;
+  // From this many places on, "Your places" starts folded, unless the reader chose.
+  const FOLDED_FROM = 8, FOLD_KEY = "places-folds";
 
   const map = L.map("map", { worldCopyJump: true }).setView([30, 0], 2);
   L.tileLayer(tiles, { maxZoom: 19, attribution: plain(attribution) }).addTo(map);
@@ -154,7 +194,57 @@
     button.type = "button"; button.className = "link"; button.textContent = text;
     button.addEventListener("click", action);
     li.append(button); list.append(li);
+    return li;
   }
+
+  // The reader's folds, kept in this browser only; a private window keeps none.
+  const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
+  // Only a click of the reader is remembered, not a list the page opens itself.
+  for (const id of ["placesFold", "clustersFold"]) {
+    byId(id).querySelector("summary").addEventListener("click", () => {
+      folds[id] = !byId(id).open;
+      try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
+    });
+  }
+  const unfold = (id) => { if (!byId(id).open) byId(id).open = true; };
+  // The line of a place just saved flashes in its list, opened: the save shows where the eye is.
+  const flash = (li) => { li.classList.add("flash"); li.scrollIntoView({ block: "nearest" }); };
+  let flashName = null;
+
+  // The first photos of a cluster: a grid of previews; hovering one shows where it was taken.
+  let shownRank = null, photoPin = null;
+  const unpin = () => { if (photoPin) { photoPin.remove(); photoPin = null; } };
+  function hidePhotos() { shownRank = null; unpin(); byId("photos").hidden = true; byId("grid").replaceChildren(); }
+  async function showPhotos(rank) {
+    if (shownRank === rank) { hidePhotos(); draw(); return; }
+    const response = await fetch(paths.cluster + rank).catch(() => null);
+    if (!response || !response.ok) { status(T.offline, "error"); return; }
+    const answer = await response.json();
+    shownRank = rank; unpin();
+    const [lat, lon] = state.clusters[rank];
+    map.setView([lat, lon], Math.max(map.getZoom(), NAMED_ZOOM));
+    // Every photo shown, or the first ones only (videos have no preview: never shown).
+    const shown = answer.photos.length, count = state.clusters[rank][2];
+    byId("photosTitle").textContent = shown < count ? fill(T.somePhotos, { shown, count }) : counted(T.allPhotos, shown);
+    byId("photosMissing").textContent = T.photosMissing;
+    byId("photosMissing").hidden = answer.photos.every((photo) => photo.found);
+    const grid = byId("grid"); grid.replaceChildren();
+    for (const photo of answer.photos) {
+      const cell = photo.found ? document.createElement("img") : document.createElement("span");
+      if (photo.found) { cell.src = photo.preview; cell.alt = photo.name; cell.loading = "lazy"; }
+      else { cell.className = "gone"; cell.textContent = "∅"; }
+      cell.title = photo.name;
+      cell.addEventListener("mouseenter", () => {
+        unpin();
+        photoPin = L.marker([photo.latitude, photo.longitude], { icon: L.divIcon({ className: "photo-pin" }) }).addTo(map);
+      });
+      cell.addEventListener("mouseleave", unpin);
+      grid.append(cell);
+    }
+    byId("photos").hidden = false;
+    draw();
+  }
+  byId("photosClose").addEventListener("click", () => { hidePhotos(); draw(); });
 
   function draw() {
     clusterLayer.clearLayers(); placeLayer.clearLayers();
@@ -176,11 +266,25 @@
     }
     const places = byId("places"); places.replaceChildren();
     if (!state.places.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noPlace; places.append(li); }
-    for (const place of state.places) item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+    for (const place of state.places) {
+      const li = item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+      if (place.name === flashName) { unfold("placesFold"); flash(li); }
+    }
+    flashName = null;
+    byId("placesCount").textContent = `(${state.places.length})`;
     const clusters = byId("clusters"); clusters.replaceChildren();
-    const unnamed = state.clusters.filter((cluster) => !cluster[3]).slice(0, SHOWN_CLUSTERS);
+    const unnamed = state.clusters.map((cluster, rank) => [rank, ...cluster]).filter((cluster) => !cluster[4]);
+    byId("clustersCount").textContent = `(${unnamed.length})`;
     if (!unnamed.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noCluster; clusters.append(li); }
-    for (const [lat, lon, count] of unnamed) item(clusters, `● ${photos(count)} — ${T.nameIt}`, () => startNew(lat, lon));
+    for (const [rank, lat, lon, count] of unnamed.slice(0, SHOWN_CLUSTERS)) {
+      const li = item(clusters, `● ${T.nameIt}`, () => startNew(lat, lon));
+      li.classList.add("cluster"); li.classList.toggle("shown", rank === shownRank);
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "count"; button.textContent = photos(count);
+      button.title = T.showPhotos; button.setAttribute("aria-pressed", String(rank === shownRank));
+      button.addEventListener("click", () => showPhotos(rank));
+      li.prepend(button);
+    }
   }
 
   function showEditor() {
@@ -240,7 +344,8 @@
     } catch (error) { status(T.offline, "error"); return; }
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
-    state = answer; editing = null; showEditor(); draw(); status(T.saved, "saved");
+    flashName = editing ? editing.name : null;
+    state = answer; editing = null; hidePhotos(); showEditor(); draw(); status(T.saved, "saved");
   }
 
   byId("editor").addEventListener("submit", (event) => {
@@ -306,7 +411,11 @@
   }
 
   fetch(paths.state).then((response) => response.json()).then((answer) => {
-    state = answer; draw();
+    state = answer;
+    // Open while there are few places; the reader's own choice wins.
+    byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
+    byId("clustersFold").open = folds.clustersFold ?? true;
+    draw();
     const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];
     if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM });
   }).catch(() => status(T.offline, "error"));

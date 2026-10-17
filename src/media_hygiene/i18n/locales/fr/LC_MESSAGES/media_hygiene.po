@@ -4863,6 +4863,9 @@ msgstr "Affiche chaque réglage, son origine, et les points de montage."
 msgid "Show it"
 msgstr "La voir"
 
+msgid "Show its photos"
+msgstr "Voir ses photos"
+
 msgid "Show the version and exit."
 msgstr "Affiche la version et quitte."
 
@@ -4908,6 +4911,13 @@ msgstr ""
 
 msgid "Some destinations cannot be used; nothing was moved:"
 msgstr "Certaines destinations sont inutilisables ; rien n'a été déplacé :"
+
+msgid ""
+"Some photos are not reachable: moved since the audit, or their folder is "
+"not mounted (read-only is enough)."
+msgstr ""
+"Certaines photos sont introuvables : déplacées depuis l'audit, ou leur "
+"dossier n'est pas monté (en lecture seule suffit)."
 
 msgid "Sort"
 msgstr "Tri"
@@ -5418,6 +5428,12 @@ msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
+
+#, python-brace-format
+msgid "The only photo of this cluster"
+msgid_plural "The {n} photos of this cluster"
+msgstr[0] "La seule photo de ce groupe"
+msgstr[1] "Les {n} photos de ce groupe"
 
 #, python-brace-format
 msgid ""
@@ -9408,6 +9424,10 @@ msgstr "{sheet} : {key} : '{value}' ({why})"
 #, python-brace-format
 msgid "{shift}: rule {camera}"
 msgstr "{shift} : règle {camera}"
+
+#, python-brace-format
+msgid "{shown} photos out of {count}"
+msgstr "{shown} photos sur {count}"
 
 #, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"

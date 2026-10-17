@@ -3990,6 +3990,9 @@ msgstr ""
 msgid "Show it"
 msgstr ""
 
+msgid "Show its photos"
+msgstr ""
+
 msgid "Show the version and exit."
 msgstr ""
 
@@ -4027,6 +4030,11 @@ msgid ""
 msgstr ""
 
 msgid "Some destinations cannot be used; nothing was moved:"
+msgstr ""
+
+msgid ""
+"Some photos are not reachable: moved since the audit, or their folder is "
+"not mounted (read-only is enough)."
 msgstr ""
 
 msgid "Sort"
@@ -4445,6 +4453,12 @@ msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr ""
+
+#, python-brace-format
+msgid "The only photo of this cluster"
+msgid_plural "The {n} photos of this cluster"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""
@@ -7831,6 +7845,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{shift}: rule {camera}"
+msgstr ""
+
+#, python-brace-format
+msgid "{shown} photos out of {count}"
 msgstr ""
 
 #, python-brace-format
