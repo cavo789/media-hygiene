@@ -35,8 +35,31 @@ d'elle-même.
 
 ## OneDrive « fichiers à la demande »
 
-Analyser un dossier dont les fichiers sont uniquement en ligne les télécharge tous. Rendez-les
-d'abord disponibles hors connexion, ou laissez ce dossier de côté.
+Avec les fichiers à la demande, une photo peut n'exister que dans le cloud OneDrive : Windows 11
+place souvent *Images* dans OneDrive quand il est installé avec un compte Microsoft. Lire un tel
+fichier le télécharge ; analyser ce dossier le télécharge donc en entier.
+
+Sous Windows, `mh` vérifie d'abord. Avant une commande qui lit vos photos (`audit`, `review`,
+`clean`, `crosscheck`, `classify`, `tags`, `people`, `search`), pour chaque dossier de photos
+situé dans OneDrive (les dossiers donnés par les variables `OneDrive`, `OneDriveConsumer` et
+`OneDriveCommercial`), il compte les fichiers que Windows marque comme absents du PC (les
+attributs *rappel à l'accès aux données* et *hors connexion* : les lister ne lit aucune photo),
+puis demande :
+
+```text
+1 234 fichiers (45,2 Go) de C:\Users\vous\OneDrive\Images sont uniquement dans le cloud OneDrive : les lire les télécharge sur ce PC (120 Go libres sur C:). Pour les garder ici : clic droit sur le dossier, puis Toujours conserver sur cet appareil.
+Continuer ? (o/N)
+```
+
+`N` (ou Entrée) ne lance rien. Le comptage est fait une fois par fenêtre PowerShell, et un `o`
+n'y est plus redemandé. `mh folders add` d'un dossier situé dans OneDrive affiche la même ligne,
+une fois. Pour garder les photos sur le PC : clic droit sur le dossier dans l'Explorateur, puis
+**Toujours conserver sur cet appareil** ; ou laissez ce dossier de côté. Un dossier hors de
+OneDrive n'est jamais listé.
+
+Reste à vérifier : si Docker Desktop, qui lit via son partage de fichiers, télécharge un tel
+fichier comme Windows le fait (non documenté). Si vous utilisez OneDrive, un retour sur ce que vous
+voyez est bienvenu (une issue sur GitHub).
 
 ## Des fichiers « n'ont pas pu être lus cette fois »
 

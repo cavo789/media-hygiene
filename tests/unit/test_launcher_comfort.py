@@ -26,6 +26,7 @@ from media_hygiene.services.launcher import (
     launcher_script,
     render_script,
 )
+from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from media_hygiene.services.reviewing import address_tip
 from tests.support.host_bash import fake_program, run_bash
@@ -297,3 +298,57 @@ def test_census_counts_and_measures_in_one_walk(tmp_path: Path) -> None:
     assert folder_census(tmp_path) == (2, 8)
     assert (file_count(tmp_path), folder_size(tmp_path)) == (2, 8)
     assert folder_census(tmp_path / "missing") == (0, 0)
+
+
+def test_powershell_asks_before_reading_onedrive_cloud_only_photos() -> None:
+    """0199: both attributes, the three roots, a session cache, the question."""
+    text = _powershell()
+    assert "(0x00400000 -bor 0x00001000)" in text
+    assert "[int]$_.Attributes -band" in text
+    roots = "@($env:OneDrive, $env:OneDriveConsumer, $env:OneDriveCommercial)"
+    assert roots in text
+    assert "$global:MediaHygieneCloud[$part] = $seen" in text
+    assert "ContainsKey($part)) { return $global:MediaHygieneCloud[$part] }" in text
+    assert 'Read-Host "Continuer ? (o/N)"' in text
+    assert "if ($answer -notin @('y', 'o')) { return $false }" in text
+    assert "sont uniquement dans le cloud OneDrive" in text
+    assert "Toujours conserver sur cet appareil" in text
+    # Only the commands reading the photos, before docker runs; `history` reads none.
+    check = text.index("if ($command -in @('audit', 'review')) {")
+    asked = text.index("if (-not (_mh_cloud $read)) { return }")
+    assert check < asked < text.index("docker run --rm @tty")
+
+
+def test_a_folder_outside_onedrive_is_never_listed() -> None:
+    """0199: no OneDrive variable, or a folder elsewhere: back before any listing."""
+    text = _powershell(Locale.EN)
+    seen = text[text.index("function global:_mh_cloud_seen") :]
+    assert seen.index("if (-not $part) { return }") < seen.index("Get-ChildItem")
+    part = text[text.index("function global:_mh_cloud_part") : text.index(seen)]
+    assert "if (-not $root) { continue }" in part
+    assert "Get-ChildItem" not in part
+
+
+def test_folders_add_says_once_that_a_folder_is_in_the_cloud() -> None:
+    """0199: `mh folders add` of a OneDrive folder: the line, no question."""
+    text = _powershell(Locale.EN)
+    add = text[text.index("function global:_mh_folders") :]
+    said = add.index("if ($seen -and $seen.Files -gt 0) { _mh_cloud_say $seen }")
+    assert said < add.index("$photos += $folder")
+    assert "Read-Host" not in add[: add.index("$photos += $folder")]
+
+
+def test_cloud_check_keeps_the_commands_of_the_cli_reading_photos() -> None:
+    """0199: `status`, `history`, `inventory` read the tool's folders only."""
+    names = ("audit", "clean", "history", "inventory", "search", "status")
+    assert cloud_check(names).readers == ("audit", "clean", "search")
+
+
+def test_bash_launcher_has_no_onedrive_check(tmp_path: Path) -> None:
+    """0199: the bash `mh` (WSL, Linux) has no OneDrive: unchanged."""
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    text = render_script(launcher_script(runtime, Shell.BASH, _commands()))
+    assert "OneDrive" not in text
+    assert "_mh_cloud" not in text

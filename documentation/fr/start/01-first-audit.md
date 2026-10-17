@@ -63,6 +63,10 @@ dossiers des rapports, de la configuration, du journal et de la quarantaine dans
 `$HOME\media-hygiene` (créés s'ils manquent), et votre fuseau horaire, demandé à Windows à chaque
 lancement.
 
+> 💡 Des photos dans OneDrive (souvent *Images* sous Windows 11) ? `mh` dit d'abord combien ne
+> sont que dans le cloud, car les lire les télécharge, et demande avant de continuer
+> ([OneDrive « fichiers à la demande »](../reference-troubleshooting.md#onedrive--fichiers-à-la-demande-)).
+
 ??? note "Sans `mh` : un seul `docker run` (WSL, Linux, ou juste pour essayer)"
 
     Le même audit en une seule commande Docker, rien d'autre à installer que Docker :

@@ -57,6 +57,10 @@ types the `docker run` for you: your folder read-only, the cache, the folders of
 configuration, the journal and the quarantine in `$HOME\media-hygiene` (created when missing),
 and your time zone, asked from Windows at each run.
 
+> 💡 Photos in OneDrive (often *Pictures* on Windows 11)? `mh` says first how many are in the cloud
+> only, since reading them downloads them, and asks before going on
+> ([OneDrive "Files On-Demand"](../reference-troubleshooting.md#onedrive-files-on-demand)).
+
 > 💡 The tool speaks English. For French, write `mh` with `--locale fr` right after
 > `cavo789/media-hygiene` in the `launcher` line: `cavo789/media-hygiene --locale fr launcher …`.
 

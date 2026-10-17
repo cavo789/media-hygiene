@@ -924,6 +924,10 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
+#, python-brace-format
+msgid "Continue? ({yes}/N)"
+msgstr ""
+
 msgid "Copied"
 msgstr ""
 
@@ -2243,6 +2247,10 @@ msgid "Load it in this terminal with: {load}"
 msgstr ""
 
 msgid "Longitude"
+msgstr ""
+
+#, python-brace-format
+msgid "Looking for the files of {folder} in OneDrive's cloud only…"
 msgstr ""
 
 msgid "MB"
@@ -6782,6 +6790,13 @@ msgid "{count} file: {words} words from its folders, name, date and place."
 msgid_plural "{count} files: {words} words from their folders, names, dates and places."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} files ({size} GB) of {folder} are in OneDrive's cloud only: "
+"reading them downloads them onto this PC ({free} GB free on {drive}). To "
+"keep them here: right-click the folder, then Always keep on this device."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} files have an identical copy: left out."

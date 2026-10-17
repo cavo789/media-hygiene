@@ -1,0 +1,58 @@
+{# Photos in OneDrive's cloud only, in mh.ps1: see services/launcher_cloud.py. #}
+{% set f = function %}
+
+# The part of a photo folder that lies in OneDrive: the folder itself under a OneDrive
+# root, the root inside the folder, nothing otherwise (never listed then) (0199).
+function global:_{{ f }}_cloud_part($folder) {
+    $full = "$folder".TrimEnd('\')
+    foreach ($root in @({{ cloud.roots | join(", ") }})) {
+        if (-not $root) { continue }
+        $root = "$root".TrimEnd('\')
+        if ($full -eq $root -or $full.StartsWith($root + '\', [StringComparison]::OrdinalIgnoreCase)) { return $full }
+        if ($root.StartsWith($full + '\', [StringComparison]::OrdinalIgnoreCase)) { return $root }
+    }
+}
+
+# The files of that part whose data is in the cloud only, counted once a session: one
+# listing, which reads attributes, never data. Nothing outside OneDrive.
+function global:_{{ f }}_cloud_seen($folder) {
+    $part = _{{ f }}_cloud_part $folder
+    if (-not $part) { return }
+    if ($null -eq $global:MediaHygieneCloud) { $global:MediaHygieneCloud = @{} }
+    if ($global:MediaHygieneCloud.ContainsKey($part)) { return $global:MediaHygieneCloud[$part] }
+    $folder = $part
+    Write-Host "{{ cloud.listing }}"
+    $files = 0
+    $bytes = 0
+    # RECALL_ON_DATA_ACCESS, OFFLINE: numbers, the enum of PowerShell 5.1 lacks the first.
+    Get-ChildItem -LiteralPath $part -Recurse -File -Force -ErrorAction SilentlyContinue | ForEach-Object {
+        if (([int]$_.Attributes -band ({{ cloud.attributes }})) -ne 0) { $files++; $bytes += $_.Length }
+    }
+    $seen = [pscustomobject]@{ Folder = $part; Files = $files; Bytes = $bytes; Accepted = $false }
+    $global:MediaHygieneCloud[$part] = $seen
+    $seen
+}
+
+# The line: how many, how large, the room left on the drive, how to keep them here.
+function global:_{{ f }}_cloud_say($seen) {
+    $folder = $seen.Folder
+    $count = '{0:N0}' -f $seen.Files
+    $size = [math]::Round($seen.Bytes / 1GB, 1)
+    $drive = $folder.Substring(0, 2)
+    $free = [math]::Round((Get-PSDrive -Name $folder.Substring(0, 1) -ErrorAction SilentlyContinue).Free / 1GB)
+    Write-Host "{{ cloud.warning }}"
+}
+
+# Before a command that reads the photos: the line and a question per folder with
+# cloud-only files, asked once a session when answered yes. True when the run goes on.
+function global:_{{ f }}_cloud($folders) {
+    foreach ($folder in $folders) {
+        $seen = _{{ f }}_cloud_seen $folder
+        if (-not $seen -or $seen.Files -eq 0 -or $seen.Accepted) { continue }
+        _{{ f }}_cloud_say $seen
+        $answer = "$(Read-Host "{{ cloud.question }}")".Trim()
+        if ($answer -notin @('y', '{{ cloud.yes }}')) { return $false }
+        $seen.Accepted = $true
+    }
+    $true
+}

@@ -70,6 +70,11 @@ function global:{{ function }} {
         if (-not (Test-Path -LiteralPath $folder)) { Write-Host "{{ texts.missing }}"; return }
     }
     $command = $rest | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
+    if ($command -in @({{ listed(cloud.readers) }})) {
+        # Photos in OneDrive's cloud only: said, and asked, before anything reads them (0199).
+        $read = @({{ quoted(checked) }}) + @(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] })
+        if (-not (_{{ function }}_cloud $read)) { return }
+    }
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
     $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
@@ -157,3 +162,4 @@ function global:_{{ function }}_open {
 
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}
+{% include 'mh_cloud.ps1.j2' %}

@@ -43,6 +43,9 @@
 #      waits for you to start it again                                         (0174)
 #  17. mh.ps1 kept in memory, written in variants (without / with only: keep-awake, browser,
 #      shortcut, right-click): which one the antivirus refuses   (Avast IDP.Generic, 2026-10-16)
+#  18. OneDrive cloud-only files played by a folder whose files are marked offline, OneDrive
+#      pointed at it for this window only: mh audit says the line and asks (N, then y, then
+#      not again); mh folders add says the line; PowerShell 5.1's own run of the check  (0199)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -62,6 +65,7 @@
 #   .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
 #   .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
 #   .\mh-measure.ps1 -Only 17 -Count 5
+#   .\mh-measure.ps1 -Only 18 -Count 5
 
 param(
     [string]$Photos = "C:\Photos",
@@ -776,6 +780,59 @@ if (Wanted 17) {
     $seen = Read-Host "17. Did the antivirus show alerts? Which file names did they give? (type them, or none)"
     Log "   17. antivirus alerts: $seen"
     if (-not $Keep) { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $folder }
+}
+
+# --- 18: photos in OneDrive's cloud only, played without OneDrive (0199) ------------------
+# A folder under a fake OneDrive root, 3 of its files marked Offline (0x00001000, one of the
+# two attributes mh checks; a cloud provider alone sets the other). $env:OneDrive is changed
+# for this window only and put back; nothing of your own OneDrive is read or changed.
+if (Wanted 18) {
+    $ErrorActionPreference = "Continue"
+    $root = Join-Path $Work "OneDrive"
+    $cloud = Join-Path $root "Pictures"
+    $later = Join-Path $root "Later"
+    New-Item -ItemType Directory -Force -Path $cloud, $later, (Join-Path $tool "config") | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 5 | Copy-Item -Destination $cloud
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | Copy-Item -Destination $later
+    foreach ($file in @(Get-ChildItem -LiteralPath $cloud -File | Select-Object -First 3) + @(Get-ChildItem -LiteralPath $later -File)) {
+        $file.Attributes = $file.Attributes -bor [IO.FileAttributes]::Offline
+    }
+    $mhDir = Join-Path $tool "mh18"
+    New-Item -ItemType Directory -Force -Path $mhDir | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $cloud > $mhFile
+    . $mhFile
+    $ownOneDrive = $env:OneDrive
+    $env:OneDrive = $root
+    $global:MediaHygieneCloud = $null
+    Log ""
+    Log "== 18. photos in OneDrive's cloud only, played by offline files (0199)"
+    Write-Host "18a. mh audit follows: it should say 3 files of $cloud are in the cloud only. Type N."
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit
+    Log ("   18a. mh audit answered N: exit code {0}, {1:N1} s (an audit would take longer)" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $line = Read-Host "18a. Did mh say '3 files (... GB) of $cloud are in OneDrive's cloud only' with the free space of $($cloud.Substring(0, 2))? Type what was wrong, or ok"
+    Log "   18a. the line: $line"
+    Write-Host "18b. mh audit again: no new count, the same question. Type y."
+    mh audit | Out-Null
+    Log "   18b. mh audit answered y: exit code $LASTEXITCODE"
+    Write-Host "18c. mh audit a third time: no question expected."
+    mh audit | Out-Null
+    $asked = Read-Host "18c. Was the question asked again? (y/n)"
+    Log "   18c. asked again after y in the same window (n expected): $asked"
+    $said = @(mh folders add $later 6>&1 | ForEach-Object { "$_" })
+    foreach ($said1 in $said) { Log ("   18d. mh folders add: " + $said1) }
+    $env:OneDrive = $ownOneDrive
+    $global:MediaHygieneCloud = $null
+    $said = @(mh folders 6>&1 | ForEach-Object { "$_" })
+    Log ("   18e. OneDrive put back to your own ({0}); mh folders: {1}" -f $(if ($ownOneDrive) { 'set' } else { 'none' }), ($said -join ' / '))
 }
 
 # --- clean up -------------------------------------------------------------------------------
