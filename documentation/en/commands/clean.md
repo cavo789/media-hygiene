@@ -28,7 +28,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | ✋ Acts: moves the extra copies, unreadable files and orphan sidecars to the quarantine; deletes the empty files (0 bytes). |
+| Your photos | ✋ Acts: moves the extra copies, unreadable files and orphan sidecars to the quarantine; deletes the empty files (0 bytes) and the folders it leaves empty. |
 | Needs | Your folders **without** `:ro`, `/journal` and `/quarantine` (folders of yours). |
 | Recommended | `/cache`, `/reports`, `/config`. |
 | Writes | The journal of the run, the quarantine, the clean report. |
@@ -72,6 +72,15 @@ the table at the end counts what was moved, skipped and failed.
 
 The quarantine keeps the original paths below one folder per run:
 `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
+
+**A folder left empty goes too.** Once its files are set aside, a folder holding nothing else
+(or only `Thumbs.db`, `desktop.ini`, `.DS_Store`: `[sort] junk_files`, moved to the quarantine
+first) is removed, then its parent if that one is empty in turn. Before asking, `clean` says how
+many folders will go; the end of the run and [`history`](history.md) say how many went, and
+`undo` recreates them before putting the files back. Never removed: the folders you mounted, a
+protected, backup or excluded folder, a folder already empty before the run. With `--delete` and
+no quarantine mounted, a folder holding only such system files stays. A run stopped with Ctrl+C
+removes no folder.
 
 ## Options
 

@@ -91,6 +91,7 @@ class RunSummary:  # pylint: disable=too-many-instance-attributes
     unwanted: int = 0  # of `quarantined`: photos set aside in `review --junk`
     returned: int = 0  # of `quarantined`: set aside before, back since (0216)
     marked: int = 0  # files deleted in the Explorer, confirmed (0224)
+    folders_removed: int = 0  # left empty, removed (0202)
 
     @property
     def moved(self) -> int:
@@ -149,6 +150,9 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         unwanted=sum(e.action is ActionKind.QUARANTINE_UNWANTED for e in quarantined),
         returned=sum(e.action is ActionKind.QUARANTINE_RETURNED for e in quarantined),
         marked=sum(e.action in MARKS for e in done_states(entries, kind)),
+        folders_removed=sum(
+            e.action is ActionKind.REMOVE_FOLDER for e in done_states(entries, kind)
+        ),
     )
 
 

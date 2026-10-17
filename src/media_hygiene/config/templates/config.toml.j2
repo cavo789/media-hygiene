@@ -127,7 +127,7 @@ blur_percentile = 2
 {{ comment(_("Ask for confirmation before sorting."), "--yes") }}
 confirm = true
 
-{{ comment(_("Files the system leaves behind: a source folder holding nothing else is removed once sorted, these files going to the quarantine first. 'sort --keep-empty-folders' keeps every folder.")) }}
+{{ comment(_("Files the system leaves behind: a folder holding nothing else is removed once 'sort' or 'clean' emptied it, these files going to the quarantine first. 'sort --keep-empty-folders' keeps every folder a sort empties.")) }}
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
 
 

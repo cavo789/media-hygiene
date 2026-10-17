@@ -7,7 +7,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import done_states, journal_file, read_journal
-from media_hygiene.actions.kinds import ActionKind, Phase
+from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase
 from media_hygiene.actions.purge import purge_run
 from media_hygiene.actions.runs import summarize
 from media_hygiene.cli.clean_confirm import confirm_clean
@@ -116,7 +116,9 @@ def test_a_purged_burst_shot_back_is_proposed_cleaned_and_undone(
     entries = done_states(
         read_journal(journal_file(locations.journal_dir, second)), Phase.CLEAN
     )
-    assert [entry.action for entry in entries] == [ActionKind.QUARANTINE_RETURNED]
+    assert [e.action for e in entries if e.action not in FOLDER_ACTIONS] == [
+        ActionKind.QUARANTINE_RETURNED  # its folders left empty go too
+    ]
     assert summarize(locations.journal_dir, second).returned == 1
     assert not audit(runtime).plan.returned  # in the quarantine, out of /data
 

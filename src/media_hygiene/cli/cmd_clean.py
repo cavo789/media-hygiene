@@ -65,12 +65,13 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         show_second_opinion,
     )
     from media_hygiene.cli.near_preview import near_waiting, show_near_first
+    from media_hygiene.console.emptied_view import show_clean_outcome, tell_emptied
     from media_hygiene.console.progress import RichProgress
-    from media_hygiene.console.tables import outcome_table
     from media_hygiene.plan.near_review import NearSelection
     from media_hygiene.report.views import ReportRecord
     from media_hygiene.services.clean import CleanMode, CleanService
     from media_hygiene.services.decisions_archive import archive_decisions
+    from media_hygiene.services.emptied_folders import emptied_by
     from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
     from media_hygiene.services.review import apply_review, load_review, review_choices
 
@@ -104,14 +105,15 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         if plan.is_empty:
             output.success(_("Nothing to clean: no duplicate and no broken file."))
             return
-        show_near_first(runtime, replace(findings, plan=plan), yes=yes)
+        tell_emptied(output, emptied_by(runtime, plan).predicted())
+        show_near_first(runtime, replace(findings, plan=plan), yes=yes)  # last: a link
         if not confirm_clean(runtime, plan, yes):
             output.drop_advice()
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)
         output.title(_("Clean"))
         run_id, outcome = service.execute(plan)
-        output.show(outcome_table(outcome, _("Clean {run_id}").format(run_id=run_id)))
+        show_clean_outcome(output, outcome, _("Clean {run_id}").format(run_id=run_id))
         report_and_announce(
             runtime,
             ReportRecord(

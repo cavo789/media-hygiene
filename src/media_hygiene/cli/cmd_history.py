@@ -12,6 +12,8 @@ from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from rich.table import Table
 
     from media_hygiene.actions.runs import RunSummary
@@ -54,41 +56,35 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         summaries: The runs, newest first.
 
     Returns:
-        The table; the *Unwanted*, *Back*, *Explorer*, *Moved*, *Linked* and
-        *Sidecars* columns only when a run set unwanted photos aside, set aside
-        again files that came back, marked files deleted in the Explorer, moved
-        files, made an album or wrote sidecars.
+        The table; the *Unwanted*, *Back*, *Explorer*, *Moved*, *Linked*,
+        *Sidecars* and *Folders removed* columns only when a run set unwanted
+        photos aside, set aside again files that came back, marked files deleted
+        in the Explorer, moved files, made an album, wrote sidecars or removed the
+        folders it left empty.
     """
     from rich.table import Table
 
     from media_hygiene.console.formatting import human_number, human_size
 
-    unwanted = any(run.unwanted for run in summaries)
-    returned = any(run.returned for run in summaries)
-    marked = any(run.marked for run in summaries)
-    moved = any(run.moved for run in summaries)
-    linked = any(run.linked for run in summaries)
-    written = any(run.kept.written for run in summaries)
+    optional: list[tuple[str, Callable[[RunSummary], int]]] = [
+        (_("Of which unwanted"), lambda run: run.unwanted),
+        (_("Of which back again"), lambda run: run.returned),
+        (_("Deleted in the Explorer"), lambda run: run.marked),
+        (_("Moved"), lambda run: run.moved),
+        (_("Linked"), lambda run: run.linked),
+        (_("Sidecars"), lambda run: run.kept.written),
+        (_("Folders removed"), lambda run: run.folders_removed),
+    ]
+    shown = [(h, count) for h, count in optional if any(map(count, summaries))]
     table = Table(title=_("Runs (newest first)"), title_justify="left")
     table.add_column(_("Run"), no_wrap=True)
     table.add_column(_("Command"))
     headers = [_("Deleted"), _("Freed"), _("Quarantined")]
-    headers += [_("Of which unwanted")] if unwanted else []
-    headers += [_("Of which back again")] if returned else []
-    headers += [_("Deleted in the Explorer")] if marked else []
-    headers += [_("Moved")] if moved else []
-    headers += [_("Linked")] if linked else []
-    headers += [_("Sidecars")] if written else []
-    for header in [*headers, _("Restored")]:
+    for header in [*headers, *(header for header, _count in shown), _("Restored")]:
         table.add_column(header, justify="right")
     for run in summaries:
         counts = [human_number(run.deleted), human_size(run.freed)]
         counts += [human_number(run.quarantined)]
-        counts += [human_number(run.unwanted)] if unwanted else []
-        counts += [human_number(run.returned)] if returned else []
-        counts += [human_number(run.marked)] if marked else []
-        counts += [human_number(run.moved)] if moved else []
-        counts += [human_number(run.linked)] if linked else []
-        counts += [human_number(run.kept.written)] if written else []
+        counts += [human_number(count(run)) for _header, count in shown]
         table.add_row(run.run_id, run.kind.value, *counts, human_number(run.restored))
     return table

@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
-from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.journal import JournalEntry
+from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.paths.quarantines import Quarantines
-from media_hygiene.services.drive_letter import COMES_BACK, LetterChange, moved_to
+from media_hygiene.services.drive_letter import LetterChange, moved_to
+from media_hygiene.services.letter_refusals import COMES_BACK, refused
 
 _CHANGE = LetterChange("e", "f", Path("/quarantine"), Path("/data"))
 
@@ -44,3 +47,36 @@ def test_a_move_of_sort_is_never_refused_for_its_folder() -> None:
     assert ActionKind.MOVE not in COMES_BACK
     assert ActionKind.QUARANTINE in COMES_BACK
     assert ActionKind.DELETE_DUPLICATE in COMES_BACK
+
+
+def _line(seq: int, action: ActionKind, path: Path) -> JournalEntry:
+    """A done journal line."""
+    return JournalEntry(
+        seq=seq,
+        phase=Phase.CLEAN,
+        status=Status.DONE,
+        action=action,
+        path=str(path),
+        host_path=str(path),
+        size=0,
+        mtime_ns=0,
+    )
+
+
+def test_a_folder_the_run_removed_comes_back_when_its_parent_is_there(
+    tmp_path: Path,
+) -> None:
+    """0202: Trip removed by the clean, Photos still on F:: both come back."""
+    trip = tmp_path / "data" / "f" / "Photos" / "Trip"
+    trip.parent.mkdir(parents=True)
+    moved = [
+        _line(1, ActionKind.QUARANTINE_DUPLICATE, trip / "a.jpg"),
+        _line(2, ActionKind.REMOVE_FOLDER, trip),
+    ]
+    before = [
+        entry.model_copy(update={"path": entry.path.replace("/f/", "/e/")})
+        for entry in moved
+    ]
+    assert refused(moved, before) == {}
+    shutil.rmtree(trip.parent)  # Photos deleted by hand: nothing rebuilt by guess
+    assert refused(moved, before) == {1: trip / "a.jpg", 2: trip}

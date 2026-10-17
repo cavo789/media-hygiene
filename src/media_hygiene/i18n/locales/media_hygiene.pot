@@ -1695,9 +1695,9 @@ msgid "Files that could not be read this time"
 msgstr ""
 
 msgid ""
-"Files the system leaves behind: a source folder holding nothing else is "
-"removed once sorted, these files going to the quarantine first. 'sort "
-"--keep-empty-folders' keeps every folder."
+"Files the system leaves behind: a folder holding nothing else is removed "
+"once 'sort' or 'clean' emptied it, these files going to the quarantine "
+"first. 'sort --keep-empty-folders' keeps every folder a sort empties."
 msgstr ""
 
 msgid "Files to move"
@@ -1816,6 +1816,9 @@ msgid "Folders analysed:"
 msgstr ""
 
 msgid "Folders closed; your photos were not changed."
+msgstr ""
+
+msgid "Folders removed"
 msgstr ""
 
 msgid "Folders sharing identical files"
@@ -6889,12 +6892,34 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} folder left empty was removed."
+msgid_plural "{count} folders left empty were removed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} folder pair, the most space freed first: {decided} decided "
 "already."
 msgid_plural ""
 "{count} folder pairs, the most space freed first: {decided} decided "
 "already."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} folder will be left empty and removed; 'undo' recreates it."
+msgid_plural "{count} folders will be left empty and removed; 'undo' recreates them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} folder will hold only system files (Thumbs.db...): it stays, no "
+"quarantine is mounted to put them in."
+msgid_plural ""
+"{count} folders will hold only system files (Thumbs.db...): they stay, no"
+" quarantine is mounted to put them in."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -2106,13 +2106,14 @@ msgid "Files that could not be read this time"
 msgstr "Fichiers qui n'ont pas pu être lus cette fois"
 
 msgid ""
-"Files the system leaves behind: a source folder holding nothing else is "
-"removed once sorted, these files going to the quarantine first. 'sort "
-"--keep-empty-folders' keeps every folder."
+"Files the system leaves behind: a folder holding nothing else is removed "
+"once 'sort' or 'clean' emptied it, these files going to the quarantine "
+"first. 'sort --keep-empty-folders' keeps every folder a sort empties."
 msgstr ""
-"Fichiers laissés par le système : un dossier source qui ne contient plus "
-"qu'eux est supprimé une fois trié, ces fichiers partant d'abord en "
-"quarantaine. 'sort --keep-empty-folders' garde tous les dossiers."
+"Fichiers laissés par le système : un dossier qui ne contient plus qu'eux "
+"est supprimé une fois vidé par 'sort' ou 'clean', ces fichiers partant "
+"d'abord en quarantaine. 'sort --keep-empty-folders' garde tous les dossiers "
+"qu'un tri vide."
 
 msgid "Files to move"
 msgstr "Fichiers à déplacer"
@@ -2261,6 +2262,9 @@ msgstr "Dossiers analysés :"
 
 msgid "Folders closed; your photos were not changed."
 msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
+
+msgid "Folders removed"
+msgstr "Dossiers supprimés"
 
 msgid "Folders sharing identical files"
 msgstr "Dossiers partageant des fichiers identiques"
@@ -8287,6 +8291,12 @@ msgstr[0] "{count} dossier"
 msgstr[1] "{count} dossiers"
 
 #, python-brace-format
+msgid "{count} folder left empty was removed."
+msgid_plural "{count} folders left empty were removed."
+msgstr[0] "{count} dossier laissé vide a été supprimé."
+msgstr[1] "{count} dossiers laissés vides ont été supprimés."
+
+#, python-brace-format
 msgid ""
 "{count} folder pair, the most space freed first: {decided} decided "
 "already."
@@ -8299,6 +8309,27 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} paires de dossiers, la plus grande place libérée d'abord ; déjà "
 "décidées : {decided}."
+
+#, python-brace-format
+msgid "{count} folder will be left empty and removed; 'undo' recreates it."
+msgid_plural "{count} folders will be left empty and removed; 'undo' recreates them."
+msgstr[0] "{count} dossier sera laissé vide et supprimé ; 'undo' le recrée."
+msgstr[1] "{count} dossiers seront laissés vides et supprimés ; 'undo' les recrée."
+
+#, python-brace-format
+msgid ""
+"{count} folder will hold only system files (Thumbs.db...): it stays, no "
+"quarantine is mounted to put them in."
+msgid_plural ""
+"{count} folders will hold only system files (Thumbs.db...): they stay, no"
+" quarantine is mounted to put them in."
+msgstr[0] ""
+"{count} dossier ne contiendra plus que des fichiers système (Thumbs.db...) :"
+" il reste, aucune quarantaine n'est montée pour les y mettre."
+msgstr[1] ""
+"{count} dossiers ne contiendront plus que des fichiers système "
+"(Thumbs.db...) : ils restent, aucune quarantaine n'est montée pour les y "
+"mettre."
 
 #, python-brace-format
 msgid "{count} group decided earlier changed since: to decide again."

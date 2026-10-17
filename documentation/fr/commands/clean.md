@@ -28,7 +28,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | ✋ Agit : déplace en quarantaine les copies en trop, les fichiers illisibles et les fichiers compagnons orphelins ; supprime les fichiers vides (0 octet). |
+| Vos photos | ✋ Agit : déplace en quarantaine les copies en trop, les fichiers illisibles et les fichiers compagnons orphelins ; supprime les fichiers vides (0 octet) et les dossiers qu'il laisse vides. |
 | Il faut | Vos dossiers **sans** `:ro`, `/journal` et `/quarantine` (des dossiers à vous). |
 | Conseillé | `/cache`, `/reports`, `/config`. |
 | Écrit | Le journal de l'exécution, la quarantaine, le rapport de nettoyage. |
@@ -72,6 +72,16 @@ lui arrive ; le tableau final compte ce qui a été déplacé, ignoré et en éc
 
 La quarantaine garde les chemins d'origine sous un dossier par exécution :
 `quarantine\<exécution>\d\Ancien disque\2020\IMG_1203.jpg`.
+
+**Un dossier laissé vide part aussi.** Une fois ses fichiers mis de côté, un dossier qui ne
+contient plus rien (ou seulement `Thumbs.db`, `desktop.ini`, `.DS_Store` : `[sort] junk_files`,
+déplacés d'abord en quarantaine) est supprimé, puis son parent s'il est vide à son tour. Avant de
+demander, `clean` dit combien de dossiers partiront ; la fin de l'exécution et
+[`history`](history.md) disent combien sont partis, et `undo` les recrée avant de remettre les
+fichiers. Jamais supprimés : les dossiers que vous avez montés, un dossier protégé, de sauvegarde
+ou exclu, un dossier déjà vide avant l'exécution. Avec `--delete` et sans quarantaine montée, un
+dossier qui ne contient plus que ces fichiers système reste. Une exécution arrêtée par Ctrl+C ne
+supprime aucun dossier.
 
 ## Options
 

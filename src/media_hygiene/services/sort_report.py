@@ -5,19 +5,21 @@ The manifest goes to `<reports>/<run>-sort/manifest.json`.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.sort_folders import FolderRules
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.classify_inputs import root_of
+from media_hygiene.services.emptied_folders import base_rules
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.manifest import Manifest
+    from media_hygiene.actions.sort_folders import FolderRules
     from media_hygiene.actions.sort_plan import SortPlan
     from media_hygiene.classify.plan_file import ClassifyPlan
     from media_hygiene.services.runtime import Runtime
@@ -29,6 +31,9 @@ SORT_FOLDER_SUFFIX: Final = "sort"
 def folder_rules(runtime: Runtime, plan: ClassifyPlan) -> FolderRules:
     """The folders a sort never removes, and the junk that does not keep one alive.
 
+    Those of `clean` (`emptied_folders.base_rules`), and the roots of the plan's
+    proposals and the folders `[classify] leave` names.
+
     Args:
         runtime: Settings, mount points and output.
         plan: The classify plan: the roots of its proposals are never removed.
@@ -36,24 +41,14 @@ def folder_rules(runtime: Runtime, plan: ClassifyPlan) -> FolderRules:
     Returns:
         The rules.
     """
-    mapper, data_dir = runtime.mapper, runtime.locations.data_dir
-    roots = runtime.mounts.data_roots(data_dir)
-    stops = {data_dir, *roots, *runtime.mounts.mount_points}
+    mapper, base = runtime.mapper, base_rules(runtime)
+    roots = runtime.mounts.data_roots(runtime.locations.data_dir)
+    stops = set(base.stops)
     for row in plan.rows:
         stops.add(mapper.to_container(row.root))
         stops.add(root_of(mapper.to_container(row.path), roots, runtime))
-    settings = runtime.settings
-    kept = (
-        *settings.folders.untouched,
-        *settings.folders.excluded,
-        *settings.classify.leave,
-    )
-    return FolderRules(
-        junk=settings.sort.junk_names,
-        stops=frozenset(stops),
-        kept=tuple(mapper.to_container(path) for path in kept),
-        quarantine=runtime.persistent(MountKind.QUARANTINE),
-    )
+    leave = tuple(mapper.to_container(path) for path in runtime.settings.classify.leave)
+    return replace(base, stops=frozenset(stops), kept=(*base.kept, *leave))
 
 
 def source_roots(runtime: Runtime, plan: SortPlan) -> tuple[Path, ...]:

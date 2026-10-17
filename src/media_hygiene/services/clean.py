@@ -23,6 +23,7 @@ from media_hygiene.index.parked import park
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.emptied_folders import emptied_by
 from media_hygiene.services.former_copies import removed_copies
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
@@ -137,7 +138,8 @@ class CleanService:
                 workers=self._runtime.settings.clean.workers,
                 route=quarantine_route(self._runtime),
             )
-            outcome = CleanExecutor(context).run(plan)
+            folders = emptied_by(self._runtime, plan)  # removed last (0202)
+            outcome = CleanExecutor(context, folders).run(plan)
         self._forget_removed(journal_path, run_id)
         forget_answered(self._runtime.index_file, plan)
         return run_id, outcome

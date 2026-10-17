@@ -167,7 +167,7 @@ def test_the_clean_moves_only_what_was_set_aside_and_undo_restores(
     }
     assert ActionKind.QUARANTINE_UNWANTED in kinds
     history = " ".join(run(cli, "history").output.split())
-    assert "unwanted" in history  # its column, wrapped in a narrow terminal
+    assert "unwan" in history  # its column, cut in a narrow terminal
     assert run(cli, "undo").exit_code == 0
     assert (data / NIGHT).is_file()
 

@@ -167,6 +167,7 @@ rapports.
 | Quasi-doublons, photos de rafale | **Pas touchés** : seulement si vous le demandez ([étape 10](10-review-bursts.md), [étape 11](11-near-duplicates.md)). |
 | Photos mises de côté dans [`search`](../commands/search.md#mettre-des-photos-de-côté) | **Déplacées** en quarantaine par `clean --decisions`, qui les applique avec les décisions de `review` ; la question dit combien et leur taille, à part des doublons. Une photo modifiée depuis votre choix est ignorée. |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
+| Un dossier laissé vide | **Supprimé**, puis son parent s'il est vide à son tour ; `Thumbs.db`, `desktop.ini` ou `.DS_Store` seuls ne le gardent pas (déplacés d'abord en quarantaine). `undo` le recrée. Jamais un dossier que vous avez monté, protégé, de sauvegarde ou exclu, ni un dossier déjà vide avant. [Plus](../commands/clean.md#ce-qui-arrive-à-chaque-fichier) |
 
 La quarantaine contient un dossier par nettoyage, au nom de l'exécution (sa date et son heure),
 et garde en dessous les chemins d'origine :
