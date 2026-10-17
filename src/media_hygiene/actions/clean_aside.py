@@ -87,7 +87,16 @@ class AsideMoves:
             file: Copy to move.
         """
         whole = file.path == decision.keeper.path
-        blocker = near_blocker(decision.keeper.path, file)
+        # Kept none of: the kept picture goes too, maybe first (moves run in
+        # parallel), so only the file itself is checked, as for a series set aside.
+        none_kept = any(
+            item.path == decision.keeper.path for item in decision.removable
+        )
+        blocker = (
+            change_blocker(file)
+            if none_kept
+            else near_blocker(decision.keeper.path, file)
+        )
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
