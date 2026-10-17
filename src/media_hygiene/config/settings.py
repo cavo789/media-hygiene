@@ -17,14 +17,9 @@ from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.config.tags_settings import TagSettings
 from media_hygiene.config.zone import check_timezone
-from media_hygiene.constants import (
-    GENERATED_NAMES,
-    GENERIC_FOLDERS,
-    ColorMode,
-    Locale,
-    Verbosity,
-)
+from media_hygiene.constants import ColorMode, Locale, Verbosity
 from media_hygiene.i18n import _
+from media_hygiene.name_patterns import GENERATED_NAMES, GENERIC_FOLDERS
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20

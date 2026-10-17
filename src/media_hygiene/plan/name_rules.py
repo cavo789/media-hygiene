@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import GENERATED_NAMES, GENERIC_FOLDERS
+from media_hygiene.name_patterns import GENERATED_NAMES, GENERIC_FOLDERS
 from media_hygiene.plan.copy_names import without_copy_marks
 
 if TYPE_CHECKING:

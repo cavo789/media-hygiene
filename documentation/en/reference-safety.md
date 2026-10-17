@@ -100,6 +100,7 @@ error.
 | Each action | Written to the journal *before* (`pending`) and *after* (`done`) it happens: an interruption never loses track. |
 | Duplicates | Moved to the quarantine; `undo` puts them back, `purge` frees their space. With `clean --delete`, deleted at once; `undo` rebuilds them from the kept copy, date included, even across disks. |
 | Unreadable files | Moved to the quarantine, never deleted outright; `purge` deletes them for good when you are sure. |
+| Files the disk or the cloud could not read | A read that fails (a disk unplugged during the audit, a network drive, an online-only OneDrive file while offline) never makes a file "unreadable": it is listed as *could not be read this time*, never moved, and the next audit reads it again. |
 | Moves | Never over another file: an atomic rename that refuses an existing name, or, across disks, a copy into a new file, proven identical, before the original goes. |
 | Near duplicates | Photos and [re-encoded videos](clean/11-near-duplicates.md#videos-too-re-encoded-copies). Never touched by default. With `--tier near`, moved to the quarantine (never deleted) once checked: the kept photo or video still exists, the copy is the very file the audit saw. `undo` puts them back. |
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |

@@ -35,6 +35,15 @@ same folder twice. The tool refuses it rather than taking a photo for a duplicat
 Analysing a folder whose files are online-only downloads them all. Make them available offline
 first, or leave that folder out.
 
+## Files "could not be read this time"
+
+The audit lists them in the console and in its report: the disk, the network or the cloud did not
+give them (a USB disk unplugged, a network drive gone, an online-only OneDrive file while
+offline). They are not broken: `clean` leaves them where they are, and the next audit reads them
+again. Plug the disk back in, or make the OneDrive files available offline, then run `audit`
+again. A file listed audit after audit lies on a failing disk: copy it elsewhere while you still
+can.
+
 ## Windows drives are slow through Docker
 
 The first audit reads every image and every file that shares its size with another one. With

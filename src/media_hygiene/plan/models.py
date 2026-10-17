@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from media_hygiene.constants import KeepReason
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import BrokenFile, DuplicateGroup, MediaFile
+    from media_hygiene.scan.read_errors import UnreadFile
     from media_hygiene.scan.sidecars import Sidecar
     from media_hygiene.scan.stopwatch import StageTime
 
@@ -183,6 +184,7 @@ class AuditFindings:  # pylint: disable=too-many-instance-attributes
     listed: frozenset[Path] | None = None
     # How long each stage took, in the order they ran (`audit -v`).
     stages: tuple[StageTime, ...] = ()
+    unread: tuple[UnreadFile, ...] = ()  # read again next time, never in the plan
 
     @property
     def files_scanned(self) -> int:

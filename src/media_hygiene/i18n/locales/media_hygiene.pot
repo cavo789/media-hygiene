@@ -1,3 +1,7 @@
+#, python-brace-format
+msgid "  … and {count} more: the HTML report lists them all."
+msgstr ""
+
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
 "go to \"to sort\", which means: we do not know."
@@ -1508,6 +1512,9 @@ msgstr ""
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
 msgstr ""
 
+msgid "Files that could not be read this time"
+msgstr ""
+
 msgid ""
 "Files the system leaves behind: a source folder holding nothing else is "
 "removed once sorted, these files going to the quarantine first. 'sort "
@@ -1750,6 +1757,9 @@ msgid "Going to a 'to check' folder"
 msgstr ""
 
 msgid "Going to a 'to sort' folder"
+msgstr ""
+
+msgid "Google Photos record (.json)"
 msgstr ""
 
 msgid "Grandma's birthday"
@@ -3846,6 +3856,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "The decisions file {file} could not be archived."
+msgstr ""
+
+msgid ""
+"The disk, the network or the cloud did not give these files (a disk "
+"unplugged, an online-only OneDrive file while offline…). They are not "
+"broken: clean leaves them where they are, and the next audit reads them "
+"again."
 msgstr ""
 
 msgid ""
@@ -6104,6 +6121,16 @@ msgid ""
 msgid_plural ""
 "{count} files ({size}) will be copied from {sources} to the quarantine on"
 " {drive} ({free} free there)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file could not be read this time (disk, network or cloud): not "
+"marked broken, left alone by clean, read again at the next audit."
+msgid_plural ""
+"{count} files could not be read this time (disk, network or cloud): not "
+"marked broken, left alone by clean, read again at the next audit."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -129,11 +129,23 @@ class IncidentView:
 
 
 @dataclass(frozen=True, slots=True)
+class UnreadView:
+    """A file the disk or the cloud could not read this time: left alone."""
+
+    path: str
+    detail: str
+
+
+@dataclass(frozen=True, slots=True)
 class BrokenSection:
-    """Broken files `clean` handles, and those it leaves alone (protected folders)."""
+    """Broken files `clean` handles or leaves (protected), and the files unread.
+
+    `unread`: the files that could not be read this time: never broken, read again.
+    """
 
     handled: tuple[BrokenView, ...]
     protected: tuple[BrokenView, ...]
+    unread: tuple[UnreadView, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

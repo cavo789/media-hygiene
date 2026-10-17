@@ -84,3 +84,30 @@ into a photo.
 A Takeout merged with the PC's folders in one audit, undoable: its JSON files no longer left
 behind as clutter, and the photos without a date inside (videos, screenshots, received pictures)
 dated and placed by Google's record instead of going to "to check".
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `scan/takeout.py` (+ `scan/takeout_folder.py`, the folder's names indexed once): a `.json`
+  describing a media file of its folder is its sidecar (old and new suffix, truncated suffix and
+  name, moved `(n)`, `-edited` with or without its original, `&`/`?` → `_`); any other `.json`
+  stays a plain file. It travels with `sort` (`actions/sort_names.py`, `sort_folders.py`), is set
+  aside by `clean` as an orphan, comes back with `undo`.
+- `index/takeout_rows.py`: table `takeout` (schema 13, in `PATH_TABLES`), keyed by the photo's
+  path, read once per `.json` version during the walk (`services/listing.py`, needs `/cache`).
+- `DateSource.TAKEOUT` (after EXIF/video, before the name) in `classify` and `tags` date words;
+  the position fills a missing GPS (`services/classify_inputs.with_takeout`), so `place`/`trip`
+  and the place words use it.
+- `Photos from \d{4}` is a generic folder (`name_patterns.py`, moved out of `constants.py`).
+- An `-edited` file and its original are never near duplicates (`plan/near.py`).
+- Tests `tests/unit/test_takeout_names.py`, `tests/unit/test_takeout_facts.py`,
+  `tests/integration/test_takeout_tree.py`; docs `reference-sidecars.md` (section "Google Photos
+  Takeout") and step 3, both languages.
+
+### Not done
+- The `description` as `caption` words.
+  **Reason:** `TagSource.CAPTION` is a model source rebuilt from the cached vision descriptions
+  (per model); a cheap caption there would be dropped or duplicated by the next `describe`.
+  Needs a decision: a new tag source (`takeout`) or a caption with an empty model.
+- Checks on a real Takeout (names, truncation length, translated `-edited` suffixes, field
+  names). **Reason:** none at hand; documented as unchecked.

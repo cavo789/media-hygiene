@@ -12,6 +12,7 @@ from media_hygiene.classify.dates import (
     exif_date,
     folder_dating,
     name_date,
+    takeout_date,
     video_date,
 )
 from media_hygiene.classify.models import DateSource, Dating
@@ -39,8 +40,10 @@ class DatingContext:
 def dating_of(file: MediaInput, context: DatingContext) -> Dating:
     """Date one file.
 
-    A camera whose clock is not set gives way to its folders. An EXIF or video date
-    whose year its folder contradicts is kept but doubted: the file goes to "to check".
+    A camera whose clock is not set gives way to its folders. An EXIF, video or
+    Takeout date whose year its folder contradicts is kept but doubted: the file goes
+    to "to check". The date a Google Photos Takeout `.json` records comes after the
+    file's own, before its name.
 
     Args:
         file: The file.
@@ -58,6 +61,10 @@ def dating_of(file: MediaInput, context: DatingContext) -> Dating:
         (
             video_date(metadata.recorded_at if metadata else None, context.zone),
             DateSource.VIDEO,
+        ),
+        (
+            takeout_date(file.takeout.taken_at if file.takeout else None, context.zone),
+            DateSource.TAKEOUT,
         ),
     ):
         if when is not None:

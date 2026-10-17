@@ -38,6 +38,15 @@ d'elle-même.
 Analyser un dossier dont les fichiers sont uniquement en ligne les télécharge tous. Rendez-les
 d'abord disponibles hors connexion, ou laissez ce dossier de côté.
 
+## Des fichiers « n'ont pas pu être lus cette fois »
+
+L'audit les liste dans la console et dans son rapport : le disque, le réseau ou le cloud ne les a
+pas fournis (un disque USB débranché, un lecteur réseau disparu, un fichier OneDrive uniquement en
+ligne hors connexion). Ils ne sont pas cassés : `clean` les laisse où ils sont, et le prochain
+audit les relit. Rebranchez le disque, ou rendez les fichiers OneDrive disponibles hors connexion,
+puis relancez `audit`. Un fichier listé audit après audit se trouve sur un disque qui lâche :
+copiez-le ailleurs tant que c'est possible.
+
 ## Les disques Windows sont lents via Docker
 
 Le premier audit lit chaque image, ainsi que chaque fichier qui a la même taille qu'un autre.

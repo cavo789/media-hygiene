@@ -74,6 +74,7 @@ def source_name(source: DateSource | None) -> str:
     names = {
         DateSource.EXIF: _("camera (EXIF)"),
         DateSource.VIDEO: _("video tags"),
+        DateSource.TAKEOUT: _("Google Photos record (.json)"),
         DateSource.NAME: _("file name"),
         DateSource.FOLDER: _("folder name"),
         DateSource.MTIME: _("date on the disk"),

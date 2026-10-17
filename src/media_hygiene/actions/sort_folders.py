@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.sort_names import owners
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.sidecars import is_sidecar
+from media_hygiene.scan.takeout import is_takeout_json
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -134,7 +135,8 @@ def _leaves(path: Path, walk: _Walk) -> bool:
     names = walk.gone.get(path.parent, [])
     if path.name in names:
         return True
-    return is_sidecar(path.name) and bool(owners(path.name, names))
+    sidecar = is_sidecar(path.name) or is_takeout_json(path.name)
+    return sidecar and bool(owners(path.name, names))
 
 
 def _removable(folder: Path, rules: FolderRules) -> bool:

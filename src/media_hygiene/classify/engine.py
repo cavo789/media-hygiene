@@ -25,7 +25,7 @@ from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
 from media_hygiene.classify.years import below, in_years, year_folders
-from media_hygiene.constants import GENERIC_FOLDERS
+from media_hygiene.name_patterns import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
 

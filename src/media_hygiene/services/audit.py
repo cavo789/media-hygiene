@@ -113,6 +113,7 @@ class AuditService:
             inventory=take_inventory(found.files, integrity),
             listed=every_path,
             stages=self._stopwatch.times(),
+            unread=integrity.unread,
         )
 
     def _analyse_files(

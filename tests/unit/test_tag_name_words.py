@@ -9,7 +9,8 @@ import pytest
 from media_hygiene.classify.models import MediaInput
 from media_hygiene.config.settings import KeepSettings, Settings
 from media_hygiene.config.tags_settings import TagSettings
-from media_hygiene.constants import GENERATED_NAMES, Locale
+from media_hygiene.constants import Locale
+from media_hygiene.name_patterns import GENERATED_NAMES
 from media_hygiene.tags.context import TagContext, tag_context
 from media_hygiene.tags.models import Tag, TagSource
 from media_hygiene.tags.normalize import WordRules

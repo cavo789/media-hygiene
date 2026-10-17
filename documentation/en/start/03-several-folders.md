@@ -97,6 +97,9 @@ files as duplicates.
 
 ## Good to know
 
+- **A Google Photos Takeout** is one more folder: extract its ZIP files, then add the extracted
+  folder. Its `.json` files travel with their photos and date those without a date of their own
+  ([Google Photos Takeout](../reference-sidecars.md#google-photos-takeout)).
 - **A new terminal** knows `mh` through your PowerShell profile (step 1). Without that line,
   load it again: `. "$HOME\media-hygiene\mh.ps1"`.
 - **A new version**: `mh update` downloads it and writes `mh` again with your folders.

@@ -31,7 +31,8 @@ async def analyse(
     """Find broken files first (describing images), then exact duplicates.
 
     Broken and empty files are kept out of duplicate groups: they are handled on their
-    own (deleted when empty, quarantined when unreadable).
+    own (deleted when empty, quarantined when unreadable). So are the files the disk
+    or the cloud could not read this time: `clean` leaves them where they are.
 
     Args:
         files: Every media file found.
@@ -43,6 +44,7 @@ async def analyse(
     with finders.stopwatch.timing(Stage.INTEGRITY):
         integrity = await finders.broken.find(files)
     broken_paths = {item.file.path for item in integrity.broken}
+    broken_paths |= {item.file.path for item in integrity.unread}
     healthy = [
         file for file in files if file.size > 0 and file.path not in broken_paths
     ]

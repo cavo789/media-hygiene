@@ -105,6 +105,9 @@ des doublons, ce qui est exact.
 
 ## Bon à savoir
 
+- **Un Takeout Google Photos** est un dossier de plus : extrayez ses fichiers ZIP, puis ajoutez
+  le dossier extrait. Ses fichiers `.json` suivent leurs photos et datent celles qui n'ont pas
+  de date propre ([Google Photos Takeout](../reference-sidecars.md#google-photos-takeout)).
 - **Un nouveau terminal** connaît `mh` grâce à votre profil PowerShell (étape 1). Sans cette
   ligne, rechargez-le : `. "$HOME\media-hygiene\mh.ps1"`.
 - **Une nouvelle version** : `mh update` la télécharge et réécrit `mh` avec vos dossiers.

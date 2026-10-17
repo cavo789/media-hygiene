@@ -26,6 +26,7 @@ from media_hygiene.report.views import (
     OrphansSection,
     ReportHeader,
     ReportView,
+    UnreadView,
 )
 
 if TYPE_CHECKING:
@@ -132,6 +133,10 @@ class ReportBuilder:
                 handled=tuple(self._broken(item, names) for item in plan.broken),
                 protected=tuple(
                     self._broken(item, names) for item in plan.protected_broken
+                ),
+                unread=tuple(
+                    UnreadView(self.mapper.to_host(item.file.path), item.detail)
+                    for item in record.findings.unread
                 ),
             ),
             incidents=IncidentsSection(

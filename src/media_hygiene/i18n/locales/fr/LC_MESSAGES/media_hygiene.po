@@ -14,6 +14,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+#, python-brace-format
+msgid "  … and {count} more: the HTML report lists them all."
+msgstr "  … et {count} de plus : le rapport HTML les liste tous."
+
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
 "go to \"to sort\", which means: we do not know."
@@ -1866,6 +1870,9 @@ msgstr "Fichiers choisis"
 msgid "Files set aside, as media-hygiene does not analyse them: {count}."
 msgstr "Fichiers mis de côté, car media-hygiene ne les analyse pas : {count}."
 
+msgid "Files that could not be read this time"
+msgstr "Fichiers qui n'ont pas pu être lus cette fois"
+
 msgid ""
 "Files the system leaves behind: a source folder holding nothing else is "
 "removed once sorted, these files going to the quarantine first. 'sort "
@@ -2172,6 +2179,9 @@ msgstr "Vers un dossier « à vérifier »"
 
 msgid "Going to a 'to sort' folder"
 msgstr "Vers un dossier « à trier »"
+
+msgid "Google Photos record (.json)"
+msgstr "fiche Google Photos (.json)"
 
 msgid "Grandma's birthday"
 msgstr "Anniversaire de mamy"
@@ -4657,6 +4667,17 @@ msgstr "Le fichier de décisions {file} n'a pas pu être archivé ({error})."
 #, python-brace-format
 msgid "The decisions file {file} could not be archived."
 msgstr "Le fichier de décisions {file} n'a pas pu être archivé."
+
+msgid ""
+"The disk, the network or the cloud did not give these files (a disk "
+"unplugged, an online-only OneDrive file while offline…). They are not "
+"broken: clean leaves them where they are, and the next audit reads them "
+"again."
+msgstr ""
+"Le disque, le réseau ou le cloud n'a pas fourni ces fichiers (un disque "
+"débranché, un fichier OneDrive uniquement en ligne hors connexion…). Ils "
+"ne sont pas cassés : clean les laisse où ils sont, et le prochain audit "
+"les relit."
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
@@ -7292,6 +7313,20 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} fichiers ({size}) seront copiés de {sources} vers la quarantaine "
 "sur {drive} ({free} libres là-bas)."
+
+#, python-brace-format
+msgid ""
+"{count} file could not be read this time (disk, network or cloud): not "
+"marked broken, left alone by clean, read again at the next audit."
+msgid_plural ""
+"{count} files could not be read this time (disk, network or cloud): not "
+"marked broken, left alone by clean, read again at the next audit."
+msgstr[0] ""
+"{count} fichier n'a pas pu être lu cette fois (disque, réseau ou cloud) :"
+" pas marqué cassé, laissé par clean, relu au prochain audit."
+msgstr[1] ""
+"{count} fichiers n'ont pas pu être lus cette fois (disque, réseau ou "
+"cloud) : pas marqués cassés, laissés par clean, relus au prochain audit."
 
 #, python-brace-format
 msgid ""

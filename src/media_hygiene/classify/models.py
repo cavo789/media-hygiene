@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from media_hygiene.classify.layout import Values
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
+    from media_hygiene.scan.takeout_facts import TakeoutFacts
 
 
 class DateSource(StrEnum):
@@ -20,6 +21,7 @@ class DateSource(StrEnum):
 
     EXIF = "exif"
     VIDEO = "video"
+    TAKEOUT = "takeout"  # the `.json` of a Google Photos Takeout
     NAME = "name"
     FOLDER = "folder"
     MTIME = "mtime"
@@ -63,7 +65,7 @@ class Band(StrEnum):
 
 
 @dataclass(frozen=True, slots=True)
-class MediaInput:
+class MediaInput:  # pylint: disable=too-many-instance-attributes
     """One media file and what the index knows of it."""
 
     path: Path
@@ -73,6 +75,7 @@ class MediaInput:
     visual: VisualFacts | None = None
     metadata: MediaMetadata | None = None
     digest: str | None = None
+    takeout: TakeoutFacts | None = None
 
     @property
     def taken_at(self) -> str | None:

@@ -24,6 +24,7 @@ from PIL import Image
 
 from media_hygiene.scan.exif import image_metadata
 from media_hygiene.scan.hashing import digests_of
+from media_hygiene.scan.read_errors import is_read_error
 from media_hygiene.scan.visual import ANALYSIS_EDGE, visual_facts
 from media_hygiene.scan.whole_read import WHOLE_READ_LIMIT, read_whole, source_of
 
@@ -35,7 +36,8 @@ if TYPE_CHECKING:
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
 
-# A corrupt file can make a decoder raise almost anything: all mean "unreadable".
+# A corrupt file can make a decoder raise almost anything: all mean "unreadable",
+# but an errno tells a failed read of the disk or the cloud (see read_errors).
 _DECODE_ERRORS: Final = (
     OSError,
     SyntaxError,
@@ -79,12 +81,16 @@ def _discard_stderr() -> None:
 
 @dataclass(frozen=True, slots=True)
 class ImageInspection:
-    """Outcome of decoding an image: the decoder error, or what the image holds."""
+    """Outcome of decoding an image: the decoder error, or what the image holds.
+
+    `unread`: the problem is a failed read (`read_errors`), not a damaged file.
+    """
 
     problem: str | None = None
     visual: VisualFacts | None = None
     metadata: MediaMetadata | None = None
     digests: Digests | None = None  # None: the file was too large to read at once
+    unread: bool = False
 
 
 def inspect_image(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
@@ -122,7 +128,9 @@ def inspect_image(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
                 )
         except _DECODE_ERRORS as exc:
             return ImageInspection(
-                problem=f"{type(exc).__name__}: {exc}", digests=digests
+                problem=f"{type(exc).__name__}: {exc}",
+                digests=digests,
+                unread=is_read_error(exc),
             )
 
 

@@ -26,6 +26,7 @@ _EXIF_FORMATS: Final = ("%Y:%m:%d %H:%M:%S", "%d/%m/%Y %H:%M:%S", "%Y-%m-%d %H:%
 CONFIDENCE: Final = {
     DateSource.EXIF: 100,
     DateSource.VIDEO: 100,
+    DateSource.TAKEOUT: 95,  # Google's record: from the file, or from its upload
     DateSource.NAME: 90,
     DateSource.FOLDER: 70,
     DateSource.MTIME: 0,
@@ -90,6 +91,25 @@ def video_date(written: str | None, zone: tzinfo) -> datetime | None:
     if when.utcoffset():
         return when.replace(tzinfo=None)  # local time with its own offset
     return when.astimezone(zone).replace(tzinfo=None)
+
+
+def takeout_date(seconds: int | None, zone: tzinfo) -> datetime | None:
+    """Bring the date a Takeout `.json` records (Unix seconds) to local time.
+
+    Args:
+        seconds: `photoTakenTime.timestamp`, or None.
+        zone: The zone of the photos.
+
+    Returns:
+        The naive local date, or None (none, or before 1990: no real date).
+    """
+    if seconds is None:
+        return None
+    try:
+        when = datetime.fromtimestamp(seconds, UTC).astimezone(zone)
+    except OverflowError, OSError, ValueError:
+        return None
+    return when.replace(tzinfo=None) if when.year >= _FIRST_YEAR else None
 
 
 def name_date(name: str, patterns: Sequence[re.Pattern[str]]) -> datetime | None:
