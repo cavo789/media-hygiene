@@ -24,6 +24,12 @@ from tests.support.docs.screenshots import build_browser
 
 DOCUMENTATION: Final = Path(__file__).resolve().parents[3] / "documentation"
 console = Console()
+USAGE: Final = (
+    "Usage: docs_screenshots [LANGUAGE...]\n"
+    f"  No language: every one ({' '.join(str(locale) for locale in Locale)}),"
+    " one after the other.\n"
+    "  docs_screenshots fr   only the French pages."
+)
 
 
 def document(locale: Locale, work: Path) -> None:
@@ -51,8 +57,21 @@ def document(locale: Locale, work: Path) -> None:
 
 
 def main() -> None:
-    """Refresh the languages given on the command line, every language by default."""
-    locales = [Locale(argument) for argument in sys.argv[1:]] or list(Locale)
+    """Refresh the languages given on the command line, every language by default.
+
+    Raises:
+        SystemExit: A language this tool does not know (code 2), with the usage.
+    """
+    arguments = sys.argv[1:]
+    if {"-h", "--help"} & set(arguments):
+        console.print(USAGE)
+        return
+    known = {str(locale) for locale in Locale}
+    unknown = [argument for argument in arguments if argument not in known]
+    if unknown:
+        console.print(f"❌ Unknown language: {', '.join(unknown)}\n\n{USAGE}")
+        raise SystemExit(2)
+    locales = [Locale(argument) for argument in arguments] or list(Locale)
     root = Path(tempfile.gettempdir()) / "media-hygiene-docs"
     console.print("🌐 Preparing the browser image…")
     build_browser()
