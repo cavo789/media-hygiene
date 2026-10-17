@@ -21,6 +21,7 @@ from media_hygiene.i18n import _
 from media_hygiene.index.former_names import forget_former
 from media_hygiene.index.parked import unpark
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
 from media_hygiene.services.quarantines import letter_changes
@@ -170,12 +171,13 @@ def _follow_moves_back(
     copies = [
         _known(entry.path, changes) for entry in done if entry.action in REMOVED_COPIES
     ]
-    if index is None or not (back or restored or copies):
+    if index is None or not done:
         return
     with FactsRepository.open(index) as repository:
         repository.move(back)
         unpark(repository.connection, restored)  # set aside by a clean (0156)
         forget_former(repository.connection, run[1], copies)
+        forget_listings(repository.connection, done)  # the folders read again
 
 
 def _known(path: str, changes: Sequence[LetterChange]) -> str:

@@ -22,6 +22,7 @@ from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.album_folder import album_folder
 from media_hygiene.services.album_picks import find_picks, rated
 from media_hygiene.services.journaled_run import new_run
+from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
 if TYPE_CHECKING:
@@ -122,4 +123,5 @@ class AlbumService:
         with new_run(self._runtime, self._progress, Phase.ALBUM) as context:
             ended = AlbumExecutor(context, tally).run(prepared.plan, stop)
         run_id = context.quarantine_run_dir.name
+        forget_run_listings(self._runtime, run_id, Phase.ALBUM)
         return AlbumResult(run_id, tally.freeze(), ended)

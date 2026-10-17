@@ -21,6 +21,7 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.journaled_run import new_run
+from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.tag_files import require_index
 from media_hygiene.services.xmp_plan import XmpScope, plan_sidecars
 
@@ -108,4 +109,5 @@ class XmpService:
         with new_run(self._runtime, self._progress, Phase.XMP) as context:
             interrupted = XmpExecutor(context, tally).run(plan.jobs, stop)
         run_id = context.quarantine_run_dir.name
+        forget_run_listings(self._runtime, run_id, Phase.XMP)
         return XmpResult(run_id, tally.freeze(), interrupted)
