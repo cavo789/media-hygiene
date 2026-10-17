@@ -201,6 +201,14 @@ msgstr ""
 msgid "(stay where it is)"
 msgstr ""
 
+#, python-brace-format
+msgid "(the folder of a removed copy: {folders})"
+msgstr ""
+
+#, python-brace-format
+msgid "(the folders of removed copies disagree: {folders})"
+msgstr ""
+
 msgid "(type it yourself)"
 msgstr ""
 
@@ -4322,8 +4330,9 @@ msgstr ""
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, date. The model's "
-"sentence goes into dc:description."
+"(dc:subject), by source: vision, place, folder, name, former (the folders"
+" and names of the copies 'clean' removed), date. The model's sentence "
+"goes into dc:description."
 msgstr ""
 
 msgid ""
@@ -5612,6 +5621,9 @@ msgid "moves"
 msgstr ""
 
 msgid "name"
+msgstr ""
+
+msgid "name of a removed copy"
 msgstr ""
 
 msgid "name the groups of faces in your browser, with 'people'."

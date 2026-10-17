@@ -1,17 +1,20 @@
 """The files `tags` works on: the photos and videos of the index, from the cache alone.
 
 No folder is walked: the files are those the audits listed, with what they learnt
-(dates, sizes, GPS, what a Google Photos Takeout `.json` says). Each one gets its
+(dates, sizes, GPS, what a Google Photos Takeout `.json` says, where the copies
+`clean` removed lay). Each one gets its
 root, the folder an audit walked, so that the folder names above it
 (`Users/Me/Pictures`) are not taken for its words.
 """
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.former_names import former_copies
 from media_hygiene.index.listing import indexed_files, walked_roots
 from media_hygiene.index.takeout_rows import takeout_facts
 from media_hygiene.paths.host_paths import is_within
@@ -74,11 +77,13 @@ def tag_files(
     )
     found: list[MediaInput] = []
     takeout = takeout_facts(connection)
+    former = former_copies(connection)
     for file in indexed_files(connection):
         if media_kind(file.path) is None:
             continue
         if within and not any(is_within(file.path, folder) for folder in within):
             continue
         item = input_of(file, root_of(file.path, roots, runtime), file.facts)
+        item = replace(item, former=former.get(file.path, ()))
         found.append(with_takeout(item, takeout.get(file.path)))
     return tuple(found)

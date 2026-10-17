@@ -166,6 +166,13 @@ docker run --rm -it `
 The quarantine holds one folder per clean, named after the run (its date and time), and keeps
 the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 
+**What a removed copy's folder said stays searchable on the kept photo.** When `clean` removes
+a copy, the photo kept remembers the folder and the name that copy had (`Mariage Julie 2015`):
+[`tags`](../reference-tags.md#where-the-words-come-from) turns them into words that
+[`search`](../commands/search.md) finds (`former:julie`), and
+[`classify`](../sort/04-classify.md) reads that folder when the photo's own folder says nothing
+(`DCIM`). `undo` takes them back off: the copy has its own name again.
+
 ## The clean report
 
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the

@@ -172,6 +172,13 @@ La quarantaine contient un dossier par nettoyage, au nom de l'exécution (sa dat
 et garde en dessous les chemins d'origine :
 `quarantine\<exécution>\d\Ancien disque\2020\IMG_1203.jpg`.
 
+**Ce que disait le dossier d'une copie retirée reste cherchable sur la photo gardée.** Quand
+`clean` retire une copie, la photo conservée se souvient du dossier et du nom de cette copie
+(`Mariage Julie 2015`) : [`tags`](../reference-tags.md#doù-viennent-les-mots) en fait des mots
+que [`search`](../commands/search.md) retrouve (`former:julie`), et
+[`classify`](../sort/04-classify.md) lit ce dossier quand celui de la photo ne dit rien
+(`DCIM`). `undo` les retire : la copie a de nouveau son propre nom.
+
 ## Le rapport de nettoyage
 
 Chaque nettoyage écrit son propre rapport, listé dans `index.html` à côté des audits : ce qui a

@@ -40,10 +40,10 @@ def verdict(signal: Signal, dating: Dating, settings: ClassifySettings) -> Verdi
         own = settings.scores.get(reason.value, 0)
     score = min(own, dating.confidence)
     if score >= settings.sure:
-        return Verdict(Band.SURE, reason, score, signal.rule)
+        return Verdict(Band.SURE, reason, score, signal.rule, signal.hint)
     if score >= settings.unsure:
-        return Verdict(Band.UNSURE, reason, score, signal.rule)
-    return Verdict(Band.MANUAL, reason, score, signal.rule)
+        return Verdict(Band.UNSURE, reason, score, signal.rule, signal.hint)
+    return Verdict(Band.MANUAL, reason, score, signal.rule, signal.hint)
 
 
 def layout_of(band: Band, settings: ClassifySettings, *, camera: bool) -> str:

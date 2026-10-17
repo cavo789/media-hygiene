@@ -118,3 +118,25 @@ def lost_line(lost: LostEdit) -> str:
     return _("{sheet}: {key}: '{value}' ({why})").format(
         sheet=sheets[lost.sheet], key=lost.key, value=lost.value, why=why
     )
+
+
+def former_note(folders: tuple[str, ...], *, agreed: bool) -> str:
+    """Where a proposal's hint came from: the folders of copies `clean` removed.
+
+    Args:
+        folders: The host folders read; empty: none.
+        agreed: True when they gave the meaning used; False when they disagreed.
+
+    Returns:
+        ` (the folder of a removed copy: …)`, translated; empty without folders.
+    """
+    if not folders:
+        return ""
+    joined = "; ".join(folders)
+    if agreed:
+        return " " + _("(the folder of a removed copy: {folders})").format(
+            folders=joined
+        )
+    return " " + _("(the folders of removed copies disagree: {folders})").format(
+        folders=joined
+    )

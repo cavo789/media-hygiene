@@ -247,6 +247,14 @@ msgstr "(rien à faire pour l'instant)"
 msgid "(stay where it is)"
 msgstr "(rester où il est)"
 
+#, python-brace-format
+msgid "(the folder of a removed copy: {folders})"
+msgstr "(le dossier d'une copie retirée : {folders})"
+
+#, python-brace-format
+msgid "(the folders of removed copies disagree: {folders})"
+msgstr "(les dossiers des copies retirées ne s'accordent pas : {folders})"
+
 msgid "(type it yourself)"
 msgstr "(à taper vous-même)"
 
@@ -5273,12 +5281,14 @@ msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, date. The model's "
-"sentence goes into dc:description."
+"(dc:subject), by source: vision, place, folder, name, former (the folders"
+" and names of the copies 'clean' removed), date. The model's sentence "
+"goes into dc:description."
 msgstr ""
 "Les mots que 'xmp' écrit dans les fichiers compagnons .xmp à côté des "
-"photos (dc:subject), par source : vision, place, folder, name, date. La "
-"phrase du modèle va dans dc:description."
+"photos (dc:subject), par source : vision, place, folder, name, former (les"
+" dossiers et noms des copies retirées par 'clean'), date. La phrase du "
+"modèle va dans dc:description."
 
 msgid ""
 "The words of 'tags', to find photos by what they show: the meaningful "
@@ -6767,6 +6777,9 @@ msgstr "déplacements"
 
 msgid "name"
 msgstr "nom"
+
+msgid "name of a removed copy"
+msgstr "nom d'une copie retirée"
 
 msgid "name the groups of faces in your browser, with 'people'."
 msgstr "nommez les groupes de visages dans votre navigateur, avec 'people'."

@@ -17,10 +17,12 @@ from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
 from media_hygiene.i18n import _
+from media_hygiene.index.former_names import remember_former
 from media_hygiene.index.parked import park
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.former_copies import removed_copies
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
@@ -137,7 +139,9 @@ class CleanService:
         """Take out of the index the files this run deleted or moved away.
 
         The rows of a file set aside are parked (`index.parked`): `undo` puts them
-        back, `purge` drops them. Those of a file deleted are forgotten.
+        back, `purge` drops them. Those of a file deleted are forgotten. The kept file
+        of each copy remembers where the copy lay (`index.former_names`), first: a
+        kept file this run sets aside too takes it along.
 
         Args:
             journal_path: The journal of the run.
@@ -150,6 +154,8 @@ class CleanService:
         aside = [(entry.path, entry.quarantine) for entry in done if entry.quarantine]
         deleted = [entry.path for entry in done if not entry.quarantine]
         with FactsRepository.open(index) as repository:
+            copies = removed_copies(self._runtime, done)
+            remember_former(repository.connection, run_id, copies)
             park(repository.connection, run_id, aside)
             repository.forget(deleted)
 

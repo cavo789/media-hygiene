@@ -15,6 +15,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.former import FormerHint
 from media_hygiene.classify.layout import GeoValues
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.whereabouts import Spot
@@ -24,7 +25,7 @@ from media_hygiene.geo.folding import fold
 from media_hygiene.tags.vocabulary import SEASON_NAMES
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Mapping, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.classify.models import MediaInput
@@ -83,20 +84,21 @@ def folder_town_spots(
     if towns is None or not on:
         return {}
     spots: dict[Path, Spot] = {}
-    for (_folder, town), paths in _by_folder(files, _towns(towns, settings, points)):
+    folders, hints = _by_folder(files, _towns(towns, settings, points))
+    for (_folder, town), paths in folders.items():
         located = [points[path] for path in paths if path in points]
         if located and distance_km(centre(located), town.point) > (
             settings.trip_merge_max_km
         ):
             continue  # its photos say it was taken elsewhere
         values = GeoValues(country=town.country, region=town.region, city=town.name)
-        spots.update(dict.fromkeys(paths, Spot(values)))
+        spots.update({path: Spot(values, hint=hints.get(path)) for path in paths})
     return spots
 
 
 def _by_folder(
     files: Sequence[MediaInput], known: _Towns
-) -> Iterable[tuple[tuple[Path, Town], list[Path]]]:
+) -> tuple[dict[tuple[Path, Town], list[Path]], dict[Path, FormerHint]]:
     """Group the files by the nearest folder above them named after a town.
 
     Args:
@@ -104,19 +106,60 @@ def _by_folder(
         known: The towns, by name.
 
     Returns:
-        Each such folder, its town, and the files below it.
+        Each such folder, its town, and the files below it (or whose removed copies
+        lay below it); the folders of removed copies each of those files read.
     """
-    named: dict[str, Town | None] = {}  # folder names are few: each is looked up once
+    names: dict[str, Town | None] = {}  # folder names are few: each is looked up once
+
+    def named(name: str) -> Town | None:
+        """The town a folder name names, looked up once.
+
+        Args:
+            name: A folder name.
+
+        Returns:
+            The town, or None.
+        """
+        if name not in names:
+            names[name] = known.named(name) if name else None
+        return names[name]
+
     folders: dict[tuple[Path, Town], list[Path]] = defaultdict(list)
+    hints: dict[Path, FormerHint] = {}
     for file in files:
-        for folder in file.path.relative_to(file.root).parents:
-            if folder.name not in named:
-                named[folder.name] = known.named(folder.name) if folder.name else None
-            town = named[folder.name]
-            if town is not None:
-                folders[file.root / folder, town].append(file.path)
-                break
-    return folders.items()
+        found = _town_folder(file.path, file.root, named)
+        if found is None and file.former:
+            former = {
+                town
+                for copy in file.former
+                if (town := _town_folder(copy.path, copy.root, named)) is not None
+            }
+            if len({town for _folder, town in former}) == 1:
+                found = min(former, key=lambda pair: pair[0])
+                hints[file.path] = FormerHint(tuple(sorted(f for f, _t in former)))
+        if found is not None:
+            folders[found].append(file.path)
+    return folders, hints
+
+
+def _town_folder(
+    path: Path, root: Path, named: Callable[[str], Town | None]
+) -> tuple[Path, Town] | None:
+    """The nearest folder above a file named after a town.
+
+    Args:
+        path: The file.
+        root: The mounted folder it lies in: the folders above are not read.
+        named: The town of a folder name, or None.
+
+    Returns:
+        The folder and its town, or None.
+    """
+    for folder in path.relative_to(root).parents:
+        town = named(folder.name)
+        if town is not None:
+            return root / folder, town
+    return None
 
 
 def _towns(

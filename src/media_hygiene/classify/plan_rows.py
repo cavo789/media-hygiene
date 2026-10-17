@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.layout import GeoValues, Values
 from media_hygiene.classify.models import Band, DateSource, SortReason
-from media_hygiene.classify.names import reason_name
+from media_hygiene.classify.names import former_note, reason_name
 
 
 class Frozen(BaseModel):
@@ -83,6 +83,10 @@ class PlanRow(Frozen):
     root: str  # host folder the proposal is relative to
     folder: str | None  # relative to `root`, `/`-separated; None: stay where it is
     name: str  # the target name: the original one for now
+    # The host folders of the copies `clean` removed that the proposal read (0208);
+    # `former_agreed` False: they gave several meanings and none was used.
+    former: tuple[str, ...] = ()
+    former_agreed: bool = True
 
     @property
     def category(self) -> str:
@@ -94,13 +98,22 @@ class PlanRow(Frozen):
         return self.values.category if self.values else ""
 
     @property
-    def why(self) -> str:
-        """Why the file goes there: the rule's name, else the reason, translated.
+    def decided_by(self) -> str:
+        """The rule's name, else the reason, translated.
 
         Returns:
             It.
         """
         return self.rule or reason_name(self.reason)
+
+    @property
+    def why(self) -> str:
+        """Why the file goes there, and the folders of removed copies it read.
+
+        Returns:
+            It.
+        """
+        return self.decided_by + former_note(self.former, agreed=self.former_agreed)
 
     @property
     def parent(self) -> str:

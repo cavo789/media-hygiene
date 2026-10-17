@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from datetime import datetime
     from pathlib import Path
 
+    from media_hygiene.classify.former import FormerCopy, FormerHint
     from media_hygiene.classify.layout import Values
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
@@ -76,6 +77,7 @@ class MediaInput:  # pylint: disable=too-many-instance-attributes
     metadata: MediaMetadata | None = None
     digest: str | None = None
     takeout: TakeoutFacts | None = None
+    former: tuple[FormerCopy, ...] = ()  # the copies `clean` removed (0207)
 
     @property
     def taken_at(self) -> str | None:
@@ -137,6 +139,7 @@ class Verdict:
     reason: SortReason
     score: int
     rule: str = ""  # the name of the `[[classify.rules]]` entry that decided
+    hint: FormerHint | None = None  # the folders of removed copies it read (0208)
 
 
 @dataclass(frozen=True, slots=True)

@@ -85,7 +85,7 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
         The row.
     """
     file, dating = proposal.file, proposal.dating
-    folder = proposal.folder
+    folder, hint = proposal.folder, proposal.verdict.hint
     root = file.root
     if proposal.target is not None and folder is not None:
         root = proposal.target
@@ -108,6 +108,8 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
         root=mapper.to_host(root),
         folder=folder,
         name=file.path.name,
+        former=tuple(map(mapper.to_host, hint.folders)) if hint else (),
+        former_agreed=hint.agreed if hint else True,
     )
 
 

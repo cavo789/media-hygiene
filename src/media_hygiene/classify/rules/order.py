@@ -82,7 +82,8 @@ def _first(
             return signal
         if best is None or score > (best.score or 0):
             best = signal
-    return best or NO_SIGNAL
+    folder = config[1].folders[file.path]  # removed copies' folders that disagreed
+    return best or (folder if folder.reason is SortReason.NO_SIGNAL else NO_SIGNAL)
 
 
 def _signal(
@@ -100,9 +101,11 @@ def _signal(
     """
     settings, facts = config
     agreed = True
+    hint = None
     if rule.match in BUILT_IN:
         folder = facts.folders[file.path]
         reason, category, stay = folder.reason, folder.category, False
+        hint = folder.hint
     elif rule.match is RuleMatch.SUBJECT:
         subject = facts.seen.subjects[rule.name][file.path]
         reason, category, stay = SortReason.SUBJECT, subject.category, False
@@ -111,13 +114,15 @@ def _signal(
         template = rule.category or GEO_CATEGORIES.get(rule.match, "")
         reason, stay = _reason(rule.match, file, facts), not template
         category = _category(template, file, facts)
+        if rule.match is RuleMatch.FOLDER_TOWN:
+            hint = facts.where.folder_towns[file.path].hint
     score = rule.score
     if score is None or reason in NEIGHBOURS.values():
         default = settings.scores.get(reason.value, 0)
         score = default if score is None else min(score, default)
     if not agreed:
         score = min(score, settings.unsure)  # one answer, or samples that disagree
-    return Signal(reason, category, rule.name, score, stay)
+    return Signal(reason, category, rule.name, score, stay, hint)
 
 
 def _reason(match: RuleMatch, file: MediaInput, facts: RuleFacts) -> SortReason:

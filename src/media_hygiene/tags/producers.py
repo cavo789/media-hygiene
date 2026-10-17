@@ -11,12 +11,11 @@ import re
 from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.date_names import MONTHS
-from media_hygiene.geo.distance import distance_km
 from media_hygiene.plan.copy_names import without_copy_marks
 from media_hygiene.tags.dates import date_words
-from media_hygiene.tags.models import PlaceKind, Tag, TagSource
+from media_hygiene.tags.models import Tag, TagSource
+from media_hygiene.tags.place_words import place_tags
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -47,11 +46,12 @@ def cheap_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
         context: Folder rules, calendar, places and towns.
 
     Returns:
-        Its folder, name, date and place tags.
+        Its folder, name, former folder and name, date and place tags.
     """
     return (
         *_tags(TagSource.FOLDER, folder_words(file, context)),
         *_tags(TagSource.NAME, name_words(file, context)),
+        *_tags(TagSource.FORMER, former_words(file, context)),
         *_tags(TagSource.DATE, date_words(file, context)),
         *place_tags(file, context),
     )
@@ -95,6 +95,27 @@ def name_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
     )
 
 
+def former_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
+    """The words of the folders and names of the copies `clean` removed (0207).
+
+    Args:
+        file: The kept file, and where its removed copies lay.
+        context: As for `folder_words` and `name_words`.
+
+    Returns:
+        Their words, but those the file's own folders and name already give.
+    """
+    copies = [replace(file, path=c.path, root=c.root, former=()) for c in file.former]
+    mine = (*folder_words(file, context), *name_words(file, context))
+    own = {word.casefold() for word in mine}
+    return tuple(
+        word
+        for copy in copies
+        for word in (*folder_words(copy, context), *name_words(copy, context))
+        if word.casefold() not in own
+    )
+
+
 def _device_word(word: str, names: NameRules) -> bool:
     """Tell whether a word of a name is a camera's or an app's, not someone's.
 
@@ -126,41 +147,6 @@ def _meaningful(labels: Iterable[str], context: TagContext) -> tuple[str, ...]:
         and word.casefold() not in _MONTH_WORDS
         and word.casefold() not in _LINKS
     )
-
-
-def place_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
-    """Where the file was taken: a place of the user's, the town and its country.
-
-    Args:
-        file: The file and its metadata.
-        context: The personal places and the towns.
-
-    Returns:
-        E.g. `Maison` (personal), `Durbuy` (town), `Belgique` (country), each once
-        whatever its case, with every kind it names (`Luxembourg`: town and
-        country); nothing without a GPS position.
-    """
-    point = located_point(file.metadata)
-    if point is None:
-        return ()
-    found = [
-        (zone.place.name, PlaceKind.PERSONAL)
-        for zone in context.places
-        if zone.rank(point) is not None
-    ]
-    town = context.towns.nearest(point) if context.towns is not None else None
-    if town is not None and distance_km(point, town.point) <= context.town_km:
-        found.extend(((town.name, PlaceKind.TOWN), (town.country, PlaceKind.COUNTRY)))
-    seen: dict[str, Tag] = {}
-    for word, kind in found:
-        name = word.strip()
-        if not name:
-            continue
-        known = seen.get(name.casefold(), Tag(TagSource.PLACE, name))
-        if kind not in known.kinds:
-            known = replace(known, kinds=(*known.kinds, kind))
-        seen[name.casefold()] = known
-    return tuple(seen.values())
 
 
 def _tags(source: TagSource, words: Iterable[str]) -> tuple[Tag, ...]:

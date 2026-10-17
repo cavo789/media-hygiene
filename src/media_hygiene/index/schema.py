@@ -13,7 +13,8 @@ words of an older run until `tags` runs again); version 8 the faces of the photo
 near-duplicate candidates (`index.measures`); version 11 where the files the index
 followed went (`index.moves`); version 12 the rows of the files a clean set aside
 (`index.parked`); version 13 what the Takeout `.json` of each file says
-(`index.takeout_rows`). An older index keeps its digests
+(`index.takeout_rows`); version 14 where the copies a clean removed lay
+(`index.former_names`). An older index keeps its digests
 and integrity results: the new columns are filled once, without decoding images
 again.
 """
@@ -24,6 +25,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
+from media_hygiene.index.former_names import CREATE_FORMER_NAMES
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
 from media_hygiene.index.parked import CREATE_PARKED
@@ -33,7 +35,7 @@ from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 13
+SCHEMA_VERSION: Final = 14
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -183,4 +185,5 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_MOVES)
     connection.execute(CREATE_PARKED)
     connection.execute(CREATE_TAKEOUT)
+    connection.execute(CREATE_FORMER_NAMES)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

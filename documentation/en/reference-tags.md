@@ -33,6 +33,7 @@ applications read.
 |---|---|---|
 | Folders | The words of the folder names you chose: `2022/Durbuy - ours` gives `Durbuy`, `ours`. Folders named by a device or an app (`DCIM`, `100CANON`, `Camera`), dates (`2019`, `Juillet 2019`) and small linking words (`les`, `the`) are left out, as for [the kept copy](clean/05-choose-the-kept-copy.md). | Seconds |
 | File name | The words of a name you chose: `Anniversaire Léa.mp4` gives `Anniversaire`, `Léa`; `2019-07-12 Plage (petite).jpg` gives `Plage`, `petite`. A name a camera or an app gave (`IMG_1234.jpg`, `DSC00042.JPG`, `VID-20190712-WA0001.mp4`, `PXL_20230101_120000.jpg`, a bare number) gives nothing, nor does its part in a longer name (`IMG_1234 Léa.jpg` gives `Léa`): these are the names [the kept copy](clean/05-choose-the-kept-copy.md) recognises, `[keep] generated_names`. Numbers, dates, months and small linking words are left out, as for the folders. Videos too. | Seconds |
+| Removed copies | The folder and file name words of the copies [`clean`](clean/08-clean.md) removed, kept on the photo kept: a photo kept in `DCIM` whose copy lay in `Mariage Julie 2015` gets `Mariage`, `Julie`. The words the photo's own folders and name already give are not repeated. An [`undo`](clean/09-undo-history-purge.md) of that clean takes them off: the copy has its own name again. | Seconds |
 | Date | The year, the month, the season (turned around below the equator), the holidays (Christmas, New Year, Saint Nicholas, Valentine's Day, Halloween, Easter) and the names of your own `calendar` and `date_range` rules ([sorting, step 6](sort/06-write-down-what-you-know.md#dates)). A photo without a date takes the year of its folder (`Avril 2007`). | Seconds |
 | Place | The name of your place when the GPS position lies in one ([sorting, step 9](sort/09-places-from-gps.md)), then the nearest town and its country, offline (GeoNames), when it lies within `town_km` (20 km). | Seconds |
 | Vision model | A short sentence and 5 to 10 words about what the photo shows (optional, below). | About 2 s per photo |
@@ -140,7 +141,7 @@ the small previews of the grid are kept in `/cache`.
 | `bougies` | `bougie` too: the tags are kept in the singular. |
 | `anniv*` | Every word starting so: `anniversaire`, `anniv`. |
 | `"bord de mer"` | The phrase, its words in that order. |
-| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `name` (the file name), `date`, `person` (the names of [`people`](reference-people.md)). |
+| `place:durbuy` | The word among the places only; also `vision`, `caption` (the model's sentence), `folder`, `name` (the file name), `former` (the folders and names of the copies `clean` removed), `date`, `person` (the names of [`people`](reference-people.md)). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20
@@ -168,7 +169,7 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
 
 - **What is written**: the words of the sources in `xmp_sources` (`vision` and `place` by
   default: the folder, name and date words are in the path already; add `name` or `folder` to
-  write them too) into `dc:subject`, the model's
+  write them too, `former` for those of the copies `clean` removed) into `dc:subject`, the model's
   sentence into `dc:description`.
 - **The place apart**: with `place` in `xmp_sources`, the town also goes into `photoshop:City`,
   its country into `photoshop:Country` and your first personal place (`[[classify.places]]`) into

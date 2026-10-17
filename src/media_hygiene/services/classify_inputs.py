@@ -7,6 +7,7 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Protocol
 
 from media_hygiene.classify.models import MediaInput
+from media_hygiene.index.former_names import former_of
 from media_hygiene.index.takeout_rows import takeout_of
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.metadata import MediaMetadata
@@ -56,9 +57,11 @@ def media_input(file: MediaFile, root: Path, index: FactsRepository) -> MediaInp
         index: The facts of the audit.
 
     Returns:
-        Its input, with what its Takeout `.json` says.
+        Its input, with what its Takeout `.json` says and where the copies `clean`
+        removed lay.
     """
     found = input_of(file, root, index.get(file))
+    found = replace(found, former=former_of(index.connection, file.path))
     return with_takeout(found, takeout_of(index.connection, file.path))
 
 

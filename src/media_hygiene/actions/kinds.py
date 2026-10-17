@@ -64,5 +64,14 @@ ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP)
 FOLDER_ACTIONS: Final = frozenset(
     {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
 )
+# The copies of a kept file a clean removes: the kept file remembers where they lay
+# (`index.former_names`); burst shots and files set aside by choice are not copies.
+REMOVED_COPIES: Final = frozenset(
+    {
+        ActionKind.DELETE_DUPLICATE,
+        ActionKind.QUARANTINE_DUPLICATE,
+        ActionKind.QUARANTINE_NEAR,
+    }
+)
 # Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})
