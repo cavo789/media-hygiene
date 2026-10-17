@@ -22,6 +22,8 @@ class ActionKind(StrEnum):
     QUARANTINE_BURST = "quarantine-burst"
     # A file set aside in `search` (`clean --decisions`).
     QUARANTINE_CHOSEN = "quarantine-chosen"
+    # A photo set aside in `review --junk` (`clean --decisions`).
+    QUARANTINE_UNWANTED = "quarantine-unwanted"
     # Written by `sort`: a junk file (`Thumbs.db`) that alone kept a folder alive.
     QUARANTINE_JUNK = "quarantine-junk"
     # Written by `sort`: a file moved to `target`, a folder created, a folder left empty

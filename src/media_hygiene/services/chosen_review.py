@@ -7,7 +7,7 @@ gone since it was chosen is not refused here: the clean leaves it and says so.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.errors import DecisionsError
@@ -17,8 +17,57 @@ from media_hygiene.scan.models import MediaFile
 from media_hygiene.services.policy import keep_policy
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from media_hygiene.report.chosen_decisions import ChosenFile
     from media_hygiene.services.runtime import Runtime
+
+
+class NamedFile(Protocol):
+    """A file a decisions file names: host path, and the version the index knew."""
+
+    @property
+    def path(self) -> str:
+        """The host path."""
+
+    @property
+    def size(self) -> int:
+        """The size, in bytes."""
+
+    @property
+    def mtime_ns(self) -> int:
+        """The modification time, in nanoseconds."""
+
+
+def named_files(runtime: Runtime, named: Sequence[NamedFile]) -> tuple[MediaFile, ...]:
+    """Translate files named by host path, size and date into files of the container.
+
+    Args:
+        runtime: Settings, mount points and output.
+        named: The files, as a decisions file names them.
+
+    Returns:
+        The files, as the index knew them.
+
+    Raises:
+        DecisionsError: One of them lies in a protected folder.
+    """
+    mapper = runtime.mapper
+    files = tuple(
+        MediaFile(
+            path := mapper.to_container(item.path),
+            item.size,
+            item.mtime_ns,
+            media_kind(path) or MediaKind.OTHER,
+        )
+        for item in named
+    )
+    policy = keep_policy(runtime.settings, mapper)
+    locked = [file for file in files if policy.is_protected(file)]
+    if locked:
+        message = _("{path} is in a protected folder: it is never moved.")
+        raise DecisionsError(message.format(path=mapper.to_host(locked[0].path)))
+    return files
 
 
 def chosen_files(
@@ -36,21 +85,7 @@ def chosen_files(
     Raises:
         DecisionsError: One of them lies in a protected folder.
     """
-    mapper = runtime.mapper
-    files = tuple(
-        MediaFile(
-            path := mapper.to_container(item.path),
-            item.size,
-            item.mtime_ns,
-            media_kind(path) or MediaKind.OTHER,
-        )
-        for item in chosen
-    )
-    policy = keep_policy(runtime.settings, mapper)
-    locked = [file for file in files if policy.is_protected(file)]
-    if locked:
-        message = _("{path} is in a protected folder: it is never moved.")
-        raise DecisionsError(message.format(path=mapper.to_host(locked[0].path)))
+    files = named_files(runtime, chosen)
     if files:
         said = ngettext(
             "Your decisions — {count} file chosen in 'search' is set aside.",

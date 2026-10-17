@@ -1,6 +1,6 @@
 # 10. Sort burst series in your browser
 
-[Documentation](../README.md) › Cleaning, step 10 of 13 · 🇫🇷 [Français](../../fr/clean/10-review-bursts.md)
+[Documentation](../README.md) › Cleaning, step 10 of 14 · 🇫🇷 [Français](../../fr/clean/10-review-bursts.md)
 
 Phones and cameras take photos in bursts: five, ten, twenty shots in a few seconds. Most are
 nearly the same, a few are blurred, one or two are great. Sorting thousands of them file by file

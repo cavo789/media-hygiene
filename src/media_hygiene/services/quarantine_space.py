@@ -87,6 +87,7 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
     for choice in plan.bursts:
         yield from choice.discarded
     yield from plan.chosen
+    yield from plan.unwanted
     yield from (
         item.file for item in plan.broken if item.reason is not BrokenReason.EMPTY
     )

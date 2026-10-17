@@ -1,6 +1,6 @@
 # 5. Choisir la copie gardée
 
-[Documentation](../README.md) › Nettoyer, étape 5 sur 13 · 🇬🇧 [English](../../en/clean/05-choose-the-kept-copy.md)
+[Documentation](../README.md) › Nettoyer, étape 5 sur 14 · 🇬🇧 [English](../../en/clean/05-choose-the-kept-copy.md)
 
 Entre des copies identiques, l'outil en garde une et marque les autres comme en trop. Son choix
 est sensé, mais vous connaissez mieux vos dossiers. Trois options permettent de l'orienter, une à

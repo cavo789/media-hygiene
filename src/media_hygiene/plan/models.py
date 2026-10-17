@@ -60,6 +60,7 @@ class CleanPlan:  # pylint: disable=too-many-instance-attributes
     bursts: tuple[BurstChoice, ...] = ()
     delete_copies: bool = False  # `clean --delete`: exact copies deleted, not moved
     chosen: tuple[MediaFile, ...] = ()  # set aside in `search` (`clean --decisions`)
+    unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
 
     @property
     def removable_count(self) -> int:
@@ -121,7 +122,8 @@ class CleanPlan:  # pylint: disable=too-many-instance-attributes
             True when no duplicate copy, near duplicate, burst shot or file set
             aside, broken file or orphan sidecar is actionable.
         """
-        moved = self.near_count or self.burst_count or self.chosen or self.orphans
+        moved = self.near_count or self.burst_count or self.chosen or self.unwanted
+        moved = moved or self.orphans
         return not (self.removable_count or self.broken or moved)
 
     @property
@@ -163,7 +165,7 @@ class CleanPlan:  # pylint: disable=too-many-instance-attributes
         near = {file.path for group in self.near for file in group.removable}
         bursts = {file.path for choice in self.bursts for file in choice.discarded}
         broken = {item.file.path for item in self.broken}
-        chosen = {file.path for file in self.chosen}
+        chosen = {file.path for file in (*self.chosen, *self.unwanted)}
         return frozenset(exact | near | bursts | broken | chosen)
 
 

@@ -108,6 +108,15 @@ def _actions(plan: CleanPlan) -> list[str]:
         )
         weight = human_size(sum(file.size for file in plan.chosen))
         actions.append(phrase.format(count=human_number(chosen), size=weight))
+    if plan.unwanted:
+        unwanted = len(plan.unwanted)
+        phrase = ngettext(
+            "move {count} unwanted photo you set aside ({size}) to the quarantine",
+            "move {count} unwanted photos you set aside ({size}) to the quarantine",
+            unwanted,
+        )
+        weight = human_size(sum(file.size for file in plan.unwanted))
+        actions.append(phrase.format(count=human_number(unwanted), size=weight))
     if broken:
         phrase = ngettext(
             "handle {count} broken file", "handle {count} broken files", broken

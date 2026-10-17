@@ -72,3 +72,35 @@ black); sharpness percentiles 1 / 5 / 10 / 50 % = 15 / 52 / 95 / 530.
 Candidates measured on the maintainer's index (2026-10-17): about 2,500 tiny images, 400
 screenshot names, 70 black photos, and 1,000 blurriest (2 % of 50,563, estimated from the
 percentile). What the user sets aside is theirs to decide: no figure before a real review.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `plan/unwanted.py`: reasons screenshot (`classify`'s `is_screenshot`), tiny, nearly black, nearly
+  white, blurriest (percentile of the collection's own sharpness, numpy's interpolation without
+  numpy); one reason per photo; the reason with the most photos first.
+- `[review.unwanted]` settings (`UnwantedSettings` in `config/review_settings.py`, documented in
+  `config.toml.j2`): `tiny_megapixels`, `screenshots`, `dark_mean`/`dark_share`,
+  `white_mean`/`white_share`, `blur_percentile`; 0 (or false) disables a reason.
+- Never listed: protected folders, burst shots, near-duplicate and re-encoded video groups, exact
+  duplicates' other copies (`SimilarFindings.images` holds only the compared pictures).
+- `review --junk`: `services/unwanted_reviewing.py`, `review/unwanted_app.py`,
+  `unwanted_session.py`, `unwanted_views.py`, `unwanted_file.py`, templates; pages of 40 photos
+  per reason; `→` the group as marked, `Space`/click toggles, `↑`/`↓` cursor, `←`, `N`, `U`;
+  choices saved under `unwanted` (every decided photo, `aside` true/false), read back and shown,
+  the other keys kept.
+- `clean --decisions`: new kind `quarantine-unwanted` (undone like the other set-asides), checked
+  against the size and date seen (`chosen_blocker`), protected refused; the plan, the confirm
+  line, the "Your decisions" line and `history` (*Of which unwanted* column) count them apart.
+- Docs: step 14 of the cleaning guide (both languages), guide lists (both READMEs, both
+  `documentation/*/README.md`), mkdocs nav, `review` command page; steps renumbered "of 14".
+- Tests: `tests/unit/test_unwanted.py`, `tests/integration/test_unwanted_review.py`.
+
+### Not done
+- The screenshot of the page (synthetic: a tiny, a screenshot, a black, a blurred picture).
+  **Reason:** images come only from `docs_screenshots` (not run in an unattended lot), and the docs'
+  synthetic library may hold no unwanted photo (the command then serves no page): add such
+  pictures to `tests/support/docs/library.py`, a `junk` mode in `served.py`/`browser.py`/
+  `browsing.py`, run `docs_screenshots`, then show the image in step 14.
+- 0216 (photos set aside that come back): when it lands, add `quarantine-unwanted` to the kinds it
+  remembers.

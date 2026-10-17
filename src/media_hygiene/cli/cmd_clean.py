@@ -80,7 +80,9 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
         bursts = review is not None and (
-            bool(review.chosen) or any(b.discarded for b in review.bursts)
+            bool(review.chosen)
+            or any(b.discarded for b in review.bursts)
+            or any(entry.aside for entry in review.unwanted)
         )
         service.ensure_ready(CleanMode(tier is not CleanTier.EXACT, bursts, delete))
         findings = audit_and_show(runtime)

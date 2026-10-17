@@ -11,12 +11,15 @@ r"""The decisions file the report downloads and `review` writes; `clean` reads i
 ```
 
 Paths are host paths, as the report shows them. `roots` are the folders analysed by the
-audit behind the decisions: `clean` refuses the file when it sees other folders. Pairs
-left as planned are not listed. `review` lists every burst series from the start,
-`todo` until seen, then `done`; a series kept whole has an empty `discarded`, a series
-set aside whole an empty `kept`. Without `status` (older file, report), it is done.
+audit behind the decisions: `clean` refuses the file when it sees other folders. The
+report leaves out the pairs left as planned; `review --pairs` lists them as `planned`
+(seen, nothing changes), so that it resumes where it stopped. `review` lists every
+burst series from the start, `todo` until seen, then `done`; a series kept whole has an
+empty `discarded`, a series set aside whole an empty `kept`. Without `status` (older
+file, report), it is done.
 `chosen` lists the files set aside in `search` (`chosen_decisions`): they need no
-audit, so a file holding nothing else is not refused for its `roots`.
+audit, so a file holding nothing else is not refused for its `roots`. `unwanted` lists
+the photos `review --junk` decided (`unwanted_decisions`).
 """
 
 from __future__ import annotations
@@ -31,6 +34,7 @@ from media_hygiene.plan.review import PairAction
 from media_hygiene.report.burst_decisions import BurstDecisions
 from media_hygiene.report.chosen_decisions import ChosenFiles
 from media_hygiene.report.near_decisions import NearGroups
+from media_hygiene.report.unwanted_decisions import UnwantedEntries
 from media_hygiene.text_files import decode_user_text
 
 if TYPE_CHECKING:
@@ -61,6 +65,7 @@ class DecisionsFile(BaseModel):
     bursts: BurstDecisions = ()  # `review` (`burst_decisions`)
     near: NearGroups = ()  # `review --near` (`near_decisions`)
     chosen: ChosenFiles = ()  # `search`, `browse` (`chosen_decisions`)
+    unwanted: UnwantedEntries = ()  # `review --junk` (`unwanted_decisions`)
 
     @property
     def only_chosen(self) -> bool:
@@ -72,7 +77,8 @@ class DecisionsFile(BaseModel):
         Returns:
             True when it holds chosen files and no pair, series nor group.
         """
-        return bool(self.chosen) and not (self.pairs or self.bursts or self.near)
+        decided = self.pairs or self.bursts or self.near or self.unwanted
+        return bool(self.chosen) and not decided
 
     @field_validator("pairs")
     @classmethod

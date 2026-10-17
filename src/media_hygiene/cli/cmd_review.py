@@ -1,4 +1,7 @@
-"""`media-hygiene review`: set burst shots aside, series by series, in the browser."""
+"""`media-hygiene review`: set burst shots aside, series by series, in the browser.
+
+The other pages (`--near`, `--pairs`, `--junk`) are dispatched by `review_modes`.
+"""
 
 # pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
 # the code it runs when it runs; those imports count as local variables.
@@ -29,6 +32,8 @@ def review_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
     near: Annotated[bool, review_options.near()] = False,
+    pairs: Annotated[bool, review_options.pairs()] = False,
+    junk: Annotated[bool, review_options.junk()] = False,
     decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
     port: Annotated[
         int, review_options.port(options.panel_advanced())
@@ -39,7 +44,7 @@ def review_command(  # pylint: disable=too-many-arguments
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
 ) -> None:
-    """Audit, then serve the burst series (or near duplicates) until Ctrl+C.
+    """Audit, then serve the burst series (near duplicates, pairs) until Ctrl+C.
 
     Args:
         ctx: Typer context holding the runtime.
@@ -51,14 +56,17 @@ def review_command(  # pylint: disable=too-many-arguments
         decisions: `--decisions`, the file to save the decisions in.
         port: `--port`, inside the container.
         near: `--near`, the near duplicates instead of the burst series.
+        pairs: `--pairs`, the folder pairs instead of the burst series.
+        junk: `--junk`, the photos most likely unwanted instead.
     """
     from media_hygiene.cli.flows import audit_and_show
-    from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
-    from media_hygiene.console.formatting import human_number
-    from media_hygiene.services.near_reviewing import (
-        open_near_review,
-        serve_near_review,
+    from media_hygiene.cli.review_modes import (
+        ReviewMode,
+        ReviewRun,
+        review_mode,
+        run_mode,
     )
+    from media_hygiene.console.formatting import human_number
     from media_hygiene.services.reviewing import (
         open_review,
         review_target,
@@ -71,16 +79,11 @@ def review_command(  # pylint: disable=too-many-arguments
         runtime = runtime.with_overrides(
             folder_layer(prefer, protect, exclude)
         ).with_overrides(scan_layer(ext, exclude_name))
+        mode = review_mode(near=near, pairs=pairs, junk=junk)
         target = review_target(runtime, decisions, port)
         findings = audit_and_show(runtime)
-        if near:
-            if not findings.similar.groups:
-                output.success(_("No near duplicates: nothing to review."))
-                return
-            near_session = open_near_review(runtime, findings, target)
-            tell_near_opened(runtime, near_session)
-            serve_near_review(runtime, near_session, port)
-            tell_near_stopped(ctx, runtime, near_session)
+        if mode is not ReviewMode.BURSTS:
+            run_mode(ReviewRun(ctx, runtime, target, port), mode, findings)
             return
         if not findings.similar.bursts:
             output.success(_("No burst series: nothing to review."))

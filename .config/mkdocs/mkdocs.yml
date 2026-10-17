@@ -99,6 +99,7 @@ nav:
       - clean/11-near-duplicates.md
       - clean/12-decide-pair-by-pair.md
       - clean/13-second-opinion.md
+      - clean/14-unwanted-photos.md
   - Sort the photos:
       - sort/04-classify.md
       - sort/05-review-the-proposal.md

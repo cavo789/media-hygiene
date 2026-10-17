@@ -74,3 +74,43 @@ def near() -> OptionInfo:
             ),
         ),
     )
+
+
+def pairs() -> OptionInfo:
+    """`--pairs`: review the folder pairs of the exact duplicates instead.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--pairs",
+            help=_(
+                "Review the folder pairs of the exact duplicates one by one instead "
+                "of the burst series: as planned, swap the folders, or leave alone; "
+                "'clean --decisions' applies it."
+            ),
+        ),
+    )
+
+
+def junk() -> OptionInfo:
+    """`--junk`: review the photos most likely unwanted instead.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--junk",
+            help=_(
+                "Review the photos most likely unwanted (tiny, screenshots, nearly "
+                "black or white, the blurriest) instead of the burst series: nothing "
+                "is set aside without you; 'clean --decisions' moves what you set "
+                "aside to the quarantine. Thresholds: [review.unwanted] of "
+                "config.toml."
+            ),
+        ),
+    )

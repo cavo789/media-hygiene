@@ -49,3 +49,32 @@ does the same for the folder pairs. It needs no home page (the home page, F5, li
 
 Deciding folder pairs: three steps outside the tool (download, find the file, move it) → none;
 and each choice proven saved (read back from the disk) instead of trusting a download.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `review --pairs` (`cli/review_modes.py`, `cli/pairs_review_flow.py`, `services/pairs_reviewing.py`,
+  `review/pairs_app.py`, `pairs_session.py`, `pairs_views.py`, `pairs_file.py`, templates
+  `pairs_review.html.j2` / `.js.j2`): pairs the most space freed first, samples, reasons,
+  "entirely a copy", keys `→` `W` `L` `U` `←` `N`; each choice saved under `pairs`, read back and
+  shown; the other keys of `decisions.json` kept; swap refused on a protected kept folder or a
+  pair inside one folder (the same rule as `clean --decisions`).
+- New `PairAction.PLANNED` (`planned`): a pair seen and left as planned stays decided when the
+  review resumes; `clean --decisions` ignores it (never refused as stale either).
+- `cmd_review.py` dispatches `--near` / `--pairs` from `cli/review_modes.py` (one mode per run).
+- The report: "Or decide in your browser, saved for 'clean': mh review --pairs" under the download.
+- Shared code: `services/review_serving.py` (one page server for near, pairs, junk),
+  `review/decide_route.py` (`DecidingApp`), `review/keyed_choices.py`, `cli/review_next.py`.
+- Docs both languages: step 12 shows `mh review --pairs` first, the report's download as the
+  offline way; the `review` command page. French `.po` complete.
+- Integration tests `tests/integration/test_pairs_review.py` (state, choice read back, protected
+  swap refused, other keys kept, resume, `clean --decisions` applies, CLI lines, page render).
+- Docs capture wiring: `review-pairs.txt` (terminal) via `browsing.py` / `served.pairs`.
+
+### Not done
+- The screenshot of the page in the docs (`review-pairs.webp`).
+  **Reason:** images come only from `docs_screenshots` (not run in an unattended lot); a page
+  linking an image that does not exist yet fails `test_documentation.py`. Next step: in
+  `tests/support/docs/served.py::pairs`, add `page.screenshot(path=SHOTS / "review-pairs.png")`
+  after the wait, run `docs_screenshots`, then show `../images/review-pairs.webp` in step 12
+  (both languages).

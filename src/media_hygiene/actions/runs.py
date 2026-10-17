@@ -77,7 +77,7 @@ class Kept:
 
 
 @dataclass(frozen=True, slots=True)
-class RunSummary:
+class RunSummary:  # pylint: disable=too-many-instance-attributes
     """What a run did (`clean`, `sort` or `album`), and whether it was undone."""
 
     run_id: str
@@ -87,6 +87,7 @@ class RunSummary:
     quarantined: int
     kept: Kept
     restored: int
+    unwanted: int = 0  # of `quarantined`: photos set aside in `review --junk`
 
     @property
     def moved(self) -> int:
@@ -142,6 +143,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         quarantined=len(quarantined),
         kept=Kept(len(moved), len(linked), written),
         restored=len(done_states(entries, Phase.UNDO)),
+        unwanted=sum(e.action is ActionKind.QUARANTINE_UNWANTED for e in quarantined),
     )
 
 

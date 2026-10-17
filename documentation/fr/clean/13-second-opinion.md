@@ -1,6 +1,6 @@
 # 13. Un second avis
 
-[Documentation](../README.md) › Nettoyer, étape 13 sur 13 · 🇬🇧 [English](../../en/clean/13-second-opinion.md)
+[Documentation](../README.md) › Nettoyer, étape 13 sur 14 · 🇬🇧 [English](../../en/clean/13-second-opinion.md)
 
 Avant de supprimer des photos de famille, un second avis rassure.
 [Czkawka](https://github.com/qarmin/czkawka) est un détecteur de doublons indépendant et open
@@ -107,4 +107,4 @@ suppression.
 
 ---
 
-← [12. Décider paire par paire](12-decide-pair-by-pair.md) · [Documentation](../README.md)
+← [12. Décider paire par paire](12-decide-pair-by-pair.md) · [Documentation](../README.md) · Suivant : **[14. Les photos indésirables](14-unwanted-photos.md)** →

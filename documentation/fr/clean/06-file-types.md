@@ -1,6 +1,6 @@
 # 6. Seulement certains types de fichiers
 
-[Documentation](../README.md) › Nettoyer, étape 6 sur 13 · 🇬🇧 [English](../../en/clean/06-file-types.md)
+[Documentation](../README.md) › Nettoyer, étape 6 sur 14 · 🇬🇧 [English](../../en/clean/06-file-types.md)
 
 Par défaut, l'outil analyse toutes les photos, tous les fichiers RAW et toutes les vidéos, et
 rien d'autre. `--ext` restreint l'analyse à certains types, ou l'élargit à d'autres fichiers.

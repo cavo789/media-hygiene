@@ -1,6 +1,6 @@
 # 5. Choose which copy stays
 
-[Documentation](../README.md) › Cleaning, step 5 of 13 · 🇫🇷 [Français](../../fr/clean/05-choose-the-kept-copy.md)
+[Documentation](../README.md) › Cleaning, step 5 of 14 · 🇫🇷 [Français](../../fr/clean/05-choose-the-kept-copy.md)
 
 Between identical copies, the tool keeps one and marks the others as extra. Its choice is
 sensible, but you know your folders better. Three options let you steer it, one at a time.

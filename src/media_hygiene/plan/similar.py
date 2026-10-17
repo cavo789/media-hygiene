@@ -109,4 +109,6 @@ def find_similar(inputs: SimilarInputs, policy: KeepPolicy) -> SimilarFindings:
                 if (exposure := exposure_of(inputs.metadata.get(file.path)))
             }
         ),
+        metadata=inputs.metadata,
+        images=tuple(candidates),
     )

@@ -29,10 +29,15 @@ type _Choices = Mapping[tuple[Path, Path], PairAction]
 
 
 class PairAction(StrEnum):
-    """What a review decided for a folder pair (no decision: as planned)."""
+    """What a review decided for a folder pair (no decision: as planned).
+
+    `planned` is saved by `review --pairs` only, so that a pair seen and left as
+    planned stays decided when the review resumes: it changes nothing in the plan.
+    """
 
     SWAP = "swap"
     SKIP = "skip"
+    PLANNED = "planned"
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +56,7 @@ class ReviewChoices:
     pairs: tuple[PairChoice, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
     chosen: tuple[MediaFile, ...] = ()  # set aside in `search`
+    unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
 
 
 def apply_choices(
@@ -68,13 +74,19 @@ def apply_choices(
         file chosen that the plan already removes (a swapped keeper, a copy) is not
         moved a second time.
     """
-    by_pair = {(c.kept_in, c.removed_from): c.action for c in choices.pairs}
+    by_pair = {
+        (c.kept_in, c.removed_from): c.action
+        for c in choices.pairs
+        if c.action is not PairAction.PLANNED
+    }
     decisions = (_reviewed(decision, by_pair, policy) for decision in plan.decisions)
     reviewed = replace(plan, decisions=tuple(d for d in decisions if d.removable))
     reviewed = replace(reviewed, bursts=_set_aside(choices.bursts, reviewed.removed))
     removed = reviewed.removed
     chosen = tuple(file for file in choices.chosen if file.path not in removed)
-    return replace(reviewed, chosen=chosen)
+    taken = removed | {file.path for file in chosen}
+    unwanted = tuple(file for file in choices.unwanted if file.path not in taken)
+    return replace(reviewed, chosen=chosen, unwanted=unwanted)
 
 
 def _set_aside(

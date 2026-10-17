@@ -97,6 +97,24 @@ identical_below = 6
 brightness_gap = 60
 clipped_gap = 0.25
 
+[review.unwanted]
+{{ comment(_("'review --junk' shows the photos most likely unwanted, one group per reason; nothing is set aside until you say so, and 'clean --decisions' moves only what you set aside to the quarantine. A photo of a protected folder, a burst shot, a near or exact duplicate is never listed.")) }}
+
+{{ comment(_("Tiny: below this many megapixels (width times height divided by a million): 0.16 is 400 x 400 pixels, icons and thumbnails. 0 disables the reason.")) }}
+tiny_megapixels = 0.16
+
+{{ comment(_("A screenshot or a document, as 'classify' tells them: a screenshot name, or a PNG or tiny image without any camera trace.")) }}
+screenshots = true
+
+{{ comment(_("Nearly black: mean brightness under dark_mean (gray levels, 0 to 255) with at least dark_share (0 to 1) of the pixels black; the same for nearly white, over white_mean. 0 disables either reason.")) }}
+dark_mean = 25
+dark_share = 0.7
+white_mean = 230
+white_share = 0.7
+
+{{ comment(_("The blurriest: sharpness under this percentile (0 to 100) of your own photos, so the threshold follows your cameras. 0 disables the reason.")) }}
+blur_percentile = 2
+
 
 [sort]
 {{ comment(_("Ask for confirmation before sorting."), "--yes") }}

@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.scan.exposure import Exposure
+    from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import MediaFile, VisualFacts
     from media_hygiene.scan.video_models import VideoLook
 
@@ -90,10 +91,12 @@ class BurstChoice:
 
 
 @dataclass(frozen=True, slots=True)
-class SimilarFindings:
+class SimilarFindings:  # pylint: disable=too-many-instance-attributes
     """Near duplicates, burst series, re-encoded videos, and what each looks like.
 
-    `exposures`: the burst shots' measures, for the review's proposals.
+    `exposures`: the burst shots' measures, for the review's proposals; `metadata`:
+    every file's, as the audit read it, and `images`: the pictures compared
+    (`review --junk`).
     """
 
     near: tuple[NearDecision, ...] = ()
@@ -108,6 +111,10 @@ class SimilarFindings:
     exposures: Mapping[Path, Exposure] = field(
         default_factory=lambda: MappingProxyType({})
     )
+    metadata: Mapping[Path, MediaMetadata] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+    images: tuple[MediaFile, ...] = ()  # described, and no other copy of a group
 
     @property
     def near_count(self) -> int:

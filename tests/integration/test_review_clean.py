@@ -17,6 +17,7 @@ from media_hygiene.services.audit import AuditService
 from media_hygiene.services.review import review_choices
 from tests.support.cli import run
 from tests.support.media import MediaFactory
+from tests.support.pairs import IPHONE, SUMMER, clean_swapped_and_skipped
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
@@ -30,8 +31,6 @@ SELECT = re.compile(
     r'<select class="decision" data-kept-in="([^"]*)" data-removed-from="([^"]*)"'
 )
 ROOTS = re.compile(r"const roots = (.*);")
-IPHONE = ("C:\\Family Photos\\iPhone", "D:\\backup\\iPhone")
-SUMMER = ("C:\\Users\\Public\\Pictures\\Été 2019", "D:\\backup\\2019")
 
 
 def decide(report: Path, choices: dict[tuple[str, str], str]) -> str:
@@ -57,15 +56,7 @@ def test_report_decisions_drive_the_clean(cli: CliRunner, locations: Locations) 
     [report] = locations.reports_dir.glob("*-audit/report.html")
     choices = {IPHONE: PairAction.SWAP.value, SUMMER: PairAction.SKIP.value}
     (locations.reports_dir / "decisions.json").write_text(decide(report, choices))
-    result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
-    assert result.exit_code == 0, result.output
-    assert "pairs swapped: 1, pairs left alone: 1" in result.output
-    assert (data / "d/backup/iPhone/IMG_4242.HEIC").is_file()
-    assert not (data / "c/Family Photos/iPhone/IMG_4242.HEIC").exists()
-    assert (data / "d/backup/2019/IMG_0002.jpg").is_file()  # its pair left alone
-    assert not (data / "d/backup/2019/IMG_0001.jpg").exists()  # Vacances has the xmp
-    assert run(cli, "undo").exit_code == 0
-    assert (data / "c/Family Photos/iPhone/IMG_4242.HEIC").is_file()
+    clean_swapped_and_skipped(cli, data)
 
 
 def test_missing_file_fails_before_the_audit(cli: CliRunner) -> None:

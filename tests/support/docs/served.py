@@ -96,6 +96,16 @@ def near(page: Page) -> None:
     page.screenshot(path=SHOTS / "review-near-video.png")
 
 
+def pairs(page: Page) -> None:
+    """The folder pairs review: the largest pair shown, nothing decided.
+
+    No screenshot yet: an image the pages do not show fails the documentation tests.
+    """
+    page.goto(SERVED)
+    page.wait_for_selector("#keptIn div")
+    page.wait_for_selector("#status:not(:empty)")  # decisions.json read back
+
+
 def search(page: Page, words: str) -> None:
     """The search page: the words typed, the grid of the photos found.
 

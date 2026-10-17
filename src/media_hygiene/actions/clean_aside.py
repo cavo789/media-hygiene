@@ -1,4 +1,4 @@
-"""The moves of a clean chosen by a tier or a person: near, burst shots, files chosen.
+"""The moves of a clean chosen by a tier or a person: near, bursts, files chosen.
 
 None of them is an identical copy: each goes to the quarantine (never deleted), where
 `undo` finds it, and only while it is still the very file the audit, the review or
@@ -60,6 +60,9 @@ class AsideMoves:
                 yield file, self._labels.burst, partial(self._burst, choice, file)
         for file in plan.chosen:
             yield file, self._labels.chosen, partial(self._chosen, file)
+        for file in plan.unwanted:
+            unwanted = partial(self._chosen, file, ActionKind.QUARANTINE_UNWANTED)
+            yield file, self._labels.unwanted, unwanted
 
     def _near(self, decision: NearDecision, file: MediaFile) -> None:
         """Move one near duplicate to the quarantine.
@@ -91,14 +94,17 @@ class AsideMoves:
         keeper = Origin(choice.kept[0].path if choice.kept else None)
         self._changes.quarantine(file, ActionKind.QUARANTINE_BURST, keeper)
 
-    def _chosen(self, file: MediaFile) -> None:
-        """Move one file set aside in `search` to the quarantine.
+    def _chosen(
+        self, file: MediaFile, kind: ActionKind = ActionKind.QUARANTINE_CHOSEN
+    ) -> None:
+        """Move one file set aside in `search` or `review --junk` to the quarantine.
 
         Args:
             file: The file, as the index knew it when it was chosen.
+            kind: The action journaled: chosen in `search`, or unwanted.
         """
         blocker = chosen_blocker(file)
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        self._changes.quarantine(file, ActionKind.QUARANTINE_CHOSEN)
+        self._changes.quarantine(file, kind)

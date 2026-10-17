@@ -1,4 +1,4 @@
-"""The steps played in a browser: the burst review, `review --near`, `search`."""
+"""The steps played in a browser: the reviews (bursts, near, pairs), `search`."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ def _serve(demo: Demo, args: tuple[str, ...], shots: Path) -> str:
 
 
 def served_pages(demo: Demo, shots: Path) -> Captures:
-    """The burst review, then the near duplicates and the search.
+    """The burst review, then the near duplicates, the folder pairs and the search.
 
     In the burst review, one shot is set aside in two series; nothing is decided in
     the near-duplicate review, so `clean` moves what the report shows.
@@ -54,6 +54,8 @@ def served_pages(demo: Demo, shots: Path) -> Captures:
     captures["decisions.json"] = read_file(demo, "reports", "decisions.json")
     near = ("review", "--near", "--", "near")
     captures["review-near.txt"] = _serve(demo, near, shots)
+    pairs = ("review", "--pairs", "--", "pairs")  # nothing decided: `clean` as planned
+    captures["review-pairs.txt"] = _serve(demo, pairs, shots)
     # The words of the folders and dates: no vision model in the documentation.
     run(demo, Command(("tags", "--no-describe")))
     word = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1].casefold()
