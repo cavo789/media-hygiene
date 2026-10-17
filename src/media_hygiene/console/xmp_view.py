@@ -54,6 +54,7 @@ def show_plan(runtime: Runtime, plan: XmpPlan) -> None:
         more = len(plan.jobs) - _SHOWN
         if more > 0:
             output.info(_("... and {count} more.").format(count=human_number(more)))
+    _positioned(runtime, plan)
     _left_out(runtime, plan)
     for sidecar, reason in plan.refused[:_SHOWN]:
         output.warning(
@@ -63,6 +64,33 @@ def show_plan(runtime: Runtime, plan: XmpPlan) -> None:
                 ).format(path=host(sidecar), reason=reason)
             )
         )
+
+
+def _positioned(runtime: Runtime, plan: XmpPlan) -> None:
+    """Say how many photos get their folder town's position, the largest towns first.
+
+    Args:
+        runtime: Settings, mount points and output.
+        plan: The plan.
+    """
+    total = sum(plan.positioned.values())
+    if not total:
+        return
+    towns = ", ".join(
+        f"{name} {human_number(count)}"
+        for name, count in plan.positioned.most_common(_SHOWN)
+    )
+    runtime.output.info(
+        escape(
+            ngettext(
+                "{count} photo without GPS gets the position of its folder's town "
+                "(its centre, approximate): {towns}.",
+                "{count} photos without GPS get the position of their folder's town "
+                "(its centre, approximate): {towns}.",
+                total,
+            ).format(count=human_number(total), towns=towns)
+        )
+    )
 
 
 def _left_out(runtime: Runtime, plan: XmpPlan) -> None:

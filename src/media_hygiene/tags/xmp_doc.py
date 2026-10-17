@@ -25,6 +25,7 @@ MH_NS: Final = "https://github.com/cavo789/media-hygiene/ns/xmp/1.0/"
 PHOTOSHOP_NS: Final = "http://ns.adobe.com/photoshop/1.0/"
 IPTC_CORE_NS: Final = "http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/"
 IPTC_EXT_NS: Final = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/"  # PersonInImage
+EXIF_NS: Final = "http://ns.adobe.com/exif/1.0/"  # GPSLatitude, GPSLongitude
 PREFIXES: Final = {
     "x": X_NS,
     "rdf": RDF_NS,
@@ -33,6 +34,7 @@ PREFIXES: Final = {
     "photoshop": PHOTOSHOP_NS,
     "Iptc4xmpCore": IPTC_CORE_NS,
     "Iptc4xmpExt": IPTC_EXT_NS,
+    "exif": EXIF_NS,
     "mh": MH_NS,
 }
 LANG: Final = "{http://www.w3.org/XML/1998/namespace}lang"

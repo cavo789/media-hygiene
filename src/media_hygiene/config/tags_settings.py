@@ -39,6 +39,9 @@ class TagSettings(BaseModel):
     # The sources whose words `xmp` writes into `dc:subject` (the sentence of the
     # model always goes into `dc:description`).
     xmp_sources: tuple[TagSource, ...] = XMP_SOURCES
+    # A photo without GPS in a folder named after a town gets that town's position in
+    # its sidecar: approximate, so only when asked (0230).
+    xmp_folder_gps: bool = False
 
     def language_of(self, interface: Locale) -> Locale:
         """The language the words are written in.

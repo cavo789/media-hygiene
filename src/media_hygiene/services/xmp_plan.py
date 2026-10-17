@@ -12,7 +12,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.actions.xmp_write import XmpJob
 from media_hygiene.index.descriptions import PhotoVersion
@@ -20,8 +20,9 @@ from media_hygiene.index.listing import indexed_files
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
-from media_hygiene.scan.sidecars import companions_of
 from media_hygiene.search.people_words import people_words
+from media_hygiene.services.xmp_sidecars import sidecar_of
+from media_hygiene.services.xmp_towns import with_town
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.xmp_doc import XmpError, parse
 from media_hygiene.tags.xmp_merge import XmpValues, merge, new_document
@@ -32,9 +33,8 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from media_hygiene.config.people_settings import PeopleSettings
+    from media_hygiene.geo.gazetteer import Town
     from media_hygiene.index.listing import IndexedFile
-
-_XMP: Final = ".xmp"
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +46,7 @@ class XmpScope:
     sources: tuple[TagSource, ...]
     tool: str  # `media-hygiene <version>`, the creator of new sidecars
     people: PeopleSettings | None = None  # the names: read with the `person` source
+    towns: Mapping[Path, Town] = field(default_factory=dict[Path, "Town"])  # 0230
 
 
 @dataclass(slots=True)
@@ -58,6 +59,7 @@ class XmpPlan:
     copies: int = 0  # an identical copy exists
     without_words: int = 0
     refused: list[tuple[Path, str]] = field(default_factory=list[tuple[Path, str]])
+    positioned: Counter[str] = field(default_factory=Counter[str])  # by folder town
 
 
 def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
@@ -92,7 +94,10 @@ def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
         elif file.facts.full_digest and digests[file.facts.full_digest] > 1:
             plan.copies += 1
         else:
-            values = _values(store, file, (scope.sources, named))
+            town = scope.towns.get(file.path)
+            values = with_town(_values(store, file, (scope.sources, named)), town)
+            if town is not None:
+                plan.positioned[town.name] += 1
             _plan_file(plan, (file, values), (scope, folders))
     return plan
 
@@ -142,12 +147,12 @@ def _plan_file(
     """
     file, values = what
     scope, folders = where
-    if not (values.subjects or values.description or values.people) or (
-        not file.path.is_file()
-    ):
+    empty = not (values.subjects or values.description or values.people or values.gps)
+    sidecar = sidecar_of(file.path, folders) if file.path.is_file() else None
+    # Nothing to write: only a sidecar there is read, to take back values of ours.
+    if sidecar is None or (empty and not sidecar.is_file()):
         plan.without_words += 1
         return
-    sidecar = sidecar_of(file.path, folders)
     if not sidecar.is_file():
         content = new_document(values, scope.tool).to_bytes()
         plan.jobs.append(XmpJob(file.path, sidecar, content, None))
@@ -156,37 +161,15 @@ def _plan_file(
         previous = sidecar.read_bytes()
         doc = parse(previous)
     except (OSError, XmpError) as exc:
-        plan.refused.append((sidecar, str(exc)))
+        if empty:
+            plan.without_words += 1  # not ours to read: left alone, as before
+        else:
+            plan.refused.append((sidecar, str(exc)))
         return
     if not merge(doc, values):
-        plan.unchanged += 1
+        if empty:
+            plan.without_words += 1
+        else:
+            plan.unchanged += 1
         return
     plan.jobs.append(XmpJob(file.path, sidecar, doc.to_bytes(), previous))
-
-
-def sidecar_of(photo: Path, folders: dict[Path, list[str]]) -> Path:
-    """The sidecar of a photo: the one there, or the name of a new one.
-
-    Args:
-        photo: The photo.
-        folders: The names of each folder listed so far (filled here).
-
-    Returns:
-        `IMG_1.jpg.xmp` (any case) when there; `IMG_1.xmp` when it belongs to this
-        photo alone; else the name of a new `IMG_1.jpg.xmp`.
-    """
-    folder = photo.parent
-    if folder not in folders:
-        folders[folder] = sorted(entry.name for entry in folder.iterdir())
-    names = folders[folder]
-    whole = f"{photo.name}{_XMP}".casefold()
-    stem = f"{photo.stem}{_XMP}".casefold()
-    for name in names:
-        if name.casefold() == whole:
-            return folder / name
-    for name in names:
-        if name.casefold() == stem and companions_of(folder / name, names) == {
-            photo.name
-        }:
-            return folder / name
-    return folder / f"{photo.name}{_XMP}"

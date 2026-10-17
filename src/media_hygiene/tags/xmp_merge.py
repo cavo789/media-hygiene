@@ -8,6 +8,7 @@
 - `dc:description` gets the model's sentence only when empty, or when it still holds
   the sentence this tool wrote last time (`mh:description`).
 - The town, the country and the user's place go into the location fields: `xmp_places`.
+- A position for a photo without one, from its folder's town: `xmp_gps` (0230).
 - A new sidecar says who wrote it (`xmp:CreatorTool`): see `xmp_owner`.
 """
 
@@ -17,7 +18,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from typing import Final
 
-from media_hygiene.tags import xmp_places
+from media_hygiene.tags import xmp_gps, xmp_places
 from media_hygiene.tags.xmp_bags import merge_tracked, remove, tracked_snapshot
 from media_hygiene.tags.xmp_doc import (
     ABOUT,
@@ -58,6 +59,7 @@ class XmpValues:
     description: str = ""
     places: xmp_places.XmpPlaces = xmp_places.NO_PLACES
     people: tuple[str, ...] = ()  # only with the `person` source: names travel
+    gps: xmp_gps.XmpGps | None = None  # `xmp_folder_gps`: its folder's town (0230)
 
 
 def merge(doc: XmpDoc, values: XmpValues) -> bool:
@@ -73,6 +75,7 @@ def merge(doc: XmpDoc, values: XmpValues) -> bool:
     before = _snapshot(doc)
     _merge(doc, values)
     xmp_places.merge_places(doc, values.places)
+    xmp_gps.merge_gps(doc, values.gps)
     return _snapshot(doc) != before
 
 
@@ -92,6 +95,7 @@ def _snapshot(doc: XmpDoc) -> tuple[object, ...]:
         _caption(doc),
         text_of(doc.find(_MH_CAPTION)),
         xmp_places.places_snapshot(doc),
+        xmp_gps.gps_snapshot(doc),
     )
 
 
