@@ -65,15 +65,20 @@ docker run --rm -it `
 
 ## Lancer une étape
 
-La page ne modifie jamais vos photos elle-même : **Lancer** (ou le gros bouton) ferme la page et
-confie l'étape à `mh`, dans la fenêtre PowerShell, avec les dossiers dont cette étape a besoin.
-La page affiche *En cours dans la fenêtre PowerShell : cette page revient quand c'est fini* ;
-quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
+La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`
+qui a ouvert la page :
 
-L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
-c'est ainsi que `mh` sait quoi lancer. Lancée avec `docker run` seul, rien ne l'exécute : le
-terminal nomme l'étape (*Étape 3 choisie sur la page d'accueil : mh clean*) ; tapez-la
-vous-même.
+- **Un `mh` qui lance les étapes de la page** (il le dit à la page) : **Lancer** (ou le gros
+  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre PowerShell, avec les dossiers
+  dont cette étape a besoin. La page affiche *En cours dans la fenêtre PowerShell : cette page
+  revient quand c'est fini* ; quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
+  L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
+  c'est ainsi que `mh` sait quoi lancer.
+- **Sinon** (un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
+  copie la commande (*Copiée : mh clean*) et la page continue de tourner ; arrêtez-la avec Ctrl+C
+  dans sa fenêtre PowerShell, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
+  navigateur refuse de copier (page ouverte à une autre adresse que `127.0.0.1` ou `localhost`),
+  la commande est sélectionnée : appuyez vous-même sur Ctrl+C.
 
 Chaque autre page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))

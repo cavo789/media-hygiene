@@ -60,14 +60,19 @@ docker run --rm -it `
 
 ## Run a step
 
-The page never changes your photos itself: **Run** (or the big button) closes the page and hands
-the step to `mh`, in the PowerShell window, with the folders that step needs. The page says
-*Running in the PowerShell window: this page comes back when it ends*; when `mh` opens the home
-page again, the page reloads on its own.
+The page never changes your photos itself. What a step's button does depends on the `mh` that
+opened the page:
 
-The step chosen is the command's exit code, `100 + n` for step `n` of `mh menu`: that is how
-`mh` knows what to run. Started with `docker run` alone, nothing runs it: the terminal names the
-step (*Step 3 chosen on the home page: mh clean*); type it yourself.
+- **An `mh` that runs the steps of the page** (it says so to the page): **Run** (or the big
+  button) closes the page and hands the step to `mh`, in the PowerShell window, with the folders
+  that step needs. The page says *Running in the PowerShell window: this page comes back when it
+  ends*; when `mh` opens the home page again, the page reloads on its own. The step chosen is the
+  command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
+- **Otherwise** (an older `mh`, or `docker run` alone): the button reads **Copy**. It copies the
+  command (*Copied: mh clean*) and the page keeps running; stop it with Ctrl+C in its PowerShell
+  window, paste the command there (right click) and press Enter. When the browser refuses to
+  copy (the page opened at an address other than `127.0.0.1` or `localhost`), the command is
+  selected: press Ctrl+C yourself.
 
 Every other page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))

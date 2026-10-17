@@ -1169,6 +1169,9 @@ msgstr ""
 "peuvent pas partager un jour. Une date postérieure au jour de l'exécution"
 " est mise en doute : à vérifier."
 
+msgid "Close"
+msgstr "Fermer"
+
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
 
@@ -1225,6 +1228,10 @@ msgstr "Continuer ? ({yes}/N)"
 msgid "Copied"
 msgstr "Copiée"
 
+#, python-brace-format
+msgid "Copied: {command}"
+msgstr "Copiée : {command}"
+
 msgid "Copies"
 msgstr "Copies"
 
@@ -1238,8 +1245,22 @@ msgstr ""
 "Les copies des fichiers autres que des médias vont dans /quarantine : "
 "montez-le."
 
+msgid ""
+"Copies the command, to paste in the PowerShell window: this page keeps "
+"running."
+msgstr ""
+"Copie la commande, à coller dans la fenêtre PowerShell : cette page "
+"continue de tourner."
+
+msgid "Copy"
+msgstr "Copier"
+
 msgid "Copy and paste this command to run it again."
 msgstr "Copiez-collez cette commande pour relancer."
+
+#, python-brace-format
+msgid "Copy it (Ctrl+C): {command}"
+msgstr "Copiez-la (Ctrl+C) : {command}"
 
 msgid "Copy the command"
 msgstr "Copier la commande"
@@ -4967,6 +4988,13 @@ msgstr "Guide pas à pas et toutes les commandes : {url}"
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
 
+msgid ""
+"Stop this page with Ctrl+C in its PowerShell window, then paste the "
+"command there (right click) and press Enter."
+msgstr ""
+"Arrêtez cette page avec Ctrl+C dans sa fenêtre PowerShell, puis collez-y "
+"la commande (clic droit) et appuyez sur Entrée."
+
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
 
@@ -5818,6 +5846,9 @@ msgstr "C'est la dernière paire : arrêtez la revue avec Ctrl+C dans le termina
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal."
+
+msgid "This mh does not run the steps of the page: type the command."
+msgstr "Ce mh ne lance pas les étapes de la page : tapez la commande."
 
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."

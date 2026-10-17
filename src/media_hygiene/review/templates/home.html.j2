@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 {# The home page, served by `media-hygiene home`: where you are, the next step as a big button,
    every step of the guides as `mh menu` numbers them, the reports and a few previews. The page
-   never acts: a step's button ends the server, and `mh` runs that step in the terminal. #}
+   never acts: a step's button ends the server and `mh` runs that step in the terminal, when `mh`
+   said it does (relays_steps); else the button copies the command and the page keeps running. #}
 {% set texts = {
   "nothingLeft": _("Nothing left to do: everything is applied."),
   "run": _("Run"),
   "runTitle": _("Ends this page: mh runs the step in the PowerShell window, then opens this page again."),
+  "copy": _("Copy"),
+  "copyTitle": _("Copies the command, to paste in the PowerShell window: this page keeps running."),
+  "copied": _("Copied: {command}"),
+  "copyIt": _("Copy it (Ctrl+C): {command}"),
   "typeIt": _("(type it yourself)"),
   "runningCommand": _("Step chosen: {command}"),
   "failed": _("Not sent (error {status})."),
@@ -73,6 +78,12 @@
   #running[hidden] { display: none; }
   #running div { max-width: 560px; padding: 20px 24px; background: var(--card);
                  border-radius: 12px; font-size: 1.05rem; }
+  #copyBox { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2; max-width: 760px;
+             margin: 0 auto; padding: 12px 16px; background: var(--card);
+             border: 2px solid var(--accent); border-radius: 10px; }
+  #copyBox[hidden] { display: none; }
+  #copyBox p { margin: 0 0 6px; }
+  #copyBox code { user-select: all; }
 </style>
 </head>
 <body>
@@ -111,6 +122,12 @@
   <div id="guides"></div>
   <p class="muted" id="legend"></p>
 </main>
+<div id="copyBox" hidden role="status" aria-live="polite">
+  <p id="copyText"></p>
+  <p><code id="copyCommand"></code></p>
+  <p class="muted">{{ _("Stop this page with Ctrl+C in its PowerShell window, then paste the command there (right click) and press Enter.") }}</p>
+  <button id="copyClose" type="button">{{ _("Close") }}</button>
+</div>
 <div id="running" hidden role="alertdialog" aria-live="assertive">
   <div><p id="runningCommand"></p><p>{{ _("Running in the PowerShell window: this page comes back when it ends.") }}</p>
   <p class="muted">{{ _("Not opened by mh? Type the command yourself; this page is closed.") }}</p></div>

@@ -27,8 +27,9 @@ from media_hygiene.review.ending import (
 from media_hygiene.review.home_app import STEP_PATH, HomeApp
 from media_hygiene.review.home_views import STEP_EXIT_BASE
 from media_hygiene.services import home
-from media_hygiene.services.home import home_page
+from media_hygiene.services.home import home_page, launcher_relays_steps
 from media_hygiene.services.home_audit import HomeAudit
+from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.review_file import review_page
 from media_hygiene.services.status import read_status
 from tests.support.cli import run
@@ -91,12 +92,19 @@ def step(number: int, command: str, headers: tuple[str, ...] = JSON_HEADERS) -> 
     return Call("POST", STEP_PATH, body, headers)
 
 
-def home_app(runtime: Runtime) -> Callable[[Ending], HomeApp]:
-    """Build the home page's app on a runtime."""
+def home_app(
+    runtime: Runtime, *, relays_steps: bool = True
+) -> Callable[[Ending], HomeApp]:
+    """Build the home page's app on a runtime, its launcher running steps or not."""
     state = partial(home_state, runtime)
     audit = HomeAudit(page_audit(runtime))
     return lambda ending: HomeApp(
-        home_page(), state, runtime.locations.reports_dir, ending, audit
+        home_page(relays_steps=relays_steps),
+        state,
+        runtime.locations.reports_dir,
+        ending,
+        audit,
+        relays_steps=relays_steps,
     )
 
 
@@ -151,6 +159,65 @@ def test_a_step_ends_the_server_with_100_plus_its_number(
     assert chosen.status == 200
     assert chosen.json() == {"number": proposed.number, "command": proposed.command}
     assert code == STEP_EXIT_BASE + proposed.number
+
+
+def test_without_a_launcher_that_runs_steps_the_page_keeps_serving(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """An `mh` that does not relay `100 + n`: the step is refused, the server stays.
+
+    The maintainer's `mh` (before TODO 0210) lost the code: the page ended and nothing
+    ran. Without the variable, a button copies its command instead of posting it.
+    """
+    runtime = audited(cli, locations)
+    proposed = home_state(runtime).proposed
+    assert proposed is not None
+    replies, code = serve(
+        home_app(runtime, relays_steps=False),
+        [Call("GET", "/"), step(proposed.number, proposed.command)],
+    )
+    page, refused = replies
+    assert b"const relaysSteps = false;" in page.body
+    assert b'id="copyBox"' in page.body
+    assert refused.status == 409
+    assert "type the command" in str(refused.json())
+    assert code is None
+
+
+def test_the_launcher_variable_says_whether_steps_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`MEDIA_HYGIENE_LAUNCHER_STEPS`, set by `mh`, is the one signal; not carried."""
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
+    assert not launcher_relays_steps()
+    assert b"const relaysSteps = false;" in home_page()
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    assert LAUNCHER_STEPS_VARIABLE == "MEDIA_HYGIENE_LAUNCHER_STEPS"
+    assert launcher_relays_steps()
+    assert b"const relaysSteps = true;" in home_page(relays_steps=True)
+
+
+def test_every_step_button_sends_the_step_it_shows(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Each numbered step, and the proposed one, is accepted with its own command.
+
+    The page sends the number and command of the button clicked, the server runs only
+    the pair its state agrees with: whatever button, the step run is the one shown.
+    """
+    runtime = audited(cli, locations)
+    state = home_state(runtime)
+    shown = [
+        (item.number, item.command)
+        for section in state.sections
+        for item in section.steps
+        if item.number
+    ]
+    assert len({number for number, _command in shown}) == len(shown)
+    assert state.proposed is not None
+    assert (state.proposed.number, state.proposed.command) in shown
+    for number, command in shown:
+        assert state.command_of(number) == command
 
 
 def test_the_page_its_state_and_the_reports_are_served(

@@ -1,9 +1,13 @@
-{# The script of home.html.j2: draws the state, sends the step chosen, waits for mh to bring the page back. #}
+{# The script of home.html.j2: draws the state, sends the step chosen, waits for mh to bring the page back.
+   Without an mh that runs the steps (relays_steps false), a step's button copies its command instead. #}
 (() => {
   const T = {{ texts | tojson }};
   const statePath = {{ state_path | tojson }};
   const stepPath = {{ step_path | tojson }};
   const auditPath = {{ audit_path | tojson }};
+  const relaysSteps = {{ relays_steps | tojson }};
+  const thousands = {{ thousands | tojson }};
+  const count = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
   const POLL_MS = 1000;
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
@@ -36,7 +40,37 @@
     window.setTimeout(poll, POLL_MS);
   };
 
+  // The command is copied, or selected for Ctrl+C when the browser refuses (an address
+  // other than localhost is not a secure context); the server keeps running.
+  const selectCommand = () => {
+    const range = document.createRange();
+    range.selectNodeContents(byId("copyCommand"));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  };
+  const copyCommand = (command) => {
+    byId("copyCommand").textContent = command;
+    byId("copyBox").hidden = false;
+    const said = (copied) => {
+      byId("copyText").textContent = fill(copied ? T.copied : T.copyIt, { command: command });
+      if (!copied) selectCommand();
+    };
+    const byHand = () => {
+      selectCommand();
+      let copied = false;
+      try { copied = document.execCommand("copy"); } catch (error) { copied = false; }
+      said(copied);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(command).then(() => said(true), byHand);
+    else byHand();
+  };
+  byId("copyClose").addEventListener("click", () => { byId("copyBox").hidden = true; });
+
   const choose = (number, command) => {
+    if (!relaysSteps) {
+      copyCommand(command);
+      return;
+    }
     for (const button of document.querySelectorAll("button")) button.disabled = true;
     fetch(stepPath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ number: number, command: command }) })
       .then((response) => response.json().then((body) => ({ ok: response.ok, status: response.status, body: body })))
@@ -54,9 +88,9 @@
   };
 
   const runButton = (step) => {
-    const button = element("button", T.run);
+    const button = element("button", relaysSteps ? T.run : T.copy);
     button.type = "button";
-    button.title = T.runTitle;
+    button.title = (relaysSteps ? T.runTitle : T.copyTitle) + " — " + step.command;
     button.addEventListener("click", () => choose(step.number, step.command));
     return button;
   };
@@ -68,7 +102,7 @@
     button.hidden = !next;
     if (!next) return;
     button.textContent = next.command;
-    button.title = T.runTitle;
+    button.title = relaysSteps ? T.runTitle : T.copyTitle;
     button.onclick = () => choose(next.number, next.command);
   };
 
@@ -151,7 +185,7 @@
     byId("auditStart").hidden = running;
     byId("auditStop").hidden = !running;
     byId("auditSteps").replaceChildren(...audit.steps.map((step) => {
-      const counts = step.total === null ? step.done.toLocaleString() : step.done.toLocaleString() + " / " + step.total.toLocaleString();
+      const counts = step.total === null ? count(step.done) : count(step.done) + " / " + count(step.total);
       const item = element("li", (step.finished ? "✔ " : "⏳ ") + step.title + " — " + counts, step.finished ? "finished" : "");
       if (step.hint && !step.finished) item.title = step.hint;
       return item;

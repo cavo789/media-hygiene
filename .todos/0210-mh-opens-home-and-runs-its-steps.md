@@ -19,6 +19,15 @@ What it changes for the user (said when the maintainer chose it): `mh` alone ope
 
 ## What to do
 
+- **The relay signal (set by the home page fix of 2026-10-17)**: `mh` must run `home` with
+  `-e MEDIA_HYGIENE_LAUNCHER_STEPS=1` (constant `LAUNCHER_STEPS_VARIABLE` of
+  `services/next_command.py`, never carried into a printed next command). Only then does a
+  step's button end the server with `100 + n` (`services/home.py` `launcher_relays_steps()`,
+  `HomeApp.relays_steps`). Without it the button reads *Copy*, copies the command and the page
+  keeps running; `POST /api/step` answers 409. Set it **only** in the loop below, the one that
+  reads the exit code: an `mh` that sets it without relaying brings back the bug the maintainer
+  met (the page ended, nothing ran). Test: the bash `mh`'s `docker run` of `home` carries it;
+  `mh home` typed alone (no loop) does not.
 - `mh` alone (and so the shortcut and the right-click entry, `--photos` kept): run `home` as a page
   (the browser opens on it, 0178). When it exits:
   - `100 + n`: read the steps as today (`mh menu`, captured), run step `n` the way the menu does

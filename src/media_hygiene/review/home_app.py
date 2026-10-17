@@ -4,10 +4,11 @@
 from the tool folders at each call), `GET /reports/<path>` a file of the reports
 folder, `GET /api/audit` the progress of the audit run by the page, and
 `POST /api/audit` starts it (one at a time) or stops it. `POST /api/step` ends the
-server with `100 + n` for step `n`, which `mh` then runs in the terminal. A step
-needs a JSON body naming its number and command: a page of another site cannot
-send one without the browser asking first, and a menu changed since the page was
-drawn is refused.
+server with `100 + n` for step `n`, which `mh` then runs in the terminal: only when
+the launcher said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and
+the page copies the command instead. A step needs a JSON body naming its number and
+command: a page of another site cannot send one without the browser asking first,
+and a menu changed since the page was drawn is refused.
 """
 
 from __future__ import annotations
@@ -74,6 +75,7 @@ class HomeApp(LocalApp):
     reports_dir: Path
     ending: Ending
     audit: HomeAudit
+    relays_steps: bool = False  # the launcher runs the step `100 + n` names
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -148,11 +150,15 @@ class HomeApp(LocalApp):
             request: `POST /api/step`.
 
         Returns:
-            The step, about to run in the terminal; 409 when the steps changed.
+            The step, about to run in the terminal; 409 when the steps changed, or
+            when the launcher would not run it (the server must then keep serving).
         """
         refused = refused_post(request)
         if refused is not None:
             return refused
+        if not self.relays_steps:
+            message = _("This mh does not run the steps of the page: type the command.")
+            return json_response(HTTPStatus.CONFLICT, {"error": message})
         try:
             chosen = _Chosen.model_validate_json(request.body)
         except ValidationError:

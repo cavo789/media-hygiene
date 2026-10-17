@@ -1,9 +1,11 @@
 """`media-hygiene home`: the home page in the browser, where every step starts.
 
 The page shows what `status` says, the next step as a big button, every step of the
-guides as `mh menu` numbers them, the reports and a few previews. A step's button ends
-the command with the code `100 + n`: `mh` runs step `n` in the terminal, mounted as it
-needs, then opens the home page again.
+guides as `mh menu` numbers them, the reports and a few previews. When `mh` set
+`MEDIA_HYGIENE_LAUNCHER_STEPS`, a step's button ends the command with the code
+`100 + n`: `mh` runs step `n` in the terminal, mounted as it needs, then opens the home
+page again.
+Without it, the button copies the command and the page keeps running.
 """
 
 # pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs

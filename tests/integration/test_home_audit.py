@@ -17,6 +17,8 @@ from media_hygiene.console.page_progress import (
     AuditStoppedError,
     PageProgress,
 )
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import install
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
 from media_hygiene.scan.progress import NullProgress, Step
@@ -68,6 +70,25 @@ def test_the_page_audit_finds_what_audit_finds(
     assert all(step.finished for step in state.steps)
     assert state.report is not None
     assert state.report.endswith("/report.html")
+
+
+@pytest.mark.usefixtures("cli")
+def test_the_page_audit_speaks_the_language_installed(locations: Locations) -> None:
+    """Its thread reads the language `install()` chose: steps and summary in French.
+
+    The maintainer's French page showed "Listing media files — 51,818" and "Last
+    audit: …": the thread started with an empty context, hence English.
+    """
+    install(Locale.FR)
+    audit = HomeAudit(page_audit(make_runtime(locations)))
+    assert audit.start()
+    audit.wait()
+    state = audit.state()
+    assert state.phase is AuditPhase.DONE, state.error
+    assert state.steps[0].title == "Recherche des fichiers médias"
+    assert state.lines
+    assert state.lines[0].startswith("Dernier audit"), state.lines
+    assert not any("Last audit" in line for line in state.lines)
 
 
 def test_a_second_start_is_refused_while_one_runs() -> None:
