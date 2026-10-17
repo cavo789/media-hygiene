@@ -16,6 +16,7 @@ from media_hygiene.plan.burst_proposals import (
     is_obvious,
     propose,
 )
+from media_hygiene.review.file_card import FileCard
 from media_hygiene.review.shares import shares
 
 if TYPE_CHECKING:
@@ -31,15 +32,9 @@ PREVIEW_PREFIX: Final = "/preview/"
 ORIGINAL_PREFIX: Final = "/original/"
 
 
-class ShotState(BaseModel):
+class ShotState(FileCard):
     """One shot as the page shows it."""
 
-    model_config = _FROZEN
-
-    name: str
-    folder: str
-    details: str
-    preview: str
     original: str  # the file itself, bytes untouched: proof the preview is faithful
     protected: bool
     best: bool

@@ -7,7 +7,6 @@ undo, a move by the tool, a folder renamed by the user, the kept file deleted.
 from __future__ import annotations
 
 import shutil
-from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
@@ -22,28 +21,18 @@ from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.query import Filters, SearchQuery, parse_terms
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify_inputs import media_input
-from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.tags import TagStep
 from media_hygiene.services.undo import undo_run
 from media_hygiene.tags.models import TagSource
+from tests.support.cleaning import clean
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from media_hygiene.classify.former import FormerCopy
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.services.runtime import Runtime
 
 _LIMIT: Final = 50
-
-
-def clean(runtime: Runtime) -> str:
-    """Audit then clean to the quarantine; return the run identifier."""
-    findings = AuditService(runtime, NullProgress()).run()
-    service = CleanService(runtime, NullProgress())
-    service.ensure_ready(CleanMode())
-    run_id, _outcome = service.execute(service.feasible(replace(findings.plan)))
-    return run_id
 
 
 def remembered(locations: Locations) -> dict[Path, tuple[FormerCopy, ...]]:

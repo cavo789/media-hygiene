@@ -18,6 +18,7 @@ from typing import Annotated
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
 from media_hygiene.plan.unwanted import UnwantedReason
+from media_hygiene.report.decided_once import each_path_once
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 
@@ -34,26 +35,6 @@ class UnwantedEntry(BaseModel):
     aside: bool = True
 
 
-def _each_photo_once(entries: tuple[UnwantedEntry, ...]) -> tuple[UnwantedEntry, ...]:
-    """Refuse a photo listed twice: which decision would win?
-
-    Args:
-        entries: The photos decided.
-
-    Returns:
-        The photos, unchanged.
-
-    Raises:
-        ValueError: A path appears twice.
-    """
-    paths = [entry.path for entry in entries]
-    if len(set(paths)) != len(paths):
-        twice = sorted({path for path in paths if paths.count(path) > 1})
-        message = f"{twice[0]} is decided twice"
-        raise ValueError(message)
-    return entries
-
-
 type UnwantedEntries = Annotated[
-    tuple[UnwantedEntry, ...], AfterValidator(_each_photo_once)
+    tuple[UnwantedEntry, ...], AfterValidator(each_path_once)
 ]

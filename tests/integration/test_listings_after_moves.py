@@ -41,12 +41,12 @@ _KEEP: Layer = {"folders": {"preferred": ["C:\\Photos\\Keep"]}}
 def _tree(data: Path) -> None:
     """Kept photos, a folder of copies only (emptied by a clean), a mixed folder."""
     media = MediaFactory(data)
-    first = media.image(f"{_PHOTOS}/Keep/a.jpg", seed=1)
-    second = media.image(f"{_PHOTOS}/Keep/b.jpg", seed=2)
-    media.copy(first, f"{_PHOTOS}/Old/Trip/a.jpg")
-    media.copy(second, f"{_PHOTOS}/Old/Trip/b.jpg")
-    media.copy(first, f"{_PHOTOS}/Mixed/a.jpg")
-    media.image(f"{_PHOTOS}/Mixed/other.jpg", seed=3)
+    first = media.image(f"{_PHOTOS}/Keep/one.jpg", seed=11)
+    second = media.image(f"{_PHOTOS}/Keep/two.jpg", seed=12)
+    media.copy(first, f"{_PHOTOS}/Old/Trip/one.jpg")
+    media.copy(second, f"{_PHOTOS}/Old/Trip/two.jpg")
+    media.copy(first, f"{_PHOTOS}/Mixed/one.jpg")
+    media.image(f"{_PHOTOS}/Mixed/other.jpg", seed=13)
 
 
 def _runtime(locations: Locations) -> Runtime:
@@ -90,12 +90,12 @@ def _clean(runtime: Runtime, *, delete: bool = False) -> tuple[str, dict[Path, i
 def test_a_file_moved_to_the_quarantine_is_no_longer_listed(
     locations: Locations,
 ) -> None:
-    """Mixed/a.jpg set aside: the walk reads Mixed again, its time frozen."""
+    """Mixed/one.jpg set aside: the walk reads Mixed again, its time frozen."""
     data = locations.data_dir
     _tree(data)
     runtime = _runtime(locations)
     _run_id, times = _clean(runtime)
-    moved = data / _PHOTOS / "Mixed" / "a.jpg"
+    moved = data / _PHOTOS / "Mixed" / "one.jpg"
     assert not moved.exists()
     _freeze(times)
     listed = _listed(runtime)
@@ -109,7 +109,7 @@ def test_a_file_deleted_is_no_longer_listed(locations: Locations) -> None:
     _tree(data)
     runtime = _runtime(locations)
     _run_id, times = _clean(runtime, delete=True)
-    deleted = data / _PHOTOS / "Mixed" / "a.jpg"
+    deleted = data / _PHOTOS / "Mixed" / "one.jpg"
     assert not deleted.exists()
     _freeze(times)
     assert deleted not in _listed(runtime)
@@ -140,8 +140,8 @@ def test_undo_lists_the_files_and_folders_put_back(locations: Locations) -> None
     undo_run(runtime, run_id, NullProgress())
     _freeze(times)
     listed = _listed(runtime)
-    assert data / _PHOTOS / "Mixed" / "a.jpg" in listed
-    assert data / _PHOTOS / "Old" / "Trip" / "a.jpg" in listed
+    assert data / _PHOTOS / "Mixed" / "one.jpg" in listed
+    assert data / _PHOTOS / "Old" / "Trip" / "one.jpg" in listed
 
 
 def test_sort_and_its_undo_are_followed_by_the_walk(

@@ -17,6 +17,7 @@ from media_hygiene.actions.kinds import REMEMBERED, ActionKind, Phase, Status
 from media_hygiene.actions.remembered import remembered_set
 from media_hygiene.index.journal_words import read_signatures
 from media_hygiene.index.repository import FactsRepository
+from tests.support.journaled import done_line
 
 if TYPE_CHECKING:
     import sqlite3
@@ -38,12 +39,10 @@ def index() -> Iterator[sqlite3.Connection]:
 
 def entry(seq: int, action: ActionKind, minutes: int) -> JournalEntry:
     """A `done` set-aside of one content, `minutes` after the start."""
-    return JournalEntry(
+    return done_line(
+        action,
+        f"/data/c/Photos/IMG_{seq}.jpg",
         seq=seq,
-        phase=Phase.CLEAN,
-        status=Status.DONE,
-        action=action,
-        path=f"/data/c/Photos/IMG_{seq}.jpg",
         host_path=f"C:\\Photos\\IMG_{seq}.jpg",
         size=1000,
         mtime_ns=1,

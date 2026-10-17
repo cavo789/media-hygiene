@@ -17,7 +17,7 @@ from media_hygiene.actions.outcome import Tally
 from media_hygiene.actions.restore import perform
 from media_hygiene.actions.reversal import blocker, reversal_of
 from media_hygiene.actions.sort_moves import Relocator, SortContext, file_of
-from tests.support.journaled import JOURNAL_NAME, journaled
+from tests.support.journaled import JOURNAL_NAME, done_line, journaled
 
 PHOTO = b"the only copy of a photo"
 NEWCOMER = b"a file that arrived meanwhile"
@@ -25,17 +25,8 @@ NEWCOMER = b"a file that arrived meanwhile"
 
 def entry_of(action: ActionKind, path: Path, **fields: str) -> JournalEntry:
     """A done action of a run on `path`, as the journal holds it."""
-    return JournalEntry(
-        seq=1,
-        phase=Phase.CLEAN,
-        status=Status.DONE,
-        action=action,
-        path=str(path),
-        host_path=str(path),
-        size=len(PHOTO),
-        mtime_ns=0,
-        sha256=hashlib.sha256(PHOTO).hexdigest(),
-    ).model_copy(update=fields)
+    digest = hashlib.sha256(PHOTO).hexdigest()
+    return done_line(action, str(path), size=len(PHOTO), sha256=digest, **fields)
 
 
 @pytest.mark.parametrize(

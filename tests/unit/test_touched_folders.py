@@ -2,24 +2,19 @@
 
 from __future__ import annotations
 
-from media_hygiene.actions.journal import JournalEntry
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from typing import TYPE_CHECKING
+
+from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.index.touched_folders import touched_folders
+from tests.support.journaled import done_line
+
+if TYPE_CHECKING:
+    from media_hygiene.actions.journal import JournalEntry
 
 
 def _entry(action: ActionKind, path: str, **extra: str) -> JournalEntry:
     """A `done` entry of a clean."""
-    entry = JournalEntry(
-        seq=1,
-        phase=Phase.CLEAN,
-        status=Status.DONE,
-        action=action,
-        path=path,
-        host_path=path,
-        size=0,
-        mtime_ns=0,
-    )
-    return entry.model_copy(update=extra)
+    return done_line(action, path, **extra)
 
 
 def test_every_folder_a_file_left_or_reached_is_touched() -> None:

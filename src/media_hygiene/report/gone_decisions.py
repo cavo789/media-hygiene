@@ -17,6 +17,8 @@ from typing import Annotated
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
+from media_hygiene.report.decided_once import each_path_once
+
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 
 
@@ -31,24 +33,4 @@ class GoneEntry(BaseModel):
     deleted: bool = True
 
 
-def _each_file_once(entries: tuple[GoneEntry, ...]) -> tuple[GoneEntry, ...]:
-    """Refuse a file listed twice: which answer would win?
-
-    Args:
-        entries: The files decided.
-
-    Returns:
-        The files, unchanged.
-
-    Raises:
-        ValueError: A path appears twice.
-    """
-    paths = [entry.path for entry in entries]
-    if len(set(paths)) != len(paths):
-        twice = sorted({path for path in paths if paths.count(path) > 1})
-        message = f"{twice[0]} is decided twice"
-        raise ValueError(message)
-    return entries
-
-
-type GoneEntries = Annotated[tuple[GoneEntry, ...], AfterValidator(_each_file_once)]
+type GoneEntries = Annotated[tuple[GoneEntry, ...], AfterValidator(each_path_once)]

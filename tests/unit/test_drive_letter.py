@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import JournalEntry
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.paths.quarantines import Quarantines
 from media_hygiene.services.drive_letter import LetterChange, moved_to
 from media_hygiene.services.letter_refusals import COMES_BACK, refused
+from tests.support.journaled import done_line
+
+if TYPE_CHECKING:
+    from media_hygiene.actions.journal import JournalEntry
 
 _CHANGE = LetterChange("e", "f", Path("/quarantine"), Path("/data"))
 
@@ -51,16 +55,7 @@ def test_a_move_of_sort_is_never_refused_for_its_folder() -> None:
 
 def _line(seq: int, action: ActionKind, path: Path) -> JournalEntry:
     """A done journal line."""
-    return JournalEntry(
-        seq=seq,
-        phase=Phase.CLEAN,
-        status=Status.DONE,
-        action=action,
-        path=str(path),
-        host_path=str(path),
-        size=0,
-        mtime_ns=0,
-    )
+    return done_line(action, str(path), seq=seq)
 
 
 def test_a_folder_the_run_removed_comes_back_when_its_parent_is_there(

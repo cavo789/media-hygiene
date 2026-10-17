@@ -20,6 +20,7 @@ from media_hygiene.constants import Sizes
 from media_hygiene.i18n import _
 from media_hygiene.report.preview_cache import PreviewJob, preview_key
 from media_hygiene.report.thumbnails import REVIEW_EDGE
+from media_hygiene.review.file_card import FileCard
 from media_hygiene.review.near_views import folder_and_name
 from media_hygiene.review.views import PREVIEW_PREFIX
 
@@ -37,15 +38,9 @@ _KEY_LENGTH: Final = 24
 _EDGES: Final = (REVIEW_EDGE, Sizes.THUMBNAIL_EDGE)
 
 
-class GoneState(BaseModel):
-    """One file gone as the page shows it, and the answer so far."""
+class GoneState(FileCard):
+    """One file gone as the page shows it (no preview kept: empty), its answer."""
 
-    model_config = _FROZEN
-
-    name: str
-    folder: str
-    details: str
-    preview: str  # empty: no preview kept
     decision: str = ""  # empty: undecided; `deleted` or `moved`
 
 
