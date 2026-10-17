@@ -1,4 +1,4 @@
-# 0218 — `mh-measure.ps1` step 18: a phone plugged in over USB, read from PowerShell (list, copy 20 files)
+# 0218 — `mh-measure.ps1` step 19: a phone plugged in over USB, read from PowerShell (list, copy 20 files)
 
 - **Priority**: High — the phone import of 0219 is designed from what this step shows
 - **Batch**: launcher
@@ -21,7 +21,7 @@ Known from a Microsoft answer (2026-10-17): a copy from an Android phone through
 
 ## What to do
 
-A step 18 in `tests/measure/mh-measure.ps1`, run with `-Only 18`: Windows PowerShell 5.1, ASCII
+A step 19 in `tests/measure/mh-measure.ps1`, run with `-Only 19`: Windows PowerShell 5.1, ASCII
 only, no `-ExecutionPolicy Bypass` (Avast, 2026-10-16), results logged with `Log`. **It never
 deletes, moves or renames anything on the phone** (`CopyHere` only, never `MoveHere`).
 
@@ -46,7 +46,7 @@ deletes, moves or renames anything on the phone** (`CopyHere` only, never `MoveH
    happens to the existing copies.
 7. Remove the temporary folder; say that the phone is untouched.
 
-Update the step list at the top of the script and its usage lines (`-Only 18`).
+Update the step list at the top of the script and its usage lines (`-Only 19`).
 
 ## Explicit non-goals
 
@@ -55,7 +55,7 @@ Update the step list at the top of the script and its usage lines (`-Only 18`).
 
 ## Acceptance
 
-- The step runs with `-Only 18`, never writes to the phone, cleans up, is ASCII only, and is
+- The step runs with `-Only 19`, never writes to the phone, cleans up, is ASCII only, and is
   listed at the top of the script.
 - DONE when the step is written: running it is the maintainer's part, recorded in 0219's
   `Needs maintainer`.
