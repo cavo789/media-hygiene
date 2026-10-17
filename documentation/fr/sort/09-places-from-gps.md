@@ -52,8 +52,9 @@ l'adresse affichée, `http://127.0.0.1:8088/`.
 - **Les cercles** sont vos photos avec une position GPS, groupées par environ 200 mètres, plus
   grands là où il y en a plus. La liste de gauche donne d'abord **les plus grands groupes sans
   nom** : la maison est souvent le premier. Cliquez sur **le nombre de photos** d'une de ses
-  lignes (par exemple « 11 photos ») pour voir les photos de ce groupe, 24 au plus, et
-  reconnaître le lieu avant de le nommer.
+  lignes (par exemple « 🖼 11 photos ») : un tiroir s'ouvre sur la droite de la carte avec les
+  photos de ce groupe, 24 au plus, regroupées par dossier, pour reconnaître le lieu avant de le
+  nommer (**Nommer ce lieu** en haut).
 - **Repliez une liste** en cliquant sur son titre (*Vos lieux (10)*) : les groupes restent à
   portée.
 - **Cliquez sur un cercle, ou n'importe où sur la carte**, pour nommer un lieu. Donnez-lui un

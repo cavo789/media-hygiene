@@ -66,8 +66,8 @@ def test_the_same_position_twice_is_counted_twice() -> None:
     assert [cluster.count for cluster in found] == [2]
 
 
-def test_a_cluster_keeps_its_first_pictures_not_its_videos() -> None:
-    """Every file is counted; only pictures are kept, at most `MEMBERS_KEPT`."""
+def test_a_cluster_keeps_its_first_pictures_then_its_videos() -> None:
+    """Pictures and videos counted apart; at most `MEMBERS_KEPT` of each kept."""
     spot = Point(*GENVAL)
     video = _located(spot, "clip.mp4", MediaKind.VIDEO)
     raw = _located(spot, "shot.cr2", MediaKind.RAW)
@@ -75,7 +75,32 @@ def test_a_cluster_keeps_its_first_pictures_not_its_videos() -> None:
 
     (cluster,) = clusters_of([video, raw, *many])
 
+    assert (cluster.pictures, cluster.videos) == (MEMBERS_KEPT + 6, 1)
     assert cluster.count == MEMBERS_KEPT + 7
-    assert len(cluster.members) == MEMBERS_KEPT
-    assert video not in cluster.members
+    assert len(cluster.members) == MEMBERS_KEPT + 1
     assert cluster.members[0] == raw
+    assert cluster.members[-1] == video  # the videos after the pictures
+
+
+def test_a_cluster_of_one_video_is_no_photo() -> None:
+    """TODO 0232: "1 photo", then "0 photos out of 1"; now one video, listed."""
+    video = _located(Point(*GENVAL), "clip.mp4", MediaKind.VIDEO)
+
+    (cluster,) = clusters_of([video])
+
+    assert (cluster.pictures, cluster.videos, cluster.count) == (0, 1, 1)
+    assert cluster.members == (video,)
+
+
+def test_the_videos_kept_are_capped_too() -> None:
+    """Many videos at one spot: `MEMBERS_KEPT` listed, every one counted."""
+    spot = Point(*GENVAL)
+    clips = [
+        _located(spot, f"clip_{index}.mp4", MediaKind.VIDEO)
+        for index in range(MEMBERS_KEPT + 3)
+    ]
+
+    (cluster,) = clusters_of([_located(spot, "IMG_1.jpg"), *clips])
+
+    assert (cluster.pictures, cluster.videos) == (1, MEMBERS_KEPT + 3)
+    assert len(cluster.members) == MEMBERS_KEPT + 1

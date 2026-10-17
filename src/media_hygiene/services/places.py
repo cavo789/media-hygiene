@@ -96,7 +96,7 @@ def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
         config_file, runtime.mapper, runtime.settings.classify, towns
     )
     try:
-        board = PlacesBoard(clusters_of(located), config_file, towns)
+        board = PlacesBoard(clusters_of(located), context)
         return OpenedMap(board, FolderDesk(inputs, context))
     except ValueError as exc:
         message = _("The places of {file} are invalid: {reason}.")

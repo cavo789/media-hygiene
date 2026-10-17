@@ -2,8 +2,9 @@
 
 `GET /api/cluster/<rank>` lists the first photos of a cluster, `GET /api/folders` the
 folders named after a town or placed (0231), `GET /api/folder/<rank>` the photos
-without GPS of one; `GET /preview/<key>.jpg` renders one in the worker pool, kept in
-the cache folder like `review`'s. The photo folders are mounted read-only: nothing is
+without GPS of one; `GET /preview/<key>.jpg` renders one in the worker pool for the
+drawer's grid, `GET /large/<key>.jpg` larger for its viewer (0233), both kept in the
+cache folder like `review`'s. The photo folders are mounted read-only: nothing is
 written next to the photos.
 """
 
@@ -13,7 +14,8 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.places.board import JPEG
+from media_hygiene.places.drawer_rows import JPEG, LARGE_PREFIX
+from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import Response
 from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.serving import json_response
@@ -59,6 +61,8 @@ async def photo_response(
 ) -> Response | None:
     """Serve the photos of a cluster or a folder, the folders, or one preview.
 
+    Each preview has two sizes: the grid's, and the viewer's (`LARGE_PREFIX`).
+
     Args:
         path: The path asked for.
         sources: The map's state and its folders, which know the photos.
@@ -83,10 +87,13 @@ async def photo_response(
             if photos is None:
                 return Response(HTTPStatus.NOT_FOUND)
             return json_response(HTTPStatus.OK, {"photos": photos})
-    if not path.startswith(PREVIEW_PREFIX):
+    large = path.startswith(LARGE_PREFIX)
+    prefix = LARGE_PREFIX if large else PREVIEW_PREFIX
+    if not path.startswith(prefix):
         return None
-    key = path.removeprefix(PREVIEW_PREFIX).removesuffix(JPEG)
+    key = path.removeprefix(prefix).removesuffix(JPEG)
     source = sources.preview_source(key)
-    if pool is None or source is None or path != f"{PREVIEW_PREFIX}{key}{JPEG}":
+    if pool is None or source is None or path != f"{prefix}{key}{JPEG}":
         return Response(HTTPStatus.NOT_FOUND)
-    return await jpeg_response(pool.executor, pool.renderer(GRID_EDGE), source)
+    render = pool.renderer(REVIEW_EDGE if large else GRID_EDGE)
+    return await jpeg_response(pool.executor, render, source)

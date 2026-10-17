@@ -99,9 +99,10 @@ def test_a_folder_named_after_a_town_is_listed_with_its_photos(
         "Saint-Jean-de-Luz",
         2,
     )
-    assert (folder["saved"], folder["found"]) == (False, True)
+    assert (folder["saved"], folder["found"], folder["videos"]) == (False, True, 0)
     shown = json.loads(photos.body)["photos"]
     assert sorted(photo["name"] for photo in shown) == ["IMG_31.jpg", "IMG_32.jpg"]
+    assert {photo["folder"] for photo in shown} == {HOST}  # 0233: the host path
     assert preview.body.startswith(JPEG_START)
     assert unknown.status == 404
 

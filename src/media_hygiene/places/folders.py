@@ -8,18 +8,17 @@ reads `config.toml` back from the disk: the page shows what `xmp` will read.
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.config.places_settings import FolderPosition
 from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
-from media_hygiene.places.board import JPEG
-from media_hygiene.places.clusters import MEMBERS_KEPT
+from media_hygiene.places.clusters import MEMBERS_KEPT, SHOWN
 from media_hygiene.places.config_folders import ignore_name, save_folder
+from media_hygiene.places.drawer_rows import Shown, drawer_rows
 from media_hygiene.places.folder_rows import folder_rows
-from media_hygiene.review.views import PREVIEW_PREFIX, preview_key
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.models import MediaFile
 
@@ -28,8 +27,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.places.folder_rows import FolderContext, FolderRow
     from media_hygiene.services.xmp_towns import IndexedInputs
-
-_SHOWN: Final = frozenset({MediaKind.IMAGE, MediaKind.RAW})  # a video has no preview
 
 
 class FolderAction(StrEnum):
@@ -71,7 +68,8 @@ class FolderDesk:
         """The folders, read again from `config.toml`, the most photos first.
 
         Returns:
-            Each folder's line: its town, its position, saved or not, found or not.
+            Each folder's line: its town, its position, saved or not, found or not,
+            its files without a position and how many of them are videos.
         """
         self._rows = folder_rows(self._inputs, self._context)
         return {
@@ -86,6 +84,9 @@ class FolderDesk:
                     "saved": row.saved,
                     "found": row.found,
                     "count": len(row.photos),
+                    "videos": sum(
+                        media_kind(path) is MediaKind.VIDEO for path in row.photos
+                    ),
                 }
                 for rank, row in enumerate(self._rows)
             ]
@@ -121,33 +122,29 @@ class FolderDesk:
         return self.state()
 
     def photos(self, rank: int) -> list[dict[str, object]] | None:
-        """The first pictures without a position of a folder.
+        """The first pictures and videos without a position of a folder, by folder.
 
         Args:
             rank: Its rank in the last state.
 
         Returns:
-            Each picture's name, preview and whether it is still there; None for an
-            unknown rank.
+            Each file's name, host folder, previews and whether it is still there
+            (`drawer_rows`); None for an unknown rank.
         """
         if not 0 <= rank < len(self._rows):
             return None
-        shown = [p for p in self._rows[rank].photos if media_kind(p) in _SHOWN]
-        found = []
-        for path in shown[:MEMBERS_KEPT]:
-            file = self._files[path]
-            key = preview_key(
-                MediaFile(path, file.size, file.mtime_ns, MediaKind.IMAGE)
-            )
-            self._sources[key] = path
-            found.append(
-                {
-                    "name": path.name,
-                    "preview": f"{PREVIEW_PREFIX}{key}{JPEG}",
-                    "found": path.is_file(),
-                }
-            )
-        return found
+        pictures: list[Shown] = []
+        videos: list[Shown] = []
+        for path in self._rows[rank].photos:
+            kind = media_kind(path)
+            if kind is None or (kind is not MediaKind.VIDEO and kind not in SHOWN):
+                continue
+            kept = videos if kind is MediaKind.VIDEO else pictures
+            if len(kept) < MEMBERS_KEPT:
+                file = self._files[path]
+                kept.append(Shown(MediaFile(path, file.size, file.mtime_ns, kind)))
+        rows = (*pictures, *videos)
+        return drawer_rows(rows, self._context.mapper, self._sources)
 
     def preview_source(self, key: str) -> Path | None:
         """Find the picture a preview key names.

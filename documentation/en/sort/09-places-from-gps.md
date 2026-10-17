@@ -51,8 +51,9 @@ prints, `http://127.0.0.1:8088/`.
 - **The circles** are your photos with a GPS position, grouped by about 200 metres, larger
   where there are more. The list on the left gives the **largest clusters without a name**
   first: home is usually the first one. Click **the number of photos** of one of its lines
-  (for instance "11 photos") to see the photos of that cluster, 24 at most, and recognise the
-  place before naming it.
+  (for instance "🖼 11 photos"): a drawer opens over the right side of the map with the photos
+  of that cluster, 24 at most, grouped by folder, to recognise the place before naming it
+  (**Name this place** at its top).
 - **Fold a list** by clicking its title (*Your places (10)*): the clusters stay in reach.
 - **Click a circle, or anywhere on the map**, to name a place. Give it a name, set its
   **radius** with the slider (a house: 100 to 200 metres; a village: a few kilometres), and

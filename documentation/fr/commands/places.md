@@ -55,16 +55,23 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
 - **Les cercles** sont vos photos avec une position GPS, regroupées par 200 mètres environ. La
   liste de gauche donne d'abord les plus gros groupes sans nom : la maison est en général le
   premier.
-- **Cliquez sur le nombre de photos** (par exemple « 11 photos ») sur une ligne de cette liste
-  pour voir les photos du groupe (24 au plus) et reconnaître le lieu avant de le nommer ;
-  survolez une photo pour voir où elle a été prise. Cliquez à nouveau, ou sur ✕, pour les refermer.
+- **Cliquez sur le nombre de photos** (par exemple « 🖼 11 photos », ou « 🎞 1 vidéo » pour un
+  groupe de vidéos) sur une ligne de cette liste : un **tiroir** s'ouvre sur la droite de la carte,
+  toujours au même endroit, avec les photos du groupe (24 au plus, et ses vidéos par leur nom) pour
+  reconnaître le lieu avant de le nommer. **Nommer ce lieu** est en haut, avant les photos. Les
+  photos sont regroupées par dossier, sous le chemin du dossier (`C:\Photos\2014\Geer`, son nom
+  en gras) : un nom de dossier dit souvent le lieu ou l'événement. Survolez une photo pour voir où
+  elle a été prise ; cliquez dessus pour la voir en grand, avec son chemin complet (← et → pour les
+  autres, Échap pour revenir à la grille). La ligne cliquée reste en surbrillance ; cliquez-la à
+  nouveau, sur ✕ ou sur Échap pour fermer le tiroir.
 - **Repliez une liste** en cliquant sur son titre : *Vos lieux (10)* se replie d'elle-même à
   partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix.
 - **Dossiers au nom d'une ville** liste les dossiers dont le nom est celui d'une ville
   (`Douarnenez`, `Saint-Jean de Luz`) et qui contiennent des photos sans GPS : *📁 Douarnenez —
   37 photos sans GPS*. Cliquez sur l'un d'eux : la carte va sur la ville, un repère vert marque
-  son centre et les photos s'affichent dessous. Faites glisser le repère là où elles ont été
-  prises (la plage, pas la mairie) et cliquez sur **Enregistrer cette position** : elle va dans
+  son centre et le même tiroir montre ses photos, regroupées par dossier, avec **Enregistrer cette
+  position**, **Oublier sa position** et **Pas une ville** en haut. Faites glisser le repère là où
+  elles ont été prises (la plage, pas la mairie) et cliquez sur **Enregistrer cette position** : elle va dans
   `config.toml` sous `[[places.folders]]`, relue et affichée avec 📌.
   [`xmp`](xmp.md#une-position-daprès-la-ville-du-dossier) écrit ensuite cette position dans les
   fichiers `.xmp` des photos. **Oublier sa position** la retire ; **Pas une ville** ajoute le nom

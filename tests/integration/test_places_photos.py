@@ -2,6 +2,7 @@
 
 TODO 0226. The garden's three photos are one cluster; its previews are rendered from
 the folders mounted read-only; a photo moved since the audit is missing, not an error.
+TODO 0233: each photo names its folder as a host path; the viewer's larger preview.
 """
 
 from __future__ import annotations
@@ -91,3 +92,43 @@ def test_a_photo_moved_since_the_audit_is_missing_not_an_error(
     assert photos
     assert not any(photo["found"] for photo in photos)
     assert preview.status == 404
+
+
+def test_each_photo_names_its_host_folder_and_has_a_larger_preview(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    r"""`C:\Photos`, as the user knows it; the viewer's preview is a JPEG too."""
+    runner = audited_garden(locations, monkeypatch)
+    seen: list[Response] = []
+
+    async def act(app: PlacesApp) -> None:
+        listed = await call(app, "GET /api/cluster/0")
+        first = json.loads(listed.body)["photos"][0]
+        seen.extend([listed, await call(app, f"GET {first['large']}")])
+
+    monkeypatch.setattr(places_service, "run_server", fake_server(act))
+    assert run(runner, "places").exit_code == 0
+    listed, large = seen[0], seen[1]
+    photos = json.loads(listed.body)["photos"]
+    assert {photo["folder"] for photo in photos} == {"C:\\Photos"}
+    assert not any(photo["video"] for photo in photos)
+    assert large.status == 200
+    assert large.body.startswith(JPEG_START)
+
+
+def test_the_state_counts_pictures_and_videos_apart(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """TODO 0232: each cluster is (latitude, longitude, pictures, videos, place)."""
+    runner = audited_garden(locations, monkeypatch)
+    seen: list[Response] = []
+
+    async def act(app: PlacesApp) -> None:
+        seen.append(await call(app, "GET /api/state"))
+
+    monkeypatch.setattr(places_service, "run_server", fake_server(act))
+    assert run(runner, "places").exit_code == 0
+    [(_latitude, _longitude, pictures, videos, place)] = json.loads(seen[0].body)[
+        "clusters"
+    ]
+    assert (pictures, videos, place) == (3, 0, "")

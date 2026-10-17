@@ -25,9 +25,9 @@ if TYPE_CHECKING:
 
 CELL_DEGREES: Final = 0.002  # about 220 m north-south
 MAX_CLUSTERS: Final = 5000  # the largest; the page stays light
-MEMBERS_KEPT: Final = 24  # the photos shown per cluster, a grid under the list
+MEMBERS_KEPT: Final = 24  # the pictures (and, apart, the videos) shown per cluster
 _DECIMALS: Final = 5
-_SHOWN: Final = frozenset({MediaKind.IMAGE, MediaKind.RAW})  # a video has no preview
+SHOWN: Final = frozenset({MediaKind.IMAGE, MediaKind.RAW})  # a video has no preview
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,11 +40,21 @@ class Located:
 
 @dataclass(frozen=True, slots=True)
 class Cluster:
-    """Photos taken close together: their middle, their number, the first photos."""
+    """Files taken close together: their middle, their numbers, the first ones (0232).
+
+    `pictures` counts every file that is not a video; `members` keeps at most
+    `MEMBERS_KEPT` pictures with a preview and as many videos, listed by name.
+    """
 
     point: Point
-    count: int
-    members: tuple[Located, ...] = ()  # pictures only, at most `MEMBERS_KEPT`
+    pictures: int
+    videos: int = 0
+    members: tuple[Located, ...] = ()
+
+    @property
+    def count(self) -> int:
+        """Every file of the cluster, pictures and videos."""
+        return self.pictures + self.videos
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,10 +73,13 @@ def clusters_of(located: Iterable[Located]) -> tuple[Cluster, ...]:
 
     Returns:
         The clusters, the largest first, at most `MAX_CLUSTERS`; each keeps its first
-        `MEMBERS_KEPT` pictures.
+        `MEMBERS_KEPT` pictures and its first `MEMBERS_KEPT` videos.
     """
-    sums: defaultdict[tuple[int, int], list[float]] = defaultdict(lambda: [0, 0, 0])
-    members: defaultdict[tuple[int, int], list[Located]] = defaultdict(list)
+    sums: defaultdict[tuple[int, int], list[float]] = defaultdict(lambda: [0, 0, 0, 0])
+    # Per cell: the pictures kept, then the videos kept.
+    members: defaultdict[tuple[int, int], tuple[list[Located], list[Located]]] = (
+        defaultdict(lambda: ([], []))
+    )
     for item in located:
         point = item.point
         key = (
@@ -76,17 +89,22 @@ def clusters_of(located: Iterable[Located]) -> tuple[Cluster, ...]:
         total = sums[key]
         total[0] += point.latitude
         total[1] += point.longitude
-        total[2] += 1
-        kept = members[key]
-        if item.file.kind in _SHOWN and len(kept) < MEMBERS_KEPT:
+        video = item.file.kind is MediaKind.VIDEO
+        total[3 if video else 2] += 1
+        kept = members[key][1 if video else 0]
+        if (video or item.file.kind in SHOWN) and len(kept) < MEMBERS_KEPT:
             kept.append(item)
     found = [
         Cluster(
-            Point(round(lat / count, _DECIMALS), round(lon / count, _DECIMALS)),
-            int(count),
-            tuple(members[key]),
+            Point(
+                round(lat / (pictures + videos), _DECIMALS),
+                round(lon / (pictures + videos), _DECIMALS),
+            ),
+            int(pictures),
+            int(videos),
+            (*members[key][0], *members[key][1]),
         )
-        for key, (lat, lon, count) in sums.items()
+        for key, (lat, lon, pictures, videos) in sums.items()
     ]
     found.sort(key=lambda cluster: (-cluster.count, cluster.point.latitude))
     return tuple(found[:MAX_CLUSTERS])

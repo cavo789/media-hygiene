@@ -5,6 +5,7 @@
    config.toml by the server. #}
 {% set texts = {
   "photos": [ngettext("{n} photo", "{n} photos", 1), ngettext("{n} photo", "{n} photos", 2)],
+  "videos": [ngettext("{n} video", "{n} videos", 1), ngettext("{n} video", "{n} videos", 2)],
   "inPlace": _("place: {place}"),
   "nameIt": _("Name this place"),
   "noCluster": _("Every cluster lies in a place of yours."),
@@ -21,13 +22,14 @@
   "osmNone": _("OpenStreetMap knows no area of that name."),
   "osmTooLarge": _("Larger areas not listed (regions, countries): {count}. A 'trip' rule names them."),
   "osmType": _("Type a name first."),
-  "allPhotos": [ngettext("The only photo of this cluster", "The {n} photos of this cluster", 1),
-                ngettext("The only photo of this cluster", "The {n} photos of this cluster", 2)],
-  "somePhotos": _("{shown} photos out of {count}"),
+  "clusterTitle": _("Cluster — {files}"),
+  "firstPhotos": [ngettext("The first photo out of {count}", "The first {n} photos out of {count}", 1),
+                  ngettext("The first photo out of {count}", "The first {n} photos out of {count}", 2)],
+  "firstVideos": [ngettext("The first video out of {count}", "The first {n} videos out of {count}", 1),
+                  ngettext("The first video out of {count}", "The first {n} videos out of {count}", 2)],
   "photosMissing": _("Some photos are not reachable: moved since the audit, or their folder is not mounted (read-only is enough)."),
   "showPhotos": _("Show its photos"),
-  "withoutGps": [ngettext("{n} photo without GPS", "{n} photos without GPS", 1),
-                 ngettext("{n} photo without GPS", "{n} photos without GPS", 2)],
+  "withoutGps": _("{files} without GPS"),
   "noFolder": _("No folder named after a town holds photos without GPS."),
   "folderMissing": _("Not found: renamed or moved? Rename it back, or forget its position."),
   "folderHint": _("Drag the pin where these photos were taken, then save: 'xmp' writes that position into their sidecars ([tags] xmp_folder_gps = true)."),
@@ -58,7 +60,8 @@
          font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   aside { width: 340px; max-width: 45vw; overflow-y: auto; padding: 12px 16px;
           background: var(--card); border-right: 1px solid var(--line); }
-  #map { flex: 1; }
+  #stage { flex: 1; position: relative; min-width: 0; }
+  #map { position: absolute; inset: 0; }
   h1 { font-size: 1.1rem; margin: 0 0 8px; }
   h2 { font-size: .95rem; margin: 16px 0 6px; }
   .muted, .hint { color: var(--muted); font-size: .85rem; }
@@ -101,25 +104,37 @@
   li.cluster.shown button.count { background: var(--accent); border-color: var(--accent); color: #fff; }
   @keyframes flash { from { background: var(--accent); color: #fff; } to { background: none; } }
   li.flash button.link { animation: flash 1.6s ease-out; }
-  #photos { margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; }
-  #photos header { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
-  #photos header button { font: inherit; color: var(--muted); background: none; border: 0; cursor: pointer; }
-  #folderPanel { margin-top: 10px; padding: 8px; border: 2px solid var(--accent); border-radius: 10px; }
-  #folderPanel header { font-weight: 600; word-break: break-all; }
-  #folderGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
-  #folderGrid img, #folderGrid .gone { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
-                                       background: var(--bg); }
-  #folderGrid .gone { display: flex; align-items: center; justify-content: center; color: var(--muted);
-                      font-size: 1.4rem; border: 1px dashed var(--line); }
+  li.shown > button.link { background: var(--bg); font-weight: 600; }
   li.missing button.link { color: var(--bad); }
   .folder-pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
                 background: var(--ok); border: 3px solid #fff; border-radius: 50%;
                 box-shadow: 0 0 0 1px var(--ok); }
-  #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
-  #grid img, #grid .gone { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
-                           background: var(--bg); }
-  #grid .gone { display: flex; align-items: center; justify-content: center; color: var(--muted);
-                font-size: 1.4rem; border: 1px dashed var(--line); }
+  /* The drawer: over the right of the map, at a fixed place whatever the lists' length. */
+  #drawer { position: absolute; top: 0; right: 0; bottom: 0; width: 40%; min-width: 320px; z-index: 1100;
+            display: flex; flex-direction: column; background: var(--card); color: var(--text);
+            border-left: 1px solid var(--line); box-shadow: -4px 0 16px rgba(0, 0, 0, .2); }
+  #drawer[hidden], #viewer[hidden], #drawerBody[hidden] { display: none; }
+  #drawer > header { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  #drawer .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  #drawer .top strong { overflow-wrap: anywhere; }
+  #drawer .buttons { flex-wrap: wrap; margin-top: 8px; }
+  #drawerClose { font: inherit; font-size: 1.1rem; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  #drawerBody { flex: 1; overflow-y: auto; padding: 0 14px 14px; }
+  #drawerBody h3 { margin: 12px 0 4px; font-size: .85rem; font-weight: normal; color: var(--muted);
+                   overflow-wrap: anywhere; }
+  #drawerBody h3 b { color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px; }
+  .grid img, .grid .gone, .grid .video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                                         background: var(--bg); }
+  .grid img { cursor: zoom-in; }
+  .grid .gone, .grid .video { display: flex; flex-direction: column; align-items: center; justify-content: center;
+                              padding: 4px; overflow: hidden; text-align: center; color: var(--muted);
+                              font-size: 1.4rem; border: 1px dashed var(--line); }
+  .grid .video small { font-size: .7rem; overflow-wrap: anywhere; }
+  #viewer { flex: 1; display: flex; flex-direction: column; min-height: 0; margin: 0; padding: 8px 14px 14px; }
+  #viewer img { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  #viewer figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
+  @media (max-width: 700px) { #drawer { width: 100%; min-width: 0; } }
   .photo-pin { width: 12px !important; height: 12px !important; margin: -6px 0 0 -6px !important;
                background: var(--bad); border: 2px solid #fff; border-radius: 50%; }
 </style>
@@ -165,31 +180,41 @@
   <details id="clustersFold" class="fold" open>
     <summary>{{ _("The largest clusters without a name") }} <span id="clustersCount" class="count"></span></summary>
     <ul id="clusters"></ul>
-    <section id="photos" hidden aria-live="polite">
-      <header><span id="photosTitle"></span>
-        <button type="button" id="photosClose" aria-label="{{ _('Close') }}">✕</button></header>
-      <p id="photosMissing" class="hint" hidden></p>
-      <div id="grid"></div>
-    </section>
   </details>
   <details id="foldersFold" class="fold" open>
     <summary>{{ _("Folders named after a town") }} <span id="foldersCount" class="count"></span></summary>
     <ul id="folders"></ul>
-    <section id="folderPanel" hidden aria-live="polite">
-      <header id="folderTitle"></header>
-      <p id="folderNote" class="hint"></p>
-      <div class="buttons">
-        <button type="button" id="folderSave" class="primary">{{ _("Save this position") }}</button>
-        <button type="button" id="folderForget">{{ _("Forget its position") }}</button>
-        <button type="button" id="folderIgnore">{{ _("Not a town") }}</button>
-        <button type="button" id="folderClose" aria-label="{{ _('Close') }}">✕</button>
-      </div>
-      <div id="folderGrid"></div>
-    </section>
   </details>
   <p class="hint">{{ _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") }}</p>
 </aside>
-<div id="map"></div>
+<main id="stage">
+  <div id="map"></div>
+  <section id="drawer" hidden aria-labelledby="drawerTitle">
+    <header>
+      <div class="top"><strong id="drawerTitle"></strong>
+        <button type="button" id="drawerClose" aria-label="{{ _('Close') }}" title="{{ _('Close') }} (Esc)">✕</button></div>
+      <div class="buttons">
+        <button type="button" id="clusterName" class="primary">{{ _("Name this place") }}</button>
+        <button type="button" id="folderSave" class="primary">{{ _("Save this position") }}</button>
+        <button type="button" id="folderForget">{{ _("Forget its position") }}</button>
+        <button type="button" id="folderIgnore">{{ _("Not a town") }}</button>
+      </div>
+      <p id="drawerNote" class="hint"></p>
+      <p id="drawerNotes" class="hint" hidden aria-live="polite"></p>
+    </header>
+    <div id="drawerBody"></div>
+    <figure id="viewer" hidden>
+      <img id="viewerImg" alt="">
+      <figcaption id="viewerPath"></figcaption>
+      <div class="buttons">
+        <button type="button" id="viewerPrev" aria-label="{{ _('Previous photo') }}">←</button>
+        <button type="button" id="viewerBack">{{ _("Back to the photos") }} (Esc)</button>
+        <button type="button" id="viewerNext" aria-label="{{ _('Next photo') }}">→</button>
+        <span id="viewerCount" class="muted"></span>
+      </div>
+    </figure>
+  </section>
+</main>
 <script src="/leaflet.js"></script>
 <script>
 (() => {
@@ -246,88 +271,173 @@
   const flash = (li) => { li.classList.add("flash"); li.scrollIntoView({ block: "nearest" }); };
   let flashName = null;
 
-  // The first photos of a cluster: a grid of previews; hovering one shows where it was taken.
-  let shownRank = null, photoPin = null;
+  // What a cluster or a folder holds: "3 photos, 1 video"; never "0 photos" beside videos.
+  const videos = (count) => counted(T.videos, count);
+  const holds = (pictures, filmed) =>
+    [pictures || !filmed ? photos(pictures) : "", filmed ? videos(filmed) : ""].filter(Boolean).join(", ");
+  const lastName = (folder) => folder.split(/[\\/]/).filter(Boolean).pop() || folder;
+
+  // The drawer, over the right of the map: the photos of a cluster or of a folder, grouped
+  // by folder, its actions on top; a click on a photo opens it larger (←/→, Esc back).
+  let opened = null, photoPin = null, folderPin = null, viewing = [], viewed = -1;
   const unpin = () => { if (photoPin) { photoPin.remove(); photoPin = null; } };
-  function hidePhotos() { shownRank = null; unpin(); byId("photos").hidden = true; byId("grid").replaceChildren(); }
-  async function showPhotos(rank) {
-    if (shownRank === rank) { hidePhotos(); draw(); return; }
-    const response = await fetch(paths.cluster + rank).catch(() => null);
-    if (!response || !response.ok) { status(T.offline, "error"); return; }
-    const answer = await response.json();
-    shownRank = rank; unpin();
-    const [lat, lon] = state.clusters[rank];
-    map.setView([lat, lon], Math.max(map.getZoom(), NAMED_ZOOM));
-    // Every photo shown, or the first ones only (videos have no preview: never shown).
-    const shown = answer.photos.length, count = state.clusters[rank][2];
-    byId("photosTitle").textContent = shown < count ? fill(T.somePhotos, { shown, count }) : counted(T.allPhotos, shown);
-    byId("photosMissing").textContent = T.photosMissing;
-    byId("photosMissing").hidden = answer.photos.every((photo) => photo.found);
-    const grid = byId("grid"); grid.replaceChildren();
-    for (const photo of answer.photos) {
-      const cell = photo.found ? document.createElement("img") : document.createElement("span");
-      if (photo.found) { cell.src = photo.preview; cell.alt = photo.name; cell.loading = "lazy"; }
-      else { cell.className = "gone"; cell.textContent = "∅"; }
-      cell.title = photo.name;
-      cell.addEventListener("mouseenter", () => {
-        unpin();
-        photoPin = L.marker([photo.latitude, photo.longitude], { icon: L.divIcon({ className: "photo-pin" }) }).addTo(map);
-      });
-      cell.addEventListener("mouseleave", unpin);
-      grid.append(cell);
+  const pinAt = (file) => {
+    unpin();
+    if ("latitude" in file) photoPin = L.marker([file.latitude, file.longitude], { icon: L.divIcon({ className: "photo-pin" }) }).addTo(map);
+  };
+  // The width the drawer hides on the map's right; none when it covers the whole map.
+  const hidden = () => {
+    const drawer = byId("drawer"), width = drawer.hidden ? 0 : drawer.offsetWidth;
+    return width < byId("map").offsetWidth ? width : 0;
+  };
+  // A point at the middle of what the drawer leaves visible.
+  const focus = (at, zoom) => map.setView(map.unproject(map.project(at, zoom).add([hidden() / 2, 0]), zoom), zoom);
+  // The clicked line stays highlighted in its list while the drawer shows it.
+  function highlight() {
+    const key = opened ? opened.key : null;
+    for (const li of document.querySelectorAll("li[data-drawer]")) {
+      const on = li.dataset.drawer === key;
+      li.classList.toggle("shown", on);
+      const count = li.querySelector("button.count");
+      if (count) count.setAttribute("aria-pressed", String(on));
     }
-    byId("photos").hidden = false;
-    draw();
   }
-  byId("photosClose").addEventListener("click", () => { hidePhotos(); draw(); });
+  function closeViewer() {
+    viewed = -1; byId("viewer").hidden = true; byId("drawerBody").hidden = false;
+    byId("viewerImg").removeAttribute("src"); unpin();
+  }
+  function closeDrawer() {
+    if (folderPin) { folderPin.remove(); folderPin = null; }
+    opened = null; viewing = []; closeViewer();
+    byId("drawer").hidden = true; byId("drawerBody").replaceChildren();
+    highlight();
+  }
+  function openViewer(index) {
+    if (!viewing.length) return;
+    viewed = (index + viewing.length) % viewing.length;
+    const file = viewing[viewed], cut = /[\\/]$/.test(file.folder) ? "" : (file.folder.includes("\\") ? "\\" : "/");
+    byId("viewerImg").src = file.large; byId("viewerImg").alt = file.name;
+    byId("viewerPath").textContent = `${file.folder}${cut}${file.name}`;
+    byId("viewerCount").textContent = `${viewed + 1} / ${viewing.length}`;
+    byId("drawerBody").hidden = true; byId("viewer").hidden = false;
+    pinAt(file);
+  }
+  function cell(file) {
+    let node;
+    if (file.video || !file.found) {
+      node = document.createElement("span");
+      node.className = file.video ? "video" : "gone";
+      const name = document.createElement("small"); name.textContent = file.name;
+      node.append(file.video ? "🎞" : "∅", name);
+    } else {
+      node = document.createElement("img");
+      node.src = file.preview; node.alt = file.name; node.loading = "lazy";
+      node.addEventListener("click", () => openViewer(viewing.indexOf(file)));
+    }
+    node.title = file.name;
+    node.addEventListener("mouseenter", () => pinAt(file));
+    node.addEventListener("mouseleave", unpin);
+    return node;
+  }
+  // The files, one heading per folder (its host path, its own name in bold).
+  function fillDrawer(files, source) {
+    const body = byId("drawerBody"); body.replaceChildren();
+    const pictures = files.filter((file) => !file.video).length, filmed = files.length - pictures;
+    const notes = [];
+    if (pictures < source.pictures) notes.push(fill(counted(T.firstPhotos, pictures), { count: source.pictures }));
+    if (filmed < source.videos) notes.push(fill(counted(T.firstVideos, filmed), { count: source.videos }));
+    if (files.some((file) => !file.found)) notes.push(T.photosMissing);
+    byId("drawerNotes").textContent = notes.join(" · "); byId("drawerNotes").hidden = !notes.length;
+    viewing = files.filter((file) => !file.video && file.found);
+    let folder = null, grid = null;
+    for (const file of files) {
+      if (file.folder !== folder) {
+        folder = file.folder;
+        const heading = document.createElement("h3"), own = document.createElement("b"), name = lastName(folder);
+        own.textContent = name;
+        heading.append(folder.slice(0, folder.lastIndexOf(name)), own);
+        heading.title = folder;
+        grid = document.createElement("div"); grid.className = "grid";
+        body.append(heading, grid);
+      }
+      grid.append(cell(file));
+    }
+  }
+  async function openDrawer(source) {
+    closeDrawer(); opened = source;
+    byId("drawerTitle").textContent = source.title;
+    byId("drawerNote").textContent = source.note; byId("drawerNote").hidden = !source.note;
+    for (const [id, shown] of Object.entries(source.actions)) byId(id).hidden = !shown;
+    byId("drawerNotes").hidden = true;
+    byId("drawer").hidden = false;
+    focus(source.at, Math.max(map.getZoom(), source.zoom));
+    if (source.folder) {
+      folderPin = L.marker(source.at, { draggable: true, icon: L.divIcon({ className: "folder-pin" }) }).addTo(map);
+      folderPin.bindTooltip(label(source.folder.town || source.folder.folder));
+    }
+    highlight();
+    const response = await fetch(source.url).catch(() => null);
+    if (opened !== source) return;
+    if (!response || !response.ok) { status(T.offline, "error"); return; }
+    fillDrawer((await response.json()).photos, source);
+  }
+  function showCluster(rank) {
+    const key = `cluster:${rank}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const [lat, lon, pictures, filmed] = state.clusters[rank];
+    const actions = { clusterName: true, folderSave: false, folderForget: false, folderIgnore: false };
+    openDrawer({ key, url: paths.cluster + rank, at: [lat, lon], zoom: NAMED_ZOOM, pictures, videos: filmed,
+                 title: fill(T.clusterTitle, { files: holds(pictures, filmed) }), note: "", actions, folder: null });
+  }
+  byId("drawerClose").addEventListener("click", closeDrawer);
+  byId("viewerBack").addEventListener("click", closeViewer);
+  byId("viewerPrev").addEventListener("click", () => openViewer(viewed - 1));
+  byId("viewerNext").addEventListener("click", () => openViewer(viewed + 1));
+  byId("clusterName").addEventListener("click", () => { if (opened) startNew(...opened.at); });
+  document.addEventListener("keydown", (event) => {
+    if (byId("drawer").hidden || event.target.closest?.("input, textarea, select")) return;
+    if (event.key === "Escape") { if (viewed >= 0) closeViewer(); else closeDrawer(); }
+    else if (viewed >= 0 && event.key === "ArrowLeft") openViewer(viewed - 1);
+    else if (viewed >= 0 && event.key === "ArrowRight") openViewer(viewed + 1);
+    else return;
+    event.preventDefault();
+  });
 
   // The folders named after a town, or placed: their photos without GPS, a pin to drag.
-  let folders = [], chosen = null, folderPin = null, folderFlash = null;
-  const unpinFolder = () => { if (folderPin) { folderPin.remove(); folderPin = null; } };
-  function hideFolder() { chosen = null; unpinFolder(); byId("folderPanel").hidden = true; byId("folderGrid").replaceChildren(); }
+  let folders = [], folderFlash = null;
+  const filesOf = (folder) => holds(folder.count - folder.videos, folder.videos);
   function drawFolders() {
     const list = byId("folders"); list.replaceChildren();
     byId("foldersCount").textContent = `(${folders.length})`;
     if (!folders.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noFolder; list.append(li); }
     for (const folder of folders) {
-      const name = folder.town || folder.folder.split(/[\\/]/).filter(Boolean).pop();
+      const name = folder.town || lastName(folder.folder);
       const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
-      const li = item(list, `${mark}${name} — ${counted(T.withoutGps, folder.count)}`, () => showFolder(folder.rank));
-      li.title = folder.folder;
+      const li = item(list, `${mark}${name} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder.rank));
+      li.title = folder.folder; li.dataset.drawer = `folder:${folder.folder}`;
       if (!folder.found) li.classList.add("missing");
       if (folder.folder === folderFlash) { unfold("foldersFold"); flash(li); }
     }
     folderFlash = null;
+    highlight();
   }
   async function loadFolders() {
     const response = await fetch(paths.folders).catch(() => null);
     if (!response || !response.ok) return;
     folders = (await response.json()).folders; drawFolders();
   }
-  async function showFolder(rank) {
-    const folder = folders[rank];
-    hideFolder(); chosen = folder;
-    const at = [folder.latitude, folder.longitude];
-    map.setView(at, Math.max(map.getZoom(), TOWN_ZOOM));
-    folderPin = L.marker(at, { draggable: true, icon: L.divIcon({ className: "folder-pin" }) }).addTo(map);
-    folderPin.bindTooltip(label(folder.town || folder.folder));
-    byId("folderTitle").textContent = folder.folder;
-    byId("folderNote").textContent = folder.found ? T.folderHint : T.folderMissing;
-    byId("folderForget").hidden = !folder.saved;
-    byId("folderIgnore").hidden = !folder.town;
-    byId("folderSave").hidden = !folder.found;
-    byId("folderPanel").hidden = false;
-    const response = await fetch(paths.folderPhotos + rank).catch(() => null);
-    if (!response || !response.ok || chosen !== folder) return;
-    const grid = byId("folderGrid");
-    for (const photo of (await response.json()).photos) {
-      const cell = photo.found ? document.createElement("img") : document.createElement("span");
-      if (photo.found) { cell.src = photo.preview; cell.alt = photo.name; cell.loading = "lazy"; }
-      else { cell.className = "gone"; cell.textContent = "∅"; }
-      cell.title = photo.name; grid.append(cell);
-    }
+  function showFolder(rank) {
+    const folder = folders[rank], key = `folder:${folder.folder}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const name = folder.town || lastName(folder.folder);
+    const actions = { clusterName: false, folderSave: folder.found, folderForget: folder.saved, folderIgnore: Boolean(folder.town) };
+    openDrawer({ key, url: paths.folderPhotos + rank, at: [folder.latitude, folder.longitude], zoom: TOWN_ZOOM,
+                 pictures: folder.count - folder.videos, videos: folder.videos, folder, actions,
+                 title: `${name} — ${fill(T.withoutGps, { files: filesOf(folder) })}`,
+                 note: folder.found ? T.folderHint : T.folderMissing });
   }
   async function actOnFolder(action, said) {
+    const chosen = opened && opened.folder;
     if (!chosen) return;
     const where = folderPin ? folderPin.getLatLng() : { lat: chosen.latitude, lng: chosen.longitude };
     status(T.saving);
@@ -340,21 +450,21 @@
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
     folderFlash = action === "ignore" ? null : chosen.folder;
-    folders = answer.folders; hideFolder(); drawFolders(); status(said, "saved");
+    folders = answer.folders; closeDrawer(); drawFolders(); status(said, "saved");
   }
   byId("folderSave").addEventListener("click", () => actOnFolder("save", T.folderSaved));
   byId("folderForget").addEventListener("click", () => actOnFolder("forget", T.folderForgotten));
   byId("folderIgnore").addEventListener("click", () => actOnFolder("ignore", T.folderIgnored));
-  byId("folderClose").addEventListener("click", hideFolder);
 
   function draw() {
     clusterLayer.clearLayers(); placeLayer.clearLayers();
-    for (const [lat, lon, count, place] of state.clusters) {
+    for (const [lat, lon, pictures, filmed, place] of state.clusters) {
+      const what = holds(pictures, filmed);
       const circle = L.circleMarker([lat, lon], {
-        radius: 4 + 3 * Math.log2(count), weight: 1, fillOpacity: 0.45,
+        radius: 4 + 3 * Math.log2(pictures + filmed), weight: 1, fillOpacity: 0.45,
         color: place ? colour("--muted") : colour("--cluster"),
       });
-      circle.bindTooltip(label(place ? `${photos(count)}, ${fill(T.inPlace, { place })}` : photos(count)));
+      circle.bindTooltip(label(place ? `${what}, ${fill(T.inPlace, { place })}` : what));
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); startNew(lat, lon); });
       circle.addTo(clusterLayer);
     }
@@ -374,18 +484,20 @@
     flashName = null;
     byId("placesCount").textContent = `(${state.places.length})`;
     const clusters = byId("clusters"); clusters.replaceChildren();
-    const unnamed = state.clusters.map((cluster, rank) => [rank, ...cluster]).filter((cluster) => !cluster[4]);
+    const unnamed = state.clusters.map((cluster, rank) => [rank, ...cluster]).filter((cluster) => !cluster[5]);
     byId("clustersCount").textContent = `(${unnamed.length})`;
     if (!unnamed.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noCluster; clusters.append(li); }
-    for (const [rank, lat, lon, count] of unnamed.slice(0, SHOWN_CLUSTERS)) {
+    for (const [rank, lat, lon, pictures, filmed] of unnamed.slice(0, SHOWN_CLUSTERS)) {
       const li = item(clusters, `● ${T.nameIt}`, () => startNew(lat, lon));
-      li.classList.add("cluster"); li.classList.toggle("shown", rank === shownRank);
+      li.classList.add("cluster"); li.dataset.drawer = `cluster:${rank}`;
       const button = document.createElement("button");
-      button.type = "button"; button.className = "count"; button.textContent = photos(count);
-      button.title = T.showPhotos; button.setAttribute("aria-pressed", String(rank === shownRank));
-      button.addEventListener("click", () => showPhotos(rank));
+      button.type = "button"; button.className = "count";
+      button.textContent = `${pictures ? "🖼" : "🎞"} ${holds(pictures, filmed)}`;
+      button.title = T.showPhotos;
+      button.addEventListener("click", () => showCluster(rank));
       li.prepend(button);
     }
+    highlight();
   }
 
   function showEditor() {
@@ -415,8 +527,8 @@
 
   function edit(place) {
     editing = { ...place };
-    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1));
-    else map.setView([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
+    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1), { paddingBottomRight: [hidden(), 0] });
+    else focus([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
     showEditor();
   }
   const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
@@ -446,7 +558,7 @@
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
     flashName = editing ? editing.name : null;
-    state = answer; editing = null; hidePhotos(); showEditor(); draw(); status(T.saved, "saved");
+    state = answer; editing = null; closeDrawer(); showEditor(); draw(); status(T.saved, "saved");
   }
 
   byId("editor").addEventListener("submit", (event) => {

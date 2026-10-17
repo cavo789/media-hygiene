@@ -910,6 +910,9 @@ msgstr "o"
 msgid "Back after being set aside"
 msgstr "Revenus après une mise de côté"
 
+msgid "Back to the photos"
+msgstr "Retour aux photos"
+
 msgid "Back to the report"
 msgstr "Retour au rapport"
 
@@ -1174,6 +1177,10 @@ msgstr "Fermer"
 
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
+
+#, python-brace-format
+msgid "Cluster — {files}"
+msgstr "Groupe — {files}"
 
 msgid "Codec"
 msgstr "Codec"
@@ -3226,6 +3233,9 @@ msgstr ""
 msgid "Next page →"
 msgstr "Page suivante →"
 
+msgid "Next photo"
+msgstr "Photo suivante"
+
 msgid "Next step"
 msgstr "Étape suivante"
 
@@ -4076,6 +4086,9 @@ msgstr ""
 
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
+
+msgid "Previous photo"
+msgstr "Photo précédente"
 
 msgid "Proposal"
 msgstr "Proposition"
@@ -5343,6 +5356,18 @@ msgstr ""
 "dossier : W n'est pas possible."
 
 #, python-brace-format
+msgid "The first photo out of {count}"
+msgid_plural "The first {n} photos out of {count}"
+msgstr[0] "La première photo sur {count}"
+msgstr[1] "Les {n} premières photos sur {count}"
+
+#, python-brace-format
+msgid "The first video out of {count}"
+msgid_plural "The first {n} videos out of {count}"
+msgstr[0] "La première vidéo sur {count}"
+msgstr[1] "Les {n} premières vidéos sur {count}"
+
+#, python-brace-format
 msgid "The folder {path} is not mounted."
 msgstr "Le dossier {path} n'est pas monté."
 
@@ -5467,12 +5492,6 @@ msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
-
-#, python-brace-format
-msgid "The only photo of this cluster"
-msgid_plural "The {n} photos of this cluster"
-msgstr[0] "La seule photo de ce groupe"
-msgstr[1] "Les {n} photos de ce groupe"
 
 #, python-brace-format
 msgid ""
@@ -9017,6 +9036,10 @@ msgstr ""
 "audit prend quelques secondes."
 
 #, python-brace-format
+msgid "{files} without GPS"
+msgstr "{files} sans GPS"
+
+#, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
 msgstr "{files}, {undecided} à vérifier ou à trier"
 
@@ -9264,12 +9287,6 @@ msgstr[0] "{n} photo"
 msgstr[1] "{n} photos"
 
 #, python-brace-format
-msgid "{n} photo without GPS"
-msgid_plural "{n} photos without GPS"
-msgstr[0] "{n} photo sans GPS"
-msgstr[1] "{n} photos sans GPS"
-
-#, python-brace-format
 msgid "{n} series"
 msgid_plural "{n} series"
 msgstr[0] "{n} série"
@@ -9298,6 +9315,12 @@ msgid "{n} sure proposal accepted"
 msgid_plural "{n} sure proposals accepted"
 msgstr[0] "{n} proposition sûre acceptée"
 msgstr[1] "{n} propositions sûres acceptées"
+
+#, python-brace-format
+msgid "{n} video"
+msgid_plural "{n} videos"
+msgstr[0] "{n} vidéo"
+msgstr[1] "{n} vidéos"
 
 #, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
@@ -9516,10 +9539,6 @@ msgstr "{sheet} : {key} : '{value}' ({why})"
 #, python-brace-format
 msgid "{shift}: rule {camera}"
 msgstr "{shift} : règle {camera}"
-
-#, python-brace-format
-msgid "{shown} photos out of {count}"
-msgstr "{shown} photos sur {count}"
 
 #, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"

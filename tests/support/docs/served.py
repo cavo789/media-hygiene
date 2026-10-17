@@ -147,8 +147,8 @@ def places(page: Page, name: str) -> None:
         name: The name typed on the park's cluster.
     """
     page.goto(SERVED)
-    page.wait_for_selector("#clusters li button")
-    page.locator("#clusters li button").first.click()
+    page.wait_for_selector("#clusters li button.link")
+    page.locator("#clusters li button.link").first.click()  # "Name this place"
     page.fill("#name", name)
     page.press("#name", "Enter")
     page.wait_for_selector("#status.saved")

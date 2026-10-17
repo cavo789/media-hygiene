@@ -53,16 +53,22 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
 
 - **The circles** are your photos with a GPS position, grouped by about 200 metres. The list on
   the left gives the largest clusters without a name first: home is usually the first one.
-- **Click the number of photos** (for instance "11 photos") on a line of that list to see the
-  photos of the cluster (24 at most) and recognise the place before naming it; hover a photo to see where it was taken.
-  Click again, or ✕, to close them.
+- **Click the number of photos** (for instance "🖼 11 photos", or "🎞 1 video" for a cluster of
+  videos) on a line of that list: a **drawer** opens over the right side of the map, always at the
+  same place, with the photos of the cluster (24 at most, and its videos by name) to recognise the
+  place before naming it. **Name this place** sits at its top, above the photos. The photos are
+  grouped by folder, under the folder's path (`C:\Photos\2014\Geer`, its own name in bold): a
+  folder name often says the place or the event. Hover a photo to see where it was taken; click
+  it to see it larger, with its full path (← and → for the others, Esc back to the grid). The
+  line you clicked stays highlighted; click it again, ✕ or Esc to close the drawer.
 - **Fold a list** by clicking its title: *Your places (10)* folds by itself from 8 places on,
   so that the clusters stay in reach; your browser remembers your choice.
 - **Folders named after a town** lists the folders whose name is a town's (`Douarnenez`,
   `Saint-Jean de Luz`) and that hold photos without GPS: *📁 Douarnenez — 37 photos without GPS*.
-  Click one: the map goes to the town, a green pin marks its centre and the photos show below.
-  Drag the pin where they were taken (the beach, not the town hall) and click **Save this
-  position**: it goes into `config.toml` as `[[places.folders]]`, read back and shown with 📌.
+  Click one: the map goes to the town, a green pin marks its centre and the same drawer shows its
+  photos, grouped by folder, with **Save this position**, **Forget its position** and **Not a
+  town** at its top. Drag the pin where they were taken (the beach, not the town hall) and click
+  **Save this position**: it goes into `config.toml` as `[[places.folders]]`, read back and shown with 📌.
   [`xmp`](xmp.md#a-position-from-the-folders-town) then writes that position into the photos'
   sidecars. **Forget its position** takes it out; **Not a town** adds the folder's name to
   `[classify] folder_town_ignore` (a folder `Martin` is a first name, not Martin in Slovakia).

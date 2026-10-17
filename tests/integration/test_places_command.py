@@ -51,9 +51,9 @@ def test_the_map_shows_the_clusters_and_saves_a_place(
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
     assert "'place' rule" in result.output
     state = json.loads(seen["state"].body)
-    assert [cluster[2:] for cluster in state["clusters"]] == [[3, ""]]
+    assert [cluster[2:] for cluster in state["clusters"]] == [[3, 0, ""]]
     saved = json.loads(seen["saved"].body)
-    assert saved["clusters"][0][3] == "Garden"
+    assert saved["clusters"][0][4] == "Garden"
     assert saved["places"][0]["key"] == 0
     assert [place.name for place in read_places(locations.config_file)] == ["Garden"]
     page = seen["page"]
