@@ -93,8 +93,9 @@
   // What each version becomes, as decided (or as the tier would do).
   const roles = (group) => {
     const swap = group.action === "swap";
+    const none = group.action === "none";
     const leave = group.action === "leave" || (group.action === "" && !group.sure);
-    const keptRole = swap ? "move" : "keep";
+    const keptRole = swap || none ? "move" : "keep";
     const copyRole = (index) => (leave || (swap && index === 0) ? "keep" : "move");
     return { keptRole: keptRole, copyRole: copyRole, pending: group.action === "" && !group.sure };
   };
@@ -142,7 +143,7 @@
     byId("why").textContent = "💬 " + group.why + " " + group.level;
     const state = byId("state");
     state.textContent = group.action ? T[group.action] : (group.sure ? T.pendingSure : T.pending);
-    state.className = group.action ? "decided" : (group.sure ? "sure" : "");
+    state.className = group.action ? "decided " + group.action : (group.sure ? "sure" : "");
     const cards = [card(group.kept, role.pending ? "keep" : role.keptRole)];
     group.copies.forEach((version, index) => cards.push(card(version, role.pending ? "move" : role.copyRole(index))));
     for (const version of group.protected) cards.push(card(version, "lock"));
@@ -217,6 +218,10 @@
       else setStatus(T.noSwap, "error");
     }
     else if (key === "l") decide([rank], "leave", () => go(1));
+    else if (key === "x") {
+      if (groups[rank].swappable) decide([rank], "none", () => go(1));
+      else setStatus(T.noNone, "error");
+    }
     else if (event.key === "ArrowLeft") go(-1);
     else if (key === "n") nextUndecided();
     else if (key === "u" || event.key === "Backspace") decide([rank], null);

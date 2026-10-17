@@ -152,13 +152,14 @@ with the 💬 line:
 
 ![The review --near page: Group 1 of 4, to check and undecided; the beach photo IMG_0104.jpg kept in 1500 × 1000, framed in green, its 800 × 533 WhatsApp copy in red dashes; above them the 💬 line; on the left the order (to check first), the keyboard reminder and the three folder pairs, Seaside holidays → WhatsApp with 2 groups, each with its ✔ as planned button](../images/review-near.webp)
 
-The keys:
+The keys (the first four always shown at the bottom left, the others under *More keys*, as in the burst review):
 
 | Key | What it does |
 |---|---|
 | `→` | as planned: the copies go to the quarantine, then the next group |
 | `W` | keep the other version: the first copy stays, the version the audit kept goes (refused when it lies in a protected folder) |
 | `L` | leave the group alone: nothing of it moves |
+| `X` | keep none: every version of the group goes to the quarantine, the one the audit kept too (refused when it lies in a protected folder) |
 | `←` / `N` | previous group / next group to check still undecided |
 | `U` | back to undecided: the tier decides again |
 | `G` | the whole folder pair as planned |

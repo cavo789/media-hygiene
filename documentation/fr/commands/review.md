@@ -42,7 +42,7 @@ docker run --rm -it `
 | Commande | Ce que vous décidez | Appliqué par |
 |---|---|---|
 | `review` | **Les rafales**, une à la fois : quelles photos vont en quarantaine. La plus nette vient en premier, celles proposées à l'écart sont marquées ; `→` accepte ce qui est montré. | `clean --decisions` |
-| `review --near` | **Les quasi-doublons et vidéos réencodées**, groupe par groupe : comme prévu (`→`), garder l'autre version (`W`), laisser tel quel (`L`). | `clean --tier near --decisions` |
+| `review --near` | **Les quasi-doublons et vidéos réencodées**, groupe par groupe : comme prévu (`→`), garder l'autre version (`W`), laisser tel quel (`L`), n'en garder aucune (`X`). | `clean --tier near --decisions` |
 | `review --pairs` | **Les paires de dossiers** de fichiers identiques, la plus grande place libérée d'abord : comme prévu (`→`), inverser les dossiers (`W`), ne pas toucher (`L`). | `clean --decisions` |
 | `review --junk` | **Les photos le plus probablement indésirables** (minuscules, captures d'écran, presque noires ou blanches, les plus floues), groupe par groupe : chacune gardée ou mise de côté par vous. | `clean --decisions` |
 | `review --gone` | **Les photos et vidéos disparues depuis un audit** (supprimées dans l'Explorateur ?), par dossier et par jour : supprimées exprès (`D`, retenues, mises de côté si elles reviennent) ou déplacées ailleurs (`M`, oubliées). [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#supprimés-dans-lexplorateur-) | `clean --decisions` |

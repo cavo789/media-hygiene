@@ -1,0 +1,22 @@
+{# Shared by the review pages (burst series, near duplicates): the left column, its list
+   above (scrolled on its own) and the keyboard reminder below, always visible in the same
+   place; the panel showing what the decisions file holds for what is on screen. #}
+  .layout { display: grid; grid-template-columns: minmax(240px, 340px) 1fr; align-items: start; }
+  main { padding: 12px 16px 24px; }
+  #side { position: sticky; top: 52px; display: flex; flex-direction: column; gap: 10px;
+          height: calc(100vh - 110px); margin: 12px 0 12px 16px; }
+  #toc, #keys { padding: 10px 12px; background: var(--card); border: 1px solid var(--line);
+                border-radius: 10px; font-size: .85rem; }
+  #toc { flex: 1; min-height: 0; overflow: auto; }
+  #toc h2, #keys h2 { font-size: 1rem; margin: 0 0 6px; }
+  #keys { flex: none; }
+  #keys dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0; }
+  #keys dt { white-space: nowrap; } #keys dd { margin: 0; }
+  #moreKeys { margin-top: 6px; } #moreKeys summary { cursor: pointer; color: var(--muted); }
+  #disk { margin-top: 14px; padding: 8px 12px; background: var(--card);
+          border: 1px solid var(--line); border-radius: 10px; font-size: .85rem; }
+  #disk > summary { font-weight: 600; cursor: pointer; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    #side { order: 2; position: static; height: auto; margin: 0 16px 16px; }
+  }

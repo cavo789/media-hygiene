@@ -94,6 +94,49 @@ def test_a_protected_kept_version_cannot_be_swapped(locations: Locations) -> Non
     assert not session.state().groups[0].swappable
     with pytest.raises(DecisionsError, match="protected folder"):
         session.decide({0: NearAction.SWAP})
+    with pytest.raises(DecisionsError, match="protected folder"):
+        session.decide({0: NearAction.NONE})
+
+
+def test_a_group_kept_none_of_goes_whole_and_undo_restores(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """X: every version to the quarantine, the kept one too; undo brings all back."""
+    session = near_session(locations)
+    group = session.state().groups[0]
+    names = [group.kept.name, *(copy.name for copy in group.copies)]
+    before = {p for p in locations.data_dir.rglob("*") if p.name in names}
+    assert len(before) == len(names)
+    session.decide({0: NearAction.NONE})
+    result = run(
+        cli, "clean", "--yes", "--tier", "near", "--decisions", "decisions.json"
+    )
+    assert result.exit_code == 0, result.output
+    assert "none kept: 1" in result.output
+    assert not any(path.exists() for path in before)
+    assert run(cli, "undo").exit_code == 0
+    assert all(path.is_file() for path in before)
+
+
+def test_a_group_kept_none_of_refuses_a_protected_kept_version(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Protected since the review: the clean refuses the file, nothing moves."""
+    near_session(locations).decide({0: NearAction.NONE})
+    result = run(
+        cli,
+        "clean",
+        "--yes",
+        "--tier",
+        "near",
+        "--decisions",
+        "decisions.json",
+        "--protect",
+        "C:\\Family Photos\\2021",
+    )
+    assert result.exit_code == 1
+    assert "is in a protected folder" in " ".join(result.output.split())
+    assert (locations.data_dir / KEPT).is_file()
 
 
 def test_the_clean_applies_a_swap_and_undo_restores(

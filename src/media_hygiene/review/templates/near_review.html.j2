@@ -14,7 +14,9 @@
   "planned": "✔ " ~ _("Decided: as planned, the copies go to the quarantine."),
   "swap": "🔁 " ~ _("Decided: the other version is kept, the version the audit kept goes to the quarantine."),
   "leave": "✋ " ~ _("Decided: left alone, nothing of this group moves."),
+  "none": "🗑 " ~ _("Decided: none kept, every version of this group goes to the quarantine."),
   "noSwap": _("The kept version lies in a protected folder: it is never moved, W is not possible."),
+  "noNone": _("The kept version lies in a protected folder: it is never moved, X is not possible."),
   "video": "🎞 " ~ _("video: open the original"),
   "noPlay": "🎞 " ~ _("This browser cannot play this video: open the original."),
   "original": "↗ " ~ _("original"),
@@ -44,6 +46,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ _("Near duplicates review") }} — media-hygiene</title>
 <style>
+{% include "review_side.css.j2" %}
   :root {
     --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
     --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
@@ -62,16 +65,16 @@
            border-bottom: 1px solid var(--line); }
   header h1 { font-size: 1.1rem; margin: 0; }
   footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
-  .layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; padding: 12px 16px 24px; }
-  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
-  aside section { margin-bottom: 16px; }
-  aside h2 { font-size: .95rem; margin: 0 0 6px; }
+  #toc label { display: flex; gap: 6px; align-items: center; }
+  #toc select { flex: 1; min-width: 0; font: inherit; }
+  #toc h3 { font-size: .9rem; margin: 12px 0 6px; }
   .muted { color: var(--muted); }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
            border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
   #state.decided { border-style: solid; border-color: var(--ok); color: var(--ok); }
   #state.sure { border-color: var(--ok); color: var(--ok); }
+  #state.none { border-color: var(--bad); color: var(--bad); }
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 8px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; }
   .shot.keep { border-color: var(--ok); }
@@ -87,9 +90,7 @@
   .pair.current { font-weight: 600; }
   button { font: inherit; cursor: pointer; }
   kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
-        background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; font-size: .9rem; }
-  dd { margin: 0; }
+        color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -100,8 +101,8 @@
   <span id="status" role="status" aria-live="polite"></span>
 </header>
 <div class="layout">
-<aside>
-  <section>
+<aside id="side">
+  <section id="toc" aria-label="{{ _('Folder pairs') }}">
     <label>{{ _("Order") }}
       <select id="order">
         <option value="check">{{ _("to check first") }}</option>
@@ -110,23 +111,27 @@
       </select>
     </label>
     <p id="share" class="muted"></p>
+    <h3>📁 {{ _("Folder pairs") }}</h3>
+    <div id="pairs"></div>
   </section>
-  <section>
+  <section id="keys" aria-label="{{ _('Keyboard') }}">
     <h2>⌨ {{ _("Keyboard") }}</h2>
     <dl>
       <dt><kbd>→</kbd></dt><dd>{{ _("as planned, then next") }}</dd>
       <dt><kbd>W</kbd></dt><dd>{{ _("keep the other version, then next") }}</dd>
       <dt><kbd>L</kbd></dt><dd>{{ _("leave the group alone, then next") }}</dd>
+      <dt><kbd>X</kbd></dt><dd>{{ _("none: the whole group aside, then next") }}</dd>
+    </dl>
+    <details id="moreKeys">
+    <summary>{{ _("More keys") }}</summary>
+    <dl>
       <dt><kbd>←</kbd></dt><dd>{{ _("previous group") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next group to check, undecided") }}</dd>
       <dt><kbd>U</kbd></dt><dd>{{ _("back to undecided") }}</dd>
       <dt><kbd>G</kbd></dt><dd>{{ _("the whole folder pair as planned") }}</dd>
       <dt><kbd>␣</kbd> <kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("on a video you clicked: play, seek; Esc gives the keys back") }}</dd>
     </dl>
-  </section>
-  <section>
-    <h2>📁 {{ _("Folder pairs") }}</h2>
-    <div id="pairs"></div>
+    </details>
   </section>
 </aside>
 <main>

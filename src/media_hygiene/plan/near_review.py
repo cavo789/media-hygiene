@@ -2,8 +2,8 @@
 
 Without a decision, `--tier near` moves the sure groups and `--tier near-all` every
 group. A decision overrides that: `planned` moves the copies as the audit planned,
-`swap` keeps one of the copies and moves the version the audit kept instead, `leave`
-moves nothing of the group.
+`swap` keeps one of the copies and moves the version the audit kept instead, `none`
+moves every version (the kept one last), `leave` moves nothing of the group.
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ class NearAction(StrEnum):
     PLANNED = "planned"  # the copies go, the version the audit kept stays
     SWAP = "swap"  # keep a copy instead, the version the audit kept goes
     LEAVE = "leave"  # nothing of the group moves
+    NONE = "none"  # every version goes, the one the audit kept included
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,7 +57,8 @@ def selected(
         selection: The tier and the decisions.
 
     Returns:
-        The groups to move, a swapped group with its new kept version.
+        The groups to move, a swapped group with its new kept version; a group
+        decided `none` lists its kept version last among the files to move.
     """
     return tuple(_moved(groups, selection))
 
@@ -83,6 +85,8 @@ def _moved(
             yield group
         elif verdict.action is NearAction.SWAP and verdict.keep is not None:
             yield swapped(group, verdict.keep)
+        elif verdict.action is NearAction.NONE:
+            yield replace(group, removable=(*group.removable, group.keeper))
 
 
 def swapped(group: NearDecision, keep: MediaFile) -> NearDecision:

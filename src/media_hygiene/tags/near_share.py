@@ -95,12 +95,12 @@ def _answerer(group: NearDecision, search: NearSearch) -> MediaFile | None:
 
     Returns:
         The copy chosen by a swap, else the version the audit keeps; None for a
-        group left alone.
+        group left alone or kept none of.
     """
     verdict = search.verdict(group)
     if verdict is None:
         return group.keeper
-    if verdict.action is NearAction.LEAVE:
+    if verdict.action in {NearAction.LEAVE, NearAction.NONE}:
         return None
     return verdict.keep or group.keeper
 

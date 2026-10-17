@@ -42,7 +42,7 @@ docker run --rm -it `
 | Command | What you decide | Applied by |
 |---|---|---|
 | `review` | **Burst series**, one at a time: which shots go to the quarantine. The sharpest shot is first, the shots proposed aside are marked; `→` accepts what is shown. | `clean --decisions` |
-| `review --near` | **Near duplicates and re-encoded videos**, group by group: as planned (`→`), keep the other version (`W`), leave alone (`L`). | `clean --tier near --decisions` |
+| `review --near` | **Near duplicates and re-encoded videos**, group by group: as planned (`→`), keep the other version (`W`), leave alone (`L`), keep none (`X`). | `clean --tier near --decisions` |
 | `review --pairs` | **Folder pairs** of identical files, the most space freed first: as planned (`→`), swap the folders (`W`), leave alone (`L`). | `clean --decisions` |
 | `review --junk` | **Photos most likely unwanted** (tiny, screenshots, nearly black or white, the blurriest), group by group: each one kept or set aside by you. | `clean --decisions` |
 | `review --gone` | **Photos and videos gone since an audit** (deleted in the Explorer?), by folder and day: deleted on purpose (`D`, remembered, set aside if they come back) or moved elsewhere (`M`, forgotten). [Cleaning, step 9](../clean/09-undo-history-purge.md#deleted-in-the-explorer) | `clean --decisions` |

@@ -59,10 +59,11 @@ def with_near(runtime: Runtime, plan: CleanPlan, request: NearRequest) -> CleanP
         runtime.output.info(
             _(
                 "Your decisions — near-duplicate groups as planned: {planned}, "
-                "another version kept: {swap}, left alone: {leave}."
+                "another version kept: {swap}, none kept: {none}, left alone: {leave}."
             ).format(
                 planned=actions.count(NearAction.PLANNED),
                 swap=actions.count(NearAction.SWAP),
+                none=actions.count(NearAction.NONE),
                 leave=actions.count(NearAction.LEAVE),
             )
         )
@@ -98,8 +99,8 @@ def near_verdicts(
         Each decision, by the container path of the version the audit keeps.
 
     Raises:
-        DecisionsError: A group changed since the review, or a swap would move a
-            file of a protected folder.
+        DecisionsError: A group changed since the review, or a swap (or a group
+            kept none of) would move a file of a protected folder.
     """
     mapper = runtime.mapper
     groups = {
@@ -140,7 +141,7 @@ def _copies(runtime: Runtime, group: NearDecision) -> tuple[str, ...]:
 def _verdict(
     runtime: Runtime, group: NearDecision, decision: NearGroupDecision
 ) -> NearVerdict:
-    """Translate one decision, refusing a swap that would move a protected file.
+    """Translate one decision, refusing to move the kept version when protected.
 
     Args:
         runtime: Settings, mount points and output.
@@ -153,11 +154,13 @@ def _verdict(
     Raises:
         DecisionsError: The version the audit keeps lies in a protected folder.
     """
-    if decision.action is not NearAction.SWAP:
+    if decision.action not in {NearAction.SWAP, NearAction.NONE}:
         return NearVerdict(decision.action)
     if keep_policy(runtime.settings, runtime.mapper).is_protected(group.keeper):
         message = _("{path} is in a protected folder: it is never moved.")
         raise DecisionsError(message.format(path=decision.kept))
+    if decision.action is NearAction.NONE:
+        return NearVerdict(NearAction.NONE)
     mapper = runtime.mapper
     keep = next(f for f in group.removable if mapper.to_host(f.path) == decision.keep)
     return NearVerdict(NearAction.SWAP, keep)
