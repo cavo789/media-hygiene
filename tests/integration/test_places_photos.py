@@ -128,7 +128,7 @@ def test_the_state_counts_pictures_and_videos_apart(
 
     monkeypatch.setattr(places_service, "run_server", fake_server(act))
     assert run(runner, "places").exit_code == 0
-    [(_latitude, _longitude, pictures, videos, place)] = json.loads(seen[0].body)[
-        "clusters"
-    ]
-    assert (pictures, videos, place) == (3, 0, "")
+    [(_latitude, _longitude, pictures, videos, place, aside)] = json.loads(
+        seen[0].body
+    )["clusters"]
+    assert (pictures, videos, place, aside) == (3, 0, "", -1)

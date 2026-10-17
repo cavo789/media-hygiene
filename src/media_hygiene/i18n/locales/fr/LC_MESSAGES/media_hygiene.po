@@ -295,6 +295,12 @@ msgstr[1] "({count} autres conseils : ajoutez --verbosity verbose pour les voir.
 msgid "({latitude}, {longitude}) is not a position on the Earth"
 msgstr "({latitude}, {longitude}) n'est pas une position sur la Terre"
 
+#, python-brace-format
+msgid "+ {n} photo placed by hand"
+msgid_plural "+ {n} photos placed by hand"
+msgstr[0] "+ {n} photo placée à la main"
+msgstr[1] "+ {n} photos placées à la main"
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
@@ -910,6 +916,9 @@ msgstr "o"
 msgid "Back after being set aside"
 msgstr "Revenus après une mise de côté"
 
+msgid "Back on the map: taken out of config.toml."
+msgstr "De retour sur la carte : retiré de config.toml."
+
 msgid "Back to the photos"
 msgstr "Retour aux photos"
 
@@ -1494,6 +1503,20 @@ msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 "Supprimez-le : le prochain audit le reconstruit, en relisant chaque "
 "fichier une fois."
+
+#, python-brace-format
+msgid ""
+"Delete the place {name}? Its {n} photo placed by hand goes back to its "
+"GPS. The photos stay where they are."
+msgid_plural ""
+"Delete the place {name}? Its {n} photos placed by hand go back to their "
+"GPS. The photos stay where they are."
+msgstr[0] ""
+"Supprimer le lieu {name} ? {n} photo placée à la main revient à son GPS. "
+"Les photos restent où elles sont."
+msgstr[1] ""
+"Supprimer le lieu {name} ? Ses {n} photos placées à la main reviennent à "
+"leur GPS. Les photos restent où elles sont."
 
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
@@ -2476,8 +2499,23 @@ msgstr ""
 "Donnez-leur le même dossier, ou videz toutes les cellules sauf une, "
 "enregistrez le classeur, puis relancez 'sort'."
 
+msgid "Give these photos to…"
+msgstr "Donner ces photos à…"
+
 msgid "Give your photos words"
 msgstr "Donner des mots à vos photos"
+
+#, python-brace-format
+msgid ""
+"Give {files} to {place}? Their GPS is then ignored for this place; the "
+"photos stay where they are."
+msgstr ""
+"Donner {files} à {place} ? Leur GPS est alors ignoré pour ce lieu ; les "
+"photos restent où elles sont."
+
+#, python-brace-format
+msgid "Given to {place} in config.toml."
+msgstr "Données à {place} dans config.toml."
 
 msgid "Gives each file a second name in the album."
 msgstr "Donne à chaque fichier un second nom dans l'album."
@@ -2520,6 +2558,13 @@ msgstr "Rapport HTML : {path}"
 
 msgid "Height"
 msgstr "Hauteur"
+
+msgid ""
+"Hidden from the map and from the lists; 'classify' reads them as before "
+"(a cluster stays unnamed)."
+msgstr ""
+"Cachés de la carte et des listes ; « classify » les lit comme avant (un "
+"groupe reste sans nom)."
 
 msgid "Holidays and outings"
 msgstr "Vacances et sorties"
@@ -3426,6 +3471,9 @@ msgstr ""
 "Aucune photo ni vidéo directement dans ce dossier : ouvrez un sous-"
 "dossier."
 
+msgid "No photo to give: none ticked, or none reachable."
+msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 "Aucune photo avec une position GPS dans l'index : la carte ne montre "
@@ -3527,8 +3575,14 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "Not a place worth a name: hide it from the map"
+msgstr "Pas un lieu qui mérite un nom : le cacher de la carte"
+
 msgid "Not a town"
 msgstr "Pas une ville"
+
+msgid "Not a town: never read as one, in any folder"
+msgstr "Pas une ville : plus jamais lu comme tel, dans aucun dossier"
 
 #, python-brace-format
 msgid ""
@@ -3588,6 +3642,9 @@ msgstr ""
 #, python-brace-format
 msgid "Not saved (error {status})."
 msgstr "Non enregistré (erreur {status})."
+
+msgid "Not saved: config.toml, read back, does not say so."
+msgstr "Pas enregistré : config.toml, relu, ne le dit pas."
 
 #, python-brace-format
 msgid "Not saved: {reason}."
@@ -4014,6 +4071,27 @@ msgstr ""
 "de côté. false ne les cherche jamais."
 
 msgid ""
+"Photos given one of your places by hand, written by the map of 'places' "
+"(Give these photos to…) when their GPS position is wrong, as a phone "
+"indoors often records: they go to that place whatever their position "
+"says, and their trips are measured from it. They are known by their "
+"content (size, then SHA-256), so moving or renaming them changes nothing;"
+" a photo edited since falls back to its GPS. path is where it was, for "
+"you to read only. Deleting a place on the map deletes its entry."
+msgstr ""
+"Les photos données à la main à l'un de vos lieux, écrites par la carte de "
+"'places' (Donner ces photos à…) quand leur position GPS est fausse, comme "
+"un téléphone à l'intérieur en enregistre souvent : elles vont à ce lieu "
+"quoi que dise leur position, et leurs voyages sont mesurés depuis lui. "
+"Elles sont reconnues à leur contenu (taille, puis SHA-256) : les déplacer "
+"ou les renommer ne change rien ; une photo modifiée depuis revient à son "
+"GPS. path est l'endroit où elle était, à lire pour vous seulement. "
+"Supprimer un lieu sur la carte supprime son entrée."
+
+msgid "Photos placed by hand"
+msgstr "Photos placées à la main"
+
+msgid ""
 "Photos that answer for each event (the sharpest, spread over its span); "
 "the other files of the event follow them. Smaller photos (shorter side, "
 "in pixels) are never sent: the model invents details on thumbnails."
@@ -4281,6 +4359,9 @@ msgstr "Rapports"
 
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
+
+msgid "Restore"
+msgstr "Rétablir"
 
 msgid ""
 "Restore every file of a run, from the kept copy, the quarantine or where "
@@ -4867,6 +4948,12 @@ msgstr ""
 msgid "Set aside"
 msgstr "Écartées"
 
+msgid "Set aside from the map"
+msgstr "Écartés de la carte"
+
+msgid "Set aside in config.toml: hidden from the map."
+msgstr "Écarté dans config.toml : caché de la carte."
+
 msgid "Set aside on"
 msgstr "Mis de côté le"
 
@@ -4886,6 +4973,9 @@ msgstr ""
 
 msgid "Set the extra copies aside (asks first)"
 msgstr "Mettre les copies en trop de côté (demande d'abord)"
+
+msgid "Set this cluster aside"
+msgstr "Écarter ce groupe"
 
 msgid "Setting"
 msgstr "Réglage"
@@ -5152,12 +5242,18 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr "Reprendre le dernier lot de propositions sûres (Maj+Z)"
 
+msgid "Take it back: its GPS decides again"
+msgstr "La reprendre : son GPS décide à nouveau"
+
 msgid "Take out of the set aside"
 msgstr "Retirer de la mise de côté"
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
 msgstr "Reprendre le lot ({events})"
+
+msgid "Taken out of config.toml: its GPS decides again."
+msgstr "Retirée de config.toml : son GPS décide à nouveau."
 
 #, python-brace-format
 msgid "The HTML report could not be written to {folder}: {reason}."
@@ -5254,6 +5350,17 @@ msgstr "Le classeur de classify, modifié ; celui du dernier classify par défau
 
 msgid "The classify workbook; the latest classify run's by default."
 msgstr "Le classeur de classify ; celui du dernier classify par défaut."
+
+msgid ""
+"The clusters set aside on the map of 'places' (✕: not a place worth a "
+"name), written by the map: every cluster whose middle lies within "
+"radius_m metres of the position is hidden from the map and its lists. "
+"'classify' does not read them: such a cluster is just unnamed."
+msgstr ""
+"Les groupes écartés sur la carte de 'places' (✕ : pas un lieu qui mérite "
+"un nom), écrits par la carte : tout groupe dont le milieu est à moins de "
+"radius_m mètres de la position est caché de la carte et de ses listes. "
+"'classify' ne les lit pas : un tel groupe est simplement sans nom."
 
 msgid "The collection once sorted"
 msgstr "La collection une fois triée"
@@ -5827,6 +5934,13 @@ msgid "The {top} largest events hold {held} of them."
 msgstr "Les {top} plus grands événements en contiennent {held}."
 
 msgid ""
+"Their GPS is ignored for this place: they belong to it, wherever they are"
+" now (found by their content)."
+msgstr ""
+"Leur GPS est ignoré pour ce lieu : elles lui appartiennent, où qu'elles "
+"soient maintenant (retrouvées par leur contenu)."
+
+msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
 msgstr ""
@@ -5950,6 +6064,12 @@ msgid "This workbook was written by another version: it cannot be checked."
 msgstr ""
 "Ce classeur a été écrit par une autre version : il ne peut pas être "
 "vérifié."
+
+msgid "Tick at least one photo."
+msgstr "Cochez au moins une photo."
+
+msgid "Ticked: given to the place you choose above"
+msgstr "Cochée : donnée au lieu choisi au-dessus"
 
 #, python-brace-format
 msgid "Time per step: {steps}"
@@ -6134,6 +6254,9 @@ msgstr "Erreur inattendue pendant {command} : {kind} : {message}"
 #, python-brace-format
 msgid "Unexpected extra argument: {values}"
 msgstr "Argument en trop : {values}"
+
+msgid "Unknown place or cluster: reload the page."
+msgstr "Lieu ou groupe inconnu : rechargez la page."
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
@@ -6593,6 +6716,12 @@ msgstr ""
 " [general] timezone."
 
 #, python-brace-format
+msgid "[[classify.place_photos]] names '{name}', which is no [[classify.places]]"
+msgstr ""
+"[[classify.place_photos]] nomme '{name}', qui n'est aucun "
+"[[classify.places]]"
+
+#, python-brace-format
 msgid "[[{table}]] number {number}"
 msgstr "[[{table}]] n° {number}"
 
@@ -6622,6 +6751,9 @@ msgstr ""
 
 msgid "a burst shot you set aside"
 msgstr "une photo de rafale que vous avez mise de côté"
+
+msgid "a circle holding no cluster now"
+msgstr "un cercle qui ne contient plus aucun groupe"
 
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
@@ -7417,6 +7549,10 @@ msgstr "non vérifié"
 
 msgid "not created yet: the first clean creates it"
 msgstr "pas encore créée : le premier clean la crée"
+
+msgid "not found now: edited since, or its folder not mounted"
+msgstr ""
+"introuvable maintenant : modifiée depuis, ou son dossier n'est pas monté"
 
 msgid "not found where the plan or a sort put it"
 msgstr "introuvable là où le plan ou un tri l'a mis"
@@ -9195,6 +9331,18 @@ msgstr ""
 "\"docx\"]}}"
 
 #, python-brace-format
+msgid "{name} — not a town"
+msgstr "{name} — pas une ville"
+
+#, python-brace-format
+msgid "{name}: never a town again (config.toml)."
+msgstr "{name} : plus jamais une ville (config.toml)."
+
+#, python-brace-format
+msgid "{name}: read as a town again (config.toml)."
+msgstr "{name} : de nouveau lu comme une ville (config.toml)."
+
+#, python-brace-format
 msgid "{name}: {count} photos"
 msgstr "{name} : {count} photos"
 
@@ -9471,6 +9619,10 @@ msgid ""
 msgstr ""
 "{place} n'existe pas dans la version {version} : une faute de frappe, ou "
 "un réglage d'une version plus récente ?"
+
+#, python-brace-format
+msgid "{place} — {km} km"
+msgstr "{place} — {km} km"
 
 #, python-brace-format
 msgid "{place}: did you mean '{key}'?"

@@ -11,7 +11,7 @@ import re
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.dates import exif_date, name_date, video_date, zone_of
-from media_hygiene.config.classify_settings import NAME_DATES
+from media_hygiene.config.classify_defaults import NAME_DATES
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:

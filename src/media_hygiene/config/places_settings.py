@@ -5,7 +5,8 @@ photo nor a position of one. The page's Content-Security-Policy allows that host
 The online search of an area by its name asks `nominatim_url`, from the tool itself,
 on a click only; empty, there is no online search. `[[places.folders]]` holds the
 positions the user gave whole folders on the map: `xmp` writes them for the photos of
-those folders that have none (0231).
+those folders that have none (0231). `[[places.ignored]]` holds the clusters the user
+set aside, as circles: hidden from the map, `classify` unchanged (0234).
 """
 
 from __future__ import annotations
@@ -25,6 +26,8 @@ _WEB: Final = frozenset({"http", _HTTPS})
 _TILE_FIELDS: Final = ("{z}", "{x}", "{y}")
 _SUBDOMAIN: Final = "{s}"
 _ANY_SUBDOMAIN: Final = "*"
+ASIDE_RADIUS_M: Final = 150  # a cluster's cell is about 200 m wide
+MAX_ASIDE_RADIUS_M: Final = 50_000
 
 
 class FolderPosition(BaseModel):
@@ -37,6 +40,20 @@ class FolderPosition(BaseModel):
     longitude: float = Field(ge=-180, le=180)
 
 
+class IgnoredSpot(BaseModel):
+    """A cluster not worth a name: every cluster whose middle lies in this circle.
+
+    A position, not the cluster's rank: the ranks and the grid may change between
+    versions, and a later audit moves a middle by a few metres.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    radius_m: float = Field(default=ASIDE_RADIUS_M, gt=0, le=MAX_ASIDE_RADIUS_M)
+
+
 class PlacesSettings(BaseModel):
     """`[places]` — the tile server of the map, and the credit it asks for."""
 
@@ -46,6 +63,7 @@ class PlacesSettings(BaseModel):
     attribution: str = OSM_ATTRIBUTION
     nominatim_url: str = OSM_NOMINATIM
     folders: tuple[FolderPosition, ...] = ()
+    ignored: tuple[IgnoredSpot, ...] = ()
 
     @field_validator("nominatim_url")
     @classmethod

@@ -54,7 +54,7 @@ category = "Parties/Christmas"
 | `camera` | A regular expression searched in the make and model. | `pattern = '(?i)dji'` |
 | `subject` | What a local vision model sees, for the photos no other rule decided ([step 8](08-subjects-from-a-local-model.md)). | `categories = ["School", "Animals"]` |
 | `person` | Someone you named on the [`people`](../reference-people.md) page shows in the event (below). | `names = ["Chloé"]` |
-| `place` | The GPS position lies in one of your places ([step 9](09-places-from-gps.md)). | — |
+| `place` | The GPS position lies in one of your places ([step 9](09-places-from-gps.md)), or the photo was given that place on the map of [`places`](../commands/places.md) (its GPS being wrong). | — |
 | `trip` | An event far from home, named after its country and town, offline ([step 9](09-places-from-gps.md)). | — |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
 

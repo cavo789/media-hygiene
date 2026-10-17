@@ -243,6 +243,12 @@ msgstr[1] ""
 msgid "({latitude}, {longitude}) is not a position on the Earth"
 msgstr ""
 
+#, python-brace-format
+msgid "+ {n} photo placed by hand"
+msgid_plural "+ {n} photos placed by hand"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
@@ -706,6 +712,9 @@ msgid "B"
 msgstr ""
 
 msgid "Back after being set aside"
+msgstr ""
+
+msgid "Back on the map: taken out of config.toml."
 msgstr ""
 
 msgid "Back to the photos"
@@ -1213,6 +1222,16 @@ msgstr ""
 
 msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"Delete the place {name}? Its {n} photo placed by hand goes back to its "
+"GPS. The photos stay where they are."
+msgid_plural ""
+"Delete the place {name}? Its {n} photos placed by hand go back to their "
+"GPS. The photos stay where they are."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
@@ -1986,7 +2005,20 @@ msgid ""
 "workbook, then run 'sort' again."
 msgstr ""
 
+msgid "Give these photos to…"
+msgstr ""
+
 msgid "Give your photos words"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Give {files} to {place}? Their GPS is then ignored for this place; the "
+"photos stay where they are."
+msgstr ""
+
+#, python-brace-format
+msgid "Given to {place} in config.toml."
 msgstr ""
 
 msgid "Gives each file a second name in the album."
@@ -2029,6 +2061,11 @@ msgid "HTML report: {path}"
 msgstr ""
 
 msgid "Height"
+msgstr ""
+
+msgid ""
+"Hidden from the map and from the lists; 'classify' reads them as before "
+"(a cluster stays unnamed)."
 msgstr ""
 
 msgid "Holidays and outings"
@@ -2801,6 +2838,9 @@ msgstr ""
 msgid "No photo or video directly in this folder: open a subfolder."
 msgstr ""
 
+msgid "No photo to give: none ticked, or none reachable."
+msgstr ""
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
@@ -2887,7 +2927,13 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "Not a place worth a name: hide it from the map"
+msgstr ""
+
 msgid "Not a town"
+msgstr ""
+
+msgid "Not a town: never read as one, in any folder"
 msgstr ""
 
 #, python-brace-format
@@ -2935,6 +2981,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not saved (error {status})."
+msgstr ""
+
+msgid "Not saved: config.toml, read back, does not say so."
 msgstr ""
 
 #, python-brace-format
@@ -3287,6 +3336,19 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Photos given one of your places by hand, written by the map of 'places' "
+"(Give these photos to…) when their GPS position is wrong, as a phone "
+"indoors often records: they go to that place whatever their position "
+"says, and their trips are measured from it. They are known by their "
+"content (size, then SHA-256), so moving or renaming them changes nothing;"
+" a photo edited since falls back to its GPS. path is where it was, for "
+"you to read only. Deleting a place on the map deletes its entry."
+msgstr ""
+
+msgid "Photos placed by hand"
+msgstr ""
+
+msgid ""
 "Photos that answer for each event (the sharpest, spread over its span); "
 "the other files of the event follow them. Smaller photos (shorter side, "
 "in pixels) are never sent: the model invents details on thumbnails."
@@ -3518,6 +3580,9 @@ msgid "Reports"
 msgstr ""
 
 msgid "Reports (newest first)"
+msgstr ""
+
+msgid "Restore"
 msgstr ""
 
 msgid ""
@@ -3994,6 +4059,12 @@ msgstr ""
 msgid "Set aside"
 msgstr ""
 
+msgid "Set aside from the map"
+msgstr ""
+
+msgid "Set aside in config.toml: hidden from the map."
+msgstr ""
+
 msgid "Set aside on"
 msgstr ""
 
@@ -4010,6 +4081,9 @@ msgid ""
 msgstr ""
 
 msgid "Set the extra copies aside (asks first)"
+msgstr ""
+
+msgid "Set this cluster aside"
 msgstr ""
 
 msgid "Setting"
@@ -4238,11 +4312,17 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
+msgid "Take it back: its GPS decides again"
+msgstr ""
+
 msgid "Take out of the set aside"
 msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+msgid "Taken out of config.toml: its GPS decides again."
 msgstr ""
 
 #, python-brace-format
@@ -4313,6 +4393,13 @@ msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr ""
 
 msgid "The classify workbook; the latest classify run's by default."
+msgstr ""
+
+msgid ""
+"The clusters set aside on the map of 'places' (✕: not a place worth a "
+"name), written by the map: every cluster whose middle lies within "
+"radius_m metres of the position is hidden from the map and its lists. "
+"'classify' does not read them: such a cluster is just unnamed."
 msgstr ""
 
 msgid "The collection once sorted"
@@ -4763,6 +4850,11 @@ msgid "The {top} largest events hold {held} of them."
 msgstr ""
 
 msgid ""
+"Their GPS is ignored for this place: they belong to it, wherever they are"
+" now (found by their content)."
+msgstr ""
+
+msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
 msgstr ""
@@ -4867,6 +4959,12 @@ msgid "This workbook belongs to another classify run."
 msgstr ""
 
 msgid "This workbook was written by another version: it cannot be checked."
+msgstr ""
+
+msgid "Tick at least one photo."
+msgstr ""
+
+msgid "Ticked: given to the place you choose above"
 msgstr ""
 
 #, python-brace-format
@@ -5021,6 +5119,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Unexpected extra argument: {values}"
+msgstr ""
+
+msgid "Unknown place or cluster: reload the page."
 msgstr ""
 
 #, python-brace-format
@@ -5392,6 +5493,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "[[classify.place_photos]] names '{name}', which is no [[classify.places]]"
+msgstr ""
+
+#, python-brace-format
 msgid "[[{table}]] number {number}"
 msgstr ""
 
@@ -5418,6 +5523,9 @@ msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'
 msgstr ""
 
 msgid "a burst shot you set aside"
+msgstr ""
+
+msgid "a circle holding no cluster now"
 msgstr ""
 
 msgid "a file changed since the audit"
@@ -6151,6 +6259,9 @@ msgid "not checked"
 msgstr ""
 
 msgid "not created yet: the first clean creates it"
+msgstr ""
+
+msgid "not found now: edited since, or its folder not mounted"
 msgstr ""
 
 msgid "not found where the plan or a sort put it"
@@ -7621,6 +7732,18 @@ msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}
 msgstr ""
 
 #, python-brace-format
+msgid "{name} — not a town"
+msgstr ""
+
+#, python-brace-format
+msgid "{name}: never a town again (config.toml)."
+msgstr ""
+
+#, python-brace-format
+msgid "{name}: read as a town again (config.toml)."
+msgstr ""
+
+#, python-brace-format
 msgid "{name}: {count} photos"
 msgstr ""
 
@@ -7880,6 +8003,10 @@ msgstr ""
 msgid ""
 "{place} is unknown to version {version}: a typo, or a setting of a newer "
 "version?"
+msgstr ""
+
+#, python-brace-format
+msgid "{place} — {km} km"
 msgstr ""
 
 #, python-brace-format

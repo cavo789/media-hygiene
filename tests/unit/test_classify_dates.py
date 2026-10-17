@@ -21,7 +21,7 @@ from media_hygiene.classify.dates import (
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.models import DateSource, MediaInput
-from media_hygiene.config.classify_settings import NAME_DATES
+from media_hygiene.config.classify_defaults import NAME_DATES
 from media_hygiene.plan.name_rules import compile_patterns
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.scan.models import VisualFacts

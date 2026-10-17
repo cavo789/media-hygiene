@@ -2,10 +2,11 @@
 
 `GET /` serves the page, `GET /leaflet.js` and `/leaflet.css` the vendored library,
 `GET /api/state` the places and the clusters, `GET /api/cluster/<rank>` and
-`GET /preview/<key>.jpg` the first photos of one (`photos`); `POST /api/places`
-saves every place into `config.toml`, `POST /api/search` finds towns offline,
-`POST /api/osm` areas online (`osm_search`). Like `review`: loopback hosts only,
-JSON bodies only, from the page's own origin.
+`GET /preview/<key>.jpg` the first photos of one (`photos`); the board's changes
+(`posts`: the places, a cluster set aside, photos given a place) go into
+`config.toml`, `POST /api/search` finds towns offline, `POST /api/osm` areas online
+(`osm_search`). Like `review`: loopback hosts only, JSON bodies only, from the page's
+own origin.
 """
 
 from __future__ import annotations
@@ -15,14 +16,13 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import ValidationError
 
-from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.i18n import _
-from media_hygiene.places.config_file import PlaceEdit
 from media_hygiene.places.folders import FolderAct
 from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
 from media_hygiene.places.photos import PhotoSources, photo_response
+from media_hygiene.places.posts import BOARD_POSTS, board_post
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
@@ -39,7 +39,6 @@ if TYPE_CHECKING:
 
 PAGE_PATH: Final = "/"
 STATE_PATH: Final = "/api/state"
-SAVE_PATH: Final = "/api/places"
 SEARCH_PATH: Final = "/api/search"
 FOLDER_PATH: Final = "/api/folder"  # POST: save, forget or ignore a folder (0231)
 # Sends only `http://127.0.0.1:<port>` to the tile server, which asks for a referrer.
@@ -51,21 +50,7 @@ PAGE_POLICY: Final = (
     "frame-ancestors 'none'"
 )
 _GET, _POST = "GET", "POST"
-_POSTS: Final = frozenset({SAVE_PATH, SEARCH_PATH, OSM_PATH, FOLDER_PATH})
-
-
-class _PlaceIn(PersonalPlace):
-    """A place as the page sends it: its rank in the file, None when new."""
-
-    key: int | None = None
-
-
-class _Save(BaseModel):
-    """`POST /api/places`: every place."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    places: tuple[_PlaceIn, ...]
+_POSTS: Final = frozenset({SEARCH_PATH, OSM_PATH, FOLDER_PATH, *BOARD_POSTS})
 
 
 @dataclass(frozen=True, slots=True)
@@ -110,17 +95,18 @@ class PlacesApp:
         path = request.path
         if request.method == _GET:
             return await self._get(path)
-        if request.method != _POST or path not in _POSTS:
-            return Response(HTTPStatus.METHOD_NOT_ALLOWED)
-        refused = refused_post(request)
+        refused = (
+            Response(HTTPStatus.METHOD_NOT_ALLOWED)
+            if request.method != _POST or path not in _POSTS
+            else refused_post(request)
+        )
         if refused is not None:
             return refused
         if path == OSM_PATH:
             return await search_osm(self.osm, request)
-        answer = {SAVE_PATH: self._save, FOLDER_PATH: self._folder}.get(
-            path, self._search
-        )
-        return answer(request)
+        if path in BOARD_POSTS:
+            return await board_post(self.board, request)
+        return (self._folder if path == FOLDER_PATH else self._search)(request)
 
     async def _get(self, path: str) -> Response:
         """Serve the page, its state, a cluster's photos, or Leaflet.
@@ -140,26 +126,6 @@ class PlacesApp:
         if photos is not None:
             return photos
         return self.assets.get(path, Response(HTTPStatus.NOT_FOUND))
-
-    def _save(self, request: Request) -> Response:
-        """Save every place into `config.toml`.
-
-        Args:
-            request: `POST /api/places`.
-
-        Returns:
-            The new state, or an error with a translated message.
-        """
-        try:
-            body = _Save.model_validate_json(request.body)
-            edits = [
-                PlaceEdit(place.key, PersonalPlace(**place.model_dump(exclude={"key"})))
-                for place in body.places
-            ]
-            self.board.save(edits)
-        except (ValueError, OSError) as exc:  # ValidationError included
-            return save_refused(exc)
-        return json_response(HTTPStatus.OK, self.board.state())
 
     def _folder(self, request: Request) -> Response:
         """Save a folder's position, forget it, or say its name is no town.

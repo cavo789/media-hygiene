@@ -21,7 +21,8 @@ from media_hygiene.classify.models import Band, DateSource, Dating
 from media_hygiene.classify.plan_build import build_plan
 from media_hygiene.classify.workbook.rows import file_rows
 from media_hygiene.classify.workbook.sheets import Labels
-from media_hygiene.config.classify_settings import NAME_DATES, ClassifySettings
+from media_hygiene.config.classify_defaults import NAME_DATES
+from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.clock_settings import parse_shift
 from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.config.settings import Settings

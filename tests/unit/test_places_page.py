@@ -33,6 +33,8 @@ def _page() -> str:
         folders_path="/api/folders",
         folder_photos="/api/folder/",
         folder_path="/api/folder",
+        aside_path="/api/aside",
+        photos_path="/api/place-photos",
         osm_path="",
         osm_host="",
         tiles="https://tile.example/{z}/{x}/{y}.png",

@@ -139,6 +139,39 @@ def test_save_forget_and_ignore_are_read_back(
     assert read_ignored(config) == ("Saint-Jean de Luz",)
 
 
+def test_a_name_ignored_from_its_line_is_restored_from_the_set_aside_fold(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0235: the line's ✕ ignores the name, Restore lists it again; comments kept."""
+    runner = _tree(locations, monkeypatch)
+    config = locations.config_file
+    comments = [
+        line for line in config.read_text("utf-8").splitlines() if line.startswith("#")
+    ]
+    assert comments  # the default file, written by the audit
+    name = "Saint-Jean de Luz"
+    answers = _map(
+        monkeypatch,
+        runner,
+        [
+            ("GET /api/folders", None),
+            ("POST /api/folder", {"action": "ignore", "folder": HOST}),
+            ("POST /api/folder", {"action": "restore", "folder": name.upper()}),
+        ],
+    )
+    assert json.loads(answers[0].body)["ignored"] == []
+    ignored = json.loads(answers[1].body)
+    assert (ignored["folders"], ignored["ignored"]) == ([], [name])
+    restored = json.loads(answers[2].body)
+    assert restored["ignored"] == []
+    assert [row["folder"] for row in restored["folders"]] == [HOST]
+    assert not read_ignored(config)
+    kept = [
+        line for line in config.read_text("utf-8").splitlines() if line.startswith("#")
+    ]
+    assert kept == comments
+
+
 def test_a_saved_folder_renamed_since_is_not_found_and_xmp_says_so(
     locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:

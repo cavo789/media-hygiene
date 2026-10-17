@@ -14,6 +14,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.folder_towns import folder_town_spots
+from media_hygiene.classify.hand_placed import placed_by_hand
 from media_hygiene.classify.layout import GeoValues
 from media_hygiene.classify.models import DateSource
 from media_hygiene.classify.trip_walk import Group, TripWalk
@@ -65,10 +66,13 @@ def find_whereabouts(
     events, datings = known
     points = {file.path: point for file in files if (point := point_of(file))}
     named = folder_town_spots(files, points, config)
+    # A photo given a place by hand (0237): there, whatever its GPS; trips from there.
+    hand = placed_by_hand(files, settings)
+    points |= {path: place.point for path, place in hand.items()}
     if not points:
         return Whereabouts(folder_towns=named)
     return Whereabouts(
-        place_spots(points, events, settings.places),
+        place_spots(points, events, (settings.places, hand)),
         trip_spots(TripFacts(points, events, datings), settings, towns),
         named,
     )

@@ -163,6 +163,11 @@ nominatim_url = "https://nominatim.openstreetmap.org"
 # folder = 'C:\Photos\2019\Douarnenez'
 # latitude = 48.0954
 # longitude = -4.329
+{{ comment(_("The clusters set aside on the map of 'places' (✕: not a place worth a name), written by the map: every cluster whose middle lies within radius_m metres of the position is hidden from the map and its lists. 'classify' does not read them: such a cluster is just unnamed.")) }}
+# [[places.ignored]]
+# latitude = 50.30012
+# longitude = 5.10021
+# radius_m = 150
 
 
 [tags]
@@ -373,6 +378,13 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # longitude = 5.0
 # radius_m = 200
 # home = true
+
+{{ comment(_("Photos given one of your places by hand, written by the map of 'places' (Give these photos to…) when their GPS position is wrong, as a phone indoors often records: they go to that place whatever their position says, and their trips are measured from it. They are known by their content (size, then SHA-256), so moving or renaming them changes nothing; a photo edited since falls back to its GPS. path is where it was, for you to read only. Deleting a place on the map deletes its entry.")) }}
+# [[classify.place_photos]]
+# place = "{{ _("Home") }}"
+# photos = [
+#     { sha256 = "<its SHA-256>", size = 2481152, path = 'C:\Photos\IMG_1234.jpg' },
+# ]
 
 {{ comment(_("Your names for the towns: the towns are named after GeoNames, in English or in their own language (Brussels, Brugge, Gent). Write the exact GeoNames name, then yours: trips, {city}, the places page and the folder_town rule use yours; a folder named either way matches.")) }}
 # [classify.town_names]

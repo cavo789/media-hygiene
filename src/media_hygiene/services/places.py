@@ -25,7 +25,6 @@ from media_hygiene.places.app import (
     FOLDER_PATH,
     PAGE_POLICY,
     PAGE_REFERRER,
-    SAVE_PATH,
     SEARCH_PATH,
     STATE_PATH,
     PlacesApp,
@@ -36,6 +35,7 @@ from media_hygiene.places.folder_rows import FolderContext
 from media_hygiene.places.folders import FolderDesk
 from media_hygiene.places.osm_search import OSM_PATH, online_search
 from media_hygiene.places.photos import CLUSTER_PREFIX, FOLDER_PREFIX, FOLDERS_PATH
+from media_hygiene.places.posts import ASIDE_PATH, PHOTOS_PATH, SAVE_PATH
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.ending import run_server
 from media_hygiene.review.http import ContentType, Response
@@ -123,6 +123,8 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
         folders_path=FOLDERS_PATH,
         folder_photos=FOLDER_PREFIX,
         folder_path=FOLDER_PATH,
+        aside_path=ASIDE_PATH,
+        photos_path=PHOTOS_PATH,
         osm_path=OSM_PATH if osm else "",
         osm_host=osm.host if osm else "",
         tiles=settings.tiles,

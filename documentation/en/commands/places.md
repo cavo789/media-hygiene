@@ -31,8 +31,8 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed: the positions come from the cache. The photo folders, read-only (`:ro`), show the photos of a cluster; without them, the map works but shows no photo. |
 | Needs | `/cache` (the positions the audits recorded, and the previews), `/config` (where the places are saved), your photo folders read-only, and `-p 127.0.0.1:8088:8088`. |
-| Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file. |
-| Undo | Delete a place on the map, or its lines in `config.toml`. |
+| Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file; also the folders' positions (`[[places.folders]]`), the names that are no town (`folder_town_ignore`), the clusters set aside (`[[places.ignored]]`) and the photos given a place by hand (`[[classify.place_photos]]`). Each change is read back from the file before the page shows it. |
+| Undo | Delete a place on the map, or its lines in `config.toml`; **Restore** what you set aside; ✕ a photo given by hand in its place's editor. |
 | With `mh` | `mh places`: your photo folders are mounted read-only and the port is published for you. |
 
 ## Run it
@@ -73,6 +73,33 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   sidecars. **Forget its position** takes it out; **Not a town** adds the folder's name to
   `[classify] folder_town_ignore` (a folder `Martin` is a first name, not Martin in Slovakia).
   A saved folder renamed or moved since shows ⚠ *not found*: rename it back, or forget it.
+- **✕ at the end of a line** sets it aside in one click, without a question (Restore undoes
+  it):
+  - on a cluster (*Not a place worth a name*: two children in a car), the cluster leaves the list
+    and the map, and the next one moves up. It is saved as a circle of 150 metres around its middle
+    (`[[places.ignored]]`, `radius_m` to change by hand): a later audit that moves the middle by a
+    few metres still matches, and every cluster in that circle goes with it. **✕ Set this cluster
+    aside** in its drawer does the same;
+  - on a folder named after a town (*Léo* is the cat, not a town), its name goes into
+    `[classify] folder_town_ignore`, as **Not a town** does in the drawer: the name is then never
+    read as a town, in any folder. A folder with a saved position (📌) has no ✕: **Forget its
+    position** stays in its drawer.
+
+  The **Set aside from the map** list, folded, at the bottom, gives both, each with **Restore**.
+  [`classify`](classify.md) does not read the clusters set aside: such a cluster is just unnamed
+  (the town of a `trip` rule still names it).
+- **Give these photos to…**, in the drawer of a cluster, when its photos were taken at a place
+  you already named but their GPS says elsewhere (a phone indoors often records a position a few
+  streets away): pick the place, the nearest first with its distance (*Geer — 1.4 km*). Every
+  photo of the cluster is given to it, those of the drawer you untick excepted (one really taken
+  in the village). Only these photos: no larger circle (it would name the whole village) and no
+  second zone (a real photo taken at that spot would be named too). They are saved in
+  `[[classify.place_photos]]` by their **content** (size and SHA-256, the host path only for you
+  to read): moved or renamed since (`sort`, `undo`, a folder renamed in Explorer), they are still
+  found; a photo edited since (new content) falls back to its GPS. The cluster's count drops (all
+  given, it leaves the list); the place's label says *+ 3 photos placed by hand*, and its editor
+  lists them, each with ✕ to take it back. Renaming the place keeps them; deleting it asks, and
+  takes them with it.
 - **Click a circle, or anywhere**, to name a place; set its radius with the slider, drag its
   marker. Tick **Home** for your home: trips are measured from it.
 - **Find a town** searches the towns shipped with the image, offline.

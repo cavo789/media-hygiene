@@ -32,8 +32,8 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : les positions viennent du cache. Les dossiers de photos, en lecture seule (`:ro`), montrent les photos d'un groupe ; sans eux, la carte marche mais ne montre aucune photo. |
 | Il faut | `/cache` (les positions notées par les audits, et les aperçus), `/config` (où les lieux sont enregistrés), vos dossiers de photos en lecture seule, et `-p 127.0.0.1:8088:8088`. |
-| Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier. |
-| Annuler | Supprimez un lieu sur la carte, ou ses lignes dans `config.toml`. |
+| Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier ; aussi les positions des dossiers (`[[places.folders]]`), les noms qui ne sont pas des villes (`folder_town_ignore`), les groupes écartés (`[[places.ignored]]`) et les photos données à la main à un lieu (`[[classify.place_photos]]`). Chaque changement est relu dans le fichier avant que la page ne le montre. |
+| Annuler | Supprimez un lieu sur la carte, ou ses lignes dans `config.toml` ; **Rétablir** ce que vous avez écarté ; ✕ sur une photo donnée à la main, dans l'éditeur de son lieu. |
 | Avec `mh` | `mh places` : vos dossiers de photos sont montés en lecture seule et le port est publié pour vous. |
 
 ## Lancer
@@ -78,6 +78,33 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   du dossier à `[classify] folder_town_ignore` (un dossier `Martin` est un prénom, pas Martin en
   Slovaquie). Un dossier enregistré, renommé ou déplacé depuis, affiche ⚠ *introuvable* :
   rendez-lui son nom, ou oubliez sa position.
+- **✕ au bout d'une ligne** l'écarte d'un clic, sans question (Rétablir l'annule) :
+  - sur un groupe (*Pas un lieu qui mérite un nom* : deux enfants dans une voiture), le groupe
+    quitte la liste et la carte, et le suivant remonte. Il est enregistré comme un cercle de
+    150 mètres autour de son milieu (`[[places.ignored]]`, `radius_m` à changer à la main) : un
+    audit suivant qui déplace le milieu de quelques mètres le retrouve, et tout groupe dans ce
+    cercle part avec lui. **✕ Écarter ce groupe**, dans son tiroir, fait la même chose ;
+  - sur un dossier au nom d'une ville (*Léo* est le chat, pas une ville), son nom va dans
+    `[classify] folder_town_ignore`, comme **Pas une ville** dans le tiroir : ce nom n'est plus
+    jamais lu comme une ville, dans aucun dossier. Un dossier dont la position est enregistrée
+    (📌) n'a pas de ✕ : **Oublier sa position** reste dans son tiroir.
+
+  La liste **Écartés de la carte**, repliée, en bas, donne les deux, chacun avec **Rétablir**.
+  [`classify`](classify.md) ne lit pas les groupes écartés : un tel groupe est simplement sans
+  nom (la ville d'une règle `trip` le nomme toujours).
+- **Donner ces photos à…**, dans le tiroir d'un groupe, quand ses photos ont été prises dans un
+  lieu déjà nommé mais que leur GPS dit ailleurs (un téléphone à l'intérieur note souvent une
+  position à quelques rues de là) : choisissez le lieu, le plus proche d'abord avec sa distance
+  (*Geer — 1,4 km*). Toutes les photos du groupe lui sont données, sauf celles du tiroir que vous
+  décochez (une vraiment prise dans le village). Ces photos seulement : pas de cercle plus grand
+  (il nommerait tout le village) ni de deuxième zone (une vraie photo prise à cet endroit serait
+  nommée aussi). Elles sont enregistrées dans `[[classify.place_photos]]` par leur **contenu**
+  (taille et SHA-256, le chemin seulement pour vous) : déplacées ou renommées depuis (`sort`,
+  `undo`, un dossier renommé dans l'Explorateur), elles sont retrouvées ; une photo modifiée
+  depuis (nouveau contenu) revient à son GPS. Le nombre du groupe baisse (toutes données, il
+  quitte la liste) ; l'étiquette du lieu dit *+ 3 photos placées à la main*, et son éditeur les
+  liste, chacune avec ✕ pour la reprendre. Renommer le lieu les garde ; le supprimer demande, et
+  les emporte avec lui.
 - **Cliquez sur un cercle, ou n'importe où**, pour nommer un lieu ; réglez son rayon avec le
   curseur, déplacez son repère. Cochez **Maison** pour votre domicile : les voyages se mesurent
   depuis lui.

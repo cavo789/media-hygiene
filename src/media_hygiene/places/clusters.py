@@ -43,13 +43,15 @@ class Cluster:
     """Files taken close together: their middle, their numbers, the first ones (0232).
 
     `pictures` counts every file that is not a video; `members` keeps at most
-    `MEMBERS_KEPT` pictures with a preview and as many videos, listed by name.
+    `MEMBERS_KEPT` pictures with a preview and as many videos, listed by name;
+    `files` every file, to give them to a place (0237).
     """
 
     point: Point
     pictures: int
     videos: int = 0
     members: tuple[Located, ...] = ()
+    files: tuple[MediaFile, ...] = ()
 
     @property
     def count(self) -> int:
@@ -80,6 +82,7 @@ def clusters_of(located: Iterable[Located]) -> tuple[Cluster, ...]:
     members: defaultdict[tuple[int, int], tuple[list[Located], list[Located]]] = (
         defaultdict(lambda: ([], []))
     )
+    files: defaultdict[tuple[int, int], list[MediaFile]] = defaultdict(list)
     for item in located:
         point = item.point
         key = (
@@ -91,6 +94,7 @@ def clusters_of(located: Iterable[Located]) -> tuple[Cluster, ...]:
         total[1] += point.longitude
         video = item.file.kind is MediaKind.VIDEO
         total[3 if video else 2] += 1
+        files[key].append(item.file)
         kept = members[key][1 if video else 0]
         if (video or item.file.kind in SHOWN) and len(kept) < MEMBERS_KEPT:
             kept.append(item)
@@ -103,6 +107,7 @@ def clusters_of(located: Iterable[Located]) -> tuple[Cluster, ...]:
             int(pictures),
             int(videos),
             (*members[key][0], *members[key][1]),
+            tuple(files[key]),
         )
         for key, (lat, lon, pictures, videos) in sums.items()
     ]

@@ -16,7 +16,12 @@ from media_hygiene.config.places_settings import FolderPosition
 from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
 from media_hygiene.places.clusters import MEMBERS_KEPT, SHOWN
-from media_hygiene.places.config_folders import ignore_name, save_folder
+from media_hygiene.places.config_folders import (
+    ignore_name,
+    read_ignored,
+    restore_name,
+    save_folder,
+)
 from media_hygiene.places.drawer_rows import Shown, drawer_rows
 from media_hygiene.places.folder_rows import folder_rows
 from media_hygiene.scan.filters import media_kind
@@ -35,6 +40,7 @@ class FolderAction(StrEnum):
     SAVE = "save"  # its position, the pin where it was dropped
     FORGET = "forget"  # its saved position: back to its town's centre, or none
     IGNORE = "ignore"  # its name is no town: `folder_town_ignore`
+    RESTORE = "restore"  # a name ignored is a town again (0235): `folder` is the name
 
 
 class FolderAct(BaseModel):
@@ -69,10 +75,12 @@ class FolderDesk:
 
         Returns:
             Each folder's line: its town, its position, saved or not, found or not,
-            its files without a position and how many of them are videos.
+            its files without a position and how many of them are videos; the
+            folder names that are never towns (`ignored`).
         """
         self._rows = folder_rows(self._inputs, self._context)
         return {
+            "ignored": list(read_ignored(self._context.config_file)),
             "folders": [
                 {
                     "rank": rank,
@@ -89,11 +97,11 @@ class FolderDesk:
                     ),
                 }
                 for rank, row in enumerate(self._rows)
-            ]
+            ],
         }
 
     def act(self, act: FolderAct) -> dict[str, object]:
-        """Save, forget or ignore, then read the file back.
+        """Save, forget, ignore or restore, then read the file back.
 
         Args:
             act: What the page asks, for a folder it listed.
@@ -105,10 +113,13 @@ class FolderDesk:
             ValueError: The folder is not one of the list.
             OSError: The file cannot be written.
         """
+        config_file = self._context.config_file
+        if act.action is FolderAction.RESTORE:
+            restore_name(config_file, act.folder)
+            return self.state()
         if act.folder not in {row.folder for row in self._rows}:
             message = _("{folder} is not one of the folders listed")
             raise ValueError(message.format(folder=act.folder))
-        config_file = self._context.config_file
         if act.action is FolderAction.SAVE:
             position = FolderPosition(
                 folder=act.folder, latitude=act.latitude, longitude=act.longitude
