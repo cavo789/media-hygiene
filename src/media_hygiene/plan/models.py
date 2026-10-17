@@ -48,7 +48,7 @@ class KeepDecision:
 
 
 @dataclass(frozen=True, slots=True)
-class CleanPlan:
+class CleanPlan:  # pylint: disable=too-many-instance-attributes
     """Everything `clean` would do, computed by `audit`."""
 
     decisions: tuple[KeepDecision, ...]
@@ -58,6 +58,7 @@ class CleanPlan:
     sidecars: tuple[Sidecar, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
     delete_copies: bool = False  # `clean --delete`: exact copies deleted, not moved
+    chosen: tuple[MediaFile, ...] = ()  # set aside in `search` (`clean --decisions`)
 
     @property
     def removable_count(self) -> int:
@@ -116,16 +117,11 @@ class CleanPlan:
         """Tell whether there is nothing to clean.
 
         Returns:
-            True when no duplicate copy, near duplicate, burst shot set aside,
-            broken file or orphan sidecar is actionable.
+            True when no duplicate copy, near duplicate, burst shot or file set
+            aside, broken file or orphan sidecar is actionable.
         """
-        return not (
-            self.removable_count
-            or self.broken
-            or self.near_count
-            or self.burst_count
-            or self.orphans
-        )
+        moved = self.near_count or self.burst_count or self.chosen or self.orphans
+        return not (self.removable_count or self.broken or moved)
 
     @property
     def near_count(self) -> int:
@@ -166,7 +162,8 @@ class CleanPlan:
         near = {file.path for group in self.near for file in group.removable}
         bursts = {file.path for choice in self.bursts for file in choice.discarded}
         broken = {item.file.path for item in self.broken}
-        return frozenset(exact | near | bursts | broken)
+        chosen = {file.path for file in self.chosen}
+        return frozenset(exact | near | bursts | broken | chosen)
 
 
 @dataclass(frozen=True, slots=True)

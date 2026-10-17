@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{# The folder view of `media-hygiene browse` (the search's own server): the tree of the
+   library's folders on the left, the photos and videos of the folder chosen on the
+   right. The photos are never changed: the files picked can be set aside, saved at
+   once in the decisions file for `clean --decisions`. Keyboard: the arrows move,
+   a click picks (Ctrl adds, Shift a range), Space picks, Ctrl+A picks the folder,
+   Delete sets aside, Enter opens the picture, ←/→ the previous and next, Escape
+   closes it. The script is `browse.js.j2`. #}
+{% set texts = {
+  "files": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "counts": _("{photos} photos · {videos} videos · {size}"),
+  "empty": _("No photo or video directly in this folder: open a subfolder."),
+  "choose": _("Choose a folder on the left."),
+  "offline": _("The page is not running any more: start it again."),
+  "failed": _("The page failed (error {status})."),
+  "noPreview": _("No preview"),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": _("marked to set aside"),
+  "saving": _("Saving…"),
+  "notSaved": _("Nothing was saved: {error}"),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Your folders") }} — media-hygiene</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --chip: #eef1f4; --bad: #cf222e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --chip: #21262d; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
+           border-bottom: 1px solid var(--line); }
+  h1 { font-size: 1.1rem; margin: 0 0 4px; display: flex; gap: 16px; align-items: baseline;
+       flex-wrap: wrap; }
+  h1 a { font-size: .9rem; font-weight: 400; color: var(--accent); }
+  label { font-size: .85rem; color: var(--muted); }
+  select { padding: 4px 6px; font: inherit; color: var(--text); background: var(--bg);
+           border: 1px solid var(--line); border-radius: 6px; }
+  button { padding: 6px 14px; font: inherit; color: #fff; background: var(--accent);
+           border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
+  button.plain { color: var(--accent); background: transparent; }
+  button:disabled { opacity: .45; cursor: default; }
+  #actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+  .hint, #status { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+  #chosen { font-size: .85rem; margin: 6px 0 0; }
+  #chosen.error, #status.error { color: var(--bad); font-weight: 600; }
+  .layout { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; }
+  @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+  nav { padding: 12px 8px; border-right: 1px solid var(--line); overflow-wrap: anywhere; }
+  nav ul { list-style: none; margin: 0; padding-left: 14px; }
+  nav > ul { padding-left: 0; }
+  .node { display: flex; gap: 4px; align-items: baseline; }
+  .toggle { width: 1.2em; padding: 0; border: 0; color: var(--muted); background: none; }
+  .folder { flex: 1; padding: 2px 6px; text-align: left; color: var(--text); background: none;
+            border: 1px solid transparent; border-radius: 6px; }
+  .folder.open { border-color: var(--accent); }
+  .folder small { display: block; color: var(--muted); font-size: .75rem; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+         gap: 10px; padding: 16px; align-content: start; }
+  .file { position: relative; background: var(--card); border: 2px solid var(--line);
+          border-radius: 10px; overflow: hidden; cursor: pointer; outline: none; }
+  .file:focus, .file.current { border-color: var(--accent); }
+  .file.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+  .file img, .file video, .file .empty { display: block; width: 100%; aspect-ratio: 4 / 3;
+                                         object-fit: cover; background: var(--chip); }
+  .file .empty { display: flex; align-items: center; justify-content: center;
+                 color: var(--muted); font-size: .85rem; }
+  .meta { padding: 4px 8px; font-size: .8rem; }
+  .name { font-weight: 600; overflow-wrap: anywhere; }
+  .muted { color: var(--muted); }
+  .badge { position: absolute; top: 6px; left: 6px; padding: 0 8px; border-radius: 10px;
+           color: #fff; background: var(--bad); font-size: .75rem; font-weight: 600; }
+  #viewer { position: fixed; inset: 0; z-index: 2; display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px; padding: 16px;
+            background: rgba(0, 0, 0, .88); color: #fff; }
+  #viewer.open { display: flex; }
+  #viewer img, #viewer video { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
+  #viewer a { color: #9cd0ff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔒 {{ _("Your folders") }} <a href="{{ search_page }}">{{ _("Search by words") }}</a></h1>
+  <div id="actions">
+    <label>{{ _("Sort by") }}
+      <select id="order">
+        <option value="name">{{ _("name") }}</option>
+        <option value="date">{{ _("date") }}</option>
+      </select></label>
+    <span id="picked"></span>
+    <button id="setAside" type="button" disabled>{{ _("Set aside the picked files") }}</button>
+    <button id="takeBack" class="plain" type="button" disabled>{{ _("Take out of the set aside") }}</button>
+    <button id="unpick" class="plain" type="button" disabled>{{ _("Pick none") }}</button>
+  </div>
+  <p id="status" role="status"></p>
+  <p id="chosen" role="status"></p>
+  <p class="hint">{{ _("A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A the whole folder; Delete (or the button) sets them aside. Enter or a double click opens a picture, ←/→ the next ones. Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
+</header>
+<div class="layout">
+  <nav id="tree" aria-label="{{ _('Your folders') }}"></nav>
+  <main id="grid"></main>
+</div>
+<div id="viewer" role="dialog" aria-modal="true">
+  <img id="large" alt="">
+  <video id="movie" controls hidden></video>
+  <div><span id="viewerName"></span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a></div>
+</div>
+<script>
+{% include "browse.js.j2" %}
+</script>
+</body>
+</html>

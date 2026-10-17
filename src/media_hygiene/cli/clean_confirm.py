@@ -99,6 +99,15 @@ def _actions(plan: CleanPlan) -> list[str]:
             near,
         )
         actions.append(phrase.format(count=human_number(near)))
+    if plan.chosen:
+        chosen = len(plan.chosen)
+        phrase = ngettext(
+            "move {count} file you set aside ({size}) to the quarantine",
+            "move {count} files you set aside ({size}) to the quarantine",
+            chosen,
+        )
+        weight = human_size(sum(file.size for file in plan.chosen))
+        actions.append(phrase.format(count=human_number(chosen), size=weight))
     if broken:
         phrase = ngettext(
             "handle {count} broken file", "handle {count} broken files", broken

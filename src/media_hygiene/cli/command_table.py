@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_audit import audit_command
+from media_hygiene.cli.cmd_browse import browse_command
 from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
@@ -121,6 +122,15 @@ def command_table(
             _(
                 "Find photos by their words in your browser (or as a table): "
                 "the words 'tags' gave them."
+            ),
+        ),
+        (
+            "browse",
+            browse_command,
+            analyse,
+            _(
+                "Walk through your folders in your browser, as in Explorer, and set "
+                "photos aside; 'clean --decisions' then moves them."
             ),
         ),
         (

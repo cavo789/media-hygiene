@@ -61,3 +61,29 @@ when it comes back.
 
 Removing photos no longer needs Explorer: every removal goes through the journal, can be undone,
 and is remembered when the same file comes back — which a deletion in Explorer never is.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `media-hygiene browse` (page command, read-only, `PHOTO_READERS`, `PAGE_COMMANDS`): the search's
+  own server; `/` serves the page the command opens, `/search` and `/browse` both pages, linked to
+  each other.
+- Tree from the index (`search/folder_tree.py`, `search/folders.py`: photos, videos, size with
+  subfolders, files directly in it; mounted folders open, the rest closed); a folder's files by
+  name or date; thumbnails (preview cache), a video by its first frames (`/video/`, `media-src`).
+- Explorer picking (click, Ctrl, Shift, Space, Ctrl+A), Enter/double click large, ←/→; Delete or
+  the button saves under 0215's `chosen` key, read back with count and size; on Ctrl+C, the
+  next step proposed is `clean --decisions`.
+- Menu step, `COMMANDS_TOO`, mkdocs nav, pages `commands/browse.md` (en, fr), reference,
+  "Find in short" step 5 (steps 5-6 renumbered 6-7), French catalog.
+- Tests: `tests/integration/tags/test_browse_page.py` (in `tags/` for its audited-tree fixture),
+  `tests/unit/test_folder_tree.py`, `browse` added to `test_read_only_commands.py`.
+
+### Not done
+- The *Apply now* button when the page is opened from the home page.
+  **Reason:** the home page (0209, 0210) does not exist yet.
+- A capture of the page (`images/browse.webp`).
+  **Reason:** `docs_screenshots` was not run (heavy, needs asking); add a `browse` mode to
+  `tests/support/docs/browser.py` / `served.py` / `browsing.py`, run it, and reference the image
+  in both `commands/browse.md` (the unused-image test fails until it is referenced).
+- "Remembered when it comes back" is not claimed anywhere: it needs 0216.

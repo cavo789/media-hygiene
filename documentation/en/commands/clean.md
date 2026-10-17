@@ -79,7 +79,7 @@ The quarantine keeps the original paths below one folder per run:
 | `--tier exact` | The default: byte-for-byte copies only. |
 | `--tier near` | Also the **sure** near duplicates and re-encoded videos, and the groups decided with `review --near`. [Cleaning, step 11](../clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
 | `--tier near-all` | Every near duplicate, as the report shows them: look at them first. |
-| `--decisions [FILE]` | Apply the choices made in the browser: folder pairs of a report ([cleaning, step 12](../clean/12-decide-pair-by-pair.md)), burst shots set aside and near duplicates decided with [`review`](review.md). Alone, it reads `decisions.json` from `/reports`. |
+| `--decisions [FILE]` | Apply the choices made in the browser: folder pairs of a report ([cleaning, step 12](../clean/12-decide-pair-by-pair.md)), burst shots set aside and near duplicates decided with [`review`](review.md), photos set aside in [`search`](search.md#set-photos-aside). Alone, it reads `decisions.json` from `/reports`. |
 | `--yes`, `-y` | Do not ask (needed without `-it`). |
 | `--delete` | Delete the exact copies for good instead of moving them; `undo` rebuilds them from the kept copy. [Cleaning, step 8](../clean/08-clean.md#need-the-space-at-once---delete) |
 | `--prefer`, `--protect`, `--exclude`, `--exclude-name`, `--ext` | As for [`audit`](audit.md#options): give `clean` the same ones as the audit you read. |

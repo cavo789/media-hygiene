@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.search.days import NAME as DAY
 from media_hygiene.search.query import match_expression
 from media_hygiene.tags.models import TagSource
 
@@ -56,24 +57,32 @@ DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"
 HITS: Final = (
-    "SELECT files.rowid, files.path, files.size, files.mtime_ns, files.media_date"
-    + _FROM
+    "SELECT files.rowid, files.path, files.size, files.mtime_ns,"
+    f" {DAY}(files.media_date)" + _FROM
 )
 COUNT: Final = "SELECT COUNT(*)" + _FROM
 MATCHES: Final = f"{TABLE} MATCH ?"
-YEARS: Final = "CAST(substr(files.media_date, 1, 4) AS INTEGER) BETWEEN ? AND ?"
+# `media_day` reads every form a date is written in (`search/days.py`).
+YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN ? AND ?"
 # `fold` is Python's `casefold`: SQLite's `lower` knows ASCII only.
 FOLD: Final = "fold"
 FOLDER: Final = f"instr({FOLD}(files.path), ?) > 0"
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
-# EXIF writes `2019:07:14`, videos `2019-07-14T…`: compared as one format.
-NEWEST_FIRST: Final = (
-    " ORDER BY replace(substr(files.media_date, 1, 10), ':', '-') DESC, files.path"
-)
+# EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;
+# undated files (NULL) come last.
+NEWEST_FIRST: Final = f" ORDER BY {DAY}(files.media_date) DESC, files.path"
 LIMIT: Final = " LIMIT ?"
 WHERE: Final = " WHERE "
 AND: Final = " AND "
 SOURCE_OF: Final = "SELECT path, size, mtime_ns FROM files WHERE rowid = ?"
+VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns" + _FROM
+# The folder view (`browse`): every file of the index, then those of one folder (the
+# paths between `<folder>/` and `<folder>0`, `0` following `/`: the primary key).
+ALL_FILES: Final = "SELECT path, size FROM files"
+FOLDER_FILES: Final = (
+    f"SELECT rowid, path, size, {DAY}(media_date) FROM files"  # noqa: S608
+    " WHERE path > ? AND path < ?"
+)
 
 
 def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:

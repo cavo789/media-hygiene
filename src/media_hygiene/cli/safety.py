@@ -22,16 +22,16 @@ if TYPE_CHECKING:
 READ_ONLY_COMMANDS: Final = frozenset(
     {"audit", "crosscheck", "classify", "review-sort", "places", "review"}
     | {"inventory", "history", "reports", "config", "status", "launcher", "tags"}
-    | {"search", "people", "menu"}
+    | {"search", "browse", "people", "menu"}
 )
 # The read-only commands that read the photos themselves: they say so when they start.
 PHOTO_READERS: Final = frozenset(
     {"audit", "crosscheck", "classify", "review-sort", "places", "review", "tags"}
-    | {"search", "people"}
+    | {"search", "browse", "people"}
 )
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(
-    {"review", "review-sort", "places", "search", "people"}
+    {"review", "review-sort", "places", "search", "browse", "people"}
 )
 # The commands whose output stream is data (a script, the steps of the menu): every
 # message goes to stderr, and the launcher runs them without a terminal (`-t`) and

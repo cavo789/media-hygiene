@@ -35,25 +35,38 @@ _MAJORITY: Final = 0.5
 _FIRST_YEAR: Final = 1990
 
 
-def exif_date(text: str | None) -> datetime | None:
-    """Read an EXIF date as cameras write it, standard or not.
+def exif_datetime(text: str | None) -> datetime | None:
+    """Read an EXIF date as cameras write it, standard or not, whatever its year.
 
     Args:
         text: `2019:06:12 14:30:12[.subsec]`, or `12/06/2019 14:30:12`…
 
     Returns:
-        The naive local date, or None.
+        The naive local date (sub-seconds dropped), or None when it names no real
+        day (`0000:00:00 00:00:00`, a month or a day 00).
     """
     if not text:
         return None
     head = text.strip().split(".", 1)[0]
     for pattern in _EXIF_FORMATS:
         try:
-            when = datetime.strptime(head, pattern)  # noqa: DTZ007 - EXIF has no zone
+            return datetime.strptime(head, pattern)  # noqa: DTZ007 - EXIF has no zone
         except ValueError:
             continue
-        return when if when.year >= _FIRST_YEAR else None
     return None
+
+
+def exif_date(text: str | None) -> datetime | None:
+    """Read an EXIF date as cameras write it, standard or not, from 1990 on.
+
+    Args:
+        text: `2019:06:12 14:30:12[.subsec]`, or `12/06/2019 14:30:12`…
+
+    Returns:
+        The naive local date, or None (unreadable, or before 1990: a clock not set).
+    """
+    when = exif_datetime(text)
+    return when if when is not None and when.year >= _FIRST_YEAR else None
 
 
 def video_date(written: str | None, zone: tzinfo) -> datetime | None:

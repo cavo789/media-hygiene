@@ -160,6 +160,7 @@ docker run --rm -it `
 | Unreadable file (truncated, damaged) | **Moved** to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | **Untouched**: only if you ask ([step 10](10-review-bursts.md), [step 11](11-near-duplicates.md)). |
+| Photos set aside in [`search`](../commands/search.md#set-photos-aside) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
 | Files of a protected folder | Untouched, always. |
 
 The quarantine holds one folder per clean, named after the run (its date and time), and keeps

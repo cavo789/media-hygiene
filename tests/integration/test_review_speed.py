@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from media_hygiene.report.decisions import BurstStatus, read_decisions
+from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.decisions import read_decisions
 from tests.support.review import (
     JSON_HEADERS,
     Call,

@@ -3,7 +3,8 @@
 The decisions file is read before the audit (a wrong path fails at once) and checked
 after it: made on the same folders, about pairs and burst series that still exist, and
 never asking to delete the copies of a protected folder. Anything else refuses the
-whole file.
+whole file. The files chosen in `search` need no audit: a file holding only them is
+not checked for its folders (`services.chosen_review`).
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from media_hygiene.plan.review import (
 )
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.services.burst_review import burst_choices
+from media_hygiene.services.chosen_review import chosen_files
 from media_hygiene.services.policy import keep_policy
 
 if TYPE_CHECKING:
@@ -78,7 +80,7 @@ def review_choices(
     """
     mapper = runtime.mapper
     ours = mapper.roots_on_host(findings.roots)
-    if sorted(review.roots) != sorted(ours):
+    if not review.only_chosen and sorted(review.roots) != sorted(ours):
         raise DecisionsError(
             _(
                 "These decisions were made on other folders ({theirs}); this run "
@@ -109,6 +111,7 @@ def review_choices(
     return ReviewChoices(
         pairs=tuple(PairChoice(p.kept_in, p.removed_from, a) for p, a in choices),
         bursts=burst_choices(runtime, findings, review.bursts),
+        chosen=chosen_files(runtime, review.chosen),
     )
 
 

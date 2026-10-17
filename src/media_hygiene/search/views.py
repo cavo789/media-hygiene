@@ -46,21 +46,40 @@ class SearchAsked(BaseModel):
         filters = Filters(years, self.folder, self.source)
         return SearchQuery(parse_terms(self.text), filters)
 
+    def found_by(self) -> str:
+        """Name the search in the decisions file, for the user's eyes.
 
-def found_view(found: Found, mapper: HostPathMapper) -> dict[str, object]:
+        Returns:
+            Its words and filters, e.g. `person:"Ann" · 2004-2006`; empty for none.
+        """
+        query = self.query()
+        years = query.filters.years
+        parts = (
+            str.strip(self.text),
+            f"{years[0]}-{years[1]}" if years else "",
+            str.strip(self.folder),
+            query.filters.source.value if query.filters.source else "",
+        )
+        return " · ".join(part for part in parts if part)
+
+
+def found_view(
+    found: Found, mapper: HostPathMapper, chosen: frozenset[str] = frozenset()
+) -> dict[str, object]:
     """Write what a search found for the page.
 
     Args:
         found: The total and the first files.
         mapper: Writes the paths as the user knows them (host paths).
+        chosen: The host paths of the files set aside.
 
     Returns:
         The JSON object.
     """
-    return {
-        "total": found.total,
-        "hits": [_hit_view(hit, mapper) for hit in found.hits],
-    }
+    hits = [_hit_view(hit, mapper) for hit in found.hits]
+    for hit in hits:
+        hit["chosen"] = hit.pop("path") in chosen
+    return {"total": found.total, "hits": hits}
 
 
 def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
@@ -71,7 +90,8 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         mapper: Writes its path as the user knows it.
 
     Returns:
-        The JSON object: name, folder, date, sentence, words, and its addresses.
+        The JSON object: name, folder, date, sentence, words, its addresses, and
+        its host path (`path`, taken out by `found_view`).
     """
     path = hit.photo.path
     caption = hit.tags.get(TagSource.CAPTION, ())
@@ -89,4 +109,5 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "thumb": f"{THUMB_PREFIX}{hit.key}{JPEG}",
         "preview": f"{PREVIEW_PREFIX}{hit.key}{JPEG}",
         "original": f"{ORIGINAL_PREFIX}{hit.key}{path.suffix.lower()}",
+        "path": mapper.to_host(path),
     }

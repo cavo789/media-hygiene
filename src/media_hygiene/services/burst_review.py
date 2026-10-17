@@ -12,14 +12,14 @@ from typing import TYPE_CHECKING
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.plan.similar_models import BurstChoice
-from media_hygiene.report.decisions import BurstStatus
+from media_hygiene.report.burst_decisions import BurstStatus
 from media_hygiene.review.shots import match_burst, shot_places
 from media_hygiene.services.policy import keep_policy
 
 if TYPE_CHECKING:
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.plan.similar_models import BurstSeries
-    from media_hygiene.report.decisions import BurstDecision
+    from media_hygiene.report.burst_decisions import BurstDecision
     from media_hygiene.review.shots import MatchedBurst
     from media_hygiene.services.runtime import Runtime
 

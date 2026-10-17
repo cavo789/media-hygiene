@@ -81,7 +81,7 @@ def test_shots_set_aside_need_a_quarantine(
     monkeypatch.delenv("MEDIA_HYGIENE_QUARANTINE_DIR")
     result = run(cli, "clean", "--yes", "--delete", "--decisions", "decisions.json")
     assert result.exit_code == 1
-    assert "Burst shots you set aside go to /quarantine" in result.output
+    assert "The burst shots and files you set aside go to /quarantine" in result.output
     assert "Audit summary" not in result.output
 
 

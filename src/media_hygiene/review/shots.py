@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.report.decisions import BurstDecision
+from media_hygiene.report.burst_decisions import BurstDecision
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence

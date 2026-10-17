@@ -78,7 +78,7 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
 
     Yields:
         Each file moved: copies (unless `--delete` deletes them), near duplicates,
-        burst shots set aside, unreadable files and orphan sidecars.
+        burst shots and files set aside, unreadable files and orphan sidecars.
     """
     for decision in plan.decisions:
         yield from (file for file in decision.removable if plan.to_quarantine(file))
@@ -86,6 +86,7 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
         yield from near.removable
     for choice in plan.bursts:
         yield from choice.discarded
+    yield from plan.chosen
     yield from (
         item.file for item in plan.broken if item.reason is not BrokenReason.EMPTY
     )

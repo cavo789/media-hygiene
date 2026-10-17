@@ -39,7 +39,7 @@ class CleanMode:
     """What a clean will do, as its options ask."""
 
     near: bool = False  # `--tier near`: near duplicates go to the quarantine too
-    bursts: bool = False  # `--decisions`: burst shots set aside go there too
+    bursts: bool = False  # `--decisions`: burst shots, files chosen go there too
     delete: bool = False  # `--delete`: exact copies deleted for good, not moved
 
 
@@ -169,7 +169,7 @@ def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
     if mode.near:
         return _("--tier near moves near duplicates to /quarantine: mount it.")
     if mode.bursts:
-        return _("Burst shots you set aside go to /quarantine: mount it.")
+        return _("The burst shots and files you set aside go to /quarantine: mount it.")
     if runtime.settings.scan.other_files:
         return _("Copies of other files than media go to /quarantine: mount it.")
     return None

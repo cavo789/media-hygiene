@@ -6,7 +6,7 @@ msgstr ""
 msgid ""
 "\"bord de mer\" finds the phrase, anniv* every word starting so, "
 "place:durbuy the word among the places only. / types a search, the arrows"
-" move, Enter opens."
+" move, a click or Space picks, Enter or a double click opens."
 msgstr ""
 
 #, python-format
@@ -280,6 +280,15 @@ msgid ""
 " a score, the rule takes the one of its match (a date range is sure)."
 msgstr ""
 
+msgid ""
+"A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A "
+"the whole folder; Delete (or the button) sets them aside. Enter or a "
+"double click opens a picture, ←/→ the next ones. Nothing is deleted from "
+"this page: the files set aside go to the quarantine at the next 'clean "
+"--decisions', journaled; 'undo' brings them back, 'purge' frees the "
+"space."
+msgstr ""
+
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr ""
@@ -479,6 +488,10 @@ msgstr ""
 msgid "All the files"
 msgstr ""
 
+#, python-brace-format
+msgid "All {total} files found are picked"
+msgstr ""
+
 msgid "Already in place"
 msgstr ""
 
@@ -533,10 +546,10 @@ msgstr ""
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by "
-"'review' (burst shots set aside, near duplicates decided). A relative "
-"path is read from the folder mounted on /reports. The file is refused if "
-"the folders, the pairs or the series changed. Alone, --decisions reads "
-"decisions.json."
+"'review' (burst shots set aside, near duplicates decided) or by 'search' "
+"(photos set aside). A relative path is read from the folder mounted on "
+"/reports. The file is refused if the folders, the pairs or the series "
+"changed. Alone, --decisions reads decisions.json."
 msgstr ""
 
 msgid "Apply your choices: what you set aside goes to the quarantine"
@@ -651,9 +664,6 @@ msgstr ""
 msgid "Burst series review"
 msgstr ""
 
-msgid "Burst shots you set aside go to /quarantine: mount it."
-msgstr ""
-
 msgid "COMMAND [ARGS]..."
 msgstr ""
 
@@ -742,6 +752,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Choices on {count} series undone."
+msgstr ""
+
+msgid "Choose a folder on the left."
 msgstr ""
 
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
@@ -1613,6 +1626,9 @@ msgstr ""
 msgid "Folders analysed:"
 msgstr ""
 
+msgid "Folders closed; your photos were not changed."
+msgstr ""
+
 msgid "Folders sharing identical files"
 msgstr ""
 
@@ -2190,6 +2206,10 @@ msgid "Moving a duplicate copy to the quarantine: {path}"
 msgstr ""
 
 #, python-brace-format
+msgid "Moving a file you set aside to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
 msgid "Moving a near duplicate to the quarantine: {path}"
 msgstr ""
 
@@ -2454,6 +2474,9 @@ msgstr ""
 msgid "No photo of the index below these folders."
 msgstr ""
 
+msgid "No photo or video directly in this folder: open a subfolder."
+msgstr ""
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
@@ -2590,6 +2613,12 @@ msgstr ""
 msgid "Nothing found. Fewer words, or the start of a word (anniv*), find more."
 msgstr ""
 
+msgid ""
+"Nothing is deleted from this page: the files set aside go to the "
+"quarantine at the next 'clean --decisions', journaled; 'undo' brings them"
+" back, 'purge' frees the space."
+msgstr ""
+
 msgid "Nothing is proposed by --sample: run classify without it."
 msgstr ""
 
@@ -2606,6 +2635,9 @@ msgstr ""
 msgid ""
 "Nothing lost: {before} files ({before_size}) before and after; {verified}"
 " of {moved} moves verified."
+msgstr ""
+
+msgid "Nothing set aside."
 msgstr ""
 
 msgid "Nothing to add: the album holds every file found."
@@ -2644,6 +2676,10 @@ msgstr ""
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was saved: {error}"
 msgstr ""
 
 msgid "Nothing was written: run 'config --upgrade' to add them."
@@ -2862,6 +2898,13 @@ msgid ""
 msgstr ""
 
 msgid "Photos with a shooting date"
+msgstr ""
+
+#, python-brace-format
+msgid "Pick all {total} files found"
+msgstr ""
+
+msgid "Pick none"
 msgstr ""
 
 msgid "Pictures received through a messaging app, if you want them apart:"
@@ -3394,13 +3437,16 @@ msgid ""
 "second at most). Another instance, or empty to search offline only."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"Search ready, open {url} in your browser. Ctrl+C stops it; nothing is "
-"changed."
+msgid "Search by words"
 msgstr ""
 
-msgid "Search stopped; nothing was changed."
+#, python-brace-format
+msgid ""
+"Search ready, open {url} in your browser. Ctrl+C stops it; your photos "
+"are not changed."
+msgstr ""
+
+msgid "Search stopped; your photos were not changed."
 msgstr ""
 
 msgid "Search your photos"
@@ -3482,6 +3528,9 @@ msgstr ""
 msgid "Set aside"
 msgstr ""
 
+msgid "Set aside the picked files"
+msgstr ""
+
 msgid ""
 "Set burst shots aside, one series at a time, with the keyboard in your "
 "browser; 'clean --decisions' then moves them."
@@ -3553,6 +3602,9 @@ msgid "Some destinations cannot be used; nothing was moved:"
 msgstr ""
 
 msgid "Sort"
+msgstr ""
+
+msgid "Sort by"
 msgstr ""
 
 msgid "Sort review"
@@ -3689,6 +3741,9 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
+msgid "Take out of the set aside"
+msgstr ""
+
 #, python-brace-format
 msgid "Take the batch back ({events})"
 msgstr ""
@@ -3716,6 +3771,9 @@ msgid ""
 "this share of the sharpest shot of its series (0 to 1): 0.35 proposes a "
 "shot at 162 next to one at 1017, not one at 616. Moving on accepts the "
 "proposal, a key takes it back. 0 never proposes anything."
+msgstr ""
+
+msgid "The burst shots and files you set aside go to /quarantine: mount it."
 msgstr ""
 
 msgid ""
@@ -3815,6 +3873,9 @@ msgstr ""
 msgid "The files of this event: its id or its name."
 msgstr ""
 
+msgid "The files set aside are saved in /reports: mount it, or they are lost."
+msgstr ""
+
 msgid "The files the classify rule of this name decided."
 msgstr ""
 
@@ -3912,6 +3973,13 @@ msgstr ""
 msgid ""
 "The page does not open? docker run must publish the same port on both "
 "sides: -p 127.0.0.1:{port}:{port}."
+msgstr ""
+
+#, python-brace-format
+msgid "The page failed (error {status})."
+msgstr ""
+
+msgid "The page is not running any more: start it again."
 msgstr ""
 
 msgid "The page is not running any more: start people again."
@@ -4400,6 +4468,14 @@ msgid "Videos with a date in their tags"
 msgstr ""
 
 msgid ""
+"Walk through your folders in your browser, as in Explorer, and set photos"
+" aside; 'clean --decisions' then moves them."
+msgstr ""
+
+msgid "Walk through your folders, set photos aside"
+msgstr ""
+
+msgid ""
 "Walks through every folder; photos and videos are recognised by their "
 "extension."
 msgstr ""
@@ -4607,6 +4683,21 @@ msgstr ""
 
 #, python-brace-format
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgstr ""
+
+#, python-brace-format
+msgid "Your decisions — {count} file chosen in 'search' is set aside."
+msgid_plural "Your decisions — {count} files chosen in 'search' are set aside."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Your folders"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your folders are ready, open {url} in your browser. Ctrl+C stops it; your"
+" photos are not changed."
 msgstr ""
 
 #, python-brace-format
@@ -5170,6 +5261,9 @@ msgstr ""
 msgid "manifest"
 msgstr ""
 
+msgid "marked to set aside"
+msgstr ""
+
 #, python-brace-format
 msgid "match = '{match}' needs {field}"
 msgstr ""
@@ -5232,6 +5326,12 @@ msgstr ""
 msgid "move checks"
 msgstr ""
 
+#, python-brace-format
+msgid "move the {count} file you set aside to the quarantine (undoable)."
+msgid_plural "move the {count} files you set aside to the quarantine (undoable)."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "move to the quarantine"
 msgstr ""
 
@@ -5258,6 +5358,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "move {count} file you set aside ({size}) to the quarantine"
+msgid_plural "move {count} files you set aside ({size}) to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "move {count} near duplicate to the quarantine"
 msgid_plural "move {count} near duplicates to the quarantine"
 msgstr[0] ""
@@ -5267,6 +5373,9 @@ msgid "moved to the quarantine"
 msgstr ""
 
 msgid "moves"
+msgstr ""
+
+msgid "name"
 msgstr ""
 
 msgid "name the groups of faces in your browser, with 'people'."
@@ -5552,6 +5661,9 @@ msgid "the disk could not be read or written (input/output error)"
 msgstr ""
 
 msgid "the disk is full"
+msgstr ""
+
+msgid "the file changed since you chose it"
 msgstr ""
 
 msgid "the file is gone"
@@ -6072,6 +6184,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
+"moves it to the quarantine."
+msgid_plural ""
+"{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
+"moves them to the quarantine."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."
 msgid_plural "{count} files: {words} words from their folders, names, dates and places."
 msgstr[0] ""
@@ -6582,6 +6704,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} file picked"
+msgid_plural "{n} files picked"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] ""
@@ -6765,6 +6893,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{photos} and {videos} described; kept in the cache."
+msgstr ""
+
+#, python-brace-format
+msgid "{photos} photos · {videos} videos · {size}"
 msgstr ""
 
 #, python-brace-format

@@ -18,7 +18,7 @@ from media_hygiene.cli.safety import READ_ONLY_COMMANDS, read_only_marker
 from media_hygiene.services import people as people_service
 from media_hygiene.services import people_page, reviewing, sort_reviewing
 from media_hygiene.services import places as places_service
-from media_hygiene.services import search as search_service
+from media_hygiene.services import search_pages as search_service
 from tests.integration.test_clean_undo import manifest
 from tests.support.cli import run
 from tests.support.faces import FakeRecipe
@@ -42,6 +42,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("places",),
     ("tags",),
     ("search",),
+    ("browse",),
     ("people",),
     ("inventory",),
     ("history",),

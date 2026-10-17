@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.search.models import Hit
@@ -14,9 +14,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.index.tag_rows import TagStore
 
-_DATE_LENGTH: Final = 10  # `YYYY:MM:DD`, then the time
-_EXIF_SEPARATOR, _DATE_SEPARATOR = ":", "-"
-
 
 def hit_of(
     words: tuple[TagStore | None, Mapping[Path, tuple[str, ...]]],
@@ -26,7 +23,7 @@ def hit_of(
 
     Args:
         words: The tags of the index (None without any), and the people.
-        row: Key, path, size, mtime and date of a file.
+        row: Key, path, size, mtime and day (`YYYY-MM-DD`) of a file.
 
     Returns:
         The hit.
@@ -39,11 +36,7 @@ def hit_of(
         tags.setdefault(tag.source, []).append(tag.value)
     if photo.path in people:
         tags[TagSource.PERSON] = list(people[photo.path])
-    date = (
-        str(taken)[:_DATE_LENGTH].replace(_EXIF_SEPARATOR, _DATE_SEPARATOR)
-        if taken
-        else None
-    )
+    date = str(taken) if taken else None  # `YYYY-MM-DD`, from `media_day`
     return Hit(
         int(str(key)),
         photo,

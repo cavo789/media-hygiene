@@ -165,6 +165,7 @@ rapports.
 | Fichier illisible (tronqué, abîmé) | **Déplacé** en quarantaine. |
 | [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | **Pas touchés** : seulement si vous le demandez ([étape 10](10-review-bursts.md), [étape 11](11-near-duplicates.md)). |
+| Photos mises de côté dans [`search`](../commands/search.md#mettre-des-photos-de-côté) | **Déplacées** en quarantaine par `clean --decisions`, qui les applique avec les décisions de `review` ; la question dit combien et leur taille, à part des doublons. Une photo modifiée depuis votre choix est ignorée. |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
 
 La quarantaine contient un dossier par nettoyage, au nom de l'exécution (sa date et son heure),

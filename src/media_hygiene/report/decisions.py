@@ -5,7 +5,9 @@ r"""The decisions file the report downloads and `review` writes; `clean` reads i
  "pairs": [{"kept_in": "C:\\Photos\\2019", "removed_from": "D:\\Old",
             "action": "swap"}],
  "bursts": [{"status": "done", "kept": ["C:\\Photos\\IMG_1.jpg"],
-             "discarded": ["C:\\Photos\\IMG_2.jpg"]}]}
+             "discarded": ["C:\\Photos\\IMG_2.jpg"]}],
+ "chosen": [{"path": "C:\\Photos\\IMG_3.jpg", "size": 2048,
+             "mtime_ns": 1700000000000000000, "found_by": "person:\"Ann\""}]}
 ```
 
 Paths are host paths, as the report shows them. `roots` are the folders analysed by the
@@ -13,25 +15,21 @@ audit behind the decisions: `clean` refuses the file when it sees other folders.
 left as planned are not listed. `review` lists every burst series from the start,
 `todo` until seen, then `done`; a series kept whole has an empty `discarded`, a series
 set aside whole an empty `kept`. Without `status` (older file, report), it is done.
+`chosen` lists the files set aside in `search` (`chosen_decisions`): they need no
+audit, so a file holding nothing else is not refused for its `roots`.
 """
 
 from __future__ import annotations
 
-from collections import Counter
-from enum import StrEnum
 from typing import TYPE_CHECKING, Literal
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    ValidationError,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.plan.review import PairAction
+from media_hygiene.report.burst_decisions import BurstDecisions
+from media_hygiene.report.chosen_decisions import ChosenFiles
 from media_hygiene.report.near_decisions import NearGroups
 from media_hygiene.text_files import decode_user_text
 
@@ -51,46 +49,6 @@ class PairDecision(BaseModel):
     action: PairAction
 
 
-class BurstStatus(StrEnum):
-    """Whether a burst series was seen in the review."""
-
-    TODO = "todo"  # listed when the review starts, every shot kept
-    DONE = "done"
-
-
-class BurstDecision(BaseModel):
-    """The review of one burst series, in host paths.
-
-    None may be set aside (the series was seen and kept whole, or not seen yet), or
-    none kept (the whole series was set aside), but the series has at least one shot.
-    """
-
-    model_config = _FROZEN
-
-    status: BurstStatus = BurstStatus.DONE
-    kept: tuple[str, ...] = ()
-    discarded: tuple[str, ...] = ()
-
-    @model_validator(mode="after")
-    def _some_shot(self) -> BurstDecision:
-        """Refuse a review without any shot, or a series not seen with shots aside.
-
-        Returns:
-            The review, unchanged.
-
-        Raises:
-            ValueError: Neither a kept nor a discarded shot, or a `todo` series with
-                shots set aside.
-        """
-        if not self.kept and not self.discarded:
-            message = "a reviewed burst series lists no shot"
-            raise ValueError(message)
-        if self.status is BurstStatus.TODO and self.discarded:
-            message = "a burst series still to see has shots set aside"
-            raise ValueError(message)
-        return self
-
-
 class DecisionsFile(BaseModel):
     """Every decision of one review, and the audit it was made on."""
 
@@ -100,8 +58,21 @@ class DecisionsFile(BaseModel):
     report: str = ""
     roots: tuple[str, ...]
     pairs: tuple[PairDecision, ...] = ()
-    bursts: tuple[BurstDecision, ...] = ()
+    bursts: BurstDecisions = ()  # `review` (`burst_decisions`)
     near: NearGroups = ()  # `review --near` (`near_decisions`)
+    chosen: ChosenFiles = ()  # `search`, `browse` (`chosen_decisions`)
+
+    @property
+    def only_chosen(self) -> bool:
+        """Tell whether the file holds files chosen in `search`, and nothing else.
+
+        They are named one by one, with their size and date: they do not depend
+        on the folders an audit analysed.
+
+        Returns:
+            True when it holds chosen files and no pair, series nor group.
+        """
+        return bool(self.chosen) and not (self.pairs or self.bursts or self.near)
 
     @field_validator("pairs")
     @classmethod
@@ -127,31 +98,6 @@ class DecisionsFile(BaseModel):
                 raise ValueError(message)
             seen.add(key)
         return pairs
-
-    @field_validator("bursts")
-    @classmethod
-    def _each_shot_once(
-        cls, bursts: tuple[BurstDecision, ...]
-    ) -> tuple[BurstDecision, ...]:
-        """Refuse a shot decided twice: kept or set aside?
-
-        Args:
-            bursts: The reviews of burst series.
-
-        Returns:
-            The reviews, unchanged.
-
-        Raises:
-            ValueError: A shot appears twice.
-        """
-        shots = Counter(
-            shot for burst in bursts for shot in (*burst.kept, *burst.discarded)
-        )
-        twice = sorted(shot for shot, count in shots.items() if count > 1)
-        if twice:
-            message = f"{twice[0]} is decided twice"
-            raise ValueError(message)
-        return bursts
 
 
 def read_decisions(path: Path) -> DecisionsFile:

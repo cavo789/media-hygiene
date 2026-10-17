@@ -20,13 +20,14 @@ type Planned = tuple[MediaFile, str, Callable[[], object]]
 
 
 @dataclass(frozen=True, slots=True)
-class CleanLabels:
+class CleanLabels:  # pylint: disable=too-many-instance-attributes
     """What the line under the bar says about the file being handled (`{path}`)."""
 
     copy: str
     kept_aside: str
     near: str
     burst: str
+    chosen: str
     unreadable: str
     empty: str
     orphan: str
@@ -69,6 +70,7 @@ def clean_labels(*, delete_copies: bool) -> CleanLabels:
         kept_aside=kept_aside,
         near=_("Moving a near duplicate to the quarantine: {path}"),
         burst=_("Moving a burst shot set aside to the quarantine: {path}"),
+        chosen=_("Moving a file you set aside to the quarantine: {path}"),
         unreadable=_("Moving an unreadable file to the quarantine: {path}"),
         empty=_("Deleting an empty file (0 bytes): {path}"),
         orphan=_("Moving an orphan sidecar to the quarantine: {path}"),

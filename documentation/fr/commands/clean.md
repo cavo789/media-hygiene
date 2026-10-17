@@ -79,7 +79,7 @@ La quarantaine garde les chemins d'origine sous un dossier par exécution :
 | `--tier exact` | Par défaut : seulement les copies identiques octet par octet. |
 | `--tier near` | Aussi les quasi-doublons et vidéos réencodées **sûrs**, et les groupes décidés avec `review --near`. [Étape 11 du nettoyage](../clean/11-near-duplicates.md#les-groupes-sûrs-et-ceux-à-vérifier) |
 | `--tier near-all` | Tous les quasi-doublons, tels que le rapport les montre : regardez-les d'abord. |
-| `--decisions [FICHIER]` | Applique les choix faits dans le navigateur : paires de dossiers d'un rapport ([étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md)), photos de rafale écartées et quasi-doublons décidés avec [`review`](review.md). Seule, elle lit `decisions.json` dans `/reports`. |
+| `--decisions [FICHIER]` | Applique les choix faits dans le navigateur : paires de dossiers d'un rapport ([étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md)), photos de rafale écartées et quasi-doublons décidés avec [`review`](review.md), photos mises de côté dans [`search`](search.md#mettre-des-photos-de-côté). Seule, elle lit `decisions.json` dans `/reports`. |
 | `--yes`, `-y` | Ne pas demander (indispensable sans `-it`). |
 | `--delete` | Supprime pour de bon les copies exactes au lieu de les déplacer ; `undo` les reconstruit depuis la copie gardée. [Étape 8 du nettoyage](../clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--prefer`, `--protect`, `--exclude`, `--exclude-name`, `--ext` | Comme pour [`audit`](audit.md#options) : donnez à `clean` les mêmes que pour l'audit que vous avez lu. |

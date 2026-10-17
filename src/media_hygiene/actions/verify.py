@@ -109,6 +109,25 @@ def change_blocker(file: MediaFile) -> str | None:
     return None
 
 
+def chosen_blocker(file: MediaFile) -> str | None:
+    """Explain why a file set aside in `search` must not be moved, or return None.
+
+    It must be exactly the file the index knew when it was chosen.
+
+    Args:
+        file: The file, as chosen.
+
+    Returns:
+        The translated reason to skip it, or None when unchanged.
+    """
+    if not file.path.is_file():
+        return _("the file no longer exists")
+    stat = file.path.stat()
+    if (stat.st_size, stat.st_mtime_ns) != (file.size, file.mtime_ns):
+        return _("the file changed since you chose it")
+    return None
+
+
 def orphan_blocker(sidecar: MediaFile) -> str | None:
     """Explain why a sidecar must not be moved, or return None when it is an orphan.
 

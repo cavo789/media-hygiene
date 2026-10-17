@@ -27,9 +27,16 @@ if TYPE_CHECKING:
 
 BURST_GAP_SECONDS: Final = 10.0
 BURST_DISTANCE: Final = 18
+# EXIF writes the year first; some cameras write the day first (`04/12/2004`).
 _EXIF_MOMENT: Final = re.compile(
-    r"^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?$"
+    r"^(?P<y>\d{4}):(?P<m>\d{2}):(?P<d>\d{2})"
+    r" (?P<H>\d{2}):(?P<M>\d{2}):(?P<S>\d{2})(?:\.(?P<sub>\d+))?$"
 )
+_DAY_FIRST_MOMENT: Final = re.compile(
+    r"^(?P<d>\d{2})/(?P<m>\d{2})/(?P<y>\d{4})"
+    r" (?P<H>\d{2}):(?P<M>\d{2}):(?P<S>\d{2})(?:\.(?P<sub>\d+))?$"
+)
+_PARTS: Final = ("y", "m", "d", "H", "M", "S")
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,7 +50,7 @@ class _Shot:
 
 
 def moment_of(taken_at: str | None) -> float | None:
-    """Turn an EXIF date (`2019:06:12 14:30:12.35`) into seconds.
+    """Turn an EXIF date (`2019:06:12 14:30:12.35`, `12/06/2019 …`) into seconds.
 
     Args:
         taken_at: The EXIF date, with optional sub-seconds.
@@ -51,15 +58,16 @@ def moment_of(taken_at: str | None) -> float | None:
     Returns:
         A timestamp (the camera's local time read as UTC), or None when unreadable.
     """
-    found = _EXIF_MOMENT.match(taken_at or "")
+    text = taken_at or ""
+    found = _EXIF_MOMENT.match(text) or _DAY_FIRST_MOMENT.match(text)
     if found is None:
         return None
-    year, month, day, hour, minute, second = (int(part) for part in found.groups()[:6])
+    year, month, day, hour, minute, second = (int(found[part]) for part in _PARTS)
     try:
         when = datetime(year, month, day, hour, minute, second, tzinfo=UTC)
     except ValueError:
         return None
-    return when.timestamp() + float(f"0.{found[7] or 0}")
+    return when.timestamp() + float(f"0.{found['sub'] or 0}")
 
 
 def burst_series(
