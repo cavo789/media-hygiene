@@ -136,6 +136,10 @@ photos nouvelles ou modifiées. Ctrl+C s'arrête entre deux photos et garde ce q
 vidéos ne sont pas encore analysées. Une grande collection prend du temps la première fois :
 mesurez d'abord (ci-dessous).
 
+Les visages servent une fois de plus : dans une série de rafale que `people` a entièrement
+regardée, la ⭐ de [la revue des rafales](clean/10-review-bursts.md) va à la photo dont les
+visages sont les plus nets.
+
 ## Votre vie privée
 
 Les nombres qui décrivent un visage sont des **données biométriques**, le type de données

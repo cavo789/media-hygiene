@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.index.measures import MeasureStore
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.plan.face_scores import rank_by_faces
 from media_hygiene.plan.models import AuditFindings
 from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.plan.planner import build_plan
@@ -175,4 +176,5 @@ class AuditService:
             similar = checked_similar(
                 SimilarInputs.of(found.files, integrity, compared.groups), policy, tools
             )
+            similar = rank_by_faces(similar, repository.connection)
         return compared, integrity, similar, JournalFindings(returned, pruned.waiting)

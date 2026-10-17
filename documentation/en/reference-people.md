@@ -128,6 +128,9 @@ Each photo is analysed **once**: the next runs analyse only the new or changed p
 stops between two photos and keeps what is done. Videos are not analysed yet. A large collection
 takes a while the first time: measure first (below).
 
+The faces have one more use: in a burst series that `people` has looked at entirely, the ⭐ of
+[the burst review](clean/10-review-bursts.md) goes to the shot whose faces are sharpest.
+
 ## Your privacy
 
 The numbers that describe a face are **biometric data**, the most sensitive kind of personal

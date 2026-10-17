@@ -5591,6 +5591,9 @@ msgstr ""
 msgid "every source"
 msgstr ""
 
+msgid "faces sharpest"
+msgstr ""
+
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
 
@@ -6119,6 +6122,10 @@ msgid "previous series (no choice: as shown)"
 msgstr ""
 
 msgid "proposed aside"
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "proposed aside: faces less sharp, {share} %% of the best"
 msgstr ""
 
 #, python-brace-format

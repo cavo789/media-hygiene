@@ -84,6 +84,11 @@ The first series appears. Here, the second one, a birthday: five shots taken one
 - **⭐ sharpest**: always **the first shot**, framed in green. The others follow from the
   sharpest to the least sharp: the blurred ones come last. The higher the sharpness, the
   crisper the picture; it measures blur only, not a closed eye: the choice stays yours.
+  Once `people` has looked at **every** shot of a series, and at least half of them hold a face,
+  the ⭐ is the shot whose faces are sharpest (the least sharp of its main faces, those at least
+  half as large as its largest), then the whole frame; a shot without a face comes after the
+  others, and a proposal says *faces less sharp, 30 % of the best*. Otherwise, as above. The
+  faces are read from the index: `review` never runs `people`.
 - **📦 proposed aside**, in red dashes, with the reason under the picture:
   - *sharpness 13 % of the best*: far less sharp than the sharpest of its series (below 35 %
     of it). Here, the last shot, at 30 against about 225 for the others;

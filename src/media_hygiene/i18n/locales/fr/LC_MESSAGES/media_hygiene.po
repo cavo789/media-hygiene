@@ -2112,8 +2112,8 @@ msgid ""
 msgstr ""
 "Fichiers laissés par le système : un dossier qui ne contient plus qu'eux "
 "est supprimé une fois vidé par 'sort' ou 'clean', ces fichiers partant "
-"d'abord en quarantaine. 'sort --keep-empty-folders' garde tous les dossiers "
-"qu'un tri vide."
+"d'abord en quarantaine. 'sort --keep-empty-folders' garde tous les "
+"dossiers qu'un tri vide."
 
 msgid "Files to move"
 msgstr "Fichiers à déplacer"
@@ -6784,6 +6784,9 @@ msgstr "environnement"
 msgid "every source"
 msgstr "toutes les sources"
 
+msgid "faces sharpest"
+msgstr "visages les plus nets"
+
 msgid "ffmpeg not found: re-encoded copies of videos are not looked for."
 msgstr ""
 "ffmpeg introuvable : les copies réencodées de vidéos ne sont pas "
@@ -7363,6 +7366,10 @@ msgstr "série précédente (sans choix : comme affiché)"
 
 msgid "proposed aside"
 msgstr "proposée à l'écart"
+
+#, python-brace-format, python-format
+msgid "proposed aside: faces less sharp, {share} %% of the best"
+msgstr "proposée à l'écart : visages moins nets, à {share} %% du meilleur"
 
 #, python-brace-format
 msgid "proposed aside: nearly identical to the sharper shot {number}"
@@ -8324,8 +8331,9 @@ msgid_plural ""
 "{count} folders will hold only system files (Thumbs.db...): they stay, no"
 " quarantine is mounted to put them in."
 msgstr[0] ""
-"{count} dossier ne contiendra plus que des fichiers système (Thumbs.db...) :"
-" il reste, aucune quarantaine n'est montée pour les y mettre."
+"{count} dossier ne contiendra plus que des fichiers système "
+"(Thumbs.db...) : il reste, aucune quarantaine n'est montée pour les y "
+"mettre."
 msgstr[1] ""
 "{count} dossiers ne contiendront plus que des fichiers système "
 "(Thumbs.db...) : ils restent, aucune quarantaine n'est montée pour les y "

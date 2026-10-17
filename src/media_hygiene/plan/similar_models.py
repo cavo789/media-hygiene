@@ -115,6 +115,11 @@ class SimilarFindings:  # pylint: disable=too-many-instance-attributes
         default_factory=lambda: MappingProxyType({})
     )
     images: tuple[MediaFile, ...] = ()  # described, and no other copy of a group
+    # Series ranked by their faces (`plan.face_scores`): each shot's main faces'
+    # sharpness, None without a face. A series not in it is ranked by its frames.
+    faced: Mapping[Path, float | None] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
     @property
     def near_count(self) -> int:
