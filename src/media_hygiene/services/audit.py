@@ -35,15 +35,15 @@ from media_hygiene.services.data_checks import (
 )
 from media_hygiene.services.listing import tell_followed
 from media_hygiene.services.near_checks import NearTools, checked_similar
-from media_hygiene.services.policy import keep_policy, scan_filters
+from media_hygiene.services.policy import backup_folders, keep_policy, scan_filters
 from media_hygiene.services.returned import JournalFindings, returned_finder
 from media_hygiene.tags.xmp_owner import with_edits
 
 if TYPE_CHECKING:
+    from media_hygiene.plan.backups import BackupComparison
     from media_hygiene.plan.keeper import KeepPolicy
     from media_hygiene.plan.similar_models import SimilarFindings
     from media_hygiene.scan.broken import IntegrityFindings
-    from media_hygiene.scan.models import DuplicateGroup
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.scan.walker import Walk
     from media_hygiene.services.runtime import Runtime
@@ -63,6 +63,7 @@ class AuditService:
         self._progress = progress
         self._stopwatch = Stopwatch()
         self.guide = CheckGuide.of(runtime)  # told the pace of the checks, as they go
+        self._backups = backup_folders(runtime.settings, runtime.mapper)  # 0204
 
     def run(self) -> AuditFindings:
         """List media files, find broken files, exact duplicates and orphan sidecars.
@@ -83,19 +84,25 @@ class AuditService:
         filters = scan_filters(runtime.settings, runtime.mapper)
         with self._stopwatch.timing(Stage.LISTING):
             found, every_path = list_walk(runtime, roots, self._progress)
-        listed = frozenset(str(file.path) for file in found.files)
+        library = self._backups.library(found)  # backups: compared, never changed
         policy = keep_policy(
-            runtime.settings, runtime.mapper, accompanied(with_edits(found.sidecars))
+            runtime.settings, runtime.mapper, accompanied(with_edits(library.sidecars))
         )
-        groups, integrity, similar, back = self._analyse_files(
-            found,
-            WalkCoverage(roots, listed, found.unreadable, filters, found.files),
+        compared, integrity, similar, back = self._analyse_files(
+            library,
+            WalkCoverage(
+                roots,
+                frozenset(str(file.path) for file in found.files),
+                found.unreadable,
+                filters,
+                found.files,
+            ),
             policy,
         )
-        plan = build_plan(groups, integrity.broken, policy)
+        plan = build_plan(compared.groups, integrity.broken, policy)
         # With --ext, sidecars already alone before the clean are left where they are.
         sidecars = sidecars_in_scope(
-            found.sidecars, policy, alone=not runtime.settings.scan.extensions
+            library.sidecars, policy, alone=not runtime.settings.scan.extensions
         )
         return AuditFindings(
             roots=roots,
@@ -106,19 +113,20 @@ class AuditService:
             folder_files=MappingProxyType(
                 Counter(file.path.parent for file in found.files)
             ),
-            groups=groups,
+            groups=compared.groups,
             similar=similar,
-            inventory=take_inventory(found.files, integrity),
+            inventory=take_inventory(library.files, integrity),
             listed=every_path,
             stages=self._stopwatch.times(),
             unread=integrity.unread,
             gone=back.gone,
+            backups=compared.folders,
         )
 
     def _analyse_files(
         self, found: Walk, coverage: WalkCoverage, policy: KeepPolicy
     ) -> tuple[
-        tuple[DuplicateGroup, ...],
+        BackupComparison,
         IntegrityFindings,
         SimilarFindings,
         JournalFindings,
@@ -128,12 +136,14 @@ class AuditService:
         One index connection and one pool serve every step.
 
         Args:
-            found: What the walk listed.
-            coverage: What the walk could see, to tell which files are gone.
+            found: What the walk listed, the backup folders left out.
+            coverage: What the walk could see (backups included), to tell which
+                files are gone.
             policy: Protected folders and the usual keep rules.
 
         Returns:
-            The duplicate groups, the broken files and what files say of themselves,
+            The library's duplicate groups and what each backup lacks or holds
+            alone, the broken files and what files say of themselves,
             the near duplicates; the files set aside before that came back, and
             how many files gone wait for `review --gone`.
         """
@@ -152,14 +162,17 @@ class AuditService:
                 ExactDuplicateFinder(deps),
                 self._stopwatch,
                 returned_finder(self._runtime, deps),
+                self._backups,
             )
-            groups, integrity, returned = asyncio.run(analyse(found.files, finders))
+            compared, integrity, returned = asyncio.run(
+                analyse(found.files, finders, coverage.files)
+            )
             tools = NearTools(
                 ColourTools(checks.ffmpeg, self._progress, executor),
                 MeasureStore(repository.connection),
                 self._stopwatch,
             )
             similar = checked_similar(
-                SimilarInputs.of(found.files, integrity, groups), policy, tools
+                SimilarInputs.of(found.files, integrity, compared.groups), policy, tools
             )
-        return groups, integrity, similar, JournalFindings(returned, pruned.waiting)
+        return compared, integrity, similar, JournalFindings(returned, pruned.waiting)

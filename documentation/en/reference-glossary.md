@@ -11,6 +11,13 @@ The tool reads your folders and lists what it finds: duplicates, broken files, p
 bursts. It changes nothing: like a doctor's check-up before any treatment.
 [First audit](start/01-first-audit.md)
 
+### Backup folder
+
+A backup or an old disk the tool reads and compares, never changes (`--backup`). The audit says
+which of your photos it lacks, and which of its files are nowhere else: those to copy before
+wiping that disk. Its copies are never the reason a file of your photos goes.
+[Cleaning, step 5](clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)
+
 ### Burst series
 
 Shots taken a second or so apart, say ten photos of the same jump. They are not duplicates: the
@@ -43,7 +50,8 @@ The tool packed with everything it needs, downloaded once (`cavo789/media-hygien
 
 ### Excluded folder
 
-A folder the tool never reads, for a real backup that must stay a second copy (`--exclude`).
+A folder the tool never reads (`--exclude`). A backup you want checked is a
+[backup folder](#backup-folder) instead.
 [Cleaning, step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder)
 
 ### Fingerprint (SHA-256)

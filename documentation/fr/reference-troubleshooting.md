@@ -22,9 +22,10 @@ redémarrage de l'ordinateur, Docker Desktop met quelques secondes à répondre.
 
 ## Une vraie sauvegarde est vue comme des doublons
 
-Si `D:\sauvegarde` doit rester une seconde copie de vos photos,
-[excluez-la](clean/05-choose-the-kept-copy.md#exclure-un-dossier) (ou ne la montez pas). Sinon l'outil
-voit ses fichiers comme des doublons, ce qui est exact.
+Si `D:\sauvegarde` doit rester une seconde copie de vos photos, marquez-la comme sauvegarde :
+`--backup "D:\sauvegarde"` ([comparez-la](clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)). Elle est alors
+comparée, jamais modifiée, et dit ce qui lui manque. Pour ne même pas la lire,
+[excluez-la](clean/05-choose-the-kept-copy.md#exclure-un-dossier) (ou ne la montez pas).
 
 ## Un dossier est refusé parce qu'il est monté deux fois
 

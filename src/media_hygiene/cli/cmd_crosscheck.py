@@ -9,8 +9,9 @@ from typing import Annotated
 
 import typer
 
-from media_hygiene.cli import crosscheck_options, options, scan_options
-from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
+from media_hygiene.cli import crosscheck_options, folder_options, scan_options
+from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import ExitCode, RunKind
 from media_hygiene.i18n import _
@@ -19,9 +20,10 @@ from media_hygiene.i18n import _
 def crosscheck_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
-    prefer: Annotated[list[str] | None, options.prefer()] = None,
-    protect: Annotated[list[str] | None, options.protect()] = None,
-    exclude: Annotated[list[str] | None, options.exclude()] = None,
+    prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
+    protect: Annotated[list[str] | None, folder_options.protect()] = None,
+    exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
+    backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
     fresh: Annotated[bool, crosscheck_options.fresh()] = False,
@@ -34,6 +36,7 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        backup: `--backup` folders, compared and never changed.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         fresh: `--fresh`, Czkawka ignores its cache.
@@ -68,7 +71,7 @@ def crosscheck_command(  # pylint: disable=too-many-arguments
                 _('Add -v "<a folder of yours>:/reports".'),
             )
         runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
+            FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
         findings = audit_and_show(runtime)
         run = None if print_command else czkawka_run(runtime, fresh=fresh)

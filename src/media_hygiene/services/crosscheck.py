@@ -134,8 +134,9 @@ def czkawka_command(runtime: Runtime) -> CzkawkaCommand:
         scope=CzkawkaScope(
             data_dir=locations.data_dir,
             extensions=tuple(extension.lstrip(".") for extension in extensions),
-            excluded=tuple(
-                mapper.to_container(folder) for folder in settings.folders.excluded
+            excluded=tuple(  # a backup is compared, never in Czkawka's groups (0204)
+                mapper.to_container(folder)
+                for folder in (*settings.folders.excluded, *settings.folders.backups)
             ),
             excluded_names=settings.scan.excluded_names,
         ),

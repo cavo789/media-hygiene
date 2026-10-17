@@ -72,7 +72,7 @@ def check_destinations(runtime: Runtime, plan: SortPlan) -> None:
     mapper = runtime.mapper
     folders = runtime.settings.folders
     kept = [
-        mapper.to_container(path) for path in (*folders.protected, *folders.excluded)
+        mapper.to_container(path) for path in (*folders.untouched, *folders.excluded)
     ]
     problems: list[str] = []
     for group in plan.groups:
@@ -127,7 +127,7 @@ def _check_root(runtime: Runtime, root: Path) -> None:
             ).format(path=host),
             _('Mount it, e.g. -v "D:\\Photos sorted:/data/d/Photos sorted".'),
         )
-    protected = runtime.settings.folders.protected
+    protected = runtime.settings.folders.untouched
     if any(is_within(root, runtime.mapper.to_container(p)) for p in protected):
         raise MountError(
             _(

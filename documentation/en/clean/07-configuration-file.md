@@ -2,7 +2,7 @@
 
 [Documentation](../README.md) › Cleaning, step 7 of 14 · 🇫🇷 [Français](../../fr/clean/07-configuration-file.md)
 
-Your preferred folders, your excluded backup, your language: rather than typing them in every
+Your preferred folders, your backup, your language: rather than typing them in every
 command, write them once in a file, `config.toml`. The tool reads it at every run.
 
 ## Create the file
@@ -408,7 +408,8 @@ timezone = "Europe/Brussels"  # your time zone; empty: UTC
 [folders]
 preferred = ['C:\Photos\Old phone', 'C:\Photos\Family']
 protected = []
-excluded = ['D:\backup']
+excluded = []
+backups = ['D:\backup']
 
 [scan]
 excluded_names = []    # folder names skipped on every disk, e.g. ["Thumbnails", ".Trash-*"]
@@ -432,7 +433,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
   `mh`, nothing to set: it asks Windows for your zone at each run; this setting wins over it.
 - **`preferred`**: their copies are kept first, in this order (`--prefer`).
 - **`protected`**: never modified, and their files are always the copies kept (`--protect`).
-- **`excluded`**: never analysed, for a real backup (`--exclude`).
+- **`excluded`**: never analysed, not even read (`--exclude`).
+- **`backups`**: a backup or an old disk, read and compared, never changed: the audit says what
+  it lacks and what only it holds (`--backup`,
+  [step 5](05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
 - **`excluded_names`**: folder names never analysed, wherever they are; globs such as `.Trash-*`,
   case ignored, added to the system folders always skipped (`--exclude-name`,
   [step 5](05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk)). Globs, not the regular

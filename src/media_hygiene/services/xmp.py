@@ -21,7 +21,6 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.journaled_run import new_run
-from media_hygiene.services.policy import keep_policy
 from media_hygiene.services.tag_files import require_index
 from media_hygiene.services.xmp_plan import XmpScope, plan_sidecars
 
@@ -83,7 +82,7 @@ class XmpService:
         runtime = self._runtime
         scope = XmpScope(
             within,
-            keep_policy(runtime.settings, runtime.mapper).protected,
+            tuple(map(runtime.mapper.to_container, runtime.settings.folders.untouched)),
             runtime.settings.tags.xmp_sources,
             f"{APP_NAME} {version(APP_NAME)}",
             runtime.settings.people,

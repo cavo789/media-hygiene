@@ -1,0 +1,26 @@
+{# The backup folders compared, never changed (0204): included by report.html.j2. #}
+{% if backups %}
+<h2 id="backups">🗄️ {{ _("Backup folders") }}</h2>
+<p class="note">{{ _("A backup folder (--backup, folders.backups) is read and compared by content, never changed: its copies are never the reason a file of your photos goes. A resized or recompressed copy does not count. backup-missing.csv and backup-only.csv, next to this page, list every file.") }}</p>
+{% for backup in backups %}
+<h3>{{ backup.folder }} <span class="muted">· {{ ngettext("%(num)s file", "%(num)s files", backup.files, num=backup.files | number) }}</span></h3>
+{% if backup.missing.count %}
+<p>{{ ngettext("Not in this backup: %(num)s file of your photos (%(size)s).", "Not in this backup: %(num)s files of your photos (%(size)s).", backup.missing.count, num=backup.missing.count | number, size=backup.missing.size | size) }}</p>
+<details><summary>{{ _("See the files") }}</summary>
+<ul class="files">{% for path in backup.missing.paths %}<li>{{ path }}</li>{% endfor %}</ul>
+{% if backup.missing.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=backup.missing.hidden | number) }}</p>{% endif %}
+</details>
+{% else %}
+<p class="keep">✅ {{ _("Every file of your photos is in this backup.") }}</p>
+{% endif %}
+{% if backup.only.count %}
+<p class="remove">{{ ngettext("Only in this backup, nowhere else: %(num)s file (%(size)s). Deleted from your photos, or to copy before wiping this disk.", "Only in this backup, nowhere else: %(num)s files (%(size)s). Deleted from your photos, or to copy before wiping this disk.", backup.only.count, num=backup.only.count | number, size=backup.only.size | size) }}</p>
+<details><summary>{{ _("See the files") }}</summary>
+<ul class="files">{% for path in backup.only.paths %}<li>{{ path }}</li>{% endfor %}</ul>
+{% if backup.only.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=backup.only.hidden | number) }}</p>{% endif %}
+</details>
+{% else %}
+<p class="keep">✅ {{ _("Nothing is only in this backup: each of its files has a copy in your photos.") }}</p>
+{% endif %}
+{% endfor %}
+{% endif %}

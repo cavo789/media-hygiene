@@ -120,6 +120,8 @@
 {% if not is_clean %}{% include "_decisions.html.j2" %}{% endif %}
 {% endif %}
 
+{% include "_backups.html.j2" %}
+
 {% if report.groups.sample %}
 <h2 id="sample">🎲 {{ _("Random sample") }}</h2>
 <p class="muted">{{ _("Photo groups picked across the whole plan, the same ones on every run. The list after it starts with the largest files, often videos without preview.") }}</p>

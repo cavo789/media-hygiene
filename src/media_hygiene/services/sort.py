@@ -75,7 +75,7 @@ class SortService:
         """
         runtime, started = self._runtime, time.monotonic()
         plan_id = inputs.plan.plan_id
-        protected = runtime.settings.folders.protected
+        protected = runtime.settings.folders.untouched
         context = PlanContext(
             runtime.mapper,
             tuple(runtime.mapper.to_container(path) for path in protected),

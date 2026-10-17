@@ -10,8 +10,9 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.cli import clean_options, options, scan_options
-from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
+from media_hygiene.cli import clean_options, folder_options, options, scan_options
+from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
@@ -29,9 +30,10 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     decisions: Annotated[Path | None, clean_options.decisions()] = None,
     yes: Annotated[bool, options.yes()] = False,
     delete: Annotated[bool, clean_options.delete()] = False,
-    prefer: Annotated[list[str] | None, options.prefer()] = None,
-    protect: Annotated[list[str] | None, options.protect()] = None,
-    exclude: Annotated[list[str] | None, options.exclude()] = None,
+    prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
+    protect: Annotated[list[str] | None, folder_options.protect()] = None,
+    exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
+    backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
 ) -> None:
@@ -42,6 +44,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        backup: `--backup` folders, compared and never changed.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         yes: `--yes`, skip the confirmation.
@@ -75,7 +78,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     output = runtime.output
     with user_errors(output), RichProgress(output.console) as progress:
         runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
+            FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None

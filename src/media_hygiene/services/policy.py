@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.plan.backups import BackupFolders
 from media_hygiene.plan.burst_proposals import ProposalLimits
 from media_hygiene.plan.keeper import KeepPolicy
 from media_hygiene.plan.name_rules import NameRules
@@ -39,6 +40,20 @@ def keep_policy(
         names=NameRules.from_patterns(keep.generated_names, keep.generic_folders),
         with_sidecar=with_sidecar,
     )
+
+
+def backup_folders(settings: Settings, mapper: HostPathMapper) -> BackupFolders:
+    """Build the backup folders, compared and never changed (0204).
+
+    Args:
+        settings: The effective settings.
+        mapper: Host/container path translator.
+
+    Returns:
+        The `[folders] backups`, in container paths.
+    """
+    backups = settings.folders.backups
+    return BackupFolders(tuple(mapper.to_container(path) for path in backups))
 
 
 def proposal_limits(review: ReviewSettings) -> ProposalLimits:
@@ -89,5 +104,10 @@ def unmounted_folders(folders: FolderSettings, mapper: HostPathMapper) -> list[s
     Returns:
         The host paths that do not exist in the container.
     """
-    configured = (*folders.preferred, *folders.protected, *folders.excluded)
+    configured = (
+        *folders.preferred,
+        *folders.protected,
+        *folders.excluded,
+        *folders.backups,
+    )
     return [path for path in configured if not mapper.to_container(path).exists()]

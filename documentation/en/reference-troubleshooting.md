@@ -21,8 +21,10 @@ computer, Docker Desktop takes a few seconds to answer.
 
 ## A real backup is seen as duplicates
 
-If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)
-(or do not mount it). Otherwise the tool, rightly, sees its files as duplicates.
+If `D:\backup` must remain a second copy of your photos, mark it a backup:
+`--backup "D:\backup"` ([compare it](clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
+It is then compared, never changed, and says what it lacks. To not even read it,
+[exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder) (or do not mount it).
 
 ## A folder is refused because it is mounted twice
 

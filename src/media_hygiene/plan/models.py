@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
+    from media_hygiene.plan.backups import BackupCoverage
     from media_hygiene.plan.gone import GoneAnswer
     from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
@@ -171,6 +172,7 @@ class AuditFindings:  # pylint: disable=too-many-instance-attributes
     stages: tuple[StageTime, ...] = ()
     unread: tuple[UnreadFile, ...] = ()  # read again next time, never in the plan
     gone: int = 0  # files gone since, waiting for `review --gone` (0224)
+    backups: tuple[BackupCoverage, ...] = ()  # each backup folder compared (0204)
 
     @property
     def files_scanned(self) -> int:

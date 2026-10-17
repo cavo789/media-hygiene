@@ -100,7 +100,8 @@ orphelins d'un dossier protégé restent aussi en place.
 ## Exclure un dossier
 
 `--exclude` retire un dossier de l'analyse : ses fichiers ne sont ni lus ni comparés. Utilisez-le
-pour une vraie sauvegarde qui doit rester une seconde copie :
+pour un dossier que l'outil ne doit même pas lire (une sauvegarde à vérifier est plutôt
+[comparée](#comparer-une-sauvegarde-ou-un-ancien-disque)) :
 
 ```powershell
 mh audit --exclude "D:\Ancien disque"
@@ -124,6 +125,42 @@ Dossiers partageant des fichiers identiques
 • 1 fichier est présent plusieurs fois dans C:\Photos\2019\Vacances à la mer :
   un exemplaire est gardé (292,0 Ko à libérer).
 ```
+
+## Comparer une sauvegarde ou un ancien disque
+
+`--backup` (ou `backups` dans `[folders]` de `config.toml`) marque un dossier comme sauvegarde : il
+est lu et comparé par contenu, **jamais modifié**, et ses copies ne sont jamais la raison du départ
+d'un fichier de vos photos. Au contraire d'un dossier protégé, il ne garde rien : il est seulement
+comparé.
+
+```powershell
+mh audit --backup "D:\sauvegarde"
+```
+
+Pour chaque dossier de sauvegarde, l'audit dit deux choses, le rapport les liste, et deux fichiers
+à côté de `plan.csv` listent chaque fichier (chemins Windows, lisibles par Excel) :
+
+- **Absents de la sauvegarde** (`backup-missing.csv`) : les fichiers de vos photos sans copie
+  identique dans celle-ci. Ma sauvegarde est-elle complète ?
+- **Seulement dans la sauvegarde** (`backup-only.csv`) : ses fichiers sans copie identique dans
+  vos photos : supprimés de vos photos depuis, ou, sur un ancien disque, les fichiers à copier
+  avant de l'effacer.
+
+Bon à savoir :
+
+- **Identique veut dire octet pour octet** (la même empreinte) : une copie redimensionnée ou
+  recompressée ne compte pas comme sauvegardée.
+- **`clean`, `review` et `crosscheck`** acceptent aussi `--backup` : ses fichiers restent hors des
+  groupes de doublons, des quasi-doublons, des rafales et de l'analyse de Czkawka. `sort`, `album`
+  et `xmp` n'y écrivent jamais non plus.
+- **Un rôle par dossier** : un dossier de sauvegarde ne peut pas être aussi préféré, protégé ou
+  exclu, ni se trouver dans un tel dossier ni en contenir un. L'outil le refuse et nomme les deux
+  dossiers.
+- **Durée** : le premier audit lit une sauvegarde comme n'importe quel dossier, ses fichiers
+  comparés par empreinte quand un autre fichier a la même taille. Comptez environ 465 Mo par
+  seconde (mesuré sur le PC du mainteneur, premier audit d'une photothèque) ; un vieux disque dur
+  USB est plus lent. Les audits suivants la reprennent [du cache](../start/02-keep-the-cache.md).
+- **Rien n'est copié** : l'outil dit quoi copier ; vous copiez.
 
 ## Ignorer un nom de dossier sur tous les disques
 

@@ -44,7 +44,7 @@ def folder_rules(runtime: Runtime, plan: ClassifyPlan) -> FolderRules:
         stops.add(root_of(mapper.to_container(row.path), roots, runtime))
     settings = runtime.settings
     kept = (
-        *settings.folders.protected,
+        *settings.folders.untouched,
         *settings.folders.excluded,
         *settings.classify.leave,
     )

@@ -59,7 +59,8 @@ It prints, in this order:
 |---|---|
 | `--prefer PATH` | Folder whose copies are kept first; repeat it, the order matters. [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#prefer-a-folder) |
 | `--protect PATH` | Folder never modified; its files are the copies kept. [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#protect-a-folder) |
-| `--exclude PATH` | Folder never analysed, such as a real backup. [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--exclude PATH` | Folder never analysed, not even read. [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#exclude-a-folder) |
+| `--backup PATH` | A backup or an old disk: compared, never changed. Says what it lacks and what only it holds (`backup-missing.csv`, `backup-only.csv`). [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk) |
 | `--exclude-name NAME` | Folder name never analysed, wherever it is (`--exclude-name Thumbnails,.Trash-*`). [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--full` | Read every folder again, even those unchanged since the last audit (taken from the cache otherwise): for a photo changed in place by another program. [Step 2](../start/02-keep-the-cache.md#what-changes) |
 | `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); other file types too (`--ext pdf,docx`). [Cleaning, step 6](../clean/06-file-types.md) |
@@ -76,8 +77,8 @@ once, the command line still wins.
 # Keep the copies of the main phone folder first
 cavo789/media-hygiene audit --prefer "C:\Photos\Phone"
 
-# Leave a real backup out of the analysis
-cavo789/media-hygiene audit --exclude "D:\Backup"
+# Is the backup complete? Can the old disk be wiped? Compared, never changed
+cavo789/media-hygiene audit --backup "D:\Backup"
 
 # Only the videos
 cavo789/media-hygiene audit --ext video
@@ -99,7 +100,8 @@ cavo789/media-hygiene audit --people
   [the cache](../start/02-keep-the-cache.md), the next ones only read the new or changed files.
 - **Mount each folder once**: `C:\Photos` already includes `C:\Photos\2019`. A folder mounted
   twice is refused, rather than taking a photo for a copy of itself.
-- **A real backup** must stay a copy: leave it out, or `--exclude` it.
+- **A backup or an old disk**: `--backup` compares it without changing it, and says what it
+  lacks and what only it holds.
 - The summary of a **near duplicate** or a **burst** is only a forecast: a plain `clean` never
   touches them.
 

@@ -14,7 +14,7 @@ from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.models import MediaFile
-from media_hygiene.services.policy import keep_policy
+from media_hygiene.services.policy import backup_folders, keep_policy
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -50,7 +50,7 @@ def named_files(runtime: Runtime, named: Sequence[NamedFile]) -> tuple[MediaFile
         The files, as the index knew them.
 
     Raises:
-        DecisionsError: One of them lies in a protected folder.
+        DecisionsError: One of them lies in a protected or a backup folder.
     """
     mapper = runtime.mapper
     files = tuple(
@@ -67,6 +67,10 @@ def named_files(runtime: Runtime, named: Sequence[NamedFile]) -> tuple[MediaFile
     if locked:
         message = _("{path} is in a protected folder: it is never moved.")
         raise DecisionsError(message.format(path=mapper.to_host(locked[0].path)))
+    backed = backup_folders(runtime.settings, mapper).files_in(files)
+    if backed:
+        message = _("{path} is in a backup folder: it is never moved.")
+        raise DecisionsError(message.format(path=mapper.to_host(backed[0].path)))
     return files
 
 

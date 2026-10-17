@@ -13,8 +13,9 @@ from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
-from media_hygiene.cli import options, review_options, scan_options
-from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
+from media_hygiene.cli import folder_options, options, review_options, scan_options
+from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.place import DEFAULT_DECISIONS
@@ -39,9 +40,10 @@ def review_command(  # pylint: disable=too-many-arguments
     port: Annotated[
         int, review_options.port(options.panel_advanced())
     ] = review_options.PAGE_PORT,
-    prefer: Annotated[list[str] | None, options.prefer()] = None,
-    protect: Annotated[list[str] | None, options.protect()] = None,
-    exclude: Annotated[list[str] | None, options.exclude()] = None,
+    prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
+    protect: Annotated[list[str] | None, folder_options.protect()] = None,
+    exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
+    backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
 ) -> None:
@@ -52,6 +54,7 @@ def review_command(  # pylint: disable=too-many-arguments
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        backup: `--backup` folders, compared and never changed.
         ext: `--ext` categories and extensions, as for `audit`.
         exclude_name: `--exclude-name` folder names, as for `audit`.
         decisions: `--decisions`, the file to save the decisions in.
@@ -79,7 +82,7 @@ def review_command(  # pylint: disable=too-many-arguments
     output = runtime.output
     with user_errors(output):
         runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
+            FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
         mode = review_mode(
             {

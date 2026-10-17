@@ -94,7 +94,8 @@ the one kept. Broken files and orphan sidecars of a protected folder are left al
 ## Exclude a folder
 
 `--exclude` removes a folder from the analysis: its files are neither read nor compared. Use it
-for a real backup that must stay a second copy:
+for a folder the tool must not even read (a backup you want checked is
+[compared](#compare-a-backup-or-an-old-disk) instead):
 
 ```powershell
 mh audit --exclude "D:\Old disk"
@@ -116,6 +117,39 @@ Folders sharing identical files
 • 1 file is present several times in C:\Photos\2019\Seaside holidays: one copy
   is kept (292.0 KB to free).
 ```
+
+## Compare a backup or an old disk
+
+`--backup` (or `backups` in `[folders]` of `config.toml`) marks a folder as a backup: it is read
+and compared by content, **never changed**, and its copies are never the reason a file of your
+photos goes. Unlike a protected folder, it does not keep anything: it is only compared.
+
+```powershell
+mh audit --backup "D:\backup"
+```
+
+Per backup folder, the audit says two things, the report lists them, and two files next to
+`plan.csv` list every file (host paths, readable by Excel):
+
+- **Not in the backup** (`backup-missing.csv`): the files of your photos without an identical
+  copy in it. Is my backup complete?
+- **Only in the backup** (`backup-only.csv`): its files without an identical copy in your photos:
+  deleted from your photos since, or, on an old disk, the files to copy before wiping it.
+
+Good to know:
+
+- **Identical means byte for byte** (the same fingerprint): a resized or recompressed copy does not
+  count as backed up.
+- **`clean`, `review` and `crosscheck`** take `--backup` too: its files are left out of the
+  duplicate groups, the near duplicates, the burst series and Czkawka's run. `sort`, `album` and
+  `xmp` never write there either.
+- **One role per folder**: a backup folder cannot be preferred, protected or excluded too, nor lie
+  inside such a folder or hold one. The tool refuses it and names both folders.
+- **Time**: the first audit reads a backup like any other folder, its files compared by
+  fingerprint when another file has the same size. Count about 465 MB per second (measured on the
+  maintainer's PC, first audit of a library); an old USB hard disk is slower. The next audits take
+  it from [the cache](../start/02-keep-the-cache.md).
+- **Nothing is copied**: the tool says what to copy; you copy.
 
 ## Skip a folder name on every disk
 

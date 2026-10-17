@@ -2,7 +2,7 @@
 
 [Documentation](../README.md) › Nettoyer, étape 7 sur 14 · 🇬🇧 [English](../../en/clean/07-configuration-file.md)
 
-Vos dossiers préférés, votre sauvegarde exclue, votre langue : plutôt que de les taper dans
+Vos dossiers préférés, votre sauvegarde, votre langue : plutôt que de les taper dans
 chaque commande, écrivez-les une fois dans un fichier, `config.toml`. L'outil le lit à chaque
 lancement.
 
@@ -440,7 +440,8 @@ timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC
 [folders]
 preferred = ['C:\Photos\Ancien téléphone', 'C:\Photos\Famille']
 protected = []
-excluded = ['D:\sauvegarde']
+excluded = []
+backups = ['D:\sauvegarde']
 
 [scan]
 excluded_names = []    # noms de dossiers ignorés partout, p. ex. ["Thumbnails", ".Trash-*"]
@@ -466,7 +467,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
-- **`excluded`** : jamais analysés, pour une vraie sauvegarde (`--exclude`).
+- **`excluded`** : jamais analysés, même pas lus (`--exclude`).
+- **`backups`** : une sauvegarde ou un ancien disque, lu et comparé, jamais modifié : l'audit dit
+  ce qui lui manque et ce que lui seul contient (`--backup`,
+  [étape 5](05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).
 - **`excluded_names`** : noms de dossiers jamais analysés, où qu'ils soient ; des motifs comme
   `.Trash-*`, sans tenir compte de la casse, ajoutés aux dossiers système toujours ignorés
   (`--exclude-name`, [étape 5](05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques)).

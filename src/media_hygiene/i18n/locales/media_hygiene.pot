@@ -1,3 +1,16 @@
+msgid "   Nothing is only in it: each of its files has a copy in your photos."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"   {count} file is only in it, nowhere else ({size}): copy it before "
+"wiping this disk."
+msgid_plural ""
+"   {count} files are only in it, nowhere else ({size}): copy them before "
+"wiping this disk."
+msgstr[0] ""
+msgstr[1] ""
+
 #, python-brace-format
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr ""
@@ -292,6 +305,25 @@ msgid "A GPS position is named after its town only within this distance, in km."
 msgstr ""
 
 msgid "A Windows folder (PowerShell):"
+msgstr ""
+
+msgid ""
+"A backup folder (--backup, folders.backups) is read and compared by "
+"content, never changed: its copies are never the reason a file of your "
+"photos goes. A resized or recompressed copy does not count. backup-"
+"missing.csv and backup-only.csv, next to this page, list every file."
+msgstr ""
+
+msgid ""
+"A backup or an old disk: compared, never changed. Says what it lacks and "
+"what only it holds. Repeatable."
+msgstr ""
+
+msgid ""
+"A backup or an old disk: read and compared by content, never changed, and"
+" never the reason a copy elsewhere goes. The audit says what it lacks and"
+" what only it holds (to copy before wiping that disk). Not preferred, "
+"protected or excluded too."
 msgstr ""
 
 #, python-brace-format
@@ -669,6 +701,12 @@ msgid "Back after being set aside"
 msgstr ""
 
 msgid "Back to the report"
+msgstr ""
+
+msgid "Backup folder"
+msgstr ""
+
+msgid "Backup folders"
 msgstr ""
 
 msgid "Band"
@@ -1486,6 +1524,9 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
+msgid "Every file of your photos is in this backup."
+msgstr ""
+
 msgid "Every group has been decided."
 msgstr ""
 
@@ -1744,7 +1785,7 @@ msgid ""
 "somewhere: [\"Martin\", \"Victoria\"]. Case and accents do not matter."
 msgstr ""
 
-msgid "Folder never analysed, e.g. a real backup to keep. Repeatable."
+msgid "Folder never analysed, not even read. Repeatable."
 msgstr ""
 
 msgid "Folder never modified; its files are the copies kept. Repeatable."
@@ -2508,7 +2549,7 @@ msgid ""
 "duplicate. The thresholds are in [review.unwanted] of config.toml."
 msgstr ""
 
-msgid "Never analysed: e.g. a real backup that must remain a second copy."
+msgid "Never analysed, not even read."
 msgstr ""
 
 msgid ""
@@ -2801,6 +2842,12 @@ msgstr[1] ""
 msgid "Not found"
 msgstr ""
 
+#, python-format
+msgid "Not in this backup: %(num)s file of your photos (%(size)s)."
+msgid_plural "Not in this backup: %(num)s files of your photos (%(size)s)."
+msgstr[0] ""
+msgstr[1] ""
+
 #, python-brace-format
 msgid "Not looked at (not mounted): {points}."
 msgstr ""
@@ -2854,6 +2901,11 @@ msgid ""
 "Nothing is deleted from this page: the files set aside go to the "
 "quarantine at the next 'clean --decisions', journaled; 'undo' brings them"
 " back, 'purge' frees the space."
+msgstr ""
+
+msgid ""
+"Nothing is only in this backup: each of its files has a copy in your "
+"photos."
 msgstr ""
 
 msgid "Nothing is proposed by --sample: run classify without it."
@@ -2985,6 +3037,16 @@ msgid ""
 "Only for the pictures and videos found alike: a black and white edit of a"
 " colour picture is not a copy of it."
 msgstr ""
+
+#, python-format
+msgid ""
+"Only in this backup, nowhere else: %(num)s file (%(size)s). Deleted from "
+"your photos, or to copy before wiping this disk."
+msgid_plural ""
+"Only in this backup, nowhere else: %(num)s files (%(size)s). Deleted from"
+" your photos, or to copy before wiping this disk."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Only the events to decide"
 msgstr ""
@@ -3783,6 +3845,9 @@ msgid ""
 msgstr ""
 
 msgid "Seconds"
+msgstr ""
+
+msgid "See the files"
 msgstr ""
 
 msgid "Seen."
@@ -6486,6 +6551,13 @@ msgid "{actions}?"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
+"one inside the other: a backup folder is only compared, give it no other "
+"role"
+msgstr ""
+
+#, python-brace-format
 msgid "{category} cannot be used in a category"
 msgstr ""
 
@@ -7287,8 +7359,18 @@ msgid "{folder}: copies inside one folder cannot be swapped."
 msgstr ""
 
 #, python-brace-format
+msgid "{folder}: every file of your photos is in this backup."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder}: give the full path, from the drive letter."
 msgstr ""
+
+#, python-brace-format
+msgid "{folder}: {count} file of your photos is not in this backup ({size})."
+msgid_plural "{folder}: {count} files of your photos are not in this backup ({size})."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{host} answered something that is not a search result."
@@ -7494,6 +7576,10 @@ msgstr ""
 msgid ""
 "{path} is a path, not a folder name: use --exclude (folders.excluded) for"
 " one precise folder"
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is in a backup folder: it is never moved."
 msgstr ""
 
 #, python-brace-format

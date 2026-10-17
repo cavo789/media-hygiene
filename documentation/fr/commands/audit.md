@@ -61,7 +61,8 @@ Il affiche, dans cet ordre :
 |---|---|
 | `--prefer CHEMIN` | Dossier dont les copies sont gardées en priorité ; à répéter, l'ordre compte. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
 | `--protect CHEMIN` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
-| `--exclude CHEMIN` | Dossier jamais analysé, comme une vraie sauvegarde. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--exclude CHEMIN` | Dossier jamais analysé, même pas lu. [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--backup CHEMIN` | Une sauvegarde ou un ancien disque : comparé, jamais modifié. Dit ce qui lui manque et ce que lui seul contient (`backup-missing.csv`, `backup-only.csv`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque) |
 | `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--full` | Relire tous les dossiers, même ceux inchangés depuis le dernier audit (repris du cache sinon) : pour une photo modifiée sur place par un autre programme. [Étape 2](../start/02-keep-the-cache.md#ce-qui-change) |
 | `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6 du nettoyage](../clean/06-file-types.md) |
@@ -78,8 +79,8 @@ Chaque option a sa ligne dans `config.toml` ([étape 7 du nettoyage](../clean/07
 # Garder d'abord les copies du dossier du téléphone principal
 cavo789/media-hygiene --locale fr audit --prefer "C:\Photos\Téléphone"
 
-# Laisser une vraie sauvegarde hors de l'analyse
-cavo789/media-hygiene --locale fr audit --exclude "D:\Sauvegarde"
+# La sauvegarde est-elle complète ? L'ancien disque peut-il être effacé ? Comparé, jamais modifié
+cavo789/media-hygiene --locale fr audit --backup "D:\Sauvegarde"
 
 # Seulement les vidéos
 cavo789/media-hygiene --locale fr audit --ext video
@@ -102,7 +103,8 @@ cavo789/media-hygiene --locale fr audit --people
   modifiés.
 - **Montez chaque dossier une seule fois** : `C:\Photos` contient déjà `C:\Photos\2019`. Un
   dossier monté deux fois est refusé, plutôt que de prendre une photo pour une copie d'elle-même.
-- **Une vraie sauvegarde** doit rester une copie : laissez-la de côté, ou `--exclude`-la.
+- **Une sauvegarde ou un ancien disque** : `--backup` le compare sans le modifier, et dit ce qui
+  lui manque et ce que lui seul contient.
 - Le résumé des **quasi-doublons** et des **rafales** n'est qu'une prévision : un `clean` simple
   n'y touche jamais.
 

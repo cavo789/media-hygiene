@@ -35,10 +35,18 @@ De plusieurs fichiers identiques, celui qui reste en place. Les autres sont les 
 mises de côté par `clean`.
 [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md)
 
+### Dossier de sauvegarde
+
+Une sauvegarde ou un ancien disque que l'outil lit et compare, sans jamais le modifier
+(`--backup`). L'audit dit lesquelles de vos photos lui manquent, et lesquels de ses fichiers ne
+sont nulle part ailleurs : ceux à copier avant d'effacer ce disque. Ses copies ne sont jamais la
+raison du départ d'un fichier de vos photos.
+[Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)
+
 ### Dossier exclu
 
-Un dossier que l'outil ne lit jamais, pour une vraie sauvegarde qui doit rester une seconde copie
-(`--exclude`).
+Un dossier que l'outil ne lit jamais (`--exclude`). Une sauvegarde à vérifier est plutôt un
+[dossier de sauvegarde](#dossier-de-sauvegarde).
 [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#exclure-un-dossier)
 
 ### Dossier protégé

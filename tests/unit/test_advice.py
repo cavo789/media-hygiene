@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import pytest
 from rich.console import Console
 
-from media_hygiene.cli import cmd_audit
+from media_hygiene.cli import audit_tips
 from media_hygiene.console.advice import TIP_BUDGET, Advice, TipKind, select
 from media_hygiene.console.output import Output
 from media_hygiene.paths.mount_kind import MountKind
@@ -114,7 +114,7 @@ def test_the_settings_to_add_once_share_one_line(
     missing, said = case
     monkeypatch.setattr("media_hygiene.config.zone.timezone_unknown", lambda: True)
     runtime = make_runtime(make_locations(tmp_path, *missing))
-    cmd_audit._setup_tips(runtime)  # noqa: SLF001  # pylint: disable=protected-access
+    audit_tips.setup_tips(runtime)
     runtime.output.finish()
     line = " ".join(output_of(runtime).split())
     assert line.startswith("⚙️ To set once: -v media-hygiene-cache:/cache")

@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.context import warn
 from media_hygiene.cli.report_where import announce_report
 from media_hygiene.console.advice import Advice, TipKind
+from media_hygiene.console.backup_view import show_backups
 from media_hygiene.console.crosscheck_outdated import show_outdated
 from media_hygiene.console.crosscheck_view import show_cross_check
 from media_hygiene.console.inventory_view import inventory_table
@@ -56,6 +57,7 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         findings = service.run()
     output.show(findings_table(findings))
     show_unread(runtime, findings.unread)
+    show_backups(runtime, findings.backups)  # 0204
     service.guide.close()
     timed = stages_line(findings.stages)
     if timed is not None and output.verbose:  # where the time goes, to paste

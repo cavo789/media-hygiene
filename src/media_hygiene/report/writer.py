@@ -13,6 +13,7 @@ from media_hygiene.constants import (
     REPORT_FILE_NAME,
     SUMMARY_FILE_NAME,
 )
+from media_hygiene.report.backup_views import backup_section, write_backup_csvs
 from media_hygiene.report.builder import ReportBuilder
 from media_hygiene.report.csv_export import write_plan_csv
 from media_hygiene.report.environment import make_environment
@@ -55,10 +56,11 @@ class ReportWriter:
             make_thumbnails(builder.thumbnail_jobs(record), self.pool)
         )
         view = builder.view(record, previews)
+        backups = backup_section(record.findings.backups, self.mapper)  # 0204
         environment = make_environment()
         target = folder / REPORT_FILE_NAME
         page = environment.get_template(_REPORT_TEMPLATE)
-        target.write_text(page.render(report=view), encoding="utf-8")
+        target.write_text(page.render(report=view, backups=backups), encoding="utf-8")
         if view.similar.near or view.similar.videos.groups:
             near_page = environment.get_template(_NEAR_TEMPLATE)
             (folder / NEAR_FILE_NAME).write_text(
@@ -71,6 +73,7 @@ class ReportWriter:
                 pair_page.render(page=pair_view), encoding="utf-8"
             )
         write_plan_csv(folder / PLAN_CSV_FILE_NAME, record.findings, self.mapper)
+        write_backup_csvs(folder, record.findings.backups, self.mapper)
         summary_json = view.header.summary.model_dump_json(indent=2)
         (folder / SUMMARY_FILE_NAME).write_text(summary_json, encoding="utf-8")
         write_index(self.reports_dir)

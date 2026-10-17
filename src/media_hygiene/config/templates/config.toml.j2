@@ -36,13 +36,17 @@ preferred = []
 {{ comment(_('Never modified. Their files are always the copies kept, so identical files elsewhere ARE deleted (a "master library").'), "--protect") }}
 protected = []
 
-{{ comment(_("Never analysed: e.g. a real backup that must remain a second copy."), "--exclude") }}
+{{ comment(_("Never analysed, not even read."), "--exclude") }}
 excluded = []
+
+{{ comment(_("A backup or an old disk: read and compared by content, never changed, and never the reason a copy elsewhere goes. The audit says what it lacks and what only it holds (to copy before wiping that disk). Not preferred, protected or excluded too."), "--backup") }}
+backups = []
 
 {{ comment(_("Example:")) }}
 # preferred = ['C:\Family Photos', 'C:\Users\Public\Pictures']
 # protected = ['C:\Family Photos\Albums']
-# excluded = ['D:\backup']
+# excluded = ['C:\Family Photos\Temp']
+# backups = ['D:\backup']
 
 
 [scan]
