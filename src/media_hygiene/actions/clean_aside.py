@@ -79,15 +79,28 @@ class AsideMoves:
     def _near(self, decision: NearDecision, file: MediaFile) -> None:
         """Move one near duplicate to the quarantine.
 
+        The kept picture itself goes last when the review kept none of the group:
+        no other picture answers for it in the journal.
+
         Args:
             decision: The near-duplicate decision, holding the kept picture.
             file: Copy to move.
         """
-        blocker = near_blocker(decision.keeper.path, file)
+        whole = file.path == decision.keeper.path
+        # Kept none of: the kept picture goes too, maybe first (moves run in
+        # parallel), so only the file itself is checked, as for a series set aside.
+        none_kept = any(
+            item.path == decision.keeper.path for item in decision.removable
+        )
+        blocker = (
+            change_blocker(file)
+            if none_kept
+            else near_blocker(decision.keeper.path, file)
+        )
         if blocker is not None:
             self._tally.skipped.append(Incident(file.path, blocker))
             return
-        keeper = Origin(decision.keeper.path)
+        keeper = Origin(None if whole else decision.keeper.path)
         self._changes.quarantine(file, ActionKind.QUARANTINE_NEAR, keeper)
 
     def _burst(self, choice: BurstChoice, file: MediaFile) -> None:

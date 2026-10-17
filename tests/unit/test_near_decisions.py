@@ -61,6 +61,14 @@ def test_decisions_override_the_tier() -> None:
     assert chosen == (CHECK,)
 
 
+def test_a_group_kept_none_of_moves_every_version() -> None:
+    """X: the copies first, then the version the audit kept."""
+    verdicts = {CHECK.keeper.path: NearVerdict(NearAction.NONE)}
+    [whole] = selected((CHECK,), NearSelection(verdicts=verdicts))
+    assert whole.keeper == CHECK.keeper
+    assert whole.removable == (*CHECK.removable, CHECK.keeper)
+
+
 @pytest.mark.parametrize(
     "decision",
     [

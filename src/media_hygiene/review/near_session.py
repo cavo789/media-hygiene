@@ -119,7 +119,7 @@ class NearSession(RankedSession[NearAction]):
         if not 0 <= rank < len(self._states):
             return _("There is no such group.")
         state = self._states[rank]
-        if action is NearAction.SWAP and not state.swappable:
+        if action in {NearAction.SWAP, NearAction.NONE} and not state.swappable:
             message = _("{path} is in a protected folder: it is never moved.")
             keeper = self._source.groups[rank].keeper.path
             return message.format(path=self._source.builder.mapper.to_host(keeper))

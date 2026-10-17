@@ -1,16 +1,6 @@
-{# Included in the style of review.html.j2: the left column (table of contents above, the
-   keyboard reminder below, always visible), and the panel showing what the decisions
-   file holds for the series on screen. #}
-  .layout { display: grid; grid-template-columns: minmax(240px, 340px) 1fr; align-items: start; }
-  #side { position: sticky; top: 52px; display: flex; flex-direction: column; gap: 10px;
-          height: calc(100vh - 110px); margin: 12px 0 12px 16px; }
-  #toc, #keys { padding: 10px 12px; background: var(--card); border: 1px solid var(--line);
-                border-radius: 10px; font-size: .85rem; }
-  #toc { flex: 1; min-height: 0; overflow: auto; }
-  #toc h2, #keys h2 { font-size: 1rem; margin: 0 0 6px; }
-  #keys { flex: none; }
-  #keys dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0; }
-  #keys dt { white-space: nowrap; } #keys dd { margin: 0; }
+{# Included in the style of review.html.j2, after review_side.css.j2: the table of
+   contents of the left column, and the panel showing what the decisions file holds for
+   the series on screen. #}
   #tree summary .validate { flex: none; margin-left: auto; padding: 0 6px; font: inherit;
                             font-size: .8rem; color: var(--ok); background: none; cursor: pointer;
                             border: 1px solid var(--line); border-radius: 4px; visibility: hidden; }
@@ -42,17 +32,9 @@
              color: var(--ok); background: var(--bg); cursor: pointer;
              border: 1px solid var(--ok); border-radius: 6px; }
   #obvious:disabled { color: var(--muted); border-color: var(--line); cursor: default; }
-  #moreKeys { margin-top: 6px; } #moreKeys summary { cursor: pointer; color: var(--muted); }
-  #disk { margin-top: 14px; padding: 8px 12px; background: var(--card);
-          border: 1px solid var(--line); border-radius: 10px; font-size: .85rem; }
-  #disk > summary { font-weight: 600; cursor: pointer; }
   #disk p.done { color: var(--ok); font-weight: 600; } #disk p.todo { color: var(--muted); }
   #disk .names { display: inline-block; vertical-align: top; min-width: 220px; margin: 0 24px 6px 0; }
   #disk .names.kept strong { color: var(--ok); } #disk .names.aside strong { color: var(--bad); }
   #disk ul { margin: 2px 0; padding-left: 18px; }
   #raw summary { cursor: pointer; color: var(--muted); }
   #rawJson { margin: 6px 0 0; padding: 8px; overflow: auto; background: var(--bg); border-radius: 6px; }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-    #side { order: 2; position: static; height: auto; margin: 0 16px 16px; }
-  }

@@ -159,13 +159,14 @@ rouges, avec la ligne 💬 :
 
 ![La page de review --near : Groupe 1 sur 4, à vérifier et non décidé ; la photo de plage IMG_0104.jpg gardée en 1500 × 1000, encadrée en vert, sa copie WhatsApp de 800 × 533 en pointillés rouges ; au-dessus la ligne 💬 ; à gauche l'ordre (à vérifier d'abord), l'aide-mémoire du clavier et les trois paires de dossiers, Vacances à la mer → WhatsApp avec 2 groupes, chacune avec son bouton ✔ comme prévu](../images/review-near.webp)
 
-Les touches :
+Les touches (les quatre premières toujours visibles en bas à gauche, les autres sous *Plus de touches*, comme dans la revue des rafales) :
 
 | Touche | Ce qu'elle fait |
 |---|---|
 | `→` | comme prévu : les copies partent en quarantaine, puis le groupe suivant |
 | `W` | garder l'autre version : la première copie reste, la version que l'audit gardait part (refusé quand elle est dans un dossier protégé) |
 | `L` | laisser le groupe tel quel : rien n'en bouge |
+| `X` | n'en garder aucune : toutes les versions du groupe partent en quarantaine, celle que l'audit gardait aussi (refusé quand elle est dans un dossier protégé) |
 | `←` / `N` | groupe précédent / groupe suivant à vérifier encore non décidé |
 | `U` | revenir à non décidé : le `--tier` décide à nouveau |
 | `G` | toute la paire de dossiers comme prévu |
