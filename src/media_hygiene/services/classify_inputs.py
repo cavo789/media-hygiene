@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Protocol
 
 from media_hygiene.classify.models import MediaInput
+from media_hygiene.index.former_names import former_of
+from media_hygiene.index.takeout_rows import takeout_of
 from media_hygiene.paths.host_paths import is_within
+from media_hygiene.scan.metadata import MediaMetadata
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -17,6 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.index.facts import FileFacts
     from media_hygiene.index.repository import FactsRepository
     from media_hygiene.scan.models import MediaFile
+    from media_hygiene.scan.takeout_facts import TakeoutFacts
     from media_hygiene.services.runtime import Runtime
 
 
@@ -53,9 +57,34 @@ def media_input(file: MediaFile, root: Path, index: FactsRepository) -> MediaInp
         index: The facts of the audit.
 
     Returns:
-        Its input.
+        Its input, with what its Takeout `.json` says and where the copies `clean`
+        removed lay.
     """
-    return input_of(file, root, index.get(file))
+    found = input_of(file, root, index.get(file))
+    found = replace(found, former=former_of(index.connection, file.path))
+    return with_takeout(found, takeout_of(index.connection, file.path))
+
+
+def with_takeout(file: MediaInput, takeout: TakeoutFacts | None) -> MediaInput:
+    """Add what a Google Photos Takeout `.json` says of a file.
+
+    Its position stands for the file's own when the file holds none: the `place`
+    and `trip` rules and the place words count it like a GPS position.
+
+    Args:
+        file: The input.
+        takeout: The facts of its `.json`, or None.
+
+    Returns:
+        The input, completed.
+    """
+    if takeout is None:
+        return file
+    metadata = file.metadata
+    if takeout.located and not (metadata is not None and metadata.located):
+        position = {"latitude": takeout.latitude, "longitude": takeout.longitude}
+        metadata = (metadata or MediaMetadata()).model_copy(update=position)
+    return replace(file, takeout=takeout, metadata=metadata)
 
 
 def input_of(file: ListedFile, root: Path, facts: FileFacts) -> MediaInput:

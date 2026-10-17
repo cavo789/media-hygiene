@@ -11,6 +11,7 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
+from media_hygiene.classify.clocks import clocks_of
 from media_hygiene.classify.dates import clock_not_set, zone_of
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
 from media_hygiene.classify.event_folders import without_event_folders
@@ -25,7 +26,7 @@ from media_hygiene.classify.signals import folder_signal, with_neighbours
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
 from media_hygiene.classify.years import below, in_years, year_folders
-from media_hygiene.constants import GENERIC_FOLDERS
+from media_hygiene.name_patterns import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.name_rules import compile_patterns
 
@@ -86,6 +87,7 @@ def classify(
         compile_patterns(settings.name_dates),
         zone_of(settings.timezone),
         clock_not_set(files, rules),
+        clocks_of(settings.clocks),
     )
     datings = {file.path: dating_of(file, context) for file in files}
     signals = {file.path: folder_signal(file, rules) for file in files}

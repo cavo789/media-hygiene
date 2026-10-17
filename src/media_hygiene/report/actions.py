@@ -1,18 +1,21 @@
 """What an audit lets the user do, each action with its gain and its effort.
 
-At most three lines: the identical copies (no risk, one command), the near duplicates
-(the sure groups, and those to look at), the burst series (optional). The effort is a
-fixed estimate per group to look at or series, the pace measured on the review page.
+At most five lines: the identical copies (no risk, one command), the files set aside
+before that came back (0216), the files gone since (0224, both in `journal_actions`),
+the near duplicates (the sure groups, and those to look at), the burst series
+(optional). The effort is a fixed estimate per group to look at or series, the pace
+measured on the review page.
 """
 
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.report.action_models import ActionCommands, AuditAction
+from media_hygiene.report.journal_actions import gone_action, returned_action
 
 if TYPE_CHECKING:
     from media_hygiene.plan.models import AuditFindings
@@ -20,25 +23,8 @@ if TYPE_CHECKING:
 NEAR_GROUP_SECONDS: Final = 30  # to compare two pictures and choose
 BURST_SERIES_SECONDS: Final = 40  # to look at a series in 'review' and choose
 _SECONDS_PER_MINUTE: Final = 60
-
-
-@dataclass(frozen=True, slots=True)
-class ActionCommands:
-    """The full command of each action, ready to paste."""
-
-    clean: str = ""
-    near: str = ""
-    review: str = ""
-    near_review: str = ""  # `review --near`: the groups to look at, in the browser
-
-
-@dataclass(frozen=True, slots=True)
-class AuditAction:
-    """One thing the user can do now: an icon, what it gains and costs, its command."""
-
-    icon: str
-    text: str
-    command: str = ""
+# `ActionCommands` and `AuditAction` live in `action_models`, imported from here too.
+__all__ = ["ActionCommands", "AuditAction", "actions_title", "audit_actions"]
 
 
 def effort(seconds: int) -> str:
@@ -84,10 +70,11 @@ def audit_actions(
         commands: The command of each action.
 
     Returns:
-        Up to three actions.
+        Up to five actions.
     """
     plan, similar = findings.plan, findings.similar
     actions: list[AuditAction] = []
+    returned = returned_action(plan, commands.clean)
     if plan.decisions:
         copies = ngettext(
             "{count} identical copy, {size}: no risk, one command.",
@@ -104,6 +91,10 @@ def audit_actions(
                 commands.clean,
             )
         )
+    actions += [returned] if returned else []
+    actions += (
+        [gone_action(findings.gone, commands.gone_review)] if findings.gone else []
+    )
     groups = len(similar.groups)
     if groups:
         sure = similar.sure_groups

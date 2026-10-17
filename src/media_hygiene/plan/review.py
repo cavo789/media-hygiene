@@ -4,7 +4,8 @@ A folder pair holds the copies deleted from `removed_from` because an identical 
 kept in `kept_in`. A review can swap a pair (keep the copies of `removed_from`, delete
 the one of `kept_in`) or skip it (delete nothing of the pair). Several decisions may
 touch one group: a copy some decision keeps is never deleted. The shots of a burst
-series a review set aside are moved to the quarantine.
+series a review set aside, and the files set aside in `search`, are moved to the
+quarantine.
 """
 
 from __future__ import annotations
@@ -19,18 +20,25 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
     from pathlib import Path
 
+    from media_hygiene.plan.gone import GoneAnswer
     from media_hygiene.plan.keeper import KeepPolicy
     from media_hygiene.plan.models import CleanPlan, KeepDecision
     from media_hygiene.plan.similar_models import BurstChoice
+    from media_hygiene.scan.models import MediaFile
 
 type _Choices = Mapping[tuple[Path, Path], PairAction]
 
 
 class PairAction(StrEnum):
-    """What a review decided for a folder pair (no decision: as planned)."""
+    """What a review decided for a folder pair (no decision: as planned).
+
+    `planned` is saved by `review --pairs` only, so that a pair seen and left as
+    planned stays decided when the review resumes: it changes nothing in the plan.
+    """
 
     SWAP = "swap"
     SKIP = "skip"
+    PLANNED = "planned"
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,12 +56,15 @@ class ReviewChoices:
 
     pairs: tuple[PairChoice, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
+    chosen: tuple[MediaFile, ...] = ()  # set aside in `search`
+    unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
+    gone: tuple[GoneAnswer, ...] = ()  # answered in `review --gone`
 
 
 def apply_choices(
     plan: CleanPlan, choices: ReviewChoices, policy: KeepPolicy
 ) -> CleanPlan:
-    """Rewrite the exact duplicate groups the decisions touch, add the burst shots.
+    """Rewrite the exact duplicate groups the decisions touch, add what is set aside.
 
     Args:
         plan: The plan of the audit.
@@ -61,13 +72,23 @@ def apply_choices(
         policy: Ranks the copies a swap keeps, to choose the new keeper.
 
     Returns:
-        The plan; groups left with nothing to delete are dropped. A burst shot the
-        exact tier already removes (a swapped keeper) is not moved a second time.
+        The plan; groups left with nothing to delete are dropped. A burst shot or a
+        file chosen that the plan already removes (a swapped keeper, a copy) is not
+        moved a second time.
     """
-    by_pair = {(c.kept_in, c.removed_from): c.action for c in choices.pairs}
+    by_pair = {
+        (c.kept_in, c.removed_from): c.action
+        for c in choices.pairs
+        if c.action is not PairAction.PLANNED
+    }
     decisions = (_reviewed(decision, by_pair, policy) for decision in plan.decisions)
     reviewed = replace(plan, decisions=tuple(d for d in decisions if d.removable))
-    return replace(reviewed, bursts=_set_aside(choices.bursts, reviewed.removed))
+    reviewed = replace(reviewed, bursts=_set_aside(choices.bursts, reviewed.removed))
+    removed = reviewed.removed
+    chosen = tuple(file for file in choices.chosen if file.path not in removed)
+    taken = removed | {file.path for file in chosen}
+    unwanted = tuple(file for file in choices.unwanted if file.path not in taken)
+    return replace(reviewed, chosen=chosen, unwanted=unwanted, gone=choices.gone)
 
 
 def _set_aside(

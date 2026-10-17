@@ -5,10 +5,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_audit import audit_command
+from media_hygiene.cli.cmd_browse import browse_command
 from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
+from media_hygiene.cli.cmd_home import home_command
 from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
 from media_hygiene.cli.cmd_menu import menu_command
@@ -59,6 +61,15 @@ def command_table(
             _(
                 "Every step of the guides with its command, the next one first: "
                 "what 'mh' alone shows, Enter runs it."
+            ),
+        ),
+        (
+            "home",
+            home_command,
+            analyse,
+            _(
+                "The home page in your browser: where you are, the next step as a "
+                "button, every step of the guides, the reports."
             ),
         ),
         (
@@ -121,6 +132,15 @@ def command_table(
             _(
                 "Find photos by their words in your browser (or as a table): "
                 "the words 'tags' gave them."
+            ),
+        ),
+        (
+            "browse",
+            browse_command,
+            analyse,
+            _(
+                "Walk through your folders in your browser, as in Explorer, and set "
+                "photos aside; 'clean --decisions' then moves them."
             ),
         ),
         (

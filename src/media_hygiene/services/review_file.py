@@ -76,6 +76,8 @@ def resume_decisions(
         if target.exists()
         else DecisionsFile(version=1, roots=roots)
     )
+    if base.only_chosen:  # files chosen in `search` need no audit
+        return base.model_copy(update={"roots": roots})
     if sorted(base.roots) != sorted(roots):
         message = _(
             "{path} was made on other folders ({theirs}); this review analyses {ours}."

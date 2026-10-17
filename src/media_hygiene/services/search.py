@@ -1,35 +1,30 @@
-"""`media-hygiene search`: find photos by their words, in the console or the browser.
+"""`search` and `browse`: find photos by their words, or walk through the folders.
 
 The index (`/cache`) is read, never written: the full-text table lives in memory. The
 browser page is served like `review`, until Ctrl+C; the grid's previews are kept in
-the cache folder. Nothing in the photo folders is ever changed.
+the cache folder. Nothing in the photo folders is ever changed: the files set aside on
+the page are written into the decisions file (`/reports`), for `clean --decisions`.
 """
 
 from __future__ import annotations
 
-import asyncio
-import contextlib
 import sqlite3
 from dataclasses import dataclass
-from functools import partial
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.console.search_view import show_found
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.search.app import SEARCH_PATH, SearchApp, SearchPlace
+from media_hygiene.search.app import SEARCH_PAGE_PATH
+from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.people_words import people_words, unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.data_checks import unreadable_index
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.search_pages import PageStart, serve_pages
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-
-_PACKAGE: Final = "media_hygiene.search"
-_PAGE_TEMPLATE: Final = "search.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,11 +35,12 @@ class Printed:
     limit: int
 
 
-def open_search(runtime: Runtime) -> SearchIndex:
+def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
     """Open the index read-only; say when no file has words yet.
 
     Args:
         runtime: Settings, mount points and output.
+        words: Whether the words matter (`search`); the folder view needs none.
 
     Returns:
         The search, to close after use.
@@ -65,7 +61,7 @@ def open_search(runtime: Runtime) -> SearchIndex:
     try:
         search = SearchIndex.open(index)
         search.name_people(people_words(search.connection, runtime.settings.people))
-        empty = search.find(SearchQuery(()), 1).total == 0
+        empty = words and search.find(SearchQuery(()), 1).total == 0
     except sqlite3.Error as exc:
         raise unreadable_index(runtime, index, exc) from exc
     if empty:
@@ -99,35 +95,37 @@ def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:
     return found.total
 
 
-def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> None:
+def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> int:
     """Serve the search page until Ctrl+C.
 
     Args:
         runtime: Settings, mount points and output.
         search: The open index.
         port: The port to listen on, inside the container (0: any free one).
+
+    Returns:
+        How many files are set aside when the page stops, read from the disk.
     """
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    page = environment.get_template(_PAGE_TEMPLATE).render(search_path=SEARCH_PATH)
-    place = SearchPlace(
-        search, runtime.mapper, runtime.previews_dir, runtime.settings.people
+    ready = _(
+        "Search ready, open {url} in your browser. Ctrl+C stops it; your photos "
+        "are not changed."
     )
-    with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = SearchApp(place, page.encode(), executor)
-        asyncio.run(run_server(app, port, partial(_announce, runtime)))
+    return serve_pages(runtime, search, PageStart(port, SEARCH_PAGE_PATH, ready))
 
 
-def _announce(runtime: Runtime, port: int) -> None:
-    """Tell where the page is and how to open it from the host.
+def serve_browse(runtime: Runtime, search: SearchIndex, port: int) -> int:
+    """Serve the folder view until Ctrl+C.
 
     Args:
         runtime: Settings, mount points and output.
-        port: The port listened on, inside the container.
+        search: The open index.
+        port: The port to listen on, inside the container (0: any free one).
+
+    Returns:
+        How many files are set aside when the page stops, read from the disk.
     """
-    runtime.output.success(
-        _(
-            "Search ready, open {url} in your browser. Ctrl+C stops it; nothing is "
-            "changed."
-        ).format(url=page_url(port))
+    ready = _(
+        "Your folders are ready, open {url} in your browser. Ctrl+C stops it; your "
+        "photos are not changed."
     )
-    address_tip(runtime.output, port)
+    return serve_pages(runtime, search, PageStart(port, BROWSE_PATH, ready))

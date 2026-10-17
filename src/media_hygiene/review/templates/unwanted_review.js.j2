@@ -1,0 +1,175 @@
+{# The script of unwanted_review.html.j2: one group at a time, each choice saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const filePath = {{ file_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
+  const number = (value) => value.toLocaleString(lang);
+  let photos = [];
+  let groups = [];
+  let reasons = {};
+  let at = 0;  // the group shown
+  let cursor = 0;  // position of the cursor in that group
+  const disk = new Map();  // photo rank -> set aside (true) or kept, as read back from the disk
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+  const decided = (group) => group.photos.every((rank) => photos[rank].decision !== "");
+
+  // A photo's role: undecided ones are proposed aside.
+  const role = (rank) => photos[rank].decision || "proposed";
+
+  const card = (rank, position) => {
+    const photo = photos[rank];
+    const figure = document.createElement("figure");
+    figure.className = "shot " + role(rank) + (position === cursor ? " cursor" : "");
+    const image = document.createElement("img");
+    image.src = photo.preview;
+    image.alt = photo.name;
+    image.loading = "lazy";
+    const link = line("a", T.original, "original");
+    link.href = photo.original;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.title = T.originalTitle;
+    link.addEventListener("click", (event) => event.stopPropagation());
+    const name = line("div", "");
+    name.append(line("strong", photo.name), link);
+    const caption = document.createElement("figcaption");
+    caption.append(line("div", T[role(rank)], "tag"), name, line("div", reasons[photo.reason], "muted"), line("div", photo.folder, "muted"), line("div", photo.details, "muted"));
+    figure.append(image, caption);
+    figure.addEventListener("click", () => {
+      cursor = position;
+      toggle();
+    });
+    return figure;
+  };
+
+  const render = () => {
+    if (groups.length === 0) return;
+    const group = groups[at];
+    const aside = photos.filter((photo) => photo.decision === "aside").length;
+    const done = photos.filter((photo) => photo.decision !== "").length;
+    byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
+    byId("totals").textContent = fill(T.totals, { aside: number(aside), decided: number(done), total: number(photos.length) });
+    byId("title").textContent = group.title;
+    const state = byId("state");
+    state.textContent = decided(group) ? T.decided : T.pending;
+    state.className = decided(group) ? "decided" : "";
+    byId("shots").replaceChildren(...group.photos.map(card));
+    const counts = { aside: 0, kept: 0, none: 0 };
+    for (const rank of group.photos) {
+      if (!disk.has(rank)) counts.none += 1;
+      else if (disk.get(rank)) counts.aside += 1;
+      else counts.kept += 1;
+    }
+    byId("diskTitle").textContent = T.diskTitle;
+    byId("diskBody").replaceChildren(line("p", fill(T.diskCounts, counts)));
+  };
+
+  const go = (step) => {
+    const next = at + step;
+    if (next < 0) setStatus(T.first, "");
+    else if (next >= groups.length) setStatus(T.last, "");
+    else {
+      at = next;
+      cursor = 0;
+      render();
+    }
+  };
+
+  const nextUndecided = () => {
+    const ahead = groups.findIndex((group, index) => index > at && !decided(group));
+    const found = ahead >= 0 ? ahead : groups.findIndex((group) => !decided(group));
+    if (found < 0) setStatus(T.allDecided, "saved");
+    else {
+      at = found;
+      cursor = 0;
+      render();
+    }
+  };
+
+  // choices: photo rank -> true (aside), false (kept) or null (undecided).
+  const decide = (choices, then) => {
+    setStatus(T.saving, "");
+    const body = { choices: [...choices].map(([photo, aside]) => ({ photo: photo, aside: aside })) };
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        for (const [rank, aside] of choices) {
+          photos[rank].decision = aside === null ? "" : (aside ? "aside" : "kept");
+          disk.delete(rank);
+        }
+        for (const entry of reply.body.file.entries) disk.set(entry.photo, entry.aside);
+        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
+        if (then) then();
+        else render();
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  const toggle = () => {
+    const rank = groups[at].photos[cursor];
+    decide(new Map([[rank, photos[rank].decision === "kept"]]));
+  };
+
+  const asMarked = () => {
+    const undecided = groups[at].photos.filter((rank) => photos[rank].decision === "");
+    if (undecided.length === 0) go(1);
+    else decide(new Map(undecided.map((rank) => [rank, true])), () => go(1));
+  };
+
+  const moveCursor = (step) => {
+    const size = groups[at].photos.length;
+    cursor = Math.min(Math.max(cursor + step, 0), size - 1);
+    render();
+    const shown = byId("shots").children[cursor];
+    if (shown) shown.scrollIntoView({ block: "nearest" });
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
+    const key = event.key.toLowerCase();
+    if (event.key === "ArrowRight") asMarked();
+    else if (event.key === " ") toggle();
+    else if (event.key === "ArrowLeft") go(-1);
+    else if (event.key === "ArrowDown") moveCursor(1);
+    else if (event.key === "ArrowUp") moveCursor(-1);
+    else if (key === "n") nextUndecided();
+    else if (key === "u" || event.key === "Backspace") decide(new Map(groups[at].photos.map((rank) => [rank, null])));
+    else return;
+    event.preventDefault();
+  });
+
+  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
+    .then(([state, file]) => {
+      photos = state.photos;
+      groups = state.groups;
+      reasons = state.reasons;
+      if (file.error) setStatus(file.error, "error");
+      else {
+        for (const entry of file.entries) disk.set(entry.photo, entry.aside);
+        setStatus(fill(T.loaded, { time: clock(file.modified) }), "saved");
+      }
+      const first = groups.findIndex((group) => !decided(group));
+      at = first >= 0 ? first : 0;
+      render();
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();

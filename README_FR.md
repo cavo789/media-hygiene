@@ -123,9 +123,11 @@ de Docker ? [Installez Docker](https://cavo789.github.io/media-hygiene/fr/start/
 11. [Les quasi-doublons](https://cavo789.github.io/media-hygiene/fr/clean/11-near-duplicates/) : les copies réduites et
     recompressées (`--tier near`).
 12. [Décider paire par paire](https://cavo789.github.io/media-hygiene/fr/clean/12-decide-pair-by-pair/) : inverser une paire de
-    dossiers ou ne pas y toucher, depuis le rapport.
+    dossiers ou ne pas y toucher, dans le navigateur ou depuis le rapport.
 13. [Un second avis](https://cavo789.github.io/media-hygiene/fr/clean/13-second-opinion/) : comparer avec Czkawka, un outil
     indépendant.
+14. [Les photos indésirables](https://cavo789.github.io/media-hygiene/fr/clean/14-unwanted-photos/) : images minuscules,
+    captures d'écran, photos noires ou floues, mises de côté par vous seul.
 
 **Trier les photos** (nettoyez d'abord les doublons)
 

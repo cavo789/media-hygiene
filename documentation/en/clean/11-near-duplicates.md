@@ -1,6 +1,6 @@
 # 11. Near duplicates
 
-[Documentation](../README.md) › Cleaning, step 11 of 13 · 🇫🇷 [Français](../../fr/clean/11-near-duplicates.md)
+[Documentation](../README.md) › Cleaning, step 11 of 14 · 🇫🇷 [Français](../../fr/clean/11-near-duplicates.md)
 
 Some copies are not identical files, yet they are the same picture: the photo sent through
 WhatsApp (smaller), the one "reduced for email", a copy saved again with another quality, turned

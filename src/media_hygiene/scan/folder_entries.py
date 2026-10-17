@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Protocol
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.scan.models import FileIdentity, MediaFile
-from media_hygiene.scan.sidecars import Sidecar, companions_of, is_sidecar
+from media_hygiene.scan.sidecars import Sidecar, companions_of, is_sidecar_of
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -109,13 +109,14 @@ def sort_entries(items: Sequence[EntryLike], filters: ScanFilters) -> Listing:
     folders: list[Path] = []
     sidecars: list[EntryLike] = []
     unreadable: list[Path] = []
+    names = tuple(item.name for item in items if not item.is_dir(follow_symlinks=False))
     for entry in items:
         path = Path(entry.path)
         if entry.is_dir(follow_symlinks=False):
             if not filters.skips_dir(path):
                 folders.append(path)
             continue
-        if is_sidecar(entry.name):
+        if is_sidecar_of(entry.name, names):
             sidecars.append(entry)
             continue
         try:
@@ -127,25 +128,22 @@ def sort_entries(items: Sequence[EntryLike], filters: ScanFilters) -> Listing:
         if media is not None:
             files.append(media)
     return Listing(
-        tuple(files), tuple(folders), _sidecars(sidecars, items), tuple(unreadable)
+        tuple(files), tuple(folders), _sidecars(sidecars, names), tuple(unreadable)
     )
 
 
 def _sidecars(
-    entries: Sequence[EntryLike], items: Sequence[EntryLike]
+    entries: Sequence[EntryLike], names: tuple[str, ...]
 ) -> tuple[Sidecar, ...]:
     """Describe the sidecars of a folder, with the files each one belongs to.
 
     Args:
         entries: The sidecar entries of the folder.
-        items: Every entry of the folder.
+        names: Names of every entry of the folder but its subfolders.
 
     Returns:
         The sidecars that are regular files.
     """
-    if not entries:
-        return ()
-    names = [item.name for item in items if not item.is_dir(follow_symlinks=False)]
     found: list[Sidecar] = []
     for entry in entries:
         try:

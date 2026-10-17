@@ -7,6 +7,7 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import MediaKind
+from media_hygiene.plan.keep_decision import KeepDecision
 from media_hygiene.plan.similar_models import SimilarFindings
 from media_hygiene.scan.inventory import Inventory
 
@@ -14,41 +15,21 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
-    from media_hygiene.constants import KeepReason
+    from media_hygiene.plan.backups import BackupCoverage
+    from media_hygiene.plan.gone import GoneAnswer
+    from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import BrokenFile, DuplicateGroup, MediaFile
+    from media_hygiene.scan.read_errors import UnreadFile
     from media_hygiene.scan.sidecars import Sidecar
     from media_hygiene.scan.stopwatch import StageTime
 
-
-@dataclass(frozen=True, slots=True)
-class KeepDecision:
-    """One duplicate group: the copy that stays and the copies that go.
-
-    `protected` copies lie in protected folders; `spared` ones were kept by a review
-    decision (`clean --decisions`). Neither is ever removed.
-    """
-
-    digest: str
-    size: int
-    keeper: MediaFile
-    removable: tuple[MediaFile, ...]
-    protected: tuple[MediaFile, ...] = ()
-    reason: KeepReason | None = None
-    spared: tuple[MediaFile, ...] = ()
-
-    @property
-    def reclaimable(self) -> int:
-        """Bytes freed by removing the removable copies.
-
-        Returns:
-            Size times the number of removable copies.
-        """
-        return self.size * len(self.removable)
+# `KeepDecision` lives in `keep_decision` (this module's size), imported from here too.
+__all__ = ["AuditFindings", "CleanPlan", "KeepDecision"]
 
 
 @dataclass(frozen=True, slots=True)
-class CleanPlan:
+class CleanPlan:  # pylint: disable=too-many-instance-attributes
     """Everything `clean` would do, computed by `audit`."""
 
     decisions: tuple[KeepDecision, ...]
@@ -58,6 +39,10 @@ class CleanPlan:
     sidecars: tuple[Sidecar, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
     delete_copies: bool = False  # `clean --delete`: exact copies deleted, not moved
+    chosen: tuple[MediaFile, ...] = ()  # set aside in `search` (`clean --decisions`)
+    unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
+    returned: tuple[ReturnedFile, ...] = ()  # set aside before, back (0216)
+    gone: tuple[GoneAnswer, ...] = ()  # answered in `review --gone` (0224)
 
     @property
     def removable_count(self) -> int:
@@ -116,16 +101,13 @@ class CleanPlan:
         """Tell whether there is nothing to clean.
 
         Returns:
-            True when no duplicate copy, near duplicate, burst shot set aside,
-            broken file or orphan sidecar is actionable.
+            True when no duplicate copy, near duplicate, burst shot or file set
+            aside, broken file or orphan sidecar is actionable.
         """
-        return not (
-            self.removable_count
-            or self.broken
-            or self.near_count
-            or self.burst_count
-            or self.orphans
-        )
+        moved = self.near_count or self.burst_count or self.chosen or self.unwanted
+        moved = moved or self.orphans
+        journal = bool(self.returned or self.gone)
+        return not (self.removable_count or self.broken or moved or journal)
 
     @property
     def near_count(self) -> int:
@@ -166,7 +148,9 @@ class CleanPlan:
         near = {file.path for group in self.near for file in group.removable}
         bursts = {file.path for choice in self.bursts for file in choice.discarded}
         broken = {item.file.path for item in self.broken}
-        return frozenset(exact | near | bursts | broken)
+        chosen = {file.path for file in (*self.chosen, *self.unwanted)}
+        back = {item.file.path for item in self.returned}
+        return frozenset(exact | near | bursts | broken | chosen | back)
 
 
 @dataclass(frozen=True, slots=True)
@@ -186,6 +170,9 @@ class AuditFindings:  # pylint: disable=too-many-instance-attributes
     listed: frozenset[Path] | None = None
     # How long each stage took, in the order they ran (`audit -v`).
     stages: tuple[StageTime, ...] = ()
+    unread: tuple[UnreadFile, ...] = ()  # read again next time, never in the plan
+    gone: int = 0  # files gone since, waiting for `review --gone` (0224)
+    backups: tuple[BackupCoverage, ...] = ()  # each backup folder compared (0204)
 
     @property
     def files_scanned(self) -> int:

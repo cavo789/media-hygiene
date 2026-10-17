@@ -39,7 +39,7 @@
     const state = shotState(item, shot, rank);
     const figure = line("figure", "", "thumb " + state.css);
     const image = Object.assign(document.createElement("img"), { src: shot.preview, alt: shot.name, loading: "lazy" });
-    const share = shot.best ? T.sharpest : Math.round(shot.share * 100) + " %";
+    const share = shot.best ? sharpestOf(shot) : Math.round(shot.share * 100) + " %";
     figure.append(image, line("figcaption", share));
     figure.title = shot.name + " · " + state.text;
     figure.addEventListener("mouseenter", (event) => zoomIn(event, shot));

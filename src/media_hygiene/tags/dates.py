@@ -1,15 +1,16 @@
 """The words of a date: year, month, season, holidays and the user's own days.
 
-The date is the one `classify` and `inventory` read (EXIF, else the video's own date);
-without one, the year and month a folder name gives (`2007/Avril`). A position in the
-southern hemisphere turns the seasons around.
+The date is the one `classify` reads (EXIF, else the video's own date, else the one a
+Google Photos Takeout `.json` records); without one, the year and month a folder name
+gives (`2007/Avril`). A position in the southern hemisphere turns the seasons around.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.dates import exif_date, video_date
+from media_hygiene.classify.clocks import set_right
+from media_hygiene.classify.dates import takeout_date, video_date
 from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.tags.vocabulary import (
     EASTER,
@@ -62,14 +63,16 @@ def taken_on(file: MediaInput, context: TagContext) -> date | None:
 
     Args:
         file: The file.
-        context: The zone of the videos' UTC times.
+        context: The zone of the videos' UTC times, the clocks set right.
 
     Returns:
         The local day, or None.
     """
-    when = exif_date(file.taken_at)
+    when = set_right(file, context.clocks)
     if when is None and file.metadata is not None:
         when = video_date(file.metadata.recorded_at, context.zone)
+    if when is None and file.takeout is not None:
+        when = takeout_date(file.takeout.taken_at, context.zone)
     return when.date() if when is not None else None
 
 

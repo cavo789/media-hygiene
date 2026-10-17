@@ -11,15 +11,17 @@ from media_hygiene.actions.journal import (
     journal_file,
     read_journal,
 )
-from media_hygiene.actions.kinds import ActionKind, Phase
+from media_hygiene.actions.kinds import REMOVED_COPIES, ActionKind, Phase
 from media_hygiene.actions.outcome import combine
 from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
+from media_hygiene.index.former_names import forget_former
 from media_hygiene.index.parked import unpark
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
 from media_hygiene.services.quarantines import letter_changes
@@ -137,24 +139,25 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
         outcome = executor.run(entries)
     for change in changes:
         tidy(change, run_id)
-    _follow_moves_back(runtime, file, changes)
+    _follow_moves_back(runtime, (file, run_id), changes)
     return replace(outcome, skipped=(*outcome.skipped, *refused))
 
 
 def _follow_moves_back(
-    runtime: Runtime, file: Path, changes: Sequence[LetterChange]
+    runtime: Runtime, run: tuple[Path, str], changes: Sequence[LetterChange]
 ) -> None:
     """Update the index: files moved back by `undo` keep their facts.
 
-    The index knows them by the paths of the run, under the drive's old letter.
+    The index knows them by the paths of the run, under the drive's old letter. A
+    copy back under its own name is no longer remembered by its kept file.
 
     Args:
         runtime: Settings, mount points and output.
-        file: The journal of the run.
+        run: The journal of the run, and the run.
         changes: The drives of the run that changed letter since.
     """
     index = runtime.index_file
-    done = done_states(read_journal(file), Phase.UNDO)
+    done = done_states(read_journal(run[0]), Phase.UNDO)
     back = [
         (_known(entry.target, changes), entry.path)
         for entry in done
@@ -165,11 +168,16 @@ def _follow_moves_back(
         for entry in done
         if entry.quarantine
     ]
-    if index is None or not (back or restored):
+    copies = [
+        _known(entry.path, changes) for entry in done if entry.action in REMOVED_COPIES
+    ]
+    if index is None or not done:
         return
     with FactsRepository.open(index) as repository:
         repository.move(back)
         unpark(repository.connection, restored)  # set aside by a clean (0156)
+        forget_former(repository.connection, run[1], copies)
+        forget_listings(repository.connection, done)  # the folders read again
 
 
 def _known(path: str, changes: Sequence[LetterChange]) -> str:

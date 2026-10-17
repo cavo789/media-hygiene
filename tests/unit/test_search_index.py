@@ -125,3 +125,59 @@ def test_stale_tags_and_an_index_without_tags(tmp_path: Path) -> None:
     with SearchIndex.open(bare) as search:
         assert not search.has_tags
         assert search.find(SearchQuery(()), 5).total == 0
+
+
+_FORMS = (
+    ("/data/c/a/exif.jpg", "2004:12:04 11:05:08"),
+    ("/data/c/a/day_first.jpg", "04/12/2004 11:05:08"),
+    ("/data/c/a/video.mp4", "2004-12-04T10:00:00Z"),
+    ("/data/c/a/zero.jpg", "0000:00:00 00:00:00"),
+    ("/data/c/a/old.jpg", "1985:06:01 10:00:00"),
+)
+
+
+def _forms_index(tmp_path: Path) -> Path:
+    """An index of one file per way of writing a date, each with a tag."""
+    index = tmp_path / "forms.sqlite"
+    with closing(sqlite3.connect(index)) as connection:
+        prepare(connection)
+        for path, date in _FORMS:
+            connection.execute(
+                "INSERT INTO files (path, size, mtime_ns, media_date)"
+                " VALUES (?, 1, 7, ?)",
+                (path, date),
+            )
+            connection.execute(
+                "INSERT INTO tags (path, size, mtime_ns, source, value)"
+                " VALUES (?, 1, 7, 'vision', 'chat')",
+                (path,),
+            )
+        connection.commit()
+    return index
+
+
+def test_every_form_of_a_date_gives_its_day(tmp_path: Path) -> None:
+    """Year first, day first or ISO: one day; a zero date is no date, listed last."""
+    with SearchIndex.open(_forms_index(tmp_path)) as search:
+        assert sorted(_names(search, "", Filters(years=(2004, 2004)))) == [
+            "day_first.jpg",
+            "exif.jpg",
+            "video.mp4",
+        ]
+        assert _names(search, "", Filters(years=(1985, 1985))) == ["old.jpg"]
+        assert _names(search, "", Filters(years=(0, 0))) == []
+        hits = search.find(SearchQuery(()), 10).hits
+        assert [hit.photo.path.name for hit in hits] == [
+            "day_first.jpg",
+            "exif.jpg",
+            "video.mp4",
+            "old.jpg",
+            "zero.jpg",
+        ]
+        assert [hit.date for hit in hits] == [
+            "2004-12-04",
+            "2004-12-04",
+            "2004-12-04",
+            "1985-06-01",
+            None,
+        ]

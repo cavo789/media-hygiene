@@ -11,7 +11,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import DecisionsError
-from media_hygiene.report.decisions import BurstStatus, write_decisions
+from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.decisions import write_decisions
 from media_hygiene.review.session_file import (
     choice_problem,
     proven,

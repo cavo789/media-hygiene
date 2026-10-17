@@ -24,7 +24,7 @@ _DIM: Final = "dim"
 _NO_MARK: Final = "  "  # as wide as an emoji
 
 
-def _titles() -> dict[Section, str]:
+def section_titles() -> dict[Section, str]:
     """The title of each section, as the guides name them.
 
     Returns:
@@ -53,7 +53,7 @@ def show_menu(runtime: Runtime, menu: Menu) -> None:
     table.add_column()
     table.add_column(no_wrap=True)
     proposed = menu.proposed
-    titles = _titles()
+    titles = section_titles()
     section: Section | None = None
     for line in menu.steps:
         if line.section is not section:

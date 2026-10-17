@@ -74,6 +74,7 @@ def source_name(source: DateSource | None) -> str:
     names = {
         DateSource.EXIF: _("camera (EXIF)"),
         DateSource.VIDEO: _("video tags"),
+        DateSource.TAKEOUT: _("Google Photos record (.json)"),
         DateSource.NAME: _("file name"),
         DateSource.FOLDER: _("folder name"),
         DateSource.MTIME: _("date on the disk"),
@@ -116,4 +117,26 @@ def lost_line(lost: LostEdit) -> str:
     why = reasons.get((lost.why, lost.sheet), _("the value cannot be used"))
     return _("{sheet}: {key}: '{value}' ({why})").format(
         sheet=sheets[lost.sheet], key=lost.key, value=lost.value, why=why
+    )
+
+
+def former_note(folders: tuple[str, ...], *, agreed: bool) -> str:
+    """Where a proposal's hint came from: the folders of copies `clean` removed.
+
+    Args:
+        folders: The host folders read; empty: none.
+        agreed: True when they gave the meaning used; False when they disagreed.
+
+    Returns:
+        ` (the folder of a removed copy: …)`, translated; empty without folders.
+    """
+    if not folders:
+        return ""
+    joined = "; ".join(folders)
+    if agreed:
+        return " " + _("(the folder of a removed copy: {folders})").format(
+            folders=joined
+        )
+    return " " + _("(the folders of removed copies disagree: {folders})").format(
+        folders=joined
     )

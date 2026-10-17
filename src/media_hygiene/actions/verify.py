@@ -6,13 +6,15 @@ import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.journaled import Origin
 from media_hygiene.i18n import _
-from media_hygiene.scan.hashing import identical_digest
+from media_hygiene.scan.hashing import full_digest, identical_digest, partial_digest
 from media_hygiene.scan.sidecars import companions_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.scan.models import MediaFile
 
 
@@ -109,6 +111,25 @@ def change_blocker(file: MediaFile) -> str | None:
     return None
 
 
+def chosen_blocker(file: MediaFile) -> str | None:
+    """Explain why a file set aside in `search` must not be moved, or return None.
+
+    It must be exactly the file the index knew when it was chosen.
+
+    Args:
+        file: The file, as chosen.
+
+    Returns:
+        The translated reason to skip it, or None when unchanged.
+    """
+    if not file.path.is_file():
+        return _("the file no longer exists")
+    stat = file.path.stat()
+    if (stat.st_size, stat.st_mtime_ns) != (file.size, file.mtime_ns):
+        return _("the file changed since you chose it")
+    return None
+
+
 def orphan_blocker(sidecar: MediaFile) -> str | None:
     """Explain why a sidecar must not be moved, or return None when it is an orphan.
 
@@ -129,3 +150,20 @@ def orphan_blocker(sidecar: MediaFile) -> str | None:
     if companions_of(sidecar.path, names):
         return _("a file with the same name is still next to it")
     return None
+
+
+def still_remembered(item: ReturnedFile) -> tuple[Origin, str | None]:
+    """Read a file back since it was set aside again: still the content remembered?
+
+    Args:
+        item: The file, and the digest it was recognised by.
+
+    Returns:
+        Its SHA-256 and partial digest, both journaled so that an `undo` forgets
+        every word naming it; the translated reason to skip it (None: it matches).
+    """
+    sha256, partial = full_digest(item.file.path), partial_digest(item.file.path)
+    found, expected = (sha256, item.digest) if item.digest else (partial, item.partial)
+    same = found == expected
+    reason = None if same else _("a file changed since the audit")
+    return Origin(sha256=sha256, partial=partial), reason

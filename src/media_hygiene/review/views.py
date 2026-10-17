@@ -16,6 +16,8 @@ from media_hygiene.plan.burst_proposals import (
     is_obvious,
     propose,
 )
+from media_hygiene.review.file_card import FileCard
+from media_hygiene.review.shares import shares
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -30,15 +32,9 @@ PREVIEW_PREFIX: Final = "/preview/"
 ORIGINAL_PREFIX: Final = "/original/"
 
 
-class ShotState(BaseModel):
+class ShotState(FileCard):
     """One shot as the page shows it."""
 
-    model_config = _FROZEN
-
-    name: str
-    folder: str
-    details: str
-    preview: str
     original: str  # the file itself, bytes untouched: proof the preview is faithful
     protected: bool
     best: bool
@@ -47,6 +43,7 @@ class ShotState(BaseModel):
     reason: str = ""  # an `AsideReason`; for the page only, never in decisions.json
     like: int | None = None  # `identical`: rank of the sharper shot it repeats
     size: int = 0  # bytes, for the order "space freed, largest first"
+    faces: bool = False  # its series is ranked by its faces: ⭐ and share follow them
 
 
 class SeriesState(BaseModel):
@@ -107,13 +104,15 @@ class StateBuilder:
         looks = tuple(self._look(file, burst) for file in burst.shots)
         known = tuple(filter(None, looks))
         proposals = propose(known, self.limits) if len(known) == len(looks) else {}
-        top = max((look.sharpness for look in known), default=0.0)
         shots = []
-        for rank, (file, look) in enumerate(zip(burst.shots, looks, strict=True)):
+        for rank, (file, look, share) in enumerate(
+            zip(burst.shots, looks, shares(looks), strict=True)
+        ):
             shot = self._shot(file, file == burst.best)
-            if look is not None and top:
-                share = min(look.sharpness / top, 1.0)
+            if share is not None:
                 shot = shot.model_copy(update=_proposed(share, proposals.get(rank)))
+            if look is not None and look.faced:
+                shot = shot.model_copy(update={"faces": True})
             shots.append(shot)
         return SeriesState(
             camera=(first.camera if first else None) or "",
@@ -140,6 +139,8 @@ class StateBuilder:
             phash=visual.phash,
             exposure=self.similar.exposures.get(file.path),
             keep=file == burst.best or self.policy.is_protected(file),
+            faced=file.path in self.similar.faced,
+            faces=self.similar.faced.get(file.path),
         )
 
     def _shot(self, file: MediaFile, best: bool) -> ShotState:  # noqa: FBT001

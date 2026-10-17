@@ -56,7 +56,7 @@ def summary_rows(plan: ClassifyPlan) -> list[Row]:
     categories = Counter(row.category for row in rows if row.category)
     lines += _counts(categories)[:_TOP_CATEGORIES]
     lines += [(), (_("Rules and reasons"),)]
-    lines += _counts(Counter(row.why for row in rows))
+    lines += _counts(Counter(row.decided_by for row in rows))
     if plan.unused_rules:
         lines += [(), (_("Rules that decided nothing: check their dates or patterns"),)]
         lines += [(name, 0) for name in plan.unused_rules]

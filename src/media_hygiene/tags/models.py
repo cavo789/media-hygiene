@@ -23,6 +23,9 @@ class TagSource(StrEnum):
     CAPTION = "caption"  # its sentence, kept whole for the search
     FOLDER = "folder"  # the meaningful words of the folder names
     NAME = "name"  # the meaningful words of the file name, none for `IMG_1234`
+    # The meaningful words of the folders and names its copies had, those `clean`
+    # removed (0207); the words its own folders and name give are not repeated.
+    FORMER = "former"
     DATE = "date"  # year, month, season, holidays, calendar rules
     PLACE = "place"  # a personal place, the GeoNames town and country
     # The names of the people on the photo (`people`), made at each search from the
@@ -43,6 +46,7 @@ class PlaceKind(StrEnum):
 CHEAP_SOURCES: Final = (
     TagSource.FOLDER,
     TagSource.NAME,
+    TagSource.FORMER,
     TagSource.DATE,
     TagSource.PLACE,
 )

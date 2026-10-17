@@ -47,6 +47,7 @@ aucun historique à afficher*.
 | Supprimés, Libéré | Les fichiers supprimés (fichiers vides, `--delete`) et la place qu'ils ont libérée. |
 | En quarantaine | Les fichiers déplacés en quarantaine : leur place est libérée par `purge`. |
 | Déplacés, Liés, Compagnons | Affichées dès qu'une exécution a déplacé des fichiers vers un autre de vos dossiers (`sort`), créé des liens (`album`) ou écrit des fichiers compagnons (`xmp`). |
+| Dossiers supprimés | Affichée dès qu'une exécution a supprimé les dossiers qu'elle a laissés vides (`clean`, `sort`) ; `undo` les recrée. |
 | Restaurés | Combien de fichiers `undo` a ramenés depuis. |
 
 Par exemple, après un nettoyage, son annulation, puis un nouveau nettoyage :

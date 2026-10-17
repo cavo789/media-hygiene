@@ -10,8 +10,9 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.cli import clean_options, options, scan_options
-from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
+from media_hygiene.cli import clean_options, folder_options, options, scan_options
+from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
@@ -29,9 +30,10 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     decisions: Annotated[Path | None, clean_options.decisions()] = None,
     yes: Annotated[bool, options.yes()] = False,
     delete: Annotated[bool, clean_options.delete()] = False,
-    prefer: Annotated[list[str] | None, options.prefer()] = None,
-    protect: Annotated[list[str] | None, options.protect()] = None,
-    exclude: Annotated[list[str] | None, options.exclude()] = None,
+    prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
+    protect: Annotated[list[str] | None, folder_options.protect()] = None,
+    exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
+    backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
 ) -> None:
@@ -42,6 +44,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        backup: `--backup` folders, compared and never changed.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         yes: `--yes`, skip the confirmation.
@@ -62,12 +65,13 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         show_second_opinion,
     )
     from media_hygiene.cli.near_preview import near_waiting, show_near_first
+    from media_hygiene.console.emptied_view import show_clean_outcome, tell_emptied
     from media_hygiene.console.progress import RichProgress
-    from media_hygiene.console.tables import outcome_table
     from media_hygiene.plan.near_review import NearSelection
     from media_hygiene.report.views import ReportRecord
     from media_hygiene.services.clean import CleanMode, CleanService
     from media_hygiene.services.decisions_archive import archive_decisions
+    from media_hygiene.services.emptied_folders import emptied_by
     from media_hygiene.services.near_tier import NearRequest, near_verdicts, with_near
     from media_hygiene.services.review import apply_review, load_review, review_choices
 
@@ -75,11 +79,15 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     output = runtime.output
     with user_errors(output), RichProgress(output.console) as progress:
         runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
+            FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
         service = CleanService(runtime, progress)
         review = load_review(runtime, decisions) if decisions else None
-        bursts = review is not None and any(b.discarded for b in review.bursts)
+        bursts = review is not None and (
+            bool(review.chosen)
+            or any(b.discarded for b in review.bursts)
+            or any(entry.aside for entry in review.unwanted)
+        )
         service.ensure_ready(CleanMode(tier is not CleanTier.EXACT, bursts, delete))
         findings = audit_and_show(runtime)
         plan = service.feasible(replace(findings.plan, delete_copies=delete))
@@ -97,14 +105,15 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         if plan.is_empty:
             output.success(_("Nothing to clean: no duplicate and no broken file."))
             return
-        show_near_first(runtime, replace(findings, plan=plan), yes=yes)
+        tell_emptied(output, emptied_by(runtime, plan).predicted())
+        show_near_first(runtime, replace(findings, plan=plan), yes=yes)  # last: a link
         if not confirm_clean(runtime, plan, yes):
             output.drop_advice()
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)
         output.title(_("Clean"))
         run_id, outcome = service.execute(plan)
-        output.show(outcome_table(outcome, _("Clean {run_id}").format(run_id=run_id)))
+        show_clean_outcome(output, outcome, _("Clean {run_id}").format(run_id=run_id))
         report_and_announce(
             runtime,
             ReportRecord(

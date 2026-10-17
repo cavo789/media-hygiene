@@ -102,3 +102,30 @@ def test_near_duplicates_alone_ask_only_about_them(
     assert "the files are moved to the quarantine" in " ".join(
         output_of(runtime).split()
     )
+
+
+def test_files_set_aside_in_search_are_asked_apart_with_their_size(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Their count and size, after the duplicates."""
+    asked: list[str] = []
+    monkeypatch.setattr("sys.stdin.isatty", lambda: True)
+
+    def refuse(_output: object, question: str) -> bool:
+        asked.append(question)
+        return False
+
+    monkeypatch.setattr("media_hygiene.console.output.Output.confirm", refuse)
+    chosen = tuple(
+        MediaFile(Path(f"/data/c/E/{n}.jpg"), 1024, 0, MediaKind.IMAGE) for n in "ab"
+    )
+    plan = CleanPlan((copies(MediaKind.IMAGE, "a.jpg"),), (), chosen=chosen)
+    assert not plan.is_empty
+    runtime = make_runtime(make_locations(tmp_path))
+    assert not confirm_clean(runtime, plan, yes=False)
+    assert asked == [
+        (
+            "Move 1 duplicate copy (1 B) to the quarantine and move 2 files you set "
+            "aside (2.0 KB) to the quarantine?"
+        )
+    ]

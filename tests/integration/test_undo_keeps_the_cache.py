@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_purge import _purge
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.clean import CleanMode, CleanService
 from media_hygiene.services.undo import undo_run
+from tests.support.cleaning import clean
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
@@ -18,18 +17,8 @@ if TYPE_CHECKING:
     import pytest
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.services.runtime import Runtime
 
 _PARKED = "SELECT COUNT(*) FROM parked"
-
-
-def clean(runtime: Runtime) -> str:
-    """Audit then clean to the quarantine; return the run identifier."""
-    findings = AuditService(runtime, NullProgress()).run()
-    service = CleanService(runtime, NullProgress())
-    service.ensure_ready(CleanMode())
-    run_id, _outcome = service.execute(service.feasible(replace(findings.plan)))
-    return run_id
 
 
 def parked(locations: Locations) -> int:

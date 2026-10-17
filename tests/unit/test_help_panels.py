@@ -20,7 +20,7 @@ _FEW_OPTIONS: Final = 4
 
 _DAILY: Final = {
     "clean": {"--tier", "--decisions", "--yes"},
-    "review": {"--near"},
+    "review": {"--near", "--pairs", "--junk", "--gone"},
     "classify": {"--year", "--path", "--layout", "--target"},
     "album": {"--category", "--event", "--apply"},
     "audit": set(),

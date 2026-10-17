@@ -20,6 +20,12 @@ class ActionKind(StrEnum):
     QUARANTINE_DUPLICATE = "quarantine-duplicate"
     QUARANTINE_SIDECAR = "quarantine-sidecar"
     QUARANTINE_BURST = "quarantine-burst"
+    # A file set aside in `search` (`clean --decisions`).
+    QUARANTINE_CHOSEN = "quarantine-chosen"
+    # A photo set aside in `review --junk` (`clean --decisions`).
+    QUARANTINE_UNWANTED = "quarantine-unwanted"
+    # A file set aside before by a choice, found again (a phone backup, 0216).
+    QUARANTINE_RETURNED = "quarantine-returned"
     # Written by `sort`: a junk file (`Thumbs.db`) that alone kept a folder alive.
     QUARANTINE_JUNK = "quarantine-junk"
     # Written by `sort`: a file moved to `target`, a folder created, a folder left empty
@@ -35,6 +41,22 @@ class ActionKind(StrEnum):
     # application rewritten with our words (its previous bytes kept in `quarantine`).
     CREATE_XMP = "create-xmp"
     MERGE_XMP = "merge-xmp"
+    # Written by `clean --decisions`: a file deleted outside the tool (the Explorer),
+    # confirmed deleted on purpose in `review --gone` (0224). Nothing moves.
+    MARK_GONE = "mark-gone"
+
+    @property
+    def remembered(self) -> bool:
+        """Tell whether the content of a file set aside so stays set aside (0216).
+
+        A file set aside by a choice (a burst shot, a near duplicate, a file chosen,
+        an unwanted photo) is proposed again when it comes back; an exact copy (its
+        content is kept) or a broken file is not.
+
+        Returns:
+            True for the kinds of `REMEMBERED`.
+        """
+        return self in REMEMBERED
 
 
 class Phase(StrEnum):
@@ -60,5 +82,27 @@ ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP)
 FOLDER_ACTIONS: Final = frozenset(
     {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
 )
+# The copies of a kept file a clean removes: the kept file remembers where they lay
+# (`index.former_names`); burst shots and files set aside by choice are not copies.
+REMOVED_COPIES: Final = frozenset(
+    {
+        ActionKind.DELETE_DUPLICATE,
+        ActionKind.QUARANTINE_DUPLICATE,
+        ActionKind.QUARANTINE_NEAR,
+    }
+)
+# The files set aside by a choice: their content is proposed again when it comes back.
+REMEMBERED: Final = frozenset(
+    {
+        ActionKind.QUARANTINE_BURST,
+        ActionKind.QUARANTINE_NEAR,
+        ActionKind.QUARANTINE_CHOSEN,
+        ActionKind.QUARANTINE_UNWANTED,
+        ActionKind.QUARANTINE_RETURNED,
+        ActionKind.MARK_GONE,
+    }
+)
+# Journal marks: no file is deleted, moved nor freed by them (0224).
+MARKS: Final = frozenset({ActionKind.MARK_GONE})
 # Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})

@@ -30,10 +30,12 @@ class Origin:
     """What is known of a file set aside: the file kept instead, its SHA-256.
 
     A SHA-256 computed during the byte comparison spares one more reading of the file.
+    `partial`: the partial digest a file back was recognised by (0224).
     """
 
     keeper: Path | None = None
     sha256: str | None = None
+    partial: str | None = None
 
 
 NO_ORIGIN: Final = Origin()
@@ -161,6 +163,7 @@ class JournaledChanges:
                 "quarantine": str(target),
                 "sha256": origin.sha256 or full_digest(path),
                 "keeper": str(keeper) if keeper else None,
+                "partial": origin.partial,
             },
         )
         self.act(entry, lambda: move_no_replace(path, target))

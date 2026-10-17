@@ -39,6 +39,7 @@ class Reversal(Enum):
     REMOVE_MARKER = auto()
     REMOVE_XMP = auto()
     RESTORE_XMP = auto()
+    FORGET_MARK = auto()  # a mark: nothing on the disk, the undo line is the change
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -52,6 +53,7 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
         ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
+        ActionKind.MARK_GONE: Reversal.FORGET_MARK,
     }
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
@@ -93,6 +95,8 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
         The translated reason, or None when it can be undone.
     """
     path = Path(entry.path)
+    if reversal is Reversal.FORGET_MARK:
+        return None
     if reversal in XMP_REVERSALS:
         return xmp_blocker(entry)
     if reversal is Reversal.REMOVE_LINK:

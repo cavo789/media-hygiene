@@ -97,14 +97,37 @@ Un dossier inclut déjà ses sous-dossiers : `C:\Photos` suffit pour `C:\Photos\
 deux montrerait chaque photo deux fois, et l'outil le **refuse** plutôt que de prendre une photo
 pour un doublon d'elle-même.
 
-## Une vraie sauvegarde ? Laissez-la de côté
+## Une sauvegarde ou un ancien disque ? Comparez-le
 
-Si `D:\sauvegarde` doit rester une seconde copie de vos photos, ne l'ajoutez pas, ou
-[excluez-la](../clean/05-choose-the-kept-copy.md#exclure-un-dossier). Sinon l'outil voit ses fichiers comme
-des doublons, ce qui est exact.
+Ajouté comme n'importe quel dossier (ci-dessus), `D:\sauvegarde` serait vu, à raison, comme des
+doublons de vos photos. Marquez-le plutôt comme **sauvegarde** : l'outil le lit et le compare, ne
+le modifie jamais, et ne met jamais une copie de côté parce que la sauvegarde l'a aussi.
+
+```powershell
+mh audit --backup "D:\sauvegarde"
+```
+
+L'audit répond alors aux deux questions, en deux lignes :
+
+```text
+🗄️ D:\sauvegarde : 37 fichiers de vos photos ne sont pas dans cette sauvegarde (412,0 Mo).
+   5 fichiers ne sont que là, nulle part ailleurs (18,3 Mo) : copiez-les avant d'effacer ce disque.
+```
+
+- **Ma sauvegarde est-elle complète ?** La première ligne : les fichiers de vos photos qui lui
+  manquent.
+- **Puis-je effacer cet ancien disque ?** La seconde ligne : ses fichiers qui ne sont nulle part
+  ailleurs. Copiez-les d'abord ; l'outil ne copie jamais rien lui-même.
+
+Le rapport liste les deux, et `backup-missing.csv` et `backup-only.csv`, à côté de `plan.csv`,
+listent chaque fichier ([Comparer une sauvegarde ou un ancien disque](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).
+Un dossier qui ne doit même pas être lu est plutôt [exclu](../clean/05-choose-the-kept-copy.md#exclure-un-dossier).
 
 ## Bon à savoir
 
+- **Un Takeout Google Photos** est un dossier de plus : extrayez ses fichiers ZIP, puis ajoutez
+  le dossier extrait. Ses fichiers `.json` suivent leurs photos et datent celles qui n'ont pas
+  de date propre ([Google Photos Takeout](../reference-sidecars.md#google-photos-takeout)).
 - **Un nouveau terminal** connaît `mh` grâce à votre profil PowerShell (étape 1). Sans cette
   ligne, rechargez-le : `. "$HOME\media-hygiene\mh.ps1"`.
 - **Une nouvelle version** : `mh update` la télécharge et réécrit `mh` avec vos dossiers.

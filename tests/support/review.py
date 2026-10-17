@@ -9,10 +9,11 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.app import ReviewApp
+from media_hygiene.review.ending import run_server
 from media_hygiene.scan.image_check import prepare_image_worker
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
-from media_hygiene.services.reviewing import open_review, run_server
+from media_hygiene.services.reviewing import open_review
 from tests.support.runtime import make_runtime
 from tests.support.scenes import Effect, Shot, write_shot
 
@@ -144,14 +145,14 @@ def serve_app_and_call(
             async with asyncio.TaskGroup() as group:
                 server = group.create_task(run_server(app, 0, ports.put_nowait))
                 port = await ports.get()
-                replies = [await _send(port, call) for call in calls]
+                replies = [await send_call(port, call) for call in calls]
                 server.cancel()
         return replies
 
     return asyncio.run(scenario())
 
 
-async def _send(port: int, call: Call | bytes) -> Reply:
+async def send_call(port: int, call: Call | bytes) -> Reply:
     """Send one request on a new connection and read the whole answer."""
     reader, writer = await asyncio.open_connection("127.0.0.1", port)
     writer.write(call.encode() if isinstance(call, Call) else call)

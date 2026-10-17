@@ -4,13 +4,16 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
+
+if TYPE_CHECKING:
+    from media_hygiene.services.runtime import Runtime
 
 _PRINTED: Final = 20
 
@@ -75,6 +78,30 @@ def search_command(  # pylint: disable=too-many-arguments
                     NextVerb(carried(runtime, "search"), port=port),
                 )
             return
-        serve_search(runtime, search, port)
+        chosen = serve_search(runtime, search, port)
         output.blank()
-        output.success(_("Search stopped; nothing was changed."))
+        output.success(_("Search stopped; your photos were not changed."))
+        if chosen:
+            suggest_clean(runtime, chosen)
+
+
+def suggest_clean(runtime: Runtime, chosen: int) -> None:
+    """Propose the clean that moves the files set aside on the page.
+
+    Args:
+        runtime: Settings, mount points and output.
+        chosen: How many files are set aside, read from the disk.
+    """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.services.next_command import CHANGING, NextVerb
+
+    said = ngettext(
+        "move the {count} file you set aside to the quarantine (undoable).",
+        "move the {count} files you set aside to the quarantine (undoable).",
+        chosen,
+    )
+    suggest(
+        runtime,
+        said.format(count=chosen),
+        NextVerb(carried(runtime, "clean --decisions"), CHANGING),
+    )

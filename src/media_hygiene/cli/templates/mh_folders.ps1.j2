@@ -21,6 +21,9 @@ function global:_{{ f }}_folders {
         if ($folder -notmatch '^[A-Za-z]:') { Write-Host "{{ update.not_found }}"; return }
         # Windows ignores case: C:\photos is C:\Photos, mounted once.
         if (@($photos | Where-Object { $_.TrimEnd('\') -eq $folder.TrimEnd('\') }).Count -gt 0) { Write-Host "{{ update.already }}"; return }
+        # Under OneDrive: said once, before an audit downloads it (0199).
+        $seen = _{{ f }}_cloud_seen $folder
+        if ($seen -and $seen.Files -gt 0) { _{{ f }}_cloud_say $seen }
         $photos += $folder
     } else {
         # A folder renamed, moved or on a disk gone: removed without being found.

@@ -1,6 +1,6 @@
 # 11. Les quasi-doublons
 
-[Documentation](../README.md) › Nettoyer, étape 11 sur 13 · 🇬🇧 [English](../../en/clean/11-near-duplicates.md)
+[Documentation](../README.md) › Nettoyer, étape 11 sur 14 · 🇬🇧 [English](../../en/clean/11-near-duplicates.md)
 
 Certaines copies ne sont pas des fichiers identiques, et pourtant c'est la même image : la photo
 envoyée par WhatsApp (plus petite), celle « réduite pour l'e-mail », une copie réenregistrée avec

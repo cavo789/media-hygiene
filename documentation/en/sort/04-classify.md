@@ -118,6 +118,14 @@ sorts, it is how far your collection is.
 
 *Why* gives the rule (or the reason) of each proposal, then the categories found most.
 
+**A photo kept in a generic folder after a clean.** When [`clean`](../clean/08-clean.md) removed
+a copy, the photo kept remembers the copy's folder. A photo whose own folders say nothing
+(`DCIM`, `Camera`) reads that folder as if it lay there: its copy in `Mariage Julie 2015` makes
+it `Mariage Julie 2015`, a copy in `2017/Durbuy` names the town. Its own folders always come
+first. Two removed copies in folders that disagree (`Mariage Julie`, `Noël`): neither is used,
+and the photo waits for you in *To sort*. The workbook's *why* says where the hint came from:
+`(the folder of a removed copy: D:\Backup\Mariage Julie 2015)`.
+
 ## Where the dates come from
 
 The first reliable source wins: the date the camera wrote (EXIF), the tags of a video (its UTC

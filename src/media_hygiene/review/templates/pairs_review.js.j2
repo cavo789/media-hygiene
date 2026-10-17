@@ -1,0 +1,153 @@
+{# The script of pairs_review.html.j2: one folder pair at a time, each choice saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const filePath = {{ file_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
+  const plural = new Intl.PluralRules(lang);
+  const counted = (forms, n, values) => fill(forms[plural.select(n) === "one" ? 0 : 1], Object.assign({ n: n.toLocaleString(lang) }, values));
+  const UNITS = T.units;  // translated: o, Ko, Mo… in French
+  const size = (bytes) => {
+    let value = bytes;
+    let unit = 0;
+    while (value >= 1024 && unit < UNITS.length - 1) {
+      value /= 1024;
+      unit += 1;
+    }
+    return value.toLocaleString(lang, { maximumFractionDigits: 1 }) + " " + UNITS[unit];
+  };
+  let pairs = [];
+  let at = 0;  // rank of the pair shown: the most space freed first
+  const disk = new Map();  // pair rank -> its entry, as read back from the disk
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+
+  const folder = (id, path, role) => {
+    const box = byId(id);
+    box.className = "folder " + role;
+    box.replaceChildren(line("div", T[role], "tag"), line("div", path));
+  };
+
+  const sample = (shot) => {
+    const figure = document.createElement("figure");
+    figure.className = "shot";
+    const image = document.createElement("img");
+    image.src = shot.preview;
+    image.alt = shot.name;
+    const link = line("a", T.original, "original");
+    link.href = shot.original;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.title = T.originalTitle;
+    const caption = document.createElement("figcaption");
+    caption.append(line("strong", shot.name), link);
+    figure.append(image, caption);
+    return figure;
+  };
+
+  const render = () => {
+    if (pairs.length === 0) return;
+    const pair = pairs[at];
+    const decided = pairs.filter((item) => item.action !== "").length;
+    byId("position").textContent = fill(T.position, { number: at + 1, total: pairs.length });
+    byId("totals").textContent = fill(T.totals, { decided: decided, total: pairs.length });
+    const state = byId("state");
+    state.textContent = pair.action ? T[pair.action] : T.pending;
+    state.className = pair.action ? "decided" : "";
+    const swap = pair.action === "swap";
+    const skip = pair.action === "skip";
+    folder("keptIn", pair.kept_in, swap ? "lose" : "keep");
+    folder("removedFrom", pair.removed_from, swap || skip ? "keep" : "lose");
+    byId("files").textContent = counted(T.files, pair.files, { size: size(pair.size) });
+    byId("why").textContent = pair.reasons.length ? fill(T.why, { reasons: pair.reasons.join("; ") }) : "";
+    byId("complete").textContent = pair.complete ? T.complete : "";
+    byId("shots").replaceChildren(...(pair.samples.length ? pair.samples.map(sample) : [line("p", T.noSamples, "muted")]));
+    const entry = disk.get(at);
+    byId("diskTitle").textContent = T.diskTitle;
+    byId("diskBody").replaceChildren(line("p", entry ? fill(T.diskEntry, { action: entry.action }) : T.diskNone));
+    for (const next of pairs.slice(at + 1, at + 3)) for (const shot of next.samples) new Image().src = shot.preview;
+  };
+
+  const go = (step) => {
+    const next = at + step;
+    if (next < 0) setStatus(T.first, "");
+    else if (next >= pairs.length) setStatus(T.last, "");
+    else {
+      at = next;
+      render();
+    }
+  };
+
+  const nextUndecided = () => {
+    const ahead = pairs.findIndex((pair, rank) => rank > at && pair.action === "");
+    const found = ahead >= 0 ? ahead : pairs.findIndex((pair) => pair.action === "");
+    if (found < 0) setStatus(T.allDecided, "saved");
+    else {
+      at = found;
+      render();
+    }
+  };
+
+  const decide = (action, then) => {
+    const rank = at;
+    setStatus(T.saving, "");
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pair: rank, action: action }) })
+      .then((response) => response.json().then((body) => ({ ok: response.ok, status: response.status, body: body })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        pairs[rank].action = action || "";
+        disk.delete(rank);
+        for (const entry of reply.body.file.entries) disk.set(entry.pair, entry);
+        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
+        if (then) then();
+        else render();
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || pairs.length === 0) return;
+    const key = event.key.toLowerCase();
+    if (event.key === "ArrowRight") decide("planned", () => go(1));
+    else if (key === "w") {
+      if (pairs[at].swappable) decide("swap", () => go(1));
+      else setStatus(T.noSwap, "error");
+    }
+    else if (key === "l") decide("skip", () => go(1));
+    else if (event.key === "ArrowLeft") go(-1);
+    else if (key === "n") nextUndecided();
+    else if (key === "u" || event.key === "Backspace") decide(null);
+    else return;
+    event.preventDefault();
+  });
+
+  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
+    .then(([state, file]) => {
+      pairs = state.pairs;
+      if (file.error) setStatus(file.error, "error");
+      else {
+        for (const entry of file.entries) disk.set(entry.pair, entry);
+        setStatus(fill(T.loaded, { time: clock(file.modified) }), "saved");
+      }
+      const first = pairs.findIndex((pair) => pair.action === "");
+      at = first >= 0 ? first : 0;
+      render();
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();

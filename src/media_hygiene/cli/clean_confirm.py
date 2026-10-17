@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.clean_space import check_quarantine_room
 from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.console.returned_view import returned_phrases, tell_returned
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.quarantines import mounted_quarantines
 
@@ -99,12 +100,30 @@ def _actions(plan: CleanPlan) -> list[str]:
             near,
         )
         actions.append(phrase.format(count=human_number(near)))
+    if plan.chosen:
+        chosen = len(plan.chosen)
+        phrase = ngettext(
+            "move {count} file you set aside ({size}) to the quarantine",
+            "move {count} files you set aside ({size}) to the quarantine",
+            chosen,
+        )
+        weight = human_size(sum(file.size for file in plan.chosen))
+        actions.append(phrase.format(count=human_number(chosen), size=weight))
+    if plan.unwanted:
+        unwanted = len(plan.unwanted)
+        phrase = ngettext(
+            "move {count} unwanted photo you set aside ({size}) to the quarantine",
+            "move {count} unwanted photos you set aside ({size}) to the quarantine",
+            unwanted,
+        )
+        weight = human_size(sum(file.size for file in plan.unwanted))
+        actions.append(phrase.format(count=human_number(unwanted), size=weight))
     if broken:
         phrase = ngettext(
             "handle {count} broken file", "handle {count} broken files", broken
         )
         actions.append(phrase.format(count=human_number(broken)))
-    return actions
+    return actions + returned_phrases(plan)
 
 
 def _announce(runtime: Runtime, plan: CleanPlan) -> None:
@@ -133,6 +152,7 @@ def _announce(runtime: Runtime, plan: CleanPlan) -> None:
             output.info(moved.format(count=human_number(plan.moved_copies)))
     else:
         output.info(_safe_line(runtime, plan))
+    tell_returned(output, plan)
     if plan.burst_count:
         bursts = ngettext(
             "{count} burst shot you set aside will be moved to the quarantine.",

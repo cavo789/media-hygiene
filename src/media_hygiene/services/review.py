@@ -3,7 +3,8 @@
 The decisions file is read before the audit (a wrong path fails at once) and checked
 after it: made on the same folders, about pairs and burst series that still exist, and
 never asking to delete the copies of a protected folder. Anything else refuses the
-whole file.
+whole file. The files chosen in `search` need no audit: a file holding only them is
+not checked for its folders (`services.chosen_review`).
 """
 
 from __future__ import annotations
@@ -22,7 +23,10 @@ from media_hygiene.plan.review import (
 )
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.services.burst_review import burst_choices
+from media_hygiene.services.chosen_review import chosen_files
+from media_hygiene.services.gone_review import gone_answers
 from media_hygiene.services.policy import keep_policy
+from media_hygiene.services.unwanted_review import unwanted_files
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -78,7 +82,7 @@ def review_choices(
     """
     mapper = runtime.mapper
     ours = mapper.roots_on_host(findings.roots)
-    if sorted(review.roots) != sorted(ours):
+    if not review.only_chosen and sorted(review.roots) != sorted(ours):
         raise DecisionsError(
             _(
                 "These decisions were made on other folders ({theirs}); this run "
@@ -90,7 +94,8 @@ def review_choices(
         (mapper.to_host(pair.kept_in), mapper.to_host(pair.removed_from)): pair
         for pair in folder_pairs(findings.plan.decisions)
     }
-    stale = [d for d in review.pairs if (d.kept_in, d.removed_from) not in pairs]
+    decided = [d for d in review.pairs if d.action is not PairAction.PLANNED]
+    stale = [d for d in decided if (d.kept_in, d.removed_from) not in pairs]
     if stale:
         message = ngettext(
             "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}.",
@@ -103,12 +108,15 @@ def review_choices(
             ),
             _("Files changed since the report: audit again and decide on it."),
         )
-    choices = [(pairs[d.kept_in, d.removed_from], d.action) for d in review.pairs]
+    choices = [(pairs[d.kept_in, d.removed_from], d.action) for d in decided]
     for pair, action in choices:
         _check_swap(runtime, pair, action)
     return ReviewChoices(
         pairs=tuple(PairChoice(p.kept_in, p.removed_from, a) for p, a in choices),
         bursts=burst_choices(runtime, findings, review.bursts),
+        chosen=chosen_files(runtime, review.chosen),
+        unwanted=unwanted_files(runtime, review.unwanted),
+        gone=gone_answers(runtime, review.gone),
     )
 
 
@@ -127,12 +135,13 @@ def apply_review(
     """
     pairs, bursts = choices.pairs, choices.bursts
     swapped = sum(choice.action is PairAction.SWAP for choice in pairs)
+    skipped = sum(choice.action is PairAction.SKIP for choice in pairs)
     if pairs:
         runtime.output.info(
             _(
                 "Your decisions — pairs swapped: {swapped}, pairs left alone: "
                 "{skipped}."
-            ).format(swapped=swapped, skipped=len(pairs) - swapped)
+            ).format(swapped=swapped, skipped=skipped)
         )
     if bursts:
         runtime.output.info(

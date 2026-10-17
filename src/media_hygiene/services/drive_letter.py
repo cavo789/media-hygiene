@@ -13,24 +13,19 @@ from __future__ import annotations
 import contextlib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
-from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident
-from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.quarantines import drive_name
+from media_hygiene.services.letter_refusals import refused as refusals
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from media_hygiene.actions.journal import JournalEntry
     from media_hygiene.paths.quarantines import Quarantines
-
-
-# The files an undo brings back from the quarantine or rebuilds from their keeper.
-COMES_BACK: Final = QUARANTINED | {ActionKind.DELETE_DUPLICATE}
 
 
 @dataclass(frozen=True, slots=True)
@@ -113,13 +108,7 @@ def relocate(
     moved = list(entries)
     for change in changes:
         moved = [_moved(entry, change) for entry in moved]
-    refused = {  # a move of `sort` comes back on its own drive: never a guess
-        entry.seq: Path(entry.path)
-        for entry, before in zip(moved, entries, strict=True)
-        if entry.path != before.path
-        and entry.action in COMES_BACK
-        and not Path(entry.path).parent.is_dir()
-    }
+    refused = refusals(moved, entries)  # a folder the run removed comes back first
     reason = _("its folder is not on the drive under its new letter")
     return (
         [entry for entry in moved if entry.seq not in refused],

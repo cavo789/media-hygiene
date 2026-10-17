@@ -20,6 +20,7 @@ from PIL import ExifTags, Image, ImageOps
 
 from media_hygiene.scan.hashing import digests_of
 from media_hygiene.scan.image_check import ImageInspection
+from media_hygiene.scan.read_errors import is_read_error
 from media_hygiene.scan.whole_read import WHOLE_READ_LIMIT, read_whole
 
 if TYPE_CHECKING:
@@ -44,7 +45,8 @@ def inspect_raw(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
         limit: The largest file read at once, in bytes (`[scan] read_whole_mb`).
 
     Returns:
-        The decoder error, or nothing to report; its digests.
+        The decoder error (a failed read is told apart: `read_errors`), or nothing
+        to report; its digests.
     """
     import rawpy
 
@@ -56,7 +58,9 @@ def inspect_raw(path: Path, limit: int = WHOLE_READ_LIMIT) -> ImageInspection:
         with rawpy.imread(source) as raw:
             raw.unpack()
     except raw_errors() as exc:
-        return ImageInspection(problem=_describe(exc), digests=digests)
+        return ImageInspection(
+            problem=_describe(exc), digests=digests, unread=is_read_error(exc)
+        )
     return ImageInspection(digests=digests)
 
 
@@ -115,7 +119,7 @@ def _describe(exc: Exception) -> str:
     Returns:
         `<error type>: <message>`.
     """
-    message = exc.args[0] if exc.args else ""
+    message = exc.args[0] if exc.args and not isinstance(exc, OSError) else str(exc)
     if isinstance(message, bytes):
         message = message.decode(errors="replace")
     return f"{type(exc).__name__}: {message}"

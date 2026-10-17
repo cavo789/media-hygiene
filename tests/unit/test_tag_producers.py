@@ -18,7 +18,8 @@ from media_hygiene.scan.models import VisualFacts
 from media_hygiene.tags.context import TagContext, tag_context
 from media_hygiene.tags.models import PlaceKind, Tag, TagSource
 from media_hygiene.tags.normalize import WordRules
-from media_hygiene.tags.producers import cheap_tags, folder_words, place_tags
+from media_hygiene.tags.place_words import place_tags
+from media_hygiene.tags.producers import cheap_tags, folder_words
 from tests.support.towns import write_towns
 
 ROOT = Path("/data/c/Photos")

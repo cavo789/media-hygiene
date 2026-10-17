@@ -45,6 +45,7 @@ No photo folder is needed. Without `/journal`, it says *No journal mount: no his
 | Deleted, Freed | The files deleted (empty files, `--delete`) and the space they freed. |
 | Quarantined | The files moved to the quarantine: their space is freed by `purge`. |
 | Moved, Linked, Sidecars | Shown once a run has moved files to another of your folders (`sort`), made links (`album`) or written sidecars (`xmp`). |
+| Folders removed | Shown once a run removed the folders it left empty (`clean`, `sort`); `undo` recreates them. |
 | Restored | How many files `undo` brought back since. |
 
 For example, after a clean, its undo, then a new clean:

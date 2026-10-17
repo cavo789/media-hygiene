@@ -17,10 +17,15 @@ from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
 from media_hygiene.i18n import _
+from media_hygiene.index.former_names import remember_former
+from media_hygiene.index.gone_rows import forget_answered
 from media_hygiene.index.parked import park
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.emptied_folders import emptied_by
+from media_hygiene.services.former_copies import removed_copies
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
@@ -39,7 +44,7 @@ class CleanMode:
     """What a clean will do, as its options ask."""
 
     near: bool = False  # `--tier near`: near duplicates go to the quarantine too
-    bursts: bool = False  # `--decisions`: burst shots set aside go there too
+    bursts: bool = False  # `--decisions`: burst shots, files chosen go there too
     delete: bool = False  # `--delete`: exact copies deleted for good, not moved
 
 
@@ -94,17 +99,22 @@ class CleanService:
         if self._runtime.persistent(MountKind.QUARANTINE):
             return plan
         kept = tuple(item for item in plan.broken if item.reason is BrokenReason.EMPTY)
-        if len(kept) != len(plan.broken) or plan.orphans:
+        if len(kept) != len(plan.broken) or plan.orphans or plan.returned:
             self._runtime.output.warning(
                 _(
                     "No quarantine mount: unreadable files and orphan sidecars are "
                     "left in place."
                 )
+                if not plan.returned
+                else _(
+                    "No quarantine mount: unreadable files, orphan sidecars and the "
+                    "files you had set aside that came back are left in place."
+                )
             )
             self._runtime.output.tip(
                 _('Add -v "<a folder of yours>:/quarantine" to handle them.')
             )
-        return replace(plan, broken=kept, sidecars=())
+        return replace(plan, broken=kept, sidecars=(), returned=())
 
     def execute(self, plan: CleanPlan) -> tuple[str, Outcome]:
         """Execute the plan under a new run identifier.
@@ -129,15 +139,20 @@ class CleanService:
                 workers=self._runtime.settings.clean.workers,
                 route=quarantine_route(self._runtime),
             )
-            outcome = CleanExecutor(context).run(plan)
+            folders = emptied_by(self._runtime, plan)  # removed last (0202)
+            outcome = CleanExecutor(context, folders).run(plan)
         self._forget_removed(journal_path, run_id)
+        forget_answered(self._runtime.index_file, plan)
         return run_id, outcome
 
     def _forget_removed(self, journal_path: Path, run_id: str) -> None:
         """Take out of the index the files this run deleted or moved away.
 
         The rows of a file set aside are parked (`index.parked`): `undo` puts them
-        back, `purge` drops them. Those of a file deleted are forgotten.
+        back, `purge` drops them. Those of a file deleted are forgotten, and so are
+        the listings of the folders the run changed. The kept file
+        of each copy remembers where the copy lay (`index.former_names`), first: a
+        kept file this run sets aside too takes it along.
 
         Args:
             journal_path: The journal of the run.
@@ -150,8 +165,11 @@ class CleanService:
         aside = [(entry.path, entry.quarantine) for entry in done if entry.quarantine]
         deleted = [entry.path for entry in done if not entry.quarantine]
         with FactsRepository.open(index) as repository:
+            copies = removed_copies(self._runtime, done)
+            remember_former(repository.connection, run_id, copies)
             park(repository.connection, run_id, aside)
             repository.forget(deleted)
+            forget_listings(repository.connection, done)  # read again
 
 
 def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
@@ -169,7 +187,7 @@ def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
     if mode.near:
         return _("--tier near moves near duplicates to /quarantine: mount it.")
     if mode.bursts:
-        return _("Burst shots you set aside go to /quarantine: mount it.")
+        return _("The burst shots and files you set aside go to /quarantine: mount it.")
     if runtime.settings.scan.other_files:
         return _("Copies of other files than media go to /quarantine: mount it.")
     return None

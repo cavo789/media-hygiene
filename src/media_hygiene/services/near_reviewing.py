@@ -6,22 +6,16 @@ decides differ. The groups to check come first on the page; the sure ones follow
 
 from __future__ import annotations
 
-import asyncio
-import contextlib
+from functools import partial
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.i18n import _
 from media_hygiene.review.near_app import NEAR_DECIDE_PATH, NEAR_FILE_PATH, NearApp
 from media_hygiene.review.near_session import NearSession, NearSource
 from media_hygiene.review.near_views import NearStateBuilder
 from media_hygiene.review.place import decisions_place
 from media_hygiene.services.policy import keep_policy
-from media_hygiene.services.review_file import (
-    first_save,
-    resume_decisions,
-    review_page,
-)
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.review_file import first_save, resume_decisions
+from media_hygiene.services.review_serving import ReviewPage, serve_review_page
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -68,22 +62,5 @@ def serve_near_review(runtime: Runtime, session: NearSession, port: int) -> None
         port: The port to listen on, inside the container (0: any free one).
     """
     api = (NEAR_DECIDE_PATH, NEAR_FILE_PATH)
-    page = review_page(_PAGE_TEMPLATE, session.place, api)
-
-    def ready(port: int) -> None:
-        """Tell where the page is and how to open it from the host.
-
-        Args:
-            port: The port listened on, inside the container.
-        """
-        runtime.output.success(
-            _(
-                "Review ready, open {url} in your browser. Each decision is saved "
-                "at once in {place}. Ctrl+C stops the review."
-            ).format(url=page_url(port), place=session.place.host)
-        )
-        address_tip(runtime.output, port)
-
-    with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = NearApp(session, page, executor, runtime.previews_dir)
-        asyncio.run(run_server(app, port, ready))
+    page = ReviewPage(_PAGE_TEMPLATE, session.place, api, partial(NearApp, session))
+    serve_review_page(runtime, page, port)

@@ -44,6 +44,30 @@ def show_actions(
     Returns:
         The actions, with the full command of each.
     """
+    actions = action_list(runtime, findings, ctx)
+    if actions:
+        output = runtime.output
+        output.info(f"[bold]{actions_title()}[/]")
+        for action in actions:
+            output.info(f"{action.icon} {action.text}")
+        output.blank()
+    return actions
+
+
+def action_list(
+    runtime: Runtime, findings: AuditFindings, ctx: typer.Context | None = None
+) -> tuple[AuditAction, ...]:
+    """List what an audit lets the user do, each with its full command.
+
+    Args:
+        runtime: Settings, mount points and output.
+        findings: The audit.
+        ctx: Typer context of the audit, whose options the commands keep; None
+            for an audit started from the home page.
+
+    Returns:
+        The actions, at most three.
+    """
 
     def command(verb: str, *, changes: bool = True, port: int | None = None) -> str:
         """Build the full command of one action.
@@ -67,15 +91,9 @@ def show_actions(
         near=command("clean --tier near"),
         review=command("review", changes=False, port=PAGE_PORT),
         near_review=command("review --near", changes=False, port=PAGE_PORT),
+        gone_review=command("review --gone", changes=False, port=PAGE_PORT),
     )
-    actions = audit_actions(findings, commands)
-    if actions:
-        output = runtime.output
-        output.info(f"[bold]{actions_title()}[/]")
-        for action in actions:
-            output.info(f"{action.icon} {action.text}")
-        output.blank()
-    return actions
+    return audit_actions(findings, commands)
 
 
 def second_opinion(runtime: Runtime, plan: CleanPlan) -> None:

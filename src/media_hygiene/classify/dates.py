@@ -26,6 +26,7 @@ _EXIF_FORMATS: Final = ("%Y:%m:%d %H:%M:%S", "%d/%m/%Y %H:%M:%S", "%Y-%m-%d %H:%
 CONFIDENCE: Final = {
     DateSource.EXIF: 100,
     DateSource.VIDEO: 100,
+    DateSource.TAKEOUT: 95,  # Google's record: from the file, or from its upload
     DateSource.NAME: 90,
     DateSource.FOLDER: 70,
     DateSource.MTIME: 0,
@@ -35,25 +36,38 @@ _MAJORITY: Final = 0.5
 _FIRST_YEAR: Final = 1990
 
 
-def exif_date(text: str | None) -> datetime | None:
-    """Read an EXIF date as cameras write it, standard or not.
+def exif_datetime(text: str | None) -> datetime | None:
+    """Read an EXIF date as cameras write it, standard or not, whatever its year.
 
     Args:
         text: `2019:06:12 14:30:12[.subsec]`, or `12/06/2019 14:30:12`…
 
     Returns:
-        The naive local date, or None.
+        The naive local date (sub-seconds dropped), or None when it names no real
+        day (`0000:00:00 00:00:00`, a month or a day 00).
     """
     if not text:
         return None
     head = text.strip().split(".", 1)[0]
     for pattern in _EXIF_FORMATS:
         try:
-            when = datetime.strptime(head, pattern)  # noqa: DTZ007 - EXIF has no zone
+            return datetime.strptime(head, pattern)  # noqa: DTZ007 - EXIF has no zone
         except ValueError:
             continue
-        return when if when.year >= _FIRST_YEAR else None
     return None
+
+
+def exif_date(text: str | None) -> datetime | None:
+    """Read an EXIF date as cameras write it, standard or not, from 1990 on.
+
+    Args:
+        text: `2019:06:12 14:30:12[.subsec]`, or `12/06/2019 14:30:12`…
+
+    Returns:
+        The naive local date, or None (unreadable, or before 1990: a clock not set).
+    """
+    when = exif_datetime(text)
+    return when if when is not None and when.year >= _FIRST_YEAR else None
 
 
 def video_date(written: str | None, zone: tzinfo) -> datetime | None:
@@ -77,6 +91,25 @@ def video_date(written: str | None, zone: tzinfo) -> datetime | None:
     if when.utcoffset():
         return when.replace(tzinfo=None)  # local time with its own offset
     return when.astimezone(zone).replace(tzinfo=None)
+
+
+def takeout_date(seconds: int | None, zone: tzinfo) -> datetime | None:
+    """Bring the date a Takeout `.json` records (Unix seconds) to local time.
+
+    Args:
+        seconds: `photoTakenTime.timestamp`, or None.
+        zone: The zone of the photos.
+
+    Returns:
+        The naive local date, or None (none, or before 1990: no real date).
+    """
+    if seconds is None:
+        return None
+    try:
+        when = datetime.fromtimestamp(seconds, UTC).astimezone(zone)
+    except OverflowError, OSError, ValueError:
+        return None
+    return when.replace(tzinfo=None) if when.year >= _FIRST_YEAR else None
 
 
 def name_date(name: str, patterns: Sequence[re.Pattern[str]]) -> datetime | None:

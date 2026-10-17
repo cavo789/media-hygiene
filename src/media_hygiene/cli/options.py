@@ -37,10 +37,6 @@ def panel_local_ai() -> str:
     return _("🤖 Local AI (Ollama), optional: a model set in config.toml")
 
 
-def _panel_folders() -> str:
-    return _("Advanced: folders (override folders.* of config.toml)")
-
-
 def _panel_output() -> str:
     return _("Output (override general.* of config.toml)")
 
@@ -112,57 +108,6 @@ def version(callback: Callable[[bool], None]) -> OptionInfo:
             help=_("Show the version and exit."),
             callback=callback,
             is_eager=True,
-        ),
-    )
-
-
-def prefer() -> OptionInfo:
-    """`--prefer`: folder whose copies are kept first (repeatable, ordered).
-
-    Returns:
-        The option definition.
-    """
-    return cast(
-        "OptionInfo",
-        typer.Option(
-            "--prefer",
-            help=_("Folder whose copies are kept first. Repeat it; the order matters."),
-            rich_help_panel=_panel_folders(),
-            show_default=False,
-        ),
-    )
-
-
-def protect() -> OptionInfo:
-    """`--protect`: folder never modified (repeatable).
-
-    Returns:
-        The option definition.
-    """
-    return cast(
-        "OptionInfo",
-        typer.Option(
-            "--protect",
-            help=_("Folder never modified; its files are the copies kept. Repeatable."),
-            rich_help_panel=_panel_folders(),
-            show_default=False,
-        ),
-    )
-
-
-def exclude() -> OptionInfo:
-    """`--exclude`: folder never analysed (repeatable).
-
-    Returns:
-        The option definition.
-    """
-    return cast(
-        "OptionInfo",
-        typer.Option(
-            "--exclude",
-            help=_("Folder never analysed, e.g. a real backup to keep. Repeatable."),
-            rich_help_panel=_panel_folders(),
-            show_default=False,
         ),
     )
 

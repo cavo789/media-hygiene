@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from PIL import Image
 
 from media_hygiene.review.http import Request
-from media_hygiene.services import search as search_service
+from media_hygiene.services import search_pages as search_service
 from tests.support.cli import run
 from tests.support.places_map import JSON, PORT
 
@@ -104,7 +104,7 @@ def test_the_page_searches_and_shows_the_pictures(
     result = run(cli, "search")
     assert result.exit_code == 0, result.output
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
-    assert "nothing was changed" in result.output
+    assert "your photos were not changed" in result.output
     found = json.loads(seen["found"].body)
     assert found["total"] == 3
     hit = found["hits"][0]

@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
     from pathlib import Path
 
+    from media_hygiene.classify.former import FormerHint
     from media_hygiene.classify.layout import Values
     from media_hygiene.classify.models import Event, MediaInput
     from media_hygiene.config.classify_places import PersonalPlace
@@ -36,6 +37,7 @@ class Spot:
 
     values: GeoValues
     inherited: bool = False
+    hint: FormerHint | None = None  # a folder of removed copies named the town (0208)
 
 
 @dataclass(frozen=True, slots=True)

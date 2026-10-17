@@ -118,9 +118,11 @@ Or step by step, one option at a time:
 11. [Near duplicates](https://cavo789.github.io/media-hygiene/clean/11-near-duplicates/) — resized and recompressed copies
     (`--tier near`).
 12. [Decide pair by pair](https://cavo789.github.io/media-hygiene/clean/12-decide-pair-by-pair/) — swap or leave alone a
-    folder pair, from the report.
+    folder pair, in your browser or from the report.
 13. [A second opinion](https://cavo789.github.io/media-hygiene/clean/13-second-opinion/) — compare with Czkawka, an
     independent tool.
+14. [Unwanted photos](https://cavo789.github.io/media-hygiene/clean/14-unwanted-photos/) — tiny images, screenshots,
+    black or blurred photos, set aside only by you.
 
 **Sort the photos** (clean the duplicates first)
 

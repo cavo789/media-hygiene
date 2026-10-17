@@ -35,6 +35,29 @@ def move(seq: int, row: str, paths: tuple[Path, Path]) -> JournalEntry:
     )
 
 
+def done_line(action: ActionKind, path: str, **fields: object) -> JournalEntry:
+    """A `done` action of a clean on `path` (its host path too), empty, first line.
+
+    Args:
+        action: What was done.
+        path: The file or folder.
+        **fields: Other values (`seq`, `size`, `sha256`, `quarantine`...).
+
+    Returns:
+        The journal line.
+    """
+    return JournalEntry(
+        seq=1,
+        phase=Phase.CLEAN,
+        status=Status.DONE,
+        action=action,
+        path=path,
+        host_path=path,
+        size=0,
+        mtime_ns=0,
+    ).model_copy(update=fields)
+
+
 @contextmanager
 def journaled(
     tmp_path: Path, phase: Phase = Phase.CLEAN, *, delete: bool = False

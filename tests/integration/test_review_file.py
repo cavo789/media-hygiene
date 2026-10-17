@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from media_hygiene.report.decisions import BurstStatus, read_decisions
+from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review import session as session_module
 from tests.support.review import (
     BURST_HOST,

@@ -81,9 +81,11 @@ Free the space the extra copies take, safely, and keep the best shots.
     with the keyboard.
 11. [Near duplicates](clean/11-near-duplicates.md): resized and recompressed copies, the sure ones
     apart, the others decided in your browser (`review --near`, `--tier near`).
-12. [Decide pair by pair](clean/12-decide-pair-by-pair.md): swap or leave alone a folder pair, from the
-    report.
+12. [Decide pair by pair](clean/12-decide-pair-by-pair.md): swap or leave alone a folder pair, in your
+    browser (`review --pairs`) or from the report.
 13. [A second opinion](clean/13-second-opinion.md): compare with Czkawka, an independent tool.
+14. [Unwanted photos](clean/14-unwanted-photos.md): tiny images, screenshots, black or blurred photos,
+    set aside only by you (`review --junk`).
 
 ## Sort the photos
 

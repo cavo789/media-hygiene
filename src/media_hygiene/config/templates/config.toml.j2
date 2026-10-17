@@ -36,13 +36,17 @@ preferred = []
 {{ comment(_('Never modified. Their files are always the copies kept, so identical files elsewhere ARE deleted (a "master library").'), "--protect") }}
 protected = []
 
-{{ comment(_("Never analysed: e.g. a real backup that must remain a second copy."), "--exclude") }}
+{{ comment(_("Never analysed, not even read."), "--exclude") }}
 excluded = []
+
+{{ comment(_("A backup or an old disk: read and compared by content, never changed, and never the reason a copy elsewhere goes. The audit says what it lacks and what only it holds (to copy before wiping that disk). Not preferred, protected or excluded too."), "--backup") }}
+backups = []
 
 {{ comment(_("Example:")) }}
 # preferred = ['C:\Family Photos', 'C:\Users\Public\Pictures']
 # protected = ['C:\Family Photos\Albums']
-# excluded = ['D:\backup']
+# excluded = ['C:\Family Photos\Temp']
+# backups = ['D:\backup']
 
 
 [scan]
@@ -83,6 +87,9 @@ workers = 4
 {{ comment(_("Space 'clean' leaves free on the quarantine's drive when it copies files there from another drive, in GB (0 or more): a full system drive breaks Windows. 0 keeps no margin.")) }}
 quarantine_headroom_gb = 1.0
 
+{{ comment(_("Photos and videos you set aside by a choice (burst shots, near duplicates, files set aside in 'search' or 'review --junk') and that come back, whatever their name (a phone backup): the audit recognises them from the journal and 'clean' sets them aside again. false never looks for them.")) }}
+returned = true
+
 
 [review]
 {{ comment(_("A series whose proposal leaves only the sharpest shot (and those of protected folders) is obvious: the review page validates every obvious series at once, with one confirmation.")) }}
@@ -97,12 +104,30 @@ identical_below = 6
 brightness_gap = 60
 clipped_gap = 0.25
 
+[review.unwanted]
+{{ comment(_("'review --junk' shows the photos most likely unwanted, one group per reason; nothing is set aside until you say so, and 'clean --decisions' moves only what you set aside to the quarantine. A photo of a protected folder, a burst shot, a near or exact duplicate is never listed.")) }}
+
+{{ comment(_("Tiny: below this many megapixels (width times height divided by a million): 0.16 is 400 x 400 pixels, icons and thumbnails. 0 disables the reason.")) }}
+tiny_megapixels = 0.16
+
+{{ comment(_("A screenshot or a document, as 'classify' tells them: a screenshot name, or a PNG or tiny image without any camera trace.")) }}
+screenshots = true
+
+{{ comment(_("Nearly black: mean brightness under dark_mean (gray levels, 0 to 255) with at least dark_share (0 to 1) of the pixels black; the same for nearly white, over white_mean. 0 disables either reason.")) }}
+dark_mean = 25
+dark_share = 0.7
+white_mean = 230
+white_share = 0.7
+
+{{ comment(_("The blurriest: sharpness under this percentile (0 to 100) of your own photos, so the threshold follows your cameras. 0 disables the reason.")) }}
+blur_percentile = 2
+
 
 [sort]
 {{ comment(_("Ask for confirmation before sorting."), "--yes") }}
 confirm = true
 
-{{ comment(_("Files the system leaves behind: a source folder holding nothing else is removed once sorted, these files going to the quarantine first. 'sort --keep-empty-folders' keeps every folder.")) }}
+{{ comment(_("Files the system leaves behind: a folder holding nothing else is removed once 'sort' or 'clean' emptied it, these files going to the quarantine first. 'sort --keep-empty-folders' keeps every folder a sort empties.")) }}
 junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
 
 
@@ -143,7 +168,7 @@ language = ""
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
-{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, date. The model's sentence goes into dc:description.")) }}
+{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
 {{ comment(_("person writes the names of the people on each photo (PersonInImage): never by default, as the names then travel with every copy of the photos.")) }}
 xmp_sources = ["vision", "place"]
 
@@ -209,6 +234,12 @@ min_edge = 512
 {{ comment(_("Above this many photos to describe, classify asks first and prints the estimated time. One photo at a time suits one graphics card."), "--yes") }}
 confirm_above = 200
 concurrency = 1
+
+{{ comment(_("Clocks: a camera whose clock was off (an hour behind on a trip abroad, a day ahead) is set right here, never in the photos. camera: a regular expression searched in the make and model; dates: the camera's own, wrong, days; shift: what to add to them, + or -, then days d, hours h, minutes m (+1h, -1d, +1d2h30m). Two rules of one camera may not share a day. A date after the day of the run is doubted: to check.")) }}
+# [[classify.clocks]]
+# camera = '(?i)canon eos 550d'
+# dates = "2010-07-01..2010-07-15"
+# shift = "+1h"
 
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
 {{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}

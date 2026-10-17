@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.purge import folder_census, run_folders, runs_in
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME
 from media_hygiene.errors import DecisionsError
-from media_hygiene.report.decisions import BurstStatus, read_decisions
+from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.place import DEFAULT_DECISIONS
 
 if TYPE_CHECKING:

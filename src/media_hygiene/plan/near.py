@@ -4,7 +4,8 @@ Two images are near duplicates only when every test agrees: both 64-bit hashes d
 by at most `NEAR_DISTANCE` bits, the aspect ratio is the same (±1 %), and the smaller
 one was shot at the same moment or has lost its date, and both keep the same colours
 when they were measured (a black and white edit is not a copy). A burst (another
-moment) never qualifies.
+moment) never qualifies, nor a Google Photos edit and its original (`IMG_1-edited.jpg`
+and `IMG_1.jpg`): an edit is a choice.
 Featureless images (black, white, blank) are left out: they all hash alike.
 
 Candidates meet through multi-index hashing: two hashes at most 3 bits apart share at
@@ -25,6 +26,7 @@ from media_hygiene.plan.near_keeper import choose_keeper
 from media_hygiene.plan.near_pairs import close_pairs
 from media_hygiene.plan.near_rounds import Grouping, in_rounds
 from media_hygiene.plan.union_find import UnionFind
+from media_hygiene.scan.takeout import is_edit_pair
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -123,7 +125,9 @@ def _settle(
     near = [
         file
         for file in cluster
-        if file != choice.keeper and is_near(best, visuals[file.path])
+        if file != choice.keeper
+        and is_near(best, visuals[file.path])
+        and not is_edit_pair(file.path.name, choice.keeper.path.name)
     ]
     return choice, near
 
@@ -145,5 +149,6 @@ def _clusters(
         return links.sets()
     firsts, seconds = close_pairs([visuals[file.path] for file in files], NEAR_DISTANCE)
     for first, second in zip(firsts.tolist(), seconds.tolist(), strict=True):
-        links.link(first, second)
+        if not is_edit_pair(files[first].path.name, files[second].path.name):
+            links.link(first, second)
     return links.sets()

@@ -15,10 +15,11 @@ import pytest
 
 from media_hygiene.cli.app import build_app
 from media_hygiene.cli.safety import READ_ONLY_COMMANDS, read_only_marker
+from media_hygiene.services import home as home_service
 from media_hygiene.services import people as people_service
 from media_hygiene.services import people_page, reviewing, sort_reviewing
 from media_hygiene.services import places as places_service
-from media_hygiene.services import search as search_service
+from media_hygiene.services import search_pages as search_service
 from tests.integration.test_clean_undo import manifest
 from tests.support.cli import run
 from tests.support.faces import FakeRecipe
@@ -42,6 +43,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("places",),
     ("tags",),
     ("search",),
+    ("browse",),
     ("people",),
     ("inventory",),
     ("history",),
@@ -50,6 +52,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("status",),
     ("launcher",),
     ("menu",),
+    ("home",),
 )
 
 
@@ -95,6 +98,7 @@ def test_read_only_commands_change_nothing_in_the_photos(
     for module in (reviewing, sort_reviewing, places_service, search_service):
         monkeypatch.setattr(module, "run_server", ready_then_stop())
     monkeypatch.setattr(people_page, "run_server", ready_then_stop())
+    monkeypatch.setattr(home_service, "serve_until_ended", ready_then_stop())
     monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
     before = manifest(read_only_data)
     for args in RUNS:

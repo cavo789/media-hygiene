@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 {# The page of `media-hygiene search`: one field, a few filters, a grid of the files
-   found with their folder, date and tags. Read-only: it only asks the server to search
-   and to show pictures. Keyboard: "/" focuses the field, the arrows move in the grid,
-   Enter opens the picture, Escape closes it. #}
+   found with their folder, date and tags. The photos are never changed: files picked
+   (a click or Space) can be set aside, saved at once in the decisions file for
+   `clean --decisions`. Keyboard: "/" focuses the field, the arrows move in the grid,
+   Space picks, Enter opens the picture, Escape closes it. #}
 {% set texts = {
   "found": [ngettext("{n} file found.", "{n} files found.", 1), ngettext("{n} file found.", "{n} files found.", 2)],
   "shown": _("{total} files found; the first {shown} are shown."),
@@ -11,11 +12,18 @@
   "failed": _("The search failed (error {status})."),
   "original": _("Open the original"),
   "noPreview": _("No preview"),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "allFound": _("Pick all {total} files found"),
+  "allPicked": _("All {total} files found are picked"),
+  "aside": _("marked to set aside"),
+  "saving": _("Saving…"),
+  "notSaved": _("Nothing was saved: {error}"),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
   "folder": _("folder"),
   "name": _("file name"),
+  "former": _("name of a removed copy"),
   "date": _("date"),
   "place": _("place"),
   "person": _("person"),
@@ -41,7 +49,8 @@
          font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
            border-bottom: 1px solid var(--line); }
-  h1 { font-size: 1.1rem; margin: 0 0 8px; }
+  h1 { font-size: 1.1rem; margin: 0 0 8px; display: flex; gap: 16px; align-items: baseline; }
+  h1 a { font-size: .9rem; font-weight: 400; color: var(--accent); }
   form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
   label { display: flex; flex-direction: column; font-size: .8rem; color: var(--muted); }
   input, select { padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
@@ -72,11 +81,20 @@
   #viewer.open { display: flex; }
   #viewer img { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
   #viewer a { color: #9cd0ff; }
+  #actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+  #actions button.plain { color: var(--accent); background: transparent; }
+  #actions button:disabled { opacity: .45; cursor: default; }
+  #chosen { font-size: .85rem; margin: 6px 0 0; }
+  #chosen.error { color: var(--bad); font-weight: 600; }
+  .hit.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+  .hit { position: relative; }
+  .badge { position: absolute; top: 6px; left: 6px; padding: 0 8px; border-radius: 10px;
+           color: #fff; background: var(--bad); font-size: .75rem; font-weight: 600; }
 </style>
 </head>
 <body>
 <header>
-  <h1>🔒 {{ _("Search your photos") }}</h1>
+  <h1>🔒 {{ _("Search your photos") }} <a href="{{ browse_path }}">{{ _("Your folders") }}</a></h1>
   <form id="form">
     <label>{{ _("Words") }}
       <input id="text" type="search" autocomplete="off"
@@ -94,8 +112,17 @@
       </select></label>
     <button type="submit">{{ _("Search") }}</button>
   </form>
-  <p class="hint">{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only. / types a search, the arrows move, Enter opens.') }}</p>
+  <p class="hint">{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only. / types a search, the arrows move, a click or Space picks, Enter or a double click opens.') }}</p>
   <p id="status" role="status"></p>
+  <div id="actions">
+    <span id="picked"></span>
+    <button id="pickAll" class="plain" type="button" hidden></button>
+    <button id="setAside" type="button" disabled>{{ _("Set aside the picked files") }}</button>
+    <button id="takeBack" class="plain" type="button" disabled>{{ _("Take out of the set aside") }}</button>
+    <button id="unpick" class="plain" type="button" disabled>{{ _("Pick none") }}</button>
+  </div>
+  <p id="chosen" role="status"></p>
+  <p class="hint">{{ _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
 </header>
 <main id="grid"></main>
 <div id="viewer" role="dialog" aria-modal="true">
@@ -107,9 +134,14 @@
 const TEXTS = {{ texts | tojson }};
 const SOURCES = {{ sources | tojson }};
 const SEARCH_PATH = {{ search_path | tojson }};
+const CHOSEN_PATH = {{ chosen_path | tojson }};
 const $ = (id) => document.getElementById(id);
 let cards = [];
 let current = -1;
+let asked = {};        // the search shown
+let total = 0;         // how many files it finds
+let everything = false; // every file found is picked, not only those shown
+const picked = new Set(); // the keys of the files picked
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
@@ -151,8 +183,11 @@ function card(hit, index) {
   }
   meta.append(chips);
   node.append(picture, meta);
-  node.addEventListener("click", () => { select(index); open(); });
+  if (hit.chosen) node.append(element("span", "badge", TEXTS.aside));
+  node.addEventListener("click", () => { select(index); pick(index); });
+  node.addEventListener("dblclick", () => { select(index); open(); });
   node.addEventListener("focus", () => select(index));
+  node.dataset.key = hit.key;
   node.dataset.preview = hit.preview;
   node.dataset.original = hit.original;
   node.dataset.name = hit.name;
@@ -179,6 +214,63 @@ function open() {
 
 function close() { $("viewer").classList.remove("open"); }
 
+function pick(index) {
+  const node = cards[index];
+  if (!node) return;
+  everything = false;
+  const key = Number(node.dataset.key);
+  if (picked.has(key)) picked.delete(key); else picked.add(key);
+  showPicked();
+}
+
+function showPicked() {
+  for (const node of cards) {
+    node.classList.toggle("picked", everything || picked.has(Number(node.dataset.key)));
+  }
+  const count = everything ? total : picked.size;
+  $("picked").textContent = count ? counted(TEXTS.picked, count) : "";
+  for (const id of ["setAside", "takeBack", "unpick"]) $(id).disabled = !count;
+  const button = $("pickAll");
+  button.hidden = total <= cards.length && !everything;
+  button.disabled = everything;
+  button.textContent = fill(everything ? TEXTS.allPicked : TEXTS.allFound, { total: total });
+}
+
+function said(answer, state) {
+  const line = $("chosen");
+  line.className = answer.ok ? "" : "error";
+  line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+}
+
+async function choose(action) {
+  const body = { action: action, keys: [...picked], all: everything, search: asked };
+  $("chosen").className = "";
+  $("chosen").textContent = TEXTS.saving;
+  let answer;
+  try {
+    answer = await fetch(CHOSEN_PATH, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+  } catch (error) {
+    $("chosen").className = "error";
+    $("chosen").textContent = TEXTS.offline;
+    return;
+  }
+  const state = await answer.json().catch(() => ({}));
+  said(answer, state);
+  if (!answer.ok) return;
+  picked.clear();
+  everything = false;
+  await search();
+}
+
+async function loadChosen() {
+  try {
+    const answer = await fetch(CHOSEN_PATH);
+    said(answer, await answer.json());
+  } catch (error) { /* the search says when the server is gone */ }
+}
+
 function columns() {
   if (cards.length < 2) return 1;
   const top = cards[0].offsetTop;
@@ -193,6 +285,8 @@ async function search(event) {
     text: $("text").value, year_from: year("from"), year_to: year("to"),
     folder: $("folder").value, source: $("source").value || null,
   };
+  if (event || JSON.stringify(body) !== JSON.stringify(asked)) { picked.clear(); everything = false; }
+  asked = body;
   const status = $("status");
   status.className = "";
   let answer;
@@ -213,7 +307,9 @@ async function search(event) {
   const found = await answer.json();
   cards = found.hits.map(card);
   current = -1;
+  total = found.total;
   $("grid").replaceChildren(...cards);
+  showPicked();
   if (!found.total) status.textContent = TEXTS.none;
   else if (found.total > found.hits.length) {
     status.textContent = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
@@ -240,12 +336,21 @@ document.addEventListener("keydown", (event) => {
   } else if (event.key === "Enter" && current >= 0) {
     event.preventDefault();
     open();
+  } else if (event.key === " " && current >= 0) {
+    event.preventDefault();
+    pick(current);
   }
 });
+$("pickAll").addEventListener("click", () => { everything = true; showPicked(); });
+$("unpick").addEventListener("click", () => { picked.clear(); everything = false; showPicked(); });
+$("setAside").addEventListener("click", () => choose("add"));
+$("takeBack").addEventListener("click", () => choose("remove"));
 $("viewer").addEventListener("click", (event) => { if (event.target.tagName !== "A") close(); });
 $("form").addEventListener("submit", search);
 $("text").focus();
 search();
+loadChosen();
 </script>
+{% include "home_link.html.j2" %}
 </body>
 </html>

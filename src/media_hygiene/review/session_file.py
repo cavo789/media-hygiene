@@ -13,7 +13,8 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.report.decisions import BurstDecision, BurstStatus, read_decisions
+from media_hygiene.report.burst_decisions import BurstDecision, BurstStatus
+from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.shots import burst_decision, match_burst, set_aside_problem
 
 if TYPE_CHECKING:

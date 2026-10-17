@@ -33,6 +33,7 @@ class Tally:
     skipped: list[Incident] = field(default_factory=list[Incident])
     failed: list[Incident] = field(default_factory=list[Incident])
     started: float = field(default_factory=time.monotonic)
+    folders_removed: int = 0  # left empty by a clean (0202)
 
     def freeze(self) -> Outcome:
         """Snapshot the counters.
@@ -47,6 +48,7 @@ class Tally:
             skipped=tuple(self.skipped),
             failed=tuple(self.failed),
             seconds=time.monotonic() - self.started,
+            folders_removed=self.folders_removed,
         )
 
 
@@ -60,6 +62,7 @@ class Outcome:
     skipped: tuple[Incident, ...]
     failed: tuple[Incident, ...]
     seconds: float = 0.0
+    folders_removed: int = 0  # left empty by a clean, removed (0202)
 
 
 def combine(outcomes: Sequence[Outcome]) -> Outcome:
@@ -78,6 +81,7 @@ def combine(outcomes: Sequence[Outcome]) -> Outcome:
         skipped=tuple(item for outcome in outcomes for item in outcome.skipped),
         failed=tuple(item for outcome in outcomes for item in outcome.failed),
         seconds=sum(outcome.seconds for outcome in outcomes),
+        folders_removed=sum(outcome.folders_removed for outcome in outcomes),
     )
 
 

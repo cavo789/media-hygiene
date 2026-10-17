@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.actions.journal import journal_file, read_journal
-from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind
 from media_hygiene.constants import MediaKind
 from media_hygiene.errors import MountError
 from media_hygiene.paths.mount_kind import MountKind
@@ -67,7 +67,7 @@ def test_other_files_are_compared_and_their_copies_quarantined(
     assert outcome.quarantined == 1
     assert not copy.exists()
     entries = read_journal(journal_file(locations.journal_dir, run_id))
-    actions = {e.action for e in entries}
+    actions = {e.action for e in entries if e.action not in FOLDER_ACTIONS}
     assert actions == {ActionKind.QUARANTINE_DUPLICATE, ActionKind.DELETE_DUPLICATE}
     assert undo_run(runtime, run_id, NullProgress()).done == len(actions)
     assert copy.read_bytes() == _CONTRACT

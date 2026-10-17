@@ -13,6 +13,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | savoir, sans aucun risque, combien de copies contiennent mes dossiers et quelle place elles prennent | [`audit`](commands/audit.md) |
 | savoir en une seconde où j'en suis après quelques jours, et la prochaine étape | [`status`](commands/status.md) |
 | ne retenir aucune commande : voir chaque étape, lancer la prochaine avec Entrée | [`menu`](commands/menu.md) (`mh` seul) |
+| cliquer plutôt que taper : où j'en suis, l'étape suivante en bouton, mes rapports, l'audit lancé dans la page | [`home`](commands/home.md) |
 | libérer la place que prennent mes photos en double, en sécurité : mises de côté, jamais effacées | [`clean`](commands/clean.md) |
 | ne garder que les meilleures photos de mes rafales, trancher les quasi-doublons | [`review`](commands/review.md), puis `clean --decisions` |
 | voir ce que chaque exécution a fait | [`history`](commands/history.md) |
@@ -28,6 +29,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | retrouver les photos de quelqu'un par son nom, les ranger selon qui y figure | [`people`](commands/people.md), puis `search` ou `classify` |
 | donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
 | retrouver une photo par un mot, un lieu, une année, une personne | [`search`](commands/search.md) |
+| parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [`browse`](commands/browse.md), puis `clean --decisions` |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
 | taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
@@ -46,6 +48,7 @@ exemples et son `--help`.
 | [`audit`](commands/audit.md) | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Où en suis-je ? Le dernier audit, la quarantaine, les exécutions encore annulables, les tris pas appliqués, la dernière proposition pas triée ; puis une étape suivante en commande complète. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer, 9](clean/09-undo-history-purge.md#où-en-suis-je--status) |
 | [`menu`](commands/menu.md) | Ce que montre `mh` seul : chaque étape des trois guides avec sa commande `mh` complète, celle que donnerait `status` proposée ; Entrée la lance par `mh`, un numéro en lance une autre. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer en bref](clean/quick-guide.md) |
+| [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
 | [`review`](commands/review.md) | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [Nettoyer, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | [`history`](commands/history.md) | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [Nettoyer, 4](clean/04-html-report.md) |
@@ -57,7 +60,8 @@ exemples et son `--help`.
 | [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Donne à chaque photo et vidéo des mots pour la retrouver : les mots parlants de ses dossiers et de son nom de fichier, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif ; une vidéo par l'image du milieu). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
-| [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
+| [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. Les photos choisies peuvent être mises de côté pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
+| [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 | [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
 
 **Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
@@ -85,6 +89,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--prefer CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier dont les copies sont gardées en priorité ; répétable, l'ordre compte. [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#préférer-un-dossier) |
 | `--protect CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais modifié ; ses fichiers sont les copies gardées. [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#protéger-un-dossier) |
 | `--exclude CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Dossier jamais analysé. [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#exclure-un-dossier) |
+| `--backup CHEMIN` | `audit`, `review`, `clean`, `crosscheck` | Une sauvegarde ou un ancien disque : comparé, jamais modifié ; l'audit dit ce qui lui manque et ce que lui seul contient. [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque) |
 | `--exclude-name NOM` | `audit`, `clean`, `crosscheck` | Nom de dossier jamais analysé, où qu'il soit (casse ignorée, `*` et `?` permis : `--exclude-name Thumbnails,.Trash-*`) ; s'ajoute aux dossiers système et corbeilles toujours ignorés. [Étape 5 du nettoyage](clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | N'analyse que ces catégories ou extensions (`--ext photo,video`, `--ext png,webp`) ; catégories intégrées `photo`, `raw`, `video`, `media`, plus celles de `[scan.categories]` ; `media` (toutes les photos, RAW et vidéos) par défaut. D'autres types aussi (`--ext pdf,docx`). [Étape 6 du nettoyage](clean/06-file-types.md) |
 | `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit` | Ne pas demander de confirmation (`undo` ne demande qu'avant d'annuler plusieurs passages d'un tri ; `classify` et `tags`, avant de décrire beaucoup de photos avec un modèle local ; `audit`, avant de chercher les visages avec `--people`). |
@@ -93,7 +98,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--near` | `review` | Décider les quasi-doublons groupe par groupe (comme prévu, garder l'autre version, laisser tel quel) au lieu de trier les rafales. [Étape 11 du nettoyage](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8 du nettoyage](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport, les photos de rafale écartées avec `review` et les groupes de quasi-doublons décidés avec `review --near` (avec `--tier near`). `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. Une fois appliqué par `clean`, le fichier est renommé `decisions.applied-<run>.json`. [Étape 10 du nettoyage](clean/10-review-bursts.md), [étape 12 du nettoyage](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `people` | Port de la page, `8088` par défaut ; publiez le même : `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home` | Port de la page, `8088` par défaut ; publiez le même : `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--photos "C:\Photos"` | `launcher` | Un dossier de photos et vidéos, tel que l'Explorateur le montre ; répétez-la pour plusieurs dossiers. Pas besoin de `-v`. [Nettoyer en bref, 0](clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh) |
 | `--quarantine "D:\quarantaine"` | `launcher` | Où vont les copies mises de côté ; de préférence sur le disque des photos. Par défaut : `$HOME\media-hygiene\quarantine`. |
@@ -158,6 +163,9 @@ commande montre son propre `--help` ; voici la liste des commandes :
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyser : lecture seule, ne modifie jamais vos photos ──────────────────╮
 │ audit        Trouver les doublons exacts et les fichiers cassés.             │
+│ browse       Parcourir vos dossiers dans votre navigateur, comme dans        │
+│              l'Explorateur, et mettre des photos de côté ; 'clean            │
+│              --decisions' les déplace ensuite.                               │
 │ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
 │              catégorie, et ce que montrent les photos isolées avec une IA    │
 │              locale facultative 🤖                                           │
@@ -165,6 +173,9 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │ crosscheck   Lance Czkawka, un détecteur de doublons indépendant, puis       │
 │              compare ses groupes à un nouvel audit : un second avis.         │
 │ history      Liste les exécutions et ce qu'elles ont fait.                   │
+│ home         La page d'accueil dans votre navigateur : où vous en êtes,      │
+│              l'étape suivante en un bouton, toutes les étapes des guides,    │
+│              les rapports.                                                   │
 │ inventory    Exporter vers Excel chaque photo et vidéo avec ce que les       │
 │              audits en ont appris, depuis le cache seul : aucun fichier      │
 │              n'est lu.                                                       │

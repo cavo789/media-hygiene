@@ -30,7 +30,7 @@ type Captures = dict[str, str]
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
 COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
                        "places", "status", "launcher", "review-sort", "tags", "search",
-                       "people", "xmp", "menu")  # fmt: skip
+                       "browse", "people", "xmp", "menu", "home")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(
@@ -56,6 +56,7 @@ CAPTURES: Final = frozenset(
         "crosscheck.txt",
         "review.txt",
         "review-near.txt",
+        "review-pairs.txt",
         "decisions.json",
         "clean.txt",
         "undo.txt",

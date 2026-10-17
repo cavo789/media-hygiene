@@ -1,15 +1,10 @@
 # 12. Décider paire par paire
 
-[Documentation](../README.md) › Nettoyer, étape 12 sur 13 · 🇬🇧 [English](../../en/clean/12-decide-pair-by-pair.md)
+[Documentation](../README.md) › Nettoyer, étape 12 sur 14 · 🇬🇧 [English](../../en/clean/12-decide-pair-by-pair.md)
 
 [`--prefer`](05-choose-the-kept-copy.md) change le choix pour tout un dossier, partout. Parfois,
 vous n'êtes en désaccord qu'avec une seule paire : garder l'autre côté, ou ne pas toucher à cette
-paire. Le rapport d'audit vous laisse décider paire par paire, d'un clic.
-
-## Étape 1 : choisir dans le rapport
-
-Dans le tableau *Paires de dossiers* d'un rapport d'**audit**, chaque paire a une liste
-*Votre décision* :
+paire. Vous décidez paire par paire, dans votre navigateur.
 
 | Choix | Ce que `clean` fera de cette paire |
 |---|---|
@@ -17,20 +12,47 @@ Dans le tableau *Paires de dossiers* d'un rapport d'**audit**, chaque paire a un
 | Inverser les dossiers | Garder les copies du **second** dossier, mettre de côté celles du premier. |
 | Ne pas toucher | Ne rien toucher de cette paire. |
 
-Ici, les vidéos ne sont pas touchées et la paire `Ancien téléphone` est inversée :
+## Étape 1 : ouvrir les paires dans le navigateur
 
-![Les paires de dossiers du rapport, avec Ne pas toucher choisi pour C:\Photos\Vidéos et Inverser les dossiers pour C:\Photos\Ancien téléphone ; le bouton en dessous indique Télécharger decisions.json (2)](../images/report-pairs.webp)
+```powershell
+mh review --pairs
+```
 
-Votre navigateur retient vos choix, même si vous fermez la page. *Inverser les dossiers* n'est
-pas proposé pour les copies d'un même dossier : il n'y a rien à inverser.
+(sans `mh` : la commande `docker run … -p 127.0.0.1:8088:8088 … review --pairs` de
+[`review`](../commands/review.md#lancer))
 
-## Étape 2 : télécharger le fichier
+Il fait d'abord l'audit, puis affiche le nombre de paires et *✅ Tri prêt, ouvrez
+http://127.0.0.1:8088/ dans votre navigateur* :
 
-Cliquez sur **Télécharger decisions.json** ; le nombre entre parenthèses compte vos décisions.
-Enregistrez le fichier dans votre dossier de rapports (`C:\Users\<vous>\media-hygiene\reports`), à
-côté d'`index.html`.
+<!-- capture: review-pairs.txt|paire|127.0.0.1:8088:8088 -->
+```text
+9 paires de dossiers, la plus grande place libérée d'abord ; déjà décidées : 0.
+✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
+décision est enregistrée aussitôt dans decisions.json, dans le dossier monté sur
+/reports. Ctrl+C arrête le tri.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
+```
 
-## Étape 3 : nettoyer avec vos décisions
+La page montre une paire à la fois, de la plus grande place libérée à la plus petite : le dossier
+qui garde ses copies encadré en vert, celui qui les perd en pointillés rouges, le nombre de
+fichiers identiques, pourquoi le premier dossier les garde, *Entièrement une copie* quand le
+second dossier ne contient rien d'autre, et quelques photos d'exemple (↗ ouvre l'original).
+
+| Touche | Ce qu'elle fait |
+|---|---|
+| `→` | Comme prévu, puis la paire suivante |
+| `W` | Inverser les dossiers, puis la paire suivante (pas proposé pour un dossier protégé, ni pour les copies d'un même dossier) |
+| `L` | Ne pas toucher à la paire, puis la paire suivante |
+| `←` / `N` | Paire précédente / paire suivante non décidée |
+| `U` | Revenir à « non décidée » |
+
+Chaque choix est enregistré aussitôt dans `decisions.json` (dans votre dossier de rapports), puis
+relu sur le disque et affiché : *✔ Enregistré, puis relu sur le disque à 14:32:05*. Arrêtez
+quand vous voulez avec Ctrl+C : le `review --pairs` suivant s'ouvre sur la première paire non
+décidée.
+
+## Étape 2 : nettoyer avec vos décisions
 
 Lancez votre commande `clean` de l'[étape 8](08-clean.md) avec `--decisions` : seul, il lit
 `decisions.json` dans le dossier des rapports (un autre fichier : `--decisions autre.json`) :
@@ -47,6 +69,19 @@ les protections : comparaison octet par octet, journal, `undo`. Une fois le nett
 fichier est archivé sous `decisions.applied-<run>.json`, à côté de lui-même : après un `undo`,
 `--decisions` avec ce nom l'applique à nouveau.
 
+## Hors ligne : depuis le rapport
+
+Un rapport ouvert seul, sans que l'outil tourne, permet aussi de décider. Dans le tableau
+*Paires de dossiers* d'un rapport d'**audit**, chaque paire a une liste *Votre décision*. Ici, les
+vidéos ne sont pas touchées et la paire `Ancien téléphone` est inversée :
+
+![Les paires de dossiers du rapport, avec Ne pas toucher choisi pour C:\Photos\Vidéos et Inverser les dossiers pour C:\Photos\Ancien téléphone ; le bouton en dessous indique Télécharger decisions.json (2)](../images/report-pairs.webp)
+
+Votre navigateur retient vos choix, même si vous fermez la page. Cliquez sur **Télécharger
+decisions.json** ; le nombre entre parenthèses compte vos décisions. Enregistrez le fichier dans
+votre dossier de rapports (`C:\Users\<vous>\media-hygiene\reports`), à côté d'`index.html`, puis
+lancez le `clean` de l'étape 2.
+
 ## Quand le fichier est refusé
 
 Par sécurité, `clean` refuse le fichier plutôt que de deviner quand :
@@ -60,8 +95,8 @@ Par sécurité, `clean` refuse le fichier plutôt que de deviner quand :
 
 Le même `decisions.json` peut contenir les paires de dossiers, les photos de rafale de
 l'[étape 10](10-review-bursts.md) **et** les groupes de quasi-doublons de
-l'[étape 11](11-near-duplicates.md#décider-dans-le-navigateur--review---near) : `review` et
-`review --near` conservent ce que le fichier contient déjà, et un seul
+l'[étape 11](11-near-duplicates.md#décider-dans-le-navigateur--review---near) : `review`,
+`review --near` et `review --pairs` conservent ce que le fichier contient déjà, et un seul
 `clean --tier near --decisions` applique les trois.
 
 ---

@@ -126,6 +126,12 @@ def find_steps() -> tuple[Step, ...]:
         Step("tags", _("Give your photos words"), Risk.SAFE, Slot.TAGS, ai=True),
         Step("search", _("Find a photo by its words, in your browser"), Risk.SAFE),
         Step(
+            "browse",
+            _("Walk through your folders, set photos aside"),
+            Risk.SAFE,
+            optional=True,
+        ),
+        Step(
             "xmp",
             _("Carry the words into other photo software"),
             Risk.UNDO,

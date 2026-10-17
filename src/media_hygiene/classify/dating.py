@@ -2,16 +2,18 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
+from dataclasses import dataclass, field, replace
+from datetime import date, datetime
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.clocks import doubt_future, shifted
 from media_hygiene.classify.dates import (
     CONFIDENCE,
     DOUBTED,
     exif_date,
     folder_dating,
     name_date,
+    takeout_date,
     video_date,
 )
 from media_hygiene.classify.models import DateSource, Dating
@@ -20,27 +22,42 @@ if TYPE_CHECKING:
     import re
     from datetime import tzinfo
 
+    from media_hygiene.classify.clocks import Clock
     from media_hygiene.classify.folders import FolderRules
     from media_hygiene.classify.models import MediaInput
 
 _NS: Final = 1_000_000_000
 
 
+def _today() -> date:
+    """The day of the run, local.
+
+    Returns:
+        It.
+    """
+    return datetime.now().astimezone().date()
+
+
 @dataclass(frozen=True, slots=True)
 class DatingContext:
-    """What the chain needs: folder rules, name patterns, the zone, unset clocks."""
+    """What the chain needs: folder rules, name patterns, the zone, the clocks."""
 
     rules: FolderRules
     names: tuple[re.Pattern[str], ...]
     zone: tzinfo
     unset_clocks: frozenset[str] = frozenset()
+    clocks: tuple[Clock, ...] = ()  # `[[classify.clocks]]`
+    today: date = field(default_factory=_today)
 
 
 def dating_of(file: MediaInput, context: DatingContext) -> Dating:
     """Date one file.
 
-    A camera whose clock is not set gives way to its folders. An EXIF or video date
-    whose year its folder contradicts is kept but doubted: the file goes to "to check".
+    A camera whose clock is not set gives way to its folders; one a
+    `[[classify.clocks]]` rule covers is set right. An EXIF, video or Takeout date
+    whose year its folder contradicts is kept but doubted, as is a date after the
+    day of the run: the file goes to "to check". The date a Google Photos Takeout
+    `.json` records comes after the file's own, before its name.
 
     Args:
         file: The file.
@@ -48,6 +65,19 @@ def dating_of(file: MediaInput, context: DatingContext) -> Dating:
 
     Returns:
         Its date; from the mtime (confidence 0) when nothing else tells.
+    """
+    return doubt_future(_chain(file, context), context.today)
+
+
+def _chain(file: MediaInput, context: DatingContext) -> Dating:
+    """The first reliable date of a file, a clock set right.
+
+    Args:
+        file: The file.
+        context: Rules and settings of the chain.
+
+    Returns:
+        Its date.
     """
     folder = folder_dating(file, context.rules)
     if file.camera in context.unset_clocks and folder is not None:
@@ -59,10 +89,17 @@ def dating_of(file: MediaInput, context: DatingContext) -> Dating:
             video_date(metadata.recorded_at if metadata else None, context.zone),
             DateSource.VIDEO,
         ),
+        (
+            takeout_date(file.takeout.taken_at if file.takeout else None, context.zone),
+            DateSource.TAKEOUT,
+        ),
     ):
-        if when is not None:
-            doubted = folder is not None and folder.when.year != when.year
-            return Dating(when, source, DOUBTED if doubted else CONFIDENCE[source])
+        if when is None:
+            continue
+        found = shifted(Dating(when, source, CONFIDENCE[source]), file, context.clocks)
+        if folder is not None and folder.when.year != found.when.year:
+            return replace(found, confidence=DOUBTED)
+        return found
     named = name_date(file.path.stem, context.names)
     if named is not None:
         return Dating(named, DateSource.NAME, CONFIDENCE[DateSource.NAME])

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.plan.pairs import Disposal
+from media_hygiene.report.returned_views import ReturnedSection
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
@@ -129,11 +130,23 @@ class IncidentView:
 
 
 @dataclass(frozen=True, slots=True)
+class UnreadView:
+    """A file the disk or the cloud could not read this time: left alone."""
+
+    path: str
+    detail: str
+
+
+@dataclass(frozen=True, slots=True)
 class BrokenSection:
-    """Broken files `clean` handles, and those it leaves alone (protected folders)."""
+    """Broken files `clean` handles or leaves (protected), and the files unread.
+
+    `unread`: the files that could not be read this time: never broken, read again.
+    """
 
     handled: tuple[BrokenView, ...]
     protected: tuple[BrokenView, ...]
+    unread: tuple[UnreadView, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -171,7 +184,7 @@ class ReportHeader:
 
 
 @dataclass(frozen=True, slots=True)
-class ReportView:
+class ReportView:  # pylint: disable=too-many-instance-attributes
     """The full report."""
 
     header: ReportHeader
@@ -181,3 +194,4 @@ class ReportView:
     broken: BrokenSection
     incidents: IncidentsSection
     orphans: OrphansSection = field(default_factory=OrphansSection)
+    returned: ReturnedSection = field(default_factory=ReturnedSection)

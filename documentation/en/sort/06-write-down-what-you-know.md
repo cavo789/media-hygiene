@@ -123,6 +123,30 @@ Sport and leisure, At home, Animals, Nature and landscapes, Documents and screen
 Other. Replace them with yours. Avoid a "Family" or "Portraits" category: in a family
 collection, it swallows most photos.
 
+## A camera whose clock was wrong
+
+On a trip abroad, the phone sets itself to the local time; the camera does not. Its photos
+come out an hour behind the phone's, and an event photographed with both is cut or mixed up.
+Write the shift once in `config.toml`, as a `[[classify.clocks]]` table, next to the rules:
+
+```toml
+[[classify.clocks]]
+camera = '(?i)canon eos 550d'      # searched in the make and model, as the camera rule
+dates = "2010-07-01..2010-07-15"   # the camera's own days, the wrong ones
+shift = "+1h"                      # what to add: + or -, then days d, hours h, minutes m
+```
+
+`classify` and `tags` read the EXIF dates of that camera, on those days, an hour later: the
+two devices' photos make one event, in the right order. Nothing is written into the photos.
+The Files sheet of the workbook says it in the **Date from** column (`camera (EXIF), +1h:
+rule (?i)canon eos 550d`). A shift combines units (`-1d`, `+1d2h30m`); a shift or a range
+that cannot be read stops the run, naming the rule, and so do two rules of one camera that
+share a day.
+
+A date **after the day of the run** cannot be right: a clock set wrong. The file goes to
+"to check" (**Date from** ends with `in the future: to check`), as a year its folder
+contradicts does.
+
 ## Which rule wins
 
 The rules are read **in order**, and the first one whose score reaches `sure` (80 by default)

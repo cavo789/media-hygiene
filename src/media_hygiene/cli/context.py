@@ -140,23 +140,3 @@ def runtime_of(ctx: typer.Context) -> Runtime:
     ctx.call_on_close(runtime.output.finish)
     announce_read_only(runtime, ctx.info_name)
     return runtime
-
-
-def folder_layer(
-    prefer: list[str] | None,
-    protect: list[str] | None,
-    exclude: list[str] | None,
-) -> Layer:
-    """Turn the folder options of a command into a settings layer.
-
-    Args:
-        prefer: `--prefer` values.
-        protect: `--protect` values.
-        exclude: `--exclude` values.
-
-    Returns:
-        The `[folders]` overrides actually given.
-    """
-    given = {"preferred": prefer, "protected": protect, "excluded": exclude}
-    folders: dict[str, object] = {key: value for key, value in given.items() if value}
-    return {"folders": folders} if folders else {}

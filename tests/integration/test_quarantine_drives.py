@@ -263,6 +263,8 @@ def test_a_file_whose_folder_is_gone_under_the_new_letter_stays_aside(
     gone_folder = (
         locations.data_dir / "e" / gone.relative_to(locations.data_dir / "d").parent
     )
+    while not gone_folder.exists():  # removed by the clean once empty (0202)
+        gone_folder = gone_folder.parent
     shutil.rmtree(gone_folder)
     result = run(cli, "undo", run_id, "--yes")
     text = " ".join(result.output.split())

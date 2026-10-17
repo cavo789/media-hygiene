@@ -9,8 +9,9 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.cli import options, scan_options
-from media_hygiene.cli.context import folder_layer, runtime_of, user_errors
+from media_hygiene.cli import folder_options, options, scan_options
+from media_hygiene.cli.context import runtime_of, user_errors
+from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import RunKind
@@ -24,9 +25,10 @@ if TYPE_CHECKING:
 def audit_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
-    prefer: Annotated[list[str] | None, options.prefer()] = None,
-    protect: Annotated[list[str] | None, options.protect()] = None,
-    exclude: Annotated[list[str] | None, options.exclude()] = None,
+    prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
+    protect: Annotated[list[str] | None, folder_options.protect()] = None,
+    exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
+    backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
     full: Annotated[
@@ -68,6 +70,7 @@ def audit_command(  # pylint: disable=too-many-arguments
         prefer: `--prefer` folders.
         protect: `--protect` folders.
         exclude: `--exclude` folders.
+        backup: `--backup` folders, compared and never changed.
         ext: `--ext` categories and extensions.
         exclude_name: `--exclude-name` folder names.
         full: `--full`, no folder taken from the index.
@@ -76,6 +79,7 @@ def audit_command(  # pylint: disable=too-many-arguments
     """
     from media_hygiene.cli.audit_actions import second_opinion, show_actions
     from media_hygiene.cli.audit_people import audit_people
+    from media_hygiene.cli.audit_tips import setup_tips
     from media_hygiene.cli.flows import audit_and_show, report_and_announce
     from media_hygiene.console.advice import Advice, TipKind
     from media_hygiene.report.views import ReportRecord
@@ -83,7 +87,7 @@ def audit_command(  # pylint: disable=too-many-arguments
     runtime = runtime_of(ctx)
     with user_errors(runtime.output):
         runtime = runtime.with_overrides(
-            folder_layer(prefer, protect, exclude)
+            FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
         if full:
             runtime = runtime.with_overrides({"scan": {"full_check_days": 0}})
@@ -131,7 +135,7 @@ def audit_command(  # pylint: disable=too-many-arguments
         with user_errors(output):
             audit_people(runtime, yes)
     second_opinion(runtime, plan)
-    _setup_tips(runtime)
+    setup_tips(runtime)
     _next_step(ctx, runtime, findings)
 
 
@@ -162,39 +166,3 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
             _("sort the burst series with the keyboard, in 'review'."),
             NextVerb(carried(runtime, "review", ctx), port=PAGE_PORT),
         )
-
-
-def _setup_tips(runtime: Runtime) -> None:
-    """Suggest the settings worth adding once: the cache, the user's time zone.
-
-    Args:
-        runtime: Settings, mount points and output.
-    """
-    from media_hygiene.config.zone import timezone_unknown
-    from media_hygiene.paths.mount_kind import MountKind
-
-    if not runtime.persistent(MountKind.CACHE):
-        runtime.output.setting(
-            _("-v media-hygiene-cache:/cache (much faster next audits)")
-        )
-    if timezone_unknown():
-        runtime.output.setting(_timezone_tip(runtime))
-
-
-def _timezone_tip(runtime: Runtime) -> str:
-    """Say how to give the tool the user's time zone, in config.toml when mounted.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The setting, as a fragment of the setup line.
-    """
-    from media_hygiene.paths.mount_kind import MountKind
-
-    if runtime.persistent(MountKind.CONFIG):
-        return _(
-            'timezone = "Europe/Brussels" in section [general] of {path} (times '
-            "in your time zone, not UTC)"
-        ).format(path=runtime.mapper.to_host(runtime.locations.config_file))
-    return _("-e TZ=Europe/Brussels (times in your time zone, not UTC)")

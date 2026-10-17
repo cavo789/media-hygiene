@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.index.gone_rows import drop_reappeared, gone_count, record_gone
 from media_hygiene.index.rematch import rematched
 from media_hygiene.index.walks import mark_walked
 from media_hygiene.paths.host_paths import is_within
@@ -41,17 +42,22 @@ class WalkCoverage:
 
 @dataclass(frozen=True, slots=True)
 class Pruned:
-    """What the index did after a walk: files followed to their new path, forgotten."""
+    """What the index did after a walk: files followed to their new path, forgotten.
+
+    `waiting`: the files gone, kept for `review --gone` (0224), not answered yet.
+    """
 
     followed: int = 0
     forgotten: int = 0
+    waiting: int = 0
 
 
 def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> Pruned:
     """Follow the files moved since, forget the other ones the walk proves gone.
 
     A file moved or renamed outside the tool keeps its rows (`index.rematch`); the
-    other gone files are forgotten. The complete walks are dated.
+    other gone files are forgotten, what the index knew of them kept for `review
+    --gone` (`index.gone_rows`). The complete walks are dated.
 
     Args:
         repository: The index.
@@ -72,13 +78,16 @@ def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> Prune
     pairs = rematched(repository.connection, gone, newcomers) if gone else []
     repository.move(pairs)
     followed = {old for old, _new in pairs}
-    forgotten = repository.forget(path for path in gone if path not in followed)
-    _LOGGER.debug("Index: forgot %d files that are gone", forgotten)
     now = datetime.now(UTC)
+    unfollowed = [path for path in gone if path not in followed]
+    record_gone(repository.connection, unfollowed, now)
+    drop_reappeared(repository, coverage.files)
+    forgotten = repository.forget(unfollowed)
+    _LOGGER.debug("Index: forgot %d files that are gone", forgotten)
     for root in coverage.roots:
         if not any(is_within(item, root) for item in coverage.unreadable):
             mark_walked(repository, root, now)
-    return Pruned(len(pairs), forgotten)
+    return Pruned(len(pairs), forgotten, gone_count(repository.connection))
 
 
 def _proven_gone(path: Path, root: Path, coverage: WalkCoverage) -> bool:

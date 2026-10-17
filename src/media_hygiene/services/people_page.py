@@ -26,7 +26,8 @@ from media_hygiene.people.app import (
 )
 from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.roster import NamesFile, Roster
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.review.ending import run_server
+from media_hygiene.services.reviewing import address_tip, page_url
 
 if TYPE_CHECKING:
     from pathlib import Path

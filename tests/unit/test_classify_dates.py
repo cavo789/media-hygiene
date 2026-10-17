@@ -11,7 +11,13 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from media_hygiene.classify.dates import clock_not_set, exif_date, name_date, video_date
+from media_hygiene.classify.dates import (
+    clock_not_set,
+    exif_date,
+    exif_datetime,
+    name_date,
+    video_date,
+)
 from media_hygiene.classify.dating import DatingContext, dating_of, has_camera_trace
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.models import DateSource, MediaInput
@@ -54,6 +60,28 @@ def described(relative: str, metadata: MediaMetadata) -> MediaInput:
 def test_exif_dates_as_written(text: str | None, expected: datetime | None) -> None:
     """Standard, with sub-seconds, day first; zeros and garbage are no date."""
     assert exif_date(text) == expected
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("2004:12:04 11:05:08.5", datetime(2004, 12, 4, 11, 5, 8)),
+        ("04/12/2004 11:05:08", datetime(2004, 12, 4, 11, 5, 8)),
+        ("2004-12-04 11:05:08", datetime(2004, 12, 4, 11, 5, 8)),
+        ("1985:06:01 10:00:00", datetime(1985, 6, 1, 10, 0, 0)),
+        ("0000:00:00 00:00:00", None),
+        ("2019:00:12 10:00:00", None),
+        ("", None),
+    ],
+)
+def test_exif_datetimes_whatever_the_year(text: str, expected: datetime | None) -> None:
+    """The three forms, any year; a month or a day 00 is no date."""
+    assert exif_datetime(text) == expected
+
+
+def test_exif_date_keeps_its_floor() -> None:
+    """A year before 1990 is a clock not set, for `classify`."""
+    assert exif_date("1985:06:01 10:00:00") is None
 
 
 def test_a_utc_video_time_moves_to_the_right_year() -> None:

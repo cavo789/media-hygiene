@@ -12,7 +12,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, latest_states
-from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind, Phase, Status
+from media_hygiene.actions.kinds import (
+    FOLDER_ACTIONS,
+    MARKS,
+    ActionKind,
+    Phase,
+    Status,
+)
 from media_hygiene.actions.outcome import Incident, Outcome, Tally, why
 from media_hygiene.actions.parallel import WORKERS, Runner, run_all, stopping_on
 from media_hygiene.actions.quarantine import LeftFolders
@@ -162,7 +168,7 @@ class UndoExecutor:
         self._journal.record(pending.as_done())
         if reversal is Reversal.UNQUARANTINE and entry.quarantine:
             self._left.note(Path(entry.path), Path(entry.quarantine))
-        if entry.action in FOLDER_ACTIONS:  # a folder is not a file restored
+        if entry.action in FOLDER_ACTIONS | MARKS:  # not a file restored
             return
         with self._lock:
             self._tally.done += 1

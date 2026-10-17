@@ -1,8 +1,8 @@
 # 7. Le fichier de configuration
 
-[Documentation](../README.md) › Nettoyer, étape 7 sur 13 · 🇬🇧 [English](../../en/clean/07-configuration-file.md)
+[Documentation](../README.md) › Nettoyer, étape 7 sur 14 · 🇬🇧 [English](../../en/clean/07-configuration-file.md)
 
-Vos dossiers préférés, votre sauvegarde exclue, votre langue : plutôt que de les taper dans
+Vos dossiers préférés, votre sauvegarde, votre langue : plutôt que de les taper dans
 chaque commande, écrivez-les une fois dans un fichier, `config.toml`. L'outil le lit à chaque
 lancement.
 
@@ -440,7 +440,8 @@ timezone = "Europe/Brussels"  # votre fuseau horaire ; vide : UTC
 [folders]
 preferred = ['C:\Photos\Ancien téléphone', 'C:\Photos\Famille']
 protected = []
-excluded = ['D:\sauvegarde']
+excluded = []
+backups = ['D:\sauvegarde']
 
 [scan]
 excluded_names = []    # noms de dossiers ignorés partout, p. ex. ["Thumbnails", ".Trash-*"]
@@ -466,7 +467,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`preferred`** : leurs copies sont gardées en priorité, dans cet ordre (`--prefer`).
 - **`protected`** : jamais modifiés, et leurs fichiers sont toujours les copies gardées
   (`--protect`).
-- **`excluded`** : jamais analysés, pour une vraie sauvegarde (`--exclude`).
+- **`excluded`** : jamais analysés, même pas lus (`--exclude`).
+- **`backups`** : une sauvegarde ou un ancien disque, lu et comparé, jamais modifié : l'audit dit
+  ce qui lui manque et ce que lui seul contient (`--backup`,
+  [étape 5](05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).
 - **`excluded_names`** : noms de dossiers jamais analysés, où qu'ils soient ; des motifs comme
   `.Trash-*`, sans tenir compte de la casse, ajoutés aux dossiers système toujours ignorés
   (`--exclude-name`, [étape 5](05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques)).
@@ -487,6 +491,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`quarantine_headroom_gb`** (1, dans `[clean]`) : ce qu'un `clean` qui copie des fichiers dans la
   quarantaine d'un autre disque y laisse libre, en Go ; il refuse avant tout déplacement si cette
   place manquerait. `0` ne garde aucune marge ; augmentez-le si votre `C:` doit garder plus de place.
+- **`returned`** (true, dans `[clean]`) : les photos et vidéos mises de côté par un choix qui
+  reviennent (une sauvegarde de téléphone) sont reconnues par l'audit et remises de côté par
+  `clean` ([étape 9](09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté)).
+  `false` ne les cherche jamais.
 
 Pourquoi des apostrophes ? Entre guillemets, TOML lit la barre oblique inverse comme un
 caractère spécial : le `\b` de `"D:\backup"` devient un caractère de contrôle (l'outil refuse

@@ -1,6 +1,6 @@
 # 9. Undo, history, purge
 
-[Documentation](../README.md) › Cleaning, step 9 of 13 · 🇫🇷 [Français](../../fr/clean/09-undo-history-purge.md)
+[Documentation](../README.md) › Cleaning, step 9 of 14 · 🇫🇷 [Français](../../fr/clean/09-undo-history-purge.md)
 
 A clean is not final. The journal remembers every action, so you can put everything back, see
 what each clean did, and, once you are sure, empty the quarantine for good.
@@ -132,10 +132,58 @@ then **one** next step, as a full command. A quarantine older than 30 days (`pur
 the `[clean]` section of `config.toml`) is the first thing it suggests to purge. Mount the same
 folders as for `clean` (or type `mh status`): a folder not mounted is said, never an error.
 
+## What you set aside stays set aside
+
+You set burst shots aside, near duplicates, photos chosen in [`search`](../commands/search.md) or
+[`review --junk`](../commands/review.md); months later, a phone backup brings them back, under
+other names. The journal remembers the content of every file set aside by such a choice (its
+size and SHA-256), even after `purge`: the next audit recognises them, whatever their name now,
+and says it on a line of its own:
+
+```text
+↩️ 23 photos and videos you had set aside are back (45 MB): 'clean' sets them aside again.
+```
+
+The report lists them in a section of their own (*Back after being set aside*), each with its
+preview, when and why it was set aside, and where it lay then. `clean` moves them to the
+quarantine again with the rest of its plan, without another question: its usual question counts
+them on a line of their own (*↩️ 23 photos and videos you had already set aside are back (45 MB):
+back to the quarantine.*), and `history` counts them apart (*Of which back again*).
+
+- To keep one after all: `undo` that clean. The last word is then yours: it is no longer
+  proposed.
+- Only what you set aside **by a choice** is remembered: an identical copy that comes back is a
+  plain duplicate (its content is still kept elsewhere); a broken file is not remembered.
+- A resized or recompressed version of a photo (other bytes) is not recognised. A file deleted
+  in the Explorer is, once you confirm it (below).
+- A file back in a [protected](07-configuration-file.md) folder is never touched.
+- `returned = false` in the `[clean]` section of `config.toml` never looks for them.
+
+### Deleted in the Explorer?
+
+Photos deleted in the Explorer are unknown to the journal. The index can tell they are gone: a
+file an audit no longer finds where it was, nor elsewhere (a folder renamed in the Explorer is
+followed, never counted), below a folder mounted this time. Deleted on purpose, or moved to a
+disk not plugged in? Only you can tell, so the audit asks:
+
+```text
+🗑️ 312 photos and videos have disappeared since the last audit (deleted in the Explorer?): say which ones you deleted on purpose, so that media-hygiene sets them aside if they come back.
+```
+
+`mh review --gone` shows them by folder and by day, each with its preview when the cache still
+holds one (else its name, date, size and camera): `D` deleted on purpose, `M` moved elsewhere,
+`G` the whole group deleted on purpose. Your answers are saved in `decisions.json`; the next
+`clean --decisions` remembers the files deleted on purpose (nothing moves: a line in the
+journal, counted by `history` under *Deleted in the Explorer*) and forgets the others. When one
+of them comes back, it is proposed like a file you had set aside. `undo` of that clean forgets
+them. A file gone whose content is still there (a copy elsewhere) or reappears later (a disk
+plugged in again) is dropped from the list on its own: deleting one of two copies loses nothing.
+
 ## Keep the journal folder
 
-The journal is small, and it is what makes `undo` possible. Never delete it while you might
-still want to restore a clean.
+The journal is small, and it is what makes `undo` possible, and what lets the audit recognise
+the files you set aside if they come back. Never delete it while you might still want to restore
+a clean.
 
 ---
 

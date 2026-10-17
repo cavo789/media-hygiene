@@ -23,6 +23,7 @@ from media_hygiene.paths.docker_run import (
 )
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
 from media_hygiene.services.launcher_folders import checked_folders
@@ -150,6 +151,7 @@ def render_script(script: LauncherScript) -> str:
         update=update_texts(),
         host=host_commands(script),
         checked=checked_folders(script),
+        cloud=cloud_check(script.commands.names),
         zone=WINDOWS_ZONE_VARIABLE,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text

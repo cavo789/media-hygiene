@@ -28,6 +28,7 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.quarantine_space import quarantine_route
+from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.sort_guards import check_companions, check_destinations
 from media_hygiene.services.sort_models import Prepared, SortResult
 from media_hygiene.services.sort_report import (
@@ -75,7 +76,7 @@ class SortService:
         """
         runtime, started = self._runtime, time.monotonic()
         plan_id = inputs.plan.plan_id
-        protected = runtime.settings.folders.protected
+        protected = runtime.settings.folders.untouched
         context = PlanContext(
             runtime.mapper,
             tuple(runtime.mapper.to_container(path) for path in protected),
@@ -113,6 +114,7 @@ class SortService:
             moves, folders = self._act(prepared, run_id, stop)
         with watch.timing(Stage.FOLLOW):
             self._follow(moves.moved)
+            forget_run_listings(runtime, run_id, Phase.SORT)
         with watch.timing(Stage.VERIFY):
             verified, problems = verify_moves(moves.moved, runtime.mapper.to_host)
         with watch.timing(Stage.COUNTS):

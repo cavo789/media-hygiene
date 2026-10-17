@@ -1,6 +1,6 @@
 # 8. Nettoyer
 
-[Documentation](../README.md) › Nettoyer, étape 8 sur 13 · 🇬🇧 [English](../../en/clean/08-clean.md)
+[Documentation](../README.md) › Nettoyer, étape 8 sur 14 · 🇬🇧 [English](../../en/clean/08-clean.md)
 
 Vous avez fait l'audit, lu les paires de dossiers, peut-être choisi quels dossiers restent. Place
 au ménage. `clean` déplace les copies en trop en quarantaine — rien n'est effacé — et garde une
@@ -165,11 +165,20 @@ rapports.
 | Fichier illisible (tronqué, abîmé) | **Déplacé** en quarantaine. |
 | [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | **Pas touchés** : seulement si vous le demandez ([étape 10](10-review-bursts.md), [étape 11](11-near-duplicates.md)). |
+| Photos mises de côté dans [`search`](../commands/search.md#mettre-des-photos-de-côté) | **Déplacées** en quarantaine par `clean --decisions`, qui les applique avec les décisions de `review` ; la question dit combien et leur taille, à part des doublons. Une photo modifiée depuis votre choix est ignorée. |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
+| Un dossier laissé vide | **Supprimé**, puis son parent s'il est vide à son tour ; `Thumbs.db`, `desktop.ini` ou `.DS_Store` seuls ne le gardent pas (déplacés d'abord en quarantaine). `undo` le recrée. Jamais un dossier que vous avez monté, protégé, de sauvegarde ou exclu, ni un dossier déjà vide avant. [Plus](../commands/clean.md#ce-qui-arrive-à-chaque-fichier) |
 
 La quarantaine contient un dossier par nettoyage, au nom de l'exécution (sa date et son heure),
 et garde en dessous les chemins d'origine :
 `quarantine\<exécution>\d\Ancien disque\2020\IMG_1203.jpg`.
+
+**Ce que disait le dossier d'une copie retirée reste cherchable sur la photo gardée.** Quand
+`clean` retire une copie, la photo conservée se souvient du dossier et du nom de cette copie
+(`Mariage Julie 2015`) : [`tags`](../reference-tags.md#doù-viennent-les-mots) en fait des mots
+que [`search`](../commands/search.md) retrouve (`former:julie`), et
+[`classify`](../sort/04-classify.md) lit ce dossier quand celui de la photo ne dit rien
+(`DCIM`). `undo` les retire : la copie a de nouveau son propre nom.
 
 ## Le rapport de nettoyage
 

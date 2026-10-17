@@ -13,6 +13,7 @@ from pathlib import Path, PurePath
 from typing import TYPE_CHECKING
 
 from media_hygiene.scan.sidecars import is_sidecar
+from media_hygiene.scan.takeout import edited_original, is_takeout_json, takeout_owners
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Iterable
@@ -28,8 +29,11 @@ def owners(sidecar: str, names: Iterable[str]) -> list[str]:
         names: Names of files in its folder.
 
     Returns:
-        Those whose name, or name without extension, is the sidecar's stem.
+        Those whose name, or name without extension, is the sidecar's stem; for a
+        Takeout `.json`, the files it describes.
     """
+    if is_takeout_json(sidecar):
+        return sorted(takeout_owners(sidecar, names))
     key = PurePath(sidecar).stem.casefold()
     return [
         name
@@ -78,17 +82,25 @@ def _sidecars_in(folder: Path) -> dict[str, list[Path]]:
         folder: A source folder.
 
     Returns:
-        Casefolded stem of each sidecar (`IMG_1` or `IMG_1.CR2`) → the sidecars.
+        Casefolded stem of each sidecar (`IMG_1` or `IMG_1.CR2`) → the sidecars; a
+        Takeout `.json` under the name of the file it describes (the original first).
     """
     keyed: dict[str, list[Path]] = {}
     try:
         with os.scandir(folder) as entries:
-            for entry in entries:
-                if entry.is_file() and is_sidecar(entry.name):
-                    key = PurePath(entry.name).stem.casefold()
-                    keyed.setdefault(key, []).append(Path(entry.path))
+            files = [entry for entry in entries if entry.is_file()]
     except OSError:
         return {}
+    names = tuple(entry.name for entry in files)
+    for entry in files:
+        key = PurePath(entry.name).stem.casefold() if is_sidecar(entry.name) else None
+        if is_takeout_json(entry.name):
+            described = owners(entry.name, names)
+            if described:
+                key = min(described, key=lambda n: (bool(edited_original(n)), n))
+                key = key.casefold()
+        if key is not None:
+            keyed.setdefault(key, []).append(Path(entry.path))
     return keyed
 
 

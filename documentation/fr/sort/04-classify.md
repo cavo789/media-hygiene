@@ -122,6 +122,15 @@ quelques tris, c'est l'avancement de votre collection.
 
 *Pourquoi* donne la règle (ou la raison) de chaque proposition, puis les catégories les plus trouvées.
 
+**Une photo gardée dans un dossier générique après un nettoyage.** Quand
+[`clean`](../clean/08-clean.md) a retiré une copie, la photo gardée se souvient du dossier de
+cette copie. Une photo dont les dossiers ne disent rien (`DCIM`, `Camera`) lit ce dossier comme
+si elle s'y trouvait : sa copie dans `Mariage Julie 2015` la range dans `Mariage Julie 2015`,
+une copie dans `2017/Durbuy` nomme la ville. Ses propres dossiers passent toujours d'abord. Deux
+copies retirées dans des dossiers qui ne s'accordent pas (`Mariage Julie`, `Noël`) : aucun
+n'est utilisé, et la photo vous attend dans *À trier*. Le *pourquoi* du classeur dit d'où vient
+l'indice : `(le dossier d'une copie retirée : D:\Backup\Mariage Julie 2015)`.
+
 ## D'où viennent les dates
 
 La première source fiable l'emporte : la date écrite par l'appareil (EXIF), les balises d'une

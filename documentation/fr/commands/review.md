@@ -4,16 +4,16 @@
 
 ## En bref
 
-**Ne garder que les meilleures photos de vos rafales, et trancher les quasi-doublons, en les
-regardant en grand dans votre navigateur.**
+**Ne garder que les meilleures photos de vos rafales, et trancher les quasi-doublons et les
+paires de dossiers, en les regardant en grand dans votre navigateur.**
 
 Les [rafales](../reference-glossary.md#rafale) (cinq, dix, vingt photos en quelques secondes) et les [quasi-doublons](../reference-glossary.md#quasi-doublon) (une photo
 réenregistrée, plus petite) ne sont pas des fichiers identiques : c'est à vous de dire lesquels
 garder. `review` vous les montre **un à la fois** et vous choisissez au clavier. Chaque choix
 est enregistré aussitôt dans `decisions.json` ; `clean --decisions` les applique ensuite.
 
-**Quand** : après un audit qui a trouvé des rafales (ou des quasi-doublons, avec `--near`),
-avant `clean --decisions`.
+**Quand** : après un audit qui a trouvé des rafales (ou des quasi-doublons, avec `--near` ; des
+paires de dossiers de fichiers identiques, avec `--pairs`), avant `clean --decisions`.
 
 **Essayer** :
 
@@ -35,14 +35,17 @@ docker run --rm -it `
 | Conseillé | `/cache` (l'audit par lequel il commence prend quelques secondes), `/config`. |
 | Écrit | `decisions.json` dans `/reports`, le cache. |
 | Annuler | Changez vos choix dans la page, ou supprimez `decisions.json`. |
-| Avec `mh` | `mh review`, `mh review --near` : le port est publié pour vous. |
+| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone` : le port est publié pour vous. |
 
-## Deux sortes de tri
+## Cinq sortes de tri
 
 | Commande | Ce que vous décidez | Appliqué par |
 |---|---|---|
 | `review` | **Les rafales**, une à la fois : quelles photos vont en quarantaine. La plus nette vient en premier, celles proposées à l'écart sont marquées ; `→` accepte ce qui est montré. | `clean --decisions` |
 | `review --near` | **Les quasi-doublons et vidéos réencodées**, groupe par groupe : comme prévu (`→`), garder l'autre version (`W`), laisser tel quel (`L`). | `clean --tier near --decisions` |
+| `review --pairs` | **Les paires de dossiers** de fichiers identiques, la plus grande place libérée d'abord : comme prévu (`→`), inverser les dossiers (`W`), ne pas toucher (`L`). | `clean --decisions` |
+| `review --junk` | **Les photos le plus probablement indésirables** (minuscules, captures d'écran, presque noires ou blanches, les plus floues), groupe par groupe : chacune gardée ou mise de côté par vous. | `clean --decisions` |
+| `review --gone` | **Les photos et vidéos disparues depuis un audit** (supprimées dans l'Explorateur ?), par dossier et par jour : supprimées exprès (`D`, retenues, mises de côté si elles reviennent) ou déplacées ailleurs (`M`, oubliées). [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#supprimés-dans-lexplorateur-) | `clean --decisions` |
 
 ## Lancer
 
@@ -63,25 +66,37 @@ Ctrl+C l'arrête.
 
 ## Les touches principales
 
-| Touche | Rafales (`review`) | Quasi-doublons (`review --near`) |
-|---|---|---|
-| `→` | Rafale suivante, telle que montrée | Comme prévu, puis le groupe suivant |
-| `←` | Rafale précédente | Groupe précédent |
-| `N` | Rafale suivante encore à voir | Groupe suivant encore indécis |
-| `1` … `9` | Écarter cette photo, ou la reprendre | — |
-| `S` / `A` / `X` | Garder seulement la plus nette / tout garder / écarter toute la rafale | — |
-| `W` / `L` / `U` | — | Garder l'autre version / laisser tel quel / revenir à indécis |
-| `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu |
-| `Z` | Annuler le dernier choix | — |
+| Touche | Rafales (`review`) | Quasi-doublons (`review --near`) | Paires de dossiers (`review --pairs`) |
+|---|---|---|---|
+| `→` | Rafale suivante, telle que montrée | Comme prévu, puis le groupe suivant | Comme prévu, puis la paire suivante |
+| `←` | Rafale précédente | Groupe précédent | Paire précédente |
+| `N` | Rafale suivante encore à voir | Groupe suivant encore indécis | Paire suivante encore indécise |
+| `1` … `9` | Écarter cette photo, ou la reprendre | — | — |
+| `S` / `A` / `X` | Garder seulement la plus nette / tout garder / écarter toute la rafale | — | — |
+| `W` / `L` / `U` | — | Garder l'autre version / laisser tel quel / revenir à indécis | Inverser les dossiers / ne pas toucher / revenir à indécise |
+| `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu | — |
+| `Z` | Annuler le dernier choix | — | — |
+
+`review --junk` : `→` le groupe tel que marqué, puis le suivant ; `Espace` garde ou met de côté
+la photo sous le curseur (`↑` / `↓`) ; `←`, `N`, `U` comme pour les autres tris.
+
+`review --gone` : `D` supprimé exprès, `M` déplacé ailleurs (le fichier sous le curseur, puis le
+suivant), `G` tout le groupe supprimé exprès, `U` le groupe redevient sans réponse ; `→`, `←`,
+`N` comme pour les autres tris.
 
 Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#étape-5--aller-plus-vite) et
-[étape 11 du nettoyage](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near).
+[étape 11 du nettoyage](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near),
+[étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md),
+[étape 14 du nettoyage](../clean/14-unwanted-photos.md#étape-2--choisir).
 
 ## Options
 
 | Option | Rôle |
 |---|---|
 | `--near` | Trier les quasi-doublons et vidéos réencodées au lieu des rafales. |
+| `--pairs` | Trier les paires de dossiers de fichiers identiques au lieu des rafales. |
+| `--junk` | Trier les photos le plus probablement indésirables au lieu des rafales ; seuils dans `[review.unwanted]`. |
+| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone` par lancement. |
 | `--decisions FICHIER` | Le fichier où les choix sont enregistrés, et repris ; `decisions.json` de `/reports` par défaut. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même : `-p 127.0.0.1:9000:9000` pour `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | Comme pour [`audit`](audit.md#options) : donnez à `review` les mêmes qu'à `clean`. |
@@ -94,7 +109,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 - **Arrêtez quand vous voulez** : le `review` suivant ouvre la première rafale encore à voir. Les
   rafales que vous n'avez pas vues ne déplacent rien.
 - **Un seul fichier pour tout** : `decisions.json` contient les photos de rafale (`bursts`), les
-  quasi-doublons (`near`) et les paires de dossiers d'un rapport (`pairs`) ; chaque tri garde les
+  quasi-doublons (`near`), les paires de dossiers (`pairs`, de `review --pairs` ou du
+  téléchargement du rapport) et les photos indésirables (`unwanted`) ; chaque tri garde les
   autres.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
@@ -104,6 +120,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 
 - [10. Trier les rafales dans votre navigateur](../clean/10-review-bursts.md)
 - [11. Quasi-doublons](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near)
+- [12. Décider paire par paire](../clean/12-decide-pair-by-pair.md)
+- [14. Les photos indésirables](../clean/14-unwanted-photos.md)
 - [Dépannage : la page de tri ne s'ouvre pas](../reference-troubleshooting.md#la-page-de-tri-ne-souvre-pas)
 - Ensuite : [`clean --decisions`](clean.md).
 

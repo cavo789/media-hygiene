@@ -7,6 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.scan.read_errors import is_read_error_message
 from media_hygiene.scan.tool_run import run_tool
 from media_hygiene.scan.video_meta import PROBE_ENTRIES, video_metadata
 
@@ -22,16 +23,22 @@ _PROBE_ARGS: Final = ("-v", "error", "-show_entries", PROBE_ENTRIES, "-of", "jso
 
 @dataclass(frozen=True, slots=True)
 class VideoProbe:
-    """Outcome of probing a video: the probe error, or what the video holds."""
+    """Outcome of probing a video: the probe error, or what the video holds.
+
+    `unread`: the problem is a failed read (`read_errors`), not a damaged file.
+    """
 
     problem: str | None = None
     metadata: MediaMetadata | None = None
+    unread: bool = False
 
 
 async def probe_video(path: Path, ffprobe: str) -> VideoProbe:
     """Probe a video: a container ffprobe cannot open, or without any stream, is broken.
 
-    A probe that times out is inconclusive: the file is then considered healthy.
+    A probe that times out is inconclusive: the file is then considered healthy. A
+    probe whose last line is the system message of a failed read (`Input/output
+    error`…) tells nothing of the file: it is `unread`, not broken.
 
     Args:
         path: Video file.
@@ -46,7 +53,9 @@ async def probe_video(path: Path, ffprobe: str) -> VideoProbe:
         return VideoProbe()
     if run.returncode != 0:
         lines = run.stderr.decode(errors="replace").strip().splitlines()
-        return VideoProbe(lines[-1] if lines else f"ffprobe exit code {run.returncode}")
+        if not lines:
+            return VideoProbe(f"ffprobe exit code {run.returncode}")
+        return VideoProbe(lines[-1], unread=is_read_error_message(lines[-1]))
     try:
         probe = json.loads(run.stdout or b"{}")
     except ValueError:

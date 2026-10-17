@@ -43,6 +43,12 @@
 #      waits for you to start it again                                         (0174)
 #  17. mh.ps1 kept in memory, written in variants (without / with only: keep-awake, browser,
 #      shortcut, right-click): which one the antivirus refuses   (Avast IDP.Generic, 2026-10-16)
+#  18. OneDrive cloud-only files played by a folder whose files are marked offline, OneDrive
+#      pointed at it for this window only: mh audit says the line and asks (N, then y, then
+#      not again); mh folders add says the line; PowerShell 5.1's own run of the check  (0199)
+#  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
+#      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
+#      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -62,6 +68,8 @@
 #   .\mh-measure.ps1 -Only 13 -Count 20 -OtherDrive E:
 #   .\mh-measure.ps1 -Only 14,15,16 -Count 20 -OtherDrive E:
 #   .\mh-measure.ps1 -Only 17 -Count 5
+#   .\mh-measure.ps1 -Only 18 -Count 5
+#   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -776,6 +784,184 @@ if (Wanted 17) {
     $seen = Read-Host "17. Did the antivirus show alerts? Which file names did they give? (type them, or none)"
     Log "   17. antivirus alerts: $seen"
     if (-not $Keep) { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $folder }
+}
+
+# --- 18: photos in OneDrive's cloud only, played without OneDrive (0199) ------------------
+# A folder under a fake OneDrive root, 3 of its files marked Offline (0x00001000, one of the
+# two attributes mh checks; a cloud provider alone sets the other). $env:OneDrive is changed
+# for this window only and put back; nothing of your own OneDrive is read or changed.
+if (Wanted 18) {
+    $ErrorActionPreference = "Continue"
+    $root = Join-Path $Work "OneDrive"
+    $cloud = Join-Path $root "Pictures"
+    $later = Join-Path $root "Later"
+    New-Item -ItemType Directory -Force -Path $cloud, $later, (Join-Path $tool "config") | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 5 | Copy-Item -Destination $cloud
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | Copy-Item -Destination $later
+    foreach ($file in @(Get-ChildItem -LiteralPath $cloud -File | Select-Object -First 3) + @(Get-ChildItem -LiteralPath $later -File)) {
+        $file.Attributes = $file.Attributes -bor [IO.FileAttributes]::Offline
+    }
+    $mhDir = Join-Path $tool "mh18"
+    New-Item -ItemType Directory -Force -Path $mhDir | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    $toolMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $cloud > $mhFile
+    . $mhFile
+    $ownOneDrive = $env:OneDrive
+    $env:OneDrive = $root
+    $global:MediaHygieneCloud = $null
+    Log ""
+    Log "== 18. photos in OneDrive's cloud only, played by offline files (0199)"
+    Write-Host "18a. mh audit follows: it should say 3 files of $cloud are in the cloud only. Type N."
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit
+    Log ("   18a. mh audit answered N: exit code {0}, {1:N1} s (an audit would take longer)" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $line = Read-Host "18a. Did mh say '3 files (... GB) of $cloud are in OneDrive's cloud only' with the free space of $($cloud.Substring(0, 2))? Type what was wrong, or ok"
+    Log "   18a. the line: $line"
+    Write-Host "18b. mh audit again: no new count, the same question. Type y."
+    mh audit | Out-Null
+    Log "   18b. mh audit answered y: exit code $LASTEXITCODE"
+    Write-Host "18c. mh audit a third time: no question expected."
+    mh audit | Out-Null
+    $asked = Read-Host "18c. Was the question asked again? (y/n)"
+    Log "   18c. asked again after y in the same window (n expected): $asked"
+    $said = @(mh folders add $later 6>&1 | ForEach-Object { "$_" })
+    foreach ($said1 in $said) { Log ("   18d. mh folders add: " + $said1) }
+    $env:OneDrive = $ownOneDrive
+    $global:MediaHygieneCloud = $null
+    $said = @(mh folders 6>&1 | ForEach-Object { "$_" })
+    Log ("   18e. OneDrive put back to your own ({0}); mh folders: {1}" -f $(if ($ownOneDrive) { 'set' } else { 'none' }), ($said -join ' / '))
+}
+
+# --- 19: a phone plugged in over USB (MTP), read from PowerShell (0218) ---------------------
+# Shell.Application only (a COM object of Windows: no Add-Type, no compilation). Nothing is
+# written to the phone: CopyHere copies, MoveHere is never called. Its copies go to a temporary
+# folder under -Work, removed at the end. The phone must be unlocked, in "File transfer" mode.
+function PhoneFiles($folder, [int]$depth) {
+    foreach ($entry in $folder.Items()) {
+        if ($entry.IsFolder) {
+            if ($depth -lt 8) { PhoneFiles $entry.GetFolder ($depth + 1) }
+        } else {
+            $entry
+        }
+    }
+}
+function PhoneFindDcim($folder, [int]$depth) {
+    foreach ($entry in $folder.Items()) {
+        if ($entry.IsFolder) {
+            if ($entry.Name -ieq "DCIM") { return $entry }
+            if ($depth -lt 3) {
+                $found = PhoneFindDcim $entry.GetFolder ($depth + 1)
+                if ($found) { return $found }
+            }
+        }
+    }
+    return $null
+}
+function PhoneWait($item, [string]$folder) {
+    $target = Join-Path $folder $item.Name
+    $size = [int64]$item.Size
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    while ($watch.Elapsed.TotalSeconds -lt 60) {
+        if (Test-Path -LiteralPath $target) {
+            $length = (Get-Item -LiteralPath $target).Length
+            if ($length -eq $size -or $size -le 0) { return $watch.Elapsed.TotalSeconds }
+        }
+        Start-Sleep -Milliseconds 200
+    }
+    return -1
+}
+if (Wanted 19) {
+    $ErrorActionPreference = "Continue"
+    $phoneTmp = Join-Path $Work "phone"
+    $shell = New-Object -ComObject Shell.Application
+    Log ""
+    Log "== 19. a phone over USB, read through Shell.Application (0218)"
+    Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone"
+    Read-Host "19a. Plug the phone in, unlock it (Android: choose File transfer; iPhone: Trust this computer), then press Enter" | Out-Null
+    $devices = @()
+    foreach ($entry in $shell.Namespace(17).Items()) {
+        if (-not $entry.IsFileSystem) { $devices += $entry }
+    }
+    $number = 0
+    foreach ($device in $devices) {
+        $number++
+        Log ("   19a. {0}: name '{1}', Type '{2}', IsFileSystem {3}, IsFolder {4}" -f $number, $device.Name, $device.Type, $device.IsFileSystem, $device.IsFolder)
+    }
+    if ($devices.Count -eq 0) {
+        Log "   19a. no item of This PC without a file system: the phone is not seen (cable, unlock, File transfer?)"
+    } else {
+        $answer = Read-Host "19a. Number of the phone (1 to $($devices.Count))"
+        $phone = $devices[[int]$answer - 1]
+        Log "   19a. phone picked: '$($phone.Name)' (Type '$($phone.Type)')"
+        $dcim = PhoneFindDcim $phone.GetFolder 0
+        if (-not $dcim) {
+            Log "   19b. no DCIM folder within three levels of the phone"
+        } else {
+            Log "   19b. DCIM found: $($dcim.Path)"
+            $top = @()
+            foreach ($entry in $phone.GetFolder.Items()) { $top += $entry.Name }
+            Log "   19b. top folders of the phone: $($top -join ' / ')"
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $all = @(PhoneFiles $dcim.GetFolder 0)
+            Log ("   19c. DCIM listed: {0} files in {1:N1} s" -f $all.Count, $watch.Elapsed.TotalSeconds)
+            $kinds = $all | ForEach-Object { [IO.Path]::GetExtension($_.Name).ToLower() } | Group-Object | Sort-Object Count -Descending
+            Log ("   19c. extensions: " + (($kinds | ForEach-Object { "$($_.Name) x$($_.Count)" }) -join ', '))
+            foreach ($item in ($all | Select-Object -First 10)) {
+                Log ("   19c. '{0}' Size {1} ModifyDate {2} | System.Size {3} System.DateModified {4} System.DateCreated {5}" -f $item.Name, $item.Size, $item.ModifyDate, $item.ExtendedProperty('System.Size'), $item.ExtendedProperty('System.DateModified'), $item.ExtendedProperty('System.DateCreated'))
+            }
+            $seen = @{}
+            $recent = @()
+            foreach ($item in ($all | Sort-Object { $_.ModifyDate } -Descending)) {
+                if ($recent.Count -ge 20) { break }
+                if (-not $seen.ContainsKey($item.Name)) { $seen[$item.Name] = 1; $recent += $item }
+            }
+            New-Item -ItemType Directory -Force -Path $phoneTmp | Out-Null
+            $target = $shell.Namespace($phoneTmp)
+            foreach ($round in 1, 2) {
+                $before = @{}
+                foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) { $before[$copy.Name] = "$($copy.Length)/$($copy.LastWriteTime.Ticks)" }
+                $bytes = 0
+                $late = 0
+                $round1 = [Diagnostics.Stopwatch]::StartNew()
+                foreach ($item in $recent) {
+                    $target.CopyHere($item, 4 + 16 + 1024)
+                    $took = PhoneWait $item $phoneTmp
+                    if ($took -lt 0) {
+                        $late++
+                        Log "   19d$round. never arrived within 60 s: '$($item.Name)' (phone said $($item.Size) bytes)"
+                    } else {
+                        $bytes += [int64]$item.Size
+                        Log ("   19d$round. '{0}': {1:N1} s" -f $item.Name, $took)
+                    }
+                }
+                $seconds = [Math]::Max($round1.Elapsed.TotalSeconds, 0.001)
+                Log ("   19d{0}. {1} files asked, {2} missing, {3:N1} MB in {4:N1} s = {5:N2} MB/s" -f $round, $recent.Count, $late, ($bytes / 1MB), $seconds, ($bytes / 1MB / $seconds))
+                if ($round -eq 1) {
+                    foreach ($item in ($recent | Select-Object -First 5)) {
+                        $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
+                        if ($copy) { Log ("   19e. '{0}': phone ModifyDate {1}, copy modified {2}, copy created {3}" -f $item.Name, $item.ModifyDate, $copy.LastWriteTime, $copy.CreationTime) }
+                    }
+                } else {
+                    $changed = 0
+                    foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) {
+                        if ($before[$copy.Name] -ne "$($copy.Length)/$($copy.LastWriteTime.Ticks)") { $changed++ }
+                    }
+                    Log "   19f. second copy of the same files: $changed of $($before.Count) existing copies changed (size or modified date)"
+                    $asked = Read-Host "19f. Did Windows show any dialog or question during the second copy? (n or what it said)"
+                    Log "   19f. dialog during the second copy (none expected with flag 16): $asked"
+                }
+            }
+        }
+    }
+    if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
+    Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
 }
 
 # --- clean up -------------------------------------------------------------------------------

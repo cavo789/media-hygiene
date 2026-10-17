@@ -89,7 +89,7 @@ def _check(runtime: Runtime, folder: Path) -> None:
             ).format(path=host),
             _("Mount the folder of your photos that holds it, without ':ro'."),
         )
-    protected = runtime.settings.folders.protected
+    protected = runtime.settings.folders.untouched
     if any(is_within(folder, runtime.mapper.to_container(p)) for p in protected):
         raise MountError(
             _(

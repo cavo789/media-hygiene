@@ -40,14 +40,13 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
             place already (nothing is left half done).
     """
     path = Path(entry.path)
+    if _without_a_file(entry, reversal):
+        return
     if reversal is Reversal.REMOVE_CREATED_FOLDER:
         path.rmdir()  # an empty folder only: rmdir refuses any other
         return
     if reversal in _REMOVALS:
         path.unlink()
-        return
-    if reversal in XMP_REVERSALS:
-        undo_xmp(entry)
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     if reversal is Reversal.RECREATE_FOLDER:
@@ -62,6 +61,21 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
     if path.stat().st_mtime_ns != entry.mtime_ns:  # a file moved back kept its time
         # Only the owner may set a time: not the image's user on a file it did not make.
         os.utime(path, ns=(entry.mtime_ns, entry.mtime_ns))
+
+
+def _without_a_file(entry: JournalEntry, reversal: Reversal) -> bool:
+    """Undo what brings no file back: a sidecar `xmp` wrote, a mark (0224).
+
+    Args:
+        entry: The action.
+        reversal: How it is undone.
+
+    Returns:
+        True when it is undone (a mark: the undo line in the journal is the change).
+    """
+    if reversal in XMP_REVERSALS:
+        undo_xmp(entry)
+    return reversal in XMP_REVERSALS or reversal is Reversal.FORGET_MARK
 
 
 def _bring_back(entry: JournalEntry, reversal: Reversal) -> None:

@@ -33,8 +33,10 @@ def test_the_sure_groups_agree_with_their_own_number() -> None:
     assert sure_count(1) == "1 sûr"
     assert sure_count(3) == "3 sûrs"
     similar = SimpleNamespace(groups=(object(),) * 4, sure_groups=1, bursts=())
-    plan = SimpleNamespace(decisions=())
-    findings = cast("AuditFindings", SimpleNamespace(plan=plan, similar=similar))
+    plan = SimpleNamespace(decisions=(), returned=())
+    findings = cast(
+        "AuditFindings", SimpleNamespace(plan=plan, similar=similar, gone=0)
+    )
     actions = audit_actions(findings, ActionCommands())
     assert actions[0].text.startswith(
         "4 groupes de quasi-doublons : 1 sûr, 3 à regarder"

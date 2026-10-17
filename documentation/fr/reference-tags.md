@@ -34,6 +34,7 @@ d'autres applications lisent.
 |---|---|---|
 | Dossiers | Les mots des noms de dossiers que vous avez choisis : `2022/Durbuy - ours` donne `Durbuy`, `ours`. Les dossiers nommés par un appareil ou une application (`DCIM`, `100CANON`, `Camera`), les dates (`2019`, `Juillet 2019`) et les petits mots de liaison (`les`, `the`) sont écartés, comme pour [la copie gardée](clean/05-choose-the-kept-copy.md). | Secondes |
 | Nom du fichier | Les mots d'un nom que vous avez choisi : `Anniversaire Léa.mp4` donne `Anniversaire`, `Léa` ; `2019-07-12 Plage (petite).jpg` donne `Plage`, `petite`. Un nom donné par un appareil ou une application (`IMG_1234.jpg`, `DSC00042.JPG`, `VID-20190712-WA0001.mp4`, `PXL_20230101_120000.jpg`, un simple nombre) ne donne rien, pas plus que sa part dans un nom plus long (`IMG_1234 Léa.jpg` donne `Léa`) : ce sont les noms que reconnaît [la copie gardée](clean/05-choose-the-kept-copy.md), `[keep] generated_names`. Les nombres, les dates, les mois et les petits mots de liaison sont écartés, comme pour les dossiers. Les vidéos aussi. | Secondes |
+| Copies retirées | Les mots des dossiers et des noms des copies que [`clean`](clean/08-clean.md) a retirées, gardés sur la photo conservée : une photo gardée dans `DCIM` dont la copie était dans `Mariage Julie 2015` reçoit `Mariage`, `Julie`. Les mots que donnent déjà les dossiers et le nom de la photo ne sont pas répétés. Un [`undo`](clean/09-undo-history-purge.md) de ce nettoyage les retire : la copie a de nouveau son propre nom. | Secondes |
 | Date | L'année, le mois, la saison (inversée sous l'équateur), les fêtes (Noël, Nouvel an, Saint-Nicolas, Saint-Valentin, Halloween, Pâques) et les noms de vos propres règles `calendar` et `date_range` ([trier, étape 6](sort/06-write-down-what-you-know.md#les-dates)). Une photo sans date prend l'année de son dossier (`Avril 2007`). | Secondes |
 | Lieu | Le nom de votre lieu quand la position GPS s'y trouve ([trier, étape 9](sort/09-places-from-gps.md)), puis la ville la plus proche et son pays, hors ligne (GeoNames), quand elle est à moins de `town_km` (20 km). | Secondes |
 | Modèle de vision | Une courte phrase et 5 à 10 mots sur ce que montre la photo (facultatif, ci-dessous). | Environ 2 s par photo |
@@ -144,7 +145,7 @@ la grille sont gardés dans `/cache`.
 | `bougies` | `bougie` aussi : les tags sont gardés au singulier. |
 | `anniv*` | Chaque mot qui commence ainsi : `anniversaire`, `anniv`. |
 | `"bord de mer"` | L'expression, ses mots dans cet ordre. |
-| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `name` (nom du fichier), `date`, `person` (les noms de [`people`](reference-people.md)). |
+| `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption` (la phrase du modèle), `folder` (dossier), `name` (nom du fichier), `former` (les dossiers et noms des copies retirées par `clean`), `date`, `person` (les noms de [`people`](reference-people.md)). |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
@@ -173,7 +174,7 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
 
 - **Ce qui est écrit** : les mots des sources de `xmp_sources` (`vision` et `place` par défaut :
   les mots des dossiers, des noms et des dates sont déjà dans le chemin ; ajoutez `name` ou
-  `folder` pour les écrire aussi) dans `dc:subject`, la phrase du
+  `folder` pour les écrire aussi, `former` pour ceux des copies retirées par `clean`) dans `dc:subject`, la phrase du
   modèle dans `dc:description`.
 - **Le lieu à part** : avec `place` dans `xmp_sources`, la ville va aussi dans `photoshop:City`,
   son pays dans `photoshop:Country` et votre premier lieu personnel (`[[classify.places]]`) dans

@@ -6,23 +6,28 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.dating_models import DateSource, Dating
+
+__all__ = [
+    "Band",
+    "DateSource",
+    "Dating",
+    "Event",
+    "MediaInput",
+    "Proposal",
+    "SortReason",
+    "Verdict",
+]
+
 if TYPE_CHECKING:
     from datetime import datetime
     from pathlib import Path
 
+    from media_hygiene.classify.former import FormerCopy, FormerHint
     from media_hygiene.classify.layout import Values
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
-
-
-class DateSource(StrEnum):
-    """Where the date of a file comes from, the most reliable first."""
-
-    EXIF = "exif"
-    VIDEO = "video"
-    NAME = "name"
-    FOLDER = "folder"
-    MTIME = "mtime"
+    from media_hygiene.scan.takeout_facts import TakeoutFacts
 
 
 class SortReason(StrEnum):
@@ -63,7 +68,7 @@ class Band(StrEnum):
 
 
 @dataclass(frozen=True, slots=True)
-class MediaInput:
+class MediaInput:  # pylint: disable=too-many-instance-attributes
     """One media file and what the index knows of it."""
 
     path: Path
@@ -73,6 +78,8 @@ class MediaInput:
     visual: VisualFacts | None = None
     metadata: MediaMetadata | None = None
     digest: str | None = None
+    takeout: TakeoutFacts | None = None
+    former: tuple[FormerCopy, ...] = ()  # the copies `clean` removed (0207)
 
     @property
     def taken_at(self) -> str | None:
@@ -91,15 +98,6 @@ class MediaInput:
             Them, or None.
         """
         return self.visual.camera if self.visual else None
-
-
-@dataclass(frozen=True, slots=True)
-class Dating:
-    """The date of a file, where it comes from, and how much it is trusted (0-100)."""
-
-    when: datetime
-    source: DateSource
-    confidence: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,6 +132,7 @@ class Verdict:
     reason: SortReason
     score: int
     rule: str = ""  # the name of the `[[classify.rules]]` entry that decided
+    hint: FormerHint | None = None  # the folders of removed copies it read (0208)
 
 
 @dataclass(frozen=True, slots=True)

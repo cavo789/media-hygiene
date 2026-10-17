@@ -1,6 +1,6 @@
 # 8. Clean
 
-[Documentation](../README.md) › Cleaning, step 8 of 13 · 🇫🇷 [Français](../../fr/clean/08-clean.md)
+[Documentation](../README.md) › Cleaning, step 8 of 14 · 🇫🇷 [Français](../../fr/clean/08-clean.md)
 
 You have audited, read the folder pairs, maybe chosen which folders stay. Time to free the
 space. `clean` moves the extra copies to the quarantine — nothing is erased — and keeps a written
@@ -160,10 +160,19 @@ docker run --rm -it `
 | Unreadable file (truncated, damaged) | **Moved** to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | **Untouched**: only if you ask ([step 10](10-review-bursts.md), [step 11](11-near-duplicates.md)). |
+| Photos set aside in [`search`](../commands/search.md#set-photos-aside) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
 | Files of a protected folder | Untouched, always. |
+| A folder left empty | **Removed**, then its parent if empty in turn; `Thumbs.db`, `desktop.ini` or `.DS_Store` alone does not keep it (moved to the quarantine first). `undo` recreates it. Never a folder you mounted, a protected, backup or excluded one, nor one already empty before. [More](../commands/clean.md#what-happens-to-each-file) |
 
 The quarantine holds one folder per clean, named after the run (its date and time), and keeps
 the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
+
+**What a removed copy's folder said stays searchable on the kept photo.** When `clean` removes
+a copy, the photo kept remembers the folder and the name that copy had (`Mariage Julie 2015`):
+[`tags`](../reference-tags.md#where-the-words-come-from) turns them into words that
+[`search`](../commands/search.md) finds (`former:julie`), and
+[`classify`](../sort/04-classify.md) reads that folder when the photo's own folder says nothing
+(`DCIM`). `undo` takes them back off: the copy has its own name again.
 
 ## The clean report
 

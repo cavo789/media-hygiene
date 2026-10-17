@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from typing import Self
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from media_hygiene.actions.parallel import WORKERS
 from media_hygiene.config.album_settings import AlbumSettings
 from media_hygiene.config.cache_settings import CacheSettings
 from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.config.folder_roles import check_backup_roles
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.people_settings import PeopleSettings
@@ -17,14 +20,9 @@ from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.config.tags_settings import TagSettings
 from media_hygiene.config.zone import check_timezone
-from media_hygiene.constants import (
-    GENERATED_NAMES,
-    GENERIC_FOLDERS,
-    ColorMode,
-    Locale,
-    Verbosity,
-)
+from media_hygiene.constants import ColorMode, Locale, Verbosity
 from media_hygiene.i18n import _
+from media_hygiene.name_patterns import GENERATED_NAMES, GENERIC_FOLDERS
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
@@ -61,7 +59,9 @@ class FolderSettings(BaseModel):
     """`[folders]` — host paths that steer which copy is kept, never folder names.
 
     `protected` folders are never modified and always hold the copy kept (identical
-    files elsewhere are deleted); `excluded` folders are not analysed at all.
+    files elsewhere are deleted); `excluded` folders are not analysed at all;
+    `backups` are read and compared, never changed and never the reason a copy goes
+    (0204).
     """
 
     model_config = _FROZEN
@@ -69,8 +69,33 @@ class FolderSettings(BaseModel):
     preferred: tuple[str, ...] = ()
     protected: tuple[str, ...] = ()
     excluded: tuple[str, ...] = ()
+    backups: tuple[str, ...] = ()
 
-    @field_validator("preferred", "protected", "excluded")
+    @property
+    def untouched(self) -> tuple[str, ...]:
+        """The folders never modified: the protected ones and the backups.
+
+        Returns:
+            Their host paths.
+        """
+        return (*self.protected, *self.backups)
+
+    @model_validator(mode="after")
+    def _one_role(self) -> Self:
+        """Refuse a backup folder that is also preferred, protected or excluded.
+
+        Returns:
+            The settings, unchanged.
+        """
+        others = {
+            "preferred": self.preferred,
+            "protected": self.protected,
+            "excluded": self.excluded,
+        }
+        check_backup_roles(self.backups, others)
+        return self
+
+    @field_validator("preferred", "protected", "excluded", "backups")
     @classmethod
     def _no_control_character(cls, paths: tuple[str, ...]) -> tuple[str, ...]:
         r"""Reject paths holding control characters.
@@ -130,11 +155,14 @@ class CleanSettings(BaseModel):
     read a Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk,
     whose head seeks between the readers, may prefer 1. `quarantine_headroom_gb` is
     what a `clean` copying to another drive leaves free there (0182, 0191).
+    `returned`: the audit recognises the files set aside by a choice that came
+    back, and `clean` sets them aside again (0216).
     """
 
     model_config = _FROZEN
 
     confirm: bool = True
+    returned: bool = True
     purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
     workers: int = Field(default=WORKERS, ge=1)
     quarantine_headroom_gb: float = Field(default=_QUARANTINE_HEADROOM_GB, ge=0)

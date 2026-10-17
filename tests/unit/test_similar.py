@@ -122,6 +122,25 @@ def test_exif_moments() -> None:
     assert moment_of("unknown") is None
 
 
+def test_shots_dated_day_first_form_a_series() -> None:
+    """`04/07/2021 10:15:00.25`, as some cameras write it: one series, sub-seconds."""
+    shots = [
+        shot("a.jpg", "04/07/2021 10:15:00.25"),
+        shot("b.jpg", "04/07/2021 10:15:01.25", sharpness=300.0),
+        shot("c.jpg", "04/07/2021 10:15:02.25"),
+    ]
+    (series,) = burst_series(
+        [file for file, _visual in shots], {file.path: visual for file, visual in shots}
+    )
+    assert names(series.shots) == ["a.jpg", "b.jpg", "c.jpg"]
+    assert series.best.path.name == "b.jpg"
+    day_first = moment_of("04/07/2021 10:15:00.25")
+    assert day_first == moment_of("2021:07:04 10:15:00.25")
+    assert day_first is not None
+    assert day_first % 1 == 0.25
+    assert moment_of("31/02/2021 10:15:00") is None
+
+
 def test_a_chain_of_alike_pictures_is_settled_in_one_audit() -> None:
     """K looks like B, B like X, X like Y: cleaning once leaves no near duplicate."""
     visuals = {

@@ -16,9 +16,11 @@
   "aside": "📦 " ~ _("set aside"),
   "protected": "🔒 " ~ _("protected folder, kept"),
   "sharpest": "⭐ " ~ _("sharpest"),
+  "sharpestFaces": "⭐ " ~ _("faces sharpest"),
   "suggested": _("suggestion"),
   "undecided": "⏳ " ~ _("kept if you move on"),
   "proposed": "📦 " ~ _("proposed aside: sharpness {share} %% of the best"),
+  "proposedFaces": "📦 " ~ _("proposed aside: faces less sharp, {share} %% of the best"),
   "identical": "📦 " ~ _("proposed aside: nearly identical to the sharper shot {number}"),
   "overexposed": "📦 " ~ _("proposed aside: overexposed next to the others"),
   "underexposed": "📦 " ~ _("proposed aside: underexposed next to the others"),
@@ -275,13 +277,15 @@
 
 {% include "review_board.js.j2" %}
 
+  const sharpestOf = (shot) => (shot.faces ? T.sharpestFaces : T.sharpest);
+
   const shotState = (item, shot, rank) => {
     if (shot.protected) return { css: "protected", text: T.protected };
     if (item.discarded.includes(rank)) return { css: "aside", text: T.aside };
     if (item.reviewed) return { css: "kept", text: T.kept };
     // No choice yet: the sharpest is only a suggestion, far less sharp shots a proposal.
     if (shot.proposed) return { css: "proposed", text: proposedText(item, shot) };
-    return shot.best ? { css: "suggested", text: T.sharpest + " · " + T.suggested } : { css: "undecided", text: T.undecided };
+    return shot.best ? { css: "suggested", text: sharpestOf(shot) + " · " + T.suggested } : { css: "undecided", text: T.undecided };
   };
 
   const originalLink = (shot) => {
@@ -302,7 +306,7 @@
     const image = document.createElement("img");
     image.src = shot.preview;
     image.alt = shot.name;
-    const text = shot.best && state.css !== "suggested" ? state.text + " · " + T.sharpest : state.text;
+    const text = shot.best && state.css !== "suggested" ? state.text + " · " + sharpestOf(shot) : state.text;
     const name = line("strong", shot.name);
     const caption = document.createElement("figcaption");
     caption.append(
@@ -395,5 +399,6 @@
     .catch(() => setStatus(T.offline, "error"));
 })();
 </script>
+{% include "home_link.html.j2" %}
 </body>
 </html>

@@ -8,6 +8,7 @@
   const proposedText = (item, shot) => {
     if (shot.reason === "identical") return fill(T.identical, { number: shown(item).indexOf(shot.like) + 1 });
     if (shot.reason === "overexposed" || shot.reason === "underexposed") return T[shot.reason];
+    if (shot.reason === "faces") return fill(T.proposedFaces, { share: Math.round(shot.share * 100) });
     return fill(T.proposed, { share: Math.round(shot.share * 100) });
   };
 

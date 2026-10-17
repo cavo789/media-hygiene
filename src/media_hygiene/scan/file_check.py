@@ -17,6 +17,7 @@ from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.scan.image_check import inspect_image, read_image_metadata
 from media_hygiene.scan.metadata import METADATA_VERSION
 from media_hygiene.scan.raw_check import inspect_raw
+from media_hygiene.scan.read_errors import ReadFailedError, is_stored_read_error
 from media_hygiene.scan.video_check import probe_video
 
 if TYPE_CHECKING:
@@ -62,8 +63,9 @@ def need_of(file: MediaFile, facts: FileFacts) -> Need:
     """Tell what a check would still compute for this file.
 
     Images checked by an older version still lack their visual facts: they are decoded
-    again once. Readable images and videos indexed before their metadata was recorded
-    get it once: from the header for images, from the usual probe for videos.
+    again once, as the files it stored broken after a failed read. Readable images
+    and videos indexed before their metadata was recorded get it once: from the
+    header for images, from the usual probe for videos.
 
     Args:
         file: The file.
@@ -76,6 +78,8 @@ def need_of(file: MediaFile, facts: FileFacts) -> Need:
         return Need.CHECK
     if file.kind is MediaKind.IMAGE and not facts.visual_checked:
         return Need.CHECK
+    if facts.broken_reason is not None and is_stored_read_error(facts.broken_detail):
+        return Need.CHECK  # an older version took a failed read for a broken file
     if facts.broken_reason is not None or file.kind is MediaKind.RAW:
         return Need.NOTHING  # a broken file has nothing more to tell
     if facts.metadata_version == METADATA_VERSION:
@@ -117,20 +121,23 @@ class FileChecker:
 
         Returns:
             Its facts, including the integrity outcome and its metadata.
+
+        Raises:
+            ReadFailedError: The disk or the cloud could not read it: nothing to store.
         """
         facts = self._deps.repository.get(file)
         try:
             if file.kind is MediaKind.VIDEO and self._tools.ffprobe is not None:
                 async with self._deps.io_slots:
                     probe = await probe_video(file.path, self._tools.ffprobe)
-                problem = probe.problem
+                problem, unread = probe.problem, probe.unread
                 facts = facts.with_metadata(probe.metadata)
             else:
                 decode = functools.partial(
                     _decoder(file.kind), limit=self._tools.read_limit
                 )
                 inspection = await self._in_pool(decode, file.path)
-                problem = inspection.problem
+                problem, unread = inspection.problem, inspection.unread
                 facts = facts.with_visual(inspection.visual)
                 if inspection.digests is not None:  # read once: no second reading
                     digests = inspection.digests
@@ -139,6 +146,8 @@ class FileChecker:
                     facts = facts.with_metadata(inspection.metadata)
         finally:
             self._deps.progress.advance()
+        if unread:
+            raise ReadFailedError(problem)
         return facts.with_integrity(
             _REASONS[file.kind] if problem else None, problem or ""
         )

@@ -2,7 +2,8 @@
 
 Shared by `audit` and `classify`. Without a persistent `/cache`, or with
 `[scan] full_check_days = 0` (`audit --full`), every folder is read. The index keeps
-the listings of the folders read, for the next walk.
+the listings of the folders read, for the next walk, and what the Google Photos
+Takeout `.json` files found say (`index.takeout_rows`).
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.index.folder_listings import load_listings, save_listings
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.takeout_rows import remember_takeout
 from media_hygiene.scan.folder_cache import WalkSetup
 from media_hygiene.scan.walker import Walk, walk
 from media_hygiene.services.policy import scan_filters
@@ -56,6 +58,8 @@ def list_media(
             setup = WalkSetup(filters, known, trusted)
         found = asyncio.run(walk(roots, setup, progress))
         save_listings(repository.connection, found.listings, (roots, found.visited))
+        listed = (file.path for file in found.files)
+        remember_takeout(repository.connection, found.sidecars, listed)
     _tell(runtime, found)
     return found
 

@@ -17,6 +17,8 @@ from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
+from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.days import media_day
 from media_hygiene.search.hits import hit_of
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
@@ -41,6 +43,7 @@ class SearchIndex:
         self._built: int | None = None  # the data version the table was built at
         self._people: dict[Path, tuple[str, ...]] = {}
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
+        connection.create_function(DAY, 1, media_day, deterministic=True)
         connection.execute(sql.CREATE_PEOPLE)
 
     @classmethod
@@ -140,6 +143,23 @@ class SearchIndex:
         store = TagStore(self._connection) if self.has_tags else None
         hits = tuple(hit_of((store, self._people), row) for row in rows)
         return Found(int(total), hits)
+
+    def versions(self, query: SearchQuery) -> tuple[PhotoVersion, ...]:
+        """Every file matching a search, not only the first ones: to set them aside.
+
+        Args:
+            query: Its words and filters.
+
+        Returns:
+            The files and their versions.
+        """
+        self._fresh()
+        conditions, parameters = sql.conditions(query)
+        where = sql.WHERE + sql.AND.join(conditions) if conditions else ""
+        rows = self._connection.execute(sql.VERSIONS + where, parameters)
+        return tuple(
+            PhotoVersion(Path(path), size, mtime) for path, size, mtime in rows
+        )
 
     def source_of(self, key: int) -> PhotoVersion | None:
         """The file a key of a hit names.

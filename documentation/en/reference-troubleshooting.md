@@ -21,8 +21,10 @@ computer, Docker Desktop takes a few seconds to answer.
 
 ## A real backup is seen as duplicates
 
-If `D:\backup` must remain a second copy of your photos, [exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder)
-(or do not mount it). Otherwise the tool, rightly, sees its files as duplicates.
+If `D:\backup` must remain a second copy of your photos, mark it a backup:
+`--backup "D:\backup"` ([compare it](clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
+It is then compared, never changed, and says what it lacks. To not even read it,
+[exclude it](clean/05-choose-the-kept-copy.md#exclude-a-folder) (or do not mount it).
 
 ## A folder is refused because it is mounted twice
 
@@ -32,8 +34,38 @@ same folder twice. The tool refuses it rather than taking a photo for a duplicat
 
 ## OneDrive "Files On-Demand"
 
-Analysing a folder whose files are online-only downloads them all. Make them available offline
-first, or leave that folder out.
+With Files On-Demand, a photo can live in OneDrive's cloud only: Windows 11 often puts
+*Pictures* in OneDrive when it is set up with a Microsoft account. Reading such a file downloads
+it, so analysing that folder downloads all of it.
+
+On Windows, `mh` checks first. Before a command that reads your photos (`audit`, `review`,
+`clean`, `crosscheck`, `classify`, `tags`, `people`, `search`), for each photo folder under
+OneDrive (the folders named by the `OneDrive`, `OneDriveConsumer` and `OneDriveCommercial`
+variables), it counts the files Windows marks as not stored on the PC (the attributes
+*recall on data access* and *offline*: listing them reads no photo), then asks:
+
+```text
+1,234 files (45.2 GB) of C:\Users\you\OneDrive\Pictures are in OneDrive's cloud only: reading them downloads them onto this PC (120 GB free on C:). To keep them here: right-click the folder, then Always keep on this device.
+Continue? (y/N)
+```
+
+`N` (or Enter) runs nothing. The count is made once per PowerShell window, and a `y` is not asked
+again in it. `mh folders add` of a folder under OneDrive says the same line once. To keep the
+photos on the PC, right-click the folder in Explorer, then **Always keep on this device**; or
+leave that folder out. A folder outside OneDrive is never listed.
+
+Still to check: whether Docker Desktop, reading through its file sharing, downloads such a file as
+Windows does (not documented). If you use OneDrive, a report of what you see is welcome (an issue
+on GitHub).
+
+## Files "could not be read this time"
+
+The audit lists them in the console and in its report: the disk, the network or the cloud did not
+give them (a USB disk unplugged, a network drive gone, an online-only OneDrive file while
+offline). They are not broken: `clean` leaves them where they are, and the next audit reads them
+again. Plug the disk back in, or make the OneDrive files available offline, then run `audit`
+again. A file listed audit after audit lies on a failing disk: copy it elsewhere while you still
+can.
 
 ## Windows drives are slow through Docker
 

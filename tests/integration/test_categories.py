@@ -6,7 +6,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
-from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.kinds import FOLDER_ACTIONS, ActionKind
 from media_hygiene.constants import MediaKind
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
@@ -47,7 +47,7 @@ def test_a_mixed_category_decodes_images_and_quarantines_the_rest(
     run_id, outcome = service.execute(service.feasible(plan))
     assert outcome.quarantined == 1
     entries = read_journal(journal_file(locations.journal_dir, run_id))
-    assert {entry.action for entry in entries} == {
+    assert {e.action for e in entries if e.action not in FOLDER_ACTIONS} == {
         ActionKind.QUARANTINE_DUPLICATE,
         ActionKind.DELETE_DUPLICATE,
     }

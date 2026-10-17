@@ -18,6 +18,7 @@ from media_hygiene.actions.journal import (
 from media_hygiene.actions.kinds import (
     ACTING_PHASES,
     FOLDER_ACTIONS,
+    MARKS,
     XMP_ACTIONS,
     ActionKind,
     Phase,
@@ -77,7 +78,7 @@ class Kept:
 
 
 @dataclass(frozen=True, slots=True)
-class RunSummary:
+class RunSummary:  # pylint: disable=too-many-instance-attributes
     """What a run did (`clean`, `sort` or `album`), and whether it was undone."""
 
     run_id: str
@@ -87,6 +88,10 @@ class RunSummary:
     quarantined: int
     kept: Kept
     restored: int
+    unwanted: int = 0  # of `quarantined`: photos set aside in `review --junk`
+    returned: int = 0  # of `quarantined`: set aside before, back since (0216)
+    marked: int = 0  # files deleted in the Explorer, confirmed (0224)
+    folders_removed: int = 0  # left empty, removed (0202)
 
     @property
     def moved(self) -> int:
@@ -122,7 +127,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
     files = [
         entry
         for entry in done_states(entries, kind)
-        if entry.action not in FOLDER_ACTIONS
+        if entry.action not in FOLDER_ACTIONS | MARKS
     ]
     moved = [entry for entry in files if entry.action is ActionKind.MOVE]
     linked = [entry for entry in files if entry.action is ActionKind.LINK]
@@ -142,6 +147,12 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         quarantined=len(quarantined),
         kept=Kept(len(moved), len(linked), written),
         restored=len(done_states(entries, Phase.UNDO)),
+        unwanted=sum(e.action is ActionKind.QUARANTINE_UNWANTED for e in quarantined),
+        returned=sum(e.action is ActionKind.QUARANTINE_RETURNED for e in quarantined),
+        marked=sum(e.action in MARKS for e in done_states(entries, kind)),
+        folders_removed=sum(
+            e.action is ActionKind.REMOVE_FOLDER for e in done_states(entries, kind)
+        ),
     )
 
 

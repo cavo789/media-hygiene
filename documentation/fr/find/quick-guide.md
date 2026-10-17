@@ -4,7 +4,8 @@
 
 Retrouvez une photo par ce dont vous vous souvenez : une personne, un lieu, une année, un mot
 (« Chloé à la montagne »), dans votre navigateur. Une commande par étape, à coller dans
-**PowerShell**. **Rien ne bouge** : vos photos restent où elles sont, triées ou non.
+**PowerShell**. **Rien ne bouge** : vos photos restent où elles sont, triées ou non, sauf celles
+que vous mettez de côté (étape 4).
 
 <div class="mh-path" markdown>
 
@@ -142,7 +143,45 @@ les meilleures d'abord ; Entrée en agrandit une.
     `mh search Chloé montagne` affiche les premiers résultats en tableau. Plus :
     [`search`](../commands/search.md).
 
-## 5. Emporter les mots dans un autre logiciel photo (facultatif)
+??? tip "Retirer toutes les photos de quelqu'un : les mettre de côté"
+
+    <span class="mh-badge mh-undo">↩️ Annulable</span> Cherchez-les (`person:"Mamie Jeanne"`),
+    choisissez-les (un clic ou Espace ; **Choisir les N fichiers trouvés** prend tous les fichiers
+    trouvés, pas seulement ceux affichés), puis **Mettre de côté les fichiers choisis** : le choix est enregistré
+    aussitôt dans `decisions.json` de vos rapports, rien ne bouge encore. Arrêtez la page
+    (Ctrl+C), puis :
+
+    ```powershell
+    mh clean --decisions
+    ```
+
+    Il dit combien de fichiers et d'octets partent, demande, puis les déplace en quarantaine,
+    journalisé : `mh undo` les remet, `mh purge` libère la place. Plus : [mettre des photos de
+    côté](../commands/search.md#mettre-des-photos-de-côté).
+
+## 5. Parcourir vos dossiers : `browse` (facultatif)
+
+<span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-undo">↩️ Annulable</span>
+
+Pour parcourir un dossier et retirer quelques photos, comme dans l'Explorateur, mais de façon
+annulable :
+
+```powershell
+mh browse
+```
+
+Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : l'arborescence de vos
+dossiers à gauche, les photos du dossier choisi à droite ; Entrée en agrandit une, ← et → passent
+aux suivantes. Choisissez-en (un clic, Ctrl, Maj, Ctrl+A), puis Suppr : elles sont mises de côté,
+enregistrées dans `decisions.json` de vos rapports, rien ne bouge encore. Ensuite
+`mh clean --decisions` les déplace en quarantaine, journalisé.
+
+??? info "Détails"
+
+    Pas besoin de mots : la page montre ce que l'audit a lu. **Chercher par mots** mène à la page
+    `search`, sur le même serveur. Plus : [`browse`](../commands/browse.md).
+
+## 6. Emporter les mots dans un autre logiciel photo (facultatif)
 
 <span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-undo">↩️ Annulable</span>
 
@@ -162,7 +201,7 @@ mh xmp --apply
     `mh undo` retire ce qu'il a écrit. Plus : [emporter les mots avec les
     photos](../reference-tags.md#emporter-les-mots-avec-les-photos--xmp).
 
-## 6. Répondre à vos propres questions dans Excel (facultatif)
+## 7. Répondre à vos propres questions dans Excel (facultatif)
 
 <span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
@@ -195,10 +234,12 @@ Chaque commande de la recherche, et l'étape de cette page qui la montre :
 | [`people`](../commands/people.md) | 1 | Trouve et nomme les visages ; `--forget` les supprime. |
 | [`places`](../commands/places.md) | 2 | Nomme vos lieux sur une carte. |
 | [`tags`](../commands/tags.md) | 3 | Donne des mots à chaque photo et vidéo ; 🤖 ce qu'elles montrent, avec une IA locale seulement. |
-| [`search`](../commands/search.md) | 4 | Retrouve une photo par un mot, un lieu, une année, une personne. |
-| [`xmp`](../commands/xmp.md) | 5 | Écrit les mots dans des fichiers compagnons `.xmp`. |
-| [`undo`](../commands/undo.md) | 5 | Retire les fichiers `.xmp` écrits. |
-| [`inventory`](../commands/inventory.md) | 6 | Chaque photo et vidéo dans un classeur Excel. |
+| [`search`](../commands/search.md) | 4 | Retrouve une photo par un mot, un lieu, une année, une personne ; met des photos de côté. |
+| [`browse`](../commands/browse.md) | 5 | Parcourt vos dossiers, comme dans l'Explorateur ; met des photos de côté. |
+| [`clean`](../commands/clean.md) | 4, 5 | `--decisions` : déplace en quarantaine les photos mises de côté. |
+| [`xmp`](../commands/xmp.md) | 6 | Écrit les mots dans des fichiers compagnons `.xmp`. |
+| [`undo`](../commands/undo.md) | 4, 5, 6 | Remet les photos mises de côté ; retire les fichiers `.xmp` écrits. |
+| [`inventory`](../commands/inventory.md) | 7 | Chaque photo et vidéo dans un classeur Excel. |
 | [`status`](../commands/status.md) | Plus tard | Dit où vous en êtes et la prochaine étape. |
 | [`menu`](../commands/menu.md) | Plus tard | Liste chaque étape avec sa commande ; Entrée lance la prochaine. |
 
@@ -211,7 +252,7 @@ guide](../reference-glossary.md). Un message d'erreur ? [Dépannage](../referenc
 
     Pour celles qui ne modifient rien (`audit`, `tags`, `inventory`, et `xmp` sans `--apply`), en
     lecture seule ; ajoutez `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page
-    (`people`, `places`, `search`) :
+    (`people`, `places`, `search`, `browse`) :
 
     ```powershell
     docker run --rm -it `

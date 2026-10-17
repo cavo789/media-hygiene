@@ -21,6 +21,18 @@ _SEPARATORS: Final = MappingProxyType(
 )
 
 
+def separators(locale: Locale | None = None) -> tuple[str, str]:
+    """The thousands and decimal separators of a language, for a page's script.
+
+    Args:
+        locale: The language; the active one by default.
+
+    Returns:
+        `(",", ".")` in English, `(".", ",")` in French.
+    """
+    return _SEPARATORS[locale or active_locale()]
+
+
 def human_number(
     value: float,
     decimals: int = 0,
@@ -31,13 +43,13 @@ def human_number(
     Args:
         value: The number.
         decimals: Digits after the decimal separator.
-        locale: The language; the active one by default. Code running outside the
-            main context (e.g. Rich's refresh thread) must pass it explicitly.
+        locale: The language; the active one by default (every thread's, since
+            `install()` sets it for the process).
 
     Returns:
         `67,947` in English, `67.947` in French; `44.3` / `44,3` with one decimal.
     """
-    thousands, decimal = _SEPARATORS[locale or active_locale()]
+    thousands, decimal = separators(locale)
     text = f"{value:,.{decimals}f}"
     return text.translate(str.maketrans(",.", thousands + decimal))
 

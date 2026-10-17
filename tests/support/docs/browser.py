@@ -1,9 +1,9 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review`, `near`, `search <words>`, `people <name>`, `places <name>` (the pages
-served on 127.0.0.1:8088, see `served.py`), `reports <audit> <clean> <classify>`
-(report folders of /reports), `terminal <name>...` (SVG terminals in /shots). Every
-shot lands in /shots. The image runs Python 3.10: nothing newer here.
+Modes: `review`, `near`, `pairs`, `search <words>`, `people <name>`, `places <name>`
+(the pages served on 127.0.0.1:8088, see `served.py`), `reports <audit> <clean>
+<classify>` (report folders of /reports), `terminal <name>...` (SVG terminals in
+/shots). Every shot lands in /shots. The image runs Python 3.10: nothing newer here.
 """
 
 from __future__ import annotations
@@ -31,6 +31,7 @@ VIEW_BOX_JS: Final = (
     " return [box.width, box.height]; }"
 )
 REVIEW_WIDTH: Final = 1600
+REVIEWS: Final = frozenset({"review", "near", "pairs"})  # a function each in served.py
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
 PAUSE_MS: Final = 500
@@ -178,16 +179,14 @@ def main() -> None:
     from playwright.sync_api import sync_playwright  # noqa: PLC0415
 
     mode, arguments = sys.argv[1], sys.argv[2:]
-    width = REVIEW_WIDTH if mode in {"review", "near"} else REPORT_WIDTH
+    width = REVIEW_WIDTH if mode in REVIEWS else REPORT_WIDTH
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={"width": width, "height": HEIGHT}, color_scheme="light"
         )
-        if mode == "review":
-            served.review(page)
-        elif mode == "near":
-            served.near(page)
+        if mode in REVIEWS:
+            getattr(served, mode)(page)
         elif mode == "search":
             served.search(page, arguments[0])
         elif mode == "people":

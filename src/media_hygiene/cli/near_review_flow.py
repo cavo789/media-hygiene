@@ -4,12 +4,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.next_steps import carried, suggest
+from media_hygiene.cli.review_next import CleanNext, tell_choices_and_clean
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.report.actions import sure_count
-from media_hygiene.review.place import decisions_flag
-from media_hygiene.services.next_command import CHANGING, NextVerb
 
 if TYPE_CHECKING:
     import typer
@@ -67,14 +65,8 @@ def tell_near_stopped(
             decided=human_number(decided), total=human_number(total)
         )
     )
-    place = session.place
-    output.info(_("Your choices are in {place}.").format(place=place.host))
-    flag = decisions_flag(place.argument)
-    suggest(
-        runtime,
-        _(
-            "the same 'clean' command with --tier near {option}; the sure groups "
-            "and those you decided go to the quarantine, 'undo' brings them back."
-        ).format(option=flag),
-        NextVerb(carried(runtime, f"clean --tier near {flag}", ctx), CHANGING),
+    text = _(
+        "the same 'clean' command with --tier near {option}; the sure groups "
+        "and those you decided go to the quarantine, 'undo' brings them back."
     )
+    tell_choices_and_clean(ctx, runtime, CleanNext(session.place, text, "--tier near "))

@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.plan.face_scores import sharpness_order
 from media_hygiene.plan.likeness import distance
 
 if TYPE_CHECKING:
@@ -32,6 +33,7 @@ class AsideReason(StrEnum):
     OVEREXPOSED = "overexposed"
     UNDEREXPOSED = "underexposed"
     IDENTICAL = "identical"
+    FACES = "faces"
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,6 +54,8 @@ class ShotLook:
     phash: int
     exposure: Exposure | None = None
     keep: bool = False
+    faced: bool = False  # the series is ranked by its faces (`plan.face_scores`)
+    faces: float | None = None  # then: its main faces' sharpness, None without a face
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,7 +80,7 @@ def propose(
     """
     kept: list[int] = []
     proposals: dict[int, Proposal] = {}
-    for rank in sorted(range(len(looks)), key=lambda rank: -looks[rank].sharpness):
+    for rank in sorted(range(len(looks)), key=lambda rank: _order(looks[rank])):
         look = looks[rank]
         found = None if look.keep else _reason(rank, looks, limits)
         if found is None and not look.keep:
@@ -86,6 +90,14 @@ def propose(
         else:
             proposals[rank] = found
     return proposals
+
+
+def _order(look: ShotLook) -> tuple[bool, float, float]:
+    """Sort key, the best shot first: by faces for a series looked at, else by frame."""
+    if look.faced:
+        has, faces, frame = sharpness_order(look.faces, look.sharpness)
+        return (not has, -faces, -frame)
+    return (False, 0.0, -look.sharpness)
 
 
 def is_obvious(looks: Sequence[ShotLook], proposals: Mapping[int, Proposal]) -> bool:
@@ -117,9 +129,15 @@ def _reason(
     Returns:
         The proposal, or None.
     """
-    top = max(look.sharpness for look in looks)
-    if top and looks[rank].sharpness / top < limits.sharpness_below:
-        return Proposal(AsideReason.BLURRIER)
+    shot = looks[rank]
+    if shot.faced and shot.faces is not None:
+        top = max(look.faces or 0.0 for look in looks)
+        if top and shot.faces / top < limits.sharpness_below:
+            return Proposal(AsideReason.FACES)
+    else:
+        top = max(look.sharpness for look in looks)
+        if top and shot.sharpness / top < limits.sharpness_below:
+            return Proposal(AsideReason.BLURRIER)
     others = [
         look.exposure
         for other, look in enumerate(looks)

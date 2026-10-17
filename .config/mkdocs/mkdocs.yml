@@ -99,6 +99,7 @@ nav:
       - clean/11-near-duplicates.md
       - clean/12-decide-pair-by-pair.md
       - clean/13-second-opinion.md
+      - clean/14-unwanted-photos.md
   - Sort the photos:
       - sort/04-classify.md
       - sort/05-review-the-proposal.md
@@ -113,11 +114,13 @@ nav:
       - reference-commands.md
       - commands/album.md
       - commands/audit.md
+      - commands/browse.md
       - commands/classify.md
       - commands/clean.md
       - commands/config.md
       - commands/crosscheck.md
       - commands/history.md
+      - commands/home.md
       - commands/inventory.md
       - commands/launcher.md
       - commands/menu.md

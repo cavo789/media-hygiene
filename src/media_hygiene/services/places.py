@@ -34,10 +34,11 @@ from media_hygiene.places.app import (
 from media_hygiene.places.board import PlacesBoard
 from media_hygiene.places.clusters import clusters_of
 from media_hygiene.places.osm_search import OSM_PATH, online_search
+from media_hygiene.review.ending import run_server
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.missing_mount import missing_mount
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:

@@ -14,34 +14,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final, override
+from typing import TYPE_CHECKING, ClassVar, Final, override
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field
 
-from media_hygiene.errors import DecisionsError
 from media_hygiene.plan.near_review import NearAction
-from media_hygiene.report.preview_cache import PreviewPool
-from media_hygiene.review.files import FILE_PATH, file_response
+from media_hygiene.review.decide_route import DecidingApp
+from media_hygiene.review.files import FILE_PATH
 from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.local_app import (
-    PAGE_PATH,
-    LocalApp,
-    choice_failed,
-    page_or_state,
-)
-from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.review.near_session import NearSession
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
-    from pathlib import Path
-
     from media_hygiene.review.http import Request
-    from media_hygiene.review.near_session import NearSession
 
 NEAR_DECIDE_PATH: Final = "/api/near"
 NEAR_FILE_PATH: Final = FILE_PATH
-_GET, _POST = "GET", "POST"
+_GET = "GET"
 
 
 class _Choice(BaseModel):
@@ -62,17 +52,14 @@ class _Choices(BaseModel):
 
 
 @dataclass(frozen=True, slots=True)
-class NearApp(LocalApp):
+class NearApp(DecidingApp[NearSession]):
     """Answers the browser; the session holds the decisions and saves them."""
 
-    session: NearSession
-    page: bytes
-    executor: Executor
-    previews: Path | None = None  # the cache folder of previews, if any
+    decide_path: ClassVar[str] = NEAR_DECIDE_PATH
 
     @override
     async def answer(self, request: Request) -> Response:
-        """Route a request from the loopback.
+        """Route a request from the loopback: the videos and the page first.
 
         Args:
             request: The request.
@@ -80,58 +67,25 @@ class NearApp(LocalApp):
         Returns:
             The response.
         """
-        if request.method == _GET:
-            if request.path.startswith(VIDEO_PREFIX):
-                return await video_response(request, self.session.preview_source)
-            return await self._get(request.path)
-        if request.path == NEAR_DECIDE_PATH and request.method == _POST:
-            return self._decide(request)
-        return Response(HTTPStatus.METHOD_NOT_ALLOWED)
-
-    async def _get(self, path: str) -> Response:
-        """Serve the page, the state, the decisions file, a preview or an original.
-
-        Args:
-            path: The path asked for.
-
-        Returns:
-            The response; 404 for anything else.
-        """
-        if path == PAGE_PATH:  # it plays the videos: `media-src` too
+        if request.method == _GET and request.path.startswith(VIDEO_PREFIX):
+            return await video_response(request, self.session.preview_source)
+        if request.method == _GET and request.path == PAGE_PATH:
+            # It plays the videos: `media-src` too.
             return Response(
                 HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY
             )
-        found = await file_response(
-            path, self.session, PreviewPool(self.executor, self.previews)
-        )
-        if found is not None:
-            return found
-        return page_or_state(path, self.page, self.session.state)
+        return await DecidingApp.answer(self, request)
 
-    def _decide(self, request: Request) -> Response:
+    @override
+    def decide(self, body: bytes) -> dict[str, object]:
         """Decide one or more groups and save the decisions file.
 
         Args:
-            request: `POST /api/near`, with a JSON body.
+            body: The JSON body of `POST /api/near`.
 
         Returns:
-            The groups decided, and those groups as read back from the disk, or an
-            error with a translated message.
+            The groups decided, and those groups as read back from the disk.
         """
-        refused = refused_post(request)
-        if refused is not None:
-            return refused
-        try:
-            choices = _Choices.model_validate_json(request.body)
-            proof = self.session.decide(
-                {choice.group: choice.action for choice in choices.choices}
-            )
-        except ValidationError:
-            return Response(HTTPStatus.BAD_REQUEST)
-        except (DecisionsError, OSError) as exc:
-            return choice_failed(exc)
-        decided, total = self.session.decided
-        totals = {"decided": decided, "total": total}
-        return json_response(
-            HTTPStatus.OK, totals | {"file": proof.model_dump(mode="json")}
-        )
+        choices = _Choices.model_validate_json(body).choices
+        proof = self.session.decide({choice.group: choice.action for choice in choices})
+        return self.session.counts() | {"file": proof.model_dump(mode="json")}

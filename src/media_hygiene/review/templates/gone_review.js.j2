@@ -1,0 +1,169 @@
+{# The script of gone_review.html.j2: one group at a time, each answer saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const filePath = {{ file_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
+  const number = (value) => value.toLocaleString(lang);
+  let files = [];
+  let groups = [];
+  let at = 0;  // the group shown
+  let cursor = 0;  // position of the cursor in that group
+  const disk = new Map();  // file rank -> deleted on purpose (true) or moved, as read back from the disk
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+  const decided = (group) => group.files.every((rank) => files[rank].decision !== "");
+  const role = (rank) => files[rank].decision || "none";
+
+  const card = (rank, position) => {
+    const file = files[rank];
+    const figure = document.createElement("figure");
+    figure.className = "shot " + role(rank) + (position === cursor ? " cursor" : "");
+    let picture;
+    if (file.preview) {
+      picture = document.createElement("img");
+      picture.src = file.preview;
+      picture.alt = file.name;
+      picture.loading = "lazy";
+    } else picture = line("div", T.noPreview, "none");
+    const caption = document.createElement("figcaption");
+    caption.append(line("div", T[role(rank)], "tag"), line("strong", file.name), line("div", file.folder, "muted"), line("div", file.details, "muted"));
+    figure.append(picture, caption);
+    figure.addEventListener("click", () => {
+      cursor = position;
+      render();
+    });
+    return figure;
+  };
+
+  const render = () => {
+    if (groups.length === 0) return;
+    const group = groups[at];
+    const deleted = files.filter((file) => file.decision === "deleted").length;
+    const done = files.filter((file) => file.decision !== "").length;
+    byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
+    byId("totals").textContent = fill(T.totals, { deleted: number(deleted), decided: number(done), total: number(files.length) });
+    byId("title").textContent = group.title;
+    const state = byId("state");
+    state.textContent = decided(group) ? T.decided : T.pending;
+    state.className = decided(group) ? "decided" : "";
+    byId("shots").replaceChildren(...group.files.map(card));
+    const counts = { deleted: 0, moved: 0, none: 0 };
+    for (const rank of group.files) {
+      if (!disk.has(rank)) counts.none += 1;
+      else if (disk.get(rank)) counts.deleted += 1;
+      else counts.moved += 1;
+    }
+    byId("diskTitle").textContent = T.diskTitle;
+    byId("diskBody").replaceChildren(line("p", fill(T.diskCounts, counts)));
+  };
+
+  const go = (step) => {
+    const next = at + step;
+    if (next < 0) setStatus(T.first, "");
+    else if (next >= groups.length) setStatus(T.last, "");
+    else {
+      at = next;
+      cursor = 0;
+      render();
+    }
+  };
+
+  const nextUndecided = () => {
+    const ahead = groups.findIndex((group, index) => index > at && !decided(group));
+    const found = ahead >= 0 ? ahead : groups.findIndex((group) => !decided(group));
+    if (found < 0) setStatus(T.allDecided, "saved");
+    else {
+      at = found;
+      cursor = 0;
+      render();
+    }
+  };
+
+  // choices: file rank -> true (deleted on purpose), false (moved) or null (unanswered).
+  const decide = (choices, then) => {
+    setStatus(T.saving, "");
+    const body = { choices: [...choices].map(([file, deleted]) => ({ file: file, deleted: deleted })) };
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        for (const [rank, deleted] of choices) {
+          files[rank].decision = deleted === null ? "" : (deleted ? "deleted" : "moved");
+          disk.delete(rank);
+        }
+        for (const entry of reply.body.file.entries) disk.set(entry.file, entry.deleted);
+        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
+        if (then) then();
+        else render();
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  // One file answered, then the cursor moves on (the next group after the last file).
+  const answer = (deleted) => {
+    const group = groups[at];
+    const rank = group.files[cursor];
+    decide(new Map([[rank, deleted]]), () => {
+      if (cursor + 1 < group.files.length) {
+        cursor += 1;
+        render();
+      } else go(1);
+    });
+  };
+
+  const moveCursor = (step) => {
+    const size = groups[at].files.length;
+    cursor = Math.min(Math.max(cursor + step, 0), size - 1);
+    render();
+    const shown = byId("shots").children[cursor];
+    if (shown) shown.scrollIntoView({ block: "nearest" });
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
+    const key = event.key.toLowerCase();
+    if (key === "d") answer(true);
+    else if (key === "m") answer(false);
+    else if (key === "g") decide(new Map(groups[at].files.map((rank) => [rank, true])), () => go(1));
+    else if (key === "u" || event.key === "Backspace") decide(new Map(groups[at].files.map((rank) => [rank, null])));
+    else if (event.key === "ArrowRight") go(1);
+    else if (event.key === "ArrowLeft") go(-1);
+    else if (event.key === "ArrowDown") moveCursor(1);
+    else if (event.key === "ArrowUp") moveCursor(-1);
+    else if (key === "n") nextUndecided();
+    else return;
+    event.preventDefault();
+  });
+
+  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
+    .then(([state, file]) => {
+      files = state.files;
+      groups = state.groups;
+      if (file.error) setStatus(file.error, "error");
+      else {
+        for (const entry of file.entries) disk.set(entry.file, entry.deleted);
+        setStatus(fill(T.loaded, { time: clock(file.modified) }), "saved");
+      }
+      const first = groups.findIndex((group) => !decided(group));
+      at = first >= 0 ? first : 0;
+      render();
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();

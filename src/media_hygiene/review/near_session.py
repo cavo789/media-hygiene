@@ -11,10 +11,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.plan.near_review import NearAction
 from media_hygiene.report.decisions import write_decisions
+from media_hygiene.review.keyed_choices import RankedSession, record, with_actions
 from media_hygiene.review.near_file import (
     decision_key,
     group_decision,
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from media_hygiene.plan.similar_models import NearDecision
     from media_hygiene.report.decisions import DecisionsFile
     from media_hygiene.review.near_file import NearProof
-    from media_hygiene.review.near_views import NearStateBuilder
+    from media_hygiene.review.near_views import GroupState, NearStateBuilder
     from media_hygiene.review.place import DecisionsPlace
 
 
@@ -46,8 +46,11 @@ class NearSource:
     place: DecisionsPlace
 
 
-class NearSession:
+class NearSession(RankedSession[NearAction]):
     """The groups under review and the decisions, in memory and on disk."""
+
+    _source: NearSource
+    _states: tuple[GroupState, ...]
 
     def __init__(self, source: NearSource, base: DecisionsFile) -> None:
         """Resume the decisions of `base` that still match a group of the audit.
@@ -80,24 +83,6 @@ class NearSession:
                 continue
             self._actions[rank] = decision.action
 
-    @property
-    def place(self) -> DecisionsPlace:
-        """The decisions file, for `clean --decisions` and on the host.
-
-        Returns:
-            Its names.
-        """
-        return self._source.place
-
-    @property
-    def decided(self) -> tuple[int, int]:
-        """How far the review went.
-
-        Returns:
-            The groups decided, and every group.
-        """
-        return len(self._actions), len(self._states)
-
     def state(self) -> NearReviewState:
         """Describe every group and the decisions so far, for the page.
 
@@ -107,10 +92,7 @@ class NearSession:
         return NearReviewState(
             decisions_file=self.place.argument,
             decisions_place=self.place.host,
-            groups=tuple(
-                state.model_copy(update={"action": self._actions.get(rank, "")})
-                for rank, state in enumerate(self._states)
-            ),
+            groups=with_actions(self._states, self._actions),
         )
 
     def preview_source(self, key: str) -> Path | None:
@@ -168,15 +150,7 @@ class NearSession:
             DecisionsError: An unknown group, a swap that would move a file of a
                 protected folder, or a file that does not hold the choices once saved.
         """
-        for rank, action in choices.items():
-            problem = self.problem(rank, action)
-            if problem is not None:
-                raise DecisionsError(problem)
-        for rank, action in choices.items():
-            if action is None:
-                self._actions.pop(rank, None)
-            else:
-                self._actions[rank] = action
+        record(self._actions, choices, self.problem)
         self.save()
         return near_proven(self.on_disk(), choices)
 

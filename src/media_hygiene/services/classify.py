@@ -147,7 +147,7 @@ class ClassifyService:
                     ),
                     _('Mount it under /data, e.g. -v "C:\\Photos triées:/data/c/Tri".'),
                 )
-        kept = (*settings.folders.protected, *settings.classify.leave)
+        kept = (*settings.folders.untouched, *settings.classify.leave)
         return Scope(
             target,
             tuple(mapper.to_container(p) for p in kept),

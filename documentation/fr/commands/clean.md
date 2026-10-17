@@ -28,7 +28,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | ✋ Agit : déplace en quarantaine les copies en trop, les fichiers illisibles et les fichiers compagnons orphelins ; supprime les fichiers vides (0 octet). |
+| Vos photos | ✋ Agit : déplace en quarantaine les copies en trop, les fichiers illisibles et les fichiers compagnons orphelins ; supprime les fichiers vides (0 octet) et les dossiers qu'il laisse vides. |
 | Il faut | Vos dossiers **sans** `:ro`, `/journal` et `/quarantine` (des dossiers à vous). |
 | Conseillé | `/cache`, `/reports`, `/config`. |
 | Écrit | Le journal de l'exécution, la quarantaine, le rapport de nettoyage. |
@@ -67,10 +67,21 @@ lui arrive ; le tableau final compte ce qui a été déplacé, ignoré et en éc
 | Fichier illisible | Déplacé en quarantaine. |
 | [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | Pas touchés, sauf si vous le demandez (`--tier`, `--decisions`). |
+| Un fichier que vous aviez mis de côté, revenu depuis (une sauvegarde de téléphone) | Remis en quarantaine, compté sur une ligne à part. [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté) |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
 
 La quarantaine garde les chemins d'origine sous un dossier par exécution :
 `quarantine\<exécution>\d\Ancien disque\2020\IMG_1203.jpg`.
+
+**Un dossier laissé vide part aussi.** Une fois ses fichiers mis de côté, un dossier qui ne
+contient plus rien (ou seulement `Thumbs.db`, `desktop.ini`, `.DS_Store` : `[sort] junk_files`,
+déplacés d'abord en quarantaine) est supprimé, puis son parent s'il est vide à son tour. Avant de
+demander, `clean` dit combien de dossiers partiront ; la fin de l'exécution et
+[`history`](history.md) disent combien sont partis, et `undo` les recrée avant de remettre les
+fichiers. Jamais supprimés : les dossiers que vous avez montés, un dossier protégé, de sauvegarde
+ou exclu, un dossier déjà vide avant l'exécution. Avec `--delete` et sans quarantaine montée, un
+dossier qui ne contient plus que ces fichiers système reste. Une exécution arrêtée par Ctrl+C ne
+supprime aucun dossier.
 
 ## Options
 
@@ -79,7 +90,7 @@ La quarantaine garde les chemins d'origine sous un dossier par exécution :
 | `--tier exact` | Par défaut : seulement les copies identiques octet par octet. |
 | `--tier near` | Aussi les quasi-doublons et vidéos réencodées **sûrs**, et les groupes décidés avec `review --near`. [Étape 11 du nettoyage](../clean/11-near-duplicates.md#les-groupes-sûrs-et-ceux-à-vérifier) |
 | `--tier near-all` | Tous les quasi-doublons, tels que le rapport les montre : regardez-les d'abord. |
-| `--decisions [FICHIER]` | Applique les choix faits dans le navigateur : paires de dossiers d'un rapport ([étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md)), photos de rafale écartées et quasi-doublons décidés avec [`review`](review.md). Seule, elle lit `decisions.json` dans `/reports`. |
+| `--decisions [FICHIER]` | Applique les choix faits dans le navigateur : paires de dossiers d'un rapport ([étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md)), photos de rafale écartées et quasi-doublons décidés avec [`review`](review.md), photos mises de côté dans [`search`](search.md#mettre-des-photos-de-côté). Seule, elle lit `decisions.json` dans `/reports`. |
 | `--yes`, `-y` | Ne pas demander (indispensable sans `-it`). |
 | `--delete` | Supprime pour de bon les copies exactes au lieu de les déplacer ; `undo` les reconstruit depuis la copie gardée. [Étape 8 du nettoyage](../clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--prefer`, `--protect`, `--exclude`, `--exclude-name`, `--ext` | Comme pour [`audit`](audit.md#options) : donnez à `clean` les mêmes que pour l'audit que vous avez lu. |

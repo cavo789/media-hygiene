@@ -1,6 +1,6 @@
 # 10. Trier les rafales dans le navigateur
 
-[Documentation](../README.md) › Nettoyer, étape 10 sur 13 · 🇬🇧 [English](../../en/clean/10-review-bursts.md)
+[Documentation](../README.md) › Nettoyer, étape 10 sur 14 · 🇬🇧 [English](../../en/clean/10-review-bursts.md)
 
 Les téléphones et appareils photo prennent des rafales : cinq, dix, vingt photos en quelques
 secondes. La plupart se ressemblent, quelques-unes sont floues, une ou deux sont réussies. Les
@@ -90,7 +90,12 @@ seconde d'intervalle.
 - **⭐ la plus nette** : toujours **la première photo**, encadrée en vert. Les autres suivent
   de la plus nette à la moins nette : les floues arrivent en dernier. Plus la netteté est
   haute, plus l'image est piquée ; elle ne mesure que le flou, pas un œil fermé : le choix
-  reste le vôtre.
+  reste le vôtre. Quand `people` a regardé **toutes** les photos d'une série et que la moitié au
+  moins ont un visage, la ⭐ va à la photo dont les visages sont les plus nets (le moins net de
+  ses visages principaux, ceux d'au moins la moitié de son plus grand), puis à l'image entière ;
+  une photo sans visage passe après les autres, et une proposition dit *visages moins nets, à
+  30 % du meilleur*. Sinon, comme ci-dessus. Les visages viennent de l'index : `review` ne lance
+  jamais `people`.
 - **📦 proposée à l'écart**, en pointillés rouges, avec la raison sous l'image :
   - *netteté à 13 % de la meilleure* : nettement moins nette que la plus nette de sa série
     (sous 35 % de celle-ci). Ici, la dernière, à 30 contre environ 225 pour les autres ;

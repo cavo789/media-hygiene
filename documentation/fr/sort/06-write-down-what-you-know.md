@@ -129,6 +129,31 @@ Les catégories d'exemple sont des occasions et des activités : Fêtes, Vacance
 d'écran, Autres. Remplacez-les par les vôtres. Évitez une catégorie « Famille » ou
 « Portraits » : dans une collection familiale, elle avale la plupart des photos.
 
+## Un appareil dont l'horloge était fausse
+
+En voyage à l'étranger, le téléphone se met à l'heure locale ; l'appareil photo, non. Ses
+photos ont une heure de retard sur celles du téléphone, et un événement photographié avec les
+deux est coupé ou mélangé. Écrivez le décalage une fois dans `config.toml`, dans une table
+`[[classify.clocks]]`, à côté des règles :
+
+```toml
+[[classify.clocks]]
+camera = '(?i)canon eos 550d'      # cherché dans la marque et le modèle, comme la règle camera
+dates = "2010-07-01..2010-07-15"   # les jours de l'appareil lui-même, les faux
+shift = "+1h"                      # ce qu'il faut ajouter : + ou -, puis jours d, heures h, minutes m
+```
+
+`classify` et `tags` lisent les dates EXIF de cet appareil, ces jours-là, une heure plus tard :
+les photos des deux appareils forment un seul événement, dans le bon ordre. Rien n'est écrit
+dans les photos. La feuille Fichiers du classeur le dit dans la colonne **Date tirée de**
+(`appareil (EXIF), +1h : règle (?i)canon eos 550d`). Un décalage combine les unités
+(`-1d`, `+1d2h30m`) ; un décalage ou une plage illisible arrête l'exécution en nommant la
+règle, tout comme deux règles d'un même appareil qui partagent un jour.
+
+Une date **postérieure au jour de l'exécution** ne peut pas être juste : une horloge mal
+réglée. Le fichier va dans « à vérifier » (**Date tirée de** se termine par
+`dans le futur : à vérifier`), comme quand son dossier contredit l'année.
+
 ## Quelle règle l'emporte
 
 Les règles sont lues **dans l'ordre**, et la première dont le score atteint `sure` (80 par

@@ -31,10 +31,10 @@ def load_summaries(reports_dir: Path) -> list[ReportSummary]:
     Returns:
         The summaries.
     """
-    return [summary for summary, _folder in _reports(reports_dir)]
+    return [summary for summary, _folder in report_folders(reports_dir)]
 
 
-def _reports(reports_dir: Path) -> list[tuple[ReportSummary, Path]]:
+def report_folders(reports_dir: Path) -> list[tuple[ReportSummary, Path]]:
     """Read every report: its summary and the folder holding it, newest first.
 
     Args:
@@ -87,7 +87,7 @@ def prune_reports(reports_dir: Path, keep: int) -> list[str]:
     """
     removed = [
         folder
-        for _summary, folder in _reports(reports_dir)[keep:]
+        for _summary, folder in report_folders(reports_dir)[keep:]
         if _REPORT_FOLDER.fullmatch(folder.name) and not folder.is_symlink()
     ]
     for folder in removed:

@@ -89,14 +89,36 @@ A folder already includes its subfolders: `C:\Photos` is enough for `C:\Photos\2
 both would show each photo twice, and the tool **refuses** it rather than taking a photo for a
 duplicate of itself.
 
-## A real backup? Leave it out
+## A backup or an old disk? Compare it
 
-If `D:\backup` must stay a second copy of your photos, do not add it, or
-[exclude it](../clean/05-choose-the-kept-copy.md#exclude-a-folder). Otherwise the tool, rightly, sees its
-files as duplicates.
+Added like any folder (above), `D:\backup` would be seen, rightly, as duplicates of your photos. Mark it
+a **backup** instead: the tool reads it and compares it, never changes it, and never sets a copy
+aside because the backup has it too.
+
+```powershell
+mh audit --backup "D:\backup"
+```
+
+The audit then answers the two questions, in two lines:
+
+```text
+🗄️ D:\backup: 37 files of your photos are not in this backup (412.0 MB).
+   5 files are only in it, nowhere else (18.3 MB): copy them before wiping this disk.
+```
+
+- **Is my backup complete?** The first line: the files of your photos it lacks.
+- **Can I wipe this old disk?** The second line: its files that are nowhere else. Copy them
+  first; the tool never copies anything itself.
+
+The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `plan.csv`, list
+every file ([Compare a backup or an old disk](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
+A folder that must not even be read is [excluded](../clean/05-choose-the-kept-copy.md#exclude-a-folder) instead.
 
 ## Good to know
 
+- **A Google Photos Takeout** is one more folder: extract its ZIP files, then add the extracted
+  folder. Its `.json` files travel with their photos and date those without a date of their own
+  ([Google Photos Takeout](../reference-sidecars.md#google-photos-takeout)).
 - **A new terminal** knows `mh` through your PowerShell profile (step 1). Without that line,
   load it again: `. "$HOME\media-hygiene\mh.ps1"`.
 - **A new version**: `mh update` downloads it and writes `mh` again with your folders.

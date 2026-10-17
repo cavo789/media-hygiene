@@ -1,4 +1,8 @@
-"""Execute a plan: quarantine copies (deleted with `--delete`), delete empty files."""
+"""Execute a plan: quarantine copies (deleted with `--delete`), delete empty files.
+
+What is moved because a person or the tier chose so (near duplicates, burst shots,
+files chosen in `search`) is planned by `clean_aside`.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +10,9 @@ from dataclasses import replace
 from functools import partial
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.clean_aside import AsideMoves
+from media_hygiene.actions.clean_gone import mark_gone
+from media_hygiene.actions.clean_leftovers import Leftovers
 from media_hygiene.actions.clean_step import clean_labels, clean_step
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
@@ -17,41 +24,44 @@ from media_hygiene.actions.parallel import (
     shown_on,
     stopping_on,
 )
-from media_hygiene.actions.verify import (
-    burst_blocker,
-    change_blocker,
-    checked_removal,
-    near_blocker,
-    orphan_blocker,
-)
-from media_hygiene.constants import BrokenReason, MediaKind
+from media_hygiene.actions.sort_cleanup import FolderCleaner
+from media_hygiene.actions.verify import checked_removal
+from media_hygiene.constants import MediaKind
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from media_hygiene.actions.clean_folders import EmptiedFolders
     from media_hygiene.actions.clean_step import Planned
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.plan.models import CleanPlan, KeepDecision
-    from media_hygiene.plan.similar_models import BurstChoice, NearDecision
-    from media_hygiene.scan.models import BrokenFile, MediaFile
+    from media_hygiene.scan.models import MediaFile
 
 
 class CleanExecutor:
     """Acts on a few files at a time; a problem on one file never stops the others."""
 
-    def __init__(self, context: CleanContext) -> None:
+    def __init__(
+        self, context: CleanContext, folders: EmptiedFolders | None = None
+    ) -> None:
         """Prepare a run.
 
         Args:
             context: Journal, path mapper, quarantine folder and progress sink.
+            folders: The folders it may leave empty, removed last (0202).
         """
         self._context = context
+        self._folders = folders
         self._tally = Tally()
         self._changes = JournaledChanges(context, self._tally)
+        self._leftovers = Leftovers(self._changes, self._tally)
         self._labels = clean_labels(delete_copies=context.delete_copies)
 
     def run(self, plan: CleanPlan) -> Outcome:
         """Execute the plan: copies first, then what may be their keeper (a shot).
+
+        The folders left empty go last, in the same journal: `undo` recreates them
+        before it puts the files back. Ctrl+C stops the run before them.
 
         Args:
             plan: What to clean.
@@ -61,7 +71,7 @@ class CleanExecutor:
         """
         actions = list(self._actions(plan))
         orphans = [
-            (file, self._labels.orphan, partial(self._quarantine_orphan, file))
+            (file, self._labels.orphan, partial(self._leftovers.orphan, file))
             for file in plan.orphans
         ]
         step = clean_step(
@@ -78,7 +88,12 @@ class CleanExecutor:
         run_all(actions[plan.removable_count :], runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.
         run_all(orphans, replace(runner, workers=1))
+        mark_gone(self._changes, plan)  # no file moves: journal lines only (0224)
         self._context.progress.stop()
+        if self._folders is not None and self._folders.candidates:
+            cleaner = FolderCleaner(self._changes, self._tally)
+            found = cleaner.run(list(self._folders.candidates), self._folders.rules)
+            self._tally.folders_removed = found.removed
         return self._tally.freeze()
 
     def _actions(self, plan: CleanPlan) -> Iterator[Planned]:
@@ -94,28 +109,10 @@ class CleanExecutor:
             for file in decision.removable:
                 action = partial(self._delete_copy, decision, file)
                 yield file, self._labels.of_copy(file), action
-        yield from self._look_alikes(plan)
+        yield from AsideMoves(self._changes, self._tally, self._labels).planned(plan)
         for item in plan.broken:
-            action = partial(self._handle_broken, item)
+            action = partial(self._leftovers.broken, item)
             yield item.file, self._labels.of_broken(item), action
-
-    def _look_alikes(self, plan: CleanPlan) -> Iterator[Planned]:
-        """List the moves of pictures that look like a kept one: near, burst shots.
-
-        Args:
-            plan: What to clean.
-
-        Yields:
-            Each file, what the screen says of it, and its move to the quarantine.
-        """
-        for near in plan.near:
-            for file in near.removable:
-                action = partial(self._quarantine_near, near, file)
-                yield file, self._labels.near, action
-        for choice in plan.bursts:
-            for file in choice.discarded:
-                action = partial(self._quarantine_burst, choice, file)
-                yield file, self._labels.burst, action
 
     def _delete_copy(self, decision: KeepDecision, file: MediaFile) -> None:
         """Set aside one duplicate copy after a byte-for-byte check against the keeper.
@@ -140,61 +137,3 @@ class CleanExecutor:
             update={"sha256": decision.digest, "keeper": str(decision.keeper.path)},
         )
         self._changes.act(entry, file.path.unlink)
-
-    def _quarantine_near(self, decision: NearDecision, file: MediaFile) -> None:
-        """Move one near duplicate to the quarantine, where `undo` finds it again.
-
-        Args:
-            decision: The near-duplicate decision, holding the kept picture.
-            file: Copy to move.
-        """
-        blocker = near_blocker(decision.keeper.path, file)
-        if blocker is not None:
-            self._tally.skipped.append(Incident(file.path, blocker))
-            return
-        keeper = Origin(decision.keeper.path)
-        self._changes.quarantine(file, ActionKind.QUARANTINE_NEAR, keeper)
-
-    def _quarantine_burst(self, choice: BurstChoice, file: MediaFile) -> None:
-        """Move one burst shot a review set aside to the quarantine.
-
-        A series set aside whole has no kept shot to name in the journal.
-
-        Args:
-            choice: The review of its series, holding the shots kept.
-            file: Shot to move.
-        """
-        blocker = burst_blocker(choice.kept, file)
-        if blocker is not None:
-            self._tally.skipped.append(Incident(file.path, blocker))
-            return
-        keeper = Origin(choice.kept[0].path if choice.kept else None)
-        self._changes.quarantine(file, ActionKind.QUARANTINE_BURST, keeper)
-
-    def _handle_broken(self, item: BrokenFile) -> None:
-        """Delete an empty file, or move an unreadable one to the quarantine.
-
-        Args:
-            item: The broken file.
-        """
-        blocker = change_blocker(item.file)
-        if blocker is not None:
-            self._tally.skipped.append(Incident(item.file.path, blocker))
-            return
-        if item.reason is BrokenReason.EMPTY:
-            entry = self._changes.entry(item.file, ActionKind.DELETE_EMPTY)
-            self._changes.act(entry, item.file.path.unlink)
-            return
-        self._changes.quarantine(item.file, ActionKind.QUARANTINE)
-
-    def _quarantine_orphan(self, sidecar: MediaFile) -> None:
-        """Move an orphan sidecar to the quarantine, where `undo` finds it again.
-
-        Args:
-            sidecar: The sidecar, as audited.
-        """
-        blocker = orphan_blocker(sidecar)
-        if blocker is not None:
-            self._tally.skipped.append(Incident(sidecar.path, blocker))
-            return
-        self._changes.quarantine(sidecar, ActionKind.QUARANTINE_SIDECAR)

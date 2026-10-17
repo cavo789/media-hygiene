@@ -120,6 +120,8 @@
 {% if not is_clean %}{% include "_decisions.html.j2" %}{% endif %}
 {% endif %}
 
+{% include "_backups.html.j2" %}
+
 {% if report.groups.sample %}
 <h2 id="sample">🎲 {{ _("Random sample") }}</h2>
 <p class="muted">{{ _("Photo groups picked across the whole plan, the same ones on every run. The list after it starts with the largest files, often videos without preview.") }}</p>
@@ -132,6 +134,7 @@
 {% if report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
 {% endif %}
 
+{% include "_returned.html.j2" %}
 {% include "_similar.html.j2" %}
 {% include "_bursts.html.j2" %}
 
@@ -150,6 +153,14 @@
 {% endfor %}
 {% endif %}
 
+{% if report.broken.unread %}
+<h2 id="unread">🔌 {{ _("Files that could not be read this time") }}</h2>
+<p class="muted">{{ _("The disk, the network or the cloud did not give these files (a disk unplugged, an online-only OneDrive file while offline…). They are not broken: clean leaves them where they are, and the next audit reads them again.") }}</p>
+<ul class="files">
+  {% for item in report.broken.unread %}<li>{{ item.path }}{% if item.detail %} <span class="muted">— {{ item.detail }}</span>{% endif %}</li>{% endfor %}
+</ul>
+{% endif %}
+
 {% if report.orphans.paths %}
 <h2 id="orphans">🏷️ {{ _("Orphan sidecar files") }}</h2>
 <p class="muted">{{ _("Sidecars (.xmp, .aae, .thm) hold the metadata or edits of the photo of the same name, next to them. These ones have no such file left: they are moved to the quarantine, never deleted outright. A sidecar next to its photo is never touched.") }}</p>
@@ -159,7 +170,7 @@
 {% if report.orphans.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=report.orphans.hidden | number) }}</p>{% endif %}
 {% endif %}
 
-{% if not report.groups.largest and not report.broken.handled and not report.orphans.paths %}
+{% if not report.groups.largest and not report.broken.handled and not report.orphans.paths and not report.returned.items %}
 <p class="note">🎉 {{ _("Nothing to clean: no duplicate and no broken file.") }}</p>
 {% endif %}
 <p class="muted"><a href="../index.html">← {{ _("All reports") }}</a></p>

@@ -20,6 +20,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mounts import is_writable
+from media_hygiene.review.ending import run_server
 from media_hygiene.review.sort_app import PAGE_PATH, STATE_PATH, SortReviewApp
 from media_hygiene.review.sort_batch import SortBatchSession
 from media_hygiene.review.sort_choices import (
@@ -30,7 +31,7 @@ from media_hygiene.review.sort_choices import (
 )
 from media_hygiene.review.sort_files import SortSource
 from media_hygiene.services.page_choices import page_decisions, page_file
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.sort_inputs import find_workbook, open_elsewhere, plan_of
 from media_hygiene.services.writable import writable_tip
 

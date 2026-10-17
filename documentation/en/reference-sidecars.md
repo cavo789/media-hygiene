@@ -3,7 +3,8 @@
 [Documentation](README.md) › Reference · 🇫🇷 [Français](../fr/reference-sidecars.md)
 
 Sidecars are small files next to a photo or a video, holding its metadata or its edits: `.xmp`
-(Lightroom, digiKam, darktable), `.aae` (iPhone edits), `.thm` (camcorder thumbnails). A sidecar
+(Lightroom, digiKam, darktable), `.aae` (iPhone edits), `.thm` (camcorder thumbnails), and
+the `.json` files of a [Google Photos Takeout](#google-photos-takeout). A sidecar
 belongs to the files of its folder with the same name: `IMG_1.xmp` to `IMG_1.jpg` or
 `IMG_1.CR2`, and `IMG_1.CR2.xmp` to `IMG_1.CR2`, case ignored.
 
@@ -27,3 +28,33 @@ another copy *with* its edits, name its folder in [`--prefer`](clean/05-choose-t
 
 In the audit, orphan sidecars are counted on their own line, and the HTML report lists them in
 the *Orphan sidecar files* section ([screenshot](clean/04-html-report.md#broken-files-and-orphan-sidecars)).
+
+## Google Photos Takeout
+
+Google Takeout (takeout.google.com) downloads a copy of your Google Photos as ZIP files. Extract
+them, then add the extracted folder like any other one (step 3): its photos are compared with
+yours, and its `.json` files are handled as sidecars.
+
+- **Each `.json` belongs to its photo or video**: `IMG_1234.jpg.json` (older Takeouts) or
+  `IMG_1234.jpg.supplemental-metadata.json` (newer ones), also when Google cut the name short
+  (`.supplemental-me.json`, a long photo name cut), moved the number of a duplicate name
+  (`IMG_1234.jpg(1).json` for `IMG_1234(1).jpg`) or wrote `_` for `&` and `?`. An edited
+  version (`IMG_1234-edited.jpg`) shares its original's `.json`, or has it alone when the
+  original is gone.
+- **It travels with its photo**: `clean` sets it aside once its photo is gone, `sort` moves it
+  with its photo, `undo` puts it back. A `.json` that describes no file of its folder is left
+  alone.
+- **Its date and place are used**: a photo or video without a date of its own (a video, a
+  screenshot, a picture received) is dated by `classify` and `tags` from the `.json`, after its
+  own EXIF or video date and before its name; its position counts like a GPS position for the
+  `place` and `trip` rules and the place words. The photos themselves are never written to.
+  This needs the cache (`/cache`): the `.json` files are read once, during the audit.
+- **Year folders** (`Photos from 2019`) are generic folder names: between identical copies, the
+  one in an album folder is kept.
+- **An edit and its original** are never near duplicates of each other: both stay.
+
+Not checked on a real Takeout (none was at hand): these name rules come from the tools that
+read Takeouts. The description of a `.json` does not give words to `search` yet, an edited
+version's suffix is recognised in English only (`-edited`), and a `.json` whose cut name was
+renumbered by `sort` (` (2)`) no longer finds its photo. Tell us what your Takeout looks like
+if it differs.
