@@ -1,12 +1,12 @@
 """Folders named after a town (`2017/Durbuy`): a place told by the folder, to check.
 
 Few photos carry a GPS position; their folders often name where they were taken. A
-folder matches only when its whole name is a town's (case and accents aside), never a
-word inside it, and only towns of `folder_town_min_population` inhabitants count. Among
-homonyms, the countries of the collection's GPS photos and of home win, then the most
-populous. Month and season names are never towns (`Mai`, `Été`). The located photos of
-the folder have the last word: farther than `trip_merge_max_km` from the town, the
-folder is not named after it.
+folder matches only when its whole name is a town's (case, accents and hyphens aside),
+never a word inside it, and only towns of `folder_town_min_population` inhabitants
+count. Among homonyms, the countries of the collection's GPS photos and of home win,
+then the most populous. Months and seasons are never towns (`Mai`, `Été`). The located
+photos of the folder have the last word: farther than `trip_merge_max_km` from the
+town, the folder is not named after it.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.whereabouts import Spot
 from media_hygiene.date_names import MONTHS
 from media_hygiene.geo.distance import Point, centre, distance_km
-from media_hygiene.geo.folding import fold
+from media_hygiene.geo.folding import town_key
 from media_hygiene.tags.vocabulary import SEASON_NAMES
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ _GRID: Final = 10  # GPS positions rounded to 0.1 degree to find their countries
 _THOUSAND: Final = 1000
 # Words of dates are folder names first: `2017/Mai` is May, not Mai in Kenya.
 _NOT_TOWNS: Final = frozenset(
-    fold(word) for words in (*MONTHS, *SEASON_NAMES.values()) for word in words
+    town_key(word) for words in (*MONTHS, *SEASON_NAMES.values()) for word in words
 )
 
 
@@ -56,7 +56,7 @@ class _Towns:
         Returns:
             The town, the preferred country first, then the most populous; None.
         """
-        found = self.by_name.get(fold(folder), ())
+        found = self.by_name.get(town_key(folder), ())
         return max(
             found,
             key=lambda town: (town.country in self.countries, town.population_k),
@@ -176,13 +176,13 @@ def _towns(
         The index.
     """
     least = settings.folder_town_min_population
-    ignored = _NOT_TOWNS | {fold(name) for name in settings.folder_town_ignore}
+    ignored = _NOT_TOWNS | {town_key(name) for name in settings.folder_town_ignore}
     by_name: dict[str, list[Town]] = defaultdict(list)
     for index, names in enumerate(zip(towns.geonames, towns.names, strict=True)):
         town = towns.town(index)
         if town.population_k * _THOUSAND < least:
             continue
-        for key in {fold(name) for name in names} - ignored:
+        for key in {town_key(name) for name in names} - ignored:
             by_name[key].append(town)
     grid = {
         Point(round(p.latitude * _GRID) / _GRID, round(p.longitude * _GRID) / _GRID)

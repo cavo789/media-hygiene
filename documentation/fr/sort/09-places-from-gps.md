@@ -201,7 +201,8 @@ match = "folder_town"
 ```
 
 - Un dossier n'est reconnu que si son **nom entier** est celui d'une ville (sans tenir compte
-  des majuscules ni des accents) : `Durbuy` l'est, `Durbuy 2017` et `Week-end à Durbuy` non. Le
+  des majuscules, des accents, des traits d'union, des apostrophes ni des soulignés : `Saint-Jean
+  de Luz` est Saint-Jean-de-Luz) : `Durbuy` l'est, `Durbuy 2017` et `Week-end à Durbuy` non. Le
   dossier le plus proche au-dessus d'une photo compte.
 - Seules les villes d'au moins `folder_town_min_population` habitants (5 000) comptent : un
   village de 3 000 habitants n'est pas cherché. Les noms de mois et de saisons ne sont jamais des

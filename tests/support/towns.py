@@ -35,6 +35,7 @@ TOWNS: Final = (
     ("Stoumont", 50.40592, 5.80840, "PPL", "BE", "WAL", 3000),
     ("Nice", 43.70313, 7.26608, "PPLA2", "FR", "93", 342669),
     ("Bruges", 44.88333, -0.61667, "PPL", "FR", "75", 12000),
+    ("Saint-Jean-de-Luz", 43.38871, -1.66324, "PPL", "FR", "75", 14000),
 )
 REGIONS: Final = (
     ("BE.BRU", "Brussels Capital"),

@@ -114,3 +114,28 @@ def test_ignored_names_are_never_towns(towns: Gazetteer) -> None:
     """`folder_town_ignore`: a first name that is a town somewhere, any case."""
     ignored = run(shots("Nice"), towns, folder_town_ignore=("NICE",))
     assert {p.reason for p in ignored} == {SortReason.NO_SIGNAL}
+
+
+@pytest.mark.parametrize(
+    "folder",
+    [
+        "Saint-Jean de Luz",
+        "saint jean de luz",
+        "Saint_Jean_de_Luz",
+        "Saint\u2013Jean\u2013de\u2013Luz",
+    ],
+)
+def test_hyphens_spaces_and_underscores_do_not_matter(
+    towns: Gazetteer, folder: str
+) -> None:
+    """0229: `Saint-Jean de Luz` is GeoNames' Saint-Jean-de-Luz."""
+    found = run(shots(f"2019/{folder}"), towns)
+    assert {p.category for p in found} == {"France/Saint-Jean-de-Luz"}
+
+
+def test_an_ignored_name_ignores_its_hyphenated_spelling(towns: Gazetteer) -> None:
+    """`folder_town_ignore = ["Saint Jean de Luz"]` ignores `Saint-Jean-de-Luz` too."""
+    ignored = run(
+        shots("Saint-Jean-de-Luz"), towns, folder_town_ignore=("Saint Jean de Luz",)
+    )
+    assert {p.reason for p in ignored} == {SortReason.NO_SIGNAL}

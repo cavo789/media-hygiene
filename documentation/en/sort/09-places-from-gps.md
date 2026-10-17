@@ -190,8 +190,9 @@ name = "Towns of the folders"
 match = "folder_town"
 ```
 
-- A folder matches only when its **whole name** is a town's (case and accents aside):
-  `Durbuy` does, `Durbuy 2017` and `Weekend in Durbuy` do not. The nearest such folder above a
+- A folder matches only when its **whole name** is a town's (case, accents, hyphens,
+  apostrophes and underscores aside: `Saint-Jean de Luz` is Saint-Jean-de-Luz): `Durbuy` does,
+  `Durbuy 2017` and `Weekend in Durbuy` do not. The nearest such folder above a
   photo counts.
 - Only towns of `folder_town_min_population` inhabitants (5,000) count: a village of 3,000
   is not looked for. Month and season names are never towns (`Mai` is May, not Mai in Kenya).
