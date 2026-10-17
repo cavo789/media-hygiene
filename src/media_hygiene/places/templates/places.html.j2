@@ -33,6 +33,10 @@
   "noFolder": _("No folder named after a town holds photos without GPS."),
   "folderMissing": _("Not found: renamed or moved? Rename it back, or forget its position."),
   "folderHint": _("Drag the pin where these photos were taken, then save: 'xmp' writes that position into their sidecars ([tags] xmp_folder_gps = true)."),
+  "toPlace": _("To place"),
+  "placed": _("Placed"),
+  "noMatch": _("No folder of that name."),
+  "townHint": _("{town} is a town: 'classify' already names its photos. Keep it as a place only for exact borders (an OpenStreetMap area) or another name."),
   "folderSaved": _("Position saved in config.toml."),
   "folderForgotten": _("Position taken out of config.toml."),
   "folderIgnored": _("Saved in config.toml: this name is no town."),
@@ -120,6 +124,8 @@
   details.fold > summary { font-size: .95rem; font-weight: 600; color: var(--muted); cursor: pointer;
                            margin-bottom: 6px; }
   details.fold .count { font-weight: normal; }
+  details.fold.sub { margin: 8px 0 0 8px; }
+  #folderFilter { margin-top: 4px; }
   li.cluster { display: flex; gap: 4px; align-items: center; }
   li.cluster button.link { flex: 1; width: auto; }
   li.cluster button.count { padding: 2px 8px; font: inherit; font-size: .85rem; white-space: nowrap;
@@ -181,7 +187,8 @@
 <body>
 <aside>
   <h1>📍 {{ _("Your places") }}</h1>
-  <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}</p>
+  <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}
+    {{ _("A place is for a spot the towns list does not know: home, the grandparents', the office. Towns are named on their own.") }}</p>
   <input id="search" type="search" autocomplete="off"
          placeholder="{{ _('Find a town (offline)…') }}" aria-label="{{ _('Find a town') }}">
   <ul id="towns"></ul>
@@ -199,6 +206,7 @@
     <strong id="editorTitle"></strong>
     <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
     <input id="name" type="text" maxlength="120" required>
+    <p id="townHint" class="hint" role="note" hidden></p>
     <div id="circleOnly">
     <label for="radius">{{ _("Radius, in metres") }}</label>
     <input id="radius" type="range" min="20" max="3000" step="10">
@@ -227,7 +235,17 @@
   </details>
   <details id="foldersFold" class="fold" open>
     <summary>{{ _("Folders named after a town") }} <span id="foldersCount" class="count"></span></summary>
-    <ul id="folders"></ul>
+    <input id="folderFilter" type="search" autocomplete="off"
+           placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
+           title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">
+    <details id="todoFold" class="fold sub" open>
+      <summary>{{ _("To place") }} <span id="todoCount" class="count"></span></summary>
+      <ul id="foldersTodo"></ul>
+    </details>
+    <details id="placedFold" class="fold sub">
+      <summary>{{ _("Placed") }} <span id="placedCount" class="count"></span></summary>
+      <ul id="foldersPlaced"></ul>
+    </details>
   </details>
   <details id="asideFold" class="fold">
     <summary>{{ _("Set aside from the map") }} <span id="asideCount" class="count"></span></summary>
@@ -274,7 +292,7 @@
                   search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
                   cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
                   folderPhotos: {{ folder_photos | tojson }}, folder: {{ folder_path | tojson }},
-                  aside: {{ aside_path | tojson }}, photos: {{ photos_path | tojson }} };
+                  aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -332,7 +350,7 @@
   // The reader's folds, kept in this browser only; a private window keeps none.
   const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
   // Only a click of the reader is remembered, not a list the page opens itself.
-  for (const id of ["placesFold", "clustersFold", "foldersFold", "asideFold"]) {
+  for (const id of ["placesFold", "clustersFold", "foldersFold", "todoFold", "placedFold", "asideFold"]) {
     byId(id).querySelector("summary").addEventListener("click", () => {
       folds[id] = !byId(id).open;
       try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
@@ -347,6 +365,9 @@
   const videos = (count) => counted(T.videos, count);
   const holds = (pictures, filmed) =>
     [pictures || !filmed ? photos(pictures) : "", filmed ? videos(filmed) : ""].filter(Boolean).join(", ");
+  // Sorted by the name shown, case and accents ignored ("Écluse" among the E); the file's order is kept.
+  const collator = new Intl.Collator(document.documentElement.lang, { sensitivity: "base" });
+  const plain = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const lastName = (folder) => folder.split(/[\\/]/).filter(Boolean).pop() || folder;
 
   // The drawer, over the right of the map: the photos of a cluster or of a folder, grouped
@@ -538,23 +559,45 @@
   // The folders named after a town, or placed: their photos without GPS, a pin to drag.
   let folders = [], ignored = [], folderFlash = null;
   const filesOf = (folder) => holds(folder.count - folder.videos, folder.videos);
+  // The name a folder line shows: its town, else its last folder name.
+  const folderName = (folder) => folder.town || lastName(folder.folder);
+  const byFolderName = (first, second) =>
+    collator.compare(folderName(first), folderName(second)) || first.folder.localeCompare(second.folder);
+  // The folders typed for: the name shown and the host path, case and accents ignored.
+  const folderMatches = (folder, typed) => !typed || plain(`${folderName(folder)}\n${folder.folder}`).includes(typed);
+  const countOf = (shown, total) => (shown === total ? `(${total})` : `(${shown} / ${total})`);
   function drawFolders() {
-    const list = byId("folders"); list.replaceChildren();
-    byId("foldersCount").textContent = `(${folders.length})`;
-    if (!folders.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noFolder; list.append(li); }
-    for (const folder of folders) {
-      const name = folder.town || lastName(folder.folder);
-      const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
-      const li = item(list, `${mark}${name} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder.rank));
-      li.title = folder.folder; li.dataset.drawer = `folder:${folder.folder}`; li.classList.add("folder");
-      if (!folder.found) li.classList.add("missing");
-      // A town guess only: a position saved (📌) is the user's, forgotten in the drawer.
-      if (folder.town && !folder.saved) tail(li, "✕", T.notTown, () => ignoreName(folder));
-      if (folder.folder === folderFlash) { unfold("foldersFold"); flash(li); }
-    }
+    const typed = plain(byId("folderFilter").value.trim());
+    // A copy is sorted: `folders` keeps the server's order, whose index is the rank the API names.
+    const seen = folders.filter((folder) => folderMatches(folder, typed));
+    const placed = seen.filter((folder) => folder.saved).sort(byFolderName);
+    // Saved but not found (renamed, moved): at the top of "Placed", where they are seen.
+    const lines = [["foldersTodo", seen.filter((folder) => !folder.saved).sort(byFolderName), "todoFold"],
+                   ["foldersPlaced", [...placed.filter((f) => !f.found), ...placed.filter((f) => f.found)], "placedFold"]];
+    const total = [folders.filter((folder) => !folder.saved).length, folders.filter((folder) => folder.saved).length];
+    byId("foldersCount").textContent = countOf(seen.length, folders.length);
+    lines.forEach(([id, rows, fold], index) => {
+      const list = byId(id); list.replaceChildren();
+      byId(fold.replace("Fold", "Count")).textContent = countOf(rows.length, total[index]);
+      if (!rows.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = folders.length ? T.noMatch : T.noFolder; list.append(li); }
+      for (const folder of rows) drawFolder(list, folder, fold);
+    });
     folderFlash = null;
     highlight();
   }
+  function drawFolder(list, folder, fold) {
+    const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
+    const li = item(list, `${mark}${folderName(folder)} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder.rank));
+    li.title = folder.folder; li.dataset.drawer = `folder:${folder.folder}`; li.classList.add("folder");
+    if (!folder.found) li.classList.add("missing");
+    // A town guess only: a position saved (📌) is the user's, forgotten in the drawer.
+    if (folder.town && !folder.saved) tail(li, "✕", T.notTown, () => ignoreName(folder));
+    if (folder.folder === folderFlash) { unfold("foldersFold"); unfold(fold); flash(li); }
+  }
+  byId("folderFilter").addEventListener("input", drawFolders);
+  byId("folderFilter").addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && byId("folderFilter").value) { event.stopPropagation(); byId("folderFilter").value = ""; drawFolders(); }
+  });
   async function loadFolders() {
     const response = await fetch(paths.folders).catch(() => null);
     if (!response || !response.ok) return;
@@ -654,8 +697,15 @@
     }
     const places = byId("places"); places.replaceChildren();
     if (!state.places.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noPlace; places.append(li); }
-    for (const place of state.places) {
+    // Home first, then by name; `state.places` keeps the file's order (a place's key is its rank there).
+    const sorted = [...state.places].sort((first, second) => Number(second.home) - Number(first.home) || collator.compare(first.name, second.name));
+    for (const place of sorted) {
       const li = item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+      if (place.town) {  // the same sentence as the editor's hint
+        const mark = document.createElement("span");
+        mark.textContent = " ⓘ"; mark.className = "muted"; mark.title = fill(T.townHint, { town: place.town });
+        li.firstChild.append(mark);
+      }
       if (place.name === flashName) { unfold("placesFold"); flash(li); }
     }
     flashName = null;
@@ -696,7 +746,7 @@
       });
     } else { editMarker = null; }
     byId("editorTitle").textContent = editing.key === null ? T.newPlace : editing.name;
-    byId("name").value = editing.name;
+    byId("name").value = editing.name; showTownHint();
     byId("radius").value = editing.radius_m; byId("radiusValue").value = editing.radius_m;
     byId("home").checked = editing.home;
     byId("delete").hidden = editing.key === null;
@@ -728,6 +778,21 @@
     const still = state.places.some((known) => (known.hand || []).some((photo) => photo.sha256 === sha256));
     status(still ? T.notSaved : T.takenBack, still ? "error" : "saved");
   }
+  // A name like a town's, near: a hint under the name, never a refusal (0239).
+  let hintAsked = 0;
+  async function showTownHint() {
+    const note = byId("townHint"), asked = ++hintAsked, name = byId("name").value.trim();
+    note.hidden = true;
+    if (!editing || !name) return;
+    const response = await fetch(paths.hint, { method: "POST", headers: { "Content-Type": "application/json" },
+                                               body: JSON.stringify({ name, latitude: editing.latitude, longitude: editing.longitude }) }).catch(() => null);
+    if (!response || !response.ok || asked !== hintAsked) return;
+    const { town } = await response.json();
+    if (asked !== hintAsked || !town) return;
+    note.textContent = fill(T.townHint, { town }); note.hidden = false;
+  }
+  let hintTimer = null;
+  byId("name").addEventListener("input", () => { clearTimeout(hintTimer); hintTimer = setTimeout(showTownHint, 300); });
   function edit(place) {
     editing = { ...place };
     if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1), { paddingBottomRight: [hidden(), 0] });
@@ -834,6 +899,8 @@
     byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
     byId("clustersFold").open = folds.clustersFold ?? true;
     byId("foldersFold").open = folds.foldersFold ?? true;
+    byId("todoFold").open = folds.todoFold ?? true;
+    byId("placedFold").open = folds.placedFold ?? false;
     byId("asideFold").open = folds.asideFold ?? false;
     draw(); loadFolders();
     const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];

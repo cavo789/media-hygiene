@@ -62,7 +62,8 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   it to see it larger, with its full path (← and → for the others, Esc back to the grid). The
   line you clicked stays highlighted; click it again, ✕ or Esc to close the drawer.
 - **Fold a list** by clicking its title: *Your places (10)* folds by itself from 8 places on,
-  so that the clusters stay in reach; your browser remembers your choice.
+  so that the clusters stay in reach; your browser remembers your choice. *Your places* is sorted
+  by name, case and accents ignored, home (🏠) first; the file keeps its own order.
 - **Folders named after a town** lists the folders whose name is a town's (`Douarnenez`,
   `Saint-Jean de Luz`) and that hold photos without GPS: *📁 Douarnenez — 37 photos without GPS*.
   Click one: the map goes to the town, a green pin marks its centre and the same drawer shows its
@@ -73,6 +74,13 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   sidecars. **Forget its position** takes it out; **Not a town** adds the folder's name to
   `[classify] folder_town_ignore` (a folder `Martin` is a first name, not Martin in Slovakia).
   A saved folder renamed or moved since shows ⚠ *not found*: rename it back, or forget it.
+
+  The list has two sub-lists, each with its count: **To place** (📁, open) and **Placed** (📌,
+  folded; the folders not found, ⚠, at its top). Each is sorted by the name shown, case and
+  accents ignored (*Écluse* among the E); saving a position moves the line from one to the other
+  and flashes it, **Forget its position** moves it back. The folders set aside as *not a town*
+  are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
+  type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
 - **✕ at the end of a line** sets it aside in one click, without a question (Restore undoes
   it):
   - on a cluster (*Not a place worth a name*: two children in a car), the cluster leaves the list
@@ -100,6 +108,11 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   given, it leaves the list); the place's label says *+ 3 photos placed by hand*, and its editor
   lists them, each with ✕ to take it back. Renaming the place keeps them; deleting it asks, and
   takes them with it.
+- **A place is not a town.** It is for a spot the towns list does not know (home, the
+  grandparents', the office): [`classify`](classify.md) already names the towns from the
+  GeoNames list. Type a name like a town's within about 10 km (*Blankenberge*) and a hint says
+  so under the name; the place shows ⓘ in *Your places*. It is only a hint, the save still
+  works: keep such a place for exact borders (an OpenStreetMap area) or another name.
 - **Click a circle, or anywhere**, to name a place; set its radius with the slider, drag its
   marker. Tick **Home** for your home: trips are measured from it.
 - **Find a town** searches the towns shipped with the image, offline.

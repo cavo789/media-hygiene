@@ -13,13 +13,13 @@ from typing import TYPE_CHECKING
 from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.place_photos import HandPhoto, PlacePhotos
-from media_hygiene.places.board import renamed
 from media_hygiene.places.config_file import PlaceEdit, read_places, save_places
 from media_hygiene.places.config_photos import (
     give_photos,
     read_place_photos,
     take_back,
 )
+from media_hygiene.places.renames import renamed
 
 if TYPE_CHECKING:
     from pathlib import Path

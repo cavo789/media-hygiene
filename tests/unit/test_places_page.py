@@ -34,6 +34,7 @@ def _page() -> str:
         folder_photos="/api/folder/",
         folder_path="/api/folder",
         aside_path="/api/aside",
+        hint_path="/api/hint",
         photos_path="/api/place-photos",
         osm_path="",
         osm_host="",
@@ -90,3 +91,51 @@ def test_one_drawer_replaces_both_panels() -> None:
     assert 'id="photos"' not in page
     assert 'id="folderPanel"' not in page
     assert page.index('id="map"') < page.index('id="drawer"')
+
+
+def test_your_places_are_sorted_by_name_with_home_first() -> None:
+    """TODO 0236: the page sorts a copy (the file's order is each place's key)."""
+    page = _page()
+
+    assert (
+        'new Intl.Collator(document.documentElement.lang, { sensitivity: "base" })'
+        in page
+    )
+    assert (
+        "[...state.places].sort((first, second) =>"
+        " Number(second.home) - Number(first.home)" in page
+    )
+    assert "collator.compare(first.name, second.name)" in page
+    assert "for (const place of sorted)" in page
+
+
+def test_the_folders_are_split_sorted_and_filtered_by_the_page() -> None:
+    """TODO 0238: to place / placed, by name, a filter box; the rank is kept."""
+    page = _page()
+
+    assert page.index('id="foldersTodo"') < page.index('id="foldersPlaced"')
+    assert 'id="folderFilter"' in page
+    assert 'id="todoFold" class="fold sub" open' in page  # to place: open
+    assert 'id="placedFold" class="fold sub">' in page  # placed: folded
+    assert "folders.filter((folder) => folderMatches(folder, typed))" in page
+    assert ".sort(byFolderName)" in page
+    assert "folders.sort" not in page  # a copy is sorted: the index is the API's rank
+    assert "plain(" in page
+    assert 'normalize("NFD")' in page
+    assert 'event.key === "Escape"' in page
+    assert "const mark = !folder.found" in page
+
+
+def test_a_place_named_like_a_town_gets_a_hint_and_the_page_says_what_places_are() -> (
+    None
+):
+    """TODO 0239: the editor's hint, the mark in the list, the intro sentence."""
+    page = _page()
+
+    assert 'id="townHint"' in page
+    assert "paths.hint" in page
+    hint = str(_texts()["townHint"])
+    assert "{town}" in hint
+    assert "classify" in hint
+    assert "if (place.town)" in page
+    assert "the grandparents'" in page

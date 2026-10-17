@@ -23,6 +23,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.places.app import (
     FOLDER_PATH,
+    HINT_PATH,
     PAGE_POLICY,
     PAGE_REFERRER,
     SEARCH_PATH,
@@ -124,6 +125,7 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
         folder_photos=FOLDER_PREFIX,
         folder_path=FOLDER_PATH,
         aside_path=ASIDE_PATH,
+        hint_path=HINT_PATH,
         photos_path=PHOTOS_PATH,
         osm_path=OSM_PATH if osm else "",
         osm_host=osm.host if osm else "",

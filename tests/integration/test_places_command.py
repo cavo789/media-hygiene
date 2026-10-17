@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
 from typer.testing import CliRunner
@@ -93,3 +93,35 @@ def test_without_an_index_the_map_is_empty_but_works(
     result = run(CliRunner(), "places")
     assert result.exit_code == 0, result.output
     assert "No photo with a GPS position in the index" in result.output
+
+
+def test_a_place_named_like_a_town_nearby_says_so_and_still_saves(
+    garden: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """TODO 0239: a hint for a town nearby, none for a nickname or a far namesake."""
+    hints: list[str] = []
+    seen: dict[str, Any] = {}
+    beach = {"latitude": 51.3135, "longitude": 3.1325}
+
+    async def ask(app: PlacesApp) -> None:
+        for name, where in (
+            ("Blankenberge", beach),
+            ("blankenberge ", {"latitude": 51.35, "longitude": 3.2}),  # 5 km, folded
+            ("Geer chez papy", beach),
+            ("Blankenberge", {"latitude": -33.9, "longitude": 151.2}),
+        ):
+            answer = await call(app, "POST /api/hint", {"name": name, **where})
+            hints.append(json.loads(answer.body)["town"])
+        place = {"key": None, "name": "Blankenberge", "radius_m": 100, "home": False}
+        saved = await call(app, "POST /api/places", {"places": [place | beach]})
+        seen["state"] = json.loads(saved.body)
+        seen["bad"] = (await call(app, "POST /api/hint", {"name": "x"})).status
+
+    monkeypatch.setattr(places_service, "run_server", fake_server(ask))
+    assert run(garden, "places").exit_code == 0
+    assert hints == ["Blankenberge", "Blankenberge", "", ""]
+    assert seen["state"]["places"][0]["town"] == "Blankenberge"
+    assert [place.name for place in read_places(locations.config_file)] == [
+        "Blankenberge"
+    ]
+    assert seen["bad"] == 400

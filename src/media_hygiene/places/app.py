@@ -23,6 +23,7 @@ from media_hygiene.places.folders import FolderAct
 from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
 from media_hygiene.places.photos import PhotoSources, photo_response
 from media_hygiene.places.posts import BOARD_POSTS, board_post
+from media_hygiene.places.town_hint import HintAsk
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
@@ -40,6 +41,9 @@ if TYPE_CHECKING:
 PAGE_PATH: Final = "/"
 STATE_PATH: Final = "/api/state"
 SEARCH_PATH: Final = "/api/search"
+HINT_PATH: Final = (
+    "/api/hint"  # POST: does a place of that name duplicate a town (0239)
+)
 FOLDER_PATH: Final = "/api/folder"  # POST: save, forget or ignore a folder (0231)
 # Sends only `http://127.0.0.1:<port>` to the tile server, which asks for a referrer.
 PAGE_REFERRER: Final = "strict-origin"
@@ -50,7 +54,7 @@ PAGE_POLICY: Final = (
     "frame-ancestors 'none'"
 )
 _GET, _POST = "GET", "POST"
-_POSTS: Final = frozenset({SEARCH_PATH, OSM_PATH, FOLDER_PATH, *BOARD_POSTS})
+_POSTS: Final = frozenset({SEARCH_PATH, OSM_PATH, FOLDER_PATH, HINT_PATH, *BOARD_POSTS})
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,7 +110,8 @@ class PlacesApp:
             return await search_osm(self.osm, request)
         if path in BOARD_POSTS:
             return await board_post(self.board, request)
-        return (self._folder if path == FOLDER_PATH else self._search)(request)
+        routed = {HINT_PATH: self._hint, FOLDER_PATH: self._folder}
+        return routed.get(path, self._search)(request)
 
     async def _get(self, path: str) -> Response:
         """Serve the page, its state, a cluster's photos, or Leaflet.
@@ -143,6 +148,21 @@ class PlacesApp:
         except (ValueError, OSError) as exc:  # ValidationError included
             return save_refused(exc)
         return json_response(HTTPStatus.OK, found)
+
+    def _hint(self, request: Request) -> Response:
+        """Say whether a place of that name duplicates a town nearby.
+
+        Args:
+            request: `POST /api/hint`.
+
+        Returns:
+            `{"town": name}`, the town's name or "".
+        """
+        try:
+            ask = HintAsk.model_validate_json(request.body)
+        except ValidationError:
+            return Response(HTTPStatus.BAD_REQUEST)
+        return json_response(HTTPStatus.OK, self.board.hint(ask))
 
     def _search(self, request: Request) -> Response:
         """Find towns by name.

@@ -444,6 +444,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A place is for a spot the towns list does not know: home, the "
+"grandparents', the office. Towns are named on their own."
+msgstr ""
+
+msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
 msgstr ""
@@ -1776,6 +1781,9 @@ msgstr ""
 msgid "Films and series"
 msgstr ""
 
+msgid "Filter the folders"
+msgstr ""
+
 msgid "Final folder"
 msgstr ""
 
@@ -2746,6 +2754,9 @@ msgstr ""
 msgid "No folder named after a town holds photos without GPS."
 msgstr ""
 
+msgid "No folder of that name."
+msgstr ""
+
 msgid "No folder pairs: nothing to review."
 msgstr ""
 
@@ -3371,6 +3382,9 @@ msgid "Place"
 msgstr ""
 
 msgid "Place (video tag)"
+msgstr ""
+
+msgid "Placed"
 msgstr ""
 
 #, python-brace-format
@@ -4578,6 +4592,9 @@ msgstr ""
 msgid "The model {model} is not installed at {url}."
 msgstr ""
 
+msgid "The name shown and the folder's path; Esc empties the box."
+msgstr ""
+
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
 "who gets a copy of them can read who is on them."
@@ -5009,6 +5026,9 @@ msgstr ""
 msgid "To move"
 msgstr ""
 
+msgid "To place"
+msgstr ""
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 
@@ -5070,6 +5090,9 @@ msgid "Type a name first."
 msgstr ""
 
 msgid "Type a name or a category, or leave it in place."
+msgstr ""
+
+msgid "Type a name to filter the folders"
 msgstr ""
 
 #, python-brace-format
@@ -8088,6 +8111,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{total} files found; the first {shown} are shown."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{town} is a town: 'classify' already names its photos. Keep it as a place"
+" only for exact borders (an OpenStreetMap area) or another name."
 msgstr ""
 
 #, python-brace-format

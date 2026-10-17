@@ -576,6 +576,14 @@ msgstr ""
 "chaque fichier deux fois."
 
 msgid ""
+"A place is for a spot the towns list does not know: home, the "
+"grandparents', the office. Towns are named on their own."
+msgstr ""
+"Un lieu sert pour un endroit que la liste des villes ne connaît pas : la "
+"maison, chez les grands-parents, le bureau. Les villes sont nommées d"
+"'elles-mêmes."
+
+msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
 msgstr ""
@@ -2210,6 +2218,9 @@ msgstr "Fichiers à déplacer"
 msgid "Films and series"
 msgstr "Films et séries"
 
+msgid "Filter the folders"
+msgstr "Filtrer les dossiers"
+
 msgid "Final folder"
 msgstr "Dossier final"
 
@@ -3367,6 +3378,9 @@ msgstr ""
 msgid "No folder named after a town holds photos without GPS."
 msgstr "Aucun dossier au nom d'une ville ne contient de photos sans GPS."
 
+msgid "No folder of that name."
+msgstr "Aucun dossier de ce nom."
+
 msgid "No folder pairs: nothing to review."
 msgstr "Aucune paire de dossiers : rien à passer en revue."
 
@@ -4079,14 +4093,14 @@ msgid ""
 " a photo edited since falls back to its GPS. path is where it was, for "
 "you to read only. Deleting a place on the map deletes its entry."
 msgstr ""
-"Les photos données à la main à l'un de vos lieux, écrites par la carte de "
-"'places' (Donner ces photos à…) quand leur position GPS est fausse, comme "
-"un téléphone à l'intérieur en enregistre souvent : elles vont à ce lieu "
-"quoi que dise leur position, et leurs voyages sont mesurés depuis lui. "
-"Elles sont reconnues à leur contenu (taille, puis SHA-256) : les déplacer "
-"ou les renommer ne change rien ; une photo modifiée depuis revient à son "
-"GPS. path est l'endroit où elle était, à lire pour vous seulement. "
-"Supprimer un lieu sur la carte supprime son entrée."
+"Les photos données à la main à l'un de vos lieux, écrites par la carte de"
+" 'places' (Donner ces photos à…) quand leur position GPS est fausse, "
+"comme un téléphone à l'intérieur en enregistre souvent : elles vont à ce "
+"lieu quoi que dise leur position, et leurs voyages sont mesurés depuis "
+"lui. Elles sont reconnues à leur contenu (taille, puis SHA-256) : les "
+"déplacer ou les renommer ne change rien ; une photo modifiée depuis "
+"revient à son GPS. path est l'endroit où elle était, à lire pour vous "
+"seulement. Supprimer un lieu sur la carte supprime son entrée."
 
 msgid "Photos placed by hand"
 msgstr "Photos placées à la main"
@@ -4119,6 +4133,9 @@ msgstr "Lieu"
 
 msgid "Place (video tag)"
 msgstr "Lieu (balise vidéo)"
+
+msgid "Placed"
+msgstr "Placés"
 
 #, python-brace-format
 msgid ""
@@ -5571,6 +5588,9 @@ msgstr "Le modèle {model} ne voit pas les images."
 msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
 
+msgid "The name shown and the folder's path; Esc empties the box."
+msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
+
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
 "who gets a copy of them can read who is on them."
@@ -6122,6 +6142,9 @@ msgstr ""
 msgid "To move"
 msgstr "À déplacer"
 
+msgid "To place"
+msgstr "À placer"
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 "Pour écarter toutes les photos, appuyez sur X : toute la rafale part en "
@@ -6196,6 +6219,9 @@ msgstr "Saisissez d'abord un nom."
 
 msgid "Type a name or a category, or leave it in place."
 msgstr "Tapez un nom ou une catégorie, ou laissez-le où il est."
+
+msgid "Type a name to filter the folders"
+msgstr "Tapez un nom pour filtrer les dossiers"
 
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
@@ -7551,8 +7577,7 @@ msgid "not created yet: the first clean creates it"
 msgstr "pas encore créée : le premier clean la crée"
 
 msgid "not found now: edited since, or its folder not mounted"
-msgstr ""
-"introuvable maintenant : modifiée depuis, ou son dossier n'est pas monté"
+msgstr "introuvable maintenant : modifiée depuis, ou son dossier n'est pas monté"
 
 msgid "not found where the plan or a sort put it"
 msgstr "introuvable là où le plan ou un tri l'a mis"
@@ -9715,6 +9740,15 @@ msgstr "{total} fichiers trouvés ; les {shown} premiers sont listés (--limit).
 #, python-brace-format
 msgid "{total} files found; the first {shown} are shown."
 msgstr "{total} fichiers trouvés ; les {shown} premiers sont affichés."
+
+#, python-brace-format
+msgid ""
+"{town} is a town: 'classify' already names its photos. Keep it as a place"
+" only for exact borders (an OpenStreetMap area) or another name."
+msgstr ""
+"{town} est une ville : « classify » nomme déjà ses photos. Gardez-la "
+"comme lieu seulement pour des frontières exactes (une zone OpenStreetMap)"
+" ou un autre nom."
 
 #, python-brace-format
 msgid "{undone}, read back from the disk at {time}."

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.geo.point import Point
 from media_hygiene.i18n import _
 from media_hygiene.places.board_state import BoardView, board_state
 from media_hygiene.places.config_aside import read_aside, restore, set_aside
@@ -18,12 +19,13 @@ from media_hygiene.places.config_file import read_places, save_places
 from media_hygiene.places.config_photos import take_back
 from media_hygiene.places.drawer_rows import Shown, drawer_rows
 from media_hygiene.places.hand_desk import HandDesk, PhotosAction
+from media_hygiene.places.renames import renamed
+from media_hygiene.places.town_hint import HintAsk, TownHints
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.config.classify_places import PersonalPlace
     from media_hygiene.config.places_settings import IgnoredSpot
     from media_hygiene.places.clusters import Cluster
     from media_hygiene.places.config_file import PlaceEdit
@@ -51,6 +53,7 @@ class PlacesBoard:
         self._places = read_places(context.config_file)
         self._aside = read_aside(context.config_file)
         self._hand = HandDesk(self._clusters, context)
+        self._hints = TownHints(context.towns)
         self._sources: dict[str, Path] = {}
 
     def photos(self, rank: int) -> list[dict[str, object]] | None:
@@ -92,7 +95,19 @@ class PlacesBoard:
             The places, the clusters, the circles set aside.
         """
         view = BoardView(self._clusters, self._places, self._aside, self._hand)
-        return board_state(view)
+        return self._hints.mark(board_state(view))
+
+    def hint(self, ask: HintAsk) -> dict[str, object]:
+        """Say whether a place of that name duplicates a town (0239).
+
+        Args:
+            ask: The name, and where the place lies.
+
+        Returns:
+            `{"town": name}`, the town's name or "".
+        """
+        where = Point(ask.latitude, ask.longitude)
+        return {"town": self._hints.of(ask.name, where)}
 
     def save(self, edits: Sequence[PlaceEdit]) -> None:
         """Write the places into `config.toml`, then read them back.
@@ -173,23 +188,3 @@ class PlacesBoard:
             }
             for town in self._context.towns.search(text, SEARCH_LIMIT)
         ]
-
-
-def renamed(
-    old: Sequence[PersonalPlace], edits: Sequence[PlaceEdit]
-) -> dict[str, str | None]:
-    """The places a save renames (old name → new) or deletes (→ None).
-
-    Args:
-        old: The places as read back before the save.
-        edits: Every place kept, with its key (its rank in `old`), and the new ones.
-
-    Returns:
-        The names that change.
-    """
-    kept = {edit.key: edit.place.name for edit in edits if edit.key is not None}
-    return {
-        place.name: kept.get(key)
-        for key, place in enumerate(old)
-        if kept.get(key) != place.name
-    }

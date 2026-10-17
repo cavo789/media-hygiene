@@ -65,7 +65,9 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   autres, Échap pour revenir à la grille). La ligne cliquée reste en surbrillance ; cliquez-la à
   nouveau, sur ✕ ou sur Échap pour fermer le tiroir.
 - **Repliez une liste** en cliquant sur son titre : *Vos lieux (10)* se replie d'elle-même à
-  partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix.
+  partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix. *Vos lieux* est triée par nom,
+  sans tenir compte des majuscules ni des accents, la maison (🏠) d'abord ; le fichier garde son
+  propre ordre.
 - **Dossiers au nom d'une ville** liste les dossiers dont le nom est celui d'une ville
   (`Douarnenez`, `Saint-Jean de Luz`) et qui contiennent des photos sans GPS : *📁 Douarnenez —
   37 photos sans GPS*. Cliquez sur l'un d'eux : la carte va sur la ville, un repère vert marque
@@ -78,6 +80,14 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   du dossier à `[classify] folder_town_ignore` (un dossier `Martin` est un prénom, pas Martin en
   Slovaquie). Un dossier enregistré, renommé ou déplacé depuis, affiche ⚠ *introuvable* :
   rendez-lui son nom, ou oubliez sa position.
+
+  La liste a deux sous-listes, chacune avec son nombre : **À placer** (📁, ouverte) et **Placés**
+  (📌, repliée ; les dossiers introuvables, ⚠, en tête). Chacune est triée par le nom affiché,
+  sans tenir compte des majuscules ni des accents (*Écluse* parmi les E) ; enregistrer une
+  position fait passer la ligne de l'une à l'autre et la fait clignoter, **Oublier sa position**
+  la ramène. Les dossiers écartés comme *pas une ville* ne sont dans aucune. **Tapez un nom** dans
+  la zone en haut de la liste pour filtrer les deux sous-listes au fil de la frappe (le nom
+  affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone.
 - **✕ au bout d'une ligne** l'écarte d'un clic, sans question (Rétablir l'annule) :
   - sur un groupe (*Pas un lieu qui mérite un nom* : deux enfants dans une voiture), le groupe
     quitte la liste et la carte, et le suivant remonte. Il est enregistré comme un cercle de
@@ -105,6 +115,12 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   quitte la liste) ; l'étiquette du lieu dit *+ 3 photos placées à la main*, et son éditeur les
   liste, chacune avec ✕ pour la reprendre. Renommer le lieu les garde ; le supprimer demande, et
   les emporte avec lui.
+- **Un lieu n'est pas une ville.** Il sert pour un endroit que la liste des villes ne connaît pas
+  (la maison, chez les grands-parents, le bureau) : [`classify`](classify.md) nomme déjà les
+  villes d'après la liste GeoNames. Tapez un nom pareil à celui d'une ville à moins de 10 km
+  environ (*Blankenberge*) et une indication le dit sous le nom ; le lieu porte ⓘ dans *Vos
+  lieux*. Ce n'est qu'une indication, l'enregistrement fonctionne : gardez un tel lieu pour des
+  frontières exactes (une zone OpenStreetMap) ou un autre nom.
 - **Cliquez sur un cercle, ou n'importe où**, pour nommer un lieu ; réglez son rayon avec le
   curseur, déplacez son repère. Cochez **Maison** pour votre domicile : les voyages se mesurent
   depuis lui.
