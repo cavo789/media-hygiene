@@ -74,6 +74,9 @@ class PlanRow(Frozen):
     sha256: str | None
     date: str | None  # ISO date and time, local
     date_source: DateSource | None
+    # The `[[classify.clocks]]` rule that set the date right: (shift, camera).
+    clock: tuple[str, str] | None = None
+    future: bool = False  # the date is after the day of the run: doubted
     event_id: str
     values: RowValues | None  # what the layout was rendered from; None: stays
     band: Band

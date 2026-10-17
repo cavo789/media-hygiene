@@ -99,6 +99,8 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
         sha256=file.digest,
         date=dating.when.isoformat(timespec="seconds") if dating else None,
         date_source=dating.source if dating else None,
+        clock=dating.clock if dating else None,
+        future=dating.future if dating else False,
         event_id=proposal.event_id,
         values=RowValues.of(proposal.values) if proposal.values else None,
         band=proposal.band,

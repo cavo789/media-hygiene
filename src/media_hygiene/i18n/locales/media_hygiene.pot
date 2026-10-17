@@ -183,6 +183,14 @@ msgid "'{text}' is not a folder below the target."
 msgstr ""
 
 #, python-brace-format
+msgid "'{text}' is not a shift such as +1h, -1d or +1d2h30m"
+msgstr ""
+
+#, python-brace-format
+msgid "'{text}' shifts nothing"
+msgstr ""
+
+#, python-brace-format
 msgid "'{text}': choose {yes} or {no}."
 msgstr ""
 
@@ -918,6 +926,15 @@ msgstr ""
 msgid "Cleaning"
 msgstr ""
 
+msgid ""
+"Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
+"day ahead) is set right here, never in the photos. camera: a regular "
+"expression searched in the make and model; dates: the camera's own, "
+"wrong, days; shift: what to add to them, + or -, then days d, hours h, "
+"minutes m (+1h, -1d, +1d2h30m). Two rules of one camera may not share a "
+"day. A date after the day of the run is doubted: to check."
+msgstr ""
+
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr ""
 
@@ -1122,6 +1139,9 @@ msgid "Decided: left alone, nothing of this group moves."
 msgstr ""
 
 msgid "Decided: left alone, nothing of this pair moves."
+msgstr ""
+
+msgid "Decided: none kept, every version of this group goes to the quarantine."
 msgstr ""
 
 msgid ""
@@ -4328,6 +4348,11 @@ msgid ""
 "possible."
 msgstr ""
 
+msgid ""
+"The kept version lies in a protected folder: it is never moved, X is not "
+"possible."
+msgstr ""
+
 msgid "The largest clusters without a name"
 msgstr ""
 
@@ -5180,7 +5205,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Your decisions — near-duplicate groups as planned: {planned}, another "
-"version kept: {swap}, left alone: {leave}."
+"version kept: {swap}, none kept: {none}, left alone: {leave}."
 msgstr ""
 
 #, python-brace-format
@@ -5492,6 +5517,14 @@ msgstr ""
 msgid "clean moves the duplicate copies to /quarantine: mount it."
 msgstr ""
 
+#, python-brace-format
+msgid "clock '{camera}': {first} and {second} overlap"
+msgstr ""
+
+#, python-brace-format
+msgid "clock '{camera}': {reason}"
+msgstr ""
+
 msgid "colours"
 msgstr ""
 
@@ -5643,6 +5676,9 @@ msgid "healthy"
 msgstr ""
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
+msgstr ""
+
+msgid "in the future: to check"
 msgstr ""
 
 msgid "in your own home only: meals, games, children, sofa, garden"
@@ -6002,6 +6038,9 @@ msgid "no preview kept"
 msgstr ""
 
 msgid "no shot kept from its series is left"
+msgstr ""
+
+msgid "none: the whole group aside, then next"
 msgstr ""
 
 msgid "none: the whole series aside, then next"
@@ -7761,6 +7800,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{sheet}: {key}: '{value}' ({why})"
+msgstr ""
+
+#, python-brace-format
+msgid "{shift}: rule {camera}"
 msgstr ""
 
 #, python-brace-format

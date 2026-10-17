@@ -235,6 +235,14 @@ msgid "'{text}' is not a folder below the target."
 msgstr "« {text} » n'est pas un dossier sous la cible."
 
 #, python-brace-format
+msgid "'{text}' is not a shift such as +1h, -1d or +1d2h30m"
+msgstr "« {text} » n'est pas un décalage comme +1h, -1d ou +1d2h30m"
+
+#, python-brace-format
+msgid "'{text}' shifts nothing"
+msgstr "« {text} » ne décale rien"
+
+#, python-brace-format
 msgid "'{text}': choose {yes} or {no}."
 msgstr "« {text} » : choisissez {yes} ou {no}."
 
@@ -1144,6 +1152,23 @@ msgstr "Nettoyage {run_id}"
 msgid "Cleaning"
 msgstr "Nettoyage"
 
+msgid ""
+"Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
+"day ahead) is set right here, never in the photos. camera: a regular "
+"expression searched in the make and model; dates: the camera's own, "
+"wrong, days; shift: what to add to them, + or -, then days d, hours h, "
+"minutes m (+1h, -1d, +1d2h30m). Two rules of one camera may not share a "
+"day. A date after the day of the run is doubted: to check."
+msgstr ""
+"Horloges : un appareil dont l'horloge était fausse (une heure de retard "
+"en voyage à l'étranger, un jour d'avance) est remis à l'heure ici, jamais"
+" dans les photos. camera : une expression régulière cherchée dans la "
+"marque et le modèle ; dates : les jours de l'appareil lui-même, faux ; "
+"shift : ce qu'il faut y ajouter, + ou -, puis des jours d, des heures h, "
+"des minutes m (+1h, -1d, +1d2h30m). Deux règles d'un même appareil ne "
+"peuvent pas partager un jour. Une date postérieure au jour de l'exécution"
+" est mise en doute : à vérifier."
+
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
 
@@ -1382,6 +1407,11 @@ msgstr "Décidé : laissé tel quel, rien de ce groupe ne bouge."
 
 msgid "Decided: left alone, nothing of this pair moves."
 msgstr "Décidé : laissée telle quelle, rien de cette paire ne bouge."
+
+msgid "Decided: none kept, every version of this group goes to the quarantine."
+msgstr ""
+"Décidé : aucune gardée, toutes les versions de ce groupe partent en "
+"quarantaine."
 
 msgid ""
 "Decided: swapped, the copies of the second folder stay and those of the "
@@ -5268,6 +5298,13 @@ msgstr ""
 "La version gardée est dans un dossier protégé : elle n'est jamais "
 "déplacée, W est impossible."
 
+msgid ""
+"The kept version lies in a protected folder: it is never moved, X is not "
+"possible."
+msgstr ""
+"La version gardée est dans un dossier protégé : elle n'est jamais "
+"déplacée, X est impossible."
+
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
 
@@ -6313,10 +6350,11 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Your decisions — near-duplicate groups as planned: {planned}, another "
-"version kept: {swap}, left alone: {leave}."
+"version kept: {swap}, none kept: {none}, left alone: {leave}."
 msgstr ""
 "Vos décisions — groupes de quasi-doublons comme prévu : {planned}, autre "
-"version gardée : {swap}, laissés tels quels : {leave}."
+"version gardée : {swap}, aucune gardée : {none}, laissés tels quels : "
+"{leave}."
 
 #, python-brace-format
 msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
@@ -6677,6 +6715,14 @@ msgstr "nettoyage"
 msgid "clean moves the duplicate copies to /quarantine: mount it."
 msgstr "clean déplace les copies en double dans /quarantine : montez-le."
 
+#, python-brace-format
+msgid "clock '{camera}': {first} and {second} overlap"
+msgstr "horloge « {camera} » : {first} et {second} se chevauchent"
+
+#, python-brace-format
+msgid "clock '{camera}': {reason}"
+msgstr "horloge « {camera} » : {reason}"
+
 msgid "colours"
 msgstr "couleurs"
 
@@ -6841,6 +6887,9 @@ msgstr "sain"
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
+
+msgid "in the future: to check"
+msgstr "dans le futur : à vérifier"
 
 msgid "in your own home only: meals, games, children, sofa, garden"
 msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
@@ -7238,6 +7287,9 @@ msgstr "pas d'aperçu gardé"
 
 msgid "no shot kept from its series is left"
 msgstr "il ne reste aucune photo gardée de sa série"
+
+msgid "none: the whole group aside, then next"
+msgstr "aucune : tout le groupe écarté, puis suivant"
 
 msgid "none: the whole series aside, then next"
 msgstr "aucune : toute la série écartée, puis suivante"
@@ -9321,6 +9373,10 @@ msgstr "{sheet} : la ligne {key} a été supprimée."
 #, python-brace-format
 msgid "{sheet}: {key}: '{value}' ({why})"
 msgstr "{sheet} : {key} : '{value}' ({why})"
+
+#, python-brace-format
+msgid "{shift}: rule {camera}"
+msgstr "{shift} : règle {camera}"
 
 #, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"

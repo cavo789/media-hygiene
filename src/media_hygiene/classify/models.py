@@ -6,6 +6,19 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.dating_models import DateSource, Dating
+
+__all__ = [
+    "Band",
+    "DateSource",
+    "Dating",
+    "Event",
+    "MediaInput",
+    "Proposal",
+    "SortReason",
+    "Verdict",
+]
+
 if TYPE_CHECKING:
     from datetime import datetime
     from pathlib import Path
@@ -15,17 +28,6 @@ if TYPE_CHECKING:
     from media_hygiene.scan.metadata import MediaMetadata
     from media_hygiene.scan.models import VisualFacts
     from media_hygiene.scan.takeout_facts import TakeoutFacts
-
-
-class DateSource(StrEnum):
-    """Where the date of a file comes from, the most reliable first."""
-
-    EXIF = "exif"
-    VIDEO = "video"
-    TAKEOUT = "takeout"  # the `.json` of a Google Photos Takeout
-    NAME = "name"
-    FOLDER = "folder"
-    MTIME = "mtime"
 
 
 class SortReason(StrEnum):
@@ -96,15 +98,6 @@ class MediaInput:  # pylint: disable=too-many-instance-attributes
             Them, or None.
         """
         return self.visual.camera if self.visual else None
-
-
-@dataclass(frozen=True, slots=True)
-class Dating:
-    """The date of a file, where it comes from, and how much it is trusted (0-100)."""
-
-    when: datetime
-    source: DateSource
-    confidence: int
 
 
 @dataclass(frozen=True, slots=True)

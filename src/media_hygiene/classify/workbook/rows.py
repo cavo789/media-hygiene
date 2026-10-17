@@ -59,7 +59,7 @@ def file_rows(plan: ClassifyPlan, labels: Labels) -> list[Row]:
             row.parent,
             row.name,
             (row.date or "").replace("T", " "),
-            source_name(row.date_source),
+            _date_from(row),
             row.event_id,
             band_name(row.band),
             f"{row.why} ({row.score})",
@@ -163,3 +163,21 @@ def _folder(row: PlanRow, labels: Labels) -> str:
         The text.
     """
     return labels.stay if row.folder is None else row.folder
+
+
+def _date_from(row: PlanRow) -> str:
+    """Where the date comes from, and what doubted it or set it right.
+
+    Args:
+        row: A row.
+
+    Returns:
+        E.g. `camera (EXIF), +1h: rule (?i)canon`, translated.
+    """
+    parts = [source_name(row.date_source)]
+    if row.clock is not None:
+        shift, camera = row.clock
+        parts.append(_("{shift}: rule {camera}").format(shift=shift, camera=camera))
+    if row.future:
+        parts.append(_("in the future: to check"))
+    return ", ".join(parts)

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders
+from media_hygiene.classify.clocks import clocks_of
 from media_hygiene.classify.dates import zone_of
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.place_match import zones_of
@@ -23,6 +24,7 @@ from media_hygiene.plan.name_rules import DEFAULT_NAME_RULES, NameRules
 if TYPE_CHECKING:
     from datetime import tzinfo
 
+    from media_hygiene.classify.clocks import Clock
     from media_hygiene.classify.place_match import Zone
     from media_hygiene.classify.rules.calendar import OneOff, Recurring
     from media_hygiene.config.settings import Settings
@@ -43,6 +45,7 @@ class TagContext:  # pylint: disable=too-many-instance-attributes
     town_km: float = 0.0
     # Names a camera or an app generated (`[keep] generated_names`): they give no word.
     names: NameRules = DEFAULT_NAME_RULES
+    clocks: tuple[Clock, ...] = ()  # `[[classify.clocks]]`: cameras set right
 
 
 def tag_context(settings: Settings, words: WordRules) -> TagContext:
@@ -68,6 +71,7 @@ def tag_context(settings: Settings, words: WordRules) -> TagContext:
         zones_of(classify.places),
         town_km=settings.tags.town_km,
         names=NameRules.from_patterns(keep.generated_names, keep.generic_folders),
+        clocks=clocks_of(classify.clocks),
     )
 
 

@@ -22,6 +22,7 @@ from media_hygiene.config.classify_rules import (
     ClassifyRule,
     unique_names,
 )
+from media_hygiene.config.clock_settings import ClockRules
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.i18n import _
 
@@ -97,6 +98,7 @@ class ClassifySettings(BaseModel):
     rules: tuple[ClassifyRule, ...] = DEFAULT_RULES
     ai: AiSettings = AiSettings()
     places: tuple[PersonalPlace, ...] = ()
+    clocks: ClockRules = ()  # a camera's clock off by an hour or a day, set right
     trip_min_km: float = Field(default=100, gt=0)
     trip_merge_gap_hours: float = Field(default=48, ge=0)
     trip_merge_max_km: float = Field(default=120, ge=0)
