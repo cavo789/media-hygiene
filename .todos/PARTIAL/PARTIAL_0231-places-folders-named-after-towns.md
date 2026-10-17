@@ -31,3 +31,36 @@ sidecars (0230). Chosen: an adjusted position is saved in `config.toml`, `[[plac
 ## Explicit non-goals
 
 - Photos of folders without a town name, placed one by one: only whole folders here.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- A third folding list on the map, "Folders named after a town (N)" (`places/folder_rows.py`,
+  `places/folders.py`): the folders the `folder_town` guess names that hold photos without GPS,
+  plus every `[[places.folders]]` entry; the most photos first; 📁 / 📌 saved / ⚠ not found.
+  A click centres the map, drops a draggable green pin (saved position or the town's centre)
+  and shows the folder's pictures without GPS (24 at most, the grid of 0226).
+- `POST /api/folder` (`save` / `forget` / `ignore`), only for a folder of the list; each answer
+  is the list read again from `config.toml` (`places/config_folders.py`, tomlkit, comments kept,
+  checked then replaced atomically). `[[places.folders]]` (`folder` host path as a literal
+  string, `latitude`, `longitude`); `ignore` adds the folder's name to
+  `[classify] folder_town_ignore` once whatever its spelling (`town_key`).
+- `[places] folders` setting (`FolderPosition`), commented example in the default `config.toml`.
+- `xmp` (0230) takes the nearest folder above a photo: a saved position first, else the town's
+  centre; a saved folder needs no town name; a saved folder not found is said once
+  (`xmp_view`), never an error. The index is read once for the clusters and the folders
+  (`services/places_index.py`); the clusters now count Takeout positions too.
+- Tests: `tests/integration/test_places_folders.py` (listed with previews and a 404; save,
+  forget, ignore read back; an unknown folder refused with a reason; a saved folder renamed:
+  not found, `xmp` warns; `xmp --apply` writes the saved position). Page script syntax checked
+  with node 20 (Docker); no browser test.
+- Docs EN + FR (`commands/places.md`, `commands/xmp.md`); French catalog.
+
+### Not done
+- Placing a folder whose name is no town from the page (the TODO's "a folder line of the photo
+  grid, or the map clicked while a folder is chosen").
+  **Reason:** needs a way to pick any folder on the page (a folder picker, or the cluster grid
+  naming its folders); a design choice for the maintainer. Such a folder can be written by
+  hand in `[[places.folders]]` today, and `xmp` and the page already use it.
+- The documentation captures of `places` (the new list) and of the default `config.toml`.
+  **Reason:** `docs_screenshots` not run (heavy, run on request).

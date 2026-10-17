@@ -67,12 +67,21 @@ def show_plan(runtime: Runtime, plan: XmpPlan) -> None:
 
 
 def _positioned(runtime: Runtime, plan: XmpPlan) -> None:
-    """Say how many photos get their folder town's position, the largest towns first.
+    """Say how many photos get their folder's position, the largest towns first.
 
     Args:
         runtime: Settings, mount points and output.
         plan: The plan.
     """
+    for folder in plan.missing_folders:
+        runtime.output.warning(
+            escape(
+                _(
+                    "{folder} has a position in [[places.folders]] but cannot be "
+                    "found: renamed or moved? Correct it in the map of 'places'."
+                ).format(folder=folder)
+            )
+        )
     total = sum(plan.positioned.values())
     if not total:
         return

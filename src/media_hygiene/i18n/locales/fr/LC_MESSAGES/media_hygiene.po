@@ -1635,6 +1635,14 @@ msgstr ""
 "(39 Mo) : ils tournent sur cet ordinateur, rien de vos photos n'est "
 "envoyé."
 
+msgid ""
+"Drag the pin where these photos were taken, then save: 'xmp' writes that "
+"position into their sidecars ([tags] xmp_folder_gps = true)."
+msgstr ""
+"Faites glisser le repère là où ces photos ont été prises, puis "
+"enregistrez : 'xmp' écrit cette position dans leurs fichiers .xmp ([tags]"
+" xmp_folder_gps = true)."
+
 msgid "Drone"
 msgstr "Drone"
 
@@ -2314,6 +2322,9 @@ msgstr "Dossiers analysés :"
 msgid "Folders closed; your photos were not changed."
 msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
 
+msgid "Folders named after a town"
+msgstr "Dossiers au nom d'une ville"
+
 msgid "Folders removed"
 msgstr "Dossiers supprimés"
 
@@ -2354,6 +2365,9 @@ msgstr ""
 #, python-brace-format
 msgid "For every terminal, add that line to {profile}."
 msgstr "Pour chaque terminal, ajoutez cette ligne à {profile}."
+
+msgid "Forget its position"
+msgstr "Oublier sa position"
 
 msgid "Format"
 msgstr "Format"
@@ -3295,6 +3309,9 @@ msgstr ""
 "Aucun dossier pour les albums : ni album.root ni classify.target n'est "
 "défini."
 
+msgid "No folder named after a town holds photos without GPS."
+msgstr "Aucun dossier au nom d'une ville ne contient de photos sans GPS."
+
 msgid "No folder pairs: nothing to review."
 msgstr "Aucune paire de dossiers : rien à passer en revue."
 
@@ -3500,6 +3517,9 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "Not a town"
+msgstr "Pas une ville"
+
 #, python-brace-format
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
@@ -3528,6 +3548,11 @@ msgstr[1] ""
 
 msgid "Not found"
 msgstr "Introuvables"
+
+msgid "Not found: renamed or moved? Rename it back, or forget its position."
+msgstr ""
+"Introuvable : renommé ou déplacé ? Rendez-lui son nom, ou oubliez sa "
+"position."
 
 #, python-format
 msgid "Not in this backup: %(num)s file of your photos (%(size)s)."
@@ -4033,6 +4058,12 @@ msgstr ""
 "Port de la page. docker run le publie sous le même numéro sur votre "
 "ordinateur, par exemple -p 127.0.0.1:9000:9000 pour --port 9000. Par "
 "défaut : {default}."
+
+msgid "Position saved in config.toml."
+msgstr "Position enregistrée dans config.toml."
+
+msgid "Position taken out of config.toml."
+msgstr "Position retirée de config.toml."
 
 msgid ""
 "Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* "
@@ -4629,6 +4660,9 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr "Enregistrez-le, fermez-le, puis relancez 'sort'."
 
+msgid "Save this position"
+msgstr "Enregistrer cette position"
+
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr "Enregistrez {url} sous {path} à la main, puis relancez la commande."
@@ -4651,6 +4685,9 @@ msgstr[1] "Enregistré dans config.toml, relu : {name}, {count} visages confirm�
 
 msgid "Saved in config.toml."
 msgstr "Enregistré dans config.toml."
+
+msgid "Saved in config.toml: this name is no town."
+msgstr "Enregistré dans config.toml : ce nom n'est pas une ville."
 
 #, python-brace-format
 msgid "Saved, read back from {path}:"
@@ -5469,6 +5506,16 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
+
+msgid ""
+"The positions you give whole folders on the map of 'places' (Save this "
+"position), written by the map: 'xmp' gives them to the photos of those "
+"folders without GPS, when [tags] xmp_folder_gps is true."
+msgstr ""
+"Les positions que vous donnez à des dossiers entiers sur la carte de "
+"'places' (Enregistrer cette position), écrites par la carte : 'xmp' les "
+"donne aux photos sans GPS de ces dossiers, quand [tags] xmp_folder_gps "
+"vaut true."
 
 #, python-brace-format
 msgid "The previous image still takes {size} MB: docker image prune frees it."
@@ -8729,11 +8776,11 @@ msgid_plural ""
 "{count} photos without GPS get the position of their folder's town (its "
 "centre, approximate): {towns}."
 msgstr[0] ""
-"{count} photo sans GPS reçoit la position de la ville de son dossier (son "
-"centre, approximatif) : {towns}."
+"{count} photo sans GPS reçoit la position de la ville de son dossier (son"
+" centre, approximatif) : {towns}."
 msgstr[1] ""
-"{count} photos sans GPS reçoivent la position de la ville de leur dossier "
-"(son centre, approximatif) : {towns}."
+"{count} photos sans GPS reçoivent la position de la ville de leur dossier"
+" (son centre, approximatif) : {towns}."
 
 #, python-brace-format
 msgid ""
@@ -8998,10 +9045,22 @@ msgstr ""
 "launcher."
 
 #, python-brace-format
+msgid ""
+"{folder} has a position in [[places.folders]] but cannot be found: "
+"renamed or moved? Correct it in the map of 'places'."
+msgstr ""
+"{folder} a une position dans [[places.folders]] mais est introuvable : "
+"renommé ou déplacé ? Corrigez-le sur la carte de 'places'."
+
+#, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 "{folder} est monté en lecture seule : config.toml ne peut pas être "
 "complété."
+
+#, python-brace-format
+msgid "{folder} is not one of the folders listed"
+msgstr "{folder} ne fait pas partie des dossiers listés"
 
 #, python-brace-format
 msgid "{folder} is not one of your folders: mh folders lists them."
@@ -9203,6 +9262,12 @@ msgid "{n} photo"
 msgid_plural "{n} photos"
 msgstr[0] "{n} photo"
 msgstr[1] "{n} photos"
+
+#, python-brace-format
+msgid "{n} photo without GPS"
+msgid_plural "{n} photos without GPS"
+msgstr[0] "{n} photo sans GPS"
+msgstr[1] "{n} photos sans GPS"
 
 #, python-brace-format
 msgid "{n} series"

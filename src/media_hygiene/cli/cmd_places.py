@@ -37,8 +37,8 @@ def places_command(
             (MountKind.CONFIG, MountKind.CACHE),
             port=port,
         )
-        board = open_places(runtime, again)
-        serve_places(runtime, board, port)
+        opened = open_places(runtime, again)
+        serve_places(runtime, opened, port)
         output.blank()
         output.success(_("Map stopped; your places are in config.toml."))
         suggest(

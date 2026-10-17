@@ -74,6 +74,9 @@ xmp_folder_gps = true
 
 - **Approximatif** : le centre de la ville, pas la plage où la photo a été prise. C'est pourquoi
   c'est désactivé par défaut.
+- **Une position à vous** : un dossier placé sur la carte de [`places`](places.md) (**Enregistrer
+  cette position**, `[[places.folders]]`) reçoit cette position au lieu du centre de la ville ; le
+  dossier le plus proche au-dessus d'une photo décide.
 - **Quels dossiers** : les mêmes que pour la [règle `folder_town`](../sort/09-places-from-gps.md) de
   `classify`, qu'elle soit active ou non : le nom entier du dossier est une ville d'au moins 5 000
   habitants (sans tenir compte des majuscules, des accents ni des traits d'union), jamais un mois

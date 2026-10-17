@@ -26,6 +26,14 @@
   "somePhotos": _("{shown} photos out of {count}"),
   "photosMissing": _("Some photos are not reachable: moved since the audit, or their folder is not mounted (read-only is enough)."),
   "showPhotos": _("Show its photos"),
+  "withoutGps": [ngettext("{n} photo without GPS", "{n} photos without GPS", 1),
+                 ngettext("{n} photo without GPS", "{n} photos without GPS", 2)],
+  "noFolder": _("No folder named after a town holds photos without GPS."),
+  "folderMissing": _("Not found: renamed or moved? Rename it back, or forget its position."),
+  "folderHint": _("Drag the pin where these photos were taken, then save: 'xmp' writes that position into their sidecars ([tags] xmp_folder_gps = true)."),
+  "folderSaved": _("Position saved in config.toml."),
+  "folderForgotten": _("Position taken out of config.toml."),
+  "folderIgnored": _("Saved in config.toml: this name is no town."),
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -96,6 +104,17 @@
   #photos { margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; }
   #photos header { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
   #photos header button { font: inherit; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  #folderPanel { margin-top: 10px; padding: 8px; border: 2px solid var(--accent); border-radius: 10px; }
+  #folderPanel header { font-weight: 600; word-break: break-all; }
+  #folderGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
+  #folderGrid img, #folderGrid .gone { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                                       background: var(--bg); }
+  #folderGrid .gone { display: flex; align-items: center; justify-content: center; color: var(--muted);
+                      font-size: 1.4rem; border: 1px dashed var(--line); }
+  li.missing button.link { color: var(--bad); }
+  .folder-pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
+                background: var(--ok); border: 3px solid #fff; border-radius: 50%;
+                box-shadow: 0 0 0 1px var(--ok); }
   #grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
   #grid img, #grid .gone { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
                            background: var(--bg); }
@@ -153,6 +172,21 @@
       <div id="grid"></div>
     </section>
   </details>
+  <details id="foldersFold" class="fold" open>
+    <summary>{{ _("Folders named after a town") }} <span id="foldersCount" class="count"></span></summary>
+    <ul id="folders"></ul>
+    <section id="folderPanel" hidden aria-live="polite">
+      <header id="folderTitle"></header>
+      <p id="folderNote" class="hint"></p>
+      <div class="buttons">
+        <button type="button" id="folderSave" class="primary">{{ _("Save this position") }}</button>
+        <button type="button" id="folderForget">{{ _("Forget its position") }}</button>
+        <button type="button" id="folderIgnore">{{ _("Not a town") }}</button>
+        <button type="button" id="folderClose" aria-label="{{ _('Close') }}">✕</button>
+      </div>
+      <div id="folderGrid"></div>
+    </section>
+  </details>
   <p class="hint">{{ _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") }}</p>
 </aside>
 <div id="map"></div>
@@ -162,7 +196,8 @@
   const T = {{ texts | tojson }};
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
                   search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
-                  cluster: {{ cluster_path | tojson }} };
+                  cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
+                  folderPhotos: {{ folder_photos | tojson }}, folder: {{ folder_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -200,7 +235,7 @@
   // The reader's folds, kept in this browser only; a private window keeps none.
   const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
   // Only a click of the reader is remembered, not a list the page opens itself.
-  for (const id of ["placesFold", "clustersFold"]) {
+  for (const id of ["placesFold", "clustersFold", "foldersFold"]) {
     byId(id).querySelector("summary").addEventListener("click", () => {
       folds[id] = !byId(id).open;
       try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
@@ -245,6 +280,72 @@
     draw();
   }
   byId("photosClose").addEventListener("click", () => { hidePhotos(); draw(); });
+
+  // The folders named after a town, or placed: their photos without GPS, a pin to drag.
+  let folders = [], chosen = null, folderPin = null, folderFlash = null;
+  const unpinFolder = () => { if (folderPin) { folderPin.remove(); folderPin = null; } };
+  function hideFolder() { chosen = null; unpinFolder(); byId("folderPanel").hidden = true; byId("folderGrid").replaceChildren(); }
+  function drawFolders() {
+    const list = byId("folders"); list.replaceChildren();
+    byId("foldersCount").textContent = `(${folders.length})`;
+    if (!folders.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noFolder; list.append(li); }
+    for (const folder of folders) {
+      const name = folder.town || folder.folder.split(/[\\/]/).filter(Boolean).pop();
+      const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
+      const li = item(list, `${mark}${name} — ${counted(T.withoutGps, folder.count)}`, () => showFolder(folder.rank));
+      li.title = folder.folder;
+      if (!folder.found) li.classList.add("missing");
+      if (folder.folder === folderFlash) { unfold("foldersFold"); flash(li); }
+    }
+    folderFlash = null;
+  }
+  async function loadFolders() {
+    const response = await fetch(paths.folders).catch(() => null);
+    if (!response || !response.ok) return;
+    folders = (await response.json()).folders; drawFolders();
+  }
+  async function showFolder(rank) {
+    const folder = folders[rank];
+    hideFolder(); chosen = folder;
+    const at = [folder.latitude, folder.longitude];
+    map.setView(at, Math.max(map.getZoom(), TOWN_ZOOM));
+    folderPin = L.marker(at, { draggable: true, icon: L.divIcon({ className: "folder-pin" }) }).addTo(map);
+    folderPin.bindTooltip(label(folder.town || folder.folder));
+    byId("folderTitle").textContent = folder.folder;
+    byId("folderNote").textContent = folder.found ? T.folderHint : T.folderMissing;
+    byId("folderForget").hidden = !folder.saved;
+    byId("folderIgnore").hidden = !folder.town;
+    byId("folderSave").hidden = !folder.found;
+    byId("folderPanel").hidden = false;
+    const response = await fetch(paths.folderPhotos + rank).catch(() => null);
+    if (!response || !response.ok || chosen !== folder) return;
+    const grid = byId("folderGrid");
+    for (const photo of (await response.json()).photos) {
+      const cell = photo.found ? document.createElement("img") : document.createElement("span");
+      if (photo.found) { cell.src = photo.preview; cell.alt = photo.name; cell.loading = "lazy"; }
+      else { cell.className = "gone"; cell.textContent = "∅"; }
+      cell.title = photo.name; grid.append(cell);
+    }
+  }
+  async function actOnFolder(action, said) {
+    if (!chosen) return;
+    const where = folderPin ? folderPin.getLatLng() : { lat: chosen.latitude, lng: chosen.longitude };
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(paths.folder, { method: "POST", headers: { "Content-Type": "application/json" },
+                                             body: JSON.stringify({ action, folder: chosen.folder,
+                                                                    latitude: where.lat, longitude: where.lng }) });
+    } catch (error) { status(T.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    folderFlash = action === "ignore" ? null : chosen.folder;
+    folders = answer.folders; hideFolder(); drawFolders(); status(said, "saved");
+  }
+  byId("folderSave").addEventListener("click", () => actOnFolder("save", T.folderSaved));
+  byId("folderForget").addEventListener("click", () => actOnFolder("forget", T.folderForgotten));
+  byId("folderIgnore").addEventListener("click", () => actOnFolder("ignore", T.folderIgnored));
+  byId("folderClose").addEventListener("click", hideFolder);
 
   function draw() {
     clusterLayer.clearLayers(); placeLayer.clearLayers();
@@ -415,7 +516,8 @@
     // Open while there are few places; the reader's own choice wins.
     byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
     byId("clustersFold").open = folds.clustersFold ?? true;
-    draw();
+    byId("foldersFold").open = folds.foldersFold ?? true;
+    draw(); loadFolders();
     const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];
     if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM });
   }).catch(() => status(T.offline, "error"));

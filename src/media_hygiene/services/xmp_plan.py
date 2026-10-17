@@ -22,7 +22,7 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search.people_words import people_words
 from media_hygiene.services.xmp_sidecars import sidecar_of
-from media_hygiene.services.xmp_towns import with_town
+from media_hygiene.services.xmp_towns import with_spot
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.xmp_doc import XmpError, parse
 from media_hygiene.tags.xmp_merge import XmpValues, merge, new_document
@@ -33,8 +33,8 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from media_hygiene.config.people_settings import PeopleSettings
-    from media_hygiene.geo.gazetteer import Town
     from media_hygiene.index.listing import IndexedFile
+    from media_hygiene.services.xmp_towns import FolderSpot
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,11 +46,11 @@ class XmpScope:
     sources: tuple[TagSource, ...]
     tool: str  # `media-hygiene <version>`, the creator of new sidecars
     people: PeopleSettings | None = None  # the names: read with the `person` source
-    towns: Mapping[Path, Town] = field(default_factory=dict[Path, "Town"])  # 0230
+    spots: Mapping[Path, FolderSpot] = field(default_factory=dict[Path, "FolderSpot"])
 
 
 @dataclass(slots=True)
-class XmpPlan:
+class XmpPlan:  # pylint: disable=too-many-instance-attributes  # one per count
     """The sidecars to write, and why the other files are left out."""
 
     jobs: list[XmpJob] = field(default_factory=list[XmpJob])
@@ -60,6 +60,7 @@ class XmpPlan:
     without_words: int = 0
     refused: list[tuple[Path, str]] = field(default_factory=list[tuple[Path, str]])
     positioned: Counter[str] = field(default_factory=Counter[str])  # by folder town
+    missing_folders: tuple[str, ...] = ()  # `[[places.folders]]` not found (0231)
 
 
 def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
@@ -94,10 +95,10 @@ def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
         elif file.facts.full_digest and digests[file.facts.full_digest] > 1:
             plan.copies += 1
         else:
-            town = scope.towns.get(file.path)
-            values = with_town(_values(store, file, (scope.sources, named)), town)
-            if town is not None:
-                plan.positioned[town.name] += 1
+            spot = scope.spots.get(file.path)
+            values = with_spot(_values(store, file, (scope.sources, named)), spot)
+            if spot is not None:
+                plan.positioned[spot.name] += 1
             _plan_file(plan, (file, values), (scope, folders))
     return plan
 

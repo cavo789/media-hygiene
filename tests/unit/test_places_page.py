@@ -26,6 +26,9 @@ def _page() -> str:
         save_path="/api/places",
         search_path="/api/search",
         cluster_path="/api/cluster/",
+        folders_path="/api/folders",
+        folder_photos="/api/folder/",
+        folder_path="/api/folder",
         osm_path="",
         osm_host="",
         tiles="https://tile.example/{z}/{x}/{y}.png",
@@ -37,7 +40,7 @@ def test_every_tooltip_is_a_text_node() -> None:
     """Each `bindTooltip` gets `label(…)`, a span filled through `textContent`."""
     page = _page()
     calls = _TOOLTIP.findall(page)
-    assert len(calls) == 2  # the clusters and the saved places
+    assert len(calls) == 3  # the clusters, the saved places, the folder pin
     assert all(call.startswith("label(") for call in calls)
     assert _LABEL.search(page)
 

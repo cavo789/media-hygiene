@@ -58,6 +58,15 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   Click again, or ✕, to close them.
 - **Fold a list** by clicking its title: *Your places (10)* folds by itself from 8 places on,
   so that the clusters stay in reach; your browser remembers your choice.
+- **Folders named after a town** lists the folders whose name is a town's (`Douarnenez`,
+  `Saint-Jean de Luz`) and that hold photos without GPS: *📁 Douarnenez — 37 photos without GPS*.
+  Click one: the map goes to the town, a green pin marks its centre and the photos show below.
+  Drag the pin where they were taken (the beach, not the town hall) and click **Save this
+  position**: it goes into `config.toml` as `[[places.folders]]`, read back and shown with 📌.
+  [`xmp`](xmp.md#a-position-from-the-folders-town) then writes that position into the photos'
+  sidecars. **Forget its position** takes it out; **Not a town** adds the folder's name to
+  `[classify] folder_town_ignore` (a folder `Martin` is a first name, not Martin in Slovakia).
+  A saved folder renamed or moved since shows ⚠ *not found*: rename it back, or forget it.
 - **Click a circle, or anywhere**, to name a place; set its radius with the slider, drag its
   marker. Tick **Home** for your home: trips are measured from it.
 - **Find a town** searches the towns shipped with the image, offline.

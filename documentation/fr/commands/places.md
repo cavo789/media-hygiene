@@ -60,6 +60,17 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   survolez une photo pour voir où elle a été prise. Cliquez à nouveau, ou sur ✕, pour les refermer.
 - **Repliez une liste** en cliquant sur son titre : *Vos lieux (10)* se replie d'elle-même à
   partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix.
+- **Dossiers au nom d'une ville** liste les dossiers dont le nom est celui d'une ville
+  (`Douarnenez`, `Saint-Jean de Luz`) et qui contiennent des photos sans GPS : *📁 Douarnenez —
+  37 photos sans GPS*. Cliquez sur l'un d'eux : la carte va sur la ville, un repère vert marque
+  son centre et les photos s'affichent dessous. Faites glisser le repère là où elles ont été
+  prises (la plage, pas la mairie) et cliquez sur **Enregistrer cette position** : elle va dans
+  `config.toml` sous `[[places.folders]]`, relue et affichée avec 📌.
+  [`xmp`](xmp.md#une-position-daprès-la-ville-du-dossier) écrit ensuite cette position dans les
+  fichiers `.xmp` des photos. **Oublier sa position** la retire ; **Pas une ville** ajoute le nom
+  du dossier à `[classify] folder_town_ignore` (un dossier `Martin` est un prénom, pas Martin en
+  Slovaquie). Un dossier enregistré, renommé ou déplacé depuis, affiche ⚠ *introuvable* :
+  rendez-lui son nom, ou oubliez sa position.
 - **Cliquez sur un cercle, ou n'importe où**, pour nommer un lieu ; réglez son rayon avec le
   curseur, déplacez son repère. Cochez **Maison** pour votre domicile : les voyages se mesurent
   depuis lui.

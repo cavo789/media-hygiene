@@ -1328,6 +1328,11 @@ msgid ""
 " this computer, nothing about your photos is sent."
 msgstr ""
 
+msgid ""
+"Drag the pin where these photos were taken, then save: 'xmp' writes that "
+"position into their sidecars ([tags] xmp_folder_gps = true)."
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -1857,6 +1862,9 @@ msgstr ""
 msgid "Folders closed; your photos were not changed."
 msgstr ""
 
+msgid "Folders named after a town"
+msgstr ""
+
 msgid "Folders removed"
 msgstr ""
 
@@ -1889,6 +1897,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "For every terminal, add that line to {profile}."
+msgstr ""
+
+msgid "Forget its position"
 msgstr ""
 
 msgid "Format"
@@ -2685,6 +2696,9 @@ msgstr ""
 msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 
+msgid "No folder named after a town holds photos without GPS."
+msgstr ""
+
 msgid "No folder pairs: nothing to review."
 msgstr ""
 
@@ -2863,6 +2877,9 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "Not a town"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
@@ -2882,6 +2899,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Not found"
+msgstr ""
+
+msgid "Not found: renamed or moved? Rename it back, or forget its position."
 msgstr ""
 
 #, python-format
@@ -3298,6 +3318,12 @@ msgstr ""
 msgid ""
 "Port of the page. docker run publishes it under the same number on your "
 "computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
+msgstr ""
+
+msgid "Position saved in config.toml."
+msgstr ""
+
+msgid "Position taken out of config.toml."
 msgstr ""
 
 msgid ""
@@ -3787,6 +3813,9 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr ""
 
+msgid "Save this position"
+msgstr ""
+
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
@@ -3808,6 +3837,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Saved in config.toml."
+msgstr ""
+
+msgid "Saved in config.toml: this name is no town."
 msgstr ""
 
 #, python-brace-format
@@ -4487,6 +4519,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
+msgstr ""
+
+msgid ""
+"The positions you give whole folders on the map of 'places' (Save this "
+"position), written by the map: 'xmp' gives them to the photos of those "
+"folders without GPS, when [tags] xmp_folder_gps is true."
 msgstr ""
 
 #, python-brace-format
@@ -7450,7 +7488,17 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{folder} has a position in [[places.folders]] but cannot be found: "
+"renamed or moved? Correct it in the map of 'places'."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} is not one of the folders listed"
 msgstr ""
 
 #, python-brace-format
@@ -7638,6 +7686,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo"
 msgid_plural "{n} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo without GPS"
+msgid_plural "{n} photos without GPS"
 msgstr[0] ""
 msgstr[1] ""
 

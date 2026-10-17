@@ -72,6 +72,9 @@ xmp_folder_gps = true
 
 - **Approximate**: the centre of the town, not the beach where the photo was taken. That is why
   it is off by default.
+- **A position of your own**: a folder placed on the map of [`places`](places.md) (**Save this
+  position**, `[[places.folders]]`) gets that position instead of the town's centre; the nearest
+  folder above a photo decides.
 - **Which folders**: the same as the [`folder_town` rule](../sort/09-places-from-gps.md) of
   `classify`, whether or not that rule is on: the whole name of the folder is a town of 5,000
   inhabitants or more (case, accents and hyphens aside), never a month or a season,

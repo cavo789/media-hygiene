@@ -3,7 +3,9 @@
 Only the map tiles are fetched, by the browser: they reveal the areas viewed, never a
 photo nor a position of one. The page's Content-Security-Policy allows that host only.
 The online search of an area by its name asks `nominatim_url`, from the tool itself,
-on a click only; empty, there is no online search.
+on a click only; empty, there is no online search. `[[places.folders]]` holds the
+positions the user gave whole folders on the map: `xmp` writes them for the photos of
+those folders that have none (0231).
 """
 
 from __future__ import annotations
@@ -11,7 +13,7 @@ from __future__ import annotations
 from typing import Final
 from urllib.parse import urlsplit
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from media_hygiene.i18n import _
 
@@ -25,6 +27,16 @@ _SUBDOMAIN: Final = "{s}"
 _ANY_SUBDOMAIN: Final = "*"
 
 
+class FolderPosition(BaseModel):
+    """Where the photos of a folder were taken, set on the map of `places`."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    folder: str = Field(min_length=1)  # a host path, as `protected` holds them
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+
+
 class PlacesSettings(BaseModel):
     """`[places]` — the tile server of the map, and the credit it asks for."""
 
@@ -33,6 +45,7 @@ class PlacesSettings(BaseModel):
     tiles: str = OSM_TILES
     attribution: str = OSM_ATTRIBUTION
     nominatim_url: str = OSM_NOMINATIM
+    folders: tuple[FolderPosition, ...] = ()
 
     @field_validator("nominatim_url")
     @classmethod

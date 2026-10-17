@@ -22,6 +22,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.places.app import (
+    FOLDER_PATH,
     PAGE_POLICY,
     PAGE_REFERRER,
     SAVE_PATH,
@@ -31,13 +32,15 @@ from media_hygiene.places.app import (
 )
 from media_hygiene.places.board import PlacesBoard
 from media_hygiene.places.clusters import clusters_of
+from media_hygiene.places.folder_rows import FolderContext
+from media_hygiene.places.folders import FolderDesk
 from media_hygiene.places.osm_search import OSM_PATH, online_search
-from media_hygiene.places.photos import CLUSTER_PREFIX
+from media_hygiene.places.photos import CLUSTER_PREFIX, FOLDER_PREFIX, FOLDERS_PATH
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.ending import run_server
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.missing_mount import missing_mount
-from media_hygiene.services.places_index import located_files
+from media_hygiene.services.places_index import OpenedMap, located_files, read_index
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
 
@@ -54,7 +57,7 @@ _ASSETS: Final = {
 }
 
 
-def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
+def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
     """Check the mounts, read where the photos were taken and the places written.
 
     Args:
@@ -62,7 +65,7 @@ def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
         again: This command, offered with `/config` added when it is missing.
 
     Returns:
-        The board of the map page.
+        The state of the map page: the board, the folders.
 
     Raises:
         MountError: `/config` is not mounted or not writable.
@@ -78,7 +81,8 @@ def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
             again,
         )
     ensure_writable(runtime, MountKind.CONFIG)
-    located = located_files(runtime)
+    inputs = read_index(runtime)
+    located = located_files(inputs)
     if not located:
         runtime.output.warning(
             _("No photo with a GPS position in the index: the map shows no cluster.")
@@ -87,24 +91,25 @@ def open_places(runtime: Runtime, again: NextVerb) -> PlacesBoard:
             _("Run 'audit' first with the same /cache mount: it records the positions.")
         )
     config_file = runtime.locations.config_file
+    towns = Gazetteer.load().renamed(runtime.settings.classify.town_names)
+    context = FolderContext(
+        config_file, runtime.mapper, runtime.settings.classify, towns
+    )
     try:
-        return PlacesBoard(
-            clusters_of(located),
-            config_file,
-            Gazetteer.load().renamed(runtime.settings.classify.town_names),
-        )
+        board = PlacesBoard(clusters_of(located), config_file, towns)
+        return OpenedMap(board, FolderDesk(inputs, context))
     except ValueError as exc:
         message = _("The places of {file} are invalid: {reason}.")
         host = runtime.mapper.to_host(config_file)
         raise ConfigError(message.format(file=host, reason=exc)) from exc
 
 
-def serve_places(runtime: Runtime, board: PlacesBoard, port: int) -> None:
+def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
     """Serve the map until Ctrl+C; every place is saved as it is named.
 
     Args:
         runtime: Settings, mount points and output.
-        board: The map's state.
+        opened: The map's state, and its folders.
         port: The port to listen on, inside the container (0: any free one).
     """
     settings = runtime.settings.places
@@ -115,6 +120,9 @@ def serve_places(runtime: Runtime, board: PlacesBoard, port: int) -> None:
         save_path=SAVE_PATH,
         search_path=SEARCH_PATH,
         cluster_path=CLUSTER_PREFIX,
+        folders_path=FOLDERS_PATH,
+        folder_photos=FOLDER_PREFIX,
+        folder_path=FOLDER_PATH,
         osm_path=OSM_PATH if osm else "",
         osm_host=osm.host if osm else "",
         tiles=settings.tiles,
@@ -137,7 +145,7 @@ def serve_places(runtime: Runtime, board: PlacesBoard, port: int) -> None:
     )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         pool = PreviewPool(executor, runtime.previews_dir)
-        app = PlacesApp(board, shown, assets, osm, pool)
+        app = PlacesApp(opened.board, shown, assets, osm, pool, opened.folders)
         asyncio.run(run_server(app, port, partial(_announce, runtime)))
 
 
