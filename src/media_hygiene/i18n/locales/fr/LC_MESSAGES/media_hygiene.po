@@ -788,8 +788,8 @@ msgstr ""
 "identique octet par octet à celle conservée ; 'clean' les compare encore "
 "juste avant de supprimer."
 
-msgid "An icon on the Desktop and in the Start menu opens this menu"
-msgstr "Une icône sur le Bureau et dans le menu Démarrer ouvre ce menu"
+msgid "An icon on the Desktop and in the Start menu opens the home page"
+msgstr "Une icône sur le Bureau et dans le menu Démarrer ouvre la page d'accueil"
 
 msgid ""
 "Analyse this many random photos, print the time per photo and the "
@@ -3467,8 +3467,8 @@ msgid "No signal"
 msgstr "Aucun indice"
 
 #, python-brace-format
-msgid "No step {choice}: type mh alone to see the menu again."
-msgstr "Pas d'étape {choice} : tapez mh seul pour revoir le menu."
+msgid "No step {choice}: type mh menu to see the menu again."
+msgstr "Pas d'étape {choice} : tapez mh menu pour revoir le menu."
 
 #, python-brace-format
 msgid "No such command {name}."
@@ -4367,8 +4367,8 @@ msgstr ""
 "Juste avant de supprimer, 'clean' compare à nouveau les deux fichiers, "
 "octet par octet, et ignore toute différence."
 
-msgid "Right-click a folder in Explorer: this menu, on that folder"
-msgstr "Clic droit sur un dossier dans l'Explorateur : ce menu, sur ce dossier"
+msgid "Right-click a folder in Explorer: the home page, on that folder"
+msgstr "Clic droit sur un dossier dans l'Explorateur : la page d'accueil, sur ce dossier"
 
 #, python-brace-format
 msgid ""
@@ -5373,10 +5373,10 @@ msgstr ""
 
 msgid ""
 "The menu runs its steps through mh: write it once with 'launcher' (step 0"
-" of the guides), then type mh alone."
+" of the guides), then type mh menu."
 msgstr ""
 "Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' "
-"(étape 0 des guides), puis tapez mh seul."
+"(étape 0 des guides), puis tapez mh menu."
 
 msgid "The model sent an answer without a message."
 msgstr "Le modèle a envoyé une réponse sans message."

@@ -609,7 +609,7 @@ msgid ""
 "deleting."
 msgstr ""
 
-msgid "An icon on the Desktop and in the Start menu opens this menu"
+msgid "An icon on the Desktop and in the Start menu opens the home page"
 msgstr ""
 
 msgid ""
@@ -2834,7 +2834,7 @@ msgid "No signal"
 msgstr ""
 
 #, python-brace-format
-msgid "No step {choice}: type mh alone to see the menu again."
+msgid "No step {choice}: type mh menu to see the menu again."
 msgstr ""
 
 #, python-brace-format
@@ -3575,7 +3575,7 @@ msgid ""
 "byte, and skips any difference."
 msgstr ""
 
-msgid "Right-click a folder in Explorer: this menu, on that folder"
+msgid "Right-click a folder in Explorer: the home page, on that folder"
 msgstr ""
 
 #, python-brace-format
@@ -4409,7 +4409,7 @@ msgstr ""
 
 msgid ""
 "The menu runs its steps through mh: write it once with 'launcher' (step 0"
-" of the guides), then type mh alone."
+" of the guides), then type mh menu."
 msgstr ""
 
 msgid "The model sent an answer without a message."

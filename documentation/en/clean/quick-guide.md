@@ -77,8 +77,8 @@ right-click of every folder: the menu opens on that folder. More: [`launcher`](.
     | `journal` | The journal of each clean: what makes `undo` possible. |
     | `quarantine` | The files set aside, until you erase them. |
 
-**Lost?** Type `mh` alone: every step of the guides with its command, the next one proposed;
-Enter runs it. More: [`menu`](../commands/menu.md).
+**Lost?** Type `mh` alone: the [home page](../commands/home.md) opens in your browser, every
+step of the guides a button, the next one proposed. In the terminal only: [`mh menu`](../commands/menu.md).
 
 ## 1. Audit
 

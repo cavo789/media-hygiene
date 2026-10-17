@@ -1,4 +1,7 @@
-"""`mh` alone: `menu` lists the steps, the number read runs as `mh <step>` (0172)."""
+"""`mh menu`: `menu` lists the steps, the number read runs as `mh <step>` (0172).
+
+`mh` alone opens the home page instead (0210, `test_launcher_home.py`).
+"""
 
 from __future__ import annotations
 
@@ -45,7 +48,7 @@ docker() {
 
 
 def _bash(tmp_path: Path, typed: str) -> subprocess.CompletedProcess[str]:
-    """Load the bash `mh`, call it alone and type a choice.
+    """Load the bash `mh`, call `mh menu` and type a choice.
 
     Args:
         tmp_path: The test's folder, for the script and the home.
@@ -60,7 +63,7 @@ def _bash(tmp_path: Path, typed: str) -> subprocess.CompletedProcess[str]:
     script = tmp_path / "mh.sh"
     script.write_text(render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)))
     bash = shutil.which("bash") or "bash"
-    line = f"{_FAKE_DOCKER}\nsource {script}; mh; echo status=$?"
+    line = f"{_FAKE_DOCKER}\nsource {script}; mh menu; echo status=$?"
     # Trusted script written by the test itself, run on its temporary folder.
     return subprocess.run(  # noqa: S603
         [bash, "-c", line],
@@ -95,19 +98,19 @@ def test_a_wrong_number_runs_nothing(tmp_path: Path) -> None:
     """No such step: said, status 2, nothing run."""
     done = _bash(tmp_path, "42\n")
     assert "status=2" in done.stdout
-    assert "No step 42: type mh alone to see the menu again." in done.stderr
+    assert "No step 42: type mh menu to see the menu again." in done.stderr
     assert "ran:" not in done.stdout
 
 
 def test_powershell_menu_reads_a_number_then_calls_itself() -> None:
-    """Alone: menu captured, Read-Host, then mh @words; ASCII even in French."""
+    """`mh menu`: menu captured, Read-Host, then mh @words; ASCII even in French."""
     with using(Locale.FR):
         text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
     assert text.isascii()
-    assert "    if ($rest.Count -eq 0) {" in text
+    assert "    if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {" in text
     assert "$steps = @(mh @color menu)" in text
     assert '$number, $line = "$step" -split "`t", 2' in text
-    assert "        mh @words @typed" in text
+    assert "    mh @words @typed" in text
     back = expanded(text)
     assert 'Write-Host "La prochaine fois, tapez-la directement : mh ${chosen}"' in back
 

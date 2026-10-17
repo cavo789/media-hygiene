@@ -37,8 +37,9 @@ L'étape 0 a écrit `mh` dans votre profil PowerShell : chaque nouveau terminal 
 nettoyez d'abord les doublons ([nettoyer en bref](../clean/quick-guide.md)) : sinon chaque photo
 est trouvée deux fois.
 
-**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
-Entrée la lance. Plus : [`menu`](../commands/menu.md).
+**Perdu ?** Tapez `mh` seul : la [page d'accueil](../commands/home.md) s'ouvre dans votre
+navigateur, chaque étape des guides un bouton, la prochaine proposée. Dans le terminal seulement :
+[`mh menu`](../commands/menu.md).
 
 ## 1. Nommer les personnes (facultatif)
 

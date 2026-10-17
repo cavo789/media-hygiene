@@ -155,13 +155,13 @@ def setup_steps() -> tuple[Step, ...]:
     return (
         Step(
             "shortcut",
-            _("An icon on the Desktop and in the Start menu opens this menu"),
+            _("An icon on the Desktop and in the Start menu opens the home page"),
             Risk.SAFE,
             optional=True,
         ),
         Step(
             "explorer",
-            _("Right-click a folder in Explorer: this menu, on that folder"),
+            _("Right-click a folder in Explorer: the home page, on that folder"),
             Risk.SAFE,
             optional=True,
         ),

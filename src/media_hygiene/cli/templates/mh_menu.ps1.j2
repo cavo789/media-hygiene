@@ -1,0 +1,52 @@
+{# `mh` alone (the home page, its steps run in the console) and `mh menu`: included by mh.ps1.j2. #}
+# `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
+# here as `{{ function }} <step>`, its questions in this console, then the page comes back.
+# Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
+function global:_{{ function }}_home {
+    $typed = @($args)
+    $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' } else { '--color', 'never' })
+    while ($true) {
+        $global:MediaHygieneRelay = $true
+        try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null }
+        $status = $LASTEXITCODE
+        if ($status -le {{ step_base }}) { return }
+        $steps = @({{ function }} @color menu)
+        $chosen = ''
+        foreach ($step in $steps) {
+            $number, $line = "$step" -split "`t", 2
+            if ($number -eq "$($status - {{ step_base }})") { $chosen = $line; break }
+        }
+        if (-not $chosen) { $global:LASTEXITCODE = $status; return }
+        Write-Host "{{ texts.direct }}"
+        $words = -split $chosen
+        {{ function }} @words @typed
+    }
+}
+
+# `{{ function }} menu`: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
+# With --photos, the step chosen gets them too (0181).
+function global:_{{ function }}_menu {
+    $typed = @($args)
+    if ($typed.Count -gt 0) {
+        $shown = @(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] }) -join ', '
+        Write-Host "{{ texts.folder }}"
+    }
+    $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' } else { '--color', 'never' })
+    Write-Host "{{ texts.reading }}"
+    $steps = @({{ function }} @color menu)
+    if ($LASTEXITCODE -ne 0 -or $steps.Count -eq 0) { return }
+    $choice = "$(Read-Host "{{ texts.prompt }}")".Trim()
+    if (-not $choice) { $choice = '0' }
+    $chosen = ''
+    foreach ($step in $steps) {
+        $number, $line = "$step" -split "`t", 2
+        if ($number -eq $choice) { $chosen = $line; break }
+    }
+    if (-not $chosen) {
+        if ($choice -ne '0') { Write-Host "{{ texts.unknown }}" }
+        return
+    }
+    Write-Host "{{ texts.direct }}"
+    $words = -split $chosen
+    {{ function }} @words @typed
+}

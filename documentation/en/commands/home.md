@@ -53,7 +53,7 @@ docker run --rm -it `
 - **What the last audit found**: a few previews of its report.
 - **Reports**: the last audit and the last clean, and *Every report* (`index.html`), opened in
   a new tab from the page itself.
-- **The steps of the three guides**, numbered as in [`mh` alone](menu.md): **👉** the step
+- **The steps of the three guides**, numbered as in [`mh menu`](menu.md): **👉** the step
   proposed, **✅** a step the tool's folders prove done, the badges 🔒 photos untouched, ↩️ can be
   undone, ⚠️ for good, *optional*, 🤖 when a local model is set. A step `mh` cannot fill for you
   (`mh album "Christmas" --category …`) shows the command to type.
@@ -63,12 +63,13 @@ docker run --rm -it `
 The page never changes your photos itself. What a step's button does depends on the `mh` that
 opened the page:
 
-- **An `mh` that runs the steps of the page** (it says so to the page): **Run** (or the big
+- **`mh` alone** (and so the Desktop shortcut and the right-click of a folder), which runs the
+  steps of the page and says so to it: **Run** (or the big
   button) closes the page and hands the step to `mh`, in the PowerShell window, with the folders
   that step needs. The page says *Running in the PowerShell window: this page comes back when it
   ends*; when `mh` opens the home page again, the page reloads on its own. The step chosen is the
   command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
-- **Otherwise** (an older `mh`, or `docker run` alone): the button reads **Copy**. It copies the
+- **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button reads **Copy**. It copies the
   command (*Copied: mh clean*) and the page keeps running; stop it with Ctrl+C in its PowerShell
   window, paste the command there (right click) and press Enter. When the browser refuses to
   copy (the page opened at an address other than `127.0.0.1` or `localhost`), the command is

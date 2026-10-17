@@ -4,9 +4,10 @@
 
 ## In short
 
-**Lost? Type `mh` alone: every step of the guides, the next one proposed, Enter runs it.**
+**Lost? Type `mh menu`: every step of the guides in the terminal, the next one proposed, Enter
+runs it.** `mh` alone shows the same steps on the [home page](home.md), in your browser.
 
-You do not need to remember any command name. `mh` typed alone shows the steps of the three
+You do not need to remember any command name. `mh menu` shows the steps of the three
 guides ([clean](../clean/quick-guide.md), [sort](../sort/quick-guide.md),
 [find](../find/quick-guide.md)) in order, each with its full `mh …` command, and proposes **one**:
 the step [`status`](status.md) would give. Press Enter to run it, or type the number of another
@@ -18,7 +19,7 @@ learn the commands while using them.
 **Try it** (once `mh` is written, [step 0 of the guides](../clean/quick-guide.md#0-once-write-the-mh-command)):
 
 ```powershell
-mh
+mh menu
 ```
 
 ## At a glance
@@ -29,7 +30,7 @@ mh
 | Needs | `mh`: the menu runs the step you choose through it, with the right folders. |
 | Writes | Nothing. |
 | Undo | Nothing to undo; each step keeps its own undo. |
-| With `mh` | `mh` alone. |
+| With `mh` | `mh menu`. |
 
 ## What it shows
 
@@ -122,7 +123,9 @@ the guides), then type mh alone.
 
 - `menu` has no option.
 - The menu never answers for you: `clean`, `sort` and `purge` still ask before acting.
-- After the step, the menu does not come back: type `mh` again, it shows where you are now.
+- After the step, the menu does not come back: type `mh menu` again, it shows where you are now.
+  The [home page](home.md) (`mh` alone) does come back after each step.
+- For a remote session, a slow PC or no browser: `mh menu` opens no page.
 - `docker run … cavo789/media-hygiene` with no command still prints the `--help`: only `mh` can
   run the step chosen with the right folders.
 - `docker run -it … menu` shows the menu but cannot run a step: write `mh` first.

@@ -48,8 +48,8 @@ de suite.
 
 C'est la seule commande longue du guide. Plusieurs dossiers, un disque USB ? L'[étape
 3](03-several-folders.md) les ajoute avec `mh folders add`. **Plutôt cliquer que taper ?**
-`mh shortcut` pose une icône *Media Hygiene* sur votre Bureau : un double-clic ouvre le menu de
-`mh`.
+`mh shortcut` pose une icône *Media Hygiene* sur votre Bureau : un double-clic ouvre la page
+d'accueil.
 
 ## Lancer l'audit
 
@@ -57,7 +57,9 @@ C'est la seule commande longue du guide. Plusieurs dossiers, un disque USB ? L'[
 mh audit
 ```
 
-`mh` seul ouvre un menu qui propose l'étape suivante ; `mh audit` la lance directement.
+`mh` seul ouvre la [page d'accueil](../commands/home.md) dans votre navigateur : elle propose
+l'étape suivante, et son bouton la lance dans la fenêtre PowerShell (`mh menu` : les mêmes étapes
+dans le terminal). `mh audit` la lance directement.
 Derrière, `mh` tape le `docker run` pour vous : votre dossier en lecture seule, le cache, les
 dossiers des rapports, de la configuration, du journal et de la quarantaine dans
 `$HOME\media-hygiene` (créés s'ils manquent), et votre fuseau horaire, demandé à Windows à chaque

@@ -4,7 +4,7 @@
 {% endfor %}
 {{ function }}() {
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
-    local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=()
+    local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
     # --photos /mnt/e/Folder: one more photo folder, for this command only.
     while [[ $# -gt 0 ]]; do
         if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
@@ -21,7 +21,13 @@
     done
     set -- "${rest[@]}"
     if [[ $# -eq 0 ]]; then
-        # Alone: the menu; with --photos, the step chosen gets them too (0181).
+        # Alone: the home page, the steps chosen there run here (0210); with --photos,
+        # the step chosen gets them too (0181).
+        _{{ function }}_home "${typed[@]}"
+        return
+    fi
+    if [[ $# -eq 1 && "$1" == menu ]]; then
+        # `{{ function }} menu`: the steps in this terminal, a number read (0172).
         _{{ function }}_menu "${typed[@]}"
         return
     fi
@@ -55,6 +61,8 @@
         *" $command "*) long=1 ;;
     esac
     for folder in "${given[@]}"; do photos+=(-v "$folder$mode"); done
+    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210).
+    if [[ -n "${_{{ function }}_relay:-}" && "$command" == home ]]; then relay=(-e "{{ relay }}=1"); fi
     # The host's own zone, unless TZ says one: /etc/localtime links to it.
     if [[ -z "$zone" && -L /etc/localtime ]]; then
         zone="$(readlink /etc/localtime)"
@@ -78,7 +86,7 @@
     fi
     "${awake[@]}" docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
         -e "{{ variable }}={{ script.shell.value }}" \
-        "${zoned[@]}" \
+        "${zoned[@]}" "${relay[@]}" \
 {% for option in script.environment %}
         {{ option }} \
 {% endfor %}
@@ -117,10 +125,32 @@ _{{ function }}_{{ name }}() {
 }
 {% endfor %}
 
-# `{{ function }}` alone: the menu lists the steps, the number chosen runs as
+# `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
+# here as `{{ function }} <step>`, its questions in this terminal, then the page comes back.
+# Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
+_{{ function }}_home() {
+    local _{{ function }}_relay=1 status steps number line chosen words=() color=(--color never)
+    if [[ -t 2 ]]; then color=(--color always); fi
+    while true; do
+        status=0
+        {{ function }} home "$@" || status=$?
+        if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
+        steps="$({{ function }} "${color[@]}" menu)" || return
+        chosen=""
+        while IFS=$'\t' read -r number line; do
+            if [[ "$number" == "$((status - {{ step_base }}))" ]]; then chosen="$line"; break; fi
+        done <<< "$steps"
+        if [[ -z "$chosen" ]]; then return "$status"; fi
+        printf '%s\n' "{{ texts.direct }}" >&2
+        read -r -a words <<< "$chosen"
+        {{ function }} "${words[@]}" "$@" || true
+    done
+}
+
+# `{{ function }} menu`: the menu lists the steps, the number chosen runs as
 # `{{ function }} <step>`, with the --photos given to it, if any (0181).
 _{{ function }}_menu() {
-    local steps number line choice="" chosen="" color=() words=() shown="" index
+    local steps number line choice="" chosen="" color=(--color never) words=() shown="" index
     if [[ -t 2 ]]; then color=(--color always); fi
     for ((index = 2; index <= $#; index += 2)); do shown+="${shown:+, }${!index}"; done
     if [[ -n "$shown" ]]; then printf '%s\n' "{{ texts.folder }}" >&2; fi

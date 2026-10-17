@@ -35,8 +35,9 @@
 #      free): to the quarantine on C: (copy E: -> C:), then to that drive's own quarantine
 #      /quarantine/x (copy E: -> E:): wall time of each clean and undo; then undo without
 #      the drive's quarantine mounted must refuse, naming the drive                  (0183)
-#  14. the mh menu by hand, old console then your usual one: colours, columns, a number +
-#      Enter, Ctrl+C; asks what you saw                                        (0172)
+#  14. mh menu by hand, old console then your usual one: colours, columns, a number +
+#      Enter, Ctrl+C; then mh alone: the home page, a step run from it, the page back,
+#      Home from a review page, Quit; asks what you saw                        (0172, 0210)
 #  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
 #  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
@@ -649,7 +650,8 @@ if (Wanted 13) {
 }
 
 # --- 14: the mh menu by hand, in the old console and in your usual one (0172) --------------
-# mh alone lists the steps; a number then Enter runs one. Watch the colours and the columns.
+# mh menu lists the steps; a number then Enter runs one. Watch the colours and the columns.
+# Then mh alone opens the home page; the step chosen there runs in the console (0210).
 if (Wanted 14) {
     $ErrorActionPreference = "Continue"
     $mhDir = Join-Path $tool "mh14"
@@ -671,8 +673,8 @@ if (Wanted 14) {
         } else {
             Write-Host "14 (usual console): open Windows PowerShell as you usually do."
         }
-        Write-Host "    In it, type: . '$mhFile'; mh"
-        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh again, then Ctrl+C at the question."
+        Write-Host "    In it, type: . '$mhFile'; mh menu"
+        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh menu again, then Ctrl+C at the question."
         $colours = Read-Host "14. Colours shown as colours, not as codes like [32m? (y/n)"
         $columns = Read-Host "14. Emoji and step columns lined up? (y/n)"
         $ran = Read-Host "14. The number + Enter ran audit? (y/n)"
@@ -680,6 +682,20 @@ if (Wanted 14) {
         Log "   14 ($console): colours $colours, columns $columns, number ran $ran, Ctrl+C clean $stopped"
         Write-Host "Close that window."
     }
+    # mh alone: the home page in the browser; its buttons run the steps in the console (0210).
+    Write-Host "14 (home page): open Windows PowerShell as you usually do."
+    Write-Host "    In it, type: . '$mhFile'; mh"
+    Write-Host "    The home page opens in your browser. Click Run on the 'clean' step: it runs in the"
+    Write-Host "    PowerShell window and asks its question there; answer n. The page must come back."
+    Write-Host "    Then click Run on a 'review' step; on that page, click the Home link at the bottom right."
+    Write-Host "    Finally click Quit on the home page."
+    $opened = Read-Host "14h. mh alone opened the home page in the browser? (y/n)"
+    $asked = Read-Host "14h. Run on 'clean' ran it in the PowerShell window, with its question? (y/n)"
+    $back = Read-Host "14h. After it, the home page came back by itself (reloaded)? (y/n)"
+    $homeLink = Read-Host "14h. Home from the review page brought the home page back? (y/n)"
+    $quit = Read-Host "14h. Quit gave the PowerShell prompt back, no red error? (y/n)"
+    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, Home from review $homeLink, Quit clean $quit"
+    Write-Host "Close that window."
 }
 
 # --- 15: the launcher line of the guide, then mh audit and mh --photos (0173) ----------------

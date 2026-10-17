@@ -49,7 +49,7 @@ def menu_texts() -> MenuTexts:
     return MenuTexts(
         prompt=shell_safe(_("Step number (Enter: the proposed one)")),
         unknown=shell_safe(
-            _("No step {choice}: type mh alone to see the menu again.")
+            _("No step {choice}: type mh menu to see the menu again.")
         ).replace("{choice}", "${choice}"),
         direct=shell_safe(_("Next time, type it directly: {command}")).replace(
             "{command}", f"{LAUNCHER_FUNCTION} ${{chosen}}"

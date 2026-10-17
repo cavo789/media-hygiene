@@ -84,8 +84,8 @@ def test_bash_successful_run_does_not_ask_docker(tmp_path: Path) -> None:
 
 
 def test_bash_menu_says_it_once_and_asks_nothing(tmp_path: Path) -> None:
-    """`mh` alone: the captured `menu` run says it; the menu stops there."""
-    done = _bash(tmp_path, "mh < /dev/null", (1, 1))
+    """`mh menu`: the captured `menu` run says it; the menu stops there."""
+    done = _bash(tmp_path, "mh menu < /dev/null", (1, 1))
     assert done.stderr.count(_DAEMON) == 1
     assert "Step number" not in done.stderr
     assert "status=0" not in done.stdout

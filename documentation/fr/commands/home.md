@@ -57,7 +57,7 @@ docker run --rm -it `
 - **Ce que le dernier audit a trouvé** : quelques aperçus de son rapport.
 - **Rapports** : le dernier audit et le dernier nettoyage, et *Tous les rapports*
   (`index.html`), ouverts dans un nouvel onglet depuis la page elle-même.
-- **Les étapes des trois guides**, numérotées comme dans [`mh` seul](menu.md) : **👉** l'étape
+- **Les étapes des trois guides**, numérotées comme dans [`mh menu`](menu.md) : **👉** l'étape
   proposée, **✅** une étape que les dossiers de l'outil prouvent faite, les badges 🔒 photos
   intactes, ↩️ annulable, ⚠️ définitif, *facultatif*, 🤖 quand un modèle local est réglé. Une
   étape que `mh` ne peut pas remplir pour vous (`mh album "Noël" --category …`) montre la
@@ -68,13 +68,14 @@ docker run --rm -it `
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`
 qui a ouvert la page :
 
-- **Un `mh` qui lance les étapes de la page** (il le dit à la page) : **Lancer** (ou le gros
+- **`mh` seul** (et donc le raccourci du Bureau et le clic droit sur un dossier), qui lance les
+  étapes de la page et le lui dit : **Lancer** (ou le gros
   bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre PowerShell, avec les dossiers
   dont cette étape a besoin. La page affiche *En cours dans la fenêtre PowerShell : cette page
   revient quand c'est fini* ; quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
   L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
   c'est ainsi que `mh` sait quoi lancer.
-- **Sinon** (un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
+- **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
   copie la commande (*Copiée : mh clean*) et la page continue de tourner ; arrêtez-la avec Ctrl+C
   dans sa fenêtre PowerShell, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
   navigateur refuse de copier (page ouverte à une autre adresse que `127.0.0.1` ou `localhost`),

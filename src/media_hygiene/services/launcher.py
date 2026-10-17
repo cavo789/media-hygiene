@@ -22,6 +22,7 @@ from media_hygiene.paths.docker_run import (
     running_image,
 )
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.home_views import STEP_EXIT_BASE
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
@@ -34,6 +35,7 @@ from media_hygiene.services.launcher_menu import BROWSE_WAIT, menu_texts
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
+    LAUNCHER_STEPS_VARIABLE,
     LAUNCHER_VARIABLE,
     TOOL_KINDS,
     data_volumes,
@@ -153,5 +155,7 @@ def render_script(script: LauncherScript) -> str:
         checked=checked_folders(script),
         cloud=cloud_check(script.commands.names),
         zone=WINDOWS_ZONE_VARIABLE,
+        relay=LAUNCHER_STEPS_VARIABLE,
+        step_base=STEP_EXIT_BASE,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
