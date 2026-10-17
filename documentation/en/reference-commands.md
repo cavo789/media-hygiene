@@ -13,6 +13,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | know, without any risk, how many copies my folders hold and how much space they take | [`audit`](commands/audit.md) |
 | know in a second where I stand after a few days, and the next step | [`status`](commands/status.md) |
 | not remember any command: see every step, run the next one with Enter | [`menu`](commands/menu.md) (`mh` alone) |
+| click rather than type: where I stand, the next step as a button, my reports, the audit run in the page | [`home`](commands/home.md) |
 | free the space my duplicate photos take, safely: set aside, never erased | [`clean`](commands/clean.md) |
 | keep only the best shots of my bursts, decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
 | see what each run did | [`history`](commands/history.md) |
@@ -46,6 +47,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [Cleaning, 9](clean/09-undo-history-purge.md#where-am-i-status) |
 | [`menu`](commands/menu.md) | What `mh` alone shows: every step of the three guides with its full `mh` command, the one `status` would give proposed; Enter runs it through `mh`, a number runs another. Reads the tool's folders only, no scan. | [Clean in short](clean/quick-guide.md) |
+| [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
 | [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |
@@ -94,7 +96,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Cleaning, step 8](clean/08-clean.md#need-the-space-at-once---delete) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home` | Port of the page, `8088` by default; publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
 | `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
@@ -158,6 +160,8 @@ command shows its own `--help`; here is the list of the commands:
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyse: read-only, never changes your photos ───────────────────────────╮
 │ audit        Find exact duplicates and broken files.                         │
+│ browse       Walk through your folders in your browser, as in Explorer, and  │
+│              set photos aside; 'clean --decisions' then moves them.          │
 │ classify     Propose where every photo and video should go: year, event,     │
 │              category, and what lone photos show with an optional local AI   │
 │              🤖                                                              │
@@ -165,6 +169,8 @@ command shows its own `--help`; here is the list of the commands:
 │ crosscheck   Run Czkawka, an independent duplicate finder, then compare its  │
 │              groups with a fresh audit: a second opinion.                    │
 │ history      List the runs and what they did.                                │
+│ home         The home page in your browser: where you are, the next step as  │
+│              a button, every step of the guides, the reports.                │
 │ inventory    Export every photo and video with what the audits learnt to     │
 │              Excel, from the cache alone: no file is read.                   │
 │ launcher     Write 'mh', a short command holding your folders: mh audit, mh  │

@@ -17,6 +17,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.ending import run_server
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
@@ -33,7 +34,7 @@ from media_hygiene.search.folders import (
     FOLDERS_PATH,
     FolderDesk,
 )
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:

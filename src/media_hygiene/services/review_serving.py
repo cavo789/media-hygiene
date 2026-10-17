@@ -12,8 +12,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.review.ending import run_server
 from media_hygiene.services.review_file import review_page
-from media_hygiene.services.reviewing import address_tip, page_url, run_server
+from media_hygiene.services.reviewing import address_tip, page_url
 
 if TYPE_CHECKING:
     from collections.abc import Callable

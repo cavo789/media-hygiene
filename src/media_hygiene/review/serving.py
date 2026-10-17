@@ -9,7 +9,7 @@ import asyncio
 import contextlib
 import json
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final, Protocol
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import (
     BadRequestError,
@@ -29,20 +29,6 @@ _DROPPED_CONNECTION: Final = (
     asyncio.IncompleteReadError,
     ConnectionError,
 )
-
-
-class Connected(Protocol):
-    """A local page: serves each connection the browser opens."""
-
-    async def connection(
-        self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
-    ) -> None:
-        """Serve one connection.
-
-        Args:
-            reader: What the browser sends.
-            writer: Where to answer.
-        """
 
 
 async def serve_connection(

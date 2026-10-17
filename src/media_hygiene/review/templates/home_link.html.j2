@@ -1,0 +1,38 @@
+{# "⌂ Home" on every page but the home page itself: `POST /api/stop` ends this page's server
+   (code 0) and `mh` opens the home page again on the same port; the page reloads once the
+   server was seen gone, then answering again. Included by each page, from any package. #}
+<a id="homeLink" href="#" title="{{ _('Close this page and go back to the home page: mh opens it again.') }}"
+   style="position: fixed; right: 12px; bottom: 12px; z-index: 50; padding: 4px 12px; border-radius: 999px;
+          background: #0969da; color: #fff; font: 600 14px/1.6 system-ui, sans-serif; text-decoration: none;">{{ _("⌂ Home") }}</a>
+<div id="homeClosed" hidden role="alertdialog" aria-live="assertive"
+     style="position: fixed; inset: 0; z-index: 60; align-items: center; justify-content: center;
+            padding: 16px; background: rgba(0, 0, 0, .55); font: 16px/1.5 system-ui, sans-serif;">
+  <p style="max-width: 520px; padding: 20px 24px; border-radius: 12px; background: #fff; color: #1f2328;">
+    {{ _("This page is closed. The home page comes back here when mh opens it.") }}</p>
+</div>
+<script>
+(() => {
+  const POLL_MS = 1000;
+  const closed = document.getElementById("homeClosed");
+  document.getElementById("homeLink").addEventListener("click", (event) => {
+    event.preventDefault();
+    fetch("/api/stop", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+      .then(() => {
+        closed.hidden = false;
+        closed.style.display = "flex";
+        let seenGone = false;
+        const poll = () => fetch("/", { cache: "no-store" })
+          .then((response) => {
+            if (response.ok && seenGone) window.location.replace("/");
+            else window.setTimeout(poll, POLL_MS);
+          })
+          .catch(() => {
+            seenGone = true;
+            window.setTimeout(poll, POLL_MS);
+          });
+        window.setTimeout(poll, POLL_MS);
+      })
+      .catch(() => undefined);
+  });
+})();
+</script>

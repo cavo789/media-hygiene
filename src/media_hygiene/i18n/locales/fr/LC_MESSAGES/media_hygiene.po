@@ -704,6 +704,9 @@ msgstr ""
 "Une zone d'OpenStreetMap : les photos prises à l'intérieur de son contour"
 " appartiennent à ce lieu."
 
+msgid "An audit already runs: wait for its end, or stop it."
+msgstr "Un audit tourne déjà : attendez sa fin, ou arrêtez-le."
+
 msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
@@ -793,8 +796,17 @@ msgstr "À la maison"
 msgid "Audit"
 msgstr "Audit"
 
+msgid "Audit in this page"
+msgstr "Auditer dans cette page"
+
+msgid "Audit now"
+msgstr "Auditer maintenant"
+
 msgid "Audit report"
 msgstr "Rapport d'audit"
+
+msgid "Audit stopped: the cache keeps what it had read."
+msgstr "Audit arrêté : le cache garde ce qu'il avait lu."
 
 msgid "Audit summary"
 msgstr "Résumé de l'audit"
@@ -806,6 +818,9 @@ msgstr ""
 "Analyser, confirmer, puis déplacer les copies en double en quarantaine, "
 "après une comparaison octet par octet (journalisé, annulable) ; --delete "
 "les supprime pour de bon."
+
+msgid "Auditing…"
+msgstr "Audit en cours…"
 
 msgid "August"
 msgstr "août"
@@ -1048,6 +1063,9 @@ msgstr "Nettoyage {run_id}"
 
 msgid "Cleaning"
 msgstr "Nettoyage"
+
+msgid "Close this page and go back to the home page: mh opens it again."
+msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
 
 msgid "Codec"
 msgstr "Codec"
@@ -1606,6 +1624,13 @@ msgstr ""
 "Les fichiers vides sont supprimés ; les illisibles sont déplacés en "
 "quarantaine, jamais supprimés directement."
 
+msgid ""
+"Ends this page: mh runs the step in the PowerShell window, then opens "
+"this page again."
+msgstr ""
+"Ferme cette page : mh lance l'étape dans la fenêtre PowerShell, puis "
+"rouvre cette page."
+
 #, python-brace-format
 msgid ""
 "Enter runs step {number} ({command}). Another number runs that step. "
@@ -1784,6 +1809,9 @@ msgstr "Toutes les paires ont été décidées."
 
 msgid "Every photo and video in an Excel workbook"
 msgstr "Toutes les photos et vidéos dans un classeur Excel"
+
+msgid "Every report"
+msgstr "Tous les rapports"
 
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
@@ -2307,6 +2335,16 @@ msgstr "Vacances et sorties"
 
 msgid "Home"
 msgstr "Maison"
+
+msgid "Home page"
+msgstr "Accueil"
+
+msgid "Home page closed; your photos were not changed."
+msgstr "Accueil fermé ; vos photos n'ont pas été modifiées."
+
+#, python-brace-format
+msgid "Home page ready, open {url} in your browser. Ctrl+C stops it."
+msgstr "Accueil prêt, ouvrez {url} dans votre navigateur. Ctrl+C l'arrête."
 
 msgid "Home: trips are measured from it"
 msgstr "Maison : les voyages se mesurent à partir d'ici"
@@ -2985,6 +3023,9 @@ msgstr ""
 msgid "Next page →"
 msgstr "Page suivante →"
 
+msgid "Next step"
+msgstr "Étape suivante"
+
 #, python-brace-format
 msgid "Next time, type it directly: {command}"
 msgstr "La prochaine fois, tapez-la directement : {command}"
@@ -3191,6 +3232,9 @@ msgstr ""
 msgid "No report yet: run 'media-hygiene audit'."
 msgstr "Aucun rapport pour l'instant : lancez 'media-hygiene audit'."
 
+msgid "No report yet: the audit writes one."
+msgstr "Pas encore de rapport : l'audit en écrit un."
+
 #, python-brace-format
 msgid "No report yet: type {command} first."
 msgstr "Pas encore de rapport : tapez d'abord {command}."
@@ -3282,6 +3326,9 @@ msgstr "Introuvables"
 msgid "Not looked at (not mounted): {points}."
 msgstr "Non consulté (non monté) : {points}."
 
+msgid "Not opened by mh? Type the command yourself; this page is closed."
+msgstr "Pas ouverte par mh ? Tapez la commande vous-même ; cette page est fermée."
+
 #, python-brace-format
 msgid ""
 "Not photos or videos: {extensions}. These files are only compared byte "
@@ -3297,6 +3344,10 @@ msgstr "Non enregistré (erreur {status})."
 #, python-brace-format
 msgid "Not saved: {reason}."
 msgstr "Pas enregistré : {reason}."
+
+#, python-brace-format
+msgid "Not sent (error {status})."
+msgstr "Non envoyé (erreur {status})."
 
 msgid "Not the folder you want to keep?"
 msgstr "Ce n'est pas le dossier que vous voulez garder ?"
@@ -3556,6 +3607,9 @@ msgstr ""
 
 msgid "Open the page at 127.0.0.1 or localhost."
 msgstr "Ouvrez la page sur 127.0.0.1 ou localhost."
+
+msgid "Open the report"
+msgstr "Ouvrir le rapport"
 
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr "Ouvrez le tri sur 127.0.0.1 ou localhost."
@@ -3872,6 +3926,13 @@ msgstr ""
 "Lit entièrement les candidats restants : même SHA-256 veut dire "
 "identiques, octet par octet."
 
+msgid ""
+"Reads your folders as 'mh audit' does, its progress shown here: your "
+"photos are not touched."
+msgstr ""
+"Lit vos dossiers comme 'mh audit', sa progression affichée ici : vos "
+"photos ne sont pas touchées."
+
 msgid "Reason"
 msgstr "Raison"
 
@@ -3915,6 +3976,9 @@ msgstr "Rapport avec les photos : {path}"
 #, python-brace-format
 msgid "Report written in {duration}."
 msgstr "Rapport écrit en {duration}."
+
+msgid "Reports"
+msgstr "Rapports"
 
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
@@ -4236,6 +4300,9 @@ msgstr ""
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
+
+msgid "Running in the PowerShell window: this page comes back when it ends."
+msgstr "En cours dans la fenêtre PowerShell : cette page revient quand c'est fini."
 
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
@@ -4623,12 +4690,23 @@ msgstr "Restent où ils sont"
 msgid "Step 1 of the guide:"
 msgstr "Étape 1 du guide :"
 
+#, python-brace-format
+msgid "Step chosen: {command}"
+msgstr "Étape choisie : {command}"
+
 msgid "Step number (Enter: the proposed one)"
 msgstr "Numéro de l'étape (Entrée : celle proposée)"
 
 #, python-brace-format
+msgid "Step {number} chosen on the home page: {command}"
+msgstr "Étape {number} choisie sur la page d'accueil : {command}"
+
+#, python-brace-format
 msgid "Step-by-step guide and every command: {url}"
 msgstr "Guide pas à pas et toutes les commandes : {url}"
+
+msgid "Stop the audit"
+msgstr "Arrêter l'audit"
 
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
@@ -4748,6 +4826,9 @@ msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 
 msgid "The album's name: the folder holding its links."
 msgstr "Le nom de l'album : le dossier qui contient ses liens."
+
+msgid "The audit failed: the PowerShell window says why."
+msgstr "L'audit a échoué : la fenêtre PowerShell dit pourquoi."
 
 msgid "The audit is done; look for the faces now?"
 msgstr "L'audit est terminé ; chercher les visages maintenant ?"
@@ -4932,6 +5013,16 @@ msgstr "Le dossier {path} n'est pas monté."
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr "Les groupes n'ont pas pu être lus (erreur {status})."
+
+msgid ""
+"The home page in your browser: where you are, the next step as a button, "
+"every step of the guides, the reports."
+msgstr ""
+"La page d'accueil dans votre navigateur : où vous en êtes, l'étape "
+"suivante en un bouton, toutes les étapes des guides, les rapports."
+
+msgid "The home page is not running any more: start it again (mh)."
+msgstr "L'accueil ne tourne plus : relancez-le (mh)."
 
 #, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
@@ -5238,6 +5329,9 @@ msgstr ""
 msgid "The step you choose also analyses: {folder}"
 msgstr "L'étape choisie analyse aussi : {folder}"
 
+msgid "The steps changed since the page was shown: here they are."
+msgstr "Les étapes ont changé depuis l'affichage de la page : les voici."
+
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -5286,9 +5380,9 @@ msgid ""
 "goes into dc:description."
 msgstr ""
 "Les mots que 'xmp' écrit dans les fichiers compagnons .xmp à côté des "
-"photos (dc:subject), par source : vision, place, folder, name, former (les"
-" dossiers et noms des copies retirées par 'clean'), date. La phrase du "
-"modèle va dans dc:description."
+"photos (dc:subject), par source : vision, place, folder, name, former "
+"(les dossiers et noms des copies retirées par 'clean'), date. La phrase "
+"du modèle va dans dc:description."
 
 msgid ""
 "The words of 'tags', to find photos by what they show: the meaningful "
@@ -5455,6 +5549,9 @@ msgstr "C'est la dernière paire : arrêtez la revue avec Ctrl+C dans le termina
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal."
+
+msgid "This page is closed. The home page comes back here when mh opens it."
+msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
 
 msgid "This series is not in the file yet."
 msgstr "Cette série n'est pas encore dans le fichier."
@@ -5720,6 +5817,9 @@ msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
 
 msgid "What next:"
 msgstr "Et maintenant :"
+
+msgid "What the last audit found"
+msgstr "Ce que le dernier audit a trouvé"
 
 msgid "What was already done is in the journal: 'undo' puts it back."
 msgstr "Ce qui a déjà été fait est dans le journal : 'undo' le remet en place."
@@ -8860,6 +8960,9 @@ msgid ""
 msgstr ""
 "→ valide comme affichées les séries encore à voir ici ({series}, "
 "{aside}), puis ouvre la page suivante."
+
+msgid "⌂ Home"
+msgstr "⌂ Accueil"
 
 #, python-brace-format
 msgid ""

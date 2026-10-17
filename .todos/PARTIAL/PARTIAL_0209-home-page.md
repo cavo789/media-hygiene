@@ -57,3 +57,30 @@ chooses; 0211 runs the audit inside the page.
 
 For a non-technical user: a numbered list in PowerShell → a page showing where they stand, the
 next step as a button, and the photos found.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `media-hygiene home` (`cli/cmd_home.py`, `PAGE_COMMANDS`, `READ_ONLY_COMMANDS`): the state from
+  the same sources as `status` and `mh menu` (`cli/home_state.py`, `cli/home_reports.py`): status
+  lines, undo line, next step as a big button, every step numbered as `mh menu` with its badges,
+  the latest audit/clean reports and `index.html` (served by the page itself under `/reports/`,
+  `review/report_files.py`, never outside the folder), 8 thumbnails of the last audit's report.
+- `POST /api/step {number, command}` ends the server with `100 + n` (checked against the menu
+  read again: a stale page gets 409); the command exits with that code and names the step.
+  The page then says "Running in the PowerShell window…" and reloads once the server was seen
+  gone, then answering again.
+- `review/ending.py`: every page server (`run_server`) answers `POST /api/stop` (loopback `Host`,
+  JSON only) and ends with 0; every other page (review, near, pairs, junk, review-sort, places,
+  search, browse, people) includes the shared `home_link.html.j2` ("⌂ Home"), found from any
+  package through a `ChoiceLoader` in `i18n/templates.py`.
+- Docs: `commands/home.md` (en, fr), reference tables, `--help` capture of `reference-commands`
+  refreshed by hand, `COMMANDS_TOO`, mkdocs nav; French catalog.
+- Tests: `tests/integration/test_home_page.py`; `home` added to `test_read_only_commands.py`.
+
+### Not done
+- A capture of the page (`images/home.webp`).
+  **Reason:** `docs_screenshots` not run (heavy, needs asking): add a `home` mode to
+  `tests/support/docs/browser.py` / `served.py`, run it, reference the image in both pages.
+- `mh` reopening the home page after a step or a "⌂ Home" (the exit codes are in place).
+  **Reason:** 0210 (launcher side), out of scope here.

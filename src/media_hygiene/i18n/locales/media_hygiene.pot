@@ -551,6 +551,9 @@ msgid ""
 " this place."
 msgstr ""
 
+msgid "An audit already runs: wait for its end, or stop it."
+msgstr ""
+
 msgid ""
 "An audit never modifies anything. Every copy listed below is byte-for-"
 "byte identical to the one kept; 'clean' compares them again right before "
@@ -619,7 +622,16 @@ msgstr ""
 msgid "Audit"
 msgstr ""
 
+msgid "Audit in this page"
+msgstr ""
+
+msgid "Audit now"
+msgstr ""
+
 msgid "Audit report"
+msgstr ""
+
+msgid "Audit stopped: the cache keeps what it had read."
 msgstr ""
 
 msgid "Audit summary"
@@ -628,6 +640,9 @@ msgstr ""
 msgid ""
 "Audit, confirm, then move the duplicate copies to the quarantine, after a"
 " byte comparison (journaled, undoable); --delete deletes them for good."
+msgstr ""
+
+msgid "Auditing…"
 msgstr ""
 
 msgid "August"
@@ -846,6 +861,9 @@ msgid "Clean {run_id}"
 msgstr ""
 
 msgid "Cleaning"
+msgstr ""
+
+msgid "Close this page and go back to the home page: mh opens it again."
 msgstr ""
 
 msgid "Codec"
@@ -1300,6 +1318,11 @@ msgid ""
 "never deleted outright."
 msgstr ""
 
+msgid ""
+"Ends this page: mh runs the step in the PowerShell window, then opens "
+"this page again."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Enter runs step {number} ({command}). Another number runs that step. "
@@ -1436,6 +1459,9 @@ msgid "Every pair has been decided."
 msgstr ""
 
 msgid "Every photo and video in an Excel workbook"
+msgstr ""
+
+msgid "Every report"
 msgstr ""
 
 #, python-brace-format
@@ -1865,6 +1891,16 @@ msgid "Holidays and outings"
 msgstr ""
 
 msgid "Home"
+msgstr ""
+
+msgid "Home page"
+msgstr ""
+
+msgid "Home page closed; your photos were not changed."
+msgstr ""
+
+#, python-brace-format
+msgid "Home page ready, open {url} in your browser. Ctrl+C stops it."
 msgstr ""
 
 msgid "Home: trips are measured from it"
@@ -2435,6 +2471,9 @@ msgstr ""
 msgid "Next page →"
 msgstr ""
 
+msgid "Next step"
+msgstr ""
+
 #, python-brace-format
 msgid "Next time, type it directly: {command}"
 msgstr ""
@@ -2613,6 +2652,9 @@ msgstr ""
 msgid "No report yet: run 'media-hygiene audit'."
 msgstr ""
 
+msgid "No report yet: the audit writes one."
+msgstr ""
+
 #, python-brace-format
 msgid "No report yet: type {command} first."
 msgstr ""
@@ -2690,6 +2732,9 @@ msgstr ""
 msgid "Not looked at (not mounted): {points}."
 msgstr ""
 
+msgid "Not opened by mh? Type the command yourself; this page is closed."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Not photos or videos: {extensions}. These files are only compared byte "
@@ -2702,6 +2747,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not saved: {reason}."
+msgstr ""
+
+#, python-brace-format
+msgid "Not sent (error {status})."
 msgstr ""
 
 msgid "Not the folder you want to keep?"
@@ -2906,6 +2955,9 @@ msgid "Open the original in a new tab: the file as it lies on the disk"
 msgstr ""
 
 msgid "Open the page at 127.0.0.1 or localhost."
+msgstr ""
+
+msgid "Open the report"
 msgstr ""
 
 msgid "Open the review at 127.0.0.1 or localhost."
@@ -3189,6 +3241,11 @@ msgid ""
 "byte for byte."
 msgstr ""
 
+msgid ""
+"Reads your folders as 'mh audit' does, its progress shown here: your "
+"photos are not touched."
+msgstr ""
+
 msgid "Reason"
 msgstr ""
 
@@ -3225,6 +3282,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Report written in {duration}."
+msgstr ""
+
+msgid "Reports"
 msgstr ""
 
 msgid "Reports (newest first)"
@@ -3478,6 +3538,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
+msgstr ""
+
+msgid "Running in the PowerShell window: this page comes back when it ends."
 msgstr ""
 
 msgid "Runs (newest first)"
@@ -3812,11 +3875,22 @@ msgstr ""
 msgid "Step 1 of the guide:"
 msgstr ""
 
+#, python-brace-format
+msgid "Step chosen: {command}"
+msgstr ""
+
 msgid "Step number (Enter: the proposed one)"
 msgstr ""
 
 #, python-brace-format
+msgid "Step {number} chosen on the home page: {command}"
+msgstr ""
+
+#, python-brace-format
 msgid "Step-by-step guide and every command: {url}"
+msgstr ""
+
+msgid "Stop the audit"
 msgstr ""
 
 msgid "Stopped (Ctrl+C)."
@@ -3916,6 +3990,9 @@ msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
 msgid "The album's name: the folder holding its links."
+msgstr ""
+
+msgid "The audit failed: the PowerShell window says why."
 msgstr ""
 
 msgid "The audit is done; look for the faces now?"
@@ -4057,6 +4134,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
+msgstr ""
+
+msgid ""
+"The home page in your browser: where you are, the next step as a button, "
+"every step of the guides, the reports."
+msgstr ""
+
+msgid "The home page is not running any more: start it again (mh)."
 msgstr ""
 
 #, python-brace-format
@@ -4296,6 +4381,9 @@ msgstr ""
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
+msgid "The steps changed since the page was shown: here they are."
+msgstr ""
+
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -4467,6 +4555,9 @@ msgid "This is the last pair: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
+msgstr ""
+
+msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr ""
 
 msgid "This series is not in the file yet."
@@ -4694,6 +4785,9 @@ msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr ""
 
 msgid "What next:"
+msgstr ""
+
+msgid "What the last audit found"
 msgstr ""
 
 msgid "What was already done is in the journal: 'undo' puts it back."
@@ -7398,6 +7492,9 @@ msgstr ""
 msgid ""
 "→ validates the series still to see here as shown ({series}, {aside}), "
 "then opens the next page."
+msgstr ""
+
+msgid "⌂ Home"
 msgstr ""
 
 #, python-brace-format

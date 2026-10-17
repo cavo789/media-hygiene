@@ -120,6 +120,7 @@ nav:
       - commands/config.md
       - commands/crosscheck.md
       - commands/history.md
+      - commands/home.md
       - commands/inventory.md
       - commands/launcher.md
       - commands/menu.md

@@ -10,6 +10,7 @@ from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_config import config_command
 from media_hygiene.cli.cmd_crosscheck import crosscheck_command
 from media_hygiene.cli.cmd_history import history_command
+from media_hygiene.cli.cmd_home import home_command
 from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
 from media_hygiene.cli.cmd_menu import menu_command
@@ -60,6 +61,15 @@ def command_table(
             _(
                 "Every step of the guides with its command, the next one first: "
                 "what 'mh' alone shows, Enter runs it."
+            ),
+        ),
+        (
+            "home",
+            home_command,
+            analyse,
+            _(
+                "The home page in your browser: where you are, the next step as a "
+                "button, every step of the guides, the reports."
             ),
         ),
         (

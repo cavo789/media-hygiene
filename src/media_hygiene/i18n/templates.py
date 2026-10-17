@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
-from jinja2 import Environment, PackageLoader, select_autoescape
+from typing import Final
+
+from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 
 from media_hygiene.i18n import active
+
+# The fragments every local page includes (the "⌂ Home" link): found from any package.
+_SHARED_PAGES: Final = "media_hygiene.review"
 
 
 def translated_environment(package: str, escaped: tuple[str, ...]) -> Environment:
     """Create a Jinja environment loading `<package>/templates`, translated.
+
+    A template not found there is looked for among the pages' shared fragments.
 
     Args:
         package: The package holding a `templates` directory.
@@ -18,7 +25,12 @@ def translated_environment(package: str, escaped: tuple[str, ...]) -> Environmen
         The environment.
     """
     environment = Environment(
-        loader=PackageLoader(package, "templates"),
+        loader=ChoiceLoader(
+            (
+                PackageLoader(package, "templates"),
+                PackageLoader(_SHARED_PAGES, "templates"),
+            )
+        ),
         autoescape=select_autoescape(enabled_extensions=escaped),
         extensions=["jinja2.ext.i18n"],
         trim_blocks=True,

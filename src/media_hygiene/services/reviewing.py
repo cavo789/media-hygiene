@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
+from media_hygiene.review.ending import run_server
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
@@ -31,16 +32,12 @@ from media_hygiene.services.review_file import (
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
     from pathlib import Path
 
     from media_hygiene.console.output import Output
     from media_hygiene.plan.models import AuditFindings
-    from media_hygiene.review.serving import Connected
     from media_hygiene.services.runtime import Runtime
 
-# Every interface of the container: Docker forwards the published port to it.
-LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
 HOST_LOOPBACK: Final = "127.0.0.1"
 _PAGE_TEMPLATE: Final = "review.html.j2"
 
@@ -116,20 +113,6 @@ def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = ReviewApp(session, page, executor, runtime.previews_dir)
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
-
-
-async def run_server(app: Connected, port: int, ready: Callable[[int], None]) -> None:
-    """Listen, tell the port, and serve until cancelled.
-
-    Args:
-        app: Answers each connection.
-        port: The port to listen on (0: any free one).
-        ready: Called with the port actually listened on.
-    """
-    server = await asyncio.start_server(app.connection, LISTEN_HOST, port)
-    async with server:
-        ready(server.sockets[0].getsockname()[1])
-        await server.serve_forever()
 
 
 def _announce(runtime: Runtime, session: ReviewSession, port: int) -> None:
