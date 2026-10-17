@@ -125,11 +125,14 @@ class CleanSettings(BaseModel):
     read a Windows folder ≈ 4 times faster than one (TODO 0149); a slow USB hard disk,
     whose head seeks between the readers, may prefer 1. `quarantine_headroom_gb` is
     what a `clean` copying to another drive leaves free there (0182, 0191).
+    `returned`: the audit recognises the files set aside by a choice that came
+    back, and `clean` sets them aside again (0216).
     """
 
     model_config = _FROZEN
 
     confirm: bool = True
+    returned: bool = True
     purge_hint_days: int = Field(default=_PURGE_HINT_DAYS, ge=1)
     workers: int = Field(default=WORKERS, ge=1)
     quarantine_headroom_gb: float = Field(default=_QUARANTINE_HEADROOM_GB, ge=0)

@@ -26,13 +26,39 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
-class _DigestStep:
+class DigestStep:
     """One hashing pass: how to compute, read from and write to the cached facts."""
 
     step: Step
     compute: Callable[[Path], str]
     cached: Callable[[FileFacts], str | None]
     store: Callable[[FileFacts, str], FileFacts]
+
+
+def partial_pass(step: Step) -> DigestStep:
+    """The pass computing the partial digest (first and last 64 KiB).
+
+    Args:
+        step: What the progress bar says of it.
+
+    Returns:
+        The pass.
+    """
+    return DigestStep(
+        step, partial_digest, lambda f: f.partial_digest, FileFacts.with_partial
+    )
+
+
+def full_pass(step: Step) -> DigestStep:
+    """The pass computing the SHA-256 of the whole content.
+
+    Args:
+        step: What the progress bar says of it.
+
+    Returns:
+        The pass.
+    """
+    return DigestStep(step, full_digest, lambda f: f.full_digest, FileFacts.with_full)
 
 
 def _groups[K: Hashable](
@@ -77,35 +103,29 @@ class ExactDuplicateFinder:
         by_size = [
             file for bucket in _groups(files, lambda f: f.size) for file in bucket
         ]
-        partial = await self._digests(
+        partial = await self.digests(
             by_size,
-            _DigestStep(
+            partial_pass(
                 Step(
                     _("Comparing files of equal size"),
                     _(
                         "Only files of the same size can be identical: their first and "
                         "last 64 KB rule most of them out quickly."
                     ),
-                ),
-                partial_digest,
-                lambda facts: facts.partial_digest,
-                FileFacts.with_partial,
+                )
             ),
         )
         same_partial = _groups(partial, lambda f: (f.size, partial[f]))
-        full = await self._digests(
+        full = await self.digests(
             [file for bucket in same_partial for file in bucket],
-            _DigestStep(
+            full_pass(
                 Step(
                     _("Proving identity (full SHA-256)"),
                     _(
                         "Reads the remaining candidates in full: same SHA-256 means "
                         "identical, byte for byte."
                     ),
-                ),
-                full_digest,
-                lambda facts: facts.full_digest,
-                FileFacts.with_full,
+                )
             ),
         )
         groups = (
@@ -118,10 +138,10 @@ class ExactDuplicateFinder:
         )
         return tuple(sorted(groups, key=lambda group: (-group.size, group.digest)))
 
-    async def _digests(
+    async def digests(
         self,
         files: Sequence[MediaFile],
-        step: _DigestStep,
+        step: DigestStep,
     ) -> dict[MediaFile, str]:
         """Return the digest of each file, from the index or computed in threads.
 
@@ -153,7 +173,7 @@ class ExactDuplicateFinder:
         )
         return digests
 
-    async def _hash(self, file: MediaFile, step: _DigestStep) -> str | None:
+    async def _hash(self, file: MediaFile, step: DigestStep) -> str | None:
         """Hash one file in a worker thread, within the I/O concurrency limit.
 
         The digest is stored at once, not after the pass: the index commits every few

@@ -1,5 +1,7 @@
 """The moves of a clean chosen by a tier or a person: near, bursts, files chosen.
 
+The files set aside so before that came back go again (0216).
+
 None of them is an identical copy: each goes to the quarantine (never deleted), where
 `undo` finds it, and only while it is still the very file the audit, the review or
 the search saw.
@@ -13,7 +15,14 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.journaled import Origin
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident
-from media_hygiene.actions.verify import burst_blocker, chosen_blocker, near_blocker
+from media_hygiene.actions.verify import (
+    burst_blocker,
+    change_blocker,
+    chosen_blocker,
+    near_blocker,
+    still_remembered,
+)
+from media_hygiene.plan.returned import returned_moves
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -22,6 +31,7 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journaled import JournaledChanges
     from media_hygiene.actions.outcome import Tally
     from media_hygiene.plan.models import CleanPlan
+    from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
     from media_hygiene.scan.models import MediaFile
 
@@ -63,6 +73,8 @@ class AsideMoves:
         for file in plan.unwanted:
             unwanted = partial(self._chosen, file, ActionKind.QUARANTINE_UNWANTED)
             yield file, self._labels.unwanted, unwanted
+        for item in returned_moves(plan):
+            yield item.file, self._labels.returned, partial(self._returned, item)
 
     def _near(self, decision: NearDecision, file: MediaFile) -> None:
         """Move one near duplicate to the quarantine.
@@ -93,6 +105,23 @@ class AsideMoves:
             return
         keeper = Origin(choice.kept[0].path if choice.kept else None)
         self._changes.quarantine(file, ActionKind.QUARANTINE_BURST, keeper)
+
+    def _returned(self, item: ReturnedFile) -> None:
+        """Move a file set aside before, back since, to the quarantine again (0216).
+
+        Its content is read again first: the digest the audit took from the index
+        is never trusted for a move.
+
+        Args:
+            item: The file, as audited, and the digest remembered.
+        """
+        origin, blocker = Origin(), change_blocker(item.file)
+        if blocker is None:
+            origin, blocker = still_remembered(item)
+        if blocker is not None:
+            self._tally.skipped.append(Incident(item.file.path, blocker))
+            return
+        self._changes.quarantine(item.file, ActionKind.QUARANTINE_RETURNED, origin)
 
     def _chosen(
         self, file: MediaFile, kind: ActionKind = ActionKind.QUARANTINE_CHOSEN

@@ -11,6 +11,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.clean_aside import AsideMoves
+from media_hygiene.actions.clean_gone import mark_gone
 from media_hygiene.actions.clean_step import clean_labels, clean_step
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
@@ -80,6 +81,7 @@ class CleanExecutor:
         run_all(actions[plan.removable_count :], runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.
         run_all(orphans, replace(runner, workers=1))
+        mark_gone(self._changes, plan)  # no file moves: journal lines only (0224)
         self._context.progress.stop()
         return self._tally.freeze()
 

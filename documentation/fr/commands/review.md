@@ -35,9 +35,9 @@ docker run --rm -it `
 | Conseillé | `/cache` (l'audit par lequel il commence prend quelques secondes), `/config`. |
 | Écrit | `decisions.json` dans `/reports`, le cache. |
 | Annuler | Changez vos choix dans la page, ou supprimez `decisions.json`. |
-| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk` : le port est publié pour vous. |
+| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone` : le port est publié pour vous. |
 
-## Quatre sortes de tri
+## Cinq sortes de tri
 
 | Commande | Ce que vous décidez | Appliqué par |
 |---|---|---|
@@ -45,6 +45,7 @@ docker run --rm -it `
 | `review --near` | **Les quasi-doublons et vidéos réencodées**, groupe par groupe : comme prévu (`→`), garder l'autre version (`W`), laisser tel quel (`L`). | `clean --tier near --decisions` |
 | `review --pairs` | **Les paires de dossiers** de fichiers identiques, la plus grande place libérée d'abord : comme prévu (`→`), inverser les dossiers (`W`), ne pas toucher (`L`). | `clean --decisions` |
 | `review --junk` | **Les photos le plus probablement indésirables** (minuscules, captures d'écran, presque noires ou blanches, les plus floues), groupe par groupe : chacune gardée ou mise de côté par vous. | `clean --decisions` |
+| `review --gone` | **Les photos et vidéos disparues depuis un audit** (supprimées dans l'Explorateur ?), par dossier et par jour : supprimées exprès (`D`, retenues, mises de côté si elles reviennent) ou déplacées ailleurs (`M`, oubliées). [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#supprimés-dans-lexplorateur-) | `clean --decisions` |
 
 ## Lancer
 
@@ -79,6 +80,10 @@ Ctrl+C l'arrête.
 `review --junk` : `→` le groupe tel que marqué, puis le suivant ; `Espace` garde ou met de côté
 la photo sous le curseur (`↑` / `↓`) ; `←`, `N`, `U` comme pour les autres tris.
 
+`review --gone` : `D` supprimé exprès, `M` déplacé ailleurs (le fichier sous le curseur, puis le
+suivant), `G` tout le groupe supprimé exprès, `U` le groupe redevient sans réponse ; `→`, `←`,
+`N` comme pour les autres tris.
+
 Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#étape-5--aller-plus-vite) et
 [étape 11 du nettoyage](../clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near),
 [étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md),
@@ -90,7 +95,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 |---|---|
 | `--near` | Trier les quasi-doublons et vidéos réencodées au lieu des rafales. |
 | `--pairs` | Trier les paires de dossiers de fichiers identiques au lieu des rafales. |
-| `--junk` | Trier les photos le plus probablement indésirables au lieu des rafales ; seuils dans `[review.unwanted]`. Un seul de `--near`, `--pairs`, `--junk` par lancement. |
+| `--junk` | Trier les photos le plus probablement indésirables au lieu des rafales ; seuils dans `[review.unwanted]`. |
+| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone` par lancement. |
 | `--decisions FICHIER` | Le fichier où les choix sont enregistrés, et repris ; `decisions.json` de `/reports` par défaut. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même : `-p 127.0.0.1:9000:9000` pour `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | Comme pour [`audit`](audit.md#options) : donnez à `review` les mêmes qu'à `clean`. |

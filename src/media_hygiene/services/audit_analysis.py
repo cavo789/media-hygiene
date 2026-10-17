@@ -10,24 +10,30 @@ from media_hygiene.scan.stopwatch import Stage
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.scan.broken import BrokenFileFinder, IntegrityFindings
     from media_hygiene.scan.exact import ExactDuplicateFinder
     from media_hygiene.scan.models import DuplicateGroup, MediaFile
     from media_hygiene.scan.stopwatch import Stopwatch
+    from media_hygiene.services.returned import ReturnedFinder
 
 
 @dataclass(frozen=True, slots=True)
 class Finders:
-    """The two passes over the files, and the stopwatch that times them."""
+    """The passes over the files, and the stopwatch that times them.
+
+    `returned` recognises the files set aside by a choice that came back (0216).
+    """
 
     broken: BrokenFileFinder
     exact: ExactDuplicateFinder
     stopwatch: Stopwatch
+    returned: ReturnedFinder | None = None
 
 
 async def analyse(
     files: Sequence[MediaFile], finders: Finders
-) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings]:
+) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings, tuple[ReturnedFile, ...]]:
     """Find broken files first (describing images), then exact duplicates.
 
     Broken and empty files are kept out of duplicate groups: they are handled on their
@@ -39,7 +45,8 @@ async def analyse(
         finders: Integrity checker, duplicate finder and stopwatch.
 
     Returns:
-        The duplicate groups, the broken files and the visual facts of images.
+        The duplicate groups, the broken files and the visual facts of images,
+        and the files set aside before that came back.
     """
     with finders.stopwatch.timing(Stage.INTEGRITY):
         integrity = await finders.broken.find(files)
@@ -50,4 +57,5 @@ async def analyse(
     ]
     with finders.stopwatch.timing(Stage.DIGESTS):
         groups = await finders.exact.find(healthy)
-    return groups, integrity
+        returned = await finders.returned.find(healthy) if finders.returned else ()
+    return groups, integrity, returned

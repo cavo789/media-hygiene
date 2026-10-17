@@ -32,11 +32,12 @@ def _findings(copies: int, near: tuple[int, int], bursts: int) -> AuditFindings:
         decisions=(object(),) * copies,
         removable_count=copies,
         reclaimable=copies * 1024,
+        returned=(),
     )
     similar = SimpleNamespace(
         groups=(object(),) * near[0], sure_groups=near[1], bursts=(object(),) * bursts
     )
-    return cast("AuditFindings", SimpleNamespace(plan=plan, similar=similar))
+    return cast("AuditFindings", SimpleNamespace(plan=plan, similar=similar, gone=0))
 
 
 @pytest.mark.parametrize(

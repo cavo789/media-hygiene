@@ -114,3 +114,23 @@ def junk() -> OptionInfo:
             ),
         ),
     )
+
+
+def gone() -> OptionInfo:
+    """`--gone`: review the files gone since the last audit instead.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--gone",
+            help=_(
+                "Review the photos and videos gone since an audit (deleted in the "
+                "Explorer?) instead of the burst series: say which ones you deleted on "
+                "purpose, and 'clean --decisions' remembers them, so that they are set "
+                "aside if they come back."
+            ),
+        ),
+    )

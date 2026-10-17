@@ -34,6 +34,7 @@ def review_command(  # pylint: disable=too-many-arguments
     near: Annotated[bool, review_options.near()] = False,
     pairs: Annotated[bool, review_options.pairs()] = False,
     junk: Annotated[bool, review_options.junk()] = False,
+    gone: Annotated[bool, review_options.gone()] = False,
     decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
     port: Annotated[
         int, review_options.port(options.panel_advanced())
@@ -58,6 +59,7 @@ def review_command(  # pylint: disable=too-many-arguments
         near: `--near`, the near duplicates instead of the burst series.
         pairs: `--pairs`, the folder pairs instead of the burst series.
         junk: `--junk`, the photos most likely unwanted instead.
+        gone: `--gone`, the files gone since the last audit instead.
     """
     from media_hygiene.cli.flows import audit_and_show
     from media_hygiene.cli.review_modes import (
@@ -79,7 +81,14 @@ def review_command(  # pylint: disable=too-many-arguments
         runtime = runtime.with_overrides(
             folder_layer(prefer, protect, exclude)
         ).with_overrides(scan_layer(ext, exclude_name))
-        mode = review_mode(near=near, pairs=pairs, junk=junk)
+        mode = review_mode(
+            {
+                ReviewMode.NEAR: near,
+                ReviewMode.PAIRS: pairs,
+                ReviewMode.JUNK: junk,
+                ReviewMode.GONE: gone,
+            }
+        )
         target = review_target(runtime, decisions, port)
         findings = audit_and_show(runtime)
         if mode is not ReviewMode.BURSTS:

@@ -67,6 +67,7 @@ the table at the end counts what was moved, skipped and failed.
 | Unreadable file | Moved to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | Untouched, unless you ask (`--tier`, `--decisions`). |
+| A file you had set aside, back since (a phone backup) | Moved to the quarantine again, counted on a line of its own. [Cleaning, step 9](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside) |
 | Files of a protected folder | Untouched, always. |
 
 The quarantine keeps the original paths below one folder per run:

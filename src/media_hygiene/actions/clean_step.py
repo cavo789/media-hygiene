@@ -29,6 +29,7 @@ class CleanLabels:  # pylint: disable=too-many-instance-attributes
     burst: str
     chosen: str
     unwanted: str
+    returned: str
     unreadable: str
     empty: str
     orphan: str
@@ -73,6 +74,7 @@ def clean_labels(*, delete_copies: bool) -> CleanLabels:
         burst=_("Moving a burst shot set aside to the quarantine: {path}"),
         chosen=_("Moving a file you set aside to the quarantine: {path}"),
         unwanted=_("Moving an unwanted photo you set aside to the quarantine: {path}"),
+        returned=_("Moving a file you had set aside, back, to the quarantine: {path}"),
         unreadable=_("Moving an unreadable file to the quarantine: {path}"),
         empty=_("Deleting an empty file (0 bytes): {path}"),
         orphan=_("Moving an orphan sidecar to the quarantine: {path}"),

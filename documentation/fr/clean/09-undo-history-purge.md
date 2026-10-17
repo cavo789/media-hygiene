@@ -140,9 +140,61 @@ puis **une** étape suivante, en commande complète. Une quarantaine de plus de 
 propose de purger. Montez les mêmes dossiers que pour `clean` (ou tapez `mh status`) : un dossier
 non monté est signalé, jamais une erreur.
 
+## Ce que vous avez mis de côté reste de côté
+
+Vous avez mis de côté des photos de rafale, des quasi-doublons, des photos choisies dans
+[`search`](../commands/search.md) ou [`review --junk`](../commands/review.md) ; des mois plus
+tard, une sauvegarde de téléphone les ramène, sous d'autres noms. Le journal se souvient du
+contenu de chaque fichier mis de côté par un tel choix (sa taille et son SHA-256), même après
+`purge` : l'audit suivant les reconnaît, quel que soit leur nom aujourd'hui, et le dit sur une
+ligne à part :
+
+```text
+↩️ 23 photos et vidéos que vous aviez mises de côté sont revenues (45 Mo) : 'clean' les remet de côté.
+```
+
+Le rapport les liste dans une section à part (*Revenus après une mise de côté*), chacune avec
+son aperçu, quand et pourquoi elle a été mise de côté, et où elle se trouvait alors. `clean` les
+remet en quarantaine avec le reste de son plan, sans autre question : sa question habituelle les
+compte sur une ligne à part (*↩️ 23 photos et vidéos que vous aviez déjà mises de côté sont
+revenues (45 Mo) : retour en quarantaine.*), et `history` les compte à part (*Dont revenus*).
+
+- Pour en garder une finalement : `undo` de ce nettoyage. Le dernier mot est alors le vôtre :
+  elle n'est plus proposée.
+- Seul ce que vous avez mis de côté **par un choix** est retenu : une copie identique qui
+  revient est un simple doublon (son contenu est toujours gardé ailleurs) ; un fichier abîmé
+  n'est pas retenu.
+- Une version redimensionnée ou recompressée d'une photo (d'autres octets) n'est pas reconnue.
+  Un fichier supprimé dans l'Explorateur l'est, une fois que vous le confirmez (ci-dessous).
+- Un fichier revenu dans un dossier [protégé](07-configuration-file.md) n'est jamais touché.
+- `returned = false` dans la section `[clean]` de `config.toml` ne les cherche jamais.
+
+### Supprimés dans l'Explorateur ?
+
+Le journal ne connaît pas les photos supprimées dans l'Explorateur. L'index, lui, voit qu'elles
+ont disparu : un fichier qu'un audit ne trouve plus là où il était, ni ailleurs (un dossier
+renommé dans l'Explorateur est suivi, jamais compté), sous un dossier monté cette fois.
+Supprimé exprès, ou déplacé sur un disque non branché ? Vous seul pouvez le dire, alors l'audit
+demande :
+
+```text
+🗑️ 312 photos et vidéos ont disparu depuis le dernier audit (supprimées dans l'Explorateur ?) : dites lesquelles vous avez supprimées exprès, pour que media-hygiene les mette de côté si elles reviennent.
+```
+
+`mh review --gone` les montre par dossier et par jour, chacune avec son aperçu quand le cache en
+garde un (sinon son nom, sa date, sa taille et son appareil) : `D` supprimé exprès, `M` déplacé
+ailleurs, `G` tout le groupe supprimé exprès. Vos réponses sont enregistrées dans
+`decisions.json` ; le `clean --decisions` suivant retient les fichiers supprimés exprès (rien ne
+bouge : une ligne dans le journal, comptée par `history` sous *Supprimés dans l'Explorateur*) et
+oublie les autres. Quand l'un d'eux revient, il est proposé comme un fichier que vous aviez mis
+de côté. `undo` de ce nettoyage les oublie. Un fichier disparu dont le contenu est toujours là
+(une copie ailleurs) ou réapparaît plus tard (un disque rebranché) quitte la liste tout seul :
+supprimer l'une de deux copies ne perd rien.
+
 ## Gardez le dossier du journal
 
-Le journal est léger, et c'est lui qui rend `undo` possible. Ne le supprimez jamais tant que vous
+Le journal est léger, et c'est lui qui rend `undo` possible, et qui permet à l'audit de
+reconnaître les fichiers mis de côté s'ils reviennent. Ne le supprimez jamais tant que vous
 pourriez encore vouloir restaurer un nettoyage.
 
 ---

@@ -18,6 +18,7 @@ from media_hygiene.actions.runs import new_run_id
 from media_hygiene.constants import BrokenReason
 from media_hygiene.i18n import _
 from media_hygiene.index.former_names import remember_former
+from media_hygiene.index.gone_rows import forget_answered
 from media_hygiene.index.parked import park
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mount_kind import MountKind
@@ -96,17 +97,22 @@ class CleanService:
         if self._runtime.persistent(MountKind.QUARANTINE):
             return plan
         kept = tuple(item for item in plan.broken if item.reason is BrokenReason.EMPTY)
-        if len(kept) != len(plan.broken) or plan.orphans:
+        if len(kept) != len(plan.broken) or plan.orphans or plan.returned:
             self._runtime.output.warning(
                 _(
                     "No quarantine mount: unreadable files and orphan sidecars are "
                     "left in place."
                 )
+                if not plan.returned
+                else _(
+                    "No quarantine mount: unreadable files, orphan sidecars and the "
+                    "files you had set aside that came back are left in place."
+                )
             )
             self._runtime.output.tip(
                 _('Add -v "<a folder of yours>:/quarantine" to handle them.')
             )
-        return replace(plan, broken=kept, sidecars=())
+        return replace(plan, broken=kept, sidecars=(), returned=())
 
     def execute(self, plan: CleanPlan) -> tuple[str, Outcome]:
         """Execute the plan under a new run identifier.
@@ -133,6 +139,7 @@ class CleanService:
             )
             outcome = CleanExecutor(context).run(plan)
         self._forget_removed(journal_path, run_id)
+        forget_answered(self._runtime.index_file, plan)
         return run_id, outcome
 
     def _forget_removed(self, journal_path: Path, run_id: str) -> None:

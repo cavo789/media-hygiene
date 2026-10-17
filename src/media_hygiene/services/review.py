@@ -24,6 +24,7 @@ from media_hygiene.plan.review import (
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.services.burst_review import burst_choices
 from media_hygiene.services.chosen_review import chosen_files
+from media_hygiene.services.gone_review import gone_answers
 from media_hygiene.services.policy import keep_policy
 from media_hygiene.services.unwanted_review import unwanted_files
 
@@ -115,6 +116,7 @@ def review_choices(
         bursts=burst_choices(runtime, findings, review.bursts),
         chosen=chosen_files(runtime, review.chosen),
         unwanted=unwanted_files(runtime, review.unwanted),
+        gone=gone_answers(runtime, review.gone),
     )
 
 

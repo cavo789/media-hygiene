@@ -6,13 +6,15 @@ import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.journaled import Origin
 from media_hygiene.i18n import _
-from media_hygiene.scan.hashing import identical_digest
+from media_hygiene.scan.hashing import full_digest, identical_digest, partial_digest
 from media_hygiene.scan.sidecars import companions_of
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.scan.models import MediaFile
 
 
@@ -148,3 +150,20 @@ def orphan_blocker(sidecar: MediaFile) -> str | None:
     if companions_of(sidecar.path, names):
         return _("a file with the same name is still next to it")
     return None
+
+
+def still_remembered(item: ReturnedFile) -> tuple[Origin, str | None]:
+    """Read a file back since it was set aside again: still the content remembered?
+
+    Args:
+        item: The file, and the digest it was recognised by.
+
+    Returns:
+        Its SHA-256 and partial digest, both journaled so that an `undo` forgets
+        every word naming it; the translated reason to skip it (None: it matches).
+    """
+    sha256, partial = full_digest(item.file.path), partial_digest(item.file.path)
+    found, expected = (sha256, item.digest) if item.digest else (partial, item.partial)
+    same = found == expected
+    reason = None if same else _("a file changed since the audit")
+    return Origin(sha256=sha256, partial=partial), reason

@@ -132,6 +132,7 @@
 {% if report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
 {% endif %}
 
+{% include "_returned.html.j2" %}
 {% include "_similar.html.j2" %}
 {% include "_bursts.html.j2" %}
 
@@ -167,7 +168,7 @@
 {% if report.orphans.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=report.orphans.hidden | number) }}</p>{% endif %}
 {% endif %}
 
-{% if not report.groups.largest and not report.broken.handled and not report.orphans.paths %}
+{% if not report.groups.largest and not report.broken.handled and not report.orphans.paths and not report.returned.items %}
 <p class="note">🎉 {{ _("Nothing to clean: no duplicate and no broken file.") }}</p>
 {% endif %}
 <p class="muted"><a href="../index.html">← {{ _("All reports") }}</a></p>

@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
     from pathlib import Path
 
+    from media_hygiene.plan.gone import GoneAnswer
     from media_hygiene.plan.keeper import KeepPolicy
     from media_hygiene.plan.models import CleanPlan, KeepDecision
     from media_hygiene.plan.similar_models import BurstChoice
@@ -57,6 +58,7 @@ class ReviewChoices:
     bursts: tuple[BurstChoice, ...] = ()
     chosen: tuple[MediaFile, ...] = ()  # set aside in `search`
     unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
+    gone: tuple[GoneAnswer, ...] = ()  # answered in `review --gone`
 
 
 def apply_choices(
@@ -86,7 +88,7 @@ def apply_choices(
     chosen = tuple(file for file in choices.chosen if file.path not in removed)
     taken = removed | {file.path for file in chosen}
     unwanted = tuple(file for file in choices.unwanted if file.path not in taken)
-    return replace(reviewed, chosen=chosen, unwanted=unwanted)
+    return replace(reviewed, chosen=chosen, unwanted=unwanted, gone=choices.gone)
 
 
 def _set_aside(

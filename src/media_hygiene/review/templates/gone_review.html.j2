@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{# The keyboard review of the files gone since an audit, served by `media-hygiene review --gone`.
+   The page never touches a file: each answer is sent to the server, which saves the `gone`
+   key of the decisions file; `clean --decisions` then writes a journal mark per file deleted
+   on purpose. The panel below the group shows the file as read back from the disk. #}
+{% set texts = {
+  "position": _("Group {number} of {total}"),
+  "totals": _("Deleted on purpose: {deleted} · answered: {decided} of {total}"),
+  "pending": "⏳ " ~ _("Unanswered: nothing is remembered. D: deleted on purpose, M: moved elsewhere, G: the whole group deleted on purpose."),
+  "decided": "✔ " ~ _("Answered: the files marked 🗑️ are remembered with 'clean --decisions', set aside if they come back; the others are forgotten."),
+  "deleted": "🗑️ " ~ _("deleted on purpose"),
+  "moved": "📦 " ~ _("moved elsewhere"),
+  "none": "❔ " ~ _("unanswered"),
+  "noPreview": _("no preview kept"),
+  "saving": _("Saving…"),
+  "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds your choice.").replace("{file}", file),
+  "loaded": "📄 " ~ _("{file} read from the disk at {time}.").replace("{file}", file),
+  "diskTitle": _("What {file} holds for this group").replace("{file}", file),
+  "diskCounts": _("In the file: {deleted} deleted on purpose, {moved} moved elsewhere, {none} unanswered."),
+  "allDecided": _("Every group has been decided."),
+  "first": _("This is the first group."),
+  "last": _("This is the last group: stop the review with Ctrl+C in the terminal."),
+  "failed": _("Not saved (error {status})."),
+  "offline": _("The review is not running any more: start it again."),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Files gone review") }} — media-hygiene</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
+  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
+           border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  .layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; padding: 12px 16px 24px; }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
+  aside section { margin-bottom: 16px; }
+  aside h2 { font-size: .95rem; margin: 0 0 6px; }
+  main h2 { font-size: 1rem; margin: 0 0 8px; }
+  .muted { color: var(--muted); }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
+           border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
+  #state.decided { border-style: solid; border-color: var(--ok); color: var(--ok); }
+  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .shot { margin: 0; padding: 6px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; cursor: pointer; }
+  .shot.moved { border-color: var(--ok); }
+  .shot.deleted { border: 3px dashed var(--bad); }
+  .shot.deleted img { opacity: .6; }
+  .shot .none { display: flex; align-items: center; justify-content: center; height: 160px; border-radius: 6px; background: var(--bg); color: var(--muted); }
+  .shot.cursor { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .shot img { display: block; width: 100%; height: 160px; object-fit: contain; border-radius: 6px; background: var(--bg); }
+  figcaption { margin-top: 4px; font-size: .8rem; overflow-wrap: anywhere; }
+  figcaption .original { margin-left: 6px; color: var(--accent); }
+  .tag { font-weight: 600; }
+  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; font-size: .9rem; }
+  dd { margin: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🗑️ {{ _("Files gone review") }}</h1>
+  <strong id="position"></strong>
+  <span id="totals" class="muted"></span>
+  <span id="status" role="status" aria-live="polite"></span>
+</header>
+<div class="layout">
+<aside>
+  <section>
+    <h2>⌨ {{ _("Keyboard") }}</h2>
+    <dl>
+      <dt><kbd>D</kbd></dt><dd>{{ _("deleted on purpose: remembered, set aside if it comes back") }}</dd>
+      <dt><kbd>M</kbd></dt><dd>{{ _("moved elsewhere (a disk not plugged in): forgotten") }}</dd>
+      <dt><kbd>G</kbd></dt><dd>{{ _("the whole group deleted on purpose, then next") }}</dd>
+      <dt><kbd>U</kbd></dt><dd>{{ _("the group back to unanswered") }}</dd>
+      <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the cursor") }}</dd>
+      <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>{{ _("next, previous group") }}</dd>
+      <dt><kbd>N</kbd></dt><dd>{{ _("next group not answered") }}</dd>
+    </dl>
+    <p class="muted">{{ _("A click on a file moves the cursor to it.") }}</p>
+  </section>
+  <section>
+    <p class="muted">{{ _("A file gone is a file the last audits no longer found where it was, nor elsewhere: deleted, or moved to a disk not plugged in. Only the files deleted on purpose are remembered; nothing ever moves.") }}</p>
+  </section>
+</aside>
+<main>
+  <h2 id="title"></h2>
+  <p id="state" role="status"></p>
+  <div id="shots" class="shots"></div>
+  <details id="disk" open>
+    <summary id="diskTitle"></summary>
+    <div id="diskBody"></div>
+  </details>
+</main>
+</div>
+<footer>
+  {{ _("Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the files deleted on purpose are remembered, and 'undo' forgets them.", place=place, option=clean_option) }}
+</footer>
+<script>
+{% include "gone_review.js.j2" %}
+</script>
+{% include "home_link.html.j2" %}
+</body>
+</html>

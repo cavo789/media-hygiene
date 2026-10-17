@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.plan.pairs import Disposal
+from media_hygiene.report.returned_views import ReturnedSection
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
@@ -183,7 +184,7 @@ class ReportHeader:
 
 
 @dataclass(frozen=True, slots=True)
-class ReportView:
+class ReportView:  # pylint: disable=too-many-instance-attributes
     """The full report."""
 
     header: ReportHeader
@@ -193,3 +194,4 @@ class ReportView:
     broken: BrokenSection
     incidents: IncidentsSection
     orphans: OrphansSection = field(default_factory=OrphansSection)
+    returned: ReturnedSection = field(default_factory=ReturnedSection)

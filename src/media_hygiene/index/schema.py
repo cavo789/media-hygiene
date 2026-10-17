@@ -14,9 +14,10 @@ near-duplicate candidates (`index.measures`); version 11 where the files the ind
 followed went (`index.moves`); version 12 the rows of the files a clean set aside
 (`index.parked`); version 13 what the Takeout `.json` of each file says
 (`index.takeout_rows`); version 14 where the copies a clean removed lay
-(`index.former_names`). An older index keeps its digests
-and integrity results: the new columns are filled once, without decoding images
-again.
+(`index.former_names`); version 15 what each journal says of the files set aside by
+a choice (`index.journal_words`) and the files gone (`index.gone_rows`). An older
+index keeps its digests and integrity results: the new columns are filled once,
+without decoding images again.
 """
 
 from __future__ import annotations
@@ -26,6 +27,8 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.former_names import CREATE_FORMER_NAMES
+from media_hygiene.index.gone_rows import CREATE_GONE
+from media_hygiene.index.journal_words import JOURNAL_TABLES
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
 from media_hygiene.index.parked import CREATE_PARKED
@@ -35,7 +38,7 @@ from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 14
+SCHEMA_VERSION: Final = 15
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -186,4 +189,6 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_PARKED)
     connection.execute(CREATE_TAKEOUT)
     connection.execute(CREATE_FORMER_NAMES)
+    for table in (*JOURNAL_TABLES, CREATE_GONE):
+        connection.execute(table)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

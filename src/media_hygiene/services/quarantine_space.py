@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import BrokenReason
 from media_hygiene.paths.drives import Drives, QuarantineRoute
+from media_hygiene.plan.returned import returned_moves
 from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
@@ -78,7 +79,8 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
 
     Yields:
         Each file moved: copies (unless `--delete` deletes them), near duplicates,
-        burst shots and files set aside, unreadable files and orphan sidecars.
+        burst shots and files set aside, the files back after being set aside,
+        unreadable files and orphan sidecars.
     """
     for decision in plan.decisions:
         yield from (file for file in decision.removable if plan.to_quarantine(file))
@@ -88,6 +90,7 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
         yield from choice.discarded
     yield from plan.chosen
     yield from plan.unwanted
+    yield from (item.file for item in returned_moves(plan))
     yield from (
         item.file for item in plan.broken if item.reason is not BrokenReason.EMPTY
     )

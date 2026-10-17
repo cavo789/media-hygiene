@@ -91,6 +91,7 @@ def action_list(
         near=command("clean --tier near"),
         review=command("review", changes=False, port=PAGE_PORT),
         near_review=command("review --near", changes=False, port=PAGE_PORT),
+        gone_review=command("review --gone", changes=False, port=PAGE_PORT),
     )
     return audit_actions(findings, commands)
 

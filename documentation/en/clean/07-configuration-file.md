@@ -450,6 +450,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
 - **`quarantine_headroom_gb`** (1, in `[clean]`): what a `clean` copying files to the quarantine of
   another drive leaves free there, in GB; it refuses before moving anything when that space would
   be missing. `0` keeps no margin; raise it if your `C:` must keep more room.
+- **`returned`** (true, in `[clean]`): the photos and videos you set aside by a choice that come
+  back (a phone backup) are recognised by the audit and set aside again by `clean`
+  ([step 9](09-undo-history-purge.md#what-you-set-aside-stays-set-aside)). `false` never looks.
 
 Why single quotes? In double quotes, TOML turns the `\b` of `"D:\backup"` into a control
 character; the tool refuses such a path rather than ignoring it.

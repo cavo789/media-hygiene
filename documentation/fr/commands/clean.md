@@ -67,6 +67,7 @@ lui arrive ; le tableau final compte ce qui a été déplacé, ignoré et en éc
 | Fichier illisible | Déplacé en quarantaine. |
 | [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | Pas touchés, sauf si vous le demandez (`--tier`, `--decisions`). |
+| Un fichier que vous aviez mis de côté, revenu depuis (une sauvegarde de téléphone) | Remis en quarantaine, compté sur une ligne à part. [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté) |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
 
 La quarantaine garde les chemins d'origine sous un dossier par exécution :

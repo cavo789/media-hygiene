@@ -19,7 +19,8 @@ empty `discarded`, a series set aside whole an empty `kept`. Without `status` (o
 file, report), it is done.
 `chosen` lists the files set aside in `search` (`chosen_decisions`): they need no
 audit, so a file holding nothing else is not refused for its `roots`. `unwanted` lists
-the photos `review --junk` decided (`unwanted_decisions`).
+the photos `review --junk` decided (`unwanted_decisions`), `gone` the files gone that
+`review --gone` decided (`gone_decisions`): they need no audit either.
 """
 
 from __future__ import annotations
@@ -33,6 +34,7 @@ from media_hygiene.i18n import _
 from media_hygiene.plan.review import PairAction
 from media_hygiene.report.burst_decisions import BurstDecisions
 from media_hygiene.report.chosen_decisions import ChosenFiles
+from media_hygiene.report.gone_decisions import GoneEntries
 from media_hygiene.report.near_decisions import NearGroups
 from media_hygiene.report.unwanted_decisions import UnwantedEntries
 from media_hygiene.text_files import decode_user_text
@@ -66,19 +68,20 @@ class DecisionsFile(BaseModel):
     near: NearGroups = ()  # `review --near` (`near_decisions`)
     chosen: ChosenFiles = ()  # `search`, `browse` (`chosen_decisions`)
     unwanted: UnwantedEntries = ()  # `review --junk` (`unwanted_decisions`)
+    gone: GoneEntries = ()  # `review --gone` (`gone_decisions`)
 
     @property
     def only_chosen(self) -> bool:
         """Tell whether the file holds files chosen in `search`, and nothing else.
 
         They are named one by one, with their size and date: they do not depend
-        on the folders an audit analysed.
+        on the folders an audit analysed. So are the files gone (`review --gone`).
 
         Returns:
-            True when it holds chosen files and no pair, series nor group.
+            True when it holds chosen or gone files and no pair, series nor group.
         """
         decided = self.pairs or self.bursts or self.near or self.unwanted
-        return bool(self.chosen) and not decided
+        return bool(self.chosen or self.gone) and not decided
 
     @field_validator("pairs")
     @classmethod

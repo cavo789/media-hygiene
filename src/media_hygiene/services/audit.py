@@ -9,46 +9,43 @@ from dataclasses import replace
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from media_hygiene.i18n import _
 from media_hygiene.index.measures import MeasureStore
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.plan.models import AuditFindings
 from media_hygiene.plan.orphans import sidecars_in_scope
 from media_hygiene.plan.planner import build_plan
+from media_hygiene.plan.returned import in_plan
 from media_hygiene.plan.similar import SimilarInputs
-from media_hygiene.scan.aliases import unique_files
 from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.colour import ColourTools
 from media_hygiene.scan.deps import ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
 from media_hygiene.scan.inventory import take_inventory
-from media_hygiene.scan.progress import Step
 from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
-from media_hygiene.scan.walker import Walk
 from media_hygiene.services.audit_analysis import Finders, analyse
+from media_hygiene.services.audit_listing import list_walk
 from media_hygiene.services.check_guide import CheckGuide
 from media_hygiene.services.check_tools import audit_tools
 from media_hygiene.services.data_checks import (
     refuse_empty_data,
     refuse_overlapping_mounts,
-    warn_about_aliases,
     warn_about_scope,
 )
-from media_hygiene.services.listing import list_media, tell_followed
+from media_hygiene.services.listing import tell_followed
 from media_hygiene.services.near_checks import NearTools, checked_similar
 from media_hygiene.services.policy import keep_policy, scan_filters
+from media_hygiene.services.returned import JournalFindings, returned_finder
 from media_hygiene.tags.xmp_owner import with_edits
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from media_hygiene.plan.keeper import KeepPolicy
     from media_hygiene.plan.similar_models import SimilarFindings
     from media_hygiene.scan.broken import IntegrityFindings
     from media_hygiene.scan.models import DuplicateGroup
     from media_hygiene.scan.progress import ProgressSink
+    from media_hygiene.scan.walker import Walk
     from media_hygiene.services.runtime import Runtime
 
 
@@ -80,18 +77,17 @@ class AuditService:
         runtime, started = self._runtime, time.monotonic()
         refuse_empty_data(runtime, "audit")
         runtime.warm_pool()  # Pillow and numpy load while the folders are listed
-        data_dir = runtime.locations.data_dir
         refuse_overlapping_mounts(runtime)
         warn_about_scope(runtime)
-        roots = runtime.mounts.data_roots(data_dir)
+        roots = runtime.mounts.data_roots(runtime.locations.data_dir)
         filters = scan_filters(runtime.settings, runtime.mapper)
         with self._stopwatch.timing(Stage.LISTING):
-            found, every_path = self._list_files(roots)
+            found, every_path = list_walk(runtime, roots, self._progress)
         listed = frozenset(str(file.path) for file in found.files)
         policy = keep_policy(
             runtime.settings, runtime.mapper, accompanied(with_edits(found.sidecars))
         )
-        groups, integrity, similar = self._analyse_files(
+        groups, integrity, similar, back = self._analyse_files(
             found,
             WalkCoverage(roots, listed, found.unreadable, filters, found.files),
             policy,
@@ -103,7 +99,9 @@ class AuditService:
         )
         return AuditFindings(
             roots=roots,
-            plan=replace(plan, sidecars=sidecars),
+            plan=replace(
+                plan, sidecars=sidecars, returned=in_plan(back.returned, plan, policy)
+            ),
             seconds=time.monotonic() - started,
             folder_files=MappingProxyType(
                 Counter(file.path.parent for file in found.files)
@@ -114,11 +112,17 @@ class AuditService:
             listed=every_path,
             stages=self._stopwatch.times(),
             unread=integrity.unread,
+            gone=back.gone,
         )
 
     def _analyse_files(
         self, found: Walk, coverage: WalkCoverage, policy: KeepPolicy
-    ) -> tuple[tuple[DuplicateGroup, ...], IntegrityFindings, SimilarFindings]:
+    ) -> tuple[
+        tuple[DuplicateGroup, ...],
+        IntegrityFindings,
+        SimilarFindings,
+        JournalFindings,
+    ]:
         """Forget what is gone, check and hash every file, then find near duplicates.
 
         One index connection and one pool serve every step.
@@ -130,14 +134,16 @@ class AuditService:
 
         Returns:
             The duplicate groups, the broken files and what files say of themselves,
-            and the near duplicates.
+            the near duplicates; the files set aside before that came back, and
+            how many files gone wait for `review --gone`.
         """
         with (
             FactsRepository.open(self._runtime.index_file) as repository,
             self._runtime.executor_factory() as executor,
         ):
             with self._stopwatch.timing(Stage.INDEX):
-                tell_followed(self._runtime, forget_missing(repository, coverage))
+                pruned = forget_missing(repository, coverage)
+                tell_followed(self._runtime, pruned)
                 repository.preload(coverage.roots)
             deps = ScanDeps(repository, self._progress, reporter=self.guide)
             checks = audit_tools(self._runtime, executor)
@@ -145,8 +151,9 @@ class AuditService:
                 BrokenFileFinder(deps, checks),
                 ExactDuplicateFinder(deps),
                 self._stopwatch,
+                returned_finder(self._runtime, deps),
             )
-            groups, integrity = asyncio.run(analyse(found.files, finders))
+            groups, integrity, returned = asyncio.run(analyse(found.files, finders))
             tools = NearTools(
                 ColourTools(checks.ffmpeg, self._progress, executor),
                 MeasureStore(repository.connection),
@@ -155,29 +162,4 @@ class AuditService:
             similar = checked_similar(
                 SimilarInputs.of(found.files, integrity, groups), policy, tools
             )
-        return groups, integrity, similar
-
-    def _list_files(self, roots: tuple[Path, ...]) -> tuple[Walk, frozenset[Path]]:
-        """Walk every root, without listing a file twice (nested mounts, hard links).
-
-        Args:
-            roots: Mounted folders.
-
-        Returns:
-            The media files, by path, every sidecar found, what could not be read;
-            then every media path listed, the aliases set aside included.
-        """
-        step = Step(
-            _("Listing media files"),
-            _(
-                "Walks through every folder; photos and videos are recognised by their "
-                "extension."
-            ),
-        )
-        self._progress.start(step, None)
-        found = list_media(self._runtime, roots, self._progress)
-        self._progress.stop()
-        unique = unique_files(found.files)
-        warn_about_aliases(self._runtime, unique.aliases)
-        every_path = frozenset(file.path for file in found.files)
-        return Walk(unique.files, found.sidecars, found.unreadable), every_path
+        return groups, integrity, similar, JournalFindings(returned, pruned.waiting)

@@ -1,0 +1,17 @@
+{# The files set aside before that came back (0216): included by report.html.j2. #}
+{% set back = report.returned %}
+{% if back.items %}
+<h2 id="returned">↩️ {{ _("Back after being set aside") }}</h2>
+<p class="note">{{ _("You had set these photos and videos aside (a burst shot, a near duplicate, a file chosen in 'search' or 'review --junk'); the same content is back, whatever its name now (a phone backup, a copy). 'clean' moves them to the quarantine again, with the rest of its plan. To keep one after all: 'undo' that clean, and it is no longer proposed.") }}</p>
+{% for item in back.items %}
+<div class="group">
+  <div class="thumb">{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}🎞️{% endif %}</div>
+  <ul class="files">
+    <li class="remove">↩️ {{ item.path }} <span class="muted">· {{ item.size | size }}</span></li>
+    <li class="muted">{{ _("Set aside on") }} {{ item.set_aside | when }} · {{ item.why }} · {{ _("run") }} {{ item.run_id }}</li>
+    <li class="muted">{{ _("It was then:") }} {{ item.former }}</li>
+  </ul>
+</div>
+{% endfor %}
+{% if back.hidden %}<p class="muted">{{ _("… and %(count)s more.", count=back.hidden | number) }}</p>{% endif %}
+{% endif %}

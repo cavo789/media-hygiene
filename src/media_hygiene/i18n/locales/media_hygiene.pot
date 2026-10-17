@@ -227,7 +227,7 @@ msgid ""
 "the kept copy; 'undo' rebuilds them from it."
 msgstr ""
 
-msgid "--near, --pairs and --junk are separate reviews: one per run."
+msgid "--near, --pairs, --junk and --gone are separate reviews: one per run."
 msgstr ""
 
 msgid "--people keeps the faces in the cache: mount /cache to look for them."
@@ -302,6 +302,9 @@ msgid ""
 " a score, the rule takes the one of its match (a date range is sure)."
 msgstr ""
 
+msgid "A click on a file moves the cursor to it."
+msgstr ""
+
 msgid "A click on a photo keeps it or sets it aside too."
 msgstr ""
 
@@ -325,6 +328,12 @@ msgid ""
 msgstr ""
 
 msgid "A file changed by another program meanwhile also changes the counts."
+msgstr ""
+
+msgid ""
+"A file gone is a file the last audits no longer found where it was, nor "
+"elsewhere: deleted, or moved to a disk not plugged in. Only the files "
+"deleted on purpose are remembered; nothing ever moves."
 msgstr ""
 
 msgid ""
@@ -577,6 +586,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
+"set aside if they come back; the others are forgotten."
+msgstr ""
+
+msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by "
 "'review' (burst shots set aside, near duplicates decided) or by 'search' "
@@ -649,6 +663,9 @@ msgid "August"
 msgstr ""
 
 msgid "B"
+msgstr ""
+
+msgid "Back after being set aside"
 msgstr ""
 
 msgid "Back to the report"
@@ -882,6 +899,11 @@ msgstr ""
 msgid "Compare at 100 %%"
 msgstr ""
 
+msgid ""
+"Compares the files of the same size as a photo or video you had set "
+"aside: same SHA-256, it is back."
+msgstr ""
+
 msgid "Comparing colours"
 msgstr ""
 
@@ -1112,6 +1134,13 @@ msgid "Deleted"
 msgstr ""
 
 msgid "Deleted from"
+msgstr ""
+
+msgid "Deleted in the Explorer"
+msgstr ""
+
+#, python-brace-format
+msgid "Deleted on purpose: {deleted} · answered: {decided} of {total}"
 msgstr ""
 
 msgid "Deleted or moved to the quarantine"
@@ -1399,6 +1428,13 @@ msgid ""
 " month."
 msgstr ""
 
+#, python-format
+msgid ""
+"Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal "
+"stops the review; then run the same 'clean' command with %(option)s: the "
+"files deleted on purpose are remembered, and 'undo' forgets them."
+msgstr ""
+
 msgid ""
 "Every audit and clean, newest first. Open this page with a double-click: "
 "no server needed."
@@ -1589,6 +1625,9 @@ msgid "Files changed since the review: run 'review --near' again."
 msgstr ""
 
 msgid "Files changed since the review: run 'review' again."
+msgstr ""
+
+msgid "Files gone review"
 msgstr ""
 
 msgid "Files left untouched"
@@ -1990,6 +2029,12 @@ msgid "In the file: {aside} set aside, {kept} kept, {none} undecided."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"In the file: {deleted} deleted on purpose, {moved} moved elsewhere, "
+"{none} unanswered."
+msgstr ""
+
+#, python-brace-format
 msgid "Install it with: ollama pull {model}"
 msgstr ""
 
@@ -2026,6 +2071,9 @@ msgid ""
 "Is Ollama running? On Docker Engine (Linux, WSL), add --add-"
 "host=host.docker.internal:host-gateway and let Ollama listen beyond "
 "127.0.0.1 (OLLAMA_HOST=0.0.0.0)."
+msgstr ""
+
+msgid "It was then:"
 msgstr ""
 
 msgid "Italy 2023"
@@ -2328,6 +2376,10 @@ msgid "Moving a duplicate copy to the quarantine: {path}"
 msgstr ""
 
 #, python-brace-format
+msgid "Moving a file you had set aside, back, to the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
 msgid "Moving a file you set aside to the quarantine: {path}"
 msgstr ""
 
@@ -2575,6 +2627,11 @@ msgstr ""
 msgid "No journal mount: no history to show."
 msgstr ""
 
+msgid ""
+"No journal mount: the photos and videos you set aside before are not "
+"recognised if they come back."
+msgstr ""
+
 msgid "No journal mount: there is nothing to undo."
 msgstr ""
 
@@ -2614,6 +2671,9 @@ msgstr ""
 msgid "No photo looks unwanted: nothing to review."
 msgstr ""
 
+msgid "No photo nor video has disappeared: nothing to review."
+msgstr ""
+
 msgid "No photo nor video of the index below these folders."
 msgstr ""
 
@@ -2647,6 +2707,11 @@ msgstr ""
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
 "place."
+msgstr ""
+
+msgid ""
+"No quarantine mount: unreadable files, orphan sidecars and the files you "
+"had set aside that came back are left in place."
 msgstr ""
 
 msgid "No report yet: run 'media-hygiene audit'."
@@ -2856,6 +2921,9 @@ msgid "November"
 msgstr ""
 
 msgid "October"
+msgstr ""
+
+msgid "Of which back again"
 msgstr ""
 
 msgid "Of which unwanted"
@@ -3069,6 +3137,14 @@ msgid "Photos and videos with a GPS position"
 msgstr ""
 
 msgid ""
+"Photos and videos you set aside by a choice (burst shots, near "
+"duplicates, files set aside in 'search' or 'review --junk') and that come"
+" back, whatever their name (a phone backup): the audit recognises them "
+"from the journal and 'clean' sets them aside again. false never looks for"
+" them."
+msgstr ""
+
+msgid ""
 "Photos that answer for each event (the sharpest, spread over its span); "
 "the other files of the event follow them. Smaller photos (shorter side, "
 "in pixels) are never sent: the model invents details on thumbnails."
@@ -3260,6 +3336,9 @@ msgstr ""
 msgid "Received and downloaded"
 msgstr ""
 
+msgid "Recognising what you had set aside"
+msgstr ""
+
 msgid ""
 "Regular expressions matching the whole name, case ignored: file names "
 "without extension, then folder names. Leave these lines commented to use "
@@ -3328,6 +3407,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Review stopped — files answered: {decided} of {total}, deleted on "
+"purpose: {deleted}."
+msgstr ""
+
+#, python-brace-format
 msgid "Review stopped — groups decided: {decided} of {total}."
 msgstr ""
 
@@ -3357,6 +3442,13 @@ msgid ""
 "Review the near duplicates and re-encoded videos group by group instead "
 "of the burst series: as planned, keep the other version, or leave alone; "
 "'clean --tier near --decisions' applies it."
+msgstr ""
+
+msgid ""
+"Review the photos and videos gone since an audit (deleted in the "
+"Explorer?) instead of the burst series: say which ones you deleted on "
+"purpose, and 'clean --decisions' remembers them, so that they are set "
+"aside if they come back."
 msgstr ""
 
 msgid ""
@@ -3740,6 +3832,9 @@ msgid ""
 msgstr ""
 
 msgid "Set aside"
+msgstr ""
+
+msgid "Set aside on"
 msgstr ""
 
 msgid "Set aside the picked files"
@@ -4483,6 +4578,9 @@ msgstr ""
 msgid "There is no such event."
 msgstr ""
 
+msgid "There is no such file."
+msgstr ""
+
 msgid "There is no such folder pair."
 msgstr ""
 
@@ -4679,6 +4777,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
+msgstr ""
+
+msgid ""
+"Unanswered: nothing is remembered. D: deleted on purpose, M: moved "
+"elsewhere, G: the whole group deleted on purpose."
 msgstr ""
 
 msgid "Undated"
@@ -4964,6 +5067,14 @@ msgstr ""
 msgid "Yes, it is {name}"
 msgstr ""
 
+msgid ""
+"You had set these photos and videos aside (a burst shot, a near "
+"duplicate, a file chosen in 'search' or 'review --junk'); the same "
+"content is back, whatever its name now (a phone backup, a copy). 'clean' "
+"moves them to the quarantine again, with the rest of its plan. To keep "
+"one after all: 'undo' that clean, and it is no longer proposed."
+msgstr ""
+
 msgid "Your browser cannot show this format: open the original."
 msgstr ""
 
@@ -4982,6 +5093,12 @@ msgstr ""
 msgid ""
 "Your decisions — burst series reviewed: {series}, shots set aside: "
 "{shots}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Your decisions — files deleted in the Explorer on purpose: {deleted}, "
+"moved elsewhere: {moved}."
 msgstr ""
 
 #, python-brace-format
@@ -5101,6 +5218,9 @@ msgstr ""
 msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'."
 msgstr ""
 
+msgid "a burst shot you set aside"
+msgstr ""
+
 msgid "a file changed since the audit"
 msgstr ""
 
@@ -5117,6 +5237,9 @@ msgid "a name in names is empty"
 msgstr ""
 
 msgid "a name someone chose (the other one was generated by a camera or an app)"
+msgstr ""
+
+msgid "a near duplicate set aside"
 msgstr ""
 
 #, python-brace-format
@@ -5185,6 +5308,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "an area of {count} points is too detailed (at most {limit})"
+msgstr ""
+
+msgid "an unwanted photo set aside"
 msgstr ""
 
 msgid "analyse every photo, then see the faces alike in your browser."
@@ -5345,6 +5471,15 @@ msgid "delete {count} duplicate copy ({size})"
 msgid_plural "delete {count} duplicate copies ({size})"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "deleted in the Explorer, on purpose"
+msgstr ""
+
+msgid "deleted on purpose"
+msgstr ""
+
+msgid "deleted on purpose: remembered, set aside if it comes back"
+msgstr ""
 
 msgid "docker pull failed: mh is unchanged."
 msgstr ""
@@ -5691,6 +5826,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "move {count} file you had set aside, back since, to the quarantine again"
+msgid_plural "move {count} files you had set aside, back since, to the quarantine again"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "move {count} file you set aside ({size}) to the quarantine"
 msgid_plural "move {count} files you set aside ({size}) to the quarantine"
 msgstr[0] ""
@@ -5707,6 +5848,12 @@ msgid "move {count} unwanted photo you set aside ({size}) to the quarantine"
 msgid_plural "move {count} unwanted photos you set aside ({size}) to the quarantine"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "moved elsewhere"
+msgstr ""
+
+msgid "moved elsewhere (a disk not plugged in): forgotten"
+msgstr ""
 
 msgid "moved to the quarantine"
 msgstr ""
@@ -5742,6 +5889,9 @@ msgstr ""
 msgid "next event to decide"
 msgstr ""
 
+msgid "next group not answered"
+msgstr ""
+
 msgid "next group to check, undecided"
 msgstr ""
 
@@ -5757,6 +5907,9 @@ msgstr ""
 msgid "next undecided pair"
 msgstr ""
 
+msgid "next, previous group"
+msgstr ""
+
 msgid "no"
 msgstr ""
 
@@ -5764,6 +5917,9 @@ msgid "no date"
 msgstr ""
 
 msgid "no preview"
+msgstr ""
+
+msgid "no preview kept"
 msgstr ""
 
 msgid "no shot kept from its series is left"
@@ -5957,6 +6113,12 @@ msgstr ""
 msgid "set aside"
 msgstr ""
 
+msgid "set aside again after it came back"
+msgstr ""
+
+msgid "set aside in 'search' or 'browse'"
+msgstr ""
+
 msgid "sharpest"
 msgstr ""
 
@@ -6057,6 +6219,9 @@ msgstr ""
 msgid "the group as marked, then next"
 msgstr ""
 
+msgid "the group back to unanswered"
+msgstr ""
+
 msgid "the group back to undecided"
 msgstr ""
 
@@ -6115,6 +6280,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"the same 'clean' command with {option}; the files deleted on purpose are "
+"remembered, nothing moves, 'undo' forgets them."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "the same 'clean' command with {option}; the photos set aside go to the "
 "quarantine, 'undo' brings them back."
 msgstr ""
@@ -6144,6 +6315,9 @@ msgid "the value cannot be used"
 msgstr ""
 
 msgid "the whole folder pair as planned"
+msgstr ""
+
+msgid "the whole group deleted on purpose, then next"
 msgstr ""
 
 msgid "this category is no longer proposed"
@@ -6214,6 +6388,9 @@ msgid "two small local models: nothing is sent"
 msgstr ""
 
 msgid "type a name first"
+msgstr ""
+
+msgid "unanswered"
 msgstr ""
 
 msgid "undo the last choice"
@@ -6491,6 +6668,16 @@ msgid ""
 msgid_plural ""
 "{count} files ({size}) will be copied from {sources} to the quarantine on"
 " {drive} ({free} free there)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file answered earlier is no longer recorded as gone: its answer "
+"is dropped."
+msgid_plural ""
+"{count} files answered earlier are no longer recorded as gone: their "
+"answers are dropped."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -6798,6 +6985,38 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} photo or video has disappeared since an audit: deleted on "
+"purpose, or moved to a disk not plugged in? Only you can tell."
+msgid_plural ""
+"{count} photos and videos have disappeared since an audit: deleted on "
+"purpose, or moved to a disk not plugged in? Only you can tell."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo or video has disappeared since the last audit (deleted in "
+"the Explorer?): say if you deleted it on purpose, so that media-hygiene "
+"sets it aside if it comes back."
+msgid_plural ""
+"{count} photos and videos have disappeared since the last audit (deleted "
+"in the Explorer?): say which ones you deleted on purpose, so that media-"
+"hygiene sets them aside if they come back."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo or video you had set aside is back ({size}): 'clean' sets "
+"it aside again."
+msgid_plural ""
+"{count} photos and videos you had set aside are back ({size}): 'clean' "
+"sets them aside again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} photos to describe with {model}, about {duration}: one per set of"
 " identical files and per burst series."
 msgstr ""
@@ -7034,6 +7253,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} — gone since {day}: {first} to {last} of {total}"
 msgstr ""
 
 #, python-brace-format
@@ -7479,6 +7702,10 @@ msgstr ""
 msgid "… and %(count)s more series."
 msgstr ""
 
+#, python-format
+msgid "… and %(count)s more."
+msgstr ""
+
 #, python-brace-format
 msgid "… and {count} more."
 msgstr ""
@@ -7493,6 +7720,16 @@ msgid ""
 "→ validates the series still to see here as shown ({series}, {aside}), "
 "then opens the next page."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"↩️ {count} photo or video you had already set aside is back ({size}): "
+"back to the quarantine."
+msgid_plural ""
+"↩️ {count} photos and videos you had already set aside are back ({size}):"
+" back to the quarantine."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "⌂ Home"
 msgstr ""
@@ -7528,6 +7765,16 @@ msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"🗑️ {count} file you deleted in the Explorer will be remembered: if it "
+"comes back, it is set aside."
+msgid_plural ""
+"🗑️ {count} files you deleted in the Explorer will be remembered: if they "
+"come back, they are set aside."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "🛟 An album only adds names (hard links): no photo is copied, moved nor "

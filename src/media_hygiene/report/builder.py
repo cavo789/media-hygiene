@@ -13,6 +13,7 @@ from media_hygiene.report.group_views import (
     sample_groups,
 )
 from media_hygiene.report.pair_views import PairRenderer, report_pairs, sampled_files
+from media_hygiene.report.returned_views import returned_section
 from media_hygiene.report.similar_views import SimilarRenderer, similar_files
 from media_hygiene.report.summary import CrossCheckSummary, ReportSummary
 from media_hygiene.report.thumbnail_jobs import ThumbnailJob
@@ -52,7 +53,7 @@ class ReportBuilder:
             record: What the report is written from.
 
         Returns:
-            One job per previewable keeper, sample, similar picture or broken image.
+            One job per previewable keeper, sample, similar, broken or file back.
         """
         plan = record.findings.plan
         groups = (*largest_groups(plan), *sample_groups(plan))
@@ -63,6 +64,7 @@ class ReportBuilder:
                 *sampled_files(report_pairs(record)),
                 *similar_files(record.findings.similar),
                 *(item.file for item in plan.broken),
+                *(item.file for item in plan.returned),
             )
         }
         return [
@@ -121,6 +123,7 @@ class ReportBuilder:
                 self._renderer(record, previews).summary(index, pair)
                 for index, pair in enumerate(report_pairs(record), start=1)
             ),
+            returned=returned_section(plan, self.mapper, names),
             similar=SimilarRenderer(self.mapper, names).section(
                 record.findings.similar
             ),

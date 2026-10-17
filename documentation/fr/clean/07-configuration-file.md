@@ -487,6 +487,10 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # ne gardent pas un doss
 - **`quarantine_headroom_gb`** (1, dans `[clean]`) : ce qu'un `clean` qui copie des fichiers dans la
   quarantaine d'un autre disque y laisse libre, en Go ; il refuse avant tout déplacement si cette
   place manquerait. `0` ne garde aucune marge ; augmentez-le si votre `C:` doit garder plus de place.
+- **`returned`** (true, dans `[clean]`) : les photos et vidéos mises de côté par un choix qui
+  reviennent (une sauvegarde de téléphone) sont reconnues par l'audit et remises de côté par
+  `clean` ([étape 9](09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté)).
+  `false` ne les cherche jamais.
 
 Pourquoi des apostrophes ? Entre guillemets, TOML lit la barre oblique inverse comme un
 caractère spécial : le `\b` de `"D:\backup"` devient un caractère de contrôle (l'outil refuse
