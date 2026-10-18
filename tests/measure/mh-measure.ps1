@@ -50,6 +50,8 @@
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
 #      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
+#  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
+#      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -71,6 +73,7 @@
 #   .\mh-measure.ps1 -Only 17 -Count 5
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
+#   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -80,7 +83,10 @@ param(
     [string]$Cache = "media-hygiene-cache",
     [switch]$Keep,
     [string]$Only = "",
-    [string]$OtherDrive = ""
+    [string]$OtherDrive = "",
+    [int]$Sample = 1000,
+    [int]$Cpus = 4,
+    [string]$Branch = "main"
 )
 
 $ErrorActionPreference = "Stop"
@@ -978,6 +984,71 @@ if (Wanted 19) {
     }
     if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
     Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
+}
+
+# --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------
+# Downloads the bench (tests/measure/embeddings of the -Branch) under -Work; the models once
+# into $HOME\media-hygiene\embeddings-models (2.5 GB, kept for the next runs: delete that
+# folder to get the room back); the pages into $HOME\media-hygiene\embeddings-<stamp>. The
+# searches come from $HOME\media-hygiene\embeddings-queries.txt: the first time, the step
+# writes it with examples and stops, so you write your 20 searches (UTF-8, one per line).
+# C:\Photos and the index (-Cache) are mounted read-only; -Sample photos drawn at random.
+$benchFiles = @(
+    "__init__.py", "embedders.py", "measure.py", "models.py", "pages.py", "ranking.py", "runs.py",
+    "templates/base.html", "templates/index.html", "templates/queries.html", "templates/pairs.html"
+)
+if (Wanted 20) {
+    # Native stderr (pip, the ONNX runtime's warnings) must not stop the script in PS 5.1.
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $queries = Join-Path $outDir "embeddings-queries.txt"
+    if (-not (Test-Path -LiteralPath $queries)) {
+        $examples = @(
+            "# One search per line, in French, as you would type it; lines starting with # are left out.",
+            "# Accents are welcome: keep this file in UTF-8 (Notepad: Save as, Encoding UTF-8).",
+            "gateau d'anniversaire",
+            "plage au coucher du soleil",
+            "neige en montagne"
+        )
+        Set-Content -LiteralPath $queries -Value $examples -Encoding UTF8
+        Log ""
+        Log "== 20. image embeddings (0220)"
+        Log "   20a. write your 20 searches in $queries (examples inside), then run -Only 20 again"
+    } else {
+        $bench = Join-Path $Work "embeddings"
+        $models = Join-Path $outDir "embeddings-models"
+        $pages = Join-Path $outDir "embeddings-$stamp"
+        foreach ($folder in $bench, (Join-Path $bench "templates"), $models, $pages) {
+            New-Item -ItemType Directory -Force -Path $folder | Out-Null
+        }
+        $base = "https://raw.githubusercontent.com/cavo789/media-hygiene/$Branch/tests/measure/embeddings"
+        foreach ($name in $benchFiles) {
+            Invoke-WebRequest -UseBasicParsing -Uri "$base/$name" -OutFile (Join-Path $bench ($name -replace '/', '\'))
+        }
+        Copy-Item -LiteralPath $queries -Destination (Join-Path $pages "queries.txt")
+        $mounts = @(
+            "--cpus", "$Cpus",
+            "--mount", "type=bind,source=$Photos,target=/data/c/Photos,readonly",
+            "--mount", "type=volume,source=$Cache,target=/cache,readonly",
+            "--mount", "type=bind,source=$bench,target=/bench/embeddings,readonly",
+            "-v", "${models}:/models",
+            "-v", "${pages}:/out"
+        )
+        $inside = "/usr/local/bin/python3 -m pip install -q --no-cache-dir --disable-pip-version-check --target /tmp/wheels tokenizers==0.23.2" +
+            " && PYTHONPATH=/tmp/wheels:/bench python -m embeddings.measure --photos /data/c/Photos --queries /out/queries.txt" +
+            " --models-dir /models --out /out --count $Sample --cpus $Cpus"
+        Log ""
+        Log "== 20. image embeddings on $Sample photos of $Photos, $Cpus CPUs (0220)"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $lines = & docker run --rm @mounts --entrypoint sh $Image -c $inside 2>&1
+        $watch.Stop()
+        foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        Log ("   20b. wall time: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+        $size = (Get-ChildItem -LiteralPath $models -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB
+        Log ("   20c. models folder: {0:N0} MB in {1}" -f $size, $models)
+        Log "   20d. open $(Join-Path $pages 'index.html'), tick the searches and the pairs, download both JSON files, then tell Claude where they are"
+    }
+    $ErrorActionPreference = $saved
 }
 
 # --- clean up -------------------------------------------------------------------------------

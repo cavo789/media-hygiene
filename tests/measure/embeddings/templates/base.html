@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Embeddings bench{% endblock %}</title>
+<style>
+:root { --bg: #fafafa; --fg: #1d1d1f; --muted: #6b6b70; --line: #d9d9de; --on: #1a7f37; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #18181b; --fg: #ececf0; --muted: #a1a1aa; --line: #3f3f46; --on: #4ade80; }
+}
+body { background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, sans-serif; margin: 0 16px 48px; }
+header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 0; z-index: 1; }
+nav a { margin-right: 12px; color: inherit; }
+h2 { margin-top: 32px; }
+h3 { font-size: 15px; color: var(--muted); margin: 16px 0 6px; }
+table { border-collapse: collapse; }
+td, th { border: 1px solid var(--line); padding: 4px 8px; text-align: left; vertical-align: top; }
+.grid { display: flex; flex-wrap: wrap; gap: 6px; }
+figure { margin: 0; width: 160px; }
+figure img { width: 160px; height: 160px; object-fit: contain; background: #0001; display: block; }
+figcaption { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+label { display: block; font-size: 13px; cursor: pointer; }
+input:checked + span { color: var(--on); font-weight: 600; }
+.pair { display: flex; gap: 6px; align-items: flex-start; border-bottom: 1px solid var(--line); padding: 6px 0; }
+button { font: inherit; padding: 4px 12px; }
+.muted { color: var(--muted); }
+</style>
+</head>
+<body data-page="{% block page %}index{% endblock %}">
+<header>
+<nav><a href="index.html">Summary</a><a href="queries.html">Searches</a><a href="pairs.html">Pairs</a></nav>
+{% block tools %}{% endblock %}
+</header>
+{% block content %}{% endblock %}
+<script>
+"use strict";
+const key = "embeddings-bench:" + document.body.dataset.page;
+const boxes = () => Array.from(document.querySelectorAll("input[data-judged]"));
+function saved() {
+  try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch (error) { return {}; }
+}
+function remember() {
+  const ticked = {};
+  boxes().forEach((box) => { if (box.checked) { ticked[box.id] = true; } });
+  try { localStorage.setItem(key, JSON.stringify(ticked)); } catch (error) { /* kept in the page only */ }
+}
+function download() {
+  const rows = boxes().map((box) => {
+    const row = Object.assign({}, box.dataset);
+    delete row.judged;
+    row.ticked = box.checked;
+    return row;
+  });
+  const body = JSON.stringify({ page: document.body.dataset.page, rows: rows }, null, 1);
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([body], { type: "application/json" }));
+  link.download = "embeddings-" + document.body.dataset.page + "-judged.json";
+  link.click();
+}
+const before = saved();
+boxes().forEach((box) => { box.checked = Boolean(before[box.id]); box.addEventListener("change", remember); });
+const button = document.getElementById("download");
+if (button) { button.addEventListener("click", download); }
+</script>
+</body>
+</html>

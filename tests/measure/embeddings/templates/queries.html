@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Embeddings searches{% endblock %}
+{% block page %}queries{% endblock %}
+{% block tools %}<p>Tick every picture a person would expect for the search. <button id="download" type="button">Download the ticks (JSON)</button></p>
+<nav>{% for item in queries %}<a href="#q{{ loop.index }}">{{ item.query }}</a>{% endfor %}</nav>{% endblock %}
+{% block content %}
+{% for item in queries %}{% set query_number = loop.index %}
+<h2 id="q{{ query_number }}">{{ item.query }}</h2>
+{% for column in item.columns %}
+<h3>{{ column.title }}</h3>
+{% if not column.pictures %}<p class="muted">Nothing found.</p>{% endif %}
+<div class="grid">
+{% for picture in column.pictures %}
+<figure><img src="{{ picture.thumb }}" alt="" loading="lazy" title="{{ picture.path }}">
+<label><input type="checkbox" id="q{{ query_number }}-{{ column.name }}-{{ loop.index }}" data-judged data-query="{{ item.query }}" data-column="{{ column.name }}" data-rank="{{ loop.index }}" data-photo="{{ picture.path }}"><span>relevant</span></label>
+<figcaption>{{ loop.index }}. {{ picture.path.rsplit('/', 1)[-1] }}</figcaption></figure>
+{% endfor %}
+</div>
+{% endfor %}
+{% endfor %}
+{% endblock %}
