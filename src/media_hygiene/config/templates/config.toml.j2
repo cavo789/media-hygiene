@@ -178,7 +178,7 @@ language = ""
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
-{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
+{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, takeout (the Google Photos description), former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
 {{ comment(_("person writes the names of the people on each photo (PersonInImage): never by default, as the names then travel with every copy of the photos.")) }}
 xmp_sources = ["vision", "place"]
 {{ comment(_("true: a photo without GPS in a folder named after a town (2019/Douarnenez) gets the position of that town's centre in its sidecar, so that other applications show it on their map. Approximate: off by default.")) }}

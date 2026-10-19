@@ -74,7 +74,7 @@ quarantine, journaled: `mh undo` brings them back, `mh purge` frees the space.
 once something is set aside, an **Apply now** button appears under the saved line. It closes
 the page and `mh` runs the home page's step that applies your choices (`mh clean --decisions`,
 with `--tier near` when you also reviewed near duplicates), with its usual question, in the
-PowerShell window; then the home page comes back. Opened by `mh browse` alone, there is no
+window where `mh` runs (PowerShell on Windows); then the home page comes back. Opened by `mh browse` alone, there is no
 button: type the command above. The button needs an `mh` written by this version (`mh update`
 writes it again).
 

@@ -1081,8 +1081,8 @@ msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 
 msgid ""
-"Copies the command, to paste in the PowerShell window: this page keeps "
-"running."
+"Copies the command, to paste in the window where mh runs: this page keeps"
+" running."
 msgstr ""
 
 msgid "Copy"
@@ -1537,7 +1537,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Ends this page: mh runs the step in the PowerShell window, then opens "
+"Ends this page: mh runs the step in the window where mh runs, then opens "
 "this page again."
 msgstr ""
 
@@ -1974,7 +1974,7 @@ msgstr ""
 msgid "Folders closed; your photos were not changed."
 msgstr ""
 
-msgid "Folders named after a town"
+msgid "Folders named after a town, or placed"
 msgstr ""
 
 msgid "Folders removed"
@@ -2120,6 +2120,9 @@ msgid "Going to a 'to check' folder"
 msgstr ""
 
 msgid "Going to a 'to sort' folder"
+msgstr ""
+
+msgid "Google Photos description"
 msgstr ""
 
 msgid "Google Photos record (.json)"
@@ -2859,7 +2862,7 @@ msgstr ""
 msgid "No folder in the index: run 'audit' first, with the same /cache mount."
 msgstr ""
 
-msgid "No folder named after a town holds photos without GPS."
+msgid "No folder named after a town, or placed, holds photos without GPS."
 msgstr ""
 
 msgid "No folder of that name."
@@ -3994,12 +3997,12 @@ msgstr ""
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr ""
 
-msgid "Running in the PowerShell window: this page comes back when it ends."
+msgid "Running in the window where mh runs: this page comes back when it ends."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"Running in the PowerShell window: {command}. The home page comes back "
+"Running in the window where mh runs: {command}. The home page comes back "
 "here when it ends."
 msgstr ""
 
@@ -4387,7 +4390,7 @@ msgid "Stop the audit"
 msgstr ""
 
 msgid ""
-"Stop this page with Ctrl+C in its PowerShell window, then paste the "
+"Stop this page with Ctrl+C in the window where mh runs, then paste the "
 "command there (right click) and press Enter."
 msgstr ""
 
@@ -4496,7 +4499,7 @@ msgstr ""
 msgid "The album's name: the folder holding its links."
 msgstr ""
 
-msgid "The audit failed: the PowerShell window says why."
+msgid "The audit failed: the window where mh runs says why."
 msgstr ""
 
 msgid "The audit is done; look for the faces now?"
@@ -4979,9 +4982,9 @@ msgstr ""
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, former (the folders"
-" and names of the copies 'clean' removed), date. The model's sentence "
-"goes into dc:description."
+"(dc:subject), by source: vision, place, folder, name, takeout (the Google"
+" Photos description), former (the folders and names of the copies 'clean'"
+" removed), date. The model's sentence goes into dc:description."
 msgstr ""
 
 msgid ""
@@ -7097,6 +7100,12 @@ msgstr ""
 #, python-brace-format
 msgid "{command}: failed"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} backup (read-only)"
+msgid_plural "{count} backups (read-only)"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."

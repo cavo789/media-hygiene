@@ -15,6 +15,7 @@ from media_hygiene.constants import Locale
 from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.scan.models import VisualFacts
+from media_hygiene.scan.takeout_facts import TakeoutFacts
 from media_hygiene.tags.context import TagContext, tag_context
 from media_hygiene.tags.models import PlaceKind, Tag, TagSource
 from media_hygiene.tags.normalize import WordRules
@@ -163,3 +164,27 @@ def test_a_place_named_like_its_town_is_kept_once(tmp_path: Path) -> None:
 def test_without_towns_only_personal_places() -> None:
     """No gazetteer loaded: no town, no error."""
     assert not place_tags(photo("a.jpg", metadata=TURIN), context())
+
+
+def takeout_photo(description: str | None) -> MediaInput:
+    """A photo whose Takeout `.json` carries a description."""
+    return replace(photo("a/IMG_1.jpg"), takeout=TakeoutFacts(description=description))
+
+
+def test_a_takeout_description_gives_its_sentence_and_its_words() -> None:
+    """Own source `takeout`: the sentence whole, then the meaningful words once."""
+    tags = cheap_tags(takeout_photo("Fête de Léa  à la plage, plage"), context())
+    assert [t.value for t in tags if t.source is TagSource.TAKEOUT] == [
+        "Fête de Léa à la plage, plage",
+        "Fête",
+        "Léa",
+        "plage",
+    ]
+
+
+def test_an_empty_or_missing_takeout_description_gives_nothing() -> None:
+    """No `.json`, no description, only blanks: no `takeout` tag."""
+    for file in (photo("a/IMG_1.jpg"), takeout_photo(None), takeout_photo("  ")):
+        assert not [
+            t for t in cheap_tags(file, context()) if t.source is TagSource.TAKEOUT
+        ]

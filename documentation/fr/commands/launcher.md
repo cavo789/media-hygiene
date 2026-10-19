@@ -103,8 +103,8 @@ mh audit
   `launcher`, l'emporte.
 - **Votre langue** : un `--locale fr` donné à `launcher` est écrit dans le script : `mh` parle
   français. Une langue réglée dans `config.toml` est laissée au fichier (une modification de celui-ci
-  compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, langue,
-  fuseau horaire.
+  compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, sauvegardes (lecture seule),
+  langue, fuseau horaire.
 
 ## Ce que `mh` fait lui-même
 

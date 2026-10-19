@@ -68,7 +68,7 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix. *Vos lieux* est triée par nom,
   sans tenir compte des majuscules ni des accents, la maison (🏠) d'abord ; le fichier garde son
   propre ordre.
-- **Dossiers au nom d'une ville** liste les dossiers dont le nom est celui d'une ville
+- **Dossiers au nom d'une ville, ou placés** liste les dossiers dont le nom est celui d'une ville
   (`Douarnenez`, `Saint-Jean de Luz`) et qui contiennent des photos sans GPS : *📁 Douarnenez —
   37 photos sans GPS*. Cliquez sur l'un d'eux : la carte va sur la ville, un repère vert marque
   son centre et le même tiroir montre ses photos, regroupées par dossier, avec **Enregistrer cette

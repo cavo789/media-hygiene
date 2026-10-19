@@ -122,7 +122,7 @@ class HomeAudit:
             _LOGGER.exception("The audit started from the home page failed")
             end = PageAudit(
                 phase=AuditPhase.FAILED,
-                error=_("The audit failed: the PowerShell window says why."),
+                error=_("The audit failed: the window where mh runs says why."),
             )
         else:
             end = PageAudit(

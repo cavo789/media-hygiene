@@ -54,7 +54,7 @@ yours, and its `.json` files are handled as sidecars.
 - **An edit and its original** are never near duplicates of each other: both stay.
 
 Not checked on a real Takeout (none was at hand): these name rules come from the tools that
-read Takeouts. The description of a `.json` does not give words to `search` yet, an edited
+read Takeouts. The description of a `.json` is searchable ([`tags`](reference-tags.md#where-the-words-come-from): source `takeout`, not written to `.xmp` unless you ask), an edited
 version's suffix is recognised in English only (`-edited`), and a `.json` whose cut name was
 renumbered by `sort` (` (2)`) no longer finds its photo. Tell us what your Takeout looks like
 if it differs.

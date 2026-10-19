@@ -100,7 +100,7 @@ mh audit
 - **Your language**: a `--locale fr` given to `launcher` is written into the script, so `mh`
   speaks French.
   A language set in `config.toml` is left to the file (an edit of it still counts). `launcher`
-  ends with one line saying what `mh` remembers: folders, language, time zone.
+  ends with one line saying what `mh` remembers: folders, backups (read-only), language, time zone.
 
 ## What `mh` does by itself
 

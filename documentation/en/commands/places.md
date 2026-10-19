@@ -64,7 +64,7 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
 - **Fold a list** by clicking its title: *Your places (10)* folds by itself from 8 places on,
   so that the clusters stay in reach; your browser remembers your choice. *Your places* is sorted
   by name, case and accents ignored, home (🏠) first; the file keeps its own order.
-- **Folders named after a town** lists the folders whose name is a town's (`Douarnenez`,
+- **Folders named after a town, or placed** lists the folders whose name is a town's (`Douarnenez`,
   `Saint-Jean de Luz`) and that hold photos without GPS: *📁 Douarnenez — 37 photos without GPS*.
   Click one: the map goes to the town, a green pin marks its centre and the same drawer shows its
   photos, grouped by folder, with **Save this position**, **Forget its position** and **Not a

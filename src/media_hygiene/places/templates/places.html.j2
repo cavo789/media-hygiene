@@ -30,7 +30,7 @@
   "photosMissing": _("Some photos are not reachable: moved since the audit, or their folder is not mounted (read-only is enough)."),
   "showPhotos": _("Show its photos"),
   "withoutGps": _("{files} without GPS"),
-  "noFolder": _("No folder named after a town holds photos without GPS."),
+  "noFolder": _("No folder named after a town, or placed, holds photos without GPS."),
   "folderMissing": _("Not found: renamed or moved? Rename it back, or forget its position."),
   "folderHint": _("Drag the pin where these photos were taken, then save: 'xmp' writes that position into their sidecars ([tags] xmp_folder_gps = true)."),
   "toPlace": _("To place"),
@@ -244,7 +244,7 @@
     <ul id="clusters"></ul>
   </details>
   <details id="foldersFold" class="fold" open>
-    <summary>{{ _("Folders named after a town") }} <span id="foldersCount" class="count"></span></summary>
+    <summary>{{ _("Folders named after a town, or placed") }} <span id="foldersCount" class="count"></span></summary>
     <input id="folderFilter" type="search" autocomplete="off"
            placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
            title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">

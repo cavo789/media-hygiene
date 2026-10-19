@@ -76,7 +76,7 @@ quarantaine, journalisé : `mh undo` les remet, `mh purge` libère la place.
 que quelque chose est mis de côté, un bouton **Appliquer maintenant** apparaît sous la ligne
 enregistrée. Il ferme la page et `mh` lance l'étape de l'accueil qui applique vos choix
 (`mh clean --decisions`, avec `--tier near` si vous avez aussi revu des quasi-doublons), avec sa
-question habituelle, dans la fenêtre PowerShell ; puis l'accueil revient. Ouverte par
+question habituelle, dans la fenêtre où `mh` tourne (PowerShell sous Windows) ; puis l'accueil revient. Ouverte par
 `mh browse` seul, pas de bouton : tapez la commande ci-dessus. Le bouton demande un `mh` écrit
 par cette version (`mh update` le réécrit).
 

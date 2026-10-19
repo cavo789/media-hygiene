@@ -30,6 +30,7 @@ _SEPARATORS: Final = re.compile(r"[\s_.,;:()\[\]{}+&!?#]+")
 _MONTH_WORDS: Final = frozenset(name for names in MONTHS for name in names)
 # Appended to a word to see whether a device numbers its files after it: `IMG_1`.
 _COUNTER: Final = "_1"
+_SPACES: Final = re.compile(r"\s+")
 # Words that link others in a folder name, never searched for on their own.
 _LINKS: Final = frozenset(
     {"les", "des", "une", "aux", "chez", "avec", "pour", "sur", "dans", "par", "et"}
@@ -46,12 +47,14 @@ def cheap_tags(file: MediaInput, context: TagContext) -> tuple[Tag, ...]:
         context: Folder rules, calendar, places and towns.
 
     Returns:
-        Its folder, name, former folder and name, date and place tags.
+        Its folder, name, former folder and name, Takeout description, date and
+        place tags.
     """
     return (
         *_tags(TagSource.FOLDER, folder_words(file, context)),
         *_tags(TagSource.NAME, name_words(file, context)),
         *_tags(TagSource.FORMER, former_words(file, context)),
+        *_tags(TagSource.TAKEOUT, takeout_words(file, context)),
         *_tags(TagSource.DATE, date_words(file, context)),
         *place_tags(file, context),
     )
@@ -114,6 +117,23 @@ def former_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
         for word in (*folder_words(copy, context), *name_words(copy, context))
         if word.casefold() not in own
     )
+
+
+def takeout_words(file: MediaInput, context: TagContext) -> tuple[str, ...]:
+    """The description typed in Google Photos: the sentence whole, then its words.
+
+    Args:
+        file: The file and what its Takeout `.json` said (0240).
+        context: The stop words.
+
+    Returns:
+        `Fête de Léa à la plage` → that sentence, `Fête`, `Léa`, `plage`; nothing
+        without a Takeout `.json` or with an empty description.
+    """
+    text = _SPACES.sub(" ", (file.takeout.description or "") if file.takeout else "")
+    if not text.strip():
+        return ()
+    return (text.strip(), *_meaningful((text,), context))
 
 
 def _device_word(word: str, names: NameRules) -> bool:

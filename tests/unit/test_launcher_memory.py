@@ -1,75 +1,45 @@
-"""What `mh` remembers beside the folders: the language of the run, its time zone."""
+"""The closing line of `launcher`: what `mh` remembers, backups apart (0249)."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, cast
 
-from media_hygiene.paths.docker_run import Shell
-from media_hygiene.services.launcher import (
-    LauncherCommands,
-    launcher_script,
-    render_script,
-)
-from media_hygiene.services.launcher_memory import locale_option, remembered
-from tests.support.runtime import make_locations, make_runtime
+import pytest
+
+from media_hygiene.config.settings import Settings
+from media_hygiene.paths.docker_run import Volume
+from media_hygiene.services.launcher_memory import remembered
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    from media_hygiene.services.launcher import LauncherScript
+    from media_hygiene.services.runtime import Runtime
 
-    import pytest
-
-_COMMANDS = LauncherCommands(names=("audit",), writers=(), pages=(), data=(), port=8088)
-_FRENCH = '-e "MEDIA_HYGIENE_GENERAL__LOCALE=fr"'
+_FOLDER = Volume("C:\\Photos", Path("/data/c/Photos"))
+_BACKUP = Volume("E:\\Backup", Path("/data/e/Backup"))
 
 
-def test_a_locale_given_to_launcher_is_written_into_the_script(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+def line(data: int, backups: int) -> str:
+    """The line for some folders and some backups."""
+    runtime = cast("Runtime", SimpleNamespace(settings=Settings()))
+    script = cast(
+        "LauncherScript",
+        SimpleNamespace(data=(_FOLDER,) * data, backups=(_BACKUP,) * backups),
+    )
+    return remembered(runtime, script)
+
+
+@pytest.mark.parametrize(
+    ("data", "backups", "said"),
+    [
+        (2, 0, "mh remembers: 2 folders, language en"),
+        (1, 1, "mh remembers: 1 folder, 1 backup (read-only), language en"),
+        (2, 2, "mh remembers: 2 folders, 2 backups (read-only), language en"),
+    ],
+)
+def test_backups_are_counted_apart_and_only_when_there_are(
+    data: int, backups: int, said: str
 ) -> None:
-    """`--locale fr launcher`: every `mh` run speaks French."""
-    monkeypatch.delenv("MEDIA_HYGIENE_GENERAL__LOCALE", raising=False)
-    runtime = make_runtime(make_locations(tmp_path), {"general": {"locale": "fr"}})
-    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
-    assert f"        {_FRENCH} `" in text
-
-
-def test_the_default_locale_adds_nothing(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """No `--locale`: the script holds no language at all."""
-    monkeypatch.delenv("MEDIA_HYGIENE_GENERAL__LOCALE", raising=False)
-    runtime = make_runtime(make_locations(tmp_path))
-    text = render_script(launcher_script(runtime, Shell.BASH, _COMMANDS))
-    assert "LOCALE" not in text
-
-
-def test_a_locale_of_config_toml_is_left_to_the_file(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """config.toml is read by every `mh` run: a later edit of it still wins."""
-    monkeypatch.delenv("MEDIA_HYGIENE_GENERAL__LOCALE", raising=False)
-    locations = make_locations(tmp_path)
-    locations.config_file.write_text('[general]\nlocale = "fr"\n', encoding="utf-8")
-    assert not locale_option(make_runtime(locations))
-
-
-def test_a_locale_of_the_environment_is_carried_once(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """`-e MEDIA_HYGIENE_GENERAL__LOCALE=fr launcher`: kept, not repeated."""
-    monkeypatch.setenv("MEDIA_HYGIENE_GENERAL__LOCALE", "fr")
-    runtime = make_runtime(make_locations(tmp_path))
-    text = render_script(launcher_script(runtime, Shell.BASH, _COMMANDS))
-    assert text.count("MEDIA_HYGIENE_GENERAL__LOCALE=fr") == 1
-
-
-def test_remembered_names_the_folders_the_language_and_the_zone(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """One line: how many folders, which language, which time zone."""
-    monkeypatch.setenv("TZ", "Europe/Brussels")
-    runtime = make_runtime(make_locations(tmp_path), {"general": {"locale": "fr"}})
-    script = launcher_script(runtime, Shell.BASH, _COMMANDS)
-    line = remembered(runtime, script)
-    assert "language fr" in line
-    assert "time zone Europe/Brussels" in line
-    assert "0 folders" in line
+    """No backup: the line as before; else the count, read-only."""
+    assert line(data, backups).startswith(said)

@@ -71,14 +71,14 @@ qui a ouvert la page :
 
 - **`mh` seul** (et donc le raccourci du Bureau et le clic droit sur un dossier), qui lance les
   étapes de la page et le lui dit : **Lancer** (ou le gros
-  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre PowerShell, avec les dossiers
-  dont cette étape a besoin. La page affiche *En cours dans la fenêtre PowerShell : cette page
+  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers
+  dont cette étape a besoin. La page affiche *En cours dans la fenêtre où mh tourne : cette page
   revient quand c'est fini* ; quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
   L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
   c'est ainsi que `mh` sait quoi lancer.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
   copie la commande (*Copiée : mh clean*) et la page continue de tourner ; arrêtez-la avec Ctrl+C
-  dans sa fenêtre PowerShell, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
+  dans la fenêtre où `mh` tourne (PowerShell sous Windows), collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
   navigateur refuse de copier (page ouverte à une autre adresse que `127.0.0.1` ou `localhost`),
   la commande est sélectionnée : appuyez vous-même sur Ctrl+C.
 
