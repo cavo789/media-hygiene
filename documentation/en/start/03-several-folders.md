@@ -124,6 +124,21 @@ The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `
 every file ([Compare a backup or an old disk](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
 A folder that must not even be read is [excluded](../clean/05-choose-the-kept-copy.md#exclude-a-folder) instead.
 
+## A phone? Copy only its new photos
+
+Plugging a phone in and copying everything each time brings back every photo you already have,
+and the cleaning that follows. On Windows, `mh phone` copies only the photos and videos your
+library does not hold yet, nor the ones you set aside on purpose before:
+
+```powershell
+mh phone
+mh audit
+```
+
+They land in `<your first photo folder>\Phone\<the phone's name>` (`--to` chooses another
+folder); the phone itself is only read. How it decides, and what to do when the cable comes
+out: [`mh phone`](../commands/launcher.md#a-phone-copy-only-its-new-photos-mh-phone).
+
 ## Good to know
 
 - **A Google Photos Takeout** is one more folder: extract its ZIP files, then add the extracted

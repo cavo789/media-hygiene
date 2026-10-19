@@ -5,9 +5,9 @@ The container can neither open a browser nor write a Windows shortcut or registr
 `mh explorer` (the right-click entry of a folder) are functions of the script, and so
 are `mh folders` and `mh update`, which write the script itself again. `mh`
 dispatches them before anything else, by their first word; the bash script says that
-`shortcut` and `explorer` are for Windows. Their messages are written into the
-script, translated, with the shell variables they show (`${index}`, `${path}`,
-`${key}`, `$1`).
+`shortcut`, `explorer` and `phone` (0219) are for Windows. Their messages are written
+into the script, translated, with the shell variables they show (`${index}`,
+`${path}`, `${key}`, `$1`).
 """
 
 from __future__ import annotations
@@ -37,8 +37,10 @@ EXPLORER: Final = "explorer"
 # Both write `mh` again by running `launcher` (0176, 0177: `launcher_kept.py`).
 FOLDERS: Final = "folders"
 UPDATE: Final = "update"
-HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE)
-WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER)
+# Copies the new photos of a phone over USB, which only Windows PowerShell reads (0219).
+PHONE: Final = "phone"
+HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PHONE)
+WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER, PHONE)
 # The name of the shortcut and of the right-click entry.
 LABEL: Final = "Media Hygiene"
 # HKCU: the user's own key, no administrator needed.

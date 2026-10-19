@@ -53,7 +53,9 @@
 #      not again); mh folders add says the line; PowerShell 5.1's own run of the check  (0199)
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
 #      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
-#      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
+#      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219);
+#      then, if you agree, mh phone end to end: every file of DCIM copied, again (nothing
+#      copied), then the cable pulled out during a copy, plugged in again       (0219)
 #  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
 #      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
 #  21. the Synology NAS (-Nas, -NasShare, -NasUser), read-only: its ports; SMB from Windows (a
@@ -1026,7 +1028,7 @@ if (Wanted 19) {
             $kinds = $all | ForEach-Object { [IO.Path]::GetExtension($_.Name).ToLower() } | Group-Object | Sort-Object Count -Descending
             Log ("   19c. extensions: " + (($kinds | ForEach-Object { "$($_.Name) x$($_.Count)" }) -join ', '))
             foreach ($item in ($all | Select-Object -First 10)) {
-                Log ("   19c. '{0}' Size {1} ModifyDate {2} | System.Size {3} System.DateModified {4} System.DateCreated {5}" -f $item.Name, $item.Size, $item.ModifyDate, $item.ExtendedProperty('System.Size'), $item.ExtendedProperty('System.DateModified'), $item.ExtendedProperty('System.DateCreated'))
+                Log ("   19c. '{0}' Size {1} ModifyDate {2} | System.Size {3} System.DateModified {4} System.DateCreated {5} System.FileName '{6}'" -f $item.Name, $item.Size, $item.ModifyDate, $item.ExtendedProperty('System.Size'), $item.ExtendedProperty('System.DateModified'), $item.ExtendedProperty('System.DateCreated'), $item.ExtendedProperty('System.FileName'))
             }
             $seen = @{}
             $recent = @()
@@ -1077,6 +1079,56 @@ if (Wanted 19) {
     }
     if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
     Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
+
+    # 19h-19k: mh phone end to end (0219), with mh written by the image under test. Its photo
+    # folder is an empty test folder: the first run copies every file of DCIM into
+    # <that folder>\Phone\<phone name>, the second copies nothing; then the largest copies are
+    # removed and copied again while you pull the cable out. All under -Work, removed at the end.
+    $answer = Read-Host "19h. mh phone copies EVERY photo and video of the phone's DCIM into $Work (see the size in 19c). Run it? (y/n)"
+    if ($answer -eq 'y') {
+        $phoneLibrary = Join-Path $Work "phone-library"
+        $mhDir = Join-Path $tool "mh19"
+        New-Item -ItemType Directory -Force -Path $phoneLibrary, $mhDir, (Join-Path $tool "config") | Out-Null
+        $mhFile = Join-Path $mhDir "mh.ps1"
+        $toolMounts = @(
+            "-v", "${volume}:/cache",
+            "-v", "$(Join-Path $tool 'config'):/config",
+            "-v", "$(Join-Path $tool 'journal'):/journal",
+            "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+            "-v", "$(Join-Path $tool 'reports'):/reports"
+        )
+        & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $phoneLibrary > $mhFile
+        . $mhFile
+        foreach ($round in 'first', 'second') {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            $seconds = $watch.Elapsed.TotalSeconds
+            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19h. $round mh phone: " + $line) }
+            Log ("   19h. $round mh phone: {0:N1} s wall time, {1} files copied (lines 'n/m')" -f $seconds, @($said | Where-Object { $_ -match '^\s+\d+/\d+ ' }).Count)
+        }
+        $copies = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue)
+        Log ("   19i. read back: {0} files, {1:N1} MB under {2}\Phone; staging folders left: {3}" -f $copies.Count, (($copies | Measure-Object Length -Sum).Sum / 1MB), $phoneLibrary, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
+        foreach ($copy in ($copies | Select-Object -First 3)) { Log ("   19i. '{0}': modified {1}, created {2}" -f $copy.Name, $copy.LastWriteTime, $copy.CreationTime) }
+        $largest = @($copies | Sort-Object Length -Descending | Select-Object -First 5)
+        if ($largest.Count -gt 0) {
+            foreach ($copy in $largest) { Remove-Item -LiteralPath $copy.FullName -Force }
+            Log ("   19j. the 5 largest copies removed ({0:N1} MB): the next mh phone copies them again" -f (($largest | Measure-Object Length -Sum).Sum / 1MB))
+            Read-Host "19j. Next: as soon as the line '1/5' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
+            Log ("   19j. cable pulled: {0:N1} s wall time; staging folders left: {1}" -f $watch.Elapsed.TotalSeconds, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
+            $dialog = Read-Host "19j. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+            Log "   19j. a window during the cable pulled (none expected): $dialog"
+            Read-Host "19k. Plug the phone in again, unlock it (File transfer), then press Enter" | Out-Null
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19k. after the cable: " + $line) }
+        }
+        $names = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '_\d+\.[^.]+$' })
+        Log "   19k. copies under a new name (_1): $($names.Count) (0 expected: no name was taken)"
+    } else {
+        Log "   19h. mh phone end to end: skipped"
+    }
 }
 
 # --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------

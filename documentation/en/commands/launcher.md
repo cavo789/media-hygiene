@@ -114,6 +114,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
+| `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key
 `HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. A failure is shown with its
@@ -121,8 +122,8 @@ reason; *access refused* often comes from an antivirus, which may lock a path it
 Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the image to
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep
 PowerShell's icon. From WSL, Linux or macOS,
-`mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; the other two say they are for
-Windows.
+`mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; `mh shortcut`, `mh explorer` and
+`mh phone` say they are for Windows.
 
 **`mh --photos "E:\Folder"` alone** opens the home page on that folder: it says which folder, and the
 step you choose analyses it too, as `mh --photos "E:\Folder" audit` would. That is what the
@@ -179,6 +180,43 @@ prints that link after an update.
 A `mh` written before `mh update` existed does not know it: run the `launcher` line of the
 guides once more, with your folders; from then on, `mh update` is enough. An image you built
 yourself (`media-hygiene`) has nothing to download: `mh update` says so.
+
+## A phone? Copy only its new photos: `mh phone`
+
+```powershell
+mh phone                       # into <your first photo folder>\Phone\<the phone's name>
+mh phone --to "D:\From phones" # elsewhere, then a folder per phone
+```
+
+Plug the phone in over USB, unlock it and choose *File transfer* (iPhone: *Trust this
+computer*). `mh phone` finds it (several phones: it asks which one), lists its `DCIM` folder
+(about 30 seconds per 1,000 files), then copies **only** what your library does not hold yet:
+
+- **already in your library**: a file of the same name (case ignored) and the same size that an
+  audit has seen, on any of your disks, plugged in or not;
+- **set aside on purpose before**: a burst shot, a near copy, a photo you chose to remove
+  ([cleaning, step 9](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside)),
+  whether its quarantine is still there or purged;
+- **already copied** into that folder by an earlier `mh phone`.
+
+It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
+18.5 MB/s)*, then each count left out, and *👉 What next: `mh audit`*. 🔒 The phone is only
+read: nothing on it is deleted, moved or renamed.
+
+- **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
+  photo of the phone is new (it says so).
+- **The phone only gives a name and a size**, not its content. A different photo that happens to
+  have the name and size of one of yours stays on the phone, not copied; a photo copied twice
+  under another name is found by the next audit as an identical copy, which `clean` handles.
+- **Unplugged in the middle?** The file being copied is removed, the import stops and says how
+  many were copied. Type `mh phone` again: what is already copied is skipped.
+- **Never a Windows question**: each file is copied into an empty folder
+  (`.mh-phone-<date>`), then moved to its place; a name already taken gets `_1`, said on screen.
+  That folder is removed at the end.
+- The phone's folders below `DCIM` are kept (`Camera`, `Screenshots`). Other folders of the phone
+  (WhatsApp) are not read. With `--to` outside your photo folders, `mh folders add` it for the
+  audits to see it.
+- Windows only: from WSL, Linux or macOS, Docker and bash cannot reach a phone over USB.
 
 ## Options
 

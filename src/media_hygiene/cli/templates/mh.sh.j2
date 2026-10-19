@@ -127,7 +127,8 @@
 {% include 'mh_host.sh.j2' %}
 {% for name in host.windows %}
 
-# `{{ function }} {{ name }}` writes a Windows shortcut or registry key: mh.ps1 only (0180, 0181).
+# `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1
+# only (0180, 0181, 0219).
 _{{ function }}_{{ name }}() {
     set -- {{ name }}
     printf '%s\n' "{{ host.texts.windows }}" >&2

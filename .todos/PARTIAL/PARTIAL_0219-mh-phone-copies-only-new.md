@@ -101,3 +101,66 @@ and copies, the container decides.
 Each import of a phone: copying every photo and video again (gigabytes, then a clean of the
 duplicates) → copying only the new ones; for a phone holding 5,000 files of which 200 are new,
 ≈ 96 % less to copy (estimated from those numbers, the speed to be measured by step 19).
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `mh phone [--to <folder>]` in `mh.ps1` (`cli/templates/mh_phone.ps1.j2`, values and translated
+  messages in `services/launcher_phone.py`; dispatched as a host command, `PHONE` in
+  `launcher_host.py`; the bash `mh` says "mh phone is for Windows only."). Shell.Application only,
+  no Add-Type; `CopyHere` only, never `MoveHere`. The phone: items of This PC (17) that are
+  folders without a file system; one taken, several numbered and asked. `DCIM` found by walking
+  (three levels). Listing with `System.Size`, `System.DateModified` (UTC, ISO, invariant culture),
+  the name from `System.FileName` (else `.Name`: extensions hidden by Explorer would drop it), a
+  line every 500 files; the phone looked for again after the listing (a cable pulled there stops
+  before anything is decided).
+- Destination: `--to`, else `<first photo folder>\Phone`, then `<phone name>` (characters Windows
+  refuses replaced by `_`), the phone's folders below `DCIM` kept.
+- `media-hygiene phone-plan` (`cli/cmd_phone_plan.py`, `services/phone_plan.py`,
+  `services/phone_known.py`): hidden from `--help`, read-only (in `READ_ONLY_COMMANDS`, a data
+  command: messages on stderr), reads `path<TAB>size<TAB>date` lines on stdin (UTF-8), prints one
+  line per file: `case<TAB>path<TAB>size<TAB>date<TAB>reason…` with the cases `new`, `library`
+  (+ host path of the file), `set-aside` (+ run, `quarantine`/`purged`, date, kind — what 0248
+  needs for its two warnings), `destination` (+ relative path). Order: library, then journals,
+  then destination. Name compared case-folded, size equal; ties: first index path in order, the
+  latest set-aside. The journals through `remembered_of` (0216: honours `[clean] returned`), the
+  quarantine state from `runs_in(mounted_quarantines)`. Empty index: a warning to run
+  `mh audit` first.
+- `mh` runs it with `-i` (no `-t`), photos and backups `:ro`, the tool folders and drive
+  quarantines, the destination mounted `:ro` at its `/data/<x>/...` point; UTF-8 both ways.
+- Copy: each file into an empty staging folder `<destination>\.mh-phone-<date>` (leftovers of a
+  stopped run removed first, skipped by `phone-plan`), waited for until its length equals
+  `System.Size` (size unknown: until it stops growing) **and** it opens exclusively (the copy
+  engine let it go); 60 s without growth: the partial copy removed, the import stopped with the
+  count copied so far and "type mh phone again". Then `Move-Item` without `-Force` to a free name
+  (`_1`, `_2`…, said); the staging folder removed in a `finally`.
+- Summary read back from the destination (each copy found with the phone's size): copied count,
+  GB, MB/s; then library / set aside / already copied counts; one 👉 `mh audit` line last.
+- Tests: `tests/unit/test_phone_plan.py` (16: each reason, case ignored, ties, undo forgets,
+  latest set-aside, staging ignored, empty cache warning, unreadable lines, UTF-8, hidden from
+  help), `tests/unit/test_launcher_phone.py` (15: functions, CopyHere only, no MoveHere/Add-Type,
+  extended properties, staging then move, wait, never overwritten, mounts, French, safe texts,
+  bash Windows only); `test_help_panels.py` ignores hidden commands; `phone-plan` added to the
+  read-only runs of `tests/integration/test_read_only_commands.py`.
+- Docs both languages: launcher page (`mh phone` row and section: what is skipped, name+size is
+  no proof, cable pulled, staging folder, Windows only), step 3 ("A phone? Copy only its new
+  photos"). French catalogue translated.
+- Step 19 of `mh-measure.ps1`: 19c logs `System.FileName`; 19h–19k (asked first, it copies the
+  whole `DCIM` under `-Work`): `mh phone` twice (wall time, files copied, read back, staging
+  folders left), the 5 largest copies removed and copied again while the cable is pulled out
+  (lines, wall time, any window), plugged in again, the rest copied; `_1` names counted.
+
+### Not done
+- The Windows end-to-end check (maintainer): image built from branch `iterate/2026-10-19`, then
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Unblock-File .\mh-measure.ps1
+  .\mh-measure.ps1 -Only 19 -Count 1
+  ```
+  (answer `y` at 19h; the second `mh phone` must copy nothing; the speed in MB/s; the cable pulled
+  at 19j: no window, the partial copy and the staging folder gone, 19k copies the rest).
+  **Reason:** needs Windows, Docker Desktop and the phone; not reachable from the devcontainer.
+  Unverified until then: that "length = System.Size and opens exclusively" proves a finished MTP
+  copy, `System.FileName` over MTP, and Windows PowerShell 5.1 piping the listing to `docker run -i`.
+- No documentation capture is stale (`phone-plan` is hidden; no captured output changed).

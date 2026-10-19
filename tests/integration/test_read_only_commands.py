@@ -53,6 +53,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("launcher",),
     ("menu",),
     ("home",),
+    ("phone-plan",),  # plumbing of `mh phone` (0219): an empty listing on stdin
 )
 
 

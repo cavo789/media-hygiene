@@ -36,6 +36,7 @@ from media_hygiene.services.launcher_menu import (
     DESKTOP_WAIT,
     menu_texts,
 )
+from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -164,6 +165,7 @@ def render_script(script: LauncherScript) -> str:
             *(volume.host for volume in script.backups),
         ),
         cloud=cloud_check(script.commands.names),
+        phone=phone_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         step_base=STEP_EXIT_BASE,

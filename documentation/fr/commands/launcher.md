@@ -118,6 +118,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : la page d'accueil s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
+| `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Un échec est dit
@@ -125,8 +126,8 @@ avec sa raison ; un *accès refusé* vient souvent d'un antivirus, qui peut bloq
 signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hygiene* : Docker la
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
 disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
-Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
-autres disent qu'elles sont pour Windows.
+Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
+`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows.
 
 **`mh --photos "E:\Dossier"` seul** ouvre la page d'accueil sur ce dossier : il dit lequel, et l'étape
 choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
@@ -186,6 +187,46 @@ une mise à jour.
 Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez
 construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit.
+
+## Un téléphone ? Copiez seulement ses nouvelles photos : `mh phone`
+
+```powershell
+mh phone                              # dans <votre premier dossier de photos>\Phone\<nom du téléphone>
+mh phone --to "D:\Depuis les téléphones" # ailleurs, puis un dossier par téléphone
+```
+
+Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
+*Faire confiance à cet ordinateur*). `mh phone` le trouve (plusieurs téléphones : il demande
+lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fichiers), puis copie
+**uniquement** ce que votre photothèque n'a pas encore :
+
+- **déjà dans votre photothèque** : un fichier de même nom (sans tenir compte de la casse) et de
+  même taille qu'un audit a vu, sur n'importe lequel de vos disques, branché ou non ;
+- **écarté volontairement auparavant** : une photo de rafale, une quasi-copie, une photo que vous
+  avez choisi de retirer (*De retour après avoir été écartés* dans [`clean`](clean.md)), que sa
+  quarantaine soit encore là ou purgée ;
+- **déjà copié** dans ce dossier par un `mh phone` précédent.
+
+Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
+(1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté, et *👉 Et maintenant : `mh audit`*.
+🔒 Le téléphone est seulement lu : rien n'y est supprimé, déplacé ni renommé.
+
+- **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
+  chaque photo du téléphone est nouvelle (il le dit).
+- **Le téléphone ne donne qu'un nom et une taille**, pas son contenu. Une autre photo qui aurait
+  par hasard le nom et la taille d'une des vôtres reste sur le téléphone, non copiée ; une photo
+  copiée deux fois sous un autre nom est trouvée par l'audit suivant comme copie identique, que
+  `clean` traite.
+- **Débranché en cours de route ?** Le fichier en cours de copie est supprimé, l'import s'arrête et
+  dit combien ont été copiés. Tapez de nouveau `mh phone` : ce qui est déjà copié est passé.
+- **Jamais une question de Windows** : chaque fichier est copié dans un dossier vide
+  (`.mh-phone-<date>`), puis déplacé à sa place ; un nom déjà pris reçoit `_1`, dit à l'écran. Ce
+  dossier est supprimé à la fin.
+- Les dossiers du téléphone sous `DCIM` sont gardés (`Camera`, `Screenshots`). Les autres dossiers
+  du téléphone (WhatsApp) ne sont pas lus. Avec `--to` hors de vos dossiers de photos,
+  ajoutez-le par `mh folders add` pour que les audits le voient.
+- Windows uniquement : depuis WSL, Linux ou macOS, ni Docker ni bash n'atteignent un téléphone en
+  USB.
 
 ## Options
 

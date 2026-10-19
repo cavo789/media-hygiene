@@ -133,6 +133,21 @@ Le rapport liste les deux, et `backup-missing.csv` et `backup-only.csv`, à côt
 listent chaque fichier ([Comparer une sauvegarde ou un ancien disque](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).
 Un dossier qui ne doit même pas être lu est plutôt [exclu](../clean/05-choose-the-kept-copy.md#exclure-un-dossier).
 
+## Un téléphone ? Copiez seulement ses nouvelles photos
+
+Brancher un téléphone et tout copier à chaque fois ramène toutes les photos que vous avez déjà, et
+le nettoyage qui suit. Sous Windows, `mh phone` copie uniquement les photos et vidéos que votre
+photothèque n'a pas encore, ni celles que vous avez écartées volontairement auparavant :
+
+```powershell
+mh phone
+mh audit
+```
+
+Elles arrivent dans `<votre premier dossier de photos>\Phone\<nom du téléphone>` (`--to` choisit
+un autre dossier) ; le téléphone lui-même est seulement lu. Comment il décide, et que faire si le
+câble se débranche : [`mh phone`](../commands/launcher.md#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone).
+
 ## Bon à savoir
 
 - **Un Takeout Google Photos** est un dossier de plus : extrayez ses fichiers ZIP, puis ajoutez

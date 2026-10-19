@@ -600,11 +600,19 @@ msgstr ""
 msgid "All {total} files found are picked"
 msgstr ""
 
+#, python-brace-format
+msgid "Already copied by an earlier mh phone: {count}."
+msgstr ""
+
 msgid "Already in place"
 msgstr ""
 
 #, python-brace-format
 msgid "Already in place: {share}."
+msgstr ""
+
+#, python-brace-format
+msgid "Already in your library, not copied: {count}."
 msgstr ""
 
 #, python-brace-format
@@ -1039,6 +1047,10 @@ msgid "Copies"
 msgstr ""
 
 msgid "Copies found in these folders are kept first, in this order."
+msgstr ""
+
+#, python-brace-format
+msgid "Copies not found when read back: {count}. Type mh phone again."
 msgstr ""
 
 msgid "Copies of other files than media go to /quarantine: mount it."
@@ -1963,6 +1975,9 @@ msgstr ""
 msgid "For every terminal, add that line to {profile}."
 msgstr ""
 
+msgid "For mh phone: which files of a phone are new, from its listing."
+msgstr ""
+
 msgid "Forget its position"
 msgstr ""
 
@@ -2419,6 +2434,10 @@ msgid "Listing media files"
 msgstr ""
 
 #, python-brace-format
+msgid "Listing the photos and videos of {name}: about 30 seconds per 1,000 files…"
+msgstr ""
+
+#, python-brace-format
 msgid "Load it in this terminal with: {load}"
 msgstr ""
 
@@ -2698,6 +2717,16 @@ msgstr ""
 msgid "New name"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"New photos and videos copied: {count} ({size} GB, {speed} MB/s), read "
+"back from {destination}."
+msgstr ""
+
+#, python-brace-format
+msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgstr ""
+
 msgid "New place"
 msgstr ""
 
@@ -2718,6 +2747,10 @@ msgid "Next time, type it directly: {command}"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
+msgstr ""
+
+#, python-brace-format
+msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
 msgid "No audit has walked a folder completely yet."
@@ -2851,8 +2884,16 @@ msgid "No obvious series left to validate."
 msgstr ""
 
 msgid ""
+"No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
+" this computer), then type mh phone again."
+msgstr ""
+
+msgid ""
 "No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
 " again."
+msgstr ""
+
+msgid "No photo folder: type mh phone --to <folder>."
 msgstr ""
 
 msgid "No photo left to analyse: every one is in the cache."
@@ -3091,6 +3132,9 @@ msgid ""
 " of {moved} moves verified."
 msgstr ""
 
+msgid "Nothing new on the phone: nothing to copy."
+msgstr ""
+
 msgid "Nothing set aside."
 msgstr ""
 
@@ -3143,6 +3187,10 @@ msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr ""
 
 msgid "November"
+msgstr ""
+
+#, python-brace-format
+msgid "Number of the phone (1 to {count})"
 msgstr ""
 
 msgid "October"
@@ -4106,6 +4154,10 @@ msgstr ""
 msgid "Set aside"
 msgstr ""
 
+#, python-brace-format
+msgid "Set aside before on purpose, not copied: {count}."
+msgstr ""
+
 msgid "Set aside from the map"
 msgstr ""
 
@@ -4416,6 +4468,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"The cache knows no photo yet: type mh audit first, or every photo of the "
+"phone is taken for new."
+msgstr ""
+
+msgid ""
 "The categories below are an example to replace with your own, e.g. "
 "Parties, Holidays and outings, School, Sport and leisure, At home, "
 "Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"
@@ -4454,6 +4511,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The command adds {points}: folders of your home."
+msgstr ""
+
+msgid "The comparison with your library failed: nothing was copied."
 msgstr ""
 
 #, python-brace-format
@@ -4541,6 +4601,11 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid ""
+"The folder the phone's files are copied into, as Explorer shows it "
+"(mounted read-only): a file it holds is not copied again."
+msgstr ""
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
@@ -4667,6 +4732,12 @@ msgstr ""
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The phone no longer answers (unplugged?): {count} files copied so far. "
+"Type mh phone again: what is already copied is skipped."
 msgstr ""
 
 #, python-brace-format
@@ -6147,6 +6218,11 @@ msgid ""
 "this one."
 msgstr ""
 
+msgid ""
+"mh phone copies only the new photos and videos of a phone plugged in over"
+" USB; mh phone --to <folder> chooses where."
+msgstr ""
+
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
 msgstr ""
@@ -7207,6 +7283,10 @@ msgid "{count} files have no word to write."
 msgstr ""
 
 #, python-brace-format
+msgid "{count} files listed…"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} files of protected folders: never written."
 msgstr ""
 
@@ -7283,6 +7363,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} line of the phone's listing could not be read: skipped."
+msgid_plural "{count} lines of the phone's listing could not be read: skipped."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7795,6 +7881,10 @@ msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}
 msgstr ""
 
 #, python-brace-format
+msgid "{name} was already there: copied as {final}."
+msgstr ""
+
+#, python-brace-format
 msgid "{name} — not a town"
 msgstr ""
 
@@ -8160,6 +8250,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{to} is not a folder on a drive letter."
+msgstr ""
+
+#, python-brace-format
 msgid "{undone}, read back from the disk at {time}."
 msgstr ""
 
@@ -8247,6 +8341,9 @@ msgid ""
 "single page: {path} (Ctrl+click opens it)."
 msgstr ""
 
+msgid "👉 What next: mh audit (the new files join your library)."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
@@ -8271,6 +8368,9 @@ msgid "🔒 Read-only: never changes your photos."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."
+msgstr ""
+
+msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
 msgstr ""
 
 #, python-brace-format
