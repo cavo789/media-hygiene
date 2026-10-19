@@ -341,7 +341,7 @@ def test_powershell_photos_alone_open_the_menu_with_them() -> None:
     text = _powershell()
     parsed = text.index("$typed += '--photos', $found.ProviderPath")
     alone = text.index("    if ($rest.Count -eq 0) {")
-    assert parsed < alone < text.index("        mh @words @typed")
+    assert parsed < alone < text.index("        try { mh @words @typed }")
     assert 'Write-Host "L\'\u00e9tape choisie analyse aussi : ${shown}"' in text
     explorer = text.index(f"$args[0] -eq '{FROM_EXPLORER}'")
     assert explorer < parsed

@@ -46,8 +46,9 @@ docker run --rm -it `
   'clean' sets them aside*, **mh clean**. When everything is applied, the page says so.
 - **Audit in this page** 🔒: **Audit now** reads your folders as `mh audit` does, with the same
   settings. Each step (listing, fingerprints, comparing, proving identity…) shows with its counts
-  as it goes; at the end, the audit's figures, *What you can do*, and a link to the new report.
-  One audit at a time; **Stop the audit** stops it between two files: the cache keeps what it
+  as it goes; at the end, the audit's figures, the time each step took (*Time per step: listing
+  1.2 s · checks 3.4 s · …*, the line `mh --verbosity verbose audit` prints), *What you can do*,
+  and a link to the new report. One audit at a time; **Stop the audit** stops it between two files: the cache keeps what it
   has read, and the next audit starts from there.
 - **Where you are**: the lines of [`status`](status.md), and the run `mh undo` still puts back.
 - **What the last audit found**: a few previews of its report.

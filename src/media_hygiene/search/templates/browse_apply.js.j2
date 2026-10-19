@@ -1,0 +1,38 @@
+{# *Apply now* (0243), shown by `said()` of browse.js.j2 when the page was opened from the
+   home page and something is set aside: `POST /api/apply` ends the server with the code
+   of the home step that applies the decisions; mh runs it in the terminal (its usual
+   question), then opens the home page again on the same port: the page goes there once
+   the server was seen gone, then answering again. #}
+const APPLY_PATH = {{ apply_path | tojson }};
+const APPLY_POLL_MS = 1000;
+
+function waitForHome() {
+  let seenGone = false;
+  const poll = () => fetch("/", { cache: "no-store" })
+    .then((response) => {
+      if (response.ok && seenGone) window.location.replace("/");
+      else window.setTimeout(poll, APPLY_POLL_MS);
+    })
+    .catch(() => {
+      seenGone = true;
+      window.setTimeout(poll, APPLY_POLL_MS);
+    });
+  window.setTimeout(poll, APPLY_POLL_MS);
+}
+
+$("applyNow").addEventListener("click", async () => {
+  $("applyNow").disabled = true;
+  const answer = await ask(APPLY_PATH, {});
+  if (!answer) { failed(null); return; }
+  const state = await answer.json().catch(() => ({}));
+  if (!answer.ok) {
+    $("applyNow").disabled = false;
+    $("chosen").className = "error";
+    $("chosen").textContent = state.error || fill(TEXTS.failed, { status: answer.status });
+    return;
+  }
+  $("chosen").className = "";
+  $("chosen").textContent = fill(TEXTS.applying, { command: state.command });
+  $("applyNow").hidden = true;
+  waitForHome();
+});

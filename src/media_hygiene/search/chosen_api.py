@@ -120,9 +120,12 @@ class ChosenDesk:
         if count:
             message = ngettext(
                 "{count} file set aside ({size}), saved in {place}: 'clean "
-                "--decisions' moves it to the quarantine.",
+                "--decisions' moves it to the quarantine, and remembers it: if it "
+                "comes back (a new copy from the phone), the audit proposes it again.",
                 "{count} files set aside ({size}), saved in {place}: 'clean "
-                "--decisions' moves them to the quarantine.",
+                "--decisions' moves them to the quarantine, and remembers them: if "
+                "one comes back (a new copy from the phone), the audit proposes it "
+                "again.",
                 count,
             ).format(count=human_number(count), size=size, place=self.store.place.host)
         else:

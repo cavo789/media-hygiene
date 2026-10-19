@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from PIL import Image
 
 from media_hygiene.review.http import Request
+from media_hygiene.search.app import SearchApp
 from media_hygiene.services import search_pages as search_service
 from tests.support.cli import run
 from tests.support.places_map import JSON, PORT
@@ -19,17 +20,23 @@ if TYPE_CHECKING:
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
+    from media_hygiene.review.ending import EndingDoor
     from media_hygiene.review.http import Response
-    from media_hygiene.search.app import SearchApp
 
 
 def fake_server(action: Callable[[SearchApp], Awaitable[None]]) -> object:
-    """A server that says it is ready, lets `action` act, then gets Ctrl+C."""
+    """A server that says it is ready, lets `action` act, then gets Ctrl+C.
 
-    async def serve(app: SearchApp, _port: int, ready: Callable[[int], None]) -> None:
+    When the page asked the server to end (*Apply now*), it ends with that code.
+    """
+
+    async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> int:
         ready(PORT)
-        await action(app)
-        raise KeyboardInterrupt
+        assert isinstance(door.app, SearchApp)
+        await action(door.app)
+        if door.ending.asked is None:
+            raise KeyboardInterrupt
+        return door.ending.asked
 
     return serve
 
@@ -100,7 +107,7 @@ def test_the_page_searches_and_shows_the_pictures(
         seen["unknown"] = await _call(app, "GET /thumb/999999.jpg")
         seen["bad"] = await _call(app, "POST /api/search", {"text": 3})
 
-    monkeypatch.setattr(search_service, "run_server", fake_server(browse))
+    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(browse))
     result = run(cli, "search")
     assert result.exit_code == 0, result.output
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
@@ -140,7 +147,7 @@ def test_the_page_refuses_other_hosts_and_bodies(
         )
         answers.extend([(await app.handle(request)).status for request in requests])
 
-    monkeypatch.setattr(search_service, "run_server", fake_server(attack))
+    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(attack))
     assert run(cli, "search").exit_code == 0
     assert answers == [403, 415, 403, 405, 404, 404]
 

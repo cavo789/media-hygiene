@@ -5,10 +5,11 @@ answers the files matching the words and filters sent in JSON, `GET /thumb/<key>
 a small preview (kept in the cache folder), `GET /preview/<key>.jpg` a large one,
 `GET /original/<key>.<ext>` the file untouched. `GET /api/chosen` says what is set
 aside, `POST /api/chosen` sets files aside or takes them out (the decisions file in
-the reports folder, `chosen_api`). The folder view asks for its tree, its folders and
-its videos (`folders`). Like `review` and `places`: loopback hosts only, JSON bodies
-only, from the page's own origin. The photos are never changed: `clean --decisions`
-moves what was set aside.
+the reports folder, `chosen_api`); `POST /api/apply` ends the page on the home page's
+step that applies them, when opened from it (`apply_api`). The folder view asks for
+its tree, its folders and its videos (`folders`). Like `review` and `places`:
+loopback hosts only, JSON bodies only, from the page's own origin. The photos are
+never changed: `clean --decisions` moves what was set aside.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ from media_hygiene.i18n import _
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
+from media_hygiene.search.apply_api import APPLY_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_PATH, FOLDERS_PATH
 from media_hygiene.search.people_words import unknown_people
@@ -37,6 +39,7 @@ if TYPE_CHECKING:
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.http import Request
+    from media_hygiene.search.apply_api import ApplyDesk
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
@@ -47,7 +50,7 @@ SEARCH_PATH: Final = "/api/search"
 # The page shows this many files at most; the total says how many match.
 PAGE_HITS: Final = 240
 _GET, _POST = "GET", "POST"
-_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, FOLDER_PATH})
+_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, FOLDER_PATH, APPLY_PATH})
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,6 +63,7 @@ class SearchPlace:
     people: PeopleSettings  # the names, to say when a `person:` word names nobody
     chosen: ChosenDesk  # the files set aside
     folders: FolderDesk  # the folder view
+    apply: ApplyDesk  # *Apply now*, opened from the home page
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,7 +110,12 @@ class SearchApp:
             return await self._get(request)
         if request.method != _POST or request.path not in _POSTED:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
-        return refused_post(request) or self._post(request)
+        refused = refused_post(request)
+        if refused is not None:
+            return refused
+        if request.path == APPLY_PATH:
+            return await self.place.apply.answer()
+        return self._post(request)
 
     def _post(self, request: Request) -> Response:
         """Answer a JSON body from the page: a search, a folder, a choice.

@@ -67,7 +67,9 @@ trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 af
 
 - Rien n'est supprimé depuis la page. Le choix est enregistré aussitôt dans `decisions.json` de
   vos rapports, relu sur le disque et affiché avec son nombre et sa taille : *37 fichiers mis de
-  côté (412 Mo), enregistrés dans … : 'clean --decisions' les déplace en quarantaine.* Les photos
+  côté (412 Mo), enregistrés dans … : 'clean --decisions' les déplace en quarantaine, et s'en
+  souvient : si l'un d'eux revient (une nouvelle copie depuis le téléphone), l'audit le propose à
+  nouveau.* Les photos
   mises de côté portent une étiquette rouge *à mettre de côté*.
 - **Retirer de la mise de côté** en retire les fichiers choisis.
 - Quand vous arrêtez la page, `search` propose l'étape suivante : `mh clean --decisions`. Il

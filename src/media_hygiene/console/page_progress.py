@@ -55,6 +55,7 @@ class PageAudit(BaseModel):
     lines: tuple[str, ...] = ()  # the summary, once done
     actions: tuple[str, ...] = ()  # what you can do, once done
     report: str | None = None  # the report's address on the page
+    timed: str | None = None  # `Time per step: …`, once done (0241)
     error: str | None = None
 
 

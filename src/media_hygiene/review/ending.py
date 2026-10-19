@@ -65,6 +65,15 @@ class Ending:
         self._code = code
         self._event.set()
 
+    @property
+    def asked(self) -> int | None:
+        """The code asked for so far.
+
+        Returns:
+            It, or None while no page asked the server to end.
+        """
+        return self._code if self._event.is_set() else None
+
     async def wait(self) -> int:
         """Wait until a page asks the server to end.
 

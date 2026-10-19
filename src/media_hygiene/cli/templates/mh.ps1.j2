@@ -68,8 +68,9 @@ function global:{{ function }} {
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
     # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
     $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }})) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
-    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210).
-    $relay = @(if ($global:MediaHygieneRelay -and $command -eq 'home') { '-e', '{{ relay }}=1' })
+    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
+    # or on a page it opened (browse's Apply now, 0243).
+    $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}=1' })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}

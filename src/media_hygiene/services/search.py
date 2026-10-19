@@ -21,9 +21,12 @@ from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.people_words import people_words, unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.data_checks import unreadable_index
-from media_hygiene.services.search_pages import PageStart, serve_pages
+from media_hygiene.services.search_pages import PageStart, Served, serve_pages
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from media_hygiene.search.apply_api import ApplyStep
     from media_hygiene.services.runtime import Runtime
 
 
@@ -110,22 +113,34 @@ def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> int:
         "Search ready, open {url} in your browser. Ctrl+C stops it; your photos "
         "are not changed."
     )
-    return serve_pages(runtime, search, PageStart(port, SEARCH_PAGE_PATH, ready))
+    start = PageStart(port, SEARCH_PAGE_PATH, ready)
+    return serve_pages(runtime, search, start).chosen
 
 
-def serve_browse(runtime: Runtime, search: SearchIndex, port: int) -> int:
-    """Serve the folder view until Ctrl+C.
+@dataclass(frozen=True, slots=True)
+class BrowseStart:
+    """`browse`: its port, and the step *Apply now* ends on (opened from home)."""
+
+    port: int  # inside the container (0: any free one)
+    apply: Callable[[], ApplyStep | None] | None = None  # None: no button
+
+
+def serve_browse(runtime: Runtime, search: SearchIndex, start: BrowseStart) -> Served:
+    """Serve the folder view until Ctrl+C, or *Apply now*.
 
     Args:
         runtime: Settings, mount points and output.
         search: The open index.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port, and the step *Apply now* ends on.
 
     Returns:
-        How many files are set aside when the page stops, read from the disk.
+        How many files are set aside when the page stops, read from the disk, and
+        `100 + n` when *Apply now* chose step `n`.
     """
     ready = _(
         "Your folders are ready, open {url} in your browser. Ctrl+C stops it; your "
         "photos are not changed."
     )
-    return serve_pages(runtime, search, PageStart(port, BROWSE_PATH, ready))
+    return serve_pages(
+        runtime, search, PageStart(start.port, BROWSE_PATH, ready, start.apply)
+    )

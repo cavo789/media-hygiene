@@ -54,6 +54,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _TEMPLATE_PACKAGE: Final = "media_hygiene.cli"
+# The pages that may end on a step `mh` runs: the home page, browse's Apply now (0243).
+_RELAYED: Final = ("home", "browse")
 _TEMPLATES: Final = {Shell.POWERSHELL: "mh.ps1.j2", Shell.BASH: "mh.sh.j2"}
 
 
@@ -168,6 +170,7 @@ def render_script(script: LauncherScript) -> str:
         phone=phone_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
+        relayed=_RELAYED,
         step_base=STEP_EXIT_BASE,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text

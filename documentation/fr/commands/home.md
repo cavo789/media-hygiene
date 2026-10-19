@@ -49,8 +49,9 @@ docker run --rm -it `
   page le dit.
 - **Auditer dans cette page** 🔒 : **Auditer maintenant** lit vos dossiers comme `mh audit`, avec
   les mêmes réglages. Chaque étape (liste, empreintes, comparaison, preuve d'identité…) s'affiche
-  avec ses comptes au fil de l'eau ; à la fin, les chiffres de l'audit, *Ce que vous pouvez
-  faire*, et le lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit** l'arrête
+  avec ses comptes au fil de l'eau ; à la fin, les chiffres de l'audit, le temps de chaque étape
+  (*Temps par étape : liste 1,2 s · vérifications 3,4 s · …*, la ligne qu'affiche
+  `mh --verbosity verbose audit`), *Ce que vous pouvez faire*, et le lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit** l'arrête
   entre deux fichiers : le cache garde ce qu'il a lu, et l'audit suivant repart de là.
 - **Où vous en êtes** : les lignes de [`status`](status.md), et le passage que `mh undo` remet
   encore en place.

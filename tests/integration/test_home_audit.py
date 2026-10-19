@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import threading
 from functools import partial
+from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
 import pytest
@@ -21,6 +22,7 @@ from media_hygiene.constants import Locale
 from media_hygiene.i18n import install
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
+from media_hygiene.scan import stopwatch
 from media_hygiene.scan.progress import NullProgress, Step
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.home import home_page
@@ -70,6 +72,42 @@ def test_the_page_audit_finds_what_audit_finds(
     assert all(step.finished for step in state.steps)
     assert state.report is not None
     assert state.report.endswith("/report.html")
+
+
+def test_the_page_audit_ends_on_the_console_time_per_step(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0241: the line `audit -v` prints, same words and rounding, once it is done."""
+    monkeypatch.setattr(stopwatch, "time", SimpleNamespace(monotonic=lambda: 0.0))
+    audit = HomeAudit(page_audit(make_runtime(locations)))
+    assert audit.start()
+    assert audit.state().timed is None  # nothing while it runs
+    audit.wait()
+    state = audit.state()
+    assert state.phase is AuditPhase.DONE, state.error
+    assert state.timed is not None
+    assert state.timed.startswith("Time per step: listing 0.0 s · ")
+    console = run(cli, "--verbosity", "verbose", "audit").output
+    assert state.timed in " ".join(console.split())
+
+
+def test_no_time_per_step_after_a_stop_or_a_failure() -> None:
+    """0241: a stopped or failed audit shows no time line."""
+
+    def stopped(_progress: PageProgress) -> AuditResult:
+        raise AuditStoppedError
+
+    def broken(_progress: PageProgress) -> AuditResult:
+        raise OSError
+
+    for run_ in (stopped, broken):
+        audit = HomeAudit(run_)
+        assert audit.start()
+        audit.wait()
+        state = audit.state()
+        assert state.phase is not AuditPhase.DONE
+        assert state.timed is None
+        assert "timed" not in state.model_dump(exclude_none=True)
 
 
 @pytest.mark.usefixtures("cli")

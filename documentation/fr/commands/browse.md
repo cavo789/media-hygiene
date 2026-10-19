@@ -56,7 +56,9 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
 - **Mettre de côté** : Suppr, ou **Mettre de côté les fichiers choisis**. Le choix est enregistré
   aussitôt dans `decisions.json` de vos rapports, relu sur le disque et affiché avec son nombre et
   sa taille : *37 fichiers mis de côté (412 Mo), enregistrés dans … : 'clean --decisions' les
-  déplace en quarantaine.* Ces fichiers portent une étiquette rouge *à mettre de côté* ;
+  déplace en quarantaine, et s'en souvient : si l'un d'eux revient (une nouvelle copie depuis le
+  téléphone), l'audit le propose à nouveau.* (Voir [Ce que vous avez mis de côté reste de côté](../clean/09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté).)
+  Ces fichiers portent une étiquette rouge *à mettre de côté* ;
   **Retirer de la mise de côté** en retire les fichiers choisis.
 - **Chercher par mots** ouvre la page [`search`](search.md), sur le même serveur : ce que vous y
   mettez de côté va dans le même fichier.
@@ -69,6 +71,14 @@ mh clean --decisions
 
 Il dit combien de fichiers et d'octets partent (à part des doublons), demande, puis les déplace en
 quarantaine, journalisé : `mh undo` les remet, `mh purge` libère la place.
+
+**Ouverte depuis l'[accueil](home.md)** (`mh` seul, puis l'étape *Parcourir vos dossiers*) : dès
+que quelque chose est mis de côté, un bouton **Appliquer maintenant** apparaît sous la ligne
+enregistrée. Il ferme la page et `mh` lance l'étape de l'accueil qui applique vos choix
+(`mh clean --decisions`, avec `--tier near` si vous avez aussi revu des quasi-doublons), avec sa
+question habituelle, dans la fenêtre PowerShell ; puis l'accueil revient. Ouverte par
+`mh browse` seul, pas de bouton : tapez la commande ci-dessus. Le bouton demande un `mh` écrit
+par cette version (`mh update` le réécrit).
 
 ## Options
 

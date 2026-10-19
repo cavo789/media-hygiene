@@ -667,6 +667,13 @@ msgid ""
 "set aside if they come back; the others are forgotten."
 msgstr ""
 
+msgid "Apply now"
+msgstr ""
+
+#, python-brace-format
+msgid "Apply now, chosen on the page: {command}"
+msgstr ""
+
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by "
@@ -985,6 +992,11 @@ msgid "Close"
 msgstr ""
 
 msgid "Close this page and go back to the home page: mh opens it again."
+msgstr ""
+
+msgid ""
+"Close this page: mh moves the files set aside to the quarantine (it asks "
+"first), then opens the home page again."
 msgstr ""
 
 #, python-brace-format
@@ -2982,6 +2994,9 @@ msgstr ""
 msgid "No signal"
 msgstr ""
 
+msgid "No step applies the decisions now: type the next step yourself."
+msgstr ""
+
 #, python-brace-format
 msgid "No step {choice}: type mh menu to see the menu again."
 msgstr ""
@@ -3321,6 +3336,9 @@ msgid "OpenStreetMap contributors"
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
+msgid "Opened without the home page: type the next step yourself."
 msgstr ""
 
 #, python-brace-format
@@ -3943,6 +3961,12 @@ msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr ""
 
 msgid "Running in the PowerShell window: this page comes back when it ends."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Running in the PowerShell window: {command}. The home page comes back "
+"here when it ends."
 msgstr ""
 
 msgid "Runs (newest first)"
@@ -7253,10 +7277,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves it to the quarantine."
+"moves it to the quarantine, and remembers it: if it comes back (a new "
+"copy from the phone), the audit proposes it again."
 msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves them to the quarantine."
+"moves them to the quarantine, and remembers them: if one comes back (a "
+"new copy from the phone), the audit proposes it again."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -866,6 +866,13 @@ msgstr ""
 "Répondu : les fichiers marqués 🗑️ sont retenus par 'clean --decisions', "
 "mis de côté s'ils reviennent ; les autres sont oubliés."
 
+msgid "Apply now"
+msgstr "Appliquer maintenant"
+
+#, python-brace-format
+msgid "Apply now, chosen on the page: {command}"
+msgstr "Appliquer maintenant, choisi sur la page : {command}"
+
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by "
@@ -1234,6 +1241,13 @@ msgstr "Fermer"
 
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
+
+msgid ""
+"Close this page: mh moves the files set aside to the quarantine (it asks "
+"first), then opens the home page again."
+msgstr ""
+"Ferme cette page : mh déplace en quarantaine les fichiers mis de côté (il "
+"demande d'abord), puis rouvre l'accueil."
 
 #, python-brace-format
 msgid "Cluster — {files}"
@@ -3653,6 +3667,9 @@ msgstr "Aucune exécution pour l'instant."
 msgid "No signal"
 msgstr "Aucun indice"
 
+msgid "No step applies the decisions now: type the next step yourself."
+msgstr "Aucune étape n'applique les décisions pour l'instant : tapez vous-même l'étape suivante."
+
 #, python-brace-format
 msgid "No step {choice}: type mh menu to see the menu again."
 msgstr "Pas d'étape {choice} : tapez mh menu pour revoir le menu."
@@ -4072,6 +4089,9 @@ msgstr "contributeurs d'OpenStreetMap"
 
 msgid "OpenStreetMap knows no area of that name."
 msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
+
+msgid "Opened without the home page: type the next step yourself."
+msgstr "Ouverte sans l'accueil : tapez vous-même l'étape suivante."
 
 #, python-brace-format
 msgid "Option {name} needs a value."
@@ -4825,6 +4845,14 @@ msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de cô
 
 msgid "Running in the PowerShell window: this page comes back when it ends."
 msgstr "En cours dans la fenêtre PowerShell : cette page revient quand c'est fini."
+
+#, python-brace-format
+msgid ""
+"Running in the PowerShell window: {command}. The home page comes back "
+"here when it ends."
+msgstr ""
+"En cours dans la fenêtre PowerShell : {command}. L'accueil revient ici "
+"quand c'est fini."
 
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
@@ -8734,16 +8762,21 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves it to the quarantine."
+"moves it to the quarantine, and remembers it: if it comes back (a new "
+"copy from the phone), the audit proposes it again."
 msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves them to the quarantine."
+"moves them to the quarantine, and remembers them: if one comes back (a "
+"new copy from the phone), the audit proposes it again."
 msgstr[0] ""
 "{count} fichier mis de côté ({size}), enregistré dans {place} : 'clean "
-"--decisions' le déplace en quarantaine."
+"--decisions' le déplace en quarantaine, et s'en souvient : s'il revient "
+"(une nouvelle copie depuis le téléphone), l'audit le propose à nouveau."
 msgstr[1] ""
 "{count} fichiers mis de côté ({size}), enregistrés dans {place} : 'clean "
-"--decisions' les déplace en quarantaine."
+"--decisions' les déplace en quarantaine, et s'en souvient : si l'un "
+"d'eux revient (une nouvelle copie depuis le téléphone), l'audit le "
+"propose à nouveau."
 
 #, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."

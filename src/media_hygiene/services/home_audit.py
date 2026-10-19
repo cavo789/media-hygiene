@@ -35,6 +35,7 @@ class AuditResult:
     lines: tuple[str, ...]
     actions: tuple[str, ...] = ()
     report: str | None = None  # its address on the page
+    timed: str | None = None  # `Time per step: …`, as the console says it (0241)
 
 
 class HomeAudit:
@@ -129,6 +130,7 @@ class HomeAudit:
                 lines=result.lines,
                 actions=result.actions,
                 report=result.report,
+                timed=result.timed,
             )
         progress.stop()
         with self._lock:
