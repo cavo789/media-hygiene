@@ -32,9 +32,12 @@ and copies, the container decides.
   (`20250512_195342.jpg` → 17:53:43, Brussels summer time); `System.DateCreated` is empty.
 - A copy (`CopyHere`, flags 4+16+1024) keeps the phone's modified time (shown in local time), its
   creation time is the copy's.
-- Copying again a file the destination already holds **blocked** the script (no progress for
-  minutes, a dialog likely behind the console: flag 16 is not honoured for MTP). Hence below: copy
-  only into a folder that cannot hold the name yet.
+- Copying again a file the destination already holds opens Windows' "replace" dialog **despite
+  flag 16** (not honoured for MTP), and it opens **behind the console**: the maintainer found
+  about ten of them only with Alt+Tab; the second round of 20 files took 386.3 s instead of 2.0 s
+  (measured), all spent waiting for a person. "Copy and overwrite" left the 20 copies identical
+  (size and modified time unchanged). Hence below: copy only into a folder that cannot hold the
+  name yet — a dialog must never be possible.
 - Not measured (script bug, fixed since): the speed, and whether "size reached" proves a finished
   copy — the size was read as 0, so each wait returned at once. To measure by the end-to-end run.
 - The maintainer does not leave the phone plugged in: an import is a session of a few minutes, and
