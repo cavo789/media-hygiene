@@ -8,23 +8,19 @@ Docker Desktop's VM before the run).
 from __future__ import annotations
 
 import os
-from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 import pytest
 
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import using
-from media_hygiene.paths.docker_run import Shell
-from media_hygiene.paths.mounts import MountTable
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
     render_script,
 )
 from media_hygiene.services.launcher_guards import PAGE_LABEL, launcher_guards
-from tests.support.host_bash import run_bash
-from tests.support.runtime import make_locations, make_runtime
+from tests.support.host_bash import bash_mh, run_bash
 from tests.unit.test_launcher_ascii import accented_runtime, expanded
 
 if TYPE_CHECKING:
@@ -53,12 +49,7 @@ def _bash(
     tmp_path: Path, line: str, held: str = ""
 ) -> subprocess.CompletedProcess[str]:
     """Load the bash `mh` and run `line`, `docker ps` printing `held`."""
-    runtime = replace(
-        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
-    )
-    script = tmp_path / "mh.sh"
-    script.write_text(render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)))
-    code = f"{_FAKE_DOCKER}\nsource {script}; {line}; echo status=$?"
+    code = f"{bash_mh(tmp_path, _COMMANDS, _FAKE_DOCKER)}; {line}; echo status=$?"
     env = {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin", "HELD": held}
     return run_bash(code, env)
 
