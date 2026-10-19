@@ -53,7 +53,7 @@
 #      pointed at it for this window only: mh audit says the line and asks (N, then y, then
 #      not again); mh folders add says the line; PowerShell 5.1's own run of the check  (0199)
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
-#      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
+#      PC, DCIM, listing time and properties, the 20 most recent files copied once (CopyHere
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219);
 #      then, if you agree, mh phone end to end: every file of DCIM copied, again (nothing
 #      copied), then the cable pulled out during a copy, plugged in again       (0219);
@@ -1084,12 +1084,11 @@ if (Wanted 19) {
             }
             New-Item -ItemType Directory -Force -Path $phoneTmp | Out-Null
             $target = $shell.Namespace($phoneTmp)
-            foreach ($round in 1, 2) {
-                if ($round -eq 2) {
-                    Log "   19f. second copy of the same files: Windows may open a 'Replace or Skip' dialog BEHIND this window (Alt+Tab): note what it says, then choose Skip"
-                }
-                $before = @{}
-                foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) { $before[$copy.Name] = "$($copy.Length)/$($copy.LastWriteTime.Ticks)" }
+            # One round only: copying the same files again opens Windows' "Replace or Skip"
+            # dialogs behind the console, flag 16 ignored over MTP (measured 2026-10-19: 386 s for
+            # 20 files, twice). mh phone copies into an empty staging folder instead (0219).
+            Log "   19f. second copy of the same files: not run (its hidden Replace or Skip dialogs are measured; mh phone avoids them)"
+            foreach ($round in 1) {
                 $bytes = 0
                 $late = 0
                 $round1 = [Diagnostics.Stopwatch]::StartNew()
@@ -1106,19 +1105,9 @@ if (Wanted 19) {
                 }
                 $seconds = [Math]::Max($round1.Elapsed.TotalSeconds, 0.001)
                 Log ("   19d{0}. {1} files asked, {2} missing, {3:N1} MB in {4:N1} s = {5:N2} MB/s" -f $round, $recent.Count, $late, ($bytes / 1MB), $seconds, ($bytes / 1MB / $seconds))
-                if ($round -eq 1) {
-                    foreach ($item in ($recent | Select-Object -First 5)) {
-                        $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
-                        if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
-                    }
-                } else {
-                    $changed = 0
-                    foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) {
-                        if ($before[$copy.Name] -ne "$($copy.Length)/$($copy.LastWriteTime.Ticks)") { $changed++ }
-                    }
-                    Log "   19f. second copy of the same files: $changed of $($before.Count) existing copies changed (size or modified date)"
-                    $asked = Read-Host "19f. Did Windows show any dialog or question during the second copy? (n or what it said)"
-                    Log "   19f. dialog during the second copy (none expected with flag 16): $asked"
+                foreach ($item in ($recent | Select-Object -First 5)) {
+                    $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
+                    if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
                 }
             }
         }
