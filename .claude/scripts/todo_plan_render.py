@@ -12,7 +12,7 @@ Usage: todo_plan_render.py [todos-dir]   (writes <todos-dir>/plan.md, prints its
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import re
 import subprocess
 import sys
@@ -271,7 +271,7 @@ def render(todos: Path) -> str:
     every = records(todos)
     lots, alone = queue(every)
     header, partial = sibling("todo_plan_tables.sh", todos).split("\n", 1)
-    today = datetime.datetime.now(tz=datetime.UTC).date()
+    today = dt.datetime.now(tz=dt.UTC).date()
     lines = [
         "# TODO execution plan",
         "",
