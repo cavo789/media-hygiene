@@ -84,6 +84,7 @@ def review(
         (review(("C:\\",), ("C:\\Gone", "C:\\Away", PairAction.SKIP)), "no longer"),
         (review(("C:\\",), ("C:\\X", "C:\\X", PairAction.SWAP)), "inside one folder"),
         (review(("C:\\",), ("C:\\Y", "C:\\Z", PairAction.SWAP)), "is protected"),
+        (review(("C:\\",), ("C:\\Y", "C:\\Z", PairAction.LINK)), "both names cannot"),
     ],
 )
 def test_foreign_stale_or_impossible_decisions_are_refused(

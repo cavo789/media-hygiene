@@ -929,6 +929,9 @@ msgid ""
 "back, then run 'sort' again."
 msgstr ""
 
+msgid "Choose another decision for this pair, or leave it as planned."
+msgstr ""
+
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
 "workbook."
@@ -1227,6 +1230,12 @@ msgid "Decided: as planned, the copies go to the quarantine."
 msgstr ""
 
 msgid "Decided: as planned, the copies of the second folder go."
+msgstr ""
+
+msgid ""
+"Decided: both names kept, each copy of the second folder becomes a link "
+"to its file in the first one (one photo, two names: an edit saved in "
+"place shows under both)."
 msgstr ""
 
 msgid "Decided: left alone, nothing of this group moves."
@@ -2325,6 +2334,9 @@ msgid "June"
 msgstr ""
 
 msgid "KB"
+msgstr ""
+
+msgid "Keep both names (link)"
 msgstr ""
 
 msgid "Keep one of them: the other is a copy."
@@ -3700,6 +3712,10 @@ msgid "Remove ':ro' from their -v options to let '{command}' act."
 msgstr ""
 
 #, python-brace-format
+msgid "Replacing a duplicate copy by a link to the kept file: {path}"
+msgstr ""
+
+#, python-brace-format
 msgid "Report with the photos: {path}"
 msgstr ""
 
@@ -4629,6 +4645,11 @@ msgstr ""
 msgid ""
 "The first folder is protected, or both copies lie in one folder: W is not"
 " possible."
+msgstr ""
+
+msgid ""
+"The first folder is protected, or the two folders are on two drives: K is"
+" not possible."
 msgstr ""
 
 #, python-brace-format
@@ -5579,7 +5600,9 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgid ""
+"Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}, "
+"pairs keeping both names (links): {linked}."
 msgstr ""
 
 #, python-brace-format
@@ -5700,6 +5723,10 @@ msgid "a circle holding no cluster now"
 msgstr ""
 
 msgid "a file changed since the audit"
+msgstr ""
+
+#, python-brace-format
+msgid "a file named {name} is in the way"
 msgstr ""
 
 msgid "a file of that name is in the album already"
@@ -6080,6 +6107,9 @@ msgstr ""
 msgid "it changed while the words were written: left as is"
 msgstr ""
 
+msgid "it is an independent file already"
+msgstr ""
+
 msgid "it is gone already"
 msgstr ""
 
@@ -6152,6 +6182,9 @@ msgstr ""
 msgid "keep all"
 msgstr ""
 
+msgid "keep both names (links, one drive), then next"
+msgstr ""
+
 msgid "keep every shot"
 msgstr ""
 
@@ -6165,6 +6198,9 @@ msgid "keep the other version, then next"
 msgstr ""
 
 msgid "keeps its copies"
+msgstr ""
+
+msgid "keeps the names, as links: the space of the copies is freed"
 msgstr ""
 
 msgid "kept"
@@ -6210,6 +6246,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
+msgstr ""
+
+msgid "link to the kept file"
 msgstr ""
 
 msgid "listing"
@@ -6584,6 +6623,16 @@ msgstr ""
 msgid "removed from your folders"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"replace {count} duplicate copy by a link to its kept file ({size} freed, "
+"both names stay)"
+msgid_plural ""
+"replace {count} duplicate copies by links to their kept files ({size} "
+"freed, both names stay)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "review page"
 msgstr ""
 
@@ -6687,6 +6736,11 @@ msgid ""
 msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
+msgstr ""
+
+msgid ""
+"the copy and its kept file are on two disks or two mounts: a hard link "
+"cannot cross them, the copy is left as it is"
 msgstr ""
 
 msgid "the copy differs from the original"
@@ -6821,6 +6875,14 @@ msgstr ""
 msgid "the target exists"
 msgstr ""
 
+msgid ""
+"the two folders are on two disks or two mounts: a hard link cannot cross "
+"them"
+msgstr ""
+
+msgid "the two folders are on two drives: a hard link cannot cross them"
+msgstr ""
+
 msgid "the value cannot be used"
 msgstr ""
 
@@ -6831,6 +6893,9 @@ msgid "the whole group deleted on purpose, then next"
 msgstr ""
 
 msgid "this category is no longer proposed"
+msgstr ""
+
+msgid "this disk does not support hard links (FAT, exFAT, a NAS?)"
 msgstr ""
 
 msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
@@ -7851,6 +7916,18 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{folder} is protected, or the two folders are on two drives: the pair "
+"cannot keep both names."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{folder} is protected: a link would let an edit made through the other "
+"name change it"
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
 msgstr ""
 
@@ -7900,6 +7977,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{inner} is inside {outer}: give only {outer}."
+msgstr ""
+
+#, python-brace-format
+msgid "{kept} -> {removed}: both names cannot be kept ({reason})."
 msgstr ""
 
 #, python-brace-format
@@ -8343,6 +8424,15 @@ msgid ""
 ".{value}"
 msgstr ""
 
+msgid ""
+"“Keep both names (link)”, offered when both folders are on one drive: "
+"each copy becomes a hard link to the kept file, so both folders still "
+"show the photo and the copy's space is freed. A link is one photo under "
+"two names: an edit saved in place shows under both names, deleting one "
+"name frees nothing while the other remains, and a backup tool may count "
+"it twice. 'undo' makes the names independent files again."
+msgstr ""
+
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."
 msgstr ""
@@ -8423,6 +8513,13 @@ msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr ""
 
 msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
+msgstr ""
+
+msgid ""
+"🔗 A link is one photo under two names: an edit saved in place shows under"
+" both names, deleting one name frees nothing while the other remains, and"
+" a backup tool may count it twice. 'undo' makes each name an independent "
+"file again."
 msgstr ""
 
 #, python-brace-format

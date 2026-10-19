@@ -39,6 +39,9 @@ Les commandes qui agissent sur vos fichiers n'effacent jamais rien, et chacune p
   celui d'une autre application est copié en quarantaine avant d'être complété.
 - **`clean`** déplace les copies en trop en quarantaine, chacune comparée octet par octet avec la
   copie gardée juste avant. Leur place est libérée par `purge`, une fois que vous avez vérifié.
+- **`clean --decisions`** peut aussi remplacer une copie par un second nom du fichier gardé (un
+  lien physique), pour une [paire qui garde les deux noms](clean/12-decide-pair-by-pair.md#garder-les-deux-noms--un-lien) :
+  même comparaison octet par octet d'abord, et le nom ne manque jamais.
 - **`undo`** remet les fichiers d'une exécution là où ils étaient.
 
 **`purge` est la seule commande qui efface** : elle vide la quarantaine, pour de bon, après vous
@@ -114,6 +117,7 @@ probable qu'une erreur de disque.
 | Rafales | Jamais touchées par défaut. Les photos que vous [écartez avec `review`](clean/10-review-bursts.md) sont déplacées en quarantaine (jamais supprimées) par `clean --decisions`, après vérification : une photo gardée est toujours là, la photo écartée est bien le fichier montré par le tri. `undo` les remet en place. |
 | Autres types de fichiers | Seulement s'ils sont demandés avec `--ext` : leurs copies sont déplacées en quarantaine (jamais supprimées), et les dossiers de logiciels (`.git`, `node_modules`, `AppData`, …) sont ignorés. |
 | Fichiers compagnons | Jamais touchés à côté de leur photo. Un orphelin est déplacé en quarantaine (jamais supprimé) après vérification : inchangé depuis l'audit, et aucun fichier du même nom à côté de lui. `undo` le remet en place. |
+| Paires qui gardent les deux noms | Seulement sur [votre décision](clean/12-decide-pair-by-pair.md#garder-les-deux-noms--un-lien), entre deux dossiers d'un même lecteur, jamais vers un dossier protégé. Chaque copie est comparée octet par octet avec le fichier gardé, puis un lien physique vers lui, fait sous un nom temporaire à côté de la copie, la remplace d'un seul renommage : le nom porte toujours la copie ou le lien. Journalisé ; entre deux disques, refusé. Un lien, c'est une photo sous deux noms : une retouche enregistrée sur place se voit sous les deux. `undo` refait du nom un fichier indépendant (une copie prouvée identique, sa date rendue), et laisse tel quel un nom qui n'est plus un lien. |
 | Albums | [`album`](sort/12-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés, jamais par-dessus un fichier ; toutes les analyses ignorent ce dossier. `undo` ne retire un nom de l'album que si l'original qu'il désigne est toujours là et est bien le même fichier ; sinon le nom reste, et `undo` dit pourquoi. |
 | Fichiers compagnons XMP | [`xmp`](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) n'écrit jamais dans une photo ni dans un dossier protégé. Chaque fichier compagnon est journalisé, écrit dans un fichier temporaire puis renommé (jamais par-dessus un fichier apparu), relu et analysé ; celui d'une autre application est complété (ses retouches gardées), ses octets précédents gardés en quarantaine. `undo` ne supprime ou ne remet un fichier compagnon que tant qu'il contient ce que l'exécution a écrit. |
 | Fichiers inutiles de `sort` | Seuls les noms de `[sort] junk_files` (`Thumbs.db`, …) vont en quarantaine avec un dossier vidé ; un nom de photo, de vidéo ou de fichier compagnon y est refusé. |

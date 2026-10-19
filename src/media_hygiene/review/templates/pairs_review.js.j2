@@ -69,8 +69,9 @@
     state.className = pair.action ? "decided" : "";
     const swap = pair.action === "swap";
     const skip = pair.action === "skip";
+    const link = pair.action === "link";
     folder("keptIn", pair.kept_in, swap ? "lose" : "keep");
-    folder("removedFrom", pair.removed_from, swap || skip ? "keep" : "lose");
+    folder("removedFrom", pair.removed_from, link ? "linked" : swap || skip ? "keep" : "lose");
     byId("files").textContent = counted(T.files, pair.files, { size: size(pair.size) });
     byId("why").textContent = pair.reasons.length ? fill(T.why, { reasons: pair.reasons.join("; ") }) : "";
     byId("complete").textContent = pair.complete ? T.complete : "";
@@ -130,6 +131,10 @@
       else setStatus(T.noSwap, "error");
     }
     else if (key === "l") decide("skip", () => go(1));
+    else if (key === "k") {
+      if (pairs[at].linkable) decide("link", () => go(1));
+      else setStatus(T.noLink, "error");
+    }
     else if (event.key === "ArrowLeft") go(-1);
     else if (key === "n") nextUndecided();
     else if (key === "u" || event.key === "Backspace") decide(null);

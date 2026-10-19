@@ -66,6 +66,10 @@
 #      drive mapped, a listing, 20 photos read), SMB from Docker (that drive letter, then a CIFS
 #      volume), FTP from Docker (FEAT, MLSD, partial and whole reads); the password asked once,
 #      never logged; nothing written on the NAS                          (0246, for 0245)
+#  22. a folder pair keeping both names: audit, the pair offered "link" in the report, clean
+#      --decisions, fsutil hardlink list of each copy, C:'s free space before/after; asks what
+#      Explorer shows, then for one photo edited and saved in the Photos app: does its other
+#      name change too; undo: one name each again                         (0213)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -90,6 +94,7 @@
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
+#   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -1715,6 +1720,91 @@ else:
         NasLog "   21. SMB in Docker: $smbDocker"
         NasLog "   21. SMB in Windows: $smbWindows"
         NasLog "   21. FTP in Docker: $ftpDocker"
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 22: a pair keeping both names: each copy a hard link (0213) ----------------------------
+if (Wanted 22) {
+    Log ""
+    Log "== 22. a folder pair keeping both names (links), through Docker Desktop (0213)"
+    $links = Join-Path $Work "links"
+    foreach ($folder in "Best of", "2019-07") {
+        New-Item -ItemType Directory -Force -Path (Join-Path $links $folder) | Out-Null
+    }
+    foreach ($photo in ($picked | Select-Object -First 3)) {
+        Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $links "Best of\$($photo.Name)")
+        Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $links "2019-07\$($photo.Name)")
+    }
+    $linkMounts = @(
+        "-v", "${links}:/data/c/mh-measure-22",
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en audit 2>&1 | Out-Null
+    $report = Get-ChildItem -Path (Join-Path $tool "reports") -Recurse -Filter "report.html" |
+        Where-Object { $_.Directory.Name -like "*-audit" } |
+        Sort-Object LastWriteTime | Select-Object -Last 1
+    $page = [IO.File]::ReadAllText($report.FullName)
+    $pattern = '<select class="decision" data-kept-in="([^"]*)" data-removed-from="([^"]*)"[^>]*>([\s\S]*?)</select>'
+    $pair = [regex]::Matches($page, $pattern) | Where-Object { $_.Groups[3].Value -match 'value="link"' } |
+        Select-Object -First 1
+    if (-not $pair) {
+        Log "   22. stopped: the report offers no pair to link (see $($report.FullName))"
+    } else {
+        $kept = [Net.WebUtility]::HtmlDecode($pair.Groups[1].Value)
+        $removed = [Net.WebUtility]::HtmlDecode($pair.Groups[2].Value)
+        $roots = [regex]::Match($page, 'const roots = (.*);').Groups[1].Value
+        $quote = { param($text) '"' + $text.Replace('\', '\\').Replace('"', '\"') + '"' }
+        $json = '{"version": 1, "roots": ' + $roots + ', "pairs": [{"kept_in": ' + (& $quote $kept) +
+            ', "removed_from": ' + (& $quote $removed) + ', "action": "link"}]}'
+        [IO.File]::WriteAllText((Join-Path $tool "reports\decisions.json"), $json)
+        $copiesFolder = if ($removed.EndsWith("Best of")) { "Best of" } else { "2019-07" }
+        $keptFolder = if ($copiesFolder -eq "Best of") { "2019-07" } else { "Best of" }
+        Log "   22. pair: kept in $kept, linked in $removed"
+        $before = (Get-PSDrive C).Free
+        $lines = & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en clean --yes --decisions decisions.json 2>&1
+        foreach ($line in $lines) {
+            $text = "$line"
+            if ($text -match 'link|names|Files processed|Skipped|Failed|Error') { Log ("   " + $text.Trim()) }
+        }
+        $after = (Get-PSDrive C).Free
+        Log ("   22a. C: free space: {0:N0} bytes before, {1:N0} after (+{2:N0}; the copies weigh {3:N0})" -f
+            $before, $after, ($after - $before),
+            ((Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File | Measure-Object -Property Length -Sum).Sum))
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File) {
+            $names = @(& fsutil hardlink list $file.FullName 2>&1)
+            $twin = Join-Path (Join-Path $links $keptFolder) $file.Name
+            $same = (Get-FileHash -LiteralPath $file.FullName).Hash -eq (Get-FileHash -LiteralPath $twin).Hash
+            Log ("   22b. {0}: {1} name(s) [{2}], same bytes as its twin: {3}" -f $file.Name, $names.Count, ($names -join " | "), $same)
+        }
+        $first = Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File | Select-Object -First 1
+        $twin = Join-Path (Join-Path $links $keptFolder) $first.Name
+        Write-Host ""
+        Write-Host "22c. Open $(Join-Path $links $copiesFolder) and $(Join-Path $links $keptFolder) in Explorer."
+        $seen = Read-Host "Do both folders show the photos, and do both open? (y/n, then any remark)"
+        Log "   22c. Explorer shows both, both open: $seen"
+        $hashBefore = (Get-FileHash -LiteralPath $twin).Hash
+        Write-Host "22d. Open $($first.FullName) in the Photos app, rotate or edit it, and SAVE it (not 'Save a copy')."
+        Read-Host "Press Enter once it is saved and Photos is closed" | Out-Null
+        $edited = (Get-FileHash -LiteralPath $first.FullName).Hash
+        $twinNow = (Get-FileHash -LiteralPath $twin).Hash
+        $names = @(& fsutil hardlink list $first.FullName 2>&1)
+        Log ("   22d. after the edit in Photos: the edited name changed: {0}; its twin {1} changed too: {2}; names now: {3}" -f
+            ($edited -ne $hashBefore), $first.Name, ($twinNow -ne $hashBefore), ($names -join " | "))
+        $lines = & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en undo --yes 2>&1
+        foreach ($line in $lines) {
+            $text = "$line"
+            if ($text -match 'Files processed|Skipped|Failed|Error|independent|no longer') { Log ("   " + $text.Trim()) }
+        }
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File) {
+            $names = @(& fsutil hardlink list $file.FullName 2>&1)
+            Log ("   22e. after undo, {0}: {1} name(s), modified {2}" -f $file.Name, $names.Count, $file.LastWriteTime.ToString("s"))
+        }
     }
     $ErrorActionPreference = $saved
 }

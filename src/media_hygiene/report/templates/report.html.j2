@@ -111,6 +111,7 @@
     <td><select class="decision" data-kept-in="{{ pair.kept_in }}" data-removed-from="{{ pair.removed_from }}" aria-label="{{ _('Your decision') }}">
       <option value="">{{ _("As planned") }}</option>
       {% if pair.swappable %}<option value="swap">{{ _("Swap the folders") }}</option>{% endif %}
+      {% if pair.linkable %}<option value="link">{{ _("Keep both names (link)") }}</option>{% endif %}
       <option value="skip">{{ _("Leave alone") }}</option>
     </select></td>
     {% endif %}

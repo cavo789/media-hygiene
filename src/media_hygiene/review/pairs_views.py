@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.paths.host_paths import is_within
+from media_hygiene.plan.pair_links import link_refusal
 from media_hygiene.report.pair_views import pair_samples
 from media_hygiene.report.reasons import keep_reason_label
 from media_hygiene.review.near_views import folder_and_name
@@ -46,6 +47,7 @@ class PairState(BaseModel):
     reasons: tuple[str, ...]  # why `kept_in` keeps the copies, most frequent first
     samples: tuple[SampleState, ...]
     swappable: bool  # not inside one folder, and `kept_in` is not protected
+    linkable: bool = False  # one drive, `kept_in` not protected: links allowed (0213)
     action: str = ""  # empty: undecided; else a `PairAction`
 
 
@@ -105,6 +107,7 @@ class PairsStateBuilder:
             ),
             samples=tuple(self.sample(file) for file in pair_samples(pair)),
             swappable=pair_swappable(pair, self.policy),
+            linkable=link_refusal(pair, self.mapper, self.policy.protected) is None,
         )
 
     def sample(self, file: MediaFile) -> SampleState:

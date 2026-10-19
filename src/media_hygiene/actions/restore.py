@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.link_undo import separate
 from media_hygiene.actions.no_overwrite import (
     copy_exclusive,
     create_empty,
@@ -21,6 +22,8 @@ from media_hygiene.scan.hashing import full_digest
 if TYPE_CHECKING:
     from media_hygiene.actions.journal import JournalEntry
 
+# Undone in place: a sidecar `xmp` wrote, a mark, a copy made a link (0213).
+_IN_PLACE: Final = XMP_REVERSALS | {Reversal.FORGET_MARK, Reversal.SEPARATE_LINK}
 # A name an album run made: a link (its file keeps its other names), the marker.
 _REMOVALS: Final = frozenset({Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER})
 
@@ -64,7 +67,7 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
 
 
 def _without_a_file(entry: JournalEntry, reversal: Reversal) -> bool:
-    """Undo what brings no file back: a sidecar `xmp` wrote, a mark (0224).
+    """Undo in place: a sidecar `xmp` wrote, a mark (0224), a copy made a link (0213).
 
     Args:
         entry: The action.
@@ -75,7 +78,9 @@ def _without_a_file(entry: JournalEntry, reversal: Reversal) -> bool:
     """
     if reversal in XMP_REVERSALS:
         undo_xmp(entry)
-    return reversal in XMP_REVERSALS or reversal is Reversal.FORGET_MARK
+    if reversal is Reversal.SEPARATE_LINK:
+        separate(entry)  # the name stays: it becomes its own file again (0213)
+    return reversal in _IN_PLACE
 
 
 def _bring_back(entry: JournalEntry, reversal: Reversal) -> None:

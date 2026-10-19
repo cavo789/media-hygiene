@@ -1163,6 +1163,9 @@ msgstr ""
 "Choisissez à nouveau dans 'review-sort' (elle montre les deux), ou "
 "remettez les cellules du classeur comme avant, puis relancez 'sort'."
 
+msgid "Choose another decision for this pair, or leave it as planned."
+msgstr "Choisissez une autre décision pour cette paire, ou laissez-la comme prévu."
+
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
 "workbook."
@@ -1227,8 +1230,8 @@ msgid ""
 "'xmp' writes that position into the sidecars of the photos without GPS of"
 " this folder and of its subfolders ([tags] xmp_folder_gps = true)."
 msgstr ""
-"Cliquez sur la carte ou faites glisser le repère là où ces photos ont été "
-"prises, puis enregistrez : 'xmp' écrit cette position dans les fichiers "
+"Cliquez sur la carte ou faites glisser le repère là où ces photos ont été"
+" prises, puis enregistrez : 'xmp' écrit cette position dans les fichiers "
 ".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
 "xmp_folder_gps = true)."
 
@@ -1517,6 +1520,15 @@ msgstr "Décidé : comme prévu, les copies partent en quarantaine."
 
 msgid "Decided: as planned, the copies of the second folder go."
 msgstr "Décidé : comme prévu, les copies du second dossier partent."
+
+msgid ""
+"Decided: both names kept, each copy of the second folder becomes a link "
+"to its file in the first one (one photo, two names: an edit saved in "
+"place shows under both)."
+msgstr ""
+"Décidé : les deux noms restent, chaque copie du second dossier devient un"
+" lien vers son fichier du premier (une photo, deux noms : une retouche "
+"enregistrée sur place se voit sous les deux)."
 
 msgid "Decided: left alone, nothing of this group moves."
 msgstr "Décidé : laissé tel quel, rien de ce groupe ne bouge."
@@ -2890,6 +2902,9 @@ msgstr "juin"
 msgid "KB"
 msgstr "Ko"
 
+msgid "Keep both names (link)"
+msgstr "Garder les deux noms (lien)"
+
 msgid "Keep one of them: the other is a copy."
 msgstr "Gardez-en un : l'autre est une copie."
 
@@ -3500,8 +3515,8 @@ msgstr ""
 
 msgid "No folder in the index: run 'audit' first, with the same /cache mount."
 msgstr ""
-"Aucun dossier dans l'index : lancez d'abord 'audit', avec le même montage "
-"/cache."
+"Aucun dossier dans l'index : lancez d'abord 'audit', avec le même montage"
+" /cache."
 
 msgid "No folder named after a town holds photos without GPS."
 msgstr "Aucun dossier au nom d'une ville ne contient de photos sans GPS."
@@ -4516,6 +4531,12 @@ msgstr[1] "Retirez ':ro' de leurs options -v : l'outil y écrit."
 #, python-brace-format
 msgid "Remove ':ro' from their -v options to let '{command}' act."
 msgstr "Retirez ':ro' de leurs options -v pour laisser '{command}' agir."
+
+#, python-brace-format
+msgid "Replacing a duplicate copy by a link to the kept file: {path}"
+msgstr ""
+"Remplacement d'une copie en double par un lien vers le fichier gardé : "
+"{path}"
 
 #, python-brace-format
 msgid "Report with the photos: {path}"
@@ -5653,6 +5674,13 @@ msgid ""
 msgstr ""
 "Le premier dossier est protégé, ou les deux copies sont dans un même "
 "dossier : W n'est pas possible."
+
+msgid ""
+"The first folder is protected, or the two folders are on two drives: K is"
+" not possible."
+msgstr ""
+"Le premier dossier est protégé, ou les deux dossiers sont sur deux "
+"lecteurs : K n'est pas possible."
 
 #, python-brace-format
 msgid "The first photo out of {count}"
@@ -6815,10 +6843,12 @@ msgstr ""
 "{leave}."
 
 #, python-brace-format
-msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgid ""
+"Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}, "
+"pairs keeping both names (links): {linked}."
 msgstr ""
 "Vos décisions — paires inversées : {swapped}, paires laissées telles "
-"quelles : {skipped}."
+"quelles : {skipped}, paires gardant les deux noms (liens) : {linked}."
 
 #, python-brace-format
 msgid "Your decisions — {count} file chosen in 'search' is set aside."
@@ -6977,6 +7007,10 @@ msgstr "un cercle qui ne contient plus aucun groupe"
 
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
+
+#, python-brace-format
+msgid "a file named {name} is in the way"
+msgstr "un fichier nommé {name} est dans le chemin"
 
 msgid "a file of that name is in the album already"
 msgstr "un fichier de ce nom est déjà dans l'album"
@@ -7384,6 +7418,9 @@ msgstr "il existe déjà"
 msgid "it changed while the words were written: left as is"
 msgstr "il a changé pendant l'écriture des mots : laissé tel quel"
 
+msgid "it is an independent file already"
+msgstr "c'est déjà un fichier indépendant"
+
 msgid "it is gone already"
 msgstr "il a déjà disparu"
 
@@ -7464,6 +7501,9 @@ msgstr "garder"
 msgid "keep all"
 msgstr "tout garder"
 
+msgid "keep both names (links, one drive), then next"
+msgstr "garder les deux noms (liens, un même lecteur), puis suivante"
+
 msgid "keep every shot"
 msgstr "garder toutes les photos"
 
@@ -7478,6 +7518,9 @@ msgstr "garder l'autre version, puis suivant"
 
 msgid "keeps its copies"
 msgstr "garde ses copies"
+
+msgid "keeps the names, as links: the space of the copies is freed"
+msgstr "garde les noms, en liens : la place des copies est libérée"
 
 msgid "kept"
 msgstr "conservée"
@@ -7525,6 +7568,9 @@ msgstr "moins d'une minute"
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
+
+msgid "link to the kept file"
+msgstr "lien vers le fichier gardé"
 
 msgid "listing"
 msgstr "liste"
@@ -7934,6 +7980,20 @@ msgstr "fr/reference-safety/"
 msgid "removed from your folders"
 msgstr "retirés de vos dossiers"
 
+#, python-brace-format
+msgid ""
+"replace {count} duplicate copy by a link to its kept file ({size} freed, "
+"both names stay)"
+msgid_plural ""
+"replace {count} duplicate copies by links to their kept files ({size} "
+"freed, both names stay)"
+msgstr[0] ""
+"remplacer {count} copie en double par un lien vers son fichier gardé "
+"({size} libérés, les deux noms restent)"
+msgstr[1] ""
+"remplacer {count} copies en double par des liens vers leurs fichiers "
+"gardés ({size} libérés, les deux noms restent)"
+
 msgid "review page"
 msgstr "page de revue"
 
@@ -8044,6 +8104,13 @@ msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
 msgstr "la proposition de classify attend : 'sort' applique le classeur modifié."
+
+msgid ""
+"the copy and its kept file are on two disks or two mounts: a hard link "
+"cannot cross them, the copy is left as it is"
+msgstr ""
+"la copie et son fichier gardé sont sur deux disques ou deux montages : un"
+" lien physique ne peut pas les relier, la copie reste telle quelle"
 
 msgid "the copy differs from the original"
 msgstr "la copie diffère de l'original"
@@ -8194,6 +8261,18 @@ msgstr "le fichier compagnon a déjà disparu"
 msgid "the target exists"
 msgstr "la cible existe"
 
+msgid ""
+"the two folders are on two disks or two mounts: a hard link cannot cross "
+"them"
+msgstr ""
+"les deux dossiers sont sur deux disques ou deux montages : un lien "
+"physique ne peut pas les relier"
+
+msgid "the two folders are on two drives: a hard link cannot cross them"
+msgstr ""
+"les deux dossiers sont sur deux lecteurs : un lien physique ne peut pas "
+"les relier"
+
 msgid "the value cannot be used"
 msgstr "la valeur est inutilisable"
 
@@ -8205,6 +8284,9 @@ msgstr "tout le groupe supprimé exprès, puis le suivant"
 
 msgid "this category is no longer proposed"
 msgstr "cette catégorie n'est plus proposée"
+
+msgid "this disk does not support hard links (FAT, exFAT, a NAS?)"
+msgstr "ce disque ne gère pas les liens physiques (FAT, exFAT, un NAS ?)"
 
 msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
 msgstr ""
@@ -9494,6 +9576,22 @@ msgstr ""
 "ne peut pas être inversée."
 
 #, python-brace-format
+msgid ""
+"{folder} is protected, or the two folders are on two drives: the pair "
+"cannot keep both names."
+msgstr ""
+"{folder} est protégé, ou les deux dossiers sont sur deux lecteurs : la "
+"paire ne peut pas garder les deux noms."
+
+#, python-brace-format
+msgid ""
+"{folder} is protected: a link would let an edit made through the other "
+"name change it"
+msgstr ""
+"{folder} est protégé : un lien laisserait une retouche faite par l'autre "
+"nom le modifier"
+
+#, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
 msgstr "{folder} est protégé : ses copies sont toujours gardées."
 
@@ -9551,6 +9649,10 @@ msgstr ""
 #, python-brace-format
 msgid "{inner} is inside {outer}: give only {outer}."
 msgstr "{inner} est dans {outer} : ne donnez que {outer}."
+
+#, python-brace-format
+msgid "{kept} -> {removed}: both names cannot be kept ({reason})."
+msgstr "{kept} -> {removed} : impossible de garder les deux noms ({reason})."
 
 #, python-brace-format
 msgid "{limit} or less is expected, not {value}"
@@ -10035,6 +10137,22 @@ msgstr ""
 "{value} : catégorie inconnue, vouliez-vous dire {name} ? Pour "
 "l'extension, écrivez .{value}"
 
+msgid ""
+"“Keep both names (link)”, offered when both folders are on one drive: "
+"each copy becomes a hard link to the kept file, so both folders still "
+"show the photo and the copy's space is freed. A link is one photo under "
+"two names: an edit saved in place shows under both names, deleting one "
+"name frees nothing while the other remains, and a backup tool may count "
+"it twice. 'undo' makes the names independent files again."
+msgstr ""
+"« Garder les deux noms (lien) », proposé quand les deux dossiers sont sur"
+" un même lecteur : chaque copie devient un lien physique vers le fichier "
+"gardé, les deux dossiers montrent toujours la photo et la place de la "
+"copie est libérée. Un lien, c'est une photo sous deux noms : une retouche"
+" enregistrée sur place se voit sous les deux noms, supprimer un nom ne "
+"libère rien tant que l'autre reste, et un outil de sauvegarde peut la "
+"compter deux fois. 'undo' refait des noms des fichiers indépendants."
+
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."
 msgstr "… et %(count)s de plus (le CSV les liste tous)."
@@ -10142,6 +10260,17 @@ msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
 msgstr ""
 "🔒 Le téléphone est seulement lu : rien n'y est supprimé, déplacé ni "
 "renommé."
+
+msgid ""
+"🔗 A link is one photo under two names: an edit saved in place shows under"
+" both names, deleting one name frees nothing while the other remains, and"
+" a backup tool may count it twice. 'undo' makes each name an independent "
+"file again."
+msgstr ""
+"🔗 Un lien, c'est une photo sous deux noms : une retouche enregistrée sur "
+"place se voit sous les deux noms, supprimer un nom ne libère rien tant "
+"que l'autre reste, et un outil de sauvegarde peut la compter deux fois. "
+"'undo' refait de chaque nom un fichier indépendant."
 
 #, python-brace-format
 msgid ""

@@ -1,8 +1,7 @@
 """How `undo` reverses each kind of action: every kind is listed, nothing is guessed.
 
-A kind missing from `REVERSALS` stops `undo` before it changes anything: recreating an
-empty file for an action it does not understand would leave a 0-byte "restored" file
-while the real one lies elsewhere.
+A kind missing from `REVERSALS` stops `undo` before it changes anything: recreating
+an empty file for an unknown action would leave a 0-byte "restored" file instead.
 """
 
 from __future__ import annotations
@@ -14,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.album_links import link_blocker, marker_blocker
 from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.link_undo import separate_blocker
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.xmp_undo import xmp_blocker
 from media_hygiene.errors import JournalError
@@ -36,6 +36,7 @@ class Reversal(Enum):
     RECREATE_FOLDER = auto()
     REMOVE_CREATED_FOLDER = auto()
     REMOVE_LINK = auto()
+    SEPARATE_LINK = auto()  # a copy made a link becomes an independent file (0213)
     REMOVE_MARKER = auto()
     REMOVE_XMP = auto()
     RESTORE_XMP = auto()
@@ -50,6 +51,7 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.REMOVE_FOLDER: Reversal.RECREATE_FOLDER,
         ActionKind.CREATE_FOLDER: Reversal.REMOVE_CREATED_FOLDER,
         ActionKind.LINK: Reversal.REMOVE_LINK,
+        ActionKind.LINK_DUPLICATE: Reversal.SEPARATE_LINK,
         ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
         ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
@@ -60,6 +62,7 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
 _WITHOUT_SOURCE: Final = frozenset({Reversal.RECREATE_EMPTY, Reversal.RECREATE_FOLDER})
 # Sidecars `xmp` wrote: undone only while they hold what it wrote (`xmp_undo`).
 XMP_REVERSALS: Final = frozenset({Reversal.REMOVE_XMP, Reversal.RESTORE_XMP})
+_LINKS: Final = frozenset({Reversal.REMOVE_LINK, Reversal.SEPARATE_LINK})
 
 
 def reversal_of(entry: JournalEntry) -> Reversal:
@@ -94,17 +97,17 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     Returns:
         The translated reason, or None when it can be undone.
     """
-    path = Path(entry.path)
     if reversal is Reversal.FORGET_MARK:
         return None
     if reversal in XMP_REVERSALS:
         return xmp_blocker(entry)
-    if reversal is Reversal.REMOVE_LINK:
-        return link_blocker(entry)
+    if reversal in _LINKS:
+        album = reversal is Reversal.REMOVE_LINK
+        return link_blocker(entry) if album else separate_blocker(entry)
     if reversal is Reversal.REMOVE_CREATED_FOLDER:
-        return _folder_blocker(path)
+        return _folder_blocker(Path(entry.path))
     if reversal is Reversal.REMOVE_MARKER:
-        return marker_blocker(path)
+        return marker_blocker(Path(entry.path))
     return _restore_blocker(entry, reversal)
 
 

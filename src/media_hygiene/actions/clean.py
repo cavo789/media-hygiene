@@ -1,5 +1,6 @@
 """Execute a plan: quarantine copies (deleted with `--delete`), delete empty files.
 
+The copies of a pair keeping both names become hard links (`clean_links`, 0213).
 What is moved because a person or the tier chose so (near duplicates, burst shots,
 files chosen in `search`) is planned by `clean_aside`.
 """
@@ -13,6 +14,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.clean_aside import AsideMoves
 from media_hygiene.actions.clean_gone import mark_gone
 from media_hygiene.actions.clean_leftovers import Leftovers
+from media_hygiene.actions.clean_links import CopyLinker
 from media_hygiene.actions.clean_step import clean_labels, clean_step
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
@@ -27,6 +29,7 @@ from media_hygiene.actions.parallel import (
 from media_hygiene.actions.sort_cleanup import FolderCleaner
 from media_hygiene.actions.verify import checked_removal
 from media_hygiene.constants import MediaKind
+from media_hygiene.plan.pair_links import linked_count
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -55,6 +58,7 @@ class CleanExecutor:
         self._tally = Tally()
         self._changes = JournaledChanges(context, self._tally)
         self._leftovers = Leftovers(self._changes, self._tally)
+        self._linker = CopyLinker(self._changes, self._tally)
         self._labels = clean_labels(delete_copies=context.delete_copies)
 
     def run(self, plan: CleanPlan) -> Outcome:
@@ -84,8 +88,9 @@ class CleanExecutor:
             self._context.workers,
             stopping=stopping_on(self._context.progress),
         )
-        run_all(actions[: plan.removable_count], runner)
-        run_all(actions[plan.removable_count :], runner)
+        copies = plan.removable_count + linked_count(plan)
+        run_all(actions[:copies], runner)
+        run_all(actions[copies:], runner)
         # Last, one by one: a sidecar is an orphan only once its files are gone.
         run_all(orphans, replace(runner, workers=1))
         mark_gone(self._changes, plan)  # no file moves: journal lines only (0224)
@@ -109,6 +114,9 @@ class CleanExecutor:
             for file in decision.removable:
                 action = partial(self._delete_copy, decision, file)
                 yield file, self._labels.of_copy(file), action
+            for file in decision.linked:  # a pair keeping both names (0213)
+                action = partial(self._linker.link, decision, file)
+                yield file, self._labels.linked, action
         yield from AsideMoves(self._changes, self._tally, self._labels).planned(plan)
         for item in plan.broken:
             action = partial(self._leftovers.broken, item)

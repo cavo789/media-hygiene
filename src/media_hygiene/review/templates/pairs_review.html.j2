@@ -13,9 +13,12 @@
   "planned": "✔ " ~ _("Decided: as planned, the copies of the second folder go."),
   "swap": "🔁 " ~ _("Decided: swapped, the copies of the second folder stay and those of the first one go."),
   "skip": "✋ " ~ _("Decided: left alone, nothing of this pair moves."),
+  "link": "🔗 " ~ _("Decided: both names kept, each copy of the second folder becomes a link to its file in the first one (one photo, two names: an edit saved in place shows under both)."),
   "keep": "✅ " ~ _("keeps its copies"),
   "lose": "📦 " ~ _("loses its copies"),
+  "linked": "🔗 " ~ _("keeps the names, as links: the space of the copies is freed"),
   "noSwap": _("The first folder is protected, or both copies lie in one folder: W is not possible."),
+  "noLink": _("The first folder is protected, or the two folders are on two drives: K is not possible."),
   "original": "↗ " ~ _("original"),
   "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
   "noSamples": _("No picture to preview in this pair (videos or other files): open the report's page of the pair."),
@@ -71,6 +74,7 @@
             overflow-wrap: anywhere; }
   .folder.keep { border-color: var(--ok); }
   .folder.lose { border: 3px dashed var(--bad); }
+  .folder.linked { border: 3px dotted var(--accent); }
   .tag { font-weight: 600; }
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
@@ -99,6 +103,7 @@
       <dt><kbd>→</kbd></dt><dd>{{ _("as planned, then next") }}</dd>
       <dt><kbd>W</kbd></dt><dd>{{ _("swap the folders, then next") }}</dd>
       <dt><kbd>L</kbd></dt><dd>{{ _("leave the pair alone, then next") }}</dd>
+      <dt><kbd>K</kbd></dt><dd>{{ _("keep both names (links, one drive), then next") }}</dd>
       <dt><kbd>←</kbd></dt><dd>{{ _("previous pair") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next undecided pair") }}</dd>
       <dt><kbd>U</kbd></dt><dd>{{ _("back to undecided") }}</dd>

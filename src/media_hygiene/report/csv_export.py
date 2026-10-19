@@ -1,11 +1,11 @@
 """The whole plan as a spreadsheet: one row per file, readable by Excel in any language.
 
 The HTML report caps the exact-duplicate groups it lists; this file never does, and
-lists the near duplicates too (`csv_near`). Excel reads a CSV with
-the list separator of the regional settings (`;` in French, `,` in English) and needs a
-byte order mark to read accents: both follow the interface language. Excel computes a
-cell that starts with `=`, `+`, `-` or `@`: such text gets a leading apostrophe, so that
-a file named `-2019 trip.jpg` shows its name, not `#NAME?` (`spreadsheet_text`).
+lists the near duplicates too (`csv_near`). Excel reads a CSV with the list separator
+of the regional settings (`;` in French, `,` in English) and needs a byte order mark
+to read accents: both follow the interface language. Excel computes a cell that
+starts with `=`, `+`, `-` or `@`: such text gets a leading apostrophe, so that a file
+named `-2019 trip.jpg` shows its name, not `#NAME?` (`spreadsheet_text`).
 """
 
 from __future__ import annotations
@@ -89,13 +89,11 @@ def write_plan_csv(
             )
         )
         writer.writerows(rows.duplicates(plan))
-        writer.writerows(
-            rows.row(
-                line.file,
-                _Line(line.action, line.group, detail=line.detail, level=line.level),
-            )
+        near = (
+            (line.file, _Line(line.action, line.group, "", line.detail, line.level))
             for line in near_lines(findings)
         )
+        writer.writerows(rows.row(file, line) for file, line in near)
         writer.writerows(rows.broken(plan))
         orphan = _Line(
             _("move to the quarantine"),
@@ -143,6 +141,8 @@ class _Rows:
                 yield self.row(file, _Line(_("protected, kept"), group, digest))
             for file in decision.spared:
                 yield self.row(file, _Line(_("kept (your decision)"), group, digest))
+            for file in decision.linked:
+                yield self.row(file, _Line(_("link to the kept file"), group, digest))
 
     def broken(self, plan: CleanPlan) -> Iterator[Row]:
         """One row per broken file, handled or left alone in a protected folder.

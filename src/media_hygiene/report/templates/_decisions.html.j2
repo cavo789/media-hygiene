@@ -3,6 +3,7 @@
 <div class="note">
   <strong>✋ {{ _("Not the folder you want to keep?") }}</strong>
   {{ _("Decide per pair: “Swap the folders” keeps the copies of the second folder and removes those of the first one; “Leave alone” removes nothing of that pair. This browser remembers your choices.") }}
+  <p>{{ _("“Keep both names (link)”, offered when both folders are on one drive: each copy becomes a hard link to the kept file, so both folders still show the photo and the copy's space is freed. A link is one photo under two names: an edit saved in place shows under both names, deleting one name frees nothing while the other remains, and a backup tool may count it twice. 'undo' makes the names independent files again.") }}</p>
   <p><button id="download-decisions" type="button" disabled>{{ _("Download decisions.json") }} (<span id="decisions-count">0</span>)</button></p>
   <span class="muted">{{ _("Save it in the folder mounted on /reports, then run the same 'clean' command with --decisions decisions.json: it audits again, applies your decisions, shows the result and asks before cleaning. The file is refused if the folders or the pairs changed in the meantime.") }}</span>
   <p>{{ _("Or decide in your browser, saved for 'clean':") }} <code>mh review --pairs</code></p>

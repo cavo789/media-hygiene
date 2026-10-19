@@ -2,17 +2,18 @@
 
 A folder pair holds the copies deleted from `removed_from` because an identical file is
 kept in `kept_in`. A review can swap a pair (keep the copies of `removed_from`, delete
-the one of `kept_in`) or skip it (delete nothing of the pair). Several decisions may
-touch one group: a copy some decision keeps is never deleted. The shots of a burst
-series a review set aside, and the files set aside in `search`, are moved to the
-quarantine.
+the one of `kept_in`), skip it (delete nothing of the pair) or link it (each copy of
+`removed_from` keeps its name, made a hard link to its kept file, 0213). Several
+decisions may touch one group: a copy some decision keeps is never deleted. The shots
+of a burst series a review set aside, and the files set aside in `search`, are moved
+to the quarantine.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import KeepReason
 
@@ -38,7 +39,12 @@ class PairAction(StrEnum):
 
     SWAP = "swap"
     SKIP = "skip"
+    LINK = "link"  # keep both names: each copy becomes a hard link to its kept file
     PLANNED = "planned"
+
+
+# The decisions that keep a copy as it is (a swap may make it the keeper).
+_KEEPING: Final = frozenset({PairAction.SWAP, PairAction.SKIP})
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,9 +78,9 @@ def apply_choices(
         policy: Ranks the copies a swap keeps, to choose the new keeper.
 
     Returns:
-        The plan; groups left with nothing to delete are dropped. A burst shot or a
-        file chosen that the plan already removes (a swapped keeper, a copy) is not
-        moved a second time.
+        The plan; groups left with nothing to delete nor link are dropped. A burst
+        shot or a file chosen that the plan already removes (a swapped keeper, a
+        copy) or links is not moved.
     """
     by_pair = {
         (c.kept_in, c.removed_from): c.action
@@ -82,9 +88,13 @@ def apply_choices(
         if c.action is not PairAction.PLANNED
     }
     decisions = (_reviewed(decision, by_pair, policy) for decision in plan.decisions)
-    reviewed = replace(plan, decisions=tuple(d for d in decisions if d.removable))
-    reviewed = replace(reviewed, bursts=_set_aside(choices.bursts, reviewed.removed))
-    removed = reviewed.removed
+    kept = tuple(d for d in decisions if d.removable or d.linked)
+    reviewed = replace(plan, decisions=kept)
+    # A copy made a link keeps its name: nothing else moves it.
+    linked = frozenset(file.path for d in kept for file in d.linked)
+    bursts = _set_aside(choices.bursts, reviewed.removed | linked)
+    reviewed = replace(reviewed, bursts=bursts)
+    removed = reviewed.removed | linked
     chosen = tuple(file for file in choices.chosen if file.path not in removed)
     taken = removed | {file.path for file in chosen}
     unwanted = tuple(file for file in choices.unwanted if file.path not in taken)
@@ -121,23 +131,27 @@ def _reviewed(
         policy: Ranks the copies kept, when the keeper is swapped away.
 
     Returns:
-        The group: swapped (new keeper, the old one deleted), spared, or unchanged.
+        The group: swapped (new keeper, the old one deleted), spared, linked, or
+        unchanged. A swap changes the keeper the links were decided for: the copies
+        of a linked pair then stay as they are (spared).
     """
     folder = decision.keeper.path.parent
     actions = [
         (file, choices.get((folder, file.path.parent))) for file in decision.removable
     ]
-    kept = tuple(file for file, action in actions if action is not None)
-    if not kept:
+    if all(action is None for _file, action in actions):
         return decision
     removable = tuple(file for file, action in actions if action is None)
+    linked = tuple(file for file, action in actions if action is PairAction.LINK)
+    kept = tuple(file for file, action in actions if action in _KEEPING)
     if PairAction.SWAP not in {action for _file, action in actions}:
-        return replace(decision, removable=removable, spared=(*decision.spared, *kept))
-    keeper, *spared = sorted(kept, key=policy.rank)
+        spared = (*decision.spared, *kept)
+        return replace(decision, removable=removable, spared=spared, linked=linked)
+    keeper, *others = sorted(kept, key=policy.rank)
     return replace(
         decision,
         keeper=keeper,
         removable=(*removable, decision.keeper),
-        spared=(*decision.spared, *spared),
+        spared=(*decision.spared, *others, *linked),
         reason=KeepReason.REVIEWED,
     )

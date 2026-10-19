@@ -59,7 +59,7 @@ et des dernières lignes de chaque exécution.
 
 | Exécution | Ce que fait `undo` |
 |---|---|
-| `clean` | Chaque fichier en quarantaine retourne à sa place ; chaque copie supprimée (`--delete`) ou fichier vide est reconstruit depuis la copie gardée, date comprise. Les dossiers de quarantaine qu'il laisse vides disparaissent. |
+| `clean` | Chaque fichier en quarantaine retourne à sa place ; chaque copie supprimée (`--delete`) ou fichier vide est reconstruit depuis la copie gardée, date comprise. Chaque copie devenue un lien (une paire qui garde les deux noms) redevient un fichier indépendant, sa date rendue. Les dossiers de quarantaine qu'il laisse vides disparaissent. |
 | `sort` | Les fichiers reviennent, les dossiers que le tri avait supprimés reviennent, ceux qu'il avait créés disparaissent. Un tri relancé après une interruption est annulé **en entier**, du plus récent au plus ancien, après une seule question. |
 | `album` | Ses liens, son fichier `.media-hygiene-album` et ses dossiers disparaissent ; les originaux ne sont pas touchés. |
 | `xmp` | Les fichiers compagnons qu'il a créés disparaissent ; ceux qu'il a complétés sont remis octet pour octet. |
@@ -85,6 +85,8 @@ et des dernières lignes de chaque exécution.
 - Un lien d'album dont l'original a été supprimé ou déplacé depuis est peut-être le dernier
   exemplaire de la photo : `undo` le garde et le dit. Un fichier compagnon modifié depuis que
   `xmp` l'a écrit est gardé aussi.
+- Une copie devenue un lien qui n'en est plus un (enregistrée depuis par un nouveau fichier), ou
+  dont le fichier gardé a disparu, reste telle quelle : `undo` dit pourquoi.
 - Après un [`purge`](purge.md), les fichiers de cette quarantaine ne peuvent plus revenir.
 
 ## Pour aller plus loin

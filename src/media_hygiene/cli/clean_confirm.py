@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.clean_space import check_quarantine_room
 from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number, human_size
+from media_hygiene.console.link_view import link_phrases, tell_links
 from media_hygiene.console.returned_view import returned_phrases, tell_returned
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.quarantines import mounted_quarantines
@@ -123,7 +124,7 @@ def _actions(plan: CleanPlan) -> list[str]:
             "handle {count} broken file", "handle {count} broken files", broken
         )
         actions.append(phrase.format(count=human_number(broken)))
-    return actions + returned_phrases(plan)
+    return actions + link_phrases(plan) + returned_phrases(plan)
 
 
 def _announce(runtime: Runtime, plan: CleanPlan) -> None:
@@ -153,6 +154,7 @@ def _announce(runtime: Runtime, plan: CleanPlan) -> None:
     else:
         output.info(_safe_line(runtime, plan))
     tell_returned(output, plan)
+    tell_links(output, plan)
     if plan.burst_count:
         bursts = ngettext(
             "{count} burst shot you set aside will be moved to the quarantine.",

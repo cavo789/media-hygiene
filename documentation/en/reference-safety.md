@@ -38,6 +38,9 @@ The commands that act on your files never erase anything, and every one of them 
   another application is copied into the quarantine before it is completed.
 - **`clean`** moves the extra copies to the quarantine, each one compared byte for byte with
   the copy kept just before. Their space is freed by `purge`, once you have checked.
+- **`clean --decisions`** may also replace a copy by a second name of the kept file (a hard
+  link), for a [pair keeping both names](clean/12-decide-pair-by-pair.md#keep-both-names-a-link):
+  same byte comparison first, and the name is never missing.
 - **`undo`** puts the files of a run back where they were.
 
 **`purge` is the only command that erases**: it empties the quarantine, for good, after
@@ -106,6 +109,7 @@ error.
 | Burst series | Never touched by default. The shots you [set aside with `review`](clean/10-review-bursts.md) are moved to the quarantine (never deleted) by `clean --decisions`, once checked: a shot you kept is still there, the shot set aside is the very file the review showed. `undo` puts them back. |
 | Other file types | Only when asked for with `--ext`: their copies are moved to the quarantine (never deleted), and software folders (`.git`, `node_modules`, `AppData`, …) are skipped. |
 | Sidecars | Never touched next to their photo. An orphan is moved to the quarantine (never deleted) once checked: unchanged since the audit, and no file of the same name next to it. `undo` puts it back. |
+| Pairs keeping both names | Only on [your decision](clean/12-decide-pair-by-pair.md#keep-both-names-a-link), between two folders of one drive, never to a protected folder. Each copy is compared byte for byte with the kept file, then a hard link to it, made under a temporary name next to the copy, replaces it in one rename: the name always holds the copy or the link. Journaled; across disks, refused. A link is one photo under two names: an edit saved in place shows under both. `undo` makes the name an independent file again (a copy proven identical, its date back), and leaves alone a name that is no link any more. |
 | Albums | [`album`](sort/12-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
 | XMP sidecars | [`xmp`](reference-tags.md#carry-the-words-with-the-photos-xmp) never writes into a photo nor into a protected folder. Each sidecar is journaled, written to a temporary file then renamed (never over a file that appeared), read back and parsed; one of another application is completed (its edits kept), its previous bytes kept in the quarantine. `undo` removes or restores a sidecar only while it holds what the run wrote. |
 | `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
