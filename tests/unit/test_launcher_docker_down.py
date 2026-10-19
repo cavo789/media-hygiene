@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
@@ -99,7 +100,7 @@ def test_powershell_checks_docker_desktop_after_a_failed_run() -> None:
     back = expanded(text)
     check = back.index("    if ($status -ne 0) {\n")
     asked = back.index("        $null = docker version 2>$null\n", check)
-    started = back.index("(_mh_start)", asked)
+    started = back.index("(_mh_desktop_start)", asked)
     assert started < back.index("        $global:LASTEXITCODE = $status\n", started)
     assert back.index("        $status = $LASTEXITCODE\n") < check
 
@@ -125,7 +126,7 @@ def _powershell() -> str:
 def test_powershell_starts_docker_desktop_and_waits_for_it() -> None:
     """`docker desktop start --timeout 180`, asked again; 0174's line on failure."""
     back = _powershell()
-    start = back.index("function global:_mh_start {\n")
+    start = back.index("function global:_mh_desktop_start {\n")
     said = back.index(
         "Write-Host \"Docker Desktop n'est pas démarré : je le lance", start
     )
@@ -150,7 +151,7 @@ def test_powershell_menu_paths_check_docker_desktop_first() -> None:
     assert back.count(checked) == 2
     desktop = back.index("function global:_mh_desktop {\n")
     asked = back.index("    $null = docker version 2>$null\n", desktop)
-    assert asked < back.index("    return (_mh_start)\n", asked)
+    assert asked < back.index("    return (_mh_desktop_start)\n", asked)
 
 
 def test_powershell_failed_command_is_never_run_twice() -> None:
@@ -159,7 +160,27 @@ def test_powershell_failed_command_is_never_run_twice() -> None:
     check = back.index("    if ($status -ne 0) {\n")
     end = back.index("        $global:LASTEXITCODE = $status\n", check)
     block = back[check:end]
-    assert "if ($LASTEXITCODE -ne 0 -and (_mh_start)) {" in block
+    assert "if ($LASTEXITCODE -ne 0 -and (_mh_desktop_start)) {" in block
     assert "tapez de nouveau la commande" in block
     assert "docker run" not in block
     assert back.count("        docker run --rm @tty `\n") == 1
+
+
+def test_each_powershell_function_is_defined_once() -> None:
+    """A second definition silently replaces the first (2026-10-19).
+
+    `_mh_start` of the Explorer entry replaced the one starting Docker Desktop:
+    `mh` printed a command line instead of starting it, then said it was ready.
+    """
+    names = re.findall(r"^function global:(\S+?)[ ({]", _powershell(), re.MULTILINE)
+    assert {"_mh_desktop_start", "_mh_start"} <= set(names)
+    assert len(names) == len(set(names)), sorted(n for n in names if names.count(n) > 1)
+
+
+def test_each_bash_function_is_defined_once(tmp_path: Path) -> None:
+    """The same in mh.sh: a function defined twice keeps only the last one."""
+    runtime = make_runtime(make_locations(tmp_path))
+    text = render_script(launcher_script(runtime, Shell.BASH, _COMMANDS))
+    names = re.findall(r"^(\w+)\(\) \{", text, re.MULTILINE)
+    assert names
+    assert len(names) == len(set(names)), sorted(n for n in names if names.count(n) > 1)

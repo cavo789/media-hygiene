@@ -110,9 +110,13 @@ def link_both_ways(report: Path, target: Path) -> None:
 
 
 def _newest(locations: Locations) -> Path:
-    """The report of the latest audit."""
-    reports = sorted(locations.reports_dir.glob("*-audit/report.html"))
-    return reports[-1]
+    """The report of the latest audit.
+
+    Two audits in the same second write `<stamp>-audit` then `<stamp>-audit-2`: the
+    newest is the last written, not the last name (a CI failure, 2026-10-19).
+    """
+    reports = locations.reports_dir.glob("*-audit*/report.html")
+    return max(reports, key=lambda report: report.stat().st_mtime_ns)
 
 
 def photo(path: Path, data: bytes = b"photo") -> MediaFile:
