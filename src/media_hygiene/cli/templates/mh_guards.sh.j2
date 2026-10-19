@@ -1,0 +1,24 @@
+{# The check before a page (0250): included by mh.sh.j2; services/launcher_guards.py. #}
+# A page left by a closed terminal keeps the port of the pages (0250): closing a terminal
+# ends the docker client, not the container. Each page carries the PID of its shell; before
+# a page, one whose shell is gone (or is this one, idle) is stopped, said in one line; one
+# whose shell still runs is left alone, the user told to close it there.
+_{{ function }}_page_free() {
+    local line id labels owner pattern='(^|,){{ guards.label | replace(".", "[.]") }}=bash-([0-9]+)(,|$)'
+    while IFS= read -r line; do
+        id="${line%%;*}"
+        labels="${line#*;}"
+        if [[ ! "$id" =~ ^[0-9a-f]+$ ]]; then continue; fi  # a container id, nothing else
+        if [[ ! "$labels" =~ $pattern ]]; then
+            printf '%s\n' "{{ guards.texts.held }}" >&2
+            return 1
+        fi
+        owner="${BASH_REMATCH[2]}"
+        if [[ "$owner" != "$$" ]] && ps -p "$owner" >/dev/null 2>&1; then
+            printf '%s\n' "{{ guards.texts.open }}" >&2
+            return 1
+        fi
+        docker stop "$id" >/dev/null 2>&1
+        printf '%s\n' "{{ guards.texts.stopped }}" >&2
+    done < <(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>/dev/null)
+}

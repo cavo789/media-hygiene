@@ -24,14 +24,17 @@
 #      (powercfg /requests) needs an administrator PowerShell
 #  10. mh open, mh shortcut, mh explorer (right-click a folder, then the empty space of an
 #      open folder), each read back   (0175, 0180, 0181, 0188): asks what you saw; your own
-#      Media Hygiene shortcut or entries are put back after
+#      Media Hygiene shortcut or entries are put back after; a page window closed with its X,
+#      the next page stopping what it left running                              (0250)
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
 #      published one, writes mh again and says both versions                (0176, 0177);
 #      mh folders add alone: the folder window, a folder chosen, then cancelled       (0201);
 #      mh folders add --backup (on -OtherDrive when given): its mount line, mh audit's two
-#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205)
+#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205);
+#      its drive's type and its mount in a container before and after mh: a USB stick shared
+#      by mh with Docker Desktop's VM                                           (0252)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -92,6 +95,7 @@
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
+#                                         (19p: mh phone --free on 3 test files written to the phone, after a y)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
@@ -509,8 +513,14 @@ if (Wanted 10) {
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
     $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
     Log "   10c. audit chosen from the right-click analyses the folder: $audit"
-    $inside = Read-Host "10c. Close that mh window: Ctrl+C in it, then type exit (its X would leave the page running). In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
+    # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
+    $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
+    Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
+    $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
     Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
+    $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
+    Log "   10c. the next page stopped the leftover and opened (0250): $freed"
     $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
     Log "   10c. background entry found in: $where"
     MhLeftovers "10c"
@@ -639,8 +649,16 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     foreach ($line in $said) { Log ("   11h. " + $line) }
     $mounts = @(Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "-v `"${backupDir}:" | ForEach-Object { $_.Line.Trim() })
     Log ("   11h. mount line of the backup in mh.ps1: " + ($mounts -join ' / '))
-    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned' })
+    # 0252: a removable drive (a USB stick) is not shared by WSL; mh shares it before the run.
+    $letter = $backupDir.Substring(0, 1)
+    $kind = (Get-Volume -DriveLetter $letter -ErrorAction SilentlyContinue).DriveType
+    Log "   11h. drive ${letter}: of the backup is $kind (Get-Volume)"
+    $before = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11h. the backup in a docker run before mh (mountinfo, then files seen): " + ($before -join ' / '))
+    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned|removable|cannot see' })
     foreach ($line in $lines) { Log ("   11h. mh audit: " + $line.Trim()) }
+    $after = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11h. the backup in a docker run after mh (mountinfo, then files seen, planted: $planted): " + ($after -join ' / '))
     $lines = @(mh clean --yes 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'backup|read-only|Read-only|Error|moved|set aside' })
     foreach ($line in $lines) { Log ("   11i. mh clean: " + $line.Trim()) }
     $left = @(Get-ChildItem -LiteralPath $backupDir -File).Count
@@ -1331,6 +1349,104 @@ if (Wanted 19) {
         Log ("   19o. SHA-256 of the copies: {0} files, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $copies.Count, ($hashed / 1MB), $seconds, ($hashed / 1MB / $seconds))
         foreach ($folder in $phoneDelete, $phoneMoved, $phoneRead) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
         Log "   19o. the PC's temporary folders of 19l-19o removed"
+    }
+
+    # 19p: mh phone --free end to end (0248), on THREE synthetic test files only (16x16 grey
+    # JPEGs made here, a tail of bytes making each one unique), written into DCIM\mh-measure-free
+    # on the phone; --only mh-measure-free keeps every other file of the phone out of the import
+    # and of the page. A and C are new: imported, then proven and deleted from the phone. B has a
+    # twin in the destination with its name and size but another content: kept on the phone.
+    $answer = if ($phone) { Read-Host "19p. Next: mh phone --free on 3 test files written to the phone (DCIM\mh-measure-free); no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $device = $null
+    if ($answer -eq 'y') {
+        foreach ($entry in $shell.Namespace(17).Items()) {
+            if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+        }
+        if (-not $device) { Log "   19p. the phone '$($phone.Name)' is not seen any more: 19p skipped" }
+    } else {
+        Log "   19p. mh phone --free on test files: skipped"
+    }
+    $dcimFree = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
+    if ($dcimFree) {
+        $jpeg = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBv3f8Ad/lTqKb93/d/lS2K+L1P/9k='
+        $freeLocal = Join-Path $Work "phone-free-local"
+        $freeTo = Join-Path $Work "phone-free"
+        $freeAside = Join-Path $Work "phone-free-aside"
+        foreach ($folder in $freeLocal, $freeTo, $freeAside) {
+            if (Test-Path -LiteralPath $folder) { Remove-Item -Recurse -Force -LiteralPath $folder }
+            New-Item -ItemType Directory -Force -Path $folder | Out-Null
+        }
+        $dcimFolder = $dcimFree.GetFolder
+        $countBefore = @(PhoneFiles $dcimFolder 0).Count
+        Log "   19p. DCIM before: $countBefore files"
+        $dcimFolder.NewFolder('mh-measure-free')
+        $testItem = $null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (-not $testItem -and $watch.Elapsed.TotalSeconds -lt 30) {
+            foreach ($entry in $dcimFolder.Items()) { if ($entry.Name -eq 'mh-measure-free') { $testItem = $entry } }
+            if (-not $testItem) { Start-Sleep -Milliseconds 300 }
+        }
+        if (-not $testItem) { Log "   19p. DCIM\mh-measure-free NOT seen on the phone within 30 s: 19p stops here" }
+    }
+    if ($dcimFree -and $testItem) {
+        $testFolder = $testItem.GetFolder
+        $names = @()
+        foreach ($letter in 'A', 'B', 'C') {
+            $name = "mh-free-$stamp-$letter.jpg"
+            $bytes = [Convert]::FromBase64String($jpeg) + [Text.Encoding]::ASCII.GetBytes("mh-measure $stamp $letter")
+            [IO.File]::WriteAllBytes((Join-Path $freeLocal $name), [byte[]]$bytes)
+            $testFolder.CopyHere((Join-Path $freeLocal $name), 4 + 16 + 1024)
+            $names += $name
+        }
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (@($testFolder.Items()).Count -lt 3 -and $watch.Elapsed.TotalSeconds -lt 60) { Start-Sleep -Milliseconds 300 }
+        Log ("   19p. test files on the phone: {0} of 3 after {1:N1} s" -f @($testFolder.Items()).Count, $watch.Elapsed.TotalSeconds)
+        # B's twin: the destination already holds its name and size, with another content.
+        if (-not (Get-Command mh -ErrorAction SilentlyContinue)) {
+            $mhDir = Join-Path $tool "mh19"
+            New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config"), $Work | Out-Null
+            $mhFile = Join-Path $mhDir "mh.ps1"
+            $toolMounts = @(
+                "-v", "${volume}:/cache",
+                "-v", "$(Join-Path $tool 'config'):/config",
+                "-v", "$(Join-Path $tool 'journal'):/journal",
+                "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+                "-v", "$(Join-Path $tool 'reports'):/reports"
+            )
+            & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $freeAside > $mhFile
+            . $mhFile
+        }
+        $own = ($phone.Name -replace '[\\/:*?"<>|]', '_').Trim().TrimEnd('.')
+        $twinFolder = Join-Path (Join-Path $freeTo $own) 'mh-measure-free'
+        New-Item -ItemType Directory -Force -Path $twinFolder | Out-Null
+        $twin = [IO.File]::ReadAllBytes((Join-Path $freeLocal $names[1]))
+        $twin[$twin.Length - 1] = [byte](($twin[$twin.Length - 1] + 1) % 256)
+        [IO.File]::WriteAllBytes((Join-Path $twinFolder $names[1]), $twin)
+        Log "   19p. B's twin written in the destination: same name and size, another content"
+        Read-Host "19p. Next: a page opens in your browser; leave the ticks as they are (A, B, C), press Delete, confirm. Press Enter to start" | Out-Null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $said = @(mh phone --to $freeTo --only mh-measure-free --free 6>&1 | ForEach-Object { "$_" })
+        $seconds = $watch.Elapsed.TotalSeconds
+        foreach ($line in $said) { Log ("   19p. mh phone --free: " + $line) }
+        Log ("   19p. mh phone --free: {0:N1} s wall time (the page included)" -f $seconds)
+        $dialog = Read-Host "19p. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+        Log "   19p. a window during mh phone --free (none expected): $dialog"
+        $left = @(foreach ($entry in $testFolder.Items()) { "$($entry.ExtendedProperty('System.FileName'))" })
+        Log ("   19p. left on the phone in DCIM\mh-measure-free: {0} (expected: only {1})" -f ($left -join ', '), $names[1])
+        $onPc = @(Get-ChildItem -LiteralPath $freeTo -Recurse -File -Force -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName.Substring($freeTo.Length) })
+        Log ("   19p. on the PC under {0}: {1}" -f $freeTo, ($onPc -join ', '))
+        $tmp = @(Get-ChildItem -LiteralPath $freeTo -Recurse -Directory -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -like '.mh-*' })
+        Log "   19p. staging or moved folders left: $($tmp.Count) (0 expected)"
+        foreach ($line in @(mh history 6>&1 | ForEach-Object { "$_" })) { Log ("   19p. mh history: " + $line) }
+        # The test files left on the phone, then their folder, moved to the PC (no dialog, 19m).
+        foreach ($entry in @($testFolder.Items())) { $shell.Namespace($freeAside).MoveHere($entry, 4 + 16 + 1024) }
+        Start-Sleep -Seconds 2
+        foreach ($entry in @($dcimFolder.Items())) { if ($entry.Name -eq 'mh-measure-free') { $shell.Namespace($freeAside).MoveHere($entry, 4 + 16 + 1024) } }
+        Start-Sleep -Seconds 2
+        $countAfter = @(PhoneFiles $dcimFolder 0).Count
+        Log ("   19p. DCIM after: {0} files, before: {1} ({2})" -f $countAfter, $countBefore, $(if ($countAfter -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }))
+        foreach ($folder in $freeLocal, $freeTo, $freeAside) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
+        Log "   19p. the PC's temporary folders of 19p removed"
     }
 }
 

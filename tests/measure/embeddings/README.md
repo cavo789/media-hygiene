@@ -79,8 +79,11 @@ files count: send both to Claude (0221).
 project's image: DINOv2-small measured **0.057 s per photo**, RAM peak 246 MB, 89 MB of
 files; the tokenizers of both text models checked (SigLIP 2: lowercase, `<eos>`, padded to
 64 tokens; multilingual CLIP: `[CLS] … [SEP]`) and the CLIP projection read (512 × 768).
-The SigLIP 2 and CLIP models themselves (2.4 GB) were not downloaded in the devcontainer:
-their first run is the maintainer's.
+SigLIP 2 and CLIP themselves (2026-10-19, same 21 pictures and 3 French searches, devcontainer
+venv, `--cpus 2`, `nice`): downloads pinned as in `models.py` (2.3 GB on disk), no failure,
+pages written. Measured per photo: SigLIP 2 **0.12 s** (model), 0.04 s per search, loaded in
+2.0 s, RAM peak **2.5 GB**; CLIP **0.039 s**, 0.007 s per search, 0.9 s, RAM peak 1.4 GB.
+One model runs at a time, so the container needs about 2.5 GB of memory.
 
 ## Code
 

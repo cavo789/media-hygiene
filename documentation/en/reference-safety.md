@@ -47,6 +47,11 @@ The commands that act on your files never erase anything, and every one of them 
 telling you how many files and how much space, and asking you. Until then, `undo` brings
 everything back.
 
+**On a phone, `mh phone --free` deletes**, and only what you ticked on its page: each file is
+first copied again from the phone and proven (SHA-256) equal to what the PC holds; a file that
+differs stays on the phone. A deletion over USB is final on the phone (no trash), and `undo`
+cannot put a file back on a phone: [free the phone](commands/launcher.md#free-the-phone-mh-phone---free).
+
 Need the space at once? `clean --delete` deletes the extra copies instead of moving them, after
 the same byte comparison. The copy kept stays, so nothing is lost: `undo` rebuilds each deleted
 copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
@@ -113,6 +118,7 @@ error.
 | Albums | [`album`](sort/12-albums.md) only adds hard links (second names) in its own folder, journaled, never over a file; every scan skips that folder. `undo` removes an album's name only when the original it names is still there and is the very same file; otherwise the name stays, and `undo` says why. |
 | XMP sidecars | [`xmp`](reference-tags.md#carry-the-words-with-the-photos-xmp) never writes into a photo nor into a protected folder. Each sidecar is journaled, written to a temporary file then renamed (never over a file that appeared), read back and parsed; one of another application is completed (its edits kept), its previous bytes kept in the quarantine. `undo` removes or restores a sidecar only while it holds what the run wrote. |
 | `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
+| Freeing a phone | [`mh phone --free`](commands/launcher.md#free-the-phone-mh-phone---free): only the files ticked on its page, a set-aside one never ticked for you. Each one copied again from the phone, its SHA-256 proven equal to a library file still there, the import's copy or a content set aside before (else kept on the phone); journaled before it is moved off the phone (no dialog), the phone listed again, the moved copy dropped once equal. `undo` cannot put a file back on a phone. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |
 

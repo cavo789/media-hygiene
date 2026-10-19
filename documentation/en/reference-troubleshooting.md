@@ -171,6 +171,9 @@ setting is required.`
 - Did you publish the port? The command needs `-p 127.0.0.1:8088:8088`: the same number on both
   sides, or the address the review prints is not the right one
   ([cleaning, step 10](clean/10-review-bursts.md#step-2-open-the-page)).
+- A page window closed with its X leaves the page running, port 8088 held. The next `mh` page
+  stops it by itself (*An mh page left open by a closed window was stopped.*); a page still open
+  in another window is left alone: close it there with Ctrl+C.
 - *port is already allocated*: another program uses 8088. Choose another number, the same three
   times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
@@ -198,6 +201,27 @@ decoded the tool's output in the console's old code page before `>` saved it. `m
 folder that does not exist, Docker Desktop creates it empty, and the audit finds nothing there.
 Run `launcher` again, with the same folders, to the same file: the new script is ASCII only
 and keeps every accent.
+
+## A USB stick is seen empty: "missing from the backup", 0 files
+
+*Docker Desktop cannot see D:\Backup (a removable drive, such as a USB stick)*: the folder is on a
+drive Windows calls removable, usually a USB stick or a memory card. WSL, which Docker Desktop
+runs on, shares fixed drives only: in place of the stick, Docker Desktop mounts an empty folder
+of its own. An audit would then say your photos are missing from a backup that holds them all,
+so the tool stops before it compares anything.
+
+- With `mh`, nothing to do: before each command it shares a removable drive with Docker Desktop
+  and says so (*D: is a removable drive: shared with Docker Desktop.*). If sharing fails, it
+  stops with the advice below.
+- With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
+
+  ```powershell
+  wsl -d docker-desktop sh -c "mkdir -p /mnt/host/d && mount -t drvfs D: /mnt/host/d"
+  ```
+
+  It lasts until Docker Desktop stops.
+- Or copy the folder to a fixed disk. Most external hard disks and SSDs are fixed drives:
+  Docker Desktop sees them as they are.
 
 ## A command the guide shows is unknown
 

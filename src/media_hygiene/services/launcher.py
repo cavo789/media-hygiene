@@ -28,6 +28,7 @@ from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
 from media_hygiene.services.launcher_folders import checked_folders
+from media_hygiene.services.launcher_guards import launcher_guards
 from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
 from media_hygiene.services.launcher_memory import locale_option
@@ -158,6 +159,7 @@ def render_script(script: LauncherScript) -> str:
         image=running_image(),
         header=header(script.shell),
         texts=menu_texts(),
+        guards=launcher_guards(),
         desktop_wait=DESKTOP_WAIT,
         kept=kept_run(script),
         update=update_texts(),

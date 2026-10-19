@@ -61,7 +61,19 @@ A measurement bench in `tests/measure/embeddings/`, never part of the published 
 None by itself: it lets the maintainer judge, on their own photos and searches, whether "search by
 meaning" is worth building, and at what cost per photo.
 
-## Status — PARTIAL (2026-10-18)
+## Status — DONE (2026-10-19, was PARTIAL)
+
+### Done (inbox 2026-10-19: the maintainer asked for the smoke run here)
+- SigLIP 2 and CLIP run for real: `python -m embeddings.measure --models siglip2,clip`, 21
+  synthetic pictures, 3 French searches, `--cpus 2`, devcontainer venv + `tokenizers==0.23.2`
+  in a scratch folder, `nice -n 19`. Every pinned file downloaded (2.3 GB on disk), exit 0, the
+  three pages written. Measured: SigLIP 2 0.12 s per photo (model), 0.04 s per search, load
+  2.0 s, RAM peak 2.5 GB; CLIP ViT-B/32 + multilingual text 0.039 s per photo, 0.007 s per
+  search, load 0.9 s, RAM peak 1.4 GB. The input/output names read from the files were right.
+  Estimated for step 20 (1,000 photos, 4 CPUs): SigLIP 2 ≈ 1 min of model time, CLIP ≈ 20 s
+  (scaled from 2 threads, not measured on 4), plus decoding; the download dominates.
+
+### Earlier status — PARTIAL (2026-10-18)
 
 ### Done
 - The bench in `tests/measure/embeddings/`: `measure.py` (command line), `runs.py` (sampling with

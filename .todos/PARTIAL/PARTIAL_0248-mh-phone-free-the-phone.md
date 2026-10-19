@@ -106,3 +106,57 @@ warnings above.
 Freeing a phone today: copy everything, check by hand, delete in the gallery, hoping nothing was
 missed → one command, nothing deleted that the PC does not hold (proved by content) unless the
 person ticks it past a warning.
+
+## Decided (2026-10-19)
+
+**Copy, prove, then move** (maintainer): the file is copied from the phone into the staging folder, its SHA-256 compared, and only then deleted from the phone with `MoveHere` into a PC folder (the way 0247 measured with no dialog); the moved copy is then dropped once equal to the staged one. Two reads per file (≈ 6 min for 4.2 GB, estimated at 24 MB/s). Alternative left aside: move first, prove after (one read, but the file leaves the phone before the proof; a cable pulled mid-move not measured).
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `mh phone --free` (opt-in; without it the phone is only read, as 0219) and
+  `mh phone --only <folder of DCIM>` (keeps every other file out of the import and of the page:
+  what makes the Windows measure safe on test files). `cli/templates/mh_phone_free.ps1.j2`,
+  values and messages in `services/launcher_phone_free.py`.
+- Proof (`services/phone_proof.py`, `phone_holdings.py`, `phone_free.py`): the staged copy's
+  SHA-256 against (1) a library file still there (index digest while size+mtime unchanged, else
+  read now), (2) the import's own copy (phone size, same SHA-256), (3) the journals (full, else
+  partial digest) with the two warnings; else kept with its reason.
+- Journal: `Phase.PHONE`, kinds `phone-library`, `phone-imported`, `phone-set-aside`
+  (`keeper` = PC copy for 1 and 2); `phone-prove` writes `pending`, `phone-done` writes `done`
+  for the files seen gone. `history` shows the run and says undo cannot put files back; `undo`
+  refuses a phone run (`undo_guard`), status never proposes it.
+- Page (`review/phone_app.py`, `phone_session.py`, `phone_views.py`, `phone_file.py`,
+  `templates/phone_review.*`, hidden `phone-review`): three groups, set-aside never ticked and
+  its warning per tile, thumbnails of library/import files, every tick saved in
+  `/reports/phone-decisions.json` and read back; "Delete" accepted only when the file read back
+  holds ticks; `mh` gets the ticked lines read back from the disk; a forged rank refused (422).
+- mh.ps1: page → per batch of 100: CopyHere into an empty staging folder → `phone-prove` →
+  only proven files `MoveHere` into `<destination>\.mh-moved-<date>` → phone folder listed
+  again (up to 10 s) → moved copy Get-FileHash equal → dropped; differing copy kept; still on
+  the phone counted; phone unplugged: stop. `phone-done` per batch. Estimate said first (two
+  reads at 24 MB/s); final counts read back from the phone.
+- Tests: `tests/unit/test_phone_free.py` (17), `tests/integration/test_phone_review.py` (7),
+  `tests/unit/test_launcher_phone.py` (+9). Docs en/fr: launcher page, step 3, safety page.
+- Step 19p of `mh-measure.ps1`: `mh phone --to <Work> --only mh-measure-free --free` on 3
+  synthetic files written to the phone (A, C new; B with a twin of same name/size, other content).
+
+### Not done
+- The Windows end-to-end run (maintainer), image built from branch `iterate/2026-10-19-2`:
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/64e5337/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Unblock-File .\mh-measure.ps1
+  .\mh-measure.ps1 -Only 19 -Count 1
+  ```
+  (answer y at 19p, leave the ticks, press Delete: expected A and C deleted, B kept "Not the
+  same content", no window, no `.mh-*` folder left, DCIM count unchanged after cleanup).
+  **Reason:** needs Windows, Docker Desktop and the phone. Unverified until then: MoveHere of a
+  large file, the folder listing after a move, the page served through `docker run -i -p`.
+- Thumbnails of set-aside files come from nowhere (generic tile): the quarantine copy is not
+  looked up. **Reason:** the journal's remembered set keeps the original host path only.
+- Case 2 checks a second independent read of the phone equal to the import copy instead of a
+  Pillow/ffprobe decode. **Reason:** byte equality with the phone's own bytes already rules out
+  a truncated copy; a decode would only refuse files broken on the phone itself.
+- "Purged on <date>": the purge date is not journaled; the text says "set aside on <date> and
+  purged since".

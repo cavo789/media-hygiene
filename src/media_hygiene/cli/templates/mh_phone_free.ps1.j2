@@ -1,0 +1,195 @@
+{# `mh phone --free` in mh.ps1: see services/launcher_phone_free.py. #}
+{% set f = function %}
+{% set p = phone %}
+{% set c = phone.free %}
+{% set t = phone.free.texts %}
+
+# `{{ f }} phone {{ c.flag }}` (0248), after the import: the files the PC may hold (the plan's, and
+# those just imported) are ticked on a page ({{ c.review }}); then, {{ c.batch }} at a time, each one is
+# copied again into an empty staging folder, proven by its content in the container ({{ c.prove }},
+# journaled pending), and only then moved off the phone with MoveHere into a PC folder: no
+# dialog (measured), where a delete verb asks in a window behind the console. The phone's
+# folder is listed again; the moved copy, equal to the proven content, is dropped; the files
+# gone are journaled done ({{ c.done }}). The final counts are what was seen gone from the phone.
+function global:_{{ f }}_phone_clear($shell, [string]$name, $items, $plan, $result, [string]$destination) {
+    $offered = New-Object 'System.Collections.Generic.List[string]'
+    $aside = 0
+    foreach ($line in $plan) {
+        $fields = "$line" -split "`t"
+        if ($fields.Count -lt 4 -or $fields[0] -eq '{{ p.new }}' -or -not $items.ContainsKey($fields[1])) { continue }
+        $offered.Add("$line")
+        if ($fields[0] -eq '{{ p.aside }}') { $aside++ }
+    }
+    if ($result) {
+        foreach ($copy in $result.Files) {
+            # Imported now: proven against its own copy, named relative to the destination.
+            $relative = $copy.Path.Substring($destination.Length).TrimStart('\') -replace '\\', '/'
+            $offered.Add("{{ p.here }}`t$($copy.Phone.Path)`t$($copy.Phone.Size)`t$($copy.Phone.Date)`t$relative")
+        }
+    }
+    if ($offered.Count -eq 0) { Write-Host "{{ t.none }}"; return }
+    $ticked = _{{ f }}_phone_page $offered $destination $name
+    if ($null -eq $ticked) { Write-Host "{{ t.failed }}"; return }
+    $chosen = @(foreach ($line in $ticked) {
+        $fields = "$line" -split "`t"
+        if ($fields.Count -ge 4 -and $items.ContainsKey($fields[1])) { [pscustomobject]@{ Line = "$line"; File = $items[$fields[1]]; Case = $fields[0] } }
+    })
+    if ($chosen.Count -eq 0) { Write-Host "{{ t.nothing }}"; return }
+    $aside -= @($chosen | Where-Object { $_.Case -eq '{{ p.aside }}' }).Count
+    $bytes = [int64]0
+    foreach ($one in $chosen) { $bytes += $one.File.Size }
+    # Each file read twice from the phone (the proof's copy, then the move): said before starting.
+    $count = '{0:N0}' -f $chosen.Count
+    $size = '{0:N2}' -f ($bytes / 1GB)
+    $minutes = '{0:N0}' -f [Math]::Ceiling(2 * $bytes / 1MB / {{ c.speed }} / 60)
+    Write-Host "{{ t.estimate }}"
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $staging = Join-Path $destination ('{{ p.staging }}' + $stamp)
+    $moved = Join-Path $destination ('{{ c.moved }}' + $stamp)
+    $run = ''
+    $deleted = 0
+    $freed = [int64]0
+    $kept = 0
+    $still = 0
+    $differs = 0
+    $stopped = $false
+    try {
+        for ($start = 0; $start -lt $chosen.Count -and -not $stopped; $start += {{ c.batch }}) {
+            $part = @($chosen | Select-Object -Skip $start -First {{ c.batch }})
+            # 1. Each one copied into the empty staging folder, under its path on the phone.
+            $staged = New-Object 'System.Collections.Generic.List[string]'
+            foreach ($one in $part) {
+                Write-Host ('    {0}/{1} {2}' -f ($start + $staged.Count + 1), $chosen.Count, $one.File.Path)
+                if (-not (_{{ f }}_phone_stage $shell $one.File $staging)) { $stopped = $true; break }
+                $staged.Add($one.Line)
+            }
+            # A copy that stalled (cable pulled): nothing of this batch leaves the phone.
+            if ($stopped -or $staged.Count -eq 0) { break }
+            # 2. Proven by its content in the container, journaled pending before anything moves.
+            $words = @('{{ c.prove }}', '--phone', $name, '--staging', $staging, '--destination', $destination)
+            if ($run) { $words += @('--run', $run) }
+            $proofs = _{{ f }}_phone_docker $staged $destination @() $words
+            if ($null -eq $proofs) { Write-Host "{{ t.failed }}"; $stopped = $true; break }
+            $gone = New-Object 'System.Collections.Generic.List[string]'
+            foreach ($proof in $proofs) {
+                $fields = "$proof" -split "`t"
+                if ($fields[0] -eq 'run' -and $fields.Count -ge 2) { $run = $fields[1]; continue }
+                if ($fields.Count -lt 4 -or -not $items.ContainsKey($fields[1])) { continue }
+                $file = $items[$fields[1]]
+                if ($fields[0] -ne '{{ c.proven }}' -or $fields.Count -lt 5) {
+                    $kept++
+                    $path = $file.Path
+                    $reason = $fields[3]
+                    Write-Host "    {{ t.kept }}"
+                    continue
+                }
+                # 3. Only now, the proof passed: moved off the phone.
+                switch (_{{ f }}_phone_move $shell $name $file $moved $fields[4]) {
+                    'gone' { $gone.Add($file.Path); $deleted++; $freed += $file.Size }
+                    'differs' { $differs++ }
+                    'still' { $still++ }
+                    default { $stopped = $true }
+                }
+                if ($stopped) { break }
+            }
+            # 4. The files seen gone from the phone, journaled done.
+            if ($gone.Count -gt 0 -and $null -eq (_{{ f }}_phone_docker $gone $destination @() @('{{ c.done }}', '--run', $run))) { Write-Host "{{ t.failed }}"; $stopped = $true }
+            Remove-Item -LiteralPath $staging -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    } finally {
+        Remove-Item -LiteralPath $staging -Recurse -Force -ErrorAction SilentlyContinue
+        # The moved folder goes only when no file is left in it: a copy there may be the only one.
+        if ((Test-Path -LiteralPath $moved) -and -not (Get-ChildItem -LiteralPath $moved -Recurse -File -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath $moved -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+    $count = '{0:N0}' -f $deleted
+    $size = '{0:N2}' -f ($freed / 1GB)
+    Write-Host "{{ t.freed }}"
+    $count = '{0:N0}' -f $kept
+    if ($kept -gt 0) { Write-Host "{{ t.kept_count }}" }
+    $count = '{0:N0}' -f $still
+    if ($still -gt 0) { Write-Host "{{ t.still }}" }
+    $count = '{0:N0}' -f $differs
+    $folder = $moved
+    if ($differs -gt 0) { Write-Host "{{ t.differs }}" }
+    $count = '{0:N0}' -f $aside
+    if ($aside -gt 0) { Write-Host "{{ t.aside }}" }
+    if ($stopped) { Write-Host "{{ t.stopped }}" }
+    if ($result -and $result.Files.Count -gt 0) { Write-Host "{{ phone.texts.next }}" } else { Write-Host "{{ t.next }}" }
+}
+
+# The page where the files to delete are ticked ({{ c.review }}): the port published on the loopback
+# only, the browser opened as soon as it answers. The files ticked come back as the container
+# read them from phone-decisions.json; an empty list when none; $null when it failed.
+function global:_{{ f }}_phone_page($lines, [string]$destination, [string]$name) {
+    if (-not (_{{ f }}_page_free)) { return $null }
+    $page = @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}', '--label', "{{ guards.label }}=powershell-$PID")
+    $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
+        param($url, $wait)
+        for ($i = 0; $i -lt $wait; $i++) {
+            try { $null = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop; break } catch { Start-Sleep -Seconds 1 }
+        }
+        if ($i -lt $wait) { Start-Process $url }
+    }
+    try {
+        $out = _{{ f }}_phone_docker $lines $destination $page @('{{ c.review }}', '--phone', $name, '--destination', $destination, '--port', '{{ script.commands.port }}')
+        return ,$out
+    } finally {
+        Remove-Job -Job $browser -Force
+    }
+}
+
+# One file of the phone copied into the staging folder, under its path on the phone, and
+# waited for (CopyHere: the folder is new, no name is ever there). False when it stalled.
+function global:_{{ f }}_phone_stage($shell, $file, [string]$staging) {
+    $parent = Split-Path -Parent ($file.Path -replace '/', '\')
+    $folder = $staging
+    if ($parent) { $folder = Join-Path $staging $parent }
+    $null = New-Item -ItemType Directory -Force -Path $folder
+    $staged = Join-Path $folder $file.Name
+    $shell.Namespace($folder).CopyHere($file.Item, {{ p.flags }})
+    if (_{{ f }}_phone_wait $staged $file.Size) { return $true }
+    Remove-Item -LiteralPath $staged -Force -ErrorAction SilentlyContinue
+    return $false
+}
+
+# A file proven moved off the phone into $moved (MoveHere: no dialog, measured), waited for, then
+# the phone's folder listed again. 'gone': off the phone, the moved copy equal to the proven
+# content (then dropped); 'differs': off the phone with another content (kept); 'still': still
+# on the phone (a moved copy removed, the phone holds the file); 'stopped': no answer.
+function global:_{{ f }}_phone_move($shell, [string]$name, $file, [string]$moved, [string]$digest) {
+    $parent = Split-Path -Parent ($file.Path -replace '/', '\')
+    $folder = $moved
+    if ($parent) { $folder = Join-Path $moved $parent }
+    $null = New-Item -ItemType Directory -Force -Path $folder
+    $landed = Join-Path $folder $file.Name
+    if (Test-Path -LiteralPath $landed) { return 'still' }
+    $shell.Namespace($folder).MoveHere($file.Item, {{ p.flags }})
+    $arrived = _{{ f }}_phone_wait $landed $file.Size
+    $phone = _{{ f }}_phone_gone $shell $name $file
+    if ($phone -eq 'there') {
+        Remove-Item -LiteralPath $landed -Force -ErrorAction SilentlyContinue
+        if ($arrived) { return 'still' } else { return 'stopped' }
+    }
+    if ($phone -ne 'gone') { return 'stopped' }
+    if (-not $arrived) { return 'differs' }
+    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $landed).Hash
+    if ($hash -ne $digest) { return 'differs' }
+    Remove-Item -LiteralPath $landed -Force -ErrorAction SilentlyContinue
+    return 'gone'
+}
+
+# The phone's folder listed again until the file is not in it (MTP removes it after the copy,
+# 0.4 s measured), at most {{ c.gone }} s: 'gone', 'there', or 'unknown' (the phone unplugged).
+function global:_{{ f }}_phone_gone($shell, [string]$name, $file) {
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    while ($true) {
+        if (-not (_{{ f }}_phone_there $shell $name)) { return 'unknown' }
+        $there = $false
+        try {
+            foreach ($entry in $file.Folder.Items()) { if ((_{{ f }}_phone_name $entry) -eq $file.Name) { $there = $true; break } }
+        } catch { return 'unknown' }
+        if (-not $there) { return 'gone' }
+        if ($watch.Elapsed.TotalSeconds -ge {{ c.gone }}) { return 'there' }
+        Start-Sleep -Milliseconds {{ p.poll }}
+    }
+}

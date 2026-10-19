@@ -47,6 +47,12 @@ class ActionKind(StrEnum):
     # Written by `clean --decisions`: a file deleted outside the tool (the Explorer),
     # confirmed deleted on purpose in `review --gone` (0224). Nothing moves.
     MARK_GONE = "mark-gone"
+    # Written by `mh phone` (0248): a file deleted from the phone, its content proven
+    # on the PC — in the library (`keeper`), in the import's copy (`keeper`), or set
+    # aside before on purpose. `undo` cannot put a file back on a phone.
+    PHONE_LIBRARY = "phone-library"
+    PHONE_IMPORTED = "phone-imported"
+    PHONE_SET_ASIDE = "phone-set-aside"
 
     @property
     def remembered(self) -> bool:
@@ -69,6 +75,7 @@ class Phase(StrEnum):
     SORT = "sort"
     ALBUM = "album"
     XMP = "xmp"
+    PHONE = "phone"
     UNDO = "undo"
 
 
@@ -79,8 +86,8 @@ class Status(StrEnum):
     DONE = "done"
 
 
-# The phases that change files; `undo` reverses one of them.
-ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP)
+# The phases that change files; `undo` reverses one of them, but `phone`'s (0248).
+ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP, Phase.PHONE)
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(
     {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
@@ -109,5 +116,9 @@ REMEMBERED: Final = frozenset(
 LINKS: Final = frozenset({ActionKind.LINK, ActionKind.LINK_DUPLICATE})
 # Journal marks: no file is deleted, moved nor freed by them (0224).
 MARKS: Final = frozenset({ActionKind.MARK_GONE})
+# Files deleted from a phone (0248): nothing on the PC is deleted, moved nor freed.
+PHONE_DELETIONS: Final = frozenset(
+    {ActionKind.PHONE_LIBRARY, ActionKind.PHONE_IMPORTED, ActionKind.PHONE_SET_ASIDE}
+)
 # Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})

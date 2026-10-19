@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 import pytest
@@ -11,14 +10,13 @@ import pytest
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
-from media_hygiene.paths.mounts import MountTable
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
     render_script,
 )
 from media_hygiene.services.launcher_menu import UNSAFE_CHARACTERS, menu_texts
-from tests.support.host_bash import run_bash
+from tests.support.host_bash import bash_mh, run_bash
 from tests.support.runtime import make_locations, make_runtime
 from tests.unit.test_launcher_ascii import accented_runtime, expanded
 
@@ -51,12 +49,7 @@ def _bash(
 ) -> subprocess.CompletedProcess[str]:
     """Load the bash `mh` and run `line`; docker exits with `answers` (run, version)."""
     run, version = answers
-    runtime = replace(
-        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
-    )
-    script = tmp_path / "mh.sh"
-    script.write_text(render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)))
-    code = f"{_FAKE_DOCKER}\nsource {script}; {line}; echo status=$?"
+    code = f"{bash_mh(tmp_path, _COMMANDS, _FAKE_DOCKER)}; {line}; echo status=$?"
     env = {
         "HOME": str(tmp_path),
         "PATH": "/usr/bin:/bin",

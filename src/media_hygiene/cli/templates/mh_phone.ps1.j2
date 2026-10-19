@@ -2,16 +2,25 @@
 {% set f = function %}
 {% set p = phone %}
 {% set t = phone.texts %}
+{% set c = phone.free %}
 
-# `{{ f }} phone [--to <folder>]`: copy only the new photos and videos of a phone plugged in
-# over USB (0219). Shell.Application only (a COM object of Windows: no Add-Type); CopyHere
-# only, never MoveHere: nothing on the phone is deleted, moved or renamed. The container
-# decides what is new ({{ p.plan }}): only it knows the library and what was set aside.
+# `{{ f }} phone [--to <folder>] [--only <folder of DCIM>] [{{ c.flag }}]`: copy only the new photos and videos of a phone
+# plugged in over USB (0219). Shell.Application only (a COM object of Windows: no Add-Type);
+# the import copies with CopyHere only: nothing on the phone is deleted, moved or renamed.
+# The container decides what is new ({{ p.plan }}): only it knows the library and what was set
+# aside. With {{ c.flag }} (0248), what the PC holds may then leave the phone: _{{ f }}_phone_clear.
 function global:_{{ f }}_phone {
     $words = @($args)
     $to = ''
-    if ($words.Count -eq 2 -and $words[0] -eq '--to') { $to = "$($words[1])" }
-    elseif ($words.Count -ne 0) { Write-Host "{{ t.usage }}"; return }
+    $only = ''
+    $free = $false
+    for ($i = 0; $i -lt $words.Count; $i++) {
+        $word = "$($words[$i])"
+        if ($word -eq '{{ c.flag }}') { $free = $true }
+        elseif ($word -eq '--to' -and $i + 1 -lt $words.Count) { $i++; $to = "$($words[$i])" }
+        elseif ($word -eq '--only' -and $i + 1 -lt $words.Count) { $i++; $only = ("$($words[$i])" -replace '\\', '/').Trim('/') }
+        else { Write-Host "{{ t.usage }}"; return }
+    }
     if (-not $to) {
         $first = @(_{{ f }}_photos) | Select-Object -First 1
         if (-not $first) { Write-Host "{{ t.no_folder }}"; return }
@@ -19,7 +28,7 @@ function global:_{{ f }}_phone {
     }
     try { $to = [IO.Path]::GetFullPath($to) } catch { }
     if ($to -notmatch '^[A-Za-z]:\\' -or -not (Test-Path -LiteralPath $to.Substring(0, 3))) { Write-Host "{{ t.bad_folder }}"; return }
-    Write-Host "{{ t.read_only }}"
+    if ($free) { Write-Host "{{ c.texts.read }}" } else { Write-Host "{{ t.read_only }}" }
     $shell = New-Object -ComObject Shell.Application
     $phone = _{{ f }}_phone_pick $shell
     if (-not $phone) { return }
@@ -36,6 +45,8 @@ function global:_{{ f }}_phone {
     $lines = New-Object 'System.Collections.Generic.List[string]'
     foreach ($entry in @(_{{ f }}_phone_files $dcim.GetFolder '' 0)) {
         if ($items.ContainsKey($entry.Path)) { continue }
+        # --only <folder of DCIM>: the other files are neither copied nor offered.
+        if ($only -and -not $entry.Path.StartsWith($only + '/', [StringComparison]::OrdinalIgnoreCase)) { continue }
         $items[$entry.Path] = $entry
         $lines.Add("$($entry.Path)`t$($entry.Size)`t$($entry.Date)")
         if ($lines.Count % {{ p.every }} -eq 0) { $count = '{0:N0}' -f $lines.Count; Write-Host "    {{ t.listed }}" }
@@ -44,7 +55,7 @@ function global:_{{ f }}_phone {
     if (-not (_{{ f }}_phone_there $shell $name)) { $count = 0; Write-Host "{{ t.unplugged }}"; return }
     if ($lines.Count -eq 0) { Write-Host "{{ t.nothing }}"; return }
     $null = New-Item -ItemType Directory -Force -Path $destination
-    $plan = _{{ f }}_phone_plan $lines $destination
+    $plan = _{{ f }}_phone_docker $lines $destination @() @('{{ p.plan }}', '--destination', $destination)
     if ($null -eq $plan) { Write-Host "{{ t.no_plan }}"; return }
     $new = @()
     $bytes = [int64]0
@@ -75,6 +86,7 @@ function global:_{{ f }}_phone {
     if ($aside -gt 0) { Write-Host "{{ t.aside }}" }
     $count = '{0:N0}' -f $here
     if ($here -gt 0) { Write-Host "{{ t.here }}" }
+    if ($free) { _{{ f }}_phone_clear $shell $name $items $plan $result $destination; return }
     if ($copies -gt 0) { Write-Host "{{ t.next }}" }
 }
 
@@ -140,11 +152,16 @@ function global:_{{ f }}_phone_files($folder, [string]$below, [int]$depth) {
             if ($depth -lt 8) { _{{ f }}_phone_files $entry.GetFolder ($below + $entry.Name + '/') ($depth + 1) }
             continue
         }
-        # The file name with its extension, whatever Explorer's "hide extensions" says.
-        $name = "$($entry.ExtendedProperty('System.FileName'))"
-        if (-not $name) { $name = "$($entry.Name)" }
-        [pscustomobject]@{ Path = $below + $name; Name = $name; Size = (_{{ f }}_phone_size $entry); Date = (_{{ f }}_phone_date $entry); Item = $entry }
+        $name = _{{ f }}_phone_name $entry
+        [pscustomobject]@{ Path = $below + $name; Name = $name; Size = (_{{ f }}_phone_size $entry); Date = (_{{ f }}_phone_date $entry); Item = $entry; Folder = $folder }
     }
+}
+
+# The file name with its extension, whatever Explorer's "hide extensions" says.
+function global:_{{ f }}_phone_name($item) {
+    $name = "$($item.ExtendedProperty('System.FileName'))"
+    if (-not $name) { $name = "$($item.Name)" }
+    return $name
 }
 
 # Over MTP, .Size is 0 and .ModifyDate 1899-12-30 (measured 2026-10-19, Android): the real
@@ -160,9 +177,10 @@ function global:_{{ f }}_phone_date($item) {
     return ([datetime]$date).ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", [Globalization.CultureInfo]::InvariantCulture)
 }
 
-# The plan of the container: the listing on its stdin, a line per file on its stdout, in
-# UTF-8 both ways. The photos, the backups and the destination read-only. Nothing when it failed.
-function global:_{{ f }}_phone_plan($lines, [string]$destination) {
+# A command of the container for mh phone ({{ p.plan }}, {{ c.review }}, {{ c.prove }}, {{ c.done }}): the lines
+# on its stdin, its lines back from its stdout, in UTF-8 both ways. The photos, the backups and
+# the destination read-only; $page publishes the port of a page. $null when it failed.
+function global:_{{ f }}_phone_docker($lines, [string]$destination, $page, $words) {
     $point = '{{ script.data_dir.as_posix() }}/' + $destination.Substring(0, 1).ToLower() + ($destination.Substring(2).TrimEnd('\') -replace '\\', '/')
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
@@ -171,7 +189,7 @@ function global:_{{ f }}_phone_plan($lines, [string]$destination) {
     try {
         try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false) } catch { }
         $OutputEncoding = [Text.UTF8Encoding]::new($false)
-        $plan = @($lines | docker run --rm -i `
+        $out = @($lines | docker run --rm -i @page `
             -e "{{ variable }}={{ script.shell.value }}" `
 {% for option in script.environment %}
             {{ option }} `
@@ -183,9 +201,9 @@ function global:_{{ f }}_phone_plan($lines, [string]$destination) {
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
             -v "${destination}:${point}:ro" `
-            {{ image }} {{ p.plan }} --destination $destination)
+            {{ image }} @words)
         if ($LASTEXITCODE -ne 0) { return $null }
-        return ,$plan
+        return ,$out
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
     }
@@ -230,7 +248,7 @@ function global:_{{ f }}_phone_copy($shell, $files, [string]$destination) {
                 break
             }
             if ((Split-Path -Leaf $final) -ne $file.Name) { $name = $file.Name; Write-Host "    {{ t.renamed }}" }
-            $done.Add([pscustomobject]@{ Path = $final; Size = $file.Size })
+            $done.Add([pscustomobject]@{ Path = $final; Size = $file.Size; Phone = $file })
         }
     } finally {
         Remove-Item -LiteralPath $staging -Recurse -Force -ErrorAction SilentlyContinue
@@ -239,22 +257,23 @@ function global:_{{ f }}_phone_copy($shell, $files, [string]$destination) {
 }
 
 # Until the copy has the phone's System.Size (or, size unknown, stops growing) and the copy
-# engine has let it go (opened alone). False after {{ p.stall }} s without growing.
+# engine has let it go (opened alone). Looked at before the first pause, every {{ p.fast }} ms
+# for {{ p.fast_for }} ms (a photo), then every {{ p.poll }} ms (0251). False after {{ p.stall }} s without growing.
 function global:_{{ f }}_phone_wait([string]$path, [int64]$size) {
     $last = [int64]-1
     $watch = [Diagnostics.Stopwatch]::StartNew()
+    $since = [Diagnostics.Stopwatch]::StartNew()
     while ($watch.Elapsed.TotalSeconds -lt {{ p.stall }}) {
-        Start-Sleep -Milliseconds {{ p.poll }}
         $copy = Get-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
-        if (-not $copy) { continue }
-        $length = [int64]$copy.Length
-        if ($length -ne $last) {
-            $last = $length
-            $watch.Restart()
-            if ($size -le 0) { continue }
+        if ($copy) {
+            $length = [int64]$copy.Length
+            $grew = $length -ne $last
+            if ($grew) { $last = $length; $watch.Restart() }
+            if (($size -gt 0 -and $length -eq $size) -or ($size -le 0 -and -not $grew)) {
+                try { $stream = [IO.File]::Open($path, 'Open', 'Read', 'None'); $stream.Close(); return $true } catch { }
+            }
         }
-        if ($size -gt 0 -and $length -ne $size) { continue }
-        try { $stream = [IO.File]::Open($path, 'Open', 'Read', 'None'); $stream.Close(); return $true } catch { }
+        if ($since.ElapsedMilliseconds -lt {{ p.fast_for }}) { Start-Sleep -Milliseconds {{ p.fast }} } else { Start-Sleep -Milliseconds {{ p.poll }} }
     }
     return $false
 }

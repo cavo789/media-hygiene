@@ -63,6 +63,14 @@ function global:{{ function }} {
     }
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
     $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
+    if ($page) {
+        # A page left by a closed window holds the port: stopped when its console is gone (0250).
+        if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }
+        $page += '--label', "{{ guards.label }}=powershell-$PID"
+    }
+    # A removable drive is shared with Docker Desktop first, or the command stops (0252).
+    $hosts = @({{ quoted((script.data + script.backups + script.tools + script.drives) | map(attribute='host') | list) }}) + @(foreach ($volume in $given) { $volume })
+    if (-not (_{{ function }}_removable $hosts)) { $global:LASTEXITCODE = 1; return }
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
@@ -160,7 +168,10 @@ function global:_{{ function }}_open {
 
 {% include 'mh_desktop.ps1.j2' %}
 
+{% include 'mh_guards.ps1.j2' %}
+
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}
 {% include 'mh_cloud.ps1.j2' %}
 {% include 'mh_phone.ps1.j2' %}
+{% include 'mh_phone_free.ps1.j2' %}

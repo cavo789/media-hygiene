@@ -4,7 +4,7 @@
 - **Batch**: docker
 - **Depends**: —
 - **Files**: `src/media_hygiene/scan/image_check.py`, `Dockerfile`, `pyproject.toml`
-- **Needs maintainer**: a few dozen real iPhone HEIC files (tile grids), kept outside the repository
+
 
 ## Context
 
@@ -54,7 +54,38 @@ Measured on 2026-10-14 in the devcontainer, 12 MP pictures made from the same sy
 - The figures of item 2 written here; the `DECODE_THREADS` decision applied or rejected with its
   figures; a follow-up TODO for the decoder if it qualifies.
 
-## Status — BLOCKED (2026-10-14)
+## Status — DONE (2026-10-19, was BLOCKED)
+
+### Done (inbox 2026-10-19: the maintainer agreed to public samples)
+- Real files: the HEIC of `drewnoakes/metadata-extractor-images` (README: "You are free to use
+  these media files however you wish"), downloaded to the session's scratchpad only, never into
+  the repository: 6 iPhone tile grids, 12 MP, 48 tiles of 512 px (iPhone 8, XR, 11 Pro ×4;
+  0.7–6.2 MB) and one Samsung Galaxy S24 FE grid (33 tiles). No 48 MP file among them.
+- Measured in the devcontainer (venv, `inspect_image`, median of 3, `nice -n 19`):
+  one process, `DECODE_THREADS` 4 (default) → 107–263 ms wall, 225–698 ms CPU per file;
+  `DECODE_THREADS` 1 → 207–635 ms wall, same CPU (216–666 ms). Real grids cost less than the
+  synthetic one-frame files above (403–691 ms): ≈ 0.3 s CPU for a typical 12 MP iPhone photo,
+  ≈ 10× a JPEG (30.6 ms), not 13×.
+- Pool as wide as the CPUs (4 workers pinned to 4 CPUs with `taskset`, 56 files, run twice):
+  threads 4 → 11.05 / 10.77 files/s, threads 2 → 11.42 / 10.79, threads 1 → 10.98 / 11.15:
+  no difference beyond the noise (±3 %). The oversubscription costs nothing measurable, and the
+  threads help when the pool is not full (the last files of a walk). **Decision: keep
+  `DECODE_THREADS` at its default** (rejected with these figures).
+- Throughput: ≈ 2.75 files/s per CPU (measured on 4) → 300,000 iPhone photos on 16 CPUs
+  ≈ 1.9 h of first audit (estimated by scaling; the Priority line's ≈ 2 h stands).
+- The image's `ffmpeg` 9.0.2 reads the grid (`ffprobe -show_stream_groups`: one *Tile Grid*
+  group of 48 streams) but cannot assemble it: "No such filter: 'xstack'" (measured,
+  `media-hygiene:latest`). Using it would need `xstack` in the minimal build, for a decoder
+  gain measured at ≈ 1.4× (above, one-frame file), below the 1.5× this TODO sets for a
+  follow-up. **No decoder follow-up filed.**
+
+### Not done (dropped)
+- libheif built with its FFmpeg decoder plugin: not built; same FFmpeg HEVC decoder, so the
+  same ≈ 1.4× (estimated), under the threshold.
+- 48 MP files (iPhone 14 Pro and later): none public found with a clear licence; their cost
+  per file is ≈ 4× a 12 MP one (estimated from the pixel count), the decision does not change.
+
+### Earlier status — BLOCKED (2026-10-14)
 
 ### Not done
 - All items remain open.

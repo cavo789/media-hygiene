@@ -179,6 +179,10 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
 - Avez-vous publié le port ? La commande a besoin de `-p 127.0.0.1:8088:8088` : le même numéro des
   deux côtés, sinon l'adresse affichée par le tri n'est pas la bonne
   ([étape 10 du nettoyage](clean/10-review-bursts.md#étape-2--ouvrir-la-page)).
+- Une fenêtre de page fermée par sa croix laisse la page tourner, le port 8088 pris. La page
+  `mh` suivante l'arrête d'elle-même (*Une page de mh restée ouverte par une fenêtre fermée a été
+  arrêtée.*) ; une page encore ouverte dans une autre fenêtre est laissée : fermez-la là-bas avec
+  Ctrl+C.
 - *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
   même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
@@ -207,6 +211,28 @@ Un `mh.ps1` écrit par une image plus ancienne contient `Vid├®os` là où vot
 avant que `>` ne l'enregistre. `mh` monte alors un dossier qui n'existe pas, Docker Desktop le crée
 vide, et l'audit n'y trouve rien. Relancez `launcher`, avec les mêmes dossiers, vers le même
 fichier : le nouveau script ne contient que de l'ASCII et garde chaque accent.
+
+## Une clé USB est vue vide : « absentes de la sauvegarde », 0 fichier
+
+*Docker Desktop ne voit pas D:\Sauvegarde (un disque amovible, comme une clé USB)* : le dossier est
+sur un disque que Windows dit amovible, le plus souvent une clé USB ou une carte mémoire. WSL, sur
+lequel tourne Docker Desktop, ne partage que les disques fixes : à la place de la clé, Docker
+Desktop monte un dossier vide à lui. Un audit dirait alors que vos photos manquent dans une
+sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer quoi que ce soit.
+
+- Avec `mh`, rien à faire : avant chaque commande, il partage un disque amovible avec Docker
+  Desktop et le dit (*D: est un disque amovible : partagé avec Docker Desktop.*). Si le partage
+  échoue, il s'arrête avec le conseil ci-dessous.
+- Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
+  commande :
+
+  ```powershell
+  wsl -d docker-desktop sh -c "mkdir -p /mnt/host/d && mount -t drvfs D: /mnt/host/d"
+  ```
+
+  Cela dure jusqu'à l'arrêt de Docker Desktop.
+- Ou copiez le dossier sur un disque fixe. La plupart des disques durs et SSD externes sont des
+  disques fixes : Docker Desktop les voit tels quels.
 
 ## Une commande du guide est inconnue
 

@@ -495,6 +495,9 @@ msgstr ""
 "non branché. Seuls les fichiers supprimés exprès sont retenus ; rien "
 "n'est jamais déplacé."
 
+msgid "A file of your library has the same name and size."
+msgstr "Un fichier de votre photothèque a le même nom et la même taille."
+
 msgid ""
 "A file reachable through two paths (a folder mounted twice, a hard link) "
 "is recognised: it is never counted as its own copy."
@@ -795,6 +798,9 @@ msgstr "Déjà à leur place"
 msgid "Already in place: {share}."
 msgstr "Déjà à leur place : {share}."
 
+msgid "Already in your library"
+msgstr "Déjà dans votre photothèque"
+
 #, python-brace-format
 msgid "Already in your library, not copied: {count}."
 msgstr "Déjà dans votre photothèque, non copiés : {count}."
@@ -841,6 +847,16 @@ msgstr ""
 
 msgid "An icon on the Desktop and in the Start menu opens the home page"
 msgstr "Une icône sur le Bureau et dans le menu Démarrer ouvre la page d'accueil"
+
+msgid ""
+"An mh page is open in another window: close it there (Ctrl+C), then type "
+"the command again."
+msgstr ""
+"Une page de mh est ouverte dans une autre fenêtre : ferme-la là-bas "
+"(Ctrl+C), puis tape la commande à nouveau."
+
+msgid "An mh page left open by a closed window was stopped."
+msgstr "Une page de mh restée ouverte par une fenêtre fermée a été arrêtée."
 
 msgid ""
 "Analyse this many random photos, print the time per photo and the "
@@ -973,6 +989,13 @@ msgstr "Revenus après une mise de côté"
 
 msgid "Back on the map: taken out of config.toml."
 msgstr "De retour sur la carte : retiré de config.toml."
+
+msgid ""
+"Back to the console: mh copies each file ticked again, proves it, then "
+"deletes it from the phone."
+msgstr ""
+"Retour à la console : mh copie à nouveau chaque fichier coché, le prouve,"
+" puis le supprime du téléphone."
 
 msgid "Back to the photos"
 msgstr "Retour aux photos"
@@ -1132,6 +1155,15 @@ msgstr ""
 
 msgid "Checking that files can be read"
 msgstr "Vérification de la lisibilité des fichiers"
+
+#, python-brace-format
+msgid ""
+"Checking then deleting {count} files ({size} GB): about {minutes} min, "
+"each one copied again from the phone, then moved off it."
+msgstr ""
+"Vérification puis suppression de {count} fichiers ({size} Go) : environ "
+"{minutes} min, chacun copié à nouveau depuis le téléphone, puis déplacé "
+"hors de celui-ci."
 
 #, python-brace-format
 msgid "Choice on series {number} undone."
@@ -1321,6 +1353,9 @@ msgstr "Continuer ? ({yes}/N)"
 
 msgid "Copied"
 msgstr "Copiée"
+
+msgid "Copied by mh phone"
+msgstr "Copiés par mh phone"
 
 #, python-brace-format
 msgid "Copied: {command}"
@@ -1613,6 +1648,22 @@ msgstr[1] ""
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr "Supprimer le lieu {name} ? Les photos restent où elles sont."
 
+#, python-brace-format
+msgid "Delete {ticked} files ({size}) from the phone"
+msgstr "Supprimer {ticked} fichiers ({size}) du téléphone"
+
+#, python-brace-format
+msgid ""
+"Delete {ticked} files ({size}) from the phone? Each one is first copied "
+"again and compared with the PC's copy: one that differs stays on the "
+"phone. Deleted over USB, a file is gone for good from the phone: it has "
+"no trash."
+msgstr ""
+"Supprimer {ticked} fichiers ({size}) du téléphone ? Chacun est d'abord "
+"copié à nouveau et comparé à la copie du PC : celui qui diffère reste sur"
+" le téléphone. Supprimé par USB, un fichier disparaît pour de bon du "
+"téléphone : il n'a pas de corbeille."
+
 msgid "Deleted"
 msgstr "Supprimés"
 
@@ -1692,6 +1743,30 @@ msgstr ""
 "Ne pas lancer Czkawka ici : afficher la commande qui le lance dans sa "
 "propre image, puis comparer les résultats qu'il a écrits dans /reports "
 "(czkawka.json)."
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {drive}: (a removable drive, such as a USB "
+"stick), and sharing it failed: copy the folder to a fixed disk, or use an"
+" external hard disk."
+msgstr ""
+"Docker Desktop ne voit pas {drive}: (un disque amovible, comme une clé "
+"USB), et le partager a échoué : copie le dossier sur un disque fixe, ou "
+"utilise un disque dur externe."
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows an empty folder instead, so nothing is compared."
+msgid_plural ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows empty folders instead, so nothing is compared."
+msgstr[0] ""
+"Docker Desktop ne voit pas {folders} (un disque amovible, comme une clé "
+"USB) : il montre un dossier vide à la place, donc rien n'est comparé."
+msgstr[1] ""
+"Docker Desktop ne voit pas {folders} (un disque amovible, comme une clé "
+"USB) : il montre des dossiers vides à la place, donc rien n'est comparé."
 
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
@@ -1849,6 +1924,13 @@ msgstr ""
 
 msgid "Each of its files would be seen twice, as its own duplicate."
 msgstr "Chacun de ses fichiers serait vu deux fois, comme son propre doublon."
+
+msgid ""
+"Each one was first proven on the PC by its content: in your library, in "
+"the folder of the import, or set aside before."
+msgstr ""
+"Chacun a d'abord été prouvé sur le PC par son contenu : dans votre "
+"photothèque, dans le dossier de l'import, ou mis de côté avant."
 
 msgid ""
 "Each rule has a name and a \"match\": existing_folder (a folder name you "
@@ -2149,6 +2231,10 @@ msgid ""
 msgstr ""
 "Chaque étape des guides avec sa commande, la prochaine en premier : ce "
 "que montre 'mh' seul, Entrée la lance."
+
+#, python-format
+msgid "Every tick is saved at once in %(place)s."
+msgstr "Chaque coche est enregistrée aussitôt dans %(place)s."
 
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
@@ -2510,6 +2596,15 @@ msgstr ""
 msgid "For every terminal, add that line to {profile}."
 msgstr "Pour chaque terminal, ajoutez cette ligne à {profile}."
 
+msgid "For mh phone: journal the files gone from the phone."
+msgstr "Pour mh phone : inscrit au journal les fichiers partis du téléphone."
+
+msgid "For mh phone: prove by their content the files ticked to delete."
+msgstr "Pour mh phone : prouve par leur contenu les fichiers cochés à supprimer."
+
+msgid "For mh phone: the page where you tick what leaves the phone."
+msgstr "Pour mh phone : la page où vous cochez ce qui quitte le téléphone."
+
 msgid "For mh phone: which files of a phone are new, from its listing."
 msgstr ""
 "Pour mh phone : quels fichiers d'un téléphone sont nouveaux, d'après sa "
@@ -2543,6 +2638,9 @@ msgstr ""
 "nettoyages précédents), ou donnez à {source} sa propre quarantaine : 'mh "
 "folders add' avec un dossier de {source}, ou -v \"{source}\\media-"
 "hygiene\\quarantine:/quarantine/{letter}\"."
+
+msgid "Free the phone"
+msgstr "Libérer le téléphone"
 
 msgid ""
 "Free the space at once: delete the exact copies for good, after a byte "
@@ -2875,6 +2973,9 @@ msgstr "Il était alors :"
 msgid "Italy 2023"
 msgstr "Italie 2023"
 
+msgid "Its content is nowhere on the PC: kept on the phone."
+msgstr "Son contenu n'est nulle part sur le PC : gardé sur le téléphone."
+
 #, python-brace-format
 msgid ""
 "Its edits would not be carried over: repair {path}, name another one with"
@@ -2927,6 +3028,10 @@ msgstr "Gardées"
 
 msgid "Kept in"
 msgstr "Conservées dans"
+
+#, python-brace-format
+msgid "Kept on the phone, the PC not holding their content: {count}."
+msgstr "Gardés sur le téléphone, le PC n'ayant pas leur contenu : {count}."
 
 #, python-brace-format
 msgid ""
@@ -3010,6 +3115,9 @@ msgstr "Lanceur écrit. Chargez-le avec : {load}, puis tapez : mh audit"
 
 msgid "Leave alone"
 msgstr "Ne pas toucher"
+
+msgid "Leave everything on the phone"
+msgstr "Tout laisser sur le téléphone"
 
 msgid "Left as it is"
 msgstr "Laissé tel quel"
@@ -3216,6 +3324,14 @@ msgstr "Déplacés"
 
 msgid "Moved by an earlier run"
 msgstr "Déplacés par un passage précédent"
+
+#, python-brace-format
+msgid ""
+"Moved off the phone with another content than the one proven: {count}, "
+"kept in {folder}."
+msgstr ""
+"Déplacés hors du téléphone avec un autre contenu que celui prouvé : "
+"{count}, gardés dans {folder}."
 
 msgid "Moved to the quarantine"
 msgstr "Déplacés en quarantaine"
@@ -3564,6 +3680,9 @@ msgstr "Aucun journal trouvé à {path}."
 msgid "No journal mount: no history to show."
 msgstr "Pas de montage /journal : aucun historique à afficher."
 
+msgid "No journal mount: nothing is deleted from the phone without one."
+msgstr "Pas de montage du journal : rien n'est supprimé du téléphone sans lui."
+
 msgid ""
 "No journal mount: the photos and videos you set aside before are not "
 "recognised if they come back."
@@ -3802,6 +3921,14 @@ msgid_plural "Not in this backup: %(num)s files of your photos (%(size)s)."
 msgstr[0] "Absent de cette sauvegarde : %(num)s fichier de vos photos (%(size)s)."
 msgstr[1] "Absents de cette sauvegarde : %(num)s fichiers de vos photos (%(size)s)."
 
+msgid ""
+"Not in your library: you set them aside (a burst shot, a near copy, an "
+"unwanted photo). Never ticked for you: read the warning first."
+msgstr ""
+"Pas dans votre photothèque : vous les avez mis de côté (une photo de "
+"rafale, une copie proche, une photo indésirable). Jamais cochés pour vous"
+" : lisez d'abord l'avertissement."
+
 #, python-brace-format
 msgid "Not looked at (not mounted): {points}."
 msgstr "Non consulté (non monté) : {points}."
@@ -3834,6 +3961,10 @@ msgstr "Non envoyé (erreur {status})."
 
 msgid "Not the folder you want to keep?"
 msgstr "Ce n'est pas le dossier que vous voulez garder ?"
+
+#, python-brace-format
+msgid "Not the same content as {path}: kept on the phone."
+msgstr "Pas le même contenu que {path} : gardé sur le téléphone."
 
 msgid "Not this person: take this face out"
 msgstr "Pas cette personne : retirer ce visage"
@@ -3879,6 +4010,23 @@ msgstr ""
 msgid "Nothing is proposed by --sample: run classify without it."
 msgstr "--sample ne propose rien : lancez classify sans lui."
 
+msgid "Nothing is ticked: nothing to delete."
+msgstr "Rien n'est coché : rien à supprimer."
+
+msgid ""
+"Nothing leaves the phone before you press Delete. Each file ticked is "
+"then copied again from the phone and compared, byte for byte (SHA-256), "
+"with the PC's copy: a file that differs stays on the phone. Deleted over "
+"USB, a file is gone for good from the phone: it has no trash, and undo "
+"cannot put it back."
+msgstr ""
+"Rien ne quitte le téléphone avant que vous appuyiez sur Supprimer. Chaque"
+" fichier coché est alors copié à nouveau depuis le téléphone et comparé, "
+"octet par octet (SHA-256), à la copie du PC : un fichier qui diffère "
+"reste sur le téléphone. Supprimé par USB, un fichier disparaît pour de "
+"bon du téléphone : il n'a pas de corbeille, et undo ne peut pas l'y "
+"remettre."
+
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
@@ -3898,6 +4046,9 @@ msgstr ""
 
 msgid "Nothing new on the phone: nothing to copy."
 msgstr "Rien de nouveau sur le téléphone : rien à copier."
+
+msgid "Nothing on the phone that the PC holds: nothing to free."
+msgstr "Rien sur le téléphone que le PC détienne : rien à libérer."
 
 msgid "Nothing set aside."
 msgstr "Rien n'est mis de côté."
@@ -3939,6 +4090,12 @@ msgstr ""
 "Rien n'a été modifié : ajoutez --apply pour écrire les fichiers "
 "compagnons."
 
+msgid "Nothing was deleted from the phone."
+msgstr "Rien n'a été supprimé du téléphone."
+
+msgid "Nothing was deleted from the phone. You can close this page."
+msgstr "Rien n'a été supprimé du téléphone. Vous pouvez fermer cette page."
+
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
@@ -3974,6 +4131,9 @@ msgstr "Dont indésirables"
 
 msgid "On another disk or mount"
 msgstr "Sur un autre disque ou montage"
+
+msgid "On the PC:"
+msgstr "Sur le PC :"
 
 msgid ""
 "Once per video: a few frames are decoded and hashed, to find the same "
@@ -4185,6 +4345,15 @@ msgstr "Autre catégorie"
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
+#, python-brace-format
+msgid ""
+"Page ready, open {url} in your browser. Each choice is saved at once in "
+"{place}. Nothing leaves the phone before you press Delete."
+msgstr ""
+"Page prête, ouvrez {url} dans votre navigateur. Chaque choix est "
+"enregistré aussitôt dans {place}. Rien ne quitte le téléphone avant que "
+"vous appuyiez sur Supprimer."
+
 msgid "Page stopped; nothing was changed."
 msgstr "Page arrêtée ; rien n'a été modifié."
 
@@ -4226,6 +4395,14 @@ msgstr "Personne"
 
 msgid "Personal place"
 msgstr "Lieu personnel"
+
+#, python-brace-format
+msgid ""
+"Phone freed: {count} files deleted ({size} GB), each one seen gone from "
+"the phone and found whole on the PC."
+msgstr ""
+"Téléphone libéré : {count} fichiers supprimés ({size} Go), chacun vu "
+"parti du téléphone et retrouvé entier sur le PC."
 
 msgid "Photo"
 msgstr "Photo"
@@ -4999,6 +5176,14 @@ msgstr ""
 "Enregistré, puis relu sur le disque à {time} : {file} contient votre "
 "choix."
 
+#, python-brace-format
+msgid ""
+"Saved, then read back from the disk at {time}: {ticked} files ticked in "
+"{file}."
+msgstr ""
+"Enregistré, puis relu depuis le disque à {time} : {ticked} fichiers "
+"cochés dans {file}."
+
 msgid "Saved."
 msgstr "Enregistré."
 
@@ -5158,6 +5343,13 @@ msgstr "Écartées"
 msgid "Set aside before on purpose, not copied: {count}."
 msgstr "Écartés volontairement auparavant, non copiés : {count}."
 
+#, python-brace-format
+msgid "Set aside before, left on the phone: {count}."
+msgstr "Mis de côté avant, laissés sur le téléphone : {count}."
+
+msgid "Set aside before, on purpose"
+msgstr "Mis de côté avant, exprès"
+
 msgid "Set aside from the map"
 msgstr "Écartés de la carte"
 
@@ -5166,6 +5358,20 @@ msgstr "Écarté dans config.toml : caché de la carte."
 
 msgid "Set aside on"
 msgstr "Mis de côté le"
+
+#, python-brace-format
+msgid ""
+"Set aside on {date} and purged since: it is nowhere else. Deleted from "
+"the phone, it is lost for good."
+msgstr ""
+"Mis de côté le {date} et purgé depuis : il n'est nulle part ailleurs. "
+"Supprimé du téléphone, il est perdu pour de bon."
+
+#, python-brace-format
+msgid "Set aside on {date}, still recoverable with mh undo {run} until mh purge."
+msgstr ""
+"Mis de côté le {date}, encore récupérable avec mh undo {run} jusqu'à mh "
+"purge."
 
 msgid "Set aside the picked files"
 msgstr "Mettre de côté les fichiers choisis"
@@ -5320,6 +5526,16 @@ msgstr ""
 "Repartir de zéro : ne reprendre aucune modification d'un classeur "
 "précédent."
 
+#, python-brace-format
+msgid ""
+"Start the command with mh, which shares such a drive with Docker Desktop;"
+" or share it yourself in PowerShell, then start the command again: "
+"{command} (or copy the folder to a fixed disk)."
+msgstr ""
+"Lance la commande avec mh, qui partage un tel disque avec Docker Desktop "
+"; ou partage-le toi-même dans PowerShell, puis relance la commande : "
+"{command} (ou copie le dossier sur un disque fixe)."
+
 msgid "Started"
 msgstr "Lancé le"
 
@@ -5346,6 +5562,12 @@ msgstr "Étape {number} choisie sur la page d'accueil : {command}"
 #, python-brace-format
 msgid "Step-by-step guide and every command: {url}"
 msgstr "Guide pas à pas et toutes les commandes : {url}"
+
+#, python-brace-format
+msgid "Still on the phone after the move: {count}. Type mh phone --free again."
+msgstr ""
+"Encore sur le téléphone après le déplacement : {count}. Tapez à nouveau "
+"mh phone --free."
 
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
@@ -5543,6 +5765,9 @@ msgstr ""
 "Évitez une catégorie « Famille » ou « Portraits » : dans une collection "
 "familiale, elle avale la plupart des photos."
 
+msgid "The check of the phone failed: nothing more was deleted."
+msgstr "La vérification du téléphone a échoué : rien de plus n'a été supprimé."
+
 msgid ""
 "The circles are your photos with a GPS position, larger where there are "
 "more. Click a circle or the map to name a place; drag its marker to move "
@@ -5596,6 +5821,14 @@ msgstr "Le fichier de configuration {path} n'est pas du TOML valide : {error}"
 #, python-brace-format
 msgid "The container cannot write to {folders}."
 msgstr "Le conteneur ne peut pas écrire dans {folders}."
+
+msgid "The copy from the phone is missing or incomplete: kept on the phone."
+msgstr ""
+"La copie depuis le téléphone manque ou est incomplète : gardé sur le "
+"téléphone."
+
+msgid "The copy of the import has the same name and size."
+msgstr "La copie de l'import a le même nom et la même taille."
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
 msgstr "Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :"
@@ -5700,6 +5933,27 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] "La première vidéo sur {count}"
 msgstr[1] "Les {n} premières vidéos sur {count}"
+
+msgid ""
+"The folder of the import, as Explorer shows it (mounted read-only): its "
+"copies are shown on the page."
+msgstr ""
+"Le dossier de l'import, tel que l'Explorateur l'affiche (monté en lecture"
+" seule) : ses copies sont montrées sur la page."
+
+msgid ""
+"The folder of the import, as Explorer shows it (mounted read-only): its "
+"copies prove the files it imported."
+msgstr ""
+"Le dossier de l'import, tel que l'Explorateur l'affiche (monté en lecture"
+" seule) : ses copies prouvent les fichiers qu'il a importés."
+
+msgid ""
+"The folder the files ticked were just copied into from the phone, as "
+"Explorer shows it (mounted read-only)."
+msgstr ""
+"Le dossier où les fichiers cochés viennent d'être copiés depuis le "
+"téléphone, tel que l'Explorateur l'affiche (monté en lecture seule)."
 
 msgid ""
 "The folder the phone's files are copied into, as Explorer shows it "
@@ -5856,12 +6110,22 @@ msgstr "La page ne tourne plus : relancez-la."
 msgid "The page is not running any more: start people again."
 msgstr "La page ne tourne plus : relancez people."
 
+msgid "The page is not running any more: type mh phone again."
+msgstr "La page ne tourne plus : tapez à nouveau mh phone."
+
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."
 msgstr ""
 "Les paires viennent de la plus grande place libérée à la plus petite. "
 "Chaque copie du second dossier a un fichier identique dans le premier."
+
+msgid ""
+"The phone no longer answers (unplugged?): what is counted above was "
+"deleted, the rest is still on it. Type mh phone --free again."
+msgstr ""
+"Le téléphone ne répond plus (débranché ?) : ce qui est compté ci-dessus a"
+" été supprimé, le reste y est encore. Tapez à nouveau mh phone --free."
 
 #, python-brace-format
 msgid ""
@@ -5871,6 +6135,12 @@ msgstr ""
 "Le téléphone ne répond plus (débranché ?) : {count} fichiers copiés "
 "jusqu'ici. Tapez de nouveau mh phone : ce qui est déjà copié est passé."
 
+msgid "The phone run the files were proven in."
+msgstr "Le passage du téléphone où les fichiers ont été prouvés."
+
+msgid "The phone's name, as Windows shows it."
+msgstr "Le nom du téléphone, tel que Windows l'affiche."
+
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
 msgstr "Les lieux de {file} ne sont pas valables : {reason}."
@@ -5878,6 +6148,14 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
+
+#, python-brace-format
+msgid ""
+"The port of the mh pages is held by the container {id}: close the window "
+"where it runs, or type docker stop {id}, then type the command again."
+msgstr ""
+"Le port des pages de mh est pris par le conteneur {id} : ferme la fenêtre"
+" où il tourne, ou tape docker stop {id}, puis tape la commande à nouveau."
 
 msgid ""
 "The positions you give whole folders on the map of 'places' (Save this "
@@ -5926,6 +6204,19 @@ msgstr ""
 
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
+
+msgid "The run to go on with, for the next files; none: a new run."
+msgstr ""
+"Le passage à poursuivre, pour les fichiers suivants ; aucun : un nouveau "
+"passage."
+
+#, python-brace-format
+msgid ""
+"The run {run_id} deleted files from a phone: undo cannot put them back on"
+" it. Nothing was changed."
+msgstr ""
+"Le passage {run_id} a supprimé des fichiers d'un téléphone : undo ne peut"
+" pas les y remettre. Rien n'a été modifié."
 
 #, python-brace-format
 msgid ""
@@ -6200,6 +6491,9 @@ msgstr "Il n'y a pas encore de config.toml dans {folder}."
 msgid "There is no such event."
 msgstr "Cet événement n'existe pas."
 
+msgid "There is no such file on the page."
+msgstr "Ce fichier n'est pas sur la page."
+
 msgid "There is no such file."
 msgstr "Ce fichier n'existe pas."
 
@@ -6297,6 +6591,12 @@ msgstr "Ce mh ne lance pas les étapes de la page : tapez la commande."
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
 
+#, python-brace-format
+msgid "This photo is not in your library: {warning} Tick it anyway?"
+msgstr ""
+"Cette photo n'est pas dans votre photothèque : {warning} La cocher quand "
+"même ?"
+
 msgid "This series is not in the file yet."
 msgstr "Cette série n'est pas encore dans le fichier."
 
@@ -6316,6 +6616,10 @@ msgstr "Cochez au moins une photo."
 
 msgid "Ticked: given to the place you choose above"
 msgstr "Cochée : donnée au lieu choisi au-dessus"
+
+#, python-brace-format
+msgid "Ticked: {ticked} of {total} files ({size})"
+msgstr "Cochés : {ticked} fichiers sur {total} ({size})"
 
 #, python-brace-format
 msgid "Time per step: {steps}"
@@ -7637,10 +7941,14 @@ msgstr ""
 
 msgid ""
 "mh phone copies only the new photos and videos of a phone plugged in over"
-" USB; mh phone --to <folder> chooses where."
+" USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
+"folder only (Camera), --free then offers to delete from the phone what "
+"the PC holds."
 msgstr ""
-"mh phone copie uniquement les nouvelles photos et vidéos d'un téléphone "
-"branché en USB ; mh phone --to <dossier> choisit où."
+"mh phone copie seulement les nouvelles photos et vidéos d'un téléphone "
+"branché en USB ; --to <dossier> choisit où, --only <dossier de DCIM> "
+"prend ce dossier seulement (Camera), --free propose ensuite de supprimer "
+"du téléphone ce que le PC détient."
 
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
@@ -9035,10 +9343,26 @@ msgstr[1] ""
 "dans « review --near ») ; « clean --tier near » déplace les sûrs."
 
 #, python-brace-format
+msgid "{count} hidden file of the phone left out (its name starts with a dot)."
+msgid_plural "{count} hidden files of the phone left out (their names start with a dot)."
+msgstr[0] ""
+"{count} fichier caché du téléphone laissé de côté (son nom commence par "
+"un point)."
+msgstr[1] ""
+"{count} fichiers cachés du téléphone laissés de côté (leurs noms "
+"commencent par un point)."
+
+#, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
 msgstr[1] "{count} copies identiques, {size} : sans risque, une commande."
+
+#, python-brace-format
+msgid "{count} line of the files ticked could not be read: skipped."
+msgid_plural "{count} lines of the files ticked could not be read: skipped."
+msgstr[0] "{count} ligne des fichiers cochés n'a pas pu être lue : ignorée."
+msgstr[1] "{count} lignes des fichiers cochés n'ont pas pu être lues : ignorées."
 
 #, python-brace-format
 msgid "{count} line of the phone's listing could not be read: skipped."
@@ -9463,6 +9787,10 @@ msgid "{done}: Z takes the whole batch back."
 msgstr "{done} : Z annule tout le lot."
 
 #, python-brace-format
+msgid "{drive}: is a removable drive: shared with Docker Desktop."
+msgstr "{drive}: est un disque amovible : partagé avec Docker Desktop."
+
+#, python-brace-format
 msgid ""
 "{faces} faces in {photos} photos: no two of them look alike enough to be "
 "grouped."
@@ -9525,6 +9853,10 @@ msgstr "{files}, {undecided} à vérifier ou à trier"
 #, python-brace-format
 msgid "{file} read from the disk at {time}."
 msgstr "{file} lu sur le disque à {time}."
+
+#, python-brace-format
+msgid "{file} read from the disk at {time}: {ticked} files ticked."
+msgstr "{file} lu depuis le disque à {time} : {ticked} fichiers cochés."
 
 #, python-brace-format
 msgid "{file}, in the folder mounted on {mount}"
@@ -9950,6 +10282,10 @@ msgstr ""
 "enregistrés."
 
 #, python-brace-format
+msgid "{path} stays on the phone: {reason}"
+msgstr "{path} reste sur le téléphone : {reason}"
+
+#, python-brace-format
 msgid "{path} was made on other folders ({theirs}); this review analyses {ours}."
 msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
 
@@ -10074,6 +10410,10 @@ msgstr "{subject} : page '{page}', classeur '{workbook}'"
 #, python-brace-format
 msgid "{table} in config.toml"
 msgstr "{table} dans config.toml"
+
+#, python-brace-format
+msgid "{ticked} of {count} ticked · {size}"
+msgstr "{ticked} sur {count} cochés · {size}"
 
 #, python-brace-format
 msgid ""
@@ -10234,6 +10574,11 @@ msgstr ""
 "👉 Et maintenant : mh audit (les nouveaux fichiers rejoignent votre "
 "photothèque)."
 
+msgid "👉 What next: mh history (the phone's run, and what it deleted)."
+msgstr ""
+"👉 Et ensuite : mh history (le passage du téléphone, et ce qu'il a "
+"supprimé)."
+
 #, python-brace-format
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
@@ -10241,6 +10586,14 @@ msgid ""
 msgstr ""
 "📦 {file} est appliqué : archivé sous {archive}, le prochain 'review' "
 "repart de zéro."
+
+msgid ""
+"📱 A phone run deleted files from a phone: undo cannot put them back on "
+"it. Each one was first proven on the PC by its content."
+msgstr ""
+"📱 Un passage du téléphone a supprimé des fichiers d'un téléphone : undo "
+"ne peut pas les y remettre. Chacun a d'abord été prouvé sur le PC par son"
+" contenu."
 
 msgid "🔒 Analyse: read-only, never changes your photos"
 msgstr "🔒 Analyser : lecture seule, ne modifie jamais vos photos"
@@ -10262,6 +10615,14 @@ msgstr ""
 "🔒 Les visages sont des données personnelles : ils restent dans le cache "
 "(/cache), rien n'est envoyé nulle part. 'people --forget' les supprime "
 "tous."
+
+msgid ""
+"🔒 Nothing leaves the phone before you tick it on a page and press Delete;"
+" each file is first proven on the PC by its content."
+msgstr ""
+"🔒 Rien ne quitte le téléphone avant que vous le cochiez sur une page et "
+"appuyiez sur Supprimer ; chaque fichier est d'abord prouvé sur le PC par "
+"son contenu."
 
 msgid "🔒 Read-only: never changes your photos."
 msgstr "🔒 Lecture seule : ne modifie jamais vos photos."

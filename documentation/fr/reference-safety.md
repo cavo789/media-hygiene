@@ -48,6 +48,12 @@ Les commandes qui agissent sur vos fichiers n'effacent jamais rien, et chacune p
 avoir dit combien de fichiers et quelle place, et vous l'avoir demandé. D'ici là, `undo` remet
 tout en place.
 
+**Sur un téléphone, `mh phone --free` supprime**, et seulement ce que vous avez coché sur sa page :
+chaque fichier est d'abord copié à nouveau depuis le téléphone et prouvé (SHA-256) égal à ce que
+le PC détient ; un fichier qui diffère reste sur le téléphone. Une suppression par USB est
+définitive sur le téléphone (pas de corbeille), et `undo` ne peut pas remettre un fichier sur un
+téléphone : [libérer le téléphone](commands/launcher.md#libérer-le-téléphone--mh-phone---free).
+
 Besoin de la place tout de suite ? `clean --delete` supprime les copies en trop au lieu de les
 déplacer, après la même comparaison octet par octet. La copie gardée reste, donc rien n'est
 perdu : `undo` reconstruit chaque copie supprimée à partir d'elle. Les fichiers vides (0 octet)
@@ -121,6 +127,7 @@ probable qu'une erreur de disque.
 | Albums | [`album`](sort/12-albums.md) ne fait qu'ajouter des liens physiques (des seconds noms) dans son propre dossier, journalisés, jamais par-dessus un fichier ; toutes les analyses ignorent ce dossier. `undo` ne retire un nom de l'album que si l'original qu'il désigne est toujours là et est bien le même fichier ; sinon le nom reste, et `undo` dit pourquoi. |
 | Fichiers compagnons XMP | [`xmp`](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) n'écrit jamais dans une photo ni dans un dossier protégé. Chaque fichier compagnon est journalisé, écrit dans un fichier temporaire puis renommé (jamais par-dessus un fichier apparu), relu et analysé ; celui d'une autre application est complété (ses retouches gardées), ses octets précédents gardés en quarantaine. `undo` ne supprime ou ne remet un fichier compagnon que tant qu'il contient ce que l'exécution a écrit. |
 | Fichiers inutiles de `sort` | Seuls les noms de `[sort] junk_files` (`Thumbs.db`, …) vont en quarantaine avec un dossier vidé ; un nom de photo, de vidéo ou de fichier compagnon y est refusé. |
+| Libérer un téléphone | [`mh phone --free`](commands/launcher.md#libérer-le-téléphone--mh-phone---free) : seulement les fichiers cochés sur sa page, un fichier mis de côté jamais coché pour vous. Chacun copié à nouveau depuis le téléphone, son SHA-256 prouvé égal à un fichier de la photothèque encore là, à la copie de l'import ou à un contenu mis de côté avant (sinon gardé sur le téléphone) ; écrit au journal avant d'être déplacé hors du téléphone (sans fenêtre), le téléphone relu, la copie déplacée supprimée une fois égale. `undo` ne peut pas remettre un fichier sur un téléphone. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
 | Chaque groupe | Garde toujours au moins une copie. |
 

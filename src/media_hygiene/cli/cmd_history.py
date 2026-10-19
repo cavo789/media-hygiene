@@ -28,6 +28,7 @@ def history_command(ctx: typer.Context) -> None:
     Raises:
         MountError: The journal is not mounted.
     """
+    from media_hygiene.actions.kinds import Phase
     from media_hygiene.actions.runs import list_run_ids, summarize
     from media_hygiene.errors import MountError
     from media_hygiene.paths.mount_kind import MountKind
@@ -46,6 +47,13 @@ def history_command(ctx: typer.Context) -> None:
         output.info(_("No run yet."))
         return
     output.show(_runs_table(summaries))
+    if any(run.kind is Phase.PHONE for run in summaries):
+        output.info(
+            _(
+                "📱 A phone run deleted files from a phone: undo cannot put them "
+                "back on it. Each one was first proven on the PC by its content."
+            )
+        )
     output.tip(_("'media-hygiene undo <run>' restores the files of a run."))
 
 

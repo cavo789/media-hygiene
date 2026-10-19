@@ -118,7 +118,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur, et de l'espace vide d'un dossier ouvert : la page d'accueil s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` retire les deux. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
-| `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
+| `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB ; avec `--free`, supprime ensuite du téléphone ce que le PC détient, prouvé par son contenu : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene` et
@@ -194,6 +194,8 @@ construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` 
 ```powershell
 mh phone                              # dans <votre premier dossier de photos>\Phone\<nom du téléphone>
 mh phone --to "D:\Depuis les téléphones" # ailleurs, puis un dossier par téléphone
+mh phone --only Camera                # seulement le dossier DCIM\Camera du téléphone
+mh phone --free                       # puis libérer le téléphone : plus bas
 ```
 
 Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
@@ -210,7 +212,7 @@ lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fich
 
 Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
 (1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté, et *👉 Et maintenant : `mh audit`*.
-🔒 Le téléphone est seulement lu : rien n'y est supprimé, déplacé ni renommé.
+🔒 Sans `--free`, le téléphone est seulement lu : rien n'y est supprimé, déplacé ni renommé.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
   chaque photo du téléphone est nouvelle (il le dit).
@@ -228,6 +230,42 @@ Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos co
   ajoutez-le par `mh folders add` pour que les audits le voient.
 - Windows uniquement : depuis WSL, Linux ou macOS, ni Docker ni bash n'atteignent un téléphone en
   USB.
+
+### Libérer le téléphone : `mh phone --free`
+
+Après l'import, une page s'ouvre dans votre navigateur avec ce que le PC peut détenir, en trois
+groupes :
+
+- **📚 Déjà dans votre photothèque** et **📥 Copiés par `mh phone`** (maintenant ou avant) : cochés
+  pour vous ;
+- **⚠️ Mis de côté avant, exprès** : jamais cochés pour vous. Chaque vignette le dit : *Mis de côté
+  le <date>, encore récupérable avec `mh undo <run>` jusqu'à `mh purge`*, ou, une fois purgé, *il
+  n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon*.
+
+Chaque coche est enregistrée aussitôt dans `phone-decisions.json` (dans votre dossier des
+rapports), relue depuis le disque et affichée. **Rien ne quitte le téléphone avant que vous
+appuyiez sur *Supprimer N fichiers du téléphone*** ; *Tout laisser sur le téléphone* la termine
+sans rien supprimer. Ensuite, pour chaque fichier coché :
+
+1. il est **copié à nouveau** depuis le téléphone dans un dossier vide (`.mh-phone-<date>`) ;
+2. son **contenu est prouvé** (SHA-256) égal à un fichier de votre photothèque encore là, à la
+   copie de l'import, ou à ce que vous aviez mis de côté ; **sinon il reste sur le téléphone**, avec
+   sa raison (*Pas le même contenu que `2025\07\IMG_0001.jpg`*). Un nom et une taille ne suffisent
+   jamais ;
+3. seulement alors il est **déplacé hors du téléphone** vers un dossier du PC (`.mh-moved-<date>`),
+   le dossier du téléphone relu pour le voir parti, et cette copie déplacée supprimée une fois
+   égale à celle prouvée (une qui diffère y est gardée, dit à l'écran).
+
+Il annonce d'abord la durée (chaque fichier est lu deux fois depuis le téléphone, environ 24 Mo/s :
+*environ 6 min pour 4,2 Go*), et termine par ce qu'il a vu parti : *Téléphone libéré : 4 980
+fichiers supprimés (21,3 Go)*, puis les fichiers gardés sur le téléphone et pourquoi. Chaque
+suppression est écrite au journal avant et après (un passage de type `phone` dans `mh history`).
+
+- ⚠️ **Supprimé par USB, un fichier disparaît pour de bon du téléphone** : la galerie du téléphone
+  n'a pas de corbeille pour lui, et `undo` ne peut pas remettre un fichier sur un téléphone (il le
+  dit). Son contenu est sur le PC : c'est ce qui a été prouvé.
+- **Débranché en cours de route ?** Il s'arrête et dit ce qui a été supprimé ; le reste est encore
+  sur le téléphone. Tapez de nouveau `mh phone --free` : il repart d'une liste fraîche.
 
 ## Options
 

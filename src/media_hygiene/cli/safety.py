@@ -15,7 +15,12 @@ from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
 from media_hygiene.paths.mounts import is_read_only
 from media_hygiene.services.data_checks import nothing_mounted
-from media_hygiene.services.phone_plan import PHONE_PLAN
+from media_hygiene.services.phone_plan import (
+    PHONE_DONE,
+    PHONE_PLAN,
+    PHONE_PROVE,
+    PHONE_REVIEW,
+)
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -37,7 +42,9 @@ PAGE_COMMANDS: Final = frozenset(
 # The commands whose output stream is data (a script, the steps of the menu): every
 # message goes to stderr, and the launcher runs them without a terminal (`-t`) and
 # without the keyboard (`-i`), which stays for the `mh` that reads their output.
-DATA_COMMANDS: Final = frozenset({"launcher", "menu", PHONE_PLAN})
+DATA_COMMANDS: Final = frozenset(
+    {"launcher", "menu", PHONE_PLAN, PHONE_REVIEW, PHONE_PROVE, PHONE_DONE}
+)
 # The commands that may run for hours: the launcher keeps the computer awake during
 # them, and says in the window title, with a sound, when they end (0179, 0185).
 LONG_COMMANDS: Final = frozenset(

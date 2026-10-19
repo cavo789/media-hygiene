@@ -35,7 +35,9 @@ publish `README.md` as the overview at each release.
 - After the next release, the Docker Hub overview equals `README.md`, the *Licences* section
   included, its links working.
 
-## Status — PARTIAL (2026-10-14)
+## Status — DONE (2026-10-19, was PARTIAL)
+
+### Earlier status — PARTIAL (2026-10-14)
 
 ### Done
 - `ci.yml`, job *Publish to Docker Hub* (tags only): a checkout (`persist-credentials: false`),
@@ -55,3 +57,11 @@ publish `README.md` as the overview at each release.
 
 - `DOCKERHUB_TOKEN` scope: Read/Write/Delete, confirmed by the maintainer. Left: read the Docker
   Hub overview after the next release (links, *Licences* section).
+
+## Inbox (2026-10-19)
+
+- Docker Hub overview after v0.4.0 (published 2026-10-16), measured with the public API
+  (`hub.docker.com/v2/repositories/cavo789/media-hygiene/`): `full_description` holds the README
+  of v0.4.0 (15,426 characters, same headings), no relative link left (all made absolute at the
+  tag, e.g. `blob/v0.4.0/LICENSE`), the *Licences* section with its table present; short
+  description = the Dockerfile label. Done.
