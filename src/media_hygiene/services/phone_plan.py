@@ -26,6 +26,8 @@ type NameKey = tuple[str, int]
 
 # The hidden command `mh phone` pipes the listing to: plumbing, no page (0219).
 PHONE_PLAN: Final = "phone-plan"
+# Freeing the phone (0248): its page, the proof and its journal.
+PHONE_REVIEW, PHONE_PROVE, PHONE_DONE = "phone-review", "phone-prove", "phone-done"
 SEPARATOR: Final = "\t"
 _FIELDS: Final = 3  # relative path, size, modified date
 _PARENT: Final = ".."
@@ -136,7 +138,7 @@ def read_listing(lines: Iterable[str]) -> tuple[tuple[PhoneFile, ...], int]:
         text = raw.strip().lstrip(_BOM)
         if not text:
             continue
-        file = _file(text.split(SEPARATOR))
+        file = file_of(text.split(SEPARATOR))
         if file is None:
             skipped += 1
             continue
@@ -144,7 +146,7 @@ def read_listing(lines: Iterable[str]) -> tuple[tuple[PhoneFile, ...], int]:
     return tuple(files.values()), skipped
 
 
-def _file(fields: list[str]) -> PhoneFile | None:
+def file_of(fields: list[str]) -> PhoneFile | None:
     """Read one line of the listing.
 
     Args:

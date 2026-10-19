@@ -233,6 +233,20 @@ def test_unreadable_lines_are_skipped_and_counted(runner: CliRunner) -> None:
     assert "4 lines of the phone's listing could not be read" in result.stderr
 
 
+def test_hidden_files_of_the_phone_are_left_out_and_counted(runner: CliRunner) -> None:
+    """A `.temp-…mp4` or a `.thumbnails` folder: neither copied nor listed (0251)."""
+    listing = (
+        _line("Camera/a.jpg", 1)
+        + _line("Camera/.temp-20240906_105433899_20.mp4", 2)
+        + _line(".thumbnails/123.jpg", 3)
+    )
+    result = _plan(runner, listing)
+    assert [line.split("\t")[1] for line in result.stdout.splitlines()] == [
+        "Camera/a.jpg"
+    ]
+    assert "2 hidden files of the phone left out" in result.stderr
+
+
 def test_accented_names_cross_stdin_and_stdout_in_utf8(runner: CliRunner) -> None:
     """A name with accents comes back as it went, in UTF-8."""
     result = _plan(runner, _line("Été/Noël.jpg", 3))

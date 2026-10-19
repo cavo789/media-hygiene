@@ -43,7 +43,11 @@ def phone_plan_command(
         ctx: Typer context holding the runtime.
         destination: `--destination`, the host folder of the import.
     """
-    from media_hygiene.services.phone_known import PhoneQuery, known_of
+    from media_hygiene.services.phone_known import (
+        PhoneQuery,
+        known_of,
+        without_hidden,
+    )
     from media_hygiene.services.phone_plan import decide, read_listing
 
     runtime = runtime_of(ctx)
@@ -56,6 +60,17 @@ def phone_plan_command(
                 "{count} lines of the phone's listing could not be read: skipped.",
                 skipped,
             ).format(count=skipped)
+        )
+    files, hidden = without_hidden(files)
+    if hidden:
+        runtime.output.info(
+            ngettext(
+                "{count} hidden file of the phone left out (its name starts "
+                "with a dot).",
+                "{count} hidden files of the phone left out (their names start "
+                "with a dot).",
+                hidden,
+            ).format(count=hidden)
         )
     folder = runtime.mapper.to_container(destination) if destination else None
     known = known_of(runtime, PhoneQuery(files, folder))

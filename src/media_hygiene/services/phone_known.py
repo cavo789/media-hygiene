@@ -26,6 +26,7 @@ from media_hygiene.services.returned import remembered_of
 
 if TYPE_CHECKING:
     import sqlite3
+    from collections.abc import Iterable
 
     from media_hygiene.plan.returned import Remembered
     from media_hygiene.services.phone_plan import NameKey, PhoneFile
@@ -34,6 +35,9 @@ if TYPE_CHECKING:
 _FILES: Final = "SELECT path, size FROM files"
 # `mh` copies into `<destination>\.mh-phone-<run>` first: never a file of the library.
 STAGING_PREFIX: Final = ".mh-phone-"
+# A name starting with it is hidden on the phone: a temporary file (`.temp-…mp4`,
+# measured 0251) or a folder of thumbnails, never a photo of the user.
+_HIDDEN: Final = "."
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,6 +46,24 @@ class PhoneQuery:
 
     files: tuple[PhoneFile, ...]
     destination: Path | None = None
+
+
+def without_hidden(files: Iterable[PhoneFile]) -> tuple[tuple[PhoneFile, ...], int]:
+    """Leave out the phone's hidden files: a name, or a folder's, starting with a dot.
+
+    Args:
+        files: The files of the phone.
+
+    Returns:
+        The others, in the order given, and how many were left out.
+    """
+    files = tuple(files)
+    shown = tuple(
+        file
+        for file in files
+        if not any(part.startswith(_HIDDEN) for part in file.path.parts)
+    )
+    return shown, len(files) - len(shown)
 
 
 def known_of(runtime: Runtime, query: PhoneQuery) -> Known:

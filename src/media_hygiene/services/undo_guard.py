@@ -12,8 +12,9 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.journal import journal_file, read_journal
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.quarantine import QUARANTINED
+from media_hygiene.actions.runs import run_phase
 from media_hygiene.actions.undo import actions_to_undo
-from media_hygiene.errors import MountError
+from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
@@ -36,7 +37,22 @@ def ensure_undo_ready(runtime: Runtime, run_ids: Sequence[str]) -> None:
         MountError: The journal is not persistent, a folder is read-only, a mount point
             is not writable, or a run has files in a quarantine that is not mounted
             (`/quarantine`, or the one of a drive).
+        JournalError: A run deleted files from a phone (0248): nothing puts a file
+            back on a phone.
     """
+    for run_id in run_ids:
+        entries = read_journal(journal_file(runtime.locations.journal_dir, run_id))
+        if run_phase(entries) is Phase.PHONE:
+            raise JournalError(
+                _(
+                    "The run {run_id} deleted files from a phone: undo cannot put "
+                    "them back on it. Nothing was changed."
+                ).format(run_id=run_id),
+                _(
+                    "Each one was first proven on the PC by its content: in your "
+                    "library, in the folder of the import, or set aside before."
+                ),
+            )
     ensure_can_act(runtime, Phase.UNDO.value)
     refuse_unplugged(runtime, run_ids)
     if runtime.persistent(MountKind.QUARANTINE):

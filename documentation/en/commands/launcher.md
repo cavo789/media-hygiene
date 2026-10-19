@@ -114,7 +114,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer, and of the empty space inside an open folder: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes both away. On Windows 11, it may sit under *Show more options*. |
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
-| `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
+| `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys
 `HKCU\Software\Classes\Directory\shell\MediaHygiene` and
@@ -187,6 +187,8 @@ yourself (`media-hygiene`) has nothing to download: `mh update` says so.
 ```powershell
 mh phone                       # into <your first photo folder>\Phone\<the phone's name>
 mh phone --to "D:\From phones" # elsewhere, then a folder per phone
+mh phone --only Camera         # only the folder DCIM\Camera of the phone
+mh phone --free                # then free the phone: below
 ```
 
 Plug the phone in over USB, unlock it and choose *File transfer* (iPhone: *Trust this
@@ -201,8 +203,8 @@ computer*). `mh phone` finds it (several phones: it asks which one), lists its `
 - **already copied** into that folder by an earlier `mh phone`.
 
 It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
-18.5 MB/s)*, then each count left out, and *👉 What next: `mh audit`*. 🔒 The phone is only
-read: nothing on it is deleted, moved or renamed.
+18.5 MB/s)*, then each count left out, and *👉 What next: `mh audit`*. 🔒 Without `--free`, the
+phone is only read: nothing on it is deleted, moved or renamed.
 
 - **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
   photo of the phone is new (it says so).
@@ -218,6 +220,39 @@ read: nothing on it is deleted, moved or renamed.
   (WhatsApp) are not read. With `--to` outside your photo folders, `mh folders add` it for the
   audits to see it.
 - Windows only: from WSL, Linux or macOS, Docker and bash cannot reach a phone over USB.
+
+### Free the phone: `mh phone --free`
+
+After the import, a page opens in your browser with what the PC may hold, in three groups:
+
+- **📚 Already in your library** and **📥 Copied by `mh phone`** (now or before): ticked for you;
+- **⚠️ Set aside before, on purpose**: never ticked for you. Each tile says it: *Set aside on
+  <date>, still recoverable with `mh undo <run>` until `mh purge`*, or, once purged, *it is
+  nowhere else. Deleted from the phone, it is lost for good*.
+
+Every tick is saved at once in `phone-decisions.json` (in your reports folder), read back from the
+disk and shown. **Nothing leaves the phone before you press *Delete N files from the phone***;
+*Leave everything on the phone* ends it with nothing deleted. Then, for each file ticked:
+
+1. it is **copied again** from the phone into an empty folder (`.mh-phone-<date>`);
+2. its **content is proven** (SHA-256) equal to a file of your library that is still there, to
+   the import's own copy, or to what you set aside before; **otherwise it stays on the phone**,
+   with its reason (*Not the same content as `2025\07\IMG_0001.jpg`*). A name and a size are
+   never enough;
+3. only then is it **moved off the phone** into a PC folder (`.mh-moved-<date>`), the phone's
+   folder listed again to see it gone, and that moved copy dropped once equal to the proven one
+   (one that differs is kept there, said on screen).
+
+It says the time first (each file is read twice from the phone, about 24 MB/s: *about 6 min for
+4.2 GB*), and ends with what it saw gone: *Phone freed: 4,980 files deleted (21.3 GB)*, then the
+files kept on the phone and why. Each deletion is written in the journal before and after it
+happens (a run of kind `phone` in `mh history`).
+
+- ⚠️ **Deleted over USB, a file is gone for good from the phone**: the phone's gallery has no
+  trash for it, and `undo` cannot put a file back on a phone (it says so). Its content is on the
+  PC: that is what was proven.
+- **Unplugged in the middle?** It stops and says what was deleted; the rest is still on the
+  phone. Type `mh phone --free` again: it starts over from a fresh listing.
 
 ## Options
 

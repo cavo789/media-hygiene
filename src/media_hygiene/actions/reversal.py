@@ -1,7 +1,7 @@
 """How `undo` reverses each kind of action: every kind is listed, nothing is guessed.
 
-A kind missing from `REVERSALS` stops `undo` before it changes anything: recreating
-an empty file for an unknown action would leave a 0-byte "restored" file instead.
+A kind missing from `REVERSALS` (a phone's: its run is refused first, 0248) stops `undo`
+before it changes anything: an empty file made up would be a 0-byte "restored" file.
 """
 
 from __future__ import annotations

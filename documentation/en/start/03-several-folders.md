@@ -139,6 +139,10 @@ They land in `<your first photo folder>\Phone\<the phone's name>` (`--to` choose
 folder); the phone itself is only read. How it decides, and what to do when the cable comes
 out: [`mh phone`](../commands/launcher.md#a-phone-copy-only-its-new-photos-mh-phone).
 
+To make room on the phone too, `mh phone --free` then shows on a page what the PC holds, and
+deletes from the phone only what you tick, each file proven on the PC by its content first:
+[free the phone](../commands/launcher.md#free-the-phone-mh-phone---free).
+
 ## Good to know
 
 - **A Google Photos Takeout** is one more folder: extract its ZIP files, then add the extracted

@@ -15,7 +15,7 @@ from media_hygiene.actions.journal import (
     journal_file,
     read_journal,
 )
-from media_hygiene.actions.kinds import ActionKind, Phase, Status
+from media_hygiene.actions.kinds import PHONE_DELETIONS, ActionKind, Phase, Status
 from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.reversal import REVERSALS
 from media_hygiene.actions.undo import UndoExecutor
@@ -134,8 +134,11 @@ def test_a_moved_or_edited_file_is_skipped_the_rest_undone(
 
 
 def test_every_action_kind_can_be_undone() -> None:
-    """A new kind without its reversal fails here, not in a user's undo."""
-    assert set(REVERSALS) == set(ActionKind)
+    """A new kind without its reversal fails here, not in a user's undo.
+
+    A file deleted from a phone has none: `undo` refuses a phone run first (0248).
+    """
+    assert set(REVERSALS) == set(ActionKind) - PHONE_DELETIONS
 
 
 def test_an_action_undo_does_not_know_changes_nothing(

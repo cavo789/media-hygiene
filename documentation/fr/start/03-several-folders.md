@@ -148,6 +148,10 @@ Elles arrivent dans `<votre premier dossier de photos>\Phone\<nom du téléphone
 un autre dossier) ; le téléphone lui-même est seulement lu. Comment il décide, et que faire si le
 câble se débranche : [`mh phone`](../commands/launcher.md#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone).
 
+Pour faire aussi de la place sur le téléphone, `mh phone --free` montre ensuite sur une page ce que
+le PC détient, et ne supprime du téléphone que ce que vous cochez, chaque fichier d'abord prouvé
+sur le PC par son contenu : [libérer le téléphone](../commands/launcher.md#libérer-le-téléphone--mh-phone---free).
+
 ## Bon à savoir
 
 - **Un Takeout Google Photos** est un dossier de plus : extrayez ses fichiers ZIP, puis ajoutez

@@ -1,0 +1,149 @@
+{# The script of phone_review.html.j2: three groups of tiles, each tick saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const filePath = {{ file_path | tojson }};
+  const freePath = {{ free_path | tojson }};
+  const stopPath = {{ stop_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
+  const number = (value) => value.toLocaleString(lang);
+  const UNITS = ["B", "KB", "MB", "GB", "TB"];
+  const size = (bytes) => {
+    let value = bytes;
+    let unit = 0;
+    while (value >= 1024 && unit < UNITS.length - 1) {
+      value /= 1024;
+      unit += 1;
+    }
+    return value.toLocaleString(lang, { maximumFractionDigits: unit < 2 ? 0 : 1 }) + " " + UNITS[unit];
+  };
+  let tiles = [];
+  let groups = [];
+  let disk = new Set();  // the ranks ticked in the file, as read back from the disk
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").className = kind || "";
+  };
+  const line = (tag, text, css) => {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    if (css) element.className = css;
+    return element;
+  };
+  const sum = (ranks) => ranks.reduce((total, rank) => total + tiles[rank].size, 0);
+  const tickedOf = (ranks) => ranks.filter((rank) => tiles[rank].ticked);
+
+  const tile = (rank) => {
+    const file = tiles[rank];
+    const figure = document.createElement("figure");
+    figure.className = "tile" + (file.ticked ? " ticked" : "");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = file.ticked;
+    box.addEventListener("change", () => {
+      if (box.checked && file.warning && !window.confirm(fill(T.confirmAside, { warning: file.warning }))) {
+        box.checked = false;
+        return;
+      }
+      decide([[rank, box.checked]]);
+    });
+    const label = document.createElement("label");
+    label.append(box, line("span", file.name));
+    let picture;
+    if (file.preview) {
+      picture = document.createElement("img");
+      picture.src = file.preview;
+      picture.alt = file.name;
+      picture.loading = "lazy";
+      picture.addEventListener("error", () => picture.replaceWith(line("div", "📷", "none")));
+    } else picture = line("div", "📷", "none");
+    figure.append(label, picture, line("p", file.folder + " · " + file.size_text, "muted"));
+    if (file.held) figure.append(line("p", T.pc + " " + file.held, "muted"));
+    if (file.warning) figure.append(line("p", "⚠️ " + file.warning, "warning"));
+    return figure;
+  };
+
+  const render = () => {
+    const all = tiles.map((file) => file.rank);
+    const ticked = tickedOf(all);
+    byId("totals").textContent = fill(T.totals, { ticked: number(ticked.length), total: number(all.length), size: size(sum(ticked)) });
+    const free = byId("free");
+    free.textContent = fill(T.delete, { ticked: number(disk.size), size: size(sum([...disk])) });
+    free.disabled = disk.size === 0;
+    byId("groups").replaceChildren(...groups.map((group) => {
+      const section = document.createElement("section");
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      const chosen = tickedOf(group.files);
+      bar.append(line("h2", group.title), line("span", fill(T.group, { ticked: number(chosen.length), count: number(group.files.length), size: size(sum(chosen)) }), "muted"));
+      const grid = document.createElement("div");
+      grid.className = "tiles";
+      grid.append(...group.files.map(tile));
+      section.append(bar, line("p", group.help, "muted"), grid);
+      return section;
+    }));
+  };
+
+  const readBack = (file) => {
+    disk = new Set(file.ticked);
+  };
+
+  // changes: [rank, ticked] pairs; the page shows what the file read back holds.
+  const decide = (changes) => {
+    setStatus(T.saving, "");
+    const body = { choices: changes.map(([rank, ticked]) => ({ file: rank, ticked: ticked })) };
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          render();
+          return;
+        }
+        readBack(reply.body.file);
+        for (const file of tiles) file.ticked = disk.has(file.rank);
+        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified), ticked: number(disk.size) }), "saved");
+        render();
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  const end = (path, text) => {
+    fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        byId("closedText").textContent = text;
+        byId("closed").style.display = "flex";
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  byId("free").addEventListener("click", () => {
+    const ranks = [...disk];
+    if (window.confirm(fill(T.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(freePath, T.freed);
+  });
+  byId("leave").addEventListener("click", () => end(stopPath, T.left));
+
+  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
+    .then(([state, file]) => {
+      tiles = state.tiles;
+      groups = state.groups;
+      byId("phone").textContent = state.phone;
+      if (file.error) setStatus(file.error, "error");
+      else {
+        readBack(file);
+        setStatus(fill(T.loaded, { time: clock(file.modified), ticked: number(disk.size) }), "saved");
+      }
+      render();
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();
