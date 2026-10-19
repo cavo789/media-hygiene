@@ -58,7 +58,7 @@ menu, waiting, typing again → the menu shows once Docker Desktop has started (
 estimated from step 16 of 2026-10-16, where Docker Desktop answered 5 s after being started by
 hand; a cold start is longer: to measure), nothing to do.
 
-## Status — PARTIAL (2026-10-19)
+## Status — DONE (2026-10-19)
 
 ### Done
 - `mh.ps1`: `mh` alone and `mh menu` (so the shortcut and the right-click entry) ask `docker version`
@@ -99,4 +99,6 @@ hand; a cold start is longer: to measure), nothing to do.
   the first: `mh` printed `powershell.exe -NoExit …`, took it for "answering" after 0 s, and after a
   failed `mh audit` said "Docker Desktop is ready" while it was not. Fixed: renamed
   `_mh_desktop_start`, and a test fails on any function defined twice in `mh.ps1` / `mh.sh`.
-- Still to run: step 16 again with an image holding the fix (the cold start time is not measured yet).
+- Step 16 again with the fix (image 8d6b603e): `mh` alone started Docker Desktop, answering after
+  **11 s**; after a failed `mh audit`, started it in 9 s and said "type the command again"; typed
+  again: exit 0. The 180 s limit leaves a wide margin: no setting needed.

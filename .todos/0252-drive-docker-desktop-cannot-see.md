@@ -28,10 +28,13 @@ Measured by the maintainer on 2026-10-19 (mh-measure step 11h, image of PR #15):
 - Same risk for a **photo folder** on such a drive: seen empty, nothing to clean (no data loss),
   but a wrong picture of the library. And for a quarantine drive.
 
-Why Docker Desktop cannot see the drive (a removable drive plugged in after the WSL 2 VM started
-is not mounted in it?): **to check** — the maintainer restarts Docker Desktop with the stick
-plugged in (step 16 does it), then runs the `ls` again; the one-line advice of step 2 depends on
-it (to confirm during the work, not blocking).
+Why (2026-10-19): **WSL mounts fixed drives only.** The stick is `FAT32`, `DriveType Removable`
+(`Get-Volume`, measured); Microsoft's WSL configuration page says automount mounts *fixed* drives
+under `/mnt`, a removable one must be mounted by hand (`mount -t drvfs D: /mnt/d`). Measured: the
+folder stayed empty after Docker Desktop was restarted twice with the stick plugged in (step 16);
+`wsl -d docker-desktop ls /mnt/host` lists `d`, but only as the folder Docker Desktop created.
+Most external hard disks and SSDs report `Fixed` and are shared (*to check* on one). Not tried yet:
+`wsl -d docker-desktop sh -c "mount -t drvfs D: /mnt/host/d"` then the `ls` (would `mh` do it?).
 
 ## What to do
 
@@ -39,9 +42,10 @@ it (to confirm during the work, not blocking).
    not `9p` is a drive Docker Desktop cannot see (measured shape above); keep its drive and
    folder (`D:\mh-test`) to name it. Today `_DESKTOP_ROOT` only knows `(/run)/desktop/mnt/host`.
 2. Before an audit, clean, review, sort: such a folder stops the command with one line, e.g.
-   *"Docker Desktop cannot see D:\mh-measure-11-backup: it shows an empty folder instead. Quit
-   Docker Desktop and start it again with the drive plugged in."* — a backup or a photo folder
-   alike; never a comparison with an empty folder.
+   *"Docker Desktop cannot see D:\mh-measure-11-backup (a removable drive, such as a USB stick):
+   it shows an empty folder instead. Copy it to a fixed disk, or use an external hard disk."* —
+   a backup or a photo folder alike; never a comparison with an empty folder. The launcher can
+   say it earlier: `(Get-Volume -DriveLetter D).DriveType -eq 'Removable'` when a folder is added.
 3. `mh.ps1`: the same check before each run is cheap only from inside a container — prefer the
    tool's check (1–2); the launcher keeps checking the folder exists on Windows.
 4. Troubleshooting page (en + fr): the symptom ("missing from the backup", "0 files") and the fix.

@@ -46,7 +46,6 @@
 | 0182 | `clean`: say when the quarantine is on another drive than the photos | [PARTIAL_0182-quarantine-on-another-drive-warns.md](PARTIAL/PARTIAL_0182-quarantine-on-another-drive-warns.md) |
 | 0183 | One quarantine per drive: files set aside stay on their own drive | [PARTIAL_0183-one-quarantine-per-drive.md](PARTIAL/PARTIAL_0183-one-quarantine-per-drive.md) |
 | 0194 | A Media Hygiene icon for the shortcut and the right-click entry | [PARTIAL_0194-media-hygiene-icon.md](PARTIAL/PARTIAL_0194-media-hygiene-icon.md) |
-| 0200 | `mh`: start Docker Desktop itself when it is not running | [PARTIAL_0200-mh-starts-docker-desktop.md](PARTIAL/PARTIAL_0200-mh-starts-docker-desktop.md) |
 | 0210 | `mh` alone and the shortcut open the home page; `mh` runs the step chosen there, then the page again | [PARTIAL_0210-mh-opens-home-and-runs-its-steps.md](PARTIAL/PARTIAL_0210-mh-opens-home-and-runs-its-steps.md) |
 | 0213 | A folder pair can keep both names: each copy becomes a hard link to the kept file (same drive) | [PARTIAL_0213-pair-keep-both-names-hard-link.md](PARTIAL/PARTIAL_0213-pair-keep-both-names-hard-link.md) |
 | 0217 | Google Photos Takeout: its `.json` files travel with their photo, and give a date and a place to the files without one | [PARTIAL_0217-google-takeout-sidecars-and-dates.md](PARTIAL/PARTIAL_0217-google-takeout-sidecars-and-dates.md) |
