@@ -145,7 +145,7 @@ person ticks it past a warning.
 - The Windows end-to-end run (maintainer), image built from branch `iterate/2026-10-19-2`:
   ```powershell
   cd C:\temp
-  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/<commit>/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/64e5337/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
   Unblock-File .\mh-measure.ps1
   .\mh-measure.ps1 -Only 19 -Count 1
   ```
