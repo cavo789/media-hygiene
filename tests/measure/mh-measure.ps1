@@ -603,7 +603,7 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         # settings the newer image wrote into config.toml (11f-11i all failed so, 2026-10-19).
         & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
         . $mhFile
-        Log "   11e. mh written again with $Image: 11f-11i measure the image under test"
+        Log "   11e. mh written again with ${Image}: 11f-11i measure the image under test"
     }
 
     # 11f: mh folders add alone: Windows' folder window (0201), chosen, then cancelled.
