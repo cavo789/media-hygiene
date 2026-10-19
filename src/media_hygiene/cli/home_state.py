@@ -7,6 +7,7 @@ from the reports folder; nothing else is read, nothing is scanned.
 
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.home_reports import audit_previews, latest_reports
@@ -26,7 +27,10 @@ from media_hygiene.review.home_views import (
     HomeState,
     HomeStep,
 )
-from media_hygiene.services.next_command import LAUNCHER_FUNCTION
+from media_hygiene.services.next_command import (
+    LAUNCHER_FUNCTION,
+    LAUNCHER_PHOTOS_VARIABLE,
+)
 from media_hygiene.services.status import read_status
 
 if TYPE_CHECKING:
@@ -38,6 +42,8 @@ if TYPE_CHECKING:
 
 
 _AI: Final = "🤖"
+# Between two folders of LAUNCHER_PHOTOS_VARIABLE: no Windows name holds it (mh.ps1).
+_SEPARATOR: Final = "|"
 
 
 def home_state(runtime: Runtime) -> HomeState:
@@ -57,6 +63,7 @@ def home_state(runtime: Runtime) -> HomeState:
     reports = _reports_dir(runtime)
     return HomeState(
         lines=status_lines(status),
+        given=_given(),
         sections=_sections(runtime, menu),
         proposed=HomeNext(
             number=proposed.number,
@@ -153,3 +160,14 @@ def _reports_dir(runtime: Runtime) -> Path | None:
     reports = runtime.locations.reports_dir
     mounted = runtime.persistent(MountKind.REPORTS) and reports.is_dir()
     return reports if mounted else None
+
+
+def _given() -> tuple[str, ...]:
+    """The folders `mh` gave this page with --photos, a right-click's (TODO 0258).
+
+    Returns:
+        One line per folder; none when `mh` gave none.
+    """
+    folders = os.environ.get(LAUNCHER_PHOTOS_VARIABLE, "").split(_SEPARATOR)
+    text = _("This page also analyses: {folder}")
+    return tuple(text.format(folder=folder) for folder in folders if folder)

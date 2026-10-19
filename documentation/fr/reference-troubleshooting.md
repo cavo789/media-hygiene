@@ -108,9 +108,24 @@ qui garde l'ordinateur éveillé jusqu'à la fin d'une commande longue, ou régl
 ## `mh.ps1` ne peut pas être écrit : « Access to the path … is denied »
 
 Votre antivirus bloque ce fichier : après avoir signalé quelque chose dans un dossier, certains
-(Avast) refusent tout nouveau fichier au même chemin, sans nouvelle alerte. Cherchez `mh.ps1` dans
-sa quarantaine et son historique ; restaurez-le, ou ajoutez une exception pour
-`$HOME\media-hygiene\mh.ps1`, puis relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md).
+(Avast) refusent tout nouveau fichier au même chemin, sans nouvelle alerte, jusqu'au redémarrage
+de Windows. Cherchez `mh.ps1` dans sa quarantaine et son historique et restaurez-le, ou
+redémarrez Windows, puis relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md).
+Aucune exception n'est nécessaire : voyez
+[plus bas](#un-antivirus-a-arrêté-mh-lancé-par-le-raccourci-ou-le-clic-droit) ce que lançait
+un `mh` plus ancien.
+
+## Un antivirus a arrêté `mh` lancé par le raccourci ou le clic droit
+
+La page s'ouvre, puis *Lancer* ne fait rien, ou l'antivirus dit avoir bloqué `mh.ps1` (Avast :
+*IDP.HELU.PSD11*). Le raccourci et l'entrée de clic droit *Media Hygiene* d'un `mh` plus ancien
+lançaient PowerShell avec `-ExecutionPolicy Bypass`, un lancement que certains antivirus
+arrêtent. Tapez `mh update` (ou relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md)
+et chargez `mh.ps1`) : `mh` réécrit le raccourci et l'entrée qu'il trouve, sans cette option,
+et le dit en une ligne chacun. N'ajoutez pas d'exception à l'antivirus : rien dans `mh` n'en a
+besoin. Si une ligne dit *Impossible d'écrire* avec *Accès refusé*, redémarrez Windows
+(l'antivirus bloque jusque-là un chemin qu'il a signalé), puis tapez de nouveau `mh shortcut`
+ou `mh explorer`.
 
 ## « Impossible de demander confirmation sans terminal interactif »
 

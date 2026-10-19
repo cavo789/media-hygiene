@@ -1,12 +1,62 @@
 {# `mh shortcut` and `mh explorer` in mh.ps1: see services/launcher_host.py. #}
 # What the icon and the right-click entry start: Windows PowerShell loading this very
 # file, then `{{ function }}` with the words given; the window stays open (0180, 0181).
+# The user's own execution policy loads it (RemoteSigned, step 1 of the guides): an
+# antivirus stopped a start that overrode it (0257). When it is refused, `{{ function }}`
+# says the line to type instead of PowerShell's error. The words stay last: Explorer's
+# folder follows them after a comment (`#`).
 # Returns the program, then its arguments; nothing when this file is unknown.
 function global:_{{ function }}_start($words) {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
     if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ host.texts.no_file }}"; return }
     Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-    '-NoExit -ExecutionPolicy Bypass -Command ". ''{0}''; {1}"' -f $file.Replace("'", "''"), $words
+    $load = "try { . '" + $file.Replace("'", "''") + "' } catch { function global:{{ function }} { Write-Host '{{ launch.policy }}' } }"
+    '-NoExit -Command "' + $load + '; ' + $words + '"'
+}
+
+# A shortcut or a right-click entry made by an older mh starts this very file with another
+# command (the policy overridden, before 0257): each one there is written again, read back
+# and said in one line, when this file is loaded (mh update, mh folders, launcher).
+# One naming another mh.ps1, or none, is left alone; nothing is created here.
+function global:_{{ function }}_refresh {
+    $file = $MyInvocation.MyCommand.ScriptBlock.File
+    if ($env:OS -ne 'Windows_NT' -or -not $file) { return }
+    $named = "'" + $file.Replace("'", "''") + "'"
+    $powershell, $arguments = _{{ function }}_start '{{ function }}'
+    $shell = New-Object -ComObject WScript.Shell
+    foreach ($place in 'Desktop', 'Programs') {
+        $path = Join-Path ([Environment]::GetFolderPath($place)) '{{ host.label }}.lnk'
+        if (-not (Test-Path -LiteralPath $path)) { continue }
+        $link = $shell.CreateShortcut($path)
+        if (-not $link.Arguments.Contains($named) -or $link.Arguments -eq $arguments) { continue }
+        $link.TargetPath = $powershell
+        $link.Arguments = $arguments
+        $reason = ''
+        $denied = $false
+        try { $link.Save() } catch { $reason, $denied = _{{ function }}_why $_ }
+        _{{ function }}_said ($shell.CreateShortcut($path).Arguments -eq $arguments) $reason $denied
+    }
+    $null, $arguments = _{{ function }}_start '{{ function }} {{ host.flag }} #" "%V'
+    $command = '"' + $powershell + '" ' + $arguments
+    foreach ($key in '{{ host.key }}', '{{ host.background }}') {
+        $path = "$key\command"
+        $item = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+        $read = if ($item) { "$($item.GetValue(''))" } else { '' }
+        if (-not $read.Contains($named) -or $read -eq $command) { continue }
+        $reason = ''
+        $denied = $false
+        try { $null = New-Item -Path $path -Value $command -Force -ErrorAction Stop } catch { $reason, $denied = _{{ function }}_why $_ }
+        $back = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+        _{{ function }}_said ($back -and $back.GetValue('') -eq $command) $reason $denied
+    }
+}
+
+# One line per shortcut or entry refreshed: written and read back, or why not ($path set).
+function global:_{{ function }}_said($written, $reason, $denied) {
+    if ($written) { Write-Host "{{ launch.refreshed }}"; return }
+    Write-Host "{{ host.texts.not_saved }}"
+    if ($reason) { Write-Host "    $reason" }
+    if ($denied) { Write-Host "{{ host.texts.denied }}" }
 }
 
 # The icon of the shortcut and of the right-click entry, copied from the image next to
@@ -117,3 +167,6 @@ function global:_{{ function }}_explorer {
     }
     if ($written -gt 0) { Write-Host "{{ host.texts.explorer }}" }
 }
+
+# Loaded: the shortcut and the right-click entry of this file start it as written above.
+try { _{{ function }}_refresh } catch { }

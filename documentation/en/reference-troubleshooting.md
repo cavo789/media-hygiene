@@ -102,9 +102,22 @@ night. Run the command again: what was already read is in the cache.
 ## `mh.ps1` cannot be written: "Access to the path … is denied"
 
 Your antivirus blocks that file: after it has flagged something in a folder, some (Avast) refuse
-any new file at the same path, without a new alert. Look in its quarantine and its history for
-`mh.ps1`; restore it, or add an exception for `$HOME\media-hygiene\mh.ps1`, then run the
-`launcher` line of [step 0](clean/quick-guide.md) again.
+any new file at the same path, without a new alert, until Windows restarts. Look in its
+quarantine and its history for `mh.ps1` and restore it, or restart Windows, then run the
+`launcher` line of [step 0](clean/quick-guide.md) again. No exception is needed: see
+[below](#an-antivirus-stopped-mh-started-by-the-shortcut-or-the-right-click) for what an
+older `mh` started.
+
+## An antivirus stopped `mh` started by the shortcut or the right-click
+
+The page opens, then *Run* does nothing, or the antivirus says it blocked `mh.ps1` (Avast:
+*IDP.HELU.PSD11*). The *Media Hygiene* shortcut and right-click entry of an older `mh` started
+PowerShell with `-ExecutionPolicy Bypass`, a start some antiviruses stop. Type `mh update` (or
+run the `launcher` line of [step 0](clean/quick-guide.md) again and load `mh.ps1`): `mh` writes
+the shortcut and the entry it finds again, without that option, and says so in one line each.
+Do not add an antivirus exception: nothing in `mh` needs one. If a line says *Could not write*
+with *Access refused*, restart Windows (the antivirus locks a path it has flagged until then),
+then type `mh shortcut` or `mh explorer` again.
 
 ## "Cannot ask for confirmation without an interactive terminal"
 

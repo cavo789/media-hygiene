@@ -57,6 +57,9 @@ docker run --rm -it `
   entre deux fichiers : le cache garde ce qu'il a lu, et l'audit suivant repart de là.
 - **Où vous en êtes** : les lignes de [`status`](status.md), et le passage que `mh undo` remet
   encore en place.
+  Ouverte par un clic droit sur un dossier (ou `mh --photos "E:\Dossier"`), elle nomme d'abord
+  ce dossier, en gras : *Cette page analyse aussi : E:\Dossier*, une ligne par dossier ; l'audit
+  de la page et chaque étape lancée depuis elle l'analysent aussi.
 - **Ce que le dernier audit a trouvé** : quelques aperçus de son rapport.
 - **Rapports** : le dernier audit et le dernier nettoyage, et *Tous les rapports*
   (`index.html`), ouverts dans un nouvel onglet depuis la page elle-même.
@@ -74,8 +77,11 @@ qui a ouvert la page :
 - **`mh` seul** (et donc le raccourci du Bureau et le clic droit sur un dossier), qui lance les
   étapes de la page et le lui dit : **Lancer** (ou le gros
   bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers
-  dont cette étape a besoin. La page affiche *En cours dans la fenêtre où mh tourne : cette page
-  revient quand c'est fini* ; quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
+  dont cette étape a besoin. La page dit où : *mh audit tourne dans la fenêtre PowerShell de mh (dans la barre des tâches) :
+  cette page revient d'elle-même quand c'est fini*. Cette fenêtre est souvent derrière le
+  navigateur : une étape qui pose une question y attend votre réponse, alors après 30 secondes la
+  page ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la barre des tâches)
+  (Alt+Tab)*. Quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
   L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
   c'est ainsi que `mh` sait quoi lancer.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il

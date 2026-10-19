@@ -1054,6 +1054,10 @@ msgid "Broken files in protected folders"
 msgstr "Fichiers cassés dans des dossiers protégés"
 
 #, python-brace-format
+msgid "Brought up to date, read back from {path}: it starts this mh."
+msgstr "Mis à jour, relu depuis {path} : il lance ce mh."
+
+#, python-brace-format
 msgid "Burst review: {count} series still to see."
 msgid_plural "Burst review: {count} series still to see."
 msgstr[0] "Tri des rafales : {count} série encore à voir."
@@ -4044,6 +4048,10 @@ msgstr ""
 "Rien de perdu : {before} fichiers ({before_size}) avant et après ; "
 "{verified} déplacements vérifiés sur {moved}."
 
+#, python-brace-format
+msgid "Nothing moves? Look at {window} (Alt+Tab)."
+msgstr "Rien ne bouge ? Regardez {window} (Alt+Tab)."
+
 msgid "Nothing new on the phone: nothing to copy."
 msgstr "Rien de nouveau sur le téléphone : rien à copier."
 
@@ -4520,6 +4528,14 @@ msgstr "Position enregistrée dans config.toml."
 
 msgid "Position taken out of config.toml."
 msgstr "Position retirée de config.toml."
+
+#, python-brace-format
+msgid ""
+"PowerShell refused to load mh.ps1. Type this line once, then start Media "
+"Hygiene again: {line}"
+msgstr ""
+"PowerShell a refusé de charger mh.ps1. Tapez une fois cette ligne, puis "
+"relancez Media Hygiene : {line}"
 
 msgid ""
 "Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* "
@@ -5074,11 +5090,6 @@ msgstr ""
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
-
-msgid "Running in the window where mh runs: this page comes back when it ends."
-msgstr ""
-"En cours dans la fenêtre où mh tourne : cette page revient quand c'est "
-"fini."
 
 #, python-brace-format
 msgid ""
@@ -6587,6 +6598,10 @@ msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal
 
 msgid "This mh does not run the steps of the page: type the command."
 msgstr "Ce mh ne lance pas les étapes de la page : tapez la commande."
+
+#, python-brace-format
+msgid "This page also analyses: {folder}"
+msgstr "Cette page analyse aussi : {folder}"
 
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
@@ -8410,6 +8425,9 @@ msgstr ""
 "reprendre le choix fait ici (des photos sélectionnées, sinon de "
 "l'événement)"
 
+msgid "the PowerShell window of mh (in the taskbar)"
+msgstr "la fenêtre PowerShell de mh (dans la barre des tâches)"
+
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
@@ -8575,6 +8593,9 @@ msgstr "le fichier compagnon a déjà disparu"
 
 msgid "the target exists"
 msgstr "la cible existe"
+
+msgid "the terminal where mh runs"
+msgstr "le terminal où mh tourne"
 
 msgid ""
 "the two folders are on two disks or two mounts: a hard link cannot cross "
@@ -8814,6 +8835,12 @@ msgstr "{cell} : la ligne {key} apparaît deux fois."
 #, python-brace-format
 msgid "{command} is for Windows only."
 msgstr "{command} est réservé à Windows."
+
+#, python-brace-format
+msgid "{command} runs in {window}: this page comes back by itself when it ends."
+msgstr ""
+"{command} tourne dans {window} : cette page revient d'elle-même quand "
+"c'est fini."
 
 #, python-brace-format
 msgid "{command}: done"

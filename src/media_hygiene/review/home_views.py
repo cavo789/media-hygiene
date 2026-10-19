@@ -61,6 +61,7 @@ class HomeState(_Frozen):
     """Everything the home page shows."""
 
     lines: tuple[str, ...]  # what `status` says, one line per part
+    given: tuple[str, ...] = ()  # the folders `mh --photos` added, one line each
     sections: tuple[HomeSection, ...]
     proposed: HomeNext | None = None
     undo: str | None = None  # the undo line of the newest run, when one is undoable

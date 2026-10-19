@@ -830,6 +830,10 @@ msgid "Broken files in protected folders"
 msgstr ""
 
 #, python-brace-format
+msgid "Brought up to date, read back from {path}: it starts this mh."
+msgstr ""
+
+#, python-brace-format
 msgid "Burst review: {count} series still to see."
 msgid_plural "Burst review: {count} series still to see."
 msgstr[0] ""
@@ -3297,6 +3301,10 @@ msgid ""
 " of {moved} moves verified."
 msgstr ""
 
+#, python-brace-format
+msgid "Nothing moves? Look at {window} (Alt+Tab)."
+msgstr ""
+
 msgid "Nothing new on the phone: nothing to copy."
 msgstr ""
 
@@ -3683,6 +3691,12 @@ msgid "Position saved in config.toml."
 msgstr ""
 
 msgid "Position taken out of config.toml."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"PowerShell refused to load mh.ps1. Type this line once, then start Media "
+"Hygiene again: {line}"
 msgstr ""
 
 msgid ""
@@ -4136,9 +4150,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
-msgstr ""
-
-msgid "Running in the window where mh runs: this page comes back when it ends."
 msgstr ""
 
 #, python-brace-format
@@ -5361,6 +5372,10 @@ msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
 msgid "This mh does not run the steps of the page: type the command."
+msgstr ""
+
+#, python-brace-format
+msgid "This page also analyses: {folder}"
 msgstr ""
 
 msgid "This page is closed. The home page comes back here when mh opens it."
@@ -6974,6 +6989,9 @@ msgstr ""
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
+msgid "the PowerShell window of mh (in the taskbar)"
+msgstr ""
+
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
@@ -7117,6 +7135,9 @@ msgid "the sidecar is gone already"
 msgstr ""
 
 msgid "the target exists"
+msgstr ""
+
+msgid "the terminal where mh runs"
 msgstr ""
 
 msgid ""
@@ -7332,6 +7353,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{command} is for Windows only."
+msgstr ""
+
+#, python-brace-format
+msgid "{command} runs in {window}: this page comes back by itself when it ends."
 msgstr ""
 
 #, python-brace-format

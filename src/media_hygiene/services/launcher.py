@@ -31,6 +31,7 @@ from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_guards import launcher_guards
 from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
+from media_hygiene.services.launcher_launch import launch_texts
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import (
     BROWSE_WAIT,
@@ -41,6 +42,7 @@ from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
+    LAUNCHER_PHOTOS_VARIABLE,
     LAUNCHER_STEPS_VARIABLE,
     LAUNCHER_VARIABLE,
     TOOL_KINDS,
@@ -164,6 +166,7 @@ def render_script(script: LauncherScript) -> str:
         kept=kept_run(script),
         update=update_texts(),
         host=host_commands(script),
+        launch=launch_texts(),
         checked=(
             *checked_folders(script),
             *(volume.host for volume in script.backups),
@@ -172,6 +175,7 @@ def render_script(script: LauncherScript) -> str:
         phone=phone_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
+        photos=LAUNCHER_PHOTOS_VARIABLE,
         relayed=_RELAYED,
         step_base=STEP_EXIT_BASE,
     )
