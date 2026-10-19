@@ -111,13 +111,14 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 |---|---|
 | `mh open` | Opens `index.html`, the list of every report, in your browser (the newest at its top). No report yet: it says to run `mh audit` first. |
 | `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window and the home page in your browser; the window stays open, each step chosen on the page runs in it. Run again, it rewrites both. |
-| `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
+| `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer, and of the empty space inside an open folder: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes both away. On Windows 11, it may sit under *Show more options*. |
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 | `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
 
-`mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry key
-`HKCU\Software\Classes\Directory\shell\MediaHygiene`) and show it. A failure is shown with its
+`mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys
+`HKCU\Software\Classes\Directory\shell\MediaHygiene` and
+`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) and show it. A failure is shown with its
 reason; *access refused* often comes from an antivirus, which may lock a path it has flagged until
 Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the image to
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep

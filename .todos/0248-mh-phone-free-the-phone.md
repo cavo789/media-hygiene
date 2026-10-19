@@ -4,7 +4,7 @@
 - **Batch**: launcher
 - **Depends**: 0219, 0247
 - **Files**: `src/media_hygiene/cli/templates/mh_phone.ps1.j2`, `src/media_hygiene/services/phone_plan.py`, `src/media_hygiene/services/phone_free.py` (new), `src/media_hygiene/cli/cmd_phone_plan.py`, `src/media_hygiene/review/phone_app.py` (new), `src/media_hygiene/review/phone_session.py` (new), `src/media_hygiene/review/templates/phone_review.html.j2` (new), `src/media_hygiene/actions/remembered.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_phone_free.py` (new), `tests/integration/test_phone_review.py` (new), `tests/unit/test_launcher_phone.py`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/reference-safety.md`, `documentation/fr/reference-safety.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the results of step 19 extended by 0247 (how a file is deleted over MTP without a hidden dialog, the read and hash speed), the phone plugged in for a few minutes
+- **Needs maintainer**: the results of step 19 extended by 0247 (parts 19l-19o: how a file is deleted over MTP without a hidden dialog, the read and hash speed), the phone plugged in for a few minutes (`.\mh-measure.ps1 -Only 19 -Count 1`, `y` at 19l; fetched as 0219's Status says)
 
 ## Context
 

@@ -30,6 +30,7 @@ from media_hygiene.services.launcher import (
     render_script,
 )
 from media_hygiene.services.launcher_host import (
+    BACKGROUND_KEY,
     EXPLORER_KEY,
     FROM_EXPLORER,
     HOST_COMMANDS,
@@ -235,17 +236,28 @@ def test_powershell_why_keeps_the_innermost_message_and_spots_a_refusal() -> Non
     assert -2147024891 == 0x80070005 - 2**32  # E_ACCESSDENIED
 
 
-def test_powershell_explorer_writes_the_key_and_reads_it_back() -> None:
-    """0181: HKCU only, `%V` after a comment sign, read back; `--remove`."""
+def test_powershell_explorer_writes_both_keys_and_reads_them_back() -> None:
+    """0181, 0188: a folder and an open folder's background, HKCU, `%V`; `--remove`."""
     text = _powershell()
-    assert f"$key = '{EXPLORER_KEY}'" in text
+    assert f"$keys = '{EXPLORER_KEY}', '{BACKGROUND_KEY}'" in text
     assert EXPLORER_KEY.startswith("HKCU:\\")
+    assert BACKGROUND_KEY == (
+        "HKCU:\\Software\\Classes\\Directory\\Background\\shell\\MediaHygiene"
+    )
     assert f"_mh_start 'mh {FROM_EXPLORER} #\" \"%V'" in text
-    assert '$null = New-Item -Path "$key\\command" -Value $command -Force' in text
-    assert "$read = if ($back) { $back.GetValue('') } else { $null }" in text
-    assert "if ($read -eq $command) {" in text
-    assert "if ($args -contains '--remove') {" in text
-    assert "Remove-Item -LiteralPath $key -Recurse -Force -ErrorAction Stop" in text
+    body = text[text.index("function global:_mh_explorer {") :]
+    body = body[: body.index("\n}\n")]
+    removing = body.index("if ($args -contains '--remove') {")
+    assert body.count("foreach ($key in $keys) {") == 2
+    assert removing < body.index("Remove-Item -LiteralPath $key -Recurse -Force")
+    assert '$null = New-Item -Path "$key\\command" -Value $command -Force' in body
+    assert "$read = if ($back) { $back.GetValue('') } else { $null }" in body
+    assert "if ($read -eq $command) {" in body
+    assert body.count('Write-Host "Enregistr\u00e9, relu depuis ${path}') == 1
+    assert body.count("Write-Host \"Impossible d'\u00e9crire ${path}") == 1
+    assert body.count('Write-Host "Entr\u00e9e du clic droit retir\u00e9e') == 1
+    hint = body.index('if ($written -gt 0) { Write-Host "Clic droit sur un dossier')
+    assert hint > body.rindex("foreach ($key in $keys) {")
 
 
 def test_powershell_explorer_catches_its_errors_and_says_why() -> None:

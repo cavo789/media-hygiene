@@ -4619,13 +4619,12 @@ msgstr ""
 "Clic droit sur un dossier dans l'Explorateur : la page d'accueil, sur ce "
 "dossier"
 
-#, python-brace-format
 msgid ""
-"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
-"back from {key}:"
+"Right-click a folder, or the empty space of an open folder, then Media "
+"Hygiene: the mh menu opens on that folder."
 msgstr ""
-"Clic droit sur un dossier, puis Media Hygiene : le menu de mh s'ouvre sur"
-" ce dossier. Relu depuis {key} :"
+"Clic droit sur un dossier, ou dans l'espace vide d'un dossier ouvert, "
+"puis Media Hygiene : le menu de mh s'ouvre sur ce dossier."
 
 #, python-brace-format
 msgid "Right-click entry removed: {key} is gone."

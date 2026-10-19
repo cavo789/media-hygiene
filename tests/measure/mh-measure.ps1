@@ -22,8 +22,9 @@
 #   9. the mh launcher around docker run, in the old console (conhost)    (0184 accents, 0179 awake,
 #      0185 title and sound, 0178 browser): asks what you heard and saw; the awake check
 #      (powercfg /requests) needs an administrator PowerShell
-#  10. mh open, mh shortcut, mh explorer (right-click a folder), each read back   (0175, 0180,
-#      0181): asks what you saw; your own Media Hygiene shortcut or entry is put back after
+#  10. mh open, mh shortcut, mh explorer (right-click a folder, then the empty space of an
+#      open folder), each read back   (0175, 0180, 0181, 0188): asks what you saw; your own
+#      Media Hygiene shortcut or entries are put back after
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
@@ -55,7 +56,10 @@
 #      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219);
 #      then, if you agree, mh phone end to end: every file of DCIM copied, again (nothing
-#      copied), then the cable pulled out during a copy, plugged in again       (0219)
+#      copied), then the cable pulled out during a copy, plugged in again       (0219);
+#      then, if you agree, ONE synthetic test file written to the phone and deleted (InvokeVerb,
+#      InvokeVerbEx, MoveHere), DCIM counted before and after, the gallery's trash; the 20 files
+#      copied into an empty folder and their SHA-256: MB/s of each         (0247, for 0248)
 #  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
 #      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
 #  21. the Synology NAS (-Nas, -NasShare, -NasUser), read-only: its ports; SMB from Windows (a
@@ -83,6 +87,7 @@
 #   .\mh-measure.ps1 -Only 17 -Count 5
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
+#                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 
@@ -441,7 +446,7 @@ if (Wanted 10) {
     & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
     . $mhFile
     Log ""
-    Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 explorer)"
+    Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 and 0188 explorer)"
     $index = Join-Path $tool "reports\index.html"
     if (-not (Test-Path $index)) {
         $said = @(mh open 6>&1 | ForEach-Object { "$_" })
@@ -465,15 +470,20 @@ if (Wanted 10) {
     $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open on the mh menu and stay open? (y/n)"
     Log "   10b. the icon opens the mh menu, window kept: $clicked"
 
-    # 10c: the right-click entry, yours exported first; a folder whose name has a space and an apostrophe.
-    $key = 'HKCU\Software\Classes\Directory\shell\MediaHygiene'
-    $saved = Join-Path $Work "explorer-key.reg"
-    $had = Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"
-    if ($had) { & reg.exe export $key $saved /y | Out-Null }
+    # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
+    # exported first; a folder whose name has a space and an apostrophe.
+    $entries = @('Directory\shell\MediaHygiene', 'Directory\Background\shell\MediaHygiene')
+    $had = @{}
+    foreach ($entry in $entries) {
+        $had[$entry] = Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"
+        if ($had[$entry]) { & reg.exe export "HKCU\Software\Classes\$entry" (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) /y | Out-Null }
+    }
     $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   10c. " + $line) }
-    $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene\command" -ErrorAction SilentlyContinue)
-    Log ("   10c. registry command read back: " + $(if ($command) { $command.GetValue('') } else { '(none)' }))
+    foreach ($entry in $entries) {
+        $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\$entry\command" -ErrorAction SilentlyContinue)
+        Log ("   10c. registry command of {0} read back: {1}" -f $entry, $(if ($command) { $command.GetValue('') } else { '(none)' }))
+    }
     $odd = Join-Path $Work "L'ete 2019"
     New-Item -ItemType Directory -Force -Path $odd | Out-Null
     Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
@@ -484,12 +494,18 @@ if (Wanted 10) {
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
     $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
     Log "   10c. audit chosen from the right-click analyses the folder: $audit"
+    $inside = Read-Host "10c. Close that mh window. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
+    $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
+    Log "   10c. background entry found in: $where"
 
     # 10d: --remove, then what you had put back.
     $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   10d. " + $line) }
-    Log ("   10d. key still there after --remove: " + (Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"))
-    if ($had) { & reg.exe import $saved 2>&1 | Out-Null }
+    foreach ($entry in $entries) {
+        Log ("   10d. key {0} still there after --remove: {1}" -f $entry, (Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"))
+        if ($had[$entry]) { & reg.exe import (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) 2>&1 | Out-Null }
+    }
     foreach ($link in $links) {
         Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
         if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
@@ -943,8 +959,9 @@ if (Wanted 18) {
 
 # --- 19: a phone plugged in over USB (MTP), read from PowerShell (0218) ---------------------
 # Shell.Application only (a COM object of Windows: no Add-Type, no compilation). Nothing is
-# written to the phone: CopyHere copies, MoveHere is never called. Its copies go to a temporary
-# folder under -Work, removed at the end. The phone must be unlocked, in "File transfer" mode.
+# written to the phone but the test files of 19l-19o (0247), after a y: CopyHere copies. Its
+# copies go to temporary folders under -Work, removed at the end. The phone must be unlocked,
+# in "File transfer" mode.
 function PhoneFiles($folder, [int]$depth) {
     foreach ($entry in $folder.Items()) {
         if ($entry.IsFolder) {
@@ -997,7 +1014,7 @@ if (Wanted 19) {
     $shell = New-Object -ComObject Shell.Application
     Log ""
     Log "== 19. a phone over USB, read through Shell.Application (0218)"
-    Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone"
+    Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone before 19l"
     Read-Host "19a. Plug the phone in, unlock it (Android: choose File transfer; iPhone: Trust this computer), then press Enter" | Out-Null
     $devices = @()
     foreach ($entry in $shell.Namespace(17).Items()) {
@@ -1128,6 +1145,153 @@ if (Wanted 19) {
         Log "   19k. copies under a new name (_1): $($names.Count) (0 expected: no name was taken)"
     } else {
         Log "   19h. mh phone end to end: skipped"
+    }
+
+    # 19l-19o: a file deleted on the phone over MTP (0247, for 0248). ONE synthetic test file at
+    # a time (a 16x16 grey JPEG made here, never a photo), written into DCIM\mh-measure on the
+    # phone, then deleted: InvokeVerb, InvokeVerbEx, MoveHere to the PC, each on its own test
+    # file. Every other file of the phone is left alone: DCIM is counted before and after.
+    $answer = Read-Host "19l. Next: this writes ONE test file to the phone (in DCIM\mh-measure), then deletes it, three ways in turn; no other file of the phone is touched. Go on? (y/n)"
+    $device = $null
+    if ($answer -eq 'y' -and $phone) {
+        foreach ($entry in $shell.Namespace(17).Items()) {
+            if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+        }
+        if (-not $device) { Log "   19l. the phone '$($phone.Name)' is not seen any more (plugged in, unlocked, File transfer?): 19l-19o skipped" }
+    } elseif ($answer -eq 'y') {
+        Log "   19l. no phone picked in 19a: 19l-19o skipped"
+    } else {
+        Log "   19l. writing and deleting a test file on the phone: skipped"
+    }
+    $dcimAgain = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
+    if ($device -and -not $dcimAgain) { Log "   19l. no DCIM folder on the phone any more: 19l-19o skipped" }
+    if ($dcimAgain) {
+        $jpeg = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBv3f8Ad/lTqKb93/d/lS2K+L1P/9k='
+        $phoneDelete = Join-Path $Work "phone-delete"
+        $phoneMoved = Join-Path $Work "phone-moved"
+        New-Item -ItemType Directory -Force -Path $phoneDelete, $phoneMoved | Out-Null
+        $dcimFolder = $dcimAgain.GetFolder
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $countBefore = @(PhoneFiles $dcimFolder 0).Count
+        Log ("   19l. DCIM before: {0} files (listed in {1:N1} s)" -f $countBefore, $watch.Elapsed.TotalSeconds)
+        # PhoneFind: an item of a phone folder by its name (over MTP, Name may lack the
+        # extension), or $null once $seconds have passed. PhoneGone: the seconds it took to
+        # disappear from the folder, -1 when it is still there after $seconds.
+        function PhoneFind($folder, [string]$name, [int]$seconds) {
+            $bare = [IO.Path]::GetFileNameWithoutExtension($name)
+            $wait = [Diagnostics.Stopwatch]::StartNew()
+            do {
+                foreach ($entry in $folder.Items()) {
+                    if ($entry.Name -eq $name -or $entry.Name -eq $bare -or $entry.ExtendedProperty('System.FileName') -eq $name) { return $entry }
+                }
+                Start-Sleep -Milliseconds 300
+            } while ($wait.Elapsed.TotalSeconds -lt $seconds)
+            return $null
+        }
+        function PhoneGone($folder, [string]$name, [int]$seconds) {
+            $wait = [Diagnostics.Stopwatch]::StartNew()
+            do {
+                if (-not (PhoneFind $folder $name 0)) { return $wait.Elapsed.TotalSeconds }
+                Start-Sleep -Milliseconds 300
+            } while ($wait.Elapsed.TotalSeconds -lt $seconds)
+            return -1
+        }
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $dcimFolder.NewFolder('mh-measure')
+        $testItem = PhoneFind $dcimFolder 'mh-measure' 30
+        Log ("   19l. NewFolder('mh-measure') in DCIM: {0} after {1:N1} s" -f $(if ($testItem) { 'seen' } else { 'NOT seen' }), $watch.Elapsed.TotalSeconds)
+        $deleted = @()
+        if ($testItem) {
+            $testFolder = $testItem.GetFolder
+            $number = 0
+            $onPhone = $null
+            foreach ($way in 'InvokeVerb', 'InvokeVerbEx', 'MoveHere') {
+                if (-not $onPhone) {
+                    $number++
+                    $name = "mh-measure-$stamp-$number.jpg"
+                    $local = Join-Path $phoneDelete $name
+                    [IO.File]::WriteAllBytes($local, [Convert]::FromBase64String($jpeg))
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    $testFolder.CopyHere($local, 4 + 16 + 1024)
+                    $onPhone = PhoneFind $testFolder $name 60
+                    if (-not $onPhone) {
+                        Log ("   19l. test file {0} ({1} bytes) NOT seen on the phone within 60 s: 19m stops here" -f $name, (Get-Item -LiteralPath $local).Length)
+                        break
+                    }
+                    Log ("   19l. test file {0} written: seen after {1:N1} s as '{2}', System.Size {3} (local {4} bytes)" -f $name, $watch.Elapsed.TotalSeconds, $onPhone.Name, $onPhone.ExtendedProperty('System.Size'), (Get-Item -LiteralPath $local).Length)
+                    if ($number -eq 1) { Log ("   19l. verbs of a phone file: " + ((@($onPhone.Verbs()) | ForEach-Object { $_.Name -replace '&', '' }) -join ' / ')) }
+                }
+                Log "   19m. $way on $name next: Windows may open a dialog BEHIND this window (look with Alt+Tab); if it asks, answer Yes"
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                $failed = ''
+                try {
+                    if ($way -eq 'InvokeVerb') { $onPhone.InvokeVerb('delete') }
+                    elseif ($way -eq 'InvokeVerbEx') { $onPhone.InvokeVerbEx('delete') }
+                    else { $shell.Namespace($phoneMoved).MoveHere($onPhone, 4 + 16 + 1024) }
+                } catch { $failed = $_.Exception.Message }
+                $called = $watch.Elapsed.TotalSeconds
+                $gone = PhoneGone $testFolder $name 60
+                Log ("   19m. {0}: call returned after {1:N1} s{2}; {3}" -f $way, $called, $(if ($failed) { " with an error: $failed" } else { '' }), $(if ($gone -ge 0) { "gone from the phone after {0:N1} s" -f ($called + $gone) } else { 'STILL on the phone after 60 s' }))
+                if ($way -eq 'MoveHere') {
+                    $moved = Get-Item -LiteralPath (Join-Path $phoneMoved $name) -ErrorAction SilentlyContinue
+                    Log ("   19m. MoveHere: copy on the PC {0}" -f $(if ($moved) { "there, $($moved.Length) bytes" } else { 'NOT there' }))
+                }
+                $dialog = Read-Host "19m. $way : did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                Log "   19m. $way : dialog: $dialog"
+                if ($gone -ge 0) { $deleted += $way; $onPhone = $null }
+            }
+            if ($onPhone) { Log "   19m. $name is still on the phone (DCIM\mh-measure): delete it by hand in Explorer" }
+            # 19n: the test folder removed the first way that worked; DCIM counted again.
+            $folderItem = PhoneFind $dcimFolder 'mh-measure' 5
+            if ($deleted.Count -gt 0 -and $folderItem -and -not $onPhone) {
+                $way = $deleted[0]
+                Log "   19n. removing DCIM\mh-measure with ${way}: a dialog may open BEHIND this window (look with Alt+Tab); if it asks, answer Yes"
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                try {
+                    if ($way -eq 'InvokeVerb') { $folderItem.InvokeVerb('delete') }
+                    elseif ($way -eq 'InvokeVerbEx') { $folderItem.InvokeVerbEx('delete') }
+                    else { $shell.Namespace($phoneMoved).MoveHere($folderItem, 4 + 16 + 1024) }
+                } catch { Log "   19n. $way on the folder: error $($_.Exception.Message)" }
+                $gone = PhoneGone $dcimFolder 'mh-measure' 60
+                Log ("   19n. DCIM\mh-measure removed with {0}: {1}" -f $way, $(if ($gone -ge 0) { "gone after {0:N1} s" -f ($watch.Elapsed.TotalSeconds) } else { 'STILL there after 60 s: delete it by hand' }))
+                $dialog = Read-Host "19n. Did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                Log "   19n. dialog on the folder: $dialog"
+            } else {
+                Log "   19n. DCIM\mh-measure left on the phone (no way deleted the test file, or it is not empty): delete it by hand in Explorer"
+            }
+        }
+        $after = @(PhoneFiles $dcimFolder 0)
+        $left = @($after | Where-Object { $_.Name -like 'mh-measure-*' })
+        Log ("   19n. DCIM after: {0} files, before: {1} ({2}); test files left: {3}" -f $after.Count, $countBefore, $(if ($after.Count -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }), $left.Count)
+        $trash = Read-Host "19n. On the phone, open the Gallery, then its Trash (Recycle bin): is a mh-measure-... picture there? (n or what you see)"
+        Log "   19n. phone gallery trash after the deletions over USB: $trash"
+
+        # 19o: the read speed of 0248's proof: the 20 files of 19d copied into an EMPTY folder
+        # (no dialog), then the SHA-256 of each.
+        $phoneRead = Join-Path $Work "phone-read"
+        if (Test-Path -LiteralPath $phoneRead) { Remove-Item -Recurse -Force -LiteralPath $phoneRead }
+        New-Item -ItemType Directory -Force -Path $phoneRead | Out-Null
+        $names = @{}
+        foreach ($item in $recent) { $names[$item.Name] = 1 }
+        $again = @($after | Where-Object { $names.ContainsKey($_.Name) } | Select-Object -First 20)
+        $target = $shell.Namespace($phoneRead)
+        $bytes = 0
+        $late = 0
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        foreach ($item in $again) {
+            $target.CopyHere($item, 4 + 16 + 1024)
+            if ((PhoneWait $item $phoneRead) -lt 0) { $late++ } else { $bytes += PhoneSize $item }
+        }
+        $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+        Log ("   19o. copy into an empty folder: {0} files, {1} missing, {2:N1} MB in {3:N1} s = {4:N2} MB/s" -f $again.Count, $late, ($bytes / 1MB), $seconds, ($bytes / 1MB / $seconds))
+        $copies = @(Get-ChildItem -LiteralPath $phoneRead -File)
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        foreach ($copy in $copies) { $null = Get-FileHash -LiteralPath $copy.FullName -Algorithm SHA256 }
+        $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+        $hashed = ($copies | Measure-Object Length -Sum).Sum
+        Log ("   19o. SHA-256 of the copies: {0} files, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $copies.Count, ($hashed / 1MB), $seconds, ($hashed / 1MB / $seconds))
+        foreach ($folder in $phoneDelete, $phoneMoved, $phoneRead) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
+        Log "   19o. the PC's temporary folders of 19l-19o removed"
     }
 }
 

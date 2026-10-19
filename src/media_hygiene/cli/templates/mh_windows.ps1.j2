@@ -68,42 +68,52 @@ function global:_{{ function }}_shortcut {
     if ($written -gt 0) { Write-Host "{{ host.texts.shortcut }}" }
 }
 
-# `{{ function }} explorer`: the right-click entry of every folder, in the user's own
-# registry (no administrator), read back; `--remove` deletes it (0181). Explorer puts
-# the folder after `#`: a comment, so that no character of its name breaks the command.
+# `{{ function }} explorer`: the right-click entry of every folder and of the empty space of
+# an open folder (0188), in the user's own registry (no administrator), each read back;
+# `--remove` deletes both (0181). Explorer puts the folder (`%V`, the open one on the
+# background) after `#`: a comment, so that no character of its name breaks the command.
 function global:_{{ function }}_explorer {
-    $key = '{{ host.key }}'
-    $reason = ''
-    $denied = $false
+    $keys = '{{ host.key }}', '{{ host.background }}'
     if ($args -contains '--remove') {
-        if (Test-Path -LiteralPath $key) {
-            try { Remove-Item -LiteralPath $key -Recurse -Force -ErrorAction Stop } catch { $reason, $denied = _{{ function }}_why $_ }
+        foreach ($key in $keys) {
+            $reason = ''
+            $denied = $false
+            if (Test-Path -LiteralPath $key) {
+                try { Remove-Item -LiteralPath $key -Recurse -Force -ErrorAction Stop } catch { $reason, $denied = _{{ function }}_why $_ }
+            }
+            if (-not (Test-Path -LiteralPath $key)) { Write-Host "{{ host.texts.removed }}"; continue }
+            Write-Host "{{ host.texts.not_removed }}"
+            if ($reason) { Write-Host "    $reason" }
+            if ($denied) { Write-Host "{{ host.texts.denied }}" }
         }
-        if (-not (Test-Path -LiteralPath $key)) { Write-Host "{{ host.texts.removed }}"; return }
-        Write-Host "{{ host.texts.not_removed }}"
-        if ($reason) { Write-Host "    $reason" }
-        if ($denied) { Write-Host "{{ host.texts.denied }}" }
         return
     }
     $powershell, $arguments = _{{ function }}_start '{{ function }} {{ host.flag }} #" "%V'
     if (-not $arguments) { return }
     $icon = _{{ function }}_icon $powershell
     $command = '"' + $powershell + '" ' + $arguments
-    try {
-        $null = New-Item -Path $key -Value '{{ host.label }}' -Force -ErrorAction Stop
-        $null = New-ItemProperty -LiteralPath $key -Name Icon -Value $icon -Force -ErrorAction Stop
-        $null = New-Item -Path "$key\command" -Value $command -Force -ErrorAction Stop
-    } catch { $reason, $denied = _{{ function }}_why $_ }
-    $back = Get-Item -LiteralPath "$key\command" -ErrorAction SilentlyContinue
-    $read = if ($back) { $back.GetValue('') } else { $null }
-    if ($read -eq $command) {
-        Write-Host "{{ host.texts.explorer }}"
-        Write-Host "    $read"
-        Write-Host "    $((Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon)"
-    } else {
+    $written = 0
+    foreach ($key in $keys) {
+        $reason = ''
+        $denied = $false
+        try {
+            $null = New-Item -Path $key -Value '{{ host.label }}' -Force -ErrorAction Stop
+            $null = New-ItemProperty -LiteralPath $key -Name Icon -Value $icon -Force -ErrorAction Stop
+            $null = New-Item -Path "$key\command" -Value $command -Force -ErrorAction Stop
+        } catch { $reason, $denied = _{{ function }}_why $_ }
+        $back = Get-Item -LiteralPath "$key\command" -ErrorAction SilentlyContinue
+        $read = if ($back) { $back.GetValue('') } else { $null }
         $path = $key
-        Write-Host "{{ host.texts.not_saved }}"
-        if ($reason) { Write-Host "    $reason" }
-        if ($denied) { Write-Host "{{ host.texts.denied }}" }
+        if ($read -eq $command) {
+            Write-Host "{{ host.texts.saved }}"
+            Write-Host "    $read"
+            Write-Host "    $((Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon)"
+            $written++
+        } else {
+            Write-Host "{{ host.texts.not_saved }}"
+            if ($reason) { Write-Host "    $reason" }
+            if ($denied) { Write-Host "{{ host.texts.denied }}" }
+        }
     }
+    if ($written -gt 0) { Write-Host "{{ host.texts.explorer }}" }
 }

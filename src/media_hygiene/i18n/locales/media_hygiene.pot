@@ -3777,10 +3777,9 @@ msgstr ""
 msgid "Right-click a folder in Explorer: the home page, on that folder"
 msgstr ""
 
-#, python-brace-format
 msgid ""
-"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
-"back from {key}:"
+"Right-click a folder, or the empty space of an open folder, then Media "
+"Hygiene: the mh menu opens on that folder."
 msgstr ""
 
 #, python-brace-format
