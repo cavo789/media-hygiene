@@ -78,3 +78,8 @@ Desktop restarts. Closing the window with its X is the natural user action.
 ## Inbox (2026-10-19)
 
 - A non-Docker program on 8088 → refiled as 0253 (name the program, never the raw error; maintainer).
+
+### Measured (2026-10-19, step 10, `measures-20261019-2208`)
+- Not checked: Avast blocked the test `mh.ps1` started by the right-click (IDP.HELU.PSD11, the
+  `-ExecutionPolicy Bypass` start): the first page ended at *Run* (exit 101) with nothing taking
+  over, so no leftover page existed to stop. To check again after 0257 (no Bypass) and a reboot.
