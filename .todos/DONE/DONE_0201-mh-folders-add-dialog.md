@@ -46,7 +46,7 @@ picker.
 
 Adding a folder: typing a quoted Windows path → two clicks in a familiar window.
 
-## Status — PARTIAL (2026-10-19)
+## Status — DONE (2026-10-19)
 
 ### Done
 - `mh.ps1`: `mh folders add` alone opens Windows' folder dialog through COM
@@ -72,3 +72,8 @@ Adding a folder: typing a quoted Windows path → two clicks in a familiar windo
   (the window opens in front of the console, cancel changes nothing, the folder chosen is added and
   read back, Avast says nothing). **Reason:** needs Windows.
 - No documentation capture is stale.
+
+### Measured (2026-10-19, step 11f-11g, three runs, Windows Terminal, image of PR #15)
+- The folder window opened **in front of the console** (no Alt+Tab), in Windows Terminal; the
+  folder chosen was saved and read back (`the file names the folder chosen: True`).
+- Cancel: "No folder chosen: nothing changed", `mh.ps1` unchanged. Avast said nothing.

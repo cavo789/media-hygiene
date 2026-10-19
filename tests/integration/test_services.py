@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 import pytest
@@ -9,6 +10,7 @@ import pytest
 from media_hygiene.constants import BrokenReason
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.paths.mounts import MountTable
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService
@@ -41,6 +43,30 @@ def test_clean_refuses_read_only_folders(
         CleanService(make_runtime(locations), NullProgress()).ensure_ready()
     assert caught.value.tip is not None
     assert ":ro" in caught.value.tip
+
+
+def test_clean_acts_beside_a_read_only_backup(
+    locations: Locations,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A backup is :ro on purpose (0205): clean runs; a photo folder :ro does not."""
+    photos = locations.data_dir / "c" / "Photos"
+    backup = locations.data_dir / "d" / "backup"
+    for folder in (photos, backup):
+        folder.mkdir(parents=True)
+    runtime = replace(
+        make_runtime(locations, {"folders": {"backups": ["D:\\backup"]}}),
+        mounts=MountTable(frozenset({photos, backup})),
+    )
+    monkeypatch.setattr(
+        "media_hygiene.services.acting.is_read_only", lambda path: path == backup
+    )
+    CleanService(runtime, NullProgress()).ensure_ready()
+    monkeypatch.setattr(
+        "media_hygiene.services.acting.is_read_only", lambda _path: True
+    )
+    with pytest.raises(MountError, match="Photos"):
+        CleanService(runtime, NullProgress()).ensure_ready()
 
 
 def test_without_quarantine_only_empty_files_are_handled(tmp_path: Path) -> None:

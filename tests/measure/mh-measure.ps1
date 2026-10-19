@@ -599,6 +599,11 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         foreach ($line in $said) { Log ("   11e. " + $line) }
         Log ("   11e. mh.ps1 still names the folder: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $data -Quiet))
         Log ("   11e. images: " + ((& docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | Where-Object { $_ -match 'media-hygiene' }) -join ' / '))
+        # mh now runs the published image, older than the image under test: it refuses the
+        # settings the newer image wrote into config.toml (11f-11i all failed so, 2026-10-19).
+        & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
+        . $mhFile
+        Log "   11e. mh written again with ${Image}: 11f-11i measure the image under test"
     }
 
     # 11f: mh folders add alone: Windows' folder window (0201), chosen, then cancelled.
