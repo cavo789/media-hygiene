@@ -886,9 +886,21 @@ function PhoneFindDcim($folder, [int]$depth) {
     }
     return $null
 }
+# Over MTP, .Size is 0 and .ModifyDate 1899-12-30 (measured 2026-10-19, Android): the real
+# values are the extended properties (System.DateModified in UTC).
+function PhoneSize($item) {
+    $size = $item.ExtendedProperty('System.Size')
+    if ($size) { return [int64]$size }
+    return [int64]$item.Size
+}
+function PhoneDate($item) {
+    $date = $item.ExtendedProperty('System.DateModified')
+    if ($date) { return [datetime]$date }
+    return $item.ModifyDate
+}
 function PhoneWait($item, [string]$folder) {
     $target = Join-Path $folder $item.Name
-    $size = [int64]$item.Size
+    $size = PhoneSize $item
     $watch = [Diagnostics.Stopwatch]::StartNew()
     while ($watch.Elapsed.TotalSeconds -lt 60) {
         if (Test-Path -LiteralPath $target) {
@@ -940,13 +952,16 @@ if (Wanted 19) {
             }
             $seen = @{}
             $recent = @()
-            foreach ($item in ($all | Sort-Object { $_.ModifyDate } -Descending)) {
+            foreach ($item in ($all | Sort-Object { PhoneDate $_ } -Descending)) {
                 if ($recent.Count -ge 20) { break }
                 if (-not $seen.ContainsKey($item.Name)) { $seen[$item.Name] = 1; $recent += $item }
             }
             New-Item -ItemType Directory -Force -Path $phoneTmp | Out-Null
             $target = $shell.Namespace($phoneTmp)
             foreach ($round in 1, 2) {
+                if ($round -eq 2) {
+                    Log "   19f. second copy of the same files: Windows may open a 'Replace or Skip' dialog BEHIND this window (Alt+Tab): note what it says, then choose Skip"
+                }
                 $before = @{}
                 foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) { $before[$copy.Name] = "$($copy.Length)/$($copy.LastWriteTime.Ticks)" }
                 $bytes = 0
@@ -957,10 +972,10 @@ if (Wanted 19) {
                     $took = PhoneWait $item $phoneTmp
                     if ($took -lt 0) {
                         $late++
-                        Log "   19d$round. never arrived within 60 s: '$($item.Name)' (phone said $($item.Size) bytes)"
+                        Log "   19d$round. never arrived within 60 s: '$($item.Name)' (phone said $(PhoneSize $item) bytes)"
                     } else {
-                        $bytes += [int64]$item.Size
-                        Log ("   19d$round. '{0}': {1:N1} s" -f $item.Name, $took)
+                        $bytes += PhoneSize $item
+                        Log ("   19d$round. '{0}' ({1:N1} MB): {2:N1} s" -f $item.Name, ((PhoneSize $item) / 1MB), $took)
                     }
                 }
                 $seconds = [Math]::Max($round1.Elapsed.TotalSeconds, 0.001)
@@ -968,7 +983,7 @@ if (Wanted 19) {
                 if ($round -eq 1) {
                     foreach ($item in ($recent | Select-Object -First 5)) {
                         $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
-                        if ($copy) { Log ("   19e. '{0}': phone ModifyDate {1}, copy modified {2}, copy created {3}" -f $item.Name, $item.ModifyDate, $copy.LastWriteTime, $copy.CreationTime) }
+                        if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
                     }
                 } else {
                     $changed = 0

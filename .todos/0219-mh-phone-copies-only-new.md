@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: 0218, 0216
 - **Files**: `src/media_hygiene/cli/templates/mh_phone.ps1.j2` (new), `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/services/launcher_host.py`, `src/media_hygiene/services/launcher_phone.py` (new), `src/media_hygiene/cli/cmd_phone_plan.py` (new), `src/media_hygiene/services/phone_plan.py` (new), `src/media_hygiene/cli/app.py`, `src/media_hygiene/cli/safety.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_phone_plan.py` (new), `tests/unit/test_launcher_phone.py` (new), `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the results of step 19 of `mh-measure.ps1` (0218) with one or two phones (an Android one, and an iPhone if one is at hand): the device and `DCIM` names, the properties giving a file's size and date, how to know a copy has finished, the speed — the maintainer runs it before the next iterate (inbox 2026-10-19)
 
 ## Context
 
@@ -17,6 +16,29 @@ A phone over USB has no drive letter: Docker cannot see it, PowerShell can (0218
 container knows what the library already holds (the index, in the cache volume) and what the user
 set aside before (the journals, 0216). So the work is split: `mh` (PowerShell, on Windows) reads
 and copies, the container decides.
+
+## Measured (step 19 of `mh-measure.ps1`, 2026-10-19, maintainer's Samsung A72, Android, PowerShell 5.1)
+
+- The phone: one item of This PC (`Namespace(17)`) with `IsFileSystem` False, `Type` "Mobile Phone",
+  named by its owner ("A72 de …"). One top folder, **localised** ("Stockage interne"): find `DCIM`
+  by walking (as step 19 does), never by a fixed path.
+- `DCIM` listed through `Items()`: 775 files in 24.0 s (≈ 31 ms per file, measured): for 5,000
+  files, ≈ 2.5 min just to list (estimated): say it with a progress line.
+- Extensions seen: `.jpg` 663, `.png` 85, `.mp4` 14, `.jpeg` 12, `.webp` 1; names such as
+  `20250512_195342.jpg`, `Screenshot_…`, `Messenger_creation_<GUID>.jpeg`, `1763843759164.jpg`
+  (epoch milliseconds), `received_….png`.
+- **Over MTP, `.Size` is 0 and `.ModifyDate` is 1899-12-30 (no value)** for every file: the size is
+  `ExtendedProperty('System.Size')`, the date `ExtendedProperty('System.DateModified')`, in **UTC**
+  (`20250512_195342.jpg` → 17:53:43, Brussels summer time); `System.DateCreated` is empty.
+- A copy (`CopyHere`, flags 4+16+1024) keeps the phone's modified time (shown in local time), its
+  creation time is the copy's.
+- Copying again a file the destination already holds **blocked** the script (no progress for
+  minutes, a dialog likely behind the console: flag 16 is not honoured for MTP). Hence below: copy
+  only into a folder that cannot hold the name yet.
+- Not measured (script bug, fixed since): the speed, and whether "size reached" proves a finished
+  copy — the size was read as 0, so each wait returned at once. To measure by the end-to-end run.
+- The maintainer does not leave the phone plugged in: an import is a session of a few minutes, and
+  an unplugged cable in the middle must be handled.
 
 ## What to do
 
@@ -40,6 +62,14 @@ and copies, the container decides.
   journals remember it as set aside by the user (0216, by name and size: the phone gives no
   content to hash), or when the destination already holds it.
 - **Never** deletes, moves or renames anything on the phone.
+- From the measurement: size and date from the extended properties (`System.Size`,
+  `System.DateModified` UTC), never `.Size`/`.ModifyDate`; each file copied into an **empty staging
+  folder** of the run (`<destination>\.mh-phone-<run>`), waited for until its length equals
+  `System.Size` (and stops growing), then moved with `Move-Item` to its place — a name already there
+  is never overwritten (`_1` added, said), so Windows never asks anything. A file that never
+  arrives (cable pulled, 60 s): the partial copy removed, the import stopped with what was copied
+  so far said ("unplugged? type `mh phone` again: what is already copied is skipped"); the staging
+  folder removed at the end.
 - Name and size are not a proof of identity (the phone gives no content); a file wrongly taken for
   "already there" stays on the phone, and a file copied twice is found by the next audit as an
   identical copy: say both in the docs.
@@ -58,7 +88,7 @@ and copies, the container decides.
   reason to skip, names compared without case, the output format; (`test_launcher_phone.py`): the
   rendered `mh.ps1` holds `phone`, `CopyHere` only (never `MoveHere`), the wait per file, ASCII.
 - Docs both languages: the launcher page, step 3 ("copy only the new photos of your phone").
-- Windows (maintainer): step 19 with the end-to-end run.
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): step 19 with the end-to-end run (`mh phone` twice, the second copies nothing; the speed in MB/s; the cable pulled once in the middle).
 
 ## Gain (estimated)
 
