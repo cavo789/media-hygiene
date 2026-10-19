@@ -64,7 +64,10 @@ and copies, the container decides.
   already holds a file of the same name (case ignored) and the same size (the index), when the
   journals remember it as set aside by the user (0216, by name and size: the phone gives no
   content to hash), or when the destination already holds it.
-- **Never** deletes, moves or renames anything on the phone.
+- **Never** deletes, moves or renames anything on the phone: freeing the phone is 0248, which
+  reuses this plan — so `phone-plan` prints each file's case with its reason: new (to copy),
+  in the library (which file), set aside on purpose (which run, still in the quarantine or
+  purged), already at the destination.
 - From the measurement: size and date from the extended properties (`System.Size`,
   `System.DateModified` UTC), never `.Size`/`.ModifyDate`; each file copied into an **empty staging
   folder** of the run (`<destination>\.mh-phone-<run>`), waited for until its length equals
