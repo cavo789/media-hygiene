@@ -56,14 +56,21 @@ Desktop restarts. Closing the window with its X is the natural user action.
 - Bash: run for real with a fake docker (stopped / live / foreign / not a page);
   PowerShell: rendered text checked, ASCII, no Add-Type, no -ExecutionPolicy in the new code.
 - Troubleshooting page (en + fr): the closed window and the line said.
+- Review of 2026-10-19 (2), commit a63e789: the label also holds the console's start time
+  (`<shell>-<PID>-<start>`: PowerShell `(Get-Process -Id $PID).StartTime`, UTC,
+  `yyyyMMddHHmmss`, invariant culture; bash field 22 of `/proc/<pid>/stat`); a page is live
+  only when its PID runs AND its start time matches (a PID Windows gave again no longer
+  keeps a dead page alive). An unreadable start time, or an older label without one: the
+  PID alone, never a page in use cut. Bash tested with the real and a wrong start time.
 - mh-measure step 10c: the window closed with its X, `docker ps` on port 8088 logged, then
   asked whether the next page said the line and opened.
 
 ### Not done
 - The Windows check of the acceptance (closing with the X leaves the container; the fix frees
   the port). **Reason:** only the maintainer's Windows + Docker Desktop, with the image of this
-  branch (`docker build --tag media-hygiene .`, or the PR's image):
-  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19-2/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 10 -Count 20`.
+  branch (`docker build --tag media-hygiene .`, or the PR's image), still waiting after the
+  review:
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/a63e789/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 10 -Count 20`.
 - A non-Docker program on port 8088 still shows Docker's raw "port is already allocated"
   (the troubleshooting page covers it). **Reason:** telling it apart needs a port probe
   before every page; not asked.

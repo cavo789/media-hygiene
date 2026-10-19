@@ -1,39 +1,77 @@
-{# The checks before docker run (0250, 0252): included by mh.ps1.j2; services/launcher_guards.py. #}
+{# The checks around docker run (0250, 0252): included by mh.ps1.j2; services/launcher_guards.py. #}
 # A page left by a closed window keeps the port of the pages (0250): closing a console with
-# its X ends the docker client, not the container. Each page carries the PID of its console;
-# before a page, one whose console is gone (or is this one, idle) is stopped, said in one
-# line; one whose console still runs is left alone, the user told to close it there.
+# its X ends the docker client, not the container. Each page carries the PID of its console
+# and its start time (Windows gives a closed console's PID to another process); before a
+# page, one whose console is gone (or is this one, idle) is stopped, said in one line; one
+# whose console still runs is left alone, the user told to close it there.
 # True once the port is free.
 function global:_{{ function }}_page_free {
     $ErrorActionPreference = 'Continue'
     $held = @(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>$null)
-    $mark = '(^|,)' + [regex]::Escape('{{ guards.label }}') + '=powershell-(\d+)(,|$)'
+    $mark = '(^|,)' + [regex]::Escape('{{ guards.label }}') + '=powershell-(\d+)(-(\d*))?(,|$)'
     foreach ($line in $held) {
         $id, $labels = "$line" -split ';', 2
         if ("$id" -notmatch '^[0-9a-f]+$') { continue }  # a container id, nothing else
-        $owner = if ("$labels" -match $mark) { [int]$Matches[2] } else { 0 }
+        $owner = 0
+        $since = ''
+        if ("$labels" -match $mark) { $owner = [int]$Matches[2]; $since = "$($Matches[4])" }
         if (-not $owner) { Write-Host "{{ guards.texts.held }}"; return $false }
-        if ($owner -ne $PID -and (Get-Process -Id $owner -ErrorAction SilentlyContinue)) { Write-Host "{{ guards.texts.open }}"; return $false }
+        if ($owner -ne $PID -and (Get-Process -Id $owner -ErrorAction SilentlyContinue)) {
+            # Live only when the start time matches; an unreadable one (or an older mh's
+            # label without it) cannot prove the console gone: left alone.
+            $started = _{{ function }}_started $owner
+            if (-not $since -or -not $started -or $started -eq $since) { Write-Host "{{ guards.texts.open }}"; return $false }
+        }
         $null = docker stop $id 2>$null
         Write-Host "{{ guards.texts.stopped }}"
     }
     return $true
 }
 
+# The start time of a process, UTC, written the same in every language; '' when unreadable.
+function global:_{{ function }}_started([int]$id) {
+    try { return (Get-Process -Id $id -ErrorAction Stop).StartTime.ToUniversalTime().ToString('yyyyMMddHHmmss', [Globalization.CultureInfo]::InvariantCulture) } catch { return '' }
+}
+
 # A removable drive (a USB stick) is not shared by WSL: Docker Desktop would mount an empty
 # folder of its own disk instead (0252). Mounted in its VM here (wsl.exe only), said in one
 # line; a failure stops the command with the advice. C: is never removable: not asked.
-# True when every drive given can be seen.
+# The drives it mounted itself (exit 0; 10: mounted already, by another window or by hand)
+# and a label per removable drive for the container; $null when a drive cannot be seen.
 function global:_{{ function }}_removable([string[]]$folders) {
     $ErrorActionPreference = 'Continue'
+    $shared = @{ mounted = @(); labels = @() }
     $drives = @($folders | Where-Object { "$_" -match '^[A-Za-z]:' } | ForEach-Object { "$_".Substring(0, 1).ToUpper() } | Where-Object { $_ -ne 'C' } | Sort-Object -Unique)
     foreach ($drive in $drives) {
         $volume = Get-Volume -DriveLetter $drive -ErrorAction SilentlyContinue
         if (-not $volume -or "$($volume.DriveType)" -ne 'Removable') { continue }
         $letter = $drive.ToLower()
-        $null = wsl.exe -d {{ guards.distro }} sh -c "mountpoint -q /mnt/host/$letter || { mkdir -p /mnt/host/$letter && mount -t drvfs ${drive}: /mnt/host/$letter; }" 2>$null
-        if ($LASTEXITCODE -ne 0) { Write-Host "{{ guards.texts.unshared }}"; return $false }
+        $null = wsl.exe -d {{ guards.distro }} sh -c "mountpoint -q /mnt/host/$letter && exit 10; mkdir -p /mnt/host/$letter && mount -t drvfs ${drive}: /mnt/host/$letter" 2>$null
+        if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 10) {
+            Write-Host "{{ guards.texts.unshared }}"
+            _{{ function }}_unmount $shared.mounted
+            return $null
+        }
+        if ($LASTEXITCODE -eq 0) { $shared.mounted += $letter }
+        $shared.labels += '--label', "{{ guards.drive }}.$letter=1"
         Write-Host "{{ guards.texts.shared }}"
     }
-    return $true
+    return $shared
+}
+
+# After the run, a drive mounted by this run is unmounted, so that Windows can eject the
+# stick (0252); left while another mh container uses it (its label), or when Docker cannot
+# tell. A failure says one line; the exit code stays the run's.
+function global:_{{ function }}_unmount([string[]]$letters) {
+    $ErrorActionPreference = 'Continue'
+    $status = $global:LASTEXITCODE
+    foreach ($letter in $letters) {
+        $drive = $letter.ToUpper()
+        $users = @(docker ps -q --filter "label={{ guards.drive }}.$letter" 2>$null)
+        if ($LASTEXITCODE -ne 0) { continue }
+        if ($users.Count -gt 0) { Write-Host "{{ guards.texts.kept }}"; continue }
+        $null = wsl.exe -d {{ guards.distro }} umount /mnt/host/$letter 2>$null
+        if ($LASTEXITCODE -ne 0) { Write-Host "{{ guards.texts.stuck }}" }
+    }
+    $global:LASTEXITCODE = $status
 }

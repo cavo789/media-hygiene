@@ -1,10 +1,11 @@
 {# The check before a page (0250): included by mh.sh.j2; services/launcher_guards.py. #}
 # A page left by a closed terminal keeps the port of the pages (0250): closing a terminal
-# ends the docker client, not the container. Each page carries the PID of its shell; before
-# a page, one whose shell is gone (or is this one, idle) is stopped, said in one line; one
-# whose shell still runs is left alone, the user told to close it there.
+# ends the docker client, not the container. Each page carries the PID of its shell and
+# its start time (a PID is given again once free); before a page, one whose shell is gone
+# (or is this one, idle) is stopped, said in one line; one whose shell still runs is left
+# alone, the user told to close it there.
 _{{ function }}_page_free() {
-    local line id labels owner pattern='(^|,){{ guards.label | replace(".", "[.]") }}=bash-([0-9]+)(,|$)'
+    local line id labels owner since started pattern='(^|,){{ guards.label | replace(".", "[.]") }}=bash-([0-9]+)(-([0-9]*))?(,|$)'
     while IFS= read -r line; do
         id="${line%%;*}"
         labels="${line#*;}"
@@ -14,11 +15,26 @@ _{{ function }}_page_free() {
             return 1
         fi
         owner="${BASH_REMATCH[2]}"
-        if [[ "$owner" != "$$" ]] && ps -p "$owner" >/dev/null 2>&1; then
+        since="${BASH_REMATCH[4]}"
+        # Live: another shell with this PID, started when the page was (an older mh's
+        # label has no start time: the PID alone, as before).
+        if [[ "$owner" != "$$" ]] && started="$(_{{ function }}_started "$owner")" \
+            && [[ -z "$since" || "$started" == "$since" ]]; then
             printf '%s\n' "{{ guards.texts.open }}" >&2
             return 1
         fi
         docker stop "$id" >/dev/null 2>&1
         printf '%s\n' "{{ guards.texts.stopped }}" >&2
     done < <(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>/dev/null)
+}
+
+# The start time of a process, in clock ticks since boot (field 22 of /proc/<pid>/stat,
+# read after the command name, which may hold spaces); fails when the process is gone.
+# Without /proc (not Linux): empty, the PID alone tells.
+_{{ function }}_started() {
+    local stat fields
+    if [[ ! -r /proc/self/stat ]]; then ps -p "$1" >/dev/null 2>&1; return; fi
+    stat="$(cat "/proc/$1/stat" 2>/dev/null)" || return 1
+    read -ra fields <<< "${stat##*) }"
+    printf '%s' "${fields[19]}"
 }

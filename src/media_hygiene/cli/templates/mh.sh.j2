@@ -57,7 +57,7 @@
     if [[ -n "${page[*]}" ]]; then
         # A page left by a closed terminal holds the port: stopped when its shell is gone (0250).
         _{{ function }}_page_free || return 1
-        page+=(--label "{{ guards.label }}=bash-$$")
+        page+=(--label "{{ guards.label }}=bash-$$-$(_{{ function }}_started $$)")
     fi
     case " {{ script.commands.data | join(" ") }} " in
         *" $command "*) tty=() ;;

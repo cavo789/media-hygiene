@@ -182,7 +182,8 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
 - Une fenêtre de page fermée par sa croix laisse la page tourner, le port 8088 pris. La page
   `mh` suivante l'arrête d'elle-même (*Une page de mh restée ouverte par une fenêtre fermée a été
   arrêtée.*) ; une page encore ouverte dans une autre fenêtre est laissée : fermez-la là-bas avec
-  Ctrl+C.
+  Ctrl+C. `mh` reconnaît une fenêtre à son numéro de processus et à l'heure où elle a démarré :
+  un numéro que Windows a donné depuis à un autre programme ne garde pas en vie une page morte.
 - *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
   même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
@@ -222,7 +223,12 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
 
 - Avec `mh`, rien à faire : avant chaque commande, il partage un disque amovible avec Docker
   Desktop et le dit (*D: est un disque amovible : partagé avec Docker Desktop.*). Si le partage
-  échoue, il s'arrête avec le conseil ci-dessous.
+  échoue, il s'arrête avec le conseil ci-dessous. Après la commande, il cesse de partager le
+  disque : l'option *Retirer le périphérique en toute sécurité* de Windows peut l'éjecter. Un disque
+  qu'une autre fenêtre de `mh` utilise encore reste partagé (*D: reste partagé avec Docker
+  Desktop : une autre fenêtre de mh l'utilise.*) jusqu'à l'arrêt de Docker Desktop ; pour
+  l'éjecter quand la commande de cette fenêtre est finie, tapez d'abord
+  `wsl -d docker-desktop umount /mnt/host/d`.
 - Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
   commande :
 
@@ -230,7 +236,8 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
   wsl -d docker-desktop sh -c "mkdir -p /mnt/host/d && mount -t drvfs D: /mnt/host/d"
   ```
 
-  Cela dure jusqu'à l'arrêt de Docker Desktop.
+  Cela dure jusqu'à l'arrêt de Docker Desktop ; pour éjecter la clé avant :
+  `wsl -d docker-desktop umount /mnt/host/d`.
 - Ou copiez le dossier sur un disque fixe. La plupart des disques durs et SSD externes sont des
   disques fixes : Docker Desktop les voit tels quels.
 

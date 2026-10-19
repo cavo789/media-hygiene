@@ -99,13 +99,20 @@ docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" 
 - Troubleshooting page (en + fr): the symptom and the fix. mh-measure step 11h: the drive's
   type, the mountinfo and the files seen by a container before and after `mh`, mh audit's
   lines.
+- Review of 2026-10-19 (2), commit a63e789: after each command (`finally`, after the
+  `docker run`), `mh.ps1` unmounts the removable drives this run mounted itself (the mount
+  line exits 10 when the drive is mounted already: another window, or by hand), so Windows
+  can eject the stick. Every container using a removable drive carries
+  `--label media-hygiene.drive.<x>=1`; one still running → the drive left mounted, one line.
+  A failed `umount` says one line, the exit code stays the run's. mh-measure 11h logs the
+  VM's mount after `mh audit` (expected: none), 11j asks whether Windows ejects the stick.
 
 ### Not done
 - The maintainer's step 11 on a stick plugged in after Docker Desktop. **Reason:** Windows +
-  a USB stick, with the image of this branch: `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19-2/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then
+  a USB stick, with the image of this branch: `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/a63e789/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then
   `.\mh-measure.ps1 -Only 11 -Count 20 -OtherDrive D:` (D: the stick). To check there too:
-  `mountpoint` exists in the docker-desktop distribution; whether the mount blocks Windows'
-  "safely remove".
+  `mountpoint` exists in the docker-desktop distribution; whether Windows lets the stick be
+  safely removed after the run (step 11j, still waiting after the review).
 - mh.sh (WSL, Linux): no drive mounting (a WSL user mounts `/mnt/x` by hand); the tool's
   check covers it.
 
