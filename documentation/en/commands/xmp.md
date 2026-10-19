@@ -59,6 +59,35 @@ docker run --rm -it `
 - **A sidecar already there is completed, never replaced**: its edits, its other properties and
   its own words stay. A field another application filled keeps its value.
 
+## A position from the folder's town
+
+Many photos carry no GPS position, but their folder says where they were taken: `2019/Douarnenez`,
+`Saint-Jean de Luz`. With this line in `config.toml`, `xmp` gives each of those photos **the
+position of the town's centre**, so that a photo manager shows it on its map:
+
+```toml
+[tags]
+xmp_folder_gps = true
+```
+
+- **Approximate**: the centre of the town, not the beach where the photo was taken. That is why
+  it is off by default.
+- **A position of your own**: a folder placed on the map of [`places`](places.md) (**Save this
+  position**, `[[places.folders]]`) gets that position instead of the town's centre; the nearest
+  folder above a photo decides.
+- **Which folders**: the same as the [`folder_town` rule](../sort/09-places-from-gps.md) of
+  `classify`, whether or not that rule is on: the whole name of the folder is a town of 5,000
+  inhabitants or more (case, accents and hyphens aside), never a month or a season,
+  `folder_town_ignore` respected.
+- **Never over a real position**: a photo with its own GPS position (or one from its Google
+  Takeout `.json`) gets nothing; a position another application wrote into the sidecar is kept.
+- Written as `exif:GPSLatitude` / `exif:GPSLongitude` (e.g. `48,5.7252N`), with the town and its
+  country in `photoshop:City` / `photoshop:Country` when the tags give none. exiftool reads
+  these positions; whether your photo manager reads a position from a sidecar: check with it.
+- The dry run says how many photos get a position, by town: *37 photos without GPS get the
+  position of their folder's town (its centre, approximate): Douarnenez 25, Saint-Jean-de-Luz 12.*
+- Turned off again, the next `xmp --apply` takes back the positions it wrote; `undo` too.
+
 ## Options
 
 | Option | What it does |

@@ -12,7 +12,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 |---|---|
 | know, without any risk, how many copies my folders hold and how much space they take | [`audit`](commands/audit.md) |
 | know in a second where I stand after a few days, and the next step | [`status`](commands/status.md) |
-| not remember any command: see every step, run the next one with Enter | [`menu`](commands/menu.md) (`mh` alone) |
+| not remember any command: see every step, run the next one with Enter | [`menu`](commands/menu.md) (`mh menu`; `mh` alone: the [home page](commands/home.md)) |
 | click rather than type: where I stand, the next step as a button, my reports, the audit run in the page | [`home`](commands/home.md) |
 | free the space my duplicate photos take, safely: set aside, never erased | [`clean`](commands/clean.md) |
 | keep only the best shots of my bursts, decide the near duplicates | [`review`](commands/review.md), then `clean --decisions` |
@@ -46,7 +46,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 |---|---|---|
 | [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [Cleaning, 9](clean/09-undo-history-purge.md#where-am-i-status) |
-| [`menu`](commands/menu.md) | What `mh` alone shows: every step of the three guides with its full `mh` command, the one `status` would give proposed; Enter runs it through `mh`, a number runs another. Reads the tool's folders only, no scan. | [Clean in short](clean/quick-guide.md) |
+| [`menu`](commands/menu.md) | What `mh menu` shows in the terminal: every step of the three guides with its full `mh` command, the one `status` would give proposed; Enter runs it through `mh`, a number runs another. Reads the tool's folders only, no scan. | [Clean in short](clean/quick-guide.md) |
 | [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
 | [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |

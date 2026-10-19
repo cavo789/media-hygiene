@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Embeddings pairs{% endblock %}
+{% block page %}pairs{% endblock %}
+{% block tools %}<p>The pairs each model finds the most alike, those the audit already calls near duplicates left out. Tick "same photo" when one is a copy of the other (cropped, filtered, mirrored, edited). <button id="download" type="button">Download the ticks (JSON)</button></p>{% endblock %}
+{% block content %}
+{% for model in models %}
+<h2>{{ model.title }}</h2>
+{% if not model.pairs %}<p class="muted">No pair.</p>{% endif %}
+{% for pair in model.pairs %}
+<div class="pair">
+<figure><img src="{{ pair.first.thumb }}" alt="" loading="lazy" title="{{ pair.first.path }}"><figcaption>{{ pair.first.path }}</figcaption></figure>
+<figure><img src="{{ pair.second.thumb }}" alt="" loading="lazy" title="{{ pair.second.path }}"><figcaption>{{ pair.second.path }}</figcaption></figure>
+<div>{{ loop.index }}. similarity {{ pair.similarity }}
+<label><input type="checkbox" id="p-{{ model.name }}-{{ loop.index }}" data-judged data-model="{{ model.name }}" data-rank="{{ loop.index }}" data-first="{{ pair.first.path }}" data-second="{{ pair.second.path }}" data-similarity="{{ pair.similarity }}"><span>same photo</span></label></div>
+</div>
+{% endfor %}
+{% endfor %}
+{% endblock %}

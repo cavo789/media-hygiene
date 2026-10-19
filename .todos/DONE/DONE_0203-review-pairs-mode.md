@@ -78,3 +78,7 @@ and each choice proven saved (read back from the disk) instead of trusting a dow
   `tests/support/docs/served.py::pairs`, add `page.screenshot(path=SHOTS / "review-pairs.png")`
   after the wait, run `docs_screenshots`, then show `../images/review-pairs.webp` in step 12
   (both languages).
+
+## Inbox (2026-10-19)
+
+- The screenshot `review-pairs.webp` → refiled as 0244 (docs captures, `docs_screenshots` run by the lot).

@@ -12,7 +12,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 |---|---|
 | savoir, sans aucun risque, combien de copies contiennent mes dossiers et quelle place elles prennent | [`audit`](commands/audit.md) |
 | savoir en une seconde où j'en suis après quelques jours, et la prochaine étape | [`status`](commands/status.md) |
-| ne retenir aucune commande : voir chaque étape, lancer la prochaine avec Entrée | [`menu`](commands/menu.md) (`mh` seul) |
+| ne retenir aucune commande : voir chaque étape, lancer la prochaine avec Entrée | [`menu`](commands/menu.md) (`mh menu` ; `mh` seul : la [page d'accueil](commands/home.md)) |
 | cliquer plutôt que taper : où j'en suis, l'étape suivante en bouton, mes rapports, l'audit lancé dans la page | [`home`](commands/home.md) |
 | libérer la place que prennent mes photos en double, en sécurité : mises de côté, jamais effacées | [`clean`](commands/clean.md) |
 | ne garder que les meilleures photos de mes rafales, trancher les quasi-doublons | [`review`](commands/review.md), puis `clean --decisions` |
@@ -47,7 +47,7 @@ exemples et son `--help`.
 |---|---|---|
 | [`audit`](commands/audit.md) | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Où en suis-je ? Le dernier audit, la quarantaine, les exécutions encore annulables, les tris pas appliqués, la dernière proposition pas triée ; puis une étape suivante en commande complète. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer, 9](clean/09-undo-history-purge.md#où-en-suis-je--status) |
-| [`menu`](commands/menu.md) | Ce que montre `mh` seul : chaque étape des trois guides avec sa commande `mh` complète, celle que donnerait `status` proposée ; Entrée la lance par `mh`, un numéro en lance une autre. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer en bref](clean/quick-guide.md) |
+| [`menu`](commands/menu.md) | Ce que montre `mh menu` dans le terminal : chaque étape des trois guides avec sa commande `mh` complète, celle que donnerait `status` proposée ; Entrée la lance par `mh`, un numéro en lance une autre. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer en bref](clean/quick-guide.md) |
 | [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
 | [`review`](commands/review.md) | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [Nettoyer, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | [`history`](commands/history.md) | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [Nettoyer, 9](clean/09-undo-history-purge.md) |

@@ -44,7 +44,7 @@ The first run downloads the tool (a few hundred MB); the next ones start at once
 
 This is the only long command of the guide. Several folders, a USB disk? [Step
 3](03-several-folders.md) adds them with `mh folders add`. **Rather click than type?**
-`mh shortcut` puts a *Media Hygiene* icon on your Desktop: a double-click opens the `mh` menu.
+`mh shortcut` puts a *Media Hygiene* icon on your Desktop: a double-click opens the home page.
 
 ## Run the audit
 
@@ -52,7 +52,9 @@ This is the only long command of the guide. Several folders, a USB disk? [Step
 mh audit
 ```
 
-`mh` alone opens a menu that proposes the next step; `mh audit` runs it directly. Behind it, `mh`
+`mh` alone opens the [home page](../commands/home.md) in your browser: it proposes the next step,
+and its button runs it in the PowerShell window (`mh menu`: the same steps in the terminal).
+`mh audit` runs it directly. Behind it, `mh`
 types the `docker run` for you: your folder read-only, the cache, the folders of the reports, the
 configuration, the journal and the quarantine in `$HOME\media-hygiene` (created when missing),
 and your time zone, asked from Windows at each run.

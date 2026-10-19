@@ -134,26 +134,28 @@ def needs_towns(settings: ClassifySettings) -> bool:
 def place_spots(
     points: Mapping[Path, Point],
     events: Sequence[Event],
-    places: Sequence[PersonalPlace],
+    places: tuple[Sequence[PersonalPlace], Mapping[Path, PersonalPlace]],
 ) -> dict[Path, Spot]:
-    """The files at a personal place: by their GPS, or by their event.
+    """The files at a personal place: given by hand, by their GPS, or by their event.
 
     Args:
         points: The position of each located file.
         events: The events.
-        places: The user's places.
+        places: The user's places, and the files given one by hand (0237).
 
     Returns:
         The place of each file at one.
     """
-    if not places:
+    known, hand = places
+    if not known:
         return {}
-    zones = zones_of(places)
+    zones = zones_of(known)
     own = {
         path: found.name
         for path, point in points.items()
-        if (found := place_at(point, zones)) is not None
+        if path not in hand and (found := place_at(point, zones)) is not None
     }
+    own |= {path: place.name for path, place in hand.items()}
     spots = {path: Spot(GeoValues(place=name)) for path, name in own.items()}
     for event in events:
         located = [path for path in event.paths if path in points]

@@ -4,9 +4,11 @@
 
 ## En bref
 
-**Perdu ? Tapez `mh` seul : chaque étape des guides, la prochaine proposée, Entrée la lance.**
+**Perdu ? Tapez `mh menu` : chaque étape des guides dans le terminal, la prochaine proposée,
+Entrée la lance.** `mh` seul montre les mêmes étapes sur la [page d'accueil](home.md), dans votre
+navigateur.
 
-Inutile de retenir le nom des commandes. `mh` tapé seul montre les étapes des trois guides
+Inutile de retenir le nom des commandes. `mh menu` montre les étapes des trois guides
 ([nettoyer](../clean/quick-guide.md), [trier](../sort/quick-guide.md),
 [retrouver](../find/quick-guide.md)) dans l'ordre, chacune avec sa commande `mh …` complète, et en
 propose **une** : celle que donnerait [`status`](status.md). Appuyez sur Entrée pour la lancer, ou
@@ -18,7 +20,7 @@ tapez-la directement : mh clean* : vous apprenez les commandes en vous en servan
 **Essayer** (une fois `mh` écrit, [étape 0 des guides](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh)) :
 
 ```powershell
-mh
+mh menu
 ```
 
 ## D'un coup d'œil
@@ -29,7 +31,7 @@ mh
 | Il faut | `mh` : le menu lance par lui l'étape choisie, avec les bons dossiers. |
 | Écrit | Rien. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
-| Avec `mh` | `mh` seul. |
+| Avec `mh` | `mh menu`. |
 
 ## Ce qu'il montre
 
@@ -139,8 +141,9 @@ pour quitter.
 - `menu` n'a pas d'option.
 - Le menu ne répond jamais à votre place : `clean`, `sort` et `purge` demandent toujours avant
   d'agir.
-- Après l'étape, le menu ne revient pas : tapez de nouveau `mh`, il montre où vous en êtes
-  désormais.
+- Après l'étape, le menu ne revient pas : tapez de nouveau `mh menu`, il montre où vous en êtes
+  désormais. La [page d'accueil](home.md) (`mh` seul), elle, revient après chaque étape.
+- Pour une session à distance, un PC lent ou sans navigateur : `mh menu` n'ouvre aucune page.
 - `docker run … cavo789/media-hygiene` sans commande affiche toujours le `--help` : seul `mh` peut
   lancer l'étape choisie avec les bons dossiers.
 - `docker run -it … menu` montre le menu mais ne peut lancer aucune étape : écrivez d'abord `mh`.

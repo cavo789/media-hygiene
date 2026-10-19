@@ -17,7 +17,7 @@ import numpy as np
 from media_hygiene.constants import Locale
 from media_hygiene.errors import GeoDataError
 from media_hygiene.geo.distance import Point
-from media_hygiene.geo.folding import fold
+from media_hygiene.geo.folding import town_key
 from media_hygiene.geo.nearest import NearestIndex
 from media_hygiene.geo.towns_file import TownRows, read_table, read_towns
 from media_hygiene.i18n import _, active_locale
@@ -138,7 +138,8 @@ class Gazetteer:
     def search(self, text: str, limit: int) -> tuple[Town, ...]:
         """The towns whose name starts with a text, the largest first.
 
-        Case and accents do not matter: `liege` finds Liège.
+        Case, accents and separators do not matter: `liege` finds Liège,
+        `saint jean de` Saint-Jean-de-Luz.
 
         Args:
             text: The start of a name.
@@ -147,11 +148,11 @@ class Gazetteer:
         Returns:
             The towns found.
         """
-        wanted = fold(text)
+        wanted = town_key(text)
         if not wanted:
             return ()
         if not self._folded:
-            self._folded = tuple(fold(name) for name in self.names)
+            self._folded = tuple(town_key(name) for name in self.names)
         found = [i for i, name in enumerate(self._folded) if name.startswith(wanted)]
         population = self._rows.population_k
         found.sort(key=lambda index: -int(population[index]))

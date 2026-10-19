@@ -9,7 +9,7 @@ persistent journal, journaled before each write, read back after, undone by `und
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from importlib.metadata import version
 from typing import TYPE_CHECKING
 
@@ -24,6 +24,7 @@ from media_hygiene.services.journaled_run import new_run
 from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.tag_files import require_index
 from media_hygiene.services.xmp_plan import XmpScope, plan_sidecars
+from media_hygiene.services.xmp_towns import folder_spots
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -91,9 +92,13 @@ class XmpService:
         index = runtime.locations.index_file  # mounted: `ensure_ready` checked it
         try:
             with FactsRepository.open(index) as repository:
-                return plan_sidecars(repository.connection, scope)
+                found = folder_spots(runtime, repository.connection)
+                scope = replace(scope, spots=found.spots)
+                plan = plan_sidecars(repository.connection, scope)
         except sqlite3.Error as exc:
             raise unreadable_index(runtime, index, exc) from exc
+        plan.missing_folders = found.missing
+        return plan
 
     def execute(self, plan: XmpPlan, stop: Callable[[], bool]) -> XmpResult:
         """Write the sidecars under a new run identifier.

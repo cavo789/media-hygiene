@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/services/launcher_menu.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_launcher_docker_down.py`, `documentation/en/reference-troubleshooting.md`, `documentation/fr/reference-troubleshooting.md`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: after the work, one run on Windows: step 16 of `mh-measure.ps1`, extended (Docker Desktop quit, then `mh` alone, then `mh audit`)
 
 ## Context
 
@@ -50,7 +49,7 @@ version: to check (an older version answers that `desktop` is not a docker comma
   PowerShell tests).
 - Docs both languages: troubleshooting ("Docker Desktop is not started" now starts it, and what to
   do when that fails), launcher page.
-- Windows (maintainer): step 16 extended.
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): one run on Windows: step 16 of `mh-measure.ps1`, extended (Docker Desktop quit, then `mh` alone, then `mh audit`).
 
 ## Gain (estimated)
 

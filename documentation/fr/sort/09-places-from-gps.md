@@ -24,7 +24,8 @@ zone de recherche est envoyé à OpenStreetMap ([plus bas](#un-village-ou-un-par
 `places` montre où vos photos ont été prises, à partir du cache des audits, et vous laisse
 nommer les lieux qui comptent pour vous. Il lui faut le cache (`/cache`, où les audits ont
 noté les positions) et le dossier de `config.toml` (`/config`, où les lieux sont enregistrés) ;
-`mh` monte les deux, et ouvre le port de la page :
+vos dossiers de photos, en lecture seule, montrent les photos d'un groupe. `mh` monte le tout,
+et ouvre le port de la page :
 
 ```powershell
 mh places
@@ -35,6 +36,7 @@ mh places
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene --locale fr places
@@ -49,7 +51,12 @@ l'adresse affichée, `http://127.0.0.1:8088/`.
 
 - **Les cercles** sont vos photos avec une position GPS, groupées par environ 200 mètres, plus
   grands là où il y en a plus. La liste de gauche donne d'abord **les plus grands groupes sans
-  nom** : la maison est souvent le premier.
+  nom** : la maison est souvent le premier. Cliquez sur **le nombre de photos** d'une de ses
+  lignes (par exemple « 🖼 11 photos ») : un tiroir s'ouvre sur la droite de la carte avec les
+  photos de ce groupe, 24 au plus, regroupées par dossier, pour reconnaître le lieu avant de le
+  nommer (**Nommer ce lieu** en haut).
+- **Repliez une liste** en cliquant sur son titre (*Vos lieux (10)*) : les groupes restent à
+  portée.
 - **Cliquez sur un cercle, ou n'importe où sur la carte**, pour nommer un lieu. Donnez-lui un
   nom, réglez son **rayon** avec le curseur (une maison : 100 à 200 mètres ; un village :
   quelques kilomètres), et faites glisser son repère pour le déplacer. Cochez **Maison** pour
@@ -195,7 +202,8 @@ match = "folder_town"
 ```
 
 - Un dossier n'est reconnu que si son **nom entier** est celui d'une ville (sans tenir compte
-  des majuscules ni des accents) : `Durbuy` l'est, `Durbuy 2017` et `Week-end à Durbuy` non. Le
+  des majuscules, des accents, des traits d'union, des apostrophes ni des soulignés : `Saint-Jean
+  de Luz` est Saint-Jean-de-Luz) : `Durbuy` l'est, `Durbuy 2017` et `Week-end à Durbuy` non. Le
   dossier le plus proche au-dessus d'une photo compte.
 - Seules les villes d'au moins `folder_town_min_population` habitants (5 000) comptent : un
   village de 3 000 habitants n'est pas cherché. Les noms de mois et de saisons ne sont jamais des

@@ -33,8 +33,9 @@ copies d'une photo sont triées. La commande `mh` écrite pour le nettoyage sert
 écrivez-la une fois : [nettoyer en bref, étape 0](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh).
 L'étape 0 l'a écrite dans votre profil PowerShell : chaque nouveau terminal la connaît.
 
-**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
-Entrée la lance. Plus : [`menu`](../commands/menu.md).
+**Perdu ?** Tapez `mh` seul : la [page d'accueil](../commands/home.md) s'ouvre dans votre
+navigateur, chaque étape des guides un bouton, la prochaine proposée. Dans le terminal seulement :
+[`mh menu`](../commands/menu.md).
 
 ## 1. Demander une proposition
 

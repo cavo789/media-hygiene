@@ -55,7 +55,7 @@ def menu_command(ctx: typer.Context) -> None:
         output.warning(
             _(
                 "The menu runs its steps through mh: write it once with 'launcher' "
-                "(step 0 of the guides), then type mh alone."
+                "(step 0 of the guides), then type mh menu."
             )
         )
     if on_screen:

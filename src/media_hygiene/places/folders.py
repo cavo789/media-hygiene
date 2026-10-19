@@ -1,0 +1,169 @@
+"""The folders of the map page: their list, their photos, what the page changes (0231).
+
+Each line (`folder_rows`) says how many photos of a folder have no position; a click
+shows them and a pin, at the saved position or the town's centre, to drag. Every answer
+reads `config.toml` back from the disk: the page shows what `xmp` will read.
+"""
+
+from __future__ import annotations
+
+from enum import StrEnum
+from typing import TYPE_CHECKING
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from media_hygiene.config.places_settings import FolderPosition
+from media_hygiene.constants import MediaKind
+from media_hygiene.i18n import _
+from media_hygiene.places.clusters import MEMBERS_KEPT, SHOWN
+from media_hygiene.places.config_folders import (
+    ignore_name,
+    read_ignored,
+    restore_name,
+    save_folder,
+)
+from media_hygiene.places.drawer_rows import Shown, drawer_rows
+from media_hygiene.places.folder_rows import folder_rows
+from media_hygiene.scan.filters import media_kind
+from media_hygiene.scan.models import MediaFile
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from media_hygiene.places.folder_rows import FolderContext, FolderRow
+    from media_hygiene.services.xmp_towns import IndexedInputs
+
+
+class FolderAction(StrEnum):
+    """What the page asks of a folder."""
+
+    SAVE = "save"  # its position, the pin where it was dropped
+    FORGET = "forget"  # its saved position: back to its town's centre, or none
+    IGNORE = "ignore"  # its name is no town: `folder_town_ignore`
+    RESTORE = "restore"  # a name ignored is a town again (0235): `folder` is the name
+
+
+class FolderAct(BaseModel):
+    """`POST /api/folder`: save a position, forget it, or say a name is no town."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    action: FolderAction
+    folder: str = Field(min_length=1)  # a host path, as listed
+    latitude: float = Field(default=0, ge=-90, le=90)
+    longitude: float = Field(default=0, ge=-180, le=180)
+
+
+class FolderDesk:
+    """The folders' list, their photos, and what the page changes of them."""
+
+    def __init__(self, inputs: IndexedInputs, context: FolderContext) -> None:
+        """Keep the files of the index.
+
+        Args:
+            inputs: Every file and the positions.
+            context: The file, the paths, the towns.
+        """
+        self._inputs = inputs
+        self._context = context
+        self._files = {file.path: file for file in inputs.files}
+        self._rows: tuple[FolderRow, ...] = ()
+        self._sources: dict[str, Path] = {}
+
+    def state(self) -> dict[str, object]:
+        """The folders, read again from `config.toml`, the most photos first.
+
+        Returns:
+            Each folder's line: its town, its position, saved or not, found or not,
+            its files without a position and how many of them are videos; the
+            folder names that are never towns (`ignored`).
+        """
+        self._rows = folder_rows(self._inputs, self._context)
+        return {
+            "ignored": list(read_ignored(self._context.config_file)),
+            "folders": [
+                {
+                    "rank": rank,
+                    "folder": row.folder,
+                    "town": row.town,
+                    "country": row.country,
+                    "latitude": row.latitude,
+                    "longitude": row.longitude,
+                    "saved": row.saved,
+                    "found": row.found,
+                    "count": len(row.photos),
+                    "videos": sum(
+                        media_kind(path) is MediaKind.VIDEO for path in row.photos
+                    ),
+                }
+                for rank, row in enumerate(self._rows)
+            ],
+        }
+
+    def act(self, act: FolderAct) -> dict[str, object]:
+        """Save, forget, ignore or restore, then read the file back.
+
+        Args:
+            act: What the page asks, for a folder it listed.
+
+        Returns:
+            The new state.
+
+        Raises:
+            ValueError: The folder is not one of the list.
+            OSError: The file cannot be written.
+        """
+        config_file = self._context.config_file
+        if act.action is FolderAction.RESTORE:
+            restore_name(config_file, act.folder)
+            return self.state()
+        if act.folder not in {row.folder for row in self._rows}:
+            message = _("{folder} is not one of the folders listed")
+            raise ValueError(message.format(folder=act.folder))
+        if act.action is FolderAction.SAVE:
+            position = FolderPosition(
+                folder=act.folder, latitude=act.latitude, longitude=act.longitude
+            )
+            save_folder(config_file, position)
+        elif act.action is FolderAction.FORGET:
+            save_folder(config_file, act.folder)
+        else:
+            name = self._context.mapper.to_container(act.folder).name
+            ignore_name(config_file, name)
+        return self.state()
+
+    def photos(self, rank: int) -> list[dict[str, object]] | None:
+        """The first pictures and videos without a position of a folder, by folder.
+
+        Args:
+            rank: Its rank in the last state.
+
+        Returns:
+            Each file's name, host folder, previews and whether it is still there
+            (`drawer_rows`); None for an unknown rank.
+        """
+        if not 0 <= rank < len(self._rows):
+            return None
+        pictures: list[Shown] = []
+        videos: list[Shown] = []
+        for path in self._rows[rank].photos:
+            kind = media_kind(path)
+            if kind is None or (kind is not MediaKind.VIDEO and kind not in SHOWN):
+                continue
+            kept = videos if kind is MediaKind.VIDEO else pictures
+            if len(kept) < MEMBERS_KEPT:
+                file = self._files[path]
+                kept.append(Shown(MediaFile(path, file.size, file.mtime_ns, kind)))
+        rows = (*pictures, *videos)
+        return drawer_rows(rows, self._context.mapper, self._sources)
+
+    def preview_source(self, key: str) -> Path | None:
+        """Find the picture a preview key names.
+
+        Args:
+            key: The key, from the page.
+
+        Returns:
+            The file, or None for a key never listed.
+        """
+        return self._sources.get(key)

@@ -68,3 +68,8 @@ A `clean` that silently fills `C:` → told before, refused when it cannot fit.
   `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 12 -Count 20 -OtherDrive E:`.
 - `docs_screenshots` not run (console output changed only in the cross-drive case, which the
   synthetic captures do not show: captures likely unchanged).
+
+## Inbox (2026-10-19)
+
+- `docs_screenshots`: stale — the synthetic captures never show the cross-drive line.
+- The Windows check: still waiting (`mh-measure.ps1`, step 13).

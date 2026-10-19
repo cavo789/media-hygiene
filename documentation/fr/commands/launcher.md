@@ -106,8 +106,8 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | Commande | Ce qu'elle fait |
 |---|---|
 | `mh open` | Ouvre `index.html`, la liste de tous les rapports, dans votre navigateur (le plus récent en haut). Pas encore de rapport : elle dit de lancer d'abord `mh audit`. |
-| `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell sur le menu de `mh`, qui reste ouverte. Relancée, elle réécrit les deux. |
-| `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : le menu de `mh` s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
+| `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell et la page d'accueil dans votre navigateur ; la fenêtre reste ouverte, chaque étape choisie sur la page s'y lance. Relancée, elle réécrit les deux. |
+| `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : la page d'accueil s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 
@@ -120,7 +120,7 @@ disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
 autres disent qu'elles sont pour Windows.
 
-**`mh --photos "E:\Dossier"` seul** ouvre le menu sur ce dossier : il dit lequel, et l'étape
+**`mh --photos "E:\Dossier"` seul** ouvre la page d'accueil sur ce dossier : il dit lequel, et l'étape
 choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
 clic droit de `mh explorer`.
 

@@ -60,6 +60,40 @@ docker run --rm -it `
 - **Un fichier compagnon déjà là est complété, jamais remplacé** : ses modifications, ses autres
   propriétés et ses propres mots restent. Un champ qu'une autre application a rempli garde sa valeur.
 
+## Une position d'après la ville du dossier
+
+Beaucoup de photos n'ont pas de position GPS, mais leur dossier dit où elles ont été prises :
+`2019/Douarnenez`, `Saint-Jean de Luz`. Avec cette ligne dans `config.toml`, `xmp` donne à chacune
+de ces photos **la position du centre de la ville**, pour qu'un gestionnaire de photos la montre
+sur sa carte :
+
+```toml
+[tags]
+xmp_folder_gps = true
+```
+
+- **Approximatif** : le centre de la ville, pas la plage où la photo a été prise. C'est pourquoi
+  c'est désactivé par défaut.
+- **Une position à vous** : un dossier placé sur la carte de [`places`](places.md) (**Enregistrer
+  cette position**, `[[places.folders]]`) reçoit cette position au lieu du centre de la ville ; le
+  dossier le plus proche au-dessus d'une photo décide.
+- **Quels dossiers** : les mêmes que pour la [règle `folder_town`](../sort/09-places-from-gps.md) de
+  `classify`, qu'elle soit active ou non : le nom entier du dossier est une ville d'au moins 5 000
+  habitants (sans tenir compte des majuscules, des accents ni des traits d'union), jamais un mois
+  ni une saison, `folder_town_ignore` respecté.
+- **Jamais par-dessus une vraie position** : une photo qui a sa propre position GPS (ou celle de
+  son `.json` Google Takeout) ne reçoit rien ; une position qu'une autre application a écrite dans
+  le `.xmp` est gardée.
+- Écrite dans `exif:GPSLatitude` / `exif:GPSLongitude` (par exemple `48,5.7252N`), avec la ville
+  et son pays dans `photoshop:City` / `photoshop:Country` quand les mots n'en donnent pas.
+  exiftool lit ces positions ; si votre gestionnaire de photos lit une position dans un `.xmp` :
+  à vérifier avec lui.
+- L'essai à blanc dit combien de photos reçoivent une position, par ville : *37 photos sans GPS
+  reçoivent la position de la ville de leur dossier (son centre, approximatif) : Douarnenez 25,
+  Saint-Jean-de-Luz 12.*
+- Désactivé à nouveau, le `xmp --apply` suivant retire les positions qu'il avait écrites ;
+  `undo` aussi.
+
 ## Options
 
 | Option | Rôle |

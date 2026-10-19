@@ -50,3 +50,8 @@ ran the tool, the full `docker run` otherwise.
 4. Documentation EN + FR: grep `media-hygiene <verb>` outside code blocks meant for the image
    itself and the developer page.
 5. `i18n_update`, translate; say that `docs_screenshots` should run (console captures change).
+
+## Status — POSTPONED (2026-10-18)
+
+Postponed by the maintainer during `/todo:iterate`: the choice in step 1 (`mh <verb>` always, or
+the full `docker run` when the launcher is not used) waits for them. Re-file it flat to run it.

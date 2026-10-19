@@ -210,4 +210,4 @@ def test_on_a_terminal_the_menu_is_shown_without_choices(
     assert result.exit_code == 0, result.output
     assert "\t" not in result.stdout
     assert "mh audit" in result.stderr
-    assert "then type mh alone" in result.stderr
+    assert "then type mh menu" in result.stderr

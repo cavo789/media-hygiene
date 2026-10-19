@@ -35,8 +35,9 @@
 #      free): to the quarantine on C: (copy E: -> C:), then to that drive's own quarantine
 #      /quarantine/x (copy E: -> E:): wall time of each clean and undo; then undo without
 #      the drive's quarantine mounted must refuse, naming the drive                  (0183)
-#  14. the mh menu by hand, old console then your usual one: colours, columns, a number +
-#      Enter, Ctrl+C; asks what you saw                                        (0172)
+#  14. mh menu by hand, old console then your usual one: colours, columns, a number +
+#      Enter, Ctrl+C; then mh alone: the home page, a step run from it, the page back,
+#      Home from a review page, Quit; asks what you saw                        (0172, 0210)
 #  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
 #  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
@@ -49,6 +50,8 @@
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
 #      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
+#  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
+#      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -70,6 +73,7 @@
 #   .\mh-measure.ps1 -Only 17 -Count 5
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
+#   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -79,7 +83,10 @@ param(
     [string]$Cache = "media-hygiene-cache",
     [switch]$Keep,
     [string]$Only = "",
-    [string]$OtherDrive = ""
+    [string]$OtherDrive = "",
+    [int]$Sample = 1000,
+    [int]$Cpus = 4,
+    [string]$Branch = "main"
 )
 
 $ErrorActionPreference = "Stop"
@@ -649,7 +656,8 @@ if (Wanted 13) {
 }
 
 # --- 14: the mh menu by hand, in the old console and in your usual one (0172) --------------
-# mh alone lists the steps; a number then Enter runs one. Watch the colours and the columns.
+# mh menu lists the steps; a number then Enter runs one. Watch the colours and the columns.
+# Then mh alone opens the home page; the step chosen there runs in the console (0210).
 if (Wanted 14) {
     $ErrorActionPreference = "Continue"
     $mhDir = Join-Path $tool "mh14"
@@ -671,8 +679,8 @@ if (Wanted 14) {
         } else {
             Write-Host "14 (usual console): open Windows PowerShell as you usually do."
         }
-        Write-Host "    In it, type: . '$mhFile'; mh"
-        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh again, then Ctrl+C at the question."
+        Write-Host "    In it, type: . '$mhFile'; mh menu"
+        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh menu again, then Ctrl+C at the question."
         $colours = Read-Host "14. Colours shown as colours, not as codes like [32m? (y/n)"
         $columns = Read-Host "14. Emoji and step columns lined up? (y/n)"
         $ran = Read-Host "14. The number + Enter ran audit? (y/n)"
@@ -680,6 +688,20 @@ if (Wanted 14) {
         Log "   14 ($console): colours $colours, columns $columns, number ran $ran, Ctrl+C clean $stopped"
         Write-Host "Close that window."
     }
+    # mh alone: the home page in the browser; its buttons run the steps in the console (0210).
+    Write-Host "14 (home page): open Windows PowerShell as you usually do."
+    Write-Host "    In it, type: . '$mhFile'; mh"
+    Write-Host "    The home page opens in your browser. Click Run on the 'clean' step: it runs in the"
+    Write-Host "    PowerShell window and asks its question there; answer n. The page must come back."
+    Write-Host "    Then click Run on a 'review' step; on that page, click the Home link at the bottom right."
+    Write-Host "    Finally click Quit on the home page."
+    $opened = Read-Host "14h. mh alone opened the home page in the browser? (y/n)"
+    $asked = Read-Host "14h. Run on 'clean' ran it in the PowerShell window, with its question? (y/n)"
+    $back = Read-Host "14h. After it, the home page came back by itself (reloaded)? (y/n)"
+    $homeLink = Read-Host "14h. Home from the review page brought the home page back? (y/n)"
+    $quit = Read-Host "14h. Quit gave the PowerShell prompt back, no red error? (y/n)"
+    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, Home from review $homeLink, Quit clean $quit"
+    Write-Host "Close that window."
 }
 
 # --- 15: the launcher line of the guide, then mh audit and mh --photos (0173) ----------------
@@ -864,9 +886,21 @@ function PhoneFindDcim($folder, [int]$depth) {
     }
     return $null
 }
+# Over MTP, .Size is 0 and .ModifyDate 1899-12-30 (measured 2026-10-19, Android): the real
+# values are the extended properties (System.DateModified in UTC).
+function PhoneSize($item) {
+    $size = $item.ExtendedProperty('System.Size')
+    if ($size) { return [int64]$size }
+    return [int64]$item.Size
+}
+function PhoneDate($item) {
+    $date = $item.ExtendedProperty('System.DateModified')
+    if ($date) { return [datetime]$date }
+    return $item.ModifyDate
+}
 function PhoneWait($item, [string]$folder) {
     $target = Join-Path $folder $item.Name
-    $size = [int64]$item.Size
+    $size = PhoneSize $item
     $watch = [Diagnostics.Stopwatch]::StartNew()
     while ($watch.Elapsed.TotalSeconds -lt 60) {
         if (Test-Path -LiteralPath $target) {
@@ -918,13 +952,16 @@ if (Wanted 19) {
             }
             $seen = @{}
             $recent = @()
-            foreach ($item in ($all | Sort-Object { $_.ModifyDate } -Descending)) {
+            foreach ($item in ($all | Sort-Object { PhoneDate $_ } -Descending)) {
                 if ($recent.Count -ge 20) { break }
                 if (-not $seen.ContainsKey($item.Name)) { $seen[$item.Name] = 1; $recent += $item }
             }
             New-Item -ItemType Directory -Force -Path $phoneTmp | Out-Null
             $target = $shell.Namespace($phoneTmp)
             foreach ($round in 1, 2) {
+                if ($round -eq 2) {
+                    Log "   19f. second copy of the same files: Windows may open a 'Replace or Skip' dialog BEHIND this window (Alt+Tab): note what it says, then choose Skip"
+                }
                 $before = @{}
                 foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) { $before[$copy.Name] = "$($copy.Length)/$($copy.LastWriteTime.Ticks)" }
                 $bytes = 0
@@ -935,10 +972,10 @@ if (Wanted 19) {
                     $took = PhoneWait $item $phoneTmp
                     if ($took -lt 0) {
                         $late++
-                        Log "   19d$round. never arrived within 60 s: '$($item.Name)' (phone said $($item.Size) bytes)"
+                        Log "   19d$round. never arrived within 60 s: '$($item.Name)' (phone said $(PhoneSize $item) bytes)"
                     } else {
-                        $bytes += [int64]$item.Size
-                        Log ("   19d$round. '{0}': {1:N1} s" -f $item.Name, $took)
+                        $bytes += PhoneSize $item
+                        Log ("   19d$round. '{0}' ({1:N1} MB): {2:N1} s" -f $item.Name, ((PhoneSize $item) / 1MB), $took)
                     }
                 }
                 $seconds = [Math]::Max($round1.Elapsed.TotalSeconds, 0.001)
@@ -946,7 +983,7 @@ if (Wanted 19) {
                 if ($round -eq 1) {
                     foreach ($item in ($recent | Select-Object -First 5)) {
                         $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
-                        if ($copy) { Log ("   19e. '{0}': phone ModifyDate {1}, copy modified {2}, copy created {3}" -f $item.Name, $item.ModifyDate, $copy.LastWriteTime, $copy.CreationTime) }
+                        if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
                     }
                 } else {
                     $changed = 0
@@ -962,6 +999,71 @@ if (Wanted 19) {
     }
     if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
     Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
+}
+
+# --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------
+# Downloads the bench (tests/measure/embeddings of the -Branch) under -Work; the models once
+# into $HOME\media-hygiene\embeddings-models (2.5 GB, kept for the next runs: delete that
+# folder to get the room back); the pages into $HOME\media-hygiene\embeddings-<stamp>. The
+# searches come from $HOME\media-hygiene\embeddings-queries.txt: the first time, the step
+# writes it with examples and stops, so you write your 20 searches (UTF-8, one per line).
+# C:\Photos and the index (-Cache) are mounted read-only; -Sample photos drawn at random.
+$benchFiles = @(
+    "__init__.py", "embedders.py", "measure.py", "models.py", "pages.py", "ranking.py", "runs.py",
+    "templates/base.html", "templates/index.html", "templates/queries.html", "templates/pairs.html"
+)
+if (Wanted 20) {
+    # Native stderr (pip, the ONNX runtime's warnings) must not stop the script in PS 5.1.
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $queries = Join-Path $outDir "embeddings-queries.txt"
+    if (-not (Test-Path -LiteralPath $queries)) {
+        $examples = @(
+            "# One search per line, in French, as you would type it; lines starting with # are left out.",
+            "# Accents are welcome: keep this file in UTF-8 (Notepad: Save as, Encoding UTF-8).",
+            "gateau d'anniversaire",
+            "plage au coucher du soleil",
+            "neige en montagne"
+        )
+        Set-Content -LiteralPath $queries -Value $examples -Encoding UTF8
+        Log ""
+        Log "== 20. image embeddings (0220)"
+        Log "   20a. write your 20 searches in $queries (examples inside), then run -Only 20 again"
+    } else {
+        $bench = Join-Path $Work "embeddings"
+        $models = Join-Path $outDir "embeddings-models"
+        $pages = Join-Path $outDir "embeddings-$stamp"
+        foreach ($folder in $bench, (Join-Path $bench "templates"), $models, $pages) {
+            New-Item -ItemType Directory -Force -Path $folder | Out-Null
+        }
+        $base = "https://raw.githubusercontent.com/cavo789/media-hygiene/$Branch/tests/measure/embeddings"
+        foreach ($name in $benchFiles) {
+            Invoke-WebRequest -UseBasicParsing -Uri "$base/$name" -OutFile (Join-Path $bench ($name -replace '/', '\'))
+        }
+        Copy-Item -LiteralPath $queries -Destination (Join-Path $pages "queries.txt")
+        $mounts = @(
+            "--cpus", "$Cpus",
+            "--mount", "type=bind,source=$Photos,target=/data/c/Photos,readonly",
+            "--mount", "type=volume,source=$Cache,target=/cache,readonly",
+            "--mount", "type=bind,source=$bench,target=/bench/embeddings,readonly",
+            "-v", "${models}:/models",
+            "-v", "${pages}:/out"
+        )
+        $inside = "/usr/local/bin/python3 -m pip install -q --no-cache-dir --disable-pip-version-check --target /tmp/wheels tokenizers==0.23.2" +
+            " && PYTHONPATH=/tmp/wheels:/bench python -m embeddings.measure --photos /data/c/Photos --queries /out/queries.txt" +
+            " --models-dir /models --out /out --count $Sample --cpus $Cpus"
+        Log ""
+        Log "== 20. image embeddings on $Sample photos of $Photos, $Cpus CPUs (0220)"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $lines = & docker run --rm @mounts --entrypoint sh $Image -c $inside 2>&1
+        $watch.Stop()
+        foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        Log ("   20b. wall time: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+        $size = (Get-ChildItem -LiteralPath $models -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB
+        Log ("   20c. models folder: {0:N0} MB in {1}" -f $size, $models)
+        Log "   20d. open $(Join-Path $pages 'index.html'), tick the searches and the pairs, download both JSON files, then tell Claude where they are"
+    }
+    $ErrorActionPreference = $saved
 }
 
 # --- clean up -------------------------------------------------------------------------------

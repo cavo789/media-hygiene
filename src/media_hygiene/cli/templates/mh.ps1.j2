@@ -32,30 +32,14 @@ function global:{{ function }} {
         $given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/')
     }
     if ($rest.Count -eq 0) {
-        # Alone: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.
-        # With --photos, the step chosen gets them too (0181).
-        if ($typed.Count -gt 0) {
-            $shown = @(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] }) -join ', '
-            Write-Host "{{ texts.folder }}"
-        }
-        $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' })
-        Write-Host "{{ texts.reading }}"
-        $steps = @({{ function }} @color menu)
-        if ($LASTEXITCODE -ne 0 -or $steps.Count -eq 0) { return }
-        $choice = "$(Read-Host "{{ texts.prompt }}")".Trim()
-        if (-not $choice) { $choice = '0' }
-        $chosen = ''
-        foreach ($step in $steps) {
-            $number, $line = "$step" -split "`t", 2
-            if ($number -eq $choice) { $chosen = $line; break }
-        }
-        if (-not $chosen) {
-            if ($choice -ne '0') { Write-Host "{{ texts.unknown }}" }
-            return
-        }
-        Write-Host "{{ texts.direct }}"
-        $words = -split $chosen
-        {{ function }} @words @typed
+        # Alone: the home page, the steps chosen there run here (0210); with --photos,
+        # the step chosen gets them too (0181).
+        _{{ function }}_home @typed
+        return
+    }
+    if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {
+        # `{{ function }} menu`: the steps in this console, a number read (0172).
+        _{{ function }}_menu @typed
         return
     }
     # The commands of the host itself, without the container (0175, 0180, 0181).
@@ -80,6 +64,8 @@ function global:{{ function }} {
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
+    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210).
+    $relay = @(if ($global:MediaHygieneRelay -and $command -eq 'home') { '-e', '{{ relay }}=1' })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
@@ -114,6 +100,7 @@ function global:{{ function }} {
             -e "{{ variable }}={{ script.shell.value }}" `
             -e "{{ zone }}=$((Get-TimeZone).Id)" `
             -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
+            @relay `
 {% for option in script.environment %}
             {{ option }} `
 {% endfor %}
@@ -159,6 +146,8 @@ function global:_{{ function }}_open {
     Write-Host "{{ host.texts.volume }}"
 {% endif %}
 }
+
+{% include 'mh_menu.ps1.j2' %}
 
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}

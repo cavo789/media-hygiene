@@ -135,3 +135,8 @@ From the command above: 4 things to copy exactly → 1 (the folder as Explorer s
   refusal; the bash one returns 2).
 - Not done: 15d, `mh --photos <USB key> audit` (no key plugged in): with steps 12 and 13,
   `-OtherDrive E:`.
+
+## Inbox (2026-10-19)
+
+- `docs_screenshots` (`help-launcher.txt`, the `-e TZ` line) → refiled as 0244.
+- 15d (`mh --photos <USB key> audit`): still waiting (`mh-measure.ps1 -Only 15`, a USB key plugged in).

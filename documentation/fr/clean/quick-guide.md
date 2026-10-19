@@ -84,8 +84,9 @@ Hygiene* au clic droit de chaque dossier : le menu s'ouvre sur ce dossier. Plus 
     | `journal` | Le journal de chaque nettoyage : ce qui permet `undo`. |
     | `quarantine` | Les fichiers mis de côté, jusqu'à ce que vous les effaciez. |
 
-**Perdu ?** Tapez `mh` seul : chaque étape des guides avec sa commande, la prochaine proposée ;
-Entrée la lance. Plus : [`menu`](../commands/menu.md).
+**Perdu ?** Tapez `mh` seul : la [page d'accueil](../commands/home.md) s'ouvre dans votre
+navigateur, chaque étape des guides un bouton, la prochaine proposée. Dans le terminal seulement :
+[`mh menu`](../commands/menu.md).
 
 ## 1. Auditer
 

@@ -60,3 +60,36 @@ A measurement bench in `tests/measure/embeddings/`, never part of the published 
 
 None by itself: it lets the maintainer judge, on their own photos and searches, whether "search by
 meaning" is worth building, and at what cost per photo.
+
+## Status — PARTIAL (2026-10-18)
+
+### Done
+- The bench in `tests/measure/embeddings/`: `measure.py` (command line), `runs.py` (sampling with
+  a fixed seed, one model per spawned process, timings and RAM peak), `embedders.py` (ONNX
+  runtime, preprocessing per model, `tokenizers` imported by name, a stub), `models.py` (files
+  pinned to a revision, licences as checked), `ranking.py` (24 best per search, today's `search`
+  among the sampled photos when an index is mounted, 50 closest pairs minus the audit's hash
+  test), `pages.py` + `templates/` (summary, searches, pairs; boxes kept in local storage and
+  downloaded as JSON), `README.md`. Deviation: three more modules than the `Files:` bullet
+  (`embedders.py`, `runs.py`, `ranking.py`), and one page holding every search (one JSON to send
+  back instead of 20).
+- Models (Hugging Face API, 2026-10-18): SigLIP 2 base (`onnx-community/siglip2-base-patch16-224-ONNX`,
+  Apache-2.0 on Google's card), CLIP ViT-B/32 (`Xenova/clip-vit-base-patch32`, MIT on OpenAI's
+  GitHub) + `sentence-transformers/clip-ViT-B-32-multilingual-v1` (Apache-2.0 on its card, French
+  among its languages), DINOv2-small (`onnx-community/dinov2-small`, Apache-2.0 on Meta's card).
+  The ONNX exports state no licence: to check. Downloads: 1,536 + 894 + 89 MB = 2.5 GB, fp32.
+- Step 20 of `tests/measure/mh-measure.ps1` (`-Sample`, `-Cpus`, `-Branch`): fetches the bench,
+  writes the searches file with examples the first time, runs it with `C:\Photos` and the index
+  read-only, models kept in `%USERPROFILE%\media-hygiene\embeddings-models`.
+- Unit: `tests/unit/test_embeddings_measure.py` (19 tests, stub, synthetic pictures, no download).
+- Smoke in the project's image (21 synthetic pictures, `--cpus 2`): DINOv2-small real, measured
+  0.057 s per photo, RAM peak 246 MB; the tokenizers of SigLIP 2 and multilingual CLIP and the
+  CLIP projection checked; pages written.
+
+### Not done
+- The smoke run of SigLIP 2 and CLIP themselves (2.4 GB of models) in the devcontainer.
+  **Reason:** the unattended run was told not to download large models; their input and
+  output names were read from the tails of the ONNX files (`pixel_values` → `pooler_output` /
+  `image_embeds`; `input_ids` (+ `attention_mask`) → `pooler_output` / `last_hidden_state`),
+  not run. Their first run is the maintainer's step 20, which 0221 waits for anyway: if it
+  fails, the log names the model and the fix goes here.

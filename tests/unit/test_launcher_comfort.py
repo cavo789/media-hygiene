@@ -287,7 +287,7 @@ def test_powershell_gives_its_width_and_says_it_reads() -> None:
     text = _powershell()
     assert '-e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)"' in text
     reading = text.index('Write-Host "Lecture de là où vous en êtes…"')
-    assert reading < text.index("$steps = @(mh @color menu)")
+    assert reading < text.index("$steps = @(mh @color menu)", reading)
 
 
 def test_census_counts_and_measures_in_one_walk(tmp_path: Path) -> None:

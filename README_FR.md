@@ -38,7 +38,7 @@ mh audit
 `mh audit` liste les photos et vidéos en double ou cassées de `C:\Photos`, sans rien modifier :
 `mh` lui donne votre dossier en lecture seule (`:ro`), et Docker lui-même interdit toute écriture.
 Le premier lancement télécharge l'image [depuis Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) tout seul.
-Ensuite, `mh` seul ouvre un menu qui propose l'étape suivante, et `mh shortcut` pose une icône
+Ensuite, `mh` seul ouvre dans votre navigateur une page d'accueil qui propose l'étape suivante, et `mh shortcut` pose une icône
 *Media Hygiene* sur votre Bureau. [Votre premier audit](https://cavo789.github.io/media-hygiene/fr/start/01-first-audit/)
 explique ces lignes et le résultat, morceau par morceau.
 

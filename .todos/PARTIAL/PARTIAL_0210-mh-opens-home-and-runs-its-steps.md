@@ -56,3 +56,38 @@ What it changes for the user (said when the maintainer chose it): `mh` alone ope
 
 Double-clicking Media Hygiene: a numbered list in PowerShell → the home page in the browser,
 every step a button; the terminal only shows what a step prints and asks.
+
+## Status — PARTIAL (2026-10-17)
+
+### Done
+- `mh` alone (so the shortcut and the right-click, `--photos` kept) runs `home` in a loop:
+  `_mh_home` in `mh.sh.j2` and in the new include `mh_menu.ps1.j2`. Exit `100 + n`: the steps
+  read from `mh --color … menu` (captured), step `n` run as `mh <step>` with its mounts, the
+  "Next time, type it directly" line, then `home` again; 0 or a code naming no step (an error,
+  Docker's 125…) ends the loop with that code.
+- The relay signal `-e MEDIA_HYGIENE_LAUNCHER_STEPS=1` only on the `home` run of that loop
+  (bash: a `local _mh_relay` seen by the call; PowerShell: `$global:MediaHygieneRelay`, set and
+  cleared in `try/finally`); `mh home` typed alone does not carry it. Names passed to the
+  templates from `LAUNCHER_STEPS_VARIABLE` and `STEP_EXIT_BASE` (`services/launcher.py`).
+- `mh menu` alone is the terminal menu (moved, unchanged). The menu's internal capture always
+  passes `--color always|never`, so it never calls the interactive menu again.
+- Texts: the shortcut and right-click steps say "the home page"; "type mh menu" in the
+  `menu` warning and the unknown-step line; French catalog.
+- Tests: `tests/unit/test_launcher_home.py` (103 → step 3 then home; two steps in a row; 0,
+  1, 125 end the loop; `mh home` alone not relayed; the PowerShell loop, ASCII); the menu tests
+  moved to `mh menu`.
+- Docs EN + FR: step 1, launcher, menu, home, the three quick guides, reference-commands, both
+  READMEs. `mh-measure.ps1` step 14: `mh menu` for the menu part, then a home-page part (14h).
+
+### Not done
+- The run on Windows: step 14 of `mh-measure.ps1` (part 14h): the shortcut/`mh` opens the home
+  page; Run on `clean` runs it in the PowerShell window with its question; the page comes back;
+  "⌂ Home" from a review page brings the home page back; Quit gives the prompt back.
+  **Reason:** needs the maintainer's PC (Windows PowerShell 5.1, Docker Desktop, a browser).
+- The documentation captures (`menu.txt`, the menu's step 16/17 lines, the help pages).
+  **Reason:** `docs_screenshots` not run (heavy, run on request).
+
+## Inbox (2026-10-19)
+
+- The documentation captures → refiled as 0244.
+- The Windows run (step 14h): still waiting (`mh-measure.ps1`).

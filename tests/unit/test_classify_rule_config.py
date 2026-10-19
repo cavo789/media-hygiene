@@ -8,8 +8,9 @@ import pytest
 
 from media_hygiene.classify.rules.calendar import overlapping_ranges
 from media_hygiene.classify.rules.kinds import RuleMatch
+from media_hygiene.config.classify_defaults import SCORES
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import SCORES, ClassifySettings
+from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.constants import Locale
 from media_hygiene.errors import ConfigError

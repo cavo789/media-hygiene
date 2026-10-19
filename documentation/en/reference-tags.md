@@ -184,6 +184,9 @@ Without `--apply`, `xmp` only shows what it would write (the photo folders may t
   writing: the names then travel with every copy of the photos (a phone, a cloud, a shared
   drive). A name another application wrote stays; take `person` out and run `xmp --apply` again
   to take ours back.
+- **A position, only if you ask**: with `[tags] xmp_folder_gps = true`, a photo without GPS in a
+  folder named after a town gets that town's centre as its position, approximate
+  ([`xmp`](commands/xmp.md#a-position-from-the-folders-town)).
 - **Where**: `IMG_1.jpg.xmp` next to `IMG_1.jpg`. A sidecar already there (`IMG_1.jpg.xmp`, or
   `IMG_1.xmp` when it belongs to that photo alone) is completed, never replaced: its edits, its
   other properties and its own words stay; the sentence is only set when it has none. A sidecar

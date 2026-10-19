@@ -102,8 +102,8 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | Command | What it does |
 |---|---|
 | `mh open` | Opens `index.html`, the list of every report, in your browser (the newest at its top). No report yet: it says to run `mh audit` first. |
-| `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window on the `mh` menu, which stays open. Run again, it rewrites both. |
-| `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the `mh` menu opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
+| `mh shortcut` | Windows: puts a *Media Hygiene* icon on your Desktop and in the Start menu. A double-click opens a PowerShell window and the home page in your browser; the window stays open, each step chosen on the page runs in it. Run again, it rewrites both. |
+| `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes it away. On Windows 11, it may sit under *Show more options*. |
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 
@@ -116,7 +116,7 @@ PowerShell's icon. From WSL, Linux or macOS,
 `mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; the other two say they are for
 Windows.
 
-**`mh --photos "E:\Folder"` alone** opens the menu on that folder: it says which folder, and the
+**`mh --photos "E:\Folder"` alone** opens the home page on that folder: it says which folder, and the
 step you choose analyses it too, as `mh --photos "E:\Folder" audit` would. That is what the
 right-click of `mh explorer` runs.
 

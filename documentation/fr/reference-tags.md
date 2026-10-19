@@ -190,6 +190,9 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
   avant d'écrire : les noms voyagent alors avec chaque copie des photos (un téléphone, un cloud,
   un disque partagé). Un nom écrit par une autre application reste ; retirez `person` et relancez
   `xmp --apply` pour reprendre les nôtres.
+- **Une position, seulement si vous le demandez** : avec `[tags] xmp_folder_gps = true`, une photo
+  sans GPS dans un dossier au nom d'une ville reçoit le centre de cette ville comme position,
+  approximative ([`xmp`](commands/xmp.md#une-position-daprès-la-ville-du-dossier)).
 - **Où** : `IMG_1.jpg.xmp` à côté de `IMG_1.jpg`. Un fichier compagnon déjà là (`IMG_1.jpg.xmp`,
   ou `IMG_1.xmp` quand il n'appartient qu'à cette photo) est complété, jamais remplacé : ses
   retouches, ses autres propriétés et ses propres mots restent ; la phrase n'est posée que s'il

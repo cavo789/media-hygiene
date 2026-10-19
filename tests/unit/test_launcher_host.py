@@ -166,11 +166,11 @@ def test_bash_says_windows_only(tmp_path: Path, name: str) -> None:
     assert done.stdout == "status=2\n"
 
 
-def test_bash_photos_alone_open_the_menu_on_that_folder(tmp_path: Path) -> None:
+def test_bash_photos_and_menu_open_the_menu_on_that_folder(tmp_path: Path) -> None:
     """0181: the folder said, the step chosen runs with it, mounted under /data."""
     folder = tmp_path / "L'été 2019"
     folder.mkdir()
-    done = _bash(tmp_path, f'mh --photos "{folder}" <<< 1')
+    done = _bash(tmp_path, f'mh menu --photos "{folder}" <<< 1')
     assert f"The step you choose also analyses: {folder}" in done.stderr
     ran = [line for line in done.stdout.splitlines() if line.startswith("ran:")]
     assert ran[-1] == "ran:audit"

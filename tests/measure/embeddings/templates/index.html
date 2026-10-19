@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Embeddings bench{% endblock %}
+{% block content %}
+<h1>Image embeddings: what each model costs</h1>
+<p>{{ facts.photos }} photos sampled, {{ facts.queries }} searches{% if facts.searched %}, today's search read from the index{% else %}, no index mounted (no column of today's search){% endif %}.
+Judge the <a href="queries.html">searches</a> and the <a href="pairs.html">pairs</a>, then download each page's JSON.</p>
+<table>
+<tr><th>Model</th><th>Seconds per photo (model)</th><th>Seconds per photo (decoding)</th><th>Seconds per search</th><th>Loading (s)</th><th>Threads</th><th>RAM peak (MB)</th><th>Files (MB)</th><th>Unreadable photos</th><th>Licence</th></tr>
+{% for model in models %}
+<tr><td>{{ model.title }}{% if not model.reads_text %} <span class="muted">(no text)</span>{% endif %}</td>
+<td>{{ "%.3f"|format(model.model_seconds) }}</td><td>{{ "%.3f"|format(model.decode_seconds) }}</td>
+<td>{% if model.reads_text %}{{ "%.3f"|format(model.text_seconds) }}{% else %}-{% endif %}</td><td>{{ "%.1f"|format(model.load_seconds) }}</td>
+<td>{{ model.threads }}</td><td>{{ "%.0f"|format(model.peak_mb) }}</td><td>{{ "%.0f"|format(model.model_mb) }}</td>
+<td>{{ model.failed }}</td><td>{{ model.licence }}</td></tr>
+{% endfor %}
+</table>
+<p class="muted">Measured in this run: one process per model, one photo at a time, on the CPU. RAM peak: the process's maximum resident size.</p>
+{% endblock %}

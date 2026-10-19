@@ -22,8 +22,9 @@ never goes online.
 
 `places` shows where your photos were taken, from the cache of the audits, and lets you name
 the places that matter to you. It needs the cache (`/cache`, where the audits recorded the
-positions) and the folder of `config.toml` (`/config`, where the places are saved); `mh` mounts
-both, and opens the port of the page:
+positions) and the folder of `config.toml` (`/config`, where the places are saved); your photo
+folders, read-only, show the photos of a cluster. `mh` mounts all of them, and opens the port
+of the page:
 
 ```powershell
 mh places
@@ -34,6 +35,7 @@ mh places
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
   cavo789/media-hygiene places
@@ -48,7 +50,11 @@ prints, `http://127.0.0.1:8088/`.
 
 - **The circles** are your photos with a GPS position, grouped by about 200 metres, larger
   where there are more. The list on the left gives the **largest clusters without a name**
-  first: home is usually the first one.
+  first: home is usually the first one. Click **the number of photos** of one of its lines
+  (for instance "🖼 11 photos"): a drawer opens over the right side of the map with the photos
+  of that cluster, 24 at most, grouped by folder, to recognise the place before naming it
+  (**Name this place** at its top).
+- **Fold a list** by clicking its title (*Your places (10)*): the clusters stay in reach.
 - **Click a circle, or anywhere on the map**, to name a place. Give it a name, set its
   **radius** with the slider (a house: 100 to 200 metres; a village: a few kilometres), and
   drag its marker to move it. Tick **Home** for your home: trips are measured from it.
@@ -185,8 +191,9 @@ name = "Towns of the folders"
 match = "folder_town"
 ```
 
-- A folder matches only when its **whole name** is a town's (case and accents aside):
-  `Durbuy` does, `Durbuy 2017` and `Weekend in Durbuy` do not. The nearest such folder above a
+- A folder matches only when its **whole name** is a town's (case, accents, hyphens,
+  apostrophes and underscores aside: `Saint-Jean de Luz` is Saint-Jean-de-Luz): `Durbuy` does,
+  `Durbuy 2017` and `Weekend in Durbuy` do not. The nearest such folder above a
   photo counts.
 - Only towns of `folder_town_min_population` inhabitants (5,000) count: a village of 3,000
   is not looked for. Month and season names are never towns (`Mai` is May, not Mai in Kenya).

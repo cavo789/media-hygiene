@@ -158,6 +158,16 @@ tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 attribution = "© OpenStreetMap contributors"
 {{ comment(_("Search an area by its name on OpenStreetMap (a village, a park), from the map, on a click only: only the text you type is sent to this Nominatim service, never a photo nor a position. Its usage policy: https://operations.osmfoundation.org/policies/nominatim/ (one search per second at most). Another instance, or empty to search offline only.")) }}
 nominatim_url = "https://nominatim.openstreetmap.org"
+{{ comment(_("The positions you give whole folders on the map of 'places' (Save this position), written by the map: 'xmp' gives them to the photos of those folders without GPS, when [tags] xmp_folder_gps is true.")) }}
+# [[places.folders]]
+# folder = 'C:\Photos\2019\Douarnenez'
+# latitude = 48.0954
+# longitude = -4.329
+{{ comment(_("The clusters set aside on the map of 'places' (✕: not a place worth a name), written by the map: every cluster whose middle lies within radius_m metres of the position is hidden from the map and its lists. 'classify' does not read them: such a cluster is just unnamed.")) }}
+# [[places.ignored]]
+# latitude = 50.30012
+# longitude = 5.10021
+# radius_m = 150
 
 
 [tags]
@@ -171,6 +181,8 @@ town_km = 20
 {{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
 {{ comment(_("person writes the names of the people on each photo (PersonInImage): never by default, as the names then travel with every copy of the photos.")) }}
 xmp_sources = ["vision", "place"]
+{{ comment(_("true: a photo without GPS in a folder named after a town (2019/Douarnenez) gets the position of that town's centre in its sidecar, so that other applications show it on their map. Approximate: off by default.")) }}
+xmp_folder_gps = false
 
 
 [people]
@@ -366,6 +378,13 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 # longitude = 5.0
 # radius_m = 200
 # home = true
+
+{{ comment(_("Photos given one of your places by hand, written by the map of 'places' (Give these photos to…) when their GPS position is wrong, as a phone indoors often records: they go to that place whatever their position says, and their trips are measured from it. They are known by their content (size, then SHA-256), so moving or renaming them changes nothing; a photo edited since falls back to its GPS. path is where it was, for you to read only. Deleting a place on the map deletes its entry.")) }}
+# [[classify.place_photos]]
+# place = "{{ _("Home") }}"
+# photos = [
+#     { sha256 = "<its SHA-256>", size = 2481152, path = 'C:\Photos\IMG_1234.jpg' },
+# ]
 
 {{ comment(_("Your names for the towns: the towns are named after GeoNames, in English or in their own language (Brussels, Brugge, Gent). Write the exact GeoNames name, then yours: trips, {city}, the places page and the folder_town rule use yours; a folder named either way matches.")) }}
 # [classify.town_names]

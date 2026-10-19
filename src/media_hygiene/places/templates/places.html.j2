@@ -5,6 +5,7 @@
    config.toml by the server. #}
 {% set texts = {
   "photos": [ngettext("{n} photo", "{n} photos", 1), ngettext("{n} photo", "{n} photos", 2)],
+  "videos": [ngettext("{n} video", "{n} videos", 1), ngettext("{n} video", "{n} videos", 2)],
   "inPlace": _("place: {place}"),
   "nameIt": _("Name this place"),
   "noCluster": _("Every cluster lies in a place of yours."),
@@ -21,6 +22,48 @@
   "osmNone": _("OpenStreetMap knows no area of that name."),
   "osmTooLarge": _("Larger areas not listed (regions, countries): {count}. A 'trip' rule names them."),
   "osmType": _("Type a name first."),
+  "clusterTitle": _("Cluster — {files}"),
+  "firstPhotos": [ngettext("The first photo out of {count}", "The first {n} photos out of {count}", 1),
+                  ngettext("The first photo out of {count}", "The first {n} photos out of {count}", 2)],
+  "firstVideos": [ngettext("The first video out of {count}", "The first {n} videos out of {count}", 1),
+                  ngettext("The first video out of {count}", "The first {n} videos out of {count}", 2)],
+  "photosMissing": _("Some photos are not reachable: moved since the audit, or their folder is not mounted (read-only is enough)."),
+  "showPhotos": _("Show its photos"),
+  "withoutGps": _("{files} without GPS"),
+  "noFolder": _("No folder named after a town holds photos without GPS."),
+  "folderMissing": _("Not found: renamed or moved? Rename it back, or forget its position."),
+  "folderHint": _("Drag the pin where these photos were taken, then save: 'xmp' writes that position into their sidecars ([tags] xmp_folder_gps = true)."),
+  "toPlace": _("To place"),
+  "placed": _("Placed"),
+  "noMatch": _("No folder of that name."),
+  "townHint": _("{town} is a town: 'classify' already names its photos. Keep it as a place only for exact borders (an OpenStreetMap area) or another name."),
+  "folderSaved": _("Position saved in config.toml."),
+  "folderForgotten": _("Position taken out of config.toml."),
+  "folderIgnored": _("Saved in config.toml: this name is no town."),
+  "setAside": _("Not a place worth a name: hide it from the map"),
+  "asideSaved": _("Set aside in config.toml: hidden from the map."),
+  "asideRestored": _("Back on the map: taken out of config.toml."),
+  "asideEmpty": _("a circle holding no cluster now"),
+  "asideName": _("{name} — not a town"),
+  "noAside": _("Nothing set aside."),
+  "restore": _("Restore"),
+  "notTown": _("Not a town: never read as one, in any folder"),
+  "nameIgnored": _("{name}: never a town again (config.toml)."),
+  "nameRestored": _("{name}: read as a town again (config.toml)."),
+  "notSaved": _("Not saved: config.toml, read back, does not say so."),
+  "giveTo": _("Give these photos to…"),
+  "giveDistance": _("{place} — {km} km"),
+  "giveConfirm": _("Give {files} to {place}? Their GPS is then ignored for this place; the photos stay where they are."),
+  "given": _("Given to {place} in config.toml."),
+  "noneTicked": _("Tick at least one photo."),
+  "ticked": _("Ticked: given to the place you choose above"),
+  "handCount": [ngettext("+ {n} photo placed by hand", "+ {n} photos placed by hand", 1),
+                ngettext("+ {n} photo placed by hand", "+ {n} photos placed by hand", 2)],
+  "handGone": _("not found now: edited since, or its folder not mounted"),
+  "takeBack": _("Take it back: its GPS decides again"),
+  "takenBack": _("Taken out of config.toml: its GPS decides again."),
+  "confirmDeleteHand": [ngettext("Delete the place {name}? Its {n} photo placed by hand goes back to its GPS. The photos stay where they are.", "Delete the place {name}? Its {n} photos placed by hand go back to their GPS. The photos stay where they are.", 1),
+                        ngettext("Delete the place {name}? Its {n} photo placed by hand goes back to its GPS. The photos stay where they are.", "Delete the place {name}? Its {n} photos placed by hand go back to their GPS. The photos stay where they are.", 2)],
 } %}
 <html lang="{{ _('en') }}">
 <head>
@@ -45,7 +88,8 @@
          font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   aside { width: 340px; max-width: 45vw; overflow-y: auto; padding: 12px 16px;
           background: var(--card); border-right: 1px solid var(--line); }
-  #map { flex: 1; }
+  #stage { flex: 1; position: relative; min-width: 0; }
+  #map { position: absolute; inset: 0; }
   h1 { font-size: 1.1rem; margin: 0 0 8px; }
   h2 { font-size: .95rem; margin: 16px 0 6px; }
   .muted, .hint { color: var(--muted); font-size: .85rem; }
@@ -76,12 +120,75 @@
                 background: var(--bg); color: var(--text); cursor: pointer; }
   #osm button:disabled { opacity: .6; cursor: progress; }
   #osm a { color: var(--accent); }
+  details.fold { margin-top: 16px; }
+  details.fold > summary { font-size: .95rem; font-weight: 600; color: var(--muted); cursor: pointer;
+                           margin-bottom: 6px; }
+  details.fold .count { font-weight: normal; }
+  details.fold.sub { margin: 8px 0 0 8px; }
+  #folderFilter { margin-top: 4px; }
+  li.cluster { display: flex; gap: 4px; align-items: center; }
+  li.cluster button.link { flex: 1; width: auto; }
+  li.cluster button.count { padding: 2px 8px; font: inherit; font-size: .85rem; white-space: nowrap;
+                            color: var(--accent); background: none; border: 1px solid var(--line);
+                            border-radius: 6px; cursor: pointer; }
+  li.cluster.shown button.count { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @keyframes flash { from { background: var(--accent); color: #fff; } to { background: none; } }
+  li.flash button.link { animation: flash 1.6s ease-out; }
+  li.shown > button.link { background: var(--bg); font-weight: 600; }
+  li.missing button.link { color: var(--bad); }
+  .folder-pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
+                background: var(--ok); border: 3px solid #fff; border-radius: 50%;
+                box-shadow: 0 0 0 1px var(--ok); }
+  /* The drawer: over the right of the map, at a fixed place whatever the lists' length. */
+  #drawer { position: absolute; top: 0; right: 0; bottom: 0; width: 40%; min-width: 320px; z-index: 1100;
+            display: flex; flex-direction: column; background: var(--card); color: var(--text);
+            border-left: 1px solid var(--line); box-shadow: -4px 0 16px rgba(0, 0, 0, .2); }
+  #drawer[hidden], #viewer[hidden], #drawerBody[hidden] { display: none; }
+  #drawer > header { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  #drawer .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  #drawer .top strong { overflow-wrap: anywhere; }
+  #drawer .buttons { flex-wrap: wrap; margin-top: 8px; }
+  #drawerClose { font: inherit; font-size: 1.1rem; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  #drawerBody { flex: 1; overflow-y: auto; padding: 0 14px 14px; }
+  #drawerBody h3 { margin: 12px 0 4px; font-size: .85rem; font-weight: normal; color: var(--muted);
+                   overflow-wrap: anywhere; }
+  #drawerBody h3 b { color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px; }
+  .grid img, .grid .gone, .grid .video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                                         background: var(--bg); }
+  .grid img { cursor: zoom-in; }
+  .grid .gone, .grid .video { display: flex; flex-direction: column; align-items: center; justify-content: center;
+                              padding: 4px; overflow: hidden; text-align: center; color: var(--muted);
+                              font-size: 1.4rem; border: 1px dashed var(--line); }
+  .grid .video small { font-size: .7rem; overflow-wrap: anywhere; }
+  #viewer { flex: 1; display: flex; flex-direction: column; min-height: 0; margin: 0; padding: 8px 14px 14px; }
+  #viewer img { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  #viewer figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
+  @media (max-width: 700px) { #drawer { width: 100%; min-width: 0; } }
+  li.cluster button.drop, li.folder button.drop, li.aside button.restore {
+    padding: 2px 8px; font: inherit; font-size: .85rem; color: var(--muted); background: none;
+    border: 1px solid transparent; border-radius: 6px; cursor: pointer; }
+  li.cluster button.drop:hover, li.folder button.drop:hover { color: var(--bad); border-color: var(--line); }
+  li.folder, li.aside { display: flex; gap: 4px; align-items: center; }
+  li.folder button.link, li.aside button.link, li.aside span { flex: 1; width: auto; }
+  li.aside button.restore { color: var(--accent); border-color: var(--line); }
+  .pick { position: relative; }
+  .pick input { position: absolute; top: 4px; left: 4px; width: 18px; height: 18px; cursor: pointer; }
+  #giveTo { padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+            border: 1px solid var(--line); border-radius: 6px; max-width: 100%; }
+  #hand ul li { display: flex; gap: 6px; align-items: center; font-size: .85rem; overflow-wrap: anywhere; }
+  #hand img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+  #hand li span { flex: 1; }
+  #hand li button { font: inherit; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  .photo-pin { width: 12px !important; height: 12px !important; margin: -6px 0 0 -6px !important;
+               background: var(--bad); border: 2px solid #fff; border-radius: 50%; }
 </style>
 </head>
 <body>
 <aside>
   <h1>📍 {{ _("Your places") }}</h1>
-  <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}</p>
+  <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}
+    {{ _("A place is for a spot the towns list does not know: home, the grandparents', the office. Towns are named on their own.") }}</p>
   <input id="search" type="search" autocomplete="off"
          placeholder="{{ _('Find a town (offline)…') }}" aria-label="{{ _('Find a town') }}">
   <ul id="towns"></ul>
@@ -99,10 +206,16 @@
     <strong id="editorTitle"></strong>
     <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
     <input id="name" type="text" maxlength="120" required>
+    <p id="townHint" class="hint" role="note" hidden></p>
     <div id="circleOnly">
     <label for="radius">{{ _("Radius, in metres") }}</label>
     <input id="radius" type="range" min="20" max="3000" step="10">
     <input id="radiusValue" type="number" min="1" max="50000" step="1" aria-label="{{ _('Radius, in metres') }}">
+    </div>
+    <div id="hand" hidden>
+      <label>{{ _("Photos placed by hand") }} <span id="handCount" class="muted"></span></label>
+      <p class="hint">{{ _("Their GPS is ignored for this place: they belong to it, wherever they are now (found by their content).") }}</p>
+      <ul id="handList"></ul>
     </div>
     <p id="areaNote" class="hint" hidden>{{ _("An area from OpenStreetMap: the photos taken inside its outline belong to this place.") }}</p>
     <label class="check"><input id="home" type="checkbox"> {{ _("Home: trips are measured from it") }}</label>
@@ -112,19 +225,74 @@
       <button type="button" id="delete" class="danger">{{ _("Delete") }}</button>
     </div>
   </form>
-  <h2>{{ _("Your places") }}</h2>
-  <ul id="places"></ul>
-  <h2>{{ _("The largest clusters without a name") }}</h2>
-  <ul id="clusters"></ul>
+  <details id="placesFold" class="fold" open>
+    <summary>{{ _("Your places") }} <span id="placesCount" class="count"></span></summary>
+    <ul id="places"></ul>
+  </details>
+  <details id="clustersFold" class="fold" open>
+    <summary>{{ _("The largest clusters without a name") }} <span id="clustersCount" class="count"></span></summary>
+    <ul id="clusters"></ul>
+  </details>
+  <details id="foldersFold" class="fold" open>
+    <summary>{{ _("Folders named after a town") }} <span id="foldersCount" class="count"></span></summary>
+    <input id="folderFilter" type="search" autocomplete="off"
+           placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
+           title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">
+    <details id="todoFold" class="fold sub" open>
+      <summary>{{ _("To place") }} <span id="todoCount" class="count"></span></summary>
+      <ul id="foldersTodo"></ul>
+    </details>
+    <details id="placedFold" class="fold sub">
+      <summary>{{ _("Placed") }} <span id="placedCount" class="count"></span></summary>
+      <ul id="foldersPlaced"></ul>
+    </details>
+  </details>
+  <details id="asideFold" class="fold">
+    <summary>{{ _("Set aside from the map") }} <span id="asideCount" class="count"></span></summary>
+    <p class="hint">{{ _("Hidden from the map and from the lists; 'classify' reads them as before (a cluster stays unnamed).") }}</p>
+    <ul id="aside"></ul>
+  </details>
   <p class="hint">{{ _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") }}</p>
 </aside>
-<div id="map"></div>
+<main id="stage">
+  <div id="map"></div>
+  <section id="drawer" hidden aria-labelledby="drawerTitle">
+    <header>
+      <div class="top"><strong id="drawerTitle"></strong>
+        <button type="button" id="drawerClose" aria-label="{{ _('Close') }}" title="{{ _('Close') }} (Esc)">✕</button></div>
+      <div class="buttons">
+        <button type="button" id="clusterName" class="primary">{{ _("Name this place") }}</button>
+        <select id="giveTo" aria-label="{{ _('Give these photos to…') }}"></select>
+        <button type="button" id="clusterAside" title="{{ _('Not a place worth a name: hide it from the map') }}">✕ {{ _("Set this cluster aside") }}</button>
+        <button type="button" id="folderSave" class="primary">{{ _("Save this position") }}</button>
+        <button type="button" id="folderForget">{{ _("Forget its position") }}</button>
+        <button type="button" id="folderIgnore">{{ _("Not a town") }}</button>
+      </div>
+      <p id="drawerNote" class="hint"></p>
+      <p id="drawerNotes" class="hint" hidden aria-live="polite"></p>
+    </header>
+    <div id="drawerBody"></div>
+    <figure id="viewer" hidden>
+      <img id="viewerImg" alt="">
+      <figcaption id="viewerPath"></figcaption>
+      <div class="buttons">
+        <button type="button" id="viewerPrev" aria-label="{{ _('Previous photo') }}">←</button>
+        <button type="button" id="viewerBack">{{ _("Back to the photos") }} (Esc)</button>
+        <button type="button" id="viewerNext" aria-label="{{ _('Next photo') }}">→</button>
+        <span id="viewerCount" class="muted"></span>
+      </div>
+    </figure>
+  </section>
+</main>
 <script src="/leaflet.js"></script>
 <script>
 (() => {
   const T = {{ texts | tojson }};
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
-                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }} };
+                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
+                  cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
+                  folderPhotos: {{ folder_photos | tojson }}, folder: {{ folder_path | tojson }},
+                  aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -138,15 +306,37 @@
   const photos = (count) => counted(T.photos, count);
   const colour = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const SHOWN_CLUSTERS = 15, NAMED_ZOOM = 16, TOWN_ZOOM = 13, DEFAULT_RADIUS = 200;
+  // From this many places on, "Your places" starts folded, unless the reader chose.
+  const FOLDED_FROM = 8, FOLD_KEY = "places-folds";
 
   const map = L.map("map", { worldCopyJump: true }).setView([30, 0], 2);
   L.tileLayer(tiles, { maxZoom: 19, attribution: plain(attribution) }).addTo(map);
   const clusterLayer = L.layerGroup().addTo(map);
   const placeLayer = L.layerGroup().addTo(map);
-  let state = { places: [], clusters: [] };
+  let state = { places: [], clusters: [], aside: [] };
   let editing = null, editCircle = null, editMarker = null;
 
   const status = (text, kind) => { const node = byId("status"); node.textContent = text; node.className = kind || ""; };
+  // Post a change; the answer is config.toml read back, or null (the error said).
+  async function post(path, body) {
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    } catch (error) { status(T.offline, "error"); return null; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return null; }
+    return answer;
+  }
+  // A small button at the end of a line: ✕ (set aside, not a town) or Restore.
+  function tail(li, text, title, action) {
+    const button = document.createElement("button");
+    button.type = "button"; button.className = text === "✕" ? "drop" : "restore";
+    button.textContent = text; button.title = title; button.setAttribute("aria-label", title);
+    button.addEventListener("click", (event) => { event.stopPropagation(); action(); });
+    li.append(button);
+    return button;
+  }
 
   function item(list, text, action) {
     const li = document.createElement("li");
@@ -154,33 +344,389 @@
     button.type = "button"; button.className = "link"; button.textContent = text;
     button.addEventListener("click", action);
     li.append(button); list.append(li);
+    return li;
   }
+
+  // The reader's folds, kept in this browser only; a private window keeps none.
+  const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
+  // Only a click of the reader is remembered, not a list the page opens itself.
+  for (const id of ["placesFold", "clustersFold", "foldersFold", "todoFold", "placedFold", "asideFold"]) {
+    byId(id).querySelector("summary").addEventListener("click", () => {
+      folds[id] = !byId(id).open;
+      try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
+    });
+  }
+  const unfold = (id) => { if (!byId(id).open) byId(id).open = true; };
+  // The line of a place just saved flashes in its list, opened: the save shows where the eye is.
+  const flash = (li) => { li.classList.add("flash"); li.scrollIntoView({ block: "nearest" }); };
+  let flashName = null;
+
+  // What a cluster or a folder holds: "3 photos, 1 video"; never "0 photos" beside videos.
+  const videos = (count) => counted(T.videos, count);
+  const holds = (pictures, filmed) =>
+    [pictures || !filmed ? photos(pictures) : "", filmed ? videos(filmed) : ""].filter(Boolean).join(", ");
+  // Sorted by the name shown, case and accents ignored ("Écluse" among the E); the file's order is kept.
+  const collator = new Intl.Collator(document.documentElement.lang, { sensitivity: "base" });
+  const plain = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const lastName = (folder) => folder.split(/[\\/]/).filter(Boolean).pop() || folder;
+
+  // The drawer, over the right of the map: the photos of a cluster or of a folder, grouped
+  // by folder, its actions on top; a click on a photo opens it larger (←/→, Esc back).
+  let opened = null, photoPin = null, folderPin = null, viewing = [], viewed = -1;
+  const unpin = () => { if (photoPin) { photoPin.remove(); photoPin = null; } };
+  const pinAt = (file) => {
+    unpin();
+    if ("latitude" in file) photoPin = L.marker([file.latitude, file.longitude], { icon: L.divIcon({ className: "photo-pin" }) }).addTo(map);
+  };
+  // The width the drawer hides on the map's right; none when it covers the whole map.
+  const hidden = () => {
+    const drawer = byId("drawer"), width = drawer.hidden ? 0 : drawer.offsetWidth;
+    return width < byId("map").offsetWidth ? width : 0;
+  };
+  // A point at the middle of what the drawer leaves visible.
+  const focus = (at, zoom) => map.setView(map.unproject(map.project(at, zoom).add([hidden() / 2, 0]), zoom), zoom);
+  // The clicked line stays highlighted in its list while the drawer shows it.
+  function highlight() {
+    const key = opened ? opened.key : null;
+    for (const li of document.querySelectorAll("li[data-drawer]")) {
+      const on = li.dataset.drawer === key;
+      li.classList.toggle("shown", on);
+      const count = li.querySelector("button.count");
+      if (count) count.setAttribute("aria-pressed", String(on));
+    }
+  }
+  function closeViewer() {
+    viewed = -1; byId("viewer").hidden = true; byId("drawerBody").hidden = false;
+    byId("viewerImg").removeAttribute("src"); unpin();
+  }
+  function closeDrawer() {
+    if (folderPin) { folderPin.remove(); folderPin = null; }
+    opened = null; viewing = []; closeViewer();
+    byId("drawer").hidden = true; byId("drawerBody").replaceChildren();
+    highlight();
+  }
+  function openViewer(index) {
+    if (!viewing.length) return;
+    viewed = (index + viewing.length) % viewing.length;
+    const file = viewing[viewed], cut = /[\\/]$/.test(file.folder) ? "" : (file.folder.includes("\\") ? "\\" : "/");
+    byId("viewerImg").src = file.large; byId("viewerImg").alt = file.name;
+    byId("viewerPath").textContent = `${file.folder}${cut}${file.name}`;
+    byId("viewerCount").textContent = `${viewed + 1} / ${viewing.length}`;
+    byId("drawerBody").hidden = true; byId("viewer").hidden = false;
+    pinAt(file);
+  }
+  function cell(file) {
+    let node;
+    if (file.video || !file.found) {
+      node = document.createElement("span");
+      node.className = file.video ? "video" : "gone";
+      const name = document.createElement("small"); name.textContent = file.name;
+      node.append(file.video ? "🎞" : "∅", name);
+    } else {
+      node = document.createElement("img");
+      node.src = file.preview; node.alt = file.name; node.loading = "lazy";
+      node.addEventListener("click", () => openViewer(viewing.indexOf(file)));
+    }
+    node.title = file.name;
+    node.addEventListener("mouseenter", () => pinAt(file));
+    node.addEventListener("mouseleave", unpin);
+    if (!opened || !opened.give) return node;
+    // Giving a cluster's photos to a place (0237): untick a photo really taken here.
+    const box = document.createElement("div"), check = document.createElement("input");
+    box.className = "pick"; check.type = "checkbox"; check.checked = !file.unticked; check.title = T.ticked;
+    check.setAttribute("aria-label", `${T.ticked}: ${file.name}`);
+    check.addEventListener("change", () => { file.unticked = !check.checked; });
+    box.append(node, check);
+    return box;
+  }
+  // The files, one heading per folder (its host path, its own name in bold).
+  function fillDrawer(files, source) {
+    const body = byId("drawerBody"); body.replaceChildren();
+    const pictures = files.filter((file) => !file.video).length, filmed = files.length - pictures;
+    const notes = [];
+    if (pictures < source.pictures) notes.push(fill(counted(T.firstPhotos, pictures), { count: source.pictures }));
+    if (filmed < source.videos) notes.push(fill(counted(T.firstVideos, filmed), { count: source.videos }));
+    if (files.some((file) => !file.found)) notes.push(T.photosMissing);
+    byId("drawerNotes").textContent = notes.join(" · "); byId("drawerNotes").hidden = !notes.length;
+    viewing = files.filter((file) => !file.video && file.found);
+    source.files = files;
+    let folder = null, grid = null;
+    for (const file of files) {
+      if (file.folder !== folder) {
+        folder = file.folder;
+        const heading = document.createElement("h3"), own = document.createElement("b"), name = lastName(folder);
+        own.textContent = name;
+        heading.append(folder.slice(0, folder.lastIndexOf(name)), own);
+        heading.title = folder;
+        grid = document.createElement("div"); grid.className = "grid";
+        body.append(heading, grid);
+      }
+      grid.append(cell(file));
+    }
+  }
+  async function openDrawer(source) {
+    closeDrawer(); opened = source;
+    byId("drawerTitle").textContent = source.title;
+    byId("drawerNote").textContent = source.note; byId("drawerNote").hidden = !source.note;
+    for (const [id, shown] of Object.entries(source.actions)) byId(id).hidden = !shown;
+    byId("drawerNotes").hidden = true;
+    byId("drawer").hidden = false;
+    focus(source.at, Math.max(map.getZoom(), source.zoom));
+    if (source.folder) {
+      folderPin = L.marker(source.at, { draggable: true, icon: L.divIcon({ className: "folder-pin" }) }).addTo(map);
+      folderPin.bindTooltip(label(source.folder.town || source.folder.folder));
+    }
+    highlight();
+    const response = await fetch(source.url).catch(() => null);
+    if (opened !== source) return;
+    if (!response || !response.ok) { status(T.offline, "error"); return; }
+    fillDrawer((await response.json()).photos, source);
+  }
+  function showCluster(rank) {
+    const key = `cluster:${rank}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const [lat, lon, pictures, filmed, , aside] = state.clusters[rank];
+    const give = state.places.length > 0;
+    const actions = { clusterName: true, clusterAside: aside < 0, giveTo: give,
+                      folderSave: false, folderForget: false, folderIgnore: false };
+    if (give) fillGive([lat, lon]);
+    openDrawer({ key, rank, url: paths.cluster + rank, at: [lat, lon], zoom: NAMED_ZOOM, pictures, videos: filmed, give,
+                 title: fill(T.clusterTitle, { files: holds(pictures, filmed) }), note: "", actions, folder: null });
+  }
+  // The places, the nearest first, with their distance: "Geer — 1.4 km".
+  function fillGive(at) {
+    const select = byId("giveTo"), first = document.createElement("option");
+    first.value = ""; first.textContent = T.giveTo; select.replaceChildren(first);
+    const here = L.latLng(at), lang = document.documentElement.lang;
+    const near = state.places.map((place) => [here.distanceTo([place.latitude, place.longitude]), place.name]).sort((a, b) => a[0] - b[0]);
+    for (const [metres, name] of near) {
+      const option = document.createElement("option"); option.value = name;
+      option.textContent = fill(T.giveDistance, { place: name, km: (metres / 1000).toLocaleString(lang, { maximumFractionDigits: 1 }) });
+      select.append(option);
+    }
+  }
+  async function give(place) {
+    const source = opened;
+    if (!source || !source.give) return;
+    const unticked = (source.files || []).filter((file) => file.unticked);
+    const pictures = source.pictures - unticked.filter((file) => !file.video).length;
+    const filmed = source.videos - unticked.filter((file) => file.video).length;
+    if (pictures + filmed <= 0) { status(T.noneTicked, "error"); return; }
+    if (!window.confirm(fill(T.giveConfirm, { files: holds(pictures, filmed), place }))) return;
+    const before = (state.places.find((known) => known.name === place) || { hand: [] }).hand.length;
+    const answer = await post(paths.photos, { action: "give", cluster: source.rank, place,
+                                              left_out: unticked.map((file) => [file.folder, file.name]) });
+    if (!answer) return;
+    const after = answer.places.find((known) => known.name === place);
+    state = answer; flashName = place; closeDrawer(); draw();
+    if (!after || after.hand.length <= before) { status(T.notSaved, "error"); return; }
+    status(fill(T.given, { place }), "saved");
+  }
+  byId("giveTo").addEventListener("change", (event) => {
+    const place = event.target.value; event.target.value = "";
+    if (place) give(place);
+  });
+  // A cluster not worth a name: a circle in config.toml, hidden from the map (0234).
+  async function setAside(lat, lon) {
+    const answer = await post(paths.aside, { latitude: lat, longitude: lon });
+    if (!answer) return;
+    state = answer; closeDrawer(); draw();
+    const near = (spot) => Math.abs(spot.latitude - lat) < 1e-6 && Math.abs(spot.longitude - lon) < 1e-6;
+    status(state.aside.some(near) ? T.asideSaved : T.notSaved, state.aside.some(near) ? "saved" : "error");
+  }
+  async function restoreSpot(spot) {
+    const answer = await post(paths.aside, { latitude: spot.latitude, longitude: spot.longitude, restore: true });
+    if (!answer) return;
+    state = answer; closeDrawer(); draw();
+    const still = state.aside.some((known) => known.latitude === spot.latitude && known.longitude === spot.longitude);
+    status(still ? T.notSaved : T.asideRestored, still ? "error" : "saved");
+  }
+  byId("clusterAside").addEventListener("click", () => { if (opened) setAside(...opened.at); });
+  byId("drawerClose").addEventListener("click", closeDrawer);
+  byId("viewerBack").addEventListener("click", closeViewer);
+  byId("viewerPrev").addEventListener("click", () => openViewer(viewed - 1));
+  byId("viewerNext").addEventListener("click", () => openViewer(viewed + 1));
+  byId("clusterName").addEventListener("click", () => { if (opened) startNew(...opened.at); });
+  document.addEventListener("keydown", (event) => {
+    if (byId("drawer").hidden || event.target.closest?.("input, textarea, select")) return;
+    if (event.key === "Escape") { if (viewed >= 0) closeViewer(); else closeDrawer(); }
+    else if (viewed >= 0 && event.key === "ArrowLeft") openViewer(viewed - 1);
+    else if (viewed >= 0 && event.key === "ArrowRight") openViewer(viewed + 1);
+    else return;
+    event.preventDefault();
+  });
+
+  // The folders named after a town, or placed: their photos without GPS, a pin to drag.
+  let folders = [], ignored = [], folderFlash = null;
+  const filesOf = (folder) => holds(folder.count - folder.videos, folder.videos);
+  // The name a folder line shows: its town, else its last folder name.
+  const folderName = (folder) => folder.town || lastName(folder.folder);
+  const byFolderName = (first, second) =>
+    collator.compare(folderName(first), folderName(second)) || first.folder.localeCompare(second.folder);
+  // The folders typed for: the name shown and the host path, case and accents ignored.
+  const folderMatches = (folder, typed) => !typed || plain(`${folderName(folder)}\n${folder.folder}`).includes(typed);
+  const countOf = (shown, total) => (shown === total ? `(${total})` : `(${shown} / ${total})`);
+  function drawFolders() {
+    const typed = plain(byId("folderFilter").value.trim());
+    // A copy is sorted: `folders` keeps the server's order, whose index is the rank the API names.
+    const seen = folders.filter((folder) => folderMatches(folder, typed));
+    const placed = seen.filter((folder) => folder.saved).sort(byFolderName);
+    // Saved but not found (renamed, moved): at the top of "Placed", where they are seen.
+    const lines = [["foldersTodo", seen.filter((folder) => !folder.saved).sort(byFolderName), "todoFold"],
+                   ["foldersPlaced", [...placed.filter((f) => !f.found), ...placed.filter((f) => f.found)], "placedFold"]];
+    const total = [folders.filter((folder) => !folder.saved).length, folders.filter((folder) => folder.saved).length];
+    byId("foldersCount").textContent = countOf(seen.length, folders.length);
+    lines.forEach(([id, rows, fold], index) => {
+      const list = byId(id); list.replaceChildren();
+      byId(fold.replace("Fold", "Count")).textContent = countOf(rows.length, total[index]);
+      if (!rows.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = folders.length ? T.noMatch : T.noFolder; list.append(li); }
+      for (const folder of rows) drawFolder(list, folder, fold);
+    });
+    folderFlash = null;
+    highlight();
+  }
+  function drawFolder(list, folder, fold) {
+    const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
+    const li = item(list, `${mark}${folderName(folder)} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder.rank));
+    li.title = folder.folder; li.dataset.drawer = `folder:${folder.folder}`; li.classList.add("folder");
+    if (!folder.found) li.classList.add("missing");
+    // A town guess only: a position saved (📌) is the user's, forgotten in the drawer.
+    if (folder.town && !folder.saved) tail(li, "✕", T.notTown, () => ignoreName(folder));
+    if (folder.folder === folderFlash) { unfold("foldersFold"); unfold(fold); flash(li); }
+  }
+  byId("folderFilter").addEventListener("input", drawFolders);
+  byId("folderFilter").addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && byId("folderFilter").value) { event.stopPropagation(); byId("folderFilter").value = ""; drawFolders(); }
+  });
+  async function loadFolders() {
+    const response = await fetch(paths.folders).catch(() => null);
+    if (!response || !response.ok) return;
+    const answer = await response.json();
+    folders = answer.folders; ignored = answer.ignored || []; drawFolders(); drawAside();
+  }
+  // Léo is the cat (0235): the name goes into folder_town_ignore, its line leaves the list.
+  async function ignoreName(folder) {
+    const name = lastName(folder.folder);
+    const answer = await post(paths.folder, { action: "ignore", folder: folder.folder });
+    if (!answer) return;
+    if (opened && opened.folder) closeDrawer();
+    folders = answer.folders; ignored = answer.ignored; drawFolders(); drawAside();
+    const gone = !folders.some((other) => other.folder === folder.folder);
+    status(gone ? fill(T.nameIgnored, { name }) : T.notSaved, gone ? "saved" : "error");
+  }
+  async function restoreName(name) {
+    const answer = await post(paths.folder, { action: "restore", folder: name });
+    if (!answer) return;
+    folders = answer.folders; ignored = answer.ignored; drawFolders(); drawAside();
+    const still = ignored.includes(name);
+    status(still ? T.notSaved : fill(T.nameRestored, { name }), still ? "error" : "saved");
+  }
+  // What was set aside: the clusters' circles (0234) and the names that are no town (0235).
+  function drawAside() {
+    const list = byId("aside"); list.replaceChildren();
+    const spots = state.aside || [];
+    byId("asideCount").textContent = `(${spots.length + ignored.length})`;
+    if (!spots.length && !ignored.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noAside; list.append(li); }
+    for (const spot of spots) {
+      const files = spot.pictures + spot.videos ? holds(spot.pictures, spot.videos) : T.asideEmpty;
+      const li = item(list, `✕ ${files}`, () => {
+        if (spot.cluster >= 0) showCluster(spot.cluster); else focus([spot.latitude, spot.longitude], NAMED_ZOOM);
+      });
+      li.classList.add("aside");
+      if (spot.cluster >= 0) li.dataset.drawer = `cluster:${spot.cluster}`;
+      tail(li, T.restore, T.restore, () => restoreSpot(spot));
+    }
+    for (const name of ignored) {
+      const li = document.createElement("li"), text = document.createElement("span");
+      li.className = "aside"; text.textContent = fill(T.asideName, { name }); li.append(text); list.append(li);
+      tail(li, T.restore, T.restore, () => restoreName(name));
+    }
+    highlight();
+  }
+  function showFolder(rank) {
+    const folder = folders[rank], key = `folder:${folder.folder}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const name = folder.town || lastName(folder.folder);
+    const actions = { clusterName: false, clusterAside: false, giveTo: false,
+                      folderSave: folder.found, folderForget: folder.saved, folderIgnore: Boolean(folder.town) };
+    openDrawer({ key, url: paths.folderPhotos + rank, at: [folder.latitude, folder.longitude], zoom: TOWN_ZOOM,
+                 pictures: folder.count - folder.videos, videos: folder.videos, folder, actions,
+                 title: `${name} — ${fill(T.withoutGps, { files: filesOf(folder) })}`,
+                 note: folder.found ? T.folderHint : T.folderMissing });
+  }
+  async function actOnFolder(action, said) {
+    const chosen = opened && opened.folder;
+    if (!chosen) return;
+    const where = folderPin ? folderPin.getLatLng() : { lat: chosen.latitude, lng: chosen.longitude };
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(paths.folder, { method: "POST", headers: { "Content-Type": "application/json" },
+                                             body: JSON.stringify({ action, folder: chosen.folder,
+                                                                    latitude: where.lat, longitude: where.lng }) });
+    } catch (error) { status(T.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    folderFlash = action === "ignore" ? null : chosen.folder;
+    folders = answer.folders; ignored = answer.ignored || []; closeDrawer(); drawFolders(); drawAside(); status(said, "saved");
+  }
+  byId("folderSave").addEventListener("click", () => actOnFolder("save", T.folderSaved));
+  byId("folderForget").addEventListener("click", () => actOnFolder("forget", T.folderForgotten));
+  byId("folderIgnore").addEventListener("click", () => actOnFolder("ignore", T.folderIgnored));
 
   function draw() {
     clusterLayer.clearLayers(); placeLayer.clearLayers();
-    for (const [lat, lon, count, place] of state.clusters) {
+    for (const [lat, lon, pictures, filmed, place, aside] of state.clusters) {
+      if (aside >= 0 || !(pictures + filmed)) continue;  // set aside, or every photo given a place
+      const what = holds(pictures, filmed);
       const circle = L.circleMarker([lat, lon], {
-        radius: 4 + 3 * Math.log2(count), weight: 1, fillOpacity: 0.45,
+        radius: 4 + 3 * Math.log2(pictures + filmed), weight: 1, fillOpacity: 0.45,
         color: place ? colour("--muted") : colour("--cluster"),
       });
-      circle.bindTooltip(label(place ? `${photos(count)}, ${fill(T.inPlace, { place })}` : photos(count)));
+      circle.bindTooltip(label(place ? `${what}, ${fill(T.inPlace, { place })}` : what));
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); startNew(lat, lon); });
       circle.addTo(clusterLayer);
     }
     for (const place of state.places) {
       const style = { radius: place.radius_m, color: colour("--place"), weight: 2 };
       const circle = place.area ? L.polygon(place.area, style) : L.circle([place.latitude, place.longitude], style);
-      circle.bindTooltip(label(place.home ? `🏠 ${place.name}` : place.name), { permanent: true, className: "place-name" });
+      const hand = place.hand && place.hand.length ? ` ${counted(T.handCount, place.hand.length)}` : "";
+      circle.bindTooltip(label(`${place.home ? "🏠 " : ""}${place.name}${hand}`), { permanent: true, className: "place-name" });
       circle.on("click", (event) => { L.DomEvent.stopPropagation(event); edit(place); });
       circle.addTo(placeLayer);
     }
     const places = byId("places"); places.replaceChildren();
     if (!state.places.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noPlace; places.append(li); }
-    for (const place of state.places) item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+    // Home first, then by name; `state.places` keeps the file's order (a place's key is its rank there).
+    const sorted = [...state.places].sort((first, second) => Number(second.home) - Number(first.home) || collator.compare(first.name, second.name));
+    for (const place of sorted) {
+      const li = item(places, (place.home ? "🏠 " : "📍 ") + place.name, () => edit(place));
+      if (place.town) {  // the same sentence as the editor's hint
+        const mark = document.createElement("span");
+        mark.textContent = " ⓘ"; mark.className = "muted"; mark.title = fill(T.townHint, { town: place.town });
+        li.firstChild.append(mark);
+      }
+      if (place.name === flashName) { unfold("placesFold"); flash(li); }
+    }
+    flashName = null;
+    byId("placesCount").textContent = `(${state.places.length})`;
     const clusters = byId("clusters"); clusters.replaceChildren();
-    const unnamed = state.clusters.filter((cluster) => !cluster[3]).slice(0, SHOWN_CLUSTERS);
+    const unnamed = state.clusters.map((cluster, rank) => [rank, ...cluster])
+      .filter((cluster) => !cluster[5] && cluster[6] < 0 && cluster[3] + cluster[4] > 0);
+    byId("clustersCount").textContent = `(${unnamed.length})`;
     if (!unnamed.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noCluster; clusters.append(li); }
-    for (const [lat, lon, count] of unnamed) item(clusters, `● ${photos(count)} — ${T.nameIt}`, () => startNew(lat, lon));
+    for (const [rank, lat, lon, pictures, filmed] of unnamed.slice(0, SHOWN_CLUSTERS)) {
+      const li = item(clusters, `● ${T.nameIt}`, () => startNew(lat, lon));
+      li.classList.add("cluster"); li.dataset.drawer = `cluster:${rank}`;
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "count";
+      button.textContent = `${pictures ? "🖼" : "🎞"} ${holds(pictures, filmed)}`;
+      button.title = T.showPhotos;
+      button.addEventListener("click", () => showCluster(rank));
+      li.prepend(button);
+      tail(li, "✕", T.setAside, () => setAside(lat, lon));
+    }
+    drawAside();
   }
 
   function showEditor() {
@@ -200,18 +746,57 @@
       });
     } else { editMarker = null; }
     byId("editorTitle").textContent = editing.key === null ? T.newPlace : editing.name;
-    byId("name").value = editing.name;
+    byId("name").value = editing.name; showTownHint();
     byId("radius").value = editing.radius_m; byId("radiusValue").value = editing.radius_m;
     byId("home").checked = editing.home;
     byId("delete").hidden = editing.key === null;
+    fillHand(editing.hand || []);
     byId("editor").hidden = false;
     byId("name").focus();
   }
 
+  // The photos given this place by hand (0237), each one taken back with ✕.
+  function fillHand(hand) {
+    const list = byId("handList"); list.replaceChildren();
+    byId("hand").hidden = !hand.length; byId("handCount").textContent = `(${hand.length})`;
+    for (const photo of hand) {
+      const li = document.createElement("li"), where = document.createElement("span");
+      if (photo.preview) { const img = document.createElement("img"); img.src = photo.preview; img.alt = ""; img.loading = "lazy"; li.append(img); }
+      where.textContent = photo.now || `${photo.path} — ${T.handGone}`;
+      li.append(where); list.append(li);
+      const button = tail(li, "✕", T.takeBack, () => takeBack(photo.sha256));
+      button.className = "";
+    }
+  }
+  async function takeBack(sha256) {
+    const key = editing ? editing.key : null;
+    const answer = await post(paths.photos, { action: "remove", sha256 });
+    if (!answer) return;
+    state = answer; draw();
+    const place = state.places.find((known) => known.key === key);
+    if (place && editing) { editing.hand = place.hand; fillHand(place.hand); }
+    const still = state.places.some((known) => (known.hand || []).some((photo) => photo.sha256 === sha256));
+    status(still ? T.notSaved : T.takenBack, still ? "error" : "saved");
+  }
+  // A name like a town's, near: a hint under the name, never a refusal (0239).
+  let hintAsked = 0;
+  async function showTownHint() {
+    const note = byId("townHint"), asked = ++hintAsked, name = byId("name").value.trim();
+    note.hidden = true;
+    if (!editing || !name) return;
+    const response = await fetch(paths.hint, { method: "POST", headers: { "Content-Type": "application/json" },
+                                               body: JSON.stringify({ name, latitude: editing.latitude, longitude: editing.longitude }) }).catch(() => null);
+    if (!response || !response.ok || asked !== hintAsked) return;
+    const { town } = await response.json();
+    if (asked !== hintAsked || !town) return;
+    note.textContent = fill(T.townHint, { town }); note.hidden = false;
+  }
+  let hintTimer = null;
+  byId("name").addEventListener("input", () => { clearTimeout(hintTimer); hintTimer = setTimeout(showTownHint, 300); });
   function edit(place) {
     editing = { ...place };
-    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1));
-    else map.setView([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
+    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1), { paddingBottomRight: [hidden(), 0] });
+    else focus([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
     showEditor();
   }
   const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
@@ -240,7 +825,8 @@
     } catch (error) { status(T.offline, "error"); return; }
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
-    state = answer; editing = null; showEditor(); draw(); status(T.saved, "saved");
+    flashName = editing ? editing.name : null;
+    state = answer; editing = null; closeDrawer(); showEditor(); draw(); status(T.saved, "saved");
   }
 
   byId("editor").addEventListener("submit", (event) => {
@@ -255,7 +841,9 @@
     send(ordered);
   });
   byId("delete").addEventListener("click", () => {
-    if (!window.confirm(fill(T.confirmDelete, { name: editing.name }))) return;
+    const hand = (editing.hand || []).length;
+    const question = hand ? fill(counted(T.confirmDeleteHand, hand), { name: editing.name }) : fill(T.confirmDelete, { name: editing.name });
+    if (!window.confirm(question)) return;
     send(state.places.filter((place) => place.key !== editing.key));
   });
 
@@ -306,7 +894,15 @@
   }
 
   fetch(paths.state).then((response) => response.json()).then((answer) => {
-    state = answer; draw();
+    state = answer;
+    // Open while there are few places; the reader's own choice wins.
+    byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
+    byId("clustersFold").open = folds.clustersFold ?? true;
+    byId("foldersFold").open = folds.foldersFold ?? true;
+    byId("todoFold").open = folds.todoFold ?? true;
+    byId("placedFold").open = folds.placedFold ?? false;
+    byId("asideFold").open = folds.asideFold ?? false;
+    draw(); loadFolders();
     const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];
     if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM });
   }).catch(() => status(T.offline, "error"));

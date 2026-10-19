@@ -15,9 +15,10 @@ import tomlkit
 from tomlkit.items import AoT, Array, Table
 
 from media_hygiene.config.classify_places import PersonalPlace, check_places
+from media_hygiene.places.config_photos import follow_places
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from tomlkit.toml_document import TOMLDocument
@@ -57,12 +58,18 @@ def read_places(config_file: Path) -> tuple[PersonalPlace, ...]:
     return tuple(PersonalPlace.model_validate(row) for row in rows)
 
 
-def save_places(config_file: Path, edits: Sequence[PlaceEdit]) -> None:
+def save_places(
+    config_file: Path,
+    edits: Sequence[PlaceEdit],
+    renamed: Mapping[str, str | None] | None = None,
+) -> None:
     """Write the places, replacing those of the file.
 
     Args:
         config_file: `config.toml`, created when missing.
         edits: Every place, kept ones with their key.
+        renamed: The places renamed (old name → new) or deleted (→ None): their
+            photos given by hand follow, in the same write (0237).
 
     Raises:
         ValueError: Two places share a name, or two are home; the file is not TOML.
@@ -79,6 +86,7 @@ def save_places(config_file: Path, edits: Sequence[PlaceEdit]) -> None:
             _fill(written[key], kept[key])
         else:
             del document[SECTION][KEY][key]
+    follow_places(document, renamed or {})
     result = _append(document, new)
     tomllib.loads(result)  # never write a file the next run cannot read
     temporary = config_file.with_name(f".{config_file.name}.tmp")

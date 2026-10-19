@@ -243,6 +243,12 @@ msgstr[1] ""
 msgid "({latitude}, {longitude}) is not a position on the Earth"
 msgstr ""
 
+#, python-brace-format
+msgid "+ {n} photo placed by hand"
+msgid_plural "+ {n} photos placed by hand"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
 "the kept copy; 'undo' rebuilds them from it."
@@ -438,6 +444,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A place is for a spot the towns list does not know: home, the "
+"grandparents', the office. Towns are named on their own."
+msgstr ""
+
+msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
 msgstr ""
@@ -609,7 +620,7 @@ msgid ""
 "deleting."
 msgstr ""
 
-msgid "An icon on the Desktop and in the Start menu opens this menu"
+msgid "An icon on the Desktop and in the Start menu opens the home page"
 msgstr ""
 
 msgid ""
@@ -706,6 +717,12 @@ msgid "B"
 msgstr ""
 
 msgid "Back after being set aside"
+msgstr ""
+
+msgid "Back on the map: taken out of config.toml."
+msgstr ""
+
+msgid "Back to the photos"
 msgstr ""
 
 msgid "Back to the report"
@@ -939,6 +956,10 @@ msgid "Close"
 msgstr ""
 
 msgid "Close this page and go back to the home page: mh opens it again."
+msgstr ""
+
+#, python-brace-format
+msgid "Cluster — {files}"
 msgstr ""
 
 msgid "Codec"
@@ -1208,6 +1229,16 @@ msgid "Delete it: the next audit builds it again, reading every file once."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Delete the place {name}? Its {n} photo placed by hand goes back to its "
+"GPS. The photos stay where they are."
+msgid_plural ""
+"Delete the place {name}? Its {n} photos placed by hand go back to their "
+"GPS. The photos stay where they are."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr ""
 
@@ -1326,6 +1357,11 @@ msgstr ""
 msgid ""
 "Downloading the two face models into the cache, once (39 MB): they run on"
 " this computer, nothing about your photos is sent."
+msgstr ""
+
+msgid ""
+"Drag the pin where these photos were taken, then save: 'xmp' writes that "
+"position into their sidecars ([tags] xmp_folder_gps = true)."
 msgstr ""
 
 msgid "Drone"
@@ -1745,6 +1781,9 @@ msgstr ""
 msgid "Films and series"
 msgstr ""
 
+msgid "Filter the folders"
+msgstr ""
+
 msgid "Final folder"
 msgstr ""
 
@@ -1857,6 +1896,9 @@ msgstr ""
 msgid "Folders closed; your photos were not changed."
 msgstr ""
 
+msgid "Folders named after a town"
+msgstr ""
+
 msgid "Folders removed"
 msgstr ""
 
@@ -1889,6 +1931,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "For every terminal, add that line to {profile}."
+msgstr ""
+
+msgid "Forget its position"
 msgstr ""
 
 msgid "Format"
@@ -1968,7 +2013,20 @@ msgid ""
 "workbook, then run 'sort' again."
 msgstr ""
 
+msgid "Give these photos to…"
+msgstr ""
+
 msgid "Give your photos words"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Give {files} to {place}? Their GPS is then ignored for this place; the "
+"photos stay where they are."
+msgstr ""
+
+#, python-brace-format
+msgid "Given to {place} in config.toml."
 msgstr ""
 
 msgid "Gives each file a second name in the album."
@@ -2011,6 +2069,11 @@ msgid "HTML report: {path}"
 msgstr ""
 
 msgid "Height"
+msgstr ""
+
+msgid ""
+"Hidden from the map and from the lists; 'classify' reads them as before "
+"(a cluster stays unnamed)."
 msgstr ""
 
 msgid "Holidays and outings"
@@ -2614,6 +2677,9 @@ msgstr ""
 msgid "Next page →"
 msgstr ""
 
+msgid "Next photo"
+msgstr ""
+
 msgid "Next step"
 msgstr ""
 
@@ -2683,6 +2749,12 @@ msgid "No file has words yet: nothing can be found."
 msgstr ""
 
 msgid "No folder for the albums: neither album.root nor classify.target is set."
+msgstr ""
+
+msgid "No folder named after a town holds photos without GPS."
+msgstr ""
+
+msgid "No folder of that name."
 msgstr ""
 
 msgid "No folder pairs: nothing to review."
@@ -2777,6 +2849,9 @@ msgstr ""
 msgid "No photo or video directly in this folder: open a subfolder."
 msgstr ""
 
+msgid "No photo to give: none ticked, or none reachable."
+msgstr ""
+
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
 
@@ -2834,7 +2909,7 @@ msgid "No signal"
 msgstr ""
 
 #, python-brace-format
-msgid "No step {choice}: type mh alone to see the menu again."
+msgid "No step {choice}: type mh menu to see the menu again."
 msgstr ""
 
 #, python-brace-format
@@ -2863,6 +2938,15 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "Not a place worth a name: hide it from the map"
+msgstr ""
+
+msgid "Not a town"
+msgstr ""
+
+msgid "Not a town: never read as one, in any folder"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
@@ -2882,6 +2966,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Not found"
+msgstr ""
+
+msgid "Not found: renamed or moved? Rename it back, or forget its position."
 msgstr ""
 
 #, python-format
@@ -2905,6 +2992,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not saved (error {status})."
+msgstr ""
+
+msgid "Not saved: config.toml, read back, does not say so."
 msgstr ""
 
 #, python-brace-format
@@ -3257,6 +3347,19 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Photos given one of your places by hand, written by the map of 'places' "
+"(Give these photos to…) when their GPS position is wrong, as a phone "
+"indoors often records: they go to that place whatever their position "
+"says, and their trips are measured from it. They are known by their "
+"content (size, then SHA-256), so moving or renaming them changes nothing;"
+" a photo edited since falls back to its GPS. path is where it was, for "
+"you to read only. Deleting a place on the map deletes its entry."
+msgstr ""
+
+msgid "Photos placed by hand"
+msgstr ""
+
+msgid ""
 "Photos that answer for each event (the sharpest, spread over its span); "
 "the other files of the event follow them. Smaller photos (shorter side, "
 "in pixels) are never sent: the model invents details on thumbnails."
@@ -3281,6 +3384,9 @@ msgstr ""
 msgid "Place (video tag)"
 msgstr ""
 
+msgid "Placed"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
@@ -3300,6 +3406,12 @@ msgid ""
 "computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
 msgstr ""
 
+msgid "Position saved in config.toml."
+msgstr ""
+
+msgid "Position taken out of config.toml."
+msgstr ""
+
 msgid ""
 "Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* "
 "environment variables (e.g. MEDIA_HYGIENE_GENERAL__LOCALE=fr) > this file"
@@ -3307,6 +3419,9 @@ msgid ""
 msgstr ""
 
 msgid "Previous guess, already in place"
+msgstr ""
+
+msgid "Previous photo"
 msgstr ""
 
 msgid "Proposal"
@@ -3481,6 +3596,9 @@ msgstr ""
 msgid "Reports (newest first)"
 msgstr ""
 
+msgid "Restore"
+msgstr ""
+
 msgid ""
 "Restore every file of a run, from the kept copy, the quarantine or where "
 "it was moved; remove the links of an album."
@@ -3575,7 +3693,7 @@ msgid ""
 "byte, and skips any difference."
 msgstr ""
 
-msgid "Right-click a folder in Explorer: this menu, on that folder"
+msgid "Right-click a folder in Explorer: the home page, on that folder"
 msgstr ""
 
 #, python-brace-format
@@ -3787,6 +3905,9 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr ""
 
+msgid "Save this position"
+msgstr ""
+
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
@@ -3808,6 +3929,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Saved in config.toml."
+msgstr ""
+
+msgid "Saved in config.toml: this name is no town."
 msgstr ""
 
 #, python-brace-format
@@ -3949,6 +4073,12 @@ msgstr ""
 msgid "Set aside"
 msgstr ""
 
+msgid "Set aside from the map"
+msgstr ""
+
+msgid "Set aside in config.toml: hidden from the map."
+msgstr ""
+
 msgid "Set aside on"
 msgstr ""
 
@@ -3965,6 +4095,9 @@ msgid ""
 msgstr ""
 
 msgid "Set the extra copies aside (asks first)"
+msgstr ""
+
+msgid "Set this cluster aside"
 msgstr ""
 
 msgid "Setting"
@@ -3988,6 +4121,9 @@ msgid "Show every setting, where it comes from, and the mount points."
 msgstr ""
 
 msgid "Show it"
+msgstr ""
+
+msgid "Show its photos"
 msgstr ""
 
 msgid "Show the version and exit."
@@ -4027,6 +4163,11 @@ msgid ""
 msgstr ""
 
 msgid "Some destinations cannot be used; nothing was moved:"
+msgstr ""
+
+msgid ""
+"Some photos are not reachable: moved since the audit, or their folder is "
+"not mounted (read-only is enough)."
 msgstr ""
 
 msgid "Sort"
@@ -4185,11 +4326,17 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
+msgid "Take it back: its GPS decides again"
+msgstr ""
+
 msgid "Take out of the set aside"
 msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+msgid "Taken out of config.toml: its GPS decides again."
 msgstr ""
 
 #, python-brace-format
@@ -4260,6 +4407,13 @@ msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr ""
 
 msgid "The classify workbook; the latest classify run's by default."
+msgstr ""
+
+msgid ""
+"The clusters set aside on the map of 'places' (✕: not a place worth a "
+"name), written by the map: every cluster whose middle lies within "
+"radius_m metres of the position is hidden from the map and its lists. "
+"'classify' does not read them: such a cluster is just unnamed."
 msgstr ""
 
 msgid "The collection once sorted"
@@ -4344,6 +4498,18 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The first photo out of {count}"
+msgid_plural "The first {n} photos out of {count}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "The first video out of {count}"
+msgid_plural "The first {n} videos out of {count}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "The folder {path} is not mounted."
 msgstr ""
 
@@ -4401,7 +4567,7 @@ msgstr ""
 
 msgid ""
 "The menu runs its steps through mh: write it once with 'launcher' (step 0"
-" of the guides), then type mh alone."
+" of the guides), then type mh menu."
 msgstr ""
 
 msgid "The model sent an answer without a message."
@@ -4424,6 +4590,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The model {model} is not installed at {url}."
+msgstr ""
+
+msgid "The name shown and the folder's path; Esc empties the box."
 msgstr ""
 
 msgid ""
@@ -4473,6 +4642,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
+msgstr ""
+
+msgid ""
+"The positions you give whole folders on the map of 'places' (Save this "
+"position), written by the map: 'xmp' gives them to the photos of those "
+"folders without GPS, when [tags] xmp_folder_gps is true."
 msgstr ""
 
 #, python-brace-format
@@ -4692,6 +4867,11 @@ msgid "The {top} largest events hold {held} of them."
 msgstr ""
 
 msgid ""
+"Their GPS is ignored for this place: they belong to it, wherever they are"
+" now (found by their content)."
+msgstr ""
+
+msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
 msgstr ""
@@ -4798,6 +4978,12 @@ msgstr ""
 msgid "This workbook was written by another version: it cannot be checked."
 msgstr ""
 
+msgid "Tick at least one photo."
+msgstr ""
+
+msgid "Ticked: given to the place you choose above"
+msgstr ""
+
 #, python-brace-format
 msgid "Time per step: {steps}"
 msgstr ""
@@ -4838,6 +5024,9 @@ msgid ""
 msgstr ""
 
 msgid "To move"
+msgstr ""
+
+msgid "To place"
 msgstr ""
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
@@ -4903,6 +5092,9 @@ msgstr ""
 msgid "Type a name or a category, or leave it in place."
 msgstr ""
 
+msgid "Type a name to filter the folders"
+msgstr ""
+
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
 msgstr ""
@@ -4950,6 +5142,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Unexpected extra argument: {values}"
+msgstr ""
+
+msgid "Unknown place or cluster: reload the page."
 msgstr ""
 
 #, python-brace-format
@@ -5321,6 +5516,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "[[classify.place_photos]] names '{name}', which is no [[classify.places]]"
+msgstr ""
+
+#, python-brace-format
 msgid "[[{table}]] number {number}"
 msgstr ""
 
@@ -5347,6 +5546,9 @@ msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'
 msgstr ""
 
 msgid "a burst shot you set aside"
+msgstr ""
+
+msgid "a circle holding no cluster now"
 msgstr ""
 
 msgid "a file changed since the audit"
@@ -6082,6 +6284,9 @@ msgstr ""
 msgid "not created yet: the first clean creates it"
 msgstr ""
 
+msgid "not found now: edited since, or its folder not mounted"
+msgstr ""
+
 msgid "not found where the plan or a sort put it"
 msgstr ""
 
@@ -6514,6 +6719,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "true or false is expected, not {value}"
+msgstr ""
+
+msgid ""
+"true: a photo without GPS in a folder named after a town "
+"(2019/Douarnenez) gets the position of that town's centre in its sidecar,"
+" so that other applications show it on their map. Approximate: off by "
+"default."
 msgstr ""
 
 msgid ""
@@ -7202,6 +7414,16 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} photo without GPS gets the position of its folder's town (its "
+"centre, approximate): {towns}."
+msgid_plural ""
+"{count} photos without GPS get the position of their folder's town (its "
+"centre, approximate): {towns}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} photos to describe with {model}, about {duration}: one per set of"
 " identical files and per burst series."
 msgstr ""
@@ -7393,6 +7615,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{files} without GPS"
+msgstr ""
+
+#, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
 msgstr ""
 
@@ -7419,7 +7645,17 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{folder} has a position in [[places.folders]] but cannot be found: "
+"renamed or moved? Correct it in the map of 'places'."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} is not one of the folders listed"
 msgstr ""
 
 #, python-brace-format
@@ -7516,6 +7752,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} — not a town"
+msgstr ""
+
+#, python-brace-format
+msgid "{name}: never a town again (config.toml)."
+msgstr ""
+
+#, python-brace-format
+msgid "{name}: read as a town again (config.toml)."
 msgstr ""
 
 #, python-brace-format
@@ -7637,6 +7885,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} sure proposal accepted"
 msgid_plural "{n} sure proposals accepted"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} video"
+msgid_plural "{n} videos"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7775,6 +8029,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{place} — {km} km"
+msgstr ""
+
+#, python-brace-format
 msgid "{place}: did you mean '{key}'?"
 msgstr ""
 
@@ -7853,6 +8111,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{total} files found; the first {shown} are shown."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{town} is a town: 'classify' already names its photos. Keep it as a place"
+" only for exact borders (an OpenStreetMap area) or another name."
 msgstr ""
 
 #, python-brace-format

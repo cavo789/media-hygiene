@@ -107,7 +107,7 @@ def test_an_area_found_online_is_saved_and_names_the_photos(
     assert path.startswith("/search?q=fictiville&")
     assert agent.startswith("media-hygiene/")
     saved = json.loads(seen["saved"].body)
-    assert saved["clusters"][0][3] == "Fictiville"
+    assert saved["clusters"][0][4] == "Fictiville"  # lat, lon, pictures, videos, place
     [village] = read_places(locations.config_file)
     assert (village.osm, len(village.area or ())) == ("R9000001", 1)
 

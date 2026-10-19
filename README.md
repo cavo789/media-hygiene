@@ -37,8 +37,8 @@ mh audit
 `mh audit` lists the duplicate and broken photos and videos of `C:\Photos`, and changes nothing:
 `mh` gives it your folder read-only (`:ro`), so Docker itself forbids any write. The first run
 downloads the image [from Docker Hub](https://hub.docker.com/r/cavo789/media-hygiene) by itself.
-Then `mh` alone opens a menu that proposes the next step, and `mh shortcut` puts a *Media
-Hygiene* icon on your Desktop. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/)
+Then `mh` alone opens a home page in your browser that proposes the next step, and `mh
+shortcut` puts a *Media Hygiene* icon on your Desktop. [Your first audit](https://cavo789.github.io/media-hygiene/start/01-first-audit/)
 explains these lines and the result, part by part.
 
 Just to try, or in a **WSL** (or Linux) terminal, one command audits a folder without `mh`:
