@@ -13,6 +13,7 @@ from media_hygiene.paths.overlaps import mount_overlaps
 from media_hygiene.services.missing_mount import no_folder
 from media_hygiene.services.policy import unmounted_folders
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
+from media_hygiene.services.unseen_drives import refuse_unseen_drives
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -32,10 +33,12 @@ def refuse_empty_data(runtime: Runtime, command: str) -> None:
 
     Raises:
         MountError: Nothing to analyse, or the quarantine, the journal, the cache or
-            the reports folder is, holds or lies inside a folder to analyse.
+            the reports folder is, holds or lies inside a folder to analyse, or a
+            folder lies on a drive Docker Desktop cannot see (shown empty).
     """
     if nothing_mounted(runtime):
         raise no_folder(runtime, command)
+    refuse_unseen_drives(runtime)
     refuse_tool_folders_in_data(runtime)
 
 

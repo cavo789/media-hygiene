@@ -17,6 +17,7 @@ from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.policy import backup_folders
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
+from media_hygiene.services.unseen_drives import refuse_unseen_drives
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -35,7 +36,10 @@ def ensure_can_act(runtime: Runtime, command: str) -> None:
             journal or the quarantine is not writable, or a tool folder is mixed with
             the photos (never for `undo`: it is how files come back). A backup is
             read-only on purpose (0205): compared, never changed, never refused.
+            A drive Docker Desktop cannot see is refused, `undo` included: what is
+            written there would land on Docker Desktop's own disk (0252).
     """
+    refuse_unseen_drives(runtime)
     if not runtime.persistent(MountKind.JOURNAL):
         raise missing_mount(
             runtime,

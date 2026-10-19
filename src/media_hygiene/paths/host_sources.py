@@ -5,6 +5,10 @@ Docker Desktop leaves the host folder visible in the mount table, in one of two 
 - a `9p` (drvfs) mount whose source is the drive (`C:\`) and whose root is the folder;
 - a mount whose root is `/run/desktop/mnt/host/<drive>/<folder>`.
 
+A drive Docker Desktop cannot see (a removable one, which WSL does not mount) has a
+third shape: the root `/mnt/host/<drive>/<folder>` on the VM's own disk (`ext4
+/dev/sdX`), an empty folder Docker Desktop created silently (measured, 0252).
+
 Knowing it lets the tool show `C:\Photos\2013` even for `-v "${PWD}:/data/current"`.
 """
 
@@ -16,6 +20,8 @@ from typing import Final
 _DESKTOP_ROOT = re.compile(
     r"^(?:/run)?/desktop/mnt/host/(?P<drive>[a-z])(?P<rest>/.*)?$"
 )
+_VM_DRIVE_ROOT = re.compile(r"^/mnt/host/(?P<drive>[a-z])(?P<rest>/.*)?$")
+_BLOCK_DEVICE: Final = "/dev/"
 _DRIVE_SOURCE = re.compile(r"^(?P<drive>[A-Za-z]):\\?$")
 _DRVFS_TYPE: Final = "9p"
 
@@ -38,6 +44,24 @@ def windows_source(root: str, fs_type: str, source: str) -> str | None:
     if fs_type == _DRVFS_TYPE and drive is not None:
         return windows_path(drive["drive"], root)
     return None
+
+
+def unseen_drive_folder(root: str, source: str) -> str | None:
+    r"""Return the Windows folder of a drive Docker Desktop cannot see, if it is one.
+
+    Only a block device of the VM backs it: a host share (9p, virtiofs) never does.
+
+    Args:
+        root: The mount root (4th mountinfo field), unescaped.
+        source: The mount source (second field after ` - `), unescaped.
+
+    Returns:
+        A path such as `D:\mh-test`, or None for any other mount.
+    """
+    unseen = _VM_DRIVE_ROOT.match(root)
+    if unseen is None or not source.startswith(_BLOCK_DEVICE):
+        return None
+    return windows_path(unseen["drive"], unseen["rest"] or "")
 
 
 def windows_path(drive: str, posix_rest: str) -> str:

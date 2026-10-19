@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import MOUNTINFO_PATH
 from media_hygiene.paths.host_folders import host_folder
-from media_hygiene.paths.host_sources import windows_source
+from media_hygiene.paths.host_sources import unseen_drive_folder, windows_source
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_folders import HostFolder
@@ -71,9 +71,10 @@ def _parse(fields: list[str]) -> Mount | None:
     tail = fields[fields.index(_SEPARATOR) + 1 :] if _SEPARATOR in fields else []
     if len(tail) < _TAIL_FIELDS:
         return Mount(point, None)
-    root = _unescape(fields[_ROOT_FIELD])
-    windows = windows_source(root, tail[0], _unescape(tail[1]))
-    return Mount(point, windows, host_folder(fields[_DEVICE_FIELD], root, windows))
+    root, source = _unescape(fields[_ROOT_FIELD]), _unescape(tail[1])
+    windows = windows_source(root, tail[0], source)
+    host = host_folder(fields[_DEVICE_FIELD], root, windows)
+    return Mount(point, windows, host, unseen_drive_folder(root, source))
 
 
 def is_read_only(path: Path) -> bool:
@@ -117,6 +118,7 @@ class Mount:
     point: Path
     windows_source: str | None
     host: HostFolder | None = None
+    unseen: str | None = None  # a drive Docker Desktop cannot see (0252)
 
 
 @dataclass(frozen=True, slots=True)
@@ -126,6 +128,7 @@ class MountTable:
     mount_points: frozenset[Path]
     host_sources: tuple[tuple[Path, str], ...] = ()
     host_folders: tuple[tuple[Path, HostFolder], ...] = ()
+    unseen_drives: tuple[tuple[Path, str], ...] = ()
 
     @classmethod
     def current(cls, mountinfo: Path = Path(MOUNTINFO_PATH)) -> MountTable:
@@ -146,6 +149,7 @@ class MountTable:
                 if mount.windows_source is not None
             ),
             tuple((mount.point, mount.host) for mount in mounts if mount.host),
+            tuple((mount.point, mount.unseen) for mount in mounts if mount.unseen),
         )
 
     def is_persistent(self, locations: Locations, kind: MountKind) -> bool:

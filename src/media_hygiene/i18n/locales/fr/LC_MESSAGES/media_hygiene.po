@@ -843,6 +843,16 @@ msgid "An icon on the Desktop and in the Start menu opens the home page"
 msgstr "Une icône sur le Bureau et dans le menu Démarrer ouvre la page d'accueil"
 
 msgid ""
+"An mh page is open in another window: close it there (Ctrl+C), then type "
+"the command again."
+msgstr ""
+"Une page de mh est ouverte dans une autre fenêtre : ferme-la là-bas "
+"(Ctrl+C), puis tape la commande à nouveau."
+
+msgid "An mh page left open by a closed window was stopped."
+msgstr "Une page de mh restée ouverte par une fenêtre fermée a été arrêtée."
+
+msgid ""
 "Analyse this many random photos, print the time per photo and the "
 "estimate of a full run, and stop."
 msgstr ""
@@ -1692,6 +1702,30 @@ msgstr ""
 "Ne pas lancer Czkawka ici : afficher la commande qui le lance dans sa "
 "propre image, puis comparer les résultats qu'il a écrits dans /reports "
 "(czkawka.json)."
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {drive}: (a removable drive, such as a USB "
+"stick), and sharing it failed: copy the folder to a fixed disk, or use an"
+" external hard disk."
+msgstr ""
+"Docker Desktop ne voit pas {drive}: (un disque amovible, comme une clé "
+"USB), et le partager a échoué : copie le dossier sur un disque fixe, ou "
+"utilise un disque dur externe."
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows an empty folder instead, so nothing is compared."
+msgid_plural ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows empty folders instead, so nothing is compared."
+msgstr[0] ""
+"Docker Desktop ne voit pas {folders} (un disque amovible, comme une clé "
+"USB) : il montre un dossier vide à la place, donc rien n'est comparé."
+msgstr[1] ""
+"Docker Desktop ne voit pas {folders} (un disque amovible, comme une clé "
+"USB) : il montre des dossiers vides à la place, donc rien n'est comparé."
 
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
@@ -5320,6 +5354,16 @@ msgstr ""
 "Repartir de zéro : ne reprendre aucune modification d'un classeur "
 "précédent."
 
+#, python-brace-format
+msgid ""
+"Start the command with mh, which shares such a drive with Docker Desktop;"
+" or share it yourself in PowerShell, then start the command again: "
+"{command} (or copy the folder to a fixed disk)."
+msgstr ""
+"Lance la commande avec mh, qui partage un tel disque avec Docker Desktop ;"
+" ou partage-le toi-même dans PowerShell, puis relance la commande : "
+"{command} (ou copie le dossier sur un disque fixe)."
+
 msgid "Started"
 msgstr "Lancé le"
 
@@ -5878,6 +5922,14 @@ msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
+
+#, python-brace-format
+msgid ""
+"The port of the mh pages is held by the container {id}: close the window "
+"where it runs, or type docker stop {id}, then type the command again."
+msgstr ""
+"Le port des pages de mh est pris par le conteneur {id} : ferme la fenêtre "
+"où il tourne, ou tape docker stop {id}, puis tape la commande à nouveau."
 
 msgid ""
 "The positions you give whole folders on the map of 'places' (Save this "
@@ -9461,6 +9513,10 @@ msgstr "{done}, relu sur le disque à {time} : le bouton ↶ reprend tout le lot
 #, python-brace-format
 msgid "{done}: Z takes the whole batch back."
 msgstr "{done} : Z annule tout le lot."
+
+#, python-brace-format
+msgid "{drive}: is a removable drive: shared with Docker Desktop."
+msgstr "{drive}: est un disque amovible : partagé avec Docker Desktop."
 
 #, python-brace-format
 msgid ""

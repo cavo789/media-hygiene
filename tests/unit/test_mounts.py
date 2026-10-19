@@ -108,3 +108,31 @@ def test_windows_sources_come_from_docker_desktop_mounts(tmp_path: Path) -> None
         "/data/d2": "D:\\My Pics",
         "/reports": "C:\\Users\\Ann\\reports",
     }
+
+
+# Measured on the maintainer's PC (0252): C:\Temp shared, a USB stick D: not seen.
+REMOVABLE = (
+    "1377 1365 0:99 /Temp /data/c/temp ro,noatime - 9p C:\\134 rw,aname=drvfs;"
+    "path=C:\\134;uid=0\n"
+    "1378 1365 8:80 /mnt/host/d/mh-test /data/d/mh-test ro,relatime - ext4 /dev/sdf "
+    "rw,discard\n"
+    "1379 1365 0:63 /mnt/host/e/Pics /data/e/pics ro - virtiofs e rw\n"
+)
+
+
+def test_a_drive_docker_desktop_cannot_see_is_reported(tmp_path: Path) -> None:
+    """The VM's own disk under /mnt/host is reported; a host share never is."""
+    table = tmp_path / "mountinfo"
+    table.write_text(REMOVABLE)
+    mounts = MountTable.current(table)
+    assert [(str(point), host) for point, host in mounts.unseen_drives] == [
+        ("/data/d/mh-test", "D:\\mh-test")
+    ]
+    assert "/data/d/mh-test" not in {str(point) for point, _ in mounts.host_sources}
+
+
+def test_local_mounts_hide_no_drive(tmp_path: Path) -> None:
+    """A Linux run without Docker Desktop (every mount local) reports nothing."""
+    table = tmp_path / "mountinfo"
+    table.write_text(MOUNTINFO + DOCKER_DESKTOP)
+    assert not MountTable.current(table).unseen_drives

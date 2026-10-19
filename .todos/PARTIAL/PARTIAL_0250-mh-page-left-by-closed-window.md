@@ -41,3 +41,29 @@ Desktop restarts. Closing the window with its X is the natural user action.
 ## Decided (2026-10-19)
 
 **Stop only an orphaned page** (maintainer, review of the iterate run): each page container carries the PID of its console (a label); before a page, `mh` stops a page whose console process is gone, said in one line; a page whose console still runs is left alone and the user told to close it there. Alternative left aside: one page at a time (could cut a page in use).
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- Each page container is labelled `media-hygiene.page=<shell>-<PID of its console>`
+  (`powershell-$PID` in mh.ps1, `bash-$$` in mh.sh); before a page, `mh` lists the
+  containers publishing the page port (`docker ps --filter publish=8088`): one whose console
+  is gone (`Get-Process -Id` / `ps -p`), or is this idle console, is stopped with one line
+  ("An mh page left open by a closed window was stopped."); one whose console still runs is
+  left alone, the user told to close it there; one without the label (an older `mh`, another
+  program) is named with `docker stop <id>`. Never Docker's raw error for a container.
+  Templates `mh_guards.ps1.j2` / `mh_guards.sh.j2`, texts in `services/launcher_guards.py`.
+- Bash: run for real with a fake docker (stopped / live / foreign / not a page);
+  PowerShell: rendered text checked, ASCII, no Add-Type, no -ExecutionPolicy in the new code.
+- Troubleshooting page (en + fr): the closed window and the line said.
+- mh-measure step 10c: the window closed with its X, `docker ps` on port 8088 logged, then
+  asked whether the next page said the line and opened.
+
+### Not done
+- The Windows check of the acceptance (closing with the X leaves the container; the fix frees
+  the port). **Reason:** only the maintainer's Windows + Docker Desktop, with the image of this
+  branch (`docker build --tag media-hygiene .`, or the PR's image):
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19-2/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 10 -Count 20`.
+- A non-Docker program on port 8088 still shows Docker's raw "port is already allocated"
+  (the troubleshooting page covers it). **Reason:** telling it apart needs a port probe
+  before every page; not asked.

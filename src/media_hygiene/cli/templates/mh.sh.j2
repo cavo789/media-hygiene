@@ -54,6 +54,11 @@
     case " {{ script.commands.pages | join(" ") }} " in
         *" $command "*) page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}") ;;
     esac
+    if [[ -n "${page[*]}" ]]; then
+        # A page left by a closed terminal holds the port: stopped when its shell is gone (0250).
+        _{{ function }}_page_free || return 1
+        page+=(--label "{{ guards.label }}=bash-$$")
+    fi
     case " {{ script.commands.data | join(" ") }} " in
         *" $command "*) tty=() ;;
         *) if [[ -t 0 && -t 1 ]]; then tty=(-it); fi ;;
@@ -126,6 +131,8 @@
 }
 
 {% include 'mh_host.sh.j2' %}
+
+{% include 'mh_guards.sh.j2' %}
 {% for name in host.windows %}
 
 # `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1

@@ -24,14 +24,17 @@
 #      (powercfg /requests) needs an administrator PowerShell
 #  10. mh open, mh shortcut, mh explorer (right-click a folder, then the empty space of an
 #      open folder), each read back   (0175, 0180, 0181, 0188): asks what you saw; your own
-#      Media Hygiene shortcut or entries are put back after
+#      Media Hygiene shortcut or entries are put back after; a page window closed with its X,
+#      the next page stopping what it left running                              (0250)
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
 #      published one, writes mh again and says both versions                (0176, 0177);
 #      mh folders add alone: the folder window, a folder chosen, then cancelled       (0201);
 #      mh folders add --backup (on -OtherDrive when given): its mount line, mh audit's two
-#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205)
+#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205);
+#      its drive's type and its mount in a container before and after mh: a USB stick shared
+#      by mh with Docker Desktop's VM                                           (0252)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -509,8 +512,14 @@ if (Wanted 10) {
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
     $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
     Log "   10c. audit chosen from the right-click analyses the folder: $audit"
-    $inside = Read-Host "10c. Close that mh window: Ctrl+C in it, then type exit (its X would leave the page running). In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
+    # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
+    $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
+    Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
+    $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
     Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
+    $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
+    Log "   10c. the next page stopped the leftover and opened (0250): $freed"
     $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
     Log "   10c. background entry found in: $where"
     MhLeftovers "10c"
@@ -639,8 +648,16 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     foreach ($line in $said) { Log ("   11h. " + $line) }
     $mounts = @(Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "-v `"${backupDir}:" | ForEach-Object { $_.Line.Trim() })
     Log ("   11h. mount line of the backup in mh.ps1: " + ($mounts -join ' / '))
-    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned' })
+    # 0252: a removable drive (a USB stick) is not shared by WSL; mh shares it before the run.
+    $letter = $backupDir.Substring(0, 1)
+    $kind = (Get-Volume -DriveLetter $letter -ErrorAction SilentlyContinue).DriveType
+    Log "   11h. drive ${letter}: of the backup is $kind (Get-Volume)"
+    $before = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11h. the backup in a docker run before mh (mountinfo, then files seen): " + ($before -join ' / '))
+    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned|removable|cannot see' })
     foreach ($line in $lines) { Log ("   11h. mh audit: " + $line.Trim()) }
+    $after = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11h. the backup in a docker run after mh (mountinfo, then files seen, planted: $planted): " + ($after -join ' / '))
     $lines = @(mh clean --yes 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'backup|read-only|Read-only|Error|moved|set aside' })
     foreach ($line in $lines) { Log ("   11i. mh clean: " + $line.Trim()) }
     $left = @(Get-ChildItem -LiteralPath $backupDir -File).Count

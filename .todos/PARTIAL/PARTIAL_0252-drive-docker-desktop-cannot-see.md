@@ -81,3 +81,30 @@ docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" 
 ## Decided (2026-10-19)
 
 **Mount it and say so** (maintainer): `mh.ps1` mounts a removable drive in Docker Desktop's VM itself (`wsl.exe`, measured to work), one line said; a failure stops with the advice. Alternatives left aside: warn only; ask each time.
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `paths/host_sources.py` `unseen_drive_folder`: a mount whose root is
+  `/mnt/host/<drive>[/…]` and whose source is a block device (`/dev/…`, the VM's own disk)
+  is a drive Docker Desktop cannot see; `MountTable.unseen_drives` keeps its point and its
+  Windows folder (`D:\mh-test`).
+- `services/unseen_drives.py`: `refuse_empty_data` (audit, review, classify, the home
+  audit) and `ensure_can_act` (clean, sort, undo, album, xmp) stop with one line naming the
+  folders, the tip giving `mh` and the `wsl -d docker-desktop … mount -t drvfs` line.
+- `mh.ps1`: before each `docker run`, every drive of the folders mounted (but C:) whose
+  `Get-Volume` DriveType is `Removable` is mounted in Docker Desktop's VM
+  (`wsl.exe -d docker-desktop sh -c "mountpoint -q … || { mkdir -p … && mount -t drvfs X: …; }"`),
+  one line said; a failure stops with the advice.
+- Troubleshooting page (en + fr): the symptom and the fix. mh-measure step 11h: the drive's
+  type, the mountinfo and the files seen by a container before and after `mh`, mh audit's
+  lines.
+
+### Not done
+- The maintainer's step 11 on a stick plugged in after Docker Desktop. **Reason:** Windows +
+  a USB stick, with the image of this branch: `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19-2/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1; Unblock-File .\mh-measure.ps1`, then
+  `.\mh-measure.ps1 -Only 11 -Count 20 -OtherDrive D:` (D: the stick). To check there too:
+  `mountpoint` exists in the docker-desktop distribution; whether the mount blocks Windows'
+  "safely remove".
+- mh.sh (WSL, Linux): no drive mounting (a WSL user mounts `/mnt/x` by hand); the tool's
+  check covers it.

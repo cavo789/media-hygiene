@@ -650,6 +650,14 @@ msgid "An icon on the Desktop and in the Start menu opens the home page"
 msgstr ""
 
 msgid ""
+"An mh page is open in another window: close it there (Ctrl+C), then type "
+"the command again."
+msgstr ""
+
+msgid "An mh page left open by a closed window was stopped."
+msgstr ""
+
+msgid ""
 "Analyse this many random photos, print the time per photo and the "
 "estimate of a full run, and stop."
 msgstr ""
@@ -1376,6 +1384,23 @@ msgid ""
 "Do not run Czkawka here: print the command that runs it in its own image,"
 " then compare the results it wrote in /reports (czkawka.json)."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {drive}: (a removable drive, such as a USB "
+"stick), and sharing it failed: copy the folder to a fixed disk, or use an"
+" external hard disk."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows an empty folder instead, so nothing is compared."
+msgid_plural ""
+"Docker Desktop cannot see {folders} (a removable drive, such as a USB "
+"stick): it shows empty folders instead, so nothing is compared."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
@@ -4359,6 +4384,13 @@ msgstr ""
 msgid "Start fresh: carry no edit of a previous workbook over."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Start the command with mh, which shares such a drive with Docker Desktop;"
+" or share it yourself in PowerShell, then start the command again: "
+"{command} (or copy the folder to a fixed disk)."
+msgstr ""
+
 msgid "Started"
 msgstr ""
 
@@ -4811,6 +4843,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The port of the mh pages is held by the container {id}: close the window "
+"where it runs, or type docker stop {id}, then type the command again."
 msgstr ""
 
 msgid ""
@@ -7818,6 +7856,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{done}: Z takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
+msgid "{drive}: is a removable drive: shared with Docker Desktop."
 msgstr ""
 
 #, python-brace-format
