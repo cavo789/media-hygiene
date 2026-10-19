@@ -60,5 +60,5 @@ tell it apart rather than leave it to the troubleshooting page.
   container publishes (to confirm `DOCKER_LISTENERS`), the line `mh review` says with another
   program on 8088, and the probe's time (estimated 0.1-0.5 s, a CIM query).
   **Reason:** Windows + Docker Desktop only. Command (PowerShell 5.1):
-  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/COMMIT/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/12104de/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 10 -Count 20`.

@@ -67,5 +67,5 @@ folder with advice. Maintainer's choice (inbox 2026-10-19): `mh.sh` does it too.
   from WSL sees before and after `mount -t drvfs` in the distribution, then the eject of 11j).
   If the container sees nothing, `_mh_drive` must mount in `docker-desktop` too
   (`wsl.exe -d docker-desktop`, as `mh.ps1`). Command (PowerShell 5.1, a stick as E:):
-  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/COMMIT/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/12104de/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 11 -Count 20 -OtherDrive E:`.
