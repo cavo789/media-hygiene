@@ -164,3 +164,14 @@ duplicates) → copying only the new ones; for a phone holding 5,000 files of wh
   Unverified until then: that "length = System.Size and opens exclusively" proves a finished MTP
   copy, `System.FileName` over MTP, and Windows PowerShell 5.1 piping the listing to `docker run -i`.
 - No documentation capture is stale (`phone-plan` is hidden; no captured output changed).
+
+### Measured (2026-10-19, step 19 run `measures-20261019-1738.txt`, image built from the shared tree at 17:26)
+- First `mh phone`: 801 files (3.13 GB) copied in 317.2 s, **10.2 MB/s**; no window. Second:
+  "Nothing new", 801 already copied, 3.4 s. Read back: 801 files, 3,209.4 MB, no staging folder left.
+- The 5 largest (0.19 GB) copied again at **29.5 MB/s** in 8.8 s: too fast to pull the cable
+  (step 19j now re-copies up to 2 GB: commit 85cdded). **The cable test is still to do.**
+- 19k's "530 copies under a new name" was a false hit of the measure (its regex matched every
+  camera name `20250512_195342.jpg`); fixed to compare with the phone's names — to read again.
+- A phone file named `.temp-20240906_105433899_20.mp4` was copied: a hidden/temporary file of the
+  phone. Follow-up 0251 (skip names starting with `.`; the 200 ms poll costs ≈ 0.23 s per file).
+- Still to run: `.\mh-measure.ps1 -Only 19 -Count 1` (fetched as above), pull the cable at line 2/N.

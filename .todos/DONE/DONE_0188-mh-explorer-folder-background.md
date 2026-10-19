@@ -27,7 +27,7 @@ Follows 0181 (PARTIAL), which adds the entry on a folder's icon only. Decided by
 
 Inside the folder already: go up one level to right-click it → right-click where you are.
 
-## Status — PARTIAL (2026-10-19)
+## Status — DONE (2026-10-19)
 
 ### Done
 - `mh explorer` writes a second key, `HKCU:\Software\Classes\Directory\Background\shell\MediaHygiene`
@@ -63,3 +63,11 @@ Inside the folder already: go up one level to right-click it → right-click whe
   not checked on the maintainer's Windows), and that `New-Item -Force` creates the missing
   `Directory\Background\shell` parent keys under `HKCU:\Software\Classes`.
 - No documentation capture shows `mh explorer`'s output: none is stale.
+
+### Measured (2026-10-19, step 10, maintainer's Windows 11)
+- Right-click on the empty space of the open `L'ete 2019`: *Media Hygiene* is there, under
+  **Show more options** (not the first menu, as for the folder's own entry); it starts `mh` on
+  that folder (`%V` is the open folder; `New-Item -Force` created the missing parent keys).
+- `mh explorer --remove`: both keys gone (read back: False, False).
+- The page did not open on the second right-click: the first `mh` window, closed with its X, had
+  left its home page container holding port 8088 — not this TODO's: filed as 0250.

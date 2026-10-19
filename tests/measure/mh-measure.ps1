@@ -1167,8 +1167,16 @@ if (Wanted 19) {
             $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
             foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19k. after the cable: " + $line) }
         }
-        $names = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '_\d+\.[^.]+$' })
-        Log "   19k. copies under a new name (_1): $($names.Count) (0 expected: no name was taken)"
+        # A name the phone does not hold: mh gave it _1, _2... (a regex on _<digits> also caught
+        # every camera name such as 20250512_195342.jpg: 530 false hits, 2026-10-19).
+        $onPhone = @{}
+        foreach ($item in $all) {
+            $name = "$($item.ExtendedProperty('System.FileName'))"
+            $onPhone[$(if ($name) { $name } else { $item.Name })] = 1
+        }
+        $names = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue | Where-Object { -not $onPhone.ContainsKey($_.Name) })
+        Log "   19k. copies under a name the phone does not hold (_1...): $($names.Count) (0 expected: no name was taken)"
+        foreach ($copy in ($names | Select-Object -First 5)) { Log "   19k. renamed: $($copy.Name)" }
     } else {
         Log "   19h. mh phone end to end: skipped"
     }
