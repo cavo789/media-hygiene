@@ -37,3 +37,7 @@ Desktop restarts. Closing the window with its X is the natural user action.
 
 - Unit: the rendered `mh` scripts (both shells) label each page container and check for a leftover before a page run; ASCII.
 - Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — as decided in the inbox of 2026-10-19): a Windows check that closing the console with its X leaves the container running (`docker ps` right after), and that the fix frees the port.
+
+## Decided (2026-10-19)
+
+**Stop only an orphaned page** (maintainer, review of the iterate run): each page container carries the PID of its console (a label); before a page, `mh` stops a page whose console process is gone, said in one line; a page whose console still runs is left alone and the user told to close it there. Alternative left aside: one page at a time (could cut a page in use).

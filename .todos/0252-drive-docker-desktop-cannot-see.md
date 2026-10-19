@@ -77,3 +77,7 @@ Command used for the mountinfo above (stick plugged in):
 ```powershell
 docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" --entrypoint sh media-hygiene -c "grep ' /data' /proc/self/mountinfo"
 ```
+
+## Decided (2026-10-19)
+
+**Mount it and say so** (maintainer): `mh.ps1` mounts a removable drive in Docker Desktop's VM itself (`wsl.exe`, measured to work), one line said; a failure stops with the advice. Alternatives left aside: warn only; ask each time.

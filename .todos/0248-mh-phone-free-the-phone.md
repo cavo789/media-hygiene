@@ -106,3 +106,7 @@ warnings above.
 Freeing a phone today: copy everything, check by hand, delete in the gallery, hoping nothing was
 missed → one command, nothing deleted that the PC does not hold (proved by content) unless the
 person ticks it past a warning.
+
+## Decided (2026-10-19)
+
+**Copy, prove, then move** (maintainer): the file is copied from the phone into the staging folder, its SHA-256 compared, and only then deleted from the phone with `MoveHere` into a PC folder (the way 0247 measured with no dialog); the moved copy is then dropped once equal to the staged one. Two reads per file (≈ 6 min for 4.2 GB, estimated at 24 MB/s). Alternative left aside: move first, prove after (one read, but the file leaves the phone before the proof; a cable pulled mid-move not measured).
