@@ -229,6 +229,8 @@ def test_bash_opens_the_browser_once_the_page_answers(
     """0178: `xdg-open` gets the page's address; docker stays in the foreground."""
     record = tmp_path / "opened.txt"
     fake_program(bin_folder, "xdg-open", f'echo "$1" > {record}')
+    # The fake page below holds the port: the guard of 0253 must not name it (ss on CI).
+    fake_program(bin_folder, "ss", "exit 0")
     extra = {"PORT": str(page_port), "WAIT_FOR": str(record)}
     done = _bash(tmp_path, "mh review", extra)
     assert "ran:review" in done.stdout
