@@ -173,7 +173,9 @@ setting is required.`
   ([cleaning, step 10](clean/10-review-bursts.md#step-2-open-the-page)).
 - A page window closed with its X leaves the page running, port 8088 held. The next `mh` page
   stops it by itself (*An mh page left open by a closed window was stopped.*); a page still open
-  in another window is left alone: close it there with Ctrl+C.
+  in another window is left alone: close it there with Ctrl+C. `mh` knows a window by its
+  process number and the time it started, so a number Windows has given to another program
+  since does not keep a dead page alive.
 - *port is already allocated*: another program uses 8088. Choose another number, the same three
   times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
@@ -212,14 +214,19 @@ so the tool stops before it compares anything.
 
 - With `mh`, nothing to do: before each command it shares a removable drive with Docker Desktop
   and says so (*D: is a removable drive: shared with Docker Desktop.*). If sharing fails, it
-  stops with the advice below.
+  stops with the advice below. After the command, it stops sharing the drive, so Windows'
+  *Safely Remove Hardware* can eject it. A drive another `mh` window still uses stays shared
+  (*D: stays shared with Docker Desktop: another mh window uses it.*) until Docker Desktop
+  stops; to eject it once that window's command has ended, type
+  `wsl -d docker-desktop umount /mnt/host/d` first.
 - With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
 
   ```powershell
   wsl -d docker-desktop sh -c "mkdir -p /mnt/host/d && mount -t drvfs D: /mnt/host/d"
   ```
 
-  It lasts until Docker Desktop stops.
+  It lasts until Docker Desktop stops; to eject the stick before that:
+  `wsl -d docker-desktop umount /mnt/host/d`.
 - Or copy the folder to a fixed disk. Most external hard disks and SSDs are fixed drives:
   Docker Desktop sees them as they are.
 

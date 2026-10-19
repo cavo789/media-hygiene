@@ -66,11 +66,14 @@ function global:{{ function }} {
     if ($page) {
         # A page left by a closed window holds the port: stopped when its console is gone (0250).
         if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }
-        $page += '--label', "{{ guards.label }}=powershell-$PID"
+        $page += '--label', "{{ guards.label }}=powershell-$PID-$(_{{ function }}_started $PID)"
     }
-    # A removable drive is shared with Docker Desktop first, or the command stops (0252).
+    # A removable drive is shared with Docker Desktop first, or the command stops; the
+    # drives this run mounted are unmounted after it, in finally (0252).
     $hosts = @({{ quoted((script.data + script.backups + script.tools + script.drives) | map(attribute='host') | list) }}) + @(foreach ($volume in $given) { $volume })
-    if (-not (_{{ function }}_removable $hosts)) { $global:LASTEXITCODE = 1; return }
+    $shared = _{{ function }}_removable $hosts
+    if ($null -eq $shared) { $global:LASTEXITCODE = 1; return }
+    $marks = @($shared.labels)
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
@@ -128,11 +131,13 @@ function global:{{ function }} {
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
             @page `
+            @marks `
             {{ image }} @rest @backups
         $status = $LASTEXITCODE
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
         if ($browser) { Remove-Job -Job $browser -Force }
+        if ($shared.mounted) { _{{ function }}_unmount $shared.mounted }
         if ($long) {
             # ES_CONTINUOUS alone: the computer may sleep again, Ctrl+C included.
             $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483648)

@@ -34,7 +34,8 @@
 #      mh folders add --backup (on -OtherDrive when given): its mount line, mh audit's two
 #      lines, mh clean leaving it whole, Docker refusing a write in it          (0205);
 #      its drive's type and its mount in a container before and after mh: a USB stick shared
-#      by mh with Docker Desktop's VM                                           (0252)
+#      by mh with Docker Desktop's VM, unshared after each command; on a stick, asks whether
+#      Windows then lets you eject it safely                                    (0252)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -655,10 +656,13 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     Log "   11h. drive ${letter}: of the backup is $kind (Get-Volume)"
     $before = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
     Log ("   11h. the backup in a docker run before mh (mountinfo, then files seen): " + ($before -join ' / '))
-    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned|removable|cannot see' })
+    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned|removable|cannot see|Docker Desktop' })
     foreach ($line in $lines) { Log ("   11h. mh audit: " + $line.Trim()) }
+    # mh unshares the stick after each command: a docker run by hand sees it empty again.
+    $vm = @(& wsl.exe -d docker-desktop sh -c "grep ' /mnt/host/$($letter.ToLower()) ' /proc/mounts || echo none" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11h. drive ${letter}: in Docker Desktop's VM after mh audit (none = unshared): " + ($vm -join ' / '))
     $after = @(& docker run --rm -v "${backupDir}:/data/backup:ro" --entrypoint sh $Image -c "grep ' /data' /proc/self/mountinfo; ls /data/backup | wc -l" 2>&1 | ForEach-Object { "$_" })
-    Log ("   11h. the backup in a docker run after mh (mountinfo, then files seen, planted: $planted): " + ($after -join ' / '))
+    Log ("   11h. the backup in a docker run after mh (mountinfo, then files seen, planted: $planted; 0 on a stick, unshared): " + ($after -join ' / '))
     $lines = @(mh clean --yes 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'backup|read-only|Read-only|Error|moved|set aside' })
     foreach ($line in $lines) { Log ("   11i. mh clean: " + $line.Trim()) }
     $left = @(Get-ChildItem -LiteralPath $backupDir -File).Count
@@ -667,6 +671,12 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     Log ("   11i. a write in a :ro mount of it, by Docker: exit code $LASTEXITCODE, says: " + ($refused -join ' / '))
     $null = @(mh undo --yes 2>&1)
     Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
+    if ("$kind" -eq 'Removable') {
+        # 0252: after each command mh unshares the stick, so Windows can eject it.
+        $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
+        Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"
+        $null = Read-Host "11j. Plug ${letter}: back in (same letter), then press Enter"
+    }
     $null = @(mh folders remove $backupDir 6>&1)
     if ($OtherDrive -ne "" -and -not $Keep) { Remove-Item -Recurse -Force -LiteralPath $backupDir }
     $ErrorActionPreference = "Stop"

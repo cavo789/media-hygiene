@@ -8074,7 +8074,17 @@ msgid "{done}: Z takes the whole batch back."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
+" eject it, quit Docker Desktop first."
+msgstr ""
+
+#, python-brace-format
 msgid "{drive}: is a removable drive: shared with Docker Desktop."
+msgstr ""
+
+#, python-brace-format
+msgid "{drive}: stays shared with Docker Desktop: another mh window uses it."
 msgstr ""
 
 #, python-brace-format

@@ -9787,8 +9787,22 @@ msgid "{done}: Z takes the whole batch back."
 msgstr "{done} : Z annule tout le lot."
 
 #, python-brace-format
+msgid ""
+"{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
+" eject it, quit Docker Desktop first."
+msgstr ""
+"{drive}: n'a pas pu être retiré de Docker Desktop : si Windows refuse de "
+"l'éjecter, quittez d'abord Docker Desktop."
+
+#, python-brace-format
 msgid "{drive}: is a removable drive: shared with Docker Desktop."
 msgstr "{drive}: est un disque amovible : partagé avec Docker Desktop."
+
+#, python-brace-format
+msgid "{drive}: stays shared with Docker Desktop: another mh window uses it."
+msgstr ""
+"{drive}: reste partagé avec Docker Desktop : une autre fenêtre de mh "
+"l'utilise."
 
 #, python-brace-format
 msgid ""
