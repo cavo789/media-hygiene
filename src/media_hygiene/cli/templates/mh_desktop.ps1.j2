@@ -2,7 +2,7 @@
 # Docker Desktop does not answer: started here, waiting up to {{ desktop_wait }} s, then asked
 # again (0200). True once it answers; otherwise the line of 0174 (a Docker Desktop too old for
 # `docker desktop start`, a start that failed or timed out), the exit code kept.
-function global:_{{ function }}_start {
+function global:_{{ function }}_desktop_start {
     $ErrorActionPreference = 'Continue'
     Write-Host "{{ texts.starting }}"
     $null = docker desktop start --timeout {{ desktop_wait }} 2>$null
@@ -18,5 +18,5 @@ function global:_{{ function }}_desktop {
     $ErrorActionPreference = 'Continue'
     $null = docker version 2>$null
     if ($LASTEXITCODE -eq 0) { return $true }
-    return (_{{ function }}_start)
+    return (_{{ function }}_desktop_start)
 }

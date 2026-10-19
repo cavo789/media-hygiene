@@ -89,3 +89,14 @@ hand; a cold start is longer: to measure), nothing to do.
   start` exists in the maintainer's Docker Desktop version (16 logs the client version).
   **Reason:** needs Windows + Docker Desktop.
 - No documentation capture is stale (no console capture shows these lines).
+
+### Measured (2026-10-19, step 16, Docker Desktop client 29.8.2, image a90d9b43)
+- 16a/16b: with Docker Desktop quit, `docker run` says *failed to connect to the docker API at
+  npipe:////./pipe/dockerDesktopLinuxEngine … The system cannot find the file specified.*, exit 1;
+  `docker version` exit 1.
+- 16c/16d: **mh did not start Docker Desktop.** Two PowerShell functions were named `_mh_start`
+  (this TODO's, and the Explorer entry's command line in `mh_windows.ps1.j2`); the second replaced
+  the first: `mh` printed `powershell.exe -NoExit …`, took it for "answering" after 0 s, and after a
+  failed `mh audit` said "Docker Desktop is ready" while it was not. Fixed: renamed
+  `_mh_desktop_start`, and a test fails on any function defined twice in `mh.ps1` / `mh.sh`.
+- Still to run: step 16 again with an image holding the fix (the cold start time is not measured yet).
