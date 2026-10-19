@@ -67,3 +67,7 @@ Desktop restarts. Closing the window with its X is the natural user action.
 - A non-Docker program on port 8088 still shows Docker's raw "port is already allocated"
   (the troubleshooting page covers it). **Reason:** telling it apart needs a port probe
   before every page; not asked.
+
+## Inbox (2026-10-19)
+
+- A non-Docker program on 8088 → refiled as 0253 (name the program, never the raw error; maintainer).

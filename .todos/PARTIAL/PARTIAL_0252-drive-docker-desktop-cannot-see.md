@@ -108,3 +108,7 @@ docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" 
   "safely remove".
 - mh.sh (WSL, Linux): no drive mounting (a WSL user mounts `/mnt/x` by hand); the tool's
   check covers it.
+
+## Inbox (2026-10-19)
+
+- mh.sh (WSL) mounting a removable drive → refiled as 0254 (maintainer).
