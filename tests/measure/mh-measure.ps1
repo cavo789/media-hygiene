@@ -128,6 +128,16 @@ function Log([string]$text) {
     Write-Host $text
 }
 
+function MhLeftovers([string]$part) {
+    foreach ($id in @(& docker ps --quiet)) {
+        $binds = "$(& docker inspect $id --format '{{json .HostConfig.Binds}}' 2>$null)"
+        if (-not $binds.Contains($Work.Replace('\', '\\'))) { continue }
+        $name = "$(& docker inspect $id --format '{{.Name}} {{json .Config.Cmd}} {{json .NetworkSettings.Ports}}')"
+        Log "   $part. container of this run still running after its window closed: $name; stopped"
+        & docker stop $id | Out-Null
+    }
+}
+
 function Measure-Mh([string]$title, [string[]]$mounts, [string[]]$arguments) {
     Log ""
     Log "== $title"
@@ -499,10 +509,11 @@ if (Wanted 10) {
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
     $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
     Log "   10c. audit chosen from the right-click analyses the folder: $audit"
-    $inside = Read-Host "10c. Close that mh window. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    $inside = Read-Host "10c. Close that mh window: Ctrl+C in it, then type exit (its X would leave the page running). In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
     Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
     $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
     Log "   10c. background entry found in: $where"
+    MhLeftovers "10c"
 
     # 10d: --remove, then what you had put back.
     $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
@@ -1022,6 +1033,8 @@ if (Wanted 19) {
     Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone before 19l"
     Read-Host "19a. Plug the phone in, unlock it (Android: choose File transfer; iPhone: Trust this computer), then press Enter" | Out-Null
     $devices = @()
+    $phone = $null
+    $dcim = $null
     foreach ($entry in $shell.Namespace(17).Items()) {
         if (-not $entry.IsFileSystem) { $devices += $entry }
     }
@@ -1037,8 +1050,19 @@ if (Wanted 19) {
         $phone = $devices[[int]$answer - 1]
         Log "   19a. phone picked: '$($phone.Name)' (Type '$($phone.Type)')"
         $dcim = PhoneFindDcim $phone.GetFolder 0
+        for ($try = 1; -not $dcim -and $try -le 3; $try++) {
+            # A locked phone, or USB left on "Charging only", shows the phone without its storage.
+            $top = @(foreach ($entry in $phone.GetFolder.Items()) { $entry.Name })
+            Log ("   19b. try {0}: no DCIM folder within three levels of the phone; it shows: {1}" -f $try, $(if ($top.Count) { $top -join ' / ' } else { '(nothing)' }))
+            $again = Read-Host "19b. Unlock the phone, choose File transfer in its USB notification, open it in Explorer until you see DCIM, then press Enter to look again (s to skip the phone)"
+            if ($again -eq 's') { break }
+            foreach ($entry in $shell.Namespace(17).Items()) {
+                if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $phone = $entry }
+            }
+            $dcim = PhoneFindDcim $phone.GetFolder 0
+        }
         if (-not $dcim) {
-            Log "   19b. no DCIM folder within three levels of the phone"
+            Log "   19b. no DCIM folder on the phone: 19c-19o skipped (nothing to list, copy or delete)"
         } else {
             Log "   19b. DCIM found: $($dcim.Path)"
             $top = @()
@@ -1106,7 +1130,7 @@ if (Wanted 19) {
     # folder is an empty test folder: the first run copies every file of DCIM into
     # <that folder>\Phone\<phone name>, the second copies nothing; then the largest copies are
     # removed and copied again while you pull the cable out. All under -Work, removed at the end.
-    $answer = Read-Host "19h. mh phone copies EVERY photo and video of the phone's DCIM into $Work (see the size in 19c). Run it? (y/n)"
+    $answer = if ($dcim) { Read-Host "19h. mh phone copies EVERY photo and video of the phone's DCIM into $Work (see the size in 19c). Run it? (y/n)" } else { 'n' }
     if ($answer -eq 'y') {
         $phoneLibrary = Join-Path $Work "phone-library"
         $mhDir = Join-Path $tool "mh19"
@@ -1156,7 +1180,7 @@ if (Wanted 19) {
     # a time (a 16x16 grey JPEG made here, never a photo), written into DCIM\mh-measure on the
     # phone, then deleted: InvokeVerb, InvokeVerbEx, MoveHere to the PC, each on its own test
     # file. Every other file of the phone is left alone: DCIM is counted before and after.
-    $answer = Read-Host "19l. Next: this writes ONE test file to the phone (in DCIM\mh-measure), then deletes it, three ways in turn; no other file of the phone is touched. Go on? (y/n)"
+    $answer = if ($dcim) { Read-Host "19l. Next: this writes ONE test file to the phone (in DCIM\mh-measure), then deletes it, three ways in turn; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
     $device = $null
     if ($answer -eq 'y' -and $phone) {
         foreach ($entry in $shell.Namespace(17).Items()) {
@@ -1813,7 +1837,13 @@ if (Wanted 22) {
 if (-not $Keep) {
     if ($otherRoot -ne "") { Remove-Item -Recurse -Force $otherRoot }
     if ($driveRoot -ne "") { Remove-Item -Recurse -Force $driveRoot }
-    Remove-Item -Recurse -Force $Work
+    MhLeftovers "clean-up"
+    try {
+        Remove-Item -Recurse -Force $Work -ErrorAction Stop
+    } catch {
+        if (Test-Path -LiteralPath $Work) { Set-Content -Path (Join-Path $Work ".mh-measure") -Value "made by mh-measure.ps1" }
+        Log "   clean-up: $Work is still in use (an Explorer or mh window open in it?): close it, the next run removes it. $($_.Exception.Message)"
+    }
     docker volume rm -f $volume | Out-Null
 }
 Log ""
