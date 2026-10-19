@@ -51,4 +51,3 @@
 | 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
 | 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
 | 0250 | `mh`: a page left running by a closed window blocks the next one (port 8088 already allocated) | [PARTIAL_0250-mh-page-left-by-closed-window.md](PARTIAL/PARTIAL_0250-mh-page-left-by-closed-window.md) |
-| 0252 | A drive Docker Desktop cannot see is mounted empty: say so, never compare with nothing | [PARTIAL_0252-drive-docker-desktop-cannot-see.md](PARTIAL/PARTIAL_0252-drive-docker-desktop-cannot-see.md) |

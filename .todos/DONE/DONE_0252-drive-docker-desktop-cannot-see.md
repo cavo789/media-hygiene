@@ -82,7 +82,7 @@ docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" 
 
 **Mount it and say so** (maintainer): `mh.ps1` mounts a removable drive in Docker Desktop's VM itself (`wsl.exe`, measured to work), one line said; a failure stops with the advice. Alternatives left aside: warn only; ask each time.
 
-## Status — PARTIAL (2026-10-19)
+## Status — DONE (2026-10-19)
 
 ### Done
 - `paths/host_sources.py` `unseen_drive_folder`: a mount whose root is
@@ -119,3 +119,15 @@ docker run --rm -v "D:\mh-test:/data/d/mh-test:ro" -v "C:\temp:/data/c/temp:ro" 
 ## Inbox (2026-10-19)
 
 - mh.sh (WSL) mounting a removable drive → refiled as 0254 (maintainer).
+
+### Measured (2026-10-19, step 11, image 47a411fa built from main a21f880, USB stick FAT32 Removable in D:)
+- Run 1 (`measures-20261019-2138`): D: was already mounted by hand earlier (9p before mh): mh left it
+  (not its own), the audit scanned **8** files, "every file of your photos is in this backup"; the
+  stick could not be ejected ("This device is currently in use") — the hand mount; after
+  `wsl -d docker-desktop umount /mnt/host/d`, Windows ejected it at once: the VM's mount is what
+  blocks the eject.
+- Run 2 (`measures-20261019-2153`), stick not mounted: before mh, an empty `ext4` folder (0 files);
+  "D: is a removable drive: shared with Docker Desktop."; audit **8** files, all in the backup;
+  after the command, D: no longer mounted in the VM; clean left the 5 files; **ejected safely: y**.
+- Before → after: 3 of 3 photos falsely "missing" and a stick that could not be ejected → the right
+  comparison, the stick free after each command.
