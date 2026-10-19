@@ -3734,6 +3734,12 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
+"for good."
+msgstr ""
+
 msgid "Put back the files of the last run"
 msgstr ""
 
@@ -5041,6 +5047,13 @@ msgstr ""
 msgid ""
 "The port of the mh pages is held by the container {id}: close the window "
 "where it runs, or type docker stop {id}, then type the command again."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The port of the mh pages is used by another program, {name} (process "
+"{process}): close it, then type the command again. mh always uses this "
+"port."
 msgstr ""
 
 msgid ""
@@ -8100,12 +8113,37 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
+"/mnt/{letter}, then the command again, or copy the folder to a fixed "
+"disk."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
+"before ejecting it."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
 " eject it, quit Docker Desktop first."
 msgstr ""
 
 #, python-brace-format
 msgid "{drive}: is a removable drive: shared with Docker Desktop."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: is not mounted in WSL: mounted for this command (sudo may ask "
+"for your password)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: stays mounted in WSL: another mh window uses it. Once it has "
+"ended, type sudo umount /mnt/{letter} before ejecting it."
 msgstr ""
 
 #, python-brace-format

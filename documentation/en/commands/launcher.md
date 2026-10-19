@@ -237,9 +237,11 @@ phone is only read: nothing on it is deleted, moved or renamed.
 After the import, a page opens in your browser with what the PC may hold, in three groups:
 
 - **📚 Already in your library** and **📥 Copied by `mh phone`** (now or before): ticked for you;
-- **⚠️ Set aside before, on purpose**: never ticked for you. Each tile says it: *Set aside on
-  <date>, still recoverable with `mh undo <run>` until `mh purge`*, or, once purged, *it is
-  nowhere else. Deleted from the phone, it is lost for good*.
+- **⚠️ Set aside before, on purpose**: never ticked for you. While its quarantine is there, the
+  tile shows the photo itself (its copy in the quarantine, only read) and says *Set aside on
+  <date>, still recoverable with `mh undo <run>` until `mh purge`*; once purged, *Purged on
+  <date>: it is nowhere else. Deleted from the phone, it is lost for good* (a purge older than
+  this version gives no date: *purged since*).
 
 Every tick is saved at once in `phone-decisions.json` (in your reports folder), read back from the
 disk and shown. **Nothing leaves the phone before you press *Delete N files from the phone***;

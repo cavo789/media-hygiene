@@ -15,8 +15,12 @@ from typer.testing import CliRunner
 
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.kinds import ActionKind, Phase
+from media_hygiene.actions.purged import note_purged, purge_dates, purge_record
 from media_hygiene.cli.app import build_app
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import using
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.review.phone_views import set_aside_warning
 from media_hygiene.services.phone_known import STAGING_PREFIX
 from media_hygiene.services.phone_plan import (
     PHONE_PLAN,
@@ -281,11 +285,20 @@ def test_decide_without_anything_known_copies_everything() -> None:
 
 
 def test_set_aside_reason_holds_run_state_date_and_kind() -> None:
-    """The fields 0248 reads to warn before freeing the phone."""
+    """The fields 0248 reads to warn, then where it lay and the purge date (0256)."""
     file = PhoneFile(PurePosixPath("a.jpg"), 1, _DATE)
-    aside = SetAside(_RUN, _START, "quarantine-near", AsideState.QUARANTINE)
+    aside = SetAside(
+        _RUN, _START, "quarantine-near", AsideState.QUARANTINE, "C:\\a.jpg"
+    )
     (verdict,) = decide((file,), Known(set_aside={file.key: aside}))
-    assert verdict.reason == (_RUN, "quarantine", _START.isoformat(), "quarantine-near")
+    assert verdict.reason == (
+        _RUN,
+        "quarantine",
+        _START.isoformat(),
+        "quarantine-near",
+        "C:\\a.jpg",
+        "",
+    )
 
 
 def test_phone_plan_is_hidden_from_the_help(runner: CliRunner) -> None:
@@ -299,3 +312,70 @@ def test_a_missing_destination_holds_nothing(runner: CliRunner, tmp_path: Path) 
     """The first import: the folder is not there yet, every file new."""
     result = _plan(runner, _line("a.jpg", 1), "--destination", str(tmp_path / "none"))
     assert _cases(result)["a.jpg"] == [PhoneCase.NEW.value]
+
+
+def test_a_purge_records_its_date_and_the_plan_says_it(
+    runner: CliRunner, locations: Locations
+) -> None:
+    """`purge` dates the run (0256): the plan gives where the file lay and that date."""
+    _aside(locations, _RUN, _burst("burst_01.jpg", 500))
+    copy = locations.quarantine_dir / _RUN / "c" / "Photos" / "burst_01.jpg"
+    copy.parent.mkdir(parents=True)
+    copy.write_bytes(b"x" * 500)
+    before = datetime.now(UTC)
+    purged = runner.invoke(
+        build_app(), ["purge", _RUN, "--yes"], catch_exceptions=False
+    )
+    assert purged.exit_code == 0, purged.output
+    assert not copy.exists()
+    first = _cases(_plan(runner, _line("Camera/burst_01.jpg", 500)))[
+        "Camera/burst_01.jpg"
+    ]
+    assert first[:3] == [PhoneCase.SET_ASIDE.value, _RUN, AsideState.PURGED.value]
+    assert first[5] == "C:\\Photos\\burst_01.jpg"
+    assert before <= datetime.fromisoformat(first[6]) <= datetime.now(UTC)
+    with using(Locale.EN):
+        warning = set_aside_warning(tuple(first[1:]))
+    day = datetime.fromisoformat(first[6]).astimezone().strftime("%Y-%m-%d")
+    assert warning == (
+        f"Purged on {day}: it is nowhere else. Deleted from the phone, it is lost "
+        "for good."
+    )
+
+
+def test_a_purge_older_than_its_record_keeps_purged_since(
+    runner: CliRunner, locations: Locations
+) -> None:
+    """A run purged before 0256 (no record): no date, the warning as before."""
+    _aside(locations, _RUN, _burst("burst_01.jpg", 500))
+    first = _cases(_plan(runner, _line("Camera/burst_01.jpg", 500)))[
+        "Camera/burst_01.jpg"
+    ]
+    assert first[6] == ""
+    with using(Locale.EN):
+        for reason in (tuple(first[1:]), tuple(first[1:5])):  # an older plan line too
+            assert "and purged since: it is nowhere else" in set_aside_warning(reason)
+
+
+def test_a_purge_record_unreadable_or_of_another_run_is_no_date(
+    locations: Locations,
+) -> None:
+    """A torn or foreign record, a run name that is not one: no date, no error."""
+    locations.journal_dir.mkdir(parents=True, exist_ok=True)
+    purge_record(locations.journal_dir, _RUN).write_text("{", encoding="utf-8")
+    note_purged(locations.journal_dir, _LATER)
+    moved = purge_record(locations.journal_dir, _LATER)
+    moved.rename(purge_record(locations.journal_dir, "20260401-120000"))
+    note_purged(locations.journal_dir, "20260501-120000")
+    asked = (_RUN, "20260401-120000", "20260501-120000", "../x")
+    assert list(purge_dates(locations.journal_dir, asked)) == ["20260501-120000"]
+    # Never a journal: the readers of journals do not list it.
+    assert not list(locations.journal_dir.glob("*.jsonl"))
+
+
+def test_a_purge_record_that_cannot_be_written_never_stops_the_purge(
+    tmp_path: Path,
+) -> None:
+    """No journal folder: the record is logged as lost, nothing raised."""
+    note_purged(tmp_path / "absent", _RUN)
+    assert not (tmp_path / "absent").exists()

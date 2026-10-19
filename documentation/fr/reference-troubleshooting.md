@@ -199,8 +199,14 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
   arrêtée.*) ; une page encore ouverte dans une autre fenêtre est laissée : fermez-la là-bas avec
   Ctrl+C. `mh` reconnaît une fenêtre à son numéro de processus et à l'heure où elle a démarré :
   un numéro que Windows a donné depuis à un autre programme ne garde pas en vie une page morte.
-- *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
-  même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
+- Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh` le
+  nomme avant la page, avec son numéro de processus (*Le port des pages de mh est pris par un
+  autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*), et ne lance
+  rien. Fermez ce programme : `mh` utilise toujours 8088. Sous Windows, il demande à Windows quel
+  programme écoute ; dans WSL ou sous Linux, `ss` le dit pour vos propres programmes seulement,
+  et Docker dit *address already in use* pour les autres.
+- *port is already allocated* avec un `docker run` tapé à la main : choisissez un autre numéro,
+  le même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
 - *« Le tri ne tourne plus »* : la fenêtre du tri a été fermée ou arrêtée avec Ctrl+C.
   Relancez-le ; vos choix sont conservés.
@@ -244,6 +250,13 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
   Desktop : une autre fenêtre de mh l'utilise.*) jusqu'à l'arrêt de Docker Desktop ; pour
   l'éjecter quand la commande de cette fenêtre est finie, tapez d'abord
   `wsl -d docker-desktop umount /mnt/host/d`.
+- Avec `mh` dans WSL (`mh.sh`) : WSL monte les disques présents à son démarrage, jamais une clé
+  branchée après, donc `/mnt/d` manque. Avant chaque commande, `mh` la monte avec `sudo` (*D:
+  n'est pas monté dans WSL : monté pour cette commande (sudo peut demander votre mot de passe).*),
+  et la démonte après : Windows peut éjecter la clé. Si le montage échoue, il s'arrête et donne la ligne
+  à taper vous-même : `sudo mount -t drvfs D: /mnt/d`. Si l'interopérabilité Windows de WSL est
+  coupée (`/etc/wsl.conf`), `mh` ne peut pas demander à Windows ses disques : montez la clé
+  vous-même.
 - Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
   commande :
 

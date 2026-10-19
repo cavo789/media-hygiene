@@ -106,7 +106,10 @@ def purge_command(
 
 
 def _purge(runtime: Runtime, runs: list[str]) -> int:
-    """Erase the quarantine of each run, on every drive.
+    """Erase the quarantine of each run, on every drive, and record when (0256).
+
+    A run is recorded once all its folders are erased: one left half-erased by an
+    error has no date.
 
     Args:
         runtime: Settings, mount points and output.
@@ -119,18 +122,19 @@ def _purge(runtime: Runtime, runs: list[str]) -> int:
         MediaHygieneError: A folder could not be erased (what is left stays).
     """
     from media_hygiene.actions.purge import purge_run, run_folders
+    from media_hygiene.actions.purged import note_purged
     from media_hygiene.errors import MediaHygieneError
     from media_hygiene.index.parked import forget_runs
     from media_hygiene.index.repository import FactsRepository
     from media_hygiene.services.quarantines import mounted_quarantines
 
     quarantines = mounted_quarantines(runtime).folders
+    freed = 0
     try:
-        freed = sum(
-            purge_run(folder.parent, run)
-            for run in runs
-            for folder in run_folders(quarantines, run)
-        )
+        for run in runs:
+            folders = run_folders(quarantines, run)
+            freed += sum(purge_run(folder.parent, run) for folder in folders)
+            note_purged(runtime.locations.journal_dir, run)
     except OSError as exc:
         raise MediaHygieneError(
             _("The quarantine could not be erased: {reason}.").format(

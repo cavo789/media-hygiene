@@ -20,7 +20,7 @@ from media_hygiene.cli.app import build_app
 from media_hygiene.review.phone_app import PhoneApp
 from media_hygiene.review.phone_file import PHONE_DECISIONS, read_phone_decisions
 from media_hygiene.review.phone_session import PhonePages, PhoneSession
-from media_hygiene.review.phone_views import TileSource
+from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.services import phone_review
 from media_hygiene.services.phone_free import read_ticked
@@ -228,3 +228,67 @@ def test_phone_review_without_a_file_the_pc_holds_serves_nothing(
     assert result.stdout == ""
     assert "nothing to free" in result.stderr
     assert not (tmp_path / "reports" / PHONE_DECISIONS).exists()
+
+
+_RUN: Final = "20260301-120000"
+
+
+def _aside_session(locations: Locations, where: str) -> PhoneSession:
+    """The page on one file set aside by `_RUN`, still in its quarantine (0256)."""
+    locations.reports_dir.mkdir(parents=True, exist_ok=True)
+    runtime = make_runtime(locations)
+    line = _line(
+        PhoneCase.SET_ASIDE,
+        "Camera/burst_2.jpg",
+        _RUN,
+        "quarantine",
+        "2026-03-01T12:00:00+00:00",
+        "quarantine-burst",
+        where,
+        "",
+    )
+    files, _skipped = read_ticked((line,))
+    target = locations.reports_dir / PHONE_DECISIONS
+    place = DecisionsPlace(PHONE_DECISIONS, PHONE_DECISIONS)
+    tiles = TileSource(runtime.mapper, None, (locations.quarantine_dir,))
+    session = PhoneSession(PhonePages(_PHONE, files, tiles, (target, place)))
+    session.save()
+    return session
+
+
+def test_a_set_aside_tile_shows_its_quarantine_copy(locations: Locations) -> None:
+    """Its run's quarantine still holds it: the tile is the photo, read-only."""
+    copy = locations.quarantine_dir / _RUN / "c" / "Photos" / "burst_2.jpg"
+    write_shot(copy, Shot(3))
+    before = copy.read_bytes()
+    session = _aside_session(locations, "C:\\Photos\\burst_2.jpg")
+    tile = session.state().tiles[0]
+    assert "still recoverable with mh undo" in tile.warning
+    assert tile.preview.startswith("/preview/")
+    (shown,) = serve_app_and_call(
+        lambda pool: PhoneApp(session, PAGE, pool), [Call("GET", tile.preview)]
+    )
+    assert shown.status == 200
+    assert shown.body.startswith(b"\xff\xd8")
+    assert copy.read_bytes() == before
+
+
+def test_a_set_aside_tile_never_leaves_the_quarantine(
+    locations: Locations, tmp_path: Path
+) -> None:
+    """A link in the quarantine pointing out of it, a copy gone: a generic tile."""
+    outside = tmp_path / "elsewhere.jpg"
+    write_shot(outside, Shot(4))
+    link = locations.quarantine_dir / _RUN / "c" / "Photos" / "burst_2.jpg"
+    link.parent.mkdir(parents=True)
+    link.symlink_to(outside)
+    assert (
+        _aside_session(locations, "C:\\Photos\\burst_2.jpg").state().tiles[0].preview
+        == ""
+    )
+    link.unlink()
+    assert (
+        _aside_session(locations, "C:\\Photos\\burst_2.jpg").state().tiles[0].preview
+        == ""
+    )
+    assert _aside_session(locations, "").state().tiles[0].preview == ""

@@ -4577,6 +4577,14 @@ msgstr "Proposé :"
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
 
+#, python-brace-format
+msgid ""
+"Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
+"for good."
+msgstr ""
+"Purgé le {date} : il n'est nulle part ailleurs. Supprimé du téléphone, il "
+"est perdu pour de bon."
+
 msgid "Put back the files of the last run"
 msgstr "Remettre les fichiers de la dernière exécution"
 
@@ -6167,6 +6175,16 @@ msgid ""
 msgstr ""
 "Le port des pages de mh est pris par le conteneur {id} : ferme la fenêtre"
 " où il tourne, ou tape docker stop {id}, puis tape la commande à nouveau."
+
+#, python-brace-format
+msgid ""
+"The port of the mh pages is used by another program, {name} (process "
+"{process}): close it, then type the command again. mh always uses this "
+"port."
+msgstr ""
+"Le port des pages de mh est pris par un autre programme, {name} "
+"(processus {process}) : fermez-le, puis retapez la commande. mh utilise "
+"toujours ce port."
 
 msgid ""
 "The positions you give whole folders on the map of 'places' (Save this "
@@ -9815,6 +9833,24 @@ msgstr "{done} : Z annule tout le lot."
 
 #, python-brace-format
 msgid ""
+"{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
+"/mnt/{letter}, then the command again, or copy the folder to a fixed "
+"disk."
+msgstr ""
+"{drive}: n'a pas pu être monté dans WSL : tapez sudo mount -t drvfs "
+"{drive}: /mnt/{letter}, puis de nouveau la commande, ou copiez le dossier "
+"sur un disque fixe."
+
+#, python-brace-format
+msgid ""
+"{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
+"before ejecting it."
+msgstr ""
+"{drive}: n'a pas pu être démonté de WSL : tapez sudo umount /mnt/{letter} "
+"avant de l'éjecter."
+
+#, python-brace-format
+msgid ""
 "{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
 " eject it, quit Docker Desktop first."
 msgstr ""
@@ -9824,6 +9860,22 @@ msgstr ""
 #, python-brace-format
 msgid "{drive}: is a removable drive: shared with Docker Desktop."
 msgstr "{drive}: est un disque amovible : partagé avec Docker Desktop."
+
+#, python-brace-format
+msgid ""
+"{drive}: is not mounted in WSL: mounted for this command (sudo may ask "
+"for your password)."
+msgstr ""
+"{drive}: n'est pas monté dans WSL : monté pour cette commande (sudo peut "
+"demander votre mot de passe)."
+
+#, python-brace-format
+msgid ""
+"{drive}: stays mounted in WSL: another mh window uses it. Once it has "
+"ended, type sudo umount /mnt/{letter} before ejecting it."
+msgstr ""
+"{drive}: reste monté dans WSL : une autre fenêtre de mh l'utilise. Quand "
+"elle a fini, tapez sudo umount /mnt/{letter} avant de l'éjecter."
 
 #, python-brace-format
 msgid "{drive}: stays shared with Docker Desktop: another mh window uses it."

@@ -26,6 +26,24 @@ _{{ function }}_page_free() {
         docker stop "$id" >/dev/null 2>&1
         printf '%s\n' "{{ guards.texts.stopped }}" >&2
     done < <(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>/dev/null)
+    _{{ function }}_port_user
+}
+
+# No container holds the port: a program listening on it (another local server) is
+# named, never Docker's raw "address already in use" (0253). ss tells the program of a
+# socket of this user only; without ss, or for another user's, Docker says it.
+_{{ function }}_port_user() {
+    local said name process pattern='users:\(\("([^"]+)",pid=([0-9]+)'
+    if ! command -v ss >/dev/null 2>&1; then return 0; fi
+    said="$(ss -ltnp "sport = :{{ script.commands.port }}" 2>/dev/null)"
+    if [[ ! "$said" =~ $pattern ]]; then return 0; fi
+    name="${BASH_REMATCH[1]}"
+    process="${BASH_REMATCH[2]}"
+    case " {{ guards.port.listeners | join(" ") }} " in
+        *" $name "*) return 0 ;;
+    esac
+    printf '%s\n' "{{ guards.port.busy }}" >&2
+    return 1
 }
 
 # The start time of a process, in clock ticks since boot (field 22 of /proc/<pid>/stat,

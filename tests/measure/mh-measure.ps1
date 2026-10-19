@@ -28,7 +28,8 @@
 #      the next page stopping what it left running                              (0250);
 #      the start without -ExecutionPolicy Bypass, any antivirus alert, the same right-click
 #      with mh.ps1 under %USERPROFILE%\media-hygiene (the real place) against -Work  (0257);
-#      the page names the folder clicked, Run says which window runs the step     (0258)
+#      the page names the folder clicked, Run says which window runs the step     (0258);
+#      another program listening on 8088: mh review names it, the probe timed     (0253)
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
@@ -38,7 +39,9 @@
 #      lines, mh clean leaving it whole, Docker refusing a write in it          (0205);
 #      its drive's type and its mount in a container before and after mh: a USB stick shared
 #      by mh with Docker Desktop's VM, unshared after each command; on a stick, asks whether
-#      Windows then lets you eject it safely                                    (0252)
+#      Windows then lets you eject it safely                                    (0252);
+#      from WSL: the interop, /mnt/x of the stick, what a container sees before and after a
+#      mount -t drvfs in the distribution (what mh.sh does)                     (0254)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -562,6 +565,31 @@ if (Wanted 10) {
     . $mhFile
     Remove-Item -LiteralPath $home10e -Recurse -Force -ErrorAction SilentlyContinue
 
+    # 10f (0253): which program Windows names for a port a container publishes (Docker
+    # Desktop's own listener, never "another program"), then another program on 8088: mh
+    # review must name it in one line, never Docker's raw error; the probe timed.
+    $page = & docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint sleep $Image 60 2>$null
+    Start-Sleep -Seconds 2
+    $names = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { "$((Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName) ($($_.OwningProcess))" })
+    Log ("   10f. listeners of a port a container publishes (Docker's own): " + $(if ($names) { $names -join ' / ' } else { '(none)' }))
+    if ($page) { $null = & docker stop $page 2>$null }
+    $listener = Start-Job -ScriptBlock {
+        $socket = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 8088)
+        $socket.Start()
+        Start-Sleep -Seconds 120
+        $socket.Stop()
+    }
+    Start-Sleep -Seconds 3
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $null = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)
+    $watch.Stop()
+    Log ("   10f. the probe (Get-NetTCPConnection) took {0:N0} ms (estimated 100-500)" -f $watch.Elapsed.TotalMilliseconds)
+    $said = @(mh review 6>&1 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+    Log ("   10f. mh review with another program on 8088 (one line naming powershell and its process, expected): exit code $LASTEXITCODE, " + ($said -join ' / '))
+    Log ("   10f. Docker's raw error shown (expected False): " + [bool]($said -match 'already allocated|address already in use'))
+    Stop-Job -Job $listener -ErrorAction SilentlyContinue
+    Remove-Job -Job $listener -Force -ErrorAction SilentlyContinue
+
     # 10d: --remove, then what you had put back.
     $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   10d. " + $line) }
@@ -708,6 +736,27 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     $null = @(mh undo --yes 2>&1)
     Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
     if ("$kind" -eq 'Removable') {
+        # 11k (0254): from your WSL distribution (Docker Desktop's integration on): is the
+        # interop on, is the stick in /mnt, and which mount does a container started from
+        # WSL see: the distribution's /mnt/x once mounted there (as mh.sh does), or not.
+        $low = $letter.ToLower()
+        $wslPath = "/mnt/$low/" + ($backupDir.Substring(3) -replace '\\', '/')
+        $distro = "$(& wsl.exe -e printenv WSL_DISTRO_NAME 2>$null)".Trim()
+        $interop = "$(& wsl.exe -e sh -c 'command -v cmd.exe' 2>$null)".Trim()
+        Log "   11k. WSL distribution: $distro; cmd.exe reachable (interop on): $(if ($interop) { $interop } else { 'no' })"
+        $null = & wsl.exe -e mountpoint -q "/mnt/$low" 2>$null
+        Log "   11k. /mnt/$low a mount in $distro before (0 = mounted; expected 1 for a stick plugged in after WSL started): $LASTEXITCODE"
+        $seen = @(& wsl.exe -e docker run --rm -v "${wslPath}:/x:ro" --entrypoint ls $Image /x 2>&1)
+        Log ("   11k. files a container from WSL sees, nothing mounted (planted: $planted): exit code $LASTEXITCODE, " + @($seen).Count + " lines: " + (($seen | Select-Object -First 3) -join ' / '))
+        $null = & wsl.exe -u root -e mkdir -p "/mnt/$low" 2>$null
+        $said = @(& wsl.exe -u root -e mount -t drvfs "${letter}:" "/mnt/$low" -o uid=1000,gid=1000 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. mount -t drvfs ${letter}: /mnt/$low in $distro (as mh.sh does with sudo): exit code $LASTEXITCODE " + ($said -join ' / '))
+        $seen = @(& wsl.exe -e docker run --rm -v "${wslPath}:/x:ro" --entrypoint ls $Image /x 2>&1)
+        Log ("   11k. files a container from WSL sees, mounted in $distro (planted: $planted expected): exit code $LASTEXITCODE, " + @($seen).Count + " lines")
+        $vm = @(& wsl.exe -d docker-desktop sh -c "grep ' /mnt/host/$low ' /proc/mounts || echo none" 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. drive ${letter}: in Docker Desktop's VM meanwhile (none: the distribution's mount is what counts): " + ($vm -join ' / '))
+        $said = @(& wsl.exe -u root -e umount "/mnt/$low" 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. umount /mnt/$low in ${distro}: exit code $LASTEXITCODE " + ($said -join ' / '))
         # 0252: after each command mh unshares the stick, so Windows can eject it.
         $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
         Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"

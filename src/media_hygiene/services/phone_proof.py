@@ -50,6 +50,16 @@ class Proven(StrEnum):
 
 
 @dataclass(frozen=True, slots=True)
+class AsideWhen:
+    """A file set aside before: by which run, when, and whether it can come back."""
+
+    run_id: str
+    at: datetime
+    quarantined: bool  # that run's quarantine is still there
+    purged: datetime | None = None  # when it was purged, if recorded (0256)
+
+
+@dataclass(frozen=True, slots=True)
 class Ticked:
     """A file ticked in the page: its case in the plan, and the plan's reason."""
 
@@ -97,7 +107,8 @@ def prove(ticked: Ticked, staged: Path, holdings: Holdings) -> Proof:
     said = remembered_content(staged, (file.size, digest), holdings.remembered)
     if said is not None:
         quarantined = said.run_id in holdings.quarantined
-        note = aside_warning(said.run_id, said.at, quarantined=quarantined)
+        purged = holdings.purged.get(said.run_id)
+        note = aside_warning(AsideWhen(said.run_id, said.at, quarantined, purged))
         return Proof(file, digest, Proven.SET_ASIDE, said.run_id, note)
     return Proof(file, digest, note=_kept_reason(ticked))
 
@@ -119,22 +130,27 @@ def _imported(ticked: Ticked, digest: str, destination: Path | None) -> Path | N
     return imported_copy(destination, relative, (ticked.file.size, digest))
 
 
-def aside_warning(run_id: str, at: datetime, *, quarantined: bool) -> str:
+def aside_warning(when: AsideWhen) -> str:
     """The warning of a file set aside before: recoverable, or lost for good.
 
+    A purge recorded is dated (0256); an older one says "purged since".
+
     Args:
-        run_id: The run that set it aside.
-        at: When.
-        quarantined: That run's quarantine is still there.
+        when: The run that set it aside, when, and where it is now.
 
     Returns:
         The translated warning.
     """
-    day = at.astimezone().strftime(_DAY)
-    if quarantined:
+    day = when.at.astimezone().strftime(_DAY)
+    if when.quarantined:
         return _(
             "Set aside on {date}, still recoverable with mh undo {run} until mh purge."
-        ).format(date=day, run=run_id)
+        ).format(date=day, run=when.run_id)
+    if when.purged is not None:
+        return _(
+            "Purged on {date}: it is nowhere else. Deleted from the phone, it is "
+            "lost for good."
+        ).format(date=when.purged.astimezone().strftime(_DAY))
     return _(
         "Set aside on {date} and purged since: it is nowhere else. Deleted from the "
         "phone, it is lost for good."

@@ -1,0 +1,59 @@
+{# The photo folders given and their drives in WSL (0254): included by mh.sh.j2; services/launcher_guards.py. #}
+# --photos /mnt/e/Folder: one more photo folder, for this command only, its drive mounted
+# first in WSL when it is not; the other words go to the caller's `rest`.
+_{{ function }}_given() {
+    local folder
+    while [[ $# -gt 0 ]]; do
+        if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
+        folder="$2"
+        shift 2
+        _{{ function }}_drive "$folder" || return 1
+        if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
+        folder="$(cd "$folder" && pwd -P)"
+        typed+=(--photos "$folder")
+        if [[ "$folder" =~ ^/mnt/([a-z])(/.*)?$ ]]; then
+            given+=("$folder:/data/${BASH_REMATCH[1]}${BASH_REMATCH[2]}")
+        else
+            given+=("$folder:/data$folder")
+        fi
+    done
+}
+
+# WSL mounts the drives present when it starts (/mnt/c, /mnt/d), never a USB stick plugged
+# in later: its /mnt/e is absent, the folder cannot be found, and Docker would mount an
+# empty one in its place (0252). In WSL (cmd.exe reachable), the drive of a /mnt/<x>
+# folder that Windows has but WSL has not mounted is mounted here with sudo (which may ask
+# your password), said in one line; a failure stops the command with the advice. Native
+# Linux, macOS, WSL with its Windows interop off: nothing changes. Each drive goes to the
+# caller's `marks` (a label of the container: another mh leaves it mounted); the drives
+# mounted here to its `mounted`, unmounted after the run.
+_{{ function }}_drive() {
+    local letter drive
+    if [[ ! "$1" =~ ^/mnt/([a-z])(/|$) || "${BASH_REMATCH[1]}" == c ]]; then return 0; fi
+    letter="${BASH_REMATCH[1]}"
+    drive="$(printf '%s' "$letter" | tr '[:lower:]' '[:upper:]')"
+    if [[ " ${marks[*]} " != *" {{ guards.drive }}.$letter=1 "* ]]; then marks+=(--label "{{ guards.drive }}.$letter=1"); fi
+    if [[ " ${mounted[*]} " == *" $letter "* ]] || mountpoint -q "/mnt/$letter" 2>/dev/null; then return 0; fi
+    if ! command -v cmd.exe >/dev/null 2>&1; then return 0; fi  # native Linux, or interop off
+    if ! cmd.exe /c vol "$drive:" >/dev/null 2>&1; then return 0; fi  # not a drive of Windows
+    printf '%s\n' "{{ guards.wsl.mount }}" >&2
+    if sudo mkdir -p "/mnt/$letter" && sudo mount -t drvfs "$drive:" "/mnt/$letter" -o "uid=$(id -u),gid=$(id -g)"; then
+        mounted+=("$letter")
+        return 0
+    fi
+    printf '%s\n' "{{ guards.wsl.failed }}" >&2
+    return 1
+}
+
+# After the run, a drive mounted by this command is unmounted, so that Windows can eject
+# the stick; left while another mh container uses it (its label), or when Docker cannot
+# tell. A failure says one line; the exit code stays the run's.
+_{{ function }}_release() {
+    local letter drive users
+    for letter in "${mounted[@]}"; do
+        drive="$(printf '%s' "$letter" | tr '[:lower:]' '[:upper:]')"
+        users="$(docker ps -q --filter "label={{ guards.drive }}.$letter" 2>/dev/null)" || continue
+        if [[ -n "$users" ]]; then printf '%s\n' "{{ guards.wsl.kept }}" >&2; continue; fi
+        sudo umount "/mnt/$letter" || printf '%s\n' "{{ guards.wsl.stuck }}" >&2
+    done
+}

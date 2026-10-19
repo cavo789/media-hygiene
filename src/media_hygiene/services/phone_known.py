@@ -18,6 +18,7 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.purge import runs_in
+from media_hygiene.actions.purged import purge_dates
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.phone_plan import AsideState, Known, SetAside
@@ -135,7 +136,8 @@ def _set_aside(
         wanted: The names and sizes of the phone.
 
     Returns:
-        The latest set-aside of each, with its run's quarantine state.
+        The latest set-aside of each, with its run's quarantine state and, once
+        purged, when (0256).
     """
     remembered = remembered_of(runtime, connection)
     held = frozenset(runs_in(mounted_quarantines(runtime).folders))
@@ -148,12 +150,16 @@ def _set_aside(
         last = found.get(key)
         if last is None or (said.at, said.run_id) > (last.at, last.run_id):
             found[key] = said
+    gone = {said.run_id for said in found.values()} - held
+    purged = purge_dates(runtime.locations.journal_dir, gone)
     return {
         key: SetAside(
             said.run_id,
             said.at,
             said.action.value,
             AsideState.QUARANTINE if said.run_id in held else AsideState.PURGED,
+            said.host_path,
+            purged.get(said.run_id),
         )
         for key, said in found.items()
     }

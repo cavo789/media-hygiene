@@ -251,9 +251,11 @@ groupes :
 
 - **📚 Déjà dans votre photothèque** et **📥 Copiés par `mh phone`** (maintenant ou avant) : cochés
   pour vous ;
-- **⚠️ Mis de côté avant, exprès** : jamais cochés pour vous. Chaque vignette le dit : *Mis de côté
-  le <date>, encore récupérable avec `mh undo <run>` jusqu'à `mh purge`*, ou, une fois purgé, *il
-  n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon*.
+- **⚠️ Mis de côté avant, exprès** : jamais cochés pour vous. Tant que sa quarantaine est là, la
+  vignette montre la photo elle-même (sa copie en quarantaine, seulement lue) et dit *Mis de côté
+  le <date>, encore récupérable avec `mh undo <run>` jusqu'à `mh purge`* ; une fois purgé, *Purgé
+  le <date> : il n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon* (une
+  purge plus ancienne que cette version ne donne pas de date : *purgé depuis*).
 
 Chaque coche est enregistrée aussitôt dans `phone-decisions.json` (dans votre dossier des
 rapports), relue depuis le disque et affichée. **Rien ne quitte le téléphone avant que vous

@@ -12,11 +12,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from itertools import chain
 from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.purge import runs_in
+from media_hygiene.actions.purged import purge_dates
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.services.phone_holdings import Holdings, LibraryRow
 from media_hygiene.services.phone_known import STAGING_PREFIX
@@ -109,12 +111,16 @@ def holdings_of(runtime: Runtime, query: ProveQuery) -> Holdings:
         connection = repository.connection
         library = _library(connection, sizes)
         remembered = remembered_of(runtime, connection)
+    quarantined = frozenset(runs_in(mounted_quarantines(runtime).folders))
+    said = chain(remembered.by_digest.values(), remembered.by_partial.values())
+    gone = {aside.run_id for aside in said} - quarantined
     return Holdings(
         mapper=runtime.mapper,
         library=library,
         remembered=remembered,
-        quarantined=frozenset(runs_in(mounted_quarantines(runtime).folders)),
+        quarantined=quarantined,
         destination=query.destination,
+        purged=purge_dates(runtime.locations.journal_dir, gone),
     )
 
 
