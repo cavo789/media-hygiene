@@ -33,8 +33,11 @@ Why (2026-10-19): **WSL mounts fixed drives only.** The stick is `FAT32`, `Drive
 under `/mnt`, a removable one must be mounted by hand (`mount -t drvfs D: /mnt/d`). Measured: the
 folder stayed empty after Docker Desktop was restarted twice with the stick plugged in (step 16);
 `wsl -d docker-desktop ls /mnt/host` lists `d`, but only as the folder Docker Desktop created.
-Most external hard disks and SSDs report `Fixed` and are shared (*to check* on one). Not tried yet:
-`wsl -d docker-desktop sh -c "mount -t drvfs D: /mnt/host/d"` then the `ls` (would `mh` do it?).
+Most external hard disks and SSDs report `Fixed` and are shared (*to check* on one).
+**Mounting it by hand works** (measured, same evening): `wsl -d docker-desktop sh -c "mount -t
+drvfs D: /mnt/host/d && ls /mnt/host/d/mh-test"` listed the 2 photos, and the same `docker run -v
+"D:\mh-test:…"` then saw them (sizes and 2020 dates right). The mount lasts until Docker Desktop
+stops (*to check*: whether it blocks Windows' "safely remove" of the stick).
 
 ## What to do
 
@@ -46,8 +49,13 @@ Most external hard disks and SSDs report `Fixed` and are shared (*to check* on o
    it shows an empty folder instead. Copy it to a fixed disk, or use an external hard disk."* —
    a backup or a photo folder alike; never a comparison with an empty folder. The launcher can
    say it earlier: `(Get-Volume -DriveLetter D).DriveType -eq 'Removable'` when a folder is added.
-3. `mh.ps1`: the same check before each run is cheap only from inside a container — prefer the
-   tool's check (1–2); the launcher keeps checking the folder exists on Windows.
+3. `mh.ps1` (Windows): before a `docker run`, for each mounted folder on a drive whose
+   `(Get-Volume -DriveLetter X).DriveType` is `Removable`, mount it in Docker Desktop's VM when it
+   is not yet (`wsl -d docker-desktop sh -c "mountpoint -q /mnt/host/x || { mkdir -p /mnt/host/x &&
+   mount -t drvfs X: /mnt/host/x; }"`), one line said (*"D: is a removable drive: shared with
+   Docker Desktop"*); a failure says the line of step 2 and stops. Measured to work on FAT32.
+   Check with Avast (no `-ExecutionPolicy Bypass`, no Add-Type: `wsl.exe` only). The tool's
+   check (1–2) stays for every other case (mh.sh, a `docker run` by hand, a mount that failed).
 4. Troubleshooting page (en + fr): the symptom ("missing from the backup", "0 files") and the fix.
 5. mh-measure step 11h: log the mount type of the backup in the container (`grep /data
    /proc/self/mountinfo`), so a run on a stick tells at once.
