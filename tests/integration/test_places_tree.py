@@ -11,16 +11,12 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Final
 
-import tomlkit
-from tomlkit.items import Table
-
 from media_hygiene.places.config_folders import read_folders
-from media_hygiene.services import places as places_service
 from media_hygiene.tags.xmp_doc import parse
 from media_hygiene.tags.xmp_gps import LATITUDE, coordinate
 from media_hygiene.tags.xmp_places import simple_value
 from tests.support.cli import run
-from tests.support.places_map import audited_garden, call, fake_server
+from tests.support.places_map import audited_garden, gps_on, open_map
 from tests.support.scenes import Shot, write_shot
 
 if TYPE_CHECKING:
@@ -30,7 +26,6 @@ if TYPE_CHECKING:
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.places.app import PlacesApp
     from media_hygiene.review.http import Response
 
 NAME: Final = "Mariage Julie"
@@ -51,22 +46,6 @@ def _tree(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> CliRunner:
     return audited_garden(locations, monkeypatch)
 
 
-def _map(
-    monkeypatch: pytest.MonkeyPatch, runner: CliRunner, routes: list[tuple[str, object]]
-) -> list[Response]:
-    """Open the map, send each route (with its body, if any), keep the answers."""
-    seen: list[Response] = []
-
-    async def act(app: PlacesApp) -> None:
-        for route, body in routes:
-            seen.append(await call(app, route, body))
-
-    monkeypatch.setattr(places_service, "run_server", fake_server(act))
-    result = run(runner, "places")
-    assert result.exit_code == 0, result.output
-    return seen
-
-
 def _answer(response: Response) -> dict[str, list[dict[str, object]]]:
     """The JSON of an answer."""
     found: dict[str, list[dict[str, object]]] = json.loads(response.body)
@@ -83,7 +62,7 @@ def test_a_folder_named_after_no_town_is_in_the_tree_with_its_photos(
 ) -> None:
     """Not in the town list; in the tree under its parents, its two photos shown."""
     runner = _tree(locations, monkeypatch)
-    listed = _map(monkeypatch, runner, [("GET /api/folders", None)])[0]
+    listed = open_map(monkeypatch, runner, [("GET /api/folders", None)])[0]
     assert _answer(listed)["folders"] == []
     node = _node(listed, HOST)
     assert (node["name"], node["parent"], node["count"]) == (
@@ -95,7 +74,7 @@ def test_a_folder_named_after_no_town_is_in_the_tree_with_its_photos(
     assert (photos["count"], photos["parent"]) == (2, "C:\\")
     top = _node(listed, "C:\\")
     assert top["parent"] is None
-    shown = _map(
+    shown = open_map(
         monkeypatch,
         runner,
         [("GET /api/folders", None), (f"GET /api/tree/{node['rank']}", None)],
@@ -110,7 +89,7 @@ def test_any_folder_is_saved_read_back_and_written_by_xmp(
     """Saved from the tree: read back from config.toml, placed; `xmp` writes it."""
     runner = _tree(locations, monkeypatch)
     save = {"action": "save", "folder": HOST, **CHURCH}
-    answers = _map(
+    answers = open_map(
         monkeypatch, runner, [("GET /api/folders", None), ("POST /api/folder", save)]
     )
     [placed] = _answer(answers[1])["folders"]
@@ -119,11 +98,7 @@ def test_any_folder_is_saved_read_back_and_written_by_xmp(
     [written] = read_folders(locations.config_file)
     assert (written.folder, written.longitude) == (HOST, CHURCH["longitude"])
     config = locations.config_file
-    document = tomlkit.parse(config.read_text("utf-8"))
-    tags = document["tags"]
-    assert isinstance(tags, Table)
-    tags["xmp_folder_gps"] = True
-    config.write_text(tomlkit.dumps(document), "utf-8")
+    gps_on(config)
     applied = run(runner, "xmp", "--apply")
     assert applied.exit_code == 0, applied.output
     doc = parse((_folder(locations) / "IMG_41.jpg.xmp").read_bytes())
@@ -136,7 +111,7 @@ def test_a_folder_unknown_to_the_index_is_refused(
     """Neither a town folder nor in the index's tree: nothing is written."""
     runner = _tree(locations, monkeypatch)
     save = {"action": "save", "folder": "C:\\Photos\\Elsewhere", **CHURCH}
-    answers = _map(
+    answers = open_map(
         monkeypatch, runner, [("GET /api/folders", None), ("POST /api/folder", save)]
     )
     assert answers[1].status == UNPROCESSABLE
@@ -152,15 +127,17 @@ def test_a_folder_renamed_since_is_refused_then_said_not_found_once_saved(
     folder = _folder(locations)
     folder.rename(folder.with_name("Julie"))
     save = {"action": "save", "folder": HOST, **CHURCH}
-    refused = _map(
+    refused = open_map(
         monkeypatch, runner, [("GET /api/folders", None), ("POST /api/folder", save)]
     )[1]
     assert refused.status == UNPROCESSABLE
     assert "renamed or moved since the audit" in json.loads(refused.body)["error"]
     assert not read_folders(locations.config_file)
     folder.with_name("Julie").rename(folder)
-    _map(monkeypatch, runner, [("GET /api/folders", None), ("POST /api/folder", save)])
+    open_map(
+        monkeypatch, runner, [("GET /api/folders", None), ("POST /api/folder", save)]
+    )
     folder.rename(folder.with_name("Julie"))
-    listed = _map(monkeypatch, runner, [("GET /api/folders", None)])[0]
+    listed = open_map(monkeypatch, runner, [("GET /api/folders", None)])[0]
     [gone] = _answer(listed)["folders"]
     assert (gone["folder"], gone["saved"], gone["found"]) == (HOST, True, False)
