@@ -329,6 +329,17 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A backup is compared, never changed: it cannot be, hold or lie in a photo"
+" folder or another backup."
+msgstr ""
+
+msgid ""
+"A backup or an old disk, as Explorer shows it: \"E:\\Backup\". Mounted "
+"read-only for every command, clean included, and given as --backup: "
+"compared, never changed. Repeatable."
+msgstr ""
+
+msgid ""
 "A backup or an old disk: compared, never changed. Says what it lacks and "
 "what only it holds. Repeatable."
 msgstr ""
@@ -535,7 +546,14 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Add or remove a photo folder: mh folders add (a window to choose it) or "
+"mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
+"never changed: mh folders add --backup <folder>."
+msgstr ""
+
+msgid ""
 "Add or remove a photo folder: mh folders add <folder>, mh folders remove "
+"<folder>. A backup, compared, never changed: mh folders add --backup "
 "<folder>."
 msgstr ""
 
@@ -877,6 +895,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Choices on {count} series undone."
+msgstr ""
+
+msgid "Choose a folder of photos or videos to add"
 msgstr ""
 
 msgid "Choose a folder on the left."
@@ -1317,6 +1338,15 @@ msgstr ""
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
 "it says it is running, then type the command again."
+msgstr ""
+
+#, python-brace-format
+msgid "Docker Desktop is not started: starting it (up to {minutes} minute)…"
+msgid_plural "Docker Desktop is not started: starting it (up to {minutes} minutes)…"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Docker Desktop is ready: type the command again (↑ then Enter)."
 msgstr ""
 
 msgid ""
@@ -2746,6 +2776,9 @@ msgid "No face looked for: 'people', or the next 'audit --people', does it later
 msgstr ""
 
 msgid "No file has words yet: nothing can be found."
+msgstr ""
+
+msgid "No folder chosen: nothing changed."
 msgstr ""
 
 msgid "No folder for the albums: neither album.root nor classify.target is set."
@@ -5398,6 +5431,9 @@ msgid ""
 "one after all: 'undo' that clean, and it is no longer proposed."
 msgstr ""
 
+msgid "Your backups, compared, never changed:"
+msgstr ""
+
 msgid "Your browser cannot show this format: open the original."
 msgstr ""
 
@@ -6843,6 +6879,10 @@ msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
 "role"
+msgstr ""
+
+#, python-brace-format
+msgid "{backup} overlaps {folder}: give them apart."
 msgstr ""
 
 #, python-brace-format

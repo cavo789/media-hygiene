@@ -1,0 +1,22 @@
+{# Docker Desktop started by `mh` when it does not answer (0200): included by mh.ps1.j2. #}
+# Docker Desktop does not answer: started here, waiting up to {{ desktop_wait }} s, then asked
+# again (0200). True once it answers; otherwise the line of 0174 (a Docker Desktop too old for
+# `docker desktop start`, a start that failed or timed out), the exit code kept.
+function global:_{{ function }}_start {
+    $ErrorActionPreference = 'Continue'
+    Write-Host "{{ texts.starting }}"
+    $null = docker desktop start --timeout {{ desktop_wait }} 2>$null
+    if ($LASTEXITCODE -eq 0) { $null = docker version 2>$null }
+    if ($LASTEXITCODE -eq 0) { return $true }
+    Write-Host "{{ texts.desktop }}"
+    return $false
+}
+
+# `{{ function }}` alone and `{{ function }} menu`: Docker Desktop asked first, once per page or
+# menu, and started when it does not answer: the shortcut works after a reboot (0200).
+function global:_{{ function }}_desktop {
+    $ErrorActionPreference = 'Continue'
+    $null = docker version 2>$null
+    if ($LASTEXITCODE -eq 0) { return $true }
+    return (_{{ function }}_start)
+}

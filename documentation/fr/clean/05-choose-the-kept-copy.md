@@ -134,8 +134,13 @@ d'un fichier de vos photos. Au contraire d'un dossier protégé, il ne garde rie
 comparé.
 
 ```powershell
-mh audit --backup "D:\sauvegarde"
+mh folders add --backup "D:\sauvegarde"
+mh audit
 ```
+
+`mh folders add --backup` la monte en lecture seule pour chaque commande, `clean` compris, et la
+donne en `--backup` à `audit`, `review`, `clean` et `crosscheck`
+([`launcher`](../commands/launcher.md#changer-vos-dossiers--mh-folders)).
 
 Pour chaque dossier de sauvegarde, l'audit dit deux choses, le rapport les liste, et deux fichiers
 à côté de `plan.csv` listent chaque fichier (chemins Windows, lisibles par Excel) :

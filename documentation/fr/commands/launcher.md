@@ -60,10 +60,18 @@ mh audit
 
 ## Ce que `mh` fait pour chaque commande
 
+- **Il démarre Docker Desktop s'il ne tourne pas** (Windows) : `mh` seul, le raccourci et
+  l'entrée du clic droit l'attendent, puis ouvrent l'accueil ; après toute autre commande qui a
+  échoué parce que Docker Desktop était arrêté, `mh` le démarre et vous demande de retaper la
+  commande, sans jamais la relancer tout seul
+  ([dépannage](../reference-troubleshooting.md#docker-répond-à-la-place-de-loutil)).
 - **Il vérifie d'abord vos dossiers** : un disque pas branché est signalé, et rien n'est lancé
   (Docker monterait un dossier vide à sa place).
 - **Vos dossiers en lecture seule** (`:ro`) pour chaque commande qui ne les modifie jamais, en
   écriture seulement pour `clean`, `sort`, `album`, `undo`, `purge` et `xmp`.
+- **Vos sauvegardes en lecture seule pour chaque commande**, `clean` compris (`launcher --backup`,
+  `mh folders add --backup`) : Windows lui-même y refuse toute modification. Les commandes qui
+  comparent (`audit`, `review`, `clean`, `crosscheck`) reçoivent chacune en `--backup`.
 - **Le cache** (le volume `media-hygiene-cache`) et les dossiers `reports`, `config`, `journal`
   et `quarantine` de `$HOME\media-hygiene`, créés s'ils manquent ; le dossier de `--quarantine`,
   ou un dossier de l'outil que vous avez monté vous-même avec `-v` en lançant `launcher`, est gardé
@@ -128,9 +136,18 @@ clic droit de `mh explorer`.
 
 ```powershell
 mh folders                          # vos dossiers, présents ou non
-mh folders add "D:\Ancien disque"    # un de plus
+mh folders add                       # un de plus, choisi dans une fenêtre (Windows)
+mh folders add "D:\Ancien disque"    # un de plus, tapé
 mh folders remove "D:\Ancien disque" # un de moins
+mh folders add --backup "E:\Sauvegarde" # une sauvegarde : en lecture seule, quelle que soit la commande
 ```
+
+**`mh folders add` seul** (Windows) ouvre la fenêtre de choix de dossier de Windows, devant la
+console, à partir de *Ce PC* : choisissez le dossier, puis *OK* ; aucun chemin à taper, aucun
+guillemet. *Annuler* dit *Aucun dossier choisi : rien n'a changé.* Le dossier choisi est vérifié
+comme un dossier tapé : une bibliothèque, un téléphone ou un emplacement réseau sans lettre de
+lecteur est refusé, comme un dossier déjà dans la liste. `mh.sh` (WSL, Linux, macOS) n'a pas de
+fenêtre : donnez le dossier.
 
 `add` et `remove` relancent `launcher`, par l'image, avec les dossiers que `mh` contient plus ou
 moins celui-là, et la même quarantaine, la même langue, les mêmes réglages. Le nouveau script va
@@ -176,6 +193,7 @@ construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` 
 |---|---|
 | `--photos "C:\Photos"` | Un dossier de photos et vidéos, tel que l'Explorateur le montre (`/mnt/c/Photos` depuis WSL). Répétez-la pour plusieurs dossiers ; pas un dossier à l'intérieur d'un autre. |
 | `--quarantine "D:\quarantaine"` | Où vont les copies mises de côté, de tous les disques. Par défaut : `$HOME\media-hygiene\quarantine`, avec une quarantaine par disque de photos. |
+| `--backup "E:\Sauvegarde"` | Une sauvegarde ou un ancien disque : monté en lecture seule pour chaque commande, `clean` compris, et donné en `--backup` aux commandes qui comparent ([comparé, jamais modifié](../start/03-several-folders.md#une-sauvegarde-ou-un-ancien-disque--comparez-le)). Répétable ; pas un dossier de photos, ni dedans ni autour. |
 | `--shell powershell` | Un script PowerShell (`mh.ps1`), pour Windows. |
 | `--shell bash` | Un script bash (`mh.sh`), pour WSL, Linux, macOS. |
 

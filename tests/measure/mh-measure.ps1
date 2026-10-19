@@ -27,7 +27,10 @@
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
-#      published one, writes mh again and says both versions                (0176, 0177)
+#      published one, writes mh again and says both versions                (0176, 0177);
+#      mh folders add alone: the folder window, a folder chosen, then cancelled       (0201);
+#      mh folders add --backup (on -OtherDrive when given): its mount line, mh audit's two
+#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -40,8 +43,9 @@
 #      Home from a review page, Quit; asks what you saw                        (0172, 0210)
 #  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
-#  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
-#      waits for you to start it again                                         (0174)
+#  16. asks you to quit Docker Desktop: records docker run's exact message and exit code; then
+#      mh starts it by itself: the check of mh alone, timed, and mh audit after another quit:
+#      the "type the command again" line, the audit typed again              (0174, 0200)
 #  17. mh.ps1 kept in memory, written in variants (without / with only: keep-awake, browser,
 #      shortcut, right-click): which one the antivirus refuses   (Avast IDP.Generic, 2026-10-16)
 #  18. OneDrive cloud-only files played by a folder whose files are marked offline, OneDrive
@@ -52,6 +56,10 @@
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
 #  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
 #      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
+#  21. the Synology NAS (-Nas, -NasShare, -NasUser), read-only: its ports; SMB from Windows (a
+#      drive mapped, a listing, 20 photos read), SMB from Docker (that drive letter, then a CIFS
+#      volume), FTP from Docker (FEAT, MLSD, partial and whole reads); the password asked once,
+#      never logged; nothing written on the NAS                          (0246, for 0245)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -74,6 +82,7 @@
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
+#   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -86,7 +95,10 @@ param(
     [string]$OtherDrive = "",
     [int]$Sample = 1000,
     [int]$Cpus = 4,
-    [string]$Branch = "main"
+    [string]$Branch = "main",
+    [string]$Nas = "",
+    [string]$NasShare = "photo",
+    [string]$NasUser = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -554,6 +566,52 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         Log ("   11e. mh.ps1 still names the folder: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $data -Quiet))
         Log ("   11e. images: " + ((& docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | Where-Object { $_ -match 'media-hygiene' }) -join ' / '))
     }
+
+    # 11f: mh folders add alone: Windows' folder window (0201), chosen, then cancelled.
+    $picked = Join-Path $Work "Picked photos"
+    New-Item -ItemType Directory -Force -Path $picked | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $picked ("picked-" + $_.Name)) }
+    Write-Host "11f. A folder window opens: choose $picked (This PC, then the folders), then OK."
+    $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11f. " + $line) }
+    Log ("   11f. the file names the folder chosen: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $picked -Quiet))
+    $front = Read-Host "11f. Did the window open in front of this console, without Alt+Tab? (y/n)"
+    Log "   11f. window in front of the console: $front"
+    $before = (Get-FileHash -LiteralPath $mhFile).Hash
+    Write-Host "11g. The folder window opens again: click Cancel."
+    $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11g. cancelled: " + $line) }
+    Log ("   11g. mh.ps1 unchanged after cancel: " + ($before -eq (Get-FileHash -LiteralPath $mhFile).Hash))
+    $avast = Read-Host "11g. Did your antivirus say anything during 11f or 11g? (n, or what it said)"
+    Log "   11g. antivirus: $avast"
+    $null = @(mh folders remove $picked 6>&1)
+
+    # 11h: a backup (0205): mounted read-only for every command, clean included. Its files are
+    # copies of the test folder's, two of them twice: clean must leave all of them. On
+    # -OtherDrive when given (a backup is often another disk), else in the test folder.
+    $backupDir = if ($OtherDrive -ne "") { Join-Path $OtherDrive "mh-measure-11-backup" } else { Join-Path $Work "Backup copy" }
+    New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+    $sources = @(Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3)
+    foreach ($photo in $sources) { Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $backupDir $photo.Name) }
+    Copy-Item -LiteralPath $sources[0].FullName -Destination (Join-Path $backupDir ("planted-" + $sources[0].Name))
+    Copy-Item -LiteralPath $sources[1].FullName -Destination (Join-Path $backupDir ("planted-" + $sources[1].Name))
+    $planted = @(Get-ChildItem -LiteralPath $backupDir -File).Count
+    $said = @(mh folders add --backup $backupDir 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11h. " + $line) }
+    $mounts = @(Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "-v `"${backupDir}:" | ForEach-Object { $_.Line.Trim() })
+    Log ("   11h. mount line of the backup in mh.ps1: " + ($mounts -join ' / '))
+    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned' })
+    foreach ($line in $lines) { Log ("   11h. mh audit: " + $line.Trim()) }
+    $lines = @(mh clean --yes 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'backup|read-only|Read-only|Error|moved|set aside' })
+    foreach ($line in $lines) { Log ("   11i. mh clean: " + $line.Trim()) }
+    $left = @(Get-ChildItem -LiteralPath $backupDir -File).Count
+    Log "   11i. files in the backup after mh clean: $left (planted: $planted, all must stay)"
+    $refused = @(& docker run --rm -v "${backupDir}:/backup:ro" --entrypoint sh $Image -c "touch /backup/written-by-docker" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11i. a write in a :ro mount of it, by Docker: exit code $LASTEXITCODE, says: " + ($refused -join ' / '))
+    $null = @(mh undo --yes 2>&1)
+    Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
+    $null = @(mh folders remove $backupDir 6>&1)
+    if ($OtherDrive -ne "" -and -not $Keep) { Remove-Item -Recurse -Force -LiteralPath $backupDir }
     $ErrorActionPreference = "Stop"
 }
 
@@ -739,12 +797,20 @@ if (Wanted 15) {
     Log ("   15e. a folder not plugged in: exit code $LASTEXITCODE, says: " + ($said -join ' / '))
 }
 
-# --- 16: Docker Desktop closed: the exact message of docker run (0174) ----------------------
+# --- 16: Docker Desktop closed: the exact message of docker run (0174), mh starting it (0200) --
 # You quit Docker Desktop when asked; its own message and exit code are recorded as they are.
+# Then mh starts it by itself: the check of `mh` alone, timed, and `mh audit` after a quit.
 if (Wanted 16) {
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 16. docker run with Docker Desktop closed (0174)"
+    Log "== 16. docker run with Docker Desktop closed (0174), mh starting it (0200)"
+    # mh is written while Docker Desktop still runs: launcher needs it.
+    $mhDir = Join-Path $tool "mh16"
+    New-Item -ItemType Directory -Force -Path $mhDir | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    & docker run --rm $Image launcher --photos $data > $mhFile
+    . $mhFile
+    Log ("   16. Docker Desktop client: " + "$(& docker version --format '{{.Client.Version}}' 2>$null)")
     Read-Host "16. Quit Docker Desktop now (its icon near the clock, right-click, Quit), wait 20 s, then press Enter"
     $said = @(& docker run --rm $Image --version 2>&1 | ForEach-Object { "$_" })
     $code = $LASTEXITCODE
@@ -752,13 +818,25 @@ if (Wanted 16) {
     Log "   16a. docker run exit code: $code"
     & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
     Log "   16b. docker version exit code with Docker Desktop closed: $LASTEXITCODE"
-    Read-Host "16. Start Docker Desktop again, then press Enter (this script waits up to 3 minutes for it)"
+    # 16c: what `mh` alone (the shortcut, the right-click) runs before the home page.
+    Write-Host "16c. mh starts Docker Desktop now (up to 3 minutes); do not touch it."
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    do {
-        Start-Sleep -Seconds 5
-        & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
-    } while ($LASTEXITCODE -ne 0 -and $watch.Elapsed.TotalSeconds -lt 180)
-    Log ("   16c. Docker Desktop answering again after {0:N0} s: {1}" -f $watch.Elapsed.TotalSeconds, ($LASTEXITCODE -eq 0))
+    $said = @(_mh_desktop 6>&1 | ForEach-Object { "$_" })
+    $watch.Stop()
+    foreach ($line in $said) { Log ("   16c. mh alone says: " + $line) }
+    Log ("   16c. mh alone: Docker Desktop answering after {0:N0} s (the home page would open now)" -f $watch.Elapsed.TotalSeconds)
+    & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
+    Log "   16c. docker version exit code afterwards: $LASTEXITCODE"
+    # 16d: another command after a quit: Docker Desktop started, the command not run twice.
+    Read-Host "16d. Quit Docker Desktop again, wait 20 s, then press Enter (mh audit runs, then mh starts Docker Desktop)"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $said = @(mh audit 6>&1 2>&1 | ForEach-Object { "$_" })
+    $code = $LASTEXITCODE
+    $watch.Stop()
+    foreach ($line in $said) { if ("$line".Trim()) { Log ("   16d. mh audit says: " + "$line".Trim()) } }
+    Log ("   16d. mh audit: exit code {0}, {1:N0} s, says type the command again: {2}" -f $code, $watch.Elapsed.TotalSeconds, [bool]($said -match 'type the command again'))
+    $scanned = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'Media files scanned' })
+    Log ("   16e. mh audit typed again: exit code $LASTEXITCODE, " + ($scanned -join ' / '))
 }
 
 # --- 17: which part of mh.ps1 an antivirus refuses on write (Avast IDP.Generic) -----------
@@ -1062,6 +1140,365 @@ if (Wanted 20) {
         $size = (Get-ChildItem -LiteralPath $models -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB
         Log ("   20c. models folder: {0:N0} MB in {1}" -f $size, $models)
         Log "   20d. open $(Join-Path $pages 'index.html'), tick the searches and the pairs, download both JSON files, then tell Claude where they are"
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 21: the Synology NAS by SMB or FTP, from Windows and from Docker, read-only (0246) -------
+# For 0245: which of three ways in works. Nothing is written, moved, renamed or deleted on the
+# NAS: listings and reads only, Docker mounts with ro, FTP sends no write command. The password
+# is asked once, never logged (every line logged has it masked), passed to the container by the
+# name of a variable only; the drive, the mapping, the Docker volume and the variable are
+# removed in a finally, even after an error.
+function NasLog([string]$text) {
+    if ($script:nasSecret) { $text = $text.Replace($script:nasSecret, '***') }
+    Log $text
+}
+function NasPort([string]$address, [int]$port) {
+    $client = New-Object System.Net.Sockets.TcpClient
+    try {
+        $pending = $client.BeginConnect($address, $port, $null, $null)
+        if (-not $pending.AsyncWaitHandle.WaitOne(2000)) { return $false }
+        $client.EndConnect($pending)
+        return $true
+    } catch { return $false } finally { $client.Close() }
+}
+# Docker runs the probe (python of the image) with the mounts given; its lines logged, masked.
+function NasDocker([string]$label, [string[]]$arguments) {
+    $said = @(& docker run --rm @arguments 2>&1 | ForEach-Object { "$_" })
+    $code = $LASTEXITCODE
+    foreach ($line in $said) { if ($line.Trim()) { NasLog ("   ${label}. " + $line.Trim()) } }
+    NasLog "   ${label}. exit code $code"
+    return @{ Code = $code; Lines = $said }
+}
+if (Wanted 21) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 21. the NAS by SMB or FTP, from Windows and from Docker, read-only (0246)"
+    if ($Nas -eq "") {
+        Log "   21. skipped: give -Nas <name or IP address> -NasUser <user> (and -NasShare, default photo)"
+    } else {
+        $script:nasSecret = ""
+        $letter = ""
+        $nasVolume = "mh-measure-nas"
+        $smbWindows = "not tried (port 445 closed)"
+        $smbDocker = "not tried (port 445 closed)"
+        $ftpDocker = "not tried (port 21 closed)"
+        $nasProbe = Join-Path $Work "nas"
+        New-Item -ItemType Directory -Force -Path $nasProbe | Out-Null
+        Set-Content -Path (Join-Path $nasProbe "nas_probe.py") -Encoding Ascii -Value @'
+import ftplib, os, re, sys, time
+
+# Read-only: listings and reads. FTP sends USER/PASS, then only FEAT, PWD, CWD, MLSD or LIST,
+# TYPE, PASV, SIZE, MDTM, REST, RETR, QUIT (no ABOR: a partial read closes its data link).
+YEAR = re.compile(r'^(19|20)[0-9][0-9]$')
+LIMIT = 2000
+CHUNK = 65536
+PHOTOS = ('.jpg', '.jpeg', '.heic')
+
+
+def say(text):
+    print(text, flush=True)
+
+
+def listed():
+    try:
+        with open('/probe/photos.txt', encoding='utf-8-sig') as handle:
+            return [line.strip() for line in handle if line.strip()]
+    except OSError:
+        return []
+
+
+def first_year(names):
+    names = sorted(name for name in names if not name.startswith(('@', '#')))
+    return next((name for name in names if YEAR.match(name)), names[0] if names else '')
+
+
+def speed(count, size, seconds):
+    seconds = max(seconds, 0.001)
+    return '%d photos, %.1f MB in %.1f s = %.2f MB/s' % (count, size / 1e6, seconds, size / 1e6 / seconds)
+
+
+def smb(year):
+    root = '/nas'
+    tops = [name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))]
+    say('top folders: ' + ' / '.join(sorted(tops)[:30]))
+    year = year or first_year(tops)
+    start = time.monotonic()
+    files, size, skipped, found = 0, 0, 0, []
+    for folder, dirs, names in os.walk(os.path.join(root, year)):
+        if '@eaDir' in dirs:
+            skipped += 1
+            dirs.remove('@eaDir')
+        dirs.sort()
+        for name in sorted(names):
+            if files >= LIMIT:
+                break
+            files += 1
+            size += os.path.getsize(os.path.join(folder, name))
+            if name.lower().endswith(PHOTOS) and len(found) < 20:
+                found.append(os.path.relpath(os.path.join(folder, name), root))
+        if files >= LIMIT:
+            break
+    say('listing of %s: %d files (at most %d), %.1f MB, %d @eaDir skipped, %.1f s' % (year, files, LIMIT, size / 1e6, skipped, time.monotonic() - start))
+    chosen = listed() or found
+    total, count, start = 0, 0, time.monotonic()
+    for relative in chosen[:20]:
+        try:
+            with open(os.path.join(root, relative.replace('\\', '/')), 'rb') as handle:
+                while True:
+                    block = handle.read(1 << 20)
+                    if not block:
+                        break
+                    total += len(block)
+            count += 1
+        except OSError as error:
+            say('cannot read %s: %s' % (relative, error))
+    say('read whole: ' + speed(count, total, time.monotonic() - start))
+    sys.exit(0 if files else 3)
+
+
+def partial(ftp, path, rest):
+    connection = ftp.transfercmd('RETR ' + path, rest=rest)
+    got = 0
+    try:
+        while got < CHUNK:
+            block = connection.recv(CHUNK - got)
+            if not block:
+                break
+            got += len(block)
+    finally:
+        connection.close()
+    try:
+        ftp.voidresp()
+    except ftplib.all_errors:
+        pass
+    return got
+
+
+def walk(ftp, year, mlsd):
+    files, skipped, sample, accented = [], 0, '', ''
+    queue = [year]
+    while queue and len(files) < LIMIT:
+        folder = queue.pop(0)
+        if mlsd:
+            entries = sorted(ftp.mlsd(folder))
+            for name, facts in entries:
+                kind = facts.get('type', '')
+                if not accented and kind in ('dir', 'file') and not name.isascii():
+                    accented = name
+                if kind == 'dir':
+                    if name == '@eaDir':
+                        skipped += 1
+                    else:
+                        queue.append(folder + '/' + name)
+                elif kind == 'file' and len(files) < LIMIT:
+                    files.append((folder + '/' + name, int(facts.get('size', 0))))
+                    sample = sample or '%s %s' % (name, facts)
+        else:
+            lines = []
+            ftp.retrlines('LIST ' + folder, lines.append)
+            for line in lines:
+                name = line.split(None, 8)[-1]
+                sample = sample or line
+                if not accented and not name.isascii():
+                    accented = name
+                if line.startswith('-') and len(files) < LIMIT:
+                    files.append((folder + '/' + name, 0))
+    return files, skipped, sample, accented
+
+
+def ftp_probe(host, share, user):
+    ftp = ftplib.FTP(timeout=30)
+    ftp.encoding = 'utf-8'
+    start = time.monotonic()
+    say('welcome: ' + ftp.connect(host, 21))
+    ftp.login(user, os.environ.get('MH_NAS_PASSWORD', ''))
+    say('login: %.1f s' % (time.monotonic() - start))
+    try:
+        feat = ftp.sendcmd('FEAT').upper()
+    except ftplib.error_perm as error:
+        feat = ''
+        say('FEAT refused: %s' % error)
+    offered = {name: name in feat for name in ('MLSD', 'MLST', 'REST STREAM', 'SIZE', 'MDTM', 'UTF8')}
+    say('FEAT: ' + ', '.join('%s %s' % (name, 'yes' if on else 'no') for name, on in offered.items()))
+    say('PWD at login: ' + ftp.pwd())
+    try:
+        ftp.cwd(share)
+    except ftplib.error_perm:
+        ftp.cwd('/' + share)
+    say('the share as FTP shows it: ' + ftp.pwd())
+    mlsd = offered['MLSD'] or offered['MLST']
+    if mlsd:
+        tops = [name for name, facts in ftp.mlsd() if facts.get('type') == 'dir']
+    else:
+        lines = []
+        ftp.retrlines('LIST', lines.append)
+        tops = [line.split(None, 8)[-1] for line in lines if line.startswith('d')]
+    say('top folders: ' + ' / '.join(sorted(tops)[:30]))
+    year = first_year(tops)
+    start = time.monotonic()
+    files, skipped, sample, accented = walk(ftp, year, mlsd)
+    say('listing of %s by %s: %d files (at most %d), %d @eaDir skipped, %.1f s' % (year, 'MLSD' if mlsd else 'LIST (this folder only)', len(files), LIMIT, skipped, time.monotonic() - start))
+    say('one line: ' + sample)
+    say('a name with accents: %s %s' % (accented, ascii(accented)) if accented else 'a name with accents: none in this listing')
+    photos = [path for path, _size in files if path.lower().endswith(PHOTOS)]
+    ftp.voidcmd('TYPE I')
+    if photos:
+        say('MDTM of %s: %s' % (photos[0], ftp.sendcmd('MDTM ' + photos[0])))
+    start = time.monotonic()
+    parts = 0
+    for path in photos[:10]:
+        size = ftp.size(path) or 0
+        partial(ftp, path, None)
+        partial(ftp, path, max(size - CHUNK, 0))
+        parts += 1
+    say('first and last 64 KiB: %d photos, %.2f s per photo' % (parts, (time.monotonic() - start) / max(parts, 1)))
+    total, count, start = [0], 0, time.monotonic()
+    for path in photos[:20]:
+        ftp.retrbinary('RETR ' + path, lambda block: total.__setitem__(0, total[0] + len(block)))
+        count += 1
+    read = speed(count, total[0], time.monotonic() - start)
+    say('read whole: ' + read)
+    ftp.quit()
+    say('summary: works, MLSD %s, %s' % ('yes' if mlsd else 'no', read))
+
+
+if sys.argv[1] == 'smb':
+    smb(sys.argv[2] if len(sys.argv) > 2 else '')
+else:
+    ftp_probe(sys.argv[2], sys.argv[3], sys.argv[4])
+'@
+        try {
+            # 21a: the NAS powered on and answering; the PC's adapter on that link.
+            Read-Host "21a. Power the NAS on, then press Enter (this script waits up to 3 minutes for it)" | Out-Null
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $up = $false
+            while (-not $up -and $watch.Elapsed.TotalSeconds -lt 180) {
+                $up = Test-Connection -ComputerName $Nas -Count 1 -Quiet
+                if (-not $up) { Start-Sleep -Seconds 10 }
+            }
+            Log ("   21a. {0} answers: {1}, after {2:N0} s" -f $Nas, $up, $watch.Elapsed.TotalSeconds)
+            $ip = "$(@([Net.Dns]::GetHostAddresses($Nas) | Where-Object { $_.AddressFamily -eq 'InterNetwork' })[0])"
+            Log "   21a. IPv4 address of the NAS: $ip"
+            try {
+                $adapter = @(Find-NetRoute -RemoteIPAddress $ip -ErrorAction Stop | Where-Object { $_.IPAddress }) | Select-Object -First 1
+                Log ("   21a. PC adapter on that link: '{0}', {1}" -f $adapter.InterfaceAlias, $adapter.IPAddress)
+            } catch { Log ("   21a. adapter not found: " + $_.Exception.Message) }
+
+            # 21b: which services answer.
+            $open = @{}
+            foreach ($port in 21, 445, 139, 22, 5000, 5001) {
+                $open[$port] = NasPort $ip $port
+                Log ("   21b. port {0}: {1}" -f $port, $(if ($open[$port]) { 'open' } else { 'closed' }))
+            }
+
+            # 21c: the password, once, kept in a credential and in this process's environment only.
+            if ($NasUser -eq "") { $NasUser = Read-Host "21c. User name on the NAS" }
+            $secure = Read-Host "21c. Password of $NasUser on the NAS (never logged)" -AsSecureString
+            $credential = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
+            $script:nasSecret = $credential.GetNetworkCredential().Password
+            $env:MH_NAS_PASSWORD = $script:nasSecret
+
+            $yearName = ""
+            if ($open[445]) {
+                # 21d: SMB from Windows, a drive letter mapped by the credential (no password on
+                # a command line); the same letter is given to Docker in 21e.
+                try {
+                    $letter = @(foreach ($l in 'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P') { if (-not (Test-Path -LiteralPath "${l}:\")) { $l } })[0]
+                    $null = New-PSDrive -Name $letter -PSProvider FileSystem -Root "\\$ip\$NasShare" -Credential $credential -Persist -Scope Global -ErrorAction Stop
+                    $root = "${letter}:\"
+                    Log "   21d. \\$ip\$NasShare mapped on ${letter}: (this logon only, removed at the end)"
+                    $shares = @(net view "\\$ip" /all 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match '\sDisk' })
+                    Log ("   21d. net view: " + ($shares -join ' / '))
+                    $tops = @([IO.Directory]::GetDirectories($root) | ForEach-Object { [IO.Path]::GetFileName($_) } | Sort-Object)
+                    Log ("   21d. top folders: " + (($tops | Select-Object -First 30) -join ' / '))
+                    $yearName = @($tops | Where-Object { $_ -match '^(19|20)\d\d$' })[0]
+                    if (-not $yearName) { $yearName = @($tops | Where-Object { $_ -notmatch '^[@#]' })[0] }
+                    # At most 2,000 files below the first year folder, @eaDir (thumbnails) skipped.
+                    $queue = New-Object System.Collections.Queue
+                    $queue.Enqueue((Join-Path $root $yearName))
+                    $files = New-Object System.Collections.ArrayList
+                    $eaDirs = 0
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    while ($queue.Count -gt 0 -and $files.Count -lt 2000) {
+                        $folder = New-Object IO.DirectoryInfo ($queue.Dequeue())
+                        foreach ($sub in ($folder.GetDirectories() | Sort-Object Name)) {
+                            if ($sub.Name -eq '@eaDir') { $eaDirs++ } else { $queue.Enqueue($sub.FullName) }
+                        }
+                        foreach ($file in ($folder.GetFiles() | Sort-Object Name)) { if ($files.Count -lt 2000) { $null = $files.Add($file) } }
+                    }
+                    $listed = $watch.Elapsed.TotalSeconds
+                    $bytes = ($files | Measure-Object -Property Length -Sum).Sum
+                    Log ("   21d. listing of {0}: {1} files (at most 2000), {2:N1} MB, {3} @eaDir skipped, {4:N1} s" -f $yearName, $files.Count, ($bytes / 1MB), $eaDirs, $listed)
+                    # 20 photos read whole into memory: nothing copied to disk.
+                    $photos = @($files | Where-Object { $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
+                    $buffer = New-Object byte[] 1048576
+                    $read = 0
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    foreach ($photo in $photos) {
+                        $stream = [IO.File]::OpenRead($photo.FullName)
+                        try { while (($count = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) { $read += $count } } finally { $stream.Close() }
+                    }
+                    $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+                    $speed = "{0} photos, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $photos.Count, ($read / 1MB), $seconds, ($read / 1MB / $seconds)
+                    Log "   21d. read whole: $speed"
+                    # The same photos for the container (21e, 21f), relative to the share.
+                    $relative = @($photos | ForEach-Object { $_.FullName.Substring($root.Length).Replace('\', '/') })
+                    [IO.File]::WriteAllLines((Join-Path $nasProbe "photos.txt"), [string[]]$relative)
+                    $smbWindows = "works, listing {0} files in {1:N1} s, read {2}" -f $files.Count, $listed, $speed
+                } catch {
+                    $smbWindows = "does not work: " + $_.Exception.Message
+                    NasLog "   21d. SMB from Windows: $smbWindows"
+                }
+
+                # 21e: Docker given the mapped drive letter, read-only.
+                $smbDocker = "does not work"
+                if ($letter -ne "" -and (Test-Path -LiteralPath "${letter}:\")) {
+                    $run = NasDocker "21e" @("-v", "${letter}:\:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
+                    if ($run.Code -eq 0) { $smbDocker = "works with the drive letter ${letter}:" }
+                }
+                # 21f: a Docker CIFS volume, read-only; SMB 3.0, else 2.1. The volume keeps the
+                # password in its options: removed right after, and in the finally.
+                if ($script:nasSecret -match '[,"]') {
+                    Log "   21f. skipped: the password holds a comma or a double quote, which the CIFS options cannot carry"
+                } else {
+                    foreach ($version in '3.0', '2.1') {
+                        & docker volume rm -f $nasVolume 2>&1 | Out-Null
+                        $made = @(& docker volume create --driver local --opt type=cifs --opt "device=//$ip/$NasShare" --opt "o=addr=$ip,username=$NasUser,password=$($script:nasSecret),ro,vers=$version" $nasVolume 2>&1 | ForEach-Object { "$_" })
+                        if ($LASTEXITCODE -ne 0) { NasLog ("   21f. vers=${version}: volume refused: " + ($made -join ' / ')); continue }
+                        $run = NasDocker "21f vers=$version" @("-v", "${nasVolume}:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
+                        & docker volume rm -f $nasVolume 2>&1 | Out-Null
+                        if ($run.Code -eq 0) {
+                            $smbDocker = if ($smbDocker -like 'works*') { "$smbDocker; and with a CIFS volume, vers=$version" } else { "works with a CIFS volume, vers=$version" }
+                            break
+                        }
+                    }
+                }
+            }
+
+            # 21g: FTP from the container, passive mode, read commands only.
+            if ($open[21]) {
+                $run = NasDocker "21g" @("-e", "MH_NAS_PASSWORD", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "ftp", $ip, $NasShare, $NasUser)
+                $summary = @($run.Lines | Where-Object { $_ -match '^summary: ' })
+                $ftpDocker = if ($run.Code -eq 0 -and $summary.Count -gt 0) { $summary[0].Substring(9) } else { "does not work (see 21g)" }
+            }
+        } catch {
+            NasLog ("   21. stopped: " + $_.Exception.Message)
+        } finally {
+            if ($letter -ne "") {
+                Remove-PSDrive -Name $letter -Force -ErrorAction SilentlyContinue
+                & net use "${letter}:" /delete /y 2>&1 | Out-Null
+            }
+            & docker volume rm -f $nasVolume 2>&1 | Out-Null
+            Remove-Item -Path Env:\MH_NAS_PASSWORD -ErrorAction SilentlyContinue
+            NasLog "   21. cleaned up: mapped drive, Docker volume and password variable removed; nothing was written on the NAS"
+            $script:nasSecret = ""
+        }
+        NasLog "   21. SMB in Docker: $smbDocker"
+        NasLog "   21. SMB in Windows: $smbWindows"
+        NasLog "   21. FTP in Docker: $ftpDocker"
     }
     $ErrorActionPreference = $saved
 }

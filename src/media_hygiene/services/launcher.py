@@ -31,7 +31,11 @@ from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
 from media_hygiene.services.launcher_memory import locale_option
-from media_hygiene.services.launcher_menu import BROWSE_WAIT, menu_texts
+from media_hygiene.services.launcher_menu import (
+    BROWSE_WAIT,
+    DESKTOP_WAIT,
+    menu_texts,
+)
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -53,7 +57,7 @@ _TEMPLATES: Final = {Shell.POWERSHELL: "mh.ps1.j2", Shell.BASH: "mh.sh.j2"}
 
 
 @dataclass(frozen=True, slots=True)
-class LauncherCommands:
+class LauncherCommands:  # pylint: disable=too-many-instance-attributes  # one per role
     """Which commands exist, which change the photos, which serve a page."""
 
     names: tuple[str, ...]
@@ -62,6 +66,7 @@ class LauncherCommands:
     data: tuple[str, ...]  # their output is read or redirected: no terminal, no input
     port: int
     long: tuple[str, ...] = ()  # the computer kept awake, the end told (0179, 0185)
+    backups: tuple[str, ...] = ()  # they take `--backup`: given each backup (0205)
     browse_wait: int = BROWSE_WAIT  # seconds `mh` waits for a page before giving up
 
 
@@ -77,6 +82,7 @@ class LauncherScript:  # pylint: disable=too-many-instance-attributes
     commands: LauncherCommands
     data_dir: Path  # where `--photos` folders are mounted (`/data`)
     drives: tuple[Volume, ...] = ()  # `/quarantine/e`: each drive's own (0183)
+    backups: tuple[Volume, ...] = ()  # compared, never changed: always `:ro` (0205)
 
     @property
     def folders(self) -> str:
@@ -149,10 +155,14 @@ def render_script(script: LauncherScript) -> str:
         image=running_image(),
         header=header(script.shell),
         texts=menu_texts(),
+        desktop_wait=DESKTOP_WAIT,
         kept=kept_run(script),
         update=update_texts(),
         host=host_commands(script),
-        checked=checked_folders(script),
+        checked=(
+            *checked_folders(script),
+            *(volume.host for volume in script.backups),
+        ),
         cloud=cloud_check(script.commands.names),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,

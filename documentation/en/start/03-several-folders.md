@@ -14,6 +14,9 @@ mh folders add "D:\Old disk"
 mh audit
 ```
 
+Or type `mh folders add` alone: Windows' folder window opens, choose the folder in it, then *OK*
+(no quotes, no path to type).
+
 `mh` writes itself again with that folder, then shows your folders read back from its file.
 `mh folders` alone lists them, each *found* or *not found* (a disk not plugged in);
 `mh folders remove "D:\Old disk"` takes one out, a renamed folder too. Several folders from the
@@ -96,8 +99,15 @@ a **backup** instead: the tool reads it and compares it, never changes it, and n
 aside because the backup has it too.
 
 ```powershell
-mh audit --backup "D:\backup"
+mh folders add --backup "D:\backup"
+mh audit
 ```
+
+`mh` writes itself again with that backup: from then on, it is mounted **read-only for every
+command, `clean` included**, so Windows itself refuses any change in it, and given to the
+commands that compare (`audit`, `review`, `clean`, `crosscheck`). `mh folders` lists it apart,
+under *Your backups, compared, never changed*; `mh folders remove "D:\backup"` takes it out.
+From the start: `--backup "D:\backup"` in the `launcher` line of [step 1](01-first-audit.md#write-mh-once).
 
 The audit then answers the two questions, in two lines:
 

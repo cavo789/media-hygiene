@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Final
 
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 # Inside the double-quoted strings of both shells, these would be code, not text.
@@ -20,6 +20,9 @@ UNSAFE_CHARACTERS = frozenset('"$`\\')
 # How long `mh` waits for a page to answer before opening the browser on it (0178): a
 # review audits first, minutes without a cache. The wait also ends with the command.
 BROWSE_WAIT: Final = 300
+# How long `docker desktop start` may take before `mh` gives up (0200): a cold start
+# after a reboot, not a setting (step 16 of `mh-measure.ps1` times it).
+DESKTOP_WAIT: Final = 180
 _COMMAND: Final = f"{LAUNCHER_FUNCTION} ${{command}}"
 
 
@@ -37,6 +40,8 @@ class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     reading: str  # shown while the menu reads the tool folders (a large quarantine: s)
     desktop: str  # mh.ps1: a failed run, and Docker Desktop does not answer (0174)
     daemon: str  # mh.sh: the same, Docker on Linux, macOS or WSL
+    starting: str  # mh.ps1: Docker Desktop does not answer, `mh` starts it (0200)
+    ready: str  # mh.ps1: started after a failed run: the command is typed again
 
 
 def menu_texts() -> MenuTexts:
@@ -77,6 +82,16 @@ def menu_texts() -> MenuTexts:
                 "Docker is not started: start it (Docker Desktop, or the docker "
                 "service), then type the command again."
             )
+        ),
+        starting=shell_safe(
+            ngettext(
+                "Docker Desktop is not started: starting it (up to {minutes} minute)…",
+                "Docker Desktop is not started: starting it (up to {minutes} minutes)…",
+                DESKTOP_WAIT // 60,
+            ).format(minutes=DESKTOP_WAIT // 60)
+        ),
+        ready=shell_safe(
+            _("Docker Desktop is ready: type the command again (↑ then Enter).")
         ),
     )
 

@@ -16,9 +16,23 @@ démarré, c'est Docker lui-même qui manque ou est arrêté. Ouvrez Docker Desk
 failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
 ```
 
-`mh` ajoute en dessous une ligne en clair : *Docker Desktop n'est pas démarré : lancez-le depuis
-le menu Démarrer, attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande.* Après un
-redémarrage de l'ordinateur, Docker Desktop met quelques secondes à répondre.
+**`mh` le démarre pour vous** (Windows, `mh.ps1`) : *Docker Desktop n'est pas démarré : je le
+lance (jusqu'à 3 minutes)…*, puis il attend que Docker Desktop réponde (`docker desktop start`).
+
+- `mh` seul, le raccourci *Media Hygiene* et l'entrée du clic droit vérifient Docker Desktop
+  d'abord : dès qu'il répond, l'accueil s'ouvre comme d'habitude. Après un redémarrage de
+  l'ordinateur, rien à faire.
+- Toute autre commande (`mh audit`, `mh clean`…) n'est jamais relancée toute seule : un `clean`
+  a pu s'arrêter au milieu. Une fois Docker Desktop démarré, `mh` dit *Docker Desktop est prêt :
+  tapez de nouveau la commande (↑ puis Entrée)*.
+- **Quand il ne peut pas le démarrer** (un Docker Desktop trop ancien pour connaître
+  `docker desktop start`, un démarrage qui échoue ou prend plus de 3 minutes), `mh` dit :
+  *Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, attendez qu'il dise
+  qu'il tourne, puis tapez à nouveau la commande.* Faites-le ; si Docker Desktop ne démarre pas
+  non plus depuis le menu Démarrer, voyez [installer Docker](start/00-install-docker.md#si-ça-ne-marche-pas).
+
+Depuis WSL ou Linux, `mh.sh` dit seulement que Docker n'est pas démarré : Docker Engine est un
+service, et `mh` ne lance jamais `sudo`.
 
 ## Une vraie sauvegarde est vue comme des doublons
 

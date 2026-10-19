@@ -5,16 +5,21 @@
 # as --photos when mh is written again (0176).
 _{{ f }}_file="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd -P)/$(basename "${BASH_SOURCE[0]}")"
 _{{ f }}_photos=({{ kept.photos | join(" ") }})
+# The backups, given back as --backup: compared, never changed (0205).
+_{{ f }}_backups=({{ kept.backups | join(" ") }})
 
 # `{{ f }} folders`: the photo folders and the quarantine, each found or not; `add` and
 # `remove` write mh again with one folder more or less (0176).
 _{{ f }}_folders() {
-    local photos=("${_{{ f }}_photos[@]}") kept=() folder item found=""
+    local photos=("${_{{ f }}_photos[@]}") backups=("${_{{ f }}_backups[@]}") kept=() spared=()
+    local folder item found="" backup="" pairs=()
     if [[ $# -eq 0 ]]; then
         _{{ f }}_list
         printf '%s\n' "{{ update.usage }}"
         return 0
     fi
+    # `add --backup <folder>`: a backup, mounted read-only for every command (0205).
+    if [[ $# -eq 3 && "$1" == add && "$2" == --backup ]]; then backup=1; set -- add "$3"; fi
     if [[ $# -ne 2 || ("$1" != add && "$1" != remove) ]]; then
         printf '%s\n' "{{ update.usage }}" >&2
         return 2
@@ -23,20 +28,26 @@ _{{ f }}_folders() {
     if [[ "$1" == add ]]; then
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ update.not_found }}" >&2; return 2; fi
         folder="$(cd "$folder" && pwd -P)"
-        for item in "${photos[@]}"; do
+        for item in "${photos[@]}" "${backups[@]}"; do
             if [[ "${item%/}" == "${folder%/}" ]]; then printf '%s\n' "{{ update.already }}" >&2; return 0; fi
         done
-        photos+=("$folder")
+        if [[ -n "$backup" ]]; then backups+=("$folder"); else photos+=("$folder"); fi
     else
         # A folder renamed, moved or on a disk gone: removed without being found.
         for item in "${photos[@]}"; do
-            if [[ "${item%/}" != "${folder%/}" ]]; then kept+=("$item"); else found=1; fi
+            if [[ "${item%/}" != "${folder%/}" ]]; then kept+=("$item"); else found=photo; fi
+        done
+        for item in "${backups[@]}"; do
+            if [[ "${item%/}" != "${folder%/}" ]]; then spared+=("$item"); else found="${found:-backup}"; fi
         done
         if [[ -z "$found" ]]; then printf '%s\n' "{{ update.not_listed }}" >&2; return 2; fi
-        if [[ -z "${kept[*]}" && {{ kept.fixed }} -eq 0 ]]; then printf '%s\n' "{{ update.last }}" >&2; return 2; fi
+        if [[ "$found" == photo && -z "${kept[*]}" && {{ kept.fixed }} -eq 0 ]]; then printf '%s\n' "{{ update.last }}" >&2; return 2; fi
         photos=("${kept[@]}")
+        backups=("${spared[@]}")
     fi
-    _{{ f }}_rewrite "${photos[@]}"
+    for item in "${photos[@]}"; do pairs+=(--photos "$item"); done
+    for item in "${backups[@]}"; do pairs+=(--backup "$item"); done
+    _{{ f }}_rewrite "${pairs[@]}"
 }
 
 # The folders of this very file, each said found or not.
@@ -44,6 +55,10 @@ _{{ f }}_list() {
     local folder
     printf '%s\n' "{{ update.photos }}"
     for folder in {{ kept.shown | join(" ") }}; do _{{ f }}_state "$folder"; done
+{% if kept.backups %}
+    printf '%s\n' "{{ update.backups }}"
+    for folder in {{ kept.backups | join(" ") }}; do _{{ f }}_state "$folder"; done
+{% endif %}
     printf '%s\n' "{{ update.quarantine }}"
     _{{ f }}_state {{ kept.quarantine }} quarantine
 {% for volume in script.drives %}
@@ -65,13 +80,13 @@ _{{ f }}_state() {
     fi
 }
 
-# Run `launcher` again with these photo folders, into a file beside this one; it
+# Run `launcher` again with these --photos and --backup folders, into a file beside this one; it
 # replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
 # was), then it is loaded again and its folders read back (0176).
 _{{ f }}_rewrite() {
-    local file="${_{{ f }}_file:-}" temp path folder words=({{ kept.launcher | join(" ") }})
+    local file="${_{{ f }}_file:-}" temp path words=({{ kept.launcher | join(" ") }})
     if [[ ! -f "$file" ]]; then printf '%s\n' "{{ update.no_file }}" >&2; return 1; fi
-    for folder in "$@"; do words+=(--photos "$folder"); done
+    words+=("$@")
     temp="$file.new"
     if ! docker run --rm -e "{{ variable }}={{ script.shell.value }}" {{ kept.docker | join(" ") }} {{ kept.image }} "${words[@]}" > "$temp" ||
         [[ ! -s "$temp" ]]; then
@@ -96,7 +111,10 @@ _{{ f }}_update() {
     if [[ -n "$before" ]]; then old="$(docker run --rm "$image" --version)"; fi
     if ! docker pull "$image"; then printf '%s\n' "{{ update.pull_failed }}" >&2; return 1; fi
     after="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image")"
-    _{{ f }}_rewrite "${_{{ f }}_photos[@]}" || return 1
+    local item pairs=()
+    for item in "${_{{ f }}_photos[@]}"; do pairs+=(--photos "$item"); done
+    for item in "${_{{ f }}_backups[@]}"; do pairs+=(--backup "$item"); done
+    _{{ f }}_rewrite "${pairs[@]}" || return 1
     new="$(docker run --rm "$image" --version)"
     if [[ "$before" == "$after" ]]; then printf '%s\n' "{{ update.latest }}"; return 0; fi
     printf '%s\n' "{{ update.updated }}"

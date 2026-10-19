@@ -15,9 +15,22 @@ follow [install Docker](start/00-install-docker.md#if-it-does-not-work) (Windows
 failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
 ```
 
-`mh` adds one plain line below it: *Docker Desktop is not started: start it from the Start menu,
-wait until it says it is running, then type the command again.* After a restart of the
-computer, Docker Desktop takes a few seconds to answer.
+**`mh` starts it for you** (Windows, `mh.ps1`): *Docker Desktop is not started: starting it (up
+to 3 minutes)…*, then it waits for Docker Desktop to answer (`docker desktop start`).
+
+- `mh` alone, the *Media Hygiene* shortcut and the right-click entry check Docker Desktop first:
+  once it answers, the home page opens as usual. After a restart of the computer, nothing to do.
+- Any other command (`mh audit`, `mh clean`…) is never run a second time by itself: a `clean`
+  may have stopped in the middle. Once Docker Desktop is started, `mh` says *Docker Desktop is
+  ready: type the command again (↑ then Enter)*.
+- **When it cannot start it** (a Docker Desktop too old to know `docker desktop start`, a start
+  that fails or takes more than 3 minutes), `mh` says: *Docker Desktop is not started: start it
+  from the Start menu, wait until it says it is running, then type the command again.* Do so;
+  if Docker Desktop does not start from the Start menu either, see
+  [install Docker](start/00-install-docker.md#if-it-does-not-work).
+
+From WSL or Linux, `mh.sh` only says that Docker is not started: Docker Engine is a service, and
+`mh` never runs `sudo`.
 
 ## A real backup is seen as duplicates
 

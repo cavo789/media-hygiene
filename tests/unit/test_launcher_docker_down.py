@@ -92,17 +92,15 @@ def test_bash_menu_says_it_once_and_asks_nothing(tmp_path: Path) -> None:
 
 
 def test_powershell_checks_docker_desktop_after_a_failed_run() -> None:
-    """mh.ps1: `docker version` after a failure, the line, the run's exit code back."""
+    """mh.ps1: `docker version` after a failure, a start, the run's exit code back."""
     with using(Locale.FR):
         text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
     assert text.isascii()
     back = expanded(text)
     check = back.index("    if ($status -ne 0) {\n")
     asked = back.index("        $null = docker version 2>$null\n", check)
-    said = back.index(
-        "Write-Host \"Docker Desktop n'est pas démarré : lancez-le", asked
-    )
-    assert said < back.index("        $global:LASTEXITCODE = $status\n", said)
+    started = back.index("(_mh_start)", asked)
+    assert started < back.index("        $global:LASTEXITCODE = $status\n", started)
     assert back.index("        $status = $LASTEXITCODE\n") < check
 
 
@@ -111,6 +109,57 @@ def test_no_translation_breaks_the_docker_lines() -> None:
     for locale in Locale:
         with using(locale):
             texts = menu_texts()
-        for text in (texts.desktop, texts.daemon):
+        for text in (texts.desktop, texts.daemon, texts.starting, texts.ready):
             assert text
             assert not set(text) & UNSAFE_CHARACTERS
+
+
+def _powershell() -> str:
+    """The French mh.ps1, its escapes expanded as PowerShell reads them."""
+    with using(Locale.FR):
+        text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
+    assert text.isascii()
+    return expanded(text)
+
+
+def test_powershell_starts_docker_desktop_and_waits_for_it() -> None:
+    """`docker desktop start --timeout 180`, asked again; 0174's line on failure."""
+    back = _powershell()
+    start = back.index("function global:_mh_start {\n")
+    said = back.index(
+        "Write-Host \"Docker Desktop n'est pas démarré : je le lance", start
+    )
+    started = back.index(
+        "    $null = docker desktop start --timeout 180 2>$null\n", said
+    )
+    again = back.index(
+        "    if ($LASTEXITCODE -eq 0) { $null = docker version 2>$null }\n", started
+    )
+    failed = back.index("Docker Desktop n'est pas démarré : lancez-le", again)
+    assert failed < back.index("    return $false\n", failed)
+
+
+def test_powershell_menu_paths_check_docker_desktop_first() -> None:
+    """`mh` alone and `mh menu`: the check, then the page or the menu on success."""
+    back = _powershell()
+    checked = "        if (-not (_mh_desktop)) { return }\n"
+    alone = back.index("    if ($rest.Count -eq 0) {\n")
+    assert back.index(checked, alone) < back.index("        _mh_home @typed\n", alone)
+    menu = back.index("    if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {\n")
+    assert back.index(checked, menu) < back.index("        _mh_menu @typed\n", menu)
+    assert back.count(checked) == 2
+    desktop = back.index("function global:_mh_desktop {\n")
+    asked = back.index("    $null = docker version 2>$null\n", desktop)
+    assert asked < back.index("    return (_mh_start)\n", asked)
+
+
+def test_powershell_failed_command_is_never_run_twice() -> None:
+    """After a failed run: Docker Desktop started, the user types the command again."""
+    back = _powershell()
+    check = back.index("    if ($status -ne 0) {\n")
+    end = back.index("        $global:LASTEXITCODE = $status\n", check)
+    block = back[check:end]
+    assert "if ($LASTEXITCODE -ne 0 -and (_mh_start)) {" in block
+    assert "tapez de nouveau la commande" in block
+    assert "docker run" not in block
+    assert back.count("        docker run --rm @tty `\n") == 1

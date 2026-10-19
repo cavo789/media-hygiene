@@ -399,6 +399,23 @@ msgstr ""
 " de cette page, listent tous les fichiers."
 
 msgid ""
+"A backup is compared, never changed: it cannot be, hold or lie in a photo"
+" folder or another backup."
+msgstr ""
+"Une sauvegarde est comparée, jamais modifiée : elle ne peut pas être un "
+"dossier de photos ou une autre sauvegarde, ni en contenir un, ni se "
+"trouver dedans."
+
+msgid ""
+"A backup or an old disk, as Explorer shows it: \"E:\\Backup\". Mounted "
+"read-only for every command, clean included, and given as --backup: "
+"compared, never changed. Repeatable."
+msgstr ""
+"Une sauvegarde ou un ancien disque, tel que l'Explorateur le montre : "
+"\"E:\\Sauvegarde\". Monté en lecture seule pour chaque commande, clean "
+"compris, et donné en --backup : comparé, jamais modifié. Répétable."
+
+msgid ""
 "A backup or an old disk: compared, never changed. Says what it lacks and "
 "what only it holds. Repeatable."
 msgstr ""
@@ -702,11 +719,23 @@ msgstr ""
 "interdit alors toute modification. {url}"
 
 msgid ""
+"Add or remove a photo folder: mh folders add (a window to choose it) or "
+"mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
+"never changed: mh folders add --backup <folder>."
+msgstr ""
+"Ajouter ou retirer un dossier de photos : mh folders add (une fenêtre "
+"pour le choisir) ou mh folders add <dossier>, mh folders remove "
+"<dossier>. Une sauvegarde, comparée, jamais modifiée : mh folders add "
+"--backup <dossier>."
+
+msgid ""
 "Add or remove a photo folder: mh folders add <folder>, mh folders remove "
+"<folder>. A backup, compared, never changed: mh folders add --backup "
 "<folder>."
 msgstr ""
 "Ajouter ou retirer un dossier de photos : mh folders add <dossier>, mh "
-"folders remove <dossier>."
+"folders remove <dossier>. Une sauvegarde, comparée, jamais modifiée : mh "
+"folders add --backup <dossier>."
 
 msgid ""
 "Add the settings of this version to your config.toml, with their "
@@ -1097,6 +1126,9 @@ msgstr "Choix de la page de revue repris aussi : {count}."
 #, python-brace-format
 msgid "Choices on {count} series undone."
 msgstr "Choix sur {count} séries annulés."
+
+msgid "Choose a folder of photos or videos to add"
+msgstr "Choisissez un dossier de photos ou de vidéos à ajouter"
 
 msgid "Choose a folder on the left."
 msgstr "Choisissez un dossier à gauche."
@@ -1616,6 +1648,17 @@ msgid ""
 msgstr ""
 "Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, "
 "attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande."
+
+#, python-brace-format
+msgid "Docker Desktop is not started: starting it (up to {minutes} minute)…"
+msgid_plural "Docker Desktop is not started: starting it (up to {minutes} minutes)…"
+msgstr[0] "Docker Desktop n'est pas démarré : je le lance (jusqu'à {minutes} minute)…"
+msgstr[1] ""
+"Docker Desktop n'est pas démarré : je le lance (jusqu'à {minutes} "
+"minutes)…"
+
+msgid "Docker Desktop is ready: type the command again (↑ then Enter)."
+msgstr "Docker Desktop est prêt : tapez de nouveau la commande (↑ puis Entrée)."
 
 msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
@@ -3369,6 +3412,9 @@ msgstr ""
 
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
+
+msgid "No folder chosen: nothing changed."
+msgstr "Aucun dossier choisi : rien n'a changé."
 
 msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
@@ -6583,6 +6629,9 @@ msgstr ""
 "avec le reste de son plan. Pour en garder une finalement : 'undo' de ce "
 "nettoyage, et elle n'est plus proposée."
 
+msgid "Your backups, compared, never changed:"
+msgstr "Vos sauvegardes, comparées, jamais modifiées :"
+
 msgid "Your browser cannot show this format: open the original."
 msgstr "Votre navigateur ne sait pas afficher ce format : ouvrez l'original."
 
@@ -8189,6 +8238,10 @@ msgstr ""
 "{backup} (folders.backups) et {other} (folders.{key}) sont un même "
 "dossier ou l'un dans l'autre : un dossier de sauvegarde est seulement "
 "comparé, ne lui donnez aucun autre rôle"
+
+#, python-brace-format
+msgid "{backup} overlaps {folder}: give them apart."
+msgstr "{backup} recouvre {folder} : donnez-les séparément."
 
 #, python-brace-format
 msgid "{category} cannot be used in a category"

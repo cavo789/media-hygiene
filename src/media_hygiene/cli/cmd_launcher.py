@@ -9,15 +9,15 @@ from typing import TYPE_CHECKING, Annotated, NoReturn
 
 import typer
 
+from media_hygiene.cli.cmd_launcher_parts import backup_option
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
 
 if TYPE_CHECKING:
-    from media_hygiene.services.launcher import LauncherCommands, LauncherScript
+    from media_hygiene.services.launcher import LauncherScript
     from media_hygiene.services.launcher_folders import FolderChoice
     from media_hygiene.services.runtime import Runtime
 
@@ -59,6 +59,7 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
             show_default=False,
         ),
     ] = None,
+    backup: Annotated[list[str] | None, backup_option()] = None,
 ) -> None:
     """Print the script of the `mh` function; every message goes to stderr.
 
@@ -67,6 +68,7 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
         shell: `--shell`, None to guess it.
         photos: `--photos`, the photo folders typed.
         quarantine: `--quarantine`, the quarantine folder typed.
+        backup: `--backup`, the backup folders typed, always read-only (0205).
     """
     from media_hygiene.console.output import data_on_terminal
     from media_hygiene.services.launcher import render_script
@@ -75,7 +77,8 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
     from media_hygiene.services.launcher_memory import remembered
 
     runtime = runtime_of(ctx)
-    script = _built(ctx, shell, FolderChoice(tuple(photos or ()), quarantine))
+    choice = FolderChoice(tuple(photos or ()), quarantine, tuple(backup or ()))
+    script = _built(ctx, shell, choice)
     if data_on_terminal():
         _refuse_terminal(script.shell)
     sys.stdout.write(render_script(script))
@@ -105,15 +108,17 @@ def _built(
     Returns:
         The script.
     """
+    from media_hygiene.cli.cmd_launcher_parts import cli_commands
     from media_hygiene.services.launcher import launcher_script
+    from media_hygiene.services.launcher_backups import with_backups
     from media_hygiene.services.launcher_folders import with_folders
 
     runtime = runtime_of(ctx)
     shell = shell or choice.shell()
     try:
-        return with_folders(
-            runtime, launcher_script(runtime, shell, _commands(ctx)), choice
-        )
+        script = launcher_script(runtime, shell, cli_commands(ctx))
+        script = with_folders(runtime, script, choice)
+        return with_backups(runtime, script, choice.backups)
     except MountError as error:
         _refuse_folder(runtime, shell or Shell.POWERSHELL, error)
 
@@ -158,35 +163,3 @@ def _refuse_folder(runtime: Runtime, shell: Shell, error: MountError) -> NoRetur
     sys.stdout.flush()
     with user_errors(runtime.output):
         raise error
-
-
-def _commands(ctx: typer.Context) -> LauncherCommands:
-    """List the commands of the CLI, and which ones change the photos.
-
-    Args:
-        ctx: Typer context of the running command.
-
-    Returns:
-        The commands, the photos read-write for those not read-only.
-    """
-    from typer.core import TyperGroup
-
-    from media_hygiene.cli.safety import (
-        DATA_COMMANDS,
-        LONG_COMMANDS,
-        PAGE_COMMANDS,
-        READ_ONLY_COMMANDS,
-    )
-    from media_hygiene.services.launcher import LauncherCommands
-
-    root = ctx.find_root()
-    group = root.command
-    names = tuple(group.list_commands(root)) if isinstance(group, TyperGroup) else ()
-    return LauncherCommands(
-        names=names,
-        writers=tuple(name for name in names if name not in READ_ONLY_COMMANDS),
-        pages=tuple(name for name in names if name in PAGE_COMMANDS),
-        data=tuple(name for name in names if name in DATA_COMMANDS),
-        long=tuple(name for name in names if name in LONG_COMMANDS),
-        port=PAGE_PORT,
-    )

@@ -15,6 +15,9 @@ mh folders add "D:\Ancien disque"
 mh audit
 ```
 
+Ou tapez `mh folders add` seul : la fenêtre de choix de dossier de Windows s'ouvre, choisissez-y
+le dossier, puis *OK* (ni guillemets, ni chemin à taper).
+
 `mh` se réécrit avec ce dossier, puis montre vos dossiers relus depuis son fichier.
 `mh folders` seul les liste, chacun *présent* ou *introuvable* (un disque pas branché) ;
 `mh folders remove "D:\Ancien disque"` en retire un, un dossier renommé aussi. Plusieurs dossiers
@@ -104,8 +107,15 @@ doublons de vos photos. Marquez-le plutôt comme **sauvegarde** : l'outil le lit
 le modifie jamais, et ne met jamais une copie de côté parce que la sauvegarde l'a aussi.
 
 ```powershell
-mh audit --backup "D:\sauvegarde"
+mh folders add --backup "D:\sauvegarde"
+mh audit
 ```
+
+`mh` se réécrit avec cette sauvegarde : dès lors, elle est montée **en lecture seule pour chaque
+commande, `clean` compris**, Windows lui-même y refuse donc toute modification, et donnée aux
+commandes qui comparent (`audit`, `review`, `clean`, `crosscheck`). `mh folders` la liste à part,
+sous *Vos sauvegardes, comparées, jamais modifiées* ; `mh folders remove "D:\sauvegarde"` la
+retire. Dès le départ : `--backup "D:\sauvegarde"` dans la ligne `launcher` de l'[étape 1](01-first-audit.md#écrire-mh-une-fois).
 
 L'audit répond alors aux deux questions, en deux lignes :
 

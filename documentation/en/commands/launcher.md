@@ -59,10 +59,18 @@ mh audit
 
 ## What `mh` does for each command
 
+- **It starts Docker Desktop when it is not running** (Windows): `mh` alone, the shortcut and
+  the right-click entry wait for it, then open the home page; after any other command that
+  failed because Docker Desktop was stopped, `mh` starts it and asks you to type the command
+  again, never running it twice by itself
+  ([troubleshooting](../reference-troubleshooting.md#docker-answers-instead-of-the-tool)).
 - **It checks your folders first**: a disk not plugged in is said, and nothing runs (Docker
   would mount an empty folder in its place).
 - **Your folders read-only** (`:ro`) for every command that never changes them, writable only for
   `clean`, `sort`, `album`, `undo`, `purge` and `xmp`.
+- **Your backups read-only for every command**, `clean` included (`launcher --backup`, `mh
+  folders add --backup`): Windows itself refuses any change in them. The commands that compare
+  (`audit`, `review`, `clean`, `crosscheck`) get each one as `--backup`.
 - **The cache** (the `media-hygiene-cache` volume) and the `reports`, `config`, `journal` and
   `quarantine` folders of `$HOME\media-hygiene`, created when missing; the folder of
   `--quarantine`, or a tool folder you mounted yourself with `-v` when running `launcher`, is
@@ -124,9 +132,17 @@ right-click of `mh explorer` runs.
 
 ```powershell
 mh folders                          # your folders, found or not
-mh folders add "D:\Old disk"        # one more
+mh folders add                      # one more, chosen in a window (Windows)
+mh folders add "D:\Old disk"        # one more, typed
 mh folders remove "D:\Old disk"     # one less
+mh folders add --backup "E:\Backup" # a backup: read-only, whatever the command
 ```
+
+**`mh folders add` alone** (Windows) opens Windows' folder window, in front of the console,
+starting at *This PC*: choose the folder, then *OK*; no path to type, no quotes. *Cancel* says
+*No folder chosen: nothing changed.* The folder chosen is checked as a typed one: a library, a
+phone or a network place without a drive letter is refused, and so is a folder already listed.
+`mh.sh` (WSL, Linux, macOS) has no window: give the folder.
 
 `add` and `remove` run `launcher` again, through the image, with the folders `mh` holds plus or
 minus that one, and the same quarantine, language and settings. The new script goes into a file
@@ -170,6 +186,7 @@ yourself (`media-hygiene`) has nothing to download: `mh update` says so.
 |---|---|
 | `--photos "C:\Photos"` | A folder of photos and videos, as Explorer shows it (`/mnt/c/Photos` from WSL). Repeat it for several folders; not a folder inside another one. |
 | `--quarantine "D:\quarantine"` | Where the copies set aside go, from every drive. Default: `$HOME\media-hygiene\quarantine`, with one quarantine per photo drive. |
+| `--backup "E:\Backup"` | A backup or an old disk: mounted read-only for every command, `clean` included, and given as `--backup` to the commands that compare ([compared, never changed](../start/03-several-folders.md#a-backup-or-an-old-disk-compare-it)). Repeatable; not a photo folder, nor inside or around one. |
 | `--shell powershell` | A PowerShell script (`mh.ps1`), for Windows. |
 | `--shell bash` | A bash script (`mh.sh`), for WSL, Linux, macOS. |
 

@@ -426,3 +426,43 @@ def test_the_menu_ends_on_folders_and_update(
     assert "Your folders: mh folders. A new version: mh update." in result.stderr
     assert "\tfolders" not in result.stdout
     assert "\tupdate" not in result.stdout
+
+
+def test_folders_add_backup_rewrites_and_keeps_it_apart(tmp_path: Path) -> None:
+    """0205: `add --backup`: `launcher --backup`, listed apart, kept by the rewrite."""
+    photos, backup, more = _folders(tmp_path, "Photos", "Backup disk", "More")
+    script = _written(tmp_path, photos)
+    done = _mh(tmp_path, script, f"mh folders add --backup {shlex.quote(f'{backup}')}")
+    assert "status=0" in done.stdout, done.stderr
+    assert _held(done) == [str(photos)]
+    assert f"--photos {photos} --backup {backup}" in _calls(tmp_path)
+    text = script.read_text(encoding="utf-8")
+    assert f"_mh_backups=({quoted(str(backup), Shell.BASH)})" in text
+    mount = next(line for line in text.splitlines() if f'-v "{backup}:' in line)
+    assert mount.endswith('Backup disk:ro" \\')
+    listed = _mh(tmp_path, script, "mh folders")
+    backups = listed.stdout.index("Your backups, compared, never changed:")
+    assert listed.stdout.index(f"    {backup}: found", backups) > backups
+    # Another folder added: the rewrite gives the backup back.
+    added = _mh(tmp_path, script, f"mh folders add {shlex.quote(f'{more}')}")
+    assert _held(added) == [str(photos), str(more)]
+    assert f"--photos {photos} --photos {more} --backup {backup}" in _calls(tmp_path)
+    again = _mh(tmp_path, script, f"mh folders add --backup {shlex.quote(f'{backup}')}")
+    assert "is one of your folders already" in again.stderr
+    removed = _mh(tmp_path, script, f"mh folders remove {shlex.quote(f'{backup}')}")
+    assert "status=0" in removed.stdout, removed.stderr
+    assert _held(removed) == [str(photos), str(more)]
+    assert "_mh_backups=()" in script.read_text(encoding="utf-8")
+    assert "Your backups" not in removed.stdout
+
+
+def test_removing_the_last_photo_folder_is_refused_even_with_a_backup(
+    tmp_path: Path,
+) -> None:
+    """A backup is no photo folder: `mh` still needs one of those."""
+    photos, backup = _folders(tmp_path, "Photos", "Backup")
+    script = _written(tmp_path, photos)
+    _mh(tmp_path, script, f"mh folders add --backup {shlex.quote(f'{backup}')}")
+    done = _mh(tmp_path, script, f"mh folders remove {shlex.quote(f'{photos}')}")
+    assert "mh needs at least one photo folder" in done.stderr
+    assert _held(done) == [str(photos)]

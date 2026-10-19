@@ -40,3 +40,36 @@ read-write for the acting commands (`clean`, `sort`, …), so a backup needs its
 
 A backup checked without any risk of change, whatever command `mh` runs; no `docker run` to
 write by hand.
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `launcher --backup "E:\Backup"` (repeatable; `cli/cmd_launcher_parts.py`, which also took
+  `_commands` out of `cmd_launcher.py`, 192 → 167 lines) and `services/launcher_backups.py`: a
+  backup that is, holds or lies in a photo folder or another backup is refused (stopping script).
+- Both scripts mount each backup `-v host:point:ro` for every command, `clean` included (not
+  `${mode}`), check it is there before each run, and append `--backup` (`E:\Backup` in mh.ps1, the
+  mount point in mh.sh) to the commands whose options hold `--backup` (read from the CLI itself:
+  audit, clean, crosscheck, review).
+- `mh folders add --backup <folder>`, `mh folders remove <folder>` (either list); `mh folders` lists
+  them apart ("Your backups, compared, never changed:"); the rewrite and `mh update` give them back
+  as `--backup`; removing the last photo folder is still refused with backups.
+- Tests: `test_launcher_folders.py` (PowerShell text, ASCII, refusals, bash run: `:ro` mount for
+  clean and history, `--backup` only for clean, a backup not plugged in stops), `test_launcher_rewrite.py`
+  (bash: add --backup, list, rewrite keeps it, remove). French translated.
+- Docs both languages: launcher page (options table, what mh does, `mh folders`), step 3 (`mh folders
+  add --backup` instead of `mh audit --backup`, which mounted nothing), clean step 5's example too.
+- Step 11 of `mh-measure.ps1` extended (11h/11i: on `-OtherDrive` when given; its mount line, the
+  audit's two lines, the files left after `mh clean --yes`, a write refused by Docker in a `:ro` mount).
+
+### Not done
+- The Windows run (maintainer): image built from branch `iterate/2026-10-19`, then
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Unblock-File .\mh-measure.ps1
+  .\mh-measure.ps1 -Only 11 -Count 20 -OtherDrive E:
+  ```
+  **Reason:** needs Windows + Docker Desktop.
+- Stale capture: the built-in help of `launcher` in `documentation/{en,fr}/commands/launcher.md`
+  (new `--backup` option): `docs_screenshots` (TODO 0244).
