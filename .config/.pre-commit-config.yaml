@@ -1,7 +1,10 @@
 # Quality gate run on every commit and by the `check` helper (pre-commit run --all-files).
 # Python tools run from the project virtual environment (`language: system`), so their versions
 # come from uv.lock — one source of truth for the editor, the hooks and CI.
-default_install_hook_types: [pre-commit]
+# `git push` runs only the duplicate-code checks (stage pre-push, below): the other hooks
+# already ran at each commit.
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit, manual]
 fail_fast: false
 
 repos:
@@ -79,8 +82,10 @@ repos:
       # duplicate-code compares the files pylint is given with each other, so these two
       # run that one check over every tracked file; untracked work in progress is left
       # out, as CI never sees it (the `lint` helper sets LINT_UNTRACKED to check new files
-      # too). Stage `manual`: not at each commit (≈ 17 s for src/ alone, measured in the
-      # devcontainer), only where `--hook-stage manual` is passed: `lint`, `check`, CI.
+      # too). Not at each commit (≈ 17 s for src/ alone, measured in the devcontainer):
+      # at each `git push` (stage pre-push: a new file repeating an unchanged one failed
+      # CI twice, the commit hook only compares the changed files), and where
+      # `--hook-stage manual` is passed: `lint`, `check`, CI.
       - id: pylint-duplicates
         name: pylint duplicate-code (all of src)
         entry: >-
@@ -91,7 +96,7 @@ repos:
         files: ^src/
         pass_filenames: false
         require_serial: true
-        stages: [manual]
+        stages: [manual, pre-push]
       - id: pylint-duplicates-tests
         name: pylint duplicate-code (all of tests)
         entry: >-
@@ -102,7 +107,7 @@ repos:
         files: ^tests/
         pass_filenames: false
         require_serial: true
-        stages: [manual]
+        stages: [manual, pre-push]
       - id: shellcheck
         name: shellcheck
         entry: shellcheck --external-sources

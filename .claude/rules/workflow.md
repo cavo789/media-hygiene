@@ -5,7 +5,8 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 
 - ✅ DO: before declaring done or committing, run the commit gate itself on what changed:
   `pre-commit run --config <the project's config> --files $(git status --porcelain | awk '{print $2}')`
-  (here, the duplicate-code checks are left to `lint`, `check` and CI: stage `manual`).
+  (here, the duplicate-code checks run at `git push` instead: stage `pre-push`; a refused
+  push means a new file repeats another one — move the shared part to a helper).
   ❌ DON'T: trust a single-file `mypy`/`ruff` run: the gate's config differs (strict typing of
   tests, pylint's docstring and boolean checks). The `Stop` hook (`.claude/scripts/stop_gate.sh`)
   runs it on the changed files at the end of each turn and sends a failure back.
