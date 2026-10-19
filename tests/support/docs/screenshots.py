@@ -49,12 +49,15 @@ def build_browser() -> None:
     )
 
 
-def start_review(demo: Demo, args: tuple[str, ...] = ("review",)) -> str:
+def start_review(
+    demo: Demo, args: tuple[str, ...] = ("review",), variables: tuple[str, ...] = ()
+) -> str:
     """Start a page served on port 8088 in its own container, and wait until it listens.
 
     Args:
         demo: The demo library to serve.
         args: The command: `("review",)`, `("review", "--near")`, `("search",)`.
+        variables: Environment variables (`NAME=value`) given to the container.
 
     Returns:
         The container's name: a browser joins its network to reach 127.0.0.1:8088.
@@ -65,7 +68,9 @@ def start_review(demo: Demo, args: tuple[str, ...] = ("review",)) -> str:
     name = "-".join((demo.prefix, *(arg.lstrip("-") for arg in args)))
     docker("rm", "--force", name)
     command = Command(args)
-    docker("run", "--detach", "--name", name, "-t", *DUMB, *demo.mounts(command),
+    environment = [item for variable in variables for item in ("-e", variable)]
+    docker("run", "--detach", "--name", name, "-t", *DUMB, *environment,
+           *demo.mounts(command),
            *demo.tool(command))  # fmt: skip
     for _ in range(_WAIT_SECONDS):
         if _READY in docker("logs", name).stdout:

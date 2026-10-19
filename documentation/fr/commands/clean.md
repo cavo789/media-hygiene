@@ -168,10 +168,11 @@ cavo789/media-hygiene --locale fr clean --yes
 │                                             téléchargé depuis un rapport     │
 │                                             d'audit (paires de dossiers      │
 │                                             inversées ou laissées telles     │
-│                                             quelles) ou écrit par 'review'   │
+│                                             quelles), écrit par 'review'     │
 │                                             (photos de rafale écartées,      │
-│                                             quasi-doublons décidés). Un      │
-│                                             chemin relatif est lu dans le    │
+│                                             quasi-doublons décidés) ou par   │
+│                                             'search' (photos mises de côté). │
+│                                             Un chemin relatif est lu dans le │
 │                                             dossier monté sur /reports. Le   │
 │                                             fichier est refusé si les        │
 │                                             dossiers, les paires ou les      │
@@ -192,8 +193,10 @@ cavo789/media-hygiene --locale fr clean --yes
 │                         Répétable ; l'ordre compte.                          │
 │ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
 │                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
+│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
+│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
+│                         modifié. Dit ce qui lui manque et ce que lui seul    │
+│                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
 │ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │

@@ -50,6 +50,7 @@ Réglages effectifs
 │ folders.preferred           │ []                         │ défaut            │
 │ folders.protected           │ []                         │ défaut            │
 │ folders.excluded            │ []                         │ défaut            │
+│ folders.backups             │ []                         │ défaut            │
 │ scan.categories             │ {}                         │ défaut            │
 │ scan.extensions             │ []                         │ défaut            │
 │ scan.excluded_names         │ []                         │ défaut            │
@@ -97,6 +98,7 @@ Réglages effectifs
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
 │                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ 'Photos from \\d{4}',      │                   │
 │                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
 │                             │ ',                         │                   │
 │                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
@@ -152,6 +154,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ défaut            │
+│ clean.returned              │ True                       │ défaut            │
 │ clean.purge_hint_days       │ 30                         │ défaut            │
 │ clean.workers               │ 4                          │ défaut            │
 │ clean.quarantine_headroom_g │ 1.0                        │ défaut            │
@@ -160,6 +163,13 @@ Réglages effectifs
 │ review.identical_below      │ 6                          │ défaut            │
 │ review.brightness_gap       │ 60.0                       │ défaut            │
 │ review.clipped_gap          │ 0.25                       │ défaut            │
+│ review.unwanted             │ {'tiny_megapixels': 0.16,  │ défaut            │
+│                             │ 'screenshots': True,       │                   │
+│                             │ 'dark_mean': 25.0,         │                   │
+│                             │ 'dark_share': 0.7,         │                   │
+│                             │ 'white_mean': 230.0,       │                   │
+│                             │ 'white_share': 0.7,        │                   │
+│                             │ 'blur_percentile': 2.0}    │                   │
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
 │ classify.timezone           │                            │ défaut            │
@@ -286,6 +296,8 @@ Réglages effectifs
 │                             │ 'confirm_above': 200,      │                   │
 │                             │ 'seconds_per_photo': 4.5}  │                   │
 │ classify.places             │ []                         │ défaut            │
+│ classify.place_photos       │ []                         │ défaut            │
+│ classify.clocks             │ []                         │ défaut            │
 │ classify.trip_min_km        │ 100.0                      │ défaut            │
 │ classify.trip_merge_gap_hou │ 48.0                       │ défaut            │
 │ rs                          │                            │                   │
@@ -310,6 +322,8 @@ Réglages effectifs
 │                             │ contributors               │                   │
 │ places.nominatim_url        │ https://nominatim.openstre │ défaut            │
 │                             │ etmap.org                  │                   │
+│ places.folders              │ []                         │ défaut            │
+│ places.ignored              │ []                         │ défaut            │
 │ album.root                  │                            │ défaut            │
 │ tags.language               │                            │ défaut            │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -328,6 +342,7 @@ Réglages effectifs
 │                             │ 'view']                    │                   │
 │ tags.town_km                │ 20.0                       │ défaut            │
 │ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
+│ tags.xmp_folder_gps         │ False                      │ défaut            │
 │ people.similarity           │ 0.363                      │ défaut            │
 │ people.min_face             │ 40                         │ défaut            │
 │ people.min_sharpness        │ 30.0                       │ défaut            │
@@ -555,6 +570,7 @@ Réglages effectifs
 │ folders.preferred           │ []                         │ config.toml       │
 │ folders.protected           │ []                         │ config.toml       │
 │ folders.excluded            │ []                         │ config.toml       │
+│ folders.backups             │ []                         │ config.toml       │
 │ scan.categories             │ {}                         │ config.toml       │
 │ scan.extensions             │ []                         │ config.toml       │
 │ scan.excluded_names         │ []                         │ config.toml       │
@@ -602,6 +618,7 @@ Réglages effectifs
 │                             │ folder|Nouveau dossier)(   │                   │
 │                             │ \\(\\d+\\))?',             │                   │
 │                             │ 'Import(s|ed)?|Temp|tmp',  │                   │
+│                             │ 'Photos from \\d{4}',      │                   │
 │                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
 │                             │ ',                         │                   │
 │                             │ '(?P<year>(?:19|20)\\d{2}) │                   │
@@ -657,6 +674,7 @@ Réglages effectifs
 │                             │ -\\d{2}-\\d{2}(?:\\.\\.[\\ │                   │
 │                             │ d-]+)?']                   │                   │
 │ clean.confirm               │ True                       │ config.toml       │
+│ clean.returned              │ True                       │ config.toml       │
 │ clean.purge_hint_days       │ 30                         │ config.toml       │
 │ clean.workers               │ 4                          │ config.toml       │
 │ clean.quarantine_headroom_g │ 1.0                        │ config.toml       │
@@ -665,6 +683,13 @@ Réglages effectifs
 │ review.identical_below      │ 6                          │ config.toml       │
 │ review.brightness_gap       │ 60.0                       │ config.toml       │
 │ review.clipped_gap          │ 0.25                       │ config.toml       │
+│ review.unwanted             │ {'tiny_megapixels': 0.16,  │ config.toml       │
+│                             │ 'screenshots': True,       │                   │
+│                             │ 'dark_mean': 25.0,         │                   │
+│                             │ 'dark_share': 0.7,         │                   │
+│                             │ 'white_mean': 230.0,       │                   │
+│                             │ 'white_share': 0.7,        │                   │
+│                             │ 'blur_percentile': 2.0}    │                   │
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │
 │ classify.timezone           │                            │ config.toml       │
@@ -802,6 +827,8 @@ Réglages effectifs
 │                             │ 'confirm_above': 200,      │                   │
 │                             │ 'seconds_per_photo': 4.5}  │                   │
 │ classify.places             │ []                         │ défaut            │
+│ classify.place_photos       │ []                         │ défaut            │
+│ classify.clocks             │ []                         │ défaut            │
 │ classify.trip_min_km        │ 100.0                      │ config.toml       │
 │ classify.trip_merge_gap_hou │ 48.0                       │ config.toml       │
 │ rs                          │                            │                   │
@@ -826,6 +853,8 @@ Réglages effectifs
 │                             │ contributors               │                   │
 │ places.nominatim_url        │ https://nominatim.openstre │ config.toml       │
 │                             │ etmap.org                  │                   │
+│ places.folders              │ []                         │ défaut            │
+│ places.ignored              │ []                         │ défaut            │
 │ album.root                  │                            │ config.toml       │
 │ tags.language               │                            │ config.toml       │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -844,6 +873,7 @@ Réglages effectifs
 │                             │ 'view']                    │                   │
 │ tags.town_km                │ 20.0                       │ config.toml       │
 │ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
+│ tags.xmp_folder_gps         │ False                      │ config.toml       │
 │ people.similarity           │ 0.363                      │ config.toml       │
 │ people.min_face             │ 40                         │ config.toml       │
 │ people.min_sharpness        │ 30.0                       │ config.toml       │

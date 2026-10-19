@@ -30,6 +30,8 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
+![The home page: the next step as a big button, the audit run in the page with the time of each step, where you are, a few pictures the audit found, the reports, then the steps of the three guides](../images/home.webp)
+
 ## At a glance
 
 | | |

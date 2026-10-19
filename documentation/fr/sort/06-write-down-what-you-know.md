@@ -186,11 +186,12 @@ Le tableau *Pourquoi* de `classify` compte les fichiers que chaque règle a déc
 <!-- capture: classify.txt|Pourquoi|Vérifiez leurs dates -->
 ```text
 Pourquoi
-┌────────────────────┬────┐
-│ Dossiers existants │ 76 │
-│ Aucun indice       │  3 │
-│ Sans date          │  3 │
-└────────────────────┴────┘
+┌───────────────────────────────┬────┐
+│ Dossiers existants            │ 76 │
+│ Aucun indice                  │  5 │
+│ Sans date                     │  4 │
+│ Captures d'écran et documents │  1 │
+└───────────────────────────────┴────┘
 
 Catégories les plus remplies
 ┌─────────────────────┬────┐
@@ -206,8 +207,8 @@ Catégories les plus remplies
 │ WhatsApp            │  3 │
 └─────────────────────┴────┘
 
-⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et
-documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
+⚠️  Règles qui n'ont rien décidé : Films et séries, Voisins d'événement, Noël,
+Nouvel An, Saint-Nicolas.
 💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
 ```
 

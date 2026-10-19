@@ -50,12 +50,18 @@ mh review --junk
 It audits first, then counts the photos by reason and prints *✅ Review ready, open
 http://127.0.0.1:8088/ in your browser*:
 
+<!-- capture: review-junk.txt|look unwanted|127.0.0.1:8088:8088 -->
 ```text
-4 photos look unwanted (tiny image: 2, screenshot or document: 1, nearly black: 1); nothing is
-set aside without you.
-✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each decision is saved at once in
-decisions.json, in the folder mounted on /reports. Ctrl+C stops the review.
+4 photos look unwanted (tiny image: 2, nearly black: 1, screenshot or document:
+1); nothing is set aside without you.
+✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each decision is
+saved at once in decisions.json, in the folder mounted on /reports. Ctrl+C stops
+the review.
+💡 The page does not open? docker run must publish the same port on both sides:
+-p 127.0.0.1:8088:8088.
 ```
+
+![The unwanted photos review: the first group, with each photo proposed aside in red dashes and its reason, size and folder written under it](../images/review-junk.webp)
 
 ## Step 2: choose
 

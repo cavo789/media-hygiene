@@ -27,13 +27,15 @@ http://127.0.0.1:8088/ in your browser*:
 
 <!-- capture: review-pairs.txt|folder pair|127.0.0.1:8088:8088 -->
 ```text
-9 folder pairs, the most space freed first: 0 decided already.
+7 folder pairs, the most space freed first: 0 decided already.
 ✅ Review ready, open http://127.0.0.1:8088/ in your browser. Each decision is
 saved at once in decisions.json, in the folder mounted on /reports. Ctrl+C stops
 the review.
 💡 The page does not open? docker run must publish the same port on both sides:
 -p 127.0.0.1:8088:8088.
 ```
+
+![The folder pairs review: the first pair, C:\Photos\2019\Seaside holidays framed in green as the folder that keeps its copies, D:\Old disk\Photos 2019 in red dashes, the keys on the left with K to keep both names as links](../images/review-pairs.webp)
 
 The page shows one pair at a time, the most space freed first: the folder that keeps its copies
 framed in green, the one that loses them in red dashes, the number of identical files, why the

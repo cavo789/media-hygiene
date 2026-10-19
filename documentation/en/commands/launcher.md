@@ -289,6 +289,12 @@ The `-v` of earlier guides still work, alongside `--photos`.
 │                                          once: best on the photos' disk (a   │
 │                                          move, not a copy). Default: the     │
 │                                          quarantine folder of your home.     │
+│ --backup              <str>              A backup or an old disk, as         │
+│                                          Explorer shows it: "E:\Backup".     │
+│                                          Mounted read-only for every         │
+│                                          command, clean included, and given  │
+│                                          as --backup: compared, never        │
+│                                          changed. Repeatable.                │
 │ --help        -h                         Show this message and exit.         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

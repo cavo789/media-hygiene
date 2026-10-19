@@ -48,6 +48,7 @@ Effective settings
 │ folders.preferred             │ []                            │ default      │
 │ folders.protected             │ []                            │ default      │
 │ folders.excluded              │ []                            │ default      │
+│ folders.backups               │ []                            │ default      │
 │ scan.categories               │ {}                            │ default      │
 │ scan.extensions               │ []                            │ default      │
 │ scan.excluded_names           │ []                            │ default      │
@@ -92,6 +93,7 @@ Effective settings
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
 │                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ 'Photos from \\d{4}',         │              │
 │                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
 │                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
 │                               │ . ](?P<month>\\d{1,2})',      │              │
@@ -138,6 +140,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ default      │
+│ clean.returned                │ True                          │ default      │
 │ clean.purge_hint_days         │ 30                            │ default      │
 │ clean.workers                 │ 4                             │ default      │
 │ clean.quarantine_headroom_gb  │ 1.0                           │ default      │
@@ -145,6 +148,13 @@ Effective settings
 │ review.identical_below        │ 6                             │ default      │
 │ review.brightness_gap         │ 60.0                          │ default      │
 │ review.clipped_gap            │ 0.25                          │ default      │
+│ review.unwanted               │ {'tiny_megapixels': 0.16,     │ default      │
+│                               │ 'screenshots': True,          │              │
+│                               │ 'dark_mean': 25.0,            │              │
+│                               │ 'dark_share': 0.7,            │              │
+│                               │ 'white_mean': 230.0,          │              │
+│                               │ 'white_share': 0.7,           │              │
+│                               │ 'blur_percentile': 2.0}       │              │
 │ classify.target               │                               │ default      │
 │ classify.leave                │ []                            │ default      │
 │ classify.timezone             │                               │ default      │
@@ -263,6 +273,8 @@ Effective settings
 │                               │ 20, 'confirm_above': 200,     │              │
 │                               │ 'seconds_per_photo': 4.5}     │              │
 │ classify.places               │ []                            │ default      │
+│ classify.place_photos         │ []                            │ default      │
+│ classify.clocks               │ []                            │ default      │
 │ classify.trip_min_km          │ 100.0                         │ default      │
 │ classify.trip_merge_gap_hours │ 48.0                          │ default      │
 │ classify.trip_merge_max_km    │ 120.0                         │ default      │
@@ -284,6 +296,8 @@ Effective settings
 │ places.attribution            │ © OpenStreetMap contributors  │ default      │
 │ places.nominatim_url          │ https://nominatim.openstreetm │ default      │
 │                               │ ap.org                        │              │
+│ places.folders                │ []                            │ default      │
+│ places.ignored                │ []                            │ default      │
 │ album.root                    │                               │ default      │
 │ tags.language                 │                               │ default      │
 │ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
@@ -300,6 +314,7 @@ Effective settings
 │                               │ 'scene', 'view']              │              │
 │ tags.town_km                  │ 20.0                          │ default      │
 │ tags.xmp_sources              │ ['vision', 'place']           │ default      │
+│ tags.xmp_folder_gps           │ False                         │ default      │
 │ people.similarity             │ 0.363                         │ default      │
 │ people.min_face               │ 40                            │ default      │
 │ people.min_sharpness          │ 30.0                          │ default      │
@@ -511,6 +526,7 @@ Effective settings
 │ folders.preferred             │ []                            │ config.toml  │
 │ folders.protected             │ []                            │ config.toml  │
 │ folders.excluded              │ []                            │ config.toml  │
+│ folders.backups               │ []                            │ config.toml  │
 │ scan.categories               │ {}                            │ config.toml  │
 │ scan.extensions               │ []                            │ config.toml  │
 │ scan.excluded_names           │ []                            │ config.toml  │
@@ -555,6 +571,7 @@ Effective settings
 │                               │ folder|Nouveau dossier)(      │              │
 │                               │ \\(\\d+\\))?',                │              │
 │                               │ 'Import(s|ed)?|Temp|tmp',     │              │
+│                               │ 'Photos from \\d{4}',         │              │
 │                               │ '(?P<year>(?:19|20)\\d{2})',  │              │
 │                               │ '(?P<year>(?:19|20)\\d{2})[-_ │              │
 │                               │ . ](?P<month>\\d{1,2})',      │              │
@@ -601,6 +618,7 @@ Effective settings
 │                               │ d{2}-\\d{2}(?:\\.\\.[\\d-]+)? │              │
 │                               │ ']                            │              │
 │ clean.confirm                 │ True                          │ config.toml  │
+│ clean.returned                │ True                          │ config.toml  │
 │ clean.purge_hint_days         │ 30                            │ config.toml  │
 │ clean.workers                 │ 4                             │ config.toml  │
 │ clean.quarantine_headroom_gb  │ 1.0                           │ config.toml  │
@@ -608,6 +626,13 @@ Effective settings
 │ review.identical_below        │ 6                             │ config.toml  │
 │ review.brightness_gap         │ 60.0                          │ config.toml  │
 │ review.clipped_gap            │ 0.25                          │ config.toml  │
+│ review.unwanted               │ {'tiny_megapixels': 0.16,     │ config.toml  │
+│                               │ 'screenshots': True,          │              │
+│                               │ 'dark_mean': 25.0,            │              │
+│                               │ 'dark_share': 0.7,            │              │
+│                               │ 'white_mean': 230.0,          │              │
+│                               │ 'white_share': 0.7,           │              │
+│                               │ 'blur_percentile': 2.0}       │              │
 │ classify.target               │                               │ config.toml  │
 │ classify.leave                │ []                            │ config.toml  │
 │ classify.timezone             │                               │ config.toml  │
@@ -726,6 +751,8 @@ Effective settings
 │                               │ 20, 'confirm_above': 200,     │              │
 │                               │ 'seconds_per_photo': 4.5}     │              │
 │ classify.places               │ []                            │ default      │
+│ classify.place_photos         │ []                            │ default      │
+│ classify.clocks               │ []                            │ default      │
 │ classify.trip_min_km          │ 100.0                         │ config.toml  │
 │ classify.trip_merge_gap_hours │ 48.0                          │ config.toml  │
 │ classify.trip_merge_max_km    │ 120.0                         │ config.toml  │
@@ -747,6 +774,8 @@ Effective settings
 │ places.attribution            │ © OpenStreetMap contributors  │ config.toml  │
 │ places.nominatim_url          │ https://nominatim.openstreetm │ config.toml  │
 │                               │ ap.org                        │              │
+│ places.folders                │ []                            │ default      │
+│ places.ignored                │ []                            │ default      │
 │ album.root                    │                               │ config.toml  │
 │ tags.language                 │                               │ config.toml  │
 │ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
@@ -763,6 +792,7 @@ Effective settings
 │                               │ 'scene', 'view']              │              │
 │ tags.town_km                  │ 20.0                          │ config.toml  │
 │ tags.xmp_sources              │ ['vision', 'place']           │ config.toml  │
+│ tags.xmp_folder_gps           │ False                         │ config.toml  │
 │ people.similarity             │ 0.363                         │ config.toml  │
 │ people.min_face               │ 40                            │ config.toml  │
 │ people.min_sharpness          │ 30.0                          │ config.toml  │

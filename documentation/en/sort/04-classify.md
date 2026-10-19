@@ -37,26 +37,27 @@ still there. The reports folder receives the workbook where you correct the prop
 ```text
 🔒 Read-only: your photos and videos are not touched.
 ─────────────────────────────────── Classify ───────────────────────────────────
-23 unchanged folders taken from the index, 0 read.
+24 unchanged folders taken from the index, 0 read.
 💡 A photo changed in place by another program? 'audit --full' reads every
 folder (done anyway for those listed 7 days ago).
 
-Already in place: 43 of 82 (52%).
+Already in place: 43 of 86 (50%).
 Proposal
 ┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
 ┃ Band    ┃ Files ┃ To move ┃
 ┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━┩
-│ Sure    │    76 │      33 │
-│ To sort │     3 │       3 │
-│ Undated │     3 │       3 │
+│ Sure    │    77 │      34 │
+│ To sort │     5 │       5 │
+│ Undated │     4 │       4 │
 └─────────┴───────┴─────────┘
 
 Why
-┌──────────────────┬────┐
-│ Existing folders │ 76 │
-│ No signal        │  3 │
-│ Undated          │  3 │
-└──────────────────┴────┘
+┌───────────────────────────┬────┐
+│ Existing folders          │ 76 │
+│ No signal                 │  5 │
+│ Undated                   │  4 │
+│ Screenshots and documents │  1 │
+└───────────────────────────┴────┘
 
 Largest categories
 ┌──────────────────┬────┐
@@ -72,15 +73,15 @@ Largest categories
 │ WhatsApp         │  3 │
 └──────────────────┴────┘
 
-⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
-Event neighbours, Christmas, New Year.
+⚠️  Rules that decided nothing: Films and series, Event neighbours, Christmas,
+New Year.
 💡 Check their dates, their patterns and their order in config.toml.
-To check or to sort: 3 files in 1 event.
+To check or to sort: 5 files in 1 event.
 💡 Nothing was changed: 'classify' only proposes.
 ✅ Workbook to edit:
-C:\Users\you\media-hygiene\reports\20261016-192346-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261019-153500-classify\classify.xlsx
 ✅ Report with the photos:
-C:\Users\you\media-hygiene\reports\20261016-192346-classify\report.html
+C:\Users\you\media-hygiene\reports\20261019-153500-classify\report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

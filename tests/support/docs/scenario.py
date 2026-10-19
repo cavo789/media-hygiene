@@ -57,6 +57,7 @@ CAPTURES: Final = frozenset(
         "review.txt",
         "review-near.txt",
         "review-pairs.txt",
+        "review-junk.txt",
         "decisions.json",
         "clean.txt",
         "undo.txt",

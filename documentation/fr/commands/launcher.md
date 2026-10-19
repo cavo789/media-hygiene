@@ -303,6 +303,12 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 │                                          déplacement, pas une copie). Par    │
 │                                          défaut : le dossier quarantine de   │
 │                                          votre dossier personnel.            │
+│ --backup              <str>              Une sauvegarde ou un ancien disque, │
+│                                          tel que l'Explorateur le montre :   │
+│                                          "E:\Sauvegarde". Monté en lecture   │
+│                                          seule pour chaque commande, clean   │
+│                                          compris, et donné en --backup :     │
+│                                          comparé, jamais modifié. Répétable. │
 │ --help        -h                         Affiche ce message et quitte.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

@@ -132,7 +132,9 @@ cavo789/media-hygiene audit --people
 │                         order matters.                                       │
 │ --protect        <str>  Folder never modified; its files are the copies      │
 │                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
+│ --backup         <str>  A backup or an old disk: compared, never changed.    │
+│                         Says what it lacks and what only it holds.           │
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮

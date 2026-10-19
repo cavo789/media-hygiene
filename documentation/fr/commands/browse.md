@@ -46,6 +46,8 @@ mh browse
 
 Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
 
+![La vue par dossiers : l'arbre des dossiers à gauche, les photos du dossier Anniversaire à droite dont deux marquées à mettre de côté, la ligne d'enregistrement et le bouton Appliquer maintenant](../images/browse.webp)
+
 - **L'arborescence** : vos dossiers montés, ouverts ; les dossiers en dessous, fermés (▸ en ouvre
   un). Cliquez un dossier : ses photos et vidéos apparaissent, triées par nom ou par date
   (**Trier par**).

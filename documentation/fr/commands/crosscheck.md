@@ -114,8 +114,10 @@ Les mêmes options de dossiers et d'analyse qu'[`audit`](audit.md#options) : `--
 │                         Répétable ; l'ordre compte.                          │
 │ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
 │                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
+│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
+│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
+│                         modifié. Dit ce qui lui manque et ce que lui seul    │
+│                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
 │ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │

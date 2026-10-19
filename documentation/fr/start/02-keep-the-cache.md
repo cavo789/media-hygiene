@@ -19,11 +19,11 @@ mh audit
 <!-- capture: audit-mh-again.txt|re:^─+ Audit|Rien de nouveau -->
 ```text
 ──────────────────────────────────── Audit ─────────────────────────────────────
-16 dossiers inchangés repris de l'index, 0 relus.
+17 dossiers inchangés repris de l'index, 0 relus.
 💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
 tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
 
-♻️  Rien de nouveau ni de modifié depuis le dernier audit : 61 fichiers repris
+♻️  Rien de nouveau ni de modifié depuis le dernier audit : 65 fichiers repris
 du cache.
 ```
 

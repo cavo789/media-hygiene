@@ -30,7 +30,7 @@ Le résultat compare maintenant les deux disques :
 ```text
 Résumé de l'audit
 ┌─────────────────────────────────────────────────────────────┬─────────┐
-│ Fichiers média analysés                                     │      85 │
+│ Fichiers média analysés                                     │      89 │
 │ Groupes de fichiers identiques                              │      20 │
 │ Copies en trop, à mettre de côté                            │      32 │
 │ Espace libérable                                            │ 14,0 Mo │

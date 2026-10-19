@@ -62,8 +62,8 @@ named, and the address of the page: a click on a face opens its photo. Ctrl+C st
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysed: 12 faces, 0.04 s per photo.
-✅ 17 faces in 43 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
+✅ 37 photos analysed: 13 faces, 0.04 s per photo.
+✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
 name is saved at once in config.toml. Ctrl+C stops it; the photos are not

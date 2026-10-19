@@ -45,6 +45,8 @@ mh browse
 
 Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 
+![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside, the saved line and the Apply now button](../images/browse.webp)
+
 - **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
   folder: its photos and videos appear, sorted by name or by date (**Sort by**).
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the

@@ -164,11 +164,12 @@ cavo789/media-hygiene clean --yes
 │                                             (swap or leave alone some folder │
 │                                             pairs) or written by 'review'    │
 │                                             (burst shots set aside, near     │
-│                                             duplicates decided). A relative  │
-│                                             path is read from the folder     │
-│                                             mounted on /reports. The file is │
-│                                             refused if the folders, the      │
-│                                             pairs or the series changed.     │
+│                                             duplicates decided) or by        │
+│                                             'search' (photos set aside). A   │
+│                                             relative path is read from the   │
+│                                             folder mounted on /reports. The  │
+│                                             file is refused if the folders,  │
+│                                             the pairs or the series changed. │
 │                                             Alone, --decisions reads         │
 │                                             decisions.json.                  │
 │ --yes        -y                             Do not ask for confirmation      │
@@ -186,7 +187,9 @@ cavo789/media-hygiene clean --yes
 │                         order matters.                                       │
 │ --protect        <str>  Folder never modified; its files are the copies      │
 │                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
+│ --backup         <str>  A backup or an old disk: compared, never changed.    │
+│                         Says what it lacks and what only it holds.           │
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮

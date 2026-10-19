@@ -35,12 +35,12 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261016-192704 ────────────────
+─────────────── Annulation de l'exécution clean 20261019-153731 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261016-192704
+20261019-153731
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,6 Mo │
@@ -80,12 +80,13 @@ mh history
 <!-- capture: history.txt -->
 ```text
 Exécutions (les plus récentes d'abord)
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃ Exécution       ┃ Commande ┃ Supprimés ┃ Libéré ┃ En quarantaine ┃ Restaurés ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ 20261016-192706 │ clean    │         1 │      0 │             41 │         0 │
-│ 20261016-192704 │ clean    │         1 │      0 │             35 │        36 │
-└─────────────────┴──────────┴───────────┴────────┴────────────────┴───────────┘
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃                 ┃         ┃          ┃        ┃      En ┃ Dossiers ┃         ┃
+┃ Exécution       ┃ Comman… ┃ Supprim… ┃ Libéré ┃ quaran… ┃ supprim… ┃ Restau… ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│ 20261019-153734 │ clean   │        1 │      0 │      41 │        9 │       0 │
+│ 20261019-153731 │ clean   │        1 │      0 │      35 │        7 │      43 │
+└─────────────────┴─────────┴──────────┴────────┴─────────┴──────────┴─────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
 
@@ -113,7 +114,7 @@ mh purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261016-192706 (41 fichiers, 16,4 Mo) ? [o/N] o
+❓ Effacer la quarantaine de 20261019-153734 (41 fichiers, 16,4 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 16,4 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.
 ```

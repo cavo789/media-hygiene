@@ -29,7 +29,7 @@ The result now compares the two disks:
 ```text
 Audit summary
 ┌──────────────────────────────────────────────────────┬─────────┐
-│ Media files scanned                                  │      85 │
+│ Media files scanned                                  │      89 │
 │ Groups of identical files                            │      20 │
 │ Extra copies that can be set aside                   │      32 │
 │ Space that can be freed                              │ 14.0 MB │

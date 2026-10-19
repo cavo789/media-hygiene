@@ -136,7 +136,7 @@ are drawn by a program):
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Audit summary
 ┌──────────────────────────────────────────────────────┬────────┐
-│ Media files scanned                                  │     61 │
+│ Media files scanned                                  │     65 │
 │ Groups of identical files                            │      8 │
 │ Extra copies that can be set aside                   │     12 │
 │ Space that can be freed                              │ 3.4 MB │
@@ -167,7 +167,7 @@ What you can do
 kept whole.
 
 ✅ HTML report:
-C:\Users\you\media-hygiene\reports\20261016-192337-audit\report.html
+C:\Users\you\media-hygiene\reports\20261019-153448-audit\report.html
 👉 What next: run 'clean' to set 3.4 MB of copies aside.
 mh clean
 💡 Type mh open: your browser shows every report.

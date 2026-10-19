@@ -28,13 +28,15 @@ http://127.0.0.1:8088/ dans votre navigateur* :
 
 <!-- capture: review-pairs.txt|paire|127.0.0.1:8088:8088 -->
 ```text
-9 paires de dossiers, la plus grande place libérée d'abord ; déjà décidées : 0.
+7 paires de dossiers, la plus grande place libérée d'abord ; déjà décidées : 0.
 ✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
 décision est enregistrée aussitôt dans decisions.json, dans le dossier monté sur
 /reports. Ctrl+C arrête le tri.
 💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
 avec -p 127.0.0.1:8088:8088.
 ```
+
+![La revue des paires de dossiers : la première paire, C:\Photos\2019\Vacances à la mer encadré en vert (il garde ses copies), D:\Ancien disque\Photos 2019 en pointillés rouges, les touches à gauche dont K pour garder les deux noms en liens](../images/review-pairs.webp)
 
 La page montre une paire à la fois, de la plus grande place libérée à la plus petite : le dossier
 qui garde ses copies encadré en vert, celui qui les perd en pointillés rouges, le nombre de

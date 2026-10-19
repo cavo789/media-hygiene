@@ -43,7 +43,7 @@ On the demo library of this guide, 10 photos measured:
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysed: 5 faces, 0.04 s per photo.
+✅ 10 photos analysed: 4 faces, 0.03 s per photo.
 ```
 
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about
@@ -98,8 +98,8 @@ group) and prints the address of the page, `http://127.0.0.1:8088/`: Ctrl+click 
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 33 photos analysed: 12 faces, 0.04 s per photo.
-✅ 17 faces in 43 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
+✅ 37 photos analysed: 13 faces, 0.04 s per photo.
+✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
 name is saved at once in config.toml. Ctrl+C stops it; the photos are not
@@ -166,11 +166,13 @@ there, the rule goes right above *Existing folders*, or that rule would decide t
 <!-- capture: classify-person.txt|re:^Why$|<blank> -->
 ```text
 Why
-┌──────────────────┬────┐
-│ With Chloé       │ 25 │
-│ Existing folders │ 18 │
-│ Undated          │  1 │
-└──────────────────┴────┘
+┌───────────────────────────┬────┐
+│ With Chloé                │ 25 │
+│ Existing folders          │ 18 │
+│ Undated                   │  2 │
+│ No signal                 │  2 │
+│ Screenshots and documents │  1 │
+└───────────────────────────┴────┘
 ```
 
 What to check:

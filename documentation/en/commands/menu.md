@@ -58,7 +58,7 @@ your browser. `mh` runs these three itself: [what `mh` does by itself](launcher.
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-16 19:23 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-10-19 15:34 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 
@@ -96,17 +96,19 @@ Quarantine: empty.
    12 mh tags                           Give your photos words       🔒
    13 mh search                         Find a photo by its words,   🔒
                                         in your browser
-   14 mh xmp                            Carry the words into other   ↩️ optional
+   14 mh browse                         Walk through your folders,   🔒 optional
+                                        set photos aside
+   15 mh xmp                            Carry the words into other   ↩️ optional
                                         photo software
-   15 mh inventory                      Every photo and video in an  🔒 optional
+   16 mh inventory                      Every photo and video in an  🔒 optional
                                         Excel workbook
       Reach mh without typing (Windows)
-   16 mh shortcut                       An icon on the Desktop and   🔒 optional
-                                        in the Start menu opens this
-                                        menu
-   17 mh explorer                       Right-click a folder in      🔒 optional
-                                        Explorer: this menu, on that
-                                        folder
+   17 mh shortcut                       An icon on the Desktop and   🔒 optional
+                                        in the Start menu opens the
+                                        home page
+   18 mh explorer                       Right-click a folder in      🔒 optional
+                                        Explorer: the home page, on
+                                        that folder
 
 🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good
 🤖 classify and tags can also ask a local AI model: set [classify.ai] model in
@@ -116,7 +118,7 @@ https://cavo789.github.io/media-hygiene/sort/quick-guide/
 Your folders: mh folders. A new version: mh update.
 Enter runs step 3 (mh clean). Another number runs that step. Ctrl+C leaves.
 ⚠️  The menu runs its steps through mh: write it once with 'launcher' (step 0 of
-the guides), then type mh alone.
+the guides), then type mh menu.
 ```
 
 ## Good to know
