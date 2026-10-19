@@ -1144,11 +1144,19 @@ if (Wanted 19) {
         $copies = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue)
         Log ("   19i. read back: {0} files, {1:N1} MB under {2}\Phone; staging folders left: {3}" -f $copies.Count, (($copies | Measure-Object Length -Sum).Sum / 1MB), $phoneLibrary, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
         foreach ($copy in ($copies | Select-Object -First 3)) { Log ("   19i. '{0}': modified {1}, created {2}" -f $copy.Name, $copy.LastWriteTime, $copy.CreationTime) }
-        $largest = @($copies | Sort-Object Length -Descending | Select-Object -First 5)
+        # Enough to copy for a minute: 5 videos (0.19 GB) took 8.8 s at 29.5 MB/s, too fast to
+        # pull the cable in time (measured 2026-10-19). The largest copies up to 2 GB, 5 at least.
+        $largest = @()
+        $sum = 0
+        foreach ($copy in ($copies | Sort-Object Length -Descending)) {
+            if ($largest.Count -ge 5 -and $sum -ge 2GB) { break }
+            $largest += $copy
+            $sum += $copy.Length
+        }
         if ($largest.Count -gt 0) {
             foreach ($copy in $largest) { Remove-Item -LiteralPath $copy.FullName -Force }
-            Log ("   19j. the 5 largest copies removed ({0:N1} MB): the next mh phone copies them again" -f (($largest | Measure-Object Length -Sum).Sum / 1MB))
-            Read-Host "19j. Next: as soon as the line '1/5' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
+            Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
+            Read-Host "19j. Next: when the line '2/$($largest.Count)' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
             $watch = [Diagnostics.Stopwatch]::StartNew()
             $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
             foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
