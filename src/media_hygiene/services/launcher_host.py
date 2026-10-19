@@ -2,12 +2,13 @@ r"""The commands `mh` runs on the host itself, without `docker run` (0175-0181).
 
 The container can neither open a browser nor write a Windows shortcut or registry key:
 `mh open` (the reports in the browser), `mh shortcut` (an icon opening the menu) and
-`mh explorer` (the right-click entry of a folder) are functions of the script, and so
-are `mh folders` and `mh update`, which write the script itself again. `mh`
+`mh explorer` (the right-click entry of a folder and of an open folder's background,
+0188) are functions of the script, and so are `mh folders` and `mh update`, which
+write the script itself again. `mh`
 dispatches them before anything else, by their first word; the bash script says that
-`shortcut` and `explorer` are for Windows. Their messages are written into the
-script, translated, with the shell variables they show (`${index}`, `${path}`,
-`${key}`, `$1`).
+`shortcut`, `explorer` and `phone` (0219) are for Windows. Their messages are written
+into the script, translated, with the shell variables they show (`${index}`,
+`${path}`, `${key}`, `$1`).
 """
 
 from __future__ import annotations
@@ -37,12 +38,16 @@ EXPLORER: Final = "explorer"
 # Both write `mh` again by running `launcher` (0176, 0177: `launcher_kept.py`).
 FOLDERS: Final = "folders"
 UPDATE: Final = "update"
-HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE)
-WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER)
+# Copies the new photos of a phone over USB, which only Windows PowerShell reads (0219).
+PHONE: Final = "phone"
+HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PHONE)
+WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER, PHONE)
 # The name of the shortcut and of the right-click entry.
 LABEL: Final = "Media Hygiene"
 # HKCU: the user's own key, no administrator needed.
 EXPLORER_KEY: Final = r"HKCU:\Software\Classes\Directory\shell\MediaHygiene"
+# The same entry on the background of an open folder, where `%V` is that folder (0188).
+BACKGROUND_KEY: Final = EXPLORER_KEY.replace(r"\shell", r"\Background\shell")
 # Explorer puts the folder after a `#`: a comment for PowerShell, so that no character
 # of its name (an apostrophe) breaks the command; `mh` reads it from the command line.
 FROM_EXPLORER: Final = "--from-explorer"
@@ -66,7 +71,7 @@ class HostTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     not_saved: str  # holds `$path`
     denied: str  # access refused: an antivirus may lock a path (0190)
     shortcut: str
-    explorer: str  # holds `$key`
+    explorer: str
     removed: str  # holds `$key`
     not_removed: str  # holds `$key`
     no_icon: str  # the icon could not be copied from the image (0194)
@@ -82,6 +87,7 @@ class HostCommands:  # pylint: disable=too-many-instance-attributes  # one per t
     texts: HostTexts
     label: str = LABEL
     key: str = EXPLORER_KEY
+    background: str = BACKGROUND_KEY
     flag: str = FROM_EXPLORER
     icon: str = ICON  # its path in the image
     icon_name: str = ICON_NAME
@@ -163,13 +169,11 @@ def _texts(reports: str) -> HostTexts:
                 "the mh menu opens."
             )
         ),
-        explorer=with_variable(
+        explorer=shell_safe(
             _(
-                "Right-click a folder, then Media Hygiene: the mh menu opens on it. "
-                "Read back from {key}:"
-            ),
-            "{key}",
-            "${key}",
+                "Right-click a folder, or the empty space of an open folder, then "
+                "Media Hygiene: the mh menu opens on that folder."
+            )
         ),
         removed=with_variable(
             _("Right-click entry removed: {key} is gone."), "{key}", "${key}"

@@ -21,22 +21,22 @@ was not measured. That is fixed in step 19 since (`PhoneSize`, `PhoneDate`).
 
 ## What to do
 
-New parts of step 19, after 19f, each said before it runs ("this writes ONE test file to the
+New parts of step 19, after 19f and after 0219's parts 19h-19k (`mh phone` end to end), each said before it runs ("this writes ONE test file to the
 phone, then deletes it"), and asked once (`y` to go on, anything else skips them):
 
-- **19h** write a test file to the phone: a small synthetic JPEG made by the script (never a
+- **19l** write a test file to the phone: a small synthetic JPEG made by the script (never a
   photo of the maintainer), named `mh-measure-<stamp>.jpg`, copied with `CopyHere` into the
   phone's `DCIM` (a subfolder `mh-measure` created there with `NewFolder`). Log whether it
   appears, its `System.Size`.
-- **19i** delete it with `$item.InvokeVerb("delete")`: log the time, whether a dialog showed
+- **19m** delete it with `$item.InvokeVerb("delete")`: log the time, whether a dialog showed
   (ask the maintainer, with the Alt+Tab hint of 19f), whether the item is gone when the folder
   is listed again. Then write a second test file and try the other ways, each logged the same:
   `InvokeVerbEx("delete")`, and `MoveHere` of the phone's file into the temporary folder of the
   PC (is the phone's copy gone after? does a dialog show?).
-- **19j** remove the `mh-measure` folder of the phone (the same way that worked), and list the
+- **19n** remove the `mh-measure` folder of the phone (the same way that worked), and list the
   phone's `DCIM` again: only the test files changed, every other file still there (count before
   and after, logged).
-- **19k** the read speed for the proof of 0248: copy the 20 files of 19d once more into an
+- **19o** the read speed for the proof of 0248: copy the 20 files of 19d once more into an
   **empty** folder (no dialog), waited for by `PhoneSize`, then `Get-FileHash -Algorithm SHA256`
   of each: MB/s of the copy, MB/s of the hash.
 - Ask the maintainer to look at the phone's gallery: are the test files in its trash?

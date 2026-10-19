@@ -45,3 +45,30 @@ picker.
 ## Gain (estimated)
 
 Adding a folder: typing a quoted Windows path → two clicks in a familiar window.
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `mh.ps1`: `mh folders add` alone opens Windows' folder dialog through COM
+  (`Shell.Application.BrowseForFolder`, owner the console's `MainWindowHandle`, 0 when unknown, root
+  This PC = 17, options 0x41 = file-system folders + new dialog style); no `Add-Type`, no Windows
+  Forms. Cancel: "No folder chosen: nothing changed." The folder chosen goes through the same checks
+  (exists, drive letter, not listed yet), rewrite and read-back as a typed one.
+- Dialog title translated and shell-safe (`UpdateTexts.pick`); the PowerShell usage line names the
+  window (`usage_windows`); the bash `mh` and its usage line are unchanged.
+- Tests (`test_launcher_folders.py`): the dialog only for `add` alone, cancel, the checks kept, ASCII,
+  no Add-Type nor Forms; bash has no dialog.
+- Docs both languages: launcher page (`mh folders`), step 3 ("or `mh folders add` alone").
+- Step 11 of `mh-measure.ps1` extended (11f chosen, 11g cancelled: file unchanged, antivirus asked).
+
+### Not done
+- The Windows run (maintainer): image built from branch `iterate/2026-10-19`, then
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Unblock-File .\mh-measure.ps1
+  .\mh-measure.ps1 -Only 11 -Count 20
+  ```
+  (the window opens in front of the console, cancel changes nothing, the folder chosen is added and
+  read back, Avast says nothing). **Reason:** needs Windows.
+- No documentation capture is stale.

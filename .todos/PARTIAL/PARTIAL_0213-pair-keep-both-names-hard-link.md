@@ -60,3 +60,44 @@ the kept one (`COPY_FROM_KEEPER`).
 
 For pairs of meaningful folders: the copies' space freed without losing either folder's view of
 the photos.
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `PairAction.LINK` (`plan/review.py`): the pair's copies go to `KeepDecision.linked`, never
+  removed; a swap in the same group spares them; a linked copy is not moved by a burst or
+  `search` choice. `plan/pair_links.py`: `link_refusal` (two drive letters, two devices by the
+  scan's identity, unknown identity, protected kept folder), counts and size.
+- Offered in the report (*Keep both names (link)*, only when `linkable`) and in `review --pairs`
+  (key `K`, refused when not linkable); `clean --decisions` refuses a link decision across
+  drives or to a protected folder (`services/pair_checks.py`, the swap check moved there too).
+- `actions/clean_links.py`: byte comparison (`checked_removal`), device check, journal
+  `link-duplicate` (`pending`, `done`, `keeper`, `sha256`), `os.link` to a hidden draft
+  `.<name>.media-hygiene-link` then `Path.replace` over the copy; EXDEV / no-link filesystems
+  said in plain words; a draft left by a killed run is taken over, a user's file of that name
+  stops the link.
+- `undo` (`actions/link_undo.py`, `Reversal.SEPARATE_LINK`): copy of the name to a draft,
+  proven identical, the copy's date back, `replace`; a name no longer a link is left and
+  said; a `pending` entry whose name is no link was never done (`actions/undo_pending.py`).
+- The question before cleaning says the phrase and what a link is (`console/link_view.py`);
+  `history` counts the links in *Linked* and their bytes in *Freed* (not *Deleted*);
+  `plan.csv` lists them; docs both languages (step 12, safety, `clean`, `undo`); French .po.
+- Tests: `tests/integration/test_clean_links.py` (demo tree both ways, D: never offered,
+  byte mismatch, EXDEV, stopped before the rename, killed after it, draft leftovers, undo
+  cases, history), `tests/unit/test_pair_links.py`, `review --pairs` K, refused decision.
+- Step 22 of `tests/measure/mh-measure.ps1`.
+
+### Not done
+- The Windows check (maintainer): image built from branch `iterate/2026-10-19`, then
+  ```powershell
+  cd C:\temp
+  Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1
+  Unblock-File .\mh-measure.ps1
+  powershell -File .\mh-measure.ps1 -Only 22 -Count 3
+  ```
+  It links a pair through Docker Desktop, logs `fsutil hardlink list` and C:'s free space,
+  asks what Explorer shows, then for a photo edited and saved in the Photos app (does the
+  other name change too?), and undoes. Its result goes into the docs (step 12: what an edit
+  in Photos does).
+  **Reason:** only Windows + Docker Desktop can show whether `os.link` + `os.replace` through
+  the file sharing make a true NTFS hard link, and what Photos does on save.

@@ -121,6 +121,12 @@ class PairsSession(RankedSession[PairAction]):
                 "cannot be swapped."
             )
             return message.format(folder=state.kept_in)
+        if action is PairAction.LINK and not state.linkable:
+            message = _(
+                "{folder} is protected, or the two folders are on two drives: the "
+                "pair cannot keep both names."
+            )
+            return message.format(folder=state.kept_in)
         return None
 
     def save(self) -> None:

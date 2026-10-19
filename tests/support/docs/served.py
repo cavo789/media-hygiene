@@ -1,6 +1,7 @@
 """The pages served on 127.0.0.1:8088, shot inside the Playwright image by `browser.py`.
 
-The burst review, the near-duplicate review, the search page and the people page.
+The reviews (bursts, near, pairs, junk), the home and browse pages, search, people
+and places.
 Copied next to `browser.py`, which imports it; Python 3.10 there: nothing newer here.
 """
 
@@ -39,6 +40,11 @@ TILES_SHOWN_JS: Final = (
     "return tiles.length > 0 && "
     "tiles.every((tile) => tile.classList.contains('leaflet-tile-loaded')); }"
 )
+PREVIEWS_SHOWN_JS: Final = (
+    "() => [...document.querySelectorAll('#previews img')]"
+    ".every((image) => image.complete)"
+)
+AUDIT_MS: Final = 300_000
 TILES_MS: Final = 30_000
 PAUSE_MS: Final = 500
 VIDEO_PAUSE_MS: Final = 2000  # the loading spinner fades out
@@ -97,13 +103,70 @@ def near(page: Page) -> None:
 
 
 def pairs(page: Page) -> None:
-    """The folder pairs review: the largest pair shown, nothing decided.
-
-    No screenshot yet: an image the pages do not show fails the documentation tests.
-    """
+    """The folder pairs review: the largest pair shown, nothing decided."""
     page.goto(SERVED)
     page.wait_for_selector("#keptIn div")
     page.wait_for_selector("#status:not(:empty)")  # decisions.json read back
+    shots_shown(page)
+    _fit(page)
+    shots_shown(page)
+    page.screenshot(path=SHOTS / "review-pairs.png")
+
+
+def junk(page: Page) -> None:
+    """The photos most likely unwanted: the first group, everything still proposed."""
+    page.goto(SERVED)
+    page.wait_for_selector("#shots figure")
+    page.wait_for_function(FACES_SHOWN_JS.replace("#groups", "#shots"))
+    _fit(page)
+    page.wait_for_timeout(PAUSE_MS)
+    page.screenshot(path=SHOTS / "review-junk.png")
+
+
+def home(page: Page) -> None:
+    """The home page after its own audit: the steps with their times, the next step."""
+    page.goto(SERVED)
+    page.wait_for_selector("#guides *")
+    page.click("#auditStart")
+    page.wait_for_selector("#auditEnd a", timeout=AUDIT_MS)  # link to the new report
+    page.wait_for_selector("#previews img", timeout=AUDIT_MS)
+    page.wait_for_function(PREVIEWS_SHOWN_JS)
+    page.mouse.move(5, 5)
+    page.wait_for_timeout(PAUSE_MS)
+    page.screenshot(path=SHOTS / "home.png", full_page=True)
+
+
+def browse(page: Page, name: str) -> None:
+    """The folder view: a folder opened, two photos picked and set aside, saved.
+
+    Args:
+        page: The browser tab.
+        name: The last part of the folder to open (its path ends with it).
+    """
+    page.goto(SERVED)
+    page.wait_for_selector("#tree .folder")
+    page.evaluate(
+        "document.querySelectorAll('#tree ul[hidden]')"
+        ".forEach((list) => { list.hidden = false; })"
+    )
+    page.locator(f'.folder[data-path$="{name}"]').first.click()
+    page.wait_for_selector("#grid article")
+    page.wait_for_function(HITS_SHOWN_JS.replace("#grid .hit", "#grid article"))
+    page.locator("#grid article").nth(1).click()
+    page.locator("#grid article").nth(2).click(modifiers=["Control"])
+    page.click("#setAside")
+    page.wait_for_selector("#grid .badge")
+    page.wait_for_selector("#applyNow:not([hidden])")
+    page.mouse.move(5, 5)
+    page.wait_for_timeout(PAUSE_MS)
+    page.screenshot(path=SHOTS / "browse.png")
+    # Put them back: `clean --decisions` would set the two photos aside in the story.
+    page.locator("#grid article").nth(1).click()
+    page.locator("#grid article").nth(2).click(modifiers=["Control"])
+    page.click("#takeBack")
+    page.wait_for_function(
+        "() => document.querySelectorAll('#grid .badge').length === 0"
+    )
 
 
 def search(page: Page, words: str) -> None:

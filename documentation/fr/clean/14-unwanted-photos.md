@@ -51,13 +51,18 @@ mh review --junk
 Il fait d'abord l'audit, puis compte les photos par raison et affiche *✅ Tri prêt, ouvrez
 http://127.0.0.1:8088/ dans votre navigateur* :
 
+<!-- capture: review-junk.txt|semblent indésirables|127.0.0.1:8088:8088 -->
 ```text
-4 photos semblent indésirables (image minuscule : 2, capture d'écran ou document : 1, presque
-noire : 1) ; rien n'est mis de côté sans vous.
-✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque décision est
-enregistrée aussitôt dans decisions.json, dans le dossier monté sur /reports. Ctrl+C arrête le
-tri.
+4 photos semblent indésirables (image minuscule: 2, presque noire: 1, capture
+d'écran ou document: 1) ; rien n'est mis de côté sans vous.
+✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre navigateur. Chaque
+décision est enregistrée aussitôt dans decisions.json, dans le dossier monté sur
+/reports. Ctrl+C arrête le tri.
+💡 La page ne s'ouvre pas ? docker run doit publier le même port des deux côtés,
+avec -p 127.0.0.1:8088:8088.
 ```
+
+![La revue des photos indésirables : le premier groupe, chaque photo proposée à l'écart en pointillés rouges avec sa raison, sa taille et son dossier écrits dessous](../images/review-junk.webp)
 
 ## Étape 2 : choisir
 

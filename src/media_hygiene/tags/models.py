@@ -26,6 +26,10 @@ class TagSource(StrEnum):
     # The meaningful words of the folders and names its copies had, those `clean`
     # removed (0207); the words its own folders and name give are not repeated.
     FORMER = "former"
+    # The description typed in Google Photos (a Takeout `.json`, 0240): its words and
+    # its sentence whole. Not the model's `caption`, which `describe` rebuilds; not
+    # written into a sidecar unless the user adds it to `[tags] xmp_sources`.
+    TAKEOUT = "takeout"
     DATE = "date"  # year, month, season, holidays, calendar rules
     PLACE = "place"  # a personal place, the GeoNames town and country
     # The names of the people on the photo (`people`), made at each search from the
@@ -47,6 +51,7 @@ CHEAP_SOURCES: Final = (
     TagSource.FOLDER,
     TagSource.NAME,
     TagSource.FORMER,
+    TagSource.TAKEOUT,
     TagSource.DATE,
     TagSource.PLACE,
 )

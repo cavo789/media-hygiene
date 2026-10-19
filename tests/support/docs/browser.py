@@ -1,6 +1,7 @@
 """Screenshots taken inside the Playwright image: `python browser.py <mode> [args]`.
 
-Modes: `review`, `near`, `pairs`, `search <words>`, `people <name>`, `places <name>`
+Modes: `review`, `near`, `pairs`, `junk`, `home`, `browse <folder>`, `search <words>`,
+`people <name>`, `places <name>`
 (the pages served on 127.0.0.1:8088, see `served.py`), `reports <audit> <clean>
 <classify>` (report folders of /reports), `terminal <name>...` (SVG terminals in
 /shots). Every shot lands in /shots. The image runs Python 3.10: nothing newer here.
@@ -31,7 +32,9 @@ VIEW_BOX_JS: Final = (
     " return [box.width, box.height]; }"
 )
 REVIEW_WIDTH: Final = 1600
-REVIEWS: Final = frozenset({"review", "near", "pairs"})  # a function each in served.py
+REVIEWS: Final = frozenset(
+    {"review", "near", "pairs", "junk", "home", "browse"}
+)  # a function each in served.py
 REPORT_WIDTH: Final = 1180
 HEIGHT: Final = 1000
 PAUSE_MS: Final = 500
@@ -185,8 +188,10 @@ def main() -> None:
         page = browser.new_page(
             viewport={"width": width, "height": HEIGHT}, color_scheme="light"
         )
-        if mode in REVIEWS:
+        if mode in REVIEWS - {"browse"}:
             getattr(served, mode)(page)
+        elif mode == "browse":
+            served.browse(page, arguments[0])
         elif mode == "search":
             served.search(page, arguments[0])
         elif mode == "people":

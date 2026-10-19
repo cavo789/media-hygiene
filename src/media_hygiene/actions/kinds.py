@@ -37,6 +37,9 @@ class ActionKind(StrEnum):
     # (`keeper`), and the marker telling the scans to skip that folder.
     LINK = "link"
     MARK_ALBUM = "mark-album"
+    # Written by `clean --decisions`: a copy replaced by a hard link to its kept file
+    # (`keeper`), a pair that keeps both names (0213).
+    LINK_DUPLICATE = "link-duplicate"
     # Written by `xmp`: a sidecar created next to a photo, or one of another
     # application rewritten with our words (its previous bytes kept in `quarantine`).
     CREATE_XMP = "create-xmp"
@@ -102,6 +105,8 @@ REMEMBERED: Final = frozenset(
         ActionKind.MARK_GONE,
     }
 )
+# Hard links a run made: an album's (nothing freed), a copy's (its bytes freed).
+LINKS: Final = frozenset({ActionKind.LINK, ActionKind.LINK_DUPLICATE})
 # Journal marks: no file is deleted, moved nor freed by them (0224).
 MARKS: Final = frozenset({ActionKind.MARK_GONE})
 # Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.

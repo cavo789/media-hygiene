@@ -14,6 +14,9 @@ mh folders add "D:\Old disk"
 mh audit
 ```
 
+Or type `mh folders add` alone: Windows' folder window opens, choose the folder in it, then *OK*
+(no quotes, no path to type).
+
 `mh` writes itself again with that folder, then shows your folders read back from its file.
 `mh folders` alone lists them, each *found* or *not found* (a disk not plugged in);
 `mh folders remove "D:\Old disk"` takes one out, a renamed folder too. Several folders from the
@@ -26,7 +29,7 @@ The result now compares the two disks:
 ```text
 Audit summary
 ┌──────────────────────────────────────────────────────┬─────────┐
-│ Media files scanned                                  │      85 │
+│ Media files scanned                                  │      89 │
 │ Groups of identical files                            │      20 │
 │ Extra copies that can be set aside                   │      32 │
 │ Space that can be freed                              │ 14.0 MB │
@@ -96,8 +99,15 @@ a **backup** instead: the tool reads it and compares it, never changes it, and n
 aside because the backup has it too.
 
 ```powershell
-mh audit --backup "D:\backup"
+mh folders add --backup "D:\backup"
+mh audit
 ```
+
+`mh` writes itself again with that backup: from then on, it is mounted **read-only for every
+command, `clean` included**, so Windows itself refuses any change in it, and given to the
+commands that compare (`audit`, `review`, `clean`, `crosscheck`). `mh folders` lists it apart,
+under *Your backups, compared, never changed*; `mh folders remove "D:\backup"` takes it out.
+From the start: `--backup "D:\backup"` in the `launcher` line of [step 1](01-first-audit.md#write-mh-once).
 
 The audit then answers the two questions, in two lines:
 
@@ -113,6 +123,21 @@ The audit then answers the two questions, in two lines:
 The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `plan.csv`, list
 every file ([Compare a backup or an old disk](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
 A folder that must not even be read is [excluded](../clean/05-choose-the-kept-copy.md#exclude-a-folder) instead.
+
+## A phone? Copy only its new photos
+
+Plugging a phone in and copying everything each time brings back every photo you already have,
+and the cleaning that follows. On Windows, `mh phone` copies only the photos and videos your
+library does not hold yet, nor the ones you set aside on purpose before:
+
+```powershell
+mh phone
+mh audit
+```
+
+They land in `<your first photo folder>\Phone\<the phone's name>` (`--to` chooses another
+folder); the phone itself is only read. How it decides, and what to do when the cable comes
+out: [`mh phone`](../commands/launcher.md#a-phone-copy-only-its-new-photos-mh-phone).
 
 ## Good to know
 

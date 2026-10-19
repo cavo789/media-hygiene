@@ -40,7 +40,7 @@ def _serve(
         for route, body in calls:
             answers.append(await _call(app, route, body))
 
-    monkeypatch.setattr(search_service, "run_server", fake_server(browse))
+    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(browse))
     result = run(cli, "search")
     assert result.exit_code == 0, result.output
     return answers, result.output

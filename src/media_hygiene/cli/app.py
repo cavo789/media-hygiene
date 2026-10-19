@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import typer
 
+from media_hygiene.cli.cmd_phone_plan import phone_plan_command
 from media_hygiene.cli.commands import commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
@@ -11,6 +12,7 @@ from media_hygiene.cli.safety import help_of
 from media_hygiene.cli.usage_errors import localize_error_frame
 from media_hygiene.constants import APP_NAME, DOC_PAGES
 from media_hygiene.i18n import _
+from media_hygiene.services.phone_plan import PHONE_PLAN
 
 # One short command per line, so a copy/paste stays a single command.
 # "\b" tells Click not to re-wrap the block.
@@ -75,4 +77,12 @@ def build_app() -> typer.Typer:
             short_help=help_text,
             rich_help_panel=panel,
         )(function)
+    # Plumbing for `mh phone` only (0219): hidden from `--help`, no page of its own.
+    plumbing = _("For mh phone: which files of a phone are new, from its listing.")
+    app.command(
+        name=PHONE_PLAN,
+        cls=LocalizedCommand,
+        help=help_of(PHONE_PLAN, plumbing),
+        hidden=True,
+    )(phone_plan_command)
     return app

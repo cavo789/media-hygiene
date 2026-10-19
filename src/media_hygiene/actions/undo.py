@@ -9,7 +9,7 @@ import logging
 import threading
 from dataclasses import replace
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import (
@@ -23,15 +23,10 @@ from media_hygiene.actions.outcome import Incident, Outcome, Tally, why
 from media_hygiene.actions.parallel import WORKERS, Runner, run_all, stopping_on
 from media_hygiene.actions.quarantine import LeftFolders
 from media_hygiene.actions.restore import perform
-from media_hygiene.actions.reversal import (
-    XMP_REVERSALS,
-    Reversal,
-    blocker,
-    reversal_of,
-)
+from media_hygiene.actions.reversal import Reversal, blocker, reversal_of
 from media_hygiene.actions.runs import run_phase
 from media_hygiene.actions.undo_chains import stages
-from media_hygiene.actions.xmp_undo import never_written
+from media_hygiene.actions.undo_pending import never_happened
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
@@ -41,10 +36,6 @@ if TYPE_CHECKING:
     from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
-# Undone by removing what the action created: the path existing proves it happened.
-_NOT_ABOUT_THE_PATH: Final = frozenset(
-    {Reversal.REMOVE_CREATED_FOLDER, Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER}
-)
 
 
 def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
@@ -152,7 +143,7 @@ class UndoExecutor:
             entry: Latest state of the action to reverse.
             reversal: How it is reversed.
         """
-        if _never_happened(entry, reversal):
+        if never_happened(entry, reversal):
             _LOGGER.debug("Interrupted before acting, nothing to undo: %s", entry.path)
             return
         reason = blocker(entry, reversal)
@@ -174,26 +165,3 @@ class UndoExecutor:
             self._tally.done += 1
             if entry.action is not ActionKind.LINK:  # removing a link frees nothing
                 self._tally.bytes_done += entry.size
-
-
-def _never_happened(entry: JournalEntry, reversal: Reversal) -> bool:
-    """Tell whether a run stopped before this action changed anything.
-
-    A `pending` action may have happened (stopped before its `done` line) or not
-    (stopped before it acted). A file still where the action would have taken it
-    from was never touched: there is nothing to undo, and nothing to warn about.
-
-    Args:
-        entry: Latest state of the action.
-        reversal: How it is undone.
-
-    Returns:
-        True for a `pending` file action whose file is still in place.
-    """
-    if reversal in XMP_REVERSALS:
-        return never_written(entry)
-    return (
-        entry.status is Status.PENDING
-        and reversal not in _NOT_ABOUT_THE_PATH
-        and Path(entry.path).exists()
-    )

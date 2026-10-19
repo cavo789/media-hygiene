@@ -48,7 +48,7 @@ The audit starts by saying what it analyses:
 <!-- capture: audit-ext.txt|Only analysed|└ -->
 ```text
 ⚠️  Only analysed: heic, video.
-17 unchanged folders taken from the index, 6 read.
+18 unchanged folders taken from the index, 6 read.
 💡 A photo changed in place by another program? 'audit --full' reads every
 folder (done anyway for those listed 7 days ago).
 

@@ -60,10 +60,18 @@ mh audit
 
 ## Ce que `mh` fait pour chaque commande
 
+- **Il démarre Docker Desktop s'il ne tourne pas** (Windows) : `mh` seul, le raccourci et
+  l'entrée du clic droit l'attendent, puis ouvrent l'accueil ; après toute autre commande qui a
+  échoué parce que Docker Desktop était arrêté, `mh` le démarre et vous demande de retaper la
+  commande, sans jamais la relancer tout seul
+  ([dépannage](../reference-troubleshooting.md#docker-répond-à-la-place-de-loutil)).
 - **Il vérifie d'abord vos dossiers** : un disque pas branché est signalé, et rien n'est lancé
   (Docker monterait un dossier vide à sa place).
 - **Vos dossiers en lecture seule** (`:ro`) pour chaque commande qui ne les modifie jamais, en
   écriture seulement pour `clean`, `sort`, `album`, `undo`, `purge` et `xmp`.
+- **Vos sauvegardes en lecture seule pour chaque commande**, `clean` compris (`launcher --backup`,
+  `mh folders add --backup`) : Windows lui-même y refuse toute modification. Les commandes qui
+  comparent (`audit`, `review`, `clean`, `crosscheck`) reçoivent chacune en `--backup`.
 - **Le cache** (le volume `media-hygiene-cache`) et les dossiers `reports`, `config`, `journal`
   et `quarantine` de `$HOME\media-hygiene`, créés s'ils manquent ; le dossier de `--quarantine`,
   ou un dossier de l'outil que vous avez monté vous-même avec `-v` en lançant `launcher`, est gardé
@@ -95,8 +103,8 @@ mh audit
   `launcher`, l'emporte.
 - **Votre langue** : un `--locale fr` donné à `launcher` est écrit dans le script : `mh` parle
   français. Une langue réglée dans `config.toml` est laissée au fichier (une modification de celui-ci
-  compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, langue,
-  fuseau horaire.
+  compte toujours). `launcher` finit par une ligne qui dit ce que `mh` retient : dossiers, sauvegardes (lecture seule),
+  langue, fuseau horaire.
 
 ## Ce que `mh` fait lui-même
 
@@ -107,18 +115,20 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 |---|---|
 | `mh open` | Ouvre `index.html`, la liste de tous les rapports, dans votre navigateur (le plus récent en haut). Pas encore de rapport : elle dit de lancer d'abord `mh audit`. |
 | `mh shortcut` | Windows : pose une icône *Media Hygiene* sur votre Bureau et dans le menu Démarrer. Un double-clic ouvre une fenêtre PowerShell et la page d'accueil dans votre navigateur ; la fenêtre reste ouverte, chaque étape choisie sur la page s'y lance. Relancée, elle réécrit les deux. |
-| `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur : la page d'accueil s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` le retire. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
+| `mh explorer` | Windows : ajoute *Media Hygiene* au clic droit de chaque dossier dans l'Explorateur, et de l'espace vide d'un dossier ouvert : la page d'accueil s'ouvre sur ce dossier. Pour votre compte seulement, sans administrateur. `mh explorer --remove` retire les deux. Sous Windows 11, il peut se trouver sous *Afficher d'autres options*. |
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
+| `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
 
-`mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, la clé de
-registre `HKCU\Software\Classes\Directory\shell\MediaHygiene`) et le montrent. Un échec est dit
+`mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
+registre `HKCU\Software\Classes\Directory\shell\MediaHygiene` et
+`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) et le montrent. Un échec est dit
 avec sa raison ; un *accès refusé* vient souvent d'un antivirus, qui peut bloquer un chemin qu'il a
 signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hygiene* : Docker la
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
 disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
-Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ; les deux
-autres disent qu'elles sont pour Windows.
+Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
+`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows.
 
 **`mh --photos "E:\Dossier"` seul** ouvre la page d'accueil sur ce dossier : il dit lequel, et l'étape
 choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
@@ -128,9 +138,18 @@ clic droit de `mh explorer`.
 
 ```powershell
 mh folders                          # vos dossiers, présents ou non
-mh folders add "D:\Ancien disque"    # un de plus
+mh folders add                       # un de plus, choisi dans une fenêtre (Windows)
+mh folders add "D:\Ancien disque"    # un de plus, tapé
 mh folders remove "D:\Ancien disque" # un de moins
+mh folders add --backup "E:\Sauvegarde" # une sauvegarde : en lecture seule, quelle que soit la commande
 ```
+
+**`mh folders add` seul** (Windows) ouvre la fenêtre de choix de dossier de Windows, devant la
+console, à partir de *Ce PC* : choisissez le dossier, puis *OK* ; aucun chemin à taper, aucun
+guillemet. *Annuler* dit *Aucun dossier choisi : rien n'a changé.* Le dossier choisi est vérifié
+comme un dossier tapé : une bibliothèque, un téléphone ou un emplacement réseau sans lettre de
+lecteur est refusé, comme un dossier déjà dans la liste. `mh.sh` (WSL, Linux, macOS) n'a pas de
+fenêtre : donnez le dossier.
 
 `add` et `remove` relancent `launcher`, par l'image, avec les dossiers que `mh` contient plus ou
 moins celui-là, et la même quarantaine, la même langue, les mêmes réglages. Le nouveau script va
@@ -170,12 +189,53 @@ Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fo
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez
 construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit.
 
+## Un téléphone ? Copiez seulement ses nouvelles photos : `mh phone`
+
+```powershell
+mh phone                              # dans <votre premier dossier de photos>\Phone\<nom du téléphone>
+mh phone --to "D:\Depuis les téléphones" # ailleurs, puis un dossier par téléphone
+```
+
+Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
+*Faire confiance à cet ordinateur*). `mh phone` le trouve (plusieurs téléphones : il demande
+lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fichiers), puis copie
+**uniquement** ce que votre photothèque n'a pas encore :
+
+- **déjà dans votre photothèque** : un fichier de même nom (sans tenir compte de la casse) et de
+  même taille qu'un audit a vu, sur n'importe lequel de vos disques, branché ou non ;
+- **écarté volontairement auparavant** : une photo de rafale, une quasi-copie, une photo que vous
+  avez choisi de retirer (*De retour après avoir été écartés* dans [`clean`](clean.md)), que sa
+  quarantaine soit encore là ou purgée ;
+- **déjà copié** dans ce dossier par un `mh phone` précédent.
+
+Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
+(1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté, et *👉 Et maintenant : `mh audit`*.
+🔒 Le téléphone est seulement lu : rien n'y est supprimé, déplacé ni renommé.
+
+- **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
+  chaque photo du téléphone est nouvelle (il le dit).
+- **Le téléphone ne donne qu'un nom et une taille**, pas son contenu. Une autre photo qui aurait
+  par hasard le nom et la taille d'une des vôtres reste sur le téléphone, non copiée ; une photo
+  copiée deux fois sous un autre nom est trouvée par l'audit suivant comme copie identique, que
+  `clean` traite.
+- **Débranché en cours de route ?** Le fichier en cours de copie est supprimé, l'import s'arrête et
+  dit combien ont été copiés. Tapez de nouveau `mh phone` : ce qui est déjà copié est passé.
+- **Jamais une question de Windows** : chaque fichier est copié dans un dossier vide
+  (`.mh-phone-<date>`), puis déplacé à sa place ; un nom déjà pris reçoit `_1`, dit à l'écran. Ce
+  dossier est supprimé à la fin.
+- Les dossiers du téléphone sous `DCIM` sont gardés (`Camera`, `Screenshots`). Les autres dossiers
+  du téléphone (WhatsApp) ne sont pas lus. Avec `--to` hors de vos dossiers de photos,
+  ajoutez-le par `mh folders add` pour que les audits le voient.
+- Windows uniquement : depuis WSL, Linux ou macOS, ni Docker ni bash n'atteignent un téléphone en
+  USB.
+
 ## Options
 
 | Option | Rôle |
 |---|---|
 | `--photos "C:\Photos"` | Un dossier de photos et vidéos, tel que l'Explorateur le montre (`/mnt/c/Photos` depuis WSL). Répétez-la pour plusieurs dossiers ; pas un dossier à l'intérieur d'un autre. |
 | `--quarantine "D:\quarantaine"` | Où vont les copies mises de côté, de tous les disques. Par défaut : `$HOME\media-hygiene\quarantine`, avec une quarantaine par disque de photos. |
+| `--backup "E:\Sauvegarde"` | Une sauvegarde ou un ancien disque : monté en lecture seule pour chaque commande, `clean` compris, et donné en `--backup` aux commandes qui comparent ([comparé, jamais modifié](../start/03-several-folders.md#une-sauvegarde-ou-un-ancien-disque--comparez-le)). Répétable ; pas un dossier de photos, ni dedans ni autour. |
 | `--shell powershell` | Un script PowerShell (`mh.ps1`), pour Windows. |
 | `--shell bash` | Un script bash (`mh.sh`), pour WSL, Linux, macOS. |
 
@@ -243,6 +303,12 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 │                                          déplacement, pas une copie). Par    │
 │                                          défaut : le dossier quarantine de   │
 │                                          votre dossier personnel.            │
+│ --backup              <str>              Une sauvegarde ou un ancien disque, │
+│                                          tel que l'Explorateur le montre :   │
+│                                          "E:\Sauvegarde". Monté en lecture   │
+│                                          seule pour chaque commande, clean   │
+│                                          compris, et donné en --backup :     │
+│                                          comparé, jamais modifié. Répétable. │
 │ --help        -h                         Affiche ce message et quitte.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

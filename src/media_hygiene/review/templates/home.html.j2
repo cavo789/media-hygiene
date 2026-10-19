@@ -6,9 +6,9 @@
 {% set texts = {
   "nothingLeft": _("Nothing left to do: everything is applied."),
   "run": _("Run"),
-  "runTitle": _("Ends this page: mh runs the step in the PowerShell window, then opens this page again."),
+  "runTitle": _("Ends this page: mh runs the step in the window where mh runs, then opens this page again."),
   "copy": _("Copy"),
-  "copyTitle": _("Copies the command, to paste in the PowerShell window: this page keeps running."),
+  "copyTitle": _("Copies the command, to paste in the window where mh runs: this page keeps running."),
   "copied": _("Copied: {command}"),
   "copyIt": _("Copy it (Ctrl+C): {command}"),
   "typeIt": _("(type it yourself)"),
@@ -125,11 +125,11 @@
 <div id="copyBox" hidden role="status" aria-live="polite">
   <p id="copyText"></p>
   <p><code id="copyCommand"></code></p>
-  <p class="muted">{{ _("Stop this page with Ctrl+C in its PowerShell window, then paste the command there (right click) and press Enter.") }}</p>
+  <p class="muted">{{ _("Stop this page with Ctrl+C in the window where mh runs, then paste the command there (right click) and press Enter.") }}</p>
   <button id="copyClose" type="button">{{ _("Close") }}</button>
 </div>
 <div id="running" hidden role="alertdialog" aria-live="assertive">
-  <div><p id="runningCommand"></p><p>{{ _("Running in the PowerShell window: this page comes back when it ends.") }}</p>
+  <div><p id="runningCommand"></p><p>{{ _("Running in the window where mh runs: this page comes back when it ends.") }}</p>
   <p class="muted">{{ _("Not opened by mh? Type the command yourself; this page is closed.") }}</p></div>
 </div>
 <script>

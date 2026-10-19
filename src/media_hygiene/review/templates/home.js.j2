@@ -193,6 +193,7 @@
     byId("auditCurrent").textContent = running ? (audit.current || T.auditRunning) : "";
     const end = byId("auditEnd");
     end.replaceChildren(...audit.lines.map((line) => element("p", line)), ...audit.actions.map((line) => element("p", line)));
+    if (audit.timed) end.append(element("p", audit.timed, "muted"));
     if (audit.report) {
       const paragraph = element("p");
       const anchor = element("a", T.auditOpen);

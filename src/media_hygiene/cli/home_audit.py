@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.audit_actions import action_list
 from media_hygiene.cli.status_view import status_lines
+from media_hygiene.console.stage_times import stages_line
 from media_hygiene.constants import RunKind
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.views import ReportRecord
@@ -50,7 +51,8 @@ def _audit(runtime: Runtime, progress: PageProgress) -> AuditResult:
         progress: Where each step reports.
 
     Returns:
-        The first line of `status` (the audit's figures), the actions, the report.
+        The first line of `status` (the audit's figures), the actions, the report,
+        and the time of each step, as the console's `Time per step` line.
     """
     refuse_empty_data(runtime, "audit")
     ensure_writable(runtime, MountKind.CACHE, MountKind.REPORTS)
@@ -67,4 +69,5 @@ def _audit(runtime: Runtime, progress: PageProgress) -> AuditResult:
         report=None
         if report is None
         else f"{REPORTS_PREFIX}{report.parent.name}/{report.name}",
+        timed=stages_line(findings.stages),
     )

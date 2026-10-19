@@ -20,6 +20,10 @@ _LABEL: Final = re.compile(
     r"const label = \(text\) => \{[^\n]*textContent = text; return span; \};"
 )
 _TEXTS: Final = re.compile(r"const T = (\{.*?\});\n")
+# A name the page's script declares at its top level (two spaces in).
+_DECLARED: Final = re.compile(
+    r"^  (?:const|let|function|async function) (\w+)", re.MULTILINE
+)
 
 
 def _page() -> str:
@@ -32,6 +36,7 @@ def _page() -> str:
         cluster_path="/api/cluster/",
         folders_path="/api/folders",
         folder_photos="/api/folder/",
+        tree_photos="/api/tree/",
         folder_path="/api/folder",
         aside_path="/api/aside",
         hint_path="/api/hint",
@@ -120,7 +125,7 @@ def test_the_folders_are_split_sorted_and_filtered_by_the_page() -> None:
     assert "folders.filter((folder) => folderMatches(folder, typed))" in page
     assert ".sort(byFolderName)" in page
     assert "folders.sort" not in page  # a copy is sorted: the index is the API's rank
-    assert "plain(" in page
+    assert "folded(" in page
     assert 'normalize("NFD")' in page
     assert 'event.key === "Escape"' in page
     assert "const mark = !folder.found" in page
@@ -139,3 +144,24 @@ def test_a_place_named_like_a_town_gets_a_hint_and_the_page_says_what_places_are
     assert "classify" in hint
     assert "if (place.town)" in page
     assert "the grandparents'" in page
+
+
+def test_no_name_is_declared_twice_in_the_script() -> None:
+    """A second `const plain` was a SyntaxError: the whole map page stopped (0242)."""
+    [script] = [part for part in _page().split("<script>") if "const T = " in part]
+    names = _DECLARED.findall(script)
+    assert len(names) > 20
+    assert sorted({name for name in names if names.count(name) > 1}) == []
+
+
+def test_any_folder_of_the_index_is_listed_as_a_tree() -> None:
+    """TODO 0242: a fourth fold, folded, filtered; a click on the map moves the pin."""
+    page = _page()
+
+    assert page.index('id="foldersFold"') < page.index('id="treeFold"')
+    assert 'id="treeFold" class="fold">' in page  # folded
+    assert 'id="treeFilter"' in page
+    assert 'tree: "/api/tree/"' in page
+    assert "if (node.count) button.addEventListener" in page  # none without GPS: grey
+    assert "if (known) { showFolder(known.rank); return; }" in page
+    assert "if (folderPin) folderPin.setLatLng(event.latlng);" in page

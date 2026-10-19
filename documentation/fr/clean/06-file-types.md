@@ -48,7 +48,7 @@ L'audit commence par dire ce qu'il analyse :
 <!-- capture: audit-ext.txt|Seuls sont|└ -->
 ```text
 ⚠️  Seuls sont analysés : heic, video.
-17 dossiers inchangés repris de l'index, 6 relus.
+18 dossiers inchangés repris de l'index, 6 relus.
 💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
 tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
 

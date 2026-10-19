@@ -2,7 +2,8 @@
 
 Both read the index; the files set aside on either are written into `decisions.json`
 of the reports folder, checked writable before each save, for `clean --decisions`.
-The server runs until Ctrl+C.
+The server runs until Ctrl+C, or until *Apply now* (`browse` opened from the home
+page) ends it on the step that applies the decisions.
 """
 
 from __future__ import annotations
@@ -17,7 +18,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.review.ending import run_server
+from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
@@ -26,6 +27,7 @@ from media_hygiene.search.app import (
     SearchPages,
     SearchPlace,
 )
+from media_hygiene.search.apply_api import APPLY_PATH, ApplyDesk
 from media_hygiene.search.chosen import ChosenPlace, ChosenStore
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.folders import (
@@ -38,8 +40,10 @@ from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.search.apply_api import ApplyStep
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
@@ -53,10 +57,20 @@ class PageStart:
     port: int
     path: str
     ready: str  # translated, with `{url}`
+    # Opened from the home page: the step *Apply now* ends on (None: no button).
+    apply: Callable[[], ApplyStep | None] | None = None
 
 
-def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> int:
-    """Serve the search and the folder view until Ctrl+C.
+@dataclass(frozen=True, slots=True)
+class Served:
+    """How the pages ended: what is set aside, and the exit code asked for."""
+
+    chosen: int  # read from the disk
+    code: int = 0  # `100 + n`: *Apply now* chose step `n`
+
+
+def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Served:
+    """Serve the search and the folder view until Ctrl+C or *Apply now*.
 
     Args:
         runtime: Settings, mount points and output.
@@ -64,7 +78,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> int:
         start: The port and the page to announce.
 
     Returns:
-        How many files are set aside when the pages stop, read from the disk.
+        How many files are set aside when the pages stop, read from the disk, and
+        the exit code a page asked for.
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     paths = {
@@ -74,6 +89,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> int:
         "search_page": SEARCH_PAGE_PATH,
         "folders_path": FOLDERS_PATH,
         "folder_path": FOLDER_PATH,
+        "apply_path": APPLY_PATH,
+        "apply_offered": start.apply is not None,
     }
     pages = SearchPages(
         environment.get_template("search.html.j2").render(**paths).encode(),
@@ -81,7 +98,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> int:
         start.path,
     )
     chosen = chosen_desk(runtime, search)
-    folders = FolderDesk(search, runtime.mapper, _shown_roots(runtime), chosen)
+    folders = FolderDesk(search, runtime.mapper, shown_roots(runtime), chosen)
+    ending = Ending()
     place = SearchPlace(
         search,
         runtime.mapper,
@@ -89,11 +107,14 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> int:
         runtime.settings.people,
         chosen,
         folders,
+        ApplyDesk(start.apply, ending, chosen),
     )
+    code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = SearchApp(place, pages, executor)
-        asyncio.run(run_server(app, start.port, partial(_announce, runtime, start)))
-    return len(chosen.paths())
+        door = EndingDoor(SearchApp(place, pages, executor), ending)
+        ready = partial(_announce, runtime, start)
+        code = asyncio.run(serve_until_ended(door, start.port, ready))
+    return Served(len(chosen.paths()), code)
 
 
 def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
@@ -119,7 +140,7 @@ def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
     )
 
 
-def _shown_roots(runtime: Runtime) -> tuple[Path, ...]:
+def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
     """The top folders of the tree: the mounted ones, or the drives of `/data`.
 
     Args:

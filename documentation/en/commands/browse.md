@@ -45,6 +45,8 @@ mh browse
 
 Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 
+![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside, the saved line and the Apply now button](../images/browse.webp)
+
 - **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
   folder: its photos and videos appear, sorted by name or by date (**Sort by**).
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
@@ -53,7 +55,9 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   the file at hand, Ctrl+A the whole folder.
 - **Set aside**: Delete, or **Set aside the picked files**. The choice is saved at once in
   `decisions.json` of your reports, read back from the disk and shown with its count and size:
-  *37 files set aside (412 MB), saved in …: 'clean --decisions' moves them to the quarantine.*
+  *37 files set aside (412 MB), saved in …: 'clean --decisions' moves them to the quarantine,
+  and remembers them: if one comes back (a new copy from the phone), the audit proposes it
+  again.* (See [What you set aside stays set aside](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside).)
   Those files carry a red *marked to set aside* label; **Take out of the set aside** takes
   picked files back out.
 - **Search by words** opens the [`search`](search.md) page, on the same server: what you set
@@ -67,6 +71,14 @@ mh clean --decisions
 
 It says how many files and bytes go (apart from the duplicates), asks, then moves them to the
 quarantine, journaled: `mh undo` brings them back, `mh purge` frees the space.
+
+**Opened from the [home page](home.md)** (`mh` alone, then the *Walk through your folders* step):
+once something is set aside, an **Apply now** button appears under the saved line. It closes
+the page and `mh` runs the home page's step that applies your choices (`mh clean --decisions`,
+with `--tier near` when you also reviewed near duplicates), with its usual question, in the
+window where `mh` runs (PowerShell on Windows); then the home page comes back. Opened by `mh browse` alone, there is no
+button: type the command above. The button needs an `mh` written by this version (`mh update`
+writes it again).
 
 ## Options
 

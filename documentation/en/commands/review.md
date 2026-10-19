@@ -137,11 +137,24 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
  them.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near            Review the near duplicates and re-encoded videos group by  │
-│                   group instead of the burst series: as planned, keep the    │
-│                   other version, or leave alone; 'clean --tier near          │
-│                   --decisions' applies it.                                   │
-│ --help  -h        Show this message and exit.                                │
+│ --near             Review the near duplicates and re-encoded videos group by │
+│                    group instead of the burst series: as planned, keep the   │
+│                    other version, or leave alone; 'clean --tier near         │
+│                    --decisions' applies it.                                  │
+│ --pairs            Review the folder pairs of the exact duplicates one by    │
+│                    one instead of the burst series: as planned, swap the     │
+│                    folders, or leave alone; 'clean --decisions' applies it.  │
+│ --junk             Review the photos most likely unwanted (tiny,             │
+│                    screenshots, nearly black or white, the blurriest)        │
+│                    instead of the burst series: nothing is set aside without │
+│                    you; 'clean --decisions' moves what you set aside to the  │
+│                    quarantine. Thresholds:  of config.toml.                  │
+│ --gone             Review the photos and videos gone since an audit (deleted │
+│                    in the Explorer?) instead of the burst series: say which  │
+│                    ones you deleted on purpose, and 'clean --decisions'      │
+│                    remembers them, so that they are set aside if they come   │
+│                    back.                                                     │
+│ --help   -h        Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
 │ --decisions        <path>              File the decisions are saved in, and  │
@@ -158,7 +171,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 │                         order matters.                                       │
 │ --protect        <str>  Folder never modified; its files are the copies      │
 │                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
+│ --backup         <str>  A backup or an old disk: compared, never changed.    │
+│                         Says what it lacks and what only it holds.           │
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮

@@ -112,7 +112,7 @@ Toute autre réponse que `o` arrête tout ici, et rien ne change. Avec `o` :
 <!-- capture: clean.txt|re:^─+ Nettoyage| -->
 ```text
 ────────────────────────────────── Nettoyage ───────────────────────────────────
-Nettoyage 20261016-192704
+Nettoyage 20261019-153731
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,6 Mo │
@@ -121,9 +121,10 @@ Nettoyage 20261016-192704
 │ En échec                  │       0 │
 │ Durée                     │     0 s │
 └───────────────────────────┴─────────┘
+7 dossiers laissés vides ont été supprimés.
 ✅ Rapport HTML :
-C:\Users\you\media-hygiene\reports\20261016-192704-clean\report.html
-💡 Vous changez d'avis ? 'media-hygiene undo 20261016-192704' restaure tout :
+C:\Users\you\media-hygiene\reports\20261019-153731-clean\report.html
+💡 Vous changez d'avis ? 'media-hygiene undo 20261019-153731' restaure tout :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
   -v "D:\Ancien disque:/data/d/Ancien disque" `
@@ -132,7 +133,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261016-192704
+  cavo789/media-hygiene --locale fr undo 20261019-153731
 👉 Et maintenant : une fois vérifié, 'purge' libère la place des fichiers mis de
 côté.
 docker run --rm -it `
@@ -143,7 +144,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr purge 20261016-192704
+  cavo789/media-hygiene --locale fr purge 20261019-153731
 💡 Ouvrez index.html dans le dossier monté sur /reports : il liste tous les
 rapports.
 ```

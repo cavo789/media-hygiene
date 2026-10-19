@@ -3,42 +3,73 @@
 
 # The photo folders that `launcher` gets back as --photos when mh is written again (0176).
 function global:_{{ f }}_photos { @({{ kept.photos | join(", ") }}) }
+# The backups, given back as --backup: compared, never changed (0205).
+function global:_{{ f }}_backups { @({{ kept.backups | join(", ") }}) }
 
 # `{{ f }} folders`: the photo folders and the quarantine, each found or not; `add` and
-# `remove` write mh again with one folder more or less (0176).
+# `remove` write mh again with one folder more or less (0176); `add` alone opens Windows'
+# folder dialog, the folder chosen checked as a typed one (0201).
 function global:_{{ f }}_folders {
-    if ($args.Count -eq 0) {
+    $words = @($args)
+    if ($words.Count -eq 0) {
         _{{ f }}_list
-        Write-Host "{{ update.usage }}"
+        Write-Host "{{ update.usage_windows }}"
         return
     }
-    if ($args.Count -ne 2 -or $args[0] -notin 'add', 'remove') { Write-Host "{{ update.usage }}"; return }
+    if ($words.Count -eq 1 -and $words[0] -eq 'add') {
+        $picked = _{{ f }}_pick
+        if (-not $picked) { Write-Host "{{ update.none }}"; return }
+        $words = @('add', $picked)
+    }
+    # `add --backup <folder>`: a backup, mounted read-only for every command (0205).
+    $backup = $words.Count -eq 3 -and $words[0] -eq 'add' -and $words[1] -eq '--backup'
+    if ($backup) { $words = @('add', $words[2]) }
+    if ($words.Count -ne 2 -or $words[0] -notin 'add', 'remove') { Write-Host "{{ update.usage_windows }}"; return }
     $photos = @(_{{ f }}_photos)
-    $folder = "$($args[1])"
-    if ($args[0] -eq 'add') {
+    $backups = @(_{{ f }}_backups)
+    $folder = "$($words[1])"
+    if ($words[0] -eq 'add') {
         if (-not (Test-Path -LiteralPath $folder -PathType Container)) { Write-Host "{{ update.not_found }}"; return }
         $folder = (Resolve-Path -LiteralPath $folder).ProviderPath
         if ($folder -notmatch '^[A-Za-z]:') { Write-Host "{{ update.not_found }}"; return }
         # Windows ignores case: C:\photos is C:\Photos, mounted once.
-        if (@($photos | Where-Object { $_.TrimEnd('\') -eq $folder.TrimEnd('\') }).Count -gt 0) { Write-Host "{{ update.already }}"; return }
+        if (@(($photos + $backups) | Where-Object { $_.TrimEnd('\') -eq $folder.TrimEnd('\') }).Count -gt 0) { Write-Host "{{ update.already }}"; return }
         # Under OneDrive: said once, before an audit downloads it (0199).
         $seen = _{{ f }}_cloud_seen $folder
         if ($seen -and $seen.Files -gt 0) { _{{ f }}_cloud_say $seen }
-        $photos += $folder
+        if ($backup) { $backups += $folder } else { $photos += $folder }
     } else {
         # A folder renamed, moved or on a disk gone: removed without being found.
         $kept = @($photos | Where-Object { $_.TrimEnd('\') -ne $folder.TrimEnd('\') })
-        if ($kept.Count -eq $photos.Count) { Write-Host "{{ update.not_listed }}"; return }
-        if ($kept.Count + {{ kept.fixed }} -eq 0) { Write-Host "{{ update.last }}"; return }
+        $spared = @($backups | Where-Object { $_.TrimEnd('\') -ne $folder.TrimEnd('\') })
+        if ($kept.Count -eq $photos.Count -and $spared.Count -eq $backups.Count) { Write-Host "{{ update.not_listed }}"; return }
+        if ($kept.Count -lt $photos.Count -and $kept.Count + {{ kept.fixed }} -eq 0) { Write-Host "{{ update.last }}"; return }
         $photos = $kept
+        $backups = $spared
     }
-    $null = _{{ f }}_rewrite $photos
+    $null = _{{ f }}_rewrite $photos $backups
+}
+
+# Windows' folder dialog through COM, as `{{ f }} shortcut` uses WScript.Shell: no Add-Type, no
+# Windows Forms (an antivirus flagged a compiled Add-Type, 2026-10-16). In front of this
+# console (its window, 0 when unknown), from This PC (17); file-system folders only (0x1),
+# the new dialog style (0x40). The path chosen, empty when cancelled (0201).
+function global:_{{ f }}_pick {
+    $owner = 0
+    try { $owner = [int](Get-Process -Id $PID).MainWindowHandle } catch { }
+    $chosen = (New-Object -ComObject Shell.Application).BrowseForFolder($owner, "{{ update.pick }}", 0x41, 17)
+    if (-not $chosen) { return '' }
+    return "$($chosen.Self.Path)"
 }
 
 # The folders of this very file, each said found or not.
 function global:_{{ f }}_list {
     Write-Host "{{ update.photos }}"
     foreach ($folder in @({{ kept.shown | join(", ") }})) { _{{ f }}_state $folder }
+{% if kept.backups %}
+    Write-Host "{{ update.backups }}"
+    foreach ($folder in @({{ kept.backups | join(", ") }})) { _{{ f }}_state $folder }
+{% endif %}
     Write-Host "{{ update.quarantine }}"
     _{{ f }}_state {{ kept.quarantine }} $true
 {% for volume in script.drives %}
@@ -56,15 +87,16 @@ function global:_{{ f }}_state($folder, $quarantine = $false) {
     Write-Host "    ${folder}: $state"
 }
 
-# Run `launcher` again with these photo folders, into a file beside this one; it
+# Run `launcher` again with these photo folders and backups, into a file beside this one; it
 # replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
 # was), then it is loaded again and its folders read back (0176). True when written.
-function global:_{{ f }}_rewrite($photos) {
+function global:_{{ f }}_rewrite($photos, $backups) {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
     if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ update.no_file }}"; return $false }
     $docker = @({{ kept.docker | join(", ") }})
     $words = @({{ kept.launcher | join(", ") }})
     foreach ($folder in $photos) { $words += '--photos', $folder }
+    foreach ($folder in $backups) { $words += '--backup', $folder }
     $lines = @(docker run --rm -e "{{ variable }}={{ script.shell.value }}" @docker {{ kept.image }} @words)
     if ($LASTEXITCODE -ne 0 -or $lines.Count -eq 0) { Write-Host "{{ update.unchanged }}"; return $false }
     $temp = "$file.new"
@@ -88,7 +120,8 @@ function global:_{{ f }}_update {
     if ($LASTEXITCODE -ne 0) { Write-Host "{{ update.pull_failed }}"; return }
     $after = "$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' $image)"
     $photos = @(_{{ f }}_photos)
-    if (-not (_{{ f }}_rewrite $photos)) { return }
+    $backups = @(_{{ f }}_backups)
+    if (-not (_{{ f }}_rewrite $photos $backups)) { return }
     $new = "$(docker run --rm $image --version)"
     if ($before -eq $after) { Write-Host "{{ update.latest }}"; return }
     Write-Host "{{ update.updated }}"

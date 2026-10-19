@@ -49,6 +49,7 @@ class KeptRun:  # pylint: disable=too-many-instance-attributes  # one per templa
     # The data mounts not given back with `--photos` (a `-v` folder, a named volume):
     # kept, never removed by `mh`, so removing the last `--photos` still leaves photos.
     fixed: int = 0
+    backups: tuple[str, ...] = ()  # given back with `--backup`: read-only (0205)
 
 
 def kept_run(script: LauncherScript) -> KeptRun:
@@ -93,6 +94,7 @@ def kept_run(script: LauncherScript) -> KeptRun:
         image=image,
         pullable=image == PUBLISHED_IMAGE,
         fixed=len(script.data) - len(photos),
+        backups=tuple(quoted(volume.host, shell) for volume in script.backups),
     )
 
 

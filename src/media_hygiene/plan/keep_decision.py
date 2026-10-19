@@ -11,11 +11,12 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class KeepDecision:
+class KeepDecision:  # pylint: disable=too-many-instance-attributes
     """One duplicate group: the copy that stays and the copies that go.
 
     `protected` copies lie in protected folders; `spared` ones were kept by a review
-    decision (`clean --decisions`). Neither is ever removed.
+    decision (`clean --decisions`). Neither is ever removed. `linked` copies keep
+    their name, which becomes a hard link to `keeper` (a pair keeping both, 0213).
     """
 
     digest: str
@@ -25,6 +26,7 @@ class KeepDecision:
     protected: tuple[MediaFile, ...] = ()
     reason: KeepReason | None = None
     spared: tuple[MediaFile, ...] = ()
+    linked: tuple[MediaFile, ...] = ()
 
     @property
     def reclaimable(self) -> int:

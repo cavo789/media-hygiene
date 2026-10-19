@@ -30,6 +30,8 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
+![The home page: the next step as a big button, the audit run in the page with the time of each step, where you are, a few pictures the audit found, the reports, then the steps of the three guides](../images/home.webp)
+
 ## At a glance
 
 | | |
@@ -46,8 +48,9 @@ docker run --rm -it `
   'clean' sets them aside*, **mh clean**. When everything is applied, the page says so.
 - **Audit in this page** 🔒: **Audit now** reads your folders as `mh audit` does, with the same
   settings. Each step (listing, fingerprints, comparing, proving identity…) shows with its counts
-  as it goes; at the end, the audit's figures, *What you can do*, and a link to the new report.
-  One audit at a time; **Stop the audit** stops it between two files: the cache keeps what it
+  as it goes; at the end, the audit's figures, the time each step took (*Time per step: listing
+  1.2 s · checks 3.4 s · …*, the line `mh --verbosity verbose audit` prints), *What you can do*,
+  and a link to the new report. One audit at a time; **Stop the audit** stops it between two files: the cache keeps what it
   has read, and the next audit starts from there.
 - **Where you are**: the lines of [`status`](status.md), and the run `mh undo` still puts back.
 - **What the last audit found**: a few previews of its report.
@@ -65,13 +68,13 @@ opened the page:
 
 - **`mh` alone** (and so the Desktop shortcut and the right-click of a folder), which runs the
   steps of the page and says so to it: **Run** (or the big
-  button) closes the page and hands the step to `mh`, in the PowerShell window, with the folders
-  that step needs. The page says *Running in the PowerShell window: this page comes back when it
+  button) closes the page and hands the step to `mh`, in the window where `mh` runs (PowerShell on Windows), with the folders
+  that step needs. The page says *Running in the window where mh runs: this page comes back when it
   ends*; when `mh` opens the home page again, the page reloads on its own. The step chosen is the
   command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button reads **Copy**. It copies the
-  command (*Copied: mh clean*) and the page keeps running; stop it with Ctrl+C in its PowerShell
-  window, paste the command there (right click) and press Enter. When the browser refuses to
+  command (*Copied: mh clean*) and the page keeps running; stop it with Ctrl+C in the window where `mh` runs (PowerShell on Windows),
+  paste the command there (right click) and press Enter. When the browser refuses to
   copy (the page opened at an address other than `127.0.0.1` or `localhost`), the command is
   selected: press Ctrl+C yourself.
 

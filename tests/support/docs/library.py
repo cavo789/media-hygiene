@@ -11,6 +11,7 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Final
 
 from tests.support.docs.events import LATER, birthday, hike, lake, phone, videos
+from tests.support.docs.junk import junk
 from tests.support.docs.names import NAMES, Library
 from tests.support.docs.pictures import Kind, Picture
 from tests.support.docs.shots import Shot, copy, truncate, write_shot
@@ -120,4 +121,5 @@ def build_library(locale: Locale, data: Path) -> Library:
     lake(library)
     phone(library)
     videos(library)
+    junk(library)
     return library

@@ -15,7 +15,9 @@ from typer.testing import CliRunner
 from media_hygiene.cli.app import build_app
 from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE, iana_zone
 from media_hygiene.config.zone import apply_timezone
+from media_hygiene.constants import Locale
 from media_hygiene.errors import MountError
+from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.locations import Locations
 from media_hygiene.paths.mount_kind import MountKind
@@ -25,13 +27,14 @@ from media_hygiene.services.launcher import (
     launcher_script,
     render_script,
 )
+from media_hygiene.services.launcher_backups import with_backups
 from media_hygiene.services.launcher_folders import (
     FolderChoice,
     container_point,
     with_folders,
 )
 from tests.support.runtime import make_runtime
-from tests.unit.test_launcher_ascii import expanded
+from tests.unit.test_launcher_ascii import accented_runtime, expanded
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -243,3 +246,185 @@ def test_the_windows_zone_applies_when_nothing_else_says_one(
     assert os.environ["TZ"] == "Europe/Brussels"
     apply_timezone("America/Montreal")
     assert os.environ["TZ"] == "America/Montreal"
+
+
+def _french_powershell() -> str:
+    """The French mh.ps1 of two accented folders, as PowerShell reads its strings."""
+    with using(Locale.FR):
+        text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
+    assert text.isascii()
+    return expanded(text)
+
+
+def test_folders_add_alone_opens_the_folder_dialog_then_the_same_checks() -> None:
+    """0201: the dialog only for `add` without a folder; cancel changes nothing."""
+    back = _french_powershell()
+    alone = back.index("    if ($words.Count -eq 1 -and $words[0] -eq 'add') {\n")
+    picked = back.index("        $picked = _mh_pick\n", alone)
+    cancel = back.index(
+        '        if (-not $picked) { Write-Host "Aucun dossier choisi', picked
+    )
+    chosen = back.index("        $words = @('add', $picked)\n", cancel)
+    usage = back.index(
+        "    if ($words.Count -ne 2 -or $words[0] -notin 'add', 'remove')"
+    )
+    found = back.index(
+        "if (-not (Test-Path -LiteralPath $folder -PathType Container))", usage
+    )
+    letter = back.index("if ($folder -notmatch '^[A-Za-z]:')", found)
+    listed = back.index('Write-Host "${folder}', letter)
+    assert alone < picked < cancel < chosen < usage < found < letter < listed
+    assert back.index("    $null = _mh_rewrite $photos $backups\n") > listed
+    assert back.count("_mh_pick") == 2  # defined once, called once
+
+
+def test_the_folder_dialog_is_com_in_front_of_the_console() -> None:
+    """Shell.Application, owned by the console, This PC, no Add-Type nor Forms."""
+    back = _french_powershell()
+    pick = back[back.index("function global:_mh_pick {") :]
+    pick = pick[: pick.index("\n}\n")]
+    assert "$owner = [int](Get-Process -Id $PID).MainWindowHandle" in pick
+    assert (
+        "(New-Object -ComObject Shell.Application).BrowseForFolder($owner, "
+        '"Choisissez un dossier de photos ou de vid\u00e9os \u00e0 ajouter", 0x41, 17)'
+    ) in pick
+    assert 'return "$($chosen.Self.Path)"' in pick
+    assert "Add-Type" not in pick
+    assert "Windows.Forms" not in back
+
+
+def test_bash_folders_has_no_dialog_and_keeps_its_usage(tmp_path: Path) -> None:
+    """The bash `mh` (non-goal of 0201): `add` alone is a usage error, as before."""
+    script = tmp_path / "mh.sh"
+    script.write_text(render_script(launcher_script(_runtime(), Shell.BASH, _COMMANDS)))
+    assert "pick" not in script.read_text()
+    assert "a window to choose it" not in script.read_text()
+
+
+def _with_backup(choice: FolderChoice, shell: Shell) -> str:
+    """The script of these folders and backups, rendered."""
+    runtime = _runtime()
+    script = with_folders(runtime, launcher_script(runtime, shell, _BACKUPS), choice)
+    return render_script(with_backups(runtime, script, choice.backups))
+
+
+# The commands of the CLI that take `--backup` (0204), as `launcher` reads them.
+_BACKUPS: Final = replace(_COMMANDS, backups=("audit", "clean"))
+
+
+def test_the_cli_says_which_commands_take_a_backup() -> None:
+    """0205: read from the options themselves, so a new command cannot be forgotten."""
+    app = build_app()
+    result = CliRunner().invoke(app, ["launcher", "--photos", "C:\\Photos"])
+    assert result.exit_code == 0, result.output
+    line = next(
+        line for line in result.stdout.splitlines() if line.startswith("    $backups")
+    )
+    assert line == "    $backups = @()"
+    result = CliRunner().invoke(
+        app, ["launcher", "--photos", "C:\\Photos", "--backup", "E:\\Backup"]
+    )
+    assert result.exit_code == 0, result.output
+    line = next(
+        line for line in result.stdout.splitlines() if line.startswith("    $backups")
+    )
+    for name in ("audit", "clean", "crosscheck", "review"):
+        assert f"'{name}'" in line
+    for name in ("history", "sort", "undo", "home"):
+        assert f"'{name}'" not in line
+
+
+def test_powershell_mounts_a_backup_read_only_for_every_command() -> None:
+    """`:ro` written in the run, not `${mode}`: `clean` cannot change it either."""
+    text = _with_backup(
+        FolderChoice(("C:\\Photos",), backups=("E:\\Backup\\",)), Shell.POWERSHELL
+    )
+    assert text.isascii()
+    assert '            -v "E:\\Backup:/data/e/Backup:ro" `\n' in text
+    assert "E:\\Backup:/data/e/Backup${mode}" not in text
+    assert (
+        "    $backups = @(if ($command -in @('audit', 'clean')) "
+        "{ '--backup', \"E:\\Backup\" })\n"
+    ) in text
+    assert " @rest @backups\n" in text
+    assert 'foreach ($folder in @("C:\\Photos", "E:\\Backup")) {' in text
+    assert 'function global:_mh_backups { @("E:\\Backup") }' in text
+    assert '    Write-Host "Your backups, compared, never changed:"\n' in text
+    assert "    foreach ($folder in $backups) { $words += '--backup', $folder }" in text
+    assert (
+        "    $backup = $words.Count -eq 3 -and $words[0] -eq 'add' -and "
+        "$words[1] -eq '--backup'\n"
+    ) in text
+    assert (
+        "        if ($backup) { $backups += $folder } else { $photos += $folder }"
+        in text
+    )
+
+
+@pytest.mark.parametrize(
+    "backup", ["C:\\Photos", "c:\\photos\\2019", "C:\\", "E:\\Backup\\Old"]
+)
+def test_a_backup_overlapping_another_folder_is_refused(backup: str) -> None:
+    r"""The same folder, inside or around a photo folder or another backup."""
+    choice = FolderChoice(("C:\\Photos",), backups=("E:\\Backup", backup))
+    with pytest.raises(MountError, match="overlaps"):
+        _with_backup(choice, Shell.POWERSHELL)
+
+
+def test_launcher_refuses_an_overlapping_backup_with_a_stopping_script(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`> mh.ps1` stops with the reason, as for a folder inside another one."""
+    monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(tmp_path))
+    result = CliRunner().invoke(
+        build_app(),
+        ["launcher", "--photos", "C:\\Photos", "--backup", "C:\\Photos\\Old"],
+    )
+    assert result.exit_code == 1
+    assert "throw (" in result.stdout
+    assert "C:\\Photos\\Old overlaps C:\\Photos" in result.stderr
+
+
+def _bash_backup(tmp_path: Path, line: str) -> str:
+    """The bash `mh` of a photo folder and a backup, `line` run with a fake docker."""
+    photos, backup = tmp_path / "photos", tmp_path / "backup"
+    photos.mkdir(exist_ok=True)
+    backup.mkdir(exist_ok=True)
+    script = tmp_path / "mh.sh"
+    choice = FolderChoice((str(photos),), backups=(str(backup),))
+    script.write_text(_with_backup(choice, Shell.BASH))
+    bash = shutil.which("bash") or "bash"
+    environment = {"HOME": str(tmp_path), "PATH": os.environ["PATH"]}
+    # Trusted script written by the test itself, run on its temporary folder.
+    done = subprocess.run(  # noqa: S603
+        [bash, "-c", f"{_FAKE_DOCKER}\nsource {script}; {line}; echo status=$?"],
+        capture_output=True,
+        text=True,
+        check=False,
+        env=environment,
+    )
+    return done.stdout + done.stderr
+
+
+@pytest.mark.parametrize(("command", "given"), [("clean", True), ("history", False)])
+def test_bash_mounts_a_backup_read_only_and_gives_it(
+    tmp_path: Path,
+    command: str,
+    given: bool,  # noqa: FBT001
+) -> None:
+    """`mh clean`: the photos writable, the backup `:ro` and `--backup` at the end."""
+    shown = _bash_backup(tmp_path, f"mh {command}")
+    backup = tmp_path / "backup"
+    point = container_point(_DATA, str(backup)).as_posix()
+    photos = container_point(_DATA, str(tmp_path / "photos")).as_posix()
+    assert f"ran:{backup}:{point}:ro" in shown
+    assert (f"ran:{tmp_path / 'photos'}:{photos}\n" in shown) is (command == "clean")
+    assert (f"ran:{command}\nran:--backup\nran:{point}\n" in shown) is given
+    assert "status=0" in shown
+
+
+def test_bash_stops_on_a_backup_not_plugged_in(tmp_path: Path) -> None:
+    """A backup disk not plugged in: said, docker never runs (an empty mount)."""
+    shown = _bash_backup(tmp_path, f"rmdir {tmp_path / 'backup'}; mh audit")
+    assert f"{tmp_path / 'backup'} cannot be found" in shown
+    assert "ran:" not in shown

@@ -41,22 +41,22 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
 Classeur :
-C:\Users\you\media-hygiene\reports\20261016-192740-classify\classify.xlsx
-0 modification lue ; classeur enregistré le 16 octobre 2026 à 19:27.
+C:\Users\you\media-hygiene\reports\20261019-153811-classify\classify.xlsx
+0 modification lue ; classeur enregistré le 19 octobre 2026 à 15:38.
 Tri
 ┌────────────────────────────────┬────────┐
-│ Fichiers à déplacer            │      4 │
-│ Dans des dossiers              │      2 │
-│ Taille                         │ 5,9 Mo │
+│ Fichiers à déplacer            │      8 │
+│ Dans des dossiers              │      4 │
+│ Taille                         │ 6,6 Mo │
 │ Déjà à leur place              │     40 │
 │ Restent où ils sont            │      0 │
 │ Vers un dossier « à vérifier » │      0 │
-│ Vers un dossier « à trier »    │      1 │
-│ Dossiers sources supprimés     │      2 │
+│ Vers un dossier « à trier »    │      4 │
+│ Dossiers sources supprimés     │      3 │
 └────────────────────────────────┴────────┘
 🛟 Chaque fichier est déplacé, jamais par-dessus un autre ni supprimé ;
 l'exécution est journalisée : 'undo' remet tout en place.
-❓ Déplacer 4 fichiers dans 2 dossiers ? [o/N] o
+❓ Déplacer 8 fichiers dans 4 dossiers ? [o/N] o
 ```
 
 - *modifications lues* compte les cellules que vous avez remplies ; vérifiez la date : un classeur
@@ -131,20 +131,20 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261016-192742
+Tri 20261019-153813
 ┌───────────────────────────┬────────┐
-│ Fichiers traités          │      4 │
-│ Taille                    │ 5,9 Mo │
+│ Fichiers traités          │      8 │
+│ Taille                    │ 6,6 Mo │
 │ Ignorés (laissés intacts) │      0 │
 │ En échec                  │      0 │
 │ Durée                     │    0 s │
 └───────────────────────────┴────────┘
-Dossiers sources supprimés : 2.
-✅ Rien de perdu : 46 fichiers (17,6 Mo) avant et après ; 4 déplacements
-vérifiés sur 4.
+Dossiers sources supprimés : 3.
+✅ Rien de perdu : 50 fichiers (18,3 Mo) avant et après ; 8 déplacements
+vérifiés sur 8.
 Manifeste :
-C:\Users\you\media-hygiene\reports\20261016-192742-sort\manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261016-192742' remet tout en
+C:\Users\you\media-hygiene\reports\20261019-153813-sort\manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261019-153813' remet tout en
 place :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -154,7 +154,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261016-192742
+  cavo789/media-hygiene --locale fr undo 20261019-153813
 ```
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
@@ -190,15 +190,15 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20261016-192742 ────────────────
+──────────────── Annulation de l'exécution sort 20261019-153813 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261016-192742
+20261019-153813
 ┌───────────────────────────┬────────┐
-│ Fichiers traités          │      4 │
-│ Taille                    │ 5,9 Mo │
+│ Fichiers traités          │      8 │
+│ Taille                    │ 6,6 Mo │
 │ Ignorés (laissés intacts) │      0 │
 │ En échec                  │      0 │
 │ Durée                     │    0 s │

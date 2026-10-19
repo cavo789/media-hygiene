@@ -40,22 +40,22 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
 Workbook:
-C:\Users\you\media-hygiene\reports\20261016-192444-classify\classify.xlsx
-0 edits read; workbook saved on 16 October 2026 at 19:24.
+C:\Users\you\media-hygiene\reports\20261019-153618-classify\classify.xlsx
+0 edits read; workbook saved on 19 October 2026 at 15:36.
 Sort
 ┌──────────────────────────────┬────────┐
-│ Files to move                │      4 │
-│ Into folders                 │      2 │
-│ Size                         │ 5.9 MB │
+│ Files to move                │      8 │
+│ Into folders                 │      4 │
+│ Size                         │ 6.6 MB │
 │ Already in place             │     40 │
 │ Staying where they are       │      0 │
 │ Going to a 'to check' folder │      0 │
-│ Going to a 'to sort' folder  │      1 │
-│ Source folders removed       │      2 │
+│ Going to a 'to sort' folder  │      4 │
+│ Source folders removed       │      3 │
 └──────────────────────────────┴────────┘
 🛟 Each file is moved, never over another one nor deleted; the run is journaled:
 'undo' puts everything back.
-❓ Move 4 files into 2 folders? [y/N] y
+❓ Move 8 files into 4 folders? [y/N] y
 ```
 
 - *edits read* counts the cells you filled; check the date: a workbook edited but **not saved**
@@ -123,18 +123,18 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261016-192445
+Sort 20261019-153619
 ┌──────────────────────────┬────────┐
-│ Files processed          │      4 │
-│ Size                     │ 5.9 MB │
+│ Files processed          │      8 │
+│ Size                     │ 6.6 MB │
 │ Skipped (left untouched) │      0 │
 │ Failed                   │      0 │
 │ Duration                 │    0 s │
 └──────────────────────────┴────────┘
-Source folders removed: 2.
-✅ Nothing lost: 46 files (17.6 MB) before and after; 4 of 4 moves verified.
-Manifest: C:\Users\you\media-hygiene\reports\20261016-192445-sort\manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261016-192445' moves everything
+Source folders removed: 3.
+✅ Nothing lost: 50 files (18.3 MB) before and after; 8 of 8 moves verified.
+Manifest: C:\Users\you\media-hygiene\reports\20261019-153619-sort\manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261019-153619' moves everything
 back:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -144,7 +144,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261016-192445
+  cavo789/media-hygiene undo 20261019-153619
 ```
 
 The proof is written to `/reports/<run>-sort/manifest.json`.
@@ -177,14 +177,14 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20261016-192445 ───────────────────────
+────────────────────── Undo the sort run 20261019-153619 ───────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the sort run 20261016-192445
+Undo the sort run 20261019-153619
 ┌──────────────────────────┬────────┐
-│ Files processed          │      4 │
-│ Size                     │ 5.9 MB │
+│ Files processed          │      8 │
+│ Size                     │ 6.6 MB │
 │ Skipped (left untouched) │      0 │
 │ Failed                   │      0 │
 │ Duration                 │    0 s │

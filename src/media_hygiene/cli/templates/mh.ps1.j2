@@ -33,12 +33,14 @@ function global:{{ function }} {
     }
     if ($rest.Count -eq 0) {
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
-        # the step chosen gets them too (0181).
+        # the step chosen gets them too (0181). Docker Desktop started first (0200).
+        if (-not (_{{ function }}_desktop)) { return }
         _{{ function }}_home @typed
         return
     }
     if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {
         # `{{ function }} menu`: the steps in this console, a number read (0172).
+        if (-not (_{{ function }}_desktop)) { return }
         _{{ function }}_menu @typed
         return
     }
@@ -64,8 +66,11 @@ function global:{{ function }} {
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
-    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210).
-    $relay = @(if ($global:MediaHygieneRelay -and $command -eq 'home') { '-e', '{{ relay }}=1' })
+    # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
+    $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }})) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
+    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
+    # or on a page it opened (browse's Apply now, 0243).
+    $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}=1' })
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
@@ -108,11 +113,14 @@ function global:{{ function }} {
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
 {% endfor %}
             @photos `
+{% for volume in script.backups %}
+            -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" `
+{% endfor %}
 {% for volume in script.tools + script.drives %}
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
             @page `
-            {{ image }} @rest
+            {{ image }} @rest @backups
         $status = $LASTEXITCODE
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
@@ -127,11 +135,12 @@ function global:{{ function }} {
         if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
     }
     if ($status -ne 0) {
-        # The container did not run or failed: Docker Desktop stopped says so in one line;
-        # the exit code stays the run's (0174).
+        # The container did not run or failed: Docker Desktop stopped is started, and the
+        # command typed again by the user, never run twice by mh (a clean may have stopped
+        # in the middle); the exit code stays the run's (0174, 0200).
         $ErrorActionPreference = 'Continue'
         $null = docker version 2>$null
-        if ($LASTEXITCODE -ne 0) { Write-Host "{{ texts.desktop }}" }
+        if ($LASTEXITCODE -ne 0 -and (_{{ function }}_start)) { Write-Host "{{ texts.ready }}" }
         $global:LASTEXITCODE = $status
     }
 }
@@ -149,6 +158,9 @@ function global:_{{ function }}_open {
 
 {% include 'mh_menu.ps1.j2' %}
 
+{% include 'mh_desktop.ps1.j2' %}
+
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}
 {% include 'mh_cloud.ps1.j2' %}
+{% include 'mh_phone.ps1.j2' %}

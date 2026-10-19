@@ -206,3 +206,31 @@ def test_the_page_renders_with_its_routes_and_both_plural_forms() -> None:
         "{n} identical files, {size}",
     ]
     assert "(s)" not in text
+
+
+VACANCES_TO_SUMMER = ("C:\\Family Photos\\2019\\Vacances", SUMMER[0])
+
+
+@pytest.mark.usefixtures("cli")
+def test_k_keeps_both_names_on_one_drive_only(locations: Locations) -> None:
+    """K (link) is offered for two folders of C:, refused across C: and D: (0213)."""
+    session = pairs_session(locations)
+    same_drive = rank_of(session, VACANCES_TO_SUMMER)
+    iphone = rank_of(session, IPHONE)
+    assert session.state().pairs[same_drive].linkable
+    assert not session.state().pairs[iphone].linkable
+    with pytest.raises(DecisionsError, match="two drives"):
+        session.decide({iphone: PairAction.LINK})
+    session.decide({same_drive: PairAction.LINK})
+    assert read_decisions(decisions_file(locations)).pairs[0].action == "link"
+
+
+def test_the_page_offers_k_with_its_warning() -> None:
+    """The keyboard help names K; the decided state says what a link is."""
+    place = DecisionsPlace(argument="decisions.json", host="decisions.json")
+    page = review_page("pairs_review.html.j2", place, ("/api/pairs", "/api/file"))
+    text = page.decode()
+    texts = json.loads(text.split("const T = ", 1)[1].split("\n", 1)[0].rstrip(";"))
+    assert "an edit saved in place shows under both" in texts["link"]
+    assert "K is not possible" in texts["noLink"]
+    assert "<kbd>K</kbd>" in text

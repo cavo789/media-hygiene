@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import PAIRS_DIR_NAME, KeepReason, Sizes
+from media_hygiene.plan.pair_links import link_refusal
 from media_hygiene.plan.pairs import folder_pairs
 from media_hygiene.report.reasons import keep_reason_label
 from media_hygiene.report.thumbnails import PREVIEWABLE, thumbnail_name
@@ -123,6 +124,7 @@ class PairRenderer:
             ),
             swappable=pair.kept_in != pair.removed_from
             and all(copy.reason is not KeepReason.PROTECTED for copy in pair.copies),
+            linkable=link_refusal(pair, self.mapper) is None,
         )
 
     def page(self, index: int, pair: FolderPair) -> PairPageView:

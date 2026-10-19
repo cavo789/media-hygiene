@@ -46,11 +46,12 @@ class PairEvidence:
 
 
 @dataclass(frozen=True, slots=True)
-class FolderPairView:
+class FolderPairView:  # pylint: disable=too-many-instance-attributes
     """Two folders sharing identical files: the fastest way to sanity-check a clean.
 
     `swappable` pairs can keep the copies of `removed_from` instead: not inside one
-    folder, nor when `kept_in` is protected.
+    folder, nor when `kept_in` is protected. `linkable` pairs can keep both names,
+    each copy a hard link to its kept file: one drive, `kept_in` not protected (0213).
     """
 
     kept_in: str
@@ -60,6 +61,7 @@ class FolderPairView:
     page: str = ""
     evidence: PairEvidence = field(default_factory=PairEvidence)
     swappable: bool = False
+    linkable: bool = False
 
 
 @dataclass(frozen=True, slots=True)

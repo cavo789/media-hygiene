@@ -22,12 +22,16 @@
 #   9. the mh launcher around docker run, in the old console (conhost)    (0184 accents, 0179 awake,
 #      0185 title and sound, 0178 browser): asks what you heard and saw; the awake check
 #      (powercfg /requests) needs an administrator PowerShell
-#  10. mh open, mh shortcut, mh explorer (right-click a folder), each read back   (0175, 0180,
-#      0181): asks what you saw; your own Media Hygiene shortcut or entry is put back after
+#  10. mh open, mh shortcut, mh explorer (right-click a folder, then the empty space of an
+#      open folder), each read back   (0175, 0180, 0181, 0188): asks what you saw; your own
+#      Media Hygiene shortcut or entries are put back after
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
-#      published one, writes mh again and says both versions                (0176, 0177)
+#      published one, writes mh again and says both versions                (0176, 0177);
+#      mh folders add alone: the folder window, a folder chosen, then cancelled       (0201);
+#      mh folders add --backup (on -OtherDrive when given): its mount line, mh audit's two
+#      lines, mh clean leaving it whole, Docker refusing a write in it          (0205)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -40,18 +44,32 @@
 #      Home from a review page, Quit; asks what you saw                        (0172, 0210)
 #  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
-#  16. asks you to quit Docker Desktop: records docker run's exact message and exit code, then
-#      waits for you to start it again                                         (0174)
+#  16. asks you to quit Docker Desktop: records docker run's exact message and exit code; then
+#      mh starts it by itself: the check of mh alone, timed, and mh audit after another quit:
+#      the "type the command again" line, the audit typed again              (0174, 0200)
 #  17. mh.ps1 kept in memory, written in variants (without / with only: keep-awake, browser,
 #      shortcut, right-click): which one the antivirus refuses   (Avast IDP.Generic, 2026-10-16)
 #  18. OneDrive cloud-only files played by a folder whose files are marked offline, OneDrive
 #      pointed at it for this window only: mh audit says the line and asks (N, then y, then
 #      not again); mh folders add says the line; PowerShell 5.1's own run of the check  (0199)
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
-#      PC, DCIM, listing time and properties, the 20 most recent files copied twice (CopyHere
-#      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219)
+#      PC, DCIM, listing time and properties, the 20 most recent files copied once (CopyHere
+#      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219);
+#      then, if you agree, mh phone end to end: every file of DCIM copied, again (nothing
+#      copied), then the cable pulled out during a copy, plugged in again       (0219);
+#      then, if you agree, ONE synthetic test file written to the phone and deleted (InvokeVerb,
+#      InvokeVerbEx, MoveHere), DCIM counted before and after, the gallery's trash; the 20 files
+#      copied into an empty folder and their SHA-256: MB/s of each         (0247, for 0248)
 #  20. image embeddings: -Sample photos of C:\Photos (read-only), your searches, three models on
 #      -Cpus CPUs; pages to tick, seconds per photo, RAM; downloads 2.5 GB of models once (0220)
+#  21. the Synology NAS (-Nas, -NasShare, -NasUser), read-only: its ports; SMB from Windows (a
+#      drive mapped, a listing, 20 photos read), SMB from Docker (that drive letter, then a CIFS
+#      volume), FTP from Docker (FEAT, MLSD, partial and whole reads); the password asked once,
+#      never logged; nothing written on the NAS                          (0246, for 0245)
+#  22. a folder pair keeping both names: audit, the pair offered "link" in the report, clean
+#      --decisions, fsutil hardlink list of each copy, C:'s free space before/after; asks what
+#      Explorer shows, then for one photo edited and saved in the Photos app: does its other
+#      name change too; undo: one name each again                         (0213)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -73,7 +91,10 @@
 #   .\mh-measure.ps1 -Only 17 -Count 5
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
+#                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
+#   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
+#   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -86,7 +107,10 @@ param(
     [string]$OtherDrive = "",
     [int]$Sample = 1000,
     [int]$Cpus = 4,
-    [string]$Branch = "main"
+    [string]$Branch = "main",
+    [string]$Nas = "",
+    [string]$NasShare = "photo",
+    [string]$NasUser = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -102,6 +126,16 @@ $wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged fold
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
     Write-Host $text
+}
+
+function MhLeftovers([string]$part) {
+    foreach ($id in @(& docker ps --quiet)) {
+        $binds = "$(& docker inspect $id --format '{{json .HostConfig.Binds}}' 2>$null)"
+        if (-not $binds.Contains($Work.Replace('\', '\\'))) { continue }
+        $name = "$(& docker inspect $id --format '{{.Name}} {{json .Config.Cmd}} {{json .NetworkSettings.Ports}}')"
+        Log "   $part. container of this run still running after its window closed: $name; stopped"
+        & docker stop $id | Out-Null
+    }
 }
 
 function Measure-Mh([string]$title, [string[]]$mounts, [string[]]$arguments) {
@@ -427,7 +461,7 @@ if (Wanted 10) {
     & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
     . $mhFile
     Log ""
-    Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 explorer)"
+    Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 and 0188 explorer)"
     $index = Join-Path $tool "reports\index.html"
     if (-not (Test-Path $index)) {
         $said = @(mh open 6>&1 | ForEach-Object { "$_" })
@@ -451,15 +485,20 @@ if (Wanted 10) {
     $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open on the mh menu and stay open? (y/n)"
     Log "   10b. the icon opens the mh menu, window kept: $clicked"
 
-    # 10c: the right-click entry, yours exported first; a folder whose name has a space and an apostrophe.
-    $key = 'HKCU\Software\Classes\Directory\shell\MediaHygiene'
-    $saved = Join-Path $Work "explorer-key.reg"
-    $had = Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"
-    if ($had) { & reg.exe export $key $saved /y | Out-Null }
+    # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
+    # exported first; a folder whose name has a space and an apostrophe.
+    $entries = @('Directory\shell\MediaHygiene', 'Directory\Background\shell\MediaHygiene')
+    $had = @{}
+    foreach ($entry in $entries) {
+        $had[$entry] = Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"
+        if ($had[$entry]) { & reg.exe export "HKCU\Software\Classes\$entry" (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) /y | Out-Null }
+    }
     $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   10c. " + $line) }
-    $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene\command" -ErrorAction SilentlyContinue)
-    Log ("   10c. registry command read back: " + $(if ($command) { $command.GetValue('') } else { '(none)' }))
+    foreach ($entry in $entries) {
+        $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\$entry\command" -ErrorAction SilentlyContinue)
+        Log ("   10c. registry command of {0} read back: {1}" -f $entry, $(if ($command) { $command.GetValue('') } else { '(none)' }))
+    }
     $odd = Join-Path $Work "L'ete 2019"
     New-Item -ItemType Directory -Force -Path $odd | Out-Null
     Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
@@ -470,12 +509,19 @@ if (Wanted 10) {
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
     $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
     Log "   10c. audit chosen from the right-click analyses the folder: $audit"
+    $inside = Read-Host "10c. Close that mh window: Ctrl+C in it, then type exit (its X would leave the page running). In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
+    $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
+    Log "   10c. background entry found in: $where"
+    MhLeftovers "10c"
 
     # 10d: --remove, then what you had put back.
     $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   10d. " + $line) }
-    Log ("   10d. key still there after --remove: " + (Test-Path -LiteralPath "HKCU:\Software\Classes\Directory\shell\MediaHygiene"))
-    if ($had) { & reg.exe import $saved 2>&1 | Out-Null }
+    foreach ($entry in $entries) {
+        Log ("   10d. key {0} still there after --remove: {1}" -f $entry, (Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"))
+        if ($had[$entry]) { & reg.exe import (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) 2>&1 | Out-Null }
+    }
     foreach ($link in $links) {
         Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
         if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
@@ -554,6 +600,52 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         Log ("   11e. mh.ps1 still names the folder: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $data -Quiet))
         Log ("   11e. images: " + ((& docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' | Where-Object { $_ -match 'media-hygiene' }) -join ' / '))
     }
+
+    # 11f: mh folders add alone: Windows' folder window (0201), chosen, then cancelled.
+    $picked = Join-Path $Work "Picked photos"
+    New-Item -ItemType Directory -Force -Path $picked | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $picked ("picked-" + $_.Name)) }
+    Write-Host "11f. A folder window opens: choose $picked (This PC, then the folders), then OK."
+    $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11f. " + $line) }
+    Log ("   11f. the file names the folder chosen: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $picked -Quiet))
+    $front = Read-Host "11f. Did the window open in front of this console, without Alt+Tab? (y/n)"
+    Log "   11f. window in front of the console: $front"
+    $before = (Get-FileHash -LiteralPath $mhFile).Hash
+    Write-Host "11g. The folder window opens again: click Cancel."
+    $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11g. cancelled: " + $line) }
+    Log ("   11g. mh.ps1 unchanged after cancel: " + ($before -eq (Get-FileHash -LiteralPath $mhFile).Hash))
+    $avast = Read-Host "11g. Did your antivirus say anything during 11f or 11g? (n, or what it said)"
+    Log "   11g. antivirus: $avast"
+    $null = @(mh folders remove $picked 6>&1)
+
+    # 11h: a backup (0205): mounted read-only for every command, clean included. Its files are
+    # copies of the test folder's, two of them twice: clean must leave all of them. On
+    # -OtherDrive when given (a backup is often another disk), else in the test folder.
+    $backupDir = if ($OtherDrive -ne "") { Join-Path $OtherDrive "mh-measure-11-backup" } else { Join-Path $Work "Backup copy" }
+    New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+    $sources = @(Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3)
+    foreach ($photo in $sources) { Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $backupDir $photo.Name) }
+    Copy-Item -LiteralPath $sources[0].FullName -Destination (Join-Path $backupDir ("planted-" + $sources[0].Name))
+    Copy-Item -LiteralPath $sources[1].FullName -Destination (Join-Path $backupDir ("planted-" + $sources[1].Name))
+    $planted = @(Get-ChildItem -LiteralPath $backupDir -File).Count
+    $said = @(mh folders add --backup $backupDir 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   11h. " + $line) }
+    $mounts = @(Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "-v `"${backupDir}:" | ForEach-Object { $_.Line.Trim() })
+    Log ("   11h. mount line of the backup in mh.ps1: " + ($mounts -join ' / '))
+    $lines = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'this backup|nowhere else|only in it|Media files scanned' })
+    foreach ($line in $lines) { Log ("   11h. mh audit: " + $line.Trim()) }
+    $lines = @(mh clean --yes 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'backup|read-only|Read-only|Error|moved|set aside' })
+    foreach ($line in $lines) { Log ("   11i. mh clean: " + $line.Trim()) }
+    $left = @(Get-ChildItem -LiteralPath $backupDir -File).Count
+    Log "   11i. files in the backup after mh clean: $left (planted: $planted, all must stay)"
+    $refused = @(& docker run --rm -v "${backupDir}:/backup:ro" --entrypoint sh $Image -c "touch /backup/written-by-docker" 2>&1 | ForEach-Object { "$_" })
+    Log ("   11i. a write in a :ro mount of it, by Docker: exit code $LASTEXITCODE, says: " + ($refused -join ' / '))
+    $null = @(mh undo --yes 2>&1)
+    Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
+    $null = @(mh folders remove $backupDir 6>&1)
+    if ($OtherDrive -ne "" -and -not $Keep) { Remove-Item -Recurse -Force -LiteralPath $backupDir }
     $ErrorActionPreference = "Stop"
 }
 
@@ -739,12 +831,20 @@ if (Wanted 15) {
     Log ("   15e. a folder not plugged in: exit code $LASTEXITCODE, says: " + ($said -join ' / '))
 }
 
-# --- 16: Docker Desktop closed: the exact message of docker run (0174) ----------------------
+# --- 16: Docker Desktop closed: the exact message of docker run (0174), mh starting it (0200) --
 # You quit Docker Desktop when asked; its own message and exit code are recorded as they are.
+# Then mh starts it by itself: the check of `mh` alone, timed, and `mh audit` after a quit.
 if (Wanted 16) {
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 16. docker run with Docker Desktop closed (0174)"
+    Log "== 16. docker run with Docker Desktop closed (0174), mh starting it (0200)"
+    # mh is written while Docker Desktop still runs: launcher needs it.
+    $mhDir = Join-Path $tool "mh16"
+    New-Item -ItemType Directory -Force -Path $mhDir | Out-Null
+    $mhFile = Join-Path $mhDir "mh.ps1"
+    & docker run --rm $Image launcher --photos $data > $mhFile
+    . $mhFile
+    Log ("   16. Docker Desktop client: " + "$(& docker version --format '{{.Client.Version}}' 2>$null)")
     Read-Host "16. Quit Docker Desktop now (its icon near the clock, right-click, Quit), wait 20 s, then press Enter"
     $said = @(& docker run --rm $Image --version 2>&1 | ForEach-Object { "$_" })
     $code = $LASTEXITCODE
@@ -752,13 +852,25 @@ if (Wanted 16) {
     Log "   16a. docker run exit code: $code"
     & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
     Log "   16b. docker version exit code with Docker Desktop closed: $LASTEXITCODE"
-    Read-Host "16. Start Docker Desktop again, then press Enter (this script waits up to 3 minutes for it)"
+    # 16c: what `mh` alone (the shortcut, the right-click) runs before the home page.
+    Write-Host "16c. mh starts Docker Desktop now (up to 3 minutes); do not touch it."
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    do {
-        Start-Sleep -Seconds 5
-        & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
-    } while ($LASTEXITCODE -ne 0 -and $watch.Elapsed.TotalSeconds -lt 180)
-    Log ("   16c. Docker Desktop answering again after {0:N0} s: {1}" -f $watch.Elapsed.TotalSeconds, ($LASTEXITCODE -eq 0))
+    $said = @(_mh_desktop 6>&1 | ForEach-Object { "$_" })
+    $watch.Stop()
+    foreach ($line in $said) { Log ("   16c. mh alone says: " + $line) }
+    Log ("   16c. mh alone: Docker Desktop answering after {0:N0} s (the home page would open now)" -f $watch.Elapsed.TotalSeconds)
+    & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
+    Log "   16c. docker version exit code afterwards: $LASTEXITCODE"
+    # 16d: another command after a quit: Docker Desktop started, the command not run twice.
+    Read-Host "16d. Quit Docker Desktop again, wait 20 s, then press Enter (mh audit runs, then mh starts Docker Desktop)"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $said = @(mh audit 6>&1 2>&1 | ForEach-Object { "$_" })
+    $code = $LASTEXITCODE
+    $watch.Stop()
+    foreach ($line in $said) { if ("$line".Trim()) { Log ("   16d. mh audit says: " + "$line".Trim()) } }
+    Log ("   16d. mh audit: exit code {0}, {1:N0} s, says type the command again: {2}" -f $code, $watch.Elapsed.TotalSeconds, [bool]($said -match 'type the command again'))
+    $scanned = @(mh audit 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'Media files scanned' })
+    Log ("   16e. mh audit typed again: exit code $LASTEXITCODE, " + ($scanned -join ' / '))
 }
 
 # --- 17: which part of mh.ps1 an antivirus refuses on write (Avast IDP.Generic) -----------
@@ -863,8 +975,9 @@ if (Wanted 18) {
 
 # --- 19: a phone plugged in over USB (MTP), read from PowerShell (0218) ---------------------
 # Shell.Application only (a COM object of Windows: no Add-Type, no compilation). Nothing is
-# written to the phone: CopyHere copies, MoveHere is never called. Its copies go to a temporary
-# folder under -Work, removed at the end. The phone must be unlocked, in "File transfer" mode.
+# written to the phone but the test files of 19l-19o (0247), after a y: CopyHere copies. Its
+# copies go to temporary folders under -Work, removed at the end. The phone must be unlocked,
+# in "File transfer" mode.
 function PhoneFiles($folder, [int]$depth) {
     foreach ($entry in $folder.Items()) {
         if ($entry.IsFolder) {
@@ -917,9 +1030,11 @@ if (Wanted 19) {
     $shell = New-Object -ComObject Shell.Application
     Log ""
     Log "== 19. a phone over USB, read through Shell.Application (0218)"
-    Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone"
+    Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone before 19l"
     Read-Host "19a. Plug the phone in, unlock it (Android: choose File transfer; iPhone: Trust this computer), then press Enter" | Out-Null
     $devices = @()
+    $phone = $null
+    $dcim = $null
     foreach ($entry in $shell.Namespace(17).Items()) {
         if (-not $entry.IsFileSystem) { $devices += $entry }
     }
@@ -935,8 +1050,19 @@ if (Wanted 19) {
         $phone = $devices[[int]$answer - 1]
         Log "   19a. phone picked: '$($phone.Name)' (Type '$($phone.Type)')"
         $dcim = PhoneFindDcim $phone.GetFolder 0
+        for ($try = 1; -not $dcim -and $try -le 3; $try++) {
+            # A locked phone, or USB left on "Charging only", shows the phone without its storage.
+            $top = @(foreach ($entry in $phone.GetFolder.Items()) { $entry.Name })
+            Log ("   19b. try {0}: no DCIM folder within three levels of the phone; it shows: {1}" -f $try, $(if ($top.Count) { $top -join ' / ' } else { '(nothing)' }))
+            $again = Read-Host "19b. Unlock the phone, choose File transfer in its USB notification, open it in Explorer until you see DCIM, then press Enter to look again (s to skip the phone)"
+            if ($again -eq 's') { break }
+            foreach ($entry in $shell.Namespace(17).Items()) {
+                if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $phone = $entry }
+            }
+            $dcim = PhoneFindDcim $phone.GetFolder 0
+        }
         if (-not $dcim) {
-            Log "   19b. no DCIM folder within three levels of the phone"
+            Log "   19b. no DCIM folder on the phone: 19c-19o skipped (nothing to list, copy or delete)"
         } else {
             Log "   19b. DCIM found: $($dcim.Path)"
             $top = @()
@@ -948,7 +1074,7 @@ if (Wanted 19) {
             $kinds = $all | ForEach-Object { [IO.Path]::GetExtension($_.Name).ToLower() } | Group-Object | Sort-Object Count -Descending
             Log ("   19c. extensions: " + (($kinds | ForEach-Object { "$($_.Name) x$($_.Count)" }) -join ', '))
             foreach ($item in ($all | Select-Object -First 10)) {
-                Log ("   19c. '{0}' Size {1} ModifyDate {2} | System.Size {3} System.DateModified {4} System.DateCreated {5}" -f $item.Name, $item.Size, $item.ModifyDate, $item.ExtendedProperty('System.Size'), $item.ExtendedProperty('System.DateModified'), $item.ExtendedProperty('System.DateCreated'))
+                Log ("   19c. '{0}' Size {1} ModifyDate {2} | System.Size {3} System.DateModified {4} System.DateCreated {5} System.FileName '{6}'" -f $item.Name, $item.Size, $item.ModifyDate, $item.ExtendedProperty('System.Size'), $item.ExtendedProperty('System.DateModified'), $item.ExtendedProperty('System.DateCreated'), $item.ExtendedProperty('System.FileName'))
             }
             $seen = @{}
             $recent = @()
@@ -958,12 +1084,11 @@ if (Wanted 19) {
             }
             New-Item -ItemType Directory -Force -Path $phoneTmp | Out-Null
             $target = $shell.Namespace($phoneTmp)
-            foreach ($round in 1, 2) {
-                if ($round -eq 2) {
-                    Log "   19f. second copy of the same files: Windows may open a 'Replace or Skip' dialog BEHIND this window (Alt+Tab): note what it says, then choose Skip"
-                }
-                $before = @{}
-                foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) { $before[$copy.Name] = "$($copy.Length)/$($copy.LastWriteTime.Ticks)" }
+            # One round only: copying the same files again opens Windows' "Replace or Skip"
+            # dialogs behind the console, flag 16 ignored over MTP (measured 2026-10-19: 386 s for
+            # 20 files, twice). mh phone copies into an empty staging folder instead (0219).
+            Log "   19f. second copy of the same files: not run (its hidden Replace or Skip dialogs are measured; mh phone avoids them)"
+            foreach ($round in 1) {
                 $bytes = 0
                 $late = 0
                 $round1 = [Diagnostics.Stopwatch]::StartNew()
@@ -980,25 +1105,228 @@ if (Wanted 19) {
                 }
                 $seconds = [Math]::Max($round1.Elapsed.TotalSeconds, 0.001)
                 Log ("   19d{0}. {1} files asked, {2} missing, {3:N1} MB in {4:N1} s = {5:N2} MB/s" -f $round, $recent.Count, $late, ($bytes / 1MB), $seconds, ($bytes / 1MB / $seconds))
-                if ($round -eq 1) {
-                    foreach ($item in ($recent | Select-Object -First 5)) {
-                        $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
-                        if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
-                    }
-                } else {
-                    $changed = 0
-                    foreach ($copy in Get-ChildItem -LiteralPath $phoneTmp -File) {
-                        if ($before[$copy.Name] -ne "$($copy.Length)/$($copy.LastWriteTime.Ticks)") { $changed++ }
-                    }
-                    Log "   19f. second copy of the same files: $changed of $($before.Count) existing copies changed (size or modified date)"
-                    $asked = Read-Host "19f. Did Windows show any dialog or question during the second copy? (n or what it said)"
-                    Log "   19f. dialog during the second copy (none expected with flag 16): $asked"
+                foreach ($item in ($recent | Select-Object -First 5)) {
+                    $copy = Get-Item -LiteralPath (Join-Path $phoneTmp $item.Name) -ErrorAction SilentlyContinue
+                    if ($copy) { Log ("   19e. '{0}': phone System.DateModified {1} (UTC), copy modified {2}, copy created {3}" -f $item.Name, (PhoneDate $item), $copy.LastWriteTime, $copy.CreationTime) }
                 }
             }
         }
     }
     if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
     Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
+
+    # 19h-19k: mh phone end to end (0219), with mh written by the image under test. Its photo
+    # folder is an empty test folder: the first run copies every file of DCIM into
+    # <that folder>\Phone\<phone name>, the second copies nothing; then the largest copies are
+    # removed and copied again while you pull the cable out. All under -Work, removed at the end.
+    $answer = if ($dcim) { Read-Host "19h. mh phone copies EVERY photo and video of the phone's DCIM into $Work (see the size in 19c). Run it? (y/n)" } else { 'n' }
+    if ($answer -eq 'y') {
+        $phoneLibrary = Join-Path $Work "phone-library"
+        $mhDir = Join-Path $tool "mh19"
+        New-Item -ItemType Directory -Force -Path $phoneLibrary, $mhDir, (Join-Path $tool "config") | Out-Null
+        $mhFile = Join-Path $mhDir "mh.ps1"
+        $toolMounts = @(
+            "-v", "${volume}:/cache",
+            "-v", "$(Join-Path $tool 'config'):/config",
+            "-v", "$(Join-Path $tool 'journal'):/journal",
+            "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+            "-v", "$(Join-Path $tool 'reports'):/reports"
+        )
+        & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $phoneLibrary > $mhFile
+        . $mhFile
+        foreach ($round in 'first', 'second') {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            $seconds = $watch.Elapsed.TotalSeconds
+            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19h. $round mh phone: " + $line) }
+            Log ("   19h. $round mh phone: {0:N1} s wall time, {1} files copied (lines 'n/m')" -f $seconds, @($said | Where-Object { $_ -match '^\s+\d+/\d+ ' }).Count)
+        }
+        $copies = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue)
+        Log ("   19i. read back: {0} files, {1:N1} MB under {2}\Phone; staging folders left: {3}" -f $copies.Count, (($copies | Measure-Object Length -Sum).Sum / 1MB), $phoneLibrary, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
+        foreach ($copy in ($copies | Select-Object -First 3)) { Log ("   19i. '{0}': modified {1}, created {2}" -f $copy.Name, $copy.LastWriteTime, $copy.CreationTime) }
+        # Enough to copy for a minute: 5 videos (0.19 GB) took 8.8 s at 29.5 MB/s, too fast to
+        # pull the cable in time (measured 2026-10-19). The largest copies up to 2 GB, 5 at least.
+        $largest = @()
+        $sum = 0
+        foreach ($copy in ($copies | Sort-Object Length -Descending)) {
+            if ($largest.Count -ge 5 -and $sum -ge 2GB) { break }
+            $largest += $copy
+            $sum += $copy.Length
+        }
+        if ($largest.Count -gt 0) {
+            foreach ($copy in $largest) { Remove-Item -LiteralPath $copy.FullName -Force }
+            Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
+            Read-Host "19j. Next: when the line '2/$($largest.Count)' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
+            Log ("   19j. cable pulled: {0:N1} s wall time; staging folders left: {1}" -f $watch.Elapsed.TotalSeconds, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
+            $dialog = Read-Host "19j. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+            Log "   19j. a window during the cable pulled (none expected): $dialog"
+            Read-Host "19k. Plug the phone in again, unlock it (File transfer), then press Enter" | Out-Null
+            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19k. after the cable: " + $line) }
+        }
+        # A name the phone does not hold: mh gave it _1, _2... (a regex on _<digits> also caught
+        # every camera name such as 20250512_195342.jpg: 530 false hits, 2026-10-19).
+        $onPhone = @{}
+        foreach ($item in $all) {
+            $name = "$($item.ExtendedProperty('System.FileName'))"
+            $onPhone[$(if ($name) { $name } else { $item.Name })] = 1
+        }
+        $names = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue | Where-Object { -not $onPhone.ContainsKey($_.Name) })
+        Log "   19k. copies under a name the phone does not hold (_1...): $($names.Count) (0 expected: no name was taken)"
+        foreach ($copy in ($names | Select-Object -First 5)) { Log "   19k. renamed: $($copy.Name)" }
+    } else {
+        Log "   19h. mh phone end to end: skipped"
+    }
+
+    # 19l-19o: a file deleted on the phone over MTP (0247, for 0248). ONE synthetic test file at
+    # a time (a 16x16 grey JPEG made here, never a photo), written into DCIM\mh-measure on the
+    # phone, then deleted: InvokeVerb, InvokeVerbEx, MoveHere to the PC, each on its own test
+    # file. Every other file of the phone is left alone: DCIM is counted before and after.
+    $answer = if ($dcim) { Read-Host "19l. Next: this writes ONE test file to the phone (in DCIM\mh-measure), then deletes it, three ways in turn; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $device = $null
+    if ($answer -eq 'y' -and $phone) {
+        foreach ($entry in $shell.Namespace(17).Items()) {
+            if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+        }
+        if (-not $device) { Log "   19l. the phone '$($phone.Name)' is not seen any more (plugged in, unlocked, File transfer?): 19l-19o skipped" }
+    } elseif ($answer -eq 'y') {
+        Log "   19l. no phone picked in 19a: 19l-19o skipped"
+    } else {
+        Log "   19l. writing and deleting a test file on the phone: skipped"
+    }
+    $dcimAgain = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
+    if ($device -and -not $dcimAgain) { Log "   19l. no DCIM folder on the phone any more: 19l-19o skipped" }
+    if ($dcimAgain) {
+        $jpeg = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBv3f8Ad/lTqKb93/d/lS2K+L1P/9k='
+        $phoneDelete = Join-Path $Work "phone-delete"
+        $phoneMoved = Join-Path $Work "phone-moved"
+        New-Item -ItemType Directory -Force -Path $phoneDelete, $phoneMoved | Out-Null
+        $dcimFolder = $dcimAgain.GetFolder
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $countBefore = @(PhoneFiles $dcimFolder 0).Count
+        Log ("   19l. DCIM before: {0} files (listed in {1:N1} s)" -f $countBefore, $watch.Elapsed.TotalSeconds)
+        # PhoneFind: an item of a phone folder by its name (over MTP, Name may lack the
+        # extension), or $null once $seconds have passed. PhoneGone: the seconds it took to
+        # disappear from the folder, -1 when it is still there after $seconds.
+        function PhoneFind($folder, [string]$name, [int]$seconds) {
+            $bare = [IO.Path]::GetFileNameWithoutExtension($name)
+            $wait = [Diagnostics.Stopwatch]::StartNew()
+            do {
+                foreach ($entry in $folder.Items()) {
+                    if ($entry.Name -eq $name -or $entry.Name -eq $bare -or $entry.ExtendedProperty('System.FileName') -eq $name) { return $entry }
+                }
+                Start-Sleep -Milliseconds 300
+            } while ($wait.Elapsed.TotalSeconds -lt $seconds)
+            return $null
+        }
+        function PhoneGone($folder, [string]$name, [int]$seconds) {
+            $wait = [Diagnostics.Stopwatch]::StartNew()
+            do {
+                if (-not (PhoneFind $folder $name 0)) { return $wait.Elapsed.TotalSeconds }
+                Start-Sleep -Milliseconds 300
+            } while ($wait.Elapsed.TotalSeconds -lt $seconds)
+            return -1
+        }
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $dcimFolder.NewFolder('mh-measure')
+        $testItem = PhoneFind $dcimFolder 'mh-measure' 30
+        Log ("   19l. NewFolder('mh-measure') in DCIM: {0} after {1:N1} s" -f $(if ($testItem) { 'seen' } else { 'NOT seen' }), $watch.Elapsed.TotalSeconds)
+        $deleted = @()
+        if ($testItem) {
+            $testFolder = $testItem.GetFolder
+            $number = 0
+            $onPhone = $null
+            foreach ($way in 'InvokeVerb', 'InvokeVerbEx', 'MoveHere') {
+                if (-not $onPhone) {
+                    $number++
+                    $name = "mh-measure-$stamp-$number.jpg"
+                    $local = Join-Path $phoneDelete $name
+                    [IO.File]::WriteAllBytes($local, [Convert]::FromBase64String($jpeg))
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    $testFolder.CopyHere($local, 4 + 16 + 1024)
+                    $onPhone = PhoneFind $testFolder $name 60
+                    if (-not $onPhone) {
+                        Log ("   19l. test file {0} ({1} bytes) NOT seen on the phone within 60 s: 19m stops here" -f $name, (Get-Item -LiteralPath $local).Length)
+                        break
+                    }
+                    Log ("   19l. test file {0} written: seen after {1:N1} s as '{2}', System.Size {3} (local {4} bytes)" -f $name, $watch.Elapsed.TotalSeconds, $onPhone.Name, $onPhone.ExtendedProperty('System.Size'), (Get-Item -LiteralPath $local).Length)
+                    if ($number -eq 1) { Log ("   19l. verbs of a phone file: " + ((@($onPhone.Verbs()) | ForEach-Object { $_.Name -replace '&', '' }) -join ' / ')) }
+                }
+                Log "   19m. $way on $name next: Windows may open a dialog BEHIND this window (look with Alt+Tab); if it asks, answer Yes"
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                $failed = ''
+                try {
+                    if ($way -eq 'InvokeVerb') { $onPhone.InvokeVerb('delete') }
+                    elseif ($way -eq 'InvokeVerbEx') { $onPhone.InvokeVerbEx('delete') }
+                    else { $shell.Namespace($phoneMoved).MoveHere($onPhone, 4 + 16 + 1024) }
+                } catch { $failed = $_.Exception.Message }
+                $called = $watch.Elapsed.TotalSeconds
+                $gone = PhoneGone $testFolder $name 60
+                Log ("   19m. {0}: call returned after {1:N1} s{2}; {3}" -f $way, $called, $(if ($failed) { " with an error: $failed" } else { '' }), $(if ($gone -ge 0) { "gone from the phone after {0:N1} s" -f ($called + $gone) } else { 'STILL on the phone after 60 s' }))
+                if ($way -eq 'MoveHere') {
+                    $moved = Get-Item -LiteralPath (Join-Path $phoneMoved $name) -ErrorAction SilentlyContinue
+                    Log ("   19m. MoveHere: copy on the PC {0}" -f $(if ($moved) { "there, $($moved.Length) bytes" } else { 'NOT there' }))
+                }
+                $dialog = Read-Host "19m. $way : did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                Log "   19m. $way : dialog: $dialog"
+                if ($gone -ge 0) { $deleted += $way; $onPhone = $null }
+            }
+            if ($onPhone) { Log "   19m. $name is still on the phone (DCIM\mh-measure): delete it by hand in Explorer" }
+            # 19n: the test folder removed the first way that worked; DCIM counted again.
+            $folderItem = PhoneFind $dcimFolder 'mh-measure' 5
+            if ($deleted.Count -gt 0 -and $folderItem -and -not $onPhone) {
+                $way = $deleted[0]
+                Log "   19n. removing DCIM\mh-measure with ${way}: a dialog may open BEHIND this window (look with Alt+Tab); if it asks, answer Yes"
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                try {
+                    if ($way -eq 'InvokeVerb') { $folderItem.InvokeVerb('delete') }
+                    elseif ($way -eq 'InvokeVerbEx') { $folderItem.InvokeVerbEx('delete') }
+                    else { $shell.Namespace($phoneMoved).MoveHere($folderItem, 4 + 16 + 1024) }
+                } catch { Log "   19n. $way on the folder: error $($_.Exception.Message)" }
+                $gone = PhoneGone $dcimFolder 'mh-measure' 60
+                Log ("   19n. DCIM\mh-measure removed with {0}: {1}" -f $way, $(if ($gone -ge 0) { "gone after {0:N1} s" -f ($watch.Elapsed.TotalSeconds) } else { 'STILL there after 60 s: delete it by hand' }))
+                $dialog = Read-Host "19n. Did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                Log "   19n. dialog on the folder: $dialog"
+            } else {
+                Log "   19n. DCIM\mh-measure left on the phone (no way deleted the test file, or it is not empty): delete it by hand in Explorer"
+            }
+        }
+        $after = @(PhoneFiles $dcimFolder 0)
+        $left = @($after | Where-Object { $_.Name -like 'mh-measure-*' })
+        Log ("   19n. DCIM after: {0} files, before: {1} ({2}); test files left: {3}" -f $after.Count, $countBefore, $(if ($after.Count -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }), $left.Count)
+        $trash = Read-Host "19n. On the phone, open the Gallery, then its Trash (Recycle bin): is a mh-measure-... picture there? (n or what you see)"
+        Log "   19n. phone gallery trash after the deletions over USB: $trash"
+
+        # 19o: the read speed of 0248's proof: the 20 files of 19d copied into an EMPTY folder
+        # (no dialog), then the SHA-256 of each.
+        $phoneRead = Join-Path $Work "phone-read"
+        if (Test-Path -LiteralPath $phoneRead) { Remove-Item -Recurse -Force -LiteralPath $phoneRead }
+        New-Item -ItemType Directory -Force -Path $phoneRead | Out-Null
+        $names = @{}
+        foreach ($item in $recent) { $names[$item.Name] = 1 }
+        $again = @($after | Where-Object { $names.ContainsKey($_.Name) } | Select-Object -First 20)
+        $target = $shell.Namespace($phoneRead)
+        $bytes = 0
+        $late = 0
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        foreach ($item in $again) {
+            $target.CopyHere($item, 4 + 16 + 1024)
+            if ((PhoneWait $item $phoneRead) -lt 0) { $late++ } else { $bytes += PhoneSize $item }
+        }
+        $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+        Log ("   19o. copy into an empty folder: {0} files, {1} missing, {2:N1} MB in {3:N1} s = {4:N2} MB/s" -f $again.Count, $late, ($bytes / 1MB), $seconds, ($bytes / 1MB / $seconds))
+        $copies = @(Get-ChildItem -LiteralPath $phoneRead -File)
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        foreach ($copy in $copies) { $null = Get-FileHash -LiteralPath $copy.FullName -Algorithm SHA256 }
+        $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+        $hashed = ($copies | Measure-Object Length -Sum).Sum
+        Log ("   19o. SHA-256 of the copies: {0} files, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $copies.Count, ($hashed / 1MB), $seconds, ($hashed / 1MB / $seconds))
+        foreach ($folder in $phoneDelete, $phoneMoved, $phoneRead) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
+        Log "   19o. the PC's temporary folders of 19l-19o removed"
+    }
 }
 
 # --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------
@@ -1066,11 +1394,461 @@ if (Wanted 20) {
     $ErrorActionPreference = $saved
 }
 
+# --- 21: the Synology NAS by SMB or FTP, from Windows and from Docker, read-only (0246) -------
+# For 0245: which of three ways in works. Nothing is written, moved, renamed or deleted on the
+# NAS: listings and reads only, Docker mounts with ro, FTP sends no write command. The password
+# is asked once, never logged (every line logged has it masked), passed to the container by the
+# name of a variable only; the drive, the mapping, the Docker volume and the variable are
+# removed in a finally, even after an error.
+function NasLog([string]$text) {
+    if ($script:nasSecret) { $text = $text.Replace($script:nasSecret, '***') }
+    Log $text
+}
+function NasPort([string]$address, [int]$port) {
+    $client = New-Object System.Net.Sockets.TcpClient
+    try {
+        $pending = $client.BeginConnect($address, $port, $null, $null)
+        if (-not $pending.AsyncWaitHandle.WaitOne(2000)) { return $false }
+        $client.EndConnect($pending)
+        return $true
+    } catch { return $false } finally { $client.Close() }
+}
+# Docker runs the probe (python of the image) with the mounts given; its lines logged, masked.
+function NasDocker([string]$label, [string[]]$arguments) {
+    $said = @(& docker run --rm @arguments 2>&1 | ForEach-Object { "$_" })
+    $code = $LASTEXITCODE
+    foreach ($line in $said) { if ($line.Trim()) { NasLog ("   ${label}. " + $line.Trim()) } }
+    NasLog "   ${label}. exit code $code"
+    return @{ Code = $code; Lines = $said }
+}
+if (Wanted 21) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 21. the NAS by SMB or FTP, from Windows and from Docker, read-only (0246)"
+    if ($Nas -eq "") {
+        Log "   21. skipped: give -Nas <name or IP address> -NasUser <user> (and -NasShare, default photo)"
+    } else {
+        $script:nasSecret = ""
+        $letter = ""
+        $nasVolume = "mh-measure-nas"
+        $smbWindows = "not tried (port 445 closed)"
+        $smbDocker = "not tried (port 445 closed)"
+        $ftpDocker = "not tried (port 21 closed)"
+        $nasProbe = Join-Path $Work "nas"
+        New-Item -ItemType Directory -Force -Path $nasProbe | Out-Null
+        Set-Content -Path (Join-Path $nasProbe "nas_probe.py") -Encoding Ascii -Value @'
+import ftplib, os, re, sys, time
+
+# Read-only: listings and reads. FTP sends USER/PASS, then only FEAT, PWD, CWD, MLSD or LIST,
+# TYPE, PASV, SIZE, MDTM, REST, RETR, QUIT (no ABOR: a partial read closes its data link).
+YEAR = re.compile(r'^(19|20)[0-9][0-9]$')
+LIMIT = 2000
+CHUNK = 65536
+PHOTOS = ('.jpg', '.jpeg', '.heic')
+
+
+def say(text):
+    print(text, flush=True)
+
+
+def listed():
+    try:
+        with open('/probe/photos.txt', encoding='utf-8-sig') as handle:
+            return [line.strip() for line in handle if line.strip()]
+    except OSError:
+        return []
+
+
+def first_year(names):
+    names = sorted(name for name in names if not name.startswith(('@', '#')))
+    return next((name for name in names if YEAR.match(name)), names[0] if names else '')
+
+
+def speed(count, size, seconds):
+    seconds = max(seconds, 0.001)
+    return '%d photos, %.1f MB in %.1f s = %.2f MB/s' % (count, size / 1e6, seconds, size / 1e6 / seconds)
+
+
+def smb(year):
+    root = '/nas'
+    tops = [name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))]
+    say('top folders: ' + ' / '.join(sorted(tops)[:30]))
+    year = year or first_year(tops)
+    start = time.monotonic()
+    files, size, skipped, found = 0, 0, 0, []
+    for folder, dirs, names in os.walk(os.path.join(root, year)):
+        if '@eaDir' in dirs:
+            skipped += 1
+            dirs.remove('@eaDir')
+        dirs.sort()
+        for name in sorted(names):
+            if files >= LIMIT:
+                break
+            files += 1
+            size += os.path.getsize(os.path.join(folder, name))
+            if name.lower().endswith(PHOTOS) and len(found) < 20:
+                found.append(os.path.relpath(os.path.join(folder, name), root))
+        if files >= LIMIT:
+            break
+    say('listing of %s: %d files (at most %d), %.1f MB, %d @eaDir skipped, %.1f s' % (year, files, LIMIT, size / 1e6, skipped, time.monotonic() - start))
+    chosen = listed() or found
+    total, count, start = 0, 0, time.monotonic()
+    for relative in chosen[:20]:
+        try:
+            with open(os.path.join(root, relative.replace('\\', '/')), 'rb') as handle:
+                while True:
+                    block = handle.read(1 << 20)
+                    if not block:
+                        break
+                    total += len(block)
+            count += 1
+        except OSError as error:
+            say('cannot read %s: %s' % (relative, error))
+    say('read whole: ' + speed(count, total, time.monotonic() - start))
+    sys.exit(0 if files else 3)
+
+
+def partial(ftp, path, rest):
+    connection = ftp.transfercmd('RETR ' + path, rest=rest)
+    got = 0
+    try:
+        while got < CHUNK:
+            block = connection.recv(CHUNK - got)
+            if not block:
+                break
+            got += len(block)
+    finally:
+        connection.close()
+    try:
+        ftp.voidresp()
+    except ftplib.all_errors:
+        pass
+    return got
+
+
+def walk(ftp, year, mlsd):
+    files, skipped, sample, accented = [], 0, '', ''
+    queue = [year]
+    while queue and len(files) < LIMIT:
+        folder = queue.pop(0)
+        if mlsd:
+            entries = sorted(ftp.mlsd(folder))
+            for name, facts in entries:
+                kind = facts.get('type', '')
+                if not accented and kind in ('dir', 'file') and not name.isascii():
+                    accented = name
+                if kind == 'dir':
+                    if name == '@eaDir':
+                        skipped += 1
+                    else:
+                        queue.append(folder + '/' + name)
+                elif kind == 'file' and len(files) < LIMIT:
+                    files.append((folder + '/' + name, int(facts.get('size', 0))))
+                    sample = sample or '%s %s' % (name, facts)
+        else:
+            lines = []
+            ftp.retrlines('LIST ' + folder, lines.append)
+            for line in lines:
+                name = line.split(None, 8)[-1]
+                sample = sample or line
+                if not accented and not name.isascii():
+                    accented = name
+                if line.startswith('-') and len(files) < LIMIT:
+                    files.append((folder + '/' + name, 0))
+    return files, skipped, sample, accented
+
+
+def ftp_probe(host, share, user):
+    ftp = ftplib.FTP(timeout=30)
+    ftp.encoding = 'utf-8'
+    start = time.monotonic()
+    say('welcome: ' + ftp.connect(host, 21))
+    ftp.login(user, os.environ.get('MH_NAS_PASSWORD', ''))
+    say('login: %.1f s' % (time.monotonic() - start))
+    try:
+        feat = ftp.sendcmd('FEAT').upper()
+    except ftplib.error_perm as error:
+        feat = ''
+        say('FEAT refused: %s' % error)
+    offered = {name: name in feat for name in ('MLSD', 'MLST', 'REST STREAM', 'SIZE', 'MDTM', 'UTF8')}
+    say('FEAT: ' + ', '.join('%s %s' % (name, 'yes' if on else 'no') for name, on in offered.items()))
+    say('PWD at login: ' + ftp.pwd())
+    try:
+        ftp.cwd(share)
+    except ftplib.error_perm:
+        ftp.cwd('/' + share)
+    say('the share as FTP shows it: ' + ftp.pwd())
+    mlsd = offered['MLSD'] or offered['MLST']
+    if mlsd:
+        tops = [name for name, facts in ftp.mlsd() if facts.get('type') == 'dir']
+    else:
+        lines = []
+        ftp.retrlines('LIST', lines.append)
+        tops = [line.split(None, 8)[-1] for line in lines if line.startswith('d')]
+    say('top folders: ' + ' / '.join(sorted(tops)[:30]))
+    year = first_year(tops)
+    start = time.monotonic()
+    files, skipped, sample, accented = walk(ftp, year, mlsd)
+    say('listing of %s by %s: %d files (at most %d), %d @eaDir skipped, %.1f s' % (year, 'MLSD' if mlsd else 'LIST (this folder only)', len(files), LIMIT, skipped, time.monotonic() - start))
+    say('one line: ' + sample)
+    say('a name with accents: %s %s' % (accented, ascii(accented)) if accented else 'a name with accents: none in this listing')
+    photos = [path for path, _size in files if path.lower().endswith(PHOTOS)]
+    ftp.voidcmd('TYPE I')
+    if photos:
+        say('MDTM of %s: %s' % (photos[0], ftp.sendcmd('MDTM ' + photos[0])))
+    start = time.monotonic()
+    parts = 0
+    for path in photos[:10]:
+        size = ftp.size(path) or 0
+        partial(ftp, path, None)
+        partial(ftp, path, max(size - CHUNK, 0))
+        parts += 1
+    say('first and last 64 KiB: %d photos, %.2f s per photo' % (parts, (time.monotonic() - start) / max(parts, 1)))
+    total, count, start = [0], 0, time.monotonic()
+    for path in photos[:20]:
+        ftp.retrbinary('RETR ' + path, lambda block: total.__setitem__(0, total[0] + len(block)))
+        count += 1
+    read = speed(count, total[0], time.monotonic() - start)
+    say('read whole: ' + read)
+    ftp.quit()
+    say('summary: works, MLSD %s, %s' % ('yes' if mlsd else 'no', read))
+
+
+if sys.argv[1] == 'smb':
+    smb(sys.argv[2] if len(sys.argv) > 2 else '')
+else:
+    ftp_probe(sys.argv[2], sys.argv[3], sys.argv[4])
+'@
+        try {
+            # 21a: the NAS powered on and answering; the PC's adapter on that link.
+            Read-Host "21a. Power the NAS on, then press Enter (this script waits up to 3 minutes for it)" | Out-Null
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $up = $false
+            while (-not $up -and $watch.Elapsed.TotalSeconds -lt 180) {
+                $up = Test-Connection -ComputerName $Nas -Count 1 -Quiet
+                if (-not $up) { Start-Sleep -Seconds 10 }
+            }
+            Log ("   21a. {0} answers: {1}, after {2:N0} s" -f $Nas, $up, $watch.Elapsed.TotalSeconds)
+            $ip = "$(@([Net.Dns]::GetHostAddresses($Nas) | Where-Object { $_.AddressFamily -eq 'InterNetwork' })[0])"
+            Log "   21a. IPv4 address of the NAS: $ip"
+            try {
+                $adapter = @(Find-NetRoute -RemoteIPAddress $ip -ErrorAction Stop | Where-Object { $_.IPAddress }) | Select-Object -First 1
+                Log ("   21a. PC adapter on that link: '{0}', {1}" -f $adapter.InterfaceAlias, $adapter.IPAddress)
+            } catch { Log ("   21a. adapter not found: " + $_.Exception.Message) }
+
+            # 21b: which services answer.
+            $open = @{}
+            foreach ($port in 21, 445, 139, 22, 5000, 5001) {
+                $open[$port] = NasPort $ip $port
+                Log ("   21b. port {0}: {1}" -f $port, $(if ($open[$port]) { 'open' } else { 'closed' }))
+            }
+
+            # 21c: the password, once, kept in a credential and in this process's environment only.
+            if ($NasUser -eq "") { $NasUser = Read-Host "21c. User name on the NAS" }
+            $secure = Read-Host "21c. Password of $NasUser on the NAS (never logged)" -AsSecureString
+            $credential = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
+            $script:nasSecret = $credential.GetNetworkCredential().Password
+            $env:MH_NAS_PASSWORD = $script:nasSecret
+
+            $yearName = ""
+            if ($open[445]) {
+                # 21d: SMB from Windows, a drive letter mapped by the credential (no password on
+                # a command line); the same letter is given to Docker in 21e.
+                try {
+                    $letter = @(foreach ($l in 'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P') { if (-not (Test-Path -LiteralPath "${l}:\")) { $l } })[0]
+                    $null = New-PSDrive -Name $letter -PSProvider FileSystem -Root "\\$ip\$NasShare" -Credential $credential -Persist -Scope Global -ErrorAction Stop
+                    $root = "${letter}:\"
+                    Log "   21d. \\$ip\$NasShare mapped on ${letter}: (this logon only, removed at the end)"
+                    $shares = @(net view "\\$ip" /all 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match '\sDisk' })
+                    Log ("   21d. net view: " + ($shares -join ' / '))
+                    $tops = @([IO.Directory]::GetDirectories($root) | ForEach-Object { [IO.Path]::GetFileName($_) } | Sort-Object)
+                    Log ("   21d. top folders: " + (($tops | Select-Object -First 30) -join ' / '))
+                    $yearName = @($tops | Where-Object { $_ -match '^(19|20)\d\d$' })[0]
+                    if (-not $yearName) { $yearName = @($tops | Where-Object { $_ -notmatch '^[@#]' })[0] }
+                    # At most 2,000 files below the first year folder, @eaDir (thumbnails) skipped.
+                    $queue = New-Object System.Collections.Queue
+                    $queue.Enqueue((Join-Path $root $yearName))
+                    $files = New-Object System.Collections.ArrayList
+                    $eaDirs = 0
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    while ($queue.Count -gt 0 -and $files.Count -lt 2000) {
+                        $folder = New-Object IO.DirectoryInfo ($queue.Dequeue())
+                        foreach ($sub in ($folder.GetDirectories() | Sort-Object Name)) {
+                            if ($sub.Name -eq '@eaDir') { $eaDirs++ } else { $queue.Enqueue($sub.FullName) }
+                        }
+                        foreach ($file in ($folder.GetFiles() | Sort-Object Name)) { if ($files.Count -lt 2000) { $null = $files.Add($file) } }
+                    }
+                    $listed = $watch.Elapsed.TotalSeconds
+                    $bytes = ($files | Measure-Object -Property Length -Sum).Sum
+                    Log ("   21d. listing of {0}: {1} files (at most 2000), {2:N1} MB, {3} @eaDir skipped, {4:N1} s" -f $yearName, $files.Count, ($bytes / 1MB), $eaDirs, $listed)
+                    # 20 photos read whole into memory: nothing copied to disk.
+                    $photos = @($files | Where-Object { $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
+                    $buffer = New-Object byte[] 1048576
+                    $read = 0
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    foreach ($photo in $photos) {
+                        $stream = [IO.File]::OpenRead($photo.FullName)
+                        try { while (($count = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) { $read += $count } } finally { $stream.Close() }
+                    }
+                    $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
+                    $speed = "{0} photos, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $photos.Count, ($read / 1MB), $seconds, ($read / 1MB / $seconds)
+                    Log "   21d. read whole: $speed"
+                    # The same photos for the container (21e, 21f), relative to the share.
+                    $relative = @($photos | ForEach-Object { $_.FullName.Substring($root.Length).Replace('\', '/') })
+                    [IO.File]::WriteAllLines((Join-Path $nasProbe "photos.txt"), [string[]]$relative)
+                    $smbWindows = "works, listing {0} files in {1:N1} s, read {2}" -f $files.Count, $listed, $speed
+                } catch {
+                    $smbWindows = "does not work: " + $_.Exception.Message
+                    NasLog "   21d. SMB from Windows: $smbWindows"
+                }
+
+                # 21e: Docker given the mapped drive letter, read-only.
+                $smbDocker = "does not work"
+                if ($letter -ne "" -and (Test-Path -LiteralPath "${letter}:\")) {
+                    $run = NasDocker "21e" @("-v", "${letter}:\:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
+                    if ($run.Code -eq 0) { $smbDocker = "works with the drive letter ${letter}:" }
+                }
+                # 21f: a Docker CIFS volume, read-only; SMB 3.0, else 2.1. The volume keeps the
+                # password in its options: removed right after, and in the finally.
+                if ($script:nasSecret -match '[,"]') {
+                    Log "   21f. skipped: the password holds a comma or a double quote, which the CIFS options cannot carry"
+                } else {
+                    foreach ($version in '3.0', '2.1') {
+                        & docker volume rm -f $nasVolume 2>&1 | Out-Null
+                        $made = @(& docker volume create --driver local --opt type=cifs --opt "device=//$ip/$NasShare" --opt "o=addr=$ip,username=$NasUser,password=$($script:nasSecret),ro,vers=$version" $nasVolume 2>&1 | ForEach-Object { "$_" })
+                        if ($LASTEXITCODE -ne 0) { NasLog ("   21f. vers=${version}: volume refused: " + ($made -join ' / ')); continue }
+                        $run = NasDocker "21f vers=$version" @("-v", "${nasVolume}:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
+                        & docker volume rm -f $nasVolume 2>&1 | Out-Null
+                        if ($run.Code -eq 0) {
+                            $smbDocker = if ($smbDocker -like 'works*') { "$smbDocker; and with a CIFS volume, vers=$version" } else { "works with a CIFS volume, vers=$version" }
+                            break
+                        }
+                    }
+                }
+            }
+
+            # 21g: FTP from the container, passive mode, read commands only.
+            if ($open[21]) {
+                $run = NasDocker "21g" @("-e", "MH_NAS_PASSWORD", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "ftp", $ip, $NasShare, $NasUser)
+                $summary = @($run.Lines | Where-Object { $_ -match '^summary: ' })
+                $ftpDocker = if ($run.Code -eq 0 -and $summary.Count -gt 0) { $summary[0].Substring(9) } else { "does not work (see 21g)" }
+            }
+        } catch {
+            NasLog ("   21. stopped: " + $_.Exception.Message)
+        } finally {
+            if ($letter -ne "") {
+                Remove-PSDrive -Name $letter -Force -ErrorAction SilentlyContinue
+                & net use "${letter}:" /delete /y 2>&1 | Out-Null
+            }
+            & docker volume rm -f $nasVolume 2>&1 | Out-Null
+            Remove-Item -Path Env:\MH_NAS_PASSWORD -ErrorAction SilentlyContinue
+            NasLog "   21. cleaned up: mapped drive, Docker volume and password variable removed; nothing was written on the NAS"
+            $script:nasSecret = ""
+        }
+        NasLog "   21. SMB in Docker: $smbDocker"
+        NasLog "   21. SMB in Windows: $smbWindows"
+        NasLog "   21. FTP in Docker: $ftpDocker"
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 22: a pair keeping both names: each copy a hard link (0213) ----------------------------
+if (Wanted 22) {
+    Log ""
+    Log "== 22. a folder pair keeping both names (links), through Docker Desktop (0213)"
+    $links = Join-Path $Work "links"
+    foreach ($folder in "Best of", "2019-07") {
+        New-Item -ItemType Directory -Force -Path (Join-Path $links $folder) | Out-Null
+    }
+    foreach ($photo in ($picked | Select-Object -First 3)) {
+        Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $links "Best of\$($photo.Name)")
+        Copy-Item -LiteralPath $photo.FullName -Destination (Join-Path $links "2019-07\$($photo.Name)")
+    }
+    $linkMounts = @(
+        "-v", "${links}:/data/c/mh-measure-22",
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en audit 2>&1 | Out-Null
+    $report = Get-ChildItem -Path (Join-Path $tool "reports") -Recurse -Filter "report.html" |
+        Where-Object { $_.Directory.Name -like "*-audit" } |
+        Sort-Object LastWriteTime | Select-Object -Last 1
+    $page = [IO.File]::ReadAllText($report.FullName)
+    $pattern = '<select class="decision" data-kept-in="([^"]*)" data-removed-from="([^"]*)"[^>]*>([\s\S]*?)</select>'
+    $pair = [regex]::Matches($page, $pattern) | Where-Object { $_.Groups[3].Value -match 'value="link"' } |
+        Select-Object -First 1
+    if (-not $pair) {
+        Log "   22. stopped: the report offers no pair to link (see $($report.FullName))"
+    } else {
+        $kept = [Net.WebUtility]::HtmlDecode($pair.Groups[1].Value)
+        $removed = [Net.WebUtility]::HtmlDecode($pair.Groups[2].Value)
+        $roots = [regex]::Match($page, 'const roots = (.*);').Groups[1].Value
+        $quote = { param($text) '"' + $text.Replace('\', '\\').Replace('"', '\"') + '"' }
+        $json = '{"version": 1, "roots": ' + $roots + ', "pairs": [{"kept_in": ' + (& $quote $kept) +
+            ', "removed_from": ' + (& $quote $removed) + ', "action": "link"}]}'
+        [IO.File]::WriteAllText((Join-Path $tool "reports\decisions.json"), $json)
+        $copiesFolder = if ($removed.EndsWith("Best of")) { "Best of" } else { "2019-07" }
+        $keptFolder = if ($copiesFolder -eq "Best of") { "2019-07" } else { "Best of" }
+        Log "   22. pair: kept in $kept, linked in $removed"
+        $before = (Get-PSDrive C).Free
+        $lines = & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en clean --yes --decisions decisions.json 2>&1
+        foreach ($line in $lines) {
+            $text = "$line"
+            if ($text -match 'link|names|Files processed|Skipped|Failed|Error') { Log ("   " + $text.Trim()) }
+        }
+        $after = (Get-PSDrive C).Free
+        Log ("   22a. C: free space: {0:N0} bytes before, {1:N0} after (+{2:N0}; the copies weigh {3:N0})" -f
+            $before, $after, ($after - $before),
+            ((Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File | Measure-Object -Property Length -Sum).Sum))
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File) {
+            $names = @(& fsutil hardlink list $file.FullName 2>&1)
+            $twin = Join-Path (Join-Path $links $keptFolder) $file.Name
+            $same = (Get-FileHash -LiteralPath $file.FullName).Hash -eq (Get-FileHash -LiteralPath $twin).Hash
+            Log ("   22b. {0}: {1} name(s) [{2}], same bytes as its twin: {3}" -f $file.Name, $names.Count, ($names -join " | "), $same)
+        }
+        $first = Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File | Select-Object -First 1
+        $twin = Join-Path (Join-Path $links $keptFolder) $first.Name
+        Write-Host ""
+        Write-Host "22c. Open $(Join-Path $links $copiesFolder) and $(Join-Path $links $keptFolder) in Explorer."
+        $seen = Read-Host "Do both folders show the photos, and do both open? (y/n, then any remark)"
+        Log "   22c. Explorer shows both, both open: $seen"
+        $hashBefore = (Get-FileHash -LiteralPath $twin).Hash
+        Write-Host "22d. Open $($first.FullName) in the Photos app, rotate or edit it, and SAVE it (not 'Save a copy')."
+        Read-Host "Press Enter once it is saved and Photos is closed" | Out-Null
+        $edited = (Get-FileHash -LiteralPath $first.FullName).Hash
+        $twinNow = (Get-FileHash -LiteralPath $twin).Hash
+        $names = @(& fsutil hardlink list $first.FullName 2>&1)
+        Log ("   22d. after the edit in Photos: the edited name changed: {0}; its twin {1} changed too: {2}; names now: {3}" -f
+            ($edited -ne $hashBefore), $first.Name, ($twinNow -ne $hashBefore), ($names -join " | "))
+        $lines = & docker run --rm --env COLUMNS=160 @linkMounts $Image --locale en undo --yes 2>&1
+        foreach ($line in $lines) {
+            $text = "$line"
+            if ($text -match 'Files processed|Skipped|Failed|Error|independent|no longer') { Log ("   " + $text.Trim()) }
+        }
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File) {
+            $names = @(& fsutil hardlink list $file.FullName 2>&1)
+            Log ("   22e. after undo, {0}: {1} name(s), modified {2}" -f $file.Name, $names.Count, $file.LastWriteTime.ToString("s"))
+        }
+    }
+    $ErrorActionPreference = $saved
+}
+
 # --- clean up -------------------------------------------------------------------------------
 if (-not $Keep) {
     if ($otherRoot -ne "") { Remove-Item -Recurse -Force $otherRoot }
     if ($driveRoot -ne "") { Remove-Item -Recurse -Force $driveRoot }
-    Remove-Item -Recurse -Force $Work
+    MhLeftovers "clean-up"
+    try {
+        Remove-Item -Recurse -Force $Work -ErrorAction Stop
+    } catch {
+        if (Test-Path -LiteralPath $Work) { Set-Content -Path (Join-Path $Work ".mh-measure") -Value "made by mh-measure.ps1" }
+        Log "   clean-up: $Work is still in use (an Explorer or mh window open in it?): close it, the next run removes it. $($_.Exception.Message)"
+    }
     docker volume rm -f $volume | Out-Null
 }
 Log ""

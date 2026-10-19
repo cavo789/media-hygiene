@@ -7,16 +7,20 @@ import sqlite3
 from contextlib import closing
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.home_state import home_state
 from media_hygiene.report.decisions import read_decisions
+from media_hygiene.review.home_views import STEP_EXIT_BASE
 from media_hygiene.review.http import Request
 from media_hygiene.services import search_pages
+from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from tests.integration.tags.test_search_command import _call, fake_server
 from tests.support.cli import run
 from tests.support.places_map import JSON
+from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     import pytest
-    from typer.testing import CliRunner
+    from typer.testing import CliRunner, Result
 
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.http import Response
@@ -35,7 +39,7 @@ def _browse(
         for route, body in calls:
             answers.append(await _call(app, route, body))
 
-    monkeypatch.setattr(search_pages, "run_server", fake_server(browse))
+    monkeypatch.setattr(search_pages, "serve_until_ended", fake_server(browse))
     result = run(cli, "browse")
     assert result.exit_code == 0, result.output
     return answers, result.output
@@ -142,7 +146,7 @@ def test_the_pages_refuse_other_hosts_and_serve_both_pages(
             ]
         )
 
-    monkeypatch.setattr(search_pages, "run_server", fake_server(attack))
+    monkeypatch.setattr(search_pages, "serve_until_ended", fake_server(attack))
     assert run(cli, "browse").exit_code == 0
     browse = answers[1]
     assert [answer.status for answer in answers] == [403, 200, 200, 200, 400, 404]
@@ -151,3 +155,82 @@ def test_the_pages_refuse_other_hosts_and_serve_both_pages(
     assert answers[3].body == browse.body  # `browse` opens on the folders
     assert "media-src 'self'" in browse.policy
     assert b'href="/browse"' in answers[2].body
+
+
+def _opened(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch, calls: list[tuple[str, object]]
+) -> tuple[list[Response], Result]:
+    """Open the folder view, send the calls, stop it; answers and the whole result."""
+    answers: list[Response] = []
+
+    async def browse(app: SearchApp) -> None:
+        for route, body in calls:
+            answers.append(await _call(app, route, body))
+
+    monkeypatch.setattr(search_pages, "serve_until_ended", fake_server(browse))
+    return answers, run(cli, "browse")
+
+
+def _one_set_aside(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Set the first file of the events' folder aside, from the page."""
+    folder = _dcim(cli, monkeypatch)
+    listed = _browse(cli, monkeypatch, [("POST /api/folder", {"folder": folder})])
+    key = _body(listed[0][0])["files"][0]["key"]
+    asked = {"action": "add", "keys": [key], "search": {"folder": folder}}
+    assert (
+        json.loads(_browse(cli, monkeypatch, [("POST /api/chosen", asked)])[0][0].body)[
+            "count"
+        ]
+        == 1
+    )
+
+
+def test_apply_now_from_home_ends_on_the_clean_step(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0243: opened from home with a choice: the button, the home step's exit code."""
+    _one_set_aside(cli, monkeypatch)
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    answers, result = _opened(
+        cli, monkeypatch, [("GET /browse", None), ("POST /api/apply", {})]
+    )
+    page, applied = answers[0], answers[1]
+    assert b"const APPLY_OFFERED = true;" in page.body
+    assert b'id="applyNow"' in page.body
+    assert applied.status == 200
+    step = json.loads(applied.body)
+    command = home_state(make_runtime(locations)).command_of(step["number"])
+    assert command is not None
+    assert command == step["command"]
+    assert "--decisions" in command
+    assert result.exit_code == STEP_EXIT_BASE + step["number"], result.output
+    assert f"Apply now, chosen on the page: {command}" in " ".join(
+        result.output.split()
+    )
+    assert "What next" not in result.output  # mh runs the step: no line to type
+
+
+def test_apply_now_refused_when_opened_directly(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0243: `mh browse` alone: no button, refused; the next step line stays."""
+    _one_set_aside(cli, monkeypatch)
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
+    answers, result = _opened(
+        cli, monkeypatch, [("GET /browse", None), ("POST /api/apply", {})]
+    )
+    assert b"const APPLY_OFFERED = false;" in answers[0].body
+    assert answers[1].status == 409
+    assert result.exit_code == 0, result.output
+    assert "clean --decisions" in result.output.split("What next")[-1]
+
+
+def test_apply_now_refused_with_nothing_set_aside(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0243: opened from home, nothing chosen: refused, the page keeps running."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    answers, result = _opened(cli, monkeypatch, [("POST /api/apply", {})])
+    assert answers[0].status == 409
+    assert json.loads(answers[0].body)["error"] == "Nothing set aside."
+    assert result.exit_code == 0, result.output

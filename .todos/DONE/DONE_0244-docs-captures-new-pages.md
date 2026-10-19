@@ -40,3 +40,9 @@ with `nice` as every heavy helper. Synthetic pictures only (CLAUDE.md), never re
 ## Gain (estimated)
 
 Six pages a newcomer reads without seeing the screen they describe → each with its picture.
+
+## Status: DONE (2026-10-19)
+
+Modes `junk`, `home`, `browse` and a screenshot for `pairs` added (`served.py`, `browser.py`,
+`browsing.py`); `junk.py` draws four synthetic unwanted photos (`Downloads`); `docs_screenshots`
+run in `en` then `fr`; images `review-pairs`, `review-junk`, `home`, `browse` shown in both languages.

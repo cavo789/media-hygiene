@@ -144,7 +144,7 @@ démonstration, dont les images sont dessinées par un programme) :
 ──────────────────────────────────── Audit ─────────────────────────────────────
 Résumé de l'audit
 ┌──────────────────────────────────────────────────────────┬────────┐
-│ Fichiers média analysés                                  │     61 │
+│ Fichiers média analysés                                  │     65 │
 │ Groupes de fichiers identiques                           │      8 │
 │ Copies en trop, à mettre de côté                         │     12 │
 │ Espace libérable                                         │ 3,4 Mo │
@@ -177,7 +177,7 @@ Ce que vous pouvez faire
 gardées entières.
 
 ✅ Rapport HTML :
-C:\Users\you\media-hygiene\reports\20261016-192631-audit\report.html
+C:\Users\you\media-hygiene\reports\20261019-153641-audit\report.html
 👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté.
 mh clean
 💡 Tapez mh open : votre navigateur montre tous les rapports.

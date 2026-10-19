@@ -25,6 +25,7 @@ class CleanLabels:  # pylint: disable=too-many-instance-attributes
 
     copy: str
     kept_aside: str
+    linked: str
     near: str
     burst: str
     chosen: str
@@ -70,6 +71,7 @@ def clean_labels(*, delete_copies: bool) -> CleanLabels:
     return CleanLabels(
         copy=_("Deleting a duplicate copy: {path}") if delete_copies else kept_aside,
         kept_aside=kept_aside,
+        linked=_("Replacing a duplicate copy by a link to the kept file: {path}"),
         near=_("Moving a near duplicate to the quarantine: {path}"),
         burst=_("Moving a burst shot set aside to the quarantine: {path}"),
         chosen=_("Moving a file you set aside to the quarantine: {path}"),

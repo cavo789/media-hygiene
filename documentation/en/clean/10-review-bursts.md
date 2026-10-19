@@ -276,7 +276,10 @@ The one of this example:
       ]
     }
   ],
-  "near": []
+  "near": [],
+  "chosen": [],
+  "unwanted": [],
+  "gone": []
 }
 ```
 

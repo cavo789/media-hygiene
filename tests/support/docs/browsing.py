@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 PLACE: Final = "Parc du Cinquantenaire"  # a public park of Brussels
 
+# As `mh` runs them: a step chosen on the page is relayed, so *Apply now* is offered.
+_LAUNCHED: Final = ("MEDIA_HYGIENE_LAUNCHER_STEPS=1",)
+_RELAYING: Final = frozenset({"browse", "home"})
+
 type Captures = dict[str, str]
 
 
@@ -29,7 +33,9 @@ def _serve(demo: Demo, args: tuple[str, ...], shots: Path) -> str:
         What the page's terminal showed, tidied.
     """
     split = args.index("--")
-    container = start_review(demo, args[:split])
+    container = start_review(
+        demo, args[:split], _LAUNCHED if args[0] in _RELAYING else ()
+    )
     try:
         shoot(demo, Job(f"container:{container}", args[split + 1 :]), shots)
     finally:
@@ -56,10 +62,15 @@ def served_pages(demo: Demo, shots: Path) -> Captures:
     captures["review-near.txt"] = _serve(demo, near, shots)
     pairs = ("review", "--pairs", "--", "pairs")  # nothing decided: `clean` as planned
     captures["review-pairs.txt"] = _serve(demo, pairs, shots)
+    junk = ("review", "--junk", "--", "junk")  # nothing decided: proposed only
+    captures["review-junk.txt"] = _serve(demo, junk, shots)
     # The words of the folders and dates: no vision model in the documentation.
     run(demo, Command(("tags", "--no-describe")))
     word = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1].casefold()
     _serve(demo, ("search", "--", "search", word), shots)
+    folder = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1]
+    _serve(demo, ("browse", "--", "browse", folder), shots)
+    _serve(demo, ("home", "--", "home"), shots)
     return captures
 
 

@@ -5,6 +5,7 @@
 {{ function }}() {
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
     local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
+    local backups=()
     # --photos /mnt/e/Folder: one more photo folder, for this command only.
     while [[ $# -gt 0 ]]; do
         if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
@@ -61,8 +62,15 @@
         *" $command "*) long=1 ;;
     esac
     for folder in "${given[@]}"; do photos+=(-v "$folder$mode"); done
-    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210).
-    if [[ -n "${_{{ function }}_relay:-}" && "$command" == home ]]; then relay=(-e "{{ relay }}=1"); fi
+{% if script.backups %}
+    # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
+    case " {{ script.commands.backups | join(" ") }} " in
+        *" $command "*) backups=({% for volume in script.backups %}--backup "{{ volume.point.as_posix() }}"{{ " " if not loop.last }}{% endfor %}) ;;
+    esac
+{% endif %}
+    # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
+    # or on a page it opened (browse's Apply now, 0243).
+    if [[ -n "${_{{ function }}_relay:-}" && " {{ relayed | join(" ") }} " == *" $command "* ]]; then relay=(-e "{{ relay }}=1"); fi
     # The host's own zone, unless TZ says one: /etc/localtime links to it.
     if [[ -z "$zone" && -L /etc/localtime ]]; then
         zone="$(readlink /etc/localtime)"
@@ -94,11 +102,14 @@
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
 {% endfor %}
         "${photos[@]}" \
+{% for volume in script.backups %}
+        -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" \
+{% endfor %}
 {% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
         "${page[@]}" \
-        {{ image }} "$@" || status=$?
+        {{ image }} "$@" "${backups[@]}" || status=$?
     if [[ -n "$browser" ]]; then kill "$browser" 2>/dev/null; fi
     if [[ -n "$long" ]]; then
         if [[ "$status" -eq 0 ]]; then
@@ -117,7 +128,8 @@
 {% include 'mh_host.sh.j2' %}
 {% for name in host.windows %}
 
-# `{{ function }} {{ name }}` writes a Windows shortcut or registry key: mh.ps1 only (0180, 0181).
+# `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1
+# only (0180, 0181, 0219).
 _{{ function }}_{{ name }}() {
     set -- {{ name }}
     printf '%s\n' "{{ host.texts.windows }}" >&2
@@ -127,23 +139,30 @@ _{{ function }}_{{ name }}() {
 
 # `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
 # here as `{{ function }} <step>`, its questions in this terminal, then the page comes back.
+# A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
 _{{ function }}_home() {
-    local _{{ function }}_relay=1 status steps number line chosen words=() color=(--color never)
+    local _{{ function }}_relay=1 status=0 after=0 steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
-        status=0
-        {{ function }} home "$@" || status=$?
-        if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
+        if [[ "$status" -le {{ step_base }} ]]; then
+            status=0
+            after=0
+            {{ function }} home "$@" || status=$?
+            if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
+        fi
         steps="$({{ function }} "${color[@]}" menu)" || return
         chosen=""
         while IFS=$'\t' read -r number line; do
             if [[ "$number" == "$((status - {{ step_base }}))" ]]; then chosen="$line"; break; fi
         done <<< "$steps"
+        if [[ -z "$chosen" && "$after" == 1 ]]; then status=0; continue; fi
         if [[ -z "$chosen" ]]; then return "$status"; fi
         printf '%s\n' "{{ texts.direct }}" >&2
         read -r -a words <<< "$chosen"
-        {{ function }} "${words[@]}" "$@" || true
+        status=0
+        after=1
+        {{ function }} "${words[@]}" "$@" || status=$?
     done
 }
 

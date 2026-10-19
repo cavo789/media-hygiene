@@ -32,6 +32,8 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
+![La page d'accueil : l'étape suivante en gros bouton, l'audit lancé dans la page avec le temps de chaque étape, où vous en êtes, quelques images trouvées par l'audit, les rapports, puis les étapes des trois guides](../images/home.webp)
+
 ## D'un coup d'œil
 
 | | |
@@ -49,8 +51,9 @@ docker run --rm -it `
   page le dit.
 - **Auditer dans cette page** 🔒 : **Auditer maintenant** lit vos dossiers comme `mh audit`, avec
   les mêmes réglages. Chaque étape (liste, empreintes, comparaison, preuve d'identité…) s'affiche
-  avec ses comptes au fil de l'eau ; à la fin, les chiffres de l'audit, *Ce que vous pouvez
-  faire*, et le lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit** l'arrête
+  avec ses comptes au fil de l'eau ; à la fin, les chiffres de l'audit, le temps de chaque étape
+  (*Temps par étape : liste 1,2 s · vérifications 3,4 s · …*, la ligne qu'affiche
+  `mh --verbosity verbose audit`), *Ce que vous pouvez faire*, et le lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit** l'arrête
   entre deux fichiers : le cache garde ce qu'il a lu, et l'audit suivant repart de là.
 - **Où vous en êtes** : les lignes de [`status`](status.md), et le passage que `mh undo` remet
   encore en place.
@@ -70,14 +73,14 @@ qui a ouvert la page :
 
 - **`mh` seul** (et donc le raccourci du Bureau et le clic droit sur un dossier), qui lance les
   étapes de la page et le lui dit : **Lancer** (ou le gros
-  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre PowerShell, avec les dossiers
-  dont cette étape a besoin. La page affiche *En cours dans la fenêtre PowerShell : cette page
+  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers
+  dont cette étape a besoin. La page affiche *En cours dans la fenêtre où mh tourne : cette page
   revient quand c'est fini* ; quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
   L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
   c'est ainsi que `mh` sait quoi lancer.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
   copie la commande (*Copiée : mh clean*) et la page continue de tourner ; arrêtez-la avec Ctrl+C
-  dans sa fenêtre PowerShell, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
+  dans la fenêtre où `mh` tourne (PowerShell sous Windows), collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
   navigateur refuse de copier (page ouverte à une autre adresse que `127.0.0.1` ou `localhost`),
   la commande est sélectionnée : appuyez vous-même sur Ctrl+C.
 

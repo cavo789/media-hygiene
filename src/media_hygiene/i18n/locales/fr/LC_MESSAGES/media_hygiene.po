@@ -399,6 +399,23 @@ msgstr ""
 " de cette page, listent tous les fichiers."
 
 msgid ""
+"A backup is compared, never changed: it cannot be, hold or lie in a photo"
+" folder or another backup."
+msgstr ""
+"Une sauvegarde est comparée, jamais modifiée : elle ne peut pas être un "
+"dossier de photos ou une autre sauvegarde, ni en contenir un, ni se "
+"trouver dedans."
+
+msgid ""
+"A backup or an old disk, as Explorer shows it: \"E:\\Backup\". Mounted "
+"read-only for every command, clean included, and given as --backup: "
+"compared, never changed. Repeatable."
+msgstr ""
+"Une sauvegarde ou un ancien disque, tel que l'Explorateur le montre : "
+"\"E:\\Sauvegarde\". Monté en lecture seule pour chaque commande, clean "
+"compris, et donné en --backup : comparé, jamais modifié. Répétable."
+
+msgid ""
 "A backup or an old disk: compared, never changed. Says what it lacks and "
 "what only it holds. Repeatable."
 msgstr ""
@@ -702,11 +719,23 @@ msgstr ""
 "interdit alors toute modification. {url}"
 
 msgid ""
+"Add or remove a photo folder: mh folders add (a window to choose it) or "
+"mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
+"never changed: mh folders add --backup <folder>."
+msgstr ""
+"Ajouter ou retirer un dossier de photos : mh folders add (une fenêtre "
+"pour le choisir) ou mh folders add <dossier>, mh folders remove "
+"<dossier>. Une sauvegarde, comparée, jamais modifiée : mh folders add "
+"--backup <dossier>."
+
+msgid ""
 "Add or remove a photo folder: mh folders add <folder>, mh folders remove "
+"<folder>. A backup, compared, never changed: mh folders add --backup "
 "<folder>."
 msgstr ""
 "Ajouter ou retirer un dossier de photos : mh folders add <dossier>, mh "
-"folders remove <dossier>."
+"folders remove <dossier>. Une sauvegarde, comparée, jamais modifiée : mh "
+"folders add --backup <dossier>."
 
 msgid ""
 "Add the settings of this version to your config.toml, with their "
@@ -755,12 +784,20 @@ msgstr "Tous les fichiers"
 msgid "All {total} files found are picked"
 msgstr "Les {total} fichiers trouvés sont choisis"
 
+#, python-brace-format
+msgid "Already copied by an earlier mh phone: {count}."
+msgstr "Déjà copiés par un mh phone précédent : {count}."
+
 msgid "Already in place"
 msgstr "Déjà à leur place"
 
 #, python-brace-format
 msgid "Already in place: {share}."
 msgstr "Déjà à leur place : {share}."
+
+#, python-brace-format
+msgid "Already in your library, not copied: {count}."
+msgstr "Déjà dans votre photothèque, non copiés : {count}."
 
 #, python-brace-format
 msgid "Already the latest version: {version}."
@@ -828,6 +865,16 @@ msgid ""
 msgstr ""
 "Répondu : les fichiers marqués 🗑️ sont retenus par 'clean --decisions', "
 "mis de côté s'ils reviennent ; les autres sont oubliés."
+
+msgid "Any folder"
+msgstr "N'importe quel dossier"
+
+msgid "Apply now"
+msgstr "Appliquer maintenant"
+
+#, python-brace-format
+msgid "Apply now, chosen on the page: {command}"
+msgstr "Appliquer maintenant, choisi sur la page : {command}"
 
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
@@ -1098,6 +1145,9 @@ msgstr "Choix de la page de revue repris aussi : {count}."
 msgid "Choices on {count} series undone."
 msgstr "Choix sur {count} séries annulés."
 
+msgid "Choose a folder of photos or videos to add"
+msgstr "Choisissez un dossier de photos ou de vidéos à ajouter"
+
 msgid "Choose a folder on the left."
 msgstr "Choisissez un dossier à gauche."
 
@@ -1112,6 +1162,9 @@ msgid ""
 msgstr ""
 "Choisissez à nouveau dans 'review-sort' (elle montre les deux), ou "
 "remettez les cellules du classeur comme avant, puis relancez 'sort'."
+
+msgid "Choose another decision for this pair, or leave it as planned."
+msgstr "Choisissez une autre décision pour cette paire, ou laissez-la comme prévu."
 
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
@@ -1173,6 +1226,16 @@ msgid "Cleaning"
 msgstr "Nettoyage"
 
 msgid ""
+"Click the map or drag the pin where these photos were taken, then save: "
+"'xmp' writes that position into the sidecars of the photos without GPS of"
+" this folder and of its subfolders ([tags] xmp_folder_gps = true)."
+msgstr ""
+"Cliquez sur la carte ou faites glisser le repère là où ces photos ont été"
+" prises, puis enregistrez : 'xmp' écrit cette position dans les fichiers "
+".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
+"xmp_folder_gps = true)."
+
+msgid ""
 "Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
 "day ahead) is set right here, never in the photos. camera: a regular "
 "expression searched in the make and model; dates: the camera's own, "
@@ -1194,6 +1257,13 @@ msgstr "Fermer"
 
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
+
+msgid ""
+"Close this page: mh moves the files set aside to the quarantine (it asks "
+"first), then opens the home page again."
+msgstr ""
+"Ferme cette page : mh déplace en quarantaine les fichiers mis de côté (il"
+" demande d'abord), puis rouvre l'accueil."
 
 #, python-brace-format
 msgid "Cluster — {files}"
@@ -1264,16 +1334,20 @@ msgstr ""
 "Les copies trouvées dans ces dossiers sont gardées en priorité, dans cet "
 "ordre."
 
+#, python-brace-format
+msgid "Copies not found when read back: {count}. Type mh phone again."
+msgstr "Copies introuvables à la relecture : {count}. Tapez de nouveau mh phone."
+
 msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 "Les copies des fichiers autres que des médias vont dans /quarantine : "
 "montez-le."
 
 msgid ""
-"Copies the command, to paste in the PowerShell window: this page keeps "
-"running."
+"Copies the command, to paste in the window where mh runs: this page keeps"
+" running."
 msgstr ""
-"Copie la commande, à coller dans la fenêtre PowerShell : cette page "
+"Copie la commande, à coller dans la fenêtre où mh tourne : cette page "
 "continue de tourner."
 
 msgid "Copy"
@@ -1447,6 +1521,15 @@ msgstr "Décidé : comme prévu, les copies partent en quarantaine."
 msgid "Decided: as planned, the copies of the second folder go."
 msgstr "Décidé : comme prévu, les copies du second dossier partent."
 
+msgid ""
+"Decided: both names kept, each copy of the second folder becomes a link "
+"to its file in the first one (one photo, two names: an edit saved in "
+"place shows under both)."
+msgstr ""
+"Décidé : les deux noms restent, chaque copie du second dossier devient un"
+" lien vers son fichier du premier (une photo, deux noms : une retouche "
+"enregistrée sur place se voit sous les deux)."
+
 msgid "Decided: left alone, nothing of this group moves."
 msgstr "Décidé : laissé tel quel, rien de ce groupe ne bouge."
 
@@ -1616,6 +1699,17 @@ msgid ""
 msgstr ""
 "Docker Desktop n'est pas démarré : lancez-le depuis le menu Démarrer, "
 "attendez qu'il dise qu'il tourne, puis tapez à nouveau la commande."
+
+#, python-brace-format
+msgid "Docker Desktop is not started: starting it (up to {minutes} minute)…"
+msgid_plural "Docker Desktop is not started: starting it (up to {minutes} minutes)…"
+msgstr[0] "Docker Desktop n'est pas démarré : je le lance (jusqu'à {minutes} minute)…"
+msgstr[1] ""
+"Docker Desktop n'est pas démarré : je le lance (jusqu'à {minutes} "
+"minutes)…"
+
+msgid "Docker Desktop is ready: type the command again (↑ then Enter)."
+msgstr "Docker Desktop est prêt : tapez de nouveau la commande (↑ puis Entrée)."
 
 msgid ""
 "Docker Desktop resolves host.docker.internal by itself. Docker Engine "
@@ -1820,10 +1914,10 @@ msgstr ""
 "quarantaine, jamais supprimés directement."
 
 msgid ""
-"Ends this page: mh runs the step in the PowerShell window, then opens "
+"Ends this page: mh runs the step in the window where mh runs, then opens "
 "this page again."
 msgstr ""
-"Ferme cette page : mh lance l'étape dans la fenêtre PowerShell, puis "
+"Ferme cette page : mh lance l'étape dans la fenêtre où mh tourne, puis "
 "rouvre cette page."
 
 #, python-brace-format
@@ -2003,6 +2097,15 @@ msgstr "Toutes les copies"
 
 msgid "Every file of your photos is in this backup."
 msgstr "Chaque fichier de vos photos est dans cette sauvegarde."
+
+msgid ""
+"Every folder of the index, as 'browse' shows them: place one named after "
+"no town (a wedding, a holiday). Its subfolders get its position, unless "
+"they have their own."
+msgstr ""
+"Chaque dossier de l'index, comme 'browse' les montre : placez-en un qui "
+"ne porte le nom d'aucune ville (un mariage, des vacances). Ses sous-"
+"dossiers reçoivent sa position, sauf s'ils ont la leur."
 
 msgid "Every group has been decided."
 msgstr "Tous les groupes ont été décidés."
@@ -2363,8 +2466,8 @@ msgstr "Dossiers analysés :"
 msgid "Folders closed; your photos were not changed."
 msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
 
-msgid "Folders named after a town"
-msgstr "Dossiers au nom d'une ville"
+msgid "Folders named after a town, or placed"
+msgstr "Dossiers au nom d'une ville, ou placés"
 
 msgid "Folders removed"
 msgstr "Dossiers supprimés"
@@ -2406,6 +2509,11 @@ msgstr ""
 #, python-brace-format
 msgid "For every terminal, add that line to {profile}."
 msgstr "Pour chaque terminal, ajoutez cette ligne à {profile}."
+
+msgid "For mh phone: which files of a phone are new, from its listing."
+msgstr ""
+"Pour mh phone : quels fichiers d'un téléphone sont nouveaux, d'après sa "
+"liste."
 
 msgid "Forget its position"
 msgstr "Oublier sa position"
@@ -2539,6 +2647,9 @@ msgstr "Vers un dossier « à vérifier »"
 
 msgid "Going to a 'to sort' folder"
 msgstr "Vers un dossier « à trier »"
+
+msgid "Google Photos description"
+msgstr "description Google Photos"
 
 msgid "Google Photos record (.json)"
 msgstr "fiche Google Photos (.json)"
@@ -2794,6 +2905,9 @@ msgstr "juin"
 msgid "KB"
 msgstr "Ko"
 
+msgid "Keep both names (link)"
+msgstr "Garder les deux noms (lien)"
+
 msgid "Keep one of them: the other is a copy."
 msgstr "Gardez-en un : l'autre est une copie."
 
@@ -2943,6 +3057,12 @@ msgstr "Liste les exécutions et ce qu'elles ont fait."
 
 msgid "Listing media files"
 msgstr "Recherche des fichiers médias"
+
+#, python-brace-format
+msgid "Listing the photos and videos of {name}: about 30 seconds per 1,000 files…"
+msgstr ""
+"Liste des photos et vidéos de {name} : environ 30 secondes par tranche de"
+" 1 000 fichiers…"
 
 #, python-brace-format
 msgid "Load it in this terminal with: {load}"
@@ -3278,6 +3398,20 @@ msgstr "Nouvel An"
 msgid "New name"
 msgstr "Nouveau nom"
 
+#, python-brace-format
+msgid ""
+"New photos and videos copied: {count} ({size} GB, {speed} MB/s), read "
+"back from {destination}."
+msgstr ""
+"Nouvelles photos et vidéos copiées : {count} ({size} Go, {speed} Mo/s), "
+"relu dans {destination}."
+
+#, python-brace-format
+msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgstr ""
+"Nouvelles photos et vidéos à copier : {count} ({size} Go) dans "
+"{destination}…"
+
 msgid "New place"
 msgstr "Nouveau lieu"
 
@@ -3301,6 +3435,10 @@ msgstr "La prochaine fois, tapez-la directement : {command}"
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
+
+#, python-brace-format
+msgid "No DCIM folder on {name}: no photo to copy."
+msgstr "Aucun dossier DCIM sur {name} : aucune photo à copier."
 
 msgid "No audit has walked a folder completely yet."
 msgstr "Aucun audit n'a encore parcouru un dossier en entier."
@@ -3370,13 +3508,23 @@ msgstr ""
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
 
+msgid "No folder chosen: nothing changed."
+msgstr "Aucun dossier choisi : rien n'a changé."
+
 msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 "Aucun dossier pour les albums : ni album.root ni classify.target n'est "
 "défini."
 
-msgid "No folder named after a town holds photos without GPS."
-msgstr "Aucun dossier au nom d'une ville ne contient de photos sans GPS."
+msgid "No folder in the index: run 'audit' first, with the same /cache mount."
+msgstr ""
+"Aucun dossier dans l'index : lancez d'abord 'audit', avec le même montage"
+" /cache."
+
+msgid "No folder named after a town, or placed, holds photos without GPS."
+msgstr ""
+"Aucun dossier au nom d'une ville, ou placé, ne contient de photos sans "
+"GPS."
 
 msgid "No folder of that name."
 msgstr "Aucun dossier de ce nom."
@@ -3450,11 +3598,22 @@ msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
 
 msgid ""
+"No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
+" this computer), then type mh phone again."
+msgstr ""
+"Aucun téléphone vu : branchez-le, déverrouillez-le, choisissez Transfert "
+"de fichiers (iPhone : Faire confiance à cet ordinateur), puis tapez de "
+"nouveau mh phone."
+
+msgid ""
 "No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
 " again."
 msgstr ""
 "Aucun dossier de photos : ajoutez --photos \"C:\\Photos\" pour chaque "
 "dossier, puis relancez."
+
+msgid "No photo folder: type mh phone --to <folder>."
+msgstr "Aucun dossier de photos : tapez mh phone --to <dossier>."
 
 msgid "No photo left to analyse: every one is in the cache."
 msgstr "Plus aucune photo à analyser : toutes sont dans le cache."
@@ -3554,6 +3713,11 @@ msgstr "Aucune exécution pour l'instant."
 
 msgid "No signal"
 msgstr "Aucun indice"
+
+msgid "No step applies the decisions now: type the next step yourself."
+msgstr ""
+"Aucune étape n'applique les décisions pour l'instant : tapez vous-même "
+"l'étape suivante."
 
 #, python-brace-format
 msgid "No step {choice}: type mh menu to see the menu again."
@@ -3732,6 +3896,9 @@ msgstr ""
 "Rien de perdu : {before} fichiers ({before_size}) avant et après ; "
 "{verified} déplacements vérifiés sur {moved}."
 
+msgid "Nothing new on the phone: nothing to copy."
+msgstr "Rien de nouveau sur le téléphone : rien à copier."
+
 msgid "Nothing set aside."
 msgstr "Rien n'est mis de côté."
 
@@ -3791,6 +3958,10 @@ msgstr "Rien n'a été écrit : le lanceur va dans un fichier, pas à l'écran."
 
 msgid "November"
 msgstr "novembre"
+
+#, python-brace-format
+msgid "Number of the phone (1 to {count})"
+msgstr "Numéro du téléphone (1 à {count})"
 
 msgid "October"
 msgstr "octobre"
@@ -3967,6 +4138,9 @@ msgstr "contributeurs d'OpenStreetMap"
 
 msgid "OpenStreetMap knows no area of that name."
 msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
+
+msgid "Opened without the home page: type the next step yourself."
+msgstr "Ouverte sans l'accueil : tapez vous-même l'étape suivante."
 
 #, python-brace-format
 msgid "Option {name} needs a value."
@@ -4364,6 +4538,12 @@ msgid "Remove ':ro' from their -v options to let '{command}' act."
 msgstr "Retirez ':ro' de leurs options -v pour laisser '{command}' agir."
 
 #, python-brace-format
+msgid "Replacing a duplicate copy by a link to the kept file: {path}"
+msgstr ""
+"Remplacement d'une copie en double par un lien vers le fichier gardé : "
+"{path}"
+
+#, python-brace-format
 msgid "Report with the photos: {path}"
 msgstr "Rapport avec les photos : {path}"
 
@@ -4514,13 +4694,12 @@ msgstr ""
 "Clic droit sur un dossier dans l'Explorateur : la page d'accueil, sur ce "
 "dossier"
 
-#, python-brace-format
 msgid ""
-"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
-"back from {key}:"
+"Right-click a folder, or the empty space of an open folder, then Media "
+"Hygiene: the mh menu opens on that folder."
 msgstr ""
-"Clic droit sur un dossier, puis Media Hygiene : le menu de mh s'ouvre sur"
-" ce dossier. Relu depuis {key} :"
+"Clic droit sur un dossier, ou dans l'espace vide d'un dossier ouvert, "
+"puis Media Hygiene : le menu de mh s'ouvre sur ce dossier."
 
 #, python-brace-format
 msgid "Right-click entry removed: {key} is gone."
@@ -4719,8 +4898,18 @@ msgstr ""
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
 
-msgid "Running in the PowerShell window: this page comes back when it ends."
-msgstr "En cours dans la fenêtre PowerShell : cette page revient quand c'est fini."
+msgid "Running in the window where mh runs: this page comes back when it ends."
+msgstr ""
+"En cours dans la fenêtre où mh tourne : cette page revient quand c'est "
+"fini."
+
+#, python-brace-format
+msgid ""
+"Running in the window where mh runs: {command}. The home page comes back "
+"here when it ends."
+msgstr ""
+"En cours dans la fenêtre où mh tourne : {command}. L'accueil revient ici "
+"quand c'est fini."
 
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
@@ -4965,6 +5154,10 @@ msgstr ""
 msgid "Set aside"
 msgstr "Écartées"
 
+#, python-brace-format
+msgid "Set aside before on purpose, not copied: {count}."
+msgstr "Écartés volontairement auparavant, non copiés : {count}."
+
 msgid "Set aside from the map"
 msgstr "Écartés de la carte"
 
@@ -5158,11 +5351,11 @@ msgid "Stop the audit"
 msgstr "Arrêter l'audit"
 
 msgid ""
-"Stop this page with Ctrl+C in its PowerShell window, then paste the "
+"Stop this page with Ctrl+C in the window where mh runs, then paste the "
 "command there (right click) and press Enter."
 msgstr ""
-"Arrêtez cette page avec Ctrl+C dans sa fenêtre PowerShell, puis collez-y "
-"la commande (clic droit) et appuyez sur Entrée."
+"Arrêtez cette page avec Ctrl+C dans la fenêtre où mh tourne, puis "
+"collez-y la commande (clic droit) et appuyez sur Entrée."
 
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
@@ -5289,8 +5482,8 @@ msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 msgid "The album's name: the folder holding its links."
 msgstr "Le nom de l'album : le dossier qui contient ses liens."
 
-msgid "The audit failed: the PowerShell window says why."
-msgstr "L'audit a échoué : la fenêtre PowerShell dit pourquoi."
+msgid "The audit failed: the window where mh runs says why."
+msgstr "L'audit a échoué : la fenêtre où mh tourne dit pourquoi."
 
 msgid "The audit is done; look for the faces now?"
 msgstr "L'audit est terminé ; chercher les visages maintenant ?"
@@ -5329,6 +5522,13 @@ msgstr ""
 "deux fois une photo. Au plus ce nombre de gigaoctets : au-delà, les "
 "aperçus affichés il y a le plus longtemps sont supprimés, et refaits au "
 "besoin."
+
+msgid ""
+"The cache knows no photo yet: type mh audit first, or every photo of the "
+"phone is taken for new."
+msgstr ""
+"Le cache ne connaît encore aucune photo : tapez d'abord mh audit, sinon "
+"toutes les photos du téléphone sont prises pour nouvelles."
 
 msgid ""
 "The categories below are an example to replace with your own, e.g. "
@@ -5385,6 +5585,9 @@ msgstr "La collection une fois triée"
 #, python-brace-format
 msgid "The command adds {points}: folders of your home."
 msgstr "La commande ajoute {points} : des dossiers de votre profil."
+
+msgid "The comparison with your library failed: nothing was copied."
+msgstr "La comparaison avec votre photothèque a échoué : rien n'a été copié."
 
 #, python-brace-format
 msgid "The configuration file {path} is not valid TOML: {error}"
@@ -5479,6 +5682,13 @@ msgstr ""
 "Le premier dossier est protégé, ou les deux copies sont dans un même "
 "dossier : W n'est pas possible."
 
+msgid ""
+"The first folder is protected, or the two folders are on two drives: K is"
+" not possible."
+msgstr ""
+"Le premier dossier est protégé, ou les deux dossiers sont sur deux "
+"lecteurs : K n'est pas possible."
+
 #, python-brace-format
 msgid "The first photo out of {count}"
 msgid_plural "The first {n} photos out of {count}"
@@ -5490,6 +5700,14 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] "La première vidéo sur {count}"
 msgstr[1] "Les {n} premières vidéos sur {count}"
+
+msgid ""
+"The folder the phone's files are copied into, as Explorer shows it "
+"(mounted read-only): a file it holds is not copied again."
+msgstr ""
+"Le dossier où les fichiers du téléphone sont copiés, tel que "
+"l'Explorateur l'affiche (monté en lecture seule) : un fichier qu'il "
+"contient n'est pas copié de nouveau."
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
@@ -5644,6 +5862,14 @@ msgid ""
 msgstr ""
 "Les paires viennent de la plus grande place libérée à la plus petite. "
 "Chaque copie du second dossier a un fichier identique dans le premier."
+
+#, python-brace-format
+msgid ""
+"The phone no longer answers (unplugged?): {count} files copied so far. "
+"Type mh phone again: what is already copied is skipped."
+msgstr ""
+"Le téléphone ne répond plus (débranché ?) : {count} fichiers copiés "
+"jusqu'ici. Tapez de nouveau mh phone : ce qui est déjà copié est passé."
 
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
@@ -5880,14 +6106,14 @@ msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, former (the folders"
-" and names of the copies 'clean' removed), date. The model's sentence "
-"goes into dc:description."
+"(dc:subject), by source: vision, place, folder, name, takeout (the Google"
+" Photos description), former (the folders and names of the copies 'clean'"
+" removed), date. The model's sentence goes into dc:description."
 msgstr ""
 "Les mots que 'xmp' écrit dans les fichiers compagnons .xmp à côté des "
-"photos (dc:subject), par source : vision, place, folder, name, former "
-"(les dossiers et noms des copies retirées par 'clean'), date. La phrase "
-"du modèle va dans dc:description."
+"photos (dc:subject), par source : vision, place, folder, name, takeout "
+"(la description Google Photos), former (les dossiers et noms des copies "
+"retirées par 'clean'), date. La phrase du modèle va dans dc:description."
 
 msgid ""
 "The words of 'tags', to find photos by what they show: the meaningful "
@@ -6583,6 +6809,9 @@ msgstr ""
 "avec le reste de son plan. Pour en garder une finalement : 'undo' de ce "
 "nettoyage, et elle n'est plus proposée."
 
+msgid "Your backups, compared, never changed:"
+msgstr "Vos sauvegardes, comparées, jamais modifiées :"
+
 msgid "Your browser cannot show this format: open the original."
 msgstr "Votre navigateur ne sait pas afficher ce format : ouvrez l'original."
 
@@ -6621,10 +6850,12 @@ msgstr ""
 "{leave}."
 
 #, python-brace-format
-msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgid ""
+"Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}, "
+"pairs keeping both names (links): {linked}."
 msgstr ""
 "Vos décisions — paires inversées : {swapped}, paires laissées telles "
-"quelles : {skipped}."
+"quelles : {skipped}, paires gardant les deux noms (liens) : {linked}."
 
 #, python-brace-format
 msgid "Your decisions — {count} file chosen in 'search' is set aside."
@@ -6783,6 +7014,10 @@ msgstr "un cercle qui ne contient plus aucun groupe"
 
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
+
+#, python-brace-format
+msgid "a file named {name} is in the way"
+msgstr "un fichier nommé {name} est dans le chemin"
 
 msgid "a file of that name is in the album already"
 msgstr "un fichier de ce nom est déjà dans l'album"
@@ -7100,6 +7335,9 @@ msgstr "entièrement une copie : ne contient rien d'autre"
 msgid "environment"
 msgstr "environnement"
 
+msgid "every photo has GPS"
+msgstr "chaque photo a son GPS"
+
 msgid "every source"
 msgstr "toutes les sources"
 
@@ -7187,6 +7425,9 @@ msgstr "il existe déjà"
 msgid "it changed while the words were written: left as is"
 msgstr "il a changé pendant l'écriture des mots : laissé tel quel"
 
+msgid "it is an independent file already"
+msgstr "c'est déjà un fichier indépendant"
+
 msgid "it is gone already"
 msgstr "il a déjà disparu"
 
@@ -7267,6 +7508,9 @@ msgstr "garder"
 msgid "keep all"
 msgstr "tout garder"
 
+msgid "keep both names (links, one drive), then next"
+msgstr "garder les deux noms (liens, un même lecteur), puis suivante"
+
 msgid "keep every shot"
 msgstr "garder toutes les photos"
 
@@ -7281,6 +7525,9 @@ msgstr "garder l'autre version, puis suivant"
 
 msgid "keeps its copies"
 msgstr "garde ses copies"
+
+msgid "keeps the names, as links: the space of the copies is freed"
+msgstr "garde les noms, en liens : la place des copies est libérée"
 
 msgid "kept"
 msgstr "conservée"
@@ -7328,6 +7575,9 @@ msgstr "moins d'une minute"
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
+
+msgid "link to the kept file"
+msgstr "lien vers le fichier gardé"
 
 msgid "listing"
 msgstr "liste"
@@ -7384,6 +7634,13 @@ msgid ""
 msgstr ""
 "mh a besoin d'au moins un dossier de photos : ajoutez d'abord le nouveau,"
 " puis retirez celui-ci."
+
+msgid ""
+"mh phone copies only the new photos and videos of a phone plugged in over"
+" USB; mh phone --to <folder> chooses where."
+msgstr ""
+"mh phone copie uniquement les nouvelles photos et vidéos d'un téléphone "
+"branché en USB ; mh phone --to <dossier> choisit où."
 
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
@@ -7730,6 +7987,20 @@ msgstr "fr/reference-safety/"
 msgid "removed from your folders"
 msgstr "retirés de vos dossiers"
 
+#, python-brace-format
+msgid ""
+"replace {count} duplicate copy by a link to its kept file ({size} freed, "
+"both names stay)"
+msgid_plural ""
+"replace {count} duplicate copies by links to their kept files ({size} "
+"freed, both names stay)"
+msgstr[0] ""
+"remplacer {count} copie en double par un lien vers son fichier gardé "
+"({size} libérés, les deux noms restent)"
+msgstr[1] ""
+"remplacer {count} copies en double par des liens vers leurs fichiers "
+"gardés ({size} libérés, les deux noms restent)"
+
 msgid "review page"
 msgstr "page de revue"
 
@@ -7840,6 +8111,13 @@ msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
 msgstr "la proposition de classify attend : 'sort' applique le classeur modifié."
+
+msgid ""
+"the copy and its kept file are on two disks or two mounts: a hard link "
+"cannot cross them, the copy is left as it is"
+msgstr ""
+"la copie et son fichier gardé sont sur deux disques ou deux montages : un"
+" lien physique ne peut pas les relier, la copie reste telle quelle"
 
 msgid "the copy differs from the original"
 msgstr "la copie diffère de l'original"
@@ -7990,6 +8268,18 @@ msgstr "le fichier compagnon a déjà disparu"
 msgid "the target exists"
 msgstr "la cible existe"
 
+msgid ""
+"the two folders are on two disks or two mounts: a hard link cannot cross "
+"them"
+msgstr ""
+"les deux dossiers sont sur deux disques ou deux montages : un lien "
+"physique ne peut pas les relier"
+
+msgid "the two folders are on two drives: a hard link cannot cross them"
+msgstr ""
+"les deux dossiers sont sur deux lecteurs : un lien physique ne peut pas "
+"les relier"
+
 msgid "the value cannot be used"
 msgstr "la valeur est inutilisable"
 
@@ -8001,6 +8291,9 @@ msgstr "tout le groupe supprimé exprès, puis le suivant"
 
 msgid "this category is no longer proposed"
 msgstr "cette catégorie n'est plus proposée"
+
+msgid "this disk does not support hard links (FAT, exFAT, a NAS?)"
+msgstr "ce disque ne gère pas les liens physiques (FAT, exFAT, un NAS ?)"
 
 msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
 msgstr ""
@@ -8191,6 +8484,10 @@ msgstr ""
 "comparé, ne lui donnez aucun autre rôle"
 
 #, python-brace-format
+msgid "{backup} overlaps {folder}: give them apart."
+msgstr "{backup} recouvre {folder} : donnez-les séparément."
+
+#, python-brace-format
 msgid "{category} cannot be used in a category"
 msgstr "{category} ne peut pas servir dans une catégorie"
 
@@ -8217,6 +8514,12 @@ msgstr "{command} : terminé"
 #, python-brace-format
 msgid "{command}: failed"
 msgstr "{command} : échec"
+
+#, python-brace-format
+msgid "{count} backup (read-only)"
+msgid_plural "{count} backups (read-only)"
+msgstr[0] "{count} sauvegarde (lecture seule)"
+msgstr[1] "{count} sauvegardes (lecture seule)"
 
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."
@@ -8586,16 +8889,21 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves it to the quarantine."
+"moves it to the quarantine, and remembers it: if it comes back (a new "
+"copy from the phone), the audit proposes it again."
 msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves them to the quarantine."
+"moves them to the quarantine, and remembers them: if one comes back (a "
+"new copy from the phone), the audit proposes it again."
 msgstr[0] ""
 "{count} fichier mis de côté ({size}), enregistré dans {place} : 'clean "
-"--decisions' le déplace en quarantaine."
+"--decisions' le déplace en quarantaine, et s'en souvient : s'il revient "
+"(une nouvelle copie depuis le téléphone), l'audit le propose à nouveau."
 msgstr[1] ""
 "{count} fichiers mis de côté ({size}), enregistrés dans {place} : 'clean "
-"--decisions' les déplace en quarantaine."
+"--decisions' les déplace en quarantaine, et s'en souvient : si l'un d'eux"
+" revient (une nouvelle copie depuis le téléphone), l'audit le propose à "
+"nouveau."
 
 #, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."
@@ -8625,6 +8933,10 @@ msgstr "{count} fichiers ont une copie identique : laissés de côté."
 #, python-brace-format
 msgid "{count} files have no word to write."
 msgstr "{count} fichiers n'ont aucun mot à écrire."
+
+#, python-brace-format
+msgid "{count} files listed…"
+msgstr "{count} fichiers listés…"
 
 #, python-brace-format
 msgid "{count} files of protected folders: never written."
@@ -8727,6 +9039,12 @@ msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
 msgstr[1] "{count} copies identiques, {size} : sans risque, une commande."
+
+#, python-brace-format
+msgid "{count} line of the phone's listing could not be read: skipped."
+msgid_plural "{count} lines of the phone's listing could not be read: skipped."
+msgstr[0] "{count} ligne de la liste du téléphone n'a pas pu être lue : ignorée."
+msgstr[1] "{count} lignes de la liste du téléphone n'ont pas pu être lues : ignorées."
 
 #, python-brace-format
 msgid "{count} link made: no photo was copied nor moved, no space is used."
@@ -9243,6 +9561,14 @@ msgstr ""
 "complété."
 
 #, python-brace-format
+msgid ""
+"{folder} is no longer there: renamed or moved since the audit. Run "
+"'audit' again, then place it under its new name."
+msgstr ""
+"{folder} n'est plus là : renommé ou déplacé depuis l'audit. Relancez "
+"'audit', puis placez-le sous son nouveau nom."
+
+#, python-brace-format
 msgid "{folder} is not one of the folders listed"
 msgstr "{folder} ne fait pas partie des dossiers listés"
 
@@ -9261,6 +9587,22 @@ msgid ""
 msgstr ""
 "{folder} est protégé, ou les copies sont dans un même dossier : la paire "
 "ne peut pas être inversée."
+
+#, python-brace-format
+msgid ""
+"{folder} is protected, or the two folders are on two drives: the pair "
+"cannot keep both names."
+msgstr ""
+"{folder} est protégé, ou les deux dossiers sont sur deux lecteurs : la "
+"paire ne peut pas garder les deux noms."
+
+#, python-brace-format
+msgid ""
+"{folder} is protected: a link would let an edit made through the other "
+"name change it"
+msgstr ""
+"{folder} est protégé : un lien laisserait une retouche faite par l'autre "
+"nom le modifier"
 
 #, python-brace-format
 msgid "{folder} is protected: its copies are always kept."
@@ -9322,6 +9664,10 @@ msgid "{inner} is inside {outer}: give only {outer}."
 msgstr "{inner} est dans {outer} : ne donnez que {outer}."
 
 #, python-brace-format
+msgid "{kept} -> {removed}: both names cannot be kept ({reason})."
+msgstr "{kept} -> {removed} : impossible de garder les deux noms ({reason})."
+
+#, python-brace-format
 msgid "{limit} or less is expected, not {value}"
 msgstr "au plus {limit} est attendu, pas {value}"
 
@@ -9354,6 +9700,10 @@ msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}
 msgstr ""
 "{name} doit contenir un objet JSON, p. ex. {{\"documents\": [\"pdf\", "
 "\"docx\"]}}"
+
+#, python-brace-format
+msgid "{name} was already there: copied as {final}."
+msgstr "{name} était déjà là : copié sous le nom {final}."
 
 #, python-brace-format
 msgid "{name} — not a town"
@@ -9751,6 +10101,10 @@ msgstr ""
 " ou un autre nom."
 
 #, python-brace-format
+msgid "{to} is not a folder on a drive letter."
+msgstr "{to} n'est pas un dossier sur une lettre de lecteur."
+
+#, python-brace-format
 msgid "{undone}, read back from the disk at {time}."
 msgstr "{undone}, relu sur le disque à {time}."
 
@@ -9795,6 +10149,22 @@ msgid ""
 msgstr ""
 "{value} : catégorie inconnue, vouliez-vous dire {name} ? Pour "
 "l'extension, écrivez .{value}"
+
+msgid ""
+"“Keep both names (link)”, offered when both folders are on one drive: "
+"each copy becomes a hard link to the kept file, so both folders still "
+"show the photo and the copy's space is freed. A link is one photo under "
+"two names: an edit saved in place shows under both names, deleting one "
+"name frees nothing while the other remains, and a backup tool may count "
+"it twice. 'undo' makes the names independent files again."
+msgstr ""
+"« Garder les deux noms (lien) », proposé quand les deux dossiers sont sur"
+" un même lecteur : chaque copie devient un lien physique vers le fichier "
+"gardé, les deux dossiers montrent toujours la photo et la place de la "
+"copie est libérée. Un lien, c'est une photo sous deux noms : une retouche"
+" enregistrée sur place se voit sous les deux noms, supprimer un nom ne "
+"libère rien tant que l'autre reste, et un outil de sauvegarde peut la "
+"compter deux fois. 'undo' refait des noms des fichiers indépendants."
 
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."
@@ -9859,6 +10229,11 @@ msgstr ""
 "👀 Ce ne sont pas des fichiers identiques : regardez-les avant de "
 "répondre, tous sur une seule page : {path} (Ctrl+clic l'ouvre)."
 
+msgid "👉 What next: mh audit (the new files join your library)."
+msgstr ""
+"👉 Et maintenant : mh audit (les nouveaux fichiers rejoignent votre "
+"photothèque)."
+
 #, python-brace-format
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
@@ -9893,6 +10268,22 @@ msgstr "🔒 Lecture seule : ne modifie jamais vos photos."
 
 msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr "🔒 Lecture seule : vos photos et vidéos ne sont pas touchées."
+
+msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
+msgstr ""
+"🔒 Le téléphone est seulement lu : rien n'y est supprimé, déplacé ni "
+"renommé."
+
+msgid ""
+"🔗 A link is one photo under two names: an edit saved in place shows under"
+" both names, deleting one name frees nothing while the other remains, and"
+" a backup tool may count it twice. 'undo' makes each name an independent "
+"file again."
+msgstr ""
+"🔗 Un lien, c'est une photo sous deux noms : une retouche enregistrée sur "
+"place se voit sous les deux noms, supprimer un nom ne libère rien tant "
+"que l'autre reste, et un outil de sauvegarde peut la compter deux fois. "
+"'undo' refait de chaque nom un fichier indépendant."
 
 #, python-brace-format
 msgid ""

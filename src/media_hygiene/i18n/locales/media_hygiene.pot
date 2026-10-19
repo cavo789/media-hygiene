@@ -329,6 +329,17 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A backup is compared, never changed: it cannot be, hold or lie in a photo"
+" folder or another backup."
+msgstr ""
+
+msgid ""
+"A backup or an old disk, as Explorer shows it: \"E:\\Backup\". Mounted "
+"read-only for every command, clean included, and given as --backup: "
+"compared, never changed. Repeatable."
+msgstr ""
+
+msgid ""
 "A backup or an old disk: compared, never changed. Says what it lacks and "
 "what only it holds. Repeatable."
 msgstr ""
@@ -535,7 +546,14 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Add or remove a photo folder: mh folders add (a window to choose it) or "
+"mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
+"never changed: mh folders add --backup <folder>."
+msgstr ""
+
+msgid ""
 "Add or remove a photo folder: mh folders add <folder>, mh folders remove "
+"<folder>. A backup, compared, never changed: mh folders add --backup "
 "<folder>."
 msgstr ""
 
@@ -582,11 +600,19 @@ msgstr ""
 msgid "All {total} files found are picked"
 msgstr ""
 
+#, python-brace-format
+msgid "Already copied by an earlier mh phone: {count}."
+msgstr ""
+
 msgid "Already in place"
 msgstr ""
 
 #, python-brace-format
 msgid "Already in place: {share}."
+msgstr ""
+
+#, python-brace-format
+msgid "Already in your library, not copied: {count}."
 msgstr ""
 
 #, python-brace-format
@@ -639,6 +665,16 @@ msgstr ""
 msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
+msgstr ""
+
+msgid "Any folder"
+msgstr ""
+
+msgid "Apply now"
+msgstr ""
+
+#, python-brace-format
+msgid "Apply now, chosen on the page: {command}"
 msgstr ""
 
 msgid ""
@@ -879,6 +915,9 @@ msgstr ""
 msgid "Choices on {count} series undone."
 msgstr ""
 
+msgid "Choose a folder of photos or videos to add"
+msgstr ""
+
 msgid "Choose a folder on the left."
 msgstr ""
 
@@ -888,6 +927,9 @@ msgstr ""
 msgid ""
 "Choose again in 'review-sort' (it shows both), or set the workbook cells "
 "back, then run 'sort' again."
+msgstr ""
+
+msgid "Choose another decision for this pair, or leave it as planned."
 msgstr ""
 
 msgid ""
@@ -944,6 +986,12 @@ msgid "Cleaning"
 msgstr ""
 
 msgid ""
+"Click the map or drag the pin where these photos were taken, then save: "
+"'xmp' writes that position into the sidecars of the photos without GPS of"
+" this folder and of its subfolders ([tags] xmp_folder_gps = true)."
+msgstr ""
+
+msgid ""
 "Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
 "day ahead) is set right here, never in the photos. camera: a regular "
 "expression searched in the make and model; dates: the camera's own, "
@@ -956,6 +1004,11 @@ msgid "Close"
 msgstr ""
 
 msgid "Close this page and go back to the home page: mh opens it again."
+msgstr ""
+
+msgid ""
+"Close this page: mh moves the files set aside to the quarantine (it asks "
+"first), then opens the home page again."
 msgstr ""
 
 #, python-brace-format
@@ -1020,12 +1073,16 @@ msgstr ""
 msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
+#, python-brace-format
+msgid "Copies not found when read back: {count}. Type mh phone again."
+msgstr ""
+
 msgid "Copies of other files than media go to /quarantine: mount it."
 msgstr ""
 
 msgid ""
-"Copies the command, to paste in the PowerShell window: this page keeps "
-"running."
+"Copies the command, to paste in the window where mh runs: this page keeps"
+" running."
 msgstr ""
 
 msgid "Copy"
@@ -1175,6 +1232,12 @@ msgstr ""
 msgid "Decided: as planned, the copies of the second folder go."
 msgstr ""
 
+msgid ""
+"Decided: both names kept, each copy of the second folder becomes a link "
+"to its file in the first one (one photo, two names: an edit saved in "
+"place shows under both)."
+msgstr ""
+
 msgid "Decided: left alone, nothing of this group moves."
 msgstr ""
 
@@ -1317,6 +1380,15 @@ msgstr ""
 msgid ""
 "Docker Desktop is not started: start it from the Start menu, wait until "
 "it says it is running, then type the command again."
+msgstr ""
+
+#, python-brace-format
+msgid "Docker Desktop is not started: starting it (up to {minutes} minute)…"
+msgid_plural "Docker Desktop is not started: starting it (up to {minutes} minutes)…"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Docker Desktop is ready: type the command again (↑ then Enter)."
 msgstr ""
 
 msgid ""
@@ -1465,7 +1537,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Ends this page: mh runs the step in the PowerShell window, then opens "
+"Ends this page: mh runs the step in the window where mh runs, then opens "
 "this page again."
 msgstr ""
 
@@ -1600,6 +1672,12 @@ msgid "Every copy"
 msgstr ""
 
 msgid "Every file of your photos is in this backup."
+msgstr ""
+
+msgid ""
+"Every folder of the index, as 'browse' shows them: place one named after "
+"no town (a wedding, a holiday). Its subfolders get its position, unless "
+"they have their own."
 msgstr ""
 
 msgid "Every group has been decided."
@@ -1896,7 +1974,7 @@ msgstr ""
 msgid "Folders closed; your photos were not changed."
 msgstr ""
 
-msgid "Folders named after a town"
+msgid "Folders named after a town, or placed"
 msgstr ""
 
 msgid "Folders removed"
@@ -1931,6 +2009,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "For every terminal, add that line to {profile}."
+msgstr ""
+
+msgid "For mh phone: which files of a phone are new, from its listing."
 msgstr ""
 
 msgid "Forget its position"
@@ -2039,6 +2120,9 @@ msgid "Going to a 'to check' folder"
 msgstr ""
 
 msgid "Going to a 'to sort' folder"
+msgstr ""
+
+msgid "Google Photos description"
 msgstr ""
 
 msgid "Google Photos record (.json)"
@@ -2255,6 +2339,9 @@ msgstr ""
 msgid "KB"
 msgstr ""
 
+msgid "Keep both names (link)"
+msgstr ""
+
 msgid "Keep one of them: the other is a copy."
 msgstr ""
 
@@ -2386,6 +2473,10 @@ msgid "List the runs and what they did."
 msgstr ""
 
 msgid "Listing media files"
+msgstr ""
+
+#, python-brace-format
+msgid "Listing the photos and videos of {name}: about 30 seconds per 1,000 files…"
 msgstr ""
 
 #, python-brace-format
@@ -2668,6 +2759,16 @@ msgstr ""
 msgid "New name"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"New photos and videos copied: {count} ({size} GB, {speed} MB/s), read "
+"back from {destination}."
+msgstr ""
+
+#, python-brace-format
+msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgstr ""
+
 msgid "New place"
 msgstr ""
 
@@ -2688,6 +2789,10 @@ msgid "Next time, type it directly: {command}"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
+msgstr ""
+
+#, python-brace-format
+msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
 msgid "No audit has walked a folder completely yet."
@@ -2748,10 +2853,16 @@ msgstr ""
 msgid "No file has words yet: nothing can be found."
 msgstr ""
 
+msgid "No folder chosen: nothing changed."
+msgstr ""
+
 msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 
-msgid "No folder named after a town holds photos without GPS."
+msgid "No folder in the index: run 'audit' first, with the same /cache mount."
+msgstr ""
+
+msgid "No folder named after a town, or placed, holds photos without GPS."
 msgstr ""
 
 msgid "No folder of that name."
@@ -2818,8 +2929,16 @@ msgid "No obvious series left to validate."
 msgstr ""
 
 msgid ""
+"No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
+" this computer), then type mh phone again."
+msgstr ""
+
+msgid ""
 "No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
 " again."
+msgstr ""
+
+msgid "No photo folder: type mh phone --to <folder>."
 msgstr ""
 
 msgid "No photo left to analyse: every one is in the cache."
@@ -2906,6 +3025,9 @@ msgid "No run yet."
 msgstr ""
 
 msgid "No signal"
+msgstr ""
+
+msgid "No step applies the decisions now: type the next step yourself."
 msgstr ""
 
 #, python-brace-format
@@ -3058,6 +3180,9 @@ msgid ""
 " of {moved} moves verified."
 msgstr ""
 
+msgid "Nothing new on the phone: nothing to copy."
+msgstr ""
+
 msgid "Nothing set aside."
 msgstr ""
 
@@ -3110,6 +3235,10 @@ msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr ""
 
 msgid "November"
+msgstr ""
+
+#, python-brace-format
+msgid "Number of the phone (1 to {count})"
 msgstr ""
 
 msgid "October"
@@ -3240,6 +3369,9 @@ msgid "OpenStreetMap contributors"
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
+msgstr ""
+
+msgid "Opened without the home page: type the next step yourself."
 msgstr ""
 
 #, python-brace-format
@@ -3583,6 +3715,10 @@ msgid "Remove ':ro' from their -v options to let '{command}' act."
 msgstr ""
 
 #, python-brace-format
+msgid "Replacing a duplicate copy by a link to the kept file: {path}"
+msgstr ""
+
+#, python-brace-format
 msgid "Report with the photos: {path}"
 msgstr ""
 
@@ -3696,10 +3832,9 @@ msgstr ""
 msgid "Right-click a folder in Explorer: the home page, on that folder"
 msgstr ""
 
-#, python-brace-format
 msgid ""
-"Right-click a folder, then Media Hygiene: the mh menu opens on it. Read "
-"back from {key}:"
+"Right-click a folder, or the empty space of an open folder, then Media "
+"Hygiene: the mh menu opens on that folder."
 msgstr ""
 
 #, python-brace-format
@@ -3862,7 +3997,13 @@ msgstr ""
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr ""
 
-msgid "Running in the PowerShell window: this page comes back when it ends."
+msgid "Running in the window where mh runs: this page comes back when it ends."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Running in the window where mh runs: {command}. The home page comes back "
+"here when it ends."
 msgstr ""
 
 msgid "Runs (newest first)"
@@ -4073,6 +4214,10 @@ msgstr ""
 msgid "Set aside"
 msgstr ""
 
+#, python-brace-format
+msgid "Set aside before on purpose, not copied: {count}."
+msgstr ""
+
 msgid "Set aside from the map"
 msgstr ""
 
@@ -4245,7 +4390,7 @@ msgid "Stop the audit"
 msgstr ""
 
 msgid ""
-"Stop this page with Ctrl+C in its PowerShell window, then paste the "
+"Stop this page with Ctrl+C in the window where mh runs, then paste the "
 "command there (right click) and press Enter."
 msgstr ""
 
@@ -4354,7 +4499,7 @@ msgstr ""
 msgid "The album's name: the folder holding its links."
 msgstr ""
 
-msgid "The audit failed: the PowerShell window says why."
+msgid "The audit failed: the window where mh runs says why."
 msgstr ""
 
 msgid "The audit is done; look for the faces now?"
@@ -4380,6 +4525,11 @@ msgid ""
 "size, so that reports and review pages never decode a photo twice. At "
 "most this many gigabytes: beyond, the previews shown least recently are "
 "removed, and made again when needed."
+msgstr ""
+
+msgid ""
+"The cache knows no photo yet: type mh audit first, or every photo of the "
+"phone is taken for new."
 msgstr ""
 
 msgid ""
@@ -4421,6 +4571,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The command adds {points}: folders of your home."
+msgstr ""
+
+msgid "The comparison with your library failed: nothing was copied."
 msgstr ""
 
 #, python-brace-format
@@ -4497,6 +4650,11 @@ msgid ""
 " possible."
 msgstr ""
 
+msgid ""
+"The first folder is protected, or the two folders are on two drives: K is"
+" not possible."
+msgstr ""
+
 #, python-brace-format
 msgid "The first photo out of {count}"
 msgid_plural "The first {n} photos out of {count}"
@@ -4508,6 +4666,11 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid ""
+"The folder the phone's files are copied into, as Explorer shows it "
+"(mounted read-only): a file it holds is not copied again."
+msgstr ""
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
@@ -4634,6 +4797,12 @@ msgstr ""
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The phone no longer answers (unplugged?): {count} files copied so far. "
+"Type mh phone again: what is already copied is skipped."
 msgstr ""
 
 #, python-brace-format
@@ -4813,9 +4982,9 @@ msgstr ""
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, former (the folders"
-" and names of the copies 'clean' removed), date. The model's sentence "
-"goes into dc:description."
+"(dc:subject), by source: vision, place, folder, name, takeout (the Google"
+" Photos description), former (the folders and names of the copies 'clean'"
+" removed), date. The model's sentence goes into dc:description."
 msgstr ""
 
 msgid ""
@@ -5398,6 +5567,9 @@ msgid ""
 "one after all: 'undo' that clean, and it is no longer proposed."
 msgstr ""
 
+msgid "Your backups, compared, never changed:"
+msgstr ""
+
 msgid "Your browser cannot show this format: open the original."
 msgstr ""
 
@@ -5431,7 +5603,9 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}."
+msgid ""
+"Your decisions — pairs swapped: {swapped}, pairs left alone: {skipped}, "
+"pairs keeping both names (links): {linked}."
 msgstr ""
 
 #, python-brace-format
@@ -5552,6 +5726,10 @@ msgid "a circle holding no cluster now"
 msgstr ""
 
 msgid "a file changed since the audit"
+msgstr ""
+
+#, python-brace-format
+msgid "a file named {name} is in the way"
 msgstr ""
 
 msgid "a file of that name is in the album already"
@@ -5850,6 +6028,9 @@ msgstr ""
 msgid "environment"
 msgstr ""
 
+msgid "every photo has GPS"
+msgstr ""
+
 msgid "every source"
 msgstr ""
 
@@ -5929,6 +6110,9 @@ msgstr ""
 msgid "it changed while the words were written: left as is"
 msgstr ""
 
+msgid "it is an independent file already"
+msgstr ""
+
 msgid "it is gone already"
 msgstr ""
 
@@ -6001,6 +6185,9 @@ msgstr ""
 msgid "keep all"
 msgstr ""
 
+msgid "keep both names (links, one drive), then next"
+msgstr ""
+
 msgid "keep every shot"
 msgstr ""
 
@@ -6014,6 +6201,9 @@ msgid "keep the other version, then next"
 msgstr ""
 
 msgid "keeps its copies"
+msgstr ""
+
+msgid "keeps the names, as links: the space of the copies is freed"
 msgstr ""
 
 msgid "kept"
@@ -6059,6 +6249,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
+msgstr ""
+
+msgid "link to the kept file"
 msgstr ""
 
 msgid "listing"
@@ -6109,6 +6302,11 @@ msgstr ""
 msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
+msgstr ""
+
+msgid ""
+"mh phone copies only the new photos and videos of a phone plugged in over"
+" USB; mh phone --to <folder> chooses where."
 msgstr ""
 
 #, python-brace-format
@@ -6428,6 +6626,16 @@ msgstr ""
 msgid "removed from your folders"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"replace {count} duplicate copy by a link to its kept file ({size} freed, "
+"both names stay)"
+msgid_plural ""
+"replace {count} duplicate copies by links to their kept files ({size} "
+"freed, both names stay)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "review page"
 msgstr ""
 
@@ -6531,6 +6739,11 @@ msgid ""
 msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
+msgstr ""
+
+msgid ""
+"the copy and its kept file are on two disks or two mounts: a hard link "
+"cannot cross them, the copy is left as it is"
 msgstr ""
 
 msgid "the copy differs from the original"
@@ -6665,6 +6878,14 @@ msgstr ""
 msgid "the target exists"
 msgstr ""
 
+msgid ""
+"the two folders are on two disks or two mounts: a hard link cannot cross "
+"them"
+msgstr ""
+
+msgid "the two folders are on two drives: a hard link cannot cross them"
+msgstr ""
+
 msgid "the value cannot be used"
 msgstr ""
 
@@ -6675,6 +6896,9 @@ msgid "the whole group deleted on purpose, then next"
 msgstr ""
 
 msgid "this category is no longer proposed"
+msgstr ""
+
+msgid "this disk does not support hard links (FAT, exFAT, a NAS?)"
 msgstr ""
 
 msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
@@ -6846,6 +7070,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{backup} overlaps {folder}: give them apart."
+msgstr ""
+
+#, python-brace-format
 msgid "{category} cannot be used in a category"
 msgstr ""
 
@@ -6872,6 +7100,12 @@ msgstr ""
 #, python-brace-format
 msgid "{command}: failed"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} backup (read-only)"
+msgid_plural "{count} backups (read-only)"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} burst series is set aside whole: none of its shots stays."
@@ -7138,10 +7372,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves it to the quarantine."
+"moves it to the quarantine, and remembers it: if it comes back (a new "
+"copy from the phone), the audit proposes it again."
 msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
-"moves them to the quarantine."
+"moves them to the quarantine, and remembers them: if one comes back (a "
+"new copy from the phone), the audit proposes it again."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7164,6 +7400,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{count} files have no word to write."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files listed…"
 msgstr ""
 
 #, python-brace-format
@@ -7243,6 +7483,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} line of the phone's listing could not be read: skipped."
+msgid_plural "{count} lines of the phone's listing could not be read: skipped."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7655,6 +7901,12 @@ msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{folder} is no longer there: renamed or moved since the audit. Run "
+"'audit' again, then place it under its new name."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is not one of the folders listed"
 msgstr ""
 
@@ -7670,6 +7922,18 @@ msgstr ""
 msgid ""
 "{folder} is protected, or the copies lie in one folder: the pair cannot "
 "be swapped."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{folder} is protected, or the two folders are on two drives: the pair "
+"cannot keep both names."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{folder} is protected: a link would let an edit made through the other "
+"name change it"
 msgstr ""
 
 #, python-brace-format
@@ -7725,6 +7989,10 @@ msgid "{inner} is inside {outer}: give only {outer}."
 msgstr ""
 
 #, python-brace-format
+msgid "{kept} -> {removed}: both names cannot be kept ({reason})."
+msgstr ""
+
+#, python-brace-format
 msgid "{limit} or less is expected, not {value}"
 msgstr ""
 
@@ -7752,6 +8020,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgstr ""
+
+#, python-brace-format
+msgid "{name} was already there: copied as {final}."
 msgstr ""
 
 #, python-brace-format
@@ -8120,6 +8392,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{to} is not a folder on a drive letter."
+msgstr ""
+
+#, python-brace-format
 msgid "{undone}, read back from the disk at {time}."
 msgstr ""
 
@@ -8155,6 +8431,15 @@ msgstr ""
 msgid ""
 "{value}: unknown category, did you mean {name}? For the extension, write "
 ".{value}"
+msgstr ""
+
+msgid ""
+"“Keep both names (link)”, offered when both folders are on one drive: "
+"each copy becomes a hard link to the kept file, so both folders still "
+"show the photo and the copy's space is freed. A link is one photo under "
+"two names: an edit saved in place shows under both names, deleting one "
+"name frees nothing while the other remains, and a backup tool may count "
+"it twice. 'undo' makes the names independent files again."
 msgstr ""
 
 #, python-format
@@ -8207,6 +8492,9 @@ msgid ""
 "single page: {path} (Ctrl+click opens it)."
 msgstr ""
 
+msgid "👉 What next: mh audit (the new files join your library)."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
@@ -8231,6 +8519,16 @@ msgid "🔒 Read-only: never changes your photos."
 msgstr ""
 
 msgid "🔒 Read-only: your photos and videos are not touched."
+msgstr ""
+
+msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
+msgstr ""
+
+msgid ""
+"🔗 A link is one photo under two names: an edit saved in place shows under"
+" both names, deleting one name frees nothing while the other remains, and"
+" a backup tool may count it twice. 'undo' makes each name an independent "
+"file again."
 msgstr ""
 
 #, python-brace-format

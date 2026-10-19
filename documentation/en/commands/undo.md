@@ -57,7 +57,7 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 
 | Run | What `undo` does |
 |---|---|
-| `clean` | Each quarantined file moves back to its place; each copy deleted (`--delete`) or empty file is rebuilt from the copy kept, date included. The quarantine folders it leaves empty go. |
+| `clean` | Each quarantined file moves back to its place; each copy deleted (`--delete`) or empty file is rebuilt from the copy kept, date included. Each copy made a link (a pair keeping both names) becomes an independent file again, its date back. The quarantine folders it leaves empty go. |
 | `sort` | The files move back, the folders the sort removed come back, those it created go. A sort run again after an interruption is undone **whole**, newest first, after one question. |
 | `album` | Its links, its `.media-hygiene-album` file and its folders go; the originals are not touched. |
 | `xmp` | The sidecars it created go; those it completed are put back byte for byte. |
@@ -81,6 +81,8 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
   folders mounted `:ro`, or without the `/quarantine` the run used, it refuses and names the run.
 - An album link whose original was deleted or moved since may be the last copy of the photo:
   `undo` keeps it and says so. A sidecar edited since `xmp` wrote it is kept as well.
+- A copy made a link that is no link any more (saved since through a new file), or whose kept
+  file is gone, is left as it is: `undo` says why.
 - After a [`purge`](purge.md), the files of that quarantine can no longer come back.
 
 ## Go further

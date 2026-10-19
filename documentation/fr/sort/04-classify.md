@@ -38,26 +38,27 @@ encore là. Le dossier de rapports reçoit le classeur où vous corrigez la prop
 ```text
 🔒 Lecture seule : vos photos et vidéos ne sont pas touchées.
 ─────────────────────────────────── Classer ────────────────────────────────────
-23 dossiers inchangés repris de l'index, 0 relus.
+24 dossiers inchangés repris de l'index, 0 relus.
 💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
 tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
 
-Déjà à leur place : 43 sur 82 (52 %).
+Déjà à leur place : 43 sur 86 (50 %).
 Proposition
 ┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┓
 ┃ Bande     ┃ Fichiers ┃ À déplacer ┃
 ┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━┩
-│ Sûrs      │       76 │         33 │
-│ À trier   │        3 │          3 │
-│ Sans date │        3 │          3 │
+│ Sûrs      │       77 │         34 │
+│ À trier   │        5 │          5 │
+│ Sans date │        4 │          4 │
 └───────────┴──────────┴────────────┘
 
 Pourquoi
-┌────────────────────┬────┐
-│ Dossiers existants │ 76 │
-│ Aucun indice       │  3 │
-│ Sans date          │  3 │
-└────────────────────┴────┘
+┌───────────────────────────────┬────┐
+│ Dossiers existants            │ 76 │
+│ Aucun indice                  │  5 │
+│ Sans date                     │  4 │
+│ Captures d'écran et documents │  1 │
+└───────────────────────────────┴────┘
 
 Catégories les plus remplies
 ┌─────────────────────┬────┐
@@ -73,15 +74,15 @@ Catégories les plus remplies
 │ WhatsApp            │  3 │
 └─────────────────────┴────┘
 
-⚠️  Règles qui n'ont rien décidé : Films et séries, Captures d'écran et
-documents, Voisins d'événement, Noël, Nouvel An, Saint-Nicolas.
+⚠️  Règles qui n'ont rien décidé : Films et séries, Voisins d'événement, Noël,
+Nouvel An, Saint-Nicolas.
 💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
-À vérifier ou à trier : 3 fichiers dans 1 événement.
+À vérifier ou à trier : 5 fichiers dans 1 événement.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
 ✅ Classeur à modifier :
-C:\Users\you\media-hygiene\reports\20261016-192641-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261019-153651-classify\classify.xlsx
 ✅ Rapport avec les photos :
-C:\Users\you\media-hygiene\reports\20261016-192641-classify\report.html
+C:\Users\you\media-hygiene\reports\20261019-153651-classify\report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

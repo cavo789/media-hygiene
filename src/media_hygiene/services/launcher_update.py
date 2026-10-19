@@ -23,11 +23,15 @@ class UpdateTexts:  # pylint: disable=too-many-instance-attributes  # one per me
     """The messages of `mh folders` and `mh update`, ready for double quotes."""
 
     photos: str
+    backups: str  # the backups, listed apart (0205)
     quarantine: str
     found: str
     absent: str
     unborn: str  # a quarantine not created yet, its disk there
     usage: str
+    usage_windows: str  # mh.ps1: `add` alone opens Windows' folder dialog (0201)
+    pick: str  # the title of that dialog
+    none: str  # the dialog cancelled
     not_found: str  # holds `${folder}`
     already: str  # holds `${folder}`
     not_listed: str  # holds `${folder}`
@@ -50,6 +54,7 @@ def update_texts() -> UpdateTexts:
     folder = "${folder}"
     return UpdateTexts(
         photos=shell_safe(_("Your photo folders:")),
+        backups=shell_safe(_("Your backups, compared, never changed:")),
         quarantine=shell_safe(_("The quarantine:")),
         found=shell_safe(_("found")),
         absent=shell_safe(_("not found: is its disk plugged in?")),
@@ -57,9 +62,19 @@ def update_texts() -> UpdateTexts:
         usage=shell_safe(
             _(
                 "Add or remove a photo folder: mh folders add <folder>, "
-                "mh folders remove <folder>."
+                "mh folders remove <folder>. A backup, compared, never changed: "
+                "mh folders add --backup <folder>."
             )
         ),
+        usage_windows=shell_safe(
+            _(
+                "Add or remove a photo folder: mh folders add (a window to choose it) "
+                "or mh folders add <folder>, mh folders remove <folder>. A backup, "
+                "compared, never changed: mh folders add --backup <folder>."
+            )
+        ),
+        pick=shell_safe(_("Choose a folder of photos or videos to add")),
+        none=shell_safe(_("No folder chosen: nothing changed.")),
         not_found=with_variable(
             _("{folder} cannot be found: check its name, or plug its disk in."),
             "{folder}",

@@ -11,6 +11,7 @@ from typer.core import TyperOption
 from media_hygiene.cli.app import build_app
 from media_hygiene.cli.options import panel_local_ai
 from media_hygiene.cli.safety import READ_ONLY_COMMANDS, read_only_marker
+from media_hygiene.services.phone_plan import PHONE_PLAN
 
 if TYPE_CHECKING:
     from typer._click import Command
@@ -67,10 +68,11 @@ def test_few_options_keep_one_panel() -> None:
 
 def test_read_only_commands_share_one_panel_sorted_by_name() -> None:
     """Read-only commands first, then the others; each panel in alphabetical order."""
-    infos = build_app().registered_commands
+    infos = [info for info in build_app().registered_commands if not info.hidden]
     names = [info.name or "" for info in infos]
-    read_only = names[: len(READ_ONLY_COMMANDS)]
-    assert set(read_only) == READ_ONLY_COMMANDS
+    shown = {name for name in READ_ONLY_COMMANDS if name != PHONE_PLAN}
+    read_only = names[: len(shown)]
+    assert set(read_only) == shown
     assert read_only == sorted(read_only)
     assert names[len(read_only) :] == sorted(names[len(read_only) :])
     assert len({info.rich_help_panel for info in infos}) == len(("read-only", "act"))

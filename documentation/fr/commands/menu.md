@@ -61,7 +61,7 @@ lui-même](launcher.md#ce-que-mh-fait-lui-même).
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-10-16 19:26 (aujourd'hui) — 10 fichiers, 4 copies en trop
+Dernier audit: 2026-10-19 15:36 (aujourd'hui) — 10 fichiers, 4 copies en trop
 (5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 
@@ -110,19 +110,23 @@ Quarantaine : vide.
    13 mh search                           Retrouver une photo par  🔒
                                           ses mots, dans le
                                           navigateur
-   14 mh xmp                              Emporter les mots dans   ↩️ facultatif
+   14 mh browse                           Parcourir vos dossiers,  🔒 facultatif
+                                          mettre des photos de
+                                          côté
+   15 mh xmp                              Emporter les mots dans   ↩️ facultatif
                                           d'autres logiciels photo
-   15 mh inventory                        Toutes les photos et     🔒 facultatif
+   16 mh inventory                        Toutes les photos et     🔒 facultatif
                                           vidéos dans un classeur
                                           Excel
       Ouvrir mh sans rien taper (Windows)
-   16 mh shortcut                         Une icône sur le Bureau  🔒 facultatif
+   17 mh shortcut                         Une icône sur le Bureau  🔒 facultatif
                                           et dans le menu Démarrer
-                                          ouvre ce menu
-   17 mh explorer                         Clic droit sur un        🔒 facultatif
+                                          ouvre la page d'accueil
+   18 mh explorer                         Clic droit sur un        🔒 facultatif
                                           dossier dans
-                                          l'Explorateur : ce menu,
-                                          sur ce dossier
+                                          l'Explorateur : la page
+                                          d'accueil, sur ce
+                                          dossier
 
 🔒 vos photos ne sont pas touchées · ↩️ peut être annulé · ⚠️ définitif
 🤖 classify et tags peuvent aussi interroger un modèle d'IA local : indiquez
@@ -133,7 +137,7 @@ Vos dossiers : mh folders. Une nouvelle version : mh update.
 Entrée lance l'étape 3 (mh clean). Un autre numéro lance cette étape. Ctrl+C
 pour quitter.
 ⚠️  Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' (étape
-0 des guides), puis tapez mh seul.
+0 des guides), puis tapez mh menu.
 ```
 
 ## Bon à savoir

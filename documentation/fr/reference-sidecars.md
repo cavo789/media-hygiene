@@ -62,7 +62,7 @@ sont comparées aux vôtres, et ses fichiers `.json` sont traités comme des fic
   restent.
 
 Pas vérifié sur un vrai Takeout (aucun sous la main) : ces règles de noms viennent des outils
-qui lisent les Takeout. La description d'un `.json` ne donne pas encore de mots à `search`, le
+qui lisent les Takeout. La description d'un `.json` se cherche ([`tags`](reference-tags.md#doù-viennent-les-mots) : source `takeout`, écrite dans les `.xmp` seulement si vous le demandez), le
 suffixe d'une version retouchée n'est reconnu qu'en anglais (`-edited`), et un `.json` au nom
 coupé que `sort` a renuméroté (` (2)`) ne retrouve plus sa photo. Dites-nous à quoi ressemble
 votre Takeout s'il diffère.

@@ -101,12 +101,13 @@ class CleanPlan:  # pylint: disable=too-many-instance-attributes
         """Tell whether there is nothing to clean.
 
         Returns:
-            True when no duplicate copy, near duplicate, burst shot or file set
-            aside, broken file or orphan sidecar is actionable.
+            True when no duplicate copy (removed or linked), near duplicate, burst
+            shot or file set aside, broken file or orphan sidecar is actionable.
         """
         moved = self.near_count or self.burst_count or self.chosen or self.unwanted
         moved = moved or self.orphans
         journal = bool(self.returned or self.gone)
+        journal = journal or any(decision.linked for decision in self.decisions)
         return not (self.removable_count or self.broken or moved or journal)
 
     @property

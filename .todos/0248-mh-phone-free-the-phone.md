@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: 0219, 0247
 - **Files**: `src/media_hygiene/cli/templates/mh_phone.ps1.j2`, `src/media_hygiene/services/phone_plan.py`, `src/media_hygiene/services/phone_free.py` (new), `src/media_hygiene/cli/cmd_phone_plan.py`, `src/media_hygiene/review/phone_app.py` (new), `src/media_hygiene/review/phone_session.py` (new), `src/media_hygiene/review/templates/phone_review.html.j2` (new), `src/media_hygiene/actions/remembered.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_phone_free.py` (new), `tests/integration/test_phone_review.py` (new), `tests/unit/test_launcher_phone.py`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/reference-safety.md`, `documentation/fr/reference-safety.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the results of step 19 extended by 0247 (how a file is deleted over MTP without a hidden dialog, the read and hash speed), the phone plugged in for a few minutes
 
 ## Context
 
@@ -28,6 +27,24 @@ An exact copy that `clean` removed is case 1, not 3: its content is kept elsewhe
 Decisions of the maintainer (inbox, 2026-10-19): a separate TODO from the import (0219);
 **proof by content before deleting**; the choice made in a **page of the browser**; the two
 warnings above.
+
+## Measured (step 19l-19o of `mh-measure.ps1`, 2026-10-19, maintainer's Samsung A72, PowerShell 5.1, Windows Terminal)
+
+- **`InvokeVerb('delete')` and `InvokeVerbEx('delete')` ask** "Are you sure that you want to
+  permanently delete '…'?" in a dialog **behind the console**: the calls returned after 8.9 s and
+  18.8 s, all of it waiting for the maintainer to find the dialog (Alt+Tab). Not usable.
+- **`MoveHere` into a PC folder: no dialog**, returned after 0.1 s, the file gone from the phone
+  after 0.4 s, its copy on the PC (644 bytes, intact). **The way to use**: the phone's file is
+  moved to the PC, never deleted there — the moved file is itself the safety copy.
+- Removing a folder (`DCIM\mh-measure`) with `InvokeVerb` asks too ("permanently remove the
+  folder … and all of its contents?"), 16.1 s. Folders: `MoveHere` as well, or leave them.
+- Only the test files were touched: DCIM held 801 files before and after.
+- **No gallery trash**: a file removed over USB is not in the phone's Gallery → Trash. A deletion
+  over MTP is final on the phone side: the PC copy, proven equal, is the only way back.
+- Speeds: the 20 newest photos (93.6 MB) copied into an empty folder at 24.2 MB/s; their SHA-256
+  at 770 MB/s (files just written, read from the OS cache: the proof costs nothing next to the
+  copy; a cold read would be slower, *to measure* if it matters).
+- DCIM listed: 801 files in 24.8 s the first time, 0.5 s just after (cached by Windows).
 
 ## What to do
 

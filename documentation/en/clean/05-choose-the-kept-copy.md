@@ -125,8 +125,13 @@ and compared by content, **never changed**, and its copies are never the reason 
 photos goes. Unlike a protected folder, it does not keep anything: it is only compared.
 
 ```powershell
-mh audit --backup "D:\backup"
+mh folders add --backup "D:\backup"
+mh audit
 ```
+
+`mh folders add --backup` mounts it read-only for every command, `clean` included, and gives it
+as `--backup` to `audit`, `review`, `clean` and `crosscheck`
+([`launcher`](../commands/launcher.md#change-your-folders-mh-folders)).
 
 Per backup folder, the audit says two things, the report lists them, and two files next to
 `plan.csv` list every file (host paths, readable by Excel):

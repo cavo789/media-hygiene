@@ -139,11 +139,26 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
  les déplace ensuite.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near            Passer en revue les quasi-doublons et les vidéos           │
-│                   réencodées groupe par groupe au lieu des rafales : comme   │
-│                   prévu, garder l'autre version, ou laisser tel quel ; «     │
-│                   clean --tier near --decisions » l'applique.                │
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --near             Passer en revue les quasi-doublons et les vidéos          │
+│                    réencodées groupe par groupe au lieu des rafales : comme  │
+│                    prévu, garder l'autre version, ou laisser tel quel ; «    │
+│                    clean --tier near --decisions » l'applique.               │
+│ --pairs            Passer en revue les paires de dossiers des doublons       │
+│                    exacts une à une au lieu des rafales : comme prévu,       │
+│                    inverser les dossiers, ou ne pas toucher ; 'clean         │
+│                    --decisions' l'applique.                                  │
+│ --junk             Passer en revue les photos le plus probablement           │
+│                    indésirables (minuscules, captures d'écran, presque       │
+│                    noires ou blanches, les plus floues) au lieu des rafales  │
+│                    : rien n'est mis de côté sans vous ; 'clean --decisions'  │
+│                    déplace en quarantaine ce que vous avez mis de côté.      │
+│                    Seuils :  de config.toml.                                 │
+│ --gone             Passer en revue les photos et vidéos disparues depuis un  │
+│                    audit (supprimées dans l'Explorateur ?) au lieu des       │
+│                    rafales : dites lesquelles vous avez supprimées exprès,   │
+│                    et 'clean --decisions' les retient, pour qu'elles soient  │
+│                    mises de côté si elles reviennent.                        │
+│ --help   -h        Affiche ce message et quitte.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options avancées ───────────────────────────────────────────────────────────╮
 │ --decisions        <path>              Fichier où les décisions sont         │
@@ -162,8 +177,10 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 │                         Répétable ; l'ordre compte.                          │
 │ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
 │                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
+│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
+│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
+│                         modifié. Dit ce qui lui manque et ce que lui seul    │
+│                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
 │ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │

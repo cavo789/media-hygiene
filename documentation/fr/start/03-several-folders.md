@@ -15,6 +15,9 @@ mh folders add "D:\Ancien disque"
 mh audit
 ```
 
+Ou tapez `mh folders add` seul : la fenêtre de choix de dossier de Windows s'ouvre, choisissez-y
+le dossier, puis *OK* (ni guillemets, ni chemin à taper).
+
 `mh` se réécrit avec ce dossier, puis montre vos dossiers relus depuis son fichier.
 `mh folders` seul les liste, chacun *présent* ou *introuvable* (un disque pas branché) ;
 `mh folders remove "D:\Ancien disque"` en retire un, un dossier renommé aussi. Plusieurs dossiers
@@ -27,7 +30,7 @@ Le résultat compare maintenant les deux disques :
 ```text
 Résumé de l'audit
 ┌─────────────────────────────────────────────────────────────┬─────────┐
-│ Fichiers média analysés                                     │      85 │
+│ Fichiers média analysés                                     │      89 │
 │ Groupes de fichiers identiques                              │      20 │
 │ Copies en trop, à mettre de côté                            │      32 │
 │ Espace libérable                                            │ 14,0 Mo │
@@ -104,8 +107,15 @@ doublons de vos photos. Marquez-le plutôt comme **sauvegarde** : l'outil le lit
 le modifie jamais, et ne met jamais une copie de côté parce que la sauvegarde l'a aussi.
 
 ```powershell
-mh audit --backup "D:\sauvegarde"
+mh folders add --backup "D:\sauvegarde"
+mh audit
 ```
+
+`mh` se réécrit avec cette sauvegarde : dès lors, elle est montée **en lecture seule pour chaque
+commande, `clean` compris**, Windows lui-même y refuse donc toute modification, et donnée aux
+commandes qui comparent (`audit`, `review`, `clean`, `crosscheck`). `mh folders` la liste à part,
+sous *Vos sauvegardes, comparées, jamais modifiées* ; `mh folders remove "D:\sauvegarde"` la
+retire. Dès le départ : `--backup "D:\sauvegarde"` dans la ligne `launcher` de l'[étape 1](01-first-audit.md#écrire-mh-une-fois).
 
 L'audit répond alors aux deux questions, en deux lignes :
 
@@ -122,6 +132,21 @@ L'audit répond alors aux deux questions, en deux lignes :
 Le rapport liste les deux, et `backup-missing.csv` et `backup-only.csv`, à côté de `plan.csv`,
 listent chaque fichier ([Comparer une sauvegarde ou un ancien disque](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).
 Un dossier qui ne doit même pas être lu est plutôt [exclu](../clean/05-choose-the-kept-copy.md#exclure-un-dossier).
+
+## Un téléphone ? Copiez seulement ses nouvelles photos
+
+Brancher un téléphone et tout copier à chaque fois ramène toutes les photos que vous avez déjà, et
+le nettoyage qui suit. Sous Windows, `mh phone` copie uniquement les photos et vidéos que votre
+photothèque n'a pas encore, ni celles que vous avez écartées volontairement auparavant :
+
+```powershell
+mh phone
+mh audit
+```
+
+Elles arrivent dans `<votre premier dossier de photos>\Phone\<nom du téléphone>` (`--to` choisit
+un autre dossier) ; le téléphone lui-même est seulement lu. Comment il décide, et que faire si le
+câble se débranche : [`mh phone`](../commands/launcher.md#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone).
 
 ## Bon à savoir
 

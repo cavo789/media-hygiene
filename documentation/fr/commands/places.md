@@ -68,7 +68,7 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   partir de 8 lieux, pour que les groupes restent à portée ; votre navigateur retient votre choix. *Vos lieux* est triée par nom,
   sans tenir compte des majuscules ni des accents, la maison (🏠) d'abord ; le fichier garde son
   propre ordre.
-- **Dossiers au nom d'une ville** liste les dossiers dont le nom est celui d'une ville
+- **Dossiers au nom d'une ville, ou placés** liste les dossiers dont le nom est celui d'une ville
   (`Douarnenez`, `Saint-Jean de Luz`) et qui contiennent des photos sans GPS : *📁 Douarnenez —
   37 photos sans GPS*. Cliquez sur l'un d'eux : la carte va sur la ville, un repère vert marque
   son centre et le même tiroir montre ses photos, regroupées par dossier, avec **Enregistrer cette
@@ -88,6 +88,20 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C arrête 
   la ramène. Les dossiers écartés comme *pas une ville* ne sont dans aucune. **Tapez un nom** dans
   la zone en haut de la liste pour filtrer les deux sous-listes au fil de la frappe (le nom
   affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone.
+- **N'importe quel dossier**, replié sous les dossiers au nom d'une ville, liste chaque dossier
+  de l'index comme [`browse`](browse.md) les montre (lu dans `/cache`, sans parcourir le disque) :
+  vos dossiers montés ouverts, les autres fermés (▸ en ouvre un). Chaque ligne compte les photos
+  et vidéos sans GPS du dossier et de ses sous-dossiers : *📁 Mariage Julie — 42 photos sans GPS* ;
+  un dossier dont toutes les photos ont leur GPS est grisé. Cliquez sur un dossier qui ne porte le
+  nom d'aucune ville (un mariage, des vacances) : le même tiroir montre ses photos sans GPS et un
+  repère vert au milieu de la carte ; **cliquez sur la carte** ou faites glisser le repère là où
+  elles ont été prises, puis **Enregistrer cette position**. Elle est enregistrée comme pour un
+  dossier au nom d'une ville (`[[places.folders]]`, relue, 📌) et le dossier passe dans **Placés** ;
+  ses sous-dossiers reçoivent aussi cette position, sauf s'ils ont la leur. La zone du haut filtre
+  les dossiers au fil de la frappe (nom ou chemin, en liste à plat). Un dossier renommé ou déplacé
+  depuis le dernier audit est refusé (relancez `audit`, puis placez-le sous son nouveau nom) ; une
+  fois enregistré, renommé ou déplacé plus tard (par vous dans l'Explorateur, ou par
+  [`sort`](sort.md)), il s'affiche ⚠ *introuvable* dans **Placés**, et `xmp` le signale.
 - **✕ au bout d'une ligne** l'écarte d'un clic, sans question (Rétablir l'annule) :
   - sur un groupe (*Pas un lieu qui mérite un nom* : deux enfants dans une voiture), le groupe
     quitte la liste et la carte, et le suivant remonte. Il est enregistré comme un cercle de

@@ -63,7 +63,8 @@ not only the 240 shown), then **Set aside the picked files**.
 
 - Nothing is deleted from the page. The choice is saved at once in `decisions.json` of your
   reports, read back from the disk and shown with its count and size: *37 files set aside
-  (412 MB), saved in …: 'clean --decisions' moves them to the quarantine.* The photos set aside
+  (412 MB), saved in …: 'clean --decisions' moves them to the quarantine, and remembers them: if
+  one comes back (a new copy from the phone), the audit proposes it again.* The photos set aside
   carry a red *marked to set aside* label.
 - **Take out of the set aside** takes the files picked back out of it.
 - When you stop the page, `search` proposes the next step: `mh clean --decisions`. It asks first

@@ -67,6 +67,7 @@ the table at the end counts what was moved, skipped and failed.
 | Unreadable file | Moved to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | Untouched, unless you ask (`--tier`, `--decisions`). |
+| Copy of a pair keeping both names (`--decisions`) | **Replaced by a hard link** to the kept file, after the same byte comparison: the name stays, the space is freed. Across disks: refused, said. [Cleaning, step 12](../clean/12-decide-pair-by-pair.md#keep-both-names-a-link) |
 | A file you had set aside, back since (a phone backup) | Moved to the quarantine again, counted on a line of its own. [Cleaning, step 9](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside) |
 | Files of a protected folder | Untouched, always. |
 
@@ -163,11 +164,12 @@ cavo789/media-hygiene clean --yes
 │                                             (swap or leave alone some folder │
 │                                             pairs) or written by 'review'    │
 │                                             (burst shots set aside, near     │
-│                                             duplicates decided). A relative  │
-│                                             path is read from the folder     │
-│                                             mounted on /reports. The file is │
-│                                             refused if the folders, the      │
-│                                             pairs or the series changed.     │
+│                                             duplicates decided) or by        │
+│                                             'search' (photos set aside). A   │
+│                                             relative path is read from the   │
+│                                             folder mounted on /reports. The  │
+│                                             file is refused if the folders,  │
+│                                             the pairs or the series changed. │
 │                                             Alone, --decisions reads         │
 │                                             decisions.json.                  │
 │ --yes        -y                             Do not ask for confirmation      │
@@ -185,7 +187,9 @@ cavo789/media-hygiene clean --yes
 │                         order matters.                                       │
 │ --protect        <str>  Folder never modified; its files are the copies      │
 │                         kept. Repeatable.                                    │
-│ --exclude        <str>  Folder never analysed, e.g. a real backup to keep.   │
+│ --exclude        <str>  Folder never analysed, not even read. Repeatable.    │
+│ --backup         <str>  A backup or an old disk: compared, never changed.    │
+│                         Says what it lacks and what only it holds.           │
 │                         Repeatable.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: scan (override scan.* of config.toml) ────────────────────────────╮

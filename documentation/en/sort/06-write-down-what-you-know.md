@@ -178,11 +178,12 @@ The *Why* table of `classify` counts the files each rule decided, by its name:
 <!-- capture: classify.txt|Why|Check their dates -->
 ```text
 Why
-┌──────────────────┬────┐
-│ Existing folders │ 76 │
-│ No signal        │  3 │
-│ Undated          │  3 │
-└──────────────────┴────┘
+┌───────────────────────────┬────┐
+│ Existing folders          │ 76 │
+│ No signal                 │  5 │
+│ Undated                   │  4 │
+│ Screenshots and documents │  1 │
+└───────────────────────────┴────┘
 
 Largest categories
 ┌──────────────────┬────┐
@@ -198,8 +199,8 @@ Largest categories
 │ WhatsApp         │  3 │
 └──────────────────┴────┘
 
-⚠️  Rules that decided nothing: Films and series, Screenshots and documents,
-Event neighbours, Christmas, New Year.
+⚠️  Rules that decided nothing: Films and series, Event neighbours, Christmas,
+New Year.
 💡 Check their dates, their patterns and their order in config.toml.
 ```
 

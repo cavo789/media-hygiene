@@ -67,6 +67,7 @@ lui arrive ; le tableau final compte ce qui a été déplacé, ignoré et en éc
 | Fichier illisible | Déplacé en quarantaine. |
 | [Fichier compagnon](../reference-sidecars.md) orphelin | Déplacé en quarantaine. |
 | Quasi-doublons, photos de rafale | Pas touchés, sauf si vous le demandez (`--tier`, `--decisions`). |
+| Copie d'une paire qui garde les deux noms (`--decisions`) | **Remplacée par un lien physique** vers le fichier gardé, après la même comparaison octet par octet : le nom reste, la place est libérée. Entre deux disques : refusé, et dit. [Étape 12 du nettoyage](../clean/12-decide-pair-by-pair.md#garder-les-deux-noms--un-lien) |
 | Un fichier que vous aviez mis de côté, revenu depuis (une sauvegarde de téléphone) | Remis en quarantaine, compté sur une ligne à part. [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#ce-que-vous-avez-mis-de-côté-reste-de-côté) |
 | Fichiers d'un dossier protégé | Pas touchés, jamais. |
 
@@ -167,10 +168,11 @@ cavo789/media-hygiene --locale fr clean --yes
 │                                             téléchargé depuis un rapport     │
 │                                             d'audit (paires de dossiers      │
 │                                             inversées ou laissées telles     │
-│                                             quelles) ou écrit par 'review'   │
+│                                             quelles), écrit par 'review'     │
 │                                             (photos de rafale écartées,      │
-│                                             quasi-doublons décidés). Un      │
-│                                             chemin relatif est lu dans le    │
+│                                             quasi-doublons décidés) ou par   │
+│                                             'search' (photos mises de côté). │
+│                                             Un chemin relatif est lu dans le │
 │                                             dossier monté sur /reports. Le   │
 │                                             fichier est refusé si les        │
 │                                             dossiers, les paires ou les      │
@@ -191,8 +193,10 @@ cavo789/media-hygiene --locale fr clean --yes
 │                         Répétable ; l'ordre compte.                          │
 │ --protect        <str>  Dossier jamais modifié ; ses fichiers sont les       │
 │                         copies conservées. Répétable.                        │
-│ --exclude        <str>  Dossier jamais analysé, p. ex. une vraie sauvegarde  │
-│                         à garder. Répétable.                                 │
+│ --exclude        <str>  Dossier jamais analysé, même pas lu. Répétable.      │
+│ --backup         <str>  Une sauvegarde ou un ancien disque : comparé, jamais │
+│                         modifié. Dit ce qui lui manque et ce que lui seul    │
+│                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
 │ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │

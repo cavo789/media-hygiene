@@ -9,11 +9,11 @@ not checked for its folders (`services.chosen_review`).
 
 from __future__ import annotations
 
+from collections import Counter
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.pairs import folder_pairs
 from media_hygiene.plan.review import (
     PairAction,
@@ -25,6 +25,7 @@ from media_hygiene.report.decisions import read_decisions
 from media_hygiene.services.burst_review import burst_choices
 from media_hygiene.services.chosen_review import chosen_files
 from media_hygiene.services.gone_review import gone_answers
+from media_hygiene.services.pair_checks import check_pair
 from media_hygiene.services.policy import keep_policy
 from media_hygiene.services.unwanted_review import unwanted_files
 
@@ -32,7 +33,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.plan.models import AuditFindings, CleanPlan
-    from media_hygiene.plan.pairs import FolderPair
     from media_hygiene.report.decisions import DecisionsFile
     from media_hygiene.services.runtime import Runtime
 
@@ -110,7 +110,7 @@ def review_choices(
         )
     choices = [(pairs[d.kept_in, d.removed_from], d.action) for d in decided]
     for pair, action in choices:
-        _check_swap(runtime, pair, action)
+        check_pair(runtime, pair, action)
     return ReviewChoices(
         pairs=tuple(PairChoice(p.kept_in, p.removed_from, a) for p, a in choices),
         bursts=burst_choices(runtime, findings, review.bursts),
@@ -134,14 +134,17 @@ def apply_review(
         The plan, decisions applied.
     """
     pairs, bursts = choices.pairs, choices.bursts
-    swapped = sum(choice.action is PairAction.SWAP for choice in pairs)
-    skipped = sum(choice.action is PairAction.SKIP for choice in pairs)
+    counts = Counter(choice.action for choice in pairs)
     if pairs:
         runtime.output.info(
             _(
                 "Your decisions — pairs swapped: {swapped}, pairs left alone: "
-                "{skipped}."
-            ).format(swapped=swapped, skipped=skipped)
+                "{skipped}, pairs keeping both names (links): {linked}."
+            ).format(
+                swapped=counts[PairAction.SWAP],
+                skipped=counts[PairAction.SKIP],
+                linked=counts[PairAction.LINK],
+            )
         )
     if bursts:
         runtime.output.info(
@@ -159,26 +162,3 @@ def apply_review(
         )
         runtime.output.info(message.format(count=whole))
     return apply_choices(plan, choices, keep_policy(runtime.settings, runtime.mapper))
-
-
-def _check_swap(runtime: Runtime, pair: FolderPair, action: PairAction) -> None:
-    """Refuse a swap that would delete what must stay.
-
-    Args:
-        runtime: Settings, mount points and output.
-        pair: The folder pair.
-        action: What the review decided for it.
-
-    Raises:
-        DecisionsError: The pair is inside one folder, or its kept folder is protected.
-    """
-    if action is not PairAction.SWAP:
-        return
-    kept = runtime.mapper.to_host(pair.kept_in)
-    if pair.kept_in == pair.removed_from:
-        message = _("{folder}: copies inside one folder cannot be swapped.")
-        raise DecisionsError(message.format(folder=kept))
-    protected = keep_policy(runtime.settings, runtime.mapper).protected
-    if any(is_within(pair.kept_in, folder) for folder in protected):
-        message = _("{folder} is protected: its copies are always kept.")
-        raise DecisionsError(message.format(folder=kept))

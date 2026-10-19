@@ -35,6 +35,7 @@ class FolderChoice:
 
     photos: tuple[str, ...] = ()
     quarantine: str | None = None
+    backups: tuple[str, ...] = ()  # compared, never changed: mounted `:ro` (0205)
 
     def shell(self) -> Shell | None:
         """The shell these folders are written for.
@@ -42,7 +43,11 @@ class FolderChoice:
         Returns:
             PowerShell for a Windows path, bash for another, None without folders.
         """
-        hosts = (*self.photos, *((self.quarantine,) if self.quarantine else ()))
+        hosts = (
+            *self.photos,
+            *((self.quarantine,) if self.quarantine else ()),
+            *self.backups,
+        )
         return guess_shell(hosts) if hosts else None
 
 
