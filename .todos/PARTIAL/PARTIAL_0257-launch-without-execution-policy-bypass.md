@@ -98,6 +98,6 @@ evening) without any exception.
 - The Windows check (acceptance): after a reboot (Avast's path lock lifted), right-click →
   page → *Run* `mh audit` runs in the window, no Avast alert; then 0250's check.
   **Reason:** needs the maintainer's Windows + Avast. In a normal Windows PowerShell 5.1:
-  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/COMMIT/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/8fefa13ff2096fc44972ecfca7734aae3acb60bc/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then
   `.\mh-measure.ps1 -Only 10 -Count 20 -Work C:\temp\mh-measure10c`.
