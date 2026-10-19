@@ -4,7 +4,7 @@
 - **Batch**: launcher
 - **Depends**: 0218, 0216
 - **Files**: `src/media_hygiene/cli/templates/mh_phone.ps1.j2` (new), `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/services/launcher_host.py`, `src/media_hygiene/services/launcher_phone.py` (new), `src/media_hygiene/cli/cmd_phone_plan.py` (new), `src/media_hygiene/services/phone_plan.py` (new), `src/media_hygiene/cli/app.py`, `src/media_hygiene/cli/safety.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_phone_plan.py` (new), `tests/unit/test_launcher_phone.py` (new), `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the results of step 19 of `mh-measure.ps1` (0218) with one or two phones (an Android one, and an iPhone if one is at hand): the device and `DCIM` names, the properties giving a file's size and date, how to know a copy has finished, the speed
+- **Needs maintainer**: the results of step 19 of `mh-measure.ps1` (0218) with one or two phones (an Android one, and an iPhone if one is at hand): the device and `DCIM` names, the properties giving a file's size and date, how to know a copy has finished, the speed — the maintainer runs it before the next iterate (inbox 2026-10-19)
 
 ## Context
 

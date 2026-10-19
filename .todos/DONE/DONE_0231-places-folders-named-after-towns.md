@@ -64,3 +64,8 @@ sidecars (0230). Chosen: an adjusted position is saved in `config.toml`, `[[plac
   hand in `[[places.folders]]` today, and `xmp` and the page already use it.
 - The documentation captures of `places` (the new list) and of the default `config.toml`.
   **Reason:** `docs_screenshots` not run (heavy, run on request).
+
+## Inbox (2026-10-19)
+
+- Placing any folder from the page → refiled as 0242 (a list of every folder, as `browse`; maintainer's choice).
+- The captures → refiled as 0244.

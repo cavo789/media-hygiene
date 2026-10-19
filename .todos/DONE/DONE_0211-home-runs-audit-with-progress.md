@@ -63,3 +63,8 @@ guide happens in the browser.
 - The `Time per step` durations (only counts are shown).
   **Reason:** the stopwatch's stage times are only known at the end; showing them after the
   run is a small follow-up.
+
+## Inbox (2026-10-19)
+
+- `Time per step` at the end → refiled as 0241.
+- Stopping the audit when the tab is closed: dropped (maintainer).

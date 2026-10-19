@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/services/launcher_host.py`, `documentation/{en,fr}/commands/launcher.md`, `tests/unit/test_launcher_host.py`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: after the work, one run on Windows: right-click the empty space of an open folder → "Media Hygiene" → the menu opens on that folder (step 10 of `mh-measure.ps1`, extended)
 
 ## Why
 
@@ -22,6 +21,7 @@ Follows 0181 (PARTIAL), which adds the entry on a folder's icon only. Decided by
 
 - Unit: the rendered `mh.ps1` writes, reads back and removes both keys, ASCII.
 - Docs both languages: launcher page.
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): one run on Windows: right-click the empty space of an open folder → "Media Hygiene" → the menu opens on that folder (step 10 of `mh-measure.ps1`, extended)
 
 ## Gain (estimated)
 

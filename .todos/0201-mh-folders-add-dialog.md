@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh_folders.ps1.j2`, `src/media_hygiene/services/launcher_update.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_launcher_folders.py`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: after the work, one run on Windows: step 11 of `mh-measure.ps1`, extended (`mh folders add` alone: the dialog opens in front of the console, cancel changes nothing, the folder chosen is added and read back; Avast says nothing)
 
 ## Context
 
@@ -41,7 +40,7 @@ picker.
   cancel, keeps the checks; ASCII; no `Add-Type`.
 - Docs both languages: launcher page, and step 3 ("or `mh folders add` alone: choose it in a
   window").
-- Windows (maintainer): step 11 extended.
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): one run on Windows: step 11 of `mh-measure.ps1`, extended (`mh folders add` alone: the dialog opens in front of the console, cancel changes nothing, the folder chosen is added and read back; Avast says nothing).
 
 ## Gain (estimated)
 

@@ -86,3 +86,8 @@ every step a button; the terminal only shows what a step prints and asks.
   **Reason:** needs the maintainer's PC (Windows PowerShell 5.1, Docker Desktop, a browser).
 - The documentation captures (`menu.txt`, the menu's step 16/17 lines, the help pages).
   **Reason:** `docs_screenshots` not run (heavy, run on request).
+
+## Inbox (2026-10-19)
+
+- The documentation captures → refiled as 0244.
+- The Windows run (step 14h): still waiting (`mh-measure.ps1`).

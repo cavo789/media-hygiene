@@ -84,3 +84,8 @@ next step as a button, and the photos found.
   `tests/support/docs/browser.py` / `served.py`, run it, reference the image in both pages.
 - `mh` reopening the home page after a step or a "⌂ Home" (the exit codes are in place).
   **Reason:** 0210 (launcher side), out of scope here.
+
+## Inbox (2026-10-19)
+
+- The capture `home.webp` → refiled as 0244.
+- `mh` reopening the home page: done by 0210.

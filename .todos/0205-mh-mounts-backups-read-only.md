@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: 0204
 - **Files**: `src/media_hygiene/cli/cmd_launcher.py`, `src/media_hygiene/services/launcher.py`, `src/media_hygiene/services/launcher_folders.py`, `src/media_hygiene/services/launcher_kept.py`, `src/media_hygiene/services/launcher_update.py`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/cli/templates/mh_folders.ps1.j2`, `src/media_hygiene/cli/templates/mh_folders.sh.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_launcher_folders.py`, `tests/unit/test_launcher_rewrite.py`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: after the work, one run on Windows: `launcher --backup` on another drive, `mh audit` then `mh clean`: the backup mounted `:ro` both times (Docker refuses any write), its two results shown
 
 ## Context
 
@@ -35,7 +34,7 @@ read-write for the acting commands (`clean`, `sort`, …), so a backup needs its
 - Unit: the rendered scripts (both shells) mount a backup with `:ro` for the acting commands too,
   pass `--backup`, list it apart; ASCII; the rewrite keeps it.
 - Docs both languages: launcher page, step 3.
-- Windows (maintainer): the run above.
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): one run on Windows: `launcher --backup` on another drive, `mh audit` then `mh clean`: the backup mounted `:ro` both times (Docker refuses any write), its two results shown.
 
 ## Gain (estimated)
 

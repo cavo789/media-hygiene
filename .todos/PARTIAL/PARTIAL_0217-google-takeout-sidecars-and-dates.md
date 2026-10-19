@@ -111,3 +111,8 @@ dated and placed by Google's record instead of going to "to check".
   Needs a decision: a new tag source (`takeout`) or a caption with an empty model.
 - Checks on a real Takeout (names, truncation length, translated `-edited` suffixes, field
   names). **Reason:** none at hand; documented as unchecked.
+
+## Inbox (2026-10-19)
+
+- The `description` as words → refiled as 0240 (own source `takeout`, maintainer's choice).
+- Checks on a real Takeout: still waiting for one (material).

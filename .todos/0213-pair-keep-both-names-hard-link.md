@@ -4,7 +4,6 @@
 - **Batch**: actions
 - **Depends**: 0203
 - **Files**: `src/media_hygiene/plan/review.py`, `src/media_hygiene/plan/models.py`, `src/media_hygiene/report/decisions.py`, `src/media_hygiene/report/templates/report.html.j2`, `src/media_hygiene/report/templates/_decisions.html.j2`, `src/media_hygiene/review/pairs_app.py`, `src/media_hygiene/review/templates/pairs_review.html.j2`, `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/actions/clean.py`, `src/media_hygiene/actions/clean_links.py` (new), `src/media_hygiene/actions/reversal.py`, `src/media_hygiene/actions/undo.py`, `src/media_hygiene/actions/album_links.py`, `src/media_hygiene/cli/clean_confirm.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/integration/test_clean_links.py` (new), `documentation/en/clean/12-decide-pair-by-pair.md`, `documentation/fr/clean/12-decide-pair-by-pair.md`, `documentation/en/reference-safety.md`, `documentation/fr/reference-safety.md`, `documentation/en/commands/clean.md`, `documentation/fr/commands/clean.md`, `documentation/en/commands/undo.md`, `documentation/fr/commands/undo.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: after the work, one run on Windows: a pair linked through Docker Desktop's file sharing — Explorer shows both files, both open, the free space grows; then a photo of the pair edited and saved in the Photos app: does the other name change too (write down what was seen)
 
 ## Context
 
@@ -54,7 +53,7 @@ the kept one (`COPY_FROM_KEEPER`).
   or the link under each name (never nothing), `undo` gives two independent files with the same
   bytes.
 - Docs both languages (step 12, safety page, `clean` and `undo` pages).
-- Windows (maintainer): the run above, its result written into the docs (what an edit in Photos
+- Windows (maintainer, after the work; closes the TODO, implementing needs no maintainer — inbox 2026-10-19): one run on Windows: a pair linked through Docker Desktop's file sharing — Explorer shows both files, both open, the free space grows; then a photo of the pair edited and saved in the Photos app: does the other name change too (write down what was seen); its result written into the docs (what an edit in Photos
   does).
 
 ## Gain (estimated)

@@ -104,3 +104,8 @@ percentile). What the user sets aside is theirs to decide: no figure before a re
   `browsing.py`, run `docs_screenshots`, then show the image in step 14.
 - 0216 (photos set aside that come back): when it lands, add `quarantine-unwanted` to the kinds it
   remembers.
+
+## Inbox (2026-10-19)
+
+- The screenshot of the page → refiled as 0244.
+- 0216's remembered kinds: stale — 0216 added `quarantine-unwanted` to `REMEMBERED` (`actions/kinds.py`).

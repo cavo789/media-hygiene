@@ -87,3 +87,8 @@ and is remembered when the same file comes back — which a deletion in Explorer
   `tests/support/docs/browser.py` / `served.py` / `browsing.py`, run it, and reference the image
   in both `commands/browse.md` (the unused-image test fails until it is referenced).
 - "Remembered when it comes back" is not claimed anywhere: it needs 0216.
+
+## Inbox (2026-10-19)
+
+- *Apply now* from the home page, and "remembered when it comes back" in the docs → refiled as 0243.
+- The capture `browse.webp` → refiled as 0244.
