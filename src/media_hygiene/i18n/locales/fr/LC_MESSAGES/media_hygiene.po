@@ -866,6 +866,9 @@ msgstr ""
 "Répondu : les fichiers marqués 🗑️ sont retenus par 'clean --decisions', "
 "mis de côté s'ils reviennent ; les autres sont oubliés."
 
+msgid "Any folder"
+msgstr "N'importe quel dossier"
+
 msgid "Apply now"
 msgstr "Appliquer maintenant"
 
@@ -1220,6 +1223,16 @@ msgid "Cleaning"
 msgstr "Nettoyage"
 
 msgid ""
+"Click the map or drag the pin where these photos were taken, then save: "
+"'xmp' writes that position into the sidecars of the photos without GPS of"
+" this folder and of its subfolders ([tags] xmp_folder_gps = true)."
+msgstr ""
+"Cliquez sur la carte ou faites glisser le repère là où ces photos ont été "
+"prises, puis enregistrez : 'xmp' écrit cette position dans les fichiers "
+".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
+"xmp_folder_gps = true)."
+
+msgid ""
 "Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
 "day ahead) is set right here, never in the photos. camera: a regular "
 "expression searched in the make and model; dates: the camera's own, "
@@ -1246,8 +1259,8 @@ msgid ""
 "Close this page: mh moves the files set aside to the quarantine (it asks "
 "first), then opens the home page again."
 msgstr ""
-"Ferme cette page : mh déplace en quarantaine les fichiers mis de côté (il "
-"demande d'abord), puis rouvre l'accueil."
+"Ferme cette page : mh déplace en quarantaine les fichiers mis de côté (il"
+" demande d'abord), puis rouvre l'accueil."
 
 #, python-brace-format
 msgid "Cluster — {files}"
@@ -2072,6 +2085,15 @@ msgstr "Toutes les copies"
 
 msgid "Every file of your photos is in this backup."
 msgstr "Chaque fichier de vos photos est dans cette sauvegarde."
+
+msgid ""
+"Every folder of the index, as 'browse' shows them: place one named after "
+"no town (a wedding, a holiday). Its subfolders get its position, unless "
+"they have their own."
+msgstr ""
+"Chaque dossier de l'index, comme 'browse' les montre : placez-en un qui "
+"ne porte le nom d'aucune ville (un mariage, des vacances). Ses sous-"
+"dossiers reçoivent sa position, sauf s'ils ont la leur."
 
 msgid "Every group has been decided."
 msgstr "Tous les groupes ont été décidés."
@@ -3476,6 +3498,11 @@ msgstr ""
 "Aucun dossier pour les albums : ni album.root ni classify.target n'est "
 "défini."
 
+msgid "No folder in the index: run 'audit' first, with the same /cache mount."
+msgstr ""
+"Aucun dossier dans l'index : lancez d'abord 'audit', avec le même montage "
+"/cache."
+
 msgid "No folder named after a town holds photos without GPS."
 msgstr "Aucun dossier au nom d'une ville ne contient de photos sans GPS."
 
@@ -3668,7 +3695,9 @@ msgid "No signal"
 msgstr "Aucun indice"
 
 msgid "No step applies the decisions now: type the next step yourself."
-msgstr "Aucune étape n'applique les décisions pour l'instant : tapez vous-même l'étape suivante."
+msgstr ""
+"Aucune étape n'applique les décisions pour l'instant : tapez vous-même "
+"l'étape suivante."
 
 #, python-brace-format
 msgid "No step {choice}: type mh menu to see the menu again."
@@ -7265,6 +7294,9 @@ msgstr "entièrement une copie : ne contient rien d'autre"
 msgid "environment"
 msgstr "environnement"
 
+msgid "every photo has GPS"
+msgstr "chaque photo a son GPS"
+
 msgid "every source"
 msgstr "toutes les sources"
 
@@ -8774,9 +8806,9 @@ msgstr[0] ""
 "(une nouvelle copie depuis le téléphone), l'audit le propose à nouveau."
 msgstr[1] ""
 "{count} fichiers mis de côté ({size}), enregistrés dans {place} : 'clean "
-"--decisions' les déplace en quarantaine, et s'en souvient : si l'un "
-"d'eux revient (une nouvelle copie depuis le téléphone), l'audit le "
-"propose à nouveau."
+"--decisions' les déplace en quarantaine, et s'en souvient : si l'un d'eux"
+" revient (une nouvelle copie depuis le téléphone), l'audit le propose à "
+"nouveau."
 
 #, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."
@@ -9432,6 +9464,14 @@ msgid "{folder} is mounted read-only: config.toml cannot be completed."
 msgstr ""
 "{folder} est monté en lecture seule : config.toml ne peut pas être "
 "complété."
+
+#, python-brace-format
+msgid ""
+"{folder} is no longer there: renamed or moved since the audit. Run "
+"'audit' again, then place it under its new name."
+msgstr ""
+"{folder} n'est plus là : renommé ou déplacé depuis l'audit. Relancez "
+"'audit', puis placez-le sous son nouveau nom."
 
 #, python-brace-format
 msgid "{folder} is not one of the folders listed"

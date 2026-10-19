@@ -667,6 +667,9 @@ msgid ""
 "set aside if they come back; the others are forgotten."
 msgstr ""
 
+msgid "Any folder"
+msgstr ""
+
 msgid "Apply now"
 msgstr ""
 
@@ -977,6 +980,12 @@ msgid "Clean {run_id}"
 msgstr ""
 
 msgid "Cleaning"
+msgstr ""
+
+msgid ""
+"Click the map or drag the pin where these photos were taken, then save: "
+"'xmp' writes that position into the sidecars of the photos without GPS of"
+" this folder and of its subfolders ([tags] xmp_folder_gps = true)."
 msgstr ""
 
 msgid ""
@@ -1654,6 +1663,12 @@ msgid "Every copy"
 msgstr ""
 
 msgid "Every file of your photos is in this backup."
+msgstr ""
+
+msgid ""
+"Every folder of the index, as 'browse' shows them: place one named after "
+"no town (a wedding, a holiday). Its subfolders get its position, unless "
+"they have their own."
 msgstr ""
 
 msgid "Every group has been decided."
@@ -2827,6 +2842,9 @@ msgid "No folder chosen: nothing changed."
 msgstr ""
 
 msgid "No folder for the albums: neither album.root nor classify.target is set."
+msgstr ""
+
+msgid "No folder in the index: run 'audit' first, with the same /cache mount."
 msgstr ""
 
 msgid "No folder named after a town holds photos without GPS."
@@ -5980,6 +5998,9 @@ msgstr ""
 msgid "environment"
 msgstr ""
 
+msgid "every photo has GPS"
+msgstr ""
+
 msgid "every source"
 msgstr ""
 
@@ -7803,6 +7824,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{folder} is no longer there: renamed or moved since the audit. Run "
+"'audit' again, then place it under its new name."
 msgstr ""
 
 #, python-brace-format

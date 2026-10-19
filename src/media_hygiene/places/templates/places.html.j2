@@ -36,6 +36,9 @@
   "toPlace": _("To place"),
   "placed": _("Placed"),
   "noMatch": _("No folder of that name."),
+  "noTree": _("No folder in the index: run 'audit' first, with the same /cache mount."),
+  "allLocated": _("every photo has GPS"),
+  "treeHint": _("Click the map or drag the pin where these photos were taken, then save: 'xmp' writes that position into the sidecars of the photos without GPS of this folder and of its subfolders ([tags] xmp_folder_gps = true)."),
   "townHint": _("{town} is a town: 'classify' already names its photos. Keep it as a place only for exact borders (an OpenStreetMap area) or another name."),
   "folderSaved": _("Position saved in config.toml."),
   "folderForgotten": _("Position taken out of config.toml."),
@@ -125,7 +128,14 @@
                            margin-bottom: 6px; }
   details.fold .count { font-weight: normal; }
   details.fold.sub { margin: 8px 0 0 8px; }
-  #folderFilter { margin-top: 4px; }
+  #folderFilter, #treeFilter { margin-top: 4px; }
+  #tree ul { margin-left: 14px; }
+  .tree-line { display: flex; gap: 2px; align-items: center; }
+  .tree-line button.toggle { width: 20px; padding: 0; font: inherit; color: var(--muted);
+                             background: none; border: 0; cursor: pointer; }
+  .tree-line button.link { flex: 1; width: auto; }
+  li.none > .tree-line button.link { color: var(--muted); cursor: default; }
+  li.shown > .tree-line button.link { background: var(--bg); font-weight: 600; }
   li.cluster { display: flex; gap: 4px; align-items: center; }
   li.cluster button.link { flex: 1; width: auto; }
   li.cluster button.count { padding: 2px 8px; font: inherit; font-size: .85rem; white-space: nowrap;
@@ -247,6 +257,14 @@
       <ul id="foldersPlaced"></ul>
     </details>
   </details>
+  <details id="treeFold" class="fold">
+    <summary>{{ _("Any folder") }} <span id="treeCount" class="count"></span></summary>
+    <p class="hint">{{ _("Every folder of the index, as 'browse' shows them: place one named after no town (a wedding, a holiday). Its subfolders get its position, unless they have their own.") }}</p>
+    <input id="treeFilter" type="search" autocomplete="off"
+           placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
+           title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">
+    <ul id="tree"></ul>
+  </details>
   <details id="asideFold" class="fold">
     <summary>{{ _("Set aside from the map") }} <span id="asideCount" class="count"></span></summary>
     <p class="hint">{{ _("Hidden from the map and from the lists; 'classify' reads them as before (a cluster stays unnamed).") }}</p>
@@ -292,6 +310,7 @@
                   search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
                   cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
                   folderPhotos: {{ folder_photos | tojson }}, folder: {{ folder_path | tojson }},
+                  tree: {{ tree_photos | tojson }},
                   aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
@@ -350,7 +369,7 @@
   // The reader's folds, kept in this browser only; a private window keeps none.
   const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
   // Only a click of the reader is remembered, not a list the page opens itself.
-  for (const id of ["placesFold", "clustersFold", "foldersFold", "todoFold", "placedFold", "asideFold"]) {
+  for (const id of ["placesFold", "clustersFold", "foldersFold", "todoFold", "placedFold", "treeFold", "asideFold"]) {
     byId(id).querySelector("summary").addEventListener("click", () => {
       folds[id] = !byId(id).open;
       try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
@@ -367,7 +386,7 @@
     [pictures || !filmed ? photos(pictures) : "", filmed ? videos(filmed) : ""].filter(Boolean).join(", ");
   // Sorted by the name shown, case and accents ignored ("Écluse" among the E); the file's order is kept.
   const collator = new Intl.Collator(document.documentElement.lang, { sensitivity: "base" });
-  const plain = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const folded = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const lastName = (folder) => folder.split(/[\\/]/).filter(Boolean).pop() || folder;
 
   // The drawer, over the right of the map: the photos of a cluster or of a folder, grouped
@@ -564,10 +583,10 @@
   const byFolderName = (first, second) =>
     collator.compare(folderName(first), folderName(second)) || first.folder.localeCompare(second.folder);
   // The folders typed for: the name shown and the host path, case and accents ignored.
-  const folderMatches = (folder, typed) => !typed || plain(`${folderName(folder)}\n${folder.folder}`).includes(typed);
+  const folderMatches = (folder, typed) => !typed || folded(`${folderName(folder)}\n${folder.folder}`).includes(typed);
   const countOf = (shown, total) => (shown === total ? `(${total})` : `(${shown} / ${total})`);
   function drawFolders() {
-    const typed = plain(byId("folderFilter").value.trim());
+    const typed = folded(byId("folderFilter").value.trim());
     // A copy is sorted: `folders` keeps the server's order, whose index is the rank the API names.
     const seen = folders.filter((folder) => folderMatches(folder, typed));
     const placed = seen.filter((folder) => folder.saved).sort(byFolderName);
@@ -602,7 +621,12 @@
     const response = await fetch(paths.folders).catch(() => null);
     if (!response || !response.ok) return;
     const answer = await response.json();
-    folders = answer.folders; ignored = answer.ignored || []; drawFolders(); drawAside();
+    gotFolders(answer);
+  }
+  // Every list the folders' answer feeds: the town folders, the names set aside, the tree.
+  function gotFolders(answer) {
+    folders = answer.folders; ignored = answer.ignored || []; tree = answer.tree || [];
+    drawFolders(); drawAside(); drawTree();
   }
   // Léo is the cat (0235): the name goes into folder_town_ignore, its line leaves the list.
   async function ignoreName(folder) {
@@ -610,14 +634,14 @@
     const answer = await post(paths.folder, { action: "ignore", folder: folder.folder });
     if (!answer) return;
     if (opened && opened.folder) closeDrawer();
-    folders = answer.folders; ignored = answer.ignored; drawFolders(); drawAside();
+    gotFolders(answer);
     const gone = !folders.some((other) => other.folder === folder.folder);
     status(gone ? fill(T.nameIgnored, { name }) : T.notSaved, gone ? "saved" : "error");
   }
   async function restoreName(name) {
     const answer = await post(paths.folder, { action: "restore", folder: name });
     if (!answer) return;
-    folders = answer.folders; ignored = answer.ignored; drawFolders(); drawAside();
+    gotFolders(answer);
     const still = ignored.includes(name);
     status(still ? T.notSaved : fill(T.nameRestored, { name }), still ? "error" : "saved");
   }
@@ -668,11 +692,72 @@
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
     folderFlash = action === "ignore" ? null : chosen.folder;
-    folders = answer.folders; ignored = answer.ignored || []; closeDrawer(); drawFolders(); drawAside(); status(said, "saved");
+    closeDrawer(); gotFolders(answer); status(said, "saved");
   }
   byId("folderSave").addEventListener("click", () => actOnFolder("save", T.folderSaved));
   byId("folderForget").addEventListener("click", () => actOnFolder("forget", T.folderForgotten));
   byId("folderIgnore").addEventListener("click", () => actOnFolder("ignore", T.folderIgnored));
+
+  // Any folder of the index (0242), as `browse` shows them: the mounted folders open, the
+  // rest closed; what the reader opens stays open when an answer draws the tree again.
+  let tree = [];
+  const treeOpen = new Set(), treeTops = new Set();  // the folders open; the tops seen once
+  const listedAs = (node) => folders.find((folder) => folder.folder === node.folder);
+  const treeFiles = (node) => (node.count ? fill(T.withoutGps, { files: holds(node.count - node.videos, node.videos) }) : T.allLocated);
+  function treeNode(node, children, flat) {
+    const li = document.createElement("li"), line = document.createElement("div");
+    const toggle = document.createElement("button"), button = document.createElement("button");
+    const below = flat ? [] : children.get(node.folder) || [];
+    const known = listedAs(node), mark = known && known.saved ? (known.found ? "📌 " : "⚠ ") : "📁 ";
+    line.className = "tree-line"; toggle.type = "button"; toggle.className = "toggle";
+    button.type = "button"; button.className = "link"; button.title = node.folder;
+    button.textContent = `${mark}${flat ? node.folder : node.name} — ${treeFiles(node)}`;
+    if (node.count) button.addEventListener("click", () => showTreeFolder(node));
+    else li.classList.add("none");
+    li.dataset.drawer = `folder:${node.folder}`;
+    line.append(toggle, button); li.append(line);
+    if (below.length) {
+      const list = document.createElement("ul");
+      list.append(...below.map((child) => treeNode(child, children, false)));
+      const shut = () => { list.hidden = !treeOpen.has(node.folder); toggle.textContent = list.hidden ? "▸" : "▾"; };
+      toggle.addEventListener("click", () => { treeOpen.has(node.folder) ? treeOpen.delete(node.folder) : treeOpen.add(node.folder); shut(); });
+      shut(); li.append(list);
+    }
+    return li;
+  }
+  function drawTree() {
+    const typed = folded(byId("treeFilter").value.trim()), list = byId("tree");
+    for (const node of tree) {
+      if (node.parent === null && !treeTops.has(node.folder)) { treeTops.add(node.folder); treeOpen.add(node.folder); }
+    }
+    // Typed for: the folders whose name or path matches, flat, their path shown.
+    const seen = typed ? tree.filter((node) => folded(`${node.name}\n${node.folder}`).includes(typed)) : tree;
+    byId("treeCount").textContent = countOf(seen.length, tree.length);
+    const children = new Map();
+    for (const node of tree) { if (!children.has(node.parent)) children.set(node.parent, []); children.get(node.parent).push(node); }
+    const tops = typed ? seen : children.get(null) || [];
+    list.replaceChildren(...tops.map((node) => treeNode(node, children, Boolean(typed))));
+    if (!tops.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = tree.length ? T.noMatch : T.noTree; list.append(li); }
+    highlight();
+  }
+  // A folder of the town list opens as there; any other, its pin in the middle of the map.
+  function showTreeFolder(node) {
+    const known = listedAs(node);
+    if (known) { showFolder(known.rank); return; }
+    const key = `folder:${node.folder}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const centre = map.getCenter();
+    const folder = { folder: node.folder, town: "", latitude: centre.lat, longitude: centre.lng, saved: false, found: true };
+    const actions = { clusterName: false, clusterAside: false, giveTo: false,
+                      folderSave: true, folderForget: false, folderIgnore: false };
+    openDrawer({ key, url: paths.tree + node.rank, at: [centre.lat, centre.lng], zoom: map.getZoom(),
+                 pictures: node.count - node.videos, videos: node.videos, folder, actions,
+                 title: `${node.name} — ${treeFiles(node)}`, note: T.treeHint });
+  }
+  byId("treeFilter").addEventListener("input", drawTree);
+  byId("treeFilter").addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && byId("treeFilter").value) { event.stopPropagation(); byId("treeFilter").value = ""; drawTree(); }
+  });
 
   function draw() {
     clusterLayer.clearLayers(); placeLayer.clearLayers();
@@ -801,7 +886,10 @@
   }
   const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
   const startNew = (lat, lon) => edit({ ...blank, latitude: lat, longitude: lon });
-  map.on("click", (event) => startNew(event.latlng.lat, event.latlng.lng));
+  // A folder's drawer open: a click moves its pin (0242); else it names a new place.
+  map.on("click", (event) => {
+    if (folderPin) folderPin.setLatLng(event.latlng); else startNew(event.latlng.lat, event.latlng.lng);
+  });
 
   const setRadius = (value) => {
     const radius = Math.max(1, Math.min(50000, Number(value) || DEFAULT_RADIUS));
@@ -901,6 +989,7 @@
     byId("foldersFold").open = folds.foldersFold ?? true;
     byId("todoFold").open = folds.todoFold ?? true;
     byId("placedFold").open = folds.placedFold ?? false;
+    byId("treeFold").open = folds.treeFold ?? false;
     byId("asideFold").open = folds.asideFold ?? false;
     draw(); loadFolders();
     const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];

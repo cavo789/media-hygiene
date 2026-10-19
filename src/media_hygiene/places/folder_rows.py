@@ -12,9 +12,12 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.town_folders import town_folders
+from media_hygiene.constants import MediaKind
 from media_hygiene.places.config_folders import read_folders, read_ignored
+from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from pathlib import Path
 
     from media_hygiene.config.classify_settings import ClassifySettings
@@ -32,6 +35,7 @@ class FolderContext:
     mapper: HostPathMapper
     settings: ClassifySettings  # the threshold, home; the ignored names read back
     towns: Gazetteer
+    roots: tuple[Path, ...] = ()  # the mounted folders: the tree's tops (0242)
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,6 +75,33 @@ def folder_rows(inputs: IndexedInputs, context: FolderContext) -> tuple[FolderRo
         key = position.folder.casefold()
         rows[key] = _saved(position, rows.get(key), (inputs, context))
     return tuple(sorted(rows.values(), key=lambda row: (-len(row.photos), row.folder)))
+
+
+def folders_json(rows: Iterable[FolderRow]) -> list[dict[str, object]]:
+    """Write the list for the page; a line's rank is the one `GET /api/folder/` names.
+
+    Args:
+        rows: The folders.
+
+    Returns:
+        Each folder's town, position, saved or not, found or not, its files
+        without a position and how many of them are videos.
+    """
+    return [
+        {
+            "rank": rank,
+            "folder": row.folder,
+            "town": row.town,
+            "country": row.country,
+            "latitude": row.latitude,
+            "longitude": row.longitude,
+            "saved": row.saved,
+            "found": row.found,
+            "count": len(row.photos),
+            "videos": sum(media_kind(path) is MediaKind.VIDEO for path in row.photos),
+        }
+        for rank, row in enumerate(rows)
+    ]
 
 
 def _named(host: str, town: Town, photos: tuple[Path, ...]) -> FolderRow:

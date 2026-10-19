@@ -81,6 +81,18 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map
   and flashes it, **Forget its position** moves it back. The folders set aside as *not a town*
   are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
   type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
+- **Any folder**, folded under the town folders, lists every folder of the index as
+  [`browse`](browse.md) shows them (read from `/cache`, the disk is not walked): your mounted
+  folders open, the others closed (▸ opens one). Each line counts the photos and videos without
+  GPS of the folder and of its subfolders: *📁 Mariage Julie — 42 photos without GPS*; a folder
+  whose photos all have GPS is greyed. Click one named after no town (a wedding, a holiday): the
+  same drawer shows its photos without GPS and a green pin in the middle of the map; **click the
+  map** or drag the pin where they were taken, then **Save this position**. It is saved as for a
+  town folder (`[[places.folders]]`, read back, 📌) and moves to **Placed**; its subfolders get
+  that position too, unless they have their own. The box on top filters the folders as you type
+  (name or path, listed flat). A folder renamed or moved since the last audit is refused (run
+  `audit` again, then place it under its new name); once saved, renamed or moved later (by you in
+  Explorer, or by [`sort`](sort.md)), it shows ⚠ *not found* in **Placed**, and `xmp` says so.
 - **✕ at the end of a line** sets it aside in one click, without a question (Restore undoes
   it):
   - on a cluster (*Not a place worth a name*: two children in a car), the cluster leaves the list

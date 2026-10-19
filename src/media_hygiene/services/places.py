@@ -35,7 +35,12 @@ from media_hygiene.places.clusters import clusters_of
 from media_hygiene.places.folder_rows import FolderContext
 from media_hygiene.places.folders import FolderDesk
 from media_hygiene.places.osm_search import OSM_PATH, online_search
-from media_hygiene.places.photos import CLUSTER_PREFIX, FOLDER_PREFIX, FOLDERS_PATH
+from media_hygiene.places.photos import (
+    CLUSTER_PREFIX,
+    FOLDER_PREFIX,
+    FOLDERS_PATH,
+    TREE_PREFIX,
+)
 from media_hygiene.places.posts import ASIDE_PATH, PHOTOS_PATH, SAVE_PATH
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.ending import run_server
@@ -43,6 +48,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.missing_mount import missing_mount
 from media_hygiene.services.places_index import OpenedMap, located_files, read_index
 from media_hygiene.services.reviewing import address_tip, page_url
+from media_hygiene.services.search_pages import shown_roots
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -94,7 +100,11 @@ def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
     config_file = runtime.locations.config_file
     towns = Gazetteer.load().renamed(runtime.settings.classify.town_names)
     context = FolderContext(
-        config_file, runtime.mapper, runtime.settings.classify, towns
+        config_file,
+        runtime.mapper,
+        runtime.settings.classify,
+        towns,
+        shown_roots(runtime),
     )
     try:
         board = PlacesBoard(clusters_of(located), context)
@@ -123,6 +133,7 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
         cluster_path=CLUSTER_PREFIX,
         folders_path=FOLDERS_PATH,
         folder_photos=FOLDER_PREFIX,
+        tree_photos=TREE_PREFIX,
         folder_path=FOLDER_PATH,
         aside_path=ASIDE_PATH,
         hint_path=HINT_PATH,

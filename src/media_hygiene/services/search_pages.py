@@ -98,7 +98,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         start.path,
     )
     chosen = chosen_desk(runtime, search)
-    folders = FolderDesk(search, runtime.mapper, _shown_roots(runtime), chosen)
+    folders = FolderDesk(search, runtime.mapper, shown_roots(runtime), chosen)
     ending = Ending()
     place = SearchPlace(
         search,
@@ -140,7 +140,7 @@ def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
     )
 
 
-def _shown_roots(runtime: Runtime) -> tuple[Path, ...]:
+def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
     """The top folders of the tree: the mounted ones, or the drives of `/data`.
 
     Args:
