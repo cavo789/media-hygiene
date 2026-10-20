@@ -48,11 +48,13 @@ LAUNCHER_VARIABLE: Final = f"{ENV_PREFIX}LAUNCHER"
 LAUNCHER_FUNCTION: Final = "mh"
 # Set by an `mh` that runs the step chosen on the home page (exit code 100 + n, 0210).
 LAUNCHER_STEPS_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_STEPS"
+# The folders given to that page with --photos, `|` between them (0258).
+LAUNCHER_PHOTOS_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_PHOTOS"
 # The image's own name is written in the command itself, not passed on with -e; `mh`
 # reads the zone of the Windows host again at every run.
 _NOT_CARRIED: Final = frozenset(
     {LAUNCHER_VARIABLE, LAUNCHER_STEPS_VARIABLE, IMAGE_VARIABLE, WINDOWS_ZONE_VARIABLE}
-)
+) | {LAUNCHER_PHOTOS_VARIABLE}
 
 
 @dataclass(frozen=True, slots=True)

@@ -38,8 +38,10 @@ _COMMANDS: Final = LauncherCommands(
 )
 # A PID no process has: beyond Linux's largest `pid_max`.
 _GONE: Final = 2_147_483_646
-# `docker ps` prints $HELD; `docker stop` leaves a mark; `docker run` says what it got.
+# `docker ps` prints $HELD; `docker stop` leaves a mark; `docker run` says what it got;
+# `ss` prints $LISTENING (nothing listens by default, whatever the test machine runs).
 _FAKE_DOCKER: Final = r"""
+ss() { touch "$HOME/probed"; printf '%s' "${LISTENING:-}"; }
 docker() {
     case "$1" in
         ps) touch "$HOME/listed"; if [[ -n "$HELD" ]]; then printf '%s\n' "$HELD"; fi ;;
@@ -54,8 +56,22 @@ def _bash(
     tmp_path: Path, line: str, held: str = ""
 ) -> subprocess.CompletedProcess[str]:
     """Load the bash `mh` and run `line`, `docker ps` printing `held`."""
+    return _run(tmp_path, line, {"HELD": held})
+
+
+def _listen(
+    tmp_path: Path, line: str, listening: str
+) -> subprocess.CompletedProcess[str]:
+    """Load the bash `mh` and run `line`, `ss` printing `listening`, no container."""
+    return _run(tmp_path, line, {"LISTENING": listening})
+
+
+def _run(
+    tmp_path: Path, line: str, said: dict[str, str]
+) -> subprocess.CompletedProcess[str]:
+    """Load the bash `mh` and run `line`, the fakes printing what `said` holds."""
     code = f"{bash_mh(tmp_path, _COMMANDS, _FAKE_DOCKER)}; {line}; echo status=$?"
-    env = {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin", "HELD": held}
+    env = {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin", **said}
     return run_bash(code, env)
 
 
@@ -145,6 +161,73 @@ def test_bash_port_held_by_another_container_names_it(tmp_path: Path) -> None:
     assert "docker stop 0def34" in done.stderr
     assert not (tmp_path / "stopped").exists()
     assert "status=1" in done.stdout
+
+
+def _listening(name: str, pid: int = 4242) -> str:
+    """What `ss -ltnp` says of a program of this user listening on the port."""
+    return (
+        "State Recv-Q Send-Q Local Address:Port Peer Address:Port Process\n"
+        f"LISTEN 0 5 127.0.0.1:{_PORT} 0.0.0.0:* "
+        f'users:(("{name}",pid={pid},fd=3))\n'
+    )
+
+
+def test_bash_port_held_by_another_program_names_it(tmp_path: Path) -> None:
+    """No container, a server of this user listens: named with its PID, nothing runs."""
+    with using(Locale.EN):
+        busy = launcher_guards().port.busy
+        done = _listen(tmp_path, "mh review", _listening("python3"))
+    said = busy.replace("${name}", "python3").replace("${process}", "4242")
+    assert said in done.stderr
+    assert "ran:" not in done.stdout
+    assert "status=1" in done.stdout
+
+
+@pytest.mark.parametrize("name", ["docker-proxy", "wslrelay"])
+def test_bash_port_held_by_docker_itself_is_not_another_program(
+    tmp_path: Path, name: str
+) -> None:
+    """Docker's own listener is not another program: the page runs."""
+    done = _listen(tmp_path, "mh review", _listening(name))
+    assert "ran:review" in done.stdout
+    assert not done.stderr
+
+
+def test_bash_port_listener_of_another_user_lets_docker_say(tmp_path: Path) -> None:
+    """Ss tells no program (another user's socket): the page runs, Docker says."""
+    listening = f"LISTEN 0 5 127.0.0.1:{_PORT} 0.0.0.0:*\n"
+    done = _listen(tmp_path, "mh review", listening)
+    assert "ran:review" in done.stdout
+    assert (tmp_path / "probed").exists()
+
+
+def test_bash_port_probe_only_before_a_page(tmp_path: Path) -> None:
+    """An audit never asks ss: it costs nothing more."""
+    done = _listen(tmp_path, "mh audit", _listening("python3"))
+    assert "ran:audit" in done.stdout
+    assert not (tmp_path / "probed").exists()
+
+
+def test_powershell_names_another_program_on_the_port() -> None:
+    """mh.ps1: the listener's process named after the container check (0253)."""
+    with using(Locale.EN):
+        text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
+        busy = launcher_guards().port.busy
+    assert text.isascii()
+    shown = expanded(text)
+    body = shown[shown.index("function global:_mh_page_free") :]
+    body = body[: body.index("\n}\n")]
+    probe = (
+        f"Get-NetTCPConnection -LocalPort {_PORT} -State Listen "
+        "-ErrorAction SilentlyContinue"
+    )
+    assert body.index("docker ps --filter") < body.index(probe)
+    assert "Get-Process -Id $process -ErrorAction SilentlyContinue" in body
+    assert "'com.docker.backend', 'com.docker.proxy', 'wslrelay'" in body
+    assert f'Write-Host "{busy}"; return $false' in body
+    assert "${name}" in busy
+    assert "${process}" in busy
+    assert "Add-Type" not in body
 
 
 @pytest.mark.parametrize("locale", list(Locale))

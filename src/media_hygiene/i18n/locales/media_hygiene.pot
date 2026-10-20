@@ -830,6 +830,10 @@ msgid "Broken files in protected folders"
 msgstr ""
 
 #, python-brace-format
+msgid "Brought up to date, read back from {path}: it starts this mh."
+msgstr ""
+
+#, python-brace-format
 msgid "Burst review: {count} series still to see."
 msgid_plural "Burst review: {count} series still to see."
 msgstr[0] ""
@@ -3297,6 +3301,10 @@ msgid ""
 " of {moved} moves verified."
 msgstr ""
 
+#, python-brace-format
+msgid "Nothing moves? Look at {window} (Alt+Tab)."
+msgstr ""
+
 msgid "Nothing new on the phone: nothing to copy."
 msgstr ""
 
@@ -3685,6 +3693,12 @@ msgstr ""
 msgid "Position taken out of config.toml."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"PowerShell refused to load mh.ps1. Type this line once, then start Media "
+"Hygiene again: {line}"
+msgstr ""
+
 msgid ""
 "Precedence, from the strongest: command-line options > MEDIA_HYGIENE_* "
 "environment variables (e.g. MEDIA_HYGIENE_GENERAL__LOCALE=fr) > this file"
@@ -3718,6 +3732,12 @@ msgid "Proposed:"
 msgstr ""
 
 msgid "Proving identity (full SHA-256)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
+"for good."
 msgstr ""
 
 msgid "Put back the files of the last run"
@@ -4136,9 +4156,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
-msgstr ""
-
-msgid "Running in the window where mh runs: this page comes back when it ends."
 msgstr ""
 
 #, python-brace-format
@@ -5032,6 +5049,13 @@ msgid ""
 "where it runs, or type docker stop {id}, then type the command again."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The port of the mh pages is used by another program, {name} (process "
+"{process}): close it, then type the command again. mh always uses this "
+"port."
+msgstr ""
+
 msgid ""
 "The positions you give whole folders on the map of 'places' (Save this "
 "position), written by the map: 'xmp' gives them to the photos of those "
@@ -5361,6 +5385,10 @@ msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
 msgid "This mh does not run the steps of the page: type the command."
+msgstr ""
+
+#, python-brace-format
+msgid "This page also analyses: {folder}"
 msgstr ""
 
 msgid "This page is closed. The home page comes back here when mh opens it."
@@ -6974,6 +7002,9 @@ msgstr ""
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
+msgid "the PowerShell window of mh (in the taskbar)"
+msgstr ""
+
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
@@ -7117,6 +7148,9 @@ msgid "the sidecar is gone already"
 msgstr ""
 
 msgid "the target exists"
+msgstr ""
+
+msgid "the terminal where mh runs"
 msgstr ""
 
 msgid ""
@@ -7332,6 +7366,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{command} is for Windows only."
+msgstr ""
+
+#, python-brace-format
+msgid "{command} runs in {window}: this page comes back by itself when it ends."
 msgstr ""
 
 #, python-brace-format
@@ -8075,12 +8113,37 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
+"/mnt/{letter}, then the command again, or copy the folder to a fixed "
+"disk."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
+"before ejecting it."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
 " eject it, quit Docker Desktop first."
 msgstr ""
 
 #, python-brace-format
 msgid "{drive}: is a removable drive: shared with Docker Desktop."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: is not mounted in WSL: mounted for this command (sudo may ask "
+"for your password)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{drive}: stays mounted in WSL: another mh window uses it. Once it has "
+"ended, type sudo umount /mnt/{letter} before ejecting it."
 msgstr ""
 
 #, python-brace-format

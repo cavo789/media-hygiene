@@ -7,14 +7,18 @@ of its console in a label, with the console's start time: Windows gives the PID 
 closed console to another process, so a PID alone could make a dead page look live.
 Before a page, `mh` stops one whose console is gone, says it in one line, and
 leaves a page whose console still runs, telling the user to close it there.
-Never Docker's raw "port is already allocated".
+Never Docker's raw "port is already allocated": a program that is not a container
+listening on the port (another local server) is named with its process number (0253),
+Docker's own listeners excepted.
 
 A removable drive (0252): WSL mounts fixed drives only, so Docker Desktop shows an
 empty folder for a USB stick. `mh.ps1` mounts it in Docker Desktop's VM first
 (`wsl.exe`, measured to work on FAT32), one line said; a failure stops the command
 with the advice. After the run, a drive `mh` mounted itself is unmounted, so that
 Windows can eject the stick; left mounted while another `mh` container uses it (each
-container carries a label per removable drive it mounts).
+container carries a label per removable drive it mounts). `mh.sh` in WSL does the same
+for the user's distribution (0254): WSL mounts only the drives present when it starts,
+so a stick plugged in later is mounted with sudo (`mount -t drvfs`), then unmounted.
 """
 
 from __future__ import annotations
@@ -32,6 +36,17 @@ PAGE_LABEL: Final = "media-hygiene.page"
 DRIVE_LABEL: Final = "media-hygiene.drive"
 # The WSL distribution of Docker Desktop's VM, where a removable drive is mounted.
 DESKTOP_DISTRO: Final = "docker-desktop"
+# Docker's own programs listening for a published port (Docker Desktop on Windows, the
+# engine on Linux): never "another program" holding the port of the pages (0253).
+DOCKER_LISTENERS: Final = (
+    "com.docker.backend",
+    "com.docker.proxy",
+    "wslrelay",
+    "vpnkit",
+    "docker-proxy",
+    "rootlesskit",
+    "dockerd",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,6 +63,24 @@ class GuardTexts:
 
 
 @dataclass(frozen=True, slots=True)
+class PortGuard:
+    """Another program on the port of the pages (0253): the line, Docker's names."""
+
+    busy: str  # holds `${name}` and `${process}`
+    listeners: tuple[str, ...] = DOCKER_LISTENERS
+
+
+@dataclass(frozen=True, slots=True)
+class WslTexts:
+    """mh.sh in WSL: a drive mounted for the command; each holds `${drive}`."""
+
+    mount: str  # mounting it with sudo
+    failed: str  # mounting it failed; holds `${letter}` too
+    kept: str  # left mounted, another mh container uses it; holds `${letter}` too
+    stuck: str  # unmounting it failed; holds `${letter}` too
+
+
+@dataclass(frozen=True, slots=True)
 class LauncherGuards:
     """The labels of the containers, the VM's distribution and the lines said."""
 
@@ -55,6 +88,8 @@ class LauncherGuards:
     drive: str
     distro: str
     texts: GuardTexts
+    port: PortGuard
+    wsl: WslTexts
 
 
 def launcher_guards() -> LauncherGuards:
@@ -117,4 +152,47 @@ def launcher_guards() -> LauncherGuards:
                 "${drive}",
             ),
         ),
+        port=PortGuard(
+            busy=with_variable(
+                _(
+                    "The port of the mh pages is used by another program, {name} "
+                    "(process {process}): close it, then type the command again. "
+                    "mh always uses this port."
+                ),
+                "{name}",
+                "${name}",
+            ).replace("{process}", "${process}"),
+        ),
+        wsl=_wsl_texts(),
     )
+
+
+def _wsl_texts() -> WslTexts:
+    """Translate the lines of mh.sh mounting a drive in WSL (0254).
+
+    Returns:
+        The lines, `${drive}` (`E`) and `${letter}` (`e`) in place.
+    """
+    texts = (
+        _(
+            "{drive}: is not mounted in WSL: mounted for this command "
+            "(sudo may ask for your password)."
+        ),
+        _(
+            "{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
+            "/mnt/{letter}, then the command again, or copy the folder to a fixed disk."
+        ),
+        _(
+            "{drive}: stays mounted in WSL: another mh window uses it. Once it has "
+            "ended, type sudo umount /mnt/{letter} before ejecting it."
+        ),
+        _(
+            "{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
+            "before ejecting it."
+        ),
+    )
+    mount, failed, kept, stuck = (
+        with_variable(text, "{drive}", "${drive}").replace("{letter}", "${letter}")
+        for text in texts
+    )
+    return WslTexts(mount=mount, failed=failed, kept=kept, stuck=stuck)

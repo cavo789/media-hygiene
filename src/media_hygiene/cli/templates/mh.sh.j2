@@ -3,23 +3,19 @@
 # {{ line }}
 {% endfor %}
 {{ function }}() {
+    # The drives mounted in WSL for this command are unmounted after it, whatever the way out (0254).
+    local mounted=() marks=() status=0
+    _{{ function }}_command "$@" || status=$?
+    _{{ function }}_release
+    return "$status"
+}
+
+# One command of `{{ function }}`: the host's own, or the container's.
+_{{ function }}_command() {
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
     local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
     local backups=()
-    # --photos /mnt/e/Folder: one more photo folder, for this command only.
-    while [[ $# -gt 0 ]]; do
-        if [[ "$1" != --photos || $# -lt 2 ]]; then rest+=("$1"); shift; continue; fi
-        folder="$2"
-        shift 2
-        if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
-        folder="$(cd "$folder" && pwd -P)"
-        typed+=(--photos "$folder")
-        if [[ "$folder" =~ ^/mnt/([a-z])(/.*)?$ ]]; then
-            given+=("$folder:/data/${BASH_REMATCH[1]}${BASH_REMATCH[2]}")
-        else
-            given+=("$folder:/data$folder")
-        fi
-    done
+    _{{ function }}_given "$@" || return  # --photos /mnt/e/Folder, for this command only
     set -- "${rest[@]}"
     if [[ $# -eq 0 ]]; then
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
@@ -40,6 +36,7 @@
     esac
 {% if checked %}
     for folder in {% for folder in checked %}"{{ folder }}"{{ " " if not loop.last }}{% endfor %}; do
+        _{{ function }}_drive "$folder" || return 1
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
     done
 {% endif %}
@@ -113,7 +110,7 @@
 {% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
-        "${page[@]}" \
+        "${page[@]}" "${marks[@]}" \
         {{ image }} "$@" "${backups[@]}" || status=$?
     if [[ -n "$browser" ]]; then kill "$browser" 2>/dev/null; fi
     if [[ -n "$long" ]]; then
@@ -133,6 +130,8 @@
 {% include 'mh_host.sh.j2' %}
 
 {% include 'mh_guards.sh.j2' %}
+
+{% include 'mh_drives.sh.j2' %}
 {% for name in host.windows %}
 
 # `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1

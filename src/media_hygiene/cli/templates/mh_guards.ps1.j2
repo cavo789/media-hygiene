@@ -25,6 +25,13 @@ function global:_{{ function }}_page_free {
         $null = docker stop $id 2>$null
         Write-Host "{{ guards.texts.stopped }}"
     }
+    # No container holds it: a program listening on it (another local server) is named,
+    # never Docker's raw "port is already allocated" (0253); Docker's own listeners are not.
+    foreach ($socket in @(Get-NetTCPConnection -LocalPort {{ script.commands.port }} -State Listen -ErrorAction SilentlyContinue)) {
+        $process = $socket.OwningProcess
+        $name = "$((Get-Process -Id $process -ErrorAction SilentlyContinue).ProcessName)"
+        if ($name -and $name -notin @({% for name in guards.port.listeners %}'{{ name }}'{{ ", " if not loop.last }}{% endfor %})) { Write-Host "{{ guards.port.busy }}"; return $false }
+    }
     return $true
 }
 

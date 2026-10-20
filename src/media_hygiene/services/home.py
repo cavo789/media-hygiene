@@ -26,6 +26,7 @@ from media_hygiene.review.ending import (
 from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.services.home_audit import HomeAudit
+from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.reviewing import address_tip, page_url
 
@@ -57,8 +58,20 @@ def home_page(*, relays_steps: bool = False) -> bytes:
         step_path=STEP_PATH,
         audit_path=AUDIT_PATH,
         relays_steps=relays_steps,
+        window=_mh_window(),
         thousands=separators()[0],
     ).encode()
+
+
+def _mh_window() -> str:
+    """Name the window where `mh` runs the step chosen, often behind the browser (0258).
+
+    Returns:
+        PowerShell's window from `mh.ps1` (or without `mh`), else the terminal.
+    """
+    if windows_menu():
+        return _("the PowerShell window of mh (in the taskbar)")
+    return _("the terminal where mh runs")
 
 
 def launcher_relays_steps() -> bool:

@@ -60,3 +60,44 @@ The maintainer (2026-10-19): the antivirus must not react; an exception is not a
 
 The shortcut and the right-click usable on a PC with Avast (measured: blocked twice the same
 evening) without any exception.
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `_mh_start` (`mh_windows.ps1.j2`): `powershell.exe -NoExit -Command "try { . '<mh.ps1>' }
+  catch { function global:mh { Write-Host '<line>' } }; mh …"`: no `-ExecutionPolicy`; a
+  refused load defines a stand-in `mh` that says *PowerShell refused to load mh.ps1. Type this
+  line once, then start Media Hygiene again: Set-ExecutionPolicy -Scope CurrentUser
+  RemoteSigned* (translated; ASCII in `mh.ps1`; no `'` nor `"` that would break the command
+  line). The words stay last, so Explorer's `#" "%V` still works.
+- Older starts refreshed: `_mh_refresh` runs when `mh.ps1` is loaded (so after `mh update`,
+  `mh folders add/remove`, which dot-source the new file, and after the `launcher` line): each
+  existing `Media Hygiene.lnk` (Desktop, Start menu) and each right-click key whose command
+  names this very `mh.ps1` with another command is rewritten, read back, said in one line
+  (*Brought up to date, read back from …: it starts this mh.*), or *Could not write* + reason +
+  the antivirus-lock hint. Nothing is created; an entry naming another `mh.ps1` (the measure
+  harness's) is left alone. Texts in `services/launcher_launch.py` (`LaunchTexts`).
+- Test `tests/unit/test_launcher_launch.py`: no `Bypass`, ` -ExecutionPolicy`,
+  `-EncodedCommand`, `Invoke-Expression`, `iex`, `WindowStyle Hidden`, `conhost` in any rendered
+  `mh.ps1`/`mh.sh` (EN, FR; comments included); the refused-policy line (EN, FR); the refresh's
+  conditions and read-back; ASCII.
+- Docs EN/FR: `commands/launcher.md` (what the icon and the right-click start, the refresh),
+  `reference-troubleshooting.md` (new entry *An antivirus stopped mh started by the shortcut or
+  the right-click*: `mh update`, never an exception; the *Access denied* entry no longer advises
+  an exception).
+- `mh-measure.ps1` step 10: logs whether the shortcut and registry commands hold `Bypass`; asks
+  about Avast / Windows Defender after the double-click and after the right-click; new 10e: the
+  same right-click with `mh.ps1` under `%USERPROFILE%\media-hygiene\mh-measure-10e` against
+  `-Work` (the path's weight), folder removed after.
+
+### Not done
+- `Add-Type` stays once, in the keep-awake of long commands (0179): the maintainer put it back
+  on 2026-10-16 after a user-like run with it raised no alert (removing it on a guess was undone
+  once). The test pins it to that one line. To decide: keep it, or drop the keep-awake if step
+  10 still alerts with the new start.
+- The Windows check (acceptance): after a reboot (Avast's path lock lifted), right-click →
+  page → *Run* `mh audit` runs in the window, no Avast alert; then 0250's check.
+  **Reason:** needs the maintainer's Windows + Avast. In a normal Windows PowerShell 5.1:
+  `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/8fefa13ff2096fc44972ecfca7734aae3acb60bc/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
+  `Unblock-File .\mh-measure.ps1`, then
+  `.\mh-measure.ps1 -Only 10 -Count 20 -Work C:\temp\mh-measure10c`.

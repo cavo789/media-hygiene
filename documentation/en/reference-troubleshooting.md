@@ -102,9 +102,22 @@ night. Run the command again: what was already read is in the cache.
 ## `mh.ps1` cannot be written: "Access to the path … is denied"
 
 Your antivirus blocks that file: after it has flagged something in a folder, some (Avast) refuse
-any new file at the same path, without a new alert. Look in its quarantine and its history for
-`mh.ps1`; restore it, or add an exception for `$HOME\media-hygiene\mh.ps1`, then run the
-`launcher` line of [step 0](clean/quick-guide.md) again.
+any new file at the same path, without a new alert, until Windows restarts. Look in its
+quarantine and its history for `mh.ps1` and restore it, or restart Windows, then run the
+`launcher` line of [step 0](clean/quick-guide.md) again. No exception is needed: see
+[below](#an-antivirus-stopped-mh-started-by-the-shortcut-or-the-right-click) for what an
+older `mh` started.
+
+## An antivirus stopped `mh` started by the shortcut or the right-click
+
+The page opens, then *Run* does nothing, or the antivirus says it blocked `mh.ps1` (Avast:
+*IDP.HELU.PSD11*). The *Media Hygiene* shortcut and right-click entry of an older `mh` started
+PowerShell with `-ExecutionPolicy Bypass`, a start some antiviruses stop. Type `mh update` (or
+run the `launcher` line of [step 0](clean/quick-guide.md) again and load `mh.ps1`): `mh` writes
+the shortcut and the entry it finds again, without that option, and says so in one line each.
+Do not add an antivirus exception: nothing in `mh` needs one. If a line says *Could not write*
+with *Access refused*, restart Windows (the antivirus locks a path it has flagged until then),
+then type `mh shortcut` or `mh explorer` again.
 
 ## "Cannot ask for confirmation without an interactive terminal"
 
@@ -176,8 +189,14 @@ setting is required.`
   in another window is left alone: close it there with Ctrl+C. `mh` knows a window by its
   process number and the time it started, so a number Windows has given to another program
   since does not keep a dead page alive.
-- *port is already allocated*: another program uses 8088. Choose another number, the same three
-  times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
+- Another program uses 8088 (another local server, a preview of your editor): `mh` names it
+  before the page, with its process number (*The port of the mh pages is used by another
+  program, python (process 4242): close it, then type the command again.*), and runs nothing.
+  Close that program: `mh` always uses 8088. On Windows it asks Windows which program listens;
+  in WSL or Linux, `ss` tells it for your own programs only, and Docker says *address already in
+  use* for the others.
+- *port is already allocated* with `docker run` typed by hand: choose another number, the same
+  three times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.
 - *"The review is not running any more"*: the review window was closed or stopped with Ctrl+C.
   Start it again; your choices are kept.
@@ -219,6 +238,12 @@ so the tool stops before it compares anything.
   (*D: stays shared with Docker Desktop: another mh window uses it.*) until Docker Desktop
   stops; to eject it once that window's command has ended, type
   `wsl -d docker-desktop umount /mnt/host/d` first.
+- With `mh` in WSL (`mh.sh`): WSL mounts the drives present when it starts, never a stick
+  plugged in later, so `/mnt/d` is missing. Before each command, `mh` mounts it with `sudo`
+  (*D: is not mounted in WSL: mounted for this command (sudo may ask for your password).*), and
+  unmounts it after, so Windows can eject the stick. If mounting fails, it stops and says the
+  line to type yourself: `sudo mount -t drvfs D: /mnt/d`. With the Windows interop of WSL turned
+  off (`/etc/wsl.conf`), `mh` cannot ask Windows which drives it has: mount the stick yourself.
 - With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
 
   ```powershell

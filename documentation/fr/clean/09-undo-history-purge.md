@@ -122,7 +122,9 @@ contenu.
 - Sans nom, `purge` vide la quarantaine de tous les nettoyages ; `purge <exécution>` seulement
   celle-là.
 - Il demande d'abord, comme `clean` ; `--yes` saute la question.
-- Après une purge, `undo` ne peut plus ramener ces fichiers.
+- Après une purge, `undo` ne peut plus ramener ces fichiers. La date de la purge est écrite à
+  côté du journal de l'exécution (`<exécution>.purged.json`, le journal lui-même n'est jamais
+  réécrit) : `mh phone --free` la donne sur la vignette d'une photo mise de côté par celle-ci.
 
 ## Où en suis-je ? `status`
 

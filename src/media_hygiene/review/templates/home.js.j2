@@ -9,6 +9,7 @@
   const thousands = {{ thousands | tojson }};
   const count = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
   const POLL_MS = 1000;
+  const HINT_MS = 30000;
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const element = (tag, text, css) => {
@@ -26,6 +27,8 @@
   // the same port. The page reloads once the server was seen gone, then answering again.
   const waitForComeBack = () => {
     let seenGone = false;
+    // Still here after a while: the step may wait for an answer in mh's window, behind this one.
+    window.setTimeout(() => { byId("runningHint").hidden = false; }, HINT_MS);
     const poll = () => {
       fetch(statePath, { cache: "no-store" })
         .then((response) => {
@@ -81,6 +84,7 @@
           return;
         }
         byId("runningCommand").textContent = fill(T.runningCommand, { command: reply.body.command });
+        byId("runningWhere").textContent = fill(T.runningWhere, { command: reply.body.command });
         byId("running").hidden = false;
         waitForComeBack();
       })
@@ -108,7 +112,8 @@
 
   const drawWhere = (state) => {
     const lines = byId("lines");
-    lines.replaceChildren(...state.lines.map((line) => element("li", line)));
+    // The folders a right-click (mh --photos) added: first, so that they are seen (0258).
+    lines.replaceChildren(...state.given.map((line) => element("li", line, "given")), ...state.lines.map((line) => element("li", line)));
     byId("undo").hidden = !state.undo;
     byId("undo").textContent = state.undo || "";
   };

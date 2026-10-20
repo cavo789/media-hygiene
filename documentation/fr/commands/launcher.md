@@ -130,7 +130,20 @@ disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
 `mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows.
 
-**`mh --photos "E:\Dossier"` seul** ouvre la page d'accueil sur ce dossier : il dit lequel, et l'étape
+**Ce que lancent l'icône et le clic droit** : Windows PowerShell, `-NoExit -Command`, qui charge
+`mh.ps1` selon votre propre stratégie d'exécution (la ligne `Set-ExecutionPolicy -Scope
+CurrentUser RemoteSigned` de l'étape 1), puis `mh`. Rien ne contourne cette stratégie : un
+antivirus n'a donc aucune raison de l'arrêter, et vous n'avez jamais à ajouter d'exception. Si
+PowerShell refuse quand même le fichier, la fenêtre dit cette ligne à taper. Un raccourci ou une
+entrée de clic droit faits par un `mh` plus ancien lançaient PowerShell avec
+`-ExecutionPolicy Bypass`, qu'un antivirus peut arrêter
+([dépannage](../reference-troubleshooting.md#un-antivirus-a-arrêté-mh-lancé-par-le-raccourci-ou-le-clic-droit)) :
+au prochain chargement de `mh.ps1` (après `mh update`, `mh folders add` ou la ligne `launcher`),
+chacun de ceux qui lancent ce même `mh.ps1` est réécrit, relu et dit en une ligne :
+*Mis à jour, relu depuis … : il lance ce mh.*
+
+**`mh --photos "E:\Dossier"` seul** ouvre la page d'accueil sur ce dossier : *Où vous en êtes* le nomme (*Cette page analyse
+aussi : E:\Dossier*), et l'étape
 choisie l'analyse aussi, comme le ferait `mh --photos "E:\Dossier" audit`. C'est ce que lance le
 clic droit de `mh explorer`.
 
@@ -238,9 +251,11 @@ groupes :
 
 - **📚 Déjà dans votre photothèque** et **📥 Copiés par `mh phone`** (maintenant ou avant) : cochés
   pour vous ;
-- **⚠️ Mis de côté avant, exprès** : jamais cochés pour vous. Chaque vignette le dit : *Mis de côté
-  le <date>, encore récupérable avec `mh undo <run>` jusqu'à `mh purge`*, ou, une fois purgé, *il
-  n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon*.
+- **⚠️ Mis de côté avant, exprès** : jamais cochés pour vous. Tant que sa quarantaine est là, la
+  vignette montre la photo elle-même (sa copie en quarantaine, seulement lue) et dit *Mis de côté
+  le <date>, encore récupérable avec `mh undo <run>` jusqu'à `mh purge`* ; une fois purgé, *Purgé
+  le <date> : il n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon* (une
+  purge plus ancienne que cette version ne donne pas de date : *purgé depuis*).
 
 Chaque coche est enregistrée aussitôt dans `phone-decisions.json` (dans votre dossier des
 rapports), relue depuis le disque et affichée. **Rien ne quitte le téléphone avant que vous
@@ -301,7 +316,8 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
 - **Avec `-it`**, Docker envoie aussi les messages dans le fichier : `launcher` n'écrit pas de
   lanceur, et le chargement du fichier s'arrête sur la bonne commande (sans `-it`).
 - PowerShell refuse de charger le fichier (*l'exécution de scripts est désactivée*) ? Une fois :
-  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+  `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`. La fenêtre qu'ouvrent le raccourci
+  ou le clic droit dit aussi cette ligne.
 - **Les dossiers accentués** (`C:\Photos\Vidéos`) ne craignent rien : `mh.ps1` ne contient que
   des caractères ASCII, que `>` ne peut pas abîmer, quelle que soit la page de codes de la
   console. Un `é` de dossier y est écrit `$([char]0x00E9)`, que PowerShell retransforme en `é` ;

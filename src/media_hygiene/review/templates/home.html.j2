@@ -13,6 +13,7 @@
   "copyIt": _("Copy it (Ctrl+C): {command}"),
   "typeIt": _("(type it yourself)"),
   "runningCommand": _("Step chosen: {command}"),
+  "runningWhere": _("{command} runs in {window}: this page comes back by itself when it ends.").replace("{window}", window),
   "failed": _("Not sent (error {status})."),
   "offline": _("The home page is not running any more: start it again (mh)."),
   "noReport": _("No report yet: the audit writes one."),
@@ -54,6 +55,7 @@
   #auditSteps li.finished { color: var(--muted); }
   #auditCurrent { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   #where ul { margin: 0; padding-left: 20px; }
+  #where li.given { font-weight: 600; }
   #next { border: 2px solid var(--accent); }
   #next p { margin: 0 0 10px; font-weight: 600; }
   button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line);
@@ -129,7 +131,8 @@
   <button id="copyClose" type="button">{{ _("Close") }}</button>
 </div>
 <div id="running" hidden role="alertdialog" aria-live="assertive">
-  <div><p id="runningCommand"></p><p>{{ _("Running in the window where mh runs: this page comes back when it ends.") }}</p>
+  <div><p id="runningCommand"></p><p id="runningWhere"></p>
+  <p id="runningHint" hidden>{{ _("Nothing moves? Look at {window} (Alt+Tab).").replace("{window}", window) }}</p>
   <p class="muted">{{ _("Not opened by mh? Type the command yourself; this page is closed.") }}</p></div>
 </div>
 <script>

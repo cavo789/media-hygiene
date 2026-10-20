@@ -24,8 +24,9 @@ from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH, PhoneApp
 from media_hygiene.review.phone_file import PHONE_DECISIONS
 from media_hygiene.review.phone_session import PhonePages, PhoneSession
-from media_hygiene.review.phone_views import TileSource
+from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import decisions_place
+from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
 
@@ -71,7 +72,8 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
     ensure_writable(runtime, MountKind.REPORTS)
     target = runtime.locations.reports_dir / PHONE_DECISIONS
     place = decisions_place(runtime.mapper, runtime.locations.reports_dir, target)
-    tiles = TileSource(runtime.mapper, review.destination)
+    quarantines = mounted_quarantines(runtime).folders
+    tiles = TileSource(runtime.mapper, review.destination, quarantines)
     session = PhoneSession(
         PhonePages(review.phone, review.files, tiles, (target, place))
     )

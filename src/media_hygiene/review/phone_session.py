@@ -19,12 +19,8 @@ from media_hygiene.review.phone_file import (
     read_ticked_back,
     write_phone_decisions,
 )
-from media_hygiene.review.phone_views import (
-    PhoneReviewState,
-    TileSource,
-    phone_groups,
-    preview_key,
-)
+from media_hygiene.review.phone_tiles import TileSource, preview_key
+from media_hygiene.review.phone_views import PhoneReviewState, phone_groups
 from media_hygiene.services.phone_plan import PhoneCase, Verdict
 
 if TYPE_CHECKING:

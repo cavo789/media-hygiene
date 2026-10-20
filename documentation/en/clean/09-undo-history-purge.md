@@ -115,7 +115,9 @@ It is, with 'clean --delete', the only way the tool removes content.
 
 - Without a name, `purge` empties the quarantine of every clean; `purge <run>` only that one.
 - It asks first, like `clean`; `--yes` skips the question.
-- After a purge, `undo` can no longer bring those files back.
+- After a purge, `undo` can no longer bring those files back. The date of the purge is written
+  next to the run's journal (`<run>.purged.json`, the journal itself is never rewritten):
+  `mh phone --free` says it on the tile of a photo set aside by that run.
 
 ## Where am I? `status`
 

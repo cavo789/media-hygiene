@@ -108,9 +108,24 @@ qui garde l'ordinateur éveillé jusqu'à la fin d'une commande longue, ou régl
 ## `mh.ps1` ne peut pas être écrit : « Access to the path … is denied »
 
 Votre antivirus bloque ce fichier : après avoir signalé quelque chose dans un dossier, certains
-(Avast) refusent tout nouveau fichier au même chemin, sans nouvelle alerte. Cherchez `mh.ps1` dans
-sa quarantaine et son historique ; restaurez-le, ou ajoutez une exception pour
-`$HOME\media-hygiene\mh.ps1`, puis relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md).
+(Avast) refusent tout nouveau fichier au même chemin, sans nouvelle alerte, jusqu'au redémarrage
+de Windows. Cherchez `mh.ps1` dans sa quarantaine et son historique et restaurez-le, ou
+redémarrez Windows, puis relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md).
+Aucune exception n'est nécessaire : voyez
+[plus bas](#un-antivirus-a-arrêté-mh-lancé-par-le-raccourci-ou-le-clic-droit) ce que lançait
+un `mh` plus ancien.
+
+## Un antivirus a arrêté `mh` lancé par le raccourci ou le clic droit
+
+La page s'ouvre, puis *Lancer* ne fait rien, ou l'antivirus dit avoir bloqué `mh.ps1` (Avast :
+*IDP.HELU.PSD11*). Le raccourci et l'entrée de clic droit *Media Hygiene* d'un `mh` plus ancien
+lançaient PowerShell avec `-ExecutionPolicy Bypass`, un lancement que certains antivirus
+arrêtent. Tapez `mh update` (ou relancez la ligne `launcher` de [l'étape 0](clean/quick-guide.md)
+et chargez `mh.ps1`) : `mh` réécrit le raccourci et l'entrée qu'il trouve, sans cette option,
+et le dit en une ligne chacun. N'ajoutez pas d'exception à l'antivirus : rien dans `mh` n'en a
+besoin. Si une ligne dit *Impossible d'écrire* avec *Accès refusé*, redémarrez Windows
+(l'antivirus bloque jusque-là un chemin qu'il a signalé), puis tapez de nouveau `mh shortcut`
+ou `mh explorer`.
 
 ## « Impossible de demander confirmation sans terminal interactif »
 
@@ -184,8 +199,14 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
   arrêtée.*) ; une page encore ouverte dans une autre fenêtre est laissée : fermez-la là-bas avec
   Ctrl+C. `mh` reconnaît une fenêtre à son numéro de processus et à l'heure où elle a démarré :
   un numéro que Windows a donné depuis à un autre programme ne garde pas en vie une page morte.
-- *port is already allocated* : un autre programme utilise 8088. Choisissez un autre numéro, le
-  même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
+- Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh` le
+  nomme avant la page, avec son numéro de processus (*Le port des pages de mh est pris par un
+  autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*), et ne lance
+  rien. Fermez ce programme : `mh` utilise toujours 8088. Sous Windows, il demande à Windows quel
+  programme écoute ; dans WSL ou sous Linux, `ss` le dit pour vos propres programmes seulement,
+  et Docker dit *address already in use* pour les autres.
+- *port is already allocated* avec un `docker run` tapé à la main : choisissez un autre numéro,
+  le même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.
 - *« Le tri ne tourne plus »* : la fenêtre du tri a été fermée ou arrêtée avec Ctrl+C.
   Relancez-le ; vos choix sont conservés.
@@ -229,6 +250,13 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
   Desktop : une autre fenêtre de mh l'utilise.*) jusqu'à l'arrêt de Docker Desktop ; pour
   l'éjecter quand la commande de cette fenêtre est finie, tapez d'abord
   `wsl -d docker-desktop umount /mnt/host/d`.
+- Avec `mh` dans WSL (`mh.sh`) : WSL monte les disques présents à son démarrage, jamais une clé
+  branchée après, donc `/mnt/d` manque. Avant chaque commande, `mh` la monte avec `sudo` (*D:
+  n'est pas monté dans WSL : monté pour cette commande (sudo peut demander votre mot de passe).*),
+  et la démonte après : Windows peut éjecter la clé. Si le montage échoue, il s'arrête et donne la ligne
+  à taper vous-même : `sudo mount -t drvfs D: /mnt/d`. Si l'interopérabilité Windows de WSL est
+  coupée (`/etc/wsl.conf`), `mh` ne peut pas demander à Windows ses disques : montez la clé
+  vous-même.
 - Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
   commande :
 

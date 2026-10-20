@@ -6,7 +6,7 @@ is computed once by `phone_proof`, then compared here.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 from typing import TYPE_CHECKING, Final
 
@@ -14,6 +14,7 @@ from media_hygiene.scan.hashing import full_digest, partial_digest
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from datetime import datetime
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -40,6 +41,7 @@ class Holdings:
     remembered: RememberedSet
     quarantined: frozenset[str]  # the runs whose quarantine is still there
     destination: Path | None = None  # the import's folder, in the container
+    purged: Mapping[str, datetime] = field(default_factory=dict)  # by run (0256)
 
 
 def in_library(rows: tuple[LibraryRow, ...], size: int, digest: str) -> Path | None:

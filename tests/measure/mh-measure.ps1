@@ -25,7 +25,11 @@
 #  10. mh open, mh shortcut, mh explorer (right-click a folder, then the empty space of an
 #      open folder), each read back   (0175, 0180, 0181, 0188): asks what you saw; your own
 #      Media Hygiene shortcut or entries are put back after; a page window closed with its X,
-#      the next page stopping what it left running                              (0250)
+#      the next page stopping what it left running                              (0250);
+#      the start without -ExecutionPolicy Bypass, any antivirus alert, the same right-click
+#      with mh.ps1 under %USERPROFILE%\media-hygiene (the real place) against -Work  (0257);
+#      the page names the folder clicked, Run says which window runs the step     (0258);
+#      another program listening on 8088: mh review names it, the probe timed     (0253)
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
@@ -35,7 +39,9 @@
 #      lines, mh clean leaving it whole, Docker refusing a write in it          (0205);
 #      its drive's type and its mount in a container before and after mh: a USB stick shared
 #      by mh with Docker Desktop's VM, unshared after each command; on a stick, asks whether
-#      Windows then lets you eject it safely                                    (0252)
+#      Windows then lets you eject it safely                                    (0252);
+#      from WSL: the interop, /mnt/x of the stick, what a container sees before and after a
+#      mount -t drvfs in the distribution (what mh.sh does)                     (0254)
 #  12. clean of photos on another drive (-OtherDrive, else the first drive but C: with 2 GB
 #      free), quarantine on C:: the line before the question names both drives, the size and
 #      C:'s free space (checked against Windows'); quarantine on that drive: no line   (0182)
@@ -486,9 +492,14 @@ if (Wanted 10) {
     foreach ($link in $links) {
         $back = $shell.CreateShortcut($link)
         Log ("   10b. {0} exists: {1}; target {2}; arguments {3}" -f $link, (Test-Path -LiteralPath $link), $back.TargetPath, $back.Arguments)
+        Log ("   10b. {0} arguments hold Bypass (0257, expected False): {1}" -f $link, ($back.Arguments -match 'Bypass'))
     }
-    $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open on the mh menu and stay open? (y/n)"
-    Log "   10b. the icon opens the mh menu, window kept: $clicked"
+    $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open, stay open, and the home page open in your browser? (y/n)"
+    Log "   10b. the icon opens the window and the home page: $clicked"
+    $alert = Read-Host "10b. Did Avast or Windows Defender show anything since that double-click (an alert, a blocked file)? (none, or what it said)"
+    Log "   10b. antivirus after the double-click (0257): $alert"
+    $null = Read-Host "10b. Close that window with its X (top right). Then press Enter here"
+    MhLeftovers "10b"
 
     # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
     # exported first; a folder whose name has a space and an apostrophe.
@@ -503,28 +514,81 @@ if (Wanted 10) {
     foreach ($entry in $entries) {
         $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\$entry\command" -ErrorAction SilentlyContinue)
         Log ("   10c. registry command of {0} read back: {1}" -f $entry, $(if ($command) { $command.GetValue('') } else { '(none)' }))
+        Log ("   10c. {0} command holds Bypass (0257, expected False): {1}" -f $entry, ($command -and ($command.GetValue('') -match 'Bypass')))
     }
     $odd = Join-Path $Work "L'ete 2019"
     New-Item -ItemType Directory -Force -Path $odd | Out-Null
     Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
     explorer.exe $Work
-    $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: does the mh menu open, saying it also analyses that folder? (y/n)"
-    Log "   10c. right-click opens the menu on the folder: $menu"
+    $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: do a PowerShell window and the home page open? (y/n)"
+    Log "   10c. right-click opens the window and the home page: $menu"
+    $alert = Read-Host "10c. Did Avast or Windows Defender show anything since that right-click (an alert, a blocked file)? (none, or what it said)"
+    Log "   10c. antivirus after the right-click (0257): $alert"
     $where = Read-Host "10c. Where was Media Hygiene: in the first menu, or under Show more options? (first/more)"
     Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
-    $audit = Read-Host "10c. In that window, type 1 (mh audit): does it analyse L'ete 2019 too (its 3 photos counted, its folder named)? (y/n)"
-    Log "   10c. audit chosen from the right-click analyses the folder: $audit"
+    $named = Read-Host "10c. On the page, under 'Where you are', is the first line 'This page also analyses: ...\L'ete 2019', in bold? (y/n, or what it says)"
+    Log "   10c. the page names the folder clicked (0258): $named"
+    $popup = Read-Host "10c. Click Run on the line mh audit. Does the page say 'mh audit runs in the PowerShell window of mh (in the taskbar)'? Wait 30 s: does it add 'Nothing moves? Look at ...'? (y/y, y/n, n/n...)"
+    Log "   10c. Run names the window, then the 30 s hint (0258): $popup"
+    $audit = Read-Host "10c. In the PowerShell window, how many media files does the audit say it scanned? (43 with L'ete 2019's 3 photos; type the number)"
+    Log "   10c. audit run from the page, files scanned (43 expected): $audit"
+    $back = Read-Host "10c. When the audit ended, did the home page come back by itself? (y/n)"
+    Log "   10c. the page came back after the step: $back"
     $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
     # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
     $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
     Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
-    $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the mh menu open, saying it also analyses L'ete 2019? (y/n)"
+    $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the home page open, naming L'ete 2019 under 'Where you are'? (y/n)"
     Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
     $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
     Log "   10c. the next page stopped the leftover and opened (0250): $freed"
     $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
     Log "   10c. background entry found in: $where"
     MhLeftovers "10c"
+
+    # 10e (0257): the same right-click with mh.ps1 where users keep it, under
+    # %USERPROFILE%\media-hygiene (a folder of its own, removed after), against -Work above:
+    # tells whether the path weighs in an antivirus alert.
+    $home10e = Join-Path $env:USERPROFILE "media-hygiene\mh-measure-10e"
+    New-Item -ItemType Directory -Force -Path $home10e | Out-Null
+    $mhHome = Join-Path $home10e "mh.ps1"
+    Copy-Item -LiteralPath $mhFile -Destination $mhHome -Force
+    . $mhHome
+    $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
+    foreach ($line in $said) { Log ("   10e. " + $line) }
+    $menu = Read-Host "10e. Right-click L'ete 2019 again, then Media Hygiene (mh.ps1 now under $home10e): do the window and the home page open? (y/n)"
+    Log "   10e. right-click with mh.ps1 under the user's folder: $menu"
+    $alert = Read-Host "10e. Did Avast or Windows Defender show anything this time? (none, or what it said)"
+    Log "   10e. antivirus, mh.ps1 under %USERPROFILE%\media-hygiene: $alert"
+    $null = Read-Host "10e. Close that mh window with its X (top right). Then press Enter here"
+    MhLeftovers "10e"
+    . $mhFile
+    Remove-Item -LiteralPath $home10e -Recurse -Force -ErrorAction SilentlyContinue
+
+    # 10f (0253): which program Windows names for a port a container publishes (Docker
+    # Desktop's own listener, never "another program"), then another program on 8088: mh
+    # review must name it in one line, never Docker's raw error; the probe timed.
+    $page = & docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint sleep $Image 60 2>$null
+    Start-Sleep -Seconds 2
+    $names = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { "$((Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName) ($($_.OwningProcess))" })
+    Log ("   10f. listeners of a port a container publishes (Docker's own): " + $(if ($names) { $names -join ' / ' } else { '(none)' }))
+    if ($page) { $null = & docker stop $page 2>$null }
+    $listener = Start-Job -ScriptBlock {
+        $socket = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 8088)
+        $socket.Start()
+        Start-Sleep -Seconds 120
+        $socket.Stop()
+    }
+    Start-Sleep -Seconds 3
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $null = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)
+    $watch.Stop()
+    Log ("   10f. the probe (Get-NetTCPConnection) took {0:N0} ms (estimated 100-500)" -f $watch.Elapsed.TotalMilliseconds)
+    $said = @(mh review 6>&1 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+    Log ("   10f. mh review with another program on 8088 (one line naming powershell and its process, expected): exit code $LASTEXITCODE, " + ($said -join ' / '))
+    Log ("   10f. Docker's raw error shown (expected False): " + [bool]($said -match 'already allocated|address already in use'))
+    Stop-Job -Job $listener -ErrorAction SilentlyContinue
+    Remove-Job -Job $listener -Force -ErrorAction SilentlyContinue
 
     # 10d: --remove, then what you had put back.
     $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
@@ -672,6 +736,27 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     $null = @(mh undo --yes 2>&1)
     Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
     if ("$kind" -eq 'Removable') {
+        # 11k (0254): from your WSL distribution (Docker Desktop's integration on): is the
+        # interop on, is the stick in /mnt, and which mount does a container started from
+        # WSL see: the distribution's /mnt/x once mounted there (as mh.sh does), or not.
+        $low = $letter.ToLower()
+        $wslPath = "/mnt/$low/" + ($backupDir.Substring(3) -replace '\\', '/')
+        $distro = "$(& wsl.exe -e printenv WSL_DISTRO_NAME 2>$null)".Trim()
+        $interop = "$(& wsl.exe -e sh -c 'command -v cmd.exe' 2>$null)".Trim()
+        Log "   11k. WSL distribution: $distro; cmd.exe reachable (interop on): $(if ($interop) { $interop } else { 'no' })"
+        $null = & wsl.exe -e mountpoint -q "/mnt/$low" 2>$null
+        Log "   11k. /mnt/$low a mount in $distro before (0 = mounted; expected 1 for a stick plugged in after WSL started): $LASTEXITCODE"
+        $seen = @(& wsl.exe -e docker run --rm -v "${wslPath}:/x:ro" --entrypoint ls $Image /x 2>&1)
+        Log ("   11k. files a container from WSL sees, nothing mounted (planted: $planted): exit code $LASTEXITCODE, " + @($seen).Count + " lines: " + (($seen | Select-Object -First 3) -join ' / '))
+        $null = & wsl.exe -u root -e mkdir -p "/mnt/$low" 2>$null
+        $said = @(& wsl.exe -u root -e mount -t drvfs "${letter}:" "/mnt/$low" -o uid=1000,gid=1000 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. mount -t drvfs ${letter}: /mnt/$low in $distro (as mh.sh does with sudo): exit code $LASTEXITCODE " + ($said -join ' / '))
+        $seen = @(& wsl.exe -e docker run --rm -v "${wslPath}:/x:ro" --entrypoint ls $Image /x 2>&1)
+        Log ("   11k. files a container from WSL sees, mounted in $distro (planted: $planted expected): exit code $LASTEXITCODE, " + @($seen).Count + " lines")
+        $vm = @(& wsl.exe -d docker-desktop sh -c "grep ' /mnt/host/$low ' /proc/mounts || echo none" 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. drive ${letter}: in Docker Desktop's VM meanwhile (none: the distribution's mount is what counts): " + ($vm -join ' / '))
+        $said = @(& wsl.exe -u root -e umount "/mnt/$low" 2>&1 | ForEach-Object { "$_" })
+        Log ("   11k. umount /mnt/$low in ${distro}: exit code $LASTEXITCODE " + ($said -join ' / '))
         # 0252: after each command mh unshares the stick, so Windows can eject it.
         $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
         Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"

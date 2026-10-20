@@ -39,3 +39,29 @@ Seen by the maintainer on 2026-10-19 (mh-measure step 10c, with the home page of
 
 A right-click that visibly applies to the folder clicked, and a *Run* that says where it runs —
 two questions the maintainer could not answer from the page (measured: step 10, 2026-10-19).
+
+## Status — PARTIAL (2026-10-19)
+
+### Done
+- `mh.ps1` gives a relayed page (`home`, `browse`) the host folders of `--photos` in
+  `MEDIA_HYGIENE_LAUNCHER_PHOTOS` (`|` between them; never carried into suggested commands);
+  `home_state` turns them into `HomeState.given`; the page draws them first under *Where you
+  are*, in bold: *This page also analyses: C:\…\L'ete 2019*, one line per folder.
+- The popup after *Run*: *mh audit runs in the PowerShell window of mh (in the taskbar): this
+  page comes back by itself when it ends* (*the terminal where mh runs* from `mh.sh`); after
+  30 s without the page coming back, *Nothing moves? Look at the PowerShell window of mh (in the
+  taskbar) (Alt+Tab).*
+- French translations; docs EN/FR `commands/home.md`, `commands/launcher.md` (`mh --photos`
+  alone); tests `tests/unit/test_home_given.py` (relay line, ASCII, folder lines or none, not
+  carried, popup wording per shell, the 30 s hint, French).
+- `mh-measure.ps1` step 10c rewritten for the page: the page opens; *Where you are* names the
+  folder; *Run* on `mh audit` names the window, then the 30 s hint; the files scanned (43
+  expected); the page back after the audit; the background right-click names the folder.
+
+### Not done
+- `mh.sh` does not relay the folders (the right-click is Windows only; `mh --photos X` alone in
+  bash opens the page without the line). File a TODO if wanted.
+- The maintainer's step 10 reading without guessing.
+  **Reason:** needs Windows; same command as 0257, fetched at 8fefa13ff2096fc44972ecfca7734aae3acb60bc (`-Only 10`, after a reboot).
+- Captures of `commands/home.md` / `commands/launcher.md` are stale: `docs_screenshots` should
+  run (not run here: heavy).

@@ -78,6 +78,8 @@ class SetAside:
     at: datetime
     action: str
     state: AsideState
+    host_path: str = ""  # where it lay: its copy in the quarantine mirrors it (0256)
+    purged: datetime | None = None  # when its quarantine was purged, if recorded
 
 
 def _empty[V]() -> Mapping[NameKey, V]:
@@ -190,8 +192,9 @@ def _verdict(file: PhoneFile, known: Known) -> Verdict:
     if (held := known.library.get(key)) is not None:
         return Verdict(file, PhoneCase.LIBRARY, (held,))
     if (aside := known.set_aside.get(key)) is not None:
+        purged = aside.purged.isoformat() if aside.purged is not None else ""
         reason = (aside.run_id, aside.state.value, aside.at.isoformat(), aside.action)
-        return Verdict(file, PhoneCase.SET_ASIDE, reason)
+        return Verdict(file, PhoneCase.SET_ASIDE, (*reason, aside.host_path, purged))
     if (there := known.destination.get(key)) is not None:
         return Verdict(file, PhoneCase.DESTINATION, (there,))
     return Verdict(file, PhoneCase.NEW)
