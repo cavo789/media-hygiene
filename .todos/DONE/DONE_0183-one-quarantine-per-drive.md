@@ -88,3 +88,12 @@ Space used on `C:` by a clean of `E:`: the size of the files set aside → 0.
 - A USB drive that comes back under another letter: the journal says `/quarantine/e/…`, the
   refusal asks for `E:`. Same limit as every path in the journal; not handled.
   → refiled as 0186: look for the run in the other quarantines (maintainer, inbox 2026-10-16).
+
+## Inbox (2026-10-20)
+
+- The Windows measurement (steps 12 and 13 of mh-measure.ps1) needs a second **fixed** disk: the
+  maintainer has none (a USB stick is refused by those steps since 2026-10-20: Docker Desktop
+  cannot see it without mh's sharing). Not a maintainer item any more: the behaviour stays
+  covered by the unit and integration tests; a contributor with a second disk may run
+  `.\mh-measure.ps1 -Only "12,13" -Count 20 -OtherDrive <letter>:`.
+- Every other item done or refiled → closed DONE.
