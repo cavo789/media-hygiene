@@ -418,7 +418,11 @@ param([string]$mh, [string]$result)
 function Note([string]$text) { Add-Content -Path $result -Value $text -Encoding UTF8 }
 Note ("   9a. console code page before mh: " + [Console]::OutputEncoding.CodePage)
 . $mh
+# The menu asks for a step number since 0210: answered here with one it does not know, so it
+# lists the steps and runs none.
+function global:Read-Host { 'x' }
 $menu = @(mh menu 2>&1 | ForEach-Object { "$_" })
+Remove-Item -Path Function:\Read-Host
 $text = $menu -join "`n"
 Note ("   9a. French menu holds accented letters: " + ($text -match '[\u00E0-\u00FC]') + "; an e-acute garbled as in code page 850: " + ($text -match '\u251C\u00AE'))
 Note ("   9a. its first line: " + ($menu | Where-Object { "$_".Trim() } | Select-Object -First 1))
