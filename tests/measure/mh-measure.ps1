@@ -800,8 +800,9 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
             $shut = Read-Host "11k. Then Safely remove ${letter}: again. Did Windows let you now? (y/n, or what it said)"
             Log "   11k. ${letter}: ejected after wsl --shutdown: $shut"
             $null = Read-Host "11k. Start Docker Desktop again (Start menu), wait until it runs, plug ${letter}: back in, then press Enter"
+        } else {
+            $null = Read-Host "11k. Plug ${letter}: back in (same letter), then press Enter"
         }
-        $null = Read-Host "11k. Plug ${letter}: back in (same letter), then press Enter"
     }
     $null = @(mh folders remove $backupDir 6>&1)
     if ($OtherDrive -ne "" -and -not $Keep) { Remove-Item -Recurse -Force -LiteralPath $backupDir }

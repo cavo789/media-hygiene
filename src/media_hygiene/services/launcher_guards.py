@@ -174,7 +174,8 @@ def _wsl_texts() -> WslTexts:
     text = _(
         "{drive}: is plugged in but not mounted in WSL: type the line below, then the "
         "command again (↑ then Enter). Before ejecting the drive: sudo umount "
-        "/mnt/{letter}"
+        "/mnt/{letter}; if Windows still says it is in use, wsl --shutdown in "
+        "PowerShell (it stops Docker Desktop too)."
     )
     return WslTexts(
         unmounted=with_variable(text, "{drive}", "${drive}").replace(

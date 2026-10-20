@@ -143,3 +143,16 @@ From the command above: 4 things to copy exactly → 1 (the folder as Explorer s
 
 - `docs_screenshots` (`help-launcher.txt`, the `-e TZ` line) → refiled as 0244.
 - 15d (`mh --photos <USB key> audit`): still waiting (`mh-measure.ps1 -Only 15`, a USB key plugged in).
+
+## Measured on Windows (2026-10-20, step 15 of mh-measure.ps1 at 8a069b2, maintainer)
+
+- 15a: `launcher --photos` exit 0, `mh.ps1` written (132,170 bytes), holds `Get-TimeZone`. The
+  "NativeCommandError" lines are PowerShell 5.1 wrapping docker's stderr under the harness's `2>`
+  redirect, not mh.
+- 15b: `mh audit` exit 0.
+- 15d: `mh --photos D:\mh-measure-15 audit` on a USB stick: "D: is a removable drive: shared with
+  Docker Desktop.", exit 0.
+- 15e: a folder not plugged in: the line said, but exit code **0** (mh.sh says 2): fixed, mh.ps1
+  sets 2 (test `test_a_folder_not_found_ends_powershell_with_2`).
+- 15c (the hour in `mh history`) stays a harness gap noted on 2026-10-16: not worth a TODO.
+- Every item done → closed DONE.

@@ -73,3 +73,14 @@ command.
   "mh is unchanged: launcher refused it" and `mh.ps1` kept its folder — safe. The full path
   (pull, rewrite, both versions said) can only be measured once a release with `launcher` is
   published: rerun step 11 then.
+
+## Measured on Windows (2026-10-20, step 11e, maintainer)
+
+- The published image is now v0.4.0 (has `launcher`): `mh update` pulled it (digest
+  `sha256:0e1bef2a…`), then its `launcher` refused the `config.toml` written by the newer local
+  build: "5 settings are unknown to version 0.4.0" (`backups`, `returned`, `port`, `unwanted`,
+  `xmp_folder_gps`); `mh.ps1` unchanged — safe. The harness runs the update backwards (a local
+  build newer than the published one); a real update goes from older to newer.
+- Still to measure: the full path (pull, rewrite, both versions said) once a release newer than
+  the local build of the run is published (`release`, v0.5.0), with step 11 run from a build of
+  the commit before it.

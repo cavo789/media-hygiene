@@ -259,7 +259,10 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
   sudo mkdir -p /mnt/d && sudo mount -t drvfs D: /mnt/d -o uid=1000,gid=1000
   ```
 
-  (`mh` y écrit votre propre `uid` et `gid`.) Avant d'éjecter la clé, tapez `sudo umount /mnt/d`.
+  (`mh` y écrit votre propre `uid` et `gid`.) Avant d'éjecter la clé, tapez `sudo umount /mnt/d` ;
+  si Windows dit encore *Ce périphérique est en cours d'utilisation*, tapez `wsl --shutdown` dans
+  PowerShell (il arrête aussi Docker Desktop : relancez-le ensuite) : WSL garde la clé tant qu'il
+  tourne (mesuré).
   Si l'interopérabilité Windows de WSL est coupée (`/etc/wsl.conf`), `mh` ne peut pas demander à
   Windows ses disques : montez la clé vous-même avec la même ligne.
 - Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
