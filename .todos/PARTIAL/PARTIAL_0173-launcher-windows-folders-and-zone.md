@@ -121,6 +121,8 @@ From the command above: 4 things to copy exactly → 1 (the folder as Explorer s
 - Network folders (`\\NAS\photos`): refused by `--photos`; whether Docker Desktop can bind
   mount them, or a mapped drive letter, is to check.
   → keep the refusal: no network folders for now (maintainer, inbox 2026-10-16).
+- 15d, `mh --photos <USB key> audit`: not run on 2026-10-16 (no key plugged in).
+  **Reason:** needs a USB key: `.\mh-measure.ps1 -Only 15 -Count 20 -OtherDrive E:`.
 
 ### Measured on Windows (2026-10-16, step 15 of mh-measure.ps1, PowerShell 5.1)
 - 15a: the guide's `launcher --photos` line: exit code 0, `mh.ps1` written (33 590 bytes,

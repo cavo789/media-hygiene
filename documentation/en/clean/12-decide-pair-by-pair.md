@@ -94,6 +94,9 @@ interrupted: it holds the copy, then the link. Each one is written in the journa
 A link is **one photo under two names**:
 
 - an edit saved in place (a photo editor that writes into the file) shows under both names;
+- an editor that saves a new file instead (Paint.NET does, measured on Windows) separates the two
+  names: the edit shows only under the name you opened, the other keeps the photo as it was, and
+  that copy takes room again. Nothing is lost; the next audit sees two different photos;
 - deleting one name frees nothing while the other remains;
 - a backup tool may count the photo twice.
 

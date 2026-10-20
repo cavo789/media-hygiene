@@ -78,8 +78,17 @@ Desktop restarts. Closing the window with its X is the natural user action.
 ## Inbox (2026-10-19)
 
 - A non-Docker program on 8088 → refiled as 0253 (name the program, never the raw error; maintainer).
+  → stale: done by 0253, commit 12104de (inbox 2026-10-20).
 
 ### Measured (2026-10-19, step 10, `measures-20261019-2208`)
 - Not checked: Avast blocked the test `mh.ps1` started by the right-click (IDP.HELU.PSD11, the
   `-ExecutionPolicy Bypass` start): the first page ended at *Run* (exit 101) with nothing taking
   over, so no leftover page existed to stop. To check again after 0257 (no Bypass) and a reboot.
+
+## Measured on Windows (2026-10-20, step 10 of mh-measure.ps1 at e4644f4, maintainer)
+
+- After closing the window of the right-click page with its X, a container still held 8088
+  (`media-hygiene.page=powershell-14184-...`); the next right-click (background of the open folder)
+  said "An mh page left open by a closed window was stopped." and opened the page, no "port is
+  already allocated" (y).
+- Every item done (the non-Docker program on 8088 went to 0253) → closed DONE.

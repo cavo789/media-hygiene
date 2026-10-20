@@ -95,9 +95,18 @@ evening) without any exception.
   on 2026-10-16 after a user-like run with it raised no alert (removing it on a guess was undone
   once). The test pins it to that one line. To decide: keep it, or drop the keep-awake if step
   10 still alerts with the new start.
+  → keep; removed only if step 10 still raises an Avast alert (review of feedback 2026-10-19-3, 2026-10-20).
 - The Windows check (acceptance): after a reboot (Avast's path lock lifted), right-click →
   page → *Run* `mh audit` runs in the window, no Avast alert; then 0250's check.
   **Reason:** needs the maintainer's Windows + Avast. In a normal Windows PowerShell 5.1:
   `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/8fefa13ff2096fc44972ecfca7734aae3acb60bc/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then
   `.\mh-measure.ps1 -Only 10 -Count 20 -Work C:\temp\mh-measure10c`.
+
+## Measured on Windows (2026-10-20, step 10 of mh-measure.ps1 at e4644f4, maintainer)
+
+- Shortcuts (Desktop, Start menu) and both right-click commands read back: `Bypass` False in all four.
+- Double-click: window and home page open; right-click on `L'ete 2019`: same; again with `mh.ps1`
+  under `%USERPROFILE%\media-hygiene` (10e): same. **No Avast or Defender alert** in any of the three.
+- `Add-Type` (keep-awake) kept, as decided (review of feedback 2026-10-19-3).
+- Every item done → closed DONE.

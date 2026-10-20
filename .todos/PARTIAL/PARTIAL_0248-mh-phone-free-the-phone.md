@@ -155,8 +155,11 @@ person ticks it past a warning.
   large file, the folder listing after a move, the page served through `docker run -i -p`.
 - Thumbnails of set-aside files come from nowhere (generic tile): the quarantine copy is not
   looked up. **Reason:** the journal's remembered set keeps the original host path only.
+  → stale: done by 0256, commit 12104de (inbox 2026-10-20).
 - Case 2 checks a second independent read of the phone equal to the import copy instead of a
   Pillow/ffprobe decode. **Reason:** byte equality with the phone's own bytes already rules out
   a truncated copy; a decode would only refuse files broken on the phone itself.
+  → keep the byte equality, no decode (maintainer, inbox 2026-10-20).
 - "Purged on <date>": the purge date is not journaled; the text says "set aside on <date> and
   purged since".
+  → stale: done by 0256, commit 12104de (inbox 2026-10-20).

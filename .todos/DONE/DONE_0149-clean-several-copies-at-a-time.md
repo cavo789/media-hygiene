@@ -95,3 +95,18 @@ Still missing: K = 1 against K = 4, and `--delete` (steps 5d/5e added to the scr
 - K = 1 against K = 4: steps 5f/5g added to `tests/measure/mh-measure.ps1` (clean then undo with
   `MEDIA_HYGIENE_CLEAN__WORKERS=1`, against 5a/5b). `--delete` is step 5d. Since 0161,
   `[clean] workers` is a setting (default 4): the measurement only chooses the default.
+
+## Windows measurement (2026-10-20, step 5 of mh-measure.ps1 at c1c5cd3, maintainer)
+
+2,000 copies (1.3 GB), Windows + Docker Desktop, image `sha256:d2ebd18d…` (main), quarantine on
+another mount (measured, one run each):
+
+| Step | `[clean] workers = 4` (default) | `workers = 1` | 4 against 1 |
+|---|---|---|---|
+| `clean` (move to the quarantine) | 17 s (5a) | 56 s (5f) | 3.3× faster |
+| `undo` of that clean | 14 s (5b) | 48 s (5g) | 3.4× faster |
+| `clean --delete` / its `undo` | 8 s / 10 s (5d/5e) | — | — |
+
+`undo` went from 56 s (2026-10-14, one file at a time) to 14 s since 0161. Decision: the default
+stays 4 (item 6 settled); more than 4 not measured — `[clean] workers` is a setting, a user with a
+fast disk may raise it. Every item done → closed DONE.
