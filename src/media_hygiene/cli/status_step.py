@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.status_view import days_since
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
@@ -41,7 +40,7 @@ class NextStep:
     text: str  # translated, in lower case after the label
     command: str  # e.g. `purge 20261015-101010`
     needs: tuple[MountKind, ...] = ()
-    port: int | None = None
+    page: bool = False  # a page: published on `[review] port`
 
 
 def next_step(status: Status, purge_hint_days: int) -> NextStep | None:
@@ -64,7 +63,7 @@ def next_step(status: Status, purge_hint_days: int) -> NextStep | None:
         return NextStep(Slot.CLEAN, text, "clean", CHANGING)
     if review.bursts_to_see:
         text = _("finish the burst review where you stopped.")
-        return NextStep(Slot.REVIEW, text, "review", port=PAGE_PORT)
+        return NextStep(Slot.REVIEW, text, "review", page=True)
     if review.shots_set_aside or review.near_groups:
         tier = "--tier near " if review.near_groups else ""
         text = _("apply your review: the files you set aside go to the quarantine.")

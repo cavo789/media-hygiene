@@ -12,7 +12,6 @@ import typer
 from media_hygiene.cli import folder_options, options, scan_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.folder_options import FolderOptions
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
@@ -164,5 +163,7 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
         suggest(
             runtime,
             _("sort the burst series with the keyboard, in 'review'."),
-            NextVerb(carried(runtime, "review", ctx), port=PAGE_PORT),
+            NextVerb(
+                carried(runtime, "review", ctx), port=runtime.settings.review.port
+            ),
         )

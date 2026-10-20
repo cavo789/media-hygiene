@@ -3693,7 +3693,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Port of the page. docker run publishes it under the same number on your "
-"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
+"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: [review] port "
+"in config.toml, {default}."
 msgstr ""
 
 msgid "Position saved in config.toml."
@@ -5056,6 +5057,13 @@ msgstr ""
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr ""
 
+msgid ""
+"The port of every page (review, home, places, people, search): inside the"
+" container and on your computer under the same number. Change it only "
+"when another program holds 8088 and cannot be closed; then type mh "
+"update, which writes the new port into mh."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The port of the mh pages is held by the container {id}: close the window "
@@ -5065,8 +5073,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "The port of the mh pages is used by another program, {name} (process "
-"{process}): close it, then type the command again. mh always uses this "
-"port."
+"{process}): close it, then type the command again; or choose another "
+"port, [review] port in config.toml, then mh update."
 msgstr ""
 
 msgid ""

@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.next_steps import carried
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.console.advice import Advice, TipKind
 from media_hygiene.i18n import _
 from media_hygiene.report.actions import (
@@ -86,12 +85,13 @@ def action_list(
         )
         return built.command
 
+    page = runtime.settings.review.port
     commands = ActionCommands(
         clean=command("clean"),
         near=command("clean --tier near"),
-        review=command("review", changes=False, port=PAGE_PORT),
-        near_review=command("review --near", changes=False, port=PAGE_PORT),
-        gone_review=command("review --gone", changes=False, port=PAGE_PORT),
+        review=command("review", changes=False, port=page),
+        near_review=command("review --near", changes=False, port=page),
+        gone_review=command("review --gone", changes=False, port=page),
     )
     return audit_actions(findings, commands)
 

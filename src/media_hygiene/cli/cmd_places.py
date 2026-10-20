@@ -16,7 +16,7 @@ from media_hygiene.i18n import _
 def places_command(
     ctx: typer.Context,
     *,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Serve the map of the photos' positions until Ctrl+C.
 
@@ -30,6 +30,7 @@ def places_command(
     from media_hygiene.services.places import open_places, serve_places
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output):
         again = NextVerb(

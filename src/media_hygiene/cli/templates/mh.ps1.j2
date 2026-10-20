@@ -62,7 +62,8 @@ function global:{{ function }} {
         if (-not (_{{ function }}_cloud $read)) { return }
     }
     $mode = if ($command -in @({{ listed(script.commands.writers) }})) { '' } else { ':ro' }
-    $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}') } else { @() }
+    # The port mh publishes is the one the page listens on, config.toml changed or not (0260).
+    $page = if ($command -in @({{ listed(script.commands.pages) }})) { @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}', '-e', 'MEDIA_HYGIENE_REVIEW__PORT={{ script.commands.port }}') } else { @() }
     if ($page) {
         # A page left by a closed window holds the port: stopped when its console is gone (0250).
         if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }

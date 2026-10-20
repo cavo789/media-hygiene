@@ -154,8 +154,8 @@ def launcher_guards() -> LauncherGuards:
             busy=with_variable(
                 _(
                     "The port of the mh pages is used by another program, {name} "
-                    "(process {process}): close it, then type the command again. "
-                    "mh always uses this port."
+                    "(process {process}): close it, then type the command again; or "
+                    "choose another port, [review] port in config.toml, then mh update."
                 ),
                 "{name}",
                 "${name}",

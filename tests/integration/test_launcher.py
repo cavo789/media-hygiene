@@ -115,3 +115,19 @@ def test_on_a_terminal_the_launcher_writes_nothing_and_says_how(
     assert "mh.ps1" in result.stdout
     assert result.stdout.splitlines()[-1].startswith("throw ")
     assert not result.stderr
+
+
+@pytest.mark.usefixtures("mounted_data")
+def test_another_page_port_reaches_the_script_and_the_page(
+    cli: CliRunner, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`[review] port` (0260): mh publishes it, and tells the page to listen on it."""
+    monkeypatch.setenv("MEDIA_HYGIENE_REVIEW__PORT", "9000")
+    result = run(cli, "launcher", "--shell", "bash")
+    assert result.exit_code == 0, result.output
+    script = tmp_path / "mh.sh"
+    script.write_text(result.stdout, encoding="utf-8")
+    monkeypatch.delenv("MEDIA_HYGIENE_REVIEW__PORT")
+    review = _arguments(script, tmp_path / "home", "review")
+    assert review[review.index("-p") + 1] == "127.0.0.1:9000:9000"
+    assert "MEDIA_HYGIENE_REVIEW__PORT=9000" in review

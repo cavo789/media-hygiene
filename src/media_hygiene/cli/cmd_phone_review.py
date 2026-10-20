@@ -15,8 +15,9 @@ from typing import Annotated, Final
 
 import typer
 
+from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.cli.review_options import PAGE_PORT, port
+from media_hygiene.cli.review_options import port
 from media_hygiene.i18n import _
 
 _ENCODING: Final = "utf-8"
@@ -40,7 +41,7 @@ def phone_review_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = None,
-    page_port: Annotated[int, port()] = PAGE_PORT,
+    page_port: Annotated[int | None, port()] = None,
 ) -> None:
     """Serve the page of the files the PC may hold; print those ticked to delete.
 
@@ -54,6 +55,7 @@ def phone_review_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.phone_review import PhoneReview, serve_phone_review
 
     runtime = runtime_of(ctx)
+    page_port = review_options.page_port(runtime, page_port)
     text = sys.stdin.buffer.read().decode(_ENCODING, errors="replace")
     files, _skipped = read_ticked(text.splitlines())  # a new file never leaves
     if not files:

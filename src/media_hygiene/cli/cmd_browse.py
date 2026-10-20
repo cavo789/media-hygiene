@@ -17,7 +17,7 @@ from media_hygiene.i18n import _
 def browse_command(
     ctx: typer.Context,
     *,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Walk through the folders of the library, as in Explorer, until Ctrl+C.
 
@@ -35,6 +35,7 @@ def browse_command(
     from media_hygiene.services.search import BrowseStart, open_search, serve_browse
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     # Opened from the home page: `mh` runs the step *Apply now* ends on (0243).
     apply = partial(apply_step, runtime) if launcher_relays_steps() else None

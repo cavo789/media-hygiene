@@ -35,4 +35,5 @@ def advise_status(runtime: Runtime, status: Status) -> None:
         runtime.output.success(_("Nothing left to do: everything is applied."))
         return
     command = carried(runtime, step.command)
-    suggest(runtime, step.text, NextVerb(command, step.needs, step.port))
+    port = runtime.settings.review.port if step.page else None
+    suggest(runtime, step.text, NextVerb(command, step.needs, port))

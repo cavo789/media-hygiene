@@ -192,7 +192,8 @@ setting is required.`
 - Another program uses 8088 (another local server, a preview of your editor): `mh` names it
   before the page, with its process number (*The port of the mh pages is used by another
   program, python (process 4242): close it, then type the command again.*), and runs nothing.
-  Close that program: `mh` always uses 8088. On Windows it asks Windows which program listens;
+  Close that program; if you cannot, give the pages another port: `port = 9000` under
+  `[review]` in `config.toml`, then `mh update` (it writes the new port into `mh`). On Windows it asks Windows which program listens;
   in WSL or Linux, `ss` tells it for your own programs only, and Docker says *address already in
   use* for the others.
 - *port is already allocated* with `docker run` typed by hand: choose another number, the same

@@ -202,7 +202,8 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
 - Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh` le
   nomme avant la page, avec son numéro de processus (*Le port des pages de mh est pris par un
   autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*), et ne lance
-  rien. Fermez ce programme : `mh` utilise toujours 8088. Sous Windows, il demande à Windows quel
+  rien. Fermez ce programme ; si vous ne pouvez pas, donnez un autre port aux pages : `port = 9000`
+  sous `[review]` dans `config.toml`, puis `mh update` (il écrit le nouveau port dans `mh`). Sous Windows, il demande à Windows quel
   programme écoute ; dans WSL ou sous Linux, `ss` le dit pour vos propres programmes seulement,
   et Docker dit *address already in use* pour les autres.
 - *port is already allocated* avec un `docker run` tapé à la main : choisissez un autre numéro,

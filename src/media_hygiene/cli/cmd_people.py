@@ -51,7 +51,7 @@ def people_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Find the faces the cache lacks, group them, show and name them until Ctrl+C.
 
@@ -71,6 +71,7 @@ def people_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.writable import ensure_writable
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output):
         require_people_index(runtime)
