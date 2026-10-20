@@ -37,7 +37,6 @@
 
 | ID | Title | File |
 |----|-------|------|
-| 0149 | `clean`: compare and move several copies at a time | [PARTIAL_0149-clean-several-copies-at-a-time.md](PARTIAL/PARTIAL_0149-clean-several-copies-at-a-time.md) |
 | 0173 | `launcher --photos "C:\Photos"`: Windows paths only, the time zone found by `mh` | [PARTIAL_0173-launcher-windows-folders-and-zone.md](PARTIAL/PARTIAL_0173-launcher-windows-folders-and-zone.md) |
 | 0177 | `mh update`: pull the new image, rewrite `mh` with the same folders | [PARTIAL_0177-mh-update-pulls-and-rewrites.md](PARTIAL/PARTIAL_0177-mh-update-pulls-and-rewrites.md) |
 | 0178 | `mh review` / `review-sort` / `places`: `mh` opens the browser on the page | [PARTIAL_0178-mh-opens-the-browser-for-pages.md](PARTIAL/PARTIAL_0178-mh-opens-the-browser-for-pages.md) |
