@@ -121,12 +121,20 @@ chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la
 ouverte, **⌂ Retour à l'accueil** ferme cette page (ce que vous y avez décidé est déjà
 enregistré) et attend la page d'accueil à la même adresse.
 
+La documentation elle-même est dans l'image : chaque lien **Doc** et **Documentation** de ces
+pages ouvre son chapitre servi par l'outil, avec la même allure, hors ligne, et écrit pour la
+version que vous utilisez (le site peut déjà décrire une version plus récente). Sa barre latérale
+liste chaque chapitre, sa barre du haut passe à l'autre langue (**EN**), chaque page liste ses
+sections et se termine sur la précédente et la suivante. Les liens qu'affiche le terminal, et
+les rapports HTML ouverts depuis le disque, mènent toujours au
+[site](https://cavo789.github.io/media-hygiene/) : aucune page de l'outil n'y répond.
+
 ## Le clavier, la palette, le thème
 
 | Touche | Ce qu'elle fait |
 |---|---|
 | <kbd>Entrée</kbd> | À l'ouverture, lance l'étape suivante : son bouton a le focus. |
-| <kbd>Ctrl</kbd>+<kbd>K</kbd> ou <kbd>/</kbd> | *Que voulez-vous faire ?* : chaque action et chaque espace, trouvés par des mots de tous les jours (*téléphone*, *NAS*, *annuler*) ; <kbd>↑</kbd> <kbd>↓</kbd> choisissent, <kbd>Entrée</kbd> lance. |
+| <kbd>Ctrl</kbd>+<kbd>K</kbd> ou <kbd>/</kbd> | *Que voulez-vous faire ?* : chaque action et chaque espace, trouvés par des mots de tous les jours (*téléphone*, *NAS*, *annuler*), puis les sections de la documentation (ouvertes dans un nouvel onglet) ; <kbd>↑</kbd> <kbd>↓</kbd> choisissent, <kbd>Entrée</kbd> lance. |
 | <kbd>↑</kbd> <kbd>↓</kbd> | Dans le menu de gauche, d'un espace à l'autre (un seul arrêt de <kbd>Tab</kbd> pour tout le menu). |
 | <kbd>?</kbd> | Les touches. |
 | <kbd>Échap</kbd> | Ferme ce qui est ouvert. |

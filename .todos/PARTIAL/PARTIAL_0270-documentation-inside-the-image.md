@@ -88,3 +88,29 @@ Measured on 2026-10-20:
 - Decision 1: the public site's look is **a separate, smaller TODO** filed after this one.
 - Decision 2: **no `mh docs` verb**; the home page's links and the palette are enough.
   By the maintainer, at the start of `/todo:iterate`.
+
+## Status — PARTIAL (2026-10-20)
+
+### Done
+- Items 1–6: the `docs` stage of the `Dockerfile` (the `docs` group only, `uv sync --only-group docs`)
+  renders `documentation/{en,fr}` with `python -m media_hygiene.docs.render` (fragments, screenshots,
+  `index.json` with the `nav`, titles, `h2`/`h3`); `links.py` is shared with `.config/mkdocs/hooks.py`
+  (loaded by path: the site's CI installs the docs group only). The runtime copies the result to
+  `/usr/share/media-hygiene/docs`; Markdown and MkDocs stay out (e2e test
+  `test_the_documentation_is_inside_without_its_renderer`).
+- Every page's server (not only the home page's: `review/shared_routes.py`) answers `/docs/…`;
+  the "Doc"/"Documentation" links of the home page and of the review pages' bar open the served
+  chapter; the terminal and the reports keep the site. The palette lists the docs' sections under
+  the actions (a "Documentation" group, opened in a new tab).
+- Development: `MEDIA_HYGIENE_DOCS_DIR` (set by the `hygiene` helper) renders the sources into
+  `/tmp/media-hygiene/docs` on first use and when a page changed; `docs` is a default uv group
+  (the builder uses `--no-default-groups`).
+- Measured: the docs stage alone builds (`docker build --target docs`, 1.0 s to render 128
+  pages); the output is 6.9 MB (6 912 KB, `du -sk` in the stage), 5.1 MB gzip-compressed
+  (`tar czf`): +3.6 % of the 142 MB image, estimated from the compressed size.
+
+### Not done
+- The full image build and `dive_ci`, and a look at a page in a browser (light, dark, narrow).
+  **Reason:** heavy on the maintainer's PC (image build) and no browser in the devcontainer; CI's
+  image job builds the image and runs the new e2e test. To do: `build`, `dive_ci`, then
+  `hygiene home` and open a Doc link.

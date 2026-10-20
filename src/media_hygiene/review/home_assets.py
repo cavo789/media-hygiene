@@ -10,16 +10,11 @@ from __future__ import annotations
 from http import HTTPStatus
 from pathlib import Path
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import Final
 from urllib.parse import unquote
 
-from media_hygiene.review.http import ContentType, Response, is_local
+from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.report_files import read_found
-
-if TYPE_CHECKING:
-    from collections.abc import Awaitable, Callable
-
-    from media_hygiene.review.http import Request
 
 ASSETS_PREFIX: Final = "/assets/"
 ASSETS_DIR: Final = Path(__file__).resolve().parents[1] / "assets"
@@ -66,20 +61,3 @@ async def asset_response(path: str) -> Response:
         return Response(HTTPStatus.NOT_FOUND)
     kind = _SERVED[target.suffix.lower()]
     return Response(HTTPStatus.OK, body, kind, max_age=MAX_AGE_S)
-
-
-async def asset_or_page(
-    request: Request, page: Callable[[Request], Awaitable[Response]]
-) -> Response:
-    """Serve a font or an image of the theme to the loopback; else let the page answer.
-
-    Args:
-        request: The request.
-        page: How the page served answers.
-
-    Returns:
-        The response.
-    """
-    if request.path.startswith(ASSETS_PREFIX) and is_local(request):
-        return await asset_response(request.path)
-    return await page(request)

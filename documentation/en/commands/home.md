@@ -112,12 +112,19 @@ next to its French twin (*En français*). When the home page opened it, **⌂ Ba
 closes that page (what you decided there is already saved) and waits for the home page on the
 same address.
 
+The documentation itself is inside the image: every **Doc** and **Documentation** link of these
+pages opens its chapter served by the tool, in the same look, offline, and written for the version
+you run (the website may already describe a newer one). Its sidebar lists every chapter, its top
+bar switches to the other language (**FR**), each page lists its sections and ends on the previous
+and next ones. The links the terminal prints, and the HTML reports opened from the disk, still
+lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the tool answers there.
+
 ## The keyboard, the palette, the theme
 
 | Key | What it does |
 |---|---|
 | <kbd>Enter</kbd> | When the page opens, runs the next step: its button has the focus. |
-| <kbd>Ctrl</kbd>+<kbd>K</kbd> or <kbd>/</kbd> | *What do you want to do?*: every action and every space, found by everyday words (*phone*, *NAS*, *undo*); <kbd>↑</kbd> <kbd>↓</kbd> choose, <kbd>Enter</kbd> runs. |
+| <kbd>Ctrl</kbd>+<kbd>K</kbd> or <kbd>/</kbd> | *What do you want to do?*: every action and every space, found by everyday words (*phone*, *NAS*, *undo*), then the sections of the documentation (opened in a new tab); <kbd>↑</kbd> <kbd>↓</kbd> choose, <kbd>Enter</kbd> runs. |
 | <kbd>↑</kbd> <kbd>↓</kbd> | In the sidebar, from one space to the next (one <kbd>Tab</kbd> stop for the whole sidebar). |
 | <kbd>?</kbd> | The keys. |
 | <kbd>Esc</kbd> | Closes what is open. |

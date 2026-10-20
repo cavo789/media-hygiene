@@ -19,7 +19,7 @@ reclaim_volumes() {
 }
 
 install_project() {
-    printf "📦 Installing the project and its dev dependencies (uv sync)...\n"
+    printf "📦 Installing the project, its dev and docs dependencies (uv sync)...\n"
     uv sync --locked
 }
 

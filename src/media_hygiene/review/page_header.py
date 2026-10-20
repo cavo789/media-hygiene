@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
 from media_hygiene.constants import Locale
+from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import active_locale
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -88,8 +89,8 @@ def page_header(template: str) -> PageHeader:
     here = active_locale()
     twin = Locale.EN if here is Locale.FR else Locale.FR
     return PageHeader(
-        doc=doc.url(here),
-        twin=doc.url(twin),
+        doc=served_url(doc, here),
+        twin=served_url(doc, twin),
         twin_locale=twin,
         twin_label=_TWIN_LABELS[twin],
         home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))

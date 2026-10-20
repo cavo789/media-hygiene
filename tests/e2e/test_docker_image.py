@@ -78,3 +78,14 @@ def test_image_ffprobe_tells_broken_videos(volumes: dict[str, str]) -> None:
     assert "ffprobe not found" not in audit
     assert DEMO_BROKEN.search(audit), audit
     assert DEMO_VIDEO_TAGS.search(audit), audit
+
+
+def test_the_documentation_is_inside_without_its_renderer() -> None:
+    """The docs rendered by the `docs` stage (0270); Markdown and MkDocs stay out."""
+    script = (
+        "import importlib.util as u; from media_hygiene.docs.shelf import docs_root; "
+        "print(docs_root(), u.find_spec('markdown'), u.find_spec('mkdocs'))"
+    )
+    result = run_image("--entrypoint", "python", IMAGE, "-c", script)
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert result.stdout.split() == ["/usr/share/media-hygiene/docs", "None", "None"]

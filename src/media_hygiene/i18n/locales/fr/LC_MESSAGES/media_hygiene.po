@@ -1139,6 +1139,9 @@ msgstr "Retour aux photos"
 msgid "Back to the report"
 msgstr "Retour au rapport"
 
+msgid "Back to the tool"
+msgstr "Retour à l'outil"
+
 msgid "Back up"
 msgstr "Sauvegarder"
 
@@ -4090,6 +4093,9 @@ msgstr "De nouvelles photos ? Le cycle recommence à {stage}."
 msgid "New place"
 msgstr "Nouveau lieu"
 
+msgid "Next"
+msgstr "Suivante"
+
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 "Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
@@ -4758,6 +4764,9 @@ msgstr "Sur un autre disque ou montage"
 msgid "On the PC:"
 msgstr "Sur le PC :"
 
+msgid "On this page"
+msgstr "Dans cette page"
+
 msgid ""
 "Once a day at most, ask Docker Hub whether a newer version is published, "
 "to say so on the home page and in 'mh menu'. Sent: one request for the "
@@ -5036,6 +5045,9 @@ msgstr "Autres commandes"
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
+msgid "Page not found"
+msgstr "Page introuvable"
+
 #, python-brace-format
 msgid ""
 "Page ready, open {url} in your browser. Each choice is saved at once in "
@@ -5266,6 +5278,12 @@ msgstr ""
 
 msgid "Preparing the home page…"
 msgstr "Préparation de l'accueil…"
+
+msgid "Previous"
+msgstr "Précédente"
+
+msgid "Previous and next pages"
+msgstr "Pages précédente et suivante"
 
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
@@ -6808,6 +6826,9 @@ msgstr ""
 "ne sont pas cassés : clean les laisse où ils sont, et le prochain audit "
 "les relit."
 
+msgid "The documentation's home"
+msgstr "L'accueil de la documentation"
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
@@ -7081,6 +7102,9 @@ msgstr "La page ne tourne plus : relancez people."
 
 msgid "The page is not running any more: type mh phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh phone."
+
+msgid "The page of the tool this server shows"
+msgstr "La page de l'outil que ce serveur affiche"
 
 msgid "The page's tab was closed: the page stopped."
 msgstr "L'onglet de la page a été fermé : la page s'est arrêtée."
@@ -7646,6 +7670,9 @@ msgstr "Cette page analyse aussi : {folder}"
 
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
+
+msgid "This page is not in the documentation of this version."
+msgstr "Cette page n'est pas dans la documentation de cette version."
 
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"

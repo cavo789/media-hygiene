@@ -19,10 +19,10 @@ from typing import TYPE_CHECKING, Final, Protocol
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import PageClosed
 from media_hygiene.i18n import _
-from media_hygiene.review.home_assets import asset_or_page
 from media_hygiene.review.http import Response, is_local
 from media_hygiene.review.presence import PRESENCE_PATH, Presence, presence_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
+from media_hygiene.review.shared_routes import asset_or_page
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -107,6 +107,16 @@ or anchor fails. `docs_serve` shows it at <http://127.0.0.1:8000>, reloaded at e
 page goes into `nav` in `mkdocs.yml` (a test checks it), in English only: French follows the same
 file names.
 
+The image holds the same pages, for the pages the tool serves (`/docs/<language>/<page>/`, in the
+home page's look). The `docs` stage of the `Dockerfile` installs the `docs` dependency group only
+and runs `python -m media_hygiene.docs.render`: one HTML fragment per page, its screenshots, and
+an `index.json` per language (the `nav` of `mkdocs.yml`, each page's title, `h2` and `h3`), with
+the site's Markdown extensions and anchors; where a link leads is decided by
+`src/media_hygiene/docs/links.py`, which `hooks.py` loads too. Only the result reaches the image
+(`/usr/share/media-hygiene/docs`, about 7 MB). From the sources, `hygiene home` renders them into
+`/tmp/media-hygiene/docs` on first use, and again when a page changed (`MEDIA_HYGIENE_DOCS_DIR`);
+`tests/unit/test_docs_render.py` checks every page, link and anchor.
+
 ## Continuous integration and releases
 
 Every push and pull request runs the quality gate and the end-to-end tests on GitHub Actions

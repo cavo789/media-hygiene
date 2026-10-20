@@ -3,27 +3,46 @@
 The pages are written for GitHub first: their anchors keep accents (`#étape-1`), each
 page links its twin in the other language (`../../fr/…`), which a language's build does
 not hold, and some links point at files outside documentation/ (the READMEs, the CI).
+Where a link leads is decided by `src/media_hygiene/docs/links.py`, which the docs
+inside the image use too: loaded by its path, the package is not installed here.
 """
 
 from __future__ import annotations
 
-import re
-from pathlib import Path, PurePosixPath
+import importlib.util
+import sys
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from pymdownx.slugs import slugify
-
 if TYPE_CHECKING:
+    import re
+    from pathlib import PurePosixPath
+    from types import ModuleType
+
     from mkdocs.config.defaults import MkDocsConfig
     from mkdocs.structure.pages import Page
 
-BLOB: Final = "https://github.com/cavo789/media-hygiene/blob/main"
-_LINK: Final = re.compile(r"(?P<head>\]\()(?P<target>[^)\s#]+)(?P<anchor>#[^)\s]*)?\)")
-_EXTERNAL: Final = ("http://", "https://", "mailto:")
-DEFAULT_LOCALE: Final = (
-    "en"  # built at the root of the site, the others under /<locale>/
+_SHARED: Final = (
+    Path(__file__).resolve().parents[2] / "src" / "media_hygiene" / "docs" / "links.py"
 )
-INDEX: Final = "README.md"
+
+
+def _load_links() -> ModuleType:
+    """Load the module shared with the docs inside the image, by its path.
+
+    Returns:
+        `media_hygiene.docs.links`.
+    """
+    spec = importlib.util.spec_from_file_location("media_hygiene_doc_links", _SHARED)
+    if spec is None or spec.loader is None:  # pragma: no cover - the file is tracked
+        raise ImportError(_SHARED)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module  # its dataclasses look their module up
+    spec.loader.exec_module(module)
+    return module
+
+
+links = _load_links()
 
 
 def on_config(config: MkDocsConfig) -> MkDocsConfig:
@@ -35,14 +54,14 @@ def on_config(config: MkDocsConfig) -> MkDocsConfig:
     Returns:
         The configuration, the `toc` extension set up.
     """
-    config.mdx_configs.setdefault("toc", {})["slugify"] = slugify(case="lower")
+    config.mdx_configs.setdefault("toc", {})["slugify"] = links.slugifier()
     return config
 
 
 def on_page_markdown(
     markdown: str, *, page: Page, config: MkDocsConfig, **_: object
 ) -> str:
-    """Point the links to repository files outside documentation/ at GitHub.
+    """Point the links to another language, or outside documentation/, at their page.
 
     Args:
         markdown: The page source.
@@ -54,30 +73,23 @@ def on_page_markdown(
         The source, those links rewritten.
     """
     docs = Path(config.docs_dir).resolve()
-    repository = docs.parent
     source = Path(page.file.abs_src_path or docs).resolve()
     locale = source.relative_to(docs).parts[0]
+    where = links.LinkSource(docs, source)
 
     def rewrite(link: re.Match[str]) -> str:
-        target = link["target"]
-        if target.startswith(_EXTERNAL):
-            return link[0]
-        resolved = (source.parent / target).resolve()
+        target = links.resolve(where, link["target"])
         anchor = link["anchor"] or ""
-        if resolved.is_relative_to(docs):
-            page_path = resolved.relative_to(docs)
-            if page_path.parts[0] == locale or resolved.suffix != ".md":
-                return link[0]
-            return f"{link['head']}{site_page(config, page_path)}{anchor})"
-        if not resolved.is_relative_to(repository):
-            return link[0]
-        path = PurePosixPath(*resolved.relative_to(repository).parts)
-        return f"{link['head']}{BLOB}/{path}{anchor})"
+        if target.kind is links.LinkKind.PAGE and target.path.parts[0] != locale:
+            return f"{link['head']}{site_page(config, target.path)}{anchor})"
+        if target.kind is links.LinkKind.REPOSITORY:
+            return f"{link['head']}{links.blob_url(target.path)}{anchor})"
+        return link[0]
 
-    return _LINK.sub(rewrite, markdown)
+    return links.MARKDOWN_LINK.sub(rewrite, markdown)
 
 
-def site_page(config: MkDocsConfig, page_path: Path) -> str:
+def site_page(config: MkDocsConfig, page_path: PurePosixPath) -> str:
     """The address on the site of a page of documentation/.
 
     Args:
@@ -87,11 +99,9 @@ def site_page(config: MkDocsConfig, page_path: Path) -> str:
     Returns:
         E.g. `https://…/fr/start/01-first-audit/`; the default language at the root.
     """
-    locale, *parts = page_path.parts
-    prefix = () if locale == DEFAULT_LOCALE else (locale,)
-    *folders, name = parts
-    tail = () if name == INDEX else (name.removesuffix(".md"),)
-    path = "/".join((*prefix, *folders, *tail))
+    locale, parts = links.page_parts(page_path)
+    prefix = () if locale == links.DEFAULT_LOCALE else (locale,)
+    path = "/".join((*prefix, *parts))
     return f"{config.site_url or '/'}{path}/" if path else config.site_url or "/"
 
 

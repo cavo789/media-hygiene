@@ -54,6 +54,9 @@ docs = [
 # Hugging Face Hub client it requires for `from_pretrained` (and its 13 dependencies,
 # 22 MB installed, measured) is never imported, so never installed.
 [tool.uv]
+# The docs group too: the tests render the docs inside the image (0270); the image's
+# builder installs none of them (`--no-default-groups`).
+default-groups = ["dev", "docs"]
 override-dependencies = ["huggingface-hub; sys_platform == 'never'"]
 
 [tool.hatch.build.targets.wheel]
@@ -176,6 +179,11 @@ enable_error_code = [
 # Playwright only exists in the browser image the documentation screenshots run in.
 [[tool.mypy.overrides]]
 module = ["playwright.*"]
+ignore_missing_imports = true
+
+# The renderer of the docs inside the image (0270): the `docs` group ships no type hints.
+[[tool.mypy.overrides]]
+module = ["markdown", "markdown.*", "yaml", "pymdownx.*"]
 ignore_missing_imports = true
 
 [tool.pydantic-mypy]
