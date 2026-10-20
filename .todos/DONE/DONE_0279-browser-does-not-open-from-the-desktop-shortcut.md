@@ -44,3 +44,9 @@ runs `Start-Process $url`. The second console line (`reviewing.py:160`) promises
    console line must not claim "Votre navigateur s'ouvre" when nothing will open.
 4. A unit test on the rendered `mh.ps1` for the chosen mechanism; both languages' launcher
    pages updated if the behaviour text changes (`docs_screenshots` to rerun, unasked).
+
+## Status — resolved by 0277 (2026-10-20)
+
+The browser job waits for the page to answer before `Start-Process`; the page took up to
+154 s (quarantine census, 0277). Once 0277 made it answer in 0.08 s, the maintainer
+confirmed the home page opens by itself from the desktop shortcut. No change of its own.
