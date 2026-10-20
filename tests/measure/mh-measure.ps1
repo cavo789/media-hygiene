@@ -1323,7 +1323,9 @@ if (Wanted 19) {
             Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
             Read-Host "19j. Next: when the line '2/$($largest.Count)' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
             $watch = [Diagnostics.Stopwatch]::StartNew()
-            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            # Shown as it comes (the '2/N' line to wait for), and logged after: captured alone,
+            # the maintainer saw nothing (2026-10-20).
+            $said = @(mh phone 6>&1 | ForEach-Object { $text = "$_"; Write-Host $text; $text })
             foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
             Log ("   19j. cable pulled: {0:N1} s wall time; staging folders left: {1}" -f $watch.Elapsed.TotalSeconds, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
             $dialog = Read-Host "19j. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
