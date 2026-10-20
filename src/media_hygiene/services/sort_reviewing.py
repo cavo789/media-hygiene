@@ -21,6 +21,7 @@ from media_hygiene.i18n import _, ngettext
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mounts import is_writable
 from media_hygiene.review.ending import run_server
+from media_hygiene.review.page_header import page_header
 from media_hygiene.review.sort_app import PAGE_PATH, STATE_PATH, SortReviewApp
 from media_hygiene.review.sort_batch import SortBatchSession
 from media_hygiene.review.sort_choices import (
@@ -101,6 +102,7 @@ def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) ->
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     workbook, decisions = session.hosts
     page = environment.get_template(_PAGE_TEMPLATE).render(
+        header=page_header(_PAGE_TEMPLATE),
         paths={
             "page": PAGE_PATH,
             "state": STATE_PATH,

@@ -885,6 +885,9 @@ msgid ""
 "deletes it from the phone."
 msgstr ""
 
+msgid "Back to the home page"
+msgstr ""
+
 msgid "Back to the photos"
 msgstr ""
 
@@ -10148,9 +10151,6 @@ msgid_plural ""
 " back to the quarantine."
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "⌂ Home"
-msgstr ""
 
 #, python-brace-format
 msgid ""

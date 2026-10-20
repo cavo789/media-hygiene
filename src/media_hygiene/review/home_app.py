@@ -3,8 +3,8 @@
 `GET /` serves the page at once, without its state: the page shows a waiting
 meerkat, then asks `GET /api/state` where you are and every step (read again from
 the tool folders at each call; slow through Docker Desktop's file sharing, 0277),
-`GET /reports/<path>` a file of the reports folder, `GET /assets/<path>` an image
-or a font of the page (`home_assets`),
+`GET /reports/<path>` a file of the reports folder (its images and fonts, `/assets/`,
+come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it; `POST /api/alive` says a tab still shows the
 page (0261, `presence`). `POST /api/step` ends the server with `100 + n` for step
@@ -24,7 +24,6 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.review.home_assets import ASSETS_PREFIX, asset_response
 from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
@@ -117,8 +116,6 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
-        if path.startswith(ASSETS_PREFIX):
-            return await asset_response(path)
         if path == STATE_PATH:
             state: BaseModel = await asyncio.to_thread(self.state)
         elif path == AUDIT_PATH:

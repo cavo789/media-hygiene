@@ -1,0 +1,2 @@
+{# Before the first paint: the theme a viewer chose on the home page (its switch, the same key), so that no page flashes the other one. #}
+try { const theme = JSON.parse(localStorage.getItem("mh-home-theme")); if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme); } catch (error) { /* the OS's theme */ }

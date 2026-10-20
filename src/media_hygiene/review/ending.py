@@ -1,12 +1,12 @@
 """How a local page's server ends: Ctrl+C, `POST /api/stop`, or a step chosen at home.
 
-Every page answers `POST /api/stop` (its "⌂ Home" link): the server ends with code 0,
-and `mh` opens the home page again. The home page ends with `100 + n` when the user
-chooses step `n`, which `mh` then runs with the mounts it needs. A page whose tab was
-closed (`presence`, `POST /api/alive`) ends with `ExitCode.PAGE_CLOSED`, raised as
-`PageClosed` for its command to say so (0262). The server listens on
-every interface of the container: Docker publishes the port on the host's loopback
-only, under the same number.
+Every page answers `POST /api/stop` (its "Back to the home page" link) and serves the
+theme's `/assets/`: the server ends with code 0, and `mh` opens the home page again.
+The home page ends with `100 + n` when the user chooses step `n`, which `mh` then runs
+with the mounts it needs. A page whose tab was closed (`presence`, `POST /api/alive`)
+ends with `ExitCode.PAGE_CLOSED`, raised as `PageClosed` for its command to say so
+(0262). The server listens on every interface of the container: Docker publishes the
+port on the host's loopback only, under the same number.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Final, Protocol
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import PageClosed
 from media_hygiene.i18n import _
+from media_hygiene.review.home_assets import asset_or_page
 from media_hygiene.review.http import Response, is_local
 from media_hygiene.review.presence import PRESENCE_PATH, Presence, presence_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
@@ -31,7 +32,9 @@ if TYPE_CHECKING:
 # Every interface of the container: Docker forwards the published port to it.
 LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
 STOP_PATH: Final = "/api/stop"
-STOPPED: Final = 0  # the exit code of a page closed from its "⌂ Home" link
+STOPPED: Final = (
+    0  # the exit code of a page closed from its "Back to the home page" link
+)
 _POST: Final = "POST"
 
 
@@ -91,7 +94,7 @@ class Ending:
 
 @dataclass(frozen=True, slots=True)
 class EndingDoor:
-    """Serves a page's connections, `POST /api/stop` answered for every page.
+    """Serves a page's connections: `POST /api/stop` and `/assets/` for every page.
 
     With a presence, `POST /api/alive` too: the page ends once no tab shows it.
     """
@@ -112,7 +115,7 @@ class EndingDoor:
         await serve_connection(reader, writer, self.handle)
 
     async def handle(self, request: Request) -> Response:
-        """Stop on `POST /api/stop` from the loopback; else let the page answer.
+        """Stop on `POST /api/stop`; else the theme's fonts and images, or the page.
 
         Args:
             request: The request.
@@ -123,7 +126,7 @@ class EndingDoor:
         if request.path == PRESENCE_PATH and self.presence is not None:
             return await self._alive(request)
         if request.path != STOP_PATH:
-            return await self.app.handle(request)
+            return await asset_or_page(request, self.app.handle)
         if not is_local(request):
             message = _("Open the review at 127.0.0.1 or localhost.")
             return Response(HTTPStatus.FORBIDDEN, message.encode())

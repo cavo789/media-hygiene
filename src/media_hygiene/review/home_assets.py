@@ -1,4 +1,4 @@
-"""`GET /assets/<path>`: the home page's images and fonts, inside the image.
+"""`GET /assets/<path>`: the images and fonts of every page (0268), inside the image.
 
 Only the files of `media_hygiene/assets/` are served, with the type of their
 extension; a path leaving that folder (`../`), or an unknown extension, is 404. They
@@ -10,11 +10,16 @@ from __future__ import annotations
 from http import HTTPStatus
 from pathlib import Path
 from types import MappingProxyType
-from typing import Final
+from typing import TYPE_CHECKING, Final
 from urllib.parse import unquote
 
-from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.report_files import read_found
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+    from media_hygiene.review.http import Request
 
 ASSETS_PREFIX: Final = "/assets/"
 ASSETS_DIR: Final = Path(__file__).resolve().parents[1] / "assets"
@@ -61,3 +66,20 @@ async def asset_response(path: str) -> Response:
         return Response(HTTPStatus.NOT_FOUND)
     kind = _SERVED[target.suffix.lower()]
     return Response(HTTPStatus.OK, body, kind, max_age=MAX_AGE_S)
+
+
+async def asset_or_page(
+    request: Request, page: Callable[[Request], Awaitable[Response]]
+) -> Response:
+    """Serve a font or an image of the theme to the loopback; else let the page answer.
+
+    Args:
+        request: The request.
+        page: How the page served answers.
+
+    Returns:
+        The response.
+    """
+    if request.path.startswith(ASSETS_PREFIX) and is_local(request):
+        return await asset_response(request.path)
+    return await page(request)

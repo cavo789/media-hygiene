@@ -29,25 +29,17 @@
   "person": _("person"),
   "takeout": _("Google Photos description"),
 } %}
+{% set page_name = _("Search your photos") %}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ _("Search your photos") }} — media-hygiene</title>
+<title>{{ page_name }} — media-hygiene</title>
 <style>
-  :root {
-    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
-    --accent: #0969da; --chip: #eef1f4; --bad: #cf222e;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
-      --accent: #4493f8; --chip: #21262d; --bad: #f85149;
-    }
-  }
+{% include "theme.css.j2" %}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+         font: 400 15px/1.5 var(--mk-font-text); }
   header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
            border-bottom: 1px solid var(--line); }
   h1 { font-size: 1.1rem; margin: 0 0 8px; display: flex; gap: 16px; align-items: baseline; }
@@ -58,7 +50,7 @@
                   border: 1px solid var(--line); border-radius: 6px; }
   #text { width: min(520px, 100%); font-size: 1.05rem; }
   .year { width: 6.5em; }
-  button { padding: 6px 14px; font: inherit; color: #fff; background: var(--accent);
+  button { padding: 6px 14px; font: inherit; color: var(--on-accent); background: var(--accent);
            border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
   .hint, #status { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
   #status.error { color: var(--bad); font-weight: 600; }
@@ -94,6 +86,7 @@
 </style>
 </head>
 <body>
+{% include "page_header.html.j2" %}
 <header>
   <h1>🔒 {{ _("Search your photos") }} <a href="{{ browse_path }}">{{ _("Your folders") }}</a></h1>
   <form id="form">

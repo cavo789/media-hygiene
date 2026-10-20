@@ -304,8 +304,11 @@ def test_stop_ends_any_page_with_0(locations: Locations) -> None:
     assert code == 0
 
 
-def test_every_page_links_home(cli: CliRunner, locations: Locations) -> None:
-    """The review's page carries the "⌂ Home" link, which posts to the stop path."""
+def test_every_page_links_home(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Opened from home, the review carries "Back to the home page", posting to stop."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
     audited(cli, locations)
     write_burst(locations.data_dir)
     session = review_session(locations)
@@ -336,7 +339,7 @@ def test_the_command_exits_with_the_step_chosen(
 
 
 def test_every_page_template_includes_the_home_link() -> None:
-    """Each page served but the home page itself includes the "⌂ Home" fragment."""
+    """Each page served but the home page itself includes the way-home fragment."""
     source = Path(media_hygiene.__file__).parent
     pages = [
         page
@@ -344,7 +347,12 @@ def test_every_page_template_includes_the_home_link() -> None:
         if page.parent.parent.name in {"review", "search", "places", "people"}
         # The page freeing a phone ends into `mh phone`, never the home page (0248).
         and page.name
-        not in {"home.html.j2", "home_link.html.j2", "phone_review.html.j2"}
+        not in {
+            "home.html.j2",
+            "home_link.html.j2",
+            "page_header.html.j2",
+            "phone_review.html.j2",
+        }
     ]
     assert len(pages) >= 9
     for page in pages:

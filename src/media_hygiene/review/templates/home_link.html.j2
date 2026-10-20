@@ -1,15 +1,13 @@
-{# "⌂ Home" on every page but the home page itself: `POST /api/stop` ends this page's server
-   (code 0) and `mh` opens the home page again on the same port; the page reloads once the
-   server was seen gone, then answering again. Included by each page, from any package.
+{# "Back to the home page" of the page's bar (page_header.html.j2, shown when `mh` opened the page
+   from the home page): `POST /api/stop` ends this page's server (code 0) and `mh` opens the home
+   page again on the same port; the page reloads once the server was seen gone, then answering
+   again. Included by each page, from any package.
    The page also says it is alive, and that it leaves on pagehide: its server ends once no
    tab shows it (0262, review/presence.py; 10 s is its ALIVE_SECONDS). #}
-<a id="homeLink" href="#" title="{{ _('Close this page and go back to the home page: mh opens it again.') }}"
-   style="position: fixed; right: 12px; bottom: 12px; z-index: 50; padding: 4px 12px; border-radius: 999px;
-          background: #0969da; color: #fff; font: 600 14px/1.6 system-ui, sans-serif; text-decoration: none;">{{ _("⌂ Home") }}</a>
 <div id="homeClosed" hidden role="alertdialog" aria-live="assertive"
      style="position: fixed; inset: 0; z-index: 60; align-items: center; justify-content: center;
-            padding: 16px; background: rgba(0, 0, 0, .55); font: 16px/1.5 system-ui, sans-serif;">
-  <p style="max-width: 520px; padding: 20px 24px; border-radius: 12px; background: #fff; color: #1f2328;">
+            padding: 16px; background: rgba(0, 0, 0, .55); font: 16px/1.5 var(--mk-font-text);">
+  <p style="max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--mk-surface); color: var(--mk-ink);">
     {{ _("This page is closed. The home page comes back here when mh opens it.") }}</p>
 </div>
 <script>
@@ -21,7 +19,8 @@
   window.addEventListener("pagehide", () => alive(true));
   window.setInterval(() => alive(false), ALIVE_MS);
   const closed = document.getElementById("homeClosed");
-  document.getElementById("homeLink").addEventListener("click", (event) => {
+  const homeLink = document.getElementById("homeLink");
+  if (homeLink !== null) homeLink.addEventListener("click", (event) => {
     event.preventDefault();
     fetch("/api/stop", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
       .then(() => {

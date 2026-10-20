@@ -107,8 +107,10 @@ opened the page:
 
 Every other page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
-carries a **⌂ Home** link at the bottom right: it closes that page (what you decided there is
-already saved) and waits for the home page on the same address.
+wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
+next to its French twin (*En français*). When the home page opened it, **⌂ Back to the home page**
+closes that page (what you decided there is already saved) and waits for the home page on the
+same address.
 
 ## The keyboard, the palette, the theme
 

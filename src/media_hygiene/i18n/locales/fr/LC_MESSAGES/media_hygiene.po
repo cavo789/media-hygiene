@@ -1120,6 +1120,9 @@ msgstr ""
 "Retour à la console : mh copie à nouveau chaque fichier coché, le prouve,"
 " puis le supprime du téléphone."
 
+msgid "Back to the home page"
+msgstr "Retour à l'accueil"
+
 msgid "Back to the photos"
 msgstr "Retour aux photos"
 
@@ -12095,9 +12098,6 @@ msgstr[0] ""
 msgstr[1] ""
 "↩️ {count} photos et vidéos que vous aviez déjà mises de côté sont "
 "revenues ({size}) : retour en quarantaine."
-
-msgid "⌂ Home"
-msgstr "⌂ Accueil"
 
 #, python-brace-format
 msgid ""

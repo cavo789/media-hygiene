@@ -116,8 +116,10 @@ qui a ouvert la page :
 
 Chaque autre page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
-porte un lien **⌂ Accueil** en bas à droite : il ferme cette page (ce que vous y avez décidé est
-déjà enregistré) et attend la page d'accueil à la même adresse.
+prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
+chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a
+ouverte, **⌂ Retour à l'accueil** ferme cette page (ce que vous y avez décidé est déjà
+enregistré) et attend la page d'accueil à la même adresse.
 
 ## Le clavier, la palette, le thème
 

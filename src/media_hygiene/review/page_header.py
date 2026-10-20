@@ -1,0 +1,114 @@
+"""The bar on top of every page served but the home page (`page_header.html.j2`, 0268).
+
+"Media Hygiene", the avatar and the page's name; its chapter of the documentation in the
+page's language and in the other one (the catalog's `doc` of the action that opens the
+page); "Back to the home page" only when `mh` opened the page from the home page (it
+sets `MEDIA_HYGIENE_LAUNCHER_STEPS` for those runs alone): elsewhere, ending the page
+would bring nothing back.
+"""
+
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Final
+
+from media_hygiene.cli.menu_catalog import catalog
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import active_locale
+from media_hygiene.review.home_assets import ASSETS_PREFIX
+from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from jinja2 import Environment
+
+# Each page's template, and the action of the catalog that opens it: its chapter.
+PAGE_STEPS: Final = MappingProxyType(
+    {
+        "review.html.j2": "review",
+        "near_review.html.j2": "review-near",
+        "pairs_review.html.j2": "review-pairs",
+        "unwanted_review.html.j2": "review-junk",
+        "gone_review.html.j2": "review-gone",
+        "sort_review.html.j2": "review-sort",
+        "phone_review.html.j2": "phone-free",
+        "search.html.j2": "search",
+        "browse.html.j2": "browse",
+        "places.html.j2": "places",
+        "people.html.j2": "people",
+    }
+)
+# The pages whose own button ends them ("Leave" on the phone's): no second way back.
+_OWN_WAY_BACK: Final = frozenset({"phone_review.html.j2"})
+# The other language's link, written in that language: never translated.
+_TWIN_LABELS: Final = MappingProxyType(
+    {Locale.EN: "In English", Locale.FR: "En français"}
+)
+
+
+@dataclass(frozen=True, slots=True)
+class PageHeader:
+    """What the bar of a page shows."""
+
+    doc: str  # its chapter, in the page's language
+    twin: str  # the same chapter in the other language
+    twin_locale: Locale
+    twin_label: str
+    home: bool  # opened from the home page: the way back is offered
+    assets: str = ASSETS_PREFIX
+
+    @property
+    def twin_lang(self) -> str:
+        """The other language's code, for `hreflang` and `lang`.
+
+        Returns:
+            It, e.g. `fr`.
+        """
+        return self.twin_locale.value
+
+
+def page_header(template: str) -> PageHeader:
+    """The bar of a page, in the language in use.
+
+    Args:
+        template: The page's template, a key of `PAGE_STEPS`.
+
+    Returns:
+        Its links.
+
+    Raises:
+        KeyError: The page's action has no chapter (test_page_headers checks each).
+    """
+    doc = catalog().step(PAGE_STEPS[template]).doc
+    if doc is None:  # pragma: no cover - test_page_headers checks every page has one
+        raise KeyError(template)
+    here = active_locale()
+    twin = Locale.EN if here is Locale.FR else Locale.FR
+    return PageHeader(
+        doc=doc.url(here),
+        twin=doc.url(twin),
+        twin_locale=twin,
+        twin_label=_TWIN_LABELS[twin],
+        home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
+        and template not in _OWN_WAY_BACK,
+    )
+
+
+def headed_page(
+    environment: Environment, template: str, values: Mapping[str, object]
+) -> bytes:
+    """Render a page with its bar.
+
+    Args:
+        environment: Where its template lives.
+        template: The page's template, a key of `PAGE_STEPS`.
+        values: What else it names.
+
+    Returns:
+        The page.
+    """
+    page = environment.get_template(template)
+    return page.render(header=page_header(template), **values).encode()
