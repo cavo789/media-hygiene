@@ -2242,16 +2242,6 @@ if (Wanted 23) {
         $port = "8088"
         $mapped = "$(& docker port $id 2>$null)"
         if ($mapped -match ':(\d+)\s*$') { $port = $Matches[1] }
-        foreach ($path in "/", "/api/state", "/api/state", "/api/state") {
-            $watch = [Diagnostics.Stopwatch]::StartNew()
-            try {
-                $answer = Invoke-WebRequest -Uri "http://127.0.0.1:$port$path" -UseBasicParsing -TimeoutSec 300
-                $watch.Stop()
-                Log ("   23b. GET {0}: {1:N2} s, {2} bytes" -f $path, $watch.Elapsed.TotalSeconds, $answer.RawContentLength)
-            } catch {
-                Log ("   23b. GET {0}: failed after {1:N2} s: {2}" -f $path, $watch.Elapsed.TotalSeconds, $_.Exception.Message)
-            }
-        }
         # Inside the container: its own mounts and settings, each part of home_state() timed.
         $code = @'
 import os, socket, time
@@ -2260,8 +2250,19 @@ from media_hygiene.i18n.bootstrap import resolve_locale
 install(resolve_locale([]))
 from media_hygiene.cli.context import build_runtime
 import media_hygiene.cli.home_state as hs
+import media_hygiene.services.status as st
 runtime = build_runtime({})
 spent = {}
+for name in ('load_summaries', 'list_run_ids', 'summarize', 'can_undo', 'last_walk', 'mounted_quarantines',
+             'quarantine_state', 'review_state', 'sort_state', 'face_coverage', 'tag_coverage'):
+    if not hasattr(st, name):
+        continue
+    def inner(*args, _f=getattr(st, name), _n='status.' + name, **kwargs):
+        start = time.perf_counter()
+        result = _f(*args, **kwargs)
+        spent[_n] = spent.get(_n, 0.0) + time.perf_counter() - start
+        return result
+    setattr(st, name, inner)
 names = ('read_status', 'windows_menu', 'build_menu', 'full_catalog', 'home_update', 'home_folders',
          'latest_reports', 'audit_previews', 'status_lines', 'home_spaces', 'home_actions', 'home_next',
          'home_tiles', 'home_findings', 'home_quarantine', 'home_undo', 'next_step')
@@ -2272,12 +2273,12 @@ for name in names:
         spent[_n] = spent.get(_n, 0.0) + time.perf_counter() - start
         return result
     setattr(hs, name, timed)
-for run in (1, 2, 3):
+for run in (1, 2):
     spent.clear()
     start = time.perf_counter()
     hs.home_state(runtime)
     total = (time.perf_counter() - start) * 1000
-    parts = ', '.join(f'{n} {s * 1000:.0f}' for n, s in sorted(spent.items(), key=lambda x: -x[1])[:6])
+    parts = ', '.join(f'{n} {s * 1000:.0f}' for n, s in sorted(spent.items(), key=lambda x: -x[1])[:10])
     print(f'23c. home_state run {run}: {total:.0f} ms ({parts})')
 start = time.perf_counter()
 try:
@@ -2294,6 +2295,17 @@ for root in ('/journal', '/quarantine', '/reports', '/cache'):
         $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
         $lines = & docker exec $id python -c "import base64; exec(base64.b64decode('$encoded'))" 2>&1
         foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        # Then from Windows, as the browser asks (the old image reads the state for / too).
+        foreach ($path in "/", "/api/state") {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            try {
+                $answer = Invoke-WebRequest -Uri "http://127.0.0.1:$port$path" -UseBasicParsing -TimeoutSec 300
+                $watch.Stop()
+                Log ("   23b. GET {0}: {1:N2} s, {2} bytes" -f $path, $watch.Elapsed.TotalSeconds, $answer.RawContentLength)
+            } catch {
+                Log ("   23b. GET {0}: failed after {1:N2} s: {2}" -f $path, $watch.Elapsed.TotalSeconds, $_.Exception.Message)
+            }
+        }
         Write-Host "23: you may close the home page now (Ctrl+C in its PowerShell window)."
     }
     # Each step chosen on the page is one docker run for the step, then one for the page again.
