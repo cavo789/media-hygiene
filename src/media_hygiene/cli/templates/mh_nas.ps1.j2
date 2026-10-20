@@ -1,0 +1,91 @@
+{# A NAS backup in mh.ps1 (0245): included by mh.ps1.j2; services/launcher_nas.py. #}
+{% set f = function %}
+# A share of a NAS given as a backup is mounted by Docker itself (SMB3, read-only) in a
+# volume made before the command and removed after it: Docker Desktop mounts no network
+# folder and sees no drive mapped in Windows. The volume is proven readable by a short run
+# first. The password is asked once and kept encrypted for this Windows user only
+# (Export-Clixml), next to the tool's folders; never in config.toml, never in a log.
+function global:_{{ f }}_nas_file([string]$name) { Join-Path (Join-Path $HOME 'media-hygiene') $name }
+
+# True when the NAS answers on the port of SMB within 2 s.
+function global:_{{ f }}_nas_up([string]$address) {
+    $client = New-Object System.Net.Sockets.TcpClient
+    try {
+        $pending = $client.BeginConnect($address, 445, $null, $null)
+        if (-not $pending.AsyncWaitHandle.WaitOne(2000)) { return $false }
+        $client.EndConnect($pending)
+        return $true
+    } catch { return $false } finally { $client.Close() }
+}
+
+# The kept user name and password of a share, else asked (`-Fresh`: always asked).
+function global:_{{ f }}_nas_credential([string]$unc, [string]$file, [switch]$Fresh) {
+    $kept = _{{ f }}_nas_file $file
+    if (-not $Fresh -and (Test-Path -LiteralPath $kept)) {
+        try { return Import-Clixml -LiteralPath $kept } catch { }
+    }
+    $user = Read-Host "{{ nas.user }}"
+    $secure = Read-Host "{{ nas.password }}" -AsSecureString
+    return New-Object System.Management.Automation.PSCredential($user, $secure)
+}
+
+# A volume of the share, read-only, proven readable; its name, or '' when the NAS does not
+# answer, refuses the password or offers an older SMB (each said in one line).
+function global:_{{ f }}_nas_volume([string]$unc, [string]$address, [string]$share, $credential) {
+    if (-not (_{{ f }}_nas_up $address)) { Write-Host "{{ nas.off }}"; return '' }
+    $secret = $credential.GetNetworkCredential().Password
+    if ($secret -match '[,"]') { Write-Host "{{ nas.unsafe }}"; return '' }
+    $ip = $address
+    try { $ip = @([Net.Dns]::GetHostAddresses($address) | Where-Object { $_.AddressFamily -eq 'InterNetwork' })[0].IPAddressToString } catch { }
+    $name = "mh-nas-$PID-" + [guid]::NewGuid().ToString('N').Substring(0, 8)
+    $ErrorActionPreference = 'Continue'
+    $null = docker volume create --driver local --opt type=cifs --opt "device=//$ip/$share" --opt "o=addr=$ip,username=$($credential.UserName),password=$secret,{{ smb }}" $name 2>$null
+    $said = @(docker run --rm -v "${name}:/nas:ro" --entrypoint true {{ image }} 2>&1 | ForEach-Object { "$_" })
+    if ($LASTEXITCODE -eq 0) { return $name }
+    $null = docker volume rm -f $name 2>$null
+    if (($said -join ' ') -match 'permission denied') { Write-Host "{{ nas.wrong }}" } else { Write-Host "{{ nas.legacy }}" }
+    return ''
+}
+
+# The NAS backups of one command: their -v and --backup options, the volumes to remove.
+function global:_{{ f }}_nas_mount([string]$command) {
+    $made = @{ mounts = @(); backups = @(); volumes = @() }
+{% for share in script.nas %}
+    $unc = '{{ share.unc }}'
+    $volume = _{{ f }}_nas_volume $unc '{{ share.host }}' '{{ share.share }}' (_{{ f }}_nas_credential $unc '{{ share.credential }}')
+    if ($volume) {
+        $made.mounts += '-v', "${volume}:{{ share.point.as_posix() }}:ro"
+        $made.volumes += $volume
+        if ($command -in @({{ listed(script.commands.backups) }})) { $made.backups += '--backup', $unc }
+    }
+{% endfor %}
+    return $made
+}
+
+# After the command: the volumes removed, the password with them.
+function global:_{{ f }}_nas_release($volumes) {
+    foreach ($volume in @($volumes)) { $null = docker volume rm -f $volume 2>$null }
+}
+
+# `{{ f }} folders add --backup \\NAS\Share`: the user name and password asked, proven by a
+# volume read once, kept when the user agrees. True when the share can be read.
+function global:_{{ f }}_nas_add([string]$unc) {
+    $parts = $unc.TrimStart('\').Split('\')
+    $credential = _{{ f }}_nas_credential $unc '' -Fresh
+    $volume = _{{ f }}_nas_volume $unc $parts[0] $parts[1] $credential
+    if (-not $volume) { return $false }
+    _{{ f }}_nas_release @($volume)
+    if ((Read-Host "{{ nas.keep }}") -match '^[yYoO]') {
+        $kept = _{{ f }}_nas_file (_{{ f }}_nas_name $unc)
+        $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $kept)
+        $credential | Export-Clixml -LiteralPath $kept
+        Write-Host "{{ nas.kept }}"
+    }
+    return $true
+}
+
+# The file name of a share's kept password, as services/launcher_nas.py names it.
+function global:_{{ f }}_nas_name([string]$unc) {
+    $parts = $unc.TrimStart('\').Split('\')
+    return 'nas-' + (($parts[0] + '-' + $parts[1]) -replace '[^A-Za-z0-9._-]+', '-').Trim('-') + '.xml'
+}

@@ -12,6 +12,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from media_hygiene.paths.unc import unc_host, unc_point
+
 _WINDOWS_PATH = re.compile(r"^(?P<drive>[A-Za-z]):[\\/]*(?P<rest>.*)$")
 _SEPARATORS = re.compile(r"[\\/]+")
 
@@ -50,6 +52,9 @@ class HostPathMapper:
             return text
         if parts and len(parts[0]) == 1 and parts[0].isalpha():
             return f"{parts[0].upper()}:\\" + "\\".join(parts[1:])
+        network = unc_host(parts)
+        if network is not None:
+            return network
         return "/" + "/".join(parts)
 
     def roots_on_host(self, roots: tuple[Path, ...]) -> tuple[str, ...]:
@@ -91,6 +96,9 @@ class HostPathMapper:
         Returns:
             The matching path under the data directory.
         """
+        network = unc_point(self.data_dir, host_path)
+        if network is not None:
+            return network
         windows = _windows_parts(host_path)
         if windows is not None:
             for point, host in sorted(self.sources, key=lambda item: -len(item[1])):

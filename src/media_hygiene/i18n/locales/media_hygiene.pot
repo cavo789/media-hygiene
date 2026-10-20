@@ -1,19 +1,36 @@
 msgid "   Nothing is only in it: each of its files has a copy in your photos."
 msgstr ""
 
+msgid "   Nothing to bring back from it:"
+msgstr ""
+
 #, python-brace-format
 msgid ""
-"   {count} file is only in it, nowhere else ({size}): copy it before "
-"wiping this disk."
+"   {count} file is only in it, never in your photos ({size}): 'import' "
+"copies it into them."
 msgid_plural ""
-"   {count} files are only in it, nowhere else ({size}): copy them before "
-"wiping this disk."
+"   {count} files are only in it, never in your photos ({size}): 'import' "
+"copies them into them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "   … and {count} more."
+msgid_plural "   … and {count} more."
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr ""
+
+#, python-brace-format
+msgid " {count} other file is one you set aside or deleted before: not proposed."
+msgid_plural ""
+" {count} other files are ones you set aside or deleted before: not "
+"proposed."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
@@ -554,6 +571,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Add one first: mh folders add --backup <folder>, or --backup <folder> on "
+"this command."
+msgstr ""
+
+msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
 "never changed: mh folders add --backup <folder>."
@@ -568,6 +590,9 @@ msgstr ""
 msgid ""
 "Add the settings of this version to your config.toml, with their "
 "explanation; your values and comments are kept."
+msgstr ""
+
+msgid "Add your photo folder: mh folders add <folder>."
 msgstr ""
 
 msgid "Advanced options"
@@ -901,6 +926,10 @@ msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr ""
 
 #, python-brace-format
+msgid "Changed your mind? 'media-hygiene undo {run_id}' removes the copies:"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Changed your mind? 'media-hygiene undo {run_id}' removes the sidecars "
 "written and puts the others back as they were:"
@@ -1107,6 +1136,9 @@ msgstr ""
 msgid "Copies"
 msgstr ""
 
+msgid "Copies each file, then compares it with its source."
+msgstr ""
+
 msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
@@ -1128,6 +1160,11 @@ msgstr ""
 msgid "Copy and paste this command to run it again."
 msgstr ""
 
+msgid ""
+"Copy into your photos what only a backup (a NAS) holds, never what you "
+"set aside or deleted before; each copy proven (journaled, undoable)."
+msgstr ""
+
 #, python-brace-format
 msgid "Copy it (Ctrl+C): {command}"
 msgstr ""
@@ -1136,6 +1173,15 @@ msgid "Copy the command"
 msgstr ""
 
 msgid "Copy the photos to a local disk, or mount it yourself with -v."
+msgstr ""
+
+msgid "Copy them into your photos?"
+msgstr ""
+
+msgid "Copy without asking first."
+msgstr ""
+
+msgid "Copying"
 msgstr ""
 
 msgid "Correct it, then run the same command again."
@@ -2032,6 +2078,11 @@ msgstr ""
 msgid "Folder pairs review"
 msgstr ""
 
+msgid ""
+"Folder receiving the copies (host path); default: 'From NAS' in your "
+"first photo folder, the folders of the backup kept below it."
+msgstr ""
+
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
 
@@ -2129,6 +2180,9 @@ msgid "Free the space of the quarantine, for good"
 msgstr ""
 
 msgid "Freed"
+msgstr ""
+
+msgid "From WSL or Linux, mount the share yourself, then give its folder."
 msgstr ""
 
 msgid "From year"
@@ -2425,6 +2479,9 @@ msgid "KB"
 msgstr ""
 
 msgid "Keep both names (link)"
+msgstr ""
+
+msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
 msgstr ""
 
 msgid "Keep one of them: the other is a copy."
@@ -2913,6 +2970,9 @@ msgstr ""
 msgid "No audit yet."
 msgstr ""
 
+msgid "No backup folder to import from."
+msgstr ""
+
 msgid "No burst series: nothing to review."
 msgstr ""
 
@@ -3046,6 +3106,9 @@ msgstr ""
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
 " this computer), then type mh phone again."
+msgstr ""
+
+msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
 
 msgid ""
@@ -3334,6 +3397,9 @@ msgstr ""
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr ""
 
+msgid "Nothing to import: every file of the backup is dealt with."
+msgstr ""
+
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
@@ -3586,6 +3652,10 @@ msgid "Pair {number} of {total}"
 msgstr ""
 
 msgid "Parties"
+msgstr ""
+
+#, python-brace-format
+msgid "Password of {share} (asked once, never shown)"
 msgstr ""
 
 msgid ""
@@ -4605,6 +4675,9 @@ msgstr ""
 msgid "Stopped before the end, as asked."
 msgstr ""
 
+msgid "Stopped by Ctrl+C: type the command again for the rest."
+msgstr ""
+
 msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
 
@@ -5038,6 +5111,16 @@ msgstr ""
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The password of {share} holds a comma or a double quote, which Docker "
+"cannot pass: change it on the NAS."
+msgstr ""
+
+#, python-brace-format
+msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
 msgid ""
@@ -5635,6 +5718,9 @@ msgstr ""
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr ""
 
+msgid "User name on the NAS"
+msgstr ""
+
 msgid ""
 "Validate at once every series still to see whose proposal leaves nothing "
 "to judge (V)"
@@ -6133,6 +6219,9 @@ msgstr[1] ""
 msgid "another program is using it"
 msgstr ""
 
+msgid "answers"
+msgstr ""
+
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr ""
 
@@ -6143,6 +6232,9 @@ msgid "as planned, then next"
 msgstr ""
 
 msgid "audit"
+msgstr ""
+
+msgid "audit again: the new photos join your library."
 msgstr ""
 
 msgid "away from home: trips, visits, restaurants, playgrounds"
@@ -6294,6 +6386,9 @@ msgid "deleted on purpose: remembered, set aside if it comes back"
 msgstr ""
 
 msgid "docker pull failed: mh is unchanged."
+msgstr ""
+
+msgid "does not answer (powered off?)"
 msgstr ""
 
 #, python-format
@@ -7047,10 +7142,22 @@ msgid ""
 "cannot cross them, the copy is left as it is"
 msgstr ""
 
+msgid "the copy changed since (edited in another application?): kept"
+msgstr ""
+
 msgid "the copy differs from the original"
 msgstr ""
 
+msgid "the copy does not match its source"
+msgstr ""
+
+msgid "the copy is gone already"
+msgstr ""
+
 msgid "the copy of the previous sidecar does not match it"
+msgstr ""
+
+msgid "the copy was never proven (the run stopped): kept"
 msgstr ""
 
 msgid "the disk could not be read or written (input/output error)"
@@ -7378,6 +7485,10 @@ msgid "{backup} overlaps {folder}: give them apart."
 msgstr ""
 
 #, python-brace-format
+msgid "{backup}: a NAS backup is for mh in Windows PowerShell."
+msgstr ""
+
+#, python-brace-format
 msgid "{category} cannot be used in a category"
 msgstr ""
 
@@ -7593,6 +7704,16 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} file copied into your photos ({size}), each one compared with its"
+" source, read back where it was written."
+msgid_plural ""
+"{count} files copied into your photos ({size}), each one compared with "
+"its source, read back where they were written."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} file could not be read this time (disk, network or cloud): not "
 "marked broken, left alone by clean, read again at the next audit."
 msgid_plural ""
@@ -7614,6 +7735,14 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} file found."
 msgid_plural "{count} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file is an identical copy of another one of the backup: copied "
+"once."
+msgid_plural "{count} files are identical copies of others of the backup: copied once."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7686,6 +7815,12 @@ msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
 "moves them to the quarantine, and remembers them: if one comes back (a "
 "new copy from the phone), the audit proposes it again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file to copy into your photos ({size}):"
+msgid_plural "{count} files to copy into your photos ({size}):"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7917,6 +8052,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo has the words of the vision model; {left} left."
 msgid_plural "{count} photos have the words of the vision model; {left} left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo is probably in your photos already (a near copy: another "
+"size or format): not copied."
+msgid_plural ""
+"{count} photos are probably in your photos already (a near copy: another "
+"size or format): not copied."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8629,6 +8774,10 @@ msgid "{path}: not an XMP file this tool can read ({reason}); left as is."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: not copied: {reason}"
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr ""
 
@@ -8699,6 +8848,25 @@ msgid ""
 "{series}: only the sharpest shot (and those of protected folders) would "
 "stay, {aside}, saved in one write. Series to look at, still to see: "
 "{left}. Validate them? Z takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} could not be read by Docker: an older SMB? On a Synology: Control"
+" Panel, File Services, SMB, Advanced Settings, Maximum SMB protocol: "
+"SMB3."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} does not answer (the NAS is off?): this command runs without it. "
+"Power it on, then type the command again."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} refused this user name or password: type them again with mh "
+"folders add --backup."
 msgstr ""
 
 #, python-brace-format
@@ -8939,6 +9107,11 @@ msgstr ""
 msgid ""
 "🛟 Only .xmp sidecars are written, never a photo: each one is journaled "
 "and 'undo' takes it back."
+msgstr ""
+
+msgid ""
+"🛟 The backup is only read: each file is copied, compared with its source,"
+" journaled; 'undo' removes the copies."
 msgstr ""
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"

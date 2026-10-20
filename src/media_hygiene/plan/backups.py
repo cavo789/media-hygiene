@@ -11,10 +11,11 @@ identical copy in the library (`only`: to copy before wiping an old disk).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.paths.host_paths import is_within
+from media_hygiene.plan.backup_import import DealtWith, proposed
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -36,6 +37,8 @@ class BackupCoverage:
     files: int = 0
     missing: tuple[MediaFile, ...] = ()
     only: tuple[MediaFile, ...] = ()
+    # Of `only`, the contents the user already dealt with (0245, `backup_import`).
+    dealt: DealtWith = field(default_factory=DealtWith)
 
     @property
     def missing_size(self) -> int:
@@ -45,6 +48,15 @@ class BackupCoverage:
             The size of the files missing.
         """
         return sum(file.size for file in self.missing)
+
+    @property
+    def to_import(self) -> tuple[MediaFile, ...]:
+        """The files only in this backup that were never dealt with (0245).
+
+        Returns:
+            Them, in path order.
+        """
+        return proposed(self.only, self.dealt)
 
     @property
     def only_size(self) -> int:

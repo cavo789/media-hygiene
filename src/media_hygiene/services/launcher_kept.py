@@ -94,7 +94,10 @@ def kept_run(script: LauncherScript) -> KeptRun:
         image=image,
         pullable=image == PUBLISHED_IMAGE,
         fixed=len(script.data) - len(photos),
-        backups=tuple(quoted(volume.host, shell) for volume in script.backups),
+        backups=(
+            *(quoted(volume.host, shell) for volume in script.backups),
+            *(quoted(share.unc, shell) for share in script.nas),
+        ),
     )
 
 

@@ -27,6 +27,7 @@ from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.services.audit_analysis import Finders, analyse
 from media_hygiene.services.audit_listing import list_walk
+from media_hygiene.services.backup_dealt import gone_finder
 from media_hygiene.services.check_guide import CheckGuide
 from media_hygiene.services.check_tools import audit_tools
 from media_hygiene.services.data_checks import (
@@ -97,6 +98,7 @@ class AuditService:
                 found.unreadable,
                 filters,
                 found.files,
+                self._backups.folders,
             ),
             policy,
         )
@@ -164,6 +166,7 @@ class AuditService:
                 self._stopwatch,
                 returned_finder(self._runtime, deps),
                 self._backups,
+                gone_finder(self._runtime, deps) if self._backups.folders else None,
             )
             compared, integrity, returned = asyncio.run(
                 analyse(found.files, finders, coverage.files)

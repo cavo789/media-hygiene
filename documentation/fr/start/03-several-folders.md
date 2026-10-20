@@ -121,13 +121,30 @@ L'audit répond alors aux deux questions, en deux lignes :
 
 ```text
 🗄️ D:\sauvegarde : 37 fichiers de vos photos ne sont pas dans cette sauvegarde (412,0 Mo).
-   5 fichiers ne sont que là, nulle part ailleurs (18,3 Mo) : copiez-les avant d'effacer ce disque.
+   5 fichiers sont seulement là, jamais dans vos photos (18,3 Mo) : 'import' les copie dedans.
+   2 autres fichiers sont des fichiers que vous avez mis de côté ou supprimés avant : pas proposés.
 ```
 
 - **Ma sauvegarde est-elle complète ?** La première ligne : les fichiers de vos photos qui lui
   manquent.
 - **Puis-je effacer cet ancien disque ?** La seconde ligne : ses fichiers qui ne sont nulle part
-  ailleurs. Copiez-les d'abord ; l'outil ne copie jamais rien lui-même.
+  ailleurs. [`mh import`](../commands/import.md) les copie dans vos photos, chacun vérifié ;
+  ceux que vous avez mis de côté ou supprimés exprès ne sont jamais proposés.
+
+### Votre NAS : récupérer ce que lui seul contient
+
+Un partage d'un NAS est aussi une sauvegarde : `mh folders add --backup \\NAS\Photos` (son
+adresse, puis le nom du dossier partagé). `mh` demande une fois le nom d'utilisateur et le mot de
+passe, vérifie qu'il peut lire le partage, et propose de garder le mot de passe, chiffré pour
+votre seul compte Windows, sur ce PC. Avant chaque commande, il monte le partage en lecture seule
+(SMB 3) et le démonte après ; un NAS éteint est signalé en une ligne, et la commande se fait sans
+lui. `mh folders` dit s'il répond ; `mh folders remove \\NAS\Photos` l'oublie, avec son mot de
+passe.
+
+À travers Docker Desktop, un NAS se lit à environ 15 Mo/s (mesuré) : un premier audit d'un gros
+NAS prend du temps, les suivants ne lisent que ce qui a changé. Un Synology qui ne propose qu'un
+ancien SMB : *Panneau de configuration → Services de fichiers → SMB → Paramètres avancés →
+Protocole SMB maximum : SMB3*.
 
 Le rapport liste les deux, et `backup-missing.csv` et `backup-only.csv`, à côté de `plan.csv`,
 listent chaque fichier ([Comparer une sauvegarde ou un ancien disque](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)).

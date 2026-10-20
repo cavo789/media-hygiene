@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import shutil
 from dataclasses import replace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.gone_rows import gone_count, gone_records
 from media_hygiene.index.repository import FactsRepository
@@ -21,6 +21,7 @@ from tests.support.scenes import scene
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.config.layers import Layer
     from media_hygiene.index.gone_rows import GoneRecord
     from media_hygiene.paths.locations import Locations
     from media_hygiene.plan.models import AuditFindings
@@ -112,4 +113,49 @@ def test_a_copy_still_there_drops_the_record(locations: Locations) -> None:
     audit(locations)
     gone.unlink()
     assert audit(locations).gone == 0
+    assert not recorded(locations)
+
+
+_BACKUP: Final[Layer] = {"folders": {"backups": ["D:\\backup"]}}
+
+
+def audit_with_backup(locations: Locations) -> AuditFindings:
+    """Audit with a backup folder on D: (0204), as `mh` gives a NAS (0245)."""
+    runtime = make_runtime(locations, _BACKUP)
+    return AuditService(runtime, NullProgress()).run()
+
+
+def test_a_copy_in_a_backup_never_cancels_a_deletion(locations: Locations) -> None:
+    """0245: deleted from the library, kept on the NAS: still a deletion to answer."""
+    gone, _kept = photos(locations.data_dir / "c" / "Photos", 1, 2)
+    backup = locations.data_dir / "d" / "backup"
+    backup.mkdir(parents=True)
+    shutil.copy2(gone, backup / gone.name)
+    audit_with_backup(locations)
+    gone.unlink()
+    assert audit_with_backup(locations).gone == 1
+    assert [record.path for record in recorded(locations)] == [str(gone)]
+
+
+def test_a_deletion_is_never_followed_into_a_backup(locations: Locations) -> None:
+    """0245: the same content reaching the NAS as it leaves the library: no move."""
+    gone, _kept = photos(locations.data_dir / "c" / "Photos", 1, 2)
+    backup = locations.data_dir / "d" / "backup"
+    backup.mkdir(parents=True)
+    audit_with_backup(locations)
+    shutil.copy2(gone, backup / gone.name)  # same size, time and digest
+    gone.unlink()
+    assert audit_with_backup(locations).gone == 1
+
+
+def test_a_file_gone_from_a_backup_is_not_asked_about(locations: Locations) -> None:
+    """0245: a photo deleted on the NAS is forgotten, never put to `review --gone`."""
+    photos(locations.data_dir / "c" / "Photos", 1)
+    (on_nas,) = photos(locations.data_dir / "d" / "backup", 2)
+    twin = on_nas.with_name("twin.jpg")  # two copies: their digests are computed
+    shutil.copy2(on_nas, twin)
+    audit_with_backup(locations)
+    on_nas.unlink()
+    twin.unlink()
+    assert audit_with_backup(locations).gone == 0
     assert not recorded(locations)

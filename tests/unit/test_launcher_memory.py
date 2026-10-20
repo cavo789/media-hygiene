@@ -25,7 +25,7 @@ def line(data: int, backups: int) -> str:
     runtime = cast("Runtime", SimpleNamespace(settings=Settings()))
     script = cast(
         "LauncherScript",
-        SimpleNamespace(data=(_FOLDER,) * data, backups=(_BACKUP,) * backups),
+        SimpleNamespace(data=(_FOLDER,) * data, backups=(_BACKUP,) * backups, nas=()),
     )
     return remembered(runtime, script)
 

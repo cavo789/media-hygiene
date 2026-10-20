@@ -31,6 +31,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
 | look through my folders and remove photos, without Explorer, undoably | [`browse`](commands/browse.md), then `clean --decisions` |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
+| get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
 | check every setting and every folder before the tool acts | [`config`](commands/config.md) |
@@ -73,6 +74,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
 | [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
+| [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 
 ## Options
 
@@ -88,10 +90,10 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--prefer PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder whose copies are kept first; repeatable, ordered. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#prefer-a-folder) |
 | `--protect PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never modified; its files are the copies kept. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#protect-a-folder) |
 | `--exclude PATH` | `audit`, `review`, `clean`, `crosscheck` | Folder never analysed. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#exclude-a-folder) |
-| `--backup PATH` | `audit`, `review`, `clean`, `crosscheck`; `undo`, `sort`, `album`, `xmp` | A backup or an old disk: compared, never changed; the audit says what it lacks and what only it holds. The commands that change files leave it alone, never refused for being read-only; `mh` passes your backups to each. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk) |
+| `--backup PATH` | `audit`, `review`, `clean`, `crosscheck`, `import`; `undo`, `sort`, `album`, `xmp` | A backup or an old disk: compared, never changed; the audit says what it lacks and what only it holds. The commands that change files leave it alone, never refused for being read-only; `mh` passes your backups to each. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk) |
 | `--exclude-name NAME` | `audit`, `clean`, `crosscheck` | Folder name never analysed, wherever it is (case ignored, `*` and `?` allowed: `--exclude-name Thumbnails,.Trash-*`); adds to the system and trash folders always skipped. [Cleaning, step 5](clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--ext EXT` | `audit`, `clean`, `crosscheck` | Only analyse these categories or extensions (`--ext photo,video`, `--ext png,webp`); built-in categories `photo`, `raw`, `video`, `media`, plus those of `[scan.categories]`; `media` (every photo, RAW and video) by default. Other types too (`--ext pdf,docx`). [Cleaning, step 6](clean/06-file-types.md) |
-| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify` and `tags`, before describing many photos with a local model; `audit`, before looking for faces with `--people`). |
+| `--yes`, `-y` | `clean`, `sort`, `undo`, `purge`, `classify`, `tags`, `audit`, `import` | Do not ask for confirmation (`undo` asks only before undoing several runs of one sort; `classify` and `tags`, before describing many photos with a local model; `audit`, before looking for faces with `--people`). |
 | `--people` | `audit` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking. [People](reference-people.md#during-the-audit-audit---people) |
 | `--tier exact\|near\|near-all` | `clean` | `exact` (default): byte-for-byte copies only. `near`: also move the sure near duplicates, and those decided with `review --near`, to the quarantine. `near-all`: every near duplicate. [Cleaning, step 11](clean/11-near-duplicates.md#sure-groups-and-groups-to-check) |
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone, keep none) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |

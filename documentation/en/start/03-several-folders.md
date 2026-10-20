@@ -113,12 +113,27 @@ The audit then answers the two questions, in two lines:
 
 ```text
 🗄️ D:\backup: 37 files of your photos are not in this backup (412.0 MB).
-   5 files are only in it, nowhere else (18.3 MB): copy them before wiping this disk.
+   5 files are only in it, never in your photos (18.3 MB): 'import' copies them into them.
+   2 other files are ones you set aside or deleted before: not proposed.
 ```
 
 - **Is my backup complete?** The first line: the files of your photos it lacks.
-- **Can I wipe this old disk?** The second line: its files that are nowhere else. Copy them
-  first; the tool never copies anything itself.
+- **Can I wipe this old disk?** The second line: its files that are nowhere else.
+  [`mh import`](../commands/import.md) copies them into your photos, each one checked; the
+  ones you set aside or deleted on purpose are never proposed.
+
+### Your NAS: get back what only it holds
+
+A share of a NAS is a backup too: `mh folders add --backup \\NAS\Photos` (its address, then the
+name of the shared folder). `mh` asks the user name and the password once, checks it can read the
+share, and offers to keep the password, encrypted for your Windows account only, on this PC.
+Before each command it mounts the share read-only (SMB 3) and unmounts it after; a NAS powered
+off is said in one line, and the command runs without it. `mh folders` tells whether it
+answers; `mh folders remove \\NAS\Photos` forgets it and its password.
+
+Through Docker Desktop a NAS is read at about 15 MB/s (measured): a first audit of a large one
+takes a while, the next ones read only what changed. A Synology that offers only an older SMB:
+*Control Panel → File Services → SMB → Advanced Settings → Maximum SMB protocol: SMB3*.
 
 The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `plan.csv`, list
 every file ([Compare a backup or an old disk](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).

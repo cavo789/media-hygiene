@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.copy_in_undo import never_copied
 from media_hygiene.actions.kinds import Status
 from media_hygiene.actions.link_undo import never_linked
 from media_hygiene.actions.reversal import XMP_REVERSALS, Reversal
@@ -38,6 +39,8 @@ def never_happened(entry: JournalEntry, reversal: Reversal) -> bool:
         return never_written(entry)
     if reversal is Reversal.SEPARATE_LINK:
         return never_linked(entry)
+    if reversal is Reversal.REMOVE_COPY:
+        return never_copied(entry)
     return (
         entry.status is Status.PENDING
         and reversal not in _NOT_ABOUT_THE_PATH

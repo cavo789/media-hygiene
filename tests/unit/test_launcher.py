@@ -81,7 +81,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert '-e "TZ=Europe/Brussels" `' in text
     assert "MEDIA_HYGIENE_LAUNCHER=1" not in text  # its own shell, never carried
     assert (
-        "            cavo789/media-hygiene @rest @backups\n"
+        "            cavo789/media-hygiene @rest @backups @($nas.backups)\n"
         "        $status = $LASTEXITCODE" in text
     )
 

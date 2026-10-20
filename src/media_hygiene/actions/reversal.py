@@ -12,6 +12,8 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.album_links import link_blocker, marker_blocker
+from media_hygiene.actions.copy_in_undo import copy_blocker
+from media_hygiene.actions.folder_undo import folder_blocker
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.link_undo import separate_blocker
 from media_hygiene.actions.quarantine import QUARANTINED
@@ -21,7 +23,7 @@ from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
     from media_hygiene.actions.journal import JournalEntry
 
@@ -41,6 +43,7 @@ class Reversal(Enum):
     REMOVE_XMP = auto()
     RESTORE_XMP = auto()
     FORGET_MARK = auto()  # a mark: nothing on the disk, the undo line is the change
+    REMOVE_COPY = auto()  # a file `import` copied in (0245): removed while unchanged
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -56,13 +59,25 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
         ActionKind.MARK_GONE: Reversal.FORGET_MARK,
+        ActionKind.COPY_IN: Reversal.REMOVE_COPY,
     }
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
 _WITHOUT_SOURCE: Final = frozenset({Reversal.RECREATE_EMPTY, Reversal.RECREATE_FOLDER})
 # Sidecars `xmp` wrote: undone only while they hold what it wrote (`xmp_undo`).
 XMP_REVERSALS: Final = frozenset({Reversal.REMOVE_XMP, Reversal.RESTORE_XMP})
-_LINKS: Final = frozenset({Reversal.REMOVE_LINK, Reversal.SEPARATE_LINK})
+# The reversals checked by what the file itself holds: sidecars, links, copies in.
+_OWN_CHECKS: Final[Mapping[Reversal, Callable[[JournalEntry], str | None]]] = (
+    MappingProxyType(
+        {
+            Reversal.REMOVE_XMP: xmp_blocker,
+            Reversal.RESTORE_XMP: xmp_blocker,
+            Reversal.REMOVE_LINK: link_blocker,
+            Reversal.SEPARATE_LINK: separate_blocker,
+            Reversal.REMOVE_COPY: copy_blocker,
+        }
+    )
+)
 
 
 def reversal_of(entry: JournalEntry) -> Reversal:
@@ -99,13 +114,11 @@ def blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     """
     if reversal is Reversal.FORGET_MARK:
         return None
-    if reversal in XMP_REVERSALS:
-        return xmp_blocker(entry)
-    if reversal in _LINKS:
-        album = reversal is Reversal.REMOVE_LINK
-        return link_blocker(entry) if album else separate_blocker(entry)
+    own = _OWN_CHECKS.get(reversal)
+    if own is not None:
+        return own(entry)
     if reversal is Reversal.REMOVE_CREATED_FOLDER:
-        return _folder_blocker(Path(entry.path))
+        return folder_blocker(Path(entry.path))
     if reversal is Reversal.REMOVE_MARKER:
         return marker_blocker(Path(entry.path))
     return _restore_blocker(entry, reversal)
@@ -127,20 +140,6 @@ def _restore_blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     if reversal in _WITHOUT_SOURCE:
         return None
     return _source_blocker(entry, reversal)
-
-
-def _folder_blocker(folder: Path) -> str | None:
-    """Tell why a folder a run created cannot be removed.
-
-    Args:
-        folder: The folder.
-
-    Returns:
-        The reason, or None when it is there and empty.
-    """
-    if not folder.is_dir():
-        return _("the folder is gone already")
-    return _("the folder is not empty") if any(folder.iterdir()) else None
 
 
 def _source_blocker(entry: JournalEntry, reversal: Reversal) -> str | None:

@@ -11,19 +11,18 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-import logging
 import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.no_overwrite import COPY_INSTEAD, rename_no_replace
-from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
-from media_hygiene.tags.xmp_doc import XmpError, parse
+from media_hygiene.tags.xmp_doc import parse
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -33,7 +32,6 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
 
-_LOGGER = logging.getLogger(__name__)
 _TEMPORARY: Final = ".media-hygiene.tmp"
 _EXCLUSIVE: Final = "xb"
 
@@ -84,24 +82,13 @@ class XmpExecutor:
         Returns:
             True when Ctrl+C stopped the run.
         """
-        progress = self._context.progress
-        progress.start(
+        return JobLoop(
+            self._context.progress,
             Step(_("Writing"), _("Writes the words into the .xmp sidecars.")),
-            len(jobs),
-        )
-        stopped = False
-        for job in jobs:
-            if stop():
-                stopped = True
-                break
-            try:
-                self._write(job)
-            except (OSError, XmpError) as exc:
-                _LOGGER.debug("Sidecar not written: %s", job.sidecar, exc_info=True)
-                self._tally.failed.append(Incident(job.sidecar, why(exc)))
-            progress.advance()
-        progress.stop()
-        return stopped
+            self._tally,
+            self._write,
+            lambda job: job.sidecar,
+        ).run(jobs, stop)
 
     def _write(self, job: XmpJob) -> None:
         """Journal, keep the previous sidecar, write, read back.

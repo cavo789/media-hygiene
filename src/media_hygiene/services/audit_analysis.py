@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.plan.backups import BackupFolders, ComparedFiles
 from media_hygiene.scan.stopwatch import Stage
+from media_hygiene.services.backup_dealt import dealt_with
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -33,6 +34,8 @@ class Finders:
     stopwatch: Stopwatch
     returned: ReturnedFinder | None = None
     backups: BackupFolders = field(default_factory=BackupFolders)
+    # The deletions waiting for `review --gone`: not proposed back from a backup (0245).
+    gone: ReturnedFinder | None = None
 
 
 def healthy_files(
@@ -82,5 +85,6 @@ async def analyse(
     with finders.stopwatch.timing(Stage.DIGESTS):
         groups = await finders.exact.find([*healthy, *backup])
         returned = await finders.returned.find(healthy) if finders.returned else ()
-    compared = finders.backups.compare(groups, ComparedFiles(healthy, backup))
+        compared = finders.backups.compare(groups, ComparedFiles(healthy, backup))
+        compared = await dealt_with(compared, finders)
     return compared, integrity, returned
