@@ -164,7 +164,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 │ --port             <int range> [x>=1]  Port of the page. docker run          │
 │                                        publishes it under the same number on │
 │                                        your computer: -p 127.0.0.1:9000:9000 │
-│                                        for --port 9000. Default: 8088.       │
+│                                        for --port 9000. Default:  port in    │
+│                                        config.toml, 8088.                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
 │ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │

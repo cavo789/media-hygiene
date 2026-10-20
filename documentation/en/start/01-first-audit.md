@@ -167,7 +167,7 @@ What you can do
 kept whole.
 
 ✅ HTML report:
-C:\Users\you\media-hygiene\reports\20261019-153448-audit\report.html
+C:\Users\you\media-hygiene\reports\20261020-110045-audit\report.html
 👉 What next: run 'clean' to set 3.4 MB of copies aside.
 mh clean
 💡 Type mh open: your browser shows every report.

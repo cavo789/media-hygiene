@@ -118,6 +118,11 @@ et des dernières lignes de chaque exécution.
 │                   passages d'un tri (remplace sort.confirm).                 │
 │ --help  -h        Affiche ce message et quitte.                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
+│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
+│                        seule : jamais modifié, et jamais refusé pour cela    │
+│                        (mh passe vos sauvegardes). Répétable.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

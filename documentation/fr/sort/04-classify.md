@@ -80,9 +80,9 @@ Nouvel An, Saint-Nicolas.
 À vérifier ou à trier : 5 fichiers dans 1 événement.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
 ✅ Classeur à modifier :
-C:\Users\you\media-hygiene\reports\20261019-153651-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261020-110243-classify\classify.xlsx
 ✅ Rapport avec les photos :
-C:\Users\you\media-hygiene\reports\20261019-153651-classify\report.html
+C:\Users\you\media-hygiene\reports\20261020-110243-classify\report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

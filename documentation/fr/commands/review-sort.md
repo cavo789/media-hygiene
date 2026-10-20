@@ -104,7 +104,8 @@ fois suivante, il reprend.
 │                                     sous le même numéro sur votre            │
 │                                     ordinateur, par exemple -p               │
 │                                     127.0.0.1:9000:9000 pour --port 9000.    │
-│                                     Par défaut : 8088.                       │
+│                                     Par défaut :  port dans config.toml,     │
+│                                     8088.                                    │
 │ --help  -h                          Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

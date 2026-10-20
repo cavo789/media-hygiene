@@ -62,7 +62,7 @@ named, and the address of the page: a click on a face opens its photo. Ctrl+C, o
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysed: 13 faces, 0.04 s per photo.
+✅ 37 photos analysed: 14 faces, 0.04 s per photo.
 ✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each
@@ -145,7 +145,8 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 │ --port            <int range> [x>=1]  Port of the page. docker run publishes │
 │                                       it under the same number on your       │
 │                                       computer: -p 127.0.0.1:9000:9000 for   │
-│                                       --port 9000. Default: 8088.            │
+│                                       --port 9000. Default:  port in         │
+│                                       config.toml, 8088.                     │
 │ --help    -h                          Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

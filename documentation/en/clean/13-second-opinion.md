@@ -63,7 +63,7 @@ After the usual summary and Czkawka's run, the two tools are compared group by g
 
 <!-- capture: crosscheck.txt|re:^Czkawka results|agrees -->
 ```text
-Czkawka results of 2026-10-19 15:35 UTC.
+Czkawka results of 2026-10-20 11:01 UTC.
 ✅ Czkawka agrees: the same 32 extra copies in 20 groups.
 ```
 

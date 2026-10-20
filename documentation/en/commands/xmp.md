@@ -131,6 +131,11 @@ xmp_folder_gps = true
 │                         be written.                                          │
 │ --help   -h             Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
+│                        changed, and not refused for being read-only (mh      │
+│                        passes your backups). Repeatable.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

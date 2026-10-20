@@ -117,6 +117,11 @@ rassemble les plus belles photos de Noël. La casse ne compte pas.
 │                                          celui du dernier classify par       │
 │                                          défaut.                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
+│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
+│                        seule : jamais modifié, et jamais refusé pour cela    │
+│                        (mh passe vos sauvegardes). Répétable.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>
