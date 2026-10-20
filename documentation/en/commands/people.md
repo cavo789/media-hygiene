@@ -58,7 +58,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
 
 The first run downloads the two face models into the cache, once. Each photo is analysed once;
 the next runs analyse only the new ones. Then it prints the groups found, the people already
-named, and the address of the page: a click on a face opens its photo. Ctrl+C stops it.
+named, and the address of the page: a click on a face opens its photo. Ctrl+C, or closing its tab, stops it.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text

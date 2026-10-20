@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
-from media_hygiene.constants import Locale
+from media_hygiene.constants import ExitCode, Locale
 from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
@@ -191,3 +191,20 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
     )
     assert "        if (-not $chosen -and $after) { $status = 0; continue }" in text
     assert "            @relay `" in text
+
+
+def test_a_page_whose_tab_was_closed_ends_the_loop(tmp_path: Path) -> None:
+    """0262: browse opened from home, its tab closed: prompt back, home not again."""
+    done = _bash(tmp_path, "mh", ("104", str(int(ExitCode.PAGE_CLOSED))))
+    assert _lines(done) == ["home:relayed", "browse:relayed", "status=0"]
+
+
+def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
+    """0262: the same rule in mh.ps1, before home would open again."""
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
+    code = int(ExitCode.PAGE_CLOSED)
+    closed = f"if ($status -eq {code}) {{ $global:LASTEXITCODE = 0; return }}"
+    assert text.index(closed) < text.index("if ($status -le 100) {")

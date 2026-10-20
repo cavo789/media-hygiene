@@ -14,12 +14,14 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
+from media_hygiene.review.presence import Presence
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
     SEARCH_PATH,
@@ -111,7 +113,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
     )
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        door = EndingDoor(SearchApp(place, pages, executor), ending)
+        closing = Presence(ending, ExitCode.PAGE_CLOSED)  # its tab closed (0262)
+        door = EndingDoor(SearchApp(place, pages, executor), ending, closing)
         ready = partial(_announce, runtime, start)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return Served(len(chosen.paths()), code)

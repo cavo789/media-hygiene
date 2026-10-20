@@ -144,6 +144,7 @@ _{{ function }}_home() {
     local _{{ function }}_relay=1 status=0 after=0 steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
+        if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
         if [[ "$status" -le {{ step_base }} ]]; then
             status=0
             after=0

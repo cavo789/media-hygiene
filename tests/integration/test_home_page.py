@@ -10,12 +10,16 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+import typer
 
 import media_hygiene
+from media_hygiene.cli.context import user_errors
 from media_hygiene.cli.home_audit import page_audit
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.cli.menu_steps import build_menu, choice_lines
 from media_hygiene.cli.status_view import status_lines
+from media_hygiene.constants import ExitCode
+from media_hygiene.errors import PageClosed
 from media_hygiene.review import presence
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.ending import (
@@ -372,3 +376,33 @@ def test_a_closed_tab_or_quit_ends_home_with_0(
     )
     assert replies[0].status == 200
     assert code == STOPPED
+
+
+def test_a_page_whose_tab_was_closed_raises_page_closed(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0262: any page served by run_server: its tab left, none came back."""
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    write_burst(locations.data_dir)
+    session = review_session(locations)
+    leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
+
+    async def scenario() -> Reply:
+        with ThreadPoolExecutor(1) as executor:
+            ports: asyncio.Queue[int] = asyncio.Queue()
+            app = ReviewApp(session, PAGE, executor)
+            server = asyncio.create_task(run_server(app, 0, ports.put_nowait))
+            reply = await send_call(await ports.get(), leaving)
+            with pytest.raises(PageClosed):
+                await asyncio.wait_for(server, 2)
+            return reply
+
+    assert asyncio.run(scenario()).status == 200
+
+
+def test_a_closed_page_exits_with_its_own_code(locations: Locations) -> None:
+    """0262: `user_errors` says it in one line and exits with PAGE_CLOSED."""
+    runtime = make_runtime(locations)
+    with pytest.raises(typer.Exit) as ended, user_errors(runtime.output):
+        raise PageClosed
+    assert ended.value.exit_code == ExitCode.PAGE_CLOSED

@@ -63,3 +63,12 @@ class AlbumError(MediaHygieneError):
 
 class FaceModelError(MediaHygieneError):
     """The face models cannot be run: no runtime, a failed or altered download."""
+
+
+class PageClosed(Exception):  # noqa: N818  # not an error: the user's own gesture
+    """A page's tab was closed and none came back: its command ends (0262).
+
+    Not a `MediaHygieneError`: nothing went wrong. `user_errors` says it in one line
+    and exits with `ExitCode.PAGE_CLOSED`, which ends the loop of `mh` instead of
+    opening the home page again.
+    """

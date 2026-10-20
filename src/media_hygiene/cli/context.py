@@ -15,7 +15,7 @@ from media_hygiene.config.zone import apply_timezone
 from media_hygiene.console.logs import configure_logging
 from media_hygiene.console.output import Output, make_console
 from media_hygiene.constants import ColorMode, ExitCode, Verbosity
-from media_hygiene.errors import MediaHygieneError
+from media_hygiene.errors import MediaHygieneError, PageClosed
 from media_hygiene.i18n import _
 from media_hygiene.paths.locations import Locations
 from media_hygiene.paths.mount_kind import MountKind
@@ -40,7 +40,7 @@ def user_errors(output: Output) -> Iterator[None]:
         Control to the guarded block.
 
     Raises:
-        typer.Exit: A domain error occurred.
+        typer.Exit: A domain error occurred, or the page's tab was closed (0262).
     """
     try:
         yield
@@ -48,6 +48,9 @@ def user_errors(output: Output) -> Iterator[None]:
         output.error(escape(exc.message))  # plain text: `[general]` is not markup
         follow_up(output, exc)
         raise typer.Exit(ExitCode.FAILURE) from exc
+    except PageClosed as closed:
+        output.info(_("The page's tab was closed: the page stopped."))
+        raise typer.Exit(ExitCode.PAGE_CLOSED) from closed
 
 
 def warn(output: Output, error: MediaHygieneError) -> None:

@@ -1,6 +1,8 @@
 {# "⌂ Home" on every page but the home page itself: `POST /api/stop` ends this page's server
    (code 0) and `mh` opens the home page again on the same port; the page reloads once the
-   server was seen gone, then answering again. Included by each page, from any package. #}
+   server was seen gone, then answering again. Included by each page, from any package.
+   The page also says it is alive, and that it leaves on pagehide: its server ends once no
+   tab shows it (0262, review/presence.py; 10 s is its ALIVE_SECONDS). #}
 <a id="homeLink" href="#" title="{{ _('Close this page and go back to the home page: mh opens it again.') }}"
    style="position: fixed; right: 12px; bottom: 12px; z-index: 50; padding: 4px 12px; border-radius: 999px;
           background: #0969da; color: #fff; font: 600 14px/1.6 system-ui, sans-serif; text-decoration: none;">{{ _("⌂ Home") }}</a>
@@ -13,6 +15,11 @@
 <script>
 (() => {
   const POLL_MS = 1000;
+  const ALIVE_MS = 10000;
+  const alive = (leaving) => fetch("/api/alive", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => undefined);
+  window.addEventListener("pageshow", () => alive(false));
+  window.addEventListener("pagehide", () => alive(true));
+  window.setInterval(() => alive(false), ALIVE_MS);
   const closed = document.getElementById("homeClosed");
   document.getElementById("homeLink").addEventListener("click", (event) => {
     event.preventDefault();

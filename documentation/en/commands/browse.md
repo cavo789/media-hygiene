@@ -63,7 +63,7 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 - **Search by words** opens the [`search`](search.md) page, on the same server: what you set
   aside there and here goes to the same file.
 
-Ctrl+C stops the page; when files are set aside, `browse` proposes the next step:
+Ctrl+C, or closing its tab, stops the page; when files are set aside, `browse` proposes the next step:
 
 ```powershell
 mh clean --decisions

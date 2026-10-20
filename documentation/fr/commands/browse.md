@@ -65,7 +65,7 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
 - **Chercher par mots** ouvre la page [`search`](search.md), sur le même serveur : ce que vous y
   mettez de côté va dans le même fichier.
 
-Ctrl+C arrête la page ; quand des fichiers sont mis de côté, `browse` propose l'étape suivante :
+Ctrl+C, ou fermer son onglet, arrête la page ; quand des fichiers sont mis de côté, `browse` propose l'étape suivante :
 
 ```powershell
 mh clean --decisions

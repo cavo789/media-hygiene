@@ -6149,6 +6149,9 @@ msgstr "La page ne tourne plus : relancez people."
 msgid "The page is not running any more: type mh phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh phone."
 
+msgid "The page's tab was closed: the page stopped."
+msgstr "L'onglet de la page a été fermé : la page s'est arrêtée."
+
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."

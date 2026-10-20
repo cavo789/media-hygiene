@@ -18,7 +18,12 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.review.ending import STOP_PATH, EndingDoor, serve_until_ended
+from media_hygiene.review.ending import (
+    STOP_PATH,
+    STOPPED,
+    EndingDoor,
+    serve_until_ended,
+)
 from media_hygiene.review.files import FILE_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH, PhoneApp
@@ -26,6 +31,7 @@ from media_hygiene.review.phone_file import PHONE_DECISIONS
 from media_hygiene.review.phone_session import PhonePages, PhoneSession
 from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import decisions_place
+from media_hygiene.review.presence import Presence
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
@@ -96,7 +102,8 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
 
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PhoneApp(session, _page(place), executor, runtime.previews_dir)
-        door = EndingDoor(app, app.ending)
+        # Its tab closed: as Stop, nothing deleted; mh reads the page's lines (0262).
+        door = EndingDoor(app, app.ending, Presence(app.ending, STOPPED))
         asyncio.run(serve_until_ended(door, review.port, ready))
     return session.ticked_lines() if session.freeing else ()
 

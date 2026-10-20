@@ -45,7 +45,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene places
 ```
 
-Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C stops the map.
+Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C, or closing its tab, stops the map.
 
 ![The places map: OpenStreetMap tiles of the Cinquantenaire park in Brussels, the circle of the photos taken there, the green circle of the place Parc du Cinquantenaire just saved, and on the left the list of places and of the largest clusters without a name](../images/places.webp)
 
