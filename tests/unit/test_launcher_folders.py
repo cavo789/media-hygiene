@@ -328,9 +328,10 @@ def test_the_cli_says_which_commands_take_a_backup() -> None:
     line = next(
         line for line in result.stdout.splitlines() if line.startswith("    $backups")
     )
-    for name in ("audit", "clean", "crosscheck", "review"):
+    # The commands that change files take it too (0262): never refused as read-only.
+    for name in ("audit", "clean", "crosscheck", "review", "sort", "undo", "xmp"):
         assert f"'{name}'" in line
-    for name in ("history", "sort", "undo", "home"):
+    for name in ("history", "home"):
         assert f"'{name}'" not in line
 
 

@@ -4,6 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import typer
+from typer.core import TyperGroup
+
+from media_hygiene.cli.app import build_app
+from media_hygiene.cli.cmd_launcher_parts import _takes_backup
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.undo import undo_run
@@ -117,3 +122,29 @@ def test_a_grouped_sort_with_quarantined_junk_is_refused(
     assert "Mount the same quarantine folder" in result.output  # Thumbs.db
     assert not asked
     assert snapshot(locations.data_dir) == after
+
+
+def test_every_command_that_acts_takes_the_backups(cli: CliRunner) -> None:
+    """0262 run of 2026-10-20: mh passes `--backup` to the commands taking it.
+
+    A backup is mounted read-only for every command: a command that changes files
+    without knowing it is a backup refused it ("mounted read-only"), `undo` first.
+    """
+    del cli  # the app is built once the locale is installed, as the fixture does
+    group = typer.main.get_command(build_app())
+    assert isinstance(group, TyperGroup)
+    context = typer.Context(group)
+    for name in ("clean", "undo", "sort", "album", "xmp"):
+        assert _takes_backup(group.get_command(context, name)), name
+
+
+def test_undo_with_a_backup_named(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`undo --backup`, as mh types it: the run is undone, the backup left alone."""
+    sort_run = SortRun(locations.data_dir / "photos", locations.journal_dir)
+    without_quarantine(monkeypatch)
+    result = run(cli, "undo", "--yes", "--backup", "D:\\backup")
+    assert result.exit_code == 0, result.output
+    for name, data in sort_run.photos.items():
+        assert (sort_run.source / name).read_bytes() == data

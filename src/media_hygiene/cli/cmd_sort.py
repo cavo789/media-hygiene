@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
+from media_hygiene.cli import folder_options
 from media_hygiene.cli.context import runtime_of, user_errors, warn
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
@@ -46,11 +47,13 @@ def sort_command(  # pylint: disable=too-many-arguments
             help=_("Keep the source folders the sort leaves empty."),
         ),
     ] = False,
+    backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Check the workbook, confirm, then move the files into their folders.
 
     Args:
         ctx: Typer context holding the runtime.
+        backup: `--backup` folders, read-only on purpose: never refused (0262).
         workbook: The workbook (host or container path), or None for the latest.
         yes: `--yes`, skip the confirmation.
         keep_empty_folders: `--keep-empty-folders`, no folder is removed.
@@ -70,7 +73,7 @@ def sort_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.sort import SortService
     from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
-    runtime = runtime_of(ctx)
+    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
     with user_errors(output):
         service = SortService(runtime, NullProgress())

@@ -340,6 +340,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A backup or an old disk, mounted read-only: never changed, and not "
+"refused for being read-only (mh passes your backups). Repeatable."
+msgstr ""
+
+msgid ""
 "A backup or an old disk: compared, never changed. Says what it lacks and "
 "what only it holds. Repeatable."
 msgstr ""
