@@ -922,13 +922,13 @@ if (Wanted 14) {
     Write-Host "    The home page opens in your browser. Click Run on the 'clean' step: it runs in the"
     Write-Host "    PowerShell window and asks its question there; answer n. The page must come back."
     Write-Host "    Then click Run on a 'review' step; on that page, click the Home link at the bottom right."
-    Write-Host "    Finally click Quit on the home page."
+    Write-Host "    Finally press Ctrl+C in the PowerShell window (the home page has no Quit button)."
     $opened = Read-Host "14h. mh alone opened the home page in the browser? (y/n)"
     $asked = Read-Host "14h. Run on 'clean' ran it in the PowerShell window, with its question? (y/n)"
     $back = Read-Host "14h. After it, the home page came back by itself (reloaded)? (y/n)"
     $homeLink = Read-Host "14h. Home from the review page brought the home page back? (y/n)"
-    $quit = Read-Host "14h. Quit gave the PowerShell prompt back, no red error? (y/n)"
-    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, Home from review $homeLink, Quit clean $quit"
+    $quit = Read-Host "14h. Ctrl+C gave the PowerShell prompt back, no red error? (y/n)"
+    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, Home from review $homeLink, Ctrl+C clean $quit"
     Write-Host "Close that window."
 }
 
