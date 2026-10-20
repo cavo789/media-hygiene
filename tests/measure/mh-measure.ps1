@@ -1726,7 +1726,8 @@ def listed():
 
 
 def first_year(names):
-    names = sorted(name for name in names if not name.startswith(('@', '#')))
+    # The latest year folder: the earliest may hold a single file (1998, 2026-10-20).
+    names = sorted((name for name in names if not name.startswith(('@', '#'))), reverse=True)
     return next((name for name in names if YEAR.match(name)), names[0] if names else '')
 
 
@@ -1772,6 +1773,17 @@ def smb(year):
             say('cannot read %s: %s' % (relative, error))
     say('read whole: ' + speed(count, total, time.monotonic() - start))
     sys.exit(0 if files else 3)
+
+
+def names_encoding(ftp, mlsd):
+    """The NAS's names as bytes: UTF-8, or Latin-1 though FEAT says UTF8 (2026-10-20)."""
+    raw = bytearray()
+    ftp.retrbinary('MLSD' if mlsd else 'NLST', raw.extend)
+    try:
+        raw.decode('utf-8')
+    except UnicodeDecodeError:
+        return 'latin-1'
+    return 'utf-8'
 
 
 def partial(ftp, path, rest):
@@ -1852,6 +1864,8 @@ def ftp_probe(host, share, user):
             return
     say('the share as FTP shows it: ' + ftp.pwd())
     mlsd = offered['MLSD'] or offered['MLST']
+    ftp.encoding = names_encoding(ftp, mlsd)
+    say('names on the NAS: ' + ('UTF-8' if ftp.encoding == 'utf-8' else 'Latin-1, though FEAT says UTF8'))
     if mlsd:
         tops = [name for name, facts in ftp.mlsd() if facts.get('type') == 'dir']
     else:
@@ -1936,7 +1950,8 @@ else:
                     Log ("   21d. net view: " + ($shares -join ' / '))
                     $tops = @([IO.Directory]::GetDirectories($root) | ForEach-Object { [IO.Path]::GetFileName($_) } | Sort-Object)
                     Log ("   21d. top folders: " + (($tops | Select-Object -First 30) -join ' / '))
-                    $yearName = @($tops | Where-Object { $_ -match '^(19|20)\d\d$' })[0]
+                    # The latest year folder: the earliest may hold a single file (1998, 2026-10-20).
+                    $yearName = @($tops | Where-Object { $_ -match '^(19|20)\d\d$' } | Sort-Object -Descending)[0]
                     if (-not $yearName) { $yearName = @($tops | Where-Object { $_ -notmatch '^[@#]' })[0] }
                     # At most 2,000 files below the first year folder, @eaDir (thumbnails) skipped.
                     $queue = New-Object System.Collections.Queue
@@ -1955,7 +1970,7 @@ else:
                     $bytes = ($files | Measure-Object -Property Length -Sum).Sum
                     Log ("   21d. listing of {0}: {1} files (at most 2000), {2:N1} MB, {3} @eaDir skipped, {4:N1} s" -f $yearName, $files.Count, ($bytes / 1MB), $eaDirs, $listed)
                     # 20 photos read whole into memory: nothing copied to disk.
-                    $photos = @($files | Where-Object { $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
+                    $photos = @($files | Where-Object { $_ -and $_.FullName -and $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
                     $buffer = New-Object byte[] 1048576
                     $read = 0
                     $watch = [Diagnostics.Stopwatch]::StartNew()
@@ -1981,12 +1996,13 @@ else:
                     $run = NasDocker "21e" @("-v", "${letter}:\:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
                     if ($run.Code -eq 0) { $smbDocker = "works with the drive letter ${letter}:" }
                 }
-                # 21f: a Docker CIFS volume, read-only; SMB 3.0, else 2.1. The volume keeps the
+                # 21f: a Docker CIFS volume, read-only; SMB 3.0, else 2.1, 2.0, 1.0. The volume keeps the
                 # password in its options: removed right after, and in the finally.
                 if ($script:nasSecret -match '[,"]') {
                     Log "   21f. skipped: the password holds a comma or a double quote, which the CIFS options cannot carry"
                 } else {
-                    foreach ($version in '3.0', '2.1') {
+                    # An older NAS may speak 2.0 or 1.0 only: 3.0 and 2.1 were refused (2026-10-20).
+                    foreach ($version in '3.0', '2.1', '2.0', '1.0') {
                         & docker volume rm -f $nasVolume 2>&1 | Out-Null
                         $made = @(& docker volume create --driver local --opt type=cifs --opt "device=//$ip/$NasShare" --opt "o=addr=$ip,username=$NasUser,password=$($script:nasSecret),ro,vers=$version" $nasVolume 2>&1 | ForEach-Object { "$_" })
                         if ($LASTEXITCODE -ne 0) { NasLog ("   21f. vers=${version}: volume refused: " + ($made -join ' / ')); continue }
