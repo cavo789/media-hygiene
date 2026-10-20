@@ -78,6 +78,7 @@ Desktop restarts. Closing the window with its X is the natural user action.
 ## Inbox (2026-10-19)
 
 - A non-Docker program on 8088 → refiled as 0253 (name the program, never the raw error; maintainer).
+  → stale: done by 0253, commit 12104de (inbox 2026-10-20).
 
 ### Measured (2026-10-19, step 10, `measures-20261019-2208`)
 - Not checked: Avast blocked the test `mh.ps1` started by the right-click (IDP.HELU.PSD11, the

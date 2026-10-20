@@ -95,6 +95,7 @@ evening) without any exception.
   on 2026-10-16 after a user-like run with it raised no alert (removing it on a guess was undone
   once). The test pins it to that one line. To decide: keep it, or drop the keep-awake if step
   10 still alerts with the new start.
+  → keep; removed only if step 10 still raises an Avast alert (review of feedback 2026-10-19-3, 2026-10-20).
 - The Windows check (acceptance): after a reboot (Avast's path lock lifted), right-click →
   page → *Run* `mh audit` runs in the window, no Avast alert; then 0250's check.
   **Reason:** needs the maintainer's Windows + Avast. In a normal Windows PowerShell 5.1:

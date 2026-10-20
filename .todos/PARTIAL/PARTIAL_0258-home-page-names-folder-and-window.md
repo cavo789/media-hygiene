@@ -61,6 +61,7 @@ two questions the maintainer could not answer from the page (measured: step 10, 
 ### Not done
 - `mh.sh` does not relay the folders (the right-click is Windows only; `mh --photos X` alone in
   bash opens the page without the line). File a TODO if wanted.
+  → keep: Windows only (review of feedback 2026-10-19-3, 2026-10-20).
 - The maintainer's step 10 reading without guessing.
   **Reason:** needs Windows; same command as 0257, fetched at 8fefa13ff2096fc44972ecfca7734aae3acb60bc (`-Only 10`, after a reboot).
 - Captures of `commands/home.md` / `commands/launcher.md` are stale: `docs_screenshots` should
