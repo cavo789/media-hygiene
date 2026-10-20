@@ -183,6 +183,14 @@ function Wanted([int]$group) {
     return ($steps.Count -eq 0) -or ($steps -contains "$group")
 }
 
+# A USB stick: steps 12 and 13 run docker run by hand on it, which Docker Desktop cannot
+# see without the sharing mh does (0252): they need a fixed disk (2026-10-20, a stick gave
+# exit code 1 four times, then 2 GB were copied to it for nothing).
+function Removable([string]$drive) {
+    $volume = Get-Volume -DriveLetter $drive.Substring(0, 1) -ErrorAction SilentlyContinue
+    return "$($volume.DriveType)" -eq 'Removable'
+}
+
 # NTFS file ids (no administrator rights needed): a file renamed or linked keeps its id, a
 # copy gets a new one. That is what proves 0138 (sort moves without copying). Compiled only for
 # step 7: an antivirus's behaviour shield may flag C# calling kernel32 (Avast IDP.Generic,
@@ -755,7 +763,11 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     $said = @(mh undo --yes 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
     Log ("   11i. mh undo of that clean: exit code $LASTEXITCODE, says: " + (($said | Select-Object -Last 6) -join ' / '))
     if ("$kind" -eq 'Removable') {
-        # 0252: after each command mh unshares the stick, so Windows can eject it.
+        # 0252: after each command mh unshares the stick, so Windows can eject it. A WSL
+        # distribution started while the stick is in mounts it (/mnt/d) and may hold it:
+        # listed here without starting any (wsl -e would start one, and mount the stick).
+        $running = @(& wsl.exe --list --running --quiet 2>$null | ForEach-Object { "$_" -replace "`0", '' } | Where-Object { $_.Trim() })
+        Log ("   11j. WSL distributions running before the eject: " + $(if ($running) { $running -join ', ' } else { 'none' }))
         $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
         Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"
         $null = Read-Host "11j. Plug ${letter}: back in (same letter), then press Enter"
@@ -783,6 +795,12 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         # 11j asked after the mh commands alone; here, after WSL's own mount and Docker's try.
         $ejected = Read-Host "11k. Safely remove ${letter}: again now. Did Windows let you this time? (y/n, or what it said)"
         Log "   11k. ${letter}: ejected after the WSL checks: $ejected"
+        if ("$ejected" -notmatch '^y') {
+            Write-Host "11k. In another PowerShell (on C:), type: wsl --shutdown   (it stops Docker Desktop too)"
+            $shut = Read-Host "11k. Then Safely remove ${letter}: again. Did Windows let you now? (y/n, or what it said)"
+            Log "   11k. ${letter}: ejected after wsl --shutdown: $shut"
+            $null = Read-Host "11k. Start Docker Desktop again (Start menu), wait until it runs, plug ${letter}: back in, then press Enter"
+        }
         $null = Read-Host "11k. Plug ${letter}: back in (same letter), then press Enter"
     }
     $null = @(mh folders remove $backupDir 6>&1)
@@ -805,6 +823,8 @@ if (Wanted 12) {
         Log "== 12. skipped: -OtherDrive $unplugged is not accessible"
     } elseif ($OtherDrive -eq "") {
         Log "== 12. skipped: no drive other than C: with 2 GB free (give one with -OtherDrive)"
+    } elseif (Removable $OtherDrive) {
+        Log "== 12. skipped: $OtherDrive is a removable drive (a USB stick): steps 12 and 13 need a fixed disk, an external hard disk for instance (-OtherDrive)"
     } else {
         $otherRoot = Join-Path ($OtherDrive.TrimEnd('\') + "\") "mh-measure-12"
         $otherData = Join-Path $otherRoot "data"
@@ -851,6 +871,8 @@ if (Wanted 13) {
         Log "== 13. skipped: -OtherDrive $unplugged is not accessible"
     } elseif ($drive13 -eq "") {
         Log "== 13. skipped: no drive other than C: with 3 GB free (give one with -OtherDrive)"
+    } elseif (Removable $drive13) {
+        Log "== 13. skipped: $drive13 is a removable drive (a USB stick): step 13 needs a fixed disk (-OtherDrive)"
     } else {
         $driveRoot = Join-Path ($drive13.TrimEnd('\') + "\") "mh-measure-13"
         $driveData = Join-Path $driveRoot "data"
@@ -860,6 +882,7 @@ if (Wanted 13) {
         }
         $bytes = 0
         $files = 0
+        Write-Host "13. Copying 1 GB of photos twice to $drive13 first (minutes on a slow disk)..."
         foreach ($photo in (Get-ChildItem -Path $Photos -Recurse -File -Include *.jpg, *.jpeg)) {
             if ($bytes -ge 1GB) { break }
             $name = "{0:D6}-{1}" -f $files, $photo.Name
