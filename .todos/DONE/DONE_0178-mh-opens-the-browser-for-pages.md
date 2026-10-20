@@ -57,3 +57,12 @@ Reaching the review page: copy an address into a browser → nothing to do.
 ### Not done
 - The check on Windows: `mh review` opens the default browser (PowerShell 5.1).
   **Reason:** needs the maintainer's Windows: `powershell -ExecutionPolicy Bypass -File .\mh-measure.ps1 -Only 9 -Count 300`.
+
+## Measured on Windows (2026-10-20, step 9 of mh-measure.ps1, maintainer)
+
+- In a console opened by hand (`conhost.exe powershell.exe`, Windows PowerShell 5.1), `mh review`
+  opened the default browser on the review page by itself (y).
+- Same run: French menu accents right in code page 850 (no garbling), window title "mh audit :
+  terminé" then restored at the next mh call, end sound heard. The keep-awake check (9b) needs
+  an administrator PowerShell: not run.
+- Every item done → closed DONE.
