@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections import Counter
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
+from media_hygiene.i18n import _
 from media_hygiene.plan.backups import BackupFolders, ComparedFiles
+from media_hygiene.scan.exact import partial_pass
+from media_hygiene.scan.progress import Step
 from media_hygiene.scan.stopwatch import Stage
 from media_hygiene.services.backup_dealt import dealt_with
 
@@ -66,7 +70,7 @@ async def analyse(
     own (deleted when empty, quarantined when unreadable). So are the files the disk
     or the cloud could not read this time: `clean` leaves them where they are. The
     files of the backup folders are only compared by content: never checked, never
-    in a group, never proposed back (0204).
+    in a group, never proposed back (0204), never read whole (0274).
 
     Args:
         files: Every media file of the library.
@@ -83,8 +87,45 @@ async def analyse(
     healthy = healthy_files(files, integrity)
     backup = [file for file in finders.backups.files_in(listed) if file.size > 0]
     with finders.stopwatch.timing(Stage.DIGESTS):
-        groups = await finders.exact.find([*healthy, *backup])
+        groups = await finders.exact.find(healthy)
         returned = await finders.returned.find(healthy) if finders.returned else ()
-        compared = finders.backups.compare(groups, ComparedFiles(healthy, backup))
+        both = await with_partials(finders.exact, ComparedFiles(healthy, backup))
+        compared = finders.backups.compare(groups, both)
         compared = await dealt_with(compared, finders)
     return compared, integrity, returned
+
+
+async def with_partials(
+    exact: ExactDuplicateFinder, files: ComparedFiles
+) -> ComparedFiles:
+    """Give the partial digest of the files a backup may share with another file.
+
+    A backup file whose size no library file has has no copy there, and is not read
+    (unless another backup file has its size: `import` copies such twins once). The
+    library files of a size a backup file has are read too (the index keeps most).
+    No file is read whole (0274): 128 KiB each at most.
+
+    Args:
+        exact: The exact pipeline, whose index keeps the digests.
+        files: The library's healthy files and the backups' non-empty ones.
+
+    Returns:
+        The same files, with the partial digests of those candidates.
+    """
+    if not files.backup:
+        return files
+    mine = {file.size for file in files.library}
+    theirs = Counter(file.size for file in files.backup)
+    candidates = [
+        *(f for f in files.backup if f.size in mine or theirs[f.size] > 1),
+        *(f for f in files.library if f.size in theirs),
+    ]
+    step = Step(
+        _("Comparing the backup with your photos"),
+        _(
+            "Reads the first and last 64 KB of the files of the same size on both "
+            "sides: a backup is never read whole."
+        ),
+    )
+    partials = await exact.digests(candidates, partial_pass(step))
+    return replace(files, partials=partials)

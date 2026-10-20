@@ -40,11 +40,14 @@ def test_a_backup_file_identical_to_two_library_files_covers_both() -> None:
     alone = media("/data/c/a/y.jpg", size=11)
     old = media("/data/d/backup/old.jpg", size=12)
     folders = BackupFolders((_BACKUP,))
+    group = DuplicateGroup("d1", 10, (one, two))
     compared = folders.compare(
-        (DuplicateGroup("d1", 10, (one, two, backed)),),
-        ComparedFiles((one, two, alone), (backed, old)),
+        (group,),
+        ComparedFiles(
+            (one, two, alone), (backed, old), {one: "p", two: "p", backed: "p"}
+        ),
     )
-    assert compared.groups == (DuplicateGroup("d1", 10, (one, two)),)
+    assert compared.groups == (group,)
     (coverage,) = compared.folders
     assert coverage.files == 2
     assert coverage.missing == (alone,)
@@ -56,18 +59,41 @@ def test_a_library_file_and_its_backup_copy_form_no_group() -> None:
     """A copy only in the backup is never the reason a library file goes."""
     mine, theirs = media("/data/c/x.jpg"), media("/data/d/backup/x.jpg")
     compared = BackupFolders((_BACKUP,)).compare(
-        (DuplicateGroup("d1", 10, (mine, theirs)),),
-        ComparedFiles((mine,), (theirs,)),
+        (), ComparedFiles((mine,), (theirs,), {mine: "p", theirs: "p"})
     )
     assert not compared.groups
     assert compared.folders == (BackupCoverage(_BACKUP, files=1),)
 
 
+def test_a_backup_file_matching_start_and_end_counts_as_a_copy() -> None:
+    """Same size and partial digest, middle unknown: covered (0274's trade-off)."""
+    mine, theirs = media("/data/c/x.jpg"), media("/data/d/backup/x.jpg")
+    other = media("/data/d/backup/y.jpg")
+    compared = BackupFolders((_BACKUP,)).compare(
+        (),
+        ComparedFiles((mine,), (theirs, other), {mine: "p", theirs: "p", other: "q"}),
+    )
+    (coverage,) = compared.folders
+    assert not coverage.missing
+    assert coverage.only == (other,)
+
+
+def test_a_backup_file_of_the_same_size_but_unread_has_no_copy() -> None:
+    """No partial digest (unreadable): only in the backup, the library's missing."""
+    mine, theirs = media("/data/c/x.jpg"), media("/data/d/backup/x.jpg")
+    compared = BackupFolders((_BACKUP,)).compare(
+        (), ComparedFiles((mine,), (theirs,), {mine: "p"})
+    )
+    (coverage,) = compared.folders
+    assert coverage.missing == (mine,)
+    assert coverage.only == (theirs,)
+
+
 def test_two_identical_backup_files_without_library_copy_are_only_there() -> None:
-    """A group inside the backup alone: both files are only in the backup."""
+    """Twins inside the backup alone: both files are only in the backup."""
     first, second = media("/data/d/backup/a.jpg"), media("/data/d/backup/b.jpg")
     compared = BackupFolders((_BACKUP,)).compare(
-        (DuplicateGroup("d1", 10, (first, second)),), ComparedFiles((), (first, second))
+        (), ComparedFiles((), (first, second), {first: "p", second: "p"})
     )
     assert not compared.groups
     assert compared.folders[0].only == (first, second)

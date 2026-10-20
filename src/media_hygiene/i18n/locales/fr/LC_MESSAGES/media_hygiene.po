@@ -1528,6 +1528,9 @@ msgstr "Comparaison des couleurs"
 msgid "Comparing files of equal size"
 msgstr "Comparaison des fichiers de même taille"
 
+msgid "Comparing the backup with your photos"
+msgstr "Comparaison de la sauvegarde avec vos photos"
+
 #, python-brace-format
 msgid "Completing {path} would change a setting: nothing was written."
 msgstr "Compléter {path} changerait un réglage : rien n'a été écrit."
@@ -5387,6 +5390,13 @@ msgstr "Lecture des dossiers de l'outil…"
 
 msgid "Reading where you are…"
 msgstr "Lecture de là où vous en êtes…"
+
+msgid ""
+"Reads the first and last 64 KB of the files of the same size on both "
+"sides: a backup is never read whole."
+msgstr ""
+"Lit les 64 Ko du début et de la fin des fichiers de même taille des deux "
+"côtés : une sauvegarde n'est jamais lue en entier."
 
 msgid ""
 "Reads the remaining candidates in full: same SHA-256 means identical, "

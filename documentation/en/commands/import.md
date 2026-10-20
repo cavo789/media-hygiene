@@ -42,7 +42,7 @@ mh import
   mistake? The file is still on the NAS: copy it by hand.
 - **Listed apart**: a photo whose **near copy** is in your photos (another size or format, a
   HEIC on the NAS and its JPG on the PC): *probably in your photos already*, not copied.
-- **Once**: two identical files of the backup are copied once.
+- **Once**: two identical files of the backup (same size, same start and end) are copied once.
 
 The copies go to **`From NAS`** in your first photo folder, the folders of the NAS kept below
 it (`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`), or to the folder of `--to`. Sort them later
@@ -58,10 +58,15 @@ your photos: nothing is left to import.
 ## Speed
 
 Over the network, only the list of the NAS's files is read for most of them (size, date: 253
-files in 0.1 s, measured). Only a file of the same size as one of your photos is read, then
-only the files really copied. Through Docker Desktop a NAS is read at about **15 MB/s**
-(measured on a Synology over Ethernet): a first comparison of a large NAS takes a while; the
-next ones only read what changed.
+files in 0.1 s, measured). Of a file of the same size as one of your photos, only its first and
+last 64 KB are read: same size and same start and end, it is in your photos. The NAS is never
+read whole, only the files really copied are. Through Docker Desktop a NAS is read at about
+**15 MB/s** (measured on a Synology over Ethernet): 300 GB of photos of 5 MB, about 8 minutes for
+a first comparison instead of 5 h 30 read whole (estimated from that rate); the next ones only
+read what changed.
+
+The trade-off: a NAS file whose start and end match one of your photos but whose middle differs
+counts as in your photos. It stays on the NAS: nothing is lost.
 
 ## Options
 

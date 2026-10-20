@@ -141,7 +141,9 @@ def _unique(
 ) -> tuple[list[Candidate], int]:
     """Keep one of identical files of the backups (the first by path).
 
-    The audit hashed the files sharing a size; their digests are read from the index.
+    Identical by size and partial digest (0274): the audit read the first and last
+    64 KiB of the backup files sharing a size, never the whole file; the digests are
+    read from the index (none: the file is copied, as a file of its own).
 
     Args:
         candidates: Each backup and its file to import.
@@ -159,7 +161,9 @@ def _unique(
     seen: set[tuple[int, str]] = set()
     with FactsRepository.open(runtime.index_file) as repository:
         for backup, file in sorted(candidates, key=lambda pair: str(pair[1].path)):
-            digest = repository.get(file).full_digest if sizes[file.size] > 1 else None
+            digest = (
+                repository.get(file).partial_digest if sizes[file.size] > 1 else None
+            )
             key = (file.size, digest or str(file.path))
             if key not in seen:
                 seen.add(key)

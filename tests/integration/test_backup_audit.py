@@ -4,18 +4,23 @@ from __future__ import annotations
 
 import csv
 import json
+import sqlite3
+from contextlib import closing
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PIL import Image
 
 from media_hygiene.console.backup_view import show_backups
-from media_hygiene.constants import SUMMARY_FILE_NAME, RunKind
+from media_hygiene.constants import SUMMARY_FILE_NAME, RunKind, Sizes
 from media_hygiene.report.backup_views import (
     MISSING_CSV_FILE_NAME,
     ONLY_CSV_FILE_NAME,
 )
 from media_hygiene.report.csv_export import CSV_ENCODING
 from media_hygiene.report.views import ReportRecord
+from media_hygiene.scan import exact, hashing
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService
@@ -24,7 +29,7 @@ from media_hygiene.services.reporting import write_report
 from tests.support.runtime import make_runtime, output_of
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    import pytest
 
     from media_hygiene.config.layers import Layer
     from media_hygiene.paths.locations import Locations
@@ -169,3 +174,58 @@ def test_czkawka_leaves_the_backup_out(locations: Locations) -> None:
     (locations.data_dir / "d" / "backup").mkdir(parents=True)
     command = czkawka_command(make_runtime(locations, _BACKUP))
     assert locations.data_dir / "d" / "backup" in command.scope.excluded
+
+
+def test_no_backup_file_is_read_whole(
+    locations: Locations, media: MediaFactory, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The audit hashes the library's twins in full, never a backup file (0274)."""
+    files = library_and_backup(media)
+    backup_dir = locations.data_dir / "d" / "backup"
+    read: list[Path] = []
+    whole = hashing.full_digest
+
+    def spy(path: Path) -> str:
+        read.append(path)
+        return whole(path)
+
+    monkeypatch.setattr(exact, "full_digest", spy)
+    runtime = make_runtime(locations, _BACKUP)
+    findings = audit(runtime)
+    assert not any(path.is_relative_to(backup_dir) for path in read)
+    assert runtime.index_file is not None
+    with closing(sqlite3.connect(runtime.index_file)) as connection:
+        rows = connection.execute("SELECT path, partial_digest, full_digest FROM files")
+        digests = {Path(path): (partial, full) for path, partial, full in rows}
+    assert digests[files["twin"]][1]  # the library's twins: proven in full
+    assert digests[files["backed"]][0]  # the backup's copies: 128 KiB read
+    assert not any(
+        full
+        for path, (_partial, full) in digests.items()
+        if path.is_relative_to(backup_dir)
+    )
+    (backup,) = findings.backups
+    assert {f.path for f in backup.only} == {
+        files["backup only"],
+        files["backup resized"],
+    }
+
+
+def test_a_backup_file_differing_only_in_its_middle_counts_as_a_copy(
+    locations: Locations, media: MediaFactory
+) -> None:
+    """Same size, same first and last 64 KiB: covered, the documented trade-off."""
+    photo = media.root / "c/Photos/noise.jpg"
+    photo.parent.mkdir(parents=True)
+    pixels = np.random.default_rng(7).integers(0, 256, (512, 512, 3), dtype=np.uint8)
+    Image.fromarray(pixels).save(photo, quality=95)
+    content = bytearray(photo.read_bytes())
+    assert len(content) > 3 * Sizes.PARTIAL_HASH
+    content[len(content) // 2] ^= 0xFF
+    altered = media.root / "d/backup/noise.jpg"
+    altered.parent.mkdir(parents=True)
+    altered.write_bytes(content)
+    (backup,) = audit(make_runtime(locations, _BACKUP)).backups
+    assert backup.files == 1
+    assert not backup.missing
+    assert not backup.only

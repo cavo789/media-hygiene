@@ -4,7 +4,9 @@ The files only in a backup go through the same recognition as the files back aft
 being set aside (0216, `ReturnedFinder`): the contents the journals remember (set aside
 by a choice, deletions confirmed), then the deletions still waiting for `review --gone`
 (0224), whose size and digests the index kept. Only the files of a size remembered are
-read; the others are proposed without reading them.
+read: 128 KiB for a deletion (its partial digest), the whole file only for a content
+set aside, whose journal keeps the SHA-256 alone (rare: the size must match to the
+byte); the others are proposed without reading them.
 """
 
 from __future__ import annotations
@@ -38,7 +40,6 @@ def gone_finder(runtime: Runtime, deps: ScanDeps) -> ReturnedFinder | None:
     Returns:
         The finder, or None when nothing waits.
     """
-    by_digest: dict[tuple[int, str], Remembered] = {}
     by_partial: dict[tuple[int, str], Remembered] = {}
     for record in gone_records(deps.repository.connection):
         at = datetime.fromisoformat(record.gone_at) if record.gone_at else None
@@ -49,11 +50,11 @@ def gone_finder(runtime: Runtime, deps: ScanDeps) -> ReturnedFinder | None:
             runtime.mapper.to_host(Path(record.path)),
         )
         by_partial[record.size, record.partial_digest] = said
-        if record.full_digest:
-            by_digest[record.size, record.full_digest] = said
     if not by_partial:
         return None
-    remembered = RememberedSet(by_digest=by_digest, by_partial=by_partial)
+    # By partial digest only, even when the SHA-256 is known: the backup is never
+    # read whole (0274).
+    remembered = RememberedSet(by_partial=by_partial)
     return ReturnedFinder(ExactDuplicateFinder(deps), remembered)
 
 

@@ -1,12 +1,14 @@
 """Backup folders: compared by content with the library, never changed (TODO 0204).
 
-A backup folder (`--backup`, `[folders] backups`) is listed and its files go through
-the exact pipeline with the library's (size, then SHA-256): a file whose size no other
-file has has no copy. Its files are then taken out of the duplicate groups, so a copy
+A backup folder (`--backup`, `[folders] backups`) is listed and its files are matched
+with the library's by size, then partial digest (first and last 64 KiB), never read
+whole (0274): a backup is only compared, a NAS read at 15 MB/s would take hours. A file
+whose start and end match but whose middle differs counts as a copy: it stays in the
+backup, nothing is lost. The backup's files never join the duplicate groups, so a copy
 in a backup is never the reason a library file goes, and never goes itself; the near
 duplicates and the burst series never see them. Two answers per backup folder: the
-library's files without an identical copy in it (`missing`), and its files without an
-identical copy in the library (`only`: to copy before wiping an old disk).
+library's files without a copy in it (`missing`), and its files without a copy in the
+library (`only`: to copy before wiping an old disk).
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.backup_import import DealtWith, proposed
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Sequence
+    from collections.abc import Iterable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.scan.models import DuplicateGroup, MediaFile
@@ -70,10 +72,15 @@ class BackupCoverage:
 
 @dataclass(frozen=True, slots=True)
 class ComparedFiles:
-    """The files compared: the library's healthy ones, and the backups' non-empty."""
+    """The files compared: the library's healthy ones, and the backups' non-empty.
+
+    `partials`: the partial digest of each file sharing its size with the other side
+    (or with another backup file); a file left out has no copy there (0274).
+    """
 
     library: Sequence[MediaFile]
     backup: Sequence[MediaFile]
+    partials: Mapping[MediaFile, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,45 +141,39 @@ class BackupFolders:
     def compare(
         self, groups: Iterable[DuplicateGroup], files: ComparedFiles
     ) -> BackupComparison:
-        """Split groups of the library and the backups into what each side lacks.
+        """Tell what each backup lacks and holds alone, by (size, partial digest).
 
         Args:
-            groups: The exact duplicate groups of the library and the backups.
-            files: Every file compared, on both sides.
+            groups: The exact duplicate groups of the library alone.
+            files: Every file compared, on both sides, with their partial digests.
 
         Returns:
-            The library's groups (two copies at least) and each backup's coverage.
+            The library's groups and each backup's coverage.
         """
         if not self.folders:
             return BackupComparison(groups=tuple(groups))
-        kept: list[DuplicateGroup] = []
-        covered: dict[Path, set[Path]] = {folder: set() for folder in self.folders}
-        backed: set[Path] = set()
-        for group in groups:
-            mine = tuple(f for f in group.files if self.holding(f.path) is None)
-            if len(mine) > 1:
-                kept.append(replace(group, files=mine))
-            if not mine:
-                continue
-            for file in group.files:
-                folder = self.holding(file.path)
-                if folder is not None:
-                    covered[folder].update(f.path for f in mine)
-                    backed.add(file.path)
-        return BackupComparison(
-            groups=tuple(kept),
-            folders=tuple(
+        library: dict[tuple[int, str], list[MediaFile]] = {}
+        for file in files.library:
+            if (partial := files.partials.get(file)) is not None:
+                library.setdefault((file.size, partial), []).append(file)
+        folders: list[BackupCoverage] = []
+        for folder in self.folders:
+            theirs = self._of(folder, files.backup)
+            keys = {(f.size, p) for f in theirs if (p := files.partials.get(f))}
+            covered = {f.path for key in keys & library.keys() for f in library[key]}
+            folders.append(
                 BackupCoverage(
                     folder=folder,
-                    files=len(theirs := self._of(folder, files.backup)),
-                    missing=_sorted(
-                        f for f in files.library if f.path not in covered[folder]
+                    files=len(theirs),
+                    missing=_sorted(f for f in files.library if f.path not in covered),
+                    only=_sorted(
+                        f
+                        for f in theirs
+                        if (f.size, files.partials.get(f, "")) not in library
                     ),
-                    only=_sorted(f for f in theirs if f.path not in backed),
                 )
-                for folder in self.folders
-            ),
-        )
+            )
+        return BackupComparison(groups=tuple(groups), folders=tuple(folders))
 
     def _of(self, folder: Path, files: Iterable[MediaFile]) -> tuple[MediaFile, ...]:
         return tuple(file for file in files if self.holding(file.path) == folder)

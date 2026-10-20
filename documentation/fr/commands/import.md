@@ -44,7 +44,8 @@ mh import
 - **Listés à part** : une photo dont une **quasi-copie** est dans vos photos (une autre taille ou
   un autre format, un HEIC sur le NAS et son JPG sur le PC) : *probablement déjà dans vos
   photos*, pas copiée.
-- **Une seule fois** : deux fichiers identiques de la sauvegarde sont copiés une fois.
+- **Une seule fois** : deux fichiers identiques de la sauvegarde (même taille, même début et même
+  fin) sont copiés une fois.
 
 Les copies vont dans **`From NAS`** dans votre premier dossier de photos, les dossiers du NAS
 gardés en dessous (`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`), ou dans le dossier de `--to`.
@@ -61,10 +62,16 @@ suivant voit les copies comme vos photos : il ne reste rien à importer.
 ## Vitesse
 
 Par le réseau, seule la liste des fichiers du NAS est lue pour la plupart d'entre eux (taille,
-date : 253 fichiers en 0,1 s, mesuré). Seul un fichier de même taille qu'une de vos photos est
-lu, puis seuls les fichiers vraiment copiés. À travers Docker Desktop, un NAS se lit à environ
-**15 Mo/s** (mesuré sur un Synology en Ethernet) : une première comparaison d'un gros NAS prend du
-temps ; les suivantes ne lisent que ce qui a changé.
+date : 253 fichiers en 0,1 s, mesuré). D'un fichier de même taille qu'une de vos photos, seuls
+ses 64 premiers et 64 derniers Ko sont lus : même taille, même début et même fin, il est dans
+vos photos. Le NAS n'est jamais lu en entier, seuls les fichiers vraiment copiés le sont. À
+travers Docker Desktop, un NAS se lit à environ **15 Mo/s** (mesuré sur un Synology en
+Ethernet) : 300 Go de photos de 5 Mo, environ 8 minutes pour une première comparaison au lieu
+de 5 h 30 en lisant tout (estimé à partir de ce débit) ; les suivantes ne lisent que ce qui a
+changé.
+
+Le compromis : un fichier du NAS dont le début et la fin sont ceux d'une de vos photos mais dont
+le milieu diffère compte comme présent dans vos photos. Il reste sur le NAS : rien n'est perdu.
 
 ## Options
 

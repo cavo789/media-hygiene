@@ -131,8 +131,10 @@ Before each command it mounts the share read-only (SMB 3) and unmounts it after;
 off is said in one line, and the command runs without it. `mh folders` tells whether it
 answers; `mh folders remove \\NAS\Photos` forgets it and its password.
 
-Through Docker Desktop a NAS is read at about 15 MB/s (measured): a first audit of a large one
-takes a while, the next ones read only what changed. A Synology that offers only an older SMB:
+Through Docker Desktop a NAS is read at about 15 MB/s (measured). A backup is never read whole:
+of a file the same size as one of your photos, the audit reads its first and last 64 KB (128 KB
+per file), so a first audit of a large NAS takes minutes, not hours; the next ones read only what
+changed. A Synology that offers only an older SMB:
 *Control Panel → File Services → SMB → Advanced Settings → Maximum SMB protocol: SMB3*.
 
 The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `plan.csv`, list
