@@ -124,6 +124,18 @@ def _visual_row(visual: VisualFacts | None) -> tuple[object, ...]:
     )
 
 
+def visual_of(values: Sequence[object]) -> VisualFacts | None:
+    """Rebuild visual facts from their columns (`import`'s near copies, 0245).
+
+    Args:
+        values: dhash, phash, width, height, sharpness, taken_at, camera.
+
+    Returns:
+        The facts, or None when the image has none.
+    """
+    return _visual_of(values)
+
+
 def _visual_of(values: Sequence[object]) -> VisualFacts | None:
     """Rebuild visual facts from the version 2 columns.
 

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_album import album_command
 from media_hygiene.cli.cmd_clean import clean_command
+from media_hygiene.cli.cmd_import import import_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_undo import undo_command
@@ -62,6 +63,16 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
                 "Write the words of 'tags' into .xmp sidecars next to the photos, "
                 "for digiKam, darktable, Lightroom or Immich; never into a photo "
                 "(journaled, undoable)."
+            ),
+        ),
+        (
+            "import",
+            import_command,
+            act,
+            _(
+                "Copy into your photos what only a backup (a NAS) holds, never what "
+                "you set aside or deleted before; each copy proven (journaled, "
+                "undoable)."
             ),
         ),
         (

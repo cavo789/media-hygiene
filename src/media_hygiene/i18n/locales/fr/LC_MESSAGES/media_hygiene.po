@@ -19,23 +19,44 @@ msgstr ""
 "   Rien n'est seulement là : chacun de ses fichiers a une copie dans vos "
 "photos."
 
+msgid "   Nothing to bring back from it:"
+msgstr "   Rien à en récupérer :"
+
 #, python-brace-format
 msgid ""
-"   {count} file is only in it, nowhere else ({size}): copy it before "
-"wiping this disk."
+"   {count} file is only in it, never in your photos ({size}): 'import' "
+"copies it into them."
 msgid_plural ""
-"   {count} files are only in it, nowhere else ({size}): copy them before "
-"wiping this disk."
+"   {count} files are only in it, never in your photos ({size}): 'import' "
+"copies them into them."
 msgstr[0] ""
-"   {count} fichier n'est que là, nulle part ailleurs ({size}) : copiez-le"
-" avant d'effacer ce disque."
+"   {count} fichier est seulement là, jamais dans vos photos ({size}) : "
+"'import' le copie dedans."
 msgstr[1] ""
-"   {count} fichiers ne sont que là, nulle part ailleurs ({size}) : "
-"copiez-les avant d'effacer ce disque."
+"   {count} fichiers sont seulement là, jamais dans vos photos ({size}) : "
+"'import' les copie dedans."
+
+#, python-brace-format
+msgid "   … and {count} more."
+msgid_plural "   … and {count} more."
+msgstr[0] "   … et {count} autre."
+msgstr[1] "   … et {count} autres."
 
 #, python-brace-format
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr "  … et {count} de plus : le rapport HTML les liste tous."
+
+#, python-brace-format
+msgid " {count} other file is one you set aside or deleted before: not proposed."
+msgid_plural ""
+" {count} other files are ones you set aside or deleted before: not "
+"proposed."
+msgstr[0] ""
+" {count} autre fichier est un fichier que vous avez mis de côté ou "
+"supprimé avant : pas proposé."
+msgstr[1] ""
+" {count} autres fichiers sont des fichiers que vous avez mis de côté ou "
+"supprimés avant : pas proposés."
 
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
@@ -730,6 +751,13 @@ msgstr ""
 "interdit alors toute modification. {url}"
 
 msgid ""
+"Add one first: mh folders add --backup <folder>, or --backup <folder> on "
+"this command."
+msgstr ""
+"Ajoutez-en d'abord un : mh folders add --backup <dossier>, ou --backup "
+"<dossier> sur cette commande."
+
+msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
 "never changed: mh folders add --backup <folder>."
@@ -754,6 +782,9 @@ msgid ""
 msgstr ""
 "Ajouter à votre config.toml les réglages de cette version, avec leur "
 "explication ; vos valeurs et commentaires sont gardés."
+
+msgid "Add your photo folder: mh folders add <folder>."
+msgstr "Ajoutez votre dossier de photos : mh folders add <dossier>."
 
 msgid "Advanced options"
 msgstr "Options avancées"
@@ -1130,6 +1161,10 @@ msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place :"
 
 #, python-brace-format
+msgid "Changed your mind? 'media-hygiene undo {run_id}' removes the copies:"
+msgstr "Changé d'avis ? 'media-hygiene undo {run_id}' retire les copies :"
+
+#, python-brace-format
 msgid ""
 "Changed your mind? 'media-hygiene undo {run_id}' removes the sidecars "
 "written and puts the others back as they were:"
@@ -1376,6 +1411,9 @@ msgstr "Copiée : {command}"
 msgid "Copies"
 msgstr "Copies"
 
+msgid "Copies each file, then compares it with its source."
+msgstr "Copie chaque fichier, puis le compare à sa source."
+
 msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 "Les copies trouvées dans ces dossiers sont gardées en priorité, dans cet "
@@ -1403,6 +1441,14 @@ msgstr "Copier"
 msgid "Copy and paste this command to run it again."
 msgstr "Copiez-collez cette commande pour relancer."
 
+msgid ""
+"Copy into your photos what only a backup (a NAS) holds, never what you "
+"set aside or deleted before; each copy proven (journaled, undoable)."
+msgstr ""
+"Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir,"
+" jamais ce que vous avez mis de côté ou supprimé avant ; chaque copie "
+"prouvée (journalisé, annulable)."
+
 #, python-brace-format
 msgid "Copy it (Ctrl+C): {command}"
 msgstr "Copiez-la (Ctrl+C) : {command}"
@@ -1412,6 +1458,15 @@ msgstr "Copier la commande"
 
 msgid "Copy the photos to a local disk, or mount it yourself with -v."
 msgstr "Copiez les photos sur un disque local, ou montez-le vous-même avec -v."
+
+msgid "Copy them into your photos?"
+msgstr "Les copier dans vos photos ?"
+
+msgid "Copy without asking first."
+msgstr "Copier sans demander d'abord."
+
+msgid "Copying"
+msgstr "Copie"
 
 msgid "Correct it, then run the same command again."
 msgid_plural "Correct them, then run the same command again."
@@ -2543,6 +2598,14 @@ msgstr "Paires de dossiers"
 msgid "Folder pairs review"
 msgstr "Revue des paires de dossiers"
 
+msgid ""
+"Folder receiving the copies (host path); default: 'From NAS' in your "
+"first photo folder, the folders of the backup kept below it."
+msgstr ""
+"Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : « From "
+"NAS » dans votre premier dossier de photos, les dossiers de la sauvegarde"
+" gardés en dessous."
+
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
 "Dossier dont les copies sont conservées en priorité. Répétable ; l'ordre "
@@ -3586,6 +3649,9 @@ msgstr "Aucun audit n'a encore parcouru un dossier en entier."
 msgid "No audit yet."
 msgstr "Pas encore d'audit."
 
+msgid "No backup folder to import from."
+msgstr "Aucun dossier de sauvegarde d'où importer."
+
 msgid "No burst series: nothing to review."
 msgstr "Aucune rafale : rien à trier."
 
@@ -3747,6 +3813,11 @@ msgstr ""
 "Aucun téléphone vu : branchez-le, déverrouillez-le, choisissez Transfert "
 "de fichiers (iPhone : Faire confiance à cet ordinateur), puis tapez de "
 "nouveau mh phone."
+
+msgid "No photo folder to copy into: only backup folders are mounted."
+msgstr ""
+"Aucun dossier de photos où copier : seuls des dossiers de sauvegarde sont"
+" montés."
 
 msgid ""
 "No photo folder: add --photos \"C:\\Photos\" for each folder, then run it"
@@ -4086,6 +4157,9 @@ msgstr "Rien à ajouter : l'album contient déjà chaque fichier trouvé."
 
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
+
+msgid "Nothing to import: every file of the backup is dealt with."
+msgstr "Rien à importer : chaque fichier de la sauvegarde est déjà traité."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
@@ -5620,6 +5694,9 @@ msgstr "Arrêté (Ctrl+C)."
 
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
+
+msgid "Stopped by Ctrl+C: type the command again for the rest."
+msgstr "Arrêté par Ctrl+C : retapez la commande pour le reste."
 
 msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
@@ -7518,6 +7595,9 @@ msgstr "comme prévu, puis suivant"
 msgid "audit"
 msgstr "audit"
 
+msgid "audit again: the new photos join your library."
+msgstr "refaites un audit : les nouvelles photos rejoignent votre photothèque."
+
 msgid "away from home: trips, visits, restaurants, playgrounds"
 msgstr "hors de chez soi : voyages, restaurants, plaines de jeux"
 
@@ -8502,11 +8582,23 @@ msgstr ""
 "la copie et son fichier gardé sont sur deux disques ou deux montages : un"
 " lien physique ne peut pas les relier, la copie reste telle quelle"
 
+msgid "the copy changed since (edited in another application?): kept"
+msgstr "la copie a changé depuis (modifiée dans une autre application ?) : gardée"
+
 msgid "the copy differs from the original"
 msgstr "la copie diffère de l'original"
 
+msgid "the copy does not match its source"
+msgstr "la copie ne correspond pas à sa source"
+
+msgid "the copy is gone already"
+msgstr "la copie a déjà disparu"
+
 msgid "the copy of the previous sidecar does not match it"
 msgstr "la copie du fichier compagnon précédent ne lui correspond pas"
+
+msgid "the copy was never proven (the run stopped): kept"
+msgstr "la copie n'a jamais été prouvée (l'exécution s'est arrêtée) : gardée"
 
 msgid "the disk could not be read or written (input/output error)"
 msgstr "le disque n'a pas pu être lu ou écrit (erreur d'entrée/sortie)"
@@ -9157,6 +9249,20 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} file copied into your photos ({size}), each one compared with its"
+" source, read back where it was written."
+msgid_plural ""
+"{count} files copied into your photos ({size}), each one compared with "
+"its source, read back where they were written."
+msgstr[0] ""
+"{count} fichier copié dans vos photos ({size}), comparé à sa source, relu"
+" là où il a été écrit."
+msgstr[1] ""
+"{count} fichiers copiés dans vos photos ({size}), chacun comparé à sa "
+"source, relus là où ils ont été écrits."
+
+#, python-brace-format
+msgid ""
 "{count} file could not be read this time (disk, network or cloud): not "
 "marked broken, left alone by clean, read again at the next audit."
 msgid_plural ""
@@ -9188,6 +9294,18 @@ msgid "{count} file found."
 msgid_plural "{count} files found."
 msgstr[0] "{count} fichier trouvé."
 msgstr[1] "{count} fichiers trouvés."
+
+#, python-brace-format
+msgid ""
+"{count} file is an identical copy of another one of the backup: copied "
+"once."
+msgid_plural "{count} files are identical copies of others of the backup: copied once."
+msgstr[0] ""
+"{count} fichier est une copie identique d'un autre de la sauvegarde : "
+"copié une fois."
+msgstr[1] ""
+"{count} fichiers sont des copies identiques d'autres de la sauvegarde : "
+"copiés une fois."
 
 #, python-brace-format
 msgid ""
@@ -9296,6 +9414,12 @@ msgstr[1] ""
 "--decisions' les déplace en quarantaine, et s'en souvient : si l'un d'eux"
 " revient (une nouvelle copie depuis le téléphone), l'audit le propose à "
 "nouveau."
+
+#, python-brace-format
+msgid "{count} file to copy into your photos ({size}):"
+msgid_plural "{count} files to copy into your photos ({size}):"
+msgstr[0] "{count} fichier à copier dans vos photos ({size}) :"
+msgstr[1] "{count} fichiers à copier dans vos photos ({size}) :"
 
 #, python-brace-format
 msgid "{count} file: {words} words from its folders, name, date and place."
@@ -9589,6 +9713,20 @@ msgid "{count} photo has the words of the vision model; {left} left."
 msgid_plural "{count} photos have the words of the vision model; {left} left."
 msgstr[0] "{count} photo a les mots du modèle de vision ; {left} restantes."
 msgstr[1] "{count} photos ont les mots du modèle de vision ; {left} restantes."
+
+#, python-brace-format
+msgid ""
+"{count} photo is probably in your photos already (a near copy: another "
+"size or format): not copied."
+msgid_plural ""
+"{count} photos are probably in your photos already (a near copy: another "
+"size or format): not copied."
+msgstr[0] ""
+"{count} photo est probablement déjà dans vos photos (une quasi-copie : "
+"une autre taille ou un autre format) : pas copiée."
+msgstr[1] ""
+"{count} photos sont probablement déjà dans vos photos (une quasi-copie : "
+"une autre taille ou un autre format) : pas copiées."
 
 #, python-brace-format
 msgid ""
@@ -10418,6 +10556,10 @@ msgstr ""
 "tel quel."
 
 #, python-brace-format
+msgid "{path}: not copied: {reason}"
+msgstr "{path} : pas copié : {reason}"
+
+#, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
 
@@ -10816,6 +10958,13 @@ msgid ""
 msgstr ""
 "🛟 Seuls des fichiers compagnons .xmp sont écrits, jamais une photo : "
 "chacun est journalisé et 'undo' le reprend."
+
+msgid ""
+"🛟 The backup is only read: each file is copied, compared with its source,"
+" journaled; 'undo' removes the copies."
+msgstr ""
+"🛟 La sauvegarde est seulement lue : chaque fichier est copié, comparé à "
+"sa source, journalisé ; 'undo' retire les copies."
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"

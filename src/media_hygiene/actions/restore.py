@@ -24,8 +24,11 @@ if TYPE_CHECKING:
 
 # Undone in place: a sidecar `xmp` wrote, a mark, a copy made a link (0213).
 _IN_PLACE: Final = XMP_REVERSALS | {Reversal.FORGET_MARK, Reversal.SEPARATE_LINK}
-# A name an album run made: a link (its file keeps its other names), the marker.
-_REMOVALS: Final = frozenset({Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER})
+# A name an album run made: a link (its file keeps its other names), the marker;
+# a copy `import` made, proven unchanged by `blocker` (0245).
+_REMOVALS: Final = frozenset(
+    {Reversal.REMOVE_LINK, Reversal.REMOVE_MARKER, Reversal.REMOVE_COPY}
+)
 
 
 def perform(entry: JournalEntry, reversal: Reversal) -> None:

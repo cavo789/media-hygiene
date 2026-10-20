@@ -17,6 +17,7 @@ from media_hygiene.actions.journal import (
 )
 from media_hygiene.actions.kinds import (
     ACTING_PHASES,
+    COPIES_IN,
     FOLDER_ACTIONS,
     LINKS,
     MARKS,
@@ -34,7 +35,7 @@ _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 # Every run identifier: the stamp, then a number when two runs share a second.
 RUN_ID_PATTERN: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?")
 # Actions after which the file is still there: neither deleted nor freed.
-_KEPT: Final = frozenset({ActionKind.MOVE}) | LINKS | XMP_ACTIONS
+_KEPT: Final = frozenset({ActionKind.MOVE}) | LINKS | XMP_ACTIONS | COPIES_IN
 
 
 def new_run_id(journal_dir: Path) -> str:

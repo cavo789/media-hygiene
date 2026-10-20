@@ -62,13 +62,38 @@ def backup_lines(backup: BackupCoverage, mapper: HostPathMapper) -> tuple[str, s
         return f"🗄️ {lacks}", _(
             "   Nothing is only in it: each of its files has a copy in your photos."
         )
-    holds = ngettext(
-        "   {count} file is only in it, nowhere else ({size}): copy it before "
-        "wiping this disk.",
-        "   {count} files are only in it, nowhere else ({size}): copy them before "
-        "wiping this disk.",
-        only,
+    return f"🗄️ {lacks}", _holds(backup)
+
+
+def _holds(backup: BackupCoverage) -> str:
+    """What only the backup holds: to import, or dealt with before (0245).
+
+    Args:
+        backup: The folder compared with the library.
+
+    Returns:
+        The line.
+    """
+    fresh = backup.to_import
+    if fresh:
+        line = ngettext(
+            "   {count} file is only in it, never in your photos ({size}): 'import' "
+            "copies it into them.",
+            "   {count} files are only in it, never in your photos ({size}): 'import' "
+            "copies them into them.",
+            len(fresh),
+        ).format(
+            count=human_number(len(fresh)),
+            size=human_size(sum(file.size for file in fresh)),
+        )
+    else:
+        line = _("   Nothing to bring back from it:")
+    aside = len(backup.only) - len(fresh)
+    if not aside:
+        return line
+    dealt = ngettext(
+        " {count} other file is one you set aside or deleted before: not proposed.",
+        " {count} other files are ones you set aside or deleted before: not proposed.",
+        aside,
     )
-    return f"🗄️ {lacks}", holds.format(
-        count=human_number(only), size=human_size(backup.only_size)
-    )
+    return line + dealt.format(count=human_number(aside))

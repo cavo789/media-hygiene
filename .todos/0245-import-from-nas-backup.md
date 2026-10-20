@@ -91,6 +91,10 @@ role, which reads a mounted folder, cannot see it as it is.
 - Destination: **`C:\Photos\From NAS\…`, NAS folders kept** (default) — or straight into the
   matching year folders.
 
+→ All three defaults chosen by the maintainer (2026-10-20): near copies listed apart, not
+proposed; gone files not proposed until confirmed (counted apart); destination
+`<first photo folder>\From NAS\…` with the NAS's folders kept. Built in one block.
+
 ## Acceptance
 
 - Unit (`test_backup_import.py`): a library, a backup, journals and gone rows: a file only in the

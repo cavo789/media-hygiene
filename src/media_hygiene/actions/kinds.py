@@ -53,6 +53,10 @@ class ActionKind(StrEnum):
     PHONE_LIBRARY = "phone-library"
     PHONE_IMPORTED = "phone-imported"
     PHONE_SET_ASIDE = "phone-set-aside"
+    # Written by `import` (0245): a file only a backup held, copied into the library
+    # (`path`) from the backup (`keeper`), proven by its SHA-256. `undo` removes the
+    # copy while it still holds those bytes; the backup is never touched.
+    COPY_IN = "copy-in"
 
     @property
     def remembered(self) -> bool:
@@ -76,6 +80,7 @@ class Phase(StrEnum):
     ALBUM = "album"
     XMP = "xmp"
     PHONE = "phone"
+    IMPORT = "import"
     UNDO = "undo"
 
 
@@ -87,7 +92,14 @@ class Status(StrEnum):
 
 
 # The phases that change files; `undo` reverses one of them, but `phone`'s (0248).
-ACTING_PHASES: Final = (Phase.CLEAN, Phase.SORT, Phase.ALBUM, Phase.XMP, Phase.PHONE)
+ACTING_PHASES: Final = (
+    Phase.CLEAN,
+    Phase.SORT,
+    Phase.ALBUM,
+    Phase.XMP,
+    Phase.PHONE,
+    Phase.IMPORT,
+)
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(
     {ActionKind.CREATE_FOLDER, ActionKind.REMOVE_FOLDER, ActionKind.MARK_ALBUM}
@@ -122,3 +134,5 @@ PHONE_DELETIONS: Final = frozenset(
 )
 # Sidecars written by `xmp`: no photo is deleted, moved nor freed by them.
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})
+# Files `import` copied into the library (0245): nothing is deleted nor freed.
+COPIES_IN: Final = frozenset({ActionKind.COPY_IN})

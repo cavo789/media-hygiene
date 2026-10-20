@@ -121,6 +121,7 @@ nav:
       - commands/crosscheck.md
       - commands/history.md
       - commands/home.md
+      - commands/import.md
       - commands/inventory.md
       - commands/launcher.md
       - commands/menu.md

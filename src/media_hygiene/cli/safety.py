@@ -49,6 +49,7 @@ DATA_COMMANDS: Final = frozenset(
 # them, and says in the window title, with a sound, when they end (0179, 0185).
 LONG_COMMANDS: Final = frozenset(
     {"audit", "clean", "inventory", "classify", "sort", "tags", "people", "undo"}
+    | {"import"}
 )
 
 
