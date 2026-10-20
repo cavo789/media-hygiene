@@ -26,7 +26,6 @@ Nothing to run unattended.
 
 | ID | Title | File |
 |----|-------|------|
-| 0173 | `launcher --photos "C:\Photos"`: Windows paths only, the time zone found by `mh` | [PARTIAL_0173-launcher-windows-folders-and-zone.md](PARTIAL/PARTIAL_0173-launcher-windows-folders-and-zone.md) |
 | 0177 | `mh update`: pull the new image, rewrite `mh` with the same folders | [PARTIAL_0177-mh-update-pulls-and-rewrites.md](PARTIAL/PARTIAL_0177-mh-update-pulls-and-rewrites.md) |
 | 0182 | `clean`: say when the quarantine is on another drive than the photos | [PARTIAL_0182-quarantine-on-another-drive-warns.md](PARTIAL/PARTIAL_0182-quarantine-on-another-drive-warns.md) |
 | 0183 | One quarantine per drive: files set aside stay on their own drive | [PARTIAL_0183-one-quarantine-per-drive.md](PARTIAL/PARTIAL_0183-one-quarantine-per-drive.md) |

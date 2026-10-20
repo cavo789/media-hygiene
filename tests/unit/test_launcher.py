@@ -97,3 +97,11 @@ def test_bash_creates_the_home_folders_and_runs_as_the_user() -> None:
     assert 'case " clean " in' in text
     assert 'source "$HOME/media-hygiene/mh.sh"' in text
     assert load_command(Shell.BASH) == 'source "$HOME/media-hygiene/mh.sh"'
+
+
+def test_a_folder_not_found_ends_powershell_with_2() -> None:
+    """Measured 2026-10-20 (15e): said, but exit code 0; now 2, as mh.sh says it."""
+    text = render_script(launcher_script(_runtime(), Shell.POWERSHELL, _COMMANDS))
+    missing = [line for line in text.splitlines() if "or write mh again" in line]
+    assert len(missing) == 2  # a --photos folder, a folder of the launcher line
+    assert all("$global:LASTEXITCODE = 2; return" in line for line in missing)

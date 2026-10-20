@@ -8154,7 +8154,8 @@ msgstr ""
 msgid ""
 "{drive}: is plugged in but not mounted in WSL: type the line below, then "
 "the command again (↑ then Enter). Before ejecting the drive: sudo umount "
-"/mnt/{letter}"
+"/mnt/{letter}; if Windows still says it is in use, wsl --shutdown in "
+"PowerShell (it stops Docker Desktop too)."
 msgstr ""
 
 #, python-brace-format

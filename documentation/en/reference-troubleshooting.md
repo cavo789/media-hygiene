@@ -247,7 +247,9 @@ so the tool stops before it compares anything.
   sudo mkdir -p /mnt/d && sudo mount -t drvfs D: /mnt/d -o uid=1000,gid=1000
   ```
 
-  (`mh` writes your own `uid` and `gid`.) Before ejecting the stick, type `sudo umount /mnt/d`.
+  (`mh` writes your own `uid` and `gid`.) Before ejecting the stick, type `sudo umount /mnt/d`; if
+  Windows still says *This device is currently in use*, type `wsl --shutdown` in PowerShell (it
+  stops Docker Desktop too: start it again after): WSL keeps the stick until it stops (measured).
   With the Windows interop of WSL turned off (`/etc/wsl.conf`), `mh` cannot ask Windows which
   drives it has: mount the stick yourself with the same line.
 - With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
