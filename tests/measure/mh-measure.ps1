@@ -1842,7 +1842,14 @@ def ftp_probe(host, share, user):
     try:
         ftp.cwd(share)
     except ftplib.error_perm:
-        ftp.cwd('/' + share)
+        try:
+            ftp.cwd('/' + share)
+        except ftplib.error_perm:
+            # The password worked: say the folders there are, not a traceback (2026-10-20).
+            names = sorted(name for name, facts in ftp.mlsd() if facts.get('type') == 'dir') if 'MLSD' in feat else ftp.nlst()
+            say('no folder %r at the top of the NAS; its folders: %s (run again with -NasShare <one of them>)' % (share, ', '.join(names)))
+            ftp.quit()
+            return
     say('the share as FTP shows it: ' + ftp.pwd())
     mlsd = offered['MLSD'] or offered['MLST']
     if mlsd:
