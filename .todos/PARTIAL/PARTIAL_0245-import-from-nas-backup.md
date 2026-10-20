@@ -211,3 +211,14 @@ Share `Photos` (not `photo`), read-only, nothing written on the NAS:
 - Speed of a first import on a large NAS-only set: the near-copy check decodes each
   candidate image once over the network (15 MB/s measured) before copying it. **Reason:** to
   measure on the maintainer's data; a setting to skip the near check could follow.
+
+## Measured on Windows (2026-10-20, step 21h, maintainer)
+
+- `mh folders add --backup \\NAS\Photos` (the DS216j): user name and password asked, proven,
+  kept (Export-Clixml); `mh` rewritten ("1 backup (read-only)"); `mh folders` shows the
+  share "answers", never looked up as a folder.
+- `mh audit` with the NAS and a one-photo test library: stopped by Ctrl+C after 8,164.5 s,
+  unfinished — the backup read whole by the exact pipeline at 15 MB/s → **0274**.
+- After Ctrl+C: no Docker volume of the NAS left (the password never stayed in Docker);
+  `mh folders remove` deleted the password file.
+- Still to do: a first real `mh import` on the maintainer's library, once 0274 is built.
