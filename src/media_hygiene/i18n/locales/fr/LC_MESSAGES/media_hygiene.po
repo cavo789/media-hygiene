@@ -2789,8 +2789,8 @@ msgstr ""
 msgid "Fingerprinting videos"
 msgstr "Empreinte des vidéos"
 
-msgid "Five stages; the next one is in apricot."
-msgstr "Cinq étapes ; la prochaine est en abricot."
+msgid "Five stages; the highlighted one is your next step."
+msgstr "Cinq étapes ; celle mise en évidence est la prochaine à faire."
 
 msgid "Flash"
 msgstr "Flash"

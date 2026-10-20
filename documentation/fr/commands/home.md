@@ -58,7 +58,7 @@ docker run --rm -it `
   lance et sa commande : *le dernier audit a trouvé des copies en trop : 'clean' les met de
   côté*, **mh clean**. Son bouton a le focus à l'ouverture : <kbd>Entrée</kbd> la lance, comme
   dans `mh menu`. Quand tout est appliqué, la page le dit.
-- **Le cycle de vos photos** : les cinq étapes, la prochaine en abricot (*Vous êtes ici*),
+- **Le cycle de vos photos** : les cinq étapes, la prochaine mise en évidence (*Vous êtes ici*),
   chacune avec une ligne (*9 copies à mettre de côté*, *Une proposition à appliquer*) et le
   nombre d'étapes faites de son parcours.
 - **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la

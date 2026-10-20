@@ -54,7 +54,7 @@ docker run --rm -it `
   command: *the last audit found extra copies: 'clean' sets them aside*, **mh clean**. Its
   button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
   everything is applied, the page says so.
-- **The cycle of your photos**: the five stages, the next one in apricot (*You are here*), each
+- **The cycle of your photos**: the five stages, the next one highlighted (*You are here*), each
   with one line (*9 copies to set aside*, *A proposal to apply*) and how many steps of its
   guide are done.
 - **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the

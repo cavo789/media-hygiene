@@ -76,7 +76,7 @@ def _home() -> dict[str, str]:
             "Nothing left to do: everything is applied. New photos? The cycle starts "
             "again at Import."
         ),
-        "cycleNote": _("Five stages; the next one is in apricot."),
+        "cycleNote": _("Five stages; the highlighted one is your next step."),
         "youAreHere": _("You are here"),
         "stepsDone": _("{done} of {total} steps done."),
         "whereYouAre": _("Where you are"),

@@ -2265,7 +2265,7 @@ msgstr ""
 msgid "Fingerprinting videos"
 msgstr ""
 
-msgid "Five stages; the next one is in apricot."
+msgid "Five stages; the highlighted one is your next step."
 msgstr ""
 
 msgid "Flash"
