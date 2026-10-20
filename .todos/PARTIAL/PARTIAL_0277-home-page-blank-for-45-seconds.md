@@ -96,3 +96,16 @@ on the button, "the step starts in the console…") so it never reads as "nothin
   journals/quarantines; the two `docker run` per step chosen (likely the slow clicks).
 - Setting: none added; `LOADING_SLOW_MS` (5 s) is cosmetic, not worth a `config.toml` key.
 - `docs_screenshots` should run (the home page's first frame changed), not run here.
+
+## Measured on the maintainer's PC (2026-10-20, `mh-measure.ps1` step 23)
+
+- `GET /` 104–154 s, `GET /api/state` 120–167 s (the old image reads the state for both).
+- Inside the container: `home_state()` 57–63 s, of which `status.quarantine_state` 55–61 s
+  (97 %): `folder_census` stats each of the 18,506 quarantined files (listing them alone:
+  11.5 s). Everything else under 2 s; DNS of hub.docker.com 43 ms; empty `docker run` 0.6 s.
+- Fix chosen by the maintainer: count each run's quarantine from its journal
+  (`services/quarantine_ledger.py`), only for the run folders still listed at the top of a
+  quarantine; a run without a readable journal is walked; `purge` still walks the disk.
+  Trade-off accepted: a file deleted by hand inside a run's folder counts until `purge`.
+- Expected (estimated from the measured parts): `home_state()` about 2 s instead of 60 s.
+  To confirm: step 23 again once the image holds this change.

@@ -12,6 +12,7 @@ from media_hygiene.errors import DecisionsError
 from media_hygiene.report.burst_decisions import BurstStatus
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.place import DEFAULT_DECISIONS
+from media_hygiene.services.quarantine_ledger import journal_census
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -69,30 +70,39 @@ class QuarantineState:
         return sum(run.size for run in self.runs)
 
 
-def quarantine_state(quarantines: Sequence[Path]) -> QuarantineState:
+def quarantine_state(quarantines: Sequence[Path], journal_dir: Path) -> QuarantineState:
     """Measure the quarantine of every run, in every quarantine.
 
     Args:
         quarantines: The default quarantine and the per-drive ones.
+        journal_dir: Journal mount point: each run's files counted from it (0277).
 
     Returns:
         The runs that still hold files.
     """
-    runs = (_measure(quarantines, run_id) for run_id in runs_in(quarantines))
+    runs = (_measure(quarantines, journal_dir, run) for run in runs_in(quarantines))
     return QuarantineState(tuple(run for run in runs if run.files))
 
 
-def _measure(quarantines: Sequence[Path], run_id: str) -> QuarantinedRun:
-    """Count and measure the quarantine of one run, on every drive.
+def _measure(
+    quarantines: Sequence[Path], journal_dir: Path, run_id: str
+) -> QuarantinedRun:
+    """Count and measure the quarantine of one run: from its journal, else on disk.
 
     Args:
         quarantines: The default quarantine and the per-drive ones.
+        journal_dir: Journal mount point.
         run_id: The run.
 
     Returns:
         Its files, size and start.
     """
-    census = [folder_census(folder) for folder in run_folders(quarantines, run_id)]
+    known = journal_census(journal_dir, run_id)
+    census = (
+        [known]
+        if known is not None
+        else [folder_census(folder) for folder in run_folders(quarantines, run_id)]
+    )
     return QuarantinedRun(
         run_id,
         sum(files for files, _ in census),

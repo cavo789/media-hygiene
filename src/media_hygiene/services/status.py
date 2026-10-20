@@ -129,7 +129,9 @@ def read_status(runtime: Runtime) -> Status:
             for run in runs
             if _undoable(run) and can_undo(locations.journal_dir, run.run_id)
         ),
-        quarantine=quarantine_state(mounted_quarantines(runtime).folders)
+        quarantine=quarantine_state(
+            mounted_quarantines(runtime).folders, locations.journal_dir
+        )
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),
         review=review_state(locations.reports_dir) if reports else ReviewState(),
