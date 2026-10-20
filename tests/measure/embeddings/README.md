@@ -68,8 +68,10 @@ ticked, untick the misses.
   picture starts ticked **relevant**: untick those a person would not expect, then
   **Download the ticks (JSON)**;
 - `pairs.html`: per model, the 50 closest pairs the audit does not already call near
-  duplicates (its dHash and pHash test); every pair starts ticked **same photo**: untick
-  those where neither is a copy of the other (crop, filter, mirror, edit), then download;
+  duplicates (its dHash and pHash test); every pair starts ticked **same photo**: keep it
+  only when both files come from one shot (same instant, pose, expression), one a copy of the
+  other (resized, cropped, filtered, rotated, mirrored, sent by a messaging app); untick two
+  shots however alike (a burst, a retake, a zoom between them), then download;
 - `thumbs/`: the thumbnails the pages show. Your photos are only read.
 
 A model sees what is in the picture, never who or where: write the searches as what can be
