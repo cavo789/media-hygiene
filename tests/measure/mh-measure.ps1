@@ -1786,6 +1786,18 @@ def names_encoding(ftp, mlsd):
     return 'utf-8'
 
 
+def reopen(host, user, home, encoding):
+    """A new session in the share: the NAS closes one whose read stopped early (2026-10-20)."""
+    ftp = ftplib.FTP(timeout=30)
+    ftp.encoding = encoding
+    ftp.connect(host, 21)
+    ftp.login(user, os.environ.get('MH_NAS_PASSWORD', ''))
+    ftp.file = ftp.sock.makefile('r', encoding=encoding)
+    ftp.cwd(home)
+    ftp.voidcmd('TYPE I')
+    return ftp
+
+
 def partial(ftp, path, rest):
     connection = ftp.transfercmd('RETR ' + path, rest=rest)
     got = 0
@@ -1886,14 +1898,24 @@ def ftp_probe(host, share, user):
     ftp.voidcmd('TYPE I')
     if photos:
         say('MDTM of %s: %s' % (photos[0], ftp.sendcmd('MDTM ' + photos[0])))
+    home = ftp.pwd()
     start = time.monotonic()
-    parts = 0
+    parts, closed = 0, 0
     for path in photos[:10]:
         size = ftp.size(path) or 0
-        partial(ftp, path, None)
-        partial(ftp, path, max(size - CHUNK, 0))
+        for rest in (None, max(size - CHUNK, 0)):
+            try:
+                partial(ftp, path, rest)
+            except (EOFError, *ftplib.all_errors):
+                closed += 1
+                ftp = reopen(host, user, home, ftp.encoding)
         parts += 1
-    say('first and last 64 KiB: %d photos, %.2f s per photo' % (parts, (time.monotonic() - start) / max(parts, 1)))
+    say('first and last 64 KiB: %d photos, %.2f s per photo; the NAS closed the session after %d of %d partial reads (a new login each time)' % (parts, (time.monotonic() - start) / max(parts, 1), closed, parts * 2))
+    try:
+        ftp.close()
+    except ftplib.all_errors:
+        pass
+    ftp = reopen(host, user, home, ftp.encoding)  # the whole reads on a session surely alive
     total, count, start = [0], 0, time.monotonic()
     for path in photos[:20]:
         ftp.retrbinary('RETR ' + path, lambda block: total.__setitem__(0, total[0] + len(block)))
