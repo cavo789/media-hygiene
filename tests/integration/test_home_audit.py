@@ -21,7 +21,9 @@ from media_hygiene.console.page_progress import (
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import install
 from media_hygiene.report.index_page import load_summaries
+from media_hygiene.review.ending import STOPPED
 from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
+from media_hygiene.review.presence import Presence
 from media_hygiene.scan import stopwatch
 from media_hygiene.scan.progress import NullProgress, Step
 from media_hygiene.services.audit import AuditService
@@ -201,6 +203,7 @@ def test_the_audit_routes(locations: Locations) -> None:
             runtime.locations.reports_dir,
             ending,
             audit,
+            Presence(ending, STOPPED),
         ),
         [
             Call("GET", AUDIT_PATH),

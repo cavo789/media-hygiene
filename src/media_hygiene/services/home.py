@@ -3,7 +3,9 @@
 A step chosen ends the server with `100 + n`: the command exits with that code and
 `mh` runs step `n` in the terminal, mounted as that command needs; only when `mh` set
 `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps running.
-The page only reads the tool folders: the photos stay mounted read-only.
+The page only reads the tool folders: the photos stay mounted read-only. Its Quit
+button, or its tab closed (0261, `review.presence`), ends it with 0: `mh` gives the
+prompt back.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import (
+    STOP_PATH,
     STOPPED,
     Ending,
     EndingDoor,
@@ -25,6 +28,7 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
 from media_hygiene.review.local_app import STATE_PATH
+from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -57,6 +61,9 @@ def home_page(*, relays_steps: bool = False) -> bytes:
         state_path=STATE_PATH,
         step_path=STEP_PATH,
         audit_path=AUDIT_PATH,
+        alive_path=PRESENCE_PATH,
+        alive_ms=ALIVE_SECONDS * 1000,
+        stop_path=STOP_PATH,
         relays_steps=relays_steps,
         window=_mh_window(),
         thousands=separators()[0],
@@ -104,6 +111,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         `100 + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
     """
     ending = Ending()
+    presence = Presence(ending, STOPPED)
     audit = HomeAudit(sources.audit)
     reports_dir = runtime.locations.reports_dir
     relays = launcher_relays_steps()
@@ -113,6 +121,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         reports_dir,
         ending,
         audit,
+        presence,
         relays_steps=relays,
     )
 
@@ -136,4 +145,6 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         audit.stop()  # between two files: the index keeps what it committed
+    if presence.closed:
+        runtime.output.info(_("The home page's tab was closed: the home page stopped."))
     return code

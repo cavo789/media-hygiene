@@ -37,9 +37,7 @@ def review_command(  # pylint: disable=too-many-arguments
     junk: Annotated[bool, review_options.junk()] = False,
     gone: Annotated[bool, review_options.gone()] = False,
     decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
-    port: Annotated[
-        int, review_options.port(options.panel_advanced())
-    ] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port(options.panel_advanced())] = None,
     prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
     protect: Annotated[list[str] | None, folder_options.protect()] = None,
     exclude: Annotated[list[str] | None, folder_options.exclude()] = None,
@@ -79,6 +77,7 @@ def review_command(  # pylint: disable=too-many-arguments
     )
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output):
         runtime = runtime.with_overrides(

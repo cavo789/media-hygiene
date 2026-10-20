@@ -53,7 +53,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 Ouvrez <http://127.0.0.1:8088/>. `/` relance une recherche, les flèches se déplacent, un clic ou
 Espace choisit une photo, Entrée ou un double clic la montre en grand (avec un lien vers
 l'original), Échap la ferme. Filtres : années, une partie du chemin, les mots d'une seule source.
-Ctrl+C arrête la page.
+Ctrl+C, ou fermer son onglet, arrête la page.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.

@@ -1472,11 +1472,6 @@ msgid ""
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
 msgstr ""
 
-msgid ""
-"Double-click Media Hygiene on the Desktop or in the Start menu: the mh "
-"menu opens."
-msgstr ""
-
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
 msgstr ""
@@ -2607,6 +2602,20 @@ msgstr ""
 msgid "May"
 msgstr ""
 
+msgid ""
+"Media Hygiene added to the right-click menu and checked: right-click a "
+"folder, or the empty space of an open folder, then Media Hygiene to open "
+"the mh menu on that folder."
+msgstr ""
+
+msgid "Media Hygiene is stopped: you can close this tab."
+msgstr ""
+
+msgid ""
+"Media Hygiene shortcut created and checked: double-click it on the "
+"Desktop or in the Start menu to open the mh menu."
+msgstr ""
+
 msgid "Media files scanned"
 msgstr ""
 
@@ -3684,7 +3693,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Port of the page. docker run publishes it under the same number on your "
-"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: {default}."
+"computer: -p 127.0.0.1:9000:9000 for --port 9000. Default: [review] port "
+"in config.toml, {default}."
 msgstr ""
 
 msgid "Position saved in config.toml."
@@ -3766,6 +3776,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Quarantined"
+msgstr ""
+
+msgid "Quit"
 msgstr ""
 
 msgid "RAW"
@@ -3991,11 +4004,6 @@ msgid ""
 msgstr ""
 
 msgid "Right-click a folder in Explorer: the home page, on that folder"
-msgstr ""
-
-msgid ""
-"Right-click a folder, or the empty space of an open folder, then Media "
-"Hygiene: the mh menu opens on that folder."
 msgstr ""
 
 #, python-brace-format
@@ -4609,6 +4617,9 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Stops this page; closing its tab does too."
+msgstr ""
+
 msgid "Subject"
 msgstr ""
 
@@ -4904,6 +4915,9 @@ msgstr ""
 msgid "The home page is not running any more: start it again (mh)."
 msgstr ""
 
+msgid "The home page's tab was closed: the home page stopped."
+msgstr ""
+
 #, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
 msgstr ""
@@ -5013,6 +5027,9 @@ msgstr ""
 msgid "The page is not running any more: type mh phone again."
 msgstr ""
 
+msgid "The page's tab was closed: the page stopped."
+msgstr ""
+
 msgid ""
 "The pairs come the most space freed first. Each copy in the second folder"
 " has an identical file in the first one."
@@ -5043,6 +5060,13 @@ msgstr ""
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr ""
 
+msgid ""
+"The port of every page (review, home, places, people, search): inside the"
+" container and on your computer under the same number. Change it only "
+"when another program holds 8088 and cannot be closed; then type mh "
+"update, which writes the new port into mh."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The port of the mh pages is held by the container {id}: close the window "
@@ -5052,8 +5076,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "The port of the mh pages is used by another program, {name} (process "
-"{process}): close it, then type the command again. mh always uses this "
-"port."
+"{process}): close it, then type the command again; or choose another "
+"port, [review] port in config.toml, then mh update."
 msgstr ""
 
 msgid ""
@@ -8113,19 +8137,6 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
-"/mnt/{letter}, then the command again, or copy the folder to a fixed "
-"disk."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
-"before ejecting it."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
 " eject it, quit Docker Desktop first."
 msgstr ""
@@ -8136,14 +8147,9 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{drive}: is not mounted in WSL: mounted for this command (sudo may ask "
-"for your password)."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"{drive}: stays mounted in WSL: another mh window uses it. Once it has "
-"ended, type sudo umount /mnt/{letter} before ejecting it."
+"{drive}: is plugged in but not mounted in WSL: type the line below, then "
+"the command again (↑ then Enter). Before ejecting the drive: sudo umount "
+"/mnt/{letter}"
 msgstr ""
 
 #, python-brace-format

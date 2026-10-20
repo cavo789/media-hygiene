@@ -60,7 +60,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 
 Il fait d'abord l'audit, puis affiche *✅ Tri prêt, ouvrez http://127.0.0.1:8088/ dans votre
 navigateur*. Ctrl+clic dessus. Laissez la fenêtre ouverte : la page tourne tant qu'elle l'est ;
-Ctrl+C l'arrête.
+Ctrl+C, ou fermer son onglet, l'arrête.
 
 `-p 127.0.0.1:8088:8088` ouvre la page à votre ordinateur seulement, personne d'autre sur le réseau.
 

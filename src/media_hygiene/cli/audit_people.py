@@ -16,7 +16,6 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.next_steps import carried, suggest
 from media_hygiene.cli.people_flow import find_shown
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.console.formatting import human_duration, human_number
 from media_hygiene.console.people_view import show_groups, show_named, show_privacy
 from media_hygiene.console.progress import RichProgress
@@ -76,7 +75,7 @@ def audit_people(runtime: Runtime, yes: bool) -> None:  # noqa: FBT001
         suggest(
             runtime,
             _("name the groups of faces in your browser, with 'people'."),
-            NextVerb(carried(runtime, "people"), port=PAGE_PORT),
+            NextVerb(carried(runtime, "people"), port=runtime.settings.review.port),
         )
 
 

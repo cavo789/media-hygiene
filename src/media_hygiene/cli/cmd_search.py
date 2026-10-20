@@ -45,7 +45,7 @@ def search_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = _PRINTED,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Search the words of the photos: the page until Ctrl+C, or a table.
 
@@ -65,6 +65,7 @@ def search_command(  # pylint: disable=too-many-arguments
     )
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output), open_search(runtime) as search:
         if words:

@@ -2,16 +2,8 @@
 {% for line in header %}
 # {{ line }}
 {% endfor %}
-{{ function }}() {
-    # The drives mounted in WSL for this command are unmounted after it, whatever the way out (0254).
-    local mounted=() marks=() status=0
-    _{{ function }}_command "$@" || status=$?
-    _{{ function }}_release
-    return "$status"
-}
-
 # One command of `{{ function }}`: the host's own, or the container's.
-_{{ function }}_command() {
+{{ function }}() {
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
     local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
     local backups=()
@@ -36,7 +28,7 @@ _{{ function }}_command() {
     esac
 {% if checked %}
     for folder in {% for folder in checked %}"{{ folder }}"{{ " " if not loop.last }}{% endfor %}; do
-        _{{ function }}_drive "$folder" || return 1
+        _{{ function }}_drive "$folder" || return 2
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
     done
 {% endif %}
@@ -49,7 +41,8 @@ _{{ function }}_command() {
         *" $command "*) mode="" ;;
     esac
     case " {{ script.commands.pages | join(" ") }} " in
-        *" $command "*) page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}") ;;
+        # The port mh publishes is the one the page listens on, config.toml changed or not (0260).
+        *" $command "*) page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}" -e "MEDIA_HYGIENE_REVIEW__PORT={{ script.commands.port }}") ;;
     esac
     if [[ -n "${page[*]}" ]]; then
         # A page left by a closed terminal holds the port: stopped when its shell is gone (0250).
@@ -110,7 +103,7 @@ _{{ function }}_command() {
 {% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
-        "${page[@]}" "${marks[@]}" \
+        "${page[@]}" \
         {{ image }} "$@" "${backups[@]}" || status=$?
     if [[ -n "$browser" ]]; then kill "$browser" 2>/dev/null; fi
     if [[ -n "$long" ]]; then
@@ -151,6 +144,7 @@ _{{ function }}_home() {
     local _{{ function }}_relay=1 status=0 after=0 steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
+        if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
         if [[ "$status" -le {{ step_base }} ]]; then
             status=0
             after=0

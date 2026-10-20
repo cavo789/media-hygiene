@@ -27,7 +27,7 @@ def review_sort_command(
         ),
     ] = None,
     *,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Serve the events of a classify proposal in the browser until Ctrl+C.
 
@@ -45,6 +45,7 @@ def review_sort_command(
     )
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     with user_errors(output):
         session = open_sort_review(runtime, workbook)

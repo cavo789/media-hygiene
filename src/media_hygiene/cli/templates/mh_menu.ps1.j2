@@ -2,13 +2,15 @@
 # `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
 # here as `{{ function }} <step>`, its questions in this console, then the page comes back.
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
-# Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
+# Quit, Ctrl+C or an error end the loop with the page's exit code (0210); a page whose tab
+# was closed ends it too, the prompt back, never home opened again (0262).
 function global:_{{ function }}_home {
     $typed = @($args)
     $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' } else { '--color', 'never' })
     $status = 0
     $after = $false
     while ($true) {
+        if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
         if ($status -le {{ step_base }}) {
             $after = $false
             $global:MediaHygieneRelay = $true

@@ -2,19 +2,32 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final, cast
+from typing import TYPE_CHECKING, cast
 
 import typer
 
 from media_hygiene.cli.clean_options import decisions_option
 from media_hygiene.cli.options import panel_advanced
+from media_hygiene.config.review_settings import PAGE_PORT
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from typer.models import OptionInfo
 
-# Uncommon, so rarely taken on the host, where it is published under the same number.
-PAGE_PORT: Final = 8088
+    from media_hygiene.services.runtime import Runtime
+
+
+def page_port(runtime: Runtime, given: int | None) -> int:
+    """The port of a page: `--port` when given, else `[review] port` (0260).
+
+    Args:
+        runtime: Its settings hold `[review] port`.
+        given: `--port`, or None.
+
+    Returns:
+        The port to listen on, inside the container.
+    """
+    return runtime.settings.review.port if given is None else given
 
 
 def decisions_file() -> OptionInfo:
@@ -49,7 +62,7 @@ def port(panel: str | None = None) -> OptionInfo:
             help=_(
                 "Port of the page. docker run publishes it under the same number "
                 "on your computer: -p 127.0.0.1:9000:9000 for --port 9000. "
-                "Default: {default}."
+                "Default: [review] port in config.toml, {default}."
             ).format(default=PAGE_PORT),
             rich_help_panel=panel,
             show_default=False,

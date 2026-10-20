@@ -16,9 +16,10 @@ empty folder for a USB stick. `mh.ps1` mounts it in Docker Desktop's VM first
 (`wsl.exe`, measured to work on FAT32), one line said; a failure stops the command
 with the advice. After the run, a drive `mh` mounted itself is unmounted, so that
 Windows can eject the stick; left mounted while another `mh` container uses it (each
-container carries a label per removable drive it mounts). `mh.sh` in WSL does the same
-for the user's distribution (0254): WSL mounts only the drives present when it starts,
-so a stick plugged in later is mounted with sudo (`mount -t drvfs`), then unmounted.
+container carries a label per removable drive it mounts). `mh.sh` in WSL never runs
+sudo (0259): WSL mounts only the drives present when it starts, so for a stick plugged
+in later it stops with the `mount -t drvfs` line to type, and the `umount` one for
+ejecting.
 """
 
 from __future__ import annotations
@@ -72,12 +73,9 @@ class PortGuard:
 
 @dataclass(frozen=True, slots=True)
 class WslTexts:
-    """mh.sh in WSL: a drive mounted for the command; each holds `${drive}`."""
+    """mh.sh in WSL: a drive Windows has but WSL has not mounted (0259)."""
 
-    mount: str  # mounting it with sudo
-    failed: str  # mounting it failed; holds `${letter}` too
-    kept: str  # left mounted, another mh container uses it; holds `${letter}` too
-    stuck: str  # unmounting it failed; holds `${letter}` too
+    unmounted: str  # the line before the command to type; holds `${drive}`, `${letter}`
 
 
 @dataclass(frozen=True, slots=True)
@@ -156,8 +154,8 @@ def launcher_guards() -> LauncherGuards:
             busy=with_variable(
                 _(
                     "The port of the mh pages is used by another program, {name} "
-                    "(process {process}): close it, then type the command again. "
-                    "mh always uses this port."
+                    "(process {process}): close it, then type the command again; or "
+                    "choose another port, [review] port in config.toml, then mh update."
                 ),
                 "{name}",
                 "${name}",
@@ -168,31 +166,18 @@ def launcher_guards() -> LauncherGuards:
 
 
 def _wsl_texts() -> WslTexts:
-    """Translate the lines of mh.sh mounting a drive in WSL (0254).
+    """Translate the line of mh.sh for a drive WSL has not mounted (0259).
 
     Returns:
-        The lines, `${drive}` (`E`) and `${letter}` (`e`) in place.
+        The line, `${drive}` (`E`) and `${letter}` (`e`) in place.
     """
-    texts = (
-        _(
-            "{drive}: is not mounted in WSL: mounted for this command "
-            "(sudo may ask for your password)."
-        ),
-        _(
-            "{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
-            "/mnt/{letter}, then the command again, or copy the folder to a fixed disk."
-        ),
-        _(
-            "{drive}: stays mounted in WSL: another mh window uses it. Once it has "
-            "ended, type sudo umount /mnt/{letter} before ejecting it."
-        ),
-        _(
-            "{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
-            "before ejecting it."
-        ),
+    text = _(
+        "{drive}: is plugged in but not mounted in WSL: type the line below, then the "
+        "command again (↑ then Enter). Before ejecting the drive: sudo umount "
+        "/mnt/{letter}"
     )
-    mount, failed, kept, stuck = (
-        with_variable(text, "{drive}", "${drive}").replace("{letter}", "${letter}")
-        for text in texts
+    return WslTexts(
+        unmounted=with_variable(text, "{drive}", "${drive}").replace(
+            "{letter}", "${letter}"
+        )
     )
-    return WslTexts(mount=mount, failed=failed, kept=kept, stuck=stuck)

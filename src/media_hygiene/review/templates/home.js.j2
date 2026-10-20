@@ -5,6 +5,9 @@
   const statePath = {{ state_path | tojson }};
   const stepPath = {{ step_path | tojson }};
   const auditPath = {{ audit_path | tojson }};
+  const alivePath = {{ alive_path | tojson }};
+  const stopPath = {{ stop_path | tojson }};
+  const ALIVE_MS = {{ alive_ms | tojson }};
   const relaysSteps = {{ relays_steps | tojson }};
   const thousands = {{ thousands | tojson }};
   const count = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
@@ -226,6 +229,21 @@
     .catch(() => setStatus(T.offline, "error"));
   byId("auditStart").addEventListener("click", () => askAudit("start"));
   byId("auditStop").addEventListener("click", () => askAudit("stop"));
+
+  // While a tab shows the page, it says so; leaving (closed, reloaded), it says that too,
+  // with a request that outlives the tab: the server ends once no tab came back (0261).
+  const alive = (leaving) => fetch(alivePath, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => {});
+  window.addEventListener("pageshow", () => alive(false));
+  window.addEventListener("pagehide", () => alive(true));
+  window.setInterval(() => alive(false), ALIVE_MS);
+  byId("quit").addEventListener("click", () => {
+    fetch(stopPath, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+      .then(() => {
+        for (const button of document.querySelectorAll("button")) button.disabled = true;
+        setStatus(T.quitDone);
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  });
 
   byId("legend").textContent = fill(T.legend, { safe: "🔒", undo: "↩️", final: "⚠️" });
   load();

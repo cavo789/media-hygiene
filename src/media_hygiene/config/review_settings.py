@@ -7,6 +7,9 @@ moving on to the next series accepts the proposal, a key takes it back. A series
 only shots left are the sharpest and those of protected folders is obvious: the page
 validates every obvious series at once.
 
+`port`: the port of every page (`review`, `home`, `places`…), published by `mh` under
+the same number on the host; another number for whoever cannot free 8088 (0260).
+
 `[review.unwanted]`: what `review --junk` lists as most likely unwanted, never set
 aside without you. Each threshold at 0 disables its reason.
 """
@@ -29,6 +32,9 @@ _WHITE_MEAN: Final = 230.0
 _FLAT_SHARE: Final = 0.7
 _BLUR_PERCENTILE: Final = 2.0
 _PERCENT: Final = 100
+# Uncommon, so rarely taken on the host, where `mh` publishes it under the same number.
+PAGE_PORT: Final = 8088
+_LAST_PORT: Final = 65535
 
 
 class UnwantedSettings(BaseModel):
@@ -68,4 +74,7 @@ class ReviewSettings(BaseModel):
     brightness_gap: float = Field(default=_BRIGHTNESS_GAP, ge=0, le=_GRAY_LEVELS)
     # Share of pixels clipped to white or black (0 to 1) above the others'; 0 disables.
     clipped_gap: float = Field(default=_CLIPPED_GAP, ge=0, le=1)
+    # The port of the pages, inside the container and on the host (`mh update` after a
+    # change: it writes the port into `mh`).
+    port: int = Field(default=PAGE_PORT, ge=1, le=_LAST_PORT)
     unwanted: UnwantedSettings = UnwantedSettings()

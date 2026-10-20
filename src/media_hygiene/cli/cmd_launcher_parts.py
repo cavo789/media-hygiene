@@ -52,7 +52,7 @@ def cli_commands(ctx: typer.Context) -> LauncherCommands:
     """
     from typer.core import TyperGroup
 
-    from media_hygiene.cli.review_options import PAGE_PORT
+    from media_hygiene.cli.context import runtime_of
     from media_hygiene.cli.safety import (
         DATA_COMMANDS,
         LONG_COMMANDS,
@@ -72,7 +72,7 @@ def cli_commands(ctx: typer.Context) -> LauncherCommands:
         pages=tuple(name for name in names if name in PAGE_COMMANDS),
         data=tuple(name for name in names if name in DATA_COMMANDS),
         long=tuple(name for name in names if name in LONG_COMMANDS),
-        port=PAGE_PORT,
+        port=runtime_of(ctx).settings.review.port,
         backups=tuple(
             name for name in names if _takes_backup(group.get_command(root, name))
         ),

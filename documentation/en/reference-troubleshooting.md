@@ -192,7 +192,8 @@ setting is required.`
 - Another program uses 8088 (another local server, a preview of your editor): `mh` names it
   before the page, with its process number (*The port of the mh pages is used by another
   program, python (process 4242): close it, then type the command again.*), and runs nothing.
-  Close that program: `mh` always uses 8088. On Windows it asks Windows which program listens;
+  Close that program; if you cannot, give the pages another port: `port = 9000` under
+  `[review]` in `config.toml`, then `mh update` (it writes the new port into `mh`). On Windows it asks Windows which program listens;
   in WSL or Linux, `ss` tells it for your own programs only, and Docker says *address already in
   use* for the others.
 - *port is already allocated* with `docker run` typed by hand: choose another number, the same
@@ -239,11 +240,16 @@ so the tool stops before it compares anything.
   stops; to eject it once that window's command has ended, type
   `wsl -d docker-desktop umount /mnt/host/d` first.
 - With `mh` in WSL (`mh.sh`): WSL mounts the drives present when it starts, never a stick
-  plugged in later, so `/mnt/d` is missing. Before each command, `mh` mounts it with `sudo`
-  (*D: is not mounted in WSL: mounted for this command (sudo may ask for your password).*), and
-  unmounts it after, so Windows can eject the stick. If mounting fails, it stops and says the
-  line to type yourself: `sudo mount -t drvfs D: /mnt/d`. With the Windows interop of WSL turned
-  off (`/etc/wsl.conf`), `mh` cannot ask Windows which drives it has: mount the stick yourself.
+  plugged in later, so `/mnt/d` is missing. `mh` never runs `sudo` itself: it stops and says the
+  line to type once per plug-in, then the command again (↑ then Enter):
+
+  ```bash
+  sudo mkdir -p /mnt/d && sudo mount -t drvfs D: /mnt/d -o uid=1000,gid=1000
+  ```
+
+  (`mh` writes your own `uid` and `gid`.) Before ejecting the stick, type `sudo umount /mnt/d`.
+  With the Windows interop of WSL turned off (`/etc/wsl.conf`), `mh` cannot ask Windows which
+  drives it has: mount the stick yourself with the same line.
 - With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
 
   ```powershell

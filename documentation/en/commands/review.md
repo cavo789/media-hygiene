@@ -59,7 +59,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 It audits first, then prints *✅ Review ready, open http://127.0.0.1:8088/ in your browser*.
-Ctrl+click it. Leave the window open: the page runs as long as it does; Ctrl+C stops it.
+Ctrl+click it. Leave the window open: the page runs as long as it does; Ctrl+C, or closing its tab, stops it.
 
 `-p 127.0.0.1:8088:8088` opens the page to your computer only, nobody else on the network.
 

@@ -25,7 +25,7 @@ from media_hygiene.i18n import _
 def home_command(
     ctx: typer.Context,
     *,
-    port: Annotated[int, review_options.port()] = review_options.PAGE_PORT,
+    port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Serve the home page until Ctrl+C or a step chosen.
 
@@ -42,6 +42,7 @@ def home_command(
     from media_hygiene.services.home import HomeSources, serve_home
 
     runtime = runtime_of(ctx)
+    port = review_options.page_port(runtime, port)
     output = runtime.output
     state = partial(home_state, runtime)
     code = serve_home(runtime, HomeSources(state, page_audit(runtime)), port)

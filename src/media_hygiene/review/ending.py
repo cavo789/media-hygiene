@@ -2,7 +2,9 @@
 
 Every page answers `POST /api/stop` (its "⌂ Home" link): the server ends with code 0,
 and `mh` opens the home page again. The home page ends with `100 + n` when the user
-chooses step `n`, which `mh` then runs with the mounts it needs. The server listens on
+chooses step `n`, which `mh` then runs with the mounts it needs. A page whose tab was
+closed (`presence`, `POST /api/alive`) ends with `ExitCode.PAGE_CLOSED`, raised as
+`PageClosed` for its command to say so (0262). The server listens on
 every interface of the container: Docker publishes the port on the host's loopback
 only, under the same number.
 """
@@ -14,8 +16,11 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Protocol
 
+from media_hygiene.constants import ExitCode
+from media_hygiene.errors import PageClosed
 from media_hygiene.i18n import _
 from media_hygiene.review.http import Response, is_local
+from media_hygiene.review.presence import PRESENCE_PATH, Presence, presence_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 
 if TYPE_CHECKING:
@@ -86,10 +91,14 @@ class Ending:
 
 @dataclass(frozen=True, slots=True)
 class EndingDoor:
-    """Serves a page's connections, `POST /api/stop` answered for every page."""
+    """Serves a page's connections, `POST /api/stop` answered for every page.
+
+    With a presence, `POST /api/alive` too: the page ends once no tab shows it.
+    """
 
     app: Handling
     ending: Ending
+    presence: Presence | None = None
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -111,6 +120,8 @@ class EndingDoor:
         Returns:
             The response.
         """
+        if request.path == PRESENCE_PATH and self.presence is not None:
+            return await self._alive(request)
         if request.path != STOP_PATH:
             return await self.app.handle(request)
         if not is_local(request):
@@ -124,6 +135,19 @@ class EndingDoor:
         self.ending.end(STOPPED)
         return json_response(HTTPStatus.OK, {"stopped": True})
 
+    async def _alive(self, request: Request) -> Response:
+        """Answer `POST /api/alive` from the loopback: a tab still shows the page.
+
+        Args:
+            request: The request.
+
+        Returns:
+            The response.
+        """
+        if self.presence is None or not is_local(request):
+            return Response(HTTPStatus.FORBIDDEN)
+        return await presence_response(self.presence, request)
+
 
 async def run_server(app: Handling, port: int, ready: Callable[[int], None]) -> int:
     """Listen, tell the port, and serve until cancelled or a page asks to end.
@@ -135,8 +159,13 @@ async def run_server(app: Handling, port: int, ready: Callable[[int], None]) -> 
 
     Returns:
         The exit code the page asked for: 0 after `POST /api/stop`.
+
+    Raises:
+        PageClosed: The page's tab was closed and none came back (0262).
     """
-    return await serve_until_ended(EndingDoor(app, Ending()), port, ready)
+    ending = Ending()
+    presence = Presence(ending, ExitCode.PAGE_CLOSED)
+    return await serve_until_ended(EndingDoor(app, ending, presence), port, ready)
 
 
 async def serve_until_ended(
@@ -151,6 +180,9 @@ async def serve_until_ended(
 
     Returns:
         The exit code the page asked for.
+
+    Raises:
+        PageClosed: The page's tab was closed and none came back (0262).
     """
     server = await asyncio.start_server(door.connection, LISTEN_HOST, port)
     async with server:
@@ -159,4 +191,6 @@ async def serve_until_ended(
             serving = group.create_task(server.serve_forever())
             code = await door.ending.wait()
             serving.cancel()
+    if code == ExitCode.PAGE_CLOSED:
+        raise PageClosed
     return code

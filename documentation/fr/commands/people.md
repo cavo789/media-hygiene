@@ -60,7 +60,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 \
 La première exécution télécharge les deux modèles de visages dans le cache, une fois. Chaque photo
 est analysée une fois ; les exécutions suivantes n'analysent que les nouvelles. Il affiche ensuite
 les groupes trouvés, les personnes déjà nommées et l'adresse de la page : un clic sur un visage
-ouvre sa photo. Ctrl+C l'arrête.
+ouvre sa photo. Ctrl+C, ou fermer son onglet, l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text

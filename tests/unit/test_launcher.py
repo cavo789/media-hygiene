@@ -67,7 +67,10 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert '. "$HOME\\media-hygiene\\mh.ps1"' in text
     assert "function global:mh {" in text
     assert "$mode = if ($command -in @('clean')) { '' } else { ':ro' }" in text
-    assert "@('-p', '127.0.0.1:8088:8088')" in text
+    assert (
+        "@('-p', '127.0.0.1:8088:8088', '-e', 'MEDIA_HYGIENE_REVIEW__PORT=8088')"
+        in text
+    )
     assert "$tty = @(if ($command -notin @('launcher')) { '-it' })" in text
     assert "docker run --rm @tty `" in text
     assert '-v "C:\\Photos:/data/c/Photos${mode}" `' in text

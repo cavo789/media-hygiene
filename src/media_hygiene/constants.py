@@ -132,6 +132,7 @@ class ExitCode(IntEnum):
     OK = 0
     FAILURE = 1
     USAGE = 2
+    PAGE_CLOSED = 3  # a page's tab was closed: mh does not open home again (0262)
     INTERRUPTED = 130  # 128 + SIGINT, as shells report Ctrl+C
 
 

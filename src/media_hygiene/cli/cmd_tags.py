@@ -11,7 +11,6 @@ import typer
 
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.options import panel_local_ai
-from media_hygiene.cli.review_options import PAGE_PORT
 from media_hygiene.i18n import _
 
 
@@ -94,5 +93,5 @@ def tags_command(  # pylint: disable=too-many-arguments
                 "find your photos by these words in your browser; 'inventory' "
                 "lists them in its last column."
             ),
-            NextVerb(carried(runtime, "search"), port=PAGE_PORT),
+            NextVerb(carried(runtime, "search"), port=runtime.settings.review.port),
         )

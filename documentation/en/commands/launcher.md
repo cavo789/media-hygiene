@@ -118,7 +118,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys
 `HKCU\Software\Classes\Directory\shell\MediaHygiene` and
-`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) and show it. A failure is shown with its
+`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) and confirm it in one line. A failure is shown with its
 reason; *access refused* often comes from an antivirus, which may lock a path it has flagged until
 Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the image to
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep

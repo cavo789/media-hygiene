@@ -45,7 +45,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 It counts the events (*412 events to decide: 260 with a sure proposal (one click), 152 to look
-at*), then prints the address of the page: Ctrl+click it. Ctrl+C stops it; the next run resumes.
+at*), then prints the address of the page: Ctrl+click it. Ctrl+C, or closing its tab, stops it; the next run resumes.
 
 ## The main keys
 

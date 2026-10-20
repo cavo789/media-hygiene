@@ -10,15 +10,21 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+import typer
 
 import media_hygiene
+from media_hygiene.cli.context import user_errors
 from media_hygiene.cli.home_audit import page_audit
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.cli.menu_steps import build_menu, choice_lines
 from media_hygiene.cli.status_view import status_lines
+from media_hygiene.constants import ExitCode
+from media_hygiene.errors import PageClosed
+from media_hygiene.review import presence
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.ending import (
     STOP_PATH,
+    STOPPED,
     Ending,
     EndingDoor,
     run_server,
@@ -26,6 +32,7 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.home_app import STEP_PATH, HomeApp
 from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.presence import Presence
 from media_hygiene.services import home
 from media_hygiene.services.home import home_page, launcher_relays_steps
 from media_hygiene.services.home_audit import HomeAudit
@@ -104,6 +111,7 @@ def home_app(
         runtime.locations.reports_dir,
         ending,
         audit,
+        Presence(ending, STOPPED),
         relays_steps=relays_steps,
     )
 
@@ -347,3 +355,54 @@ def test_every_page_template_includes_the_home_link() -> None:
     assert len(pages) >= 9
     for page in pages:
         assert 'include "home_link.html.j2"' in page.read_text("utf-8"), page.name
+
+
+def test_a_closed_tab_or_quit_ends_home_with_0(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The tab said it leaves and none came back, or Quit: home ends with 0 (0261)."""
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    runtime = audited(cli, locations)
+    page = home_page(relays_steps=True).decode()
+    assert 'id="quit"' in page
+    assert presence.PRESENCE_PATH in page
+    assert STOP_PATH in page
+    leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
+    replies, code = serve(home_app(runtime), [leaving])
+    assert replies[0].status == 200
+    assert code == STOPPED
+    replies, code = serve(
+        home_app(runtime), [Call("POST", STOP_PATH, b"{}", JSON_HEADERS)]
+    )
+    assert replies[0].status == 200
+    assert code == STOPPED
+
+
+def test_a_page_whose_tab_was_closed_raises_page_closed(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0262: any page served by run_server: its tab left, none came back."""
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    write_burst(locations.data_dir)
+    session = review_session(locations)
+    leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
+
+    async def scenario() -> Reply:
+        with ThreadPoolExecutor(1) as executor:
+            ports: asyncio.Queue[int] = asyncio.Queue()
+            app = ReviewApp(session, PAGE, executor)
+            server = asyncio.create_task(run_server(app, 0, ports.put_nowait))
+            reply = await send_call(await ports.get(), leaving)
+            with pytest.raises(PageClosed):
+                await asyncio.wait_for(server, 2)
+            return reply
+
+    assert asyncio.run(scenario()).status == 200
+
+
+def test_a_closed_page_exits_with_its_own_code(locations: Locations) -> None:
+    """0262: `user_errors` says it in one line and exits with PAGE_CLOSED."""
+    runtime = make_runtime(locations)
+    with pytest.raises(typer.Exit) as ended, user_errors(runtime.output):
+        raise PageClosed
+    assert ended.value.exit_code == ExitCode.PAGE_CLOSED

@@ -45,7 +45,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 Il compte les événements (*412 événements à décider : 260 avec une proposition sûre (un clic),
-152 à regarder*), puis affiche l'adresse de la page : Ctrl+clic dessus. Ctrl+C l'arrête ; la
+152 à regarder*), puis affiche l'adresse de la page : Ctrl+clic dessus. Ctrl+C, ou fermer son onglet, l'arrête ; la
 fois suivante, il reprend.
 
 ## Les touches principales

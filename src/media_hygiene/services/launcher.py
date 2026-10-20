@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE
+from media_hygiene.constants import ExitCode
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.docker_run import (
     Shell,
@@ -178,5 +179,6 @@ def render_script(script: LauncherScript) -> str:
         photos=LAUNCHER_PHOTOS_VARIABLE,
         relayed=_RELAYED,
         step_base=STEP_EXIT_BASE,
+        page_closed=int(ExitCode.PAGE_CLOSED),
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text

@@ -50,7 +50,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 
 Open <http://127.0.0.1:8088/>. `/` searches again, the arrows move, a click or Space picks a
 photo, Enter or a double click shows it large (with a link to the original), Escape closes it.
-Filters: years, a part of the path, the words of one source only. Ctrl+C stops the page.
+Filters: years, a part of the path, the words of one source only. Ctrl+C, or closing its tab, stops the page.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
