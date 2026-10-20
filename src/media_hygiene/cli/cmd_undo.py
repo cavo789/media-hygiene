@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
+from media_hygiene.cli import folder_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _, ngettext
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def undo_command(
+def undo_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     run_id: Annotated[
         str | None,
@@ -42,11 +43,13 @@ def undo_command(
             ),
         ),
     ] = False,
+    backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Restore every file a run deleted, quarantined or moved.
 
     Args:
         ctx: Typer context holding the runtime.
+        backup: `--backup` folders, read-only on purpose: never refused (0262).
         run_id: Run identifier, or None for the latest run.
         yes: `--yes`, skip the confirmation.
 
@@ -60,7 +63,7 @@ def undo_command(
     from media_hygiene.services.undo import resolve_run_id, runs_to_undo, undo_runs
     from media_hygiene.services.undo_guard import ensure_undo_ready
 
-    runtime = runtime_of(ctx)
+    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
     with user_errors(output):
         run = resolve_run_id(runtime, run_id)

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Annotated, Final
 
 import typer
 
+from media_hygiene.cli import folder_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.options import panel_advanced
 from media_hygiene.i18n import _
@@ -74,11 +75,13 @@ def album_command(  # pylint: disable=too-many-arguments
             help=_("Make the links; without it, only show what the album gathers."),
         ),
     ] = False,
+    backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Show what the album gathers; with --apply, make one hard link per file.
 
     Args:
         ctx: Typer context holding the runtime.
+        backup: `--backup` folders, read-only on purpose: never refused (0262).
         name: The album's name.
         category: `--category`.
         event: `--event`.
@@ -92,7 +95,7 @@ def album_command(  # pylint: disable=too-many-arguments
     from media_hygiene.scan.progress import NullProgress
     from media_hygiene.services.album import AlbumRequest, AlbumService
 
-    runtime = runtime_of(ctx)
+    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     request = AlbumRequest(name, Criteria(category, event, rule, rating or 0), workbook)
     with user_errors(runtime.output):
         service = AlbumService(runtime, NullProgress())

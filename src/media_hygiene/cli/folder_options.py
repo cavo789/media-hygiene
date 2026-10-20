@@ -98,6 +98,41 @@ def backup() -> OptionInfo:
     )
 
 
+def kept_backup() -> OptionInfo:
+    """`--backup` of a command that changes files: a backup it must leave alone (0262).
+
+    `mh` mounts each backup read-only for every command and passes it to those taking
+    this option: named, it is never refused for being read-only.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--backup",
+            help=_(
+                "A backup or an old disk, mounted read-only: never changed, and not "
+                "refused for being read-only (mh passes your backups). Repeatable."
+            ),
+            rich_help_panel=_panel(),
+            show_default=False,
+        ),
+    )
+
+
+def backup_layer(folders: list[str] | None) -> Layer:
+    """Turn `--backup` folders into a settings layer.
+
+    Args:
+        folders: The folders given, or None.
+
+    Returns:
+        The `[folders] backups` override, empty when none was given.
+    """
+    return {"folders": {"backups": folders}} if folders else {}
+
+
 @dataclass(frozen=True, slots=True)
 class FolderOptions:
     """The folder options typed on a command line, as their values came."""

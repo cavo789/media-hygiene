@@ -9,11 +9,12 @@ from typing import Annotated
 
 import typer
 
+from media_hygiene.cli import folder_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _
 
 
-def xmp_command(
+def xmp_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     *,
     path: Annotated[
@@ -34,11 +35,13 @@ def xmp_command(
             help=_("Write the sidecars; without it, only show what would be written."),
         ),
     ] = False,
+    backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Show the sidecars to write; with --apply, write them, journaled.
 
     Args:
         ctx: Typer context holding the runtime.
+        backup: `--backup` folders, read-only on purpose: never refused (0262).
         path: `--path`, host folders.
         apply: `--apply`, write the sidecars.
     """
@@ -50,7 +53,7 @@ def xmp_command(
     from media_hygiene.services.next_command import CHANGING, NextVerb
     from media_hygiene.services.xmp import XmpService
 
-    runtime = runtime_of(ctx)
+    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
     within = tuple(runtime.mapper.to_container(folder) for folder in path or ())
     with user_errors(output):
