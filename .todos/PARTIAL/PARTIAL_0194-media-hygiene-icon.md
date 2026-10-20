@@ -42,3 +42,10 @@ Decided at the review of the 2026-10-16 run (question 3, about 0180/0181): `mh s
   **Reason:** needs the maintainer's PC (Windows + Docker Desktop + Avast). Steps: `mh update`,
   then `mh shortcut` and `mh explorer`. If Explorer shows the old icon, its icon cache is stale
   (sign out and in again).
+
+## Measured on Windows (2026-10-20, step 10 of mh-measure.ps1 at e4644f4, maintainer)
+
+- Double-click on the Desktop *Media Hygiene* shortcut: window and home page open; no Avast or
+  Defender alert. The right-click entry sits under *Show more options* (Windows 10.0.26300).
+- Still open: the look of the icon (Desktop, Start menu, 16 px in the menu) and the
+  `docker create`/`cp`/`rm` time (not asked by step 10).

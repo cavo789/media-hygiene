@@ -66,3 +66,14 @@ two questions the maintainer could not answer from the page (measured: step 10, 
   **Reason:** needs Windows; same command as 0257, fetched at 8fefa13ff2096fc44972ecfca7734aae3acb60bc (`-Only 10`, after a reboot).
 - Captures of `commands/home.md` / `commands/launcher.md` are stale: `docs_screenshots` should
   run (not run here: heavy).
+
+## Measured on Windows (2026-10-20, step 10 of mh-measure.ps1 at e4644f4, maintainer)
+
+- Right-click on `L'ete 2019`: the page's first line under *Where you are* is "This page also
+  analyses: C:\Temp\mh-measure10c\L'ete 2019", in bold; the audit run from the page scanned 43 files
+  (expected 43).
+- *Run* on `mh audit`: the page said which window runs it (y); the page came back by itself.
+- The 30 s hint was not seen: the audit of 43 files ended and the page came back before 30 s, so
+  none was expected (the 10c question was worded as if it always shows; reworded in
+  mh-measure.ps1, inbox of 2026-10-20). The hint itself stays covered by the unit tests of the page.
+- Every item done → closed DONE.

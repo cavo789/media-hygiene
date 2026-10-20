@@ -48,8 +48,5 @@
 | 0213 | A folder pair can keep both names: each copy becomes a hard link to the kept file (same drive) | [PARTIAL_0213-pair-keep-both-names-hard-link.md](PARTIAL/PARTIAL_0213-pair-keep-both-names-hard-link.md) |
 | 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
 | 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
-| 0250 | `mh`: a page left running by a closed window blocks the next one (port 8088 already allocated) | [PARTIAL_0250-mh-page-left-by-closed-window.md](PARTIAL/PARTIAL_0250-mh-page-left-by-closed-window.md) |
 | 0253 | `mh`: port 8088 taken by another program — say which, never Docker's raw error | [PARTIAL_0253-mh-page-port-taken-by-another-program.md](PARTIAL/PARTIAL_0253-mh-page-port-taken-by-another-program.md) |
 | 0254 | `mh.sh` (WSL): a removable drive is mounted for the user, as `mh.ps1` does | [PARTIAL_0254-mh-sh-mounts-removable-drive.md](PARTIAL/PARTIAL_0254-mh-sh-mounts-removable-drive.md) |
-| 0257 | The shortcut and the right-click start `mh` without `-ExecutionPolicy Bypass`: Avast blocks it | [PARTIAL_0257-launch-without-execution-policy-bypass.md](PARTIAL/PARTIAL_0257-launch-without-execution-policy-bypass.md) |
-| 0258 | Home page opened from a right-click names the folder; the "Running" popup says which window; step 10's questions match the page | [PARTIAL_0258-home-page-names-folder-and-window.md](PARTIAL/PARTIAL_0258-home-page-names-folder-and-window.md) |

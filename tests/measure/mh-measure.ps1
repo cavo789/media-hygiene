@@ -29,7 +29,8 @@
 #      the start without -ExecutionPolicy Bypass, any antivirus alert, the same right-click
 #      with mh.ps1 under %USERPROFILE%\media-hygiene (the real place) against -Work  (0257);
 #      the page names the folder clicked, Run says which window runs the step     (0258);
-#      another program listening on 8088: mh review names it, the probe timed     (0253)
+#      another program listening on 8088: mh review names it, the probe timed     (0253);
+#      -Only 10f runs this port check alone, without the questions above
 #  11. mh folders add / remove (mh rewrites its own file), a new terminal audits the folder added;
 #      mh update: with the local image it says there is nothing to pull; then, if you agree, the
 #      local image tagged cavo789/media-hygiene plays an older one and mh update pulls the
@@ -142,7 +143,8 @@ function Log([string]$text) {
 function MhLeftovers([string]$part) {
     foreach ($id in @(& docker ps --quiet)) {
         $binds = "$(& docker inspect $id --format '{{json .HostConfig.Binds}}' 2>$null)"
-        if (-not $binds.Contains($Work.Replace('\', '\\'))) { continue }
+        # Explorer passes the folder as on disk (C:\Temp), -Work as typed (C:\temp): any case.
+        if ($binds.IndexOf($Work.Replace('\', '\\'), [StringComparison]::OrdinalIgnoreCase) -lt 0) { continue }
         $name = "$(& docker inspect $id --format '{{.Name}} {{json .Config.Cmd}} {{json .NetworkSettings.Ports}}')"
         Log "   $part. container of this run still running after its window closed: $name; stopped"
         & docker stop $id | Out-Null
@@ -457,7 +459,9 @@ Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
 # --- 10: what mh does by itself, without docker run (0175, 0180, 0181) ----------------------
 # mh open, mh shortcut, mh explorer: each one read back here; a Media Hygiene shortcut or
 # right-click entry you already had is saved first and put back at the end.
-if (Wanted 10) {
+# -Only 10f: the port check alone (0253), without the questions of 10a-10e.
+$portOnly = $steps -contains '10f'
+if ((Wanted 10) -or $portOnly) {
     $ErrorActionPreference = "Continue"
     $mhDir = Join-Path $tool "mh"
     New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
@@ -473,101 +477,109 @@ if (Wanted 10) {
     . $mhFile
     Log ""
     Log "== 10. what mh does by itself (0175 open, 0180 shortcut, 0181 and 0188 explorer)"
-    $index = Join-Path $tool "reports\index.html"
-    if (-not (Test-Path $index)) {
-        $said = @(mh open 6>&1 | ForEach-Object { "$_" })
-        Log ("   10a. mh open before any report says: " + ($said -join ' / '))
-        mh audit | Out-Null
-    }
-    mh open
-    $opened = Read-Host "10a. mh open: did your browser open the list of the reports? (y/n)"
-    Log "   10a. browser opened on index.html by mh open: $opened"
+    if (-not $portOnly) {
+        $index = Join-Path $tool "reports\index.html"
+        if (-not (Test-Path $index)) {
+            $said = @(mh open 6>&1 | ForEach-Object { "$_" })
+            Log ("   10a. mh open before any report says: " + ($said -join ' / '))
+            mh audit | Out-Null
+        }
+        mh open
+        $opened = Read-Host "10a. mh open: did your browser open the list of the reports? (y/n)"
+        Log "   10a. browser opened on index.html by mh open: $opened"
 
-    # 10b: the shortcuts, yours saved first.
-    $shell = New-Object -ComObject WScript.Shell
-    $links = @(foreach ($place in 'Desktop', 'Programs') { Join-Path ([Environment]::GetFolderPath($place)) 'Media Hygiene.lnk' })
-    foreach ($link in $links) { if (Test-Path -LiteralPath $link) { Copy-Item -LiteralPath $link -Destination "$link.mh-measure" -Force } }
-    $said = @(mh shortcut 6>&1 | ForEach-Object { "$_" })
-    foreach ($line in $said) { Log ("   10b. " + $line) }
-    foreach ($link in $links) {
-        $back = $shell.CreateShortcut($link)
-        Log ("   10b. {0} exists: {1}; target {2}; arguments {3}" -f $link, (Test-Path -LiteralPath $link), $back.TargetPath, $back.Arguments)
-        Log ("   10b. {0} arguments hold Bypass (0257, expected False): {1}" -f $link, ($back.Arguments -match 'Bypass'))
-    }
-    $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open, stay open, and the home page open in your browser? (y/n)"
-    Log "   10b. the icon opens the window and the home page: $clicked"
-    $alert = Read-Host "10b. Did Avast or Windows Defender show anything since that double-click (an alert, a blocked file)? (none, or what it said)"
-    Log "   10b. antivirus after the double-click (0257): $alert"
-    $null = Read-Host "10b. Close that window with its X (top right). Then press Enter here"
-    MhLeftovers "10b"
+        # 10b: the shortcuts, yours saved first.
+        $shell = New-Object -ComObject WScript.Shell
+        $links = @(foreach ($place in 'Desktop', 'Programs') { Join-Path ([Environment]::GetFolderPath($place)) 'Media Hygiene.lnk' })
+        foreach ($link in $links) { if (Test-Path -LiteralPath $link) { Copy-Item -LiteralPath $link -Destination "$link.mh-measure" -Force } }
+        $said = @(mh shortcut 6>&1 | ForEach-Object { "$_" })
+        foreach ($line in $said) { Log ("   10b. " + $line) }
+        foreach ($link in $links) {
+            $back = $shell.CreateShortcut($link)
+            Log ("   10b. {0} exists: {1}; target {2}; arguments {3}" -f $link, (Test-Path -LiteralPath $link), $back.TargetPath, $back.Arguments)
+            Log ("   10b. {0} arguments hold Bypass (0257, expected False): {1}" -f $link, ($back.Arguments -match 'Bypass'))
+        }
+        $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open, stay open, and the home page open in your browser? (y/n)"
+        Log "   10b. the icon opens the window and the home page: $clicked"
+        $alert = Read-Host "10b. Did Avast or Windows Defender show anything since that double-click (an alert, a blocked file)? (none, or what it said)"
+        Log "   10b. antivirus after the double-click (0257): $alert"
+        $null = Read-Host "10b. Close that window with its X (top right). Then press Enter here"
+        MhLeftovers "10b"
 
-    # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
-    # exported first; a folder whose name has a space and an apostrophe.
-    $entries = @('Directory\shell\MediaHygiene', 'Directory\Background\shell\MediaHygiene')
-    $had = @{}
-    foreach ($entry in $entries) {
-        $had[$entry] = Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"
-        if ($had[$entry]) { & reg.exe export "HKCU\Software\Classes\$entry" (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) /y | Out-Null }
-    }
-    $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
-    foreach ($line in $said) { Log ("   10c. " + $line) }
-    foreach ($entry in $entries) {
-        $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\$entry\command" -ErrorAction SilentlyContinue)
-        Log ("   10c. registry command of {0} read back: {1}" -f $entry, $(if ($command) { $command.GetValue('') } else { '(none)' }))
-        Log ("   10c. {0} command holds Bypass (0257, expected False): {1}" -f $entry, ($command -and ($command.GetValue('') -match 'Bypass')))
-    }
-    $odd = Join-Path $Work "L'ete 2019"
-    New-Item -ItemType Directory -Force -Path $odd | Out-Null
-    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
-    explorer.exe $Work
-    $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: do a PowerShell window and the home page open? (y/n)"
-    Log "   10c. right-click opens the window and the home page: $menu"
-    $alert = Read-Host "10c. Did Avast or Windows Defender show anything since that right-click (an alert, a blocked file)? (none, or what it said)"
-    Log "   10c. antivirus after the right-click (0257): $alert"
-    $where = Read-Host "10c. Where was Media Hygiene: in the first menu, or under Show more options? (first/more)"
-    Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
-    $named = Read-Host "10c. On the page, under 'Where you are', is the first line 'This page also analyses: ...\L'ete 2019', in bold? (y/n, or what it says)"
-    Log "   10c. the page names the folder clicked (0258): $named"
-    $popup = Read-Host "10c. Click Run on the line mh audit. Does the page say 'mh audit runs in the PowerShell window of mh (in the taskbar)'? Wait 30 s: does it add 'Nothing moves? Look at ...'? (y/y, y/n, n/n...)"
-    Log "   10c. Run names the window, then the 30 s hint (0258): $popup"
-    $audit = Read-Host "10c. In the PowerShell window, how many media files does the audit say it scanned? (43 with L'ete 2019's 3 photos; type the number)"
-    Log "   10c. audit run from the page, files scanned (43 expected): $audit"
-    $back = Read-Host "10c. When the audit ended, did the home page come back by itself? (y/n)"
-    Log "   10c. the page came back after the step: $back"
-    $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
-    # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
-    $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
-    Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
-    $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the home page open, naming L'ete 2019 under 'Where you are'? (y/n)"
-    Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
-    $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
-    Log "   10c. the next page stopped the leftover and opened (0250): $freed"
-    $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
-    Log "   10c. background entry found in: $where"
-    MhLeftovers "10c"
+        # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
+        # exported first; a folder whose name has a space and an apostrophe.
+        $entries = @('Directory\shell\MediaHygiene', 'Directory\Background\shell\MediaHygiene')
+        $had = @{}
+        foreach ($entry in $entries) {
+            $had[$entry] = Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"
+            if ($had[$entry]) { & reg.exe export "HKCU\Software\Classes\$entry" (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) /y | Out-Null }
+        }
+        $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
+        foreach ($line in $said) { Log ("   10c. " + $line) }
+        foreach ($entry in $entries) {
+            $command = (Get-Item -LiteralPath "HKCU:\Software\Classes\$entry\command" -ErrorAction SilentlyContinue)
+            Log ("   10c. registry command of {0} read back: {1}" -f $entry, $(if ($command) { $command.GetValue('') } else { '(none)' }))
+            Log ("   10c. {0} command holds Bypass (0257, expected False): {1}" -f $entry, ($command -and ($command.GetValue('') -match 'Bypass')))
+        }
+        $odd = Join-Path $Work "L'ete 2019"
+        New-Item -ItemType Directory -Force -Path $odd | Out-Null
+        Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
+        explorer.exe $Work
+        $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: do a PowerShell window and the home page open? (y/n)"
+        Log "   10c. right-click opens the window and the home page: $menu"
+        $alert = Read-Host "10c. Did Avast or Windows Defender show anything since that right-click (an alert, a blocked file)? (none, or what it said)"
+        Log "   10c. antivirus after the right-click (0257): $alert"
+        $where = Read-Host "10c. Where was Media Hygiene: in the first menu, or under Show more options? (first/more)"
+        Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
+        $named = Read-Host "10c. On the page, under 'Where you are', is the first line 'This page also analyses: ...\L'ete 2019', in bold? (y/n, or what it says)"
+        Log "   10c. the page names the folder clicked (0258): $named"
+        $popup = Read-Host "10c. Click Run on the line mh audit. Does the page say 'mh audit runs in the PowerShell window of mh (in the taskbar)'? If the page has not come back after 30 s, does it add 'Nothing moves? Look at ...'? (y/back: the page came back before 30 s, no hint expected; y/y; y/n; n/...)"
+        Log "   10c. Run names the window, then the 30 s hint (0258): $popup"
+        $audit = Read-Host "10c. In the PowerShell window, how many media files does the audit say it scanned? (43 with L'ete 2019's 3 photos; type the number)"
+        Log "   10c. audit run from the page, files scanned (43 expected): $audit"
+        $back = Read-Host "10c. When the audit ended, did the home page come back by itself? (y/n)"
+        Log "   10c. the page came back after the step: $back"
+        $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
+        # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
+        $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
+        Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
+        $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the home page open, naming L'ete 2019 under 'Where you are'? (y/n)"
+        Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
+        $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
+        Log "   10c. the next page stopped the leftover and opened (0250): $freed"
+        $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
+        Log "   10c. background entry found in: $where"
+        $null = Read-Host "10c. Close that mh window too, with its X. Then press Enter here"
+        MhLeftovers "10c"
 
-    # 10e (0257): the same right-click with mh.ps1 where users keep it, under
-    # %USERPROFILE%\media-hygiene (a folder of its own, removed after), against -Work above:
-    # tells whether the path weighs in an antivirus alert.
-    $home10e = Join-Path $env:USERPROFILE "media-hygiene\mh-measure-10e"
-    New-Item -ItemType Directory -Force -Path $home10e | Out-Null
-    $mhHome = Join-Path $home10e "mh.ps1"
-    Copy-Item -LiteralPath $mhFile -Destination $mhHome -Force
-    . $mhHome
-    $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
-    foreach ($line in $said) { Log ("   10e. " + $line) }
-    $menu = Read-Host "10e. Right-click L'ete 2019 again, then Media Hygiene (mh.ps1 now under $home10e): do the window and the home page open? (y/n)"
-    Log "   10e. right-click with mh.ps1 under the user's folder: $menu"
-    $alert = Read-Host "10e. Did Avast or Windows Defender show anything this time? (none, or what it said)"
-    Log "   10e. antivirus, mh.ps1 under %USERPROFILE%\media-hygiene: $alert"
-    $null = Read-Host "10e. Close that mh window with its X (top right). Then press Enter here"
-    MhLeftovers "10e"
-    . $mhFile
-    Remove-Item -LiteralPath $home10e -Recurse -Force -ErrorAction SilentlyContinue
+        # 10e (0257): the same right-click with mh.ps1 where users keep it, under
+        # %USERPROFILE%\media-hygiene (a folder of its own, removed after), against -Work above:
+        # tells whether the path weighs in an antivirus alert.
+        $home10e = Join-Path $env:USERPROFILE "media-hygiene\mh-measure-10e"
+        New-Item -ItemType Directory -Force -Path $home10e | Out-Null
+        $mhHome = Join-Path $home10e "mh.ps1"
+        Copy-Item -LiteralPath $mhFile -Destination $mhHome -Force
+        . $mhHome
+        $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
+        foreach ($line in $said) { Log ("   10e. " + $line) }
+        $menu = Read-Host "10e. Right-click L'ete 2019 again, then Media Hygiene (mh.ps1 now under $home10e): do the window and the home page open? (y/n)"
+        Log "   10e. right-click with mh.ps1 under the user's folder: $menu"
+        $alert = Read-Host "10e. Did Avast or Windows Defender show anything this time? (none, or what it said)"
+        Log "   10e. antivirus, mh.ps1 under %USERPROFILE%\media-hygiene: $alert"
+        $null = Read-Host "10e. Close that mh window with its X (top right). Then press Enter here"
+        MhLeftovers "10e"
+        . $mhFile
+        Remove-Item -LiteralPath $home10e -Recurse -Force -ErrorAction SilentlyContinue
+    }
 
     # 10f (0253): which program Windows names for a port a container publishes (Docker
     # Desktop's own listener, never "another program"), then another program on 8088: mh
     # review must name it in one line, never Docker's raw error; the probe timed.
+    # A page still open (a window not closed) would answer instead of the program: stopped.
+    foreach ($id in @(& docker ps --quiet --filter "publish=8088" 2>$null)) {
+        Log "   10f. a page still on 8088 stopped first: $id"
+        $null = & docker stop $id 2>$null
+    }
     $page = & docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint sleep $Image 60 2>$null
     Start-Sleep -Seconds 2
     $names = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { "$((Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName) ($($_.OwningProcess))" })
@@ -590,18 +602,20 @@ if (Wanted 10) {
     Stop-Job -Job $listener -ErrorAction SilentlyContinue
     Remove-Job -Job $listener -Force -ErrorAction SilentlyContinue
 
-    # 10d: --remove, then what you had put back.
-    $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
-    foreach ($line in $said) { Log ("   10d. " + $line) }
-    foreach ($entry in $entries) {
-        Log ("   10d. key {0} still there after --remove: {1}" -f $entry, (Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"))
-        if ($had[$entry]) { & reg.exe import (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) 2>&1 | Out-Null }
+    if (-not $portOnly) {
+        # 10d: --remove, then what you had put back.
+        $said = @(mh explorer --remove 6>&1 | ForEach-Object { "$_" })
+        foreach ($line in $said) { Log ("   10d. " + $line) }
+        foreach ($entry in $entries) {
+            Log ("   10d. key {0} still there after --remove: {1}" -f $entry, (Test-Path -LiteralPath "HKCU:\Software\Classes\$entry"))
+            if ($had[$entry]) { & reg.exe import (Join-Path $Work ("explorer-key-{0}.reg" -f ($entry -replace "\\", "-"))) 2>&1 | Out-Null }
+        }
+        foreach ($link in $links) {
+            Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
+            if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
+        }
+        Log "   10d. your own shortcuts and right-click entry, if any, are back; close the mh windows."
     }
-    foreach ($link in $links) {
-        Remove-Item -LiteralPath $link -Force -ErrorAction SilentlyContinue
-        if (Test-Path -LiteralPath "$link.mh-measure") { Move-Item -LiteralPath "$link.mh-measure" -Destination $link -Force }
-    }
-    Log "   10d. your own shortcuts and right-click entry, if any, are back; close the mh windows."
     $ErrorActionPreference = "Stop"
 }
 

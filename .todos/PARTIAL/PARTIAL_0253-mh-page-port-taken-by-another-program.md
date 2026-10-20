@@ -62,3 +62,13 @@ tell it apart rather than leave it to the troubleshooting page.
   **Reason:** Windows + Docker Desktop only. Command (PowerShell 5.1):
   `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/12104de/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 10 -Count 20`.
+
+## Measured on Windows (2026-10-20, step 10 of mh-measure.ps1 at e4644f4, maintainer)
+
+- Docker Desktop's listener of a published port: `com.docker.backend` (in `DOCKER_LISTENERS`: right).
+- The probe (`Get-NetTCPConnection`) took 313 ms (measured, one run; estimated 100-500).
+- "Another program on 8088" **not measured**: a page left open by the 10c window (still open, the
+  maintainer confirmed) held 8088, so `mh review` rightly said "An mh page is open in another
+  window" and the script's listener never got the port. Script fixed (inbox of 2026-10-20): 10f
+  stops any page on 8088 first, the 10c window is closed, leftovers matched in any case, and
+  `-Only 10f` runs the check alone. Still to run: `.\mh-measure.ps1 -Only 10f -Count 20 -Work C:\temp\mh-measure10f`.
