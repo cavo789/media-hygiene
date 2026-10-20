@@ -278,6 +278,11 @@ kbd {
 .space-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: end; gap: 16px 28px; }
 .space-art { width: 156px; height: auto; align-self: end; filter: drop-shadow(0 8px 12px var(--mh-art-shadow)); }
 .stopped-dlg .dlg { align-items: center; text-align: center; }
+.loading { position: fixed; inset: 0; z-index: 90; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; text-align: center; background: var(--mk-bg); }
+.loading[hidden] { display: none; }
+.loading img { width: 200px; height: auto; filter: drop-shadow(0 8px 12px var(--mh-art-shadow)); animation: peek 1.6s ease-in-out infinite alternate; }
+@keyframes peek { to { transform: translateY(-8px); } }
+.btn[aria-busy="true"] { cursor: progress; opacity: .7; }
 .stopped-dlg img { width: 220px; height: auto; filter: drop-shadow(0 8px 12px var(--mh-art-shadow)); }
 .space-head h1 { font-size: clamp(1.8rem, 1.3rem + 1.5vw, 2.5rem); font-weight: 800; letter-spacing: -.02em; }
 .space-pitch { margin-top: 8px; font-size: 1.06rem; color: var(--mk-ink-soft); max-width: 64ch; }

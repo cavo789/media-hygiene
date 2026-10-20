@@ -17,10 +17,14 @@ function proceed(action, body, command) {
 }
 function launch(action, body, command) {
   if (!RELAYS) { copyBox(command); return; }
+  // At once, before the server answers: the click is seen, never "nothing happens" (0277).
+  const clicked = document.activeElement;
+  if (clicked && clicked.matches("button")) clicked.setAttribute("aria-busy", "true");
   $$("button").forEach((button) => { button.disabled = true; });
+  toast(fill(T.starting, { window: WINDOW }));
   post(P.step, body)
     .then((reply) => {
-      $$("button").forEach((button) => { button.disabled = false; });
+      $$("button").forEach((button) => { button.disabled = false; button.removeAttribute("aria-busy"); });
       if (reply.ok) { openRun(action, reply.body.command); return; }
       if (reply.body.command) copyBox(reply.body.command);
       toast(reply.body.error || fill(T.failed, { status: reply.status }));
@@ -54,6 +58,7 @@ function openForm(action) {
     if (Object.values(given).some((value) => !value)) { error.textContent = T.fillEach; error.hidden = false; return; }
     if (!RELAYS) { dialog.close(); copyBox(action.command); return; }
     // The server checks each value and says why it refuses one: the form stays open.
+    toast(fill(T.starting, { window: WINDOW }));
     post(P.step, { name: action.name, fields: given })
       .then((reply) => {
         if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }

@@ -5228,6 +5228,9 @@ msgstr ""
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
 
+msgid "Preparing the home page…"
+msgstr "Préparation de l'accueil…"
+
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
 
@@ -6022,6 +6025,10 @@ msgstr "Sélectionnez {text} et faites Ctrl+C."
 msgid "Send the photos ({count}) to the category:"
 msgstr "Envoyer les photos ({count}) dans la catégorie :"
 
+#, python-brace-format
+msgid "Sent: the step starts in {window}…"
+msgstr "Envoyé : l'étape démarre dans {window}…"
+
 msgid "September"
 msgstr "septembre"
 
@@ -6353,6 +6360,13 @@ msgid "Still on the phone after the move: {count}. Type mh phone --free again."
 msgstr ""
 "Encore sur le téléphone après le déplacement : {count}. Tapez à nouveau "
 "mh phone --free."
+
+msgid ""
+"Still reading the tool folders: the first time after a start, it can take"
+" a minute."
+msgstr ""
+"Lecture des dossiers de l'outil en cours : la première fois après un "
+"démarrage, cela peut prendre une minute."
 
 #, python-brace-format
 msgid "Still undoable: {what}"

@@ -4,8 +4,8 @@
    whose button has the focus (Enter runs it, as in `mh menu`), the cycle, the tiles, what the last audit
    found, one page per space, every action a click or Ctrl+K away. The page never acts: a step's button
    ends the server and `mh` runs that step in its window, when `mh` said it does (relays_steps); else
-   the button copies the command. Its first frame is the server's state (#homeState), inside the page;
-   the fonts and images come from /assets/: nothing from a CDN. #}
+   the button copies the command. It is served at once, a waiting meerkat (#loading) in front until
+   GET state_path answers: reading the tool folders can be slow through Docker Desktop (0277); the fonts and images come from /assets/: nothing from a CDN. #}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
@@ -24,6 +24,11 @@
 </head>
 <body>
 {% include "home_icons.svg.j2" %}
+<div class="loading" id="loading" role="status">
+  <img src="{{ paths.assets }}images/meerkat-lookout.webp" alt="" width="400" height="387">
+  <p>{{ texts.loading }}</p>
+  <p class="muted" id="loadingSlow" hidden>{{ texts.loadingSlow }}</p>
+</div>
 <a class="skip" href="#main">{{ texts.skip }}</a>
 <div class="app" id="app">
   <aside class="sidebar" id="sidebar" aria-label="{{ texts.sidebar }}">
@@ -129,7 +134,6 @@
 </section>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
-<script type="application/json" id="homeState">{{ state_mark }}</script>
 <script>
 (() => {
 {% include "home.js.j2" %}

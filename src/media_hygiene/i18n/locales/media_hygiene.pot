@@ -4318,6 +4318,9 @@ msgid ""
 " > built-in defaults."
 msgstr ""
 
+msgid "Preparing the home page…"
+msgstr ""
+
 msgid "Previous guess, already in place"
 msgstr ""
 
@@ -4982,6 +4985,10 @@ msgstr ""
 msgid "Send the photos ({count}) to the category:"
 msgstr ""
 
+#, python-brace-format
+msgid "Sent: the step starts in {window}…"
+msgstr ""
+
 msgid "September"
 msgstr ""
 
@@ -5273,6 +5280,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "Still on the phone after the move: {count}. Type mh phone --free again."
+msgstr ""
+
+msgid ""
+"Still reading the tool folders: the first time after a start, it can take"
+" a minute."
 msgstr ""
 
 #, python-brace-format

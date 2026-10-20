@@ -81,6 +81,10 @@
 #      --decisions, fsutil hardlink list of each copy, C:'s free space before/after; asks what
 #      Explorer shows, then for one photo edited and saved in the Photos app: does its other
 #      name change too; undo: one name each again                         (0213)
+#  23. the home page opened by your own mh (your real folders): GET / and GET /api/state from
+#      Windows, each part of the state timed inside its container (docker exec), the DNS of
+#      Docker Hub from it, the files of the tool folders; then an empty docker run, the price
+#      of each step's round trip; nothing written                          (0277)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -107,6 +111,7 @@
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
+#   .\mh-measure.ps1 -Only 23 -Count 1   (the home page of your own mh, timed: 0277)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2214,6 +2219,89 @@ if (Wanted 22) {
             $names = @(& fsutil hardlink list $file.FullName 2>&1)
             Log ("   22e. after undo, {0}: {1} name(s), modified {2}" -f $file.Name, $names.Count, $file.LastWriteTime.ToString("s"))
         }
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 23: the home page of your own mh, timed (0277) ------------------------------------------
+# Blank for about 45 s, then slow clicks (2026-10-20). Read-only: the state is read, as the page does.
+if (Wanted 23) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 23. the home page of your own mh, timed (0277)"
+    Write-Host "23: open Windows PowerShell as you usually do, type mh, Enter."
+    Write-Host "    Wait until the home page shows in the browser (time it if you can), then come back here."
+    $seen = Read-Host "23. Seconds between Enter and the page shown (your estimate, empty if unknown)"
+    Log "   23a. estimated by you: $seen s from mh to the page shown"
+    $page = @(& docker ps --quiet --filter "label=media-hygiene.page")
+    if ($page.Count -eq 0) {
+        Log "   23a. no home page container running (label media-hygiene.page): step skipped"
+    } else {
+        $id = $page[0]
+        $port = "8088"
+        $mapped = "$(& docker port $id 2>$null)"
+        if ($mapped -match ':(\d+)\s*$') { $port = $Matches[1] }
+        foreach ($path in "/", "/api/state", "/api/state", "/api/state") {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            try {
+                $answer = Invoke-WebRequest -Uri "http://127.0.0.1:$port$path" -UseBasicParsing -TimeoutSec 300
+                $watch.Stop()
+                Log ("   23b. GET {0}: {1:N2} s, {2} bytes" -f $path, $watch.Elapsed.TotalSeconds, $answer.RawContentLength)
+            } catch {
+                Log ("   23b. GET {0}: failed after {1:N2} s: {2}" -f $path, $watch.Elapsed.TotalSeconds, $_.Exception.Message)
+            }
+        }
+        # Inside the container: its own mounts and settings, each part of home_state() timed.
+        $code = @'
+import os, socket, time
+from media_hygiene.i18n import install
+from media_hygiene.i18n.bootstrap import resolve_locale
+install(resolve_locale([]))
+from media_hygiene.cli.context import build_runtime
+import media_hygiene.cli.home_state as hs
+runtime = build_runtime({})
+spent = {}
+names = ('read_status', 'windows_menu', 'build_menu', 'full_catalog', 'home_update', 'home_folders',
+         'latest_reports', 'audit_previews', 'status_lines', 'home_spaces', 'home_actions', 'home_next',
+         'home_tiles', 'home_findings', 'home_quarantine', 'home_undo', 'next_step')
+for name in names:
+    def timed(*args, _f=getattr(hs, name), _n=name, **kwargs):
+        start = time.perf_counter()
+        result = _f(*args, **kwargs)
+        spent[_n] = spent.get(_n, 0.0) + time.perf_counter() - start
+        return result
+    setattr(hs, name, timed)
+for run in (1, 2, 3):
+    spent.clear()
+    start = time.perf_counter()
+    hs.home_state(runtime)
+    total = (time.perf_counter() - start) * 1000
+    parts = ', '.join(f'{n} {s * 1000:.0f}' for n, s in sorted(spent.items(), key=lambda x: -x[1])[:6])
+    print(f'23c. home_state run {run}: {total:.0f} ms ({parts})')
+start = time.perf_counter()
+try:
+    socket.getaddrinfo('hub.docker.com', 443)
+    found = 'resolved'
+except OSError as error:
+    found = f'failed: {error}'
+print(f'23d. DNS of hub.docker.com: {(time.perf_counter() - start) * 1000:.0f} ms, {found}')
+for root in ('/journal', '/quarantine', '/reports', '/cache'):
+    start = time.perf_counter()
+    count = sum(len(files) for _, _, files in os.walk(root))
+    print(f'23e. {root}: {count} files, listed in {(time.perf_counter() - start) * 1000:.0f} ms')
+'@
+        $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
+        $lines = & docker exec $id python -c "import base64; exec(base64.b64decode('$encoded'))" 2>&1
+        foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        Write-Host "23: you may close the home page now (Ctrl+C in its PowerShell window)."
+    }
+    # Each step chosen on the page is one docker run for the step, then one for the page again.
+    foreach ($try in 1, 2) {
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        & docker run --rm $Image --version 2>&1 | Out-Null
+        $watch.Stop()
+        Log ("   23f. an empty docker run of {0} (try {1}): {2:N2} s" -f $Image, $try, $watch.Elapsed.TotalSeconds)
     }
     $ErrorActionPreference = $saved
 }

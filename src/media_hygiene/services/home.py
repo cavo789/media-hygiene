@@ -26,7 +26,7 @@ from media_hygiene.review.ending import (
     EndingDoor,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import AUDIT_PATH, STATE_MARK, STEP_PATH, HomeApp
+from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.home_texts import home_texts
@@ -74,7 +74,6 @@ def home_page(*, relays_steps: bool = False) -> bytes:
         relays_steps=relays_steps,
         window=_mh_window(),
         thousands=separators()[0],
-        state_mark=STATE_MARK.decode(),
     ).encode()
 
 

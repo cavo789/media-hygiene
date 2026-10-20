@@ -169,7 +169,7 @@ def test_the_template_renders_with_no_undefined_value(
     monkeypatch.setattr(home, "translated_environment", lambda *_a, **_k: strict)
     with using(locale):
         page = home.home_page(relays_steps=True).decode()
-    assert "__HOME_STATE__" in page
+    assert 'id="loading"' in page
     assert "fonts.googleapis" not in page
     assert page.count("/assets/fonts/") == 4
     texts = json.loads(re.search(r"const T = (\{.*?\});\n", page)[1])  # type: ignore[index]
@@ -177,25 +177,33 @@ def test_the_template_renders_with_no_undefined_value(
     assert used <= set(texts)
 
 
-def test_the_first_frame_holds_the_state(tmp_path: Path) -> None:
-    """`GET /`: the state inside the page, no `<` that could close its script."""
+def test_the_page_answers_without_reading_the_state(tmp_path: Path) -> None:
+    """`GET /` never waits for the tool folders (0277); `GET /api/state` reads them."""
     runtime = make_runtime(make_locations(tmp_path), _NEVER_OLD)
     SITUATIONS["audit done"](runtime)
+    reads: list[int] = []
+
+    def state() -> HomeState:
+        reads.append(1)
+        return home_state(runtime)
+
     ending = Ending()
     app = HomeApp(
         home.home_page(),
-        lambda: home_state(runtime),
+        state,
         tmp_path,
         ending,
         HomeAudit(lambda _progress: pytest.fail("no audit")),
         Presence(ending, STOPPED),
     )
-    reply = asyncio.run(app.answer(Request("GET", "/", {"host": "127.0.0.1"})))
-    page = reply.body.decode()
-    data = re.search(r'id="homeState">(.*?)</script>', page, re.DOTALL)
-    assert data
-    assert "<" not in data[1]
-    assert json.loads(data[1])["proposed"]["name"] == "clean"
+    host = {"host": "127.0.0.1"}
+    page = asyncio.run(app.answer(Request("GET", "/", host)))
+    assert page.status == HTTPStatus.OK
+    assert b'id="loading"' in page.body
+    assert not reads
+    reply = asyncio.run(app.answer(Request("GET", "/api/state", host)))
+    assert json.loads(reply.body)["proposed"]["name"] == "clean"
+    assert reads == [1]
 
 
 def test_assets_serves_only_its_own_files() -> None:

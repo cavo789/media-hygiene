@@ -1,8 +1,10 @@
 """The routes of the home page: the page, its state, the reports, and a step chosen.
 
-`GET /` serves the page, `GET /api/state` where you are and every step (read again
-from the tool folders at each call), `GET /reports/<path>` a file of the reports
-folder, `GET /assets/<path>` an image or a font of the page (`home_assets`),
+`GET /` serves the page at once, without its state: the page shows a waiting
+meerkat, then asks `GET /api/state` where you are and every step (read again from
+the tool folders at each call; slow through Docker Desktop's file sharing, 0277),
+`GET /reports/<path>` a file of the reports folder, `GET /assets/<path>` an image
+or a font of the page (`home_assets`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it; `POST /api/alive` says a tab still shows the
 page (0261, `presence`). `POST /api/step` ends the server with `100 + n` for step
@@ -42,8 +44,6 @@ if TYPE_CHECKING:
     from media_hygiene.services.home_audit import HomeAudit
 
 STEP_PATH: Final = "/api/step"
-# Where the page receives the state of its first frame (`<script id="homeState">`).
-STATE_MARK: Final = b"__HOME_STATE__"
 AUDIT_PATH: Final = "/api/audit"
 _GET, _POST = "GET", "POST"
 
@@ -114,11 +114,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             The response; 404 for any other path.
         """
         if path == PAGE_PATH:
-            first = await asyncio.to_thread(self.state)
-            # Inside <script>: no `<`, so that no `</script>` can close it early.
-            data = first.model_dump_json().replace("<", "\\u003c").encode()
-            page = self.page.replace(STATE_MARK, data)
-            return Response(HTTPStatus.OK, page, ContentType.HTML)
+            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
         if path.startswith(ASSETS_PREFIX):

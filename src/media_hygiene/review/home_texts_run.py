@@ -59,6 +59,12 @@ def _dialogs() -> dict[str, str]:
             "Stop this page with Ctrl+C in the window where mh runs, paste the command "
             "there (right click), then Enter."
         ),
+        "loading": _("Preparing the home page…"),
+        "loadingSlow": _(
+            "Still reading the tool folders: the first time after a start, it can "
+            "take a minute."
+        ),
+        "starting": _("Sent: the step starts in {window}…"),
         "stoppedTitle": _("Media Hygiene is stopped"),
         "stoppedText": _(
             "You can close this tab. To open it again: type mh in PowerShell, or "

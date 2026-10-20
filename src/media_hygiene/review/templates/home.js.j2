@@ -1,4 +1,4 @@
-{# The script of home.html.j2, its core: the state the server sent (#homeState, then GET state_path),
+{# The script of home.html.j2, its core: the state asked once the page shows (GET state_path),
    the spaces, the theme, the keys. The page only draws: the next step, each action's state and reason
    come from Python (cli/home_state.py). home_draw.js.j2 draws, home_run.js.j2 runs the steps. #}
 "use strict";
@@ -11,9 +11,10 @@ const THOUSANDS = {{ thousands | tojson }};
 const POLL_MS = 1000;
 const HINT_MS = 30000;
 const TOAST_MS = 6500;
+const LOADING_SLOW_MS = 5000;
 const HOME = "home";
 const STORE_PREFIX = "mh-home-";
-let S = JSON.parse(document.getElementById("homeState").textContent);
+let S = null;
 
 const esc = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const icon = (name) => `<svg class="i" aria-hidden="true" focusable="false"><use href="#i-${esc(name)}"></use></svg>`;
@@ -171,10 +172,20 @@ function wire() {
     if (SPACE[wanted] && wanted !== view.id) go(wanted);
   });
   wirePalette();
-  wirePresence();
 }
 
+// The page shows at once, its meerkat waiting for the state: reading the tool folders can be
+// slow through Docker Desktop (0277). The tab says it is there from the start (0261).
 function start() {
+  wirePresence();
+  const slow = window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
+  const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
+  fetch(P.state, { cache: "no-store" })
+    .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json(); })
+    .then((state) => { S = state; shown(); begin(); })
+    .catch(() => { shown(); stopped(); });
+}
+function begin() {
   index();
   applyTheme(store.get("theme", "auto"), false);
   const wanted = decodeURIComponent((location.hash || "").slice(1));
