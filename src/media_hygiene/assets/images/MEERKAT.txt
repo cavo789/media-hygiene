@@ -6,7 +6,8 @@ media-hygiene, and its poses.
   JPEG on a magenta ground), the ground made transparent, cropped and fitted in 400 x 400 px:
   lookout (the first audit), broom (clean), sorting (sort), magnifier (find), phone (import),
   nas (back up), party (everything done), asleep (the page stopped).
-- All WebP, transparent background, quality 90.
+- favicon.png: 64 x 64 px, the avatar centred on a transparent square (0278).
+- All WebP but favicon.png, transparent background, quality 90.
 - Not covered by the project's MIT licence (LICENSE): (c) 2026 Christophe Avonture, all rights
   reserved. Do not reuse them, change them or use them as an avatar or a logo of your own; a
   fork replaces them with its own images.

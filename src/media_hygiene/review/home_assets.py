@@ -17,6 +17,9 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.report_files import read_found
 
 ASSETS_PREFIX: Final = "/assets/"
+FAVICON_PATH: Final = (
+    "/favicon.ico"  # browsers ask for it unasked (0278): the meerkat, a PNG
+)
 ASSETS_DIR: Final = Path(__file__).resolve().parents[1] / "assets"
 MAX_AGE_S: Final = 24 * 60 * 60
 _SERVED: Final = MappingProxyType(

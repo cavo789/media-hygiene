@@ -180,3 +180,31 @@ def test_every_page_template_includes_the_theme_and_the_bar() -> None:
         text = path.read_text("utf-8")
         assert 'include "theme.css.j2"' in text, path.name
         assert 'include "page_header.html.j2"' in text, path.name
+
+
+def test_every_door_answers_the_favicon_browsers_ask_for() -> None:
+    """`/favicon.ico` is the meerkat (0278), 200 on the loopback, refused elsewhere."""
+    icon = _get("/favicon.ico")
+    assert icon.status == HTTPStatus.OK
+    assert icon.content_type is ContentType.PNG
+    assert _get("/assets/images/favicon.png").body == icon.body
+    assert _get("/favicon.ico", host="evil.example").status == HTTPStatus.FORBIDDEN
+
+
+def test_every_served_page_declares_the_favicon_its_policy_allows() -> None:
+    """Each served template links the icon; places allows images of `self`."""
+    root = Path(__file__).resolve().parents[2] / "src" / "media_hygiene"
+    link = 'rel="icon" type="image/png" href="/assets/images/favicon.png"'
+    templates = [
+        *(root / "review" / "templates").glob("*_review.html.j2"),
+        root / "review" / "templates" / "home.html.j2",
+        root / "docs" / "templates" / "doc.html.j2",
+        root / "places" / "templates" / "places.html.j2",
+        root / "search" / "templates" / "search.html.j2",
+        root / "search" / "templates" / "browse.html.j2",
+        root / "people" / "templates" / "people.html.j2",
+        root / "review" / "templates" / "review.html.j2",
+    ]
+    missing = [t.name for t in templates if link not in t.read_text("utf-8")]
+    assert missing == []
+    assert "img-src 'self'" in PAGE_POLICY
