@@ -10290,6 +10290,14 @@ msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
 
 #, python-brace-format
+msgid ""
+"{command} changed on disk since this window loaded it: type {reload} (or "
+"open a new window)."
+msgstr ""
+"{command} a changé sur le disque depuis que cette fenêtre l'a chargé : tapez "
+"{reload} (ou ouvrez une nouvelle fenêtre)."
+
+#, python-brace-format
 msgid "{command} is for Windows only."
 msgstr "{command} est réservé à Windows."
 

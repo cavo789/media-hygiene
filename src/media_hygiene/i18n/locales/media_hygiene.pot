@@ -8667,6 +8667,12 @@ msgid "{cell}: the row {key} appears twice."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{command} changed on disk since this window loaded it: type {reload} (or "
+"open a new window)."
+msgstr ""
+
+#, python-brace-format
 msgid "{command} is for Windows only."
 msgstr ""
 

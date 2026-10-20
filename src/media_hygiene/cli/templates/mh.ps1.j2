@@ -17,6 +17,7 @@ function global:{{ function }} {
         {{ function }} --photos $folder
         return
     }
+    _{{ function }}_stale  # this file written again since this window loaded it (0276)
     # --photos "E:\Folder": one more photo folder, for this command only.
     $given = @()
     $typed = @()
@@ -187,3 +188,4 @@ function global:_{{ function }}_open {
 {% include 'mh_cloud.ps1.j2' %}
 {% include 'mh_phone.ps1.j2' %}
 {% include 'mh_phone_free.ps1.j2' %}
+{% include 'mh_stale.ps1.j2' %}
