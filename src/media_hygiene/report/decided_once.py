@@ -11,7 +11,7 @@ class Decided(Protocol):
     @property
     def path(self) -> str:
         """The file, in host path."""
-        ...  # pylint: disable=unnecessary-ellipsis
+        ...
 
 
 def each_path_once[T: Decided](entries: tuple[T, ...]) -> tuple[T, ...]:

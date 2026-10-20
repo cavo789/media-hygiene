@@ -2,34 +2,21 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from media_hygiene.cli.cmd_album import album_command
-from media_hygiene.cli.cmd_clean import clean_command
-from media_hygiene.cli.cmd_import import import_command
-from media_hygiene.cli.cmd_purge import purge_command
-from media_hygiene.cli.cmd_sort import sort_command
-from media_hygiene.cli.cmd_undo import undo_command
-from media_hygiene.cli.cmd_xmp import xmp_command
 from media_hygiene.i18n import _
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
 
-
-def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str], ...]:
+def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
     """List the commands that change files.
 
     Args:
         act: The translated name of the panel of actions.
 
     Returns:
-        Name, function, panel and help text of each command.
+        Name, panel and help text of each command.
     """
     return (
         (
             "clean",
-            clean_command,
             act,
             _(
                 "Audit, confirm, then move the duplicate copies to the quarantine, "
@@ -39,7 +26,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "sort",
-            sort_command,
             act,
             _(
                 "Move the photos and videos as the edited classify workbook says "
@@ -48,7 +34,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "album",
-            album_command,
             act,
             _(
                 "Gather a selection of the classify plan into a folder of hard "
@@ -57,7 +42,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "xmp",
-            xmp_command,
             act,
             _(
                 "Write the words of 'tags' into .xmp sidecars next to the photos, "
@@ -67,7 +51,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "import",
-            import_command,
             act,
             _(
                 "Copy into your photos what only a backup (a NAS) holds, never what "
@@ -77,7 +60,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "undo",
-            undo_command,
             act,
             _(
                 "Restore every file of a run, from the kept copy, the quarantine "
@@ -86,7 +68,6 @@ def action_commands(act: str) -> tuple[tuple[str, Callable[..., None], str, str]
         ),
         (
             "purge",
-            purge_command,
             act,
             _(
                 "Erase the quarantine of a run for good: with 'clean --delete', the "

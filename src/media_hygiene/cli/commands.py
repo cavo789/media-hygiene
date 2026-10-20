@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.command_table import command_table
-from media_hygiene.i18n import _
+from media_hygiene.cli.command_functions import command_functions
+from media_hygiene.cli.command_help import command_help
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -14,17 +14,10 @@ if TYPE_CHECKING:
 def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:
     """List the commands in the order of `--help`, their help translated.
 
-    The read-only panel comes first, then the actions; each one sorted by name.
-
     Returns:
         Name, function, panel and help text of each command.
     """
-    analyse = _("🔒 Analyse: read-only, never changes your photos")
-    act = _("Act: moves, writes or deletes files")
-    panels = (analyse, act)
+    functions = command_functions()
     return tuple(
-        sorted(
-            command_table(analyse, act),
-            key=lambda command: (panels.index(command[2]), command[0]),
-        )
+        (name, functions[name], panel, text) for name, panel, text in command_help()
     )

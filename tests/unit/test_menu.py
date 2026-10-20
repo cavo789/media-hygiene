@@ -11,7 +11,7 @@ from typer.testing import CliRunner
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.cli.app import build_app
-from media_hygiene.cli.commands import commands
+from media_hygiene.cli.command_help import command_help
 from media_hygiene.cli.menu_entry import Space
 from media_hygiene.cli.menu_steps import build_menu, choice_lines
 from media_hygiene.cli.menu_view import show_menu
@@ -197,9 +197,11 @@ def test_a_command_with_no_entry_shows_under_other_commands(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """A new verb not in the catalog yet is still listed, with its help text."""
-    real = commands()
-    extra = ("teleport", real[0][1], real[0][2], "Send the photos to the Moon.")
-    monkeypatch.setattr("media_hygiene.cli.menu_steps.commands", lambda: (*real, extra))
+    real = command_help()
+    extra = ("teleport", real[0][1], "Send the photos to the Moon.")
+    monkeypatch.setattr(
+        "media_hygiene.cli.menu_steps.command_help", lambda: (*real, extra)
+    )
     runtime = make_runtime(make_locations(tmp_path))
     menu = build_menu(read_status(runtime), _HINT)
     line = menu.steps[-1]

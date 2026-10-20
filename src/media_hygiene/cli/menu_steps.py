@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.commands import commands
+from media_hygiene.cli.command_help import command_help
 from media_hygiene.cli.menu_catalog import catalog, with_others
 from media_hygiene.cli.menu_needs import missing
 from media_hygiene.cli.status_step import Slot, next_step
@@ -53,7 +53,7 @@ def full_catalog() -> Catalog:
         It.
     """
     names = (
-        *((name, text) for name, _function, _panel, text in commands()),
+        *((name, text) for name, _panel, text in command_help()),
         *((name, "") for name in HOST_COMMANDS),
     )
     return with_others(catalog(), names)
