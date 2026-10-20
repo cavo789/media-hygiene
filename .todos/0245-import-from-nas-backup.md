@@ -159,3 +159,12 @@ Share `Photos` (not `photo`), read-only, nothing written on the NAS:
   reason measured here: Docker Desktop's kernel refuses `vers=2.0` and `1.0`.
 - Speed: reads at 15 MB/s (measured): only listings (size, date) for most files, the first and
   last 64 KiB for size matches, whole reads for partial-digest matches — as item 1 planned.
+- **Remembered once, like any folder** (maintainer, 2026-10-20: "to make the NAS easier to
+  use"): `mh folders add --backup \\NAS\Share` (or the folder window of 0201, which shows the
+  network too) accepts a network path; `mh` keeps it in `mh.ps1` like the other folders
+  (host, share, user), asks the password once, offers to keep it (encrypted for this Windows
+  user, `Export-Clixml`, next to `mh.ps1`, never in `config.toml` nor in the repository),
+  reads it back at each command, and says in one line where it is and how to forget it
+  (`mh folders remove \\NAS\Share` deletes it too). `mh folders` lists the NAS with its state
+  (answers / powered off), never the password. A wrong password, read back: said in one line,
+  asked again, the kept one replaced only once the new one worked.
