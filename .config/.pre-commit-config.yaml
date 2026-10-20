@@ -85,12 +85,14 @@ repos:
       # too). Not at each commit (≈ 17 s for src/ alone, measured in the devcontainer):
       # at each `git push` (stage pre-push: a new file repeating an unchanged one failed
       # CI twice, the commit hook only compares the changed files), and where
-      # `--hook-stage manual` is passed: `lint`, `check`, CI.
+      # `--hook-stage manual` is passed: `lint`, `check`, CI. cyclic-import rides along
+      # for the same reason (a cycle shows only when pylint sees all of its modules): one
+      # parse for both, +2.5 to 4 s measured, against 6 s as a hook of its own.
       - id: pylint-duplicates
-        name: pylint duplicate-code (all of src)
+        name: pylint duplicate-code + cyclic-import (all of src)
         entry: >-
           bash -c 'git ls-files -z --cached ${LINT_UNTRACKED:+--others --exclude-standard} -- "src/*.py"
-          | xargs -0 pylint --disable=all --enable=duplicate-code'
+          | xargs -0 pylint --disable=all --enable=duplicate-code,cyclic-import'
         language: system
         types: [python]
         files: ^src/
@@ -101,7 +103,7 @@ repos:
         name: pylint duplicate-code (all of tests)
         entry: >-
           bash -c 'git ls-files -z --cached ${LINT_UNTRACKED:+--others --exclude-standard} -- "tests/*.py"
-          | xargs -0 pylint --disable=all --enable=duplicate-code'
+          | xargs -0 pylint --disable=all --enable=duplicate-code,cyclic-import'
         language: system
         types: [python]
         files: ^tests/
