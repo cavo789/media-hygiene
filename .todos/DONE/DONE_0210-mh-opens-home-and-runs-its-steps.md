@@ -92,3 +92,16 @@ every step a button; the terminal only shows what a step prints and asks.
 
 - The documentation captures → refiled as 0244.
 - The Windows run (step 14h): still waiting (`mh-measure.ps1`).
+
+## Measured on Windows (2026-10-20, step 14 of mh-measure.ps1, maintainer)
+
+- `mh menu`, old console (conhost) and usual console: colours as colours, emoji and columns lined
+  up, a number + Enter ran `audit`, Ctrl+C at the question gave the prompt back cleanly (y ×4 each).
+- `mh` alone: the home page opened; Run on `clean` ran it in the PowerShell window with its
+  question; the page came back by itself; "⌂ Home" from the review page brought it back; Ctrl+C
+  gave the prompt back, no red error (y ×5).
+- Seen on the way: the script said "click Quit on the home page", which has no Quit button; the
+  maintainer closed the browser tab with its X, and the page kept running in PowerShell until
+  Ctrl+C (wording fixed in the script, 2c3a5dd). Whether the page should stop when its tab
+  closes, or carry a Quit button: asked to the maintainer (2026-10-20).
+- Every item done → closed DONE.
