@@ -1,0 +1,12 @@
+The meerkat: the author's avatar (https://www.avonture.be), which signs the web pages of
+media-hygiene, and its poses.
+
+- avatar.webp: 236 x 320 px, cropped to its outline from the author's 585 x 742 px PNG.
+- meerkat-*.webp: the poses, drawn by Google Gemini from the avatar on 2026-10-20 (1024 x 1024
+  JPEG on a magenta ground), the ground made transparent, cropped and fitted in 400 x 400 px:
+  lookout (the first audit), broom (clean), sorting (sort), magnifier (find), phone (import),
+  nas (back up), party (everything done), asleep (the page stopped).
+- All WebP, transparent background, quality 90.
+- Not covered by the project's MIT licence (LICENSE): (c) 2026 Christophe Avonture, all rights
+  reserved. Do not reuse them, change them or use them as an avatar or a logo of your own; a
+  fork replaces them with its own images.
