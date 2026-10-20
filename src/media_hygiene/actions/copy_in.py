@@ -10,15 +10,14 @@ The backup is only read.
 from __future__ import annotations
 
 import contextlib
-import logging
 import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.no_overwrite import copy_exclusive, rename_no_replace
-from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of, make_folders, target_exists
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
@@ -31,7 +30,6 @@ if TYPE_CHECKING:
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
 
-_LOGGER = logging.getLogger(__name__)
 _TEMPORARY: Final = ".media-hygiene.tmp"
 
 
@@ -47,46 +45,31 @@ class CopyInExecutor:
     """Journals and makes the copies of one `import` run."""
 
     def __init__(self, context: CleanContext, tally: Tally) -> None:
-        """Prepare the copies of a run.
+        """Prepare the copies of a run, journaled under the phase `import`.
 
         Args:
-            context: Journal (phase `import`), path mapper, progress.
-            tally: Counters of the run: one per file copied.
+            context: Where to journal and report progress (phase `import`).
+            tally: Counters of the run: one per file copied, the bytes copied.
         """
+        self._changes = JournaledChanges(context, tally)
         self._context = context
         self._tally = tally
-        self._changes = JournaledChanges(context, tally)
 
     def run(self, jobs: Sequence[CopyJob], stop: Callable[[], bool]) -> bool:
-        """Copy every file; a failure is counted and the run goes on.
+        """Copy every file; one that fails is counted, the others are copied.
 
         Args:
-            jobs: The files.
-            stop: Tells when Ctrl+C was pressed: the run stops between two files.
+            jobs: The files to copy.
+            stop: Tells when Ctrl+C was pressed: no file is cut in the middle.
 
         Returns:
             True when Ctrl+C stopped the run.
         """
-        progress = self._context.progress
-        progress.start(
-            Step(
-                _("Copying"), _("Copies each file, then compares it with its source.")
-            ),
-            len(jobs),
+        step = Step(
+            _("Copying"), _("Copies each file, then compares it with its source.")
         )
-        stopped = False
-        for job in jobs:
-            if stop():
-                stopped = True
-                break
-            try:
-                self._copy(job)
-            except OSError as exc:
-                _LOGGER.debug("Not copied: %s", job.source, exc_info=True)
-                self._tally.failed.append(Incident(job.source, why(exc)))
-            progress.advance()
-        progress.stop()
-        return stopped
+        loop = JobLoop(self._context.progress, step, self._tally, self._copy, _source)
+        return loop.run(jobs, stop)
 
     def _copy(self, job: CopyJob) -> None:
         """Journal, copy under a temporary name, prove, rename, journal the digest.
@@ -150,3 +133,15 @@ def _prove(copy: Path, digest: str) -> None:
     """
     if full_digest(copy) != digest:
         raise OSError(_("the copy does not match its source"))
+
+
+def _source(job: CopyJob) -> Path:
+    """The file a failed copy is told about: its source on the backup.
+
+    Args:
+        job: The copy.
+
+    Returns:
+        Its source.
+    """
+    return job.source
