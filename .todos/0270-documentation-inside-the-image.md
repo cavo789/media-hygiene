@@ -82,3 +82,9 @@ Measured on 2026-10-20:
   text, to the chapter of the running version, in the same look, offline.
 - **The cost.** About 5 MB more in a 142 MB image, +3.5 %. Estimated: the 4.69 MB of WebP do
   not compress further, and 1.38 MB of Markdown is about 0.4 MB compressed at 3:1.
+
+## Decided (2026-10-20)
+
+- Decision 1: the public site's look is **a separate, smaller TODO** filed after this one.
+- Decision 2: **no `mh docs` verb**; the home page's links and the palette are enough.
+  By the maintainer, at the start of `/todo:iterate`.
