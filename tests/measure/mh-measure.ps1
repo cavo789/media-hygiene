@@ -85,6 +85,9 @@
 #      Windows, each part of the state timed inside its container (docker exec), the DNS of
 #      Docker Hub from it, the files of the tool folders; then an empty docker run, the price
 #      of each step's round trip; nothing written                          (0277)
+#  24. C:\Photos read-only with your usual cache: tags --meaning (downloads the CLIP model,
+#      894 MB, into that cache once, then a vector per photo: seconds per photo on your PC),
+#      then a search by meaning, timed (text model loaded)                  (0263)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -112,6 +115,7 @@
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
 #   .\mh-measure.ps1 -Only 23 -Count 1   (the home page of your own mh, timed: 0277)
+#   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -138,7 +142,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted|by what|to look at|Downloading the model|files found'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -2316,6 +2320,15 @@ for root in ('/journal', '/quarantine', '/reports', '/cache'):
         Log ("   23f. an empty docker run of {0} (try {1}): {2:N2} s" -f $Image, $try, $watch.Elapsed.TotalSeconds)
     }
     $ErrorActionPreference = $saved
+}
+
+# --- 24: search by meaning on C:\Photos, with your usual cache (0263) ----------------------
+# The vectors and the model stay in your cache: the next tags --meaning only looks at new
+# photos, and search uses them. Ctrl+C keeps what is done.
+if (Wanted 24) {
+    Measure-Mh "24a. C:\Photos, tags --meaning (model downloaded once, then each photo)" $real @("tags", "--no-describe", "--meaning")
+    Measure-Mh "24b. the same again: nothing left to look at" $real @("tags", "--no-describe", "--meaning")
+    Measure-Mh "24c. search by meaning, the text model loaded" $real @("search", "--limit", "5", "une plage")
 }
 
 # --- clean up -------------------------------------------------------------------------------

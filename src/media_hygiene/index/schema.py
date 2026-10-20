@@ -15,7 +15,8 @@ followed went (`index.moves`); version 12 the rows of the files a clean set asid
 (`index.parked`); version 13 what the Takeout `.json` of each file says
 (`index.takeout_rows`); version 14 where the copies a clean removed lay
 (`index.former_names`); version 15 what each journal says of the files set aside by
-a choice (`index.journal_words`) and the files gone (`index.gone_rows`). An older
+a choice (`index.journal_words`) and the files gone (`index.gone_rows`); version 16
+the vector of each photo for search by meaning (`index.meaning_rows`). An older
 index keeps its digests and integrity results: the new columns are filled once,
 without decoding images again.
 """
@@ -29,6 +30,7 @@ from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.former_names import CREATE_FORMER_NAMES
 from media_hygiene.index.gone_rows import CREATE_GONE
 from media_hygiene.index.journal_words import JOURNAL_TABLES
+from media_hygiene.index.meaning_rows import CREATE_MEANINGS
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
 from media_hygiene.index.parked import CREATE_PARKED
@@ -38,7 +40,7 @@ from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 15
+SCHEMA_VERSION: Final = 16
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -189,6 +191,6 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_PARKED)
     connection.execute(CREATE_TAKEOUT)
     connection.execute(CREATE_FORMER_NAMES)
-    for table in (*JOURNAL_TABLES, CREATE_GONE):
+    for table in (*JOURNAL_TABLES, CREATE_GONE, CREATE_MEANINGS):
         connection.execute(table)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

@@ -90,6 +90,8 @@ not only the 240 shown), then **Set aside the picked files**.
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
 | `Chloé montagne` | The photos of Chloé with "montagne" from any source, once her group is named in [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | The name among the people only. A name nobody has yet is said in one line. |
+| `un chat sur un canapé` | After [`tags --meaning`](tags.md): the photos that show it first, even without any of these words ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). |
+| `Chloé cuisine` | After `tags --meaning`: the photos of Chloé only, the kitchens first. |
 
 ## Options
 
@@ -106,6 +108,9 @@ not only the 240 shown), then **Set aside the picked files**.
 - The search reads the cache only: run [`audit`](audit.md) then [`tags`](tags.md) again to find
   the new photos.
 - Without `/cache`, or with a cache no audit has filled yet, it stops and says why.
+- **By meaning**: once [`tags --meaning`](tags.md) gave the photos their vectors, the search
+  ranks them by what they show too, and says so at start (*Search by meaning: 52,318 photos can
+  be found by what they show.*). The model is read from the cache, never downloaded by `search`.
 - The names of the people come from the faces of the cache and the names of `config.toml`, at
   each start: mount `/config` too to find them. Nothing else to run after naming a group.
 

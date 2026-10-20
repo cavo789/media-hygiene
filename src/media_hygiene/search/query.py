@@ -94,7 +94,7 @@ def match_expression(query: SearchQuery) -> str | None:
     """
     if not query.terms:
         return None
-    joined = _AND.join(_term(term) for term in query.terms)
+    joined = _AND.join(term_expression(term) for term in query.terms)
     source = query.filters.source
     return joined if source is None else f"{source.value} : ({joined})"
 
@@ -111,7 +111,7 @@ def _is_source(name: str | None) -> bool:
     return name is not None and name.casefold() in set(TagSource)
 
 
-def _term(term: Term) -> str:
+def term_expression(term: Term) -> str:
     """Write one term: quoted, its singulars as alternatives, its source first.
 
     Args:

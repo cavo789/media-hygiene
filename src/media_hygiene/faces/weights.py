@@ -3,6 +3,7 @@
 They come from OpenCV Zoo at a pinned commit: YuNet (MIT, 230 KB) finds the faces,
 SFace (Apache 2.0, 37 MB) describes them. A file whose digest differs is never used:
 it is deleted and the download is told as failed. Nothing about the photos is sent.
+Search by meaning (`meaning.clip`) downloads its files the same way.
 """
 
 from __future__ import annotations
@@ -96,7 +97,7 @@ def ensure_model(models_dir: Path, model: ModelFile, fetch: Fetch = download) ->
     except (OSError, ValueError) as exc:
         partial.unlink(missing_ok=True)
         raise FaceModelError(
-            _("Cannot download the face model {name}: {error}").format(
+            _("Cannot download the model {name}: {error}").format(
                 name=model.name, error=exc
             ),
             _("Save {url} as {path} by hand, then run the command again.").format(
@@ -106,7 +107,7 @@ def ensure_model(models_dir: Path, model: ModelFile, fetch: Fetch = download) ->
     if _digest(partial) != model.sha256:
         partial.unlink(missing_ok=True)
         raise FaceModelError(
-            _("The face model {name} downloaded is not the expected file.").format(
+            _("The model {name} downloaded is not the expected file.").format(
                 name=model.name
             )
         )

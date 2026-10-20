@@ -189,6 +189,12 @@ town_km = 20
 xmp_sources = ["vision", "place"]
 {{ comment(_("true: a photo without GPS in a folder named after a town (2019/Douarnenez) gets the position of that town's centre in its sidecar, so that other applications show it on their map. Approximate: off by default.")) }}
 xmp_folder_gps = false
+{{ comment(_("true: 'tags' also lets a model look at each photo (CLIP, on this computer's processor: no GPU, nothing sent), once, about 1 minute per 1,000 photos, so that 'search' finds what a photo shows even without a word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into the cache the first time. It sees what is on a photo, never who nor where: names come from 'people', places from the GPS."), "--meaning") }}
+meaning = false
+{{ comment(_("How many processor threads the model uses.")) }}
+meaning_threads = 4
+{{ comment(_("How many photos a search by meaning finds at most, the closest first.")) }}
+meaning_results = 200
 
 
 [people]

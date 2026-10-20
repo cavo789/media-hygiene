@@ -919,6 +919,16 @@ msgstr[1] ""
 "Supprimer aussi les {count} noms de config.toml ([[people.person]]) et "
 "les visages ignorés ?"
 
+msgid ""
+"Also let a model look at each photo on this computer's processor (CLIP, "
+"once, about 1 minute per 1,000 photos), so that 'search' finds what a "
+"photo shows. Default: [tags] meaning."
+msgstr ""
+"Laisser aussi un modèle regarder chaque photo sur le processeur de cet "
+"ordinateur (CLIP, une seule fois, environ 1 minute pour 1 000 photos), "
+"pour que 'search' trouve ce qu'une photo montre. Par défaut : [tags] "
+"meaning."
+
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
@@ -1236,8 +1246,8 @@ msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr "Impossible de demander confirmation sans terminal interactif."
 
 #, python-brace-format
-msgid "Cannot download the face model {name}: {error}"
-msgstr "Impossible de télécharger le modèle de visages {name} : {error}"
+msgid "Cannot download the model {name}: {error}"
+msgstr "Impossible de télécharger le modèle {name} : {error}"
 
 #, python-brace-format
 msgid ""
@@ -2089,6 +2099,15 @@ msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 "Téléchargez-le à nouveau depuis le rapport, et placez-le à côté de lui "
 "sur /reports."
+
+#, python-brace-format
+msgid ""
+"Downloading the model of search by meaning into the cache, once ({size} "
+"MB): it runs on this computer, nothing about your photos is sent."
+msgstr ""
+"Téléchargement du modèle de la recherche par le sens dans le cache, une "
+"seule fois ({size} Mo) : il tourne sur cet ordinateur, rien de vos photos"
+" n'est envoyé."
 
 msgid ""
 "Downloading the two face models into the cache, once (39 MB): they run on"
@@ -3295,6 +3314,14 @@ msgstr ""
 msgid "How many files the table lists at most. Default: {count}."
 msgstr "Nombre maximal de fichiers listés dans le tableau. Par défaut : {count}."
 
+msgid "How many photos a search by meaning finds at most, the closest first."
+msgstr ""
+"Combien de photos une recherche par le sens trouve au plus, les plus "
+"proches d'abord."
+
+msgid "How many processor threads the model uses."
+msgstr "Combien de fils d'exécution du processeur le modèle utilise."
+
 msgid "How many reports to keep?"
 msgstr "Combien de rapports garder ?"
 
@@ -3655,6 +3682,9 @@ msgstr "Longitude"
 
 msgid "Look again at the photos gone"
 msgstr "Revoir les photos disparues"
+
+msgid "Looking at the photos"
+msgstr "Regard sur les photos"
 
 #, python-brace-format
 msgid "Looking for the files of {folder} in OneDrive's cloud only…"
@@ -5736,6 +5766,9 @@ msgstr "Lancez 'media-hygiene history' pour lister les exécutions."
 msgid "Run 'people' to see the groups in your browser and name them."
 msgstr "Lancez 'people' pour voir les groupes dans votre navigateur et les nommer."
 
+msgid "Run 'tags --meaning' once: it downloads the model again."
+msgstr "Lancez 'tags --meaning' une fois : il télécharge à nouveau le modèle."
+
 msgid ""
 "Run 'tags' first: it gives every photo the words of its folders, date and"
 " place."
@@ -5971,6 +6004,35 @@ msgstr ""
 "d'utilisation : https://operations.osmfoundation.org/policies/nominatim/ "
 "(une recherche par seconde au plus). Une autre instance, ou vide pour ne "
 "chercher que hors ligne."
+
+msgid "Search by meaning: every photo is looked at already."
+msgstr "Recherche par le sens : chaque photo a déjà été regardée."
+
+#, python-brace-format
+msgid "Search by meaning: {count} photo can be found by what it shows."
+msgid_plural "Search by meaning: {count} photos can be found by what they show."
+msgstr[0] ""
+"Recherche par le sens : {count} photo peut être trouvée par ce qu'elle "
+"montre."
+msgstr[1] ""
+"Recherche par le sens : {count} photos peuvent être trouvées par ce "
+"qu'elles montrent."
+
+#, python-brace-format
+msgid ""
+"Search by meaning: {count} photo to look at on this computer's processor,"
+" about {duration}. Ctrl+C stops; what is done is kept."
+msgid_plural ""
+"Search by meaning: {count} photos to look at on this computer's "
+"processor, about {duration}. Ctrl+C stops; what is done is kept."
+msgstr[0] ""
+"Recherche par le sens : {count} photo à regarder sur le processeur de cet"
+" ordinateur, environ {duration}. Ctrl+C arrête ; ce qui est fait est "
+"gardé."
+msgstr[1] ""
+"Recherche par le sens : {count} photos à regarder sur le processeur de "
+"cet ordinateur, environ {duration}. Ctrl+C arrête ; ce qui est fait est "
+"gardé."
 
 msgid "Search by words"
 msgstr "Chercher par mots"
@@ -6753,10 +6815,6 @@ msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
 
-#, python-brace-format
-msgid "The face model {name} downloaded is not the expected file."
-msgstr "Le modèle de visages {name} téléchargé n'est pas le fichier attendu."
-
 msgid ""
 "The faces 'people' finds and groups. They are personal data: kept in the "
 "cache (/cache) only, never sent anywhere; 'people --forget' deletes them "
@@ -6967,6 +7025,10 @@ msgstr "Le modèle {model} ne voit pas les images."
 msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
 
+#, python-brace-format
+msgid "The model {name} downloaded is not the expected file."
+msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
+
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
 
@@ -7062,6 +7124,13 @@ msgstr "Le passage du téléphone où les fichiers ont été prouvés."
 
 msgid "The phone's name, as Windows shows it."
 msgstr "Le nom du téléphone, tel que Windows l'affiche."
+
+msgid ""
+"The photos have vectors, but the model of search by meaning is not in the"
+" cache: the words alone answer."
+msgstr ""
+"Les photos ont leurs vecteurs, mais le modèle de la recherche par le sens"
+" n'est pas dans le cache : seuls les mots répondent."
 
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
@@ -7508,6 +7577,12 @@ msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."
 msgid "This build cannot find faces: the ONNX runtime is not installed."
 msgstr ""
 "Cette version ne sait pas trouver les visages : le moteur ONNX n'est pas "
+"installé."
+
+#, python-brace-format
+msgid "This build cannot search by meaning: {module} is not installed."
+msgstr ""
+"Cette version ne sait pas chercher par le sens : {module} n'est pas "
 "installé."
 
 msgid ""
@@ -9983,6 +10058,22 @@ msgid "true or false is expected, not {value}"
 msgstr "true ou false est attendu, pas {value}"
 
 msgid ""
+"true: 'tags' also lets a model look at each photo (CLIP, on this "
+"computer's processor: no GPU, nothing sent), once, about 1 minute per "
+"1,000 photos, so that 'search' finds what a photo shows even without a "
+"word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into "
+"the cache the first time. It sees what is on a photo, never who nor "
+"where: names come from 'people', places from the GPS."
+msgstr ""
+"true : 'tags' laisse aussi un modèle regarder chaque photo (CLIP, sur le "
+"processeur de cet ordinateur : pas de carte graphique, rien n'est "
+"envoyé), une seule fois, environ 1 minute pour 1 000 photos, pour que "
+"'search' trouve ce qu'une photo montre même sans un mot pour le dire "
+"(\"un chat sur un canapé\"). Le modèle (894 Mo) est téléchargé dans le "
+"cache la première fois. Il voit ce qui est sur une photo, jamais qui ni "
+"où : les noms viennent de 'people', les lieux du GPS."
+
+msgid ""
 "true: a photo without GPS in a folder named after a town "
 "(2019/Douarnenez) gets the position of that town's centre in its sidecar,"
 " so that other applications show it on their map. Approximate: off by "
@@ -10070,6 +10161,9 @@ msgstr "vidéos datées par leurs balises :"
 
 msgid "videos:"
 msgstr "vidéos :"
+
+msgid "what each photo shows, for search by meaning"
+msgstr "ce que montre chaque photo, pour la recherche par le sens"
 
 msgid "whole series set aside"
 msgstr "série entière écartée"
@@ -10872,10 +10966,26 @@ msgstr[0] "{count} photo analysée : {faces} visages, {seconds} s par photo."
 msgstr[1] "{count} photos analysées : {faces} visages, {seconds} s par photo."
 
 #, python-brace-format
+msgid "{count} photo can now be found by what it shows ({duration})."
+msgid_plural "{count} photos can now be found by what they show ({duration})."
+msgstr[0] ""
+"{count} photo peut maintenant être trouvée par ce qu'elle montre "
+"({duration})."
+msgstr[1] ""
+"{count} photos peuvent maintenant être trouvées par ce qu'elles montrent "
+"({duration})."
+
+#, python-brace-format
 msgid "{count} photo could not be decoded."
 msgid_plural "{count} photos could not be decoded."
 msgstr[0] "{count} photo n'a pas pu être décodée."
 msgstr[1] "{count} photos n'ont pas pu être décodées."
+
+#, python-brace-format
+msgid "{count} photo could not be decoded: it has no vector."
+msgid_plural "{count} photos could not be decoded: they have no vector."
+msgstr[0] "{count} photo n'a pas pu être décodée : elle n'a pas de vecteur."
+msgstr[1] "{count} photos n'ont pas pu être décodées : elles n'ont pas de vecteur."
 
 #, python-brace-format
 msgid "{count} photo could not be described: unreadable, or no answer."

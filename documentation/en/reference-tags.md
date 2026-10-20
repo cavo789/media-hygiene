@@ -149,6 +149,37 @@ Without a browser (WSL, a script), give the words: `search durbuy ours` prints t
 files as a table (`--limit N` for more). The search reads the cache only: run `tags` again after
 an audit to find the new photos.
 
+## Find a photo by what it shows: `--meaning`
+
+Words find what someone named: a folder, a file, a model's sentence. A photo of a cat on a sofa
+in `2019/Divers` has no word "cat". With `--meaning` (or `meaning = true` in `[tags]`), `tags`
+also lets a model look at each photo, **on this computer's processor** (CLIP ViT-B/32 and its
+multilingual text model: no Ollama, no GPU, nothing sent), and `search` then ranks the photos by
+what they show, in French or in English:
+
+```powershell
+docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 a model runs on this PC
+```
+
+- **What it finds**: what is seen. Measured on the maintainer's 1,000 photos with 20 French
+  searches: 2 of the first 3 pictures right (67 % of the first 5), strong on things and places
+  seen (a cat, a beach, a house front, a cake), weaker on an action ("a girl dancing").
+- **What it does not**: who and where. A model never knows a name nor a village: the names come
+  from [`people`](reference-people.md), the places from the GPS. Typed together, they work
+  together: `Frédérique cuisine` keeps the photos of Frédérique (a name of `people`) and puts the
+  kitchens first; `Durbuy plage` keeps the photos of Durbuy and puts the beaches first.
+- **Once**: the model (894 MB) is downloaded into the cache (`/cache/models`) the first time,
+  after saying so; then each photo is looked at once, about 0.06 s on 4 threads (measured on the
+  maintainer's PC): about 1 minute per 1,000 photos, 10 minutes per 10,000 (estimated from it).
+  Identical copies are looked at once; a photo edited since is looked at again; videos are not.
+  Ctrl+C stops between two photos, and the next run goes on.
+- **The search**: `search` uses the vectors as soon as the cache holds them, whatever
+  `[tags] meaning` says; the words still count, merged with the meaning (reciprocal rank
+  fusion). It finds at most `meaning_results` photos (200), the closest first. A search among
+  one source (`vision:`, the source filter) or of names and places only stays a search of words.
+  The text model loads at the first search (about a second, 1.5 GB of memory with the image
+  model while `tags` runs).
+
 ## Carry the words with the photos: `xmp`
 
 The words live in the cache of this tool. To find them in digiKam, darktable, Lightroom or
@@ -213,6 +244,9 @@ language = ""   # "en", "fr", or empty for the language of the interface
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 town_km = 20
 xmp_sources = ["vision", "place"]   # the words written into the .xmp sidecars
+meaning = false        # true: tags also gives each photo its vector (search by meaning)
+meaning_threads = 4    # processor threads of the model
+meaning_results = 200  # how many photos a search by meaning finds at most
 ```
 
 A list of `stop_words` written here replaces the built-in one. The model itself is set in

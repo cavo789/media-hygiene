@@ -3,6 +3,11 @@
 The vision model is the one of `[classify.ai]` (url, model, sizes, confirmation): one
 model and one server for the whole tool. Without a model, `tags` computes the words
 of the folders, names, dates and places only.
+
+`meaning` (off by default, TODO 0263): `tags` also gives each photo the vector of a
+CLIP model run on the CPU, and `search` then ranks the photos by what they show.
+`meaning_threads`: 4 measured (0221, 0.057 s per photo); `meaning_results`: how many
+photos, the closest first, a search by meaning finds at most.
 """
 
 from __future__ import annotations
@@ -22,6 +27,8 @@ STOP_WORDS: Final = (
     *("picture", "person", "people", "thing", "object", "background", "scene", "view"),
 )
 _TOWN_KM: Final = 20.0
+_MEANING_THREADS: Final = 4
+_MEANING_RESULTS: Final = 200
 # Folder, name and date words are seen in the path already: only these go into
 # sidecars.
 XMP_SOURCES: Final = (TagSource.VISION, TagSource.PLACE)
@@ -42,6 +49,9 @@ class TagSettings(BaseModel):
     # A photo without GPS in a folder named after a town gets that town's position in
     # its sidecar: approximate, so only when asked (0230).
     xmp_folder_gps: bool = False
+    meaning: bool = False
+    meaning_threads: int = Field(default=_MEANING_THREADS, ge=1)
+    meaning_results: int = Field(default=_MEANING_RESULTS, ge=1)
 
     def language_of(self, interface: Locale) -> Locale:
         """The language the words are written in.

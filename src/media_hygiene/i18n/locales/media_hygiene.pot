@@ -720,6 +720,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid ""
+"Also let a model look at each photo on this computer's processor (CLIP, "
+"once, about 1 minute per 1,000 photos), so that 'search' finds what a "
+"photo shows. Default: [tags] meaning."
+msgstr ""
+
 msgid "Altitude (m)"
 msgstr ""
 
@@ -993,7 +999,7 @@ msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr ""
 
 #, python-brace-format
-msgid "Cannot download the face model {name}: {error}"
+msgid "Cannot download the model {name}: {error}"
 msgstr ""
 
 #, python-brace-format
@@ -1710,6 +1716,12 @@ msgid "Download decisions.json"
 msgstr ""
 
 msgid "Download it again from the report, next to it on /reports."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Downloading the model of search by meaning into the cache, once ({size} "
+"MB): it runs on this computer, nothing about your photos is sent."
 msgstr ""
 
 msgid ""
@@ -2681,6 +2693,12 @@ msgstr ""
 msgid "How many files the table lists at most. Default: {count}."
 msgstr ""
 
+msgid "How many photos a search by meaning finds at most, the closest first."
+msgstr ""
+
+msgid "How many processor threads the model uses."
+msgstr ""
+
 msgid "How many reports to keep?"
 msgstr ""
 
@@ -3005,6 +3023,9 @@ msgid "Longitude"
 msgstr ""
 
 msgid "Look again at the photos gone"
+msgstr ""
+
+msgid "Looking at the photos"
 msgstr ""
 
 #, python-brace-format
@@ -4740,6 +4761,9 @@ msgstr ""
 msgid "Run 'people' to see the groups in your browser and name them."
 msgstr ""
 
+msgid "Run 'tags --meaning' once: it downloads the model again."
+msgstr ""
+
 msgid ""
 "Run 'tags' first: it gives every photo the words of its folders, date and"
 " place."
@@ -4935,6 +4959,25 @@ msgid ""
 "https://operations.osmfoundation.org/policies/nominatim/ (one search per "
 "second at most). Another instance, or empty to search offline only."
 msgstr ""
+
+msgid "Search by meaning: every photo is looked at already."
+msgstr ""
+
+#, python-brace-format
+msgid "Search by meaning: {count} photo can be found by what it shows."
+msgid_plural "Search by meaning: {count} photos can be found by what they show."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"Search by meaning: {count} photo to look at on this computer's processor,"
+" about {duration}. Ctrl+C stops; what is done is kept."
+msgid_plural ""
+"Search by meaning: {count} photos to look at on this computer's "
+"processor, about {duration}. Ctrl+C stops; what is done is kept."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Search by words"
 msgstr ""
@@ -5599,10 +5642,6 @@ msgid ""
 "covers most of the work."
 msgstr ""
 
-#, python-brace-format
-msgid "The face model {name} downloaded is not the expected file."
-msgstr ""
-
 msgid ""
 "The faces 'people' finds and groups. They are personal data: kept in the "
 "cache (/cache) only, never sent anywhere; 'people --forget' deletes them "
@@ -5777,6 +5816,10 @@ msgstr ""
 msgid "The model {model} is not installed at {url}."
 msgstr ""
 
+#, python-brace-format
+msgid "The model {name} downloaded is not the expected file."
+msgstr ""
+
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr ""
 
@@ -5852,6 +5895,11 @@ msgid "The phone run the files were proven in."
 msgstr ""
 
 msgid "The phone's name, as Windows shows it."
+msgstr ""
+
+msgid ""
+"The photos have vectors, but the model of search by meaning is not in the"
+" cache: the words alone answer."
 msgstr ""
 
 #, python-brace-format
@@ -6196,6 +6244,10 @@ msgid "This browser cannot play this video: open the original."
 msgstr ""
 
 msgid "This build cannot find faces: the ONNX runtime is not installed."
+msgstr ""
+
+#, python-brace-format
+msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
 msgid ""
@@ -8406,6 +8458,15 @@ msgid "true or false is expected, not {value}"
 msgstr ""
 
 msgid ""
+"true: 'tags' also lets a model look at each photo (CLIP, on this "
+"computer's processor: no GPU, nothing sent), once, about 1 minute per "
+"1,000 photos, so that 'search' finds what a photo shows even without a "
+"word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into "
+"the cache the first time. It sees what is on a photo, never who nor "
+"where: names come from 'people', places from the GPS."
+msgstr ""
+
+msgid ""
 "true: a photo without GPS in a folder named after a town "
 "(2019/Douarnenez) gets the position of that town's centre in its sidecar,"
 " so that other applications show it on their map. Approximate: off by "
@@ -8483,6 +8544,9 @@ msgid "videos with a date in their tags:"
 msgstr ""
 
 msgid "videos:"
+msgstr ""
+
+msgid "what each photo shows, for search by meaning"
 msgstr ""
 
 msgid "whole series set aside"
@@ -9109,8 +9173,20 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo can now be found by what it shows ({duration})."
+msgid_plural "{count} photos can now be found by what they show ({duration})."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} photo could not be decoded."
 msgid_plural "{count} photos could not be decoded."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo could not be decoded: it has no vector."
+msgid_plural "{count} photos could not be decoded: they have no vector."
 msgstr[0] ""
 msgstr[1] ""
 

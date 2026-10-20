@@ -1,0 +1,20 @@
+The model of search by meaning (media_hygiene.meaning): not in the image, downloaded
+once into the cache (/cache/models) by 'tags --meaning', checked by SHA-256 (clip.py).
+
+Image side: CLIP ViT-B/32, by OpenAI (https://github.com/openai/CLIP), MIT licence
+(https://github.com/openai/CLIP/blob/main/LICENSE, "Copyright (c) 2021 OpenAI").
+File: onnx/vision_model.onnx of https://huggingface.co/Xenova/clip-vit-base-patch32,
+revision d15189d7028b43f1d3e65039190477f6af591c2a: an ONNX export of
+https://huggingface.co/openai/clip-vit-base-patch32 by Xenova (Transformers.js); the
+export states no licence of its own. Unchanged.
+
+Text side: clip-ViT-B-32-multilingual-v1, by sentence-transformers (Nils Reimers),
+Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0), a multilingual text
+model taught to give CLIP's vectors. Files: onnx/model.onnx, tokenizer.json and
+2_Dense/model.safetensors of
+https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1, revision
+58edf8cada9e398793dca955574a48cbb7f18be2. Unchanged.
+
+Checked on 2026-10-20. OpenAI's model card adds that CLIP was made for research and
+that deployed uses were out of its scope when published (2021); it sees what a photo
+shows, and media-hygiene never asks it who is on a photo (faces: 'people').

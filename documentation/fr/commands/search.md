@@ -95,6 +95,8 @@ trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 af
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
 | `Chloé montagne` | Les photos de Chloé avec « montagne » venu de n'importe quelle source, une fois son groupe nommé dans [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | Le nom parmi les personnes seulement. Un nom que personne ne porte encore est signalé en une ligne. |
+| `un chat sur un canapé` | Après [`tags --meaning`](tags.md) : les photos qui le montrent d'abord, même sans aucun de ces mots ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). |
+| `Chloé cuisine` | Après `tags --meaning` : les photos de Chloé seulement, les cuisines d'abord. |
 
 ## Options
 
@@ -111,6 +113,10 @@ trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 af
 - La recherche ne lit que le cache : relancez [`audit`](audit.md) puis [`tags`](tags.md) pour
   trouver les nouvelles photos.
 - Sans `/cache`, ou avec un cache qu'aucun audit n'a encore rempli, il s'arrête et dit pourquoi.
+- **Par le sens** : une fois que [`tags --meaning`](tags.md) a donné leurs vecteurs aux photos,
+  la recherche les classe aussi par ce qu'elles montrent, et le dit au lancement (*Recherche par
+  le sens : 52 318 photos peuvent être trouvées par ce qu'elles montrent.*). Le modèle est lu
+  dans le cache, jamais téléchargé par `search`.
 - Les noms des personnes viennent des visages du cache et des noms de `config.toml`, à chaque
   lancement : montez aussi `/config` pour les trouver. Rien d'autre à lancer après avoir nommé un
   groupe.

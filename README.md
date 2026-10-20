@@ -250,4 +250,6 @@ Because of x265, the image **as a whole** is covered by the GPL when you redistr
 component is the unmodified upstream release pinned in `Dockerfile` and `uv.lock`: its sources
 are those of that release. The face models of `people` are not in the image: they are downloaded
 on first use from [OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet: MIT, SFace:
-Apache-2.0).
+Apache-2.0). Neither is the model of search by meaning (`tags --meaning`): CLIP ViT-B/32 (MIT,
+OpenAI) and its multilingual text model (Apache-2.0, sentence-transformers), downloaded from
+Hugging Face into the cache on first use (see `src/media_hygiene/meaning/ATTRIBUTION.txt`).

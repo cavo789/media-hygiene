@@ -68,6 +68,7 @@ leurs dossiers, noms, dates et lieux.*
 | 🤖 `--sample N` | **Avec une IA locale seulement.** Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
 | 🤖 `--no-describe` | **Avec une IA locale seulement.** Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
 | 🤖 `--yes`, `-y` | **Avec une IA locale seulement.** Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
+| 🤖 `--meaning` | Un modèle sur le processeur de cet ordinateur (CLIP : ni Ollama, ni carte graphique, rien n'est envoyé) regarde chaque photo une fois, environ 1 minute pour 1 000 photos, pour que [`search`](search.md) trouve ce qu'une photo montre ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). Le modèle (894 Mo) est téléchargé dans le cache la première fois. Par défaut : `[tags] meaning`. |
 
 ## Bon à savoir
 
@@ -78,6 +79,9 @@ leurs dossiers, noms, dates et lieux.*
   sa photo la plus nette ; une vidéo est vue par l'image du milieu ; les petites images et
   vidéos ne sont pas envoyées. `classify` réutilise ensuite ces réponses au lieu de renvoyer les
   photos.
+- **Recherche par le sens** (`--meaning`, à activer) : ce qu'une photo montre, jamais qui ni où
+  (les noms viennent de `people`, les lieux du GPS) ; les copies identiques sont regardées une
+  fois, les vidéos jamais.
 - **Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours de description ; la
   fois suivante reprend où celle-ci s'est arrêtée.
 - **Pourquoi pas dans les photos ?** Écrire dans un JPEG change ses octets, son empreinte, et deux
