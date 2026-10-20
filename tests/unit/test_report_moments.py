@@ -19,7 +19,8 @@ def test_a_moment_is_a_time_element_in_utc() -> None:
 def test_pages_turn_times_into_local_time() -> None:
     """The filter is not escaped, and every page carries the converting script."""
     page = make_environment().from_string(
-        '{% extends "base.html.j2" %}{% block content %}{{ at | when }}{% endblock %}'
+        '{% extends "base.html.j2" %}{% set report_kind = "index" %}'
+        '{% set report_name = "x" %}{% block content %}{{ at | when }}{% endblock %}'
     )
     html = page.render(at=datetime(2026, 10, 10, 7, 52, tzinfo=UTC))
     assert _UTC_TIME in html

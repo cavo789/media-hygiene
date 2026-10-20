@@ -1,6 +1,9 @@
 {% extends "base.html.j2" %}
 {% set s = report.header.summary %}
 {% set is_clean = s.kind.value == "clean" %}
+{% set report_kind = "clean" if is_clean else "audit" %}
+{% set report_name = _("Clean report") if is_clean else _("Audit report") %}
+{% set report_when = s.created_at %}
 {% set reasons = {
   "empty": _("Empty file (0 bytes)"),
   "unreadable-image": _("Image cannot be decoded"),

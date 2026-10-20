@@ -1,5 +1,8 @@
 {% extends "base.html.j2" %}
 {% set s = report.header.summary %}
+{% set report_kind = "near" %}
+{% set report_name = _("Near duplicates") %}
+{% set report_when = s.created_at %}
 {% block title %}{{ _("Near duplicates") }} — {{ s.folder }}{% endblock %}
 {% block content %}
 {% set near_page = true %}

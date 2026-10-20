@@ -14,6 +14,7 @@ from media_hygiene.console.formatting import (
     human_size,
 )
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.report.report_header import report_header
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -36,6 +37,7 @@ def make_environment() -> Environment:
     environment.filters["share"] = human_share
     environment.filters["duration"] = human_duration
     environment.filters["when"] = when
+    environment.globals["report_header"] = report_header
     return environment
 
 
