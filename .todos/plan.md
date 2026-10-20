@@ -48,5 +48,4 @@
 | 0213 | A folder pair can keep both names: each copy becomes a hard link to the kept file (same drive) | [PARTIAL_0213-pair-keep-both-names-hard-link.md](PARTIAL/PARTIAL_0213-pair-keep-both-names-hard-link.md) |
 | 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
 | 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
-| 0253 | `mh`: port 8088 taken by another program — say which, never Docker's raw error | [PARTIAL_0253-mh-page-port-taken-by-another-program.md](PARTIAL/PARTIAL_0253-mh-page-port-taken-by-another-program.md) |
 | 0254 | `mh.sh` (WSL): a removable drive is mounted for the user, as `mh.ps1` does | [PARTIAL_0254-mh-sh-mounts-removable-drive.md](PARTIAL/PARTIAL_0254-mh-sh-mounts-removable-drive.md) |

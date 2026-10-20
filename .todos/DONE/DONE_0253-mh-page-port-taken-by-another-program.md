@@ -72,3 +72,13 @@ tell it apart rather than leave it to the troubleshooting page.
   window" and the script's listener never got the port. Script fixed (inbox of 2026-10-20): 10f
   stops any page on 8088 first, the 10c window is closed, leftovers matched in any case, and
   `-Only 10f` runs the check alone. Still to run: `.\mh-measure.ps1 -Only 10f -Count 20 -Work C:\temp\mh-measure10f`.
+
+## Measured on Windows (2026-10-20, `-Only 10f` of mh-measure.ps1 at c1c5cd3, maintainer)
+
+- No interaction needed. Docker's listener again `com.docker.backend`; the probe took 219 ms
+  (measured; 313 ms in the first run).
+- Another program (a PowerShell `TcpListener`) on 8088: `mh review` said, exit code 1, "The port of
+  the mh pages is used by another program, powershell (process 14676): close it, then type the
+  command again. mh always uses this port." Docker's raw error shown: False.
+- "mh always uses this port" becomes the setting to change with 0260.
+- Every item done → closed DONE.
