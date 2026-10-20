@@ -3,7 +3,7 @@
 - **Priority**: High — asked by the maintainer, mockup approved on 2026-10-20
 - **Batch**: home
 - **Depends**: 0265
-- **Files**: `src/media_hygiene/review/templates/home.html.j2`, `src/media_hygiene/review/templates/home.js.j2`, `src/media_hygiene/review/templates/home_*.css.j2` (new), `src/media_hygiene/review/templates/home_*.js.j2` (new), `src/media_hygiene/review/home_app.py`, `src/media_hygiene/review/home_views.py`, `src/media_hygiene/cli/home_state.py`, `src/media_hygiene/cli/home_reports.py`, `src/media_hygiene/services/home.py`, `src/media_hygiene/services/launcher.py`, `src/media_hygiene/cli/templates/mh_menu.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/assets/images/` (exists), `src/media_hygiene/assets/fonts/` (new), `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_home_given.py`, `tests/unit/test_launcher_home.py`, `tests/unit/test_home_page.py` (new), `tests/support/docs/browsing.py`, `README.md`, `README_FR.md`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
+- **Files**: `src/media_hygiene/review/templates/home.html.j2`, `src/media_hygiene/review/templates/home.js.j2`, `src/media_hygiene/review/templates/home_*.css.j2` (new), `src/media_hygiene/review/templates/home_*.js.j2` (new), `src/media_hygiene/review/home_app.py`, `src/media_hygiene/review/http.py`, `src/media_hygiene/review/home_views.py`, `src/media_hygiene/cli/home_state.py`, `src/media_hygiene/cli/home_reports.py`, `src/media_hygiene/services/home.py`, `src/media_hygiene/services/launcher.py`, `src/media_hygiene/cli/templates/mh_menu.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/assets/images/` (exists), `src/media_hygiene/assets/fonts/` (new), `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_home_given.py`, `tests/unit/test_launcher_home.py`, `tests/unit/test_home_page.py` (new), `tests/support/docs/browsing.py`, `README.md`, `README_FR.md`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
 
 ## Context
 
@@ -54,7 +54,11 @@ catalog.
    - The theme follows the OS by default; a choice of the switch is kept in `localStorage`
      (wrapped in try/catch).
 5. **The assets**, served by the home server under `/assets/` from `media_hygiene/assets/`:
-   - long cache; only files under that folder; the right content types; the CSP stays `self`;
+   - long cache; only files under that folder; the right content types;
+   - **the CSP must allow the fonts.** `REVIEW_POLICY` (`review/http.py`) is
+     `default-src 'none'` with no `font-src` (checked, 2026-10-20), which blocks every font:
+     add `font-src 'self'`. Keep CSS and JS inline in the template, as today, since
+     `style-src` and `script-src` do not allow `'self'`;
    - the images: avatar and 8 poses, 363 KB of WebP in all (measured);
    - **the fonts, embedded** (decided on 2026-10-20), so the page never asks Google: Bricolage
      Grotesque, Source Sans 3 and JetBrains Mono as WOFF2, Latin subsets, the OFL licences next
