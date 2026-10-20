@@ -51,3 +51,9 @@ tags first (0082, then a `tags` night).
      "bord de mer", → a small synonym list), or truly semantic (→ vectors).
   4. Write the table here; build `bge-m3` vectors (plan above) only if the semantic misses
      dominate.
+
+## Closed (2026-10-20)
+
+UNNEEDED: the image embeddings measured by 0221 answer searches by meaning without Ollama's
+captions (CLIP: 67 % of the first 5 relevant, 0.06 s per photo on the CPU, no GPU); built by
+0263. Decided by the maintainer on 2026-10-20.

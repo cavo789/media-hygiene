@@ -1654,7 +1654,7 @@ if (Wanted 20) {
         Log ("   20b. wall time: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
         $size = (Get-ChildItem -LiteralPath $models -Recurse -File | Measure-Object -Property Length -Sum).Sum / 1MB
         Log ("   20c. models folder: {0:N0} MB in {1}" -f $size, $models)
-        Log "   20d. open $(Join-Path $pages 'index.html'), tick the searches and the pairs, download both JSON files, then tell Claude where they are"
+        Log "   20d. open $(Join-Path $pages 'index.html'), every box starts ticked: untick the misses (searches, then pairs), download both JSON files, then tell Claude where they are"
     }
     $ErrorActionPreference = $saved
 }

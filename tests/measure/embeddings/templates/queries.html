@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Embeddings searches{% endblock %}
 {% block page %}queries{% endblock %}
-{% block tools %}<p>Tick every picture a person would expect for the search. <button id="download" type="button">Download the ticks (JSON)</button></p>
+{% block tools %}<p>Every picture starts ticked: untick those a person would not expect for the search. <button id="download" type="button">Download the ticks (JSON)</button></p>
 <nav>{% for item in queries %}<a href="#q{{ loop.index }}">{{ item.query }}</a>{% endfor %}</nav>{% endblock %}
 {% block content %}
 {% for item in queries %}{% set query_number = loop.index %}

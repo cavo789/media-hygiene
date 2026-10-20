@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Embeddings pairs{% endblock %}
 {% block page %}pairs{% endblock %}
-{% block tools %}<p>The pairs each model finds the most alike, those the audit already calls near duplicates left out. Tick "same photo" when one is a copy of the other (cropped, filtered, mirrored, edited). <button id="download" type="button">Download the ticks (JSON)</button></p>{% endblock %}
+{% block tools %}<p>The pairs each model finds the most alike, those the audit already calls near duplicates left out. Every pair starts ticked "same photo": keep it only when both files come from ONE shot (the same instant, pose and expression), one a copy of the other: resized, cropped, filtered, rotated, mirrored, sent by a messaging app. Untick two shots, however alike: a burst, a retake, the camera zoomed between them. <button id="download" type="button">Download the ticks (JSON)</button></p>{% endblock %}
 {% block content %}
 {% for model in models %}
 <h2>{{ model.title }}</h2>

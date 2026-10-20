@@ -35,15 +35,17 @@ button { font: inherit; padding: 4px 12px; }
 {% block content %}{% endblock %}
 <script>
 "use strict";
-const key = "embeddings-bench:" + document.body.dataset.page;
+// Every box starts ticked, the maintainer unticks the misses (2026-10-20: 400+ ticks by hand
+// otherwise): what is remembered is the unticked boxes, under a key of its own.
+const key = "embeddings-bench:unticked:" + document.body.dataset.page;
 const boxes = () => Array.from(document.querySelectorAll("input[data-judged]"));
 function saved() {
   try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch (error) { return {}; }
 }
 function remember() {
-  const ticked = {};
-  boxes().forEach((box) => { if (box.checked) { ticked[box.id] = true; } });
-  try { localStorage.setItem(key, JSON.stringify(ticked)); } catch (error) { /* kept in the page only */ }
+  const unticked = {};
+  boxes().forEach((box) => { if (!box.checked) { unticked[box.id] = true; } });
+  try { localStorage.setItem(key, JSON.stringify(unticked)); } catch (error) { /* kept in the page only */ }
 }
 function download() {
   const rows = boxes().map((box) => {
@@ -59,7 +61,7 @@ function download() {
   link.click();
 }
 const before = saved();
-boxes().forEach((box) => { box.checked = Boolean(before[box.id]); box.addEventListener("change", remember); });
+boxes().forEach((box) => { box.checked = !before[box.id]; box.addEventListener("change", remember); });
 const button = document.getElementById("download");
 if (button) { button.addEventListener("click", download); }
 </script>
