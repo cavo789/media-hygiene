@@ -2182,6 +2182,9 @@ msgstr ""
 msgid "Freed"
 msgstr ""
 
+msgid "From WSL or Linux, mount the share yourself, then give its folder."
+msgstr ""
+
 msgid "From year"
 msgstr ""
 
@@ -2476,6 +2479,9 @@ msgid "KB"
 msgstr ""
 
 msgid "Keep both names (link)"
+msgstr ""
+
+msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
 msgstr ""
 
 msgid "Keep one of them: the other is a copy."
@@ -3646,6 +3652,10 @@ msgid "Pair {number} of {total}"
 msgstr ""
 
 msgid "Parties"
+msgstr ""
+
+#, python-brace-format
+msgid "Password of {share} (asked once, never shown)"
 msgstr ""
 
 msgid ""
@@ -5103,6 +5113,16 @@ msgid ""
 " has an identical file in the first one."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The password of {share} holds a comma or a double quote, which Docker "
+"cannot pass: change it on the NAS."
+msgstr ""
+
+#, python-brace-format
+msgid "The password of {share} is kept: mh folders remove forgets it."
+msgstr ""
+
 msgid ""
 "The phone no longer answers (unplugged?): what is counted above was "
 "deleted, the rest is still on it. Type mh phone --free again."
@@ -5698,6 +5718,9 @@ msgstr ""
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr ""
 
+msgid "User name on the NAS"
+msgstr ""
+
 msgid ""
 "Validate at once every series still to see whose proposal leaves nothing "
 "to judge (V)"
@@ -6196,6 +6219,9 @@ msgstr[1] ""
 msgid "another program is using it"
 msgstr ""
 
+msgid "answers"
+msgstr ""
+
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr ""
 
@@ -6360,6 +6386,9 @@ msgid "deleted on purpose: remembered, set aside if it comes back"
 msgstr ""
 
 msgid "docker pull failed: mh is unchanged."
+msgstr ""
+
+msgid "does not answer (powered off?)"
 msgstr ""
 
 #, python-format
@@ -7453,6 +7482,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{backup} overlaps {folder}: give them apart."
+msgstr ""
+
+#, python-brace-format
+msgid "{backup}: a NAS backup is for mh in Windows PowerShell."
 msgstr ""
 
 #, python-brace-format
@@ -8815,6 +8848,25 @@ msgid ""
 "{series}: only the sharpest shot (and those of protected folders) would "
 "stay, {aside}, saved in one write. Series to look at, still to see: "
 "{left}. Validate them? Z takes the whole batch back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} could not be read by Docker: an older SMB? On a Synology: Control"
+" Panel, File Services, SMB, Advanced Settings, Maximum SMB protocol: "
+"SMB3."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} does not answer (the NAS is off?): this command runs without it. "
+"Power it on, then type the command again."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{share} refused this user name or password: type them again with mh "
+"folders add --backup."
 msgstr ""
 
 #, python-brace-format

@@ -28,7 +28,13 @@ function global:_{{ f }}_folders {
     $photos = @(_{{ f }}_photos)
     $backups = @(_{{ f }}_backups)
     $folder = "$($words[1])"
-    if ($words[0] -eq 'add') {
+    if ($words[0] -eq 'add' -and $backup -and $folder -match '^\\\\[^\\]+\\[^\\]+') {
+        # A share of a NAS (0245): its password asked and proven, never a folder looked up.
+        $folder = $folder.TrimEnd('\')
+        if (@($backups | Where-Object { $_.TrimEnd('\') -eq $folder }).Count -gt 0) { Write-Host "{{ update.already }}"; return }
+        if (-not (_{{ f }}_nas_add $folder)) { return }
+        $backups += $folder
+    } elseif ($words[0] -eq 'add') {
         if (-not (Test-Path -LiteralPath $folder -PathType Container)) { Write-Host "{{ update.not_found }}"; return }
         $folder = (Resolve-Path -LiteralPath $folder).ProviderPath
         if ($folder -notmatch '^[A-Za-z]:') { Write-Host "{{ update.not_found }}"; return }
@@ -46,6 +52,7 @@ function global:_{{ f }}_folders {
         if ($kept.Count -lt $photos.Count -and $kept.Count + {{ kept.fixed }} -eq 0) { Write-Host "{{ update.last }}"; return }
         $photos = $kept
         $backups = $spared
+        if ($folder -match '^\\\\') { Remove-Item -LiteralPath (_{{ f }}_nas_file (_{{ f }}_nas_name $folder)) -ErrorAction SilentlyContinue }
     }
     $null = _{{ f }}_rewrite $photos $backups
 }
@@ -80,6 +87,12 @@ function global:_{{ f }}_list {
 # A quarantine is made by the first clean: missing on a disk that is there, it is not
 # "not found" (review of 2026-10-16).
 function global:_{{ f }}_state($folder, $quarantine = $false) {
+    if ($folder -match '^\\\\') {
+        # A NAS: whether it answers, never a folder looked up without its password (0245).
+        $state = if (_{{ f }}_nas_up $folder.TrimStart('\').Split('\')[0]) { "{{ nas.answers }}" } else { "{{ nas.powered_off }}" }
+        Write-Host "    ${folder}: $state"
+        return
+    }
     $root = [IO.Path]::GetPathRoot($folder)
     $state = "{{ update.absent }}"
     if (Test-Path -LiteralPath $folder) { $state = "{{ update.found }}" }

@@ -17,8 +17,10 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.paths.docker_run import Volume
+from media_hygiene.paths.docker_run import Shell, Volume
+from media_hygiene.paths.unc import share_of
 from media_hygiene.services.launcher_folders import container_point
+from media_hygiene.services.launcher_nas import nas_share
 
 if TYPE_CHECKING:
     from media_hygiene.services.launcher import LauncherScript
@@ -47,9 +49,19 @@ def with_backups(
     if not hosts:
         return script
     data_dir = runtime.locations.data_dir
+    typed = tuple(dict.fromkeys(hosts))
+    shares = tuple(s for host in typed if (s := nas_share(data_dir, host)) is not None)
+    if shares and script.shell is not Shell.POWERSHELL:
+        raise MountError(
+            _("{backup}: a NAS backup is for mh in Windows PowerShell.").format(
+                backup=shares[0].unc
+            ),
+            _("From WSL or Linux, mount the share yourself, then give its folder."),
+        )
     backups = tuple(
         Volume(host.rstrip("\\/") or host, container_point(data_dir, host))
-        for host in dict.fromkeys(hosts)
+        for host in typed
+        if share_of(host) is None
     )
     for backup in backups:
         for other in (*script.data, *backups):
@@ -63,7 +75,7 @@ def with_backups(
                         "lie in a photo folder or another backup."
                     ),
                 )
-    return replace(script, backups=backups)
+    return replace(script, backups=backups, nas=shares)
 
 
 def _overlap(first: str, second: str) -> bool:

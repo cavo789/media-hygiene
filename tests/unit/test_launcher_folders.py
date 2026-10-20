@@ -347,7 +347,7 @@ def test_powershell_mounts_a_backup_read_only_for_every_command() -> None:
         "    $backups = @(if ($command -in @('audit', 'clean')) "
         "{ '--backup', \"E:\\Backup\" })\n"
     ) in text
-    assert " @rest @backups\n" in text
+    assert " @rest @backups @($nas.backups)\n" in text
     assert 'foreach ($folder in @("C:\\Photos", "E:\\Backup")) {' in text
     assert 'function global:_mh_backups { @("E:\\Backup") }' in text
     assert '    Write-Host "Your backups, compared, never changed:"\n' in text

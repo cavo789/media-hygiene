@@ -2726,6 +2726,9 @@ msgstr "Libérer la place de la quarantaine, définitivement"
 msgid "Freed"
 msgstr "Libéré"
 
+msgid "From WSL or Linux, mount the share yourself, then give its folder."
+msgstr "Depuis WSL ou Linux, montez le partage vous-même, puis donnez son dossier."
+
 msgid "From year"
 msgstr "De l'année"
 
@@ -3076,6 +3079,9 @@ msgstr "Ko"
 
 msgid "Keep both names (link)"
 msgstr "Garder les deux noms (lien)"
+
+msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
+msgstr "Le garder, chiffré pour votre seul compte Windows, sur ce PC ? (o/n)"
 
 msgid "Keep one of them: the other is a copy."
 msgstr "Gardez-en un : l'autre est une copie."
@@ -4469,6 +4475,10 @@ msgstr "Paire {number} sur {total}"
 
 msgid "Parties"
 msgstr "Fêtes"
+
+#, python-brace-format
+msgid "Password of {share} (asked once, never shown)"
+msgstr "Mot de passe de {share} (demandé une fois, jamais affiché)"
 
 msgid ""
 "Paste it in the terminal where you ran the audit (PowerShell or bash, as "
@@ -6244,6 +6254,18 @@ msgstr ""
 "Les paires viennent de la plus grande place libérée à la plus petite. "
 "Chaque copie du second dossier a un fichier identique dans le premier."
 
+#, python-brace-format
+msgid ""
+"The password of {share} holds a comma or a double quote, which Docker "
+"cannot pass: change it on the NAS."
+msgstr ""
+"Le mot de passe de {share} contient une virgule ou un guillemet, que "
+"Docker ne peut pas transmettre : changez-le sur le NAS."
+
+#, python-brace-format
+msgid "The password of {share} is kept: mh folders remove forgets it."
+msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
+
 msgid ""
 "The phone no longer answers (unplugged?): what is counted above was "
 "deleted, the rest is still on it. Type mh phone --free again."
@@ -6988,6 +7010,9 @@ msgstr "Utilisation :"
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr "Utilisez l'image publiée, ou réinstallez les dépendances : uv sync."
 
+msgid "User name on the NAS"
+msgstr "Nom d'utilisateur sur le NAS"
+
 msgid ""
 "Validate at once every series still to see whose proposal leaves nothing "
 "to judge (V)"
@@ -7583,6 +7608,9 @@ msgstr[1] "et {n} visages de plus"
 msgid "another program is using it"
 msgstr "un autre programme l'utilise"
 
+msgid "answers"
+msgstr "répond"
+
 msgid "apply your review: the files you set aside go to the quarantine."
 msgstr "appliquez votre tri : les fichiers mis de côté vont en quarantaine."
 
@@ -7762,6 +7790,9 @@ msgstr "supprimé exprès : retenu, mis de côté s'il revient"
 
 msgid "docker pull failed: mh is unchanged."
 msgstr "docker pull a échoué : mh n'a pas changé."
+
+msgid "does not answer (powered off?)"
+msgstr "ne répond pas (éteint ?)"
 
 #, python-format
 msgid "duplicate copies in %(num)s group"
@@ -8964,6 +8995,10 @@ msgstr ""
 #, python-brace-format
 msgid "{backup} overlaps {folder}: give them apart."
 msgstr "{backup} recouvre {folder} : donnez-les séparément."
+
+#, python-brace-format
+msgid "{backup}: a NAS backup is for mh in Windows PowerShell."
+msgstr "{backup} : une sauvegarde sur NAS se fait avec mh dans Windows PowerShell."
 
 #, python-brace-format
 msgid "{category} cannot be used in a category"
@@ -10642,6 +10677,32 @@ msgstr ""
 "{series} : seule la photo la plus nette (et celles des dossiers protégés)"
 " resterait, {aside}, enregistré en une seule écriture. Séries à regarder,"
 " encore à voir : {left}. Les valider ? Z annule tout le lot."
+
+#, python-brace-format
+msgid ""
+"{share} could not be read by Docker: an older SMB? On a Synology: Control"
+" Panel, File Services, SMB, Advanced Settings, Maximum SMB protocol: "
+"SMB3."
+msgstr ""
+"{share} n'a pas pu être lu par Docker : un SMB trop ancien ? Sur un "
+"Synology : Panneau de configuration, Services de fichiers, SMB, "
+"Paramètres avancés, Protocole SMB maximum : SMB3."
+
+#, python-brace-format
+msgid ""
+"{share} does not answer (the NAS is off?): this command runs without it. "
+"Power it on, then type the command again."
+msgstr ""
+"{share} ne répond pas (le NAS est éteint ?) : cette commande se fait sans"
+" lui. Allumez-le, puis retapez la commande."
+
+#, python-brace-format
+msgid ""
+"{share} refused this user name or password: type them again with mh "
+"folders add --backup."
+msgstr ""
+"{share} a refusé ce nom d'utilisateur ou ce mot de passe : retapez-les "
+"avec mh folders add --backup."
 
 #, python-brace-format
 msgid "{sheet}: the row {key} was deleted."

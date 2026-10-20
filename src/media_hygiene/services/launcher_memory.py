@@ -57,12 +57,13 @@ def remembered(runtime: Runtime, script: LauncherScript) -> str:
     """
     count = len(script.data)
     folders = ngettext("{count} folder", "{count} folders", count).format(count=count)
-    if script.backups:
+    backups = len(script.backups) + len(script.nas)
+    if backups:
         folders += ", " + ngettext(
             "{count} backup (read-only)",
             "{count} backups (read-only)",
-            len(script.backups),
-        ).format(count=len(script.backups))
+            backups,
+        ).format(count=backups)
     zone = (
         _("your computer's, read at each run")
         if timezone_unknown()

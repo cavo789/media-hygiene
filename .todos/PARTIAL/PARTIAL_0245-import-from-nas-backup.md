@@ -172,3 +172,42 @@ Share `Photos` (not `photo`), read-only, nothing written on the NAS:
   (`mh folders remove \\NAS\Share` deletes it too). `mh folders` lists the NAS with its state
   (answers / powered off), never the password. A wrong password, read back: said in one line,
   asked again, the kept one replaced only once the new one worked.
+
+## Status — PARTIAL (2026-10-20)
+
+### Done
+- Found on the way, fixed apart (009c87e): a backup's copy no longer cancels a deletion, is
+  never taken for a moved file, and a file gone from a backup is never put to `review --gone`
+  (`index/pruning.py`; three tests, each failing before).
+- What only a backup holds minus what was dealt with (`plan/backup_import.py`,
+  `services/backup_dealt.py`): set aside before (0216, confirmed deletions included) and
+  deletions waiting for `review --gone` (0224) counted apart, never proposed; the audit's line
+  says both (`console/backup_view.py`).
+- `media-hygiene import` (`services/import_plan.py`, `services/import_run.py`,
+  `cli/cmd_import.py`, `console/import_view.py`): near copies listed apart (`plan.near`'s test
+  over the index's visuals, `index/visual_listing.py`), twins copied once, copies into
+  `<first photo folder>/From NAS/<the backup's folders>` (`--to`), each journaled `copy-in`
+  (phase `import`), written under a temporary name, proven by SHA-256 (the source hashed as it
+  is read), renamed, never over a file; `undo` removes a copy while it holds those bytes (an
+  edited copy kept), then the folders it created (`actions/copy_in.py`,
+  `actions/copy_in_undo.py`, `actions/reversal.py`).
+- The NAS in `mh.ps1` (`paths/unc.py`, `services/launcher_nas.py`,
+  `cli/templates/mh_nas.ps1.j2`): `\\NAS\Share` ↔ `/data/unc/NAS/Share`; `mh folders add
+  --backup \\NAS\Share` asks the user name and password, proves them by a volume read once,
+  offers to keep them (Export-Clixml, `$HOME\media-hygiene\nas-<host>-<share>.xml`); each
+  command makes a CIFS volume (`ro,vers=3.1.1,sec=ntlmssp`), proves it by a short run, removes
+  it after; a NAS off, a refused password, an older SMB: one line each, the command without
+  it; `mh folders` says whether it answers; `remove` forgets the password. The bash `mh`
+  refuses a share, said.
+- Docs en/fr: `commands/import.md`, step 3 ("Your NAS: get back what only it holds"),
+  reference-commands; French; tests (unit, integration, rendered scripts).
+- `mh-measure.ps1` step 21h: add the share in a test mh, `mh folders`, `mh audit` with it,
+  no volume left, the password file kept then forgotten.
+
+### Not done
+- The Windows check of the NAS in `mh` (step 21h) and a first real `mh import` on the
+  maintainer's library. **Reason:** Windows + Docker Desktop + the NAS only; the PowerShell
+  of `mh_nas.ps1.j2` never ran (rendered and checked here only).
+- Speed of a first import on a large NAS-only set: the near-copy check decodes each
+  candidate image once over the network (15 MB/s measured) before copying it. **Reason:** to
+  measure on the maintainer's data; a setting to skip the near check could follow.

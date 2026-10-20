@@ -75,6 +75,7 @@ function global:{{ function }} {
     $shared = _{{ function }}_removable $hosts
     if ($null -eq $shared) { $global:LASTEXITCODE = 1; return }
     $marks = @($shared.labels)
+    $nas = {% if script.nas %}_{{ function }}_nas_mount $command{% else %}@{ mounts = @(); backups = @(); volumes = @() }{% endif %}  # 0245
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
@@ -130,17 +131,19 @@ function global:{{ function }} {
 {% for volume in script.backups %}
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" `
 {% endfor %}
+            @($nas.mounts) `
 {% for volume in script.tools + script.drives %}
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
             @page `
             @marks `
-            {{ image }} @rest @backups
+            {{ image }} @rest @backups @($nas.backups)
         $status = $LASTEXITCODE
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
         if ($browser) { Remove-Job -Job $browser -Force }
         if ($shared.mounted) { _{{ function }}_unmount $shared.mounted }
+        if ($nas.volumes) { _{{ function }}_nas_release $nas.volumes }
         if ($long) {
             # ES_CONTINUOUS alone: the computer may sleep again, Ctrl+C included.
             $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483648)
@@ -180,6 +183,7 @@ function global:_{{ function }}_open {
 
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}
+{% include 'mh_nas.ps1.j2' %}
 {% include 'mh_cloud.ps1.j2' %}
 {% include 'mh_phone.ps1.j2' %}
 {% include 'mh_phone_free.ps1.j2' %}

@@ -2082,6 +2082,39 @@ else:
         NasLog "   21. SMB in Docker: $smbDocker"
         NasLog "   21. SMB in Windows: $smbWindows"
         NasLog "   21. FTP in Docker: $ftpDocker"
+
+        # 21h (0245): the NAS as mh's backup in a test mh: added once (user name and password
+        # asked, kept or not), listed, then an audit with it. Never an import here: the test
+        # folder holds one photo, so nearly the whole NAS would be proposed.
+        $unc = "\\$Nas\$NasShare"
+        $go = Read-Host "21h. Try 'mh folders add --backup $unc' in a test mh (it asks the user name, the password, then whether to keep it), then 'mh audit' with it? (y/n)"
+        if ($go -match '^y') {
+            $mhDir = Join-Path $tool "mh21"
+            New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+            $mhFile = Join-Path $mhDir "mh.ps1"
+            $toolMounts = @(
+                "-v", "${volume}:/cache",
+                "-v", "$(Join-Path $tool 'config'):/config",
+                "-v", "$(Join-Path $tool 'journal'):/journal",
+                "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+                "-v", "$(Join-Path $tool 'reports'):/reports"
+            )
+            & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $data > $mhFile
+            . $mhFile
+            mh folders add --backup $unc
+            Log ("   21h. mh.ps1 names the share: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $unc -Quiet))
+            $said = @(mh folders 6>&1 | ForEach-Object { "$_" })
+            foreach ($line in $said) { Log ("   21h. mh folders: " + $line) }
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh audit 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'only in it|not in this backup|set aside or deleted|does not answer|could not be read|refused|Media files scanned' })
+            foreach ($line in $said) { Log ("   21h. mh audit: " + $line) }
+            Log ("   21h. mh audit with the NAS: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+            Log ("   21h. Docker volumes of the NAS left after it (none expected): " + ((@(& docker volume ls -q --filter name=mh-nas-) -join ' / ') -replace '^$', 'none'))
+            $kept = Join-Path $outDir ('nas-' + (("$Nas-$NasShare") -replace '[^A-Za-z0-9._-]+', '-').Trim('-') + '.xml')
+            Log "   21h. password kept by mh: $(Test-Path -LiteralPath $kept)"
+            $null = @(mh folders remove $unc 6>&1)
+            Log "   21h. after mh folders remove: password file left: $(Test-Path -LiteralPath $kept)"
+        }
     }
     $ErrorActionPreference = $saved
 }

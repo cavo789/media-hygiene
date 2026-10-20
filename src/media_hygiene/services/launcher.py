@@ -39,6 +39,7 @@ from media_hygiene.services.launcher_menu import (
     DESKTOP_WAIT,
     menu_texts,
 )
+from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
@@ -90,6 +91,7 @@ class LauncherScript:  # pylint: disable=too-many-instance-attributes
     data_dir: Path  # where `--photos` folders are mounted (`/data`)
     drives: tuple[Volume, ...] = ()  # `/quarantine/e`: each drive's own (0183)
     backups: tuple[Volume, ...] = ()  # compared, never changed: always `:ro` (0205)
+    nas: tuple[NasShare, ...] = ()  # backups on a NAS: a Docker volume each (0245)
 
     @property
     def folders(self) -> str:
@@ -180,5 +182,7 @@ def render_script(script: LauncherScript) -> str:
         relayed=_RELAYED,
         step_base=STEP_EXIT_BASE,
         page_closed=int(ExitCode.PAGE_CLOSED),
+        nas=nas_texts(),
+        smb=SMB_OPTIONS,
     )
     return ascii_powershell(text) if script.shell is Shell.POWERSHELL else text
