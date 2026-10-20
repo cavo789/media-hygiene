@@ -700,13 +700,14 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     }
 
     # 11f: mh folders add alone: Windows' folder window (0201), chosen, then cancelled.
-    $picked = Join-Path $Work "Picked photos"
-    New-Item -ItemType Directory -Force -Path $picked | Out-Null
-    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $picked ("picked-" + $_.Name)) }
-    Write-Host "11f. A folder window opens: choose $picked (This PC, then the folders), then OK."
+    $pickedDir = Join-Path $Work "Picked photos"
+    New-Item -ItemType Directory -Force -Path $pickedDir | Out-Null
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $pickedDir ("picked-" + $_.Name)) }
+    Write-Host "11f. A folder window opens: choose $pickedDir (This PC, then the folders), then OK."
     $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   11f. " + $line) }
-    Log ("   11f. the file names the folder chosen: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern $picked -Quiet))
+    # The folder window gives the long path, %TEMP% may be the short one (CHRIST~1): its name.
+    Log ("   11f. the file names the folder chosen: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "\Picked photos" -Quiet))
     $front = Read-Host "11f. Did the window open in front of this console, without Alt+Tab? (y/n)"
     Log "   11f. window in front of the console: $front"
     $before = (Get-FileHash -LiteralPath $mhFile).Hash
@@ -716,7 +717,7 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     Log ("   11g. mh.ps1 unchanged after cancel: " + ($before -eq (Get-FileHash -LiteralPath $mhFile).Hash))
     $avast = Read-Host "11g. Did your antivirus say anything during 11f or 11g? (n, or what it said)"
     Log "   11g. antivirus: $avast"
-    $null = @(mh folders remove $picked 6>&1)
+    $null = @(mh folders remove $pickedDir 6>&1)
 
     # 11h: a backup (0205): mounted read-only for every command, clean included. Its files are
     # copies of the test folder's, two of them twice: clean must leave all of them. On
@@ -751,9 +752,13 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     Log "   11i. files in the backup after mh clean: $left (planted: $planted, all must stay)"
     $refused = @(& docker run --rm -v "${backupDir}:/backup:ro" --entrypoint sh $Image -c "touch /backup/written-by-docker" 2>&1 | ForEach-Object { "$_" })
     Log ("   11i. a write in a :ro mount of it, by Docker: exit code $LASTEXITCODE, says: " + ($refused -join ' / '))
-    $null = @(mh undo --yes 2>&1)
-    Log "   11i. mh undo of that clean: exit code $LASTEXITCODE"
+    $said = @(mh undo --yes 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+    Log ("   11i. mh undo of that clean: exit code $LASTEXITCODE, says: " + (($said | Select-Object -Last 6) -join ' / '))
     if ("$kind" -eq 'Removable') {
+        # 0252: after each command mh unshares the stick, so Windows can eject it.
+        $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
+        Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"
+        $null = Read-Host "11j. Plug ${letter}: back in (same letter), then press Enter"
         # 11k (0254): from your WSL distribution (Docker Desktop's integration on): is the
         # interop on, is the stick in /mnt, and which mount does a container started from
         # WSL see: the distribution's /mnt/x once mounted there (the line mh.sh says to type), or not.
@@ -775,10 +780,10 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         Log ("   11k. drive ${letter}: in Docker Desktop's VM meanwhile (none: the distribution's mount is what counts): " + ($vm -join ' / '))
         $said = @(& wsl.exe -u root -e umount "/mnt/$low" 2>&1 | ForEach-Object { "$_" })
         Log ("   11k. umount /mnt/$low in ${distro}: exit code $LASTEXITCODE " + ($said -join ' / '))
-        # 0252: after each command mh unshares the stick, so Windows can eject it.
-        $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
-        Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"
-        $null = Read-Host "11j. Plug ${letter}: back in (same letter), then press Enter"
+        # 11j asked after the mh commands alone; here, after WSL's own mount and Docker's try.
+        $ejected = Read-Host "11k. Safely remove ${letter}: again now. Did Windows let you this time? (y/n, or what it said)"
+        Log "   11k. ${letter}: ejected after the WSL checks: $ejected"
+        $null = Read-Host "11k. Plug ${letter}: back in (same letter), then press Enter"
     }
     $null = @(mh folders remove $backupDir 6>&1)
     if ($OtherDrive -ne "" -and -not $Keep) { Remove-Item -Recurse -Force -LiteralPath $backupDir }
