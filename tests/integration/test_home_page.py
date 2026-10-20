@@ -126,10 +126,9 @@ def test_the_state_is_what_status_and_the_menu_say(
     assert state.lines == status_lines(status)
     menu = build_menu(status, runtime.settings.clean.purge_hint_days)
     numbered = {
-        f"{step.number}\t{step.command}"
-        for section in state.sections
-        for step in section.steps
-        if step.number
+        f"{action.number}\t{action.command}"
+        for action in state.actions
+        if action.number
     }
     assert numbered == {
         f"{number}\tmh {command}"
@@ -185,7 +184,7 @@ def test_without_a_launcher_that_runs_steps_the_page_keeps_serving(
         [Call("GET", "/"), step(proposed.number, proposed.command)],
     )
     page, refused = replies
-    assert b"const relaysSteps = false;" in page.body
+    assert b"const RELAYS = false;" in page.body
     assert b'id="copyBox"' in page.body
     assert refused.status == 409
     assert "type the command" in str(refused.json())
@@ -198,11 +197,11 @@ def test_the_launcher_variable_says_whether_steps_run(
     """`MEDIA_HYGIENE_LAUNCHER_STEPS`, set by `mh`, is the one signal; not carried."""
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     assert not launcher_relays_steps()
-    assert b"const relaysSteps = false;" in home_page()
+    assert b"const RELAYS = false;" in home_page()
     monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
     assert LAUNCHER_STEPS_VARIABLE == "MEDIA_HYGIENE_LAUNCHER_STEPS"
     assert launcher_relays_steps()
-    assert b"const relaysSteps = true;" in home_page(relays_steps=True)
+    assert b"const RELAYS = true;" in home_page(relays_steps=True)
 
 
 def test_every_step_button_sends_the_step_it_shows(
@@ -215,12 +214,7 @@ def test_every_step_button_sends_the_step_it_shows(
     """
     runtime = audited(cli, locations)
     state = home_state(runtime)
-    shown = [
-        (item.number, item.command)
-        for section in state.sections
-        for item in section.steps
-        if item.number
-    ]
+    shown = [(item.number, item.command) for item in state.actions if item.number]
     assert len({number for number, _command in shown}) == len(shown)
     assert state.proposed is not None
     assert (state.proposed.number, state.proposed.command) in shown
@@ -364,7 +358,7 @@ def test_a_closed_tab_or_quit_ends_home_with_0(
     monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
     runtime = audited(cli, locations)
     page = home_page(relays_steps=True).decode()
-    assert 'id="quit"' in page
+    assert 'data-act="quit"' in page
     assert presence.PRESENCE_PATH in page
     assert STOP_PATH in page
     leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)

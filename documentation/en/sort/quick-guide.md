@@ -32,8 +32,8 @@ of a photo are sorted. The `mh` command written for the clean serves here too; o
 once: [clean in short, step 0](../clean/quick-guide.md#0-once-write-the-mh-command). Step 0 wrote
 it into your PowerShell profile: every new terminal knows it.
 
-**Lost?** Type `mh` alone: the [home page](../commands/home.md) opens in your browser, every
-step of the guides a button, the next one proposed. In the terminal only: [`mh menu`](../commands/menu.md).
+**Lost?** Type `mh` alone: the [home page](../commands/home.md) opens in your browser: the next
+step proposed, every action a click or Ctrl+K away. In the terminal only: [`mh menu`](../commands/menu.md).
 
 ## 1. Ask for a proposal
 

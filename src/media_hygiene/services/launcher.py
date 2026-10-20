@@ -23,7 +23,8 @@ from media_hygiene.paths.docker_run import (
     running_image,
 )
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.home_fields import RELAY_FIELDS
+from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
@@ -178,9 +179,11 @@ def render_script(script: LauncherScript) -> str:
         phone=phone_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
+        relay_fields=RELAY_FIELDS,
         photos=LAUNCHER_PHOTOS_VARIABLE,
         relayed=_RELAYED,
         step_base=STEP_EXIT_BASE,
+        fields_code=STEP_EXIT_BASE + FIELDS_STEP,
         page_closed=int(ExitCode.PAGE_CLOSED),
         nas=nas_texts(),
         smb=SMB_OPTIONS,

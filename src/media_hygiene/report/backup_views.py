@@ -86,6 +86,18 @@ def backup_section(
     )
 
 
+def backup_only(backups: Sequence[BackupCoverage]) -> int:
+    """Count the files only a backup holds that `import` would copy back.
+
+    Args:
+        backups: Each backup folder compared with the library.
+
+    Returns:
+        The files never imported nor dealt with, in every backup.
+    """
+    return sum(len(backup.to_import) for backup in backups)
+
+
 def write_backup_csvs(
     folder: Path, backups: Sequence[BackupCoverage], mapper: HostPathMapper
 ) -> None:

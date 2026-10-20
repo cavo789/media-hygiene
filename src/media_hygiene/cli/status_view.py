@@ -38,15 +38,24 @@ def when(moment: datetime) -> str:
     Returns:
         E.g. `2026-10-07 14:02 (3 days ago)`.
     """
+    return f"{moment.astimezone().strftime(_MOMENT)} ({ago(moment)})"
+
+
+def ago(moment: datetime) -> str:
+    """Say how long ago a moment was, in days.
+
+    Args:
+        moment: An aware moment.
+
+    Returns:
+        E.g. `today`, `3 days ago`.
+    """
     days = days_since(moment)
-    ago = (
-        _("today")
-        if not days
-        else ngettext("{count} day ago", "{count} days ago", days).format(
-            count=human_number(days)
-        )
+    if not days:
+        return _("today")
+    return ngettext("{count} day ago", "{count} days ago", days).format(
+        count=human_number(days)
     )
-    return f"{moment.astimezone().strftime(_MOMENT)} ({ago})"
 
 
 def status_lines(status: Status) -> tuple[str, ...]:

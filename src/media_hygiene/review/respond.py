@@ -34,7 +34,9 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
     """
     status = response.status
     cache = (
-        ("private, no-cache", f"ETag: {RUN_TAG}")
+        (f"private, max-age={response.max_age}",)
+        if response.max_age
+        else ("private, no-cache", f"ETag: {RUN_TAG}")
         if response.cacheable
         else ("no-store",)
     )

@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.home_fields import STEP_FILE_NAME
 from media_hygiene.services.launcher_menu import shell_safe, with_variable
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -84,6 +85,7 @@ class HostCommands:  # pylint: disable=too-many-instance-attributes  # one per t
     names: tuple[str, ...]
     windows: tuple[str, ...]
     index: str  # the host path of the reports' `index.html`; empty for a volume
+    step_file: str  # the host path of the page's one-shot file; empty for a volume
     texts: HostTexts
     label: str = LABEL
     key: str = EXPLORER_KEY
@@ -109,6 +111,9 @@ def host_commands(script: LauncherScript) -> HostCommands:
         names=HOST_COMMANDS,
         windows=WINDOWS_ONLY,
         index="" if _VOLUME.fullmatch(reports) else f"{folder}{separator}{_INDEX_PAGE}",
+        step_file=""
+        if _VOLUME.fullmatch(reports)
+        else f"{folder}{separator}{STEP_FILE_NAME}",
         texts=_texts(reports),
     )
 

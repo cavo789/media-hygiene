@@ -30,6 +30,7 @@ class Slot(StrEnum):
     SORT = "sort"
     PEOPLE = "people"
     TAGS = "tags"
+    IMPORT = "import"
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,7 +74,7 @@ def next_step(status: Status, purge_hint_days: int) -> NextStep | None:
 
 
 def _quarantine_or_sort(status: Status, purge_hint_days: int) -> NextStep | None:
-    """An old quarantine first, then a proposal not sorted, then a recent quarantine.
+    """An old quarantine, then a backup to import, a proposal, a recent quarantine.
 
     Args:
         status: What the tool folders say.
@@ -91,6 +92,9 @@ def _quarantine_or_sort(status: Status, purge_hint_days: int) -> NextStep | None
             "'purge' frees its space."
         ).format(run_id=run_id, days=purge_hint_days)
         return NextStep(Slot.PURGE, text, f"purge {run_id}", CHANGING)
+    if to_import(status):
+        text = _("your backup holds files the PC lacks: 'import' copies them back.")
+        return NextStep(Slot.IMPORT, text, "import", CHANGING)
     if status.sort.proposed is not None and not status.sort.sorted:
         text = _("the classify proposal waits: 'sort' applies the edited workbook.")
         return NextStep(Slot.SORT, text, "sort", CHANGING)
@@ -98,3 +102,19 @@ def _quarantine_or_sort(status: Status, purge_hint_days: int) -> NextStep | None
         text = _("once you have checked the quarantine, 'purge' frees its space.")
         return NextStep(Slot.PURGE, text, f"purge {runs[0].run_id}", CHANGING)
     return None
+
+
+def to_import(status: Status) -> bool:
+    """Tell whether the last audit or clean saw files only a backup holds, not imported.
+
+    Args:
+        status: What the tool folders say.
+
+    Returns:
+        True when an `import` would copy files back.
+    """
+    summary = status.analysis.summary
+    if summary is None or not summary.backup_only:
+        return False
+    # Run identifiers and report folders start with the same time stamp.
+    return status.imported is None or status.imported < summary.folder

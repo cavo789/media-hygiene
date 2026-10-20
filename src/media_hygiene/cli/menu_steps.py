@@ -1,95 +1,115 @@
-"""The steps of the `mh` menu: the three guides in order, each with its full command.
+"""The lines of the `mh` menu: every action of the catalog, numbered across its spaces.
 
-Every step is listed, so the user reads the commands they will later type; one is
-proposed, the step `status` would print. A step is marked done only when the tool
-folders prove it, and one that needs what the tool cannot fill is not selectable.
+Every action is listed once, where it first comes in the cycle, so the user reads the
+commands they will later type; one is proposed, the step `status` would print. A step
+is marked done only when the tool folders prove it; one that takes words only the
+user knows, or that is planned, is not selectable.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from media_hygiene.cli.menu_catalog import (
-    clean_steps,
-    find_steps,
-    setup_steps,
-    sort_steps,
-)
+from media_hygiene.cli.commands import commands
+from media_hygiene.cli.menu_catalog import catalog, with_others
+from media_hygiene.cli.menu_needs import missing
 from media_hygiene.cli.status_step import Slot, next_step
 from media_hygiene.constants import RunKind
-from media_hygiene.services.launcher_host import windows_menu
+from media_hygiene.services.launcher_host import HOST_COMMANDS, windows_menu
 
 if TYPE_CHECKING:
-    from media_hygiene.cli.menu_catalog import Step
+    from media_hygiene.cli.menu_catalog import Catalog
+    from media_hygiene.cli.menu_entry import Area, Group, Step
     from media_hygiene.services.status import Status
 
 
-class Section(StrEnum):
-    """The three guides, in the order the documentation gives them."""
-
-    CLEAN = "clean"
-    SORT = "sort"
-    FIND = "find"
-    SETUP = "setup"  # `mh` on the Desktop and in Explorer: Windows only
-
-
 @dataclass(frozen=True, slots=True)
-class MenuStep:
-    """One line of the menu: the step of the guide, as this state fills it."""
+class MenuStep:  # pylint: disable=too-many-instance-attributes  # one per thing drawn
+    """One line of the menu: the action, as this state fills it."""
 
-    section: Section
+    area: Area
+    group: Group
     step: Step
-    command: str  # without `mh`; empty when the user must type it
+    command: str  # without `mh`; empty when the user must type it, or nothing to do
     number: int | None = None  # None: not selectable
     done: bool = False
     proposed: bool = False
+    reason: str = ""  # why it cannot run yet (`menu_needs`), translated
 
 
 @dataclass(frozen=True, slots=True)
 class Menu:
-    """Every step, and the one proposed (None when nothing is left)."""
+    """Every line, and the one proposed (None when nothing is left)."""
 
     steps: tuple[MenuStep, ...]
     proposed: MenuStep | None
 
 
+def full_catalog() -> Catalog:
+    """The catalog, with the commands no action names yet under "Other commands".
+
+    Returns:
+        It.
+    """
+    names = (
+        *((name, text) for name, _function, _panel, text in commands()),
+        *((name, "") for name in HOST_COMMANDS),
+    )
+    return with_others(catalog(), names)
+
+
 def build_menu(
     status: Status, purge_hint_days: int, *, windows: bool | None = None
 ) -> Menu:
-    """List the steps of the three guides, the proposed one marked, then the setup.
+    """List every action once, the proposed one marked, numbered from 1.
 
     Args:
         status: What the tool folders say.
         purge_hint_days: The age from which a quarantine is worth purging first.
-        windows: False leaves out the Windows steps; None: unless the bash `mh`
+        windows: False leaves out the Windows actions; None: unless the bash `mh`
             runs the menu.
 
     Returns:
-        The menu, its selectable steps numbered from 1.
+        The menu, in the order of the spaces and of their groups.
     """
     proposal = next_step(status, purge_hint_days)
     windows = windows_menu() if windows is None else windows
-    sections = (
-        (Section.CLEAN, clean_steps()),
-        (Section.SORT, sort_steps()),
-        (Section.FIND, find_steps()),
-        (Section.SETUP, setup_steps() if windows else ()),
-    )
     lines: list[MenuStep] = []
     number = 0
-    for section, catalog in sections:
-        for step in catalog:
-            line = _filled(MenuStep(section, step, step.command), status)
-            if proposal is not None and step.slot is proposal.slot:
-                line = replace(line, command=proposal.command, proposed=True)
-            if line.command:
-                number += 1
-                line = replace(line, number=number)
-            lines.append(line)
+    for listed in _lines(full_catalog(), windows=windows):
+        line = _filled(listed, status)
+        if proposal is not None and line.step.slot is proposal.slot:
+            line = replace(line, command=proposal.command, proposed=True)
+        if line.command:
+            number += 1
+            line = replace(line, number=number)
+        lines.append(line)
     proposed = next((line for line in lines if line.proposed), None)
     return Menu(tuple(lines), proposed)
+
+
+def _lines(known: Catalog, *, windows: bool) -> list[MenuStep]:
+    """Every action once, where it first comes, its command as the catalog writes it.
+
+    Args:
+        known: The catalog.
+        windows: False leaves out the Windows actions.
+
+    Returns:
+        The lines, in the order of the spaces and of their groups.
+    """
+    seen: set[str] = set()
+    lines = []
+    for area in known.areas:
+        for group in area.groups:
+            for name in group.steps:
+                step = known.step(name)
+                if name in seen or (step.windows and not windows):
+                    continue
+                seen.add(name)
+                lines.append(MenuStep(area, group, step, step.command))
+    return lines
 
 
 def _filled(line: MenuStep, status: Status) -> MenuStep:
@@ -102,7 +122,11 @@ def _filled(line: MenuStep, status: Status) -> MenuStep:
     Returns:
         The step for this state; without a command when the state cannot fill it.
     """
-    match line.step.slot:
+    step = line.step
+    reason = missing(step, status) or ""
+    if step.fields or step.planned or reason:
+        return replace(line, command="", reason=reason)
+    match step.slot:
         case Slot.PURGE:
             runs = status.quarantine.runs
             command = f"purge {runs[0].run_id}" if runs else ""

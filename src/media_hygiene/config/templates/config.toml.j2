@@ -26,6 +26,9 @@ verbosity = "info"
 {{ comment(_('ANSI colours: "auto", "always" or "never".'), "--color") }}
 color = "auto"
 
+{{ comment(_("Once a day at most, ask Docker Hub whether a newer version is published, to say so on the home page and in 'mh menu'. Sent: one request for the tags of cavo789/media-hygiene, no data about your photos; Docker Hub sees your address, as with a 'docker pull'. Without a network nothing is shown. false: never ask.")) }}
+check_updates = true
+
 
 [folders]
 {{ comment(_("Host paths, written between 'single quotes' so backslashes need no escaping. These are lists of paths: your real folders are never renamed.")) }}

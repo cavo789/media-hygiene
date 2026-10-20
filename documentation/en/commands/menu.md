@@ -7,12 +7,14 @@
 **Lost? Type `mh menu`: every step of the guides in the terminal, the next one proposed, Enter
 runs it.** `mh` alone shows the same steps on the [home page](home.md), in your browser.
 
-You do not need to remember any command name. `mh menu` shows the steps of the three
-guides ([clean](../clean/quick-guide.md), [sort](../sort/quick-guide.md),
-[find](../find/quick-guide.md)) in order, each with its full `mh …` command, and proposes **one**:
-the step [`status`](status.md) would give. Press Enter to run it, or type the number of another
-step. The command chosen is then shown once more, *Next time, type it directly: mh clean*: you
-learn the commands while using them.
+You do not need to remember any command name. `mh menu` shows every action of the tool, grouped
+as the cycle goes: **import** (from a phone, from your NAS or an old disk), **clean**
+([guide](../clean/quick-guide.md)), **sort** ([guide](../sort/quick-guide.md)), **find**
+([guide](../find/quick-guide.md)), **back up** (planned), then the tools: history and undo,
+reports, settings. Each line has its full `mh …` command, and the menu proposes **one**: the step
+[`status`](status.md) would give. Press Enter to run it, or type the number of another step. The
+command chosen is then shown once more, *Next time, type it directly: mh clean*: you learn the
+commands while using them.
 
 **When**: whenever you no longer know what comes next.
 
@@ -44,16 +46,21 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
   *optional*; 🤖 next to `classify` and `tags` when a local model is set (`[classify.ai] model`).
   The line under the table recalls what 🔒, ↩️ and ⚠️ mean.
 - A step the tool fills from what it knows takes its argument (`mh purge <run>`, `mh undo <run>`);
-  with nothing to purge or undo, it has no number. An album needs words only you know
-  (`mh album "Christmas" --category …`): type it yourself.
+  with nothing to purge or undo, it has no number. A step that needs words only you know (an
+  album's name, your NAS's folder, a folder to remove, how many reports to keep) shows an example,
+  *(type it yourself)*: `mh album "Christmas 2025" --category Christmas`. On the
+  [home page](home.md), its form fills them in. `mh backup` shows as *(planned)*.
 
-While a clean step is proposed, the sort and find steps are dimmed: they come after. The menu
-takes the width of your window; *Reading where you are…* shows while it counts the quarantine,
-which takes a few seconds when it holds thousands of files.
+Each action is listed once, numbered across the spaces, under the space where it first comes:
+`mh open`, `mh history`, `mh undo` and `mh purge` sit in the clean guide, where they come. While a
+step is proposed, the other spaces are dimmed. The menu takes the width of your window; *Reading
+where you are…* shows while it counts the quarantine, which takes a few seconds when it holds
+thousands of files.
 
-The last section, on Windows, makes `mh` easier to reach: `mh shortcut` (an icon on the Desktop)
-and `mh explorer` (the right-click of a folder). `mh open`, after `mh audit`, shows the reports in
-your browser. `mh` runs these three itself: [what `mh` does by itself](launcher.md#what-mh-does-by-itself).
+The phone, `mh shortcut` (an icon on the Desktop) and `mh explorer` (the right-click of a folder)
+are for Windows: the bash `mh` leaves them out. `mh` runs `open`, `folders`, `update`, `phone`,
+`shortcut` and `explorer` itself: [what `mh` does by itself](launcher.md#what-mh-does-by-itself).
+A command that has no place in the menu yet still shows, last, under *Other commands*.
 
 <!-- capture: menu.txt -->
 ```text

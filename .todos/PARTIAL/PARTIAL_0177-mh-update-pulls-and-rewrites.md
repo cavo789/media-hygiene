@@ -13,6 +13,9 @@ A user never types `docker pull`: they keep the image of their first day, its bu
 run would break "nothing leaves the machine" (`geo/`, README). So the update is a command the
 user types, and the documentation says when.
 
+The rule changed on 2026-10-20, asked by the maintainer: a daily check of Docker Hub tells
+when a newer version exists (0267, `services/update_check.py`, `[general] check_updates`).
+
 ## What to do
 
 - `mh update`, handled by `mh` itself: `docker pull <image>` (the image written in the script;

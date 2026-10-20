@@ -65,7 +65,7 @@
 {% endif %}
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
     # or on a page it opened (browse's Apply now, 0243).
-    if [[ -n "${_{{ function }}_relay:-}" && " {{ relayed | join(" ") }} " == *" $command "* ]]; then relay=(-e "{{ relay }}=1"); fi
+    if [[ -n "${_{{ function }}_relay:-}" && " {{ relayed | join(" ") }} " == *" $command "* ]]; then relay=(-e "{{ relay }}={{ relay_fields if host.step_file else 1 }}"); fi
     # The host's own zone, unless TZ says one: /etc/localtime links to it.
     if [[ -z "$zone" && -L /etc/localtime ]]; then
         zone="$(readlink /etc/localtime)"
@@ -151,6 +151,24 @@ _{{ function }}_home() {
             {{ function }} home "$@" || status=$?
             if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
         fi
+{% if host.step_file %}
+        # A step with fields (0266): the page wrote its words, one per line, read once.
+        if [[ "$status" -eq {{ fields_code }} && -f "{{ host.step_file }}" ]]; then
+            words=()
+            while IFS= read -r line; do
+                if [[ "$line" =~ ^\"(.*)\",?$ && "$line" != '"words":'* ]]; then
+                    words+=("${BASH_REMATCH[1]//\\\\/\\}")
+                fi
+            done < "{{ host.step_file }}"
+            rm -f -- "{{ host.step_file }}"
+            chosen="${words[*]}"
+            printf '%s\n' "{{ texts.direct }}" >&2
+            status=0
+            after=1
+            {{ function }} "${words[@]}" "$@" || status=$?
+            continue
+        fi
+{% endif %}
         steps="$({{ function }} "${color[@]}" menu)" || return
         chosen=""
         while IFS=$'\t' read -r number line; do

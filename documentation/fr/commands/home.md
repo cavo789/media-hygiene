@@ -4,16 +4,16 @@
 
 ## En bref
 
-**Une page dans votre navigateur : où vous en êtes, l'étape suivante en un gros bouton, toutes
-les étapes des guides, vos rapports.**
+**Une page dans votre navigateur : où en sont vos photos, l'étape suivante en un gros bouton,
+chaque action de l'outil à un clic ou à <kbd>Ctrl</kbd>+<kbd>K</kbd>.**
 
 `home` montre dans votre navigateur ce que [`status`](status.md) et [`menu`](menu.md) montrent
-dans le terminal : le dernier audit, la quarantaine, les passages encore annulables, les revues
-pas encore appliquées ; l'étape qui suit en un gros bouton ; chaque étape des trois guides
-([nettoyer](../clean/quick-guide.md), [trier](../sort/quick-guide.md),
-[retrouver](../find/quick-guide.md)) avec sa commande `mh` et ses badges ; vos rapports, et
-quelques images trouvées par le dernier audit. Elle peut aussi lancer l'audit elle-même, sa
-progression affichée dans la page.
+dans le terminal, rangé comme le cycle de vos photos : **Importer** (un téléphone, votre NAS ou
+un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu), puis trois
+outils : **Historique et annulation**, **Rapports**, **Réglages**. Chaque espace a sa page : son
+parcours, numéroté, puis « Pour aller plus loin ». Chaque action montre sa commande `mh`, à
+copier, et mène à son chapitre de cette documentation. La page peut aussi lancer l'audit
+elle-même, sa progression affichée dans la page.
 
 **Quand** : chaque fois que vous préférez cliquer plutôt que taper, ou que vous ne savez plus
 quelle est la suite.
@@ -32,7 +32,7 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
-![La page d'accueil : l'étape suivante en gros bouton, l'audit lancé dans la page avec le temps de chaque étape, où vous en êtes, quelques images trouvées par l'audit, les rapports, puis les étapes des trois guides](../images/home.webp)
+![La page d'accueil : le menu de gauche avec les cinq étapes du cycle et les outils, l'étape suivante en gros bouton, le cycle, les tuiles de là où vous en êtes, ce que le dernier audit a trouvé, les rapports et l'audit dans la page](../images/home.webp)
 
 ## D'un coup d'œil
 
@@ -46,54 +46,100 @@ docker run --rm -it `
 
 ## Ce que montre la page
 
-- **Étape suivante** : pourquoi, et la commande complète en gros bouton : *le dernier audit a
-  trouvé des copies en trop : 'clean' les met de côté*, **mh clean**. Quand tout est appliqué, la
-  page le dit.
-- **Auditer dans cette page** 🔒 : **Auditer maintenant** lit vos dossiers comme `mh audit`, avec
-  les mêmes réglages. Chaque étape (liste, empreintes, comparaison, preuve d'identité…) s'affiche
-  avec ses comptes au fil de l'eau ; à la fin, les chiffres de l'audit, le temps de chaque étape
-  (*Temps par étape : liste 1,2 s · vérifications 3,4 s · …*, la ligne qu'affiche
-  `mh --verbosity verbose audit`), *Ce que vous pouvez faire*, et le lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit** l'arrête
-  entre deux fichiers : le cache garde ce qu'il a lu, et l'audit suivant repart de là.
-- **Où vous en êtes** : les lignes de [`status`](status.md), et le passage que `mh undo` remet
-  encore en place.
-  Ouverte par un clic droit sur un dossier (ou `mh --photos "E:\Dossier"`), elle nomme d'abord
-  ce dossier, en gras : *Cette page analyse aussi : E:\Dossier*, une ligne par dossier ; l'audit
-  de la page et chaque étape lancée depuis elle l'analysent aussi.
-- **Ce que le dernier audit a trouvé** : quelques aperçus de son rapport.
-- **Rapports** : le dernier audit et le dernier nettoyage, et *Tous les rapports*
-  (`index.html`), ouverts dans un nouvel onglet depuis la page elle-même.
-- **Les étapes des trois guides**, numérotées comme dans [`mh menu`](menu.md) : **👉** l'étape
-  proposée, **✅** une étape que les dossiers de l'outil prouvent faite, les badges 🔒 photos
-  intactes, ↩️ annulable, ⚠️ définitif, *facultatif*, 🤖 quand un modèle local est réglé. Une
-  étape que `mh` ne peut pas remplir pour vous (`mh album "Noël" --category …`) montre la
-  commande à taper.
+- **Le menu de gauche** : les cinq étapes du cycle et les outils, chacun avec son compte (*9*
+  copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
+  ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,
+  [`mh update`](launcher.md#une-nouvelle-version--mh-update)), le choix du thème et **Quitter
+  Media Hygiene**.
+- **La barre du haut** : *Que voulez-vous faire ?* (la palette), **Annuler la dernière
+  exécution** tant qu'une exécution est annulable, et **Documentation** : le chapitre de la page
+  où vous êtes, et son jumeau anglais.
+- **L'étape suivante** : pourquoi, ce qu'elle risque en mots (*Annulable*), le bouton qui la
+  lance et sa commande : *le dernier audit a trouvé des copies en trop : 'clean' les met de
+  côté*, **mh clean**. Son bouton a le focus à l'ouverture : <kbd>Entrée</kbd> la lance, comme
+  dans `mh menu`. Quand tout est appliqué, la page le dit.
+- **Le cycle de vos photos** : les cinq étapes, la prochaine en abricot (*Vous êtes ici*),
+  chacune avec une ligne (*9 copies à mettre de côté*, *Une proposition à appliquer*) et le
+  nombre d'étapes faites de son parcours.
+- **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la
+  quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages), chacune mène à
+  son espace.
+- **Ce que le dernier audit a trouvé** : chaque constat avec son bouton (*9 copies
+  identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport), et
+  quelques aperçus de son rapport. Avant tout audit : trois choses à savoir (rien ne bouge sans
+  vous, tout ce qui bouge s'annule, une seule chose est définitive).
+- **Rapports récents**, et **Auditer dans cette page** 🔒 : **Auditer maintenant** lit vos
+  dossiers comme `mh audit`, avec les mêmes réglages. Chaque étape s'affiche avec ses comptes au
+  fil de l'eau ; à la fin, les chiffres de l'audit, le temps de chaque étape, *Ce que vous
+  pouvez faire*, et un lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit**
+  l'arrête entre deux fichiers : le cache garde ce qu'il a lu, et l'audit suivant repart de là.
+- **Une page par espace** : son parcours, numéroté, puis « Pour aller plus loin » en cartes.
+  Chaque action dit ce qu'elle risque (🔒 *Photos intactes*, ↩️ *Annulable*, ⚠️ *Définitif*),
+  *Facultatif*, *Windows*, *IA locale* (🤖), *Prévu* ; **Fait** quand les dossiers de l'outil le
+  prouvent ; quand elle ne peut pas encore tourner, pourquoi à la place de son texte (*Rien à
+  annuler pour l'instant.*). *Historique et annulation* montre l'exécution encore annulable et
+  la quarantaine par exécution ; *Réglages* vos dossiers, la mise à jour, Windows, l'IA locale,
+  la vie privée, les actions avancées et *À propos*.
+
+Ouverte par un clic droit sur un dossier (ou `mh --photos "E:\Dossier"`), la page nomme ce
+dossier en premier : *Cette page analyse aussi : E:\Dossier* ; l'audit de la page et chaque
+étape lancée depuis elle l'analysent aussi.
 
 ## Lancer une étape
 
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`
 qui a ouvert la page :
 
-- **`mh` seul** (et donc le raccourci du Bureau et le clic droit sur un dossier), qui lance les
-  étapes de la page et le lui dit : **Lancer** (ou le gros
-  bouton) ferme la page et confie l'étape à `mh`, dans la fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers
-  dont cette étape a besoin. La page dit où : *mh audit tourne dans la fenêtre PowerShell de mh (dans la barre des tâches) :
-  cette page revient d'elle-même quand c'est fini*. Cette fenêtre est souvent derrière le
-  navigateur : une étape qui pose une question y attend votre réponse, alors après 30 secondes la
-  page ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la barre des tâches)
-  (Alt+Tab)*. Quand `mh` rouvre la page d'accueil, la page se recharge d'elle-même.
-  L'étape choisie est le code de sortie de la commande, `100 + n` pour l'étape `n` de `mh menu` :
-  c'est ainsi que `mh` sait quoi lancer.
-- **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton s'appelle **Copier**. Il
-  copie la commande (*Copiée : mh clean*) et la page continue de tourner ; arrêtez-la avec Ctrl+C
-  dans la fenêtre où `mh` tourne (PowerShell sous Windows), collez-y la commande (clic droit) et appuyez sur Entrée. Quand le
-  navigateur refuse de copier (page ouverte à une autre adresse que `127.0.0.1` ou `localhost`),
-  la commande est sélectionnée : appuyez vous-même sur Ctrl+C.
+- **`mh` seul** (et donc le raccourci du Bureau et le clic droit d'un dossier) lance les étapes
+  de la page : **Lancer** (ou le gros bouton) ferme la page et confie l'étape à `mh`, dans la
+  fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. La
+  page dit où : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans la barre des
+  tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*.
+  Après 30 secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
+  barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `100 + n`
+  pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer.
+- **Une étape qui prend des mots** (le nom et la catégorie d'un album, le dossier de votre NAS,
+  un dossier à retirer, combien de rapports garder) : **Compléter** ouvre son formulaire,
+  l'exemple déjà rempli. Le serveur vérifie chaque valeur et dit pourquoi il en refuse une (*pas
+  de guillemet double*, *aucun caractère de contrôle*, *elle ne peut pas commencer par '-'*, *un
+  dossier tel que l'Explorateur le montre*) ; puis il écrit les mots dans `.mh-step.json` de
+  votre dossier des rapports et s'arrête avec `199`. `mh` lit ce fichier une fois, le retire, et
+  lance ces mots : `Noël 2025` reste un seul mot. Avec des rapports dans un volume nommé, ou un
+  `mh` plus ancien, la page donne la commande à copier à la place.
+- **⚠️ Définitif** (`purge`, `clean --delete`, `phone --free`) : la page demande d'abord ; `mh`
+  redemande dans sa fenêtre avant de toucher quoi que ce soit.
+- **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la
+  commande (*Commande copiée*) et la page continue ; arrêtez-la avec Ctrl+C dans la fenêtre où
+  `mh` tourne, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le navigateur
+  refuse de copier (une adresse autre que `127.0.0.1` ou `localhost`), la commande est
+  sélectionnée : faites Ctrl+C.
 
 Chaque autre page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
 porte un lien **⌂ Accueil** en bas à droite : il ferme cette page (ce que vous y avez décidé est
 déjà enregistré) et attend la page d'accueil à la même adresse.
+
+## Le clavier, la palette, le thème
+
+| Touche | Ce qu'elle fait |
+|---|---|
+| <kbd>Entrée</kbd> | À l'ouverture, lance l'étape suivante : son bouton a le focus. |
+| <kbd>Ctrl</kbd>+<kbd>K</kbd> ou <kbd>/</kbd> | *Que voulez-vous faire ?* : chaque action et chaque espace, trouvés par des mots de tous les jours (*téléphone*, *NAS*, *annuler*) ; <kbd>↑</kbd> <kbd>↓</kbd> choisissent, <kbd>Entrée</kbd> lance. |
+| <kbd>↑</kbd> <kbd>↓</kbd> | Dans le menu de gauche, d'un espace à l'autre (un seul arrêt de <kbd>Tab</kbd> pour tout le menu). |
+| <kbd>?</kbd> | Les touches. |
+| <kbd>Échap</kbd> | Ferme ce qui est ouvert. |
+
+Un parcours au clavier seul : <kbd>Tab</kbd> une fois montre *Aller au contenu* ;
+<kbd>Entrée</kbd> dessus saute le menu de gauche. <kbd>Maj</kbd>+<kbd>Tab</kbd> revient au menu,
+<kbd>↓</kbd> jusqu'à *Nettoyer*, <kbd>Entrée</kbd> ouvre sa page. <kbd>Ctrl</kbd>+<kbd>K</kbd>,
+tapez *téléphone*, <kbd>Entrée</kbd> : l'étape du téléphone se lance. Rechargez la page :
+<kbd>Entrée</kbd> lance l'étape suivante. Le contour du focus ne s'affiche qu'au clavier ; les
+messages passagers sont lus par les lecteurs d'écran.
+
+Le thème suit Windows (clair ou sombre) ; **Auto**, **Clair** et **Sombre** en bas du menu de
+gauche choisissent pour ce navigateur. Les animations s'arrêtent quand Windows demande moins de
+mouvement. Les polices et les images viennent de l'image elle-même : la page ne demande rien à
+aucun autre site.
 
 ## Options
 
@@ -105,7 +151,7 @@ déjà enregistré) et attend la page d'accueil à la même adresse.
 
 - La page ne répond qu'à `127.0.0.1` ou `localhost`, et seulement à ses propres boutons : un
   autre site ne peut pas choisir une étape à votre place.
-- **Quitter** (en haut à droite), fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
+- **Quitter Media Hygiene** (en bas du menu de gauche), fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
   page et rend l'invite ; un audit en cours s'arrête entre deux fichiers. Un onglet fermé est vu
   une dizaine de secondes plus tard (*L'onglet de la page d'accueil a été fermé : la page d'accueil
   s'est arrêtée.*) ; un rechargement, ou un onglet laissé en arrière-plan, ne l'arrête jamais.

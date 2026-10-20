@@ -2,6 +2,7 @@
 # `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
 # here as `{{ function }} <step>`, its questions in this console, then the page comes back.
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
+# A step with fields leaves its words in a one-shot file of the reports folder (0266).
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210); a page whose tab
 # was closed ends it too, the prompt back, never home opened again (0262).
 function global:_{{ function }}_home {
@@ -18,6 +19,22 @@ function global:_{{ function }}_home {
             $status = $LASTEXITCODE
             if ($status -le {{ step_base }}) { return }
         }
+{% if host.step_file %}
+        # A step with fields (0266): the page wrote its words, read once, then removed.
+        $file = "{{ host.step_file }}"
+        if ($status -eq {{ fields_code }} -and (Test-Path -LiteralPath $file)) {
+            $words = @((Get-Content -LiteralPath $file -Raw -Encoding UTF8 | ConvertFrom-Json).words)
+            Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue
+            $chosen = @($words | ForEach-Object { if ("$_" -match '[\s\\]') { '"' + $_ + '"' } else { $_ } }) -join ' '
+            Write-Host "{{ texts.direct }}"
+            $after = $true
+            $global:LASTEXITCODE = 0
+            $global:MediaHygieneRelay = $true
+            try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null }
+            $status = $LASTEXITCODE
+            continue
+        }
+{% endif %}
         $steps = @({{ function }} @color menu)
         $chosen = ''
         foreach ($step in $steps) {

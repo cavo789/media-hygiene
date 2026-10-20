@@ -192,11 +192,16 @@ media-hygiene 0.5.0 → media-hygiene 0.6.0*, ou *Déjà la dernière version*. 
 occupe encore de la place sur votre disque : `mh update` dit combien, et la commande qui la
 libère, `docker image prune` ; il ne la lance jamais à votre place.
 
-**Quand** : une fois par mois, ou quand un guide montre une commande que votre `mh` ne connaît
-pas. L'outil ne cherche jamais une nouvelle version de lui-même : rien ne quitte votre ordinateur
-sans que vous le demandiez. Les notes de chaque version sont sur
-[GitHub](https://github.com/cavo789/media-hygiene/releases) ; `mh update` affiche ce lien après
-une mise à jour.
+**Quand** : quand l'outil vous le dit. Une fois par jour au plus, la [page d'accueil](home.md)
+et `mh menu` demandent à Docker Hub si une version plus récente est publiée ; quand c'est le
+cas, la page d'accueil l'affiche à côté de la version, avec *Voir ce qui change* et *Mettre à
+jour*, et `mh menu` se termine par *Une nouvelle version, 0.5.0 : mh update*. Cette demande ne
+porte aucune donnée sur vos photos : Docker Hub voit votre adresse et le nom de l'image, comme
+pour un `docker pull`. Sans réseau, rien ne s'affiche et rien n'attend ; `check_updates = false`
+dans `[general]` de `config.toml` la coupe ([le
+réglage](../clean/07-configuration-file.md#une-nouvelle-version--check_updates)). Les notes de
+chaque version sont sur [GitHub](https://github.com/cavo789/media-hygiene/releases) ; `mh update`
+affiche ce lien après une mise à jour.
 
 Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez

@@ -184,9 +184,14 @@ the same folders exactly as `mh folders` does, then says the versions: *Updated:
 room on your disk: `mh update` says how much, and the command freeing it, `docker image prune`;
 it never runs it for you.
 
-**When**: once a month, or when a guide shows a command your `mh` does not know. The tool
-never looks for a new version by itself: nothing leaves your computer unless you ask. The
-notes of each version are on [GitHub](https://github.com/cavo789/media-hygiene/releases); `mh update`
+**When**: when the tool tells you. Once a day at most, the [home page](home.md) and `mh menu`
+ask Docker Hub whether a newer version is published; when one is, the home page shows it next
+to the version, with *See what changes* and *Update*, and `mh menu` ends with *A new version,
+0.5.0: mh update*. That request carries no data about your photos: Docker Hub sees your address
+and the image's name, as with a `docker pull`. Without a network nothing is shown and nothing
+waits; `check_updates = false` in `[general]` of `config.toml` turns it off
+([the setting](../clean/07-configuration-file.md#a-new-version-check_updates)). The notes of
+each version are on [GitHub](https://github.com/cavo789/media-hygiene/releases); `mh update`
 prints that link after an update.
 
 A `mh` written before `mh update` existed does not know it: run the `launcher` line of the

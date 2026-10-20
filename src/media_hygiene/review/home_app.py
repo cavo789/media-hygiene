@@ -2,14 +2,13 @@
 
 `GET /` serves the page, `GET /api/state` where you are and every step (read again
 from the tool folders at each call), `GET /reports/<path>` a file of the reports
-folder, `GET /api/audit` the progress of the audit run by the page, and
-`POST /api/audit` starts it (one at a time) or stops it; `POST /api/alive` says a tab
-still shows the page (0261, `presence`). `POST /api/step` ends the
-server with `100 + n` for step `n`, which `mh` then runs in the terminal: only when
-the launcher said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and
-the page copies the command instead. A step needs a JSON body naming its number and
-command: a page of another site cannot send one without the browser asking first,
-and a menu changed since the page was drawn is refused.
+folder, `GET /assets/<path>` an image or a font of the page (`home_assets`),
+`GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
+starts it (one at a time) or stops it; `POST /api/alive` says a tab still shows the
+page (0261, `presence`). `POST /api/step` ends the server with `100 + n` for step
+`n`, which `mh` then runs in the terminal (`home_step`): only when the launcher said
+it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies the
+command instead.
 """
 
 from __future__ import annotations
@@ -23,7 +22,9 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.review.home_views import REPORTS_PREFIX, STEP_EXIT_BASE
+from media_hygiene.review.home_assets import ASSETS_PREFIX, asset_response
+from media_hygiene.review.home_step import StepDoor, step_response
+from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
@@ -41,6 +42,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.home_audit import HomeAudit
 
 STEP_PATH: Final = "/api/step"
+# Where the page receives the state of its first frame (`<script id="homeState">`).
+STATE_MARK: Final = b"__HOME_STATE__"
 AUDIT_PATH: Final = "/api/audit"
 _GET, _POST = "GET", "POST"
 
@@ -60,17 +63,8 @@ class _AuditAsked(BaseModel):
     action: AuditAction
 
 
-class _Chosen(BaseModel):
-    """`POST /api/step`: the step chosen, as the page showed it."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    number: int
-    command: str
-
-
 @dataclass(frozen=True, slots=True)
-class HomeApp(LocalApp):
+class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     """Answers the browser; the state is read again from the tool folders each time."""
 
     page: bytes
@@ -80,6 +74,7 @@ class HomeApp(LocalApp):
     audit: HomeAudit
     presence: Presence
     relays_steps: bool = False  # the launcher runs the step `100 + n` names
+    relays_fields: bool = False  # and the words of a form (`home_fields`)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -95,7 +90,14 @@ class HomeApp(LocalApp):
         if request.method == _GET:
             return await self._read(path)
         if path == STEP_PATH and request.method == _POST:
-            return await self._step(request)
+            door = StepDoor(
+                self.state,
+                self.ending,
+                self.reports_dir,
+                relays_steps=self.relays_steps,
+                relays_fields=self.relays_fields,
+            )
+            return await step_response(door, request)
         if path == AUDIT_PATH and request.method == _POST:
             return await self._audit(request)
         if path == PRESENCE_PATH and request.method == _POST:
@@ -112,9 +114,15 @@ class HomeApp(LocalApp):
             The response; 404 for any other path.
         """
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
+            first = await asyncio.to_thread(self.state)
+            # Inside <script>: no `<`, so that no `</script>` can close it early.
+            data = first.model_dump_json().replace("<", "\\u003c").encode()
+            page = self.page.replace(STATE_MARK, data)
+            return Response(HTTPStatus.OK, page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
+        if path.startswith(ASSETS_PREFIX):
+            return await asset_response(path)
         if path == STATE_PATH:
             state: BaseModel = await asyncio.to_thread(self.state)
         elif path == AUDIT_PATH:
@@ -148,33 +156,3 @@ class HomeApp(LocalApp):
             return json_response(HTTPStatus.CONFLICT, {"error": message})
         body = self.audit.state().model_dump_json().encode()
         return Response(HTTPStatus.OK, body, ContentType.JSON)
-
-    async def _step(self, request: Request) -> Response:
-        """End the server with the code of the step chosen, when the menu agrees.
-
-        Args:
-            request: `POST /api/step`.
-
-        Returns:
-            The step, about to run in the terminal; 409 when the steps changed, or
-            when the launcher would not run it (the server must then keep serving).
-        """
-        refused = refused_post(request)
-        if refused is not None:
-            return refused
-        if not self.relays_steps:
-            message = _("This mh does not run the steps of the page: type the command.")
-            return json_response(HTTPStatus.CONFLICT, {"error": message})
-        try:
-            chosen = _Chosen.model_validate_json(request.body)
-        except ValidationError:
-            return Response(HTTPStatus.BAD_REQUEST)
-        state = await asyncio.to_thread(self.state)
-        command = state.command_of(chosen.number)
-        if command is None or command != chosen.command:
-            message = _("The steps changed since the page was shown: here they are.")
-            return json_response(HTTPStatus.CONFLICT, {"error": message})
-        self.ending.end(STEP_EXIT_BASE + chosen.number)
-        return json_response(
-            HTTPStatus.OK, {"number": chosen.number, "command": command}
-        )

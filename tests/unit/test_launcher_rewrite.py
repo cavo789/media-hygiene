@@ -418,14 +418,15 @@ def test_launcher_under_mh_does_not_say_how_to_load_it(
 def test_the_menu_ends_on_folders_and_update(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """0176, 0177: one line under the menu, not a step of the guides."""
+    """0176, 0177, 0265: entries of the menu now, run by `mh` itself."""
     monkeypatch.setenv("MEDIA_HYGIENE_CONFIG_DIR", str(tmp_path))
     monkeypatch.setenv(LAUNCHER_VARIABLE, "bash")
     result = CliRunner().invoke(build_app(), ["menu"])
     assert result.exit_code == 0, result.output
-    assert "Your folders: mh folders. A new version: mh update." in result.stderr
-    assert "\tfolders" not in result.stdout
-    assert "\tupdate" not in result.stdout
+    assert "mh folders " in result.stderr
+    assert "mh update " in result.stderr
+    assert any(line.endswith("\tfolders") for line in result.stdout.splitlines())
+    assert any(line.endswith("\tupdate") for line in result.stdout.splitlines())
 
 
 def test_folders_add_backup_rewrites_and_keeps_it_apart(tmp_path: Path) -> None:

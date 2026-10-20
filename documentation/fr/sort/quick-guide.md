@@ -34,7 +34,7 @@ copies d'une photo sont triées. La commande `mh` écrite pour le nettoyage sert
 L'étape 0 l'a écrite dans votre profil PowerShell : chaque nouveau terminal la connaît.
 
 **Perdu ?** Tapez `mh` seul : la [page d'accueil](../commands/home.md) s'ouvre dans votre
-navigateur, chaque étape des guides un bouton, la prochaine proposée. Dans le terminal seulement :
+navigateur : la prochaine étape proposée, chaque action à un clic ou Ctrl+K. Dans le terminal seulement :
 [`mh menu`](../commands/menu.md).
 
 ## 1. Demander une proposition

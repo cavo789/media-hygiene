@@ -38,7 +38,7 @@ nettoyez d'abord les doublons ([nettoyer en bref](../clean/quick-guide.md)) : si
 est trouvée deux fois.
 
 **Perdu ?** Tapez `mh` seul : la [page d'accueil](../commands/home.md) s'ouvre dans votre
-navigateur, chaque étape des guides un bouton, la prochaine proposée. Dans le terminal seulement :
+navigateur : la prochaine étape proposée, chaque action à un clic ou Ctrl+K. Dans le terminal seulement :
 [`mh menu`](../commands/menu.md).
 
 ## 1. Nommer les personnes (facultatif)

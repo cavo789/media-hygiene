@@ -1,76 +1,132 @@
 """What the home page shows, as `GET /api/state` sends it: built by `cli/home_state.py`.
 
-The page only displays it: where you are (the lines of `status`), the next step, every
-step of the three guides as `mh menu` numbers them, the reports and a few previews.
+The page only draws it: the spaces of the cycle and the tools, every action of the
+catalog with its state (available, done, proposed, its reason, its command), the next
+step, the tiles, the findings, the folders and the version. The next step and the
+availability are never computed again in the page.
 """
 
 from __future__ import annotations
 
 from typing import Final
 
-from pydantic import BaseModel, ConfigDict
+from media_hygiene.review.home_parts import (
+    Frozen,
+    HomeFindings,
+    HomeFolder,
+    HomeLink,
+    HomeQuarantine,
+    HomeReport,
+    HomeTile,
+    HomeUndo,
+    HomeUpdate,
+)
 
 # A step's button ends the home server with `STEP_EXIT_BASE + n`, `n` its number in
 # `mh menu`: `mh` then runs that step with the mounts it needs.
 STEP_EXIT_BASE: Final = 100
+# A step with fields: `mh` runs the words of the one-shot file instead (`home_fields`).
+FIELDS_STEP: Final = 99
 REPORTS_PREFIX: Final = "/reports/"
 
 
-class _Frozen(BaseModel):
-    """A part of the state: frozen, no field left unknown."""
+class HomeField(Frozen):
+    """A word an action takes from a form."""
 
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    name: str
+    label: str
+    example: str
+    kind: str  # text, number, folder
 
 
-class HomeStep(_Frozen):
-    """One step of a guide, as `mh menu` lists it."""
+class HomeAction(Frozen):  # one field per thing the page draws
+    """One action of the catalog, as this state fills it."""
 
-    number: int | None  # None: nothing to do yet, or to type yourself
-    command: str  # the full command, `mh` included
+    name: str
+    space: str
+    title: str
     text: str
-    badges: tuple[str, ...]  # 🔒 ↩️ ⚠️, 🤖, "optional"
+    command: str  # the full command, `mh` included; an example for fields
+    risk: str  # safe, undo, final
+    kind: str  # console, page, host
+    icon: str
+    keywords: str
+    number: int | None = None  # its step in `mh menu`; None: not runnable now
+    available: bool = True
+    reason: str = ""  # why not, translated
     done: bool = False
     proposed: bool = False
-    typed: bool = False  # a step the menu cannot fill: the command is to type
+    optional: bool = False
+    ai: bool = False
+    windows: bool = False
+    planned: bool = False
+    fields: tuple[HomeField, ...] = ()
+    doc: HomeLink | None = None
 
 
-class HomeSection(_Frozen):
-    """One guide, its steps in order."""
+class HomeGroup(Frozen):
+    """Actions shown together: a numbered guide, "go further", a panel."""
 
     title: str
-    steps: tuple[HomeStep, ...]
+    actions: tuple[str, ...]
+    numbered: bool = False
+    extra: str = ""  # folders, update, ai, about
 
 
-class HomeNext(_Frozen):
+class HomeSpace(Frozen):  # one field per thing the page draws
+    """A stage of the cycle or a tool, with its place in the sidebar."""
+
+    id: str
+    title: str
+    long: str
+    pitch: str
+    icon: str
+    groups: tuple[HomeGroup, ...]
+    stage: int = 0
+    planned: bool = False
+    guide: HomeLink | None = None
+    guide_title: str = ""
+    line: str = ""  # what the cycle says of it
+    badge: str = ""  # the sidebar's count
+    mark: str = ""  # here, done, todo, planned
+    done: int = 0  # steps of its guides done
+    total: int = 0
+
+
+class HomeNext(Frozen):
     """The step proposed first, as `status` ends with it."""
 
+    name: str
     number: int
     command: str
     why: str  # translated, e.g. "start with an audit: it changes nothing."
+    where: str  # e.g. "Clean the duplicates · step 3 of 8"
 
 
-class HomeReport(_Frozen):
-    """A report the page links to, served under `/reports/`."""
-
-    label: str  # e.g. "Last audit", translated
-    when: str
-    url: str
-
-
-class HomeState(_Frozen):
+class HomeState(Frozen):  # one field per part of the page
     """Everything the home page shows."""
 
+    version: str
     lines: tuple[str, ...]  # what `status` says, one line per part
+    spaces: tuple[HomeSpace, ...]
+    actions: tuple[HomeAction, ...]
+    docs: HomeLink  # the documentation's home
     given: tuple[str, ...] = ()  # the folders `mh --photos` added, one line each
-    sections: tuple[HomeSection, ...]
     proposed: HomeNext | None = None
-    undo: str | None = None  # the undo line of the newest run, when one is undoable
+    tiles: tuple[HomeTile, ...] = ()
+    findings: HomeFindings | None = None
+    folders: tuple[HomeFolder, ...] = ()
+    quarantine: tuple[HomeQuarantine, ...] = ()
+    undo: HomeUndo | None = None
     reports: tuple[HomeReport, ...] = ()
     index: str | None = None  # `/reports/index.html`, when it exists
     previews: tuple[str, ...] = ()  # thumbnails of the last audit's report
+    update: HomeUpdate | None = None  # a newer version, from Docker Hub (0267)
+    windows: bool = True  # the Windows actions are offered
+    ai: bool = False  # a local model is set
 
     def command_of(self, number: int) -> str | None:
-        """The command of a selectable step.
+        """The command of a runnable step.
 
         Args:
             number: Its number in `mh menu`.
@@ -79,11 +135,17 @@ class HomeState(_Frozen):
             Its command, or None when no step has that number.
         """
         return next(
-            (
-                step.command
-                for section in self.sections
-                for step in section.steps
-                if step.number == number
-            ),
+            (action.command for action in self.actions if action.number == number),
             None,
         )
+
+    def action(self, name: str) -> HomeAction | None:
+        """The action of a name.
+
+        Args:
+            name: Its name, e.g. `album`.
+
+        Returns:
+            It, or None.
+        """
+        return next((action for action in self.actions if action.name == name), None)

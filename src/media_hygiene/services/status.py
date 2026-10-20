@@ -76,6 +76,7 @@ class Status:  # pylint: disable=too-many-instance-attributes
     tagged: tuple[int, int] | None = None
     # Photos analysed and faces found; None before any `people`.
     faces: tuple[int, int] | None = None
+    imported: str | None = None  # the newest `import` run (0265)
 
     @property
     def blank(self) -> bool:
@@ -138,6 +139,7 @@ def read_status(runtime: Runtime) -> Status:
         missing=tuple(kind for kind in LOOKED_AT if kind not in mounted),
         tagged=tag_coverage(runtime.index_file),
         faces=face_coverage(runtime.index_file),
+        imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
     )
 
 

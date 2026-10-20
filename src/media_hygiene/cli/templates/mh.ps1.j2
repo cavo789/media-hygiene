@@ -83,7 +83,7 @@ function global:{{ function }} {
     $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }})) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
     # or on a page it opened (browse's Apply now, 0243).
-    $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}=1' })
+    $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}={{ relay_fields if host.step_file else 1 }}' })
     # The page names the folders given with --photos, a right-click's folder (0258).
     if ($relay -and $typed) { $relay += '-e', ('{{ photos }}=' + (@(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] }) -join '|')) }
 {% if script.folders %}

@@ -241,6 +241,8 @@ people's work, each under its own licence:
 | [Czkawka](https://github.com/qarmin/czkawka) (`czkawka_cli`, the second opinion of `crosscheck`) | MIT |
 | [GeoNames](https://www.geonames.org/) towns (`geo/data`, see its `ATTRIBUTION.txt`) | CC BY 4.0 |
 | [Leaflet](https://leafletjs.com/) (the `places` map) | BSD-2-Clause |
+| [Bricolage Grotesque](https://github.com/ateliertriay/bricolage), [Source Sans 3](https://github.com/adobe-fonts/source-sans), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) (the fonts of the home page, `assets/fonts`, their licences next to them) | OFL-1.1 |
+| The meerkat images (`assets/images`, see `MEERKAT.txt`) | © the author, all rights reserved |
 | Python, Pillow, NumPy, ONNX Runtime and the other Python packages, with the libraries their wheels bundle (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 and similar permissive licences |
 | The Debian packages of the `python:3.14-slim` base image | Their own licences (`/usr/share/doc/*/copyright`) |
 

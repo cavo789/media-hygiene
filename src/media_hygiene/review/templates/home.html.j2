@@ -1,145 +1,142 @@
 <!DOCTYPE html>
-{# The home page, served by `media-hygiene home`: where you are, the next step as a big button,
-   every step of the guides as `mh menu` numbers them, the reports and a few previews. The page
-   never acts: a step's button ends the server and `mh` runs that step in the terminal, when `mh`
-   said it does (relays_steps); else the button copies the command and the page keeps running. #}
-{% set texts = {
-  "nothingLeft": _("Nothing left to do: everything is applied."),
-  "run": _("Run"),
-  "runTitle": _("Ends this page: mh runs the step in the window where mh runs, then opens this page again."),
-  "copy": _("Copy"),
-  "copyTitle": _("Copies the command, to paste in the window where mh runs: this page keeps running."),
-  "copied": _("Copied: {command}"),
-  "copyIt": _("Copy it (Ctrl+C): {command}"),
-  "typeIt": _("(type it yourself)"),
-  "runningCommand": _("Step chosen: {command}"),
-  "runningWhere": _("{command} runs in {window}: this page comes back by itself when it ends.").replace("{window}", window),
-  "failed": _("Not sent (error {status})."),
-  "offline": _("The home page is not running any more: start it again (mh)."),
-  "quitDone": _("Media Hygiene is stopped: you can close this tab."),
-  "noReport": _("No report yet: the audit writes one."),
-  "everyReport": _("Every report"),
-  "auditOpen": _("Open the report"),
-  "auditRunning": _("Auditing…"),
-  "auditBusy": _("An audit already runs: wait for its end, or stop it."),
-  "legend": _("{safe} your photos are not touched · {undo} can be undone · {final} for good"),
-} %}
+{# The home page, served by `media-hygiene home` (0266, from the mockup approved on 2026-10-20): an
+   indigo sidebar (the five stages of the cycle, the tools, your folders, the version), the next step
+   whose button has the focus (Enter runs it, as in `mh menu`), the cycle, the tiles, what the last audit
+   found, one page per space, every action a click or Ctrl+K away. The page never acts: a step's button
+   ends the server and `mh` runs that step in its window, when `mh` said it does (relays_steps); else
+   the button copies the command. Its first frame is the server's state (#homeState), inside the page;
+   the fonts and images come from /assets/: nothing from a CDN. #}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ _("Home page") }} — media-hygiene</title>
+<meta name="color-scheme" content="light dark">
+<title>Media Hygiene — {{ texts.home }}</title>
+<script>
+  {# Before the first paint: the theme a viewer chose, so that the page never flashes the other one. #}
+  try { const theme = JSON.parse(localStorage.getItem("mh-home-theme")); if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme); } catch (error) { /* the OS's theme */ }
+</script>
 <style>
-  :root {
-    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
-    --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
-      --accent: #4493f8; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
-    }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  header { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 4px 20px;
-           align-items: baseline; padding: 8px 16px; background: var(--card);
-           border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 1.1rem; margin: 0; }
-  #quit { margin-left: auto; }
-  main { max-width: 1100px; margin: 0 auto; padding: 12px 16px 32px; }
-  section { margin-bottom: 20px; padding: 12px 16px; background: var(--card);
-            border: 1px solid var(--line); border-radius: 10px; }
-  h2 { font-size: 1rem; margin: 0 0 8px; }
-  .muted { color: var(--muted); }
-  #status.error { color: var(--bad); font-weight: 600; }
-  #auditSteps li.finished { color: var(--muted); }
-  #auditCurrent { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-  #where ul { margin: 0; padding-left: 20px; }
-  #where li.given { font-weight: 600; }
-  #next { border: 2px solid var(--accent); }
-  #next p { margin: 0 0 10px; font-weight: 600; }
-  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line);
-           background: var(--bg); color: var(--text); padding: 4px 12px; }
-  button.big { padding: 12px 20px; font-size: 1.1rem; font-weight: 600; color: #fff;
-               background: var(--accent); border-color: var(--accent); }
-  button:disabled { opacity: .5; cursor: default; }
-  code { font: .9em ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
-  .previews { display: flex; flex-wrap: wrap; gap: 8px; }
-  .previews img { width: 96px; height: 96px; object-fit: cover; border-radius: 6px;
-                  border: 1px solid var(--line); }
-  table { width: 100%; border-collapse: collapse; }
-  td { padding: 6px 6px; border-top: 1px solid var(--line); vertical-align: top; }
-  td.mark { width: 2em; text-align: center; }
-  td.number { width: 2.5em; text-align: right; color: var(--muted); }
-  td.badges { white-space: nowrap; }
-  tr.done td { color: var(--muted); }
-  tr.proposed td { font-weight: 600; }
-  @media (max-width: 760px) { td.command { display: none; } }
-  #running { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center;
-             justify-content: center; padding: 16px; background: rgba(0, 0, 0, .55); }
-  #running[hidden] { display: none; }
-  #running div { max-width: 560px; padding: 20px 24px; background: var(--card);
-                 border-radius: 12px; font-size: 1.05rem; }
-  #copyBox { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2; max-width: 760px;
-             margin: 0 auto; padding: 12px 16px; background: var(--card);
-             border: 2px solid var(--accent); border-radius: 10px; }
-  #copyBox[hidden] { display: none; }
-  #copyBox p { margin: 0 0 6px; }
-  #copyBox code { user-select: all; }
+{% include "home_fonts.css.j2" %}
+{% include "home_base.css.j2" %}
+{% include "home_parts.css.j2" %}
 </style>
 </head>
 <body>
-<header>
-  <h1>⌂ {{ _("media-hygiene — where you are") }}</h1>
-  <span id="status" role="status" aria-live="polite"></span>
-  <button id="quit" type="button" title="{{ _('Stops this page; closing its tab does too.') }}">{{ _("Quit") }}</button>
-</header>
-<main>
-  <section id="next" aria-labelledby="nextTitle">
-    <h2 id="nextTitle">👉 {{ _("Next step") }}</h2>
-    <p id="why"></p>
-    <button id="nextButton" class="big" type="button" hidden></button>
-  </section>
-  <section id="audit" aria-labelledby="auditTitle">
-    <h2 id="auditTitle">🔒 {{ _("Audit in this page") }}</h2>
-    <p class="muted">{{ _("Reads your folders as 'mh audit' does, its progress shown here: your photos are not touched.") }}</p>
-    <button id="auditStart" type="button">{{ _("Audit now") }}</button>
-    <button id="auditStop" type="button" hidden>{{ _("Stop the audit") }}</button>
-    <ol id="auditSteps"></ol>
-    <p id="auditCurrent" class="muted"></p>
-    <div id="auditEnd"></div>
-  </section>
-  <section id="where" aria-labelledby="whereTitle">
-    <h2 id="whereTitle">{{ _("Where you are") }}</h2>
-    <ul id="lines"></ul>
-    <p id="undo" class="muted" hidden></p>
-  </section>
-  <section id="found" hidden aria-labelledby="foundTitle">
-    <h2 id="foundTitle">{{ _("What the last audit found") }}</h2>
-    <div id="previews" class="previews"></div>
-  </section>
-  <section aria-labelledby="reportsTitle">
-    <h2 id="reportsTitle">{{ _("Reports") }}</h2>
-    <ul id="reports"></ul>
-  </section>
-  <div id="guides"></div>
-  <p class="muted" id="legend"></p>
-</main>
-<div id="copyBox" hidden role="status" aria-live="polite">
-  <p id="copyText"></p>
-  <p><code id="copyCommand"></code></p>
-  <p class="muted">{{ _("Stop this page with Ctrl+C in the window where mh runs, then paste the command there (right click) and press Enter.") }}</p>
-  <button id="copyClose" type="button">{{ _("Close") }}</button>
+{% include "home_icons.svg.j2" %}
+<a class="skip" href="#main">{{ texts.skip }}</a>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="{{ texts.sidebar }}">
+    <a class="brand" href="#home" data-go="home">
+      <svg class="brand-logo" viewBox="0 0 256 256" aria-hidden="true" focusable="false">
+        <g stroke="#0B2239" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="84" y="20" width="152" height="150" rx="18" fill="#3D85C6" stroke-width="12"/>
+          <rect x="20" y="58" width="168" height="170" rx="18" fill="#FFFFFF" stroke-width="12"/>
+          <clipPath id="mhLogoPhoto"><rect x="42" y="80" width="124" height="100" rx="6"/></clipPath>
+          <g clip-path="url(#mhLogoPhoto)">
+            <rect x="42" y="80" width="124" height="100" fill="#FFFFFF" stroke="none"/>
+            <path d="M30 186 L84 128 L120 164 L140 146 L178 186 Z" fill="#34A853" stroke-width="8"/>
+            <circle cx="136" cy="110" r="14" fill="#FBC02D" stroke="none"/>
+          </g>
+          <rect x="42" y="80" width="124" height="100" rx="6" fill="none" stroke-width="8"/>
+          <g transform="translate(194 194) rotate(32) scale(0.9)">
+            <rect x="-13" y="-124" width="26" height="96" rx="13" fill="#FBC02D" stroke-width="10"/>
+            <rect x="-30" y="-36" width="60" height="22" rx="6" fill="#FBC02D" stroke-width="10"/>
+            <path d="M-28 -14 H28 Q40 22 34 50 Q0 64 -34 50 Q-40 22 -28 -14 Z" fill="#FBC02D" stroke-width="10"/>
+            <path d="M-12 0 L-16 40 M8 0 L10 44" fill="none" stroke-width="7"/>
+          </g>
+        </g>
+      </svg>
+      <span><span class="brand-name">Media Hygiene</span><span class="brand-tag">{{ texts.tagline }}</span></span>
+    </a>
+    <nav class="nav" aria-label="{{ texts.spaces }}">
+      <ul class="nav-list" id="navHome"></ul>
+      <div>
+        <p class="nav-label" id="navCycleLabel">{{ texts.cycle }}</p>
+        <ul class="nav-list" id="navStages" aria-labelledby="navCycleLabel"></ul>
+      </div>
+      <div>
+        <p class="nav-label" id="navToolsLabel">{{ texts.tools }}</p>
+        <ul class="nav-list" id="navTools" aria-labelledby="navToolsLabel"></ul>
+      </div>
+    </nav>
+    <details class="folders" id="folders">
+      <summary id="foldersSummary"></summary>
+      <ul class="folder-list" id="folderList"></ul>
+      <button class="folder-add" type="button" data-run="folders-add"><svg class="i" aria-hidden="true"><use href="#i-folder-plus"></use></svg> {{ texts.addFolder }}</button>
+    </details>
+    <div class="signature">
+      <img src="{{ paths.assets }}images/avatar.webp" alt="{{ texts.avatarAlt }}" width="236" height="320">
+      <p class="sig-version" id="sigVersion"></p>
+      <p class="sig-by">{{ texts.by }} <a href="https://www.avonture.be" target="_blank" rel="noopener">Christophe Avonture</a></p>
+      <div class="theme-switch" role="group" aria-label="{{ texts.display }}">
+        <button type="button" data-theme-choice="auto" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-auto"></use></svg>{{ texts.themeAuto }}</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-sun"></use></svg>{{ texts.themeLight }}</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-moon"></use></svg>{{ texts.themeDark }}</button>
+      </div>
+      <button class="quit" type="button" data-act="quit" title="{{ texts.quitTitle }}"><svg class="i" aria-hidden="true"><use href="#i-power"></use></svg> {{ texts.quit }}</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="main-col">
+    <header class="topbar">
+      <button class="btn btn-ghost icon-btn menu-btn" id="menuBtn" type="button" aria-label="{{ texts.openMenu }}" aria-controls="sidebar" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+      <p class="crumb"><span class="hide-sm">Media Hygiene</span><span class="sep hide-sm" aria-hidden="true">›</span><strong id="crumbHere">{{ texts.home }}</strong></p>
+      <button class="search-trigger" id="openPalette" type="button" data-act="open-palette" aria-haspopup="dialog" aria-keyshortcuts="Control+K /" aria-label="{{ texts.whatToDo }} (Ctrl+K)">
+        <svg class="i" aria-hidden="true"><use href="#i-search"></use></svg>
+        <span class="label">{{ texts.whatToDo }}</span>
+        <span class="keys" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+      </button>
+      <div class="top-links" id="topLinks"></div>
+    </header>
+    <main id="main" tabindex="-1"></main>
+  </div>
 </div>
-<div id="running" hidden role="alertdialog" aria-live="assertive">
-  <div><p id="runningCommand"></p><p id="runningWhere"></p>
-  <p id="runningHint" hidden>{{ _("Nothing moves? Look at {window} (Alt+Tab).").replace("{window}", window) }}</p>
-  <p class="muted">{{ _("Not opened by mh? Type the command yourself; this page is closed.") }}</p></div>
-</div>
+
+<dialog id="paletteDlg" class="palette-dlg" aria-label="{{ texts.whatToDo }}">
+  <div class="palette-box">
+    <div class="palette-input">
+      <svg class="i" aria-hidden="true"><use href="#i-search"></use></svg>
+      <input id="paletteInput" type="text" role="combobox" aria-expanded="true" aria-controls="paletteList" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="{{ texts.palettePlaceholder }}" aria-label="{{ texts.whatToDo }}">
+      <kbd>{{ texts.escKey }}</kbd>
+    </div>
+    <ul class="palette-list" id="paletteList" role="listbox" aria-label="{{ texts.actions }}"></ul>
+    <div class="palette-foot" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> {{ texts.choose }}</span>
+      <span><kbd>{{ texts.enterKey }}</kbd> {{ texts.launch }}</span>
+      <span><kbd>{{ texts.escKey }}</kbd> {{ texts.close }}</span>
+    </div>
+  </div>
+</dialog>
+<dialog id="formDlg" aria-labelledby="formTitle"></dialog>
+<dialog id="confirmDlg" aria-labelledby="confirmTitle"></dialog>
+<dialog id="runDlg" aria-labelledby="runTitle"></dialog>
+<dialog id="keysDlg" aria-labelledby="keysTitle"></dialog>
+<dialog id="stoppedDlg" class="stopped-dlg" aria-labelledby="stoppedTitle">
+  <div class="dlg">
+    <img src="{{ paths.assets }}images/meerkat-asleep.webp" alt="" width="400" height="387">
+    <h2 id="stoppedTitle">{{ texts.stoppedTitle }}</h2>
+    <p class="dlg-text">{{ texts.stoppedText }}</p>
+    <div class="dlg-foot"><button class="btn btn-primary" type="button" data-close autofocus>{{ texts.close }}</button></div>
+  </div>
+</dialog>
+
+<section class="copybox" id="copyBox" hidden aria-labelledby="copyTitle">
+  <p class="copybox-title"><strong id="copyTitle">{{ texts.copied }}</strong></p>
+  <code class="copybox-cmd" id="copyCmd"></code>
+  <p class="muted">{{ texts.copyHow }}</p>
+  <div class="copybox-foot"><button class="btn" type="button" id="copyClose">{{ texts.close }}</button></div>
+</section>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="application/json" id="homeState">{{ state_mark }}</script>
 <script>
+(() => {
 {% include "home.js.j2" %}
+{% include "home_draw.js.j2" %}
+{% include "home_run.js.j2" %}
+  start();
+})();
 </script>
 </body>
 </html>

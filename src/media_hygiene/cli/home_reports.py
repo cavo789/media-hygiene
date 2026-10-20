@@ -8,7 +8,8 @@ from media_hygiene.cli.status_view import when
 from media_hygiene.constants import REPORT_FILE_NAME, THUMBNAILS_DIR_NAME, RunKind
 from media_hygiene.i18n import _
 from media_hygiene.report.index_page import report_folders
-from media_hygiene.review.home_views import REPORTS_PREFIX, HomeReport
+from media_hygiene.review.home_parts import HomeReport
+from media_hygiene.review.home_views import REPORTS_PREFIX
 
 if TYPE_CHECKING:
     from pathlib import Path

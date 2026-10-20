@@ -1,168 +1,107 @@
-"""The steps of the three quick guides, as the `mh` menu lists them, then its setup.
+"""Every action of the tool, in the order of the cycle: `mh menu`, home page, palette.
 
-The order is the guides' (`documentation/*/{clean,sort,find}/quick-guide.md`), the
-badges theirs: 🔒 photos untouched, ↩️ can be undone, ⚠️ for good. `open`, `shortcut`
-and `explorer` are run by `mh` itself, on the host (`services/launcher_host.py`).
+Five stages (import, clean, sort, find, back up), then three tools (history, reports,
+settings); one module per stage or group of tools. The badges are the guides': 🔒
+photos untouched, ↩️ can be undone, ⚠️ for good. A command no entry names yet still
+shows, under "Other commands" (`with_others`), and `tests/unit/test_menu_catalog.py`
+fails until it has its entry.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
+from typing import TYPE_CHECKING
 
-from media_hygiene.cli.status_step import Slot
+from media_hygiene.cli.menu_catalog_clean import clean_area, clean_steps
+from media_hygiene.cli.menu_catalog_clean_more import clean_more_steps
+from media_hygiene.cli.menu_catalog_find import find_areas, find_steps
+from media_hygiene.cli.menu_catalog_import import import_area, import_steps
+from media_hygiene.cli.menu_catalog_settings import settings_steps
+from media_hygiene.cli.menu_catalog_sort import sort_area, sort_steps
+from media_hygiene.cli.menu_catalog_tools import tools_areas, tools_steps
+from media_hygiene.cli.menu_entry import Area, Group, Risk, Space, Step
 from media_hygiene.i18n import _
 
-
-class Risk(StrEnum):
-    """What a step may do to the photos, as the guides badge it."""
-
-    SAFE = "🔒"
-    UNDO = "↩️"
-    FINAL = "⚠️"
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 @dataclass(frozen=True, slots=True)
-class Step:
-    """A step of a guide: its command, what it does, what it risks."""
+class Catalog:
+    """The actions, and the spaces that show them."""
 
-    command: str  # without `mh`; empty: the user types it (`typed` shows how)
-    text: str
-    risk: Risk
-    slot: Slot | None = None
-    optional: bool = False
-    ai: bool = False  # may ask the local model of `[classify.ai]` 🤖
-    typed: str = ""  # the command to type, for a step the menu cannot fill
+    steps: tuple[Step, ...]
+    areas: tuple[Area, ...]
 
+    def step(self, name: str) -> Step:
+        """The action of a name.
 
-def clean_steps() -> tuple[Step, ...]:
-    """The steps of "Clean in short".
+        Args:
+            name: Its name, e.g. `review-near`.
 
-    Returns:
-        Them, in order.
-    """
-    return (
-        Step(
-            "audit",
-            _("Find the duplicates and the broken files"),
-            Risk.SAFE,
-            Slot.AUDIT,
-        ),
-        Step("open", _("Read the reports in your browser"), Risk.SAFE),
-        Step(
-            "clean", _("Set the extra copies aside (asks first)"), Risk.UNDO, Slot.CLEAN
-        ),
-        Step("history", _("What each run did"), Risk.SAFE),
-        Step("undo", _("Put back the files of the last run"), Risk.UNDO, Slot.UNDO),
-        Step(
-            "review",
-            _("Choose the best shots of each burst, in your browser"),
-            Risk.SAFE,
-            Slot.REVIEW,
-            optional=True,
-        ),
-        Step(
-            "clean --tier near --decisions",
-            _("Apply your choices: what you set aside goes to the quarantine"),
-            Risk.UNDO,
-            Slot.APPLY,
-            optional=True,
-        ),
-        Step(
-            "purge",
-            _("Free the space of the quarantine, for good"),
-            Risk.FINAL,
-            Slot.PURGE,
-        ),
-    )
+        Returns:
+            It.
+
+        Raises:
+            KeyError: No action has that name.
+        """
+        found = next((step for step in self.steps if step.name == name), None)
+        if found is None:
+            raise KeyError(name)
+        return found
 
 
-def sort_steps() -> tuple[Step, ...]:
-    """The steps of "Sort in short".
+def catalog() -> Catalog:
+    """Every action and every space, in the language in use.
 
     Returns:
-        Them, in order.
+        The catalog, the spaces in the cycle's order, then the tools.
     """
-    return (
-        Step(
-            "classify",
-            _("Propose a tidy tree, in a workbook you correct"),
-            Risk.SAFE,
-            Slot.CLASSIFY,
-            ai=True,
-        ),
-        Step(
-            "review-sort",
-            _("Name the events in your browser"),
-            Risk.SAFE,
-            optional=True,
-        ),
-        Step("places", _("Name your places on a map"), Risk.SAFE, optional=True),
-        Step(
-            "people",
-            _("Name the faces"),
-            Risk.SAFE,
-            Slot.PEOPLE,
-            optional=True,
-        ),
-        Step("sort", _("Move the photos as the workbook says"), Risk.UNDO, Slot.SORT),
-        Step(
-            "",
-            _("Gather a selection into an album of links"),
-            Risk.UNDO,
-            optional=True,
-            typed='album "Christmas" --category …',
-        ),
+    steps = (
+        *import_steps(),
+        *clean_steps(),
+        *clean_more_steps(),
+        *sort_steps(),
+        *find_steps(),
+        *tools_steps(),
+        *settings_steps(),
     )
+    areas = (import_area(), clean_area(), sort_area(), *find_areas(), *tools_areas())
+    return Catalog(steps, areas)
 
 
-def find_steps() -> tuple[Step, ...]:
-    """The steps of "Find in short".
+def named(step: Step) -> tuple[str, str]:
+    """The command and the review mode an action names.
+
+    Args:
+        step: The action.
 
     Returns:
-        Them, in order.
+        Its verb, and its first option (`--near`), or empty.
     """
-    return (
-        Step("tags", _("Give your photos words"), Risk.SAFE, Slot.TAGS, ai=True),
-        Step("search", _("Find a photo by its words, in your browser"), Risk.SAFE),
-        Step(
-            "browse",
-            _("Walk through your folders, set photos aside"),
-            Risk.SAFE,
-            optional=True,
-        ),
-        Step(
-            "xmp",
-            _("Carry the words into other photo software"),
-            Risk.UNDO,
-            optional=True,
-        ),
-        Step(
-            "inventory",
-            _("Every photo and video in an Excel workbook"),
-            Risk.SAFE,
-            optional=True,
-        ),
-    )
+    words = step.command.split()
+    return words[0], words[1] if len(words) > 1 else ""
 
 
-def setup_steps() -> tuple[Step, ...]:
-    """The steps that make `mh` easier to reach, on Windows only (0180, 0181).
+def with_others(known: Catalog, names: Iterable[tuple[str, str]]) -> Catalog:
+    """Add the commands no action names yet, so that the menu never misses one.
+
+    Args:
+        known: The catalog.
+        names: Each command and its `--help` short text.
 
     Returns:
-        Them, in order.
+        The catalog, with a last space "Other commands" when any is left.
     """
-    return (
-        Step(
-            "shortcut",
-            _("An icon on the Desktop and in the Start menu opens the home page"),
-            Risk.SAFE,
-            optional=True,
-        ),
-        Step(
-            "explorer",
-            _("Right-click a folder in Explorer: the home page, on that folder"),
-            Risk.SAFE,
-            optional=True,
-        ),
+    verbs = {named(step)[0] for step in known.steps}
+    left = {name: text for name, text in names if name not in verbs}
+    if not left:
+        return known
+    title = _("Other commands")
+    # Their risk is unknown: said as the highest until each one has its entry.
+    steps = tuple(
+        Step(name, Space.OTHER, text or name, "", name, Risk.FINAL)
+        for name, text in left.items()
     )
+    area = Area(Space.OTHER, title, title, "", "", (Group(title, tuple(left)),))
+    return Catalog((*known.steps, *steps), (*known.areas, area))

@@ -82,10 +82,10 @@ def test_the_folders_variable_is_not_carried_to_the_next_commands(
 
 
 def test_the_given_folders_are_drawn_first() -> None:
-    """Above the lines of `status`, in bold."""
+    """Above the next step, each folder in its own callout."""
     page = home_page(relays_steps=True).decode()
-    assert '...state.given.map((line) => element("li", line, "given"))' in page
-    assert "#where li.given { font-weight: 600; }" in page
+    assert "S.given.map((line) =>" in page
+    assert page.index("${given}${hero()}") > 0
 
 
 @pytest.mark.parametrize(
@@ -101,26 +101,24 @@ def test_run_says_which_window_then_a_hint_after_30_s(
     """The window named after *Run*; *Nothing moves?* shown 30 s later."""
     monkeypatch.setenv(LAUNCHER_VARIABLE, shell.value)
     page = home_page(relays_steps=True)
-    assert _texts(page)["runningWhere"] == (
-        f"{{command}} runs in {window}: this page comes back by itself when it ends."
+    texts = _texts(page)
+    assert texts["runsConsole"] == (
+        "{command} runs in {window}: answer it if it asks something, then this "
+        "page comes back by itself."
     )
+    assert texts["nothingMoves"] == "Nothing moves? Look at {window} (Alt+Tab)."
     text = page.decode()
-    assert f'<p id="runningHint" hidden>Nothing moves? Look at {window} (Alt+Tab).' in (
-        text
-    )
+    assert f"const WINDOW = {json.dumps(window)};" in text
     assert "const HINT_MS = 30000;" in text
-    wait = text.index("const waitForComeBack = () => {")
-    shown = text.index('byId("runningHint").hidden = false; }, HINT_MS);')
+    wait = text.index("function waitForComeBack() {")
+    shown = text.index("hint.hidden = false; }, HINT_MS);", wait)
     assert wait < shown < text.index("const poll = () => {", wait)
-    assert "Running in the window where mh runs" not in text
 
 
 def test_the_window_is_translated(monkeypatch: pytest.MonkeyPatch) -> None:
     """French page: the PowerShell window named in French."""
     monkeypatch.setenv(LAUNCHER_VARIABLE, Shell.POWERSHELL.value)
     with using(Locale.FR):
-        page = home_page(relays_steps=True)
-    assert _texts(page)["runningWhere"] == (
-        "{command} tourne dans la fenêtre PowerShell de mh (dans la barre des "
-        "tâches) : cette page revient d'elle-même quand c'est fini."
-    )
+        page = home_page(relays_steps=True).decode()
+    window = "la fenêtre PowerShell de mh (dans la barre des tâches)"
+    assert f"const WINDOW = {json.dumps(window)};" in page

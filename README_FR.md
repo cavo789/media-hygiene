@@ -248,6 +248,8 @@ d'autres personnes, chacun sous sa propre licence :
 | [Czkawka](https://github.com/qarmin/czkawka) (`czkawka_cli`, le second avis de `crosscheck`) | MIT |
 | Les villes de [GeoNames](https://www.geonames.org/) (`geo/data`, voir son `ATTRIBUTION.txt`) | CC BY 4.0 |
 | [Leaflet](https://leafletjs.com/) (la carte de `places`) | BSD-2-Clause |
+| [Bricolage Grotesque](https://github.com/ateliertriay/bricolage), [Source Sans 3](https://github.com/adobe-fonts/source-sans), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) (les polices de la page d'accueil, `assets/fonts`, leurs licences à côté) | OFL-1.1 |
+| Les images du suricate (`assets/images`, voir `MEERKAT.txt`) | © l'auteur, tous droits réservés |
 | Python, Pillow, NumPy, ONNX Runtime et les autres paquets Python, avec les bibliothèques que leurs wheels embarquent (libjpeg, libpng, libtiff, libwebp, OpenBLAS…) | PSF, MIT, BSD, Apache-2.0 et licences permissives semblables |
 | Les paquets Debian de l'image de base `python:3.14-slim` | Leurs propres licences (`/usr/share/doc/*/copyright`) |
 

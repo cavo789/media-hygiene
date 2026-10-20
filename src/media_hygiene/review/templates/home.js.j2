@@ -1,251 +1,189 @@
-{# The script of home.html.j2: draws the state, sends the step chosen, waits for mh to bring the page back.
-   Without an mh that runs the steps (relays_steps false), a step's button copies its command instead. #}
-(() => {
-  const T = {{ texts | tojson }};
-  const statePath = {{ state_path | tojson }};
-  const stepPath = {{ step_path | tojson }};
-  const auditPath = {{ audit_path | tojson }};
-  const alivePath = {{ alive_path | tojson }};
-  const stopPath = {{ stop_path | tojson }};
-  const ALIVE_MS = {{ alive_ms | tojson }};
-  const relaysSteps = {{ relays_steps | tojson }};
-  const thousands = {{ thousands | tojson }};
-  const count = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
-  const POLL_MS = 1000;
-  const HINT_MS = 30000;
-  const byId = (id) => document.getElementById(id);
-  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
-  const element = (tag, text, css) => {
-    const made = document.createElement(tag);
-    if (text) made.textContent = text;
-    if (css) made.className = css;
-    return made;
-  };
-  const setStatus = (text, kind) => {
-    byId("status").textContent = text;
-    byId("status").className = kind || "";
-  };
+{# The script of home.html.j2, its core: the state the server sent (#homeState, then GET state_path),
+   the spaces, the theme, the keys. The page only draws: the next step, each action's state and reason
+   come from Python (cli/home_state.py). home_draw.js.j2 draws, home_run.js.j2 runs the steps. #}
+"use strict";
+const T = {{ texts | tojson }};
+const P = {{ paths | tojson }};
+const RELAYS = {{ relays_steps | tojson }};
+const WINDOW = {{ window | tojson }};
+const ALIVE_MS = {{ alive_ms | tojson }};
+const THOUSANDS = {{ thousands | tojson }};
+const POLL_MS = 1000;
+const HINT_MS = 30000;
+const TOAST_MS = 6500;
+const HOME = "home";
+const STORE_PREFIX = "mh-home-";
+let S = JSON.parse(document.getElementById("homeState").textContent);
 
-  // After a step is chosen the server ends; mh runs the step, then opens the page again on
-  // the same port. The page reloads once the server was seen gone, then answering again.
-  const waitForComeBack = () => {
-    let seenGone = false;
-    // Still here after a while: the step may wait for an answer in mh's window, behind this one.
-    window.setTimeout(() => { byId("runningHint").hidden = false; }, HINT_MS);
-    const poll = () => {
-      fetch(statePath, { cache: "no-store" })
-        .then((response) => {
-          if (response.ok && seenGone) window.location.reload();
-          else window.setTimeout(poll, POLL_MS);
-        })
-        .catch(() => {
-          seenGone = true;
-          window.setTimeout(poll, POLL_MS);
-        });
-    };
-    window.setTimeout(poll, POLL_MS);
-  };
+const esc = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const icon = (name) => `<svg class="i" aria-hidden="true" focusable="false"><use href="#i-${esc(name)}"></use></svg>`;
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const norm = (text) => String(text).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+const count = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, THOUSANDS);
+const image = (name) => `${P.assets}images/${name}`;
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  // The command is copied, or selected for Ctrl+C when the browser refuses (an address
-  // other than localhost is not a secure context); the server keeps running.
-  const selectCommand = () => {
-    const range = document.createRange();
-    range.selectNodeContents(byId("copyCommand"));
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  };
-  const copyCommand = (command) => {
-    byId("copyCommand").textContent = command;
-    byId("copyBox").hidden = false;
-    const said = (copied) => {
-      byId("copyText").textContent = fill(copied ? T.copied : T.copyIt, { command: command });
-      if (!copied) selectCommand();
-    };
-    const byHand = () => {
-      selectCommand();
-      let copied = false;
-      try { copied = document.execCommand("copy"); } catch (error) { copied = false; }
-      said(copied);
-    };
-    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(command).then(() => said(true), byHand);
-    else byHand();
-  };
-  byId("copyClose").addEventListener("click", () => { byId("copyBox").hidden = true; });
+// Per-viewer conveniences only (the theme, an update banner closed): the page works without them.
+const store = {
+  get(key, fallback) {
+    try { const value = localStorage.getItem(STORE_PREFIX + key); return value === null ? fallback : JSON.parse(value); } catch (error) { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(STORE_PREFIX + key, JSON.stringify(value)); } catch (error) { /* storage refused: the choice lasts this visit */ }
+  },
+};
 
-  const choose = (number, command) => {
-    if (!relaysSteps) {
-      copyCommand(command);
+const RISK = {
+  safe: { label: T.riskSafe, icon: "lock", cls: "pill-safe" },
+  undo: { label: T.riskUndo, icon: "undo", cls: "pill-undo" },
+  final: { label: T.riskFinal, icon: "alert", cls: "pill-final" },
+};
+// The meerkat of each stage, and of a few actions (assets/images/meerkat-*.webp).
+const POSE = { import: "phone", clean: "broom", sort: "sorting", find: "magnifier", backup: "nas" };
+const ACTION_POSE = { audit: "lookout", import: "nas", "nas-add": "nas", review: "magnifier", "review-near": "magnifier", "review-pairs": "magnifier", "review-junk": "magnifier", "review-gone": "magnifier" };
+// The panels a tool's page shows above its commands.
+const TOPS = { history: ["undo", "quarantine"], reports: ["reportsList"] };
+
+const view = { id: HOME };
+let SPACE = {};
+let BY_ID = {};
+let STAGES = [];
+let TOOLS = [];
+function index() {
+  SPACE = Object.fromEntries([[HOME, { id: HOME, title: T.home, long: T.home, icon: "home", groups: [] }], ...S.spaces.map((space) => [space.id, space])]);
+  BY_ID = Object.fromEntries(S.actions.map((action) => [action.name, action]));
+  STAGES = S.spaces.filter((space) => space.stage);
+  TOOLS = S.spaces.filter((space) => !space.stage);
+}
+const statusOf = (action) => ({
+  available: action.available && !action.planned,
+  planned: action.planned,
+  done: action.done,
+  proposed: action.proposed,
+  reason: action.planned ? T.plannedReason : action.reason || T.nothingYet,
+});
+const proposedAction = () => (S.proposed ? BY_ID[S.proposed.name] : null);
+const stageOf = (name) => {
+  const space = STAGES.find((stage) => stage.groups.some((group) => group.numbered && group.actions.includes(name)));
+  return space ? space.id : null;
+};
+
+// ---- Theme ------------------------------------------------------------------------------
+function applyTheme(choice, save) {
+  const root = document.documentElement;
+  if (choice === "auto") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", choice);
+  if (save) store.set("theme", choice);
+  $$("[data-theme-choice]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === choice)));
+}
+
+// ---- Drawer and navigation --------------------------------------------------------------
+const narrow = window.matchMedia("(max-width: 959.98px)");
+function setNav(open, focus = true) {
+  $("#app").classList.toggle("nav-open", open);
+  $("#menuBtn").setAttribute("aria-expanded", String(open));
+  $("#scrim").hidden = !open;
+  $("#sidebar").inert = narrow.matches && !open;
+  if (open && focus) { const current = $('.nav-link[aria-current="page"]') || $(".nav-link"); current.focus(); }
+}
+function go(id, focusMain = true) {
+  view.id = SPACE[id] ? id : HOME;
+  try { history.replaceState(null, "", "#" + view.id); } catch (error) { /* a sandboxed frame may refuse it */ }
+  setNav(false, false);
+  render();
+  window.scrollTo(0, 0);
+  if (focusMain) $("#main").focus({ preventScroll: true });
+}
+function render() {
+  renderNav();
+  renderFolders();
+  renderSignature();
+  renderTop();
+  renderMain();
+}
+// The state, read again from the tool folders (after the audit of the page, a step's end).
+const reload = () => fetch(P.state, { cache: "no-store" })
+  .then((response) => response.json())
+  .then((state) => { S = state; index(); render(); })
+  .catch(() => stopped());
+
+// ---- Events -----------------------------------------------------------------------------
+function wire() {
+  narrow.addEventListener("change", () => setNav(false, false));
+  $("#menuBtn").addEventListener("click", () => setNav(!$("#app").classList.contains("nav-open")));
+  $("#scrim").addEventListener("click", () => { setNav(false, false); $("#menuBtn").focus(); });
+  $("#copyClose").addEventListener("click", () => { $("#copyBox").hidden = true; });
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const closer = event.target.closest("[data-close]");
+    if (closer) { closer.closest("dialog").close(); return; }
+    const target = event.target.closest("[data-go],[data-run],[data-copy],[data-theme-choice],[data-act]");
+    if (!target) return;
+    if (target.dataset.go) { event.preventDefault(); go(target.dataset.go); }
+    else if (target.dataset.run) { event.preventDefault(); onRun(target.dataset.run); }
+    else if (target.dataset.copy) { event.preventDefault(); copyText(target.dataset.copy); }
+    else if (target.dataset.themeChoice) applyTheme(target.dataset.themeChoice, true);
+    else if (target.dataset.act && ACTS[target.dataset.act]) { event.preventDefault(); ACTS[target.dataset.act](); }
+  });
+  $$("dialog").forEach((dialog) => {
+    dialog.addEventListener("close", () => {
+      const back = dialog.opener;
+      dialog.opener = null;
+      if (back && back.isConnected) back.focus({ preventScroll: true });
+    });
+    dialog.addEventListener("click", (event) => { if (event.target === dialog && dialog.id !== "stoppedDlg" && dialog.id !== "runDlg") dialog.close(); });
+  });
+  // The sidebar is one stop of Tab: ↑ and ↓ move inside it (a roving tabindex).
+  $("#sidebar").addEventListener("keydown", (event) => {
+    const link = event.target.closest(".nav-link");
+    if (!link) return;
+    const links = $$(".nav-link");
+    const at = links.indexOf(link);
+    const to = { ArrowDown: (at + 1) % links.length, ArrowUp: (at - 1 + links.length) % links.length, Home: 0, End: links.length - 1 }[event.key];
+    if (to === undefined) return;
+    event.preventDefault();
+    links.forEach((other) => { other.tabIndex = -1; });
+    links[to].tabIndex = 0;
+    links[to].focus();
+  });
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      if (palette.dialog.open) palette.dialog.close();
+      else if (!document.querySelector("dialog[open]")) openPalette();
       return;
     }
-    for (const button of document.querySelectorAll("button")) button.disabled = true;
-    fetch(stepPath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ number: number, command: command }) })
-      .then((response) => response.json().then((body) => ({ ok: response.ok, status: response.status, body: body })))
-      .then((reply) => {
-        if (!reply.ok) {
-          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
-          load();
-          return;
-        }
-        byId("runningCommand").textContent = fill(T.runningCommand, { command: reply.body.command });
-        byId("runningWhere").textContent = fill(T.runningWhere, { command: reply.body.command });
-        byId("running").hidden = false;
-        waitForComeBack();
-      })
-      .catch(() => setStatus(T.offline, "error"));
-  };
-
-  const runButton = (step) => {
-    const button = element("button", relaysSteps ? T.run : T.copy);
-    button.type = "button";
-    button.title = (relaysSteps ? T.runTitle : T.copyTitle) + " — " + step.command;
-    button.addEventListener("click", () => choose(step.number, step.command));
-    return button;
-  };
-
-  const drawNext = (state) => {
-    const next = state.proposed;
-    const button = byId("nextButton");
-    byId("why").textContent = next ? next.why : T.nothingLeft;
-    button.hidden = !next;
-    if (!next) return;
-    button.textContent = next.command;
-    button.title = relaysSteps ? T.runTitle : T.copyTitle;
-    button.onclick = () => choose(next.number, next.command);
-  };
-
-  const drawWhere = (state) => {
-    const lines = byId("lines");
-    // The folders a right-click (mh --photos) added: first, so that they are seen (0258).
-    lines.replaceChildren(...state.given.map((line) => element("li", line, "given")), ...state.lines.map((line) => element("li", line)));
-    byId("undo").hidden = !state.undo;
-    byId("undo").textContent = state.undo || "";
-  };
-
-  const drawFound = (state) => {
-    byId("found").hidden = state.previews.length === 0;
-    byId("previews").replaceChildren(...state.previews.map((url) => {
-      const image = element("img");
-      image.src = url;
-      image.alt = "";
-      image.loading = "lazy";
-      return image;
-    }));
-  };
-
-  const link = (text, url, detail) => {
-    const item = element("li");
-    const anchor = element("a", text);
-    anchor.href = url;
-    anchor.target = "_blank";
-    item.append(anchor);
-    if (detail) item.append(" — " + detail);
-    return item;
-  };
-
-  const drawReports = (state) => {
-    const items = state.reports.map((report) => link(report.label, report.url, report.when));
-    if (state.index) items.push(link(T.everyReport, state.index, ""));
-    if (items.length === 0) items.push(element("li", T.noReport, "muted"));
-    byId("reports").replaceChildren(...items);
-  };
-
-  const stepRow = (step) => {
-    const row = element("tr", "", step.done ? "done" : step.proposed ? "proposed" : "");
-    row.append(element("td", step.proposed ? "👉" : step.done ? "✅" : "", "mark"));
-    row.append(element("td", step.number ? String(step.number) : "", "number"));
-    const command = element("td", "", "command");
-    command.append(element("code", step.command));
-    row.append(command);
-    row.append(element("td", step.typed ? step.text + " " + T.typeIt : step.text));
-    row.append(element("td", step.badges.join(" "), "badges"));
-    const action = element("td");
-    if (step.number) action.append(runButton(step));
-    row.append(action);
-    return row;
-  };
-
-  const drawGuides = (state) => {
-    byId("guides").replaceChildren(...state.sections.map((section) => {
-      const box = element("section");
-      box.append(element("h2", section.title));
-      const table = element("table");
-      table.append(...section.steps.map(stepRow));
-      box.append(table);
-      return box;
-    }));
-  };
-
-  const load = () => fetch(statePath, { cache: "no-store" })
-    .then((response) => response.json())
-    .then((state) => {
-      drawNext(state);
-      drawWhere(state);
-      drawFound(state);
-      drawReports(state);
-      drawGuides(state);
-      for (const button of document.querySelectorAll("button")) button.disabled = false;
-    })
-    .catch(() => setStatus(T.offline, "error"));
-
-  // The audit run by the page: its steps polled while it runs, then its summary.
-  const drawAudit = (audit) => {
-    const running = audit.phase === "running";
-    byId("auditStart").hidden = running;
-    byId("auditStop").hidden = !running;
-    byId("auditSteps").replaceChildren(...audit.steps.map((step) => {
-      const counts = step.total === null ? count(step.done) : count(step.done) + " / " + count(step.total);
-      const item = element("li", (step.finished ? "✔ " : "⏳ ") + step.title + " — " + counts, step.finished ? "finished" : "");
-      if (step.hint && !step.finished) item.title = step.hint;
-      return item;
-    }));
-    byId("auditCurrent").textContent = running ? (audit.current || T.auditRunning) : "";
-    const end = byId("auditEnd");
-    end.replaceChildren(...audit.lines.map((line) => element("p", line)), ...audit.actions.map((line) => element("p", line)));
-    if (audit.timed) end.append(element("p", audit.timed, "muted"));
-    if (audit.report) {
-      const paragraph = element("p");
-      const anchor = element("a", T.auditOpen);
-      anchor.href = audit.report;
-      anchor.target = "_blank";
-      paragraph.append(anchor);
-      end.append(paragraph);
+    if (document.querySelector("dialog[open]")) return;
+    if (event.key === "Escape") {
+      if ($("#app").classList.contains("nav-open")) { setNav(false, false); $("#menuBtn").focus(); return; }
+      if (!$("#copyBox").hidden) $("#copyBox").hidden = true;
+      return;
     }
-    if (audit.error) end.append(element("p", audit.error, "muted"));
-    return running;
-  };
-  const pollAudit = () => fetch(auditPath, { cache: "no-store" })
-    .then((response) => response.json())
-    .then((audit) => {
-      if (drawAudit(audit)) window.setTimeout(pollAudit, POLL_MS);
-      else if (audit.phase !== "idle") load();
-    })
-    .catch(() => setStatus(T.offline, "error"));
-  const askAudit = (action) => fetch(auditPath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: action }) })
-    .then((response) => response.json().then((body) => ({ ok: response.ok, body: body })))
-    .then((reply) => {
-      if (!reply.ok) setStatus(reply.body.error || T.auditBusy, "error");
-      pollAudit();
-    })
-    .catch(() => setStatus(T.offline, "error"));
-  byId("auditStart").addEventListener("click", () => askAudit("start"));
-  byId("auditStop").addEventListener("click", () => askAudit("stop"));
-
-  // While a tab shows the page, it says so; leaving (closed, reloaded), it says that too,
-  // with a request that outlives the tab: the server ends once no tab came back (0261).
-  const alive = (leaving) => fetch(alivePath, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => {});
-  window.addEventListener("pageshow", () => alive(false));
-  window.addEventListener("pagehide", () => alive(true));
-  window.setInterval(() => alive(false), ALIVE_MS);
-  byId("quit").addEventListener("click", () => {
-    fetch(stopPath, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
-      .then(() => {
-        for (const button of document.querySelectorAll("button")) button.disabled = true;
-        setStatus(T.quitDone);
-      })
-      .catch(() => setStatus(T.offline, "error"));
+    const typing = event.target.closest("input, textarea, select, [contenteditable='true']");
+    if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === "/") { event.preventDefault(); openPalette(); }
+    else if (event.key === "?") { event.preventDefault(); openKeys(); }
   });
+  window.addEventListener("hashchange", () => {
+    const wanted = decodeURIComponent(location.hash.slice(1));
+    if (SPACE[wanted] && wanted !== view.id) go(wanted);
+  });
+  wirePalette();
+  wirePresence();
+}
 
-  byId("legend").textContent = fill(T.legend, { safe: "🔒", undo: "↩️", final: "⚠️" });
-  load();
+function start() {
+  index();
+  applyTheme(store.get("theme", "auto"), false);
+  const wanted = decodeURIComponent((location.hash || "").slice(1));
+  view.id = SPACE[wanted] ? wanted : HOME;
+  wire();
+  render();
+  setNav(false, false);
+  // Enter runs the next step, as in `mh menu`: its button has the focus.
+  const first = $("#heroRun");
+  if (view.id === HOME && first) first.focus({ preventScroll: true });
   pollAudit();
-})();
+}

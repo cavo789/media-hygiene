@@ -17,7 +17,7 @@ from PIL import Image
 from typer.testing import CliRunner
 
 from media_hygiene.cli.app import build_app
-from media_hygiene.cli.menu_steps import Section, build_menu
+from media_hygiene.cli.menu_steps import build_menu
 from media_hygiene.cli.report_where import announce_report
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import using
@@ -353,16 +353,17 @@ def test_the_launcher_tells_the_image_its_shell() -> None:
 
 
 def test_menu_lists_open_after_audit_and_setup_on_windows(tmp_path: Path) -> None:
-    """0175: `open` right after `audit`; 0180, 0181: setup last, not for bash."""
+    """0175: `open` right after `audit`; 0180, 0181: the setup on Windows only."""
     status = read_status(make_runtime(make_locations(tmp_path)))
     menu = build_menu(status, _HINT)
     commands = [line.step.command for line in menu.steps]
     assert commands[commands.index("audit") + 1] == "open"
-    setup = [line.step.command for line in menu.steps if line.section is Section.SETUP]
-    assert setup == ["shortcut", "explorer"]
-    assert menu.steps[-1].section is Section.SETUP
+    windows = [
+        line.step.command for line in menu.steps if line.group.title == "Windows"
+    ]
+    assert windows == ["shortcut", "explorer", "explorer --remove"]
     bash = build_menu(status, _HINT, windows=False)
-    assert not any(line.section is Section.SETUP for line in bash.steps)
+    assert not any(line.step.windows for line in bash.steps)
     assert "open" in [line.step.command for line in bash.steps]
 
 

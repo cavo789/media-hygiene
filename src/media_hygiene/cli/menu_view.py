@@ -1,4 +1,4 @@
-"""The `mh` menu on screen: the three guides, every command, the proposed one first."""
+"""The `mh` menu on screen: every action by space, its command, the proposed first."""
 
 from __future__ import annotations
 
@@ -7,15 +7,16 @@ from typing import TYPE_CHECKING, Final
 from rich.markup import escape
 from rich.table import Table
 
-from media_hygiene.cli.menu_catalog import Risk
-from media_hygiene.cli.menu_steps import Section
+from media_hygiene.cli.menu_entry import Risk
 from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 if TYPE_CHECKING:
+    from media_hygiene.cli.menu_entry import Area, Group
     from media_hygiene.cli.menu_steps import Menu, MenuStep
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.update_check import UpdateNotice
 
 _DONE: Final = "✅"
 _PROPOSED: Final = "👉"
@@ -24,28 +25,15 @@ _DIM: Final = "dim"
 _NO_MARK: Final = "  "  # as wide as an emoji
 
 
-def section_titles() -> dict[Section, str]:
-    """The title of each section, as the guides name them.
+def show_menu(runtime: Runtime, menu: Menu, notice: UpdateNotice | None = None) -> None:
+    """Print every action by space and group, then what Enter and a number do.
 
-    Returns:
-        Translated titles.
-    """
-    return {
-        Section.CLEAN: _("Clean the duplicates"),
-        Section.SORT: _("Sort the photos"),
-        Section.FIND: _("Find a photo"),
-        Section.SETUP: _("Reach mh without typing (Windows)"),
-    }
-
-
-def show_menu(runtime: Runtime, menu: Menu) -> None:
-    """Print every step, then what Enter and a number do.
-
-    While a clean step is proposed, the other guides are dimmed: they come after.
+    While a step is proposed, the other spaces are dimmed: they come after.
 
     Args:
         runtime: Settings, mount points and output (on stderr).
         menu: The menu.
+        notice: A newer version published, said before the line for Enter (0267).
     """
     table = Table.grid(padding=(0, 1))
     table.add_column(no_wrap=True)
@@ -53,17 +41,27 @@ def show_menu(runtime: Runtime, menu: Menu) -> None:
     table.add_column()
     table.add_column(no_wrap=True)
     proposed = menu.proposed
-    titles = section_titles()
-    section: Section | None = None
+    area: Area | None = None
+    group: Group | None = None
     for line in menu.steps:
-        if line.section is not section:
-            section = line.section
-            table.add_row("", f"[bold]{titles[section]}[/]")
-        dim = proposed is not None and proposed.section is not section
+        if line.area is not area:
+            area, group = line.area, None
+            table.add_row("", f"[bold]{escape(area.long)}[/]")
+        if line.group is not group and len(area.groups) > 1:
+            table.add_row("", f"[italic]{escape(line.group.title)}[/]")
+        group = line.group
+        dim = proposed is not None and proposed.area is not area
         table.add_row(*_cells(runtime, line), style=_DIM if dim else None)
     runtime.output.show(table)
     runtime.output.blank()
     _footer(runtime, menu)
+    if notice is not None:
+        runtime.output.info(
+            _("A new version, {version}: {command}").format(
+                version=notice.version, command=f"{LAUNCHER_FUNCTION} update"
+            )
+        )
+    _enter(runtime, menu)
 
 
 def _cells(runtime: Runtime, line: MenuStep) -> tuple[str, ...]:
@@ -80,8 +78,10 @@ def _cells(runtime: Runtime, line: MenuStep) -> tuple[str, ...]:
     number = str(line.number) if line.number else ""
     shown = line.command or line.step.typed or line.step.command
     command = escape(f"{LAUNCHER_FUNCTION} {shown}")
-    text = escape(line.step.text)
-    if line.step.typed:
+    text = escape(line.step.title)
+    if line.step.planned:
+        text += f" [italic]{_('(planned)')}[/]"
+    elif line.step.fields:
         text += f" [italic]{_('(type it yourself)')}[/]"
     elif not line.command:
         text += f" [italic]{_('(nothing to do yet)')}[/]"
@@ -94,7 +94,7 @@ def _cells(runtime: Runtime, line: MenuStep) -> tuple[str, ...]:
 
 
 def _footer(runtime: Runtime, menu: Menu) -> None:
-    """Say what a local model would add, how to type a step, then how to choose.
+    """Recall the badges, say what a local model would add and how to type a step.
 
     Args:
         runtime: Settings, mount points and output.
@@ -116,18 +116,22 @@ def _footer(runtime: Runtime, menu: Menu) -> None:
                 )
             )
         )
-    if any(line.step.typed for line in menu.steps):
+    if any(line.step.fields and not line.step.planned for line in menu.steps):
         output.info(
             _("A step to type yourself takes words only you know: {url}").format(
-                url=f"{DOC_PAGES}/{_('sort/quick-guide/')}"
+                url=f"{DOC_PAGES}/{_('reference-commands/')}"
             )
         )
-    # Not steps of a guide: `mh` runs them itself (0176, 0177).
-    output.info(
-        _("Your folders: {folders}. A new version: {update}.").format(
-            folders=f"{LAUNCHER_FUNCTION} folders", update=f"{LAUNCHER_FUNCTION} update"
-        )
-    )
+
+
+def _enter(runtime: Runtime, menu: Menu) -> None:
+    """Say what Enter runs, or that nothing is left.
+
+    Args:
+        runtime: Settings, mount points and output.
+        menu: The menu.
+    """
+    output = runtime.output
     proposed = menu.proposed
     if proposed is None:
         output.success(

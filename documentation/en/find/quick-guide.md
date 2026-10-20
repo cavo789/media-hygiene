@@ -35,8 +35,8 @@ mh audit
 Step 0 wrote `mh` into your PowerShell profile: every new terminal knows it. Better still, clean the
 duplicates first ([clean in short](../clean/quick-guide.md)): otherwise each photo is found twice.
 
-**Lost?** Type `mh` alone: the [home page](../commands/home.md) opens in your browser, every
-step of the guides a button, the next one proposed. In the terminal only: [`mh menu`](../commands/menu.md).
+**Lost?** Type `mh` alone: the [home page](../commands/home.md) opens in your browser: the next
+step proposed, every action a click or Ctrl+K away. In the terminal only: [`mh menu`](../commands/menu.md).
 
 ## 1. Name the people (optional)
 

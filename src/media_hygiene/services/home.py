@@ -26,7 +26,10 @@ from media_hygiene.review.ending import (
     EndingDoor,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
+from media_hygiene.review.home_app import AUDIT_PATH, STATE_MARK, STEP_PATH, HomeApp
+from media_hygiene.review.home_assets import ASSETS_PREFIX
+from media_hygiene.review.home_fields import RELAY_FIELDS
+from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.services.home_audit import HomeAudit
@@ -58,15 +61,20 @@ def home_page(*, relays_steps: bool = False) -> bytes:
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     template = environment.get_template(_TEMPLATE)
     return template.render(
-        state_path=STATE_PATH,
-        step_path=STEP_PATH,
-        audit_path=AUDIT_PATH,
-        alive_path=PRESENCE_PATH,
+        texts=home_texts(),
+        paths={
+            "state": STATE_PATH,
+            "step": STEP_PATH,
+            "audit": AUDIT_PATH,
+            "alive": PRESENCE_PATH,
+            "stop": STOP_PATH,
+            "assets": ASSETS_PREFIX,
+        },
         alive_ms=ALIVE_SECONDS * 1000,
-        stop_path=STOP_PATH,
         relays_steps=relays_steps,
         window=_mh_window(),
         thousands=separators()[0],
+        state_mark=STATE_MARK.decode(),
     ).encode()
 
 
@@ -79,6 +87,16 @@ def _mh_window() -> str:
     if windows_menu():
         return _("the PowerShell window of mh (in the taskbar)")
     return _("the terminal where mh runs")
+
+
+def launcher_relays_fields() -> bool:
+    """Tell whether `mh` also runs the words of a step's form (0266).
+
+    Returns:
+        True when `MEDIA_HYGIENE_LAUNCHER_STEPS` says so: `mh` reads the one-shot
+        file of the reports folder (`review/home_fields.py`).
+    """
+    return os.environ.get(LAUNCHER_STEPS_VARIABLE) == RELAY_FIELDS
 
 
 def launcher_relays_steps() -> bool:
@@ -123,6 +141,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         audit,
         presence,
         relays_steps=relays,
+        relays_fields=relays and launcher_relays_fields(),
     )
 
     def ready(port: int) -> None:

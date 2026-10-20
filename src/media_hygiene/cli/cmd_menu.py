@@ -14,11 +14,17 @@ from __future__ import annotations
 
 import os
 import sys
+from typing import TYPE_CHECKING
 
 import typer
 
 from media_hygiene.cli.context import runtime_of
 from media_hygiene.i18n import _
+
+if TYPE_CHECKING:
+    from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.status import Status
+    from media_hygiene.services.update_check import UpdateNotice
 
 
 def menu_command(ctx: typer.Context) -> None:
@@ -34,7 +40,6 @@ def menu_command(ctx: typer.Context) -> None:
     from media_hygiene.cli.status_view import status_lines
     from media_hygiene.console.output import data_on_terminal
     from media_hygiene.services.next_command import LAUNCHER_VARIABLE
-    from media_hygiene.services.status import read_status
 
     runtime = runtime_of(ctx)
     output = runtime.output
@@ -43,14 +48,14 @@ def menu_command(ctx: typer.Context) -> None:
     # A large quarantine takes seconds to count through Docker Desktop: a spinner on
     # stderr (`mh` passes --color always) says the tool is alive (seen 2026-10-16).
     with output.console.status(_("Reading the tool folders…")):
-        status = read_status(runtime)
+        status, notice = _where(runtime)
     menu = build_menu(status, runtime.settings.clean.purge_hint_days)
     output.title(_("media-hygiene — where you are"))
     lines = status_lines(status)
     for line in (*lines[:2], *lines[-1:] * bool(status.missing)):
         output.info(line)
     output.blank()
-    show_menu(runtime, menu)
+    show_menu(runtime, menu, notice)
     if on_screen or not os.environ.get(LAUNCHER_VARIABLE):
         output.warning(
             _(
@@ -62,3 +67,19 @@ def menu_command(ctx: typer.Context) -> None:
         return
     sys.stdout.write("".join(f"{line}\n" for line in choice_lines(menu)))
     sys.stdout.flush()
+
+
+def _where(runtime: Runtime) -> tuple[Status, UpdateNotice | None]:
+    """Read the tool folders, and whether a newer version is published.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        What the tool folders say; the newer version, Docker Hub asked once a day
+        at most (0267).
+    """
+    from media_hygiene.services.status import read_status
+    from media_hygiene.services.update_check import newer_version
+
+    return read_status(runtime), newer_version(runtime)

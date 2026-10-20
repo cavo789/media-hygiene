@@ -6,7 +6,9 @@ it relays the steps: `-e MEDIA_HYGIENE_LAUNCHER_STEPS=1`, set by this loop alone
 
 from __future__ import annotations
 
+import re
 from dataclasses import replace
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import pytest
@@ -15,6 +17,8 @@ from media_hygiene.constants import ExitCode, Locale
 from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
+from media_hygiene.review.home_fields import RELAY_FIELDS, write_step
+from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
@@ -27,7 +31,6 @@ from tests.unit.test_launcher_ascii import accented_runtime
 
 if TYPE_CHECKING:
     import subprocess
-    from pathlib import Path
 
 _COMMANDS: Final = LauncherCommands(
     names=("audit", "browse", "clean", "history", "home", "menu"),
@@ -36,7 +39,8 @@ _COMMANDS: Final = LauncherCommands(
     data=("menu",),
     port=8088,
 )
-_RELAY: Final = f"{LAUNCHER_STEPS_VARIABLE}=1"
+# The reports are in a host folder: `mh` also reads the one-shot file of a form (0266).
+_RELAY: Final = f"{LAUNCHER_STEPS_VARIABLE}={RELAY_FIELDS}"
 # `menu` prints its steps; `home` exits with the next code of $CODES (then 0) and
 # says whether it was told to relay; any other command says it ran.
 _FAKE_DOCKER: Final = r"""
@@ -69,9 +73,13 @@ docker() {
         fi
         return "${code:-0}"
     fi
+    local words=() seen=""
     for arg in "$@"; do
         if [[ "$arg" == history || "$arg" == clean ]]; then echo "ran:$arg"; fi
+        if [[ "$arg" == album ]]; then seen=1; fi
+        if [[ -n "$seen" ]]; then words+=("$arg"); fi
     done
+    if [[ -n "$seen" ]]; then (IFS='|'; echo "ran:${words[*]}"); fi
     return 0
 }
 """
@@ -208,3 +216,39 @@ def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     code = int(ExitCode.PAGE_CLOSED)
     closed = f"if ($status -eq {code}) {{ $global:LASTEXITCODE = 0; return }}"
     assert text.index(closed) < text.index("if ($status -le 100) {")
+
+
+def _step_file(tmp_path: Path) -> Path:
+    """Where the bash `mh` of `_bash` reads the words of a form (the reports folder)."""
+    script = (tmp_path / "mh.sh").read_text()
+    found = re.search(r'-f "([^"]+\.mh-step\.json)"', script)
+    assert found
+    return Path(found[1].replace("$HOME", str(tmp_path)))
+
+
+def test_a_form_s_words_run_once_then_the_file_is_gone(tmp_path: Path) -> None:
+    """0266: `199` runs the words of the one-shot file, `Noël 2025` one of them."""
+    _bash(tmp_path, "true", "0")
+    step = _step_file(tmp_path)
+    step.parent.mkdir(parents=True, exist_ok=True)
+    write_step(step.parent, ("album", "Noël 2025", "--category", "Noël"))
+    code = str(STEP_EXIT_BASE + FIELDS_STEP)
+    done = _bash(tmp_path, "mh", code)
+    assert _lines(done) == [
+        "home:relayed",
+        "ran:album|Noël 2025|--category|Noël",
+        "home:relayed",
+        "status=0",
+    ]
+    assert not step.exists()
+
+
+def test_a_file_left_behind_never_runs_for_a_numbered_step(tmp_path: Path) -> None:
+    """A step chosen by its number runs that step, whatever file is there."""
+    _bash(tmp_path, "true", "0")
+    step = _step_file(tmp_path)
+    step.parent.mkdir(parents=True, exist_ok=True)
+    write_step(step.parent, ("album", "Old", "--category", "Old"))
+    done = _bash(tmp_path, "mh", "103")
+    assert _lines(done) == ["home:relayed", "ran:history", "home:relayed", "status=0"]
+    assert step.exists()

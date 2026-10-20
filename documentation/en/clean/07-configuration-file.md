@@ -841,6 +841,21 @@ Mount points
 - **Folder on your computer** shows the Windows folder behind each mount; `—` for a Docker
   volume such as the cache.
 
+## A new version: `check_updates`
+
+```toml
+[general]
+check_updates = true
+```
+
+Once a day at most, the home page and `mh menu` ask Docker Hub whether a newer version of
+`cavo789/media-hygiene` is published, and say so with the command,
+[`mh update`](../commands/launcher.md#a-new-version-mh-update). What is sent: one request for the
+image's tags, with no data about your photos; Docker Hub sees your address, as with a
+`docker pull`. The answer is kept a day in `C:\Users\<you>\media-hygiene\cache`. Without a
+network, nothing is shown and nothing waits. `check_updates = false`: never ask. An image you
+built yourself never asks.
+
 ## After an update
 
 A newer version can bring new settings. Your file keeps working without them, each one at its

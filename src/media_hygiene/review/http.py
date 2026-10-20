@@ -30,7 +30,7 @@ NO_REFERRER: Final = "no-referrer"
 # What the page may load: itself only. `places` adds its scripts and the map tiles.
 REVIEW_POLICY: Final = (
     "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-    "img-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+    "img-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
 )
 
 
@@ -47,6 +47,7 @@ class ContentType(StrEnum):
     TEXT = "text/plain; charset=utf-8"
     JAVASCRIPT = "text/javascript; charset=utf-8"
     CSS = "text/css; charset=utf-8"
+    WOFF2 = "font/woff2"
     MP4 = "video/mp4"
     QUICKTIME = "video/quicktime"
     MATROSKA = "video/x-matroska"
@@ -75,7 +76,7 @@ class Request:
 
 
 @dataclass(frozen=True, slots=True)
-class Response:
+class Response:  # pylint: disable=too-many-instance-attributes
     """A response: `cacheable` never changes for its path; CSP and Referrer-Policy."""
 
     status: HTTPStatus
@@ -85,6 +86,7 @@ class Response:
     policy: str = REVIEW_POLICY
     referrer: str = NO_REFERRER
     part: FilePart | None = None  # sent after the head, instead of `body`
+    max_age: int = 0  # seconds the browser keeps it without asking (`/assets/`)
 
 
 class BadRequestError(Exception):

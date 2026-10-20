@@ -1,0 +1,249 @@
+{# The script of home.html.j2, what it draws: the sidebar, the top bar, the home view, each space.
+   Everything comes from S, the state of cli/home_state.py; nothing is decided here. #}
+// ---- Small builders ---------------------------------------------------------------------
+const cmdChip = (command, id = "") => `<span class="cmd"${id ? ` id="${id}"` : ""}><code><span class="ps" aria-hidden="true">PS&gt;</span>${esc(command)}</code><button class="copy" type="button" data-copy="${esc(command)}" aria-label="${esc(fill(T.copyThe, { command: command }))}">${icon("copy")}</button></span>`;
+const riskPill = (risk) => { const r = RISK[risk]; return `<span class="pill ${r.cls}">${icon(r.icon)} ${esc(r.label)}</span>`; };
+function pillsOf(action) {
+  const out = [riskPill(action.risk)];
+  if (action.ai) out.push(`<span class="pill pill-ai" title="${esc(S.ai ? T.aiOnTitle : T.aiOffTitle)}">${icon("sparkles")} ${esc(S.ai ? T.aiOn : T.aiOff)}</span>`);
+  if (action.optional) out.push(`<span class="pill pill-opt">${esc(T.optional)}</span>`);
+  if (action.windows) out.push(`<span class="pill pill-win">${icon("window")} Windows</span>`);
+  if (action.planned) out.push(`<span class="pill pill-planned">${esc(T.planned)}</span>`);
+  return `<span class="pills">${out.join("")}</span>`;
+}
+function docLinks(action) {
+  const doc = action.doc;
+  if (!doc) return "";
+  const twin = doc.url_en !== doc.url ? `<a class="doc-mini" href="${esc(doc.url_en)}" target="_blank" rel="noopener" hreflang="en" lang="en" aria-label="Documentation in English (new tab)">EN</a>` : "";
+  return `<span class="doc-links"><a class="doc-mini" href="${esc(doc.url)}" target="_blank" rel="noopener" aria-label="${esc(fill(T.docOf, { title: action.title }))}">${icon("book")} ${esc(T.doc)}</a>${twin}</span>`;
+}
+function verbOf(action, st) {
+  if (st.planned) return T.verbSoon;
+  if (action.fields.length) return T.verbFill;
+  return action.kind === "page" ? T.verbPage : T.verbRun;
+}
+function actionButton(action, st) {
+  const off = !st.available;
+  const glyph = st.planned ? "info" : action.fields.length ? "edit" : action.kind === "page" ? "external" : "play";
+  const cls = st.proposed ? "btn btn-primary" : action.risk === "final" && !off ? "btn btn-danger-ghost" : "btn";
+  const here = action.name === "audit" && !off ? `<button class="btn btn-ghost btn-sm" type="button" data-act="audit-here">${esc(T.inThisPage)}</button>` : "";
+  return `<button class="${cls}" type="button" data-run="${esc(action.name)}"${off ? ' aria-disabled="true"' : ""}>${icon(glyph)} ${esc(verbOf(action, st))}</button>${here}`;
+}
+
+// ---- Sidebar and top bar ----------------------------------------------------------------
+function navBadge(space) {
+  if (space.badge) return `<span class="nav-count${space.mark === "planned" || space.id === "history" ? " is-soft" : ""}">${esc(space.badge)}</span>`;
+  if (space.mark === "here") return `<span class="nav-here"><span class="visually-hidden">${esc(T.nextStep)}</span></span>`;
+  return "";
+}
+function navItem(space) {
+  const current = view.id === space.id;
+  return `<li><a class="nav-link" href="#${esc(space.id)}" data-go="${esc(space.id)}"${current ? ' aria-current="page"' : ""} tabindex="${current ? 0 : -1}">${icon(space.icon)}<span>${esc(space.title)}</span>${space.id === HOME ? "" : navBadge(space)}</a></li>`;
+}
+function renderNav() {
+  $("#navHome").innerHTML = navItem(SPACE[HOME]);
+  $("#navStages").innerHTML = STAGES.map(navItem).join("");
+  $("#navTools").innerHTML = TOOLS.map(navItem).join("");
+}
+function renderFolders() {
+  const warn = S.folders.some((folder) => !folder.ok);
+  $("#foldersSummary").innerHTML = `${icon("folder")}<span>${esc(fill(T.yourFolders, { count: S.folders.length }))}</span>${warn ? `<span class="folder-warn"><span class="visually-hidden">${esc(T.folderMissing)}</span></span>` : ""}<svg class="i chev" aria-hidden="true"><use href="#i-chevron"></use></svg>`;
+  $("#folderList").innerHTML = S.folders.map((folder) => `<li class="folder-item"><span class="folder-path">${esc(folder.path)}</span><span class="folder-role${folder.ok ? "" : " is-warn"}">${esc(folder.role)} · ${esc(folder.note)}</span></li>`).join("");
+}
+function renderSignature() {
+  const state = S.update ? `<a class="sig-state" href="#settings" data-go="settings">${esc(fill(T.available, { version: S.update.version }))}</a>` : `<span class="sig-state">${esc(T.upToDate)}</span>`;
+  $("#sigVersion").innerHTML = `Media Hygiene ${esc(S.version)} ${state}`;
+}
+function renderTop() {
+  const space = SPACE[view.id];
+  $("#crumbHere").textContent = space.long || space.title;
+  const doc = space.guide || S.docs;
+  const label = space.guide ? space.guide_title : T.docHome;
+  const undo = S.undo ? `<button class="btn btn-ghost" type="button" data-run="undo" title="${esc(S.undo.command)}">${icon("undo")}<span class="hide-sm">${esc(T.undoLast)}</span><span class="visually-hidden"> : ${esc(S.undo.text)}</span></button>` : "";
+  const twin = doc.url_en !== doc.url ? `<a class="lang-link" href="${esc(doc.url_en)}" target="_blank" rel="noopener" hreflang="en" lang="en" aria-label="Documentation in English (new tab)">EN</a>` : "";
+  $("#topLinks").innerHTML = `${undo}<a class="doc-link" href="${esc(doc.url)}" target="_blank" rel="noopener" title="${esc(label)}" aria-label="${esc(fill(T.docOf, { title: label }))}">${icon("book")}<span class="hide-sm">${esc(T.documentation)}</span></a>${twin}`;
+}
+
+// ---- Home -------------------------------------------------------------------------------
+function updateBanner() {
+  if (!S.update || store.get("dismissed", "") === S.update.version) return "";
+  return `<div class="banner" role="status">${icon("cloud-down")}<p class="grow"><strong>${esc(fill(T.newVersion, { version: S.update.version }))}</strong> · ${esc(fill(T.youHave, { version: S.version }))}</p><a class="btn btn-ghost" href="${esc(S.update.notes)}" target="_blank" rel="noopener">${icon("external")} ${esc(T.whatChanges)}</a><button class="btn btn-primary" type="button" data-run="update">${icon("refresh")} ${esc(T.updateNow)}</button><button class="btn btn-ghost icon-btn" type="button" data-act="dismiss-update" aria-label="${esc(T.later)}">${icon("x")}</button></div>`;
+}
+function hero() {
+  const action = proposedAction();
+  const pose = !action ? "party" : ACTION_POSE[action.name] || POSE[stageOf(action.name)] || "lookout";
+  const art = `<div class="hero-art" aria-hidden="true"><img src="${image(`meerkat-${pose}.webp`)}" alt="" width="400" height="400"></div>`;
+  if (!action) {
+    const firsts = ["phone", "search"].filter((name) => BY_ID[name]);
+    const buttons = firsts.map((name, at) => `<button class="btn ${at ? "" : "btn-primary "}btn-lg"${at ? "" : ' id="heroRun"'} type="button" data-run="${name}">${icon(BY_ID[name].icon)} ${esc(BY_ID[name].title)}</button>`).join("");
+    return `<section class="hero is-calm" aria-labelledby="heroTitle"><div class="hero-body"><span class="hero-tag is-ok">${icon("check")} ${esc(T.allApplied)}</span><h2 id="heroTitle">${esc(T.allInOrder)}</h2><p class="hero-why">${esc(T.allInOrderWhy)}</p><div class="hero-actions">${buttons}</div></div>${art}</section>`;
+  }
+  return `<section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-body">
+      <span class="hero-tag">${icon("arrow-right")} ${esc(T.nextStep)}</span>
+      <p class="eyebrow">${esc(S.proposed.where)}</p>
+      <h2 id="heroTitle">${esc(action.title)}</h2>
+      <p class="hero-why">${esc(S.proposed.why)}</p>
+      <span class="pills">${riskPill(action.risk)}</span>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" id="heroRun" type="button" data-run="${esc(action.name)}">${icon(action.kind === "page" ? "external" : "play")} ${esc(verbOf(action, statusOf(action)))}</button>
+        ${cmdChip(S.proposed.command)}
+        ${docLinks(action)}
+      </div>
+      <p class="hero-hint">${T.enterHint}</p>
+    </div>${art}
+  </section>`;
+}
+function station(space) {
+  const cls = { here: "is-here", done: "is-done", todo: "is-todo", planned: "is-planned" }[space.mark] || "";
+  const pct = space.total ? Math.round((100 * space.done) / space.total) : 0;
+  const meter = space.planned ? "" : `<span class="station-meter" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="visually-hidden">${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</span>`;
+  return `<li><a class="station ${cls}" href="#${esc(space.id)}" data-go="${esc(space.id)}">
+    <span class="station-dot" aria-hidden="true">${icon(space.icon)}${space.mark === "done" ? `<span class="station-check">${icon("check")}</span>` : ""}</span>
+    <span class="station-text">
+      <span><span class="station-num" aria-hidden="true">${space.stage}</span><span class="station-name">${esc(space.title)}</span></span>
+      ${space.mark === "here" ? `<span class="pill pill-here">${esc(T.youAreHere)}</span>` : ""}
+      <span class="station-state">${esc(space.line)}</span>
+      ${meter}
+    </span>
+  </a></li>`;
+}
+const TILE_PILL = () => ({
+  ok: `<span class="pill pill-done">${icon("check")} OK</span>`,
+  todo: `<span class="pill pill-here">${esc(T.toDo)}</span>`,
+  check: `<span class="pill pill-planned">${esc(T.toCheck)}</span>`,
+  planned: `<span class="pill pill-planned">${esc(T.planned)}</span>`,
+});
+const tile = (t) => `<button class="tile" type="button" data-go="${esc(t.space)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
+function findingRow(row) {
+  const action = row.action ? BY_ID[row.action] : null;
+  const button = action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : "";
+  return `<li class="finding${row.ok ? " is-ok" : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
+}
+function findings() {
+  const found = S.findings;
+  const thumbs = S.previews.map((url) => `<figure class="thumb"><img src="${esc(url)}" alt="" loading="lazy" decoding="async"></figure>`).join("");
+  const open = S.index ? `<a class="link-btn" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)} ${icon("external")}</a>` : "";
+  const previews = thumbs ? `<div class="previews-card"><div class="previews-head"><h3>${esc(T.previews)}</h3>${open}</div><div class="thumbs">${thumbs}</div></div>` : "";
+  return `<section class="block" aria-labelledby="foundTitle">
+    <div class="section-head"><h2 id="foundTitle">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
+    <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul>${previews}</div>
+  </section>`;
+}
+function welcome() {
+  return `<section class="block" aria-labelledby="safeTitle">
+    <div class="section-head"><h2 id="safeTitle">${esc(T.threeThings)}</h2></div>
+    <ul class="safety">
+      <li>${riskPill("safe")}<p>${T.safeLine}</p></li>
+      <li>${riskPill("undo")}<p>${T.undoLine}</p></li>
+      <li>${riskPill("final")}<p>${T.finalLine}</p></li>
+    </ul>
+  </section>`;
+}
+function reportItems(withIcon) {
+  const items = S.reports.map((report) => `<li>${withIcon ? `<span class="report-icon" aria-hidden="true">${icon("report")}</span>` : ""}<div><a class="link-btn" href="${esc(report.url)}" target="_blank" rel="noopener">${withIcon ? "" : icon("report")} ${esc(report.label)}</a><p class="run-detail">${esc(report.when)}</p></div></li>`);
+  if (S.index) items.push(`<li><a class="link-btn" href="${esc(S.index)}" target="_blank" rel="noopener">${icon("external")} ${esc(T.everyReport)}</a></li>`);
+  return items.length ? items.join("") : `<li class="muted">${esc(T.noReport)}</li>`;
+}
+const recentReports = () => `<section class="panel" aria-labelledby="reportsTitle"><h2 class="panel-title" id="reportsTitle">${esc(T.recentReports)}</h2><ul class="plain-list">${reportItems(false)}</ul></section>`;
+function auditPanel() {
+  return `<section class="panel audit-here" id="auditHere" aria-labelledby="auditHereTitle">
+    <div class="panel-head"><h2 class="panel-title" id="auditHereTitle">${esc(T.auditHere)}</h2>${riskPill("safe")}</div>
+    <p class="muted">${esc(T.auditHereText)}</p>
+    <div class="audit-controls"><button class="btn" type="button" data-act="audit-here" id="auditStart">${icon("play")} ${esc(T.auditNow)}</button><button class="btn btn-ghost" type="button" data-act="audit-stop" id="auditStop" hidden>${esc(T.auditStop)}</button></div>
+    <ol class="progress-steps" id="auditSteps" hidden></ol>
+    <p class="pcurrent" id="auditCurrent" aria-live="polite"></p>
+    <div id="auditEnd"></div>
+  </section>`;
+}
+function viewHome() {
+  const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
+  return `${updateBanner()}
+    <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
+    ${given}${hero()}
+    <section class="block" aria-labelledby="cycleTitle">
+      <div class="section-head"><h2 id="cycleTitle">${esc(T.cycle)}</h2><p class="section-note">${esc(T.cycleNote)}</p></div>
+      <ol class="cycle">${STAGES.map(station).join("")}</ol>
+      <p class="cycle-loop">${icon("loop")}<span>${T.cycleLoop}</span></p>
+    </section>
+    <section class="block" aria-labelledby="whereTitle">
+      <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2><p class="section-note">${esc(T.tilesNote)}</p></div>
+      <div class="tiles">${S.tiles.map(tile).join("")}</div>
+    </section>
+    ${S.findings ? findings() : welcome()}
+    <div class="duo">${recentReports()}${auditPanel()}</div>`;
+}
+
+// ---- Spaces -----------------------------------------------------------------------------
+function stepRow(action, number, numbered) {
+  const st = statusOf(action);
+  const cls = ["step", st.done && "is-done", st.proposed && "is-proposed", !st.available && "is-unavailable"].filter(Boolean).join(" ");
+  const marker = st.done ? icon("check") : numbered ? String(number) : icon(action.icon);
+  const tags = `${st.proposed ? `<span class="pill pill-here">${esc(T.nextStep)}</span>` : ""}${st.done ? `<span class="pill pill-done">${icon("check")} ${esc(T.done)}</span>` : ""}`;
+  return `<li class="${cls}">
+    <span class="step-marker" aria-hidden="true">${marker}</span>
+    <div class="step-body">
+      <h3 class="step-title">${numbered ? `<span class="visually-hidden">${esc(fill(T.stepN, { number: number }))} </span>` : ""}${esc(action.title)}${tags}</h3>
+      <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
+      <div class="step-meta">${pillsOf(action)}${cmdChip(action.command)}</div>
+    </div>
+    <div class="step-actions">${actionButton(action, st)}${docLinks(action)}</div>
+  </li>`;
+}
+function card(action) {
+  const st = statusOf(action);
+  return `<article class="tool-card${st.available || st.planned ? "" : " is-unavailable"}">
+    <div class="tool-head"><span class="tool-icon" aria-hidden="true">${icon(action.icon)}</span><h3 class="tool-title">${esc(action.title)}</h3></div>
+    <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
+    ${pillsOf(action)}
+    ${cmdChip(action.command)}
+    <div class="tool-foot">${actionButton(action, st)}${docLinks(action)}</div>
+  </article>`;
+}
+function groupHtml(group, cards) {
+  const names = group.actions.filter((name) => BY_ID[name]);
+  const extra = group.extra && EXTRAS[group.extra] ? EXTRAS[group.extra]() : "";
+  if (!names.length && !extra) return "";
+  let body = "";
+  if (names.length && cards) body = `<div class="cards">${names.map((name) => card(BY_ID[name])).join("")}</div>`;
+  else if (names.length) {
+    const tag = group.numbered ? "ol" : "ul";
+    body = `<${tag} class="steps">${names.map((name, at) => stepRow(BY_ID[name], at + 1, group.numbered)).join("")}</${tag}>`;
+  }
+  return `<section class="group"><h2 class="group-title">${esc(group.title)}</h2>${extra}${body}</section>`;
+}
+function viewSpace(space) {
+  const pct = space.total ? Math.round((100 * space.done) / space.total) : 0;
+  const twin = space.guide && space.guide.url_en !== space.guide.url ? `<a class="btn btn-sm btn-ghost" href="${esc(space.guide.url_en)}" target="_blank" rel="noopener" hreflang="en" lang="en">EN</a>` : "";
+  const guide = space.guide ? `<a class="btn btn-sm" href="${esc(space.guide.url)}" target="_blank" rel="noopener">${icon("book")} ${esc(space.guide_title)}</a>${twin}` : "";
+  const progress = space.stage && !space.planned ? `<p class="space-progress"><span class="meter" aria-hidden="true"><span style="width:${pct}%"></span></span>${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</p>` : "";
+  const planned = space.planned ? `<div class="callout callout-warn">${icon("info")}<div><p><strong>${esc(T.backupPlanned)}</strong></p><p>${esc(T.backupPlannedText)}</p></div></div>` : "";
+  const top = (TOPS[space.id] || []).map((name) => EXTRAS[name]()).join("");
+  const art = POSE[space.id] ? `<span aria-hidden="true"><img class="space-art" src="${image(`meerkat-${POSE[space.id]}.webp`)}" alt="" width="400" height="400" loading="lazy" decoding="async"></span>` : "";
+  // A stage's first guide is numbered; what follows it is "go further", as cards.
+  const groups = space.groups.map((group) => groupHtml(group, space.stage > 0 && !group.numbered)).join("");
+  return `<header class="space-head">
+      <div><p class="eyebrow">${esc(space.stage ? fill(T.stageN, { stage: space.stage }) : T.tools)}</p><h1>${esc(space.long || space.title)}</h1><p class="space-pitch">${esc(space.pitch)}</p></div>
+      <div class="space-side"><div class="guide-links">${guide}</div>${progress}</div>
+      ${art}
+    </header>
+    ${planned}${top}${groups}`;
+}
+const EXTRAS = {
+  undo: () => (S.undo
+    ? `<div class="callout callout-info">${icon("undo")}<div><p><strong>${esc(fill(T.stillUndoable, { what: S.undo.text }))}</strong></p><div class="callout-actions"><button class="btn btn-primary" type="button" data-run="undo">${icon("undo")} ${esc(T.undoThis)}</button>${cmdChip(S.undo.command)}</div></div></div>`
+    : `<div class="callout callout-note">${icon("info")}<p>${esc(T.nothingToUndo)}</p></div>`),
+  quarantine: () => (S.quarantine.length
+    ? `<div class="table-wrap"><table><caption class="table-caption">${esc(T.quarantineByRun)}</caption><thead><tr><th scope="col">${esc(T.run)}</th><th scope="col">${esc(T.files)}</th><th scope="col">${esc(T.room)}</th><th scope="col">${esc(T.since)}</th></tr></thead><tbody>${S.quarantine.map((q) => `<tr><td><code>${esc(q.run_id)}</code></td><td class="num">${esc(q.files)}</td><td class="num">${esc(q.size)}</td><td>${esc(q.since)}</td></tr>`).join("")}</tbody></table></div>`
+    : `<p class="muted">${esc(T.quarantineEmpty)}</p>`),
+  reportsList: () => `<ul class="report-list">${reportItems(true)}</ul>`,
+  folders: () => `<div class="table-wrap"><table><caption class="table-caption">${esc(T.foldersKnown)}</caption><thead><tr><th scope="col">${esc(T.folder)}</th><th scope="col">${esc(T.role)}</th><th scope="col">${esc(T.state)}</th></tr></thead><tbody>${S.folders.map((f) => `<tr><td><code>${esc(f.path)}</code></td><td>${esc(f.role)}</td><td>${f.ok ? `<span class="pill pill-done">${icon("check")} ${esc(f.note)}</span>` : `<span class="pill pill-planned">${icon("alert")} ${esc(f.note)}</span>`}</td></tr>`).join("")}</tbody></table></div>`,
+  update: () => `<p class="setting-line">${S.update ? `<strong>${esc(fill(T.newVersion, { version: S.update.version }))}</strong> (${esc(fill(T.youHave, { version: S.version }))}).` : `<strong>Media Hygiene ${esc(S.version)}</strong> ${esc(T.isLatest)}`} ${T.updateCheck}</p>`,
+  ai: () => `<div class="callout ${S.ai ? "callout-info" : "callout-note"}">${icon("sparkles")}<p>${S.ai ? T.aiSet : T.aiNotSet}</p></div>`,
+  about: () => `<div class="about"><img src="${image("avatar.webp")}" alt="${esc(T.avatarAlt)}" width="236" height="320"><div><p class="about-title">Media Hygiene ${esc(S.version)}</p><p>${T.aboutText}</p><p class="muted small"><a href="https://github.com/cavo789/media-hygiene" target="_blank" rel="noopener">${esc(T.codeOnGitHub)}</a> · <a href="https://hub.docker.com/r/cavo789/media-hygiene" target="_blank" rel="noopener">${esc(T.imageOnHub)}</a></p></div></div>`,
+};
+function renderMain() {
+  const space = SPACE[view.id];
+  $("#main").innerHTML = space.id === HOME ? viewHome() : viewSpace(space);
+  if (audit.last) drawAudit(audit.last);
+}

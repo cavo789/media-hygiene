@@ -36,6 +36,20 @@ def plain_output(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.fixture(autouse=True)
+def offline(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Never ask Docker Hub for a newer version: no network in the tests (0267).
+
+    Args:
+        monkeypatch: Pytest monkeypatch fixture.
+    """
+
+    def refuse(url: str) -> bytes:
+        raise OSError(url)
+
+    monkeypatch.setattr("media_hygiene.services.update_check.fetch_tags", refuse)
+
+
+@pytest.fixture(autouse=True)
 def english() -> Iterator[None]:
     """Run every test in English, whatever a previous test installed."""
     install(Locale.EN)

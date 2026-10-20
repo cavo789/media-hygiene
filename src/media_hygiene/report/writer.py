@@ -13,7 +13,11 @@ from media_hygiene.constants import (
     REPORT_FILE_NAME,
     SUMMARY_FILE_NAME,
 )
-from media_hygiene.report.backup_views import backup_section, write_backup_csvs
+from media_hygiene.report.backup_views import (
+    backup_only,
+    backup_section,
+    write_backup_csvs,
+)
 from media_hygiene.report.builder import ReportBuilder
 from media_hygiene.report.csv_export import write_plan_csv
 from media_hygiene.report.environment import make_environment
@@ -74,8 +78,13 @@ class ReportWriter:
             )
         write_plan_csv(folder / PLAN_CSV_FILE_NAME, record.findings, self.mapper)
         write_backup_csvs(folder, record.findings.backups, self.mapper)
-        summary_json = view.header.summary.model_dump_json(indent=2)
-        (folder / SUMMARY_FILE_NAME).write_text(summary_json, encoding="utf-8")
+        # What only a backup holds: `mh menu` then proposes `import` (0265).
+        summary = view.header.summary.model_copy(
+            update={"backup_only": backup_only(record.findings.backups)}
+        )
+        (folder / SUMMARY_FILE_NAME).write_text(
+            summary.model_dump_json(indent=2), encoding="utf-8"
+        )
         write_index(self.reports_dir)
         return target
 

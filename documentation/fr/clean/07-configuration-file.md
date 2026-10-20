@@ -923,6 +923,22 @@ de commande l'emportent.
 - **Dossier sur votre ordinateur** montre le dossier Windows derrière chaque montage ; `—` pour
   un volume Docker comme le cache.
 
+## Une nouvelle version : `check_updates`
+
+```toml
+[general]
+check_updates = true
+```
+
+Une fois par jour au plus, la page d'accueil et `mh menu` demandent à Docker Hub si une version
+plus récente de `cavo789/media-hygiene` est publiée, et le disent avec la commande,
+[`mh update`](../commands/launcher.md#une-nouvelle-version--mh-update). Ce qui part : une
+demande des étiquettes de l'image, sans aucune donnée sur vos photos ; Docker Hub voit votre
+adresse, comme pour un `docker pull`. La réponse est gardée un jour dans
+`C:\Users\<vous>\media-hygiene\cache`. Sans réseau, rien ne s'affiche et rien n'attend.
+`check_updates = false` : ne jamais demander. Une image que vous avez construite vous-même ne
+demande jamais.
+
 ## Après une mise à jour
 
 Une version plus récente peut apporter de nouveaux réglages. Votre fichier fonctionne toujours

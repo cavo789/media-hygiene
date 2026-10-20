@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import csv
+import json
 from typing import TYPE_CHECKING
 
 from PIL import Image
 
 from media_hygiene.console.backup_view import show_backups
-from media_hygiene.constants import RunKind
+from media_hygiene.constants import SUMMARY_FILE_NAME, RunKind
 from media_hygiene.report.backup_views import (
     MISSING_CSV_FILE_NAME,
     ONLY_CSV_FILE_NAME,
@@ -153,6 +154,10 @@ def test_console_report_and_csv_files_say_both(
     with (report.parent / ONLY_CSV_FILE_NAME).open(encoding=CSV_ENCODING) as f:
         only = list(csv.reader(f))
     assert len(missing) == len(only) == 3  # the header, then two files each
+    # What `mh menu` proposes to import: the files only it holds, never dealt with.
+    summary = json.loads((report.parent / SUMMARY_FILE_NAME).read_text("utf-8"))
+    assert summary["backup_only"] == sum(len(b.to_import) for b in findings.backups)
+    assert summary["backup_only"] > 0
     assert {row[1] for row in missing[1:]} == {
         runtime.mapper.to_host(files["library only"]),
         runtime.mapper.to_host(files["resized"]),

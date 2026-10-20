@@ -88,3 +88,5 @@ class ReportSummary(BaseModel):
     plan_file: str | None = None
     crosscheck: CrossCheckSummary | None = None
     inventory: Inventory | None = None
+    # Files only a backup folder holds, never imported nor dealt with (`import`).
+    backup_only: int = 0

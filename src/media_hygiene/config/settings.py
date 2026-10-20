@@ -32,7 +32,7 @@ _QUARANTINE_HEADROOM_GB = 1.0
 
 
 class GeneralSettings(BaseModel):
-    """`[general]` — language, time zone, log level, colours."""
+    """`[general]` — language, time zone, log level, colours, the version check."""
 
     model_config = _FROZEN
 
@@ -40,6 +40,7 @@ class GeneralSettings(BaseModel):
     timezone: str = ""
     verbosity: Verbosity = Verbosity.INFO
     color: ColorMode = ColorMode.AUTO
+    check_updates: bool = True  # ask Docker Hub for a newer version, once a day (0267)
 
     @field_validator("timezone")
     @classmethod

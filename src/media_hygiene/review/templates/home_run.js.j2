@@ -1,0 +1,283 @@
+{# The script of home.html.j2, what it runs: a step sent to mh (the server ends, mh runs it, the page
+   comes back), its form or its confirmation first, the audit of the page, the palette, Quit. #}
+// ---- Running a step ---------------------------------------------------------------------
+function onRun(name) {
+  const action = BY_ID[name];
+  if (!action) return;
+  const st = statusOf(action);
+  if (!st.available) { toast(st.reason); return; }
+  if (action.fields.length) { openForm(action); return; }
+  proceed(action, { number: action.number, command: action.command }, action.command);
+}
+// Only what may be lost for good asks first, in the page; mh asks again before acting.
+const confirms = (action) => action.risk === "final";
+function proceed(action, body, command) {
+  if (confirms(action)) { openConfirm(action, body, command); return; }
+  launch(action, body, command);
+}
+function launch(action, body, command) {
+  if (!RELAYS) { copyBox(command); return; }
+  $$("button").forEach((button) => { button.disabled = true; });
+  post(P.step, body)
+    .then((reply) => {
+      $$("button").forEach((button) => { button.disabled = false; });
+      if (reply.ok) { openRun(action, reply.body.command); return; }
+      if (reply.body.command) copyBox(reply.body.command);
+      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      if (reply.status === 409 && !reply.body.command) reload();
+    })
+    .catch(() => stopped());
+}
+const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer })));
+function showDialog(dialog) {
+  dialog.opener = document.activeElement;
+  dialog.showModal();
+}
+const closeButton = () => `<button class="btn btn-ghost icon-btn" type="button" data-close aria-label="${esc(T.close)}">${icon("x")}</button>`;
+function openForm(action) {
+  const dialog = $("#formDlg");
+  const fields = action.fields.map((field, at) => `<div class="field"><label for="f-${esc(field.name)}">${esc(field.label)}</label><input id="f-${esc(field.name)}" name="${esc(field.name)}" type="${field.kind === "number" ? "number" : "text"}" value="${esc(field.example)}" autocomplete="off" spellcheck="false" required${at ? "" : " autofocus"}></div>`).join("");
+  dialog.innerHTML = `<form class="dlg" id="formEl" novalidate>
+    <div class="dlg-head"><div><p class="eyebrow">${icon("edit")} ${esc(T.toFill)}</p><h2 id="formTitle">${esc(action.title)}</h2></div>${closeButton()}</div>
+    <p class="dlg-text">${esc(action.text)} ${esc(T.formNote)}</p>
+    ${fields}
+    <p class="field-error" id="formError" role="alert" hidden></p>
+    <div class="dlg-foot"><button class="btn" type="button" data-close>${esc(T.cancel)}</button><button class="btn btn-primary" type="submit">${icon("play")} ${esc(T.verbRun)}</button></div>
+  </form>`;
+  const form = $("#formEl", dialog);
+  const values = () => Object.fromEntries(action.fields.map((field) => [field.name, form.elements[field.name].value.trim()]));
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const given = values();
+    const error = $("#formError", dialog);
+    if (Object.values(given).some((value) => !value)) { error.textContent = T.fillEach; error.hidden = false; return; }
+    if (!RELAYS) { dialog.close(); copyBox(action.command); return; }
+    // The server checks each value and says why it refuses one: the form stays open.
+    post(P.step, { name: action.name, fields: given })
+      .then((reply) => {
+        if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }
+        dialog.close();
+        if (reply.ok) { openRun(action, reply.body.command); return; }
+        if (reply.body.command) copyBox(reply.body.command);
+        toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      })
+      .catch(() => stopped());
+  });
+  showDialog(dialog);
+}
+function openConfirm(action, body, command) {
+  const dialog = $("#confirmDlg");
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow is-danger">${icon("alert")} ${esc(T.riskFinal)}</p><h2 id="confirmTitle">${esc(fill(T.confirmTitle, { title: action.title }))}</h2></div>${closeButton()}</div>
+    <p class="dlg-text">${esc(action.text)}</p>
+    ${cmdChip(command)}
+    <p class="muted small">${esc(fill(T.asksAgain, { window: WINDOW }))}</p>
+    <div class="dlg-foot"><button class="btn" type="button" data-close autofocus>${esc(T.keep)}</button><button class="btn btn-danger" type="button" id="confirmGo">${esc(verbOf(action, statusOf(action)))}</button></div>
+  </div>`;
+  $("#confirmGo", dialog).addEventListener("click", () => { dialog.close(); launch(action, body, command); });
+  showDialog(dialog);
+}
+// The server ended: mh runs the step, then opens the page again on the same port. The page
+// reloads once it saw the server gone, then answering again.
+function openRun(action, command) {
+  const dialog = $("#runDlg");
+  const where = fill(action.kind === "page" ? T.runsPage : T.runsConsole, { command: command, window: WINDOW });
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow">${icon("play")} ${esc(T.stepStarted)}</p><h2 id="runTitle">${esc(action.title)}</h2></div></div>
+    <div class="term" aria-hidden="true"><div class="term-head"><span class="term-dots"><i></i><i></i><i></i></span>${esc(WINDOW)}</div><pre class="term-body"><span class="p">PS&gt;</span> ${esc(command)}<span class="cursor"></span>
+<span class="c"># ${esc(T.termComment)}</span></pre></div>
+    <p class="dlg-text" role="status">${esc(where)}</p>
+    <p class="dlg-hint" id="runHint" hidden>${icon("info")} ${esc(fill(T.nothingMoves, { window: WINDOW }))}</p>
+    <p class="muted small">${esc(T.notOpenedByMh)}</p>
+  </div>`;
+  showDialog(dialog);
+  waitForComeBack();
+}
+function waitForComeBack() {
+  let seenGone = false;
+  window.setTimeout(() => { const hint = $("#runHint"); if (hint) hint.hidden = false; }, HINT_MS);
+  const poll = () => {
+    fetch(P.state, { cache: "no-store" })
+      .then((response) => { if (response.ok && seenGone) window.location.reload(); else window.setTimeout(poll, POLL_MS); })
+      .catch(() => { seenGone = true; window.setTimeout(poll, POLL_MS); });
+  };
+  window.setTimeout(poll, POLL_MS);
+}
+// The command is copied, or selected for Ctrl+C when the browser refuses (an address other
+// than localhost is not a secure context); the server keeps running.
+function copyBox(command) {
+  const box = $("#copyBox");
+  const shown = $("#copyCmd");
+  shown.textContent = command;
+  box.hidden = false;
+  const select = () => { const range = document.createRange(); range.selectNodeContents(shown); const chosen = window.getSelection(); chosen.removeAllRanges(); chosen.addRange(range); };
+  const title = $("#copyTitle");
+  const byHand = () => { title.textContent = T.copyIt; select(); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(command).then(() => { title.textContent = T.copied; }, byHand);
+  else byHand();
+  $("#copyClose").focus();
+}
+function copyText(text) {
+  const done = () => toast(fill(T.copiedText, { text: text }), "ok");
+  const refused = () => toast(fill(T.selectIt, { text: text }));
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, refused);
+  else refused();
+}
+function toast(message, tone = "info") {
+  const item = document.createElement("div");
+  item.className = "toast";
+  item.innerHTML = `${icon(tone === "ok" ? "check" : "info")}<p>${esc(message)}</p><button class="toast-x" type="button" aria-label="${esc(T.close)}">${icon("x")}</button>`;
+  $("#toasts").append(item);
+  const remove = () => item.remove();
+  item.querySelector(".toast-x").addEventListener("click", remove);
+  window.setTimeout(remove, TOAST_MS);
+}
+function stopped() {
+  const dialog = $("#stoppedDlg");
+  if (!dialog.open) showDialog(dialog);
+}
+
+// ---- The audit run by the page: its steps polled while it runs, then its summary --------
+const audit = { last: null };
+function drawAudit(state) {
+  audit.last = state;
+  const list = $("#auditSteps");
+  if (!list) return state.phase === "running";
+  const running = state.phase === "running";
+  $("#auditStart").hidden = running;
+  $("#auditStop").hidden = !running;
+  list.hidden = state.steps.length === 0;
+  list.innerHTML = state.steps.map((step) => {
+    const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;
+    const pct = step.total ? Math.round((100 * step.done) / step.total) : 0;
+    return `<li class="pstep${step.finished ? " is-done" : ""}"${step.hint && !step.finished ? ` title="${esc(step.hint)}"` : ""}>${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${pct}%"></span></span></li>`;
+  }).join("");
+  $("#auditCurrent").textContent = running ? state.current || T.auditRunning : "";
+  const end = [...state.lines, ...state.actions].map((line) => `<p>${esc(line)}</p>`);
+  if (state.timed) end.push(`<p class="muted">${esc(state.timed)}</p>`);
+  if (state.report) end.push(`<p><a href="${esc(state.report)}" target="_blank" rel="noopener">${esc(T.openReport)}</a></p>`);
+  if (state.error) end.push(`<p class="muted">${esc(state.error)}</p>`);
+  $("#auditEnd").innerHTML = end.join("");
+  return running;
+}
+const pollAudit = () => fetch(P.audit, { cache: "no-store" })
+  .then((response) => response.json())
+  .then((state) => {
+    if (drawAudit(state)) window.setTimeout(pollAudit, POLL_MS);
+    else if (state.phase !== "idle") reload();
+  })
+  .catch(() => stopped());
+function askAudit(action) {
+  if (action === "start" && view.id !== HOME) go(HOME, false);
+  post(P.audit, { action: action })
+    .then((reply) => {
+      if (!reply.ok) toast(reply.body.error || T.auditBusy);
+      pollAudit();
+      if (action === "start") { const here = $("#auditHere"); if (here) here.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "center" }); }
+    })
+    .catch(() => stopped());
+}
+
+// ---- Palette (Ctrl+K): every action and every space, by everyday words ------------------
+const palette = { dialog: null, input: null, list: null, items: [], active: -1 };
+function scoreOf(item, words) {
+  const title = norm(item.title);
+  const parts = title.split(/[\s'’,:-]+/);
+  let score = 0;
+  for (const word of words) {
+    if (parts.some((part) => part.startsWith(word))) score += 6;
+    else if (title.includes(word)) score += 4;
+    else if (item.hay.includes(word)) score += 1;
+    else return 0;
+  }
+  return score + (item.type === "go" ? 0.5 : 0);
+}
+function paletteEntries(query) {
+  const words = norm(query).split(/\s+/).filter(Boolean);
+  const spaces = [SPACE[HOME], ...S.spaces];
+  const goItems = spaces.map((space) => ({ type: "go", id: space.id, title: space.long || space.title, sub: space.stage ? fill(T.goStage, { stage: space.stage }) : space.id === HOME ? T.goHome : T.goTools, icon: space.icon, hay: norm(`${space.title} ${space.long || ""} ${space.pitch || ""}`) }));
+  const runItems = S.actions.map((action) => ({ type: "run", id: action.name, title: action.title, sub: action.command, icon: action.icon, risk: action.risk, home: action.space, hay: norm(`${action.title} ${action.text} ${action.command} ${action.keywords} ${(SPACE[action.space] || {}).title || ""}`) }));
+  if (!words.length) {
+    const out = [];
+    if (S.proposed) out.push({ header: T.nextStep }, runItems.find((item) => item.id === S.proposed.name));
+    out.push({ header: T.goTo }, ...goItems);
+    for (const space of S.spaces) {
+      const mine = runItems.filter((item) => item.home === space.id);
+      if (mine.length) out.push({ header: space.long || space.title }, ...mine);
+    }
+    return out.filter(Boolean);
+  }
+  const found = [...runItems, ...goItems].map((item) => ({ item: item, score: scoreOf(item, words) })).filter((x) => x.score > 0).sort((x, y) => y.score - x.score).slice(0, 12).map((x) => x.item);
+  return found.length ? [{ header: fill(T.results, { count: found.length }) }, ...found] : [];
+}
+function fillPalette() {
+  const entries = paletteEntries(palette.input.value);
+  palette.items = entries.filter((entry) => !entry.header);
+  palette.active = palette.items.length ? 0 : -1;
+  let at = -1;
+  palette.list.innerHTML = entries.length
+    ? entries.map((entry) => {
+      if (entry.header) return `<li class="palette-group" role="presentation">${esc(entry.header)}</li>`;
+      at += 1;
+      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span></li>`;
+    }).join("")
+    : `<li class="palette-empty" role="presentation">${esc(T.nothingMatches)}</li>`;
+  markActive();
+}
+function markActive() {
+  $$(".palette-opt", palette.list).forEach((option) => { option.setAttribute("aria-selected", String(Number(option.dataset.k) === palette.active)); });
+  const current = palette.active >= 0 ? $(`#po-${palette.active}`) : null;
+  if (current) { palette.input.setAttribute("aria-activedescendant", current.id); current.scrollIntoView({ block: "nearest" }); }
+  else palette.input.removeAttribute("aria-activedescendant");
+}
+function activate(at) {
+  const item = palette.items[at];
+  if (!item) return;
+  palette.dialog.close();
+  window.setTimeout(() => { if (item.type === "go") go(item.id); else onRun(item.id); }, 0);
+}
+function openPalette() {
+  if (palette.dialog.open) return;
+  palette.input.value = "";
+  fillPalette();
+  showDialog(palette.dialog);
+  palette.input.focus();
+}
+function wirePalette() {
+  Object.assign(palette, { dialog: $("#paletteDlg"), input: $("#paletteInput"), list: $("#paletteList") });
+  palette.input.addEventListener("input", fillPalette);
+  palette.input.addEventListener("keydown", (event) => {
+    const count = palette.items.length;
+    if (!count) return;
+    const keys = { ArrowDown: (palette.active + 1) % count, ArrowUp: (palette.active - 1 + count) % count };
+    if (event.key in keys) { event.preventDefault(); palette.active = keys[event.key]; markActive(); }
+    else if (event.key === "Enter") { event.preventDefault(); activate(palette.active); }
+  });
+  palette.list.addEventListener("click", (event) => { const option = event.target.closest(".palette-opt"); if (option) activate(Number(option.dataset.k)); });
+  palette.list.addEventListener("mousemove", (event) => { const option = event.target.closest(".palette-opt"); if (option && Number(option.dataset.k) !== palette.active) { palette.active = Number(option.dataset.k); markActive(); } });
+}
+function openKeys() {
+  const dialog = $("#keysDlg");
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow">${icon("keyboard")} ${esc(T.keyboard)}</p><h2 id="keysTitle">${esc(T.keysTitle)}</h2></div>${closeButton()}</div>
+    <dl class="keys-list">${T.keys}</dl>
+  </div>`;
+  showDialog(dialog);
+}
+
+// ---- Presence and Quit: a tab still shows the page; leaving, it says so (0261) ----------
+function wirePresence() {
+  const alive = (leaving) => fetch(P.alive, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => {});
+  window.addEventListener("pageshow", () => alive(false));
+  window.addEventListener("pagehide", () => alive(true));
+  window.setInterval(() => alive(false), ALIVE_MS);
+}
+const ACTS = {
+  "audit-here": () => askAudit("start"),
+  "audit-stop": () => askAudit("stop"),
+  "dismiss-update": () => { store.set("dismissed", S.update ? S.update.version : ""); render(); },
+  "open-palette": openPalette,
+  "open-keys": openKeys,
+  quit: () => fetch(P.stop, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).then(stopped, stopped),
+};

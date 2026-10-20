@@ -8,12 +8,14 @@
 Entrée la lance.** `mh` seul montre les mêmes étapes sur la [page d'accueil](home.md), dans votre
 navigateur.
 
-Inutile de retenir le nom des commandes. `mh menu` montre les étapes des trois guides
-([nettoyer](../clean/quick-guide.md), [trier](../sort/quick-guide.md),
-[retrouver](../find/quick-guide.md)) dans l'ordre, chacune avec sa commande `mh …` complète, et en
-propose **une** : celle que donnerait [`status`](status.md). Appuyez sur Entrée pour la lancer, ou
-tapez le numéro d'une autre étape. La commande choisie est ensuite rappelée, *La prochaine fois,
-tapez-la directement : mh clean* : vous apprenez les commandes en vous en servant.
+Inutile de retenir le nom des commandes. `mh menu` montre chaque action de l'outil, rangée comme
+le cycle avance : **importer** (depuis un téléphone, depuis votre NAS ou un ancien disque),
+**nettoyer** ([guide](../clean/quick-guide.md)), **trier** ([guide](../sort/quick-guide.md)),
+**retrouver** ([guide](../find/quick-guide.md)), **sauvegarder** (prévu), puis les outils :
+historique et annulation, rapports, réglages. Chaque ligne a sa commande `mh …` complète, et le
+menu en propose **une** : celle que donnerait [`status`](status.md). Appuyez sur Entrée pour la
+lancer, ou tapez le numéro d'une autre étape. La commande choisie est ensuite rappelée, *La
+prochaine fois, tapez-la directement : mh clean* : vous apprenez les commandes en vous en servant.
 
 **Quand** : chaque fois que vous ne savez plus quelle est la suite.
 
@@ -45,18 +47,23 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
   *facultatif* ; 🤖 à côté de `classify` et `tags` quand un modèle local est indiqué
   (`[classify.ai] model`). La ligne sous le tableau rappelle ce que veulent dire 🔒, ↩️ et ⚠️.
 - Une étape que l'outil remplit d'après ce qu'il sait prend son argument (`mh purge <exécution>`,
-  `mh undo <exécution>`) ; sans rien à purger ni à annuler, elle n'a pas de numéro. Un album
-  demande des mots que vous seul connaissez (`mh album "Noël" --category …`) : à taper vous-même.
+  `mh undo <exécution>`) ; sans rien à purger ni à annuler, elle n'a pas de numéro. Une étape qui
+  demande des mots que vous seul connaissez (le nom d'un album, le dossier de votre NAS, un
+  dossier à retirer, combien de rapports garder) montre un exemple, *(à taper vous-même)* :
+  `mh album "Noël 2025" --category Noël`. Sur la [page d'accueil](home.md), son formulaire les
+  remplit. `mh backup` s'affiche *(prévu)*.
 
-Tant qu'une étape de nettoyage est proposée, celles du tri et de la recherche sont estompées :
-elles viennent après. Le menu prend la largeur de votre fenêtre ; *Lecture de là où vous en
-êtes…* s'affiche pendant qu'il compte la quarantaine, ce qui prend quelques secondes quand elle
-contient des milliers de fichiers.
+Chaque action est listée une fois, numérotée d'un espace à l'autre, dans l'espace où elle vient
+en premier : `mh open`, `mh history`, `mh undo` et `mh purge` sont dans le guide du nettoyage, là
+où ils viennent. Tant qu'une étape est proposée, les autres espaces sont estompés. Le menu prend
+la largeur de votre fenêtre ; *Lecture de là où vous en êtes…* s'affiche pendant qu'il compte la
+quarantaine, ce qui prend quelques secondes quand elle contient des milliers de fichiers.
 
-La dernière section, sous Windows, rend `mh` plus facile à atteindre : `mh shortcut` (une icône sur
-le Bureau) et `mh explorer` (le clic droit d'un dossier). `mh open`, après `mh audit`, montre les
-rapports dans votre navigateur. `mh` lance ces trois-là lui-même : [ce que `mh` fait
-lui-même](launcher.md#ce-que-mh-fait-lui-même).
+Le téléphone, `mh shortcut` (une icône sur le Bureau) et `mh explorer` (le clic droit d'un
+dossier) sont pour Windows : le `mh` de bash les laisse de côté. `mh` lance lui-même `open`,
+`folders`, `update`, `phone`, `shortcut` et `explorer` : [ce que `mh` fait
+lui-même](launcher.md#ce-que-mh-fait-lui-même). Une commande qui n'a pas encore sa place dans le
+menu s'affiche quand même, en dernier, sous *Autres commandes*.
 
 <!-- capture: menu.txt -->
 ```text
