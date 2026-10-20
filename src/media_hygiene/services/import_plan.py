@@ -18,7 +18,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.visual_listing import library_visuals
-from media_hygiene.plan.backup_import import near_present
+from media_hygiene.plan.backup_near import near_present
 from media_hygiene.scan.image_check import inspect_image
 
 if TYPE_CHECKING:
