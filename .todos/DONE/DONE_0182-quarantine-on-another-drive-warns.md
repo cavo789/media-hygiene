@@ -73,3 +73,12 @@ A `clean` that silently fills `C:` → told before, refused when it cannot fit.
 
 - `docs_screenshots`: stale — the synthetic captures never show the cross-drive line.
 - The Windows check: still waiting (`mh-measure.ps1`, step 13).
+
+## Inbox (2026-10-20)
+
+- The Windows measurement (steps 12 and 13 of mh-measure.ps1) needs a second **fixed** disk: the
+  maintainer has none (a USB stick is refused by those steps since 2026-10-20: Docker Desktop
+  cannot see it without mh's sharing). Not a maintainer item any more: the behaviour stays
+  covered by the unit and integration tests; a contributor with a second disk may run
+  `.\mh-measure.ps1 -Only "12,13" -Count 20 -OtherDrive <letter>:`.
+- Every other item done or refiled → closed DONE.
