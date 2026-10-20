@@ -69,3 +69,18 @@ folder with advice. Maintainer's choice (inbox 2026-10-19): `mh.sh` does it too.
   (`wsl.exe -d docker-desktop`, as `mh.ps1`). Command (PowerShell 5.1, a stick as E:):
   `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/12104de/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`,
   `Unblock-File .\mh-measure.ps1`, then `.\mh-measure.ps1 -Only 11 -Count 20 -OtherDrive E:`.
+
+## Measured on Windows (2026-10-20, step 11k of mh-measure.ps1 at bb72911, maintainer)
+
+USB stick D: (Removable), WSL distribution Ubuntu-24.04, interop on:
+- Before: `/mnt/d` not a mount (as expected for a stick plugged in after WSL started). A container
+  started from WSL on `/mnt/d/...` without it: **Docker refuses** — exit 125, "timed out waiting
+  for /mnt/d to be automounted" (no empty folder in its place).
+- After `mount -t drvfs D: /mnt/d` in the distribution (the line `mh.sh` now says, 0259): the
+  container sees the 5 files planted. Docker Desktop's VM meanwhile has no `/mnt/host/d`: **the
+  distribution's own mount is what counts** — step 1 of this TODO answered, the design right.
+- `umount /mnt/d`: exit 0. The stick could not be ejected right after ("This device is currently
+  in use"), while it could after the mh commands alone on 2026-10-19: whether 11k's checks
+  (Docker's automount try, WSL's drvfs) hold it is asked separately by the next run (11j now
+  before 11k, 11k asks again, script 7da204c).
+- Every item done → closed DONE (the eject question goes with the next step 11 run).
