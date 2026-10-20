@@ -7,7 +7,6 @@ change only with the image: the browser keeps them a day without asking.
 
 from __future__ import annotations
 
-import asyncio
 from http import HTTPStatus
 from pathlib import Path
 from types import MappingProxyType
@@ -15,6 +14,7 @@ from typing import Final
 from urllib.parse import unquote
 
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.report_files import read_found
 
 ASSETS_PREFIX: Final = "/assets/"
 ASSETS_DIR: Final = Path(__file__).resolve().parents[1] / "assets"
@@ -56,11 +56,8 @@ async def asset_response(path: str) -> Response:
         The file, kept a day by the browser; 404 otherwise.
     """
     target = asset_file(path)
-    if target is None:
-        return Response(HTTPStatus.NOT_FOUND)
-    try:
-        body = await asyncio.to_thread(target.read_bytes)
-    except OSError:
+    body = await read_found(target)
+    if target is None or body is None:
         return Response(HTTPStatus.NOT_FOUND)
     kind = _SERVED[target.suffix.lower()]
     return Response(HTTPStatus.OK, body, kind, max_age=MAX_AGE_S)

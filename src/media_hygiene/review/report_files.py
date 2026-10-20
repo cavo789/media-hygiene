@@ -63,11 +63,25 @@ async def report_response(reports_dir: Path, path: str) -> Response:
         The file; 404 outside the folder, for a missing or unreadable file.
     """
     target = report_file(reports_dir, path)
-    if target is None:
-        return Response(HTTPStatus.NOT_FOUND)
-    try:
-        body = await asyncio.to_thread(target.read_bytes)
-    except OSError:
+    body = await read_found(target)
+    if target is None or body is None:
         return Response(HTTPStatus.NOT_FOUND)
     kind = _SERVED.get(target.suffix.lower(), ContentType.BINARY)
     return Response(HTTPStatus.OK, body, kind)
+
+
+async def read_found(target: Path | None) -> bytes | None:
+    """Read a file a route found, in a thread.
+
+    Args:
+        target: The file, or None when the route found none.
+
+    Returns:
+        Its bytes; None without a file, or when it cannot be read.
+    """
+    if target is None:
+        return None
+    try:
+        return await asyncio.to_thread(target.read_bytes)
+    except OSError:
+        return None
