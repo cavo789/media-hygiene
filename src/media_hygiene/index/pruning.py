@@ -38,6 +38,20 @@ class WalkCoverage:
     unreadable: tuple[Path, ...]
     filters: ScanFilters
     files: Sequence[MediaFile] = ()  # what was listed: the moved files are among them
+    # Backup folders (0204): their files are forgotten when gone, never followed nor
+    # kept for `review --gone`, and a copy in them never cancels a deletion (0245).
+    backups: tuple[Path, ...] = ()
+
+    def in_library(self, path: Path) -> bool:
+        """Tell whether a path lies outside every backup folder.
+
+        Args:
+            path: A container path.
+
+        Returns:
+            True for a file of the library.
+        """
+        return not any(is_within(path, folder) for folder in self.backups)
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,14 +88,16 @@ def forget_missing(repository: FactsRepository, coverage: WalkCoverage) -> Prune
         if _proven_gone(Path(path), root, coverage)
     ]
     known = {path for paths in indexed.values() for path in paths}
-    newcomers = [file for file in coverage.files if str(file.path) not in known]
-    pairs = rematched(repository.connection, gone, newcomers) if gone else []
+    library = [file for file in coverage.files if coverage.in_library(file.path)]
+    newcomers = [file for file in library if str(file.path) not in known]
+    mine = [path for path in gone if coverage.in_library(Path(path))]
+    pairs = rematched(repository.connection, mine, newcomers) if mine else []
     repository.move(pairs)
     followed = {old for old, _new in pairs}
     now = datetime.now(UTC)
     unfollowed = [path for path in gone if path not in followed]
-    record_gone(repository.connection, unfollowed, now)
-    drop_reappeared(repository, coverage.files)
+    record_gone(repository.connection, [p for p in mine if p not in followed], now)
+    drop_reappeared(repository, library)
     forgotten = repository.forget(unfollowed)
     _LOGGER.debug("Index: forgot %d files that are gone", forgotten)
     for root in coverage.roots:

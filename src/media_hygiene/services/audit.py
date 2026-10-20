@@ -97,6 +97,7 @@ class AuditService:
                 found.unreadable,
                 filters,
                 found.files,
+                self._backups.folders,
             ),
             policy,
         )
