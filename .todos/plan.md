@@ -56,4 +56,3 @@ One `/todo:run NNNN` each, highest priority first.
 | 0177 | `mh update`: pull the new image, rewrite `mh` with the same folders | [PARTIAL_0177-mh-update-pulls-and-rewrites.md](PARTIAL/PARTIAL_0177-mh-update-pulls-and-rewrites.md) |
 | 0194 | A Media Hygiene icon for the shortcut and the right-click entry | [PARTIAL_0194-media-hygiene-icon.md](PARTIAL/PARTIAL_0194-media-hygiene-icon.md) |
 | 0245 | `import`: copy into the library what only a backup (a Synology NAS) holds, never what the user already set aside or deleted | [PARTIAL_0245-import-from-nas-backup.md](PARTIAL/PARTIAL_0245-import-from-nas-backup.md) |
-| 0277 | Home page blank for about 45 seconds before it shows | [PARTIAL_0277-home-page-blank-for-45-seconds.md](PARTIAL/PARTIAL_0277-home-page-blank-for-45-seconds.md) |
