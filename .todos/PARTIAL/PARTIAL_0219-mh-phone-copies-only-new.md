@@ -164,6 +164,7 @@ duplicates) → copying only the new ones; for a phone holding 5,000 files of wh
   Unverified until then: that "length = System.Size and opens exclusively" proves a finished MTP
   copy, `System.FileName` over MTP, and Windows PowerShell 5.1 piping the listing to `docker run -i`.
 - No documentation capture is stale (`phone-plan` is hidden; no captured output changed).
+  → nothing to do: a statement, not a wait (inbox 2026-10-20).
 
 ### Measured (2026-10-19, step 19 run `measures-20261019-1738.txt`, image built from the shared tree at 17:26)
 - First `mh phone`: 801 files (3.13 GB) copied in 317.2 s, **10.2 MB/s**; no window. Second:

@@ -31,6 +31,8 @@ TODO_ID = re.compile(r"\b0\d{3}\b")
 NEEDS = re.compile(r"^- \*\*Needs maintainer\*\*:\s*(.+)$", re.MULTILINE)
 DEPENDS = re.compile(r"^- \*\*Depends\*\*:\s*(.+)$", re.MULTILINE)
 REASON = re.compile(r"\*\*Reason:\*\*\s*(.+)")
+# An item answered already: a line of its own starting with "→" (`→ keep (2026-10-20)`).
+ANSWERED = re.compile(r"^\s+→", re.MULTILINE)
 type Record = dict[str, str]
 
 
@@ -51,6 +53,8 @@ def todo_files(todos: Path) -> list[tuple[str, Path]]:
 def not_done(text: str) -> list[tuple[str, str]]:
     """Give the items of the `### Not done` section, and unticked boxes, with reasons.
 
+    An item answered already (a `→ <answer>` line under it) is left out.
+
     Returns:
         (item, reason) pairs; an item is its first line, a reason its first line too.
     """
@@ -58,6 +62,8 @@ def not_done(text: str) -> list[tuple[str, str]]:
     section = text.split("### Not done", 1)[1] if "### Not done" in text else ""
     section = re.split(r"^#{1,3} ", section, maxsplit=1, flags=re.MULTILINE)[0]
     for block in re.split(r"^- ", section, flags=re.MULTILINE)[1:]:
+        if ANSWERED.search(block):
+            continue
         reason = REASON.search(block)
         items.append((block.splitlines()[0].strip(), reason[1] if reason else ""))
     items.extend(
