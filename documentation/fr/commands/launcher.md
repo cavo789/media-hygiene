@@ -122,7 +122,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene` et
-`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) et le montrent. Un échec est dit
+`HKCU\Software\Classes\Directory\Background\shell\MediaHygiene`) et le confirment en une ligne. Un échec est dit
 avec sa raison ; un *accès refusé* vient souvent d'un antivirus, qui peut bloquer un chemin qu'il a
 signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hygiene* : Docker la
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le

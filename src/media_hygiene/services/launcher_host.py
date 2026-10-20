@@ -165,14 +165,15 @@ def _texts(reports: str) -> HostTexts:
         ),
         shortcut=shell_safe(
             _(
-                "Double-click Media Hygiene on the Desktop or in the Start menu: "
-                "the mh menu opens."
+                "Media Hygiene shortcut created and checked: double-click it on "
+                "the Desktop or in the Start menu to open the mh menu."
             )
         ),
         explorer=shell_safe(
             _(
-                "Right-click a folder, or the empty space of an open folder, then "
-                "Media Hygiene: the mh menu opens on that folder."
+                "Media Hygiene added to the right-click menu and checked: "
+                "right-click a folder, or the empty space of an open folder, then "
+                "Media Hygiene to open the mh menu on that folder."
             )
         ),
         removed=with_variable(

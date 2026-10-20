@@ -85,7 +85,7 @@ function global:_{{ function }}_why($record) {
 }
 
 # `{{ function }} shortcut`: "{{ host.label }}" on the Desktop and in the Start menu, read back (0180).
-# Double-clicking is suggested only when a shortcut was read back (0190).
+# Each one is read back but said only when it failed: one line when all went well (0190).
 function global:_{{ function }}_shortcut {
     $powershell, $arguments = _{{ function }}_start '{{ function }}'
     if (-not $arguments) { return }
@@ -105,9 +105,6 @@ function global:_{{ function }}_shortcut {
         try { $link.Save() } catch { $reason, $refused = _{{ function }}_why $_; $denied = $denied -or $refused }
         $back = $shell.CreateShortcut($path)
         if ((Test-Path -LiteralPath $path) -and $back.TargetPath -eq $powershell -and $back.Arguments -eq $arguments) {
-            Write-Host "{{ host.texts.saved }}"
-            Write-Host "    $($back.TargetPath) $($back.Arguments)"
-            Write-Host "    $($back.IconLocation)"
             $written++
         } else {
             Write-Host "{{ host.texts.not_saved }}"
@@ -119,7 +116,8 @@ function global:_{{ function }}_shortcut {
 }
 
 # `{{ function }} explorer`: the right-click entry of every folder and of the empty space of
-# an open folder (0188), in the user's own registry (no administrator), each read back;
+# an open folder (0188), in the user's own registry (no administrator), each read back and
+# said only when it failed;
 # `--remove` deletes both (0181). Explorer puts the folder (`%V`, the open one on the
 # background) after `#`: a comment, so that no character of its name breaks the command.
 function global:_{{ function }}_explorer {
@@ -155,9 +153,6 @@ function global:_{{ function }}_explorer {
         $read = if ($back) { $back.GetValue('') } else { $null }
         $path = $key
         if ($read -eq $command) {
-            Write-Host "{{ host.texts.saved }}"
-            Write-Host "    $read"
-            Write-Host "    $((Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon)"
             $written++
         } else {
             Write-Host "{{ host.texts.not_saved }}"

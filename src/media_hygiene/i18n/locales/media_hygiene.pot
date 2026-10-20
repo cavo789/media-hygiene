@@ -1472,11 +1472,6 @@ msgid ""
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
 msgstr ""
 
-msgid ""
-"Double-click Media Hygiene on the Desktop or in the Start menu: the mh "
-"menu opens."
-msgstr ""
-
 #, python-brace-format
 msgid "Double-click {name} in the folder mounted on /reports."
 msgstr ""
@@ -2605,6 +2600,17 @@ msgid "March"
 msgstr ""
 
 msgid "May"
+msgstr ""
+
+msgid ""
+"Media Hygiene added to the right-click menu and checked: right-click a "
+"folder, or the empty space of an open folder, then Media Hygiene to open "
+"the mh menu on that folder."
+msgstr ""
+
+msgid ""
+"Media Hygiene shortcut created and checked: double-click it on the "
+"Desktop or in the Start menu to open the mh menu."
 msgstr ""
 
 msgid "Media files scanned"
@@ -3991,11 +3997,6 @@ msgid ""
 msgstr ""
 
 msgid "Right-click a folder in Explorer: the home page, on that folder"
-msgstr ""
-
-msgid ""
-"Right-click a folder, or the empty space of an open folder, then Media "
-"Hygiene: the mh menu opens on that folder."
 msgstr ""
 
 #, python-brace-format

@@ -208,11 +208,12 @@ def test_powershell_shortcut_writes_then_reads_back_both_links() -> None:
     save = text.index("try { $link.Save() } catch { $reason, $refused = _mh_why $_;")
     back = text.index("$back = $shell.CreateShortcut($path)")
     assert save < back < text.index("$back.Arguments -eq $arguments")
-    assert 'Write-Host "Enregistr\u00e9, relu depuis ${path} :"' in text
+    body = text[text.index("function global:_mh_shortcut {") :]
+    assert "Enregistr\u00e9, relu depuis" not in body[: body.index("\n}\n")]
 
 
 def test_powershell_shortcut_says_why_and_suggests_a_click_only_once_written() -> None:
-    """0190: why a write failed, the refusal hint, no click after a failure."""
+    """0190: why a write failed, the refusal hint; one line when written."""
     text = _powershell()
     body = text[text.index("function global:_mh_shortcut {") :]
     body = body[: body.index("\n}\n")]
@@ -221,7 +222,10 @@ def test_powershell_shortcut_says_why_and_suggests_a_click_only_once_written() -
     counted = body.index("$written++")
     assert counted < body.index('Write-Host "Impossible d')
     assert 'if ($denied) { Write-Host "Acc\u00e8s refus\u00e9 : un antivirus' in body
-    assert 'if ($written -gt 0) { Write-Host "Double-cliquez' in body
+    assert (
+        'if ($written -gt 0) { Write-Host "Raccourci Media Hygiene cr\u00e9\u00e9'
+        in body
+    )
 
 
 def test_powershell_why_keeps_the_innermost_message_and_spots_a_refusal() -> None:
@@ -251,10 +255,10 @@ def test_powershell_explorer_writes_both_keys_and_reads_them_back() -> None:
     assert '$null = New-Item -Path "$key\\command" -Value $command -Force' in body
     assert "$read = if ($back) { $back.GetValue('') } else { $null }" in body
     assert "if ($read -eq $command) {" in body
-    assert body.count('Write-Host "Enregistr\u00e9, relu depuis ${path}') == 1
+    assert "Enregistr\u00e9, relu depuis" not in body
     assert body.count("Write-Host \"Impossible d'\u00e9crire ${path}") == 1
     assert body.count('Write-Host "Entr\u00e9e du clic droit retir\u00e9e') == 1
-    hint = body.index('if ($written -gt 0) { Write-Host "Clic droit sur un dossier')
+    hint = body.index('if ($written -gt 0) { Write-Host "Media Hygiene ajout\u00e9')
     assert hint > body.rindex("foreach ($key in $keys) {")
 
 
@@ -293,7 +297,7 @@ def test_powershell_icon_is_copied_by_docker_next_to_the_script() -> None:
 
 
 def test_powershell_shortcut_and_explorer_show_the_icon_read_back() -> None:
-    """0194: both point to the copied icon and show what they read back."""
+    """0194: both point to the copied icon; the read back is said only on failure."""
     text = _powershell()
     for name in ("shortcut", "explorer"):
         body = text[text.index(f"function global:_mh_{name}") :]
@@ -301,12 +305,8 @@ def test_powershell_shortcut_and_explorer_show_the_icon_read_back() -> None:
         checked = body.index("if (-not $arguments) { return }")
         assert checked < body.index("$icon = _mh_icon $powershell")
     assert '$link.IconLocation = "$icon,0"' in text
-    assert 'Write-Host "    $($back.IconLocation)"' in text
+    assert "$($back.IconLocation)" not in text
     assert "-Name Icon -Value $icon -Force -ErrorAction Stop" in text
-    assert (
-        "(Get-ItemProperty -LiteralPath $key -ErrorAction SilentlyContinue).Icon"
-        in text
-    )
 
 
 def _from_command_line(line: str) -> str:
