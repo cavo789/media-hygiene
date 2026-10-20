@@ -115,3 +115,22 @@ copied and verified in one command. Time of a first comparison over FTP: the fil
 read; the others cost 128 KiB each, and only the true copies are read whole — estimated ≈
 110 MB/s on gigabit Ethernet (to measure), so ≈ 45 min for 300 GB of true copies at worst; the
 next runs read only what changed (index keyed by path, size, mtime).
+
+## Measured on Windows (2026-10-20, step 21 of mh-measure.ps1, maintainer's Synology over Ethernet)
+
+Share `Photos` (not `photo`), read-only, nothing written on the NAS:
+
+| Way | Result |
+|---|---|
+| SMB from Windows (a drive mapped with the credential) | **works**: 253 files listed in 0.1 s, 20 photos read whole at **86–105 MB/s** |
+| Docker given that drive letter | sees nothing (a mapped drive belongs to the Windows logon) |
+| SMB mounted by Docker (CIFS volume) | **refused**: the NAS offers only legacy dialects ("Dialect not supported by server" for 3.1.1, 3.0, 2.1), which Docker Desktop's kernel forbids ("vers=2.0/1.0 mount not permitted when legacy dialects disabled") |
+| FTP from Docker | **works at 15 MB/s**; names in **Latin-1** though FEAT says UTF8 (`F\xe9vrier 2023`); the NAS **closes the session** when a RETR is cut short (10 of 20 partial reads: a new login each, 0.45 s per photo for its first and last 64 KiB); MLSD, SIZE, MDTM, REST present |
+
+- The design note "if SMB mounted by Docker works, reuse 0205's backup mount" is blocked by the
+  NAS's SMB setting only: the maintainer tries DSM's *Maximum SMB protocol = SMB3* (2026-10-20),
+  then step 21 again. If it works: the NAS is a `--backup` folder like any other (0205), no FTP
+  module. If not: FTP as written above, with Latin-1 names and a new session after each
+  partial read (or whole reads only), measured at 15 MB/s.
+- The password: `mh-measure.ps1` keeps it with `Export-Clixml` (DPAPI, this Windows user only),
+  at the maintainer's request; `mh` would need the same for a CIFS volume or FTP.
