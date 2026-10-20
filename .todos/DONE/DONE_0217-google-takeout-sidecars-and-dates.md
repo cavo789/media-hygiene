@@ -116,3 +116,9 @@ dated and placed by Google's record instead of going to "to check".
 
 - The `description` as words → refiled as 0240 (own source `takeout`, maintainer's choice).
 - Checks on a real Takeout: still waiting for one (material).
+
+## Inbox (2026-10-20)
+
+- Checks on a real Takeout → not a maintainer item: the maintainer does not use Google Takeout
+  and has none (already said on 2026-10-17). Left to a contributor who has one (the docs do not say yet
+  that it is unchecked: offered to the maintainer). Every other item done (0240) → closed DONE.

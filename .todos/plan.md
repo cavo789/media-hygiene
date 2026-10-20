@@ -46,7 +46,6 @@
 | 0194 | A Media Hygiene icon for the shortcut and the right-click entry | [PARTIAL_0194-media-hygiene-icon.md](PARTIAL/PARTIAL_0194-media-hygiene-icon.md) |
 | 0210 | `mh` alone and the shortcut open the home page; `mh` runs the step chosen there, then the page again | [PARTIAL_0210-mh-opens-home-and-runs-its-steps.md](PARTIAL/PARTIAL_0210-mh-opens-home-and-runs-its-steps.md) |
 | 0213 | A folder pair can keep both names: each copy becomes a hard link to the kept file (same drive) | [PARTIAL_0213-pair-keep-both-names-hard-link.md](PARTIAL/PARTIAL_0213-pair-keep-both-names-hard-link.md) |
-| 0217 | Google Photos Takeout: its `.json` files travel with their photo, and give a date and a place to the files without one | [PARTIAL_0217-google-takeout-sidecars-and-dates.md](PARTIAL/PARTIAL_0217-google-takeout-sidecars-and-dates.md) |
 | 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
 | 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
 | 0250 | `mh`: a page left running by a closed window blocks the next one (port 8088 already allocated) | [PARTIAL_0250-mh-page-left-by-closed-window.md](PARTIAL/PARTIAL_0250-mh-page-left-by-closed-window.md) |
