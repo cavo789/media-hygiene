@@ -3,7 +3,8 @@
 `GET /` serves the page, `GET /api/state` where you are and every step (read again
 from the tool folders at each call), `GET /reports/<path>` a file of the reports
 folder, `GET /api/audit` the progress of the audit run by the page, and
-`POST /api/audit` starts it (one at a time) or stops it. `POST /api/step` ends the
+`POST /api/audit` starts it (one at a time) or stops it; `POST /api/alive` says a tab
+still shows the page (0261, `presence`). `POST /api/step` ends the
 server with `100 + n` for step `n`, which `mh` then runs in the terminal: only when
 the launcher said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and
 the page copies the command instead. A step needs a JSON body naming its number and
@@ -25,6 +26,7 @@ from media_hygiene.i18n import _
 from media_hygiene.review.home_views import REPORTS_PREFIX, STEP_EXIT_BASE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
+from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
 from media_hygiene.review.serving import json_response, refused_post
 
@@ -35,6 +37,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.ending import Ending
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.review.http import Request
+    from media_hygiene.review.presence import Presence
     from media_hygiene.services.home_audit import HomeAudit
 
 STEP_PATH: Final = "/api/step"
@@ -75,6 +78,7 @@ class HomeApp(LocalApp):
     reports_dir: Path
     ending: Ending
     audit: HomeAudit
+    presence: Presence
     relays_steps: bool = False  # the launcher runs the step `100 + n` names
 
     @override
@@ -94,6 +98,8 @@ class HomeApp(LocalApp):
             return await self._step(request)
         if path == AUDIT_PATH and request.method == _POST:
             return await self._audit(request)
+        if path == PRESENCE_PATH and request.method == _POST:
+            return await presence_response(self.presence, request)
         return Response(HTTPStatus.METHOD_NOT_ALLOWED)
 
     async def _read(self, path: str) -> Response:

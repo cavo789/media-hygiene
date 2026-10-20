@@ -105,7 +105,10 @@ déjà enregistré) et attend la page d'accueil à la même adresse.
 
 - La page ne répond qu'à `127.0.0.1` ou `localhost`, et seulement à ses propres boutons : un
   autre site ne peut pas choisir une étape à votre place.
-- Ctrl+C dans le terminal ferme la page ; un audit en cours s'arrête entre deux fichiers.
+- **Quitter** (en haut à droite), fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
+  page et rend l'invite ; un audit en cours s'arrête entre deux fichiers. Un onglet fermé est vu
+  une dizaine de secondes plus tard (*L'onglet de la page d'accueil a été fermé : la page d'accueil
+  s'est arrêtée.*) ; un rechargement, ou un onglet laissé en arrière-plan, ne l'arrête jamais.
 - Les étapes sont relues dans les dossiers de l'outil à chaque chargement de la page : ce
   qu'une autre fenêtre a fait apparaît au rechargement suivant. Un bouton d'une page dessinée
   avant un tel changement est refusé (*Les étapes ont changé depuis l'affichage de la page*) et

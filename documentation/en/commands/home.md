@@ -98,7 +98,10 @@ already saved) and waits for the home page on the same address.
 
 - The page answers only at `127.0.0.1` or `localhost`, and only to its own buttons: another
   site cannot choose a step for you.
-- Ctrl+C in the terminal closes the page; an audit running stops between two files.
+- **Quit** (top right), closing the page's browser tab, or Ctrl+C in the terminal stops the page
+  and gives the prompt back; an audit running stops between two files. A closed tab is noticed
+  about 10 seconds later (*The home page's tab was closed: the home page stopped.*); a reload, or
+  a tab left in the background, never stops it.
 - The steps are read again from the tool's folders each time the page loads: what another
   window did shows at the next reload. A button of a page drawn before such a change is refused
   (*The steps changed since the page was shown*) and the page shows the steps again.

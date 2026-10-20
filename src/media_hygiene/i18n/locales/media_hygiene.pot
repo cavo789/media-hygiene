@@ -2608,6 +2608,9 @@ msgid ""
 "the mh menu on that folder."
 msgstr ""
 
+msgid "Media Hygiene is stopped: you can close this tab."
+msgstr ""
+
 msgid ""
 "Media Hygiene shortcut created and checked: double-click it on the "
 "Desktop or in the Start menu to open the mh menu."
@@ -3774,6 +3777,9 @@ msgstr[1] ""
 msgid "Quarantined"
 msgstr ""
 
+msgid "Quit"
+msgstr ""
+
 msgid "RAW"
 msgstr ""
 
@@ -4610,6 +4616,9 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Stops this page; closing its tab does too."
+msgstr ""
+
 msgid "Subject"
 msgstr ""
 
@@ -4903,6 +4912,9 @@ msgid ""
 msgstr ""
 
 msgid "The home page is not running any more: start it again (mh)."
+msgstr ""
+
+msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 
 #, python-brace-format

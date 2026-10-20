@@ -3220,6 +3220,9 @@ msgstr ""
 "dossier, ou dans l'espace vide d'un dossier ouvert, puis Media Hygiene "
 "pour ouvrir le menu de mh sur ce dossier."
 
+msgid "Media Hygiene is stopped: you can close this tab."
+msgstr "Media Hygiene est arrêté : vous pouvez fermer cet onglet."
+
 msgid ""
 "Media Hygiene shortcut created and checked: double-click it on the "
 "Desktop or in the Start menu to open the mh menu."
@@ -4626,6 +4629,9 @@ msgstr[1] ""
 msgid "Quarantined"
 msgstr "En quarantaine"
 
+msgid "Quit"
+msgstr "Quitter"
+
 msgid "RAW"
 msgstr "RAW"
 
@@ -5633,6 +5639,9 @@ msgstr[1] ""
 "Arrêt : les {count} fichiers en cours se terminent d'abord, pour que rien"
 " ne reste à moitié fait…"
 
+msgid "Stops this page; closing its tab does too."
+msgstr "Arrête cette page ; fermer son onglet le fait aussi."
+
 msgid "Subject"
 msgstr "Sujet"
 
@@ -6001,6 +6010,11 @@ msgstr ""
 
 msgid "The home page is not running any more: start it again (mh)."
 msgstr "L'accueil ne tourne plus : relancez-le (mh)."
+
+msgid "The home page's tab was closed: the home page stopped."
+msgstr ""
+"L'onglet de la page d'accueil a été fermé : la page d'accueil s'est "
+"arrêtée."
 
 #, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
