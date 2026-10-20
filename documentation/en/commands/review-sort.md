@@ -101,7 +101,8 @@ at*), then prints the address of the page: Ctrl+click it. Ctrl+C, or closing its
 │ --port          <int range> [x>=1]  Port of the page. docker run publishes   │
 │                                     it under the same number on your         │
 │                                     computer: -p 127.0.0.1:9000:9000 for     │
-│                                     --port 9000. Default: 8088.              │
+│                                     --port 9000. Default:  port in           │
+│                                     config.toml, 8088.                       │
 │ --help  -h                          Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

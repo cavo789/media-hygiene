@@ -141,6 +141,11 @@ xmp_folder_gps = true
 │                         seulement montrer ce qui serait écrit.               │
 │ --help   -h             Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
+│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
+│                        seule : jamais modifié, et jamais refusé pour cela    │
+│                        (mh passe vos sauvegardes). Répétable.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

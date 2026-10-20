@@ -114,6 +114,11 @@ Christmas photos. Case does not matter.
 │ --workbook        <str>                  The classify workbook to read; the  │
 │                                          latest classify run's by default.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
+│                        changed, and not refused for being read-only (mh      │
+│                        passes your backups). Repeatable.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

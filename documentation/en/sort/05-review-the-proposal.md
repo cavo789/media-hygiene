@@ -35,9 +35,9 @@ The end of the output says where the files are:
 <!-- capture: classify.txt|Workbook to edit| -->
 ```text
 ✅ Workbook to edit:
-C:\Users\you\media-hygiene\reports\20261019-153500-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261020-110055-classify\classify.xlsx
 ✅ Report with the photos:
-C:\Users\you\media-hygiene\reports\20261019-153500-classify\report.html
+C:\Users\you\media-hygiene\reports\20261020-110055-classify\report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

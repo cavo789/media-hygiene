@@ -113,6 +113,11 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 │                   a sort (overrides sort.confirm).                           │
 │ --help  -h        Show this message and exit.                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
+│                        changed, and not refused for being read-only (mh      │
+│                        passes your backups). Repeatable.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

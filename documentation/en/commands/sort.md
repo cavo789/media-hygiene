@@ -112,6 +112,11 @@ the source folders it will remove, then asks.
 │                                 empty.                                       │
 │ --help                -h        Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
+│                        changed, and not refused for being read-only (mh      │
+│                        passes your backups). Repeatable.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

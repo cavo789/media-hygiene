@@ -163,6 +163,7 @@ Réglages effectifs
 │ review.identical_below      │ 6                          │ défaut            │
 │ review.brightness_gap       │ 60.0                       │ défaut            │
 │ review.clipped_gap          │ 0.25                       │ défaut            │
+│ review.port                 │ 8088                       │ défaut            │
 │ review.unwanted             │ {'tiny_megapixels': 0.16,  │ défaut            │
 │                             │ 'screenshots': True,       │                   │
 │                             │ 'dark_mean': 25.0,         │                   │
@@ -683,6 +684,7 @@ Réglages effectifs
 │ review.identical_below      │ 6                          │ config.toml       │
 │ review.brightness_gap       │ 60.0                       │ config.toml       │
 │ review.clipped_gap          │ 0.25                       │ config.toml       │
+│ review.port                 │ 8088                       │ config.toml       │
 │ review.unwanted             │ {'tiny_megapixels': 0.16,  │ config.toml       │
 │                             │ 'screenshots': True,       │                   │
 │                             │ 'dark_mean': 25.0,         │                   │

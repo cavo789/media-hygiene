@@ -64,7 +64,7 @@ ouvre sa photo. Ctrl+C, ou fermer son onglet, l'arrête.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysées : 15 visages, 0,04 s par photo.
+✅ 37 photos analysées : 12 visages, 0,03 s par photo.
 ✅ 17 visages dans 47 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les
@@ -153,7 +153,8 @@ SHA-256 : il n'envoie rien sur vos photos.
 │                                       sous le même numéro sur votre          │
 │                                       ordinateur, par exemple -p             │
 │                                       127.0.0.1:9000:9000 pour --port 9000.  │
-│                                       Par défaut : 8088.                     │
+│                                       Par défaut :  port dans config.toml,   │
+│                                       8088.                                  │
 │ --help    -h                          Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

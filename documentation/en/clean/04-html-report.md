@@ -134,8 +134,8 @@ check. It opens directly in Excel, accents included:
 <!-- capture: plan-csv.txt -->
 ```text
 Group,SHA-256,Size (bytes),Action,File,Folder,Modified (UTC),Detail,Near-duplicate level
-1,91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date,
-1,91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,,
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,keep,C:\Photos\Videos\Birthday.mp4,C:\Photos\Videos,2022-05-21 16:35:00,the oldest date,
+1,b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93,3009124,move to the quarantine,D:\Old disk\Videos\Birthday.mp4,D:\Old disk\Videos,2024-01-15 20:30:00,,
 2,e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84,1073000,keep,C:\Photos\Phone\IMG_4242.HEIC,C:\Photos\Phone,2024-04-06 11:00:00,the oldest date,
 2,e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84,1073000,move to the quarantine,D:\Old disk\Phone\IMG_4242.HEIC,D:\Old disk\Phone,2024-08-02 20:30:00,,
 3,9b999fe90fc44acf6f2c5fb9d89e830321cabb631ae2ea1ad97449e4b78324c8,1041095,keep,C:\Photos\Phone\IMG_4244.HEIC,C:\Photos\Phone,2024-04-06 12:22:00,the oldest date,
@@ -165,16 +165,16 @@ Reports (newest first)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Folder                ┃ Type  ┃ Files ┃ Duplicates ┃ Space   ┃ Broken ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261019-153541-clean │ clean │ 89    │ 32         │ 16.4 MB │ 3      │
-│ 20261019-153541-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
-│ 20261019-153539-clean │ clean │ 89    │ 32         │ 15.6 MB │ 3      │
-│ 20261019-153536-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
-│ 20261019-153506-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
-│ 20261019-153502-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
-│ 20261019-153459-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
-│ 20261019-153457-audit │ audit │ 65    │ 12         │ 3.4 MB  │ 0      │
-│ 20261019-153455-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
-│ 20261019-153454-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110136-clean │ clean │ 89    │ 32         │ 16.4 MB │ 3      │
+│ 20261020-110136-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110134-clean │ clean │ 89    │ 32         │ 15.6 MB │ 3      │
+│ 20261020-110131-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110102-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110058-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110054-audit │ audit │ 10    │ 4          │ 5.9 MB  │ 1      │
+│ 20261020-110053-audit │ audit │ 65    │ 12         │ 3.4 MB  │ 0      │
+│ 20261020-110052-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
+│ 20261020-110051-audit │ audit │ 89    │ 32         │ 14.0 MB │ 3      │
 └───────────────────────┴───────┴───────┴────────────┴─────────┴────────┘
 💡 Double-click index.html in the folder mounted on /reports.
 ```

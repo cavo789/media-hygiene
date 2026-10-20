@@ -170,7 +170,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 │                                        sous le même numéro sur votre         │
 │                                        ordinateur, par exemple -p            │
 │                                        127.0.0.1:9000:9000 pour --port 9000. │
-│                                        Par défaut : 8088.                    │
+│                                        Par défaut :  port dans config.toml,  │
+│                                        8088.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
 │ --prefer         <str>  Dossier dont les copies sont conservées en priorité. │
