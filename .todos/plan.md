@@ -30,5 +30,3 @@ Nothing to run unattended.
 | 0182 | `clean`: say when the quarantine is on another drive than the photos | [PARTIAL_0182-quarantine-on-another-drive-warns.md](PARTIAL/PARTIAL_0182-quarantine-on-another-drive-warns.md) |
 | 0183 | One quarantine per drive: files set aside stay on their own drive | [PARTIAL_0183-one-quarantine-per-drive.md](PARTIAL/PARTIAL_0183-one-quarantine-per-drive.md) |
 | 0194 | A Media Hygiene icon for the shortcut and the right-click entry | [PARTIAL_0194-media-hygiene-icon.md](PARTIAL/PARTIAL_0194-media-hygiene-icon.md) |
-| 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
-| 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
