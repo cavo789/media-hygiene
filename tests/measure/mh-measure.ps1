@@ -1865,6 +1865,9 @@ def ftp_probe(host, share, user):
     say('the share as FTP shows it: ' + ftp.pwd())
     mlsd = offered['MLSD'] or offered['MLST']
     ftp.encoding = names_encoding(ftp, mlsd)
+    # The replies too (a path with an accent in a 550 or 150 line): ftplib reads them through a
+    # file made at connect time, in UTF-8.
+    ftp.file = ftp.sock.makefile('r', encoding=ftp.encoding)
     say('names on the NAS: ' + ('UTF-8' if ftp.encoding == 'utf-8' else 'Latin-1, though FEAT says UTF8'))
     if mlsd:
         tops = [name for name, facts in ftp.mlsd() if facts.get('type') == 'dir']
@@ -1931,9 +1934,25 @@ else:
             }
 
             # 21c: the password, once, kept in a credential and in this process's environment only.
-            if ($NasUser -eq "") { $NasUser = Read-Host "21c. User name on the NAS" }
-            $secure = Read-Host "21c. Password of $NasUser on the NAS (never logged)" -AsSecureString
-            $credential = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
+            # Kept encrypted by Windows for this user on this PC only (Export-Clixml uses DPAPI):
+            # asked once, read back next time; deleting the file forgets it.
+            $kept = Join-Path $outDir "nas-credential.xml"
+            $credential = $null
+            if (Test-Path -LiteralPath $kept) {
+                try { $credential = Import-Clixml -LiteralPath $kept } catch { $credential = $null }
+                if ($credential -and $NasUser -ne "" -and $credential.UserName -ne $NasUser) { $credential = $null }
+                if ($credential) { Log "   21c. password read back from $kept (delete it to forget it)" }
+            }
+            if (-not $credential) {
+                if ($NasUser -eq "") { $NasUser = Read-Host "21c. User name on the NAS" }
+                $secure = Read-Host "21c. Password of $NasUser on the NAS (never logged)" -AsSecureString
+                $credential = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
+                if ((Read-Host "21c. Keep it, encrypted for your Windows account, in $kept? (y/n)") -match '^y') {
+                    $credential | Export-Clixml -LiteralPath $kept
+                    Log "   21c. password kept in $kept (encrypted for this Windows user; delete the file to forget it)"
+                }
+            }
+            $NasUser = $credential.UserName
             $script:nasSecret = $credential.GetNetworkCredential().Password
             $env:MH_NAS_PASSWORD = $script:nasSecret
 
@@ -1969,20 +1988,21 @@ else:
                     $listed = $watch.Elapsed.TotalSeconds
                     $bytes = ($files | Measure-Object -Property Length -Sum).Sum
                     Log ("   21d. listing of {0}: {1} files (at most 2000), {2:N1} MB, {3} @eaDir skipped, {4:N1} s" -f $yearName, $files.Count, ($bytes / 1MB), $eaDirs, $listed)
-                    # 20 photos read whole into memory: nothing copied to disk.
-                    $photos = @($files | Where-Object { $_ -and $_.FullName -and $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
+                    # 20 photos read whole into memory: nothing copied to disk. Not $photos: PowerShell names
+                    # ignore case, and the [string] -Photos parameter turned the list into a string.
+                    $nasPhotos = @($files | Where-Object { $_ -and $_.FullName -and $_.Extension -match '^\.(jpe?g|heic)$' } | Select-Object -First 20)
                     $buffer = New-Object byte[] 1048576
                     $read = 0
                     $watch = [Diagnostics.Stopwatch]::StartNew()
-                    foreach ($photo in $photos) {
-                        $stream = [IO.File]::OpenRead($photo.FullName)
+                    foreach ($nasPhoto in $nasPhotos) {
+                        $stream = [IO.File]::OpenRead($nasPhoto.FullName)
                         try { while (($count = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) { $read += $count } } finally { $stream.Close() }
                     }
                     $seconds = [Math]::Max($watch.Elapsed.TotalSeconds, 0.001)
-                    $speed = "{0} photos, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $photos.Count, ($read / 1MB), $seconds, ($read / 1MB / $seconds)
+                    $speed = "{0} photos, {1:N1} MB in {2:N1} s = {3:N2} MB/s" -f $nasPhotos.Count, ($read / 1MB), $seconds, ($read / 1MB / $seconds)
                     Log "   21d. read whole: $speed"
                     # The same photos for the container (21e, 21f), relative to the share.
-                    $relative = @($photos | ForEach-Object { $_.FullName.Substring($root.Length).Replace('\', '/') })
+                    $relative = @($nasPhotos | ForEach-Object { $_.FullName.Substring($root.Length).Replace('\', '/') })
                     [IO.File]::WriteAllLines((Join-Path $nasProbe "photos.txt"), [string[]]$relative)
                     $smbWindows = "works, listing {0} files in {1:N1} s, read {2}" -f $files.Count, $listed, $speed
                 } catch {
@@ -2002,12 +2022,15 @@ else:
                     Log "   21f. skipped: the password holds a comma or a double quote, which the CIFS options cannot carry"
                 } else {
                     # An older NAS may speak 2.0 or 1.0 only: 3.0 and 2.1 were refused (2026-10-20).
-                    foreach ($version in '3.0', '2.1', '2.0', '1.0') {
+                    foreach ($version in '3.1.1,sec=ntlmssp', '3.0', '3.0,sec=ntlmssp', '2.1', '2.0', '1.0') {
                         & docker volume rm -f $nasVolume 2>&1 | Out-Null
                         $made = @(& docker volume create --driver local --opt type=cifs --opt "device=//$ip/$NasShare" --opt "o=addr=$ip,username=$NasUser,password=$($script:nasSecret),ro,vers=$version" $nasVolume 2>&1 | ForEach-Object { "$_" })
                         if ($LASTEXITCODE -ne 0) { NasLog ("   21f. vers=${version}: volume refused: " + ($made -join ' / ')); continue }
                         $run = NasDocker "21f vers=$version" @("-v", "${nasVolume}:/nas:ro", "-v", "${nasProbe}:/probe:ro", "--entrypoint", "python", $Image, "/probe/nas_probe.py", "smb", $yearName)
                         & docker volume rm -f $nasVolume 2>&1 | Out-Null
+                        # The kernel's own reason ('Dialect not supported', 'Permission denied'...).
+                        $why = @(& wsl.exe -d docker-desktop sh -c "dmesg | grep -i cifs | tail -n 3" 2>$null | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+                        if ($run.Code -ne 0 -and $why) { NasLog ("   21f vers=${version}. kernel says: " + ($why -join ' / ')) }
                         if ($run.Code -eq 0) {
                             $smbDocker = if ($smbDocker -like 'works*') { "$smbDocker; and with a CIFS volume, vers=$version" } else { "works with a CIFS volume, vers=$version" }
                             break
