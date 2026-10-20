@@ -3,8 +3,7 @@
 - **Priority**: Medium — asked by the maintainer: "there may be photos on the NAS that I do not have in C:\Photos"
 - **Batch**: actions
 - **Depends**: 0246, 0204, 0216, 0224
-- **Files**: `src/media_hygiene/remote/ftp_source.py` (new), `src/media_hygiene/remote/ftp_index.py` (new), `src/media_hygiene/plan/backups.py`, `src/media_hygiene/plan/backup_import.py` (new), `src/media_hygiene/services/import_run.py` (new), `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/actions/copy_in.py` (new), `src/media_hygiene/cli/cmd_import.py` (new), `src/media_hygiene/cli/app.py`, `src/media_hygiene/console/backup_view.py`, `src/media_hygiene/report/backup_views.py`, `src/media_hygiene/services/launcher_folders.py`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh_folders.ps1.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_backup_import.py` (new), `tests/integration/test_import_run.py` (new), `tests/support/docs/scenario.py`, `.config/mkdocs/mkdocs.yml`, `documentation/en/commands/import.md` (new), `documentation/fr/commands/import.md` (new), `documentation/en/reference-commands.md`, `documentation/fr/reference-commands.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the results of step 21 of `mh-measure.ps1` (0246): SMB mounted by Docker, SMB in Windows only, or FTP — which design to build, and the read speeds (step written on branch `iterate/2026-10-19`; image built from that branch; PowerShell: `cd C:\temp`, `Invoke-WebRequest https://raw.githubusercontent.com/cavo789/media-hygiene/iterate/2026-10-19/tests/measure/mh-measure.ps1 -OutFile .\mh-measure.ps1`, `Unblock-File .\mh-measure.ps1`, `.\mh-measure.ps1 -Only 21 -Count 1 -Nas <IP> -NasShare photo -NasUser <user>`)
+- **Files**: `src/media_hygiene/cli/templates/mh_nas.ps1.j2` (new), `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/plan/backups.py`, `src/media_hygiene/plan/backup_import.py` (new), `src/media_hygiene/services/import_run.py` (new), `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/actions/copy_in.py` (new), `src/media_hygiene/cli/cmd_import.py` (new), `src/media_hygiene/cli/app.py`, `src/media_hygiene/console/backup_view.py`, `src/media_hygiene/report/backup_views.py`, `src/media_hygiene/services/launcher_folders.py`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh_folders.ps1.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_backup_import.py` (new), `tests/integration/test_import_run.py` (new), `tests/support/docs/scenario.py`, `.config/mkdocs/mkdocs.yml`, `documentation/en/commands/import.md` (new), `documentation/fr/commands/import.md` (new), `documentation/en/reference-commands.md`, `documentation/fr/reference-commands.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
 
 ## Context
 
@@ -134,3 +133,29 @@ Share `Photos` (not `photo`), read-only, nothing written on the NAS:
   partial read (or whole reads only), measured at 15 MB/s.
 - The password: `mh-measure.ps1` keeps it with `Export-Clixml` (DPAPI, this Windows user only),
   at the maintainer's request; `mh` would need the same for a CIFS volume or FTP.
+
+## Measured again after SMB3 (2026-10-20, step 21, DS216j, DSM *Maximum SMB protocol* set to SMB3 by the maintainer)
+
+- **SMB mounted by Docker works**: CIFS volume `vers=3.1.1,sec=ntlmssp`, read-only; top folders
+  and the 253 files of 2023 listed in 0.1 s; 20 photos read whole at **15.1 MB/s**.
+- SMB from Windows: 105.8 MB/s; FTP from Docker: 15.2 MB/s. Both ways through Docker are 7 times
+  slower than Windows whatever the protocol: the limit is Docker Desktop's VM network, not the NAS
+  (measured, same run).
+- (2,018.8 MB in Docker against 1,925.2 "MB" in Windows: the same bytes, MB against MiB.)
+
+## Decision (maintainer, 2026-10-20) — replaces item 1's FTP design
+
+- The NAS is reached by **SMB3 in a Docker CIFS volume**, read-only, and is then a `--backup`
+  folder like any other (0204, 0205): no FTP module, no `remote/` package. Item 1's FTP part, its
+  Latin-1 names and its partial reads are dropped (FTP measured and kept as a note only).
+- `mh` creates the volume before each command that needs the NAS and removes it after, so the
+  password never stays in Docker's volume options (as step 21 does); the password is asked once
+  and kept with `Export-Clixml` (DPAPI: this Windows user on this PC only, as `mh-measure.ps1`
+  does), never in `config.toml`, never in a log. `mh.sh`: the same with a file only the user can
+  read, or asked each time — to decide while implementing.
+- A NAS powered off: one line, the audit without it (item 1's last point stays).
+- A NAS that offers only legacy SMB (as this one before the change): say the DSM setting to
+  change (*Control Panel → File Services → SMB → Advanced → Maximum SMB protocol: SMB3*), the
+  reason measured here: Docker Desktop's kernel refuses `vers=2.0` and `1.0`.
+- Speed: reads at 15 MB/s (measured): only listings (size, date) for most files, the first and
+  last 64 KiB for size matches, whole reads for partial-digest matches — as item 1 planned.
