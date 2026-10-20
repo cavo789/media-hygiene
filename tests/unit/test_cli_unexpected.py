@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import sys
+
 import pytest
 import typer
 from typer.testing import CliRunner
@@ -44,6 +46,12 @@ def _flat(text: str) -> str:
 def _no_debug(monkeypatch: pytest.MonkeyPatch) -> None:
     """The developer's own MEDIA_HYGIENE_DEBUG does not leak into these tests."""
     monkeypatch.delenv(DEBUG_VARIABLE, raising=False)
+
+
+@pytest.fixture(autouse=True)
+def _own_command_line(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The message quotes `sys.argv`: never pytest's own (files named "undo")."""
+    monkeypatch.setattr(sys, "argv", ["media-hygiene"])
 
 
 def test_a_bug_in_a_read_only_command_is_one_calm_message() -> None:
