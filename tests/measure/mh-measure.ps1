@@ -140,6 +140,20 @@ function Log([string]$text) {
     Write-Host $text
 }
 
+# Each test mh.ps1 dot-sourced below defines global functions (mh, _mh_*): run as
+# .\mh-measure.ps1, they stayed in the console after the run, and `mh` then named a removed
+# test folder ("phone-library cannot be found", 2026-10-20). Saved here, put back at the end.
+$mhBefore = @{}
+foreach ($function in @(Get-ChildItem Function: | Where-Object { $_.Name -eq 'mh' -or $_.Name -like '_mh_*' })) { $mhBefore[$function.Name] = $function.ScriptBlock }
+
+function MhRestore {
+    foreach ($function in @(Get-ChildItem Function: | Where-Object { $_.Name -eq 'mh' -or $_.Name -like '_mh_*' })) {
+        if (-not $mhBefore.ContainsKey($function.Name)) { Remove-Item -Path "Function:\$($function.Name)" -Force }
+    }
+    foreach ($name in $mhBefore.Keys) { Set-Item -Path "Function:\global:$name" -Value $mhBefore[$name] }
+}
+trap { MhRestore; break }
+
 function MhLeftovers([string]$part) {
     foreach ($id in @(& docker ps --quiet)) {
         $binds = "$(& docker inspect $id --format '{{json .HostConfig.Binds}}' 2>$null)"
@@ -2217,6 +2231,8 @@ if (-not $Keep) {
     }
     docker volume rm -f $volume | Out-Null
 }
+MhRestore
 Log ""
+Log "   the test mh of this run removed from this console; the mh loaded before it (from your profile) put back"
 Log "Done. Results: $out"
 Log "Tell Claude: the measurements are in $out"
