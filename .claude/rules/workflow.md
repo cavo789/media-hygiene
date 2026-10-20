@@ -56,6 +56,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - Measurements only the maintainer can run (Windows + Docker Desktop): add a step to
   `tests/measure/mh-measure.ps1` (PowerShell 5.1, ASCII) instead of a list of commands to type;
   its results file is read back from the devcontainer through a read-only mount of `C:\`.
+  In it, never name a variable like a parameter in another case (`$photos` vs `-Photos`):
+  PowerShell names ignore case, and a typed parameter (`[string]`) silently converts what
+  is assigned (a list of files became one string, 2026-10-20).
 - A change of console output or of a page makes the documentation captures stale: say that
   `docs_screenshots` should run; never run it unasked (image build + browser: heavy).
 - The maintainer's reviews often turn a constant into a `config.toml` setting
