@@ -54,7 +54,8 @@ the download once (2.5 GB: 5 to 20 minutes depending on the connection), then ab
 10 minutes: DINOv2 0.06 s per photo measured, CLIP ViT-B/32 of the same order (fewer
 patches, more layers), SigLIP 2 about 4 times DINOv2-small's work per photo (estimated
 from their vision files: 372 MB against 89 MB); plus decoding each photo once per model and once for the audit's
-hashes. Then about an hour to tick the pages (20 searches × 2 models × 24 pictures).
+hashes. Then the pages to judge (20 searches × 2 models × 24 pictures): every box starts
+ticked, untick the misses.
 
 ## What it writes
 
@@ -63,12 +64,18 @@ hashes. Then about an hour to tick the pages (20 searches × 2 models × 24 pict
 - `index.html`: per model, seconds per photo (model, decoding), seconds per search, loading
   time, threads, RAM peak (the process's maximum resident size), files size, licence;
 - `queries.html`: per search, the 24 best photos of each model side by side, and today's
-  `search` answers among the same photos when the index has words (`tags` ran); tick
-  **relevant** under every picture a person would expect, then **Download the ticks (JSON)**;
+  `search` answers among the same photos when the index has words (`tags` ran); every
+  picture starts ticked **relevant**: untick those a person would not expect, then
+  **Download the ticks (JSON)**;
 - `pairs.html`: per model, the 50 closest pairs the audit does not already call near
-  duplicates (its dHash and pHash test); tick **same photo** for a copy (crop, filter,
-  mirror, edit), then download;
+  duplicates (its dHash and pHash test); every pair starts ticked **same photo**: untick
+  those where neither is a copy of the other (crop, filter, mirror, edit), then download;
 - `thumbs/`: the thumbnails the pages show. Your photos are only read.
+
+A model sees what is in the picture, never who or where: write the searches as what can be
+seen ("a woman in a kitchen", not a first name; "a house front", not a village). Names and
+places come from `people` and the GPS (`places`): the product would combine them with the
+model's part, which is what this bench measures.
 
 The ticks stay in the browser while you work (local storage), but only the downloaded JSON
 files count: send both to Claude (0221).
