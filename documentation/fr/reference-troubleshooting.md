@@ -251,12 +251,16 @@ sauvegarde qui les contient toutes ; l'outil s'arrête donc avant de comparer qu
   l'éjecter quand la commande de cette fenêtre est finie, tapez d'abord
   `wsl -d docker-desktop umount /mnt/host/d`.
 - Avec `mh` dans WSL (`mh.sh`) : WSL monte les disques présents à son démarrage, jamais une clé
-  branchée après, donc `/mnt/d` manque. Avant chaque commande, `mh` la monte avec `sudo` (*D:
-  n'est pas monté dans WSL : monté pour cette commande (sudo peut demander votre mot de passe).*),
-  et la démonte après : Windows peut éjecter la clé. Si le montage échoue, il s'arrête et donne la ligne
-  à taper vous-même : `sudo mount -t drvfs D: /mnt/d`. Si l'interopérabilité Windows de WSL est
-  coupée (`/etc/wsl.conf`), `mh` ne peut pas demander à Windows ses disques : montez la clé
-  vous-même.
+  branchée après, donc `/mnt/d` manque. `mh` ne lance jamais `sudo` lui-même : il s'arrête et donne
+  la ligne à taper une fois par branchement, puis de nouveau la commande (↑ puis Entrée) :
+
+  ```bash
+  sudo mkdir -p /mnt/d && sudo mount -t drvfs D: /mnt/d -o uid=1000,gid=1000
+  ```
+
+  (`mh` y écrit votre propre `uid` et `gid`.) Avant d'éjecter la clé, tapez `sudo umount /mnt/d`.
+  Si l'interopérabilité Windows de WSL est coupée (`/etc/wsl.conf`), `mh` ne peut pas demander à
+  Windows ses disques : montez la clé vous-même avec la même ligne.
 - Avec un `docker run` tapé à la main, partagez le disque une fois (ici `D:`), puis relancez la
   commande :
 

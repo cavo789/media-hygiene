@@ -8114,19 +8114,6 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{drive}: could not be mounted in WSL: type sudo mount -t drvfs {drive}: "
-"/mnt/{letter}, then the command again, or copy the folder to a fixed "
-"disk."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"{drive}: could not be unmounted from WSL: type sudo umount /mnt/{letter} "
-"before ejecting it."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "{drive}: could not be unshared from Docker Desktop: if Windows refuses to"
 " eject it, quit Docker Desktop first."
 msgstr ""
@@ -8137,14 +8124,9 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{drive}: is not mounted in WSL: mounted for this command (sudo may ask "
-"for your password)."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"{drive}: stays mounted in WSL: another mh window uses it. Once it has "
-"ended, type sudo umount /mnt/{letter} before ejecting it."
+"{drive}: is plugged in but not mounted in WSL: type the line below, then "
+"the command again (↑ then Enter). Before ejecting the drive: sudo umount "
+"/mnt/{letter}"
 msgstr ""
 
 #, python-brace-format

@@ -239,11 +239,16 @@ so the tool stops before it compares anything.
   stops; to eject it once that window's command has ended, type
   `wsl -d docker-desktop umount /mnt/host/d` first.
 - With `mh` in WSL (`mh.sh`): WSL mounts the drives present when it starts, never a stick
-  plugged in later, so `/mnt/d` is missing. Before each command, `mh` mounts it with `sudo`
-  (*D: is not mounted in WSL: mounted for this command (sudo may ask for your password).*), and
-  unmounts it after, so Windows can eject the stick. If mounting fails, it stops and says the
-  line to type yourself: `sudo mount -t drvfs D: /mnt/d`. With the Windows interop of WSL turned
-  off (`/etc/wsl.conf`), `mh` cannot ask Windows which drives it has: mount the stick yourself.
+  plugged in later, so `/mnt/d` is missing. `mh` never runs `sudo` itself: it stops and says the
+  line to type once per plug-in, then the command again (↑ then Enter):
+
+  ```bash
+  sudo mkdir -p /mnt/d && sudo mount -t drvfs D: /mnt/d -o uid=1000,gid=1000
+  ```
+
+  (`mh` writes your own `uid` and `gid`.) Before ejecting the stick, type `sudo umount /mnt/d`.
+  With the Windows interop of WSL turned off (`/etc/wsl.conf`), `mh` cannot ask Windows which
+  drives it has: mount the stick yourself with the same line.
 - With `docker run` typed by hand, share the drive once (here `D:`), then run the command again:
 
   ```powershell
