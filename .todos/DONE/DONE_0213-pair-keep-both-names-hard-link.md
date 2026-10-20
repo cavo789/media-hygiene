@@ -101,3 +101,20 @@ the photos.
   in Photos does).
   **Reason:** only Windows + Docker Desktop can show whether `os.link` + `os.replace` through
   the file sharing make a true NTFS hard link, and what Photos does on save.
+
+## Measured on Windows (2026-10-20, step 22 of mh-measure.ps1, maintainer, run `measures-20261020-1044`)
+
+- `clean` keeping both names through Docker Desktop: 3 files processed, 0 failed; each photo has
+  **2 names** in `fsutil hardlink list`, same bytes: a true NTFS hard link. C: gained 2,265,088
+  bytes for 2,386,607 bytes of copies (95 %, measured; the rest is cluster rounding or other
+  activity). Explorer shows and opens both folders.
+- An edit: the Photos app is not installed on the maintainer's PC (`Get-AppxPackage
+  Microsoft.Windows.Photos` empty), so **Paint.NET** was used (the log line says "in Photos":
+  it was Paint.NET). Its save **wrote a new file**: the edited name changed, its twin did not,
+  1 name left — the link separated, nothing lost. Paint.NET also re-encoded the JPEG at 75 %
+  quality (its own save dialog, not mh).
+- `undo`: 2 processed, 1 skipped "it is an independent file already" (the edited one, left
+  alone as designed); afterwards each name has 1 name, the untouched two back to their 2002 dates.
+- Docs en + fr step 12: the editor-saving-a-new-file case added (Paint.NET, measured). The
+  Photos app itself stays unmeasured (not on this PC); not worth a TODO.
+- Every item done → closed DONE.

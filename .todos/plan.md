@@ -43,7 +43,6 @@
 | 0182 | `clean`: say when the quarantine is on another drive than the photos | [PARTIAL_0182-quarantine-on-another-drive-warns.md](PARTIAL/PARTIAL_0182-quarantine-on-another-drive-warns.md) |
 | 0183 | One quarantine per drive: files set aside stay on their own drive | [PARTIAL_0183-one-quarantine-per-drive.md](PARTIAL/PARTIAL_0183-one-quarantine-per-drive.md) |
 | 0194 | A Media Hygiene icon for the shortcut and the right-click entry | [PARTIAL_0194-media-hygiene-icon.md](PARTIAL/PARTIAL_0194-media-hygiene-icon.md) |
-| 0213 | A folder pair can keep both names: each copy becomes a hard link to the kept file (same drive) | [PARTIAL_0213-pair-keep-both-names-hard-link.md](PARTIAL/PARTIAL_0213-pair-keep-both-names-hard-link.md) |
 | 0219 | `mh phone`: copy only the new photos and videos of a phone plugged in over USB | [PARTIAL_0219-mh-phone-copies-only-new.md](PARTIAL/PARTIAL_0219-mh-phone-copies-only-new.md) |
 | 0248 | `mh phone`: free the phone — delete from it what the PC holds, after importing what it lacks; a set-aside photo only with a warning | [PARTIAL_0248-mh-phone-free-the-phone.md](PARTIAL/PARTIAL_0248-mh-phone-free-the-phone.md) |
 | 0254 | `mh.sh` (WSL): a removable drive is mounted for the user, as `mh.ps1` does | [PARTIAL_0254-mh-sh-mounts-removable-drive.md](PARTIAL/PARTIAL_0254-mh-sh-mounts-removable-drive.md) |

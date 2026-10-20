@@ -99,6 +99,10 @@ Un lien, c'est **une photo sous deux noms** :
 
 - une retouche enregistrée sur place (un logiciel de retouche qui écrit dans le fichier) se voit
   sous les deux noms ;
+- un logiciel qui enregistre plutôt un nouveau fichier (Paint.NET le fait, mesuré sous Windows)
+  sépare les deux noms : la retouche ne se voit que sous le nom ouvert, l'autre garde la photo
+  d'origine, et cette copie reprend de la place. Rien n'est perdu ; l'audit suivant voit deux
+  photos différentes ;
 - supprimer un nom ne libère rien tant que l'autre reste ;
 - un outil de sauvegarde peut compter la photo deux fois.
 
