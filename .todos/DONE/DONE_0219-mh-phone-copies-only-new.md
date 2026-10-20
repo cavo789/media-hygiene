@@ -176,3 +176,14 @@ duplicates) → copying only the new ones; for a phone holding 5,000 files of wh
 - A phone file named `.temp-20240906_105433899_20.mp4` was copied: a hidden/temporary file of the
   phone. Follow-up 0251 (skip names starting with `.`; the 200 ms poll costs ≈ 0.23 s per file).
 - Still to run: `.\mh-measure.ps1 -Only 19 -Count 1` (fetched as above), pull the cable at line 2/N.
+
+## Measured on Windows (2026-10-20, step 19 of mh-measure.ps1 at 35b792a, maintainer, Samsung A72 over USB, run measures-20261020-1245)
+
+- First `mh phone`: 800 files (3.13 GB) copied in 144.3 s wall time, **22.6 MB/s** (10.2 MB/s on
+  2026-10-19); the hidden `.temp-…` file now left out, said in one line. Second: "Nothing new on
+  the phone", **2.2 s**.
+- Cable pulled during a copy of 304 files (2.00 GB): after 230, "The phone no longer answers
+  (unplugged?): 230 files copied so far. Type mh phone again: what is already copied is skipped.",
+  131.4 s, **no window from Windows**, no staging folder left.
+- Plugged again: the 74 left copied (26.0 MB/s), 726 skipped; 0 copies under a new name (_1…).
+- Every item done → closed DONE.

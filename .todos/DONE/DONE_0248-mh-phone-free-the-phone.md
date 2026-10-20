@@ -163,3 +163,20 @@ person ticks it past a warning.
 - "Purged on <date>": the purge date is not journaled; the text says "set aside on <date> and
   purged since".
   → stale: done by 0256, commit 12104de (inbox 2026-10-20).
+
+## Measured on Windows (2026-10-20, step 19 of mh-measure.ps1 at 35b792a, maintainer, Samsung A72 over USB, run measures-20261020-1245)
+
+- `mh phone --free` on 3 test files (A, C new; B with a twin of another content on the PC): the
+  page opened, Delete pressed: A and C copied, **proven by content, then deleted** ("each one seen
+  gone from the phone and found whole on the PC"); B **kept** ("Not the same content…"). 38.3 s
+  with the page; no window from Windows; no staging or moved folder left; DCIM 801 files before
+  and after (nothing else touched). `mh history` shows the phone run and that undo cannot put
+  the files back on the phone.
+- The page's own confirmation before Delete (the only question of the run, the browser's): "Delete
+  3 files (2 KB) from the phone? Each one is first copied again and compared with the PC's copy:
+  one that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it
+  has no trash." — as designed.
+- Deletion ways (19m/19n): InvokeVerb "Delete" (file 6.9 s, folder 6.0 s) and InvokeVerbEx (3.0 s)
+  each **asked a question**; MoveHere (what mh uses) none, 0.1 s. Files deleted over USB are not
+  in the Gallery's trash (as the docs say).
+- Every item done → closed DONE.
