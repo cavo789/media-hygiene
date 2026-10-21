@@ -9,6 +9,8 @@ import pytest
 from typer.testing import CliRunner
 
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.app import ReviewApp
+from media_hygiene.review.apply_api import ApplyingApp
 from media_hygiene.services import reviewing
 from tests.support.cli import run
 
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.app import ReviewApp
+    from media_hygiene.review.ending import EndingDoor
     from tests.support.media import MediaFactory
 
 RAFALE = "C:\\Family Photos\\Rafale"
@@ -115,9 +117,11 @@ def test_series_still_to_see_never_block_clean(
 def fake_server(action: Callable[[ReviewApp], None]) -> object:
     """A server that says it is ready, lets `action` act, then gets Ctrl+C."""
 
-    async def serve(app: ReviewApp, _port: int, ready: Callable[[int], None]) -> None:
+    async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> None:
         ready(PORT)
-        action(app)
+        assert isinstance(door.app, ApplyingApp)
+        assert isinstance(door.app.app, ReviewApp)
+        action(door.app.app)
         raise KeyboardInterrupt
 
     return serve
@@ -133,7 +137,7 @@ def test_the_review_command_serves_until_ctrl_c(
         pages.append(app.page)
         app.session.decide({0: frozenset({2})})
 
-    monkeypatch.setattr(reviewing, "run_server", fake_server(choose))
+    monkeypatch.setattr(reviewing, "serve_until_ended", fake_server(choose))
     result = run(cli, "review")
     assert result.exit_code == 0, result.output
     assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
@@ -166,7 +170,7 @@ def test_no_burst_nothing_to_review(
     for kind in MountKind:
         path = locations.path_of(kind)
         monkeypatch.setenv(f"MEDIA_HYGIENE_{kind.value.upper()}_DIR", str(path))
-    monkeypatch.setattr(reviewing, "run_server", fake_server(lambda _app: None))
+    monkeypatch.setattr(reviewing, "serve_until_ended", fake_server(lambda _app: None))
     result = run(
         CliRunner(), "review", "--decisions", str(locations.cache_dir / "d.json")
     )
@@ -178,7 +182,7 @@ def test_the_stop_summary_names_the_file_without_any_choice(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """The file may hold the report's pairs: always said where it is."""
-    monkeypatch.setattr(reviewing, "run_server", fake_server(lambda _app: None))
+    monkeypatch.setattr(reviewing, "serve_until_ended", fake_server(lambda _app: None))
     result = run(cli, "review")
     assert result.exit_code == 0, result.output
     assert (

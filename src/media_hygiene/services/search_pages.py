@@ -19,6 +19,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
@@ -30,7 +31,6 @@ from media_hygiene.search.app import (
     SearchPages,
     SearchPlace,
 )
-from media_hygiene.search.apply_api import APPLY_PATH, ApplyDesk
 from media_hygiene.search.chosen import ChosenPlace, ChosenStore
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.folders import (
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
-    from media_hygiene.search.apply_api import ApplyStep
+    from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
@@ -112,7 +112,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         runtime.settings.people,
         chosen,
         folders,
-        ApplyDesk(start.apply, ending, chosen),
+        ApplyDesk(ApplyOffer(start.apply, lambda: bool(chosen.paths())), ending),
     )
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):

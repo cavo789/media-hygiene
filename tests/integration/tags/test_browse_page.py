@@ -195,8 +195,8 @@ def test_apply_now_from_home_ends_on_the_clean_step(
         cli, monkeypatch, [("GET /browse", None), ("POST /api/apply", {})]
     )
     page, applied = answers[0], answers[1]
-    assert b"const APPLY_OFFERED = true;" in page.body
-    assert b'id="applyNow"' in page.body
+    assert b'id="applyNow"' in page.body  # apply_now.html.j2, shared with the reviews
+    assert b"window.mhApplyNow" in page.body
     assert applied.status == 200
     step = json.loads(applied.body)
     command = home_state(make_runtime(locations)).command_of(step["number"])
@@ -219,7 +219,7 @@ def test_apply_now_refused_when_opened_directly(
     answers, result = _opened(
         cli, monkeypatch, [("GET /browse", None), ("POST /api/apply", {})]
     )
-    assert b"const APPLY_OFFERED = false;" in answers[0].body
+    assert b'id="applyNow"' not in answers[0].body
     assert answers[1].status == 409
     assert result.exit_code == 0, result.output
     assert "clean --decisions" in result.output.split("What next")[-1]

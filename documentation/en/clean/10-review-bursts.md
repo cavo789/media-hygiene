@@ -285,6 +285,13 @@ The one of this example:
 
 ## Step 7: apply your choices
 
+**Opened from the [home page](../commands/home.md)** (`mh` alone, then the *Choose the best
+shots of each burst* step): once a shot is set aside, an **Apply now** button appears in the page's top bar,
+next to the counts. It closes the page and `mh` runs the home page's step that applies your
+choices, with its usual question, in the window where `mh` runs (PowerShell on Windows); then
+the home page comes back. Opened by `mh review` alone, there is no button: type the command
+below.
+
 The page itself never moves anything. Once done, run your `clean` command of
 [step 8](08-clean.md) with `--decisions` (alone, it reads `decisions.json`). You do not have to
 finish: only the series you have seen move something, those still to see stay as they are:

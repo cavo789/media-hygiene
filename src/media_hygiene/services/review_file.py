@@ -12,6 +12,7 @@ from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.report.decisions import DecisionsFile, read_decisions
+from media_hygiene.review.apply_api import APPLY_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.place import decisions_flag
@@ -40,10 +41,14 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
     """
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     decide_path, file_path = api
+    header = page_header(template)
     return (
         environment.get_template(template)
         .render(
-            header=page_header(template),
+            header=header,
+            # Opened from the home page: *Apply now*, where the page includes it (0288).
+            apply_offered=header.home,
+            apply_path=APPLY_PATH,
             state_path=STATE_PATH,
             decide_path=decide_path,
             file_path=file_path,

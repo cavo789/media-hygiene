@@ -27,7 +27,7 @@ from media_hygiene.services.search_pages import PageStart, Served, serve_pages
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from media_hygiene.search.apply_api import ApplyStep
+    from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 

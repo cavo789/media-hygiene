@@ -62,6 +62,7 @@ def review_command(  # pylint: disable=too-many-arguments
         junk: `--junk`, the photos most likely unwanted instead.
         gone: `--gone`, the files gone since the last audit instead.
     """
+    from media_hygiene.cli.apply_step import end_on_applied, page_apply
     from media_hygiene.cli.flows import audit_and_show
     from media_hygiene.cli.review_modes import (
         ReviewMode,
@@ -70,6 +71,7 @@ def review_command(  # pylint: disable=too-many-arguments
         run_mode,
     )
     from media_hygiene.console.formatting import human_number
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.reviewing import (
         open_review,
         review_target,
@@ -109,7 +111,9 @@ def review_command(  # pylint: disable=too-many-arguments
                     session.dropped,
                 ).format(count=human_number(session.dropped))
             )
-        serve_review(runtime, session, port)
+        # Opened from the home page: `mh` runs the step *Apply now* ends on (0288).
+        code = serve_review(runtime, session, ReviewStart(port, page_apply(runtime)))
+        end_on_applied(runtime, code)
         _tell_stopped(ctx, runtime, session)
 
 

@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.apply_step import end_on_applied, page_apply
 from media_hygiene.cli.gone_review_flow import run_gone
 from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
 from media_hygiene.cli.pairs_review_flow import tell_pairs_opened, tell_pairs_stopped
@@ -22,6 +23,7 @@ from media_hygiene.cli.unwanted_review_flow import (
 )
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
+from media_hygiene.review.apply_api import ReviewStart
 from media_hygiene.services import (
     near_reviewing,
     pairs_reviewing,
@@ -108,7 +110,9 @@ def _run_near(run: ReviewRun, findings: AuditFindings) -> None:
         return
     session = near_reviewing.open_near_review(runtime, findings, run.target)
     tell_near_opened(runtime, session)
-    near_reviewing.serve_near_review(runtime, session, run.port)
+    # Opened from the home page: `mh` runs the step *Apply now* ends on (0288).
+    start = ReviewStart(run.port, page_apply(runtime))
+    end_on_applied(runtime, near_reviewing.serve_near_review(runtime, session, start))
     tell_near_stopped(run.ctx, runtime, session)
 
 

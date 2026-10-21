@@ -299,6 +299,13 @@ Celui de cet exemple :
 
 ## Étape 7 : appliquer vos choix
 
+**Ouverte depuis l'[accueil](../commands/home.md)** (`mh` seul, puis l'étape *Choisir les
+meilleures photos de chaque rafale*) : dès qu'une photo est écartée, un bouton **Appliquer maintenant** apparaît dans la
+barre du haut de la page, à côté des comptes. Il ferme la page et `mh` lance l'étape de l'accueil
+qui applique vos choix, avec sa question habituelle, dans la fenêtre où `mh` tourne (PowerShell
+sous Windows) ; puis l'accueil revient. Ouverte par `mh review` seul, pas de bouton : tapez la
+commande ci-dessous.
+
 La page elle-même ne déplace jamais rien. Une fois le tri fini, lancez votre commande `clean` de
 l'[étape 8](08-clean.md) avec `--decisions` (seul, il lit `decisions.json`). Inutile d'avoir
 tout trié : seules les séries vues déplacent quelque chose, celles encore à voir restent telles

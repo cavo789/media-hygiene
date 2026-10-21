@@ -2,7 +2,8 @@
 {# The keyboard review of burst series, served by `media-hygiene review`. The page never
    touches a photo: each choice is sent to the server, which saves the decisions file;
    `clean --decisions` then moves the shots set aside, journaled. The left panel shows the
-   decisions file as read back from the disk after every choice: the proof it was saved. #}
+   decisions file as read back from the disk after every choice: the proof it was saved.
+   Opened from the home page, *Apply now* ends the page on the step that applies them. #}
 {% set texts = {
   "position": _("Series {number} of {total}"),
   "totals": _("Series seen: {seen} · with shots set aside: {series} · shots set aside: {shots}"),
@@ -139,6 +140,7 @@
   <span id="totals" class="muted"></span>
   <span id="eta" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>
+  {% include "apply_now.html.j2" %}
 </header>
 <div class="layout">
 <aside id="side">
@@ -235,6 +237,7 @@
     const seen = series.filter((item) => item.reviewed).length;
     byId("totals").textContent = fill(T.totals, { seen: seen, series: decided.length, shots: shots });
     byId("eta").textContent = remaining(series.length - seen);
+    if (window.mhApplyNow) window.mhApplyNow(shots > 0); // apply_now.html.j2, opened from home
   };
 
   const line = (tag, text, css) => {

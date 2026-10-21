@@ -390,6 +390,7 @@ def test_every_page_template_includes_the_home_link() -> None:
         not in {
             "home.html.j2",
             "home_link.html.j2",
+            "apply_now.html.j2",  # a fragment, like home_link (0288)
             "page_header.html.j2",
             "phone_review.html.j2",
         }

@@ -110,6 +110,10 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 - **One file for everything**: `decisions.json` holds the burst shots (`bursts`), the near
   duplicates (`near`), the folder pairs (`pairs`, from `review --pairs` or the report's
   download) and the unwanted photos (`unwanted`); each review keeps the others.
+- **Opened from the [home page](home.md)**, the burst and near duplicates reviews show an
+  **Apply now** button once something is set aside or decided: the page closes and `mh` runs
+  the home page's step that applies your choices (its usual question first), then the home
+  page comes back. Opened by `mh review` alone: no button, type the `clean` command.
 - A shot of a **protected folder** is never proposed nor set aside.
 - *port is already allocated*? Another program uses 8088: `-p 127.0.0.1:9000:9000` and
   `review --port 9000`.

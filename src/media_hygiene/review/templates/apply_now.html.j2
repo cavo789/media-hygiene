@@ -1,0 +1,63 @@
+{# *Apply now* (0243, 0288), included where the button goes by `browse` and the reviews, from
+   any package; rendered only when `mh` opened the page from the home page (`apply_offered`).
+   The page's own script calls `window.mhApplyNow(pending)` after each saved choice: the button
+   shows while something is set aside. Its `POST /api/apply` ends the server with the code of
+   the home step that applies the decisions; mh runs it in the terminal (its usual question),
+   then opens the home page again on the same port: the page goes there once the server was
+   seen gone, then answering again, on the section the home page was left from (0280, kept
+   for this tab in sessionStorage by home_run.js.j2). #}
+{% if apply_offered %}
+<span id="applyBar">
+  <button id="applyNow" type="button" hidden title="{{ _('Close this page: mh moves the files set aside to the quarantine (it asks first), then opens the home page again.') }}">{{ _("Apply now") }}</button>
+  <span id="applySaid" role="status"></span>
+</span>
+<script>
+(() => {
+  const APPLY_PATH = {{ apply_path | tojson }};
+  const APPLY_POLL_MS = 1000;
+  const TEXTS = {{ {
+    "applying": _("Running in the window where mh runs: {command}. The home page comes back here when it ends."),
+    "failed": _("The page failed (error {status})."),
+  } | tojson }};
+  const button = document.getElementById("applyNow");
+  const said = document.getElementById("applySaid");
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+
+  window.mhApplyNow = (pending) => { if (!button.disabled) button.hidden = !pending; };
+
+  const waitForHome = () => {
+    let seenGone = false;
+    const poll = () => fetch("/", { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok || !seenGone) { window.setTimeout(poll, APPLY_POLL_MS); return; }
+        let section = "";
+        try { section = window.sessionStorage.getItem("mh-home-section") || ""; } catch { /* private mode */ }
+        window.location.replace("/" + section);
+      })
+      .catch(() => {
+        seenGone = true;
+        window.setTimeout(poll, APPLY_POLL_MS);
+      });
+    window.setTimeout(poll, APPLY_POLL_MS);
+  };
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    const answer = await fetch(APPLY_PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+      .catch(() => null);
+    const state = answer ? await answer.json().catch(() => ({})) : {};
+    if (!answer || !answer.ok) {
+      button.disabled = false;
+      said.className = "error";
+      said.textContent = state.error || fill(TEXTS.failed, { status: answer ? answer.status : 0 });
+      return;
+    }
+    said.className = "";
+    said.textContent = fill(TEXTS.applying, { command: state.command });
+    button.hidden = true;
+    button.disabled = true;
+    waitForHome();
+  });
+})();
+</script>
+{% endif %}

@@ -6,7 +6,7 @@
    a click picks (Ctrl adds, Shift a range), Space picks, Ctrl+A picks the folder,
    Delete sets aside, Enter opens the picture, ←/→ the previous and next, Escape
    closes it. The script is `browse.js.j2`. Opened from the home page, *Apply now*
-   ends the page on the home step that applies the decisions (`browse_apply.js.j2`). #}
+   ends the page on the home step that applies the decisions (`apply_now.html.j2`). #}
 {% set texts = {
   "files": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "counts": _("{photos} photos · {videos} videos · {size}"),
@@ -19,7 +19,6 @@
   "aside": _("marked to set aside"),
   "saving": _("Saving…"),
   "notSaved": _("Nothing was saved: {error}"),
-  "applying": _("Running in the window where mh runs: {command}. The home page comes back here when it ends."),
 } %}
 {% set page_name = _("Your folders") %}
 <html lang="{{ _('en') }}">
@@ -100,7 +99,7 @@
   </div>
   <p id="status" role="status"></p>
   <p id="chosen" role="status"></p>
-  <button id="applyNow" type="button" hidden title="{{ _('Close this page: mh moves the files set aside to the quarantine (it asks first), then opens the home page again.') }}">{{ _("Apply now") }}</button>
+  {% include "apply_now.html.j2" %}
   <p class="hint">{{ _("A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A the whole folder; Delete (or the button) sets them aside. Enter or a double click opens a picture, ←/→ the next ones. Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
 </header>
 <div class="layout">
@@ -114,7 +113,6 @@
 </div>
 <script>
 {% include "browse.js.j2" %}
-{% include "browse_apply.js.j2" %}
 </script>
 {% include "home_link.html.j2" %}
 </body>

@@ -21,10 +21,10 @@ from typing import TYPE_CHECKING, Final
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.review.apply_api import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
-from media_hygiene.search.apply_api import APPLY_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_PATH, FOLDERS_PATH
 from media_hygiene.search.people_words import unknown_people
@@ -38,8 +38,8 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.review.apply_api import ApplyDesk
     from media_hygiene.review.http import Request
-    from media_hygiene.search.apply_api import ApplyDesk
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex

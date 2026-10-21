@@ -16,7 +16,8 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
-from media_hygiene.review.ending import run_server
+from media_hygiene.review.apply_api import ApplyOffer, applying_door
+from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
@@ -36,6 +37,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.console.output import Output
     from media_hygiene.plan.models import AuditFindings
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.runtime import Runtime
 
 HOST_LOOPBACK: Final = "127.0.0.1"
@@ -101,18 +103,28 @@ def open_review(
     return session
 
 
-def serve_review(runtime: Runtime, session: ReviewSession, port: int) -> None:
+def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -> int:
     """Serve the review page until Ctrl+C; every decision is saved as it is made.
 
     Args:
         runtime: Settings, mount points and output.
         session: The review.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on.
+
+    Returns:
+        `100 + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     page = review_page(_PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
+    offer = ApplyOffer(start.apply, lambda: session.progress[1] > 0)
+    code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = ReviewApp(session, page, executor, runtime.previews_dir)
-        asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
+        door = applying_door(
+            ReviewApp(session, page, executor, runtime.previews_dir), offer
+        )
+        ready = partial(_announce, runtime, session)
+        code = asyncio.run(serve_until_ended(door, start.port, ready))
+    return code
 
 
 def _announce(runtime: Runtime, session: ReviewSession, port: int) -> None:

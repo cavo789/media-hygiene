@@ -5,7 +5,6 @@ const TEXTS = {{ texts | tojson }};
 const FOLDERS_PATH = {{ folders_path | tojson }};
 const FOLDER_PATH = {{ folder_path | tojson }};
 const CHOSEN_PATH = {{ chosen_path | tojson }};
-const APPLY_OFFERED = {{ apply_offered | tojson }}; // opened from the home page (0243)
 const $ = (id) => document.getElementById(id);
 const PLURAL = new Intl.PluralRules(document.documentElement.lang);
 let folder = "";       // the folder shown (host path)
@@ -171,7 +170,7 @@ function said(answer, state) {
   const line = $("chosen");
   line.className = answer.ok ? "" : "error";
   line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
-  $("applyNow").hidden = !(APPLY_OFFERED && answer.ok && state.count > 0);
+  if (window.mhApplyNow) window.mhApplyNow(answer.ok && state.count > 0); // apply_now.html.j2
 }
 
 async function choose(action) {

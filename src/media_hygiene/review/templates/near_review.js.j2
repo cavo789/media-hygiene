@@ -60,6 +60,7 @@
     const upTo = order.slice(0, at + 1).reduce((sum, rank) => sum + groups[rank].gain, 0);
     const share = all ? Math.round((100 * upTo) / all) : 100;
     byId("share").textContent = fill(T.share, { size: size(upTo), share: share });
+    if (window.mhApplyNow) window.mhApplyNow(decided > 0); // apply_now.html.j2, opened from home
   };
 
   const showPairs = () => {

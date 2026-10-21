@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-from functools import partial
 from typing import Annotated
 
 import typer
@@ -29,24 +28,19 @@ def browse_command(
         Exit: With `100 + n` when *Apply now* chose step `n` (opened from the home
             page): `mh` runs it, then opens the home page again.
     """
-    from media_hygiene.cli.browse_apply import apply_step
+    from media_hygiene.cli.apply_step import end_on_applied, page_apply
     from media_hygiene.cli.cmd_search import suggest_clean
-    from media_hygiene.services.home import launcher_relays_steps
     from media_hygiene.services.search import BrowseStart, open_search, serve_browse
 
     runtime = runtime_of(ctx)
     port = review_options.page_port(runtime, port)
     output = runtime.output
     # Opened from the home page: `mh` runs the step *Apply now* ends on (0243).
-    apply = partial(apply_step, runtime) if launcher_relays_steps() else None
+    apply = page_apply(runtime)
     with user_errors(output), open_search(runtime, words=False) as search:
         served = serve_browse(runtime, search, BrowseStart(port, apply))
         output.blank()
         output.success(_("Folders closed; your photos were not changed."))
-        step = apply_step(runtime) if served.code else None
-        if step is not None:
-            said = _("Apply now, chosen on the page: {command}")
-            output.info(said.format(command=step.command))
-            raise typer.Exit(served.code)
+        end_on_applied(runtime, served.code)
         if served.chosen:
             suggest_clean(runtime, served.chosen)

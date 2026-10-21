@@ -112,6 +112,11 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   quasi-doublons (`near`), les paires de dossiers (`pairs`, de `review --pairs` ou du
   téléchargement du rapport) et les photos indésirables (`unwanted`) ; chaque tri garde les
   autres.
+- **Ouvertes depuis l'[accueil](home.md)**, les pages des rafales et des quasi-doublons
+  montrent un bouton **Appliquer maintenant** dès que quelque chose est écarté ou décidé : la
+  page se ferme et `mh` lance l'étape de l'accueil qui applique vos choix (sa question habituelle
+  d'abord), puis l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
+  commande `clean`.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.
