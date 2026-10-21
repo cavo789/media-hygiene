@@ -2378,22 +2378,41 @@ if (Wanted 25) {
 
 # --- 26: the shortcut's window minimised, a console step brought forward (0284, 0285) ---------
 # Your own mh, by hand: it rewrites your Desktop and Start menu shortcut (as mh shortcut does).
+# The bell, AppActivate and the minimised shortcut live in mh.ps1, not in the image: a local
+# build never rewrites mh.ps1 (mh update: nothing to pull), so an older file is rewritten
+# first, by its own _mh_rewrite: same folders, same image (2026-10-21: run on an older file).
 if (Wanted 26) {
     Log ""
     Log "== 26. the shortcut's window minimised, a console step brought forward (0284, 0285)"
-    Write-Host "26: open Windows PowerShell as you usually do, type: mh shortcut"
+    $own = Join-Path $HOME "media-hygiene\mh.ps1"
+    $fresh = (Test-Path -LiteralPath $own) -and (Select-String -LiteralPath $own -Pattern '_mh_forward' -SimpleMatch -Quiet)
+    if ((Test-Path -LiteralPath $own) -and -not $fresh) {
+        . $own
+        $null = _mh_rewrite @(_mh_photos) @(_mh_backups)
+        $fresh = [bool](Select-String -LiteralPath $own -Pattern '_mh_forward' -SimpleMatch -Quiet)
+        Log "   26: $own was older than 0285: rewritten with its folders, now holds the bell = $fresh"
+    } else {
+        Log "   26: $own holds the bell of 0285 = $fresh"
+    }
+    if (-not $fresh) {
+        Log "   26: skipped: write your mh with the launcher line of the image $Image first (its image may be another one)"
+    }
+}
+if ((Wanted 26) -and $fresh) {
+    Write-Host "26: open a NEW Windows PowerShell window (it loads the mh just written), type: mh shortcut"
     Write-Host "    Close that window. Double-click the Media Hygiene icon of the Desktop."
     $minimised = Read-Host "26a. The PowerShell window started minimised in the taskbar? (y/n)"
     $line = Read-Host "26b. In it (click its button): 'Keep this window open (minimised is fine)...'? (y/n)"
     Write-Host "    Windows Terminal: Settings, Open JSON file; in profiles, defaults, add"
     Write-Host '        "bellStyle": "taskbar",'
     Write-Host "    save. Then minimise the mh window (or tab away from it). On the home page, Run 'clean'."
+    Write-Host "    The bell rings before the step, whether it asks or not ('Nothing to clean' is fine)."
     $bold = Read-Host "26c. The page showed at once, in bold, 'Switch to ... now'? (y/n)"
     $min = Read-Host "26d. Window minimised: it came forward (f), its taskbar button flashed (b), or nothing (n)?"
-    Write-Host "    Answer n in PowerShell. When the page is back, leave the window open (not minimised),"
+    Write-Host "    If clean asks, answer n. When the page is back, leave the window open (not minimised),"
     Write-Host "    click on the browser, then Run 'clean' again."
     $normal = Read-Host "26e. Window open behind the browser: forward (f), button flashed (b), or nothing (n)?"
-    Write-Host "    Answer n. When the page is back, close the PowerShell window (its X), look at the page."
+    Write-Host "    If it asks, answer n. When the page is back, close the PowerShell window (its X), look at the page."
     $stop = Read-Host "26f. The page showed 'Media Hygiene is stopped' within about 10 s, by itself? (y/n)"
     Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
 }
