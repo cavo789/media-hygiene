@@ -91,7 +91,7 @@
         disown "$browser" 2>/dev/null
     fi
     "${awake[@]}" docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
-        -e "{{ variable }}={{ script.shell.value }}" \
+        -e "{{ variable }}={{ script.shell.value }}" -e "{{ stamp.variable }}={{ stamp.value }}" \
         "${zoned[@]}" "${relay[@]}" \
 {% for option in script.environment %}
         {{ option }} \

@@ -6467,8 +6467,8 @@ msgid "This help."
 msgstr ""
 
 msgid ""
-"This image is a local build: nothing to pull. Build it again, then write "
-"mh with launcher."
+"This image is a local build: nothing to pull. mh is written again from it"
+" as it is, with the same folders."
 msgstr ""
 
 msgid "This is not a classify workbook, or it was damaged."
@@ -6531,6 +6531,18 @@ msgid "This workbook belongs to another classify run."
 msgstr ""
 
 msgid "This workbook was written by another version: it cannot be checked."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"This {command} was written by an older image than {image}: type {command}"
+" update to write it again, with the same folders."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"This {command} was written by the image {written}, this one is {image}: "
+"type {command} update to write it again, with the same folders."
 msgstr ""
 
 msgid "Those deleted in the Explorer since an audit: on purpose, or lost?"
@@ -10504,6 +10516,10 @@ msgstr ""
 msgid ""
 "{value}: unknown category, did you mean {name}? For the extension, write "
 ".{value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{version} (build {build})"
 msgstr ""
 
 #, python-brace-format

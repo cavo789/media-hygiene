@@ -11,6 +11,7 @@ from media_hygiene.cli import options
 from media_hygiene.cli.context import build_runtime
 from media_hygiene.cli.safety import DATA_COMMANDS
 from media_hygiene.constants import ColorMode, Locale, Verbosity
+from media_hygiene.services.launcher_stamp import say_stamp
 
 _DISTRIBUTION = "media-hygiene"
 
@@ -50,7 +51,8 @@ def root_callback(  # pylint: disable=too-many-arguments
         return
     given = {"locale": locale, "verbosity": verbosity, "color": color}
     general: dict[str, object] = {key: value for key, value in given.items() if value}
-    ctx.obj = build_runtime(
-        {"general": general} if general else {},
-        stderr=ctx.invoked_subcommand in DATA_COMMANDS,
-    )
+    data = ctx.invoked_subcommand in DATA_COMMANDS
+    ctx.obj = build_runtime({"general": general} if general else {}, stderr=data)
+    # An `mh` written by another image says so, never for the output `mh` reads (0290).
+    if not data and (line := say_stamp()):
+        ctx.obj.output.warning(line)

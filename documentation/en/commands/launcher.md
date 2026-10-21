@@ -198,7 +198,28 @@ prints that link after an update.
 
 A `mh` written before `mh update` existed does not know it: run the `launcher` line of the
 guides once more, with your folders; from then on, `mh update` is enough. An image you built
-yourself (`media-hygiene`) has nothing to download: `mh update` says so.
+yourself (`media-hygiene`) has nothing to download: `mh update` says so, then writes `mh` again
+from that image as it is, with the same folders, and lists them as read back from the file.
+
+**A `mh` older than its image says so.** The image can change without `mh update`: pulled by
+Docker Desktop or `docker pull`, or built again on your computer. `mh.ps1` then stays as the
+previous image wrote it, and some of what it does (the home page's steps, a long run's window)
+may no longer match. So `mh` passes, at each command, the stamp of the image that wrote it,
+and the image compares it with its own, without any extra Docker call. When they differ, every
+command starts with one line, and nothing is blocked:
+
+```text
+⚠️  This mh was written by the image 0.5.0 (build 1a2b3c4d5e6f), this one is 0.6.0 (build
+4d5e6f7a8b9c): type mh update to write it again, with the same folders.
+```
+
+The stamp is the version and a build: the start of the digest of every file the image installs.
+The same version built again with other code is another build; the same code built twice is
+the same one. A `mh` written before this check passes no stamp: the line says *written by an
+older image* (this also covers a `mh.ps1` that no longer understands the home page's steps);
+with an image you built yourself, the `mh update` of a `mh` that old only says *nothing to
+pull*: run the `launcher` line once more. After `mh update`, the line is gone. Re-pulling `latest` while nothing changed keeps the same
+build: nothing is said.
 
 ## A phone? Copy only its new photos: `mh phone`
 

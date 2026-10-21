@@ -207,7 +207,31 @@ affiche ce lien après une mise à jour.
 
 Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez
-construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit.
+construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit, puis
+réécrit `mh` à partir de cette image telle quelle, avec les mêmes dossiers, et les liste tels
+qu'il les relit dans le fichier.
+
+**Un `mh` plus ancien que son image le dit.** L'image peut changer sans `mh update` : tirée par
+Docker Desktop ou `docker pull`, ou reconstruite sur votre ordinateur. `mh.ps1` reste alors tel
+que l'image précédente l'a écrit, et une partie de ce qu'il fait (les étapes de la page
+d'accueil, la fenêtre d'une longue exécution) peut ne plus correspondre. `mh` transmet donc, à
+chaque commande, l'empreinte de l'image qui l'a écrit, et l'image la compare à la sienne, sans
+aucun appel Docker de plus. Quand elles diffèrent, chaque commande commence par une ligne, et
+rien n'est bloqué :
+
+```text
+⚠️  Ce mh a été écrit par l'image 0.5.0 (construction 1a2b3c4d5e6f), celle-ci est 0.6.0
+(construction 4d5e6f7a8b9c) : tapez mh update pour le réécrire, avec les mêmes dossiers.
+```
+
+L'empreinte est la version et une construction : le début du condensé de tous les fichiers que
+l'image installe. La même version reconstruite avec un autre code est une autre construction ;
+le même code construit deux fois reste la même. Un `mh` écrit avant cette vérification ne
+transmet aucune empreinte : la ligne dit *écrit par une image plus ancienne* (cela couvre aussi
+un `mh.ps1` qui ne comprend plus les étapes de la page d'accueil) ; avec une image construite
+par vous-même, le `mh update` d'un `mh` aussi ancien dit seulement *rien à télécharger* :
+relancez une fois la ligne `launcher`. Après `mh update`, la ligne disparaît. Tirer de nouveau `latest` sans changement garde la même construction : rien n'est
+dit.
 
 ## Un téléphone ? Copiez seulement ses nouvelles photos : `mh phone`
 

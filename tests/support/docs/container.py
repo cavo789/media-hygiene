@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.services.launcher_stamp import LAUNCHER_STAMP_VARIABLE
 from tests.support.docker import AS_PUBLISHED, IMAGE, docker, run_image
 from tests.support.docs.host_paths import as_on_windows
 from tests.support.docs.names import Locale
@@ -76,7 +78,8 @@ class Demo:
             for kind in _TOOL_MOUNTS:
                 options += ["-v", f"{self.volume(_MH + kind)}:/{kind}"]
             locale = f"MEDIA_HYGIENE_GENERAL__LOCALE={self.locale}"
-            return [*options, "-e", _LAUNCHED, "-e", _PLAIN, "-e", locale]
+            stamp = f"{LAUNCHER_STAMP_VARIABLE}={image_stamp()}"
+            return [*options, "-e", _LAUNCHED, "-e", stamp, "-e", _PLAIN, "-e", locale]
         options += ["-v", f"{self.volume('d')}:/data/d/{disk}{suffix}"]
         for kind in _TOOL_MOUNTS:
             options += ["-v", f"{self.volume(kind)}:/{kind}"]
@@ -95,6 +98,24 @@ class Demo:
             return [*AS_PUBLISHED, IMAGE, *command.args]
         return [*AS_PUBLISHED, IMAGE, "--color", "never", "--locale", self.locale,
                 *command.args]  # fmt: skip
+
+
+@cache
+def image_stamp() -> str:
+    """The stamp of the image, as the `mh` it writes passes it on (0290).
+
+    Without it, every `mh` capture would start with the line of an older `mh`.
+
+    Returns:
+        The image's own stamp, asked once.
+    """
+    ask = (
+        "from media_hygiene.services.launcher_stamp import image_stamp; "
+        "print(image_stamp())"
+    )
+    return docker(
+        "run", "--rm", "--entrypoint", "python", IMAGE, "-c", ask
+    ).stdout.strip()
 
 
 def seed(demo: Demo) -> None:

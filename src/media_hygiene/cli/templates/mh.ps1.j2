@@ -120,6 +120,7 @@ function global:{{ function }} {
         }
         docker run --rm @tty `
             -e "{{ variable }}={{ script.shell.value }}" `
+            -e "{{ stamp.variable }}={{ stamp.value }}" `
             -e "{{ zone }}=$((Get-TimeZone).Id)" `
             -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
             @relay `

@@ -103,8 +103,8 @@ def update_texts() -> UpdateTexts:
         ),
         local=shell_safe(
             _(
-                "This image is a local build: nothing to pull. Build it again, then "
-                "write mh with launcher."
+                "This image is a local build: nothing to pull. mh is written again "
+                "from it as it is, with the same folders."
             )
         ),
         pull_failed=shell_safe(_("docker pull failed: mh is unchanged.")),

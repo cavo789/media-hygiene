@@ -38,6 +38,7 @@ from media_hygiene.services.launcher import (
 from media_hygiene.services.launcher_file import written
 from media_hygiene.services.launcher_folders import FolderChoice, with_folders
 from media_hygiene.services.launcher_kept import kept_run, quoted
+from media_hygiene.services.launcher_stamp import LAUNCHER_STAMP_VARIABLE, image_stamp
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from tests.support.runtime import make_locations, make_runtime
 from tests.unit.test_launcher_ascii import accented_runtime, expanded
@@ -47,6 +48,10 @@ if TYPE_CHECKING:
 
 pytestmark = pytest.mark.skipif(shutil.which("bash") is None, reason="no bash")
 
+# The stamp of an older image, as an mh.sh written by it passes it (0290).
+_OLDER: Final = f"{LAUNCHER_STAMP_VARIABLE}=0.3.0+000000000000"
+# A local build: its name in the image's environment, as the Dockerfile's `local` has.
+_LOCAL: Final = {"IMAGE": "media-hygiene", IMAGE_VARIABLE: "media-hygiene"}
 _COMMANDS: Final = LauncherCommands(("audit", "menu"), (), (), ("menu",), 8088)
 # The image's stand-in: `run` starts the real CLI with the `-e` given, `pull` and
 # `image inspect` play a registry whose image id lives in `$FAKE/id`; every call is
@@ -297,14 +302,53 @@ def test_a_failed_pull_leaves_mh_as_it_was(tmp_path: Path) -> None:
     assert "launcher --shell bash --photos" not in calls.split("pull ")[-1]
 
 
-def test_a_local_build_has_nothing_to_pull(tmp_path: Path) -> None:
-    """0177: the image of a developer's build: said, nothing pulled."""
+def test_a_local_build_is_written_again_without_a_pull(tmp_path: Path) -> None:
+    """0290: a developer's build: nothing pulled, mh written again, same folders."""
     (photos,) = _folders(tmp_path, "Photos")
-    script = _written(tmp_path, photos, **{IMAGE_VARIABLE: "media-hygiene"})
-    done = _mh(tmp_path, script, "mh update", IMAGE="media-hygiene")
-    assert "status=2" in done.stdout
-    assert "local build: nothing to pull" in done.stderr
+    script = _written(tmp_path, photos, **_LOCAL)
+    stamp = f'{LAUNCHER_STAMP_VARIABLE}={image_stamp()}"'
+    older = script.read_text(encoding="utf-8").replace(stamp, f'{_OLDER}"')
+    script.write_text(older, encoding="utf-8")
+    done = _mh(tmp_path, script, "mh update", **_LOCAL)
+    assert "status=0" in done.stdout, done.stderr
+    assert "local build: nothing to pull. mh is written again" in done.stdout
     assert "pull" not in _calls(tmp_path)
+    assert f"launcher --shell bash --photos {photos}" in _calls(tmp_path)
+    assert _held(done) == [str(photos)]
+    assert stamp in script.read_text(encoding="utf-8")  # read back from disk
+
+
+@pytest.mark.parametrize(
+    ("stamp", "said"),
+    [
+        (_OLDER, "written by the image 0.3.0 (build 000000000000), this one is"),
+        ("", "written by an older image than"),
+    ],
+)
+def test_an_mh_of_another_image_says_so_until_updated(
+    tmp_path: Path, stamp: str, said: str
+) -> None:
+    """0290: an older mh.sh names mh update at each call; after it, nothing."""
+    (photos,) = _folders(tmp_path, "Photos")
+    script = _written(tmp_path, photos, **_LOCAL)
+    current = f' -e "{LAUNCHER_STAMP_VARIABLE}={image_stamp()}"'
+    text = script.read_text(encoding="utf-8")
+    assert current in text
+    older = f' -e "{stamp}"' if stamp else ""
+    script.write_text(text.replace(current, older), encoding="utf-8")
+    line = "mh history; mh history"
+    before = _said(_mh(tmp_path, script, line, **_LOCAL))
+    assert before.count(said) == 2
+    assert "type mh update to write it again, with the same folders." in before
+    _mh(tmp_path, script, "mh update", **_LOCAL)
+    after = _said(_mh(tmp_path, script, line, **_LOCAL))
+    assert "No run yet." in after
+    assert "mh update" not in after
+
+
+def _said(done: subprocess.CompletedProcess[str]) -> str:
+    """Both streams, the console's line wrapping undone."""
+    return " ".join((done.stdout + done.stderr).split())
 
 
 def _runtime(tmp_path: Path) -> Runtime:
@@ -410,6 +454,7 @@ def test_powershell_update_pulls_the_published_image_only(
     assert (f"    $image = '{PUBLISHED_IMAGE}'" in text) is pulls
     assert ("    docker pull $image" in text) is pulls
     assert ("local build: nothing to pull" in text) is not pulls
+    assert pulls or "    $null = _mh_rewrite $photos $backups" in text
     assert "docker image prune" in text or not pulls
     assert "image prune\n" not in text  # said, never run
 

@@ -43,6 +43,7 @@ from media_hygiene.services.launcher_menu import (
 from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_stale import stale_texts
+from media_hygiene.services.launcher_stamp import launcher_stamp
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -172,6 +173,7 @@ def render_script(script: LauncherScript) -> str:
         kept=kept_run(script),
         update=update_texts(),
         stale=stale_texts(),
+        stamp=launcher_stamp(),
         host=host_commands(script),
         launch=launch_texts(),
         checked=(

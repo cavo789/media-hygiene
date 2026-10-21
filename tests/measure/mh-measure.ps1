@@ -100,6 +100,9 @@
 #      writes), 20 renames there timed, whether a credential-only New-PSDrive lets robocopy in;
 #      then in a test mh: mh backup twice (the second copies nothing), once stopped by Ctrl+C
 #      and typed again, once after a folder renamed (renames only); the test folder removed (0264)
+#  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
+#      removed: mh history says the line naming mh update (expected), mh update of the local
+#      build writes it again without a pull, folders read back, the line gone      (0290)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -131,6 +134,7 @@
 #   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
 #   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
 #   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
+#   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2519,6 +2523,48 @@ if (Wanted 27) {
         Log "   27h. test folder on the NAS removed: $(-not (Test-Path -LiteralPath $test))"
         Remove-PSDrive -Name $drive -Force -ErrorAction SilentlyContinue
     }
+    $ErrorActionPreference = $saved
+}
+
+# --- 28: an mh older than its image says so; mh update of a local build writes it again (0290) --
+# A test mh.ps1 under -Work (your own mh is put back at the end): written by -Image, then made
+# to look written by another image (its stamp changed), then by one older than the check (no
+# stamp). mh history must say the line each time; mh update rewrites the test file only.
+if (Wanted 28) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 28. an mh older than its image, then mh update (0290)"
+    $folder = Join-Path $Work "older"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $copy = Join-Path $folder "mh.ps1"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
+    $mark = 'MEDIA_HYGIENE_LAUNCHER_STAMP='
+    $written = @($lines | Where-Object { $_ -match $mark }) -join ' '
+    Log ("   28a. stamp written: {0}" -f $written.Trim())
+    . $copy
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28a. fresh file: line said = {0} (expected False)" -f [bool]($said -match 'mh update to write it again'))
+    $other = @($lines | ForEach-Object { $_ -replace ($mark + '[0-9a-f.+]+'), ($mark + '0.3.0+000000000000') })
+    Set-Content -LiteralPath $copy -Value $other -Encoding Ascii
+    . $copy
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28b. another stamp: line said = {0} (expected True)" -f [bool]($said -match 'mh update to write it again'))
+    $none = @($lines | Where-Object { $_ -notmatch $mark })
+    Set-Content -LiteralPath $copy -Value $none -Encoding Ascii
+    . $copy
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    $watch.Stop()
+    Log ("   28c. no stamp (older than 0290): line said = {0} (expected True), mh history took {1:N2} s" -f [bool]($said -match 'older image'), $watch.Elapsed.TotalSeconds)
+    Log ("   28c. the line: {0}" -f ([regex]::Match($said, 'This mh was written[^:]+:[^.]+\.')).Value)
+    $said = (@(mh update 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28d. mh update: nothing to pull said = {0}, pulled = {1}, exit code {2}" -f [bool]($said -match 'nothing to pull'), [bool]($said -match 'Pulling|Digest:'), $LASTEXITCODE)
+    $back = [bool](Select-String -LiteralPath $copy -Pattern $mark -SimpleMatch -Quiet)
+    Log ("   28d. file written again with a stamp = {0}, folder read back = {1}" -f $back, [bool](@(_mh_photos) -contains $data))
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28e. after mh update: line said = {0} (expected False)" -f [bool]($said -match 'mh update to write it again'))
     $ErrorActionPreference = $saved
 }
 
