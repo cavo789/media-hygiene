@@ -41,7 +41,9 @@ FOLDERS: Final = "folders"
 UPDATE: Final = "update"
 # Copies the new photos of a phone over USB, which only Windows PowerShell reads (0219).
 PHONE: Final = "phone"
-HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PHONE)
+# Copies the photo folders to a NAS: Windows writes it, the bash `mh` refuses (0264).
+BACKUP: Final = "backup"
+HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PHONE, BACKUP)
 WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER, PHONE)
 # The name of the shortcut and of the right-click entry.
 LABEL: Final = "Media Hygiene"

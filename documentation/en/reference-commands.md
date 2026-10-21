@@ -32,6 +32,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | look through my folders and remove photos, without Explorer, undoably | [`browse`](commands/browse.md), then `clean --decisions` |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
+| back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
 | check every setting and every folder before the tool acts | [`config`](commands/config.md) |
@@ -75,6 +76,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
+| [`backup`](commands/backup.md) | Windows only (`mh backup`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/backup.md) |
 
 ## Options
 

@@ -114,6 +114,7 @@ nav:
       - reference-commands.md
       - commands/album.md
       - commands/audit.md
+      - commands/backup.md
       - commands/browse.md
       - commands/classify.md
       - commands/clean.md

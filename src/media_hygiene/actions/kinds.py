@@ -57,6 +57,14 @@ class ActionKind(StrEnum):
     # (`path`) from the backup (`keeper`), proven by its SHA-256. `undo` removes the
     # copy while it still holds those bytes; the backup is never touched.
     COPY_IN = "copy-in"
+    # Written by `mh backup` (0264), on its target only (`path` and `target` relative to
+    # it): a file renamed there (a move on the PC), the previous copy of an edited file
+    # and a file the PC no longer has set aside in `.removed`, and per source folder the
+    # bytes robocopy copied. `mh backup --undo` reverses them; `undo` refuses the run.
+    BACKUP_MOVE = "backup-move"
+    BACKUP_ASIDE = "backup-aside"
+    BACKUP_REMOVE = "backup-remove"
+    BACKUP_COPY = "backup-copy"
 
     @property
     def remembered(self) -> bool:
@@ -81,6 +89,7 @@ class Phase(StrEnum):
     XMP = "xmp"
     PHONE = "phone"
     IMPORT = "import"
+    BACKUP = "backup"
     UNDO = "undo"
 
 
@@ -91,7 +100,8 @@ class Status(StrEnum):
     DONE = "done"
 
 
-# The phases that change files; `undo` reverses one of them, but `phone`'s (0248).
+# The phases that change files; `undo` reverses one of them, but `phone`'s (0248) and
+# `backup`'s (0264: `mh backup --undo`).
 ACTING_PHASES: Final = (
     Phase.CLEAN,
     Phase.SORT,
@@ -99,6 +109,7 @@ ACTING_PHASES: Final = (
     Phase.XMP,
     Phase.PHONE,
     Phase.IMPORT,
+    Phase.BACKUP,
 )
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(
@@ -136,3 +147,22 @@ PHONE_DELETIONS: Final = frozenset(
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})
 # Files `import` copied into the library (0245): nothing is deleted nor freed.
 COPIES_IN: Final = frozenset({ActionKind.COPY_IN})
+# What `mh backup` did on its target (0264): nothing on the PC is deleted nor freed.
+BACKUP_ACTIONS: Final = frozenset(
+    {
+        ActionKind.BACKUP_MOVE,
+        ActionKind.BACKUP_ASIDE,
+        ActionKind.BACKUP_REMOVE,
+        ActionKind.BACKUP_COPY,
+    }
+)
+# The files set aside in the target's `.removed`: `history` counts them as quarantined.
+BACKUP_SET_ASIDE: Final = frozenset({ActionKind.BACKUP_ASIDE, ActionKind.BACKUP_REMOVE})
+# Actions after which the file is still on the PC: neither deleted nor freed.
+LEFT_IN_PLACE: Final = (
+    frozenset({ActionKind.MOVE}) | LINKS | XMP_ACTIONS | COPIES_IN | BACKUP_ACTIONS
+)
+# Files moved: by `sort` on the PC, by `mh backup` on its target.
+MOVES: Final = frozenset({ActionKind.MOVE, ActionKind.BACKUP_MOVE})
+# Bytes copied: by `import` into the library, by `mh backup` to its target.
+COPIES: Final = COPIES_IN | {ActionKind.BACKUP_COPY}

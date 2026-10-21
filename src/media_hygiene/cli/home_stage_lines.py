@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.menu_entry import Space
 from media_hygiene.cli.status_step import to_import
+from media_hygiene.cli.status_view import ago
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
@@ -59,7 +60,7 @@ def stage_line(space: Space, status: Status) -> str:
         Space.CLEAN: _clean_line,
         Space.SORT: _sort_line,
         Space.FIND: _find_line,
-        Space.BACKUP: lambda _status: _("Planned: mh backup"),
+        Space.BACKUP: _backup_line,
     }
     line = lines.get(space)
     return line(status) if line else ""
@@ -83,10 +84,22 @@ def stage_badge(space: Space, status: Status, *, newer: bool) -> str:
         Space.HISTORY: len(status.undoable),
         Space.SETTINGS: int(newer),
     }
-    if space is Space.BACKUP:
-        return _("Planned")
     count = counts.get(space, 0)
     return human_number(count) if count else ""
+
+
+def _backup_line(status: Status) -> str:
+    """The backup stage (0264).
+
+    Args:
+        status: What the tool folders say.
+
+    Returns:
+        Its line.
+    """
+    if status.backed_up is None:
+        return _("Not backed up yet: mh backup copies to the NAS")
+    return _("Last backup: {when}").format(when=ago(status.backed_up))
 
 
 def _import_line(status: Status) -> str:

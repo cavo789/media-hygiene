@@ -1,0 +1,9 @@
+{# `mh backup` in mh.sh: refused, see services/launcher_backup.py. #}
+
+# `{{ function }} backup` copies to the NAS through Windows, about 7 times faster than a copy through
+# Docker (measured, 0264): mh.ps1 only. Said with the command to type in Windows PowerShell.
+_{{ function }}_backup() {
+    printf '%s\n' "{{ backup.texts.windows }}" "{{ backup.texts.paste }}" >&2
+    printf '    %s\n' '{{ backup.example }}' >&2
+    return 2
+}

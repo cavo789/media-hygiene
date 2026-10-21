@@ -32,6 +32,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [`browse`](commands/browse.md), puis `clean --decisions` |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
+| sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`backup`](commands/backup.md) |
 | répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
 | taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
 | vérifier chaque réglage et chaque dossier avant que l'outil agisse | [`config`](commands/config.md) |
@@ -76,6 +77,7 @@ exemples et son `--help`.
 | [`album NOM`](commands/album.md) | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
+| [`backup`](commands/backup.md) | Windows seulement (`mh backup`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/backup.md) |
 
 ## Options
 

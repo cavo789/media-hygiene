@@ -16,12 +16,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.paths.docker_run import (
-    Shell,
-    Volume,
-    guess_shell,
-    running_image,
-)
+from media_hygiene.paths.docker_run import Shell, Volume, guess_shell, running_image
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.home_views import (
@@ -30,6 +25,7 @@ from media_hygiene.review.home_views import (
     STEP_EXIT_BASE,
 )
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_backup import backup_command
 from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
@@ -184,6 +180,7 @@ def render_script(script: LauncherScript) -> str:
         ),
         cloud=cloud_check(script.commands.names),
         phone=phone_command(),
+        backup=backup_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,

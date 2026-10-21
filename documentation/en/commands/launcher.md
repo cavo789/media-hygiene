@@ -115,6 +115,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 | `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
+| `mh backup` | Windows: copies your photo folders into a folder of their own on the NAS, only what it lacks; Windows writes it (robocopy), the container decides: [`backup`](backup.md). |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys
 `HKCU\Software\Classes\Directory\shell\MediaHygiene` and
@@ -124,7 +125,8 @@ Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the 
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep
 PowerShell's icon. From WSL, Linux or macOS,
 `mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; `mh shortcut`, `mh explorer` and
-`mh phone` say they are for Windows.
+`mh phone` say they are for Windows; `mh backup` says why (Windows writes to the NAS 7 times faster)
+and the command to type in Windows PowerShell.
 
 **What the icon and the right-click start**: Windows PowerShell, `-NoExit -Command`, loading
 `mh.ps1` under your own execution policy (the `Set-ExecutionPolicy -Scope CurrentUser

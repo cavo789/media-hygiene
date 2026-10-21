@@ -914,6 +914,9 @@ msgstr "Déjà trié comme le dit le classeur."
 msgid "Already the latest version: {version}."
 msgstr "Déjà la dernière version : {version}."
 
+msgid "Already there"
+msgstr "Déjà là"
+
 #, python-brace-format
 msgid ""
 "Also delete the {count} name of config.toml ([[people.person]]) and the "
@@ -1008,6 +1011,9 @@ msgstr ""
 
 msgid "Any folder"
 msgstr "N'importe quel dossier"
+
+msgid "Apply it? (y/n)"
+msgstr "L'appliquer ? (o/n)"
 
 msgid "Apply now"
 msgstr "Appliquer maintenant"
@@ -1166,8 +1172,18 @@ msgstr "Sauvegarde"
 msgid "Backup folder"
 msgstr "Dossier de sauvegarde"
 
+#, python-brace-format
+msgid "Backup folder kept, read back: {target}. Next time, mh backup alone."
+msgstr ""
+"Dossier de sauvegarde retenu, relu : {target}. La prochaine fois, mh "
+"backup seul."
+
 msgid "Backup folders"
 msgstr "Dossiers de sauvegarde"
+
+#, python-brace-format
+msgid "Backup of {folders} into {target}:"
+msgstr "Sauvegarde de {folders} dans {target} :"
 
 msgid "Backup, never changed"
 msgstr "Sauvegarde, jamais modifiée"
@@ -1220,6 +1236,9 @@ msgstr "Fichiers cassés (vides ou illisibles)"
 
 msgid "Broken files in protected folders"
 msgstr "Fichiers cassés dans des dossiers protégés"
+
+msgid "Broken on the PC: the backup's copy kept"
+msgstr "Abîmés sur le PC : la copie de la sauvegarde est gardée"
 
 #, python-brace-format
 msgid "Brought up to date, read back from {path}: it starts this mh."
@@ -1309,6 +1328,9 @@ msgstr ""
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' restaure tout :"
+
+msgid "Changed your mind? This puts back what was renamed or set aside:"
+msgstr "Changé d'avis ? Ceci remet ce qui a été renommé ou mis de côté :"
 
 msgid ""
 "Check any group yourself: 'Check it yourself' gives the command printing "
@@ -1576,6 +1598,10 @@ msgstr "Copiée"
 
 msgid "Copied by mh phone"
 msgstr "Copiés par mh phone"
+
+#, python-brace-format
+msgid "Copied: {count} files ({size}, {speed} MB/s), read back from {target}."
+msgstr "Copiés : {count} fichiers ({size}, {speed} Mo/s), relus dans {target}."
 
 #, python-brace-format
 msgid "Copied: {text}"
@@ -2288,6 +2314,9 @@ msgstr ""
 "Modifiez {path} pour changer ces réglages ; les options de ligne de "
 "commande l'emportent."
 
+msgid "Edited since: the backup's copy set aside, then copied"
+msgstr "Modifiés depuis : la copie de la sauvegarde mise de côté, puis copiés"
+
 msgid "Edits carried over"
 msgstr "Modifications reprises"
 
@@ -2334,6 +2363,10 @@ msgstr ""
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
 msgstr "Effacer la quarantaine de {runs} ({count} fichiers, {size}) ?"
+
+#, python-brace-format
+msgid "Erased from .removed (older than {days} days): {count} runs"
+msgstr "Effacés de .removed (plus de {days} jours) : {count} passages"
 
 msgid "Error"
 msgstr "Erreur"
@@ -2972,6 +3005,11 @@ msgstr "Définitif"
 msgid "For good, once the quarantine is checked."
 msgstr "Pour de bon, une fois la quarantaine vérifiée."
 
+msgid "For mh backup: one step of a backup, its lines on stdin and stdout."
+msgstr ""
+"Pour mh backup : une étape d'une sauvegarde, ses lignes sur stdin et "
+"stdout."
+
 msgid "For mh phone: journal the files gone from the phone."
 msgstr "Pour mh phone : inscrit au journal les fichiers partis du téléphone."
 
@@ -3162,6 +3200,13 @@ msgstr "Donne à chaque fichier un second nom dans l'album."
 msgid "Go further"
 msgstr "Pour aller plus loin"
 
+msgid ""
+"Go on even when more than stop_above_percent (config.toml) of the backup "
+"would be set aside or replaced."
+msgstr ""
+"Continuer même si plus de stop_above_percent (config.toml) de la "
+"sauvegarde serait mis de côté ou remplacé."
+
 msgid "Go on with the clean?"
 msgstr "Lancer le nettoyage ?"
 
@@ -3183,6 +3228,12 @@ msgstr "Vers un dossier « à vérifier »"
 
 msgid "Going to a 'to sort' folder"
 msgstr "Vers un dossier « à trier »"
+
+msgid "Gone from the PC: kept in the backup"
+msgstr "Disparus du PC : gardés dans la sauvegarde"
+
+msgid "Gone from the PC: set aside in .removed"
+msgstr "Disparus du PC : mis de côté dans .removed"
 
 msgid "Google Photos description"
 msgstr "description Google Photos"
@@ -3311,6 +3362,9 @@ msgstr ""
 " les quasi-doublons ; vérifiez-les d'abord dans le rapport. Les quasi-"
 "doublons partent en quarantaine, jamais supprimés."
 
+msgid "How long robocopy ran."
+msgstr "Durée de robocopy."
+
 msgid ""
 "How many files 'clean', 'undo' and 'sort' handle at once (1 or more): "
 "four readers read a Windows folder about 4 times faster than one. Lower "
@@ -3321,6 +3375,9 @@ msgstr ""
 "plus) : quatre lecteurs lisent un dossier Windows environ 4 fois plus "
 "vite qu'un seul. Mettez 1 pour un disque dur USB lent, dont la tête fait "
 "des allers-retours entre les lecteurs."
+
+msgid "How many files robocopy copies at once (/MT)."
+msgstr "Nombre de fichiers que robocopy copie à la fois (/MT)."
 
 #, python-brace-format
 msgid "How many files the table lists at most. Default: {count}."
@@ -3600,6 +3657,10 @@ msgid "Last audit: {when} (mount /reports to see its figures)."
 msgstr "Dernier audit : {when} (montez /reports pour voir ses chiffres)."
 
 #, python-brace-format
+msgid "Last backup: {when}"
+msgstr "Dernière sauvegarde : {when}"
+
+#, python-brace-format
 msgid "Last classify proposal: {when}, {state}"
 msgstr "Dernière proposition de classify : {when}, {state}"
 
@@ -3608,6 +3669,9 @@ msgstr "Dernier nettoyage"
 
 msgid "Last complete audit (UTC)"
 msgstr "Dernier audit complet (UTC)"
+
+msgid "Last mh backup"
+msgstr "Dernier mh backup"
 
 msgid "Later"
 msgstr "Plus tard"
@@ -3906,6 +3970,9 @@ msgstr ""
 "Déplacés hors du téléphone avec un autre contenu que celui prouvé : "
 "{count}, gardés dans {folder}."
 
+msgid "Moved on the PC: renamed on the backup, nothing sent"
+msgstr "Déplacés sur le PC : renommés dans la sauvegarde, rien n'est renvoyé"
+
 msgid "Moved to the quarantine"
 msgstr "Déplacés en quarantaine"
 
@@ -4153,6 +4220,13 @@ msgstr "Pas encore d'audit."
 msgid "No backup folder to import from."
 msgstr "Aucun dossier de sauvegarde d'où importer."
 
+msgid ""
+"No backup folder yet: type mh backup --to <the NAS folder>, a shared "
+"folder of its own such as backup_photos."
+msgstr ""
+"Pas encore de dossier de sauvegarde : tapez mh backup --to <le dossier du"
+" NAS>, un dossier partagé rien qu'à lui, comme backup_photos."
+
 msgid "No burst series: nothing to review."
 msgstr "Aucune rafale : rien à trier."
 
@@ -4276,6 +4350,9 @@ msgstr "Pas de montage /journal : aucun historique à afficher."
 
 msgid "No journal mount: nothing is deleted from the phone without one."
 msgstr "Pas de montage du journal : rien n'est supprimé du téléphone sans lui."
+
+msgid "No journal mount: nothing was changed."
+msgstr "Pas de montage du journal : rien n'a été changé."
 
 msgid ""
 "No journal mount: the photos and videos you set aside before are not "
@@ -4489,6 +4566,9 @@ msgstr "Pas une ville"
 msgid "Not a town: never read as one, in any folder"
 msgstr "Pas une ville : plus jamais lu comme tel, dans aucun dossier"
 
+msgid "Not backed up yet: mh backup copies to the NAS"
+msgstr "Pas encore sauvegardé : mh backup copie vers le NAS"
+
 #, python-brace-format
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
@@ -4522,6 +4602,20 @@ msgid "Not found: renamed or moved? Rename it back, or forget its position."
 msgstr ""
 "Introuvable : renommé ou déplacé ? Rendez-lui son nom, ou oubliez sa "
 "position."
+
+#, python-brace-format
+msgid ""
+"Not in the backup: {count} file (robocopy failed, or new since the plan)."
+" Type mh backup again:"
+msgid_plural ""
+"Not in the backup: {count} files (robocopy failed, or new since the "
+"plan). Type mh backup again:"
+msgstr[0] ""
+"Absent de la sauvegarde : {count} fichier (robocopy a échoué, ou nouveau "
+"depuis le plan). Tapez mh backup à nouveau :"
+msgstr[1] ""
+"Absents de la sauvegarde : {count} fichiers (robocopy a échoué, ou "
+"nouveaux depuis le plan). Tapez mh backup à nouveau :"
 
 #, python-format
 msgid "Not in this backup: %(num)s file of your photos (%(size)s)."
@@ -4604,6 +4698,15 @@ msgid "Nothing found. Fewer words, or the start of a word (anniv*), find more."
 msgstr ""
 "Rien trouvé. Moins de mots, ou le début d'un mot (anniv*), trouvent "
 "davantage."
+
+msgid ""
+"Nothing is applied when the files set aside and replaced exceed this "
+"share of the backup, in percent: a drive missing? many files changed at "
+"once? 'mh backup --anyway' goes on."
+msgstr ""
+"Rien n'est appliqué quand les fichiers mis de côté et remplacés dépassent"
+" cette part de la sauvegarde, en pour cent : un disque absent ? beaucoup "
+"de fichiers changés d'un coup ? 'mh backup --anyway' continue."
 
 msgid ""
 "Nothing is deleted from this page: the files set aside go to the "
@@ -4707,6 +4810,9 @@ msgstr "Rien à importer : chaque fichier de la sauvegarde est déjà traité."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
+
+msgid "Nothing to put back."
+msgstr "Rien à remettre."
 
 msgid "Nothing to take back."
 msgstr "Rien à reprendre."
@@ -5098,6 +5204,9 @@ msgstr "Fêtes"
 msgid "Password of {share} (asked once, never shown)"
 msgstr "Mot de passe de {share} (demandé une fois, jamais affiché)"
 
+msgid "Past the safety stop."
+msgstr "Passer outre l'arrêt de sécurité."
+
 msgid ""
 "Paste it in the terminal where you ran the audit (PowerShell or bash, as "
 "written)."
@@ -5233,9 +5342,6 @@ msgstr "Prévu"
 msgid "Planned with mh backup: not in the tool yet."
 msgstr "Prévu avec mh backup : pas encore dans l'outil."
 
-msgid "Planned: mh backup"
-msgstr "Prévu : mh backup"
-
 msgid "Planned: mh backup is coming."
 msgstr "Prévu : mh backup arrive."
 
@@ -5353,6 +5459,12 @@ msgid ""
 msgstr ""
 "Purgé le {date} : il n'est nulle part ailleurs. Supprimé du téléphone, il"
 " est perdu pour de bon."
+
+#, python-brace-format
+msgid "Put back in the backup: {count} file, read back."
+msgid_plural "Put back in the backup: {count} files, read back."
+msgstr[0] "Remis dans la sauvegarde : {count} fichier, relu."
+msgstr[1] "Remis dans la sauvegarde : {count} fichiers, relus."
 
 msgid "Put back the files of the last run"
 msgstr "Remettre les fichiers de la dernière exécution"
@@ -5537,6 +5649,16 @@ msgstr "Retirer Media Hygiene du clic droit"
 
 msgid "Remove a folder"
 msgstr "Retirer un dossier"
+
+#, python-brace-format
+msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
+msgstr ""
+"Renommés dans la sauvegarde (déplacés, ou mis de côté dans .removed) : "
+"{count}."
+
+#, python-brace-format
+msgid "Renames not seen made: {count}. Type mh backup again."
+msgstr "Renommages non constatés : {count}. Tapez mh backup à nouveau."
 
 #, python-brace-format
 msgid "Replacing a duplicate copy by a link to the kept file: {path}"
@@ -6507,6 +6629,16 @@ msgstr "Arrêté avant la fin, comme demandé."
 msgid "Stopped by Ctrl+C: type the command again for the rest."
 msgstr "Arrêté par Ctrl+C : retapez la commande pour le reste."
 
+#, python-brace-format, python-format
+msgid ""
+"Stopped: more than {percent} % of the backup would be set aside or "
+"replaced. A drive missing? Many files changed at once? Nothing was "
+"applied; mh backup --anyway goes on."
+msgstr ""
+"Arrêté : plus de {percent} % de la sauvegarde serait mis de côté ou "
+"remplacé. Un disque absent ? Beaucoup de fichiers changés d'un coup ? "
+"Rien n'a été appliqué ; mh backup --anyway continue."
+
 msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
 "Arrêté : la prochaine exécution de classify reprend là où celle-ci s'est "
@@ -6676,8 +6808,39 @@ msgstr ""
 "L'audit lit vos dossiers et écrit un rapport ; vos photos ne sont pas "
 "touchées."
 
+msgid ""
+"The backup folder, as Windows writes it (\\\\NAS\\backup_photos): a "
+"folder of its own, never a photo folder nor a backup compared."
+msgstr ""
+"Le dossier de sauvegarde, tel que Windows l'écrit "
+"(\\\\NAS\\backup_photos) : un dossier rien qu'à lui, jamais un dossier de"
+" photos ni une sauvegarde comparée."
+
 msgid "The backup folder, as the Explorer shows it"
 msgstr "Dossier de la sauvegarde, tel que l'Explorateur le montre"
+
+msgid "The backup folder."
+msgstr "Le dossier de sauvegarde."
+
+#, python-brace-format
+msgid "The backup holds {count} files ({size})."
+msgstr "La sauvegarde contient {count} fichiers ({size})."
+
+msgid "The backup is up to date: nothing to copy."
+msgstr "La sauvegarde est à jour : rien à copier."
+
+#, python-brace-format
+msgid "The backup target {target} is not mounted: nothing was read."
+msgstr "Le dossier de sauvegarde {target} n'est pas monté : rien n'a été lu."
+
+#, python-brace-format
+msgid ""
+"The backup target {target} overlaps {folder}: choose a folder of its own,"
+" outside your photo folders and backups."
+msgstr ""
+"Le dossier de sauvegarde {target} chevauche {folder} : choisissez un "
+"dossier rien qu'à lui, hors de vos dossiers de photos et de vos "
+"sauvegardes."
 
 msgid ""
 "The blurriest: sharpness under this percentile (0 to 100) of your own "
@@ -6786,6 +6949,9 @@ msgstr "La commande ajoute {points} : des dossiers de votre profil."
 msgid "The commands"
 msgstr "Les commandes"
 
+msgid "The comparison with the backup failed: nothing was changed."
+msgstr "La comparaison avec la sauvegarde a échoué : rien n'a été changé."
+
 msgid "The comparison with your library failed: nothing was copied."
 msgstr "La comparaison avec votre photothèque a échoué : rien n'a été copié."
 
@@ -6887,6 +7053,9 @@ msgstr "Les fichiers de cette catégorie, d'après le classeur modifié."
 
 msgid "The files of this event: its id or its name."
 msgstr "Les fichiers de cet événement : son identifiant ou son nom."
+
+msgid "The files robocopy copied stay in the backup."
+msgstr "Les fichiers copiés par robocopy restent dans la sauvegarde."
 
 msgid "The files set aside are saved in /reports: mount it, or they are lost."
 msgstr ""
@@ -7294,6 +7463,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"The run {run_id} changed a backup folder, which Windows writes: undo "
+"cannot reach it from here. Nothing was changed."
+msgstr ""
+"Le passage {run_id} a changé un dossier de sauvegarde, que Windows écrit "
+": undo ne peut pas l'atteindre d'ici. Rien n'a été changé."
+
+#, python-brace-format
+msgid ""
 "The run {run_id} deleted files from a phone: undo cannot put them back on"
 " it. Nothing was changed."
 msgstr ""
@@ -7338,6 +7515,13 @@ msgstr[1] ""
 "L'exécution {run_id} a mis {count} fichiers de côté dans la quarantaine "
 "de {drive}, qui n'est pas montée (/quarantine/{letter}) : rien n'a été "
 "modifié."
+
+#, python-brace-format
+msgid "The run {run_id} was started already."
+msgstr "Le passage {run_id} a déjà été commencé."
+
+msgid "The run, for undo and undone."
+msgstr "Le passage, pour undo et undone."
 
 #, python-brace-format
 msgid ""
@@ -7785,6 +7969,13 @@ msgstr ""
 msgid "To check: compare the copies with the kept version."
 msgstr "À vérifier : comparez les copies avec la version gardée."
 
+msgid "To copy"
+msgstr "À copier"
+
+#, python-brace-format
+msgid "To copy, in all: {size}"
+msgstr "À copier, en tout : {size}"
+
 msgid "To do"
 msgstr "À faire"
 
@@ -7890,6 +8081,13 @@ msgstr "Tapez un nom ou une catégorie, ou laissez-le où il est."
 
 msgid "Type a name to filter the folders"
 msgstr "Tapez un nom pour filtrer les dossiers"
+
+#, python-brace-format
+msgid "Type mh backup --undo {run_id} in Windows PowerShell."
+msgstr "Tapez mh backup --undo {run_id} dans Windows PowerShell."
+
+msgid "Type mh backup in Windows PowerShell: it mounts it."
+msgstr "Tapez mh backup dans Windows PowerShell : il le monte."
 
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
@@ -8177,10 +8375,28 @@ msgstr "Seront déplacées en quarantaine depuis"
 msgid "Windows"
 msgstr "Windows"
 
+#, python-brace-format
+msgid ""
+"Windows cannot open {target}: is the NAS on, the shared folder created, "
+"the password right? Nothing was changed."
+msgstr ""
+"Windows ne peut pas ouvrir {target} : le NAS est-il allumé, le dossier "
+"partagé créé, le mot de passe juste ? Rien n'a été changé."
+
 msgid "Windows lets you choose the folder; mh keeps it for every command."
 msgstr ""
 "Windows vous laisse choisir le dossier ; mh le retient pour toutes les "
 "commandes."
+
+msgid ""
+"Windows only, as mh backup: copy your photo folders into a folder of "
+"their own on the NAS, only what it lacks; a photo moved is renamed there,"
+" a deletion by mistake never carried over. Run here, it shows the plan."
+msgstr ""
+"Windows seulement, en mh backup : copier vos dossiers de photos dans un "
+"dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo"
+" déplacée y est renommée, une suppression par erreur n'y est jamais "
+"reportée. Lancée ici, elle montre le plan."
 
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
@@ -8888,6 +9104,12 @@ msgstr "supprimé exprès"
 msgid "deleted on purpose: remembered, set aside if it comes back"
 msgstr "supprimé exprès : retenu, mis de côté s'il revient"
 
+msgid "deleted, confirmed in review --gone"
+msgstr "supprimés, confirmés dans review --gone"
+
+msgid "deleted, not confirmed yet in review --gone"
+msgstr "supprimés, pas encore confirmés dans review --gone"
+
 msgid ""
 "digiKam, darktable, Lightroom, Immich: .xmp files next to the photos, "
 "never inside them."
@@ -9025,6 +9247,14 @@ msgstr "historique journal exécutions"
 
 msgid "home page start"
 msgstr "accueil page home"
+
+#, python-brace-format
+msgid ""
+"in Windows PowerShell, type mh backup --to {target}: Windows copies, "
+"about 7 times faster than Docker."
+msgstr ""
+"dans Windows PowerShell, tapez mh backup --to {target} : Windows copie, "
+"environ 7 fois plus vite que Docker."
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
@@ -9276,6 +9506,39 @@ msgstr "mh seul l'ouvre ; le raccourci du Bureau aussi."
 #, python-brace-format
 msgid "mh asks you again in {window} before touching anything."
 msgstr "mh vous le redemande dans {window} avant de toucher quoi que ce soit."
+
+msgid "mh backup"
+msgstr "mh backup"
+
+msgid ""
+"mh backup (Windows only): a file the PC no longer has, or the previous "
+"copy of an edited file, waits in the .removed folder of the backup that "
+"many days, then mh backup erases it."
+msgstr ""
+"mh backup (Windows seulement) : un fichier que le PC n'a plus, ou la "
+"copie précédente d'un fichier modifié, attend autant de jours dans le "
+"dossier .removed de la sauvegarde, puis mh backup l'efface."
+
+msgid ""
+"mh backup --to <the NAS folder> the first time, then mh backup alone; "
+"--anyway goes past the safety stop; --undo <run> puts back what a run "
+"renamed or set aside."
+msgstr ""
+"mh backup --to <le dossier du NAS> la première fois, puis mh backup seul "
+"; --anyway passe outre l'arrêt de sécurité ; --undo <passage> remet ce "
+"qu'un passage a renommé ou mis de côté."
+
+msgid "mh backup copies it"
+msgstr "mh backup la copie"
+
+msgid ""
+"mh backup is for Windows only: Windows writes to the NAS about 7 times "
+"faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
+"15.1 MB/s). Nothing was started."
+msgstr ""
+"mh backup est pour Windows seulement : Windows écrit sur le NAS environ 7"
+" fois plus vite qu'une copie par Docker (mesuré : 86 à 105,8 Mo/s contre "
+"15,1 Mo/s). Rien n'a été lancé."
 
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
@@ -9529,6 +9792,9 @@ msgstr "pas encore triée."
 msgid "nothing"
 msgstr "rien"
 
+msgid "nothing: type mh backup again after your next import or sort."
+msgstr "rien : tapez mh backup à nouveau après votre prochain import ou tri."
+
 msgid "ok"
 msgstr "ok"
 
@@ -9633,6 +9899,9 @@ msgstr "lieux carte gps voyages endroits"
 msgid "plan checks"
 msgstr "vérification du plan"
 
+msgid "plan, start, prove, undo or undone."
+msgstr "plan, start, prove, undo ou undone."
+
 msgid "preferred folder"
 msgstr "dossier préféré"
 
@@ -9683,6 +9952,9 @@ msgstr "protégé, gardé"
 msgid "purge free room quarantine erase empty for good"
 msgstr "purger libérer place quarantaine effacer vider définitivement"
 
+msgid "purged from the quarantine"
+msgstr "purgés de la quarantaine"
+
 msgid "reference-commands/"
 msgstr "fr/reference-commands/"
 
@@ -9726,6 +9998,18 @@ msgstr "clic droit explorateur menu contextuel"
 
 msgid "right click remove delete"
 msgstr "clic droit retirer supprimer"
+
+#, python-brace-format
+msgid ""
+"robocopy could not copy everything from {from} (code {code}): the files "
+"missing are named below."
+msgstr ""
+"robocopy n'a pas pu tout copier depuis {from} (code {code}) : les "
+"fichiers manquants sont nommés plus bas."
+
+#, python-brace-format
+msgid "robocopy: {from} into {into}…"
+msgstr "robocopy : {from} dans {into}…"
 
 #, python-brace-format
 msgid "rule '{name}': match = 'trip' needs a [[classify.places]] with home = true"
@@ -9820,6 +10104,9 @@ msgstr "statut état résumé"
 #, python-brace-format
 msgid "step {index} of {count}"
 msgstr "étape {index} sur {count}"
+
+msgid "still in the quarantine"
+msgstr "encore en quarantaine"
 
 msgid "still to see first"
 msgstr "à voir d'abord"
@@ -10182,6 +10469,9 @@ msgid "unknown time zone '{name}', expected a name like 'Europe/Brussels'"
 msgstr ""
 "fuseau horaire « {name} » inconnu, un nom comme 'Europe/Brussels' est "
 "attendu"
+
+msgid "unknown to the tool: a deletion by mistake?"
+msgstr "inconnus de l'outil : une suppression par erreur ?"
 
 msgid "up to date"
 msgstr "à jour"
@@ -10709,6 +10999,20 @@ msgstr[1] ""
 "{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
 "(des copies que 'clean' déplace en quarantaine), {size} à libérer avec "
 "'purge'."
+
+#, python-brace-format
+msgid ""
+"{count} file is no longer where the run left it, or its old place is "
+"taken: left as it is."
+msgid_plural ""
+"{count} files are no longer where the run left them, or their old place "
+"is taken: left as they are."
+msgstr[0] ""
+"{count} fichier n'est plus là où le passage l'a laissé, ou son ancienne "
+"place est prise : laissé tel quel."
+msgstr[1] ""
+"{count} fichiers ne sont plus là où le passage les a laissés, ou leur "
+"ancienne place est prise : laissés tels quels."
 
 #, python-brace-format
 msgid ""
@@ -11542,6 +11846,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"{folder} could not be read whole ({count} unreadable): its part of the "
+"backup is left as it is."
+msgstr ""
+"{folder} n'a pas pu être lu en entier ({count} illisibles) : sa partie de"
+" la sauvegarde reste telle quelle."
+
+#, python-brace-format
+msgid ""
 "{folder} has a position in [[places.folders]] but cannot be found: "
 "renamed or moved? Correct it in the map of 'places'."
 msgstr ""
@@ -11569,6 +11881,12 @@ msgstr "{folder} ne fait pas partie des dossiers listés"
 #, python-brace-format
 msgid "{folder} is not one of your folders: mh folders lists them."
 msgstr "{folder} n'est pas un de vos dossiers : mh folders les liste."
+
+#, python-brace-format
+msgid "{folder} is not plugged in: its part of the backup is left as it is."
+msgstr ""
+"{folder} n'est pas branché : sa partie de la sauvegarde reste telle "
+"quelle."
 
 #, python-brace-format
 msgid "{folder} is one of your folders already."
@@ -12124,6 +12442,14 @@ msgid "{table} in config.toml"
 msgstr "{table} dans config.toml"
 
 #, python-brace-format
+msgid ""
+"{target} overlaps {folder}: choose a folder of its own, outside your "
+"photo folders and backups."
+msgstr ""
+"{target} chevauche {folder} : choisissez un dossier rien qu'à lui, hors "
+"de vos dossiers de photos et de vos sauvegardes."
+
+#, python-brace-format
 msgid "{ticked} of {count} ticked · {size}"
 msgstr "{ticked} sur {count} cochés · {size}"
 
@@ -12155,6 +12481,10 @@ msgstr ""
 "{town} est une ville : « classify » nomme déjà ses photos. Gardez-la "
 "comme lieu seulement pour des frontières exactes (une zone OpenStreetMap)"
 " ou un autre nom."
+
+#, python-brace-format
+msgid "{to} is neither a NAS folder nor a folder on a drive."
+msgstr "{to} n'est ni un dossier du NAS ni un dossier d'un disque."
 
 #, python-brace-format
 msgid "{to} is not a folder on a drive letter."
@@ -12296,6 +12626,9 @@ msgstr ""
 "👉 Et ensuite : mh history (le passage du téléphone, et ce qu'il a "
 "supprimé)."
 
+msgid "👉 What next: open Windows PowerShell and type:"
+msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
+
 #, python-brace-format
 msgid ""
 "📦 {file} is applied: archived as {archive}, the next 'review' starts "
@@ -12341,6 +12674,11 @@ msgstr ""
 "appuyiez sur Supprimer ; chaque fichier est d'abord prouvé sur le PC par "
 "son contenu."
 
+msgid "🔒 Only read: your photos and the backup folder are not changed."
+msgstr ""
+"🔒 Seulement lu : vos photos et le dossier de sauvegarde ne sont pas "
+"changés."
+
 msgid "🔒 Read-only: never changes your photos."
 msgstr "🔒 Lecture seule : ne modifie jamais vos photos."
 
@@ -12376,6 +12714,14 @@ msgstr[0] ""
 msgstr[1] ""
 "🗑️ {count} fichiers supprimés dans l'Explorateur seront retenus : s'ils "
 "reviennent, ils sont mis de côté."
+
+msgid ""
+"🛟 A backup run changed its backup folder only, never your photos: mh "
+"backup --undo <run> puts back what it renamed or set aside there."
+msgstr ""
+"🛟 Un passage de sauvegarde n'a changé que son dossier de sauvegarde, "
+"jamais vos photos : mh backup --undo <passage> remet ce qu'il y a renommé"
+" ou mis de côté."
 
 msgid ""
 "🛟 An album only adds names (hard links): no photo is copied, moved nor "
