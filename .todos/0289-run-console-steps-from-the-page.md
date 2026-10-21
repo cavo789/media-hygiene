@@ -4,6 +4,7 @@
 - **Batch**: home
 - **Depends**: 0288
 - **Files**: TBD (design first) — likely src/media_hygiene/review/home_app.py, src/media_hygiene/services/clean* , src/media_hygiene/review/templates/home_run.js.j2, src/media_hygiene/cli/templates/mh_menu.ps1.j2
+- **Needs maintainer**: review of the design note (.claude/plans/0289-console-steps-from-the-page.md), then the follow-up TODOs are filed
 
 ## Context
 
@@ -44,3 +45,5 @@ in the page, one at a time, stop button — `home_app.py`).
 By the maintainer (`/todo:iterate`): an unattended run writes the design note only
 (`.claude/plans/0289-console-steps-from-the-page.md`), no code; the maintainer reviews it, then
 the follow-up TODOs are filed.
+
+Design note written (2026-10-21): .claude/plans/0289-console-steps-from-the-page.md
