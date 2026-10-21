@@ -35,3 +35,9 @@ way (Docker Desktop, `docker pull`).
 - An older `mh.ps1` says so at the first call and names the command; after it, the line is gone.
 - A local build rewrites the file without a pull; the folders are kept (read back).
 - Whether the comparison is by version or image id: say it, and what a `latest` re-pull does.
+
+## Decided (2026-10-21)
+
+By the maintainer (`/todo:iterate`): no new verb. With a local build, `mh update` rewrites the
+file from the image as it is, with the same folders, when there is nothing to pull; the line
+names `mh update` only.

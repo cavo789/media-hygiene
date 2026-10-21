@@ -4,7 +4,6 @@
 - **Batch**: home
 - **Depends**: 0288
 - **Files**: TBD (design first) — likely src/media_hygiene/review/home_app.py, src/media_hygiene/services/clean* , src/media_hygiene/review/templates/home_run.js.j2, src/media_hygiene/cli/templates/mh_menu.ps1.j2
-- **Needs maintainer**: the design choices below
 
 ## Context
 
@@ -39,3 +38,9 @@ in the page, one at a time, stop button — `home_app.py`).
 - [ ] A design note (`.claude/plans/` or this TODO) answering the points above, with what the
       change loses, reviewed with the maintainer before code.
 - [ ] Then a follow-up TODO per lot (pilot: apply choices from the burst page via an API).
+
+## Decided (2026-10-21)
+
+By the maintainer (`/todo:iterate`): an unattended run writes the design note only
+(`.claude/plans/0289-console-steps-from-the-page.md`), no code; the maintainer reviews it, then
+the follow-up TODOs are filed.
