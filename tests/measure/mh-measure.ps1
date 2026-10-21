@@ -93,7 +93,7 @@
 #      when the file is removed); one stat, timed                              (0276)
 #  26. your own mh (the image of this branch): mh shortcut, then the Desktop icon: the window
 #      minimised and its keep-open line, a console step from the page (window forward, button
-#      flashing or nothing; minimised, then normal), the bold line of the page, the window
+#      flashing with bellStyle taskbar, or nothing; minimised, then normal), the bold line, the window
 #      closed then the stop shown by the page; asks what you saw            (0284, 0285)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -2385,9 +2385,11 @@ if (Wanted 26) {
     Write-Host "    Close that window. Double-click the Media Hygiene icon of the Desktop."
     $minimised = Read-Host "26a. The PowerShell window started minimised in the taskbar? (y/n)"
     $line = Read-Host "26b. In it (click its button): 'Keep this window open (minimised is fine)...'? (y/n)"
-    Write-Host "    Minimise that window again. On the home page, Run the 'clean' step."
+    Write-Host "    Windows Terminal: Settings, Open JSON file; in profiles, defaults, add"
+    Write-Host '        "bellStyle": "taskbar",'
+    Write-Host "    save. Then minimise the mh window (or tab away from it). On the home page, Run 'clean'."
     $bold = Read-Host "26c. The page showed at once, in bold, 'Switch to ... now'? (y/n)"
-    $min = Read-Host "26d. Window minimised: it came forward (f), its button flashed (b), or nothing (n)?"
+    $min = Read-Host "26d. Window minimised: it came forward (f), its taskbar button flashed (b), or nothing (n)?"
     Write-Host "    Answer n in PowerShell. When the page is back, leave the window open (not minimised),"
     Write-Host "    click on the browser, then Run 'clean' again."
     $normal = Read-Host "26e. Window open behind the browser: forward (f), button flashed (b), or nothing (n)?"

@@ -90,8 +90,12 @@ opened the page:
   says where: *mh clean runs in the PowerShell window of mh (in the taskbar): answer it if it
   asks something, then this page comes back by itself*, and at once, in bold, *Switch to the
   PowerShell window of mh (in the taskbar) now (Alt+Tab, or its button in the taskbar): it may
-  ask you something*. `mh` also brings its window forward, or makes its taskbar button flash,
-  as Windows allows (a minimised window stays minimised). After 30 seconds the page adds
+  ask you something*. `mh` also rings the terminal's bell and plays Windows' sound, often
+  unheard (speakers off). What you can see: Windows Terminal makes its taskbar button flash on
+  that bell once its settings say so (its default is the sound only): *Settings* → *Open JSON
+  file*, then `"bellStyle": "taskbar"` in `profiles` → `defaults` (`["audible", "taskbar"]` to
+  keep the sound). With the classic console, `mh` also brings its window forward when Windows
+  allows it (a minimised window stays minimised). After 30 seconds the page adds
   *Nothing moves? Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step
   chosen is the
   command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.

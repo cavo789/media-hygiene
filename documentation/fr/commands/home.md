@@ -97,8 +97,13 @@ qui a ouvert la page :
   tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*,
   et aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
   tâches) (Alt+Tab, ou son bouton dans la barre des tâches) : mh peut vous y demander quelque
-  chose*. `mh` ramène aussi sa fenêtre au premier plan, ou fait clignoter son bouton dans la
-  barre des tâches, selon ce que Windows permet (une fenêtre réduite reste réduite). Après 30
+  chose*. `mh` fait aussi sonner la cloche du terminal et joue le son de Windows, souvent
+  inaudible (haut-parleurs coupés). Ce qui se voit : Windows Terminal fait clignoter son bouton
+  dans la barre des tâches sur cette cloche une fois ses paramètres réglés (par défaut, le son
+  seulement) : *Paramètres* → *Ouvrir le fichier JSON*, puis `"bellStyle": "taskbar"` dans
+  `profiles` → `defaults` (`["audible", "taskbar"]` pour garder le son). Avec la console
+  classique, `mh` ramène aussi sa fenêtre au premier plan quand Windows le permet (une fenêtre
+  réduite reste réduite). Après 30
   secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
   barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `100 + n`
   pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer.

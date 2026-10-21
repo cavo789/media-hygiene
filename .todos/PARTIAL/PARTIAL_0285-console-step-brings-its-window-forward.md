@@ -68,3 +68,18 @@ console before acting; not "keep as is").
   alert alone stays and the docs say so.
   **Reason:** Windows' foreground lock depends on the machine; not testable here.
 - `docs_screenshots`: the run dialog changed.
+
+## Measured (2026-10-21, maintainer, measures-20261021-0847, step 26)
+
+- 26c the bold line at once: yes. 26d/26e AppActivate, window minimised then normal: **nothing**
+  (Windows Terminal: its window belongs to WindowsTerminal.exe, not to mh's process; the title
+  is the active tab's). AppActivate kept for the classic console (maintainer).
+- Added: the bell (BEL) and Windows' sound before a console step (PowerShell; bash: BEL).
+  The maintainer works with speakers off: the sound is often unheard; what shows is Windows
+  Terminal flashing its taskbar button on BEL, once `"bellStyle": "taskbar"` is set in its
+  settings (default "audible": checked in Microsoft's profile-advanced docs, 2026-10-21). The
+  docs (en + fr) say how. Step 26 asks to set it, then 26d/26e again.
+
+### Not done
+- Step 26 again with an image of this commit and `"bellStyle": "taskbar"`: does the button
+  flash? `.\mh-measure.ps1 -Only 26 -Count 1`.

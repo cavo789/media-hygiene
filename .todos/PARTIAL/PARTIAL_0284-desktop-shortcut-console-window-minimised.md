@@ -89,3 +89,11 @@ Whatever the option, two cheap changes regardless:
   (26a minimised, 26b the line, 26f the stop shown within about 10 s).
   **Reason:** needs Windows, the Desktop shortcut and a browser.
 - `docs_screenshots`: the stopped dialog's text changed.
+
+## Measured (2026-10-21, maintainer, measures-20261021-0847, step 26)
+
+- 26a minimised: **no** — Windows Terminal is the default terminal: the shortcut's
+  powershell.exe opened as a new tab of the existing WT window, which ignores the shortcut's
+  window style. Kept (harmless, works with the classic console), the docs say it (maintainer).
+- 26b keep-open line: yes. 26f the stop shown within about 10 s: yes.
+- Still to check: the classic console (conhost) starting minimised, if ever wanted.

@@ -208,6 +208,14 @@ def test_one_tab_for_the_home_page_and_the_pages_it_opens(tmp_path: Path) -> Non
     assert _tabs(tmp_path) == 1
 
 
+def test_a_console_step_rings_the_bell_a_page_does_not(tmp_path: Path) -> None:
+    """0285: BEL before `history` (it may ask), none before `review` (a page)."""
+    console = _bash(tmp_path, "mh", "103")
+    assert console.stderr.count("\a") == 1
+    page = _bash(tmp_path, "mh", "105")
+    assert "\a" not in page.stderr
+
+
 def test_a_page_typed_alone_opens_its_tab_without_the_home_link(tmp_path: Path) -> None:
     """`mh review` alone: its own tab, and no relay (no "Back to the home page")."""
     done = _bash(tmp_path, "mh review", "")
@@ -239,6 +247,11 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
     assert "(New-Object -ComObject WScript.Shell)" not in forward  # one object, kept
     assert "$shell = New-Object -ComObject WScript.Shell" in forward
     assert "if (-not $shell.AppActivate($PID))" in forward
+    # Measured 2026-10-21: AppActivate does nothing in Windows Terminal; the bell (its
+    # taskbar button flashes with bellStyle "taskbar") and the sound come first.
+    bell = forward.index("Write-Host -NoNewline ([char]7)")
+    assert bell < forward.index("[Media.SystemSounds]::Exclamation.Play()")
+    assert bell < forward.index("AppActivate")
     assert "Add-Type" not in forward
     assert text.count('\n        _mh_forward "$($words[0])"') == 1  # a menu step
     assert text.count('\n            _mh_forward "$($words[0])"') == 1  # a form's step

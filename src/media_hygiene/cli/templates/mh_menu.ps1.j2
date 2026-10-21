@@ -61,11 +61,15 @@ function global:_{{ function }}_home {
     }
 }
 
-# A console step chosen on the home page: this window brought forward, or its taskbar button
-# flashed, as Windows' foreground rules allow; a minimised window stays minimised (0285).
+# A console step chosen on the home page: the bell (BEL: Windows Terminal flashes its taskbar
+# button when its bellStyle holds "taskbar") and Windows' sound, heard whatever the terminal;
+# then this window brought forward when Windows allows it: the classic console only, measured
+# (2026-10-21: nothing in Windows Terminal, whose window is not this process's) (0285).
 # WScript.Shell, never Add-Type (0257). A page step shows in the browser's tab instead (0280).
 function global:_{{ function }}_forward($command) {
     if ($command -in @({{ listed(script.commands.pages) }})) { return }
+    Write-Host -NoNewline ([char]7)
+    try { [Media.SystemSounds]::Exclamation.Play() } catch { }
     try {
         $shell = New-Object -ComObject WScript.Shell
         if (-not $shell.AppActivate($PID)) { $null = $shell.AppActivate($Host.UI.RawUI.WindowTitle) }

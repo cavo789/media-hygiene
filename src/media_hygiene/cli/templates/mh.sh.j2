@@ -144,7 +144,8 @@ _{{ function }}_{{ name }}() {
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
 # One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.
-# A terminal has no portable way to come forward: the page says to switch to it (0285).
+# A terminal has no portable way to come forward: a console step rings its bell (BEL), and
+# the page says to switch to it (0285).
 _{{ function }}_home() {
     local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
@@ -168,7 +169,7 @@ _{{ function }}_home() {
             done < "{{ host.step_file }}"
             rm -f -- "{{ host.step_file }}"
             chosen="${words[*]}"
-            printf '%s\n' "{{ texts.direct }}" >&2
+            printf '%s\n\a' "{{ texts.direct }}" >&2  # a form's step asks in this terminal (0285)
             status=0
             after=1
             {{ function }} "${words[@]}" "$@" || status=$?
@@ -184,6 +185,7 @@ _{{ function }}_home() {
         if [[ -z "$chosen" ]]; then return "$status"; fi
         printf '%s\n' "{{ texts.direct }}" >&2
         read -r -a words <<< "$chosen"
+        if [[ " {{ script.commands.pages | join(" ") }} " != *" ${words[0]} "* ]]; then printf '\a' >&2; fi
         status=0
         after=1
         {{ function }} "${words[@]}" "$@" || status=$?
