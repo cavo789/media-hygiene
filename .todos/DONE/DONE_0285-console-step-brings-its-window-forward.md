@@ -71,9 +71,9 @@ console before acting; not "keep as is").
 
 ## Measured (2026-10-21, maintainer, measures-20261021-0847, step 26)
 
-- 26c the bold line at once: yes. 26d/26e AppActivate, window minimised then normal: **nothing**
-  (Windows Terminal: its window belongs to WindowsTerminal.exe, not to mh's process; the title
-  is the active tab's). AppActivate kept for the classic console (maintainer).
+- 26c the bold line at once: yes. 26d/26e, window minimised then normal: **nothing** — that
+  run used the maintainer's `mh.ps1` written before 0285 (no bell, no AppActivate); see the
+  second measure below. AppActivate kept (maintainer).
 - Added: the bell (BEL) and Windows' sound before a console step (PowerShell; bash: BEL).
   The maintainer works with speakers off: the sound is often unheard; what shows is Windows
   Terminal flashing its taskbar button on BEL, once `"bellStyle": "taskbar"` is set in its
@@ -83,3 +83,14 @@ console before acting; not "keep as is").
 ### Not done
 - Step 26 again with an image of this commit and `"bellStyle": "taskbar"`: does the button
   flash? `.\mh-measure.ps1 -Only 26 -Count 1`.
+
+## Closed (2026-10-21) — measured on the maintainer's PC (measures-20261021-0906, step 26)
+
+Step 26 first rewrote the maintainer's `mh.ps1` (older than 0285) with its own folders, then:
+26a the shortcut's window started minimised: **yes**; 26b the keep-open line: yes; 26c the
+page's bold line at once: yes; 26d window minimised: its **taskbar button flashed**; 26e
+window open behind the browser: **flashed**; 26f the stop shown within about 10 s: yes.
+Windows Terminal with `"bellStyle": "taskbar"`; the sound went to a headset not worn (the
+maintainer works with speakers off: the flash is the signal). Never brought forward:
+AppActivate kept for the classic console. The docs no longer say Windows Terminal ignores
+the minimised window (that came from the older `mh.ps1`).

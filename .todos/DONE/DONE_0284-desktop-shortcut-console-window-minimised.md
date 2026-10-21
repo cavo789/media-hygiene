@@ -92,8 +92,19 @@ Whatever the option, two cheap changes regardless:
 
 ## Measured (2026-10-21, maintainer, measures-20261021-0847, step 26)
 
-- 26a minimised: **no** — Windows Terminal is the default terminal: the shortcut's
-  powershell.exe opened as a new tab of the existing WT window, which ignores the shortcut's
-  window style. Kept (harmless, works with the classic console), the docs say it (maintainer).
+- 26a minimised: **no** — first read as Windows Terminal ignoring the shortcut's window
+  style; wrong: the maintainer's `mh.ps1` was older than 0284 (a local build never rewrites
+  it), so `mh shortcut` wrote no window style. See the second measure below.
 - 26b keep-open line: yes. 26f the stop shown within about 10 s: yes.
 - Still to check: the classic console (conhost) starting minimised, if ever wanted.
+
+## Closed (2026-10-21) — measured on the maintainer's PC (measures-20261021-0906, step 26)
+
+Step 26 first rewrote the maintainer's `mh.ps1` (older than 0285) with its own folders, then:
+26a the shortcut's window started minimised: **yes**; 26b the keep-open line: yes; 26c the
+page's bold line at once: yes; 26d window minimised: its **taskbar button flashed**; 26e
+window open behind the browser: **flashed**; 26f the stop shown within about 10 s: yes.
+Windows Terminal with `"bellStyle": "taskbar"`; the sound went to a headset not worn (the
+maintainer works with speakers off: the flash is the signal). Never brought forward:
+AppActivate kept for the classic console. The docs no longer say Windows Terminal ignores
+the minimised window (that came from the older `mh.ps1`).
