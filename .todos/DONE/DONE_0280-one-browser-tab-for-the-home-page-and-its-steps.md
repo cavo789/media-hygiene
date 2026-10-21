@@ -77,3 +77,10 @@ the space it was left from (`#clean`…). Every page opened from the home page s
   of opening the home page again as proposed in the chat: with one tab, closing it means
   leaving. To confirm by the maintainer.
 - `docs_screenshots`: the run dialog text changed (home captures, if one shows it).
+
+## Closed (2026-10-21)
+
+Checked by the maintainer on Windows (`mh-measure.ps1 -Only 14`, measures-20261021-0800): the
+review page in the same tab, *Back to the home page* back on the Clean space, **1 tab** on
+127.0.0.1 at the end, Ctrl+C clean. Closing the tab ends the page and `mh` (0262) — kept, by
+the maintainer. The console step easy to miss (the browser stays in front) is TODO 0285.
