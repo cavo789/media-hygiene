@@ -53,7 +53,7 @@ class PlacesBoard:
         self._places = read_places(context.config_file)
         self._aside = read_aside(context.config_file)
         self._hand = HandDesk(self._clusters, context)
-        self._hints = TownHints(context.towns)
+        self._hints = TownHints(context.towns, context.town_hint_km)
         self._sources: dict[str, Path] = {}
 
     def photos(self, rank: int) -> list[dict[str, object]] | None:

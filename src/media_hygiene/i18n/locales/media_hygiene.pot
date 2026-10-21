@@ -506,6 +506,12 @@ msgid ""
 "grandparents', the office. Towns are named on their own."
 msgstr ""
 
+msgid ""
+"A place you name like a town within this distance, in km, gets a hint: "
+"'classify' already names that town's photos, so the place may be "
+"redundant (it is saved anyway)."
+msgstr ""
+
 msgid "A proposal to apply"
 msgstr ""
 

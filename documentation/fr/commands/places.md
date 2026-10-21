@@ -132,7 +132,7 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C, ou ferm
 - **Un lieu n'est pas une ville.** Il sert pour un endroit que la liste des villes ne connaît pas
   (la maison, chez les grands-parents, le bureau) : [`classify`](classify.md) nomme déjà les
   villes d'après la liste GeoNames. Tapez un nom pareil à celui d'une ville à moins de 10 km
-  environ (*Blankenberge*) et une indication le dit sous le nom ; le lieu porte ⓘ dans *Vos
+  (*Blankenberge* ; `[places] town_hint_km` dans `config.toml`) et une indication le dit sous le nom ; le lieu porte ⓘ dans *Vos
   lieux*. Ce n'est qu'une indication, l'enregistrement fonctionne : gardez un tel lieu pour des
   frontières exactes (une zone OpenStreetMap) ou un autre nom.
 - **Cliquez sur un cercle, ou n'importe où**, pour nommer un lieu ; réglez son rayon avec le

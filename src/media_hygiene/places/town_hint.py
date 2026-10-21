@@ -18,7 +18,6 @@ from media_hygiene.geo.point import Point
 if TYPE_CHECKING:
     from media_hygiene.geo.gazetteer import Gazetteer
 
-NEAR_KM: Final = 10.0
 # Towns that start with the name, the largest first: enough to hold every namesake.
 CANDIDATES: Final = 500
 
@@ -33,36 +32,18 @@ class HintAsk(BaseModel):
     longitude: float = Field(ge=-180, le=180)
 
 
-def town_nearby(towns: Gazetteer, name: str, where: Point) -> str:
-    """The GeoNames town a place of that name duplicates, if any.
-
-    Args:
-        towns: The towns.
-        name: The place's name.
-        where: The place's middle.
-
-    Returns:
-        The town's name, or "" when none of that name lies within `NEAR_KM`.
-    """
-    wanted = town_key(name)
-    if not wanted:
-        return ""
-    for town in towns.search(name, CANDIDATES):
-        if town_key(town.name) == wanted and distance_km(where, town.point) <= NEAR_KM:
-            return town.name
-    return ""
-
-
 class TownHints:
-    """`town_nearby` for the saved places, remembered: the towns scan is not free."""
+    """The town each saved place duplicates, remembered: the towns scan is not free."""
 
-    def __init__(self, towns: Gazetteer) -> None:
+    def __init__(self, towns: Gazetteer, km: float) -> None:
         """Start with nothing remembered.
 
         Args:
             towns: The towns.
+            km: How close a town of that name must lie (`[places] town_hint_km`).
         """
         self._towns = towns
+        self._km = km
         self._known: dict[tuple[str, float, float], str] = {}
 
     def of(self, name: str, where: Point) -> str:
@@ -77,8 +58,29 @@ class TownHints:
         """
         key = (name, where.latitude, where.longitude)
         if key not in self._known:
-            self._known[key] = town_nearby(self._towns, name, where)
+            self._known[key] = self._nearby(name, where)
         return self._known[key]
+
+    def _nearby(self, name: str, where: Point) -> str:
+        """The GeoNames town a place of that name duplicates, if any.
+
+        Args:
+            name: The place's name.
+            where: The place's middle.
+
+        Returns:
+            The town's name, or "" when none of that name lies within `km`.
+        """
+        wanted = town_key(name)
+        if not wanted:
+            return ""
+        for town in self._towns.search(name, CANDIDATES):
+            if (
+                town_key(town.name) == wanted
+                and distance_km(where, town.point) <= self._km
+            ):
+                return town.name
+        return ""
 
     def mark(self, state: dict[str, object]) -> dict[str, object]:
         """Add `town` to each place of the state (the hint, or "").

@@ -6,7 +6,8 @@ The online search of an area by its name asks `nominatim_url`, from the tool its
 on a click only; empty, there is no online search. `[[places.folders]]` holds the
 positions the user gave whole folders on the map: `xmp` writes them for the photos of
 those folders that have none (0231). `[[places.ignored]]` holds the clusters the user
-set aside, as circles: hidden from the map, `classify` unchanged (0234).
+set aside, as circles: hidden from the map, `classify` unchanged (0234). `town_hint_km`:
+a place named like a town within that distance gets a hint (0239).
 """
 
 from __future__ import annotations
@@ -28,6 +29,8 @@ _SUBDOMAIN: Final = "{s}"
 _ANY_SUBDOMAIN: Final = "*"
 ASIDE_RADIUS_M: Final = 150  # a cluster's cell is about 200 m wide
 MAX_ASIDE_RADIUS_M: Final = 50_000
+TOWN_HINT_KM: Final = 10.0  # a place named like a town this close: the hint (0239)
+MAX_TOWN_HINT_KM: Final = 200.0
 
 
 class FolderPosition(BaseModel):
@@ -64,6 +67,7 @@ class PlacesSettings(BaseModel):
     nominatim_url: str = OSM_NOMINATIM
     folders: tuple[FolderPosition, ...] = ()
     ignored: tuple[IgnoredSpot, ...] = ()
+    town_hint_km: float = Field(default=TOWN_HINT_KM, gt=0, le=MAX_TOWN_HINT_KM)
 
     @field_validator("nominatim_url")
     @classmethod

@@ -654,6 +654,15 @@ msgstr ""
 "maison, chez les grands-parents, le bureau. Les villes sont nommées d"
 "'elles-mêmes."
 
+msgid ""
+"A place you name like a town within this distance, in km, gets a hint: "
+"'classify' already names that town's photos, so the place may be "
+"redundant (it is saved anyway)."
+msgstr ""
+"Un lieu nommé comme une ville située à moins de cette distance, en km, "
+"reçoit une indication : 'classify' nomme déjà les photos de cette ville, "
+"le lieu est donc peut-être redondant (il est enregistré quand même)."
+
 msgid "A proposal to apply"
 msgstr "Une proposition à appliquer"
 
@@ -10294,8 +10303,8 @@ msgid ""
 "{command} changed on disk since this window loaded it: type {reload} (or "
 "open a new window)."
 msgstr ""
-"{command} a changé sur le disque depuis que cette fenêtre l'a chargé : tapez "
-"{reload} (ou ouvrez une nouvelle fenêtre)."
+"{command} a changé sur le disque depuis que cette fenêtre l'a chargé : "
+"tapez {reload} (ou ouvrez une nouvelle fenêtre)."
 
 #, python-brace-format
 msgid "{command} is for Windows only."

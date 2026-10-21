@@ -106,6 +106,7 @@ def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
         runtime.settings.classify,
         towns,
         shown_roots(runtime),
+        runtime.settings.places.town_hint_km,
     )
     try:
         board = PlacesBoard(clusters_of(located), context)

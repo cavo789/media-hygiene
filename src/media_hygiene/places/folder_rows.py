@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.town_folders import town_folders
+from media_hygiene.config.places_settings import TOWN_HINT_KM
 from media_hygiene.constants import MediaKind
 from media_hygiene.places.config_folders import read_folders, read_ignored
 from media_hygiene.scan.filters import media_kind
@@ -36,6 +37,7 @@ class FolderContext:
     settings: ClassifySettings  # the threshold, home; the ignored names read back
     towns: Gazetteer
     roots: tuple[Path, ...] = ()  # the mounted folders: the tree's tops (0242)
+    town_hint_km: float = TOWN_HINT_KM  # `[places]`: the town hint's reach (0239)
 
 
 @dataclass(frozen=True, slots=True)

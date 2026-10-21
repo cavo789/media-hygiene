@@ -164,6 +164,8 @@ tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 attribution = "© OpenStreetMap contributors"
 {{ comment(_("Search an area by its name on OpenStreetMap (a village, a park), from the map, on a click only: only the text you type is sent to this Nominatim service, never a photo nor a position. Its usage policy: https://operations.osmfoundation.org/policies/nominatim/ (one search per second at most). Another instance, or empty to search offline only.")) }}
 nominatim_url = "https://nominatim.openstreetmap.org"
+{{ comment(_("A place you name like a town within this distance, in km, gets a hint: 'classify' already names that town's photos, so the place may be redundant (it is saved anyway).")) }}
+town_hint_km = 10
 {{ comment(_("The positions you give whole folders on the map of 'places' (Save this position), written by the map: 'xmp' gives them to the photos of those folders without GPS, when [tags] xmp_folder_gps is true.")) }}
 # [[places.folders]]
 # folder = 'C:\Photos\2019\Douarnenez'

@@ -122,7 +122,7 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C, or closing i
   takes them with it.
 - **A place is not a town.** It is for a spot the towns list does not know (home, the
   grandparents', the office): [`classify`](classify.md) already names the towns from the
-  GeoNames list. Type a name like a town's within about 10 km (*Blankenberge*) and a hint says
+  GeoNames list. Type a name like a town's within 10 km (*Blankenberge*; `[places] town_hint_km` in `config.toml`) and a hint says
   so under the name; the place shows ⓘ in *Your places*. It is only a hint, the save still
   works: keep such a place for exact borders (an OpenStreetMap area) or another name.
 - **Click a circle, or anywhere**, to name a place; set its radius with the slider, drag its
