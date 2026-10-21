@@ -7,10 +7,10 @@ the tool folders at each call; slow through Docker Desktop's file sharing, 0277)
 come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it; `POST /api/alive` says a tab still shows the
-page (0261, `presence`). `POST /api/step` ends the server with `100 + n` for step
-`n`, which `mh` then runs in the terminal (`home_step`): only when the launcher said
-it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies the
-command instead.
+page (0261, `presence`). `POST /api/step` ends the server with `STEP_EXIT_BASE + n` for
+step `n`, which `mh` then runs in the terminal (`home_step`): only when the launcher
+said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies
+the command instead.
 """
 
 from __future__ import annotations
@@ -72,7 +72,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     ending: Ending
     audit: HomeAudit
     presence: Presence
-    relays_steps: bool = False  # the launcher runs the step `100 + n` names
+    relays_steps: bool = False  # the launcher runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # and the words of a form (`home_fields`)
 
     @override

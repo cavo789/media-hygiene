@@ -105,8 +105,10 @@ qui a ouvert la page :
   classique, `mh` ramène aussi sa fenêtre au premier plan quand Windows le permet (une fenêtre
   réduite reste réduite). Après 30
   secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
-  barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `100 + n`
-  pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer.
+  barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `20 + n`
+  pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer. Ctrl+C pendant une
+  étape (ou sur une page qu'elle a ouverte) rend l'invite : la page d'accueil ne revient pas,
+  et aucune autre étape ne se lance.
 - **Une étape qui prend des mots** (le nom et la catégorie d'un album, le dossier de votre NAS,
   un dossier à retirer, combien de rapports garder) : **Compléter** ouvre son formulaire,
   l'exemple déjà rempli. Le serveur vérifie chaque valeur et dit pourquoi il en refuse une (*pas
@@ -140,6 +142,36 @@ sections et se termine sur la précédente et la suivante. Les liens qu'affiche 
 les rapports HTML ouverts depuis le disque, mènent toujours au
 [site](https://cavo789.github.io/media-hygiene/) : aucune page de l'outil n'y répond.
 
+## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
+
+Dans Windows PowerShell, `mh --lan` ouvre la page d'accueil comme `mh` seul, et laisse un
+téléphone **du même Wi-Fi** l'ouvrir aussi, jusqu'à l'arrêt de `mh` :
+
+1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
+   d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
+   **Docker Desktop** peut accepter des connexions : autorisez-le sur les **réseaux privés**
+   seulement.
+2. La page du PC montre, dans sa barre latérale, *Sur votre téléphone* : l'adresse, un **code**
+   de 8 chiffres et son **QR code** (la fenêtre de `mh` dit la même adresse et le même code).
+3. Sur le téléphone, scannez le QR code, ou ouvrez l'adresse et tapez le code : la page d'accueil
+   s'ouvre. Le téléphone reste appairé (un cookie) jusqu'à l'arrêt de `mh`, même après les
+   étapes lancées sur le PC.
+
+Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports et l'**audit** lancé par la page.
+Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
+dans la fenêtre de `mh`, que personne ne voit depuis le canapé. **Quitter** reste aussi au PC.
+
+| | |
+|---|---|
+| Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |
+| Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
+| Comment | HTTP simple sur le réseau de la maison, comme décidé : aucun avertissement de certificat sur le téléphone ; le code et le cookie circulent en clair sur votre Wi-Fi, pour cette fois seulement. |
+| La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
+
+Le téléphone n'ouvre pas la page ? Windows considère le réseau comme **public** (`mh` le dit) :
+passez-le en privé dans *Paramètres › Réseau et Internet*. `mh --lan` ne fonctionne que dans
+Windows PowerShell pour l'instant.
+
 ## Le clavier, la palette, le thème
 
 | Touche | Ce qu'elle fait |
@@ -170,8 +202,9 @@ aucun autre site.
 
 ## Bon à savoir
 
-- La page ne répond qu'à `127.0.0.1` ou `localhost`, et seulement à ses propres boutons : un
-  autre site ne peut pas choisir une étape à votre place.
+- La page ne répond qu'à `127.0.0.1` ou `localhost` (et, sous `mh --lan`, à l'adresse du PC pour
+  un téléphone appairé), et seulement à ses propres boutons : un autre site ne peut pas choisir
+  une étape à votre place.
 - **Quitter Media Hygiene** (en bas du menu de gauche), fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
   page et rend l'invite ; un audit en cours s'arrête entre deux fichiers. Un onglet fermé est vu
   une dizaine de secondes plus tard (*L'onglet de la page d'accueil a été fermé : la page d'accueil

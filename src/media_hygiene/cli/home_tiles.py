@@ -121,10 +121,10 @@ def _later_tiles(status: Status) -> tuple[HomeTile, ...]:
         ),
         HomeTile(
             label=_("Backup"),
-            value=_("Planned"),
-            sub="mh backup",
+            value=ago(status.backed_up) if status.backed_up else _DASH,
+            sub=_("Last mh backup") if status.backed_up else _("mh backup copies it"),
             space=Space.BACKUP.value,
-            pill=Pill.PLANNED,
+            pill=Pill.OK if status.backed_up else Pill.NONE,
         ),
     )
 

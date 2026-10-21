@@ -142,6 +142,17 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]
 root = ''
 
 
+[backup]
+{{ comment(_("mh backup (Windows only): a file the PC no longer has, or the previous copy of an edited file, waits in the .removed folder of the backup that many days, then mh backup erases it.")) }}
+keep_removed_days = 90
+
+{{ comment(_("Nothing is applied when the files set aside and replaced exceed this share of the backup, in percent: a drive missing? many files changed at once? 'mh backup --anyway' goes on.")) }}
+stop_above_percent = 20
+
+{{ comment(_("How many files robocopy copies at once (/MT).")) }}
+threads = 8
+
+
 [inventory]
 {{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
 blurry_below = 100.0

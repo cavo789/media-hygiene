@@ -149,7 +149,7 @@ def test_the_state_is_what_status_and_the_menu_say(
 def test_a_step_ends_the_server_with_100_plus_its_number(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """The step's button ends the server with `100 + n`; a stale menu is refused."""
+    """The step's button ends the server with `STEP_EXIT_BASE + n`; stale menu: no."""
     runtime = audited(cli, locations)
     proposed = home_state(runtime).proposed
     assert proposed is not None
@@ -171,7 +171,7 @@ def test_a_step_ends_the_server_with_100_plus_its_number(
 def test_without_a_launcher_that_runs_steps_the_page_keeps_serving(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """An `mh` that does not relay `100 + n`: the step is refused, the server stays.
+    """An `mh` that does not relay `STEP_EXIT_BASE + n`: step refused, the server stays.
 
     The maintainer's `mh` (before TODO 0210) lost the code: the page ended and nothing
     ran. Without the variable, a button copies its command instead of posting it.
@@ -320,7 +320,7 @@ def test_every_page_links_home(
 def test_the_command_exits_with_the_step_chosen(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """`home` exits with `100 + n` and names the step; closed, it exits with 0."""
+    """`home` exits with `STEP_EXIT_BASE + n`, names the step; closed, with 0."""
     audited(cli, locations)
     proposed = home_state(make_runtime(locations)).proposed
     assert proposed is not None
@@ -393,6 +393,7 @@ def test_every_page_template_includes_the_home_link() -> None:
             "apply_now.html.j2",  # a fragment, like home_link (0288)
             "page_header.html.j2",
             "phone_review.html.j2",
+            "lan_pair.html.j2",  # a phone not paired yet: no home to go back to (0269)
         }
     ]
     assert len(pages) >= 9

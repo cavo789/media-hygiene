@@ -119,6 +119,8 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 | `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB ; avec `--free`, supprime ensuite du téléphone ce que le PC détient, prouvé par son contenu : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
+| `mh backup` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`backup`](backup.md). |
+| `mh --lan` | Windows : la page d'accueil, comme `mh` seul, qu'un téléphone du même Wi-Fi peut aussi ouvrir avec un code (ou son QR code), jusqu'à l'arrêt de `mh` ; depuis le téléphone, l'audit et les rapports seulement : [`home`](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene` et
@@ -128,7 +130,8 @@ signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hyg
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
 disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
-`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows.
+`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows ; `mh backup` dit
+pourquoi (Windows écrit sur le NAS 7 fois plus vite) et la commande à taper dans Windows PowerShell.
 
 **Ce que lancent l'icône et le clic droit** : Windows PowerShell, `-NoExit -Command`, qui charge
 `mh.ps1` selon votre propre stratégie d'exécution (la ligne `Set-ExecutionPolicy -Scope
@@ -205,7 +208,31 @@ affiche ce lien après une mise à jour.
 
 Un `mh` écrit avant que `mh update` existe ne le connaît pas : relancez une fois la ligne
 `launcher` des guides, avec vos dossiers ; ensuite, `mh update` suffit. Une image que vous avez
-construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit.
+construite vous-même (`media-hygiene`) n'a rien à télécharger : `mh update` le dit, puis
+réécrit `mh` à partir de cette image telle quelle, avec les mêmes dossiers, et les liste tels
+qu'il les relit dans le fichier.
+
+**Un `mh` plus ancien que son image le dit.** L'image peut changer sans `mh update` : tirée par
+Docker Desktop ou `docker pull`, ou reconstruite sur votre ordinateur. `mh.ps1` reste alors tel
+que l'image précédente l'a écrit, et une partie de ce qu'il fait (les étapes de la page
+d'accueil, la fenêtre d'une longue exécution) peut ne plus correspondre. `mh` transmet donc, à
+chaque commande, l'empreinte de l'image qui l'a écrit, et l'image la compare à la sienne, sans
+aucun appel Docker de plus. Quand elles diffèrent, chaque commande commence par une ligne, et
+rien n'est bloqué :
+
+```text
+⚠️  Ce mh a été écrit par l'image 0.5.0 (construction 1a2b3c4d5e6f), celle-ci est 0.6.0
+(construction 4d5e6f7a8b9c) : tapez mh update pour le réécrire, avec les mêmes dossiers.
+```
+
+L'empreinte est la version et une construction : le début du condensé de tous les fichiers que
+l'image installe. La même version reconstruite avec un autre code est une autre construction ;
+le même code construit deux fois reste la même. Un `mh` écrit avant cette vérification ne
+transmet aucune empreinte : la ligne dit *écrit par une image plus ancienne* (cela couvre aussi
+un `mh.ps1` qui ne comprend plus les étapes de la page d'accueil) ; avec une image construite
+par vous-même, le `mh update` d'un `mh` aussi ancien dit seulement *rien à télécharger* :
+relancez une fois la ligne `launcher`. Après `mh update`, la ligne disparaît. Tirer de nouveau `latest` sans changement garde la même construction : rien n'est
+dit.
 
 ## Un téléphone ? Copiez seulement ses nouvelles photos : `mh phone`
 

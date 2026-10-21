@@ -141,7 +141,9 @@ def test_powershell_menu_paths_check_docker_desktop_first() -> None:
     assert back.index(checked, alone) < back.index("        _mh_home @typed\n", alone)
     menu = back.index("    if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {\n")
     assert back.index(checked, menu) < back.index("        _mh_menu @typed\n", menu)
-    assert back.count(checked) == 2
+    lan = back.index("    if ($rest.Count -eq 1 -and $rest[0] -eq '--lan') {\n")
+    assert back.index(checked, lan) < back.index("        _mh_lan @typed\n", lan)
+    assert back.count(checked) == 3  # mh alone, mh --lan (0269), mh menu
     desktop = back.index("function global:_mh_desktop {\n")
     asked = back.index("    $null = docker version 2>$null\n", desktop)
     assert asked < back.index("    return (_mh_desktop_start)\n", asked)

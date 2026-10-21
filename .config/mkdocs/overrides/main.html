@@ -1,0 +1,17 @@
+{#- The tool's tokens flip with `data-theme` on <html> (assets/theme/tokens.css); Material keeps its
+    scheme on <body>, set by the switch of the header: follow it. -#}
+{% extends "base.html" %}
+
+{% block scripts %}
+  {{ super() }}
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var sync = function () {
+        root.setAttribute("data-theme", document.body.getAttribute("data-md-color-scheme") === "slate" ? "dark" : "light");
+      };
+      sync();
+      new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ["data-md-color-scheme"] });
+    })();
+  </script>
+{% endblock %}

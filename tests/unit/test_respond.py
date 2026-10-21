@@ -50,3 +50,15 @@ def test_a_shrunk_file_sends_what_is_left(tmp_path: Path) -> None:
     video = tmp_path / "short.mp4"
     video.write_bytes(b"0123456789")
     assert _send(FilePart(video, 4, 100, 100)) == b"456789"
+
+
+def test_the_extra_headers_are_sent() -> None:
+    """`Location` and `Set-Cookie` reach the browser (0269: a phone paired)."""
+    sink = _Sink()
+    response = Response(
+        HTTPStatus.SEE_OTHER, headers=("Location: /", "Set-Cookie: a=b")
+    )
+    asyncio.run(write_response(cast("asyncio.StreamWriter", sink), response))
+    head = bytes(sink.sent).partition(b"\r\n\r\n")[0]
+    assert b"\r\nLocation: /" in head
+    assert b"\r\nSet-Cookie: a=b" in head

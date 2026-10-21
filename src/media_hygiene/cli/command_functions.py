@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_album import album_command
 from media_hygiene.cli.cmd_audit import audit_command
+from media_hygiene.cli.cmd_backup import backup_command
 from media_hygiene.cli.cmd_browse import browse_command
 from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_clean import clean_command
@@ -43,6 +44,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
     return {
         "album": album_command,
         "audit": audit_command,
+        "backup": backup_command,
         "browse": browse_command,
         "classify": classify_command,
         "clean": clean_command,

@@ -259,7 +259,7 @@ def _post(door: StepDoor, body: dict[str, object]) -> tuple[int, dict[str, str]]
 
 
 def test_a_form_writes_the_one_shot_file_then_ends(tmp_path: Path) -> None:
-    """The words written whole, then the server ends with `100 + 99`."""
+    """The words written whole, then the server ends with the fields code."""
     ending = Ending()
     door = StepDoor(
         lambda: pytest.fail("no state"),
@@ -315,7 +315,7 @@ def test_an_mh_that_cannot_read_the_file_gets_the_command_to_copy(
 def test_powershell_reads_the_file_once_then_splats_its_words(
     tmp_path: Path,
 ) -> None:
-    """mh.ps1: on `199` only, the words of the file run, the file removed first."""
+    """mh.ps1: on the fields code only, the file's words run, the file removed first."""
     runtime: Runtime = make_runtime(make_locations(tmp_path))
     text = render_script(launcher_script(runtime, Shell.POWERSHELL, COMMANDS))
     start = text.index("# A step with fields (0266)")

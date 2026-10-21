@@ -87,6 +87,7 @@ class Response:  # pylint: disable=too-many-instance-attributes
     referrer: str = NO_REFERRER
     part: FilePart | None = None  # sent after the head, instead of `body`
     max_age: int = 0  # seconds the browser keeps it without asking (`/assets/`)
+    headers: tuple[str, ...] = ()  # more header lines: `Location`, `Set-Cookie` (0269)
 
 
 class BadRequestError(Exception):

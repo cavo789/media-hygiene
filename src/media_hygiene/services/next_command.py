@@ -46,15 +46,14 @@ _PATH_SUFFIX: Final = "_DIR"  # MEDIA_HYGIENE_<NAME>_DIR: a mount point, not car
 # Set by the `mh` launcher (TODO 0060): the next command is then `mh <verb>`.
 LAUNCHER_VARIABLE: Final = f"{ENV_PREFIX}LAUNCHER"
 LAUNCHER_FUNCTION: Final = "mh"
-# Set by an `mh` that runs the step chosen on the home page (exit code 100 + n, 0210).
+# Set by an `mh` that runs the step chosen on home (`STEP_EXIT_BASE + n`, 0210).
 LAUNCHER_STEPS_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_STEPS"
 # The folders given to that page with --photos, `|` between them (0258).
 LAUNCHER_PHOTOS_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_PHOTOS"
 # The image's own name is written in the command itself, not passed on with -e; `mh`
-# reads the zone of the Windows host again at every run.
-_NOT_CARRIED: Final = frozenset(
-    {LAUNCHER_VARIABLE, LAUNCHER_STEPS_VARIABLE, IMAGE_VARIABLE, WINDOWS_ZONE_VARIABLE}
-) | {LAUNCHER_PHOTOS_VARIABLE}
+# reads the zone of the Windows host again at every run, and sets its own variables
+# (`MEDIA_HYGIENE_LAUNCHER*`: its shell, steps, photos, stamp) at each run too.
+_NOT_CARRIED: Final = frozenset({IMAGE_VARIABLE, WINDOWS_ZONE_VARIABLE})
 
 
 @dataclass(frozen=True, slots=True)
@@ -195,6 +194,7 @@ def environment() -> tuple[str, ...]:
             name.startswith(ENV_PREFIX)
             and not name.endswith(_PATH_SUFFIX)
             and name not in _NOT_CARRIED
+            and not name.startswith(LAUNCHER_VARIABLE)
         )
     )
     return tuple(f'-e "{name}={os.environ[name]}"' for name in names)

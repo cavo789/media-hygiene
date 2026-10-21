@@ -113,7 +113,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
             the step *Apply now* ends on.
 
     Returns:
-        `100 + n` when *Apply now* chose step `n`; 0 otherwise.
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     page = review_page(_PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
     offer = ApplyOffer(start.apply, lambda: session.progress[1] > 0)

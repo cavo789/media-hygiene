@@ -16,16 +16,16 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.config.windows_zones import WINDOWS_ZONE_VARIABLE
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.paths.docker_run import (
-    Shell,
-    Volume,
-    guess_shell,
-    running_image,
-)
+from media_hygiene.paths.docker_run import Shell, Volume, guess_shell, running_image
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_fields import RELAY_FIELDS
-from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
+from media_hygiene.review.home_views import (
+    FIELDS_STEP,
+    SIGNAL_EXIT_BASE,
+    STEP_EXIT_BASE,
+)
 from media_hygiene.services.launcher_ascii import ascii_powershell
+from media_hygiene.services.launcher_backup import backup_command
 from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
@@ -33,6 +33,7 @@ from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_guards import launcher_guards
 from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
+from media_hygiene.services.launcher_lan import lan_command
 from media_hygiene.services.launcher_launch import launch_texts
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import (
@@ -43,6 +44,7 @@ from media_hygiene.services.launcher_menu import (
 from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_stale import stale_texts
+from media_hygiene.services.launcher_stamp import launcher_stamp
 from media_hygiene.services.launcher_update import update_texts
 from media_hygiene.services.next_command import (
     LAUNCHER_FUNCTION,
@@ -172,6 +174,7 @@ def render_script(script: LauncherScript) -> str:
         kept=kept_run(script),
         update=update_texts(),
         stale=stale_texts(),
+        stamp=launcher_stamp(),
         host=host_commands(script),
         launch=launch_texts(),
         checked=(
@@ -180,6 +183,8 @@ def render_script(script: LauncherScript) -> str:
         ),
         cloud=cloud_check(script.commands.names),
         phone=phone_command(),
+        backup=backup_command(),
+        lan=lan_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,
@@ -187,6 +192,7 @@ def render_script(script: LauncherScript) -> str:
         relayed=tuple(dict.fromkeys((*_RELAYED, *script.commands.pages))),
         step_base=STEP_EXIT_BASE,
         fields_code=STEP_EXIT_BASE + FIELDS_STEP,
+        signal_base=SIGNAL_EXIT_BASE,
         page_closed=int(ExitCode.PAGE_CLOSED),
         nas=nas_texts(),
         smb=SMB_OPTIONS,

@@ -103,6 +103,7 @@ def find_steps() -> tuple[Step, ...]:
             Kind.HOST,
             icon="nas",
             keywords=_("backup nas destination"),
+            doc=Doc("commands/backup/"),
             fields=(
                 Field(
                     "path",
@@ -111,7 +112,7 @@ def find_steps() -> tuple[Step, ...]:
                     kind=FieldKind.FOLDER,
                 ),
             ),
-            planned=True,
+            windows=True,
         ),
         Step(
             "backup",
@@ -126,13 +127,14 @@ def find_steps() -> tuple[Step, ...]:
             Kind.HOST,
             icon="shield",
             keywords=_("backup nas copy robocopy"),
-            planned=True,
+            doc=Doc("commands/backup/"),
+            windows=True,
         ),
     )
 
 
 def find_areas() -> tuple[Area, ...]:
-    """The find stage, then the backup stage, planned.
+    """The find stage, then the backup stage (0264).
 
     Returns:
         Both.
@@ -167,7 +169,8 @@ def find_areas() -> tuple[Area, ...]:
             Group(_("The guide"), ("backup-to", "backup"), numbered=True),
             Group(_("And to go back"), ("import",)),
         ),
+        Doc("commands/backup/"),
+        _("mh backup"),
         stage=5,
-        planned=True,
     )
     return find, backup

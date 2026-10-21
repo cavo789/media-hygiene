@@ -17,6 +17,11 @@
         _{{ function }}_home "${typed[@]}"
         return
     fi
+    if [[ $# -eq 1 && "$1" == {{ lan.flag }} ]]; then
+        # `{{ function }} {{ lan.flag }}`: Windows PowerShell only (0269).
+        printf '%s\n' "{{ lan.texts.windows }}" >&2
+        return 1
+    fi
     if [[ $# -eq 1 && "$1" == menu ]]; then
         # `{{ function }} menu`: the steps in this terminal, a number read (0172).
         _{{ function }}_menu "${typed[@]}"
@@ -91,7 +96,7 @@
         disown "$browser" 2>/dev/null
     fi
     "${awake[@]}" docker run --rm "${tty[@]}" --user "$(id -u):$(id -g)" \
-        -e "{{ variable }}={{ script.shell.value }}" \
+        -e "{{ variable }}={{ script.shell.value }}" -e "{{ stamp.variable }}={{ stamp.value }}" \
         "${zoned[@]}" "${relay[@]}" \
 {% for option in script.environment %}
         {{ option }} \
@@ -128,6 +133,8 @@
 {% include 'mh_guards.sh.j2' %}
 
 {% include 'mh_drives.sh.j2' %}
+
+{% include 'mh_backup.sh.j2' %}
 {% for name in host.windows %}
 
 # `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1
@@ -142,7 +149,8 @@ _{{ function }}_{{ name }}() {
 # `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
 # here as `{{ function }} <step>`, its questions in this terminal, then the page comes back.
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
-# Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
+# Quit, Ctrl+C or an error end the loop with the page's exit code (0210). A signal's code
+# (128 + n: Ctrl+C is 130) ends it whatever ran, never read as a step (0287).
 # One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.
 # A terminal has no portable way to come forward: a console step rings its bell (BEL), and
 # the page says to switch to it (0285).
@@ -151,11 +159,12 @@ _{{ function }}_home() {
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
         if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
+        if [[ "$status" -ge {{ signal_base }} ]]; then return "$status"; fi
         if [[ "$status" -le {{ step_base }} ]]; then
             status=0
             after=0
             {{ function }} home "$@" || status=$?
-            if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
+            if [[ "$status" -le {{ step_base }} || "$status" -ge {{ signal_base }} ]]; then return "$status"; fi
             _{{ function }}_tab=1
         fi
 {% if host.step_file %}

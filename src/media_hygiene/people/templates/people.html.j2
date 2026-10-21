@@ -41,7 +41,6 @@
          font: 400 15px/1.5 var(--mk-font-text); }
   header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
            border-bottom: 1px solid var(--line); }
-  h1 { font-size: 1.1rem; margin: 0 0 4px; }
   .hint, #status { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
   #status.error { color: var(--bad); font-weight: 600; }
   #status.saved { color: var(--good); font-weight: 600; }
@@ -78,7 +77,6 @@
 <body>
 {% include "page_header.html.j2" %}
 <header>
-  <h1>🔒 {{ _("People") }}</h1>
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
   <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at once, i ignores a group; × takes a face out of its group.") }}</p>
   <p id="status" role="status"></p>

@@ -1,7 +1,8 @@
 """`mh` alone: the home page; a step chosen there runs here, then the page again.
 
-TODO 0210. `home` ends with `100 + n` for step `n` (0209) only when the launcher says
-it relays the steps: `-e MEDIA_HYGIENE_LAUNCHER_STEPS=1`, set by this loop alone.
+TODO 0210. `home` ends with `STEP_EXIT_BASE + n` for step `n` (0209) only when the
+launcher says it relays the steps: `-e MEDIA_HYGIENE_LAUNCHER_STEPS=1`, set by this loop
+alone.
 """
 
 from __future__ import annotations
@@ -18,7 +19,11 @@ from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.review.home_fields import RELAY_FIELDS, write_step
-from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
+from media_hygiene.review.home_views import (
+    FIELDS_STEP,
+    SIGNAL_EXIT_BASE,
+    STEP_EXIT_BASE,
+)
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
@@ -49,6 +54,7 @@ docker() {
     if [[ " $* " == *" menu "* ]]; then
         printf '0\taudit\n1\taudit\n2\tclean --tier near\n3\thistory\n'
         printf '4\tbrowse\n5\treview\n'
+        printf '110\thistory\n'  # 20 + 110 = 130: Ctrl+C must never run it (0287)
         return 0
     fi
     if [[ " $* " == *" review "* ]]; then
@@ -91,7 +97,9 @@ docker() {
         if [[ -n "$seen" ]]; then words+=("$arg"); fi
     done
     if [[ -n "$seen" ]]; then (IFS='|'; echo "ran:${words[*]}"); fi
-    return 0
+    local ended=0  # a step ends with the code of `ran` (Ctrl+C during it: 130)
+    if [[ -s "$HOME/ran" ]]; then read -r ended < "$HOME/ran"; fi
+    return "$ended"
 }
 """
 
@@ -118,6 +126,11 @@ def _bash(
     return run_bash(code, {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"})
 
 
+def _code(*numbers: int) -> str:
+    """The codes `home` ends with when steps `numbers` are chosen, in turn."""
+    return " ".join(str(STEP_EXIT_BASE + number) for number in numbers)
+
+
 def _tabs(tmp_path: Path) -> int:
     """How many browser tabs mh opened."""
     tabs = tmp_path / "tabs"
@@ -130,15 +143,15 @@ def _lines(done: subprocess.CompletedProcess[str]) -> list[str]:
 
 
 def test_a_step_chosen_runs_then_the_page_comes_back(tmp_path: Path) -> None:
-    """103: step 3 (`history`) runs, then `home` again, which ends with 0."""
-    done = _bash(tmp_path, "mh", "103")
+    """Step 3 (`history`) runs, then `home` again, which ends with 0."""
+    done = _bash(tmp_path, "mh", _code(3))
     assert _lines(done) == ["home:relayed", "ran:history", "home:relayed", "status=0"]
     assert "Next time, type it directly: mh history" in done.stderr
 
 
 def test_two_steps_in_a_row(tmp_path: Path) -> None:
     """Each step chosen runs in turn; a writer gets the photos writable."""
-    done = _bash(tmp_path, "mh", "102 103")
+    done = _bash(tmp_path, "mh", _code(2, 3))
     assert _lines(done) == [
         "home:relayed",
         "ran:clean",
@@ -159,8 +172,8 @@ def test_quit_or_an_error_ends_the_loop_with_its_code(
 
 
 def test_browse_from_home_runs_the_step_its_apply_now_chose(tmp_path: Path) -> None:
-    """0243: browse opened from home ends with 102: `clean` runs, then home again."""
-    done = _bash(tmp_path, "mh", ("104", "102"))
+    """0243: browse opened from home ends on step 2: `clean` runs, then home again."""
+    done = _bash(tmp_path, "mh", (_code(4), _code(2)))
     assert _lines(done) == [
         "home:relayed",
         "browse:relayed",
@@ -173,7 +186,7 @@ def test_browse_from_home_runs_the_step_its_apply_now_chose(tmp_path: Path) -> N
 @pytest.mark.parametrize("ended", ["0", "1", "125"])
 def test_browse_closed_or_failed_goes_back_home(tmp_path: Path, ended: str) -> None:
     """0243: browse closed (⌂ Home), failed, or a code naming no step: home again."""
-    done = _bash(tmp_path, "mh", ("104", ended))
+    done = _bash(tmp_path, "mh", (_code(4), ended))
     assert _lines(done) == [
         "home:relayed",
         "browse:relayed",
@@ -196,7 +209,7 @@ def test_home_typed_alone_does_not_relay(tmp_path: Path) -> None:
 
 def test_one_tab_for_the_home_page_and_the_pages_it_opens(tmp_path: Path) -> None:
     """0280: home opens the tab; review and home again show in it, no new tab."""
-    done = _bash(tmp_path, "mh", "105 103")
+    done = _bash(tmp_path, "mh", _code(5, 3))
     assert _lines(done) == [
         "home:relayed",
         "review:relayed",
@@ -210,9 +223,9 @@ def test_one_tab_for_the_home_page_and_the_pages_it_opens(tmp_path: Path) -> Non
 
 def test_a_console_step_rings_the_bell_a_page_does_not(tmp_path: Path) -> None:
     """0285: BEL before `history` (it may ask), none before `review` (a page)."""
-    console = _bash(tmp_path, "mh", "103")
+    console = _bash(tmp_path, "mh", _code(3))
     assert console.stderr.count("\a") == 1
-    page = _bash(tmp_path, "mh", "105")
+    page = _bash(tmp_path, "mh", _code(5))
     assert "\a" not in page.stderr
 
 
@@ -235,7 +248,10 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
         "            try { mh home @typed } finally { "
         "$global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }" in text
     )
-    assert "        if ($status -le 100) { return }" in text
+    assert (
+        f"        if ($status -le {STEP_EXIT_BASE} -or $status -ge {SIGNAL_EXIT_BASE})"
+        " { return }"
+    ) in text
     assert (
         "$relay = @(if ($global:MediaHygieneRelay -and $command -in @('home', "
         f"'browse', 'review')) {{ '-e', '{_RELAY}' }})"
@@ -269,7 +285,7 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
 
 def test_a_page_whose_tab_was_closed_ends_the_loop(tmp_path: Path) -> None:
     """0262: browse opened from home, its tab closed: prompt back, home not again."""
-    done = _bash(tmp_path, "mh", ("104", str(int(ExitCode.PAGE_CLOSED))))
+    done = _bash(tmp_path, "mh", (_code(4), str(int(ExitCode.PAGE_CLOSED))))
     assert _lines(done) == ["home:relayed", "browse:relayed", "status=0"]
 
 
@@ -281,7 +297,7 @@ def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
     code = int(ExitCode.PAGE_CLOSED)
     closed = f"if ($status -eq {code}) {{ $global:LASTEXITCODE = 0; return }}"
-    assert text.index(closed) < text.index("if ($status -le 100) {")
+    assert text.index(closed) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
 
 
 def _step_file(tmp_path: Path) -> Path:
@@ -293,7 +309,7 @@ def _step_file(tmp_path: Path) -> Path:
 
 
 def test_a_form_s_words_run_once_then_the_file_is_gone(tmp_path: Path) -> None:
-    """0266: `199` runs the words of the one-shot file, `Noël 2025` one of them."""
+    """0266: the fields code runs the one-shot file's words, `Noël 2025` one of them."""
     _bash(tmp_path, "true", "0")
     step = _step_file(tmp_path)
     step.parent.mkdir(parents=True, exist_ok=True)
@@ -315,6 +331,52 @@ def test_a_file_left_behind_never_runs_for_a_numbered_step(tmp_path: Path) -> No
     step = _step_file(tmp_path)
     step.parent.mkdir(parents=True, exist_ok=True)
     write_step(step.parent, ("album", "Old", "--category", "Old"))
-    done = _bash(tmp_path, "mh", "103")
+    done = _bash(tmp_path, "mh", _code(3))
     assert _lines(done) == ["home:relayed", "ran:history", "home:relayed", "status=0"]
     assert step.exists()
+
+
+_SIGNALS: Final = (int(ExitCode.INTERRUPTED), SIGNAL_EXIT_BASE + 15)  # Ctrl+C, SIGTERM
+
+
+def test_the_step_range_never_reaches_a_signal_s_code() -> None:
+    """0287: every step code, the form's included, sits below Docker's and the signals'.
+
+    Above the tool's own codes (0-3), below 125 (Docker's own, then 128 + n): Ctrl+C
+    (130) can never name a step, and a menu longer than `FIELDS_STEP` steps fails here.
+    """
+    docker_codes = 125
+    assert max(code for code in ExitCode if code < SIGNAL_EXIT_BASE) < STEP_EXIT_BASE
+    assert STEP_EXIT_BASE + FIELDS_STEP < docker_codes <= SIGNAL_EXIT_BASE
+    assert ExitCode.INTERRUPTED >= SIGNAL_EXIT_BASE
+
+
+@pytest.mark.parametrize("code", _SIGNALS)
+def test_ctrl_c_on_home_ends_the_loop(tmp_path: Path, code: int) -> None:
+    """0287: home interrupted: prompt back with its code, no step, home not again."""
+    done = _bash(tmp_path, "mh", str(code))
+    assert _lines(done) == ["home:relayed", f"status={code}"]
+
+
+@pytest.mark.parametrize("code", _SIGNALS)
+def test_ctrl_c_during_a_step_ends_the_loop(tmp_path: Path, code: int) -> None:
+    """0287: a step interrupted (history, or a page it opened): home not again."""
+    (tmp_path / "ran").write_text(f"{code}\n")
+    done = _bash(tmp_path, "mh", _code(3))
+    assert _lines(done) == ["home:relayed", "ran:history", f"status={code}"]
+    browse = _bash(tmp_path, "mh", (_code(4), str(code)))
+    assert _lines(browse) == ["home:relayed", "browse:relayed", f"status={code}"]
+
+
+def test_the_powershell_loop_ends_on_a_signal_s_code(tmp_path: Path) -> None:
+    """0287: mh.ps1 checks a signal's code before it would open home or read a step."""
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
+    ended = (
+        f"if ($status -ge {SIGNAL_EXIT_BASE}) "
+        "{ $global:LASTEXITCODE = $status; return }"
+    )
+    assert text.index(ended) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
+    assert text.index(ended) < text.index("$steps = @(mh @color menu)")

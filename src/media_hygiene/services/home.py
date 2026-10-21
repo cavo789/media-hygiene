@@ -1,8 +1,9 @@
 """Serve the home page until Ctrl+C, or until the user chooses a step.
 
-A step chosen ends the server with `100 + n`: the command exits with that code and
-`mh` runs step `n` in the terminal, mounted as that command needs; only when `mh` set
-`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps running.
+A step chosen ends the server with `STEP_EXIT_BASE + n`: the command exits with that
+code and `mh` runs step `n` in the terminal, mounted as that command needs; only when
+`mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps
+running.
 The page only reads the tool folders: the photos stay mounted read-only. Its Quit
 button, or its tab closed (0261, `review.presence`), ends it with 0: `mh` gives the
 prompt back.
@@ -30,9 +31,12 @@ from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.home_texts import home_texts
+from media_hygiene.review.lan import lan_access
+from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.services.home_audit import HomeAudit
+from media_hygiene.services.home_lan import say_lan
 from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -49,11 +53,12 @@ _PACKAGE: Final = "media_hygiene.review"
 _TEMPLATE: Final = "home.html.j2"
 
 
-def home_page(*, relays_steps: bool = False) -> bytes:
+def home_page(*, relays_steps: bool = False, remote: bool = False) -> bytes:
     """Render the home page; its content comes from `GET /api/state`.
 
     Args:
         relays_steps: The launcher runs a step chosen; else a button copies it.
+        remote: Drawn for a phone on the home network (0269): its steps run on the PC.
 
     Returns:
         The page.
@@ -69,9 +74,11 @@ def home_page(*, relays_steps: bool = False) -> bytes:
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
             "assets": ASSETS_PREFIX,
+            "lan": LAN_PATH,
         },
         alive_ms=ALIVE_SECONDS * 1000,
         relays_steps=relays_steps,
+        remote=remote,
         window=_mh_window(),
         thousands=separators()[0],
     ).encode()
@@ -103,7 +110,7 @@ def launcher_relays_steps() -> bool:
 
     Returns:
         True when `MEDIA_HYGIENE_LAUNCHER_STEPS` is set: ending the server with
-        `100 + n` then runs step `n`; else the code would be lost.
+        `STEP_EXIT_BASE + n` then runs step `n`; else the code would be lost.
     """
     return bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
 
@@ -125,7 +132,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         port: The port to listen on, inside the container (0: any free one).
 
     Returns:
-        `100 + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
+        `STEP_EXIT_BASE + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
     """
     ending = Ending()
     presence = Presence(ending, STOPPED)
@@ -162,11 +169,14 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                 )
             )
         address_tip(runtime.output, port)
+        say_lan(runtime.output, lan)
 
+    lan = lan_access(port) if port else None  # `mh --lan`: a phone may open it
+    handler = app if lan is None else LanApp(app, lan, home_page(remote=True))
     code = STOPPED
     try:
         with contextlib.suppress(KeyboardInterrupt):
-            door = EndingDoor(app, ending)
+            door = EndingDoor(handler, ending)
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         audit.stop()  # between two files: the index keeps what it committed

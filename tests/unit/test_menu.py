@@ -18,6 +18,7 @@ from media_hygiene.cli.menu_view import show_menu
 from media_hygiene.cli.status_step import Slot, next_step
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME, RunKind
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.home_views import FIELDS_STEP
 from media_hygiene.services.status import read_status
 from media_hygiene.services.update_check import UpdateNotice
 from tests.support.journaled import done_line
@@ -154,7 +155,7 @@ def test_the_proposed_step_is_the_step_of_status(tmp_path: Path, state: str) -> 
 def test_every_action_is_listed_once_by_space_and_numbered_across(
     tmp_path: Path,
 ) -> None:
-    """The five stages, then the tools; numbers follow; typed and planned have none."""
+    """The five stages, then the tools; numbers follow; typed ones have none."""
     menu = build_menu(read_status(make_runtime(make_locations(tmp_path))), _HINT)
     spaces = [line.area.space for line in menu.steps]
     assert spaces == sorted(spaces, key=list(Space).index)
@@ -163,10 +164,13 @@ def test_every_action_is_listed_once_by_space_and_numbered_across(
     assert len(names) == len(set(names))
     numbers = [line.number for line in menu.steps if line.number]
     assert numbers == list(range(1, len(numbers) + 1))
-    for name in ("album", "nas-add", "backup", "backup-to"):
+    for name in ("album", "nas-add", "backup-to"):
         line = next(line for line in menu.steps if line.step.name == name)
         assert line.number is None
         assert not line.command
+    # `mh backup` runs from the menu once its folder is kept (0264).
+    backup = next(line for line in menu.steps if line.step.name == "backup")
+    assert (backup.number, backup.command) != (None, "")
     assert Space.OTHER not in spaces
 
 
@@ -191,6 +195,17 @@ def test_the_windows_actions_stay_out_of_the_bash_mh(tmp_path: Path) -> None:
     assert only <= windows
     assert not only & bash
     assert "open" in bash
+
+
+def test_every_step_number_stays_below_the_form_s_code(tmp_path: Path) -> None:
+    """0287: `mh` reads `STEP_EXIT_BASE + n` as step `n` only while `n < FIELDS_STEP`.
+
+    Every action numbered (the Windows ones included) fits, so no step's code reaches
+    the form's, nor a signal's (Ctrl+C: 130).
+    """
+    status = read_status(make_runtime(make_locations(tmp_path)))
+    steps = build_menu(status, _HINT, windows=True).steps
+    assert len(steps) < FIELDS_STEP
 
 
 def test_a_command_with_no_entry_shows_under_other_commands(
@@ -240,7 +255,7 @@ def test_the_screen_says_what_enter_runs(tmp_path: Path) -> None:
     assert "mh purge" in shown
     assert "(nothing to do yet)" in shown
     assert "(type it yourself)" in shown
-    assert "(planned)" in shown
+    assert "(planned)" not in shown  # mh backup is in the tool since 0264
     assert "Import photos" in shown
     assert "From your NAS or an old disk" in shown
     assert "[classify.ai] model" in shown

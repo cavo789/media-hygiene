@@ -103,17 +103,18 @@ _{{ f }}_rewrite() {
 }
 
 # `{{ f }} update`: pull the image, write mh again with the same folders, then say the
-# versions. Only when typed: mh never looks for a new version by itself (0177).
+# versions. Only when typed: mh never looks for a new version by itself (0177). A local
+# build has nothing to pull: mh is written again from it as it is (0290).
 _{{ f }}_update() {
+    local item pairs=()
+    for item in "${_{{ f }}_photos[@]}"; do pairs+=(--photos "$item"); done
+    for item in "${_{{ f }}_backups[@]}"; do pairs+=(--backup "$item"); done
 {% if kept.pullable %}
     local image="{{ kept.image }}" before after old="" new="" size=""
     before="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image" 2>/dev/null)" || before=""
     if [[ -n "$before" ]]; then old="$(docker run --rm "$image" --version)"; fi
     if ! docker pull "$image"; then printf '%s\n' "{{ update.pull_failed }}" >&2; return 1; fi
     after="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image")"
-    local item pairs=()
-    for item in "${_{{ f }}_photos[@]}"; do pairs+=(--photos "$item"); done
-    for item in "${_{{ f }}_backups[@]}"; do pairs+=(--backup "$item"); done
     _{{ f }}_rewrite "${pairs[@]}" || return 1
     new="$(docker run --rm "$image" --version)"
     if [[ "$before" == "$after" ]]; then printf '%s\n' "{{ update.latest }}"; return 0; fi
@@ -126,7 +127,7 @@ _{{ f }}_update() {
         printf '%s\n' "{{ update.space }}"
     fi
 {% else %}
-    printf '%s\n' "{{ update.local }}" >&2
-    return 2
+    printf '%s\n' "{{ update.local }}"
+    _{{ f }}_rewrite "${pairs[@]}"
 {% endif %}
 }

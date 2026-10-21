@@ -106,6 +106,16 @@ def test_each_page_shows_its_bar_and_its_chapter(
 
 
 @pytest.mark.parametrize("template", sorted(PAGE_STEPS))
+def test_each_page_has_one_h1_and_it_is_the_bars(template: str) -> None:
+    """0282: the board's own title is gone; the bar's page name is the page's `<h1>`."""
+    page = _render(template)
+    headings = re.findall(r"<h1\b[^>]*>(.*?)</h1>", page, re.DOTALL)
+    assert len(headings) == 1
+    assert '<h1 class="mh-page">' in page
+    assert f"<title>{headings[0]} \u2014 media-hygiene</title>" in page
+
+
+@pytest.mark.parametrize("template", sorted(PAGE_STEPS))
 def test_each_page_wears_the_theme(template: str) -> None:
     """The theme's tokens and fonts, no colours of its own any more."""
     page = _render(template)

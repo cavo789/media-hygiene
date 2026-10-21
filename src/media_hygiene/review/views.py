@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.console.formatting import human_number, human_size
-from media_hygiene.i18n import _
 from media_hygiene.plan.burst_proposals import (
     ProposalLimits,
     ShotLook,
@@ -17,7 +16,7 @@ from media_hygiene.plan.burst_proposals import (
     propose,
 )
 from media_hygiene.review.file_card import FileCard
-from media_hygiene.review.shares import shares
+from media_hygiene.review.shares import compared, shares
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -44,6 +43,7 @@ class ShotState(FileCard):
     like: int | None = None  # `identical`: rank of the sharper shot it repeats
     size: int = 0  # bytes, for the order "space freed, largest first"
     faces: bool = False  # its series is ranked by its faces: ⭐ and share follow them
+    score: str = ""  # the sharpness compared (faces' if `faces`), for the badge
 
 
 class SeriesState(BaseModel):
@@ -111,8 +111,10 @@ class StateBuilder:
             shot = self._shot(file, file == burst.best)
             if share is not None:
                 shot = shot.model_copy(update=_proposed(share, proposals.get(rank)))
-            if look is not None and look.faced:
-                shot = shot.model_copy(update={"faces": True})
+            if look is not None:
+                shot = shot.model_copy(
+                    update={"faces": look.faced, "score": human_number(compared(look))}
+                )
             shots.append(shot)
         return SeriesState(
             camera=(first.camera if first else None) or "",
@@ -159,9 +161,6 @@ class StateBuilder:
         details = [human_size(file.size)]
         if visual is not None:
             details.insert(0, f"{visual.width} \N{MULTIPLICATION SIGN} {visual.height}")
-            details.append(
-                _("sharpness {value}").format(value=human_number(visual.sharpness))
-            )
             details.extend(filter(None, (visual.taken_at,)))
         return ShotState(
             name=name,

@@ -179,3 +179,42 @@ and pedagogically (product rules: one 👉 What next line, translated en + fr):
 Acceptance adds: a test running the rendered `mh.sh` with `backup`: the refusal text, the
 PowerShell command in it, the exit code; the `commands/backup.md` page (en + fr) says
 "Windows only" at the top, with the same command.
+
+## Status — PARTIAL (2026-10-21)
+
+### Done
+- Container: `media-hygiene backup --to <target>` (shows the plan; Act panel, page
+  `commands/backup.md`) and hidden `backup-step plan|start|prove|undo|undone`
+  (`cli/cmd_backup*.py`; lines protocol `services/backup_lines.py`, `backup_read.py`).
+  Planner `plan/backup_target.py` (+ `backup_entries.py`, `backup_gone.py`): unchanged
+  (size + time within 2 s, case ignored), new, edited (set aside then copied), broken kept,
+  moves by size/time/partial digest with ties by name, gone by reason (purged/confirmed
+  proposed; quarantine/pending/unknown kept), safety stop. Services: `backup_sources`
+  (target refused when it overlaps a photo or backup folder; a source per mounted photo
+  folder, `C:\Photos` → `<target>\C\Photos`), `backup_listing` (every file, system/excluded
+  folders skipped on both sides; a source read in part leaves its part alone),
+  `backup_reasons`, `backup_broken`, `backup_run`, `backup_journal` (pending → done, bytes
+  copied per folder), `backup_proof` (both sides listed again), `backup_undo`.
+- Kinds: phase `backup`, `backup-move/aside/remove/copy`; `history` counts them (Moved,
+  Quarantined, new *Copied* bytes column); `undo` refuses a backup run, naming
+  `mh backup --undo <run>`. `[backup] keep_removed_days/stop_above_percent/threads`.
+- `mh.ps1`: `mh backup [--to] [--anyway] [--undo]` (`mh_backup.ps1.j2`,
+  `services/launcher_backup.py`): target kept in `%USERPROFILE%\media-hygiene\backup-target.txt`
+  (read back), overlap refused, photos `:ro`, NAS share via 0245's volume (password reused or
+  asked), New-PSDrive for Windows's own access, ask once, Move-Item renames, robocopy per
+  folder (never /MIR, /PURGE), `.removed` expiry, prove. `mh.sh`: refused with why and the
+  PowerShell command, status 2.
+- Menu/home: backup stage no longer planned; tile and line show the last backup.
+- Tests: `tests/unit/test_backup_target.py`, `tests/unit/test_launcher_backup.py`,
+  `tests/integration/test_backup_run.py` (stand-in for Windows: first run, second plans
+  nothing, folder renamed → renames only, twins, edited, purged vs by mistake, each reason,
+  broken, undo, container undo refused, source not mounted, overlap, safety stop, expiry).
+- Docs en/fr: `commands/backup.md`, reference-commands, launcher page, step 3; mkdocs nav,
+  `COMMANDS_TOO`; French catalogue. Step 27 of `mh-measure.ps1`.
+
+### Not done
+- Step 27 of `mh-measure.ps1` (NAS write speed, renames, whether a letter-less
+  `New-PSDrive -Credential` lets robocopy in, `mh backup` twice / after Ctrl+C / after a
+  move) and a first real `mh backup` of `C:\Photos`, then a second that copies nothing.
+  **Reason:** Windows + Docker Desktop + the DS216j only; the PowerShell never ran here.
+  `docs_screenshots` to run (help capture, history, home).

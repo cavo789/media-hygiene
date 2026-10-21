@@ -37,3 +37,15 @@ def shares(looks: Sequence[ShotLook | None]) -> tuple[float | None, ...]:
         )
         result.append(min(value / top, 1.0) if top else None)
     return tuple(result)
+
+
+def compared(look: ShotLook) -> float:
+    """Give the figure a shot is compared by: its faces' sharpness, else the frame's.
+
+    Args:
+        look: The shot.
+
+    Returns:
+        The sharpness the badge shows, the one `shares` divides.
+    """
+    return look.faces if look.faces is not None else look.sharpness

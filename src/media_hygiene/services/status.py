@@ -9,6 +9,7 @@ reported as not looked at: the command never fails for it.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import Phase
@@ -30,11 +31,11 @@ from media_hygiene.services.status_parts import (
 )
 
 if TYPE_CHECKING:
-    from datetime import datetime
-
     from media_hygiene.report.summary import ReportSummary
     from media_hygiene.services.runtime import Runtime
 
+_STAMP: Final = "%Y%m%d-%H%M%S"  # a run's identifier starts with it
+_STAMP_LENGTH: Final = 15
 # The tool folders `status` reads; the photos are never needed.
 LOOKED_AT: Final = (
     MountKind.REPORTS,
@@ -77,6 +78,7 @@ class Status:  # pylint: disable=too-many-instance-attributes
     # Photos analysed and faces found; None before any `people`.
     faces: tuple[int, int] | None = None
     imported: str | None = None  # the newest `import` run (0265)
+    backed_up: datetime | None = None  # when the newest `mh backup` ran (0264)
 
     @property
     def blank(self) -> bool:
@@ -142,7 +144,24 @@ def read_status(runtime: Runtime) -> Status:
         tagged=tag_coverage(runtime.index_file),
         faces=face_coverage(runtime.index_file),
         imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
+        backed_up=_started(
+            next((r.run_id for r in runs if r.kind is Phase.BACKUP), "")
+        ),
     )
+
+
+def _started(run_id: str) -> datetime | None:
+    """When a run started, from its identifier (local time).
+
+    Args:
+        run_id: The run, or empty.
+
+    Returns:
+        The moment, aware; None for no run.
+    """
+    if not run_id:
+        return None
+    return datetime.strptime(run_id[:_STAMP_LENGTH], _STAMP).astimezone()
 
 
 def _undoable(run: RunSummary) -> bool:

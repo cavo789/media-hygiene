@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from media_hygiene.actions.parallel import WORKERS
 from media_hygiene.config.album_settings import AlbumSettings
+from media_hygiene.config.backup_settings import BackupSettings
 from media_hygiene.config.cache_settings import CacheSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.folder_roles import check_backup_roles
@@ -27,8 +28,9 @@ from media_hygiene.name_patterns import GENERATED_NAMES, GENERIC_FOLDERS
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
 _PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
-# Left free on the quarantine's drive by `clean`: a full system drive breaks Windows.
-_QUARANTINE_HEADROOM_GB = 1.0
+_QUARANTINE_HEADROOM_GB = (
+    1.0  # left free by `clean`: a full system drive breaks Windows
+)
 
 
 class GeneralSettings(BaseModel):
@@ -88,12 +90,8 @@ class FolderSettings(BaseModel):
         Returns:
             The settings, unchanged.
         """
-        others = {
-            "preferred": self.preferred,
-            "protected": self.protected,
-            "excluded": self.excluded,
-        }
-        check_backup_roles(self.backups, others)
+        others = {"preferred": self.preferred, "protected": self.protected}
+        check_backup_roles(self.backups, others | {"excluded": self.excluded})
         return self
 
     @field_validator("preferred", "protected", "excluded", "backups")
@@ -197,3 +195,4 @@ class Settings(BaseModel):
     album: AlbumSettings = AlbumSettings()
     tags: TagSettings = TagSettings()
     people: PeopleSettings = PeopleSettings()
+    backup: BackupSettings = BackupSettings()

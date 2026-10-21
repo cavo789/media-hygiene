@@ -69,7 +69,7 @@ def end_on_applied(runtime: Runtime, code: int) -> None:
         code: The exit code the page ended with; 0: no step chosen.
 
     Raises:
-        Exit: With `100 + n` when *Apply now* chose step `n`.
+        Exit: With `STEP_EXIT_BASE + n` when *Apply now* chose step `n`.
     """
     step = apply_step(runtime) if code else None
     if step is None:

@@ -71,7 +71,7 @@ class Served:
     """How the pages ended: what is set aside, and the exit code asked for."""
 
     chosen: int  # read from the disk
-    code: int = 0  # `100 + n`: *Apply now* chose step `n`
+    code: int = 0  # `STEP_EXIT_BASE + n`: *Apply now* chose step `n`
 
 
 def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Served:

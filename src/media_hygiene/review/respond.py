@@ -53,6 +53,7 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         f"Referrer-Policy: {response.referrer}",
         f"Content-Security-Policy: {response.policy}",
         *_range_head(status, part),
+        *response.headers,
     )
     writer.write(("\r\n".join(head) + "\r\n\r\n").encode(HEADER_ENCODING))
     writer.write(response.body)

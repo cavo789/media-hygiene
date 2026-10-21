@@ -55,6 +55,13 @@ def _shell() -> dict[str, str]:
         "doc": _("Doc"),
         "docOf": _("Documentation: {title} (new tab)"),
         "undoLast": _("Undo the last run"),
+        "lanTitle": _("On your phone"),
+        "lanOpen": _("Same Wi-Fi, open:"),
+        "lanCode": _("Code:"),
+        "lanNote": _("Until mh stops; never the internet."),
+        "onThePc": _(
+            "From the phone: the audit and the reports. Run this step on the PC."
+        ),
     }
 
 

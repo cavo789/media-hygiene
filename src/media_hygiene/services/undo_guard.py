@@ -38,10 +38,20 @@ def ensure_undo_ready(runtime: Runtime, run_ids: Sequence[str]) -> None:
             is not writable, or a run has files in a quarantine that is not mounted
             (`/quarantine`, or the one of a drive).
         JournalError: A run deleted files from a phone (0248): nothing puts a file
-            back on a phone.
+            back on a phone; or a run of `mh backup` (0264): Windows undoes it.
     """
     for run_id in run_ids:
         entries = read_journal(journal_file(runtime.locations.journal_dir, run_id))
+        if run_phase(entries) is Phase.BACKUP:
+            raise JournalError(
+                _(
+                    "The run {run_id} changed a backup folder, which Windows writes: "
+                    "undo cannot reach it from here. Nothing was changed."
+                ).format(run_id=run_id),
+                _("Type mh backup --undo {run_id} in Windows PowerShell.").format(
+                    run_id=run_id
+                ),
+            )
         if run_phase(entries) is Phase.PHONE:
             raise JournalError(
                 _(

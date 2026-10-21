@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import typer
 
+from media_hygiene.cli.cmd_backup_step import backup_step_command
 from media_hygiene.cli.cmd_phone_free import phone_done_command, phone_prove_command
 from media_hygiene.cli.cmd_phone_plan import phone_plan_command
 from media_hygiene.cli.cmd_phone_review import phone_review_command
@@ -14,6 +15,7 @@ from media_hygiene.cli.safety import help_of
 from media_hygiene.cli.usage_errors import localize_error_frame
 from media_hygiene.constants import APP_NAME, DOC_PAGES
 from media_hygiene.i18n import _
+from media_hygiene.services.backup_lines import BACKUP_STEP
 from media_hygiene.services.phone_plan import (
     PHONE_DONE,
     PHONE_PLAN,
@@ -84,7 +86,8 @@ def build_app() -> typer.Typer:
             short_help=help_text,
             rich_help_panel=panel,
         )(function)
-    # Plumbing for `mh phone` only (0219, 0248): hidden from `--help`, no page.
+    # Plumbing for `mh phone` and `mh backup` only (0219, 0248, 0264): hidden from
+    # `--help`, no page.
     plumbing = (
         (
             PHONE_PLAN,
@@ -105,6 +108,11 @@ def build_app() -> typer.Typer:
             PHONE_DONE,
             _("For mh phone: journal the files gone from the phone."),
             phone_done_command,
+        ),
+        (
+            BACKUP_STEP,
+            _("For mh backup: one step of a backup, its lines on stdin and stdout."),
+            backup_step_command,
         ),
     )
     for name, help_text, function in plumbing:

@@ -47,6 +47,13 @@ def history_command(ctx: typer.Context) -> None:
         output.info(_("No run yet."))
         return
     output.show(_runs_table(summaries))
+    if any(run.kind is Phase.BACKUP for run in summaries):
+        output.info(
+            _(
+                "🛟 A backup run changed its backup folder only, never your photos: "
+                "mh backup --undo <run> puts back what it renamed or set aside there."
+            )
+        )
     if any(run.kind is Phase.PHONE for run in summaries):
         output.info(
             _(
@@ -68,7 +75,7 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         *Sidecars* and *Folders removed* columns only when a run set unwanted
         photos aside, set aside again files that came back, marked files deleted
         in the Explorer, moved files, made an album, wrote sidecars or removed the
-        folders it left empty.
+        folders it left empty; *Copied* (bytes) when `import` or `mh backup` ran.
     """
     from rich.table import Table
 
@@ -82,8 +89,10 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         (_("Linked"), lambda run: run.linked),
         (_("Sidecars"), lambda run: run.kept.written),
         (_("Folders removed"), lambda run: run.folders_removed),
+        (_("Copied"), lambda run: run.kept.copied),  # bytes: import, mh backup
     ]
     shown = [(h, count) for h, count in optional if any(map(count, summaries))]
+    sizes = {_("Copied")}
     table = Table(title=_("Runs (newest first)"), title_justify="left")
     table.add_column(_("Run"), no_wrap=True)
     table.add_column(_("Command"))
@@ -93,6 +102,9 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
     for run in summaries:
         counts = [human_number(run.deleted), human_size(run.freed)]
         counts += [human_number(run.quarantined)]
-        counts += [human_number(count(run)) for _header, count in shown]
+        counts += [
+            (human_size if header in sizes else human_number)(count(run))
+            for header, count in shown
+        ]
         table.add_row(run.run_id, run.kind.value, *counts, human_number(run.restored))
     return table

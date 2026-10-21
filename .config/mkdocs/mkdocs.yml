@@ -13,8 +13,11 @@ strict: true
 
 theme:
   name: material
-  custom_dir: overrides  # stylesheets/guide.css: the look of the "in short" guides
+  custom_dir: overrides  # theme.css (Material onto the tool's tokens), guide.css, main.html
   language: en
+  font: false  # the tool's own fonts (hooks.py publishes them), never Google's
+  logo: images/avatar.webp  # the meerkat, published by hooks.py from the tool's assets
+  favicon: images/favicon.png
   features:
     - navigation.sections
     - navigation.top
@@ -34,6 +37,8 @@ theme:
         name: Light mode
 
 extra_css:
+  - stylesheets/tokens.css  # the tool's own tokens, published by hooks.py
+  - stylesheets/theme.css
   - stylesheets/guide.css
 
 hooks:
@@ -114,6 +119,7 @@ nav:
       - reference-commands.md
       - commands/album.md
       - commands/audit.md
+      - commands/backup.md
       - commands/browse.md
       - commands/classify.md
       - commands/clean.md

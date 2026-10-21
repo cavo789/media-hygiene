@@ -123,7 +123,8 @@ function global:_{{ f }}_rewrite($photos, $backups) {
 }
 
 # `{{ f }} update`: pull the image, write mh again with the same folders, then say the
-# versions. Only when typed: mh never looks for a new version by itself (0177).
+# versions. Only when typed: mh never looks for a new version by itself (0177). A local
+# build has nothing to pull: mh is written again from it as it is (0290).
 function global:_{{ f }}_update {
 {% if kept.pullable %}
     $image = '{{ kept.image }}'
@@ -147,5 +148,8 @@ function global:_{{ f }}_update {
     }
 {% else %}
     Write-Host "{{ update.local }}"
+    $photos = @(_{{ f }}_photos)
+    $backups = @(_{{ f }}_backups)
+    $null = _{{ f }}_rewrite $photos $backups
 {% endif %}
 }

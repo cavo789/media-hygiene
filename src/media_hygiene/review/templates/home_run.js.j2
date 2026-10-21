@@ -16,6 +16,7 @@ function proceed(action, body, command) {
   launch(action, body, command);
 }
 function launch(action, body, command) {
+  if (REMOTE) { toast(T.onThePc); return; }
   if (!RELAYS) { copyBox(command); return; }
   // At once, before the server answers: the click is seen, never "nothing happens" (0277).
   const clicked = document.activeElement;
@@ -56,6 +57,7 @@ function openForm(action) {
     const given = values();
     const error = $("#formError", dialog);
     if (Object.values(given).some((value) => !value)) { error.textContent = T.fillEach; error.hidden = false; return; }
+    if (REMOTE) { dialog.close(); toast(T.onThePc); return; }
     if (!RELAYS) { dialog.close(); copyBox(action.command); return; }
     // The server checks each value and says why it refuses one: the form stays open.
     toast(fill(T.starting, { window: WINDOW }));

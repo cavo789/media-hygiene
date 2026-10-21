@@ -95,6 +95,20 @@
 #      minimised and its keep-open line, a console step from the page (window forward, button
 #      flashing with bellStyle taskbar, or nothing; minimised, then normal), the bold line, the window
 #      closed then the stop shown by the page; asks what you saw            (0284, 0285)
+#  27. mh backup to the NAS (-Nas, -NasTarget: a shared folder of its own, created in DSM first):
+#      robocopy of 20 photos into <target>\mh-measure-test with /MT:1 then /MT:8 (MB/s of NAS
+#      writes), 20 renames there timed, whether a credential-only New-PSDrive lets robocopy in;
+#      then in a test mh: mh backup twice (the second copies nothing), once stopped by Ctrl+C
+#      and typed again, once after a folder renamed (renames only); the test folder removed (0264)
+#  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
+#      removed: mh history says the line naming mh update (expected), mh update of the local
+#      build writes it again without a pull, folders read back, the line gone      (0290)
+#  29. mh --lan, the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
+#      Windows' category of that network; then, in a new window, mh --lan by hand: Windows'
+#      firewall prompt, the ports Docker publishes, the QR code and the code on the PC's page,
+#      the phone paired by the QR code then by the code, the audit run from the phone, a step
+#      refused there, the phone still paired after a step run on the PC, the phone on mobile
+#      data (Wi-Fi off) never reaching it                                       (0269)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -125,6 +139,9 @@
 #   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
 #   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
 #   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
+#   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
+#   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
+#   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -140,7 +157,8 @@ param(
     [string]$Branch = "main",
     [string]$Nas = "",
     [string]$NasShare = "photo",
-    [string]$NasUser = ""
+    [string]$NasUser = "",
+    [string]$NasTarget = "backup_photos"
 )
 
 $ErrorActionPreference = "Stop"
@@ -2415,6 +2433,196 @@ if ((Wanted 26) -and $fresh) {
     Write-Host "    If it asks, answer n. When the page is back, close the PowerShell window (its X), look at the page."
     $stop = Read-Host "26f. The page showed 'Media Hygiene is stopped' within about 10 s, by itself? (y/n)"
     Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
+}
+
+# --- 27: mh backup, Windows writing to the NAS (0264) ----------------------------------------
+# Writes ONLY below \\<Nas>\<NasTarget>\mh-measure-test, removed at the end. The password is
+# asked once (or read back from step 21's kept credential), never logged.
+if (Wanted 27) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 27. mh backup: Windows writes to the NAS (0264)"
+    if ($Nas -eq "") {
+        Log "   27. skipped: give -Nas <name or IP address> -NasTarget <shared folder of its own> -NasUser <user>"
+    } else {
+        $share = "\\$Nas\$NasTarget"
+        $test = Join-Path $share "mh-measure-test"
+        $credFile = Join-Path $outDir "nas-credential.xml"
+        $nasCred = $null
+        if (Test-Path -LiteralPath $credFile) { try { $nasCred = Import-Clixml -LiteralPath $credFile } catch { } }
+        if (-not $nasCred) {
+            if ($NasUser -eq "") { $NasUser = Read-Host "27. User name on the NAS" }
+            $secure = Read-Host "27. Password of $NasUser on the NAS (never logged)" -AsSecureString
+            $nasCred = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
+        }
+        # 27a: can Windows open the share before, and after a credential-only New-PSDrive?
+        Log "   27a. Windows opens $share before: $(Test-Path -LiteralPath $share)"
+        $drive = "mh27"
+        try {
+            $null = New-PSDrive -Name $drive -PSProvider FileSystem -Root $share -Credential $nasCred -Scope Global -ErrorAction Stop
+            Log "   27a. New-PSDrive (no letter, no -Persist): made"
+        } catch { Log ("   27a. New-PSDrive refused: " + $_.Exception.Message) }
+        Log "   27a. Windows opens $share after: $(Test-Path -LiteralPath $share)"
+        $sample = Join-Path $Work "backup27"
+        New-Item -ItemType Directory -Force -Path $sample | Out-Null
+        foreach ($photo in ($picked | Select-Object -First 20)) { Copy-Item -LiteralPath $photo.FullName -Destination $sample }
+        $bytes = (Get-ChildItem -LiteralPath $sample -File | Measure-Object -Property Length -Sum).Sum
+        foreach ($threads in 1, 8) {
+            $into = Join-Path $test "mt$threads"
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $null = & robocopy $sample $into /E "/MT:$threads" /R:1 /W:1 /FFT /NP /NFL /NDL /NJH /NJS
+            $code = $LASTEXITCODE
+            $seconds = $watch.Elapsed.TotalSeconds
+            $copied = @(Get-ChildItem -LiteralPath $into -File -ErrorAction SilentlyContinue).Count
+            Log ("   27b. robocopy /MT:{0}: {1} files ({2:N1} MB) in {3:N2} s = {4:N1} MB/s, exit code {5}" -f $threads, $copied, ($bytes / 1MB), $seconds, ($bytes / 1MB / [Math]::Max($seconds, 0.001)), $code)
+            $first = Get-ChildItem -LiteralPath $into -File -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($first) {
+                $source = Get-Item -LiteralPath (Join-Path $sample $first.Name)
+                Log ("   27b. dates kept: PC {0:o}, NAS {1:o}" -f $source.LastWriteTimeUtc, $first.LastWriteTimeUtc)
+            }
+        }
+        $renamed = Join-Path $test "renamed"
+        New-Item -ItemType Directory -Force -Path $renamed | Out-Null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        foreach ($file in @(Get-ChildItem -LiteralPath (Join-Path $test "mt8") -File)) { Move-Item -LiteralPath $file.FullName -Destination (Join-Path $renamed $file.Name) }
+        Log ("   27c. 20 renames on the NAS: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
+        # 27d: mh backup end to end, in a test mh whose photo folder is the 20 photos.
+        if ((Read-Host "27d. Run mh backup in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
+            $mhDir = Join-Path $tool "mh27"
+            New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
+            $mhFile = Join-Path $mhDir "mh.ps1"
+            $toolMounts = @(
+                "-v", "${volume}:/cache",
+                "-v", "$(Join-Path $tool 'config'):/config",
+                "-v", "$(Join-Path $tool 'journal'):/journal",
+                "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+                "-v", "$(Join-Path $tool 'reports'):/reports"
+            )
+            & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $sample > $mhFile
+            . $mhFile
+            # mh keeps its target next to yours: yours is put back at the end.
+            $keptTarget = Join-Path $outDir "backup-target.txt"
+            $yours = if (Test-Path -LiteralPath $keptTarget) { Get-Content -LiteralPath $keptTarget -Raw } else { $null }
+            $target = Join-Path $test "mh"
+            foreach ($round in "first", "second") {
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                $said = @(mh backup --to $target 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Already there|Moved on|up to date|Not in the backup|robocopy|refused|cannot' })
+                foreach ($line in $said) { Log "   27d. $round mh backup: $line" }
+                Log ("   27d. $round mh backup: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+            }
+            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh backup runs again."
+            foreach ($photo in ($picked | Select-Object -Skip 20 -First 20)) { Copy-Item -LiteralPath $photo.FullName -Destination $sample }
+            try { mh backup 2>&1 | Out-Host } catch { }
+            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
+            foreach ($line in $said) { Log "   27e. after Ctrl+C, again: $line" }
+            $sub = Join-Path $sample "sorted"
+            New-Item -ItemType Directory -Force -Path $sub | Out-Null
+            Get-ChildItem -LiteralPath $sample -File | Select-Object -First 10 | ForEach-Object { Move-Item -LiteralPath $_.FullName -Destination $sub }
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Moved on|Not in the backup' })
+            foreach ($line in $said) { Log "   27f. after 10 photos moved into a folder: $line" }
+            Log ("   27f. {0:N1} s" -f $watch.Elapsed.TotalSeconds)
+            Log ("   27g. Docker volumes of the NAS left (none expected): " + ((@(& docker volume ls -q --filter name=mh-nas-) -join ' / ') -replace '^$', 'none'))
+            if ($null -ne $yours) { Set-Content -LiteralPath $keptTarget -Value $yours.Trim() -Encoding Ascii } else { Remove-Item -LiteralPath $keptTarget -ErrorAction SilentlyContinue }
+        }
+        Remove-Item -LiteralPath $test -Recurse -Force -ErrorAction SilentlyContinue
+        Log "   27h. test folder on the NAS removed: $(-not (Test-Path -LiteralPath $test))"
+        Remove-PSDrive -Name $drive -Force -ErrorAction SilentlyContinue
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 28: an mh older than its image says so; mh update of a local build writes it again (0290) --
+# A test mh.ps1 under -Work (your own mh is put back at the end): written by -Image, then made
+# to look written by another image (its stamp changed), then by one older than the check (no
+# stamp). mh history must say the line each time; mh update rewrites the test file only.
+if (Wanted 28) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 28. an mh older than its image, then mh update (0290)"
+    $folder = Join-Path $Work "older"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $copy = Join-Path $folder "mh.ps1"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
+    $mark = 'MEDIA_HYGIENE_LAUNCHER_STAMP='
+    $written = @($lines | Where-Object { $_ -match $mark }) -join ' '
+    Log ("   28a. stamp written: {0}" -f $written.Trim())
+    . $copy
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28a. fresh file: line said = {0} (expected False)" -f [bool]($said -match 'mh update to write it again'))
+    $other = @($lines | ForEach-Object { $_ -replace ($mark + '[0-9a-f.+]+'), ($mark + '0.3.0+000000000000') })
+    Set-Content -LiteralPath $copy -Value $other -Encoding Ascii
+    . $copy
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28b. another stamp: line said = {0} (expected True)" -f [bool]($said -match 'mh update to write it again'))
+    $none = @($lines | Where-Object { $_ -notmatch $mark })
+    Set-Content -LiteralPath $copy -Value $none -Encoding Ascii
+    . $copy
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    $watch.Stop()
+    Log ("   28c. no stamp (older than 0290): line said = {0} (expected True), mh history took {1:N2} s" -f [bool]($said -match 'older image'), $watch.Elapsed.TotalSeconds)
+    Log ("   28c. the line: {0}" -f ([regex]::Match($said, 'This mh was written[^:]+:[^.]+\.')).Value)
+    $said = (@(mh update 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28d. mh update: nothing to pull said = {0}, pulled = {1}, exit code {2}" -f [bool]($said -match 'nothing to pull'), [bool]($said -match 'Pulling|Digest:'), $LASTEXITCODE)
+    $back = [bool](Select-String -LiteralPath $copy -Pattern $mark -SimpleMatch -Quiet)
+    Log ("   28d. file written again with a stamp = {0}, folder read back = {1}" -f $back, [bool](@(_mh_photos) -contains $data))
+    $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
+    Log ("   28e. after mh update: line said = {0} (expected False)" -f [bool]($said -match 'mh update to write it again'))
+    $ErrorActionPreference = $saved
+}
+
+# --- 29: mh --lan, the home page on a phone of the home Wi-Fi (0269) -------------------------
+# A test mh.ps1 under -Work written by -Image (your own mh is put back at the end). The address
+# mh takes is read here; the phone part is by hand, in a new window: mh --lan holds its window.
+if (Wanted 29) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 29. mh --lan, the home page on a phone of the home Wi-Fi (0269)"
+    $folder = Join-Path $Work "lan"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $copy = Join-Path $folder "mh.ps1"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
+    . $copy
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $address = _mh_lan_address
+    $watch.Stop()
+    Log ("   29a. address found = {0}, in {1:N2} s" -f $address, $watch.Elapsed.TotalSeconds)
+    foreach ($network in @(Get-NetConnectionProfile -ErrorAction SilentlyContinue)) {
+        Log ("   29a. network {0} on {1}: category {2}" -f $network.Name, $network.InterfaceAlias, $network.NetworkCategory)
+    }
+    if ($address) {
+        Write-Host "29: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "        . '$copy'"
+        Write-Host "        mh --lan"
+        Write-Host "    Wait for the home page in the browser."
+        $firewall = Read-Host "29b. Did Windows ask whether Docker Desktop may accept connections? (n / p: allowed on private / b: both ticked)"
+        $ports = @(docker ps --format '{{.Ports}}' 2>$null) -join ' | '
+        Log "   29b. firewall prompt $firewall; ports published: $ports"
+        $card = Read-Host "29c. The PC's page shows 'On your phone' with a QR code, an address and a code of 8 digits? (y/n)"
+        Write-Host "    On the phone, on the same Wi-Fi: scan the QR code with its camera."
+        $qr = Read-Host "29d. The phone opened the home page by the QR code? (y / n / c: it asked the code)"
+        Write-Host "    On the phone, open a private tab, type the address shown, then the code."
+        $typed = Read-Host "29e. The code typed opened the page? (y/n)"
+        Write-Host "    On the phone: Run the audit of the page (the audit space, 'Run the audit here')."
+        $audit = Read-Host "29f. The audit ran to its end, its progress shown on the phone? (y/n)"
+        Write-Host "    On the phone: tap the button of any other step (clean, status...)."
+        $refused = Read-Host "29g. The phone said 'Run this step on the PC', nothing ran on the PC? (y/n)"
+        Write-Host "    On the PC's page: run 'status' (it runs in the mh window, then the page comes back). Then reload the phone."
+        $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
+        Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
+        $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
+        Write-Host "    On the PC's page: Quit Media Hygiene."
+        Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
+    } else {
+        Log "   29: skipped the phone part: no private address found (mh --lan says the same)"
+    }
+    $ErrorActionPreference = $saved
 }
 
 # --- clean up -------------------------------------------------------------------------------

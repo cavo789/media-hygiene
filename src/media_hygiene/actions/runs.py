@@ -17,10 +17,13 @@ from media_hygiene.actions.journal import (
 )
 from media_hygiene.actions.kinds import (
     ACTING_PHASES,
-    COPIES_IN,
+    BACKUP_SET_ASIDE,
+    COPIES,
     FOLDER_ACTIONS,
+    LEFT_IN_PLACE,
     LINKS,
     MARKS,
+    MOVES,
     XMP_ACTIONS,
     ActionKind,
     Phase,
@@ -34,8 +37,6 @@ if TYPE_CHECKING:
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
 # Every run identifier: the stamp, then a number when two runs share a second.
 RUN_ID_PATTERN: Final = re.compile(r"\d{8}-\d{6}(?:-\d+)?")
-# Actions after which the file is still there: neither deleted nor freed.
-_KEPT: Final = frozenset({ActionKind.MOVE}) | LINKS | XMP_ACTIONS | COPIES_IN
 
 
 def new_run_id(journal_dir: Path) -> str:
@@ -77,6 +78,7 @@ class Kept:
     moved: int = 0
     linked: int = 0  # hard links: an album's (nothing freed), a copy's (its bytes)
     written: int = 0  # the sidecars `xmp` created or rewrote
+    copied: int = 0  # bytes copied by `import`, or by `mh backup` to its target (0264)
 
 
 @dataclass(frozen=True, slots=True)
@@ -131,15 +133,17 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         for entry in done_states(entries, kind)
         if entry.action not in FOLDER_ACTIONS | MARKS
     ]
-    moved = [entry for entry in files if entry.action is ActionKind.MOVE]
+    moved = [entry for entry in files if entry.action in MOVES]
     linked = [entry for entry in files if entry.action in LINKS]
     written = sum(1 for entry in files if entry.action in XMP_ACTIONS)
-    quarantined = [entry for entry in files if entry.action in QUARANTINED]
+    copied = sum(entry.size for entry in files if entry.action in COPIES)
+    aside = QUARANTINED | BACKUP_SET_ASIDE  # `mh backup`'s `.removed` (0264)
+    quarantined = [entry for entry in files if entry.action in aside]
     # Only a deleted file frees space: a quarantined one takes it until `purge`.
     deleted = [
         entry
         for entry in files
-        if entry.action not in _KEPT and entry.action not in QUARANTINED
+        if entry.action not in LEFT_IN_PLACE and entry.action not in QUARANTINED
     ]
     # A copy made a link frees its bytes too, its name stays (0213).
     freeing = [*deleted, *(e for e in linked if e.action is ActionKind.LINK_DUPLICATE)]
@@ -149,7 +153,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
         deleted=len(deleted),
         freed=sum(entry.size for entry in freeing),
         quarantined=len(quarantined),
-        kept=Kept(len(moved), len(linked), written),
+        kept=Kept(len(moved), len(linked), written, copied),
         restored=len(done_states(entries, Phase.UNDO)),
         unwanted=sum(e.action is ActionKind.QUARANTINE_UNWANTED for e in quarantined),
         returned=sum(e.action is ActionKind.QUARANTINE_RETURNED for e in quarantined),

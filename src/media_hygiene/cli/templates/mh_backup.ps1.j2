@@ -1,0 +1,240 @@
+{# `mh backup` in mh.ps1: see services/launcher_backup.py. #}
+{% set f = function %}
+{% set b = backup %}
+{% set t = backup.texts %}
+{% set o = backup.orders %}
+{% set s = backup.steps %}
+
+# `{{ f }} backup [--to <folder>] [--anyway] [--undo <run>]`: copy the photo folders into a folder
+# of their own on the NAS, only what it lacks (0264). The container decides ({{ b.step }}): it
+# knows the index, the journals and what was moved; it reads the photos and the target
+# read-only. Windows writes the target, about 7 times faster than Docker (measured): renames
+# with Move-Item, copies with robocopy, never /MIR nor /PURGE.
+function global:_{{ f }}_backup {
+    $words = @($args)
+    $to = ''
+    $undo = ''
+    $anyway = @()
+    for ($i = 0; $i -lt $words.Count; $i++) {
+        $word = "$($words[$i])"
+        if ($word -eq '--anyway') { $anyway = @('--anyway') }
+        elseif ($word -eq '--to' -and $i + 1 -lt $words.Count) { $i++; $to = "$($words[$i])" }
+        elseif ($word -eq '--undo' -and $i + 1 -lt $words.Count) { $i++; $undo = "$($words[$i])" }
+        else { Write-Host "{{ t.usage }}"; return }
+    }
+    $kept = _{{ f }}_nas_file '{{ b.file }}'
+    $typed = [bool]$to
+    if (-not $to -and (Test-Path -LiteralPath $kept)) { $to = "$(Get-Content -LiteralPath $kept -TotalCount 1)".Trim() }
+    if (-not $to) { Write-Host "{{ t.no_target }}"; return }
+    $to = $to.TrimEnd('\')
+    if ($to -match '^[A-Za-z]:') { try { $to = [IO.Path]::GetFullPath($to + '\').TrimEnd('\') } catch { } }
+    if ($to -notmatch '^\\\\[^\\]+\\[^\\]+' -and $to -notmatch '^[A-Za-z]:') { Write-Host "{{ t.bad_target }}"; $global:LASTEXITCODE = 2; return }
+    # A folder of its own: never a photo folder nor a backup, never holding one.
+    $target = $to
+    foreach ($folder in @(@(_{{ f }}_photos) + @(_{{ f }}_backups))) {
+        $mine = $to.TrimEnd('\') + '\'
+        $theirs = "$folder".TrimEnd('\') + '\'
+        if ($mine.StartsWith($theirs, [StringComparison]::OrdinalIgnoreCase) -or $theirs.StartsWith($mine, [StringComparison]::OrdinalIgnoreCase)) {
+            Write-Host "{{ t.overlap }}"
+            $global:LASTEXITCODE = 2
+            return
+        }
+    }
+    if ($typed) {
+        # Kept for the next runs, then read back from the disk.
+        $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $kept)
+        Set-Content -LiteralPath $kept -Value $to -Encoding Ascii
+        $target = "$(Get-Content -LiteralPath $kept -TotalCount 1)".Trim()
+        Write-Host "{{ t.kept }}"
+    }
+    if (-not (_{{ f }}_desktop)) { return }
+    # The photo folders plugged in; one that is not leaves its part of the backup as it is.
+    $data = @()
+    $present = @()
+    $folders = [ordered]@{ {% for volume in script.data %}"{{ volume.host }}" = "{{ volume.point.as_posix() }}"{{ '; ' if not loop.last }}{% endfor %} }
+    foreach ($folder in $folders.Keys) {
+        if (Test-Path -LiteralPath $folder) { $data += '-v', "${folder}:$($folders[$folder]):ro"; $present += $folder }
+        else { Write-Host "{{ t.absent }}" }
+    }
+    $shared = _{{ f }}_removable ($present + @({{ quoted(script.tools | map(attribute='host') | list) }}))
+    if ($null -eq $shared) { $global:LASTEXITCODE = 1; return }
+    $mount = $null
+    try {
+        $mount = _{{ f }}_backup_mount $to
+        if (-not $mount) { $global:LASTEXITCODE = 1; return }
+        $run = @{ target = $to; mounts = $mount.mounts; data = $data; marks = @($shared.labels); backups = @(foreach ($folder in @(_{{ f }}_backups)) { '--backup'; $folder }) }
+        if ($undo) { _{{ f }}_backup_undo $run $undo; return }
+        _{{ f }}_backup_run $run $anyway
+    } finally {
+        if ($mount -and $mount.volumes) { _{{ f }}_nas_release $mount.volumes }
+        if ($mount -and $mount.drive) { Remove-PSDrive -Name $mount.drive -Force -ErrorAction SilentlyContinue }
+        if ($shared.mounted) { _{{ f }}_unmount $shared.mounted }
+    }
+}
+
+# One run: the plan, asked once, journaled, applied by Windows, then proven by the container.
+function global:_{{ f }}_backup_run($run, $anyway) {
+    $plan = _{{ f }}_backup_docker @() $run (@('{{ s.PLAN.value }}') + $anyway)
+    if ($null -eq $plan) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
+    $sources = New-Object 'System.Collections.Generic.List[object]'
+    $changes = New-Object 'System.Collections.Generic.List[object]'
+    $excluded = @()
+    $broken = @()
+    $expired = @()
+    $copies = 0
+    $stop = $false
+    $threads = 1
+    foreach ($line in $plan) {
+        $fields = "$line" -split "`t"
+        switch ($fields[0]) {
+            '{{ o.THREADS.value }}' { $threads = [int]$fields[1] }
+            '{{ o.STOP.value }}' { $stop = $true }
+            '{{ o.SOURCE.value }}' { $sources.Add(@($fields[1], $fields[2])) }
+            '{{ o.EXCLUDE.value }}' { $excluded += $fields[1] }
+            '{{ o.BROKEN.value }}' { $broken += $fields[1] }
+            '{{ o.EXPIRED.value }}' { $expired += $fields[1] }
+            '{{ o.MOVE.value }}' { $changes.Add(@($fields[1], $fields[2])) }
+            '{{ o.ASIDE.value }}' { $changes.Add(@($fields[1], $fields[2])) }
+            '{{ o.REMOVE.value }}' { $changes.Add(@($fields[1], $fields[2])) }
+            '{{ o.COPY.value }}' { $copies++ }
+        }
+    }
+    # The safety stop: the container said why and how to go on.
+    if ($stop) { $global:LASTEXITCODE = 1; return }
+    # Up to date: the container said it.
+    if ($changes.Count + $expired.Count + $copies -eq 0) { return }
+    if ((Read-Host "{{ t.ask }}") -notmatch '^[yYoO]') { Write-Host "{{ t.declined }}"; return }
+    # Each rename journaled before Windows makes it.
+    if ($null -eq (_{{ f }}_backup_docker $plan $run @('{{ s.START.value }}'))) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
+    foreach ($folder in $expired) { Remove-Item -LiteralPath $folder -Recurse -Force -ErrorAction SilentlyContinue }
+    foreach ($change in $changes) { _{{ f }}_backup_move $change[0] $change[1] $run.target }
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    foreach ($source in $sources) {
+        $from = "$($source[0])".TrimEnd('\')
+        $into = "$($source[1])"
+        $null = New-Item -ItemType Directory -Force -Path $into -ErrorAction SilentlyContinue
+        $options = @({% for option in b.robocopy %}'{{ option }}', {% endfor %}"/MT:$threads")
+        if ($excluded.Count -gt 0) { $options += '/XD'; $options += $excluded }
+        # A file the audit found broken never replaces its copy in the backup.
+        $mine = @($broken | Where-Object { "$_".StartsWith($from + '\', [StringComparison]::OrdinalIgnoreCase) })
+        if ($mine.Count -gt 0) { $options += '/XF'; $options += $mine }
+        Write-Host "{{ t.copying }}"
+        # A drive's root alone ends with a backslash, which would escape robocopy's quote.
+        $origin = if ($from -match ':$') { $from + '\.' } else { $from }
+        & robocopy $origin $into @options | Out-Host
+        $code = $LASTEXITCODE
+        if ($code -ge {{ b.failed }}) { Write-Host "{{ t.failed }}" }
+    }
+    $seconds = $watch.Elapsed.TotalSeconds.ToString('F1', [Globalization.CultureInfo]::InvariantCulture)
+    if ($null -eq (_{{ f }}_backup_docker $plan $run @('{{ s.PROVE.value }}', '--seconds', $seconds))) { $global:LASTEXITCODE = 1 }
+}
+
+# `{{ f }} backup --undo <run>`: the renames of a run put back, journaled before and after.
+function global:_{{ f }}_backup_undo($run, [string]$id) {
+    $lines = _{{ f }}_backup_docker @() $run @('{{ s.UNDO.value }}', '--run', $id)
+    if ($null -eq $lines) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
+    $moves = @($lines | Where-Object { "$_".StartsWith("{{ o.MOVE.value }}`t") })
+    if ($moves.Count -eq 0) { Write-Host "{{ t.undo_none }}"; return }
+    foreach ($line in $moves) {
+        $fields = "$line" -split "`t"
+        _{{ f }}_backup_move $fields[1] $fields[2] $run.target
+    }
+    $null = _{{ f }}_backup_docker @() $run @('{{ s.UNDONE.value }}', '--run', $id)
+}
+
+# A rename on the target, never over a file; the folders it leaves empty removed, up to
+# the target itself. A file gone since is left: the closing run says it.
+function global:_{{ f }}_backup_move([string]$from, [string]$to, [string]$root) {
+    if (-not (Test-Path -LiteralPath $from) -or (Test-Path -LiteralPath $to)) { return }
+    try {
+        $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $to) -ErrorAction Stop
+        Move-Item -LiteralPath $from -Destination $to -ErrorAction Stop
+    } catch {
+        Write-Host "    $($_.Exception.Message)"
+        return
+    }
+    $folder = Split-Path -Parent $from
+    $top = $root.TrimEnd('\')
+    while ($folder -and $folder.Length -gt $top.Length -and $folder.StartsWith($top + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        if (@(Get-ChildItem -LiteralPath $folder -Force -ErrorAction SilentlyContinue).Count -gt 0) { break }
+        Remove-Item -LiteralPath $folder -Force -ErrorAction SilentlyContinue
+        $folder = Split-Path -Parent $folder
+    }
+}
+
+# The target, read-only for the container: a share of the NAS in a Docker volume (SMB3,
+# the password kept for that NAS, else asked), a drive's folder as a folder. Windows itself
+# must open it too: a share it cannot open yet gets the same user name and password for this
+# window only (New-PSDrive, removed after). $null when the target cannot be reached.
+function global:_{{ f }}_backup_mount([string]$to) {
+    $made = @{ mounts = @(); volumes = @(); drive = '' }
+    $target = $to
+    if ($to -match '^\\\\([^\\]+)\\([^\\]+)') {
+        $address = $Matches[1]
+        $share = $Matches[2]
+        $unc = "\\$address\$share"
+        $own = _{{ f }}_nas_file (_{{ f }}_nas_name $unc)
+        $files = @($own) + @(Get-ChildItem -LiteralPath (Split-Path -Parent $own) -Filter ('nas-' + ($address -replace '[^A-Za-z0-9._-]+', '-') + '-*.xml') -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })
+        $credential = $null
+        foreach ($file in $files) {
+            if (-not $credential -and (Test-Path -LiteralPath $file)) { try { $credential = Import-Clixml -LiteralPath $file } catch { } }
+        }
+        $fresh = -not $credential
+        if ($fresh) { $credential = _{{ f }}_nas_credential $unc '' -Fresh }
+        $volume = _{{ f }}_nas_volume $unc $address $share $credential
+        if (-not $volume) { return $null }
+        $made.volumes += $volume
+        $made.mounts += '-v', ("${volume}:{{ script.data_dir.as_posix() }}/{{ b.unc }}/$address/${share}:ro")
+        if (-not (Test-Path -LiteralPath $unc)) {
+            $name = 'mhbackup' + $PID
+            try { $null = New-PSDrive -Name $name -PSProvider FileSystem -Root $unc -Credential $credential -Scope Global -ErrorAction Stop; $made.drive = $name } catch { }
+        }
+        if ($fresh -and (Read-Host "{{ nas.keep }}") -match '^[yYoO]') {
+            $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $own)
+            $credential | Export-Clixml -LiteralPath $own
+            Write-Host "{{ nas.kept }}"
+        }
+    } else {
+        $null = New-Item -ItemType Directory -Force -Path $to -ErrorAction SilentlyContinue
+        $point = '{{ script.data_dir.as_posix() }}/' + $to.Substring(0, 1).ToLower() + ($to.Substring(2).TrimEnd('\') -replace '\\', '/')
+        $made.mounts += '-v', "${to}:${point}:ro"
+    }
+    $null = New-Item -ItemType Directory -Force -Path $to -ErrorAction SilentlyContinue
+    if (-not (Test-Path -LiteralPath $to)) {
+        Write-Host "{{ t.unreachable }}"
+        if ($made.volumes) { _{{ f }}_nas_release $made.volumes }
+        if ($made.drive) { Remove-PSDrive -Name $made.drive -Force -ErrorAction SilentlyContinue }
+        return $null
+    }
+    return $made
+}
+
+# A step of the container ({{ b.step }}): the lines on its stdin, its lines back from its stdout,
+# in UTF-8 both ways; its messages go to the console. The photos and the target read-only,
+# the tool folders as for any command. $null when it failed.
+function global:_{{ f }}_backup_docker($lines, $run, $words) {
+{% if script.folders %}
+    $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
+{% endif %}
+    $console = [Console]::OutputEncoding
+    try {
+        try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false) } catch { }
+        $OutputEncoding = [Text.UTF8Encoding]::new($false)
+        $out = @($lines | docker run --rm -i @($run.marks) `
+            -e "{{ variable }}={{ script.shell.value }}" `
+            -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
+{% for option in script.environment %}
+            {{ option }} `
+{% endfor %}
+            @($run.data) `
+            @($run.mounts) `
+{% for volume in script.tools + script.drives %}
+            -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
+{% endfor %}
+            {{ image }} '{{ b.step }}' @words --to $run.target @($run.backups))
+        if ($LASTEXITCODE -ne 0) { return $null }
+        return ,$out
+    } finally {
+        try { [Console]::OutputEncoding = $console } catch { }
+    }
+}

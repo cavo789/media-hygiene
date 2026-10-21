@@ -38,7 +38,6 @@
   header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
   header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
            border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 1.1rem; margin: 0; }
   footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
   .layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; padding: 12px 16px 24px; }
   @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
@@ -70,7 +69,6 @@
 <body>
 {% include "page_header.html.j2" %}
 <header>
-  <h1>🗑️ {{ _("Files gone review") }}</h1>
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>

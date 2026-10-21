@@ -4,7 +4,8 @@
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
 # A step with fields leaves its words in a one-shot file of the reports folder (0266).
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210); a page whose tab
-# was closed ends it too, the prompt back, never home opened again (0262).
+# was closed ends it too, the prompt back, never home opened again (0262). A signal's code
+# (128 + n: Ctrl+C is 130) ends it whatever ran, never read as a step (0287).
 # One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.
 function global:_{{ function }}_home {
     $typed = @($args)
@@ -14,13 +15,14 @@ function global:_{{ function }}_home {
     $tab = $false
     while ($true) {
         if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
+        if ($status -ge {{ signal_base }}) { $global:LASTEXITCODE = $status; return }
         if ($status -le {{ step_base }}) {
             $after = $false
             $global:MediaHygieneRelay = $true
             $global:MediaHygieneTab = $tab
             try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
             $status = $LASTEXITCODE
-            if ($status -le {{ step_base }}) { return }
+            if ($status -le {{ step_base }} -or $status -ge {{ signal_base }}) { return }
             $tab = $true
         }
 {% if host.step_file %}

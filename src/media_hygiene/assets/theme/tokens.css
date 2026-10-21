@@ -211,6 +211,7 @@
 .mh-bar .mh-brand { display: inline-flex; align-items: center; gap: 8px; font: 700 1rem/1.2 var(--mk-font-display); }
 .mh-bar .mh-brand img { width: 24px; height: 32px; object-fit: contain; }
 .mh-bar .mh-page { color: var(--mh-frame-soft); }
+.mh-bar h1.mh-page { margin: 0; font: inherit; }
 .mh-bar .mh-links { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-left: auto; }
 .mh-bar a { color: var(--mh-frame-ink); text-decoration: underline; text-underline-offset: 3px; }
 .mh-bar a:hover { color: var(--mh-apricot); }

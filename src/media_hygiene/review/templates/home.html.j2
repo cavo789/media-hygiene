@@ -70,6 +70,13 @@
       <ul class="folder-list" id="folderList"></ul>
       <button class="folder-add" type="button" data-run="folders-add"><svg class="i" aria-hidden="true"><use href="#i-folder-plus"></use></svg> {{ texts.addFolder }}</button>
     </details>
+    <section class="lan-card" id="lanCard" hidden aria-labelledby="lanTitle">
+      <p class="lan-title" id="lanTitle">{{ texts.lanTitle }}</p>
+      <div class="lan-qr" id="lanQr"></div>
+      <p class="lan-line">{{ texts.lanOpen }} <strong class="lan-url" id="lanUrl"></strong></p>
+      <p class="lan-line">{{ texts.lanCode }} <strong class="lan-code" id="lanCode"></strong></p>
+      <p class="lan-note">{{ texts.lanNote }}</p>
+    </section>
     <div class="signature">
       <img src="{{ paths.assets }}images/avatar.webp" alt="{{ texts.avatarAlt }}" width="236" height="320">
       <p class="sig-version" id="sigVersion"></p>

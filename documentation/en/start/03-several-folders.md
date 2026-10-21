@@ -141,6 +141,15 @@ The report lists both, and `backup-missing.csv` and `backup-only.csv`, next to `
 every file ([Compare a backup or an old disk](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)).
 A folder that must not even be read is [excluded](../clean/05-choose-the-kept-copy.md#exclude-a-folder) instead.
 
+### Your NAS: back up your photos to it
+
+The other way round: `mh backup --to \\NAS\backup_photos` copies every photo folder of `mh`
+into a shared folder **of its own** on the NAS (create it once in DSM), only what it lacks, at
+the speed of Windows (about 100 MB/s, against 15 MB/s through Docker: measured). A photo moved
+by `sort` is renamed there, not sent again; a photo deleted by mistake on the PC is never
+deleted from the NAS: only what you purged or confirmed deleted is set aside, in `.removed`.
+The next times, `mh backup` alone. Windows PowerShell only: [`backup`](../commands/backup.md).
+
 ## A phone? Copy only its new photos
 
 Plugging a phone in and copying everything each time brings back every photo you already have,
