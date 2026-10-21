@@ -8684,8 +8684,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{command} opens its page in a new tab; once you close it, this page comes"
-" back by itself."
+"{command} opens its page here, in this tab; its ⌂ Back to the home page "
+"brings you back to this very place."
 msgstr ""
 
 #, python-brace-format

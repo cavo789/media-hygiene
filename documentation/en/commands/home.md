@@ -108,9 +108,10 @@ opened the page:
 Every other page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
-next to its French twin (*En français*). When the home page opened it, **⌂ Back to the home page**
-closes that page (what you decided there is already saved) and waits for the home page on the
-same address.
+next to its French twin (*En français*). When the home page opened it, the page shows in the
+**same tab** (no new tab), and **⌂ Back to the home page** closes it (what you decided there is
+already saved) and brings that tab back to the home page, on the space you left (*Clean*,
+*Sort*…). Closing the tab instead ends the page and `mh` with it: the prompt comes back.
 
 The documentation itself is inside the image: every **Doc** and **Documentation** link of these
 pages opens its chapter served by the tool, in the same look, offline, and written for the version

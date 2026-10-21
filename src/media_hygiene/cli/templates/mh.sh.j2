@@ -83,8 +83,9 @@
         read -r -a awake <<< "$(_{{ function }}_awake "$command")"
         _{{ function }}_title "{{ function }} $command..."
     fi
-    if [[ -n "${page[*]}" ]]; then
-        # The browser opens on the page as soon as it answers (0178).
+    if [[ -n "${page[*]}" && -z "${_{{ function }}_tab:-}" ]]; then
+        # The browser opens on the page as soon as it answers (0178); not from the loop of
+        # `{{ function }}` alone once its tab is open: that tab follows each page (0280).
         { _{{ function }}_browse {{ script.commands.port }} {{ script.commands.browse_wait }} & } 2>/dev/null
         browser=$!
         disown "$browser" 2>/dev/null
@@ -142,8 +143,9 @@ _{{ function }}_{{ name }}() {
 # here as `{{ function }} <step>`, its questions in this terminal, then the page comes back.
 # A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210).
+# One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.
 _{{ function }}_home() {
-    local _{{ function }}_relay=1 status=0 after=0 steps number line chosen words=() color=(--color never)
+    local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
         if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
@@ -152,6 +154,7 @@ _{{ function }}_home() {
             after=0
             {{ function }} home "$@" || status=$?
             if [[ "$status" -le {{ step_base }} ]]; then return "$status"; fi
+            _{{ function }}_tab=1
         fi
 {% if host.step_file %}
         # A step with fields (0266): the page wrote its words, one per line, read once.

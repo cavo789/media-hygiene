@@ -110,9 +110,28 @@ def test_run_says_which_window_then_a_hint_after_30_s(
     text = page.decode()
     assert f"const WINDOW = {json.dumps(window)};" in text
     assert "const HINT_MS = 30000;" in text
-    wait = text.index("function waitForComeBack() {")
+    wait = text.index("function waitForComeBack(page) {")
     shown = text.index("hint.hidden = false; }, HINT_MS);", wait)
     assert wait < shown < text.index("const poll = () => {", wait)
+
+
+def test_a_page_step_shows_in_this_tab_and_comes_back_to_this_section() -> None:
+    """0280: no new tab; the tab keeps its section, then follows any page on "/"."""
+    page = home_page(relays_steps=True)
+    assert _texts(page)["runsPage"] == (
+        "{command} opens its page here, in this tab; its ⌂ Back to the home page "
+        "brings you back to this very place."
+    )
+    text = page.decode()
+    run = text.index("function openRun(action, command) {")
+    kept = text.index(
+        'sessionStorage.setItem("mh-home-section", window.location.hash)', run
+    )
+    assert kept < text.index('waitForComeBack(action.kind === "page");', run)
+    wait = text.index("function waitForComeBack(page) {")
+    assert text.index('fetch("/", { cache: "no-store" })', wait) < text.index(
+        'else if (page) window.location.replace("/");', wait
+    )
 
 
 def test_the_window_is_translated(monkeypatch: pytest.MonkeyPatch) -> None:

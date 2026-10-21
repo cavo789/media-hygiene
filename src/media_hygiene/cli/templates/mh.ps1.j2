@@ -107,8 +107,9 @@ function global:{{ function }} {
             $global:MediaHygieneTitle = $Host.UI.RawUI.WindowTitle
             $Host.UI.RawUI.WindowTitle = "{{ function }} $command..."
         }
-        if ($page) {
-            # The browser opens on the page as soon as it answers (0178).
+        if ($page -and -not $global:MediaHygieneTab) {
+            # The browser opens on the page as soon as it answers (0178); not from the loop of
+            # `{{ function }}` alone once its tab is open: that tab follows each page (0280).
             $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
                 param($url, $wait)
                 for ($i = 0; $i -lt $wait; $i++) {

@@ -52,7 +52,7 @@
 #      the drive's quarantine mounted must refuse, naming the drive                  (0183)
 #  14. mh menu by hand, old console then your usual one: colours, columns, a number +
 #      Enter, Ctrl+C; then mh alone: the home page, a step run from it, the page back,
-#      Home from a review page, Quit; asks what you saw                        (0172, 0210)
+#      a review page in the same tab and back to its space, the tabs counted   (0172, 0210, 0280)
 #  15. the launcher line of the guide (launcher --photos), mh audit, the hour in mh history
 #      against this PC's clock, mh --photos on -OtherDrive, a folder not plugged in   (0173)
 #  16. asks you to quit Docker Desktop: records docker run's exact message and exit code; then
@@ -977,14 +977,18 @@ if (Wanted 14) {
     Write-Host "    In it, type: . '$mhFile'; mh"
     Write-Host "    The home page opens in your browser. Click Run on the 'clean' step: it runs in the"
     Write-Host "    PowerShell window and asks its question there; answer n. The page must come back."
-    Write-Host "    Then click Run on a 'review' step; on that page, click the Home link at the bottom right."
+    Write-Host "    Then go to the Clean space; click 'Open the page' on its 'review' step: the review"
+    Write-Host "    page must show in the SAME tab. On it, click 'Back to the home page' in the top bar."
+    Write-Host "    Count the browser tabs on 127.0.0.1 (0280: one tab from start to end)."
     Write-Host "    Finally press Ctrl+C in the PowerShell window (the home page has no Quit button)."
     $opened = Read-Host "14h. mh alone opened the home page in the browser? (y/n)"
     $asked = Read-Host "14h. Run on 'clean' ran it in the PowerShell window, with its question? (y/n)"
     $back = Read-Host "14h. After it, the home page came back by itself (reloaded)? (y/n)"
-    $homeLink = Read-Host "14h. Home from the review page brought the home page back? (y/n)"
+    $sameTab = Read-Host "14h. The review page showed in the same tab, no new tab? (y/n)"
+    $homeLink = Read-Host "14h. 'Back to the home page' came back to the Clean space? (y/n)"
+    $tabs = Read-Host "14h. How many tabs on 127.0.0.1 at the end? (a number)"
     $quit = Read-Host "14h. Ctrl+C gave the PowerShell prompt back, no red error? (y/n)"
-    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, Home from review $homeLink, Ctrl+C clean $quit"
+    Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, review in the same tab $sameTab, back to Clean $homeLink, tabs $tabs, Ctrl+C clean $quit"
     Write-Host "Close that window."
 }
 

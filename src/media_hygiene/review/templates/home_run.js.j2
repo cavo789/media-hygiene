@@ -84,8 +84,11 @@ function openConfirm(action, body, command) {
   showDialog(dialog);
 }
 // The server ended: mh runs the step, then opens the page again on the same port. The page
-// reloads once it saw the server gone, then answering again.
+// reloads once it saw the server gone, then answering again. One tab (0280): a page step shows
+// in this very tab (mh opens no other); its "Back to the home page" comes back to this section,
+// kept for this tab in sessionStorage (home_link.html.j2, browse_apply.js.j2 read it).
 function openRun(action, command) {
+  try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
   const dialog = $("#runDlg");
   const where = fill(action.kind === "page" ? T.runsPage : T.runsConsole, { command: command, window: WINDOW });
   dialog.innerHTML = `<div class="dlg">
@@ -97,14 +100,19 @@ function openRun(action, command) {
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
   showDialog(dialog);
-  waitForComeBack();
+  waitForComeBack(action.kind === "page");
 }
-function waitForComeBack() {
+// "/" and not the state: any page answers it, the step's page as well as the home page.
+function waitForComeBack(page) {
   let seenGone = false;
   window.setTimeout(() => { const hint = $("#runHint"); if (hint) hint.hidden = false; }, HINT_MS);
   const poll = () => {
-    fetch(P.state, { cache: "no-store" })
-      .then((response) => { if (response.ok && seenGone) window.location.reload(); else window.setTimeout(poll, POLL_MS); })
+    fetch("/", { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok || !seenGone) window.setTimeout(poll, POLL_MS);
+        else if (page) window.location.replace("/");
+        else window.location.reload();
+      })
       .catch(() => { seenGone = true; window.setTimeout(poll, POLL_MS); });
   };
   window.setTimeout(poll, POLL_MS);

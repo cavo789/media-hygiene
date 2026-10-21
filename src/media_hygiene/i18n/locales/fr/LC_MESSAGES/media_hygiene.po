@@ -10312,11 +10312,11 @@ msgstr "{command} est réservé à Windows."
 
 #, python-brace-format
 msgid ""
-"{command} opens its page in a new tab; once you close it, this page comes"
-" back by itself."
+"{command} opens its page here, in this tab; its ⌂ Back to the home page "
+"brings you back to this very place."
 msgstr ""
-"{command} ouvre sa page dans un nouvel onglet ; quand vous la fermez, "
-"cette page revient d'elle-même."
+"{command} ouvre sa page ici, dans cet onglet ; son ⌂ Retour à l'accueil "
+"vous ramène exactement ici."
 
 #, python-brace-format
 msgid ""

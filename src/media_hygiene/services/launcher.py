@@ -61,7 +61,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _TEMPLATE_PACKAGE: Final = "media_hygiene.cli"
-# The pages that may end on a step `mh` runs: the home page, browse's Apply now (0243).
+# The pages that may end on a step `mh` runs: the home page, browse's Apply now (0243);
+# any other page opened from home gets the relay too: its way back home (0280).
 _RELAYED: Final = ("home", "browse")
 _TEMPLATES: Final = {Shell.POWERSHELL: "mh.ps1.j2", Shell.BASH: "mh.sh.j2"}
 
@@ -183,7 +184,7 @@ def render_script(script: LauncherScript) -> str:
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,
         photos=LAUNCHER_PHOTOS_VARIABLE,
-        relayed=_RELAYED,
+        relayed=tuple(dict.fromkeys((*_RELAYED, *script.commands.pages))),
         step_base=STEP_EXIT_BASE,
         fields_code=STEP_EXIT_BASE + FIELDS_STEP,
         page_closed=int(ExitCode.PAGE_CLOSED),

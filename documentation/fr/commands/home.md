@@ -118,8 +118,10 @@ Chaque autre page ([`review`](review.md), [`review-sort`](review-sort.md),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
 prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
 chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a
-ouverte, **⌂ Retour à l'accueil** ferme cette page (ce que vous y avez décidé est déjà
-enregistré) et attend la page d'accueil à la même adresse.
+ouverte, la page s'affiche dans **le même onglet** (pas de nouvel onglet), et **⌂ Retour à
+l'accueil** la ferme (ce que vous y avez décidé est déjà enregistré) et ramène cet onglet à la
+page d'accueil, sur l'espace que vous aviez quitté (*Nettoyage*, *Tri*…). Fermer l'onglet, au
+contraire, arrête la page et `mh` avec elle : l'invite revient.
 
 La documentation elle-même est dans l'image : chaque lien **Doc** et **Documentation** de ces
 pages ouvre son chapitre servi par l'outil, avec la même allure, hors ligne, et écrit pour la

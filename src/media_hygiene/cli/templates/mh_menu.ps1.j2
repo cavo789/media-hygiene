@@ -5,19 +5,23 @@
 # A step with fields leaves its words in a one-shot file of the reports folder (0266).
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210); a page whose tab
 # was closed ends it too, the prompt back, never home opened again (0262).
+# One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.
 function global:_{{ function }}_home {
     $typed = @($args)
     $color = @(if ($Host.UI.SupportsVirtualTerminal) { '--color', 'always' } else { '--color', 'never' })
     $status = 0
     $after = $false
+    $tab = $false
     while ($true) {
         if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
         if ($status -le {{ step_base }}) {
             $after = $false
             $global:MediaHygieneRelay = $true
-            try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null }
+            $global:MediaHygieneTab = $tab
+            try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
             $status = $LASTEXITCODE
             if ($status -le {{ step_base }}) { return }
+            $tab = $true
         }
 {% if host.step_file %}
         # A step with fields (0266): the page wrote its words, read once, then removed.
@@ -30,7 +34,8 @@ function global:_{{ function }}_home {
             $after = $true
             $global:LASTEXITCODE = 0
             $global:MediaHygieneRelay = $true
-            try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null }
+            $global:MediaHygieneTab = $tab
+            try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
             $status = $LASTEXITCODE
             continue
         }
@@ -48,7 +53,8 @@ function global:_{{ function }}_home {
         $after = $true
         $global:LASTEXITCODE = 0  # a step run by mh itself (open) leaves it as it was
         $global:MediaHygieneRelay = $true
-        try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null }
+        $global:MediaHygieneTab = $tab
+        try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
         $status = $LASTEXITCODE
     }
 }

@@ -39,8 +39,8 @@ def _dialogs() -> dict[str, str]:
             "page comes back by itself."
         ),
         "runsPage": _(
-            "{command} opens its page in a new tab; once you close it, this page comes "
-            "back by itself."
+            "{command} opens its page here, in this tab; its ⌂ Back to the home page "
+            "brings you back to this very place."
         ),
         "termComment": _(
             "mh keeps the hand until the end, then opens the home page again"

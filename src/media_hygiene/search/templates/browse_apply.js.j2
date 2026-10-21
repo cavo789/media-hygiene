@@ -2,7 +2,8 @@
    home page and something is set aside: `POST /api/apply` ends the server with the code
    of the home step that applies the decisions; mh runs it in the terminal (its usual
    question), then opens the home page again on the same port: the page goes there once
-   the server was seen gone, then answering again. #}
+   the server was seen gone, then answering again, on the section the home page was left
+   from (0280, kept for this tab in sessionStorage by home_run.js.j2). #}
 const APPLY_PATH = {{ apply_path | tojson }};
 const APPLY_POLL_MS = 1000;
 
@@ -10,8 +11,10 @@ function waitForHome() {
   let seenGone = false;
   const poll = () => fetch("/", { cache: "no-store" })
     .then((response) => {
-      if (response.ok && seenGone) window.location.replace("/");
-      else window.setTimeout(poll, APPLY_POLL_MS);
+      if (!response.ok || !seenGone) { window.setTimeout(poll, APPLY_POLL_MS); return; }
+      let section = "";
+      try { section = window.sessionStorage.getItem("mh-home-section") || ""; } catch { /* private mode */ }
+      window.location.replace("/" + section);
     })
     .catch(() => {
       seenGone = true;

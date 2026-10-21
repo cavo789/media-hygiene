@@ -122,6 +122,9 @@ def test_opened_from_home_the_page_offers_the_way_back(template: str) -> None:
     page = _render(template)
     assert page.count('id="homeLink"') == 1
     assert 'getElementById("homeLink")' in page
+    # 0280: back on the section of the home page this tab was left from.
+    assert 'sessionStorage.getItem("mh-home-section")' in page
+    assert 'window.location.replace("/" + section());' in page
 
 
 @pytest.mark.usefixtures("from_home")

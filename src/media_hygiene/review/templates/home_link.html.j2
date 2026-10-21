@@ -1,7 +1,8 @@
 {# "Back to the home page" of the page's bar (page_header.html.j2, shown when `mh` opened the page
    from the home page): `POST /api/stop` ends this page's server (code 0) and `mh` opens the home
    page again on the same port; the page reloads once the server was seen gone, then answering
-   again. Included by each page, from any package.
+   again, on the section it was left from (0280: the home page keeps it for this tab in
+   sessionStorage). Included by each page, from any package.
    The page also says it is alive, and that it leaves on pagehide: its server ends once no
    tab shows it (0262, review/presence.py; 10 s is its ALIVE_SECONDS). #}
 <div id="homeClosed" hidden role="alertdialog" aria-live="assertive"
@@ -13,6 +14,7 @@
 <script>
 (() => {
   const POLL_MS = 1000;
+  const section = () => { try { return window.sessionStorage.getItem("mh-home-section") || ""; } catch { return ""; } };
   const ALIVE_MS = 10000;
   const alive = (leaving) => fetch("/api/alive", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => undefined);
   window.addEventListener("pageshow", () => alive(false));
@@ -29,7 +31,7 @@
         let seenGone = false;
         const poll = () => fetch("/", { cache: "no-store" })
           .then((response) => {
-            if (response.ok && seenGone) window.location.replace("/");
+            if (response.ok && seenGone) window.location.replace("/" + section());
             else window.setTimeout(poll, POLL_MS);
           })
           .catch(() => {

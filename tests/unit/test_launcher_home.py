@@ -33,9 +33,9 @@ if TYPE_CHECKING:
     import subprocess
 
 _COMMANDS: Final = LauncherCommands(
-    names=("audit", "browse", "clean", "history", "home", "menu"),
+    names=("audit", "browse", "clean", "history", "home", "menu", "review"),
     writers=("clean",),
-    pages=("home", "browse"),
+    pages=("home", "browse", "review"),
     data=("menu",),
     port=8088,
 )
@@ -47,7 +47,17 @@ _FAKE_DOCKER: Final = r"""
 docker() {
     if [[ "$1" == version ]]; then return 0; fi
     if [[ " $* " == *" menu "* ]]; then
-        printf '0\taudit\n1\taudit\n2\tclean --tier near\n3\thistory\n4\tbrowse\n'
+        printf '0\taudit\n1\taudit\n2\tclean --tier near\n3\thistory\n'
+        printf '4\tbrowse\n5\treview\n'
+        return 0
+    fi
+    if [[ " $* " == *" review "* ]]; then
+        sleep 0.3  # a page serves a while: its tab, if any, is opened meanwhile
+        if [[ " $* " == *" -e RELAY "* ]]; then
+            echo "review:relayed"
+        else
+            echo "review:alone"
+        fi
         return 0
     fi
     if [[ " $* " == *" browse "* ]]; then
@@ -66,6 +76,7 @@ docker() {
             read -r code rest < "$HOME/codes"
             printf '%s\n' "$rest" > "$HOME/codes"
         fi
+        sleep 0.3  # a page serves a while: its tab, if any, is opened meanwhile
         if [[ " $* " == *" -e RELAY "* ]]; then
             echo "home:relayed"
         else
@@ -101,8 +112,16 @@ def _bash(
     (tmp_path / "codes").write_text(f"{codes}\n")
     (tmp_path / "browse").write_text(f"{browse}\n")
     fake = _FAKE_DOCKER.replace("RELAY", _RELAY)
-    code = f"{fake}\nsource {script}; {line}; echo status=$?"
+    # Each tab mh opens is one line of `tabs` (0280), instead of a browser.
+    tab = '_mh_browse() { echo tab >> "$HOME/tabs"; }'
+    code = f"{fake}\nsource {script}; {tab}; {line}; echo status=$?"
     return run_bash(code, {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"})
+
+
+def _tabs(tmp_path: Path) -> int:
+    """How many browser tabs mh opened."""
+    tabs = tmp_path / "tabs"
+    return len(tabs.read_text().splitlines()) if tabs.exists() else 0
 
 
 def _lines(done: subprocess.CompletedProcess[str]) -> list[str]:
@@ -175,6 +194,27 @@ def test_home_typed_alone_does_not_relay(tmp_path: Path) -> None:
     assert _lines(done) == ["home:alone", "status=0"]
 
 
+def test_one_tab_for_the_home_page_and_the_pages_it_opens(tmp_path: Path) -> None:
+    """0280: home opens the tab; review and home again show in it, no new tab."""
+    done = _bash(tmp_path, "mh", "105 103")
+    assert _lines(done) == [
+        "home:relayed",
+        "review:relayed",
+        "home:relayed",
+        "ran:history",
+        "home:relayed",
+        "status=0",
+    ]
+    assert _tabs(tmp_path) == 1
+
+
+def test_a_page_typed_alone_opens_its_tab_without_the_home_link(tmp_path: Path) -> None:
+    """`mh review` alone: its own tab, and no relay (no "Back to the home page")."""
+    done = _bash(tmp_path, "mh review", "")
+    assert _lines(done) == ["review:alone", "status=0"]
+    assert _tabs(tmp_path) == 1
+
+
 def test_powershell_holds_the_same_loop_in_ascii() -> None:
     """mh.ps1: home relayed by the loop only, the step read from the menu, then home."""
     with using(Locale.FR):
@@ -184,18 +224,21 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
     assert text.index("        _mh_home @typed", alone) < text.index("docker run --rm")
     assert "function global:_mh_home {" in text
     assert (
-        "        try { mh home @typed } finally { $global:MediaHygieneRelay = $null }"
-        in text
+        "            try { mh home @typed } finally { "
+        "$global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }" in text
     )
     assert "        if ($status -le 100) { return }" in text
     assert (
         "$relay = @(if ($global:MediaHygieneRelay -and $command -in @('home', "
-        f"'browse')) {{ '-e', '{_RELAY}' }})"
+        f"'browse', 'review')) {{ '-e', '{_RELAY}' }})"
     ) in text
+    # 0280: one tab, opened by the first page of the loop; later pages show in it.
+    assert "        if ($page -and -not $global:MediaHygieneTab) {" in text
+    assert "            $tab = $true" in text
     # 0243: a page a step opened (browse) may end on a step, run next.
     assert (
-        "        try { mh @words @typed } finally { $global:MediaHygieneRelay = $null }"
-        in text
+        "        try { mh @words @typed } finally { $global:MediaHygieneRelay = $null;"
+        " $global:MediaHygieneTab = $null }" in text
     )
     assert "        if (-not $chosen -and $after) { $status = 0; continue }" in text
     assert "            @relay `" in text
