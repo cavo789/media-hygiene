@@ -79,7 +79,7 @@ writes on the NAS: it reads the target through 0245's CIFS volume, kept `ro`.
 6. **A safety stop**: when the removals plus the replaced files exceed
    `[backup] stop_above_percent` of the backup, nothing is applied; one line says why (a drive
    missing? many files changed at once?) and how to go on anyway.
-7. A NAS powered off, a refused password, an older SMB: 0245's lines, unchanged. `mh.sh` (WSL):
+7. A NAS powered off, a refused password, an older SMB: 0245's lines, unchanged. `mh.sh` (WSL, see Decided below):
    refused, said (as 0245 does for a share).
 8. **Step 22 of `mh-measure.ps1`**: robocopy of 20 photos into `<target>\mh-measure-test\` with
    `/MT:1` then `/MT:8` (MB/s each), the time of 20 renames on the NAS, then that test folder
@@ -164,3 +164,18 @@ Note: step 22 of `mh-measure.ps1` already measures hard links (0213). The NAS wr
 measurement does not exist yet: this TODO adds it as the next free step. The maintainer then
 creates `backup_photos` in DSM and runs that step and a first real `mh backup` (the Windows part
 of the Acceptance, after the implementation: an unattended run closes PARTIAL on it).
+
+## Decided (2026-10-21) — `mh.sh` (WSL / Linux)
+
+By the maintainer: **no backup from `mh.sh`**, no rsync. `mh backup` there is refused, clearly
+and pedagogically (product rules: one 👉 What next line, translated en + fr):
+
+- why, in one line: the copy is made by Windows, which writes to the NAS about 7× faster than a
+  copy through Docker (measured, step 21: 86–105.8 MB/s against 15.1 MB/s);
+- what to do, as a command to paste: open **Windows PowerShell** and run `mh backup --to
+  \\<NAS>\backup_photos` (the same `mh`, written by the same install, with the same folders);
+- the exit code says a refusal (non-zero), nothing is started.
+
+Acceptance adds: a test running the rendered `mh.sh` with `backup`: the refusal text, the
+PowerShell command in it, the exit code; the `commands/backup.md` page (en + fr) says
+"Windows only" at the top, with the same command.
