@@ -4,7 +4,7 @@
 - **Batch**: unassigned
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh_windows.ps1.j2`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh_menu.ps1.j2`, `src/media_hygiene/review/templates/home_run.js.j2`, `src/media_hygiene/review/home_texts_run.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`, `tests/unit/` (launcher templates, home page), `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the choice between options A/B/C below, then a check on the Windows PC (desktop shortcut, Windows PowerShell 5.1, Avast running)
+- **Needs maintainer**: a check on the Windows PC once done (desktop shortcut, Windows PowerShell 5.1, Avast running)
 
 ## Context
 
@@ -23,7 +23,9 @@ Several home page steps run **in that window** (`home_texts_run.py`: "{command} 
 for good would leave those steps waiting on an invisible prompt. The audit, on the other
 hand, runs in the page (`P.audit`, progress polled).
 
-## Options (to decide)
+## Decision (maintainer, 2026-10-21): option A + changes 1 and 2
+
+## Options
 
 - **A. Shortcut starts minimised** — `$link.WindowStyle = 7` in `_mh_shortcut` and
   `_mh_refresh` (WScript.Shell, no Add-Type: safe with Avast, see 0257 and the memory on it).
@@ -39,9 +41,13 @@ hand, runs in the page (`P.audit`, progress polled).
 
 Whatever the option, two cheap changes regardless:
 
-1. **The page notices the stop at once**: a light heartbeat (`/api/state` every few seconds,
-   paused while the tab is hidden — `visibilitychange`) shows `#stoppedDlg` within seconds of
-   the window closing, not at the next action. The dialog's text names the cause: "the
+1. **The page notices the stop at once** — no new polling: the page already sends
+   `POST /api/alive` every `ALIVE_SECONDS` (10 s, `review/presence.py`, 0261) from
+   `wirePresence()` (`home_run.js.j2`), but its `.catch(() => {})` swallows the failure.
+   Make a failed beat (network error, not a 403) call `stopped()`, and beat once more on
+   `visibilitychange` back to visible (a background tab's timers are throttled to once a
+   minute): `#stoppedDlg` within 10 s of the window closing, at once when the user comes
+   back to the tab. Cost unchanged (same request, same rate). The dialog's text names the cause: "the
    PowerShell window of Media Hygiene was closed (or Ctrl+C)" + how to start again.
 2. **The window says why it must stay open**: one line after the "Accueil prêt" line, e.g.
    "Keep this window open (minimised is fine): closing it stops Media Hygiene." In both
@@ -49,7 +55,7 @@ Whatever the option, two cheap changes regardless:
 
 ## Expected
 
-1. Maintainer picks A or B (recommended: A + 1 + 2).
+1. ~~Maintainer picks A or B~~ — A + 1 + 2, decided 2026-10-21.
 2. Shortcut (and the refresh of older shortcuts) written with the chosen window style, read
    back like the arguments are (0190 contract: one line, or why not).
 3. Heartbeat in `home_run.js.j2` + reworded stopped dialog; unit tests on the rendered
