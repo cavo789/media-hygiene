@@ -181,6 +181,8 @@ def test_a_page_asks_nothing_outside(served: Path) -> None:
     assert 'rel="prev"' in html
     assert 'rel="next"' in html
     assert 'class="highlight capture"' in html
+    assert 'id="backToTool" href="/"' in html  # closes its tab, else leads to the tool
+    assert "window.close()" in html
 
 
 def test_the_routes_of_the_docs(served: Path) -> None:

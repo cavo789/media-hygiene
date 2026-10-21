@@ -54,10 +54,29 @@ function release() {
 # @cmd dive
 # @desc Explore image layers with dive
 function dive() {
-    # The socket path is resolved on the Docker host (docker-outside-of-docker), where it exists.
-    docker run --rm -it \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        wagoodman/dive:latest media-hygiene:latest
+    _dive_archive --tty
+}
+
+# dive 0.13.1 reading `docker://` from Docker 29 extracts nothing and exits 0 (2026-10-21):
+# the gate passed without a look. It reads the saved archive instead, through a volume
+# (docker-outside-of-docker: no host path is shared with the devcontainer).
+# Usage: _dive_archive <docker run option> [dive arguments...]
+function _dive_archive() {
+    local -r volume="media-hygiene-dive"
+    local -r run_option="$1"
+    shift
+    docker volume create "${volume}" >/dev/null || return 1
+    docker save media-hygiene:latest |
+        docker run --rm --interactive --volume "${volume}:/work" --entrypoint sh \
+            wagoodman/dive:latest -c 'cat > /work/image.tar'
+    local status=$?
+    if ((status == 0)); then
+        docker run --rm --interactive "${run_option}" --volume "${volume}:/work" \
+            wagoodman/dive:latest docker-archive:///work/image.tar "$@"
+        status=$?
+    fi
+    docker volume rm "${volume}" >/dev/null
+    return "${status}"
 }
 
 # @cat Docker image
@@ -70,10 +89,7 @@ function dive_ci() {
     # apt steps), not from ours — 3 % keeps the gate strict on everything this Dockerfile adds.
     local -r lowest_efficiency=0.98
     local -r highest_user_wasted_percent=0.03
-    docker run --rm \
-        --env CI=true \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        wagoodman/dive:latest media-hygiene:latest \
+    _dive_archive --env=CI=true \
         --lowestEfficiency "${lowest_efficiency}" \
         --highestUserWastedPercent "${highest_user_wasted_percent}"
 }

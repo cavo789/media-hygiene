@@ -23,3 +23,20 @@ on PR #32). Not checked: `dive_ci` on the new layer (+6.9 MB uncompressed, **mea
 3. Light and dark theme, a narrow window (phone width).
 
 Anything wrong: fix it here, with a test; nothing wrong: close DONE.
+
+## Closed (2026-10-21)
+
+1. **Image layers.** `dive_ci` had stopped checking anything: dive 0.13.1 reading `docker://`
+   from Docker 29.8 extracted nothing and exited 0 in 1.6 s (*measured*), so the gate passed
+   blind. `dive` and `dive_ci` now read the saved archive (`_dive_archive` in
+   `.devcontainer/scripts/helpers/docker.sh`: `docker save` into a temporary volume, then
+   `docker-archive://`). Result (*measured*): efficiency 99.1 % (gate 98 %), user waste 1.59 %
+   (gate 3 %); an impossible threshold (99.9 %) fails with code 1. The docs layer is 6.6 MB:
+   128 `.html`, 46 `.webp`, 2 `index.json`, nothing else.
+2. **Pages in a browser.** Checked by the maintainer with `hygiene home`: the chapters open in
+   the tool's look, menu, table of contents, previous/next, FR/EN, both themes, narrow window.
+   One defect: "Back to the tool" led the docs' new tab to `/`, a second tab of the tool. It now
+   closes the docs tab, so the browser shows the tab left (`doc.js.j2`); where a browser refuses,
+   the link still leads to `/`. Chromium and Firefox let a tab opened by a link close itself,
+   page turns included (*measured* with Playwright 1.57 in `media-hygiene-docs-browser:1.57.0`);
+   confirmed by the maintainer in their browser.

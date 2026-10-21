@@ -1,5 +1,5 @@
 {# The script of doc.html.j2: the theme switch (the home page's choice, the same key), the drawer of
-   narrow screens, and the presence: an open page of the docs keeps its server running (0261), and
+   narrow screens, the way back (0283), and the presence: an open page of the docs keeps its server running (0261), and
    never says it leaves: the page that opened it decides when the server ends. #}
 "use strict";
 const ALIVE_MS = {{ alive_ms | tojson }};
@@ -31,6 +31,18 @@ narrow.addEventListener("change", () => setNav(false));
 $("#menuBtn").addEventListener("click", () => setNav(!$("#app").classList.contains("nav-open")));
 $("#scrim").addEventListener("click", () => { setNav(false); $("#menuBtn").focus(); });
 document.addEventListener("keydown", (event) => { if (event.key === "Escape" && $("#app").classList.contains("nav-open")) { setNav(false); $("#menuBtn").focus(); } });
+
+// The tool opens its docs in a new tab: going back closes it, and the browser shows the tab left
+// (Chromium and Firefox let a tab opened by a link close itself, page turns included: measured with
+// Playwright 1.57). Where it may not (an address typed), the link leads to the tool's page.
+const CLOSE_WAIT_MS = 300;
+$("#backToTool").addEventListener("click", (event) => {
+  if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  event.preventDefault();
+  const href = event.currentTarget.href;
+  window.close();
+  window.setTimeout(() => window.location.assign(href), CLOSE_WAIT_MS);
+});
 
 const alive = () => fetch(ALIVE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: false }) }).catch(() => {});
 window.addEventListener("pageshow", alive);

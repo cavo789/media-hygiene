@@ -41,6 +41,7 @@ export -f tests
 export -f tests_quick
 export -f build
 export -f release
+export -f _dive_archive
 export -f dive
 export -f dive_ci
 export -f e2e

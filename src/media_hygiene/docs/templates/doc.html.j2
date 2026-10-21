@@ -60,7 +60,7 @@
       <button class="btn btn-ghost icon-btn menu-btn" id="menuBtn" type="button" aria-label="{{ _('Open the menu') }}" aria-controls="sidebar" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg></button>
       <p class="crumb"><span class="hide-sm">{{ _("Documentation") }}</span><span class="sep hide-sm" aria-hidden="true">›</span><strong>{{ page.title if page else _("Page not found") }}</strong></p>
       <div class="top-links">
-        <a class="doc-link" href="/" title="{{ _('The page of the tool this server shows') }}"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg><span class="hide-sm">{{ _("Back to the tool") }}</span></a>
+        <a class="doc-link" id="backToTool" href="/" title="{{ _('The page of the tool this server shows') }}"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg><span class="hide-sm">{{ _("Back to the tool") }}</span></a>
         <a class="lang-link" href="{{ twin.route }}" hreflang="{{ twin.lang }}" lang="{{ twin.lang }}" title="{{ twin.title }}">{{ twin.label }}</a>
       </div>
     </header>
