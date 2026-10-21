@@ -232,6 +232,16 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
         "$relay = @(if ($global:MediaHygieneRelay -and $command -in @('home', "
         f"'browse', 'review')) {{ '-e', '{_RELAY}' }})"
     ) in text
+    # 0285: a console step brings this window forward (COM, no Add-Type), a page not.
+    forward = text[text.index("function global:_mh_forward($command) {") :]
+    forward = forward[: forward.index("\n}\n")]
+    assert "if ($command -in @('home', 'browse', 'review')) { return }" in forward
+    assert "(New-Object -ComObject WScript.Shell)" not in forward  # one object, kept
+    assert "$shell = New-Object -ComObject WScript.Shell" in forward
+    assert "if (-not $shell.AppActivate($PID))" in forward
+    assert "Add-Type" not in forward
+    assert text.count('\n        _mh_forward "$($words[0])"') == 1  # a menu step
+    assert text.count('\n            _mh_forward "$($words[0])"') == 1  # a form's step
     # 0280: one tab, opened by the first page of the loop; later pages show in it.
     assert "        if ($page -and -not $global:MediaHygieneTab) {" in text
     assert "            $tab = $true" in text

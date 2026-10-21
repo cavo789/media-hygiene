@@ -126,8 +126,8 @@ def test_loading_the_file_refreshes_the_older_starts_of_this_file_only() -> None
     # Only what exists, names this file and starts it otherwise.
     assert "if (-not (Test-Path -LiteralPath $path)) { continue }" in body
     assert (
-        "if (-not $link.Arguments.Contains($named) -or $link.Arguments -eq $arguments)"
-        " { continue }"
+        "if (-not $link.Arguments.Contains($named) -or ($link.Arguments -eq $arguments"
+        " -and $link.WindowStyle -eq 7)) { continue }"
     ) in body
     assert (
         "if (-not $read.Contains($named) -or $read -eq $command) { continue }" in body
@@ -136,7 +136,9 @@ def test_loading_the_file_refreshes_the_older_starts_of_this_file_only() -> None
     assert "New-Item -ItemType" not in body  # nothing created here
     # Each one read back, then said.
     assert body.count("_mh_said (") == 2
-    assert "_mh_said ($shell.CreateShortcut($path).Arguments -eq $arguments)" in body
+    assert (
+        "_mh_said ($back.Arguments -eq $arguments -and $back.WindowStyle -eq 7)" in body
+    )
     assert "_mh_said ($back -and $back.GetValue('') -eq $command)" in body
     said = _body(text, "said(")
     assert (
@@ -144,6 +146,16 @@ def test_loading_the_file_refreshes_the_older_starts_of_this_file_only() -> None
         in said
     )
     assert "Could not write ${path}." in said
+
+
+def test_the_shortcut_starts_its_window_minimised() -> None:
+    """0284: written minimised, read back so; an older one rewritten so at load."""
+    text = _script(Locale.EN)
+    shortcut = _body(text, "shortcut {")
+    assert "$link.WindowStyle = 7" in shortcut
+    assert "$back.Arguments -eq $arguments -and $back.WindowStyle -eq 7)" in shortcut
+    assert "$link.WindowStyle = 7" in _body(text, "refresh {")
+    assert "WindowStyle Hidden" not in text  # the window is minimised, never hidden
 
 
 def test_the_refresh_line_is_translated() -> None:

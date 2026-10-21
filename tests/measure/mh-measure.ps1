@@ -91,6 +91,10 @@
 #  25. mh.ps1 loaded, written again, then mh version: the line saying the file changed since the
 #      window loaded it (expected once written again, absent after loading it again and
 #      when the file is removed); one stat, timed                              (0276)
+#  26. your own mh (the image of this branch): mh shortcut, then the Desktop icon: the window
+#      minimised and its keep-open line, a console step from the page (window forward, button
+#      flashing or nothing; minimised, then normal), the bold line of the page, the window
+#      closed then the stop shown by the page; asks what you saw            (0284, 0285)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -120,6 +124,7 @@
 #   .\mh-measure.ps1 -Only 23 -Count 1   (the home page of your own mh, timed: 0277)
 #   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
 #   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
+#   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2369,6 +2374,26 @@ if (Wanted 25) {
     $fourth = @(mh version 2>&1 | ForEach-Object { "$_" })
     Log ("   25d. file removed: line said = {0} (expected False), mh still ran = {1}" -f [bool]($fourth -match 'changed on disk'), [bool]($fourth.Count -gt 0))
     $ErrorActionPreference = $saved
+}
+
+# --- 26: the shortcut's window minimised, a console step brought forward (0284, 0285) ---------
+# Your own mh, by hand: it rewrites your Desktop and Start menu shortcut (as mh shortcut does).
+if (Wanted 26) {
+    Log ""
+    Log "== 26. the shortcut's window minimised, a console step brought forward (0284, 0285)"
+    Write-Host "26: open Windows PowerShell as you usually do, type: mh shortcut"
+    Write-Host "    Close that window. Double-click the Media Hygiene icon of the Desktop."
+    $minimised = Read-Host "26a. The PowerShell window started minimised in the taskbar? (y/n)"
+    $line = Read-Host "26b. In it (click its button): 'Keep this window open (minimised is fine)...'? (y/n)"
+    Write-Host "    Minimise that window again. On the home page, Run the 'clean' step."
+    $bold = Read-Host "26c. The page showed at once, in bold, 'Switch to ... now'? (y/n)"
+    $min = Read-Host "26d. Window minimised: it came forward (f), its button flashed (b), or nothing (n)?"
+    Write-Host "    Answer n in PowerShell. When the page is back, leave the window open (not minimised),"
+    Write-Host "    click on the browser, then Run 'clean' again."
+    $normal = Read-Host "26e. Window open behind the browser: forward (f), button flashed (b), or nothing (n)?"
+    Write-Host "    Answer n. When the page is back, close the PowerShell window (its X), look at the page."
+    $stop = Read-Host "26f. The page showed 'Media Hygiene is stopped' within about 10 s, by itself? (y/n)"
+    Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
 }
 
 # --- clean up -------------------------------------------------------------------------------

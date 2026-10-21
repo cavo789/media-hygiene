@@ -115,6 +115,37 @@ def test_run_says_which_window_then_a_hint_after_30_s(
     assert wait < shown < text.index("const poll = () => {", wait)
 
 
+def test_a_console_step_says_at_once_to_switch_to_the_window() -> None:
+    """0285: the alert at once, for a console step only; the 30 s hint stays."""
+    page = home_page(relays_steps=True)
+    assert _texts(page)["switchNow"] == (
+        "Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
+        "ask you something."
+    )
+    text = page.decode()
+    run = text.index("function openRun(action, command) {")
+    alert = text.index(
+        '${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">', run
+    )
+    assert alert < text.index('id="runHint" hidden>', run)
+    assert "fill(T.switchNow, { window: WINDOW })" in text
+
+
+def test_the_page_says_the_stop_within_a_beat_never_during_a_step() -> None:
+    """0284: a beat finding nobody shows the stop; not while a step or Quit runs."""
+    text = home_page(relays_steps=True).decode()
+    wire = text.index("function wirePresence() {")
+    assert text.index(
+        ".catch(() => { if (!leaving && !presence.away) stopped(); });", wire
+    )
+    assert 'document.addEventListener("visibilitychange"' in text[wire:]
+    assert "presence.away = true;" in text[text.index("function openRun(") :]
+    assert "quit: () => { presence.away = true;" in text
+    assert _texts(home_page(relays_steps=True))["stoppedText"].startswith(
+        "Its window was closed (or Ctrl+C was pressed in it)."
+    )
+
+
 def test_a_page_step_shows_in_this_tab_and_comes_back_to_this_section() -> None:
     """0280: no new tab; the tab keeps its section, then follows any page on "/"."""
     page = home_page(relays_steps=True)

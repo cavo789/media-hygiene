@@ -206,8 +206,8 @@ def test_powershell_shortcut_writes_then_reads_back_both_links() -> None:
     assert '$load = "try { . \'" + $file.Replace("\'", "\'\'") + "\' }' in text
     assert "$file = $MyInvocation.MyCommand.ScriptBlock.File" in text
     save = text.index("try { $link.Save() } catch { $reason, $refused = _mh_why $_;")
-    back = text.index("$back = $shell.CreateShortcut($path)")
-    assert save < back < text.index("$back.Arguments -eq $arguments")
+    back = text.index("$back = $shell.CreateShortcut($path)", save)
+    assert save < back < text.index("$back.Arguments -eq $arguments", back)
     body = text[text.index("function global:_mh_shortcut {") :]
     assert "Enregistr\u00e9, relu depuis" not in body[: body.index("\n}\n")]
 

@@ -64,3 +64,28 @@ Whatever the option, two cheap changes regardless:
    `docs_screenshots` to rerun (unasked).
 5. A `mh-measure.ps1` step: shortcut started minimised, a console step from the page (does
    the prompt reach the user?), window closed → seconds until the page shows the dialog.
+
+## Status — PARTIAL (2026-10-21)
+
+### Done
+- A: `mh shortcut` writes `WindowStyle = 7` (minimised; `launcher_host.MINIMISED`) and reads it
+  back with the target and arguments; `_mh_refresh` rewrites a shortcut of this file whose
+  window is not minimised, read back the same way. Never `WindowStyle Hidden` (antivirus
+  heuristics, tested). The right-click entry (registry command) keeps its normal window.
+- 1: `wirePresence()` (`home_run.js.j2`): a beat that fails (network error, not a 403) calls
+  `stopped()`, except while a step runs or after Quit (`presence.away`, set by `openRun` and
+  `quit`); one more beat when the tab becomes visible. Same request, same 10 s rate.
+  `stoppedText` names the cause: "Its window was closed (or Ctrl+C was pressed in it)…".
+- 2: `serve_home` says, after *Home page ready*, "Keep this window open (minimised is fine):
+  closing it stops Media Hygiene." — only for `mh` alone (relayed), not `mh home` / docker run.
+- Docs (en + fr): `commands/launcher.md` (the shortcut's minimised window, 10 s), translations.
+- Tests: `test_launcher_launch.py` (minimised, read back, refreshed, never hidden),
+  `test_launcher_host.py`, `test_home_given.py` (beat, visibility, away), `test_home_page.py`
+  (the keep-open line with and without the relay). Unit suite 2,492 passed; gate clean.
+- `mh-measure.ps1` step 26 (with 0285).
+
+### Not done
+- The Windows check: `.\mh-measure.ps1 -Only 26 -Count 1` with an image of this commit
+  (26a minimised, 26b the line, 26f the stop shown within about 10 s).
+  **Reason:** needs Windows, the Desktop shortcut and a browser.
+- `docs_screenshots`: the stopped dialog's text changed.

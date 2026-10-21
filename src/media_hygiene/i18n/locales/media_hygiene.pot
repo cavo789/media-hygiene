@@ -2829,6 +2829,12 @@ msgid ""
 "command' to run Czkawka yourself."
 msgstr ""
 
+msgid ""
+"Its window was closed (or Ctrl+C was pressed in it). You can close this "
+"tab. To open it again: type mh in PowerShell, or double-click the Desktop"
+" icon."
+msgstr ""
+
 msgid "JPEG quality"
 msgstr ""
 
@@ -2865,6 +2871,9 @@ msgid ""
 msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
+msgstr ""
+
+msgid "Keep this window open (minimised is fine): closing it stops Media Hygiene."
 msgstr ""
 
 msgid "Kept"
@@ -5442,6 +5451,12 @@ msgstr ""
 msgid "Switch between the board and one series at a time (P)"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
+"ask you something."
+msgstr ""
+
 msgid "TB"
 msgstr ""
 
@@ -6845,11 +6860,6 @@ msgid "Yes, it is {name}"
 msgstr ""
 
 msgid "You are here"
-msgstr ""
-
-msgid ""
-"You can close this tab. To open it again: type mh in PowerShell, or "
-"double-click the Desktop icon."
 msgstr ""
 
 msgid ""

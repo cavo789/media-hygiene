@@ -3471,6 +3471,15 @@ msgstr ""
 "Ses messages sont juste au-dessus. Relancez 'crosscheck', ou 'crosscheck "
 "--print-command' pour lancer Czkawka vous-même."
 
+msgid ""
+"Its window was closed (or Ctrl+C was pressed in it). You can close this "
+"tab. To open it again: type mh in PowerShell, or double-click the Desktop"
+" icon."
+msgstr ""
+"Sa fenêtre a été fermée (ou Ctrl+C y a été pressé). Vous pouvez fermer "
+"cet onglet. Pour le rouvrir : tapez mh dans PowerShell, ou double-cliquez "
+"sur l'icône du Bureau."
+
 msgid "JPEG quality"
 msgstr "Qualité JPEG"
 
@@ -3511,6 +3520,11 @@ msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
 msgstr "Garder les dossiers sources que le tri laisse vides."
+
+msgid "Keep this window open (minimised is fine): closing it stops Media Hygiene."
+msgstr ""
+"Gardez cette fenêtre ouverte (réduite, c'est bien) : la fermer arrête "
+"Media Hygiene."
 
 msgid "Kept"
 msgstr "Gardées"
@@ -6565,6 +6579,14 @@ msgstr "Inverser les dossiers"
 msgid "Switch between the board and one series at a time (P)"
 msgstr "Basculer entre la planche et une série à la fois (P)"
 
+#, python-brace-format
+msgid ""
+"Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
+"ask you something."
+msgstr ""
+"Passez maintenant à {window} (Alt+Tab, ou son bouton dans la barre des "
+"tâches) : mh peut vous y demander quelque chose."
+
 msgid "TB"
 msgstr "To"
 
@@ -8274,13 +8296,6 @@ msgstr "Oui, c'est {name}"
 
 msgid "You are here"
 msgstr "Vous êtes ici"
-
-msgid ""
-"You can close this tab. To open it again: type mh in PowerShell, or "
-"double-click the Desktop icon."
-msgstr ""
-"Vous pouvez fermer cet onglet. Pour le rouvrir : tapez mh dans "
-"PowerShell, ou double-cliquez sur l'icône du Bureau."
 
 msgid ""
 "You had set these photos and videos aside (a burst shot, a near "

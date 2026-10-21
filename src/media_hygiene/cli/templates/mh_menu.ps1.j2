@@ -31,6 +31,7 @@ function global:_{{ function }}_home {
             Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue
             $chosen = @($words | ForEach-Object { if ("$_" -match '[\s\\]') { '"' + $_ + '"' } else { $_ } }) -join ' '
             Write-Host "{{ texts.direct }}"
+            _{{ function }}_forward "$($words[0])"
             $after = $true
             $global:LASTEXITCODE = 0
             $global:MediaHygieneRelay = $true
@@ -50,6 +51,7 @@ function global:_{{ function }}_home {
         if (-not $chosen) { $global:LASTEXITCODE = $status; return }
         Write-Host "{{ texts.direct }}"
         $words = -split $chosen
+        _{{ function }}_forward "$($words[0])"
         $after = $true
         $global:LASTEXITCODE = 0  # a step run by mh itself (open) leaves it as it was
         $global:MediaHygieneRelay = $true
@@ -57,6 +59,17 @@ function global:_{{ function }}_home {
         try { {{ function }} @words @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
         $status = $LASTEXITCODE
     }
+}
+
+# A console step chosen on the home page: this window brought forward, or its taskbar button
+# flashed, as Windows' foreground rules allow; a minimised window stays minimised (0285).
+# WScript.Shell, never Add-Type (0257). A page step shows in the browser's tab instead (0280).
+function global:_{{ function }}_forward($command) {
+    if ($command -in @({{ listed(script.commands.pages) }})) { return }
+    try {
+        $shell = New-Object -ComObject WScript.Shell
+        if (-not $shell.AppActivate($PID)) { $null = $shell.AppActivate($Host.UI.RawUI.WindowTitle) }
+    } catch { }
 }
 
 # `{{ function }} menu`: the menu lists the steps, the number chosen runs as `{{ function }} <step>`.

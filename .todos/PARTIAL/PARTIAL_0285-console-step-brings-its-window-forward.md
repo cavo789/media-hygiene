@@ -46,3 +46,25 @@ console before acting; not "keep as is").
 - Unit tests above pass; commit gate clean; `docs_screenshots` to rerun (the run dialog).
 - The maintainer's answer to the measure step recorded here; if AppActivate does nothing on
   their PC, keep the page alert alone and say so in the docs.
+
+## Status — PARTIAL (2026-10-21)
+
+### Done
+- `_mh_forward` (`mh_menu.ps1.j2`): before a console step chosen on the home page (menu step
+  or form step, not a page command), `WScript.Shell.AppActivate($PID)`, then by the window's
+  title (Windows Terminal owns its window), in a `try`; no `Add-Type` (tested).
+- The run dialog of a console step shows at once, in bold, *Switch to {window} now (Alt+Tab, or
+  its button in the taskbar): it may ask you something.* (`dlg-alert`); the 30 s hint stays.
+  French translated gender-neutral ("mh peut vous y demander…": the window may be a terminal).
+- `mh.sh.j2`: a comment only (no portable way for a terminal to come forward).
+- Docs (en + fr) `commands/home.md`; tests in `test_launcher_home.py` (forward defined, page
+  commands skipped, called once per call site) and `test_home_given.py` (alert for console
+  steps only). Unit suite 2,492 passed; gate clean.
+- `mh-measure.ps1` step 26 (26c bold line, 26d minimised, 26e normal window).
+
+### Not done
+- What AppActivate does on the maintainer's PC (forward, flashing button, nothing), window
+  minimised and normal: `.\mh-measure.ps1 -Only 26 -Count 1`. If nothing on both, the page
+  alert alone stays and the docs say so.
+  **Reason:** Windows' foreground lock depends on the machine; not testable here.
+- `docs_screenshots`: the run dialog changed.

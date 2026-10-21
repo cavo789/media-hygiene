@@ -154,6 +154,13 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                 url=page_url(port)
             )
         )
+        if relays:  # `mh` alone: this window runs the steps that ask in it (0284)
+            runtime.output.info(
+                _(
+                    "Keep this window open (minimised is fine): closing it stops "
+                    "Media Hygiene."
+                )
+            )
         address_tip(runtime.output, port)
 
     code = STOPPED

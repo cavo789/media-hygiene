@@ -15,8 +15,9 @@ function global:_{{ function }}_start($words) {
 }
 
 # A shortcut or a right-click entry made by an older mh starts this very file with another
-# command (the policy overridden, before 0257): each one there is written again, read back
-# and said in one line, when this file is loaded (mh update, mh folders, launcher).
+# command (the policy overridden, before 0257), or a shortcut its window not minimised (0284):
+# each one there is written again, read back and said in one line, when this file is loaded
+# (mh update, mh folders, launcher).
 # One naming another mh.ps1, or none, is left alone; nothing is created here.
 function global:_{{ function }}_refresh {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
@@ -28,13 +29,15 @@ function global:_{{ function }}_refresh {
         $path = Join-Path ([Environment]::GetFolderPath($place)) '{{ host.label }}.lnk'
         if (-not (Test-Path -LiteralPath $path)) { continue }
         $link = $shell.CreateShortcut($path)
-        if (-not $link.Arguments.Contains($named) -or $link.Arguments -eq $arguments) { continue }
+        if (-not $link.Arguments.Contains($named) -or ($link.Arguments -eq $arguments -and $link.WindowStyle -eq {{ host.minimised }})) { continue }
         $link.TargetPath = $powershell
         $link.Arguments = $arguments
+        $link.WindowStyle = {{ host.minimised }}
         $reason = ''
         $denied = $false
         try { $link.Save() } catch { $reason, $denied = _{{ function }}_why $_ }
-        _{{ function }}_said ($shell.CreateShortcut($path).Arguments -eq $arguments) $reason $denied
+        $back = $shell.CreateShortcut($path)
+        _{{ function }}_said ($back.Arguments -eq $arguments -and $back.WindowStyle -eq {{ host.minimised }}) $reason $denied
     }
     $null, $arguments = _{{ function }}_start '{{ function }} {{ host.flag }} #" "%V'
     $command = '"' + $powershell + '" ' + $arguments
@@ -86,6 +89,8 @@ function global:_{{ function }}_why($record) {
 
 # `{{ function }} shortcut`: "{{ host.label }}" on the Desktop and in the Start menu, read back (0180).
 # Each one is read back but said only when it failed: one line when all went well (0190).
+# Its window starts minimised (0284): the home page is what one looks at; the window waits
+# in the taskbar for the steps that ask there, and says it must stay open.
 function global:_{{ function }}_shortcut {
     $powershell, $arguments = _{{ function }}_start '{{ function }}'
     if (-not $arguments) { return }
@@ -101,10 +106,11 @@ function global:_{{ function }}_shortcut {
         $link.WorkingDirectory = $HOME
         $link.Description = '{{ host.label }}'
         $link.IconLocation = "$icon,0"
+        $link.WindowStyle = {{ host.minimised }}
         $reason = ''
         try { $link.Save() } catch { $reason, $refused = _{{ function }}_why $_; $denied = $denied -or $refused }
         $back = $shell.CreateShortcut($path)
-        if ((Test-Path -LiteralPath $path) -and $back.TargetPath -eq $powershell -and $back.Arguments -eq $arguments) {
+        if ((Test-Path -LiteralPath $path) -and $back.TargetPath -eq $powershell -and $back.Arguments -eq $arguments -and $back.WindowStyle -eq {{ host.minimised }}) {
             $written++
         } else {
             Write-Host "{{ host.texts.not_saved }}"

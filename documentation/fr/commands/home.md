@@ -94,8 +94,12 @@ qui a ouvert la page :
   de la page : **Lancer** (ou le gros bouton) ferme la page et confie l'étape à `mh`, dans la
   fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. La
   page dit où : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans la barre des
-  tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*.
-  Après 30 secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
+  tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*,
+  et aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
+  tâches) (Alt+Tab, ou son bouton dans la barre des tâches) : mh peut vous y demander quelque
+  chose*. `mh` ramène aussi sa fenêtre au premier plan, ou fait clignoter son bouton dans la
+  barre des tâches, selon ce que Windows permet (une fenêtre réduite reste réduite). Après 30
+  secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
   barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `100 + n`
   pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer.
 - **Une étape qui prend des mots** (le nom et la catégorie d'un album, le dossier de votre NAS,

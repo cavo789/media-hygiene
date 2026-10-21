@@ -86,8 +86,10 @@ function openConfirm(action, body, command) {
 // The server ended: mh runs the step, then opens the page again on the same port. The page
 // reloads once it saw the server gone, then answering again. One tab (0280): a page step shows
 // in this very tab (mh opens no other); its "Back to the home page" comes back to this section,
-// kept for this tab in sessionStorage (home_link.html.j2, browse_apply.js.j2 read it).
+// kept for this tab in sessionStorage (home_link.html.j2, browse_apply.js.j2 read it). A console
+// step says at once to switch to the window of mh, which mh tries to bring forward (0285).
 function openRun(action, command) {
+  presence.away = true;
   try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
   const dialog = $("#runDlg");
   const where = fill(action.kind === "page" ? T.runsPage : T.runsConsole, { command: command, window: WINDOW });
@@ -96,6 +98,7 @@ function openRun(action, command) {
     <div class="term" aria-hidden="true"><div class="term-head"><span class="term-dots"><i></i><i></i><i></i></span>${esc(WINDOW)}</div><pre class="term-body"><span class="p">PS&gt;</span> ${esc(command)}<span class="cursor"></span>
 <span class="c"># ${esc(T.termComment)}</span></pre></div>
     <p class="dlg-text" role="status">${esc(where)}</p>
+    ${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">${icon("keyboard")} ${esc(fill(T.switchNow, { window: WINDOW }))}</p>`}
     <p class="dlg-hint" id="runHint" hidden>${icon("info")} ${esc(fill(T.nothingMoves, { window: WINDOW }))}</p>
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
@@ -306,10 +309,16 @@ function openKeys() {
 }
 
 // ---- Presence and Quit: a tab still shows the page; leaving, it says so (0261) ----------
+// A beat that finds nobody (the window of mh closed, Ctrl+C) shows the stop within ALIVE_MS,
+// and at once when the tab is shown again (a hidden tab's timers run once a minute), never
+// while a step runs: the server is gone on purpose then (0284).
+const presence = { away: false };
 function wirePresence() {
-  const alive = (leaving) => fetch(P.alive, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => {});
+  const alive = (leaving) => fetch(P.alive, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) })
+    .catch(() => { if (!leaving && !presence.away) stopped(); });
   window.addEventListener("pageshow", () => alive(false));
   window.addEventListener("pagehide", () => alive(true));
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") alive(false); });
   window.setInterval(() => alive(false), ALIVE_MS);
 }
 const ACTS = {
@@ -318,5 +327,5 @@ const ACTS = {
   "dismiss-update": () => { store.set("dismissed", S.update ? S.update.version : ""); render(); },
   "open-palette": openPalette,
   "open-keys": openKeys,
-  quit: () => fetch(P.stop, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).then(stopped, stopped),
+  quit: () => { presence.away = true; fetch(P.stop, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).then(stopped, stopped); },
 };

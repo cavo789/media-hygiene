@@ -45,6 +45,10 @@ def _dialogs() -> dict[str, str]:
         "termComment": _(
             "mh keeps the hand until the end, then opens the home page again"
         ),
+        "switchNow": _(
+            "Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
+            "ask you something."
+        ),
         "nothingMoves": _("Nothing moves? Look at {window} (Alt+Tab)."),
         "notOpenedByMh": _(
             "Not opened by mh? Type the command yourself; this page is closed."
@@ -67,8 +71,9 @@ def _dialogs() -> dict[str, str]:
         "starting": _("Sent: the step starts in {window}…"),
         "stoppedTitle": _("Media Hygiene is stopped"),
         "stoppedText": _(
-            "You can close this tab. To open it again: type mh in PowerShell, or "
-            "double-click the Desktop icon."
+            "Its window was closed (or Ctrl+C was pressed in it). You can close this "
+            "tab. To open it again: type mh in PowerShell, or double-click the "
+            "Desktop icon."
         ),
     }
 

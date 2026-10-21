@@ -88,8 +88,12 @@ opened the page:
   the page: **Start** (or the big button) closes the page and hands the step to `mh`, in the
   window where `mh` runs (PowerShell on Windows), with the folders that step needs. The page
   says where: *mh clean runs in the PowerShell window of mh (in the taskbar): answer it if it
-  asks something, then this page comes back by itself*. After 30 seconds it adds *Nothing moves?
-  Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step chosen is the
+  asks something, then this page comes back by itself*, and at once, in bold, *Switch to the
+  PowerShell window of mh (in the taskbar) now (Alt+Tab, or its button in the taskbar): it may
+  ask you something*. `mh` also brings its window forward, or makes its taskbar button flash,
+  as Windows allows (a minimised window stays minimised). After 30 seconds the page adds
+  *Nothing moves? Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step
+  chosen is the
   command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
 - **A step that takes words** (an album's name and category, your NAS's folder, a folder to
   remove, how many reports to keep): **Fill in** opens its form, the example filled in. The

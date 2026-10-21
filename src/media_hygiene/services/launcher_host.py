@@ -55,6 +55,7 @@ FROM_EXPLORER: Final = "--from-explorer"
 # The icon of both (0194): `mh` copies it next to `mh.ps1` with `docker cp`.
 ICON_NAME: Final = "media-hygiene.ico"
 ICON: Final = (Path(__file__).parents[1] / "cli" / "icon" / ICON_NAME).as_posix()
+MINIMISED: Final = 7  # a shortcut's WindowStyle: its window starts minimised (0284)
 _INDEX_PAGE: Final = "index.html"
 _VOLUME: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
 
@@ -93,6 +94,7 @@ class HostCommands:  # pylint: disable=too-many-instance-attributes  # one per t
     flag: str = FROM_EXPLORER
     icon: str = ICON  # its path in the image
     icon_name: str = ICON_NAME
+    minimised: int = MINIMISED
 
 
 def host_commands(script: LauncherScript) -> HostCommands:

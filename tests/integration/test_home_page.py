@@ -338,6 +338,46 @@ def test_the_command_exits_with_the_step_chosen(
     assert "Home page closed" in closed.output
 
 
+_KEEP_OPEN = (
+    "Keep this window open (minimised is fine): closing it stops Media Hygiene."
+)
+
+
+def _home_said(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -> str:
+    """What `home` prints when its page is ready, then Ctrl+C, on one line."""
+
+    async def ready_then_stop(
+        _app: object, _port: int, ready: Callable[[int], None]
+    ) -> int:
+        ready(8088)
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(home, "serve_until_ended", ready_then_stop)
+    return " ".join(run(cli, "home").output.split())
+
+
+def test_the_window_of_mh_says_it_must_stay_open(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0284: `mh` alone (the shortcut's minimised window) says why to keep it open."""
+    audited(cli, locations)
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    said = _home_said(cli, monkeypatch)
+    assert "Home page ready" in said
+    assert _KEEP_OPEN in said
+
+
+def test_home_typed_alone_does_not_say_it(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`mh home` or `docker run`: no window of a shortcut to keep, nothing said."""
+    audited(cli, locations)
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
+    said = _home_said(cli, monkeypatch)
+    assert "Home page ready" in said
+    assert _KEEP_OPEN not in said
+
+
 def test_every_page_template_includes_the_home_link() -> None:
     """Each page served but the home page itself includes the way-home fragment."""
     source = Path(media_hygiene.__file__).parent
