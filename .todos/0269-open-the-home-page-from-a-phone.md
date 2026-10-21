@@ -4,7 +4,6 @@
 - **Batch**: home
 - **Depends**: 0266
 - **Files**: `src/media_hygiene/review/http.py`, `src/media_hygiene/review/local_app.py`, `src/media_hygiene/review/home_app.py`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/services/launcher.py`
-- **Needs maintainer**: the decisions below, then a test from the maintainer's phone on the home Wi-Fi (Windows firewall prompt included)
 
 ## Context
 
@@ -45,3 +44,16 @@ models. To check in the NAS's Package Center.
 
 To write once the decisions are taken. The maintainer's phone opens the page over the Wi-Fi
 with the code, and runs at least `audit` from it.
+
+## Decided (2026-10-21)
+
+By the maintainer (`/todo:inbox`):
+
+1. **Access**: a pairing code (and its QR code) shown on the PC, a token kept in a cookie, the
+   LAN only, opened by an option for this run only, never the internet.
+2. **Plain HTTP** on the home network (no self-signed certificate warnings); the session is short.
+3. **Read-only steps (🔒) first**: the phone runs only them; acting commands stay on the PC
+   (moving their questions into the page is a later TODO).
+
+The test from the maintainer's phone on the home Wi-Fi (Windows firewall prompt included) comes
+after the implementation: an unattended run closes PARTIAL on it.

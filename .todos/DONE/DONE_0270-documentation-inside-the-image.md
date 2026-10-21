@@ -114,3 +114,8 @@ Measured on 2026-10-20:
   **Reason:** heavy on the maintainer's PC (image build) and no browser in the devcontainer; CI's
   image job builds the image and runs the new e2e test. To do: `build`, `dive_ci`, then
   `hygiene home` and open a Doc link.
+
+## Closed (2026-10-21)
+
+The remaining checks (`dive_ci`, a look in a browser) are TODO 0283; the image build and its e2e
+test passed in CI on PR #32. Closed DONE by the maintainer (`/todo:inbox`).

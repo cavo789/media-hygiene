@@ -4,7 +4,6 @@
 - **Batch**: actions
 - **Depends**: 0245
 - **Files**: `src/media_hygiene/plan/backup_target.py` (new), `src/media_hygiene/services/backup_run.py` (new), `src/media_hygiene/cli/cmd_backup.py` (new), `src/media_hygiene/cli/app.py`, `src/media_hygiene/console/backup_target_view.py` (new), `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/config/settings.py`, `src/media_hygiene/config/templates/config.toml.j2`, `src/media_hygiene/services/launcher_backup.py` (new), `src/media_hygiene/services/launcher_nas.py`, `src/media_hygiene/cli/templates/mh_backup.ps1.j2` (new), `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh_folders.ps1.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_backup_target.py` (new), `tests/unit/test_launcher_backup.py` (new), `tests/integration/test_backup_run.py` (new), `tests/support/docs/scenario.py`, `.config/mkdocs/mkdocs.yml`, `documentation/en/commands/backup.md` (new), `documentation/fr/commands/backup.md` (new), `documentation/en/reference-commands.md`, `documentation/fr/reference-commands.md`, `documentation/en/commands/launcher.md`, `documentation/fr/commands/launcher.md`, `documentation/en/start/03-several-folders.md`, `documentation/fr/start/03-several-folders.md`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the decisions below (a NAS folder written by `mh`, against 0204/0205/0245's "never written"), a `backup_photos` shared folder created on the NAS, then step 22 of `mh-measure.ps1` (write speed)
 
 ## Context
 
@@ -150,3 +149,18 @@ writes on the NAS: it reads the target through 0245's CIFS volume, kept `ro`.
   to measure in step 22).
 - A deletion by mistake is never propagated: only purged or confirmed removals are proposed,
   and they stay in `.removed` for `keep_removed_days`.
+
+## Decided (2026-10-21)
+
+The 8 proposed defaults, by the maintainer (`/todo:inbox`): the target folder is written by
+Windows (robocopy), the container still reads the NAS `ro`; `mh backup --to`; a new DSM shared
+folder `backup_photos`; every file of the photo folders minus the excluded folders/names and the
+quarantine; removals purged or confirmed only, kept in `.removed` for `keep_removed_days = 90`;
+an edited file's previous copy set aside in `.removed`; proof by size and date read back
+(`--verify` optional, SHA-256); `[backup] keep_removed_days`, `stop_above_percent`, `threads` as
+settings.
+
+Note: step 22 of `mh-measure.ps1` already measures hard links (0213). The NAS write-speed
+measurement does not exist yet: this TODO adds it as the next free step. The maintainer then
+creates `backup_photos` in DSM and runs that step and a first real `mh backup` (the Windows part
+of the Acceptance, after the implementation: an unattended run closes PARTIAL on it).

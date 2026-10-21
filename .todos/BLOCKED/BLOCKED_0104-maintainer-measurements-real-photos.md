@@ -33,6 +33,9 @@ decides.
 
 ## 2. Twenty real searches (unblocks 0084) — after section 1
 
+→ **Dropped (2026-10-21, maintainer, `/todo:inbox`)**: 0084 is UNNEEDED and 0263 shipped
+search by meaning (CLIP vectors); the section no longer decides anything.
+
 1. One night of `tags`: `mh tags --path "C:\Photos" --yes` (`--yes` skips the question).
 2. Twenty searches you would really type, with `mh search <words>` or the page: events
    (`anniversaire Léa`), places (`Durbuy`, `mer`), objects (`gâteau`, `vélo`), seasons
