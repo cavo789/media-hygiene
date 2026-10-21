@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
+from media_hygiene.review.apply_api import ApplyingApp
 from media_hygiene.services import people as people_service
 from media_hygiene.services import people_page
 from tests.support.cli import point_mounts, run
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.paths.locations import Locations
+    from media_hygiene.review.ending import EndingDoor
 
 # Person 0 on four photos, person 1 on three, person 2 on one, nobody on two.
 PEOPLE = (0, 0, 0, 0, 1, 1, 1, 2, -1, -1)
@@ -26,14 +28,15 @@ def served(groups: list[object]) -> Callable[..., object]:
     """A server that keeps the app it was given, says it is ready, then gets Ctrl+C.
 
     Args:
-        groups: Receives the app.
+        groups: Receives the page's app, behind *Apply now*.
 
     Returns:
-        The fake `run_server`.
+        The fake `serve_until_ended`.
     """
 
-    async def serve(app: object, _port: int, ready: Callable[[int], None]) -> None:
-        groups.append(app)
+    async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> None:
+        assert isinstance(door.app, ApplyingApp)
+        groups.append(door.app.app)
         ready(PORT)
         raise KeyboardInterrupt
 
@@ -51,7 +54,7 @@ def apps(monkeypatch: pytest.MonkeyPatch) -> list[object]:
         The apps the command served, in order.
     """
     found: list[object] = []
-    monkeypatch.setattr(people_page, "run_server", served(found))
+    monkeypatch.setattr(people_page, "serve_until_ended", served(found))
     monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
     return found
 

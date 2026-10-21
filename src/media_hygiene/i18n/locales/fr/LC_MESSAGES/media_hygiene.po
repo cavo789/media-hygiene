@@ -2580,6 +2580,15 @@ msgstr "Chaque groupe à vérifier a été décidé."
 msgid "Every pair has been decided."
 msgstr "Toutes les paires ont été décidées."
 
+msgid ""
+"Every photo this person is on, with others or not. Nothing is deleted "
+"here: 'clean --decisions' moves them to the quarantine, 'undo' brings "
+"them back."
+msgstr ""
+"Chaque photo où cette personne apparaît, avec d'autres ou non. Rien n'est "
+"supprimé ici : 'clean --decisions' les déplace en quarantaine, 'undo' les "
+"remet."
+
 msgid "Every report"
 msgstr "Tous les rapports"
 
@@ -6519,6 +6528,12 @@ msgid "Set aside the picked files"
 msgstr "Mettre de côté les fichiers choisis"
 
 #, python-brace-format
+msgid "Set aside their {n} photo"
+msgid_plural "Set aside their {n} photos"
+msgstr[0] "Mettre de côté sa {n} photo"
+msgstr[1] "Mettre de côté ses {n} photos"
+
+#, python-brace-format
 msgid "Set aside: {aside} · decided: {decided} of {total}"
 msgstr "Mises de côté : {aside} · décidées : {decided} sur {total}"
 
@@ -6576,6 +6591,14 @@ msgstr ""
 
 msgid "Show again"
 msgstr "Remontrer"
+
+msgid "Show every face of the group first, to take out those of someone else."
+msgstr ""
+"Affichez d'abord tous les visages du groupe, pour retirer ceux d'une autre "
+"personne."
+
+msgid "Show every face of the group, to take out those of someone else"
+msgstr "Afficher tous les visages du groupe, pour retirer ceux d'une autre personne"
 
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr "Affiche chaque réglage, son origine, et les points de montage."
@@ -12476,6 +12499,12 @@ msgid "{n} obvious series validated"
 msgid_plural "{n} obvious series validated"
 msgstr[0] "{n} série évidente validée"
 msgstr[1] "{n} séries évidentes validées"
+
+#, python-brace-format
+msgid "{n} of these photos is set aside."
+msgid_plural "{n} of these photos are set aside."
+msgstr[0] "{n} de ces photos est mise de côté."
+msgstr[1] "{n} de ces photos sont mises de côté."
 
 #, python-brace-format
 msgid "{n} of {count} set aside"

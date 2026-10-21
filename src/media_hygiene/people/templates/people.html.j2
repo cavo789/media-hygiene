@@ -4,13 +4,21 @@
    by the server into config.toml, read back and shown. Keyboard: arrows (or j/k) move
    between groups, Enter types a name, y confirms a suggestion, x picks a group to name
    with others, i ignores a group; a click on a face opens its photo, its × takes it
-   out of the group. #}
+   out of the group. *and N more faces* shows every face of a group: then, and only
+   then, its photos can be set aside (in the decisions file, for `clean --decisions`;
+   opened from the home page, *Apply now* runs it). #}
 {% set texts = {
   "group": _("Group {number}"),
   "size": _("{faces} in {photos}"),
   "faces": [ngettext("{n} face", "{n} faces", 1), ngettext("{n} face", "{n} faces", 2)],
   "photos": [ngettext("{n} photo", "{n} photos", 1), ngettext("{n} photo", "{n} photos", 2)],
   "more": [ngettext("and {n} more face", "and {n} more faces", 1), ngettext("and {n} more face", "and {n} more faces", 2)],
+  "showAll": _("Show every face of the group, to take out those of someone else"),
+  "aside": [ngettext("Set aside their {n} photo", "Set aside their {n} photos", 1), ngettext("Set aside their {n} photo", "Set aside their {n} photos", 2)],
+  "asideHint": _("Every photo this person is on, with others or not. Nothing is deleted here: 'clean --decisions' moves them to the quarantine, 'undo' brings them back."),
+  "allFirst": _("Show every face of the group first, to take out those of someone else."),
+  "asideSome": [ngettext("{n} of these photos is set aside.", "{n} of these photos are set aside.", 1), ngettext("{n} of these photos is set aside.", "{n} of these photos are set aside.", 2)],
+  "takeBack": _("Take out of the set aside"),
   "alone": [ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 1), ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 2)],
   "ignoredGroups": [ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 1), ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 2)],
   "none": _("No group yet: no two faces look alike enough."),
@@ -67,6 +75,13 @@
                  padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6);
                  color: #fff; cursor: pointer; line-height: 22px; }
   .more { align-self: center; color: var(--muted); font-size: .85rem; }
+  button.more { padding: 4px 8px; font: inherit; font-size: .85rem; border: 1px dashed var(--line);
+                border-radius: 6px; background: transparent; color: var(--accent); cursor: pointer; }
+  .aside { margin: 0 0 8px; color: var(--bad); font-size: .85rem; font-weight: 600; }
+  .aside button { margin-left: 6px; padding: 2px 8px; font: inherit; font-weight: normal;
+                  border: 1px solid var(--line); border-radius: 6px; background: var(--chip);
+                  color: var(--text); cursor: pointer; }
+  .tools button:disabled { cursor: not-allowed; opacity: .6; }
   #viewer { position: fixed; inset: 0; z-index: 2; display: none; flex-direction: column;
             align-items: center; justify-content: center; gap: 8px; padding: 16px;
             background: rgba(0, 0, 0, .88); color: #fff; }
@@ -80,6 +95,7 @@
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
   <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at once, i ignores a group; × takes a face out of its group.") }}</p>
   <p id="status" role="status"></p>
+  {% include "apply_now.html.j2" %}
 </header>
 <main id="groups"></main>
 <datalist id="names"></datalist>
@@ -91,7 +107,9 @@
 "use strict";
 const TEXTS = {{ texts | tojson }};
 const GROUPS_PATH = {{ groups_path | tojson }};
+const SECTION = {{ section_prefix | tojson }};
 const CHANGE_PATH = {{ change_path | tojson }};
+const ASIDE_PATH = {{ aside_path | tojson }};
 const FACE = {{ face_prefix | tojson }};
 const PHOTO = {{ photo_prefix | tojson }};
 const $ = (id) => document.getElementById(id);
@@ -99,6 +117,7 @@ let state = { sections: [], people: [], writable: false };
 let current = 0;
 const picked = new Set();
 const removed = new Set();
+const whole = new Map(); // face number → every face of its group, once shown in full
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
@@ -123,15 +142,60 @@ function say(text, kind) {
   $("status").textContent = text;
 }
 
-function kept(index) {
-  return state.sections[index].shown.map((item) => item.key).filter((key) => !removed.has(key));
+// The faces a section shows: every one once asked for, else its sample.
+function displayed(item) {
+  const full = item.shown.map((face) => whole.get(face.key)).find(Boolean);
+  return full || item.shown;
 }
 
-async function send(body) {
+function complete(item) {
+  return displayed(item).length >= item.faces;
+}
+
+function kept(index) {
+  return displayed(state.sections[index]).map((item) => item.key).filter((key) => !removed.has(key));
+}
+
+async function expand(index) {
+  const item = state.sections[index];
+  let answer;
+  try {
+    answer = await fetch(SECTION + item.shown[0].key);
+  } catch (error) {
+    say(TEXTS.offline, "error");
+    return;
+  }
+  if (!answer.ok) {
+    say(fill(TEXTS.failed, { status: answer.status }), "error");
+    return;
+  }
+  const faces = (await answer.json()).faces;
+  for (const face of faces) whole.set(face.key, faces);
+  render();
+}
+
+// After a change the groups are new: show again in full those that were.
+function expandAgain() {
+  const before = new Set(whole.keys());
+  whole.clear();
+  state.sections.forEach((item, index) => {
+    if (item.faces > item.shown.length && item.shown.some((face) => before.has(face.key))) expand(index);
+  });
+}
+
+async function setAside(index, action) {
+  const item = state.sections[index];
+  if (!complete(item)) await expand(index); // every photo of the group, not only the sample
+  const label = item.name || fill(TEXTS.group, { number: index + 1 });
+  const faces = kept(index);
+  if (faces.length) send({ action, faces, label }, ASIDE_PATH);
+}
+
+async function send(body, path) {
   say(TEXTS.saving);
   let answer;
   try {
-    answer = await fetch(CHANGE_PATH, {
+    answer = await fetch(path || CHANGE_PATH, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
     });
   } catch (error) {
@@ -145,13 +209,13 @@ async function send(body) {
   }
   picked.clear();
   show(result);
-  say(result.saved, "saved");
+  say(result.saved || result.aside.message, "saved");
 }
 
 function nameGroups(index, name) {
   const chosen = new Set([index, ...picked]);
   const faces = [...chosen].flatMap(kept);
-  const out = [...chosen].flatMap((at) => state.sections[at].shown.map((item) => item.key))
+  const out = [...chosen].flatMap((at) => displayed(state.sections[at]).map((item) => item.key))
     .filter((key) => removed.has(key));
   if (faces.length) send({ action: "name", name, faces, removed: out });
 }
@@ -213,7 +277,18 @@ function tools(item, index) {
   ignore.addEventListener("click", () => ignoreGroup(index));
   bar.append(pick, ignore);
   for (const button of bar.querySelectorAll("button")) button.disabled = !state.writable;
+  if (state.can_aside) bar.append(asideButton(item, index));
   return bar;
+}
+
+function asideButton(item, index) {
+  const faces = displayed(item).filter((face) => !removed.has(face.key));
+  const photos = complete(item) ? new Set(faces.map((face) => face.photo)).size : item.photos;
+  const button = element("button", "", counted(TEXTS.aside, photos));
+  button.disabled = !complete(item) || !faces.length;
+  button.title = complete(item) ? TEXTS.asideHint : TEXTS.allFirst;
+  button.addEventListener("click", () => setAside(index, "add"));
+  return button;
 }
 
 function group(item, index) {
@@ -224,11 +299,23 @@ function group(item, index) {
   const title = element("h2", "", heading + " ");
   title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, item.faces), photos: counted(TEXTS.photos, item.photos) })));
   const faces = element("div", "faces");
-  faces.append(...item.shown.filter((shown) => !removed.has(shown.key)).map((shown) => face(shown, index)));
-  if (item.faces > item.shown.length) {
-    faces.append(element("span", "more", counted(TEXTS.more, item.faces - item.shown.length)));
+  const shown = displayed(item);
+  faces.append(...shown.filter((one) => !removed.has(one.key)).map((one) => face(one, index)));
+  if (!complete(item)) {
+    const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
+    more.title = TEXTS.showAll;
+    more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
+    faces.append(more);
   }
-  node.append(title, tools(item, index), faces);
+  node.append(title, tools(item, index));
+  if (item.aside) {
+    const line = element("p", "aside", counted(TEXTS.asideSome, item.aside));
+    const back = element("button", "", TEXTS.takeBack);
+    back.addEventListener("click", () => setAside(index, "remove"));
+    line.append(back);
+    node.append(line);
+  }
+  node.append(faces);
   node.addEventListener("click", () => { current = index; mark(); });
   return node;
 }
@@ -266,6 +353,8 @@ function show(next) {
   if (state.ignored) notes.push(counted(TEXTS.ignoredGroups, state.ignored));
   if (!state.writable) notes.push(TEXTS.readOnly);
   say(notes.join(" "));
+  if (window.mhApplyNow) window.mhApplyNow(state.chosen > 0); // apply_now.html.j2, opened from home
+  expandAgain();
 }
 
 async function load() {

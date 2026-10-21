@@ -57,10 +57,7 @@ class ChosenDesk:
         Returns:
             Them; none when the file cannot be read.
         """
-        try:
-            return frozenset(file.path for file in self.store.on_disk())
-        except MediaHygieneError:
-            return frozenset()
+        return self.store.paths()
 
     def state(self) -> Response:
         """`GET /api/chosen`: what the decisions file holds.
@@ -72,7 +69,7 @@ class ChosenDesk:
         try:
             return self._said(self.store.on_disk())
         except MediaHygieneError as exc:
-            return _refused(exc)
+            return chosen_refused(exc)
 
     def answer(self, body: bytes) -> Response:
         """`POST /api/chosen`: save a change, then say what the file holds.
@@ -101,10 +98,9 @@ class ChosenDesk:
                 self.store.add(Selection(photos, asked.search.found_by()))
             )
         except MediaHygieneError as exc:
-            return _refused(exc)
+            return chosen_refused(exc)
         except OSError as exc:
-            message = _("Cannot save the decisions file: {error}.")
-            return _refused(MediaHygieneError(message.format(error=exc.strerror)))
+            return chosen_unsaved(exc)
 
     def _said(self, files: tuple[ChosenFile, ...]) -> Response:
         """Say how many files are set aside, where, and what moves them.
@@ -115,27 +111,37 @@ class ChosenDesk:
         Returns:
             The JSON answer.
         """
-        count = len(files)
-        size = human_size(chosen_size(files))
-        if count:
-            message = ngettext(
-                "{count} file set aside ({size}), saved in {place}: 'clean "
-                "--decisions' moves it to the quarantine, and remembers it: if it "
-                "comes back (a new copy from the phone), the audit proposes it again.",
-                "{count} files set aside ({size}), saved in {place}: 'clean "
-                "--decisions' moves them to the quarantine, and remembers them: if "
-                "one comes back (a new copy from the phone), the audit proposes it "
-                "again.",
-                count,
-            ).format(count=human_number(count), size=size, place=self.store.place.host)
-        else:
-            message = _("Nothing set aside.")
-        return json_response(
-            HTTPStatus.OK, {"count": count, "size": size, "message": message}
-        )
+        return json_response(HTTPStatus.OK, chosen_said(files, self.store.place.host))
 
 
-def _refused(error: MediaHygieneError) -> Response:
+def chosen_said(files: tuple[ChosenFile, ...], place: str) -> dict[str, object]:
+    """Say how many files are set aside, where, and what moves them.
+
+    Args:
+        files: The files set aside, read back from the disk.
+        place: The decisions file, as the user sees it.
+
+    Returns:
+        The count, the size and the sentence.
+    """
+    count = len(files)
+    size = human_size(chosen_size(files))
+    if not count:
+        return {"count": 0, "size": size, "message": _("Nothing set aside.")}
+    message = ngettext(
+        "{count} file set aside ({size}), saved in {place}: 'clean "
+        "--decisions' moves it to the quarantine, and remembers it: if it "
+        "comes back (a new copy from the phone), the audit proposes it again.",
+        "{count} files set aside ({size}), saved in {place}: 'clean "
+        "--decisions' moves them to the quarantine, and remembers them: if "
+        "one comes back (a new copy from the phone), the audit proposes it "
+        "again.",
+        count,
+    ).format(count=human_number(count), size=size, place=place)
+    return {"count": count, "size": size, "message": message}
+
+
+def chosen_refused(error: MediaHygieneError) -> Response:
     """Answer that nothing was saved, and why.
 
     Args:
@@ -146,3 +152,16 @@ def _refused(error: MediaHygieneError) -> Response:
     """
     said = " ".join(part for part in (error.message, error.tip) if part)
     return json_response(HTTPStatus.CONFLICT, {"error": said})
+
+
+def chosen_unsaved(error: OSError) -> Response:
+    """Answer that the decisions file could not be written.
+
+    Args:
+        error: What the system said.
+
+    Returns:
+        409, with the reason.
+    """
+    message = _("Cannot save the decisions file: {error}.")
+    return chosen_refused(MediaHygieneError(message.format(error=error.strerror)))

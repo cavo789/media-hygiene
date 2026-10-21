@@ -100,8 +100,13 @@ def test_read_only_commands_change_nothing_in_the_photos(
         pytest.skip("root can write to read-only folders")
     for module in (sort_reviewing, places_service):
         monkeypatch.setattr(module, "run_server", ready_then_stop())
-    monkeypatch.setattr(people_page, "run_server", ready_then_stop())
-    for module in (home_service, search_service, reviewing, slideshow_service):
+    for module in (
+        home_service,
+        search_service,
+        reviewing,
+        slideshow_service,
+        people_page,
+    ):
         monkeypatch.setattr(module, "serve_until_ended", ready_then_stop())
     monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
     before = manifest(read_only_data)

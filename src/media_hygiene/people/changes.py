@@ -9,7 +9,9 @@ age); a person left without any face is dropped.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final, Literal
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.config.people_settings import Person
 
@@ -17,6 +19,19 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from media_hygiene.config.people_settings import PeopleSettings
+
+_NAME_LENGTH: Final = 100
+
+
+class NamesAsked(BaseModel):
+    """`POST /api/people`: what to do with which faces, by board number."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    action: Literal["name", "ignore", "reject"]
+    name: str = Field(default="", max_length=_NAME_LENGTH)
+    faces: tuple[int, ...] = Field(min_length=1)
+    removed: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
