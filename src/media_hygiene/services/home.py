@@ -1,8 +1,9 @@
 """Serve the home page until Ctrl+C, or until the user chooses a step.
 
-A step chosen ends the server with `100 + n`: the command exits with that code and
-`mh` runs step `n` in the terminal, mounted as that command needs; only when `mh` set
-`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps running.
+A step chosen ends the server with `STEP_EXIT_BASE + n`: the command exits with that
+code and `mh` runs step `n` in the terminal, mounted as that command needs; only when
+`mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps
+running.
 The page only reads the tool folders: the photos stay mounted read-only. Its Quit
 button, or its tab closed (0261, `review.presence`), ends it with 0: `mh` gives the
 prompt back.
@@ -103,7 +104,7 @@ def launcher_relays_steps() -> bool:
 
     Returns:
         True when `MEDIA_HYGIENE_LAUNCHER_STEPS` is set: ending the server with
-        `100 + n` then runs step `n`; else the code would be lost.
+        `STEP_EXIT_BASE + n` then runs step `n`; else the code would be lost.
     """
     return bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
 
@@ -125,7 +126,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         port: The port to listen on, inside the container (0: any free one).
 
     Returns:
-        `100 + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
+        `STEP_EXIT_BASE + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
     """
     ending = Ending()
     presence = Presence(ending, STOPPED)

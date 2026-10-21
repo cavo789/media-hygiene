@@ -98,7 +98,9 @@ opened the page:
   allows it (a minimised window stays minimised). After 30 seconds the page adds
   *Nothing moves? Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step
   chosen is the
-  command's exit code, `100 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
+  command's exit code, `20 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
+  Ctrl+C during a step (or on a page it opened) gives the prompt back: the home page does not
+  come back, and no other step runs.
 - **A step that takes words** (an album's name and category, your NAS's folder, a folder to
   remove, how many reports to keep): **Fill in** opens its form, the example filled in. The
   server checks each value and says why it refuses one (*no double quote*, *no control

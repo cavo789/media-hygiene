@@ -18,6 +18,7 @@ from media_hygiene.cli.menu_view import show_menu
 from media_hygiene.cli.status_step import Slot, next_step
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME, RunKind
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.home_views import FIELDS_STEP
 from media_hygiene.services.status import read_status
 from media_hygiene.services.update_check import UpdateNotice
 from tests.support.journaled import done_line
@@ -191,6 +192,17 @@ def test_the_windows_actions_stay_out_of_the_bash_mh(tmp_path: Path) -> None:
     assert only <= windows
     assert not only & bash
     assert "open" in bash
+
+
+def test_every_step_number_stays_below_the_form_s_code(tmp_path: Path) -> None:
+    """0287: `mh` reads `STEP_EXIT_BASE + n` as step `n` only while `n < FIELDS_STEP`.
+
+    Every action numbered (the Windows ones included) fits, so no step's code reaches
+    the form's, nor a signal's (Ctrl+C: 130).
+    """
+    status = read_status(make_runtime(make_locations(tmp_path)))
+    steps = build_menu(status, _HINT, windows=True).steps
+    assert len(steps) < FIELDS_STEP
 
 
 def test_a_command_with_no_entry_shows_under_other_commands(

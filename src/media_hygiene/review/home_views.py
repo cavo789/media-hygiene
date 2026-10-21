@@ -23,10 +23,15 @@ from media_hygiene.review.home_parts import (
 )
 
 # A step's button ends the home server with `STEP_EXIT_BASE + n`, `n` its number in
-# `mh menu`: `mh` then runs that step with the mounts it needs.
-STEP_EXIT_BASE: Final = 100
+# `mh menu`: `mh` then runs that step with the mounts it needs. The whole range stays
+# below 125 (Docker's own codes, then 128 + n for a signal: Ctrl+C is 130), so an
+# interrupted run is never read as a step (0287, tests in `test_launcher_home.py`).
+STEP_EXIT_BASE: Final = 20
 # A step with fields: `mh` runs the words of the one-shot file instead (`home_fields`).
+# Also the highest code `mh` reads as a step: no step is numbered 99 (`test_menu.py`).
 FIELDS_STEP: Final = 99
+# A code from here on is a signal's (128 + n): `mh` ends its loop, never runs a step.
+SIGNAL_EXIT_BASE: Final = 128
 REPORTS_PREFIX: Final = "/reports/"
 
 

@@ -2,11 +2,11 @@
 
 Every page answers `POST /api/stop` (its "Back to the home page" link) and serves the
 theme's `/assets/`: the server ends with code 0, and `mh` opens the home page again.
-The home page ends with `100 + n` when the user chooses step `n`, which `mh` then runs
-with the mounts it needs. A page whose tab was closed (`presence`, `POST /api/alive`)
-ends with `ExitCode.PAGE_CLOSED`, raised as `PageClosed` for its command to say so
-(0262). The server listens on every interface of the container: Docker publishes the
-port on the host's loopback only, under the same number.
+The home page ends with `STEP_EXIT_BASE + n` when the user chooses step `n`, which `mh`
+then runs with the mounts it needs. A page whose tab was closed (`presence`,
+`POST /api/alive`) ends with `ExitCode.PAGE_CLOSED`, raised as `PageClosed` for its
+command to say so (0262). The server listens on every interface of the container: Docker
+publishes the port on the host's loopback only, under the same number.
 """
 
 from __future__ import annotations

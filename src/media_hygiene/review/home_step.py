@@ -51,7 +51,7 @@ class StepDoor:
     state: Callable[[], HomeState]
     ending: Ending
     reports_dir: Path
-    relays_steps: bool = False  # `mh` runs the step `100 + n` names
+    relays_steps: bool = False  # `mh` runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # `mh` also runs the words of the one-shot file
 
 

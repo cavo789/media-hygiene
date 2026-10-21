@@ -25,8 +25,8 @@ def browse_command(
         port: `--port`, inside the container.
 
     Raises:
-        Exit: With `100 + n` when *Apply now* chose step `n` (opened from the home
-            page): `mh` runs it, then opens the home page again.
+        Exit: With `STEP_EXIT_BASE + n` when *Apply now* chose step `n` (opened
+            from the home page): `mh` runs it, then opens the home page again.
     """
     from media_hygiene.cli.apply_step import end_on_applied, page_apply
     from media_hygiene.cli.cmd_search import suggest_clean

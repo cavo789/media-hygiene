@@ -67,7 +67,7 @@ def serve_near_review(
             the step *Apply now* ends on.
 
     Returns:
-        `100 + n` when *Apply now* chose step `n`; 0 otherwise.
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     api = (NEAR_DECIDE_PATH, NEAR_FILE_PATH)
     offer = ApplyOffer(start.apply, lambda: session.decided[0] > 0)

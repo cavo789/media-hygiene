@@ -138,7 +138,7 @@ def serve_browse(runtime: Runtime, search: SearchIndex, start: BrowseStart) -> S
 
     Returns:
         How many files are set aside when the page stops, read from the disk, and
-        `100 + n` when *Apply now* chose step `n`.
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`.
     """
     ready = _(
         "Your folders are ready, open {url} in your browser. Ctrl+C stops it; your "

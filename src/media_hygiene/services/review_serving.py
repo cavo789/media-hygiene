@@ -50,7 +50,7 @@ def serve_review_page(runtime: Runtime, review: ReviewPage, port: int) -> int:
         port: The port to listen on, inside the container (0: any free one).
 
     Returns:
-        `100 + n` when *Apply now* chose step `n`; 0 otherwise.
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     page = review_page(review.template, review.place, review.api)
 
