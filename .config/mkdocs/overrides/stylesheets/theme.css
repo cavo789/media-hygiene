@@ -1,0 +1,102 @@
+/* The site in the tool's look (0281): Material's variables mapped onto the tokens of the home page.
+   The tokens themselves (--mk-*, --mh-*, light and dark) are not copied here: `hooks.py` publishes
+   the tool's own `assets/theme/tokens.css` as stylesheets/tokens.css, loaded before this file, and
+   its fonts as fonts/. They flip with `data-theme` on <html>, which main.html keeps equal to
+   Material's scheme (the switch of the header). */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("../fonts/bricolage-grotesque-latin-opsz-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("../fonts/source-sans-3-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("../fonts/source-sans-3-latin-wght-italic.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url("../fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+:root {
+  --md-text-font-family: var(--mk-font-text);
+  --md-code-font-family: var(--mk-font-mono);
+}
+
+[data-md-color-scheme="default"],
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--mh-frame);
+  --md-primary-fg-color--light: var(--mh-frame-raise);
+  --md-primary-fg-color--dark: var(--mh-frame);
+  --md-primary-bg-color: var(--mh-frame-ink);
+  --md-primary-bg-color--light: var(--mh-frame-soft);
+  --md-accent-fg-color: var(--mk-primary-strong);
+  --md-accent-fg-color--transparent: color-mix(in srgb, var(--mk-primary) 10%, transparent);
+  --md-accent-bg-color: var(--mk-on-primary);
+  --md-default-bg-color: var(--mk-bg);
+  --md-default-fg-color: var(--mk-ink);
+  --md-default-fg-color--light: var(--mk-ink-soft);
+  --md-default-fg-color--lighter: var(--mk-border-strong);
+  --md-default-fg-color--lightest: var(--mk-border);
+  --md-typeset-color: var(--mk-ink);
+  --md-typeset-a-color: var(--mk-primary);
+  --md-typeset-mark-color: var(--mh-apricot-soft);
+  --md-typeset-table-color: var(--mk-border);
+  --md-code-bg-color: var(--mk-sunken);
+  --md-code-fg-color: var(--mk-ink);
+  --md-footer-bg-color: var(--mh-frame);
+  --md-footer-bg-color--dark: var(--mh-frame);
+  --md-footer-fg-color: var(--mh-frame-ink);
+  --md-footer-fg-color--light: var(--mh-frame-soft);
+  --md-footer-fg-color--lighter: var(--mh-frame-soft);
+  --md-shadow-z1: var(--mk-shadow-1);
+  --md-shadow-z2: var(--mk-shadow-2);
+  --md-shadow-z3: var(--mk-shadow-3);
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-header__title {
+  font-family: var(--mk-font-display);
+}
+
+.md-typeset h1 {
+  color: var(--mk-ink);
+}
+
+/* The meerkat is taller than the logo's square. */
+.md-header__button.md-logo img {
+  width: auto;
+  height: 1.8rem;
+  object-fit: contain;
+}
+
+.md-typeset pre > code,
+.md-typeset .highlight {
+  --md-code-bg-color: var(--mk-code-bg);
+  --md-code-fg-color: var(--mk-code-fg);
+}
+
+.md-nav__link--active,
+.md-nav__item .md-nav__link--active {
+  color: var(--mk-primary);
+}

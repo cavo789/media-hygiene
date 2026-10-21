@@ -20,11 +20,25 @@ if TYPE_CHECKING:
     from types import ModuleType
 
     from mkdocs.config.defaults import MkDocsConfig
+    from mkdocs.structure.files import Files
     from mkdocs.structure.pages import Page
 
 _SHARED: Final = (
     Path(__file__).resolve().parents[2] / "src" / "media_hygiene" / "docs" / "links.py"
 )
+_ASSETS: Final = (
+    Path(__file__).resolve().parents[2] / "src" / "media_hygiene" / "assets"
+)
+# Published path on the site -> file of the tool's assets: the look has one source.
+PUBLISHED: Final = {
+    "stylesheets/tokens.css": "theme/tokens.css",
+    "images/avatar.webp": "images/avatar.webp",
+    "images/favicon.png": "images/favicon.png",
+    **{
+        f"fonts/{font.name}": f"fonts/{font.name}"
+        for font in (_ASSETS / "fonts").glob("*.woff2")
+    },
+}
 
 
 def _load_links() -> ModuleType:
@@ -43,6 +57,25 @@ def _load_links() -> ModuleType:
 
 
 links = _load_links()
+
+
+def on_files(files: Files, *, config: MkDocsConfig) -> Files:
+    """Publish the tool's tokens, fonts and meerkat: the site wears its look.
+
+    Args:
+        files: The files of the site.
+        config: The site configuration.
+
+    Returns:
+        The files, the assets added.
+    """
+    from mkdocs.structure.files import File  # noqa: PLC0415 - mkdocs imports this module
+
+    for published, source in PUBLISHED.items():
+        files.append(
+            File.generated(config, published, abs_src_path=str(_ASSETS / source))
+        )
+    return files
 
 
 def on_config(config: MkDocsConfig) -> MkDocsConfig:

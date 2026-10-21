@@ -105,7 +105,11 @@ la main ; relisez le résultat avec `git diff documentation/`.
 Les mêmes pages forment le site de la documentation, <https://cavo789.github.io/media-hygiene/>,
 où mènent les liens que l'outil affiche (`DOC_PAGES` dans `constants.py`). MkDocs Material le
 construit (`.config/mkdocs/` : `mkdocs.yml`, et `hooks.py`, qui envoie vers GitHub les liens qui
-sortent de `documentation/`).
+sortent de `documentation/`). Le site reprend l'aspect de la page d'accueil à partir des fichiers
+de l'outil : `hooks.py` publie `assets/theme/tokens.css`, les polices et la suricate (logo,
+favicon), et `overrides/stylesheets/theme.css` rattache les variables de Material à ces jetons,
+en clair et en sombre (`overrides/main.html` aligne le `data-theme` des jetons sur le commutateur
+de Material) : une couleur se change une fois, dans `tokens.css`.
 [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml) le publie sur GitHub Pages à
 chaque push de `main` qui change la documentation (il faut, une fois : Settings → Pages → Source :
 GitHub Actions). `docs_build` le construit comme la CI : un lien ou une ancre cassés le font

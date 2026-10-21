@@ -100,7 +100,11 @@ hand; review the result with `git diff documentation/`.
 The same pages make the documentation site, <https://cavo789.github.io/media-hygiene/>, where
 the links the tool prints lead (`DOC_PAGES` in `constants.py`). MkDocs Material builds it
 (`.config/mkdocs/`: `mkdocs.yml`, and `hooks.py`, which points the links leaving
-`documentation/` at GitHub). [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml)
+`documentation/` at GitHub). The site wears the home page's look from the tool's own files:
+`hooks.py` publishes `assets/theme/tokens.css`, the fonts and the meerkat (logo, favicon), and
+`overrides/stylesheets/theme.css` maps Material's variables onto those tokens, light and dark
+(`overrides/main.html` keeps the tokens' `data-theme` equal to Material's switch): change a
+colour in `tokens.css` once. [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml)
 publishes it on GitHub Pages at every push of `main` that changes the documentation (it needs,
 once: Settings → Pages → Source: GitHub Actions). `docs_build` builds it like CI: a broken link
 or anchor fails. `docs_serve` shows it at <http://127.0.0.1:8000>, reloaded at every save. A new

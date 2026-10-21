@@ -1,30 +1,22 @@
 /* The "in short" guides: a page holding a `.mh-path` banner is a guide. Its steps (h2)
    read as cards, each with badges saying what it risks; its screenshots are framed.
-   Material's own colour variables: right in light and dark mode alike. */
+   The tool's tokens (stylesheets/tokens.css, light and dark alike): the look of the docs it serves
+   (src/media_hygiene/docs/templates/doc.css.j2 is the same sheet). */
 
 :root {
-  --mh-safe: #2e7d32;
-  --mh-undo: #1565c0;
-  --mh-final: #c62828;
-  --mh-once: #6d4c41;
-  --mh-optional: #616161;
-  --mh-ai: #6a1b9a;
-}
-
-[data-md-color-scheme="slate"] {
-  --mh-safe: #81c784;
-  --mh-undo: #64b5f6;
-  --mh-final: #ef9a9a;
-  --mh-once: #bcaaa4;
-  --mh-optional: #bdbdbd;
-  --mh-ai: #ce93d8;
+  --mh-safe: var(--mk-tip-line);
+  --mh-undo: var(--mk-info-line);
+  --mh-final: var(--mk-danger-line);
+  --mh-once: var(--mk-note-line);
+  --mh-optional: var(--mk-ink-soft);
+  --mh-ai: var(--mh-ai-fg);
 }
 
 /* The strict minimum: the steps as a row of chips joined by arrows. */
 .md-typeset .mh-path {
-  border-left: 0.25rem solid var(--md-accent-fg-color);
+  border-left: 0.25rem solid var(--mh-apricot);
   border-radius: 0.4rem;
-  background: var(--md-code-bg-color);
+  background: var(--mk-sunken);
   padding: 0.6rem 1rem;
   margin: 1.2rem 0;
 }
@@ -51,12 +43,12 @@
   content: "→";
   position: absolute;
   right: -1.2rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--mk-ink-soft);
 }
 
 .md-typeset .mh-path ul li a {
   display: inline-block;
-  border: 1px solid var(--md-primary-fg-color);
+  border: 1px solid var(--mk-primary);
   border-radius: 1rem;
   padding: 0.1rem 0.7rem;
   font-weight: 600;
@@ -66,9 +58,9 @@
 .md-typeset:has(.mh-path) h2 {
   margin-top: 2.4rem;
   padding: 0.5rem 0.8rem;
-  border-left: 0.3rem solid var(--md-primary-fg-color);
+  border-left: 0.3rem solid var(--mk-primary);
   border-radius: 0.3rem;
-  background: var(--md-code-bg-color);
+  background: var(--mk-sunken);
   font-weight: 700;
 }
 
@@ -95,7 +87,7 @@
 .md-typeset:has(.mh-path) p > img {
   display: block;
   margin: 0.4rem auto;
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--mk-border);
   border-radius: 0.4rem;
   box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 12%);
 }
