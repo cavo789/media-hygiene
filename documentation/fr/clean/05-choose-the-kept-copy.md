@@ -131,7 +131,8 @@ Dossiers partageant des fichiers identiques
 `--backup` (ou `backups` dans `[folders]` de `config.toml`) marque un dossier comme sauvegarde : il
 est lu et comparé par contenu, **jamais modifié**, et ses copies ne sont jamais la raison du départ
 d'un fichier de vos photos. Au contraire d'un dossier protégé, il ne garde rien : il est seulement
-comparé.
+comparé, par taille puis par ses 64 premiers et 64 derniers Ko, jamais lu en entier
+([vitesse](../commands/import.md#vitesse)).
 
 ```powershell
 mh folders add --backup "D:\sauvegarde"

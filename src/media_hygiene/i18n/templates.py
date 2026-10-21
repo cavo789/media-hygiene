@@ -7,6 +7,7 @@ from typing import Final
 from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 
 from media_hygiene.i18n import active
+from media_hygiene.theme import avatar_data_uri, theme_tokens
 
 # The fragments every local page includes (the "⌂ Home" link): found from any package.
 _SHARED_PAGES: Final = "media_hygiene.review"
@@ -37,6 +38,8 @@ def translated_environment(package: str, escaped: tuple[str, ...]) -> Environmen
         lstrip_blocks=True,
         keep_trailing_newline=True,
     )
+    environment.globals["theme_tokens"] = theme_tokens
+    environment.globals["avatar_data_uri"] = avatar_data_uri
     # pylint: disable-next=no-member
     environment.install_gettext_translations(  # type: ignore[attr-defined]
         active(),

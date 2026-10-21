@@ -312,6 +312,14 @@ PowerShell. Les `-v` des guides précédents fonctionnent toujours, à côté de
   ```
 
   En bash, ajoutez la ligne `source` à `~/.bashrc`.
+- **Un nouveau `mh.ps1` écrit ?** Une fenêtre garde le `mh` qu'elle a chargé : après `launcher` ou
+  `mh update` depuis une autre fenêtre, le fichier sur le disque est plus récent que celui que
+  cette fenêtre exécute. Avant chaque commande, `mh` compare la date d'écriture du fichier à celle
+  notée au chargement (une vérification, aucun appel à Docker) et dit, en une ligne, `mh a changé
+  sur le disque depuis que cette fenêtre l'a chargé : tapez . 'C:\...\mh.ps1' (ou ouvrez une
+  nouvelle fenêtre).` La commande s'exécute quand même ; tapez la ligne, ou ouvrez une nouvelle
+  fenêtre, pour lancer la nouvelle version. Rien n'est dit si le fichier a été déplacé ou
+  supprimé. `mh folders` et `mh update` rechargent le fichier eux-mêmes.
 - **Un autre dossier ?** `mh folders add "E:\Dossier"` : `mh` se réécrit lui-même. Pour une
   seule commande : `mh --photos "E:\Clé USB" audit` l'ajoute à vos dossiers.
 - **Un dossier réseau** (`\\NAS\photos`) est refusé par `--photos` : copiez les photos sur un

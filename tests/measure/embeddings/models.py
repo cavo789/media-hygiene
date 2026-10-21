@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, Final
 
 from PIL import Image
 
+from media_hygiene.meaning.pixels import Pixels
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -81,17 +83,6 @@ class Remote:
             Its path below the folder: repository, then path in the repository.
         """
         return root / self.repo / self.path
-
-
-@dataclass(frozen=True, slots=True)
-class Pixels:
-    """How a model wants its picture: size, crop and colour scale."""
-
-    side: int  # the square the model reads
-    shortest: int  # shortest edge before a centre crop; 0: squashed to the square
-    mean: tuple[float, float, float]
-    std: tuple[float, float, float]
-    resample: Image.Resampling
 
 
 @dataclass(frozen=True, slots=True)

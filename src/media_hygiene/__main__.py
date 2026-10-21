@@ -7,6 +7,7 @@ import sys
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import APP_NAME
+from media_hygiene.teardown import quiet_teardown
 
 if TYPE_CHECKING:
     from types import FrameType
@@ -36,7 +37,10 @@ def main() -> None:
 
     signal.signal(signal.SIGTERM, stop_like_ctrl_c)
     install(resolve_locale(sys.argv[1:]))
-    build_app()(args=with_default_decisions(sys.argv[1:]), prog_name=APP_NAME)
+    app = build_app()
+    # The command's last word said, a Ctrl+C while threads finish ends quietly (0275).
+    with quiet_teardown():
+        app(args=with_default_decisions(sys.argv[1:]), prog_name=APP_NAME)
 
 
 if __name__ == "__main__":

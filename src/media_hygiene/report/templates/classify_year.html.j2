@@ -1,4 +1,6 @@
 {% extends "base.html.j2" %}
+{% set report_kind = "classify" %}
+{% set report_name = _("Proposed tree") %}
 {% block title %}{{ _("media-hygiene classify") }} — {{ year or _("Undated") }}{% endblock %}
 {% block content %}
 <p><a href="report.html">← {{ _("Proposed tree") }}</a></p>

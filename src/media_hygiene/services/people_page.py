@@ -27,6 +27,7 @@ from media_hygiene.people.app import (
 from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.review.ending import run_server
+from media_hygiene.review.page_header import page_header
 from media_hygiene.services.reviewing import address_tip, page_url
 
 if TYPE_CHECKING:
@@ -49,6 +50,7 @@ def serve_people(runtime: Runtime, result: PeopleResult, port: int) -> None:
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
+        header=page_header(_PAGE_TEMPLATE),
         groups_path=GROUPS_PATH,
         change_path=CHANGE_PATH,
         face_prefix=FACE_PREFIX,

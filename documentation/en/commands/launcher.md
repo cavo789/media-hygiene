@@ -297,6 +297,13 @@ The `-v` of earlier guides still work, alongside `--photos`.
   ```
 
   In bash, add the `source` line to `~/.bashrc`.
+- **A new `mh.ps1` written?** A window keeps the `mh` it loaded: after `launcher` or `mh update`
+  from another window, the file on disk is newer than the one this window runs. Before each
+  command, `mh` compares the file's write time with the one it recorded at load time (one
+  check, no Docker call) and says, in one line, `mh changed on disk since this window loaded
+  it: type . 'C:\...\mh.ps1' (or open a new window).` The command still runs; type the line, or
+  open a new window, to run the new version. Nothing is said when the file was moved or removed.
+  `mh folders` and `mh update` load the file again themselves.
 - **Another folder?** `mh folders add "E:\Folder"`: `mh` writes itself again. For one command
   only: `mh --photos "E:\USB key" audit` adds it to your folders.
 - **A network folder** (`\\NAS\photos`) is refused by `--photos`: copy the photos to a local

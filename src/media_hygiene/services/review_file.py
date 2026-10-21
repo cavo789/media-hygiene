@@ -13,6 +13,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.report.decisions import DecisionsFile, read_decisions
 from media_hygiene.review.local_app import STATE_PATH
+from media_hygiene.review.page_header import page_header
 from media_hygiene.review.place import decisions_flag
 
 if TYPE_CHECKING:
@@ -42,6 +43,7 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
     return (
         environment.get_template(template)
         .render(
+            header=page_header(template),
             state_path=STATE_PATH,
             decide_path=decide_path,
             file_path=file_path,

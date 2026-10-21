@@ -61,6 +61,17 @@ def tags_command(  # pylint: disable=too-many-arguments
             help=_("Describe the photos without asking, however many."),
         ),
     ] = False,
+    meaning: Annotated[
+        bool,
+        typer.Option(
+            "--meaning",
+            help=_(
+                "Also let a model look at each photo on this computer's processor "
+                "(CLIP, once, about 1 minute per 1,000 photos), so that 'search' "
+                "finds what a photo shows. Default: [tags] meaning."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Tag the photos and videos of the index; never changes a photo.
 
@@ -70,6 +81,7 @@ def tags_command(  # pylint: disable=too-many-arguments
         sample: `--sample N`.
         no_describe: `--no-describe`.
         yes: `--yes`.
+        meaning: `--meaning`.
     """
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.cli.tags_flow import TagRequest, run_tags
@@ -84,7 +96,8 @@ def tags_command(  # pylint: disable=too-many-arguments
         require_index(runtime)
         ensure_writable(runtime, MountKind.CACHE)
         within = tuple(runtime.mapper.to_container(folder) for folder in path or ())
-        request = TagRequest(within, not no_describe, sample, yes)
+        meaning = meaning or runtime.settings.tags.meaning
+        request = TagRequest(within, not no_describe, sample, yes, meaning)
         if not run_tags(runtime, request):
             return
         suggest(

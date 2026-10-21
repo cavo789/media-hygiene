@@ -1,0 +1,37 @@
+{# The script of doc.html.j2: the theme switch (the home page's choice, the same key), the drawer of
+   narrow screens, and the presence: an open page of the docs keeps its server running (0261), and
+   never says it leaves: the page that opened it decides when the server ends. #}
+"use strict";
+const ALIVE_MS = {{ alive_ms | tojson }};
+const ALIVE = {{ paths.alive | tojson }};
+const THEME_KEY = "mh-home-theme";
+const $ = (selector) => document.querySelector(selector);
+
+function applyTheme(choice, save) {
+  const root = document.documentElement;
+  if (choice === "auto") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", choice);
+  if (save) { try { localStorage.setItem(THEME_KEY, JSON.stringify(choice)); } catch (error) { /* this visit only */ } }
+  document.querySelectorAll("[data-theme-choice]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === choice)));
+}
+let saved = "auto";
+try { saved = JSON.parse(localStorage.getItem(THEME_KEY)) || "auto"; } catch (error) { /* the OS's theme */ }
+applyTheme(saved, false);
+document.querySelectorAll("[data-theme-choice]").forEach((button) => button.addEventListener("click", () => applyTheme(button.dataset.themeChoice, true)));
+
+const narrow = window.matchMedia("(max-width: 959.98px)");
+function setNav(open) {
+  $("#app").classList.toggle("nav-open", open);
+  $("#menuBtn").setAttribute("aria-expanded", String(open));
+  $("#scrim").hidden = !open;
+  $("#sidebar").inert = narrow.matches && !open;
+}
+setNav(false);
+narrow.addEventListener("change", () => setNav(false));
+$("#menuBtn").addEventListener("click", () => setNav(!$("#app").classList.contains("nav-open")));
+$("#scrim").addEventListener("click", () => { setNav(false); $("#menuBtn").focus(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape" && $("#app").classList.contains("nav-open")) { setNav(false); $("#menuBtn").focus(); } });
+
+const alive = () => fetch(ALIVE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: false }) }).catch(() => {});
+window.addEventListener("pageshow", alive);
+window.setInterval(alive, ALIVE_MS);

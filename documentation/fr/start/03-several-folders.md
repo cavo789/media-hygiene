@@ -141,8 +141,10 @@ votre seul compte Windows, sur ce PC. Avant chaque commande, il monte le partage
 lui. `mh folders` dit s'il répond ; `mh folders remove \\NAS\Photos` l'oublie, avec son mot de
 passe.
 
-À travers Docker Desktop, un NAS se lit à environ 15 Mo/s (mesuré) : un premier audit d'un gros
-NAS prend du temps, les suivants ne lisent que ce qui a changé. Un Synology qui ne propose qu'un
+À travers Docker Desktop, un NAS se lit à environ 15 Mo/s (mesuré). Une sauvegarde n'est jamais
+lue en entier : d'un fichier de même taille qu'une de vos photos, l'audit lit les 64 premiers et
+64 derniers Ko (128 Ko par fichier), un premier audit d'un gros NAS prend donc des minutes, pas
+des heures ; les suivants ne lisent que ce qui a changé. Un Synology qui ne propose qu'un
 ancien SMB : *Panneau de configuration → Services de fichiers → SMB → Paramètres avancés →
 Protocole SMB maximum : SMB3*.
 

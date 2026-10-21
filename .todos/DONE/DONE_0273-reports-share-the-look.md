@@ -55,3 +55,9 @@ of the tool alike.
 Six kinds of report (counted from the templates: the audit or clean report, the folder pair, the
 near duplicates, the classify proposal, its years, the index) in the look of the pages that open
 them. The help for each report is a click away.
+
+## Decided (2026-10-20)
+
+- Decision 1: **system fonts** (Segoe UI and Cascadia Mono on Windows); the colours, the header
+  and the meerkat carry the look. No inlined font families. By the maintainer, at the start of
+  `/todo:iterate`.

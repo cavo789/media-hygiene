@@ -257,4 +257,7 @@ d'autres personnes, chacun sous sa propre licence :
 Chaque composant est la version d'origine, non modifiée, épinglée dans `Dockerfile` et
 `uv.lock` : ses sources sont celles de cette version. Les modèles de visages de `people` ne sont
 pas dans l'image : ils sont téléchargés à la première utilisation depuis
-[OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet : MIT, SFace : Apache-2.0).
+[OpenCV Zoo](https://github.com/opencv/opencv_zoo) (YuNet : MIT, SFace : Apache-2.0). Le modèle
+de la recherche par le sens (`tags --meaning`) non plus : CLIP ViT-B/32 (MIT, OpenAI) et son
+modèle de texte multilingue (Apache-2.0, sentence-transformers), téléchargés depuis Hugging Face
+dans le cache à la première utilisation (voir `src/media_hygiene/meaning/ATTRIBUTION.txt`).

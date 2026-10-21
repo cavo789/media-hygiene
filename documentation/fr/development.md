@@ -113,6 +113,17 @@ GitHub Actions). `docs_build` le construit comme la CI : un lien ou une ancre ca
 nouvelle page va dans `nav` de `mkdocs.yml` (un test le vérifie), en anglais seulement : le
 français suit les mêmes noms de fichiers.
 
+L'image contient les mêmes pages, pour les pages que sert l'outil (`/docs/<langue>/<page>/`, avec
+l'allure de la page d'accueil). L'étape `docs` du `Dockerfile` n'installe que le groupe de
+dépendances `docs` et lance `python -m media_hygiene.docs.render` : un fragment HTML par page, ses
+captures, et un `index.json` par langue (le `nav` de `mkdocs.yml`, le titre, les `h2` et les `h3`
+de chaque page), avec les extensions Markdown et les ancres du site ; où mène un lien, c'est
+`src/media_hygiene/docs/links.py` qui le décide, et `hooks.py` le charge aussi. Seul le résultat
+entre dans l'image (`/usr/share/media-hygiene/docs`, environ 7 Mo). Depuis les sources,
+`hygiene home` les produit dans `/tmp/media-hygiene/docs` au premier usage, et à nouveau quand
+une page a changé (`MEDIA_HYGIENE_DOCS_DIR`) ; `tests/unit/test_docs_render.py` vérifie chaque
+page, chaque lien et chaque ancre.
+
 ## Intégration continue et versions
 
 Chaque push et chaque pull request lancent la barrière qualité et les tests de bout en bout sur

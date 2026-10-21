@@ -62,7 +62,10 @@ class AlbumError(MediaHygieneError):
 
 
 class FaceModelError(MediaHygieneError):
-    """The face models cannot be run: no runtime, a failed or altered download."""
+    """A local model (faces, search by meaning) cannot be run.
+
+    No runtime in this build, or a failed or altered download.
+    """
 
 
 class PageClosed(Exception):  # noqa: N818  # not an error: the user's own gesture

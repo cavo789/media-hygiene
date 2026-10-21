@@ -14,6 +14,7 @@ PATH_TABLES: Final = (
     "measures",
     "takeout",
     "former_names",
+    "meanings",
 )
 FORGET: Final = tuple(
     f"DELETE FROM {table} WHERE path = ?"  # noqa: S608 - constant table names

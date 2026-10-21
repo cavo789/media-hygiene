@@ -68,30 +68,24 @@
   "confirmDeleteHand": [ngettext("Delete the place {name}? Its {n} photo placed by hand goes back to its GPS. The photos stay where they are.", "Delete the place {name}? Its {n} photos placed by hand go back to their GPS. The photos stay where they are.", 1),
                         ngettext("Delete the place {name}? Its {n} photo placed by hand goes back to its GPS. The photos stay where they are.", "Delete the place {name}? Its {n} photos placed by hand go back to their GPS. The photos stay where they are.", 2)],
 } %}
+{% set page_name = _("Your places") %}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ _("Your places") }} — media-hygiene</title>
+<title>{{ page_name }} — media-hygiene</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
 <link rel="stylesheet" href="/leaflet.css">
 <style>
-  :root {
-    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
-    --accent: #0969da; --ok: #1a7f37; --bad: #cf222e; --place: #1a7f37; --cluster: #0969da;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
-      --accent: #4493f8; --ok: #3fb950; --bad: #f85149;
-    }
-  }
+{% include "theme.css.j2" %}
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body { display: flex; background: var(--bg); color: var(--text);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+         font: 400 15px/1.5 var(--mk-font-text); }
   aside { width: 340px; max-width: 45vw; overflow-y: auto; padding: 12px 16px;
           background: var(--card); border-right: 1px solid var(--line); }
   #stage { flex: 1; position: relative; min-width: 0; }
+  aside > .mh-bar { margin: -12px -16px 12px; }
   #map { position: absolute; inset: 0; }
   h1 { font-size: 1.1rem; margin: 0 0 8px; }
   h2 { font-size: .95rem; margin: 16px 0 6px; }
@@ -117,6 +111,12 @@
   .pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
          background: var(--accent); border: 3px solid #fff; border-radius: 50%;
          box-shadow: 0 0 0 1px var(--accent); }
+  /* Leaflet's controls take the theme's colours; the map and its tiles do not change. */
+  .leaflet-container { font-family: var(--mk-font-text); }
+  .leaflet-bar a, .leaflet-control-attribution, .leaflet-control-layers { color: var(--text); background: var(--card); border-color: var(--line); }
+  .leaflet-bar a:hover, .leaflet-bar a:focus { background: var(--chip); }
+  .leaflet-control-attribution a { color: var(--accent); }
+  .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-tooltip { color: var(--text); background: var(--card); }
   .leaflet-tooltip.place-name { font-weight: 600; }
   #osm { margin-top: 8px; }
   #osm button { padding: 4px 10px; font: inherit; border: 1px solid var(--line); border-radius: 6px;
@@ -196,6 +196,7 @@
 </head>
 <body>
 <aside>
+{% include "page_header.html.j2" %}
   <h1>📍 {{ _("Your places") }}</h1>
   <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}
     {{ _("A place is for a spot the towns list does not know: home, the grandparents', the office. Towns are named on their own.") }}</p>

@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_entry import Risk
 from media_hygiene.constants import Locale
+from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import _
 from media_hygiene.review.home_parts import HomeLink
 from media_hygiene.review.home_views import HomeAction, HomeField, HomeGroup, HomeNext
@@ -26,6 +27,8 @@ _RISKS: Final = {Risk.SAFE: "safe", Risk.UNDO: "undo", Risk.FINAL: "final"}
 def link(doc: Doc | None) -> HomeLink | None:
     """A chapter of the documentation, in the language in use and in English.
 
+    Served by the tool when its docs are there (0270), else on the public site.
+
     Args:
         doc: The chapter.
 
@@ -34,7 +37,7 @@ def link(doc: Doc | None) -> HomeLink | None:
     """
     if doc is None:
         return None
-    return HomeLink(url=doc.url(), url_en=doc.url(Locale.EN))
+    return HomeLink(url=served_url(doc), url_en=served_url(doc, Locale.EN))
 
 
 def home_actions(menu: Menu) -> tuple[HomeAction, ...]:

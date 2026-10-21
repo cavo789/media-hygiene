@@ -26,6 +26,7 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.files import FILE_PATH
 from media_hygiene.review.local_app import STATE_PATH
+from media_hygiene.review.page_header import page_header
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH, PhoneApp
 from media_hygiene.review.phone_file import PHONE_DECISIONS
 from media_hygiene.review.phone_session import PhonePages, PhoneSession
@@ -121,6 +122,7 @@ def _page(place: DecisionsPlace) -> bytes:
     return (
         environment.get_template(_TEMPLATE)
         .render(
+            header=page_header(_TEMPLATE),
             state_path=STATE_PATH,
             decide_path=PHONE_DECIDE_PATH,
             file_path=FILE_PATH,

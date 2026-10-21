@@ -14,15 +14,9 @@ import numpy as np
 import pytest
 from PIL import Image, ImageDraw
 
+from media_hygiene.meaning.pixels import pixels_of, read_projection, unit
 from tests.measure.embeddings import measure
-from tests.measure.embeddings.embedders import (
-    STUB,
-    STUB_DIMENSIONS,
-    StubEmbedder,
-    pixels_of,
-    read_projection,
-    unit,
-)
+from tests.measure.embeddings.embedders import STUB, STUB_DIMENSIONS, StubEmbedder
 from tests.measure.embeddings.models import (
     CLIP,
     DINOV2,

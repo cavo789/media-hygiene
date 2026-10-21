@@ -25,7 +25,8 @@ function _gentle() {
 }
 
 # _media_hygiene_env — print the MEDIA_HYGIENE_*_DIR assignments that redirect every mount point of
-# the tool to /tmp/media-hygiene/, so a local run never needs Docker mounts nor touches the repo.
+# the tool (and its rendered docs) to /tmp/media-hygiene/, so a local run never needs Docker mounts
+# nor touches the repo.
 function _media_hygiene_env() {
     local base="/tmp/media-hygiene"
     local kind
@@ -33,4 +34,6 @@ function _media_hygiene_env() {
         mkdir -p "${base}/${kind}"
         printf 'MEDIA_HYGIENE_%s_DIR=%s/%s\n' "${kind^^}" "${base}" "${kind}"
     done
+    # The documentation the pages serve (0270): rendered there from documentation/ on first use.
+    printf 'MEDIA_HYGIENE_DOCS_DIR=%s/docs\n' "${base}"
 }

@@ -76,6 +76,15 @@ WHERE: Final = " WHERE "
 AND: Final = " AND "
 SOURCE_OF: Final = "SELECT path, size, mtime_ns FROM files WHERE rowid = ?"
 VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns" + _FROM
+# Search by meaning (`search.meaning_index`): the rows of the files a search matches,
+# those of every file (filters only), one file as a hit, and a probe of one term.
+KEYS: Final = "SELECT files.rowid" + _FROM
+FILE_KEYS: Final = "SELECT files.rowid FROM files"
+HIT_OF: Final = (
+    f"SELECT rowid, path, size, mtime_ns, {DAY}(media_date) FROM files"  # noqa: S608
+    " WHERE rowid = ?"
+)
+PROBE: Final = f"SELECT 1 FROM temp.{TABLE} WHERE {TABLE} MATCH ? LIMIT 1"  # noqa: S608
 # The folder view (`browse`): every file of the index, then those of one folder (the
 # paths between `<folder>/` and `<folder>0`, `0` following `/`: the primary key).
 ALL_FILES: Final = "SELECT path, size FROM files"

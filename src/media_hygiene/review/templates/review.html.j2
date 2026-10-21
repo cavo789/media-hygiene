@@ -79,29 +79,22 @@
   "first": _("This is the first series."),
   "last": _("This is the last series: stop the review with Ctrl+C in the terminal."),
 } %}
+{% set page_name = _("Burst series review") %}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ _("Burst series review") }} — media-hygiene</title>
+<title>{{ page_name }} — media-hygiene</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
 <style>
+{% include "theme.css.j2" %}
 {% include "review_side.css.j2" %}
 {% include "review_tree.css.j2" %}
 {% include "review_compare.css.j2" %}
 {% include "review_board.css.j2" %}
-  :root {
-    --bg: #f7f7f5; --card: #ffffff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
-    --accent: #0969da; --ok: #1a7f37; --warn: #9a6700; --bad: #cf222e;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
-      --accent: #4493f8; --ok: #3fb950; --warn: #d29922; --bad: #f85149;
-    }
-  }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+         font: 400 15px/1.5 var(--mk-font-text); }
   header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
   header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
            border-bottom: 1px solid var(--line); }
@@ -138,6 +131,7 @@
 </style>
 </head>
 <body>
+{% include "page_header.html.j2" %}
 <header>
   <h1>📸 {{ _("Burst series review") }}</h1>
   <button type="button" id="view" title="{{ _('Switch between the board and one series at a time (P)') }}"></button>

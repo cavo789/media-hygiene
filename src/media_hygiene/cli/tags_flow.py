@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from rich.markup import escape
 
 from media_hygiene.cli.describe_consent import may_describe
+from media_hygiene.cli.meaning_flow import run_meaning
 from media_hygiene.console.progress import RichProgress
 from media_hygiene.console.tags_view import (
     show_cheap,
@@ -36,12 +37,13 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class TagRequest:
-    """`--path`, `--no-describe`, `--sample N` and `--yes`."""
+    """`--path`, `--no-describe`, `--sample N`, `--yes` and `--meaning`."""
 
     within: tuple[Path, ...] = ()
     describe: bool = True
     sample: int = 0
     yes: bool = False
+    meaning: bool = False  # `--meaning`, or `[tags] meaning`
 
 
 def run_tags(runtime: Runtime, request: TagRequest) -> bool:
@@ -62,6 +64,8 @@ def run_tags(runtime: Runtime, request: TagRequest) -> bool:
             output.warning(_("No photo nor video of the index below these folders."))
             return False
         show_cheap(output, work, step.cheap(work))
+        if request.meaning and not request.sample:
+            run_meaning(runtime, work.files)
         if not step.vision_on:
             output.tip(
                 escape(

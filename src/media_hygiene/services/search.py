@@ -17,16 +17,18 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
-from media_hygiene.search.fts import SearchIndex
+from media_hygiene.search.meaning_index import MeaningIndex
 from media_hygiene.search.people_words import people_words, unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.data_checks import unreadable_index
+from media_hygiene.services.search_meaning import with_meaning
 from media_hygiene.services.search_pages import PageStart, Served, serve_pages
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.search.apply_api import ApplyStep
+    from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
 
@@ -62,9 +64,10 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
             ),
         )
     try:
-        search = SearchIndex.open(index)
+        search = MeaningIndex.open(index)
         search.name_people(people_words(search.connection, runtime.settings.people))
         empty = words and search.find(SearchQuery(()), 1).total == 0
+        with_meaning(runtime, search)
     except sqlite3.Error as exc:
         raise unreadable_index(runtime, index, exc) from exc
     if empty:

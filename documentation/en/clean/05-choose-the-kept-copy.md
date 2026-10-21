@@ -122,7 +122,8 @@ Folders sharing identical files
 
 `--backup` (or `backups` in `[folders]` of `config.toml`) marks a folder as a backup: it is read
 and compared by content, **never changed**, and its copies are never the reason a file of your
-photos goes. Unlike a protected folder, it does not keep anything: it is only compared.
+photos goes. Unlike a protected folder, it does not keep anything: it is only compared, by size
+then by its first and last 64 KB, never read whole ([speed](../commands/import.md#speed)).
 
 ```powershell
 mh folders add --backup "D:\backup"

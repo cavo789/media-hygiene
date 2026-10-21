@@ -1,0 +1,18 @@
+{# The check of a script changed since it was loaded (0276): included by mh.sh.j2; services/launcher_stale.py. #}
+# The write time and size of this file (GNU stat, then BSD's): empty when it is gone.
+_{{ function }}_stamp() {
+    stat -c '%Y %s' -- "$1" 2>/dev/null || stat -f '%m %z' -- "$1" 2>/dev/null || true
+}
+
+# What this terminal loaded (0276): `{{ function }}` compares it, one stat and no docker
+# call, with the file's now, before each command; said when they differ (a new mh.sh written
+# from another terminal, or by launcher); nothing when the file is gone.
+_{{ function }}_loaded="$(_{{ function }}_stamp "${_{{ function }}_file}")"
+
+_{{ function }}_stale() {
+    local now reload="source '${_{{ function }}_file}'"
+    if [[ -z "${_{{ function }}_loaded:-}" ]]; then return 0; fi
+    now="$(_{{ function }}_stamp "${_{{ function }}_file}")"
+    if [[ -z "$now" || "$now" == "${_{{ function }}_loaded}" ]]; then return 0; fi
+    printf '%s\n' "{{ stale.changed }}" >&2
+}

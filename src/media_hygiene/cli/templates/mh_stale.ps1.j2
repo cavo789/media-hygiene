@@ -1,0 +1,14 @@
+{# The check of a script changed since it was loaded (0276): included by mh.ps1.j2; services/launcher_stale.py. #}
+# The write time of this file when this window loaded it (0276): `mh` compares it, one stat and
+# no docker call, with the file's now, before each command. Said when they differ (a new
+# mh.ps1 written from another window, or by launcher); nothing when the file is gone.
+function global:_{{ function }}_stale {
+    $path = $MyInvocation.MyCommand.ScriptBlock.File
+    if (-not $path -or $null -eq $global:MediaHygieneLoaded) { return }
+    $item = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+    if (-not $item -or $item.LastWriteTimeUtc.Ticks -eq $global:MediaHygieneLoaded) { return }
+    $reload = ". '$path'"
+    Write-Host "{{ stale.changed }}"
+}
+$global:MediaHygieneLoaded = $null
+try { $global:MediaHygieneLoaded = (Get-Item -LiteralPath $PSCommandPath -ErrorAction Stop).LastWriteTimeUtc.Ticks } catch { }

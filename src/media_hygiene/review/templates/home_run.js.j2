@@ -184,7 +184,7 @@ function askAudit(action) {
     .catch(() => stopped());
 }
 
-// ---- Palette (Ctrl+K): every action and every space, by everyday words ------------------
+// ---- Palette (Ctrl+K): every action, every space and the docs' sections, by everyday words
 const palette = { dialog: null, input: null, list: null, items: [], active: -1 };
 function scoreOf(item, words) {
   const title = norm(item.title);
@@ -213,8 +213,29 @@ function paletteEntries(query) {
     }
     return out.filter(Boolean);
   }
-  const found = [...runItems, ...goItems].map((item) => ({ item: item, score: scoreOf(item, words) })).filter((x) => x.score > 0).sort((x, y) => y.score - x.score).slice(0, 12).map((x) => x.item);
-  return found.length ? [{ header: fill(T.results, { count: found.length }) }, ...found] : [];
+  const best = (items, most) => items.map((item) => ({ item: item, score: scoreOf(item, words) })).filter((x) => x.score > 0).sort((x, y) => y.score - x.score).slice(0, most).map((x) => x.item);
+  const found = best([...runItems, ...goItems], 12);
+  const out = found.length ? [{ header: fill(T.results, { count: found.length }) }, ...found] : [];
+  const sections = best(DOCS || [], 8);
+  if (sections.length) out.push({ header: T.documentation }, ...sections);
+  return out;
+}
+// The sections of the docs the tool serves (0270): read once from their index, under the actions.
+let DOCS = null;
+function loadDocs() {
+  if (DOCS !== null || !S.docs_index) return;
+  DOCS = [];
+  fetch(S.docs_index)
+    .then((response) => (response.ok ? response.json() : null))
+    .then((index) => {
+      if (!index) return;
+      DOCS = index.pages.flatMap((page) => [
+        { type: "doc", id: page.route, title: page.title, sub: T.documentation, icon: "book", hay: norm(page.title) },
+        ...page.headings.map((heading) => ({ type: "doc", id: `${page.route}#${heading.anchor}`, title: heading.title, sub: page.title, icon: "book", hay: norm(`${heading.title} ${page.title}`) })),
+      ]);
+      if (palette.dialog.open && palette.input.value) fillPalette();
+    })
+    .catch(() => { /* the palette keeps the actions */ });
 }
 function fillPalette() {
   const entries = paletteEntries(palette.input.value);
@@ -240,11 +261,16 @@ function activate(at) {
   const item = palette.items[at];
   if (!item) return;
   palette.dialog.close();
-  window.setTimeout(() => { if (item.type === "go") go(item.id); else onRun(item.id); }, 0);
+  window.setTimeout(() => {
+    if (item.type === "go") go(item.id);
+    else if (item.type === "doc") window.open(item.id, "_blank", "noopener");
+    else onRun(item.id);
+  }, 0);
 }
 function openPalette() {
   if (palette.dialog.open) return;
   palette.input.value = "";
+  loadDocs();
   fillPalette();
   showDialog(palette.dialog);
   palette.input.focus();

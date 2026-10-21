@@ -7,6 +7,8 @@
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
     local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
     local backups=()
+    # This file written again since this terminal loaded it (0276); not by the menu's own calls.
+    if [[ "${1:-}" != --color ]]; then _{{ function }}_stale; fi
     _{{ function }}_given "$@" || return  # --photos /mnt/e/Folder, for this command only
     set -- "${rest[@]}"
     if [[ $# -eq 0 ]]; then
@@ -208,3 +210,4 @@ _{{ function }}_menu() {
     {{ function }} "${words[@]}" "$@"
 }
 {% include 'mh_folders.sh.j2' %}
+{% include 'mh_stale.sh.j2' %}

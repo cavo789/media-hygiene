@@ -109,3 +109,10 @@ on the button, "the step starts in the console…") so it never reads as "nothin
   Trade-off accepted: a file deleted by hand inside a run's folder counts until `purge`.
 - Expected (estimated from the measured parts): `home_state()` about 2 s instead of 60 s.
   To confirm: step 23 again once the image holds this change.
+
+## After the fix, measured on the maintainer's PC (2026-10-20 22:07, step 23, image 7b75404a)
+
+- `GET /` 154 s → 0.08 s; `GET /api/state` 167 s → 0.99 s; `home_state()` 57–63 s →
+  0.83–1.0 s (−98 %); `quarantine_state` 55–61 s → 0.18 s. From `mh` to the page shown:
+  80 s → 2 s (estimated by the maintainer).
+- No setting needed: nothing left to tune. The browser not opening by itself stays in 0279.

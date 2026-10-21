@@ -1,0 +1,83 @@
+{# A page of the documentation (doc.html.j2): the article, its contents, its neighbours, in the
+   home page's tokens (theme.css.j2). The "in short" guides keep the look of the public site's
+   guide.css (.config/mkdocs/overrides/stylesheets/), ported to these tokens; the console
+   captures (`<!-- capture: … -->`) keep a terminal's look. #}
+
+/* ---- Sidebar: the menu of the docs ---------------------------------------------------- */
+.doc-nav .nav-link { grid-template-columns: minmax(0, 1fr); min-height: 34px; padding: 6px 10px; font-weight: 500; font-size: .92rem; line-height: 1.3; }
+.doc-nav .nav-link[aria-current="page"] { font-weight: 700; box-shadow: inset 3px 0 0 var(--mh-apricot); }
+.brand-logo { object-fit: contain; }
+
+/* ---- The page: the article, then its contents on wide screens -------------------------- */
+.doc-main { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: start; gap: 18px 40px; max-width: 1180px; }
+.doc-body { grid-column: 1; min-width: 0; max-width: 78ch; line-height: 1.65; }
+.doc-body > * + * { margin-top: 1em; }
+.doc-body h1 { font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem); margin-bottom: .4em; }
+.doc-body h2 { font-size: 1.45rem; margin-top: 2em; padding-top: .2em; }
+.doc-body h3 { font-size: 1.15rem; margin-top: 1.6em; }
+.doc-body h2, .doc-body h3, .doc-body h4 { scroll-margin-top: 84px; }
+.doc-body .headerlink { margin-left: .35em; color: var(--mk-border-strong); text-decoration: none; opacity: 0; transition: opacity .15s; }
+.doc-body :is(h1, h2, h3, h4):hover .headerlink, .doc-body .headerlink:focus-visible { opacity: 1; }
+.doc-body ul, .doc-body ol { padding-left: 1.4em; }
+.doc-body li + li { margin-top: .3em; }
+.doc-body img { max-width: 100%; height: auto; border-radius: var(--mk-radius-md); }
+.doc-body hr { border: 0; border-top: 1px solid var(--mk-border); margin: 2em 0; }
+.doc-body blockquote { margin-left: 0; padding: .2em 1em; border-left: 4px solid var(--mk-border-strong); color: var(--mk-ink-soft); }
+.doc-body :not(pre) > code { padding: .1em .35em; border-radius: var(--mk-radius-sm); background: var(--mk-sunken); color: var(--mk-ink); }
+.doc-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: .94rem; }
+.doc-body th, .doc-body td { padding: 8px 12px; border: 1px solid var(--mk-border); text-align: left; vertical-align: top; }
+.doc-body th { background: var(--mk-sunken); }
+
+/* ---- Code, and the console captures -------------------------------------------------- */
+.doc-body pre { margin-block: 1em; padding: 14px 16px; overflow-x: auto; border-radius: var(--mk-radius-md); background: var(--mk-code-bg); color: var(--mk-code-fg); font-size: .9rem; line-height: 1.5; }
+.doc-body pre code { font-size: inherit; color: inherit; background: none; padding: 0; }
+.doc-body pre.capture { padding-top: 40px; position: relative; background: var(--mk-term-bg); border: 1px solid var(--mk-term-border); }
+.doc-body pre.capture::before { content: ""; position: absolute; inset: 0 0 auto; height: 28px; border-radius: var(--mk-radius-md) var(--mk-radius-md) 0 0; background: var(--mk-term-head); }
+.doc-body pre.capture::after { content: ""; position: absolute; top: 10px; left: 14px; width: 9px; height: 9px; border-radius: 50%; background: var(--mk-dot-red); box-shadow: 15px 0 0 var(--mk-dot-amber), 30px 0 0 var(--mk-dot-green); }
+
+/* ---- Admonitions (!!!) and their folded kind (???) ------------------------------------ */
+.doc-body .admonition, .doc-body details { --ad-bg: var(--mk-note-bg); --ad-line: var(--mk-note-line); --ad-fg: var(--mk-note-fg); padding: 10px 16px; border-left: 4px solid var(--ad-line); border-radius: var(--mk-radius-sm); background: var(--ad-bg); color: var(--ad-fg); }
+.doc-body :is(.admonition, details).info { --ad-bg: var(--mk-info-bg); --ad-line: var(--mk-info-line); --ad-fg: var(--mk-info-fg); }
+.doc-body :is(.admonition, details):is(.tip, .question) { --ad-bg: var(--mk-tip-bg); --ad-line: var(--mk-tip-line); --ad-fg: var(--mk-tip-fg); }
+.doc-body :is(.admonition, details):is(.warning, .danger) { --ad-bg: var(--mk-warn-bg); --ad-line: var(--mk-warn-line); --ad-fg: var(--mk-warn-fg); }
+.doc-body .admonition-title, .doc-body summary { margin: 0; font-weight: 700; }
+.doc-body summary { cursor: pointer; }
+.doc-body details[open] > summary { margin-bottom: .6em; }
+.doc-body :is(.admonition, details) > * + * { margin-top: .6em; }
+.doc-body :is(.admonition, details) a { color: inherit; }
+
+/* ---- The "in short" guides (guide.css of the site) ----------------------------------- */
+.doc-body .mh-path { margin: 1.2em 0; padding: .6em 1em; border-left: 4px solid var(--mh-apricot); border-radius: var(--mk-radius-sm); background: var(--mk-sunken); }
+.doc-body .mh-path ul { display: flex; flex-wrap: wrap; gap: .4em 1.6em; margin: .4em 0 .2em; padding: 0; list-style: none; }
+.doc-body .mh-path li { position: relative; margin: 0; }
+.doc-body .mh-path li:not(:last-child)::after { content: "→"; position: absolute; right: -1.2em; color: var(--mk-ink-soft); }
+.doc-body .mh-path li a { display: inline-block; padding: .1em .7em; border: 1px solid var(--mk-primary); border-radius: 999px; font-weight: 600; text-decoration: none; }
+.doc-body:has(.mh-path) h2 { padding: .5em .8em; border-left: 4px solid var(--mk-primary); border-radius: var(--mk-radius-sm); background: var(--mk-sunken); }
+.doc-body:has(.mh-path) p > img { display: block; margin: .4em auto; border: 1px solid var(--mk-border); box-shadow: var(--mk-shadow-2); }
+.doc-body .mh-badge { display: inline-block; margin: 0 .3em .2em 0; padding: .05em .6em; border: 1px solid currentcolor; border-radius: 999px; font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.doc-body .mh-safe { color: var(--mk-tip-line); }
+.doc-body .mh-undo { color: var(--mk-info-line); }
+.doc-body .mh-final { color: var(--mk-danger-line); }
+.doc-body .mh-once { color: var(--mk-note-line); }
+.doc-body .mh-optional { color: var(--mk-ink-soft); }
+.doc-body .mh-ai { color: var(--mh-ai-fg); }
+
+/* ---- Contents, neighbours, a page not found ------------------------------------------- */
+.doc-toc { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 84px; max-height: calc(100vh - 110px); overflow-y: auto; font-size: .88rem; }
+.doc-toc ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.doc-toc a { color: var(--mk-ink-soft); text-decoration: none; }
+.doc-toc a:hover { color: var(--mk-primary); text-decoration: underline; }
+.doc-toc .toc-3 { padding-left: 12px; }
+.doc-pager { grid-column: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; max-width: 78ch; padding-top: 18px; border-top: 1px solid var(--mk-border); }
+.doc-pager a { display: grid; gap: 2px; min-width: 0; max-width: 48%; padding: 10px 14px; border: 1px solid var(--mk-border); border-radius: var(--mk-radius-md); background: var(--mk-surface); color: var(--mk-ink); font-weight: 600; text-decoration: none; }
+.doc-pager a:hover { border-color: var(--mk-primary); }
+.doc-next { margin-left: auto; text-align: right; }
+.doc-missing { grid-column: 1 / -1; display: grid; justify-items: center; gap: 14px; padding-block: 40px; text-align: center; }
+.doc-missing img { width: 180px; height: auto; }
+@media (max-width: 1100px) {
+  .doc-main { grid-template-columns: minmax(0, 1fr); }
+  .doc-toc { display: none; }
+}
+@media (max-width: 599.98px) {
+  .doc-pager a { max-width: 100%; }
+}

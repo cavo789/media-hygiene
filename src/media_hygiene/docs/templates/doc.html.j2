@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{# A page of the documentation served by the tool (0270, docs/view.py): the home page's shell (the
+   sidebar, the top bar, the theme switch, the meerkat) around the fragment rendered when the image was
+   built. The sidebar lists the menu of mkdocs.yml; the top bar the same page in the other language and
+   the way back to the tool; the side column the page's headings; the foot its previous and next pages.
+   Nothing comes from outside: the CSP allows `self` only. #}
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{ page.title if page else _("Page not found") }} — Media Hygiene</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
+<script>
+{% include "theme_choice.js.j2" %}
+</script>
+<style>
+{% include "theme.css.j2" %}
+{% include "home_base.css.j2" %}
+{% include "home_parts.css.j2" %}
+{% include "doc.css.j2" %}
+</style>
+</head>
+<body>
+{% include "home_icons.svg.j2" %}
+<a class="skip" href="#main">{{ _("Skip to the content") }}</a>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="{{ _('Documentation') }}">
+    <a class="brand" href="{{ home }}">
+      <img class="brand-logo" src="{{ paths.assets }}images/avatar.webp" alt="" width="42" height="57">
+      <span><span class="brand-name">Media Hygiene</span><span class="brand-tag">{{ _("Documentation") }}</span></span>
+    </a>
+    <nav class="nav doc-nav" aria-label="{{ _('Documentation') }}">
+{% for title, items in sections %}
+      <div>
+{% if title %}
+        <p class="nav-label">{{ title }}</p>
+{% endif %}
+        <ul class="nav-list">
+{% for item in items %}
+          <li><a class="nav-link" href="{{ item.route }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+{% endfor %}
+        </ul>
+      </div>
+{% endfor %}
+    </nav>
+    <div class="signature">
+      <img src="{{ paths.assets }}images/meerkat-magnifier.webp" alt="{{ _('The meerkat of Christophe Avonture') }}" width="400" height="387">
+      <p class="sig-version">Media Hygiene</p>
+      <div class="theme-switch" role="group" aria-label="{{ _('Display') }}">
+        <button type="button" data-theme-choice="auto" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-auto"></use></svg>{{ _("Auto") }}</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-sun"></use></svg>{{ _("Light") }}</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-moon"></use></svg>{{ _("Dark") }}</button>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="main-col">
+    <header class="topbar">
+      <button class="btn btn-ghost icon-btn menu-btn" id="menuBtn" type="button" aria-label="{{ _('Open the menu') }}" aria-controls="sidebar" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+      <p class="crumb"><span class="hide-sm">{{ _("Documentation") }}</span><span class="sep hide-sm" aria-hidden="true">›</span><strong>{{ page.title if page else _("Page not found") }}</strong></p>
+      <div class="top-links">
+        <a class="doc-link" href="/" title="{{ _('The page of the tool this server shows') }}"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg><span class="hide-sm">{{ _("Back to the tool") }}</span></a>
+        <a class="lang-link" href="{{ twin.route }}" hreflang="{{ twin.lang }}" lang="{{ twin.lang }}" title="{{ twin.title }}">{{ twin.label }}</a>
+      </div>
+    </header>
+    <main id="main" tabindex="-1" class="doc-main">
+{% if page %}
+      <article class="doc-body">
+{{ body }}
+      </article>
+{% if headings %}
+      <nav class="doc-toc" aria-labelledby="tocTitle">
+        <p class="eyebrow" id="tocTitle">{{ _("On this page") }}</p>
+        <ul>
+{% for heading in headings %}
+          <li class="toc-{{ heading.level }}"><a href="#{{ heading.anchor }}">{{ heading.title }}</a></li>
+{% endfor %}
+        </ul>
+      </nav>
+{% endif %}
+      <nav class="doc-pager" aria-label="{{ _('Previous and next pages') }}">
+{% if before %}
+        <a class="doc-prev" href="{{ before.route }}" rel="prev"><span class="eyebrow">← {{ _("Previous") }}</span><span>{{ before.title }}</span></a>
+{% endif %}
+{% if after %}
+        <a class="doc-next" href="{{ after.route }}" rel="next"><span class="eyebrow">{{ _("Next") }} →</span><span>{{ after.title }}</span></a>
+{% endif %}
+      </nav>
+{% else %}
+      <section class="doc-missing">
+        <img src="{{ paths.assets }}images/meerkat-lookout.webp" alt="" width="400" height="387">
+        <h1>{{ _("Page not found") }}</h1>
+        <p>{{ _("This page is not in the documentation of this version.") }} <a href="{{ home }}">{{ _("The documentation's home") }}</a></p>
+      </section>
+{% endif %}
+    </main>
+  </div>
+</div>
+<script>
+(() => {
+{% include "doc.js.j2" %}
+})();
+</script>
+</body>
+</html>

@@ -20,6 +20,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
+from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
 from media_hygiene.review.presence import Presence
 from media_hygiene.search.app import (
@@ -50,6 +51,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _PACKAGE: Final = "media_hygiene.search"
+_SEARCH_TEMPLATE: Final = "search.html.j2"
+_BROWSE_TEMPLATE: Final = "browse.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -95,8 +98,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         "apply_offered": start.apply is not None,
     }
     pages = SearchPages(
-        environment.get_template("search.html.j2").render(**paths).encode(),
-        environment.get_template("browse.html.j2").render(**paths).encode(),
+        headed_page(environment, _SEARCH_TEMPLATE, paths),
+        headed_page(environment, _BROWSE_TEMPLATE, paths),
         start.path,
     )
     chosen = chosen_desk(runtime, search)

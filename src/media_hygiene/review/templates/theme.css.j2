@@ -1,0 +1,37 @@
+{# The look every page shares (0268): the avonture.be design system (--mk-*), the meerkat (--mh-*), light
+   and dark after the OS or the switch of the home page (`theme_choice.js.j2`, the same localStorage key),
+   the fonts of /assets/ (OFL licences next to them: no page ever asks Google). The tokens, the colour
+   names the pages had before (--bg, --card…) mapped onto them and the bar of `page_header.html.j2`
+   are `assets/theme/tokens.css`, written once and shared with the reports (0273: they use the system
+   fonts, a file cannot load these). Included by the home page and by every page served; `assets` is
+   the /assets/ prefix. #}
+{% set assets = header.assets if header is defined else paths.assets %}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("{{ assets }}fonts/bricolage-grotesque-latin-opsz-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("{{ assets }}fonts/source-sans-3-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("{{ assets }}fonts/source-sans-3-latin-wght-italic.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url("{{ assets }}fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+{{ theme_tokens() }}

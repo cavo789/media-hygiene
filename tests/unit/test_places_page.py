@@ -14,6 +14,7 @@ from typing import Final
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import using
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.review.page_header import page_header
 
 _TOOLTIP: Final = re.compile(r"\.bindTooltip\(([^\n]*)")
 _LABEL: Final = re.compile(
@@ -30,6 +31,7 @@ def _page() -> str:
     """Render the map page as `serve_places` does."""
     environment = translated_environment("media_hygiene.places", escaped=("html", "j2"))
     return environment.get_template("places.html.j2").render(
+        header=page_header("places.html.j2"),
         state_path="/api/state",
         save_path="/api/places",
         search_path="/api/search",

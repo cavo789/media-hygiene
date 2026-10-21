@@ -47,11 +47,11 @@ HINT_PATH: Final = (
 FOLDER_PATH: Final = "/api/folder"  # POST: save, forget or ignore a folder (0231)
 # Sends only `http://127.0.0.1:<port>` to the tile server, which asks for a referrer.
 PAGE_REFERRER: Final = "strict-origin"
-# Leaflet from the page's own origin, the tiles from their server only.
+# Leaflet and the theme's fonts from the page's origin; the tiles from their server.
 PAGE_POLICY: Final = (
     "default-src 'none'; script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline'; img-src 'self' {tiles}; connect-src 'self'; "
-    "frame-ancestors 'none'"
+    "style-src 'self' 'unsafe-inline'; img-src 'self' {tiles}; font-src 'self'; "
+    "connect-src 'self'; frame-ancestors 'none'"
 )
 _GET, _POST = "GET", "POST"
 _POSTS: Final = frozenset({SEARCH_PATH, OSM_PATH, FOLDER_PATH, HINT_PATH, *BOARD_POSTS})

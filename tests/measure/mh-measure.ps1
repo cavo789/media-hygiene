@@ -85,6 +85,12 @@
 #      Windows, each part of the state timed inside its container (docker exec), the DNS of
 #      Docker Hub from it, the files of the tool folders; then an empty docker run, the price
 #      of each step's round trip; nothing written                          (0277)
+#  24. C:\Photos read-only with your usual cache: tags --meaning (downloads the CLIP model,
+#      894 MB, into that cache once, then a vector per photo: seconds per photo on your PC),
+#      then a search by meaning, timed (text model loaded)                  (0263)
+#  25. mh.ps1 loaded, written again, then mh version: the line saying the file changed since the
+#      window loaded it (expected once written again, absent after loading it again and
+#      when the file is removed); one stat, timed                              (0276)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -112,6 +118,8 @@
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
 #   .\mh-measure.ps1 -Only 23 -Count 1   (the home page of your own mh, timed: 0277)
+#   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
+#   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -138,7 +146,7 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $outDir = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir "measures-$stamp.txt"
-$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted'
+$wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted|by what|to look at|Downloading the model|files found'
 
 function Log([string]$text) {
     Add-Content -Path $out -Value $text -Encoding UTF8
@@ -2315,6 +2323,47 @@ for root in ('/journal', '/quarantine', '/reports', '/cache'):
         $watch.Stop()
         Log ("   23f. an empty docker run of {0} (try {1}): {2:N2} s" -f $Image, $try, $watch.Elapsed.TotalSeconds)
     }
+    $ErrorActionPreference = $saved
+}
+
+# --- 24: search by meaning on C:\Photos, with your usual cache (0263) ----------------------
+# The vectors and the model stay in your cache: the next tags --meaning only looks at new
+# photos, and search uses them. Ctrl+C keeps what is done.
+if (Wanted 24) {
+    Measure-Mh "24a. C:\Photos, tags --meaning (model downloaded once, then each photo)" $real @("tags", "--no-describe", "--meaning")
+    Measure-Mh "24b. the same again: nothing left to look at" $real @("tags", "--no-describe", "--meaning")
+    Measure-Mh "24c. search by meaning, the text model loaded" $real @("search", "--limit", "5", "une plage")
+}
+
+# --- 25: mh.ps1 written again after loading: the line of the stale check (0276) -------------
+# A copy of mh.ps1 under -Work is loaded, written again, and `mh version` run: the line must show;
+# after loading it again, and after removing the file, it must not. Your own mh is put back.
+if (Wanted 25) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 25. mh.ps1 written again after loading (0276)"
+    $folder = Join-Path $Work "stale"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $copy = Join-Path $folder "mh.ps1"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
+    . $copy
+    $first = @(mh version 2>&1 | ForEach-Object { "$_" })
+    Log ("   25a. loaded, not written again: line said = {0} (expected False)" -f [bool]($first -match 'changed on disk'))
+    Add-Content -LiteralPath $copy -Value "# written again" -Encoding Ascii
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $second = @(mh version 2>&1 | ForEach-Object { "$_" })
+    $watch.Stop()
+    Log ("   25b. written again: line said = {0} (expected True), the whole mh version call took {1:N2} s" -f [bool]($second -match 'changed on disk'), $watch.Elapsed.TotalSeconds)
+    Log ("   25b. the line: {0}" -f (($second | Where-Object { $_ -match 'changed on disk' }) -join ' / '))
+    . $copy
+    $third = @(mh version 2>&1 | ForEach-Object { "$_" })
+    Log ("   25c. loaded again: line said = {0} (expected False)" -f [bool]($third -match 'changed on disk'))
+    Add-Content -LiteralPath $copy -Value "# and again" -Encoding Ascii
+    Remove-Item -LiteralPath $copy -Force
+    $fourth = @(mh version 2>&1 | ForEach-Object { "$_" })
+    Log ("   25d. file removed: line said = {0} (expected False), mh still ran = {1}" -f [bool]($fourth -match 'changed on disk'), [bool]($fourth.Count -gt 0))
     $ErrorActionPreference = $saved
 }
 

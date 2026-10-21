@@ -1,6 +1,8 @@
 {% extends "base.html.j2" %}
 {% from "_disposal.html.j2" import removed_from_label, removed_label, disposal_icon, copies_legend %}
 {% set pair = page.pair %}
+{% set report_kind = "pair" %}
+{% set report_name = _("Folder pair") %}
 {% block title %}{{ _("Folder pair") }} — {{ pair.removed_from }}{% endblock %}
 {% block content %}
 <p class="muted"><a href="../report.html">← {{ _("Back to the report") }}</a></p>

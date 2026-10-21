@@ -12,12 +12,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>Media Hygiene — {{ texts.home }}</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
 <script>
-  {# Before the first paint: the theme a viewer chose, so that the page never flashes the other one. #}
-  try { const theme = JSON.parse(localStorage.getItem("mh-home-theme")); if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme); } catch (error) { /* the OS's theme */ }
+{% include "theme_choice.js.j2" %}
 </script>
 <style>
-{% include "home_fonts.css.j2" %}
+{% include "theme.css.j2" %}
 {% include "home_base.css.j2" %}
 {% include "home_parts.css.j2" %}
 </style>

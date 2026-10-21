@@ -122,12 +122,38 @@ WORKDIR /src
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-dev --no-install-project
+    uv sync --locked --no-default-groups --no-install-project
 
 COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev --no-editable
+    uv sync --locked --no-default-groups --no-editable
+
+# --- docs: documentation/ rendered into HTML, for the pages the tool serves (0270) --------
+# The `docs` dependency group only (Python-Markdown and its extensions, as the public site
+# uses them), and the renderer alone: neither reaches the image, only what it writes. The
+# documentation of the version built: a link of the home page never leaves the tool.
+FROM ${PYTHON_IMAGE} AS docs
+
+COPY --from=uv /uv /usr/local/bin/uv
+
+ENV UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/opt/docs-venv
+
+WORKDIR /src
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --only-group docs --no-install-project
+
+COPY src/media_hygiene/__init__.py ./src/media_hygiene/__init__.py
+COPY src/media_hygiene/docs ./src/media_hygiene/docs
+COPY .config/mkdocs/mkdocs.yml ./mkdocs.yml
+COPY documentation ./documentation
+RUN PYTHONPATH=/src/src PYTHONDONTWRITEBYTECODE=1 /opt/docs-venv/bin/python \
+        -m media_hygiene.docs.render documentation mkdocs.yml /out/docs
 
 # --- runtime: the interpreter, the virtual environment, ffprobe, ffmpeg, czkawka_cli -----
 FROM ${PYTHON_IMAGE} AS runtime
@@ -167,6 +193,8 @@ COPY --from=ffprobe /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=ffmpeg /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=czkawka /usr/local/bin/czkawka_cli /usr/local/bin/czkawka_cli
 COPY --from=builder /opt/venv /opt/venv
+# Last: a page of the documentation changed rebuilds this layer only (media_hygiene/docs/shelf.py).
+COPY --from=docs /out/docs /usr/share/media-hygiene/docs
 
 USER ${APP_UID}:${APP_GID}
 WORKDIR /tmp

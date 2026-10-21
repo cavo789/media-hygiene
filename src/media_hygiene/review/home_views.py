@@ -111,6 +111,7 @@ class HomeState(Frozen):  # one field per part of the page
     spaces: tuple[HomeSpace, ...]
     actions: tuple[HomeAction, ...]
     docs: HomeLink  # the documentation's home
+    docs_index: str | None = None  # the served docs' index, for the palette (0270)
     given: tuple[str, ...] = ()  # the folders `mh --photos` added, one line each
     proposed: HomeNext | None = None
     tiles: tuple[HomeTile, ...] = ()

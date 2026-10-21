@@ -153,6 +153,41 @@ Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche
 fichiers en tableau (`--limit N` pour plus). La recherche ne lit que le cache : relancez `tags`
 après un audit pour retrouver les nouvelles photos.
 
+## Retrouver une photo par ce qu'elle montre : `--meaning`
+
+Les mots trouvent ce que quelqu'un a nommé : un dossier, un fichier, la phrase d'un modèle. La
+photo d'un chat sur un canapé dans `2019/Divers` n'a pas le mot « chat ». Avec `--meaning` (ou
+`meaning = true` dans `[tags]`), `tags` laisse aussi un modèle regarder chaque photo, **sur le
+processeur de cet ordinateur** (CLIP ViT-B/32 et son modèle de texte multilingue : ni Ollama, ni
+carte graphique, rien n'est envoyé), et `search` classe ensuite les photos par ce qu'elles
+montrent, en français ou en anglais :
+
+```powershell
+docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 un modèle tourne sur ce PC
+```
+
+- **Ce qu'il trouve** : ce qui se voit. Mesuré sur 1 000 photos du mainteneur avec 20 recherches
+  en français : 2 des 3 premières images justes (67 % des 5 premières), fort sur les choses et
+  les lieux vus (un chat, une plage, une façade, un gâteau), plus faible sur une action (« une
+  fille qui danse »).
+- **Ce qu'il ne trouve pas** : qui et où. Un modèle ne connaît ni un prénom ni un village : les
+  noms viennent de [`people`](reference-people.md), les lieux du GPS. Tapés ensemble, ils
+  travaillent ensemble : `Frédérique cuisine` garde les photos de Frédérique (un nom de `people`)
+  et met les cuisines en premier ; `Durbuy plage` garde les photos de Durbuy et met les plages en
+  premier.
+- **Une seule fois** : le modèle (894 Mo) est téléchargé dans le cache (`/cache/models`) la
+  première fois, après l'avoir annoncé ; puis chaque photo est regardée une fois, environ 0,06 s
+  sur 4 fils d'exécution (mesuré sur le PC du mainteneur) : environ 1 minute pour 1 000 photos,
+  10 minutes pour 10 000 (estimé à partir de là). Les copies identiques sont regardées une fois ;
+  une photo retouchée depuis est regardée à nouveau ; les vidéos, non. Ctrl+C arrête entre deux
+  photos, et la fois suivante reprend.
+- **La recherche** : `search` utilise les vecteurs dès que le cache les contient, quoi que dise
+  `[tags] meaning` ; les mots comptent toujours, fusionnés avec le sens (fusion des rangs
+  réciproques). Elle trouve au plus `meaning_results` photos (200), les plus proches d'abord. Une
+  recherche dans une seule source (`vision:`, le filtre de source) ou de noms et de lieux
+  seulement reste une recherche de mots. Le modèle de texte se charge à la première recherche
+  (environ une seconde ; 1,5 Go de mémoire avec le modèle d'images pendant `tags`).
+
 ## Emporter les mots avec les photos : `xmp`
 
 Les mots vivent dans le cache de cet outil. Pour les retrouver dans digiKam, darktable,
@@ -220,6 +255,9 @@ language = ""   # "en", "fr", ou vide pour la langue de l'interface
 # stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
 town_km = 20
 xmp_sources = ["vision", "place"]   # les mots écrits dans les fichiers compagnons .xmp
+meaning = false        # true : tags donne aussi à chaque photo son vecteur (recherche par le sens)
+meaning_threads = 4    # fils d'exécution du processeur pour le modèle
+meaning_results = 200  # combien de photos une recherche par le sens trouve au plus
 ```
 
 Une liste `stop_words` écrite ici remplace celle intégrée. Le modèle lui-même se règle dans

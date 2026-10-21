@@ -1,19 +1,19 @@
 """Turn a picture or a search into a vector: the ONNX models, or a stub for the tests.
 
-`onnxruntime` is in the image (faces); `tokenizers` is installed at run time, in a
-temporary folder (README.md): both are imported by name, when a real model loads, so the
-tests and the stub never need them.
+`onnxruntime` and `tokenizers` are in the image (faces, search by meaning): both are
+imported by name, when a real model loads, so the tests and the stub never need them.
+How a picture is read (`pixels_of`) is the product's own (`media_hygiene.meaning`).
 """
 
 from __future__ import annotations
 
 import hashlib
 import importlib
-import json
-import struct
 from typing import TYPE_CHECKING, Any, Final, Protocol
 
 import numpy as np
+
+from media_hygiene.meaning.pixels import pixels_of, read_projection, unit
 
 from .models import SPECS, fetch
 
@@ -23,17 +23,13 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
     from PIL import Image
 
-    from .models import ModelSpec, Pixels, Words
+    from .models import ModelSpec, Words
 
 STUB: Final = "stub"
 STUB_DIMENSIONS: Final = 16
 _STUB_THUMB: Final = (8, 8)
-_HEADER_BYTES: Final = 8
-_SAFETENSORS_META: Final = "__metadata__"
 _ERRORS_ONLY: Final = 3
 _PROVIDERS: Final = ("CPUExecutionProvider",)
-_CHANNELS_FIRST: Final = (2, 0, 1)
-_MAX_LEVEL: Final = 255.0
 _CLS: Final = 0
 _TWO_D: Final = 2
 
@@ -53,64 +49,6 @@ class Embedder(Protocol):
     def text(self, query: str) -> NDArray[np.float32]:
         """The unit vector of a search, in the space of the pictures."""
         ...
-
-
-def unit(vector: NDArray[np.float32]) -> NDArray[np.float32]:
-    """Scale a vector to length one (a zero vector stays zero).
-
-    Args:
-        vector: Any vector.
-
-    Returns:
-        The same direction, length one.
-    """
-    length = float(np.linalg.norm(vector))
-    return vector if length == 0.0 else (vector / length).astype(np.float32)
-
-
-def pixels_of(picture: Image.Image, pixels: Pixels) -> NDArray[np.float32]:
-    """Resize, crop and scale a picture as a model was trained to read it.
-
-    Args:
-        picture: The decoded picture, upright.
-        pixels: The model's way.
-
-    Returns:
-        A `3 x side x side` tensor.
-    """
-    rgb = picture.convert("RGB")
-    side = pixels.side
-    if pixels.shortest:
-        scale = pixels.shortest / min(rgb.size)
-        width = max(side, round(rgb.width * scale))
-        height = max(side, round(rgb.height * scale))
-        rgb = rgb.resize((width, height), pixels.resample)
-        left, top = (width - side) // 2, (height - side) // 2
-        rgb = rgb.crop((left, top, left + side, top + side))
-    else:
-        rgb = rgb.resize((side, side), pixels.resample)
-    array = np.asarray(rgb, dtype=np.float32) / _MAX_LEVEL
-    mean = np.asarray(pixels.mean, dtype=np.float32)
-    std = np.asarray(pixels.std, dtype=np.float32)
-    return ((array - mean) / std).transpose(_CHANNELS_FIRST).astype(np.float32)
-
-
-def read_projection(path: Path) -> NDArray[np.float32]:
-    """Read the one weight matrix of a safetensors file (no bias, as its config says).
-
-    Args:
-        path: The file.
-
-    Returns:
-        The matrix, `out x in`.
-    """
-    data = path.read_bytes()
-    (length,) = struct.unpack("<Q", data[:_HEADER_BYTES])
-    header = json.loads(data[_HEADER_BYTES : _HEADER_BYTES + length])
-    (entry,) = (value for key, value in header.items() if key != _SAFETENSORS_META)
-    start, end = entry["data_offsets"]
-    body = data[_HEADER_BYTES + length + start : _HEADER_BYTES + length + end]
-    return np.frombuffer(body, dtype=np.float32).reshape(entry["shape"])
 
 
 def _first_vector(output: NDArray[np.float32]) -> NDArray[np.float32]:

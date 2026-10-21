@@ -18,10 +18,12 @@ from media_hygiene.cli.home_folders import home_folders
 from media_hygiene.cli.home_reports import audit_previews, latest_reports
 from media_hygiene.cli.home_runs import home_quarantine, home_undo, home_update
 from media_hygiene.cli.home_tiles import home_tiles
+from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.cli.menu_steps import build_menu, full_catalog
 from media_hygiene.cli.status_step import next_step
 from media_hygiene.cli.status_view import status_lines
-from media_hygiene.constants import APP_NAME, DOC_PAGES, REPORT_INDEX_FILE_NAME
+from media_hygiene.constants import APP_NAME, REPORT_INDEX_FILE_NAME, Locale
+from media_hygiene.docs.served import served_index, served_url
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_parts import HomeLink
@@ -38,6 +40,7 @@ if TYPE_CHECKING:
 
 # Between two folders of LAUNCHER_PHOTOS_VARIABLE: no Windows name holds it (mh.ps1).
 _SEPARATOR: Final = "|"
+_DOCS_HOME: Final = Doc("")  # the documentation's home
 
 
 def home_state(runtime: Runtime) -> HomeState:
@@ -61,7 +64,10 @@ def home_state(runtime: Runtime) -> HomeState:
         lines=status_lines(status),
         spaces=home_spaces(areas, CycleFacts(status, menu, newer=update is not None)),
         actions=home_actions(menu),
-        docs=HomeLink(url=f"{DOC_PAGES}{_('/')}", url_en=f"{DOC_PAGES}/"),
+        docs=HomeLink(
+            url=served_url(_DOCS_HOME), url_en=served_url(_DOCS_HOME, Locale.EN)
+        ),
+        docs_index=served_index(),
         given=_given(),
         proposed=home_next(menu, next_step(status, purge_days), areas),
         tiles=home_tiles(status),

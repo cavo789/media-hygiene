@@ -40,7 +40,7 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
     session = review_session(locations)
     [series] = session.state().series
     preview = series.shots[0].preview
-    page, state, image, unknown, other = serve_and_call(
+    page, state, image, unknown, icon = serve_and_call(
         session,
         [
             Call("GET", "/"),
@@ -61,7 +61,8 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
     assert image.body.startswith(b"\xff\xd8")
     assert image.headers["cache-control"] == "private, no-cache"
     assert image.headers["etag"] == RUN_TAG
-    assert (unknown.status, other.status) == (404, 404)
+    assert unknown.status == 404
+    assert (icon.status, icon.headers["content-type"]) == (200, "image/png")
 
 
 def test_each_decision_is_saved_at_once_and_resumed(locations: Locations) -> None:

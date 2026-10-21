@@ -45,6 +45,7 @@ from media_hygiene.places.posts import ASIDE_PATH, PHOTOS_PATH, SAVE_PATH
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.ending import run_server
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.page_header import page_header
 from media_hygiene.services.missing_mount import missing_mount
 from media_hygiene.services.places_index import OpenedMap, located_files, read_index
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -127,6 +128,7 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
     osm = online_search(settings.nominatim_url)
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
+        header=page_header(_PAGE_TEMPLATE),
         state_path=STATE_PATH,
         save_path=SAVE_PATH,
         search_path=SEARCH_PATH,

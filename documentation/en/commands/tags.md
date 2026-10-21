@@ -67,6 +67,7 @@ names, dates and places.*
 | 🤖 `--sample N` | **With a local AI only.** Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
 | 🤖 `--no-describe` | **With a local AI only.** Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
 | 🤖 `--yes`, `-y` | **With a local AI only.** Describe the photos without asking, however many (above 200, it asks first). |
+| 🤖 `--meaning` | A model on this computer's processor (CLIP: no Ollama, no GPU, nothing sent) looks at each photo once, about 1 minute per 1,000 photos, so that [`search`](search.md) finds what a photo shows ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). The model (894 MB) is downloaded into the cache the first time. Default: `[tags] meaning`. |
 
 ## Good to know
 
@@ -76,6 +77,8 @@ names, dates and places.*
 - **One photo per set**: identical copies share their words, a burst takes those of its sharpest
   shot; a video is seen by the frame in its middle; small pictures and videos are not sent.
   `classify` then reuses these answers instead of sending the photos again.
+- **Search by meaning** (`--meaning`, opt-in): what a photo shows, never who nor where (names
+  come from `people`, places from the GPS); identical copies are looked at once, videos never.
 - **Stop whenever you want**: Ctrl+C lets the photos being described finish; the next run goes on
   where this one stopped.
 - **Why not inside the photos?** Writing into a JPEG changes its bytes, its fingerprint, and two

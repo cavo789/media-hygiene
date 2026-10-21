@@ -919,6 +919,16 @@ msgstr[1] ""
 "Supprimer aussi les {count} noms de config.toml ([[people.person]]) et "
 "les visages ignorés ?"
 
+msgid ""
+"Also let a model look at each photo on this computer's processor (CLIP, "
+"once, about 1 minute per 1,000 photos), so that 'search' finds what a "
+"photo shows. Default: [tags] meaning."
+msgstr ""
+"Laisser aussi un modèle regarder chaque photo sur le processeur de cet "
+"ordinateur (CLIP, une seule fois, environ 1 minute pour 1 000 photos), "
+"pour que 'search' trouve ce qu'une photo montre. Par défaut : [tags] "
+"meaning."
+
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
@@ -1120,11 +1130,17 @@ msgstr ""
 "Retour à la console : mh copie à nouveau chaque fichier coché, le prouve,"
 " puis le supprime du téléphone."
 
+msgid "Back to the home page"
+msgstr "Retour à l'accueil"
+
 msgid "Back to the photos"
 msgstr "Retour aux photos"
 
 msgid "Back to the report"
 msgstr "Retour au rapport"
+
+msgid "Back to the tool"
+msgstr "Retour à l'outil"
 
 msgid "Back up"
 msgstr "Sauvegarder"
@@ -1233,8 +1249,8 @@ msgid "Cannot ask for confirmation without an interactive terminal."
 msgstr "Impossible de demander confirmation sans terminal interactif."
 
 #, python-brace-format
-msgid "Cannot download the face model {name}: {error}"
-msgstr "Impossible de télécharger le modèle de visages {name} : {error}"
+msgid "Cannot download the model {name}: {error}"
+msgstr "Impossible de télécharger le modèle {name} : {error}"
 
 #, python-brace-format
 msgid ""
@@ -1524,6 +1540,9 @@ msgstr "Comparaison des couleurs"
 
 msgid "Comparing files of equal size"
 msgstr "Comparaison des fichiers de même taille"
+
+msgid "Comparing the backup with your photos"
+msgstr "Comparaison de la sauvegarde avec vos photos"
 
 #, python-brace-format
 msgid "Completing {path} would change a setting: nothing was written."
@@ -2083,6 +2102,15 @@ msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 "Téléchargez-le à nouveau depuis le rapport, et placez-le à côté de lui "
 "sur /reports."
+
+#, python-brace-format
+msgid ""
+"Downloading the model of search by meaning into the cache, once ({size} "
+"MB): it runs on this computer, nothing about your photos is sent."
+msgstr ""
+"Téléchargement du modèle de la recherche par le sens dans le cache, une "
+"seule fois ({size} Mo) : il tourne sur cet ordinateur, rien de vos photos"
+" n'est envoyé."
 
 msgid ""
 "Downloading the two face models into the cache, once (39 MB): they run on"
@@ -3289,6 +3317,14 @@ msgstr ""
 msgid "How many files the table lists at most. Default: {count}."
 msgstr "Nombre maximal de fichiers listés dans le tableau. Par défaut : {count}."
 
+msgid "How many photos a search by meaning finds at most, the closest first."
+msgstr ""
+"Combien de photos une recherche par le sens trouve au plus, les plus "
+"proches d'abord."
+
+msgid "How many processor threads the model uses."
+msgstr "Combien de fils d'exécution du processeur le modèle utilise."
+
 msgid "How many reports to keep?"
 msgstr "Combien de rapports garder ?"
 
@@ -3649,6 +3685,9 @@ msgstr "Longitude"
 
 msgid "Look again at the photos gone"
 msgstr "Revoir les photos disparues"
+
+msgid "Looking at the photos"
+msgstr "Regard sur les photos"
 
 #, python-brace-format
 msgid "Looking for the files of {folder} in OneDrive's cloud only…"
@@ -4053,6 +4092,9 @@ msgstr "De nouvelles photos ? Le cycle recommence à {stage}."
 
 msgid "New place"
 msgstr "Nouveau lieu"
+
+msgid "Next"
+msgstr "Suivante"
 
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
@@ -4722,6 +4764,9 @@ msgstr "Sur un autre disque ou montage"
 msgid "On the PC:"
 msgstr "Sur le PC :"
 
+msgid "On this page"
+msgstr "Dans cette page"
+
 msgid ""
 "Once a day at most, ask Docker Hub whether a newer version is published, "
 "to say so on the home page and in 'mh menu'. Sent: one request for the "
@@ -5000,6 +5045,9 @@ msgstr "Autres commandes"
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
+msgid "Page not found"
+msgstr "Page introuvable"
+
 #, python-brace-format
 msgid ""
 "Page ready, open {url} in your browser. Each choice is saved at once in "
@@ -5231,6 +5279,12 @@ msgstr ""
 msgid "Preparing the home page…"
 msgstr "Préparation de l'accueil…"
 
+msgid "Previous"
+msgstr "Précédente"
+
+msgid "Previous and next pages"
+msgstr "Pages précédente et suivante"
+
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
 
@@ -5384,6 +5438,13 @@ msgstr "Lecture des dossiers de l'outil…"
 
 msgid "Reading where you are…"
 msgstr "Lecture de là où vous en êtes…"
+
+msgid ""
+"Reads the first and last 64 KB of the files of the same size on both "
+"sides: a backup is never read whole."
+msgstr ""
+"Lit les 64 Ko du début et de la fin des fichiers de même taille des deux "
+"côtés : une sauvegarde n'est jamais lue en entier."
 
 msgid ""
 "Reads the remaining candidates in full: same SHA-256 means identical, "
@@ -5723,6 +5784,9 @@ msgstr "Lancez 'media-hygiene history' pour lister les exécutions."
 msgid "Run 'people' to see the groups in your browser and name them."
 msgstr "Lancez 'people' pour voir les groupes dans votre navigateur et les nommer."
 
+msgid "Run 'tags --meaning' once: it downloads the model again."
+msgstr "Lancez 'tags --meaning' une fois : il télécharge à nouveau le modèle."
+
 msgid ""
 "Run 'tags' first: it gives every photo the words of its folders, date and"
 " place."
@@ -5958,6 +6022,35 @@ msgstr ""
 "d'utilisation : https://operations.osmfoundation.org/policies/nominatim/ "
 "(une recherche par seconde au plus). Une autre instance, ou vide pour ne "
 "chercher que hors ligne."
+
+msgid "Search by meaning: every photo is looked at already."
+msgstr "Recherche par le sens : chaque photo a déjà été regardée."
+
+#, python-brace-format
+msgid "Search by meaning: {count} photo can be found by what it shows."
+msgid_plural "Search by meaning: {count} photos can be found by what they show."
+msgstr[0] ""
+"Recherche par le sens : {count} photo peut être trouvée par ce qu'elle "
+"montre."
+msgstr[1] ""
+"Recherche par le sens : {count} photos peuvent être trouvées par ce "
+"qu'elles montrent."
+
+#, python-brace-format
+msgid ""
+"Search by meaning: {count} photo to look at on this computer's processor,"
+" about {duration}. Ctrl+C stops; what is done is kept."
+msgid_plural ""
+"Search by meaning: {count} photos to look at on this computer's "
+"processor, about {duration}. Ctrl+C stops; what is done is kept."
+msgstr[0] ""
+"Recherche par le sens : {count} photo à regarder sur le processeur de cet"
+" ordinateur, environ {duration}. Ctrl+C arrête ; ce qui est fait est "
+"gardé."
+msgstr[1] ""
+"Recherche par le sens : {count} photos à regarder sur le processeur de "
+"cet ordinateur, environ {duration}. Ctrl+C arrête ; ce qui est fait est "
+"gardé."
 
 msgid "Search by words"
 msgstr "Chercher par mots"
@@ -6733,16 +6826,15 @@ msgstr ""
 "ne sont pas cassés : clean les laisse où ils sont, et le prochain audit "
 "les relit."
 
+msgid "The documentation's home"
+msgstr "L'accueil de la documentation"
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
 msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
-
-#, python-brace-format
-msgid "The face model {name} downloaded is not the expected file."
-msgstr "Le modèle de visages {name} téléchargé n'est pas le fichier attendu."
 
 msgid ""
 "The faces 'people' finds and groups. They are personal data: kept in the "
@@ -6954,6 +7046,10 @@ msgstr "Le modèle {model} ne voit pas les images."
 msgid "The model {model} is not installed at {url}."
 msgstr "Le modèle {model} n'est pas installé sur {url}."
 
+#, python-brace-format
+msgid "The model {name} downloaded is not the expected file."
+msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
+
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
 
@@ -7007,6 +7103,9 @@ msgstr "La page ne tourne plus : relancez people."
 msgid "The page is not running any more: type mh phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh phone."
 
+msgid "The page of the tool this server shows"
+msgstr "La page de l'outil que ce serveur affiche"
+
 msgid "The page's tab was closed: the page stopped."
 msgstr "L'onglet de la page a été fermé : la page s'est arrêtée."
 
@@ -7049,6 +7148,13 @@ msgstr "Le passage du téléphone où les fichiers ont été prouvés."
 
 msgid "The phone's name, as Windows shows it."
 msgstr "Le nom du téléphone, tel que Windows l'affiche."
+
+msgid ""
+"The photos have vectors, but the model of search by meaning is not in the"
+" cache: the words alone answer."
+msgstr ""
+"Les photos ont leurs vecteurs, mais le modèle de la recherche par le sens"
+" n'est pas dans le cache : seuls les mots répondent."
 
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
@@ -7497,6 +7603,12 @@ msgstr ""
 "Cette version ne sait pas trouver les visages : le moteur ONNX n'est pas "
 "installé."
 
+#, python-brace-format
+msgid "This build cannot search by meaning: {module} is not installed."
+msgstr ""
+"Cette version ne sait pas chercher par le sens : {module} n'est pas "
+"installé."
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -7558,6 +7670,9 @@ msgstr "Cette page analyse aussi : {folder}"
 
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
+
+msgid "This page is not in the documentation of this version."
+msgstr "Cette page n'est pas dans la documentation de cette version."
 
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"
@@ -9970,6 +10085,22 @@ msgid "true or false is expected, not {value}"
 msgstr "true ou false est attendu, pas {value}"
 
 msgid ""
+"true: 'tags' also lets a model look at each photo (CLIP, on this "
+"computer's processor: no GPU, nothing sent), once, about 1 minute per "
+"1,000 photos, so that 'search' finds what a photo shows even without a "
+"word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into "
+"the cache the first time. It sees what is on a photo, never who nor "
+"where: names come from 'people', places from the GPS."
+msgstr ""
+"true : 'tags' laisse aussi un modèle regarder chaque photo (CLIP, sur le "
+"processeur de cet ordinateur : pas de carte graphique, rien n'est "
+"envoyé), une seule fois, environ 1 minute pour 1 000 photos, pour que "
+"'search' trouve ce qu'une photo montre même sans un mot pour le dire "
+"(\"un chat sur un canapé\"). Le modèle (894 Mo) est téléchargé dans le "
+"cache la première fois. Il voit ce qui est sur une photo, jamais qui ni "
+"où : les noms viennent de 'people', les lieux du GPS."
+
+msgid ""
 "true: a photo without GPS in a folder named after a town "
 "(2019/Douarnenez) gets the position of that town's centre in its sidecar,"
 " so that other applications show it on their map. Approximate: off by "
@@ -10057,6 +10188,9 @@ msgstr "vidéos datées par leurs balises :"
 
 msgid "videos:"
 msgstr "vidéos :"
+
+msgid "what each photo shows, for search by meaning"
+msgstr "ce que montre chaque photo, pour la recherche par le sens"
 
 msgid "whole series set aside"
 msgstr "série entière écartée"
@@ -10154,6 +10288,14 @@ msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
+
+#, python-brace-format
+msgid ""
+"{command} changed on disk since this window loaded it: type {reload} (or "
+"open a new window)."
+msgstr ""
+"{command} a changé sur le disque depuis que cette fenêtre l'a chargé : tapez "
+"{reload} (ou ouvrez une nouvelle fenêtre)."
 
 #, python-brace-format
 msgid "{command} is for Windows only."
@@ -10859,10 +11001,26 @@ msgstr[0] "{count} photo analysée : {faces} visages, {seconds} s par photo."
 msgstr[1] "{count} photos analysées : {faces} visages, {seconds} s par photo."
 
 #, python-brace-format
+msgid "{count} photo can now be found by what it shows ({duration})."
+msgid_plural "{count} photos can now be found by what they show ({duration})."
+msgstr[0] ""
+"{count} photo peut maintenant être trouvée par ce qu'elle montre "
+"({duration})."
+msgstr[1] ""
+"{count} photos peuvent maintenant être trouvées par ce qu'elles montrent "
+"({duration})."
+
+#, python-brace-format
 msgid "{count} photo could not be decoded."
 msgid_plural "{count} photos could not be decoded."
 msgstr[0] "{count} photo n'a pas pu être décodée."
 msgstr[1] "{count} photos n'ont pas pu être décodées."
+
+#, python-brace-format
+msgid "{count} photo could not be decoded: it has no vector."
+msgid_plural "{count} photos could not be decoded: they have no vector."
+msgstr[0] "{count} photo n'a pas pu être décodée : elle n'a pas de vecteur."
+msgstr[1] "{count} photos n'ont pas pu être décodées : elles n'ont pas de vecteur."
 
 #, python-brace-format
 msgid "{count} photo could not be described: unreadable, or no answer."
@@ -12095,9 +12253,6 @@ msgstr[0] ""
 msgstr[1] ""
 "↩️ {count} photos et vidéos que vous aviez déjà mises de côté sont "
 "revenues ({size}) : retour en quarantaine."
-
-msgid "⌂ Home"
-msgstr "⌂ Accueil"
 
 #, python-brace-format
 msgid ""
