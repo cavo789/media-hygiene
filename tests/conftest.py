@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
@@ -15,9 +16,35 @@ from tests.support.runtime import make_locations
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from pathlib import Path
 
     from media_hygiene.paths.locations import Locations
+
+_SOURCES = Path(__file__).resolve().parent.parent / "src"
+
+
+def pytest_sessionfinish(session: pytest.Session) -> None:
+    """Fail the run when a test left `__pycache__` in `src/` (ad9b390, 2026-10-21).
+
+    The devcontainer writes bytecode under `PYTHONPYCACHEPREFIX`; a folder in the tree
+    means a subprocess ran with an environment that dropped it.
+
+    Args:
+        session: The pytest session ending.
+    """
+    if not os.environ.get("PYTHONPYCACHEPREFIX"):
+        return
+    left = sorted(_SOURCES.rglob("__pycache__"))
+    if not left:
+        return
+    reporter = session.config.pluginmanager.get_plugin("terminalreporter")
+    if reporter is not None:
+        reporter.ensure_newline()
+        reporter.write_line(
+            f"__pycache__ left in the tree ({left[0]}, {len(left)} in all): a test ran "
+            "Python without PYTHONPYCACHEPREFIX; fix it, then delete them",
+            red=True,
+        )
+    session.exitstatus = pytest.ExitCode.TESTS_FAILED
 
 
 @pytest.fixture(autouse=True)

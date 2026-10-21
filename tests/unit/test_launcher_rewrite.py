@@ -7,6 +7,7 @@ fake `docker`, so the script written, loaded and read back is the tool's own.
 
 from __future__ import annotations
 
+import os
 import shlex
 import shutil
 import subprocess
@@ -83,14 +84,22 @@ esac
 
 
 def _environment(tmp_path: Path, **extra: str) -> dict[str, str]:
-    """A clean environment: the fake `docker` first, the tool folders in the test's."""
+    """A clean environment: the fake `docker` first, the tool folders in the test's.
+
+    The interpreter's own settings stay (`PYTHONPYCACHEPREFIX`: no `__pycache__` in
+    the tree).
+    """
     names = {
         f"MEDIA_HYGIENE_{kind.value.upper()}_DIR": kind.value for kind in MountKind
     }
     folders = {name: str(tmp_path / "in" / value) for name, value in names.items()}
     for folder in folders.values():
         Path(folder).mkdir(parents=True, exist_ok=True)
+    python = {
+        name: value for name, value in os.environ.items() if name.startswith("PYTHON")
+    }
     return {
+        **python,
         "HOME": str(tmp_path),
         "PATH": f"{tmp_path / 'bin'}:/usr/bin:/bin",
         "FAKE": str(tmp_path),
