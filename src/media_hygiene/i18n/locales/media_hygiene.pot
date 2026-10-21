@@ -5297,6 +5297,12 @@ msgstr ""
 msgid "Sharpness"
 msgstr ""
 
+msgid "Sharpness of the faces in the shot, and its share of the sharpest faces'"
+msgstr ""
+
+msgid "Sharpness of the shot, and its share of the sharpest one's"
+msgstr ""
+
 msgid ""
 "Shots of one camera, taken seconds apart. This is not duplication: "
 "neither 'clean' nor 'clean --tier near' touches them. The sharpest shot "
@@ -8440,10 +8446,6 @@ msgid "sharpest"
 msgstr ""
 
 msgid "sharpness"
-msgstr ""
-
-#, python-brace-format
-msgid "sharpness {value}"
 msgstr ""
 
 msgid "shortcut desktop icon start"

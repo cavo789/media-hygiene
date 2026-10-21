@@ -57,6 +57,8 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
     assert sum(shot.best for shot in series.shots) == 1
     assert not series.shots[1].best  # the blurred one
     assert [shot.folder for shot in series.shots] == [BURST_HOST] * 3
+    assert all(shot.score for shot in series.shots)  # the badge's figure
+    assert all("sharpness" not in shot.details for shot in series.shots)  # not twice
     assert (image.status, image.headers["content-type"]) == (200, "image/jpeg")
     assert image.body.startswith(b"\xff\xd8")
     assert image.headers["cache-control"] == "private, no-cache"

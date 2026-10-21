@@ -16,6 +16,8 @@
   "kept": "✅ " ~ _("kept"),
   "aside": "📦 " ~ _("set aside"),
   "protected": "🔒 " ~ _("protected folder, kept"),
+  "scoreTitle": _("Sharpness of the shot, and its share of the sharpest one's"),
+  "scoreFacesTitle": _("Sharpness of the faces in the shot, and its share of the sharpest faces'"),
   "sharpest": "⭐ " ~ _("sharpest"),
   "sharpestFaces": "⭐ " ~ _("faces sharpest"),
   "suggested": _("suggestion"),
@@ -122,6 +124,9 @@
   .shot .key { position: absolute; top: 14px; left: 14px; min-width: 30px; padding: 2px 8px;
                text-align: center; font-weight: 650; background: var(--card);
                border: 1px solid var(--line); border-radius: 6px; }
+  .shot .score { position: absolute; top: 14px; left: 58px; padding: 2px 8px; font-weight: 600;
+                 background: var(--card); border: 1px solid var(--line); border-radius: 6px; }
+  .shot .score.best { color: var(--ok); border-color: var(--ok); font-weight: 750; }
   figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
   figcaption .original { margin-left: 8px; font-weight: 400; color: var(--accent); }
   .state { font-weight: 600; color: var(--ok); } .aside .state, .proposed .state { color: var(--bad); }
@@ -295,6 +300,15 @@
     return link;
   };
 
+  const scoreBadge = (shot) => {
+    // The figure the proposals compare (faces' when they decide); the sharpest one stands out.
+    if (!shot.score) return document.createComment("no score");
+    const text = shot.best ? "⭐ " + shot.score : "🔍 " + shot.score + " · " + Math.round(shot.share * 100) + " %";
+    const badge = line("span", text, shot.best ? "score best" : "score");
+    badge.title = shot.faces ? T.scoreFacesTitle : T.scoreTitle;
+    return badge;
+  };
+
   const card = (item, rank, position) => {
     const shot = item.shots[rank];
     const state = shotState(item, shot, rank);
@@ -313,7 +327,7 @@
       line("div", shot.details, "muted"),
     );
     caption.children[1].append(name, originalLink(shot));
-    figure.append(line("span", position < 9 ? String(position + 1) : "·", "key"), image, caption);
+    figure.append(line("span", position < 9 ? String(position + 1) : "·", "key"), scoreBadge(shot), image, caption);
     figure.addEventListener("click", () => toggle(position));
     return figure;
   };

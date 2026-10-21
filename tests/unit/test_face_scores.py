@@ -28,7 +28,7 @@ from media_hygiene.plan.face_scores import (
     Face as Measured,
 )
 from media_hygiene.plan.similar_models import BurstSeries, SimilarFindings
-from media_hygiene.review.shares import shares
+from media_hygiene.review.shares import compared, shares
 from media_hygiene.scan.models import MediaFile, VisualFacts
 
 if TYPE_CHECKING:
@@ -155,3 +155,11 @@ def test_the_proposals_and_their_shares_follow_the_faces() -> None:
     }
     assert shares((best, blurred, plain, faceless)) == (1.0, 0.1, 0.75, 1.0)
     assert shares((replace(best, faced=False, faces=None), None)) == (1.0, None)
+
+
+def test_the_badge_shows_the_figure_the_shares_are_made_of() -> None:
+    """Faces' sharpness when it decides, the frame's otherwise: never the other one."""
+    on_faces = ShotLook(900.0, 0, faced=True, faces=400.0)
+    on_frame = ShotLook(10.0, 0, faced=True, faces=None)
+    assert compared(on_faces) == 400.0
+    assert compared(on_frame) == 10.0

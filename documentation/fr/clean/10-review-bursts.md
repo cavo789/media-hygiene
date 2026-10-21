@@ -84,9 +84,11 @@ seconde d'intervalle.
   plus).
 - **Au-dessus des photos** : l'appareil et le nombre de photos, puis un bandeau en pointillés
   tant que vous n'avez pas choisi : il dit ce que passer à la suite enregistrera.
-- **Chaque photo** : son numéro (la touche à presser), son état, son nom, un lien
-  **↗ original**, son dossier, sa résolution, sa taille et sa **netteté**, et le moment de la
-  prise de vue.
+- **Chaque photo** : son numéro (la touche à presser) et, à côté, une **pastille de netteté**
+  (*🔍 225 · 92 %* : le score, puis sa part de celui de la plus nette ; la plus nette affiche
+  *⭐ 244* en vert ; quand les visages décident, le chiffre est celui des visages, dit dans
+  l'info-bulle de la pastille) ; puis son état, son nom, un lien **↗ original**, son dossier,
+  sa résolution, sa taille et le moment de la prise de vue.
 - **⭐ la plus nette** : toujours **la première photo**, encadrée en vert. Les autres suivent
   de la plus nette à la moins nette : les floues arrivent en dernier. Plus la netteté est
   haute, plus l'image est piquée ; elle ne mesure que le flou, pas un œil fermé : le choix

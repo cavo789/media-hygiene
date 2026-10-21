@@ -79,8 +79,11 @@ The first series appears. Here, the second one, a birthday: five shots taken one
   *⏱ about 2 h 10 left at your pace* (a long pause counts two minutes at most).
 - **Above the shots**: the camera and the number of shots, then a dashed banner as long as
   you have not chosen: it says what moving on will save.
-- **Each shot**: its number (the key to press), its state, its name, a **↗ original** link,
-  its folder, its resolution, size and **sharpness**, and the moment it was taken.
+- **Each shot**: its number (the key to press) and, next to it, a **sharpness badge**
+  (*🔍 225 · 92 %*: the score, then its share of the sharpest shot's; the sharpest shows
+  *⭐ 244* in green; when the faces decide, the figure is the faces' one, said in the badge's
+  tooltip); then its state, its name, a **↗ original** link, its folder, its resolution, its
+  size and the moment it was taken.
 - **⭐ sharpest**: always **the first shot**, framed in green. The others follow from the
   sharpest to the least sharp: the blurred ones come last. The higher the sharpness, the
   crisper the picture; it measures blur only, not a closed eye: the choice stays yours.
