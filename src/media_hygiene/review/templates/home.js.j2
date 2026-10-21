@@ -5,6 +5,9 @@
 const T = {{ texts | tojson }};
 const P = {{ paths | tojson }};
 const RELAYS = {{ relays_steps | tojson }};
+// A phone on the home network (mh --lan, 0269): reads and the audit only; Quit and the
+// presence stay the PC's (its tab, not the phone's, keeps the page open).
+const REMOTE = {{ remote | tojson }};
 const WINDOW = {{ window | tojson }};
 const ALIVE_MS = {{ alive_ms | tojson }};
 const THOUSANDS = {{ thousands | tojson }};
@@ -177,13 +180,28 @@ function wire() {
 // The page shows at once, its meerkat waiting for the state: reading the tool folders can be
 // slow through Docker Desktop (0277). The tab says it is there from the start (0261).
 function start() {
-  wirePresence();
+  if (REMOTE) $(".quit").hidden = true;
+  else { wirePresence(); showLan(); }
   const slow = window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
   const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
   fetch(P.state, { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json(); })
     .then((state) => { S = state; shown(); begin(); })
     .catch(() => { shown(); stopped(); });
+}
+// The PC's page under mh --lan: the address, the code and the QR code a phone needs (0269).
+// GET P.lan answers the loopback only, and only under mh --lan (else 404: nothing shown).
+function showLan() {
+  fetch(P.lan, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((lan) => {
+      if (!lan) return;
+      $("#lanQr").innerHTML = lan.qr;
+      $("#lanUrl").textContent = lan.url;
+      $("#lanCode").textContent = lan.code;
+      $("#lanCard").hidden = false;
+    })
+    .catch(() => undefined);
 }
 function begin() {
   index();

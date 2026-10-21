@@ -130,6 +130,33 @@ bar switches to the other language (**FR**), each page lists its sections and en
 and next ones. The links the terminal prints, and the HTML reports opened from the disk, still
 lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the tool answers there.
 
+## From a phone on the home Wi-Fi: `mh --lan`
+
+In Windows PowerShell, `mh --lan` opens the home page as `mh` alone does, and lets a phone
+**of the same Wi-Fi** open it too, until `mh` stops:
+
+1. `mh` finds the PC's address on the home network (*192.168.1.20*) and says *The home page opens
+   to the phones of the home network too*. Windows may ask whether **Docker Desktop** may accept
+   connections: allow it on **private networks** only.
+2. The PC's page shows, in its sidebar, *On your phone*: the address, a **code** of 8 digits
+   and its **QR code** (the window of `mh` says the same address and code).
+3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
+   The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
+
+From the phone: 🔒 the page, where you are, the reports and the **audit** run by the page.
+Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
+window of `mh`, which nobody sees from the sofa. **Quit** is the PC's too.
+
+| | |
+|---|---|
+| Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |
+| Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
+| How | Plain HTTP on the home network, as decided: no certificate warning on the phone; the code and the cookie travel in clear on your Wi-Fi, for this run only. |
+| Next time | A new `mh --lan`, a new code: the old phone must pair again. |
+
+The phone cannot open the page? Windows counts the network as **public** (`mh` says so): set
+it to private in *Settings › Network and Internet*. `mh --lan` is Windows PowerShell only for now.
+
 ## The keyboard, the palette, the theme
 
 | Key | What it does |
@@ -158,8 +185,8 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 
 ## Good to know
 
-- The page answers only at `127.0.0.1` or `localhost`, and only to its own buttons: another
-  site cannot choose a step for you.
+- The page answers only at `127.0.0.1` or `localhost` (and, under `mh --lan`, at the PC's address
+  to a paired phone), and only to its own buttons: another site cannot choose a step for you.
 - **Quit Media Hygiene** (bottom of the sidebar), closing the page's browser tab, or Ctrl+C in the terminal stops the page
   and gives the prompt back; an audit running stops between two files. A closed tab is noticed
   about 10 seconds later (*The home page's tab was closed: the home page stopped.*); a reload, or

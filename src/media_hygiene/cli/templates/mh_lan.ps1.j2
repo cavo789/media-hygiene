@@ -1,0 +1,47 @@
+{# `mh --lan` in mh.ps1: see services/launcher_lan.py. #}
+{% set f = function %}
+{% set l = lan %}
+{% set t = lan.texts %}
+
+# `{{ f }} {{ l.flag }}`: the home page as `{{ f }}` alone runs it, a phone of the home network may open it
+# too, for this run only (0269). The port is published on the PC's address on the home network
+# (a private IPv4 address of the adapter reaching the router), never on every interface; a
+# secret drawn for the run gives the pairing code and the phone's token (the same until the
+# loop ends, the home page restarting after each step). RandomNumberGenerator, never Add-Type.
+function global:_{{ f }}_lan {
+    $address = _{{ f }}_lan_address
+    if (-not $address) { Write-Host "{{ t.none }}"; $global:LASTEXITCODE = 1; return }
+    $bytes = New-Object byte[] {{ l.secret_bytes }}
+    $random = [Security.Cryptography.RandomNumberGenerator]::Create()
+    try { $random.GetBytes($bytes) } finally { $random.Dispose() }
+    $secret = -join ($bytes | ForEach-Object { $_.ToString('x2') })
+    Write-Host "{{ t.opening }}"
+    Write-Host "{{ t.firewall }}"
+    $global:MediaHygieneLan = @{ address = $address; secret = $secret }
+    try { _{{ f }}_home @args } finally { $global:MediaHygieneLan = $null }
+}
+
+# The address of the first adapter up with a default gateway, when it is private; the
+# network counted as public by Windows is said (its firewall then blocks the phone).
+function global:_{{ f }}_lan_address {
+    $configs = @(Get-NetIPConfiguration -ErrorAction SilentlyContinue | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })
+    foreach ($config in $configs) {
+        foreach ($ip in @($config.IPv4Address)) {
+            $text = "$($ip.IPAddress)"
+            if ($text -notmatch '{{ l.private }}') { continue }
+            $network = Get-NetConnectionProfile -InterfaceIndex $config.InterfaceIndex -ErrorAction SilentlyContinue
+            if ($network -and "$($network.NetworkCategory)" -eq '{{ l.public }}') { Write-Host "{{ t.public }}" }
+            return $text
+        }
+    }
+    return $null
+}
+
+# The options of `docker run` for the home page under `{{ f }} {{ l.flag }}`: the port on the PC's
+# address too, the address and the secret given to the page; nothing for any other command.
+function global:_{{ f }}_lan_page($command) {
+    $lan = $global:MediaHygieneLan
+    if (-not $lan -or $command -ne 'home') { return @() }
+    $port = {{ script.commands.port }}
+    return @('-p', "$($lan.address):${port}:${port}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
+}

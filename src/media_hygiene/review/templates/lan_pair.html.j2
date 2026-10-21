@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{# The pairing page a phone sees on the home network before it is paired (0269, review/lan_app.py):
+   the code shown on the PC typed here opens /pair/<code>, which sets the phone's cookie and goes to
+   the home page; the QR code shown on the PC opens that address directly. `problem` says why the
+   last code was refused; `closed` hides the form after too many wrong codes. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Media Hygiene</title>
+<style>
+:root { color-scheme: light dark; --ink: #0b2239; --muted: #4a5a6a; --surface: #ffffff; --page: #f3f6fa; --accent: #3d85c6; --danger: #b3261e; }
+@media (prefers-color-scheme: dark) { :root { --ink: #e8eef5; --muted: #a9b6c3; --surface: #16222e; --page: #0d1620; --accent: #7fb3e6; --danger: #f2b8b5; } }
+body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; background: var(--page); color: var(--ink); font: 17px/1.5 system-ui, sans-serif; }
+main { width: 100%; max-width: 420px; padding: 24px; border-radius: 14px; background: var(--surface); box-shadow: 0 2px 12px rgba(0, 0, 0, .12); }
+h1 { margin: 0 0 8px; font-size: 1.4rem; }
+p { margin: 0 0 16px; color: var(--muted); }
+label { display: block; margin-bottom: 6px; font-weight: 600; }
+input { box-sizing: border-box; width: 100%; padding: 12px; border: 2px solid var(--muted); border-radius: 10px; background: transparent; color: var(--ink); font: 600 1.6rem/1.2 ui-monospace, monospace; letter-spacing: .2em; text-align: center; }
+button { width: 100%; margin-top: 16px; padding: 12px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: 600 1.1rem/1.2 system-ui, sans-serif; }
+.problem { color: var(--danger); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{ _("Media Hygiene on this phone") }}</h1>
+  {% if problem %}<p class="problem" role="alert">{{ problem }}</p>{% endif %}
+  {% if not closed %}
+  <p>{{ _("Type the code shown on the PC: in the sidebar of its home page, and in the window of mh.") }}</p>
+  <form id="pair" autocomplete="off">
+    <label for="code">{{ _("Pairing code") }}</label>
+    <input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="{{ digits + 2 }}" required autofocus>
+    <button type="submit">{{ _("Open the home page") }}</button>
+  </form>
+  <script>
+  document.getElementById("pair").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const digits = document.getElementById("code").value.replace(/\D/g, "");
+    window.location.href = {{ prefix | tojson }} + encodeURIComponent(digits);
+  });
+  </script>
+  {% endif %}
+</main>
+</body>
+</html>

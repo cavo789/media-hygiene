@@ -1530,6 +1530,9 @@ msgstr "Ferme ce qui est ouvert."
 msgid "Cluster — {files}"
 msgstr "Groupe — {files}"
 
+msgid "Code:"
+msgstr "Code :"
+
 msgid "Codec"
 msgstr "Codec"
 
@@ -3090,6 +3093,11 @@ msgstr "D'un élément à l'autre ; le premier mène directement au contenu."
 msgid "From the cache alone: no file is read again."
 msgstr "Depuis le cache seul : aucun fichier n'est relu."
 
+msgid "From the phone: the audit and the reports. Run this step on the PC."
+msgstr ""
+"Depuis le téléphone : l'audit et les rapports. Lancez cette étape sur le "
+"PC."
+
 msgid "From year"
 msgstr "De l'année"
 
@@ -3836,6 +3844,9 @@ msgstr "Media Hygiene dans le clic droit de l'Explorateur"
 
 msgid "Media Hygiene is stopped"
 msgstr "Media Hygiene est arrêté"
+
+msgid "Media Hygiene on this phone"
+msgstr "Media Hygiene sur ce téléphone"
 
 msgid ""
 "Media Hygiene shortcut created and checked: double-click it on the "
@@ -4887,6 +4898,15 @@ msgstr "Dont indésirables"
 msgid "On a folder: the home page, on that folder."
 msgstr "Sur un dossier : la page d'accueil, sur ce dossier."
 
+#, python-brace-format
+msgid ""
+"On a phone on the same Wi-Fi: open {url} and type the code {code} (or "
+"scan the QR code of the home page). Until mh stops; never the internet."
+msgstr ""
+"Sur un téléphone du même Wi-Fi : ouvrez {url} et tapez le code {code} (ou"
+" scannez le QR code de la page d'accueil). Jusqu'à l'arrêt de mh ; jamais"
+" sur Internet."
+
 msgid "On another disk or mount"
 msgstr "Sur un autre disque ou montage"
 
@@ -4895,6 +4915,9 @@ msgstr "Sur le PC :"
 
 msgid "On this page"
 msgstr "Dans cette page"
+
+msgid "On your phone"
+msgstr "Sur votre téléphone"
 
 msgid ""
 "Once a day at most, ask Docker Hub whether a newer version is published, "
@@ -5072,6 +5095,9 @@ msgstr ""
 "Ouvrez index.html dans le dossier monté sur /reports : il liste tous les "
 "rapports."
 
+msgid "Open the home page"
+msgstr "Ouvrir la page d'accueil"
+
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr "Ouvrez la carte sur 127.0.0.1 ou localhost."
 
@@ -5196,6 +5222,9 @@ msgstr "Page {page} sur {pages}"
 #, python-brace-format
 msgid "Pair {number} of {total}"
 msgstr "Paire {number} sur {total}"
+
+msgid "Pairing code"
+msgstr "Code d'appairage"
 
 msgid "Parties"
 msgstr "Fêtes"
@@ -6038,6 +6067,9 @@ msgstr "Exécutions encore annulables : {runs}."
 
 msgid "SHA-256"
 msgstr "SHA-256"
+
+msgid "Same Wi-Fi, open:"
+msgstr "Même Wi-Fi, ouvrez :"
 
 msgid "Same picture and sound as the kept video: only the metadata differ."
 msgstr ""
@@ -7155,6 +7187,14 @@ msgstr ""
 "La page d'accueil dans votre navigateur : où vous en êtes, l'étape "
 "suivante en un bouton, toutes les étapes des guides, les rapports."
 
+#, python-brace-format
+msgid ""
+"The home page opens to the phones of the home network too, at {address}, "
+"until mh stops. Never the internet."
+msgstr ""
+"La page d'accueil s'ouvre aussi aux téléphones du réseau de la maison, à "
+"{address}, jusqu'à l'arrêt de mh. Jamais sur Internet."
+
 msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 "L'onglet de la page d'accueil a été fermé : la page d'accueil s'est "
@@ -7855,6 +7895,9 @@ msgstr ""
 msgid "This is not a classify workbook, or it was damaged."
 msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 
+msgid "This is not the code shown on the PC: type it again."
+msgstr "Ce n'est pas le code affiché sur le PC : tapez-le à nouveau."
+
 msgid "This is the first event."
 msgstr "C'est le premier événement."
 
@@ -8040,6 +8083,13 @@ msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 msgid "To year"
 msgstr "À l'année"
 
+msgid ""
+"Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
+"then type mh --lan again for a new code."
+msgstr ""
+"Trop de codes erronés : l'appairage est fermé. Sur le PC, quittez Media "
+"Hygiene, puis tapez à nouveau mh --lan pour un nouveau code."
+
 msgid "Tools"
 msgstr "Outils"
 
@@ -8112,6 +8162,13 @@ msgstr "Tapez mh backup --undo {run_id} dans Windows PowerShell."
 
 msgid "Type mh backup in Windows PowerShell: it mounts it."
 msgstr "Tapez mh backup dans Windows PowerShell : il le monte."
+
+msgid ""
+"Type the code shown on the PC: in the sidebar of its home page, and in "
+"the window of mh."
+msgstr ""
+"Tapez le code affiché sur le PC : dans la barre latérale de sa page "
+"d'accueil, et dans la fenêtre de mh."
 
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
@@ -8186,6 +8243,9 @@ msgstr "Lieu ou groupe inconnu : rechargez la page."
 #, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
+
+msgid "Until mh stops; never the internet."
+msgstr "Jusqu'à l'arrêt de mh ; jamais sur Internet."
 
 msgid "Unwanted photos review"
 msgstr "Revue des photos indésirables"
@@ -8407,10 +8467,26 @@ msgstr ""
 "Windows ne peut pas ouvrir {target} : le NAS est-il allumé, le dossier "
 "partagé créé, le mot de passe juste ? Rien n'a été changé."
 
+msgid ""
+"Windows counts this network as public: its firewall blocks the phone. On "
+"a home network, set it to private in Windows' Settings (Network and "
+"Internet)."
+msgstr ""
+"Windows considère ce réseau comme public : son pare-feu bloque le "
+"téléphone. Sur le réseau de la maison, passez-le en privé dans les "
+"Paramètres de Windows (Réseau et Internet)."
+
 msgid "Windows lets you choose the folder; mh keeps it for every command."
 msgstr ""
 "Windows vous laisse choisir le dossier ; mh le retient pour toutes les "
 "commandes."
+
+msgid ""
+"Windows may ask whether Docker Desktop may accept connections: allow it "
+"on private networks only."
+msgstr ""
+"Windows peut demander si Docker Desktop peut accepter des connexions : "
+"autorisez-le sur les réseaux privés seulement."
 
 msgid ""
 "Windows only, as mh backup: copy your photo folders into a folder of "
@@ -10591,6 +10667,14 @@ msgstr "{actions} ?"
 
 #, python-brace-format
 msgid ""
+"{address} is not an address of a home network: the page stays on this PC "
+"only."
+msgstr ""
+"{address} n'est pas une adresse d'un réseau domestique : la page reste "
+"sur ce PC seulement."
+
+#, python-brace-format
+msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
 "role"
@@ -10652,12 +10736,24 @@ msgstr ""
 "chose, puis cette page revient d'elle-même."
 
 #, python-brace-format
+msgid "{command} works in Windows PowerShell only, for now."
+msgstr "{command} ne fonctionne que dans Windows PowerShell, pour l'instant."
+
+#, python-brace-format
 msgid "{command}: done"
 msgstr "{command} : terminé"
 
 #, python-brace-format
 msgid "{command}: failed"
 msgstr "{command} : échec"
+
+#, python-brace-format
+msgid ""
+"{command}: this PC has no address on a home network (Wi-Fi or cable to a "
+"router): the page stays on this PC."
+msgstr ""
+"{command} : ce PC n'a pas d'adresse sur un réseau domestique (Wi-Fi ou "
+"câble vers une box) : la page reste sur ce PC."
 
 #, python-brace-format
 msgid "{count} backup (read-only)"

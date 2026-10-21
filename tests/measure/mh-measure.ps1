@@ -103,6 +103,12 @@
 #  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
 #      removed: mh history says the line naming mh update (expected), mh update of the local
 #      build writes it again without a pull, folders read back, the line gone      (0290)
+#  29. mh --lan, the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
+#      Windows' category of that network; then, in a new window, mh --lan by hand: Windows'
+#      firewall prompt, the ports Docker publishes, the QR code and the code on the PC's page,
+#      the phone paired by the QR code then by the code, the audit run from the phone, a step
+#      refused there, the phone still paired after a step run on the PC, the phone on mobile
+#      data (Wi-Fi off) never reaching it                                       (0269)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -135,6 +141,7 @@
 #   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
 #   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
 #   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
+#   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2565,6 +2572,56 @@ if (Wanted 28) {
     Log ("   28d. file written again with a stamp = {0}, folder read back = {1}" -f $back, [bool](@(_mh_photos) -contains $data))
     $said = (@(mh history 2>&1 | ForEach-Object { "$_" }) -join ' ') -replace '\s+', ' '
     Log ("   28e. after mh update: line said = {0} (expected False)" -f [bool]($said -match 'mh update to write it again'))
+    $ErrorActionPreference = $saved
+}
+
+# --- 29: mh --lan, the home page on a phone of the home Wi-Fi (0269) -------------------------
+# A test mh.ps1 under -Work written by -Image (your own mh is put back at the end). The address
+# mh takes is read here; the phone part is by hand, in a new window: mh --lan holds its window.
+if (Wanted 29) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 29. mh --lan, the home page on a phone of the home Wi-Fi (0269)"
+    $folder = Join-Path $Work "lan"
+    New-Item -ItemType Directory -Force -Path $folder | Out-Null
+    $copy = Join-Path $folder "mh.ps1"
+    $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
+    Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
+    . $copy
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $address = _mh_lan_address
+    $watch.Stop()
+    Log ("   29a. address found = {0}, in {1:N2} s" -f $address, $watch.Elapsed.TotalSeconds)
+    foreach ($network in @(Get-NetConnectionProfile -ErrorAction SilentlyContinue)) {
+        Log ("   29a. network {0} on {1}: category {2}" -f $network.Name, $network.InterfaceAlias, $network.NetworkCategory)
+    }
+    if ($address) {
+        Write-Host "29: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "        . '$copy'"
+        Write-Host "        mh --lan"
+        Write-Host "    Wait for the home page in the browser."
+        $firewall = Read-Host "29b. Did Windows ask whether Docker Desktop may accept connections? (n / p: allowed on private / b: both ticked)"
+        $ports = @(docker ps --format '{{.Ports}}' 2>$null) -join ' | '
+        Log "   29b. firewall prompt $firewall; ports published: $ports"
+        $card = Read-Host "29c. The PC's page shows 'On your phone' with a QR code, an address and a code of 8 digits? (y/n)"
+        Write-Host "    On the phone, on the same Wi-Fi: scan the QR code with its camera."
+        $qr = Read-Host "29d. The phone opened the home page by the QR code? (y / n / c: it asked the code)"
+        Write-Host "    On the phone, open a private tab, type the address shown, then the code."
+        $typed = Read-Host "29e. The code typed opened the page? (y/n)"
+        Write-Host "    On the phone: Run the audit of the page (the audit space, 'Run the audit here')."
+        $audit = Read-Host "29f. The audit ran to its end, its progress shown on the phone? (y/n)"
+        Write-Host "    On the phone: tap the button of any other step (clean, status...)."
+        $refused = Read-Host "29g. The phone said 'Run this step on the PC', nothing ran on the PC? (y/n)"
+        Write-Host "    On the PC's page: run 'status' (it runs in the mh window, then the page comes back). Then reload the phone."
+        $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
+        Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
+        $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
+        Write-Host "    On the PC's page: Quit Media Hygiene."
+        Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
+    } else {
+        Log "   29: skipped the phone part: no private address found (mh --lan says the same)"
+    }
     $ErrorActionPreference = $saved
 }
 

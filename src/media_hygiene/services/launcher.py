@@ -33,6 +33,7 @@ from media_hygiene.services.launcher_folders import checked_folders
 from media_hygiene.services.launcher_guards import launcher_guards
 from media_hygiene.services.launcher_host import host_commands
 from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
+from media_hygiene.services.launcher_lan import lan_command
 from media_hygiene.services.launcher_launch import launch_texts
 from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import (
@@ -183,6 +184,7 @@ def render_script(script: LauncherScript) -> str:
         cloud=cloud_check(script.commands.names),
         phone=phone_command(),
         backup=backup_command(),
+        lan=lan_command(),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,

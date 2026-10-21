@@ -32,6 +32,12 @@ function global:{{ function }} {
         $full = $found.ProviderPath.TrimEnd('\')
         $given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/')
     }
+    if ($rest.Count -eq 1 -and $rest[0] -eq '{{ lan.flag }}') {
+        # `{{ function }} {{ lan.flag }}`: the same, a phone of the home network may open the page (0269).
+        if (-not (_{{ function }}_desktop)) { return }
+        _{{ function }}_lan @typed
+        return
+    }
     if ($rest.Count -eq 0) {
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
         # the step chosen gets them too (0181). Docker Desktop started first (0200).
@@ -69,6 +75,7 @@ function global:{{ function }} {
         # A page left by a closed window holds the port: stopped when its console is gone (0250).
         if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }
         $page += '--label', "{{ guards.label }}=powershell-$PID-$(_{{ function }}_started $PID)"
+        $page += @(_{{ function }}_lan_page $command)  # the home page of `{{ function }} {{ lan.flag }}` (0269)
     }
     # A removable drive is shared with Docker Desktop first, or the command stops; the
     # drives this run mounted are unmounted after it, in finally (0252).
@@ -192,3 +199,4 @@ function global:_{{ function }}_open {
 {% include 'mh_phone_free.ps1.j2' %}
 {% include 'mh_backup.ps1.j2' %}
 {% include 'mh_stale.ps1.j2' %}
+{% include 'mh_lan.ps1.j2' %}

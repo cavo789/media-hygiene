@@ -120,6 +120,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 | `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB ; avec `--free`, supprime ensuite du téléphone ce que le PC détient, prouvé par son contenu : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
 | `mh backup` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`backup`](backup.md). |
+| `mh --lan` | Windows : la page d'accueil, comme `mh` seul, qu'un téléphone du même Wi-Fi peut aussi ouvrir avec un code (ou son QR code), jusqu'à l'arrêt de `mh` ; depuis le téléphone, l'audit et les rapports seulement : [`home`](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan). |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
 registre `HKCU\Software\Classes\Directory\shell\MediaHygiene` et

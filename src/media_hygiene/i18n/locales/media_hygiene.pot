@@ -1239,6 +1239,9 @@ msgstr ""
 msgid "Cluster — {files}"
 msgstr ""
 
+msgid "Code:"
+msgstr ""
+
 msgid "Codec"
 msgstr ""
 
@@ -2510,6 +2513,9 @@ msgstr ""
 msgid "From the cache alone: no file is read again."
 msgstr ""
 
+msgid "From the phone: the audit and the reports. Run this step on the PC."
+msgstr ""
+
 msgid "From year"
 msgstr ""
 
@@ -3152,6 +3158,9 @@ msgid "Media Hygiene in the Explorer's right-click"
 msgstr ""
 
 msgid "Media Hygiene is stopped"
+msgstr ""
+
+msgid "Media Hygiene on this phone"
 msgstr ""
 
 msgid ""
@@ -4045,6 +4054,12 @@ msgstr ""
 msgid "On a folder: the home page, on that folder."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"On a phone on the same Wi-Fi: open {url} and type the code {code} (or "
+"scan the QR code of the home page). Until mh stops; never the internet."
+msgstr ""
+
 msgid "On another disk or mount"
 msgstr ""
 
@@ -4052,6 +4067,9 @@ msgid "On the PC:"
 msgstr ""
 
 msgid "On this page"
+msgstr ""
+
+msgid "On your phone"
 msgstr ""
 
 msgid ""
@@ -4174,6 +4192,9 @@ msgstr ""
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 
+msgid "Open the home page"
+msgstr ""
+
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr ""
 
@@ -4292,6 +4313,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Pair {number} of {total}"
+msgstr ""
+
+msgid "Pairing code"
 msgstr ""
 
 msgid "Parties"
@@ -4989,6 +5013,9 @@ msgid "Runs you can still undo: {runs}."
 msgstr ""
 
 msgid "SHA-256"
+msgstr ""
+
+msgid "Same Wi-Fi, open:"
 msgstr ""
 
 msgid "Same picture and sound as the kept video: only the metadata differ."
@@ -5922,6 +5949,12 @@ msgid ""
 "every step of the guides, the reports."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The home page opens to the phones of the home network too, at {address}, "
+"until mh stops. Never the internet."
+msgstr ""
+
 msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 
@@ -6474,6 +6507,9 @@ msgstr ""
 msgid "This is not a classify workbook, or it was damaged."
 msgstr ""
 
+msgid "This is not the code shown on the PC: type it again."
+msgstr ""
+
 msgid "This is the first event."
 msgstr ""
 
@@ -6638,6 +6674,11 @@ msgstr ""
 msgid "To year"
 msgstr ""
 
+msgid ""
+"Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
+"then type mh --lan again for a new code."
+msgstr ""
+
 msgid "Tools"
 msgstr ""
 
@@ -6699,6 +6740,11 @@ msgid "Type mh backup --undo {run_id} in Windows PowerShell."
 msgstr ""
 
 msgid "Type mh backup in Windows PowerShell: it mounts it."
+msgstr ""
+
+msgid ""
+"Type the code shown on the PC: in the sidebar of its home page, and in "
+"the window of mh."
 msgstr ""
 
 #, python-brace-format
@@ -6764,6 +6810,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
+msgstr ""
+
+msgid "Until mh stops; never the internet."
 msgstr ""
 
 msgid "Unwanted photos review"
@@ -6960,7 +7009,18 @@ msgid ""
 "the password right? Nothing was changed."
 msgstr ""
 
+msgid ""
+"Windows counts this network as public: its firewall blocks the phone. On "
+"a home network, set it to private in Windows' Settings (Network and "
+"Internet)."
+msgstr ""
+
 msgid "Windows lets you choose the folder; mh keeps it for every command."
+msgstr ""
+
+msgid ""
+"Windows may ask whether Docker Desktop may accept connections: allow it "
+"on private networks only."
 msgstr ""
 
 msgid ""
@@ -8910,6 +8970,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"{address} is not an address of a home network: the page stays on this PC "
+"only."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
 "role"
@@ -8962,11 +9028,21 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{command} works in Windows PowerShell only, for now."
+msgstr ""
+
+#, python-brace-format
 msgid "{command}: done"
 msgstr ""
 
 #, python-brace-format
 msgid "{command}: failed"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{command}: this PC has no address on a home network (Wi-Fi or cable to a "
+"router): the page stays on this PC."
 msgstr ""
 
 #, python-brace-format

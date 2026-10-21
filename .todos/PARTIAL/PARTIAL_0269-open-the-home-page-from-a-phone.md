@@ -57,3 +57,37 @@ By the maintainer (`/todo:inbox`):
 
 The test from the maintainer's phone on the home Wi-Fi (Windows firewall prompt included) comes
 after the implementation: an unattended run closes PARTIAL on it.
+
+## Status — PARTIAL (2026-10-21)
+
+### Done
+- `mh --lan` (Windows PowerShell, `mh_lan.ps1.j2`): the home page loop of `mh` alone, its port
+  also published on the PC's private IPv4 address (the adapter with a default gateway;
+  `10/8`, `172.16/12`, `192.168/16` only; never `0.0.0.0`), for `home` only, for this run only;
+  a 32-byte secret drawn with `RandomNumberGenerator` (no `Add-Type`), kept for the whole loop
+  so a phone stays paired across the steps; says the address, the firewall prompt to expect,
+  and a network Windows counts as Public. The bash `mh` refuses it (PowerShell only).
+- `review/lan.py` + `review/lan_app.py`: in front of the home page, the loopback unchanged;
+  `Host` must be exactly `<address>:<port>`; an 8-digit code and the cookie token both derived
+  (HMAC) from the secret; `/pair/<code>` sets an HttpOnly SameSite=Lax cookie, 5 wrong codes
+  close the pairing until the server stops; a paired phone may only read (page, state, audit
+  progress, reports, assets, docs) and run the page's audit (`POST /api/audit`, Origin
+  checked); a step, Quit and the presence stay the PC's (403, "Run this step on the PC").
+  `GET /api/lan` (loopback only) gives the PC's page the address, the code and a QR code
+  (segno, a new dependency: pure Python, BSD, 292 KB installed, measured).
+- The phone's page (`remote`): no Quit, no presence, each step's button says to run it on the
+  PC. The PC's page: an "On your phone" card in the sidebar (QR, address, code).
+- Docs en+fr (`commands/home.md`, `commands/launcher.md`), translations, tests
+  (`tests/unit/test_home_lan.py`), step 29 of `tests/measure/mh-measure.ps1`.
+
+### Not done
+- The test from the maintainer's phone on the home Wi-Fi: Windows' firewall prompt for Docker
+  Desktop, whether Docker Desktop publishes on the PC's LAN address as asked (`-p
+  <address>:8088:8088`), the QR code read by the phone's camera, the audit run from the phone,
+  the page unreachable from mobile data.
+  **Reason:** needs the maintainer's PC and phone: `mh-measure.ps1 -Only 29 -Count 20`.
+- Moving the questions of the acting commands (`clean`, `undo`, `purge`, `sort`, `import`)
+  into the page, so that a phone may run them.
+  **Reason:** decided later (decision 3, 2026-10-21): read-only steps first; a TODO of its own.
+- `mh --lan` from bash (WSL, Linux, macOS).
+  **Reason:** Docker under WSL publishes on Windows' loopback; Windows-first; no request yet.
