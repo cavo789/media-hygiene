@@ -99,7 +99,7 @@ def cached_preview(job: PreviewJob) -> bytes | None:
         os.utime(target)  # used now: trimmed last
         return kept or None  # empty: this version cannot be shown
     image = jpeg_preview(job.source, job.edge)
-    _keep(target, image or b"")
+    keep_preview(target, image or b"")
     return image
 
 
@@ -118,7 +118,7 @@ def preview_key(job: PreviewJob, size: int, mtime_ns: int) -> str:
     return hashlib.sha256(key.encode()).hexdigest()[:_NAME_LENGTH] + _SUFFIX
 
 
-def _keep(target: Path, image: bytes) -> None:
+def keep_preview(target: Path, image: bytes) -> None:
     """Write a preview whole, or not at all.
 
     Args:

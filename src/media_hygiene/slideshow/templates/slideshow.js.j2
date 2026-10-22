@@ -1,0 +1,146 @@
+{# The script of the remote (slideshow.html.j2): the photos once, then the show as the server holds
+   it, asked again and again (a long poll: the answer comes once the show changed). Each button
+   sends one action; the answer is the show as it now is. #}
+(() => {
+  const TEXTS = {{ texts | tojson }};
+  const SLIDES_PATH = {{ slides_path | tojson }};
+  const SHOW_PATH = {{ show_path | tojson }};
+  const SCREENS_PATH = {{ screens_path | tojson }};
+  const SCREEN_PATH = {{ screen_path | tojson }};
+  const LAN_PATH = {{ lan_path | tojson }};
+  const RETRY_MS = 3000;
+  const LOOPBACK = new Set(["127.0.0.1", "localhost", "[::1]"]);
+  const status = document.getElementById("status");
+  const grid = document.getElementById("grid");
+  const play = document.getElementById("play");
+  const out = document.getElementById("out");
+  const seconds = document.getElementById("seconds");
+  const tiles = new Map();
+  let version = 0;
+  let current = null;
+  let playing = false;
+
+  const plural = (forms, n) => forms[n === 1 ? 0 : 1].replace("{n}", n);
+  const say = (text, error) => {
+    status.textContent = text;
+    status.classList.toggle("error", Boolean(error));
+  };
+  const post = (path, value) =>
+    fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(value) });
+  const ask = (value) =>
+    post(SHOW_PATH, value)
+      .then((response) => (response.ok ? response.json().then(draw) : say(TEXTS.failed.replace("{status}", response.status), true)))
+      .catch(() => say(TEXTS.offline, true));
+
+  function draw(show) {
+    version = show.version;
+    current = show.current;
+    playing = show.playing;
+    const outKeys = new Set(show.out);
+    for (const [key, tile] of tiles) {
+      tile.classList.toggle("current", key === current);
+      tile.classList.toggle("out", outKeys.has(key));
+      tile.querySelector("button").textContent = outKeys.has(key) ? TEXTS.in : TEXTS.out;
+    }
+    const where = show.place === null ? TEXTS.nothing : TEXTS.place.replace("{place}", show.place).replace("{total}", show.total);
+    const pace = show.playing ? TEXTS.playing.replace("{seconds}", show.seconds) : TEXTS.paused;
+    const screens = show.screens === 0 ? TEXTS.noScreen : plural(TEXTS.screens, show.screens);
+    say(`${where} · ${pace} · ${screens}`, false);
+    play.textContent = show.playing ? TEXTS.pause : TEXTS.play;
+    out.disabled = current === null;
+    const paceValue = String(show.seconds);
+    if (![...seconds.options].some((option) => option.value === paceValue)) {
+      seconds.add(new Option(TEXTS.seconds.replace("{n}", paceValue), paceValue));
+    }
+    seconds.value = paceValue;
+    const tile = tiles.get(current);
+    if (tile) tile.scrollIntoView({ block: "nearest" });
+  }
+
+  function poll() {
+    fetch(`${SHOW_PATH}/${version}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((show) => {
+        draw(show);
+        poll();
+      })
+      .catch(() => {
+        say(TEXTS.offline, true);
+        window.setTimeout(poll, RETRY_MS);
+      });
+  }
+
+  function tileOf(slide) {
+    const figure = document.createElement("figure");
+    figure.className = "tile";
+    const image = document.createElement("img");
+    image.src = slide.thumb;
+    image.alt = slide.day || "";
+    image.loading = "lazy";
+    image.addEventListener("click", () => ask({ action: "jump", key: slide.key }));
+    const caption = document.createElement("figcaption");
+    caption.textContent = slide.day || "";
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "plain";
+    toggle.addEventListener("click", () => ask({ action: figure.classList.contains("out") ? "in" : "out", key: slide.key }));
+    figure.append(image, caption, toggle);
+    return figure;
+  }
+
+  function showLan() {
+    const local = LOOPBACK.has(window.location.hostname);
+    if (!local) {
+      const homeLink = document.getElementById("homeLink");
+      if (homeLink) homeLink.hidden = true;  // only the PC goes back to the home page
+      return;
+    }
+    fetch(LAN_PATH, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((lan) => {
+        document.getElementById("screenUrl").textContent = new URL(SCREEN_PATH, lan.url).href;
+        document.getElementById("phoneUrl").textContent = lan.url;
+        document.getElementById("phoneCode").textContent = lan.code;
+        document.getElementById("qr").innerHTML = lan.qr;
+        document.getElementById("lan").hidden = false;
+      })
+      .catch(() => {
+        const off = document.getElementById("lanOff");
+        off.textContent = TEXTS.lanOff.replace("{command}", TEXTS.lanCommand);
+        off.hidden = false;
+      });
+  }
+
+  document.getElementById("previous").addEventListener("click", () => ask({ action: "previous" }));
+  document.getElementById("next").addEventListener("click", () => ask({ action: "next" }));
+  play.addEventListener("click", () => ask({ action: playing ? "pause" : "play" }));
+  out.addEventListener("click", () => current !== null && ask({ action: "out", key: current }));
+  seconds.addEventListener("change", () => ask({ action: "pace", seconds: Number(seconds.value) }));
+  document.getElementById("pair").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const field = document.getElementById("tvCode");
+    const said = document.getElementById("pairStatus");
+    post(SCREENS_PATH, { code: field.value })
+      .then((response) => response.json().then((value) => {
+        said.textContent = response.ok ? TEXTS.paired : value.error;
+        if (response.ok) {
+          field.value = "";
+          draw(value);
+        }
+      }))
+      .catch(() => { said.textContent = TEXTS.offline; });
+  });
+
+  showLan();
+  fetch(SLIDES_PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((value) => {
+      for (const slide of value.slides) {
+        const tile = tileOf(slide);
+        tiles.set(slide.key, tile);
+        grid.append(tile);
+      }
+      poll();
+    })
+    .catch(() => say(TEXTS.offline, true));
+})();

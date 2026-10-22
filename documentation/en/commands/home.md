@@ -147,6 +147,9 @@ From the phone: 🔒 the page, where you are, the reports and the **audit** run 
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. **Quit** is the PC's too.
 
+The *Show your photos on the TV* step, chosen on the PC, opens the [slideshow](slideshow.md) to
+the home network too: the phone already paired reloads its page and gets the slideshow's remote.
+
 | | |
 |---|---|
 | Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |

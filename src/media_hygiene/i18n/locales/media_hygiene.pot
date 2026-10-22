@@ -128,6 +128,14 @@ msgid ""
 msgstr ""
 
 msgid ""
+"'slideshow' shows photos on the TV, the phone choosing the next one. Each"
+" photo is sent fitted into screen_px pixels wide (and 9/16 of that high):"
+" 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old"
+" TV. The port is [review] port: a TV's bookmark keeps working while it "
+"does not change."
+msgstr ""
+
+msgid ""
 "'sort' applies them on top of the workbook, which you may still edit; it "
 "refuses an event or a file edited otherwise in both."
 msgstr ""
@@ -444,6 +452,9 @@ msgstr ""
 msgid ""
 "A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
 "/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
+msgstr ""
+
+msgid "A folder on the big screen; the phone chooses the next photo."
 msgstr ""
 
 msgid ""
@@ -1085,6 +1096,11 @@ msgstr ""
 msgid "Check it yourself"
 msgstr ""
 
+msgid ""
+"Check the folder as the Explorer shows it, under one of your photo "
+"folders; a search needs 'tags' first."
+msgstr ""
+
 msgid "Check their dates, their patterns and their order in config.toml."
 msgstr ""
 
@@ -1680,6 +1696,9 @@ msgid ""
 " then compare the results it wrote in /reports (czkawka.json)."
 msgstr ""
 
+msgid "Do not show"
+msgstr ""
+
 msgid "Doc"
 msgstr ""
 
@@ -1841,6 +1860,9 @@ msgstr ""
 msgid ""
 "Each one was first proven on the PC by its content: in your library, in "
 "the folder of the import, or set aside before."
+msgstr ""
+
+msgid "Each photo"
 msgstr ""
 
 msgid ""
@@ -2457,6 +2479,12 @@ msgstr ""
 msgid "For mh phone: which files of a phone are new, from its listing."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"For the TV and your phone: {command} (Windows PowerShell). The show then "
+"opens to the home network, never to the internet."
+msgstr ""
+
 msgid "Forget every face"
 msgstr ""
 
@@ -2766,6 +2794,11 @@ msgid "How many processor threads the model uses."
 msgstr ""
 
 msgid "How many reports to keep?"
+msgstr ""
+
+msgid ""
+"How many seconds each photo stays while the slideshow plays (2 to 600); "
+"the phone changes it for the evening."
 msgstr ""
 
 msgid "How much to log."
@@ -3477,6 +3510,9 @@ msgstr ""
 msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
+msgid "No TV shows this code: type the code the TV shows now."
+msgstr ""
+
 msgid "No audit has walked a folder completely yet."
 msgstr ""
 
@@ -3671,6 +3707,9 @@ msgid "No photo or video directly in this folder: open a subfolder."
 msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
+msgstr ""
+
+msgid "No photo to show: nothing the last audit saw matches."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
@@ -3954,6 +3993,9 @@ msgstr ""
 msgid "Nothing new on the phone: nothing to copy."
 msgstr ""
 
+msgid "Nothing on the TV: every photo is set out of the show."
+msgstr ""
+
 msgid "Nothing on the phone that the PC holds: nothing to free."
 msgstr ""
 
@@ -4057,6 +4099,13 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "On a phone on the same Wi-Fi: open {url} and type the code {code} (or "
+"scan the QR code of the PC's page). Until the slideshow stops; never the "
+"internet."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"On a phone on the same Wi-Fi: open {url} and type the code {code} (or "
 "scan the QR code of the home page). Until mh stops; never the internet."
 msgstr ""
 
@@ -4066,10 +4115,30 @@ msgstr ""
 msgid "On the PC:"
 msgstr ""
 
+msgid ""
+"On the TV, in its browser (the Chromecast's, or the TV's own): open this "
+"address once, then bookmark it."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"On the TV, in its browser (the Chromecast's, or the TV's own): open "
+"{screen} once and bookmark it. It shows a code: type it on the phone's "
+"remote."
+msgstr ""
+
+msgid "On the phone's remote, type the code of this TV:"
+msgstr ""
+
 msgid "On this page"
 msgstr ""
 
 msgid "On your phone"
+msgstr ""
+
+msgid ""
+"On your phone, on the same Wi-Fi: scan this code, or open the address and"
+" type the code."
 msgstr ""
 
 msgid ""
@@ -4179,6 +4248,12 @@ msgstr ""
 msgid "Only the series to look at"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Only this PC can open the slideshow. For the TV and your phone, type on "
+"the PC: {command}"
+msgstr ""
+
 msgid ""
 "Only what is new; a photo moved by sort is renamed on the NAS, not sent "
 "again."
@@ -4190,9 +4265,6 @@ msgid ""
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
-msgstr ""
-
-msgid "Open the home page"
 msgstr ""
 
 msgid "Open the map at 127.0.0.1 or localhost."
@@ -4223,6 +4295,9 @@ msgid "Open the review at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the search at 127.0.0.1 or localhost."
+msgstr ""
+
+msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
 msgstr ""
 
 msgid "OpenStreetMap contributors"
@@ -4311,6 +4386,12 @@ msgstr ""
 msgid "Page {page} of {pages}"
 msgstr ""
 
+msgid "Pair the TV"
+msgstr ""
+
+msgid "Pair this phone"
+msgstr ""
+
 #, python-brace-format
 msgid "Pair {number} of {total}"
 msgstr ""
@@ -4371,6 +4452,10 @@ msgid ""
 "Photo groups picked across the whole plan, the same ones on every run. "
 "The list after it starts with the largest files, often videos without "
 "preview."
+msgstr ""
+
+#, python-brace-format
+msgid "Photo {place} of {total}"
 msgstr ""
 
 msgid "Photos"
@@ -5097,6 +5182,11 @@ msgstr ""
 msgid "Say what the album gathers."
 msgstr ""
 
+msgid ""
+"Say what to show, one of: --folder \"C:\\Photos\\Holidays\", --search "
+"\"words\", or --chosen (the files set aside)."
+msgstr ""
+
 msgid "School"
 msgstr ""
 
@@ -5338,6 +5428,9 @@ msgid ""
 "--decisions' moves them to the quarantine."
 msgstr ""
 
+msgid "Show again"
+msgstr ""
+
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr ""
 
@@ -5347,10 +5440,29 @@ msgstr ""
 msgid "Show its photos"
 msgstr ""
 
+msgid ""
+"Show photos on the TV, the phone choosing the next one: a folder, a "
+"search or the files set aside."
+msgstr ""
+
+msgid "Show the files set aside in search or browse."
+msgstr ""
+
+msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
+msgstr ""
+
+msgid ""
+"Show the photos of this folder and its subfolders, as the Explorer shows "
+"it: \"C:\\Photos\\2026 Holidays\"."
+msgstr ""
+
 msgid "Show the version and exit."
 msgstr ""
 
 msgid "Show this message and exit."
+msgstr ""
+
+msgid "Show your photos on the TV"
 msgstr ""
 
 msgid "Sidecar"
@@ -5379,6 +5491,21 @@ msgid "Skip to the content"
 msgstr ""
 
 msgid "Skipped (left untouched)"
+msgstr ""
+
+msgid "Slideshow"
+msgstr ""
+
+#, python-brace-format
+msgid "Slideshow over ({n} photo); your photos were not changed."
+msgid_plural "Slideshow over ({n} photos); your photos were not changed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"Slideshow ready: the remote at {url} on this PC. Ctrl+C stops it; your "
+"photos are not changed."
 msgstr ""
 
 msgid "Software"
@@ -5657,6 +5784,9 @@ msgstr ""
 msgid "The PC lacks them; never those you set aside on purpose."
 msgstr ""
 
+msgid "The TV is paired: it shows the photo now."
+msgstr ""
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
@@ -5776,6 +5906,9 @@ msgid ""
 msgstr ""
 
 msgid "The code on GitHub"
+msgstr ""
+
+msgid "The code the TV shows"
 msgstr ""
 
 msgid "The collection once sorted"
@@ -5925,6 +6058,9 @@ msgid ""
 msgstr ""
 
 msgid "The folder to remove"
+msgstr ""
+
+msgid "The folder to show, as the Explorer shows it"
 msgstr ""
 
 #, python-brace-format
@@ -6129,6 +6265,9 @@ msgid ""
 " cache: the words alone answer."
 msgstr ""
 
+msgid "The photos of the show: tap one to show it on the TV"
+msgstr ""
+
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
 msgstr ""
@@ -6326,6 +6465,13 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The slideshow failed (error {status})."
+msgstr ""
+
+msgid "The slideshow is not running any more: start it again on the PC."
+msgstr ""
+
+#, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
@@ -6435,6 +6581,9 @@ msgstr ""
 msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
 "after saying how long it takes and asking."
+msgstr ""
+
+msgid "Then press OK on the TV's remote for full screen."
 msgstr ""
 
 #, python-brace-format
@@ -6675,6 +6824,11 @@ msgid "To year"
 msgstr ""
 
 msgid ""
+"Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
+"on the PC), then start it again."
+msgstr ""
+
+msgid ""
 "Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
 "then type mh --lan again for a new code."
 msgstr ""
@@ -6743,8 +6897,8 @@ msgid "Type mh backup in Windows PowerShell: it mounts it."
 msgstr ""
 
 msgid ""
-"Type the code shown on the PC: in the sidebar of its home page, and in "
-"the window of mh."
+"Type the code shown on the PC: on its page (in the sidebar of the home "
+"page, at the top of the slideshow's) and in the window of mh."
 msgstr ""
 
 #, python-brace-format
@@ -8214,6 +8368,9 @@ msgstr ""
 msgid "no"
 msgstr ""
 
+msgid "no TV yet"
+msgstr ""
+
 msgid "no control character"
 msgstr ""
 
@@ -8322,6 +8479,9 @@ msgstr ""
 msgid "pairs folders duplicated"
 msgstr ""
 
+msgid "paused"
+msgstr ""
+
 msgid "person"
 msgstr ""
 
@@ -8366,6 +8526,10 @@ msgid "plan checks"
 msgstr ""
 
 msgid "plan, start, prove, undo or undone."
+msgstr ""
+
+#, python-brace-format
+msgid "plays, {seconds} s each"
 msgstr ""
 
 msgid "preferred folder"
@@ -8521,6 +8685,9 @@ msgid "sharpness"
 msgstr ""
 
 msgid "shortcut desktop icon start"
+msgstr ""
+
+msgid "slideshow tv television chromecast phone remote holidays"
 msgstr ""
 
 msgid "small"
@@ -8972,6 +9139,12 @@ msgstr ""
 msgid ""
 "{address} is not an address of a home network: the page stays on this PC "
 "only."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{address} is not an address of a home network: the slideshow stays on "
+"this PC only."
 msgstr ""
 
 #, python-brace-format
@@ -10067,6 +10240,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{found} photos found: the first {shown} by date are shown."
+msgstr ""
+
+#, python-brace-format
 msgid "{host} answered something that is not a search result."
 msgstr ""
 
@@ -10151,6 +10328,12 @@ msgid "{name}?"
 msgstr ""
 
 #, python-brace-format
+msgid "{n} TV"
+msgid_plural "{n} TVs"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} choice of the batch taken back"
 msgid_plural "{n} choices of the batch taken back"
 msgstr[0] ""
@@ -10233,6 +10416,10 @@ msgid "{n} photo"
 msgid_plural "{n} photos"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} s"
+msgstr ""
 
 #, python-brace-format
 msgid "{n} series"
@@ -10651,6 +10838,12 @@ msgid_plural ""
 " back to the quarantine."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "▶ Play"
+msgstr ""
+
+msgid "❚❚ Pause"
+msgstr ""
 
 #, python-brace-format
 msgid ""

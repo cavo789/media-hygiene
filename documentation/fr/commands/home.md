@@ -161,6 +161,10 @@ Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports et l'**aud
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. **Quitter** reste aussi au PC.
 
+L'étape *Montrer vos photos sur la télé*, choisie sur le PC, ouvre aussi le [diaporama](slideshow.md)
+au réseau de la maison : le téléphone déjà appairé recharge sa page et obtient la télécommande du
+diaporama.
+
 | | |
 |---|---|
 | Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |

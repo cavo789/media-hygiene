@@ -153,6 +153,13 @@ stop_above_percent = 20
 threads = 8
 
 
+[slideshow]
+{{ comment(_("'slideshow' shows photos on the TV, the phone choosing the next one. Each photo is sent fitted into screen_px pixels wide (and 9/16 of that high): 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old TV. The port is [review] port: a TV's bookmark keeps working while it does not change.")) }}
+screen_px = 1920
+{{ comment(_("How many seconds each photo stays while the slideshow plays (2 to 600); the phone changes it for the evening.")) }}
+interval_seconds = 8
+
+
 [inventory]
 {{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
 blurry_below = 100.0

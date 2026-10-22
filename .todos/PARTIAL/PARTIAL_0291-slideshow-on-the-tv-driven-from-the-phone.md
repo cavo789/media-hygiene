@@ -83,3 +83,48 @@ opens the maintainer's own blog (HTTPS, heavy JavaScript): it is a modern browse
 - The maintainer's evening test through the Chromecast (then the UE55ES6100's own browser): "next" shows without bands and at once
   (preloaded), a jump to any thumbnail in ~1 s with no bands (target estimated from the
   measures above). An unattended run closes PARTIAL on it.
+
+## Status — PARTIAL (2026-10-21)
+
+### Done
+- `media-hygiene slideshow` (🔒, a page command): `--folder` (and its subfolders), `--search`
+  (the words of `search`) or `--chosen` (the files set aside), exactly one; photos only (images
+  and RAW), oldest first, the undated last, at most 3,000 (`services/slideshow_pick.py`).
+- One server, two pages (`slideshow/`): the **screen** `/screen` (ES5 only, XMLHttpRequest long
+  poll `/api/wait/<version>`, two stacked layers: the next photo loads and decodes behind the one
+  shown, swapped once decoded, `img.decode()` where it exists; the following one preloaded;
+  never a name or a path; OK/click asks for full screen; letterboxed without `object-fit`) and
+  the **remote** `/` (thumbnails, ◀ ▶, play/pause, the interval, "Do not show" / "Show again", a
+  tap jumps; the PC's page shows the TV's address, the phone's address, code and QR code).
+- The server holds the show (`show.py`, `desk.py`): next/previous go round passing over the
+  photos set out, a jump sets a photo back in, the timer is read by whoever waits (no task).
+- Access (`door.py`), reusing 0269 (`LanAccess`, `Pairing`, `pair_page`, `lan_response`): the
+  loopback does everything; under `mh --lan` the exact `Host` of the PC's private address only;
+  a phone paired by the run's code drives the show; a **TV paired the other way round**
+  (`screens.py`: a token in an HttpOnly cookie, a 6-digit code shown on the TV, typed on the
+  paired phone; 8 TVs waiting at most, 5 wrong codes close it); a stranger gets the pairing
+  pages only; only the show's photos are served (`/tv/<key>.jpg`, `/thumb/<key>.jpg`), never an
+  original. The phone's `Origin` checked (another site's POST refused).
+- TV pictures (`screen_jpeg.py`): EXIF orientation applied, fitted into `screen_px` × 9/16,
+  quality 85, baseline, kept in the cache folder (trimmed with the previews).
+- `[slideshow] screen_px` (1920) and `interval_seconds` (8) in `config.toml`; the port is
+  `[review] port` (see the feedback's question).
+- `mh slideshow … --lan` (PowerShell): the address and secret of 0269 (`_mh_lan_open`, split out
+  of `_mh_lan`), the slideshow's port published on the PC's private address too; the home page
+  of `mh --lan` publishes it for the slideshow step too; the bash `mh` refuses `--lan` anywhere.
+- The catalog step *Show your photos on the TV* (find stage, *Go further*, a folder field), the
+  command's page in both languages (Chromecast first, the TV's Internet app, the bookmark, the
+  router reservation, plan B: casting a tab), `reference-commands`, `launcher`, `home`, mkdocs
+  nav, `COMMANDS_TOO`, translations, the CLI help capture.
+- Tests: `test_slideshow_show.py` (state machine, timer, long poll), `test_slideshow_screen.py`
+  (the screen script parsed for post-ES5 syntax, TV picture size/orientation/cache),
+  `test_slideshow_app.py` (Host, phone and TV pairing, Origin, only the show's photos),
+  `test_slideshow_pick.py`, `test_slideshow_command.py`, `test_home_lan.py` (both `mh`).
+- Step 30 of `tests/measure/mh-measure.ps1`: the evening test, timed by hand.
+
+### Not done
+- The evening test on the living-room TV through the Chromecast's browser, then the
+  UE55ES6100's own browser: "next" without bands and at once, a jump in ~1 s without bands, the
+  TV's code readable, full screen, the TV reloaded, the phone asleep.
+  **Reason:** needs the maintainer's TV, Chromecast and phone: `mh-measure.ps1 -Only 30 -Count 30`
+  (image built from branch `iterate/2026-10-21-2`).

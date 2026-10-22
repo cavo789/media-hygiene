@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import math
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from PIL import Image, ImageFile, ImageOps
@@ -90,13 +91,36 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
     Returns:
         The JPEG bytes, or None when the picture cannot be decoded.
     """
+    return fitted_jpeg(source, JpegFit((edge, edge), _REVIEW_QUALITY))
+
+
+@dataclass(frozen=True, slots=True)
+class JpegFit:
+    """The largest width and height of a JPEG, and its quality."""
+
+    box: tuple[int, int]
+    quality: int
+
+
+def fitted_jpeg(source: Path, fit: JpegFit) -> bytes | None:
+    """Render a picture as an upright baseline JPEG fitted into a box.
+
+    Runs in a worker process.
+
+    Args:
+        source: Image or RAW file.
+        fit: The box and the quality.
+
+    Returns:
+        The JPEG bytes, or None when the picture cannot be decoded.
+    """
     prepare_image_worker()
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     try:
-        preview = upright_picture(source, edge)
-        preview.thumbnail((edge, edge))
+        preview = upright_picture(source, max(fit.box))
+        preview.thumbnail(fit.box)
         buffer = io.BytesIO()
-        preview.save(buffer, "JPEG", quality=_REVIEW_QUALITY)
+        preview.save(buffer, "JPEG", quality=fit.quality)
     except unreadable_errors():
         return None
     finally:

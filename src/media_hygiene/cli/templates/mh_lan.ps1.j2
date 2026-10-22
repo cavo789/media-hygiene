@@ -9,8 +9,15 @@
 # secret drawn for the run gives the pairing code and the phone's token (the same until the
 # loop ends, the home page restarting after each step). RandomNumberGenerator, never Add-Type.
 function global:_{{ f }}_lan {
+    if (-not (_{{ f }}_lan_open)) { return }
+    try { _{{ f }}_home @args } finally { $global:MediaHygieneLan = $null }
+}
+
+# The address on the home network and the run's secret, kept in $global:MediaHygieneLan for
+# the pages `{{ f }}` runs until the caller clears it (the home loop, or `{{ f }} slideshow {{ l.flag }}`, 0291).
+function global:_{{ f }}_lan_open {
     $address = _{{ f }}_lan_address
-    if (-not $address) { Write-Host "{{ t.none }}"; $global:LASTEXITCODE = 1; return }
+    if (-not $address) { Write-Host "{{ t.none }}"; $global:LASTEXITCODE = 1; return $false }
     $bytes = New-Object byte[] {{ l.secret_bytes }}
     $random = [Security.Cryptography.RandomNumberGenerator]::Create()
     try { $random.GetBytes($bytes) } finally { $random.Dispose() }
@@ -18,7 +25,7 @@ function global:_{{ f }}_lan {
     Write-Host "{{ t.opening }}"
     Write-Host "{{ t.firewall }}"
     $global:MediaHygieneLan = @{ address = $address; secret = $secret }
-    try { _{{ f }}_home @args } finally { $global:MediaHygieneLan = $null }
+    return $true
 }
 
 # The address of the first adapter up with a default gateway, when it is private; the
@@ -37,11 +44,11 @@ function global:_{{ f }}_lan_address {
     return $null
 }
 
-# The options of `docker run` for the home page under `{{ f }} {{ l.flag }}`: the port on the PC's
-# address too, the address and the secret given to the page; nothing for any other command.
+# The options of `docker run` for the home page and the slideshow under `{{ f }} {{ l.flag }}`: the port
+# on the PC's address too, the address and the secret given to the page; nothing for any other command.
 function global:_{{ f }}_lan_page($command) {
     $lan = $global:MediaHygieneLan
-    if (-not $lan -or $command -ne 'home') { return @() }
+    if (-not $lan -or $command -notin @('home'{% for name in l.shows %}, '{{ name }}'{% endfor %})) { return @() }
     $port = {{ script.commands.port }}
     return @('-p', "$($lan.address):${port}:${port}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
 }

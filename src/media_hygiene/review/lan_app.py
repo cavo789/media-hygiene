@@ -70,6 +70,25 @@ class Pairing:
         """
         return self.failures >= MAX_FAILURES
 
+    def check(self, lan: LanAccess, typed: str) -> Response:
+        """Check a code; the right one sets the phone's cookie and opens `/`.
+
+        Args:
+            lan: The run's access.
+            typed: The code, from the path.
+
+        Returns:
+            303 to `/` with the cookie; the pairing page again otherwise.
+        """
+        if self.closed:
+            return pair_page(HTTPStatus.TOO_MANY_REQUESTS, closed=True)
+        if not lan.code_matches(typed):
+            self.failures += 1
+            return pair_page(HTTPStatus.FORBIDDEN, closed=self.closed)
+        cookie = f"{COOKIE_NAME}={lan.token}; Path=/; HttpOnly; SameSite=Lax"
+        headers = (f"Location: {PAGE_PATH}", f"Set-Cookie: {cookie}")
+        return Response(HTTPStatus.SEE_OTHER, headers=headers)
+
 
 @dataclass(frozen=True, slots=True)
 class LanApp:
@@ -94,30 +113,12 @@ class LanApp:
         if is_local(request) or not self.lan.names_me(request):
             return await self.home.handle(request)  # another host: refused there
         if request.path.startswith(PAIR_PREFIX) and request.method == _GET:
-            return self._pair(request.path.removeprefix(PAIR_PREFIX))
+            return self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
         if not self.lan.is_paired(request):
             if request.method == _GET:
                 return pair_page(HTTPStatus.UNAUTHORIZED, closed=self.pairing.closed)
             return Response(HTTPStatus.FORBIDDEN)
         return await self._paired(request)
-
-    def _pair(self, typed: str) -> Response:
-        """Check a code; the right one sets the cookie and opens the home page.
-
-        Args:
-            typed: The code, from the path.
-
-        Returns:
-            303 to the home page with the cookie; the pairing page again otherwise.
-        """
-        if self.pairing.closed:
-            return pair_page(HTTPStatus.TOO_MANY_REQUESTS, closed=True)
-        if not self.lan.code_matches(typed):
-            self.pairing.failures += 1
-            return pair_page(HTTPStatus.FORBIDDEN, closed=self.pairing.closed)
-        cookie = f"{COOKIE_NAME}={self.lan.token}; Path=/; HttpOnly; SameSite=Lax"
-        headers = (f"Location: {PAGE_PATH}", f"Set-Cookie: {cookie}")
-        return Response(HTTPStatus.SEE_OTHER, headers=headers)
 
     async def _paired(self, request: Request) -> Response:
         """Answer a paired phone: the reads and the audit, as from the loopback.

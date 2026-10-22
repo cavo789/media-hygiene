@@ -138,6 +138,7 @@ nav:
       - commands/review-sort.md
       - commands/review.md
       - commands/search.md
+      - commands/slideshow.md
       - commands/sort.md
       - commands/status.md
       - commands/tags.md

@@ -1,0 +1,137 @@
+{# The script of the TV's page (screen.html.j2). ES5 only, for a 2012 TV browser: var, function,
+   XMLHttpRequest; no arrow, no let/const, no template string, no fetch, no Promise written here
+   (img.decode is used only where it exists). tests/unit/test_slideshow_screen.py parses it. #}
+(function () {
+  var WAIT = {{ wait_prefix | tojson }};
+  var CODE_SHOWN = {{ code_shown | tojson }};
+  var RETRY_MS = 3000;
+  var DECODE_MS = 150;
+  var version = 0;
+  var shown = "";
+  var loading = "";
+  var ahead = new Image();
+  var front = { layer: document.getElementById("layerA"), photo: document.getElementById("photoA") };
+  var back = { layer: document.getElementById("layerB"), photo: document.getElementById("photoB") };
+  var pairing = document.getElementById("pairing");
+  var codeText = document.getElementById("code");
+
+  front.photo.className = "hidden";
+  back.photo.className = "hidden";
+
+  function swap() {
+    var former = front;
+    front = back;
+    back = former;
+    front.layer.className = "layer front";
+    back.layer.className = "layer back";
+  }
+
+  function shownNow(url) {
+    if (loading !== url) {
+      return;
+    }
+    loading = "";
+    shown = url;
+    swap();
+  }
+
+  function show(url) {
+    if (url === shown || url === loading) {
+      return;
+    }
+    if (url === "") {
+      loading = "";
+      shown = "";
+      front.photo.className = "hidden";
+      return;
+    }
+    loading = url;
+    back.photo.onload = function () {
+      var decoded = function () { shownNow(url); };
+      if (back.photo.decode) {
+        back.photo.decode().then(decoded, decoded);
+      } else {
+        window.setTimeout(decoded, DECODE_MS);
+      }
+    };
+    back.photo.onerror = function () {
+      if (loading === url) {
+        loading = "";
+      }
+    };
+    back.photo.className = "";
+    if (back.photo.getAttribute("src") === url && back.photo.complete) {
+      back.photo.onload();
+      return;
+    }
+    back.photo.src = url;
+  }
+
+  function preload(url) {
+    if (url !== "" && url !== shown) {
+      ahead.src = url;
+    }
+  }
+
+  function showCode(code) {
+    codeText.innerHTML = "";
+    codeText.appendChild(document.createTextNode(code));
+    pairing.className = "";
+  }
+
+  function ask(since) {
+    var request = new XMLHttpRequest();
+    request.open("GET", WAIT + since, true);
+    request.onreadystatechange = function () {
+      var answer;
+      if (request.readyState !== 4) {
+        return;
+      }
+      if (request.status === 401) {
+        window.setTimeout(function () { window.location.reload(); }, RETRY_MS);
+        return;
+      }
+      if (request.status !== 200) {
+        window.setTimeout(function () { ask(version); }, RETRY_MS);
+        return;
+      }
+      try {
+        answer = JSON.parse(request.responseText);
+      } catch (error) {
+        window.setTimeout(function () { ask(version); }, RETRY_MS);
+        return;
+      }
+      if (answer.code) {
+        showCode(answer.code);
+        ask(CODE_SHOWN);
+        return;
+      }
+      pairing.className = "hidden";
+      version = answer.version;
+      show(answer.photo);
+      preload(answer.next);
+      ask(version);
+    };
+    request.send(null);
+  }
+
+  function fullScreen() {
+    var page = document.documentElement;
+    var asks = page.requestFullscreen || page.webkitRequestFullScreen || page.webkitRequestFullscreen || page.mozRequestFullScreen || page.msRequestFullscreen;
+    if (asks) {
+      try {
+        asks.call(page);
+      } catch (error) {
+        return;
+      }
+    }
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.keyCode === 13) {
+      fullScreen();
+    }
+  }, false);
+  document.addEventListener("click", fullScreen, false);
+  ask(0);
+}());
