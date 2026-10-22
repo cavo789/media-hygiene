@@ -15,14 +15,10 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
-from media_hygiene.errors import MountError
-from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.page_header import headed_page
-from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
 from media_hygiene.review.presence import Presence
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
@@ -31,7 +27,6 @@ from media_hygiene.search.app import (
     SearchPages,
     SearchPlace,
 )
-from media_hygiene.search.chosen import ChosenPlace, ChosenStore
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
@@ -40,8 +35,8 @@ from media_hygiene.search.folders import (
     FolderDesk,
 )
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
@@ -138,17 +133,7 @@ def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
     Returns:
         The desk answering the pages about them.
     """
-    reports = runtime.locations.reports_dir
-    target = reports / DEFAULT_DECISIONS
-    roots = runtime.mounts.data_roots(runtime.locations.data_dir)
-    place = ChosenPlace(
-        target,
-        decisions_place(runtime.mapper, reports, target).host,
-        runtime.mapper.roots_on_host(roots),
-    )
-    return ChosenDesk(
-        ChosenStore(place, runtime.mapper), search, partial(_reports_ready, runtime)
-    )
+    return ChosenDesk(chosen_store(runtime), search, partial(reports_ready, runtime))
 
 
 def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
@@ -165,22 +150,6 @@ def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
     if roots == (data_dir,) and data_dir.is_dir():
         return tuple(sorted(child for child in data_dir.iterdir() if child.is_dir()))
     return roots
-
-
-def _reports_ready(runtime: Runtime) -> None:
-    """Check, before each save, that the reports folder keeps the decisions file.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Raises:
-        MountError: It is not mounted, or not writable.
-    """
-    if not runtime.persistent(MountKind.REPORTS):
-        raise MountError(
-            _("The files set aside are saved in /reports: mount it, or they are lost.")
-        )
-    ensure_writable(runtime, MountKind.REPORTS)
 
 
 def _announce(runtime: Runtime, start: PageStart, port: int) -> None:

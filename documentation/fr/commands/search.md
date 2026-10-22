@@ -60,8 +60,10 @@ fichiers en tableau.
 
 ## Mettre des photos de côté
 
-Pour retirer toutes les photos de quelqu'un, ou d'un évènement : cherchez-les (`person:"Anne"`,
-une année, un mot), choisissez-les (un clic ou Espace sur chacune, ou **Choisir les N fichiers
+Pour retirer toutes les photos de quelqu'un, la page
+[`people`](people.md#retirer-toutes-les-photos-de-quelquun) le fait depuis son groupe de visages.
+Pour celles d'un évènement, ou tout autre choix : cherchez-les (`person:"Anne"`, une année, un
+mot), choisissez-les (un clic ou Espace sur chacune, ou **Choisir les N fichiers
 trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 affichés), puis
 **Mettre de côté les fichiers choisis**.
 

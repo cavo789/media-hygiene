@@ -2133,6 +2133,12 @@ msgstr ""
 msgid "Every pair has been decided."
 msgstr ""
 
+msgid ""
+"Every photo this person is on, with others or not. Nothing is deleted "
+"here: 'clean --decisions' moves them to the quarantine, 'undo' brings "
+"them back."
+msgstr ""
+
 msgid "Every report"
 msgstr ""
 
@@ -5517,6 +5523,12 @@ msgid "Set aside the picked files"
 msgstr ""
 
 #, python-brace-format
+msgid "Set aside their {n} photo"
+msgid_plural "Set aside their {n} photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Set aside: {aside} · decided: {decided} of {total}"
 msgstr ""
 
@@ -5576,6 +5588,12 @@ msgid "Show again"
 msgstr ""
 
 msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
+msgstr ""
+
+msgid "Show every face of the group first, to take out those of someone else."
+msgstr ""
+
+msgid "Show every face of the group, to take out those of someone else"
 msgstr ""
 
 msgid "Show every setting, where it comes from, and the mount points."
@@ -10726,6 +10744,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} obvious series validated"
 msgid_plural "{n} obvious series validated"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} of these photos is set aside."
+msgid_plural "{n} of these photos are set aside."
 msgstr[0] ""
 msgstr[1] ""
 

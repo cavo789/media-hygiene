@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.errors import MediaHygieneError
 from media_hygiene.report.chosen_decisions import ChosenFile
 from media_hygiene.report.decisions import (
     DecisionsFile,
@@ -71,6 +72,17 @@ class ChosenStore:
         if not self.place.target.exists():
             return ()
         return read_decisions(self.place.target).chosen
+
+    def paths(self) -> frozenset[str]:
+        """The host paths of the files set aside, to mark or count them on a page.
+
+        Returns:
+            Them; none when the file cannot be read.
+        """
+        try:
+            return frozenset(file.path for file in self.on_disk())
+        except MediaHygieneError:
+            return frozenset()
 
     def add(self, selection: Selection) -> tuple[ChosenFile, ...]:
         """Set files aside: saved, then read back.

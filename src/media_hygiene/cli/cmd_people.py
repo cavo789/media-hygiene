@@ -61,13 +61,19 @@ def people_command(  # pylint: disable=too-many-arguments
         sample: `--sample N`.
         forget: `--forget`.
         port: `--port`, inside the container.
+
+    Raises:
+        Exit: With `STEP_EXIT_BASE + n` when *Apply now* chose step `n` (opened
+            from the home page): `mh` runs it, then opens the home page again.
     """
+    from media_hygiene.cli.apply_step import end_on_applied, page_apply
+    from media_hygiene.cli.cmd_search import suggest_clean
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.cli.people_flow import PeopleRequest, run_people
     from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.services.next_command import NextVerb
     from media_hygiene.services.people_files import require_people_index
-    from media_hygiene.services.people_page import serve_people
+    from media_hygiene.services.people_page import PeopleStart, serve_people
     from media_hygiene.services.writable import ensure_writable
 
     runtime = runtime_of(ctx)
@@ -86,6 +92,10 @@ def people_command(  # pylint: disable=too-many-arguments
             )
         if result is None or not result.groups.people:
             return
-        serve_people(runtime, result, port)
+        # Opened from the home page: `mh` runs the step *Apply now* ends on (0243).
+        served = serve_people(runtime, result, PeopleStart(port, page_apply(runtime)))
         output.blank()
         output.success(_("Page stopped; nothing was changed."))
+        end_on_applied(runtime, served.code)
+        if served.chosen:
+            suggest_clean(runtime, served.chosen)
