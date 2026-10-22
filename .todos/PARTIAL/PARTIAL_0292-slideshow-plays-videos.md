@@ -56,3 +56,31 @@ The maintainer's `inventory.xlsx`, **Codec** column: **1,187 `h264`** videos, **
   skipped and labelled, the timer waits for the video's end event.
 - The maintainer plays a phone video of the holidays on the TV through the Chromecast, from
   the phone (part of 0291's evening test).
+
+## Status — PARTIAL (2026-10-22)
+
+### Done
+- The slideshow shows the videos of the selection (images, RAW and videos from the index;
+  codec and length from the audit's `ffprobe` metadata). `GET /film/<key>.<ext>` streams the
+  original piece by piece (`Range`), `.mov`/`.mp4`/`.m4v` as `video/mp4`, `.webm` as
+  `video/webm`; only the show's files. No transcoding.
+- Played on the TV: codecs h264, vp8, vp9 (an unknown codec is tried: the TV's error moves on);
+  HEVC or a container not served (avi, mkv…) is passed over by next/previous/timer, a jump to
+  it refused, its thumbnail labelled on the phone ("Not on the TV: its format (hevc) does not
+  play there.").
+- Screen page (ES5): a third layer `<video>`; plays/pauses with the show; `GET /api/ended/<key>`
+  on `ended` or `error` moves the show on; a play refused for sound is retried muted; the next
+  photo is preloaded while a video plays. The timer waits for the end: a video stays its length
+  plus max(15 s, half its length) (300 s when unknown) should the TV never say it ended.
+- A browser without `img.decode` or saying it plays no H.264 (a 2012 TV's own) asks
+  `/api/wait/<v>/photos`: once every paired TV is photos-only, the show passes over the videos
+  and the remote says so.
+- Remote: a video's first frame as thumbnail, marked ▶; status "the video plays to its end".
+- Tests (`tests/unit/test_slideshow_films.py`, pick, app, screen), docs en+fr, translations,
+  mh-measure step 31.
+
+### Not done
+- The evening test on the TV through the Chromecast (a phone `.mov` played from the phone,
+  sound or muted, end -> next, pause/play, HEVC by its address, the TV's own browser skipping
+  videos): `mh-measure.ps1 -Only 31 -Count 10`.
+  **Reason:** needs the maintainer's TV and Chromecast.

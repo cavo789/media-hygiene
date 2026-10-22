@@ -20,6 +20,9 @@ from media_hygiene.services.launcher_phone_say import say
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 LAN_FLAG: Final = "--lan"
+# The commands whose page `--lan` opens to the home network: the home page (0269), the
+# slideshow (0291, `mh slideshow --lan`, or chosen on a home page opened by `mh --lan`).
+LAN_SHOWS: Final = ("slideshow",)
 SECRET_BYTES: Final = 32
 # The private IPv4 ranges (RFC 1918), for PowerShell's -match: a home network only.
 PRIVATE_IPV4: Final = r"^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)"
@@ -39,10 +42,11 @@ class LanTexts:
 
 
 @dataclass(frozen=True, slots=True)
-class LanCommand:
+class LanCommand:  # pylint: disable=too-many-instance-attributes  # one per template value
     """What the scripts need to run, or refuse, `mh --lan`."""
 
     flag: str
+    shows: tuple[str, ...]  # `mh <command> --lan`; their page and home's published
     address: str  # the variable naming the PC's address
     secret: str  # the variable holding the run's secret
     secret_bytes: int
@@ -60,6 +64,7 @@ def lan_command() -> LanCommand:
     command = f"{LAUNCHER_FUNCTION} {LAN_FLAG}"
     return LanCommand(
         flag=LAN_FLAG,
+        shows=LAN_SHOWS,
         address=LAN_ADDRESS_VARIABLE,
         secret=LAN_SECRET_VARIABLE,
         secret_bytes=SECRET_BYTES,

@@ -40,6 +40,7 @@ PAGE_STEPS: Final = MappingProxyType(
         "browse.html.j2": "browse",
         "places.html.j2": "places",
         "people.html.j2": "people",
+        "slideshow.html.j2": "slideshow",
     }
 )
 # The pages whose own button ends them ("Leave" on the phone's): no second way back.

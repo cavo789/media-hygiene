@@ -30,6 +30,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | give my photos and videos words to search for | [`tags`](commands/tags.md) |
 | find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
 | look through my folders and remove photos, without Explorer, undoably | [`browse`](commands/browse.md), then `clean --decisions` |
+| show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
@@ -63,6 +64,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`tags`](commands/tags.md) | Give every photo and video words to find it by: the meaningful words of its folders and of its file name, its date (year, month, season, holidays), its place, and what a local vision model sees (optional; a video by its middle frame). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
 | [`search`](commands/search.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
 | [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
+| [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
 | [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
 
 **Act: moves, writes or deletes files** (journaled, undoable)
@@ -101,7 +103,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone, keep none) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Cleaning, step 8](clean/08-clean.md#need-the-space-at-once---delete) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home`, `slideshow` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
 | `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
@@ -193,6 +195,8 @@ command shows its own `--help`; here is the list of the commands:
 │              browser.                                                        │
 │ search       Find photos by their words in your browser (or as a table): the │
 │              words 'tags' gave them.                                         │
+│ slideshow    Show photos on the TV, the phone choosing the next one: a       │
+│              folder, a search or the files set aside.                        │
 │ status       Where am I? The last audit, the quarantine, what is left: no    │
 │              scan.                                                           │
 │ tags         Give every photo words to find it by, kept in the cache, never  │
@@ -202,9 +206,16 @@ command shows its own `--help`; here is the list of the commands:
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
 │ album        Gather a selection of the classify plan into a folder of hard   │
 │              links: nothing is copied nor moved (journaled, undoable).       │
+│ backup       Windows only, as mh backup: copy your photo folders into a      │
+│              folder of their own on the NAS, only what it lacks; a photo     │
+│              moved is renamed there, a deletion by mistake never carried     │
+│              over. Run here, it shows the plan.                              │
 │ clean        Audit, confirm, then move the duplicate copies to the           │
 │              quarantine, after a byte comparison (journaled, undoable);      │
 │              --delete deletes them for good.                                 │
+│ import       Copy into your photos what only a backup (a NAS) holds, never   │
+│              what you set aside or deleted before; each copy proven          │
+│              (journaled, undoable).                                          │
 │ purge        Erase the quarantine of a run for good: with 'clean --delete',  │
 │              the only way the tool removes content.                          │
 │ sort         Move the photos and videos as the edited classify workbook says │

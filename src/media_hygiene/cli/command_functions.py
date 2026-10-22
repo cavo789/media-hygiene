@@ -25,6 +25,7 @@ from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_search import search_command
+from media_hygiene.cli.cmd_slideshow import slideshow_command
 from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_status import status_command
 from media_hygiene.cli.cmd_tags import tags_command
@@ -63,6 +64,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "review": review_command,
         "review-sort": review_sort_command,
         "search": search_command,
+        "slideshow": slideshow_command,
         "sort": sort_command,
         "status": status_command,
         "tags": tags_command,

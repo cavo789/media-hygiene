@@ -30,6 +30,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
 | retrouver une photo par un mot, un lieu, une année, une personne | [`search`](commands/search.md) |
 | parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [`browse`](commands/browse.md), puis `clean --decisions` |
+| montrer les photos des vacances sur la télé, en choisissant la suivante depuis mon téléphone | [`slideshow`](commands/slideshow.md) |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`backup`](commands/backup.md) |
@@ -64,6 +65,7 @@ exemples et son `--help`.
 | [`tags`](commands/tags.md) | Donne à chaque photo et vidéo des mots pour la retrouver : les mots parlants de ses dossiers et de son nom de fichier, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif ; une vidéo par l'image du milieu). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
 | [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. Les photos choisies peuvent être mises de côté pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
+| [`slideshow`](commands/slideshow.md) | Montre les photos d'un dossier, d'une recherche ou les fichiers mis de côté sur la télé (son navigateur, ou celui d'un Chromecast), le téléphone comme télécommande : suivante, précédente, une photo touchée, lecture et pause, « ne pas montrer ». Avec `mh slideshow --lan`, pour le réseau de la maison seulement, la télé appairée par un code qu'elle affiche. N'écrit jamais dans vos dossiers. | [Commandes](commands/slideshow.md) |
 | [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
 
 **Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
@@ -102,7 +104,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--near` | `review` | Décider les quasi-doublons groupe par groupe (comme prévu, garder l'autre version, laisser tel quel, n'en garder aucune) au lieu de trier les rafales. [Étape 11 du nettoyage](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8 du nettoyage](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport, les photos de rafale écartées avec `review` et les groupes de quasi-doublons décidés avec `review --near` (avec `--tier near`). `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. Une fois appliqué par `clean`, le fichier est renommé `decisions.applied-<run>.json`. [Étape 10 du nettoyage](clean/10-review-bursts.md), [étape 12 du nettoyage](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home` | Port de la page, `[review] port` de `config.toml` par défaut (`8088`) ; publiez le même : `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home`, `slideshow` | Port de la page, `[review] port` de `config.toml` par défaut (`8088`) ; publiez le même : `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--photos "C:\Photos"` | `launcher` | Un dossier de photos et vidéos, tel que l'Explorateur le montre ; répétez-la pour plusieurs dossiers. Pas besoin de `-v`. [Nettoyer en bref, 0](clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh) |
 | `--quarantine "D:\quarantaine"` | `launcher` | Où vont les copies mises de côté ; de préférence sur le disque des photos. Par défaut : `$HOME\media-hygiene\quarantine`. |
@@ -201,6 +203,9 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              dans votre navigateur.                                          │
 │ search       Retrouver des photos par leurs mots dans votre navigateur (ou   │
 │              en tableau) : les mots que 'tags' leur a donnés.                │
+│ slideshow    Montrer des photos sur la télé, le téléphone choisissant la     │
+│              suivante : un dossier, une recherche ou les fichiers mis de     │
+│              côté.                                                           │
 │ status       Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il      │
 │              reste : sans analyse.                                           │
 │ tags         Donner à chaque photo des mots pour la retrouver, gardés dans   │
@@ -212,9 +217,17 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │ album        Rassemble une sélection du plan de classify dans un dossier de  │
 │              liens physiques : rien n'est copié ni déplacé (journalisé,      │
 │              annulable).                                                     │
+│ backup       Windows seulement, en mh backup : copier vos dossiers de photos │
+│              dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui  │
+│              manque ; une photo déplacée y est renommée, une suppression par │
+│              erreur n'y est jamais reportée. Lancée ici, elle montre le      │
+│              plan.                                                           │
 │ clean        Analyser, confirmer, puis déplacer les copies en double en      │
 │              quarantaine, après une comparaison octet par octet (journalisé, │
 │              annulable) ; --delete les supprime pour de bon.                 │
+│ import       Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à │
+│              contenir, jamais ce que vous avez mis de côté ou supprimé avant │
+│              ; chaque copie prouvée (journalisé, annulable).                 │
 │ purge        Effacer pour de bon la quarantaine d'une exécution : avec       │
 │              'clean --delete', la seule façon dont l'outil supprime du       │
 │              contenu.                                                        │

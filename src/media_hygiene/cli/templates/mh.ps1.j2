@@ -38,6 +38,13 @@ function global:{{ function }} {
         _{{ function }}_lan @typed
         return
     }
+    if ($rest.Count -gt 1 -and $rest[0] -in @({{ listed(lan.shows) }}) -and $rest -contains '{{ lan.flag }}') {
+        # `{{ function }} slideshow {{ lan.flag }}`: the show opens to the TV and the phones of the home network (0291).
+        if (-not (_{{ function }}_lan_open)) { return }
+        $plain = @($rest | Where-Object { $_ -ne '{{ lan.flag }}' }) + $typed
+        try { {{ function }} @plain } finally { $global:MediaHygieneLan = $null }
+        return
+    }
     if ($rest.Count -eq 0) {
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
         # the step chosen gets them too (0181). Docker Desktop started first (0200).

@@ -109,6 +109,18 @@
 #      the phone paired by the QR code then by the code, the audit run from the phone, a step
 #      refused there, the phone still paired after a step run on the PC, the phone on mobile
 #      data (Wi-Fi off) never reaching it                                       (0269)
+#  30. mh slideshow --lan, the photos on the TV driven from the phone: a test mh audits the
+#      test folder (timed), then, in a new window, mh slideshow --lan by hand: the TV's code
+#      on the Chromecast's browser, the phone paired, the TV paired by its code, full screen;
+#      the time from a tap on the phone to the photo whole on the TV (Enter pressed twice,
+#      5 times "next", 5 times a far thumbnail), bands seen or not, the timer, "do not show",
+#      the TV reloaded, the phone asleep; then the same on the TV's own browser     (0291)
+#  31. mh slideshow --lan plays the videos: a few phone videos of C:\Photos copied (the smallest
+#      .mov and .mp4 found first, plus one HEVC video you name), audited; on the Chromecast's
+#      browser: a .mov played (sound or muted, tap -> first frame timed), the show moving on at
+#      its end, pause/play during a video, the next photo after it; the HEVC one labelled on the
+#      phone, then opened by its address to learn whether the Chromecast plays HEVC; then the
+#      TV's own browser: videos passed over, the phone saying why                  (0292)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -142,6 +154,8 @@
 #   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
 #   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
 #   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
+#   .\mh-measure.ps1 -Only 30 -Count 30   (mh slideshow --lan: the photos on the TV, the phone as remote: 0291)
+#   .\mh-measure.ps1 -Only 31 -Count 10   (mh slideshow --lan plays the videos on the TV: 0292)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2621,6 +2635,185 @@ if (Wanted 29) {
         Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
     } else {
         Log "   29: skipped the phone part: no private address found (mh --lan says the same)"
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 30: mh slideshow --lan, the photos on the TV driven from the phone (0291) --------------
+# A test mh with the test cache audits the test folder here; the slideshow runs in a new window
+# (it holds it), the TV and the phone by hand. Times: Enter as you tap on the phone, Enter when
+# the photo is whole on the TV (your two reactions roughly cancel out).
+function SlideTimes([string]$what, [int]$times) {
+    $taken = @()
+    for ($i = 1; $i -le $times; $i++) {
+        $null = Read-Host "    $what ${i}/${times}: press Enter as you tap on the phone"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $null = Read-Host "    ... press Enter when the new photo is whole on the TV"
+        $watch.Stop()
+        $taken += $watch.Elapsed.TotalSeconds
+    }
+    $sorted = @($taken | Sort-Object)
+    $median = $sorted[[int][Math]::Floor($sorted.Count / 2)]
+    return ("{0} (median {1:N1} s)" -f (($taken | ForEach-Object { '{0:N1}' -f $_ }) -join ' '), $median)
+}
+
+if (Wanted 30) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 30. mh slideshow --lan, the photos on the TV driven from the phone (0291)"
+    $showDir = Join-Path $tool "slideshow"
+    New-Item -ItemType Directory -Force -Path $showDir, (Join-Path $tool "config") | Out-Null
+    $showFile = Join-Path $showDir "mh.ps1"
+    $showMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @showMounts $Image launcher --photos $data > $showFile
+    . $showFile
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit | Out-Null
+    $watch.Stop()
+    Log ("   30a. mh audit of the test folder: exit code {0}, {1:N1} s" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $address = _mh_lan_address
+    $shown = Join-Path $data "flat"
+    if ($address) {
+        Log "   30a. address found = $address"
+        Write-Host "30: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "        . '$showFile'"
+        Write-Host "        mh slideshow --folder '$shown' --lan"
+        Write-Host "    The PC's browser opens the remote."
+        $card = Read-Host "30b. The PC's page shows the TV's address (http://${address}:.../screen), a QR code and a code of 8 digits? (y/n)"
+        Write-Host "    On the Chromecast: open its browser, type the TV's address of the PC's page."
+        $tvCode = Read-Host "30c. The TV shows a code of 6 digits, big and readable from the sofa? (y/n)"
+        Write-Host "    On the phone (same Wi-Fi): scan the QR code of the PC's page."
+        $phone = Read-Host "30d. The phone opened the remote, with the thumbnails? (y / n / c: it asked the code)"
+        Write-Host "    On the phone: type the TV's code in 'The code the TV shows', then 'Pair the TV'."
+        $paired = Read-Host "30e. The first photo appeared on the TV, black borders, no file name? (y/n)"
+        Write-Host "    On the TV: press OK on the remote."
+        $full = Read-Host "30f. Full screen? (y / n / b: the browser's bar stays)"
+        Write-Host "    Next: tap the right arrow on the phone; wait each time for the photo."
+        $next = SlideTimes "next" 5
+        Log "   30g. tap -> photo on the TV, next (loaded in advance): $next"
+        Write-Host "    Jump: each time tap a thumbnail far down the grid (never the next one)."
+        $jump = SlideTimes "jump" 5
+        Log "   30g. tap -> photo on the TV, a far thumbnail: $jump"
+        $bands = Read-Host "30g. Did you ever see a photo drawn in bands, or half a photo? (n / y: when)"
+        Write-Host "    On the phone: 'Each photo' 5 s, then Play; wait 20 s."
+        $timer = Read-Host "30h. The TV moved on alone every 5 s or so? (y/n)"
+        Write-Host "    On the phone: Pause, then 'Do not show'."
+        $skip = Read-Host "30h. The TV moved on, and the thumbnail is dimmed on the phone? (y/n)"
+        Write-Host "    On the TV: reload the page (or open the bookmark again)."
+        $reload = Read-Host "30i. Still paired (no code), the same photo back? (y/n)"
+        Write-Host "    On the phone: lock it, wait one minute, unlock it."
+        $sleep = Read-Host "30j. The remote shows the photo the TV shows, its buttons work? (y/n)"
+        Log "   30: PC card $card, TV code $tvCode, phone $phone, TV paired $paired, full screen $full, bands $bands, timer $timer, do not show $skip, TV reload $reload, phone asleep $sleep"
+        $own = Read-Host "30k. Now the TV's own browser (Samsung: the Internet app): try it? (y/n)"
+        if ($own -eq 'y') {
+            Write-Host "    On the TV's Internet app: type the TV's address; type its code on the phone."
+            $ownCode = Read-Host "30k. The TV showed its code, then the photo once paired? (y/n)"
+            $ownNext = SlideTimes "next (TV's browser)" 3
+            $ownJump = SlideTimes "jump (TV's browser)" 3
+            $ownBands = Read-Host "30k. Bands seen on the TV's own browser? (n / y)"
+            Log "   30k. TV's own browser: code then photo $ownCode, next $ownNext, jump $ownJump, bands $ownBands"
+        }
+        Write-Host "    In the slideshow's window: Ctrl+C, then close it."
+    } else {
+        Log "   30: skipped the TV part: no private address found (mh --lan says the same)"
+    }
+    $ErrorActionPreference = $saved
+}
+
+# --- 31: mh slideshow --lan plays the videos (0292) ------------------------------------------
+# A few phone videos of $Photos are COPIED into the test folder (C:\Photos is only read), with
+# one HEVC video you name (the Codec column of inventory.xlsx says hevc); a test mh audits them,
+# the slideshow runs in a new window, the TV and the phone by hand.
+if (Wanted 31) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 31. mh slideshow --lan plays the videos on the TV (0292)"
+    $filmDir = Join-Path $data "videos"
+    $filmTool = Join-Path $tool "slideshow-videos"
+    New-Item -ItemType Directory -Force -Path $filmDir, $filmTool, (Join-Path $tool "config") | Out-Null
+    $found = @(Get-ChildItem -Path $Photos -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in '.mov', '.mp4' -and $_.Length -gt 1MB } |
+        Select-Object -First 60)
+    $chosenFilms = @($found | Sort-Object Length | Select-Object -First 4)
+    foreach ($film in $chosenFilms) { Copy-Item -LiteralPath $film.FullName -Destination $filmDir }
+    Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 4 | Copy-Item -Destination $filmDir
+    $hevcPath = Read-Host "31a. Path of ONE HEVC video of your photos (inventory.xlsx, column Codec = hevc), or Enter to skip"
+    $hevcCopied = "none"
+    if ($hevcPath -ne "" -and (Test-Path -LiteralPath $hevcPath)) {
+        Copy-Item -LiteralPath $hevcPath -Destination (Join-Path $filmDir ("hevc-" + (Split-Path $hevcPath -Leaf)))
+        $hevcCopied = "yes"
+    }
+    $sizes = ($chosenFilms | ForEach-Object { '{0} {1:N0} MB' -f $_.Extension, ($_.Length / 1MB) }) -join ', '
+    Log ("   31a. videos copied: {0} ({1}); HEVC copied: {2}" -f $chosenFilms.Count, $sizes, $hevcCopied)
+    $filmFile = Join-Path $filmTool "mh.ps1"
+    $filmMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @filmMounts $Image launcher --photos $data > $filmFile
+    . $filmFile
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit | Out-Null
+    $watch.Stop()
+    Log ("   31a. mh audit of the test folder: exit code {0}, {1:N1} s" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $address = _mh_lan_address
+    if ($address) {
+        Write-Host "31: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "        . '$filmFile'"
+        Write-Host "        mh slideshow --folder '$filmDir' --lan"
+        $filmPort = Read-Host "31b. The port in the TV's address on the PC's page (Enter: 8088)"
+        if ($filmPort -eq "") { $filmPort = "8088" }
+        $hevcUrl = ""
+        try {
+            $slides = (Invoke-WebRequest -Uri "http://127.0.0.1:$filmPort/api/slides" -UseBasicParsing -TimeoutSec 30).Content | ConvertFrom-Json
+            $kinds = @($slides.slides | ForEach-Object { if ($_.film) { 'video ' + $_.format } elseif ($_.format) { 'not on the TV ' + $_.format } else { 'photo' } })
+            Log ("   31b. the show as the server lists it: " + ($kinds -join ', '))
+            $hevc = @($slides.slides | Where-Object { $_.format -eq 'hevc' } | Select-Object -First 1)
+            if ($hevc.Count -eq 1) { $hevcUrl = "http://${address}:$filmPort/film/$($hevc[0].key)" }
+        } catch {
+            Log ("   31b. GET /api/slides failed: " + $_.Exception.Message)
+        }
+        Write-Host "    Pair the Chromecast's browser and the phone as in step 30 (the TV's code, the QR code)."
+        $marked = Read-Host "31c. On the phone: the videos' thumbnails show a frame and a play mark, the HEVC one says 'Not on the TV: its format (hevc) ...'? (y / n: what)"
+        Write-Host "    On the phone: Pause if playing, then tap a video's thumbnail; press Enter at the tap."
+        $null = Read-Host "    Enter as you tap"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $null = Read-Host "    ... Enter when its first frame is on the TV"
+        $watch.Stop()
+        Log ("   31d. tap -> the video's first frame on the TV: {0:N1} s" -f $watch.Elapsed.TotalSeconds)
+        $plays = Read-Host "31d. On the phone: Play. The video plays on the TV? (s: with sound / m: muted / d: offered a download / n: black or frozen)"
+        $smooth = Read-Host "31e. Smooth, no stutter, the whole picture (not cropped, not stretched)? (y / n: what)"
+        $paused = Read-Host "31f. On the phone: Pause, wait 5 s, Play. The video paused, then went on where it was? (y / r: restarted / n)"
+        $endNext = Read-Host "31g. At the video's end, the TV moved on alone to the next photo or video? (y / n: it stayed)"
+        $afterFilm = Read-Host "31g. The photo after the video came at once (loaded during the video)? (y / n: seconds)"
+        Log "   31: marked $marked, plays $plays, smooth $smooth, pause/play $paused, moved on at the end $endNext, next photo at once $afterFilm"
+        if ($hevcUrl -ne "") {
+            $hevcExt = [IO.Path]::GetExtension($hevcPath).ToLower()
+            Write-Host "    In the Chromecast's browser, open a NEW tab and type: $hevcUrl$hevcExt"
+            $hevcPlays = Read-Host "31h. Does the HEVC video play there? (y / d: offered a download / n: black or error)"
+            Log "   31h. HEVC on the Chromecast's browser, opened by its address: $hevcPlays"
+        } else {
+            Log "   31h. HEVC: no HEVC video in the show, not tried"
+        }
+        $ownFilms = Read-Host "31i. Now the TV's own browser (Samsung Internet app), paired as in 30k: try it? (y/n)"
+        if ($ownFilms -eq 'y') {
+            $ownSkip = Read-Host "31i. Play on the phone: the TV shows the photos only, never a video, and the phone's line says the videos are skipped? (y / n: what)"
+            Log "   31i. TV's own browser: $ownSkip"
+        }
+        Write-Host "    In the slideshow's window: Ctrl+C, then close it."
+    } else {
+        Log "   31: skipped the TV part: no private address found (mh --lan says the same)"
     }
     $ErrorActionPreference = $saved
 }

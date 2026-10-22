@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {# The pairing page a phone sees on the home network before it is paired (0269, review/lan_app.py):
    the code shown on the PC typed here opens /pair/<code>, which sets the phone's cookie and goes to
-   the home page; the QR code shown on the PC opens that address directly. `problem` says why the
+   the page (the home page, or the slideshow's remote: slideshow/door.py); the QR code shown on the PC opens that address directly. `problem` says why the
    last code was refused; `closed` hides the form after too many wrong codes. #}
 <html lang="{{ _('en') }}">
 <head>
@@ -27,11 +27,11 @@ button { width: 100%; margin-top: 16px; padding: 12px; border: 0; border-radius:
   <h1>{{ _("Media Hygiene on this phone") }}</h1>
   {% if problem %}<p class="problem" role="alert">{{ problem }}</p>{% endif %}
   {% if not closed %}
-  <p>{{ _("Type the code shown on the PC: in the sidebar of its home page, and in the window of mh.") }}</p>
+  <p>{{ _("Type the code shown on the PC: on its page (in the sidebar of the home page, at the top of the slideshow's) and in the window of mh.") }}</p>
   <form id="pair" autocomplete="off">
     <label for="code">{{ _("Pairing code") }}</label>
     <input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="{{ digits + 2 }}" required autofocus>
-    <button type="submit">{{ _("Open the home page") }}</button>
+    <button type="submit">{{ _("Pair this phone") }}</button>
   </form>
   <script>
   document.getElementById("pair").addEventListener("submit", (event) => {

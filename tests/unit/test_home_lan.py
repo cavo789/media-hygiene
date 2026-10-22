@@ -325,7 +325,7 @@ def test_powershell_publishes_the_home_page_on_the_lan_address_only(
     assert "[Security.Cryptography.RandomNumberGenerator]::Create()" in script
     assert "Add-Type" not in script[script.index("function global:_mh_lan {") :]
     assert f"'{lan.private}'" in script
-    assert "$command -ne 'home'" in script
+    assert "$command -notin @('home', 'slideshow')" in script
     assert '"$($lan.address):${port}:${port}"' in script
     assert f"{lan.address}=$($lan.address)" in script
     assert f"{lan.secret}=$($lan.secret)" in script
@@ -344,3 +344,26 @@ def test_bash_refuses_mh_lan(tmp_path: Path) -> None:
     assert result.returncode == 1
     assert "ran" not in result.stdout
     assert "mh --lan works in Windows PowerShell only" in result.stderr
+
+
+def test_powershell_opens_the_slideshow_to_the_lan_when_asked(tmp_path: Path) -> None:
+    """`mh slideshow --lan`: address and secret drawn, the flag left out, cleared."""
+    script = _render(Shell.POWERSHELL, tmp_path)
+    assert "$rest[0] -in @('slideshow') -and $rest -contains '--lan'" in script
+    assert "function global:_mh_lan_open {" in script
+    assert "$plain = @($rest | Where-Object { $_ -ne '--lan' }) + $typed" in script
+    assert "try { mh @plain } finally { $global:MediaHygieneLan = $null }" in script
+    assert (
+        "try { _mh_home @args } finally { $global:MediaHygieneLan = $null }" in script
+    )
+
+
+def test_bash_refuses_mh_slideshow_lan(tmp_path: Path) -> None:
+    """`mh slideshow --lan` in bash: PowerShell only, nothing run."""
+    script = tmp_path / "mh.sh"
+    script.write_text(_render(Shell.BASH, tmp_path), encoding="utf-8")
+    code = f"docker() {{ echo ran; }}\nsource {script}\nmh slideshow --chosen --lan"
+    result = run_bash(code, {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"})
+    assert result.returncode == 1
+    assert "ran" not in result.stdout
+    assert "Windows PowerShell only" in result.stderr

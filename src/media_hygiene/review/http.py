@@ -53,6 +53,7 @@ class ContentType(StrEnum):
     MATROSKA = "video/x-matroska"
     THREE_GPP = "video/3gpp"
     THREE_GPP2 = "video/3gpp2"
+    WEBM = "video/webm"
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{# The remote of `media-hygiene slideshow` (slideshow/app.py, 0291), on the PC and on the phones
+   paired by `mh --lan`'s code: ◀ ▶, play/pause and the interval, "do not show", a thumbnail tapped
+   shows that photo on the TV; the code a TV shows pairs it. On the PC, the card says how the TV
+   and the phone open the show (GET /api/lan: the address, the code, the QR code; 404 without
+   `mh --lan`). The server holds the show: this page only asks and draws (`slideshow.js.j2`).
+   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. #}
+{% set texts = {
+  "place": _("Photo {place} of {total}"),
+  "nothing": _("Nothing on the TV: every photo is set out of the show."),
+  "playing": _("plays, {seconds} s each"),
+  "paused": _("paused"),
+  "screens": [ngettext("{n} TV", "{n} TVs", 1), ngettext("{n} TV", "{n} TVs", 2)],
+  "noScreen": _("no TV yet"),
+  "play": _("▶ Play"),
+  "pause": _("❚❚ Pause"),
+  "out": _("Do not show"),
+  "in": _("Show again"),
+  "offline": _("The slideshow is not running any more: start it again on the PC."),
+  "failed": _("The slideshow failed (error {status})."),
+  "paired": _("The TV is paired: it shows the photo now."),
+  "lanOff": _("Only this PC can open the slideshow. For the TV and your phone, type on the PC: {command}"),
+  "lanCommand": "mh slideshow --lan …",
+  "seconds": _("{n} s"),
+  "filmPlays": _("the video plays to its end"),
+  "unplayable": _("Not on the TV: its format ({format}) does not play there."),
+  "photosOnly": _("videos skipped: this TV's own browser shows photos only, open the show in the Chromecast's browser for them"),
+} %}
+{% set page_name = _("Slideshow") %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_name }} — media-hygiene</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
+<style>
+{% include "theme.css.j2" %}
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.5 var(--mk-font-text); }
+  header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button { min-height: 44px; padding: 8px 16px; font: inherit; font-weight: 600; color: var(--on-accent); background: var(--accent); border: 1px solid var(--accent); border-radius: 10px; cursor: pointer; }
+  button.plain { color: var(--accent); background: transparent; }
+  button:disabled { opacity: .45; cursor: default; }
+  select, input { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+  #status { margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
+  #status.error { color: var(--bad); font-weight: 600; }
+  .card { margin: 12px 16px 0; padding: 12px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  .card p { margin: 0 0 8px; }
+  .card code { font-family: var(--mk-font-mono, monospace); overflow-wrap: anywhere; }
+  #qr svg { display: block; width: 160px; height: 160px; }
+  .pair { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pair input { width: 9em; font-family: var(--mk-font-mono, monospace); letter-spacing: .15em; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; padding: 12px 16px 24px; }
+  .tile { position: relative; margin: 0; background: var(--card); border: 3px solid transparent; border-radius: 10px; overflow: hidden; }
+  .tile.current { border-color: var(--accent); }
+  .tile.out img { opacity: .3; }
+  .tile img, .tile video, .tile .blank { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--chip); cursor: pointer; }
+  .tile.out video { opacity: .3; }
+  .tile .blank { display: grid; place-items: center; font-size: 2rem; color: var(--muted); cursor: default; }
+  .tile .mark { position: absolute; z-index: 1; top: 4px; left: 4px; padding: 0 6px; border-radius: 6px; color: #fff; background: rgba(0, 0, 0, .6); pointer-events: none; }
+  .tile.unplayable figcaption { color: var(--bad); }
+  .tile figcaption { padding: 2px 6px; font-size: .75rem; color: var(--muted); }
+  .tile button { position: absolute; top: 4px; right: 4px; min-height: 32px; padding: 2px 8px; font-size: .75rem; }
+</style>
+</head>
+<body>
+{% include "page_header.html.j2" %}
+<header>
+  <div class="controls">
+    <button id="previous" type="button" aria-label="{{ _('Previous photo') }}">◀</button>
+    <button id="play" type="button"></button>
+    <button id="next" type="button" aria-label="{{ _('Next photo') }}">▶</button>
+    <label>{{ _("Each photo") }}
+      <select id="seconds">
+{% for seconds in (3, 5, 8, 10, 15, 30, 60) %}
+        <option value="{{ seconds }}">{{ texts.seconds.replace("{n}", seconds | string) }}</option>
+{% endfor %}
+      </select></label>
+    <button id="out" class="plain" type="button">{{ _("Do not show") }}</button>
+  </div>
+  <p id="status" role="status"></p>
+</header>
+<section id="lan" class="card" hidden>
+  <p>🔒 {{ _("On the TV, in its browser (the Chromecast's, or the TV's own): open this address once, then bookmark it.") }} <code id="screenUrl"></code></p>
+  <p>{{ _("On your phone, on the same Wi-Fi: scan this code, or open the address and type the code.") }} <code id="phoneUrl"></code> · <strong id="phoneCode"></strong></p>
+  <div id="qr"></div>
+</section>
+<p id="lanOff" class="card" hidden></p>
+<section class="card">
+  <form id="pair" class="pair" autocomplete="off">
+    <label for="tvCode">{{ _("The code the TV shows") }}</label>
+    <input id="tvCode" inputmode="numeric" pattern="[0-9 ]*" maxlength="8" required>
+    <button type="submit">{{ _("Pair the TV") }}</button>
+  </form>
+  <p id="pairStatus" role="status"></p>
+</section>
+<main id="grid" aria-label="{{ _('The photos of the show: tap one to show it on the TV') }}"></main>
+<script>
+{% include "slideshow.js.j2" %}
+</script>
+{% include "home_link.html.j2" %}
+</body>
+</html>

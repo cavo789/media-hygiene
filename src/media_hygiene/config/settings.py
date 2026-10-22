@@ -18,6 +18,7 @@ from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
+from media_hygiene.config.slideshow_settings import SlideshowSettings
 from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.config.tags_settings import TagSettings
 from media_hygiene.config.zone import check_timezone
@@ -196,3 +197,4 @@ class Settings(BaseModel):
     tags: TagSettings = TagSettings()
     people: PeopleSettings = PeopleSettings()
     backup: BackupSettings = BackupSettings()
+    slideshow: SlideshowSettings = SlideshowSettings()

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{# The TV's page of `media-hygiene slideshow` (slideshow/app.py, 0291): black, one photo fitted to
+   the screen, never a name nor a path. Opened once in the Chromecast's browser (or the TV's own,
+   a 2012 WebKit: the script is ES5, XMLHttpRequest only, no flexbox, no object-fit; a test parses
+   screen.js.j2). Two layers hold the photo shown and the next one, loaded behind it and brought
+   to the front once decoded: the bands of a slow decoding are never seen. OK on the TV's remote
+   (or a click) asks for full screen. Not paired yet, it shows the code to type on the phone.
+   A video (0292) plays in a third layer, as it is; a browser too old for it shows photos only. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ _("Slideshow") }}</title>
+<style>
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; color: #ddd; cursor: none; }
+.layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; }
+.front { z-index: 2; }
+.back { z-index: 1; }
+.layer img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; max-width: 100%; max-height: 100%; }
+.layer video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
+.film { z-index: 3; }
+#pairing { position: absolute; z-index: 4; top: 30%; left: 0; right: 0; text-align: center; font: 32px/1.4 sans-serif; }
+#pairing strong { display: block; margin: 24px 0; font: bold 120px/1 monospace; letter-spacing: 12px; color: #fff; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div id="layerA" class="layer front"><img id="photoA" alt=""></div>
+<div id="layerB" class="layer back"><img id="photoB" alt=""></div>
+<div id="layerF" class="layer hidden"><video id="film" preload="auto" playsinline></video></div>
+<div id="pairing" class="hidden">
+  <p>{{ _("On the phone's remote, type the code of this TV:") }}</p>
+  <strong id="code"></strong>
+  <p>{{ _("Then press OK on the TV's remote for full screen.") }}</p>
+</div>
+<script>
+{% include "screen.js.j2" %}
+</script>
+</body>
+</html>

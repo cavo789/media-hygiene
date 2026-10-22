@@ -20,6 +20,7 @@ from media_hygiene.services import people as people_service
 from media_hygiene.services import people_page, reviewing, sort_reviewing
 from media_hygiene.services import places as places_service
 from media_hygiene.services import search_pages as search_service
+from media_hygiene.services import slideshow as slideshow_service
 from tests.integration.test_clean_undo import manifest
 from tests.support.cli import run
 from tests.support.faces import FakeRecipe
@@ -44,6 +45,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("tags",),
     ("search",),
     ("browse",),
+    ("slideshow", "--folder", "."),  # `.`: the whole data folder
     ("people",),
     ("inventory",),
     ("history",),
@@ -99,7 +101,7 @@ def test_read_only_commands_change_nothing_in_the_photos(
     for module in (sort_reviewing, places_service):
         monkeypatch.setattr(module, "run_server", ready_then_stop())
     monkeypatch.setattr(people_page, "run_server", ready_then_stop())
-    for module in (home_service, search_service, reviewing):
+    for module in (home_service, search_service, reviewing, slideshow_service):
         monkeypatch.setattr(module, "serve_until_ended", ready_then_stop())
     monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
     before = manifest(read_only_data)

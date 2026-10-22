@@ -1,0 +1,209 @@
+{# The script of the TV's page (screen.html.j2). ES5 only, for a 2012 TV browser: var, function,
+   XMLHttpRequest; no arrow, no let/const, no template string, no fetch, no Promise written here
+   (img.decode is used only where it exists). tests/unit/test_slideshow_screen.py parses it.
+   A video (0292): played in the third layer; its end (or an error) is told to the server, which
+   moves on. A browser older than img.decode (a 2012 TV's own) or that says it plays no H.264
+   shows the photos only, and says so on each question it asks. #}
+(function () {
+  var WAIT = {{ wait_prefix | tojson }};
+  var CODE_SHOWN = {{ code_shown | tojson }};
+  var ENDED = {{ ended_prefix | tojson }};
+  var PHOTOS_ONLY = {{ photos_only | tojson }};
+  var H264 = "video/mp4; codecs=\"avc1.42E01E\"";
+  var RETRY_MS = 3000;
+  var DECODE_MS = 150;
+  var version = 0;
+  var shown = "";
+  var loading = "";
+  var ahead = new Image();
+  var front = { layer: document.getElementById("layerA"), photo: document.getElementById("photoA") };
+  var back = { layer: document.getElementById("layerB"), photo: document.getElementById("photoB") };
+  var pairing = document.getElementById("pairing");
+  var codeText = document.getElementById("code");
+  var film = document.getElementById("film");
+  var filmLayer = document.getElementById("layerF");
+  var films = typeof ahead.decode === "function" && Boolean(film.canPlayType && film.canPlayType(H264));
+  var filmShown = "";
+  var filmKey = null;
+
+  front.photo.className = "hidden";
+  back.photo.className = "hidden";
+
+  function swap() {
+    var former = front;
+    front = back;
+    back = former;
+    front.layer.className = "layer front";
+    back.layer.className = "layer back";
+  }
+
+  function shownNow(url) {
+    if (loading !== url) {
+      return;
+    }
+    loading = "";
+    shown = url;
+    swap();
+  }
+
+  function show(url) {
+    if (url === shown || url === loading) {
+      return;
+    }
+    if (url === "") {
+      loading = "";
+      shown = "";
+      front.photo.className = "hidden";
+      return;
+    }
+    loading = url;
+    back.photo.onload = function () {
+      var decoded = function () { shownNow(url); };
+      if (back.photo.decode) {
+        back.photo.decode().then(decoded, decoded);
+      } else {
+        window.setTimeout(decoded, DECODE_MS);
+      }
+    };
+    back.photo.onerror = function () {
+      if (loading === url) {
+        loading = "";
+      }
+    };
+    back.photo.className = "";
+    if (back.photo.getAttribute("src") === url && back.photo.complete) {
+      back.photo.onload();
+      return;
+    }
+    back.photo.src = url;
+  }
+
+  function preload(url) {
+    if (url !== "" && url !== shown) {
+      ahead.src = url;
+    }
+  }
+
+  function ended() {
+    var request;
+    if (filmShown === "") {
+      return;
+    }
+    request = new XMLHttpRequest();
+    request.open("GET", ENDED + filmKey, true);
+    request.send(null);
+  }
+
+  function started(attempt, failed) {
+    if (attempt && attempt["catch"]) {
+      attempt["catch"](failed);
+    }
+  }
+
+  function startFilm() {
+    started(film.play(), function () {
+      film.muted = true;  // a browser may refuse sound before a click: muted, it plays
+      started(film.play(), ended);
+    });
+  }
+
+  function stopFilm() {
+    if (filmShown === "") {
+      return;
+    }
+    filmShown = "";
+    film.pause();
+    film.removeAttribute("src");
+    film.load();
+    filmLayer.className = "layer hidden";
+  }
+
+  function showFilm(url, key, playing) {
+    filmKey = key;
+    if (url !== filmShown) {
+      filmShown = url;
+      film.src = url;
+      filmLayer.className = "layer film";
+    }
+    if (playing) {
+      startFilm();
+    } else {
+      film.pause();
+    }
+  }
+
+  function showAnswer(answer) {
+    if (answer.film && films) {
+      showFilm(answer.film, answer.key, answer.playing);
+    } else {
+      stopFilm();
+      if (!answer.film) {
+        show(answer.photo);
+      }
+    }
+    preload(answer.next);
+  }
+
+  function showCode(code) {
+    codeText.innerHTML = "";
+    codeText.appendChild(document.createTextNode(code));
+    pairing.className = "";
+  }
+
+  function ask(since) {
+    var request = new XMLHttpRequest();
+    request.open("GET", WAIT + since + (films ? "" : PHOTOS_ONLY), true);
+    request.onreadystatechange = function () {
+      var answer;
+      if (request.readyState !== 4) {
+        return;
+      }
+      if (request.status === 401) {
+        window.setTimeout(function () { window.location.reload(); }, RETRY_MS);
+        return;
+      }
+      if (request.status !== 200) {
+        window.setTimeout(function () { ask(version); }, RETRY_MS);
+        return;
+      }
+      try {
+        answer = JSON.parse(request.responseText);
+      } catch (error) {
+        window.setTimeout(function () { ask(version); }, RETRY_MS);
+        return;
+      }
+      if (answer.code) {
+        showCode(answer.code);
+        ask(CODE_SHOWN);
+        return;
+      }
+      pairing.className = "hidden";
+      version = answer.version;
+      showAnswer(answer);
+      ask(version);
+    };
+    request.send(null);
+  }
+
+  function fullScreen() {
+    var page = document.documentElement;
+    var asks = page.requestFullscreen || page.webkitRequestFullScreen || page.webkitRequestFullscreen || page.mozRequestFullScreen || page.msRequestFullscreen;
+    if (asks) {
+      try {
+        asks.call(page);
+      } catch (error) {
+        return;
+      }
+    }
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.keyCode === 13) {
+      fullScreen();
+    }
+  }, false);
+  document.addEventListener("click", fullScreen, false);
+  film.addEventListener("ended", ended, false);
+  film.addEventListener("error", ended, false);
+  ask(0);
+}());

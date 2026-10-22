@@ -67,6 +67,27 @@ def find_steps() -> tuple[Step, ...]:
             optional=True,
         ),
         Step(
+            "slideshow",
+            space,
+            _("Show your photos on the TV"),
+            _("A folder on the big screen; the phone chooses the next photo."),
+            "slideshow --folder {path}",
+            Risk.SAFE,
+            Kind.PAGE,
+            icon="image",
+            keywords=_("slideshow tv television chromecast phone remote holidays"),
+            doc=Doc("commands/slideshow/"),
+            fields=(
+                Field(
+                    "path",
+                    _("The folder to show, as the Explorer shows it"),
+                    r"C:\Photos\2026 Holidays",
+                    kind=FieldKind.FOLDER,
+                ),
+            ),
+            optional=True,
+        ),
+        Step(
             "xmp",
             space,
             _("Carry the words into other photo software"),
@@ -150,7 +171,7 @@ def find_areas() -> tuple[Area, ...]:
         "search",
         (
             Group(_("The guide"), ("tags", "search"), numbered=True),
-            Group(_("Go further"), ("browse", "xmp", "inventory")),
+            Group(_("Go further"), ("browse", "slideshow", "xmp", "inventory")),
         ),
         Doc("find/quick-guide/"),
         _("Find in short"),
