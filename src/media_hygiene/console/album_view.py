@@ -31,7 +31,9 @@ def show_album(runtime: Runtime, prepared: AlbumPrepared) -> None:
     """
     output, host = runtime.output, runtime.mapper.to_host
     plan = prepared.plan
-    output.info(_("Workbook: {path}").format(path=host(prepared.workbook)))
+    listed = prepared.workbook is None  # an album of albums.json
+    if prepared.workbook is not None:
+        output.info(_("Workbook: {path}").format(path=host(prepared.workbook)))
     table = Table(show_header=False, title_justify="left")
     table.add_column(style="bold")
     table.add_column(justify="right")
@@ -42,16 +44,21 @@ def show_album(runtime: Runtime, prepared: AlbumPrepared) -> None:
     table.add_row(_("Not found"), human_number(len(plan.missing)))
     table.add_row(_("On another disk or mount"), human_number(len(plan.elsewhere)))
     output.show(table)
-    _list(runtime, plan.missing, _("not found where the plan or a sort put it"))
+    gone = (
+        _("moved or deleted since it was added to the album")
+        if listed
+        else _("not found where the plan or a sort put it")
+    )
+    _list(runtime, plan.missing, gone)
     _list(runtime, plan.elsewhere, _("on another disk or mount: no link possible"))
     # Both change what the next run links: ranked as next steps, at the end.
     if plan.missing:
-        output.advise(
-            Advice(
-                TipKind.NEXT,
-                _("Run 'classify' again: its plan sees the files where they are."),
-            )
+        again = (
+            _("Run 'audit' again: it finds a photo moved since, by its content.")
+            if listed
+            else _("Run 'classify' again: its plan sees the files where they are.")
         )
+        output.advise(Advice(TipKind.NEXT, again))
     if plan.elsewhere:
         output.advise(
             Advice(

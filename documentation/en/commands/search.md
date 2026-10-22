@@ -33,7 +33,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | `/cache` (the words of `tags`), your folders (to show the photos), and `-p 127.0.0.1:8088:8088` for the page; `/reports` to set photos aside. |
-| Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports. |
+| Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
 | Undo | Nothing to undo on the page: [`clean --decisions`](clean.md) moves the photos set aside, [`undo`](undo.md) brings them back. |
 | With `mh` | `mh search`, `mh search durbuy ours`. |
 
@@ -76,6 +76,35 @@ not only the 240 shown), then **Set aside the picked files**.
   clean report; a file of a protected folder refuses the whole file, as everywhere.
 - The same `decisions.json` holds what [`review`](review.md) decided: both are kept, and one
   `clean --decisions` applies them all.
+
+## Put photos in an album
+
+To show photos to others (on the TV with [`slideshow`](slideshow.md)), gather them in an
+**album**: a named list, *Crete 2023*, of photos from any folders. Type its name in **Album** (the
+albums already made are proposed), pick the photos (or **Pick all N files found**), then **➕ Add
+to the album**.
+
+- An album is a list of references, nothing else: no photo is copied, moved or changed. It is
+  saved at once in `albums.json` of your reports, next to `decisions.json` (not in the cache:
+  deleting the cache keeps your albums), read back from the disk and shown: *Crete 2023: 42
+  files, saved in …. Only this file changed: no photo was copied or moved.*
+- It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
+  ever touches the other's list.
+- **Take out of the album** takes the picked photos out of the album typed; an album left empty
+  is removed.
+- A photo moved since, by [`sort`](sort.md), by [`undo`](undo.md), or in a folder renamed in the
+  Explorer (once an audit has seen it), is found again by its content: the album follows it. One
+  found nowhere (deleted, or in the quarantine) stays in the album, listed as missing, until it
+  comes back.
+- **📺 Share on the TV** gives the command that shows the album typed, copied for you: stop the
+  page, then `mh slideshow --album "Crete 2023" --lan` ([`slideshow`](slideshow.md)).
+- **📨 Prepare for sending** gives the command that makes the album ready to send by mail:
+  resized copies without the GPS position, a folder and a zip, `mh share --album "Crete 2023"`
+  ([`share`](share.md)).
+- At most 3,000 photos added at once: narrow a search that finds more.
+
+An album can also become a folder of the Explorer: [`album "Crete 2023"`](album.md) makes it, as
+second names (hard links), without a copy.
 
 ## What you can type
 

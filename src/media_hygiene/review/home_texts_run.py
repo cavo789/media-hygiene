@@ -94,6 +94,7 @@ def _palette() -> dict[str, str]:
         "goTo": _("Go to"),
         "goStage": _("Go to stage {stage} of the cycle"),
         "goTools": _("Go to the tools"),
+        "goShare": _("Go to Share"),
         "goHome": _("Go to the home page"),
         "results": _("{count} results"),
         "nothingMatches": _("Nothing matches. Try duplicates, phone, NAS or undo."),

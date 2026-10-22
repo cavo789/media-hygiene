@@ -199,6 +199,7 @@
   <p id="series" class="muted"></p>
   <p id="pending" role="status" hidden></p>
   <p id="whole" role="status" hidden></p>
+  {% include "album_bar.html.j2" %}
   <div id="shots" class="shots"></div>
   <details id="disk" open>
     <summary id="diskTitle"></summary>
@@ -354,13 +355,25 @@
     byId("pending").hidden = item.reviewed;
     byId("pending").textContent = proposal(item).length > 0 ? T.pendingProposed : T.pending;
     byId("shots").replaceChildren(...shown(item).map((rank, position) => card(item, rank, position)));
+    if (window.mhAlbumPicked) window.mhAlbumPicked(keptKeys().length); // album_bar.html.j2
     showDisk();
     prefetch();
   };
 
+  // The shots of the series shown that are not set aside: what *Add to the album* adds.
+  const keptKeys = () => {
+    const item = series[current];
+    if (!item) return [];
+    return item.shots
+      .filter((shot, rank) => !item.discarded.includes(rank))
+      .map((shot) => shot.preview.replace(/^\/preview\/|\.jpg$/g, ""));
+  };
+  window.mhAlbumPick = () => ({ keys: keptKeys() });
+
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey || event.metaKey || event.altKey || series.length === 0) return;
     if (event.target instanceof HTMLSelectElement) return;  // the order list takes its keys
+    if (event.target instanceof HTMLInputElement && event.target.type !== "checkbox") return;  // an album's name
     // Digits by physical key: on an AZERTY keyboard the top row gives "&", "é"... without Shift.
     const digit = /^(?:Digit|Numpad)([1-9])$/.exec(event.code);
     const key = event.key.toLowerCase();

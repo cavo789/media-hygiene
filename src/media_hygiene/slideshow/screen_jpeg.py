@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 
 SCREEN_QUALITY: Final = 85
 WIDE: Final = (16, 9)  # the shape of a TV
+SQUARE: Final = (1, 1)  # a phone, held upright or turned: a photo fits either way
 _VERSION: Final = 1  # raise it when the TV's pictures are made differently
 _NAME_LENGTH: Final = 32
 _LABEL: Final = "screen"
@@ -34,19 +35,20 @@ _LABEL: Final = "screen"
 
 @dataclass(frozen=True, slots=True)
 class ScreenJob:
-    """The size of the TV's pictures, and the folder keeping them (None: nowhere)."""
+    """The size of a screen's pictures, and the folder keeping them (None: none)."""
 
     screen_px: int
     folder: Path | None
+    shape: tuple[int, int] = WIDE  # a TV; `SQUARE` for a phone turned either way (0297)
 
     @property
     def box(self) -> tuple[int, int]:
-        """The largest picture the TV gets.
+        """The largest picture the screen gets.
 
         Returns:
-            Width and height: `screen_px` wide, 16:9.
+            Width and height: `screen_px` wide, in the screen's shape.
         """
-        width, height = WIDE
+        width, height = self.shape
         return self.screen_px, self.screen_px * height // width
 
     def renderer(self) -> Callable[[Path], bytes | None]:
@@ -75,7 +77,8 @@ def kept_screen_jpeg(job: ScreenJob, source: Path) -> bytes | None:
     except OSError:
         return None
     key = f"{_LABEL}\0{_VERSION}\0{source}\0{version.st_size}\0{version.st_mtime_ns}"
-    name = hashlib.sha256(f"{key}\0{job.screen_px}".encode()).hexdigest()
+    size = f"{job.screen_px}" if job.shape == WIDE else f"{job.screen_px}\0{job.shape}"
+    name = hashlib.sha256(f"{key}\0{size}".encode()).hexdigest()
     target = job.folder / f"{name[:_NAME_LENGTH]}.jpg"
     with contextlib.suppress(OSError):
         kept = target.read_bytes()

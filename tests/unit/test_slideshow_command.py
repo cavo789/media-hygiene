@@ -59,13 +59,28 @@ def _library(locations: Locations) -> None:
 def test_the_command_asks_what_to_show(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Without --folder, --search nor --chosen: the three forms, a failure code."""
+    """Without --folder, --search nor --album: the three forms, a failure code."""
     locations = make_locations(tmp_path)
     _library(locations)
     point_mounts(locations, monkeypatch)
     result = run(CliRunner(), "slideshow")
     assert result.exit_code == ExitCode.FAILURE
-    assert "--chosen" in result.output
+    assert "--album" in result.output
+
+
+def test_chosen_is_gone_and_says_to_use_an_album(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0295: --chosen showed the files meant for the bin; one line names --album."""
+    locations = make_locations(tmp_path)
+    _library(locations)
+    point_mounts(locations, monkeypatch)
+    result = run(CliRunner(), "slideshow", "--chosen")
+    assert result.exit_code == ExitCode.FAILURE
+    said = " ".join(result.output.split())
+    assert "--chosen is gone" in said
+    assert '--album "Crete 2023"' in said
+    assert "--chosen" not in run(CliRunner(), "slideshow", "--help").output
 
 
 def test_an_empty_selection_is_said(tmp_path: Path) -> None:

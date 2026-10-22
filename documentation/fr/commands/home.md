@@ -9,8 +9,10 @@ chaque action de l'outil à un clic ou à <kbd>Ctrl</kbd>+<kbd>K</kbd>.**
 
 `home` montre dans votre navigateur ce que [`status`](status.md) et [`menu`](menu.md) montrent
 dans le terminal, rangé comme le cycle de vos photos : **Importer** (un téléphone, votre NAS ou
-un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu), puis trois
-outils : **Historique et annulation**, **Rapports**, **Réglages**. Chaque espace a sa page : son
+un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu) ; puis, à part du cycle, **Partager**
+(vos photos sur la télé : [`slideshow`](slideshow.md), un dossier ou un
+[album](search.md#mettre-des-photos-dans-un-album)) et trois outils : **Historique et annulation**,
+**Rapports**, **Réglages**. Chaque espace a sa page : son
 parcours, numéroté, puis « Pour aller plus loin ». Chaque action montre sa commande `mh`, à
 copier, et mène à son chapitre de cette documentation. La page peut aussi lancer l'audit
 elle-même, sa progression affichée dans la page.
@@ -40,13 +42,13 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées par la page : montez-les en `:ro`. L'audit lancé depuis la page ne fait que les lire. |
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
-| Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit`. |
+| Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
 | Avec `mh` | `mh home`. |
 
 ## Ce que montre la page
 
-- **Le menu de gauche** : les cinq étapes du cycle et les outils, chacun avec son compte (*9*
+- **Le menu de gauche** : les cinq étapes du cycle, **Partager** (un but, pas une étape : sans numéro) et les outils, chacun avec son compte (*9*
   copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
   ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,
   [`mh update`](launcher.md#une-nouvelle-version--mh-update)), le choix du thème et **Quitter
@@ -109,7 +111,7 @@ qui a ouvert la page :
   pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer. Ctrl+C pendant une
   étape (ou sur une page qu'elle a ouverte) rend l'invite : la page d'accueil ne revient pas,
   et aucune autre étape ne se lance.
-- **Une étape qui prend des mots** (le nom et la catégorie d'un album, le dossier de votre NAS,
+- **Une étape qui prend des mots** (le nom d'un album, le dossier de votre NAS,
   un dossier à retirer, combien de rapports garder) : **Compléter** ouvre son formulaire,
   l'exemple déjà rempli. Le serveur vérifie chaque valeur et dit pourquoi il en refuse une (*pas
   de guillemet double*, *aucun caractère de contrôle*, *elle ne peut pas commencer par '-'*, *un
@@ -157,7 +159,8 @@ téléphone **du même Wi-Fi** l'ouvrir aussi, jusqu'à l'arrêt de `mh` :
    s'ouvre. Le téléphone reste appairé (un cookie) jusqu'à l'arrêt de `mh`, même après les
    étapes lancées sur le PC.
 
-Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports et l'**audit** lancé par la page.
+Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports, l'**audit** lancé par la page et
+[vos albums](#vos-albums-sur-le-téléphone).
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. **Quitter** reste aussi au PC.
 
@@ -175,6 +178,33 @@ diaporama.
 Le téléphone n'ouvre pas la page ? Windows considère le réseau comme **public** (`mh` le dit) :
 passez-le en privé dans *Paramètres › Réseau et Internet*. `mh --lan` ne fonctionne que dans
 Windows PowerShell pour l'instant.
+
+## Vos albums, sur le téléphone
+
+À la maison, montrez un album à la famille **sur votre propre téléphone**, sans la télé :
+appairez-le une fois avec `mh --lan` (ci-dessus), puis touchez **Ouvrir les albums** sur sa page
+d'accueil (ou, sur le PC, *Partager › Vos albums*). Les proches regardent votre écran et
+n'appairent rien.
+
+- **La liste** : chaque [album](search.md#mettre-des-photos-dans-un-album), sa couverture, ses
+  dates, son lieu et combien de photos il contient.
+- **Un album**, comme le montrent les grandes applications de photos : une **couverture** (la
+  photo la plus nette du premier jour), le nom de l'album, ses dates et son lieu (nommé hors
+  ligne, d'après le GPS des photos), puis une **mosaïque** groupée par jour, *lundi 10 juillet
+  2023 · Héraklion*.
+- **Un toucher** ouvre la photo en plein écran ; **un glissement** passe à la suivante ou à la
+  précédente ; **un toucher** (ou le *Retour* du téléphone) la ferme. Les photos suivantes sont
+  chargées d'avance.
+- **Les vidéos** se lisent sur place, comme sur la télé : le H.264 tel quel ; un autre format
+  (HEVC, AVI) est signalé, jamais converti.
+- **➖ Retirer de l'album**, **➕ Ajouter à un album** (un nouveau nom le crée) : seul
+  `albums.json` change, relu et affiché ; aucune photo n'est copiée, déplacée ni touchée.
+
+| | |
+|---|---|
+| Vos photos | 🔒 Seulement lues. Le téléphone reçoit des images à sa taille (1440 pixels au plus, gardées dans `/cache`), jamais un original. |
+| Ce que le téléphone atteint | Les albums et **leurs** fichiers seulement : aucune autre photo de votre bibliothèque, quelle que soit l'adresse tapée. |
+| Où | Le Wi-Fi de la maison seulement, tant que `mh` tourne sur le PC (dit sur la page). |
 
 ## Le clavier, la palette, le thème
 

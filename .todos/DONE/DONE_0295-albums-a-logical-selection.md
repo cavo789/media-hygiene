@@ -50,3 +50,37 @@ share a list.
 - The tests of item 2 pass: a moved file is found again, a deleted one is said missing.
 - *Set aside* and *Add to the album* never touch each other's list (a test).
 - `slideshow --album "Crete 2023"` shows exactly that album.
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+- Item 5: `slideshow --chosen` is **removed at once** (it showed photos meant for the bin);
+  given, it says in one line to use `--album`.
+- From 0294: the *Share on the TV* button in search and browse belongs here; it shows the
+  current album (`slideshow --album`).
+
+## Status — PARTIAL (2026-10-22)
+
+### Done
+- `albums.json` in `/reports` (`share/albums.py`): named albums, entries `{path, sha256, size,
+  added}`, schema version 1, atomic write, every change read back (`share/album_store.py`).
+- Moved files followed (`share/album_follow.py`): the index's `moves` (sort, undo), then same
+  size + SHA-256 (a folder renamed in the Explorer, after an audit); identical copies: same name
+  first, then the first path; not found: kept and said missing on every read. One test per event
+  (`tests/unit/test_album_follow.py`; quarantine then `undo` also end to end in
+  `tests/integration/tags/test_search_albums.py`).
+- *➕ Add to the album* / *Take out of the album* / *📺 Share on the TV* in `search`, `browse` and
+  the burst review (`review/templates/album_bar.html.j2`, `GET`/`POST /api/albums`), apart from
+  *Set aside* (a test checks neither touches the other's list).
+- `slideshow --album "<name>"`; `--chosen` removed (hidden, says in one line to use `--album`).
+- Docs en + fr (search, browse, review, slideshow, home), French catalogue.
+
+### Not done
+- Item 4: a paired phone adding to or removing from an album.
+  **Reason:** a phone paired by `mh --lan` sees the home page and the reports only: no page
+  lists photos with keys it could add. The natural place is 0297 (the album pages on the phone,
+  `review/lan_app.py`, which also lists the albums for a paired phone): add `ALBUMS_PATH` to what
+  `LanApp._paired` lets through (`Origin` checked) with that page.
+
+## Status — DONE (2026-10-22)
+
+- Item 4 done with 0297: a paired phone adds a file of an album to an album or takes it out (`POST /api/albums` through `review/lan_app.py`, `Origin` checked, the keys limited to the albums' files: `share/album_page.py`, `services/album_pages.py`), read back from the disk; tested in `tests/integration/test_album_phone.py`. Nothing else remains (`docs_screenshots` to run afterwards).

@@ -111,7 +111,15 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             analyse,
             _(
                 "Show photos on the TV, the phone choosing the next one: a folder, "
-                "a search or the files set aside."
+                "a search or an album."
+            ),
+        ),
+        (
+            "share",
+            analyse,
+            _(
+                "Prepare an album for sending: resized copies without the GPS "
+                "position, a folder and a zip, for a mail or a social network."
             ),
         ),
         (

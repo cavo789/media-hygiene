@@ -391,6 +391,7 @@ def test_every_page_template_includes_the_home_link() -> None:
             "home.html.j2",
             "home_link.html.j2",
             "apply_now.html.j2",  # a fragment, like home_link (0288)
+            "album_bar.html.j2",  # a fragment too (0295)
             "page_header.html.j2",
             "phone_review.html.j2",
             "lan_pair.html.j2",  # a phone not paired yet: no home to go back to (0269)

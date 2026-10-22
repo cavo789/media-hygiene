@@ -15,6 +15,9 @@ soir, et une vignette touchée montre cette photo sur la télé. Les vidéos de 
 aussi, telles quelles. Le PC tient le diaporama : une télé rechargée ou un téléphone mis en veille
 ne perd rien.
 
+**Où le lancer** : dans la page d'accueil, l'espace **Partager** (hors du cycle, dans le menu de
+gauche), ou `mh menu`, sous *Partager*.
+
 **Quand** : après un [`audit`](audit.md) : il montre ce que l'audit a lu. Une recherche demande
 d'abord [`tags`](tags.md).
 
@@ -35,7 +38,7 @@ docker run --rm -it `
 | | |
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
-| Demande | `/cache` (les fichiers du dernier audit), vos dossiers (pour montrer les photos), le port de la page ; `/reports` pour `--chosen`. |
+| Demande | `/cache` (les fichiers du dernier audit), vos dossiers (pour montrer les photos), le port de la page ; `/reports` pour `--album`. |
 | Écrit | Les images de la télé et les vignettes du téléphone, dans le cache. Rien d'autre : le diaporama vit en mémoire. |
 | Atteint | Le PC seulement ; avec `--lan`, la télé et les téléphones de votre réseau de la maison, jamais Internet. |
 | Avec `mh` | `mh slideshow --folder "C:\Photos\Vacances 2026" --lan`. |
@@ -56,7 +59,11 @@ autorisez-le sur les réseaux **privés** seulement. Sans `--lan`, seul le PC pe
 diaporama (utile pour l'essayer, ou pour le plan B ci-dessous).
 
 Au lieu d'un dossier : `--search "noel 2025"` (les photos que trouve une [`search`](search.md)) ou
-`--chosen` (les fichiers mis de côté dans `search` ou [`browse`](browse.md)). Depuis la
+`--album "Crète 2023"` (un [album](search.md#mettre-des-photos-dans-un-album) fait dans `search`,
+[`browse`](browse.md) ou le tri des rafales [`review`](review.md) : des photos de plusieurs
+dossiers ; son bouton **📺 Partager sur la télé** donne cette commande, copiée). `--chosen` n'existe
+plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné, il dit d'utiliser
+`--album`. Depuis la
 [page d'accueil](home.md) ouverte par `mh --lan`, l'étape *Montrer vos photos sur la télé* demande
 le dossier et ouvre le diaporama de la même façon.
 
@@ -129,7 +136,7 @@ Le port est `[review] port`, celui de toutes les pages.
 |---|---|
 | `--folder "C:\…"` | Les photos de ce dossier et de ses sous-dossiers, tel que l'Explorateur le montre. |
 | `--search "mots"` | Les photos que trouve une recherche, tapée comme dans [`search`](search.md). |
-| `--chosen` | Les fichiers mis de côté dans `search` ou `browse`. |
+| `--album "Crète 2023"` | Un album fait dans `search`, `browse` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 | `--lan` (`mh` seulement) | Ouvre le diaporama à la télé et aux téléphones de votre réseau de la maison, pour ce lancement (Windows PowerShell). |
 
@@ -153,6 +160,7 @@ Le port est `[review] port`, celui de toutes les pages.
 
 - [`home` : la page d'accueil, et `mh --lan`](home.md)
 - [Retrouver en bref](../find/quick-guide.md)
+- [`share` : l'album prêt à envoyer par mail](share.md)
 
 ## L'aide intégrée
 
@@ -164,8 +172,8 @@ Le port est `[review] port`, celui de toutes les pages.
  Utilisation : media-hygiene slideshow [OPTIONS]
 
  🔒 Lecture seule : ne modifie jamais vos photos. Montrer des photos sur la
- télé, le téléphone choisissant la suivante : un dossier, une recherche ou les
- fichiers mis de côté.
+ télé, le téléphone choisissant la suivante : un dossier, une recherche ou un
+ album.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --folder          <str>               Montrer les photos de ce dossier et de │
@@ -175,8 +183,9 @@ Le port est `[review] port`, celui de toutes les pages.
 │ --search          <str>               Montrer les photos que trouve une      │
 │                                       recherche, tapée comme dans search :   │
 │                                       "noel 2025".                           │
-│ --chosen                              Montrer les fichiers mis de côté dans  │
-│                                       search ou browse.                      │
+│ --album           <str>               Montrer un album, fait dans search,    │
+│                                       browse ou le tri des rafales : "Crète  │
+│                                       2023".                                 │
 │ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
 │                                       sous le même numéro sur votre          │
 │                                       ordinateur, par exemple -p             │

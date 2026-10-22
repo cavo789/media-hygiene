@@ -128,6 +128,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"'share' makes copies of an album to send them, in your folder media-"
+"hygiene\\Shares: each photo upright, its long side fitted into "
+"long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
+"only read."
+msgstr ""
+
+msgid ""
 "'slideshow' shows photos on the TV, the phone choosing the next one. Each"
 " photo is sent fitted into screen_px pixels wide (and 9/16 of that high):"
 " 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old"
@@ -276,6 +283,11 @@ msgid "+ {n} photo placed by hand"
 msgid_plural "+ {n} photos placed by hand"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid ""
+"--chosen is gone (it showed the files set aside for the bin): add the "
+"photos to an album in search or browse, then --album \"Crete 2023\"."
+msgstr ""
 
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
@@ -449,6 +461,9 @@ msgstr ""
 msgid "A folder of its own, never mixed with your other shares."
 msgstr ""
 
+msgid "A folder of links on the disk"
+msgstr ""
+
 msgid ""
 "A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
 "/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
@@ -598,9 +613,6 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-msgid "Add --category, --event, --rule or --rating, e.g. --category Noël."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
@@ -644,9 +656,26 @@ msgid ""
 "<folder>."
 msgstr ""
 
+msgid "Add photos to an album in search or browse."
+msgstr ""
+
+msgid ""
+"Add photos to it in search or browse, or say what the album gathers from "
+"the classify plan: --category, --event, --rule or --rating."
+msgstr ""
+
+msgid "Add photos to it in search or browse; the videos are never copied."
+msgstr ""
+
 msgid ""
 "Add the settings of this version to your config.toml, with their "
 "explanation; your values and comments are kept."
+msgstr ""
+
+msgid "Add to an album"
+msgstr ""
+
+msgid "Add to the album"
 msgstr ""
 
 msgid "Add your photo folder: mh folders add <folder>."
@@ -674,6 +703,9 @@ msgstr ""
 msgid ""
 "After how many days 'status' suggests emptying the quarantine with "
 "'purge' (the files set aside still take their space until then)."
+msgstr ""
+
+msgid "Album"
 msgstr ""
 
 msgid "Album folder"
@@ -747,6 +779,10 @@ msgid ""
 msgstr ""
 
 msgid "Altitude (m)"
+msgstr ""
+
+#, python-brace-format
+msgid "An album's name: 1 to {most} characters, without double quotes."
 msgstr ""
 
 msgid ""
@@ -1046,11 +1082,23 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "Cannot read the albums file {path}."
+msgstr ""
+
+#, python-brace-format
+msgid "Cannot read the albums file: {reason}"
+msgstr ""
+
+#, python-brace-format
 msgid "Cannot read the decisions file {path}."
 msgstr ""
 
 #, python-brace-format
 msgid "Cannot save config.toml: {error}."
+msgstr ""
+
+#, python-brace-format
+msgid "Cannot save the albums file: {error}."
 msgstr ""
 
 #, python-brace-format
@@ -1192,9 +1240,6 @@ msgid "Chosen here: {chosen} · still to decide: {open}"
 msgstr ""
 
 msgid "Christmas"
-msgstr ""
-
-msgid "Christmas 2025"
 msgstr ""
 
 msgid "Classify"
@@ -1414,6 +1459,9 @@ msgid_plural ""
 "ones for root only); from WSL or Linux, add --user \"$(id -u):$(id -g)\"."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Crete 2023"
+msgstr ""
 
 msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
@@ -2547,7 +2595,9 @@ msgstr ""
 msgid "From the cache alone: no file is read again."
 msgstr ""
 
-msgid "From the phone: the audit and the reports. Run this step on the PC."
+msgid ""
+"From the phone: the audit, the reports and the albums. Run this step on "
+"the PC."
 msgstr ""
 
 msgid "From year"
@@ -2560,14 +2610,6 @@ msgid "From:"
 msgstr ""
 
 msgid "GB"
-msgstr ""
-
-msgid "Gather a selection into an album"
-msgstr ""
-
-msgid ""
-"Gather a selection of the classify plan into a folder of hard links: "
-"nothing is copied nor moved (journaled, undoable)."
 msgstr ""
 
 msgid ""
@@ -2649,6 +2691,9 @@ msgstr ""
 msgid "Go to"
 msgstr ""
 
+msgid "Go to Share"
+msgstr ""
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr ""
@@ -2669,6 +2714,9 @@ msgid "Gone from the PC: kept in the backup"
 msgstr ""
 
 msgid "Gone from the PC: set aside in .removed"
+msgstr ""
+
+msgid "Gone: use --album."
 msgstr ""
 
 msgid "Google Photos description"
@@ -2860,6 +2908,11 @@ msgid "Install the new version"
 msgstr ""
 
 msgid ""
+"Instead of a saved album: the files of this category, as the edited "
+"classify workbook says."
+msgstr ""
+
+msgid ""
 "Instead of the quarantine, when room is urgent; undo rebuilds them from "
 "the copy kept."
 msgstr ""
@@ -2964,6 +3017,16 @@ msgstr ""
 msgid ""
 "Keep plan.json in the folder 'classify' wrote, or run 'classify --carry-"
 "over <workbook>': your edits are carried over to its new workbook."
+msgstr ""
+
+msgid ""
+"Keep the GPS position in the copies. false by default: a photo sent must "
+"not say where the house is; 'share --keep-gps' keeps it for one run."
+msgstr ""
+
+msgid ""
+"Keep the GPS position in the copies; removed by default, a photo sent "
+"must not say where the house is."
 msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
@@ -3105,9 +3168,6 @@ msgstr ""
 msgid "Links to make"
 msgstr ""
 
-msgid "Links, not copies: no room taken."
-msgstr ""
-
 msgid "List the HTML reports of previous audits and cleans."
 msgstr ""
 
@@ -3162,6 +3222,11 @@ msgid ""
 "the MIT licence; the meerkat stays its author's."
 msgstr ""
 
+msgid ""
+"Make an album's folder on the disk, as hard links: nothing is copied nor "
+"moved (journaled, undoable)."
+msgstr ""
+
 msgid "Make room on the phone"
 msgstr ""
 
@@ -3191,6 +3256,11 @@ msgid ""
 "Media Hygiene added to the right-click menu and checked: right-click a "
 "folder, or the empty space of an open folder, then Media Hygiene to open "
 "the mh menu on that folder."
+msgstr ""
+
+msgid ""
+"Media Hygiene does not answer: the albums show while mh runs on the PC, "
+"on the home Wi-Fi."
 msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"
@@ -3265,6 +3335,9 @@ msgid "Mount the folders of that report, or decide again on a new report."
 msgstr ""
 
 msgid "Mount the journal folder used by clean: -v \"<folder>:/journal\"."
+msgstr ""
+
+msgid "Mount the reports folder without ':ro'."
 msgstr ""
 
 msgid "Mount the reports folder: -v \"<folder>:/reports\"."
@@ -3519,6 +3592,22 @@ msgstr ""
 msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
 
+#, python-brace-format
+msgid "No album named {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "No album named {name}. The albums: {names}."
+msgstr ""
+
+msgid ""
+"No album yet. On the PC, in search or browse, pick photos, then Add to "
+"the album."
+msgstr ""
+
+msgid "No album yet: type a name, pick photos, then Add to the album."
+msgstr ""
+
 msgid "No audit has walked a folder completely yet."
 msgstr ""
 
@@ -3629,6 +3718,9 @@ msgstr ""
 msgid "No index in {folder}: nothing to tag yet."
 msgstr ""
 
+msgid "No index yet: the albums show the photos an audit has seen."
+msgstr ""
+
 #, python-brace-format
 msgid "No journal found at {path}."
 msgstr ""
@@ -3716,6 +3808,10 @@ msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
+msgstr ""
+
+#, python-brace-format
+msgid "No photo to prepare in the album {name}."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
@@ -4137,6 +4233,12 @@ msgid ""
 "remote."
 msgstr ""
 
+msgid ""
+"On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
+"read: taking a photo out of an album, or adding it to another one, "
+"changes the albums file alone."
+msgstr ""
+
 msgid "On the phone's remote, type the code of this TV:"
 msgstr ""
 
@@ -4275,6 +4377,9 @@ msgid ""
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
+msgstr ""
+
+msgid "Open the albums"
 msgstr ""
 
 msgid "Open the map at 127.0.0.1 or localhost."
@@ -4582,7 +4687,22 @@ msgid ""
 " > built-in defaults."
 msgstr ""
 
+msgid "Prepare an album for sending"
+msgstr ""
+
+msgid ""
+"Prepare an album for sending: resized copies without the GPS position, a "
+"folder and a zip, for a mail or a social network."
+msgstr ""
+
+msgid "Prepare for sending"
+msgstr ""
+
 msgid "Preparing the home page…"
+msgstr ""
+
+#, python-brace-format
+msgid "Preparing the photos of the album {name}…"
 msgstr ""
 
 msgid "Previous"
@@ -4631,6 +4751,9 @@ msgstr ""
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
 "for good."
+msgstr ""
+
+msgid "Put back a copy of it, or move it away to start new albums."
 msgstr ""
 
 #, python-brace-format
@@ -4825,6 +4948,11 @@ msgstr ""
 msgid "Reports (newest first)"
 msgstr ""
 
+msgid ""
+"Resized copies without the GPS position, a folder and a zip: for a mail, "
+"a social network or a USB stick. Your photos are only read."
+msgstr ""
+
 msgid "Restore"
 msgstr ""
 
@@ -4966,6 +5094,9 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+msgid "Run 'audit' again: it finds a photo moved since, by its content."
+msgstr ""
+
 msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 
@@ -5041,6 +5172,9 @@ msgid "Run docker with -it, or add --yes."
 msgstr ""
 
 msgid "Run the Czkawka command again; it writes this file with -C."
+msgstr ""
+
+msgid "Run the audit first (Clean, step 1)."
 msgstr ""
 
 msgid "Run the same command again to continue: the files moved are skipped."
@@ -5189,12 +5323,9 @@ msgstr ""
 msgid "Saving…"
 msgstr ""
 
-msgid "Say what the album gathers."
-msgstr ""
-
 msgid ""
 "Say what to show, one of: --folder \"C:\\Photos\\Holidays\", --search "
-"\"words\", or --chosen (the files set aside)."
+"\"words\", or --album \"Crete 2023\"."
 msgstr ""
 
 msgid "School"
@@ -5424,7 +5555,16 @@ msgstr ""
 msgid "Settle the near duplicates"
 msgstr ""
 
+msgid "Share"
+msgstr ""
+
 msgid "Share of the work, cumulated"
+msgstr ""
+
+msgid "Share on the TV"
+msgstr ""
+
+msgid "Share your photos"
 msgstr ""
 
 msgid "Sharpness"
@@ -5447,6 +5587,9 @@ msgstr ""
 msgid "Show again"
 msgstr ""
 
+msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
+msgstr ""
+
 msgid "Show every face of the group first, to take out those of someone else."
 msgstr ""
 
@@ -5464,10 +5607,7 @@ msgstr ""
 
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
-"search or the files set aside."
-msgstr ""
-
-msgid "Show the files set aside in search or browse."
+"search or an album."
 msgstr ""
 
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
@@ -5772,11 +5912,18 @@ msgstr ""
 msgid "Take it back: its GPS decides again"
 msgstr ""
 
+msgid "Take out of the album"
+msgstr ""
+
 msgid "Take out of the set aside"
 msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+#, python-brace-format
+msgid "Take this photo out of {name}? The photo itself stays where it is."
 msgstr ""
 
 msgid "Taken out of config.toml: its GPS decides again."
@@ -5812,10 +5959,36 @@ msgstr ""
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
+msgid ""
+"The album to send, made in search, browse or the burst review: \"Crete "
+"2023\"."
+msgstr ""
+
+#, python-brace-format
+msgid "The album {name} is empty: removed from {place}."
+msgstr ""
+
 msgid "The album's name"
 msgstr ""
 
-msgid "The album's name: the folder holding its links."
+msgid "The album's name (a new name creates it):"
+msgstr ""
+
+msgid ""
+"The album's name, as search and browse saved it: the folder holding its "
+"links."
+msgstr ""
+
+msgid ""
+"The album's photos in one folder of the Explorer, as hard links: no copy,"
+" no room taken, undone by undo."
+msgstr ""
+
+msgid "The albums are saved in /reports: mount it, or they are lost."
+msgstr ""
+
+#, python-brace-format
+msgid "The albums cannot be read (error {status})."
 msgstr ""
 
 msgid "The audit counts them"
@@ -5960,6 +6133,9 @@ msgstr ""
 msgid "The copies grouped, with their previews and the copy kept."
 msgstr ""
 
+msgid "The copies to send are written to /shares, which is not mounted."
+msgstr ""
+
 msgid "The copy from the phone is missing or incomplete: kept on the phone."
 msgstr ""
 
@@ -6007,6 +6183,9 @@ msgstr ""
 msgid "The documentation's home"
 msgstr ""
 
+msgid "The earlier copies of this album were replaced."
+msgstr ""
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
@@ -6022,7 +6201,7 @@ msgstr ""
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
-msgid "The files of this category, as the edited workbook says."
+msgid "The files missing from the albums"
 msgstr ""
 
 msgid "The files of this event: its id or its name."
@@ -6283,6 +6462,9 @@ msgid "The phone's name, as Windows shows it."
 msgstr ""
 
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
+msgstr ""
+
+msgid "The photo, full screen"
 msgstr ""
 
 msgid ""
@@ -6580,7 +6762,14 @@ msgstr ""
 msgid "The workbook {path} was not found."
 msgstr ""
 
-msgid "The workbook's category"
+msgid ""
+"The zip is larger than 25 MB: some webmails refuse an attachment that "
+"large (check your mail's own limit). Send the folder another way (a USB "
+"stick, a shared drive), or an album of fewer photos."
+msgstr ""
+
+#, python-brace-format
+msgid "The zip, read back: {zip} ({size}, {n} files)."
 msgstr ""
 
 #, python-brace-format
@@ -6737,6 +6926,10 @@ msgstr ""
 msgid "This step takes no words."
 msgstr ""
 
+#, python-brace-format
+msgid "This video does not play on a phone as it is ({format})."
+msgstr ""
+
 msgid "This workbook belongs to another classify run."
 msgstr ""
 
@@ -6832,11 +7025,24 @@ msgstr ""
 msgid "To place"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"To prepare {name} for sending (resized copies without the GPS position, a"
+" folder and a zip): close this page (Ctrl+C in the window where mh runs),"
+" then type (copied):"
+msgstr ""
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 
 #, python-brace-format
 msgid "To set once: {settings}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"To show {name} on the TV: close this page (Ctrl+C in the window where mh "
+"runs), then type (copied):"
 msgstr ""
 
 msgid "To sort"
@@ -7225,6 +7431,9 @@ msgstr ""
 msgid "With Léa"
 msgstr ""
 
+msgid "Without a date"
+msgstr ""
+
 msgid "Words"
 msgstr ""
 
@@ -7307,6 +7516,19 @@ msgid ""
 "content is back, whatever its name now (a phone backup, a copy). 'clean' "
 "moves them to the quarantine again, with the rest of its plan. To keep "
 "one after all: 'undo' that clean, and it is no longer proposed."
+msgstr ""
+
+msgid "Your albums"
+msgstr ""
+
+msgid ""
+"Your albums as on a phone: a cover, the photos by day, full screen with a"
+" swipe. On a phone of the home Wi-Fi too, once paired with mh --lan."
+msgstr ""
+
+msgid ""
+"Your albums on the TV, on a phone, ready to send by mail, or as a folder "
+"on the disk."
 msgstr ""
 
 msgid "Your backups, compared, never changed:"
@@ -7565,7 +7787,7 @@ msgstr ""
 msgid "accept the proposal, next"
 msgstr ""
 
-msgid "album selection links christmas holidays"
+msgid "album folder explorer links christmas holidays"
 msgstr ""
 
 #, python-brace-format
@@ -7617,6 +7839,12 @@ msgid "as planned"
 msgstr ""
 
 msgid "as planned, then next"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"attach {zip} to a mail, or add the photos of {folder} to an album on your"
+" social network."
 msgstr ""
 
 msgid "audit"
@@ -7840,6 +8068,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "duplicates copies analyse scan check damaged broken unreadable"
+msgstr ""
+
+msgid "e.g. Crete 2023"
 msgstr ""
 
 msgid "e.g. Durbuy bear, birthday cake, snow 2008"
@@ -8227,6 +8458,11 @@ msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr ""
 
 msgid ""
+"mh mounts it for share; with docker run, add -v \"$HOME\\media-"
+"hygiene\\Shares:/shares\"."
+msgstr ""
+
+msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
 msgstr ""
@@ -8240,6 +8476,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
+msgstr ""
+
+msgid "mh slideshow"
 msgstr ""
 
 msgid ""
@@ -8324,6 +8563,9 @@ msgid "moved elsewhere"
 msgstr ""
 
 msgid "moved elsewhere (a disk not plugged in): forgotten"
+msgstr ""
+
+msgid "moved or deleted since it was added to the album"
 msgstr ""
 
 msgid "moved to the quarantine"
@@ -8686,6 +8928,9 @@ msgid "seen by the model"
 msgstr ""
 
 msgid "select a photo"
+msgstr ""
+
+msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 
 msgid "send the selected photos to another category"
@@ -9181,6 +9426,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{at} of {total}"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
@@ -9250,6 +9499,12 @@ msgid ""
 "{command}: this PC has no address on a home network (Wi-Fi or cable to a "
 "router): the page stays on this PC."
 msgstr ""
+
+#, python-brace-format
+msgid "{count} album, saved in {place}."
+msgid_plural "{count} albums, saved in {place}."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} backup (read-only)"
@@ -9557,6 +9812,18 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} file of {name} is missing: moved out of the folders analysed, or "
+"deleted. It stays in the album: once an audit sees it again, it comes "
+"back."
+msgid_plural ""
+"{count} files of {name} are missing: moved out of the folders analysed, "
+"or deleted. They stay in the album: once an audit sees them again, they "
+"come back."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} file set aside ({size}), saved in {place}: 'clean --decisions' "
 "moves it to the quarantine, and remembers it: if it comes back (a new "
 "copy from the phone), the audit proposes it again."
@@ -9616,6 +9883,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{count} files, since {when}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} files: an album takes at most {most} at once. Narrow the search "
+"(a year, a folder), then add again."
 msgstr ""
 
 #, python-brace-format
@@ -10353,6 +10626,16 @@ msgid "{name}: read as a town again (config.toml)."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{name}: {count} file, saved in {place}. Only this file changed: no photo "
+"was copied or moved."
+msgid_plural ""
+"{name}: {count} files, saved in {place}. Only this file changed: no photo"
+" was copied or moved."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{name}: {count} photos"
 msgstr ""
 
@@ -10399,6 +10682,32 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} file found."
 msgid_plural "{n} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file missing: moved out of the folders analysed, or deleted."
+msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} file of the album is missing (moved out of the folders analysed, or "
+"deleted): not included."
+msgid_plural ""
+"{n} files of the album are missing (moved out of the folders analysed, or"
+" deleted): not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} file of the album is missing (moved out of the folders analysed, or "
+"deleted): not shown."
+msgid_plural ""
+"{n} files of the album are missing (moved out of the folders analysed, or"
+" deleted): not shown."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10457,6 +10766,24 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo could not be read: not included."
+msgid_plural "{n} photos could not be read: not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo or video"
+msgid_plural "{n} photos and videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo ready to send ({size}), read back from {folder}."
+msgid_plural "{n} photos ready to send ({size}), read back from {folder}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} s"
 msgstr ""
 
@@ -10493,6 +10820,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} video"
 msgid_plural "{n} videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} video not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
+msgid_plural ""
+"{n} videos not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10560,6 +10897,10 @@ msgstr ""
 msgid ""
 "{path} is not a mounted folder: files moved there would vanish with the "
 "container."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is not a valid albums file."
 msgstr ""
 
 #, python-brace-format
@@ -10897,6 +11238,12 @@ msgid "👉 What next: mh history (the phone's run, and what it deleted)."
 msgstr ""
 
 msgid "👉 What next: open Windows PowerShell and type:"
+msgstr ""
+
+msgid "📍 The GPS positions were kept, as asked."
+msgstr ""
+
+msgid "📍 The GPS positions were removed: --keep-gps keeps them."
 msgstr ""
 
 #, python-brace-format

@@ -36,8 +36,8 @@ def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
             "album",
             act,
             _(
-                "Gather a selection of the classify plan into a folder of hard "
-                "links: nothing is copied nor moved (journaled, undoable)."
+                "Make an album's folder on the disk, as hard links: nothing is "
+                "copied nor moved (journaled, undoable)."
             ),
         ),
         (

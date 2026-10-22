@@ -117,6 +117,7 @@
     <button id="unpick" class="plain" type="button" disabled>{{ _("Pick none") }}</button>
   </div>
   <p id="chosen" role="status"></p>
+  {% include "album_bar.html.j2" %}
   <p class="hint">{{ _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
 </header>
 <main id="grid"></main>
@@ -225,11 +226,15 @@ function showPicked() {
   const count = everything ? total : picked.size;
   $("picked").textContent = count ? counted(TEXTS.picked, count) : "";
   for (const id of ["setAside", "takeBack", "unpick"]) $(id).disabled = !count;
+  if (window.mhAlbumPicked) window.mhAlbumPicked(count); // album_bar.html.j2
   const button = $("pickAll");
   button.hidden = total <= cards.length && !everything;
   button.disabled = everything;
   button.textContent = fill(everything ? TEXTS.allPicked : TEXTS.allFound, { total: total });
 }
+
+// What *Add to the album* adds: the files picked, or every file the search finds.
+window.mhAlbumPick = () => ({ keys: [...picked], all: everything, search: asked });
 
 function said(answer, state) {
   const line = $("chosen");

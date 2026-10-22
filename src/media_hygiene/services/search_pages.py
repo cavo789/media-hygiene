@@ -34,8 +34,11 @@ from media_hygiene.search.folders import (
     FOLDERS_PATH,
     FolderDesk,
 )
+from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.reviewing import address_tip, page_url
+from media_hygiene.share.album_api import ALBUMS_PATH
+from media_hygiene.share.album_pickers import SearchPicker
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -90,6 +93,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         "folders_path": FOLDERS_PATH,
         "folder_path": FOLDER_PATH,
         "apply_path": APPLY_PATH,
+        "albums_path": ALBUMS_PATH,
         "apply_offered": start.apply is not None,
     }
     pages = SearchPages(
@@ -108,6 +112,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         chosen,
         folders,
         ApplyDesk(ApplyOffer(start.apply, lambda: bool(chosen.paths())), ending),
+        album_desk(runtime, SearchPicker(search).files),
     )
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):

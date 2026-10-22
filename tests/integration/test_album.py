@@ -5,11 +5,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import ALBUM_MARKER
+from media_hygiene.services.albums import album_store
+from media_hygiene.share.album_store import AlbumChange
 from tests.support.albums import ALBUMS, WEDDING_CATEGORY, album_files, classified
 from tests.support.cli import run
+from tests.support.runtime import make_runtime
 from tests.support.sorting import EVENT_NAME, PARTY_SHOTS, name_first_event, snapshot
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import pytest
     from typer.testing import CliRunner
 
@@ -120,7 +125,7 @@ def test_album_refusals_say_what_to_do(
     """No criterion, a bad name, no folder, a protected one, stars without cache."""
     classified(cli, locations, monkeypatch)
     cases = {
-        ("album", "Noces"): "Say what the album gathers",
+        ("album", "Noces"): "No album named Noces. The albums: -.",
         ("album", "a/b", "--rule", "x"): "cannot be a folder name",
     }
     for args, message in cases.items():
@@ -149,3 +154,68 @@ def test_a_file_gone_since_classify_is_never_linked(
     shown = flat(run(cli, "album", "Noces", "--category", WEDDING_CATEGORY).output)
     assert "Not found │ 1" in shown
     assert "Run 'classify' again" in shown.split("add --apply")[1]  # at the end
+
+
+def _saved_album(locations: Locations, files: tuple[Path, ...]) -> bytes:
+    """Save "Crete 2023" in albums.json, as search or browse do (0295).
+
+    Args:
+        locations: The test mount points.
+        files: Its files, in the container.
+
+    Returns:
+        The albums file's bytes, read back.
+    """
+    runtime = make_runtime(locations)
+    album_store(runtime).add(AlbumChange("Crete 2023", files))
+    return (locations.reports_dir / "albums.json").read_bytes()
+
+
+def test_a_saved_album_gets_its_folder_of_links_then_undo_removes_it(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0298: `album "Crete 2023" --apply` links exactly that album; undo removes it."""
+    photos = classified(cli, locations, monkeypatch)
+    chosen = (
+        photos / WEDDING_CATEGORY / "DSC_0000.jpg",
+        photos / "Divers" / "IMG_9000.jpg",
+        photos / WEDDING_CATEGORY / "DSC_0002.jpg",
+    )
+    saved = _saved_album(locations, chosen)
+    chosen[2].unlink()  # deleted since it was added
+    before = snapshot(photos)
+    shown = flat(run(cli, "album", "Crete 2023").output)
+    assert "Workbook" not in shown
+    assert "Links to make │ 2" in shown
+    assert "Not found │ 1" in shown
+    assert "moved or deleted since it was added" in shown
+    assert "Run 'audit' again" in shown.split("add --apply")[1]
+    assert not (locations.data_dir / ALBUMS).exists()
+    made = run(cli, "album", "crete 2023", "--apply")  # whatever its case
+    assert made.exit_code == 0, made.output
+    links = album_files(locations, "Crete 2023")  # named as it is saved
+    assert sorted(links) == ["DSC_0000.jpg", "IMG_9000.jpg"]
+    assert links["DSC_0000.jpg"].samefile(chosen[0])
+    assert links["IMG_9000.jpg"].samefile(chosen[1])
+    assert (locations.reports_dir / "albums.json").read_bytes() == saved
+    again = run(cli, "album", "Crete 2023", "--apply")
+    assert "Nothing to add" in again.output
+    assert run(cli, "undo").exit_code == 0
+    assert not (locations.data_dir / ALBUMS).exists()
+    assert snapshot(photos) == before
+
+
+def test_a_photo_moved_by_hand_is_linked_where_it_is_now(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A folder renamed in the Explorer: found again by its content after an audit."""
+    photos = classified(cli, locations, monkeypatch)
+    old = photos / WEDDING_CATEGORY / "DSC_0001.jpg"
+    _saved_album(locations, (old,))
+    new = photos / "Renamed" / "DSC_0001.jpg"
+    new.parent.mkdir()
+    old.rename(new)
+    assert run(cli, "audit").exit_code == 0
+    made = run(cli, "album", "Crete 2023", "--apply")
+    assert made.exit_code == 0, made.output
+    assert album_files(locations, "Crete 2023")["DSC_0001.jpg"].samefile(new)

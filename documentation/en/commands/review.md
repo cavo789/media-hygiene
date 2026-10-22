@@ -115,6 +115,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
   the home page's step that applies your choices (its usual question first), then the home
   page comes back. Opened by `mh review` alone: no button, type the `clean` command.
 - A shot of a **protected folder** is never proposed nor set aside.
+- The burst review has an **Album** field too: **➕ Add to the album** puts the shots of the
+  series shown that are not set aside in that album, apart from your decisions. See
+  [Put photos in an album](search.md#put-photos-in-an-album).
 - *port is already allocated*? Another program uses 8088: `-p 127.0.0.1:9000:9000` and
   `review --port 9000`.
 

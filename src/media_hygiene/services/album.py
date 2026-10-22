@@ -1,9 +1,12 @@
-"""The album use case: gather a selection of the classify plan as hard links.
+"""The album use case: an album's folder of hard links on the disk.
 
-The selection comes from the latest classify plan (or the workbook named), read with
-the user's edits, and from the index for the stars. Each file is found where the plan
-saw it, or where a `sort` of that plan moved it. Nothing is written unless asked
-(`--apply`), and then every change is journaled and undone by `undo`.
+An album is the named list of `albums.json` (0298): `album <name>` alone makes its
+folder of links, one more use of it. With `--category`, `--event`, `--rule` or
+`--rating`, the selection comes instead from the latest classify plan (or the workbook
+named), read with the user's edits, and from the index for the stars; each file is
+found where the plan saw it, or where a `sort` of that plan moved it. Nothing is
+written unless asked (`--apply`), and then every change is journaled and undone by
+`undo`.
 """
 
 from __future__ import annotations
@@ -16,20 +19,19 @@ from media_hygiene.actions.album_plan import plan_links
 from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.outcome import Tally
 from media_hygiene.classify.album_rows import chosen_rows
-from media_hygiene.errors import AlbumError
-from media_hygiene.i18n import _
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.album_folder import album_folder
+from media_hygiene.services.album_logical import album_files
 from media_hygiene.services.album_picks import find_picks, rated
 from media_hygiene.services.journaled_run import new_run
 from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterable
     from pathlib import Path
 
-    from media_hygiene.actions.album_plan import AlbumPlan
+    from media_hygiene.actions.album_plan import AlbumPlan, Pick
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.classify.album_rows import Criteria
     from media_hygiene.scan.progress import ProgressSink
@@ -47,9 +49,9 @@ class AlbumRequest:
 
 @dataclass(frozen=True, slots=True)
 class AlbumPrepared:
-    """An album ready to make: the workbook read, the files selected, the links."""
+    """An album ready to make: where its files come from, the files, the links."""
 
-    workbook: Path
+    workbook: Path | None  # None: an album of `albums.json`
     selected: int
     plan: AlbumPlan
 
@@ -84,30 +86,52 @@ class AlbumService:
         """Select the files and give each one its name in the album.
 
         Args:
-            request: What the user asked.
+            request: What the user asked: no criterion names an album of
+                `albums.json`.
 
         Returns:
             The album, ready to make.
-
-        Raises:
-            AlbumError: Nothing is asked for.
         """
         if not request.criteria.given:
-            raise AlbumError(
-                _("Say what the album gathers."),
-                _("Add --category, --event, --rule or --rating, e.g. --category Noël."),
-            )
+            return self._from_albums(request.name)
         runtime = self._runtime
         folder = album_folder(runtime, request.name)
         inputs = load_inputs(runtime, find_workbook(runtime, request.workbook))
         rows = chosen_rows(inputs.plan, inputs.edits, request.criteria)
         found, missing = find_picks(runtime, inputs.plan.plan_id, rows)
         picks = rated(runtime, found, request.criteria.rating)
-        owner = runtime.mounts.owner
-        album_mount = owner(folder)
-        plan = plan_links(folder, picks, lambda path: owner(path) == album_mount)
+        plan = self._links(folder, picks)
         selected = len(picks) + len(missing)
         return AlbumPrepared(inputs.workbook, selected, replace(plan, missing=missing))
+
+    def _from_albums(self, name: str) -> AlbumPrepared:
+        """The folder of links of an album of `albums.json`, named as it is saved.
+
+        Args:
+            name: The album's name, whatever its case.
+
+        Returns:
+            The album, ready to make.
+        """
+        found = album_files(self._runtime, name)
+        folder = album_folder(self._runtime, found.name)
+        plan = self._links(folder, found.picks)
+        selected = len(found.picks) + len(found.missing)
+        return AlbumPrepared(None, selected, replace(plan, missing=found.missing))
+
+    def _links(self, folder: Path, picks: Iterable[Pick]) -> AlbumPlan:
+        """Give each file its name in the album; those of another mount set aside.
+
+        Args:
+            folder: The album folder.
+            picks: The files found.
+
+        Returns:
+            The links to make.
+        """
+        owner = self._runtime.mounts.owner
+        album_mount = owner(folder)
+        return plan_links(folder, picks, lambda path: owner(path) == album_mount)
 
     def execute(self, prepared: AlbumPrepared, stop: Callable[[], bool]) -> AlbumResult:
         """Make the album under a new run identifier.

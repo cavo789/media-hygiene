@@ -14,3 +14,4 @@ class MountKind(StrEnum):
     QUARANTINE = "quarantine"
     REPORTS = "reports"
     CACHE = "cache"
+    SHARES = "shares"  # `share` only: the copies made to send (0296)

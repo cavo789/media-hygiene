@@ -34,7 +34,7 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées par la page : montez-les en `:ro`. |
 | Il faut | `/cache` (les fichiers du dernier audit), vos dossiers (pour montrer les photos), `/reports` (pour garder ce que vous mettez de côté), et `-p 127.0.0.1:8088:8088` pour la page. |
-| Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports. |
+| Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
 | Annuler | Rien à annuler dans la page : [`clean --decisions`](clean.md) déplace les photos mises de côté, [`undo`](undo.md) les remet. |
 | Avec `mh` | `mh browse`. |
 
@@ -64,6 +64,9 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   **Retirer de la mise de côté** en retire les fichiers choisis.
 - **Chercher par mots** ouvre la page [`search`](search.md), sur le même serveur : ce que vous y
   mettez de côté va dans le même fichier.
+- **➕ Ajouter à l'album** met les photos choisies dans l'album tapé dans **Album**, à part de la
+  mise de côté ; **📺 Partager sur la télé** donne la commande qui le montre. Voir
+  [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
 
 Ctrl+C, ou fermer son onglet, arrête la page ; quand des fichiers sont mis de côté, `browse` propose l'étape suivante :
 

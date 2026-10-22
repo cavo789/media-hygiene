@@ -8,12 +8,11 @@ page; never to the network). A request naming the PC's address on the home netwo
   `MAX_FAILURES` wrong ones close the pairing until the server stops;
 - without the cookie, every `GET` gets the pairing page, anything else 403;
 - with it, only the reads (`READ_PATHS`, `READ_PREFIXES`: the page, its state, the
-  reports, the theme, the docs) and the audit of the page (`POST /api/audit`: it
-  changes no photo). A step, Quit or the presence stay the PC's: 403. The phone's
-  page says so on each step's button (decided 2026-10-21: read-only steps first).
-
-What passes is handed to the home page as from the loopback, its `Origin` checked.
-Any other `Host` (another name: DNS rebinding) is refused as before.
+  reports, the theme, the docs, the albums and their files, 0297), the audit of the
+  page (`POST /api/audit`) and a change of an album (`POST /api/albums`, 0295): none
+  changes a photo. A step, Quit or the presence stay the PC's: 403, said on each
+  step's button (decided 2026-10-21). What passes is handed on as from the loopback,
+  its `Origin` checked; any other `Host` (DNS rebinding) is refused as before.
 """
 
 from __future__ import annotations
@@ -36,6 +35,7 @@ from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.serving import json_response
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.services.reviewing import HOST_LOOPBACK
+from media_hygiene.share import album_page as albums
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
@@ -43,8 +43,11 @@ if TYPE_CHECKING:
 
 LAN_PATH: Final = "/api/lan"
 MAX_FAILURES: Final = 5  # wrong codes before the pairing closes for this server
-READ_PATHS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
-READ_PREFIXES: Final = (REPORTS_PREFIX, ASSETS_PREFIX, DOCS_PREFIX)
+_HOME_READS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
+READ_PATHS: Final = _HOME_READS | albums.PHONE_READS
+_HOME_PREFIXES: Final = (REPORTS_PREFIX, ASSETS_PREFIX, DOCS_PREFIX)
+READ_PREFIXES: Final = (*_HOME_PREFIXES, *albums.PHONE_READ_PREFIXES)
+WRITE_PATHS: Final = albums.PHONE_WRITES | {AUDIT_PATH}
 _GET, _POST = "GET", "POST"
 _QR_SCALE: Final = 5
 _QR_BORDER: Final = 2
@@ -121,7 +124,7 @@ class LanApp:
         return await self._paired(request)
 
     async def _paired(self, request: Request) -> Response:
-        """Answer a paired phone: the reads and the audit, as from the loopback.
+        """Answer a paired phone: the reads, the audit, the albums, as from the PC.
 
         Args:
             request: The request.
@@ -133,11 +136,12 @@ class LanApp:
         reads = request.method == _GET and (
             path in READ_PATHS or path.startswith(READ_PREFIXES)
         )
-        audit = request.method == _POST and path == AUDIT_PATH
+        writes = request.method == _POST and path in WRITE_PATHS
         origin = request.headers.get("origin")
-        if not (reads or audit) or origin not in {None, self.lan.origin}:
+        if not (reads or writes) or origin not in {None, self.lan.origin}:
             message = _(
-                "From the phone: the audit and the reports. Run this step on the PC."
+                "From the phone: the audit, the reports and the albums. Run this "
+                "step on the PC."
             )
             return json_response(HTTPStatus.FORBIDDEN, {"error": message})
         if request.method == _GET and path == PAGE_PATH:

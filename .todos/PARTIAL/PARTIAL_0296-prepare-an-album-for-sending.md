@@ -48,3 +48,29 @@ or creates the Facebook album and adds the folder by hand — fast, since the ph
   EXIF back).
 - Size per photo: measured on synthetic pictures here, and on real ones by the maintainer
   (estimated beforehand 0.3–1 MB each from 0291's 0.28 MB at 1920 px, measured 2026-10-22).
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+Item 1: videos are **left out and counted** ("3 videos not included"): only the resized photos
+are copied (one video alone can pass a mail's limit).
+
+## Status — PARTIAL (2026-10-22)
+
+### Done
+- `share --album "<name>"`: each photo upright, long side 2048, JPEG 85, GPS removed unless
+  `--keep-gps` / `[share] keep_gps`; date, camera, description kept; maker notes and XMP dropped.
+  Videos left out and counted; missing and unreadable photos counted.
+- One folder and one zip per album in `/shares` (`$HOME\media-hygiene\Shares`, mounted by `mh`
+  for `share` only; `mh.ps1` opens it in the Explorer); an album prepared again replaces its
+  folder (said); counts and sizes read back from the disk; warning above 25 MB (worded as "some
+  webmails", the limits still to check).
+- `[share] long_side_px`, `quality`, `keep_gps` settings; Share area step and the album bar's
+  📨 *Prepare for sending* button; docs en+fr, COMMANDS_TOO, mkdocs nav, translations.
+- Tests: originals compared before/after, GPS read back removed/kept, launcher mounts, read-only run.
+- Size measured on synthetic 12 MP pictures: 0.27–0.83 MB per copy.
+
+### Not done
+- Sizes on real photos and the Explorer opening on Windows: `.\mh-measure.ps1 -Only 32 -Count 60`.
+  **Reason:** only the maintainer's PC has the real photos and Windows.
+- `docs_screenshots` (new help, Share area, album bar; reference capture hand-edited).
+  **Reason:** heavy (image build + browser), never run unasked.

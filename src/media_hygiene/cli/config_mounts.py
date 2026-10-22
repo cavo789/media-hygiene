@@ -32,6 +32,8 @@ def mounts_table(runtime: Runtime) -> Table:
         table.add_column(header, overflow="fold")
     data_dir = runtime.locations.data_dir
     for kind in MountKind:
+        if kind is MountKind.SHARES and not runtime.persistent(kind):
+            continue  # mounted by `mh` for `share` only: not a missing mount
         path = runtime.locations.path_of(kind)
         paths = [path]
         if kind is MountKind.DATA:

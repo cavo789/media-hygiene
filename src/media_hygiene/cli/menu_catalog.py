@@ -1,10 +1,10 @@
 """Every action of the tool, in the order of the cycle: `mh menu`, home page, palette.
 
-Five stages (import, clean, sort, find, back up), then three tools (history, reports,
-settings); one module per stage or group of tools. The badges are the guides': 🔒
-photos untouched, ↩️ can be undone, ⚠️ for good. A command no entry names yet still
-shows, under "Other commands" (`with_others`), and `tests/unit/test_menu_catalog.py`
-fails until it has its entry.
+Five stages (import, clean, sort, find, back up), the share area, then three tools
+(history, reports, settings); one module per stage or group of tools. The badges are
+the guides': 🔒 photos untouched, ↩️ can be undone, ⚠️ for good. A command no entry
+names yet still shows, under "Other commands" (`with_others`), and
+`tests/unit/test_menu_catalog.py` fails until it has its entry.
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ from media_hygiene.cli.menu_catalog_clean_more import clean_more_steps
 from media_hygiene.cli.menu_catalog_find import find_areas, find_steps
 from media_hygiene.cli.menu_catalog_import import import_area, import_steps
 from media_hygiene.cli.menu_catalog_settings import settings_steps
+from media_hygiene.cli.menu_catalog_share import share_area, share_steps
 from media_hygiene.cli.menu_catalog_sort import sort_area, sort_steps
 from media_hygiene.cli.menu_catalog_tools import tools_areas, tools_steps
 from media_hygiene.cli.menu_entry import Area, Group, Risk, Space, Step
@@ -63,10 +64,18 @@ def catalog() -> Catalog:
         *clean_more_steps(),
         *sort_steps(),
         *find_steps(),
+        *share_steps(),
         *tools_steps(),
         *settings_steps(),
     )
-    areas = (import_area(), clean_area(), sort_area(), *find_areas(), *tools_areas())
+    areas = (
+        import_area(),
+        clean_area(),
+        sort_area(),
+        *find_areas(),
+        share_area(),
+        *tools_areas(),
+    )
     return Catalog(steps, areas)
 
 

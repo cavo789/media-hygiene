@@ -5,7 +5,8 @@ answers the files matching the words and filters sent in JSON, `GET /thumb/<key>
 a small preview (kept in the cache folder), `GET /preview/<key>.jpg` a large one,
 `GET /original/<key>.<ext>` the file untouched. `GET /api/chosen` says what is set
 aside, `POST /api/chosen` sets files aside or takes them out (the decisions file in
-the reports folder, `chosen_api`); `POST /api/apply` ends the page on the home page's
+the reports folder, `chosen_api`); `GET`/`POST /api/albums` the albums, apart
+(`albums.json`, `share.album_api`); `POST /api/apply` ends the page on the home page's
 step that applies them, when opened from it (`apply_api`). The folder view asks for
 its tree, its folders and its videos (`folders`). Like `review` and `places`:
 loopback hosts only, JSON bodies only, from the page's own origin. The photos are
@@ -30,6 +31,7 @@ from media_hygiene.search.folders import BROWSE_PATH, FOLDER_PATH, FOLDERS_PATH
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.views import SearchAsked, found_view
+from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
     import asyncio
@@ -43,6 +45,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
+    from media_hygiene.share.album_api import AlbumDesk
 
 PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
@@ -50,11 +53,13 @@ SEARCH_PATH: Final = "/api/search"
 # The page shows this many files at most; the total says how many match.
 PAGE_HITS: Final = 240
 _GET, _POST = "GET", "POST"
-_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, FOLDER_PATH, APPLY_PATH})
+_POSTED: Final = frozenset(
+    {SEARCH_PATH, CHOSEN_PATH, FOLDER_PATH, APPLY_PATH, ALBUMS_PATH}
+)
 
 
 @dataclass(frozen=True, slots=True)
-class SearchPlace:
+class SearchPlace:  # pylint: disable=too-many-instance-attributes
     """Where the search reads, and how it writes paths: index, mapper, previews."""
 
     index: SearchIndex
@@ -64,6 +69,7 @@ class SearchPlace:
     chosen: ChosenDesk  # the files set aside
     folders: FolderDesk  # the folder view
     apply: ApplyDesk  # *Apply now*, opened from the home page
+    albums: AlbumDesk  # the albums, never the files set aside
 
 
 @dataclass(frozen=True, slots=True)
@@ -113,12 +119,10 @@ class SearchApp:
         refused = refused_post(request)
         if refused is not None:
             return refused
-        if request.path == APPLY_PATH:
-            return await self.place.apply.answer()
-        return self._post(request)
+        return await self._post(request)
 
-    def _post(self, request: Request) -> Response:
-        """Answer a JSON body from the page: a search, a folder, a choice.
+    async def _post(self, request: Request) -> Response:
+        """Answer a JSON body from the page: a search, a folder, a choice, an album.
 
         Args:
             request: The request, checked.
@@ -126,6 +130,10 @@ class SearchApp:
         Returns:
             The response.
         """
+        if request.path == APPLY_PATH:
+            return await self.place.apply.answer()
+        if request.path == ALBUMS_PATH:
+            return await self.place.albums.answer(request.body)
         if request.path == CHOSEN_PATH:
             return self.place.chosen.answer(request.body)
         if request.path == FOLDER_PATH:
@@ -149,10 +157,13 @@ class SearchApp:
             return Response(
                 HTTPStatus.OK, self.pages.browse, ContentType.HTML, policy=NEAR_POLICY
             )
-        if path == CHOSEN_PATH:
-            return self.place.chosen.state()
-        if path == FOLDERS_PATH:
-            return self.place.folders.tree()
+        states = {
+            CHOSEN_PATH: self.place.chosen.state,
+            ALBUMS_PATH: self.place.albums.state,
+            FOLDERS_PATH: self.place.folders.tree,
+        }
+        if path in states:
+            return states[path]()
         pictures = Pictures(self.place.index, self.place.previews, self.executor)
         if path.startswith(VIDEO_PREFIX):
             return await video_response(request, pictures.source)

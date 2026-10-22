@@ -1,7 +1,8 @@
 """The records of the action catalog: an action, its fields, its doc, its space.
 
 `mh menu`, the home page and its palette read the same catalog (`menu_catalog.py`):
-five stages of a cycle (import, clean, sort, find, back up), then three tools.
+five stages of a cycle (import, clean, sort, find, back up), the share area outside
+it, then three tools.
 """
 
 from __future__ import annotations
@@ -32,13 +33,14 @@ class Risk(StrEnum):
 
 
 class Space(StrEnum):
-    """The five stages of the cycle, then the three tools, in the menu's order."""
+    """The five stages of the cycle, share, then the tools, in the menu's order."""
 
     IMPORT = "import"
     CLEAN = "clean"
     SORT = "sort"
     FIND = "find"
     BACKUP = "backup"
+    SHARE = "share"  # outside the cycle: a goal, not a stage
     HISTORY = "history"
     REPORTS = "reports"
     SETTINGS = "settings"
@@ -172,7 +174,9 @@ class Group:
     title: str  # translated
     steps: tuple[str, ...]  # their names, in order
     numbered: bool = False  # a guide, numbered on the page
-    extra: str = ""  # a panel the page adds: `folders`, `update`, `ai`, `about`
+    extra: str = (
+        ""  # a panel the page adds: `folders`, `update`, `ai`, `about`, `albums`
+    )
 
 
 @dataclass(frozen=True, slots=True)

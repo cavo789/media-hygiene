@@ -9,7 +9,9 @@ action of the tool a click or <kbd>Ctrl</kbd>+<kbd>K</kbd> away.**
 
 `home` shows in your browser what [`status`](status.md) and [`menu`](menu.md) show in the
 terminal, laid out as the cycle of your photos: **Import** (a phone, your NAS or an old disk),
-**Clean**, **Sort**, **Find**, **Back up** (planned), then three tools: **History and undo**,
+**Clean**, **Sort**, **Find**, **Back up** (planned); then, apart from the cycle, **Share**
+(your photos on the TV: [`slideshow`](slideshow.md), a folder or an
+[album](search.md#put-photos-in-an-album)) and three tools: **History and undo**,
 **Reports**, **Settings**. Each space has its page: its guide, numbered, then "Go further". Every
 action shows its `mh` command, copyable, and links to its chapter of this documentation. The
 page can also run the audit itself, its progress shown in the page.
@@ -38,13 +40,13 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed by the page: mount them `:ro`. The audit run from the page only reads them. |
 | Needs | The tool's folders (`/reports`, `/journal`, `/quarantine`, `/cache`), as `status` does; your folders for the audit; `-p 127.0.0.1:8088:8088` for the page. |
-| Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does. |
+| Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does; the [albums' page](#your-albums-on-the-phone) changes `albums.json` alone. |
 | Undo | Nothing to undo; each step keeps its own undo. |
 | With `mh` | `mh home`. |
 
 ## What the page shows
 
-- **The sidebar**: the five stages of the cycle and the tools, each with its count (*9* extra
+- **The sidebar**: the five stages of the cycle, **Share** (a goal, not a stage: no number) and the tools, each with its count (*9* extra
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),
   the theme switch and **Quit Media Hygiene**.
@@ -101,7 +103,7 @@ opened the page:
   command's exit code, `20 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
   Ctrl+C during a step (or on a page it opened) gives the prompt back: the home page does not
   come back, and no other step runs.
-- **A step that takes words** (an album's name and category, your NAS's folder, a folder to
+- **A step that takes words** (an album's name, your NAS's folder, a folder to
   remove, how many reports to keep): **Fill in** opens its form, the example filled in. The
   server checks each value and says why it refuses one (*no double quote*, *no control
   character*, *it cannot start with '-'*, *a folder as the Explorer shows it*); then it writes
@@ -143,7 +145,8 @@ In Windows PowerShell, `mh --lan` opens the home page as `mh` alone does, and le
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
    The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
 
-From the phone: 🔒 the page, where you are, the reports and the **audit** run by the page.
+From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page and
+[your albums](#your-albums-on-the-phone).
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. **Quit** is the PC's too.
 
@@ -159,6 +162,30 @@ the home network too: the phone already paired reloads its page and gets the sli
 
 The phone cannot open the page? Windows counts the network as **public** (`mh` says so): set
 it to private in *Settings › Network and Internet*. `mh --lan` is Windows PowerShell only for now.
+
+## Your albums, on the phone
+
+At home, show an album to the family **on your own phone**, without the TV: pair it once with
+`mh --lan` (above), then open **Open the albums** on its home page (or, on the PC, *Share ›
+Your albums*). The relatives look at your screen and pair nothing.
+
+- **The list**: each [album](search.md#put-photos-in-an-album), its cover, its dates, its
+  place and how many photos it holds.
+- **An album**, as the big photo apps show it: a **cover** (the sharpest photo of the first
+  day), the album's name, its dates and its place (named offline, from the photos' GPS), then
+  a **mosaic** grouped by day, *Monday 10 July 2023 · Heraklion*.
+- **A tap** opens the photo full screen; **a swipe** goes to the next or the previous one;
+  **a tap** (or the phone's *Back*) closes it. The next photos are loaded in advance.
+- **Videos** play in place, as on the TV: H.264 as it is; another format (HEVC, AVI) is
+  labelled, never converted.
+- **➖ Take out of the album**, **➕ Add to an album** (a new name creates it): only
+  `albums.json` changes, read back and said; no photo is copied, moved or touched.
+
+| | |
+|---|---|
+| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), never an original. |
+| What the phone reaches | The albums and **their** files only: no other photo of your library, whatever address it types. |
+| Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 
 ## The keyboard, the palette, the theme
 

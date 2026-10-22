@@ -35,16 +35,19 @@ from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
+from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan
 from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.reviewing import address_tip, page_url
+from media_hygiene.share.album_page import ALBUMS_PAGE
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.console.page_progress import PageProgress
+    from media_hygiene.review.ending import Handling
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.home_audit import AuditResult
     from media_hygiene.services.runtime import Runtime
@@ -75,6 +78,7 @@ def home_page(*, relays_steps: bool = False, remote: bool = False) -> bytes:
             "stop": STOP_PATH,
             "assets": ASSETS_PREFIX,
             "lan": LAN_PATH,
+            "albums": ALBUMS_PAGE,
         },
         alive_ms=ALIVE_SECONDS * 1000,
         relays_steps=relays_steps,
@@ -137,12 +141,11 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
     ending = Ending()
     presence = Presence(ending, STOPPED)
     audit = HomeAudit(sources.audit)
-    reports_dir = runtime.locations.reports_dir
     relays = launcher_relays_steps()
     app = HomeApp(
         home_page(relays_steps=relays),
         sources.state,
-        reports_dir,
+        runtime.locations.reports_dir,
         ending,
         audit,
         presence,
@@ -172,10 +175,12 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         say_lan(runtime.output, lan)
 
     lan = lan_access(port) if port else None  # `mh --lan`: a phone may open it
-    handler = app if lan is None else LanApp(app, lan, home_page(remote=True))
     code = STOPPED
     try:
-        with contextlib.suppress(KeyboardInterrupt):
+        with contextlib.suppress(KeyboardInterrupt), runtime.executor_factory() as pool:
+            handler: Handling = album_pages(runtime, app, pool)  # `/albums` (0297)
+            if lan is not None:
+                handler = LanApp(handler, lan, home_page(remote=True))
             door = EndingDoor(handler, ending)
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:

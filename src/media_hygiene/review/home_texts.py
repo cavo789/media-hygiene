@@ -35,6 +35,7 @@ def _shell() -> dict[str, str]:
         "spaces": _("Spaces"),
         "cycle": _("The cycle of your photos"),
         "tools": _("Tools"),
+        "share": _("Share"),
         "addFolder": _("Add a folder"),
         "avatarAlt": _("The meerkat of Christophe Avonture"),
         "by": _("by"),
@@ -60,7 +61,13 @@ def _shell() -> dict[str, str]:
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
         "onThePc": _(
-            "From the phone: the audit and the reports. Run this step on the PC."
+            "From the phone: the audit, the reports and the albums. Run this step on "
+            "the PC."
+        ),
+        "albumsOpen": _("Open the albums"),
+        "albumsText": _(
+            "Your albums as on a phone: a cover, the photos by day, full screen with "
+            "a swipe. On a phone of the home Wi-Fi too, once paired with mh --lan."
         ),
     }
 

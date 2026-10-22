@@ -100,6 +100,7 @@
   <p id="status" role="status"></p>
   <p id="chosen" role="status"></p>
   {% include "apply_now.html.j2" %}
+  {% include "album_bar.html.j2" %}
   <p class="hint">{{ _("A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A the whole folder; Delete (or the button) sets them aside. Enter or a double click opens a picture, ←/→ the next ones. Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
 </header>
 <div class="layout">

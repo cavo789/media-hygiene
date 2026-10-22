@@ -1,9 +1,10 @@
-"""What `slideshow` shows: a folder, the files a search finds, or the files set aside.
+"""What `slideshow` shows: a folder, the files a search finds, or an album (0295).
 
 Read from the index alone, as `browse` and `search` do: a photo the last audit did not
 see is not shown. Photos and videos (0292: a video's codec and length from what the
 audit's `ffprobe` read), oldest first, the undated ones last; at most `MAX_SLIDES`,
-the first ones by date.
+the first ones by date. An album's files are followed if they moved
+(`share.album_follow`); those missing are counted, never shown.
 """
 
 from __future__ import annotations
@@ -23,7 +24,8 @@ from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
 from media_hygiene.search.query import SearchQuery, parse_terms
-from media_hygiene.services.search_pages import chosen_desk
+from media_hygiene.services.albums import album_store
+from media_hygiene.share.albums import AlbumsError
 from media_hygiene.slideshow.slides import Film, Slide
 
 if TYPE_CHECKING:
@@ -47,7 +49,7 @@ class Pick:
 
     folder: str | None = None  # as the Explorer shows it
     words: str | None = None  # a search, as typed in `search`
-    chosen: bool = False  # the files set aside in `search` or `browse`
+    album: str | None = None  # an album's name (`albums.json`)
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +58,7 @@ class Picked:
 
     slides: tuple[Slide, ...]
     found: int
+    missing: int = 0  # files of the album found nowhere
 
 
 def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
@@ -64,22 +67,24 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
     Args:
         runtime: Settings, mount points and output.
         search: The open index.
-        pick: The folder, the words, or the files set aside.
+        pick: The folder, the words, or the album.
 
     Returns:
         The photos, at most `MAX_SLIDES`.
 
     Raises:
-        MediaHygieneError: None or more than one of the three was given.
+        MediaHygieneError: None or more than one of the three was given, or no
+            album has that name.
     """
-    given = sum((pick.folder is not None, pick.words is not None, pick.chosen))
-    if given != 1:
+    given = (pick.folder, pick.words, pick.album)
+    if sum(each is not None for each in given) != 1:
         raise MediaHygieneError(
             _(
                 'Say what to show, one of: --folder "C:\\Photos\\Holidays", --search '
-                '"words", or --chosen (the files set aside).'
+                '"words", or --album "Crete 2023".'
             )
         )
+    missing = 0
     connection = search.connection
     if pick.folder is not None:
         folder = runtime.mapper.to_container(pick.folder)
@@ -92,7 +97,7 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         found = search.find(SearchQuery(parse_terms(pick.words)), MAX_SLIDES)
         rows = ((hit.key, str(hit.photo.path), hit.date) for hit in found.hits)
     else:
-        paths = sorted(chosen_desk(runtime, search).paths())
+        paths, missing = album_paths(runtime, pick.album or "")
         rows = (
             row
             for path in paths
@@ -111,7 +116,35 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         Slide(key, day or None, _film(connection, key, source))
         for _undated, day, _path, key, source in photos[:MAX_SLIDES]
     )
-    return Picked(slides, len(photos))
+    return Picked(slides, len(photos), missing)
+
+
+def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
+    """The host paths of an album's files found on the disk, and how many are not.
+
+    Args:
+        runtime: Settings, mount points and output.
+        name: The album's name.
+
+    Returns:
+        The paths, and the count of files missing.
+
+    Raises:
+        AlbumsError: No album of that name, or no albums file.
+    """
+    shelf = album_store(runtime).on_disk()
+    album = shelf.albums.named(name)
+    if album is None:
+        names = ", ".join(each.name for each in shelf.albums.albums) or "-"
+        raise AlbumsError(
+            _("No album named {name}. The albums: {names}.").format(
+                name=name, names=names
+            ),
+            _("Add photos to an album in search or browse."),
+        )
+    gone = frozenset(shelf.missing.get(album.name, ()))
+    paths = sorted(entry.path for entry in album.entries if entry.path not in gone)
+    return paths, len(gone)
 
 
 def _film(connection: sqlite3.Connection, key: int, source: Path) -> Film | None:

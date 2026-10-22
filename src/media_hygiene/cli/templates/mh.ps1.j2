@@ -104,6 +104,12 @@ function global:{{ function }} {
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}
+    # `{{ function }} {{ share.verb }}`: an album's copies to send go to one fixed folder, mounted for this command only (0296).
+    $share = @()
+    if ($command -eq '{{ share.verb }}') {
+        $null = New-Item -ItemType Directory -Force -Path "{{ share.host }}"
+        $share = @('-v', "{{ share.host }}:{{ share.point }}")
+    }
     $status = 1
     $browser = $null
     $console = [Console]::OutputEncoding
@@ -153,6 +159,7 @@ function global:{{ function }} {
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
             @page `
+            @share `
             @marks `
             {{ image }} @rest @backups @($nas.backups)
         $status = $LASTEXITCODE
@@ -169,6 +176,10 @@ function global:{{ function }} {
     }
     if ($long) {
         if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
+    }
+    if ($share -and $status -eq 0 -and -not ($rest | Where-Object { $_ -in @({{ listed(share.help_flags) }}) })) {
+        # The album's folder and its zip, side by side in the Explorer (0296).
+        Invoke-Item -LiteralPath "{{ share.host }}"
     }
     if ($status -ne 0) {
         # The container did not run or failed: Docker Desktop stopped is started, and the

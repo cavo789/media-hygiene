@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final, override
 
 import pytest
 
+from media_hygiene.cli.menu_catalog_share import share_area
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.review.ending import STOP_PATH, Ending, EndingDoor
@@ -367,3 +368,12 @@ def test_bash_refuses_mh_slideshow_lan(tmp_path: Path) -> None:
     assert result.returncode == 1
     assert "ran" not in result.stdout
     assert "Windows PowerShell only" in result.stderr
+
+
+def test_the_albums_open_from_the_share_area_and_the_phones_home() -> None:
+    """The share area's panel and the phone's home view both open `/albums` (0297)."""
+    phone = home.home_page(remote=True).decode()
+    assert '"albums": "/albums"' in phone
+    assert "albums: () =>" in phone
+    assert '${hero()}${REMOTE ? EXTRAS.albums() : ""}' in phone
+    assert share_area().groups[0].extra == "albums"

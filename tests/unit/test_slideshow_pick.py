@@ -1,4 +1,4 @@
-"""What `slideshow` shows (0291): a folder and its subfolders, a search, the set aside.
+"""What `slideshow` shows (0291): a folder and its subfolders, a search, an album.
 
 Read from the index alone; photos and videos (0292), oldest first, the undated last;
 exactly one of the three asked for.
@@ -13,12 +13,12 @@ from typing import TYPE_CHECKING, Final
 import pytest
 
 from media_hygiene.errors import MediaHygieneError
-from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.schema import prepare
-from media_hygiene.search.chosen import Selection
 from media_hygiene.search.fts import SearchIndex
-from media_hygiene.services.search_pages import chosen_desk
+from media_hygiene.services.albums import album_store
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
+from media_hygiene.share.album_store import AlbumChange
+from media_hygiene.share.albums import AlbumsError
 from media_hygiene.slideshow.slides import Film
 from tests.support.runtime import make_locations, make_runtime
 
@@ -88,25 +88,43 @@ def test_a_search(runtime: Runtime, tmp_path: Path) -> None:
     assert _keys(runtime, tmp_path, Pick(words="chat")) == (6,)
 
 
-def test_the_files_set_aside(runtime: Runtime, tmp_path: Path) -> None:
-    """Read back from the decisions file of the reports folder."""
+def test_an_album_shows_exactly_its_files(runtime: Runtime, tmp_path: Path) -> None:
+    """0295: the album's files, oldest first; one deleted since: counted, not shown."""
     data = runtime.locations.data_dir
-    with SearchIndex.open(_index(runtime, tmp_path)) as search:
-        desk = chosen_desk(runtime, search)
-        desk.store.add(
-            Selection(tuple(PhotoVersion(data / _FILES[at][0], 1, 7) for at in (0, 4)))
-        )
-        picked = picked_slides(runtime, search, Pick(chosen=True))
+    index = _index(runtime, tmp_path)
+    for at in (0, 4, 5):
+        (data / _FILES[at][0]).parent.mkdir(parents=True, exist_ok=True)
+        (data / _FILES[at][0]).write_bytes(b"x")
+    files = tuple(data / _FILES[at][0] for at in (0, 4, 5))
+    album_store(runtime).add(AlbumChange("Crete 2023", files))
+    (data / _FILES[5][0]).unlink()
+    with SearchIndex.open(index) as search:
+        picked = picked_slides(runtime, search, Pick(album="crete 2023"))
     assert tuple(slide.key for slide in picked.slides) == (5, 1)
     assert picked.slides[0].day == "2026-07-01"
+    assert picked.missing == 1
 
 
-@pytest.mark.parametrize("pick", [Pick(), Pick(folder="C:\\Photos", chosen=True)])
+def test_an_unknown_album_names_the_albums(runtime: Runtime, tmp_path: Path) -> None:
+    """A typo: the albums there are, said."""
+    data = runtime.locations.data_dir
+    photo = data / _FILES[0][0]
+    photo.parent.mkdir(parents=True)
+    photo.write_bytes(b"x")
+    album_store(runtime).add(AlbumChange("Crete 2023", (photo,)))
+    with (
+        SearchIndex.open(_index(runtime, tmp_path)) as search,
+        pytest.raises(AlbumsError, match="Crete 2023"),
+    ):
+        picked_slides(runtime, search, Pick(album="Crète"))
+
+
+@pytest.mark.parametrize("pick", [Pick(), Pick(folder="C:\\Photos", album="Crete")])
 def test_exactly_one_choice(runtime: Runtime, tmp_path: Path, pick: Pick) -> None:
     """None, or two at once: said with the three forms."""
     with (
         SearchIndex.open(_index(runtime, tmp_path)) as search,
-        pytest.raises(MediaHygieneError, match="--chosen"),
+        pytest.raises(MediaHygieneError, match="--album"),
     ):
         picked_slides(runtime, search, pick)
 

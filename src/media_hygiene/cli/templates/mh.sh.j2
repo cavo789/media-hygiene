@@ -6,7 +6,7 @@
 {{ function }}() {
     local command="" mode=":ro" arg folder zone="${TZ:-}" long="" browser="" status=0
     local tty=(-i) page=() given=() typed=() rest=() photos=() zoned=() awake=() relay=()
-    local backups=()
+    local backups=() share=()
     # This file written again since this terminal loaded it (0276); not by the menu's own calls.
     if [[ "${1:-}" != --color ]]; then _{{ function }}_stale; fi
     _{{ function }}_given "$@" || return  # --photos /mnt/e/Folder, for this command only
@@ -86,6 +86,11 @@
 {% if script.folders %}
     mkdir -p {{ script.folders }}
 {% endif %}
+    if [[ "$command" == {{ share.verb }} ]]; then
+        # `{{ function }} {{ share.verb }}`: an album's copies to send go to one fixed folder, mounted for this command only (0296).
+        mkdir -p "{{ share.host }}"
+        share=(-v "{{ share.host }}:{{ share.point }}")
+    fi
     if [[ -n "$long" ]]; then
         read -r -a awake <<< "$(_{{ function }}_awake "$command")"
         _{{ function }}_title "{{ function }} $command..."
@@ -113,7 +118,7 @@
 {% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
-        "${page[@]}" \
+        "${share[@]}" "${page[@]}" \
         {{ image }} "$@" "${backups[@]}" || status=$?
     if [[ -n "$browser" ]]; then kill "$browser" 2>/dev/null; fi
     if [[ -n "$long" ]]; then

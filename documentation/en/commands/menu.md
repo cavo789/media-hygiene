@@ -48,7 +48,7 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
 - A step the tool fills from what it knows takes its argument (`mh purge <run>`, `mh undo <run>`);
   with nothing to purge or undo, it has no number. A step that needs words only you know (an
   album's name, your NAS's folder, a folder to remove, how many reports to keep) shows an example,
-  *(type it yourself)*: `mh album "Christmas 2025" --category Christmas`. On the
+  *(type it yourself)*: `mh album "Crete 2023"`. On the
   [home page](home.md), its form fills them in. `mh backup` shows as *(planned)*.
 
 Each action is listed once, numbered across the spaces, under the space where it first comes:

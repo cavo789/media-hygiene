@@ -1,4 +1,4 @@
-"""`slideshow`: the photos of a folder, a search or the files set aside, on the TV.
+"""`slideshow`: the photos of a folder, a search or an album, on the TV.
 
 The index is read, never written; the photos are never changed. One server until
 Ctrl+C (or *Back to the home page*): the remote at `/` on the PC (its browser opens
@@ -15,7 +15,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MediaHygieneError
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
@@ -97,6 +97,16 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
                     "{found} photos and videos found: the first {shown} by date are "
                     "shown."
                 ).format(found=picked.found, shown=len(picked.slides))
+            )
+        if picked.missing:
+            runtime.output.warning(
+                ngettext(
+                    "{n} file of the album is missing (moved out of the folders "
+                    "analysed, or deleted): not shown.",
+                    "{n} files of the album are missing (moved out of the folders "
+                    "analysed, or deleted): not shown.",
+                    picked.missing,
+                ).format(n=picked.missing)
             )
         settings = runtime.settings.slideshow
         show = Show(picked.slides, Timing(settings.interval_seconds))
