@@ -2,8 +2,9 @@
 {# The page of `media-hygiene people`: the people by name first, then the groups of
    faces alike, largest first, a few dozen faces each. Names are typed here and saved
    by the server into config.toml, read back and shown. Keyboard: arrows (or j/k) move
-   between groups, Enter types a name, y confirms a suggestion, x picks a group to name
-   with others, i ignores a group; a click on a face opens its photo, its × takes it
+   between groups, Enter types a name, y confirms the attributed faces shown, x picks a
+   group to name with others, i ignores a group; each person shows twice at most: the
+   faces the user confirmed (verified ✓) and those the tool gives them (attributed); a click on a face opens its photo, its × takes it
    out of the group. *and N more faces* shows every face of a group: then, and only
    then, its photos can be set aside (in the decisions file, for `clean --decisions`;
    opened from the home page, *Apply now* runs it). #}
@@ -24,8 +25,11 @@
   "none": _("No group yet: no two faces look alike enough."),
   "offline": _("The page is not running any more: start people again."),
   "failed": _("The groups could not be read (error {status})."),
-  "suggest": _("{name}?"),
-  "confirm": _("Yes, it is {name}"),
+  "verified": _("verified"),
+  "verifiedHint": _("The faces you confirmed as this person's."),
+  "attributed": _("attributed"),
+  "attributedHint": _("Faces given to this person because they look like those you confirmed: take out with × those of someone else, then confirm."),
+  "confirm": [ngettext("Yes, this face is {name}", "Yes, these {n} faces are {name}", 1), ngettext("Yes, this face is {name}", "Yes, these {n} faces are {name}", 2)],
   "placeholder": _("Who is it? Type a name, then Enter"),
   "save": _("Name"),
   "ignore": _("Ignore this group"),
@@ -59,6 +63,13 @@
   section.picked { background: var(--chip); }
   h2 { font-size: 1rem; margin: 0 0 8px; }
   h2 small { color: var(--muted); font-weight: normal; }
+  .badge { display: inline-block; margin: 0 6px 0 0; padding: 0 8px; border-radius: 999px;
+           font-size: .75rem; font-weight: 600; vertical-align: middle; }
+  .badge.verified { background: var(--good); color: #fff; }
+  .badge.attributed { border: 1px dashed var(--muted); color: var(--muted); }
+  .face .check { position: absolute; left: 2px; bottom: 2px; width: 20px; height: 20px;
+                 border-radius: 50%; background: var(--good); color: #fff; font-size: 13px;
+                 line-height: 20px; text-align: center; pointer-events: none; }
   .tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
   .tools input { flex: 1 1 14rem; min-width: 0; padding: 4px 8px; font: inherit;
                  border: 1px solid var(--line); border-radius: 6px; background: var(--bg);
@@ -93,8 +104,8 @@
 {% include "page_header.html.j2" %}
 <header>
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
-  <p class="hint">{{ _("Naming confirms the faces shown; the other faces of the group get the name when they look close enough to them. To check every one first, click “and N more faces”.") }}</p>
-  <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at once, i ignores a group; × takes a face out of its group.") }}</p>
+  <p class="hint">{{ _("Naming confirms the faces shown: they become verified ✓. The other faces that look like them are attributed to the person, in a section of their own, until you confirm them, a page at a time.") }}</p>
+  <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms the attributed faces shown, x names several groups at once, i ignores a group; × takes a face out.") }}</p>
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
 </header>
@@ -222,8 +233,7 @@ function nameGroups(index, name) {
 }
 
 function takeOut(index, key) {
-  const section = state.sections[index];
-  const name = section.name || section.suggested;
+  const name = state.sections[index].name;
   if (name && state.writable) {
     send({ action: "reject", name, faces: [key] });
     return;
@@ -232,7 +242,7 @@ function takeOut(index, key) {
   render();
 }
 
-function face(item, index) {
+function face(item, index, verified) {
   const box = element("div", "face");
   const picture = element("img");
   picture.loading = "lazy";
@@ -249,6 +259,7 @@ function face(item, index) {
   out.setAttribute("aria-label", TEXTS.remove);
   out.addEventListener("click", () => takeOut(index, item.key));
   box.append(picture, out);
+  if (verified) box.append(element("span", "check", "✓"));
   return box;
 }
 
@@ -257,21 +268,22 @@ function tools(item, index) {
   const input = element("input");
   input.setAttribute("list", "names");
   input.placeholder = TEXTS.placeholder;
-  input.value = item.name;
+  input.value = item.verified ? item.name : "";
   input.disabled = !state.writable;
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && input.value.trim()) nameGroups(index, input.value.trim());
     if (event.key === "Escape") input.blur();
     event.stopPropagation();
   });
-  const save = element("button", "main", TEXTS.save);
+  const attributed = item.name && !item.verified;
+  const save = element("button", attributed ? "" : "main", TEXTS.save);
   save.addEventListener("click", () => input.value.trim() && nameGroups(index, input.value.trim()));
-  bar.append(input, save);
-  if (item.suggested) {
-    const yes = element("button", "", fill(TEXTS.confirm, { name: item.suggested }));
-    yes.addEventListener("click", () => nameGroups(index, item.suggested));
+  if (attributed) {
+    const yes = element("button", "main", fill(counted(TEXTS.confirm, kept(index).length), { name: item.name }));
+    yes.addEventListener("click", () => nameGroups(index, item.name));
     bar.append(yes);
   }
+  bar.append(input, save);
   const pick = element("button", "", TEXTS.pick);
   pick.addEventListener("click", () => toggle(index));
   const ignore = element("button", "", TEXTS.ignore);
@@ -304,13 +316,18 @@ function group(item, index) {
   const node = element("section");
   node.classList.toggle("current", index === current);
   node.classList.toggle("picked", picked.has(index));
-  const heading = item.name || (item.suggested ? fill(TEXTS.suggest, { name: item.suggested }) : fill(TEXTS.group, { number: index + 1 }));
-  const title = element("h2", "", heading + " ");
+  const title = element("h2", "", (item.name || fill(TEXTS.group, { number: index + 1 })) + " ");
+  if (item.name) {
+    const kind = item.verified ? "verified" : "attributed";
+    const badge = element("span", "badge " + kind, (item.verified ? "✓ " : "") + TEXTS[kind]);
+    badge.title = TEXTS[kind + "Hint"];
+    title.append(badge);
+  }
   const size = left(item);
   title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
   const faces = element("div", "faces");
   const shown = displayed(item);
-  faces.append(...shown.filter((one) => !removed.has(one.key)).map((one) => face(one, index)));
+  faces.append(...shown.filter((one) => !removed.has(one.key)).map((one) => face(one, index, item.verified)));
   if (!complete(item)) {
     const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
     more.title = TEXTS.showAll;
@@ -396,7 +413,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "ArrowDown" || event.key === "j") move(1);
   else if (event.key === "ArrowUp" || event.key === "k") move(-1);
   else if (event.key === "Enter" || event.key === "n") $("groups").children[current].querySelector("input").focus();
-  else if (event.key === "y" && item.suggested && state.writable) nameGroups(current, item.suggested);
+  else if (event.key === "y" && item.name && !item.verified && state.writable) nameGroups(current, item.name);
   else if (event.key === "x" && state.writable) toggle(current);
   else if (event.key === "i" && state.writable) ignoreGroup(current);
   else return;

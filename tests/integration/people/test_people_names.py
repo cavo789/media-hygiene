@@ -107,6 +107,31 @@ def test_reject_and_ignore_are_saved(cli: CliRunner, apps: list[object]) -> None
     assert refused["error"] == "Not saved: type a name first."
 
 
+def test_attributed_faces_are_confirmed_a_page_at_a_time(
+    cli: CliRunner, apps: list[object]
+) -> None:
+    """Half a group named: the rest is attributed; confirmed, it moves to verified."""
+    assert run(cli, "people").exit_code == 0
+    group = keys(state(apps[-1])["sections"][0])  # type: ignore[index]
+    half = len(group) // 2
+    named = post(apps[-1], {"action": "name", "name": "Chloé", "faces": group[:half]})
+    verified, attributed = named["sections"][:2]  # type: ignore[index]
+    assert (verified["name"], verified["verified"]) == ("Chloé", True)
+    assert sorted(keys(verified)) == sorted(group[:half])
+    assert (attributed["name"], attributed["verified"]) == ("Chloé", False)
+    assert sorted(keys(attributed)) == sorted(group[half:])
+    confirmed = post(
+        apps[-1], {"action": "name", "name": "Chloé", "faces": keys(attributed)}
+    )
+    assert confirmed["saved"] == (
+        f"Saved in config.toml, read back: Chloé, {len(group)} confirmed faces."
+    )
+    sections = confirmed["sections"]
+    assert isinstance(sections, list)
+    assert sorted(keys(sections[0])) == sorted(group)
+    assert all(section["name"] != "Chloé" for section in sections[1:])
+
+
 def test_search_finds_the_person_by_name(
     cli: CliRunner, apps: list[object], monkeypatch: pytest.MonkeyPatch
 ) -> None:

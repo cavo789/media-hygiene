@@ -126,8 +126,9 @@ suffit :
   avec `x` et nommez-les d'un coup, ou donnez au second le même nom ;
 - un visage qui n'est pas le bon dans un groupe : × dessus, ce nom ne lui est plus jamais donné ;
 - des inconnus, des affiches, des statues : `i` ignore le groupe ;
-- « Chloé ? » est une suggestion : `y` la confirme. Une suggestion ne compte jamais tant que vous
-  ne l'avez pas confirmée.
+- **Chloé ✓ vérifié** regroupe les visages que vous avez confirmés, **Chloé attribué** ceux qui
+  lui sont donnés parce qu'ils leur ressemblent : ils comptent déjà ; vérifiez-les page par page,
+  `y` confirme.
 
 Nommer les dix plus grands groupes suffit souvent : les autres visages prennent le nom du visage
 confirmé le plus proche quand ils lui ressemblent assez. Ctrl+C dans le terminal arrête la page.

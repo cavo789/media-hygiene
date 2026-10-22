@@ -2763,6 +2763,14 @@ msgstr ""
 "Les visages plus flous que cette netteté (variance du laplacien du "
 "visage) sont laissés de côté."
 
+msgid ""
+"Faces given to this person because they look like those you confirmed: "
+"take out with × those of someone else, then confirm."
+msgstr ""
+"Visages donnés à cette personne parce qu'ils ressemblent à ceux que vous "
+"avez confirmés : retirez avec × ceux de quelqu'un d'autre, puis "
+"confirmez."
+
 #, python-brace-format
 msgid ""
 "Faces ready, open {url} in your browser to name them; each name is saved "
@@ -4244,13 +4252,13 @@ msgstr ""
 "en écriture sur /config."
 
 msgid ""
-"Naming confirms the faces shown; the other faces of the group get the "
-"name when they look close enough to them. To check every one first, click"
-" “and N more faces”."
+"Naming confirms the faces shown: they become verified ✓. The other faces "
+"that look like them are attributed to the person, in a section of their "
+"own, until you confirm them, a page at a time."
 msgstr ""
-"Nommer confirme les visages affichés ; les autres visages du groupe "
-"reçoivent le nom s'ils leur ressemblent assez. Pour tous les vérifier "
-"d'abord, cliquez sur « et N visages de plus »."
+"Nommer confirme les visages affichés : ils deviennent vérifiés ✓. Les "
+"autres visages qui leur ressemblent sont attribués à la personne, dans une "
+"section à part, jusqu'à ce que vous les confirmiez, une page à la fois."
 
 msgid "Nature and landscapes"
 msgstr "Nature et paysages"
@@ -7513,6 +7521,9 @@ msgstr ""
 "choisissent les visages regroupés : les changer ne fait rien analyser à "
 "nouveau."
 
+msgid "The faces you confirmed as this person's."
+msgstr "Les visages que vous avez confirmés comme ceux de cette personne."
+
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
 
@@ -9101,8 +9112,10 @@ msgid "Years"
 msgstr "Années"
 
 #, python-brace-format
-msgid "Yes, it is {name}"
-msgstr "Oui, c'est {name}"
+msgid "Yes, this face is {name}"
+msgid_plural "Yes, these {n} faces are {name}"
+msgstr[0] "Oui, ce visage est {name}"
+msgstr[1] "Oui, ces {n} visages sont {name}"
 
 msgid "You are here"
 msgstr "Vous êtes ici"
@@ -9507,6 +9520,9 @@ msgid ""
 msgstr ""
 "joignez {zip} à un mail, ou ajoutez les photos de {folder} à un album de "
 "votre réseau social."
+
+msgid "attributed"
+msgstr "attribué"
 
 msgid "audit"
 msgstr "audit"
@@ -11140,6 +11156,9 @@ msgstr "valider"
 
 msgid "validate every obvious series at once"
 msgstr "valider d'un coup toutes les séries évidentes"
+
+msgid "verified"
+msgstr "vérifié"
 
 msgid "video"
 msgstr "vidéo"
@@ -12786,10 +12805,6 @@ msgid "{name}: {count} photos"
 msgstr "{name} : {count} photos"
 
 #, python-brace-format
-msgid "{name}?"
-msgstr "{name} ?"
-
-#, python-brace-format
 msgid "{n} TV"
 msgid_plural "{n} TVs"
 msgstr[0] "{n} télé"
@@ -13415,12 +13430,12 @@ msgid "… and {count} more."
 msgstr "… et {count} de plus."
 
 msgid ""
-"↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at"
-" once, i ignores a group; × takes a face out of its group."
+"↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
+"several groups at once, i ignores a group; × takes a face out."
 msgstr ""
-"↑ ↓ se déplacer, Entrée nomme, y confirme une suggestion, x nomme "
-"plusieurs groupes à la fois, i ignore un groupe ; × retire un visage de "
-"son groupe."
+"↑ ↓ se déplacer, Entrée nomme, y confirme les visages attribués affichés, "
+"x nomme plusieurs groupes à la fois, i ignore un groupe ; × retire un "
+"visage."
 
 #, python-brace-format
 msgid ""

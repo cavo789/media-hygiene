@@ -45,11 +45,11 @@ déjà donnés, et n'en enregistre aucun.
 
 | Sur un groupe | Ce que ça fait |
 |---|---|
-| Taper un nom, puis Entrée | Les visages montrés (quelques dizaines, répartis dans le groupe) sont confirmés comme ceux de cette personne ; les autres visages du groupe reçoivent le nom s'ils leur ressemblent assez. Pour vérifier chaque visage d'abord, cliquez sur **et N visages de plus**. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
+| Taper un nom, puis Entrée | Les visages montrés (quelques dizaines, répartis dans le groupe) sont confirmés comme ceux de cette personne : ils s'affichent sous **✓ vérifié**. Les autres visages du groupe, et ceux qui leur ressemblent, s'affichent sous **attribué**. Pour vérifier chaque visage d'un groupe avant de le nommer, cliquez sur **et N visages de plus**. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
 | Choisir (`x`), puis nommer | Nommer plusieurs groupes d'un coup : la même personne coupée en deux groupes. |
 | × sur un visage | Ce visage n'est pas cette personne : il est retiré du groupe, et ne reçoit plus jamais ce nom. |
 | Ignorer (`i`) | Des inconnus, des affiches, des statues : le groupe n'est plus montré, ni les visages qui lui ressemblent. |
-| Oui, c'est … (`y`) | Confirme une suggestion : un groupe dont les visages ressemblent à quelqu'un de déjà nommé, montré « Chloé ? ». |
+| Oui, ces N visages sont … (`y`) | Sur une section **attribué** : les visages affichés sont ceux de cette personne. Ils passent dans **✓ vérifié**, et les suivants s'affichent : retirez les mauvais avec ×, confirmez, recommencez. Une section attribué vide n'est pas affichée. |
 
 Le clavier suffit : ↑ ↓ (ou `j` `k`) passent d'un groupe à l'autre, Entrée tape un nom. Chaque
 changement est écrit dans `config.toml`, puis **relu dans le fichier** et affiché en haut de la
@@ -68,8 +68,9 @@ faces = [
 Chaque visage est écrit par sa photo et son numéro dans la photo, jamais par son groupe : un
 nouveau regroupement (de nouvelles photos, un autre `similarity`) garde tous les noms. Les autres
 visages reçoivent le nom du **visage confirmé le plus proche**, s'ils lui ressemblent assez
-(`similarity`) ; en dessous, ils restent sans nom. Les suggestions (« Chloé ? ») ne comptent
-jamais avant que vous les confirmiez.
+(`similarity`) ; en dessous, ils restent sans nom. Ces visages **attribués** comptent pour
+`search` et `classify` comme les vérifiés : la page les montre à part pour que vous les
+vérifiiez.
 
 ## Les retrouver : `search`
 
@@ -106,8 +107,8 @@ Un événement va à la règle quand au moins **10 %** de ses photos montrent Ch
 (`min_share = 10` : c'est peut-être elle qui prend les photos) ; une photo hors de tout
 événement y va quand elle la montre. `names = ["Chloé", "Manon"]` prend les événements avec
 l'une ou l'autre ; ajoutez `all = true` pour ceux avec les deux. Les noms sont ceux de la page :
-les visages confirmés, et les visages assez proches d'eux, comme `search` les trouve ; les
-suggestions ne comptent pas. Un nom que personne ne porte encore arrête `classify` avant toute
+les visages confirmés, et les visages assez proches d'eux (attribués), comme `search` les
+trouve. Un nom que personne ne porte encore arrête `classify` avant toute
 lecture, et nomme la règle.
 
 Tout le chemin, du premier `people` aux dossiers triés, pas à pas : [tri, étape

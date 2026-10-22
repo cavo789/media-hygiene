@@ -31,7 +31,7 @@ class PageView:
 def section_view(
     board: PeopleBoard, section: Section, view: PageView
 ) -> dict[str, object]:
-    """One section: its name or suggestion, its counts, the faces shown.
+    """One section: its name, verified or attributed, its counts, the faces shown.
 
     Args:
         board: The faces of the page.
@@ -46,7 +46,7 @@ def section_view(
     photos = {view.host(board.faces[key].path) for key in faces}
     return {
         "name": section.name,
-        "suggested": section.suggested,
+        "verified": section.verified,
         "faces": len(faces),
         "photos": len(photos),
         "aside": len(photos & view.aside),

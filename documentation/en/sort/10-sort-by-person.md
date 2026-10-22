@@ -120,7 +120,8 @@ is written into `config.toml`, then read back from the file and shown at the top
   at once, or give the second one the same name;
 - a wrong face in a group: × on it, it is never given this name again;
 - strangers, posters, statues: `i` ignores the group;
-- "Chloé?" is a suggestion: `y` confirms it. A suggestion never counts until you confirm it.
+- **Chloé ✓ verified** holds the faces you confirmed, **Chloé attributed** those given to her
+  because they look like them: they count already; check them a page at a time, `y` confirms.
 
 Naming the ten largest groups is often enough: the other faces get the name of the nearest
 confirmed face when they look alike enough. Ctrl+C in the terminal stops the page. The next

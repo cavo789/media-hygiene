@@ -43,11 +43,11 @@ mounted, the page shows the groups and the names already given, and saves none.
 
 | On a group | What it does |
 |---|---|
-| Type a name, then Enter | The faces shown (a few dozen, spread over the group) are confirmed as this person's; the other faces of the group get the name when they look close enough to them. To check every face first, click **and N more faces**. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
+| Type a name, then Enter | The faces shown (a few dozen, spread over the group) are confirmed as this person's: they show under **✓ verified**. The other faces of the group, and the faces that look like them, show under **attributed**. To check every face of a group before naming it, click **and N more faces**. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
 | Pick (`x`), then name | Name several groups at once: the same person split in two groups. |
 | × on a face | This face is not this person: it is taken out of the group, and never given this name again. |
 | Ignore (`i`) | Strangers, posters, statues: the group is not shown again, nor the faces close to it. |
-| Yes, it is … (`y`) | Confirms a suggestion: a group whose faces come close to someone already named, shown as "Chloé?". |
+| Yes, these N faces are … (`y`) | On an **attributed** section: the faces shown are this person's. They move to **✓ verified**, and the next ones show: take out the wrong ones with ×, confirm, again. An empty attributed section is not shown. |
 
 The keyboard is enough: ↑ ↓ (or `j` `k`) move between groups, Enter types a name. Each change is
 written into `config.toml`, then **read back from the file** and shown at the top of the page
@@ -65,7 +65,8 @@ faces = [
 Each face is written by its photo and its number in it, never by its group: a new grouping (new
 photos, another `similarity`) keeps every name. The other faces get the name of the **nearest
 confirmed face**, when they look alike enough (`similarity`); below that, they stay unnamed.
-Suggestions ("Chloé?") never count until you confirm them.
+These **attributed** faces count for `search` and `classify` like the verified ones: the page
+shows them apart so that you can check them.
 
 ## Find them: `search`
 
@@ -100,7 +101,7 @@ An event goes to the rule when at least **10 %** of its photos show Chloé (`min
 she may be the one taking the pictures); a photo outside any event goes when it shows her.
 `names = ["Chloé", "Manon"]` takes the events with either of them; add `all = true` for those
 with both. The names are those of the page: the faces confirmed, and the faces close enough to
-them, as `search` finds them; suggestions do not count. A name nobody has yet stops `classify`
+them (attributed), as `search` finds them. A name nobody has yet stops `classify`
 before anything is read, and names the rule.
 
 The whole path, from the first `people` to the sorted folders, step by step: [sorting, step

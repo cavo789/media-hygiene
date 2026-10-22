@@ -2239,6 +2239,11 @@ msgid ""
 "face) are left out."
 msgstr ""
 
+msgid ""
+"Faces given to this person because they look like those you confirmed: "
+"take out with × those of someone else, then confirm."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Faces ready, open {url} in your browser to name them; each name is saved "
@@ -3488,9 +3493,9 @@ msgid "Names cannot be saved: mount a writable folder on /config."
 msgstr ""
 
 msgid ""
-"Naming confirms the faces shown; the other faces of the group get the "
-"name when they look close enough to them. To check every one first, click"
-" “and N more faces”."
+"Naming confirms the faces shown: they become verified ✓. The other faces "
+"that look like them are attributed to the person, in a section of their "
+"own, until you confirm them, a page at a time."
 msgstr ""
 
 msgid "Nature and landscapes"
@@ -6204,6 +6209,9 @@ msgid ""
 "analyses nothing again."
 msgstr ""
 
+msgid "The faces you confirmed as this person's."
+msgstr ""
+
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
@@ -7510,8 +7518,10 @@ msgid "Years"
 msgstr ""
 
 #, python-brace-format
-msgid "Yes, it is {name}"
-msgstr ""
+msgid "Yes, this face is {name}"
+msgid_plural "Yes, these {n} faces are {name}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "You are here"
 msgstr ""
@@ -7851,6 +7861,9 @@ msgstr ""
 msgid ""
 "attach {zip} to a mail, or add the photos of {folder} to an album on your"
 " social network."
+msgstr ""
+
+msgid "attributed"
 msgstr ""
 
 msgid "audit"
@@ -9337,6 +9350,9 @@ msgstr ""
 msgid "validate every obvious series at once"
 msgstr ""
 
+msgid "verified"
+msgstr ""
+
 msgid "video"
 msgstr ""
 
@@ -10646,10 +10662,6 @@ msgid "{name}: {count} photos"
 msgstr ""
 
 #, python-brace-format
-msgid "{name}?"
-msgstr ""
-
-#, python-brace-format
 msgid "{n} TV"
 msgid_plural "{n} TVs"
 msgstr[0] ""
@@ -11205,8 +11217,8 @@ msgid "… and {count} more."
 msgstr ""
 
 msgid ""
-"↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at"
-" once, i ignores a group; × takes a face out of its group."
+"↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
+"several groups at once, i ignores a group; × takes a face out."
 msgstr ""
 
 #, python-brace-format

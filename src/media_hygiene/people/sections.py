@@ -1,10 +1,11 @@
-"""The sections of the page: the people by name first, then suggestions, then the rest.
+"""The sections of the page: each person verified then attributed, then the rest.
 
-A group holding faces the user confirmed is that person's; the groups of one person
-are shown together. A group whose faces mostly come close to someone, none confirmed,
-is a suggestion ("Chloé?"). A group mostly ignored is not shown again. A face the
-user took out of someone (`rejected`) leaves their section: it stays in its group, but
-is never shown again under that name.
+A person shows in two sections at most: the faces the user confirmed (*verified*), and
+the faces the tool gives them (*attributed*): the rest of the groups holding faces they
+confirmed, and the groups whose faces mostly come close to them, none confirmed. The
+attributed faces are checked a page at a time; once confirmed they move to the verified
+section, and an empty section is not shown. A group mostly ignored is not shown again. A
+face the user took out of someone (`rejected`) is never shown under that name again.
 """
 
 from __future__ import annotations
@@ -21,15 +22,16 @@ if TYPE_CHECKING:
     from media_hygiene.people.naming import FaceName
 
 _HALF: Final = 2
+_SETTLED: Final = frozenset({How.CONFIRMED, How.IGNORED})  # never attributed again
 
 
 @dataclass(frozen=True, slots=True)
 class Section:
-    """Faces shown together: one person's groups, or one group."""
+    """Faces shown together: one person's verified or attributed faces, or one group."""
 
     faces: tuple[int, ...]  # numbers of the board
-    name: str = ""  # the person, confirmed
-    suggested: str = ""  # the person they look like, none confirmed
+    name: str = ""  # the person; empty for a group nobody is given
+    verified: bool = False  # True: faces the user confirmed
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,11 +55,15 @@ def sections_of(
         ruled_out: The names each face is not, by number (the user took it out).
 
     Returns:
-        The named people (most faces first), the suggestions, then the others.
+        The people (those with verified faces first, most faces first), each verified
+        then attributed, then the groups nobody is given.
     """
     ruled_out = ruled_out or {}
-    people: dict[str, list[int]] = {}
-    suggested: list[Section] = []
+    verified: dict[str, list[int]] = {}
+    for key in (key for group in groups for key in group):
+        if names[key].how is How.CONFIRMED:
+            verified.setdefault(names[key].name, []).append(key)
+    attributed: dict[str, list[int]] = {}
     unnamed: list[Section] = []
     ignored = 0
     for group in groups:
@@ -65,42 +71,51 @@ def sections_of(
         if hows[How.IGNORED] * _HALF > len(group):
             ignored += 1
             continue
-        confirmed = Counter(
-            names[key].name for key in group if names[key].how is How.CONFIRMED
-        )
-        if confirmed:
-            name = confirmed.most_common(1)[0][0]
-            people.setdefault(name, []).extend(_without(group, name, ruled_out))
-            continue
-        assigned = Counter(
-            names[key].name for key in group if names[key].how is How.ASSIGNED
-        )
-        best = assigned.most_common(1)
-        if best and best[0][1] * _HALF >= len(group):
-            name = best[0][0]
-            kept = _without(group, name, ruled_out)
-            if kept:
-                suggested.append(Section(kept, suggested=name))
-        else:
+        owner = _owner(group, names)
+        if not owner:
             unnamed.append(Section(group))
-    named = sorted(
-        (Section(tuple(faces), name=name) for name, faces in people.items() if faces),
-        key=lambda section: -len(section.faces),
+            continue
+        attributed.setdefault(owner, []).extend(
+            key
+            for key in group
+            if names[key].how not in _SETTLED and owner not in ruled_out.get(key, ())
+        )
+    people = sorted(
+        {*verified, *attributed},
+        key=lambda name: (
+            name not in verified,
+            -len(verified.get(name, ())) - len(attributed.get(name, ())),
+        ),
     )
-    return Sections((*named, *suggested, *unnamed), ignored)
+    shown = [
+        section
+        for name in people
+        for section in (
+            Section(tuple(verified.get(name, ())), name, verified=True),
+            Section(tuple(attributed.get(name, ())), name),
+        )
+        if section.faces
+    ]
+    return Sections((*shown, *unnamed), ignored)
 
 
-def _without(
-    group: tuple[int, ...], name: str, ruled_out: Mapping[int, frozenset[str]]
-) -> tuple[int, ...]:
-    """A group without the faces the user took out of someone.
+def _owner(group: tuple[int, ...], names: Sequence[FaceName]) -> str:
+    """The person a group is given to: most of its confirmed faces, else of its faces.
 
     Args:
         group: The face numbers.
-        name: The person the group is shown as.
-        ruled_out: The names each face is not, by number.
+        names: The name of each face, by number.
 
     Returns:
-        The faces left, in order.
+        The name; empty when nobody holds the group.
     """
-    return tuple(key for key in group if name not in ruled_out.get(key, ()))
+    confirmed = Counter(
+        names[key].name for key in group if names[key].how is How.CONFIRMED
+    )
+    if confirmed:
+        return confirmed.most_common(1)[0][0]
+    assigned = Counter(
+        names[key].name for key in group if names[key].how is How.ASSIGNED
+    )
+    best = assigned.most_common(1)
+    return best[0][0] if best and best[0][1] * _HALF >= len(group) else ""

@@ -80,7 +80,9 @@ avec -p 127.0.0.1:8088:8088.
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans
 `config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
-visage erroné, `i` ignore un groupe d'inconnus, `y` confirme une suggestion (« Chloé ? »). Les
+visage erroné, `i` ignore un groupe d'inconnus, Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
+vous avez confirmés, et **Chloé attribué**, les visages qui lui sont donnés parce qu'ils leur
+ressemblent ; `y` confirme les visages attribués affichés, qui passent dans vérifié. Les
 exécutions suivantes gardent tous les noms, et [`search`](search.md) retrouve les personnes par
 leur nom : `search Chloé montagne`, `search person:chloe`. Les noms suivent les photos que
 [`sort`](sort.md) déplace (et qu'`undo` remet en place) ; `config.toml` est mis à jour la

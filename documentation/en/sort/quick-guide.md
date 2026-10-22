@@ -219,8 +219,8 @@ category = "People/Chloé"
 ??? info "Details"
 
     The tool brings its own face models (39 MB, downloaded once). On the page, `x` chooses
-    several groups of the same person, × removes a face, `i` ignores strangers, `y` confirms a
-    "Chloé?" suggestion. The faces stay in the cache, never sent; `mh people --forget` deletes
+    several groups of the same person, × removes a face, `i` ignores strangers, `y` confirms the
+    faces attributed to someone (shown apart from the verified ones). The faces stay in the cache, never sent; `mh people --forget` deletes
     them all. Later, `mh audit --people` looks for the faces of the new photos with the audit.
     More: [sort by person](10-sort-by-person.md), [people](../reference-people.md).
 

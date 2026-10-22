@@ -70,36 +70,50 @@ def test_without_references_only_ids_count() -> None:
     )
 
 
-def test_sections_named_first_then_suggested_then_others() -> None:
-    """One person's groups together; a mostly ignored group is counted, not shown."""
+def test_sections_verified_then_attributed_then_others() -> None:
+    """Each person: verified, then attributed (groups, suggestions); ignored hidden."""
     chloe = FaceName("Chloé", How.CONFIRMED)
     near = FaceName("Chloé", How.ASSIGNED)
     gone = FaceName("", How.IGNORED)
-    names = (NOBODY, NOBODY, NOBODY, near, near, chloe, chloe, gone, gone, chloe)
+    names = (NOBODY, NOBODY, NOBODY, near, near, chloe, NOBODY, gone, gone, chloe)
     groups = ((0, 1, 2), (3, 4), (5, 6), (7, 8), (9,))
     sections = sections_of(groups, names)
     assert sections.ignored == 1
-    assert [(s.name, s.suggested, s.faces) for s in sections.shown] == [
-        ("Chloé", "", (5, 6, 9)),
-        ("", "Chloé", (3, 4)),
-        ("", "", (0, 1, 2)),
+    assert [(s.name, s.verified, s.faces) for s in sections.shown] == [
+        ("Chloé", True, (5, 9)),
+        ("Chloé", False, (3, 4, 6)),
+        ("", False, (0, 1, 2)),
+    ]
+
+
+def test_a_confirmed_face_counts_for_its_person_wherever_it_is() -> None:
+    """Manon confirmed inside Chloé's group: Manon's, not attributed to Chloé."""
+    chloe = FaceName("Chloé", How.CONFIRMED)
+    manon = FaceName("Manon", How.CONFIRMED)
+    gone = FaceName("", How.IGNORED)
+    names = (chloe, chloe, manon, gone, NOBODY)
+    sections = sections_of(((0, 1, 2, 3, 4),), names)
+    assert [(s.name, s.verified, s.faces) for s in sections.shown] == [
+        ("Chloé", True, (0, 1)),
+        ("Chloé", False, (4,)),
+        ("Manon", True, (2,)),
     ]
 
 
 def test_sections_leave_out_the_faces_taken_out_of_their_person() -> None:
-    """A face rejected for Chloé leaves her section and her suggestion, not others."""
+    """A face rejected for Chloé leaves her attributed faces; an empty one is hidden."""
     chloe = FaceName("Chloé", How.CONFIRMED)
     near = FaceName("Chloé", How.ASSIGNED)
     names = (chloe, chloe, NOBODY, near, near, NOBODY, NOBODY)
     groups = ((0, 1, 2), (3, 4), (5, 6))
     ruled_out = {
         2: frozenset({"Chloé"}),
+        3: frozenset({"Chloé"}),
         4: frozenset({"Chloé"}),
         6: frozenset({"Ana"}),
     }
     sections = sections_of(groups, names, ruled_out)
-    assert [(s.name, s.suggested, s.faces) for s in sections.shown] == [
-        ("Chloé", "", (0, 1)),
-        ("", "Chloé", (3,)),
-        ("", "", (5, 6)),
+    assert [(s.name, s.verified, s.faces) for s in sections.shown] == [
+        ("Chloé", True, (0, 1)),
+        ("", False, (5, 6)),
     ]

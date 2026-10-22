@@ -227,7 +227,8 @@ category = "Personnes/Chloé"
 
     L'outil apporte ses propres modèles de visages (39 Mo, téléchargés une fois). Sur la page,
     `x` choisit plusieurs groupes de la même personne, × retire un visage, `i` ignore des
-    inconnus, `y` confirme une suggestion « Chloé ? ». Les visages restent dans le cache, jamais
+    inconnus, `y` confirme les visages
+    attribués à quelqu'un (affichés à part des vérifiés). Les visages restent dans le cache, jamais
     envoyés ; `mh people --forget` les supprime tous. Plus tard, `mh audit --people` cherche les
     visages des nouvelles photos avec l'audit. Plus : [trier par personne](10-sort-by-person.md),
     [les personnes](../reference-people.md).
