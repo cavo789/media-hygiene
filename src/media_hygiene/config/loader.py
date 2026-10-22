@@ -18,6 +18,7 @@ from media_hygiene.config.layers import (
     read_file_layer,
 )
 from media_hygiene.config.origin import Origin, origin_in
+from media_hygiene.config.people_files import linked_layer
 from media_hygiene.config.settings import Settings
 from media_hygiene.constants import APP_NAME
 
@@ -75,7 +76,9 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
             version; the message names it, in the user's language.
     """
     layers = {
-        Origin.FILE: read_file_layer(locations.config_file),
+        Origin.FILE: linked_layer(
+            read_file_layer(locations.config_file), locations.config_dir
+        ),
         Origin.ENV: read_env_layer(os.environ),
         Origin.CLI: cli or {},
     }

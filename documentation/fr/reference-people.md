@@ -53,17 +53,30 @@ déjà donnés, et n'en enregistre aucun.
 
 Le clavier suffit : ↑ ↓ (ou `j` `k`) passent d'un groupe à l'autre, Entrée tape un nom. Chaque
 changement est écrit dans `config.toml`, puis **relu dans le fichier** et affiché en haut de la
-page (« Enregistré dans config.toml, relu : Chloé, 58 visages confirmés. »). Les noms ressemblent
-à ceci :
+page (« Enregistré dans config.toml, relu : Chloé, 58 visages confirmés. »). `config.toml` liste
+les personnes ; les visages de chacune sont dans un fichier à elle, dans le dossier `people` à
+côté, pour que `config.toml` reste court quel que soit le nombre de visages confirmés :
 
 ```toml
+# config.toml
 [[people.person]]
 name = "Chloé"
+file = "people/Chloé.toml"
+```
+
+```toml
+# people/Chloé.toml
 faces = [
     "/data/c/Photos/2019/IMG_0412.jpg#0",
     "/data/c/Photos/2023/IMG_7781.jpg#1",
 ]
+rejected = ["/data/c/Photos/2008/IMG_0042.jpg#1"]  # retirés avec ×
 ```
+
+Les visages des inconnus vont dans `people/ignored.toml`. Gardez le dossier `people` avec
+`config.toml` quand vous le copiez ou le sauvegardez : un fichier manquant arrête l'exécution
+suivante, avec la ligne à corriger. Un `config.toml` écrit avant cette version, les visages en
+ligne, se charge toujours ; la page les déplace dans les fichiers au premier enregistrement.
 
 Chaque visage est écrit par sa photo et son numéro dans la photo, jamais par son groupe : un
 nouveau regroupement (de nouvelles photos, un autre `similarity`) garde tous les noms. Les autres

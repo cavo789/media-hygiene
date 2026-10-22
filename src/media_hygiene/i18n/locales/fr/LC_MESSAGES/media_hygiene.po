@@ -4257,8 +4257,9 @@ msgid ""
 "own, until you confirm them, a page at a time."
 msgstr ""
 "Nommer confirme les visages affichés : ils deviennent vérifiés ✓. Les "
-"autres visages qui leur ressemblent sont attribués à la personne, dans une "
-"section à part, jusqu'à ce que vous les confirmiez, une page à la fois."
+"autres visages qui leur ressemblent sont attribués à la personne, dans "
+"une section à part, jusqu'à ce que vous les confirmiez, une page à la "
+"fois."
 
 msgid "Nature and landscapes"
 msgstr "Nature et paysages"
@@ -7521,6 +7522,19 @@ msgstr ""
 "choisissent les visages regroupés : les changer ne fait rien analyser à "
 "nouveau."
 
+msgid "The faces ignored on the people page; config.toml links this file."
+msgstr ""
+"Les visages ignorés dans la page des personnes ; config.toml renvoie à ce"
+" fichier."
+
+#, python-brace-format
+msgid ""
+"The faces of {name}, saved by the people page; config.toml links this "
+"file."
+msgstr ""
+"Les visages de {name}, enregistrés par la page des personnes ; "
+"config.toml renvoie à ce fichier."
+
 msgid "The faces you confirmed as this person's."
 msgstr "Les visages que vous avez confirmés comme ceux de cette personne."
 
@@ -7743,6 +7757,10 @@ msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
 
+#, python-brace-format
+msgid "The names of config.toml cannot be read: {error}."
+msgstr "Les noms de config.toml ne peuvent pas être lus : {error}."
+
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
 "who gets a copy of them can read who is on them."
@@ -7760,14 +7778,16 @@ msgstr ""
 
 msgid ""
 "The names you give on the 'people' page are saved here as "
-"[[people.person]] tables (a name, the faces confirmed as theirs, the "
-"faces taken out of them), and the faces of strangers as 'ignored'. "
+"[[people.person]] tables: a name, and the file of its faces in the folder"
+" 'people' next to this file (the faces confirmed as theirs, the faces "
+"taken out of them); the faces of strangers go to 'people/ignored.toml'. "
 "'search person:name' finds their photos."
 msgstr ""
-"Les noms donnés sur la page de 'people' sont enregistrés ici en tables "
-"[[people.person]] (un nom, les visages confirmés comme les siens, ceux "
-"qui lui ont été retirés), et les visages d'inconnus dans 'ignored'. "
-"'search person:nom' trouve leurs photos."
+"Les noms donnés dans la page 'people' sont enregistrés ici en tables "
+"[[people.person]] : un nom, et le fichier de ses visages dans le dossier "
+"'people' à côté de ce fichier (les visages confirmés comme les siens, les"
+" visages qui lui ont été retirés) ; les visages des inconnus vont dans "
+"'people/ignored.toml'. 'search person:nom' retrouve leurs photos."
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
@@ -12560,6 +12580,22 @@ msgid "{files}, {undecided} to check or to sort"
 msgstr "{files}, {undecided} à vérifier ou à trier"
 
 #, python-brace-format
+msgid ""
+"{file} is missing: restore it, or remove the line file = '{file}' of "
+"config.toml (its faces are then forgotten)"
+msgstr ""
+"{file} est introuvable : remettez-le en place, ou retirez la ligne file ="
+" '{file}' de config.toml (ses visages sont alors oubliés)"
+
+#, python-brace-format
+msgid "{file} is not inside the folder of config.toml"
+msgstr "{file} n'est pas dans le dossier de config.toml"
+
+#, python-brace-format
+msgid "{file} is not valid TOML: {error}"
+msgstr "{file} n'est pas du TOML valide : {error}"
+
+#, python-brace-format
 msgid "{file} read from the disk at {time}."
 msgstr "{file} lu sur le disque à {time}."
 
@@ -13433,8 +13469,8 @@ msgid ""
 "↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
 "several groups at once, i ignores a group; × takes a face out."
 msgstr ""
-"↑ ↓ se déplacer, Entrée nomme, y confirme les visages attribués affichés, "
-"x nomme plusieurs groupes à la fois, i ignore un groupe ; × retire un "
+"↑ ↓ se déplacer, Entrée nomme, y confirme les visages attribués affichés,"
+" x nomme plusieurs groupes à la fois, i ignore un groupe ; × retire un "
 "visage."
 
 #, python-brace-format

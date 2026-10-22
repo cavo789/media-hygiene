@@ -3,7 +3,9 @@
 The faces are found once and kept in the cache with their size and sharpness: these
 settings only choose which ones are grouped, so changing them costs no new analysis.
 The names live here too (`[[people.person]]`), written by the people page: each one
-lists the faces the user confirmed, by photo and face number, never a face vector.
+lists the faces the user confirmed, by photo and face number, never a face vector. The
+lists are kept in a file of each person's, under `/config/people/` (`file`), read back
+in place when the settings load (`people_files`, TODO 0300).
 """
 
 from __future__ import annotations
@@ -32,6 +34,8 @@ class Person(BaseModel):
     faces: tuple[str, ...] = ()
     # Faces removed from this person on the page: never given this name again.
     rejected: tuple[str, ...] = ()
+    # The file holding both lists, relative to the folder of config.toml.
+    file: str = ""
 
 
 class PeopleSettings(BaseModel):
@@ -49,6 +53,8 @@ class PeopleSettings(BaseModel):
     with_audit: bool = False
     # Faces of strangers, posters, statues: never named, their group never shown.
     ignored: tuple[str, ...] = ()
+    # The file holding the ignored faces, relative to the folder of config.toml.
+    ignored_file: str = ""
     person: tuple[Person, ...] = ()
 
     @model_validator(mode="after")

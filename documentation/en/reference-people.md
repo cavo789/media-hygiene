@@ -51,16 +51,30 @@ mounted, the page shows the groups and the names already given, and saves none.
 
 The keyboard is enough: ↑ ↓ (or `j` `k`) move between groups, Enter types a name. Each change is
 written into `config.toml`, then **read back from the file** and shown at the top of the page
-("Saved in config.toml, read back: Chloé, 58 confirmed faces."). The names look like this:
+("Saved in config.toml, read back: Chloé, 58 confirmed faces."). `config.toml` lists the people;
+the faces of each one live in a file of their own, in the `people` folder next to it, so that
+`config.toml` stays short however many faces you confirm:
 
 ```toml
+# config.toml
 [[people.person]]
 name = "Chloé"
+file = "people/Chloé.toml"
+```
+
+```toml
+# people/Chloé.toml
 faces = [
     "/data/c/Photos/2019/IMG_0412.jpg#0",
     "/data/c/Photos/2023/IMG_7781.jpg#1",
 ]
+rejected = ["/data/c/Photos/2008/IMG_0042.jpg#1"]  # taken out with ×
 ```
+
+The faces of strangers go to `people/ignored.toml`. Keep the `people` folder with
+`config.toml` when you copy or back it up: a missing file stops the next run, with the line to
+fix. A `config.toml` written before this version, the faces inline, still loads; the page moves
+them to the files on its first save.
 
 Each face is written by its photo and its number in it, never by its group: a new grouping (new
 photos, another `similarity`) keeps every name. The other faces get the name of the **nearest

@@ -21,8 +21,10 @@ SHARES_POINT: Final = Path("/shares")
 class Locations(BaseSettings):
     """Mount points of the container (`MEDIA_HYGIENE_<NAME>_DIR` overrides each one).
 
-    `/config` holds the configuration file only; every other kind of data has its own
-    mount point so the user can store it wherever they want on the host.
+    `/config` holds the configuration file only, and the face lists of the people
+    named (`people/<name>.toml`, linked from it: configuration the user wrote too);
+    every other kind of data has its own mount point so the user can store it
+    wherever they want on the host.
     """
 
     model_config = SettingsConfigDict(

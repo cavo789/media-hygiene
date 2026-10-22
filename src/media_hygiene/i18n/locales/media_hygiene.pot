@@ -6209,6 +6209,15 @@ msgid ""
 "analyses nothing again."
 msgstr ""
 
+msgid "The faces ignored on the people page; config.toml links this file."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The faces of {name}, saved by the people page; config.toml links this "
+"file."
+msgstr ""
+
 msgid "The faces you confirmed as this person's."
 msgstr ""
 
@@ -6398,6 +6407,10 @@ msgstr ""
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr ""
 
+#, python-brace-format
+msgid "The names of config.toml cannot be read: {error}."
+msgstr ""
+
 msgid ""
 "The names of the people go into the sidecars, next to the photos: anyone "
 "who gets a copy of them can read who is on them."
@@ -6410,8 +6423,9 @@ msgstr ""
 
 msgid ""
 "The names you give on the 'people' page are saved here as "
-"[[people.person]] tables (a name, the faces confirmed as theirs, the "
-"faces taken out of them), and the faces of strangers as 'ignored'. "
+"[[people.person]] tables: a name, and the file of its faces in the folder"
+" 'people' next to this file (the faces confirmed as theirs, the faces "
+"taken out of them); the faces of strangers go to 'people/ignored.toml'. "
 "'search person:name' finds their photos."
 msgstr ""
 
@@ -10449,6 +10463,20 @@ msgstr ""
 
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{file} is missing: restore it, or remove the line file = '{file}' of "
+"config.toml (its faces are then forgotten)"
+msgstr ""
+
+#, python-brace-format
+msgid "{file} is not inside the folder of config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid "{file} is not valid TOML: {error}"
 msgstr ""
 
 #, python-brace-format
