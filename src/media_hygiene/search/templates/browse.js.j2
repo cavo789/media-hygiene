@@ -14,6 +14,7 @@ let cards = [];
 let current = -1;      // the card with the focus
 let anchor = -1;       // where a Shift+click range starts
 const picked = new Set(); // the keys of the files picked
+let bandDrawn = false; // a rectangle just ended: the click that follows picks nothing
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
@@ -101,6 +102,7 @@ function card(file, index) {
   } else if (file.thumb) {
     picture = element("img");
     picture.loading = "lazy";
+    picture.draggable = false; // a drag draws a rectangle (`browse_band.js.j2`)
     picture.alt = file.name;
     picture.src = file.thumb;
     picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
@@ -108,9 +110,23 @@ function card(file, index) {
   const meta = element("div", "meta");
   meta.append(element("div", "name", file.name),
               element("div", "muted", [file.date, file.size].filter(Boolean).join(" · ")));
-  node.append(picture, meta);
+  // The box adds or takes out this file alone, without Ctrl (and on a touch screen).
+  const tick = element("input", "tick");
+  tick.type = "checkbox";
+  tick.tabIndex = -1;
+  tick.setAttribute("aria-label", TEXTS.tick);
+  tick.addEventListener("click", (event) => {
+    event.stopPropagation();
+    focusOn(index);
+    pick(index, { ctrlKey: true });
+  });
+  node.append(picture, meta, tick);
   if (file.chosen) node.append(element("span", "badge", TEXTS.aside));
-  node.addEventListener("click", (event) => { focusOn(index); pick(index, event); });
+  node.addEventListener("click", (event) => {
+    if (bandDrawn) return; // the end of a rectangle, not a pick
+    focusOn(index);
+    pick(index, event);
+  });
   node.addEventListener("dblclick", () => { focusOn(index); open(); });
   node.addEventListener("focus", () => focusOn(index));
   return node;
@@ -161,10 +177,23 @@ function pick(index, event) {
   showPicked();
 }
 
+// The files not picked instead: quicker when a folder holds more to set aside than to keep.
+function invert() {
+  for (const file of files) {
+    if (picked.has(file.key)) picked.delete(file.key); else picked.add(file.key);
+  }
+  showPicked();
+}
+
 function showPicked() {
-  cards.forEach((node, index) => node.classList.toggle("picked", picked.has(files[index].key)));
+  cards.forEach((node, index) => {
+    const on = picked.has(files[index].key);
+    node.classList.toggle("picked", on);
+    node.querySelector(".tick").checked = on;
+  });
   $("picked").textContent = picked.size ? counted(TEXTS.picked, picked.size) : "";
   for (const id of ["setAside", "takeBack", "unpick"]) $(id).disabled = !picked.size;
+  $("invert").disabled = !files.length;
   if (window.mhAlbumPicked) window.mhAlbumPicked(picked.size); // album_bar.html.j2
 }
 
@@ -231,6 +260,11 @@ document.addEventListener("keydown", (event) => {
     showPicked();
     return;
   }
+  if (event.key.toLowerCase() === "i" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    invert();
+    return;
+  }
   const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() };
   if (event.key in moves && cards.length) {
     event.preventDefault();
@@ -253,6 +287,7 @@ $("order").addEventListener("change", () => { if (folder) openFolder(folder); })
 $("setAside").addEventListener("click", () => choose("add"));
 $("takeBack").addEventListener("click", () => choose("remove"));
 $("unpick").addEventListener("click", () => { picked.clear(); showPicked(); });
+$("invert").addEventListener("click", invert);
 
 async function loadChosen() {
   const answer = await ask(CHOSEN_PATH);

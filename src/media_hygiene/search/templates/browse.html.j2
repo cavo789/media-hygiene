@@ -2,10 +2,9 @@
 {# The folder view of `media-hygiene browse` (the search's own server): the tree of the
    library's folders on the left, the photos and videos of the folder chosen on the
    right. The photos are never changed: the files picked can be set aside, saved at
-   once in the decisions file for `clean --decisions`. Keyboard: the arrows move,
-   a click picks (Ctrl adds, Shift a range), Space picks, Ctrl+A picks the folder,
-   Delete sets aside, Enter opens the picture, ←/→ the previous and next, Escape
-   closes it. The script is `browse.js.j2`. Opened from the home page, *Apply now*
+   once in the decisions file for `clean --decisions`. The keys are listed under the
+   tree, always in sight, as on the review pages (`review_side.css.j2`). The scripts
+   are `browse.js.j2` and `browse_band.js.j2`. Opened from the home page, *Apply now*
    ends the page on the home step that applies the decisions (`apply_now.html.j2`). #}
 {% set texts = {
   "files": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
@@ -17,6 +16,7 @@
   "noPreview": _("No preview"),
   "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
   "aside": _("marked to set aside"),
+  "tick": _("Pick this file"),
   "saving": _("Saving…"),
   "notSaved": _("Nothing was saved: {error}"),
 } %}
@@ -48,9 +48,10 @@
   .hint, #status { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
   #chosen { font-size: .85rem; margin: 6px 0 0; }
   #chosen.error, #status.error { color: var(--bad); font-weight: 600; }
-  .layout { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; }
-  @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
-  nav { padding: 12px 8px; border-right: 1px solid var(--line); overflow-wrap: anywhere; }
+{% include "review_side.css.j2" %}
+  /* The header is taller than the review pages': the column starts below it. */
+  #side { top: calc(var(--head, 52px) + 8px); height: calc(100vh - var(--head, 52px) - 24px); }
+  nav { overflow-wrap: anywhere; }
   nav ul { list-style: none; margin: 0; padding-left: 14px; }
   nav > ul { padding-left: 0; }
   .node { display: flex; gap: 4px; align-items: baseline; }
@@ -62,7 +63,14 @@
   main { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
          gap: 10px; padding: 16px; align-content: start; }
   .file { position: relative; background: var(--card); border: 2px solid var(--line);
-          border-radius: 10px; overflow: hidden; cursor: pointer; outline: none; }
+          border-radius: 10px; overflow: hidden; cursor: pointer; outline: none;
+          user-select: none; }
+  .tick { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; margin: 0;
+          accent-color: var(--accent); cursor: pointer; }
+  .band { position: absolute; z-index: 1; pointer-events: none; border: 1px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
   .file:focus, .file.current { border-color: var(--accent); }
   .file.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
   .file img, .file video, .file .empty { display: block; width: 100%; aspect-ratio: 4 / 3;
@@ -95,16 +103,40 @@
     <span id="picked"></span>
     <button id="setAside" type="button" disabled>{{ _("Set aside the picked files") }}</button>
     <button id="takeBack" class="plain" type="button" disabled>{{ _("Take out of the set aside") }}</button>
+    <button id="invert" class="plain" type="button" disabled title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
     <button id="unpick" class="plain" type="button" disabled>{{ _("Pick none") }}</button>
   </div>
   <p id="status" role="status"></p>
   <p id="chosen" role="status"></p>
   {% include "apply_now.html.j2" %}
   {% include "album_bar.html.j2" %}
-  <p class="hint">{{ _("A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A the whole folder; Delete (or the button) sets them aside. Enter or a double click opens a picture, ←/→ the next ones. Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
+  <p class="hint">{{ _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
 </header>
 <div class="layout">
-  <nav id="tree" aria-label="{{ _('Your folders') }}"></nav>
+  <aside id="side">
+    <nav id="toc" aria-label="{{ _('Your folders') }}"><div id="tree"></div></nav>
+    <section id="keys" aria-label="{{ _('Keyboard') }}">
+      <h2>⌨ {{ _("Keyboard") }}</h2>
+      <dl>
+        <dt><kbd>Shift</kbd>+{{ _("click") }}</dt><dd>{{ _("every file from the last one clicked") }}</dd>
+        <dt>☑ · <kbd>Ctrl</kbd>+{{ _("click") }}</dt><dd>{{ _("add or take out one file") }}</dd>
+        <dt>{{ _("drag") }}</dt><dd>{{ _("a rectangle: the files it touches (Ctrl adds them)") }}</dd>
+        <dt><kbd>Ctrl</kbd>+<kbd>A</kbd></dt><dd>{{ _("the whole folder") }}</dd>
+        <dt><kbd>I</kbd></dt><dd>{{ _("invert: the others instead") }}</dd>
+        <dt><kbd>Delete</kbd></dt><dd>{{ _("set the picked files aside") }}</dd>
+      </dl>
+      <details id="moreKeys">
+      <summary>{{ _("More keys") }}</summary>
+      <dl>
+        <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
+        <dt><kbd>␣</kbd></dt><dd>{{ _("pick or unpick the framed file") }}</dd>
+        <dt><kbd>Enter</kbd></dt><dd>{{ _("open it large (a double click too)") }}</dd>
+        <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one") }}</dd>
+        <dt><kbd>Esc</kbd></dt><dd>{{ _("close it") }}</dd>
+      </dl>
+      </details>
+    </section>
+  </aside>
   <main id="grid"></main>
 </div>
 <div id="viewer" role="dialog" aria-modal="true">
@@ -114,6 +146,7 @@
 </div>
 <script>
 {% include "browse.js.j2" %}
+{% include "browse_band.js.j2" %}
 </script>
 {% include "home_link.html.j2" %}
 </body>

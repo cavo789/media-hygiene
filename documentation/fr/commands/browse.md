@@ -53,8 +53,12 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   (**Trier par**).
 - **Regarder** : Entrée ou un double clic montre une image en grand, une vidéo se lit ; ← et →
   passent à la précédente et à la suivante, comme dans l'application Photos ; Échap ferme.
-- **Choisir** : un clic choisit un fichier, Ctrl+clic en ajoute ou en retire un, Maj+clic une
-  plage, Espace le fichier en cours, Ctrl+A tout le dossier.
+- **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
+  ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
+  rectangle tiré à la souris sur la grille choisit ce qu'il touche, sur plusieurs lignes (avec
+  Ctrl, il s'ajoute au choix) ; Ctrl+A tout le dossier. **Inverser la sélection** (ou I) choisit
+  les autres : quand un dossier contient surtout des ratés, choisissez les bonnes, inversez,
+  puis Suppr. Les touches sont rappelées sous l'arborescence, toujours visibles.
 - **Mettre de côté** : Suppr, ou **Mettre de côté les fichiers choisis**. Le choix est enregistré
   aussitôt dans `decisions.json` de vos rapports, relu sur le disque et affiché avec son nombre et
   sa taille : *37 fichiers mis de côté (412 Mo), enregistrés dans … : 'clean --decisions' les

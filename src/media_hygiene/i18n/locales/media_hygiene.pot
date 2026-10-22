@@ -419,15 +419,6 @@ msgstr ""
 msgid "A click on a photo keeps it or sets it aside too."
 msgstr ""
 
-msgid ""
-"A click picks a file, Ctrl+click adds one, Shift+click a range, Ctrl+A "
-"the whole folder; Delete (or the button) sets them aside. Enter or a "
-"double click opens a picture, ←/→ the next ones. Nothing is deleted from "
-"this page: the files set aside go to the quarantine at the next 'clean "
-"--decisions', journaled; 'undo' brings them back, 'purge' frees the "
-"space."
-msgstr ""
-
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr ""
@@ -2951,6 +2942,9 @@ msgid_plural "Inventory of {count} files written: {path}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Invert the picking"
+msgstr ""
+
 msgid ""
 "Is Ollama running? On Docker Engine (Linux, WSL), add --add-"
 "host=host.docker.internal:host-gateway and let Ollama listen beyond "
@@ -4025,8 +4019,14 @@ msgstr ""
 msgid "Not the same content as {path}: kept on the phone."
 msgstr ""
 
-msgid "Not this person: take this face out"
+msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
+
+#, python-brace-format
+msgid "Not {name}: take out this face"
+msgid_plural "Not {name}: take out these {n} faces"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Notes"
 msgstr ""
@@ -4630,6 +4630,12 @@ msgstr ""
 msgid "Pick none"
 msgstr ""
 
+msgid "Pick the others: the ones picked are left (I)"
+msgstr ""
+
+msgid "Pick this file"
+msgstr ""
+
 msgid "Pictures received through a messaging app, if you want them apart:"
 msgstr ""
 
@@ -4774,6 +4780,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Put back the files of the last run"
+msgstr ""
+
+msgid "Put this face back"
 msgstr ""
 
 #, python-brace-format
@@ -7773,6 +7782,9 @@ msgstr ""
 msgid "a photo, a video or a sidecar is never junk: the folder is kept"
 msgstr ""
 
+msgid "a rectangle: the files it touches (Ctrl adds them)"
+msgstr ""
+
 #, python-brace-format
 msgid "a ring of an area needs at least {count} points"
 msgstr ""
@@ -7815,6 +7827,9 @@ msgid "accept the name and category, then the next event to decide"
 msgstr ""
 
 msgid "accept the proposal, next"
+msgstr ""
+
+msgid "add or take out one file"
 msgstr ""
 
 msgid "album folder explorer links christmas holidays"
@@ -7995,12 +8010,18 @@ msgstr ""
 msgid "clean moves the duplicate copies to /quarantine: mount it."
 msgstr ""
 
+msgid "click"
+msgstr ""
+
 #, python-brace-format
 msgid "clock '{camera}': {first} and {second} overlap"
 msgstr ""
 
 #, python-brace-format
 msgid "clock '{camera}': {reason}"
+msgstr ""
+
+msgid "close it"
 msgstr ""
 
 msgid "colours"
@@ -8094,6 +8115,9 @@ msgstr ""
 msgid "does not answer (powered off?)"
 msgstr ""
 
+msgid "drag"
+msgstr ""
+
 #, python-format
 msgid "duplicate copies in %(num)s group"
 msgid_plural "duplicate copies in %(num)s groups"
@@ -8129,6 +8153,9 @@ msgid "environment"
 msgstr ""
 
 msgid "events name parties holidays"
+msgstr ""
+
+msgid "every file from the last one clicked"
 msgstr ""
 
 msgid "every photo has GPS"
@@ -8241,6 +8268,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+msgstr ""
+
+msgid "invert: the others instead"
 msgstr ""
 
 msgid "is the latest version."
@@ -8537,6 +8567,9 @@ msgstr ""
 msgid "move the cursor"
 msgstr ""
 
+msgid "move the frame"
+msgstr ""
+
 #, python-brace-format
 msgid "move the {count} file you set aside to the quarantine (undoable)."
 msgid_plural "move the {count} files you set aside to the quarantine (undoable)."
@@ -8761,6 +8794,12 @@ msgstr ""
 msgid "only the sharpest, then next"
 msgstr ""
 
+msgid "open it large (a double click too)"
+msgstr ""
+
+msgid "opened: the previous or next one"
+msgstr ""
+
 msgid "optional"
 msgstr ""
 
@@ -8810,6 +8849,9 @@ msgid "photos have words"
 msgstr ""
 
 msgid "photos with a shooting date:"
+msgstr ""
+
+msgid "pick or unpick the framed file"
 msgstr ""
 
 msgid "place"
@@ -8979,6 +9021,9 @@ msgid "set aside again after it came back"
 msgstr ""
 
 msgid "set aside in 'search' or 'browse'"
+msgstr ""
+
+msgid "set the picked files aside"
 msgstr ""
 
 msgid "sharpest"
@@ -9226,6 +9271,9 @@ msgid "the value cannot be used"
 msgstr ""
 
 msgid "the video plays to its end"
+msgstr ""
+
+msgid "the whole folder"
 msgstr ""
 
 msgid "the whole folder pair as planned"
@@ -11246,7 +11294,8 @@ msgstr ""
 
 msgid ""
 "↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
-"several groups at once, i ignores a group; × takes a face out."
+"several groups at once, i ignores a group; × marks a face that is someone"
+" else's, the next button saves it."
 msgstr ""
 
 #, python-brace-format

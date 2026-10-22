@@ -1,0 +1,87 @@
+{# The rectangle of the folder view (`browse.html.j2`), as in Explorer: pressed on the
+   grid and dragged, it picks every file it touches, over several rows and columns; with
+   Ctrl, what was picked stays. It starts only past a few pixels, so a click stays a
+   click; near the top or bottom of the window the page scrolls. Mouse only: a finger
+   scrolls. Shares the state of `browse.js.j2`, included just before. #}
+const BAND_START = 6; // pixels before a press becomes a rectangle
+const BAND_EDGE = 40; // pixels from the edge of the window where the page scrolls
+const BAND_STEP = 14; // pixels scrolled per frame there
+const head = document.querySelector("header");
+let band = null; // the rectangle drawn: where it started (page), the picking kept, its node
+
+// The column on the left starts below the header, whose height changes with its lines.
+new ResizeObserver(() => document.body.style.setProperty("--head", head.offsetHeight + "px"))
+  .observe(head);
+
+function drawBand() {
+  const x = band.clientX + window.scrollX;
+  const y = band.clientY + window.scrollY;
+  const box = {
+    left: Math.min(x, band.x), top: Math.min(y, band.y),
+    right: Math.max(x, band.x), bottom: Math.max(y, band.y),
+  };
+  Object.assign(band.node.style, {
+    left: box.left + "px", top: box.top + "px",
+    width: box.right - box.left + "px", height: box.bottom - box.top + "px",
+  });
+  picked.clear();
+  for (const key of band.kept) picked.add(key);
+  cards.forEach((node, index) => {
+    const card = node.getBoundingClientRect();
+    const left = card.left + window.scrollX;
+    const top = card.top + window.scrollY;
+    if (left < box.right && left + card.width > box.left
+        && top < box.bottom && top + card.height > box.top) picked.add(files[index].key);
+  });
+  showPicked();
+}
+
+function scrollNearEdge() {
+  if (!band || !band.node) return;
+  const top = head.getBoundingClientRect().bottom;
+  let step = 0;
+  if (band.clientY > window.innerHeight - BAND_EDGE) step = BAND_STEP;
+  else if (band.clientY < top + BAND_EDGE) step = -BAND_STEP;
+  if (step) {
+    window.scrollBy(0, step);
+    drawBand();
+  }
+  requestAnimationFrame(scrollNearEdge);
+}
+
+function endBand() {
+  if (band && band.node) {
+    band.node.remove();
+    bandDrawn = true;
+  }
+  band = null;
+}
+
+$("grid").addEventListener("pointerdown", (event) => {
+  bandDrawn = false;
+  if (event.pointerType !== "mouse" || event.button !== 0 || event.target.closest(".tick")) return;
+  const adding = event.ctrlKey || event.metaKey;
+  band = {
+    x: event.pageX, y: event.pageY, clientX: event.clientX, clientY: event.clientY,
+    kept: adding ? new Set(picked) : new Set(), node: null,
+  };
+});
+document.addEventListener("pointermove", (event) => {
+  if (!band) return;
+  band.clientX = event.clientX;
+  band.clientY = event.clientY;
+  if (!band.node) {
+    if (Math.hypot(event.pageX - band.x, event.pageY - band.y) < BAND_START) return;
+    band.node = element("div", "band");
+    document.body.append(band.node);
+    requestAnimationFrame(scrollNearEdge);
+  }
+  drawBand();
+});
+document.addEventListener("pointerup", endBand);
+document.addEventListener("pointercancel", endBand);
+// The click that ends a rectangle drawn over the grid's gaps picks nothing either.
+document.addEventListener("click", (event) => {
+  if (bandDrawn && !event.target.closest(".file")) bandDrawn = false;
+}, true);
+$("grid").addEventListener("dragstart", (event) => event.preventDefault());

@@ -234,3 +234,20 @@ def test_apply_now_refused_with_nothing_set_aside(
     assert answers[0].status == 409
     assert json.loads(answers[0].body)["error"] == "Nothing set aside."
     assert result.exit_code == 0, result.output
+
+
+def test_the_page_lists_its_keys_and_picks_many_at_once(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The keys under the tree, as on the reviews; invert, tick boxes, the rectangle."""
+    answers, _ = _browse(cli, monkeypatch, [("GET /browse", None)])
+    page = answers[0].body.decode()
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    for key in ("<kbd>Shift</kbd>", "<kbd>I</kbd>", "<kbd>Delete</kbd>", "rectangle"):
+        assert key in keys
+    assert 'id="toc"' in page  # review_side.css.j2: the tree above, the keys below
+    assert 'id="invert"' in page
+    assert "function invert()" in page
+    assert 'element("input", "tick")' in page
+    assert 'addEventListener("pointerdown"' in page  # browse_band.js.j2
+    assert "Ctrl+click adds one" not in page  # the old line of text is gone

@@ -51,8 +51,12 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   folder: its photos and videos appear, sorted by name or by date (**Sort by**).
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
   previous and next ones, as in the Photos app; Escape closes.
-- **Pick**: a click picks one file, Ctrl+click adds or removes one, Shift+click a range, Space
-  the file at hand, Ctrl+A the whole folder.
+- **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
+  one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
+  over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);
+  Ctrl+A the whole folder. **Invert the picking** (or I) picks the others: when a folder holds
+  mostly failed shots, pick the good ones, invert, then Delete. The keys are listed under the
+  tree, always in sight.
 - **Set aside**: Delete, or **Set aside the picked files**. The choice is saved at once in
   `decisions.json` of your reports, read back from the disk and shown with its count and size:
   *37 files set aside (412 MB), saved in …: 'clean --decisions' moves them to the quarantine,
