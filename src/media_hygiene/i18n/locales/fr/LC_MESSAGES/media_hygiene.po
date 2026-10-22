@@ -4954,6 +4954,14 @@ msgstr ""
 "bon du téléphone : il n'a pas de corbeille, et undo ne peut pas l'y "
 "remettre."
 
+#, python-brace-format
+msgid ""
+"Nothing left to apply: your decisions were applied by the clean {run_id} "
+"(archived as {archive}). Nothing was changed."
+msgstr ""
+"Plus rien à appliquer : vos décisions ont été appliquées par le nettoyage "
+"{run_id} (archivées sous {archive}). Rien n'a été modifié."
+
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
@@ -10413,6 +10421,10 @@ msgstr "presque noire"
 
 msgid "nearly white"
 msgstr "presque blanche"
+
+#, python-brace-format
+msgid "new choices first: '{verb}' writes a new decisions file."
+msgstr "de nouveaux choix d'abord : '{verb}' écrit un nouveau fichier de décisions."
 
 msgid "next event to decide"
 msgstr "événement suivant à décider"

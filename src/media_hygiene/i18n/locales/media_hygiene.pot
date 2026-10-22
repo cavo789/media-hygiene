@@ -4077,6 +4077,12 @@ msgid ""
 "cannot put it back."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Nothing left to apply: your decisions were applied by the clean {run_id} "
+"(archived as {archive}). Nothing was changed."
+msgstr ""
+
 msgid "Nothing left to check nor to sort."
 msgstr ""
 
@@ -8672,6 +8678,10 @@ msgid "nearly black"
 msgstr ""
 
 msgid "nearly white"
+msgstr ""
+
+#, python-brace-format
+msgid "new choices first: '{verb}' writes a new decisions file."
 msgstr ""
 
 msgid "next event to decide"

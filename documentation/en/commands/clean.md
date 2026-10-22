@@ -120,7 +120,8 @@ cavo789/media-hygiene clean --yes
 - **Interrupted?** Ctrl+C, a power cut: each action is written to the journal before and after it
   happens, so `undo` still restores what was done.
 - **Once applied**, `decisions.json` is archived as `decisions.applied-<run>.json`: after an
-  `undo`, `--decisions` with that name applies the same choices again.
+  `undo`, `--decisions` with that name applies the same choices again. Asked once more, `clean
+  --decisions` only says it is applied already and changes nothing: a new `review` comes first.
 - If [Czkawka](crosscheck.md) gave its opinion, `clean` recalls its verdict before asking.
 - `confirm = false` in the `[clean]` section of `config.toml` is the same as `--yes`, every time.
 

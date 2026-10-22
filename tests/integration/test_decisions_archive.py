@@ -83,3 +83,29 @@ def test_a_rename_not_seen_on_disk_is_not_announced(
     assert result.exit_code == 0, result.output
     assert "could not be archived." in result.output
     assert "is applied" not in result.output
+
+
+def test_asked_again_once_applied_says_nothing_is_left(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """The newest archive is named, nothing is audited nor moved, exit code 0."""
+    reports = locations.reports_dir
+    for run_id in ("20261021-084159", "20261022-190335"):
+        (reports / f"decisions.applied-{run_id}.json").write_text("{}")
+    result = run(
+        cli, "clean", "--tier", "near", "--yes", "--decisions", "decisions.json"
+    )
+    assert result.exit_code == 0, result.output
+    said = "".join(result.output.split())
+    assert "Nothinglefttoapply" in said
+    assert "theclean20261022-190335" in said
+    assert "review--near" in said
+    assert "Cannot read" not in result.output
+    assert (locations.data_dir / BLURRED).is_file()
+
+
+def test_never_applied_is_still_an_error(cli: CliRunner) -> None:
+    """No file and no archive: the decisions file is really missing."""
+    result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
+    assert result.exit_code == 1
+    assert "Cannot read the decisions file" in result.output

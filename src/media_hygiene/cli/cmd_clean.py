@@ -77,6 +77,8 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
 
     runtime = runtime_of(ctx)
     output = runtime.output
+    if decisions is not None and _already_applied(runtime, decisions, tier):
+        return
     with user_errors(output), RichProgress(output.console) as progress:
         runtime = runtime.with_overrides(
             FolderOptions(prefer, protect, exclude, backup).layer()
@@ -127,6 +129,34 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     _after_clean_tips(runtime, run_id, outcome)
     if decisions is not None:
         archive_decisions(runtime, decisions, run_id)
+
+
+def _already_applied(runtime: Runtime, decisions: Path, tier: CleanTier) -> bool:
+    """Say the decisions were applied already, and that a review makes new ones.
+
+    Args:
+        runtime: Settings, mount points and output.
+        decisions: `--decisions` value.
+        tier: `--tier`: near duplicates are decided with `review --near`.
+
+    Returns:
+        True when a clean applied them: the file is gone, its archive is there.
+    """
+    from media_hygiene.cli.next_steps import carried, suggest
+    from media_hygiene.services.decisions_archive import applied_before, tell_applied
+    from media_hygiene.services.next_command import NextVerb
+
+    archive = applied_before(runtime, decisions)
+    if archive is None:
+        return False
+    tell_applied(runtime, archive)
+    verb = "review" if tier is CleanTier.EXACT else "review --near"
+    text = _("new choices first: '{verb}' writes a new decisions file.")
+    port = runtime.settings.review.port
+    suggest(
+        runtime, text.format(verb=verb), NextVerb(carried(runtime, verb), port=port)
+    )
+    return True
 
 
 def _after_clean_tips(runtime: Runtime, run_id: str, outcome: Outcome) -> None:

@@ -121,7 +121,8 @@ cavo789/media-hygiene --locale fr clean --yes
 - **Interrompu ?** Ctrl+C, une coupure de courant : chaque action est écrite dans le journal avant
   et après avoir eu lieu, donc `undo` restaure encore ce qui a été fait.
 - **Une fois appliqué**, `decisions.json` est archivé sous `decisions.applied-<run>.json` : après
-  un `undo`, `--decisions` avec ce nom applique à nouveau les mêmes choix.
+  un `undo`, `--decisions` avec ce nom applique à nouveau les mêmes choix. Relancé, `clean
+  --decisions` dit seulement qu'il est déjà appliqué et ne change rien : un nouveau `review` d'abord.
 - Si [Czkawka](crosscheck.md) a donné son avis, `clean` rappelle son verdict avant de demander.
 - `confirm = false` dans la section `[clean]` de `config.toml` revient à `--yes`, à chaque fois.
 
