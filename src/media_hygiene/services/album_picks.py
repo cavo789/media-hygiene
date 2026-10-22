@@ -42,16 +42,31 @@ def find_picks(
     missing: list[Path] = []
     for row in rows:
         path = moved.get(row.id) or runtime.mapper.to_container(row.path)
-        try:
-            info = path.stat()
-        except OSError:
+        pick = found_pick(path, row.size)
+        if pick is None:
             missing.append(path)
-            continue
-        if not path.is_file() or info.st_size != row.size:
-            missing.append(path)
-            continue
-        picks.append(Pick(path, info.st_size, info.st_mtime_ns))
+        else:
+            picks.append(pick)
     return picks, tuple(missing)
+
+
+def found_pick(path: Path, size: int) -> Pick | None:
+    """The file at a path, if it is there and still of the size it had.
+
+    Args:
+        path: Where the file should be (container path).
+        size: Its size when it was chosen.
+
+    Returns:
+        It, or None: gone, not a file, or another size (never linked on a guess).
+    """
+    try:
+        info = path.stat()
+    except OSError:
+        return None
+    if not path.is_file() or info.st_size != size:
+        return None
+    return Pick(path, info.st_size, info.st_mtime_ns)
 
 
 def rated(runtime: Runtime, picks: list[Pick], stars: int) -> list[Pick]:

@@ -12,14 +12,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.album_plan import Pick
 from media_hygiene.errors import AlbumError
 from media_hygiene.i18n import _
+from media_hygiene.services.album_picks import found_pick
 from media_hygiene.services.albums import album_store
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.actions.album_plan import Pick
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.albums import Album
 
@@ -87,13 +88,9 @@ def _found(runtime: Runtime, album: Album, gone: frozenset[str]) -> AlbumFiles:
         if path in seen:
             continue
         seen.add(path)
-        try:
-            info = path.stat()
-        except OSError:
+        pick = None if entry.path in gone else found_pick(path, entry.size)
+        if pick is None:
             missing.append(path)
-            continue
-        if entry.path in gone or not path.is_file() or info.st_size != entry.size:
-            missing.append(path)
-            continue
-        picks.append(Pick(path, info.st_size, info.st_mtime_ns))
+        else:
+            picks.append(pick)
     return AlbumFiles(album.name, tuple(picks), tuple(missing))
