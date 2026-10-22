@@ -50,7 +50,7 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
   `mh undo <exécution>`) ; sans rien à purger ni à annuler, elle n'a pas de numéro. Une étape qui
   demande des mots que vous seul connaissez (le nom d'un album, le dossier de votre NAS, un
   dossier à retirer, combien de rapports garder) montre un exemple, *(à taper vous-même)* :
-  `mh album "Noël 2025" --category Noël`. Sur la [page d'accueil](home.md), son formulaire les
+  `mh album "Crète 2023"`. Sur la [page d'accueil](home.md), son formulaire les
   remplit. `mh backup` s'affiche *(prévu)*.
 
 Chaque action est listée une fois, numérotée d'un espace à l'autre, dans l'espace où elle vient

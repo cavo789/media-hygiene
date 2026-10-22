@@ -73,10 +73,11 @@ def test_the_cycle_has_five_stages_then_share_then_three_tools() -> None:
 
 
 def test_the_slideshow_is_in_share_and_nowhere_else() -> None:
-    """Share holds the slideshow and the album to send; Find no longer lists it."""
+    """Share holds the slideshow and the album's uses; Find no longer lists it."""
     areas = {area.space: area for area in CATALOG.areas}
     listed = {name for group in areas[Space.SHARE].groups for name in group.steps}
-    assert listed == {"slideshow", "share"}
+    assert listed == {"slideshow", "share", "album"}
+    assert CATALOG.step("album").space is Space.SHARE  # one album, several uses
     assert CATALOG.step("share").space is Space.SHARE
     assert CATALOG.step("slideshow").space is Space.SHARE
     find = {name for group in areas[Space.FIND].groups for name in group.steps}

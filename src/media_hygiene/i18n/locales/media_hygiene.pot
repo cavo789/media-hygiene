@@ -461,6 +461,9 @@ msgstr ""
 msgid "A folder of its own, never mixed with your other shares."
 msgstr ""
 
+msgid "A folder of links on the disk"
+msgstr ""
+
 msgid ""
 "A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
 "/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
@@ -610,9 +613,6 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-msgid "Add --category, --event, --rule or --rating, e.g. --category Noël."
-msgstr ""
-
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr ""
 
@@ -657,6 +657,11 @@ msgid ""
 msgstr ""
 
 msgid "Add photos to an album in search or browse."
+msgstr ""
+
+msgid ""
+"Add photos to it in search or browse, or say what the album gathers from "
+"the classify plan: --category, --event, --rule or --rating."
 msgstr ""
 
 msgid "Add photos to it in search or browse; the videos are never copied."
@@ -1081,6 +1086,10 @@ msgid "Cannot read the albums file {path}."
 msgstr ""
 
 #, python-brace-format
+msgid "Cannot read the albums file: {reason}"
+msgstr ""
+
+#, python-brace-format
 msgid "Cannot read the decisions file {path}."
 msgstr ""
 
@@ -1231,9 +1240,6 @@ msgid "Chosen here: {chosen} · still to decide: {open}"
 msgstr ""
 
 msgid "Christmas"
-msgstr ""
-
-msgid "Christmas 2025"
 msgstr ""
 
 msgid "Classify"
@@ -2600,14 +2606,6 @@ msgstr ""
 msgid "GB"
 msgstr ""
 
-msgid "Gather a selection into an album"
-msgstr ""
-
-msgid ""
-"Gather a selection of the classify plan into a folder of hard links: "
-"nothing is copied nor moved (journaled, undoable)."
-msgstr ""
-
 msgid ""
 "Gather your photos on the PC: those of the phone, and those only your NAS"
 " still keeps. Nothing leaves the phone or the NAS without your say."
@@ -2904,6 +2902,11 @@ msgid "Install the new version"
 msgstr ""
 
 msgid ""
+"Instead of a saved album: the files of this category, as the edited "
+"classify workbook says."
+msgstr ""
+
+msgid ""
 "Instead of the quarantine, when room is urgent; undo rebuilds them from "
 "the copy kept."
 msgstr ""
@@ -3159,9 +3162,6 @@ msgstr ""
 msgid "Links to make"
 msgstr ""
 
-msgid "Links, not copies: no room taken."
-msgstr ""
-
 msgid "List the HTML reports of previous audits and cleans."
 msgstr ""
 
@@ -3214,6 +3214,11 @@ msgstr ""
 msgid ""
 "Made by {author}, the author of the blog avonture.be. The code is under "
 "the MIT licence; the meerkat stays its author's."
+msgstr ""
+
+msgid ""
+"Make an album's folder on the disk, as hard links: nothing is copied nor "
+"moved (journaled, undoable)."
 msgstr ""
 
 msgid "Make room on the phone"
@@ -3324,6 +3329,9 @@ msgid "Mount the folders of that report, or decide again on a new report."
 msgstr ""
 
 msgid "Mount the journal folder used by clean: -v \"<folder>:/journal\"."
+msgstr ""
+
+msgid "Mount the reports folder without ':ro'."
 msgstr ""
 
 msgid "Mount the reports folder: -v \"<folder>:/reports\"."
@@ -5080,6 +5088,9 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
+msgid "Run 'audit' again: it finds a photo moved since, by its content."
+msgstr ""
+
 msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 
@@ -5304,9 +5315,6 @@ msgid "Saved."
 msgstr ""
 
 msgid "Saving…"
-msgstr ""
-
-msgid "Say what the album gathers."
 msgstr ""
 
 msgid ""
@@ -5948,7 +5956,14 @@ msgstr ""
 msgid "The album's name (a new name creates it):"
 msgstr ""
 
-msgid "The album's name: the folder holding its links."
+msgid ""
+"The album's name, as search and browse saved it: the folder holding its "
+"links."
+msgstr ""
+
+msgid ""
+"The album's photos in one folder of the Explorer, as hard links: no copy,"
+" no room taken, undone by undo."
 msgstr ""
 
 msgid "The albums are saved in /reports: mount it, or they are lost."
@@ -6169,9 +6184,6 @@ msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
 msgid "The files missing from the albums"
-msgstr ""
-
-msgid "The files of this category, as the edited workbook says."
 msgstr ""
 
 msgid "The files of this event: its id or its name."
@@ -6730,9 +6742,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "The workbook {path} was not found."
-msgstr ""
-
-msgid "The workbook's category"
 msgstr ""
 
 msgid ""
@@ -7499,6 +7508,11 @@ msgid ""
 " swipe. On a phone of the home Wi-Fi too, once paired with mh --lan."
 msgstr ""
 
+msgid ""
+"Your albums on the TV, on a phone, ready to send by mail, or as a folder "
+"on the disk."
+msgstr ""
+
 msgid "Your backups, compared, never changed:"
 msgstr ""
 
@@ -7605,9 +7619,6 @@ msgid "Your photo folders:"
 msgstr ""
 
 msgid "Your photos and videos were not touched."
-msgstr ""
-
-msgid "Your photos on the TV, or an album ready to send by mail."
 msgstr ""
 
 msgid "Your photos, in order"
@@ -7758,7 +7769,7 @@ msgstr ""
 msgid "accept the proposal, next"
 msgstr ""
 
-msgid "album selection links christmas holidays"
+msgid "album folder explorer links christmas holidays"
 msgstr ""
 
 #, python-brace-format
@@ -8534,6 +8545,9 @@ msgid "moved elsewhere"
 msgstr ""
 
 msgid "moved elsewhere (a disk not plugged in): forgotten"
+msgstr ""
+
+msgid "moved or deleted since it was added to the album"
 msgstr ""
 
 msgid "moved to the quarantine"

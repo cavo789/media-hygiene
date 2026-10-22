@@ -1,4 +1,4 @@
-"""`media-hygiene album`: gather a selection into a folder of hard links."""
+"""`media-hygiene album`: an album's folder of hard links on the disk (0298)."""
 
 # pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
 # the code it runs when it runs; those imports count as local variables.
@@ -26,14 +26,22 @@ def album_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     name: Annotated[
         str,
-        typer.Argument(help=_("The album's name: the folder holding its links.")),
+        typer.Argument(
+            help=_(
+                "The album's name, as search and browse saved it: the folder "
+                "holding its links."
+            )
+        ),
     ],
     *,
     category: Annotated[
         str,
         typer.Option(
             "--category",
-            help=_("The files of this category, as the edited workbook says."),
+            help=_(
+                "Instead of a saved album: the files of this category, as the "
+                "edited classify workbook says."
+            ),
         ),
     ] = "",
     event: Annotated[
@@ -77,7 +85,11 @@ def album_command(  # pylint: disable=too-many-arguments
     ] = False,
     backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
-    """Show what the album gathers; with --apply, make one hard link per file.
+    """Show what the album holds; with --apply, make one hard link per file.
+
+    The album is the one saved by search, browse or the burst review; a criterion
+    (`--category`, `--event`, `--rule`, `--rating`) picks from the classify plan
+    instead, as before 0298.
 
     Args:
         ctx: Typer context holding the runtime.

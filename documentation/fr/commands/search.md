@@ -108,8 +108,8 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   ([`share`](share.md)).
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
-`albums.json` n'est pas la commande [`album`](album.md) : celle-ci fait un dossier de seconds noms
-(liens physiques) à partir d'un plan [`classify`](classify.md).
+Un album peut aussi devenir un dossier de l'Explorateur : [`album "Crète 2023"`](album.md) le
+crée, en seconds noms (liens physiques), sans copie.
 
 ## Ce que vous pouvez taper
 

@@ -102,8 +102,8 @@ to the album**.
   ([`share`](share.md)).
 - At most 3,000 photos added at once: narrow a search that finds more.
 
-`albums.json` is not the [`album`](album.md) command: that one makes a folder of second names
-(hard links) from a [`classify`](classify.md) plan.
+An album can also become a folder of the Explorer: [`album "Crete 2023"`](album.md) makes it, as
+second names (hard links), without a copy.
 
 ## What you can type
 

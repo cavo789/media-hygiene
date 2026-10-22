@@ -111,7 +111,7 @@ qui a ouvert la page :
   pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer. Ctrl+C pendant une
   étape (ou sur une page qu'elle a ouverte) rend l'invite : la page d'accueil ne revient pas,
   et aucune autre étape ne se lance.
-- **Une étape qui prend des mots** (le nom et la catégorie d'un album, le dossier de votre NAS,
+- **Une étape qui prend des mots** (le nom d'un album, le dossier de votre NAS,
   un dossier à retirer, combien de rapports garder) : **Compléter** ouvre son formulaire,
   l'exemple déjà rempli. Le serveur vérifie chaque valeur et dit pourquoi il en refuse une (*pas
   de guillemet double*, *aucun caractère de contrôle*, *elle ne peut pas commencer par '-'*, *un

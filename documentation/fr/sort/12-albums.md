@@ -11,6 +11,12 @@ que `sort` a construite.
 un second nom pour le même fichier : la photo n'est ni copiée ni déplacée, et ne prend pas de
 place en plus. C'est facultatif, et rien ne change tant que vous n'ajoutez pas `--apply`.
 
+Un album est d'abord une liste que vous faites à la main dans
+[`search`](../commands/search.md#mettre-des-photos-dans-un-album) ou
+[`browse`](../commands/browse.md) : `album "Crète 2023"` lui donne son dossier
+([`album`](../commands/album.md)). Cette étape rassemble plutôt une sélection du plan de
+`classify`, sans choisir les photos une à une.
+
 ## Ce qu'est un lien physique, dans Windows
 
 - Dans l'Explorateur, l'album contient des fichiers ordinaires : ouvrez-les, imprimez-les,

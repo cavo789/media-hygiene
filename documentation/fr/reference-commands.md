@@ -24,7 +24,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | obtenir une arborescence bien rangée, par année, événement, lieu ou personne, et la corriger d'abord | [`classify`](commands/classify.md) |
 | nommer mes événements en regardant leurs photos | [`review-sort`](commands/review-sort.md) |
 | déplacer mes photos dans l'arborescence approuvée, de façon annulable | [`sort`](commands/sort.md) |
-| mettre une même photo dans plusieurs albums, sans copie | [`album`](commands/album.md) |
+| faire d'un album un dossier de l'Explorateur, sans copie | [`album`](commands/album.md) |
 | nommer mes lieux sur une carte, pour trier par lieu et par voyage | [`places`](commands/places.md), puis `classify` |
 | retrouver les photos de quelqu'un par son nom, les ranger selon qui y figure | [`people`](commands/people.md), puis `search` ou `classify` |
 | donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
@@ -78,7 +78,7 @@ exemples et son `--help`.
 | [`undo [EXÉCUTION]`](commands/undo.md) | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens ; pour `xmp`, ses fichiers compagnons. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`purge [EXÉCUTION]`](commands/purge.md) | Efface pour de bon la quarantaine d'une exécution (de toutes par défaut) : la seule commande qui efface du contenu, avec `clean --delete`. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`sort [CLASSEUR]`](commands/sort.md) | Vérifie le classeur modifié de `classify`, demande confirmation, puis déplace les fichiers là où il le dit ; journalisé, annulable, prouvé. | [Trier, 7](sort/07-sort.md) |
-| [`album NOM`](commands/album.md) | Rassemble une sélection du plan de `classify` (une catégorie, un événement, une règle, les étoiles) dans un dossier de liens physiques : rien de copié ni de déplacé, aucune place prise. Montre la sélection ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
+| [`album NOM`](commands/album.md) | Crée le dossier d'un album (enregistré dans `search`, `browse` ou la revue des rafales) en liens physiques : rien de copié ni de déplacé, aucune place prise. `--category`, `--event`, `--rule`, `--rating` rassemblent plutôt une sélection du plan de `classify`. Montre l'album ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`backup`](commands/backup.md) | Windows seulement (`mh backup`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/backup.md) |
@@ -127,7 +127,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--limit N` | `search` | Avec des mots : lister au plus N fichiers (20 par défaut). [Tags](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (par défaut) : un classeur avec les feuilles Fichiers et Résumé. `csv` : la feuille Fichiers seule, comme `plan.csv`. [Inventaire](reference-inventory.md#un-fichier-csv-à-la-place) |
 | `--keep-empty-folders` | `sort` | Garder les dossiers sources que le tri laisse vides. [Étape 7 du tri](sort/07-sort.md#les-dossiers-laissés-vides) |
-| `--category NOM` | `album` | Les fichiers de cette catégorie, d'après le classeur modifié (un événement nommé dans le classeur donne son nom). [Étape 12 du tri](sort/12-albums.md#choisir-ce-que-lalbum-rassemble) |
+| `--category NOM` | `album` | Au lieu d'un album enregistré : les fichiers de cette catégorie, d'après le classeur modifié (un événement nommé dans le classeur donne son nom). [Étape 12 du tri](sort/12-albums.md#choisir-ce-que-lalbum-rassemble) |
 | `--event ÉVÉNEMENT` | `album` | Les fichiers de cet événement : son identifiant (feuille Événements) ou son nom. |
 | `--rule NOM` | `album` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
 | `--rating N` | `album` | Les fichiers qui ont au moins N étoiles (1 à 5) dans Windows, telles que l'audit les a lues (demande `/cache`). |

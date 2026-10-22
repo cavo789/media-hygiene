@@ -24,7 +24,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | get a tidy tree proposed, by year, event, place or person, and correct it first | [`classify`](commands/classify.md) |
 | name my events while looking at their photos | [`review-sort`](commands/review-sort.md) |
 | move my photos into the tree I approved, undoable | [`sort`](commands/sort.md) |
-| put one photo in several albums, without a copy | [`album`](commands/album.md) |
+| make an album a folder of the Explorer, without a copy | [`album`](commands/album.md) |
 | name my places on a map, to sort by place and by trip | [`places`](commands/places.md), then `classify` |
 | find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `search` or `classify` |
 | give my photos and videos words to search for | [`tags`](commands/tags.md) |
@@ -77,7 +77,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
-| [`album NAME`](commands/album.md) | Gather a selection of the `classify` plan (a category, an event, a rule, the stars) into a folder of hard links: nothing copied nor moved, no space used. Shows the selection; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
+| [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search`, `browse` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`backup`](commands/backup.md) | Windows only (`mh backup`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/backup.md) |
@@ -126,7 +126,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--limit N` | `search` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-search) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
-| `--category NAME` | `album` | The files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 12](sort/12-albums.md#choose-what-the-album-gathers) |
+| `--category NAME` | `album` | Instead of a saved album: the files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 12](sort/12-albums.md#choose-what-the-album-gathers) |
 | `--event EVENT` | `album` | The files of this event: its id (Events sheet) or its name. |
 | `--rule NAME` | `album` | The files the `[[classify.rules]]` entry of this name decided. |
 | `--rating N` | `album` | The files given at least N stars (1 to 5) in Windows, as the audit read them (needs `/cache`). |

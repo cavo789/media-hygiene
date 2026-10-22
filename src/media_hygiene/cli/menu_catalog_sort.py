@@ -5,7 +5,6 @@ from __future__ import annotations
 from media_hygiene.cli.menu_entry import (
     Area,
     Doc,
-    Field,
     Group,
     Kind,
     Risk,
@@ -89,27 +88,11 @@ def sort_steps() -> tuple[Step, ...]:
             doc=Doc("commands/sort/"),
             slot=Slot.SORT,
         ),
-        Step(
-            "album",
-            space,
-            _("Gather a selection into an album"),
-            _("Links, not copies: no room taken."),
-            "album {name} --category {category}",
-            Risk.UNDO,
-            icon="album",
-            keywords=_("album selection links christmas holidays"),
-            doc=Doc("commands/album/"),
-            fields=(
-                Field("name", _("The album's name"), _("Christmas 2025")),
-                Field("category", _("The workbook's category"), _("Christmas")),
-            ),
-            optional=True,
-        ),
     )
 
 
 def sort_area() -> Area:
-    """The sort stage: its guide, then an album.
+    """The sort stage: its guide (an album's folder of links is in Share, 0298).
 
     Returns:
         It.
@@ -124,10 +107,7 @@ def sort_area() -> Area:
             "apply it. Nothing moves before you agree."
         ),
         "folders",
-        (
-            Group(_("The guide"), guide, numbered=True),
-            Group(_("Go further"), ("album",)),
-        ),
+        (Group(_("The guide"), guide, numbered=True),),
         Doc("sort/quick-guide/"),
         _("Sort in short"),
         stage=3,

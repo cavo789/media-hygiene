@@ -584,6 +584,9 @@ msgstr ""
 msgid "A folder of its own, never mixed with your other shares."
 msgstr "Un dossier à lui, jamais mêlé à vos autres partages."
 
+msgid "A folder of links on the disk"
+msgstr "Un dossier de liens sur le disque"
+
 msgid ""
 "A folder of photos and videos, as Explorer shows it: \"C:\\Photos\" (or "
 "/mnt/c/Photos in WSL). Repeat it for several folders. No -v needed."
@@ -801,11 +804,6 @@ msgstr "Action"
 msgid "Actions"
 msgstr "Actions"
 
-msgid "Add --category, --event, --rule or --rating, e.g. --category Noël."
-msgstr ""
-"Ajoutez --category, --event, --rule ou --rating, par exemple --category "
-"Noël."
-
 msgid "Add -v \"<a folder of yours>:/cache\" to keep the descriptions."
 msgstr "Ajoutez -v \"<un de vos dossiers>:/cache\" pour garder les descriptions."
 
@@ -864,6 +862,13 @@ msgstr ""
 
 msgid "Add photos to an album in search or browse."
 msgstr "Ajoutez des photos à un album dans search ou browse."
+
+msgid ""
+"Add photos to it in search or browse, or say what the album gathers from "
+"the classify plan: --category, --event, --rule or --rating."
+msgstr ""
+"Ajoutez-y des photos dans search ou browse, ou dites ce que l'album "
+"rassemble du plan de classify : --category, --event, --rule ou --rating."
 
 msgid "Add photos to it in search or browse; the videos are never copied."
 msgstr ""
@@ -1349,6 +1354,10 @@ msgid "Cannot read the albums file {path}."
 msgstr "Impossible de lire le fichier des albums {path}."
 
 #, python-brace-format
+msgid "Cannot read the albums file: {reason}"
+msgstr "Impossible de lire le fichier des albums : {reason}"
+
+#, python-brace-format
 msgid "Cannot read the decisions file {path}."
 msgstr "Impossible de lire le fichier de décisions {path}."
 
@@ -1525,9 +1534,6 @@ msgstr "Choisis ici : {chosen} · encore à décider : {open}"
 
 msgid "Christmas"
 msgstr "Noël"
-
-msgid "Christmas 2025"
-msgstr "Noël 2025"
 
 msgid "Classify"
 msgstr "Classer"
@@ -3200,16 +3206,6 @@ msgstr "Depuis :"
 msgid "GB"
 msgstr "Go"
 
-msgid "Gather a selection into an album"
-msgstr "Réunir une sélection dans un album"
-
-msgid ""
-"Gather a selection of the classify plan into a folder of hard links: "
-"nothing is copied nor moved (journaled, undoable)."
-msgstr ""
-"Rassemble une sélection du plan de classify dans un dossier de liens "
-"physiques : rien n'est copié ni déplacé (journalisé, annulable)."
-
 msgid ""
 "Gather your photos on the PC: those of the phone, and those only your NAS"
 " still keeps. Nothing leaves the phone or the NAS without your say."
@@ -3565,6 +3561,13 @@ msgid "Install the new version"
 msgstr "Installer la nouvelle version"
 
 msgid ""
+"Instead of a saved album: the files of this category, as the edited "
+"classify workbook says."
+msgstr ""
+"Au lieu d'un album enregistré : les fichiers de cette catégorie, d'après "
+"le classeur de classify modifié."
+
+msgid ""
 "Instead of the quarantine, when room is urgent; undo rebuilds them from "
 "the copy kept."
 msgstr ""
@@ -3856,9 +3859,6 @@ msgstr "Liens"
 msgid "Links to make"
 msgstr "Liens à créer"
 
-msgid "Links, not copies: no room taken."
-msgstr "Des liens, pas des copies : aucune place prise."
-
 msgid "List the HTML reports of previous audits and cleans."
 msgstr "Liste les rapports HTML des audits et nettoyages précédents."
 
@@ -3918,6 +3918,13 @@ msgid ""
 msgstr ""
 "Fait par {author}, l'auteur du blog avonture.be. Le code est sous licence"
 " MIT ; le suricate reste à son auteur."
+
+msgid ""
+"Make an album's folder on the disk, as hard links: nothing is copied nor "
+"moved (journaled, undoable)."
+msgstr ""
+"Crée le dossier d'un album sur le disque, en liens physiques : rien n'est "
+"copié ni déplacé (journalisé, annulable)."
 
 msgid "Make room on the phone"
 msgstr "Faire de la place sur le téléphone"
@@ -4047,6 +4054,9 @@ msgid "Mount the journal folder used by clean: -v \"<folder>:/journal\"."
 msgstr ""
 "Montez le dossier de journal utilisé par clean : -v "
 "\"<dossier>:/journal\"."
+
+msgid "Mount the reports folder without ':ro'."
+msgstr "Montez le dossier des rapports sans ':ro'."
 
 msgid "Mount the reports folder: -v \"<folder>:/reports\"."
 msgstr "Montez le dossier des rapports : -v \"<dossier>:/reports\"."
@@ -4503,8 +4513,7 @@ msgid "No index in {folder}: nothing to tag yet."
 msgstr "Aucun index dans {folder} : rien à étiqueter pour l'instant."
 
 msgid "No index yet: the albums show the photos an audit has seen."
-msgstr ""
-"Pas encore d'index : les albums montrent les photos qu'un audit a vues."
+msgstr "Pas encore d'index : les albums montrent les photos qu'un audit a vues."
 
 #, python-brace-format
 msgid "No journal found at {path}."
@@ -5116,8 +5125,8 @@ msgid ""
 "changes the albums file alone."
 msgstr ""
 "Sur le Wi-Fi de la maison seulement, tant que mh tourne sur le PC. Vos "
-"photos sont seulement lues : retirer une photo d'un album, ou l'ajouter à "
-"un autre, ne change que le fichier des albums."
+"photos sont seulement lues : retirer une photo d'un album, ou l'ajouter à"
+" un autre, ne change que le fichier des albums."
 
 msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
@@ -6156,6 +6165,11 @@ msgstr ""
 msgid "Run"
 msgstr "Exécution"
 
+msgid "Run 'audit' again: it finds a photo moved since, by its content."
+msgstr ""
+"Relancez 'audit' : il retrouve une photo déplacée depuis, par son "
+"contenu."
+
 msgid "Run 'audit' first with the same /cache mount: it records the positions."
 msgstr ""
 "Lancez d'abord 'audit' avec le même montage /cache : il enregistre les "
@@ -6428,9 +6442,6 @@ msgstr "Enregistré."
 
 msgid "Saving…"
 msgstr "Enregistrement…"
-
-msgid "Say what the album gathers."
-msgstr "Dites ce que l'album rassemble."
 
 msgid ""
 "Say what to show, one of: --folder \"C:\\Photos\\Holidays\", --search "
@@ -7182,8 +7193,19 @@ msgstr "Nom de l'album"
 msgid "The album's name (a new name creates it):"
 msgstr "Le nom de l'album (un nouveau nom le crée) :"
 
-msgid "The album's name: the folder holding its links."
-msgstr "Le nom de l'album : le dossier qui contient ses liens."
+msgid ""
+"The album's name, as search and browse saved it: the folder holding its "
+"links."
+msgstr ""
+"Le nom de l'album, tel que search et browse l'ont enregistré : le dossier"
+" qui contient ses liens."
+
+msgid ""
+"The album's photos in one folder of the Explorer, as hard links: no copy,"
+" no room taken, undone by undo."
+msgstr ""
+"Les photos de l'album dans un seul dossier de l'Explorateur, en liens "
+"physiques : aucune copie, aucune place prise, annulé par undo."
 
 msgid "The albums are saved in /reports: mount it, or they are lost."
 msgstr ""
@@ -7464,9 +7486,6 @@ msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
 
 msgid "The files missing from the albums"
 msgstr "Les fichiers manquants des albums"
-
-msgid "The files of this category, as the edited workbook says."
-msgstr "Les fichiers de cette catégorie, d'après le classeur modifié."
 
 msgid "The files of this event: its id or its name."
 msgstr "Les fichiers de cet événement : son identifiant ou son nom."
@@ -8170,9 +8189,6 @@ msgstr "Le classeur {path} ne peut pas être ouvert : {reason}."
 #, python-brace-format
 msgid "The workbook {path} was not found."
 msgstr "Le classeur {path} est introuvable."
-
-msgid "The workbook's category"
-msgstr "Catégorie du classeur"
 
 msgid ""
 "The zip is larger than 25 MB: some webmails refuse an attachment that "
@@ -9084,6 +9100,13 @@ msgstr ""
 "en plein écran d'un glissement. Sur un téléphone du Wi-Fi de la maison "
 "aussi, une fois appairé avec mh --lan."
 
+msgid ""
+"Your albums on the TV, on a phone, ready to send by mail, or as a folder "
+"on the disk."
+msgstr ""
+"Vos albums sur la télé, sur un téléphone, prêts à envoyer par mail, ou en"
+" dossier sur le disque."
+
 msgid "Your backups, compared, never changed:"
 msgstr "Vos sauvegardes, comparées, jamais modifiées :"
 
@@ -9224,9 +9247,6 @@ msgstr "Vos dossiers de photos :"
 
 msgid "Your photos and videos were not touched."
 msgstr "Vos photos et vidéos n'ont pas été touchées."
-
-msgid "Your photos on the TV, or an album ready to send by mail."
-msgstr "Vos photos sur la télé, ou un album prêt à envoyer par mail."
 
 msgid "Your photos, in order"
 msgstr "Vos photos, en ordre"
@@ -9392,8 +9412,8 @@ msgstr "accepter le nom et la catégorie, puis l'événement suivant à décider
 msgid "accept the proposal, next"
 msgstr "accepter la proposition, puis suivante"
 
-msgid "album selection links christmas holidays"
-msgstr "album sélection liens noël vacances"
+msgid "album folder explorer links christmas holidays"
+msgstr "album dossier explorateur liens noël vacances"
 
 #, python-brace-format
 msgid "all {count} kept"
@@ -10251,6 +10271,9 @@ msgstr "déplacé ailleurs"
 
 msgid "moved elsewhere (a disk not plugged in): forgotten"
 msgstr "déplacé ailleurs (un disque non branché) : oublié"
+
+msgid "moved or deleted since it was added to the album"
+msgstr "déplacé ou supprimé depuis son ajout à l'album"
 
 msgid "moved to the quarantine"
 msgstr "déplacé en quarantaine"
@@ -12779,8 +12802,7 @@ msgstr[1] "{n} fichiers trouvés."
 #, python-brace-format
 msgid "{n} file missing: moved out of the folders analysed, or deleted."
 msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
-msgstr[0] ""
-"{n} fichier manquant : déplacé hors des dossiers analysés, ou supprimé."
+msgstr[0] "{n} fichier manquant : déplacé hors des dossiers analysés, ou supprimé."
 msgstr[1] ""
 "{n} fichiers manquants : déplacés hors des dossiers analysés, ou "
 "supprimés."

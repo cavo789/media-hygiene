@@ -1,26 +1,40 @@
-# `album` : une photo dans plusieurs dossiers, sans copie
+# `album` : un album en dossier sur le disque, sans copie
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `album` · 🇬🇧 [English](../../en/commands/album.md)
 
 ## En bref
 
-**Mettre une même photo dans plusieurs albums (« Noël », « Mes plus belles photos ») sans la
-copier : aucune place en plus.**
+**Donner à un album son propre dossier dans l'Explorateur (« Crète 2023 », « Mes plus belles
+photos ») sans copier une photo : aucune place en plus.**
 
-Une arborescence donne à chaque photo **une** place. `album` rassemble une sélection dans un
-dossier de **liens physiques** : un deuxième nom pour le même fichier, ni copié ni déplacé. Sans
+Un **album** est la liste nommée de photos que vous faites dans
+[`search`](search.md#mettre-des-photos-dans-un-album), [`browse`](browse.md) ou la revue des
+rafales, enregistrée dans `albums.json`. Il a plusieurs usages, tous sous *Partager* dans la page
+d'accueil et `mh menu` :
+
+| Usage | Commande |
+|---|---|
+| Sur la télé | [`slideshow --album "Crète 2023"`](slideshow.md) |
+| Sur votre téléphone, à la maison | [la page des albums](home.md#vos-albums-sur-le-téléphone) |
+| Prêt à envoyer par mail | [`share --album "Crète 2023"`](share.md) |
+| Un dossier de liens sur le disque | `album "Crète 2023"`, cette page |
+
+`album` crée ce dossier de **liens physiques** : un deuxième nom pour le même fichier, ni copié ni
+déplacé, dans un seul dossier quels que soient les dossiers d'où viennent les photos. Sans
 `--apply`, il montre seulement ce qu'il ferait.
 
-**Quand** : après [`classify`](classify.md), chaque fois que vous voulez une sélection : une
-catégorie, un événement, les photos notées d'étoiles dans Windows.
+**Quand** : une fois l'album fait, après un [`audit`](audit.md) (une photo de l'album déplacée
+depuis est retrouvée par son contenu).
 
 **Essayer** :
 
 ```powershell
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\reports:/reports" `
-  cavo789/media-hygiene --locale fr album "Noël" --category Noël
+  -v "$HOME\media-hygiene\config:/config" `
+  cavo789/media-hygiene --locale fr album "Crète 2023"
 ```
 
 ## D'un coup d'œil
@@ -28,11 +42,11 @@ docker run --rm -it `
 | | |
 |---|---|
 | Vos photos | ✋ Agit avec `--apply` seulement : ajoute des deuxièmes noms (liens physiques) ; aucune photo n'est copiée, déplacée ni supprimée. |
-| Il faut | `/reports` (l'exécution de `classify`) ; avec `--apply`, vos dossiers **sans** `:ro` et `/journal`. |
-| Conseillé | `/cache` (indispensable pour `--rating`), `/config` (le dossier de `[album]`). |
-| Écrit | Le dossier de l'album, ses liens et un fichier `.media-hygiene-album` ; le journal. |
+| Il faut | `/reports` (les albums, `albums.json`) ; avec `--apply`, vos dossiers **sans** `:ro` et `/journal`. |
+| Conseillé | `/cache` (pour retrouver une photo déplacée depuis ; indispensable pour `--rating`), `/config` (le dossier de `[album]`). |
+| Écrit | Le dossier de l'album, ses liens et un fichier `.media-hygiene-album` ; le journal. `albums.json` est seulement lu. |
 | Annuler | [`undo <exécution>`](undo.md) retire les liens et les dossiers qu'il a créés ; les originaux restent. |
-| Avec `mh` | `mh album "Noël" --category Noël`. |
+| Avec `mh` | `mh album "Crète 2023"`. |
 
 ## Lancer
 
@@ -43,27 +57,34 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\config:/config" `
-  cavo789/media-hygiene --locale fr album "Noël" --category Noël
+  cavo789/media-hygiene --locale fr album "Crète 2023"
 ```
 
-Il montre le dossier de l'album, les fichiers choisis, les liens à créer, ceux déjà dans l'album,
-et ceux qu'il ne peut pas lier (*Introuvables*, *Sur un autre disque ou montage*), puis *💡 Rien
-n'a été modifié : ajoutez --apply pour créer les liens*. Ajoutez `--apply` pour les créer.
+Il montre le dossier de l'album, les fichiers de l'album, les liens à créer, ceux déjà dans le
+dossier, et ceux qu'il ne peut pas lier (*Introuvables* : déplacés ou supprimés depuis leur ajout,
+*Sur un autre disque ou montage*), puis *💡 Rien n'a été modifié : ajoutez --apply pour créer les
+liens*. Ajoutez `--apply` pour les créer. Le nom est celui de l'album, quelle que soit sa casse :
+`album "crète 2023"` crée le dossier `Crète 2023`.
+
+## Sans album : une sélection du plan de classify
+
+Après [`classify`](classify.md), `album` peut aussi rassembler une sélection de son plan, sans
+album enregistré d'abord : `album "Noël" --category Noël`. Chaque option ci-dessous choisit dans
+le plan **au lieu de** `albums.json` ; données ensemble, toutes les options doivent correspondre :
+`--category Noël --rating 4` rassemble les plus belles photos de Noël. La casse ne compte pas.
+Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 
 ## Options
 
 | Option | Rôle |
 |---|---|
-| `NOM` | Le nom de l'album : le dossier qui contient ses liens (obligatoire). |
-| `--category NOM` | Les fichiers de cette catégorie, d'après le classeur modifié. |
+| `NOM` | Le nom de l'album, tel que `search` et `browse` l'ont enregistré : le dossier qui contient ses liens (obligatoire). |
+| `--category NOM` | Au lieu d'un album enregistré : les fichiers de cette catégorie, d'après le classeur de `classify` modifié. |
 | `--event ÉVÉNEMENT` | Les fichiers de cet événement : son identifiant (feuille Événements) ou son nom. |
 | `--rule NOM` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
 | `--rating N` | Les fichiers qui ont au moins N étoiles (1 à 5) dans Windows, telles que l'audit les a lues. |
 | `--workbook CHEMIN` | Le classeur de `classify` à lire ; celui du dernier `classify` par défaut. |
 | `--apply` | Créer les liens ; sans cette option, montrer seulement ce que l'album rassemble. |
-
-Données ensemble, toutes les options doivent correspondre : `--category Noël --rating 4`
-rassemble les plus belles photos de Noël. La casse ne compte pas.
 
 ## Bon à savoir
 
@@ -71,8 +92,9 @@ rassemble les plus belles photos de Noël. La casse ne compte pas.
   `Albums` dans la `target` de `[classify]`.
 - **Un lien physique ne quitte jamais son disque, ni son `-v`** : montez le dossier qui contient à
   la fois les photos et les albums (`C:\Photos` pour `C:\Photos\Albums`).
-- **Relancez-le** plus tard : seules les nouvelles photos sont ajoutées ; une photo n'est jamais
-  liée deux fois.
+- **Relancez-le** plus tard, après avoir ajouté des photos à l'album : seules les nouvelles photos
+  sont ajoutées ; une photo n'est jamais liée deux fois. Une photo retirée de l'album reste dans
+  son dossier : annulez l'exécution (`undo`), ou supprimez le lien.
 - **Jamais vu comme des doublons** : `audit`, `clean`, `classify` et `sort` ignorent tout dossier
   qui contient `.media-hygiene-album`. Gardez ce fichier.
 - Une photo retouchée dans l'album l'est aussi dans son dossier trié : c'est le même fichier.
@@ -81,6 +103,8 @@ rassemble les plus belles photos de Noël. La casse ne compte pas.
 
 ## Pour aller plus loin
 
+- [`search` : mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album)
+- [`share` : l'album prêt à envoyer](share.md)
 - [Trier, étape 12 : les albums](../sort/12-albums.md)
 
 ## L'aide intégrée

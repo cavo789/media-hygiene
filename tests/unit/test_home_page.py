@@ -137,9 +137,9 @@ def test_every_action_of_the_catalog_is_in_the_state(tmp_path: Path) -> None:
     assert names == {step.name for step in full_catalog().steps}
     album = state.action("album")
     assert album is not None
-    assert [field.name for field in album.fields] == ["name", "category"]
+    assert [field.name for field in album.fields] == ["album"]
     assert album.number is None
-    assert album.command == 'mh album "Christmas 2025" --category Christmas'
+    assert album.command == 'mh album "Crete 2023"'
     audit = state.action("audit")
     assert audit is not None
     assert audit.doc is not None
@@ -236,7 +236,7 @@ def test_each_refused_value_says_why(value: str, reason: str) -> None:
     """A quote, a control character, a leading `-`: refused with its reason."""
     album = full_catalog().step("album")
     with pytest.raises(FieldError, match=re.escape(reason)):
-        checked_words(album, {"name": value, "category": "Noël"})
+        checked_words(album, {"album": value})
 
 
 def test_a_folder_must_look_like_one() -> None:
@@ -268,13 +268,13 @@ def test_a_form_writes_the_one_shot_file_then_ends(tmp_path: Path) -> None:
         relays_steps=True,
         relays_fields=True,
     )
-    fields = {"name": "Noël 2025", "category": "Noël"}
+    fields = {"album": "Noël 2025"}
     status, body = _post(door, {"name": "album", "fields": fields})
     assert status == HTTPStatus.OK
-    assert body["command"] == 'mh album "Noël 2025" --category Noël'
+    assert body["command"] == 'mh album "Noël 2025"'
     assert ending.asked == STEP_EXIT_BASE + FIELDS_STEP
     written = json.loads((tmp_path / STEP_FILE_NAME).read_text("utf-8"))
-    assert written == {"words": ["album", "Noël 2025", "--category", "Noël"]}
+    assert written == {"words": ["album", "Noël 2025"]}
 
 
 def test_a_refused_value_keeps_the_page_running(tmp_path: Path) -> None:
@@ -287,9 +287,7 @@ def test_a_refused_value_keeps_the_page_running(tmp_path: Path) -> None:
         relays_steps=True,
         relays_fields=True,
     )
-    status, body = _post(
-        door, {"name": "album", "fields": {"name": 'a"b', "category": "c"}}
-    )
+    status, body = _post(door, {"name": "album", "fields": {"album": 'a"b'}})
     assert status == HTTPStatus.UNPROCESSABLE_ENTITY
     assert "no double quote" in body["error"]
     assert ending.asked is None

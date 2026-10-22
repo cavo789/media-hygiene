@@ -114,8 +114,8 @@ In `config.toml`, `[share]`:
 - The folder is always `<your home>\media-hygiene\Shares`: no folder to type, and no photo
   folder is ever opened for writing. Delete what you sent once it is sent: the album itself
   (`albums.json`) stays.
-- `albums.json` and the [`album`](album.md) command are two things: that one makes a folder of
-  second names (hard links) from the classify plan.
+- To keep the album as a folder of the Explorer instead, without a copy:
+  [`album "Crete 2023"`](album.md) (hard links, on the disk of the photos).
 
 ## Go further
 

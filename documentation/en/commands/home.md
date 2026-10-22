@@ -103,7 +103,7 @@ opened the page:
   command's exit code, `20 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
   Ctrl+C during a step (or on a page it opened) gives the prompt back: the home page does not
   come back, and no other step runs.
-- **A step that takes words** (an album's name and category, your NAS's folder, a folder to
+- **A step that takes words** (an album's name, your NAS's folder, a folder to
   remove, how many reports to keep): **Fill in** opens its form, the example filled in. The
   server checks each value and says why it refuses one (*no double quote*, *no control
   character*, *it cannot start with '-'*, *a folder as the Explorer shows it*); then it writes

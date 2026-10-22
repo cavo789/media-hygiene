@@ -118,8 +118,8 @@ Dans `config.toml`, `[share]` :
 - Le dossier est toujours `<votre dossier personnel>\media-hygiene\Shares` : aucun dossier à
   taper, et aucun dossier de photos n'est jamais ouvert en écriture. Supprimez ce que vous avez
   envoyé une fois envoyé : l'album lui-même (`albums.json`) reste.
-- `albums.json` et la commande [`album`](album.md) sont deux choses : celle-ci fait un dossier de
-  seconds noms (liens physiques) depuis le plan de classify.
+- Pour garder plutôt l'album en dossier de l'Explorateur, sans copie :
+  [`album "Crète 2023"`](album.md) (liens physiques, sur le disque des photos).
 
 ## Pour aller plus loin
 
