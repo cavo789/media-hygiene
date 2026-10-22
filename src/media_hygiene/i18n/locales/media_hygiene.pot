@@ -3487,6 +3487,12 @@ msgstr ""
 msgid "Names cannot be saved: mount a writable folder on /config."
 msgstr ""
 
+msgid ""
+"Naming confirms the faces shown; the other faces of the group get the "
+"name when they look close enough to them. To check every one first, click"
+" “and N more faces”."
+msgstr ""
+
 msgid "Nature and landscapes"
 msgstr ""
 

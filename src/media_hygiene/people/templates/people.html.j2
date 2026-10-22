@@ -93,6 +93,7 @@
 {% include "page_header.html.j2" %}
 <header>
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
+  <p class="hint">{{ _("Naming confirms the faces shown; the other faces of the group get the name when they look close enough to them. To check every one first, click “and N more faces”.") }}</p>
   <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms a suggestion, x names several groups at once, i ignores a group; × takes a face out of its group.") }}</p>
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
@@ -281,11 +282,19 @@ function tools(item, index) {
   return bar;
 }
 
-function asideButton(item, index) {
-  const faces = displayed(item).filter((face) => !removed.has(face.key));
+// The faces and photos a section still holds once those taken out here are left out;
+// photos are only known again with every face shown.
+function left(item) {
+  const shown = displayed(item);
+  const faces = shown.filter((face) => !removed.has(face.key));
   const photos = complete(item) ? new Set(faces.map((face) => face.photo)).size : item.photos;
+  return { faces: item.faces - (shown.length - faces.length), photos };
+}
+
+function asideButton(item, index) {
+  const { faces, photos } = left(item);
   const button = element("button", "", counted(TEXTS.aside, photos));
-  button.disabled = !complete(item) || !faces.length;
+  button.disabled = !complete(item) || !faces;
   button.title = complete(item) ? TEXTS.asideHint : TEXTS.allFirst;
   button.addEventListener("click", () => setAside(index, "add"));
   return button;
@@ -297,7 +306,8 @@ function group(item, index) {
   node.classList.toggle("picked", picked.has(index));
   const heading = item.name || (item.suggested ? fill(TEXTS.suggest, { name: item.suggested }) : fill(TEXTS.group, { number: index + 1 }));
   const title = element("h2", "", heading + " ");
-  title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, item.faces), photos: counted(TEXTS.photos, item.photos) })));
+  const size = left(item);
+  title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
   const faces = element("div", "faces");
   const shown = displayed(item);
   faces.append(...shown.filter((one) => !removed.has(one.key)).map((one) => face(one, index)));

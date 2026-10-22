@@ -43,7 +43,7 @@ mounted, the page shows the groups and the names already given, and saves none.
 
 | On a group | What it does |
 |---|---|
-| Type a name, then Enter | The faces shown are this person's. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
+| Type a name, then Enter | The faces shown (a few dozen, spread over the group) are confirmed as this person's; the other faces of the group get the name when they look close enough to them. To check every face first, click **and N more faces**. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
 | Pick (`x`), then name | Name several groups at once: the same person split in two groups. |
 | × on a face | This face is not this person: it is taken out of the group, and never given this name again. |
 | Ignore (`i`) | Strangers, posters, statues: the group is not shown again, nor the faces close to it. |

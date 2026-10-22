@@ -45,7 +45,7 @@ déjà donnés, et n'en enregistre aucun.
 
 | Sur un groupe | Ce que ça fait |
 |---|---|
-| Taper un nom, puis Entrée | Les visages montrés sont ceux de cette personne. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
+| Taper un nom, puis Entrée | Les visages montrés (quelques dizaines, répartis dans le groupe) sont confirmés comme ceux de cette personne ; les autres visages du groupe reçoivent le nom s'ils leur ressemblent assez. Pour vérifier chaque visage d'abord, cliquez sur **et N visages de plus**. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
 | Choisir (`x`), puis nommer | Nommer plusieurs groupes d'un coup : la même personne coupée en deux groupes. |
 | × sur un visage | Ce visage n'est pas cette personne : il est retiré du groupe, et ne reçoit plus jamais ce nom. |
 | Ignorer (`i`) | Des inconnus, des affiches, des statues : le groupe n'est plus montré, ni les visages qui lui ressemblent. |

@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.people.board import PeopleBoard
+    from media_hygiene.people.naming import FaceName
     from media_hygiene.people.views import PageView
 
 
@@ -64,7 +65,7 @@ class Roster:
         self._file = names.config_file
         self._settings = names.settings
         self._moves = names.moves
-        self._names = name_all(board.faces, self._known())
+        self._names, self._ruled_out = self._named()
 
     @property
     def writable(self) -> bool:
@@ -84,7 +85,7 @@ class Roster:
         Returns:
             The sections, the names known, the counts.
         """
-        sections = sections_of(self.board.groups, self._names)
+        sections = sections_of(self.board.groups, self._names, self._ruled_out)
         board = self.board
         return {
             "alone": self.board.alone,
@@ -127,8 +128,22 @@ class Roster:
         self._settings = self._settings.model_copy(
             update={"person": back.person, "ignored": back.ignored}
         )
-        self._names = name_all(self.board.faces, self._known())
+        self._names, self._ruled_out = self._named()
         return proof_line(back, change) + followed_line(original, written)
+
+    def _named(self) -> tuple[tuple[FaceName, ...], dict[int, frozenset[str]]]:
+        """Name every face, and note who each one was taken out of.
+
+        Returns:
+            The name of each face, and the names each face is not, by number.
+        """
+        known = self._known()
+        ruled_out = {
+            key: names
+            for key, face in enumerate(self.board.faces)
+            if (names := known.rejected.get(id_of(face)))
+        }
+        return name_all(self.board.faces, known), ruled_out
 
     def _known(self) -> Known:
         """The faces of reference, ids of moved photos followed (TODO 0146).
@@ -150,8 +165,8 @@ class Roster:
         """
         if not key.isdigit():
             return []
-        sections = sections_of(self.board.groups, self._names).shown
-        found = next((one for one in sections if int(key) in one.faces), None)
+        shown = sections_of(self.board.groups, self._names, self._ruled_out).shown
+        found = next((one for one in shown if int(key) in one.faces), None)
         return [] if found is None else faces_view(self.board, found.faces, host)
 
     def ids(self, keys: tuple[int, ...]) -> tuple[str, ...]:

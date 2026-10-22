@@ -4243,6 +4243,15 @@ msgstr ""
 "Les noms ne peuvent pas être enregistrés : montez un dossier accessible "
 "en écriture sur /config."
 
+msgid ""
+"Naming confirms the faces shown; the other faces of the group get the "
+"name when they look close enough to them. To check every one first, click"
+" “and N more faces”."
+msgstr ""
+"Nommer confirme les visages affichés ; les autres visages du groupe "
+"reçoivent le nom s'ils leur ressemblent assez. Pour tous les vérifier "
+"d'abord, cliquez sur « et N visages de plus »."
+
 msgid "Nature and landscapes"
 msgstr "Nature et paysages"
 

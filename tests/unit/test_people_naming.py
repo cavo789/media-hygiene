@@ -84,3 +84,22 @@ def test_sections_named_first_then_suggested_then_others() -> None:
         ("", "Chloé", (3, 4)),
         ("", "", (0, 1, 2)),
     ]
+
+
+def test_sections_leave_out_the_faces_taken_out_of_their_person() -> None:
+    """A face rejected for Chloé leaves her section and her suggestion, not others."""
+    chloe = FaceName("Chloé", How.CONFIRMED)
+    near = FaceName("Chloé", How.ASSIGNED)
+    names = (chloe, chloe, NOBODY, near, near, NOBODY, NOBODY)
+    groups = ((0, 1, 2), (3, 4), (5, 6))
+    ruled_out = {
+        2: frozenset({"Chloé"}),
+        4: frozenset({"Chloé"}),
+        6: frozenset({"Ana"}),
+    }
+    sections = sections_of(groups, names, ruled_out)
+    assert [(s.name, s.suggested, s.faces) for s in sections.shown] == [
+        ("Chloé", "", (0, 1)),
+        ("", "Chloé", (3,)),
+        ("", "", (5, 6)),
+    ]

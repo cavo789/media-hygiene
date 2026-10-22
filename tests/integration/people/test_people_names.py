@@ -96,6 +96,9 @@ def test_reject_and_ignore_are_saved(cli: CliRunner, apps: list[object]) -> None
     assert rejected["saved"] == (
         "Saved in config.toml, read back: Chloé, 3 confirmed faces."
     )
+    chloe = rejected["sections"][0]  # type: ignore[index]
+    assert out not in keys(chloe)
+    assert chloe["faces"] == len(keys(sections[0])) - 1
     other = keys(sections[1])
     ignored = post(apps[-1], {"action": "ignore", "faces": other})
     assert ignored["saved"] == "Saved in config.toml, read back: 3 faces ignored."
