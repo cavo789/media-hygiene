@@ -48,3 +48,8 @@ or creates the Facebook album and adds the folder by hand — fast, since the ph
   EXIF back).
 - Size per photo: measured on synthetic pictures here, and on real ones by the maintainer
   (estimated beforehand 0.3–1 MB each from 0291's 0.28 MB at 1920 px, measured 2026-10-22).
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+Item 1: videos are **left out and counted** ("3 videos not included"): only the resized photos
+are copied (one video alone can pass a mail's limit).

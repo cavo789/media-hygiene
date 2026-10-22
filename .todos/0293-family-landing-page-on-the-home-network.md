@@ -2,7 +2,7 @@
 
 - **Priority**: Low — an idea of the maintainer (2026-10-21), after 0269 and 0291
 - **Batch**: home
-- **Depends**: 0269, 0291
+- **Depends**: 0269, 0291, 0297
 - **Files**: `src/media_hygiene/search/app.py`, `src/media_hygiene/search/views.py`, `src/media_hygiene/search/days.py`, `src/media_hygiene/search/templates/`, `src/media_hygiene/review/home_app.py`, `src/media_hygiene/config/`, `documentation/en/`, `documentation/fr/`
 - **Needs maintainer**: the decisions below (who sees this page, what it shows)
 
@@ -57,3 +57,8 @@ Every block of Gemini's page shows invented figures; kept only where the index g
 To write once decided. At least: a phone paired by 0269 opens the page and sees today's
 memories from the index, every figure on the page comes from the index (no placeholder), the
 page holds no external resource and no endless animation.
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+Kept waiting, for later: 0297 shows an album on a **paired** phone; this TODO becomes the link
+that opens one album only, for other people's phones (no pairing). It now depends on 0297.

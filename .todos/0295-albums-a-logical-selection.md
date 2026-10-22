@@ -50,3 +50,10 @@ share a list.
 - The tests of item 2 pass: a moved file is found again, a deleted one is said missing.
 - *Set aside* and *Add to the album* never touch each other's list (a test).
 - `slideshow --album "Crete 2023"` shows exactly that album.
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+- Item 5: `slideshow --chosen` is **removed at once** (it showed photos meant for the bin);
+  given, it says in one line to use `--album`.
+- From 0294: the *Share on the TV* button in search and browse belongs here; it shows the
+  current album (`slideshow --album`).

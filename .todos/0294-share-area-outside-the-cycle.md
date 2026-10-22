@@ -43,3 +43,8 @@ is kept tidy, not a stage of keeping it so. A user who wants the photos on the T
 - `tests/unit/test_menu_catalog.py`: every step in exactly one area; *Share* has no stage
   number.
 - Docs both languages, French catalogue complete.
+
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+
+Item 3: the *Share on the TV* button in search and browse comes with the albums (0295), and
+shows the current album; this TODO makes the *Share* area only.
