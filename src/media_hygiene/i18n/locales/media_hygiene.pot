@@ -3706,10 +3706,10 @@ msgstr ""
 msgid "No photo or video directly in this folder: open a subfolder."
 msgstr ""
 
-msgid "No photo to give: none ticked, or none reachable."
+msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 
-msgid "No photo to show: nothing the last audit saw matches."
+msgid "No photo to give: none ticked, or none reachable."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
@@ -3872,6 +3872,10 @@ msgid "Not looked at (not mounted): {points}."
 msgstr ""
 
 msgid "Not looked for yet"
+msgstr ""
+
+#, python-brace-format
+msgid "Not on the TV: its format ({format}) does not play there."
 msgstr ""
 
 msgid "Not opened by mh? Type the command yourself; this page is closed."
@@ -8922,6 +8926,9 @@ msgstr ""
 msgid "the value cannot be used"
 msgstr ""
 
+msgid "the video plays to its end"
+msgstr ""
+
 msgid "the whole folder pair as planned"
 msgstr ""
 
@@ -9065,6 +9072,11 @@ msgid "video tags"
 msgstr ""
 
 msgid "video: open the original"
+msgstr ""
+
+msgid ""
+"videos skipped: this TV's own browser shows photos only, open the show in"
+" the Chromecast's browser for them"
 msgstr ""
 
 msgid "videos with a date in their tags:"
@@ -10240,7 +10252,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{found} photos found: the first {shown} by date are shown."
+msgid "{found} photos and videos found: the first {shown} by date are shown."
 msgstr ""
 
 #, python-brace-format

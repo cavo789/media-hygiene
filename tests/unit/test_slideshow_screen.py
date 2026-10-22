@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 _PATHS: Final = {
     "wait_prefix": "/api/wait/",
     "code_shown": "code",
+    "ended_prefix": "/api/ended/",
+    "photos_only": "/photos",
 }
 _ORIENTATION: Final = 0x0112
 _ROTATED: Final = 6  # EXIF: the camera was turned a quarter clockwise
@@ -45,6 +47,7 @@ def test_the_screen_page_script_is_es5() -> None:
     """No arrow, let/const, template string, fetch nor Promise: a 2012 TV runs it."""
     script = _screen_script()
     assert "XMLHttpRequest" in script
+    assert '"/api/ended/"' in script  # the end of a video is told (0292)
     assert not post_es5(script)
 
 

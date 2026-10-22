@@ -1,29 +1,34 @@
-"""The show the server holds: the photos, the one on the TV, the timer.
+"""The show the server holds: the photos and videos, the one on the TV, the timer.
 
 Every change raises `version`: the pages wait for a version they have not seen yet
 (`desk`). Next and previous go round the selection, passing over the photos set out
-of the show ("do not show"); a photo chosen on the phone is shown even when it was set
-out (the choice is explicit). The timer is read, never run: `tick` moves on once the
-interval is over, called by whoever waits (the TV, the phone).
+of the show ("do not show") and the videos the TV cannot play (0292); a photo chosen
+on the phone is shown even when it was set out (the choice is explicit). The timer is
+read, never run: `tick` moves on once the interval is over (a video: once the TV says
+it ended, `ended`), called by whoever waits (the TV, the phone).
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.slideshow.order import Order
+
 if TYPE_CHECKING:
     from media_hygiene.slideshow.slides import Slide, Timing
 
 
-class Show:
+class Show:  # pylint: disable=too-many-instance-attributes
     """The selection, the photo shown, whether it plays; one version per change.
 
     `position` is the place of the photo on the TV in `slides`, None when nothing is
-    shown (an empty selection, every photo set out).
+    shown (an empty selection, every photo set out). `films` is False once every TV
+    paired shows photos only (a 2012 TV's own browser): its videos are passed over.
     """
 
     __slots__ = (
         "_deadline",
+        "films",
         "playing",
         "position",
         "skipped",
@@ -43,8 +48,9 @@ class Show:
         self.timing = timing
         self.playing = False
         self.skipped: set[int] = set()
+        self.films = True
         self.version = 1
-        self.position: int | None = 0 if slides else None
+        self.position: int | None = self._order.step(None, 1)  # the first shown
         self._deadline = 0.0
 
     @property
@@ -63,7 +69,7 @@ class Show:
         Returns:
             It; None when no other photo is left to show.
         """
-        position = self._step(1)
+        position = self._order.step(self.position, 1)
         return None if position in {None, self.position} else self.slides[position]
 
     def move(self, direction: int) -> None:
@@ -72,7 +78,7 @@ class Show:
         Args:
             direction: 1 forward (the first after the last), -1 back.
         """
-        self._go(self._step(direction))
+        self._go(self._order.step(self.position, direction))
 
     def jump(self, key: int) -> bool:
         """Show a photo chosen on the phone, set back in the show if it was out.
@@ -83,8 +89,8 @@ class Show:
         Returns:
             False for a key not in the selection.
         """
-        place = self._place(key)
-        if place is None:
+        place = self._order.place_of(key)
+        if place is None or not self.plays(self.slides[place]):
             return False
         self.skipped.discard(key)
         self._go(place)
@@ -103,7 +109,7 @@ class Show:
         Returns:
             False for a key not in the selection.
         """
-        place = self._place(key)
+        place = self._order.place_of(key)
         if place is None:
             return False
         if out:
@@ -111,10 +117,9 @@ class Show:
         else:
             self.skipped.discard(key)
         current = self.current
-        if out and current is not None and current.key == key:
-            self._go(self._step(1))
-        elif not out and current is None:
-            self._go(place)
+        shown_out = out and current is not None and current.key == key
+        if shown_out or (not out and current is None):
+            self.move(1)
         else:
             self.version += 1
         return True
@@ -126,8 +131,21 @@ class Show:
             playing: True to play.
         """
         self.playing = playing
-        self._deadline = self.timing.clock() + self.timing.interval
+        self._deadline = self.timing.clock() + self.timing.stay(self.current)
         self.version += 1
+
+    def plays(self, slide: Slide) -> bool:
+        """Tell whether the TV can show a slide: a photo, or a video it plays.
+
+        Args:
+            slide: The slide.
+
+        Returns:
+            False for a video in a format the TV cannot play, or while every TV
+            shows photos only.
+        """
+        film = slide.film
+        return film is None or (film.playable and self.films)
 
     def wait_seconds(self) -> float | None:
         """How long until the timer moves on.
@@ -157,37 +175,25 @@ class Show:
             position: The place; None for nothing.
         """
         self.position = position
-        self._deadline = self.timing.clock() + self.timing.interval
+        self._deadline = self.timing.clock() + self.timing.stay(self.current)
         self.version += 1
 
-    def _step(self, direction: int) -> int | None:
-        """Find the nearest photo still in the show, one way, going round.
-
-        Args:
-            direction: 1 forward, -1 back.
+    @property
+    def _order(self) -> Order:
+        """The selection, stopping at the slides still shown.
 
         Returns:
-            Its place; None when every photo is set out.
+            It.
         """
-        count = len(self.slides)
-        start = self.position
-        if start is None:
-            start = -1 if direction > 0 else 0
-        for offset in range(1, count + 1):
-            position = (start + direction * offset) % count
-            if self.slides[position].key not in self.skipped:
-                return position
-        return None
+        return Order(self.slides, self._shown)
 
-    def _place(self, key: int) -> int | None:
-        """Find a photo of the selection by its key.
+    def _shown(self, slide: Slide) -> bool:
+        """Tell whether next and previous stop at a slide.
 
         Args:
-            key: Its key.
+            slide: The slide.
 
         Returns:
-            Its place, or None.
+            False for one set out of the show, or a video the TV cannot play.
         """
-        return next(
-            (at for at, slide in enumerate(self.slides) if slide.key == key), None
-        )
+        return slide.key not in self.skipped and self.plays(slide)

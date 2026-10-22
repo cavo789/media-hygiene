@@ -4499,13 +4499,13 @@ msgstr ""
 "Aucune photo ni vidéo directement dans ce dossier : ouvrez un sous-"
 "dossier."
 
+msgid "No photo or video to show: nothing the last audit saw matches."
+msgstr ""
+"Aucune photo ni vidéo à montrer : rien de ce que le dernier audit a vu "
+"ne correspond."
+
 msgid "No photo to give: none ticked, or none reachable."
 msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
-
-msgid "No photo to show: nothing the last audit saw matches."
-msgstr ""
-"Aucune photo à montrer : rien de ce que le dernier audit a vu ne "
-"correspond."
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
@@ -4702,6 +4702,10 @@ msgstr "Non consulté (non monté) : {points}."
 
 msgid "Not looked for yet"
 msgstr "Pas encore cherchés"
+
+#, python-brace-format
+msgid "Not on the TV: its format ({format}) does not play there."
+msgstr "Pas sur la télé : son format ({format}) n'y est pas lu."
 
 msgid "Not opened by mh? Type the command yourself; this page is closed."
 msgstr "Pas ouverte par mh ? Tapez la commande vous-même ; cette page est fermée."
@@ -10633,6 +10637,9 @@ msgstr ""
 msgid "the value cannot be used"
 msgstr "la valeur est inutilisable"
 
+msgid "the video plays to its end"
+msgstr "la vidéo passe jusqu'au bout"
+
 msgid "the whole folder pair as planned"
 msgstr "toute la paire de dossiers comme prévu"
 
@@ -10799,6 +10806,13 @@ msgstr "balises de la vidéo"
 
 msgid "video: open the original"
 msgstr "vidéo : ouvrez l'original"
+
+msgid ""
+"videos skipped: this TV's own browser shows photos only, open the show in"
+" the Chromecast's browser for them"
+msgstr ""
+"vidéos passées : le navigateur de cette télé ne montre que les photos, "
+"ouvrez le diaporama dans le navigateur du Chromecast pour elles"
 
 msgid "videos with a date in their tags:"
 msgstr "vidéos datées par leurs balises :"
@@ -12286,8 +12300,10 @@ msgstr[1] ""
 "sauvegarde ({size})."
 
 #, python-brace-format
-msgid "{found} photos found: the first {shown} by date are shown."
-msgstr "{found} photos trouvées : les {shown} premières par date sont montrées."
+msgid "{found} photos and videos found: the first {shown} by date are shown."
+msgstr ""
+"{found} photos et vidéos trouvées : les {shown} premières par date sont "
+"montrées."
 
 #, python-brace-format
 msgid "{host} answered something that is not a search result."

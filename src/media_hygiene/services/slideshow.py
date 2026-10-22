@@ -37,7 +37,12 @@ from media_hygiene.slideshow.app import (
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
 from media_hygiene.slideshow.pictures import ShowPictures
-from media_hygiene.slideshow.screen_api import CODE_SHOWN, WAIT_PREFIX
+from media_hygiene.slideshow.screen_api import (
+    CODE_SHOWN,
+    ENDED_PREFIX,
+    PHOTOS_ONLY,
+    WAIT_PREFIX,
+)
 from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import Screens
 from media_hygiene.slideshow.show import Show
@@ -79,7 +84,7 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
         picked = picked_slides(runtime, search, start.pick)
         if not picked.slides:
             raise MediaHygieneError(
-                _("No photo to show: nothing the last audit saw matches."),
+                _("No photo or video to show: nothing the last audit saw matches."),
                 _(
                     "Check the folder as the Explorer shows it, under one of your "
                     "photo folders; a search needs 'tags' first."
@@ -87,9 +92,10 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
             )
         if picked.found > len(picked.slides):
             runtime.output.warning(
-                _("{found} photos found: the first {shown} by date are shown.").format(
-                    found=picked.found, shown=len(picked.slides)
-                )
+                _(
+                    "{found} photos and videos found: the first {shown} by date are "
+                    "shown."
+                ).format(found=picked.found, shown=len(picked.slides))
             )
         settings = runtime.settings.slideshow
         show = Show(picked.slides, Timing(settings.interval_seconds))
@@ -133,6 +139,8 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         "lan_path": LAN_PATH,
         "wait_prefix": WAIT_PREFIX,
         "code_shown": CODE_SHOWN,
+        "ended_prefix": ENDED_PREFIX,
+        "photos_only": PHOTOS_ONLY,
     }
     pages = ShowPages(
         headed_page(environment, _REMOTE_TEMPLATE, paths),

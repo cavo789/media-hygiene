@@ -11,7 +11,8 @@ the phone.**
 (or of a Chromecast plugged into it): black, one photo at a time, fitted to the screen, never a
 file name. The **remote**, on your phone: the thumbnails of the selection, ◀ and ▶, play and pause
 with the time each photo stays, **Do not show** to skip one tonight, and a tap on a thumbnail shows
-that photo on the TV. The PC holds the show: a TV reloaded or a phone gone to sleep loses nothing.
+that photo on the TV. The videos of the selection play too, as they are. The PC holds the show: a
+TV reloaded or a phone gone to sleep loses nothing.
 
 **When**: after an [`audit`](audit.md): it shows what the audit has read. A search needs
 [`tags`](tags.md) first.
@@ -61,7 +62,8 @@ folder and opens the show the same way.
 
 1. **A Chromecast with Google TV** (recommended: faster than a 2012 TV's own browser): install a
    web browser app on it, open it.
-   **The TV's own browser** (a Samsung *Smart Hub*: the **Internet** app) works too, slower.
+   **The TV's own browser** (a Samsung *Smart Hub*: the **Internet** app) works too, slower, and
+   shows the photos only: the videos need the Chromecast's browser.
 2. Type the address the window gives, for example `http://192.168.1.20:8088/screen`. It is plain
    `http`, on your home network: no certificate, nothing on the internet.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).
@@ -81,6 +83,9 @@ eight digits: the remote opens. Then:
 - A tap on a thumbnail shows that photo on the TV.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show again** sets it back.
+- A video's thumbnail is marked **▶**. On the TV, it plays to its end, then the show moves on;
+  **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
+  (*Not on the TV: its format (hevc) does not play there.*) and passed over.
 
 The TV loads the next photo in advance, behind the one shown, and swaps once it is decoded: you
 never see a photo drawn in bands.
@@ -124,13 +129,16 @@ The port is `[review] port`, the one of every page.
 
 ## Good to know
 
-- Photos only for now (images and RAW files): the videos of the folder are left out.
-- Oldest first, by the date the photo was taken; the undated ones last. At most 3,000 photos: the
-  first ones by date.
+- Videos play as they are, never converted: H.264 (most phone videos), VP8 and VP9, in `.mp4`,
+  `.m4v`, `.mov` or `.webm`. Others (HEVC, an `.avi`…) are passed over: converting them would take
+  minutes per video for a handful of files (4 of about 1,200 in a measured collection). The codec
+  is the one the last audit read; the TV's own browser of a 2012 TV shows the photos only.
+- Oldest first, by the date the photo or the video was taken; the undated ones last. At most 3,000
+  files: the first ones by date.
 - The TV gets each photo upright, at the size of its screen (300 to 500 KB, estimated), made
   once and kept in the cache with the other previews.
-- Only the photos of the show are served: a TV or a phone never reaches another photo of your
-  library, nor an original.
+- Only the files of the show are served: a TV or a phone never reaches another file of your
+  library, nor the original of a photo (a video is sent as it is).
 - A phone paired by the code may drive the show; a TV paired by its code may only show it. Too
   many wrong codes close the pairing until the slideshow starts again.
 

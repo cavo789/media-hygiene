@@ -72,7 +72,7 @@ def test_an_empty_selection_is_said(tmp_path: Path) -> None:
     """A folder the last audit did not see: nothing to show, said with a tip."""
     runtime = make_runtime(make_locations(tmp_path))
     _library(runtime.locations)
-    with pytest.raises(MediaHygieneError, match="No photo to show"):
+    with pytest.raises(MediaHygieneError, match="No photo or video to show"):
         serve_slideshow(runtime, ShowStart(Pick(folder=r"C:\Elsewhere"), 0))
 
 

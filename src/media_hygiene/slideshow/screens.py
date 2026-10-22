@@ -26,13 +26,37 @@ _HALF: Final = SCREEN_DIGITS // 2
 class Screens:
     """The TVs waiting for their code to be typed, and those paired."""
 
-    __slots__ = ("_paired", "_waiting", "failures")
+    __slots__ = ("_paired", "_photos_only", "_waiting", "failures")
 
     def __init__(self) -> None:
         """Start without any TV."""
         self._waiting: dict[str, str] = {}  # token -> code, oldest first
         self._paired: set[str] = set()
+        self._photos_only: set[str] = set()  # TVs whose browser plays no video
         self.failures = 0
+
+    @property
+    def films(self) -> bool:
+        """Tell whether the show's videos are shown: a TV paired plays them.
+
+        Returns:
+            False once every TV paired shows photos only; True without any TV.
+        """
+        return not self._paired or not self._paired <= self._photos_only
+
+    def tell(self, token: str, *, films: bool) -> None:
+        """Record whether a TV paired plays videos, as its page found out.
+
+        Args:
+            token: The TV's cookie.
+            films: True when its browser plays them.
+        """
+        if token not in self._paired:
+            return
+        if films:
+            self._photos_only.discard(token)
+        else:
+            self._photos_only.add(token)
 
     @property
     def paired(self) -> int:

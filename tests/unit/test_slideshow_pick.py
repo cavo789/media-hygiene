@@ -1,7 +1,7 @@
 """What `slideshow` shows (0291): a folder and its subfolders, a search, the set aside.
 
-Read from the index alone; photos only, oldest first, the undated last; exactly one of
-the three asked for.
+Read from the index alone; photos and videos (0292), oldest first, the undated last;
+exactly one of the three asked for.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ from media_hygiene.search.chosen import Selection
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services.search_pages import chosen_desk
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
+from media_hygiene.slideshow.slides import Film
 from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
@@ -73,8 +74,13 @@ def _keys(runtime: Runtime, tmp_path: Path, pick: Pick) -> tuple[int, ...]:
 def test_a_folder_and_its_subfolders_oldest_first(
     runtime: Runtime, tmp_path: Path
 ) -> None:
-    """Its subfolder in, a folder whose name only starts the same out, the video out."""
-    assert _keys(runtime, tmp_path, Pick(folder=r"C:\Photos\Holidays")) == (2, 1, 3)
+    """Its subfolder in, a folder whose name only starts the same out, the video in."""
+    assert _keys(runtime, tmp_path, Pick(folder=r"C:\Photos\Holidays")) == (
+        2,
+        4,
+        1,
+        3,
+    )
 
 
 def test_a_search(runtime: Runtime, tmp_path: Path) -> None:
@@ -103,3 +109,26 @@ def test_exactly_one_choice(runtime: Runtime, tmp_path: Path, pick: Pick) -> Non
         pytest.raises(MediaHygieneError, match="--chosen"),
     ):
         picked_slides(runtime, search, pick)
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        ('{"codec": "hevc", "duration": 12.5}', Film(".mp4", "hevc", 12.5)),
+        ("not json", Film(".mp4")),
+        (None, Film(".mp4")),
+    ],
+)
+def test_a_video_carries_its_codec_and_length(
+    runtime: Runtime, tmp_path: Path, case: tuple[str | None, Film]
+) -> None:
+    """Read from what the audit's ffprobe stored; unreadable: unknown, tried."""
+    metadata, film = case
+    index = _index(runtime, tmp_path)
+    with closing(sqlite3.connect(index)) as connection:
+        connection.execute("UPDATE files SET metadata = ? WHERE rowid = 4", (metadata,))
+        connection.commit()
+    with SearchIndex.open(index) as search:
+        picked = picked_slides(runtime, search, Pick(folder=r"C:\Photos\Holidays"))
+    films = [slide.film for slide in picked.slides]
+    assert films == [None, film, None, None]

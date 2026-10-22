@@ -9,7 +9,8 @@
   the interval, "do not show"; `POST /api/screens`: the code a TV shows, to pair it.
   The PC and the paired phones only; `GET /api/lan` (the address, the code and the QR
   code for the PC's page) the PC only.
-- `GET /tv/<key>.jpg` (the TV's picture) and `/thumb/<key>.jpg`: the show's photos only.
+- `GET /tv/<key>.jpg` (the TV's picture), `/thumb/<key>.jpg` and `/film/<key>.<ext>` (a
+  video, 0292): the show's files only.
 
 Nothing changes a photo: no route writes anything but the show held in memory.
 """
@@ -27,6 +28,7 @@ from media_hygiene.review.lan_app import LAN_PATH, lan_response
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
+from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.slideshow.door import Visitor, screen_cookie, screen_token
 from media_hygiene.slideshow.pictures import slides_view
 from media_hygiene.slideshow.screen_api import ScreenDesk, pair_screen
@@ -112,7 +114,7 @@ class SlideshowApp:
         if request.method != _GET:
             return self.door.stranger_page(request)
         if visitor is Visitor.SCREEN:
-            pictured = await self.pictures.answer(request.path, tv_only=True)
+            pictured = await self.pictures.answer(request, tv_only=True)
             if pictured is not None:
                 return pictured
         if request.path.startswith(PAIR_PREFIX):
@@ -135,7 +137,11 @@ class SlideshowApp:
             if fresh is not None:
                 headers = (screen_cookie(fresh),)
         return Response(
-            HTTPStatus.OK, self.pages.screen, ContentType.HTML, headers=headers
+            HTTPStatus.OK,
+            self.pages.screen,
+            ContentType.HTML,
+            policy=NEAR_POLICY,  # it plays the videos
+            headers=headers,
         )
 
     async def _remote(self, request: Request) -> Response:
@@ -153,14 +159,15 @@ class SlideshowApp:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         path = request.path
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.pages.remote, ContentType.HTML)
+            remote = self.pages.remote
+            return Response(HTTPStatus.OK, remote, ContentType.HTML, policy=NEAR_POLICY)
         if path == SLIDES_PATH:
             return json_response(HTTPStatus.OK, slides_view(self.desk))
         if path.startswith(f"{SHOW_PATH}/"):
             since = path.removeprefix(f"{SHOW_PATH}/")
             await self.desk.settle(int(since) if since.isdigit() else 0)
             return json_response(HTTPStatus.OK, self.desk.state())
-        pictured = await self.pictures.answer(path)
+        pictured = await self.pictures.answer(request)
         return Response(HTTPStatus.NOT_FOUND) if pictured is None else pictured
 
     def _posted(self, request: Request) -> Response:

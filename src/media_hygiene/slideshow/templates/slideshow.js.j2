@@ -1,6 +1,7 @@
 {# The script of the remote (slideshow.html.j2): the photos once, then the show as the server holds
    it, asked again and again (a long poll: the answer comes once the show changed). Each button
-   sends one action; the answer is the show as it now is. #}
+   sends one action; the answer is the show as it now is. A video (0292) is marked ▶, its first
+   frame as thumbnail; one the TV cannot play is labelled and cannot be chosen. #}
 (() => {
   const TEXTS = {{ texts | tojson }};
   const SLIDES_PATH = {{ slides_path | tojson }};
@@ -16,6 +17,7 @@
   const out = document.getElementById("out");
   const seconds = document.getElementById("seconds");
   const tiles = new Map();
+  const filmKeys = new Set();
   let version = 0;
   let current = null;
   let playing = false;
@@ -40,12 +42,15 @@
     for (const [key, tile] of tiles) {
       tile.classList.toggle("current", key === current);
       tile.classList.toggle("out", outKeys.has(key));
-      tile.querySelector("button").textContent = outKeys.has(key) ? TEXTS.in : TEXTS.out;
+      const toggle = tile.querySelector("button");
+      if (toggle) toggle.textContent = outKeys.has(key) ? TEXTS.in : TEXTS.out;
     }
     const where = show.place === null ? TEXTS.nothing : TEXTS.place.replace("{place}", show.place).replace("{total}", show.total);
-    const pace = show.playing ? TEXTS.playing.replace("{seconds}", show.seconds) : TEXTS.paused;
+    const stays = filmKeys.has(current) ? TEXTS.filmPlays : TEXTS.playing.replace("{seconds}", show.seconds);
+    const pace = show.playing ? stays : TEXTS.paused;
     const screens = show.screens === 0 ? TEXTS.noScreen : plural(TEXTS.screens, show.screens);
-    say(`${where} · ${pace} · ${screens}`, false);
+    const films = show.films || filmKeys.size === 0 ? "" : ` · ${TEXTS.photosOnly}`;
+    say(`${where} · ${pace} · ${screens}${films}`, false);
     play.textContent = show.playing ? TEXTS.pause : TEXTS.play;
     out.disabled = current === null;
     const paceValue = String(show.seconds);
@@ -70,21 +75,53 @@
       });
   }
 
+  function pictureOf(slide) {
+    if (slide.thumb) {
+      const image = document.createElement("img");
+      image.src = slide.thumb;
+      image.alt = slide.day || "";
+      image.loading = "lazy";
+      return image;
+    }
+    if (!slide.film) {
+      const blank = document.createElement("div");
+      blank.className = "blank";
+      blank.textContent = "▶";
+      return blank;
+    }
+    const movie = document.createElement("video");
+    movie.muted = true;
+    movie.playsInline = true;
+    movie.preload = "metadata";
+    movie.src = `${slide.film}#t=0.5`;  // its first frames: the thumbnail
+    return movie;
+  }
+
   function tileOf(slide) {
     const figure = document.createElement("figure");
     figure.className = "tile";
-    const image = document.createElement("img");
-    image.src = slide.thumb;
-    image.alt = slide.day || "";
-    image.loading = "lazy";
-    image.addEventListener("click", () => ask({ action: "jump", key: slide.key }));
+    const picture = pictureOf(slide);
     const caption = document.createElement("figcaption");
     caption.textContent = slide.day || "";
+    if (slide.format && !slide.film) {  // a video the TV cannot play
+      figure.classList.add("unplayable");
+      caption.textContent = TEXTS.unplayable.replace("{format}", slide.format);
+      figure.append(picture, caption);
+      return figure;
+    }
+    if (slide.film) {
+      filmKeys.add(slide.key);
+      const mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = "▶";
+      figure.append(mark);
+    }
+    picture.addEventListener("click", () => ask({ action: "jump", key: slide.key }));
     const toggle = document.createElement("button");
     toggle.type = "button";
     toggle.className = "plain";
     toggle.addEventListener("click", () => ask({ action: figure.classList.contains("out") ? "in" : "out", key: slide.key }));
-    figure.append(image, caption, toggle);
+    figure.append(picture, caption, toggle);
     return figure;
   }
 

@@ -119,8 +119,11 @@ def test_the_pc_does_everything_without_pairing(app: SlideshowApp) -> None:
     wait = json.loads(_ask(app, _request("/api/wait/0", sender=_PC)).body)
     assert wait == {
         "version": state["version"],
+        "key": 2,
         "photo": "/tv/2.jpg",
+        "film": "",
         "next": "/tv/1.jpg",
+        "playing": False,
         "code": "",
     }
     assert _ask(app, _request("/tv/2.jpg", sender=_PC)).status is HTTPStatus.OK

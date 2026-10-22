@@ -110,7 +110,8 @@ class Desk:
 
         Returns:
             The version, the photo shown (its key, its place from 1), whether it
-            plays, the interval, the photos set out, the TVs paired.
+            plays, the interval, the photos set out, the TVs paired, whether the
+            videos are shown.
         """
         show = self.show
         current = show.current
@@ -123,6 +124,7 @@ class Desk:
             "seconds": round(show.timing.interval),
             "out": sorted(show.skipped),
             "screens": self.screens.paired,
+            "films": show.films,  # False: every TV shows photos only (0292)
         }
 
     def ask(self, body: bytes) -> Response:

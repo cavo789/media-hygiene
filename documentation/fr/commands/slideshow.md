@@ -11,8 +11,9 @@ choisie depuis le téléphone.**
 télé (ou d'un Chromecast branché dessus) : noir, une photo à la fois, ajustée à l'écran, jamais un
 nom de fichier. La **télécommande**, sur votre téléphone : les vignettes de la sélection, ◀ et ▶,
 lecture et pause avec le temps que reste chaque photo, **Ne pas montrer** pour en passer une ce
-soir, et une vignette touchée montre cette photo sur la télé. Le PC tient le diaporama : une télé
-rechargée ou un téléphone mis en veille ne perd rien.
+soir, et une vignette touchée montre cette photo sur la télé. Les vidéos de la sélection passent
+aussi, telles quelles. Le PC tient le diaporama : une télé rechargée ou un téléphone mis en veille
+ne perd rien.
 
 **Quand** : après un [`audit`](audit.md) : il montre ce que l'audit a lu. Une recherche demande
 d'abord [`tags`](tags.md).
@@ -64,7 +65,8 @@ le dossier et ouvre le diaporama de la même façon.
 1. **Un Chromecast avec Google TV** (conseillé : plus rapide que le navigateur d'une télé de
    2012) : installez-y une application de navigateur web, ouvrez-la.
    **Le navigateur de la télé** (sur une Samsung *Smart Hub* : l'application **Internet**)
-   fonctionne aussi, plus lentement.
+   fonctionne aussi, plus lentement, et ne montre que les photos : les vidéos demandent le
+   navigateur du Chromecast.
 2. Tapez l'adresse que donne la fenêtre, par exemple `http://192.168.1.20:8088/screen`. C'est du
    `http` simple, sur votre réseau de la maison : pas de certificat, rien sur Internet.
 3. **Mettez-la en favori** : la fois suivante, le favori suffit (voyez
@@ -87,6 +89,9 @@ de huit chiffres : la télécommande s'ouvre. Ensuite :
 - Une vignette touchée montre cette photo sur la télé.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
   bouton d'une vignette fait de même pour n'importe quelle photo, et **Remontrer** la remet.
+- La vignette d'une vidéo est marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
+  diaporama continue ; **❚❚ Pause** la met en pause aussi. Une vidéo que la télé ne sait pas lire
+  est signalée sous sa vignette (*Pas sur la télé : son format (hevc) n'y est pas lu.*) et passée.
 
 La télé charge la photo suivante à l'avance, derrière celle affichée, et les échange une fois
 décodée : vous ne voyez jamais une photo dessinée par bandes.
@@ -130,14 +135,17 @@ Le port est `[review] port`, celui de toutes les pages.
 
 ## Bon à savoir
 
-- Des photos seulement pour l'instant (images et fichiers RAW) : les vidéos du dossier sont
-  laissées de côté.
-- Les plus anciennes d'abord, par date de prise de vue ; celles sans date à la fin. Au plus 3 000
-  photos : les premières par date.
+- Les vidéos passent telles quelles, jamais converties : H.264 (la plupart des vidéos de
+  téléphone), VP8 et VP9, en `.mp4`, `.m4v`, `.mov` ou `.webm`. Les autres (HEVC, un `.avi`…) sont
+  passées : les convertir prendrait des minutes par vidéo pour une poignée de fichiers (4 sur
+  environ 1 200 dans une collection mesurée). Le codec est celui que le dernier audit a lu ; le
+  navigateur d'une télé de 2012 ne montre que les photos.
+- Les plus anciennes d'abord, par date de prise de vue de la photo ou de la vidéo ; celles sans date
+  à la fin. Au plus 3 000 fichiers : les premiers par date.
 - La télé reçoit chaque photo redressée, à la taille de son écran (300 à 500 Ko, estimé), faite
   une fois et gardée dans le cache avec les autres aperçus.
-- Seules les photos du diaporama sont servies : une télé ou un téléphone n'atteint jamais une
-  autre photo de votre photothèque, ni un original.
+- Seuls les fichiers du diaporama sont servis : une télé ou un téléphone n'atteint jamais un autre
+  fichier de votre photothèque, ni l'original d'une photo (une vidéo est envoyée telle quelle).
 - Un téléphone appairé par le code peut piloter le diaporama ; une télé appairée par son code peut
   seulement le montrer. Trop de codes erronés ferment l'appairage jusqu'au prochain lancement.
 

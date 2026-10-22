@@ -3,7 +3,8 @@
    paired by `mh --lan`'s code: ◀ ▶, play/pause and the interval, "do not show", a thumbnail tapped
    shows that photo on the TV; the code a TV shows pairs it. On the PC, the card says how the TV
    and the phone open the show (GET /api/lan: the address, the code, the QR code; 404 without
-   `mh --lan`). The server holds the show: this page only asks and draws (`slideshow.js.j2`). #}
+   `mh --lan`). The server holds the show: this page only asks and draws (`slideshow.js.j2`).
+   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. #}
 {% set texts = {
   "place": _("Photo {place} of {total}"),
   "nothing": _("Nothing on the TV: every photo is set out of the show."),
@@ -21,6 +22,9 @@
   "lanOff": _("Only this PC can open the slideshow. For the TV and your phone, type on the PC: {command}"),
   "lanCommand": "mh slideshow --lan …",
   "seconds": _("{n} s"),
+  "filmPlays": _("the video plays to its end"),
+  "unplayable": _("Not on the TV: its format ({format}) does not play there."),
+  "photosOnly": _("videos skipped: this TV's own browser shows photos only, open the show in the Chromecast's browser for them"),
 } %}
 {% set page_name = _("Slideshow") %}
 <html lang="{{ _('en') }}">
@@ -51,7 +55,11 @@
   .tile { position: relative; margin: 0; background: var(--card); border: 3px solid transparent; border-radius: 10px; overflow: hidden; }
   .tile.current { border-color: var(--accent); }
   .tile.out img { opacity: .3; }
-  .tile img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--chip); cursor: pointer; }
+  .tile img, .tile video, .tile .blank { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--chip); cursor: pointer; }
+  .tile.out video { opacity: .3; }
+  .tile .blank { display: grid; place-items: center; font-size: 2rem; color: var(--muted); cursor: default; }
+  .tile .mark { position: absolute; z-index: 1; top: 4px; left: 4px; padding: 0 6px; border-radius: 6px; color: #fff; background: rgba(0, 0, 0, .6); pointer-events: none; }
+  .tile.unplayable figcaption { color: var(--bad); }
   .tile figcaption { padding: 2px 6px; font-size: .75rem; color: var(--muted); }
   .tile button { position: absolute; top: 4px; right: 4px; min-height: 32px; padding: 2px 8px; font-size: .75rem; }
 </style>
