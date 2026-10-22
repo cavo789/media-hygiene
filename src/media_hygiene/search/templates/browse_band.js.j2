@@ -6,12 +6,8 @@
 const BAND_START = 6; // pixels before a press becomes a rectangle
 const BAND_EDGE = 40; // pixels from the edge of the window where the page scrolls
 const BAND_STEP = 14; // pixels scrolled per frame there
-const head = document.querySelector("header");
+const head = $("bar"); // sticky on top of the grid: the page scrolls from its bottom edge
 let band = null; // the rectangle drawn: where it started (page), the picking kept, its node
-
-// The column on the left starts below the header, whose height changes with its lines.
-new ResizeObserver(() => document.body.style.setProperty("--head", head.offsetHeight + "px"))
-  .observe(head);
 
 function drawBand() {
   const x = band.clientX + window.scrollX;

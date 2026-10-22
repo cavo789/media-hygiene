@@ -47,6 +47,9 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 
 ![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside, the saved line and the Apply now button](../images/browse.webp)
 
+- **The bar above the grid**: the folder shown, how many files it holds and what is set aside,
+  with **Sort by** and the album field. As soon as a file is picked, it shows what to do with
+  the picking: **✕** picks none, **Set aside the picked files**, **Invert the picking**.
 - **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
   folder: its photos and videos appear, sorted by name or by date (**Sort by**).
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
@@ -56,15 +59,15 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);
   Ctrl+A the whole folder. **Invert the picking** (or I) picks the others: when a folder holds
   mostly failed shots, pick the good ones, invert, then Delete. The keys are listed under the
-  tree, always in sight.
+  tree, always in sight, with the 🔒 line reminding that nothing is deleted from this page.
 - **Set aside**: Delete, or **Set aside the picked files**. The choice is saved at once in
   `decisions.json` of your reports, read back from the disk and shown with its count and size:
   *37 files set aside (412 MB), saved in …: 'clean --decisions' moves them to the quarantine,
   and remembers them: if one comes back (a new copy from the phone), the audit proposes it
   again.* (See [What you set aside stays set aside](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside).)
-  Those files carry a red *marked to set aside* label; **Take out of the set aside** takes
-  picked files back out.
-- **Search by words** opens the [`search`](search.md) page, on the same server: what you set
+  Those files carry a red *marked to set aside* label; once one of them is picked, **Take out
+  of the set aside** appears in the bar and takes the picked files back out.
+- **🔎 Words**, the tab above the tree, opens the [`search`](search.md) page, on the same server: what you set
   aside there and here goes to the same file.
 - **➕ Add to the album** puts the picked photos in the album typed in **Album**, apart from the
   set aside; **📺 Share on the TV** gives the command that shows it. See
@@ -80,7 +83,7 @@ It says how many files and bytes go (apart from the duplicates), asks, then move
 quarantine, journaled: `mh undo` brings them back, `mh purge` frees the space.
 
 **Opened from the [home page](home.md)** (`mh` alone, then the *Walk through your folders* step):
-once something is set aside, an **Apply now** button appears under the saved line. It closes
+once something is set aside, an **Apply now** button appears in the bar, next to the saved line. It closes
 the page and `mh` runs the home page's step that applies your choices (`mh clean --decisions`,
 with `--tier near` when you also reviewed near duplicates), with its usual question, in the
 window where `mh` runs (PowerShell on Windows); then the home page comes back. Opened by `mh browse` alone, there is no

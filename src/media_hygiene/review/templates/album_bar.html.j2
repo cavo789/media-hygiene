@@ -5,8 +5,11 @@
    finds), and it calls `window.mhAlbumPicked(count)` when the picking changes. Each change is
    saved at once and shown as read back from the disk, with the files missing from each album.
    *Share on the TV* gives the command that shows the album typed (`slideshow --album`),
-   *Prepare for sending* the one that makes its copies to send (`share --album`, 0296). #}
+   *Prepare for sending* the one that makes its copies to send (`share --album`, 0296).
+   `album_compact` (browse's one bar, 0305): the field says how to start, and the list of the
+   albums is not said on opening (the field offers them), only what each change saved. #}
 {% if albums_path %}
+{% set album_quiet = album_compact | default(false) %}
 <style>
   #albumBar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
   #albumBar input { width: 14em; }
@@ -19,7 +22,7 @@
 <div id="albumBar">
   <label for="albumName">{{ _("Album") }}</label>
   <input id="albumName" list="albumNames" maxlength="80" autocomplete="off"
-         placeholder="{{ _('e.g. Crete 2023') }}">
+         placeholder="{{ _('type a name, e.g. Crete 2023') if album_quiet else _('e.g. Crete 2023') }}">
   <datalist id="albumNames"></datalist>
   <button id="albumAdd" type="button" disabled>➕ {{ _("Add to the album") }}</button>
   <button id="albumRemove" class="plain" type="button" disabled>{{ _("Take out of the album") }}</button>
@@ -42,6 +45,7 @@
     "send": _("To prepare {name} for sending (resized copies without the GPS position, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
   } | tojson }};
   const STORED = "mh-album";
+  const QUIET = {{ album_quiet | tojson }};
   const $ = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const plural = new Intl.PluralRules(document.documentElement.lang);
@@ -59,10 +63,12 @@
     $("albumSend").disabled = !named();
   };
 
-  const show = (answer, state) => {
+  const show = (answer, state, opening) => {
     const line = $("albumSaid");
     line.className = answer.ok ? "" : "error";
-    line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+    if (!(opening && QUIET && answer.ok)) {
+      line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+    }
     if (!answer.ok) return;
     albums = state.albums || [];
     $("albumNames").replaceChildren(...albums.map((album) => {
@@ -123,7 +129,7 @@
   $("albumRemove").addEventListener("click", () => send("remove"));
   $("albumTv").addEventListener("click", () => say(TEXTS.tv, 'mh slideshow --album "{name}" --lan'));
   $("albumSend").addEventListener("click", () => say(TEXTS.send, 'mh share --album "{name}"'));
-  fetch(ALBUMS_PATH).then(async (answer) => show(answer, await answer.json())).catch(() => { /* the page says it */ });
+  fetch(ALBUMS_PATH).then(async (answer) => show(answer, await answer.json(), true)).catch(() => { /* the page says it */ });
 })();
 </script>
 {% endif %}

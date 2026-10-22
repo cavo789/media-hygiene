@@ -11181,6 +11181,9 @@ msgstr "deux petits modèles locaux : rien n'est envoyé"
 msgid "type a name first"
 msgstr "tapez d'abord un nom"
 
+msgid "type a name, e.g. Crete 2023"
+msgstr "tapez un nom, p. ex. Crète 2023"
+
 msgid "unanswered"
 msgstr "sans réponse"
 
@@ -13514,10 +13517,10 @@ msgid ""
 "several groups at once, i ignores a group; × marks a face that is someone"
 " else's, the next button saves it."
 msgstr ""
-"↑ ↓ se déplacer, Entrée nomme, y confirme les visages attribués "
-"affichés, x nomme plusieurs groupes à la fois, i ignore un groupe ; × "
-"marque un visage qui est celui de quelqu'un d'autre, le prochain "
-"bouton l'enregistre."
+"↑ ↓ se déplacer, Entrée nomme, y confirme les visages attribués affichés,"
+" x nomme plusieurs groupes à la fois, i ignore un groupe ; × marque un "
+"visage qui est celui de quelqu'un d'autre, le prochain bouton "
+"l'enregistre."
 
 #, python-brace-format
 msgid ""

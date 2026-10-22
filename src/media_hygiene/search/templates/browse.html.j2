@@ -3,7 +3,9 @@
    library's folders on the left, the photos and videos of the folder chosen on the
    right. The photos are never changed: the files picked can be set aside, saved at
    once in the decisions file for `clean --decisions`. The keys are listed under the
-   tree, always in sight, as on the review pages (`review_side.css.j2`). The scripts
+   tree, always in sight, as on the review pages (`review_side.css.j2`), with the line
+   saying that nothing is deleted here. Above the grid, one bar (0305): the folder shown,
+   or, once files are picked, what to do with them (set aside, albums). The scripts
    are `browse.js.j2` and `browse_band.js.j2`. Opened from the home page, *Apply now*
    ends the page on the home step that applies the decisions (`apply_now.html.j2`). #}
 {% set texts = {
@@ -32,11 +34,6 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 400 15px/1.5 var(--mk-font-text); }
-  header { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--card);
-           border-bottom: 1px solid var(--line); }
-  .switch { font-size: 1.1rem; margin: 0 0 4px; display: flex; gap: 16px; align-items: baseline;
-       flex-wrap: wrap; }
-  .switch a { font-size: .9rem; font-weight: 400; color: var(--accent); }
   label { font-size: .85rem; color: var(--muted); }
   select { padding: 4px 6px; font: inherit; color: var(--text); background: var(--bg);
            border: 1px solid var(--line); border-radius: 6px; }
@@ -44,13 +41,30 @@
            border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
   button.plain { color: var(--accent); background: transparent; }
   button:disabled { opacity: .45; cursor: default; }
-  #actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
-  .hint, #status { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
-  #chosen { font-size: .85rem; margin: 6px 0 0; }
+  /* One bar above the grid (0305): where you are, or what to do with the files picked. */
+  #content { min-width: 0; }
+  #bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px 10px;
+         align-items: center; padding: 8px 16px; background: var(--card);
+         border-bottom: 1px solid var(--line); }
+  #bar.acting { background: color-mix(in srgb, var(--accent) 14%, var(--card)); }
+  #lead, #acting { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  #lead[hidden], #acting[hidden], #takeBack[hidden] { display: none; }
+  #status { font-weight: 600; overflow-wrap: anywhere; }
+  #chosen { flex: 1 1 220px; min-width: 0; font-size: .85rem; }
+  #bar #albumBar { margin: 0; }
+  #bar #albumBar input { width: 17em; }
+  #bar > p, #bar > details { flex-basis: 100%; margin: 0; }
+  #bar > p:empty { display: none; }
+  #views { display: flex; gap: 6px; flex: none; }
+  #views > * { flex: 1; padding: 6px; text-align: center; background: var(--card);
+               border: 1px solid var(--line); border-radius: 8px; }
+  #views [aria-current] { font-weight: 600; border-color: var(--accent); }
+  #views a { color: var(--accent); text-decoration: none; }
+  #keys .safe { margin: 8px 0 0; color: var(--muted); }
   #chosen.error, #status.error { color: var(--bad); font-weight: 600; }
 {% include "review_side.css.j2" %}
-  /* The header is taller than the review pages': the column starts below it. */
-  #side { top: calc(var(--head, 52px) + 8px); height: calc(100vh - var(--head, 52px) - 24px); }
+  /* No header above the columns: the left one starts at the top of the window. */
+  #side { top: 8px; height: calc(100vh - 16px); margin-top: 8px; }
   nav { overflow-wrap: anywhere; }
   nav ul { list-style: none; margin: 0; padding-left: 14px; }
   nav > ul { padding-left: 0; }
@@ -92,28 +106,12 @@
 </head>
 <body>
 {% include "page_header.html.j2" %}
-<header>
-  <p class="switch">🔒 <a href="{{ search_page }}">{{ _("Search by words") }}</a></p>
-  <div id="actions">
-    <label>{{ _("Sort by") }}
-      <select id="order">
-        <option value="name">{{ _("name") }}</option>
-        <option value="date">{{ _("date") }}</option>
-      </select></label>
-    <span id="picked"></span>
-    <button id="setAside" type="button" disabled>{{ _("Set aside the picked files") }}</button>
-    <button id="takeBack" class="plain" type="button" disabled>{{ _("Take out of the set aside") }}</button>
-    <button id="invert" class="plain" type="button" disabled title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
-    <button id="unpick" class="plain" type="button" disabled>{{ _("Pick none") }}</button>
-  </div>
-  <p id="status" role="status"></p>
-  <p id="chosen" role="status"></p>
-  {% include "apply_now.html.j2" %}
-  {% include "album_bar.html.j2" %}
-  <p class="hint">{{ _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
-</header>
 <div class="layout">
   <aside id="side">
+    <div id="views">
+      <span aria-current="page">📁 {{ _("Folders") }}</span>
+      <a href="{{ search_page }}" title="{{ _('Search by words') }}">🔎 {{ _("Words") }}</a>
+    </div>
     <nav id="toc" aria-label="{{ _('Your folders') }}"><div id="tree"></div></nav>
     <section id="keys" aria-label="{{ _('Keyboard') }}">
       <h2>⌨ {{ _("Keyboard") }}</h2>
@@ -135,9 +133,31 @@
         <dt><kbd>Esc</kbd></dt><dd>{{ _("close it") }}</dd>
       </dl>
       </details>
+      <p class="safe">🔒 {{ _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") }}</p>
     </section>
   </aside>
+  <div id="content">
+  <header id="bar">
+    <span id="lead"><span id="status" role="status"></span></span>
+    <span id="acting" hidden>
+      <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
+      <strong id="picked"></strong>
+      <button id="setAside" type="button">{{ _("Set aside the picked files") }}</button>
+      <button id="takeBack" class="plain" type="button" hidden>{{ _("Take out of the set aside") }}</button>
+      <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
+    </span>
+    <span id="chosen" role="status"></span>
+    {% include "apply_now.html.j2" %}
+    <label>{{ _("Sort by") }}
+      <select id="order">
+        <option value="name">{{ _("name") }}</option>
+        <option value="date">{{ _("date") }}</option>
+      </select></label>
+    {% set album_compact = true %}
+    {% include "album_bar.html.j2" %}
+  </header>
   <main id="grid"></main>
+  </div>
 </div>
 <div id="viewer" role="dialog" aria-modal="true">
   <img id="large" alt="">

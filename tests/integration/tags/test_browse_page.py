@@ -251,3 +251,32 @@ def test_the_page_lists_its_keys_and_picks_many_at_once(
     assert 'element("input", "tick")' in page
     assert 'addEventListener("pointerdown"' in page  # browse_band.js.j2
     assert "Ctrl+click adds one" not in page  # the old line of text is gone
+
+
+def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0305: one bar, the folder or what to do with the picking; 🔒 in the keys."""
+    answers, _ = _browse(cli, monkeypatch, [("GET /browse", None)])
+    page = answers[0].body.decode()
+    header = page.split('<header id="bar">')[1].split("</header>")[0]
+    for part in (
+        'id="status"',
+        '<span id="acting" hidden>',
+        'id="setAside"',
+        'id="chosen"',
+    ):
+        assert part in header
+    assert '<button id="takeBack" class="plain" type="button" hidden>' in header
+    assert 'id="albumBar"' in header
+    # The compact album field says how to start.
+    assert "type a name, e.g. Crete 2023" in header
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    assert "🔒 Nothing is deleted from this page" in keys
+    views = page.split('id="views"')[1].split("</div>")[0]
+    assert 'aria-current="page"' in views
+    assert 'href="/search"' in views
+    script = page.split("function showPicked()")[1].split("\n}\n")[0]
+    assert '$("bar").classList.toggle("acting", some)' in script
+    # *Take out of the set aside* shows only for a picked file already set aside.
+    assert "file.chosen && picked.has(file.key)" in script

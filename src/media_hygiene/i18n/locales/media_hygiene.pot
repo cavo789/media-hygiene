@@ -9374,6 +9374,9 @@ msgstr ""
 msgid "type a name first"
 msgstr ""
 
+msgid "type a name, e.g. Crete 2023"
+msgstr ""
+
 msgid "unanswered"
 msgstr ""
 

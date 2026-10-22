@@ -31,9 +31,10 @@ function element(tag, className, text) {
   return node;
 }
 
+// Said in the line the bar always shows, whether files are picked or not.
 function failed(answer) {
-  $("status").className = "error";
-  $("status").textContent = answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline;
+  $("chosen").className = "error";
+  $("chosen").textContent = answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline;
 }
 
 async function ask(path, body) {
@@ -191,9 +192,13 @@ function showPicked() {
     node.classList.toggle("picked", on);
     node.querySelector(".tick").checked = on;
   });
-  $("picked").textContent = picked.size ? counted(TEXTS.picked, picked.size) : "";
-  for (const id of ["setAside", "takeBack", "unpick"]) $(id).disabled = !picked.size;
-  $("invert").disabled = !files.length;
+  // The bar shows where you are, or, once a file is picked, what to do with the picking.
+  const some = picked.size > 0;
+  $("bar").classList.toggle("acting", some);
+  $("lead").hidden = some;
+  $("acting").hidden = !some;
+  $("picked").textContent = some ? counted(TEXTS.picked, picked.size) : "";
+  $("takeBack").hidden = !files.some((file) => file.chosen && picked.has(file.key));
   if (window.mhAlbumPicked) window.mhAlbumPicked(picked.size); // album_bar.html.j2
 }
 
