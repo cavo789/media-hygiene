@@ -3,13 +3,17 @@
 The faces are cut from their photos on request in the worker pool and never written
 anywhere; the page is served like `review` and `places`, on the loopback only. The
 names are saved into `config.toml` (`[[people.person]]`), when `/config` is mounted
-and writable; otherwise the page shows the groups and the names already given.
+and writable; otherwise the page shows the groups and the names already given. The
+photos of a group can be set aside in the decisions file of the reports folder, like
+on the search page; opened from the home page, *Apply now* ends the page on the step
+that moves them to the quarantine.
 """
 
 from __future__ import annotations
 
 import asyncio
 import contextlib
+from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
@@ -22,17 +26,23 @@ from media_hygiene.people.app import (
     FACE_PREFIX,
     GROUPS_PATH,
     PHOTO_PREFIX,
+    SECTION_PREFIX,
     PeopleApp,
 )
+from media_hygiene.people.aside import ASIDE_PATH, AsideDesk
 from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.roster import NamesFile, Roster
-from media_hygiene.review.ending import run_server
+from media_hygiene.review.apply_api import APPLY_PATH, ApplyOffer, applying_door
+from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.review.page_header import page_header
+from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.reviewing import address_tip, page_url
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.services.people_names import PeopleResult
     from media_hygiene.services.runtime import Runtime
 
@@ -40,29 +50,62 @@ _PACKAGE: Final = "media_hygiene.people"
 _PAGE_TEMPLATE: Final = "people.html.j2"
 
 
-def serve_people(runtime: Runtime, result: PeopleResult, port: int) -> None:
-    """Serve the groups until Ctrl+C; each name is saved as it is given.
+@dataclass(frozen=True, slots=True)
+class PeopleStart:
+    """The port of the page, and the step its *Apply now* ends on (None: no button)."""
+
+    port: int
+    apply: Callable[[], ApplyStep | None] | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class PeopleServed:
+    """How the page ended: the files set aside, and the exit code asked for."""
+
+    chosen: int  # read from the disk
+    code: int = 0  # `STEP_EXIT_BASE + n`: *Apply now* chose step `n`
+
+
+def serve_people(
+    runtime: Runtime, result: PeopleResult, start: PeopleStart
+) -> PeopleServed:
+    """Serve the groups until Ctrl+C or *Apply now*; each choice is saved at once.
 
     Args:
         runtime: Settings, mount points and output.
         result: The groups to show, and every face of the index.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port (0: any free one) and the step *Apply now* ends on.
+
+    Returns:
+        How many files are set aside when the page stops, read from the disk, and
+        the exit code the page asked for.
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
         header=page_header(_PAGE_TEMPLATE),
         groups_path=GROUPS_PATH,
+        section_prefix=SECTION_PREFIX,
         change_path=CHANGE_PATH,
+        aside_path=ASIDE_PATH,
         face_prefix=FACE_PREFIX,
         photo_prefix=PHOTO_PREFIX,
+        apply_path=APPLY_PATH,
+        apply_offered=start.apply is not None,
     )
     names = NamesFile(_names_file(runtime), runtime.settings.people, result.moves)
     roster = Roster(PeopleBoard.of(result.groups), result.every, names)
+    aside = AsideDesk(chosen_store(runtime), partial(reports_ready, runtime))
+    offer = ApplyOffer(start.apply, lambda: bool(aside.paths()))
+    code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PeopleApp(
-            roster, runtime.mapper, page.encode(), executor, runtime.previews_dir
+            roster, runtime.mapper, page.encode(), executor, runtime.previews_dir, aside
         )
-        asyncio.run(run_server(app, port, partial(_announce, runtime, roster)))
+        ready = partial(_announce, runtime, roster)
+        code = asyncio.run(
+            serve_until_ended(applying_door(app, offer), start.port, ready)
+        )
+    return PeopleServed(len(aside.paths()), code)
 
 
 def _names_file(runtime: Runtime) -> Path | None:

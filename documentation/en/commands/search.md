@@ -57,8 +57,9 @@ as a table.
 
 ## Set photos aside
 
-To remove every photo of someone, or of an event: search them (`person:"Ann"`, a year, a word),
-pick them (a click or Space on each, or **Pick all N files found**: every file the search finds,
+To remove every photo of someone, the [`people`](people.md#remove-every-photo-of-someone) page
+does it from their group of faces. To remove those of an event, or any other choice: search them
+(`person:"Ann"`, a year, a word), pick them (a click or Space on each, or **Pick all N files found**: every file the search finds,
 not only the 240 shown), then **Set aside the picked files**.
 
 - Nothing is deleted from the page. The choice is saved at once in `decisions.json` of your

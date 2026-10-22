@@ -33,7 +33,7 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | Vos dossiers, `/cache` (en écriture : les visages y sont gardés), `/config` (en écriture, pour enregistrer les noms) et `-p 127.0.0.1:8088:8088`. |
-| Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml`. |
+| Écrit | Les visages et les deux modèles de visages (39 Mo, une fois), dans le cache ; les noms, dans `config.toml` ; les photos mises de côté, dans `decisions.json` de `/reports`. |
 | Annuler | `people --forget` supprime tous les visages du cache, puis demande si les noms partent aussi. |
 | Avec `mh` | `mh people` : le port est publié pour vous. |
 
@@ -87,6 +87,29 @@ leur nom : `search Chloé montagne`, `search person:chloe`. Les noms suivent les
 prochaine fois que la page enregistre un nom. Chaque nom est une entrée
 `[[people.person]]` de `config.toml`. Détails :
 [Les personnes](../reference-people.md#nommer-les-groupes).
+
+## Retirer toutes les photos de quelqu'un
+
+Pour oublier quelqu'un (un ex, par exemple), retirez les photos où il apparaît depuis le groupe
+lui-même :
+
+1. Cliquez sur **et N visages de plus** : la page montre tous les visages du groupe, pas
+   seulement les quelques dizaines de l'échantillon. Retirez avec × chaque visage d'une autre
+   personne : sa photo reste.
+2. Cliquez sur **Mettre de côté ses N photos**. Le bouton attend que tous les visages soient
+   affichés. Chaque photo où cette personne apparaît part, avec d'autres ou non. Rien n'est
+   supprimé depuis la page : le choix est enregistré aussitôt dans `decisions.json` de vos
+   rapports (`/reports`, monté par `mh`), relu sur le disque et affiché avec son nombre et sa
+   taille ; le groupe dit ensuite combien de ses photos sont mises de côté, et **Retirer de la
+   mise de côté** les reprend.
+3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** ferme la page et lance
+   [`clean --decisions`](clean.md), qui demande d'abord. Sinon, la commande le propose quand vous
+   arrêtez la page. Il déplace les photos en quarantaine, journalisé ; [`undo`](undo.md) les
+   remet, [`purge`](purge.md) libère la place.
+
+Le même `decisions.json` garde ce que [`search`](search.md#mettre-des-photos-de-côté) et
+[`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
+modifiée depuis votre choix reste en place.
 
 ## Options
 

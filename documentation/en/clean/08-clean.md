@@ -161,7 +161,7 @@ docker run --rm -it `
 | Unreadable file (truncated, damaged) | **Moved** to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | **Untouched**: only if you ask ([step 10](10-review-bursts.md), [step 11](11-near-duplicates.md)). |
-| Photos set aside in [`search`](../commands/search.md#set-photos-aside) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
+| Photos set aside in [`search`](../commands/search.md#set-photos-aside) or [`people`](../commands/people.md#remove-every-photo-of-someone) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
 | Files of a protected folder | Untouched, always. |
 | A folder left empty | **Removed**, then its parent if empty in turn; `Thumbs.db`, `desktop.ini` or `.DS_Store` alone does not keep it (moved to the quarantine first). `undo` recreates it. Never a folder you mounted, a protected, backup or excluded one, nor one already empty before. [More](../commands/clean.md#what-happens-to-each-file) |
 

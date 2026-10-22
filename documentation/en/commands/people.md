@@ -32,7 +32,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | Your folders, `/cache` (writable: the faces are kept there), `/config` (writable, to save the names) and `-p 127.0.0.1:8088:8088`. |
-| Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`. |
+| Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`; the photos you set aside, in `decisions.json` of `/reports`. |
 | Undo | `people --forget` deletes every face from the cache, then asks whether the names go too. |
 | With `mh` | `mh people`: the port is published for you. |
 
@@ -84,6 +84,26 @@ The names follow the photos [`sort`](sort.md) moves (and `undo` moves back); `co
 updated the next time the page saves a name.
 Each name is a `[[people.person]]` entry of `config.toml`. Details:
 [People](../reference-people.md#name-the-groups).
+
+## Remove every photo of someone
+
+To forget someone (a former partner, say), remove the photos they are on from the group itself:
+
+1. Click **and N more faces**: the page shows every face of the group, not only the few dozen of
+   the sample. Take out with × each face that is someone else's: its photo stays.
+2. Click **Set aside their N photos**. The button waits until every face is shown. Every photo
+   this person is on goes, with others or not. Nothing is deleted from the page: the choice is
+   saved at once in `decisions.json` of your reports (`/reports`, mounted by `mh`), read back and
+   shown with its count and size; the group then says how many of its photos are set aside, and
+   **Take out of the set aside** takes them back.
+3. Opened from the home page (`mh`), **Apply now** closes the page and runs
+   [`clean --decisions`](clean.md), which asks first. Otherwise, the command proposes it when you
+   stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
+   back, [`purge`](purge.md) frees the space.
+
+The same `decisions.json` keeps what [`search`](search.md#set-photos-aside) and
+[`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
+since you chose it is left in place.
 
 ## Options
 

@@ -1,10 +1,10 @@
 """The routes of the people page: the page, the groups, the faces, the photos, names.
 
-`GET /` serves the page, `GET /api/groups` the groups, `GET /face/<n>.jpg` a face cut
-from its photo, `GET /photo/<n>.jpg` the whole photo; `POST /api/people` names,
-ignores or takes faces from someone, in `config.toml` only. Nothing else is written,
-not even a preview. Like `review` and `places`: loopback hosts only, JSON bodies only,
-from the page's own origin.
+`GET /api/groups` the groups, `/api/section/<n>` every face of face `n`'s group,
+`/face/<n>.jpg` a face, `/photo/<n>.jpg` its photo; `POST /api/people` names, ignores
+or takes faces from someone, in `config.toml`; `POST /api/aside` sets aside the photos
+of a group, in the decisions file (`aside.py`). Nothing else is written. Like `review`:
+loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
@@ -12,14 +12,14 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final, Literal
-
-from pydantic import BaseModel, ConfigDict, Field
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
-from media_hygiene.people.changes import Naming
+from media_hygiene.people.aside import ASIDE_PATH
+from media_hygiene.people.changes import NamesAsked, Naming
 from media_hygiene.people.crops import CropJob, face_crop
 from media_hygiene.people.roster import Change
+from media_hygiene.people.views import PageView
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.config_saving import save_refused
@@ -32,28 +32,18 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.people.aside import AsideDesk
     from media_hygiene.people.roster import Roster
     from media_hygiene.review.http import Request
 
 PAGE_PATH: Final = "/"
 GROUPS_PATH: Final = "/api/groups"
+SECTION_PREFIX: Final = "/api/section/"
 FACE_PREFIX: Final = "/face/"
 PHOTO_PREFIX: Final = "/photo/"
 CHANGE_PATH: Final = "/api/people"
 JPEG: Final = ".jpg"
 _GET, _POST = "GET", "POST"
-_NAME_LENGTH: Final = 100
-
-
-class _Asked(BaseModel):
-    """`POST /api/people`: what to do with which faces, by board number."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    action: Literal["name", "ignore", "reject"]
-    name: str = Field(default="", max_length=_NAME_LENGTH)
-    faces: tuple[int, ...] = Field(min_length=1)
-    removed: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,6 +55,7 @@ class PeopleApp:
     page: bytes
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
+    aside: AsideDesk | None = None  # None: no reports folder to set photos aside in
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -92,6 +83,8 @@ class PeopleApp:
         path = request.path
         if request.method == _POST and path == CHANGE_PATH:
             return refused_post(request) or self._change(request)
+        if request.method == _POST and path == ASIDE_PATH:
+            return refused_post(request) or self._aside(request)
         if request.method != _GET:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         return await self._get(path)
@@ -108,7 +101,11 @@ class PeopleApp:
         if path == PAGE_PATH:
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path == GROUPS_PATH:
-            return json_response(HTTPStatus.OK, self.roster.state(self.mapper.to_host))
+            return json_response(HTTPStatus.OK, self._state())
+        if path.startswith(SECTION_PREFIX):
+            key = path.removeprefix(SECTION_PREFIX)
+            faces = self.roster.whole(key, self.mapper.to_host)
+            return json_response(HTTPStatus.OK, {"faces": faces})
         if path.endswith(JPEG):
             return await self._picture(path)
         return Response(HTTPStatus.NOT_FOUND)
@@ -152,7 +149,7 @@ class PeopleApp:
             The new state with the line read back from the file, or an error.
         """
         try:
-            asked = _Asked.model_validate_json(request.body)
+            asked = NamesAsked.model_validate_json(request.body)
             if asked.action != "ignore" and not asked.name.strip():
                 raise ValueError(_("type a name first"))  # noqa: TRY301
             roster = self.roster
@@ -162,5 +159,30 @@ class PeopleApp:
             saved = roster.change(Change(asked.action, naming))
         except (ValueError, TypeError, OSError) as exc:  # ValidationError included
             return save_refused(exc)
-        state = self.roster.state(self.mapper.to_host)
-        return json_response(HTTPStatus.OK, {**state, "saved": saved})
+        return json_response(HTTPStatus.OK, {**self._state(), "saved": saved})
+
+    def _aside(self, request: Request) -> Response:
+        """Set aside the photos of a group, or take them back, then send the state.
+
+        Args:
+            request: `POST /api/aside`.
+
+        Returns:
+            The new state with what the decisions file holds, or an error.
+        """
+        if self.aside is None:
+            return Response(HTTPStatus.NOT_FOUND)
+        said = self.aside.answer(self.roster.board, request.body)
+        if isinstance(said, Response):
+            return said
+        return json_response(HTTPStatus.OK, {**self._state(), "aside": said})
+
+    def _state(self) -> dict[str, object]:
+        """The groups, each with how many of its photos are set aside.
+
+        Returns:
+            The state the page reads.
+        """
+        aside = frozenset() if self.aside is None else self.aside.paths()
+        state = self.roster.state(PageView(self.mapper.to_host, aside))
+        return {**state, "can_aside": self.aside is not None, "chosen": len(aside)}

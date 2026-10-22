@@ -8,7 +8,7 @@ writable `/config`, the page shows the names already given and saves none.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming, give_name, ignore_faces, reject_faces
@@ -17,6 +17,7 @@ from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.naming import Known, id_of, name_all
 from media_hygiene.people.proof import followed_line, proof_line
 from media_hygiene.people.sections import sections_of
+from media_hygiene.people.views import faces_view, section_view
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -25,9 +26,7 @@ if TYPE_CHECKING:
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.people.board import PeopleBoard
-    from media_hygiene.people.sections import Section
-
-SHOWN: Final = 60  # faces shown per section: enough to judge it
+    from media_hygiene.people.views import PageView
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,22 +75,25 @@ class Roster:
         """
         return self._file is not None
 
-    def state(self, host: Callable[[Path], str]) -> dict[str, object]:
+    def state(self, view: PageView) -> dict[str, object]:
         """The sections as the page reads them.
 
         Args:
-            host: Container path → host path.
+            view: Host paths, and the files set aside.
 
         Returns:
             The sections, the names known, the counts.
         """
         sections = sections_of(self.board.groups, self._names)
+        board = self.board
         return {
             "alone": self.board.alone,
             "ignored": sections.ignored,
             "writable": self.writable,
             "people": [person.name for person in self._settings.person],
-            "sections": [self._section(section, host) for section in sections.shown],
+            "sections": [
+                section_view(board, section, view) for section in sections.shown
+            ],
         }
 
     def change(self, change: Change) -> str:
@@ -136,6 +138,22 @@ class Roster:
         """
         return Known.of(self._every, self._settings, self._moves)
 
+    def whole(self, key: str, host: Callable[[Path], str]) -> list[dict[str, object]]:
+        """Every face of the section a face is in, to check each one.
+
+        Args:
+            key: The number of one of its faces, from the page.
+            host: Container path → host path.
+
+        Returns:
+            Its faces; none for a number no section holds.
+        """
+        if not key.isdigit():
+            return []
+        sections = sections_of(self.board.groups, self._names).shown
+        found = next((one for one in sections if int(key) in one.faces), None)
+        return [] if found is None else faces_view(self.board, found.faces, host)
+
     def ids(self, keys: tuple[int, ...]) -> tuple[str, ...]:
         """The ids of faces of the board.
 
@@ -150,28 +168,3 @@ class Roster:
             for key in keys
             if (face := self.board.face(str(key))) is not None
         )
-
-    def _section(
-        self, section: Section, host: Callable[[Path], str]
-    ) -> dict[str, object]:
-        """One section as the page reads it.
-
-        Args:
-            section: The section.
-            host: Container path → host path.
-
-        Returns:
-            Its name or suggestion, its counts, the faces shown, spread over it.
-        """
-        faces = section.faces
-        step = max(1, len(faces) // SHOWN)
-        shown = faces[::step][:SHOWN]
-        return {
-            "name": section.name,
-            "suggested": section.suggested,
-            "faces": len(faces),
-            "photos": len({self.board.faces[key].path for key in faces}),
-            "shown": [
-                {"key": key, "photo": host(self.board.faces[key].path)} for key in shown
-            ],
-        }
