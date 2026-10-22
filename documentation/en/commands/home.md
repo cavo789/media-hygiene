@@ -9,7 +9,8 @@ action of the tool a click or <kbd>Ctrl</kbd>+<kbd>K</kbd> away.**
 
 `home` shows in your browser what [`status`](status.md) and [`menu`](menu.md) show in the
 terminal, laid out as the cycle of your photos: **Import** (a phone, your NAS or an old disk),
-**Clean**, **Sort**, **Find**, **Back up** (planned), then three tools: **History and undo**,
+**Clean**, **Sort**, **Find**, **Back up** (planned); then, apart from the cycle, **Share**
+(your photos on the TV: [`slideshow`](slideshow.md)) and three tools: **History and undo**,
 **Reports**, **Settings**. Each space has its page: its guide, numbered, then "Go further". Every
 action shows its `mh` command, copyable, and links to its chapter of this documentation. The
 page can also run the audit itself, its progress shown in the page.
@@ -44,7 +45,7 @@ docker run --rm -it `
 
 ## What the page shows
 
-- **The sidebar**: the five stages of the cycle and the tools, each with its count (*9* extra
+- **The sidebar**: the five stages of the cycle, **Share** (a goal, not a stage: no number) and the tools, each with its count (*9* extra
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),
   the theme switch and **Quit Media Hygiene**.

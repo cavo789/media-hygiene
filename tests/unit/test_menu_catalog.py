@@ -63,13 +63,24 @@ def test_names_are_unique_and_every_group_names_an_entry() -> None:
     )
 
 
-def test_the_cycle_has_five_stages_then_three_tools() -> None:
-    """Import, clean, sort, find, back up; then history, reports, settings."""
+def test_the_cycle_has_five_stages_then_share_then_three_tools() -> None:
+    """Import, clean, sort, find, back up; share, outside the cycle; then the tools."""
     stages = [area.space for area in CATALOG.areas if area.stage]
     assert stages == [Space.IMPORT, Space.CLEAN, Space.SORT, Space.FIND, Space.BACKUP]
     assert [area.stage for area in CATALOG.areas if area.stage] == [1, 2, 3, 4, 5]
-    tools = [area.space for area in CATALOG.areas if not area.stage]
-    assert tools == [Space.HISTORY, Space.REPORTS, Space.SETTINGS]
+    apart = [area.space for area in CATALOG.areas if not area.stage]
+    assert apart == [Space.SHARE, Space.HISTORY, Space.REPORTS, Space.SETTINGS]
+
+
+def test_the_slideshow_is_in_share_and_nowhere_else() -> None:
+    """Share holds the slideshow; Find no longer lists it."""
+    areas = {area.space: area for area in CATALOG.areas}
+    listed = {name for group in areas[Space.SHARE].groups for name in group.steps}
+    assert listed == {"slideshow"}
+    assert CATALOG.step("slideshow").space is Space.SHARE
+    find = {name for group in areas[Space.FIND].groups for name in group.steps}
+    assert "slideshow" not in find
+    assert "tv" in CATALOG.step("slideshow").keywords
 
 
 def test_the_fields_appear_in_their_command() -> None:

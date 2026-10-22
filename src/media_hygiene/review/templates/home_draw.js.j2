@@ -43,6 +43,7 @@ function navItem(space) {
 function renderNav() {
   $("#navHome").innerHTML = navItem(SPACE[HOME]);
   $("#navStages").innerHTML = STAGES.map(navItem).join("");
+  $("#navShare").innerHTML = SHARE.map(navItem).join("");
   $("#navTools").innerHTML = TOOLS.map(navItem).join("");
 }
 function renderFolders() {
@@ -223,7 +224,7 @@ function viewSpace(space) {
   // A stage's first guide is numbered; what follows it is "go further", as cards.
   const groups = space.groups.map((group) => groupHtml(group, space.stage > 0 && !group.numbered)).join("");
   return `<header class="space-head">
-      <div><p class="eyebrow">${esc(space.stage ? fill(T.stageN, { stage: space.stage }) : T.tools)}</p><h1>${esc(space.long || space.title)}</h1><p class="space-pitch">${esc(space.pitch)}</p></div>
+      <div><p class="eyebrow">${esc(space.stage ? fill(T.stageN, { stage: space.stage }) : space.id === "share" ? T.share : T.tools)}</p><h1>${esc(space.long || space.title)}</h1><p class="space-pitch">${esc(space.pitch)}</p></div>
       <div class="space-side"><div class="guide-links">${guide}</div>${progress}</div>
       ${art}
     </header>

@@ -9,8 +9,9 @@ chaque action de l'outil à un clic ou à <kbd>Ctrl</kbd>+<kbd>K</kbd>.**
 
 `home` montre dans votre navigateur ce que [`status`](status.md) et [`menu`](menu.md) montrent
 dans le terminal, rangé comme le cycle de vos photos : **Importer** (un téléphone, votre NAS ou
-un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu), puis trois
-outils : **Historique et annulation**, **Rapports**, **Réglages**. Chaque espace a sa page : son
+un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu) ; puis, à part du cycle, **Partager**
+(vos photos sur la télé : [`slideshow`](slideshow.md)) et trois outils : **Historique et annulation**,
+**Rapports**, **Réglages**. Chaque espace a sa page : son
 parcours, numéroté, puis « Pour aller plus loin ». Chaque action montre sa commande `mh`, à
 copier, et mène à son chapitre de cette documentation. La page peut aussi lancer l'audit
 elle-même, sa progression affichée dans la page.
@@ -46,7 +47,7 @@ docker run --rm -it `
 
 ## Ce que montre la page
 
-- **Le menu de gauche** : les cinq étapes du cycle et les outils, chacun avec son compte (*9*
+- **Le menu de gauche** : les cinq étapes du cycle, **Partager** (un but, pas une étape : sans numéro) et les outils, chacun avec son compte (*9*
   copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
   ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,
   [`mh update`](launcher.md#une-nouvelle-version--mh-update)), le choix du thème et **Quitter

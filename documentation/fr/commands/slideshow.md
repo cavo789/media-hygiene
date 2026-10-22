@@ -15,6 +15,9 @@ soir, et une vignette touchée montre cette photo sur la télé. Les vidéos de 
 aussi, telles quelles. Le PC tient le diaporama : une télé rechargée ou un téléphone mis en veille
 ne perd rien.
 
+**Où le lancer** : dans la page d'accueil, l'espace **Partager** (hors du cycle, dans le menu de
+gauche), ou `mh menu`, sous *Partager*.
+
 **Quand** : après un [`audit`](audit.md) : il montre ce que l'audit a lu. Une recherche demande
 d'abord [`tags`](tags.md).
 

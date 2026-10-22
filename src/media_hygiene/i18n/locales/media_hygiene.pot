@@ -2643,6 +2643,9 @@ msgstr ""
 msgid "Go to"
 msgstr ""
 
+msgid "Go to Share"
+msgstr ""
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr ""
@@ -5412,7 +5415,13 @@ msgstr ""
 msgid "Settle the near duplicates"
 msgstr ""
 
+msgid "Share"
+msgstr ""
+
 msgid "Share of the work, cumulated"
+msgstr ""
+
+msgid "Share your photos"
 msgstr ""
 
 msgid "Sharpness"
@@ -7399,6 +7408,9 @@ msgstr ""
 msgid "Your photos and videos were not touched."
 msgstr ""
 
+msgid "Your photos on the TV, the phone as the remote."
+msgstr ""
+
 msgid "Your photos, in order"
 msgstr ""
 
@@ -8222,6 +8234,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
+msgstr ""
+
+msgid "mh slideshow"
 msgstr ""
 
 msgid ""

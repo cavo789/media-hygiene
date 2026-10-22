@@ -35,6 +35,7 @@ def _shell() -> dict[str, str]:
         "spaces": _("Spaces"),
         "cycle": _("The cycle of your photos"),
         "tools": _("Tools"),
+        "share": _("Share"),
         "addFolder": _("Add a folder"),
         "avatarAlt": _("The meerkat of Christophe Avonture"),
         "by": _("by"),

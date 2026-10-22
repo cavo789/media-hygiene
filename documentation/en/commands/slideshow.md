@@ -14,6 +14,9 @@ with the time each photo stays, **Do not show** to skip one tonight, and a tap o
 that photo on the TV. The videos of the selection play too, as they are. The PC holds the show: a
 TV reloaded or a phone gone to sleep loses nothing.
 
+**Where to start it**: in the home page, the **Share** area (outside the cycle, in the
+sidebar), or `mh menu`, under *Share*.
+
 **When**: after an [`audit`](audit.md): it shows what the audit has read. A search needs
 [`tags`](tags.md) first.
 

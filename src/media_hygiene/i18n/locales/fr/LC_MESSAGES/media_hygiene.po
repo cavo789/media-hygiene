@@ -3258,6 +3258,9 @@ msgstr "Lancer le nettoyage ?"
 msgid "Go to"
 msgstr "Aller à"
 
+msgid "Go to Share"
+msgstr "Aller à Partager"
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr "Aller à l'étape {stage} du cycle"
@@ -6547,8 +6550,14 @@ msgstr "Réglages"
 msgid "Settle the near duplicates"
 msgstr "Trancher les quasi-doublons"
 
+msgid "Share"
+msgstr "Partager"
+
 msgid "Share of the work, cumulated"
 msgstr "Part du travail, cumulée"
+
+msgid "Share your photos"
+msgstr "Partager vos photos"
 
 msgid "Sharpness"
 msgstr "Netteté"
@@ -8969,6 +8978,9 @@ msgstr "Vos dossiers de photos :"
 msgid "Your photos and videos were not touched."
 msgstr "Vos photos et vidéos n'ont pas été touchées."
 
+msgid "Your photos on the TV, the phone as the remote."
+msgstr "Vos photos sur la télé, le téléphone en télécommande."
+
 msgid "Your photos, in order"
 msgstr "Vos photos, en ordre"
 
@@ -9871,6 +9883,9 @@ msgstr ""
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
 msgstr "mh retient : {folders}, langue {locale}, fuseau horaire {zone}."
+
+msgid "mh slideshow"
+msgstr "mh slideshow"
 
 msgid ""
 "mh was not loaded from its file mh.ps1: load it as step 0 of the guides "

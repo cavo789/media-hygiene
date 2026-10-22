@@ -54,12 +54,14 @@ const view = { id: HOME };
 let SPACE = {};
 let BY_ID = {};
 let STAGES = [];
+let SHARE = [];
 let TOOLS = [];
 function index() {
   SPACE = Object.fromEntries([[HOME, { id: HOME, title: T.home, long: T.home, icon: "home", groups: [] }], ...S.spaces.map((space) => [space.id, space])]);
   BY_ID = Object.fromEntries(S.actions.map((action) => [action.name, action]));
   STAGES = S.spaces.filter((space) => space.stage);
-  TOOLS = S.spaces.filter((space) => !space.stage);
+  SHARE = S.spaces.filter((space) => !space.stage && space.id === "share");
+  TOOLS = S.spaces.filter((space) => !space.stage && space.id !== "share");
 }
 const statusOf = (action) => ({
   available: action.available && !action.planned,
