@@ -128,6 +128,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"'share' makes copies of an album to send them, in your folder media-"
+"hygiene\\Shares: each photo upright, its long side fitted into "
+"long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
+"only read."
+msgstr ""
+
+msgid ""
 "'slideshow' shows photos on the TV, the phone choosing the next one. Each"
 " photo is sent fitted into screen_px pixels wide (and 9/16 of that high):"
 " 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old"
@@ -650,6 +657,9 @@ msgid ""
 msgstr ""
 
 msgid "Add photos to an album in search or browse."
+msgstr ""
+
+msgid "Add photos to it in search or browse; the videos are never copied."
 msgstr ""
 
 msgid ""
@@ -1440,6 +1450,9 @@ msgid_plural ""
 "ones for root only); from WSL or Linux, add --user \"$(id -u):$(id -g)\"."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Crete 2023"
+msgstr ""
 
 msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
@@ -2992,6 +3005,16 @@ msgid ""
 "over <workbook>': your edits are carried over to its new workbook."
 msgstr ""
 
+msgid ""
+"Keep the GPS position in the copies. false by default: a photo sent must "
+"not say where the house is; 'share --keep-gps' keeps it for one run."
+msgstr ""
+
+msgid ""
+"Keep the GPS position in the copies; removed by default, a photo sent "
+"must not say where the house is."
+msgstr ""
+
 msgid "Keep the source folders the sort leaves empty."
 msgstr ""
 
@@ -3753,6 +3776,10 @@ msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
+msgstr ""
+
+#, python-brace-format
+msgid "No photo to prepare in the album {name}."
 msgstr ""
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
@@ -4619,7 +4646,22 @@ msgid ""
 " > built-in defaults."
 msgstr ""
 
+msgid "Prepare an album for sending"
+msgstr ""
+
+msgid ""
+"Prepare an album for sending: resized copies without the GPS position, a "
+"folder and a zip, for a mail or a social network."
+msgstr ""
+
+msgid "Prepare for sending"
+msgstr ""
+
 msgid "Preparing the home page…"
+msgstr ""
+
+#, python-brace-format
+msgid "Preparing the photos of the album {name}…"
 msgstr ""
 
 msgid "Previous"
@@ -4863,6 +4905,11 @@ msgid "Reports"
 msgstr ""
 
 msgid "Reports (newest first)"
+msgstr ""
+
+msgid ""
+"Resized copies without the GPS position, a folder and a zip: for a mail, "
+"a social network or a USB stick. Your photos are only read."
 msgstr ""
 
 msgid "Restore"
@@ -5504,7 +5551,7 @@ msgstr ""
 
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
-"search or the files set aside."
+"search or an album."
 msgstr ""
 
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
@@ -5852,6 +5899,11 @@ msgstr ""
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
+msgid ""
+"The album to send, made in search, browse or the burst review: \"Crete "
+"2023\"."
+msgstr ""
+
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
 msgstr ""
@@ -6007,6 +6059,9 @@ msgstr ""
 msgid "The copies grouped, with their previews and the copy kept."
 msgstr ""
 
+msgid "The copies to send are written to /shares, which is not mounted."
+msgstr ""
+
 msgid "The copy from the phone is missing or incomplete: kept on the phone."
 msgstr ""
 
@@ -6052,6 +6107,9 @@ msgid ""
 msgstr ""
 
 msgid "The documentation's home"
+msgstr ""
+
+msgid "The earlier copies of this album were replaced."
 msgstr ""
 
 msgid ""
@@ -6633,6 +6691,16 @@ msgstr ""
 msgid "The workbook's category"
 msgstr ""
 
+msgid ""
+"The zip is larger than 25 MB: some webmails refuse an attachment that "
+"large (check your mail's own limit). Send the folder another way (a USB "
+"stick, a shared drive), or an album of fewer photos."
+msgstr ""
+
+#, python-brace-format
+msgid "The zip, read back: {zip} ({size}, {n} files)."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The {kind} folder ({tool}) and the photo folder {data} are one inside the"
@@ -6880,6 +6948,13 @@ msgid "To move"
 msgstr ""
 
 msgid "To place"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"To prepare {name} for sending (resized copies without the GPS position, a"
+" folder and a zip): close this page (Ctrl+C in the window where mh runs),"
+" then type (copied):"
 msgstr ""
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
@@ -7473,7 +7548,7 @@ msgstr ""
 msgid "Your photos and videos were not touched."
 msgstr ""
 
-msgid "Your photos on the TV, the phone as the remote."
+msgid "Your photos on the TV, or an album ready to send by mail."
 msgstr ""
 
 msgid "Your photos, in order"
@@ -7676,6 +7751,12 @@ msgid "as planned"
 msgstr ""
 
 msgid "as planned, then next"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"attach {zip} to a mail, or add the photos of {folder} to an album on your"
+" social network."
 msgstr ""
 
 msgid "audit"
@@ -8289,6 +8370,11 @@ msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr ""
 
 msgid ""
+"mh mounts it for share; with docker run, add -v \"$HOME\\media-"
+"hygiene\\Shares:/shares\"."
+msgstr ""
+
+msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
 msgstr ""
@@ -8751,6 +8837,9 @@ msgid "seen by the model"
 msgstr ""
 
 msgid "select a photo"
+msgstr ""
+
+msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 
 msgid "send the selected photos to another category"
@@ -10504,6 +10593,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
+"deleted): not included."
+msgid_plural ""
+"{n} files of the album are missing (moved out of the folders analysed, or"
+" deleted): not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not shown."
 msgid_plural ""
 "{n} files of the album are missing (moved out of the folders analysed, or"
@@ -10560,6 +10659,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo could not be read: not included."
+msgid_plural "{n} photos could not be read: not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo ready to send ({size}), read back from {folder}."
+msgid_plural "{n} photos ready to send ({size}), read back from {folder}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} s"
 msgstr ""
 
@@ -10596,6 +10707,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} video"
 msgid_plural "{n} videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} video not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
+msgid_plural ""
+"{n} videos not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11004,6 +11125,12 @@ msgid "👉 What next: mh history (the phone's run, and what it deleted)."
 msgstr ""
 
 msgid "👉 What next: open Windows PowerShell and type:"
+msgstr ""
+
+msgid "📍 The GPS positions were kept, as asked."
+msgstr ""
+
+msgid "📍 The GPS positions were removed: --keep-gps keeps them."
 msgstr ""
 
 #, python-brace-format

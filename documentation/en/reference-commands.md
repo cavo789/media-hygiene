@@ -31,6 +31,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
 | look through my folders and remove photos, without Explorer, undoably | [`browse`](commands/browse.md), then `clean --decisions` |
 | show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
+| send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
@@ -65,6 +66,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`search`](commands/search.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
 | [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
 | [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
+| [`share`](commands/share.md) | Prepare an album for sending: a copy of each photo, upright, its long side at 2048 pixels, without its GPS position (`--keep-gps` keeps it), in a folder named after the album and its zip, in `media-hygiene\Shares`; the videos are left out and counted. Never writes to your folders. | [Commands](commands/share.md) |
 | [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
 
 **Act: moves, writes or deletes files** (journaled, undoable)
@@ -195,6 +197,8 @@ command shows its own `--help`; here is the list of the commands:
 │              browser.                                                        │
 │ search       Find photos by their words in your browser (or as a table): the │
 │              words 'tags' gave them.                                         │
+│ share        Prepare an album for sending: resized copies without the GPS    │
+│              position, a folder and a zip, for a mail or a social network.   │
 │ slideshow    Show photos on the TV, the phone choosing the next one: a       │
 │              folder, a search or the files set aside.                        │
 │ status       Where am I? The last audit, the quarantine, what is left: no    │

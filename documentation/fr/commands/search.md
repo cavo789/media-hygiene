@@ -103,6 +103,9 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   comme manquante, jusqu'à ce qu'elle revienne.
 - **📺 Partager sur la télé** donne la commande qui montre l'album tapé, copiée pour vous :
   arrêtez la page, puis `mh slideshow --album "Crète 2023" --lan` ([`slideshow`](slideshow.md)).
+- **📨 Préparer pour l'envoi** donne la commande qui prépare l'album pour un mail : des copies
+  réduites sans la position GPS, un dossier et un zip, `mh share --album "Crète 2023"`
+  ([`share`](share.md)).
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
 `albums.json` n'est pas la commande [`album`](album.md) : celle-ci fait un dossier de seconds noms

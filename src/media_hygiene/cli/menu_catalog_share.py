@@ -1,4 +1,7 @@
-"""The share area, outside the cycle: the ways to show the photos to others (0294)."""
+"""The share area, outside the cycle: the ways to show the photos to others (0294).
+
+The slideshow on the TV (0291), and an album made ready to send (0296).
+"""
 
 from __future__ import annotations
 
@@ -44,6 +47,22 @@ def share_steps() -> tuple[Step, ...]:
             ),
             optional=True,
         ),
+        Step(
+            "share",
+            Space.SHARE,
+            _("Prepare an album for sending"),
+            _(
+                "Resized copies without the GPS position, a folder and a zip: for a "
+                "mail, a social network or a USB stick. Your photos are only read."
+            ),
+            "share --album {album}",
+            Risk.SAFE,
+            icon="album",
+            keywords=_("send mail email attach zip facebook social network album gps"),
+            doc=Doc("commands/share/"),
+            fields=(Field("album", _("The album's name"), _("Crete 2023")),),
+            optional=True,
+        ),
     )
 
 
@@ -57,9 +76,9 @@ def share_area() -> Area:
         Space.SHARE,
         _("Share"),
         _("Share your photos"),
-        _("Your photos on the TV, the phone as the remote."),
+        _("Your photos on the TV, or an album ready to send by mail."),
         "image",
-        (Group(_("The commands"), ("slideshow",)),),
+        (Group(_("The commands"), ("slideshow", "share")),),
         Doc("commands/slideshow/"),
         _("mh slideshow"),
     )

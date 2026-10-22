@@ -30,11 +30,12 @@ READ_ONLY_COMMANDS: Final = frozenset(
     {"audit", "crosscheck", "classify", "review-sort", "places", "review"}
     | {"inventory", "history", "reports", "config", "status", "launcher", "tags"}
     | {"search", "browse", "people", "menu", "home", PHONE_PLAN, "slideshow"}
+    | {"share"}
 )
 # The read-only commands that read the photos themselves: they say so when they start.
 PHOTO_READERS: Final = frozenset(
     {"audit", "crosscheck", "classify", "review-sort", "places", "review", "tags"}
-    | {"search", "browse", "people", "slideshow"}
+    | {"search", "browse", "people", "slideshow", "share"}
 )
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(

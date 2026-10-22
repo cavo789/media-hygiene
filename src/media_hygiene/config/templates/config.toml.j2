@@ -160,6 +160,14 @@ screen_px = 1920
 interval_seconds = 8
 
 
+[share]
+{{ comment(_("'share' makes copies of an album to send them, in your folder media-hygiene\\Shares: each photo upright, its long side fitted into long_side_px pixels, JPEG quality quality (30 to 95). Your photos are only read.")) }}
+long_side_px = 2048
+quality = 85
+{{ comment(_("Keep the GPS position in the copies. false by default: a photo sent must not say where the house is; 'share --keep-gps' keeps it for one run.")) }}
+keep_gps = false
+
+
 [inventory]
 {{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
 blurry_below = 100.0

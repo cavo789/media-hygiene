@@ -18,6 +18,7 @@ from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
+from media_hygiene.config.share_settings import ShareSettings
 from media_hygiene.config.slideshow_settings import SlideshowSettings
 from media_hygiene.config.sort_settings import SortSettings
 from media_hygiene.config.tags_settings import TagSettings
@@ -29,9 +30,8 @@ from media_hygiene.name_patterns import GENERATED_NAMES, GENERIC_FOLDERS
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _FIRST_PRINTABLE = 0x20
 _PURGE_HINT_DAYS = 30  # `status` suggests purging a quarantine older than that
-_QUARANTINE_HEADROOM_GB = (
-    1.0  # left free by `clean`: a full system drive breaks Windows
-)
+# Left free by `clean`: a full system drive breaks Windows.
+_QUARANTINE_HEADROOM_GB = 1.0
 
 
 class GeneralSettings(BaseModel):
@@ -63,9 +63,8 @@ class FolderSettings(BaseModel):
     """`[folders]` — host paths that steer which copy is kept, never folder names.
 
     `protected` folders are never modified and always hold the copy kept (identical
-    files elsewhere are deleted); `excluded` folders are not analysed at all;
-    `backups` are read and compared, never changed and never the reason a copy goes
-    (0204).
+    files elsewhere are deleted); `excluded` folders are not analysed at all; `backups`
+    are read and compared, never changed and never the reason a copy goes (0204).
     """
 
     model_config = _FROZEN
@@ -198,3 +197,4 @@ class Settings(BaseModel):
     people: PeopleSettings = PeopleSettings()
     backup: BackupSettings = BackupSettings()
     slideshow: SlideshowSettings = SlideshowSettings()
+    share: ShareSettings = ShareSettings()

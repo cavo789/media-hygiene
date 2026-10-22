@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 # Below the cache: photo previews, each size kept once (`report.preview_cache`).
 _PREVIEWS_DIR_NAME: Final = "previews"
+# Mounted by `mh` for `share` only: the copies of an album to send (0296).
+SHARES_POINT: Final = Path("/shares")
 
 
 class Locations(BaseSettings):
@@ -33,6 +35,7 @@ class Locations(BaseSettings):
     quarantine_dir: Path = Path("/quarantine")
     reports_dir: Path = Path("/reports")
     cache_dir: Path = Path("/cache")
+    shares_dir: Path = SHARES_POINT
 
     @property
     def config_file(self) -> Path:

@@ -97,6 +97,9 @@ to the album**.
   comes back.
 - **📺 Share on the TV** gives the command that shows the album typed, copied for you: stop the
   page, then `mh slideshow --album "Crete 2023" --lan` ([`slideshow`](slideshow.md)).
+- **📨 Prepare for sending** gives the command that makes the album ready to send by mail:
+  resized copies without the GPS position, a folder and a zip, `mh share --album "Crete 2023"`
+  ([`share`](share.md)).
 - At most 3,000 photos added at once: narrow a search that finds more.
 
 `albums.json` is not the [`album`](album.md) command: that one makes a folder of second names

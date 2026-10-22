@@ -121,6 +121,10 @@
 #      its end, pause/play during a video, the next photo after it; the HEVC one labelled on the
 #      phone, then opened by its address to learn whether the Chromecast plays HEVC; then the
 #      TV's own browser: videos passed over, the phone saying why                  (0292)
+#  32. mh share: an album of 60 photos of the test folder (albums.json written here), mh share
+#      timed, its lines; the originals unchanged; the copies' size per photo and the zip's; GPS
+#      in the originals and in the copies (System.Drawing); asks whether the Explorer opened on
+#      $HOME\media-hygiene\Shares; the test album removed from it at the end      (0296)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -156,6 +160,7 @@
 #   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
 #   .\mh-measure.ps1 -Only 30 -Count 30   (mh slideshow --lan: the photos on the TV, the phone as remote: 0291)
 #   .\mh-measure.ps1 -Only 31 -Count 10   (mh slideshow --lan plays the videos on the TV: 0292)
+#   .\mh-measure.ps1 -Only 32 -Count 60   (mh share: an album ready to send, sizes and GPS: 0296)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2815,6 +2820,94 @@ if (Wanted 31) {
     } else {
         Log "   31: skipped the TV part: no private address found (mh --lan says the same)"
     }
+    $ErrorActionPreference = $saved
+}
+
+# --- 32: mh share, an album made ready to send (0296) ----------------------------------------
+# A test mh audits the test folder; an album of its first photos is written into the test
+# reports (albums.json, SHA-256 by Get-FileHash); mh share makes the copies in YOUR
+# $HOME\media-hygiene\Shares (the fixed folder of mh share): the album's folder and zip there are
+# removed at the end. The photos of the test folder are only read: compared before and after.
+if (Wanted 32) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 32. mh share, an album made ready to send (0296)"
+    $shareTool = Join-Path $tool "share"
+    New-Item -ItemType Directory -Force -Path $shareTool, (Join-Path $tool "config") | Out-Null
+    $shareFile = Join-Path $shareTool "mh.ps1"
+    $shareMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @shareMounts $Image launcher --photos $data > $shareFile
+    . $shareFile
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit | Out-Null
+    $watch.Stop()
+    Log ("   32a. mh audit of the test folder: exit code {0}, {1:N1} s" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $albumPhotos = @(Get-ChildItem -Path (Join-Path $data "flat") -File | Sort-Object Name | Select-Object -First 60)
+    $entries = @(foreach ($photo in $albumPhotos) {
+        [ordered]@{
+            path = $photo.FullName
+            sha256 = (Get-FileHash -LiteralPath $photo.FullName -Algorithm SHA256).Hash.ToLower()
+            size = $photo.Length
+            added = "2026-10-22T00:00:00Z"
+        }
+    })
+    $albumName = "mh-measure share"
+    $albums = [ordered]@{ version = 1; albums = @([ordered]@{ name = $albumName; entries = $entries }) }
+    $albumsFile = Join-Path $tool "reports\albums.json"
+    [IO.File]::WriteAllText($albumsFile, ($albums | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
+    $originalMb = ($albumPhotos | Measure-Object -Property Length -Sum).Sum / 1MB
+    Log ("   32a. album of {0} photos ({1:N1} MB) written to {2}" -f $albumPhotos.Count, $originalMb, $albumsFile)
+    $before = @($albumPhotos | ForEach-Object { "$($_.Name) $($_.Length) $($_.LastWriteTimeUtc.Ticks)" }) -join '|'
+    $shares = Join-Path $HOME "media-hygiene\Shares"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $said = @(mh share --album $albumName 2>&1)
+    $status = $LASTEXITCODE
+    $watch.Stop()
+    Log ("   32b. mh share: exit code {0}, {1:N1} s" -f $status, $watch.Elapsed.TotalSeconds)
+    foreach ($line in $said) {
+        $text = "$line".Trim()
+        if ($text -match 'ready to send|read back|GPS|not included|25 MB|replaced|missing|could not') { Log "   32b. $text" }
+    }
+    $after = @(Get-ChildItem -LiteralPath $albumPhotos.FullName | ForEach-Object { "$($_.Name) $($_.Length) $($_.LastWriteTimeUtc.Ticks)" }) -join '|'
+    Log ("   32c. the album's originals unchanged (size and date): {0}" -f ($before -eq $after))
+    $shareFolder = Join-Path $shares $albumName
+    $shareZip = Join-Path $shares "$albumName.zip"
+    $copies = @(Get-ChildItem -LiteralPath $shareFolder -File -ErrorAction SilentlyContinue)
+    if ($copies.Count -gt 0) {
+        $copiedMb = ($copies | Measure-Object -Property Length -Sum).Sum / 1MB
+        $zipMb = (Get-Item -LiteralPath $shareZip).Length / 1MB
+        Log ("   32c. copies: {0}, {1:N1} MB, {2:N2} MB per photo (originals {3:N2} MB each); zip {4:N1} MB" -f $copies.Count, $copiedMb, ($copiedMb / $copies.Count), ($originalMb / $albumPhotos.Count), $zipMb)
+        # GPSLatitude (0x0002) through System.Drawing: an assembly of Windows, nothing compiled.
+        Add-Type -AssemblyName System.Drawing
+        $gpsIn = 0
+        foreach ($photo in $albumPhotos) {
+            $picture = [Drawing.Image]::FromFile($photo.FullName)
+            if ($picture.PropertyIdList -contains 2) { $gpsIn++ }
+            $picture.Dispose()
+        }
+        $gpsOut = 0
+        foreach ($copy in $copies) {
+            $picture = [Drawing.Image]::FromFile($copy.FullName)
+            if ($picture.PropertyIdList -contains 2) { $gpsOut++ }
+            $picture.Dispose()
+        }
+        Log "   32c. photos with a GPS position: $gpsIn of the originals, $gpsOut of the copies (expected 0)"
+    } else {
+        Log "   32c. no copy found in $shareFolder"
+    }
+    $explorer = Read-Host "32d. Did the Explorer open on $shares, the folder '$albumName' and its zip side by side? (y / n: what)"
+    $look = Read-Host "32e. Open two copies: upright, sharp enough on screen, colours as the originals? (y / n: what)"
+    Log "   32d. Explorer opened on Shares: $explorer; copies look right: $look"
+    Remove-Item -Recurse -Force -LiteralPath $shareFolder -ErrorAction SilentlyContinue
+    Remove-Item -Force -LiteralPath $shareZip -ErrorAction SilentlyContinue
+    Log "   32: the test album's folder and zip removed from $shares"
     $ErrorActionPreference = $saved
 }
 

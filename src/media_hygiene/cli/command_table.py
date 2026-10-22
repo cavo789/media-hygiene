@@ -115,6 +115,14 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
+            "share",
+            analyse,
+            _(
+                "Prepare an album for sending: resized copies without the GPS "
+                "position, a folder and a zip, for a mail or a social network."
+            ),
+        ),
+        (
             "people",
             analyse,
             _(

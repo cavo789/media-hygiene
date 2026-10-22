@@ -36,13 +36,10 @@ from media_hygiene.services.launcher_kept import CACHE_VOLUME, kept_run
 from media_hygiene.services.launcher_lan import lan_command
 from media_hygiene.services.launcher_launch import launch_texts
 from media_hygiene.services.launcher_memory import locale_option
-from media_hygiene.services.launcher_menu import (
-    BROWSE_WAIT,
-    DESKTOP_WAIT,
-    menu_texts,
-)
+from media_hygiene.services.launcher_menu import BROWSE_WAIT, DESKTOP_WAIT, menu_texts
 from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
+from media_hygiene.services.launcher_share import share_mount
 from media_hygiene.services.launcher_stale import stale_texts
 from media_hygiene.services.launcher_stamp import launcher_stamp
 from media_hygiene.services.launcher_update import update_texts
@@ -185,6 +182,7 @@ def render_script(script: LauncherScript) -> str:
         phone=phone_command(),
         backup=backup_command(),
         lan=lan_command(),
+        share=share_mount(script.shell),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,

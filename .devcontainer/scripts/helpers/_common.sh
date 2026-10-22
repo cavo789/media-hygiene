@@ -30,7 +30,7 @@ function _gentle() {
 function _media_hygiene_env() {
     local base="/tmp/media-hygiene"
     local kind
-    for kind in data config journal quarantine reports cache; do
+    for kind in data config journal quarantine reports cache shares; do
         mkdir -p "${base}/${kind}"
         printf 'MEDIA_HYGIENE_%s_DIR=%s/%s\n' "${kind^^}" "${base}" "${kind}"
     done

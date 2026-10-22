@@ -160,6 +160,7 @@ Le port est `[review] port`, celui de toutes les pages.
 
 - [`home` : la page d'accueil, et `mh --lan`](home.md)
 - [Retrouver en bref](../find/quick-guide.md)
+- [`share` : l'album prêt à envoyer par mail](share.md)
 
 ## L'aide intégrée
 

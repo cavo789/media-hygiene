@@ -179,6 +179,17 @@ msgstr ""
 "quasi-doublon ou un doublon exact n'est jamais listé."
 
 msgid ""
+"'share' makes copies of an album to send them, in your folder media-"
+"hygiene\\Shares: each photo upright, its long side fitted into "
+"long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
+"only read."
+msgstr ""
+"'share' fait des copies d'un album pour les envoyer, dans votre dossier "
+"media-hygiene\\Shares : chaque photo redressée, son grand côté ramené à "
+"long_side_px pixels, en JPEG de qualité quality (30 à 95). Vos photos "
+"sont seulement lues."
+
+msgid ""
 "'slideshow' shows photos on the TV, the phone choosing the next one. Each"
 " photo is sent fitted into screen_px pixels wide (and 9/16 of that high):"
 " 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old"
@@ -341,7 +352,10 @@ msgstr[1] "+ {n} photos placées à la main"
 msgid ""
 "--chosen is gone (it showed the files set aside for the bin): add the "
 "photos to an album in search or browse, then --album \"Crete 2023\"."
-msgstr "--chosen n'existe plus (il montrait les fichiers mis de côté pour la corbeille) : ajoutez les photos à un album dans search ou browse, puis --album \"Crète 2023\"."
+msgstr ""
+"--chosen n'existe plus (il montrait les fichiers mis de côté pour la "
+"corbeille) : ajoutez les photos à un album dans search ou browse, puis "
+"--album \"Crète 2023\"."
 
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
@@ -850,6 +864,11 @@ msgstr ""
 
 msgid "Add photos to an album in search or browse."
 msgstr "Ajoutez des photos à un album dans search ou browse."
+
+msgid "Add photos to it in search or browse; the videos are never copied."
+msgstr ""
+"Ajoutez-y des photos dans search ou browse ; les vidéos ne sont jamais "
+"copiées."
 
 msgid ""
 "Add the settings of this version to your config.toml, with their "
@@ -1761,6 +1780,9 @@ msgstr[1] ""
 "Créez les dossiers vous-même avant docker run (Docker crée les dossiers "
 "manquants pour root seulement) ; depuis WSL ou Linux, ajoutez --user "
 "\"$(id -u):$(id -g)\"."
+
+msgid "Crete 2023"
+msgstr "Crète 2023"
 
 msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
@@ -3659,6 +3681,21 @@ msgstr ""
 "'classify --carry-over <classeur>' : vos modifications sont reprises dans"
 " son nouveau classeur."
 
+msgid ""
+"Keep the GPS position in the copies. false by default: a photo sent must "
+"not say where the house is; 'share --keep-gps' keeps it for one run."
+msgstr ""
+"Garder la position GPS dans les copies. false par défaut : une photo "
+"envoyée ne doit pas dire où est la maison ; 'share --keep-gps' la garde "
+"pour une fois."
+
+msgid ""
+"Keep the GPS position in the copies; removed by default, a photo sent "
+"must not say where the house is."
+msgstr ""
+"Garder la position GPS dans les copies ; retirée par défaut, une photo "
+"envoyée ne doit pas dire où est la maison."
+
 msgid "Keep the source folders the sort leaves empty."
 msgstr "Garder les dossiers sources que le tri laisse vides."
 
@@ -4312,7 +4349,9 @@ msgid "No album named {name}. The albums: {names}."
 msgstr "Aucun album nommé {name}. Les albums : {names}."
 
 msgid "No album yet: type a name, pick photos, then Add to the album."
-msgstr "Pas encore d'album : tapez un nom, choisissez des photos, puis Ajouter à l'album."
+msgstr ""
+"Pas encore d'album : tapez un nom, choisissez des photos, puis Ajouter à "
+"l'album."
 
 msgid "No audit has walked a folder completely yet."
 msgstr "Aucun audit n'a encore parcouru un dossier en entier."
@@ -4549,6 +4588,10 @@ msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
 msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
+
+#, python-brace-format
+msgid "No photo to prepare in the album {name}."
+msgstr "Aucune photo à préparer dans l'album {name}."
 
 msgid "No photo with a GPS position in the index: the map shows no cluster."
 msgstr ""
@@ -5593,8 +5636,25 @@ msgstr ""
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
 
+msgid "Prepare an album for sending"
+msgstr "Préparer un album pour l'envoyer"
+
+msgid ""
+"Prepare an album for sending: resized copies without the GPS position, a "
+"folder and a zip, for a mail or a social network."
+msgstr ""
+"Préparer un album pour l'envoyer : des copies réduites sans la position "
+"GPS, un dossier et un zip, pour un mail ou un réseau social."
+
+msgid "Prepare for sending"
+msgstr "Préparer pour l'envoi"
+
 msgid "Preparing the home page…"
 msgstr "Préparation de l'accueil…"
+
+#, python-brace-format
+msgid "Preparing the photos of the album {name}…"
+msgstr "Préparation des photos de l'album {name}…"
 
 msgid "Previous"
 msgstr "Précédente"
@@ -5649,7 +5709,9 @@ msgstr ""
 " est perdu pour de bon."
 
 msgid "Put back a copy of it, or move it away to start new albums."
-msgstr "Remettez-en une copie, ou déplacez-le ailleurs pour commencer de nouveaux albums."
+msgstr ""
+"Remettez-en une copie, ou déplacez-le ailleurs pour commencer de nouveaux"
+" albums."
 
 #, python-brace-format
 msgid "Put back in the backup: {count} file, read back."
@@ -5870,6 +5932,13 @@ msgstr "Rapports"
 
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
+
+msgid ""
+"Resized copies without the GPS position, a folder and a zip: for a mail, "
+"a social network or a USB stick. Your photos are only read."
+msgstr ""
+"Des copies réduites sans la position GPS, un dossier et un zip : pour un "
+"mail, un réseau social ou une clé USB. Vos photos sont seulement lues."
 
 msgid "Restore"
 msgstr "Rétablir"
@@ -6328,7 +6397,9 @@ msgstr "Dites ce que l'album rassemble."
 msgid ""
 "Say what to show, one of: --folder \"C:\\Photos\\Holidays\", --search "
 "\"words\", or --album \"Crete 2023\"."
-msgstr "Dites quoi montrer, au choix : --folder \"C:\\Photos\\Vacances\", --search \"mots\", ou --album \"Crète 2023\"."
+msgstr ""
+"Dites quoi montrer, au choix : --folder \"C:\\Photos\\Vacances\", "
+"--search \"mots\", ou --album \"Crète 2023\"."
 
 msgid "School"
 msgstr "École"
@@ -6631,7 +6702,9 @@ msgid "Show again"
 msgstr "Remontrer"
 
 msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
-msgstr "Montrer un album, fait dans search, browse ou le tri des rafales : \"Crète 2023\"."
+msgstr ""
+"Montrer un album, fait dans search, browse ou le tri des rafales : "
+"\"Crète 2023\"."
 
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr "Affiche chaque réglage, son origine, et les points de montage."
@@ -6644,10 +6717,10 @@ msgstr "Voir ses photos"
 
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
-"search or the files set aside."
+"search or an album."
 msgstr ""
 "Montrer des photos sur la télé, le téléphone choisissant la suivante : un"
-" dossier, une recherche ou les fichiers mis de côté."
+" dossier, une recherche ou un album."
 
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
 msgstr ""
@@ -7050,6 +7123,13 @@ msgstr "La télé est appairée : elle montre la photo maintenant."
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 
+msgid ""
+"The album to send, made in search, browse or the burst review: \"Crete "
+"2023\"."
+msgstr ""
+"L'album à envoyer, fait dans search, browse ou la revue des rafales : "
+"\"Crète 2023\"."
+
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
 msgstr "L'album {name} est vide : retiré de {place}."
@@ -7061,7 +7141,9 @@ msgid "The album's name: the folder holding its links."
 msgstr "Le nom de l'album : le dossier qui contient ses liens."
 
 msgid "The albums are saved in /reports: mount it, or they are lost."
-msgstr "Les albums sont enregistrés dans /reports : montez-le, sinon ils sont perdus."
+msgstr ""
+"Les albums sont enregistrés dans /reports : montez-le, sinon ils sont "
+"perdus."
 
 msgid "The audit counts them"
 msgstr "L'audit les compte"
@@ -7243,6 +7325,9 @@ msgstr "Le conteneur ne peut pas écrire dans {folders}."
 msgid "The copies grouped, with their previews and the copy kept."
 msgstr "Les copies regroupées, avec leurs aperçus et la copie gardée."
 
+msgid "The copies to send are written to /shares, which is not mounted."
+msgstr "Les copies à envoyer s'écrivent dans /shares, qui n'est pas monté."
+
 msgid "The copy from the phone is missing or incomplete: kept on the phone."
 msgstr ""
 "La copie depuis le téléphone manque ou est incomplète : gardé sur le "
@@ -7302,6 +7387,9 @@ msgstr ""
 
 msgid "The documentation's home"
 msgstr "L'accueil de la documentation"
+
+msgid "The earlier copies of this album were replaced."
+msgstr "Les copies précédentes de cet album ont été remplacées."
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
@@ -8034,6 +8122,20 @@ msgstr "Le classeur {path} est introuvable."
 msgid "The workbook's category"
 msgstr "Catégorie du classeur"
 
+msgid ""
+"The zip is larger than 25 MB: some webmails refuse an attachment that "
+"large (check your mail's own limit). Send the folder another way (a USB "
+"stick, a shared drive), or an album of fewer photos."
+msgstr ""
+"Le zip dépasse 25 Mo : certains webmails refusent une pièce jointe aussi "
+"grande (vérifiez la limite de votre messagerie). Envoyez le dossier "
+"autrement (une clé USB, un espace partagé), ou un album de moins de "
+"photos."
+
+#, python-brace-format
+msgid "The zip, read back: {zip} ({size}, {n} files)."
+msgstr "Le zip, relu : {zip} ({size}, {n} fichiers)."
+
 #, python-brace-format
 msgid ""
 "The {kind} folder ({tool}) and the photo folder {data} are one inside the"
@@ -8324,6 +8426,16 @@ msgstr "À déplacer"
 msgid "To place"
 msgstr "À placer"
 
+#, python-brace-format
+msgid ""
+"To prepare {name} for sending (resized copies without the GPS position, a"
+" folder and a zip): close this page (Ctrl+C in the window where mh runs),"
+" then type (copied):"
+msgstr ""
+"Pour préparer {name} pour l'envoi (des copies réduites sans la position "
+"GPS, un dossier et un zip) : fermez cette page (Ctrl+C dans la fenêtre où"
+" tourne mh), puis tapez (copié) :"
+
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
 "Pour écarter toutes les photos, appuyez sur X : toute la rafale part en "
@@ -8337,7 +8449,9 @@ msgstr "À régler une fois : {settings}."
 msgid ""
 "To show {name} on the TV: close this page (Ctrl+C in the window where mh "
 "runs), then type (copied):"
-msgstr "Pour montrer {name} sur la télé : fermez cette page (Ctrl+C dans la fenêtre où tourne mh), puis tapez (copié) :"
+msgstr ""
+"Pour montrer {name} sur la télé : fermez cette page (Ctrl+C dans la "
+"fenêtre où tourne mh), puis tapez (copié) :"
 
 msgid "To sort"
 msgstr "À trier"
@@ -9041,8 +9155,8 @@ msgstr "Vos dossiers de photos :"
 msgid "Your photos and videos were not touched."
 msgstr "Vos photos et vidéos n'ont pas été touchées."
 
-msgid "Your photos on the TV, the phone as the remote."
-msgstr "Vos photos sur la télé, le téléphone en télécommande."
+msgid "Your photos on the TV, or an album ready to send by mail."
+msgstr "Vos photos sur la télé, ou un album prêt à envoyer par mail."
 
 msgid "Your photos, in order"
 msgstr "Vos photos, en ordre"
@@ -9263,6 +9377,14 @@ msgstr "comme prévu"
 
 msgid "as planned, then next"
 msgstr "comme prévu, puis suivant"
+
+#, python-brace-format
+msgid ""
+"attach {zip} to a mail, or add the photos of {folder} to an album on your"
+" social network."
+msgstr ""
+"joignez {zip} à un mail, ou ajoutez les photos de {folder} à un album de "
+"votre réseau social."
 
 msgid "audit"
 msgstr "audit"
@@ -9929,6 +10051,13 @@ msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr "mh garde la main jusqu'à la fin, puis rouvre la page d'accueil"
 
 msgid ""
+"mh mounts it for share; with docker run, add -v \"$HOME\\media-"
+"hygiene\\Shares:/shares\"."
+msgstr ""
+"mh le monte pour share ; avec docker run, ajoutez -v \"$HOME\\media-"
+"hygiene\\Shares:/shares\"."
+
+msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
 msgstr ""
@@ -10434,6 +10563,11 @@ msgstr "vu par le modèle"
 
 msgid "select a photo"
 msgstr "sélectionner une photo"
+
+msgid "send mail email attach zip facebook social network album gps"
+msgstr ""
+"envoyer mail courriel e-mail pièce jointe zip facebook réseau social "
+"album gps"
 
 msgid "send the selected photos to another category"
 msgstr "envoyer les photos sélectionnées dans une autre catégorie"
@@ -11502,8 +11636,14 @@ msgid_plural ""
 "{count} files of {name} are missing: moved out of the folders analysed, "
 "or deleted. They stay in the album: once an audit sees them again, they "
 "come back."
-msgstr[0] "{count} fichier de {name} est manquant : déplacé hors des dossiers analysés, ou supprimé. Il reste dans l'album : dès qu'un audit le revoit, il revient."
-msgstr[1] "{count} fichiers de {name} sont manquants : déplacés hors des dossiers analysés, ou supprimés. Ils restent dans l'album : dès qu'un audit les revoit, ils reviennent."
+msgstr[0] ""
+"{count} fichier de {name} est manquant : déplacé hors des dossiers "
+"analysés, ou supprimé. Il reste dans l'album : dès qu'un audit le revoit,"
+" il revient."
+msgstr[1] ""
+"{count} fichiers de {name} sont manquants : déplacés hors des dossiers "
+"analysés, ou supprimés. Ils restent dans l'album : dès qu'un audit les "
+"revoit, ils reviennent."
 
 #, python-brace-format
 msgid ""
@@ -11587,7 +11727,9 @@ msgstr "{count} fichiers, depuis {when}"
 msgid ""
 "{count} files: an album takes at most {most} at once. Narrow the search "
 "(a year, a folder), then add again."
-msgstr "{count} fichiers : un album en prend au plus {most} à la fois. Affinez la recherche (une année, un dossier), puis ajoutez à nouveau."
+msgstr ""
+"{count} fichiers : un album en prend au plus {most} à la fois. Affinez la"
+" recherche (une année, un dossier), puis ajoutez à nouveau."
 
 #, python-brace-format
 msgid "{count} folder"
@@ -12503,8 +12645,12 @@ msgid ""
 msgid_plural ""
 "{name}: {count} files, saved in {place}. Only this file changed: no photo"
 " was copied or moved."
-msgstr[0] "{name} : {count} fichier, enregistré dans {place}. Seul ce fichier a changé : aucune photo n'a été copiée ni déplacée."
-msgstr[1] "{name} : {count} fichiers, enregistrés dans {place}. Seul ce fichier a changé : aucune photo n'a été copiée ni déplacée."
+msgstr[0] ""
+"{name} : {count} fichier, enregistré dans {place}. Seul ce fichier a "
+"changé : aucune photo n'a été copiée ni déplacée."
+msgstr[1] ""
+"{name} : {count} fichiers, enregistrés dans {place}. Seul ce fichier a "
+"changé : aucune photo n'a été copiée ni déplacée."
 
 #, python-brace-format
 msgid "{name}: {count} photos"
@@ -12559,12 +12705,30 @@ msgstr[1] "{n} fichiers trouvés."
 #, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
+"deleted): not included."
+msgid_plural ""
+"{n} files of the album are missing (moved out of the folders analysed, or"
+" deleted): not included."
+msgstr[0] ""
+"{n} fichier de l'album manque (déplacé hors des dossiers analysés, ou "
+"supprimé) : non inclus."
+msgstr[1] ""
+"{n} fichiers de l'album manquent (déplacés hors des dossiers analysés, ou"
+" supprimés) : non inclus."
+
+#, python-brace-format
+msgid ""
+"{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not shown."
 msgid_plural ""
 "{n} files of the album are missing (moved out of the folders analysed, or"
 " deleted): not shown."
-msgstr[0] "{n} fichier de l'album est manquant (déplacé hors des dossiers analysés, ou supprimé) : pas montré."
-msgstr[1] "{n} fichiers de l'album sont manquants (déplacés hors des dossiers analysés, ou supprimés) : pas montrés."
+msgstr[0] ""
+"{n} fichier de l'album est manquant (déplacé hors des dossiers analysés, "
+"ou supprimé) : pas montré."
+msgstr[1] ""
+"{n} fichiers de l'album sont manquants (déplacés hors des dossiers "
+"analysés, ou supprimés) : pas montrés."
 
 #, python-brace-format
 msgid "{n} file picked"
@@ -12615,6 +12779,18 @@ msgstr[0] "{n} photo"
 msgstr[1] "{n} photos"
 
 #, python-brace-format
+msgid "{n} photo could not be read: not included."
+msgid_plural "{n} photos could not be read: not included."
+msgstr[0] "{n} photo n'a pas pu être lue : non incluse."
+msgstr[1] "{n} photos n'ont pas pu être lues : non incluses."
+
+#, python-brace-format
+msgid "{n} photo ready to send ({size}), read back from {folder}."
+msgid_plural "{n} photos ready to send ({size}), read back from {folder}."
+msgstr[0] "{n} photo prête à envoyer ({size}), relue dans {folder}."
+msgstr[1] "{n} photos prêtes à envoyer ({size}), relues dans {folder}."
+
+#, python-brace-format
 msgid "{n} s"
 msgstr "{n} s"
 
@@ -12653,6 +12829,20 @@ msgid "{n} video"
 msgid_plural "{n} videos"
 msgstr[0] "{n} vidéo"
 msgstr[1] "{n} vidéos"
+
+#, python-brace-format
+msgid ""
+"{n} video not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
+msgid_plural ""
+"{n} videos not included: only the photos are copied (a video alone may "
+"pass a mail's limit)."
+msgstr[0] ""
+"{n} vidéo non incluse : seules les photos sont copiées (une vidéo seule "
+"peut dépasser la limite d'un mail)."
+msgstr[1] ""
+"{n} vidéos non incluses : seules les photos sont copiées (une vidéo seule"
+" peut dépasser la limite d'un mail)."
 
 #, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
@@ -13131,6 +13321,12 @@ msgstr ""
 
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
+
+msgid "📍 The GPS positions were kept, as asked."
+msgstr "📍 Les positions GPS ont été gardées, comme demandé."
+
+msgid "📍 The GPS positions were removed: --keep-gps keeps them."
+msgstr "📍 Les positions GPS ont été retirées : --keep-gps les garde."
 
 #, python-brace-format
 msgid ""

@@ -21,9 +21,12 @@ from media_hygiene.services import people_page, reviewing, sort_reviewing
 from media_hygiene.services import places as places_service
 from media_hygiene.services import search_pages as search_service
 from media_hygiene.services import slideshow as slideshow_service
+from media_hygiene.services.albums import album_store
+from media_hygiene.share.album_store import AlbumChange
 from tests.integration.test_clean_undo import manifest
 from tests.support.cli import run
 from tests.support.faces import FakeRecipe
+from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -46,6 +49,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("search",),
     ("browse",),
     ("slideshow", "--folder", "."),  # `.`: the whole data folder
+    ("share", "--album", "Demo"),  # its copies go to /shares, never next to the photos
     ("people",),
     ("inventory",),
     ("history",),
@@ -82,8 +86,13 @@ def ready_then_stop(*_args: object) -> Callable[..., object]:
 
 @pytest.fixture
 def read_only_data(locations: Locations) -> Iterator[Path]:
-    """The demo tree, every folder and file read-only, as `:ro` would make it."""
+    """The demo tree, every folder and file read-only, as `:ro` would make it.
+
+    One of its photos is in the album `Demo`, for `share`.
+    """
     data = locations.data_dir
+    photo = min(data.rglob("*.jpg"))
+    album_store(make_runtime(locations)).add(AlbumChange("Demo", (photo,)))
     paths = sorted(data.rglob("*"), reverse=True)
     for path in (*paths, data):
         path.chmod(0o555 if path.is_dir() else 0o444)

@@ -152,6 +152,7 @@ The port is `[review] port`, the one of every page.
 
 - [`home`: the home page, and `mh --lan`](home.md)
 - [Find in short](../find/quick-guide.md)
+- [`share`: the album ready to send by mail](share.md)
 
 ## The built-in help
 

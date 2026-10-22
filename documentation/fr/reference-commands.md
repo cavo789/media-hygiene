@@ -31,6 +31,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | retrouver une photo par un mot, un lieu, une année, une personne | [`search`](commands/search.md) |
 | parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [`browse`](commands/browse.md), puis `clean --decisions` |
 | montrer les photos des vacances sur la télé, en choisissant la suivante depuis mon téléphone | [`slideshow`](commands/slideshow.md) |
+| envoyer un album par mail ou sur un réseau social, réduit et sans la position GPS | [`share`](commands/share.md) |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`backup`](commands/backup.md) |
@@ -66,6 +67,7 @@ exemples et son `--help`.
 | [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. Les photos choisies peuvent être mises de côté pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
 | [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 | [`slideshow`](commands/slideshow.md) | Montre les photos d'un dossier, d'une recherche ou les fichiers mis de côté sur la télé (son navigateur, ou celui d'un Chromecast), le téléphone comme télécommande : suivante, précédente, une photo touchée, lecture et pause, « ne pas montrer ». Avec `mh slideshow --lan`, pour le réseau de la maison seulement, la télé appairée par un code qu'elle affiche. N'écrit jamais dans vos dossiers. | [Commandes](commands/slideshow.md) |
+| [`share`](commands/share.md) | Prépare un album pour l'envoyer : une copie de chaque photo, redressée, son grand côté à 2048 pixels, sans sa position GPS (`--keep-gps` la garde), dans un dossier au nom de l'album et son zip, dans `media-hygiene\Shares` ; les vidéos sont laissées de côté et comptées. N'écrit jamais dans vos dossiers. | [Commandes](commands/share.md) |
 | [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
 
 **Agir : déplace, écrit ou supprime des fichiers** (journalisé, annulable)
@@ -203,6 +205,9 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              dans votre navigateur.                                          │
 │ search       Retrouver des photos par leurs mots dans votre navigateur (ou   │
 │              en tableau) : les mots que 'tags' leur a donnés.                │
+│ share        Préparer un album pour l'envoyer : des copies réduites sans la  │
+│              position GPS, un dossier et un zip, pour un mail ou un réseau   │
+│              social.                                                         │
 │ slideshow    Montrer des photos sur la télé, le téléphone choisissant la     │
 │              suivante : un dossier, une recherche ou les fichiers mis de     │
 │              côté.                                                           │
