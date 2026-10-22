@@ -52,18 +52,17 @@ def sent_jpeg(job: SendJob, source: Path) -> bytes | None:
         The JPEG, or None when the photo cannot be decoded.
     """
     prepare_image_worker()
-    ImageFile.LOAD_TRUNCATED_IMAGES = True
-    try:
+    made = b""
+    ImageFile.LOAD_TRUNCATED_IMAGES = True  # a photo cut short still sends its part
+    with contextlib.suppress(*unreadable_errors()):
         picture = upright_picture(source, job.long_side_px)
         picture.thumbnail((job.long_side_px, job.long_side_px))
         exif, icc = _header(source, keep_gps=job.keep_gps)
         buffer = io.BytesIO()
         picture.save(buffer, "JPEG", quality=job.quality, exif=exif, icc_profile=icc)
-    except unreadable_errors():
-        return None
-    finally:
-        ImageFile.LOAD_TRUNCATED_IMAGES = False
-    return buffer.getvalue()
+        made = buffer.getvalue()  # whole, or nothing: never half a JPEG
+    ImageFile.LOAD_TRUNCATED_IMAGES = False
+    return made or None  # empty: the photo could not be decoded
 
 
 def _header(source: Path, *, keep_gps: bool) -> tuple[bytes, bytes | None]:
