@@ -6264,6 +6264,9 @@ msgstr ""
 msgid "The phone's name, as Windows shows it."
 msgstr ""
 
+msgid "The phone's remote: on a phone on the same Wi-Fi, open"
+msgstr ""
+
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"
 " cache: the words alone answer."

@@ -25,16 +25,20 @@
   var films = typeof ahead.decode === "function" && Boolean(film.canPlayType && film.canPlayType(H264));
   var filmShown = "";
   var filmKey = null;
+  var BEHIND = typeof ahead.decode === "function" ? "layer back quiet" : "layer back";
+  var SHRINK = 0.85;
+  var FITS_TRIES = 20;
 
   front.photo.className = "hidden";
   back.photo.className = "hidden";
+  back.layer.className = BEHIND;
 
   function swap() {
     var former = front;
     front = back;
     back = former;
     front.layer.className = "layer front";
-    back.layer.className = "layer back";
+    back.layer.className = BEHIND;
   }
 
   function shownNow(url) {
@@ -144,10 +148,30 @@
     preload(answer.next);
   }
 
+  function fontSize(element) {
+    return parseFloat(window.getComputedStyle(element, null).fontSize);
+  }
+
+  // Shrinks the code and its lines until they fit the screen, whatever text zoom the TV's
+  // browser applies (a Chromecast's showed the lines but not the code, 2026-10-22).
+  function fitCode() {
+    var tries = 0;
+    var text = fontSize(pairing);
+    var digits = fontSize(codeText);
+    while (tries < FITS_TRIES && (codeText.scrollWidth > pairing.clientWidth || pairing.offsetTop + pairing.offsetHeight > window.innerHeight)) {
+      text = text * SHRINK;
+      digits = digits * SHRINK;
+      pairing.style.fontSize = text + "px";
+      codeText.style.fontSize = digits + "px";
+      tries = tries + 1;
+    }
+  }
+
   function showCode(code) {
     codeText.innerHTML = "";
     codeText.appendChild(document.createTextNode(code));
     pairing.className = "";
+    fitCode();
   }
 
   function ask(since) {

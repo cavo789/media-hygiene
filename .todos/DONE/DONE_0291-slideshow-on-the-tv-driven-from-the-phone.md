@@ -4,7 +4,6 @@
 - **Batch**: slideshow
 - **Depends**: 0269
 - **Files**: `src/media_hygiene/cli/cmd_slideshow.py`, `src/media_hygiene/slideshow/`, `src/media_hygiene/services/slideshow.py`, `src/media_hygiene/cli/menu_catalog_find.py`, `src/media_hygiene/config/`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `documentation/en/commands/slideshow.md`, `documentation/fr/commands/slideshow.md`, `tests/support/docs/scenario.py`, `.config/mkdocs/mkdocs.yml`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: the evening test on the living-room TV, through the Chromecast's browser (and the TV's own as fallback)
 
 ## Context
 
@@ -84,7 +83,7 @@ opens the maintainer's own blog (HTTPS, heavy JavaScript): it is a modern browse
   (preloaded), a jump to any thumbnail in ~1 s with no bands (target estimated from the
   measures above). An unattended run closes PARTIAL on it.
 
-## Status — PARTIAL (2026-10-21)
+## Status — DONE (2026-10-22)
 
 ### Done
 - `media-hygiene slideshow` (🔒, a page command): `--folder` (and its subfolders), `--search`
@@ -122,7 +121,18 @@ opens the maintainer's own blog (HTTPS, heavy JavaScript): it is a modern browse
   `test_slideshow_pick.py`, `test_slideshow_command.py`, `test_home_lan.py` (both `mh`).
 - Step 30 of `tests/measure/mh-measure.ps1`: the evening test, timed by hand.
 
-### Not done
+### Measured on the maintainer's TV (2026-10-22, `mh-measure.ps1 -Only 30 -Count 30`)
+- Chromecast's browser: "next" (preloaded) median 0.5 s (the very first 10.1 s, cold), a jump
+  to a far thumbnail median 0.5 s, never bands; full screen, the timer, "do not show", the TV
+  reloaded and the phone asleep all right. The UE55ES6100's own Internet app: next and jump
+  median 0.5 s, no bands.
+- First run: the Chromecast showed the lines but not the 6-digit code (a fixed 120 px under
+  its text zoom), and parts of the former photo stayed on the new one. Fixed: the code sized
+  in vh then shrunk by the script until it fits, the layer behind hidden where `img.decode`
+  exists, and the TV names the phone's address (asked by the maintainer). Second run, photos
+  of one holiday folder: code whole, address shown, no trace of the former photo.
+
+### Was not done (closed by the measure above)
 - The evening test on the living-room TV through the Chromecast's browser, then the
   UE55ES6100's own browser: "next" without bands and at once, a jump in ~1 s without bands, the
   TV's code readable, full screen, the TV reloaded, the phone asleep.

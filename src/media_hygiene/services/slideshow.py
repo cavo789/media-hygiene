@@ -20,6 +20,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH
+from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import headed_page
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -142,11 +143,14 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         "ended_prefix": ENDED_PREFIX,
         "photos_only": PHOTOS_ONLY,
     }
+    lan = lan_access(serving.port) if serving.port else None  # `mh --lan`
+    phone_url = "" if lan is None else f"{lan.origin}{PAGE_PATH}"  # shown on the TV
     pages = ShowPages(
         headed_page(environment, _REMOTE_TEMPLATE, paths),
-        environment.get_template(_SCREEN_TEMPLATE).render(**paths).encode(),
+        environment.get_template(_SCREEN_TEMPLATE)
+        .render(**paths, phone_url=phone_url)
+        .encode(),
     )
-    lan = lan_access(serving.port) if serving.port else None  # `mh --lan`
     screens = Screens()
     previews = runtime.previews_dir
     pictures = ShowPictures(

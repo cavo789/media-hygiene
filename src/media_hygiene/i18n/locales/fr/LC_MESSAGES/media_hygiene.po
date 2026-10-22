@@ -4501,8 +4501,8 @@ msgstr ""
 
 msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
-"Aucune photo ni vidéo à montrer : rien de ce que le dernier audit a vu "
-"ne correspond."
+"Aucune photo ni vidéo à montrer : rien de ce que le dernier audit a vu ne"
+" correspond."
 
 msgid "No photo to give: none ticked, or none reachable."
 msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
@@ -7573,6 +7573,9 @@ msgstr "Le passage du téléphone où les fichiers ont été prouvés."
 
 msgid "The phone's name, as Windows shows it."
 msgstr "Le nom du téléphone, tel que Windows l'affiche."
+
+msgid "The phone's remote: on a phone on the same Wi-Fi, open"
+msgstr "La télécommande : sur un téléphone du même Wi-Fi, ouvrez"
 
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"

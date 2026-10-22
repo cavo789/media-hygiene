@@ -4,8 +4,14 @@
    a 2012 WebKit: the script is ES5, XMLHttpRequest only, no flexbox, no object-fit; a test parses
    screen.js.j2). Two layers hold the photo shown and the next one, loaded behind it and brought
    to the front once decoded: the bands of a slow decoding are never seen. OK on the TV's remote
-   (or a click) asks for full screen. Not paired yet, it shows the code to type on the phone.
-   A video (0292) plays in a third layer, as it is; a browser too old for it shows photos only. #}
+   (or a click) asks for full screen. Not paired yet, it shows the code to type on the phone, and
+   the address the phone opens (never the phone's own code: any TV of the network sees this page).
+   Where img.decode exists (a Chromecast's browser), the layer behind is hidden: that browser
+   left parts of the former photo on the new one (2026-10-22); the 2012 TV's, which paints a
+   photo only once shown, keeps it drawn behind. Sizes in vh (px first, for a browser without
+   vh), then fitted by the script: the code must fit whatever text zoom the TV's browser
+   applies. A video (0292) plays in a third layer, as it is; a browser too old for it shows
+   photos only. #}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
@@ -16,11 +22,14 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 .layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; }
 .front { z-index: 2; }
 .back { z-index: 1; }
+.quiet { visibility: hidden; }
 .layer img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; max-width: 100%; max-height: 100%; }
 .layer video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
 .film { z-index: 3; }
-#pairing { position: absolute; z-index: 4; top: 30%; left: 0; right: 0; text-align: center; font: 32px/1.4 sans-serif; }
-#pairing strong { display: block; margin: 24px 0; font: bold 120px/1 monospace; letter-spacing: 12px; color: #fff; }
+#pairing { position: absolute; z-index: 4; top: 8%; left: 5%; right: 5%; text-align: center; font: 32px/1.4 sans-serif; font-size: 4.5vh; }
+#pairing strong { display: block; margin: 24px 0; margin: 4vh 0; font: bold 120px/1 monospace; font-size: 20vh; letter-spacing: 0.1em; white-space: nowrap; color: #fff; }
+#pairing .phone { margin-top: 36px; margin-top: 6vh; color: #aaa; }
+#pairing .phone code { display: block; font: bold 40px/1.4 monospace; font-size: 6vh; white-space: nowrap; color: #fff; }
 .hidden { display: none; }
 </style>
 </head>
@@ -32,6 +41,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
   <p>{{ _("On the phone's remote, type the code of this TV:") }}</p>
   <strong id="code"></strong>
   <p>{{ _("Then press OK on the TV's remote for full screen.") }}</p>
+  {% if phone_url %}<p class="phone">{{ _("The phone's remote: on a phone on the same Wi-Fi, open") }} <code>{{ phone_url }}</code></p>{% endif %}
 </div>
 <script>
 {% include "screen.js.j2" %}

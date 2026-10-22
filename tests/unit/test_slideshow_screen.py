@@ -32,12 +32,16 @@ _ROTATED: Final = 6  # EXIF: the camera was turned a quarter clockwise
 _SCREEN_PX: Final = 640
 
 
-def _screen_script() -> str:
-    page = (
+def _screen_page(phone_url: str = "") -> str:
+    return str(
         translated_environment("media_hygiene.slideshow", escaped=("html", "j2"))
         .get_template("screen.html.j2")
-        .render(**_PATHS)
+        .render(**_PATHS, phone_url=phone_url)
     )
+
+
+def _screen_script() -> str:
+    page = _screen_page()
     scripts = re.findall(r"<script>(.*?)</script>", page, re.DOTALL)
     assert len(scripts) == 1
     return str(scripts[0])
@@ -49,6 +53,25 @@ def test_the_screen_page_script_is_es5() -> None:
     assert "XMLHttpRequest" in script
     assert '"/api/ended/"' in script  # the end of a video is told (0292)
     assert not post_es5(script)
+
+
+def test_the_tv_names_the_phones_address_never_its_code() -> None:
+    """Under `mh --lan` the TV says where the phone opens the remote; else nothing."""
+    url = "http://192.168.1.20:8088/"
+    page = _screen_page(url)
+    assert f"<code>{url}</code>" in page
+    assert "/pair/" not in page  # the phone's own code is never on a page any TV sees
+    assert url not in _screen_page()
+
+
+def test_the_former_photo_is_hidden_and_the_code_fitted() -> None:
+    """A Chromecast left parts of the former photo, and showed no code (2026-10-22)."""
+    page = _screen_page()
+    assert ".quiet { visibility: hidden; }" in page
+    script = _screen_script()
+    assert 'typeof ahead.decode === "function" ? "layer back quiet"' in script
+    assert "fitCode();" in script
+    assert "window.innerHeight" in script
 
 
 @pytest.mark.parametrize(
