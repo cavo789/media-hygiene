@@ -16,6 +16,7 @@ from media_hygiene.review.apply_api import APPLY_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.place import decisions_flag
+from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -52,6 +53,7 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
             state_path=STATE_PATH,
             decide_path=decide_path,
             file_path=file_path,
+            albums_path=ALBUMS_PATH,  # the pages that add to an album include it
             file=place.argument,
             clean_option=decisions_flag(place.argument),
             place=place.host,

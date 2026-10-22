@@ -1,0 +1,124 @@
+{# The albums (0295), included by `search`, `browse` and the burst review, from any package;
+   rendered only when the page's server answers them (`albums_path`). Apart from *Set aside*:
+   another list (`albums.json`), never the decisions file. The page's own script says what is
+   picked: `window.mhAlbumPick()` returns `{keys, all, search}` (`all`: every file a search
+   finds), and it calls `window.mhAlbumPicked(count)` when the picking changes. Each change is
+   saved at once and shown as read back from the disk, with the files missing from each album.
+   *Share on the TV* gives the command that shows the album typed (`slideshow --album`). #}
+{% if albums_path %}
+<style>
+  #albumBar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+  #albumBar input { width: 14em; }
+  #albumSaid { font-size: .85rem; margin: 6px 0 0; }
+  #albumSaid.error { color: var(--bad); font-weight: 600; }
+  #albumTvLine { font-size: .85rem; margin: 6px 0 0; }
+  #albumTvLine code { padding: 2px 6px; border-radius: 6px; background: var(--chip); }
+  #albumMissing { font-size: .8rem; color: var(--muted); }
+</style>
+<div id="albumBar">
+  <label for="albumName">{{ _("Album") }}</label>
+  <input id="albumName" list="albumNames" maxlength="80" autocomplete="off"
+         placeholder="{{ _('e.g. Crete 2023') }}">
+  <datalist id="albumNames"></datalist>
+  <button id="albumAdd" type="button" disabled>➕ {{ _("Add to the album") }}</button>
+  <button id="albumRemove" class="plain" type="button" disabled>{{ _("Take out of the album") }}</button>
+  <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
+</div>
+<p id="albumSaid" role="status"></p>
+<p id="albumTvLine" hidden></p>
+<details id="albumMissing" hidden><summary></summary><ul></ul></details>
+<script>
+(() => {
+  const ALBUMS_PATH = {{ albums_path | tojson }};
+  const TEXTS = {{ {
+    "saving": _("Saving…"),
+    "notSaved": _("Nothing was saved: {error}"),
+    "offline": _("The page is not running any more: start it again."),
+    "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+    "missing": _("The files missing from the albums"),
+    "tv": _("To show {name} on the TV: close this page (Ctrl+C in the window where mh runs), then type (copied):"),
+  } | tojson }};
+  const STORED = "mh-album";
+  const $ = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const plural = new Intl.PluralRules(document.documentElement.lang);
+  const counted = (forms, n) => fill(forms[plural.select(n) === "one" ? 0 : 1], { n: n });
+  const same = (name) => name.trim().replace(/\s+/g, " ").toLowerCase();
+  let albums = [];
+  let pickedCount = 0;
+
+  const named = () => albums.find((album) => same(album.name) === same($("albumName").value));
+  const buttons = () => {
+    const typed = $("albumName").value.trim() !== "";
+    $("albumAdd").disabled = !(typed && pickedCount);
+    $("albumRemove").disabled = !(named() && pickedCount);
+    $("albumTv").disabled = !named();
+  };
+
+  const show = (answer, state) => {
+    const line = $("albumSaid");
+    line.className = answer.ok ? "" : "error";
+    line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+    if (!answer.ok) return;
+    albums = state.albums || [];
+    $("albumNames").replaceChildren(...albums.map((album) => {
+      const option = document.createElement("option");
+      option.value = album.name;
+      option.label = album.name + " · " + counted(TEXTS.count, album.count);
+      return option;
+    }));
+    const missing = albums.flatMap((album) => album.missing.map((path) => album.name + " — " + path));
+    const box = $("albumMissing");
+    box.hidden = !missing.length;
+    box.querySelector("summary").textContent = TEXTS.missing + " (" + missing.length + ")";
+    box.querySelector("ul").replaceChildren(...missing.map((text) => {
+      const item = document.createElement("li");
+      item.textContent = text;
+      return item;
+    }));
+    buttons();
+  };
+
+  const send = async (action) => {
+    const name = $("albumName").value.trim();
+    if (!name || !window.mhAlbumPick) return;
+    try { window.localStorage.setItem(STORED, name); } catch { /* private mode */ }
+    $("albumSaid").className = "";
+    $("albumSaid").textContent = TEXTS.saving;
+    const body = Object.assign({ action: action, album: name }, window.mhAlbumPick());
+    body.keys = (body.keys || []).map(String);
+    let answer;
+    try {
+      answer = await fetch(ALBUMS_PATH, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+      });
+    } catch (error) {
+      $("albumSaid").className = "error";
+      $("albumSaid").textContent = TEXTS.offline;
+      return;
+    }
+    show(answer, await answer.json().catch(() => ({})));
+  };
+
+  const tv = () => {
+    const album = named();
+    if (!album) return;
+    const command = 'mh slideshow --album "' + album.name + '" --lan';
+    const line = $("albumTvLine");
+    const code = document.createElement("code");
+    code.textContent = command;
+    line.replaceChildren(fill(TEXTS.tv, { name: album.name }) + " ", code);
+    line.hidden = false;
+    if (navigator.clipboard) navigator.clipboard.writeText(command).catch(() => { /* shown anyway */ });
+  };
+
+  window.mhAlbumPicked = (count) => { pickedCount = count; buttons(); };
+  try { $("albumName").value = window.localStorage.getItem(STORED) || ""; } catch { /* private mode */ }
+  $("albumName").addEventListener("input", buttons);
+  $("albumAdd").addEventListener("click", () => send("add"));
+  $("albumRemove").addEventListener("click", () => send("remove"));
+  $("albumTv").addEventListener("click", tv);
+  fetch(ALBUMS_PATH).then(async (answer) => show(answer, await answer.json())).catch(() => { /* the page says it */ });
+})();
+</script>
+{% endif %}

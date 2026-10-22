@@ -10,7 +10,8 @@ action of the tool a click or <kbd>Ctrl</kbd>+<kbd>K</kbd> away.**
 `home` shows in your browser what [`status`](status.md) and [`menu`](menu.md) show in the
 terminal, laid out as the cycle of your photos: **Import** (a phone, your NAS or an old disk),
 **Clean**, **Sort**, **Find**, **Back up** (planned); then, apart from the cycle, **Share**
-(your photos on the TV: [`slideshow`](slideshow.md)) and three tools: **History and undo**,
+(your photos on the TV: [`slideshow`](slideshow.md), a folder or an
+[album](search.md#put-photos-in-an-album)) and three tools: **History and undo**,
 **Reports**, **Settings**. Each space has its page: its guide, numbered, then "Go further". Every
 action shows its `mh` command, copyable, and links to its chapter of this documentation. The
 page can also run the audit itself, its progress shown in the page.

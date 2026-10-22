@@ -36,11 +36,23 @@ def slideshow_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = None,
+    album: Annotated[
+        str | None,
+        typer.Option(
+            "--album",
+            help=_(
+                'Show an album, made in search, browse or the burst review: "Crete '
+                '2023".'
+            ),
+            show_default=False,
+        ),
+    ] = None,
     chosen: Annotated[
         bool,
         typer.Option(
             "--chosen",
-            help=_("Show the files set aside in search or browse."),
+            help=_("Gone: use --album."),
+            hidden=True,
         ),
     ] = False,
     port: Annotated[int | None, review_options.port()] = None,
@@ -51,16 +63,29 @@ def slideshow_command(  # pylint: disable=too-many-arguments
         ctx: Typer context holding the runtime.
         folder: `--folder`, a folder as the Explorer shows it.
         words: `--search`, the words of a search.
-        chosen: `--chosen`, the files set aside.
+        album: `--album`, an album's name.
+        chosen: `--chosen`, removed (0295): it showed the files set aside.
         port: `--port`, inside the container.
+
+    Raises:
+        MediaHygieneError: `--chosen`, said in one line to use an album.
     """
+    from media_hygiene.errors import MediaHygieneError
     from media_hygiene.services.slideshow import ShowStart, serve_slideshow
     from media_hygiene.services.slideshow_pick import Pick
 
     runtime = runtime_of(ctx)
     port = review_options.page_port(runtime, port)
-    pick = Pick(folder=folder, words=words, chosen=chosen)
+    pick = Pick(folder=folder, words=words, album=album)
     with user_errors(runtime.output):
+        if chosen:
+            raise MediaHygieneError(
+                _(
+                    "--chosen is gone (it showed the files set aside for the bin): "
+                    'add the photos to an album in search or browse, then --album "'
+                    'Crete 2023".'
+                )
+            )
         shown = serve_slideshow(runtime, ShowStart(pick, port))
     runtime.output.blank()
     runtime.output.success(

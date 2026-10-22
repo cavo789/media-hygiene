@@ -5,7 +5,8 @@
 `GET /original/<key>.<ext>` the file itself, untouched, `GET /api/file`
 the decisions file as read from the disk, and `POST /api/decide` sets shots of one
 series aside (or several series: a folder at once), saved in one write, then answers
-with those series as read back from the disk.
+with those series as read back from the disk. `GET`/`POST /api/albums` the albums,
+apart from the shots set aside (`share.album_api`).
 A decision needs a JSON body: a page of another site cannot send one without the
 browser asking first.
 """
@@ -30,6 +31,7 @@ from media_hygiene.review.local_app import (
     page_or_state,
 )
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -37,6 +39,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
     from media_hygiene.review.session import ReviewSession
+    from media_hygiene.share.album_api import AlbumDesk
 
 __all__ = ["DECIDE_PATH", "FILE_PATH", "PAGE_PATH", "STATE_PATH", "ReviewApp"]
 
@@ -69,6 +72,7 @@ class ReviewApp(LocalApp):
     page: bytes
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
+    albums: AlbumDesk | None = None  # the albums, never the shots set aside
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -80,6 +84,11 @@ class ReviewApp(LocalApp):
         Returns:
             The response.
         """
+        if request.path == ALBUMS_PATH and self.albums is not None:
+            if request.method == _GET:
+                return self.albums.state()
+            refused = refused_post(request)
+            return refused or await self.albums.answer(request.body)
         if request.method == _GET:
             return await self._get(request.path)
         if request.path == DECIDE_PATH and request.method == _POST:

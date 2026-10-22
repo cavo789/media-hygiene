@@ -10,7 +10,8 @@ chaque action de l'outil à un clic ou à <kbd>Ctrl</kbd>+<kbd>K</kbd>.**
 `home` montre dans votre navigateur ce que [`status`](status.md) et [`menu`](menu.md) montrent
 dans le terminal, rangé comme le cycle de vos photos : **Importer** (un téléphone, votre NAS ou
 un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu) ; puis, à part du cycle, **Partager**
-(vos photos sur la télé : [`slideshow`](slideshow.md)) et trois outils : **Historique et annulation**,
+(vos photos sur la télé : [`slideshow`](slideshow.md), un dossier ou un
+[album](search.md#mettre-des-photos-dans-un-album)) et trois outils : **Historique et annulation**,
 **Rapports**, **Réglages**. Chaque espace a sa page : son
 parcours, numéroté, puis « Pour aller plus loin ». Chaque action montre sa commande `mh`, à
 copier, et mène à son chapitre de cette documentation. La page peut aussi lancer l'audit

@@ -37,7 +37,7 @@ docker run --rm -it `
 | | |
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
-| Needs | `/cache` (the files of the last audit), your folders (to show the photos), the page's port; `/reports` for `--chosen`. |
+| Needs | `/cache` (the files of the last audit), your folders (to show the photos), the page's port; `/reports` for `--album`. |
 | Writes | The TV's pictures and the phone's thumbnails, in the cache. Nothing else: the show lives in memory. |
 | Reaches | The PC only; with `--lan`, the TV and the phones of your home network, never the internet. |
 | With `mh` | `mh slideshow --folder "C:\Photos\2026 Holidays" --lan`. |
@@ -57,7 +57,10 @@ Windows may ask whether Docker Desktop may accept connections: allow it on **pri
 only. Without `--lan`, only the PC can open the show (useful to try it, or for plan B below).
 
 Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) finds) or
-`--chosen` (the files set aside in `search` or [`browse`](browse.md)). From the
+`--album "Crete 2023"` (an [album](search.md#put-photos-in-an-album) made in `search`,
+[`browse`](browse.md) or the burst [`review`](review.md): photos of several folders; its
+**📺 Share on the TV** button gives this command, copied). `--chosen` is gone: it showed the
+files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
 folder and opens the show the same way.
 
@@ -126,7 +129,7 @@ The port is `[review] port`, the one of every page.
 |---|---|
 | `--folder "C:\…"` | The photos of this folder and its subfolders, as the Explorer shows it. |
 | `--search "words"` | The photos a search finds, as typed in [`search`](search.md). |
-| `--chosen` | The files set aside in `search` or `browse`. |
+| `--album "Crete 2023"` | An album made in `search`, `browse` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 | `--lan` (`mh` only) | Opens the show to the TV and the phones of your home network, for this run (Windows PowerShell). |
 
@@ -160,7 +163,7 @@ The port is `[review] port`, the one of every page.
  Usage: media-hygiene slideshow [OPTIONS]
 
  🔒 Read-only: never changes your photos. Show photos on the TV, the phone
- choosing the next one: a folder, a search or the files set aside.
+ choosing the next one: a folder, a search or an album.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --folder          <str>               Show the photos of this folder and its │
@@ -168,8 +171,8 @@ The port is `[review] port`, the one of every page.
 │                                       "C:\Photos\2026 Holidays".             │
 │ --search          <str>               Show the photos a search finds, as     │
 │                                       typed in search: "noel 2025".          │
-│ --chosen                              Show the files set aside in search or  │
-│                                       browse.                                │
+│ --album           <str>               Show an album, made in search, browse  │
+│                                       or the burst review: "Crete 2023".     │
 │ --port            <int range> [x>=1]  Port of the page. docker run publishes │
 │                                       it under the same number on your       │
 │                                       computer: -p 127.0.0.1:9000:9000 for   │

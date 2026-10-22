@@ -118,6 +118,9 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   d'abord), puis l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
   commande `clean`.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
+- Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
+  photos de la série affichée qui ne sont pas écartées, à part de vos décisions. Voir
+  [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.
 

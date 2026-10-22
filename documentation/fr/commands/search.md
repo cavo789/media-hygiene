@@ -35,7 +35,7 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Il faut | `/cache` (les mots de `tags`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088` pour la page ; `/reports` pour mettre des photos de côté. |
-| Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports. |
+| Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
 | Annuler | Rien à annuler dans la page : [`clean --decisions`](clean.md) déplace les photos mises de côté, [`undo`](undo.md) les remet. |
 | Avec `mh` | `mh search`, `mh search durbuy ours`. |
 
@@ -80,6 +80,33 @@ trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 af
   partout.
 - Le même `decisions.json` garde ce que [`review`](review.md) a décidé : les deux sont gardés, et
   un seul `clean --decisions` applique tout.
+
+## Mettre des photos dans un album
+
+Pour montrer des photos à d'autres (sur la télé avec [`slideshow`](slideshow.md)), rassemblez-les
+dans un **album** : une liste nommée, *Crète 2023*, de photos de n'importe quels dossiers. Tapez son
+nom dans **Album** (les albums déjà faits sont proposés), choisissez les photos (ou **Choisir les N
+fichiers trouvés**), puis **➕ Ajouter à l'album**.
+
+- Un album est une liste de références, rien d'autre : aucune photo n'est copiée, déplacée ni
+  modifiée. Il est enregistré aussitôt dans `albums.json` de vos rapports, à côté de
+  `decisions.json` (pas dans le cache : supprimer le cache garde vos albums), relu sur le disque et
+  affiché : *Crète 2023 : 42 fichiers, enregistrés dans …. Seul ce fichier a changé : aucune photo
+  n'a été copiée ni déplacée.*
+- Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
+  partage. Aucun des deux ne touche jamais la liste de l'autre.
+- **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
+  supprimé.
+- Une photo déplacée depuis, par [`sort`](sort.md), par [`undo`](undo.md), ou dans un dossier
+  renommé dans l'Explorateur (une fois qu'un audit l'a vu), est retrouvée par son contenu :
+  l'album la suit. Une photo introuvable (supprimée, ou en quarantaine) reste dans l'album, listée
+  comme manquante, jusqu'à ce qu'elle revienne.
+- **📺 Partager sur la télé** donne la commande qui montre l'album tapé, copiée pour vous :
+  arrêtez la page, puis `mh slideshow --album "Crète 2023" --lan` ([`slideshow`](slideshow.md)).
+- Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
+
+`albums.json` n'est pas la commande [`album`](album.md) : celle-ci fait un dossier de seconds noms
+(liens physiques) à partir d'un plan [`classify`](classify.md).
 
 ## Ce que vous pouvez taper
 

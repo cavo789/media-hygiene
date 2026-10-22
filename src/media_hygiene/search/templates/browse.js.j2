@@ -1,5 +1,6 @@
 {# The script of the folder view (`browse.html.j2`): the tree, the files of a folder,
-   the picking as in Explorer, the viewer, and the saving of what is set aside. #}
+   the picking as in Explorer, the viewer, and the saving of what is set aside; the
+   albums are `album_bar.html.j2`'s. #}
 "use strict";
 const TEXTS = {{ texts | tojson }};
 const FOLDERS_PATH = {{ folders_path | tojson }};
@@ -164,7 +165,11 @@ function showPicked() {
   cards.forEach((node, index) => node.classList.toggle("picked", picked.has(files[index].key)));
   $("picked").textContent = picked.size ? counted(TEXTS.picked, picked.size) : "";
   for (const id of ["setAside", "takeBack", "unpick"]) $(id).disabled = !picked.size;
+  if (window.mhAlbumPicked) window.mhAlbumPicked(picked.size); // album_bar.html.j2
 }
+
+// What *Add to the album* adds: the files picked in the folder shown.
+window.mhAlbumPick = () => ({ keys: [...picked], search: { folder: folder } });
 
 function said(answer, state) {
   const line = $("chosen");
@@ -219,7 +224,7 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     return;
   }
-  if (document.activeElement.tagName === "SELECT") return;
+  if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return; // an album's name
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
     event.preventDefault();
     for (const file of files) picked.add(file.key);

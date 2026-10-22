@@ -33,7 +33,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed by the page: mount them `:ro`. |
 | Needs | `/cache` (the files of the last audit), your folders (to show the photos), `/reports` (to keep what you set aside), and `-p 127.0.0.1:8088:8088` for the page. |
-| Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports. |
+| Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
 | Undo | Nothing to undo on the page: [`clean --decisions`](clean.md) moves the photos set aside, [`undo`](undo.md) brings them back. |
 | With `mh` | `mh browse`. |
 
@@ -62,6 +62,9 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   picked files back out.
 - **Search by words** opens the [`search`](search.md) page, on the same server: what you set
   aside there and here goes to the same file.
+- **➕ Add to the album** puts the picked photos in the album typed in **Album**, apart from the
+  set aside; **📺 Share on the TV** gives the command that shows it. See
+  [Put photos in an album](search.md#put-photos-in-an-album).
 
 Ctrl+C, or closing its tab, stops the page; when files are set aside, `browse` proposes the next step:
 
