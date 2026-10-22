@@ -133,19 +133,40 @@ function card(file, index) {
   return node;
 }
 
-async function openFolder(path) {
+// The same files in the same order: the cards shown can stay, only their labels change.
+function sameFiles(listed) {
+  return listed.length === files.length && listed.every((file, index) => file.key === files[index].key);
+}
+
+// After a save, the cards stay in place (no reload of the previews, no jump of the
+// scrolling): only the *marked to set aside* label follows what the server read back.
+function relabel() {
+  cards.forEach((node, index) => {
+    const badge = node.querySelector(".badge");
+    if (files[index].chosen && !badge) node.append(element("span", "badge", TEXTS.aside));
+    if (!files[index].chosen && badge) badge.remove();
+  });
+}
+
+async function openFolder(path, again) {
   folder = path;
   for (const button of document.querySelectorAll(".folder")) {
     button.classList.toggle("open", button.dataset.path === path);
   }
   const answer = await ask(FOLDER_PATH, { folder: path, order: $("order").value });
   if (!answer || !answer.ok) { failed(answer); return; }
-  files = (await answer.json()).files;
-  cards = files.map(card);
-  current = -1;
-  anchor = -1;
+  const listed = (await answer.json()).files;
   picked.clear();
-  $("grid").replaceChildren(...cards);
+  if (again && sameFiles(listed)) {
+    files = listed;
+    relabel();
+  } else {
+    files = listed;
+    cards = files.map(card);
+    current = -1;
+    anchor = -1;
+    $("grid").replaceChildren(...cards);
+  }
   $("status").className = "";
   $("status").textContent = files.length ? path + " — " + counted(TEXTS.files, files.length) : TEXTS.empty;
   showPicked();
@@ -209,6 +230,7 @@ function said(answer, state) {
   const line = $("chosen");
   line.className = answer.ok ? "" : "error";
   line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+  line.title = line.textContent; // one line in the bar: the whole sentence on hover
   if (window.mhApplyNow) window.mhApplyNow(answer.ok && state.count > 0); // apply_now.html.j2
 }
 
@@ -220,7 +242,7 @@ async function choose(action) {
   const answer = await ask(CHOSEN_PATH, body);
   if (!answer) { failed(null); return; }
   said(answer, await answer.json().catch(() => ({})));
-  if (answer.ok) await openFolder(folder);
+  if (answer.ok) await openFolder(folder, true);
 }
 
 function open() {

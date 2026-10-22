@@ -50,7 +50,10 @@
   #lead, #acting { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
   #lead[hidden], #acting[hidden], #takeBack[hidden] { display: none; }
   #status { font-weight: 600; overflow-wrap: anywhere; }
-  #chosen { flex: 1 1 220px; min-width: 0; font-size: .85rem; }
+  /* One line whatever it says, so the grid never moves when a save is said (the count and
+     size come first; the whole sentence on hover). */
+  #chosen { flex: 1 1 220px; min-width: 0; font-size: .85rem; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis; }
   #bar #albumBar { margin: 0; }
   #bar #albumBar input { width: 17em; }
   #bar > p, #bar > details { flex-basis: 100%; margin: 0; }

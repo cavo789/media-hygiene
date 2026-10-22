@@ -280,3 +280,17 @@ def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
     assert '$("bar").classList.toggle("acting", some)' in script
     # *Take out of the set aside* shows only for a picked file already set aside.
     assert "file.chosen && picked.has(file.key)" in script
+
+
+def test_a_save_keeps_the_cards_and_the_height_of_the_bar(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """After *Set aside*, the cards stay (no flicker); the saved line keeps one line."""
+    answers, _ = _browse(cli, monkeypatch, [("GET /browse", None)])
+    page = answers[0].body.decode()
+    assert "await openFolder(folder, true)" in page
+    assert "if (again && sameFiles(listed))" in page
+    assert "function relabel()" in page
+    chosen = page.split("  #chosen {")[1].split("}")[0]
+    assert "white-space: nowrap" in chosen
+    assert "text-overflow: ellipsis" in chosen
