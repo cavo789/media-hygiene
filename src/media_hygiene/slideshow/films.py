@@ -11,13 +11,12 @@ does, the show passes over its videos.
 
 from __future__ import annotations
 
-import asyncio
 from http import HTTPStatus
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.review.http import ContentType, FilePart, Response
-from media_hygiene.review.videos import NEAR_POLICY, asked_part
+from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.videos import streamed
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -74,18 +73,7 @@ async def film_response(
     suffix = source.suffix.lower()
     if suffix not in _PLAYED or request.path != f"{FILM_PREFIX}{key}{suffix}":
         return Response(HTTPStatus.NOT_FOUND)
-    try:
-        size = (await asyncio.to_thread(source.stat)).st_size
-    except OSError:
-        return Response(HTTPStatus.NOT_FOUND)
-    status, start, length = asked_part(request.headers.get("range", ""), size)
-    return Response(
-        status,
-        content_type=_PLAYED[suffix],
-        cacheable=True,
-        policy=NEAR_POLICY,
-        part=FilePart(source, start, length, size),
-    )
+    return await streamed(request, source, _PLAYED[suffix])
 
 
 def film_ended(show: Show, key: int) -> bool:

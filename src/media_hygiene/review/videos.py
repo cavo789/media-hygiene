@@ -69,6 +69,23 @@ async def video_response(
     source = source_of(key)
     if source is None or request.path != video_path(key, source):
         return Response(HTTPStatus.NOT_FOUND)
+    return await streamed(request, source, _PLAYED[source.suffix.lower()])
+
+
+async def streamed(
+    request: Request, source: Path, content_type: ContentType
+) -> Response:
+    """Send a video from the disk, whole or the part the `Range` header asks for.
+
+    Args:
+        request: The request, with or without a `Range` header.
+        source: The video, in the container.
+        content_type: The type the browser plays it by.
+
+    Returns:
+        200 (whole) or 206 (a part), sent in chunks; 416 for a part beyond the end;
+        404 for a vanished file.
+    """
     try:
         size = (await asyncio.to_thread(source.stat)).st_size
     except OSError:
@@ -76,7 +93,7 @@ async def video_response(
     status, start, length = asked_part(request.headers.get("range", ""), size)
     return Response(
         status,
-        content_type=_PLAYED[source.suffix.lower()],
+        content_type=content_type,
         cacheable=True,
         policy=NEAR_POLICY,
         part=FilePart(source, start, length, size),
